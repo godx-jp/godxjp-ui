@@ -3,6 +3,38 @@
 All notable changes to `@godxjp/ui`. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] — 2026-05-13
+
+### Added
+- **Popover** primitive (`Popover`, `PopoverTrigger`, `PopoverContent`,
+  `PopoverAnchor`) wrapping `@radix-ui/react-popover`. Visual contract
+  in the new `.popover-content` class in `tokens.css` — brand-tokenised
+  surface (`--popover`), border, and elevation.
+- **DropdownMenu** primitive (`DropdownMenu`, `DropdownMenuTrigger`,
+  `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuSeparator`,
+  `DropdownMenuLabel`, `DropdownMenuShortcut`, `DropdownMenuGroup`,
+  `DropdownMenuPortal`, `DropdownMenuSub`, `DropdownMenuRadioGroup`)
+  wrapping `@radix-ui/react-dropdown-menu`. `<DropdownMenuItem>`
+  supports `variant="destructive"` + `inset` matching the public v0.2
+  surface so call sites migrate by dep bump only.
+- **Calendar** primitive — `react-day-picker` themed via the new
+  `.calendar` class in `tokens.css` (primary / surface / ring tokens).
+- **TimeInput** primitive — narrow `HH:mm` text input with on-blur
+  normalisation (accepts `HHmm`, `H:mm`, etc.). Surfaces
+  `aria-invalid` when the draft doesn't parse.
+- New CSS classes in `tokens.css`: `.popover-content`,
+  `.dropdown-menu-content`, `.dropdown-menu-item`,
+  `.dropdown-menu-separator`, `.dropdown-menu-label`,
+  `.dropdown-menu-shortcut`, `.calendar`, `.time-input`.
+- `react-day-picker` added as a dependency.
+
+### Notes
+- This release fills the gap that blocked
+  `services/forge-service/frontend/` from migrating off the public
+  TempoFast `@godxjp/ui@0.2.0`. After 2.1.0 every primitive forge
+  imports (`Badge`, `Button`, `Tabs*`, `Popover*`, `DropdownMenu*`,
+  `Calendar`, `TimeInput`) is brand-tokenised by default.
+
 ## [2.0.0] — 2026-05-13
 
 **Major version bump.** `@godxjp/ui` (the npm package owned by godx-jp / TempoFast) is now the GoDX brand bible. The previous public 0.2.0 — TempoFast's existing component library — stays consumable for legacy callers until TempoFast itself migrates onto 2.0+. SemVer signals the breaking change so dependents pin explicitly.

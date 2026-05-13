@@ -1,46 +1,70 @@
 {
   "name": "@godxjp/ui",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "GoDX Forge unified design system — tokens, primitives, i18n, hooks shared across every service frontend (admin-platform, forge-service, console-service, me-service, agent-service, knowledge-service, …). Source of truth for design language per Plan #19/#22.",
-  "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "sideEffects": [
-    "src/tokens/*.css"
+    "**/*.css"
   ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godx-jp/godxjp-ui.git"
+  },
+  "homepage": "https://github.com/godx-jp/godxjp-ui#readme",
+  "license": "Apache-2.0",
+  "files": [
+    "dist",
+    "src/tokens",
+    "BRAND.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./tokens": "./src/tokens/tokens.css",
     "./tokens.css": "./src/tokens/tokens.css",
     "./i18n": {
-      "types": "./src/i18n/index.ts",
-      "default": "./src/i18n/index.ts"
+      "types": "./dist/i18n.d.ts",
+      "import": "./dist/i18n.js"
     },
     "./hooks": {
-      "types": "./src/hooks/index.ts",
-      "default": "./src/hooks/index.ts"
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.js"
     },
     "./data": {
-      "types": "./src/data/index.ts",
-      "default": "./src/data/index.ts"
+      "types": "./dist/data.d.ts",
+      "import": "./dist/data.js"
     },
     "./primitives": {
-      "types": "./src/components/primitives/index.ts",
-      "default": "./src/components/primitives/index.ts"
+      "types": "./dist/components/primitives.d.ts",
+      "import": "./dist/components/primitives.js"
     },
     "./components/primitives": {
-      "types": "./src/components/primitives/index.ts",
-      "default": "./src/components/primitives/index.ts"
+      "types": "./dist/components/primitives.d.ts",
+      "import": "./dist/components/primitives.js"
     },
     "./components/shell": {
-      "types": "./src/components/shell/index.ts",
-      "default": "./src/components/shell/index.ts"
+      "types": "./dist/components/shell.d.ts",
+      "import": "./dist/components/shell.js"
     },
     "./components/screens": {
-      "types": "./src/components/screens/index.ts",
-      "default": "./src/components/screens/index.ts"
+      "types": "./dist/components/screens.d.ts",
+      "import": "./dist/components/screens.js"
     }
   },
   "dependencies": {
@@ -62,6 +86,7 @@
     "i18next": "^23.16.0",
     "i18next-browser-languagedetector": "^8.0.0",
     "lucide-react": "^0.479.0",
+    "react-day-picker": "^9.0.0",
     "react-i18next": "^15.1.0",
     "tailwind-merge": "^3.0.0"
   },
@@ -69,5 +94,11 @@
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19",
     "tailwindcss": "^4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3"
   }
 }

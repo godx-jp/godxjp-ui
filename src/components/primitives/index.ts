@@ -29,3 +29,29 @@ export { Avatar } from "./Avatar"
 export type { AvatarProps } from "./Avatar"
 
 export { Separator } from "./Separator"
+
+export {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+  PopoverTrigger,
+} from "./Popover"
+
+export {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuTrigger,
+} from "./DropdownMenu"
+
+export { Calendar } from "./Calendar"
+
+export { TimeInput } from "./TimeInput"
+export type { TimeInputProps } from "./TimeInput"
