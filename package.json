@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/ui",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "GoDX Forge unified design system — tokens, primitives, i18n, hooks shared across every service frontend (admin-platform, forge-service, console-service, me-service, agent-service, knowledge-service, …). Source of truth for design language per Plan #19/#22.",
   "private": true,
   "type": "module",

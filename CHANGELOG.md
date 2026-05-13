@@ -3,7 +3,26 @@
 All notable changes to `@godxjp/ui`. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0] — 2026-05-13
+
+**Major version bump.** `@godxjp/ui` (the npm package owned by godx-jp / TempoFast) is now the GoDX brand bible. The previous public 0.2.0 — TempoFast's existing component library — stays consumable for legacy callers until TempoFast itself migrates onto 2.0+. SemVer signals the breaking change so dependents pin explicitly.
+
+### Breaking
+
+- Package surface re-anchored on the Claude Design handoff 2026-05-13.
+  Color tokens use OKLCH (not hex literals), font scale tightened
+  (text-2xs..text-4xl), density modes added, four tenants pinned.
+  `<Badge>` / `<Button>` etc. now wrap canonical CSS classes from
+  `tokens.css` rather than shadcn-default Tailwind utilities.
+- Token files merged: `tokens.css` + `tokens-ext.css` →
+  single `tokens.css` (635 lines). Consumers do
+  `import "@godxjp/ui/tokens"` once.
+- `src/primitives/` moved to `src/components/primitives/` —
+  `@godxjp/ui/primitives` alias preserved in the exports map for
+  backwards compatibility, but new code should import from
+  `@godxjp/ui` (top-level barrel re-exports everything).
+
+### Added
 
 ### Added
 - **BRAND.md** — the brand bible (locked 2026-05-13 from Claude Design

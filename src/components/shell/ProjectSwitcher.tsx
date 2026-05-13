@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PRODUCTS, type ForgeProduct, type ForgeProject } from "../../data/products";
-import { cn } from "../../primitives/cn";
+import { cn } from "../primitives/cn";
 
 export interface RecentProject {
   productId: string;

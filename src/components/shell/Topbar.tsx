@@ -1,7 +1,7 @@
 import { ChevronDown, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizontal } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { cn } from "../../primitives/cn";
+import { cn } from "../primitives/cn";
 import type { ForgeProduct, ForgeProject } from "../../data/products";
 
 // Topbar — sits across the top of every screen. Hosts:

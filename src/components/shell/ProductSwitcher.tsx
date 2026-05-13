@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PRODUCTS, type ForgeProduct } from "../../data/products";
-import { cn } from "../../primitives/cn";
+import { cn } from "../primitives/cn";
 
 // ProductSwitcher — wraps a trigger (the product chip in the topbar)
 // with a Radix Popover that lists every product the user can see.
