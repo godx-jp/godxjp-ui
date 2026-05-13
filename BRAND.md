@@ -4,6 +4,61 @@
 `design/source-2026-05-13/` (also kept verbatim as
 `design/godx-admin-2026-05-13.tar.gz`).
 
+## Drop-in / no customization
+
+`@godxjp/ui` is **turnkey**. A new service does ONE thing to be brand-compliant:
+
+```tsx
+// services/<svc>/frontend/src/main.tsx
+import "@godxjp/ui/tokens";   // <-- this is the entire brand contract
+import "./app.tsx";
+```
+
+That single import wires:
+- type scale, color palette, OKLCH dark mode, four tenants
+  (godx / kintai / tempo / betoya), density modes, spacing grid,
+  shadows, motion
+- all application-shell CSS classes (`.app-root`, `.sb-*`, `.tb-*`,
+  `.btn`, `.badge`, `.card`, `.kanban`, `.diff`, `.prose`,
+  `.auth-shell`, …)
+
+For React: also pull pre-built primitives + screens:
+
+```tsx
+import { AppShell, Sidebar, Topbar, TweaksPanel } from "@godxjp/ui/components/shell";
+import { DashboardScreen, PlansScreen, IssuesScreen, WikiScreen } from "@godxjp/ui/components/screens";
+import { useTweaks } from "@godxjp/ui/hooks";
+import { initI18n } from "@godxjp/ui/i18n";
+```
+
+**There is no theming step.** No per-service "wire up tokens" boilerplate. If a screen needs more than this provides, the answer is to add the primitive to `@godxjp/ui`, not fork.
+
+## Optional service-local overlay
+
+If — and only if — a service has a **brand-approved** deviation (e.g.
+a new tenant variant, a service-specific accent), the service ships
+a single overlay file:
+
+```css
+/* services/<svc>/frontend/src/theme.css */
+[data-tenant="my-svc"] {
+  --primary: oklch(56% 0.15 200);  /* still chroma ≤ 0.18 */
+  --ring: oklch(56% 0.15 200);
+}
+```
+
+Imported AFTER the base tokens:
+
+```tsx
+import "@godxjp/ui/tokens";
+import "./theme.css";   // overlay
+```
+
+The overlay can **only** redeclare brand-token CSS variables under a
+`[data-tenant]` or `[data-theme]` attribute selector. Editing
+foundational variables on `:root`, redefining the type scale, or
+overriding shell classes is forbidden and a review-block.
+
 > ⚠️ **Never lose the brand.** Every frontend in the GoDX ecosystem
 > (admin / forge / console / me / work / knowledge / agent / media /
 > chat / reporting / schema-studio / marketing) must:
@@ -30,7 +85,14 @@ enterprise aesthetics):
 These are NOT taste choices — they're brand contracts. Any visual
 direction that breaks them needs operator sign-off in advance.
 
-## Token surface (read from `src/tokens/`)
+## Token surface (read from `src/tokens/tokens.css`)
+
+One file. Variables + application-shell classes mastered together so
+consumers do `import "@godxjp/ui/tokens"` once and get everything. The
+design handoff bundle split them into `tokens.css` + `tokens-ext.css`
+for portability to Figma / theme tools — that split is preserved
+verbatim under `design/source-2026-05-13/` as an audit trail; the
+consumable artefact in `src/tokens/` is intentionally merged.
 
 ### Type
 

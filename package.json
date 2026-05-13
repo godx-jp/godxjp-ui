@@ -12,9 +12,8 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./tokens": "./src/tokens/index.css",
+    "./tokens": "./src/tokens/tokens.css",
     "./tokens.css": "./src/tokens/tokens.css",
-    "./tokens-ext.css": "./src/tokens/tokens-ext.css",
     "./i18n": {
       "types": "./src/i18n/index.ts",
       "default": "./src/i18n/index.ts"
@@ -28,8 +27,12 @@
       "default": "./src/data/index.ts"
     },
     "./primitives": {
-      "types": "./src/primitives/index.ts",
-      "default": "./src/primitives/index.ts"
+      "types": "./src/components/primitives/index.ts",
+      "default": "./src/components/primitives/index.ts"
+    },
+    "./components/primitives": {
+      "types": "./src/components/primitives/index.ts",
+      "default": "./src/components/primitives/index.ts"
     },
     "./components/shell": {
       "types": "./src/components/shell/index.ts",
