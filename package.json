@@ -12,6 +12,7 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./tokens": "./src/tokens/index.css",
     "./tokens.css": "./src/tokens/tokens.css",
     "./tokens-ext.css": "./src/tokens/tokens-ext.css",
     "./i18n": {

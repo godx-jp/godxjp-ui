@@ -1,0 +1,29 @@
+/* ============================================================================
+ * @godxjp/ui — canonical token entry point.
+ *
+ * Every GoDX frontend (admin / forge / console / me / work / knowledge /
+ * agent / media / chat / marketing) imports THIS file as the first
+ * stylesheet. Don't fork the tokens — the brand bible is mastered in
+ * packages/godxjp-ui/design/.
+ *
+ * Usage:
+ *
+ *   // React / Vite app entry
+ *   import "@godxjp/ui/tokens";  // or "./node_modules/@godxjp/ui/src/tokens/index.css"
+ *
+ *   // Tailwind v4 layered project
+ *   @import "@godxjp/ui/tokens";
+ *   @tailwind base;
+ *   @tailwind components;
+ *   @tailwind utilities;
+ *
+ *   // Astro / static — same pattern.
+ *
+ * Order matters: tokens.css declares base variables (type, color,
+ * spacing, density, motion). tokens-ext.css layers application-shell
+ * primitives (sidebar, topbar, page, card, btn, badge, kanban, prose,
+ * auth-shell) on top + dark mode + tenant overrides.
+ * ========================================================================= */
+
+@import "./tokens.css";
+@import "./tokens-ext.css";
