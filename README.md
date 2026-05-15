@@ -107,6 +107,7 @@ to claim "GoDX Forge compliant" in its README:
 
 | Service | Status | Owner | Notes |
 |---|---|---|---|
+| `calendar-service/frontend` | ✓ Adopted V1 | calendar | Greenfield SPA; ships compliant from F1 with shared tokens, primitives, shell, and i18n. |
 | `forge-service/frontend` | adopting (phase 1) | platform | Reference implementation. |
 | `admin-platform/frontend` | partial (existing Omnify tokens overlap ~90%) | platform | Migrate before Plan #19 cut-over. |
 | `me-service/frontend` | not started | platform | Tracked under Plan #31 R6. |
