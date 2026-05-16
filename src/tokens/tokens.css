@@ -134,7 +134,7 @@
 
   /* ── Layout ──────────────────────────────────────────────────────── */
   --header-height: 3rem;            /* 48px */
-  --sidebar-width: 16rem;           /* 256px */
+  --sidebar-width: 13rem;           /* 208px — design jZUk parity */
   --sidebar-collapsed-width: 4rem;  /* 64px */
   --sidebar-transition: 300ms;
   --content-sidebar-width: 20rem;

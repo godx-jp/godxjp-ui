@@ -419,7 +419,7 @@ textarea.input { padding: var(--spacing-2) var(--spacing-3); height: auto; line-
 
 /* Sidebar service-specific brand slot — alternative to .sb-product. */
 .sb-brand { display: flex; align-items: center; gap: var(--spacing-2); height: var(--header-height); padding: 0 var(--spacing-4); border-bottom: 1px solid var(--sidebar-border); flex-shrink: 0; }
-.sb-brand-avatar { width: 32px; height: 32px; border-radius: var(--radius-full); background: color-mix(in oklch, var(--primary) 22%, transparent); color: var(--primary); display: grid; place-items: center; font-weight: 600; font-size: 13px; flex-shrink: 0; }
+.sb-brand-avatar { width: 28px; height: 28px; border-radius: var(--radius-md); background: color-mix(in oklch, var(--primary) 22%, transparent); color: var(--primary); display: grid; place-items: center; font-weight: 600; font-size: 12px; flex-shrink: 0; }
 .sb-brand-text { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
 .sb-brand-name { font-size: var(--text-sm); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sb-brand-sub { font-size: var(--text-2xs); color: var(--sidebar-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
