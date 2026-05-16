@@ -13,12 +13,14 @@ binding rules see [`../../../new-docs/`](../../../new-docs/).
 
 ## STOP — framework-specific binding rules
 
-Before adding a new `data-*` attribute on `<html>` that re-binds
-tokens, or adding a user preference toggle (theme / accent / density /
-font-size / new axis), read
-[`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md).
-The four canonical theme axes + cascade layering rules live there;
-inline duplication is rejected at review.
+| Trigger | Required reading |
+|---|---|
+| Add / rename a `data-*` attribute on `<html>` that re-binds design tokens; add a user preference toggle (theme / accent / density / font-size / new axis) | [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
+| Start a new frontend that consumes `@godxjp/ui`; change consumer folder shape, theme.css, ESLint / Prettier / TS configs; build a new feature view; need a primitive that does not exist yet | [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
+
+These rules live next to the framework they govern. The umbrella's
+binding table routes work here when the source of truth is a
+framework concept; inline duplication is rejected at review.
 
 ## Cardinal rules
 
@@ -111,8 +113,15 @@ inline duplication is rejected at review.
 19. **No service-specific anything.** This is a generic UI
     framework. `me-service`, `forge-service`, `admin-service`,
     etc., never appear in source comments, prop names, or default
-    values. `products.ts` is the documented exception — `tenant`
-    is typed as `string` so consumers register new tenants.
+    values. `[data-tenant="<svc>"]` CSS blocks are removed — per-
+    deployment brand color lives at `[data-accent="<palette>"]`
+    (see [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md)
+    + [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) §A).
+    `src/data/products.ts` stays as a generic product catalog
+    consumed by the ProductSwitcher shell primitive; its `tenant`
+    field is typed `string` (open union) so downstream apps can
+    register their own without modifying the framework, but it
+    does NOT drive CSS token bindings.
 
 20. **No "platform-only" exports.** Every primitive ships in
     `package.json::exports` so external godx-jp projects can
@@ -143,11 +152,15 @@ Pre-commit hook enforces it; `--no-verify` is forbidden.
 
 ## Links
 
+- Framework binding rules (this submodule): [`./new-docs/`](./new-docs/)
+  — theme axes, consumer contract, future rules. Index at
+  [`./new-docs/00-index.md`](./new-docs/00-index.md).
 - Agent recipes + gotchas: [`./AGENTS.md`](./AGENTS.md)
 - Brand bible: [`./BRAND.md`](./BRAND.md)
 - Change log: [`./CHANGELOG.md`](./CHANGELOG.md)
 - Diátaxis manual: [`./docs/`](./docs/)
 - Umbrella binding rules: [`../../../new-docs/`](../../../new-docs/)
-  — esp. rule 13 (doc authoring)
+  — esp. rule 13 (doc authoring) + rule 12 (monorepo-platform
+  wiring of consumer frontends).
 - Repo-wide cardinal rules: [`../../../CLAUDE.md`](../../../CLAUDE.md)
 - Upstream: https://github.com/godx-jp/godxjp-ui

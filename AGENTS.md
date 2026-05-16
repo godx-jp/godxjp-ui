@@ -10,20 +10,24 @@ inside `libs/ts/godxjp-ui/`.
 
 ## ⛔ STOP — read these binding rules first
 
-The repo-wide rules live in the umbrella `godx-admin` repo. Every
-edit inside this submodule conforms to them.
+Two layers of binding rules apply. Framework-internal concepts
+(theme axes, the consumer contract, …) live in this submodule's
+own [`new-docs/`](./new-docs/). Umbrella-platform concerns
+(monorepo layout, submodule + CI wiring, service naming, …) live
+in the umbrella's [`new-docs/`](../../../new-docs/). Read the
+framework's own first; the umbrella's second.
 
 | Trigger | Required reading |
 |---------|------------------|
-| Editing any source file | [../../../CLAUDE.md](../../../CLAUDE.md) (umbrella hard rules) |
-| Any API / route surface | [new-docs/01-api-url-convention.md](../../../new-docs/01-api-url-convention.md) — n/a here (UI lib has no API) |
-| Naming the package or submodule | [new-docs/02-service-naming.md](../../../new-docs/02-service-naming.md) |
-| Layout / monorepo position | [new-docs/05-monorepo-layout.md](../../../new-docs/05-monorepo-layout.md) |
-| README + AGENTS skeleton | [new-docs/07-service-readme.md](../../../new-docs/07-service-readme.md) + [new-docs/08-service-agents-md.md](../../../new-docs/08-service-agents-md.md) |
-| docs/ structure | [new-docs/09-service-docs.md](../../../new-docs/09-service-docs.md) — **especially the "Library docs" section** which locks the tree for this submodule |
-| Doc deduplication (DRY) | [new-docs/10-doc-deduplication.md](../../../new-docs/10-doc-deduplication.md) |
-| Branch + PR + CI workflow | [new-docs/11-workflow-branching.md](../../../new-docs/11-workflow-branching.md) |
-| **Frontend architecture (THIS package's reason for existing)** | [new-docs/12-frontend-architecture.md](../../../new-docs/12-frontend-architecture.md) |
+| **Add / rename a `data-*` attribute on `<html>` that re-binds design tokens; add a user preference toggle (theme / accent / density / font-size / new axis)** | [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
+| **Build any feature that consumes the framework (or audit one); change `theme.css`, ESLint / Prettier / TS configs in a consumer; need a primitive that does not exist; add a `className` for visual styling** | [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
+| Editing any source file inside this submodule | [`./CLAUDE.md`](./CLAUDE.md) (20 cardinal framework rules) |
+| Layout / monorepo position | [`../../../new-docs/05-monorepo-layout.md`](../../../new-docs/05-monorepo-layout.md) |
+| README + AGENTS skeleton | [`../../../new-docs/07-service-readme.md`](../../../new-docs/07-service-readme.md) + [`../../../new-docs/08-service-agents-md.md`](../../../new-docs/08-service-agents-md.md) |
+| `docs/` Diátaxis tree | [`../../../new-docs/09-service-docs.md`](../../../new-docs/09-service-docs.md) §Library docs |
+| Doc deduplication (DRY) | [`../../../new-docs/10-doc-deduplication.md`](../../../new-docs/10-doc-deduplication.md) |
+| Branch + PR + CI workflow | [`../../../new-docs/11-workflow-branching.md`](../../../new-docs/11-workflow-branching.md) |
+| Monorepo-platform wiring of consumer frontends (pnpm workspace, submodule pin, extraction invariant, Renovate, CI gates) | [`../../../new-docs/12-frontend-architecture.md`](../../../new-docs/12-frontend-architecture.md) — umbrella scope; framework consumer contract lives in [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
 
 There is no "small exception". International-standard means every
 change conforms.
@@ -119,6 +123,8 @@ Per [umbrella rule 10](../../../new-docs/10-doc-deduplication.md):
 | Topic | Home |
 |---|---|
 | What the package is | [`README.md`](./README.md) |
+| **Theme axes** (theme / accent / density / font-size + cascade layering) | [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
+| **Consumer contract** (mandatory consumption, no-className-for-visual, search-first, folder shape, service-layer + TanStack Query, i18n bootstrap, config inheritance, primitive extension) | [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
 | Per-primitive API | `docs/reference/primitives/<Name>.md` |
 | Per-shell-component API | `docs/reference/shell/<Name>.md` |
 | Per-hook API | `docs/reference/hooks/<Name>.md` |
@@ -226,8 +232,14 @@ export const Dark: Story = {
 
 - `.storybook/main.ts` — addons (a11y, themes, viewports,
   controls, docs).
-- `.storybook/preview.ts` — global decorators (theme switcher,
-  density switcher, tenant switcher, locale switcher).
+- `.storybook/preview.tsx` — global decorators wiring the four
+  canonical theme axes ([`new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md))
+  as toolbar globals: **theme** (light/dark), **accent** /
+  Color theme (blue/green/violet/amber/rose/slate), **density**
+  (compact/default/comfortable), **font-size** (sm/base/lg/xl).
+  Calls `initI18n()` at module load so locale switching works
+  without re-init. NO tenant toolbar — `data-tenant` was removed
+  in favour of `data-accent`.
 - `.storybook/manager.ts` — branded sidebar logo + colours.
 
 Storybook runs with:
@@ -376,12 +388,15 @@ remote.
 
 ## Cross-references
 
-- Repo-wide hard rules: [`../../../CLAUDE.md`](../../../CLAUDE.md)
-- Binding rules: [`../../../new-docs/`](../../../new-docs/)
-- Frontend architecture: [`../../../new-docs/12-frontend-architecture.md`](../../../new-docs/12-frontend-architecture.md)
-- Library docs spec: [`../../../new-docs/09-service-docs.md`](../../../new-docs/09-service-docs.md) §Library docs
+- **Framework binding rules** (this submodule): [`./new-docs/`](./new-docs/) — index at [`./new-docs/00-index.md`](./new-docs/00-index.md), theme axes at [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md), consumer contract at [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md)
 - Cardinal rules (this package): [`./CLAUDE.md`](./CLAUDE.md)
 - Brand bible: [`./BRAND.md`](./BRAND.md)
 - Change log: [`./CHANGELOG.md`](./CHANGELOG.md)
-- Storybook (when running): http://localhost:6006
+- Diátaxis manual: [`./docs/`](./docs/)
+- Storybook (when running): http://localhost:6006 (or
+  `https://storybook.<publicDomain>/` for the umbrella's deploy)
 - Upstream: https://github.com/godx-jp/godxjp-ui
+- Repo-wide hard rules (umbrella): [`../../../CLAUDE.md`](../../../CLAUDE.md)
+- Umbrella binding rules: [`../../../new-docs/`](../../../new-docs/)
+- Library docs spec (umbrella): [`../../../new-docs/09-service-docs.md`](../../../new-docs/09-service-docs.md) §Library docs
+- Frontend monorepo-platform wiring (umbrella): [`../../../new-docs/12-frontend-architecture.md`](../../../new-docs/12-frontend-architecture.md)

@@ -23,8 +23,18 @@ framework concept.
 | # | File | When to read |
 |---|------|--------------|
 | 01 | [Theme axes](./01-theme-axes.md) | Adding / renaming any `data-*` attribute on `<html>` that re-binds design tokens; adding a user preference toggle to a Tweaks panel / settings UI — four canonical axes (theme / accent / density / font-size); cascade layering rules |
+| 02 | [Consumer contract](./02-consumer-contract.md) | Starting a new frontend that consumes `@godxjp/ui`; changing folder shape, theme.css, ESLint / Prettier / TS configs; building a new feature view; needing a primitive that does not exist yet — the §A-through-§I rules every consumer honours |
 
 ## Reading order
+
+For a NEW consumer (service frontend / app):
+1. 02 — §A through §I in order; the consumer's whole shape is
+   specified there.
+
+For a feature inside an existing consumer:
+1. 02 §E — service-layer pattern (api → hooks → component).
+2. 02 §B — no `className` for visual; props on primitives.
+3. 02 §H — what to do if a primitive is missing.
 
 For a NEW theme-axis-like preference:
 1. 01 — confirm the new axis meets the orthogonal-global-stable bar
