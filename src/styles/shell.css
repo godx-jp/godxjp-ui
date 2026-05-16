@@ -269,9 +269,9 @@ textarea.input { padding: var(--spacing-2) var(--spacing-3); height: auto; line-
 
 .table .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--text-xs); }
 
-.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); align-items: center; }
 
-.tab { padding: var(--spacing-2) var(--spacing-3); font-size: var(--text-sm); color: var(--muted-foreground); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; user-select: none; }
+.tab { display: inline-flex; align-items: center; gap: var(--spacing-1); padding: var(--spacing-2) var(--spacing-3); font-size: var(--text-sm); color: var(--muted-foreground); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; user-select: none; white-space: nowrap; }
 
 .tab:hover { color: var(--foreground); }
 
@@ -556,6 +556,14 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   flex-direction: column-reverse;
   gap: var(--spacing-2);
   margin-top: var(--spacing-4);
+}
+
+@media (min-width: 640px) {
+  .dialog-footer {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
 }
 
 .dialog-title {
@@ -973,6 +981,44 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   font-size: var(--text-sm);
   color: var(--muted-foreground);
 }
+
+/* sonner Toaster — `unstyled: true` mode: chrome comes from these rules,
+ * not sonner's default theme. Outer `.toaster` is the portal container;
+ * each `.toast` is one notification chip. */
+.toaster {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  font-size: var(--text-sm);
+  min-width: 320px;
+  max-width: 420px;
+  pointer-events: auto;
+}
+
+.toast--success { border-color: color-mix(in oklch, var(--success) 35%, var(--border)); }
+.toast--success .toast-icon { color: var(--success); }
+.toast--error { border-color: color-mix(in oklch, var(--destructive) 35%, var(--border)); }
+.toast--error .toast-icon { color: var(--destructive); }
+.toast--warning { border-color: color-mix(in oklch, var(--warning) 35%, var(--border)); }
+.toast--warning .toast-icon { color: var(--warning); }
+.toast--info { border-color: color-mix(in oklch, var(--info) 35%, var(--border)); }
+.toast--info .toast-icon { color: var(--info); }
+.toast--loading .toast-icon { color: var(--muted-foreground); }
 
 .toast-content {
   display: flex;
