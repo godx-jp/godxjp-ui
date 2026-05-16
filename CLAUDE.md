@@ -1,6 +1,6 @@
 # @godxjp/ui — cardinal rules
 
-Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 22
+Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 23
 cardinal rules below are non-negotiable; anything older that
 contradicts them is wrong.
 
@@ -275,6 +275,174 @@ framework concept; inline duplication is rejected at review.
     The whole reason `design-handoff/ui-system/` exists is to
     serve as the verifiable contract. Bypassing it is the most
     expensive bug class this framework can ship.
+
+23. **Concept-first component API — separate every concept, reuse
+    every shared axis, deep-research before authoring a primitive.**
+    Absolute. Bypassing any of the three sub-rules below produces
+    duplicated concepts and an incoherent API surface — the most
+    expensive long-term debt this framework can ship.
+
+    ### §A — Separate every concept cleanly
+
+    A component prop carries ONE concept. If two concepts overlap
+    in a single prop, the API confuses callers and drift becomes
+    inevitable. Examples:
+
+    - `size` carries ONE concept (component height / dimensional
+      scale). It does NOT also encode density, padding, font-size,
+      or visual emphasis. Those are separate props.
+    - `color` carries ONE concept (semantic role: `primary`,
+      `success`, `warning`, `attention`, `info`, `destructive`,
+      `default`). It does NOT also encode appearance (`soft` vs
+      `solid` vs `outline`); appearance is a separate prop.
+    - `variant` carries the visual treatment (`primary` /
+      `secondary` / `ghost` / `outline` / `link` for buttons,
+      `soft` / `solid` / `outline` for badges). It does NOT also
+      encode the semantic color; combine `variant` + `color` for
+      the full surface.
+    - `padding` (Card) carries density-of-internal-spacing.
+      It does NOT also encode background tone, border accent,
+      or shadow — `tone`, `accent`, `hoverable` are separate axes.
+
+    Rejected at review:
+
+    - A single `kind` / `style` / `mode` prop that conflates two
+      orthogonal axes ("compact-success-soft" instead of
+      `size="small" color="success" variant="soft"`).
+    - A boolean prop where a value enum is honest (`primary` bool
+      on Button instead of `variant="primary"`).
+    - Reusing one prop name for two different concepts in two
+      different primitives (e.g. `kind` meaning size in one
+      primitive and semantic role in another).
+
+    ### §B — Reuse the shared prop vocabulary
+
+    Before declaring a new prop on a new primitive, **check the
+    existing primitive surface** for a matching vocabulary. The
+    shared prop axes locked across the framework are:
+
+    | Prop | Type | Used by | Concept |
+    |---|---|---|---|
+    | `size` | `"small" \| "default" \| "large"` (+ `"x-small"` / `"x-large"` when scale needs) | Button, Input, Avatar, Tag, Badge, IconButton, Spinner, … | Dimensional scale of the primitive itself |
+    | `variant` | primitive-specific enum (e.g. `"primary" \| "secondary" \| "ghost" \| "outline" \| "link"` for Button; `"soft" \| "solid" \| "outline"` for Badge) | Button, Badge, Tag, Card?, Alert | Visual treatment (fill / outline / ghost) |
+    | `color` | `"primary" \| "success" \| "warning" \| "attention" \| "info" \| "destructive" \| "default"` | Tag, Badge, Alert, Dot, Delta, IconSquare | Semantic role |
+    | `tone` | `"default" \| "muted" \| "outline-only"` | Card | Surface tint / background treatment |
+    | `accent` | semantic color enum (left-edge or full-ring) | Card | Semantic edge indicator |
+    | `padding` | `"tight" \| "default" \| "cozy" \| "none"` | Card, Dialog (planned), Sheet (planned) | Internal-spacing density |
+    | `density` | `"compact" \| "default" \| "comfortable"` (usually inherited from `[data-density]` axis — only set explicitly when overriding the page-level axis) | (theme axis primarily; explicit prop on Table?) | Page-level spacing scale |
+    | `disabled` / `loading` / `readOnly` / `required` | boolean | Forms / inputs | Interaction state |
+    | `prefix` / `suffix` / `addonBefore` / `addonAfter` | `ReactNode` | Input, Button (icon slots) | Decorative / functional slots |
+
+    Rules:
+
+    - When designing a new primitive's prop surface, FIRST grep
+      the existing primitives for the same concept. Match the
+      vocabulary verbatim (`size` not `scale`, `variant` not
+      `kind`, `color` not `intent`).
+    - When the existing vocabulary is wrong for the new primitive
+      AND extending it would force a breaking change, document
+      the divergence in `docs/reference/primitives/<Name>.md` with
+      the reason. Don't silently coin a new name for the same
+      concept.
+    - When TWO primitives need the same enum (e.g. semantic color
+      values), promote it to a shared type
+      (`SemanticColor = "primary" | …`) in
+      `src/components/primitives/types.ts` and import. Don't
+      redeclare per primitive.
+
+    Forbidden:
+
+    - `size: "sm" | "md" | "lg"` in one primitive while another
+      uses `size: "small" | "default" | "large"`. Pick one
+      framework-wide.
+    - `appearance` / `look` / `style` synonyms for `variant`.
+    - `tint` / `intent` / `theme` synonyms for `color`.
+    - `compactness` / `spacing` synonyms for `padding` / `density`.
+
+    ### §C — Always check if a token already exists
+
+    Before adding a new design token (`--<name>: <value>`),
+    grep the existing token catalogue in
+    [`./new-docs/03-token-system.md`](./new-docs/03-token-system.md)
+    + `src/styles/theme.css` + `src/tokens/`. Map the value you
+    need against:
+
+    1. Semantic tokens (`--primary`, `--background`, `--success`,
+       `--card`, `--ring`, `--muted-foreground`, …).
+    2. Scale tokens (`--text-*`, `--spacing-*`, `--density-*`,
+       `--radius-*`, `--shadow-*`).
+    3. Component-scope tokens (`--card-pad-y-*`, `--card-title-size`,
+       `--card-band-height`, …).
+    4. Layout tokens (`--header-height`, `--sidebar-width`).
+
+    Only if NO existing token covers the literal AND the literal
+    cannot be a generic addition (per cardinal rule 22 → must
+    match design canon) do you add a NEW component-scope token.
+    Naming convention `--<component>-<aspect>-<axis>?`.
+
+    Forbidden:
+
+    - Declaring `--button-padding-y: 8px` when `--spacing-2` is
+      already 8px. Use the scale token.
+    - Re-coining `--card-divider-color` when `--border` covers it.
+    - Creating per-state tokens (`--button-hover-bg`,
+      `--button-active-bg`) when `color-mix(in oklch, var(--primary)
+      N%, transparent)` derives them. Tokens encode VALUES; states
+      derive via `color-mix` or per-state class hooks.
+
+    ### §D — Deep-research before authoring a primitive
+
+    A new primitive is a long-term commitment. Before writing the
+    first line of `<Name>.tsx`:
+
+    1. Grep the existing barrels (`src/components/primitives/index.ts`,
+       `src/components/shell/index.ts`, `src/components/composites/index.ts`)
+       for the same concept. The primitive may already exist under
+       a different name.
+    2. Check the design handoff bundle. Is this primitive shown in
+       `design-handoff/ui-system/<latest>/project/preview/`? If
+       yes, follow the
+       [`new-godx-design-to-component`](../../../.claude/skills/new-godx-design-to-component/SKILL.md)
+       skill. If no, STOP — ask the user to mock it on Claude
+       Design first (cardinal rule 22).
+    3. Check the shadcn / Radix / React Aria ecosystem (per
+       cardinal rule 14). The new primitive MUST wrap one of
+       those libraries unless it's purely structural (a div with
+       tokens).
+    4. Read the closest peer primitive's `.tsx` end-to-end. The
+       new primitive's prop shape, forwardRef usage, className
+       composition pattern, story shape MUST mirror the peer.
+
+    Forbidden:
+
+    - Writing a `<Pill>` primitive when `<Tag>` covers it — same
+      concept, different name. Extend `<Tag>` with a `shape`
+      prop instead, or use it directly.
+    - Writing a `<Statistic>` primitive AND a `<KpiNumber>`
+      primitive that emit identical DOM. Pick one.
+    - Creating `<HBox>` / `<VBox>` when `<Flex>` covers row vs
+      column via `direction`/`vertical` prop.
+    - Skipping the peer-primitive read because "I know what
+      buttons look like". The framework's conventions are not
+      generic; read the peer.
+
+    ### Verification at review
+
+    Reviewers check:
+
+    1. Every new prop maps to a row in the §B vocabulary table OR
+       has a documented divergence in `docs/reference/primitives/<Name>.md`.
+    2. Every new token maps to a §M row in
+       [`./new-docs/03-token-system.md`](./new-docs/03-token-system.md)
+       OR has a citation to the design canon literal it pins.
+    3. The PR description cites the peer primitive read in §D.4
+       (e.g. "modeled prop shape after `Button.tsx`").
+    4. No prop name collides with an existing vocabulary entry
+       under a different meaning.
+
+    Rejection is automatic for vocabulary-drift, concept-conflation,
+    or duplicate-primitive PRs. The framework's coherence is
+    impossible to recover incrementally once it fractures.
 
 ## Hard rules — code review rejects on sight
 

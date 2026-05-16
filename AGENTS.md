@@ -365,6 +365,143 @@ The submodule PR + the umbrella pin bump are TWO separate PRs.
 Never push a pin to a SHA that doesn't exist on the submodule
 remote.
 
+## Concept-first API recipe (cardinal rule 23)
+
+**Before writing a new primitive's prop signature, run this
+checklist.** Cardinal rule 23 (`./CLAUDE.md` §23) carries the
+binding form; this section is the practical recipe.
+
+### Step 1 — Deep-research before authoring
+
+Pre-flight grep (must run before writing the first line):
+
+```bash
+# Does this concept already exist under a different name?
+grep -rln "export (function|const) <CandidateName>" src/components/
+grep -rln "export interface <CandidateName>Props" src/components/
+
+# Does a sibling primitive cover the same DOM shape?
+ls src/components/primitives/  # Read peer .tsx files end-to-end.
+
+# Is the primitive in the design canon?
+ls design-handoff/ui-system/<latest>/project/preview/comp-*.html
+
+# Is there a shadcn / Radix / React Aria recipe for this?
+# (cardinal rule 14 — locked stack list at `./CLAUDE.md` §14)
+```
+
+If the primitive already exists → use it. If a peer covers 80% of
+the shape → extend the peer with a variant prop, don't duplicate.
+If the design canon doesn't show it → STOP, ask the user to mock
+on Claude Design (cardinal rule 22).
+
+### Step 2 — Match the shared prop vocabulary
+
+Locked vocabulary table — match these names verbatim, don't coin
+synonyms:
+
+| Prop | Type | Examples |
+|---|---|---|
+| `size` | `"small" \| "default" \| "large"` (+ optional `"x-small"`/`"x-large"`) | Button, Input, Avatar, Tag, Badge, IconButton |
+| `variant` | primitive-specific enum (Button: `"primary" \| "secondary" \| "ghost" \| "outline" \| "link"`; Badge: `"soft" \| "solid" \| "outline"`) | Button, Badge, Tag, Alert |
+| `color` | `"primary" \| "success" \| "warning" \| "attention" \| "info" \| "destructive" \| "default"` | Tag, Badge, Alert, Dot |
+| `tone` | `"default" \| "muted" \| "outline-only"` | Card |
+| `accent` | semantic color enum (+ `"featured"` for full ring) | Card |
+| `padding` | `"tight" \| "default" \| "cozy" \| "none"` | Card, Dialog (planned), Sheet (planned) |
+| `disabled` / `loading` / `readOnly` / `required` | boolean | Forms |
+| `prefix` / `suffix` / `addonBefore` / `addonAfter` | `ReactNode` | Input, Button |
+
+**Forbidden synonyms** (reject at review):
+
+- `scale` / `dimension` / `width` for `size`.
+- `kind` / `style` / `look` / `appearance` for `variant`.
+- `intent` / `tint` / `theme` / `status` for `color`.
+- `compactness` / `spacing` / `dense` for `padding`.
+
+### Step 3 — Separate every concept
+
+A prop carries ONE concept. Forbidden conflations:
+
+| Conflation | Fix |
+|---|---|
+| `kind="compact-success-soft"` | `size="small" color="success" variant="soft"` |
+| `primary={true}` (boolean for variant) | `variant="primary"` |
+| `error={true}` (boolean for status color) | `status="error"` / `color="destructive"` (boolean only for true/false state) |
+| `large={true}` (boolean for size) | `size="large"` |
+
+Self-check questions:
+
+- "Does this prop encode ONE thing?" If two answers fit, split.
+- "If I add a third value, does the name still read?" If not, split.
+- "Can a user combine this with other props orthogonally?" If
+  setting this prop forces other props, the concept is conflated.
+
+### Step 4 — Check the token catalogue before adding
+
+When the new primitive needs a value:
+
+```bash
+# Match against semantic tokens
+grep -E "^\s*--(primary|background|foreground|card|border|ring|muted-foreground|success|warning|attention|info|destructive)" src/styles/theme.css
+
+# Match against scale tokens
+grep -E "^\s*--(text-|spacing-|density-|radius-|shadow-)" src/styles/theme.css
+
+# Match against existing component-scope tokens
+grep -E "^\s*--<component>-" src/styles/theme.css
+
+# The full token catalogue is at:
+#   new-docs/03-token-system.md
+```
+
+Decision tree:
+
+1. Semantic role match? → use semantic token (`var(--primary)`,
+   `var(--muted-foreground)`).
+2. Scale value match at default density / base font-size? → use
+   scale token (`var(--spacing-4)`, `var(--text-base)`).
+3. Component-scope match? → use it.
+4. None match AND value is in design canon? → add new
+   component-scope token (`--<component>-<aspect>`) in
+   `:root` of `src/styles/theme.css`.
+5. None match AND value is NOT in design canon? → STOP, ask
+   user to mock on Claude Design.
+
+**Forbidden**: declaring `--button-bg-hover: oklch(58% 0.15 246)`
+when `color-mix(in oklch, var(--primary) 90%, black)` derives it.
+States derive via `color-mix`, not new tokens.
+
+### Step 5 — Read the closest peer end-to-end
+
+Before writing `<Name>.tsx`:
+
+1. Open the most-similar peer primitive (`Button.tsx` for
+   interactive, `Card.tsx` for surface containers,
+   `Tag.tsx` for semantic-color displays, …).
+2. Read its `.tsx` end-to-end. Note:
+   - Prop interface shape (Omit\<…\>, defaults in destructure)
+   - `forwardRef` pattern
+   - `cn(…)` className composition
+   - Variant → class lookup tables
+   - Default values
+3. Mirror the pattern. The new primitive's prop names + shape +
+   className composition + ref forwarding must match the peer.
+
+PR description must cite the peer ("modeled prop shape after
+`Button.tsx`"); reviewers reject vague "looks reasonable".
+
+### Anti-patterns audited at review
+
+- Duplicate concept primitive (Pill vs Tag; KpiNumber vs
+  Statistic; HBox vs Flex direction).
+- New prop name that maps to an existing vocabulary entry under a
+  different concept.
+- New token re-encoding a value an existing token covers.
+- Prop missing from the §B vocabulary table without a documented
+  divergence in `docs/reference/primitives/<Name>.md`.
+- `<Name>.tsx` written without reading the peer primitive
+  end-to-end.
+
 ## Axes compliance recipe (cardinal rule 21)
 
 **Every component supports all four theme axes** —
