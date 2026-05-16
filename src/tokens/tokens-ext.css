@@ -399,3 +399,42 @@ textarea.input { padding: var(--spacing-2) var(--spacing-3); height: auto; line-
   to   { opacity: 1; transform: none; }
 }
 .fade-in { animation: fade-in var(--transition-base) var(--ease-out) both; }
+
+/* ── Slot-based AppShell additions (Phase G) ─────────────────────── */
+/* The topbar can be a single composed `<Topbar>` OR split into logo +
+   left + right via <AppShell topbar-* slots>. .app-topbar-rail is the
+   inner flex row that lays out the slot groups. */
+.app-topbar-rail { display: flex; align-items: center; gap: var(--spacing-3); width: 100%; height: 100%; }
+.app-topbar-logo { display: flex; align-items: center; flex-shrink: 0; }
+.app-topbar-left { display: flex; align-items: center; gap: var(--spacing-2); min-width: 0; }
+.app-topbar-spacer { flex: 1; min-width: 0; }
+.app-topbar-right { display: flex; align-items: center; gap: var(--spacing-1); flex-shrink: 0; }
+
+/* In-main breadcrumb rail — sits above page content, full-width. */
+.app-breadcrumb { padding: var(--spacing-3) var(--density-page) 0; border-bottom: 1px solid var(--border); margin-bottom: var(--spacing-3); }
+
+/* Shell-level footer band, below main. */
+.app-footer { grid-area: footer; padding: var(--spacing-3) var(--density-page); border-top: 1px solid var(--border); background: var(--surface-2); }
+.app-root:has(> .app-footer) { grid-template-rows: var(--header-height) 1fr auto; grid-template-areas: "sidebar topbar" "sidebar main" "sidebar footer"; }
+
+/* Sidebar service-specific brand slot — alternative to .sb-product. */
+.sb-brand { display: flex; align-items: center; gap: var(--spacing-2); height: var(--header-height); padding: 0 var(--spacing-4); border-bottom: 1px solid var(--sidebar-border); flex-shrink: 0; }
+.sb-brand-avatar { width: 32px; height: 32px; border-radius: var(--radius-full); background: color-mix(in oklch, var(--primary) 22%, transparent); color: var(--primary); display: grid; place-items: center; font-weight: 600; font-size: 13px; flex-shrink: 0; }
+.sb-brand-text { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+.sb-brand-name { font-size: var(--text-sm); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-brand-sub { font-size: var(--text-2xs); color: var(--sidebar-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-root[data-collapsed="true"] .sb-brand { padding: 0; justify-content: center; }
+.app-root[data-collapsed="true"] .sb-brand-text { display: none; }
+
+/* ── PageContent ─────────────────────────────────────────────────── */
+.page-content { display: flex; flex-direction: column; gap: var(--spacing-4); max-width: var(--content-max-width, 1280px); margin: 0 auto; width: 100%; box-sizing: border-box; }
+.page-content-header { display: flex; flex-direction: column; gap: var(--spacing-2); }
+.page-content-breadcrumb { font-size: var(--text-sm); color: var(--muted-foreground); }
+.page-content-titlebar { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-4); }
+.page-content-titlegroup { display: flex; flex-direction: column; gap: var(--spacing-1); min-width: 0; flex: 1; }
+.page-content-title { font-size: var(--text-2xl, 1.5rem); font-weight: 600; line-height: 1.2; color: var(--foreground); margin: 0; }
+.page-content-subtitle { font-size: var(--text-sm); color: var(--muted-foreground); margin: 0; max-width: 64ch; }
+.page-content-extra { display: flex; align-items: center; gap: var(--spacing-2); flex-shrink: 0; }
+.page-content-tabs { margin-top: var(--spacing-2); border-bottom: 1px solid var(--border); }
+.page-content-body { display: flex; flex-direction: column; gap: var(--spacing-4); }
+.page-content-footer { border-top: 1px solid var(--border); padding-top: var(--spacing-4); display: flex; align-items: center; gap: var(--spacing-2); }
