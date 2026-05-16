@@ -3,6 +3,27 @@
 All notable changes to `@godxjp/ui`. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] — 2026-05-16
+
+### Added
+- **Dialog** family (`Dialog`, `DialogTrigger`, `DialogPortal`, `DialogClose`,
+  `DialogOverlay`, `DialogContent`, `DialogHeader`, `DialogFooter`,
+  `DialogTitle`, `DialogDescription`) — Radix Dialog + `.dialog-*` in
+  `tokens.css`.
+- **Sheet** family (Radix Dialog; `SheetContent` with `side` + `.sheet-*`
+  animation tokens).
+- **AlertDialog** family (`AlertDialog*`, `AlertDialogAction` / `Cancel`
+  use `.btn` / `.btn-primary` / `.btn-secondary`).
+- **Select** family (`Select*`, `SelectPortal`, scroll buttons, separator).
+- **Switch**, **Checkbox** (Radix) with `.switch-*` / `.checkbox-*`.
+- **Table** family (`Table` scroll wrapper + `TableHeader` / `Body` /
+  `Footer` / `Row` / `Head` / `Cell` / `Caption`) using the `.table` atom.
+- Dependencies: `@radix-ui/react-alert-dialog`, `@radix-ui/react-checkbox`.
+
+### Fixed
+- Removed invalid `composes:` from `.popover-content` in `tokens.css`
+  (plain CSS does not support CSS-modules `composes`).
+
 ## [2.1.0] — 2026-05-13
 
 ### Added

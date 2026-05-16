@@ -111,7 +111,7 @@ to claim "GoDX Forge compliant" in its README:
 | `forge-service/frontend` | adopting (phase 1) | platform | Reference implementation. |
 | `admin-platform/frontend` | partial (existing Omnify tokens overlap ~90%) | platform | Migrate before Plan #19 cut-over. |
 | `me-service/frontend` | not started | platform | Tracked under Plan #31 R6. |
-| `console-service/frontend` | not started | platform | Tracked under Plan #31 R6. |
+| `console-service/frontend` | adopting (shell + routes) | platform | Epic #1412; tokens + `AppShell` + menu from `console-layout-spec.md` §6; gateway `VITE_CONSOLE_API_BASE_URL`. Rich CRUD waits on @godxjp/ui parity (#1461). |
 | `agent-service/frontend` | not started | platform | Plan #21 G17 finished embed; visual port pending. |
 | `knowledge-service/frontend` | not started | knowledge | Plan #18 K-phase polish. |
 
@@ -144,8 +144,10 @@ packages/godxjp-ui/src/
 │                                /api/v1/orgs/ wires real data).
 │
 ├── primitives/                  shadcn-styled atoms (button, badge,
-│                                card, kbd, ...). One copy across the
-│                                org.
+│                                card, dialog, sheet, alert-dialog,
+│                                select, switch, checkbox, table,
+│                                tabs, popover, dropdown, …). One copy
+│                                across the org.
 │
 └── components/shell/            AppShell, Sidebar, Topbar,
                                  ProductSwitcher, ProjectSwitcher,

@@ -654,7 +654,6 @@ textarea.input { padding: var(--spacing-2) var(--spacing-3); height: auto; line-
 }
 
 .popover-content { /* alias for semantic clarity at call sites */
-  composes: floating-panel;
   padding: var(--spacing-3);
 }
 .popover-content,
@@ -711,6 +710,335 @@ textarea.input { padding: var(--spacing-2) var(--spacing-3); height: auto; line-
   font-size: var(--text-2xs);
   color: var(--muted-foreground);
   letter-spacing: 0.04em;
+}
+
+/* ── Dialog / Sheet / AlertDialog (Radix) ─────────────────────────── */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in oklch, var(--foreground) 42%, transparent);
+  animation: fade-in var(--transition-fast) var(--ease-out) both;
+}
+.dialog-content {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 50;
+  width: min(calc(100vw - var(--spacing-6)), 28rem);
+  max-height: min(90dvh, 100%);
+  overflow-y: auto;
+  transform: translate(-50%, -50%);
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--density-dialog);
+  box-shadow: 0 4px 12px -2px color-mix(in oklch, var(--foreground) 14%, transparent),
+    0 0 0 1px color-mix(in oklch, var(--foreground) 4%, transparent);
+  font-size: var(--text-sm);
+  animation: fade-in var(--transition-fast) var(--ease-out) both;
+}
+.dialog-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-4);
+  text-align: left;
+}
+.dialog-footer {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-4);
+}
+@media (min-width: 640px) {
+  .dialog-footer {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+.dialog-title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 500;
+  line-height: var(--leading-tight);
+  color: var(--foreground);
+}
+.dialog-description {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--muted-foreground);
+  line-height: var(--leading-normal);
+}
+
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in oklch, var(--foreground) 42%, transparent);
+  animation: fade-in var(--transition-fast) var(--ease-out) both;
+}
+.sheet-content {
+  position: fixed;
+  z-index: 50;
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  padding: var(--density-dialog);
+  box-shadow: 0 4px 12px -2px color-mix(in oklch, var(--foreground) 14%, transparent),
+    0 0 0 1px color-mix(in oklch, var(--foreground) 4%, transparent);
+  font-size: var(--text-sm);
+  max-height: 100dvh;
+  overflow-y: auto;
+}
+.sheet-content[data-side="top"] {
+  inset: 0 0 auto 0;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+  width: 100%;
+  max-height: 90dvh;
+}
+.sheet-content[data-side="bottom"] {
+  inset: auto 0 0 0;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  width: 100%;
+  max-height: 90dvh;
+}
+.sheet-content[data-side="left"] {
+  inset: 0 auto 0 0;
+  width: min(100vw, 24rem);
+  height: 100%;
+  border-right: 1px solid var(--border);
+  border-radius: 0;
+}
+.sheet-content[data-side="right"] {
+  inset: 0 0 0 auto;
+  width: min(100vw, 24rem);
+  height: 100%;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+}
+@keyframes sheet-from-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes sheet-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes sheet-from-top {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes sheet-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.sheet-content[data-side="right"][data-state="open"] {
+  animation: sheet-from-right var(--transition-base) var(--ease-out) both;
+}
+.sheet-content[data-side="left"][data-state="open"] {
+  animation: sheet-from-left var(--transition-base) var(--ease-out) both;
+}
+.sheet-content[data-side="top"][data-state="open"] {
+  animation: sheet-from-top var(--transition-base) var(--ease-out) both;
+}
+.sheet-content[data-side="bottom"][data-state="open"] {
+  animation: sheet-from-bottom var(--transition-base) var(--ease-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet-content[data-state="open"] {
+    animation: none;
+  }
+}
+
+/* ── Select (Radix) ─────────────────────────────────────────────────── */
+.select-trigger {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  cursor: pointer;
+}
+.select-trigger[data-placeholder] {
+  color: var(--muted-foreground);
+}
+.select-content {
+  overflow: hidden;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px -2px color-mix(in oklch, var(--foreground) 14%, transparent),
+    0 0 0 1px color-mix(in oklch, var(--foreground) 4%, transparent);
+  font-size: var(--text-sm);
+  z-index: 50;
+  max-height: min(18rem, 70dvh);
+  animation: fade-in var(--transition-fast) var(--ease-out) both;
+}
+.select-viewport {
+  padding: var(--spacing-1);
+}
+.select-label {
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+}
+.select-item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+  align-items: center;
+  gap: var(--spacing-2);
+  border-radius: var(--radius-sm, 4px);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  outline: none;
+}
+.select-item[data-highlighted] {
+  background: var(--surface-3);
+}
+.select-item[data-disabled] {
+  color: var(--muted-foreground);
+  pointer-events: none;
+  opacity: 0.5;
+}
+.select-item-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-3);
+  flex-shrink: 0;
+}
+.select-separator {
+  height: 1px;
+  margin: var(--spacing-1) calc(-1 * var(--spacing-1));
+  background: var(--border);
+}
+.select-scroll-btn {
+  display: flex;
+  cursor: default;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-1);
+  color: var(--muted-foreground);
+}
+
+/* ── Switch + Checkbox (Radix) ────────────────────────────────────── */
+.switch-root {
+  display: inline-flex;
+  height: 1.375rem;
+  width: 2.75rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  align-items: center;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  background: var(--input);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.switch-root:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.switch-root[data-state="checked"] {
+  background: var(--primary);
+}
+.switch-root[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.switch-thumb {
+  pointer-events: none;
+  display: block;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: var(--radius-full);
+  background: var(--background);
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--foreground) 12%, transparent);
+  transition: transform var(--transition-fast) var(--ease-out);
+  transform: translateX(0.125rem);
+}
+.switch-root[data-state="checked"] > .switch-thumb {
+  transform: translateX(1.375rem);
+}
+
+.checkbox-root {
+  display: flex;
+  height: var(--density-element-sm);
+  width: var(--density-element-sm);
+  flex-shrink: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--input);
+  background: var(--input-background);
+  color: var(--primary-foreground);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.checkbox-root:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.checkbox-root[data-state="checked"] {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+.checkbox-root[data-state="indeterminate"] {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+.checkbox-root[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.checkbox-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+.checkbox-indicator .checkbox-glyph-check,
+.checkbox-indicator .checkbox-glyph-indeterminate {
+  display: none;
+}
+.checkbox-root[data-state="checked"] .checkbox-indicator .checkbox-glyph-check {
+  display: block;
+}
+.checkbox-root[data-state="indeterminate"] .checkbox-indicator .checkbox-glyph-indeterminate {
+  display: block;
+}
+
+/* ── Table wrapper (horizontal scroll) ─────────────────────────────── */
+.table-scroll {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
 }
 
 /* ── Calendar (react-day-picker) ──────────────────────────────────── */
