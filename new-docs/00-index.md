@@ -24,6 +24,7 @@ framework concept.
 |---|------|--------------|
 | 01 | [Theme axes](./01-theme-axes.md) | Adding / renaming any `data-*` attribute on `<html>` that re-binds design tokens; adding a user preference toggle to a Tweaks panel / settings UI — four canonical axes (theme / accent / density / font-size); cascade layering rules |
 | 02 | [Consumer contract](./02-consumer-contract.md) | Starting a new frontend that consumes `@godxjp/ui`; changing folder shape, theme.css, ESLint / Prettier / TS configs; building a new feature view; needing a primitive that does not exist yet — the §A-through-§I rules every consumer honours |
+| 03 | [Token system foundation](./03-token-system.md) | Adding / renaming / removing a design token; writing any CSS that needs a colour, spacing, padding, radius, shadow, motion, layout, or density value — three-tier architecture (primitives / semantic / variants), every category catalogued, anti-patterns + verification |
 
 ## Reading order
 
