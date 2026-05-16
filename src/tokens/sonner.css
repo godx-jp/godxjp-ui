@@ -1,9 +1,0 @@
-/* Sonner layout, stacking, and swipe animations (from sonner MIT package).
- * Import after `@godxjp/ui/tokens.css` so `.toast` / variant rules in
- * tokens win for unstyled toasts. Resolves via the app bundler from
- * the hoisted `sonner` dependency. */
-@import "sonner/dist/styles.css";
-
-[data-sonner-toaster] {
-  font-family: inherit;
-}
