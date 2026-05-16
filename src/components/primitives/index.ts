@@ -9,6 +9,23 @@
 
 export { cn } from "./cn"
 
+// ── Layout primitives (Ant-Design-shaped: Row/Col/Flex/Space) ────
+export { Row, Col, Flex, Space, useRowGutter } from "./layout";
+export type {
+  RowProps,
+  ColProps,
+  FlexProps,
+  SpaceProps,
+  GutterValue,
+  Breakpoint,
+  Justify,
+  Align,
+  FlexGap,
+  FlexJustify,
+  FlexAlign,
+  SpaceSize,
+} from "./layout";
+
 export { Badge } from "./Badge"
 export type { BadgeProps, BadgeVariant } from "./Badge"
 
