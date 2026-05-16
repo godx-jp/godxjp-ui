@@ -14,6 +14,7 @@ export default defineConfig({
     "components/primitives": "src/components/primitives/index.ts",
     "components/shell": "src/components/shell/index.ts",
     "components/screens": "src/components/screens/index.ts",
+    preferences: "src/preferences/index.ts",
   },
   format: ["esm"],
   dts: true,
@@ -24,7 +25,7 @@ export default defineConfig({
   // React is a peer; everything else lives at runtime in the
   // consuming app. Don't bundle CSS — it's served raw from
   // `src/tokens/tokens.css` via the `./tokens` export.
-  external: ["react", "react-dom", /^react\//],
+  external: ["react", "react-dom", /^react\//, "axios", "i18next", "react-i18next"],
   outDir: "dist",
   target: "es2022",
   banner: { js: '"use client";' },
