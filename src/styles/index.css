@@ -1,0 +1,16 @@
+/* @godxjp/ui — styles entry.
+ *
+ * Loads:
+ *   1. theme   — tokens (primitives + semantic + theme/density/tenant variants).
+ *   2. base    — element resets + typography defaults (@layer base).
+ *   3. shell   — chrome + page component CSS.
+ *   4. sonner  — toast theme overrides.
+ *
+ * Service `theme.css` consumes `@godxjp/ui/tailwind.css` — which
+ * adds the Tailwind v4 utilities + the `@theme inline { … }`
+ * mapping on top of this index.
+ */
+@import "./theme.css";
+@import "./base.css";
+@import "./shell.css";
+@import "./sonner.css";

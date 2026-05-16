@@ -1,0 +1,335 @@
+/* @godxjp/ui — design tokens.
+ *
+ * Single-file shadcn-style theme surface for Tailwind v4 consumers.
+ * Service `theme.css` files customize by overriding any semantic
+ * variable in their own `:root`, `[data-theme="dark"]`, or
+ * `[data-tenant="..."]` block.
+ *
+ * Layered semantics (W3C Design Tokens Community Group):
+ *   • Primitives   — type scale, spacing, radius, shadow, motion,
+ *                    raw colour scales. Immutable across themes.
+ *   • Semantic     — intent aliases (`--background`, `--primary`,
+ *                    `--border`, `--sidebar-bg`, …). The DEFAULT
+ *                    light theme is the unscoped `:root` block.
+ *   • Variants     — re-bind semantic via `[data-theme="dark"]`,
+ *                    `[data-density="compact|comfortable"]`,
+ *                    `[data-tenant="godx|kintai|tempo|betoya"]`.
+ *
+ * Customization patterns (in a service's `theme.css`):
+ *
+ *   @import "@godxjp/ui/tailwind.css";
+ *
+ *   :root            { --primary: oklch(58% 0.18 25); }
+ *   [data-tenant="acme"] { --primary: oklch(...); }
+ *
+ * See docs/explanation/tokens-architecture.md +
+ *     docs/how-to/customize-theme.md.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@300;400;500;600;700&display=swap");
+
+:root {
+
+  /* ── Type ──────────────────────────────────────────────────────────── */
+
+  --font-sans-jp:
+
+  --font-weight-normal: 400;   /* body */
+  --font-weight-medium: 500;   /* heading default — freee vibes */
+  --font-weight-semibold: 600; /* legacy alias, prefer 700 */
+  --font-weight-bold: 700;     /* emphasis only */
+
+  --text-2xs: 0.6875rem; /* 11px — fine print */
+  --text-xs:  0.75rem;   /* 12px — caption / label */
+  --text-sm:  0.8125rem; /* 13px — dense table */
+  --text-base:0.875rem;  /* 14px — DEFAULT body (JP density override) */
+  --text-md:  1rem;      /* 16px — content-heavy body */
+  --text-lg:  1.125rem;  /* 18px — subheading */
+  --text-xl:  1.25rem;   /* 20px — h3 / page title */
+  --text-2xl: 1.5rem;    /* 24px — h2 */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2rem;      /* 32px — h1 cap */
+
+  --leading-none: 1;
+  --leading-tight: 1.25;   /* headings */
+  --leading-normal: 1.5;   /* dense / single-line UI */
+  --leading-body: 1.7;     /* JP body default — 間 (ma) principle */
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Semantic heading sizes (intentionally small — info-dense JP enterprise) */
+  --heading-h1: var(--text-xl);   /* 20px */
+  --heading-h2: var(--text-lg);   /* 18px */
+  --heading-h3: var(--text-base); /* 14px */
+  --heading-h4: var(--text-sm);   /* 13px */
+
+  /* 和色 (wa-iro) decorative palette — accents, charts, tags. NEVER role-mapped. */
+  --wa-ai:        #165e83; /* 藍   indigo (info dark) */
+  --wa-gunjo:     #4c6cb3; /* 群青 ultramarine (info) */
+  --wa-ruri:      #1e50a2; /* 瑠璃 lapis (primary saturated) */
+  --wa-kon:       #223a70; /* 紺   navy (text emphasis) */
+  --wa-wakatake:  #68be8d; /* 若竹 young bamboo (success) */
+  --wa-moegi:     #006e54; /* 萌葱 spring green (success dark) */
+  --wa-yamabuki:  #f8b500; /* 山吹 mountain yellow (warning) */
+  --wa-shu:       #eb6101; /* 朱   vermilion (attention) */
+  --wa-akane:     #b7282e; /* 茜   madder (danger) */
+  --wa-enji:      #b94047; /* 臙脂 cochineal */
+  --wa-sakura:    #fef4f4; /* 桜   cherry (soft info bg) */
+  --wa-sumi:      #595857; /* 墨   ink (warm text) */
+  --wa-nezu:      #949495; /* 鼠   mouse-grey (muted text) */
+
+  --gray-50: #f9fafb;  --gray-100:#f3f4f6;  --gray-200:#e5e7eb;
+  --gray-300:#d1d5db;  --gray-400:#9ca3af;  --gray-500:#6b7280;
+  --gray-600:#4b5563;  --gray-700:#374151;  --gray-800:#1f2937;
+  --gray-900:#111827;
+
+  --blue-50:#eff6ff;   --blue-100:#dbeafe;  --blue-500:#3b82f6;
+  --blue-600:#2563eb;  --blue-700:#1d4ed8;
+
+  /* ── Spacing (4px grid) ──────────────────────────────────────────── */
+  --spacing-0: 0;       --spacing-1: 0.25rem; --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem; --spacing-4: 1rem;    --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;  --spacing-8: 2rem;    --spacing-10:2.5rem;
+  --spacing-12:3rem;    --spacing-16:4rem;    --spacing-20:5rem;
+  --spacing-24:6rem;
+
+  /* ── Density (default mode) ──────────────────────────────────────── */
+  --density-element-xs: 1.5rem;   /* 24px */
+  --density-element-sm: 1.75rem;  /* 28px */
+  --density-element:    2rem;     /* 32px — default */
+  --density-element-lg: 2.25rem;  /* 36px */
+  --density-element-xl: 2.75rem;  /* 44px — login forms / WCAG floor */
+  --density-card: 1rem;
+  --density-dialog: 1.25rem;
+  --density-page: 1rem;
+  --density-section: 1rem;
+  --density-page-title: 1.25rem;
+  --density-table-head: 2rem;
+  --touch-target-min: 44px;       /* Digital Agency hard rule */
+
+  /* ── Layout ──────────────────────────────────────────────────────── */
+  --header-height: 3rem;            /* 48px */
+  --sidebar-width: 13rem;           /* 208px — design jZUk parity */
+  --sidebar-collapsed-width: 4rem;  /* 64px */
+  --sidebar-transition: 300ms;
+  --content-sidebar-width: 20rem;
+  --container-max-width: 1280px;
+
+  /* ── Radius / border ─────────────────────────────────────────────── */
+  --radius: 0.375rem;               /* 6px — base */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-full: 9999px;
+  --border-width: 1px;
+
+  /* ── Shadow ──────────────────────────────────────────────────────── */
+  --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / .05);
+  --shadow:     0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);
+  --shadow-md:  0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
+  --shadow-lg:  0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);
+  --shadow-xl:  0 20px 25px -5px rgb(0 0 0 / .1), 0 8px 10px -6px rgb(0 0 0 / .1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / .25);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / .05);
+
+  /* ── Motion ──────────────────────────────────────────────────────── */
+  --transition-fast:   150ms;
+  --transition-base:   200ms;
+  --transition-slow:   300ms;
+  --transition-slower: 500ms;
+  --ease-in:     cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:    cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Aspect ratios (decorative — never for type scale) ──────────── */
+  --aspect-silver: 1.4142;          /* 白銀比 (hakuginhi) — A4, manga */
+  --aspect-golden: 1.618;           /* 黄金比 — Western */
+}
+
+
+:root {
+    "M PLUS 2", "Hiragino Sans", "ヒラギノ角ゴシック", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic Medium", "游ゴシック Medium", YuGothic, "Noto Sans JP", Meiryo, メイリオ,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+
+  /* ── Color — Phase B (OKLCH, 渋み) ────────────────────────────────── */
+
+  --background:        oklch(99% 0.002 60);   /* warm off-white */
+  --foreground:        oklch(20% 0.006 60);   /* warm off-black — SmartHR TEXT_BLACK #23221e */
+  --card:              oklch(99% 0.002 60);
+  --card-foreground:   oklch(20% 0.006 60);
+  --popover:           oklch(99% 0.002 60);
+  --popover-foreground:oklch(20% 0.006 60);
+
+  --primary:           oklch(56% 0.15 240);   /* SmartHR MAIN #0077c7 */
+  --primary-foreground:oklch(99% 0.002 60);
+
+  --secondary:         oklch(96% 0.004 60);
+  --secondary-foreground: oklch(20% 0.006 60);
+  --muted:             oklch(96% 0.004 60);
+  --muted-foreground:  oklch(48% 0.008 60);   /* SmartHR TEXT_GREY #706d65 */
+  --accent:            oklch(93% 0.005 60);
+  --accent-foreground: oklch(20% 0.006 60);
+
+  --destructive:       oklch(52% 0.18 25);    /* 茜 #b7282e (chroma capped) */
+  --destructive-foreground: oklch(99% 0.002 60);
+
+  --border:            oklch(86% 0.006 60);   /* SmartHR BORDER #d6d3d0 */
+  --input:             oklch(86% 0.006 60);
+  --input-background:  oklch(99% 0.002 60);
+  --ring:              oklch(56% 0.15 240);
+
+  /* Semantic — 和色 (traditional Japanese) hue centers */
+  --success:           oklch(72% 0.13 155);   /* 若竹 #68be8d */
+  --success-foreground:oklch(99% 0.002 60);
+  --warning:           oklch(80% 0.17 85);    /* 山吹 #f8b500 */
+  --warning-foreground:oklch(20% 0.006 60);
+  --info:              oklch(55% 0.12 265);   /* 群青 #4c6cb3 */
+  --info-foreground:   oklch(99% 0.002 60);
+  --error:             oklch(52% 0.18 25);    /* 茜 #b7282e */
+  --error-foreground:  oklch(99% 0.002 60);
+  --attention:         oklch(66% 0.19 45);    /* 朱 #eb6101 — softer than red */
+  --attention-foreground: oklch(99% 0.002 60);
+
+  /* Layout extensions */
+  --sidebar-bg: oklch(98% 0.003 60);
+  --sidebar-border: var(--border);
+  --sidebar-fg: var(--foreground);
+  --sidebar-muted: var(--muted-foreground);
+  --sidebar-active-bg: oklch(95% 0.02 240);
+  --sidebar-active-fg: var(--primary);
+  --topbar-bg: var(--background);
+  --topbar-border: var(--border);
+
+  --surface-1: oklch(99% 0.002 60);   /* card, popover */
+  --surface-2: oklch(97% 0.003 60);   /* page bg subtle */
+  --surface-3: oklch(95% 0.004 60);   /* hover, accent */
+  --surface-inset: oklch(96% 0.004 60);
+
+  --kbd-bg: oklch(94% 0.005 60);
+
+  /* Status dot tokens — use as bg-color */
+  --dot-success: var(--success);
+  --dot-warning: var(--warning);
+  --dot-error: var(--error);
+  --dot-info: var(--info);
+  --dot-attention: var(--attention);
+  --dot-muted: var(--muted-foreground);
+}
+
+
+[data-tenant="betoya"] {
+  --primary: oklch(58% 0.159 150);  /* Vietnam green #009444 */
+  --primary-foreground: oklch(99% 0.002 60);
+  --ring: oklch(58% 0.159 150);
+  --foreground: oklch(20% 0.004 85);
+  --brand-betoya-primary:  #009444;
+  --brand-betoya-secondary:#ffc20e;
+  --brand-betoya-accent:   #00b856;
+  --brand-betoya-attention:#f95c39;
+  --brand-betoya-text:     #171614;
+}
+
+[data-density="compact"] {
+  --density-element-xs: 1.25rem;
+  --density-element-sm: 1.5rem;
+  --density-element:    1.75rem;  /* 28px */
+  --density-element-lg: 2rem;
+  --density-element-xl: 2.25rem;
+  --density-card: 0.75rem;
+  --density-dialog: 1rem;
+  --density-page: 0.75rem;
+  --density-section: 0.75rem;
+  --header-height: 2.5rem;
+  --density-table-head: 1.75rem;
+}
+
+[data-density="comfortable"] {
+  --density-element-xs: 2rem;
+  --density-element-sm: 2.25rem;
+  --density-element:    2.75rem;  /* 44px */
+  --density-element-lg: 3rem;
+  --density-element-xl: 3.5rem;
+  --density-card: 1.5rem;
+  --density-dialog: 2rem;
+  --density-page: 1.5rem;
+  --density-section: 1.5rem;
+  --header-height: 3.5rem;
+  --density-table-head: 2.5rem;
+}
+
+[data-tenant="godx"] {
+  /* Default: Famgia emerald accent (--brand) + SmartHR blue primary */
+  --primary: oklch(56% 0.15 240);
+  --primary-foreground: oklch(99% 0.002 60);
+  --ring: oklch(56% 0.15 240);
+  --brand: oklch(60% 0.137 163);
+}
+
+[data-tenant="kintai"] {
+  --primary: oklch(56% 0.15 240);   /* SmartHR blue */
+  --primary-foreground: oklch(99% 0.002 60);
+  --ring: oklch(56% 0.15 240);
+  --brand: oklch(56% 0.15 240);
+}
+
+[data-tenant="tempo"] {
+  --primary: oklch(48% 0.16 285);   /* deeper indigo for Tempo */
+  --primary-foreground: oklch(99% 0.002 60);
+  --ring: oklch(48% 0.16 285);
+  --brand: oklch(48% 0.16 285);
+}
+
+[data-tenant="betoya"] {
+  --primary: oklch(58% 0.159 150);
+  --primary-foreground: oklch(99% 0.002 60);
+  --ring: oklch(58% 0.159 150);
+  --brand: oklch(58% 0.159 150);
+}
+
+[data-theme="dark"] {
+  --background: oklch(18% 0.005 60);
+  --foreground: oklch(95% 0.005 60);
+  --card: oklch(22% 0.005 60);
+  --card-foreground: oklch(95% 0.005 60);
+  --popover: oklch(24% 0.005 60);
+  --popover-foreground: oklch(95% 0.005 60);
+  --secondary: oklch(26% 0.006 60);
+  --secondary-foreground: oklch(95% 0.005 60);
+  --muted: oklch(26% 0.006 60);
+  --muted-foreground: oklch(68% 0.008 60);
+  --accent: oklch(30% 0.008 60);
+  --accent-foreground: oklch(95% 0.005 60);
+  --border: oklch(32% 0.008 60);
+  --input: oklch(32% 0.008 60);
+  --input-background: oklch(24% 0.005 60);
+
+  --sidebar-bg: oklch(20% 0.005 60);
+  --sidebar-border: oklch(28% 0.006 60);
+  --sidebar-fg: oklch(92% 0.005 60);
+  --sidebar-muted: oklch(64% 0.008 60);
+  --sidebar-active-bg: oklch(28% 0.04 240);
+  --sidebar-active-fg: oklch(78% 0.13 240);
+  --topbar-bg: oklch(20% 0.005 60);
+  --topbar-border: oklch(28% 0.006 60);
+
+  --surface-1: oklch(22% 0.005 60);
+  --surface-2: oklch(20% 0.005 60);
+  --surface-3: oklch(28% 0.008 60);
+  --surface-inset: oklch(24% 0.006 60);
+
+  --kbd-bg: oklch(28% 0.008 60);
+
+  --primary: oklch(70% 0.13 240);
+  --primary-foreground: oklch(18% 0.005 60);
+  --ring: oklch(70% 0.13 240);
+}
+
+[data-theme="dark"][data-tenant="kintai"] { --primary: oklch(70% 0.13 240); --ring: oklch(70% 0.13 240); --brand: oklch(70% 0.13 240); }
+
+[data-theme="dark"][data-tenant="tempo"]  { --primary: oklch(70% 0.14 285); --ring: oklch(70% 0.14 285); --brand: oklch(70% 0.14 285); }
+
+[data-theme="dark"][data-tenant="betoya"] { --primary: oklch(72% 0.14 150); --ring: oklch(72% 0.14 150); --brand: oklch(72% 0.14 150); }
+
+[data-theme="dark"][data-tenant="godx"]   { --primary: oklch(70% 0.13 240); --ring: oklch(70% 0.13 240); --brand: oklch(72% 0.13 163); }

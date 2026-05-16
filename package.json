@@ -39,12 +39,18 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./tokens": "./src/tokens/tokens.css",
-    "./tokens.css": "./src/tokens/tokens.css",
-    "./tokens-ext.css": "./src/tokens/tokens-ext.css",
-    "./sonner.css": "./src/tokens/sonner.css",
     "./tailwind": "./src/tokens/tailwind.css",
     "./tailwind.css": "./src/tokens/tailwind.css",
+    "./styles": "./src/styles/index.css",
+    "./styles/index.css": "./src/styles/index.css",
+    "./styles/theme.css": "./src/styles/theme.css",
+    "./styles/base.css": "./src/styles/base.css",
+    "./styles/shell.css": "./src/styles/shell.css",
+    "./styles/sonner.css": "./src/styles/sonner.css",
+    "./tokens": "./src/styles/theme.css",
+    "./tokens.css": "./src/styles/theme.css",
+    "./tokens-ext.css": "./src/styles/shell.css",
+    "./sonner.css": "./src/styles/sonner.css",
     "./i18n": {
       "types": "./dist/i18n.d.ts",
       "import": "./dist/i18n.js"

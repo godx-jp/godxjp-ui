@@ -1,0 +1,51 @@
+/* @godxjp/ui — Sonner toast theme overrides.
+ *
+ * Sonner ships its own minimal CSS; we override hue + spacing to
+ * match the godx design system. Loaded last so its base styles win
+ * on selectors we don't touch.
+ */
+
+/* Sonner layout, stacking, and swipe animations (from sonner MIT package).
+ * Import after `@godxjp/ui/tokens.css` so `.toast` / variant rules in
+ * tokens win for unstyled toasts. Resolves via the app bundler from
+ * the hoisted `sonner` dependency. */
+@import "sonner/dist/styles.css";
+
+[data-sonner-toaster] {
+  font-family: inherit;
+}
+
+
+/* Import `@godxjp/ui/sonner.css` after this file for stacking / motion.
+   `<Toaster />` defaults to unstyled toasts so chrome comes only from
+   these classes (signal tints are optional accents). */
+[data-sonner-toast].toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  width: var(--width, 100%);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px -2px color-mix(in oklch, var(--foreground) 14%, transparent),
+    0 0 0 1px color-mix(in oklch, var(--foreground) 4%, transparent);
+  font-size: var(--text-sm);
+}
+[data-sonner-toast].toast--success {
+  border-color: color-mix(in oklch, var(--success) 55%, var(--border));
+}
+[data-sonner-toast].toast--error {
+  border-color: color-mix(in oklch, var(--destructive) 50%, var(--border));
+}
+[data-sonner-toast].toast--warning {
+  border-color: color-mix(in oklch, var(--warning) 45%, var(--border));
+}
+[data-sonner-toast].toast--info {
+  border-color: color-mix(in oklch, var(--info) 45%, var(--border));
+}
+[data-sonner-toast].toast--success .toast-icon { color: var(--success); }
+[data-sonner-toast].toast--error .toast-icon { color: var(--destructive); }
+[data-sonner-toast].toast--warning .toast-icon { color: var(--warning); }
+[data-sonner-toast].toast--info .toast-icon { color: var(--info); }

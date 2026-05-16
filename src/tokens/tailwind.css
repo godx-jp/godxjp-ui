@@ -7,20 +7,30 @@
  *
  * Provides:
  *   1. Tailwind v4 utilities (@import "tailwindcss").
- *   2. Design tokens (custom CSS properties).
- *   3. @theme inline mapping so Tailwind utility classes resolve tokens.
- *   4. dark custom-variant ([data-theme="dark"]).
- *   5. Default body + base layer rules.
+ *   2. Design tokens — three layers (primitives / semantic / themes).
+ *   3. Base styles — @layer base (typography, scrollbar, …).
+ *   4. Component CSS (.app-*, .sb-*, .tb-*, .page-content*, …).
+ *   5. Sonner toast theme overrides.
+ *   6. @theme inline mapping so Tailwind utility classes resolve tokens.
+ *   7. dark custom-variant ([data-theme="dark"]).
  *
- * Services do NOT write: @theme inline, tailwindcss import, dark variant,
- * or base body rules. Those are here, once.
+ * Services do NOT redeclare @theme, Tailwind import, base layer, or
+ * component CSS. Customize ONLY by overriding semantic tokens in
+ * `theme.css`:
  *
- * See new-docs/12-frontend-architecture.md for the binding rule.
+ *   @import "@godxjp/ui/tailwind.css";
+ *
+ *   :root { --primary: oklch(58% 0.18 25); }
+ *   [data-tenant="acme"] { --primary: oklch(...); }
+ *
+ * See:
+ *   - docs/explanation/tokens-architecture.md
+ *   - docs/how-to/customize-theme.md
+ *   - new-docs/12-frontend-architecture.md (umbrella binding rule)
  */
 
 @import "tailwindcss";
-@import "./tokens.css";
-@import "./tokens-ext.css";
+@import "../styles/index.css";
 
 @custom-variant dark (&:is([data-theme="dark"] *));
 
@@ -43,6 +53,7 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-attention: var(--attention);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-input-background: var(--input-background);
