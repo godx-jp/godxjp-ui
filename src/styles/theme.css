@@ -242,11 +242,14 @@
    * Per cardinal rule 22 these literals come from the bundle, expressed
    * as rem so the font-size axis rescales. Density-card carries the
    * horizontal pad so the density axis rescales. */
-  --card-pad-y-header: 0.625rem;  /* 10px */
-  --card-pad-y-body:   0.875rem;  /* 14px */
+  --card-pad-y-header: 0.625rem;  /* 10px — `.ch`, `.cf` */
+  --card-pad-y-body:   0.875rem;  /* 14px — `.cb` */
   --card-pad-y-footer: 0.625rem;  /* 10px */
+  --card-header-gap:   0.625rem;  /* 10px — `.ch` gap between title/meta/extra */
   --card-title-size:   0.8125rem; /* 13px — `.ch .t` */
-  --card-meta-size:    0.6875rem; /* 11px — `.ch .sub`, `.micro` */
+  --card-meta-size:    0.6875rem; /* 11px — `.ch .sub` */
+  --card-kicker-size:  0.625rem;  /* 10px — `.ch-kicker .k` */
+  --card-band-height:  4px;       /* `.ch-band` — hairline-class literal, doesn't scale */
 
   /* Monospace stack — used by me-service identity blocks + sandbox row
    * fingerprints. */
