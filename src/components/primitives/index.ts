@@ -42,6 +42,7 @@ export type {
   CardPadding,
   CardTone,
   CardAccent,
+  CardBand,
 } from "./Card"
 
 export { Input, Textarea } from "./Input"

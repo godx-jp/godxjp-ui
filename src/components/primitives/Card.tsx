@@ -2,44 +2,46 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "./cn";
 
 /**
- * Card — surface container with Ant-Design-shaped prop API.
+ * Card — surface container. 100% mapped to the dxs-kintai design canon
+ * (`design-handoff/ui-system/dxs-kintai-design-system/project/preview/
+ * comp-card.html`).
  *
- * Mirrors the dxs-kintai design canon (handoff
- * `design-handoff/ui-system/dxs-kintai-design-system/project/preview/
- * comp-card.html`): one atom (`.card`, 1px border, 6px radius,
- * `var(--card)` bg, no shadow at rest) + four orthogonal modifiers:
+ * One atom (`.card`, 1px border, 6px radius, `var(--card)` bg,
+ * no shadow at rest) + four orthogonal prop axes:
  *
- *   - `padding`  — tight (12) / default (16) / cozy (20) / none (0).
- *   - `tone`     — default / muted / outline-only.
- *   - `accent`   — undefined / primary / success / warning /
- *                  attention / info / destructive / featured.
- *   - `hoverable`— adds a border + shadow lift affordance.
+ *   - `padding` — tight / default / cozy / none (12 / 16 / 20 / 0)
+ *   - `tone`    — default / muted / outline-only
+ *   - `accent`  — primary / success / warning / attention / info /
+ *                 destructive / featured (3px left edge or full ring)
+ *   - `hoverable`
  *
- * Per cardinal rule 21 every modifier reads from semantic tokens,
- * so theme / accent / density / font-size axes flow through.
+ * Plus a `band` prop for the H11 color-strip variant (4px strip
+ * above the header).
  *
- * Two consumption shapes:
+ * Header shape auto-detects from the slot props:
  *
- *   1) Slot props (the common case):
+ *   - `kicker` set                          → `.ch-kicker` (3-tier
+ *                                              column: kicker / title /
+ *                                              subtitle)
+ *   - `subtitle` set, no `kicker`           → `.ch-stack` (2-tier
+ *                                              column: title /
+ *                                              subtitle)
+ *   - `meta` set, no `subtitle`/`kicker`    → `.ch` row with meta
+ *                                              right-aligned
+ *                                              (margin-left: auto)
+ *   - just `title`                          → `.ch` row, title only
  *
- *      <Card title="Pull requests" subtitle="Open this week"
- *            extra={<a>More</a>} footer={<Button>View all</Button>}
- *            accent="primary">
- *        content
- *      </Card>
+ * `extra` always renders right-aligned at the end of the header row
+ * (works with all three shapes). Used for action buttons + tags
+ * (H4/H5/H7 patterns).
  *
- *   2) Compositional (when you need full control of header /
- *      body / footer regions, e.g. for `padding="none"` cards
- *      with internal sections):
- *
- *      <Card padding="none">
- *        <CardHeader title="…" extra={…} />
- *        <CardBody>…</CardBody>
- *        <CardFooter actions>
- *          <Button>Save</Button>
- *        </CardFooter>
- *      </Card>
+ * For flush cards with internal sections (H1-H17 variants), use
+ * `padding="none"` + the compositional atoms <CardHeader> /
+ * <CardBody> / <CardFooter>.
  */
+
+// ─── Prop axes ─────────────────────────────────────────────────────
+
 export type CardPadding = "tight" | "default" | "cozy" | "none";
 export type CardTone = "default" | "muted" | "outline-only";
 export type CardAccent =
@@ -50,25 +52,40 @@ export type CardAccent =
   | "info"
   | "destructive"
   | "featured";
+export type CardBand =
+  | "primary"
+  | "success"
+  | "warning"
+  | "attention"
+  | "info"
+  | "destructive"
+  | "gradient"
+  | "dotted";
 
 export interface CardProps extends Omit<ComponentProps<"div">, "title"> {
-  /** Card header title — rendered with CardTitle styles. */
+  /** Card title — H1/H2/H3/H12 `<span class="t">…</span>`. */
   title?: ReactNode;
-  /** Sub-text rendered under the title. */
+  /** Sub-text stacked BELOW the title (H2 `.ch-stack .sub`). */
   subtitle?: ReactNode;
-  /** Header right-side slot (typically an action link or button). */
+  /** Small uppercase label ABOVE the title (H12 `.ch-kicker .k`). */
+  kicker?: ReactNode;
+  /** Right-aligned secondary text (H3 `.ch .sub` with margin-left:auto). */
+  meta?: ReactNode;
+  /** Right-aligned action slot — buttons, tags, status indicators. */
   extra?: ReactNode;
-  /** Footer slot rendered with a top divider. */
+  /** Color strip above the header (4px, semantic). */
+  band?: CardBand;
+  /** Footer slot rendered with top divider + muted secondary tint. */
   footer?: ReactNode;
-  /** Footer slot rendered right-aligned, no divider tint (action bar). */
+  /** Right-aligned action bar footer — no divider tint, transparent bg. */
   actions?: ReactNode;
-  /** Padding density. Default 16px; tight 12px; cozy 20px; none 0 (use CardHeader/Body/Footer for internal sections). */
+  /** Padding density. */
   padding?: CardPadding;
-  /** Surface tone. `muted` paints `var(--secondary)` bg; `outline-only` keeps the border but drops the background. */
+  /** Surface tone. */
   tone?: CardTone;
-  /** Edge accent. `primary` / `success` / `warning` / `attention` / `info` / `destructive` paints a 3px left edge; `featured` rings the entire card with `--primary`. */
+  /** Edge accent (3px left edge, or full --primary ring for `featured`). */
   accent?: CardAccent;
-  /** Hover affordance — border lift + shadow + cursor pointer. */
+  /** Hover affordance — border + shadow lift. */
   hoverable?: boolean;
 }
 
@@ -95,10 +112,24 @@ const ACCENT_CLASS: Record<CardAccent, string> = {
   featured: "card-accent-featured",
 };
 
+const BAND_CLASS: Record<CardBand, string> = {
+  primary: "card-band-primary",
+  success: "card-band-success",
+  warning: "card-band-warning",
+  attention: "card-band-attention",
+  info: "card-band-info",
+  destructive: "card-band-destructive",
+  gradient: "card-band-gradient",
+  dotted: "card-band-dotted",
+};
+
 export function Card({
   title,
   subtitle,
+  kicker,
+  meta,
   extra,
+  band,
   footer,
   actions,
   padding = "default",
@@ -110,8 +141,13 @@ export function Card({
   ...rest
 }: CardProps) {
   const hasHeader =
-    title !== undefined || extra !== undefined || subtitle !== undefined;
+    title !== undefined ||
+    subtitle !== undefined ||
+    kicker !== undefined ||
+    meta !== undefined ||
+    extra !== undefined;
   const flush = padding === "none";
+
   return (
     <div
       className={cn(
@@ -124,15 +160,18 @@ export function Card({
       )}
       {...rest}
     >
+      {band && <div className={cn("card-band", BAND_CLASS[band])} aria-hidden />}
       {hasHeader && (
         <CardHeader
           title={title}
           subtitle={subtitle}
+          kicker={kicker}
+          meta={meta}
           extra={extra}
           block={flush}
         />
       )}
-      {flush ? children : <div className="card-body-inline">{children}</div>}
+      {flush ? children : <div className="card-body">{children}</div>}
       {footer !== undefined && (
         <CardFooter block={flush}>{footer}</CardFooter>
       )}
@@ -145,67 +184,93 @@ export function Card({
   );
 }
 
-// ─── Compositional atoms ─────────────────────────────────────────
+// ─── Compositional atoms (for flush / padding="none" cards) ──────────
 
 export interface CardHeaderProps extends Omit<ComponentProps<"div">, "title"> {
   title?: ReactNode;
   subtitle?: ReactNode;
+  kicker?: ReactNode;
+  meta?: ReactNode;
   extra?: ReactNode;
   /** When `true`, the header pads itself + draws a bottom divider —
-   * the `.ch` block used inside flush cards (`padding="none"`). When
-   * `false` (default), the header is a flex row that sits inside the
-   * parent card's padding with a small margin-bottom and NO divider —
-   * matches the design canon's padded-card slot pattern. */
+   * the `.ch` / `.ch-stack` / `.ch-kicker` block used inside flush
+   * cards. When `false` (default), the header is the same shape but
+   * sits inside the parent card's padding (no extra divider). */
   block?: boolean;
 }
 
 export function CardHeader({
   title,
   subtitle,
+  kicker,
+  meta,
   extra,
   block = false,
   className,
   children,
   ...rest
 }: CardHeaderProps) {
+  // Header shape selector per design canon:
+  //   kicker present                → `.ch-kicker` (3-tier column)
+  //   subtitle present, no kicker   → `.ch-stack`  (2-tier column)
+  //   else                          → `.ch`        (row with optional meta-right)
+  const shape: "kicker" | "stack" | "row" =
+    kicker !== undefined
+      ? "kicker"
+      : subtitle !== undefined
+        ? "stack"
+        : "row";
+  const shapeClass =
+    shape === "kicker"
+      ? "card-header-kicker"
+      : shape === "stack"
+        ? "card-header-stack"
+        : "card-header-row";
+
   return (
     <div
       className={cn(
-        block ? "card-header-block" : "card-header-inline",
+        shapeClass,
+        block && "card-header-block",
         className,
       )}
       {...rest}
     >
-      {(title !== undefined || subtitle !== undefined) && (
-        <div className="card-header-title-group">
+      {shape === "kicker" && (
+        <>
+          {kicker !== undefined && (
+            <span className="card-kicker">{kicker}</span>
+          )}
           {title !== undefined && <h3 className="card-title">{title}</h3>}
           {subtitle !== undefined && (
-            <p className="card-subtitle">{subtitle}</p>
+            <span className="card-subtitle">{subtitle}</span>
           )}
-        </div>
+        </>
+      )}
+      {shape === "stack" && (
+        <>
+          {title !== undefined && <h3 className="card-title">{title}</h3>}
+          {subtitle !== undefined && (
+            <span className="card-subtitle">{subtitle}</span>
+          )}
+        </>
+      )}
+      {shape === "row" && (
+        <>
+          {title !== undefined && <h3 className="card-title">{title}</h3>}
+          {meta !== undefined && <span className="card-meta">{meta}</span>}
+        </>
       )}
       {children}
       {extra !== undefined && (
-        <div className="card-header-extra">{extra}</div>
+        <span className="card-header-extra">{extra}</span>
       )}
     </div>
   );
 }
 
-export function CardTitle({ className, ...rest }: ComponentProps<"h3">) {
-  return <h3 className={cn("card-title", className)} {...rest} />;
-}
-
-export interface CardSubtitleProps extends ComponentProps<"p"> {
-  children?: ReactNode;
-}
-
-export function CardSubtitle({ className, ...rest }: CardSubtitleProps) {
-  return <p className={cn("card-subtitle", className)} {...rest} />;
-}
-
 export interface CardBodyProps extends ComponentProps<"div"> {
-  /** When `true`, the body pads itself (the `.cb` block used in flush cards). */
+  /** When `true`, the body pads itself — the `.cb` block in flush cards. */
   block?: boolean;
 }
 
@@ -216,18 +281,17 @@ export function CardBody({
 }: CardBodyProps) {
   return (
     <div
-      className={cn(block ? "card-body-block" : "card-body-inline", className)}
+      className={cn(block ? "card-body-block" : "card-body", className)}
       {...rest}
     />
   );
 }
 
 export interface CardFooterProps extends ComponentProps<"div"> {
-  /** Right-aligned action bar, no muted tint, no separator background. */
+  /** Right-aligned action bar, transparent bg, no muted tint. */
   actions?: boolean;
   /** When `true`, the footer pads itself + draws a top divider — the
-   * `.cf` block used inside flush cards. When `false`, the footer sits
-   * inside the parent card's padding with margin-top + top divider. */
+   * `.cf` block in flush cards. */
   block?: boolean;
 }
 
@@ -249,6 +313,18 @@ export function CardFooter({
   );
 }
 
-// Legacy compat — older callers might import CardContent.
-// Same render as a un-classed div; new code should use CardBody.
+// ─── Direct-control atoms (when the slot API doesn't fit) ───────────
+
+export function CardTitle({ className, ...rest }: ComponentProps<"h3">) {
+  return <h3 className={cn("card-title", className)} {...rest} />;
+}
+
+export interface CardSubtitleProps extends ComponentProps<"span"> {
+  children?: ReactNode;
+}
+export function CardSubtitle({ className, ...rest }: CardSubtitleProps) {
+  return <span className={cn("card-subtitle", className)} {...rest} />;
+}
+
+// Legacy alias — older code imports CardContent.
 export const CardContent = CardBody;

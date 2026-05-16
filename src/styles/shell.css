@@ -238,54 +238,115 @@
   padding-left: 0;
 }
 
-/* Header — inline (padded card, no divider, design slot pattern)
- * vs block (flush card, `.ch`-shape with divider + own padding). */
-.card-header-inline {
+/* ─── Card header shapes ───────────────────────────────────────────
+ *  Source: design-handoff/ui-system/dxs-kintai-design-system/project/
+ *  preview/comp-card.html — `.ch`, `.ch-stack`, `.ch-kicker` (sections
+ *  H1–H3 / H12). Each shape mirrors a distinct DOM layout from the
+ *  design canon. All literals are token references.
+ *
+ *  `.card-header-row`    (= design `.ch`)        row: title-left + meta-right
+ *  `.card-header-stack`  (= design `.ch-stack`)  column: title above + sub below
+ *  `.card-header-kicker` (= design `.ch-kicker`) column: kicker / title / sub
+ *
+ *  `.card-header-block` modifier (= card padding="none") adds own
+ *  padding + bottom divider. Without it, the header sits inside the
+ *  parent's padding with margin-bottom and NO divider — matches the
+ *  design's padded-card slot pattern.
+ */
+
+.card-header-row {
   display: flex;
   align-items: center;
-  gap: 0.625rem;          /* 10px — design `.ch` gap */
-  margin-bottom: 0.625rem; /* 10px — design padded-card title→body gap */
+  gap: var(--card-header-gap);  /* 10px */
+  margin-bottom: var(--card-header-gap);
 }
-.card-header-block {
+
+.card-header-stack {
   display: flex;
-  align-items: center;
-  gap: 0.625rem;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--card-header-gap);
+  position: relative;
+}
+
+.card-header-kicker {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--card-header-gap);
+  position: relative;
+}
+
+.card-header-block {
+  margin-bottom: 0;
   padding: var(--card-pad-y-header) var(--density-card);  /* 10/16 */
   border-bottom: 1px solid var(--border);
 }
 
-.card-header-title-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1);
-  min-width: 0;
-  flex: 1;
-}
-
-.card-header-extra {
-  margin-left: auto;
-  display: flex;
-  gap: var(--spacing-2);
-  align-items: center;
-  flex-shrink: 0;
+.card-kicker {
+  font-size: var(--card-kicker-size);  /* 10px */
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  line-height: 1.4;
 }
 
 .card-title {
   font-size: var(--card-title-size);  /* 13px — design `.ch .t` */
   font-weight: 500;
+  line-height: 1.4;
   margin: 0;
+  color: var(--foreground);
 }
 
 .card-subtitle {
+  font-size: var(--card-meta-size);   /* 11px — design `.ch-stack .sub` */
+  font-weight: 400;
+  color: var(--muted-foreground);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.card-meta {
   font-size: var(--card-meta-size);   /* 11px — design `.ch .sub` */
   font-weight: 400;
   color: var(--muted-foreground);
   margin: 0;
+  margin-left: auto;  /* right-align inside .card-header-row */
 }
 
-/* Body — inline (parent padded) just stacks children with the
- * design's intra-body gap; block (parent flush) pads itself 14/16. */
-.card-body-inline {
+.card-header-extra {
+  display: inline-flex;
+  gap: var(--spacing-2);
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+/* When `meta` already grabbed margin-left:auto, extra sits naturally
+ * after it via the flex gap. */
+.card-header-row .card-meta + .card-header-extra { margin-left: 0; }
+
+/* In stack/kicker shapes the header is column-flex; extra still
+ * anchors to the top-right via absolute positioning. */
+.card-header-stack > .card-header-extra,
+.card-header-kicker > .card-header-extra {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-left: 0;
+}
+.card-header-stack.card-header-block > .card-header-extra,
+.card-header-kicker.card-header-block > .card-header-extra {
+  top: var(--card-pad-y-header);
+  right: var(--density-card);
+}
+
+/* ─── Card body ────────────────────────────────────────────────────
+ *  `.card-body`        inside padded card; stacks children with body gap.
+ *  `.card-body-block`  inside flush card; own 14/16 padding.
+ */
+.card-body {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
@@ -297,9 +358,14 @@
   padding: var(--card-pad-y-body) var(--density-card);  /* 14/16 */
 }
 
-/* Footer — design `.cf` pad 10/16, secondary 60% bg, top divider.
- * Inline (parent padded): mirror block padding but as own row. */
-.card-footer-inline,
+/* ─── Card footer ──────────────────────────────────────────────────
+ *  `.card-footer-block`   flush-card region. Own 10/16 padding, top
+ *                         divider, secondary-60% bg tint.
+ *  `.card-footer-inline`  padded-card region. Bleeds to card edges via
+ *                         negative margin so bg + divider stretch full
+ *                         width (matches design `.cf`).
+ *  `.card-footer-actions` overrides: transparent bg, right-aligned.
+ */
 .card-footer-block {
   display: flex;
   align-items: center;
@@ -311,8 +377,14 @@
   background: color-mix(in oklch, var(--secondary) 60%, transparent);
 }
 .card-footer-inline {
-  /* Inline footer escapes the parent's padding so the bg + divider
-   * stretch to the card edges, matching the design. */
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--card-pad-y-footer) var(--density-card);
+  border-top: 1px solid var(--border);
+  font-size: var(--card-meta-size);
+  color: var(--muted-foreground);
+  background: color-mix(in oklch, var(--secondary) 60%, transparent);
   margin: var(--density-card) calc(var(--density-card) * -1) calc(var(--density-card) * -1);
   border-radius: 0 0 calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px);
 }
@@ -322,12 +394,40 @@
   color: var(--foreground);
 }
 .card-footer-actions.card-footer-inline {
-  /* Action footer doesn't need to bleed to edges — it's part of the
-   * padded interior. */
   margin: var(--spacing-3) 0 0;
-  padding: 0;
-  border-top: 1px solid var(--border);
-  padding-top: var(--spacing-3);
+  padding: var(--spacing-3) 0 0;
+  border-radius: 0;
+}
+
+/* ─── Card band (H11 — color strip above header) ───────────────────
+ *  4px tall semantic strip flush above the header. Used inside flush
+ *  cards. 4px is hairline-class — pinned literal, doesn't scale.
+ */
+.card-band {
+  height: var(--card-band-height);  /* 4px */
+  width: 100%;
+  flex-shrink: 0;
+}
+.card-band-primary     { background: var(--primary); }
+.card-band-success     { background: var(--success); }
+.card-band-warning     { background: var(--warning); }
+.card-band-attention   { background: var(--attention); }
+.card-band-info        { background: var(--info); }
+.card-band-destructive { background: var(--destructive); }
+.card-band-gradient {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    var(--attention) 50%,
+    var(--info) 100%
+  );
+}
+.card-band-dotted {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--muted-foreground) 0 4px,
+    transparent 4px 8px
+  );
 }
 
 .card-hoverable {
