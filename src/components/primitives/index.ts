@@ -225,3 +225,15 @@ export type { BreadcrumbProps, BreadcrumbItemProps } from "./Breadcrumb"
 // `.tg-*` class in shell.css; no service-specific defaults per
 // cardinal rule #19.
 export * from "./calendar/index"
+
+// ── Date / time pickers — React Aria + @internationalized/date ──
+// DateField, TimeField (segmented inputs), DatePicker, DateRangePicker
+// (trigger + popover + Calendar / RangeCalendar). Mirrors the
+// dxs-kintai design-system patterns A-E.
+export { DateField, TimeField, DatePicker, DateRangePicker } from "./DateTimePicker"
+export type {
+  DateFieldProps,
+  TimeFieldProps,
+  DatePickerProps,
+  DateRangePickerProps,
+} from "./DateTimePicker"

@@ -3223,3 +3223,149 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   outline: 2px solid var(--ring);
   outline-offset: -2px;
 }
+
+/* ─── DateField / TimeField / DatePicker / DateRangePicker ─────────
+ * React Aria Components segmented inputs + popover triggers.
+ * Mirrors the dxs-kintai handoff patterns (A-E in
+ * design-handoff/ui-system/dxs-kintai-design-system/project/preview/
+ * comp-datetimepicker.html). Tokens flow through accent + theme axes.
+ *
+ * DOM shape (React Aria):
+ *   <DateField> → .field
+ *     <Label>
+ *     <DateInput> → .dt-segments
+ *       <DateSegment> → .dt-seg [data-placeholder/-focused/-readonly]
+ *     <Text slot="description"> / <FieldError>
+ *   <DatePicker> → .field
+ *     <Group> → .dt-trigger
+ *       <DateInput> → .dt-segments.dt-segments-inline
+ *       <Button> → .dt-trigger-btn
+ *     <Popover> → .dt-popover
+ *       <Dialog>
+ *         <Calendar>
+ */
+
+.dt-segments {
+  display: inline-flex;
+  align-items: center;
+  height: var(--density-element);
+  min-height: 28px;
+  padding: 0 var(--spacing-2);
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  background: var(--input-background);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, "SF Mono", monospace);
+  color: var(--foreground);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.dt-segments[data-focus-within] {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 25%, transparent);
+}
+.dt-segments[data-invalid] {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--destructive) 18%, transparent);
+}
+.dt-segments[data-disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Inline variant (inside DatePicker trigger Group) — no own border,
+ * just inherit from .dt-trigger and lay segments inline. */
+.dt-segments-inline {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none !important;
+  height: auto;
+  min-height: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.dt-seg {
+  padding: 0 1px;
+  border-radius: 2px;
+  outline: none;
+  caret-color: transparent;
+  color: var(--foreground);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.dt-seg[data-placeholder] { color: var(--muted-foreground); }
+.dt-seg[data-readonly] { color: var(--muted-foreground); }
+.dt-seg[data-type="literal"] {
+  color: var(--muted-foreground);
+  padding: 0 1px;
+}
+.dt-seg[data-focused] {
+  background: color-mix(in oklch, var(--primary) 18%, transparent);
+  color: var(--foreground);
+}
+.dt-seg[data-invalid] { color: var(--destructive); }
+
+/* Trigger group for DatePicker / DateRangePicker — same height +
+ * border shell as a standalone DateInput, but lays the segmented
+ * input + calendar button + (range) separator inline. */
+.dt-trigger {
+  display: inline-flex;
+  align-items: center;
+  height: var(--density-element);
+  min-height: 28px;
+  padding: 0 var(--spacing-2);
+  gap: var(--spacing-2);
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  background: var(--input-background);
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  cursor: text;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.dt-trigger:hover { border-color: var(--ring); }
+.dt-trigger[data-focus-within] {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 25%, transparent);
+}
+.dt-trigger[data-invalid] {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--destructive) 18%, transparent);
+}
+.dt-trigger .ico { color: var(--muted-foreground); flex-shrink: 0; }
+.dt-trigger .dt-sep { color: var(--muted-foreground); padding: 0 var(--spacing-1); }
+
+.dt-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+}
+.dt-trigger-btn:hover { background: var(--accent); color: var(--foreground); }
+.dt-trigger-btn[data-focus-visible] {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Popover containing the Calendar. React Aria's <Popover> emits
+ * data-entering / data-exiting / data-placement attributes. */
+.dt-popover {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-3);
+  width: fit-content;
+  outline: none;
+}
