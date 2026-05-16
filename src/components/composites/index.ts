@@ -21,3 +21,10 @@ export type {
   AvatarUploaderLabels,
   AvatarUploadCallbackParams,
 } from "./upload";
+
+export { LocaleInput, LocaleRowInput } from "./locale-input";
+export type {
+  LocaleInputProps,
+  LocaleRowInputProps,
+  LocaleStatus,
+} from "./locale-input";

@@ -8,16 +8,18 @@ import {
 import { cn } from "./cn";
 
 /**
- * Input — text input with Ant-Design-shaped slot props.
+ * Input — text input with affix slots that match the canonical
+ * dxs-kintai `.input-wrap` shell.
  *
- *   <Input prefix={<SearchOutlined />} suffix={<EyeOutlined />} />
+ *   <Input prefix={<SearchIcon />} suffix={<EyeIcon />} />
  *   <Input addonBefore="https://" addonAfter=".com" />
  *   <Input size="large" status="error" />
  *
  * When `prefix` / `suffix` is provided the input is wrapped in a
- * shell `.input-shell` div that keeps the focus ring while the
- * icon sits inside the field. When `addonBefore` / `addonAfter` is
- * provided the input + addons form a connected group.
+ * `.input-wrap` shell that owns the focus ring while the icon sits
+ * inside the field. When `addonBefore` / `addonAfter` is provided the
+ * input + addons form a connected group; the addons render inside the
+ * same `.input-wrap` as canonical `.affix.pre` / `.affix.suf`.
  */
 
 export type InputSize = "small" | "default" | "large";
@@ -58,6 +60,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     className,
     inputStyle,
     type = "text",
+    readOnly,
     ...rest
   },
   ref,
@@ -71,54 +74,55 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       <input
         ref={ref}
         type={type}
-        className={cn("input", sizeClass, statusClass, className)}
+        readOnly={readOnly}
+        className={cn(
+          "input",
+          sizeClass,
+          statusClass,
+          readOnly && "input-readonly",
+          className,
+        )}
         style={inputStyle}
         {...rest}
       />
     );
   }
 
-  // With prefix/suffix: wrap in a shell that owns the focus ring.
-  const shell = (
+  // Affix + addon shell — single canonical `.input-wrap` with
+  // `.affix.pre` / `.affix.suf` per dxs-kintai design system.
+  return (
     <div
       className={cn(
-        "input-shell",
+        "input-wrap",
         sizeClass,
         statusClass,
-        (addonBefore || addonAfter) && "input-shell-grouped",
+        readOnly && "input-readonly",
         className,
       )}
     >
-      {prefix !== undefined && <span className="input-affix">{prefix}</span>}
+      {addonBefore !== undefined && (
+        <span className="affix pre">{addonBefore}</span>
+      )}
+      {prefix !== undefined && <span className="affix pre">{prefix}</span>}
       <input
         ref={ref}
         type={type}
-        className="input-inner"
+        readOnly={readOnly}
         style={inputStyle}
         {...rest}
       />
-      {suffix !== undefined && <span className="input-affix">{suffix}</span>}
-    </div>
-  );
-
-  if (!addonBefore && !addonAfter) return shell;
-
-  return (
-    <div className="input-group">
-      {addonBefore !== undefined && (
-        <span className="input-addon">{addonBefore}</span>
-      )}
-      {shell}
+      {suffix !== undefined && <span className="affix suf">{suffix}</span>}
       {addonAfter !== undefined && (
-        <span className="input-addon">{addonAfter}</span>
+        <span className="affix suf">{addonAfter}</span>
       )}
     </div>
   );
 });
 
 /**
- * Textarea — Ant-Design-shaped: `rows`, `autoSize`, `showCount`,
- * `maxLength`, `resize`, `status`, `size`.
+ * Textarea — `rows`, `autoSize`, `showCount`, `maxLength`, `resize`,
+ * `status`, `size`. Visual contract maps to `.input` from the canonical
+ * dxs-kintai design system.
  *
  *   <Textarea rows={5} resize="vertical" />
  *   <Textarea autoSize={{ minRows: 3, maxRows: 8 }} showCount maxLength={500} />
@@ -130,7 +134,7 @@ export interface TextareaProps
   extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "size"> {
   size?: InputSize;
   status?: InputStatus;
-  /** "none" by default — no resize handle, matches Ant Design. */
+  /** "none" by default — matches the canonical chrome. */
   resize?: TextareaResize;
   /** Auto-grow on content. `true` = grow indefinitely. */
   autoSize?: boolean | { minRows?: number; maxRows?: number };
@@ -158,6 +162,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       style,
       value,
       defaultValue,
+      readOnly,
       ...rest
     },
     ref,
@@ -181,10 +186,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         maxLength={maxLength}
         value={value}
         defaultValue={defaultValue}
+        readOnly={readOnly}
         className={cn(
           "input",
           SIZE_CLASS[size],
           STATUS_CLASS[status],
+          readOnly && "input-readonly",
           !showCount && className,
         )}
         style={mergedStyle}
@@ -200,12 +207,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         : typeof defaultValue === "string"
           ? defaultValue.length
           : 0;
+    const over = typeof maxLength === "number" && current > maxLength;
+    const near =
+      typeof maxLength === "number" && !over && current >= Math.floor(maxLength * 0.9);
 
     return (
       <div className={cn("textarea-with-count", className)}>
         {textareaEl}
-        <span className="textarea-count">
-          {maxLength ? `${current}/${maxLength}` : current}
+        <span className={cn("count", near && "warn", over && "over")}>
+          {maxLength ? `${current} / ${maxLength}` : current}
         </span>
       </div>
     );

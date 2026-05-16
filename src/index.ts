@@ -18,6 +18,7 @@
 // See BRAND.md for the brand contract.
 
 export * from "./components/primitives"
+export * from "./components/composites"
 export * from "./hooks"
 export * from "./data"
 export * from "./i18n"

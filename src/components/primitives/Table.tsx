@@ -9,25 +9,53 @@ import { cn } from "./cn"
 
 /**
  * Table — semantic table wrapped for horizontal scroll. The `<table>`
- * uses the `.table` atom from tokens.css; compose with Header / Body /
- * Row / Head / Cell like shadcn.
+ * uses the canonical `.table` class from the dxs-kintai design system;
+ * compose with Header / Body / Row / Head / Cell like shadcn.
+ *
+ * `density="compact"` swaps 32 / 36 row heights for 28 / 32 and shrinks
+ * font to `text-xs` — the design-system "Table · density compact"
+ * variant from `comp-table.html`.
  */
-export const Table = forwardRef<
-  HTMLTableElement,
-  HTMLAttributes<HTMLTableElement> & { containerClassName?: string }
->(function Table({ className, containerClassName, ...rest }, ref) {
+
+export type TableDensity = "default" | "compact"
+
+export interface TableProps extends HTMLAttributes<HTMLTableElement> {
+  density?: TableDensity
+  containerClassName?: string
+  /** Sticky header — applies `data-sticky` on `<thead>` via CSS hook on the table root. */
+  stickyHeader?: boolean
+}
+
+export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
+  { className, containerClassName, density = "default", stickyHeader, ...rest },
+  ref,
+) {
   return (
     <div className={cn("table-scroll", containerClassName)}>
-      <table ref={ref} className={cn("table", className)} {...rest} />
+      <table
+        ref={ref}
+        data-density={density}
+        data-sticky-header={stickyHeader ? "true" : undefined}
+        className={cn("table", className)}
+        {...rest}
+      />
     </div>
   )
 })
 
-export const TableHeader = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
-  function TableHeader({ className, ...rest }, ref) {
-    return <thead ref={ref} className={cn(className)} {...rest} />
-  },
-)
+export const TableHeader = forwardRef<
+  HTMLTableSectionElement,
+  HTMLAttributes<HTMLTableSectionElement> & { sticky?: boolean }
+>(function TableHeader({ className, sticky, ...rest }, ref) {
+  return (
+    <thead
+      ref={ref}
+      data-sticky={sticky ? "true" : undefined}
+      className={cn(className)}
+      {...rest}
+    />
+  )
+})
 
 export const TableBody = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
   function TableBody({ className, ...rest }, ref) {
@@ -72,5 +100,22 @@ export const TableCaption = forwardRef<HTMLTableCaptionElement, ComponentPropsWi
         {...rest}
       />
     )
+  },
+)
+
+/**
+ * TableToolbar — translucent action band shown above a table while
+ * rows are selected (canonical "table-toolbar" pattern).
+ *
+ *   <TableToolbar>
+ *     <span className="selection-count">3 selected</span>
+ *     <span className="spacer" />
+ *     <Button size="sm" variant="ghost">Archive</Button>
+ *     <Button size="sm" variant="danger">Delete</Button>
+ *   </TableToolbar>
+ */
+export const TableToolbar = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  function TableToolbar({ className, ...rest }, ref) {
+    return <div ref={ref} className={cn("table-toolbar", className)} {...rest} />
   },
 )

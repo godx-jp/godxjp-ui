@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { useState } from "react";
 import {
   Archive,
   ChevronDown,
@@ -10,6 +11,7 @@ import {
   Play,
   Square,
   Trash2,
+  X,
 } from "lucide-react";
 import {
   Table,
@@ -20,6 +22,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableToolbar,
 } from "../components/primitives/Table";
 import {
   DropdownMenu,
@@ -28,11 +31,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../components/primitives/DropdownMenu";
+import { Tabs, TabsList, TabsTrigger } from "../components/primitives/Tabs";
 import { Tag } from "../components/primitives/Tag";
 import { Avatar } from "../components/primitives/Avatar";
 import { Button } from "../components/primitives/Button";
 import { Skeleton } from "../components/primitives/Skeleton";
 import { Empty } from "../components/primitives/Empty";
+import { Checkbox } from "../components/primitives/Checkbox";
 import { Flex, Space, Row, Col } from "../components/primitives/layout";
 import { Card } from "../components/primitives/Card";
 
@@ -44,40 +49,39 @@ const meta: Meta<typeof Table> = {
     docs: {
       description: {
         component: `
-**Table** — semantic data table.
-
-The primitive is a thin shadcn-style wrapper over the native HTML
-table elements; the visual contract lives in the \`.table\` class
-from \`tokens.css\` and a \`.table-scroll\` outer div that handles
-horizontal overflow gracefully.
+**Table** — semantic data table styled with the canonical \`.table\` class
+from the dxs-kintai design system (comp-table.html).
 
 | Export | Renders |
 |---|---|
-| \`Table\` | \`<div.table-scroll><table.table /></div>\` — accepts a \`containerClassName\` prop for the scroll wrapper. |
-| \`TableHeader\` | \`<thead>\` |
+| \`Table\` | \`<div.table-scroll><table.table data-density /></div>\` |
+| \`TableHeader\` | \`<thead>\` (\`sticky\` prop adds \`data-sticky\`) |
 | \`TableBody\` | \`<tbody>\` |
-| \`TableFooter\` | \`<tfoot>\` — typical use is a summary / totals row. |
+| \`TableFooter\` | \`<tfoot>\` |
 | \`TableRow\` | \`<tr>\` |
-| \`TableHead\` | \`<th>\` — header cell. |
-| \`TableCell\` | \`<td>\` — body cell. |
-| \`TableCaption\` | \`<caption>\` — muted-foreground, small. |
+| \`TableHead\` | \`<th>\` |
+| \`TableCell\` | \`<td>\` |
+| \`TableCaption\` | \`<caption>\` |
+| \`TableToolbar\` | \`<div.table-toolbar>\` — translucent bulk-action band above the table |
 
-**Accessibility (WCAG 2.1 AA).** Because the primitives render native
-HTML table elements, assistive tech treats the result as a real
-\`role="table"\` with native row / column semantics. Add a
-\`<TableCaption>\` for screen-reader-friendly titles. For checkbox
-selection columns add an \`aria-label\` to each cell's checkbox.
+**Density.** \`density="default"\` renders 32 px header / 36 px body rows;
+\`density="compact"\` shrinks to 28 / 32 with \`text-xs\`. Use compact for
+audit logs, kintai timesheets, and other dense grids.
 
-**Density.** The \`.table\` class is tuned to the brand bible's 4-px
-grid — header row 36 px, body rows 40 px. Compose with smaller
-content (icons sized 14, tags borderless, avatars size="sm") to keep
-the rhythm.
-
-**Horizontal scroll.** Wide tables overflow horizontally inside the
-\`.table-scroll\` container instead of breaking page layout. No extra
-config required.
+**Accessibility (WCAG 2.1 AA).** Native HTML table semantics. Add a
+\`<TableCaption>\` for screen-reader-friendly titles. For checkbox-selection
+columns, give each cell's checkbox an \`aria-label\`. Selected rows set
+\`aria-selected="true"\`.
         `.trim(),
       },
+    },
+  },
+  argTypes: {
+    density: {
+      control: "inline-radio",
+      options: ["default", "compact"],
+      description: "Row-height density (32/36 vs 28/32).",
+      table: { defaultValue: { summary: "default" } },
     },
   },
 };
@@ -85,7 +89,7 @@ export default meta;
 type Story = StoryObj<typeof Table>;
 
 // ─────────────────────────────────────────────────────────────────────────
-// Data fixtures (realistic — godx-admin sandbox-ish content)
+// Fixtures
 // ─────────────────────────────────────────────────────────────────────────
 
 type Status = "active" | "idle" | "starting" | "failed";
@@ -107,10 +111,230 @@ const SANDBOXES = [
 ];
 
 const STATUS_TAG: Record<Status, { color: string; label: string }> = {
-  active:   { color: "success",   label: "active"   },
-  idle:     { color: "default",   label: "idle"     },
-  starting: { color: "info",      label: "starting" },
-  failed:   { color: "error",     label: "failed"   },
+  active:   { color: "success", label: "active"   },
+  idle:     { color: "default", label: "idle"     },
+  starting: { color: "info",    label: "starting" },
+  failed:   { color: "error",   label: "failed"   },
+};
+
+const TIMESHEET = [
+  { date: "05/01", emp: "EMP-0042", kind: "有給",  hours: "8h",   state: "承認",   stateColor: "success" },
+  { date: "05/02", emp: "EMP-0017", kind: "遅刻",  hours: "0.5h", state: "申請中", stateColor: "warning" },
+  { date: "05/02", emp: "EMP-0009", kind: "出張",  hours: "—",    state: "下書き", stateColor: "default" },
+  { date: "05/03", emp: "EMP-0042", kind: "通常",  hours: "8h",   state: "承認",   stateColor: "success" },
+  { date: "05/03", emp: "EMP-0017", kind: "残業",  hours: "10h",  state: "承認",   stateColor: "success" },
+  { date: "05/04", emp: "EMP-0009", kind: "休暇",  hours: "—",    state: "却下",   stateColor: "error"   },
+  { date: "05/05", emp: "EMP-0042", kind: "通常",  hours: "8h",   state: "承認",   stateColor: "success" },
+];
+
+// ─────────────────────────────────────────────────────────────────────────
+// Density — default
+// ─────────────────────────────────────────────────────────────────────────
+
+export const DefaultDensity: Story = {
+  name: "Density — default (32 / 36)",
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>日付</TableHead>
+          <TableHead>従業員</TableHead>
+          <TableHead>区分</TableHead>
+          <TableHead>時間</TableHead>
+          <TableHead>状態</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {TIMESHEET.map((row, i) => (
+          <TableRow key={i}>
+            <TableCell>{row.date}</TableCell>
+            <TableCell>{row.emp}</TableCell>
+            <TableCell>
+              <Tag color={row.kind === "有給" ? "info" : row.kind === "遅刻" ? "warning" : "default"}>
+                {row.kind}
+              </Tag>
+            </TableCell>
+            <TableCell>{row.hours}</TableCell>
+            <TableCell>
+              <Tag color={row.stateColor}>{row.state}</Tag>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  ),
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// Density — compact
+// ─────────────────────────────────────────────────────────────────────────
+
+export const CompactDensity: Story = {
+  name: "Density — compact (28 / 32)",
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <Table density="compact">
+      <TableHeader>
+        <TableRow>
+          <TableHead>日付</TableHead>
+          <TableHead>従業員</TableHead>
+          <TableHead>区分</TableHead>
+          <TableHead>時間</TableHead>
+          <TableHead>状態</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {TIMESHEET.map((row, i) => (
+          <TableRow key={i}>
+            <TableCell>{row.date}</TableCell>
+            <TableCell>{row.emp}</TableCell>
+            <TableCell>
+              <Tag color={row.kind === "有給" ? "info" : row.kind === "遅刻" ? "warning" : "default"}>
+                {row.kind}
+              </Tag>
+            </TableCell>
+            <TableCell>{row.hours}</TableCell>
+            <TableCell>
+              <Tag color={row.stateColor}>{row.state}</Tag>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  ),
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// Density toggle (controlled)
+// ─────────────────────────────────────────────────────────────────────────
+
+function DensityToggleDemo() {
+  const [density, setDensity] = useState<"default" | "compact">("default");
+  return (
+    <Flex vertical gap="middle">
+      <Tabs value={density} onValueChange={(v) => setDensity(v as "default" | "compact")} variant="pills">
+        <TabsList>
+          <TabsTrigger value="default">Default</TabsTrigger>
+          <TabsTrigger value="compact">Compact</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      <Table density={density}>
+        <TableHeader>
+          <TableRow>
+            <TableHead>従業員</TableHead>
+            <TableHead>メール</TableHead>
+            <TableHead>ロール</TableHead>
+            <TableHead>状態</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {USERS.map((u) => (
+            <TableRow key={u.id}>
+              <TableCell>{u.name}</TableCell>
+              <TableCell>{u.email}</TableCell>
+              <TableCell>{u.role}</TableCell>
+              <TableCell>
+                <Tag color={u.status === "active" ? "success" : "default"}>{u.status}</Tag>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Flex>
+  );
+}
+
+export const DensityToggle: Story = {
+  name: "Density — toggle (controlled)",
+  parameters: { controls: { disable: true } },
+  render: () => <DensityToggleDemo />,
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// Toolbar — bulk action band
+// ─────────────────────────────────────────────────────────────────────────
+
+function ToolbarDemo() {
+  const [selected, setSelected] = useState<Set<string>>(new Set(["sb-001", "sb-002"]));
+  const toggle = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  const clear = () => setSelected(new Set());
+  const allChecked = SANDBOXES.every((s) => selected.has(s.id));
+  return (
+    <Flex vertical gap="small">
+      {selected.size > 0 && (
+        <TableToolbar>
+          <span className="selection-count">{selected.size} selected</span>
+          <span className="spacer" />
+          <Button size="sm" variant="ghost">
+            <Archive size={13} /> Archive
+          </Button>
+          <Button size="sm" variant="ghost">
+            <ExternalLink size={13} /> Export
+          </Button>
+          <Button size="sm" variant="danger">
+            <Trash2 size={13} /> Destroy
+          </Button>
+          <Button size="sm" variant="ghost" onClick={clear} aria-label="Clear selection">
+            <X size={13} />
+          </Button>
+        </TableToolbar>
+      )}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead style={{ width: 40 }}>
+              <Checkbox
+                checked={allChecked ? true : selected.size > 0 ? "indeterminate" : false}
+                onCheckedChange={(c) =>
+                  setSelected(c ? new Set(SANDBOXES.map((s) => s.id)) : new Set())
+                }
+                aria-label="Select all"
+              />
+            </TableHead>
+            <TableHead>Sandbox</TableHead>
+            <TableHead>Project</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Last activity</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {SANDBOXES.map((sb) => {
+            const isSel = selected.has(sb.id);
+            return (
+              <TableRow key={sb.id} aria-selected={isSel}>
+                <TableCell>
+                  <Checkbox
+                    checked={isSel}
+                    onCheckedChange={() => toggle(sb.id)}
+                    aria-label={`Select ${sb.name}`}
+                  />
+                </TableCell>
+                <TableCell>{sb.name}</TableCell>
+                <TableCell>{sb.project}</TableCell>
+                <TableCell>
+                  <Tag color={STATUS_TAG[sb.status].color}>{STATUS_TAG[sb.status].label}</Tag>
+                </TableCell>
+                <TableCell>{sb.last}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </Flex>
+  );
+}
+
+export const WithToolbar: Story = {
+  name: "States — selected rows + bulk-action toolbar",
+  parameters: { controls: { disable: true } },
+  render: () => <ToolbarDemo />,
 };
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -173,7 +397,7 @@ export const WithCaption: Story = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// With footer total
+// Footer total
 // ─────────────────────────────────────────────────────────────────────────
 
 export const WithFooter: Story = {
@@ -181,10 +405,10 @@ export const WithFooter: Story = {
   parameters: { controls: { disable: true } },
   render: () => {
     const rows = [
-      { item: "Sandbox hours",   qty: 312,  rate: 0.04 },
-      { item: "Storage GB · mo", qty: 48,   rate: 0.02 },
-      { item: "Egress GB",       qty: 16,   rate: 0.05 },
-      { item: "Vault secrets",   qty: 5,    rate: 0.00 },
+      { item: "Sandbox hours",   qty: 312, rate: 0.04 },
+      { item: "Storage GB · mo", qty: 48,  rate: 0.02 },
+      { item: "Egress GB",       qty: 16,  rate: 0.05 },
+      { item: "Vault secrets",   qty: 5,   rate: 0.00 },
     ];
     const total = rows.reduce((acc, r) => acc + r.qty * r.rate, 0);
     return (
@@ -209,12 +433,8 @@ export const WithFooter: Story = {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3} style={{ textAlign: "right", fontWeight: 600 }}>
-              Total
-            </TableCell>
-            <TableCell style={{ textAlign: "right", fontWeight: 600 }}>
-              ${total.toFixed(2)}
-            </TableCell>
+            <TableCell colSpan={3} style={{ textAlign: "right" }}>Total</TableCell>
+            <TableCell style={{ textAlign: "right" }}>${total.toFixed(2)}</TableCell>
           </TableRow>
         </TableFooter>
       </Table>
@@ -240,18 +460,7 @@ export const SelectedRow: Story = {
       </TableHeader>
       <TableBody>
         {SANDBOXES.slice(0, 4).map((sb, i) => (
-          <TableRow
-            key={sb.id}
-            aria-selected={i === 1 ? "true" : undefined}
-            style={
-              i === 1
-                ? {
-                    background: "color-mix(in oklch, var(--primary) 8%, transparent)",
-                    outline: "1px solid color-mix(in oklch, var(--primary) 35%, transparent)",
-                  }
-                : undefined
-            }
-          >
+          <TableRow key={sb.id} aria-selected={i === 1}>
             <TableCell>{sb.name}</TableCell>
             <TableCell>{sb.project}</TableCell>
             <TableCell>
@@ -273,16 +482,8 @@ export const StickyHeader: Story = {
   parameters: { controls: { disable: true } },
   render: () => (
     <div style={{ maxHeight: 320, overflowY: "auto", border: "1px solid var(--border)", borderRadius: "var(--radius-md)" }}>
-      <Table>
-        <TableHeader
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 1,
-            background: "var(--surface-2)",
-            boxShadow: "inset 0 -1px 0 var(--border)",
-          }}
-        >
+      <Table stickyHeader>
+        <TableHeader sticky>
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Project</TableHead>
@@ -311,7 +512,7 @@ export const StickyHeader: Story = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// Rich cells: Avatar + name + status + actions
+// Rich cells: Avatar + name + actions
 // ─────────────────────────────────────────────────────────────────────────
 
 export const RichCells: Story = {
@@ -357,7 +558,7 @@ export const RichCells: Story = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// Loading state — Skeleton in cells
+// Loading
 // ─────────────────────────────────────────────────────────────────────────
 
 export const Loading: Story = {
@@ -420,7 +621,7 @@ export const EmptyState: Story = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// Responsive (horizontal overflow)
+// Responsive (horizontal scroll)
 // ─────────────────────────────────────────────────────────────────────────
 
 export const Responsive: Story = {
@@ -470,7 +671,7 @@ export const AllVariants: Story = {
   render: () => (
     <Row gutter={[16, 16]}>
       <Col xs={24} md={12}>
-        <Card title="Basic" size="small">
+        <Card title="Default density" size="small">
           <Table>
             <TableHeader>
               <TableRow>
@@ -490,26 +691,19 @@ export const AllVariants: Story = {
         </Card>
       </Col>
       <Col xs={24} md={12}>
-        <Card title="With tags + avatars" size="small">
-          <Table>
+        <Card title="Compact density" size="small">
+          <Table density="compact">
             <TableHeader>
               <TableRow>
-                <TableHead>Member</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Role</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {USERS.slice(0, 3).map((u) => (
                 <TableRow key={u.id}>
-                  <TableCell>
-                    <Space size="small" align="center">
-                      <Avatar size="sm" color={u.color}>{u.name.charAt(0)}</Avatar>
-                      <span>{u.name}</span>
-                    </Space>
-                  </TableCell>
-                  <TableCell>
-                    <Tag color={u.status === "active" ? "success" : "default"}>{u.status}</Tag>
-                  </TableCell>
+                  <TableCell>{u.name}</TableCell>
+                  <TableCell>{u.role}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -560,7 +754,7 @@ export const AllVariants: Story = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// Realistic composition — Sandbox list with DropdownMenu actions
+// Realistic composition — Sandbox list
 // ─────────────────────────────────────────────────────────────────────────
 
 export const SandboxList: Story = {

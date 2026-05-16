@@ -3,9 +3,11 @@ import { useState } from "react";
 import {
   Activity,
   Bell,
+  Calendar as CalendarIcon,
   CreditCard,
   GitPullRequest,
   KeyRound,
+  List,
   Lock,
   Mail,
   MessageSquare,
@@ -37,33 +39,35 @@ const meta: Meta<typeof Tabs> = {
         component: `
 **Tabs** — segmented content switcher backed by Radix UI Tabs.
 
-The exports are thin wrappers around \`@radix-ui/react-tabs\`:
+The visual contract follows the dxs-kintai design system, with two variants:
 
-| Export | Wraps | Token class |
+| Variant | Token classes | Usage |
 |---|---|---|
-| \`Tabs\` | \`Root\` | — (passthrough — defines the controlled / uncontrolled state) |
-| \`TabsList\` | \`List\` | \`.tabs\` |
-| \`TabsTrigger\` | \`Trigger\` | \`.tab\` |
-| \`TabsContent\` | \`Content\` | — (passthrough) |
+| \`line\` (default) | \`.tabs\` / \`.tab\` | Top-level page tabs (radix-style underline). |
+| \`pills\` | \`.tabs-pills\` / \`.tabs-pill\` | Segmented control (day / week / month). |
 
-**Controlled vs uncontrolled.** Pass \`defaultValue="<tab>"\` for
-uncontrolled state, or \`value\` + \`onValueChange\` to drive the tab
-from the parent — same Radix shape, same API.
-
-**Orientation.** Radix Tabs supports horizontal (default) and
-vertical. \`<Tabs orientation="vertical">\` flips the focus ring
-behaviour (Up/Down instead of Left/Right). The token \`.tabs\` class
-is horizontal by default; vertical layouts compose it inside a
-\`<Flex>\` with \`vertical\` set.
+| Export | Wraps |
+|---|---|
+| \`Tabs\` | \`Root\` — accepts \`variant\` |
+| \`TabsList\` | \`List\` — picks the class from the variant context |
+| \`TabsTrigger\` | \`Trigger\` |
+| \`TabsContent\` | \`Content\` |
 
 **Accessibility (WCAG 2.1 AA)** — courtesy of Radix:
-
-- \`<TabsList>\` renders \`role="tablist"\`.
-- \`<TabsTrigger>\` renders \`role="tab"\` with \`aria-selected\` mirrored from \`data-state\` and \`tabindex\` managed across the list.
-- \`<TabsContent>\` renders \`role="tabpanel"\` with \`aria-labelledby\` wired automatically.
-- Keyboard: Left / Right (or Up / Down vertically) move focus across triggers; Home / End jump to first / last; Enter or Space activates.
+\`<TabsList>\` renders \`role="tablist"\`, \`<TabsTrigger>\` renders \`role="tab"\`,
+\`<TabsContent>\` renders \`role="tabpanel"\` with \`aria-labelledby\` wired automatically.
+Keyboard: arrow keys move focus across triggers; Home / End jump to first / last;
+Enter or Space activates.
         `.trim(),
       },
+    },
+  },
+  argTypes: {
+    variant: {
+      control: "inline-radio",
+      options: ["line", "pills"],
+      description: "Visual variant — line (default) or segmented pills.",
+      table: { defaultValue: { summary: "line" } },
     },
   },
 };
@@ -71,14 +75,13 @@ export default meta;
 type Story = StoryObj<typeof Tabs>;
 
 // ─────────────────────────────────────────────────────────────────────────
-// Basic
+// Playground
 // ─────────────────────────────────────────────────────────────────────────
 
-export const Default: Story = {
-  name: "Default — 3 horizontal tabs",
-  parameters: { controls: { disable: true } },
-  render: () => (
-    <Tabs defaultValue="overview" style={{ width: 520 }}>
+export const Playground: Story = {
+  args: { variant: "line", defaultValue: "overview" },
+  render: (args) => (
+    <Tabs {...args} style={{ width: 520 }}>
       <TabsList>
         <TabsTrigger value="overview">Overview</TabsTrigger>
         <TabsTrigger value="activity">Activity</TabsTrigger>
@@ -97,23 +100,99 @@ export const Default: Story = {
   ),
 };
 
-export const TwoTabs: Story = {
-  name: "Default — 2-tab editor / preview",
+// ─────────────────────────────────────────────────────────────────────────
+// Line variant — canonical radix-style underline
+// ─────────────────────────────────────────────────────────────────────────
+
+export const Line: Story = {
+  name: "Line — radix-style underline",
   parameters: { controls: { disable: true } },
   render: () => (
-    <Tabs defaultValue="edit" style={{ width: 480 }}>
+    <Tabs defaultValue="calendar" variant="line" style={{ width: 520 }}>
       <TabsList>
-        <TabsTrigger value="edit">Edit</TabsTrigger>
-        <TabsTrigger value="preview">Preview</TabsTrigger>
+        <TabsTrigger value="calendar">
+          <CalendarIcon size={14} /> カレンダー
+        </TabsTrigger>
+        <TabsTrigger value="list">
+          <List size={14} /> リスト
+        </TabsTrigger>
+        <TabsTrigger value="requests">
+          変更申請
+          <Badge variant="error" style={{ marginLeft: 6 }}>2</Badge>
+        </TabsTrigger>
       </TabsList>
-      <TabsContent value="edit" style={{ paddingTop: 16 }}>
-        Markdown editor — write release notes here.
+      <TabsContent value="calendar" style={{ paddingTop: 16, color: "var(--muted-foreground)", fontSize: 13 }}>
+        タブ内容 (カレンダーグリッド) — 個別データを表示。
       </TabsContent>
-      <TabsContent value="preview" style={{ paddingTop: 16 }}>
-        Rendered preview — what readers will see.
+      <TabsContent value="list" style={{ paddingTop: 16, color: "var(--muted-foreground)", fontSize: 13 }}>
+        タブ内容 (リスト) — 行ごとに勤怠記録を表示。
+      </TabsContent>
+      <TabsContent value="requests" style={{ paddingTop: 16, color: "var(--muted-foreground)", fontSize: 13 }}>
+        タブ内容 (変更申請) — 承認待ち 2 件。
       </TabsContent>
     </Tabs>
   ),
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// Pills variant — segmented control
+// ─────────────────────────────────────────────────────────────────────────
+
+export const Pills: Story = {
+  name: "Pills — segmented control",
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <Flex vertical gap="middle" align="start">
+      <Tabs defaultValue="day" variant="pills">
+        <TabsList>
+          <TabsTrigger value="day">日</TabsTrigger>
+          <TabsTrigger value="week">週</TabsTrigger>
+          <TabsTrigger value="month">月</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      <Tabs defaultValue="active" variant="pills">
+        <TabsList>
+          <TabsTrigger value="active">Active</TabsTrigger>
+          <TabsTrigger value="archived">Archived</TabsTrigger>
+          <TabsTrigger value="all">All</TabsTrigger>
+        </TabsList>
+      </Tabs>
+    </Flex>
+  ),
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// Segmented control — day / week / month with content
+// ─────────────────────────────────────────────────────────────────────────
+
+function SegmentedControlDemo() {
+  const [range, setRange] = useState("day");
+  const label = range === "day" ? "本日" : range === "week" ? "今週" : "今月";
+  return (
+    <Flex vertical gap="middle" style={{ width: 480 }}>
+      <Tabs value={range} onValueChange={setRange} variant="pills">
+        <TabsList>
+          <TabsTrigger value="day">日</TabsTrigger>
+          <TabsTrigger value="week">週</TabsTrigger>
+          <TabsTrigger value="month">月</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      <Card title={`勤怠 — ${label}`} size="small">
+        <Flex justify="space-between">
+          <span style={{ color: "var(--muted-foreground)", fontSize: 13 }}>合計時間</span>
+          <span style={{ fontWeight: 500 }}>
+            {range === "day" ? "8h 12m" : range === "week" ? "39h 06m" : "168h 32m"}
+          </span>
+        </Flex>
+      </Card>
+    </Flex>
+  );
+}
+
+export const SegmentedControl: Story = {
+  name: "Pills — segmented day / week / month",
+  parameters: { controls: { disable: true } },
+  render: () => <SegmentedControlDemo />,
 };
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -202,9 +281,7 @@ export const WithBadges: Story = {
           <GitPullRequest size={14} /> PRs
           <Badge variant="info" style={{ marginLeft: 6 }}>7</Badge>
         </TabsTrigger>
-        <TabsTrigger value="done">
-          Done
-        </TabsTrigger>
+        <TabsTrigger value="done">Done</TabsTrigger>
       </TabsList>
       <TabsContent value="inbox" style={{ paddingTop: 16 }}>
         12 new notifications since 2026-05-15.
@@ -297,24 +374,16 @@ export const Vertical: Story = {
         </TabsList>
         <div style={{ flex: 1, minWidth: 280 }}>
           <TabsContent value="profile">
-            <Card title="Profile" size="small">
-              Display name, locale, time zone.
-            </Card>
+            <Card title="Profile" size="small">Display name, locale, time zone.</Card>
           </TabsContent>
           <TabsContent value="security">
-            <Card title="Security" size="small">
-              Sessions, 2FA, recovery codes.
-            </Card>
+            <Card title="Security" size="small">Sessions, 2FA, recovery codes.</Card>
           </TabsContent>
           <TabsContent value="billing">
-            <Card title="Billing" size="small">
-              Plan: Community. Next invoice: 2026-06-01.
-            </Card>
+            <Card title="Billing" size="small">Plan: Community. Next invoice: 2026-06-01.</Card>
           </TabsContent>
           <TabsContent value="audit">
-            <Card title="Audit log" size="small">
-              13 events in the last 7 days.
-            </Card>
+            <Card title="Audit log" size="small">13 events in the last 7 days.</Card>
           </TabsContent>
         </div>
       </Flex>
@@ -323,46 +392,7 @@ export const Vertical: Story = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// Scrollable content
-// ─────────────────────────────────────────────────────────────────────────
-
-export const ScrollableContent: Story = {
-  name: "Variants — scrollable content",
-  parameters: { controls: { disable: true } },
-  render: () => (
-    <Tabs defaultValue="long" style={{ width: 560 }}>
-      <TabsList>
-        <TabsTrigger value="long">Long log</TabsTrigger>
-        <TabsTrigger value="short">Short</TabsTrigger>
-      </TabsList>
-      <TabsContent
-        value="long"
-        style={{
-          marginTop: 16,
-          maxHeight: 240,
-          overflowY: "auto",
-          padding: 12,
-          background: "var(--surface-2)",
-          borderRadius: "var(--radius-md)",
-          fontFamily: "var(--font-mono)",
-          fontSize: 12,
-        }}
-      >
-        {Array.from({ length: 40 }).map((_, i) => (
-          <div key={i} style={{ padding: "2px 0" }}>
-            2026-05-15T09:{String(12 + (i % 48)).padStart(2, "0")}:30 INFO sandbox-service plan-38-v15 step {i + 1} OK
-          </div>
-        ))}
-      </TabsContent>
-      <TabsContent value="short" style={{ paddingTop: 16 }}>
-        Just a few lines here.
-      </TabsContent>
-    </Tabs>
-  ),
-};
-
-// ─────────────────────────────────────────────────────────────────────────
-// Nested tabs
+// Nested
 // ─────────────────────────────────────────────────────────────────────────
 
 export const Nested: Story = {
@@ -379,7 +409,7 @@ export const Nested: Story = {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="account" style={{ paddingTop: 16 }}>
-        <Tabs defaultValue="profile">
+        <Tabs defaultValue="profile" variant="pills">
           <TabsList>
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
@@ -404,7 +434,7 @@ export const Nested: Story = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// Showcase
+// All variants showcase
 // ─────────────────────────────────────────────────────────────────────────
 
 export const AllVariants: Story = {
@@ -413,7 +443,7 @@ export const AllVariants: Story = {
   render: () => (
     <Row gutter={[16, 16]}>
       <Col xs={24} md={12}>
-        <Card title="Basic" size="small">
+        <Card title="Line — basic" size="small">
           <Tabs defaultValue="a">
             <TabsList>
               <TabsTrigger value="a">A</TabsTrigger>
@@ -423,6 +453,17 @@ export const AllVariants: Story = {
             <TabsContent value="a" style={{ paddingTop: 12 }}>Panel A</TabsContent>
             <TabsContent value="b" style={{ paddingTop: 12 }}>Panel B</TabsContent>
             <TabsContent value="c" style={{ paddingTop: 12 }}>Panel C</TabsContent>
+          </Tabs>
+        </Card>
+      </Col>
+      <Col xs={24} md={12}>
+        <Card title="Pills — segmented" size="small">
+          <Tabs defaultValue="week" variant="pills">
+            <TabsList>
+              <TabsTrigger value="day">日</TabsTrigger>
+              <TabsTrigger value="week">週</TabsTrigger>
+              <TabsTrigger value="month">月</TabsTrigger>
+            </TabsList>
           </Tabs>
         </Card>
       </Col>
@@ -456,26 +497,12 @@ export const AllVariants: Story = {
           </Tabs>
         </Card>
       </Col>
-      <Col xs={24} md={12}>
-        <Card title="With disabled" size="small">
-          <Tabs defaultValue="open">
-            <TabsList>
-              <TabsTrigger value="open">Open</TabsTrigger>
-              <TabsTrigger value="closed">Closed</TabsTrigger>
-              <TabsTrigger value="archived" disabled>Archived</TabsTrigger>
-            </TabsList>
-            <TabsContent value="open" style={{ paddingTop: 12 }}>Open panel</TabsContent>
-            <TabsContent value="closed" style={{ paddingTop: 12 }}>Closed panel</TabsContent>
-            <TabsContent value="archived" style={{ paddingTop: 12 }}>Archived panel</TabsContent>
-          </Tabs>
-        </Card>
-      </Col>
     </Row>
   ),
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// Realistic composition — Settings page with sub-tabs
+// Settings page composition
 // ─────────────────────────────────────────────────────────────────────────
 
 export const SettingsPage: Story = {
@@ -499,7 +526,6 @@ export const SettingsPage: Story = {
             <Activity size={14} /> Activity
           </TabsTrigger>
         </TabsList>
-
         <TabsContent value="profile" style={{ paddingTop: 16 }}>
           <Flex vertical gap="middle">
             <Space size="middle" align="center">
@@ -518,7 +544,6 @@ export const SettingsPage: Story = {
             </Space>
           </Flex>
         </TabsContent>
-
         <TabsContent value="security" style={{ paddingTop: 16 }}>
           <Flex vertical gap="middle">
             <Card variant="filled" size="small">
@@ -532,60 +557,20 @@ export const SettingsPage: Story = {
                 <Tag color="success">on</Tag>
               </Flex>
             </Card>
-            <Card variant="filled" size="small">
-              <Flex justify="space-between" align="center">
-                <Flex vertical gap={2}>
-                  <span style={{ fontWeight: 500 }}>Recovery codes</span>
-                  <span style={{ fontSize: 12, color: "var(--muted-foreground)" }}>
-                    Last regenerated 2026-04-22 — regenerate recommended
-                  </span>
-                </Flex>
-                <Button size="sm" variant="secondary">Regenerate</Button>
-              </Flex>
-            </Card>
-            <Card variant="filled" size="small">
-              <Flex justify="space-between" align="center">
-                <Flex vertical gap={2}>
-                  <span style={{ fontWeight: 500 }}>Active sessions</span>
-                  <span style={{ fontSize: 12, color: "var(--muted-foreground)" }}>
-                    3 — Tokyo (this device), Osaka, Singapore
-                  </span>
-                </Flex>
-                <Button size="sm" variant="ghost">Review</Button>
-              </Flex>
-            </Card>
           </Flex>
         </TabsContent>
-
         <TabsContent value="notifications" style={{ paddingTop: 16 }}>
           <Flex vertical gap="middle">
             <Flex justify="space-between" align="center">
               <span>PR review requests</span>
               <Tag color="success">email + push</Tag>
             </Flex>
-            <Separator />
-            <Flex justify="space-between" align="center">
-              <span>Deploy succeeded</span>
-              <Tag>email</Tag>
-            </Flex>
-            <Separator />
-            <Flex justify="space-between" align="center">
-              <span>Chat mentions</span>
-              <Tag color="success">push</Tag>
-            </Flex>
           </Flex>
         </TabsContent>
-
         <TabsContent value="activity" style={{ paddingTop: 16 }}>
           <Flex vertical gap="small">
             <span style={{ fontSize: 13 }}>
               2026-05-15 09:12 — Created sandbox <code>sb-yuki-feat-forge-shell-align</code>
-            </span>
-            <span style={{ fontSize: 13 }}>
-              2026-05-15 08:47 — Merged PR #1475 into <code>dev</code>
-            </span>
-            <span style={{ fontSize: 13 }}>
-              2026-05-14 18:03 — Rotated personal access token
             </span>
           </Flex>
         </TabsContent>

@@ -41,6 +41,7 @@ export type { InputProps, TextareaProps, InputSize, InputStatus, TextareaResize 
 export { Label } from "./Label"
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "./Tabs"
+export type { TabsProps, TabsVariant } from "./Tabs"
 
 export { Avatar } from "./Avatar"
 export type { AvatarProps, AvatarShape, AvatarSize, AvatarSizeToken } from "./Avatar"
@@ -151,7 +152,9 @@ export {
   TableHead,
   TableHeader,
   TableRow,
+  TableToolbar,
 } from "./Table"
+export type { TableProps, TableDensity } from "./Table"
 
 export { TimeInput } from "./TimeInput"
 export type { TimeInputProps } from "./TimeInput"
