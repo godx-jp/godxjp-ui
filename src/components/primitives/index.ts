@@ -141,3 +141,9 @@ export type { ComboboxContentProps } from "./combobox"
 
 export { Toaster, toast } from "./toaster"
 export type { ToasterProps } from "./toaster"
+
+export { Skeleton } from "./Skeleton"
+export type { SkeletonProps } from "./Skeleton"
+
+export { Breadcrumb, BreadcrumbItem, BreadcrumbSep } from "./Breadcrumb"
+export type { BreadcrumbProps, BreadcrumbItemProps } from "./Breadcrumb"
