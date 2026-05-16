@@ -1,21 +1,21 @@
+import React from "react";
 import type { Preview } from "@storybook/react";
 
 import "../src/tokens/tailwind.css";
+import "./preview.css";
 
 const preview: Preview = {
   parameters: {
+    layout: "padded",
     controls: {
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
     },
-    backgrounds: {
-      default: "app",
-      values: [
-        { name: "app", value: "var(--background)" },
-        { name: "surface", value: "var(--surface-2)" },
-      ],
+    backgrounds: { disable: true },
+    docs: {
+      toc: { headingSelector: "h2, h3" },
     },
   },
   globalTypes: {
@@ -61,20 +61,44 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
+    accent: {
+      name: "Accent",
+      description: "Primary accent palette",
+      defaultValue: "blue",
+      toolbar: {
+        icon: "paintbrush",
+        items: [
+          { value: "blue", title: "Blue" },
+          { value: "green", title: "Green" },
+          { value: "violet", title: "Violet" },
+          { value: "amber", title: "Amber" },
+          { value: "rose", title: "Rose" },
+          { value: "slate", title: "Slate" },
+        ],
+        dynamicTitle: true,
+      },
+    },
   },
   decorators: [
     (Story, context) => {
-      const { theme, tenant, density } = context.globals as {
+      const { theme, tenant, density, accent } = context.globals as {
         theme: string;
         tenant: string;
         density: string;
+        accent: string;
       };
       if (typeof document !== "undefined") {
-        document.documentElement.dataset.theme = theme;
-        document.documentElement.dataset.tenant = tenant;
-        document.documentElement.dataset.density = density;
+        const root = document.documentElement;
+        root.dataset.theme = theme;
+        root.dataset.tenant = tenant;
+        root.dataset.density = density;
+        root.dataset.accent = accent;
       }
-      return Story();
+      return (
+        <div className="sb-stage">
+          <Story />
+        </div>
+      );
     },
   ],
 };

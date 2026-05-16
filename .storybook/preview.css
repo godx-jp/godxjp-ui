@@ -1,0 +1,56 @@
+/* Storybook canvas chrome — gives every story a godx-shaped stage
+ * (background, padding, min-height, font) so primitives don't render
+ * flat against the iframe edge. Mimics PageContent without locking
+ * width — stories that need a max-width can use Card / Row / Col
+ * themselves. */
+
+html,
+body,
+#storybook-root {
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans-jp);
+  min-height: 100vh;
+}
+
+.sb-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--density-section);
+  padding: var(--density-page);
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Docs page chrome — Storybook's docs renderer wraps each story in a
+ * white card; recolour to the godx surface palette so it matches the
+ * shell. */
+
+.sbdocs-wrapper,
+.sbdocs-preview,
+.sb-show-main {
+  background: var(--background) !important;
+}
+
+.sbdocs-content {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.docs-story {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* Storybook injects an inline button toolbar above each docs story
+ * (zoom, reset, copy). Soften it into the surface so it doesn't fight
+ * the brand palette. */
+.docblock-source {
+  background: var(--surface-3) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+}
