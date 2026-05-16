@@ -1,0 +1,108 @@
+/*
+ * @godxjp/ui — Tailwind v4 entry.
+ *
+ * Services / apps consume this file as their ONE CSS import:
+ *
+ *   /* main.tsx */
+ *   import "@godxjp/ui/tailwind.css"
+ *
+ * Or as a single `@import` in a service-local `theme.css` when the
+ * service genuinely needs per-tenant token overrides.
+ *
+ * What this file does:
+ *   1. Pull Tailwind v4 utilities (`@import "tailwindcss"`).
+ *   2. Pull the design tokens (custom CSS properties).
+ *   3. Map the tokens into Tailwind's typed theme system via
+ *      `@theme inline { ... }` so utility classes resolve.
+ *   4. Provide the `dark` custom-variant (`[data-theme="dark"]`).
+ *   5. Default `body` + base layer rules.
+ *
+ * What services do NOT need to write:
+ *   - The `@theme inline { ... }` mapping. It lives here, once.
+ *   - The Tailwind import.
+ *   - The dark-variant declaration.
+ *   - The base `body { background: …; color: …; font: … }` rules.
+ *
+ * If a service needs to override a token (per-tenant brand), it
+ * ships `services/<slug>-service/frontend/src/theme.css` that
+ * imports this file then redeclares the overridden CSS custom
+ * properties scoped to `[data-tenant="<id>"]`.
+ *
+ * See new-docs/12-frontend-architecture.md for the binding rule.
+ */
+
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./tokens-ext.css";
+
+@custom-variant dark (&:is([data-theme="dark"] *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+
+  --spacing-page: var(--density-page);
+  --spacing-section: var(--density-section);
+  --spacing-element: var(--density-element);
+  --spacing-card: var(--density-card);
+
+  --font-size-page-title: var(--density-page-title);
+  --font-sans: var(--font-sans-jp);
+  --radius-lg: var(--radius);
+}
+
+@layer base {
+  :root {
+    --density-spacing: 4px;
+  }
+
+  [data-density="compact"]     { --density-spacing: 2px; }
+  [data-density="default"]     { --density-spacing: 3px; }
+  [data-density="comfortable"] { --density-spacing: 4px; }
+
+  /* Accent palettes — operator-selected via Tweaks panel. */
+  [data-accent="blue"]   { --primary: oklch(56% 0.13 246); --primary-foreground: oklch(98% 0.01 246); --ring: oklch(62% 0.12 246); }
+  [data-accent="green"]  { --primary: oklch(58% 0.12 158); --primary-foreground: oklch(98% 0.01 158); --ring: oklch(63% 0.11 158); }
+  [data-accent="violet"] { --primary: oklch(56% 0.12 302); --primary-foreground: oklch(98% 0.01 302); --ring: oklch(62% 0.11 302); }
+  [data-accent="amber"]  { --primary: oklch(67% 0.12 75);  --primary-foreground: oklch(18% 0.04 75);  --ring: oklch(72% 0.11 75); }
+  [data-accent="rose"]   { --primary: oklch(58% 0.12 18);  --primary-foreground: oklch(98% 0.01 18);  --ring: oklch(64% 0.1 18); }
+  [data-accent="slate"]  { --primary: oklch(48% 0.04 250); --primary-foreground: oklch(98% 0.01 250); --ring: oklch(58% 0.04 250); }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    margin: 0;
+    font-size: var(--text-base);
+    line-height: var(--leading-body);
+  }
+
+  a { color: inherit; }
+}

@@ -42,7 +42,8 @@ export type ForgeProject = {
 export type ForgeProduct = {
   id: string;
   name: string;
-  tenant: "godx" | "kintai" | "tempo" | "betoya" | "restaurant";
+  /** Tenant slug — matches `[data-tenant]` attribute. Operator-defined; not a closed enum. */
+  tenant: string;
   role: string;
   desc: string;
   /** Brand color in OKLCH — used as the sidebar logo mark + accent. */

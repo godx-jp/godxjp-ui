@@ -82,7 +82,9 @@ export function TweaksPanel({ open, onOpenChange }: TweaksPanelProps) {
                 onChange={(v) => setTweak("locale", v as ForgeLocale)}
                 options={SUPPORTED_LOCALES.map((code) => ({
                   value: code,
-                  label: { ja: "日本語", en: "English", vi: "Tiếng Việt" }[code],
+                  label: (
+                    { ja: "日本語", en: "English", vi: "Tiếng Việt", fil: "Filipino" } as Record<string, string>
+                  )[code] ?? code,
                 }))}
               />
             </Section>
