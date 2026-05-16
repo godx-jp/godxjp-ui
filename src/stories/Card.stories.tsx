@@ -928,6 +928,938 @@ export const Hoverable: Story = {
   ),
 };
 
+// ════════════════════════════════════════════════════════════════════
+// A · DATA DISPLAY (continued)
+// ════════════════════════════════════════════════════════════════════
+
+export const A_StatSparkline: Story = {
+  name: "A4 · Stat + sparkline",
+  render: () => (
+    <Card padding="default">
+      <div className="row-between">
+        <div>
+          <div style={muted}>売上 (今週)</div>
+          <div className="stat" style={{ marginTop: 4 }}>¥ 4.82M</div>
+          <div style={{ ...muted, marginTop: 2 }}>
+            先週 ¥ 4.55M · <span className="delta up" style={{ padding: 0 }}>+5.9%</span>
+          </div>
+        </div>
+        <svg className="spark" style={{ width: 120, height: 48 }} viewBox="0 0 120 48" preserveAspectRatio="none" aria-hidden>
+          <path d="M0,32 L15,28 L30,30 L45,22 L60,18 L75,24 L90,16 L105,10 L120,12"
+                fill="none" stroke="var(--primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M0,32 L15,28 L30,30 L45,22 L60,18 L75,24 L90,16 L105,10 L120,12 L120,48 L0,48 Z"
+                fill="color-mix(in oklch, var(--primary) 10%, transparent)" />
+          <circle cx="120" cy="12" r="3" fill="var(--primary)" />
+        </svg>
+      </div>
+    </Card>
+  ),
+};
+
+export const A_Bars: Story = {
+  name: "A5 · Bars chart",
+  render: () => (
+    <Card padding="none">
+      <CardHeader block title="週次 · 実働 vs 所定" meta="第 20 週 · 5/12 — 5/18" />
+      <CardBody block>
+        <div className="bars" aria-hidden>
+          <i style={{ height: "62%" }} />
+          <i style={{ height: "78%" }} />
+          <i style={{ height: "54%" }} />
+          <i style={{ height: "88%" }} />
+          <i className="on" style={{ height: "71%" }} />
+          <i style={{ height: "40%", background: "color-mix(in oklch, var(--border) 80%, transparent)" }} />
+          <i style={{ height: "0%" }} />
+        </div>
+        <div className="row-between" style={{ marginTop: 6, fontSize: "var(--text-2xs)", color: "var(--muted-foreground)", fontVariantNumeric: "tabular-nums" }}>
+          <span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span><span>日</span>
+        </div>
+      </CardBody>
+      <CardFooter block>
+        <span className="dot primary" /><span>実働</span>
+        <span className="dot" style={{ background: "var(--border)", marginLeft: 10 }} /><span>未来</span>
+        <span style={{ marginLeft: "auto", color: "var(--foreground)", fontWeight: 500 }}>合計 33.2 h</span>
+      </CardFooter>
+    </Card>
+  ),
+};
+
+export const A_ProgressQuota: Story = {
+  name: "A6 · Progress / quota",
+  render: () => (
+    <Row gutter={[14, 14]}>
+      <Col span={12}>
+        <Card padding="default">
+          <div className="row-between" style={{ marginBottom: 8 }}>
+            <div style={{ fontSize: "var(--card-title-size)", fontWeight: 500 }}>ストレージ使用量</div>
+            <span className="mono" style={muted}>42.8 / 50 GB</span>
+          </div>
+          <div className="prog warning"><i style={{ width: "85%" }} /></div>
+          <div style={{ ...muted, marginTop: 6, display: "flex", gap: 6, alignItems: "center" }}>
+            <AlertTriangle size={14} aria-hidden /> 残り 7.2 GB · <a href="#" style={{ color: "var(--primary)" }}>プラン変更</a>
+          </div>
+        </Card>
+      </Col>
+      <Col span={12}>
+        <Card padding="default">
+          <div className="row-between" style={{ marginBottom: 10 }}>
+            <div style={{ fontSize: "var(--card-title-size)", fontWeight: 500 }}>月次予算進捗</div>
+            <Tag>5月 17日</Tag>
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 6, marginBottom: 8 }}>
+            <div className="stat" style={{ fontSize: "var(--text-xl)" }}>¥ 2.18M</div>
+            <div style={{ ...muted, paddingBottom: 4 }}>/ ¥ 3.00M</div>
+            <span className="delta up" style={{ marginLeft: "auto", marginBottom: 4 }}>73%</span>
+          </div>
+          <div className="prog success"><i style={{ width: "73%" }} /></div>
+          <div style={{ ...muted, marginTop: 6 }}>
+            目標まで 14 日 · 達成見込み <b style={{ color: "var(--success)" }}>○ オントラック</b>
+          </div>
+        </Card>
+      </Col>
+    </Row>
+  ),
+};
+
+export const A_DatalistDouble: Story = {
+  name: "A7 · Datalist (double)",
+  render: () => (
+    <Row gutter={[14, 14]}>
+      <Col span={12}>
+        <Card padding="default">
+          <div style={{ fontSize: "var(--card-title-size)", fontWeight: 500, marginBottom: 10 }}>5月度サマリー</div>
+          <dl className="dl">
+            <dt>所定時間</dt><dd>176.0 h</dd>
+            <dt>実働時間</dt><dd>168.5 h</dd>
+            <dt>残業時間</dt><dd>12.5 h</dd>
+            <dt>有給取得</dt><dd>1.0 日</dd>
+            <dt>深夜勤務</dt><dd>0.0 h</dd>
+          </dl>
+        </Card>
+      </Col>
+      <Col span={12}>
+        <Card padding="default" tone="muted">
+          <div style={{ fontSize: "var(--card-title-size)", fontWeight: 500, marginBottom: 10 }}>給与計算 · 暫定</div>
+          <dl className="dl">
+            <dt>基本給</dt><dd>¥ 240,000</dd>
+            <dt>残業手当</dt><dd>¥ 22,800</dd>
+            <dt>交通費</dt><dd>¥ 8,500</dd>
+            <dt style={{ fontWeight: 500, color: "var(--foreground)" }}>支給合計</dt>
+            <dd style={{ fontSize: "var(--card-title-size)" }}>¥ 271,300</dd>
+          </dl>
+          <div style={{ ...muted, marginTop: 8, fontSize: "var(--text-2xs)" }}>
+            確定前 · 5月 31日 23:59 締切
+          </div>
+        </Card>
+      </Col>
+    </Row>
+  ),
+};
+
+export const A_InlineTable: Story = {
+  name: "A8 · Inline table (leaderboard)",
+  render: () => (
+    <Card padding="none">
+      <CardHeader block title="店舗別 売上 (Top 5)" meta="5月 17日 暫定" />
+      <CardBody block>
+        <div className="dv-stack">
+          {[
+            ["渋谷本店", "¥ 4.82M", "+5.9%", "up"],
+            ["表参道店", "¥ 3.15M", "+2.1%", "up"],
+            ["自由が丘店", "¥ 2.94M", "-0.4%", "down"],
+            ["新宿西口店", "¥ 2.18M", "—", "flat"],
+            ["池袋店", "¥ 1.92M", "+8.2%", "up"],
+          ].map(([store, amount, delta, dir]) => (
+            <div key={store} className="row-between" style={{ fontSize: "var(--card-title-size)" }}>
+              <span>{store}</span>
+              <span className="mono" style={{ marginLeft: "auto", marginRight: 12 }}>{amount}</span>
+              <span className={`delta ${dir}`}>{delta}</span>
+            </div>
+          ))}
+        </div>
+      </CardBody>
+    </Card>
+  ),
+};
+
+// ════════════════════════════════════════════════════════════════════
+// B · ENTITY & PERSON (continued)
+// ════════════════════════════════════════════════════════════════════
+
+export const B_ProfileRich: Story = {
+  name: "B3 · Profile rich (banner + stats)",
+  render: () => (
+    <Card padding="none" style={{ maxWidth: 480 }}>
+      <div style={{ height: 64, background: "linear-gradient(135deg, var(--primary), var(--info))" }} />
+      <CardBody block>
+        <Flex vertical gap="small" style={{ marginTop: -32 }}>
+          <Avatar name="田中 美咲" size="xl" style={{ border: "2px solid var(--card)" }} />
+          <strong style={{ fontSize: "var(--text-base)" }}>田中 美咲</strong>
+          <span style={muted}>店長 · 渋谷本店 · 入社 2022/04</span>
+          <Space size="small" style={{ marginTop: 4 }}>
+            <Tag color="primary">店長</Tag>
+            <Tag>JP</Tag>
+            <Tag>承認権限</Tag>
+          </Space>
+        </Flex>
+        <div className="dv-stack" style={{ marginTop: 14, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0 }}>
+          {[
+            ["勤続", "3 年"],
+            ["承認件数", "248"],
+            ["評価", "A"],
+          ].map(([label, val]) => (
+            <div key={label} style={{ textAlign: "center", padding: "8px 0", borderRight: "1px solid var(--border)" }}>
+              <div className="stat" style={{ fontSize: "var(--text-lg)" }}>{val}</div>
+              <div style={muted}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </CardBody>
+    </Card>
+  ),
+};
+
+export const B_Team: Story = {
+  name: "B4 · Team / org",
+  render: () => (
+    <Row gutter={[14, 14]}>
+      <Col span={12}>
+        <Card padding="default" title="Engineering" meta="12 名">
+          <Flex gap="small" wrap>
+            {["Mai", "Hoang", "Akira", "Yuki", "Linh"].map((n) => (
+              <Avatar key={n} name={n} size="sm" />
+            ))}
+            <Avatar size="sm">+7</Avatar>
+          </Flex>
+        </Card>
+      </Col>
+      <Col span={12}>
+        <Card padding="default" title="Operations" meta="8 名" extra={<Tag color="primary">Lead: Akira</Tag>}>
+          <Flex gap="small" wrap>
+            {["Akira", "Yuki", "Linh", "Mei"].map((n) => (
+              <Avatar key={n} name={n} size="sm" />
+            ))}
+            <Avatar size="sm">+4</Avatar>
+          </Flex>
+        </Card>
+      </Col>
+    </Row>
+  ),
+};
+
+export const B_Tenant: Story = {
+  name: "B5 · Tenant / company",
+  render: () => (
+    <Card padding="none" style={{ maxWidth: 420 }}>
+      <CardHeader block>
+        <span className="ic" style={{ width: 36, height: 36 }}><Briefcase size={16} aria-hidden /></span>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span className="card-title">FAMGIA Inc.</span>
+          <span style={muted}>渋谷区 · 従業員 142 名</span>
+        </div>
+        <Tag color="success" style={{ marginLeft: "auto" }}>Active</Tag>
+      </CardHeader>
+      <CardBody block>
+        <dl className="dl">
+          <dt>プラン</dt><dd>Team</dd>
+          <dt>契約期間</dt><dd>2024/04 – 2027/04</dd>
+          <dt>担当者</dt><dd>田中 美咲</dd>
+        </dl>
+      </CardBody>
+    </Card>
+  ),
+};
+
+// ════════════════════════════════════════════════════════════════════
+// C · CONTENT & COMMERCE (continued)
+// ════════════════════════════════════════════════════════════════════
+
+export const C_Article: Story = {
+  name: "C1 · Article",
+  render: () => (
+    <Card padding="none" hoverable style={{ maxWidth: 420 }}>
+      <div style={{ height: 140, background: "var(--secondary)" }} />
+      <CardBody block>
+        <Flex vertical gap="small">
+          <span className="micro">プロダクト · 5月リリース</span>
+          <strong style={{ fontSize: "var(--text-base)" }}>新しい勤怠ダッシュボードのリリース</strong>
+          <span style={muted}>
+            運用チームのフィードバックを反映した KPI ハイライトとシフト
+            ホットスポット可視化を追加しました。
+          </span>
+        </Flex>
+      </CardBody>
+      <CardFooter block>
+        <Clock size={12} aria-hidden /> 5 分で読める · 2026-05-15
+      </CardFooter>
+    </Card>
+  ),
+};
+
+export const C_Pricing: Story = {
+  name: "C3 · Pricing tier (3-up, featured)",
+  render: () => (
+    <Row gutter={[14, 14]}>
+      {[
+        { name: "Starter", price: "¥0", sub: "Up to 5 employees", featured: false },
+        { name: "Team", price: "¥2,900", sub: "Up to 50 employees", featured: true },
+        { name: "Enterprise", price: "—", sub: "Custom", featured: false },
+      ].map((plan) => (
+        <Col span={8} key={plan.name}>
+          <Card
+            padding="default"
+            accent={plan.featured ? "featured" : undefined}
+            hoverable
+            extra={plan.featured ? <Tag color="primary">Popular</Tag> : undefined}
+            title={plan.name}
+            meta={plan.sub}
+          >
+            <Flex vertical gap="small">
+              <span className="stat lg">
+                {plan.price}
+                {plan.price !== "—" && <span className="unit">/月</span>}
+              </span>
+              <Button>{plan.price === "—" ? "Talk to sales" : "Subscribe"}</Button>
+            </Flex>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  ),
+};
+
+export const C_Integration: Story = {
+  name: "C5 · Integration / connection",
+  render: () => (
+    <Row gutter={[14, 14]}>
+      {[
+        { name: "Slack", desc: "通知 + メッセージ転送", connected: true, ic: "info" as const },
+        { name: "Google Calendar", desc: "シフト連携 · 双方向", connected: true, ic: "success" as const },
+        { name: "Stripe", desc: "給与振込", connected: false, ic: "warning" as const },
+      ].map((row) => (
+        <Col span={8} key={row.name}>
+          <Card padding="default" hoverable>
+            <Flex gap="middle" align="center">
+              <span className={`ic ${row.ic}`}><ExternalLink size={14} aria-hidden /></span>
+              <Flex vertical gap="small" style={{ flex: 1 }}>
+                <strong style={{ fontSize: "var(--card-title-size)" }}>{row.name}</strong>
+                <span style={muted}>{row.desc}</span>
+              </Flex>
+              <Button size="small" variant={row.connected ? "ghost" : "primary"}>
+                {row.connected ? "Disconnect" : "Connect"}
+              </Button>
+            </Flex>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  ),
+};
+
+// ════════════════════════════════════════════════════════════════════
+// D · WORKFLOW & ACTION (continued)
+// ════════════════════════════════════════════════════════════════════
+
+export const D_Step: Story = {
+  name: "D2 · Step / wizard (onboarding)",
+  render: () => (
+    <Card title="オンボーディング" meta="3 / 5">
+      <Flex vertical gap="middle">
+        {[
+          { done: true,  label: "アカウント作成" },
+          { done: true,  label: "プロフィール入力" },
+          { done: true,  label: "勤怠端末ペアリング" },
+          { done: false, label: "シフト初回登録", cur: true },
+          { done: false, label: "管理者承認" },
+        ].map((s, i) => (
+          <Flex key={i} gap="middle" align="center">
+            <span
+              className={`ic ${s.done ? "success" : ""}`}
+              style={{ width: 24, height: 24, fontSize: 12 }}
+            >
+              {s.done ? <CheckCircle2 size={14} aria-hidden /> : i + 1}
+            </span>
+            <span style={{ fontSize: "var(--card-title-size)", color: s.done ? "var(--muted-foreground)" : undefined }}>
+              {s.label}
+            </span>
+            {s.cur && <Tag color="primary" style={{ marginLeft: "auto" }}>現在</Tag>}
+          </Flex>
+        ))}
+      </Flex>
+    </Card>
+  ),
+};
+
+export const D_QuickActionGrid: Story = {
+  name: "D3 · Quick action grid (2×2)",
+  render: () => (
+    <Card title="クイックアクション" padding="default">
+      <Row gutter={[12, 12]}>
+        {[
+          { ic: "info" as const, icon: <Plus size={16} aria-hidden />, t: "シフト追加", d: "次週分を作成" },
+          { ic: "success" as const, icon: <CheckCircle2 size={16} aria-hidden />, t: "申請承認", d: "12 件保留" },
+          { ic: "attention" as const, icon: <AlertTriangle size={16} aria-hidden />, t: "エラー確認", d: "3 件" },
+          { ic: "info" as const, icon: <Upload size={16} aria-hidden />, t: "データ出力", d: "CSV / Excel" },
+        ].map((qa) => (
+          <Col span={12} key={qa.t}>
+            <button style={{
+              display: "flex", gap: 10, padding: 12,
+              border: "1px solid var(--border)", borderRadius: "var(--radius-md)",
+              background: "var(--card)", cursor: "pointer", width: "100%",
+              alignItems: "center", textAlign: "left", fontFamily: "inherit",
+            }}>
+              <span className={`ic ${qa.ic}`}>{qa.icon}</span>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ fontSize: "var(--card-title-size)", fontWeight: 500 }}>{qa.t}</span>
+                <span style={muted}>{qa.d}</span>
+              </div>
+            </button>
+          </Col>
+        ))}
+      </Row>
+    </Card>
+  ),
+};
+
+export const D_SettingsRows: Story = {
+  name: "D4 · Settings row",
+  render: () => (
+    <Card title="通知設定" padding="default">
+      <div className="dv-stack">
+        {[
+          { t: "申請承認", d: "新規申請が届いたときに通知" },
+          { t: "シフト変更", d: "シフトに変更が入ったときに通知" },
+          { t: "残業しきい値", d: "月 40 時間を超えたら通知" },
+        ].map((r) => (
+          <div key={r.t} className="row-between">
+            <Flex vertical gap="small">
+              <strong style={{ fontSize: "var(--card-title-size)" }}>{r.t}</strong>
+              <span style={muted}>{r.d}</span>
+            </Flex>
+            <Button size="small" variant="ghost">編集</Button>
+          </div>
+        ))}
+      </div>
+    </Card>
+  ),
+};
+
+// ════════════════════════════════════════════════════════════════════
+// E · FEEDBACK (continued)
+// ════════════════════════════════════════════════════════════════════
+
+export const E_Banner: Story = {
+  name: "E6 · Banner / promo",
+  render: () => (
+    <Card padding="default" tone="muted" accent="primary">
+      <Flex gap="middle" align="center">
+        <span className="ic lg"><Zap size={18} aria-hidden /></span>
+        <Flex vertical gap="small" style={{ flex: 1 }}>
+          <strong style={{ fontSize: "var(--text-base)" }}>シフト自動最適化を試してみませんか?</strong>
+          <span style={muted}>需要予測 + スキル + 希望で最適なシフトを生成。試験運用に参加すると 30 日間無料。</span>
+        </Flex>
+        <Space size="small">
+          <Button variant="ghost">あとで</Button>
+          <Button>参加</Button>
+        </Space>
+      </Flex>
+    </Card>
+  ),
+};
+
+// ════════════════════════════════════════════════════════════════════
+// F · SCHEDULE / LIST / TIMELINE (continued)
+// ════════════════════════════════════════════════════════════════════
+
+export const F_CalendarMini: Story = {
+  name: "F2 · Calendar mini",
+  render: () => (
+    <Card padding="default" title="5月 2026" meta="シフト">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4, fontSize: "var(--text-2xs)", textAlign: "center" }}>
+        {["日","月","火","水","木","金","土"].map((d) => (
+          <span key={d} style={muted}>{d}</span>
+        ))}
+        {Array.from({ length: 31 }).map((_, i) => {
+          const day = i + 1;
+          const isToday = day === 17;
+          const hasShift = [5, 6, 7, 12, 13, 14, 19, 20, 21].includes(day);
+          return (
+            <span
+              key={day}
+              style={{
+                padding: "4px 0",
+                borderRadius: "var(--radius-sm)",
+                background: isToday ? "var(--primary)" : hasShift ? "color-mix(in oklch, var(--primary) 14%, transparent)" : undefined,
+                color: isToday ? "var(--primary-foreground)" : undefined,
+                fontWeight: isToday ? 500 : 400,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {day}
+            </span>
+          );
+        })}
+      </div>
+    </Card>
+  ),
+};
+
+export const F_Timeline: Story = {
+  name: "F4 · Activity timeline",
+  render: () => (
+    <Card title="2026-05-15 タイムライン">
+      <Flex vertical gap="middle">
+        {[
+          { t: "09:02", label: "出勤打刻", icon: <CheckCircle2 size={14} aria-hidden style={{ color: "var(--success)" }} /> },
+          { t: "10:30", label: "ミーティング", icon: <Users size={14} aria-hidden style={{ color: "var(--info)" }} /> },
+          { t: "12:30", label: "休憩", icon: <Clock size={14} aria-hidden style={{ color: "var(--muted-foreground)" }} /> },
+          { t: "18:14", label: "退勤打刻", icon: <CheckCircle2 size={14} aria-hidden style={{ color: "var(--success)" }} /> },
+        ].map((r) => (
+          <Flex key={r.t} gap="middle" align="center">
+            <span className="mono" style={{ color: "var(--muted-foreground)", width: 48 }}>{r.t}</span>
+            {r.icon}
+            <span style={{ fontSize: "var(--card-title-size)" }}>{r.label}</span>
+          </Flex>
+        ))}
+      </Flex>
+    </Card>
+  ),
+};
+
+export const F_CompactLog: Story = {
+  name: "F5 · Compact log (audit trail)",
+  render: () => (
+    <Card padding="none">
+      <CardHeader block title="監査ログ" meta="直近 24h · 248 件" />
+      <CardBody block>
+        <pre className="mono" style={{ margin: 0, fontSize: "var(--text-2xs)", lineHeight: 1.65 }}>
+{`14:32:18 [INFO]  user=mai action=login          ip=10.0.0.42
+14:31:55 [WARN]  user=hoang action=approve.fail reason=stale
+14:30:12 [INFO]  user=akira action=shift.update  ref=#1248
+14:28:04 [ERROR] system action=sync.fail         retry=3
+14:25:30 [INFO]  user=mai action=shift.create    ref=#1249
+14:22:18 [INFO]  user=yuki action=login          ip=10.0.1.18`}
+        </pre>
+      </CardBody>
+    </Card>
+  ),
+};
+
+export const F_HorizontalSteps: Story = {
+  name: "F6 · Horizontal steps",
+  render: () => (
+    <Card padding="default" title="申請フロー" meta="3 / 4">
+      <Flex gap="small" align="center">
+        {[
+          { label: "申請", done: true },
+          { label: "店長", done: true },
+          { label: "本部", done: true, cur: true },
+          { label: "完了", done: false },
+        ].map((s, i, arr) => (
+          <Flex key={s.label} align="center" gap="small" style={{ flex: 1 }}>
+            <span className={`ic ${s.done ? "success" : ""}`} style={{ width: 24, height: 24, fontSize: 11 }}>
+              {s.done ? <CheckCircle2 size={12} aria-hidden /> : i + 1}
+            </span>
+            <span style={{ fontSize: "var(--card-meta-size)", fontWeight: s.cur ? 500 : 400 }}>{s.label}</span>
+            {i < arr.length - 1 && (
+              <span style={{ flex: 1, height: 1, background: s.done ? "var(--success)" : "var(--border)" }} />
+            )}
+          </Flex>
+        ))}
+      </Flex>
+    </Card>
+  ),
+};
+
+export const F_DateGrouped: Story = {
+  name: "F7 · Date-grouped feed",
+  render: () => (
+    <Card padding="default" title="活動履歴">
+      <div className="dv-date"><span className="pill">2026/05/14 木</span></div>
+      <Flex gap="small" align="start" style={{ padding: "6px 0" }}>
+        <Avatar name="山田 太郎" size="sm" />
+        <div style={{ flex: 1, fontSize: "var(--text-xs)" }}>
+          <b>山田 太郎</b> · 09:22
+          <div style={muted}>有給申請を提出 (5/22–5/23)</div>
+        </div>
+      </Flex>
+      <Flex gap="small" align="start" style={{ padding: "6px 0" }}>
+        <Avatar name="田中 美咲" size="sm" />
+        <div style={{ flex: 1, fontSize: "var(--text-xs)" }}>
+          <b>田中 美咲</b> · 11:08
+          <div style={muted}>承認しました</div>
+        </div>
+      </Flex>
+      <div className="dv-date"><span className="pill">2026/05/15 金 · 本日</span></div>
+      <Flex gap="small" align="start" style={{ padding: "6px 0" }}>
+        <Avatar name="人事部" size="sm" />
+        <div style={{ flex: 1, fontSize: "var(--text-xs)" }}>
+          <b>人事部</b> · 09:00
+          <div style={muted}>最終承認の確認中…</div>
+        </div>
+      </Flex>
+    </Card>
+  ),
+};
+
+export const F_AvatarFeed: Story = {
+  name: "F9 · Avatar feed (social-style)",
+  render: () => (
+    <Card padding="none">
+      <CardHeader block title="チームの活動" meta="今日" />
+      <CardBody block>
+        <div className="dv-stack">
+          {[
+            { name: "Mai Nguyen", action: "approved 12 leave requests", t: "2h ago" },
+            { name: "Hoang Le", action: "submitted overtime for review", t: "4h ago" },
+            { name: "Akira Tanaka", action: "exported payroll CSV", t: "6h ago" },
+          ].map((row) => (
+            <Flex key={row.name} gap="small" align="center">
+              <Avatar name={row.name} size="sm" />
+              <Flex vertical gap="small" style={{ flex: 1 }}>
+                <span style={{ fontSize: "var(--card-title-size)" }}>
+                  <b>{row.name}</b> {row.action}
+                </span>
+                <span style={muted}>{row.t}</span>
+              </Flex>
+            </Flex>
+          ))}
+        </div>
+      </CardBody>
+    </Card>
+  ),
+};
+
+// ════════════════════════════════════════════════════════════════════
+// G · DIVIDERS — 6 patterns
+// ════════════════════════════════════════════════════════════════════
+
+export const G_Rules: Story = {
+  name: "G1 · Plain rules (5 styles)",
+  render: () => (
+    <Card>
+      <div style={muted}>Solid (default)</div>
+      <hr className="dv" />
+      <div style={muted}>Dashed</div>
+      <hr className="dv dashed" />
+      <div style={muted}>Dotted</div>
+      <hr className="dv dotted" />
+      <div style={muted}>Thick</div>
+      <hr className="dv thick" />
+      <div style={muted}>Gradient (fades at edges)</div>
+      <hr className="dv gradient" />
+      <div style={muted}>After gradient</div>
+    </Card>
+  ),
+};
+
+export const G_LabelInline: Story = {
+  name: "G2 · Label-inline / chip-inline",
+  render: () => (
+    <Row gutter={[14, 14]}>
+      <Col span={12}>
+        <Card>
+          <div style={muted}>前のコンテンツ…</div>
+          <div className="dv-label">または</div>
+          <div style={muted}>後のコンテンツ…</div>
+          <div className="dv-label dashed">承認後の処理</div>
+          <div style={muted}>…</div>
+        </Card>
+      </Col>
+      <Col span={12}>
+        <Card>
+          <div style={muted}>ログイン方法を選択</div>
+          <div className="dv-chip"><span className="pill">OR</span></div>
+          <Flex vertical gap="small">
+            <Button size="small" variant="outline">パスワードでログイン</Button>
+            <Button size="small" variant="outline">SSO でログイン</Button>
+          </Flex>
+          <div className="dv-chip"><span className="pill">あるいは</span></div>
+          <Button size="small" variant="ghost" style={{ width: "100%" }}>マジックリンクを送信</Button>
+        </Card>
+      </Col>
+    </Row>
+  ),
+};
+
+export const G_SectionHeading: Story = {
+  name: "G3 · Section heading",
+  render: () => (
+    <Card>
+      <div className="dv-section">
+        <div className="t">基本情報</div>
+        <div className="c">従業員の基本属性</div>
+        <span className="meta">last edit 2026/05/14</span>
+      </div>
+      <div style={muted}>氏名 · 入社日 · 部門 · 役職 …</div>
+      <div className="dv-section">
+        <div className="t">給与</div>
+        <div className="c">基本給 · 手当 · 控除</div>
+        <span className="meta" style={{ color: "var(--attention)" }}>未保存</span>
+      </div>
+      <div style={muted}>基本給 ¥240,000 · 通勤費 ¥8,500 …</div>
+      <div className="dv-section">
+        <div className="t">権限 · ロール</div>
+        <div className="c">アクセス可能な機能</div>
+      </div>
+      <div style={muted}>店長 · 渋谷本店 · 承認権限あり</div>
+    </Card>
+  ),
+};
+
+export const G_DateSeparator: Story = {
+  name: "G4 · Date separator",
+  render: () => (
+    <Card>
+      <div className="dv-date"><span className="pill">2026/05/14 木</span></div>
+      <Flex gap="small" align="start" style={{ padding: "6px 0" }}>
+        <Avatar name="山田 太郎" size="sm" />
+        <div style={{ flex: 1, fontSize: "var(--text-xs)" }}>
+          <b>山田 太郎</b> · 09:22<div style={muted}>有給申請を提出 (5/22–5/23)</div>
+        </div>
+      </Flex>
+      <Flex gap="small" align="start" style={{ padding: "6px 0" }}>
+        <Avatar name="田中 美咲" size="sm" />
+        <div style={{ flex: 1, fontSize: "var(--text-xs)" }}>
+          <b>田中 美咲</b> · 11:08<div style={muted}>承認しました</div>
+        </div>
+      </Flex>
+      <div className="dv-date"><span className="pill">2026/05/15 金 · 本日</span></div>
+      <Flex gap="small" align="start" style={{ padding: "6px 0" }}>
+        <Avatar name="人事部" size="sm" />
+        <div style={{ flex: 1, fontSize: "var(--text-xs)" }}>
+          <b>人事部</b> · 09:00<div style={muted}>最終承認の確認中…</div>
+        </div>
+      </Flex>
+    </Card>
+  ),
+};
+
+export const G_StackedList: Story = {
+  name: "G5 · Stacked-list dividers",
+  render: () => (
+    <Row gutter={[14, 14]}>
+      <Col span={12}>
+        <Card>
+          <div style={{ ...muted, marginBottom: 10 }}>通常 (solid)</div>
+          <div className="dv-stack">
+            <div style={{ fontSize: "var(--text-xs)" }}><b>渋谷本店</b><div style={muted}>12 名 · 売上 ¥4.8M</div></div>
+            <div style={{ fontSize: "var(--text-xs)" }}><b>表参道店</b><div style={muted}>8 名 · 売上 ¥3.1M</div></div>
+            <div style={{ fontSize: "var(--text-xs)" }}><b>自由が丘店</b><div style={muted}>6 名 · 売上 ¥2.9M</div></div>
+            <div style={{ fontSize: "var(--text-xs)" }}><b>新宿西口店</b><div style={muted}>10 名 · 売上 ¥2.1M</div></div>
+          </div>
+        </Card>
+      </Col>
+      <Col span={12}>
+        <Card>
+          <div style={{ ...muted, marginBottom: 10 }}>Dashed (より控えめ)</div>
+          <div className="dv-stack dashed">
+            <div style={{ fontSize: "var(--text-xs)", display: "flex", justifyContent: "space-between" }}>
+              <span>基本給</span><span className="mono">¥ 240,000</span>
+            </div>
+            <div style={{ fontSize: "var(--text-xs)", display: "flex", justifyContent: "space-between" }}>
+              <span>残業手当</span><span className="mono">¥ 22,800</span>
+            </div>
+            <div style={{ fontSize: "var(--text-xs)", display: "flex", justifyContent: "space-between" }}>
+              <span>交通費</span><span className="mono">¥ 8,500</span>
+            </div>
+            <div style={{ fontSize: "var(--text-xs)", display: "flex", justifyContent: "space-between", fontWeight: 500 }}>
+              <span>合計</span><span className="mono">¥ 271,300</span>
+            </div>
+          </div>
+        </Card>
+      </Col>
+    </Row>
+  ),
+};
+
+export const G_VerticalDivider: Story = {
+  name: "G6 · Vertical divider",
+  render: () => (
+    <Card style={{ display: "flex", alignItems: "center", gap: 0, fontSize: "var(--text-xs)" }}>
+      <span><b>168.5h</b> <span style={muted}>実働</span></span>
+      <hr className="dv vert" />
+      <span><b>12.5h</b> <span style={muted}>残業</span></span>
+      <hr className="dv vert" />
+      <span><b>1.0日</b> <span style={muted}>有給</span></span>
+      <hr className="dv vert" />
+      <span><b>22</b> <span style={muted}>出勤日</span></span>
+      <hr className="dv vert" />
+      <span><b>¥271K</b> <span style={muted}>給与</span></span>
+      <span style={{ marginLeft: "auto" }}>
+        <a href="#" style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>詳細 →</a>
+      </span>
+    </Card>
+  ),
+};
+
+// ════════════════════════════════════════════════════════════════════
+// SPACING — density × padding axis showcase
+// ════════════════════════════════════════════════════════════════════
+
+export const Spacing_DensityPaddingMatrix: Story = {
+  name: "Spacing · Density × Padding matrix",
+  parameters: {
+    docs: {
+      description: {
+        story: `Card padding rescales through TWO axes simultaneously:
+**density** (\`compact / default / comfortable\` → \`--density-card\`
+0.75 / 1 / 1.5 rem) × **padding** prop (\`tight / default / cozy\`
+multiplier 0.75 / 1 / 1.25). Switch the Storybook density toolbar
+to see the matrix shift.`.trim(),
+      },
+    },
+  },
+  render: () => (
+    <Flex vertical gap="middle">
+      <div style={muted}>Density axis lives on Storybook toolbar — switch & observe.</div>
+      <Row gutter={[14, 14]}>
+        {(["tight", "default", "cozy"] as const).map((p) => (
+          <Col span={8} key={p}>
+            <Card padding={p} title={`padding="${p}"`} meta="" >
+              <span style={muted}>
+                Horizontal = <code>var(--density-card)</code> × multiplier.
+                Vertical chrome = <code>var(--card-pad-y-*)</code>.
+              </span>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Flex>
+  ),
+};
+
+export const Spacing_TokenCatalog: Story = {
+  name: "Spacing · Token catalog",
+  parameters: {
+    docs: {
+      description: {
+        story: `Every spacing token catalogued, rendered as a visual
+ruler. Per cardinal rule 22 every Card padding / gap / margin
+references one of these tokens — no hardcoded literals.`.trim(),
+      },
+    },
+  },
+  render: () => (
+    <Card title="Spacing scale (4px grid)" meta="--spacing-{0..24}">
+      <div className="dv-stack">
+        {[
+          ["--spacing-0", "0", 0],
+          ["--spacing-1", "0.25rem (4px)", 4],
+          ["--spacing-2", "0.5rem (8px)", 8],
+          ["--spacing-3", "0.75rem (12px)", 12],
+          ["--spacing-4", "1rem (16px)", 16],
+          ["--spacing-5", "1.25rem (20px)", 20],
+          ["--spacing-6", "1.5rem (24px)", 24],
+          ["--spacing-8", "2rem (32px)", 32],
+          ["--spacing-10", "2.5rem (40px)", 40],
+          ["--spacing-12", "3rem (48px)", 48],
+          ["--spacing-16", "4rem (64px)", 64],
+          ["--spacing-20", "5rem (80px)", 80],
+          ["--spacing-24", "6rem (96px)", 96],
+        ].map(([name, val, w]) => (
+          <Flex key={name as string} align="center" gap="middle">
+            <code className="mono" style={{ width: 110, fontSize: "var(--text-2xs)" }}>{name}</code>
+            <span className="mono" style={{ width: 130, fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>{val}</span>
+            <span style={{ height: 6, width: w as number, background: "var(--primary)", borderRadius: 2 }} />
+          </Flex>
+        ))}
+      </div>
+    </Card>
+  ),
+};
+
+export const Spacing_DensityCatalog: Story = {
+  name: "Spacing · Density tokens",
+  parameters: {
+    docs: {
+      description: {
+        story: `Density-axis tokens. Switch the Density toolbar in
+Storybook to see every value flip. Per cardinal rule 21 components
+read these instead of hardcoded heights / paddings.`.trim(),
+      },
+    },
+  },
+  render: () => (
+    <Card title="Density tokens" meta="[data-density]">
+      <div className="dv-stack">
+        {[
+          "--density-element-xs",
+          "--density-element-sm",
+          "--density-element",
+          "--density-element-lg",
+          "--density-element-xl",
+          "--density-card",
+          "--density-dialog",
+          "--density-page",
+          "--density-section",
+          "--density-page-title",
+          "--density-table-head",
+          "--header-height",
+          "--touch-target-min",
+        ].map((tok) => (
+          <DensityRow key={tok} token={tok} />
+        ))}
+      </div>
+    </Card>
+  ),
+};
+
+function DensityRow({ token }: { token: string }) {
+  return (
+    <Flex align="center" gap="middle">
+      <code className="mono" style={{ width: 180, fontSize: "var(--text-2xs)" }}>{token}</code>
+      <span
+        style={{
+          height: 6,
+          width: `var(${token})`,
+          minWidth: 4,
+          background: "var(--primary)",
+          borderRadius: 2,
+        }}
+      />
+      <span style={{ ...muted, marginLeft: "auto" }} className="mono">var({token})</span>
+    </Flex>
+  );
+}
+
+export const Spacing_CardPadToken: Story = {
+  name: "Spacing · Card chrome tokens",
+  parameters: {
+    docs: {
+      description: {
+        story: `Component-scope tokens pinned to the dxs-kintai design
+canon. \`--card-pad-y-header\` / \`--card-pad-y-body\` /
+\`--card-pad-y-footer\` carry the design's literal 10/14/10 px
+vertical pad; horizontal pad reads \`--density-card\` for axis
+participation.`.trim(),
+      },
+    },
+  },
+  render: () => (
+    <Card title="Card chrome tokens" meta="pinned to comp-card.html">
+      <div className="dv-stack">
+        {[
+          ["--card-pad-y-header", "0.625rem (10px)", "design `.ch` pad-y"],
+          ["--card-pad-y-body", "0.875rem (14px)", "design `.cb` pad-y"],
+          ["--card-pad-y-footer", "0.625rem (10px)", "design `.cf` pad-y"],
+          ["--card-header-gap", "0.625rem (10px)", "design `.ch` gap"],
+          ["--card-title-size", "0.8125rem (13px)", "design `.ch .t`"],
+          ["--card-meta-size", "0.6875rem (11px)", "design `.ch .sub` / `.micro`"],
+          ["--card-kicker-size", "0.625rem (10px)", "design `.ch-kicker .k`"],
+          ["--card-band-height", "4px (literal)", "design `.ch-band` strip"],
+        ].map(([tok, val, src]) => (
+          <Flex key={tok as string} gap="middle" align="center">
+            <code className="mono" style={{ width: 200, fontSize: "var(--text-2xs)" }}>{tok}</code>
+            <span className="mono" style={{ width: 150, fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>{val}</span>
+            <span style={{ ...muted, marginLeft: "auto" }}>{src}</span>
+          </Flex>
+        ))}
+      </div>
+    </Card>
+  ),
+};
+
 export const Grid: Story = {
   name: "Pattern matrix (axes sweep)",
   render: () => (
