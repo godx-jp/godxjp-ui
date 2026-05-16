@@ -6,7 +6,7 @@
 // by i18next (see src/i18n/index.ts) but exposed through this hook so
 // the Tweaks UI has a single dispatcher.
 import { useCallback, useEffect, useState } from "react";
-import i18n, { FORGE_LOCALE_STORAGE_KEY, type ForgeLocale } from "../i18n";
+import i18n, { GODX_LOCALE_STORAGE_KEY, type GodxLocale } from "../i18n";
 import { PRODUCTS, type ForgeProduct } from "../data/products";
 
 export type Density = "compact" | "default" | "comfortable";
@@ -15,12 +15,12 @@ export type Theme = "light" | "dark";
 export type Tweaks = {
   density: Density;
   theme: Theme;
-  tenant: ForgeProduct["tenant"];
-  locale: ForgeLocale;
+  tenant: string;
+  locale: GodxLocale;
   sidebarCollapsed: boolean;
 };
 
-const STORAGE_KEY = "forge.tweaks";
+const STORAGE_KEY = "godx.tweaks";
 
 const DEFAULTS: Tweaks = {
   density: "default",
@@ -35,11 +35,11 @@ function loadInitial(): Tweaks {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     const stored = raw ? (JSON.parse(raw) as Partial<Tweaks>) : {};
-    const detected = (i18n.language?.slice(0, 2) || "ja") as ForgeLocale;
+    const detected = (i18n.language?.slice(0, 2) || "ja") as GodxLocale;
     return {
       ...DEFAULTS,
       ...stored,
-      locale: (stored.locale ?? detected) as ForgeLocale,
+      locale: (stored.locale ?? detected) as GodxLocale,
     };
   } catch {
     return DEFAULTS;
@@ -74,7 +74,7 @@ export function useTweaks() {
     if (i18n.language?.slice(0, 2) !== tweaks.locale) {
       void i18n.changeLanguage(tweaks.locale);
       try {
-        window.localStorage.setItem(FORGE_LOCALE_STORAGE_KEY, tweaks.locale);
+        window.localStorage.setItem(GODX_LOCALE_STORAGE_KEY, tweaks.locale);
       } catch {
         /* ignore */
       }

@@ -3,6 +3,105 @@
 All notable changes to `@godxjp/ui`. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] — 2026-05-16
+
+`@godxjp/ui` v3 is a clean-break major that fulfils the **zero-config professional
+framework** promise described in `new-docs/12-frontend-architecture.md`. Services
+upgrading from 2.x gain a complete toolchain preset and a fourth mandatory locale
+(`fil`) with no API removals beyond the deprecated symbol renames below.
+
+### Added
+
+- **Filipino (`fil`) locale** — `src/i18n/locales/fil.ts`. Full key parity with
+  `ja`. Mandatory per `new-docs/12-frontend-architecture.md §6` (all four
+  locales: `ja`, `en`, `vi`, `fil`).
+- **`GodxLocale` type** — replaces the Forge-branded `ForgeLocale`. Both are
+  exported; `ForgeLocale` is `@deprecated` but still resolves to the same type so
+  existing consumers compile without changes.
+- **`GODX_LOCALE_STORAGE_KEY`** — replaces `FORGE_LOCALE_STORAGE_KEY`. Old name
+  re-exported as deprecated alias.
+- **Zero-config toolchain presets** under `config/` — consumed via sub-path exports:
+  - `@godxjp/ui/eslint-config` → ESLint 9 flat config (typescript-eslint strict,
+    jsx-a11y, react-hooks rules). Service `eslint.config.js` = one line.
+  - `@godxjp/ui/prettier-config` → Prettier 3 config. Service `.prettierrc` = one
+    string.
+  - `@godxjp/ui/tsconfig` → TypeScript 6 strict base (`exactOptionalPropertyTypes`,
+    `noUncheckedIndexedAccess`, `verbatimModuleSyntax`).
+  - `@godxjp/ui/vitest-config` → Vitest 4 base with `jsdom` + 75%/70% coverage
+    thresholds.
+- **Vitest test runner** added to devDependencies. `pnpm test` now works in the
+  package itself.
+- **Locale parity smoke test** at `src/i18n/__tests__/locales.test.ts` — ensures
+  every key in `ja` is present in `en`, `vi`, and `fil` (test ID: GDXUI-I-LOCALE-001).
+- **`ForgeProduct.tenant` type broadened** from a closed literal union to `string`
+  — makes the framework deployable by operators who define their own tenant slugs
+  without forking the package. The four built-in PRODUCTS fixtures remain unchanged.
+
+### Changed
+
+- **package.json `description`** updated from Forge-specific wording to generic
+  professional framework copy.
+- **`useTweaks` storage key** changed from `"forge.tweaks"` to `"godx.tweaks"`.
+  On first load after upgrade, the stored tweaks key is not found and falls back
+  to defaults (density/theme/tenant reset to defaults). User-visible tweaks
+  (density, theme, tenant) persist again on next save.
+- **`initI18n` detection key** changed from `"forge.locale"` to `"godx.locale"`.
+  User locale preference is reset to browser/navigator default on first load after
+  upgrade. User re-selects locale via TweaksPanel and it persists under new key.
+- **README** rewritten as professional framework intro (≥300 words) with import
+  surface table, primitives table with a11y column, adoption tracker, zero-config
+  quick start, and npm/license/types badges.
+- **`sideEffects`** in `package.json` already `["**/*.css"]` — confirmed correct.
+  JS entries remain tree-shakable.
+
+### Deprecated
+
+- `ForgeLocale` — use `GodxLocale`. Will be removed in v4.
+- `FORGE_LOCALE_STORAGE_KEY` — use `GODX_LOCALE_STORAGE_KEY`. Will be removed in v4.
+
+### Migration guide (2.x → 3.0.0)
+
+1. **Locale storage key reset (non-breaking but visible):** The first page load
+   after upgrade will not find the old `"forge.tweaks"` key and will reset tweaks
+   to defaults. This is a one-time reset; the user re-selects density/theme/tenant
+   once and the new key persists.
+
+2. **`ForgeLocale` → `GodxLocale`:** No compile error — `ForgeLocale` still
+   exports. Update to `GodxLocale` at your own pace; it will be removed in v4.
+   Search and replace: `ForgeLocale` → `GodxLocale`.
+
+3. **`FORGE_LOCALE_STORAGE_KEY` → `GODX_LOCALE_STORAGE_KEY`:** Same pattern.
+   The old name still re-exports the same string constant.
+
+4. **Add `fil` locale to service `addResourceBundle` calls:** If your service
+   uses `i18n.addResourceBundle(locale, "my-ns", {…})` for all four locales,
+   add `fil`. Missing `addResourceBundle` calls for `fil` produce a silent fallback
+   to the base `fil` dictionary; no crash.
+
+5. **Zero-config toolchain (optional, strongly recommended):**
+   Adopt the new preset exports to reduce per-service boilerplate:
+   ```bash
+   # eslint.config.js — replace existing content with:
+   # export { default } from "@godxjp/ui/eslint-config"
+   #
+   # .prettierrc.json — replace with:
+   # "@godxjp/ui/prettier-config"
+   #
+   # tsconfig.json — extend:
+   # { "extends": "@godxjp/ui/tsconfig", "compilerOptions": { "paths": {...} } }
+   ```
+
+6. **`ForgeProduct.tenant` type:** If you were using the closed literal union
+   `"godx" | "kintai" | "tempo" | "betoya" | "restaurant"` for type narrowing,
+   the type is now `string`. Add your own type guard if needed:
+   ```ts
+   const KNOWN_TENANTS = ["godx", "kintai", "tempo", "betoya"] as const
+   type KnownTenant = (typeof KNOWN_TENANTS)[number]
+   function isKnownTenant(t: string): t is KnownTenant {
+     return KNOWN_TENANTS.includes(t as KnownTenant)
+   }
+   ```
+
 ## [2.4.0] — 2026-05-16
 
 ### Added

@@ -1,174 +1,37 @@
-# @godxjp/ui — GoDX Forge unified design system
+# @godxjp/ui
 
-**Status:** core source of truth. **Every frontend in the GoDX
-ecosystem MUST consume this package.** No service may bring its own
-tokens, theme, color palette, i18n provider, or component primitives.
-This rule is review-blocking (see `MUST RULES` below).
+**Version 3.0.0** — GoDX professional UI framework
 
-The only thing a service is allowed to do differently from another is
-**layout**: route tree, page composition, screen-specific widgets that
-have no equivalent in another service. Everything visual — typography,
-color, spacing, density, dark mode, language switcher, sidebar shape,
-top-bar shape, buttons, badges, kanban, KPI tiles, modal pattern — comes
-from here.
+[![npm](https://img.shields.io/npm/v/@godxjp/ui)](https://www.npmjs.com/package/@godxjp/ui)
+[![License](https://img.shields.io/github/license/godx-jp/godxjp-ui)](LICENSE)
+[![Types included](https://img.shields.io/badge/types-included-blue)](src/)
 
----
+`@godxjp/ui` is the **single source of visual truth** for the GoDX platform.
+Every service frontend (admin-platform, forge-service, console-service, me-service,
+chat-service, knowledge-service, …) consumes this package. No service reimplements
+a button, dialog, sidebar, or design token.
 
-## MUST RULES (review-blocking)
+The framework enforces three Japanese-enterprise design principles:
 
-> If a PR violates any of these the reviewer rejects, regardless of
-> deadline. Sync the visual layer first, ship the feature after.
-
-1. **Tokens.** Every frontend imports `@godxjp/ui/tokens.css` AND
-   `@godxjp/ui/tokens-ext.css` from its root entry (`main.tsx` /
-   `app.tsx`). Services do not define their own `--background`,
-   `--foreground`, `--primary`, font stack, density variables, or
-   shadow scale. Tenant overrides happen via `[data-tenant="<id>"]`
-   on `<html>`, never per-service.
-
-2. **Stack.** TypeScript + React 19 + Vite + Tailwind v4 + shadcn-style
-   primitives (Radix + cva + tailwind-merge). Components from this
-   package are the only UI atoms a service uses. No service may ship
-   `@mui/material`, `chakra-ui`, `antd`, native `styled-components`,
-   raw `<input>` with custom CSS, etc.
-
-3. **i18n.** All translation goes through `@godxjp/ui/i18n` — a single
-   pre-configured `i18next` instance with auto-detect + JA fallback +
-   localStorage persistence. The base dictionary (nav, shell, common,
-   tweaks, kpi, pdca, issue) lives in `src/i18n/locales/{ja,en,vi}.ts`
-   and is exported as `ForgeTranslations`. Services may register their
-   own namespace (e.g. `i18n.addResourceBundle("ja", "sandbox", {…})`)
-   but never replace the base.
-
-4. **Locale set.** Supported: `ja` (default), `en`, `vi`. Adding a
-   locale = PR to this package, never per-service.
-
-5. **Theme + density + tenant.** All toggled via the `useTweaks` hook
-   from `@godxjp/ui/hooks`. The hook mirrors selections onto `<html>`
-   data attributes — services rely on those, they do not maintain
-   their own theme state.
-
-6. **Fonts.** `M PLUS 2` (loaded by `tokens.css`) is the primary face;
-   fallbacks are Hiragino → Yu Gothic → Noto Sans JP → system. No
-   service may swap in `Inter`, `Roboto`, `Comic Sans`, etc.
-
-7. **Color literals.** No hex / rgb / oklch literals in service code.
-   Always reference a CSS variable: `var(--primary)`, `var(--wa-akane)`,
-   `text-foreground`, `bg-surface-2`. The 13 `--wa-*` 和色 colors are
-   for charts + decoration ONLY; never role-map them.
-
-8. **Density.** Three modes only: `compact` (28 px element), `default`
-   (32 px), `comfortable` (44 px, WCAG-friendly). No `medium`, no
-   intermediate sizes. Components honor `--density-element-*` tokens.
-
-9. **Signal palette.** 5 colors with fixed semantics — `--success`
-   (若竹 wakatake), `--warning` (山吹 yamabuki), `--info` (群青
-   gunjō), `--error/destructive` (茜 akane), `--attention` (朱 shu).
-   **Red (`--destructive`) is reserved for destructive actions only.**
-   Don't use `--destructive` for "wrong answer" badges, validation
-   chrome, or general emphasis.
-
-10. **No emojis in product UI.** Iconography uses `lucide-react`.
-    Emoji are acceptable in user-generated content (comments, chat,
-    notifications) but never in chrome.
-
-11. **Shell layout.** When a service needs a sidebar + topbar shell,
-    it imports `<AppShell>` from `@godxjp/ui/components/shell` and
-    plugs in its own nav config + screen routes. Services do not
-    hand-roll a CSS grid for the chrome.
-
-12. **Switchers (product/project) are universal.** The Linear-style
-    quick switcher is one component, used everywhere — same data
-    shape (`ForgeProduct` / `ForgeProject` from `@godxjp/ui/data`).
-    A service that doesn't have a project concept passes
-    `project={null}`; the chip auto-hides.
+| Principle | Meaning | What it enforces |
+|---|---|---|
+| **渋み** (shibumi) | Restrained elegance | OKLCH primary chroma ≤ 0.18. No neon. No gradients on functional UI. |
+| **間** (ma) | Vertical breathing room | Body `line-height: 1.7`. Generous spacing. Density toggle for dense tables. |
+| **簡素** (kanso) | Simplicity | Three font weights: 400 (body), 500 (heading), 700 (emphasis). No 600 in new code. |
 
 ---
 
-## Layout boundary — what a service CAN do without violating
+## Quick start
 
-| Service-owned | Must come from `@godxjp/ui` |
-|---|---|
-| Route tree (`react-router-dom` config) | Visual atoms: button, badge, card, KPI, kanban col |
-| Page composition (what cards live on this screen) | Shell: sidebar + topbar + tweaks panel |
-| Screen-specific widgets (e.g. a domain-pool map view that no other service has) | Theme tokens, density, dark mode |
-| Domain data shapes (e.g. the sandbox's tmux pane object) | i18n provider, locale list, base dictionary |
-| Per-service API client | Color palette, font stack, spacing scale |
-
-If a screen requires a NEW primitive that another service might also
-need, add it to this package first, then consume it. Don't fork.
-
----
-
-## Adoption tracker
-
-Each service must reach **100% token coverage** before it's allowed
-to claim "GoDX Forge compliant" in its README:
-
-| Service | Status | Owner | Notes |
-|---|---|---|---|
-| `calendar-service/frontend` | ✓ Adopted V1 | calendar | Greenfield SPA; ships compliant from F1 with shared tokens, primitives, shell, and i18n. |
-| `forge-service/frontend` | adopting (phase 1) | platform | Reference implementation. |
-| `admin-platform/frontend` | partial (existing Omnify tokens overlap ~90%) | platform | Migrate before Plan #19 cut-over. |
-| `me-service/frontend` | not started | platform | Tracked under Plan #31 R6. |
-| `console-service/frontend` | adopting (shell + routes) | platform | Epic #1412; tokens + `AppShell` + menu from `console-layout-spec.md` §6; gateway `VITE_CONSOLE_API_BASE_URL`. Rich CRUD waits on @godxjp/ui parity (#1461). |
-| `agent-service/frontend` | not started | platform | Plan #21 G17 finished embed; visual port pending. |
-| `knowledge-service/frontend` | not started | knowledge | Plan #18 K-phase polish. |
-
-Operator-side dashboards (Grafana, Mailpit, etc.) are external — they
-keep their own UI, not in scope.
-
----
-
-## What lives here
-
-```
-packages/godxjp-ui/src/
-├── tokens/                      Source of truth for CSS variables.
-│   ├── tokens.css               Base palette, type scale, density,
-│   │                            shadows, motion. Imports M PLUS 2.
-│   └── tokens-ext.css           Sidebar, topbar, page, card, badge,
-│                                kanban, dark mode, tenant overrides.
-│
-├── i18n/                        i18next bootstrap + base dictionary.
-│   ├── index.ts                 initI18n(); auto-detect + JA fallback.
-│   └── locales/{ja,en,vi}.ts    `ForgeTranslations` shape.
-│
-├── hooks/
-│   └── useTweaks.ts             density / theme / tenant / locale /
-│                                sidebar-collapsed state w/ persistence.
-│
-├── data/
-│   └── products.ts              ForgeProduct / ForgeProject types +
-│                                mock fixture (until forge-service
-│                                /api/v1/orgs/ wires real data).
-│
-├── components/primitives/       shadcn-styled atoms (button, badge,
-│                                card, dialog, sheet, alert-dialog,
-│                                select, switch, checkbox, table,
-│                                tabs, popover, dropdown, combobox,
-│                                toaster / toast, …). One copy across
-│                                the org.
-│
-└── components/shell/            AppShell, Sidebar, Topbar,
-                                 ProductSwitcher, ProjectSwitcher,
-                                 TweaksPanel, CommandPalette.
-```
-
----
-
-## How to consume from a service frontend
+A new service needs three lines to be fully brand-compliant:
 
 ```tsx
-// services/<svc>/frontend/src/main.tsx
-import "@godxjp/ui/tokens.css";
-import "@godxjp/ui/tokens-ext.css";
-// If you use `<Toaster />` / `toast`, import after tokens:
-import "@godxjp/ui/sonner.css";
-import { initI18n } from "@godxjp/ui/i18n";
-import { AppShell, Sidebar, Topbar } from "@godxjp/ui/components/shell";
+// services/<slug>-service/frontend/src/main.tsx
+import "@godxjp/ui/tailwind.css"   // tokens + Tailwind v4 utilities — ONE import
+import { initI18n } from "@godxjp/ui/i18n"
+import { AppShell, Sidebar, Topbar } from "@godxjp/ui/components/shell"
 
-initI18n();
+initI18n()
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
@@ -176,37 +39,142 @@ createRoot(document.getElementById("root")!).render(
       <Routes>{/* service-specific routes */}</Routes>
     </AppShell>
   </BrowserRouter>,
-);
+)
 ```
 
-That's the entire integration surface for a new service.
+That is the entire integration surface. No theming step. No per-service token file.
 
 ---
 
-## Versioning + change control
+## Zero-config toolchain
 
-The package follows semver. Breaking changes (renamed token, removed
-component prop, changed default tenant) require:
+Per `new-docs/12-frontend-architecture.md` (zero-config principle), services inherit
+the full toolchain from this package:
 
-1. RFC issue in `godx-platform-sdk` repo (or local `docs/plans/` if
-   pre-extraction).
-2. Cross-service audit — which surfaces break, who fixes them.
-3. Major version bump.
+```js
+// eslint.config.js — one line
+export { default } from "@godxjp/ui/eslint-config"
+```
 
-Additive changes (new component, new locale string, new wa-iro color,
-new tenant) are minor / patch — no RFC needed.
+```json
+// package.json
+"prettier": "@godxjp/ui/prettier-config"
+```
 
-Issue / PR for changes: file under `godx-jp/godx-platform-sdk` repo
-once Plan #22 extraction completes; until then file under
-`godx-jp/godx-admin` with label `area:design-system`.
+```json
+// tsconfig.json
+{ "extends": "@godxjp/ui/tsconfig" }
+```
+
+```ts
+// vitest.config.ts
+import base from "@godxjp/ui/vitest-config"
+import { mergeConfig } from "vitest/config"
+export default mergeConfig(base, { test: {} })
+```
 
 ---
 
-## See also
+## Import surface
 
-- Design prototype the package is ported from: `chat1.md` + `chat2.md`
-  (Claude Design handoff, 2026-05-08 / 2026-05-09).
-- Plan #19 — forge-service extraction.
-- Plan #22 — multi-repo standalone services. `@godxjp/ui` is the
-  TypeScript counterpart to `godx-platform-sdk` (Go shared kernel).
-- Plan #31 R6 — per-portal UI alignment.
+| Import | What you get |
+|---|---|
+| `@godxjp/ui` | All primitives + hooks + i18n helpers (barrel) |
+| `@godxjp/ui/tailwind.css` | Tailwind v4 + design tokens + base styles |
+| `@godxjp/ui/tokens.css` | Raw CSS custom properties only (no Tailwind) |
+| `@godxjp/ui/tokens-ext.css` | Extended tokens (dark mode, tenants, sidebar vars) |
+| `@godxjp/ui/sonner.css` | Sonner toast animations (import after tokens) |
+| `@godxjp/ui/components/shell` | `AppShell`, `Sidebar`, `Topbar`, `TweaksPanel`, `CommandPalette`, `ProductSwitcher`, `ProjectSwitcher` |
+| `@godxjp/ui/components/screens` | `DashboardScreen`, `PlansScreen`, `IssuesScreen`, `WikiScreen`, `PlanDetailScreen`, `IssueDetailScreen`, `ProjectsListScreen`, `IdeasScreen` |
+| `@godxjp/ui/i18n` | `initI18n()`, `SUPPORTED_LOCALES`, `GodxLocale` |
+| `@godxjp/ui/hooks` | `useTweaks()`, `Tweaks`, `Density`, `Theme` |
+| `@godxjp/ui/data` | `ForgeProduct`, `ForgeProject`, `PRODUCTS`, `findProductByTenant` |
+| `@godxjp/ui/eslint-config` | Shared ESLint flat config |
+| `@godxjp/ui/prettier-config` | Shared Prettier config |
+| `@godxjp/ui/tsconfig` | Strict TypeScript base |
+| `@godxjp/ui/vitest-config` | Vitest base with jsdom + coverage thresholds |
+
+---
+
+## Primitives (v3)
+
+| Component | Radix backing | A11y | Status |
+|---|---|---|---|
+| `Badge` | — | WCAG 2.1 AA | production |
+| `Button` | `@radix-ui/react-slot` | focus-visible, keyboard | production |
+| `Card`, `CardHeader`, `CardTitle`, `CardContent` | — | — | production |
+| `Input`, `Textarea` | — | aria-invalid, label wire | production |
+| `Label` | `@radix-ui/react-label` | for/id | production |
+| `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | `@radix-ui/react-tabs` | roving tabindex | production |
+| `Avatar` | — | aria-label | production |
+| `Separator` | `@radix-ui/react-separator` | role separator | production |
+| `Popover`, `PopoverTrigger`, `PopoverContent` | `@radix-ui/react-popover` | focus trap | production |
+| `DropdownMenu` family | `@radix-ui/react-dropdown-menu` | keyboard nav | production |
+| `Calendar` | `react-day-picker` | ARIA grid | production |
+| `TimeInput` | — | aria-invalid | production |
+| `Dialog` family | `@radix-ui/react-dialog` | focus trap, aria-modal | production |
+| `Sheet` family | `@radix-ui/react-dialog` | focus trap, aria-modal | production |
+| `AlertDialog` family | `@radix-ui/react-alert-dialog` | focus trap | production |
+| `Select` family | `@radix-ui/react-select` | keyboard nav | production |
+| `Switch` | `@radix-ui/react-switch` | role switch | production |
+| `Checkbox` | `@radix-ui/react-checkbox` | role checkbox | production |
+| `Table` family | — | role table | production |
+| `Combobox` family | `cmdk` + Popover | keyboard nav | production |
+| `Toaster`, `toast` | `sonner` | aria-live | production |
+| `Skeleton` | — | aria-hidden | production |
+| `Breadcrumb`, `BreadcrumbItem`, `BreadcrumbSep` | — | aria-label, aria-current | production |
+
+---
+
+## i18n
+
+Mandatory locales per `new-docs/12-frontend-architecture.md §6`:
+
+| Locale | Status |
+|---|---|
+| `ja` | production (primary) |
+| `en` | production |
+| `vi` | production |
+| `fil` | production (added v3.0.0) |
+
+Services add extra namespaces via `i18n.addResourceBundle(locale, "my-ns", {…})`.
+
+---
+
+## MUST RULES (review-blocking)
+
+See [`README.md § MUST RULES`](README.md) and [`BRAND.md`](BRAND.md) for the full list.
+The short version:
+
+1. Import `@godxjp/ui/tailwind.css` (or `/tokens.css`) once at app entry.
+2. Never redefine `--primary`, `--foreground`, `--background`, or any base token in app code.
+3. Only `[data-tenant="<id>"]`-scoped overrides in a service `theme.css`.
+4. No `@mui/material`, `chakra-ui`, `antd`, or any other component library.
+5. All primitive needs → add to `@godxjp/ui` first, then consume.
+6. Shell (AppShell + Sidebar + Topbar) is one component set — no hand-rolled grids.
+
+---
+
+## Adoption tracker
+
+| Service | Status | Notes |
+|---|---|---|
+| `calendar-service/frontend` | adopted | Greenfield; compliant from first commit. |
+| `forge-service/frontend` | adopting (phase 1) | Reference implementation for migration pattern. |
+| `admin-platform/frontend` | partial | Omnify tokens overlap ~90%; full migration pending. |
+| `me-service/frontend` | adopting | Plan #31 R6 — active migration. |
+| `console-service/frontend` | adopting | Epic #1412; AppShell + tokens wired. |
+| `agent-service/frontend` | not started | Plan #21 G17. |
+| `knowledge-service/frontend` | not started | Plan #18 K-phase. |
+| `chat-service/frontend` | adopting | Plan #30 completion phase. |
+
+---
+
+## Versioning
+
+`@godxjp/ui` follows [Semantic Versioning](https://semver.org/).
+Breaking changes require a cross-service audit + major bump.
+See [`CHANGELOG.md`](CHANGELOG.md) for the full history.
+
+Source: `github.com/godx-jp/godxjp-ui` (Apache-2.0).
+The umbrella repo (`godx-jp/godx-admin`) pins this as a git submodule at `libs/ts/godxjp-ui/`.

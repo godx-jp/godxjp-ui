@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "2.4.0",
-  "description": "GoDX Forge unified design system — tokens, primitives, i18n, hooks shared across every service frontend (admin-platform, forge-service, console-service, me-service, agent-service, knowledge-service, …). Source of truth for design language per Plan #19/#22.",
+  "version": "3.0.0",
+  "description": "GoDX professional UI framework — design tokens, primitives, shell, i18n, hooks, and toolchain config shared across every service frontend. Source of truth for the GoDX visual language.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -22,6 +22,7 @@
   "files": [
     "dist",
     "src/tokens",
+    "config",
     "BRAND.md",
     "CHANGELOG.md"
   ],
@@ -29,6 +30,8 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
   "exports": {
@@ -40,6 +43,8 @@
     "./tokens.css": "./src/tokens/tokens.css",
     "./tokens-ext.css": "./src/tokens/tokens-ext.css",
     "./sonner.css": "./src/tokens/sonner.css",
+    "./tailwind": "./src/tokens/tailwind.css",
+    "./tailwind.css": "./src/tokens/tailwind.css",
     "./i18n": {
       "types": "./dist/i18n.d.ts",
       "import": "./dist/i18n.js"
@@ -67,7 +72,11 @@
     "./components/screens": {
       "types": "./dist/components/screens.d.ts",
       "import": "./dist/components/screens.js"
-    }
+    },
+    "./eslint-config": "./config/eslint.js",
+    "./prettier-config": "./config/prettier.cjs",
+    "./tsconfig": "./config/tsconfig.base.json",
+    "./vitest-config": "./config/vitest.base.ts"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -104,6 +113,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "tsup": "^8.3.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "^4.1.5"
   }
 }
