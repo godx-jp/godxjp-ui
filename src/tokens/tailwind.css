@@ -1,32 +1,19 @@
-/*
- * @godxjp/ui — Tailwind v4 entry.
+/* @godxjp/ui — Tailwind v4 entry.
  *
- * Services / apps consume this file as their ONE CSS import:
- *
- *   /* main.tsx */
+ * Services consume this file as their ONE CSS import:
  *   import "@godxjp/ui/tailwind.css"
  *
- * Or as a single `@import` in a service-local `theme.css` when the
- * service genuinely needs per-tenant token overrides.
+ * Or via @import in a service-local theme.css for per-tenant overrides.
  *
- * What this file does:
- *   1. Pull Tailwind v4 utilities (`@import "tailwindcss"`).
- *   2. Pull the design tokens (custom CSS properties).
- *   3. Map the tokens into Tailwind's typed theme system via
- *      `@theme inline { ... }` so utility classes resolve.
- *   4. Provide the `dark` custom-variant (`[data-theme="dark"]`).
- *   5. Default `body` + base layer rules.
+ * Provides:
+ *   1. Tailwind v4 utilities (@import "tailwindcss").
+ *   2. Design tokens (custom CSS properties).
+ *   3. @theme inline mapping so Tailwind utility classes resolve tokens.
+ *   4. dark custom-variant ([data-theme="dark"]).
+ *   5. Default body + base layer rules.
  *
- * What services do NOT need to write:
- *   - The `@theme inline { ... }` mapping. It lives here, once.
- *   - The Tailwind import.
- *   - The dark-variant declaration.
- *   - The base `body { background: …; color: …; font: … }` rules.
- *
- * If a service needs to override a token (per-tenant brand), it
- * ships `services/<slug>-service/frontend/src/theme.css` that
- * imports this file then redeclares the overridden CSS custom
- * properties scoped to `[data-tenant="<id>"]`.
+ * Services do NOT write: @theme inline, tailwindcss import, dark variant,
+ * or base body rules. Those are here, once.
  *
  * See new-docs/12-frontend-architecture.md for the binding rule.
  */
