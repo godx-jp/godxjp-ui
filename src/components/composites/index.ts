@@ -28,3 +28,7 @@ export type {
   LocaleRowInputProps,
   LocaleStatus,
 } from "./locale-input";
+
+// Calendar / scheduling screen compositions (Week / Month / Day /
+// Agenda / EventDetail / CreateEvent / FindATime).
+export * from "./calendar";

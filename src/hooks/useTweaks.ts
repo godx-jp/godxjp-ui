@@ -70,7 +70,11 @@ export function useTweaks() {
   }, [tweaks.theme, tweaks.density, tweaks.tenant, tweaks.locale]);
 
   // Forward locale changes to i18next so the UI re-renders strings.
+  // Guarded by `isInitialized` so consumers that mount this hook
+  // before calling `initI18n()` no-op instead of crashing inside
+  // i18next's resolver (`toResolveHierarchy is undefined`).
   useEffect(() => {
+    if (!i18n.isInitialized) return;
     if (i18n.language?.slice(0, 2) !== tweaks.locale) {
       void i18n.changeLanguage(tweaks.locale);
       try {

@@ -30,13 +30,52 @@ export { Badge } from "./Badge"
 export type { BadgeProps, BadgeVariant } from "./Badge"
 
 export { Button } from "./Button"
-export type { ButtonProps, ButtonVariant, ButtonSize } from "./Button"
+export type { ButtonProps, ButtonVariant, ButtonSize, ButtonTone } from "./Button"
 
 export { Card, CardHeader, CardTitle, CardSubtitle, CardContent } from "./Card"
 export type { CardProps, CardSize, CardVariant, CardSubtitleProps } from "./Card"
 
 export { Input, Textarea } from "./Input"
 export type { InputProps, TextareaProps, InputSize, InputStatus, TextareaResize } from "./Input"
+
+export { InputPassword } from "./InputPassword"
+export type { InputPasswordProps } from "./InputPassword"
+
+export { InputSearch } from "./InputSearch"
+export type { InputSearchProps } from "./InputSearch"
+
+export { Field, FieldLabel, FieldHelp, FieldCount, FieldRowHelp } from "./Field"
+export type {
+  FieldProps,
+  FieldLabelProps,
+  FieldHelpProps,
+  FieldHelpTone,
+  FieldCountProps,
+} from "./Field"
+
+export { LocaleTabs } from "./LocaleTabs"
+export type { LocaleTabsProps, LocaleTabItem, LocaleTabStatus } from "./LocaleTabs"
+
+export { Checklist } from "./Checklist"
+export type { ChecklistProps, ChecklistItem } from "./Checklist"
+
+export { Spinner } from "./Spinner"
+export type { SpinnerProps, SpinnerSize, SpinnerTone } from "./Spinner"
+
+export { IconButton } from "./IconButton"
+export type { IconButtonProps, IconButtonVariant, IconButtonSize } from "./IconButton"
+
+export { PageHeader } from "./PageHeader"
+export type { PageHeaderProps, PageHeaderVariant } from "./PageHeader"
+
+export { SegmentedControl, SegmentedControlButton } from "./SegmentedControl"
+export type {
+  SegmentedControlProps,
+  SegmentedControlVariant,
+  SegmentedControlSize,
+  SegmentedControlItem,
+  SegmentedControlButtonProps,
+} from "./SegmentedControl"
 
 export { Label } from "./Label"
 
@@ -179,3 +218,10 @@ export type { SkeletonProps } from "./Skeleton"
 
 export { Breadcrumb, BreadcrumbItem, BreadcrumbSep } from "./Breadcrumb"
 export type { BreadcrumbProps, BreadcrumbItemProps } from "./Breadcrumb"
+
+// ── Calendar / scheduling primitives ─────────────────────────────
+// `MiniMonth`, `EventBlock`, `TimeGrid` family, `AvailabilityRow`, etc.
+// Mirror discipline: each atom is a thin wrapper over a `.cal-*` /
+// `.tg-*` class in shell.css; no service-specific defaults per
+// cardinal rule #19.
+export * from "./calendar"

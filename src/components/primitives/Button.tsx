@@ -26,10 +26,19 @@ import { cn } from "./cn"
  */
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger"
 export type ButtonSize = "sm" | "md" | "lg"
+/**
+ * Optional tone override. `accent` repaints `primary`/`secondary`
+ * variants to consume `var(--accent-color)` / `var(--accent-color-soft)`
+ * — the consumer-overridable accent slot from tokens.css. Use this when
+ * the host app wants a button to follow a service-specific highlight
+ * without inline `style={{}}` overrides or per-service CSS forks.
+ */
+export type ButtonTone = "primary" | "accent"
 
 export interface ButtonProps extends ComponentProps<"button"> {
   variant?: ButtonVariant
   size?: ButtonSize
+  tone?: ButtonTone
   asChild?: boolean
   children?: ReactNode
 }
@@ -37,6 +46,7 @@ export interface ButtonProps extends ComponentProps<"button"> {
 export function Button({
   variant = "primary",
   size = "md",
+  tone = "primary",
   asChild = false,
   className,
   type = "button",
@@ -52,6 +62,7 @@ export function Button({
         `btn-${variant}`,
         size === "sm" && "btn-sm",
         size === "lg" && "btn-lg",
+        tone === "accent" && "btn-tone-accent",
         className,
       )}
       {...rest}

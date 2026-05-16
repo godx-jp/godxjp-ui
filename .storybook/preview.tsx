@@ -3,6 +3,13 @@ import type { Preview } from "@storybook/react";
 
 import "../src/tokens/tailwind.css";
 import "./preview.css";
+import { initI18n } from "../src/i18n";
+
+// Initialize the i18n singleton at module load — TweaksPanel calls
+// `i18next.changeLanguage()` which crashes with "Cannot read
+// properties of undefined (reading 'toResolveHierarchy')" if the
+// singleton has no resolver wired.
+initI18n();
 
 const preview: Preview = {
   parameters: {

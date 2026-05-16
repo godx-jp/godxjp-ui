@@ -205,6 +205,18 @@
 
   --kbd-bg: oklch(94% 0.005 60);
 
+  /* ── Accent slot (consumer-overridable) ────────────────────────────
+   * Generic re-targetable accent for downstream apps that need a
+   * service-distinct highlight (e.g. a calendar product picking 浅葱
+   * teal) without mutating the brand `--primary` chain. Defaults to
+   * `--primary` so primitives referencing it stay neutral when no
+   * consumer override exists. Per cardinal rule #19 this is NOT
+   * service-specific; the calendar / scheduler app sets it on its own
+   * root.
+   */
+  --accent-color:      var(--primary);
+  --accent-color-soft: color-mix(in oklch, var(--accent-color) 14%, transparent);
+
   /* Status dot tokens — use as bg-color */
   --dot-success: var(--success);
   --dot-warning: var(--warning);
@@ -297,6 +309,9 @@
 }
 
 [data-theme="dark"] {
+  --accent-color:      var(--primary);
+  --accent-color-soft: color-mix(in oklch, var(--accent-color) 18%, transparent);
+
   --background: oklch(18% 0.005 60);
   --foreground: oklch(95% 0.005 60);
   --card: oklch(22% 0.005 60);
