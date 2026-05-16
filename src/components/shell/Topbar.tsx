@@ -1,4 +1,4 @@
-import { ChevronDown, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizontal } from "lucide-react";
+import { Bell, ChevronDown, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizontal } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../primitives/cn";
@@ -31,6 +31,20 @@ export interface TopbarProps {
   onToggleCollapsed?: () => void;
   /** Optional breadcrumb / actions slot on the right. */
   rightSlot?: ReactNode;
+  /**
+   * Notification bell. When `unread` is true a 6×6 attention-colored
+   * dot renders in the top-right corner. Click handler invokes
+   * `onNotificationsOpen`. Hidden when both are unset.
+   */
+  unread?: boolean;
+  onNotificationsOpen?: () => void;
+  /**
+   * Right-edge user chip. Rendered as the trailing element (after
+   * notifications, before tweaks) to match the design-handoff topbar
+   * shape (shell.jsx:366). Pass any node — typically a `<Avatar>` or
+   * a `<DropdownMenu>` wrapping one.
+   */
+  user?: ReactNode;
 }
 
 export function Topbar({
@@ -43,6 +57,9 @@ export function Topbar({
   collapsed = false,
   onToggleCollapsed,
   rightSlot,
+  unread = false,
+  onNotificationsOpen,
+  user,
 }: TopbarProps) {
   const { t } = useTranslation();
 
@@ -105,6 +122,20 @@ export function Topbar({
       </button>
 
       {rightSlot}
+
+      {onNotificationsOpen && (
+        <button
+          type="button"
+          className="tb-icon-btn tb-bell"
+          aria-label={t("topbar.notifications", { defaultValue: "Notifications" })}
+          onClick={onNotificationsOpen}
+        >
+          <Bell size={16} />
+          {unread && <span className="tb-bell-dot" aria-hidden />}
+        </button>
+      )}
+
+      {user}
 
       {onTweaksOpen && (
         <button
