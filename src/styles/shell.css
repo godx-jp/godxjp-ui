@@ -816,37 +816,64 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   overflow-x: auto;
 }
 
+/* react-day-picker v9 — all theming via the documented CSS variables.
+ * Variable list: https://daypicker.dev/docs/css-variables.
+ * Class-selector overrides only where v9's variables don't cover. */
 .calendar {
-  --rdp-cell-size: 32px;
   --rdp-accent-color: var(--primary);
-  --rdp-background-color: var(--surface-3);
-  --rdp-accent-color-dark: var(--primary);
-  --rdp-background-color-dark: var(--surface-3);
-  --rdp-outline: 2px solid var(--ring);
-  --rdp-outline-selected: 2px solid var(--ring);
+  --rdp-accent-background-color: color-mix(in oklch, var(--primary) 14%, transparent);
+
+  --rdp-day-height: 36px;
+  --rdp-day-width: 36px;
+  --rdp-day_button-height: 32px;
+  --rdp-day_button-width: 32px;
+  --rdp-day_button-border-radius: var(--radius-md);
+  --rdp-day_button-border: 2px solid transparent;
+
+  --rdp-selected-border: 2px solid var(--ring);
+  --rdp-today-color: var(--primary);
+  --rdp-disabled-opacity: 0.35;
+  --rdp-outside-opacity: 0.5;
+
+  --rdp-range_middle-background-color: color-mix(in oklch, var(--primary) 16%, transparent);
+  --rdp-range_middle-color: var(--foreground);
+  --rdp-range_start-color: var(--primary-foreground);
+  --rdp-range_start-date-background-color: var(--primary);
+  --rdp-range_end-color: var(--primary-foreground);
+  --rdp-range_end-date-background-color: var(--primary);
+
+  --rdp-nav_button-height: 1.75rem;
+  --rdp-nav_button-width: 1.75rem;
+  --rdp-nav-height: 2.25rem;
+
+  --rdp-weekday-opacity: 0.7;
+  --rdp-week_number-opacity: 0.6;
+
+  --rdp-months-gap: var(--spacing-6);
+
   font-size: var(--text-sm);
   color: var(--foreground);
   padding: var(--spacing-2);
 }
 
-.calendar .rdp-caption_label { font-weight: 500; font-size: var(--text-sm); }
+.calendar .rdp-caption_label,
+.calendar .rdp-month_caption { font-weight: 500; font-size: var(--text-sm); color: var(--foreground); }
 
-.calendar .rdp-head_cell { font-weight: 500; color: var(--muted-foreground); font-size: var(--text-2xs); }
+.calendar .rdp-weekday { font-weight: 500; color: var(--muted-foreground); font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.04em; }
 
-.calendar .rdp-button { border-radius: var(--radius-md); }
+.calendar .rdp-chevron { fill: currentColor; }
 
-.calendar .rdp-day_today:not(.rdp-day_selected) {
-  background: var(--surface-3);
-  color: var(--foreground);
-  font-weight: 500;
-}
+.calendar .rdp-button_next,
+.calendar .rdp-button_previous { color: var(--foreground); border-radius: var(--radius-md); }
 
-.calendar .rdp-day_selected {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
+.calendar .rdp-button_next:hover:not(:disabled),
+.calendar .rdp-button_previous:hover:not(:disabled) { background: var(--surface-2); }
 
-.calendar .rdp-day_outside { color: var(--muted-foreground); opacity: 0.6; }
+.calendar .rdp-day_button:hover:not(:disabled) { background: var(--surface-2); }
+
+.calendar .rdp-day_button:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+
+.calendar .rdp-today:not(.rdp-selected) .rdp-day_button { color: var(--primary); font-weight: 600; }
 
 .time-input {
   display: inline-flex;
