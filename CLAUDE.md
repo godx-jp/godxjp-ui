@@ -26,6 +26,7 @@ binding rules see [`../../../new-docs/`](../../../new-docs/).
 | Add / rename a `data-*` attribute on `<html>` that re-binds design tokens; add a user preference toggle (theme / accent / density / font-size / new axis) | [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
 | Start a new frontend that consumes `@godxjp/ui`; change consumer folder shape, theme.css, ESLint / Prettier / TS configs; build a new feature view; need a primitive that does not exist yet | [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
 | Add / rename / remove a design token; write any CSS that needs a colour / spacing / padding / radius / shadow / motion / layout / density value | [`./new-docs/03-token-system.md`](./new-docs/03-token-system.md) |
+| Add / rename a prop on any primitive; author a new primitive's API | [`./new-docs/04-prop-vocabulary.md`](./new-docs/04-prop-vocabulary.md) |
 
 These rules live next to the framework they govern. The umbrella's
 binding table routes work here when the source of truth is a
