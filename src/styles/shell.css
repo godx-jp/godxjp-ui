@@ -167,9 +167,27 @@
 
 .card-header { display: flex; align-items: center; gap: var(--spacing-2); margin-bottom: var(--spacing-3); padding-bottom: var(--spacing-3); border-bottom: 1px solid var(--border); }
 
+.card-header-title-group { display: flex; flex-direction: column; gap: var(--spacing-1); min-width: 0; flex: 1; }
+
+.card-header-extra { margin-left: auto; display: flex; gap: var(--spacing-2); align-items: center; flex-shrink: 0; }
+
 .card-title { font-size: var(--text-base); font-weight: 500; margin: 0; }
 
 .card-subtitle { font-size: var(--text-xs); color: var(--muted-foreground); margin: 0; }
+
+.card-body { display: flex; flex-direction: column; gap: var(--spacing-3); }
+
+.card-actions { padding-top: var(--spacing-3); border-top: 1px solid var(--border); margin-top: var(--spacing-3); display: flex; gap: var(--spacing-2); justify-content: flex-end; }
+
+.card-size-small { padding: calc(var(--density-card) * 0.625); }
+.card-size-small .card-header { margin-bottom: var(--spacing-2); padding-bottom: var(--spacing-2); }
+
+.card-variant-filled { background: var(--surface-2); border-color: transparent; }
+.card-variant-borderless { background: transparent; border: 0; padding: 0; }
+.card-variant-borderless .card-header { border-bottom: 0; padding-bottom: 0; }
+
+.card-hoverable { transition: border-color .15s, box-shadow .15s; cursor: pointer; }
+.card-hoverable:hover { border-color: var(--muted-foreground); box-shadow: var(--shadow-sm); }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--spacing-2); height: var(--density-element); padding: 0 var(--spacing-3); border-radius: var(--radius-md); border: 1px solid transparent; font-size: var(--text-sm); font-weight: 500; line-height: 1; transition: background var(--transition-fast), border-color var(--transition-fast); white-space: nowrap; }
 
@@ -1064,7 +1082,7 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
 
 .page-content-titlegroup { display: flex; flex-direction: column; gap: var(--spacing-1); min-width: 0; flex: 1; }
 
-.page-content-title { font-size: var(--text-2xl, 1.5rem); font-weight: 600; line-height: 1.2; color: var(--foreground); margin: 0; }
+.page-content-title { font-size: var(--text-2xl, 1.5rem); font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; color: var(--foreground); margin: 0; }
 
 .page-content-subtitle { font-size: var(--text-sm); color: var(--muted-foreground); margin: 0; max-width: 64ch; }
 

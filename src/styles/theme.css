@@ -109,7 +109,7 @@
 
   /* ── Layout ──────────────────────────────────────────────────────── */
   --header-height: 3rem;            /* 48px */
-  --sidebar-width: 13rem;           /* 208px — design jZUk parity */
+  --sidebar-width: 16rem;           /* 256px — design-handoff canonical (tokens.css:137) */
   --sidebar-collapsed-width: 4rem;  /* 64px */
   --sidebar-transition: 300ms;
   --content-sidebar-width: 20rem;
@@ -253,6 +253,18 @@
   --density-section: 1.5rem;
   --header-height: 3.5rem;
   --density-table-head: 2.5rem;
+
+  /* Brand default — Famgia emerald. Tenants override below. Without this
+   * default, every `.sb-logo-mark`, `.avatar.brand`, `.auth-art`, and
+   * `.sb-brand-avatar` paints transparent when `<html>` has no
+   * data-tenant — which is the case for Storybook stories. */
+  --brand: oklch(60% 0.137 163);
+
+  /* Monospace stack — used by me-service identity blocks + sandbox row
+   * fingerprints. Handoff references `var(--font-mono)` (shell.jsx:241,
+   * me-shell.jsx:31) but no token was set. */
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 }
 
 [data-tenant="godx"] {

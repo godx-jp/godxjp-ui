@@ -25,6 +25,12 @@ export interface AvatarProps
   /** Icon slot — wins over children when `src` is unset. */
   icon?: ReactNode;
   /**
+   * Display name — first two initials are rendered as the fallback
+   * when no `src` / `icon` / children are passed. Mirrors the
+   * design-handoff `<Avatar name="Satoshi F" />` shape (ui-kit.jsx).
+   */
+  name?: string;
+  /**
    * Background colour — used for initials avatars to tint the bg
    * with a brand hue. Accepts any CSS colour value.
    */
@@ -52,12 +58,23 @@ function resolveSizePx(size: AvatarSize | undefined): number {
   return SIZE_PX[size];
 }
 
+function deriveInitials(name: string): string {
+  return name
+    .trim()
+    .split(/\s+/)
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 export function Avatar({
   shape = "circle",
   size,
   src,
   alt,
   icon,
+  name,
   color,
   textColor,
   variant,
@@ -100,9 +117,11 @@ export function Avatar({
         />
       ) : icon !== undefined ? (
         icon
-      ) : (
+      ) : children !== undefined ? (
         children
-      )}
+      ) : name ? (
+        deriveInitials(name)
+      ) : null}
     </span>
   );
 }

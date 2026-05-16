@@ -38,7 +38,7 @@ export interface BadgeProps extends ComponentProps<"span"> {
 
 export function Badge({
   variant = "neutral",
-  dot = false,
+  dot = true,
   className,
   children,
   ...rest
