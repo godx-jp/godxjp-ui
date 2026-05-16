@@ -1,0 +1,76 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  /* Sidebar mockup mirrors src/components/layout/app-sidebar.tsx
+     Icons: 16px stroke=2 lucide-style — same family as the rest of the app. */
+  .sb-icon { width:16px; height:16px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
+  .sb-chev { width:14px; height:14px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
+  .sb-row  { display:flex; align-items:center; gap:8px; height:32px; padding:0 8px; border-radius:4px; color:var(--muted-foreground) }
+  .sb-row.on { background:var(--accent); color:var(--foreground); font-weight:500 }
+  .sb-row .lbl { flex:1 }
+  .sb-section { display:flex; align-items:center; gap:4px; font-size:11px; color:var(--muted-foreground); padding:8px 8px 4px; height:24px; text-transform:uppercase; letter-spacing:0.04em }
+</style>
+</head>
+<body style="padding:0;background:var(--background)">
+  <div style="display:flex">
+    <aside style="width:240px;border-right:1px solid var(--border);padding:0;font-size:13px;height:340px">
+
+      <!-- Tenant switcher -->
+      <div style="display:flex;align-items:center;height:48px;padding:0 8px;border-bottom:1px solid var(--border)">
+        <button style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;width:100%;background:var(--accent);border:0;cursor:pointer;font:inherit;color:inherit">
+          <div style="width:20px;height:20px;border-radius:4px;background:var(--primary);color:var(--primary-foreground);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">F</div>
+          <span style="font-size:13px;font-weight:600;flex:1;text-align:left">famgia</span>
+          <!-- chevrons-up-down (tenant switcher) -->
+          <svg class="sb-chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="7 15 12 20 17 15"/><polyline points="7 9 12 4 17 9"/></svg>
+        </button>
+      </div>
+
+      <div style="padding:8px 6px">
+        <!-- Section header (no caret — top-level section labels are not collapsible) -->
+        <div class="sb-section">概要</div>
+
+        <!-- Active: layout-dashboard -->
+        <div class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">ダッシュボード</span>
+        </div>
+
+        <!-- calendar-days -->
+        <div class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="8" y2="18"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+          <span class="lbl">マイシフト</span>
+        </div>
+
+        <!-- clipboard-list (with badge) -->
+        <div class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+          <span class="lbl">勤怠表</span>
+          <span class="chip chip-destructive" style="height:16px;font-size:10px;padding:0 5px;min-width:16px">3</span>
+        </div>
+
+        <!-- Collapsible section header — caret is a real SVG -->
+        <div class="sb-section" style="cursor:pointer">
+          <svg class="sb-chev" viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(0deg)"><polyline points="6 9 12 15 18 9"/></svg>
+          <span>組織</span>
+        </div>
+
+        <!-- users -->
+        <div class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span class="lbl">従業員</span>
+        </div>
+
+        <!-- store -->
+        <div class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>
+          <span class="lbl">店舗</span>
+        </div>
+
+        <!-- settings -->
+        <div class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span class="lbl">設定</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</body></html>

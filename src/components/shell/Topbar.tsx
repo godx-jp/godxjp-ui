@@ -98,7 +98,7 @@ export function Topbar({
         <span className="tb-chip-sep">/</span>
         <button
           type="button"
-          className={cn("tb-chip", !project && "empty")}
+          className={cn("tb-chip", !project && "tb-chip-empty")}
           aria-label={project ? project.name : t("shell.pickProject")}
           onClick={onProjectOpen}
         >

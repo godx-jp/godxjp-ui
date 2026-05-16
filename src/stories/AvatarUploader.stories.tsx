@@ -1,11 +1,40 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { AvatarUploader } from "../components/composites/AvatarUploader";
+import { AvatarUploader } from "../components/composites/upload";
 import { Button } from "../components/primitives/Button";
 import { Avatar } from "../components/primitives/Avatar";
 import { Flex } from "../components/primitives/layout";
 import { Camera, Upload as UploadIcon } from "lucide-react";
 
+/**
+ * `AvatarUploader` is the pre-configured single-image + required-crop
+ * variant of the Upload family. Stages: **idle → cropping → uploading
+ * → success / error**.
+ *
+ * Transport-agnostic — services provide an `onUpload({ blob, file,
+ * onProgress, signal })` callback. The composite owns the file picker,
+ * MIME / size validation, the [`react-easy-crop`](https://github.com/ValentinH/react-easy-crop)
+ * crop UI, the progress bar, abort handling, and the success / error
+ * chrome.
+ *
+ * Slots & props:
+ *
+ * - `onUpload({ blob, file, onProgress, signal })` — resolve to advance
+ *   to the success state, throw to surface an error.
+ * - `validate?(file)` — return `null` for OK, a string for an error.
+ * - `allowedTypes` / `maxSize` — drives the default validator (JPEG /
+ *   PNG / WebP, 5 MiB).
+ * - `aspect` / `cropShape` — crop ratio + circle / rect.
+ * - `labels` — fully localisable; `rejectedTooLarge` accepts `{{mb}}`.
+ * - `errorMapper(err)` — translate a thrown Problem Details / Error
+ *   into user copy.
+ * - `trigger` — replace the default **Choose image** Button with a
+ *   custom React node.
+ * - `onSuccess` / `onCancel` — lifecycle hooks.
+ *
+ * Built from `@godxjp/ui` primitives (Button + Flex + Space), so it
+ * picks up density + theme tokens automatically.
+ */
 const meta: Meta<typeof AvatarUploader> = {
   title: "Composites/AvatarUploader",
   component: AvatarUploader,
@@ -13,40 +42,11 @@ const meta: Meta<typeof AvatarUploader> = {
   parameters: {
     docs: {
       description: {
-        component: `
-\`AvatarUploader\` is a self-contained image upload flow that walks the user
-through five phases: **idle → cropping → uploading → success / error**.
-
-It is intentionally **transport-agnostic** — services provide an \`onUpload\`
-callback that performs the actual HTTP upload + persistence. The composite
-owns the file picker, MIME / size validation, the
-[\`react-easy-crop\`](https://github.com/ValentinH/react-easy-crop) crop UI,
-the progress bar, abort handling, and the success / error chrome.
-
-### Slots & props
-
-- \`onUpload({ blob, file, onProgress, signal })\` — service-supplied
-  upload routine. Resolve the returned Promise to advance to the success
-  state, reject to surface an error. The \`signal\` aborts when the user
-  taps **Cancel upload**.
-- \`validate?(file)\` — return \`null\` for OK, a string for an error.
-- \`allowedTypes\` / \`maxSize\` — drives the default validator
-  (JPEG / PNG / WebP, 5 MiB).
-- \`aspect\` / \`cropShape\` — crop ratio + circle/rect.
-- \`labels\` — fully localisable strings; \`rejectedTooLarge\` accepts
-  \`{{mb}}\` interpolation.
-- \`errorMapper(err)\` — translate a thrown Problem Details / Error into
-  user copy.
-- \`trigger\` — replace the default **Choose image** Button with a custom
-  React node (e.g. an Avatar + edit pencil).
-- \`onSuccess\` / \`onCancel\` — lifecycle hooks.
-
-### Composition
-
-Built from \`@godxjp/ui\` primitives (Button + Flex + Space), so it picks
-up density + theme tokens automatically. Service-level CSS escape hatches
-are **not** permitted — extend by passing slots / labels.
-        `,
+        component:
+          "Single image + required round crop. Pre-configured variant " +
+          "of the Upload family. For multi-image galleries or " +
+          "no-crop image upload, use `<ImageUpload>`. For generic " +
+          "file upload, use `<Upload>`.",
       },
     },
   },
@@ -65,7 +65,7 @@ are **not** permitted — extend by passing slots / labels.
     },
     allowedTypes: {
       control: { type: "object" },
-      description: "Whitelist of MIME types.",
+      description: "Allowlist of MIME types.",
     },
   },
 };

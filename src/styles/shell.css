@@ -86,7 +86,7 @@
 
 .tb-chip-caret { color: var(--muted-foreground); flex-shrink: 0; }
 
-.tb-chip.empty { color: var(--muted-foreground); border: 1px dashed var(--border); }
+.tb-chip-empty { color: var(--muted-foreground); border: 1px dashed var(--border); }
 
 .tb-chip-sep { color: var(--muted-foreground); user-select: none; padding: 0 1px; }
 
@@ -1374,3 +1374,148 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
 /* Topbar bell + attention dot — design-handoff shell.jsx:362-365. */
 .tb-bell { position: relative; }
 .tb-bell-dot { position: absolute; top: var(--spacing-1); right: var(--spacing-1); width: 6px; height: 6px; border-radius: var(--radius-full); background: var(--attention); pointer-events: none; }
+
+/* ── Upload ─────────────────────────────────────────────────────────── */
+/* <Upload> / <ImageUpload> / <AvatarUploader> composites. Ant-shaped
+   API surface; visual layer tokenised through the standard palette. */
+
+.upload-root { display: flex; flex-direction: column; gap: var(--spacing-2); }
+
+.upload-trigger {
+  padding: var(--spacing-6) var(--spacing-8);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.upload-trigger:hover { border-color: var(--ring); }
+.upload-trigger:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.upload-trigger[data-dragover="true"] {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 4%, var(--surface-2));
+}
+.upload-trigger[data-disabled="true"] { opacity: .5; cursor: not-allowed; }
+
+.upload-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-3);
+}
+
+.upload-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  position: relative;
+  overflow: hidden;
+}
+.upload-list-item[data-status="error"] {
+  border-color: var(--destructive);
+  background: color-mix(in oklch, var(--destructive) 4%, var(--card));
+}
+
+.upload-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: color-mix(in oklch, var(--primary) 18%, transparent);
+}
+.upload-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  transition: width .15s linear;
+}
+
+.upload-list-picture-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-3);
+}
+
+.upload-picture-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  aspect-ratio: 1 / 1;
+}
+.upload-picture-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.upload-picture-card[data-status="error"] {
+  border-color: var(--destructive);
+}
+
+.upload-picture-card-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.upload-picture-card-trigger:hover { border-color: var(--ring); }
+.upload-picture-card-trigger:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.upload-picture-card-trigger[data-dragover="true"] {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 4%, var(--surface-2));
+}
+.upload-picture-card-trigger[data-disabled="true"] { opacity: .5; cursor: not-allowed; }
+
+.upload-picture-card-actions {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklch, oklch(20% 0.006 60) 40%, transparent);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  transition: opacity .15s ease;
+}
+.upload-picture-card:hover .upload-picture-card-actions,
+.upload-picture-card:focus-within .upload-picture-card-actions {
+  opacity: 1;
+}
+
+/* Cropper modal — used by <ImageUpload> when an aspect is set. */
+.upload-cropper-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in oklch, oklch(8% 0.006 60) 60%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+}
+.upload-cropper {
+  width: min(560px, 100%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.upload-cropper-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--surface-2);
+}

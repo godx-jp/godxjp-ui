@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"></head>
+<body style="padding:18px 20px">
+  <div class="label" style="margin-bottom:12px">Tenant theming · multi-brand</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div style="border:1px solid var(--border);border-radius:6px;padding:14px">
+      <div style="font-size:11px;color:var(--muted-foreground);margin-bottom:8px">default tenant</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="width:36px;height:36px;border-radius:7px;background:var(--primary);color:var(--primary-foreground);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500">勤</div>
+        <div style="font-size:14px;font-weight:500">dxs · kintai</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm">Action</button>
+        <span class="chip chip-primary">Tag</span>
+      </div>
+    </div>
+    <div data-tenant="betoya" style="border:1px solid var(--border);border-radius:6px;padding:14px">
+      <div style="font-size:11px;color:var(--muted-foreground);margin-bottom:8px">data-tenant="betoya" · ベトヤ食堂</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="width:36px;height:36px;border-radius:7px;background:#009444;color:white;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600">ベ</div>
+        <div><div style="font-size:14px;font-weight:600;color:#009444">Betoya</div><div style="font-size:10px;color:var(--muted-foreground)">家庭の味 · 専門ベトナム料理</div></div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm" style="background:#009444;border-color:#009444">Đặt món</button>
+        <span class="chip" style="background:#ffc20e;color:#171614;border-color:transparent">Khuyến mãi</span>
+      </div>
+    </div>
+  </div>
+  <div class="muted" style="margin-top:10px;font-size:11px">Override scope: <span class="mono">--primary</span>, <span class="mono">--ring</span>, <span class="mono">--foreground</span> only — semantic colors stay shared.</div>
+</body></html>

@@ -1,20 +1,26 @@
-// <AvatarUploader> — generic avatar upload flow shared across godx
-// services. Stages: idle → cropping → uploading → success / error.
+// <AvatarUploader> — single image + required round crop, the
+// pre-configured avatar variant of the Upload family. Stages:
+// idle → cropping → uploading → success / error.
 //
-// Service code passes:
-//   - `onUpload({ blob, file, onProgress, signal })`
-//     Performs the actual HTTP upload + persistence. Returns a Promise.
-//   - Optional `validate(file)`, `maxSize`, `allowedTypes`
-//   - Optional `aspect`, `cropShape`, `labels`
+// Surface preserved (callsites depend on it):
+//   onUpload({ blob, file, onProgress, signal })  — service transport
+//   validate(file)                                 — pre-check hook
+//   allowedTypes / maxSize / aspect / cropShape    — gating + crop
+//   labels                                         — i18n
+//   errorMapper(err)                               — friendly copy
+//   onSuccess() / onCancel()                       — lifecycle
+//   trigger                                        — slot
 //
-// All visual presentation is owned by @godxjp/ui primitives — no
-// service-side CSS / className escape hatches involved.
+// Internally shares MIME + size validation and the crop helper with
+// the rest of the Upload family.
 
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import Cropper, { type Area } from "react-easy-crop";
-import { Camera, RotateCw, Upload, X } from "lucide-react";
-import { Button } from "../primitives/Button";
-import { Flex, Space } from "../primitives/layout";
+import { Camera, RotateCw, Upload as UploadIcon, X } from "lucide-react";
+import { Button } from "../../primitives/Button";
+import { Flex, Space } from "../../primitives/layout";
+import { validateFile } from "./shared/validate";
+import { DEFAULT_UPLOAD_LABELS } from "./shared/types";
 
 export interface AvatarUploaderLabels {
   chooseImage: string;
@@ -150,16 +156,18 @@ export function AvatarUploader({
     reset();
   }, [onCancel, reset]);
 
-  const defaultValidate = useCallback(
+  const runDefaultValidation = useCallback(
     (file: File): string | null => {
-      if (!allowedTypes.includes(file.type)) return labels.rejectedType;
-      if (file.size > maxSize) {
-        return labels.rejectedTooLarge.replace(
-          "{{mb}}",
-          String(Math.round(maxSize / 1024 / 1024)),
-        );
-      }
-      return null;
+      const result = validateFile(file, {
+        accept: allowedTypes.join(","),
+        maxSize,
+        labels: {
+          ...DEFAULT_UPLOAD_LABELS,
+          rejectedType: labels.rejectedType,
+          rejectedTooLarge: labels.rejectedTooLarge,
+        },
+      });
+      return result.ok ? null : (result.error ?? null);
     },
     [allowedTypes, maxSize, labels.rejectedType, labels.rejectedTooLarge],
   );
@@ -170,7 +178,7 @@ export function AvatarUploader({
       if (!file) return;
       e.target.value = "";
 
-      const validationError = validate ? validate(file) : defaultValidate(file);
+      const validationError = validate ? validate(file) : runDefaultValidation(file);
       if (validationError) {
         setErrorMsg(validationError);
         setPhase("error");
@@ -185,7 +193,7 @@ export function AvatarUploader({
       };
       reader.readAsDataURL(file);
     },
-    [validate, defaultValidate],
+    [validate, runDefaultValidation],
   );
 
   const onCropComplete = useCallback((_: Area, pixels: Area) => {
@@ -272,7 +280,7 @@ export function AvatarUploader({
           />
           <Space size="small">
             <Button type="button" onClick={handleUpload}>
-              <Upload size={16} />
+              <UploadIcon size={16} />
               {labels.upload}
             </Button>
             <Button type="button" variant="secondary" onClick={handleCancel}>

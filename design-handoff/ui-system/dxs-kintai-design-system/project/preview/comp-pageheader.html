@@ -1,0 +1,92 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  /* Page header system — three patterns sharing the same atoms */
+  .ph        { border:1px solid var(--border); border-radius:6px; overflow:hidden; background:var(--background); margin-bottom:14px }
+  .ph-bar    { display:flex; align-items:center; gap:12px; height:48px; padding:0 16px; border-bottom:1px solid var(--border) }
+  .ph-title  { display:flex; align-items:baseline; gap:8px; min-width:0; flex:1 }   /* min-width:0 lets title truncate instead of pushing actions */
+  .ph-title h1 { font-size:16px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .ph-title .sub { font-size:11px; color:var(--muted-foreground); white-space:nowrap; flex-shrink:0 }
+  .ph-actions{ display:flex; align-items:center; gap:6px; flex-shrink:0 }            /* never wrap, never shrink */
+  .ph-actions .btn,
+  .ph-actions .input,
+  .ph-actions .icon-btn { white-space:nowrap; flex-shrink:0 }
+  .ph-body   { padding:14px 16px; font-size:11px; color:var(--muted-foreground) }
+  .icon-btn  { width:28px; height:28px; border-radius:4px; border:1px solid var(--border);
+               background:var(--background); color:var(--foreground); cursor:pointer;
+               display:inline-flex; align-items:center; justify-content:center; font-size:14px }
+  .icon-btn.ghost { border-color:transparent; background:transparent; color:var(--muted-foreground) }
+  .ph-tabs   { display:flex; gap:18px; padding:0 16px; height:36px; align-items:center; border-bottom:1px solid var(--border); font-size:13px }
+  .ph-tabs a { color:var(--muted-foreground); text-decoration:none; height:100%; display:inline-flex; align-items:center; border-bottom:2px solid transparent }
+  .ph-tabs a.on { color:var(--foreground); border-bottom-color:var(--primary); font-weight:500 }
+  .seg       { display:inline-flex; border:1px solid var(--border); border-radius:4px; overflow:hidden; height:28px }
+  .seg button{ border:0; background:transparent; padding:0 10px; font-size:12px; cursor:pointer; color:var(--muted-foreground) }
+  .seg button.on { background:var(--secondary); color:var(--foreground); font-weight:500 }
+  .seg button + button { border-left:1px solid var(--border) }
+</style>
+</head>
+<body style="padding:18px 20px">
+
+  <!-- ① Compact: nowrap + ellipsis title + flex-shrink:0 actions -->
+  <div class="label" style="margin-bottom:6px">① Compact · 1 hàng · title co lại bằng ellipsis, actions không bao giờ xuống dòng</div>
+  <div class="ph">
+    <div class="ph-bar">
+      <button class="icon-btn ghost" aria-label="戻る">←</button>
+      <div class="ph-title">
+        <h1>従業員シフト · カレンダー</h1>
+        <span class="sub">月単位の一括割当</span>
+      </div>
+      <div class="ph-actions">
+        <input class="input" type="month" value="2026-05" style="width:130px;height:28px;font-size:12px"/>
+        <div class="seg"><button>日</button><button class="on">月</button></div>
+        <button class="btn btn-sm" style="height:28px">＋ 一括割当</button>
+      </div>
+    </div>
+    <div class="ph-body">title <code>min-width:0 + text-overflow:ellipsis</code> · actions <code>flex-shrink:0 + white-space:nowrap</code></div>
+  </div>
+
+  <!-- ② Overflow: primary stays, secondary collapse to ⋯ -->
+  <div class="label" style="margin-bottom:6px">② Overflow · nhiều actions → giữ 1 primary + dồn còn lại vào ⋯</div>
+  <div class="ph">
+    <div class="ph-bar">
+      <div class="ph-title">
+        <h1 style="font-size:16px">勤怠承認キュー</h1>
+        <span class="sub">12 件 保留</span>
+      </div>
+      <div class="ph-actions">
+        <button class="icon-btn" title="フィルタ" aria-label="フィルタ">⚲</button>
+        <button class="icon-btn" title="エクスポート" aria-label="エクスポート">↧</button>
+        <button class="btn btn-sm" style="height:28px">一括承認</button>
+        <button class="icon-btn" title="その他" aria-label="その他">⋯</button>
+      </div>
+    </div>
+    <div class="ph-body">khi tiếp tục thêm action → biến primary thành dropdown, đẩy phần còn lại vào ⋯</div>
+  </div>
+
+  <!-- ③ Stacked: meta + tabs row removes density pressure -->
+  <div class="label" style="margin-bottom:6px">③ Stacked · meta + tabs sang hàng dưới · cho phép title dài và actions phong phú</div>
+  <div class="ph">
+    <div class="ph-bar">
+      <div class="ph-title" style="flex-direction:column; align-items:flex-start; gap:2px">
+        <div style="display:flex; align-items:baseline; gap:8px; min-width:0; max-width:100%">
+          <h1>店舗別 · 月次レポート</h1>
+        </div>
+        <div style="font-size:11px;color:var(--muted-foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">
+          ベトヤ · 渋谷店 / 表参道店 / 自由が丘店 — 2026年5月
+        </div>
+      </div>
+      <div class="ph-actions">
+        <button class="btn btn-outline btn-sm" style="height:28px">CSV</button>
+        <button class="btn btn-outline btn-sm" style="height:28px">PDF</button>
+        <button class="btn btn-sm" style="height:28px">確定</button>
+      </div>
+    </div>
+    <div class="ph-tabs">
+      <a class="on">概要</a><a>従業員別</a><a>店舗別</a><a>残業</a><a>異常</a>
+    </div>
+    <div class="ph-body">tabs ăn dòng riêng → header không phải gánh navigation + actions cùng lúc</div>
+  </div>
+
+  <div class="muted" style="font-size:11px;margin-top:6px;line-height:1.55;color:var(--muted-foreground)">
+    <b>Rules:</b> ① title bên trái <code>flex:1; min-width:0</code> để truncate; actions <code>flex-shrink:0; white-space:nowrap</code> không bao giờ xuống dòng. ② quá 3 actions → 1 primary + ⋯ menu. ③ khi có tabs hoặc breadcrumb dài → tách thành 2 hàng (48 + 36) thay vì nhồi vào 1 hàng.
+  </div>
+</body></html>
