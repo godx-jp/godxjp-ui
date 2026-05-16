@@ -365,6 +365,99 @@ The submodule PR + the umbrella pin bump are TWO separate PRs.
 Never push a pin to a SHA that doesn't exist on the submodule
 remote.
 
+## Axes compliance recipe (cardinal rule 21)
+
+**Every component supports all four theme axes** —
+[`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) defines
+the axes; cardinal rule 21 binds it; this section is the
+step-by-step recipe.
+
+### Before you write a single line of CSS
+
+Open the four axes in your head:
+
+| Axis            | Values                                 | Tokens that flip                                                                                                              |
+| --------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `data-theme`    | `light` / `dark`                       | `--background`, `--foreground`, `--card`, `--border`, `--popover`, `--muted-foreground`, `--surface-{1,2,3}`, every semantic color |
+| `data-accent`   | `blue` / `green` / `violet` / `amber` / `rose` / `slate` | `--primary`, `--primary-foreground`, `--ring`, `--brand`, `--sidebar-active-bg`, `--sidebar-active-fg` |
+| `data-density`  | `compact` / `default` / `comfortable`  | `--density-element`, `--density-card`, `--density-dialog`, `--density-page`, `--density-section`, `--header-height`, `--density-table-head` |
+| `data-font-size`| `sm` / `base` / `lg` / `xl`            | `html` font-size (87.5% / 100% / 112.5% / 125%) → every `rem` token rescales                                                  |
+
+### Token rules
+
+1. **No hardcoded color literal in a `.tsx` `style={}` or a `.css`
+   rule.** Reach for the semantic token (`var(--primary)`,
+   `var(--muted-foreground)`, …) every time. If you need a tint,
+   use `color-mix(in oklch, var(--primary) 14%, transparent)` —
+   the chroma trail stays consistent across accent values.
+2. **No hardcoded height for an interactive element.** Use
+   `var(--density-element)` (button / input / picker height),
+   `var(--density-card)` (card padding), `var(--header-height)`
+   (top bar), etc. A 32px-pinned button breaks `compact` (28px)
+   and `comfortable` (44px).
+3. **Use rem, not px, for text + spacing the user should be able
+   to scale.** Pixel literals freeze the size against the
+   `data-font-size` axis. The only legitimate `px` literals:
+   - `--touch-target-min: 44px` (WCAG floor — must NOT scale).
+   - Hairline borders (`1px` — half-pixel rendering is jarring).
+   - SVG `viewBox` / icon size attributes (these are physical
+     drawing units, not user-scalable).
+4. **`font-weight` from the locked three only**: 400 / 500 / 700.
+   No 300 (kana strokes vanish), no 600 (ambiguous between 500
+   and 700). Per BRAND.md.
+5. **For attention vs danger**, prefer `var(--attention)` (朱 #eb6101)
+   over `var(--destructive)` (茜 #b7282e) for non-destructive
+   alerts. The "everything's red" pattern is dated.
+
+### Verification before opening a PR
+
+Open the Storybook story for the component you touched (cardinal
+rule 1 says it has one). In the Storybook toolbar, sweep every
+combination:
+
+```
+theme:    light / dark
+accent:   blue / green / violet / amber / rose / slate
+density:  compact / default / comfortable
+fontSize: sm / base / lg / xl
+```
+
+That's 2 × 6 × 3 × 4 = 144 combinations. You don't need to
+visually inspect all 144 — but you DO need to visually inspect:
+
+- **theme=dark** — every component, both accent=blue and
+  accent=rose. Confirm contrast + surface tints flip.
+- **accent=rose + theme=light** — confirm brand chain shifts
+  (`--primary`, `--ring`, `--brand`, sidebar active state).
+- **density=compact** — confirm heights shrink uniformly; no
+  text overlap, no pixel-pinned element stays at default.
+- **density=comfortable** — confirm heights grow + the layout
+  doesn't collide.
+- **fontSize=sm** + **fontSize=xl** — confirm rem-based sizes
+  rescale; pixel-pinned elements stay frozen (which is wrong
+  unless documented exception applies).
+
+If any combination breaks, **fix the token reference, not the
+component's instance**. The fix is upstream (token / variable),
+not at the call site.
+
+### Automated check (Playwright probe)
+
+The pattern at the bottom of `src/stories/<Name>.stories.tsx`
+that the framework uses to verify accent flip (see
+`Calendar.stories.tsx`, `DateTimePicker.stories.tsx`) is the
+template. Probe `getComputedStyle(document.documentElement)` for
+the key tokens; assert they flip across each axis value. Cross-
+reference the rendered element's `backgroundColor` /
+`borderColor` to confirm the token reached the surface.
+
+### Documentation
+
+If a primitive cannot honour an axis (rare — fixed-aspect media,
+chart libraries that emit hardcoded sizes), document the
+exception in `docs/reference/primitives/<Name>.md` with the
+reason. Silent non-compliance is rejected at review.
+
 ## Third-party library policy (cardinal rule 14)
 
 **Every external library consumed by a primitive / shell / hook MUST

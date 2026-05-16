@@ -1,6 +1,6 @@
 # @godxjp/ui — cardinal rules
 
-Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 20
+Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 21
 cardinal rules below are non-negotiable; anything older that
 contradicts them is wrong.
 
@@ -161,6 +161,49 @@ framework concept; inline duplication is rejected at review.
     `package.json::exports` so external godx-jp projects can
     consume it. Internal-only helpers stay un-exported under
     `src/internal/` or `_`-prefixed files.
+
+21. **Every component supports all four theme axes.** A new or
+    edited primitive / composite / shell composition MUST honour
+    every axis defined in
+    [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md)
+    without per-component overrides:
+
+    - **`data-theme`** (light / dark) — every color reads from a
+      semantic token (`--background`, `--foreground`, `--card`,
+      `--border`, `--muted-foreground`, `--primary`, `--ring`, …).
+      No hardcoded hex / OKLCH literals in a component CSS rule.
+      Verify: switch `[data-theme="dark"]` on `<html>` and confirm
+      the component still has 4.5:1 contrast + sensible surfaces.
+    - **`data-accent`** (blue / green / violet / amber / rose /
+      slate) — brand color flows through `--primary`, `--ring`,
+      `--brand`, `--sidebar-active-*`. A component that renders
+      "the brand color" reads `var(--primary)` (or its derivatives
+      via `color-mix(in oklch, …)`), never a fixed hue.
+    - **`data-density`** (compact / default / comfortable) —
+      heights / paddings that scale with density use the density
+      tokens (`--density-element`, `--density-card`,
+      `--density-page`, `--header-height`, `--density-table-head`).
+      A component that hardcodes `height: 32px` breaks compact +
+      comfortable. Use `var(--density-element)` or the named
+      Tailwind utility (`h-[var(--density-element)]`).
+    - **`data-font-size`** (sm / base / lg / xl) — rem-based sizes
+      rescale automatically. Pixel literals freeze the size and
+      break the axis; use `rem` (or the `--text-*` / `--spacing-*`
+      tokens) for anything the user should be able to grow / shrink.
+      Exceptions documented at the rule (touch-target-min: 44px,
+      hairline borders: 1px).
+
+    **Verification before review**: every PR touching a primitive
+    /composite / shell adds (or already has) a Storybook story for
+    that surface. The reviewer flips the Storybook toolbar through
+    every combination of `theme × accent × density × fontSize` and
+    confirms the component reads right at each. AGENTS.md §"Axes
+    compliance recipe" carries the step-by-step.
+
+    No component is exempt. If a primitive cannot honour an axis
+    (e.g. a fixed-aspect-ratio media element ignoring font-size),
+    that's documented in the primitive's reference doc with the
+    reason — not silently absorbed.
 
 ## Hard rules — code review rejects on sight
 

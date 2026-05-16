@@ -32,8 +32,17 @@ export type { BadgeProps, BadgeVariant } from "./Badge"
 export { Button } from "./Button"
 export type { ButtonProps, ButtonVariant, ButtonSize, ButtonTone } from "./Button"
 
-export { Card, CardHeader, CardTitle, CardSubtitle, CardContent } from "./Card"
-export type { CardProps, CardSize, CardVariant, CardSubtitleProps } from "./Card"
+export { Card, CardHeader, CardTitle, CardSubtitle, CardBody, CardFooter, CardContent } from "./Card"
+export type {
+  CardProps,
+  CardHeaderProps,
+  CardBodyProps,
+  CardFooterProps,
+  CardSubtitleProps,
+  CardPadding,
+  CardTone,
+  CardAccent,
+} from "./Card"
 
 export { Input, Textarea } from "./Input"
 export type { InputProps, TextareaProps, InputSize, InputStatus, TextareaResize } from "./Input"
