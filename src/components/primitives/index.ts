@@ -9,6 +9,23 @@
 
 export { cn } from "./cn"
 
+// ── Layout primitives (Ant-Design-shaped: Row/Col/Flex/Space) ────
+export { Row, Col, Flex, Space, useRowGutter } from "./layout";
+export type {
+  RowProps,
+  ColProps,
+  FlexProps,
+  SpaceProps,
+  GutterValue,
+  Breakpoint,
+  Justify,
+  Align,
+  FlexGap,
+  FlexJustify,
+  FlexAlign,
+  SpaceSize,
+} from "./layout";
+
 export { Badge } from "./Badge"
 export type { BadgeProps, BadgeVariant } from "./Badge"
 
@@ -16,17 +33,29 @@ export { Button } from "./Button"
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./Button"
 
 export { Card, CardHeader, CardTitle, CardSubtitle, CardContent } from "./Card"
-export type { CardSubtitleProps } from "./Card"
+export type { CardProps, CardSize, CardVariant, CardSubtitleProps } from "./Card"
 
 export { Input, Textarea } from "./Input"
-export type { InputProps, TextareaProps } from "./Input"
+export type { InputProps, TextareaProps, InputSize, InputStatus, TextareaResize } from "./Input"
 
 export { Label } from "./Label"
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "./Tabs"
 
 export { Avatar } from "./Avatar"
-export type { AvatarProps } from "./Avatar"
+export type { AvatarProps, AvatarShape, AvatarSize, AvatarSizeToken } from "./Avatar"
+
+export { Statistic } from "./Statistic"
+export type { StatisticProps } from "./Statistic"
+
+export { Empty } from "./Empty"
+export type { EmptyProps } from "./Empty"
+
+export { Tag } from "./Tag"
+export type { TagProps, TagPresetColor } from "./Tag"
+
+export { Descriptions } from "./Descriptions"
+export type { DescriptionsProps, DescriptionsItemProps } from "./Descriptions"
 
 export { Separator } from "./Separator"
 
