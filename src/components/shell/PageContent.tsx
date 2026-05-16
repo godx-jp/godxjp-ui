@@ -54,12 +54,11 @@ export interface PageContentProps {
   className?: string;
 }
 
-const PADDING_CLASS: Record<PageContentPadding, string> = {
-  none: "p-0",
-  compact: "px-element py-element",
-  default: "px-page py-page",
-  comfortable: "px-section py-section",
-};
+// Padding is encoded as a data attribute resolved by tokens-ext.css
+// (`.page-content[data-padding="default"] { padding: var(--density-page); }` etc.).
+// Going through Tailwind utilities is unreliable because v4's content
+// scanner doesn't always pick up token-named arbitrary spacing across
+// package boundaries; a CSS class is deterministic.
 
 export function PageContent({
   title,
@@ -77,7 +76,10 @@ export function PageContent({
     header !== "none" && (breadcrumb || title || subtitle || extra);
 
   return (
-    <section className={cn("page-content", PADDING_CLASS[padding], className)}>
+    <section
+      className={cn("page-content", className)}
+      data-padding={padding}
+    >
       {showHeader && (
         <header className="page-content-header">
           {breadcrumb && (
