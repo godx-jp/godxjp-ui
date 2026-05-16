@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ja" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<title>godx Unified Design System — Famgia</title>
+<meta name="viewport" content="width=1440"/>
+<link rel="stylesheet" href="tokens.css"/>
+<link rel="stylesheet" href="tokens-ext.css"/>
+<style>
+  html, body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans-jp); font-size: var(--text-base); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  *, *::before, *::after { box-sizing: border-box; }
+  a { color: inherit; }
+  /* .fade-in + .pulse defined in tokens-ext.css */
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="ui-kit.jsx"></script>
+<script type="text/babel" src="shell.jsx"></script>
+<script type="text/babel" src="screens-1.jsx"></script>
+<script type="text/babel" src="screens-2.jsx"></script>
+<script type="text/babel" src="screens-3.jsx"></script>
+<script type="text/babel" src="screens-product.jsx"></script>
+<script type="text/babel" src="screens-project.jsx"></script>
+<script type="text/babel" src="screens-detail.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useMemo } = React;
+
+function TweaksUI({ tweaks, setTweak }) {
+  if (!window.TweaksPanel) return null;
+  const { TweaksPanel, TweakSection, TweakRadio, TweakSelect, TweakToggle } = window;
+  return (
+    <TweaksPanel title="Tweaks">
+      <TweakSection label="表示">
+        <TweakRadio label="密度" value={tweaks.density} onChange={(v) => setTweak("density", v)} options={[{value:"compact",label:"密"},{value:"default",label:"標準"},{value:"comfortable",label:"広"}]}/>
+        <TweakRadio label="テーマ" value={tweaks.theme} onChange={(v) => setTweak("theme", v)} options={[{value:"light",label:"Light"},{value:"dark",label:"Dark"}]}/>
+        <TweakToggle label="サイドバー折畳み" value={tweaks.sidebarCollapsed} onChange={(v) => setTweak("sidebarCollapsed", v)}/>
+      </TweakSection>
+      <TweakSection label="プロダクト">
+        <TweakSelect label="アクティブプロダクト" value={tweaks.tenant} onChange={(v) => setTweak("tenant", v)} options={window.PRODUCTS.map(p => ({ value: p.tenant, label: p.name }))}/>
+      </TweakSection>
+      <TweakSection label="ロケール">
+        <TweakRadio label="言語" value={tweaks.locale} onChange={(v) => setTweak("locale", v)} options={[{value:"ja",label:"日本語"},{value:"en",label:"EN"},{value:"vi",label:"VI"}]}/>
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+window.TweaksUI = TweaksUI;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "density": "comfortable",
+  "theme": "light",
+  "tenant": "godx",
+  "locale": "vi",
+  "sidebarCollapsed": false
+}/*EDITMODE-END*/;
+
+function App() {
+  const t = (window.useTweaks && window.useTweaks(TWEAK_DEFAULTS)) || [TWEAK_DEFAULTS, () => {}];
+  const [tweaks, setTweak] = t;
+  const [route, setRoute] = useState("p-dashboard");
+  const [project, setProject] = useState(null);
+  const [planDetailId, setPlanDetailId] = useState(null);
+  const [issueDetailId, setIssueDetailId] = useState(null);
+  const [openCommand, setOpenCommand] = useState(false);
+  const [openProductMenu, setOpenProductMenu] = useState(false);
+  const [recentProjects, setRecentProjects] = useState([]);
+
+  // Product is DERIVED from tweaks.tenant — no useState, no sync loop.
+  const product = React.useMemo(
+    () => window.PRODUCTS.find(p => p.tenant === tweaks.tenant) || window.PRODUCTS[0],
+    [tweaks.tenant]
+  );
+  const setProduct = React.useCallback((p) => {
+    setTweak("tenant", p.tenant);
+    setProject(null);
+    setRoute("p-dashboard");
+  }, [setTweak]);
+
+  // Apply tweaks to <html>
+  useEffect(() => {
+    document.documentElement.dataset.theme = tweaks.theme;
+    document.documentElement.dataset.density = tweaks.density;
+    document.documentElement.dataset.tenant = tweaks.tenant;
+    document.documentElement.lang = tweaks.locale;
+  }, [tweaks.theme, tweaks.density, tweaks.tenant, tweaks.locale]);
+
+  // Wire global navigation helpers used by detail-link buttons inside views.
+  useEffect(() => {
+    window.openPlanDetail = (id) => { setPlanDetailId(id || "PDCA-Q2-001"); setRoute("plan-detail"); };
+    window.openIssueDetail = (id) => { setIssueDetailId(id || "GK-310"); setRoute(project ? "j-issue-detail" : "p-issue-detail"); };
+  }, [project]);
+
+  // ⌘K
+  useEffect(() => {
+    const fn = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setOpenCommand(true); }
+      if (e.key === "Escape") { setOpenCommand(false); setOpenProductMenu(false); }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, []);
+
+  const openProject = (p) => {
+    setProject(p);
+    setRoute("j-overview");
+    setRecentProjects(prev => {
+      const next = [{ productId: product.id, projectId: p.id }, ...prev.filter(r => !(r.productId === product.id && r.projectId === p.id))];
+      return next.slice(0, 6);
+    });
+  };
+
+  if (route === "login") {
+    return (
+      <>
+        <window.LoginScreen locale={tweaks.locale} setRoute={setRoute}/>
+        {window.TweaksUI && <window.TweaksUI tweaks={tweaks} setTweak={setTweak}/>}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="app-root" data-collapsed={tweaks.sidebarCollapsed}>
+        <window.Sidebar route={route} setRoute={setRoute} collapsed={tweaks.sidebarCollapsed} product={product} setProduct={setProduct} project={project} setProject={setProject} locale={tweaks.locale} openProductMenu={openProductMenu} setOpenProductMenu={setOpenProductMenu}/>
+        <window.Topbar route={route} product={product} setProduct={setProduct} project={project} setProject={(p) => { if (p) { setProject(p); setRecentProjects(prev => [{ productId: product.id, projectId: p.id }, ...prev.filter(r => !(r.productId === product.id && r.projectId === p.id))].slice(0, 6)); } else setProject(null); }} setRoute={setRoute} locale={tweaks.locale} collapsed={tweaks.sidebarCollapsed} setCollapsed={(v) => setTweak("sidebarCollapsed", v)} theme={tweaks.theme} setTheme={(v) => setTweak("theme", v)} openCommand={openCommand} setOpenCommand={setOpenCommand} recentProjects={recentProjects}/>
+        <main className="app-main" data-screen-label={`route:${route}`}>
+          {/* Product-level routes */}
+          {route === "p-dashboard" && <window.ProductDashboardScreen locale={tweaks.locale} product={product} openProject={openProject}/>}
+          {route === "p-projects"  && <window.ProjectsListScreen locale={tweaks.locale} product={product} openProject={openProject}/>}
+          {route === "p-issues"    && <window.ProductIssuesScreen locale={tweaks.locale} product={product}/>}
+          {route === "p-plans"     && <window.ProductPlansScreen locale={tweaks.locale} product={product} openPlan={(id) => window.openPlanDetail(id)}/>}
+          {route === "plan-detail" && <window.PlanDetailScreen locale={tweaks.locale} product={product} planId={planDetailId} setRoute={setRoute}/>}
+          {route === "p-issue-detail" && <window.IssueDetailScreen locale={tweaks.locale} product={product} issueId={issueDetailId} setRoute={setRoute}/>}
+          {route === "p-ideas"     && <window.ProductIdeasScreen locale={tweaks.locale} product={product}/>}
+          {route === "p-gantt"     && <window.ProductGanttScreen locale={tweaks.locale} product={product}/>}
+          {route === "p-wiki"      && <window.ProductWikiScreen locale={tweaks.locale} product={product}/>}
+          {route === "p-members"   && <window.MembersScreen locale={tweaks.locale} product={product}/>}
+          {route === "p-domains"   && <window.DomainsScreen locale={tweaks.locale}/>}
+
+          {/* Project-level routes (require project) */}
+          {project && route === "j-overview" && <window.ProjectOverviewScreen locale={tweaks.locale} product={product} project={project} setRoute={setRoute}/>}
+          {project && route === "j-code"     && <window.CodeScreen locale={tweaks.locale}/>}
+          {project && route === "j-branches" && <window.BranchesScreen locale={tweaks.locale} project={project}/>}
+          {project && route === "j-prs"      && <window.PRsScreen locale={tweaks.locale} project={project}/>}
+          {project && route === "j-issues"   && <window.ProjectIssuesScreen locale={tweaks.locale} product={product} project={project}/>}
+          {project && route === "j-issue-detail" && <window.IssueDetailScreen locale={tweaks.locale} product={product} project={project} issueId={issueDetailId} setRoute={setRoute}/>}
+          {project && route === "j-sandbox"  && <window.DevPanelScreen locale={tweaks.locale}/>}
+          {project && route === "j-agents"   && <window.AgentScreen locale={tweaks.locale}/>}
+          {project && route === "j-deploys"  && <window.DeploysScreen locale={tweaks.locale} project={project}/>}
+
+          {/* Meta */}
+          {route === "system" && <window.SystemScreen locale={tweaks.locale}/>}
+        </main>
+      </div>
+      <window.CommandPalette open={openCommand} onClose={() => setOpenCommand(false)} setRoute={setRoute} product={product} setProject={setProject}/>
+      {window.TweaksUI && <window.TweaksUI tweaks={tweaks} setTweak={setTweak}/>}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
