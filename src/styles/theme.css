@@ -3,7 +3,7 @@
  * Single-file shadcn-style theme surface for Tailwind v4 consumers.
  * Service `theme.css` files customize by overriding any semantic
  * variable in their own `:root`, `[data-theme="dark"]`, or
- * `[data-tenant="..."]` block.
+ * `[data-accent="..."]` block.
  *
  * Layered semantics (W3C Design Tokens Community Group):
  *   • Primitives   — type scale, spacing, radius, shadow, motion,
@@ -13,14 +13,19 @@
  *                    light theme is the unscoped `:root` block.
  *   • Variants     — re-bind semantic via `[data-theme="dark"]`,
  *                    `[data-density="compact|comfortable"]`,
- *                    `[data-tenant="godx|kintai|tempo|betoya"]`.
+ *                    `[data-accent="blue|green|violet|amber|rose|slate"]`
+ *                    (color theme — set globally on `<html>`).
  *
  * Customization patterns (in a service's `theme.css`):
  *
  *   @import "@godxjp/ui/tailwind.css";
  *
- *   :root            { --primary: oklch(58% 0.18 25); }
- *   [data-tenant="acme"] { --primary: oklch(...); }
+ *   :root                  { --primary: oklch(58% 0.18 25); }
+ *   [data-accent="custom"] { --primary: oklch(...); --brand: oklch(...); }
+ *
+ * Per rule #19 no service-specific tenant rules live here; downstream
+ * apps register their own `[data-accent]` palette or override `:root`
+ * tokens directly.
  *
  * See docs/explanation/tokens-architecture.md +
  *     docs/how-to/customize-theme.md.
@@ -224,20 +229,19 @@
   --dot-info: var(--info);
   --dot-attention: var(--attention);
   --dot-muted: var(--muted-foreground);
+
+  /* Brand stripe — used by `.sb-logo-mark`, `.avatar.brand`, `.auth-art`,
+   * `.sb-brand-avatar`. Defaults to Famgia emerald; `[data-accent]`
+   * blocks re-target it per color theme. Lives in `:root` (not in any
+   * density block) so it applies regardless of density. */
+  --brand: oklch(60% 0.137 163);
+
+  /* Monospace stack — used by me-service identity blocks + sandbox row
+   * fingerprints. */
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 }
 
-
-[data-tenant="betoya"] {
-  --primary: oklch(58% 0.159 150);  /* Vietnam green #009444 */
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(58% 0.159 150);
-  --foreground: oklch(20% 0.004 85);
-  --brand-betoya-primary:  #009444;
-  --brand-betoya-secondary:#ffc20e;
-  --brand-betoya-accent:   #00b856;
-  --brand-betoya-attention:#f95c39;
-  --brand-betoya-text:     #171614;
-}
 
 [data-density="compact"] {
   --density-element-xs: 1.25rem;
@@ -265,47 +269,6 @@
   --density-section: 1.5rem;
   --header-height: 3.5rem;
   --density-table-head: 2.5rem;
-
-  /* Brand default — Famgia emerald. Tenants override below. Without this
-   * default, every `.sb-logo-mark`, `.avatar.brand`, `.auth-art`, and
-   * `.sb-brand-avatar` paints transparent when `<html>` has no
-   * data-tenant — which is the case for Storybook stories. */
-  --brand: oklch(60% 0.137 163);
-
-  /* Monospace stack — used by me-service identity blocks + sandbox row
-   * fingerprints. Handoff references `var(--font-mono)` (shell.jsx:241,
-   * me-shell.jsx:31) but no token was set. */
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-    "Liberation Mono", monospace;
-}
-
-[data-tenant="godx"] {
-  /* Default: Famgia emerald accent (--brand) + SmartHR blue primary */
-  --primary: oklch(56% 0.15 240);
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(56% 0.15 240);
-  --brand: oklch(60% 0.137 163);
-}
-
-[data-tenant="kintai"] {
-  --primary: oklch(56% 0.15 240);   /* SmartHR blue */
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(56% 0.15 240);
-  --brand: oklch(56% 0.15 240);
-}
-
-[data-tenant="tempo"] {
-  --primary: oklch(48% 0.16 285);   /* deeper indigo for Tempo */
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(48% 0.16 285);
-  --brand: oklch(48% 0.16 285);
-}
-
-[data-tenant="betoya"] {
-  --primary: oklch(58% 0.159 150);
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(58% 0.159 150);
-  --brand: oklch(58% 0.159 150);
 }
 
 [data-theme="dark"] {
@@ -349,10 +312,3 @@
   --ring: oklch(70% 0.13 240);
 }
 
-[data-theme="dark"][data-tenant="kintai"] { --primary: oklch(70% 0.13 240); --ring: oklch(70% 0.13 240); --brand: oklch(70% 0.13 240); }
-
-[data-theme="dark"][data-tenant="tempo"]  { --primary: oklch(70% 0.14 285); --ring: oklch(70% 0.14 285); --brand: oklch(70% 0.14 285); }
-
-[data-theme="dark"][data-tenant="betoya"] { --primary: oklch(72% 0.14 150); --ring: oklch(72% 0.14 150); --brand: oklch(72% 0.14 150); }
-
-[data-theme="dark"][data-tenant="godx"]   { --primary: oklch(70% 0.13 240); --ring: oklch(70% 0.13 240); --brand: oklch(72% 0.13 163); }

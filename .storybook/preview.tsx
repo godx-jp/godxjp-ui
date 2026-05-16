@@ -39,24 +39,9 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
-    tenant: {
-      name: "Tenant",
-      description: "Tenant token override",
-      defaultValue: "godx",
-      toolbar: {
-        icon: "user",
-        items: [
-          { value: "godx", title: "godx" },
-          { value: "kintai", title: "kintai" },
-          { value: "tempo", title: "tempo" },
-          { value: "betoya", title: "betoya" },
-        ],
-        dynamicTitle: true,
-      },
-    },
     density: {
       name: "Density",
-      description: "Spacing density",
+      description: "Global spacing density — rebinds --density-element / --density-card / --density-page / --header-height across the system.",
       defaultValue: "default",
       toolbar: {
         icon: "component",
@@ -68,9 +53,24 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
+    fontSize: {
+      name: "Font size",
+      description: "Global root font-size — rescales every rem-based token (spacing, density, type, radii) across the system.",
+      defaultValue: "base",
+      toolbar: {
+        icon: "type",
+        items: [
+          { value: "sm", title: "Small (14px)" },
+          { value: "base", title: "Base (16px)" },
+          { value: "lg", title: "Large (18px)" },
+          { value: "xl", title: "XLarge (20px)" },
+        ],
+        dynamicTitle: true,
+      },
+    },
     accent: {
-      name: "Accent",
-      description: "Primary accent palette",
+      name: "Color theme",
+      description: "Global brand color theme — flips --primary, --ring, --brand, --sidebar-active-* across the whole UI.",
       defaultValue: "blue",
       toolbar: {
         icon: "paintbrush",
@@ -88,18 +88,18 @@ const preview: Preview = {
   },
   decorators: [
     (Story, context) => {
-      const { theme, tenant, density, accent } = context.globals as {
+      const { theme, density, accent, fontSize } = context.globals as {
         theme: string;
-        tenant: string;
         density: string;
         accent: string;
+        fontSize: string;
       };
       if (typeof document !== "undefined") {
         const root = document.documentElement;
         root.dataset.theme = theme;
-        root.dataset.tenant = tenant;
         root.dataset.density = density;
         root.dataset.accent = accent;
+        root.dataset.fontSize = fontSize;
       }
       return (
         <div className="sb-stage">

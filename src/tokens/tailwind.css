@@ -3,7 +3,7 @@
  * Services consume this file as their ONE CSS import:
  *   import "@godxjp/ui/tailwind.css"
  *
- * Or via @import in a service-local theme.css for per-tenant overrides.
+ * Or via @import in a service-local theme.css for per-deployment overrides.
  *
  * Provides:
  *   1. Tailwind v4 utilities (@import "tailwindcss").
@@ -13,6 +13,8 @@
  *   5. Sonner toast theme overrides.
  *   6. @theme inline mapping so Tailwind utility classes resolve tokens.
  *   7. dark custom-variant ([data-theme="dark"]).
+ *   8. `[data-accent]` color themes (default layer, AFTER theme.css
+ *      so they win the cascade over `:root { --primary }`).
  *
  * Services do NOT redeclare @theme, Tailwind import, base layer, or
  * component CSS. Customize ONLY by overriding semantic tokens in
@@ -21,7 +23,7 @@
  *   @import "@godxjp/ui/tailwind.css";
  *
  *   :root { --primary: oklch(58% 0.18 25); }
- *   [data-tenant="acme"] { --primary: oklch(...); }
+ *   [data-accent="custom"] { --primary: oklch(...); --brand: oklch(...); }
  *
  * See:
  *   - docs/explanation/tokens-architecture.md
@@ -83,14 +85,6 @@
   [data-density="default"]     { --density-spacing: 3px; }
   [data-density="comfortable"] { --density-spacing: 4px; }
 
-  /* Accent palettes — operator-selected via Tweaks panel. */
-  [data-accent="blue"]   { --primary: oklch(56% 0.13 246); --primary-foreground: oklch(98% 0.01 246); --ring: oklch(62% 0.12 246); }
-  [data-accent="green"]  { --primary: oklch(58% 0.12 158); --primary-foreground: oklch(98% 0.01 158); --ring: oklch(63% 0.11 158); }
-  [data-accent="violet"] { --primary: oklch(56% 0.12 302); --primary-foreground: oklch(98% 0.01 302); --ring: oklch(62% 0.11 302); }
-  [data-accent="amber"]  { --primary: oklch(67% 0.12 75);  --primary-foreground: oklch(18% 0.04 75);  --ring: oklch(72% 0.11 75); }
-  [data-accent="rose"]   { --primary: oklch(58% 0.12 18);  --primary-foreground: oklch(98% 0.01 18);  --ring: oklch(64% 0.1 18); }
-  [data-accent="slate"]  { --primary: oklch(48% 0.04 250); --primary-foreground: oklch(98% 0.01 250); --ring: oklch(58% 0.04 250); }
-
   * {
     @apply border-border outline-ring/50;
   }
@@ -104,3 +98,39 @@
 
   a { color: inherit; }
 }
+
+/* `[data-font-size]` — global root-font-size knob.
+ *
+ * Lives on `<html>` (the `:root` element). Setting `font-size` here
+ * rescales every rem-based token in the system — spacing, density
+ * element sizes, type scale, radii — so it acts as a true global
+ * accessibility/preference axis. 100% (16px) is the default browser
+ * rem; we offer a small + large variant on either side.
+ *
+ * Default layer (not `@layer base`) so it wins over any reset that
+ * sets `html { font-size: 100% }`. */
+html[data-font-size="sm"]      { font-size: 87.5%; }   /* 14px rem */
+html[data-font-size="base"]    { font-size: 100%; }    /* 16px rem (default) */
+html[data-font-size="lg"]      { font-size: 112.5%; }  /* 18px rem */
+html[data-font-size="xl"]      { font-size: 125%; }    /* 20px rem */
+
+/* `[data-accent]` color themes live in the default layer (not
+ * `@layer base`) so they win the cascade over `:root { --primary }`
+ * in `theme.css`. Default layer beats `@layer base` regardless of
+ * specificity or source order — moving these out of the base layer
+ * is what makes accent actually change the system color. */
+[data-accent="blue"]   { --primary: oklch(56% 0.13 246); --primary-foreground: oklch(98% 0.01 246); --ring: oklch(62% 0.12 246); --brand: oklch(56% 0.13 246); --sidebar-active-bg: oklch(95% 0.02 246); --sidebar-active-fg: oklch(56% 0.13 246); }
+[data-accent="green"]  { --primary: oklch(58% 0.12 158); --primary-foreground: oklch(98% 0.01 158); --ring: oklch(63% 0.11 158); --brand: oklch(58% 0.12 158); --sidebar-active-bg: oklch(95% 0.02 158); --sidebar-active-fg: oklch(58% 0.12 158); }
+[data-accent="violet"] { --primary: oklch(56% 0.12 302); --primary-foreground: oklch(98% 0.01 302); --ring: oklch(62% 0.11 302); --brand: oklch(56% 0.12 302); --sidebar-active-bg: oklch(95% 0.02 302); --sidebar-active-fg: oklch(56% 0.12 302); }
+[data-accent="amber"]  { --primary: oklch(67% 0.12 75);  --primary-foreground: oklch(18% 0.04 75);  --ring: oklch(72% 0.11 75);  --brand: oklch(67% 0.12 75);  --sidebar-active-bg: oklch(95% 0.03 75);  --sidebar-active-fg: oklch(50% 0.12 75); }
+[data-accent="rose"]   { --primary: oklch(58% 0.12 18);  --primary-foreground: oklch(98% 0.01 18);  --ring: oklch(64% 0.1 18);   --brand: oklch(58% 0.12 18);  --sidebar-active-bg: oklch(95% 0.02 18);  --sidebar-active-fg: oklch(58% 0.12 18); }
+[data-accent="slate"]  { --primary: oklch(48% 0.04 250); --primary-foreground: oklch(98% 0.01 250); --ring: oklch(58% 0.04 250); --brand: oklch(48% 0.04 250); --sidebar-active-bg: oklch(94% 0.01 250); --sidebar-active-fg: oklch(48% 0.04 250); }
+
+/* Dark-mode accent variants — lifted lightness for legibility on
+ * dark surfaces, matched chroma for richness. */
+[data-theme="dark"][data-accent="blue"]   { --primary: oklch(70% 0.13 246); --primary-foreground: oklch(18% 0.005 60); --ring: oklch(70% 0.13 246); --brand: oklch(72% 0.13 246); --sidebar-active-bg: oklch(28% 0.04 246); --sidebar-active-fg: oklch(78% 0.13 246); }
+[data-theme="dark"][data-accent="green"]  { --primary: oklch(72% 0.14 158); --primary-foreground: oklch(18% 0.005 60); --ring: oklch(72% 0.14 158); --brand: oklch(72% 0.14 158); --sidebar-active-bg: oklch(28% 0.04 158); --sidebar-active-fg: oklch(78% 0.13 158); }
+[data-theme="dark"][data-accent="violet"] { --primary: oklch(70% 0.14 302); --primary-foreground: oklch(18% 0.005 60); --ring: oklch(70% 0.14 302); --brand: oklch(72% 0.13 302); --sidebar-active-bg: oklch(28% 0.04 302); --sidebar-active-fg: oklch(78% 0.13 302); }
+[data-theme="dark"][data-accent="amber"]  { --primary: oklch(78% 0.14 75);  --primary-foreground: oklch(18% 0.005 60); --ring: oklch(78% 0.14 75);  --brand: oklch(78% 0.14 75);  --sidebar-active-bg: oklch(28% 0.05 75);  --sidebar-active-fg: oklch(82% 0.13 75); }
+[data-theme="dark"][data-accent="rose"]   { --primary: oklch(72% 0.13 18);  --primary-foreground: oklch(18% 0.005 60); --ring: oklch(72% 0.13 18);  --brand: oklch(72% 0.13 18);  --sidebar-active-bg: oklch(28% 0.04 18);  --sidebar-active-fg: oklch(78% 0.13 18); }
+[data-theme="dark"][data-accent="slate"]  { --primary: oklch(72% 0.04 250); --primary-foreground: oklch(18% 0.005 60); --ring: oklch(72% 0.04 250); --brand: oklch(72% 0.04 250); --sidebar-active-bg: oklch(28% 0.02 250); --sidebar-active-fg: oklch(82% 0.04 250); }
