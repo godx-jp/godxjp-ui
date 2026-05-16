@@ -31,6 +31,15 @@
   input  { font-size: var(--text-base); font-weight: var(--font-weight-normal); line-height: var(--leading-normal); font-family: inherit; color: inherit; }
   textarea, select { font-family: inherit; color: inherit; }
 
+  /* Tailwind v4 preflight sets `svg { display: block }`. That breaks
+   * every primitive that doesn't explicitly establish a flex context
+   * around an inline icon — the SVG wraps to its own line above the
+   * accompanying text. Restore the historical CSS behaviour: SVGs are
+   * inline-block, vertically aligned with text. Components that need
+   * block SVGs (e.g. icon-only Button) set `display: block` on the
+   * SVG inside their own selector. */
+  svg { display: inline-block; vertical-align: middle; }
+
   ::selection { background: color-mix(in oklch, var(--primary) 30%, transparent); }
 
   /* Scrollbar */
