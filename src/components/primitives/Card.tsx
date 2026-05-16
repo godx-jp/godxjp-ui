@@ -111,9 +111,7 @@ export function Card({
 }: CardProps) {
   const hasHeader =
     title !== undefined || extra !== undefined || subtitle !== undefined;
-  const headerInline = padding !== "none";
-  const bodyInline = padding !== "none";
-  const footerInline = padding !== "none";
+  const flush = padding === "none";
   return (
     <div
       className={cn(
@@ -131,19 +129,15 @@ export function Card({
           title={title}
           subtitle={subtitle}
           extra={extra}
-          inline={headerInline}
+          block={flush}
         />
       )}
-      {headerInline && bodyInline ? (
-        <div className="card-body">{children}</div>
-      ) : (
-        children
-      )}
+      {flush ? children : <div className="card-body-inline">{children}</div>}
       {footer !== undefined && (
-        <CardFooter inline={footerInline}>{footer}</CardFooter>
+        <CardFooter block={flush}>{footer}</CardFooter>
       )}
       {actions !== undefined && (
-        <CardFooter inline={footerInline} actions>
+        <CardFooter block={flush} actions>
           {actions}
         </CardFooter>
       )}
@@ -157,17 +151,19 @@ export interface CardHeaderProps extends Omit<ComponentProps<"div">, "title"> {
   title?: ReactNode;
   subtitle?: ReactNode;
   extra?: ReactNode;
-  /** Internal flag — when true, the header is wrapped in the parent's
-   * padding; set to `false` if the parent Card uses `padding="none"`
-   * and the header lives in an explicit `.card-header-block` region. */
-  inline?: boolean;
+  /** When `true`, the header pads itself + draws a bottom divider —
+   * the `.ch` block used inside flush cards (`padding="none"`). When
+   * `false` (default), the header is a flex row that sits inside the
+   * parent card's padding with a small margin-bottom and NO divider —
+   * matches the design canon's padded-card slot pattern. */
+  block?: boolean;
 }
 
 export function CardHeader({
   title,
   subtitle,
   extra,
-  inline = false,
+  block = false,
   className,
   children,
   ...rest
@@ -175,8 +171,7 @@ export function CardHeader({
   return (
     <div
       className={cn(
-        "card-header",
-        !inline && "card-header-block",
+        block ? "card-header-block" : "card-header-inline",
         className,
       )}
       {...rest}
@@ -210,41 +205,42 @@ export function CardSubtitle({ className, ...rest }: CardSubtitleProps) {
 }
 
 export interface CardBodyProps extends ComponentProps<"div"> {
-  /** When the parent Card uses `padding="none"`, the body pads itself. */
-  inline?: boolean;
+  /** When `true`, the body pads itself (the `.cb` block used in flush cards). */
+  block?: boolean;
 }
 
 export function CardBody({
-  inline = false,
+  block = false,
   className,
   ...rest
 }: CardBodyProps) {
   return (
     <div
-      className={cn("card-body", !inline && "card-body-block", className)}
+      className={cn(block ? "card-body-block" : "card-body-inline", className)}
       {...rest}
     />
   );
 }
 
 export interface CardFooterProps extends ComponentProps<"div"> {
-  /** Right-aligned action bar, no muted tint. */
+  /** Right-aligned action bar, no muted tint, no separator background. */
   actions?: boolean;
-  /** When the parent Card uses `padding="none"`, the footer pads itself. */
-  inline?: boolean;
+  /** When `true`, the footer pads itself + draws a top divider — the
+   * `.cf` block used inside flush cards. When `false`, the footer sits
+   * inside the parent card's padding with margin-top + top divider. */
+  block?: boolean;
 }
 
 export function CardFooter({
   actions,
-  inline = false,
+  block = false,
   className,
   ...rest
 }: CardFooterProps) {
   return (
     <div
       className={cn(
-        "card-footer",
-        !inline && "card-footer-block",
+        block ? "card-footer-block" : "card-footer-inline",
         actions && "card-footer-actions",
         className,
       )}

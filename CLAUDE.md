@@ -1,6 +1,6 @@
 # @godxjp/ui — cardinal rules
 
-Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 21
+Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 22
 cardinal rules below are non-negotiable; anything older that
 contradicts them is wrong.
 
@@ -204,6 +204,76 @@ framework concept; inline duplication is rejected at review.
     (e.g. a fixed-aspect-ratio media element ignoring font-size),
     that's documented in the primitive's reference doc with the
     reason — not silently absorbed.
+
+22. **100% match to the design canon — absolute.** Every visual
+    decision (padding, height, gap, font-size, font-weight,
+    line-height, border-width, border-color, radius, shadow,
+    spacing inside a region, divider presence, region order,
+    icon size, dot size, transition timing) MUST come from the
+    canonical design bundle at
+    `design-handoff/ui-system/<latest-bundle>/`. Implementations
+    that ship "close enough" are rejected — close-enough is the
+    reason design systems drift.
+
+    Process:
+
+    1. **Read first**: before writing CSS, open the matching
+       `project/preview/comp-<name>.html` in the bundle. Read it
+       top to bottom. Note every literal value (px, rem, percent,
+       color-mix expression, var-token reference) used by the
+       primitive's regions.
+    2. **Token-pin those literals**: express each literal as a
+       token reference (`var(--…)`), in `rem` for user-scalable
+       quantities, in `px` for the documented exceptions (44px
+       touch target, 1px hairline, SVG viewBox). The token's
+       DEFAULT value matches the design literal exactly (at
+       `data-density="default"` + `data-font-size="base"`).
+    3. **Honour axes via the token chain**: rule 21. Token
+       rescales naturally with density / font-size; literal value
+       at default density / base font-size matches the design
+       pixel-for-pixel.
+    4. **Verify with `getComputedStyle`**: a Playwright probe on
+       the rendered primitive reads `getComputedStyle(element)` and
+       compares to the design literal at default-density / base-
+       font-size. Drift in a single px is a bug, not a
+       discretionary judgement.
+    5. **Missing from the bundle?** STOP. Tell the user:
+       > "The design bundle at `design-handoff/ui-system/<latest>/`
+       > does not cover X. Please mock it on Claude Design
+       > (claude.ai/design) and share the new handoff URL — I'll
+       > re-fetch + implement."
+       Never improvise. Never "fill in a gap" with your own
+       visual judgement. The bundle is the contract.
+
+    Anti-patterns (rejected at review):
+
+    - "Used `--spacing-3` (12px) where the design shows 10px
+      because 12 was already in the token system." → Add the
+      missing 10px token, or use the closest design-matching
+      rem value, or add a per-component variable. Never
+      substitute.
+    - "Used `--text-base` (14px) where the design shows 13px
+      because we already have base." → Same. Add the missing
+      token, don't substitute.
+    - "Used `border-bottom: 1px solid var(--border)` on the
+      header because Tabs has one." → If the design's header in
+      this context has NO divider, your header has NO divider.
+      No cross-component borrowing.
+    - "Switched the order of subtitle + extra because it read
+      better." → No. Region order is the design's contract.
+
+    Honest variances are documented:
+
+    - If a design literal cannot map cleanly to the token system
+      (e.g. the design says 10px but we have `--spacing-2` = 8px
+      and `--spacing-3` = 12px), add a new token in
+      `src/styles/theme.css` that pins the exact value, then
+      reference it. Document the addition in CHANGELOG.md under
+      `### Added` so reviewers see why a new token landed.
+
+    The whole reason `design-handoff/ui-system/` exists is to
+    serve as the verifiable contract. Bypassing it is the most
+    expensive bug class this framework can ship.
 
 ## Hard rules — code review rejects on sight
 

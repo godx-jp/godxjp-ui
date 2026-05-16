@@ -236,6 +236,18 @@
    * density block) so it applies regardless of density. */
   --brand: oklch(60% 0.137 163);
 
+  /* Card chrome — pinned to dxs-kintai design canon
+   * (`design-handoff/ui-system/dxs-kintai-design-system/project/preview/
+   * comp-card.html`): `.ch` pad 10/16, `.cb` pad 14/16, `.cf` pad 10/16.
+   * Per cardinal rule 22 these literals come from the bundle, expressed
+   * as rem so the font-size axis rescales. Density-card carries the
+   * horizontal pad so the density axis rescales. */
+  --card-pad-y-header: 0.625rem;  /* 10px */
+  --card-pad-y-body:   0.875rem;  /* 14px */
+  --card-pad-y-footer: 0.625rem;  /* 10px */
+  --card-title-size:   0.8125rem; /* 13px — `.ch .t` */
+  --card-meta-size:    0.6875rem; /* 11px — `.ch .sub`, `.micro` */
+
   /* Monospace stack — used by me-service identity blocks + sandbox row
    * fingerprints. */
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
