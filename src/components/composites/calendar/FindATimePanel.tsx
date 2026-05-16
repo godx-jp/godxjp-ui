@@ -6,7 +6,7 @@ import {
   AvailabilityRow,
   SuggestedSlotCard,
   type PersonRef,
-} from "../../primitives/calendar";
+} from "../../primitives/calendar/index";
 
 /**
  * FindATimePanel — 1100×720 scheduling assistant. People rows on the

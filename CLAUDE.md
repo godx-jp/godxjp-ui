@@ -4,10 +4,18 @@ Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 20
 cardinal rules below are non-negotiable; anything older that
 contradicts them is wrong.
 
-For agent recipes (build, test, recipes, gotchas) see
-[`./AGENTS.md`](./AGENTS.md). For deeper architectural binding
-rules specific to `@godxjp/ui` (theme axes, cascade layering, …)
-see [`./new-docs/`](./new-docs/) — index at
+> **Read [`./AGENTS.md`](./AGENTS.md) first.** This file carries
+> the cardinal *rules* (the WHAT — concise, non-negotiable);
+> AGENTS.md carries the *recipes* (the HOW — package map, topic
+> homes, workflows, verification gates, design-system handoff,
+> third-party library policy, gotchas). Per umbrella rule 10
+> (one-fact-one-home) the recipe content lives there, not here.
+> If you find yourself wanting to expand a rule below into a
+> recipe, write it in AGENTS.md and leave the rule short.
+
+For deeper architectural binding rules specific to `@godxjp/ui`
+(theme axes, consumer contract, future rules) see
+[`./new-docs/`](./new-docs/) — index at
 [`./new-docs/00-index.md`](./new-docs/00-index.md). For umbrella-wide
 binding rules see [`../../../new-docs/`](../../../new-docs/).
 
@@ -85,10 +93,36 @@ framework concept; inline duplication is rejected at review.
     extension. No `any`. No `@ts-ignore` without comment + issue
     link.
 
-14. **No new external dependency without an ADR.** Locked stack:
-    React 19 + Tailwind v4 + Radix + cmdk + sonner +
-    react-day-picker + lucide + i18next. New peer →
-    `docs/adr/NNNN-<slug>.md`.
+14. **Every third-party library is shadcn / Radix-recommended.**
+    Any new external dependency consumed by a component MUST be one
+    that shadcn/ui OR Radix UI (or the React Aria / Adobe React
+    Spectrum companion stack — same recommendation pool) ship as
+    their official choice for that capability. The goal is one
+    cohesive interaction + accessibility surface across every
+    primitive; reaching for a library outside the recommendation
+    pool fractures behaviour, a11y, and theming.
+
+    Current locked stack:
+    - React 19, Tailwind v4 (locked at the framework level).
+    - **Radix UI** — interactive primitive base (per cardinal rule 3).
+    - **shadcn/ui ownership model** — primitive structure (per rule 4).
+    - **cmdk** — command palette (shadcn-canonical).
+    - **sonner** — toast (shadcn-canonical).
+    - **lucide-react** — icon set (shadcn-canonical).
+    - **react-aria-components** + **@internationalized/date** — date
+      picker / calendar (shadcn community-recommended replacement
+      for react-day-picker; ARIA APG-compliant, timezone-correct).
+    - **i18next** + **react-i18next** — i18n singleton (rule 5).
+    - **class-variance-authority** + **clsx** + **tailwind-merge** —
+      class composition (shadcn-canonical).
+
+    Adding a new peer → write `docs/adr/NNNN-<slug>.md` documenting
+    why the chosen library IS the shadcn/Radix recommendation for
+    that capability. If shadcn/Radix don't recommend any library for
+    the capability, the ADR proposes the library, links the shadcn
+    community discussion, and gets review approval. **No silent
+    "I picked this because it's popular"** — popularity does not
+    substitute for ecosystem cohesion.
 
 15. **`@apply` re-encoding tokens is forbidden.** Inside primitive
     `.tsx`, do not `@apply` a Tailwind utility that re-encodes a

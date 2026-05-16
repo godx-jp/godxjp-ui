@@ -12,7 +12,7 @@ import {
   IconRow,
   type CalendarRef,
   type PersonRef,
-} from "../../primitives/calendar";
+} from "../../primitives/calendar/index";
 
 /**
  * CreateEventDialog — 880×640 modal-shaped create form. Two-column

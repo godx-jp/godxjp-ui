@@ -31,4 +31,4 @@ export type {
 
 // Calendar / scheduling screen compositions (Week / Month / Day /
 // Agenda / EventDetail / CreateEvent / FindATime).
-export * from "./calendar";
+export * from "./calendar/index";

@@ -50,12 +50,12 @@
   .field > label .spacer { flex:1 }
   .field > label a { font-size:11px; color:var(--info); text-decoration:none; font-weight:400 }
   .field > label a:hover { text-decoration:underline }
-  .help { font-size:11px; color:var(--muted-foreground); display:flex; align-items:center; gap:4px; line-height:1.45 }
+  .help { font-size:11px; color:var(--muted-foreground); display:flex; align-items:flex-start; gap:4px; line-height:1.45 }
   .help.err { color:var(--destructive) }
   .help.warn { color:oklch(48% 0.12 75) }
   .help.ok { color:var(--success) }
   .help.info { color:var(--info) }
-  .help svg { flex-shrink:0 }
+  .help svg, .help .spinner { flex-shrink:0; margin-top:3px }
   .count { font-size:11px; color:var(--muted-foreground); font-variant-numeric:tabular-nums }
   .count.warn { color:oklch(48% 0.12 75) }
   .count.over { color:var(--destructive) }
@@ -239,10 +239,126 @@
   </div>
 
   <!-- C · Multilingual fields -->
-  <div class="section-title">C · Multilingual fields — i18n input patterns</div>
+  <div class="section-title">C · Multilingual fields — i18n input patterns (compact)</div>
 
   <div class="muted" style="font-size:11px;line-height:1.55;margin-bottom:12px">
-    Khi 1 field cần lưu nhiều ngôn ngữ (商品名 · 店舗名 · お知らせ文 · 説明文), choose theo độ phức tạp:
+    Khi 1 field cần lưu nhiều ngôn ngữ (商品名 · 店舗名 · お知らせ文 · 説明文) — pick pattern theo số locales × tần suất edit. 6 compact patterns + 3 layouts đầy đủ phía dưới.
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;margin-bottom:18px">
+
+    <!-- C-1: inline locale toggle -->
+    <div class="field">
+      <label>
+        商品名 <span class="req">*</span>
+        <span class="spacer"></span>
+        <span style="display:inline-flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;height:22px">
+          <button style="border:0;background:var(--background);color:var(--foreground);font-weight:500;padding:0 6px;font-size:11px;border-right:1px solid var(--border);font-family:inherit">JA</button>
+          <button style="border:0;background:transparent;color:var(--muted-foreground);padding:0 6px;font-size:11px;border-right:1px solid var(--border);font-family:inherit">EN</button>
+          <button style="border:0;background:transparent;color:var(--muted-foreground);padding:0 6px;font-size:11px;font-family:inherit;display:inline-flex;align-items:center;gap:3px">VI <span style="width:5px;height:5px;border-radius:50%;background:var(--warning)"></span></button>
+        </span>
+      </label>
+      <input class="input" value="特選 まぐろ握り 6貫盛り合わせ"/>
+      <div class="help">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+        Inline toggle · 1 input · switch locale tại chỗ
+      </div>
+    </div>
+
+    <!-- C-2: dropdown locale switcher in label -->
+    <div class="field">
+      <label>
+        カテゴリ名 <span class="req">*</span>
+        <span class="spacer"></span>
+        <select style="height:22px;width:auto;padding:0 6px;font-size:11px;border-radius:4px;border:1px solid var(--border);background:var(--background);color:var(--foreground);font-family:inherit;outline:none;cursor:pointer">
+          <option>日本語 (基準)</option>
+          <option>English</option>
+          <option>Tiếng Việt</option>
+          <option>简体中文</option>
+        </select>
+      </label>
+      <input class="input" value="寿司 · 刺身"/>
+      <div class="help info">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        3/4 翻訳済 · 残 1 件 (ZH)
+      </div>
+    </div>
+
+    <!-- C-3: auto-translate suggestion -->
+    <div class="field">
+      <label>
+        商品説明 <span class="opt">(English)</span>
+        <span class="spacer"></span>
+        <span style="font-size:10px;color:var(--muted-foreground);font-family:ui-monospace,monospace">JA → EN</span>
+      </label>
+      <input class="input" placeholder="Premium tuna nigiri assortment, 6 pieces" style="color:var(--muted-foreground);font-style:italic;border-style:dashed"/>
+      <div class="help" style="color:var(--info)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="m16.24 16.24 2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="m16.24 7.76 2.83-2.83"/></svg>
+        AI 翻訳候補 · 信頼度 92% — <button style="border:0;background:transparent;color:var(--info);font-weight:500;cursor:pointer;font:inherit;padding:0">採用</button> / <button style="border:0;background:transparent;color:var(--muted-foreground);cursor:pointer;font:inherit;padding:0">編集</button>
+      </div>
+    </div>
+
+    <!-- C-4: stale translation badge -->
+    <div class="field">
+      <label>
+        店舗説明 <span class="opt">(Tiếng Việt)</span>
+        <span class="spacer"></span>
+        <span style="display:inline-flex;align-items:center;gap:3px;background:color-mix(in oklch, var(--warning) 18%, transparent);color:oklch(48% 0.12 75);border-radius:3px;padding:0 5px;height:18px;font-size:10px;font-weight:500">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          古い
+        </span>
+      </label>
+      <input class="input" value="Cách lối ra Hachiko ga Shibuya 3 phút đi bộ." style="border-color:oklch(70% 0.14 75)"/>
+      <div class="help warn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+        基準 (JA) が 2026/05/02 に更新 · 翻訳は 2026/03/12 のまま — 再確認推奨
+      </div>
+    </div>
+
+    <!-- C-5: plural forms (CLDR) -->
+    <div class="field">
+      <label>
+        残席メッセージ
+        <span class="spacer"></span>
+        <span style="font-size:10px;color:var(--muted-foreground);font-family:ui-monospace,monospace">EN · plural</span>
+      </label>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="display:grid;grid-template-columns:46px 1fr;gap:6px;align-items:center">
+          <span style="font-size:10px;color:var(--muted-foreground);font-family:ui-monospace,monospace;text-align:right">one</span>
+          <input class="input" value="1 seat left" style="height:28px"/>
+        </div>
+        <div style="display:grid;grid-template-columns:46px 1fr;gap:6px;align-items:center">
+          <span style="font-size:10px;color:var(--muted-foreground);font-family:ui-monospace,monospace;text-align:right">other</span>
+          <input class="input" value="{count} seats left" style="height:28px"/>
+        </div>
+      </div>
+      <div class="help">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/></svg>
+        JA / VI / ZH chỉ cần 1 form · EN / RU cần plural — UI tự collapse
+      </div>
+    </div>
+
+    <!-- C-6: RTL direction -->
+    <div class="field">
+      <label>
+        利用規約タイトル <span class="opt">(العربية)</span>
+        <span class="spacer"></span>
+        <span style="display:inline-flex;align-items:center;gap:3px;background:var(--secondary);border:1px solid var(--border);border-radius:3px;padding:0 5px;height:18px;font-size:10px;font-family:ui-monospace,monospace;color:var(--muted-foreground)">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          RTL
+        </span>
+      </label>
+      <input class="input" value="شروط استخدام النظام" dir="rtl" lang="ar" style="text-align:right;font-family:'Geeza Pro','Noto Sans Arabic',var(--font-sans-jp)"/>
+      <div class="help">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <span><code class="mono" style="background:var(--secondary);padding:0 3px;border-radius:2px">dir="rtl"</code> + font Arabic fallback · placeholder cũng RTL</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin:18px 0 10px;font-size:11px;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:0.08em;font-weight:500;border-top:1px dashed var(--border);padding-top:14px">
+    C · Multilingual — 3 layouts đầy đủ (chọn theo số field × số locale)
   </div>
 
   <!-- Pattern 1: Locale tabs (best for single field, 2-5 locales) -->
@@ -276,10 +392,10 @@
       </div>
     </div>
 
-    <div class="help" style="margin-top:6px">
-      <span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--success);margin-right:2px"></span>済 ·
-      <span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--warning);margin:0 2px 0 8px"></span>下書き / 古い ·
-      <span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--destructive);margin:0 2px 0 8px"></span>未翻訳
+    <div class="help" style="margin-top:6px;align-items:center">
+      <span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--success);vertical-align:middle;margin-right:2px"></span>済 ·
+      <span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--warning);vertical-align:middle;margin:0 2px 0 8px"></span>下書き / 古い ·
+      <span class="dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--destructive);vertical-align:middle;margin:0 2px 0 8px"></span>未翻訳
     </div>
   </div>
 
@@ -323,7 +439,7 @@
       <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;background:var(--secondary);border-bottom:1px solid var(--border)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted-foreground)"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         <span style="font-size:12px;color:var(--muted-foreground)">編集中の言語</span>
-        <select class="input" style="height:26px;width:auto;padding:0 8px;font-size:12px">
+        <select style="height:26px;width:auto;padding:0 8px;font-size:12px;border-radius:4px;border:1px solid var(--border);background:var(--background);color:var(--foreground);font-family:inherit;outline:none;cursor:pointer">
           <option>日本語 (基準)</option>
           <option>English</option>
           <option>Tiếng Việt</option>

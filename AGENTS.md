@@ -365,6 +365,160 @@ The submodule PR + the umbrella pin bump are TWO separate PRs.
 Never push a pin to a SHA that doesn't exist on the submodule
 remote.
 
+## Third-party library policy (cardinal rule 14)
+
+**Every external library consumed by a primitive / shell / hook MUST
+be a shadcn / Radix-ecosystem recommendation for the capability it
+covers.** Cardinal rule 14 (`./CLAUDE.md` §14) carries the binding
+form; this section carries the recipe.
+
+The recommendation pool (in priority order):
+
+1. **shadcn/ui** — primitive structure + ownership model.
+2. **Radix UI** — interactive primitives (Dialog, Popover, Tabs,
+   Combobox, DropdownMenu, …).
+3. **React Aria Components (Adobe)** — accessibility-first
+   primitives the shadcn community recommends where Radix doesn't
+   cover the capability. Currently used for date input.
+4. **@internationalized/date (Adobe)** — date / time math; pairs
+   with React Aria.
+5. **Tailwind v4 ecosystem** — token system (CSS custom properties +
+   `@theme inline`), `class-variance-authority`, `clsx`,
+   `tailwind-merge`.
+6. **shadcn community-canonical adjuncts** — `cmdk` (palette),
+   `sonner` (toast), `lucide-react` (icons), `i18next` +
+   `react-i18next` (i18n).
+
+When you need a capability not yet in the locked stack:
+
+1. Check if shadcn/ui ships a recipe for it (their `examples` /
+   blocks tree). Use the library they cite.
+2. If shadcn doesn't have it, check Radix.
+3. If Radix doesn't have it, check React Aria Components.
+4. If none of them do, open an ADR at `docs/adr/NNNN-<slug>.md`
+   proposing the library, citing the relevant shadcn community
+   discussion (Discord / GitHub Discussions / issue) that gives
+   the recommendation. Get review approval before installing.
+
+**Forbidden** (rejected at review):
+
+- Picking a library "because it's popular on npm trends" without
+  shadcn / Radix backing.
+- Picking the FIRST library a web search returns.
+- Picking a library because "the team used it before" if the team
+  used it BEFORE this rule landed (2026-05-16). Reset to the
+  recommendation pool.
+- Wrapping multiple libraries that solve the same capability
+  (e.g. two date pickers, two icon sets, two animation libs). One
+  capability → one library.
+
+Replacement history (preserved here so reasoning is auditable):
+
+- **react-day-picker → react-aria-components + @internationalized/date**
+  (2026-05-16). react-day-picker carries an idiosyncratic class
+  surface (`.rdp-root` collision with our `.calendar` wrapper) and
+  uses native `Date` objects (timezone-fragile). React Aria is
+  the shadcn community's modern recommendation: ARIA APG-compliant
+  keyboard nav, locale-aware via `react-aria-i18n`, timezone-correct
+  via `@internationalized/date`.
+
+## Design system handoff (bundle workflow)
+
+**Every visual or layout change MUST reference the canonical design
+system bundle.** Don't invent components, screens, colors,
+spacings, or typography. If the bundle does not cover something,
+**ask the user** to mock it on Claude Design first — never improvise.
+
+### Bundle location
+
+```
+libs/ts/godxjp-ui/design-handoff/
+├── README.md                      # workflow notes
+├── INTENT.md, GAPS.md, CANONICAL_GAPS.md, LAYOUT_AUDIT.md,
+│                                  # working notes from prior cycles
+├── godx-admin/                    # legacy bundle (HTML/JSX prototypes)
+├── calendar/                      # calendar-specific handoff
+└── ui-system/
+    └── dxs-kintai-design-system/  # CANONICAL bundle — read this
+        ├── README.md              # "CODING AGENTS: READ THIS FIRST"
+        ├── chats/chat[1-3].md     # intent transcripts
+        └── project/
+            ├── SKILL.md           # the design-system rules
+            ├── colors_and_type.css# canonical tokens
+            ├── admin-web/         # Next.js reference implementation
+            ├── ui_kits/admin-web/ # per-component HTML mockups
+            ├── preview/           # comp-*.html per-component previews
+            └── screenshots/       # rendered references
+```
+
+### Fetching / refreshing the bundle
+
+Bundles are exported from Claude Design (`claude.ai/design`) as
+URLs of the form `https://api.anthropic.com/v1/design/h/<hash>`.
+Content is a gzipped tarball; the WebFetch tool returns the binary.
+
+When the user posts a new design-handoff URL:
+
+1. Use the WebFetch tool against the URL. The response saves a
+   `.bin` file under `~/.claude/projects/.../tool-results/`.
+2. Extract to `/tmp/<some-name>/`:
+   ```bash
+   cp <bin-path> /tmp/design-<hash>.tar.gz
+   tar -xzf /tmp/design-<hash>.tar.gz -C /tmp/design-<hash>-extracted/
+   ```
+3. Inspect: `cat /tmp/design-<hash>-extracted/<project-name>/README.md`
+   first; the README always says **"CODING AGENTS: READ THIS
+   FIRST"**.
+4. Read every file in `<project-name>/chats/` to understand intent.
+5. Copy the extracted bundle into `design-handoff/ui-system/`
+   (replace the existing `<project-name>` directory if any —
+   bundles are atomic snapshots, never partially merged):
+   ```bash
+   rm -rf libs/ts/godxjp-ui/design-handoff/ui-system/<project-name>
+   cp -r /tmp/design-<hash>-extracted/<project-name> \
+        libs/ts/godxjp-ui/design-handoff/ui-system/
+   ```
+6. Update `design-handoff/README.md` and `INTENT.md` to point at
+   the new bundle hash + date.
+
+### Rules — every design follows the bundle
+
+- **No invention.** A new primitive, screen, color, spacing, or
+  type ramp that isn't in the bundle is rejected at review. The
+  bundle is the contract.
+- **Pixel-perfect intent, not literal DOM.** The bundle is HTML/CSS
+  prototypes; recreate the visual exactly in React + tokens.
+  Don't copy the prototype's internal DOM structure unless it
+  fits the React primitive model.
+- **Token-first.** `colors_and_type.css` in the bundle is the
+  canonical source for color + type tokens. Anything that does NOT
+  resolve to a `var(--token)` is wrong — change the token, don't
+  hard-code the value.
+- **`SKILL.md` is binding.** The `project/SKILL.md` in each bundle
+  carries the design-system author's rules (font weights, density,
+  attention-vs-danger preference, table row heights, etc.).
+  Re-read it at the start of every design session.
+- **Ask before improvising.** If you reach a screen / state / edge
+  case the bundle does NOT cover, STOP. Tell the user:
+  > "The design bundle at `design-handoff/ui-system/<name>/` does
+  > not cover X. Please mock it on Claude Design
+  > (`claude.ai/design`) and share the new handoff URL — I'll
+  > re-fetch + implement."
+  Do NOT improvise the missing piece.
+- **Update history.** When a bundle is refreshed, note the
+  before/after hash + date in `design-handoff/INTENT.md` so the
+  audit trail is preserved.
+
+### Reading order for a new design session
+
+1. `design-handoff/ui-system/<latest-bundle>/README.md`
+2. `design-handoff/ui-system/<latest-bundle>/chats/chat[N].md` (last one first —
+   that's where the user landed).
+3. `design-handoff/ui-system/<latest-bundle>/project/SKILL.md`.
+4. `design-handoff/ui-system/<latest-bundle>/project/colors_and_type.css`.
+5. The specific `preview/comp-<name>.html` or `ui_kits/admin-web/<name>.tsx`
+   for the primitive you're implementing.
+
 ## Gotchas (package-specific)
 
 - **`@apply` in primitives** that re-encodes a token value is

@@ -19,7 +19,7 @@ import {
   type CalendarEvent,
   type CalendarRef,
   type PersonRef,
-} from "../../primitives/calendar";
+} from "../../primitives/calendar/index";
 
 /**
  * EventDetailPanel — 360px right-rail panel for an opened event.

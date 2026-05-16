@@ -1,76 +1,1258 @@
-<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
 <style>
-  /* Sidebar mockup mirrors src/components/layout/app-sidebar.tsx
-     Icons: 16px stroke=2 lucide-style — same family as the rest of the app. */
-  .sb-icon { width:16px; height:16px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
-  .sb-chev { width:14px; height:14px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
-  .sb-row  { display:flex; align-items:center; gap:8px; height:32px; padding:0 8px; border-radius:4px; color:var(--muted-foreground) }
-  .sb-row.on { background:var(--accent); color:var(--foreground); font-weight:500 }
-  .sb-row .lbl { flex:1 }
-  .sb-section { display:flex; align-items:center; gap:4px; font-size:11px; color:var(--muted-foreground); padding:8px 8px 4px; height:24px; text-transform:uppercase; letter-spacing:0.04em }
+  /* ════════════════════════════════════════════════════════════════════
+   * Sidebar patterns · 240px (default) · 64px (collapsed)
+   * Mirrors src/components/layout/app-sidebar.tsx visual language.
+   * Icons: lucide-style, 16px, stroke 1.5 — same family across the app.
+   * ════════════════════════════════════════════════════════════════════ */
+
+  body { padding:18px 20px; background:var(--background) }
+
+  /* sidebar atoms ----------------------------------------------- */
+  .sb        { width:240px; border-right:1px solid var(--border); background:var(--card);
+               font-size:13px; display:flex; flex-direction:column; flex-shrink:0; overflow:hidden }
+  .sb.collapsed { width:64px }
+  .sb.dark   { background:var(--wa-kon); border-right-color:transparent; color:oklch(85% 0.01 240) }
+  .sb.dark .sb-row { color:oklch(78% 0.02 240) }
+  .sb.dark .sb-row.on { background:rgba(255,255,255,0.10); color:white }
+  .sb.dark .sb-section { color:oklch(60% 0.03 240) }
+  .sb.dark .sb-hr { border-color:rgba(255,255,255,0.10) }
+  .sb.dark .sb-foot { border-top-color:rgba(255,255,255,0.10) }
+
+  .sb-icon { width:16px; height:16px; flex-shrink:0; stroke:currentColor; fill:none;
+             stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round }
+  .sb-chev { width:13px; height:13px; flex-shrink:0; stroke:currentColor; fill:none;
+             stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; transition:transform 150ms }
+  .sb-chev.open { transform:rotate(180deg) }
+
+  /* ---- Context switchers (org / branch / project) ---- */
+  .sb-ctx { padding:8px 8px 4px; border-bottom:1px solid var(--border) }
+  .sb-ctx-lbl { font-size:10px; color:var(--muted-foreground); text-transform:uppercase;
+                letter-spacing:0.06em; font-weight:500; margin-bottom:4px; padding:0 6px }
+  .sb-ctx-btn { display:flex; align-items:center; gap:8px; width:100%; height:38px; padding:0 10px;
+                border:1px solid var(--border); border-radius:6px; background:var(--background);
+                cursor:pointer; font:inherit; color:inherit; text-align:left }
+  .sb-ctx-btn:hover { border-color:var(--ring); background:var(--accent) }
+  .sb-ctx-btn .badge { width:24px; height:24px; border-radius:4px; display:inline-flex; align-items:center;
+                       justify-content:center; font-size:11px; font-weight:700; color:var(--primary-foreground);
+                       background:var(--primary); flex-shrink:0 }
+  .sb-ctx-btn .badge.green  { background:#009444 }
+  .sb-ctx-btn .badge.akane  { background:var(--wa-akane) }
+  .sb-ctx-btn .badge.muted  { background:var(--secondary); color:var(--muted-foreground);
+                              border:1px solid var(--border); font-weight:500 }
+  .sb-ctx-btn .badge.dotted { background:transparent; color:var(--muted-foreground);
+                              border:1.5px dashed var(--border); font-weight:400 }
+  .sb-ctx-btn .stack { display:flex; flex-direction:column; min-width:0; flex:1; line-height:1.2 }
+  .sb-ctx-btn .nm    { font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .sb-ctx-btn .sub   { font-size:10px; color:var(--muted-foreground); margin-top:1px; white-space:nowrap;
+                       overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums }
+  .sb-ctx-btn.ph .nm { color:var(--muted-foreground); font-weight:400 }
+  .sb-ctx-btn .chev  { color:var(--muted-foreground); flex-shrink:0 }
+  .sb-ctx-btn .pill  { font-size:9px; font-family:ui-monospace,monospace; padding:1px 5px; border-radius:8px;
+                       background:var(--secondary); color:var(--muted-foreground) }
+
+  /* cascade: org → branch on one row */
+  .sb-ctx-cascade { display:flex; align-items:stretch; gap:0; border:1px solid var(--border); border-radius:6px;
+                    background:var(--background); overflow:hidden }
+  .sb-ctx-cascade .seg { display:flex; align-items:center; gap:6px; padding:0 8px; height:36px; min-width:0;
+                          background:transparent; border:0; cursor:pointer; font:inherit; color:inherit; text-align:left }
+  .sb-ctx-cascade .seg:hover { background:var(--accent) }
+  .sb-ctx-cascade .sep { width:1px; background:var(--border); flex-shrink:0; margin:6px 0 }
+  .sb-ctx-cascade .seg .stack { display:flex; flex-direction:column; min-width:0; line-height:1.2 }
+  .sb-ctx-cascade .seg .lbl  { font-size:9px; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted-foreground); font-weight:500 }
+  .sb-ctx-cascade .seg .val  { font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .sb-ctx-cascade .seg .badge{ width:18px; height:18px; border-radius:3px; flex-shrink:0; font-size:9px;
+                                background:var(--primary); color:var(--primary-foreground); display:inline-flex;
+                                align-items:center; justify-content:center; font-weight:700 }
+  .sb-ctx-cascade .seg.org { flex:0 0 auto }
+  .sb-ctx-cascade .seg.br  { flex:1; min-width:0 }
+  .sb-ctx-cascade .seg .chev { color:var(--muted-foreground); flex-shrink:0; margin-left:auto }
+
+  /* parent-child indent (vertical cascade) */
+  .sb-ctx-stack { display:flex; flex-direction:column; gap:6px; position:relative }
+  .sb-ctx-stack .child { margin-left:14px; width:calc(100% - 14px); position:relative }
+  .sb-ctx-stack .child::before { content:""; position:absolute; left:-10px; top:-7px; bottom:50%; width:1px;
+                                 background:var(--border) }
+  .sb-ctx-stack .child::after  { content:""; position:absolute; left:-10px; top:50%; width:8px; height:1px;
+                                 background:var(--border) }
+
+  /* top */
+  .sb-top    { display:flex; align-items:center; height:48px; padding:6px 8px;
+               border-bottom:1px solid var(--border) }
+  .sb-brand  { display:flex; align-items:center; gap:8px; padding:0 8px; border-radius:6px;
+               width:100%; height:36px; background:transparent; border:0; cursor:pointer; font:inherit; color:inherit; text-align:left }
+  .sb-brand:hover { background:var(--accent) }
+  .sb-brand .logo { width:22px; height:22px; border-radius:4px; background:var(--primary);
+                    color:var(--primary-foreground); display:flex; align-items:center; justify-content:center;
+                    font-size:11px; font-weight:700; flex-shrink:0 }
+  .sb-brand .stack { display:flex; flex-direction:column; min-width:0; flex:1; line-height:1.15 }
+  .sb-brand .nm   { font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .sb-brand .sub  { font-size:10px; color:var(--muted-foreground); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:1px }
+
+  /* nav scroll area */
+  .sb-nav { flex:1; padding:8px 6px; overflow:auto; display:flex; flex-direction:column; gap:2px }
+  .sb-nav::-webkit-scrollbar { width:6px }
+  .sb-nav::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px }
+
+  /* row */
+  .sb-row { display:flex; align-items:center; gap:8px; height:32px; padding:0 8px;
+            border-radius:4px; color:var(--muted-foreground); cursor:pointer;
+            text-decoration:none; white-space:nowrap; min-width:0 }
+  .sb-row:hover { background:var(--accent); color:var(--foreground) }
+  .sb-row.on    { background:var(--accent); color:var(--foreground); font-weight:500 }
+  .sb-row .lbl  { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis }
+  .sb-row .pill { font-size:10px; height:16px; padding:0 5px; border-radius:8px; min-width:16px;
+                  display:inline-flex; align-items:center; justify-content:center; font-weight:500 }
+  .sb-row .pill.muted { background:var(--secondary); color:var(--muted-foreground) }
+  .sb-row .pill.error { background:var(--destructive); color:var(--destructive-foreground) }
+  .sb-row .pill.warn  { background:var(--attention); color:var(--attention-foreground) }
+  .sb-row .pill.info  { background:var(--info); color:var(--info-foreground) }
+  .sb-row .pill.success { background:var(--success); color:var(--success-foreground) }
+  .sb-row .pill.outline { background:transparent; border:1px solid var(--border); color:var(--muted-foreground) }
+  .sb-row .kbd  { font-size:10px; height:16px; padding:0 4px; border-radius:3px;
+                  background:var(--secondary); border:1px solid var(--border);
+                  color:var(--muted-foreground); font-family:ui-monospace,monospace }
+  .sb-row .dot  { width:6px; height:6px; border-radius:50%; background:var(--muted-foreground); flex-shrink:0 }
+  .sb-row .dot.s { background:var(--success) }
+  .sb-row .dot.a { background:var(--attention) }
+  .sb-row .dot.i { background:var(--info) }
+  .sb-row .dot.w { background:var(--warning) }
+  .sb-row.danger:hover { background:color-mix(in oklch, var(--destructive) 10%, transparent); color:var(--destructive) }
+
+  /* drag handle (visible on hover for reorder) */
+  .sb-row .grip { width:8px; height:14px; opacity:0; flex-shrink:0;
+                  background-image:radial-gradient(circle, var(--muted-foreground) 1px, transparent 1.2px);
+                  background-size:3px 3px; background-position:0 0 }
+  .sb-row:hover .grip { opacity:0.5 }
+
+  /* section header */
+  .sb-section { display:flex; align-items:center; gap:6px; font-size:10px; color:var(--muted-foreground);
+                padding:10px 10px 4px; height:24px; text-transform:uppercase; letter-spacing:0.06em; font-weight:600;
+                user-select:none }
+  .sb-section.toggleable { cursor:pointer; padding-left:6px }
+  .sb-section.toggleable:hover { color:var(--foreground) }
+  .sb-section .badge { font-size:9px; font-family:ui-monospace,monospace; padding:1px 5px; border-radius:8px;
+                       background:var(--secondary); color:var(--muted-foreground); margin-left:auto; font-weight:500; letter-spacing:0 }
+  .sb-section .iconbtn { width:18px; height:18px; border:0; background:transparent; color:var(--muted-foreground);
+                         cursor:pointer; border-radius:3px; display:inline-flex; align-items:center; justify-content:center;
+                         margin-left:auto }
+  .sb-section .iconbtn:hover { background:var(--accent); color:var(--foreground) }
+
+  /* nested rows */
+  .sb-nest { display:flex; flex-direction:column; gap:2px; padding-left:24px;
+             border-left:1px solid var(--border); margin:2px 0 4px 14px; overflow:hidden;
+             transition:max-height 200ms ease, opacity 200ms ease; max-height:300px; opacity:1 }
+  .sb-nest.collapsed { max-height:0; opacity:0; margin-top:0; margin-bottom:0 }
+  .sb-nest .sb-row { height:28px; font-size:12px }
+  .sb-nest .sb-row.on::before { display:none }
+  .sb-nest .sb-row.on { background:transparent; color:var(--primary); font-weight:500 }
+  .sb-nest .sb-row::before { content:""; width:4px; height:4px; border-radius:50%; background:currentColor; opacity:0.4;
+                              margin-left:-4px; flex-shrink:0 }
+  .sb-nest .sb-row.on::before { background:var(--primary); opacity:1 }
+
+  /* hr inside sidebar */
+  .sb-hr { border:0; border-top:1px solid var(--border); margin:6px 8px }
+
+  /* search */
+  .sb-search { padding:6px 8px }
+  .sb-search .wrap { display:flex; align-items:center; gap:6px; height:28px; padding:0 8px;
+                     border:1px solid var(--border); border-radius:6px; background:var(--background);
+                     color:var(--muted-foreground) }
+  .sb-search input { border:0; background:transparent; flex:1; min-width:0; font:inherit; font-size:12px;
+                     outline:none; color:var(--foreground) }
+  .sb-search .kbd { font-size:10px; height:18px; padding:0 5px; border-radius:3px;
+                    background:var(--secondary); border:1px solid var(--border);
+                    color:var(--muted-foreground); font-family:ui-monospace,monospace }
+
+  /* footer / user */
+  .sb-foot { border-top:1px solid var(--border); padding:8px }
+  .sb-user { display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:6px; cursor:pointer; min-width:0 }
+  .sb-user:hover { background:var(--accent) }
+  .sb-user .ava { width:28px; height:28px; border-radius:50%; background:var(--secondary);
+                  color:var(--muted-foreground); display:inline-flex; align-items:center; justify-content:center;
+                  font-size:11px; font-weight:500; flex-shrink:0; position:relative }
+  .sb-user .ava .live { position:absolute; right:-1px; bottom:-1px; width:9px; height:9px; border-radius:50%;
+                  background:var(--success); border:1.5px solid var(--card) }
+  .sb-user .nm   { font-size:12px; font-weight:500; line-height:1.3; min-width:0; flex:1; overflow:hidden }
+  .sb-user .nm small { display:block; font-size:10px; font-weight:400; color:var(--muted-foreground);
+                  white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .sb-user .menu { color:var(--muted-foreground) }
+  .sb.dark .sb-user .nm { color:white }
+  .sb.dark .sb-user .nm small { color:oklch(70% 0.02 240) }
+  .sb.dark .sb-user .ava { background:rgba(255,255,255,0.12); color:white }
+
+  /* mini stat block inside sidebar */
+  .sb-stat   { padding:10px 12px; border:1px solid var(--border); border-radius:6px; margin:6px 0 2px;
+               background:var(--card); display:flex; flex-direction:column; gap:6px }
+  .sb-stat .row1 { display:flex; align-items:center; justify-content:space-between; font-size:11px;
+                   color:var(--muted-foreground) }
+  .sb-stat .big  { font-size:18px; font-weight:600; font-variant-numeric:tabular-nums; line-height:1.1;
+                   letter-spacing:-0.01em }
+  .sb-stat .sub  { font-size:10px; color:var(--muted-foreground); font-variant-numeric:tabular-nums;
+                   font-family:ui-monospace,monospace }
+  .sb-stat .prog { height:4px; border-radius:2px; background:var(--secondary); overflow:hidden }
+  .sb-stat .prog > i { display:block; height:100%; background:var(--primary) }
+  .sb-stat .prog.warn > i { background:var(--warning) }
+  .sb-stat .prog.attn > i { background:var(--attention) }
+  .sb.dark .sb-stat { background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.10); color:white }
+  .sb.dark .sb-stat .row1, .sb.dark .sb-stat .sub { color:oklch(70% 0.02 240) }
+  .sb.dark .sb-stat .prog { background:rgba(255,255,255,0.10) }
+
+  /* promo banner */
+  .sb-promo { margin:8px 0; padding:12px; border-radius:8px; color:white; position:relative; overflow:hidden;
+              background:linear-gradient(135deg, var(--wa-ai) 0%, var(--wa-gunjo) 100%) }
+  .sb-promo.warm { background:linear-gradient(135deg, var(--wa-enji) 0%, var(--wa-shu) 100%) }
+  .sb-promo.green { background:linear-gradient(135deg, var(--wa-moegi) 0%, var(--wa-wakatake) 100%) }
+  .sb-promo::after { content:""; position:absolute; right:-20px; top:-20px; width:80px; height:80px; border-radius:50%;
+                      background:rgba(255,255,255,0.10); pointer-events:none }
+  .sb-promo .tg  { display:inline-block; font-size:9px; text-transform:uppercase; letter-spacing:0.06em; opacity:0.85;
+                   background:rgba(255,255,255,0.15); padding:1px 6px; border-radius:8px; margin-bottom:6px }
+  .sb-promo .t   { font-size:12px; font-weight:600; line-height:1.4; margin-bottom:2px; position:relative; z-index:1 }
+  .sb-promo .d   { font-size:11px; opacity:0.85; line-height:1.5; position:relative; z-index:1 }
+  .sb-promo .cta { display:inline-flex; align-items:center; gap:4px; margin-top:8px; font-size:11px;
+                   font-weight:500; padding:4px 8px; border-radius:4px; background:rgba(255,255,255,0.20);
+                   color:white; border:0; cursor:pointer; font-family:inherit; position:relative; z-index:1 }
+  .sb-promo .x   { position:absolute; top:6px; right:6px; width:18px; height:18px; border:0; background:transparent;
+                   color:rgba(255,255,255,0.7); cursor:pointer; padding:0; display:inline-flex; align-items:center;
+                   justify-content:center; border-radius:3px; z-index:2 }
+  .sb-promo .x:hover { background:rgba(255,255,255,0.15); color:white }
+
+  /* upgrade card (subtle, fits design system) */
+  .sb-upgrade { margin:8px 0; padding:12px; border:1px solid var(--border); border-radius:6px;
+                background:color-mix(in oklch, var(--primary) 4%, var(--card));
+                display:flex; flex-direction:column; gap:4px }
+  .sb-upgrade .row1 { display:flex; align-items:center; gap:6px }
+  .sb-upgrade .row1 .ic { width:24px; height:24px; border-radius:4px;
+                          background:color-mix(in oklch, var(--primary) 12%, var(--card));
+                          color:var(--primary); display:inline-flex; align-items:center; justify-content:center;
+                          flex-shrink:0 }
+  .sb-upgrade .t  { font-size:12px; font-weight:500 }
+  .sb-upgrade .d  { font-size:10px; color:var(--muted-foreground); line-height:1.5 }
+  .sb-upgrade .prog { height:3px; border-radius:2px; background:var(--secondary); overflow:hidden; margin-top:4px }
+  .sb-upgrade .prog > i { display:block; height:100%; background:var(--primary) }
+
+  /* avatar stack (team peek) */
+  .sb-ava-stack { display:inline-flex }
+  .sb-ava-stack > * { width:18px; height:18px; border-radius:50%; border:2px solid var(--card);
+                      margin-left:-6px; font-size:9px; font-weight:500;
+                      display:inline-flex; align-items:center; justify-content:center; flex-shrink:0 }
+  .sb-ava-stack > *:first-child { margin-left:0 }
+
+  /* collapsed mode icons */
+  .sb.collapsed .sb-top  { justify-content:center; padding:0 }
+  .sb.collapsed .sb-row  { justify-content:center; padding:0 8px; position:relative }
+  .sb.collapsed .sb-row.on::before { display:none }
+  .sb.collapsed .sb-row .lbl,
+  .sb.collapsed .sb-row .kbd,
+  .sb.collapsed .sb-row .grip { display:none }
+  .sb.collapsed .sb-row .pill { position:absolute; top:2px; right:4px; height:13px; padding:0 3px; font-size:9px; min-width:13px }
+  .sb.collapsed .sb-section { justify-content:center; padding:8px 0 4px; font-size:0 }
+  .sb.collapsed .sb-section::after { content:""; width:16px; height:1px; background:var(--border) }
+  .sb.collapsed .sb-section .iconbtn { display:none }
+  .sb.collapsed .sb-search,
+  .sb.collapsed .sb-stat,
+  .sb.collapsed .sb-promo,
+  .sb.collapsed .sb-upgrade,
+  .sb.collapsed .sb-nest { display:none }
+  .sb.collapsed .sb-brand .nm,
+  .sb.collapsed .sb-brand .sub,
+  .sb.collapsed .sb-brand svg.sb-chev,
+  .sb.collapsed .sb-user .nm,
+  .sb.collapsed .sb-user .menu { display:none }
+  .sb.collapsed .sb-user { justify-content:center; padding:6px 0 }
+  .sb.collapsed .sb-brand { justify-content:center; padding:6px }
+
+  /* page area shell */
+  .page    { flex:1; min-width:0; background:var(--background) }
+  .page-h  { height:48px; border-bottom:1px solid var(--border); display:flex; align-items:center;
+             gap:10px; padding:0 14px; background:var(--card); font-size:12px; color:var(--muted-foreground) }
+  .page-h .crumb { color:var(--muted-foreground); font-size:12px }
+  .page-h .crumb b { color:var(--foreground); font-weight:500 }
+  .page-h .spacer { flex:1 }
+  .page-b  { padding:18px; height:calc(100% - 48px); display:flex; align-items:center; justify-content:center;
+             color:var(--muted-foreground); font-family:ui-monospace,monospace; font-size:11px;
+             background:repeating-linear-gradient(45deg, var(--background) 0 8px, color-mix(in oklch, var(--secondary) 40%, var(--background)) 8px 16px) }
+
+  /* card-wrap for each pattern */
+  .pat       { display:flex; flex-direction:column; background:var(--card); border:1px solid var(--border);
+               border-radius:6px; overflow:hidden; box-shadow:none }
+  .pat-h     { padding:10px 14px; border-bottom:1px solid var(--border);
+               background:color-mix(in oklch, var(--secondary) 50%, var(--card));
+               display:flex; align-items:baseline; gap:10px; flex-wrap:wrap }
+  .pat-h .n  { font-size:11px; font-weight:600; color:var(--foreground); letter-spacing:0.04em }
+  .pat-h .d  { font-size:11px; color:var(--muted-foreground); line-height:1.55 }
+  .pat-body  { display:flex; height:540px; overflow:hidden }
+  .pat-body.tall { height:640px }
+
+  .section-title { font-size:11px; color:var(--muted-foreground); text-transform:uppercase; letter-spacing:0.08em;
+                   font-weight:600; margin:22px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border) }
+  .section-title:first-of-type { margin-top:0 }
+
+  .grid-pat { display:grid; grid-template-columns:1fr; gap:18px }
+
+  /* responsive helper for two-up where fits */
+  @media (min-width:1280px) {
+    .grid-pat-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px }
+  }
 </style>
 </head>
-<body style="padding:0;background:var(--background)">
-  <div style="display:flex">
-    <aside style="width:240px;border-right:1px solid var(--border);padding:0;font-size:13px;height:340px">
+<body>
 
-      <!-- Tenant switcher -->
-      <div style="display:flex;align-items:center;height:48px;padding:0 8px;border-bottom:1px solid var(--border)">
-        <button style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;width:100%;background:var(--accent);border:0;cursor:pointer;font:inherit;color:inherit">
-          <div style="width:20px;height:20px;border-radius:4px;background:var(--primary);color:var(--primary-foreground);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">F</div>
-          <span style="font-size:13px;font-weight:600;flex:1;text-align:left">famgia</span>
-          <!-- chevrons-up-down (tenant switcher) -->
-          <svg class="sb-chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="7 15 12 20 17 15"/><polyline points="7 9 12 4 17 9"/></svg>
+<div class="muted" style="font-size:11px;line-height:1.6;margin-bottom:18px">
+  <b>Sidebar patterns</b> · 240px (default) · 64px (collapsed) · cùng visual language với <code>src/components/layout/app-sidebar.tsx</code>.
+  9 patterns đa dụng cho admin / employee / mobile-icon / multi-tenant / setting / project workspace.
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  A · HR Admin · full default                                        ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="section-title">A · HR / Admin · default 240px — nested · badges · section toggles · footer user</div>
+
+<div class="pat">
+  <div class="pat-h">
+    <span class="n">A · HR ADMIN</span>
+    <span class="d">tenant switcher · search · 3 sections (概要 / 組織 / 設定) · nested under 「従業員」 · user footer with status dot</span>
+  </div>
+  <div class="pat-body tall">
+    <aside class="sb">
+      <div class="sb-top">
+        <button class="sb-brand">
+          <div class="logo">F</div>
+          <div class="stack">
+            <div class="nm">famgia</div>
+            <div class="sub">HR 管理 · Pro</div>
+          </div>
+          <svg class="sb-chev" viewBox="0 0 24 24"><polyline points="7 15 12 20 17 15"/><polyline points="7 9 12 4 17 9"/></svg>
         </button>
       </div>
 
-      <div style="padding:8px 6px">
-        <!-- Section header (no caret — top-level section labels are not collapsible) -->
+      <div class="sb-search">
+        <div class="wrap">
+          <svg class="sb-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="検索…"/>
+          <span class="kbd">⌘K</span>
+        </div>
+      </div>
+
+      <div class="sb-nav">
         <div class="sb-section">概要</div>
-
-        <!-- Active: layout-dashboard -->
-        <div class="sb-row on">
-          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
           <span class="lbl">ダッシュボード</span>
-        </div>
-
-        <!-- calendar-days -->
-        <div class="sb-row">
-          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="8" y2="18"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
-          <span class="lbl">マイシフト</span>
-        </div>
-
-        <!-- clipboard-list (with badge) -->
-        <div class="sb-row">
-          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="lbl">シフト</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
           <span class="lbl">勤怠表</span>
-          <span class="chip chip-destructive" style="height:16px;font-size:10px;padding:0 5px;min-width:16px">3</span>
-        </div>
+          <span class="pill error">3</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/><path d="M8 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/><path d="M16 13H8a4 4 0 0 0-4 4v3h16v-3a4 4 0 0 0-4-4z"/></svg>
+          <span class="lbl">承認</span>
+          <span class="pill warn">12</span>
+        </a>
 
-        <!-- Collapsible section header — caret is a real SVG -->
-        <div class="sb-section" style="cursor:pointer">
-          <svg class="sb-chev" viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(0deg)"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="sb-section toggleable">
+          <svg class="sb-chev open" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
           <span>組織</span>
+          <span class="badge">42</span>
         </div>
-
-        <!-- users -->
-        <div class="sb-row">
-          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           <span class="lbl">従業員</span>
+          <svg class="sb-chev open" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
+        <div class="sb-nest">
+          <a class="sb-row on"><span class="lbl">一覧</span></a>
+          <a class="sb-row"><span class="lbl">役職 · ロール</span></a>
+          <a class="sb-row"><span class="lbl">入社 · 退社</span><span class="pill muted">2</span></a>
+          <a class="sb-row"><span class="lbl">招待中</span></a>
         </div>
 
-        <!-- store -->
-        <div class="sb-row">
-          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>
           <span class="lbl">店舗</span>
-        </div>
+          <span class="pill muted">4</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="lbl">給与</span>
+        </a>
 
-        <!-- settings -->
-        <div class="sb-row">
-          <svg class="sb-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <hr class="sb-hr"/>
+        <div class="sb-section">設定</div>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="lbl">通知</span>
+          <span class="dot s"></span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           <span class="lbl">設定</span>
+        </a>
+      </div>
+
+      <div class="sb-foot">
+        <div class="sb-user">
+          <div class="ava">田<span class="live"></span></div>
+          <div class="nm">田中 美咲<small>店長 · 渋谷本店</small></div>
+          <svg class="sb-icon menu" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
         </div>
       </div>
     </aside>
+
+    <div class="page">
+      <div class="page-h">
+        <span class="crumb">HR 管理 · 従業員 · <b>一覧</b></span>
+        <span class="spacer"></span>
+        <span style="font-size:11px">5月 17日 (土) · 14:35</span>
+      </div>
+      <div class="page-b">page content · 1920 × 980</div>
+    </div>
   </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  A2 · Context switchers (org / branch / org→branch / project)      ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="section-title">A2 · Context switchers — 5 variants ở top sidebar (chỉ tổ chức · chỉ chi nhánh · 組織→chi nhánh · project · all-in-one)</div>
+
+<div class="pat">
+  <div class="pat-h">
+    <span class="n">A2 · CONTEXT SWITCHERS</span>
+    <span class="d">5 sidebar cùng lúc — mỗi cái show 1 cách "scoping" context khác nhau ở top. Layout cách đều, page area chiếm phần còn lại.</span>
+  </div>
+  <div class="pat-body" style="height:520px;display:grid;grid-template-columns:repeat(5, 1fr);gap:0">
+
+    <!-- V1: ORG ONLY -->
+    <aside class="sb" style="width:auto;border-right:1px dashed var(--border)">
+      <div class="sb-ctx">
+        <div class="sb-ctx-lbl">① 組織のみ</div>
+        <button class="sb-ctx-btn">
+          <span class="badge">F</span>
+          <div class="stack"><div class="nm">famgia</div><div class="sub">38 名 · 4 店舗</div></div>
+          <svg class="sb-chev chev" viewBox="0 0 24 24"><polyline points="7 15 12 20 17 15"/><polyline points="7 9 12 4 17 9"/></svg>
+        </button>
+      </div>
+      <div class="sb-nav">
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">ダッシュボード</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span class="lbl">従業員</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/></svg>
+          <span class="lbl">店舗 一覧</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="lbl">給与</span>
+        </a>
+      </div>
+      <div class="sb-foot">
+        <div style="font-size:10px;color:var(--muted-foreground);padding:4px 8px;line-height:1.5">
+          <b style="font-size:11px;font-weight:600;color:var(--foreground);display:block;margin-bottom:2px">When to use</b>
+          HR / Owner — quản lý cross-store. Không cần branch context vì view là roll-up toàn tổ chức.
+        </div>
+      </div>
+    </aside>
+
+    <!-- V2: BRANCH ONLY -->
+    <aside class="sb" style="width:auto;border-right:1px dashed var(--border)">
+      <div class="sb-ctx">
+        <div class="sb-ctx-lbl">② 店舗のみ</div>
+        <button class="sb-ctx-btn">
+          <span class="badge muted">渋</span>
+          <div class="stack"><div class="nm">渋谷本店</div><div class="sub">12 名 · 営業中</div></div>
+          <svg class="sb-chev chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+      <div class="sb-nav">
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="lbl">今日の打刻</span>
+          <span class="pill success">14</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="lbl">シフト表</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span class="lbl">スタッフ</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <span class="lbl">日報</span>
+        </a>
+      </div>
+      <div class="sb-foot">
+        <div style="font-size:10px;color:var(--muted-foreground);padding:4px 8px;line-height:1.5">
+          <b style="font-size:11px;font-weight:600;color:var(--foreground);display:block;margin-bottom:2px">When to use</b>
+          店長 — chỉ thao tác 1 chi nhánh đã pre-scoped (URL có brandSlug). Không show org để giảm noise.
+        </div>
+      </div>
+    </aside>
+
+    <!-- V3: ORG → BRANCH cascade -->
+    <aside class="sb" style="width:auto;border-right:1px dashed var(--border)">
+      <div class="sb-ctx">
+        <div class="sb-ctx-lbl">③ 組織 → 店舗</div>
+        <div class="sb-ctx-cascade">
+          <button class="seg org">
+            <span class="badge">F</span>
+            <svg class="sb-chev chev" viewBox="0 0 24 24" style="margin-left:2px"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="sep"></div>
+          <button class="seg br">
+            <div class="stack"><span class="lbl">店舗</span><span class="val">渋谷本店</span></div>
+            <svg class="sb-chev chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sb-nav">
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">ダッシュボード</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="lbl">シフト</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span class="lbl">従業員</span>
+          <span class="pill muted">12</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="lbl">売上</span>
+        </a>
+      </div>
+      <div class="sb-foot">
+        <div style="font-size:10px;color:var(--muted-foreground);padding:4px 8px;line-height:1.5">
+          <b style="font-size:11px;font-weight:600;color:var(--foreground);display:block;margin-bottom:2px">When to use</b>
+          User thuộc nhiều tenants × cần switch nhanh giữa các branches. Inline cascade = 1 row, ít space.
+        </div>
+      </div>
+    </aside>
+
+    <!-- V4: PARENT/CHILD stack -->
+    <aside class="sb" style="width:auto;border-right:1px dashed var(--border)">
+      <div class="sb-ctx">
+        <div class="sb-ctx-lbl">④ 親子 stack</div>
+        <div class="sb-ctx-stack">
+          <button class="sb-ctx-btn">
+            <span class="badge">F</span>
+            <div class="stack"><div class="nm">famgia</div><div class="sub">4 店舗</div></div>
+            <svg class="sb-chev chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <button class="sb-ctx-btn child">
+            <span class="badge muted" style="background:color-mix(in oklch, var(--primary) 12%, var(--card));color:var(--primary);border-color:color-mix(in oklch, var(--primary) 22%, transparent)">渋</span>
+            <div class="stack"><div class="nm">渋谷本店</div><div class="sub">12 名</div></div>
+            <svg class="sb-chev chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sb-nav">
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">ダッシュボード</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="lbl">シフト</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span class="lbl">従業員</span>
+        </a>
+      </div>
+      <div class="sb-foot">
+        <div style="font-size:10px;color:var(--muted-foreground);padding:4px 8px;line-height:1.5">
+          <b style="font-size:11px;font-weight:600;color:var(--foreground);display:block;margin-bottom:2px">When to use</b>
+          Hierarchy phải nhìn rõ — owner xem tổng quan org + drill xuống branch. Tốn 80px hơn cascade ngang.
+        </div>
+      </div>
+    </aside>
+
+    <!-- V5: PROJECT picker -->
+    <aside class="sb" style="width:auto">
+      <div class="sb-ctx">
+        <div class="sb-ctx-lbl">⑤ プロジェクト</div>
+        <button class="sb-ctx-btn">
+          <span class="badge" style="background:var(--wa-gunjo);border-radius:50%">P</span>
+          <div class="stack">
+            <div class="nm">Q2 リブランド</div>
+            <div class="sub">#PRJ-042 · 進行中</div>
+          </div>
+          <span class="pill">12</span>
+          <svg class="sb-chev chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+      <div class="sb-nav">
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <span class="lbl">タスク</span>
+          <span class="pill warn">8</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="lbl">スケジュール</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="lbl">ドキュメント</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span class="lbl">メンバー</span>
+          <span class="pill muted">5</span>
+        </a>
+      </div>
+      <div class="sb-foot">
+        <div style="font-size:10px;color:var(--muted-foreground);padding:4px 8px;line-height:1.5">
+          <b style="font-size:11px;font-weight:600;color:var(--foreground);display:block;margin-bottom:2px">When to use</b>
+          Project workspace (Linear / Asana style). Badge round = visually distinct với org badge vuông.
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  B · Sidebar with usage stat + upgrade card                         ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="section-title">B · With usage stats — quota progress · plan upgrade card · trial countdown</div>
+
+<div class="pat">
+  <div class="pat-h">
+    <span class="n">B · STATS &amp; UPGRADE</span>
+    <span class="d">3 mini stat blocks (今日の打刻 · 承認待ち · ストレージ) · Pro upgrade card inline · upsell low-key</span>
+  </div>
+  <div class="pat-body tall">
+    <aside class="sb">
+      <div class="sb-top">
+        <button class="sb-brand">
+          <div class="logo">F</div>
+          <div class="stack">
+            <div class="nm">famgia</div>
+            <div class="sub" style="color:var(--success)">● Starter · 14 日試用中</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="sb-nav">
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">ダッシュボード</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="lbl">シフト</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/><path d="M8 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/><path d="M16 13H8a4 4 0 0 0-4 4v3h16v-3a4 4 0 0 0-4-4z"/></svg>
+          <span class="lbl">承認</span>
+          <span class="pill warn">12</span>
+        </a>
+
+        <div class="sb-section">本日の数値</div>
+
+        <div class="sb-stat">
+          <div class="row1">
+            <span>打刻済</span>
+            <span class="sub">14 / 38 名</span>
+          </div>
+          <div class="big">37%</div>
+          <div class="prog"><i style="width:37%"></i></div>
+        </div>
+
+        <div class="sb-stat">
+          <div class="row1">
+            <span>承認待ち</span>
+            <span style="color:var(--attention);font-weight:500">12 件</span>
+          </div>
+          <div style="display:flex;gap:1px;margin-top:2px">
+            <i style="flex:1;height:14px;background:var(--attention);border-radius:1px"></i>
+            <i style="flex:1;height:14px;background:var(--attention);border-radius:1px"></i>
+            <i style="flex:1;height:14px;background:var(--attention);border-radius:1px"></i>
+            <i style="flex:1;height:14px;background:var(--attention);border-radius:1px;opacity:0.6"></i>
+            <i style="flex:1;height:14px;background:var(--attention);border-radius:1px;opacity:0.6"></i>
+            <i style="flex:1;height:14px;background:var(--attention);border-radius:1px;opacity:0.4"></i>
+            <i style="flex:1;height:14px;background:var(--secondary);border-radius:1px"></i>
+          </div>
+          <div class="sub">最古 5/14 09:42 (3日)</div>
+        </div>
+
+        <div class="sb-stat">
+          <div class="row1">
+            <span>ストレージ</span>
+            <span class="sub">42.8 / 50 GB</span>
+          </div>
+          <div class="prog warn"><i style="width:85%"></i></div>
+          <div class="sub" style="color:oklch(48% 0.12 75)">残 7.2 GB · 残量わずか</div>
+        </div>
+
+        <hr class="sb-hr"/>
+
+        <div class="sb-upgrade">
+          <div class="row1">
+            <div class="ic">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="t">Pro にアップグレード</div>
+          </div>
+          <div class="d">API · SSO · 無制限の従業員 · ¥480 / 名 / 月</div>
+          <div class="prog"><i style="width:62%"></i></div>
+          <div class="d" style="font-family:ui-monospace,monospace">試用期間 残 <b style="color:var(--primary)">8 日</b></div>
+          <button class="btn btn-sm" style="margin-top:4px">アップグレード</button>
+        </div>
+      </div>
+
+      <div class="sb-foot">
+        <div class="sb-user">
+          <div class="ava">田<span class="live"></span></div>
+          <div class="nm">田中 美咲<small>tanaka@famgia.co.jp</small></div>
+          <svg class="sb-icon menu" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        </div>
+      </div>
+    </aside>
+
+    <div class="page">
+      <div class="page-h"><span class="crumb"><b>ダッシュボード</b></span></div>
+      <div class="page-b">page content</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  C · With promo banners                                              ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="section-title">C · With banners — promo / new-feature · onboarding · changelog tease (dismissable)</div>
+
+<div class="pat">
+  <div class="pat-h">
+    <span class="n">C · BANNERS</span>
+    <span class="d">3 promo styles · gradient brand banner · subtle informational · onboarding progress</span>
+  </div>
+  <div class="pat-body tall">
+    <aside class="sb">
+      <div class="sb-top">
+        <button class="sb-brand">
+          <div class="logo">F</div>
+          <div class="stack"><div class="nm">famgia</div></div>
+        </button>
+      </div>
+
+      <div class="sb-nav">
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">ダッシュボード</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="lbl">シフト</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span class="lbl">従業員</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="lbl">給与</span>
+        </a>
+
+        <!-- Banner 1: gradient brand -->
+        <div class="sb-promo">
+          <button class="x" aria-label="閉じる">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <span class="tg">NEW · 6月リリース</span>
+          <div class="t">シフト自動最適化</div>
+          <div class="d">需要予測 + スキル + 希望で自動生成</div>
+          <button class="cta">試験運用に参加 →</button>
+        </div>
+
+        <!-- Banner 2: subtle onboarding progress -->
+        <div class="sb-upgrade" style="background:color-mix(in oklch, var(--success) 4%, var(--card))">
+          <div class="row1">
+            <div class="ic" style="background:color-mix(in oklch, var(--success) 12%, var(--card));color:var(--success)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="t">セットアップ進捗</div>
+            <div class="d" style="margin-left:auto;font-family:ui-monospace,monospace;color:var(--success)">3 / 5</div>
+          </div>
+          <div class="prog" style="background:color-mix(in oklch, var(--success) 14%, transparent)">
+            <i style="width:60%;background:var(--success)"></i>
+          </div>
+          <div class="d">残り 2 ステップ · 約 5 分</div>
+          <a class="lnk" style="font-size:11px;margin-top:2px">続きから →</a>
+        </div>
+
+        <!-- Banner 3: warm — changelog -->
+        <div class="sb-promo warm">
+          <button class="x" aria-label="閉じる">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <span class="tg">更新情報 · 5月 14日</span>
+          <div class="t">12 件の新機能と改善</div>
+          <div class="d">承認フロー · 通知 · モバイル UI</div>
+          <button class="cta">変更履歴を見る →</button>
+        </div>
+      </div>
+
+      <div class="sb-foot">
+        <div class="sb-user">
+          <div class="ava">田<span class="live"></span></div>
+          <div class="nm">田中 美咲<small>店長</small></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="page">
+      <div class="page-h"><span class="crumb"><b>ダッシュボード</b></span></div>
+      <div class="page-b">page content</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  D · Multi-tenant + workspace switcher                              ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="section-title">D · Multi-tenant workspace — tenant switcher panel · pinned items · team peek</div>
+
+<div class="pat">
+  <div class="pat-h">
+    <span class="n">D · TENANT SWITCHER</span>
+    <span class="d">4 tenants horizontal pinned · current expanded · pinned shortcuts · team avatars peek</span>
+  </div>
+  <div class="pat-body tall">
+    <aside class="sb">
+      <div class="sb-top" style="border-bottom:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 8px">
+          <div style="display:flex;gap:4px">
+            <button style="width:30px;height:30px;border-radius:6px;background:var(--primary);color:var(--primary-foreground);border:0;cursor:pointer;font-weight:700;font-size:12px;box-shadow:inset 0 0 0 2px var(--primary-foreground), 0 0 0 1px var(--primary)">F</button>
+            <button style="width:30px;height:30px;border-radius:6px;background:#009444;color:white;border:0;cursor:pointer;font-weight:700;font-size:12px" title="Betoya">B</button>
+            <button style="width:30px;height:30px;border-radius:6px;background:var(--wa-akane);color:white;border:0;cursor:pointer;font-weight:700;font-size:12px" title="Akane">A</button>
+            <button style="width:30px;height:30px;border-radius:6px;background:var(--secondary);color:var(--muted-foreground);border:1px dashed var(--border);cursor:pointer;font-size:14px" title="新規">＋</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:8px 14px 4px;border-bottom:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:600">famgia</div>
+        <div style="font-size:11px;color:var(--muted-foreground)">HR 管理 · 4 店舗 · 38 名</div>
+        <div class="sb-ava-stack" style="margin-top:6px">
+          <span class="ava" style="background:var(--primary);color:var(--primary-foreground)">田</span>
+          <span class="ava" style="background:var(--wa-shu);color:white">N</span>
+          <span class="ava" style="background:var(--wa-gunjo);color:white">佐</span>
+          <span class="ava" style="background:var(--wa-wakatake);color:var(--wa-moegi)">中</span>
+          <span class="ava" style="background:var(--secondary);color:var(--muted-foreground)">+34</span>
+        </div>
+      </div>
+
+      <div class="sb-nav">
+        <div class="sb-section">
+          <span>ピン留め</span>
+          <span class="badge">3</span>
+        </div>
+        <a class="sb-row">
+          <span class="grip"></span>
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">渋谷本店</span>
+          <span class="dot s"></span>
+        </a>
+        <a class="sb-row">
+          <span class="grip"></span>
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">表参道店</span>
+          <span class="dot s"></span>
+        </a>
+        <a class="sb-row">
+          <span class="grip"></span>
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">5月の集計</span>
+          <span class="dot a"></span>
+        </a>
+
+        <div class="sb-section">
+          <span>すべて</span>
+          <button class="iconbtn" aria-label="新規">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">ダッシュボード</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span class="lbl">従業員</span>
+          <span class="pill muted">38</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>
+          <span class="lbl">店舗</span>
+          <span class="pill muted">4</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="lbl">給与</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="lbl">レポート</span>
+        </a>
+      </div>
+
+      <div class="sb-foot">
+        <div class="sb-user">
+          <div class="ava">田<span class="live"></span></div>
+          <div class="nm">田中 美咲<small>オーナー · famgia</small></div>
+          <svg class="sb-icon menu" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        </div>
+      </div>
+    </aside>
+
+    <div class="page">
+      <div class="page-h"><span class="crumb">famgia · <b>ダッシュボード</b></span></div>
+      <div class="page-b">page content</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  E · Employee · /me (Betoya tenant)                                 ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="section-title">E · Employee · /me (Betoya tenant) — punch-card style · today summary · simpler nav</div>
+
+<div class="pat">
+  <div class="pat-h">
+    <span class="n">E · EMPLOYEE</span>
+    <span class="d">tenant Betoya (green primary) · day summary card · personal info focused · less hierarchy</span>
+  </div>
+  <div class="pat-body tall" data-tenant="betoya">
+    <aside class="sb">
+      <div class="sb-top">
+        <button class="sb-brand">
+          <div class="logo" style="background:#009444;color:white">B</div>
+          <div class="stack"><div class="nm">Betoya</div><div class="sub">あなたのプロフィール</div></div>
+        </button>
+      </div>
+
+      <div style="padding:10px 12px 8px;border-bottom:1px solid var(--border);background:color-mix(in oklch, var(--primary) 4%, var(--card))">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:white;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:500">N</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;font-weight:500">Nguyễn Lan</div>
+            <div style="font-size:10px;color:var(--muted-foreground)">ホール · 表参道</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--card);border-radius:4px;font-size:11px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span>
+          <span style="font-weight:500">出勤中</span>
+          <span style="color:var(--muted-foreground);font-family:ui-monospace,monospace;margin-left:auto">11:12 〜</span>
+        </div>
+      </div>
+
+      <div class="sb-nav">
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="lbl">打刻</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="lbl">マイシフト</span>
+          <span class="pill outline">5</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+          <span class="lbl">休暇申請</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="lbl">給与明細</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="lbl">書類</span>
+        </a>
+
+        <div class="sb-section">今月のサマリー</div>
+
+        <div class="sb-stat">
+          <div class="row1"><span>実働時間</span><span class="sub">/ 176h</span></div>
+          <div class="big">168.5<span style="font-size:11px;font-weight:500;color:var(--muted-foreground);margin-left:2px">h</span></div>
+          <div class="prog"><i style="width:96%;background:var(--primary)"></i></div>
+        </div>
+
+        <div class="sb-stat">
+          <div class="row1"><span>有給残</span><span class="sub" style="color:var(--success);font-weight:500">12.0 日</span></div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted-foreground);font-family:ui-monospace,monospace">
+            取得済 8.0 日 · 付与 20.0 日
+          </div>
+        </div>
+      </div>
+
+      <div class="sb-foot">
+        <a class="sb-row" style="padding:0 8px;height:30px">
+          <svg class="sb-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span class="lbl">設定</span>
+        </a>
+        <a class="sb-row danger" style="padding:0 8px;height:30px">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span class="lbl">ログアウト</span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="page">
+      <div class="page-h"><span class="crumb">あなたのページ · <b>打刻</b></span></div>
+      <div class="page-b">my-page content</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  F · Collapsed icon rail (64px)                                     ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="section-title">F · Collapsed icon rail — 64px width · icon-only · badges · tooltips on hover</div>
+
+<div class="pat">
+  <div class="pat-h">
+    <span class="n">F · COLLAPSED RAIL</span>
+    <span class="d">narrow icon-only · 4-tenant rail co lại còn 1 logo · pill badge ở góc icon · expand button cuối</span>
+  </div>
+  <div class="pat-body" style="height:480px">
+    <aside class="sb collapsed">
+      <div class="sb-top">
+        <button class="sb-brand"><div class="logo">F</div></button>
+      </div>
+      <div class="sb-nav">
+        <a class="sb-row on" title="ダッシュボード">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        </a>
+        <a class="sb-row" title="シフト">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </a>
+        <a class="sb-row" title="勤怠表">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+          <span class="pill error">3</span>
+        </a>
+        <a class="sb-row" title="承認">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/><path d="M8 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/><path d="M16 13H8a4 4 0 0 0-4 4v3h16v-3a4 4 0 0 0-4-4z"/></svg>
+          <span class="pill warn">12</span>
+        </a>
+        <div class="sb-section"></div>
+        <a class="sb-row" title="従業員">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </a>
+        <a class="sb-row" title="店舗">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>
+        </a>
+        <a class="sb-row" title="給与">
+          <svg class="sb-icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </a>
+        <div class="sb-section"></div>
+        <a class="sb-row" title="通知">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="pill error" style="background:var(--success)">●</span>
+        </a>
+        <a class="sb-row" title="設定">
+          <svg class="sb-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </a>
+      </div>
+
+      <div class="sb-foot">
+        <div class="sb-user"><div class="ava">田<span class="live"></span></div></div>
+        <a class="sb-row" title="展開" style="justify-content:center;color:var(--muted-foreground)">
+          <svg class="sb-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+    </aside>
+
+    <div class="page">
+      <div class="page-h"><span class="crumb"><b>ダッシュボード</b></span></div>
+      <div class="page-b">expanded content area · uses freed sidebar width</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  G · Settings sidebar (in-page secondary nav)                       ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="section-title">G · Settings page — secondary nav inside content area · grouped &amp; deeply categorized</div>
+
+<div class="pat">
+  <div class="pat-h">
+    <span class="n">G · SETTINGS</span>
+    <span class="d">in-page secondary sidebar · 4 groups · search · "danger zone" treatment cuối · không cần avatar footer</span>
+  </div>
+  <div class="pat-body" style="height:560px">
+    <aside class="sb" style="width:220px">
+      <div class="sb-top">
+        <button class="sb-brand" style="cursor:default">
+          <div class="logo">F</div>
+          <div class="stack">
+            <div class="nm">設定</div>
+            <div class="sub">famgia ワークスペース</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="sb-search">
+        <div class="wrap">
+          <svg class="sb-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="設定を検索…"/>
+        </div>
+      </div>
+
+      <div class="sb-nav">
+        <div class="sb-section">アカウント</div>
+        <a class="sb-row on"><svg class="sb-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="lbl">プロフィール</span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span class="lbl">セキュリティ</span><span class="dot a"></span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="lbl">通知</span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span class="lbl">セッション · デバイス</span></a>
+
+        <div class="sb-section">ワークスペース</div>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="lbl">基本情報</span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="lbl">メンバー</span><span class="pill muted">38</span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 5-3.5 9-9 9s-9-4-9-9 3.5-9 9-9c2 0 4 .6 5.5 1.7"/></svg><span class="lbl">ロール · 権限</span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/></svg><span class="lbl">SSO</span><span class="pill outline">Pro</span></a>
+
+        <div class="sb-section">連携</div>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span class="lbl">Slack</span><span class="dot s"></span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="lbl">Google Calendar</span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span class="lbl">freee 人事労務</span><span class="dot a"></span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span class="lbl">API · Webhook</span></a>
+
+        <div class="sb-section">課金</div>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span class="lbl">プラン</span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span class="lbl">支払い方法</span></a>
+        <a class="sb-row"><svg class="sb-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg><span class="lbl">請求書</span></a>
+
+        <hr class="sb-hr"/>
+        <div class="sb-section" style="color:var(--destructive)">危険な操作</div>
+        <a class="sb-row danger"><svg class="sb-icon" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span class="lbl">ワークスペースを削除</span></a>
+      </div>
+    </aside>
+
+    <div class="page">
+      <div class="page-h"><span class="crumb">設定 · アカウント · <b>プロフィール</b></span></div>
+      <div class="page-b">settings form</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  H · Dark · branded vertical rail                                   ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="section-title">H · Dark variant — branded · marketing-feel · gradient promo on dark</div>
+
+<div class="pat">
+  <div class="pat-h">
+    <span class="n">H · DARK</span>
+    <span class="d">dark wa-iro 紺 background · subtle gradient banner · stat blocks adapt to dark · marketing-leaning</span>
+  </div>
+  <div class="pat-body tall">
+    <aside class="sb dark">
+      <div class="sb-top">
+        <button class="sb-brand">
+          <div class="logo" style="background:white;color:var(--wa-kon)">F</div>
+          <div class="stack"><div class="nm" style="color:white">famgia</div><div class="sub" style="color:oklch(70% 0.02 240)">エンタープライズ</div></div>
+        </button>
+      </div>
+      <div class="sb-search">
+        <div class="wrap" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15)">
+          <svg class="sb-icon" viewBox="0 0 24 24" style="color:rgba(255,255,255,0.6)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="検索…" style="color:white"/>
+          <span class="kbd" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.7)">⌘K</span>
+        </div>
+      </div>
+      <div class="sb-nav">
+        <a class="sb-row on">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span class="lbl">ダッシュボード</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="lbl">シフト</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span class="lbl">従業員</span>
+          <span class="pill" style="background:rgba(255,255,255,0.15);color:white">38</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="lbl">給与</span>
+        </a>
+        <a class="sb-row">
+          <svg class="sb-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="lbl">レポート</span>
+        </a>
+
+        <div class="sb-section">分析</div>
+        <div class="sb-stat">
+          <div class="row1"><span>MAU</span><span class="sub">+5.2%</span></div>
+          <div class="big" style="color:white">12,840</div>
+          <svg width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none">
+            <path d="M0,14 L15,12 L30,13 L45,9 L60,8 L75,10 L90,5 L100,6"
+                  fill="none" stroke="oklch(72% 0.13 240)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="sb-promo">
+          <button class="x" aria-label="閉じる">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <span class="tg">Enterprise</span>
+          <div class="t">専任サポート始動</div>
+          <div class="d">SLA 99.95% · カスタム開発</div>
+          <button class="cta">問い合わせ →</button>
+        </div>
+      </div>
+
+      <div class="sb-foot">
+        <div class="sb-user">
+          <div class="ava">田<span class="live"></span></div>
+          <div class="nm">田中 美咲<small>tanaka@famgia.co.jp</small></div>
+          <svg class="sb-icon menu" viewBox="0 0 24 24" style="color:rgba(255,255,255,0.6)"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        </div>
+      </div>
+    </aside>
+
+    <div class="page">
+      <div class="page-h"><span class="crumb"><b>ダッシュボード</b></span></div>
+      <div class="page-b">page content</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+ ·  Footer rules                                                       ·
+ ════════════════════════════════════════════════════════════════════ -->
+<div class="muted" style="font-size:11px;margin-top:22px;line-height:1.65;border-top:1px dashed var(--border);padding-top:14px">
+  <b style="color:var(--foreground);font-weight:500">Sidebar rules:</b>
+  <span style="display:inline-block;margin-top:6px"></span>
+  ① Width đúng <b>240px</b> default · <b>64px</b> collapsed — không có giá trị ở giữa, navigation bị "loãng" khi 180–220px.
+  ② Row height đúng <b>32px</b> default density · 28px nested · 36px ở comfortable mode. Active row có 2px primary bar phía trước, không nhuộm cả nền primary.
+  ③ Section header viết hoa nhẹ (text-transform:uppercase), letter-spacing 0.06em, font-weight 600 — caret SVG nếu collapsible, ＋ icon button nếu actionable (ghim/add).
+  ④ Nested item <b>thụt 24px + viền trái 1px</b> — không indent bằng padding suông (mắt khó nhận ra parent-child).
+  ⑤ Pill badge dùng semantic: <code>error</code> cho số đỏ (3 vi phạm), <code>warn</code> cho cảnh báo (12 chờ), <code>muted</code> cho count thuần (38 nhân viên), <code>outline</code> cho meta (5月 / Pro).
+  ⑥ Stat block trong sidebar: tối đa <b>3 cái</b> · phải có 1 con số to và 1 dòng context — không lạm dụng (sidebar đầy số = noise).
+  ⑦ Promo banner: tối đa <b>2 cùng lúc</b>, luôn có nút × để dismiss, dismiss state nhớ vào localStorage. Gradient dùng wa-iro pairs (藍×群青, 茜×朱, 萌葱×若竹).
+  ⑧ Upgrade card khác promo: <i>không gradient</i>, dùng soft-tint primary + progress bar — informational, không marketing.
+  ⑨ User footer luôn ở dưới cùng, status dot nhỏ ở góc avatar (出勤中 / オフライン).
+  ⑩ Dark sidebar dùng <code>--wa-kon (#223a70)</code>, không pitch-black — đỡ chói trên 16h dùng liên tục. Primary/accent vẫn dùng được nhưng giảm opacity 10–15%.
+</div>
+
 </body></html>

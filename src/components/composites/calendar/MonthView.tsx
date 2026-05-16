@@ -7,7 +7,7 @@ import {
   type CalendarEvent,
   type CalendarRef,
   type TimeLocale,
-} from "../../primitives/calendar";
+} from "../../primitives/calendar/index";
 
 /**
  * MonthView — 6×7 month grid (Mon-first). Each cell shows up to 4

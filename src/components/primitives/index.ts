@@ -224,4 +224,4 @@ export type { BreadcrumbProps, BreadcrumbItemProps } from "./Breadcrumb"
 // Mirror discipline: each atom is a thin wrapper over a `.cal-*` /
 // `.tg-*` class in shell.css; no service-specific defaults per
 // cardinal rule #19.
-export * from "./calendar"
+export * from "./calendar/index"

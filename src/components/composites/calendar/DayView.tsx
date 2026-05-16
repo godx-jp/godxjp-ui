@@ -11,7 +11,7 @@ import {
   type CalendarRef,
   type EventBlockVariant,
   type TimeLocale,
-} from "../../primitives/calendar";
+} from "../../primitives/calendar/index";
 import { DayHeaderHero } from "./DayHeaderHero";
 
 /**

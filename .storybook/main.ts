@@ -3,8 +3,11 @@ import type { StorybookConfig } from "@storybook/react-vite";
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(ts|tsx)"],
   addons: [
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
+    // Storybook 10 folded former addon-essentials features
+    // (controls, viewport, backgrounds, toolbars, measure, outline)
+    // into core. addon-docs still ships separately and powers the
+    // `tags: ["autodocs"]` Docs view.
+    "@storybook/addon-docs",
   ],
   framework: {
     name: "@storybook/react-vite",

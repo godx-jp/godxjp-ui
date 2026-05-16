@@ -6,7 +6,7 @@ import {
   MiniMonth,
   type CalendarRef,
   type MiniMonthYMD,
-} from "../../primitives/calendar";
+} from "../../primitives/calendar/index";
 
 /**
  * CalendarSidebar — left rail for the calendar screen:

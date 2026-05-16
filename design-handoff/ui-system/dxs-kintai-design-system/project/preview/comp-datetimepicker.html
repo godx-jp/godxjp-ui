@@ -1,0 +1,607 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  /* ───────── Trigger fields ───────── */
+  .field          { display:flex; flex-direction:column; gap:4px; min-width:0 }
+  .field > label  { font-size:13px; font-weight:500; display:flex; align-items:center; gap:6px }
+  .field > label .opt { font-weight:400; color:var(--muted-foreground); font-size:11px }
+  .field > label .req { color:var(--destructive) }
+  .field > label .spacer { flex:1 }
+  .help           { font-size:11px; color:var(--muted-foreground); display:flex; align-items:center; gap:4px; line-height:1.45 }
+  .help svg       { flex-shrink:0 }
+  .help.err       { color:var(--destructive) }
+  .help.info      { color:var(--info) }
+
+  /* Date trigger — input-style */
+  .dt-trigger     { position:relative; height:32px; border:1px solid var(--input); border-radius:6px;
+                    background:var(--input-background); display:flex; align-items:center; padding:0 10px;
+                    font-size:13px; gap:8px; cursor:pointer; transition:border-color 150ms, box-shadow 150ms }
+  .dt-trigger:hover    { border-color:var(--ring) }
+  .dt-trigger.on,
+  .dt-trigger:focus-within { border-color:var(--ring);
+                    box-shadow:0 0 0 3px color-mix(in oklch, var(--ring) 25%, transparent) }
+  .dt-trigger.empty .val { color:var(--muted-foreground) }
+  .dt-trigger .ico { color:var(--muted-foreground); flex-shrink:0 }
+  .dt-trigger .val { flex:1; font-variant-numeric:tabular-nums; font-family:ui-monospace,monospace }
+  .dt-trigger .sep { color:var(--muted-foreground); margin:0 2px }
+  .dt-trigger .caret { color:var(--muted-foreground) }
+  .dt-trigger .clear { width:18px; height:18px; border-radius:50%; background:var(--secondary); color:var(--muted-foreground);
+                    border:0; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; padding:0 }
+  .dt-trigger.err { border-color:var(--destructive); box-shadow:0 0 0 3px color-mix(in oklch, var(--destructive) 18%, transparent) }
+
+  /* Button-style trigger */
+  .dt-btn         { display:inline-flex; align-items:center; gap:8px; height:28px; padding:0 10px;
+                    border:1px solid var(--border); border-radius:4px; background:var(--background);
+                    font-size:12px; cursor:pointer; color:var(--foreground); font-family:inherit }
+  .dt-btn:hover   { background:var(--accent) }
+  .dt-btn .ico    { color:var(--muted-foreground) }
+
+  /* ───────── Popover card ───────── */
+  .pop            { border:1px solid var(--border); border-radius:8px; background:var(--popover);
+                    box-shadow:var(--shadow-md); padding:12px; width:fit-content }
+  .pop-head       { display:flex; align-items:center; gap:6px; margin-bottom:8px }
+  .pop-head .yr   { font-size:13px; font-weight:600; color:var(--foreground) }
+  .pop-head .mo   { font-size:13px; font-weight:500; color:var(--foreground); font-variant-numeric:tabular-nums }
+  .pop-head .spacer { flex:1 }
+  .pop-head button { width:24px; height:24px; border:0; background:transparent; cursor:pointer;
+                    color:var(--muted-foreground); border-radius:4px; display:inline-flex;
+                    align-items:center; justify-content:center; font-size:14px }
+  .pop-head button:hover { background:var(--accent); color:var(--foreground) }
+
+  /* Calendar grid */
+  .cal-grid       { display:grid; grid-template-columns:repeat(7, 32px); gap:2px }
+  .cal-grid .dh   { font-size:10px; color:var(--muted-foreground); text-align:center; padding:4px 0; font-weight:500 }
+  .cal-grid .dh.sun { color:var(--destructive) }
+  .cal-grid .dh.sat { color:var(--info) }
+  .cal-day        { width:32px; height:28px; display:flex; align-items:center; justify-content:center;
+                    font-size:12px; color:var(--foreground); border-radius:4px; cursor:pointer;
+                    font-variant-numeric:tabular-nums; position:relative; border:0; background:transparent;
+                    font-family:inherit }
+  .cal-day:hover  { background:var(--accent) }
+  .cal-day.dim    { color:var(--muted-foreground) }
+  .cal-day.sun    { color:var(--destructive) }
+  .cal-day.sat    { color:var(--info) }
+  .cal-day.today  { outline:1px solid var(--primary); outline-offset:-2px; font-weight:600 }
+  .cal-day.sel    { background:var(--primary); color:var(--primary-foreground); font-weight:600 }
+  .cal-day.dis    { color:color-mix(in oklch, var(--muted-foreground) 50%, transparent); cursor:not-allowed; text-decoration:line-through }
+  .cal-day .dot   { position:absolute; bottom:3px; left:50%; transform:translateX(-50%); width:3px; height:3px;
+                    border-radius:50%; background:var(--success) }
+  .cal-day.sel .dot { background:var(--primary-foreground) }
+
+  /* Range states */
+  .cal-day.range-mid    { background:color-mix(in oklch, var(--primary) 12%, transparent);
+                          color:var(--foreground); border-radius:0 }
+  .cal-day.range-start  { background:var(--primary); color:var(--primary-foreground); border-radius:4px 0 0 4px; font-weight:600 }
+  .cal-day.range-end    { background:var(--primary); color:var(--primary-foreground); border-radius:0 4px 4px 0; font-weight:600 }
+  .cal-day.range-hover  { background:color-mix(in oklch, var(--primary) 8%, transparent); border-radius:0;
+                          outline:1px dashed var(--primary); outline-offset:-3px }
+
+  /* Footer / quick presets */
+  .pop-foot   { display:flex; align-items:center; gap:6px; padding-top:8px; margin-top:8px;
+                border-top:1px dashed var(--border); font-size:11px }
+  .pop-foot .spacer { flex:1 }
+  .preset-col { display:flex; flex-direction:column; gap:2px; min-width:120px;
+                border-right:1px solid var(--border); padding-right:10px; margin-right:10px }
+  .preset-btn { text-align:left; border:0; background:transparent; padding:5px 8px; border-radius:4px;
+                font-size:11px; color:var(--foreground); cursor:pointer; font-family:inherit;
+                display:flex; align-items:center; justify-content:space-between; gap:6px }
+  .preset-btn:hover { background:var(--accent) }
+  .preset-btn.on    { background:color-mix(in oklch, var(--primary) 10%, transparent); color:var(--primary); font-weight:500 }
+  .preset-btn .hint { font-size:9px; color:var(--muted-foreground); font-family:ui-monospace,monospace }
+
+  /* ───────── Time picker ───────── */
+  .tm-pop      { display:inline-flex; border:1px solid var(--border); border-radius:6px; overflow:hidden;
+                 background:var(--popover); box-shadow:var(--shadow-md) }
+  .tm-col      { display:flex; flex-direction:column; height:168px; overflow:hidden; position:relative;
+                 border-right:1px solid var(--border); width:48px }
+  .tm-col:last-child { border-right:0 }
+  .tm-col::before,
+  .tm-col::after { content:""; position:absolute; left:0; right:0; height:56px; pointer-events:none; z-index:1 }
+  .tm-col::before { top:0;    background:linear-gradient(to bottom, var(--popover), transparent) }
+  .tm-col::after  { bottom:0; background:linear-gradient(to top,    var(--popover), transparent) }
+  .tm-slot     { height:28px; display:flex; align-items:center; justify-content:center; font-size:13px;
+                 font-variant-numeric:tabular-nums; font-family:ui-monospace,monospace;
+                 color:var(--muted-foreground); cursor:pointer; flex-shrink:0 }
+  .tm-slot:hover { background:var(--accent); color:var(--foreground) }
+  .tm-slot.sel { color:var(--primary-foreground); background:var(--primary); font-weight:600 }
+  .tm-slot.dim { color:color-mix(in oklch, var(--muted-foreground) 50%, transparent); cursor:not-allowed }
+  .tm-sep      { display:flex; align-items:center; padding:0 2px; color:var(--muted-foreground);
+                 font-family:ui-monospace,monospace; font-size:13px; background:var(--popover) }
+
+  /* Segmented input style time */
+  .tm-seg      { display:inline-flex; align-items:center; height:32px; padding:0 8px; border:1px solid var(--input);
+                 border-radius:6px; background:var(--input-background); gap:0; font-variant-numeric:tabular-nums;
+                 font-family:ui-monospace,monospace; font-size:13px }
+  .tm-seg input { width:24px; border:0; background:transparent; text-align:center; font:inherit; color:inherit;
+                  outline:none; padding:0 }
+  .tm-seg input:focus { background:color-mix(in oklch, var(--primary) 12%, transparent); border-radius:3px }
+  .tm-seg .sp   { color:var(--muted-foreground); padding:0 1px }
+  .tm-seg .ico  { color:var(--muted-foreground); margin-right:6px; display:inline-flex }
+  .tm-seg .ampm { margin-left:8px; padding-left:8px; border-left:1px solid var(--border);
+                  font-size:11px; color:var(--muted-foreground); cursor:pointer; height:24px;
+                  display:inline-flex; align-items:center; gap:2px }
+  .tm-seg .ampm.on { color:var(--foreground); font-weight:500 }
+
+  /* Quick chips (shift presets) */
+  .tm-chips   { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px }
+  .tm-chip    { display:inline-flex; align-items:center; gap:4px; padding:0 8px; height:22px; border-radius:11px;
+                background:var(--secondary); border:1px solid var(--border); font-size:10px;
+                font-family:ui-monospace,monospace; color:var(--foreground); cursor:pointer }
+  .tm-chip:hover { background:var(--accent) }
+  .tm-chip.on    { background:color-mix(in oklch, var(--primary) 15%, transparent);
+                   border-color:var(--primary); color:var(--primary) }
+  .tm-chip .lbl  { font-family:var(--font-sans-jp); color:var(--muted-foreground); margin-right:2px }
+  .tm-chip.on .lbl { color:var(--primary) }
+
+  .section-title { font-size:11px; color:var(--muted-foreground); text-transform:uppercase; letter-spacing:0.08em;
+                   font-weight:600; margin:18px 0 10px; padding-bottom:4px; border-bottom:1px solid var(--border) }
+  .section-title:first-of-type { margin-top:0 }
+  .subgrid { display:grid; grid-template-columns:1fr 1fr; gap:16px }
+  .stack   { display:flex; flex-direction:column; gap:14px }
+  .row-pop { display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap }
+
+  .ic { width:14px; height:14px; flex-shrink:0 }
+</style>
+</head>
+<body style="padding:18px 20px">
+
+  <!-- ═════════════ A. DATE PICKER · trigger states ═════════════ -->
+  <div class="section-title">A · Date picker — trigger states · format JP (YYYY/MM/DD · 曜日)</div>
+
+  <div class="subgrid">
+
+    <div class="field">
+      <label>申請日 <span class="req">*</span></label>
+      <button class="dt-trigger empty" type="button">
+        <svg class="ic ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="val">日付を選択</span>
+        <svg class="ic caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="help">未選択 · 必須</div>
+    </div>
+
+    <div class="field">
+      <label>出勤日</label>
+      <button class="dt-trigger" type="button">
+        <svg class="ic ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="val">2026/05/09 <span class="sep">·</span> 土</span>
+        <button class="clear" aria-label="クリア" type="button">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </button>
+      <div class="help">選択済 · 曜日を併記すると勤怠の文脈で誤読を防ぐ</div>
+    </div>
+
+    <div class="field">
+      <label>有給取得日 <span class="req">*</span></label>
+      <button class="dt-trigger on" type="button" aria-expanded="true">
+        <svg class="ic ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="val">2026/05/13 <span class="sep">·</span> 水</span>
+        <svg class="ic caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="help info">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        フォーカス · ポップオーバー展開中
+      </div>
+    </div>
+
+    <div class="field">
+      <label>退職日</label>
+      <button class="dt-trigger err" type="button">
+        <svg class="ic ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="val">2025/12/31 <span class="sep">·</span> 水</span>
+      </button>
+      <div class="help err">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        入社日 (2024/04/01) より前は指定不可
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═════════════ B. DATE PICKER · popover variants ═════════════ -->
+  <div class="section-title">B · Popover — 単一日 · 期間 · 月のみ</div>
+
+  <div class="row-pop">
+
+    <!-- B1 · single date with quick presets -->
+    <div class="stack">
+      <div class="label">B1 · 単一日 + presets (申請日 · 振替日)</div>
+      <div class="pop" style="display:flex">
+        <div class="preset-col">
+          <button class="preset-btn">今日 <span class="hint">5/09</span></button>
+          <button class="preset-btn">昨日 <span class="hint">5/08</span></button>
+          <button class="preset-btn">明日 <span class="hint">5/10</span></button>
+          <button class="preset-btn on">来月曜 <span class="hint">5/11</span></button>
+          <button class="preset-btn">月初 <span class="hint">5/01</span></button>
+          <button class="preset-btn">月末 <span class="hint">5/31</span></button>
+        </div>
+        <div>
+          <div class="pop-head">
+            <button aria-label="前年">‹‹</button>
+            <button aria-label="前月">‹</button>
+            <span class="yr">2026</span><span class="mo">5月</span>
+            <span class="spacer"></span>
+            <button aria-label="翌月">›</button>
+            <button aria-label="翌年">››</button>
+          </div>
+          <div class="cal-grid">
+            <span class="dh sun">日</span><span class="dh">月</span><span class="dh">火</span><span class="dh">水</span><span class="dh">木</span><span class="dh">金</span><span class="dh sat">土</span>
+            <!-- prev mo -->
+            <button class="cal-day dim sun">26</button><button class="cal-day dim">27</button><button class="cal-day dim">28</button><button class="cal-day dim">29</button><button class="cal-day dim">30</button><button class="cal-day">1</button><button class="cal-day sat">2</button>
+            <button class="cal-day sun">3</button><button class="cal-day">4</button><button class="cal-day">5</button><button class="cal-day">6</button><button class="cal-day">7</button><button class="cal-day">8</button><button class="cal-day sat today">9</button>
+            <button class="cal-day sun">10</button><button class="cal-day sel">11<span class="dot"></span></button><button class="cal-day">12</button><button class="cal-day">13<span class="dot" style="background:var(--attention)"></span></button><button class="cal-day">14</button><button class="cal-day">15</button><button class="cal-day sat">16</button>
+            <button class="cal-day sun">17</button><button class="cal-day">18</button><button class="cal-day">19</button><button class="cal-day">20</button><button class="cal-day">21</button><button class="cal-day">22</button><button class="cal-day sat">23</button>
+            <button class="cal-day sun">24</button><button class="cal-day">25</button><button class="cal-day">26</button><button class="cal-day">27</button><button class="cal-day">28</button><button class="cal-day">29</button><button class="cal-day sat">30</button>
+            <button class="cal-day sun">31</button><button class="cal-day dim">1</button><button class="cal-day dim">2</button><button class="cal-day dim">3</button><button class="cal-day dim">4</button><button class="cal-day dim">5</button><button class="cal-day dim sat">6</button>
+          </div>
+          <div class="pop-foot">
+            <span style="color:var(--muted-foreground)">2026/05/11 · 月曜日</span>
+            <span class="spacer"></span>
+            <button class="btn btn-ghost btn-xs">クリア</button>
+            <button class="btn btn-xs">確定</button>
+          </div>
+        </div>
+      </div>
+      <div class="muted" style="max-width:380px;line-height:1.55">
+        Preset luôn ở bên trái · click thấy ngay highlight trên calendar. Dot dưới ngày = đã có dữ liệu (緑=有給, 橙=申請中).
+      </div>
+    </div>
+
+    <!-- B2 · date range with hover -->
+    <div class="stack">
+      <div class="label">B2 · 期間指定 (集計期間 · 休暇申請) — 2 ngày + hover preview</div>
+      <div class="pop">
+        <div style="display:flex;align-items:center;gap:8px;padding:4px 6px 10px;border-bottom:1px dashed var(--border);margin-bottom:8px">
+          <div class="dt-trigger" style="height:28px;font-size:12px;flex:1">
+            <span class="val">2026/05/06</span>
+          </div>
+          <span style="color:var(--muted-foreground)">→</span>
+          <div class="dt-trigger on" style="height:28px;font-size:12px;flex:1">
+            <span class="val" style="color:var(--muted-foreground)">終了日 …</span>
+          </div>
+        </div>
+        <div class="pop-head">
+          <button aria-label="前月">‹</button>
+          <span class="yr">2026</span><span class="mo">5月</span>
+          <span class="spacer"></span>
+          <button aria-label="翌月">›</button>
+        </div>
+        <div class="cal-grid">
+          <span class="dh sun">日</span><span class="dh">月</span><span class="dh">火</span><span class="dh">水</span><span class="dh">木</span><span class="dh">金</span><span class="dh sat">土</span>
+          <button class="cal-day dim sun">26</button><button class="cal-day dim">27</button><button class="cal-day dim">28</button><button class="cal-day dim">29</button><button class="cal-day dim">30</button><button class="cal-day">1</button><button class="cal-day sat">2</button>
+          <button class="cal-day sun">3</button><button class="cal-day">4</button><button class="cal-day">5</button><button class="cal-day range-start">6</button><button class="cal-day range-mid">7</button><button class="cal-day range-mid">8</button><button class="cal-day range-mid sat">9</button>
+          <button class="cal-day range-mid sun">10</button><button class="cal-day range-mid">11</button><button class="cal-day range-hover">12</button><button class="cal-day range-hover">13</button><button class="cal-day range-hover">14</button><button class="cal-day range-hover">15</button><button class="cal-day range-hover sat">16</button>
+          <button class="cal-day sun">17</button><button class="cal-day">18</button><button class="cal-day">19</button><button class="cal-day">20</button><button class="cal-day">21</button><button class="cal-day">22</button><button class="cal-day sat">23</button>
+          <button class="cal-day sun">24</button><button class="cal-day">25</button><button class="cal-day">26</button><button class="cal-day">27</button><button class="cal-day">28</button><button class="cal-day">29</button><button class="cal-day sat">30</button>
+          <button class="cal-day sun">31</button><button class="cal-day dim">1</button><button class="cal-day dim">2</button><button class="cal-day dim">3</button><button class="cal-day dim">4</button><button class="cal-day dim">5</button><button class="cal-day dim sat">6</button>
+        </div>
+        <div class="pop-foot">
+          <span style="color:var(--muted-foreground)">6日間 (5/06 – 5/11) · うち平日 3日</span>
+          <span class="spacer"></span>
+          <button class="btn btn-ghost btn-xs">クリア</button>
+          <button class="btn btn-xs">確定</button>
+        </div>
+      </div>
+      <div class="muted" style="max-width:380px;line-height:1.55">
+        Hover từ start hiển thị range tạm (dashed outline). Footer luôn show 期間日数 + 平日カウント — context quan trọng khi xin nghỉ.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- B3 · month only -->
+  <div style="margin-top:16px" class="row-pop">
+
+    <div class="stack">
+      <div class="label">B3 · 月選択のみ (締め日 · 集計対象月) — không cần day grid</div>
+      <div class="pop">
+        <div class="pop-head">
+          <button aria-label="前年">‹</button>
+          <span class="yr">2026</span>
+          <span class="spacer"></span>
+          <button aria-label="翌年">›</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4, 56px);gap:4px">
+          <button class="cal-day" style="width:auto;height:36px">1月</button>
+          <button class="cal-day" style="width:auto;height:36px">2月</button>
+          <button class="cal-day" style="width:auto;height:36px">3月</button>
+          <button class="cal-day" style="width:auto;height:36px">4月</button>
+          <button class="cal-day sel" style="width:auto;height:36px">5月</button>
+          <button class="cal-day" style="width:auto;height:36px">6月</button>
+          <button class="cal-day" style="width:auto;height:36px">7月</button>
+          <button class="cal-day" style="width:auto;height:36px">8月</button>
+          <button class="cal-day" style="width:auto;height:36px">9月</button>
+          <button class="cal-day" style="width:auto;height:36px">10月</button>
+          <button class="cal-day" style="width:auto;height:36px">11月</button>
+          <button class="cal-day" style="width:auto;height:36px">12月</button>
+        </div>
+        <div class="pop-foot">
+          <span style="color:var(--muted-foreground)">締日 25日 · 集計範囲 04/26 – 05/25</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- B4 · year selector -->
+    <div class="stack">
+      <div class="label">B4 · 年度選択 (人事評価 · 年末調整)</div>
+      <div class="pop">
+        <div class="pop-head">
+          <button aria-label="前">‹</button>
+          <span class="yr">2020 – 2029</span>
+          <span class="spacer"></span>
+          <button aria-label="次">›</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4, 56px);gap:4px">
+          <button class="cal-day dim" style="width:auto;height:36px">2020</button>
+          <button class="cal-day dim" style="width:auto;height:36px">2021</button>
+          <button class="cal-day dim" style="width:auto;height:36px">2022</button>
+          <button class="cal-day dim" style="width:auto;height:36px">2023</button>
+          <button class="cal-day" style="width:auto;height:36px">2024</button>
+          <button class="cal-day" style="width:auto;height:36px">2025</button>
+          <button class="cal-day sel" style="width:auto;height:36px">2026</button>
+          <button class="cal-day dis" style="width:auto;height:36px">2027</button>
+          <button class="cal-day dis" style="width:auto;height:36px">2028</button>
+          <button class="cal-day dis" style="width:auto;height:36px">2029</button>
+        </div>
+        <div class="pop-foot">
+          <span style="color:var(--muted-foreground)">年度 (4月始まり) · 令和 8 年</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═════════════ C. TIME PICKER ═════════════ -->
+  <div class="section-title">C · Time picker — 4 patterns · 24時間表記 fixed</div>
+
+  <div class="row-pop">
+
+    <!-- C1 · segmented inline input -->
+    <div class="stack">
+      <div class="label">C1 · Segmented input (打刻修正 · 直接入力が速い)</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="tm-seg">
+          <span class="ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <input value="09" maxlength="2"/>
+          <span class="sp">:</span>
+          <input value="30" maxlength="2"/>
+        </div>
+        <span style="color:var(--muted-foreground);font-size:13px">→</span>
+        <div class="tm-seg">
+          <span class="ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <input value="17" maxlength="2"/>
+          <span class="sp">:</span>
+          <input value="00" maxlength="2"/>
+        </div>
+      </div>
+      <div class="tm-chips">
+        <button class="tm-chip"><span class="lbl">早番</span>09:00–17:30</button>
+        <button class="tm-chip on"><span class="lbl">遅番</span>13:00–22:00</button>
+        <button class="tm-chip"><span class="lbl">通し</span>09:00–22:00</button>
+        <button class="tm-chip"><span class="lbl">夜勤</span>22:00–06:00</button>
+      </div>
+      <div class="muted" style="max-width:380px;line-height:1.55">
+        Tab-able 2-digit chunks; auto-advance khi đủ ký tự. Shift presets (店舗別) loại bỏ 90% input — chỉ click ca là xong.
+      </div>
+    </div>
+
+    <!-- C2 · scroll columns -->
+    <div class="stack">
+      <div class="label">C2 · Scroll columns (mobile-friendly · 打刻申請モーダル)</div>
+      <div class="tm-pop">
+        <div class="tm-col">
+          <div class="tm-slot dim">07</div>
+          <div class="tm-slot">08</div>
+          <div class="tm-slot sel">09</div>
+          <div class="tm-slot">10</div>
+          <div class="tm-slot">11</div>
+          <div class="tm-slot dim">12</div>
+        </div>
+        <div class="tm-col">
+          <div class="tm-slot dim">15</div>
+          <div class="tm-slot">20</div>
+          <div class="tm-slot">25</div>
+          <div class="tm-slot sel">30</div>
+          <div class="tm-slot">35</div>
+          <div class="tm-slot dim">40</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;font-size:11px;color:var(--muted-foreground)">
+        <span>選択中:</span>
+        <span style="font-family:ui-monospace,monospace;color:var(--foreground);font-weight:500">09:30</span>
+        <span class="spacer" style="flex:1"></span>
+        <button class="btn btn-ghost btn-xs">キャンセル</button>
+        <button class="btn btn-xs">確定</button>
+      </div>
+      <div class="muted" style="max-width:380px;line-height:1.55">
+        Minute step <b>5分</b> default (勤怠丸め単位). Disabled rows (dim) = ngoài giờ ca cho phép. Wheel/swipe trên mobile · click trên desktop.
+      </div>
+    </div>
+
+    <!-- C3 · time range -->
+    <div class="stack">
+      <div class="label">C3 · Time range (休憩時間 · 残業申請) — 開始 → 終了 + duration</div>
+      <div class="pop" style="display:flex;flex-direction:column;gap:10px;padding:10px 12px">
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-size:10px;color:var(--muted-foreground)">開始</span>
+            <div class="tm-seg" style="height:30px"><input value="12" maxlength="2"/><span class="sp">:</span><input value="00" maxlength="2"/></div>
+          </div>
+          <span style="color:var(--muted-foreground);margin-top:14px">→</span>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-size:10px;color:var(--muted-foreground)">終了</span>
+            <div class="tm-seg" style="height:30px"><input value="13" maxlength="2"/><span class="sp">:</span><input value="00" maxlength="2"/></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--secondary);border-radius:4px;font-size:11px;font-variant-numeric:tabular-nums;font-family:ui-monospace,monospace">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted-foreground)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span style="color:var(--muted-foreground)">時間</span>
+          <span style="color:var(--foreground);font-weight:500">1時間 00分</span>
+          <span style="color:var(--muted-foreground);margin-left:auto">無給</span>
+        </div>
+        <div class="tm-chips" style="margin-top:0">
+          <button class="tm-chip on"><span class="lbl">標準</span>60分</button>
+          <button class="tm-chip"><span class="lbl">短</span>45分</button>
+          <button class="tm-chip"><span class="lbl">長</span>90分</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- C4 · 24h grid -->
+    <div class="stack">
+      <div class="label">C4 · 24h quick-grid (シフト一括設定) — click ô để pick giờ</div>
+      <div class="pop" style="padding:10px">
+        <div style="display:grid;grid-template-columns:repeat(12, 22px);gap:2px;font-variant-numeric:tabular-nums;font-family:ui-monospace,monospace;font-size:10px">
+          <button class="cal-day dim" style="width:22px;height:22px;font-size:9px">00</button>
+          <button class="cal-day dim" style="width:22px;height:22px;font-size:9px">01</button>
+          <button class="cal-day dim" style="width:22px;height:22px;font-size:9px">02</button>
+          <button class="cal-day dim" style="width:22px;height:22px;font-size:9px">03</button>
+          <button class="cal-day dim" style="width:22px;height:22px;font-size:9px">04</button>
+          <button class="cal-day dim" style="width:22px;height:22px;font-size:9px">05</button>
+          <button class="cal-day dim" style="width:22px;height:22px;font-size:9px">06</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">07</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">08</button>
+          <button class="cal-day sel" style="width:22px;height:22px;font-size:9px">09</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">10</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">11</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">12</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">13</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">14</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">15</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">16</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">17</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">18</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">19</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">20</button>
+          <button class="cal-day" style="width:22px;height:22px;font-size:9px">21</button>
+          <button class="cal-day dim" style="width:22px;height:22px;font-size:9px">22</button>
+          <button class="cal-day dim" style="width:22px;height:22px;font-size:9px">23</button>
+        </div>
+        <div style="margin-top:8px;display:grid;grid-template-columns:repeat(4, 32px);gap:2px;font-family:ui-monospace,monospace;font-size:10px">
+          <button class="cal-day" style="width:32px;height:22px">00</button>
+          <button class="cal-day sel" style="width:32px;height:22px">15</button>
+          <button class="cal-day" style="width:32px;height:22px">30</button>
+          <button class="cal-day" style="width:32px;height:22px">45</button>
+        </div>
+        <div class="pop-foot" style="margin-top:8px">
+          <span style="color:var(--muted-foreground);font-family:ui-monospace,monospace">09:15</span>
+          <span class="spacer"></span>
+          <button class="btn btn-xs">確定</button>
+        </div>
+      </div>
+      <div class="muted" style="max-width:380px;line-height:1.55">
+        Pattern lai grid — 1 click chọn giờ, 1 click chọn phút. Phù hợp bulk-edit shifts (店長 set 1 dòng cho cả tuần).
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═════════════ D. DATETIME combined ═════════════ -->
+  <div class="section-title">D · Datetime — 打刻 (出勤・退勤) cần cả date + time</div>
+
+  <div class="subgrid">
+
+    <div class="field">
+      <label>出勤打刻 (修正) <span class="req">*</span></label>
+      <div style="display:flex;gap:6px">
+        <button class="dt-trigger" type="button" style="flex:2">
+          <svg class="ic ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="val">2026/05/09 <span class="sep">·</span> 土</span>
+        </button>
+        <div class="tm-seg" style="flex:1;min-width:0">
+          <span class="ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <input value="08" maxlength="2"/>
+          <span class="sp">:</span>
+          <input value="58" maxlength="2"/>
+        </div>
+      </div>
+      <div class="help">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        元の打刻 08:58:23 · 5分丸めで <b>09:00</b> として集計
+      </div>
+    </div>
+
+    <div class="field">
+      <label>残業申請 (期間)</label>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="dt-trigger" type="button" style="flex:2">
+          <span class="val">2026/05/09 17:30</span>
+        </button>
+        <span style="color:var(--muted-foreground)">→</span>
+        <button class="dt-trigger" type="button" style="flex:2">
+          <span class="val">2026/05/09 19:00</span>
+        </button>
+      </div>
+      <div class="help info">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        1時間 30分 · 法定外残業 · ¥1,313 × 1.25 = ¥2,463
+      </div>
+    </div>
+
+    <div class="field">
+      <label>夜勤 (日跨ぎ)</label>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="dt-trigger" type="button" style="flex:1">
+          <span class="val">5/15 (金) 22:00</span>
+        </button>
+        <span style="color:var(--muted-foreground)">→</span>
+        <button class="dt-trigger" type="button" style="flex:1">
+          <span class="val">5/16 (土) 06:00</span>
+        </button>
+      </div>
+      <div class="help" style="color:oklch(45% 0.10 280)">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        日跨ぎ · 深夜帯 22:00–05:00 含む · 1.25倍加算 5時間
+      </div>
+    </div>
+
+    <div class="field">
+      <label>有効期限 (パスワード)</label>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="dt-trigger" type="button" style="flex:1">
+          <span class="val">2026/08/09</span>
+        </button>
+        <div class="tm-seg" style="flex:1;min-width:0">
+          <input value="23" maxlength="2"/>
+          <span class="sp">:</span>
+          <input value="59" maxlength="2"/>
+        </div>
+      </div>
+      <div class="help">90日後 · タイムゾーン Asia/Tokyo (JST)</div>
+    </div>
+
+  </div>
+
+  <!-- ═════════════ E. Quick-pick bar (toolbar above table) ═════════════ -->
+  <div class="section-title">E · Quick range — toolbar pattern (集計表 · 勤怠一覧 trên cùng)</div>
+
+  <div style="display:flex;align-items:center;gap:6px;padding:8px;background:var(--secondary);border-radius:6px;flex-wrap:wrap">
+    <button class="dt-btn">
+      <svg class="ic ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      2026/04/26 — 2026/05/25
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div style="display:inline-flex;border:1px solid var(--border);border-radius:4px;overflow:hidden">
+      <button class="dt-btn" style="border:0;border-radius:0;border-right:1px solid var(--border)">今日</button>
+      <button class="dt-btn" style="border:0;border-radius:0;border-right:1px solid var(--border)">今週</button>
+      <button class="dt-btn" style="border:0;border-radius:0;border-right:1px solid var(--border);background:var(--background);color:var(--primary);font-weight:500">今月</button>
+      <button class="dt-btn" style="border:0;border-radius:0;border-right:1px solid var(--border)">先月</button>
+      <button class="dt-btn" style="border:0;border-radius:0">過去 90 日</button>
+    </div>
+    <span style="flex:1"></span>
+    <span style="font-size:11px;color:var(--muted-foreground);font-variant-numeric:tabular-nums">30 日間 · 21 営業日</span>
+  </div>
+
+  <!-- ═════════════ Rules / opinion ═════════════ -->
+  <div class="muted" style="font-size:11px;margin-top:18px;line-height:1.6;color:var(--muted-foreground);border-top:1px dashed var(--border);padding-top:12px">
+    <b style="color:var(--foreground);font-weight:500">勤怠ドメインのルール:</b>
+    <span style="display:inline-block;margin-top:6px"></span>
+    ① 日付フォーマットは <span class="mono">YYYY/MM/DD · 曜日</span> 固定 — ISO ハイフン (2026-05-09) は API/コード用、UI では使わない。
+    ② 時刻は <b>24時間表記</b>固定 — AM/PM はシフトの境目で誤読を生む (例: 22:00 vs 10PM)。
+    ③ 分単位は <b>5分丸め</b>を default — 打刻の生秒は <i>背景情報</i>として小さく併記。
+    ④ 期間ピッカーは必ず <i>日数 / 平日数 / 祝日数</i>を footer に出す — 休暇申請の文脈で「結局何日休む?」が即読める。
+    ⑤ Disabled な日は <i>取り消し線</i> + ツールチップで理由 (入社日前 / 退職日後 / 別店舗で既出勤) を出す — silent で消すと「なぜ選べない?」のクレームになる。
+    ⑥ 夜勤 (日跨ぎ) は datetime ペアで持つ — date + time の独立 2 フィールドは <i>翌日 06:00</i> の表現で必ず壊れる。
+  </div>
+
+</body></html>
