@@ -1454,6 +1454,20 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
  * Variable list: https://daypicker.dev/docs/css-variables.
  * Class-selector overrides only where v9's variables don't cover. */
 .calendar {
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  padding: var(--spacing-2);
+}
+
+/* react-day-picker v9 renders its root as `<div class="rdp-root calendar">`
+ * — `.rdp-root` and our `.calendar` wrapper are on the SAME element, not
+ * parent/child. So the override must be a compound selector matching the
+ * same element. `.calendar.rdp-root` (specificity 0,2,0) wins over rdp's
+ * `.rdp-root` (0,1,0). The earlier descendant form `.calendar .rdp-root`
+ * never matched (no `.rdp-root` lives inside `.calendar`), which is why
+ * Calendar stories rendered with raw `blue` accent for two iterations
+ * after the v8→v9 migration. */
+.calendar.rdp-root {
   --rdp-accent-color: var(--primary);
   --rdp-accent-background-color: color-mix(in oklch, var(--primary) 14%, transparent);
 
@@ -1484,10 +1498,6 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   --rdp-week_number-opacity: 0.6;
 
   --rdp-months-gap: var(--spacing-6);
-
-  font-size: var(--text-sm);
-  color: var(--foreground);
-  padding: var(--spacing-2);
 }
 
 .calendar .rdp-caption_label,
