@@ -1091,3 +1091,145 @@ textarea.input { padding: var(--spacing-2) var(--spacing-3); height: auto; line-
 .time-input:focus { outline: 2px solid var(--ring); outline-offset: -1px; border-color: transparent; }
 .time-input[aria-invalid="true"] { border-color: var(--destructive); }
 .time-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Combobox (cmdk inside Popover) ───────────────────────────────── */
+/* `ComboboxContent` zeroes padding so the search input spans edge to
+   edge; list scrolls inside `max-height`. */
+.combobox-content {
+  padding: 0;
+  min-width: min(100vw - var(--spacing-8), 14rem);
+  overflow: hidden;
+}
+.combobox-command {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: min(18rem, 55dvh);
+}
+.combobox-input {
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  height: var(--density-element);
+}
+.combobox-input:focus {
+  outline-offset: -2px;
+}
+.combobox-list {
+  overflow-y: auto;
+  padding: var(--spacing-1);
+  max-height: min(16rem, 50dvh);
+}
+.combobox-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2);
+  border-radius: var(--radius-sm, 4px);
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  cursor: default;
+  user-select: none;
+  outline: none;
+}
+.combobox-item[data-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.combobox-item[data-selected="true"] {
+  background: var(--surface-3);
+}
+.combobox-empty {
+  padding: var(--spacing-6) var(--spacing-3);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--muted-foreground);
+}
+
+/* ── Toast (sonner, unstyled + classNames) ────────────────────────── */
+/* Import `@godxjp/ui/sonner.css` after this file for stacking / motion.
+   `<Toaster />` defaults to unstyled toasts so chrome comes only from
+   these classes (signal tints are optional accents). */
+[data-sonner-toast].toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  width: var(--width, 100%);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px -2px color-mix(in oklch, var(--foreground) 14%, transparent),
+    0 0 0 1px color-mix(in oklch, var(--foreground) 4%, transparent);
+  font-size: var(--text-sm);
+}
+[data-sonner-toast].toast--success {
+  border-color: color-mix(in oklch, var(--success) 55%, var(--border));
+}
+[data-sonner-toast].toast--error {
+  border-color: color-mix(in oklch, var(--destructive) 50%, var(--border));
+}
+[data-sonner-toast].toast--warning {
+  border-color: color-mix(in oklch, var(--warning) 45%, var(--border));
+}
+[data-sonner-toast].toast--info {
+  border-color: color-mix(in oklch, var(--info) 45%, var(--border));
+}
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  flex: 1;
+  min-width: 0;
+}
+.toast-title {
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--foreground);
+}
+.toast-description {
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+}
+.toast-icon {
+  display: flex;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: var(--muted-foreground);
+}
+[data-sonner-toast].toast--success .toast-icon { color: var(--success); }
+[data-sonner-toast].toast--error .toast-icon { color: var(--destructive); }
+[data-sonner-toast].toast--warning .toast-icon { color: var(--warning); }
+[data-sonner-toast].toast--info .toast-icon { color: var(--info); }
+.toast-loader { flex-shrink: 0; }
+.toast-btn { flex-shrink: 0; }
+.toast-close {
+  position: absolute;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+.toast-close:hover {
+  background: var(--surface-3);
+  color: var(--foreground);
+}
+.toast-close:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}

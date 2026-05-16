@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/ui",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "GoDX Forge unified design system — tokens, primitives, i18n, hooks shared across every service frontend (admin-platform, forge-service, console-service, me-service, agent-service, knowledge-service, …). Source of truth for design language per Plan #19/#22.",
   "type": "module",
   "main": "./dist/index.js",
@@ -39,6 +39,7 @@
     "./tokens": "./src/tokens/tokens.css",
     "./tokens.css": "./src/tokens/tokens.css",
     "./tokens-ext.css": "./src/tokens/tokens-ext.css",
+    "./sonner.css": "./src/tokens/sonner.css",
     "./i18n": {
       "types": "./dist/i18n.d.ts",
       "import": "./dist/i18n.js"
@@ -91,6 +92,7 @@
     "lucide-react": "^0.479.0",
     "react-day-picker": "^9.0.0",
     "react-i18next": "^15.1.0",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.0.0"
   },
   "peerDependencies": {

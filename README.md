@@ -143,11 +143,12 @@ packages/godxjp-ui/src/
 │                                mock fixture (until forge-service
 │                                /api/v1/orgs/ wires real data).
 │
-├── primitives/                  shadcn-styled atoms (button, badge,
+├── components/primitives/       shadcn-styled atoms (button, badge,
 │                                card, dialog, sheet, alert-dialog,
 │                                select, switch, checkbox, table,
-│                                tabs, popover, dropdown, …). One copy
-│                                across the org.
+│                                tabs, popover, dropdown, combobox,
+│                                toaster / toast, …). One copy across
+│                                the org.
 │
 └── components/shell/            AppShell, Sidebar, Topbar,
                                  ProductSwitcher, ProjectSwitcher,
@@ -162,6 +163,8 @@ packages/godxjp-ui/src/
 // services/<svc>/frontend/src/main.tsx
 import "@godxjp/ui/tokens.css";
 import "@godxjp/ui/tokens-ext.css";
+// If you use `<Toaster />` / `toast`, import after tokens:
+import "@godxjp/ui/sonner.css";
 import { initI18n } from "@godxjp/ui/i18n";
 import { AppShell, Sidebar, Topbar } from "@godxjp/ui/components/shell";
 

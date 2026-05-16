@@ -3,6 +3,20 @@
 All notable changes to `@godxjp/ui`. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] — 2026-05-16
+
+### Added
+- **Toaster** + **`toast`** — thin wrapper around `sonner` with token
+  class names (default `unstyled` so chrome comes from `.toast*` in
+  `tokens.css`). Optional **`@godxjp/ui/sonner.css`** import (after
+  tokens) pulls in sonner’s stacking / motion stylesheet and resets
+  toaster `font-family` to inherit.
+- **Combobox** family — `Combobox` / `ComboboxTrigger` / `ComboboxAnchor`
+  (Popover aliases), `ComboboxContent` (wraps inner `cmdk` `Command`),
+  `ComboboxInput`, `ComboboxList`, `ComboboxItem`, `ComboboxEmpty`.
+  New `.combobox-*` atoms in `tokens.css`.
+- Dependency: **`sonner`** (`cmdk` already present).
+
 ## [2.3.0] — 2026-05-16
 
 ### Added
