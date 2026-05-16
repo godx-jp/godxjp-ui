@@ -15,3 +15,5 @@ export { ProjectSwitcher } from "./ProjectSwitcher";
 export type { ProjectSwitcherProps, RecentProject } from "./ProjectSwitcher";
 export { CommandPalette } from "./CommandPalette";
 export type { CommandPaletteProps, CommandItem } from "./CommandPalette";
+export { PageContent } from "./PageContent";
+export type { PageContentProps, PageContentPadding } from "./PageContent";

@@ -31,10 +31,19 @@ export interface SidebarProps {
   /** Click handler — called with the item's `id`. */
   onSelect: (id: string) => void;
   sections: SidebarSection[];
-  /** Product = the org-shaped tenant shown in the top product chip. */
-  product: ForgeProduct;
+  /**
+   * Product = the org-shaped tenant shown in the top product chip.
+   * Required unless `brand` is provided (custom top slot wins).
+   */
+  product?: ForgeProduct;
   /** Click to open the product switcher dropdown (owned by parent). */
   onProductClick?: () => void;
+  /**
+   * Custom top-of-sidebar slot — when present, replaces the product
+   * chip entirely. Use for service-specific brands (e.g. me-service
+   * renders the signed-in user's avatar + name + email here).
+   */
+  brand?: ReactNode;
   collapsed?: boolean;
   footer?: ReactNode;
 }
@@ -45,6 +54,7 @@ export function Sidebar({
   sections,
   product,
   onProductClick,
+  brand,
   collapsed = false,
   footer,
 }: SidebarProps) {
@@ -53,34 +63,37 @@ export function Sidebar({
 
   return (
     <>
-      {/* Top product chip — opens product switcher. */}
-      <button
-        type="button"
-        className="sb-product"
-        onClick={onProductClick}
-        aria-label={product.name}
-      >
-        <span
-          className="sb-logo-mark"
-          style={{ background: product.color }}
+      {brand !== undefined ? (
+        <div className="sb-brand">{brand}</div>
+      ) : product ? (
+        <button
+          type="button"
+          className="sb-product"
+          onClick={onProductClick}
+          aria-label={product.name}
         >
-          {product.name[0]?.toUpperCase() ?? "?"}
-        </span>
-        {!collapsed && (
           <span
-            className="sb-product-meta col flex-1 min-w-0"
-            style={{ display: "flex" }}
+            className="sb-logo-mark"
+            style={{ background: product.color }}
           >
-            <span className="sb-product-name">{product.name}</span>
-            <span className="sb-product-tenant">{product.role}</span>
+            {product.name[0]?.toUpperCase() ?? "?"}
           </span>
-        )}
-        {!collapsed && (
-          <span className="sb-product-tenant shrink-0">
-            <ChevronDown size={14} />
-          </span>
-        )}
-      </button>
+          {!collapsed && (
+            <span
+              className="sb-product-meta col flex-1 min-w-0"
+              style={{ display: "flex" }}
+            >
+              <span className="sb-product-name">{product.name}</span>
+              <span className="sb-product-tenant">{product.role}</span>
+            </span>
+          )}
+          {!collapsed && (
+            <span className="sb-product-tenant shrink-0">
+              <ChevronDown size={14} />
+            </span>
+          )}
+        </button>
+      ) : null}
 
       {/* Nav sections — grouped, separated by a thin divider. */}
       <div className="flex-1 overflow-y-auto">
