@@ -5,8 +5,20 @@ cardinal rules below are non-negotiable; anything older that
 contradicts them is wrong.
 
 For agent recipes (build, test, recipes, gotchas) see
-[`./AGENTS.md`](./AGENTS.md). For umbrella-wide binding rules see
-[`../../../new-docs/`](../../../new-docs/).
+[`./AGENTS.md`](./AGENTS.md). For deeper architectural binding
+rules specific to `@godxjp/ui` (theme axes, cascade layering, …)
+see [`./new-docs/`](./new-docs/) — index at
+[`./new-docs/00-index.md`](./new-docs/00-index.md). For umbrella-wide
+binding rules see [`../../../new-docs/`](../../../new-docs/).
+
+## STOP — framework-specific binding rules
+
+Before adding a new `data-*` attribute on `<html>` that re-binds
+tokens, or adding a user preference toggle (theme / accent / density /
+font-size / new axis), read
+[`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md).
+The four canonical theme axes + cascade layering rules live there;
+inline duplication is rejected at review.
 
 ## Cardinal rules
 
