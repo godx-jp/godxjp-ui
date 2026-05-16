@@ -14,6 +14,7 @@ export default defineConfig({
     "components/primitives": "src/components/primitives/index.ts",
     "components/shell": "src/components/shell/index.ts",
     "components/screens": "src/components/screens/index.ts",
+    "components/composites": "src/components/composites/index.ts",
     preferences: "src/preferences/index.ts",
   },
   format: ["esm"],
