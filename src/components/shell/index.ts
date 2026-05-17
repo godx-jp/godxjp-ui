@@ -17,3 +17,14 @@ export { CommandPalette } from "./CommandPalette";
 export type { CommandPaletteProps, CommandItem } from "./CommandPalette";
 export { PageContent } from "./PageContent";
 export type { PageContentProps, PageContentPadding } from "./PageContent";
+
+// Shell type contracts — PURE types, no mock data. Consumers pass
+// products + projects to the shell primitives as props. Per cardinal
+// rule 28 the shell layer is data-agnostic; mock fixtures for the
+// storybook live under `src/stories/examples/products.ts`.
+export type {
+  ForgeProduct,
+  ForgeProject,
+  ProjectKind,
+  ProjectStatus,
+} from "./types";

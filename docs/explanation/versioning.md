@@ -1,9 +1,12 @@
 ---
+title: "Versioning policy"
 diataxis: explanation
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # Versioning policy
@@ -160,4 +163,5 @@ follow the same deprecation policy as the component surface.
 - [`CHANGELOG.md`](../../CHANGELOG.md) — full version history.
 - [Explanation: Compatibility](./compatibility.md) — browser and framework
   support matrix.
-- [How-to: Migrate from v2](../how-to/migrate-from-v2.md).
+- [`CHANGELOG.md`](../../CHANGELOG.md) `[3.0.0]` section — v2 → v3
+  migration notes.

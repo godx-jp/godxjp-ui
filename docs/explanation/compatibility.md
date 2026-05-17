@@ -1,9 +1,12 @@
 ---
+title: "Compatibility"
 diataxis: explanation
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # Compatibility
@@ -160,7 +163,7 @@ rendering (SSR) compatibility:
 
 - [Explanation: Versioning](./versioning.md) — SemVer policy and breaking-change
   criteria.
-- [How-to: Migrate from v2](../how-to/migrate-from-v2.md) — peer version
-  requirements changed in v3.
+- [`CHANGELOG.md`](../../CHANGELOG.md) `[3.0.0]` section — peer
+  version requirements changed in v3.
 - [Reference: Exports](../reference/exports.md) — ESM entry points and
   `package.json` exports map.

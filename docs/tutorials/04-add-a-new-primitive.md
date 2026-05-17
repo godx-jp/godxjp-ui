@@ -1,40 +1,54 @@
 ---
+title: "Tutorial 04 — Add a new primitive and contribute it upstream"
 diataxis: tutorial
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # Tutorial 04 — Add a new primitive and contribute it upstream
 
 **You will learn:**
 
-- How to add a new primitive (`ProgressBar`) following the `@godxjp/ui` conventions.
+- How to add a new primitive following the `@godxjp/ui` conventions.
 - How to write it token-first (CSS classes, not inline utilities).
+- How to pick the right group folder (cardinal rule 27).
 - How to export it correctly so it appears in the barrel entry.
 - How to open a PR to the submodule.
 
-**By the end of this tutorial you will have** a `ProgressBar` component ready for
-review, committed to a branch in `libs/ts/godxjp-ui`, with a PR opened to `main`.
+For this tutorial we will add a fictitious `Slat` primitive (a thin
+horizontal divider with an accent edge). The real `Progress` /
+`Skeleton` / `Spinner` primitives already exist in
+`src/components/feedback/`; the steps below apply to any new
+primitive.
+
+**By the end of this tutorial you will have** a `Slat` component
+ready for review, committed to a branch in `libs/ts/godxjp-ui`,
+with a PR opened to `main`.
 
 **Prerequisites:** Completed [Tutorial 03](./03-shell-composition.md).
-You must be working inside the `godx-admin` monorepo, not in a consumer service.
+You must be working inside the `godx-admin` monorepo, not in a
+consumer service.
 
 **Time:** approximately 30 minutes.
 
 ---
 
-## Step 1 — Check if the primitive already exists
+## Step 1 — Verify it doesn't exist
 
-Before adding anything, verify the primitive is not already in the package:
+Before adding anything, verify the primitive is not already in the
+package (cardinal rule 23 §D):
 
 ```bash
-grep -r "ProgressBar" /home/satoshi/famgia/admin/libs/ts/godxjp-ui/src/
+cd libs/ts/godxjp-ui
+grep -rln "Slat" src/components/
 ```
 
-If no results, continue. If results appear, the primitive exists — use it instead of
-creating a duplicate.
+If no results, continue. If results appear, the primitive exists —
+use it instead of creating a duplicate.
 
 ---
 
@@ -45,197 +59,239 @@ cd /home/satoshi/famgia/admin/libs/ts/godxjp-ui
 git status   # confirm clean working tree
 git checkout main
 git pull --ff-only origin main
-git checkout -b feat/add-progress-bar
+git checkout -b feat/add-slat
 ```
 
 ---
 
-## Step 3 — Add the token class to tokens.css
+## Step 3 — Pick the group folder (cardinal rule 27)
 
-Open `src/tokens/tokens.css` and add the `.progress-*` classes in the component
-primitives section (near `.checkbox-root`, `.switch-root`):
+Primitives live under `src/components/<group>/<Name>.tsx` where
+`<group>` is one of: `general`, `layout`, `data-display`,
+`data-entry`, `feedback`, `navigation`.
+
+A `Slat` (horizontal divider with accent edge) is read-only visual
+content → `data-display` group. Plan to create the file at
+`src/components/data-display/Slat.tsx`.
+
+---
+
+## Step 4 — Add the token class to `shell.css`
+
+Open `src/styles/shell.css` and add the `.slat` class in the
+component primitives section:
 
 ```css
-/* ProgressBar */
-.progress-track {
+/* Slat — horizontal divider with optional accent edge */
+.slat {
   width: 100%;
-  height: var(--spacing-2);       /* 8px — matches density default */
-  background: var(--muted);
-  border-radius: var(--radius-full);
-  overflow: hidden;
+  height: 1px;                       /* hairline — documented px exception */
+  background: var(--border);
+  margin-block: var(--spacing-4);
 }
 
-.progress-fill {
-  height: 100%;
-  background: var(--primary);
-  border-radius: var(--radius-full);
-  transition: width var(--transition-base) var(--ease-in-out);
-}
+.slat[data-accent="primary"]   { background: var(--primary); }
+.slat[data-accent="success"]   { background: var(--success); }
+.slat[data-accent="attention"] { background: var(--attention); }
 ```
 
-Token rules to observe:
+Token rules to observe (cardinal rules 2 + 15 + 16 + 22):
 
-- Height comes from a spacing token, not a literal pixel value.
-- Background colors use semantic tokens (`--muted`, `--primary`).
-- The transition uses `--transition-base` and `--ease-in-out`.
-- Do not add `--progress-*` custom properties unless you expect operators to
-  override them. The semantic tokens are enough for this primitive.
+- Background colors use semantic tokens (`--border`, `--primary`).
+- Spacing comes from `--spacing-4`, not a literal pixel value.
+- The 1px hairline is a documented exception ([03 §F](../../new-docs/03-token-system.md#f--radius)).
 
 ---
 
-## Step 4 — Create the React component
+## Step 5 — Create the React component
 
-Create `src/components/primitives/ProgressBar.tsx`:
+Create `src/components/data-display/Slat.tsx`:
 
 ```tsx
-// src/components/primitives/ProgressBar.tsx
-import type { HTMLAttributes } from "react"
-import { cn } from "./cn"
+// src/components/data-display/Slat.tsx
+import { forwardRef, type HTMLAttributes } from "react"
+import { cn } from "../cn"
 
 /**
- * ProgressBar — determinate progress indicator.
+ * Slat — a horizontal divider with optional accent edge.
  *
- * Renders a `.progress-track` / `.progress-fill` pair from tokens.css.
- * The value must be in the range 0–100.
- *
- * @example
- *   <ProgressBar value={65} aria-label="Upload progress" />
+ * Per cardinal rule 23 §B the `accent` prop is the canonical name
+ * for "edge indicator in semantic color".
  */
 
-export interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
-  /** Progress percentage, 0–100. */
-  value: number
-  /** Maximum value. Defaults to 100. */
-  max?: number
+export type SlatAccent = "primary" | "success" | "warning" | "attention" | "info" | "destructive"
+
+export interface SlatProps extends HTMLAttributes<HTMLDivElement> {
+  /** Optional accent color edge. */
+  accent?: SlatAccent
 }
 
-export function ProgressBar({
-  value,
-  max = 100,
-  className,
-  ...rest
-}: ProgressBarProps) {
-  const clampedValue = Math.min(Math.max(0, value), max)
-  const pct = (clampedValue / max) * 100
-
+export const Slat = forwardRef<HTMLDivElement, SlatProps>(function Slat(
+  { accent, className, ...rest }, ref,
+) {
   return (
     <div
-      role="progressbar"
-      aria-valuenow={clampedValue}
-      aria-valuemin={0}
-      aria-valuemax={max}
-      className={cn("progress-track", className)}
+      ref={ref}
+      role="separator"
+      aria-orientation="horizontal"
+      data-accent={accent}
+      className={cn("slat", className)}
       {...rest}
-    >
-      <div
-        className="progress-fill"
-        style={{ width: `${pct}%` }}
-        aria-hidden
-      />
-    </div>
+    />
   )
-}
+})
 ```
+
+Notes:
+
+- `forwardRef` per cardinal rule 13.
+- `cn` imported from `"../cn"` (one level above the group folder).
+- The `accent` prop matches the vocabulary row in
+  [04 — prop vocabulary §F](../../new-docs/04-prop-vocabulary.md).
 
 ---
 
-## Step 5 — Export the primitive
+## Step 6 — Export the primitive
 
-Open `src/components/primitives/index.ts` and add the export:
+Open `src/components/primitives.ts` (the single barrel file, NOT a
+folder) and add the export:
 
 ```ts
-// src/components/primitives/index.ts  (excerpt — add at end)
-export { ProgressBar } from "./ProgressBar"
-export type { ProgressBarProps } from "./ProgressBar"
+// src/components/primitives.ts  (excerpt — add near other data-display exports)
+export { Slat } from "./data-display/Slat"
+export type { SlatProps, SlatAccent } from "./data-display/Slat"
 ```
 
-The barrel entry at `src/index.ts` re-exports everything from `components/primitives/index.ts`,
-so no further changes are needed.
+The root `src/index.ts` re-exports every name from
+`./components/primitives`, so no further changes are needed.
 
 ---
 
-## Step 6 — Write a type-check smoke test
-
-Verify TypeScript compiles correctly:
+## Step 7 — Verify TypeScript + tokens
 
 ```bash
-cd /home/satoshi/famgia/admin/libs/ts/godxjp-ui
+cd libs/ts/godxjp-ui
 pnpm type-check
+pnpm lint:tokens     # 7/7 must pass
+pnpm build           # tsup bundle must succeed
 ```
 
 **Expected output:** No errors.
 
 ---
 
-## Step 7 — Write the reference doc
+## Step 8 — Write the story (cardinal rules 1 + 29)
 
-Create `docs/reference/primitives/ProgressBar.md`:
+Create `src/stories/data-display/Slat.stories.tsx`:
+
+```tsx
+import type { Meta, StoryObj } from "@storybook/react"
+import { Slat, Card, Typography } from "@godxjp/ui"
+
+const meta: Meta<typeof Slat> = {
+  title: "Data Display/Slat",
+  component: Slat,
+}
+export default meta
+
+type Story = StoryObj<typeof Slat>
+
+export const Default: Story = {
+  render: () => (
+    <Card padding="cozy">
+      <Typography.Paragraph>Above the slat.</Typography.Paragraph>
+      <Slat />
+      <Typography.Paragraph>Below the slat.</Typography.Paragraph>
+    </Card>
+  ),
+}
+
+export const AccentVariants: Story = {
+  render: () => (
+    <Card padding="cozy">
+      {(["primary", "success", "attention"] as const).map((accent) => (
+        <div key={accent}>
+          <Typography.Paragraph>{accent}</Typography.Paragraph>
+          <Slat accent={accent} />
+        </div>
+      ))}
+    </Card>
+  ),
+}
+```
+
+Per cardinal rule 29 the story consumes framework primitives only
+(Card, Typography, Slat) — no raw `<div>` styling, no Tailwind
+utility stacks for visual decisions.
+
+---
+
+## Step 9 — Write the reference doc
+
+Create `docs/reference/primitives/Slat.md`:
 
 ```markdown
 ---
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
-component: ProgressBar
+component: Slat
 status: stable
 audience: [developer, agent]
 ---
 
-# ProgressBar
+# Slat
 
-> Determinate progress indicator that shows completion percentage.
+> Horizontal divider with optional accent color edge.
 
 ## Usage
 
 \`\`\`tsx
-import { ProgressBar } from "@godxjp/ui"
+import { Slat } from "@godxjp/ui"
 
-<ProgressBar value={65} aria-label="Upload progress" />
+<Slat />
+<Slat accent="primary" />
 \`\`\`
 
 ## Props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `value` | `number` | required | Progress percentage, 0–`max` |
-| `max` | `number` | `100` | Maximum value |
+| `accent` | `"primary" \| "success" \| "warning" \| "attention" \| "info" \| "destructive"` | `undefined` | Semantic color edge |
 | `...rest` | `HTMLAttributes<HTMLDivElement>` | — | Standard div props |
 
 ## Accessibility
 
-- Renders `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, `aria-valuemax`.
-- The fill bar uses `aria-hidden` — the numeric state is on the track element.
-- Always provide `aria-label` or `aria-labelledby` to describe what is in progress.
-- WCAG 2.1 AA: `--primary` fill on `--muted` track meets 3:1 contrast ratio.
+- Renders `role="separator"` with `aria-orientation="horizontal"`.
+- WCAG 2.1 AA: `--border` background on body surface meets 3:1 non-text contrast.
 
 ## See also
 
-- [tokens.md](../tokens.md) — `--primary`, `--muted`, `--transition-base` values.
-- [adr/0003-tokens-not-utilities.md](../../adr/0003-tokens-not-utilities.md)
+- [04 — prop vocabulary §F (accent)](../../../new-docs/04-prop-vocabulary.md)
 ```
 
 ---
 
-## Step 8 — Commit and open a PR
+## Step 10 — Commit and open a PR
 
 ```bash
-cd /home/satoshi/famgia/admin/libs/ts/godxjp-ui
+cd libs/ts/godxjp-ui
 
-git add src/tokens/tokens.css \
-        src/components/primitives/ProgressBar.tsx \
-        src/components/primitives/index.ts \
-        docs/reference/primitives/ProgressBar.md
+git add src/styles/shell.css \
+        src/components/data-display/Slat.tsx \
+        src/components/primitives.ts \
+        src/stories/data-display/Slat.stories.tsx \
+        docs/reference/primitives/Slat.md
 
-git commit -m "feat(primitives): add ProgressBar with token-first CSS"
+git commit -m "feat(primitives): add Slat with accent edge"
 
-git push origin feat/add-progress-bar
+git push origin feat/add-slat
 
 gh pr create \
   --base main \
-  --head feat/add-progress-bar \
-  --title "feat(primitives): ProgressBar" \
-  --body "Adds a determinate ProgressBar primitive backed by .progress-track/.progress-fill CSS tokens.
-Includes reference doc, ARIA role, and type exports."
+  --head feat/add-slat \
+  --title "feat(primitives): Slat" \
+  --body "Adds a horizontal-divider primitive with semantic accent edge. Story + reference doc included. Axes verified."
 ```
 
 ---
@@ -244,18 +300,24 @@ Includes reference doc, ARIA role, and type exports."
 
 | Problem | Likely cause | Fix |
 |---|---|---|
-| `pnpm type-check` fails on `cn` import | Wrong relative path | Import `cn` from `"./cn"` (same directory) |
-| ProgressBar renders but has wrong height | Token class not loaded | Confirm `.progress-track` is in `tokens.css`, not inline |
-| Export not visible from barrel | Missing line in `index.ts` | Add `export { ProgressBar } from "./ProgressBar"` to `index.ts` |
+| `pnpm type-check` fails on `cn` import | Wrong relative path | Import `cn` from `"../cn"` (one level above the group folder) |
+| Slat renders but has wrong height | Token class not loaded | Confirm `.slat` is in `shell.css`, not inline |
+| Export not visible from barrel | Missing line in `primitives.ts` | Add the `export { Slat } from "./data-display/Slat"` line |
+| Story fails parity check | Story title doesn't match group | Title must be `Data Display/Slat`, file at `src/stories/data-display/Slat.stories.tsx` |
 | PR opens on wrong base | Not on `main` before checkout | Always start with `git checkout main && git pull --ff-only` |
 
 ---
 
 ## What you achieved
 
-You added a brand-compliant primitive following the exact pattern used by every
-existing primitive in the library: token-first CSS, forwarded refs, ARIA attributes,
-and a companion reference doc.
+You added a brand-compliant primitive following the exact pattern
+used by every existing primitive in the library: per-group folder
+placement (cardinal rule 27), token-first CSS, forwarded refs,
+ARIA attributes, a paired story (cardinal rule 1 + 29), and a
+companion reference doc (cardinal rule 18).
 
-**See also:** [How-to: Contribute a primitive](../how-to/contribute-primitive.md)
-for the abbreviated task reference once you are comfortable with the workflow.
+**See also:**
+
+- [How-to: Contribute a primitive](../how-to/contribute-primitive.md) — task-mode summary.
+- [02 — Consumer contract §I (extending the framework)](../../new-docs/02-consumer-contract.md).
+- [04 — Prop vocabulary](../../new-docs/04-prop-vocabulary.md).

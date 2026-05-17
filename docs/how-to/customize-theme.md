@@ -8,7 +8,7 @@ audience:
   - ai-agent
   - designer
 status: published
-last-updated: 2026-05-16
+last-updated: 2026-05-17
 lang: en
 ---
 
@@ -63,7 +63,7 @@ re-render.
 
 ---
 
-## Recipe 2 — Add a per-tenant accent
+## Recipe 2 — Add a per-deployment accent palette
 
 Use case: your service is multi-tenant; each tenant has its own
 brand colour.
@@ -71,13 +71,13 @@ brand colour.
 ```css
 @import "@godxjp/ui/tailwind.css";
 
-[data-tenant="acme"] {
+[data-accent="acme"] {
   --primary: oklch(60% 0.15 280);
   --ring:    oklch(60% 0.15 280);
   --brand:   oklch(60% 0.15 280);
 }
 
-[data-tenant="aurora"] {
+[data-accent="aurora"] {
   --primary: oklch(72% 0.12 155);
   --ring:    oklch(72% 0.12 155);
   --brand:   oklch(72% 0.12 155);
@@ -88,7 +88,7 @@ Then somewhere at runtime — typically in `applyDesignAttrs()` —
 set the attribute on `<html>`:
 
 ```ts
-document.documentElement.dataset.tenant = currentTenant
+document.documentElement.dataset.accent = currentTenant
 ```
 
 The chrome (sidebar product chip, topbar buttons, focus rings)
@@ -96,13 +96,13 @@ flips colour automatically.
 
 ---
 
-## Recipe 3 — Tweak dark mode for your tenant
+## Recipe 3 — Tweak dark mode for your accent
 
 Use case: a tenant whose dark-mode accent needs a brighter hue (the
 default dark theme dims primary by ~14 lightness).
 
 ```css
-[data-theme="dark"][data-tenant="acme"] {
+[data-theme="dark"][data-accent="acme"] {
   --primary: oklch(72% 0.14 280);   /* brighter L for dark */
   --ring:    oklch(72% 0.14 280);
   --brand:   oklch(72% 0.14 280);
@@ -110,7 +110,7 @@ default dark theme dims primary by ~14 lightness).
 ```
 
 Combined selectors are how `@godxjp/ui` ships its own
-dark-mode/tenant interplay — search `[data-theme="dark"][data-tenant=` in `styles/theme.css` for examples.
+dark-mode/accent interplay — search `[data-theme="dark"][data-accent=` in `styles/theme.css` for examples.
 
 ---
 

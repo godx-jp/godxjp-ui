@@ -1,0 +1,98 @@
+/* ─── Sparkline + bar-chart utility ──────────────────────────────
+ *  `.spark`  inline SVG sparkline — caller writes the <path>.
+ *  `.bars`   bar chart strip used in A5 trend cards.
+ */
+
+.spark {
+  display: block;
+  width: 100%;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 54px;
+}
+.bars > i {
+  flex: 1;
+  background: color-mix(in oklch, var(--primary) 22%, transparent);
+  border-radius: 2px 2px 0 0;
+  display: block;
+}
+.bars > i.on { background: var(--primary); }
+
+/* Mono utility — terse alias used inside cards for tabular numerics. */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Pill utility — small badge-like span used in G2 / G4 / H8. */
+.pill-inline {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  font-size: var(--card-meta-size);
+  color: var(--muted-foreground);
+}
+
+/* ─── Progress primitive — line + circle variants ─────────────────
+ *  Line variant reuses the `.prog` atom from 75-card-atoms.css;
+ *  this layer adds the wrapper, label, size axes, semantic colours
+ *  and the circular SVG sweep. The colour class drives the bar
+ *  fill (`.prog > i`) AND the circle stroke (`currentColor`).
+ */
+
+.progress {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+.progress-line .prog { flex: 1; }
+.progress-line.progress-size-small .prog { height: 4px; }
+.progress-line.progress-size-large .prog { height: 8px; }
+.progress-info {
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  font-weight: var(--font-weight-medium);
+  min-width: 36px;
+  text-align: right;
+}
+.progress-color-info .prog > i        { background: var(--info); }
+.progress-color-success .prog > i     { background: var(--success); }
+.progress-color-warning .prog > i     { background: var(--warning); }
+.progress-color-destructive .prog > i { background: var(--destructive); }
+
+.progress-circle {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.progress-circle.progress-size-small  { width: 56px; height: 56px; }
+.progress-circle.progress-size-large  { width: 120px; height: 120px; }
+.progress-circle.progress-color-info        { color: var(--info); }
+.progress-circle.progress-color-success     { color: var(--success); }
+.progress-circle.progress-color-warning     { color: var(--warning); }
+.progress-circle.progress-color-destructive { color: var(--destructive); }
+.progress-circle svg { width: 100%; height: 100%; transform: rotate(0deg); }
+.progress-circle .progress-info {
+  position: absolute;
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  font-weight: var(--font-weight-medium);
+  min-width: 0;
+}
+.progress-circle.progress-size-small .progress-info  { font-size: var(--text-xs); }
+.progress-circle.progress-size-large .progress-info  { font-size: var(--text-base); }
+

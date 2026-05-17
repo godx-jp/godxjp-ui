@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="_card.css">
+<style>
+  /* ── Card system ──────────────────────────────────────────────
+     Base: 1px border, 6px radius, var(--card) bg, no shadow at rest.
+     Variants only change: padding density, header treatment, accent edge,
+     background fill, or footer divider. Never invent new colors.
+  */
+
+  /* layout helpers ------------------------------------------------ */
+  .grid-2     { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .grid-3     { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .section    { margin-top:18px; }
+  .section h2 { font-size:11px; font-weight:500; letter-spacing:.08em;
+                text-transform:uppercase; color:var(--muted-foreground);
+                margin-bottom:8px; }
+  .section h2 .hint { text-transform:none; letter-spacing:0;
+                      color:var(--muted-foreground); font-weight:400;
+                      margin-left:8px; }
+
+  /* card variants ------------------------------------------------- */
+  .card               { background:var(--card); color:var(--card-foreground);
+                        border:1px solid var(--border); border-radius:6px;
+                        padding:16px; }
+  .card.tight         { padding:12px; }
+  .card.flush         { padding:0; overflow:hidden; }     /* for cards w/ own internal sections */
+  .card.muted-bg      { background:var(--secondary); }
+  .card.outline-only  { background:transparent; }
+  .card.accent-left   { border-left:3px solid var(--primary); padding-left:13px; }
+  .card.accent-attention { border-left:3px solid var(--attention); padding-left:13px; }
+  .card.accent-success   { border-left:3px solid var(--success);   padding-left:13px; }
+  .card.accent-warning   { border-left:3px solid var(--warning);   padding-left:13px; }
+  .card.accent-info      { border-left:3px solid var(--info);      padding-left:13px; }
+
+  /* internal regions --------------------------------------------- */
+  .ch         { padding:10px 16px; border-bottom:1px solid var(--border);
+                display:flex; align-items:center; gap:10px; }
+  .ch .t      { font-size:13px; font-weight:500; }
+  .ch .sub    { font-size:11px; color:var(--muted-foreground); margin-left:auto; }
+  .cb         { padding:14px 16px; }
+  .cf         { padding:10px 16px; border-top:1px solid var(--border);
+                background:color-mix(in oklch, var(--secondary) 60%, transparent);
+                display:flex; align-items:center; gap:8px; font-size:12px;
+                color:var(--muted-foreground); }
+  .cf.actions { justify-content:flex-end; background:transparent; }
+
+  /* atomic bits -------------------------------------------------- */
+  .stat       { font-size:24px; font-weight:600; letter-spacing:-0.01em;
+                font-variant-numeric:tabular-nums; line-height:1.15; }
+  .stat .unit { font-size:13px; font-weight:500; color:var(--muted-foreground);
+                margin-left:2px; }
+  .delta      { display:inline-flex; align-items:center; gap:2px;
+                font-size:11px; font-weight:500; padding:1px 6px;
+                border-radius:9999px; font-variant-numeric:tabular-nums; }
+  .delta.up   { color:var(--success);
+                background:color-mix(in oklch, var(--success) 14%, transparent); }
+  .delta.down { color:var(--attention);
+                background:color-mix(in oklch, var(--attention) 14%, transparent); }
+  .row-between{ display:flex; justify-content:space-between; align-items:center; }
+  .dot        { width:6px; height:6px; border-radius:9999px; display:inline-block;
+                background:var(--muted-foreground); flex-shrink:0; }
+  .dot.success    { background:var(--success); }
+  .dot.attention  { background:var(--attention); }
+  .dot.warning    { background:var(--warning); }
+  .dot.info       { background:var(--info); }
+  .dot.primary    { background:var(--primary); }
+
+  /* avatar / initials ------------------------------------------- */
+  .ava        { width:34px; height:34px; border-radius:9999px;
+                background:color-mix(in oklch, var(--primary) 14%, var(--card));
+                color:var(--primary); border:1px solid color-mix(in oklch, var(--primary) 20%, transparent);
+                display:inline-flex; align-items:center; justify-content:center;
+                font-size:13px; font-weight:500; flex-shrink:0; }
+  .ava.sm     { width:24px; height:24px; font-size:11px; }
+
+  /* data list (label–value rows) -------------------------------- */
+  .dl         { display:grid; grid-template-columns:auto 1fr; gap:6px 14px;
+                font-size:12px; }
+  .dl dt      { color:var(--muted-foreground); }
+  .dl dd      { font-variant-numeric:tabular-nums; font-weight:500;
+                text-align:right; }
+
+  /* placeholder chart bars -------------------------------------- */
+  .bars       { display:flex; align-items:flex-end; gap:5px; height:54px; }
+  .bars i     { flex:1; background:color-mix(in oklch, var(--primary) 22%, transparent);
+                border-radius:2px 2px 0 0; display:block; }
+  .bars i.on  { background:var(--primary); }
+
+  /* calendar day mini ------------------------------------------- */
+  .cal-day    { display:flex; flex-direction:column; gap:4px;
+                padding:8px 10px; border:1px solid var(--border);
+                border-radius:6px; background:var(--card); min-width:0; }
+  .cal-day.today { border-color:var(--primary);
+                   box-shadow:inset 0 0 0 1px var(--primary); }
+  .cal-day .d  { font-size:11px; color:var(--muted-foreground); font-weight:500;
+                 font-variant-numeric:tabular-nums; }
+  .cal-day .time { font-size:12px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .cal-day .role { font-size:10px; color:var(--muted-foreground);
+                   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* icon glyph (purely shape, no decoration) -------------------- */
+  .ic         { width:32px; height:32px; border-radius:6px;
+                background:color-mix(in oklch, var(--primary) 10%, var(--card));
+                color:var(--primary);
+                display:inline-flex; align-items:center; justify-content:center;
+                font-size:16px; flex-shrink:0;
+                border:1px solid color-mix(in oklch, var(--primary) 16%, transparent); }
+  .ic.success    { background:color-mix(in oklch, var(--success)   10%, var(--card));
+                   color:var(--success);
+                   border-color:color-mix(in oklch, var(--success) 18%, transparent); }
+  .ic.attention  { background:color-mix(in oklch, var(--attention) 10%, var(--card));
+                   color:var(--attention);
+                   border-color:color-mix(in oklch, var(--attention) 18%, transparent); }
+  .ic.warning    { background:color-mix(in oklch, var(--warning)   12%, var(--card));
+                   color:oklch(40% 0.13 85);
+                   border-color:color-mix(in oklch, var(--warning) 22%, transparent); }
+  .ic.info       { background:color-mix(in oklch, var(--info)      10%, var(--card));
+                   color:var(--info);
+                   border-color:color-mix(in oklch, var(--info) 18%, transparent); }
+  .ic.lg         { width:40px; height:40px; font-size:18px; }
+
+  /* link-style action ------------------------------------------- */
+  .lnk { font-size:12px; color:var(--primary); font-weight:500; cursor:pointer; }
+
+  /* keep page itself comfortable in 700px frame */
+  body { padding:20px; }
+</style>
+</head>
+<body>
+
+<div class="muted" style="font-size:11px;margin-bottom:14px;line-height:1.55">
+  <b>Card system</b> — 1 base atom <code>.card</code> (1px border · 6px radius · no shadow at rest).
+  Patterns thay đổi <i>padding</i>, <i>header treatment</i>, <i>accent edge</i>, hoặc <i>background fill</i>.
+  Tuyệt đối không tạo màu mới — chỉ semantic + wa-iro qua <code>color-mix()</code>.
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ① STAT / KPI                                                 -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>① Stat · KPI <span class="hint">3 mật độ — đơn / kép / so sánh tháng trước</span></h2>
+  <div class="grid-3">
+
+    <div class="card">
+      <div class="row-between" style="margin-bottom:6px">
+        <div style="font-size:12px;color:var(--muted-foreground)">今月の勤怠</div>
+        <span class="chip chip-success">承認済</span>
+      </div>
+      <div class="stat">168.5<span class="unit">h</span></div>
+      <div class="muted" style="font-size:11px;margin-top:2px">5月 · 22 営業日</div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:12px;color:var(--muted-foreground);margin-bottom:6px">残業</div>
+      <div class="row-between" style="align-items:flex-end">
+        <div class="stat">12.5<span class="unit">h</span></div>
+        <span class="delta down">▲ 2.1h</span>
+      </div>
+      <div class="muted" style="font-size:11px;margin-top:2px">先月比 · 上限 45h</div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:12px;color:var(--muted-foreground);margin-bottom:8px">有給残</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <div class="stat" style="font-size:20px">12.0<span class="unit">日</span></div>
+          <div class="muted" style="font-size:10px">残</div>
+        </div>
+        <div>
+          <div class="stat" style="font-size:20px;color:var(--muted-foreground)">8.0<span class="unit">日</span></div>
+          <div class="muted" style="font-size:10px">取得済</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ② STAFF / PERSON                                             -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>② Staff · 従業員 <span class="hint">avatar + role + status dot</span></h2>
+  <div class="grid-2">
+
+    <div class="card">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span class="ava">田中</span>
+        <div style="min-width:0;flex:1">
+          <div class="row-between">
+            <div style="font-size:13px;font-weight:500">田中 美咲</div>
+            <span class="dot success" title="勤務中"></span>
+          </div>
+          <div class="muted" style="font-size:11px">店長 · 渋谷店</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <span class="chip chip-outline">早番</span>
+            <span class="chip chip-outline">8:00–17:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span class="ava">NL</span>
+        <div style="min-width:0;flex:1">
+          <div class="row-between">
+            <div style="font-size:13px;font-weight:500">Nguyễn Lan</div>
+            <span class="dot attention" title="遅刻"></span>
+          </div>
+          <div class="muted" style="font-size:11px">ホール · ベトヤ表参道</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <span class="chip chip-attention">遅刻 12分</span>
+            <span class="chip chip-outline">11:00–20:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ③ SHIFT                                                      -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>③ Shift · シフト <span class="hint">date · time range · location</span></h2>
+  <div class="grid-2">
+
+    <div class="card accent-left">
+      <div class="row-between" style="margin-bottom:6px">
+        <div style="font-size:11px;color:var(--muted-foreground)">5月 17日 (土)</div>
+        <span class="chip chip-primary">早番</span>
+      </div>
+      <div style="font-size:18px;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:-0.01em">
+        8:00 — 17:00
+      </div>
+      <div class="muted" style="font-size:11px;margin-top:2px">休憩 60分 · 実働 8h</div>
+      <div style="display:flex;gap:6px;margin-top:10px;align-items:center">
+        <span class="dot primary"></span>
+        <span style="font-size:11px;color:var(--muted-foreground)">ベトヤ渋谷店 · キッチン</span>
+      </div>
+    </div>
+
+    <div class="card accent-attention">
+      <div class="row-between" style="margin-bottom:6px">
+        <div style="font-size:11px;color:var(--muted-foreground)">5月 18日 (日)</div>
+        <span class="chip chip-attention">人手不足</span>
+      </div>
+      <div style="font-size:18px;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:-0.01em;color:var(--muted-foreground)">
+        — 未割当 —
+      </div>
+      <div class="muted" style="font-size:11px;margin-top:2px">遅番 17:00–22:00 · 残 2 名</div>
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <button class="btn btn-sm">割当</button>
+        <button class="btn btn-outline btn-sm">募集</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ④ APPROVAL                                                   -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>④ Approval · 申請承認 <span class="hint">header / body / actions footer</span></h2>
+
+  <div class="card flush">
+    <div class="ch">
+      <span class="ava sm">山田</span>
+      <div class="t">山田 太郎 · 有給休暇</div>
+      <span class="sub">申請 5月 14日 09:42</span>
+    </div>
+    <div class="cb">
+      <dl class="dl" style="grid-template-columns:80px 1fr; text-align:left">
+        <dt>期間</dt><dd style="text-align:left">5月 22日 (木) — 5月 23日 (金) · 2 日</dd>
+        <dt>残数</dt><dd style="text-align:left">12.0 日 → 10.0 日</dd>
+        <dt>理由</dt><dd style="text-align:left;font-weight:400;color:var(--muted-foreground)">私用のため</dd>
+      </dl>
+    </div>
+    <div class="cf actions">
+      <button class="btn btn-ghost btn-sm">却下</button>
+      <button class="btn btn-outline btn-sm">差戻し</button>
+      <button class="btn btn-sm">承認</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ⑤ NOTICE / ALERT — accent-left, semantic                     -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>⑤ Notice · 通知 <span class="hint">accent-left + icon · semantic only</span></h2>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+
+    <div class="card accent-info tight" style="display:flex;gap:12px;align-items:flex-start">
+      <span class="ic info">i</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">5月度の締めは 5/31 (土) 23:59 です</div>
+        <div class="muted" style="font-size:11px;margin-top:1px">未承認の打刻修正がある場合、承認者へリマインドが送られます。</div>
+      </div>
+      <button class="btn btn-ghost btn-xs">詳細</button>
+    </div>
+
+    <div class="card accent-attention tight" style="display:flex;gap:12px;align-items:flex-start">
+      <span class="ic attention">!</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">3 件の打刻漏れがあります</div>
+        <div class="muted" style="font-size:11px;margin-top:1px">該当日: 5/12, 5/13, 5/15 — 当事者へ修正依頼を送信できます。</div>
+      </div>
+      <button class="btn btn-outline btn-xs">確認</button>
+    </div>
+
+    <div class="card accent-success tight" style="display:flex;gap:12px;align-items:flex-start">
+      <span class="ic success">✓</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">4月度の勤怠が確定しました</div>
+        <div class="muted" style="font-size:11px;margin-top:1px">給与計算へ連携済 · 5月 1日 02:15</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ⑥ EMPTY STATE                                                -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>⑥ Empty state · 空状態 <span class="hint">一行 · 静か · イラスト無し</span></h2>
+
+  <div class="card" style="text-align:center;padding:32px 16px">
+    <div style="font-size:13px;font-weight:500">ご指定の月にシフトはありません</div>
+    <div class="muted" style="font-size:11px;margin-top:4px">別の月を選択するか、シフトを新規作成してください。</div>
+    <button class="btn btn-outline btn-sm" style="margin-top:14px">＋ シフトを作成</button>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ⑦ ACTION CARD — large CTA (punch-in)                         -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>⑦ Action · 主アクション <span class="hint">出退勤など 1 画面 1 アクション用</span></h2>
+
+  <div class="card" data-density="comfortable" style="padding:20px">
+    <div class="row-between" style="margin-bottom:10px">
+      <div>
+        <div class="muted" style="font-size:11px">2026年 5月 17日 (土)</div>
+        <div style="font-size:13px;font-weight:500">早番シフト · 8:00–17:00</div>
+      </div>
+      <div style="font-size:24px;font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:-0.01em">
+        07:58:42
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px">
+      <button class="btn btn-lg" style="height:48px;font-size:15px">出勤 · Check In</button>
+      <button class="btn btn-outline btn-lg" style="height:48px;font-size:13px">休憩開始</button>
+    </div>
+    <div class="muted" style="font-size:11px;margin-top:10px;display:flex;gap:6px;align-items:center">
+      <span class="dot info"></span> 位置確認済 · ベトヤ渋谷店から 8m
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ⑧ LIST CARD                                                  -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>⑧ List · 一覧入り <span class="hint">header + N rows + see-all footer</span></h2>
+
+  <div class="card flush">
+    <div class="ch">
+      <span class="t">本日の打刻</span>
+      <span class="sub">5月 17日 · 14 件</span>
+    </div>
+    <ul style="list-style:none;margin:0;padding:0">
+      <li style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:12px">
+        <span class="ava sm">田</span>
+        <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">田中 美咲</span>
+        <span class="mono" style="color:var(--muted-foreground);font-variant-numeric:tabular-nums">07:58</span>
+        <span class="chip chip-success">出勤</span>
+      </li>
+      <li style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:12px">
+        <span class="ava sm">N</span>
+        <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Nguyễn Lan</span>
+        <span class="mono" style="color:var(--muted-foreground);font-variant-numeric:tabular-nums">11:12</span>
+        <span class="chip chip-attention">遅刻</span>
+      </li>
+      <li style="display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:12px">
+        <span class="ava sm">佐</span>
+        <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">佐藤 健一</span>
+        <span class="mono" style="color:var(--muted-foreground);font-variant-numeric:tabular-nums">09:00</span>
+        <span class="chip chip-success">出勤</span>
+      </li>
+    </ul>
+    <div class="cf" style="justify-content:center">
+      <a class="lnk">すべて表示 →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ⑨ SETTINGS ROW                                               -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>⑨ Settings row · 設定行 <span class="hint">title + description + control · stacks vertically</span></h2>
+
+  <div class="card flush">
+    <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;border-bottom:1px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">打刻位置の確認</div>
+        <div class="muted" style="font-size:11px;line-height:1.55">店舗から 50m 以上離れた場所での打刻を警告します。</div>
+      </div>
+      <!-- placeholder toggle -->
+      <span style="width:36px;height:20px;border-radius:9999px;background:var(--primary);position:relative;display:inline-block;flex-shrink:0">
+        <span style="position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:9999px;background:var(--primary-foreground)"></span>
+      </span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;border-bottom:1px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">残業の自動申請</div>
+        <div class="muted" style="font-size:11px;line-height:1.55">所定時間を超えた場合、承認者へ申請を自動送信します。</div>
+      </div>
+      <span style="width:36px;height:20px;border-radius:9999px;background:var(--secondary);border:1px solid var(--border);position:relative;display:inline-block;flex-shrink:0">
+        <span style="position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:9999px;background:var(--muted-foreground)"></span>
+      </span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;padding:14px 16px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">締め日</div>
+        <div class="muted" style="font-size:11px;line-height:1.55">給与計算の基準となる日付。</div>
+      </div>
+      <select class="input" style="width:120px;height:28px;font-size:12px">
+        <option>月末</option><option>20日</option><option>15日</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ⑩ DATA-LIST                                                  -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>⑩ Data list · 詳細属性 <span class="hint">label / value pairs · right-aligned numeric</span></h2>
+  <div class="grid-2">
+
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px">5月度サマリー</div>
+      <dl class="dl">
+        <dt>所定時間</dt><dd>176.0 h</dd>
+        <dt>実働時間</dt><dd>168.5 h</dd>
+        <dt>残業時間</dt><dd>12.5 h</dd>
+        <dt>欠勤</dt><dd>0 日</dd>
+        <dt>有給取得</dt><dd>1.0 日</dd>
+        <dt>深夜勤務</dt><dd>0.0 h</dd>
+      </dl>
+    </div>
+
+    <div class="card muted-bg">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px">給与計算 · 暫定</div>
+      <dl class="dl">
+        <dt>基本給</dt><dd>¥ 240,000</dd>
+        <dt>残業手当</dt><dd>¥ 22,800</dd>
+        <dt>深夜手当</dt><dd>¥ 0</dd>
+        <dt>交通費</dt><dd>¥ 8,500</dd>
+        <dt style="font-weight:500;color:var(--foreground)">支給合計</dt>
+        <dd style="font-size:13px">¥ 271,300</dd>
+      </dl>
+      <div class="muted" style="font-size:10px;margin-top:8px">確定前 · 5月 31日 23:59 締切</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ⑪ CALENDAR DAY mini cards                                    -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>⑪ Calendar day · 日別小カード <span class="hint">grid 形式・打刻 + 役割</span></h2>
+
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+    <div class="cal-day"><span class="d">月 12</span><span class="time">8:00–17:00</span><span class="role">早番 · キッチン</span></div>
+    <div class="cal-day"><span class="d">火 13</span><span class="time">11:00–20:00</span><span class="role">中番 · ホール</span></div>
+    <div class="cal-day"><span class="d" style="color:var(--muted-foreground)">水 14</span><span class="time" style="color:var(--muted-foreground)">休</span><span class="role">公休</span></div>
+    <div class="cal-day"><span class="d">木 15</span><span class="time">8:00–17:00</span><span class="role">早番 · キッチン</span></div>
+    <div class="cal-day today"><span class="d" style="color:var(--primary)">金 17 · 本日</span><span class="time">8:00–17:00</span><span class="role">早番 · キッチン</span></div>
+    <div class="cal-day"><span class="d" style="color:var(--attention)">土 18</span><span class="time" style="color:var(--attention)">未割当</span><span class="role">遅番候補</span></div>
+    <div class="cal-day"><span class="d" style="color:var(--destructive)">日 19</span><span class="time">休</span><span class="role">公休</span></div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- ⑫ CHART CARD                                                 -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <h2>⑫ Chart · チャート入り <span class="hint">header + chart area + legend footer</span></h2>
+
+  <div class="card flush">
+    <div class="ch">
+      <span class="t">週次 · 実働 vs 所定</span>
+      <span class="sub">第 20 週 · 5/12 — 5/18</span>
+    </div>
+    <div class="cb">
+      <div class="bars" aria-hidden="true">
+        <i style="height:62%"></i>
+        <i style="height:78%"></i>
+        <i style="height:54%"></i>
+        <i style="height:88%"></i>
+        <i class="on" style="height:71%"></i>
+        <i style="height:40%;background:color-mix(in oklch, var(--border) 80%, transparent)"></i>
+        <i style="height:0%;background:color-mix(in oklch, var(--border) 80%, transparent)"></i>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--muted-foreground);font-variant-numeric:tabular-nums">
+        <span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span><span>日</span>
+      </div>
+    </div>
+    <div class="cf">
+      <span class="dot primary"></span><span>実働</span>
+      <span class="dot" style="background:var(--border);margin-left:10px"></span><span>所定 / 未来</span>
+      <span style="margin-left:auto;color:var(--foreground);font-weight:500">合計 33.2 h</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- Footer rules                                                  -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<div class="muted" style="font-size:11px;margin-top:20px;line-height:1.6">
+  <b>Rules:</b>
+  ・base <code>.card</code> は 1px border + 6px radius + <i>no shadow at rest</i>(shadow は popover / dialog のみ)。
+  ・accent edge は <code>border-left:3px</code> + semantic var(<code>--attention</code> / <code>--success</code> / <code>--info</code> / <code>--warning</code>)。<b>新色禁止</b>。
+  ・soft tint は <code>color-mix(in oklch, var(--xxx) 10–18%, var(--card))</code> で統一。
+  ・header / body / footer 構造の card は <code>.card.flush</code> + <code>.ch / .cb / .cf</code>。
+  ・số liệu luôn <code>font-variant-numeric:tabular-nums</code>。
+  ・empty / notice はテキスト一行 + 静かな副文。イラスト・絵文字・🎉 禁止。
+</div>
+
+</body>
+</html>

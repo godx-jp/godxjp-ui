@@ -8,14 +8,14 @@ audience:
   - ai-agent
   - designer
 status: published
-last-updated: 2026-05-16
+last-updated: 2026-05-17
 lang: en
 ---
 
 # Tokens architecture (shadcn-style + W3C DTCG layered)
 
 > **TL;DR.** Tokens follow the [shadcn/ui](https://ui.shadcn.com)
-> idiom: one `theme.css` with `:root` + `.dark` + `[data-tenant]`,
+> idiom: one `theme.css` with `:root` + `[data-theme="dark"]` + `[data-accent]`,
 > mapped to Tailwind v4 utilities via `@theme inline`. The W3C
 > Design Tokens Community Group taxonomy (primitives / semantic /
 > variants) is preserved inside that single file as commented
@@ -78,15 +78,17 @@ The DEFAULT light theme. Every component CSS rule consumes these:
 
 ### Layer 3 — Variants (re-bind semantic)
 
-Three orthogonal axes re-bind the semantic layer based on `<html data-*>` attributes:
+Four orthogonal axes re-bind the semantic layer based on `<html data-*>` attributes
+(see [01 — theme axes](../../new-docs/01-theme-axes.md)):
 
 | Axis | Selector | Effect |
 |---|---|---|
 | **Theme** | `[data-theme="dark"]` | Re-binds `--background`, `--foreground`, surfaces, `--sidebar-*`, etc. for dark mode. Driven by user preference. |
+| **Accent** | `[data-accent="blue"]` / `[data-accent="green"]` / `[data-accent="violet"]` / `[data-accent="amber"]` / `[data-accent="rose"]` / `[data-accent="slate"]` (+ consumer-registered palettes) | Re-binds `--primary`, `--ring`, `--brand`, `--sidebar-active-*`. Per cardinal rule 19 there is NO `[data-tenant]` block — accent is the single brand-color axis. |
 | **Density** | `[data-density="compact"]` / `[data-density="comfortable"]` | Re-binds `--density-element-*`, `--density-card`, `--density-page`, `--density-section`, `--header-height`. Driven by user preference (Tweaks panel). |
-| **Tenant** | `[data-tenant="godx"]` / `[data-tenant="kintai"]` / `[data-tenant="tempo"]` / `[data-tenant="betoya"]` | Re-binds `--primary`, `--ring`, `--brand`. Driven by operator config (per-org accent). |
+| **Font size** | `html[data-font-size="sm \| base \| lg \| xl"]` | Re-binds root `font-size` — every rem-based token rescales. |
 
-The combined selector `[data-theme="dark"][data-tenant="kintai"]` brightens accents in dark mode per tenant.
+The combined selector `[data-theme="dark"][data-accent="rose"]` brightens accents in dark mode per palette.
 
 ## How Tailwind v4 maps tokens to utilities
 
@@ -121,16 +123,22 @@ Three patterns, in order of how often you'll use them:
 }
 ```
 
-### Pattern 2 — Per-tenant accent
+### Pattern 2 — Per-deployment accent palette
 
 ```css
-[data-tenant="acme"] {
-  --primary: oklch(60% 0.15 280);
-  --ring:    oklch(60% 0.15 280);
+[data-accent="acme"] {
+  --primary:           oklch(60% 0.15 280);
+  --primary-foreground:oklch(98% 0.01 280);
+  --ring:              oklch(60% 0.15 280);
+  --brand:             oklch(60% 0.15 280);
+  --sidebar-active-bg: oklch(95% 0.02 280);
+  --sidebar-active-fg: oklch(60% 0.15 280);
 }
 ```
 
-The operator sets `<html data-tenant="acme">` at runtime; CSS picks up automatically.
+The operator sets `<html data-accent="acme">` at runtime; CSS picks
+up automatically. Per cardinal rule 19 do NOT add `[data-tenant]`
+blocks; the framework collapsed tenant + accent into a single axis.
 
 ### Pattern 3 — Service-local layout class (no @godxjp/ui peer)
 

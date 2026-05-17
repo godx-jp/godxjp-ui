@@ -6,8 +6,9 @@ adr: "0002"
 title: Ownership-pattern components (shadcn-style) instead of sealed library
 status: accepted
 date: 2026-01-14
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
 ---
 
 # ADR 0002 — Ownership-pattern components (shadcn-style) instead of sealed library
@@ -91,9 +92,11 @@ The team evaluated:
   changes to the upstream source.
 - The ownership model only works when the source is genuinely thin. Thick
   wrappers with complex internal state defeat the fork story.
-- CI requires `docs/reference/primitives/` parity with
-  `src/components/primitives/` (cardinal rule 18). A new primitive must have
-  a reference page; this is an authoring overhead not present in sealed
+- CI requires `docs/reference/primitives/` parity with the barrel at
+  `src/components/primitives.ts` (which re-exports from the six
+  group folders under `src/components/<group>/` per cardinal rule
+  27). A new primitive must have a reference page (cardinal rule
+  18); this is an authoring overhead not present in sealed
   libraries.
 
 **Neutral:**

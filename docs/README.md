@@ -1,17 +1,27 @@
 ---
+title: "@godxjp/ui — documentation"
 diataxis: index
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # @godxjp/ui — documentation
 
 > GoDX professional UI framework. Single source of visual truth for every service frontend.
 
-This index follows the [Diátaxis](https://diataxis.fr) four-quadrant taxonomy.
-Each document belongs to exactly one quadrant; no file mixes kinds.
+This index follows the [Diátaxis](https://diataxis.fr) four-quadrant
+taxonomy. Each document belongs to exactly one quadrant; no file
+mixes kinds.
+
+For BINDING rules (you MUST conform) see the
+[`new-docs/`](../new-docs/00-index.md) folder — that index lists the
+five canonical rules (theme axes, consumer contract, token system,
+prop vocabulary, design handoff formats). The four quadrants below
+are explanatory / task-mode companions.
 
 |  | Practical | Theoretical |
 |---|---|---|
@@ -23,13 +33,15 @@ Each document belongs to exactly one quadrant; no file mixes kinds.
 | | | [Accessibility](./explanation/accessibility.md) |
 | | | [Versioning](./explanation/versioning.md) |
 | | | [Compatibility](./explanation/compatibility.md) |
+| | | [Tokens architecture](./explanation/tokens-architecture.md) |
+| | | [Preferences](./explanation/preferences.md) |
 | | | [ADRs](./adr/) |
 | **Application** (working) | **How-to** | **Reference** |
 | | [Override tokens](./how-to/override-tokens.md) | [Primitives](./reference/primitives/) |
 | | [Compose shell](./how-to/compose-shell.md) | [Shell](./reference/shell/) |
-| | [Add a locale](./how-to/add-locale.md) | [Screens](./reference/screens/) |
-| | [Customise density](./how-to/customise-density.md) | [Hooks](./reference/hooks/) |
-| | [Add a tenant theme](./how-to/add-tenant-theme.md) | [Tokens](./reference/tokens.md) |
-| | [Migrate from v2](./how-to/migrate-from-v2.md) | [i18n](./reference/i18n.md) |
-| | [Contribute a primitive](./how-to/contribute-primitive.md) | [Exports](./reference/exports.md) |
-| | [Consume from a service](./how-to/consume-from-service.md) | [Types](./reference/types.md) |
+| | [Add a locale](./how-to/add-locale.md) | [Hooks](./reference/hooks/) |
+| | [Customise density](./how-to/customise-density.md) | [Tokens](./reference/tokens.md) |
+| | [Customize theme](./how-to/customize-theme.md) | [i18n](./reference/i18n.md) |
+| | [Wire preferences](./how-to/wire-preferences.md) | [Exports](./reference/exports.md) |
+| | [Contribute a primitive](./how-to/contribute-primitive.md) | [Types](./reference/types.md) |
+| | [Consume from a service](./how-to/consume-from-service.md) |  |

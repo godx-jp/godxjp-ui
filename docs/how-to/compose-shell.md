@@ -1,9 +1,12 @@
 ---
+title: "How to compose the portal shell in main.tsx"
 diataxis: how-to
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # How to compose the portal shell in main.tsx
@@ -26,8 +29,25 @@ audience: [developer]
      TweaksPanel,
      CommandPalette,
    } from "@godxjp/ui/components/shell"
+   import type { ForgeProduct } from "@godxjp/ui/components/shell"
    import { useTweaks } from "@godxjp/ui/hooks"
-   import { PRODUCTS } from "@godxjp/ui/data"
+
+   // Per cardinal rule 28 §D the framework does NOT ship a
+   // `@godxjp/ui/data` entry — consumers register their own
+   // product catalogues.
+   const PRODUCTS: ForgeProduct[] = [
+     {
+       id: "my-svc",
+       name: "My Service",
+       tenant: "my-svc",
+       role: "Admin",
+       desc: "My service description",
+       color: "oklch(56% 0.15 200)",
+       owner: "Team",
+       devs: 3,
+       projects: [],
+     },
+   ]
    ```
 
 2. Define navigation sections. Each section has a label and an array of nav items:
@@ -87,23 +107,10 @@ audience: [developer]
    }
    ```
 
-4. Pass your own product list if you do not use the built-in `PRODUCTS` fixture:
-
-   ```tsx
-   import type { ForgeProduct } from "@godxjp/ui/data"
-
-   const MY_PRODUCT: ForgeProduct = {
-     id: "my-svc",
-     name: "My Service",
-     tenant: "my-svc",
-     role: "Admin",
-     desc: "My service description",
-     color: "oklch(56% 0.15 200)",
-     owner: "Team",
-     devs: 3,
-     projects: [],
-   }
-   ```
+4. The `ForgeProduct` type is exported from
+   `@godxjp/ui/components/shell` — see step 1 above for the
+   minimal product shape. Storybook's `src/stories/examples/`
+   tree contains illustrative fixtures consumers may copy.
 
 ---
 

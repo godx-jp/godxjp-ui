@@ -1,0 +1,294 @@
+/* ─── Card · platform-wide UI framework ────────────────────────────
+ * One atom: `.card` (1px border, 6px radius, var(--card) bg,
+ * no shadow at rest). All variants flip ONLY:
+ *   - padding density   (.card-padding-{tight,cozy,none})
+ *   - surface tone      (.card-tone-{muted,outline})
+ *   - edge accent       (.card-accent-{primary,success,warning,
+ *                         attention,info,destructive,featured})
+ *   - hover affordance  (.card-hoverable)
+ *
+ * Mirrors dxs-kintai handoff comp-card.html. Per cardinal rule 21
+ * every modifier reads semantic tokens — theme / accent / density /
+ * font-size axes flow through unchanged.
+ */
+
+.card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--density-card);
+}
+
+.card-padding-tight { padding: calc(var(--density-card) * 0.75); }
+.card-padding-cozy  { padding: calc(var(--density-card) * 1.25); }
+.card-padding-none  { padding: 0; overflow: hidden; }
+
+.card-tone-muted   { background: var(--secondary); }
+.card-tone-outline { background: transparent; }
+
+.card-accent-primary,
+.card-accent-success,
+.card-accent-warning,
+.card-accent-attention,
+.card-accent-info,
+.card-accent-destructive {
+  border-left-width: 3px;
+  padding-left: calc(var(--density-card) - 2px);
+}
+.card-accent-primary     { border-left-color: var(--primary); }
+.card-accent-success     { border-left-color: var(--success); }
+.card-accent-warning     { border-left-color: var(--warning); }
+.card-accent-attention   { border-left-color: var(--attention); }
+.card-accent-info        { border-left-color: var(--info); }
+.card-accent-destructive { border-left-color: var(--destructive); }
+
+.card-accent-featured {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.card-padding-tight.card-accent-primary,
+.card-padding-tight.card-accent-success,
+.card-padding-tight.card-accent-warning,
+.card-padding-tight.card-accent-attention,
+.card-padding-tight.card-accent-info,
+.card-padding-tight.card-accent-destructive {
+  padding-left: calc(var(--density-card) * 0.75 - 2px);
+}
+.card-padding-cozy.card-accent-primary,
+.card-padding-cozy.card-accent-success,
+.card-padding-cozy.card-accent-warning,
+.card-padding-cozy.card-accent-attention,
+.card-padding-cozy.card-accent-info,
+.card-padding-cozy.card-accent-destructive {
+  padding-left: calc(var(--density-card) * 1.25 - 2px);
+}
+.card-padding-none.card-accent-primary,
+.card-padding-none.card-accent-success,
+.card-padding-none.card-accent-warning,
+.card-padding-none.card-accent-attention,
+.card-padding-none.card-accent-info,
+.card-padding-none.card-accent-destructive {
+  padding-left: 0;
+}
+
+/* ─── Card header shapes ───────────────────────────────────────────
+ *  Source: design-handoff/ui-system/dxs-kintai-design-system/project/
+ *  preview/comp-card.html — `.ch`, `.ch-stack`, `.ch-kicker` (sections
+ *  H1–H3 / H12). Each shape mirrors a distinct DOM layout from the
+ *  design canon. All literals are token references.
+ *
+ *  `.card-header-row`    (= design `.ch`)        row: title-left + meta-right
+ *  `.card-header-stack`  (= design `.ch-stack`)  column: title above + sub below
+ *  `.card-header-kicker` (= design `.ch-kicker`) column: kicker / title / sub
+ *
+ *  `.card-header-block` modifier (= card padding="none") adds own
+ *  padding + bottom divider. Without it, the header sits inside the
+ *  parent's padding with margin-bottom and NO divider — matches the
+ *  design's padded-card slot pattern.
+ */
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  gap: var(--card-header-gap);  /* 10px */
+  margin-bottom: var(--card-header-gap);
+}
+
+.card-header-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--card-header-gap);
+  position: relative;
+}
+
+.card-header-kicker {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--card-header-gap);
+  position: relative;
+}
+
+.card-header-block {
+  margin-bottom: 0;
+  padding: var(--card-pad-y-header) var(--density-card);  /* 10/16 */
+  border-bottom: 1px solid var(--border);
+}
+
+.card-kicker {
+  font-size: var(--card-kicker-size);  /* 10px */
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  line-height: 1.4;
+}
+
+.card-title {
+  font-size: var(--card-title-size);  /* 13px — design `.ch .t` */
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0;
+  color: var(--foreground);
+}
+
+.card-subtitle {
+  font-size: var(--card-meta-size);   /* 11px — design `.ch-stack .sub` */
+  font-weight: 400;
+  color: var(--muted-foreground);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.card-meta {
+  font-size: var(--card-meta-size);   /* 11px — design `.ch .sub` */
+  font-weight: 400;
+  color: var(--muted-foreground);
+  margin: 0;
+  margin-left: auto;  /* right-align inside .card-header-row */
+}
+
+.card-header-extra {
+  display: inline-flex;
+  gap: var(--spacing-2);
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+/* When `meta` already grabbed margin-left:auto, extra sits naturally
+ * after it via the flex gap. */
+.card-header-row .card-meta + .card-header-extra { margin-left: 0; }
+
+/* In stack/kicker shapes the header is column-flex; extra still
+ * anchors to the top-right via absolute positioning. */
+.card-header-stack > .card-header-extra,
+.card-header-kicker > .card-header-extra {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-left: 0;
+}
+.card-header-stack.card-header-block > .card-header-extra,
+.card-header-kicker.card-header-block > .card-header-extra {
+  top: var(--card-pad-y-header);
+  right: var(--density-card);
+}
+
+/* ─── Card body ────────────────────────────────────────────────────
+ *  `.card-body`        inside padded card; stacks children with body gap.
+ *  `.card-body-block`  inside flush card; own 14/16 padding.
+ */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+.card-body-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--card-pad-y-body) var(--density-card);  /* 14/16 */
+}
+
+/* ─── Card footer ──────────────────────────────────────────────────
+ *  `.card-footer-block`   flush-card region. Own 10/16 padding, top
+ *                         divider, secondary-60% bg tint.
+ *  `.card-footer-inline`  padded-card region. Bleeds to card edges via
+ *                         negative margin so bg + divider stretch full
+ *                         width (matches design `.cf`).
+ *  `.card-footer-actions` overrides: transparent bg, right-aligned.
+ */
+.card-footer-block {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--card-pad-y-footer) var(--density-card);
+  border-top: 1px solid var(--border);
+  font-size: var(--card-meta-size);
+  color: var(--muted-foreground);
+  background: color-mix(in oklch, var(--secondary) 60%, transparent);
+}
+.card-footer-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--card-pad-y-footer) var(--density-card);
+  border-top: 1px solid var(--border);
+  font-size: var(--card-meta-size);
+  color: var(--muted-foreground);
+  background: color-mix(in oklch, var(--secondary) 60%, transparent);
+  margin: var(--density-card) calc(var(--density-card) * -1) calc(var(--density-card) * -1);
+  border-radius: 0 0 calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px);
+}
+.card-footer-actions {
+  background: transparent;
+  justify-content: flex-end;
+  color: var(--foreground);
+}
+.card-footer-actions.card-footer-inline {
+  margin: var(--spacing-3) 0 0;
+  padding: var(--spacing-3) 0 0;
+  border-radius: 0;
+}
+
+/* ─── Card band (H11 — color strip above header) ───────────────────
+ *  4px tall semantic strip flush above the header. Used inside flush
+ *  cards. 4px is hairline-class — pinned literal, doesn't scale.
+ */
+.card-band {
+  height: var(--card-band-height);  /* 4px */
+  width: 100%;
+  flex-shrink: 0;
+}
+.card-band-primary     { background: var(--primary); }
+.card-band-success     { background: var(--success); }
+.card-band-warning     { background: var(--warning); }
+.card-band-attention   { background: var(--attention); }
+.card-band-info        { background: var(--info); }
+.card-band-destructive { background: var(--destructive); }
+.card-band-gradient {
+  background: linear-gradient(
+    90deg,
+    var(--primary) 0%,
+    var(--attention) 50%,
+    var(--info) 100%
+  );
+}
+.card-band-dotted {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--muted-foreground) 0 4px,
+    transparent 4px 8px
+  );
+}
+
+.card-hoverable {
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
+}
+.card-hoverable:hover {
+  border-color: var(--muted-foreground);
+  box-shadow: var(--shadow-sm);
+}
+.card-hoverable.card-accent-featured:hover {
+  box-shadow: 0 0 0 1px var(--primary), var(--shadow-sm);
+}
+
+/* Legacy alias map — older callers that imported the old class
+ * names keep working. Schedule removal in v4.0 if no callers remain. */
+.card-size-small         { padding: calc(var(--density-card) * 0.75); }
+.card-variant-filled     { background: var(--surface-2); border-color: transparent; }
+.card-variant-borderless { background: transparent; border: 0; padding: 0; }
+.card-variant-borderless .card-header { border-bottom: 0; padding-bottom: 0; }
+.card-actions {
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--border);
+  margin-top: var(--spacing-3);
+  display: flex;
+  gap: var(--spacing-2);
+  justify-content: flex-end;
+}
+

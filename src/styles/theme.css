@@ -3,7 +3,7 @@
  * Single-file shadcn-style theme surface for Tailwind v4 consumers.
  * Service `theme.css` files customize by overriding any semantic
  * variable in their own `:root`, `[data-theme="dark"]`, or
- * `[data-tenant="..."]` block.
+ * `[data-accent="..."]` block.
  *
  * Layered semantics (W3C Design Tokens Community Group):
  *   • Primitives   — type scale, spacing, radius, shadow, motion,
@@ -13,20 +13,24 @@
  *                    light theme is the unscoped `:root` block.
  *   • Variants     — re-bind semantic via `[data-theme="dark"]`,
  *                    `[data-density="compact|comfortable"]`,
- *                    `[data-tenant="godx|kintai|tempo|betoya"]`.
+ *                    `[data-accent="blue|green|violet|amber|rose|slate"]`
+ *                    (color theme — set globally on `<html>`).
  *
  * Customization patterns (in a service's `theme.css`):
  *
  *   @import "@godxjp/ui/tailwind.css";
  *
- *   :root            { --primary: oklch(58% 0.18 25); }
- *   [data-tenant="acme"] { --primary: oklch(...); }
+ *   :root                  { --primary: oklch(58% 0.18 25); }
+ *   [data-accent="custom"] { --primary: oklch(...); --brand: oklch(...); }
+ *
+ * Per rule #19 no service-specific tenant rules live here; downstream
+ * apps register their own `[data-accent]` palette or override `:root`
+ * tokens directly.
  *
  * See docs/explanation/tokens-architecture.md +
  *     docs/how-to/customize-theme.md.
  */
 
-@import url("https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@300;400;500;600;700&display=swap");
 
 :root {
 
@@ -36,7 +40,6 @@
 
   --font-weight-normal: 400;   /* body */
   --font-weight-medium: 500;   /* heading default — freee vibes */
-  --font-weight-semibold: 600; /* legacy alias, prefer 700 */
   --font-weight-bold: 700;     /* emphasis only */
 
   --text-2xs: 0.6875rem; /* 11px — fine print */
@@ -78,13 +81,7 @@
   --wa-sumi:      #595857; /* 墨   ink (warm text) */
   --wa-nezu:      #949495; /* 鼠   mouse-grey (muted text) */
 
-  --gray-50: #f9fafb;  --gray-100:#f3f4f6;  --gray-200:#e5e7eb;
-  --gray-300:#d1d5db;  --gray-400:#9ca3af;  --gray-500:#6b7280;
-  --gray-600:#4b5563;  --gray-700:#374151;  --gray-800:#1f2937;
-  --gray-900:#111827;
 
-  --blue-50:#eff6ff;   --blue-100:#dbeafe;  --blue-500:#3b82f6;
-  --blue-600:#2563eb;  --blue-700:#1d4ed8;
 
   /* ── Spacing (4px grid) ──────────────────────────────────────────── */
   --spacing-0: 0;       --spacing-1: 0.25rem; --spacing-2: 0.5rem;
@@ -109,11 +106,25 @@
 
   /* ── Layout ──────────────────────────────────────────────────────── */
   --header-height: 3rem;            /* 48px */
-  --sidebar-width: 13rem;           /* 208px — design jZUk parity */
+  --sidebar-width: 16rem;           /* 256px — design-handoff canonical (tokens.css:137) */
   --sidebar-collapsed-width: 4rem;  /* 64px */
   --sidebar-transition: 300ms;
-  --content-sidebar-width: 20rem;
   --container-max-width: 1280px;
+
+  /* ── Responsive breakpoints (Tailwind v4 first-class) ────────────
+   * Mobile-first min-width tresholds. Read at runtime via
+   * `getComputedStyle(:root)` for JS matchMedia checks (Row,
+   * matchBreakpoint, useBreakpoint), or via Tailwind utility
+   * variants (`sm:` / `md:` / `lg:` / `xl:` / `2xl:`) at compile
+   * time. Values match Tailwind v4 defaults so existing utility
+   * classes keep working unchanged.
+   */
+  --breakpoint-xs:  0;       /*  0px  — phone portrait (mobile-first base) */
+  --breakpoint-sm:  640px;   /* 40em  — phone landscape / tablet portrait */
+  --breakpoint-md:  768px;   /* 48em  — tablet landscape */
+  --breakpoint-lg:  1024px;  /* 64em  — laptop */
+  --breakpoint-xl:  1280px;  /* 80em  — desktop */
+  --breakpoint-xxl: 1536px;  /* 96em  — wide desktop / 4K-leaning */
 
   /* ── Radius / border ─────────────────────────────────────────────── */
   --radius: 0.375rem;               /* 6px — base */
@@ -122,7 +133,6 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-full: 9999px;
-  --border-width: 1px;
 
   /* ── Shadow ──────────────────────────────────────────────────────── */
   --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / .05);
@@ -143,8 +153,6 @@
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ── Aspect ratios (decorative — never for type scale) ──────────── */
-  --aspect-silver: 1.4142;          /* 白銀比 (hakuginhi) — A4, manga */
-  --aspect-golden: 1.618;           /* 黄金比 — Western */
 }
 
 
@@ -184,7 +192,6 @@
   --info:              oklch(55% 0.12 265);   /* 群青 #4c6cb3 */
   --info-foreground:   oklch(99% 0.002 60);
   --error:             oklch(52% 0.18 25);    /* 茜 #b7282e */
-  --error-foreground:  oklch(99% 0.002 60);
   --attention:         oklch(66% 0.19 45);    /* 朱 #eb6101 — softer than red */
   --attention-foreground: oklch(99% 0.002 60);
 
@@ -201,31 +208,50 @@
   --surface-1: oklch(99% 0.002 60);   /* card, popover */
   --surface-2: oklch(97% 0.003 60);   /* page bg subtle */
   --surface-3: oklch(95% 0.004 60);   /* hover, accent */
-  --surface-inset: oklch(96% 0.004 60);
 
   --kbd-bg: oklch(94% 0.005 60);
 
+  /* ── Accent slot (consumer-overridable) ────────────────────────────
+   * Generic re-targetable accent for downstream apps that need a
+   * service-distinct highlight (e.g. a calendar product picking 浅葱
+   * teal) without mutating the brand `--primary` chain. Defaults to
+   * `--primary` so primitives referencing it stay neutral when no
+   * consumer override exists. Per cardinal rule #19 this is NOT
+   * service-specific; the calendar / scheduler app sets it on its own
+   * root.
+   */
+  --accent-color:      var(--primary);
+  --accent-color-soft: color-mix(in oklch, var(--accent-color) 14%, transparent);
+
   /* Status dot tokens — use as bg-color */
-  --dot-success: var(--success);
-  --dot-warning: var(--warning);
-  --dot-error: var(--error);
-  --dot-info: var(--info);
-  --dot-attention: var(--attention);
-  --dot-muted: var(--muted-foreground);
+
+  /* Brand stripe — used by `.sb-logo-mark`, `.avatar.brand`, `.auth-art`,
+   * `.sb-brand-avatar`. Defaults to Famgia emerald; `[data-accent]`
+   * blocks re-target it per color theme. Lives in `:root` (not in any
+   * density block) so it applies regardless of density. */
+  --brand: oklch(60% 0.137 163);
+
+  /* Card chrome — pinned to dxs-kintai design canon
+   * (`design-handoff/ui-system/dxs-kintai-design-system/project/preview/
+   * comp-card.html`): `.ch` pad 10/16, `.cb` pad 14/16, `.cf` pad 10/16.
+   * Per cardinal rule 22 these literals come from the bundle, expressed
+   * as rem so the font-size axis rescales. Density-card carries the
+   * horizontal pad so the density axis rescales. */
+  --card-pad-y-header: 0.625rem;  /* 10px — `.ch`, `.cf` */
+  --card-pad-y-body:   0.875rem;  /* 14px — `.cb` */
+  --card-pad-y-footer: 0.625rem;  /* 10px */
+  --card-header-gap:   0.625rem;  /* 10px — `.ch` gap between title/meta/extra */
+  --card-title-size:   0.8125rem; /* 13px — `.ch .t` */
+  --card-meta-size:    0.6875rem; /* 11px — `.ch .sub` */
+  --card-kicker-size:  0.625rem;  /* 10px — `.ch-kicker .k` */
+  --card-band-height:  4px;       /* `.ch-band` — hairline-class literal, doesn't scale */
+
+  /* Monospace stack — used by me-service identity blocks + sandbox row
+   * fingerprints. */
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 }
 
-
-[data-tenant="betoya"] {
-  --primary: oklch(58% 0.159 150);  /* Vietnam green #009444 */
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(58% 0.159 150);
-  --foreground: oklch(20% 0.004 85);
-  --brand-betoya-primary:  #009444;
-  --brand-betoya-secondary:#ffc20e;
-  --brand-betoya-accent:   #00b856;
-  --brand-betoya-attention:#f95c39;
-  --brand-betoya-text:     #171614;
-}
 
 [data-density="compact"] {
   --density-element-xs: 1.25rem;
@@ -255,36 +281,10 @@
   --density-table-head: 2.5rem;
 }
 
-[data-tenant="godx"] {
-  /* Default: Famgia emerald accent (--brand) + SmartHR blue primary */
-  --primary: oklch(56% 0.15 240);
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(56% 0.15 240);
-  --brand: oklch(60% 0.137 163);
-}
-
-[data-tenant="kintai"] {
-  --primary: oklch(56% 0.15 240);   /* SmartHR blue */
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(56% 0.15 240);
-  --brand: oklch(56% 0.15 240);
-}
-
-[data-tenant="tempo"] {
-  --primary: oklch(48% 0.16 285);   /* deeper indigo for Tempo */
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(48% 0.16 285);
-  --brand: oklch(48% 0.16 285);
-}
-
-[data-tenant="betoya"] {
-  --primary: oklch(58% 0.159 150);
-  --primary-foreground: oklch(99% 0.002 60);
-  --ring: oklch(58% 0.159 150);
-  --brand: oklch(58% 0.159 150);
-}
-
 [data-theme="dark"] {
+  --accent-color:      var(--primary);
+  --accent-color-soft: color-mix(in oklch, var(--accent-color) 18%, transparent);
+
   --background: oklch(18% 0.005 60);
   --foreground: oklch(95% 0.005 60);
   --card: oklch(22% 0.005 60);
@@ -313,7 +313,6 @@
   --surface-1: oklch(22% 0.005 60);
   --surface-2: oklch(20% 0.005 60);
   --surface-3: oklch(28% 0.008 60);
-  --surface-inset: oklch(24% 0.006 60);
 
   --kbd-bg: oklch(28% 0.008 60);
 
@@ -322,10 +321,3 @@
   --ring: oklch(70% 0.13 240);
 }
 
-[data-theme="dark"][data-tenant="kintai"] { --primary: oklch(70% 0.13 240); --ring: oklch(70% 0.13 240); --brand: oklch(70% 0.13 240); }
-
-[data-theme="dark"][data-tenant="tempo"]  { --primary: oklch(70% 0.14 285); --ring: oklch(70% 0.14 285); --brand: oklch(70% 0.14 285); }
-
-[data-theme="dark"][data-tenant="betoya"] { --primary: oklch(72% 0.14 150); --ring: oklch(72% 0.14 150); --brand: oklch(72% 0.14 150); }
-
-[data-theme="dark"][data-tenant="godx"]   { --primary: oklch(70% 0.13 240); --ring: oklch(70% 0.13 240); --brand: oklch(72% 0.13 163); }

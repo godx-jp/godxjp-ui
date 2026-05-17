@@ -1,8 +1,49 @@
 import { defineConfig } from "tsup"
+import { readFileSync } from "node:fs"
+import { fileURLToPath } from "node:url"
+import { dirname, resolve } from "node:path"
 
 // Build config for the published `@godxjp/ui` npm artefact.
-// Mirrors the TempoFast 0.2.0 layout so dependents see the same shape
-// after the v2 dep bump (esm-only, types co-located, CSS shipped raw).
+// Per cardinal rule 26 (library isolation) every npm `dependencies`
+// entry is `external` — consumers install them via their own package
+// manager, we don't double-bundle. Only React + Tailwind sit in
+// `peerDependencies` (consumer-required, never bundled).
+//
+// What ships in `dist/`:
+//   • Sub-path entries (one per `package.json::exports` key) — ESM
+//     + .d.ts + sourcemaps.
+//   • NO story files (`src/stories/**` excluded — not an entry,
+//     `package.json::files` excludes the `src/stories/` tree).
+//   • NO Storybook config (`.storybook/**` excluded).
+//   • NO dev-only tooling (`scripts/**`, `__tests__/**`, `*.test.*`
+//     excluded — same — not an entry).
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const pkg = JSON.parse(
+  readFileSync(resolve(__dirname, "package.json"), "utf-8"),
+) as {
+  dependencies?: Record<string, string>
+  peerDependencies?: Record<string, string>
+}
+
+// Externalise EVERY runtime dep so consumer's bundler resolves them
+// once, deduped, not double-bundled into our dist. Per cardinal rule
+// 26 anything declared in `dependencies` MUST be external.
+const externalDeps = [
+  ...Object.keys(pkg.dependencies ?? {}),
+  ...Object.keys(pkg.peerDependencies ?? {}),
+]
+
+// Plus regex matchers for sub-path imports (e.g. `react/jsx-runtime`,
+// `react-dom/client`, `@radix-ui/react-dialog/style.css`).
+const externalRegex = [
+  /^react\//,
+  /^react-dom\//,
+  /^@radix-ui\//,
+  /^@internationalized\//,
+]
+
 export default defineConfig({
   entry: {
     index: "src/index.ts",
@@ -10,10 +51,8 @@ export default defineConfig({
     // package.json so consumers can do `@godxjp/ui/i18n` etc.
     i18n: "src/i18n/index.ts",
     hooks: "src/hooks/index.ts",
-    data: "src/data/index.ts",
-    "components/primitives": "src/components/primitives/index.ts",
+    "components/primitives": "src/components/primitives.ts",
     "components/shell": "src/components/shell/index.ts",
-    "components/screens": "src/components/screens/index.ts",
     "components/composites": "src/components/composites/index.ts",
     preferences: "src/preferences/index.ts",
   },
@@ -23,10 +62,7 @@ export default defineConfig({
   splitting: false,
   clean: true,
   treeshake: true,
-  // React is a peer; everything else lives at runtime in the
-  // consuming app. Don't bundle CSS — it's served raw from
-  // `src/tokens/tokens.css` via the `./tokens` export.
-  external: ["react", "react-dom", /^react\//, "axios", "i18next", "react-i18next"],
+  external: [...externalDeps, ...externalRegex],
   outDir: "dist",
   target: "es2022",
   banner: { js: '"use client";' },

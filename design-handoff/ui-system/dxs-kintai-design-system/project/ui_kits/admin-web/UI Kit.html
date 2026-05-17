@@ -1,0 +1,575 @@
+<!doctype html><html lang="ja"><head>
+<meta charset="utf-8">
+<title>dxs-kintai · UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--background); color: var(--foreground); font-family: var(--font-sans-jp); font-size: var(--text-base); line-height: var(--leading-body); }
+  body { min-height: 100vh; }
+
+  /* ── App shell ─────────────────────────────────────────── */
+  .app { display: grid; grid-template-columns: var(--sidebar-width) 1fr; min-height: 100vh; }
+  /* Sidebar */
+  .sidebar { border-right: 1px solid var(--border); background: var(--background); display: flex; flex-direction: column; }
+  .sb-brand { display: flex; align-items: center; height: var(--header-height); padding: 0 8px; border-bottom: 1px solid var(--border); }
+  .sb-tenant { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; width: 100%; cursor: pointer; }
+  .sb-tenant:hover { background: var(--accent); }
+  .sb-mark { width: 22px; height: 22px; border-radius: 5px; background: var(--primary); color: var(--primary-foreground); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .sb-name { font-size: 13px; font-weight: 600; flex: 1; }
+  .sb-chev { color: var(--muted-foreground); font-size: 11px; }
+
+  .sb-groups { padding: 6px 6px 12px; overflow-y: auto; flex: 1; }
+  .sb-group { margin-top: 6px; }
+  .sb-grouplabel { font-size: 11px; color: var(--muted-foreground); padding: 6px 8px; height: 24px; display: flex; align-items: center; cursor: pointer; user-select: none; }
+  .sb-grouplabel .chev { margin-left: auto; opacity: 0.6; transition: transform 150ms; }
+
+  .sb-item { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 8px; border-radius: 4px; color: var(--muted-foreground); font-size: 13px; text-decoration: none; transition: background-color 150ms, color 150ms; cursor: pointer; }
+  .sb-item:hover { background: var(--accent); color: var(--foreground); }
+  .sb-item.active { background: var(--accent); color: var(--foreground); font-weight: 500; }
+  .sb-item svg { flex-shrink: 0; }
+  .sb-item .ttl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sb-badge { background: var(--destructive); color: var(--destructive-foreground); font-size: 10px; padding: 0 5px; height: 16px; border-radius: 9999px; min-width: 16px; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; line-height: 1; }
+
+  /* Top bar */
+  .topbar { display: flex; align-items: center; height: var(--header-height); padding: 0 12px; border-bottom: 1px solid var(--border); background: var(--background); position: sticky; top: 0; z-index: 30; }
+  .icon-btn { width: 32px; height: 32px; border: 0; background: transparent; border-radius: 4px; color: var(--muted-foreground); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background-color 150ms, color 150ms; }
+  .icon-btn:hover { background: var(--accent); color: var(--foreground); }
+  .vsep { width: 1px; height: 16px; background: var(--border); margin: 0 8px; }
+  .switcher { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; height: 32px; font-size: 12px; cursor: pointer; }
+  .quick { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 6px; background: var(--primary); color: var(--primary-foreground); border: 0; font-size: 12px; font-weight: 500; cursor: pointer; }
+  .userpill { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+  .userpill:hover { background: var(--accent); }
+  .ava { width: 26px; height: 26px; border-radius: 9999px; background: var(--accent); color: var(--foreground); font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  .uname { font-size: 12px; font-weight: 500; line-height: 1.1; }
+  .uemail { font-size: 10px; color: var(--muted-foreground); line-height: 1.1; }
+
+  /* Main */
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .pageheader { display: flex; align-items: center; justify-content: space-between; height: var(--header-height); padding: 0 16px; border-bottom: 1px solid var(--border); background: var(--background); position: sticky; top: var(--header-height); z-index: 20; }
+  .pageheader h1 { font-size: 18px; font-weight: 600; line-height: 1.25; }
+  .pageheader .lead { display: flex; align-items: center; gap: 8px; }
+  .pageheader .crumb { font-size: 11px; color: var(--muted-foreground); }
+  .pagecontent { padding: 16px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
+  .card-tight { padding: 0; }
+  .card h3 { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+
+  /* KPI */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px; }
+  .kpi .lbl { font-size: 11px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+  .kpi .val { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; margin-top: 4px; }
+  .kpi .delta { font-size: 11px; margin-top: 2px; color: var(--muted-foreground); }
+  .kpi .delta.up { color: var(--success); }
+  .kpi .delta.down { color: var(--destructive); }
+
+  /* Forms / inputs */
+  .input { height: 32px; padding: 0 10px; border-radius: 4px; border: 1px solid var(--input); background: var(--input-background); font-family: inherit; font-size: 14px; outline: none; color: var(--foreground); width: 100%; transition: border-color 150ms, box-shadow 150ms; }
+  .input:focus { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 25%, transparent); }
+  .input::placeholder { color: var(--muted-foreground); }
+  .label { font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block; }
+  .req { color: var(--destructive); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 4px; border: 1px solid transparent; font-size: 14px; font-family: inherit; font-weight: 500; cursor: pointer; transition: filter 150ms, background-color 150ms, border-color 150ms; background: var(--primary); color: var(--primary-foreground); }
+  .btn:hover { filter: brightness(0.95); }
+  .btn-outline { background: transparent; color: var(--foreground); border-color: var(--border); }
+  .btn-outline:hover { background: var(--accent); }
+  .btn-ghost { background: transparent; color: var(--foreground); border: 0; }
+  .btn-ghost:hover { background: var(--accent); }
+  .btn-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+  .btn-sm { height: 28px; padding: 0 10px; font-size: 13px; }
+  .btn-xs { height: 24px; padding: 0 8px; font-size: 12px; }
+
+  /* Chips/badges */
+  .chip { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background: var(--muted); color: var(--muted-foreground); border: 1px solid var(--border); white-space: nowrap; }
+  .chip.primary { background: var(--primary); color: var(--primary-foreground); border-color: transparent; }
+  .chip.success { background: var(--success); color: var(--success-foreground); border-color: transparent; }
+  .chip.warning { background: var(--warning); color: var(--warning-foreground); border-color: transparent; }
+  .chip.info { background: var(--info); color: var(--info-foreground); border-color: transparent; }
+  .chip.attention { background: var(--attention); color: var(--attention-foreground); border-color: transparent; }
+  .chip.danger { background: var(--destructive); color: var(--destructive-foreground); border-color: transparent; }
+  .chip.outline { background: transparent; }
+  .chip-soft { background: color-mix(in oklch, var(--primary) 15%, transparent); color: var(--primary); border: 0; }
+  .chip-soft.attention { background: color-mix(in oklch, var(--attention) 18%, transparent); color: var(--attention); }
+  .chip-soft.success { background: color-mix(in oklch, var(--success) 25%, transparent); color: var(--success); }
+  .chip-soft.warning { background: color-mix(in oklch, var(--warning) 30%, transparent); color: oklch(35% 0.1 85); }
+  .chip-soft.info { background: color-mix(in oklch, var(--info) 18%, transparent); color: var(--info); }
+  .chip-soft.danger { background: color-mix(in oklch, var(--destructive) 18%, transparent); color: var(--destructive); }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--secondary); border-bottom: 1px solid var(--border); }
+  th { font-weight: 500; color: var(--muted-foreground); font-size: 12px; text-align: left; padding: 0 12px; height: 32px; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background-color 150ms; }
+  tbody tr:hover { background: color-mix(in oklch, var(--accent) 60%, transparent); }
+  td { padding: 0 12px; height: 36px; }
+  tbody tr:last-child { border-bottom: 0; }
+
+  /* Calendar */
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; font-size: 11px; }
+  .cal .head { color: var(--muted-foreground); padding: 4px; text-align: center; font-weight: 500; }
+  .cal .cell { background: var(--background); border: 1px solid var(--border); border-radius: 4px; padding: 4px; min-height: 76px; display: flex; flex-direction: column; gap: 2px; }
+  .cal .cell .d { color: var(--muted-foreground); text-align: right; font-size: 10px; }
+  .cal .cell.today { border-color: var(--primary); background: color-mix(in oklch, var(--primary) 5%, transparent); }
+  .cal .cell.today .d { color: var(--primary); font-weight: 600; }
+  .cal .ev { font-size: 10px; padding: 1px 4px; border-radius: 3px; background: color-mix(in oklch, var(--primary) 15%, transparent); color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cal .ev.attn { background: color-mix(in oklch, var(--attention) 18%, transparent); color: var(--attention); }
+  .cal .ev.info { background: color-mix(in oklch, var(--info) 18%, transparent); color: var(--info); }
+
+  /* Tabs */
+  .tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .tab { padding: 8px 12px; font-size: 13px; color: var(--muted-foreground); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 150ms, border-color 150ms; }
+  .tab.active { color: var(--foreground); border-bottom-color: var(--primary); font-weight: 500; }
+
+  /* Status dots */
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 9999px; vertical-align: middle; }
+
+  /* Filter row */
+  .filters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  /* Toolbar */
+  .toolbar { display: flex; align-items: center; gap: 8px; }
+
+  .row { display: flex; align-items: center; gap: 8px; }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+
+  /* Section divider for the kit */
+  .kit-section { padding: 24px 32px; border-bottom: 1px solid var(--border); background: oklch(98% 0.003 60); }
+  .kit-section h2 { font-size: 14px; font-weight: 500; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+  .kit-frame { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-md); background: var(--background); }
+</style>
+</head>
+<body>
+
+<!-- ──────────────────────────────────────────────────────────────────────
+     UI Kit · admin shell · Dashboard view
+     Mirrors src/app/admin/[brandSlug]/dashboard/page.tsx + page-shell
+     ────────────────────────────────────────────────────────────────────── -->
+<div class="kit-section">
+  <h2>01 · Admin shell — HR dashboard</h2>
+  <div class="kit-frame">
+    <div class="app" style="min-height:760px;height:760px">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sb-brand">
+          <div class="sb-tenant">
+            <div class="sb-mark">F</div>
+            <div class="sb-name">famgia</div>
+            <div class="sb-chev">⇅</div>
+          </div>
+        </div>
+        <div class="sb-groups">
+          <div class="sb-group">
+            <div class="sb-grouplabel">概要 <span class="chev">▾</span></div>
+            <a class="sb-item active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span class="ttl">ダッシュボード</span></a>
+          </div>
+          <div class="sb-group">
+            <div class="sb-grouplabel">組織 <span class="chev">▾</span></div>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg><span class="ttl">部門</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="ttl">勤務地</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="ttl">休日カレンダー</span></a>
+          </div>
+          <div class="sb-group">
+            <div class="sb-grouplabel">従業員 <span class="chev">▾</span></div>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="ttl">従業員</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg><span class="ttl">契約</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg><span class="ttl">配属</span></a>
+          </div>
+          <div class="sb-group">
+            <div class="sb-grouplabel">シフト <span class="chev">▾</span></div>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="ttl">シフト</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h2M14 14h2M8 18h2"/></svg><span class="ttl">従業員シフト</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="ttl">変更申請</span><span class="sb-badge">5</span></a>
+          </div>
+          <div class="sb-group">
+            <div class="sb-grouplabel">勤怠 <span class="chev">▾</span></div>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span class="ttl">打刻ログ</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg><span class="ttl">勤怠エントリ</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="ttl">欠勤・遅刻</span><span class="sb-badge">12</span></a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <div class="main">
+        <div class="topbar">
+          <button class="icon-btn" title="サイドバー開閉"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+          <div class="vsep"></div>
+          <span style="font-weight:500;font-size:14px">勤怠管理</span>
+          <div class="vsep"></div>
+          <div class="switcher">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13"/></svg>
+            <span>本社 · 全店舗</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:2px">
+            <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></button>
+            <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="4"/></svg></button>
+            <div class="vsep"></div>
+            <div class="userpill">
+              <div class="ava">YS</div>
+              <div><div class="uname">山田 翔</div><div class="uemail">info@famgia.com</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pageheader">
+          <div class="lead">
+            <h1>ダッシュボード</h1>
+            <span class="crumb">famgia · 5月度 · 全店舗</span>
+          </div>
+          <div class="row">
+            <div class="row" style="border:1px solid var(--border);border-radius:4px;padding:0 4px;height:28px">
+              <button class="btn btn-ghost btn-xs">日</button>
+              <button class="btn btn-ghost btn-xs" style="background:var(--accent)">週</button>
+              <button class="btn btn-ghost btn-xs">月</button>
+            </div>
+            <input class="input" type="month" value="2026-05" style="width:140px">
+            <button class="btn btn-outline btn-sm">エクスポート</button>
+            <button class="btn btn-sm">+ 新規打刻</button>
+          </div>
+        </div>
+
+        <div class="pagecontent">
+          <!-- KPI Row -->
+          <div class="kpi-grid">
+            <div class="kpi"><div class="lbl">在籍従業員</div><div class="val">147</div><div class="delta up">▲ 3 vs 先月</div></div>
+            <div class="kpi"><div class="lbl">出勤中</div><div class="val">82<span style="font-size:14px;color:var(--muted-foreground);font-weight:400"> / 147</span></div><div class="delta">55.8% · リアルタイム</div></div>
+            <div class="kpi"><div class="lbl">未承認 申請</div><div class="val" style="color:var(--attention)">17</div><div class="delta">変更5 · 欠勤12</div></div>
+            <div class="kpi"><div class="lbl">今月総労働</div><div class="val">21,084h</div><div class="delta down">▼ 残業 268h (12%)</div></div>
+          </div>
+
+          <!-- 2-col split -->
+          <div style="display:grid;grid-template-columns: 2fr 1fr;gap:16px">
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <h3>本日の打刻状況</h3>
+                <div class="row">
+                  <span class="chip outline"><span class="dot" style="background:var(--success)"></span>勤務中 82</span>
+                  <span class="chip outline"><span class="dot" style="background:var(--warning)"></span>休憩 14</span>
+                  <span class="chip outline"><span class="dot" style="background:var(--muted-foreground)"></span>退勤 51</span>
+                </div>
+              </div>
+              <!-- Chart placeholder: simple SVG sparkline -->
+              <svg viewBox="0 0 600 160" preserveAspectRatio="none" style="width:100%;height:160px">
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="oklch(56% 0.15 240)" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="oklch(56% 0.15 240)" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- grid -->
+                <line x1="0" y1="40" x2="600" y2="40" stroke="oklch(86% 0.006 60)" stroke-dasharray="2 2"/>
+                <line x1="0" y1="80" x2="600" y2="80" stroke="oklch(86% 0.006 60)" stroke-dasharray="2 2"/>
+                <line x1="0" y1="120" x2="600" y2="120" stroke="oklch(86% 0.006 60)" stroke-dasharray="2 2"/>
+                <path d="M0,140 L40,135 L80,120 L120,90 L160,55 L200,40 L240,32 L280,38 L320,55 L360,72 L400,80 L440,75 L480,68 L520,90 L560,110 L600,128 L600,160 L0,160 Z" fill="url(#g1)"/>
+                <path d="M0,140 L40,135 L80,120 L120,90 L160,55 L200,40 L240,32 L280,38 L320,55 L360,72 L400,80 L440,75 L480,68 L520,90 L560,110 L600,128" fill="none" stroke="oklch(56% 0.15 240)" stroke-width="2"/>
+                <circle cx="280" cy="38" r="3" fill="oklch(56% 0.15 240)"/>
+              </svg>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted-foreground);margin-top:6px">
+                <span>0時</span><span>6時</span><span>12時</span><span>18時</span><span>24時</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>未承認の申請 <span style="color:var(--attention)">17</span></h3>
+              <div class="col" style="gap:0;margin:0 -16px;font-size:13px">
+                <div class="row" style="padding:8px 16px;border-top:1px solid var(--border);justify-content:space-between">
+                  <div><div style="font-weight:500">田中 美咲</div><div class="muted" style="font-size:11px;color:var(--muted-foreground)">遅刻 · 0.5h · 5/7</div></div>
+                  <span class="chip-soft chip attention">遅刻</span>
+                </div>
+                <div class="row" style="padding:8px 16px;border-top:1px solid var(--border);justify-content:space-between">
+                  <div><div style="font-weight:500">佐藤 健</div><div class="muted" style="font-size:11px;color:var(--muted-foreground)">シフト変更 · 5/12 → 5/14</div></div>
+                  <span class="chip-soft chip">変更</span>
+                </div>
+                <div class="row" style="padding:8px 16px;border-top:1px solid var(--border);justify-content:space-between">
+                  <div><div style="font-weight:500">鈴木 涼太</div><div class="muted" style="font-size:11px;color:var(--muted-foreground)">有給 · 1d · 5/15</div></div>
+                  <span class="chip-soft chip success">有給</span>
+                </div>
+                <div class="row" style="padding:8px 16px;border-top:1px solid var(--border);justify-content:space-between">
+                  <div><div style="font-weight:500">山本 葵</div><div class="muted" style="font-size:11px;color:var(--muted-foreground)">早退 · 2h · 5/8</div></div>
+                  <span class="chip-soft chip warning">早退</span>
+                </div>
+                <div class="row" style="padding:8px 16px;border-top:1px solid var(--border);justify-content:space-between">
+                  <div><div style="font-weight:500">木村 玲奈</div><div class="muted" style="font-size:11px;color:var(--muted-foreground)">出張 · 5/16〜5/18</div></div>
+                  <span class="chip-soft chip info">出張</span>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-sm" style="width:100%;margin-top:12px">すべて表示 →</button>
+            </div>
+          </div>
+
+          <!-- Recent table -->
+          <div class="card card-tight">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)">
+              <h3>本日の打刻ログ</h3>
+              <div class="row">
+                <input class="input" placeholder="従業員 / 店舗で検索…" style="width:240px">
+                <button class="btn btn-outline btn-sm">フィルター</button>
+              </div>
+            </div>
+            <table>
+              <thead><tr>
+                <th>時刻</th><th>従業員</th><th>店舗</th><th>種別</th><th>状態</th><th style="text-align:right">操作</th>
+              </tr></thead>
+              <tbody>
+                <tr><td class="mono" style="font-family:ui-monospace,monospace">09:02</td><td>EMP-0042 · 田中 美咲</td><td>渋谷店</td><td><span class="chip-soft chip">出勤</span></td><td><span class="chip success">承認済</span></td><td style="text-align:right"><button class="btn btn-ghost btn-xs">…</button></td></tr>
+                <tr><td class="mono" style="font-family:ui-monospace,monospace">09:14</td><td>EMP-0017 · 佐藤 健</td><td>新宿店</td><td><span class="chip-soft chip attention">遅刻</span></td><td><span class="chip warning">申請中</span></td><td style="text-align:right"><button class="btn btn-ghost btn-xs">…</button></td></tr>
+                <tr><td class="mono" style="font-family:ui-monospace,monospace">12:03</td><td>EMP-0009 · 鈴木 涼太</td><td>渋谷店</td><td><span class="chip-soft chip warning">休憩開始</span></td><td><span class="chip success">承認済</span></td><td style="text-align:right"><button class="btn btn-ghost btn-xs">…</button></td></tr>
+                <tr><td class="mono" style="font-family:ui-monospace,monospace">13:00</td><td>EMP-0009 · 鈴木 涼太</td><td>渋谷店</td><td><span class="chip-soft chip">休憩終了</span></td><td><span class="chip success">承認済</span></td><td style="text-align:right"><button class="btn btn-ghost btn-xs">…</button></td></tr>
+                <tr><td class="mono" style="font-family:ui-monospace,monospace">17:48</td><td>EMP-0023 · 山本 葵</td><td>池袋店</td><td><span class="chip-soft chip warning">早退</span></td><td><span class="chip warning">申請中</span></td><td style="text-align:right"><button class="btn btn-ghost btn-xs">…</button></td></tr>
+                <tr><td class="mono" style="font-family:ui-monospace,monospace">18:00</td><td>EMP-0042 · 田中 美咲</td><td>渋谷店</td><td><span class="chip-soft chip">退勤</span></td><td><span class="chip success">承認済</span></td><td style="text-align:right"><button class="btn btn-ghost btn-xs">…</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ──────────────────────────────────────────────────────────────────────
+     UI Kit · employee shell · /me/dashboard
+     ────────────────────────────────────────────────────────────────────── -->
+<div class="kit-section">
+  <h2>02 · Employee shell — マイページ (today)</h2>
+  <div class="kit-frame">
+    <div class="app" style="min-height:680px">
+
+      <aside class="sidebar">
+        <div class="sb-brand">
+          <div class="sb-tenant">
+            <div class="sb-mark">勤</div>
+            <div class="sb-name">マイページ</div>
+          </div>
+        </div>
+        <div class="sb-groups">
+          <div class="sb-group">
+            <div class="sb-grouplabel">マイページ</div>
+            <a class="sb-item active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span class="ttl">ダッシュボード</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="ttl">マイシフト</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg><span class="ttl">勤怠表</span></a>
+            <a class="sb-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="ttl">設定</span></a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="main">
+        <div class="topbar">
+          <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+          <div class="vsep"></div>
+          <span style="font-weight:500;font-size:14px">dxs-kintai</span>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+            <span class="chip outline">渋谷店 · 早番</span>
+            <div class="userpill"><div class="ava">TM</div><div><div class="uname">田中 美咲</div><div class="uemail">m.tanaka@famgia.com</div></div></div>
+          </div>
+        </div>
+        <div class="pageheader">
+          <div class="lead"><h1>ダッシュボード</h1><span class="crumb">2026年5月8日 · 木曜日</span></div>
+          <span class="chip success"><span class="dot" style="background:white"></span>勤務中 · 4h 12m</span>
+        </div>
+        <div class="pagecontent">
+
+          <!-- Punch + summary -->
+          <div style="display:grid;grid-template-columns: 360px 1fr;gap:16px">
+            <div class="card">
+              <h3>打刻 · Chấm công</h3>
+              <div style="display:flex;align-items:baseline;gap:8px;margin-top:4px">
+                <div style="font-size:38px;font-weight:600;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">13:42</div>
+                <div class="muted" style="font-size:11px;color:var(--muted-foreground)">最後の打刻: 休憩終了</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+                <button class="btn">出勤 · Check In</button>
+                <button class="btn btn-destructive">退勤 · Check Out</button>
+                <button class="btn btn-outline">休憩開始</button>
+                <button class="btn btn-outline">休憩終了</button>
+              </div>
+              <div class="muted" style="font-size:11px;margin-top:10px;color:var(--muted-foreground)">
+                位置情報: 渋谷店 (35.659, 139.700) · 134m
+              </div>
+            </div>
+
+            <div class="card">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <h3>今月の進捗</h3>
+                <span class="muted" style="font-size:11px;color:var(--muted-foreground)">5月度 · 22営業日</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:12px">
+                <div><div class="muted" style="font-size:11px;color:var(--muted-foreground)">勤務時間</div><div style="font-size:22px;font-weight:600">96.5h</div><div class="muted" style="font-size:10px;color:var(--muted-foreground)">/ 168h 計画</div></div>
+                <div><div class="muted" style="font-size:11px;color:var(--muted-foreground)">残業</div><div style="font-size:22px;font-weight:600">4.2h</div><div class="delta up" style="color:var(--success);font-size:10px">▼ 30%</div></div>
+                <div><div class="muted" style="font-size:11px;color:var(--muted-foreground)">有給残</div><div style="font-size:22px;font-weight:600">8.5d</div><div class="muted" style="font-size:10px;color:var(--muted-foreground)">/ 20d</div></div>
+                <div><div class="muted" style="font-size:11px;color:var(--muted-foreground)">遅刻</div><div style="font-size:22px;font-weight:600;color:var(--attention)">1</div><div class="muted" style="font-size:10px;color:var(--muted-foreground)">5/7 · 0.5h</div></div>
+              </div>
+              <!-- progress bar -->
+              <div style="margin-top:14px">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted-foreground);margin-bottom:4px"><span>勤務 96.5 / 168h</span><span>57%</span></div>
+                <div style="height:6px;background:var(--secondary);border-radius:9999px;overflow:hidden"><div style="width:57%;height:100%;background:var(--primary);border-radius:9999px"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calendar -->
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <h3>マイシフト · 2026年5月</h3>
+              <div class="row">
+                <button class="btn btn-ghost btn-sm">‹</button>
+                <span style="font-size:13px;font-weight:500">2026年 5月</span>
+                <button class="btn btn-ghost btn-sm">›</button>
+              </div>
+            </div>
+            <div class="cal">
+              <div class="head">日</div><div class="head">月</div><div class="head">火</div><div class="head">水</div><div class="head">木</div><div class="head">金</div><div class="head">土</div>
+              <div></div><div></div><div></div><div></div><div></div>
+              <div class="cell"><div class="d">1</div><div class="ev">早番 8:00–17:00</div></div>
+              <div class="cell"><div class="d" style="color:var(--info)">2</div><div class="ev">遅番 12:00–21:00</div></div>
+              <div class="cell"><div class="d" style="color:var(--destructive)">3</div></div>
+              <div class="cell"><div class="d">4</div><div class="ev">通し 9:00–22:00</div><div class="ev info">出張</div></div>
+              <div class="cell"><div class="d">5</div><div class="ev">早番 8:00–17:00</div></div>
+              <div class="cell"><div class="d">6</div><div class="ev">早番 8:00–17:00</div></div>
+              <div class="cell"><div class="d">7</div><div class="ev attn">遅刻 0.5h</div><div class="ev">早番</div></div>
+              <div class="cell today"><div class="d">8</div><div class="ev">早番 8:00–17:00</div></div>
+              <div class="cell"><div class="d" style="color:var(--info)">9</div></div>
+              <div class="cell"><div class="d" style="color:var(--destructive)">10</div></div>
+              <div class="cell"><div class="d">11</div><div class="ev">遅番 12:00–21:00</div></div>
+              <div class="cell"><div class="d">12</div><div class="ev">早番</div></div>
+              <div class="cell"><div class="d">13</div><div class="ev">早番</div></div>
+              <div class="cell"><div class="d">14</div><div class="ev">早番</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ──────────────────────────────────────────────────────────────────────
+     UI Kit · approval workflow (/admin/[brand]/absences) — Betoya tenant
+     ────────────────────────────────────────────────────────────────────── -->
+<div class="kit-section" data-tenant="betoya">
+  <h2>03 · Approval workflow — 欠勤承認 (Betoya tenant override)</h2>
+  <div class="kit-frame">
+    <div class="app" style="min-height:600px">
+      <aside class="sidebar">
+        <div class="sb-brand">
+          <div class="sb-tenant">
+            <div class="sb-mark" style="background:#009444">ベ</div>
+            <div class="sb-name" style="color:#009444">Betoya</div>
+            <div class="sb-chev">⇅</div>
+          </div>
+        </div>
+        <div class="sb-groups">
+          <div class="sb-grouplabel">Quản lý ca</div>
+          <a class="sb-item">📅<span class="ttl">Lịch ca</span></a>
+          <a class="sb-item active">📋<span class="ttl">Vắng mặt</span><span class="sb-badge">12</span></a>
+          <a class="sb-item">⏱️<span class="ttl">Chấm công</span></a>
+        </div>
+      </aside>
+      <div class="main">
+        <div class="pageheader">
+          <div class="lead"><h1>欠勤・遅刻 · Vắng mặt</h1><span class="crumb">12 件未承認</span></div>
+          <div class="row">
+            <button class="btn btn-outline btn-sm">エクスポート</button>
+            <button class="btn btn-sm">一括承認 (3)</button>
+          </div>
+        </div>
+        <div class="pagecontent">
+          <div class="card" style="padding:14px">
+            <div class="filters">
+              <div><div class="muted" style="font-size:11px;color:var(--muted-foreground);margin-bottom:4px">区分</div><select class="input"><option>すべて</option><option>有給</option><option>遅刻</option></select></div>
+              <div><div class="muted" style="font-size:11px;color:var(--muted-foreground);margin-bottom:4px">状態</div><select class="input"><option>下書き</option><option>承認済</option></select></div>
+              <div><div class="muted" style="font-size:11px;color:var(--muted-foreground);margin-bottom:4px">期間 (from)</div><input class="input" type="date" value="2026-05-01"></div>
+              <div><div class="muted" style="font-size:11px;color:var(--muted-foreground);margin-bottom:4px">期間 (to)</div><input class="input" type="date" value="2026-05-31"></div>
+            </div>
+          </div>
+
+          <!-- Bulk toolbar -->
+          <div class="card" style="padding:10px 14px;display:flex;align-items:center;gap:12px;background:color-mix(in oklch, var(--primary) 5%, var(--card))">
+            <span style="font-size:13px"><b>3 件</b> を選択中</span>
+            <div class="row" style="margin-left:auto">
+              <button class="btn btn-outline btn-sm">🏷 有給</button>
+              <button class="btn btn-outline btn-sm">🏷 欠勤</button>
+              <button class="btn btn-outline btn-sm">🏷 遅刻</button>
+              <button class="btn btn-outline btn-sm">🏷 早退</button>
+              <button class="btn btn-outline btn-sm">🏷 出張</button>
+            </div>
+          </div>
+
+          <div class="card card-tight">
+            <table>
+              <thead><tr>
+                <th style="width:32px"><input type="checkbox" checked></th>
+                <th>日付</th><th>従業員</th><th>区分</th><th>時間</th><th>状態</th><th>理由</th><th style="text-align:right">操作</th>
+              </tr></thead>
+              <tbody>
+                <tr><td><input type="checkbox" checked></td><td>05/02</td><td>EMP-0042 · Trần Mỹ Linh</td><td><span class="chip primary">有給</span></td><td>8h</td><td><span class="chip-soft chip warning">下書き</span></td><td class="muted" style="color:var(--muted-foreground);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">家族の用事のため</td>
+                  <td style="text-align:right"><div class="row" style="justify-content:flex-end"><button class="btn btn-outline btn-xs" title="承認">✓</button><button class="btn btn-outline btn-xs" title="却下">✕</button></div></td></tr>
+                <tr><td><input type="checkbox" checked></td><td>05/03</td><td>EMP-0017 · Nguyễn Văn Hải</td><td><span class="chip-soft chip attention">遅刻</span></td><td>0.5h</td><td><span class="chip-soft chip warning">下書き</span></td><td class="muted" style="color:var(--muted-foreground)">電車の遅延</td>
+                  <td style="text-align:right"><div class="row" style="justify-content:flex-end"><button class="btn btn-outline btn-xs">✓</button><button class="btn btn-outline btn-xs">✕</button></div></td></tr>
+                <tr><td><input type="checkbox" checked></td><td>05/05</td><td>EMP-0009 · Lê Thị Hương</td><td><span class="chip-soft chip warning">早退</span></td><td>2h</td><td><span class="chip-soft chip warning">下書き</span></td><td class="muted" style="color:var(--muted-foreground)">体調不良</td>
+                  <td style="text-align:right"><div class="row" style="justify-content:flex-end"><button class="btn btn-outline btn-xs">✓</button><button class="btn btn-outline btn-xs">✕</button></div></td></tr>
+                <tr><td><input type="checkbox"></td><td>05/06</td><td>EMP-0023 · Phạm Quốc Anh</td><td><span class="chip info">出張</span></td><td>—</td><td><span class="chip success">承認済</span></td><td class="muted" style="color:var(--muted-foreground)">本社研修</td>
+                  <td style="text-align:right"><span class="muted" style="font-size:11px;color:var(--muted-foreground)">変更不可</span></td></tr>
+                <tr><td><input type="checkbox"></td><td>05/07</td><td>EMP-0031 · Vũ Hoàng Nam</td><td><span class="chip danger">欠勤</span></td><td>8h</td><td><span class="chip danger">却下</span></td><td class="muted" style="color:var(--muted-foreground)">無断欠勤</td>
+                  <td style="text-align:right"><span class="muted" style="font-size:11px;color:var(--muted-foreground)">変更不可</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ──────────────────────────────────────────────────────────────────────
+     UI Kit · login surface (no shell)
+     ────────────────────────────────────────────────────────────────────── -->
+<div class="kit-section">
+  <h2>04 · Login surface</h2>
+  <div class="kit-frame">
+    <div data-density="comfortable" style="display:flex;align-items:center;justify-content:center;min-height:500px;background:oklch(98% 0.003 60);padding:48px">
+      <div class="card" style="width:380px;padding:32px;box-shadow:var(--shadow-lg)">
+        <div style="display:flex;justify-content:center;margin-bottom:18px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="sb-mark" style="width:34px;height:34px;border-radius:8px;font-size:18px">勤</div>
+            <div style="font-size:18px;font-weight:500">dxs <span style="color:var(--primary)">·</span> kintai</div>
+          </div>
+        </div>
+        <h2 style="font-size:18px;font-weight:600;text-align:center;margin-bottom:4px">ログイン</h2>
+        <p style="font-size:12px;color:var(--muted-foreground);text-align:center;margin-bottom:18px">勤怠管理プラットフォームへようこそ</p>
+
+        <label class="label">メールアドレス</label>
+        <input class="input" placeholder="name@famgia.com" value="m.tanaka@famgia.com" style="height:44px;margin-bottom:14px">
+
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <label class="label">パスワード</label>
+          <a href="#" style="font-size:11px;color:var(--primary);text-decoration:none">忘れた場合</a>
+        </div>
+        <input class="input" type="password" value="••••••••••" style="height:44px;margin-bottom:18px">
+
+        <button class="btn" style="width:100%;height:44px;font-size:14px">ログイン</button>
+
+        <div style="display:flex;align-items:center;gap:8px;margin:14px 0;color:var(--muted-foreground);font-size:11px">
+          <div style="height:1px;background:var(--border);flex:1"></div>
+          または
+          <div style="height:1px;background:var(--border);flex:1"></div>
+        </div>
+
+        <button class="btn btn-outline" style="width:100%;height:44px;font-size:13px">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285f4" d="M21.35 11.1H12v3.2h5.35c-.5 2.4-2.55 4.05-5.35 4.05-3.2 0-5.8-2.6-5.8-5.8s2.6-5.8 5.8-5.8c1.5 0 2.8.55 3.85 1.45l2.4-2.4C16.6 4.3 14.45 3.4 12 3.4 6.7 3.4 2.4 7.7 2.4 13s4.3 9.6 9.6 9.6c5.55 0 9.2-3.9 9.2-9.4 0-.65-.05-1.3-.15-1.9z"/></svg>
+          Google でログイン
+        </button>
+
+        <p style="text-align:center;font-size:11px;color:var(--muted-foreground);margin-top:18px">利用規約 · プライバシーポリシー</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

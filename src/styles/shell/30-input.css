@@ -1,0 +1,1108 @@
+/* ── Input — canonical dxs-kintai design system primitives ───────────────
+ * Mirrors design-handoff/.../preview/comp-inputs.html (lines 45–93).
+ * `.input` is the bare native control; `.input-wrap` is the affix shell;
+ * `.field` is the label + control + help vertical group.
+ */
+.input {
+  display: flex;
+  align-items: center;
+  height: var(--density-element);
+  padding: 0 var(--spacing-3);
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  background: var(--input-background);
+  color: var(--foreground);
+  font-size: var(--text-sm);
+  font-family: inherit;
+  width: 100%;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input::placeholder { color: var(--muted-foreground); }
+
+.input:focus,
+.input:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 25%, transparent);
+}
+
+.input:disabled,
+.input[aria-disabled="true"] {
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+}
+
+.input[readonly],
+.input-readonly { background: var(--secondary); color: var(--foreground); cursor: default; }
+
+.input-size-small { height: var(--density-element-sm); font-size: var(--text-xs); padding: 0 var(--spacing-2); }
+
+.input-size-large { height: var(--density-element-lg); font-size: var(--text-base); padding: 0 var(--spacing-4); }
+
+.input-status-error,
+.input[aria-invalid="true"] {
+  border-color: var(--destructive);
+}
+
+.input-status-error:focus,
+.input-status-error:focus-visible,
+.input[aria-invalid="true"]:focus,
+.input[aria-invalid="true"]:focus-visible {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--destructive) 18%, transparent);
+}
+
+.input-status-warning { border-color: var(--warning); }
+.input-status-warning:focus,
+.input-status-warning:focus-visible {
+  border-color: var(--warning);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--warning) 22%, transparent);
+}
+
+.input-status-success { border-color: var(--success); }
+.input-status-success:focus,
+.input-status-success:focus-visible {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--success) 22%, transparent);
+}
+
+/* Mobile-first touch-target floor — cardinal rule 24 §B.
+ * Inputs are interactive surfaces; on `xs/sm` viewports they
+ * floor to `--touch-target-min` (44px) regardless of `size`. */
+@media (max-width: 767px) {
+  .input,
+  .input-wrap {
+    min-height: var(--touch-target-min);
+  }
+}
+
+textarea.input {
+  padding: var(--spacing-2) var(--spacing-3);
+  height: auto;
+  line-height: var(--leading-normal);
+  resize: vertical;
+}
+
+/* ── Affix wrapper (canonical name: .input-wrap) ─────────────────── */
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  background: var(--input-background);
+  overflow: hidden;
+  height: var(--density-element);
+  width: 100%;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input-wrap:focus-within {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 25%, transparent);
+}
+
+.input-wrap.input-size-small { height: var(--density-element-sm); }
+.input-wrap.input-size-large { height: var(--density-element-lg); }
+
+.input-wrap.input-status-error { border-color: var(--destructive); }
+.input-wrap.input-status-error:focus-within { box-shadow: 0 0 0 3px color-mix(in oklch, var(--destructive) 18%, transparent); }
+.input-wrap.input-status-warning { border-color: var(--warning); }
+.input-wrap.input-status-warning:focus-within { box-shadow: 0 0 0 3px color-mix(in oklch, var(--warning) 22%, transparent); }
+
+.input-wrap .affix {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--spacing-3);
+  color: var(--muted-foreground);
+  background: var(--secondary);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.input-wrap .affix.pre { border-right: 1px solid var(--border); }
+.input-wrap .affix.suf { border-left: 1px solid var(--border); }
+
+.input-wrap > input,
+.input-wrap > select,
+.input-wrap > textarea {
+  border: 0;
+  box-shadow: none;
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  height: 100%;
+  padding: 0 var(--spacing-3);
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+
+.input-wrap > input:focus,
+.input-wrap > input:focus-visible,
+.input-wrap > select:focus,
+.input-wrap > select:focus-visible,
+.input-wrap > textarea:focus,
+.input-wrap > textarea:focus-visible { box-shadow: none; }
+
+/* Trailing button (e.g. password show/hide) absolutely positioned inside `.input` parent. */
+.input-pass-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-pass-toggle:hover { color: var(--foreground); background: var(--accent); }
+
+.input-loading-spinner,
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid color-mix(in oklch, var(--info) 30%, transparent);
+  border-top-color: var(--info);
+  border-radius: 50%;
+  animation: gxui-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.spinner-sm { width: 10px; height: 10px; border-width: 2px; }
+.spinner-lg { width: 16px; height: 16px; border-width: 2px; }
+
+.spinner-tone-muted       { border-color: color-mix(in oklch, var(--muted-foreground) 30%, transparent); border-top-color: var(--muted-foreground); }
+.spinner-tone-primary     { border-color: color-mix(in oklch, var(--primary) 30%, transparent);          border-top-color: var(--primary); }
+.spinner-tone-success     { border-color: color-mix(in oklch, var(--success) 30%, transparent);          border-top-color: var(--success); }
+.spinner-tone-warning     { border-color: color-mix(in oklch, var(--warning) 30%, transparent);          border-top-color: var(--warning); }
+.spinner-tone-destructive { border-color: color-mix(in oklch, var(--destructive) 30%, transparent);      border-top-color: var(--destructive); }
+
+@keyframes gxui-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner,
+  .input-loading-spinner { animation-duration: 2s; }
+}
+
+/* ── Field group (label + control + help) ─────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  min-width: 0;
+}
+
+.field > label,
+.field > .label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--foreground);
+  margin-bottom: 0;
+}
+
+.field > label .opt,
+.label .opt { font-weight: 400; color: var(--muted-foreground); font-size: var(--text-2xs); }
+
+.field > label .req,
+.label .req { color: var(--destructive); }
+
+.field > label .info,
+.label .info { color: var(--muted-foreground); cursor: help; display: inline-flex; }
+
+.field > label .spacer,
+.label .spacer { flex: 1; }
+
+.field > label a,
+.label a { font-size: var(--text-2xs); color: var(--info); text-decoration: none; font-weight: 400; }
+
+.field > label a:hover,
+.label a:hover { text-decoration: underline; }
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--foreground);
+  margin-bottom: 0;
+}
+
+.help {
+  font-size: var(--text-2xs);
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.45;
+  margin-top: 0;
+}
+
+.help.err { color: var(--destructive); }
+.help.warn { color: oklch(48% 0.12 75); }
+.help.ok { color: var(--success); }
+.help.info { color: var(--info); }
+.help svg { flex-shrink: 0; }
+
+.count {
+  font-size: var(--text-2xs);
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+.count.warn { color: oklch(48% 0.12 75); }
+.count.over { color: var(--destructive); }
+
+.row-help {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.textarea-with-count {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.textarea-with-count > .count {
+  align-self: flex-end;
+  margin-top: var(--spacing-1);
+}
+
+/* ── Password / validation checklist ─────────────────────────────── */
+.checklist { display: grid; gap: 2px; margin-top: 2px; padding: 0; }
+.checklist li {
+  list-style: none;
+  font-size: var(--text-2xs);
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.checklist li.ok { color: var(--success); }
+.checklist li.bad { color: var(--destructive); }
+
+/* ── Multilingual locale tabs (pattern ①) ────────────────────────── */
+.loc-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  border-bottom: 0;
+  padding: 0 4px;
+  height: 30px;
+  background: var(--secondary);
+}
+
+.loc-tabs button {
+  border: 0;
+  background: transparent;
+  height: 100%;
+  padding: 0 var(--spacing-3);
+  font: inherit;
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.loc-tabs button:hover { color: var(--foreground); }
+
+.loc-tabs button.on,
+.loc-tabs button[aria-selected="true"] {
+  color: var(--foreground);
+  font-weight: 500;
+  border-bottom-color: var(--primary);
+  background: var(--background);
+}
+
+.loc-tabs .dot {
+  width: 6px;
+  height: 6px;
+  min-width: 6px;
+  min-height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+  flex-grow: 0;
+  display: inline-block;
+  padding: 0;
+  gap: 0;
+  box-sizing: border-box;
+}
+
+.loc-tabs .dot.empty { background: var(--destructive); padding: 0; gap: 0; }
+.loc-tabs .dot.draft { background: var(--warning); }
+.loc-tabs .spacer { flex: 1; }
+.loc-tabs .meta { font-size: var(--text-2xs); color: var(--muted-foreground); padding-right: 6px; }
+
+.loc-panel {
+  border: 1px solid var(--border);
+  border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+  padding: var(--spacing-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  background: var(--background);
+}
+
+/* ── Per-row locale layout (pattern ②) ───────────────────────────── */
+.loc-row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: var(--spacing-2);
+  align-items: start;
+}
+
+.loc-row .flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--density-element);
+  font-size: var(--text-2xs);
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.loc-row .flag .code {
+  font-weight: 600;
+  color: var(--foreground);
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+
+.loc-row .flag .dot {
+  width: 6px;
+  height: 6px;
+  min-width: 6px;
+  min-height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  display: inline-block;
+  padding: 0;
+  gap: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.loc-row .flag .dot.empty,
+.loc-row .flag .dot.bad { background: var(--destructive); padding: 0; gap: 0; }
+.loc-row .flag .dot.draft,
+.loc-row .flag .dot.warn { background: var(--warning); padding: 0; gap: 0; }
+
+/* ─── Checkbox / Radio group layout ───────────────────────────────
+ * `.checkbox-group` and `.radio-group` lay out their items via flex,
+ * direction flipping on `data-orientation`. Per-item label rows are
+ * `<label>` elements composing the control + caption text.
+ */
+.checkbox-group,
+.radio-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+
+.checkbox-group[data-orientation="vertical"],
+.radio-group[data-orientation="vertical"] {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+}
+
+.checkbox-group-item,
+.radio-group-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  user-select: none;
+}
+
+.checkbox-group-item[data-disabled],
+.radio-group-item[data-disabled] {
+  cursor: not-allowed;
+  color: var(--muted-foreground);
+}
+
+.checkbox-group-item-label,
+.radio-group-item-label {
+  line-height: var(--leading-normal);
+}
+
+/* Per-size hooks scale the item caption typography. The control
+ * itself reads `--density-element-sm` and is dimensioned by the
+ * .checkbox-root / .radio-root rules. */
+.radio-group-item[data-size="small"] .radio-group-item-label {
+  font-size: var(--text-xs);
+}
+.radio-group-item[data-size="large"] .radio-group-item-label {
+  font-size: var(--text-base);
+}
+
+/* ─── Radio (Radix) ───────────────────────────────────────────────
+ * `.radio-root` is the circular control button; `.radio-indicator`
+ * is the filled centre dot that shows when Radix data-state="checked".
+ */
+.radio-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--density-element-sm);
+  height: var(--density-element-sm);
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--input);
+  background: var(--input-background);
+  color: var(--primary);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.radio-root:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.radio-root[data-state="checked"] {
+  border-color: var(--primary);
+}
+
+.radio-root[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.radio-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.radio-indicator::after {
+  content: "";
+  display: block;
+  width: 50%;
+  height: 50%;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+}
+
+.radio-group-item[data-size="small"] .radio-root {
+  width: calc(var(--density-element-sm) - var(--spacing-1));
+  height: calc(var(--density-element-sm) - var(--spacing-1));
+}
+
+.radio-group-item[data-size="large"] .radio-root {
+  width: var(--density-element);
+  height: var(--density-element);
+}
+
+/* ─── Slider (Radix) ──────────────────────────────────────────────
+ * `.slider` is the root (relative, 6px height, full width). The track
+ * is the muted base; the range is the primary-coloured filled span;
+ * the thumb is a 16px white circle with a focus ring.
+ */
+.slider-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.slider-wrap[data-orientation="vertical"] {
+  width: auto;
+  height: 12rem;
+  flex-direction: row;
+}
+
+.slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  touch-action: none;
+  width: 100%;
+  height: 1.25rem;
+}
+
+.slider[data-orientation="vertical"] {
+  flex-direction: column;
+  width: 1.25rem;
+  height: 100%;
+}
+
+.slider-track {
+  position: relative;
+  flex-grow: 1;
+  background: var(--secondary);
+  border-radius: var(--radius-full);
+  height: 6px;
+}
+
+.slider[data-orientation="vertical"] .slider-track {
+  width: 6px;
+  height: 100%;
+}
+
+.slider-range {
+  position: absolute;
+  background: var(--primary);
+  border-radius: var(--radius-full);
+  height: 100%;
+}
+
+.slider[data-orientation="vertical"] .slider-range {
+  width: 100%;
+  height: auto;
+}
+
+.slider-thumb {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: var(--background);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-full);
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--foreground) 12%, transparent);
+  cursor: grab;
+  transition: box-shadow var(--transition-fast);
+}
+
+.slider-thumb:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--ring) 25%, transparent);
+}
+
+.slider-thumb:active {
+  cursor: grabbing;
+}
+
+.slider[data-disabled] .slider-thumb,
+.slider-thumb[data-disabled] {
+  cursor: not-allowed;
+  border-color: var(--muted-foreground);
+}
+
+.slider[data-disabled] .slider-range {
+  background: var(--muted-foreground);
+}
+
+/* Marks — small dots + optional labels rendered along the track. */
+.slider-marks {
+  position: relative;
+  width: 100%;
+  height: var(--spacing-4);
+}
+
+.slider-marks[data-orientation="vertical"] {
+  width: var(--spacing-6);
+  height: 100%;
+}
+
+.slider-mark {
+  position: absolute;
+  transform: translateX(-50%);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.slider-marks[data-orientation="vertical"] .slider-mark {
+  transform: translateY(50%);
+  flex-direction: row;
+  gap: var(--spacing-1);
+}
+
+.slider-mark-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--muted-foreground);
+}
+
+.slider-mark-label {
+  font-size: var(--text-2xs);
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+/* ─── Cascader / TreeSelect ───────────────────────────────────────
+ * Combobox-flavoured triggers (Cascader / TreeSelect) share the
+ * `.input` chrome so height + border + focus ring stay axis-aware.
+ * Popover bodies render either horizontally-flowing columns
+ * (Cascader) or a recursive tree (TreeSelect).
+ */
+
+.cascader-trigger,
+.treeselect-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  /* `.input` already pins height + border + radius + background */
+}
+
+.cascader-trigger:disabled,
+.treeselect-trigger:disabled {
+  cursor: not-allowed;
+}
+
+.cascader-trigger[data-placeholder="true"] .cascader-trigger-text,
+.treeselect-trigger[data-placeholder="true"] .treeselect-trigger-text {
+  color: var(--muted-foreground);
+}
+
+.cascader-trigger-text,
+.treeselect-trigger-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: inherit;
+  color: var(--foreground);
+}
+
+/* Cascader popover body — horizontal columns */
+.cascader-content {
+  padding: 0;
+  overflow: hidden;
+}
+
+.cascader-columns {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  max-height: min(18rem, 55dvh);
+}
+
+.cascader-column {
+  list-style: none;
+  margin: 0;
+  padding: var(--spacing-1);
+  min-width: 10rem;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+}
+
+.cascader-column:last-child {
+  border-right: 0;
+}
+
+.cascader-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2);
+  border-radius: var(--radius-sm, 4px);
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  cursor: pointer;
+  user-select: none;
+}
+
+.cascader-option:hover:not([data-disabled="true"]) {
+  background: var(--secondary);
+}
+
+.cascader-option[data-active="true"] {
+  background: var(--secondary);
+}
+
+.cascader-option[data-selected="true"] {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.cascader-option[data-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cascader-option-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cascader-option-chevron {
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+
+/* TreeSelect popover body — recursive tree */
+.treeselect-content {
+  padding: 0;
+  overflow: hidden;
+}
+
+.treeselect-tree {
+  list-style: none;
+  margin: 0;
+  padding: var(--spacing-1);
+  min-width: 14rem;
+  max-height: min(20rem, 60dvh);
+  overflow-y: auto;
+}
+
+.treeselect-tree ul.treeselect-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.treeselect-children[data-expanded="false"] {
+  display: none;
+}
+
+.treeselect-node {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm, 4px);
+  font-size: var(--text-sm);
+  color: var(--foreground);
+}
+
+.treeselect-node[data-selected="true"] {
+  background: color-mix(in oklch, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+.treeselect-node[data-disabled="true"] {
+  opacity: 0.5;
+}
+
+.treeselect-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-4);
+  height: var(--spacing-4);
+  border: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.treeselect-toggle:hover {
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.treeselect-checkbox {
+  flex-shrink: 0;
+}
+
+.treeselect-label {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.treeselect-label:disabled {
+  cursor: not-allowed;
+}
+
+/* ─── ColorPicker — decorative trigger + popover panel ───────────── */
+.colorpicker-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  height: var(--density-element);
+  padding: 0 var(--spacing-3);
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  background: var(--input-background);
+  color: var(--foreground);
+  font-size: var(--text-sm);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.colorpicker-trigger:hover { border-color: var(--ring); }
+
+.colorpicker-trigger:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 25%, transparent);
+}
+
+.colorpicker-trigger.input-size-small { height: var(--density-element-sm); font-size: var(--text-xs); padding: 0 var(--spacing-2); }
+.colorpicker-trigger.input-size-large { height: var(--density-element-lg); font-size: var(--text-base); padding: 0 var(--spacing-4); }
+
+.colorpicker-trigger[data-disabled="true"],
+.colorpicker-trigger:disabled {
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+}
+
+.colorpicker-trigger-label {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+
+.colorpicker-swatch {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.colorpicker-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  min-width: 240px;
+}
+
+.colorpicker-preview {
+  width: 100%;
+  height: 56px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.colorpicker-canvas {
+  width: 100%;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--input-background);
+  cursor: pointer;
+}
+
+.colorpicker-alpha {
+  width: 100%;
+  accent-color: var(--primary);
+}
+
+.colorpicker-hex {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+.colorpicker-presets {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+}
+
+.colorpicker-preset {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  padding: 0;
+}
+
+.colorpicker-preset:hover { border-color: var(--ring); }
+
+.colorpicker-preset[data-selected="true"] {
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+/* ─── Rate — star-rating primitive ──────────────────────────────── */
+.rate {
+  display: inline-flex;
+  gap: var(--spacing-1);
+  color: var(--warning);
+}
+
+.rate-star {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: color-mix(in oklch, var(--warning) 30%, var(--secondary));
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rate-star[data-filled="true"],
+.rate-star[data-half="true"] { color: var(--warning); }
+
+.rate-star:hover { transform: scale(1.05); }
+
+.rate-star:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 35%, transparent);
+  border-radius: 2px;
+}
+
+.rate-size-small  .rate-star svg { width: 16px; height: 16px; }
+.rate-size-default .rate-star svg { width: 20px; height: 20px; }
+.rate-size-large  .rate-star svg { width: 24px; height: 24px; }
+
+.rate[data-disabled="true"] .rate-star,
+.rate[data-readonly="true"] .rate-star { cursor: default; }
+
+.rate[data-disabled="true"] .rate-star { opacity: 0.55; }
+
+.rate[data-readonly="true"] .rate-star:hover,
+.rate[data-disabled="true"] .rate-star:hover { transform: none; }
+
+/* ─── InputNumber ────────────────────────────────────────────────── */
+.input-number-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+}
+
+.input-number-wrap > .input-number {
+  padding-right: 28px;
+  width: 100%;
+}
+
+.input-number-wrap > .input-number.input-number-no-stepper {
+  padding-right: var(--spacing-3);
+}
+
+.input-number-stepper {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border);
+}
+
+.input-number-step {
+  flex: 1;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--muted-foreground);
+  padding: 0;
+}
+
+.input-number-step:hover { color: var(--primary); background: var(--secondary); }
+.input-number-step:disabled { cursor: not-allowed; color: var(--muted-foreground); }
+.input-number-step:first-child { border-bottom: 1px solid var(--border); }
+
+/* ─── Transfer — dual list-box ──────────────────────────────────── */
+.transfer {
+  display: flex;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+
+.transfer-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  min-width: 200px;
+  max-width: 320px;
+}
+
+.transfer-list-header {
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transfer-list-search {
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.transfer-list-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 280px;
+}
+
+.transfer-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.transfer-list-item:hover { background: var(--accent); }
+
+.transfer-list-item[aria-disabled="true"] {
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+}
+
+.transfer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.transfer-size-small .transfer-list { min-width: 160px; }
+.transfer-size-large .transfer-list { min-width: 240px; max-width: 360px; }
+

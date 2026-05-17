@@ -1,10 +1,12 @@
 ---
+title: "Select"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Select
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Select

@@ -1,41 +1,55 @@
 ---
+title: "Tutorial 02 — Theming: override a token and enable dark mode"
 diataxis: tutorial
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # Tutorial 02 — Theming: override a token and enable dark mode
 
 **You will learn:**
 
-- How the `[data-theme]`, `[data-tenant]`, and `[data-density]` HTML attributes
-  control the visual layer.
-- How to write a service-local `theme.css` that adds a tenant accent.
+- How the four `data-*` axes (`data-theme`, `data-accent`,
+  `data-density`, `data-font-size`) on `<html>` control the visual
+  layer.
+- How to write a service-local `theme.css` that adds an accent
+  palette.
 - How to wire the `useTweaks` hook so the user can toggle dark mode.
 - How to confirm the override respects the brand rule (chroma ≤ 0.18).
 
-**By the end of this tutorial you will have** a working dark-mode toggle and
-a custom accent color scoped to a tenant slug.
+**By the end of this tutorial you will have** a working dark-mode
+toggle and a custom accent color scoped to a deployment-specific
+palette.
 
 **Prerequisites:** Completed [Tutorial 01](./01-getting-started.md).
 
 ---
 
-## Step 1 — Understand the attribute system
+## Step 1 — Understand the four theme axes
 
-`@godxjp/ui` does not use JavaScript for dark mode or theming. All visual switching
-happens via CSS attribute selectors on the `<html>` element:
+`@godxjp/ui` does not use JavaScript for dark mode or theming. All
+visual switching happens via CSS attribute selectors on the
+`<html>` element. There are **four orthogonal axes** (see
+[01 — theme axes](../../new-docs/01-theme-axes.md)):
 
 | Attribute | Values | What changes |
 |---|---|---|
 | `data-theme` | `light` (default) \| `dark` | Surface colors, foreground, border |
-| `data-density` | `compact` \| `default` \| `comfortable` | Button/row/input height |
-| `data-tenant` | any registered slug, e.g. `godx` | Primary color, ring color |
+| `data-accent` | `blue` (default) \| `green` \| `violet` \| `amber` \| `rose` \| `slate` \| any registered palette | Primary, ring, brand chain |
+| `data-density` | `compact` \| `default` \| `comfortable` | Element / card / page heights |
+| `data-font-size` | `sm` \| `base` (default) \| `lg` \| `xl` | Root rem scale |
 
-`tokens-ext.css` (included via `tailwind.css`) declares all variants.
-Setting `document.documentElement.dataset.theme = "dark"` is enough to flip the UI.
+`tailwind.css` (which transitively imports `theme.css`) declares
+every variant. Setting `document.documentElement.dataset.theme =
+"dark"` is enough to flip the UI.
+
+Per cardinal rule 19 the framework does NOT carry per-service
+`data-tenant` blocks. Per-deployment branding flows through the
+accent axis.
 
 ---
 
@@ -63,13 +77,8 @@ export default function App() {
         {dark ? "Switch to light" : "Switch to dark"}
       </Button>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Dark mode demo</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>Toggle the button above. All token values flip automatically.</p>
-        </CardContent>
+      <Card title="Dark mode demo">
+        <p>Toggle the button above. All token values flip automatically.</p>
       </Card>
     </main>
   )
@@ -88,7 +97,7 @@ preference to `localStorage` and keeps the `<html>` attributes in sync automatic
 
 ```tsx
 // src/App.tsx
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@godxjp/ui"
+import { Button, Card } from "@godxjp/ui"
 import { useTweaks } from "@godxjp/ui/hooks"
 
 export default function App() {
@@ -104,65 +113,67 @@ export default function App() {
         Theme: {tweaks.theme}
       </Button>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Persistent dark mode</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>
-            Reload the page. Your choice persists via <code>godx.tweaks</code> in
-            localStorage.
-          </p>
-        </CardContent>
+      <Card title="Persistent dark mode">
+        <p>
+          Reload the page. Your choice persists via <code>godx:theme</code> in
+          localStorage.
+        </p>
       </Card>
     </main>
   )
 }
 ```
 
-`useTweaks` handles all three attributes (`data-theme`, `data-density`, `data-tenant`)
-in one hook. See [useTweaks reference](../reference/hooks/useTweaks.md).
+`useTweaks` handles all four axes (`data-theme`, `data-accent`,
+`data-density`, `data-font-size`) in one hook. See [useTweaks
+reference](../reference/hooks/useTweaks.md).
 
 ---
 
-## Step 4 — Create a tenant accent override
+## Step 4 — Create an accent palette override
 
 Create a `src/theme.css` file in your service's frontend directory:
 
 ```css
 /* src/theme.css — service-local brand overlay */
+@import "@godxjp/ui/tailwind.css";
 
-/* Tenant "myapp" — green accent */
-[data-tenant="myapp"] {
-  --primary: oklch(56% 0.15 155);   /* chroma = 0.15 — within the 0.18 cap */
-  --ring:    oklch(56% 0.15 155);
+/* Accent palette "myapp" — green */
+[data-accent="myapp"] {
+  --primary:           oklch(56% 0.15 155);   /* chroma = 0.15 — within the 0.18 cap */
+  --primary-foreground:oklch(98% 0.01 155);
+  --ring:              oklch(56% 0.15 155);
+  --brand:             oklch(56% 0.15 155);
+  --sidebar-active-bg: oklch(95% 0.02 155);
+  --sidebar-active-fg: oklch(56% 0.15 155);
 }
 
-/* Dark variant is automatic — tokens-ext.css darkens every tenant automatically.
-   Only override if you need to fine-tune a specific dark value. */
+/* Optional explicit dark variant */
+[data-theme="dark"][data-accent="myapp"] {
+  --primary: oklch(70% 0.15 155);
+  --ring:    oklch(70% 0.15 155);
+}
 ```
 
-Import it AFTER the base tokens in `main.tsx`:
+Import it in `main.tsx`:
 
 ```tsx
-import "@godxjp/ui/tailwind.css"   // base tokens first
-import "./theme.css"               // service overlay second
+import "./theme.css"               // chains @godxjp/ui/tailwind.css first
 import { initI18n } from "@godxjp/ui/i18n"
 // …
 ```
 
-Activate the tenant in your App:
+Activate the palette in your App:
 
 ```tsx
-// Activate the tenant on mount
-document.documentElement.dataset.tenant = "myapp"
+document.documentElement.dataset.accent = "myapp"
 ```
 
 Or use `useTweaks`:
 
 ```tsx
 const { setTweak } = useTweaks()
-setTweak("tenant", "myapp")
+setTweak("accent", "myapp")
 ```
 
 ---
@@ -170,7 +181,7 @@ setTweak("tenant", "myapp")
 ## Step 5 — Verify the chroma cap
 
 Open the browser DevTools and inspect `--primary` on the `<html>` element when
-`[data-tenant="myapp"]` is active. Confirm the OKLCH chroma value (the second number
+`[data-accent="myapp"]` is active. Confirm the OKLCH chroma value (the second number
 in `oklch(L C H)`) is 0.18 or below.
 
 Values above 0.18 are saturated neon — outside the brand contract and will fail review.
@@ -181,17 +192,19 @@ Values above 0.18 are saturated neon — outside the brand contract and will fai
 
 | Problem | Likely cause | Fix |
 |---|---|---|
-| Dark mode toggle has no visible effect | `useTweaks` sets `data-theme` but `tokens-ext.css` is not loaded | Confirm `import "@godxjp/ui/tailwind.css"` (not `tokens.css`) is the first import |
-| Tenant color does not appear | `theme.css` imported before base tokens | Move `theme.css` import AFTER `@godxjp/ui/tailwind.css` |
-| Custom color looks wrong in dark mode | Dark variant assumed inherited from base | Add `[data-tenant="myapp"][data-theme="dark"]` rule in `theme.css` if needed |
+| Dark mode toggle has no visible effect | `theme.css` did not `@import "@godxjp/ui/tailwind.css"` | Add the import at the top of `theme.css` |
+| Accent color does not appear | `data-accent` value mismatch between CSS and `<html>` | Confirm `dataset.accent` matches the CSS selector slug |
+| Custom color looks wrong in dark mode | Dark variant not specified | Add `[data-theme="dark"][data-accent="myapp"]` rule in `theme.css` |
 | `useTweaks` import fails | Wrong sub-path | Use `import { useTweaks } from "@godxjp/ui/hooks"` |
 
 ---
 
 ## What you achieved
 
-You switched the visual layer using HTML attributes, wired persistent theme state
-via `useTweaks`, and added a scoped tenant color override. The `[data-tenant]` pattern
-is how every GoDX deployment customises colors without touching the framework source.
+You switched the visual layer using HTML attribute axes, wired
+persistent theme state via `useTweaks`, and added a scoped accent
+palette. The `[data-accent]` pattern is how every GoDX deployment
+customises colors without touching the framework source — per
+cardinal rule 19, there is no `[data-tenant]` escape hatch.
 
 **Next:** [Tutorial 03 — Shell composition](./03-shell-composition.md).

@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { PRODUCTS } from "../../data/products";
+import type { ForgeProduct } from "./types";
 import { useTweaks, type Density, type Theme } from "../../hooks/useTweaks";
 import { SUPPORTED_LOCALES, type ForgeLocale } from "../../i18n";
 
@@ -12,13 +12,19 @@ import { SUPPORTED_LOCALES, type ForgeLocale } from "../../i18n";
 // Owned state lives in `useTweaks` (localStorage-persisted); this
 // component is the visual face. Per MUST RULE #5 + #8, no service may
 // implement its own theme switcher — every consumer reuses this.
+//
+// `products` is REQUIRED — consumers pass their own catalogue
+// (no built-in mock data per cardinal rule 28). Pass `[]` to hide
+// the tenant selector entirely.
 
 export interface TweaksPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Product catalogue for the tenant selector. Pass `[]` to hide. */
+  products?: ForgeProduct[];
 }
 
-export function TweaksPanel({ open, onOpenChange }: TweaksPanelProps) {
+export function TweaksPanel({ open, onOpenChange, products = [] }: TweaksPanelProps) {
   const { t } = useTranslation();
   const { tweaks, setTweak } = useTweaks();
 
@@ -66,14 +72,16 @@ export function TweaksPanel({ open, onOpenChange }: TweaksPanelProps) {
               />
             </Section>
 
-            <Section label={t("tweaks.product")}>
-              <Select
-                label={t("tweaks.product")}
-                value={tweaks.tenant}
-                onChange={(v) => setTweak("tenant", v as typeof tweaks.tenant)}
-                options={PRODUCTS.map((p) => ({ value: p.tenant, label: p.name }))}
-              />
-            </Section>
+            {products.length > 0 && (
+              <Section label={t("tweaks.product")}>
+                <Select
+                  label={t("tweaks.product")}
+                  value={tweaks.tenant}
+                  onChange={(v) => setTweak("tenant", v as typeof tweaks.tenant)}
+                  options={products.map((p) => ({ value: p.tenant, label: p.name }))}
+                />
+              </Section>
+            )}
 
             <Section label={t("tweaks.locale")}>
               <Radio

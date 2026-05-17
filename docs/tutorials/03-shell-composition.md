@@ -1,9 +1,12 @@
 ---
+title: "Tutorial 03 — Shell composition: AppShell + Sidebar + Topbar + CommandPalette"
 diataxis: tutorial
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # Tutorial 03 — Shell composition: AppShell + Sidebar + Topbar + CommandPalette
@@ -105,8 +108,9 @@ import {
   ProjectSwitcher,
 } from "@godxjp/ui/components/shell"
 import { useTweaks } from "@godxjp/ui/hooks"
-import { PRODUCTS } from "@godxjp/ui/data"
-import { NAV_SECTIONS, COMMANDS } from "./nav"
+// Per cardinal rule 28 §D the framework does NOT ship a
+// `@godxjp/ui/data` entry — consumers define their own catalogue.
+import { PRODUCTS, NAV_SECTIONS, COMMANDS } from "./nav"
 
 export default function App() {
   const { tweaks, setTweak } = useTweaks()

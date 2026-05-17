@@ -1,0 +1,103 @@
+import type { Meta, StoryObj } from "@storybook/react";
+import { useState } from "react";
+import { Button } from "../../components/primitives";
+import { CommandPalette } from "../../components/shell";
+import type { CommandItem } from "../../components/shell";
+
+/**
+ * Shell/CommandPalette — ⌘K overlay built on cmdk + Radix Dialog.
+ *
+ * Per cardinal rule 29 trigger is a framework Button.
+ */
+
+const meta: Meta<typeof CommandPalette> = {
+  title: "Shell/CommandPalette",
+  component: CommandPalette,
+  tags: ["autodocs"],
+  parameters: {
+    layout: "centered",
+    docs: {
+      description: {
+        component:
+          "Centered command palette. Caller supplies commands + " +
+          "handlers; this component owns chrome + cmdk filtering. " +
+          "⌘K binds globally while mounted.",
+      },
+    },
+  },
+};
+export default meta;
+type Story = StoryObj<typeof CommandPalette>;
+
+const COMMANDS: CommandItem[] = [
+  {
+    id: "go-dashboard",
+    label: "Go to dashboard",
+    group: "Navigate",
+    hint: "G D",
+    onSelect: () => undefined,
+  },
+  {
+    id: "go-projects",
+    label: "Go to projects",
+    group: "Navigate",
+    hint: "G P",
+    onSelect: () => undefined,
+  },
+  {
+    id: "go-issues",
+    label: "Go to issues",
+    group: "Navigate",
+    hint: "G I",
+    onSelect: () => undefined,
+  },
+  {
+    id: "new-issue",
+    label: "New issue",
+    group: "Create",
+    hint: "C I",
+    onSelect: () => undefined,
+  },
+  {
+    id: "new-plan",
+    label: "New plan",
+    group: "Create",
+    hint: "C P",
+    onSelect: () => undefined,
+  },
+  {
+    id: "toggle-theme",
+    label: "Toggle theme",
+    group: "Tweaks",
+    onSelect: () => undefined,
+  },
+];
+
+export const Default: Story = {
+  render: () => {
+    const [open, setOpen] = useState(true);
+    return (
+      <>
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          Open command palette
+        </Button>
+        <CommandPalette open={open} onOpenChange={setOpen} commands={COMMANDS} />
+      </>
+    );
+  },
+};
+
+export const Empty: Story = {
+  name: "Empty (commands=[])",
+  render: () => {
+    const [open, setOpen] = useState(true);
+    return (
+      <>
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          Open command palette
+        </Button>
+        <CommandPalette open={open} onOpenChange={setOpen} commands={[]} />
+      </>
+    );
+  },
+};

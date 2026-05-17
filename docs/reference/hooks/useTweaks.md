@@ -1,15 +1,23 @@
 ---
+title: "useTweaks"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 hook: useTweaks
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # useTweaks
 
-> Persistent display-settings state — density, theme, tenant, locale, sidebar-collapsed.
+> Persistent theme-axis state — theme, accent, density, font-size,
+> locale, sidebar-collapsed.
+
+Mirrors the four canonical theme axes specified in
+[01 — theme axes](../../../new-docs/01-theme-axes.md). Per cardinal
+rule 19 there is no `tenant` axis — accent is the single
+brand-color dimension.
 
 ## Signature
 
@@ -31,37 +39,37 @@ const { tweaks, setTweak, setTweaks } = useTweaks()
 
 ```ts
 type Tweaks = {
-  density: "compact" | "default" | "comfortable"
   theme: "light" | "dark"
-  tenant: string           // matches a [data-tenant] CSS selector
-  locale: GodxLocale       // "ja" | "en" | "vi" | "fil"
+  accent: string                          // one of the canonical six palettes OR a consumer-registered slug
+  density: "compact" | "default" | "comfortable"
+  fontSize: "sm" | "base" | "lg" | "xl"
+  locale: GodxLocale                      // "ja" | "en" | "vi" | "fil"
   sidebarCollapsed: boolean
 }
-```
-
-### Density type
-
-```ts
-type Density = "compact" | "default" | "comfortable"
-```
-
-### Theme type
-
-```ts
-type Theme = "light" | "dark"
 ```
 
 ## Behavior
 
 ### Persistence
 
-State is persisted to `localStorage` under the key `"godx.tweaks"` (changed from `"forge.tweaks"` in v3). On first load after a v2→v3 upgrade, the key is not found and state falls back to the defaults listed below.
+State is persisted to `localStorage` under per-axis keys:
+
+| Axis | Storage key |
+|---|---|
+| `theme` | `godx:theme` |
+| `accent` | `godx:accent` |
+| `density` | `godx:density` |
+| `fontSize` | `godx:font-size` |
+| `locale` | `godx:locale` |
+
+Defaults:
 
 | Key | Default |
 |---|---|
+| `theme` | `"light"` (or `prefers-color-scheme` if no stored value) |
+| `accent` | `"blue"` |
 | `density` | `"default"` |
-| `theme` | `"light"` |
-| `tenant` | `"godx"` |
+| `fontSize` | `"base"` |
 | `locale` | `"ja"` (or browser navigator language prefix) |
 | `sidebarCollapsed` | `false` |
 
@@ -72,15 +80,18 @@ Every `setTweak` call triggers a `useEffect` that writes the new value to the `<
 | Tweak key | HTML attribute |
 |---|---|
 | `theme` | `data-theme` |
+| `accent` | `data-accent` |
 | `density` | `data-density` |
-| `tenant` | `data-tenant` |
+| `fontSize` | `data-font-size` |
 | `locale` | `lang` |
 
-This happens synchronously in the effect — CSS custom properties scoped to `[data-tenant]`, `[data-theme]`, and `[data-density]` update on the same render tick.
+This happens synchronously in the effect — CSS custom properties
+scoped to `[data-theme]`, `[data-accent]`, `[data-density]`, and
+`html[data-font-size]` update on the same render tick.
 
 ### Locale forwarding
 
-When `locale` changes, `useTweaks` calls `i18n.changeLanguage(locale)` to update the shared i18next instance, and also writes to `localStorage["godx.locale"]`.
+When `locale` changes, `useTweaks` calls `i18n.changeLanguage(locale)` to update the shared i18next instance, and also writes to `localStorage["godx:locale"]`.
 
 ### SSR safety
 
@@ -111,6 +122,7 @@ function DensityToggle() {
 
 ## See also
 
+- [01 — theme axes](../../../new-docs/01-theme-axes.md) — binding rule for the axes this hook drives.
 - [TweaksPanel](../shell/TweaksPanel.md) — visual UI for all tweaks.
 - [How-to: Customise density](../../how-to/customise-density.md).
 - [Reference: i18n](../i18n.md) — how locale interacts with i18next.

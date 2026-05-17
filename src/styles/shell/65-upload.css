@@ -1,0 +1,319 @@
+/* ── Upload ─────────────────────────────────────────────────────────── */
+/* <Upload> / <ImageUpload> / <AvatarUploader> composites. Ant-shaped
+   API surface; visual layer tokenised through the standard palette. */
+
+.upload-root { display: flex; flex-direction: column; gap: var(--spacing-2); }
+
+.upload-trigger {
+  padding: var(--spacing-6) var(--spacing-8);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.upload-trigger:hover { border-color: var(--ring); }
+.upload-trigger:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.upload-trigger[data-dragover="true"] {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 4%, var(--surface-2));
+}
+.upload-trigger[data-disabled="true"] { opacity: .5; cursor: not-allowed; }
+
+.upload-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-3);
+}
+
+.upload-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  position: relative;
+  overflow: hidden;
+}
+.upload-list-item[data-status="error"] {
+  border-color: var(--destructive);
+  background: color-mix(in oklch, var(--destructive) 4%, var(--card));
+}
+
+.upload-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: color-mix(in oklch, var(--primary) 18%, transparent);
+}
+.upload-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  transition: width .15s linear;
+}
+
+.upload-list-picture-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-3);
+}
+
+.upload-picture-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  aspect-ratio: 1 / 1;
+}
+.upload-picture-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.upload-picture-card[data-status="error"] {
+  border-color: var(--destructive);
+}
+
+.upload-picture-card-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.upload-picture-card-trigger:hover { border-color: var(--ring); }
+.upload-picture-card-trigger:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.upload-picture-card-trigger[data-dragover="true"] {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 4%, var(--surface-2));
+}
+.upload-picture-card-trigger[data-disabled="true"] { opacity: .5; cursor: not-allowed; }
+
+.upload-picture-card-actions {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklch, oklch(20% 0.006 60) 40%, transparent);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  transition: opacity .15s ease;
+}
+.upload-picture-card:hover .upload-picture-card-actions,
+.upload-picture-card:focus-within .upload-picture-card-actions {
+  opacity: 1;
+}
+
+/* Cropper modal — used by <ImageUpload> when an aspect is set. */
+.upload-cropper-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in oklch, oklch(8% 0.006 60) 60%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+}
+.upload-cropper {
+  width: min(560px, 100%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.upload-cropper-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--surface-2);
+}
+
+/* ─── MediaUpload ──────────────────────────────────────────────────────
+   High-level wrapper over the platform's media-service. Reuses the
+   `.upload-progress*` classes above for in-flight progress; adds
+   `media-upload-*` classes for the framed preview / gallery / avatar
+   layouts. Token-only — no hardcoded literals. */
+
+.media-upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  position: relative;
+}
+.media-upload[data-disabled="true"] { opacity: .55; pointer-events: none; }
+
+.media-upload-frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+  width: 144px;
+  height: 144px;
+}
+.media-upload-frame:hover { border-color: var(--ring); }
+.media-upload-frame:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.media-upload-frame[data-dragover="true"] {
+  border-color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 4%, var(--surface-2));
+}
+.media-upload-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.media-upload-size-small .media-upload-frame { width: 96px; height: 96px; }
+.media-upload-size-large .media-upload-frame { width: 192px; height: 192px; }
+
+.media-upload-shape-circle .media-upload-frame { border-radius: var(--radius-full); }
+.media-upload-shape-card .media-upload-frame {
+  border-style: solid;
+  background: var(--card);
+}
+
+.media-upload-status {
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  text-align: center;
+  padding: var(--spacing-2);
+}
+.media-upload-status-title {
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  font-weight: var(--font-weight-medium);
+}
+.media-upload-status-id {
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono, monospace);
+  word-break: break-all;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.media-upload-status-line {
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+}
+.media-upload-error {
+  font-size: var(--text-xs);
+  color: var(--destructive);
+}
+
+.media-upload-remove {
+  position: absolute;
+  top: var(--spacing-1);
+  right: var(--spacing-1);
+  background: color-mix(in oklch, var(--background) 80%, transparent);
+}
+
+/* Multi gallery */
+.media-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: var(--spacing-2);
+}
+.media-upload-size-small .media-upload-grid {
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+}
+.media-upload-size-large .media-upload-grid {
+  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+}
+
+.media-upload-tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.media-upload-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.media-upload-tile[data-status="error"] {
+  border-color: var(--destructive);
+  background: color-mix(in oklch, var(--destructive) 4%, var(--surface-2));
+}
+.media-upload-tile-remove {
+  position: absolute;
+  top: var(--spacing-1);
+  right: var(--spacing-1);
+  background: color-mix(in oklch, var(--background) 80%, transparent);
+}
+.media-upload-tile-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  cursor: pointer;
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+  transition: border-color .15s ease, background .15s ease;
+  appearance: none;
+  font-family: inherit;
+}
+.media-upload-tile-add:hover { border-color: var(--ring); color: var(--foreground); }
+.media-upload-tile-add:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.media-upload-tile-add:disabled { opacity: .55; cursor: not-allowed; }
+
+.media-upload-spin { animation: media-upload-spin 1s linear infinite; }
+@keyframes media-upload-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Avatar variant */
+.media-upload-avatar {
+  align-items: flex-start;
+}
+.media-upload-avatar-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--muted-foreground);
+}
+.media-upload-avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+

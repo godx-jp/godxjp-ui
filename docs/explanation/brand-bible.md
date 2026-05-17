@@ -1,9 +1,12 @@
 ---
+title: "Brand bible"
 diataxis: explanation
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # Brand bible
@@ -66,10 +69,11 @@ Services that consume `@godxjp/ui`:
 - Import `@godxjp/ui/tailwind.css` once as the first stylesheet.
 - Never redefine `--primary`, `--foreground`, `--background`, `--card`, `--muted`,
   or any base token on `:root`.
-- May add tenant overrides under `[data-tenant="<slug>"]` in a service-local `theme.css`,
-  subject to the chroma cap.
-- Use `[data-tenant]` and `[data-theme]` attribute switches, never JavaScript-driven
-  style mutations.
+- May add per-deployment accent palettes under `[data-accent="<palette>"]` in a
+  service-local `theme.css`, subject to the chroma cap. Per cardinal rule 19 there
+  is NO `[data-tenant]` block — accent is the single brand-color axis.
+- Use the four `data-*` axes (`data-theme`, `data-accent`, `data-density`,
+  `data-font-size`) for any visual switching — never JavaScript-driven style mutations.
 
 Breaking the contract means the brand no longer governs the visual output. A PR
 that hard-codes `color: #0077c7` or `background: blue` in component code is rejected

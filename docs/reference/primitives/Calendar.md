@@ -1,10 +1,12 @@
 ---
+title: "Calendar"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Calendar
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Calendar

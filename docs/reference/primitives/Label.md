@@ -1,10 +1,12 @@
 ---
+title: "Label"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Label
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Label

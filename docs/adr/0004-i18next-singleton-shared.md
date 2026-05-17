@@ -6,8 +6,9 @@ adr: "0004"
 title: Ship a pre-configured i18next singleton instead of an i18n interface
 status: accepted
 date: 2026-01-14
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
 ---
 
 # ADR 0004 — Ship a pre-configured i18next singleton instead of an i18n interface
