@@ -64,6 +64,28 @@ const ALIGN_CLASS: Record<Align, string> = {
   stretch: "items-stretch",
 };
 
+/**
+ * Read a breakpoint min-width from the CSS token system (cardinal
+ * rule 22 — no hardcoded breakpoint literals in components). Falls
+ * back to Tailwind defaults if the token isn't set (e.g. when the
+ * Storybook preview hasn't loaded theme.css yet).
+ */
+function getBreakpointWidth(bp: Breakpoint): string {
+  const FALLBACK: Record<Breakpoint, string> = {
+    xs: "0px",
+    sm: "640px",
+    md: "768px",
+    lg: "1024px",
+    xl: "1280px",
+    xxl: "1536px",
+  };
+  if (typeof window === "undefined") return FALLBACK[bp];
+  const v = getComputedStyle(document.documentElement)
+    .getPropertyValue(`--breakpoint-${bp}`)
+    .trim();
+  return v || FALLBACK[bp];
+}
+
 function normalizeGutter(g: GutterValue | undefined): [number, number] {
   if (g === undefined) return [0, 0];
   if (typeof g === "number") return [g, 0];
@@ -72,16 +94,8 @@ function normalizeGutter(g: GutterValue | undefined): [number, number] {
   // window.matchMedia. Server / first-paint falls back to xs.
   if (typeof window === "undefined") return [g.xs ?? 0, 0];
   const order: Breakpoint[] = ["xxl", "xl", "lg", "md", "sm", "xs"];
-  const widths: Record<Breakpoint, string> = {
-    xs: "0px",
-    sm: "640px",
-    md: "768px",
-    lg: "1024px",
-    xl: "1280px",
-    xxl: "1536px",
-  };
   for (const bp of order) {
-    if (g[bp] !== undefined && window.matchMedia(`(min-width: ${widths[bp]})`).matches) {
+    if (g[bp] !== undefined && window.matchMedia(`(min-width: ${getBreakpointWidth(bp)})`).matches) {
       return [g[bp] as number, 0];
     }
   }

@@ -1,6 +1,6 @@
 # @godxjp/ui — cardinal rules
 
-Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 23
+Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 24
 cardinal rules below are non-negotiable; anything older that
 contradicts them is wrong.
 
@@ -445,7 +445,96 @@ framework concept; inline duplication is rejected at review.
     or duplicate-primitive PRs. The framework's coherence is
     impossible to recover incrementally once it fractures.
 
-## Hard rules — code review rejects on sight
+24. **Mobile-first design — always.** Every primitive / composite /
+    shell / story is designed FIRST for the smallest viewport
+    (`xs` — phone portrait ≥0px) and progressively enhanced for
+    wider screens via the `sm` / `md` / `lg` / `xl` / `xxl`
+    breakpoint tokens (cardinal rule 22 + new-docs/03 §I-2).
+
+    Token vocabulary (single source-of-truth in `theme.css`):
+
+    ```css
+    --breakpoint-xs:  0;       /* phone portrait — mobile-first base */
+    --breakpoint-sm:  640px;   /* phone landscape / tablet portrait */
+    --breakpoint-md:  768px;   /* tablet landscape */
+    --breakpoint-lg:  1024px;  /* laptop */
+    --breakpoint-xl:  1280px;  /* desktop */
+    --breakpoint-xxl: 1536px;  /* wide desktop */
+    ```
+
+    ### §A — Mobile-first defaults
+
+    The DEFAULT (no media query, no breakpoint variant) targets
+    `xs` (phone portrait). Every `<= xs` style is written as
+    base CSS / Tailwind utility without a `<bp>:` prefix.
+    Larger-viewport styles are progressive enhancements via
+    `sm:` / `md:` / `lg:` / `xl:` / `2xl:` utility variants.
+
+    ```tsx
+    /* CORRECT — phone-first, then tablet+ override */
+    <div className="grid grid-cols-1 md:grid-cols-3">
+
+    /* WRONG — desktop-first, then narrow override */
+    <div className="grid grid-cols-3 sm:grid-cols-1">
+    ```
+
+    ### §B — Touch targets
+
+    On mobile every interactive primitive MUST meet the WCAG 2.1 AA
+    touch-target floor: **44 × 44 px** (`--touch-target-min`).
+    Cardinal rule 21 covers density-axis flow; `--touch-target-min`
+    does NOT scale with density.
+
+    ### §C — Responsive primitives reach for tokens
+
+    Components reading viewport state JS-side go through:
+
+    ```ts
+    import { useBreakpoint, matchBreakpoint } from "@godxjp/ui/hooks"
+
+    const bp = useBreakpoint()
+    if (bp === "xs" || bp === "sm") return <MobileShell />
+    ```
+
+    NEVER `window.innerWidth >= 768`. NEVER hardcoded media
+    queries with px literals in component CSS. Tailwind utility
+    variants (`md:`, `lg:`, …) for compile-time; `useBreakpoint`
+    for runtime.
+
+    ### §D — Story coverage
+
+    Every Storybook story renders FIRST at narrow viewport
+    (Storybook default for `iframe.html` is ~1280; resize the
+    Storybook canvas via the Viewports toolbar to `xs` /
+    `mobile1` / etc. and confirm the story still reads).
+    Stories that depend on wide-viewport layout (multi-col grids)
+    add a docs-block note explaining the breakpoint break.
+
+    ### §E — Mobile-first patterns
+
+    | Surface | Mobile (`xs/sm`) | Tablet+ (`md`+) |
+    |---|---|---|
+    | Page shell | Sidebar collapses to drawer; topbar full-width | Sidebar pinned `--sidebar-width: 16rem`; topbar inside |
+    | Card grid | `grid-cols-1` | `md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` |
+    | Filter row | Stacked or sheet | Inline row |
+    | Tables | Card-list fallback (1 card per row) | Real `<table>` |
+    | Dialogs | Bottom-sheet (`bottom: 0; max-height: 90vh`) | Centred modal |
+    | Forms | Single column; full-width inputs | Two-column on `md+` |
+
+    ### Anti-patterns (rejected at review)
+
+    - `window.innerWidth >= 768` — hardcoded literal. Use
+      `useBreakpoint` / `matchBreakpoint`.
+    - `@media (min-width: 768px)` in a primitive's CSS without
+      pinning to a token + comment citing it.
+    - `grid-cols-3` at base (no breakpoint prefix) when the
+      primitive is consumed at viewport < 768px. Use
+      `grid-cols-1 md:grid-cols-3`.
+    - Primitive heights that violate `--touch-target-min: 44px`
+      on `xs` / `sm` — even when density="compact", the touch
+      target floor wins.
+    - Stories that only render at desktop width without a docs
+      note explaining the breakpoint gate.
 
 - Component diff without paired story diff (rule 1).
 - Raw color utility (`bg-blue-500`) in a primitive (rule 2).

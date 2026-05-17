@@ -395,6 +395,92 @@ Conventions:
 --container-max-width:     1280px
 ```
 
+## §I-2 — Responsive breakpoints
+
+Mobile-first min-width thresholds. Values match Tailwind v4
+defaults so utility variants (`sm:`, `md:`, `lg:`, `xl:`, `2xl:`)
+keep working with existing class names.
+
+```css
+--breakpoint-xs:  0;       /*  0px  — phone portrait (mobile-first base) */
+--breakpoint-sm:  640px;   /* 40em  — phone landscape / tablet portrait */
+--breakpoint-md:  768px;   /* 48em  — tablet landscape */
+--breakpoint-lg:  1024px;  /* 64em  — laptop */
+--breakpoint-xl:  1280px;  /* 80em  — desktop */
+--breakpoint-xxl: 1536px;  /* 96em  — wide desktop / 4K-leaning */
+```
+
+The Tailwind `@theme inline` block re-exports the canonical name
+shapes (`sm` / `md` / `lg` / `xl` / `2xl`) so the utility variants
+resolve via tokens. Tailwind names `2xl` ↔ our `xxl` because
+Tailwind v4 doesn't recognize `xxl`; both spellings point at the
+same value.
+
+### Consuming breakpoints from JavaScript
+
+**Never hardcode breakpoint pixel values in a component.** Per
+cardinal rule 22 (no hardcoded literals) read them at runtime
+from the CSS token system:
+
+```ts
+import { useBreakpoint, matchBreakpoint } from "@godxjp/ui/hooks"
+
+function Shell() {
+  const bp = useBreakpoint()
+  if (bp === "xs" || bp === "sm") return <MobileShell />
+  return <DesktopShell />
+}
+
+// Or: render only on >= md
+function Aside() {
+  const bp = useBreakpoint()
+  return matchBreakpoint(bp, "md") ? <SideRail /> : null
+}
+```
+
+`useBreakpoint` subscribes to `window.matchMedia` on every
+breakpoint and re-renders when the viewport crosses one. The
+returned value is the WIDEST currently-matching name (mobile-first
+order). `matchBreakpoint(current, target)` returns `true` when
+`current` is at-or-above `target` in the mobile-first ordering.
+
+### Consuming breakpoints from CSS
+
+Use Tailwind utility variants (resolved via `@theme inline`):
+
+```html
+<div class="block md:grid lg:flex">…</div>
+```
+
+Or raw `@media` with the tokens via `var()`:
+
+```css
+@media (min-width: 768px) {
+  .my-grid { grid-template-columns: repeat(3, 1fr); }
+}
+```
+
+`var()` does not work inside `@media (min-width: var(--…))`
+(spec disallows). For raw media queries reference the literal
+matching the token value or use Tailwind utilities.
+
+### Container queries
+
+Tailwind v4 ships `@container` queries. Use the same breakpoint
+names via `@<bp>:`. The framework does not (yet) ship custom
+container tokens; default Tailwind container sizes apply.
+
+### Forbidden patterns
+
+- `if (window.innerWidth >= 768) { … }` — hardcoded 768.
+  Use `matchBreakpoint(useBreakpoint(), "md")`.
+- `@media (min-width: 768px) { … }` in a primitive's CSS without
+  citing the token. Either cite the token in a comment or use
+  Tailwind utility variants.
+- Adding `--bp-tablet`, `--bp-mobile` aliases. The vocabulary is
+  `xs / sm / md / lg / xl / xxl` framework-wide (cardinal rule
+  23 §B).
+
 ## §J — Component-scope tokens
 
 When a component needs a value that doesn't map cleanly to the

@@ -31,6 +31,11 @@
  *   - new-docs/12-frontend-architecture.md (umbrella binding rule)
  */
 
+/* Google Fonts must be the first @import in the bundled output —
+ * CSS spec requires @import to precede non-@import rules. Hoisted
+ * from theme.css so the bundler emits it before tailwindcss
+ * generates rules. */
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "../styles/index.css";
 
@@ -74,6 +79,23 @@
   --font-size-page-title: var(--density-page-title);
   --font-sans: var(--font-sans-jp);
   --radius-lg: var(--radius);
+
+  /* Tailwind v4 first-class breakpoints — `sm:`, `md:`, `lg:`,
+   * `xl:`, `2xl:` utility variants resolve to these literals.
+   *
+   * MUST be literal pixel strings (NOT `var(--breakpoint-md)`).
+   * Tailwind v4 emits `@media (width >= …)` queries from these,
+   * and CSS media queries do NOT yet support `var()` (Lightning
+   * CSS rejects the build). The literals here mirror the
+   * `--breakpoint-*` tokens in `theme.css :root` — single
+   * source-of-truth maintenance: when one changes, change the
+   * other. Cardinal rule 22 honest variance: documented here.
+   */
+  --breakpoint-sm:  640px;
+  --breakpoint-md:  768px;
+  --breakpoint-lg:  1024px;
+  --breakpoint-xl:  1280px;
+  --breakpoint-2xl: 1536px;
 }
 
 @layer base {
