@@ -90,7 +90,12 @@ export type {
 export { Label } from "./Label"
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "./Tabs"
-export type { TabsProps, TabsVariant } from "./Tabs"
+export type {
+  TabsProps,
+  TabsVariant,
+  TabsOrientation,
+  TabsPlacement,
+} from "./Tabs"
 
 export { Avatar } from "./Avatar"
 export type { AvatarProps, AvatarShape, AvatarSize, AvatarSizeToken } from "./Avatar"
@@ -246,6 +251,38 @@ export type { SkeletonProps } from "./Skeleton"
 
 export { Breadcrumb, BreadcrumbItem, BreadcrumbSep } from "./Breadcrumb"
 export type { BreadcrumbProps, BreadcrumbItemProps } from "./Breadcrumb"
+
+export { Anchor, AnchorLink } from "./Anchor"
+export type {
+  AnchorProps,
+  AnchorLinkProps,
+  AnchorItem,
+  AnchorOrientation,
+} from "./Anchor"
+
+export { Menu, MenuItem, MenuGroup, MenuDivider } from "./Menu"
+export type {
+  MenuProps,
+  MenuItemProps,
+  MenuGroupProps,
+  MenuOrientation,
+} from "./Menu"
+
+export { Pagination } from "./Pagination"
+export type {
+  PaginationProps,
+  PaginationSize,
+  PaginationVariant,
+  PaginationJustify,
+} from "./Pagination"
+
+export { Steps, Step } from "./Steps"
+export type {
+  StepsProps,
+  StepProps,
+  StepsOrientation,
+  StepColor,
+} from "./Steps"
 
 // ── Calendar / scheduling primitives ─────────────────────────────
 // `MiniMonth`, `EventBlock`, `TimeGrid` family, `AvailabilityRow`, etc.
