@@ -3,6 +3,147 @@
 All notable changes to `@godxjp/ui`. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Storybook test gate** — `@storybook/addon-vitest` wired with
+  Playwright (browser-mode Chromium) so every `play()` runs as a
+  Vitest test. `pnpm test:stories` → 419 tests / 89 files / ~7s.
+  Interactive primitives now ship with regression-pinned focus, click,
+  hover, type, open/close flows (PR #18 + extended in #19, #20).
+- **Code panel default on Story view** — `@storybook/addon-docs`
+  `parameters.docs.codePanel: true` so consumers see runnable JSX
+  beside Controls / Actions / Interactions without click-through.
+- **Actions panel auto-spy** — `parameters.actions.argTypesRegex:
+  "^on[A-Z].*"` logs every `on*` callback invocation globally.
+- **Cardinal rule 30** — story `render` must return JSX directly. No
+  `<XyzDemo />` wrapper components, no parameterised helpers. Storybook
+  source view stays copy-pasteable.
+- **Parity scripts + pre-commit gate** —
+  `scripts/check-stories-parity.mjs` (rule 17) +
+  `scripts/check-docs-parity.mjs` (rule 18). Husky pre-commit runs
+  `lint:tokens` + both parity checks + `sync:skills` + `type-check`
+  in ~5s; CI re-runs them on push.
+- **DatePicker stories** — `Placeholder`, `Granularity_DateTime`
+  (hour / minute via `granularity` + `hourCycle`), `MinMaxConstrained`,
+  `Format_Locales` (ja-JP / en-US / de-DE segment order via
+  `I18nProvider`).
+- **Select + Combobox `options` prop** — Ant / MUI / Mantine canonical
+  data-driven API. `<Select options={[{value,label}]} />` or
+  `<Combobox options={…} triggerLabel placeholder emptyLabel />`.
+  Children API remains for advanced layouts (groups / dividers / custom
+  item rendering).
+- **Combobox `WithSelection` story** — controlled state + check
+  indicator + role meta pattern (the old verbose Default).
+- **40 reference doc stubs** — `docs/reference/primitives/<Name>.md`
+  draft scaffold for the previously undocumented primitives (Flex,
+  Form, Transfer, Field, LocaleTabs, Checklist, Spinner, IconButton,
+  PageHeader, SegmentedControl, Statistic, Empty, Tag, Alert, Result,
+  Typography, Descriptions, Radio, Slider, Watermark, Popconfirm,
+  Anchor, Menu, Pagination, Steps, Progress, DatePicker,
+  AutoComplete, Cascader, Tree, ColorPicker, Rate, Carousel, Collapse,
+  List, Image, QRCode, Tooltip, Timeline, Tour). `check:docs-parity`
+  now exits clean at 63/63.
+- **Combobox vs Select decision table** in Select.md + Combobox.md —
+  fixed list / search / free-text / hierarchical / tree.
+
+### Fixed
+
+- **AutoComplete focus closing the dropdown** —
+  `onFocusOutside={preventDefault}` on `ComboboxContent` so opening
+  on focus survives the focus-leaves-anchor lifecycle.
+- **AutoComplete label vs value** — input shows the selected option's
+  `label`; `onValueChange` reports the option's `value` (Ant / shadcn
+  Combobox convention).
+- **Combobox cmdk Command `value` + `defaultValue`** — conditional
+  spread so the inner Primitive.input never receives both
+  (controlled / uncontrolled warning silenced).
+- **`<List>` and `<Menu>` nested `<li>`** — `List` renderItem no
+  longer wraps in an extra `<li>`; `MenuGroup` switched from
+  `<li role="none">` to `<div role="group">` (ARIA-compliant).
+- **`Collapse` Tailwind utility collision** — root class renamed
+  `.collapse` → `.collapse-root` so Tailwind v4's
+  `.collapse { visibility: collapse }` utility no longer hides the
+  subtree.
+- **Carousel vertical** — `height: 100%` cascades through `.carousel`
+  / `-viewport` / `-track`, clipping to one slide at a time.
+- **Card banner double-border + radius** (B3 / C1) — `.ph.striped`
+  resets the inherited `.ph` chrome (border / radius / margin-bottom).
+- **Card B3 stats footer** — uses `.card-footer-block` primitive class
+  instead of inline `borderTop` + manual padding.
+- **Card H8 tabs underline rounding** — `<button>` instead of
+  `<Button>` for tab elements + `border-radius: 0` explicit on
+  `.card-header-tabs .tab` so an accidental `<Button>` doesn't
+  contaminate the underline.
+- **Card H13 / H14 / H17 stories** — `<CardBody block>` /
+  `<CardFooter block>` sub-component pattern instead of raw
+  `<div className="card-body">` (rule 29).
+- **Card H17 sticky-shadow scroll** — `max-height: 140 + overflow-y:
+  auto` instead of `height: 80 + overflow: hidden` so the story
+  actually demonstrates scrolling.
+- **Descriptions bordered title overflow** — gap-as-border trick (1px
+  body bg) so the outer frame wraps the body only, title sits above.
+- **Checkbox + Radio sizing** — 1rem (16px @ base) matching
+  shadcn / Ant / Tailwind canon, not the density-element scale
+  intended for full-height controls.
+- **Checkbox glyph stroke** — `strokeWidth=3` +
+  `absoluteStrokeWidth` so the check / minus glyphs read at 12px.
+- **Image fallback visible** — fills wrapper 100% with secondary bg
+  + border instead of 64×64 inline-flex chip against near-white body.
+- **PageHeader `padding` prop** — vocabulary aligned with Card per
+  rule 23 §B (`tight` / `default` / `cozy` / `none`). Stacked variant
+  releases the fixed `--header-height` so breadcrumb + title get
+  vertical room.
+- **Slider / InputSearch / Textarea controlled-uncontrolled props** —
+  conditional spread so the inner `<input>` never receives both
+  `value` and `defaultValue`.
+- **TweaksPanel Dialog a11y** — `aria-describedby={undefined}` on
+  `Dialog.Content` since the panel doesn't use `Dialog.Description`.
+- **Drawer Left story** — added `<DrawerDescription>` for a11y.
+- **Sidebar collapsed text overflow** — CSS selectors broadened from
+  `.app-root[data-collapsed]` to `[data-collapsed]`, and Sidebar
+  wraps children in `<div data-collapsed style="display: contents">`
+  so the collapsed-state rules apply in both AppShell and standalone
+  contexts.
+- **Storybook Docs source chip rendering** — `preview.css` forces
+  `.prismjs .token { display: inline; border: 0 }` to defeat
+  Storybook 10's per-token-pill style; consumers now see plain
+  syntax-highlighted JSX.
+- **Storybook Docs canvas height** — `.sb-stage` no longer
+  `min-height: 100vh` so each story preview shrinks to content
+  instead of 707px frames.
+- **Build warnings** — removed broken `banner: { js: '"use client"' }`
+  from `tsup.config.ts` (never reached output, only produced 7×
+  "module-level directive ignored" warnings per build). Posture now
+  matches MUI / Radix / shadcn (consumers mark App Router boundary
+  themselves).
+
+### Changed
+
+- **Card story display names** — stripped section-code prefixes
+  (`A1·`, `B3·`, `H13·`, etc.) from 50 `name:` fields. URL slug
+  (const name) still carries the code for dev reference.
+- **Story render demos inlined** — sweep of 14 stories in
+  `data-entry/` that wrapped their body in `<XyzDemo />` (DefaultDemo
+  / ControlledDemo / ValidatedDemo / PrefectureDemo / etc.) — bodies
+  now inline in `render: function StoryName() {…}` so Storybook's
+  dynamic source shows real JSX. `<ExampleForm disabled />` exemption
+  also removed.
+- **`Card.stories.tsx` raw card-body / card-footer divs** —
+  ~27 occurrences replaced with `<CardBody block>` / `<CardFooter
+  block>` React sub-components per rule 29.
+- **`docs.source.type`** — `"dynamic"` (was `"code"`) so the source
+  view renders the JSX, not the wrapping story object.
+- **`docs.canvas.sourceState`** — `"hidden"` (was attempted `"shown"`)
+  so the Docs view doesn't auto-expand every story's source
+  (bloated 5-story pages to thousands of px).
+
+### Removed
+
+- **`docs/reference/primitives` advisory drift** — 40 stubs landed,
+  parity now strict at 63/63.
+
 ## [3.0.0] — 2026-05-16
 
 `@godxjp/ui` v3 is a clean-break major that fulfils the **zero-config professional
