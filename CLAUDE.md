@@ -1114,6 +1114,90 @@ framework concept; inline duplication is rejected at review.
     v3.0; the v3.1 audit flagged it as a rule 31 violation and merged
     it back into `Tooltip` via a `content` prop + `placement` prop.
 
+32. **No redundant props — if an existing prop / item field / variant
+    already covers the use case, do not add a new one.** Absolute.
+
+    A primitive's prop surface is its long-term contract. Every prop
+    landed becomes a thing reviewers must understand, consumers must
+    learn, and the framework must keep honouring. Coining a top-level
+    prop for what `items[i].<field>` already expresses, or coining a
+    variant flag for what a property on the existing data structure
+    already conveys, fractures the API and inflates the cognitive
+    cost of every primitive that follows.
+
+    Before adding ANY new prop / item field / variant:
+
+    1. Grep the primitive's existing surface (props + item interface
+       + variant enums) for a field that already carries the concept.
+    2. Grep the rule 23 §B shared vocabulary table for a name that
+       carries the concept across primitives.
+    3. If either exists, USE IT. Do not coin a synonym.
+
+    ### Forbidden patterns
+
+    - **Top-level prop that re-expresses an item field.** Timeline's
+      original `pending="次の同期を待機中…"` top-level prop was the
+      canonical example: it injected a trailing item with a pulsing
+      marker, which is EXACTLY what `items` + per-item
+      `animate: true` already expresses. The fix: remove the
+      `pending` prop; consumers append a regular item with
+      `animate: true`. Same for `dot` overrides at the Timeline
+      level when per-item `color` + `current` already cover it.
+    - **Singular boolean that re-expresses a value enum.** A `primary`
+      boolean on Button when `variant="primary"` exists. A `success`
+      boolean on Alert when `color="success"` exists.
+    - **Top-level flag that re-expresses inheritable axis state.** A
+      `dark` prop on a primitive when `[data-theme="dark"]` is the
+      framework-wide axis. A `compact` prop when
+      `[data-density="compact"]` covers it.
+    - **Cross-primitive synonym for an established prop name.** A
+      `tabPosition` prop on Tabs when `placement` is the locked
+      vocabulary (rule 23 §B).
+    - **Two props for one decision.** A `pending` prop AND a
+      `pendingDot` prop AND a `pendingText` prop, when one
+      `items[i]: { animate: true, title: "…" }` covers all three.
+
+    ### What IS legitimately new
+
+    - A prop that exposes behaviour the existing surface cannot
+      express. E.g. Timeline's `connector?: boolean` — controls a
+      VARIANT-LEVEL toggle (whether the vertical line between
+      markers renders), which no per-item field captures. The
+      connector is a property of the rail itself, not a property of
+      any single item.
+    - A prop that exposes an entirely new concept (cardinal rule 23
+      §A separation of concerns).
+    - A prop that the design canon (cardinal rule 22) shows as a
+      first-class variant — but ONLY if grep confirms no existing
+      field covers it.
+
+    ### Verification at review
+
+    Reviewers check:
+
+    1. Every new prop in the PR has a one-line justification: "covers
+       <concept>; no existing prop / item field carries this."
+    2. Where a new top-level prop has been coined, the PR description
+       proves no items-level field could express the same. Snapshot
+       the existing item interface in the PR description to make the
+       check trivial.
+    3. Where a new boolean prop has been coined, confirm a value enum
+       isn't the honest shape (rule 23 §A).
+    4. Where a new prop name has been coined, grep the existing
+       vocabulary (rule 23 §B) for a synonym. Reject vocabulary
+       drift.
+
+    Rejection is automatic for redundant-prop PRs. The framework's
+    surface is held together by absolute self-discipline; every
+    surplus prop is a fracture that can't be closed once shipped.
+
+    Historical case: Timeline v3.x shipped a top-level `pending`
+    prop that injected a trailing animated item. The v3.y audit
+    removed it — `items={[…, { animate: true, title }]}` is the
+    same shape, expressed in the existing vocabulary, with zero
+    prop-surface inflation. Cardinal rule 32 was lifted directly
+    from this incident.
+
 ## Verification
 
 Full pre-commit gate is in [`./AGENTS.md`](./AGENTS.md) §Verification.

@@ -116,15 +116,19 @@ export function Sidebar({
                     key={item.id}
                     className={cn("sb-nav-item")}
                     data-active={isActive}
+                    aria-label={collapsed ? item.label : undefined}
                     aria-current={isActive ? "page" : undefined}
                     aria-disabled={item.disabled}
+                    title={collapsed ? item.label : undefined}
                     onClick={() => !item.disabled && onSelect(item.id)}
                   >
                     <span className="sb-icon">
                       <Icon size={16} />
                     </span>
-                    <span className="sb-label">{item.label}</span>
-                    {item.badge !== undefined && item.badge !== "" && (
+                    {!collapsed && (
+                      <span className="sb-label">{item.label}</span>
+                    )}
+                    {!collapsed && item.badge !== undefined && item.badge !== "" && (
                       <span className="sb-badge">{item.badge}</span>
                     )}
                   </button>
