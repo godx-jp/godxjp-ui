@@ -2,10 +2,9 @@
 title: "ColorPicker"
 description: "Color-selection trigger + popover panel — swatch + hex label, native color canvas, hex text input, and preset swatch grid."
 diataxis: reference
-audience:
-  - developer
-status: draft
-last-updated: 2026-05-17
+audience: [developer]
+status: stable
+last-updated: 2026-05-18
 lang: en
 library: "@godxjp/ui"
 library_version: 3.0.0
@@ -13,39 +12,68 @@ library_version: 3.0.0
 
 # ColorPicker
 
-Decorative color-selection trigger + popover panel. The trigger is a `.colorpicker-trigger` button (swatch + hex label); the popover hosts a native `<input type="color">` canvas plus a hex text input + preset swatch grid. Vocabulary per cardinal rule 23 §B: `value` / `defaultValue` / `onValueChange` (Radix-style state — hex string with optional `#rrggbbaa` when `showAlpha` is true); `size` matches Input; `open` / `defaultOpen` / `onOpenChange` for the popover.
+> Decorative color-selection trigger + popover panel — swatch + hex label, native color canvas, hex text input, optional preset grid, optional alpha slider.
 
-## Import
+## Usage
 
-```ts
-import { ColorPicker } from "@godxjp/ui/components/primitives"
+```tsx
+import { ColorPicker } from "@godxjp/ui"
+
+<ColorPicker defaultValue="#3b82f6" />
 ```
 
 ## Props
 
+### `ColorPicker` (root)
+
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `value` | `string` | — | Controlled hex (`#rrggbb` or `#rrggbbaa`) |
-| `defaultValue` | `string` | — | Uncontrolled initial hex |
-| `onValueChange` | `(hex: string) => void` | — | Called when the colour changes |
-| `presets` | `string[]` | — | Preset swatches shown in the popover |
-| `showAlpha` | `boolean` | `false` | Toggle alpha slider (value includes `#rrggbbaa`) |
-| `size` | `"small" \| "default" \| "large"` | `"default"` | Dimensional scale |
+| `value` | `string` | — | Controlled hex value (`#rrggbb`, or `#rrggbbaa` when `showAlpha`) |
+| `defaultValue` | `string` | `"#3b82f6"` | Uncontrolled initial hex |
+| `onValueChange` | `(hex: string) => void` | — | Fires on every commit (canvas / hex input / preset) |
+| `presets` | `string[]` | — | Preset hex strings rendered as swatch grid |
+| `showAlpha` | `boolean` | `false` | Show alpha range slider; value carries `aa` suffix |
+| `size` | `"small" \| "default" \| "large"` | `"default"` | Trigger dimensional scale |
 | `disabled` | `boolean` | `false` | Disable interaction |
-| `open` / `defaultOpen` / `onOpenChange` | Radix overlay state | — | Controlled / uncontrolled popover state |
+| `open` | `boolean` | — | Controlled popover state |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled initial popover state |
+| `onOpenChange` | `(open: boolean) => void` | — | Popover open / close callback |
+| `className` | `string` | — | Merged onto the `.colorpicker-trigger` button |
 
-## Example
+## Accessibility
+
+- Trigger renders as `<button aria-label="Choose color">` carrying `aria-expanded` from the underlying Popover.
+- The native `<input type="color">` canvas exposes browser-native keyboard / mouse interaction; the hex text input is a separate `<input type="text" aria-label="Hex value">`.
+- Preset swatches render inside `<div role="listbox" aria-label="Preset colors">`; each swatch is `role="option"` with `aria-selected` when its hex matches the current value.
+- Alpha slider, when shown, is a native `<input type="range" aria-label="Alpha channel">`.
+- WCAG 2.1 SC 1.4.1 (Use of Color): the hex value is always exposed as text alongside the swatch so users not relying on color can read it.
+
+## Composition
 
 ```tsx
-<ColorPicker defaultValue="#3b82f6" presets={["#ef4444", "#10b981", "#f59e0b"]} />
+const BRAND_PRESETS = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#06b6d4",
+  "#64748b",
+]
+
+// With brand presets
+<ColorPicker defaultValue="#3b82f6" presets={BRAND_PRESETS} />
+
+// With alpha channel
+<ColorPicker defaultValue="#3b82f6ff" showAlpha />
+
+// Disabled
+<ColorPicker defaultValue="#64748b" disabled />
 ```
 
-## Related
+## See also
 
-- Story catalogue: [`ColorPicker` stories](../../../src/stories/data-entry/ColorPicker.stories.tsx)
+- [Input](./Input.md) — paired text input when a free-form hex needs validation.
+- [Popover](./Popover.md) — underlying overlay primitive.
 - Source: [`src/components/data-entry/ColorPicker.tsx`](../../../src/components/data-entry/ColorPicker.tsx)
-- Cardinal rule 23 §B prop vocabulary: [`CLAUDE.md` §23.B](../../../CLAUDE.md#23)
-
-## Status
-
-`draft` — auto-generated stub. Detailed prop docs / accessibility notes / design rationale still to be filled in.

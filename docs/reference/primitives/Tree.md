@@ -1,11 +1,10 @@
 ---
 title: "Tree"
-description: "Standalone hierarchical view (no popover) — sibling of TreeSelect, useful for org charts, file explorers, and category navigators."
+description: "Standalone hierarchical view — recursive expand / collapse, optional checkboxes, optional connector lines."
 diataxis: reference
-audience:
-  - developer
-status: draft
-last-updated: 2026-05-17
+audience: [developer]
+status: stable
+last-updated: 2026-05-18
 lang: en
 library: "@godxjp/ui"
 library_version: 3.0.0
@@ -13,48 +12,123 @@ library_version: 3.0.0
 
 # Tree
 
-Standalone hierarchical view. Sibling of `<TreeSelect>` — same recursive shape, but renders inline (not in a dropdown). Useful for org charts, file explorers, and category navigators where the tree IS the surface. Vocabulary per cardinal rule 23 §B: `value` / `defaultValue` / `onValueChange` (single = `string`, multiple = `string[]`); `multiple` boolean (never `mode="multiple"`); `expandedKeys` / `defaultExpandedKeys` / `onExpandedKeysChange`.
+> Standalone hierarchical view (no popover) — sibling of [TreeSelect](./TreeSelect.md). Renders inline; useful for org charts, file explorers, and category navigators where the tree IS the surface.
 
-## Import
+## When to use
 
-```ts
-import { Tree } from "@godxjp/ui/components/primitives"
+| Need | Use |
+|---|---|
+| Tree inline (org chart, file explorer) | **Tree** |
+| Tree inside a popover trigger | [TreeSelect](./TreeSelect.md) |
+| Fixed-depth nested columns | [Cascader](./Cascader.md) |
+
+## Usage
+
+```tsx
+import { Tree, type TreeNode } from "@godxjp/ui"
+
+const ORG_TREE: TreeNode[] = [
+  {
+    key: "company",
+    title: "ファミギア株式会社",
+    children: [
+      {
+        key: "eng",
+        title: "エンジニアリング本部",
+        children: [
+          { key: "fe", title: "フロントエンドチーム" },
+          { key: "be", title: "バックエンドチーム" },
+        ],
+      },
+    ],
+  },
+]
+
+<Tree
+  treeData={ORG_TREE}
+  defaultExpandedKeys={["company", "eng"]}
+  defaultValue="fe"
+/>
 ```
 
 ## Props
 
+### `Tree` (root)
+
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `treeData *` | `TreeNode[]` | — | Recursive tree (`{ key, title, icon?, disabled?, children? }`) |
-| `value` | `string \| string[]` | — | Selected key(s) |
-| `defaultValue` | `string \| string[]` | — | Uncontrolled initial selection |
-| `onValueChange` | `(value: string \| string[]) => void` | — | Called when selection changes |
-| `multiple` | `boolean` | `false` | Allow multi-select |
-| `defaultExpandedKeys` | `string[]` | — | Initially-expanded node keys |
-| `expandedKeys` / `onExpandedKeysChange` | controlled expansion | — | Controlled expansion state |
-| `checkable` | `boolean` | `false` | Render checkboxes (implies `multiple`) |
-| `showLine` | `boolean` | `false` | Render dashed indent guides |
+| `treeData` | `TreeNode[]` | required | Recursive tree of nodes |
+| `value` | `string \| string[]` | — | Controlled selection — string for single, array for multiple |
+| `defaultValue` | `string \| string[]` | `[]` | Uncontrolled initial selection |
+| `onValueChange` | `(value: string \| string[]) => void` | — | Fires on selection change |
+| `multiple` | `boolean` | `false` | Multi-select mode |
+| `defaultExpandedKeys` | `string[]` | `[]` | Initially-expanded node keys |
+| `expandedKeys` | `string[]` | — | Controlled expansion state |
+| `onExpandedKeysChange` | `(keys: string[]) => void` | — | Fires when expand / collapse toggles |
+| `checkable` | `boolean` | `false` | Render `<Checkbox>` per row — implies `multiple` |
+| `showLine` | `boolean` | `false` | Render dashed connector lines between depths |
+| `className` | `string` | — | Merged onto the root `<ul class="tree">` |
 
-## Example
+### `TreeNode`
+
+| Field | Type | Description |
+|---|---|---|
+| `key` | `string` | Unique node identifier |
+| `title` | `ReactNode` | Display content for the row |
+| `icon` | `ReactNode` | Optional leading icon |
+| `disabled` | `boolean` | Non-selectable, non-expandable when `true` |
+| `selectable` | `boolean` | `false` to disable selection but keep expansion |
+| `children` | `TreeNode[]` | Recursive children |
+
+## Accessibility
+
+- Root renders as `<ul role="tree">` with each row as `<li role="treeitem">`. Selection state mirrors to `aria-selected`; expansion state mirrors to `aria-expanded`; per-node disable mirrors to `aria-disabled`.
+- Each toggle button carries `aria-label="Expand"` / `"Collapse"` so screen readers announce the action.
+- When `checkable` is set, the underlying [`Checkbox`](./Checkbox.md) provides keyboard activation; clicking the row body also toggles selection.
+- WCAG 2.1 SC 4.1.2 (Name, Role, Value): `aria-selected` and `aria-expanded` make the row state programmatically determinable.
+
+## Composition
 
 ```tsx
+// File-explorer pattern with connector lines + per-row icons
+const FILE_TREE: TreeNode[] = [
+  {
+    key: "src",
+    title: "src",
+    icon: <Folder size={14} />,
+    children: [
+      {
+        key: "components",
+        title: "components",
+        icon: <Folder size={14} />,
+        children: [
+          { key: "btn", title: "Button.tsx", icon: <FileText size={14} /> },
+          { key: "input", title: "Input.tsx", icon: <FileText size={14} /> },
+        ],
+      },
+    ],
+  },
+]
+
 <Tree
-  treeData={[
-    { key: "eng", title: "エンジニアリング", children: [
-      { key: "fe", title: "Frontend" },
-      { key: "be", title: "Backend" },
-    ]},
-  ]}
-  defaultExpandedKeys={["eng"]}
+  treeData={FILE_TREE}
+  showLine
+  defaultExpandedKeys={["src", "components"]}
+  defaultValue="btn"
+/>
+
+// Multi-select with checkboxes
+<Tree
+  treeData={ORG_TREE}
+  checkable
+  defaultExpandedKeys={["company", "eng", "design"]}
+  defaultValue={["fe", "ui"]}
 />
 ```
 
-## Related
+## See also
 
-- Story catalogue: [`Tree` stories](../../../src/stories/data-display/Tree.stories.tsx)
+- [TreeSelect](./TreeSelect.md) — tree-shaped popover trigger.
+- [Cascader](./Cascader.md) — fixed-depth column navigation alternative.
+- [Checkbox](./Checkbox.md) — used internally when `checkable` is set.
 - Source: [`src/components/data-display/Tree.tsx`](../../../src/components/data-display/Tree.tsx)
-- Cardinal rule 23 §B prop vocabulary: [`CLAUDE.md` §23.B](../../../CLAUDE.md#23)
-
-## Status
-
-`draft` — auto-generated stub. Detailed prop docs / accessibility notes / design rationale still to be filled in.
