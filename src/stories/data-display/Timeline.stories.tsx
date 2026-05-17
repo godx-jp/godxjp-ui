@@ -89,10 +89,11 @@ export const ListDefault: Story = {
 // ─── Branching · approval pipeline ───────────────────────────────
 
 export const Branching: Story = {
-  name: "Branching · approval pipeline",
+  name: "Branching · approval pipeline (animate)",
   render: () => (
     <Timeline
       variant="branching"
+      animate
       items={[
         {
           color: "success",

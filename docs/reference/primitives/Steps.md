@@ -45,10 +45,19 @@ import { Steps, Step } from "@godxjp/ui"
 | `title` | `ReactNode` | — | Step title |
 | `description` | `ReactNode` | — | Step description (shown below in vertical / inline in horizontal) |
 | `icon` | `ReactNode` | index number / check | Override the node icon (default: index for current/upcoming, check for done) |
-| `color` | `"default" \| "primary" \| "success" \| "info" \| "warning" \| "destructive"` | — | Override the node colour (default: derived from current/done state) |
-| `...rest` | `Omit<ComponentProps<"li">, "color" \| "title">` | — | Standard `<li>` props |
+| `...rest` | `Omit<ComponentProps<"li">, "title">` | — | Standard `<li>` props |
 
-Vocabulary per cardinal rule 23 §B: `orientation` (axis of stack), `current` (number, active index), per-step `color` (semantic role mapping — replaces Ant's `status` enum).
+Vocabulary per cardinal rule 23 §B: `orientation` (axis of stack), `current` (number, active index).
+
+Visual state is locked to the dxs-kintai canon (`comp-card.html` §F6) and derived from the index ↔ `current` comparison:
+
+| State | Token chain |
+|---|---|
+| `done` (index `<` current) | `--success` ring + check icon |
+| `cur` (index `===` current) | `--primary` ring + index number |
+| future (index `>` current) | `--border` ring + `--muted-foreground` text |
+
+There is no per-step `color` override prop — the colour chain is a non-negotiable progress contract. If a consumer needs a different semantic colour for a step, the right primitive is `<Timeline>` (event log) rather than `<Steps>` (wizard progress).
 
 ## Accessibility
 
