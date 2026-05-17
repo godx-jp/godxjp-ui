@@ -25,6 +25,7 @@ consumer mounts once at the root of their app.
 
 \`\`\`tsx
 import { GodxConfigProvider } from "@godxjp/ui/preferences"
+import { Toaster } from "@godxjp/ui"
 import { I18nextProvider } from "react-i18next"
 import { initI18n } from "@godxjp/ui/i18n"
 
@@ -33,6 +34,7 @@ const i18n = initI18n()
 <GodxConfigProvider defaultLocale="ja" defaultTimezone="Asia/Tokyo" defaultCurrency="JPY">
   <I18nextProvider i18n={i18n}>
     <App />
+    <Toaster position="top-right" />
   </I18nextProvider>
 </GodxConfigProvider>
 \`\`\`
@@ -76,6 +78,16 @@ const ROWS: ProviderRow[] = [
     notes:
       'Mount AFTER `initI18n()`. The Provider reads locale from `<GodxConfigProvider>` indirectly via the i18next singleton.',
     required: "required",
+  },
+  {
+    name: "<Toaster /> (root-mount component)",
+    importPath: '@godxjp/ui',
+    responsibility:
+      "Portal target for the `toast()` API (sonner). Not a React provider, but a singleton consumers mount once near the root so any `toast.success(...)` / `toast.error(...)` call elsewhere in the tree renders into this surface.",
+    tags: ["toast", "sonner", "feedback"],
+    notes:
+      "Place AFTER the providers above (it consumes locale + theme tokens but emits nothing through context). Optional — only required when the app actually calls `toast()`.",
+    required: "recommended",
   },
 ];
 
@@ -156,6 +168,7 @@ export const MountingOrder: Story = {
             }}
           >
 {`import { GodxConfigProvider } from "@godxjp/ui/preferences"
+import { Toaster } from "@godxjp/ui"
 import { I18nextProvider } from "react-i18next"
 import { initI18n } from "@godxjp/ui/i18n"
 
@@ -170,6 +183,7 @@ function Root() {
     >
       <I18nextProvider i18n={i18n}>
         <App />
+        <Toaster position="top-right" />
       </I18nextProvider>
     </GodxConfigProvider>
   )
