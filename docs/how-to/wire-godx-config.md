@@ -1,7 +1,7 @@
 ---
 $schema: https://godx-jp.github.io/schemas/doc-frontmatter-v1.json
 title: Wire user preferences in a service frontend
-description: Step-by-step — install PreferencesProvider, hook usePreferences, and tell axios to send Accept-Language + X-Timezone on every request.
+description: Step-by-step — install GodxConfigProvider, hook useGodxConfig, and tell axios to send Accept-Language + X-Timezone on every request.
 diataxis: how-to
 audience:
   - developer
@@ -23,10 +23,10 @@ lang: en
 In `src/main.tsx` (above `<RouterProvider>`):
 
 ```tsx
-import { PreferencesProvider } from "@godxjp/ui/preferences"
+import { GodxConfigProvider } from "@godxjp/ui/preferences"
 
 createRoot(root).render(
-  <PreferencesProvider
+  <GodxConfigProvider
     storage="localStorage"   // default; use "cookie" or "both" for SSR
     defaultLocale="ja"
     defaultTimezone="Asia/Tokyo"
@@ -35,11 +35,11 @@ createRoot(root).render(
       <RouterProvider router={router} />
       <Toaster />
     </QueryClientProvider>
-  </PreferencesProvider>
+  </GodxConfigProvider>
 )
 ```
 
-`PreferencesProvider` will:
+`GodxConfigProvider` will:
 
 - Read from `localStorage` (or cookie, or both).
 - Fall back to `navigator.language` + `Intl.DateTimeFormat().resolvedOptions().timeZone`.
@@ -51,7 +51,7 @@ In `src/lib/api.ts`, **after** you create the axios instance:
 
 ```ts
 import axios from "axios"
-import { applyPreferenceHeaders } from "@godxjp/ui/preferences"
+import { applyGodxConfigHeaders } from "@godxjp/ui/preferences"
 
 export const meApi = axios.create({
   baseURL: …,
@@ -61,14 +61,14 @@ export const meApi = axios.create({
 // Run once at module load. The interceptor reads the current
 // preferences at REQUEST time, so it stays fresh as the user
 // changes them — no remount, no re-install.
-applyPreferenceHeaders(meApi)
+applyGodxConfigHeaders(meApi)
 ```
 
-`applyPreferenceHeaders` accepts an options object if you need to
+`applyGodxConfigHeaders` accepts an options object if you need to
 rename the headers (rare):
 
 ```ts
-applyPreferenceHeaders(meApi, {
+applyGodxConfigHeaders(meApi, {
   acceptLanguageHeader: "Accept-Language", // default
   timezoneHeader: "X-Timezone",            // default
   sendLocale: true,                        // default
@@ -84,10 +84,10 @@ you install at module load and never remove.
 Inside any component:
 
 ```tsx
-import { usePreferences } from "@godxjp/ui/preferences"
+import { useGodxConfig } from "@godxjp/ui/preferences"
 
 function LocalePicker() {
-  const { locale, setLocale } = usePreferences()
+  const { locale, setLocale } = useGodxConfig()
   return (
     <select value={locale} onChange={(e) => setLocale(e.target.value)}>
       <option value="ja">日本語</option>
@@ -108,12 +108,12 @@ If you have a fetch wrapper or a worker that needs the values without
 a React component above it:
 
 ```ts
-import { getPreferences, subscribePreferences } from "@godxjp/ui/preferences"
+import { getGodxConfig, subscribeGodxConfig } from "@godxjp/ui/preferences"
 
-const prefs = getPreferences() // current snapshot
+const prefs = getGodxConfig() // current snapshot
 
 // Or stay in sync:
-const unsubscribe = subscribePreferences((next) => {
+const unsubscribe = subscribeGodxConfig((next) => {
   console.log("prefs changed:", next)
 })
 ```
@@ -146,22 +146,22 @@ If your portals share a parent domain (`me.godx.jp`, `forge.godx.jp`,
 change on one portal propagates to siblings.
 
 ```tsx
-<PreferencesProvider
+<GodxConfigProvider
   storage="cookie"
   cookieOptions={{ domain: ".godx.jp" }}
 >
   …
-</PreferencesProvider>
+</GodxConfigProvider>
 ```
 
 ## Common mistakes
 
-- **Calling `applyPreferenceHeaders` inside a React component.**
+- **Calling `applyGodxConfigHeaders` inside a React component.**
   Causes the interceptor to re-install on every render. Install at
   module load, in `lib/api.ts`.
 - **Reading `locale` from `navigator.language` directly inside
   components.** It doesn't change at runtime; the user never sees
-  their selection reflected. Always go through `usePreferences()`.
+  their selection reflected. Always go through `useGodxConfig()`.
 - **Sending `Accept-Language` as a q-weight list (`ja;q=0.9,en;q=0.5`).**
   We send a single tag. Backends that need a fallback list can derive
   it from the single tag (`ja` → `ja, en;q=0.9`) but the SOURCE is
@@ -172,6 +172,6 @@ change on one portal propagates to siblings.
 
 ## Related
 
-- [User preferences (explanation)](../explanation/preferences.md) — design rationale + standards.
+- [User preferences (explanation)](../explanation/godx-config.md) — design rationale + standards.
 - new-docs/12 Clause 6 — i18n layer (mandatory).
 - new-docs/12 Clause 4 — service-layer pattern (where this hooks in).

@@ -23,6 +23,6 @@ with the basic import surface.
 | [Compose shell](./compose-shell.md) | Wire up AppShell + Sidebar + Topbar in a new service's `main.tsx` |
 | [Add a locale](./add-locale.md) | Support a new BCP 47 locale in your service namespace |
 | [Customise density](./customise-density.md) | Switch between compact / default / comfortable density modes |
-| [Wire preferences](./wire-preferences.md) | Wire `PreferencesProvider` + axios `Accept-Language` / `X-Timezone` propagation |
+| [Wire preferences](./wire-godx-config.md) | Wire `GodxConfigProvider` + axios `Accept-Language` / `X-Timezone` propagation |
 | [Contribute a primitive](./contribute-primitive.md) | Open a PR to the submodule with a new or changed primitive |
 | [Consume from a service](./consume-from-service.md) | Wire `@godxjp/ui` into a freshly scaffolded service frontend |

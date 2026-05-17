@@ -23,9 +23,9 @@ flowchart TD
     PRIMS["Primitives (atoms) — 73 React surfaces\nsrc/components/{general,layout,data-display,data-entry,feedback,navigation}/"]
     SHELL["Shell (organisms) — 8 compositions\nsrc/components/shell/"]
     COMP["Composites — Upload family, MediaUpload, AvatarUploader, LocaleInput, calendar\nsrc/components/composites/"]
-    HOOKS["Hooks\nsrc/hooks/\nuseTweaks · useBreakpoint · useDebouncedValue · usePreferences"]
+    HOOKS["Hooks\nsrc/hooks/\nuseTweaks · useBreakpoint · useDebouncedValue · useGodxConfig"]
     I18N["i18n singleton\nsrc/i18n/\ninitI18n + locales"]
-    PREFS["Preferences\nsrc/preferences/\nPreferencesProvider"]
+    PREFS["Preferences\nsrc/preferences/\nGodxConfigProvider"]
 
     CSS --> PRIMS
     PRIMS --> SHELL
@@ -115,7 +115,7 @@ primitives:
 |---|---|---|
 | Hooks (`useTweaks`, `useBreakpoint`, `useDebouncedValue`, …) | `src/hooks/` | Shell, Composites |
 | i18next singleton | `src/i18n/` | Shell, Composites, any component that needs translated text |
-| `PreferencesProvider` | `src/preferences/` | Shell — locale + timezone React context |
+| `GodxConfigProvider` | `src/preferences/` | Shell — locale + timezone React context |
 
 ### What is NOT a layer
 

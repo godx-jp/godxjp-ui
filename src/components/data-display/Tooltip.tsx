@@ -21,33 +21,21 @@ import { cn } from "../cn";
  *          <Button>保存</Button>
  *        </Tooltip>
  *
- *      Auto-wires `TooltipProvider` + `TooltipPrimitive.Root` +
- *      `TooltipTrigger(asChild)` + `TooltipContent`.
+ *      Auto-wires the Radix Root + Trigger(asChild) + Content.
  *
  *   2. Compositional (advanced) — omit `content`, supply children:
  *
- *        <TooltipProvider>
- *          <Tooltip>
- *            <TooltipTrigger asChild><Button /></TooltipTrigger>
- *            <TooltipContent>rich JSX…</TooltipContent>
- *          </Tooltip>
- *        </TooltipProvider>
+ *        <Tooltip>
+ *          <TooltipTrigger asChild><Button /></TooltipTrigger>
+ *          <TooltipContent>rich JSX…</TooltipContent>
+ *        </Tooltip>
  *
- * The compositional mode exists ONLY because Radix Tooltip needs a
- * shared `TooltipProvider` ancestor when multiple tooltips share a
- * `delayDuration` config — the data-driven mode handles a single
- * tooltip per consumer call.
- *
- * Nested-provider safety: data-driven `<Tooltip>` calls detect an
- * ancestor `<TooltipProvider>` (via a private React context the
- * framework's `<TooltipProvider>` populates) and skip wrapping with
- * an inner Provider when one is already present — the outer
- * Provider's `delayDuration` is reused rather than silently
- * overridden. NOTE: this detection only fires when the ancestor is
- * the framework's `<TooltipProvider>` re-export. Consumers who use
- * Radix's `TooltipProvider` directly from `@radix-ui/react-tooltip`
- * fall back to the double-wrap behaviour — use the framework export
- * to get the dedupe.
+ * Shared timing across the app is configured once on
+ * `<GodxConfigProvider>` — the consumer never imports a separate
+ * `TooltipProvider`. The provider internally mounts the Radix Provider
+ * so every nested `<Tooltip>` picks up the same `delayDuration` /
+ * `skipDelayDuration`. Per-tooltip overrides flow through the
+ * `delayDuration` prop on `<Tooltip>` itself.
  *
  * Styled via the canonical `.tooltip-content` class from
  * `src/styles/shell/35-badge-tag-misc.css` (cardinal rule 21 — reads
@@ -55,26 +43,30 @@ import { cn } from "../cn";
  */
 
 /**
- * Internal marker context — populated by the framework's
- * `<TooltipProvider>` so that data-driven `<Tooltip>` calls can
- * detect they're already inside a Provider and skip double-wrapping.
- * NOT exported (rule 28 §D — internal surface).
+ * Internal marker context — populated by `InternalTooltipProvider`
+ * (mounted by `<GodxConfigProvider>`) so data-driven `<Tooltip>` calls
+ * can detect they're already inside a Provider and skip
+ * double-wrapping. Not exported.
  */
 const TooltipProviderPresenceContext = createContext<boolean>(false);
 
-export type TooltipProviderProps = ComponentPropsWithoutRef<
+type InternalTooltipProviderProps = ComponentPropsWithoutRef<
   typeof TooltipPrimitive.Provider
 >;
 
 /**
- * `TooltipProvider` — wraps Radix's `Tooltip.Provider` AND populates
- * the internal presence-marker context so nested data-driven
+ * `InternalTooltipProvider` — wraps Radix's `Tooltip.Provider` AND
+ * populates the internal presence-marker context so nested data-driven
  * `<Tooltip>` calls dedupe automatically.
+ *
+ * This is an internal surface (not exported from `@godxjp/ui`).
+ * `<GodxConfigProvider>` mounts it once at the root so every consumer
+ * gets shared tooltip timing without ever importing this directly.
  */
-export function TooltipProvider({
+export function InternalTooltipProvider({
   children,
   ...rest
-}: TooltipProviderProps) {
+}: InternalTooltipProviderProps) {
   return (
     <TooltipPrimitive.Provider {...rest}>
       <TooltipProviderPresenceContext.Provider value={true}>
@@ -107,12 +99,12 @@ export const TooltipContent = forwardRef<
 });
 
 export interface TooltipProps {
-  /** Tooltip text / content. When set, primitive auto-wires
-   * `TooltipProvider` + `TooltipTrigger(asChild)` + `TooltipContent`
-   * around the child trigger element — the consumer just provides
-   * the trigger node. When omitted, the primitive falls back to
-   * compositional mode (consumer-rendered `<TooltipTrigger>` +
-   * `<TooltipContent>` children). */
+  /** Tooltip text / content. When set, primitive auto-wires the
+   * Radix Root + Trigger(asChild) + Content around the child trigger
+   * element — the consumer just provides the trigger node. When
+   * omitted, the primitive falls back to compositional mode
+   * (consumer-rendered `<TooltipTrigger>` + `<TooltipContent>`
+   * children). */
   content?: ReactNode;
   /** Trigger element (data-driven mode) OR Radix Root children
    * (compositional mode). */
@@ -120,9 +112,9 @@ export interface TooltipProps {
   /** Anchor side per cardinal rule 23 §B `placement` vocabulary.
    * Default `top`. Honoured only in data-driven mode. */
   placement?: "top" | "right" | "bottom" | "left";
-  /** Open / close delay in ms. Default 200. Honoured in data-driven
-   * mode (sets `TooltipProvider.delayDuration`); in compositional
-   * mode the consumer's outer `<TooltipProvider>` controls timing. */
+  /** Open / close delay in ms. Default 200. Overrides the
+   * app-wide default set on `<GodxConfigProvider>` for this single
+   * tooltip; without an override the Provider's shared timing wins. */
   delayDuration?: number;
   open?: boolean;
   defaultOpen?: boolean;
@@ -140,10 +132,11 @@ export function Tooltip({
 }: TooltipProps) {
   const hasAncestorProvider = useContext(TooltipProviderPresenceContext);
   if (content === undefined) {
-    // Compositional — consumer's <TooltipProvider> wraps and they
-    // hand-roll <TooltipTrigger> + <TooltipContent> inside the
-    // children. We just pass-through the Radix Root.
-    return (
+    // Compositional — consumer hand-rolled <TooltipTrigger> +
+    // <TooltipContent> inside the children. Pass-through the Radix
+    // Root. Outside of <GodxConfigProvider> we mount an ad-hoc
+    // Provider so Radix's Root still has its required context.
+    const compositionalRoot = (
       <TooltipPrimitive.Root
         open={open}
         defaultOpen={defaultOpen}
@@ -152,12 +145,18 @@ export function Tooltip({
         {children}
       </TooltipPrimitive.Root>
     );
+    if (hasAncestorProvider) return compositionalRoot;
+    return (
+      <InternalTooltipProvider delayDuration={delayDuration}>
+        {compositionalRoot}
+      </InternalTooltipProvider>
+    );
   }
   // Data-driven — auto-wire Root + Trigger + Content. Wrap with an
-  // inner <TooltipProvider> ONLY when there's no ancestor Provider;
-  // otherwise the outer Provider's delayDuration / disableHoverableContent
-  // would be silently overridden by the inner one (cardinal rule 31
-  // — no double-wrap).
+  // ad-hoc Provider ONLY when there's no ancestor Provider (e.g.
+  // isolated Storybook render without <GodxConfigProvider>); otherwise
+  // the outer Provider's timing would be silently overridden
+  // (cardinal rule 31 — no double-wrap).
   const root = (
     <TooltipPrimitive.Root
       open={open}
@@ -170,6 +169,8 @@ export function Tooltip({
   );
   if (hasAncestorProvider) return root;
   return (
-    <TooltipProvider delayDuration={delayDuration}>{root}</TooltipProvider>
+    <InternalTooltipProvider delayDuration={delayDuration}>
+      {root}
+    </InternalTooltipProvider>
   );
 }

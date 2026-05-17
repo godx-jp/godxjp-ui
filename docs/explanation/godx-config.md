@@ -1,7 +1,7 @@
 ---
 $schema: https://godx-jp.github.io/schemas/doc-frontmatter-v1.json
 title: User preferences (locale + timezone)
-description: Why @godxjp/ui ships a PreferencesProvider, what storage policy it follows, and which standards it inherits.
+description: Why @godxjp/ui ships a GodxConfigProvider, what storage policy it follows, and which standards it inherits.
 diataxis: explanation
 audience:
   - developer
@@ -13,7 +13,7 @@ lang: en
 
 # User preferences (locale + timezone)
 
-> Every godx frontend ships with a `PreferencesProvider` from
+> Every godx frontend ships with a `GodxConfigProvider` from
 > `@godxjp/ui/preferences`. It owns the user's locale + timezone,
 > persists them, and emits the canonical request headers so the
 > backend speaks the right language and renders dates in the right
@@ -27,13 +27,13 @@ the same headers regardless of which portal the user came from.
 Building them into `@godxjp/ui` gives us:
 
 - **One source of truth** — a module-level holder + React context.
-  `usePreferences()` reads it from React; `getPreferences()` reads it
+  `useGodxConfig()` reads it from React; `getGodxConfig()` reads it
   from non-React code (axios interceptors, fetch wrappers, error
   reporters).
 - **One storage policy** — localStorage by default, opt-in cookie for
   deployments that read the prefs server-side.
 - **One header contract** — `Accept-Language` (BCP 47) + `X-Timezone`
-  (IANA tz name). Wired into axios via `applyPreferenceHeaders()`.
+  (IANA tz name). Wired into axios via `applyGodxConfigHeaders()`.
 
 Service code chooses the values via the provider's props; the shape
 of the API surface is locked.
@@ -65,7 +65,7 @@ intentionally does not offer `sessionStorage` as a storage mode.
 
 ```
                 ┌──────────────────────────┐
-                │ <PreferencesProvider …>  │
+                │ <GodxConfigProvider …>  │
                 │                          │
    user ─click──▶ setLocale("vi")          │
                 │   │                      │
@@ -86,7 +86,7 @@ intentionally does not offer `sessionStorage` as a storage mode.
                           │
                           ▼
                    axios interceptor
-                   reads getPreferences()
+                   reads getGodxConfig()
                    on every request
                           │
                           ▼
@@ -110,10 +110,10 @@ The holder is the runtime contract:
 1. Provider mounts → seeds holder with detected/stored values.
 2. User toggles locale → provider writes holder → subscribers fire →
    React re-renders.
-3. Next API call → interceptor calls `getPreferences()` → reads
+3. Next API call → interceptor calls `getGodxConfig()` → reads
    current values from holder → attaches headers → request goes out.
 
-The holder is small, mutation-only-via-`setPreferences`, and lives in
+The holder is small, mutation-only-via-`setGodxConfig`, and lives in
 the same package as the provider, so the contract stays tight.
 
 ## Backend contract

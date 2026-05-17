@@ -328,7 +328,7 @@ framework concept; inline duplication is rejected at review.
     | Prop | Type | Used by | Concept |
     |---|---|---|---|
     | `size` | `"small" \| "default" \| "large"` (+ `"x-small"` / `"x-large"` when scale needs) | Button, Input, Avatar, Tag, Badge, IconButton, Spinner, … | Dimensional scale of the primitive itself |
-    | `variant` | primitive-specific enum (e.g. `"primary" \| "secondary" \| "ghost" \| "outline" \| "link"` for Button; `"soft" \| "solid" \| "outline"` for Badge) | Button, Badge, Tag, Card?, Alert | Visual treatment (fill / outline / ghost) |
+    | `variant` | primitive-specific enum (e.g. `"primary" \| "secondary" \| "ghost" \| "outline" \| "link"` for Button; `"soft" \| "solid" \| "outline"` for Badge; `"solid" \| "dashed" \| "dotted"` for Separator) | Button, Badge, Tag, Separator, Card?, Alert | Visual treatment (fill / outline / ghost / line style) |
     | `color` | `"primary" \| "success" \| "warning" \| "attention" \| "info" \| "destructive" \| "default"` | Tag, Badge, Alert, Dot, Delta, IconSquare | Semantic role |
     | `tone` | `"default" \| "muted" \| "outline-only"` | Card | Surface tint / background treatment |
     | `accent` | semantic color enum (left-edge or full-ring) | Card | Semantic edge indicator |
@@ -338,12 +338,17 @@ framework concept; inline duplication is rejected at review.
     | `prefix` / `suffix` / `addonBefore` / `addonAfter` | `ReactNode` | Input, Button (icon slots) | Decorative / functional slots |
     | `orientation` | `"horizontal" \| "vertical"` | Tabs, Menu, Steps, Anchor, Separator | Axis of stack / progression. Replaces Ant's `mode` (Menu) / `direction` (Steps, Anchor) / axis-of-`tabPosition` (Tabs) under one name. Matches Radix + ARIA `aria-orientation`. |
     | `placement` | `"top" \| "right" \| "bottom" \| "left"` (+ `"start"` / `"end"` when document-flow direction matters) | Tabs (tab-bar), Steps (labels), Popover, Tooltip | Positional anchor of a region relative to its host. Replaces Ant's `tabPosition` / `labelPlacement`. Same name as Radix Tooltip/Popover. |
+    | `titlePlacement` | `"start" \| "center" \| "end"` | Separator | Inline label placement inside a horizontal separator. Distinct from `placement`, which anchors external regions. |
+    | `orientationMargin` | `number \| string` | Separator | Distance from the closest edge for `titlePlacement="start"` / `"end"` labels. Numbers resolve to px. |
     | `current` | `boolean` per item OR `number \| string` for selection state | Breadcrumb (boolean — `aria-current="page"`), Steps (number — active index) | "This item is the current one" (boolean) OR "active index" (number). Booleans bind to `aria-current`; numbers bind to Radix-style selection. |
     | `value` / `defaultValue` / `onValueChange` | Radix-style controlled / uncontrolled selection | Tabs, Select, Combobox, Menu (planned), Pagination (planned) | Selection state. NEVER `defaultSelectedKeys` / `activeKey` — those are Ant aliases for the same concept. |
     | `justify` | `"start" \| "center" \| "end" \| "between"` | Flex, Pagination | Horizontal content alignment. Reused from Flex; do NOT coin `align` synonym for the same axis. |
     | `sticky` | `boolean` | Anchor, Table (planned header sticky), Topbar | Pin-on-scroll behaviour. Matches CSS `position: sticky` semantics. |
     | `offset` | `number` (px) | Anchor (scroll target offset), Popover (planned) | Pixel offset from anchor. Direction-aware via `orientation`. |
     | `open` / `defaultOpen` / `onOpenChange` | Radix-style controlled / uncontrolled overlay-visibility state | Dialog, Sheet, AlertDialog, Popover, DropdownMenu, Modal, Drawer, Popconfirm | Overlay open/closed state. NEVER `visible` / `isOpen` / `shown` / `display` synonyms — Radix-canonical name is mandatory for the entire overlay stack. |
+    | `items` | typed object array | Descriptions, Timeline, SegmentedControl, Checklist, Anchor | Data-driven rows/options owned by the primitive. Prefer this over sub-components for repeated item layout. |
+    | `renderItem` | `(item, index) => ReactNode` | Descriptions, Timeline, List, Transfer | Escape hatch for custom item rendering while keeping the primitive data-driven. |
+    | `children` | `ReactNode` | Button, Tag, Badge, Typography, Separator | Primary content slot for leaf primitives. Do not use it to define repeated data rows. |
 
     Rules:
 
@@ -372,7 +377,7 @@ framework concept; inline duplication is rejected at review.
     - `tint` / `intent` / `theme` synonyms for `color`.
     - `compactness` / `spacing` synonyms for `padding` / `density`.
     - `mode` / `direction` / `tabPosition` synonyms for `orientation` (axis of stack).
-    - `tabPosition` / `labelPlacement` synonyms for `placement` (positional anchor).
+    - `tabPosition` / `labelPlacement` synonyms for `placement` (positional anchor); for inline Separator labels use `titlePlacement`, not `labelPlacement`.
     - `activeKey` / `selectedKeys` / `defaultActiveKey` synonyms for `value` / `defaultValue` / `onValueChange` (Radix-style selection).
     - `align` synonym for `justify` (horizontal alignment — one name across Flex + Pagination + …).
     - `affix` synonym for `sticky`.
@@ -1197,6 +1202,69 @@ framework concept; inline duplication is rejected at review.
     same shape, expressed in the existing vocabulary, with zero
     prop-surface inflation. Cardinal rule 32 was lifted directly
     from this incident.
+
+33. **Stories, source, and docs MUST be name-synchronized — no
+    legacy aliases, no out-of-date references, no two names for the
+    same thing across the surface.** Absolute.
+
+    Storybook is the teaching surface (cardinal rule 29). The
+    moment a consumer reads two stories that import two different
+    names for the same primitive / provider / hook, the consumer
+    asks "which one do I use?" — and the framework loses its
+    cohesion advertised under cardinal rule 23. Likewise a story
+    that imports a symbol that no longer exists in the source, or
+    references a prop that was renamed, teaches the consumer to
+    write code that won't compile.
+
+    ### Forbidden
+
+    - **Two names for the same export in different stories.**
+      `<PreferencesProvider>` in one story + `<GodxConfigProvider>`
+      in another, when source carries both as aliases. Pick the
+      canonical name and rip the alias out of source, stories, and
+      docs in one PR.
+    - **Stories that import a symbol that no longer exists** — the
+      story would crash on render. Always rename across the full
+      `src/**` + `docs/**` + `package.json::exports` surface in the
+      same PR.
+    - **Doc / story examples that use a prop name the source no
+      longer accepts** — e.g. doc shows `tabPosition` but the source
+      coerced to `placement`. Reviewer must spot-grep every PR that
+      renames a prop.
+    - **"Deprecated alias" left in source without a story-side
+      cleanup.** If source must keep the alias for a deprecation
+      cycle, the stories + docs STILL only use the canonical name —
+      consumers should never see the deprecated name in marketing
+      surfaces. Even better: ship the rename as a clean breaking
+      change at the next major and skip the alias cycle.
+
+    ### Required at every rename / removal PR
+
+    1. `grep -rn '<oldName>' src docs` — must return zero hits
+       (excluding ADRs documenting the rename).
+    2. The PR title cites the rename: `rename: <old> → <new>`.
+    3. CHANGELOG entry under `### Changed` (or `### Removed` if
+       outright deletion).
+    4. Migration note inline in the CHANGELOG + the affected
+       reference doc — one paragraph max, just the find/replace.
+
+    ### Why this rule exists
+
+    Framework coherence is the value `@godxjp/ui` ships. A consumer
+    deciding between `<PreferencesProvider>` and `<GodxConfigProvider>`
+    spends mental energy that the framework was supposed to absorb.
+    Two names = the consumer is doing the framework's job. Even worse:
+    once two names ship in stories, neither can be removed without
+    breaking the consumer's existing code, so the drift becomes
+    permanent.
+
+    Historical case: v3.x shipped both `<PreferencesProvider>` and
+    `<GodxConfigProvider>` for a deprecation cycle. The first
+    Storybook PR that introduced the new alias also created stories
+    referencing the old name → user reported the confusion within an
+    hour. The fix: delete the alias entirely, sync every story + doc
+    to the canonical name in one PR. Cardinal rule 33 was lifted
+    directly from this incident.
 
 ## Verification
 

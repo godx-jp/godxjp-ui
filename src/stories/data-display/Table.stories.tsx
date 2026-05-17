@@ -1,33 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableToolbar,
-} from "../../components/data-display/Table";
+import { Table, type TableColumn } from "../../components/data-display/Table";
 import { Badge } from "../../components/data-display/Badge";
 import { Button } from "../../components/general/Button";
-
-/**
- * data-display/Table — semantic table family.
- *
- * Documented exports (per `Table.tsx`):
- *   <Table density? stickyHeader? containerClassName?>
- *   <TableHeader sticky?>
- *   <TableBody>
- *   <TableFooter>
- *   <TableRow>
- *   <TableHead>      ← th
- *   <TableCell>      ← td
- *   <TableCaption>
- *   <TableToolbar>   ← translucent action band over selected rows
- *
- * Stories pin the visual contract via the `.table` / `.table-toolbar`
- * classes — no inline visual overrides per cardinal rule 25.
- */
 
 const meta: Meta<typeof Table> = {
   title: "Data Display/Table",
@@ -38,15 +12,10 @@ const meta: Meta<typeof Table> = {
     docs: {
       description: {
         component: `
-**Table** — semantic table wrapper.
+**Table** — single-component TanStack Table wrapper.
 
-Two density steps:
-- \`default\` — 32 / 36 row heights, base font.
-- \`compact\` — 28 / 32 row heights, \`text-xs\` font.
-
-Optional \`stickyHeader\` pins \`<thead>\` during vertical scroll.
-Compose with the matching atoms (\`TableHeader\` / \`TableBody\` /
-\`TableRow\` / \`TableHead\` / \`TableCell\`) like shadcn.
+Use only \`<Table columns={columns} data={rows} />\`.
+No table subcomponent API is exposed.
         `.trim(),
       },
     },
@@ -80,94 +49,83 @@ function StatusBadge({ status }: { status: EmployeeRow["status"] }) {
   return <Badge variant="neutral" dot>休職</Badge>;
 }
 
-function rows() {
-  return EMPLOYEES.map((emp) => (
-    <TableRow key={emp.name}>
-      <TableCell>{emp.name}</TableCell>
-      <TableCell>{emp.role}</TableCell>
-      <TableCell>
-        <StatusBadge status={emp.status} />
-      </TableCell>
-    </TableRow>
-  ));
-}
-
-// ─── Default — 10-row employee roster ───────────────────────────
+const EMPLOYEE_COLUMNS: TableColumn<EmployeeRow>[] = [
+  {
+    accessorKey: "name",
+    header: "氏名",
+  },
+  {
+    accessorKey: "role",
+    header: "役職",
+  },
+  {
+    accessorKey: "status",
+    header: "状態",
+    cell: ({ row }) => <StatusBadge status={row.original.status} />,
+  },
+];
 
 export const Default: Story = {
-  name: "Default · 10 employees · name / role / status",
+  name: "Default · data driven",
   render: () => (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>氏名</TableHead>
-          <TableHead>役職</TableHead>
-          <TableHead>状態</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>{rows()}</TableBody>
-    </Table>
+    <Table
+      columns={EMPLOYEE_COLUMNS}
+      data={EMPLOYEES}
+      getRowId={(row) => row.name}
+    />
   ),
 };
-
-// ─── Bordered — class hook on the table root ────────────────────
 
 export const Bordered: Story = {
   name: "Bordered · table-bordered class",
   render: () => (
-    <Table className="table-bordered">
-      <TableHeader>
-        <TableRow>
-          <TableHead>氏名</TableHead>
-          <TableHead>役職</TableHead>
-          <TableHead>状態</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>{rows()}</TableBody>
-    </Table>
+    <Table
+      className="table-bordered"
+      columns={EMPLOYEE_COLUMNS}
+      data={EMPLOYEES}
+      getRowId={(row) => row.name}
+    />
   ),
 };
-
-// ─── Density · Compact ──────────────────────────────────────────
 
 export const Density_Compact: Story = {
-  name: "Density · compact (28 / 32 row heights)",
+  name: "Density · compact",
   render: () => (
-    <Table density="compact">
-      <TableHeader>
-        <TableRow>
-          <TableHead>氏名</TableHead>
-          <TableHead>役職</TableHead>
-          <TableHead>状態</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>{rows()}</TableBody>
-    </Table>
+    <Table
+      density="compact"
+      columns={EMPLOYEE_COLUMNS}
+      data={EMPLOYEES}
+      getRowId={(row) => row.name}
+    />
   ),
 };
 
-// ─── WithToolbar — translucent action band over selected rows ───
-
 export const WithToolbar: Story = {
-  name: "WithToolbar · selection action band",
+  name: "WithToolbar · toolbar prop",
   render: () => (
-    <>
-      <TableToolbar>
-        <span className="selection-count">3 件選択中</span>
-        <span className="spacer" />
-        <Button size="small" variant="ghost">アーカイブ</Button>
-        <Button size="small" variant="destructive">削除</Button>
-      </TableToolbar>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>氏名</TableHead>
-            <TableHead>役職</TableHead>
-            <TableHead>状態</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>{rows()}</TableBody>
-      </Table>
-    </>
+    <Table
+      columns={EMPLOYEE_COLUMNS}
+      data={EMPLOYEES}
+      getRowId={(row) => row.name}
+      toolbar={
+        <>
+          <span className="selection-count">3 件選択中</span>
+          <span className="spacer" />
+          <Button size="small" variant="ghost">アーカイブ</Button>
+          <Button size="small" variant="destructive">削除</Button>
+        </>
+      }
+    />
+  ),
+};
+
+export const Empty: Story = {
+  name: "Empty · custom empty row",
+  render: () => (
+    <Table
+      columns={EMPLOYEE_COLUMNS}
+      data={[]}
+      empty="該当する従業員がいません"
+    />
   ),
 };

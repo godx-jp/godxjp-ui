@@ -23,8 +23,8 @@ binding source of truth is
 |---|---|---|---|
 | `@godxjp/ui` | `dist/index.d.ts` | `dist/index.js` | All primitives + hooks + i18n helpers + preferences (root barrel) |
 | `@godxjp/ui/i18n` | `dist/i18n.d.ts` | `dist/i18n.js` | `initI18n`, `SUPPORTED_LOCALES`, `GodxLocale`, storage keys |
-| `@godxjp/ui/hooks` | `dist/hooks.d.ts` | `dist/hooks.js` | `useTweaks`, `useBreakpoint`, `useDebouncedValue`, `usePreferences`, … |
-| `@godxjp/ui/preferences` | `dist/preferences.d.ts` | `dist/preferences.js` | `PreferencesProvider` — locale + timezone React context |
+| `@godxjp/ui/hooks` | `dist/hooks.d.ts` | `dist/hooks.js` | `useTweaks`, `useBreakpoint`, `useDebouncedValue`, `useGodxConfig`, … |
+| `@godxjp/ui/preferences` | `dist/preferences.d.ts` | `dist/preferences.js` | `GodxConfigProvider` — locale + timezone React context |
 | `@godxjp/ui/components/primitives` | `dist/components/primitives.d.ts` | `dist/components/primitives.js` | All 73 primitive components, re-exported from the six group folders (`general` / `layout` / `data-display` / `data-entry` / `feedback` / `navigation`) via `src/components/primitives.ts` |
 | `@godxjp/ui/primitives` | (alias) | (alias) | Short alias for `@godxjp/ui/components/primitives` |
 | `@godxjp/ui/components/shell` | `dist/components/shell.d.ts` | `dist/components/shell.js` | `AppShell`, `Sidebar`, `Topbar`, `TweaksPanel`, `CommandPalette`, `ProductSwitcher`, `ProjectSwitcher`, `PageContent` (8) |

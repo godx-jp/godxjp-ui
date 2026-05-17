@@ -4,7 +4,7 @@ library: "@godxjp/ui"
 library_version: 3.0.0
 adr: "0005"
 title: "Datetime library + GodxConfigProvider"
-status: proposed
+status: accepted
 date: 2026-05-18
 last-updated: 2026-05-18
 audience: [developer]
@@ -15,7 +15,10 @@ lang: en
 
 ## Status
 
-Proposed.
+Accepted (2026-05-18). PR-1 + PR-2 + PR-3 of the roadmap landed in
+`feat/config-provider-and-dates` (format helpers + `GodxConfigProvider`
+alias + Timeline `time` auto-format). Subsequent PRs implement the
+remaining migrations.
 
 ---
 

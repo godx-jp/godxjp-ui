@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "../../components/data-display/Card";
-import { Flex } from "../../components/layout";
+import { Table, type TableColumn } from "../../components/data-display/Table";
 
 /**
  * Theme/Prop vocabulary — visual catalogue for the
@@ -31,7 +30,7 @@ Source: [\`new-docs/04-prop-vocabulary.md\`](https://github.com/godx-jp/godxjp-u
 export default meta;
 
 const muted = { fontSize: "var(--card-meta-size)", color: "var(--muted-foreground)" } as const;
-const propName = { width: 130, fontSize: "var(--text-sm)", fontWeight: 500 } as const;
+const propName = { fontSize: "var(--text-sm)", fontWeight: 500, whiteSpace: "nowrap" } as const;
 const propType = { fontSize: "var(--text-2xs)", fontFamily: "var(--font-mono)", color: "var(--muted-foreground)" } as const;
 
 interface Row {
@@ -52,7 +51,7 @@ const ROWS: Row[] = [
     prop: "variant",
     type: "primitive-specific enum",
     concept: "Visual treatment — how the primitive is drawn (filled / outlined / ghost / link).",
-    usedBy: ["Button (primary | secondary | ghost | outline | link)", "Badge (soft | solid | outline)", "Tag (inherits Badge)", "Alert (planned)"],
+    usedBy: ["Button (primary | secondary | ghost | outline | link)", "Badge (soft | solid | outline)", "Tag (inherits Badge)", "Separator (solid | dashed | dotted)", "Alert (planned)"],
   },
   {
     prop: "color",
@@ -127,6 +126,36 @@ const ROWS: Row[] = [
     usedBy: ["Input"],
   },
   {
+    prop: "items",
+    type: "typed object array",
+    concept: "Data-driven rows/options. Use this instead of parallel sub-components when the primitive owns item layout.",
+    usedBy: ["Descriptions", "Timeline", "SegmentedControl", "Checklist", "Anchor"],
+  },
+  {
+    prop: "renderItem",
+    type: "(item, index) => ReactNode",
+    concept: "Escape hatch for custom item rendering while keeping the primitive data-driven.",
+    usedBy: ["Descriptions", "Timeline", "List", "Transfer"],
+  },
+  {
+    prop: "children",
+    type: "ReactNode",
+    concept: "Primary content slot for leaf primitives. Do not use it to define repeated data rows.",
+    usedBy: ["Separator (horizontal label)", "Button", "Tag", "Badge", "Typography"],
+  },
+  {
+    prop: "titlePlacement",
+    type: `"start" | "center" | "end"`,
+    concept: "Inline label placement inside a horizontal separator. Kept distinct from overlay/region `placement`.",
+    usedBy: ["Separator"],
+  },
+  {
+    prop: "orientationMargin",
+    type: "number | string",
+    concept: "Distance from the nearest edge when a labeled Separator uses start/end title placement.",
+    usedBy: ["Separator"],
+  },
+  {
     prop: "title / subtitle / kicker / meta / extra / footer / actions / band",
     type: "ReactNode + enum",
     concept: "Card-specific slot family — header / footer regions. See §O in the doc.",
@@ -134,37 +163,82 @@ const ROWS: Row[] = [
   },
 ];
 
+const VOCABULARY_COLUMNS: TableColumn<Row>[] = [
+  {
+    accessorKey: "prop",
+    header: "Prop",
+    cell: ({ row }) => <code style={propName}>{row.original.prop}</code>,
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }) => <code style={propType}>{row.original.type}</code>,
+  },
+  {
+    accessorKey: "concept",
+    header: "Concept",
+    cell: ({ row }) => row.original.concept,
+    meta: { cellStyle: { minWidth: 280 } },
+  },
+  {
+    accessorKey: "usedBy",
+    header: "Used by",
+    cell: ({ row }) => <span style={muted}>{row.original.usedBy.join(" · ")}</span>,
+    meta: { cellStyle: { minWidth: 260 } },
+  },
+];
+
 export const Vocabulary: StoryObj = {
   name: "Locked vocabulary catalogue",
   render: () => (
-    <Flex vertical gap="middle">
-      {ROWS.map((r) => (
-        <Card key={r.prop} padding="default" tone="default" accent="primary">
-          <Flex vertical gap="small">
-            <Flex align="baseline" gap="middle">
-              <code style={propName}>{r.prop}</code>
-              <code style={propType}>{r.type}</code>
-            </Flex>
-            <span style={muted}>{r.concept}</span>
-            <div style={{ ...muted, paddingTop: 4, borderTop: "1px dashed var(--border)" }}>
-              <strong>Used by</strong>: {r.usedBy.join(" · ")}
-            </div>
-          </Flex>
-        </Card>
-      ))}
-    </Flex>
+    <Table
+      density="compact"
+      stickyHeader
+      containerClassName="card"
+      style={{ maxWidth: 1120 }}
+      columns={VOCABULARY_COLUMNS}
+      data={ROWS}
+      getRowId={(row) => row.prop}
+    />
   ),
 };
 
-const FORBIDDEN: Array<[string, string]> = [
-  ["scale / dimension / width",     "use `size`"],
-  ["kind / style / look / appearance", "use `variant`"],
-  ["intent / tint / status (when meaning role-color)", "use `color`"],
-  ["compactness / spacing / dense", "use `padding`"],
-  ["fullWidth / wide / stretched",  "use `block`"],
-  ["primary={true} (boolean)",      "use `variant=\"primary\"`"],
-  ["error={true} (boolean for role-color)", "use `color=\"destructive\"`"],
-  ["large={true} (boolean)",        "use `size=\"large\"`"],
+interface ForbiddenRow {
+  forbidden: string;
+  canonical: string;
+}
+
+const FORBIDDEN: ForbiddenRow[] = [
+  { forbidden: "scale / dimension / width", canonical: "use `size`" },
+  { forbidden: "kind / style / look / appearance", canonical: "use `variant`" },
+  { forbidden: "intent / tint / status (when meaning role-color)", canonical: "use `color`" },
+  { forbidden: "compactness / spacing / dense", canonical: "use `padding`" },
+  { forbidden: "labelPlacement (Separator label)", canonical: "use `titlePlacement`" },
+  { forbidden: "fullWidth / wide / stretched", canonical: "use `block`" },
+  { forbidden: "primary={true} (boolean)", canonical: "use `variant=\"primary\"`" },
+  { forbidden: "error={true} (boolean for role-color)", canonical: "use `color=\"destructive\"`" },
+  { forbidden: "large={true} (boolean)", canonical: "use `size=\"large\"`" },
+];
+
+const FORBIDDEN_COLUMNS: TableColumn<ForbiddenRow>[] = [
+  {
+    accessorKey: "forbidden",
+    header: "Forbidden",
+    cell: ({ row }) => (
+      <code className="mono" style={{ fontSize: "var(--text-2xs)", color: "var(--destructive)" }}>
+        {row.original.forbidden}
+      </code>
+    ),
+  },
+  {
+    accessorKey: "canonical",
+    header: "Canonical",
+    cell: ({ row }) => (
+      <code className="mono" style={{ fontSize: "var(--text-2xs)", color: "var(--success)" }}>
+        {row.original.canonical}
+      </code>
+    ),
+  },
 ];
 
 export const ForbiddenSynonyms: StoryObj = {
@@ -179,16 +253,13 @@ binds the vocabulary; this list is the explicit black-list.`.trim(),
     },
   },
   render: () => (
-    <Card title="Forbidden synonyms" meta="rule 23 §B">
-      <div className="dv-stack">
-        {FORBIDDEN.map(([bad, good]) => (
-          <Flex key={bad} align="center" gap="middle">
-            <code className="mono" style={{ width: 320, fontSize: "var(--text-2xs)", color: "var(--destructive)" }}>{bad}</code>
-            <span style={muted}>→</span>
-            <code className="mono" style={{ fontSize: "var(--text-2xs)", color: "var(--success)" }}>{good}</code>
-          </Flex>
-        ))}
-      </div>
-    </Card>
+    <Table
+      density="compact"
+      containerClassName="card"
+      style={{ maxWidth: 760 }}
+      columns={FORBIDDEN_COLUMNS}
+      data={FORBIDDEN}
+      getRowId={(row) => row.forbidden}
+    />
   ),
 };

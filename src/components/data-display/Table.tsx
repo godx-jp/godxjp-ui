@@ -1,121 +1,161 @@
 import {
-  forwardRef,
-  type ComponentPropsWithoutRef,
-  type HTMLAttributes,
-  type TdHTMLAttributes,
-  type ThHTMLAttributes,
-} from "react"
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  type ColumnDef,
+  type Row,
+  type RowData,
+} from "@tanstack/react-table"
+import type { CSSProperties, HTMLAttributes, ReactNode } from "react"
 import { cn } from "../cn"
 
-/**
- * Table — semantic table wrapped for horizontal scroll. The `<table>`
- * uses the canonical `.table` class from the dxs-kintai design system;
- * compose with Header / Body / Row / Head / Cell like shadcn.
- *
- * `density="compact"` swaps 32 / 36 row heights for 28 / 32 and shrinks
- * font to `text-xs` — the design-system "Table · density compact"
- * variant from `comp-table.html`.
- */
-
-export type TableDensity = "default" | "compact"
-
-export interface TableProps extends HTMLAttributes<HTMLTableElement> {
-  density?: TableDensity
-  containerClassName?: string
-  /** Sticky header — applies `data-sticky` on `<thead>` via CSS hook on the table root. */
-  stickyHeader?: boolean
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    className?: string
+    headerClassName?: string
+    cellClassName?: string | ((row: Row<TData>) => string | undefined)
+    style?: CSSProperties
+    headerStyle?: CSSProperties
+    cellStyle?: CSSProperties | ((row: Row<TData>) => CSSProperties | undefined)
+  }
 }
 
-export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
-  { className, containerClassName, density = "default", stickyHeader, ...rest },
-  ref,
+export type TableDensity = "default" | "compact"
+export type TableColumn<TData, TValue = unknown> = ColumnDef<TData, TValue>
+
+export interface TableProps<TData>
+  extends Omit<HTMLAttributes<HTMLTableElement>, "children"> {
+  columns: TableColumn<TData, unknown>[]
+  data: TData[]
+  density?: TableDensity
+  containerClassName?: string
+  stickyHeader?: boolean
+  getRowId?: (row: TData, index: number) => string
+  caption?: ReactNode
+  toolbar?: ReactNode
+  empty?: ReactNode
+}
+
+function resolveCellClass<TData>(
+  value: string | ((row: Row<TData>) => string | undefined) | undefined,
+  row: Row<TData>,
 ) {
+  return typeof value === "function" ? value(row) : value
+}
+
+function resolveCellStyle<TData>(
+  value: CSSProperties | ((row: Row<TData>) => CSSProperties | undefined) | undefined,
+  row: Row<TData>,
+) {
+  return typeof value === "function" ? value(row) : value
+}
+
+export function Table<TData>({
+  columns,
+  data,
+  density = "default",
+  containerClassName,
+  stickyHeader,
+  getRowId,
+  caption,
+  toolbar,
+  empty = "No data",
+  className,
+  ...rest
+}: TableProps<TData>) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getRowId,
+  })
+  const leafColumns = table.getAllLeafColumns()
+  const hasFooter = leafColumns.some((column) => column.columnDef.footer !== undefined)
+  const colSpan = Math.max(leafColumns.length, 1)
+
   return (
-    <div className={cn("table-scroll", containerClassName)}>
-      <table
-        ref={ref}
-        data-density={density}
-        data-sticky-header={stickyHeader ? "true" : undefined}
-        className={cn("table", className)}
-        {...rest}
-      />
+    <div className={cn("table-stack", containerClassName)}>
+      {toolbar !== undefined && <div className="table-toolbar">{toolbar}</div>}
+      <div className="table-scroll">
+        <table
+          data-density={density}
+          data-sticky-header={stickyHeader ? "true" : undefined}
+          className={cn("table", className)}
+          {...rest}
+        >
+          {caption !== undefined && <caption>{caption}</caption>}
+          <thead data-sticky={stickyHeader ? "true" : undefined}>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  const meta = header.column.columnDef.meta
+                  return (
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className={cn(meta?.className, meta?.headerClassName)}
+                      style={{ ...meta?.style, ...meta?.headerStyle }}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  )
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => {
+                    const meta = cell.column.columnDef.meta
+                    return (
+                      <td
+                        key={cell.id}
+                        className={cn(meta?.className, resolveCellClass(meta?.cellClassName, row))}
+                        style={{ ...meta?.style, ...resolveCellStyle(meta?.cellStyle, row) }}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={colSpan} className="muted">
+                  {empty}
+                </td>
+              </tr>
+            )}
+          </tbody>
+          {hasFooter && (
+            <tfoot>
+              {table.getFooterGroups().map((footerGroup) => (
+                <tr key={footerGroup.id}>
+                  {footerGroup.headers.map((footer) => {
+                    const meta = footer.column.columnDef.meta
+                    return (
+                      <td
+                        key={footer.id}
+                        colSpan={footer.colSpan}
+                        className={cn(meta?.className)}
+                        style={{ ...meta?.style }}
+                      >
+                        {footer.isPlaceholder
+                          ? null
+                          : flexRender(footer.column.columnDef.footer, footer.getContext())}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tfoot>
+          )}
+        </table>
+      </div>
     </div>
   )
-})
-
-export const TableHeader = forwardRef<
-  HTMLTableSectionElement,
-  HTMLAttributes<HTMLTableSectionElement> & { sticky?: boolean }
->(function TableHeader({ className, sticky, ...rest }, ref) {
-  return (
-    <thead
-      ref={ref}
-      data-sticky={sticky ? "true" : undefined}
-      className={cn(className)}
-      {...rest}
-    />
-  )
-})
-
-export const TableBody = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
-  function TableBody({ className, ...rest }, ref) {
-    return <tbody ref={ref} className={cn(className)} {...rest} />
-  },
-)
-
-export const TableFooter = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
-  function TableFooter({ className, ...rest }, ref) {
-    return <tfoot ref={ref} className={cn(className)} {...rest} />
-  },
-)
-
-export const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTableRowElement>>(function TableRow(
-  { className, ...rest },
-  ref,
-) {
-  return <tr ref={ref} className={cn(className)} {...rest} />
-})
-
-export const TableHead = forwardRef<HTMLTableCellElement, ThHTMLAttributes<HTMLTableCellElement>>(function TableHead(
-  { className, ...rest },
-  ref,
-) {
-  return <th ref={ref} className={cn(className)} {...rest} />
-})
-
-export const TableCell = forwardRef<HTMLTableCellElement, TdHTMLAttributes<HTMLTableCellElement>>(function TableCell(
-  { className, ...rest },
-  ref,
-) {
-  return <td ref={ref} className={cn(className)} {...rest} />
-})
-
-export const TableCaption = forwardRef<HTMLTableCaptionElement, ComponentPropsWithoutRef<"caption">>(
-  function TableCaption({ className, ...rest }, ref) {
-    return (
-      <caption
-        ref={ref}
-        className={cn("muted", className)}
-        style={{ fontSize: "var(--text-xs)", marginTop: "var(--spacing-2)" }}
-        {...rest}
-      />
-    )
-  },
-)
-
-/**
- * TableToolbar — translucent action band shown above a table while
- * rows are selected (canonical "table-toolbar" pattern).
- *
- *   <TableToolbar>
- *     <span className="selection-count">3 selected</span>
- *     <span className="spacer" />
- *     <Button size="small" variant="ghost">Archive</Button>
- *     <Button size="small" variant="destructive">Delete</Button>
- *   </TableToolbar>
- */
-export const TableToolbar = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  function TableToolbar({ className, ...rest }, ref) {
-    return <div ref={ref} className={cn("table-toolbar", className)} {...rest} />
-  },
-)
+}

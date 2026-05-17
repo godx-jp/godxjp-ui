@@ -1,7 +1,7 @@
 import type { AxiosInstance } from "axios";
-import { getPreferences } from "./holder";
+import { getGodxConfig } from "./holder";
 
-export interface ApplyPreferenceHeadersOptions {
+export interface ApplyGodxConfigHeadersOptions {
   /**
    * Override the Accept-Language header name. RFC 7231 §5.3.5 names
    * the canonical header; only override if proxying to a backend that
@@ -23,20 +23,19 @@ export interface ApplyPreferenceHeadersOptions {
 /**
  * Wire an axios instance to send the current user's locale + timezone
  * on every request. The interceptor reads from the module-level
- * preferences holder at REQUEST time, so values stay fresh as the
- * user changes them — no need to re-install on every preference
- * update.
+ * GodxConfig holder at REQUEST time, so values stay fresh as the user
+ * changes them — no need to re-install on every config update.
  *
  * Returns an `eject()` callback that removes the interceptor.
  *
  * Usage in `lib/api.ts`:
  *   import { meApi } from "./api"
- *   import { applyPreferenceHeaders } from "@godxjp/ui/preferences"
- *   applyPreferenceHeaders(meApi)
+ *   import { applyGodxConfigHeaders } from "@godxjp/ui/preferences"
+ *   applyGodxConfigHeaders(meApi)
  */
-export function applyPreferenceHeaders(
+export function applyGodxConfigHeaders(
   client: AxiosInstance,
-  options: ApplyPreferenceHeadersOptions = {},
+  options: ApplyGodxConfigHeadersOptions = {},
 ): () => void {
   const acceptLanguageHeader =
     options.acceptLanguageHeader ?? "Accept-Language";
@@ -45,12 +44,12 @@ export function applyPreferenceHeaders(
   const sendTimezone = options.sendTimezone !== false;
 
   const id = client.interceptors.request.use((config) => {
-    const prefs = getPreferences();
-    if (sendLocale && prefs.locale) {
-      config.headers.set(acceptLanguageHeader, prefs.locale);
+    const current = getGodxConfig();
+    if (sendLocale && current.locale) {
+      config.headers.set(acceptLanguageHeader, current.locale);
     }
-    if (sendTimezone && prefs.timezone) {
-      config.headers.set(timezoneHeader, prefs.timezone);
+    if (sendTimezone && current.timezone) {
+      config.headers.set(timezoneHeader, current.timezone);
     }
     return config;
   });

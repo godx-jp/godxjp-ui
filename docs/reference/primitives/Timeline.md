@@ -60,6 +60,7 @@ import { Timeline } from "@godxjp/ui"
 | `variant` | `"list" \| "branching" \| "feed"` | `"list"` | Visual treatment |
 | `reverse` | `boolean` | `false` | Render items last-first |
 | `connector` | `boolean` | `true` | Show the vertical connector line that joins markers. Ignored by `feed` (no connector by design). |
+| `timeFormat` | `"relative" \| "datetime" \| "date" \| "time"` | `"relative"` for `feed`, `"datetime"` for `list` / `branching` | Format applied to temporal `time` values. Ignored when `time` is a `ReactNode`. |
 | `className` | `string` | — | Merged onto the variant root (`.tl-list` / `.tl-br` / `.tl-feed`) |
 
 > Note: there is intentionally no `pending` top-level prop. To render a trailing "ongoing" marker, append a regular item with `animate: true` (and typically `color: "primary"`) — cardinal rule 32 forbids redundant props that an existing field already covers.
@@ -72,7 +73,7 @@ import { Timeline } from "@godxjp/ui"
 | `color` | `"default" \| "primary" \| "success" \| "warning" \| "destructive" \| "info" \| "attention"` | `"default"` | Marker semantic role |
 | `current` | `boolean` | `false` | Heavier outline on the marker — typically the active step |
 | `animate` | `boolean` | `false` | Pulsing ring around the marker dot. Use on a `current` step to signal "in progress", or on a trailing item to signal "ongoing / pending". Honours `prefers-reduced-motion`. |
-| `time` | `ReactNode` | — | Timestamp slot — right label in `branching`, inline `.ts` in `list` / `feed` |
+| `time` | `ReactNode \| Date \| CalendarDate \| CalendarDateTime \| ZonedDateTime` | — | Timestamp slot. Temporal values are auto-formatted by `useFormatters` (locale + timezone read from `<GodxConfigProvider>`); pass a string / JSX to opt out. |
 | `avatar` | `ReactNode` | — | Avatar slot (used by `feed` variant) |
 | `title` | `ReactNode` | — | Headline |
 | `description` | `ReactNode` | — | Body text |

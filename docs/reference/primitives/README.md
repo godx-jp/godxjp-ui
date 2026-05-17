@@ -42,7 +42,7 @@ where `<group>` is one of `general` / `layout` / `data-display` /
 | [Sheet](./Sheet.md) | `Sheet`, `SheetTrigger`, `SheetContent`, `SheetHeader`, `SheetFooter`, `SheetTitle`, `SheetDescription`, `SheetClose` | feedback | `@radix-ui/react-dialog` |
 | [Skeleton](./Skeleton.md) | `Skeleton` | feedback | — |
 | [Switch](./Switch.md) | `Switch` | data-entry | `@radix-ui/react-switch` |
-| [Table](./Table.md) | `Table`, `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableHead`, `TableCell`, `TableCaption` | data-display | — |
+| [Table](./Table.md) | `Table` | data-display | `@tanstack/react-table` |
 | [Tabs](./Tabs.md) | `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | navigation | `@radix-ui/react-tabs` |
 | [TimeInput](./TimeInput.md) | `TimeInput` | data-entry | `react-aria-components` |
 | [Toaster](./Toaster.md) | `Toaster`, `toast` | feedback | `sonner` |

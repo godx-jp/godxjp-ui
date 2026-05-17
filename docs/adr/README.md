@@ -24,4 +24,4 @@ Do not modify an Accepted ADR — open a new ADR that supersedes it.
 | [0002](./0002-shadcn-style-not-mui.md) | shadcn-style ownership, not MUI-style black box | Accepted |
 | [0003](./0003-tokens-not-utilities.md) | Tokens (CSS custom properties) not utility classes | Accepted |
 | [0004](./0004-i18next-singleton-shared.md) | Single shared i18next instance | Accepted |
-| [0005](./0005-datetime-library-and-config-provider.md) | Datetime library + GodxConfigProvider | Proposed |
+| [0005](./0005-datetime-library-and-config-provider.md) | Datetime library + GodxConfigProvider | Accepted |

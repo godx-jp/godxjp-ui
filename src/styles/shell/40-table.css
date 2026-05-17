@@ -13,6 +13,13 @@
   background: var(--card);
 }
 
+.table-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
 .table thead tr {
   background: var(--secondary);
   height: 32px;
@@ -60,6 +67,13 @@
   background: color-mix(in oklch, var(--primary) 12%, transparent);
 }
 
+.table caption {
+  caption-side: bottom;
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+  margin-top: var(--spacing-2);
+}
+
 .table tfoot tr {
   background: var(--secondary);
   height: 36px;
@@ -87,7 +101,7 @@
 .table .mono,
 .table .col-mono { font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace); font-size: var(--text-xs); }
 
-/* Cell ellipsis helper — wrap a `<TableCell><span className="ellipsis">…</span></TableCell>`. */
+/* Cell ellipsis helper — render a span from `ColumnDef.cell`. */
 .table .ellipsis,
 .table .cell-ellipsis {
   display: block;
@@ -97,7 +111,7 @@
   text-overflow: ellipsis;
 }
 
-/* Sticky header — opt-in via `<TableHeader data-sticky>` on the thead. */
+/* Sticky header — opt-in via `<Table stickyHeader>`. */
 .table thead[data-sticky] {
   position: sticky;
   top: 0;
@@ -127,4 +141,3 @@
 }
 
 .table-toolbar .spacer { flex: 1; }
-
