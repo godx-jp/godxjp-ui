@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { expect, within } from "storybook/test";
 import { Button } from "../../components/primitives";
 import { ProductSwitcher } from "../../components/shell";
 import { PRODUCTS } from "../examples/products";
@@ -51,6 +52,14 @@ export const Default: Story = {
         onOpenChange={setOpen}
       />
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const portal = within(canvasElement.ownerDocument.body);
+
+    await step("popover renders the product list", async () => {
+      const first = await portal.findByText(PRODUCTS[0].name);
+      await expect(first).toBeVisible();
+    });
   },
 };
 

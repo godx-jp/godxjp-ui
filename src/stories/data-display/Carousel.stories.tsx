@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, within } from "storybook/test";
 import {
   Carousel,
   CarouselSlide,
@@ -41,6 +42,7 @@ function Slide({ bg, label }: { bg: string; label: string }) {
           fontWeight: "var(--font-weight-medium)",
           textAlign: "center",
           minHeight: 240,
+          height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -107,6 +109,33 @@ export const Vertical: Story = {
       </Carousel>
     </div>
   ),
+  // Regression pin for the "vertical carousel renders every slide
+  // stacked instead of clipping to one" bug. With the CSS height:100%
+  // fix only the active slide is in the viewport's clipped region —
+  // the rest sit translated out of view. We probe that by counting
+  // slides whose bounding rect is inside the carousel viewport.
+  play: async ({ canvasElement, step }) => {
+    const root = canvasElement.querySelector(".carousel") as HTMLElement;
+    if (!root) throw new Error("carousel root missing");
+
+    await step("only the active slide is inside the viewport", async () => {
+      const viewport = root.querySelector(".carousel-viewport") as HTMLElement;
+      const slides = Array.from(root.querySelectorAll(".carousel-slide"));
+      expect(slides.length).toBeGreaterThanOrEqual(2);
+
+      const vpRect = viewport.getBoundingClientRect();
+      const inside = slides.filter((s) => {
+        const r = s.getBoundingClientRect();
+        return r.top >= vpRect.top && r.bottom <= vpRect.bottom + 1;
+      });
+      await expect(inside.length).toBe(1);
+    });
+
+    await step("the dots indicator marks slide 0 as active", async () => {
+      const dot0 = root.querySelector(".carousel-dot") as HTMLElement;
+      await expect(dot0).toHaveAttribute("data-active", "true");
+    });
+  },
 };
 
 export const NoLoop: Story = {

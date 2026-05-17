@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   Dialog,
   DialogContent,
@@ -73,6 +74,29 @@ export const Default: Story = {
       </DialogContent>
     </Dialog>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("trigger opens dialog", async () => {
+      const trigger = canvas.getByRole("button", { name: /シフトを編集/ });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByRole("dialog")).toBeVisible();
+      });
+      // Title is a heading inside the dialog — disambiguates from the trigger button text.
+      await expect(
+        within(portal).getByRole("heading", { name: /シフトを編集/ }),
+      ).toBeVisible();
+    });
+
+    await step("pressing Escape closes the dialog", async () => {
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => {
+        expect(within(portal).queryByRole("dialog")).toBeNull();
+      });
+    });
+  },
 };
 
 export const Confirmation: Story = {

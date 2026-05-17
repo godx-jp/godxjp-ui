@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -68,152 +69,165 @@ const employees: Employee[] = [
 
 // ─── Default — filterable employee picker ────────────────────────
 
-function DefaultDemo() {
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Employee | null>(null);
-
-  return (
-    <div style={{ maxWidth: 280 }}>
-      <Combobox open={open} onOpenChange={setOpen}>
-        <ComboboxTrigger asChild>
-          <Button
-            variant="secondary"
-            endContent={<ChevronsUpDown size={14} aria-hidden />}
-            style={{ justifyContent: "space-between", width: "100%" }}
-          >
-            {selected ? selected.label : "従業員を選択"}
-          </Button>
-        </ComboboxTrigger>
-        <ComboboxContent style={{ width: 260 }}>
-          <ComboboxInput placeholder="名前で検索" />
-          <ComboboxList>
-            <ComboboxEmpty>該当する従業員がいません。</ComboboxEmpty>
-            {employees.map((emp) => (
-              <ComboboxItem
-                key={emp.value}
-                value={emp.value}
-                onSelect={() => {
-                  setSelected(emp);
-                  setOpen(false);
-                }}
-              >
-                <Flex
-                  justify="space-between"
-                  align="center"
-                  style={{ width: "100%" }}
-                >
-                  <Flex vertical gap={2}>
-                    <span>{emp.label}</span>
-                    <span className="muted" style={{ fontSize: 11 }}>
-                      {emp.role}
-                    </span>
-                  </Flex>
-                  {selected?.value === emp.value && (
-                    <Check size={14} aria-hidden />
-                  )}
-                </Flex>
-              </ComboboxItem>
-            ))}
-          </ComboboxList>
-        </ComboboxContent>
-      </Combobox>
-    </div>
-  );
-}
-
 export const Default: Story = {
   name: "Default · filterable employee picker",
-  render: () => <DefaultDemo />,
+  render: function Default() {
+    const [open, setOpen] = useState(false);
+    const [selected, setSelected] = useState<Employee | null>(null);
+
+    return (
+      <div style={{ maxWidth: 280 }}>
+        <Combobox open={open} onOpenChange={setOpen}>
+          <ComboboxTrigger asChild>
+            <Button
+              variant="secondary"
+              endContent={<ChevronsUpDown size={14} aria-hidden />}
+              style={{ justifyContent: "space-between", width: "100%" }}
+            >
+              {selected ? selected.label : "従業員を選択"}
+            </Button>
+          </ComboboxTrigger>
+          <ComboboxContent style={{ width: 260 }}>
+            <ComboboxInput placeholder="名前で検索" />
+            <ComboboxList>
+              <ComboboxEmpty>該当する従業員がいません。</ComboboxEmpty>
+              {employees.map((emp) => (
+                <ComboboxItem
+                  key={emp.value}
+                  value={emp.value}
+                  onSelect={() => {
+                    setSelected(emp);
+                    setOpen(false);
+                  }}
+                >
+                  <Flex
+                    justify="space-between"
+                    align="center"
+                    style={{ width: "100%" }}
+                  >
+                    <Flex vertical gap={2}>
+                      <span>{emp.label}</span>
+                      <span className="muted" style={{ fontSize: 11 }}>
+                        {emp.role}
+                      </span>
+                    </Flex>
+                    {selected?.value === emp.value && (
+                      <Check size={14} aria-hidden />
+                    )}
+                  </Flex>
+                </ComboboxItem>
+              ))}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </div>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("trigger opens command surface", async () => {
+      const trigger = canvas.getByRole("button", { name: /従業員を選択/ });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByPlaceholderText("名前で検索")).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── Empty — search yields no matches ────────────────────────────
 
-function EmptyDemo() {
-  return (
-    <div style={{ maxWidth: 280 }}>
-      <Combobox defaultOpen>
-        <ComboboxTrigger asChild>
-          <Button variant="secondary">従業員を選択</Button>
-        </ComboboxTrigger>
-        <ComboboxContent style={{ width: 260 }}>
-          <ComboboxInput
-            defaultValue="存在しない名前"
-            placeholder="名前で検索"
-          />
-          <ComboboxList>
-            <ComboboxEmpty>該当する従業員がいません。</ComboboxEmpty>
-            {employees.map((emp) => (
-              <ComboboxItem key={emp.value} value={emp.value}>
-                {emp.label}
-              </ComboboxItem>
-            ))}
-          </ComboboxList>
-        </ComboboxContent>
-      </Combobox>
-    </div>
-  );
-}
-
 export const Empty: Story = {
   name: "Empty · ComboboxEmpty surface when no items match",
-  render: () => <EmptyDemo />,
+  render: function Empty() {
+    // Controlled input — cmdk's `Command.Input` internally tracks the
+    // value, so passing `defaultValue` while the underlying primitive
+    // also drives `value` produces React's controlled / uncontrolled
+    // warning. A single controlled state seeded with the no-match
+    // string is the canonical fix.
+    const [query, setQuery] = useState("存在しない名前");
+    return (
+      <div style={{ maxWidth: 280 }}>
+        <Combobox defaultOpen>
+          <ComboboxTrigger asChild>
+            <Button variant="secondary">従業員を選択</Button>
+          </ComboboxTrigger>
+          <ComboboxContent style={{ width: 260 }}>
+            <ComboboxInput
+              value={query}
+              onValueChange={setQuery}
+              placeholder="名前で検索"
+            />
+            <ComboboxList>
+              <ComboboxEmpty>該当する従業員がいません。</ComboboxEmpty>
+              {employees.map((emp) => (
+                <ComboboxItem key={emp.value} value={emp.value}>
+                  {emp.label}
+                </ComboboxItem>
+              ))}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </div>
+    );
+  },
 };
 
 // ─── Async — deferred load with loading row ──────────────────────
 
-function AsyncDemo() {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [items, setItems] = useState<Employee[]>([]);
-
-  useEffect(() => {
-    if (!open) return;
-    setLoading(true);
-    setItems([]);
-    const timer = window.setTimeout(() => {
-      setItems(employees);
-      setLoading(false);
-    }, 600);
-    return () => window.clearTimeout(timer);
-  }, [open]);
-
-  return (
-    <div style={{ maxWidth: 280 }}>
-      <Combobox open={open} onOpenChange={setOpen}>
-        <ComboboxTrigger asChild>
-          <Button variant="secondary">従業員を読み込む</Button>
-        </ComboboxTrigger>
-        <ComboboxContent style={{ width: 260 }}>
-          <ComboboxInput placeholder="名前で検索" />
-          <ComboboxList>
-            {loading && (
-              <ComboboxItem value="__loading" disabled>
-                <Flex align="center" gap="small">
-                  <Loader2
-                    size={14}
-                    aria-hidden
-                    style={{ animation: "spin 1s linear infinite" }}
-                  />
-                  <span>読み込み中…</span>
-                </Flex>
-              </ComboboxItem>
-            )}
-            {!loading && (
-              <ComboboxEmpty>該当する従業員がいません。</ComboboxEmpty>
-            )}
-            {items.map((emp) => (
-              <ComboboxItem key={emp.value} value={emp.value}>
-                {emp.label}
-              </ComboboxItem>
-            ))}
-          </ComboboxList>
-        </ComboboxContent>
-      </Combobox>
-    </div>
-  );
-}
-
 export const Async: Story = {
   name: "Async · deferred load + loading row",
-  render: () => <AsyncDemo />,
+  render: function Async() {
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [items, setItems] = useState<Employee[]>([]);
+
+    useEffect(() => {
+      if (!open) return;
+      setLoading(true);
+      setItems([]);
+      const timer = window.setTimeout(() => {
+        setItems(employees);
+        setLoading(false);
+      }, 600);
+      return () => window.clearTimeout(timer);
+    }, [open]);
+
+    return (
+      <div style={{ maxWidth: 280 }}>
+        <Combobox open={open} onOpenChange={setOpen}>
+          <ComboboxTrigger asChild>
+            <Button variant="secondary">従業員を読み込む</Button>
+          </ComboboxTrigger>
+          <ComboboxContent style={{ width: 260 }}>
+            <ComboboxInput placeholder="名前で検索" />
+            <ComboboxList>
+              {loading && (
+                <ComboboxItem value="__loading" disabled>
+                  <Flex align="center" gap="small">
+                    <Loader2
+                      size={14}
+                      aria-hidden
+                      style={{ animation: "spin 1s linear infinite" }}
+                    />
+                    <span>読み込み中…</span>
+                  </Flex>
+                </ComboboxItem>
+              )}
+              {!loading && (
+                <ComboboxEmpty>該当する従業員がいません。</ComboboxEmpty>
+              )}
+              {items.map((emp) => (
+                <ComboboxItem key={emp.value} value={emp.value}>
+                  {emp.label}
+                </ComboboxItem>
+              ))}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      </div>
+    );
+  },
 };

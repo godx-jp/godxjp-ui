@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,6 +61,24 @@ export const Default: Story = {
       </DropdownMenuContent>
     </DropdownMenu>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("clicking trigger opens menu", async () => {
+      const trigger = canvas.getByRole("button", { name: /アクション/ });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByRole("menu")).toBeVisible();
+      });
+    });
+
+    await step("menu shows expected items", async () => {
+      const items = within(portal).getAllByRole("menuitem");
+      await expect(items.length).toBeGreaterThanOrEqual(3);
+      await expect(within(portal).getByText(/編集/)).toBeVisible();
+    });
+  },
 };
 
 export const WithDisabled: Story = {

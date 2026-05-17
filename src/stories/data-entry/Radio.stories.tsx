@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Radio, RadioGroup } from "../../components/data-entry/Radio";
 import { Flex } from "../../components/layout";
 
@@ -32,6 +33,24 @@ export const Default: Story = {
       ]}
     />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("default selection reflects defaultValue", async () => {
+      const weekly = canvas.getByRole("radio", { name: /毎週/ });
+      await expect(weekly).toHaveAttribute("aria-checked", "true");
+    });
+
+    await step("clicking a different option moves selection", async () => {
+      const monthly = canvas.getByRole("radio", { name: /毎月/ });
+      await userEvent.click(monthly);
+      await waitFor(() => {
+        expect(monthly).toHaveAttribute("aria-checked", "true");
+      });
+      const weekly = canvas.getByRole("radio", { name: /毎週/ });
+      await expect(weekly).toHaveAttribute("aria-checked", "false");
+    });
+  },
 };
 
 export const Vertical: Story = {
@@ -101,24 +120,22 @@ export const Disabled: Story = {
   ),
 };
 
-function ControlledDemo() {
-  const [value, setValue] = useState("standard");
-  return (
-    <Flex vertical gap="small">
-      <RadioGroup
-        value={value}
-        onValueChange={setValue}
-        options={[
-          { value: "free", label: "Free" },
-          { value: "standard", label: "Standard" },
-          { value: "pro", label: "Pro" },
-        ]}
-      />
-      <code className="mono" style={{ fontSize: "var(--text-xs)" }}>{value}</code>
-    </Flex>
-  );
-}
-
 export const Controlled: Story = {
-  render: () => <ControlledDemo />,
+  render: function Controlled() {
+    const [value, setValue] = useState("standard");
+    return (
+      <Flex vertical gap="small">
+        <RadioGroup
+          value={value}
+          onValueChange={setValue}
+          options={[
+            { value: "free", label: "Free" },
+            { value: "standard", label: "Standard" },
+            { value: "pro", label: "Pro" },
+          ]}
+        />
+        <code className="mono" style={{ fontSize: "var(--text-xs)" }}>{value}</code>
+      </Flex>
+    );
+  },
 };

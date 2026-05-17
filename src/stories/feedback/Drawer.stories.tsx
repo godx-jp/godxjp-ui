@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   Sheet as Drawer,
   SheetContent as DrawerContent,
@@ -72,6 +73,19 @@ export const Right: Story = {
       </DrawerContent>
     </Drawer>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("clicking trigger opens drawer", async () => {
+      const trigger = canvas.getByRole("button", { name: /右から開く/ });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByRole("dialog")).toBeVisible();
+      });
+      await expect(within(portal).getByText("シフトを編集")).toBeVisible();
+    });
+  },
 };
 
 export const Left: Story = {
@@ -83,6 +97,9 @@ export const Left: Story = {
       <DrawerContent side="left">
         <DrawerHeader>
           <DrawerTitle>メニュー</DrawerTitle>
+          <DrawerDescription>
+            主要セクションへのナビゲーション。
+          </DrawerDescription>
         </DrawerHeader>
         <Menu>
           <MenuGroup label="ナビゲーション">

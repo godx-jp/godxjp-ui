@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, within } from "storybook/test";
 import { Transfer, type TransferItem } from "../../components/data-entry/Transfer";
 import { Flex } from "../../components/layout";
 
@@ -58,25 +59,36 @@ type Story = StoryObj<typeof Transfer>;
 
 // ─── Default ────────────────────────────────────────────────────
 
-function DefaultDemo() {
-  const [chosen, setChosen] = useState<string[]>(["suzuki"]);
-  return (
-    <Flex vertical gap="small">
-      <Transfer
-        dataSource={employees}
-        value={chosen}
-        onValueChange={setChosen}
-        titles={["利用可能", "アサイン済み"]}
-      />
-      <span style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>
-        選択中: {chosen.join(", ") || "(なし)"}
-      </span>
-    </Flex>
-  );
-}
-
 export const Default: Story = {
-  render: () => <DefaultDemo />,
+  render: function Default() {
+    const [chosen, setChosen] = useState<string[]>(["suzuki"]);
+    return (
+      <Flex vertical gap="small">
+        <Transfer
+          dataSource={employees}
+          value={chosen}
+          onValueChange={setChosen}
+          titles={["利用可能", "アサイン済み"]}
+        />
+        <span style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>
+          選択中: {chosen.join(", ") || "(なし)"}
+        </span>
+      </Flex>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("both columns render with titles", async () => {
+      await expect(canvas.getByText(/利用可能/)).toBeInTheDocument();
+      await expect(canvas.getByText(/アサイン済み/)).toBeInTheDocument();
+    });
+
+    await step("move-right action button is reachable", async () => {
+      const moveRight = canvas.getByRole("button", { name: /Move right/i });
+      await expect(moveRight).toBeInTheDocument();
+    });
+  },
 };
 
 // ─── WithSearch ─────────────────────────────────────────────────

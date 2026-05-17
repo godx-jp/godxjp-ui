@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, within } from "storybook/test";
 import { CheckCircle2, CircleAlert, Mail, Search } from "lucide-react";
 import { Input, Textarea } from "../../components/data-entry/Input";
 import { InputPassword } from "../../components/data-entry/InputPassword";
@@ -61,6 +62,22 @@ export const Default: Story = {
       <Input placeholder="名前を入力" />
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("input renders with placeholder", async () => {
+      const input = canvas.getByPlaceholderText("名前を入力") as HTMLInputElement;
+      await expect(input).toBeInTheDocument();
+      await expect(input.value).toBe("");
+    });
+
+    await step("typing updates value", async () => {
+      const input = canvas.getByPlaceholderText("名前を入力") as HTMLInputElement;
+      await userEvent.click(input);
+      await userEvent.type(input, "田中");
+      await expect(input.value).toBe("田中");
+    });
+  },
 };
 
 // ─── WithPrefix — prefix / suffix slot props ────────────────────

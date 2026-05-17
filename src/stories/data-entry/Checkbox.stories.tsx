@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Checkbox } from "../../components/data-entry/Checkbox";
 import { CheckboxGroup } from "../../components/data-entry/CheckboxGroup";
 import { Flex } from "../../components/layout";
@@ -29,6 +30,22 @@ export const Single: Story = {
       <span>利用規約に同意する</span>
     </label>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("default-checked starts true", async () => {
+      const cb = canvas.getByRole("checkbox");
+      await expect(cb).toHaveAttribute("aria-checked", "true");
+    });
+
+    await step("clicking toggles aria-checked", async () => {
+      const cb = canvas.getByRole("checkbox");
+      await userEvent.click(cb);
+      await waitFor(() => {
+        expect(cb).toHaveAttribute("aria-checked", "false");
+      });
+    });
+  },
 };
 
 export const GroupHorizontal: Story = {
@@ -93,26 +110,24 @@ export const Disabled: Story = {
   ),
 };
 
-function ControlledDemo() {
-  const [value, setValue] = useState<string[]>(["jp"]);
-  return (
-    <Flex vertical gap="small">
-      <CheckboxGroup
-        value={value}
-        onValueChange={setValue}
-        options={[
-          { value: "jp", label: "日本語" },
-          { value: "en", label: "English" },
-          { value: "vi", label: "Tiếng Việt" },
-        ]}
-      />
-      <code className="mono" style={{ fontSize: "var(--text-xs)" }}>
-        {JSON.stringify(value)}
-      </code>
-    </Flex>
-  );
-}
-
 export const Controlled: Story = {
-  render: () => <ControlledDemo />,
+  render: function Controlled() {
+    const [value, setValue] = useState<string[]>(["jp"]);
+    return (
+      <Flex vertical gap="small">
+        <CheckboxGroup
+          value={value}
+          onValueChange={setValue}
+          options={[
+            { value: "jp", label: "日本語" },
+            { value: "en", label: "English" },
+            { value: "vi", label: "Tiếng Việt" },
+          ]}
+        />
+        <code className="mono" style={{ fontSize: "var(--text-xs)" }}>
+          {JSON.stringify(value)}
+        </code>
+      </Flex>
+    );
+  },
 };

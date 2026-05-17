@@ -1,4 +1,5 @@
 import type { Meta } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   SimpleTooltip,
   Tooltip,
@@ -62,6 +63,24 @@ export const SimpleTooltip_FourPlacements = {
       </SimpleTooltip>
     </Flex>
   ),
+  play: async ({ canvasElement, step }: any) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("hovering trigger reveals tooltip content", async () => {
+      const trigger = canvas.getByRole("button", { name: "Top" });
+      await userEvent.hover(trigger);
+      await waitFor(
+        () => {
+          // Radix renders the title both in the visible tooltip-content div
+          // and in an aria-live sr-only span — so >= 1 match is expected.
+          const matches = within(portal).getAllByText("上に表示");
+          expect(matches.length).toBeGreaterThan(0);
+        },
+        { timeout: 2000 },
+      );
+    });
+  },
 };
 
 // ─── Compositional · custom Content ─────────────────────────────

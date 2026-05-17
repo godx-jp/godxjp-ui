@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { SegmentedControl } from "../../components/data-display/SegmentedControl";
 import { Flex } from "../../components/layout";
 
@@ -62,6 +63,20 @@ export const Default: Story = {
       aria-label="表示単位"
     />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("clicking a different segment moves active state", async () => {
+      const dayRadio = canvas.getByRole("radio", { name: "日" });
+      await expect(dayRadio).toHaveAttribute("aria-checked", "false");
+      await userEvent.click(dayRadio);
+      await waitFor(() => {
+        expect(dayRadio).toHaveAttribute("aria-checked", "true");
+      });
+      const monthRadio = canvas.getByRole("radio", { name: "月" });
+      await expect(monthRadio).toHaveAttribute("aria-checked", "false");
+    });
+  },
 };
 
 // ─── Sizes — sm / default × bar / pill ──────────────────────────

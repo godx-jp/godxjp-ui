@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ColorPicker } from "../../components/data-entry/ColorPicker";
 import { Flex } from "../../components/layout";
 
@@ -34,6 +35,24 @@ const BRAND_PRESETS = [
 
 export const Default: Story = {
   render: () => <ColorPicker defaultValue="#3b82f6" />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("trigger renders", async () => {
+      const trigger = canvas.getByRole("button");
+      await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    });
+
+    await step("click opens the picker popover", async () => {
+      const trigger = canvas.getByRole("button");
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(trigger).toHaveAttribute("aria-expanded", "true");
+      });
+      await expect(within(portal).getByRole("dialog")).toBeInTheDocument();
+    });
+  },
 };
 
 export const WithPresets: Story = {

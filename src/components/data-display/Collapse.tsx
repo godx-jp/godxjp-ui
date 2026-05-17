@@ -110,7 +110,7 @@ export function Collapse({
     >
       <div
         className={cn(
-          "collapse",
+          "collapse-root",
           `collapse-variant-${variant}`,
           `collapse-size-${size}`,
           className,

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, within } from "storybook/test";
 import {
   Collapse,
   CollapsePanel,
@@ -60,6 +61,33 @@ export const Default: Story = {
       </Collapse>
     </div>
   ),
+  // Regression pin for the "Tailwind .collapse utility hides the whole
+  // accordion via inherited `visibility: collapse`" bug. The fix was
+  // renaming the root class to `.collapse-root` — if a future refactor
+  // reverts to `.collapse`, this `play` fails because the title text
+  // is no longer visible.
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("root subtree is actually visible", async () => {
+      // q1 is open by default; its title must render visibly. If the
+      // Tailwind utility re-shadows `.collapse`, this trigger reads as
+      // not-visible (visibility: collapse on the ancestor).
+      const trigger = canvas.getByRole("button", { name: /godx-admin/ });
+      await expect(trigger).toBeVisible();
+      await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    });
+
+    await step("clicking another panel opens it (single mode)", async () => {
+      const q2 = canvas.getByRole("button", { name: /サンドボックス/ });
+      await userEvent.click(q2);
+      await expect(q2).toHaveAttribute("aria-expanded", "true");
+
+      // single-mode: q1 closes when q2 opens
+      const q1 = canvas.getByRole("button", { name: /godx-admin/ });
+      await expect(q1).toHaveAttribute("aria-expanded", "false");
+    });
+  },
 };
 
 export const Multiple: Story = {

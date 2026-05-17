@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, within } from "storybook/test";
 import { Button } from "../../components/primitives";
 import { TweaksPanel } from "../../components/shell";
 import { PRODUCTS } from "../examples/products";
@@ -46,6 +47,16 @@ export const Default: Story = {
         />
       </>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const portal = within(canvasElement.ownerDocument.body);
+
+    await step("panel renders the preferences UI in a portal", async () => {
+      const dialog = await portal.findByRole("dialog");
+      await expect(dialog).toBeVisible();
+      const close = within(dialog).getByRole("button", { name: "Close" });
+      await expect(close).toBeVisible();
+    });
   },
 };
 

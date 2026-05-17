@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, within } from "storybook/test";
 import { Info } from "lucide-react";
 import { Field } from "../../components/data-entry/Field";
 import { Input, Textarea } from "../../components/data-entry/Input";
@@ -65,6 +66,23 @@ export const Default: Story = {
       </Field>
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("label, control, and help all render", async () => {
+      await expect(canvas.getByText("従業員コード")).toBeInTheDocument();
+      await expect(canvas.getByPlaceholderText("EMP-0001")).toBeInTheDocument();
+      await expect(
+        canvas.getByText("英数字 4–8 文字で入力してください。"),
+      ).toBeInTheDocument();
+    });
+
+    await step("typing updates the input value", async () => {
+      const input = canvas.getByPlaceholderText("EMP-0001") as HTMLInputElement;
+      await userEvent.type(input, "EMP-0042");
+      await expect(input.value).toBe("EMP-0042");
+    });
+  },
 };
 
 // ─── Required — asterisk + info icon ────────────────────────────

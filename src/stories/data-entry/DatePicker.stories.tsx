@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { today, getLocalTimeZone } from "@internationalized/date";
 import {
   DateField,
@@ -66,6 +67,23 @@ export const SingleDate: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("calendar trigger renders", async () => {
+      const trigger = canvas.getByRole("button");
+      await expect(trigger).toBeInTheDocument();
+    });
+
+    await step("clicking trigger opens the calendar dialog", async () => {
+      const trigger = canvas.getByRole("button");
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── Date range — DateRangePicker ───────────────────────────────

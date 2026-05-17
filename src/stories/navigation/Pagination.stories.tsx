@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Pagination } from "../../components/navigation/Pagination";
 
 /**
@@ -27,6 +28,23 @@ type Story = StoryObj<typeof Pagination>;
 export const Default: Story = {
   name: "Default · 12 pages × 10/page",
   render: () => <Pagination total={120} pageSize={10} defaultValue={3} />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("defaultValue selects page 3", async () => {
+      const active = canvas.getByRole("button", { name: "3" });
+      await expect(active).toHaveAttribute("aria-current", "page");
+    });
+
+    await step("clicking next page advances current to 4", async () => {
+      const next = canvas.getByRole("button", { name: /Next page/i });
+      await userEvent.click(next);
+      await waitFor(() => {
+        const newActive = canvas.getByRole("button", { name: "4" });
+        expect(newActive).toHaveAttribute("aria-current", "page");
+      });
+    });
+  },
 };
 
 export const WithShowTotal: Story = {

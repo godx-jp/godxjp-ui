@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "../../components/data-display/Card";
+import { Card, CardBody, CardFooter } from "../../components/data-display/Card";
 import { Button } from "../../components/general/Button";
 import { Input } from "../../components/data-entry/Input";
 import {
@@ -80,7 +80,7 @@ export const Default: Story = {
 // ════════════════════════════════════════════════════════════════════
 
 export const A1_StatCompact: Story = {
-  name: "A1 · Stat — micro label + delta + value",
+  name: "Stat — micro label + delta + value",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]">
       <Card padding="tight">
@@ -109,7 +109,7 @@ export const A1_StatCompact: Story = {
 };
 
 export const A2_StatWithChip: Story = {
-  name: "A2 · Stat — label + chip on right",
+  name: "Stat — label + chip on right",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]">
       <Card>
@@ -146,7 +146,7 @@ export const A2_StatWithChip: Story = {
 };
 
 export const A4_StatSparkline: Story = {
-  name: "A4 · Stat + sparkline · trend in line",
+  name: "Stat + sparkline · trend in line",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card>
@@ -166,7 +166,7 @@ export const A4_StatSparkline: Story = {
         </div>
       </Card>
       <Card padding="none" title="週次 · 実働 vs 所定" meta="第 20 週 · 5/12 — 5/18">
-        <div className="card-body">
+        <CardBody block>
           <div className="bars" aria-hidden>
             <i style={{ height: "62%" }} />
             <i style={{ height: "78%" }} />
@@ -179,19 +179,19 @@ export const A4_StatSparkline: Story = {
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 10, color: "var(--muted-foreground)", fontVariantNumeric: "tabular-nums" }}>
             <span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span><span>日</span>
           </div>
-        </div>
-        <div className="card-footer-block">
+        </CardBody>
+        <CardFooter block>
           <span className="dot primary" /><span>実働</span>
           <span className="dot" style={{ background: "var(--border)", marginLeft: 10 }} /><span>未来</span>
           <span style={{ marginLeft: "auto", color: "var(--foreground)", fontWeight: 500 }}>合計 33.2 h</span>
-        </div>
+        </CardFooter>
       </Card>
     </div>
   ),
 };
 
 export const A6_ProgressQuota: Story = {
-  name: "A6 · Progress / quota — storage · budget",
+  name: "Progress / quota — storage · budget",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card>
@@ -229,7 +229,7 @@ export const A6_ProgressQuota: Story = {
 };
 
 export const A7_DataList: Story = {
-  name: "A7 · Data-list — key/value pairs",
+  name: "Data-list — key/value pairs",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card>
@@ -258,7 +258,7 @@ export const A7_DataList: Story = {
 };
 
 export const A8_InlineTable: Story = {
-  name: "A8 · Inline table — leaderboard",
+  name: "Inline table — leaderboard",
   render: () => (
     <Card padding="none" title="店舗別売上 · 今月" meta="5月 1日 — 17日">
       <table className="mini-table">
@@ -272,9 +272,9 @@ export const A8_InlineTable: Story = {
           <tr><td style={{ color: "var(--muted-foreground)" }}>04</td><td>新宿西口店</td><td>¥ 2,104,200</td><td><span className="delta flat">±0.0%</span></td><td>52%</td></tr>
         </tbody>
       </table>
-      <div className="card-footer-block" style={{ justifyContent: "center" }}>
+      <CardFooter block style={{ justifyContent: "center" }}>
         <a className="lnk">すべての店舗 (12) →</a>
-      </div>
+      </CardFooter>
     </Card>
   ),
 };
@@ -284,7 +284,7 @@ export const A8_InlineTable: Story = {
 // ════════════════════════════════════════════════════════════════════
 
 export const B1_PersonBasic: Story = {
-  name: "B1–B2 · Person basic — avatar + role + live status",
+  name: "Person basic — avatar + role + live status",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card>
@@ -324,13 +324,13 @@ export const B1_PersonBasic: Story = {
 };
 
 export const B3_ProfileRich: Story = {
-  name: "B3 · Profile rich — banner + avatar + stats",
+  name: "Profile rich — banner + avatar + stats",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="none">
         <div className="ph striped tinted-info" style={{ height: 80 }} />
-        <div style={{ padding: "0 16px 14px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: -36, marginBottom: 10, gap: 10, position: "relative" }}>
+        <CardBody block>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: -50, marginBottom: 4, gap: 10, position: "relative" }}>
             <span className="ava xl" style={{ background: "var(--card)", border: "4px solid var(--card)", boxShadow: "0 0 0 1px var(--border)", color: "var(--primary)", fontWeight: 600, width: 68, height: 68 }}>田</span>
             <div style={{ display: "flex", gap: 6, paddingBottom: 2 }}>
               <Button variant="outline" size="x-small">メッセージ</Button>
@@ -339,12 +339,12 @@ export const B3_ProfileRich: Story = {
           </div>
           <div style={{ fontSize: 14, fontWeight: 500 }}>田中 美咲</div>
           <div className="muted" style={{ fontSize: 11 }}>店長 · 渋谷本店 · 入社 2020年 4月</div>
-          <div style={{ display: "flex", gap: 18, marginTop: 12, paddingTop: 10, borderTop: "1px solid var(--border)" }}>
-            <div><div style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>12</div><div className="muted" style={{ fontSize: 10 }}>担当チーム</div></div>
-            <div><div style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>98.4%</div><div className="muted" style={{ fontSize: 10 }}>勤怠率</div></div>
-            <div><div style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>5.0</div><div className="muted" style={{ fontSize: 10 }}>評価</div></div>
-          </div>
-        </div>
+        </CardBody>
+        <CardFooter block style={{ gap: 18, color: "var(--foreground)" }}>
+          <div><div style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>12</div><div className="muted" style={{ fontSize: 10 }}>担当チーム</div></div>
+          <div><div style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>98.4%</div><div className="muted" style={{ fontSize: 10 }}>勤怠率</div></div>
+          <div><div style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>5.0</div><div className="muted" style={{ fontSize: 10 }}>評価</div></div>
+        </CardFooter>
       </Card>
       <Card>
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -370,7 +370,7 @@ export const B3_ProfileRich: Story = {
 };
 
 export const B4_TeamTenant: Story = {
-  name: "B4–B5 · Team · Tenant",
+  name: "Team · Tenant",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card>
@@ -430,12 +430,12 @@ const Check = () => (
 );
 
 export const C1_ArticleProduct: Story = {
-  name: "C1–C2 · Article · Product · Document",
+  name: "Article · Product · Document",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]">
       <Card padding="none">
         <div className="ph striped tinted-leaf" style={{ aspectRatio: "16/9" }}>1280 × 720 · article hero</div>
-        <div className="card-body" style={{ padding: "12px 14px 14px" }}>
+        <CardBody block style={{ padding: "12px 14px 14px" }}>
           <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 6 }}>
             <span className="chip chip-outline">お知らせ</span>
             <span className="muted" style={{ fontSize: 10 }}>2026/05/14</span>
@@ -448,11 +448,11 @@ export const C1_ArticleProduct: Story = {
             <span className="ava sm">編</span><span>編集部</span>
             <span style={{ marginLeft: "auto" }}>3 分</span>
           </div>
-        </div>
+        </CardBody>
       </Card>
       <Card padding="none">
         <div className="ph striped tinted-warm" style={{ aspectRatio: "1" }}>800 × 800 · 商品写真</div>
-        <div className="card-body" style={{ padding: "12px 14px 14px" }}>
+        <CardBody block style={{ padding: "12px 14px 14px" }}>
           <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 2 }}>和食 · 寿司</div>
           <div style={{ fontSize: 13, fontWeight: 500 }}>特選 まぐろ握り 6貫盛り合わせ</div>
           <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 8 }}>
@@ -461,7 +461,7 @@ export const C1_ArticleProduct: Story = {
             <span className="chip chip-attention" style={{ marginLeft: "auto" }}>-17%</span>
           </div>
           <Button size="small" block style={{ marginTop: 10 }}>カートに追加</Button>
-        </div>
+        </CardBody>
       </Card>
       <Card>
         <div className="row-between" style={{ marginBottom: 10 }}>
@@ -484,7 +484,7 @@ export const C1_ArticleProduct: Story = {
 };
 
 export const C3_PricingTier: Story = {
-  name: "C3 · Pricing tier — 3-up · featured middle",
+  name: "Pricing tier — 3-up · featured middle",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]" style={{ paddingTop: 14 }}>
       <Card>
@@ -539,7 +539,7 @@ export const C3_PricingTier: Story = {
 };
 
 export const C4_FeatureCards: Story = {
-  name: "C4 · Feature card — onboarding · marketing",
+  name: "Feature card — onboarding · marketing",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]">
       <Card>
@@ -588,7 +588,7 @@ export const C4_FeatureCards: Story = {
 };
 
 export const C5_Integrations: Story = {
-  name: "C5 · Integration / connection — 3rd-party",
+  name: "Integration / connection — 3rd-party",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]">
       <Card>
@@ -645,7 +645,7 @@ export const C5_Integrations: Story = {
 // ════════════════════════════════════════════════════════════════════
 
 export const D1_Approval: Story = {
-  name: "D1 · Approval — header / list / actions",
+  name: "Approval — header / list / actions",
   render: () => (
     <Card
       padding="none"
@@ -659,19 +659,19 @@ export const D1_Approval: Story = {
         </>
       )}
     >
-      <div className="card-body">
+      <CardBody block>
         <dl className="dl left" style={{ gridTemplateColumns: "80px 1fr" }}>
           <dt>期間</dt><dd>5月 22日 (木) — 5月 23日 (金) · 2 日</dd>
           <dt>残数</dt><dd>12.0 日 → 10.0 日</dd>
           <dt>理由</dt><dd style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>私用のため</dd>
         </dl>
-      </div>
+      </CardBody>
     </Card>
   ),
 };
 
 export const D2_StepsWizard: Story = {
-  name: "D2 · Step / wizard — onboarding 進捗",
+  name: "Step / wizard — onboarding 進捗",
   render: () => (
     <Card>
       <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 4 }}>初期設定をすすめましょう</div>
@@ -700,7 +700,7 @@ export const D2_StepsWizard: Story = {
 };
 
 export const D3_QuickActionGrid: Story = {
-  name: "D3 · Quick action grid — 2 × 2 / 4 cột entry-point",
+  name: "Quick action grid — 2 × 2 / 4 cột entry-point",
   render: () => (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-[10px]">
       <Card padding="tight" hoverable style={{ display: "flex", flexDirection: "column", gap: 6, cursor: "pointer" }}>
@@ -736,7 +736,7 @@ export const D3_QuickActionGrid: Story = {
 };
 
 export const D4_SettingsRows: Story = {
-  name: "D4 · Settings rows — title + desc + control",
+  name: "Settings rows — title + desc + control",
   render: () => (
     <Card padding="none">
       <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
@@ -778,7 +778,7 @@ export const D4_SettingsRows: Story = {
 };
 
 export const D5_CTA: Story = {
-  name: "D5 · Action CTA — punch · payroll",
+  name: "Action CTA — punch · payroll",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="cozy">
@@ -818,7 +818,7 @@ export const D5_CTA: Story = {
 // ════════════════════════════════════════════════════════════════════
 
 export const E1_Notices: Story = {
-  name: "E1 · Notice · alert — accent-left + icon",
+  name: "Notice · alert — accent-left + icon",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <Card accent="info" padding="tight" style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -859,7 +859,7 @@ export const E1_Notices: Story = {
 };
 
 export const E2_EmptyState: Story = {
-  name: "E2 · Empty state — 1 line calm · no illustration",
+  name: "Empty state — 1 line calm · no illustration",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card style={{ textAlign: "center", padding: "32px 16px" }}>
@@ -877,7 +877,7 @@ export const E2_EmptyState: Story = {
 };
 
 export const E3_Choices: Story = {
-  name: "E3 · Selectable choice — radio cards",
+  name: "Selectable choice — radio cards",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <div className="choice on">
@@ -914,7 +914,7 @@ export const E3_Choices: Story = {
 };
 
 export const E4_Skeleton: Story = {
-  name: "E4 · Skeleton / loading — shape parity",
+  name: "Skeleton / loading — shape parity",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]">
       <Card>
@@ -954,7 +954,7 @@ export const E4_Skeleton: Story = {
 };
 
 export const E5_Health: Story = {
-  name: "E5 · Health / status — uptime indicator",
+  name: "Health / status — uptime indicator",
   render: () => (
     <Card padding="none" title="システム状態" meta="5月 17日 14:35 時点 · 過去 90 日">
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -978,7 +978,7 @@ export const E5_Health: Story = {
 };
 
 export const E6_Banner: Story = {
-  name: "E6 · Banner / promo — wa-iro gradient",
+  name: "Banner / promo — wa-iro gradient",
   render: () => (
     <div className="banner">
       <div style={{ display: "flex", gap: 16, alignItems: "center", position: "relative", zIndex: 1, flexWrap: "wrap" }}>
@@ -1003,7 +1003,7 @@ export const E6_Banner: Story = {
 // ════════════════════════════════════════════════════════════════════
 
 export const F1_Shift: Story = {
-  name: "F1 · Shift card — date · time · status",
+  name: "Shift card — date · time · status",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card accent="primary">
@@ -1035,7 +1035,7 @@ export const F1_Shift: Story = {
 };
 
 export const F2_Calendar: Story = {
-  name: "F2 · Calendar mini — 7-day grid",
+  name: "Calendar mini — 7-day grid",
   render: () => (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6 }}>
       <div className="cal-day"><span className="d">月 12</span><span className="time">8:00–17:00</span><span className="role">早番 · キッチン</span></div>
@@ -1050,7 +1050,7 @@ export const F2_Calendar: Story = {
 };
 
 export const F3_ListRows: Story = {
-  name: "F3 · List with rows — punch log",
+  name: "List with rows — punch log",
   render: () => (
     <Card padding="none" title="本日の打刻" meta="5月 17日 · 14 件">
       <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
@@ -1067,15 +1067,15 @@ export const F3_ListRows: Story = {
           </li>
         ))}
       </ul>
-      <div className="card-footer-block" style={{ justifyContent: "center" }}>
+      <CardFooter block style={{ justifyContent: "center" }}>
         <a className="lnk">すべて表示 →</a>
-      </div>
+      </CardFooter>
     </Card>
   ),
 };
 
 export const F5_Log: Story = {
-  name: "F5 · Compact log — audit trail",
+  name: "Compact log — audit trail",
   render: () => (
     <Card>
       <div className="tl-log">
@@ -1092,7 +1092,7 @@ export const F5_Log: Story = {
 };
 
 export const F6_StepsHorizontal: Story = {
-  name: "F6 · Horizontal steps — wizard progress",
+  name: "Horizontal steps — wizard progress",
   render: () => {
     const StepCheck = () => (
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
@@ -1114,7 +1114,7 @@ export const F6_StepsHorizontal: Story = {
 };
 
 export const F7_DateGrouped: Story = {
-  name: "F7 · Date-grouped — diary style",
+  name: "Date-grouped — diary style",
   render: () => (
     <Card>
       <div className="tl-grp">
@@ -1150,7 +1150,7 @@ export const F7_DateGrouped: Story = {
 };
 
 export const F8_Branching: Story = {
-  name: "F8 · Branching — approval pipeline",
+  name: "Branching — approval pipeline",
   render: () => (
     <Card>
       <div className="tl-br">
@@ -1186,7 +1186,7 @@ export const F8_Branching: Story = {
 };
 
 export const F9_AvatarFeed: Story = {
-  name: "F9 · Avatar feed — social-style",
+  name: "Avatar feed — social-style",
   render: () => (
     <Card>
       <div className="tl-feed">
@@ -1227,7 +1227,7 @@ export const F9_AvatarFeed: Story = {
 // ════════════════════════════════════════════════════════════════════
 
 export const G1_PlainRules: Story = {
-  name: "G1 · Plain rules — solid · dashed · dotted · thick · gradient",
+  name: "Plain rules — solid · dashed · dotted · thick · gradient",
   render: () => (
     <Card>
       <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>Solid (default)</div>
@@ -1246,7 +1246,7 @@ export const G1_PlainRules: Story = {
 };
 
 export const G2_LabelChip: Story = {
-  name: "G2 · Label-inline · chip-inline",
+  name: "Label-inline · chip-inline",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card>
@@ -1278,7 +1278,7 @@ export const G2_LabelChip: Story = {
 };
 
 export const G3_SectionHeading: Story = {
-  name: "G3 · Section heading inside card",
+  name: "Section heading inside card",
   render: () => (
     <Card>
       <div className="dv-section">
@@ -1303,7 +1303,7 @@ export const G3_SectionHeading: Story = {
 };
 
 export const G4_DateSeparator: Story = {
-  name: "G4 · Date separator — chat / feed style",
+  name: "Date separator — chat / feed style",
   render: () => (
     <Card>
       <div className="dv-date"><span className="pill">2026/05/14 木</span></div>
@@ -1325,7 +1325,7 @@ export const G4_DateSeparator: Story = {
 };
 
 export const G5_StackedList: Story = {
-  name: "G5 · Stacked-list dividers — implicit borders",
+  name: "Stacked-list dividers — implicit borders",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card>
@@ -1351,7 +1351,7 @@ export const G5_StackedList: Story = {
 };
 
 export const G6_VerticalDivider: Story = {
-  name: "G6 · Vertical divider — inline-row separator",
+  name: "Vertical divider — inline-row separator",
   render: () => (
     <Card style={{ display: "flex", alignItems: "center", gap: 0, fontSize: 12, flexWrap: "wrap" }}>
       <span><b>168.5h</b> <span className="muted">実働</span></span>
@@ -1373,36 +1373,36 @@ export const G6_VerticalDivider: Story = {
 // ════════════════════════════════════════════════════════════════════
 
 export const H1_H3_Simple: Story = {
-  name: "H1–H3 · Simple — title only · stacked · meta-right",
+  name: "Simple — title only · stacked · meta-right",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]">
       <Card padding="none" title="タイトルのみ">
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           最小限のヘッダー。情報密度が高い表 / list に。
-        </div>
+        </CardBody>
       </Card>
       <Card padding="none" title="スタック構成" subtitle="タイトル + 補足 (1 行ずつ縦に積む)">
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           subtitle dài 1–2 dòng OK · không nằm bên phải tránh tràn.
-        </div>
+        </CardBody>
       </Card>
       <Card padding="none" title="メタ右" meta="5月 17日 · 14 件">
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           timestamp / count thuần → right-aligned, font monospace.
-        </div>
+        </CardBody>
       </Card>
     </div>
   ),
 };
 
 export const H4_H5_WithActions: Story = {
-  name: "H4–H5 · With actions — single · button group",
+  name: "With actions — single · button group",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="none" title="承認待ち一覧" meta="12 件" extra={<Button variant="outline" size="x-small">一括承認</Button>}>
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           1 chính + meta — action ngắn, không vượt 8 ký tự.
-        </div>
+        </CardBody>
       </Card>
       <Card padding="none" title="勤怠データ" extra={(
         <>
@@ -1420,16 +1420,16 @@ export const H4_H5_WithActions: Story = {
           <Button size="x-small">＋ 新規</Button>
         </>
       )}>
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           Icon-only buttons phía bên trái, labeled buttons phía bên phải — luôn theo thứ tự danger → standard → primary.
-        </div>
+        </CardBody>
       </Card>
     </div>
   ),
 };
 
 export const H6_H7_IconAvatar: Story = {
-  name: "H6–H7 · Icon header · Avatar header",
+  name: "Icon header · Avatar header",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="none">
@@ -1445,9 +1445,9 @@ export const H6_H7_IconAvatar: Story = {
           </div>
           <span style={{ marginLeft: "auto" }} className="live-dot">LIVE</span>
         </div>
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           Icon w/ tinted background — semantic. Phù hợp cho stat cards có category rõ ràng.
-        </div>
+        </CardBody>
       </Card>
       <Card padding="none">
         <div className="card-header-row card-header-block">
@@ -1460,24 +1460,24 @@ export const H6_H7_IconAvatar: Story = {
             <span className="dot success" />勤務中
           </span>
         </div>
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           Avatar — chuyên cho entity card (người, công ty, team). Status dot bên phải.
-        </div>
+        </CardBody>
       </Card>
     </div>
   ),
 };
 
 export const H8_Tabs: Story = {
-  name: "H8 · Tabs header — primary underline",
+  name: "Tabs header — primary underline",
   render: () => (
     <Card padding="none">
       <div className="card-header-tabs">
         <span className="t">勤怠</span>
-        <Button variant="ghost" className="tab on">月次 <span className="pill">22</span></Button>
-        <Button variant="ghost" className="tab">日次</Button>
-        <Button variant="ghost" className="tab">承認待ち <span className="pill" style={{ background: "color-mix(in oklch, var(--attention) 18%, transparent)", color: "var(--attention)" }}>3</span></Button>
-        <Button variant="ghost" className="tab">エラー</Button>
+        <button type="button" className="tab on">月次 <span className="pill">22</span></button>
+        <button type="button" className="tab">日次</button>
+        <button type="button" className="tab">承認待ち <span className="pill" style={{ background: "color-mix(in oklch, var(--attention) 18%, transparent)", color: "var(--attention)" }}>3</span></button>
+        <button type="button" className="tab">エラー</button>
         <div className="spacer" />
         <div className="right">
           <Button variant="ghost" size="x-small" aria-label="フィルタ">
@@ -1488,15 +1488,15 @@ export const H8_Tabs: Story = {
           <Button size="x-small">エクスポート</Button>
         </div>
       </div>
-      <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
         Tabs in-header — phù hợp cho card có 2–5 views cùng dataset. Count pill match màu trạng thái.
-      </div>
+      </CardBody>
     </Card>
   ),
 };
 
 export const H9_Filters: Story = {
-  name: "H9 · Filter chips — quick scope",
+  name: "Filter chips — quick scope",
   render: () => (
     <Card padding="none">
       <div className="card-header-filters">
@@ -1509,15 +1509,15 @@ export const H9_Filters: Story = {
         <span className="spacer" />
         <span style={{ fontSize: 11, color: "var(--muted-foreground)", fontVariantNumeric: "tabular-nums" }}>14 / 38 件</span>
       </div>
-      <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
         Chips "đang active" có icon × để remove · clear-all không cần (×× từng cái dễ hơn).
-      </div>
+      </CardBody>
     </Card>
   ),
 };
 
 export const H10_Search: Story = {
-  name: "H10 · Search header — inline · ⌘K",
+  name: "Search header — inline · ⌘K",
   render: () => (
     <Card padding="none">
       <div className="card-header-search">
@@ -1531,15 +1531,15 @@ export const H10_Search: Story = {
           <span className="kbd">⌘K</span>
         </div>
       </div>
-      <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
         Search input căn phải, max-width 280px — không tràn cả header. Đếm result luôn cạnh title.
-      </div>
+      </CardBody>
     </Card>
   ),
 };
 
 export const H11_Bands: Story = {
-  name: "H11 · Color bands — accent strip top",
+  name: "Color bands — accent strip top",
   render: () => (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-[10px]">
       <Card padding="none" band="primary" title="プロジェクト" meta="primary" />
@@ -1555,25 +1555,25 @@ export const H11_Bands: Story = {
 };
 
 export const H12_Kicker: Story = {
-  name: "H12 · Kicker header — uppercase + big title",
+  name: "Kicker header — uppercase + big title",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="none" kicker="5月度 · 暫定" title="¥ 8,420,500" subtitle="支払合計 · 38 名 · 振込日 5/25">
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           Kicker (uppercase) làm context · title kích thước to (h2 spec).
-        </div>
+        </CardBody>
       </Card>
       <Card padding="none" kicker="特集記事" title="2026 年 6 月リリース予定の新機能" subtitle="シフト自動最適化と多店舗在庫連携を導入">
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           Article / content card có hierarchy 3 cấp: category → title → tagline.
-        </div>
+        </CardBody>
       </Card>
     </div>
   ),
 };
 
 export const H13_H14_Hero: Story = {
-  name: "H13–H14 · Hero header — branded gradient",
+  name: "Hero header — branded gradient",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="none">
@@ -1586,9 +1586,9 @@ export const H13_H14_Hero: Story = {
             <Button variant="ghost" size="small" style={{ color: "white" }}>あとで</Button>
           </div>
         </div>
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           Hero — branded promo. White text trên gradient wa-iro. Luôn có CTA.
-        </div>
+        </CardBody>
       </Card>
       <Card padding="none">
         <div className="card-header-hero warm">
@@ -1599,16 +1599,16 @@ export const H13_H14_Hero: Story = {
             <Button size="small" style={{ background: "white", color: "var(--wa-akane)" }}>詳細を見る</Button>
           </div>
         </div>
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           Warm variant cho marketing / urgency. Wa-iro 茜×朱 gradient.
-        </div>
+        </CardBody>
       </Card>
     </div>
   ),
 };
 
 export const H15_Toolbar: Story = {
-  name: "H15 · Toolbar header — view-switcher + date nav",
+  name: "Toolbar header — view-switcher + date nav",
   render: () => (
     <Card padding="none">
       <div className="card-header-toolbar">
@@ -1635,15 +1635,15 @@ export const H15_Toolbar: Story = {
         <div className="spacer" />
         <Button variant="secondary" size="x-small">＋ シフト追加</Button>
       </div>
-      <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
         Calendar-style toolbar — view seg + date nav + primary action. Phổ biến nhất cho schedule UI.
-      </div>
+      </CardBody>
     </Card>
   ),
 };
 
 export const H16_Breadcrumb: Story = {
-  name: "H16 · Breadcrumb header — hierarchy",
+  name: "Breadcrumb header — hierarchy",
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="none">
@@ -1661,9 +1661,9 @@ export const H16_Breadcrumb: Story = {
           </div>
           <span className="card-title" style={{ fontSize: 15 }}>田中 美咲</span>
         </div>
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           Breadcrumb in-card — cho detail page sâu, link cấp trên ngắn ngọn.
-        </div>
+        </CardBody>
       </Card>
       <Card padding="none">
         <div className="card-header-row card-header-block" style={{ background: "color-mix(in oklch, var(--secondary) 30%, var(--card))" }}>
@@ -1679,16 +1679,16 @@ export const H16_Breadcrumb: Story = {
             <Button size="x-small">保存</Button>
           </span>
         </div>
-        <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
           Edit-mode header — back arrow + save status + actions. Background tint phân biệt với view mode.
-        </div>
+        </CardBody>
       </Card>
     </div>
   ),
 };
 
 export const H17_StickyShadow: Story = {
-  name: "H17 · Sticky shadow — drop shadow on scroll",
+  name: "Sticky shadow — drop shadow on scroll",
   render: () => (
     <Card padding="none">
       <div className="card-header-row card-header-block" style={{ boxShadow: "0 2px 4px -2px rgba(0,0,0,0.08)", position: "relative", zIndex: 1 }}>
@@ -1696,15 +1696,20 @@ export const H17_StickyShadow: Story = {
         <span className="card-meta">2,481 件</span>
         <span className="card-header-extra" style={{ fontSize: 11, color: "var(--muted-foreground)", fontFamily: "var(--font-mono)" }}>スクロール中</span>
       </div>
-      <div className="card-body" style={{ fontSize: 11, color: "var(--muted-foreground)", height: 80, overflow: "hidden", position: "relative" }}>
-        <div style={{ fontSize: 11, lineHeight: 1.6 }}>
+      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)", maxHeight: 140, overflowY: "auto" }}>
+        <div style={{ fontSize: 11, lineHeight: 1.7 }}>
           2026/05/17 14:32 · ¥4,500 · 渋谷本店<br />
           2026/05/17 14:28 · ¥3,200 · 渋谷本店<br />
           2026/05/17 14:15 · ¥8,100 · 表参道店<br />
           2026/05/17 14:10 · ¥2,400 · 自由が丘店<br />
-          2026/05/17 14:08 · ¥6,500 · 渋谷本店
+          2026/05/17 14:08 · ¥6,500 · 渋谷本店<br />
+          2026/05/17 14:02 · ¥1,800 · 渋谷本店<br />
+          2026/05/17 13:58 · ¥5,400 · 表参道店<br />
+          2026/05/17 13:50 · ¥7,200 · 自由が丘店<br />
+          2026/05/17 13:42 · ¥3,600 · 渋谷本店<br />
+          2026/05/17 13:35 · ¥2,950 · 表参道店
         </div>
-      </div>
+      </CardBody>
     </Card>
   ),
 };

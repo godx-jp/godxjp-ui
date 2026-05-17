@@ -995,6 +995,61 @@ framework concept; inline duplication is rejected at review.
 - Submodule push that diverges from upstream, or direct push to
   `main` (rules 11, 12).
 
+30. **Story `render` returns JSX directly — no opaque `<XyzDemo />`
+    wrapper components.** Absolute.
+
+    Storybook's docs page renders a source snippet of every story's
+    `render` function via `parameters.docs.source.type: "dynamic"`
+    (set in `.storybook/preview.tsx`). When the render is
+    `render: () => <DefaultDemo />`, the source the consumer sees in
+    the Docs view is the literal JSX — `<DefaultDemo />` — which is
+    opaque, copy-paste-useless, and teaches nothing. The consumer
+    must drill into the source repo to understand the story.
+
+    The fix is to inline the demo body into a NAMED render function
+    so Storybook can render the actual JSX:
+
+    ```tsx
+    // WRONG — story source shows `<DefaultDemo />`
+    function DefaultDemo() {
+      const [value, setValue] = useState("")
+      return (
+        <Select value={value} onValueChange={setValue}>…</Select>
+      )
+    }
+    export const Default: Story = { render: () => <DefaultDemo /> }
+
+    // RIGHT — story source shows the real Select usage
+    export const Default: Story = {
+      render: function Default() {
+        const [value, setValue] = useState("")
+        return (
+          <Select value={value} onValueChange={setValue}>…</Select>
+        )
+      },
+    }
+    ```
+
+    The named function (`function Default()` rather than `() =>`) lets
+    Storybook attribute the source to the story (otherwise the
+    extractor falls back to the literal source, which still contains
+    `() =>` syntactic noise).
+
+    Allowed exceptions (rare):
+
+    - A helper component that takes PROPS and is reused across
+      multiple stories (e.g. `<ExampleForm disabled={…} />`). The
+      `<ExampleForm />` rendering is not opaque — the consumer can
+      see the prop differences between stories. Document the helper
+      definition near its consumers.
+    - A composition that exceeds ~100 lines and is repeated
+      verbatim. Document why the extract is justified in a comment
+      above the helper.
+
+    Forbidden everywhere else. Reviewers grep for the anti-pattern
+    `render: () => <[A-Z][a-zA-Z0-9]+Demo` and reject PRs that
+    introduce a zero-arg `Demo` wrapper.
+
 ## Verification
 
 Full pre-commit gate is in [`./AGENTS.md`](./AGENTS.md) §Verification.

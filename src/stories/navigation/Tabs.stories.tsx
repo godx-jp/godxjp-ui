@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   Tabs,
   TabsList,
@@ -59,6 +60,24 @@ export const Line: Story = {
       <TabsContent value="closed"><Body label="完了" /></TabsContent>
     </Tabs>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("default tab is selected", async () => {
+      const first = canvas.getByRole("tab", { name: /未対応/ });
+      await expect(first).toHaveAttribute("aria-selected", "true");
+    });
+
+    await step("clicking tab 2 switches selection", async () => {
+      const second = canvas.getByRole("tab", { name: /進行中/ });
+      await userEvent.click(second);
+      await waitFor(() => {
+        expect(second).toHaveAttribute("aria-selected", "true");
+      });
+      const first = canvas.getByRole("tab", { name: /未対応/ });
+      await expect(first).toHaveAttribute("aria-selected", "false");
+    });
+  },
 };
 
 // ════════════════════════════════════════════════════════════════

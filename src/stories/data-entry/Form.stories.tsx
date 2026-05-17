@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, within } from "storybook/test";
 import { useForm, type Resolver } from "react-hook-form";
 import { Form, FormField } from "../../components/data-entry/Form";
 import { Input } from "../../components/data-entry/Input";
@@ -192,90 +193,104 @@ function ExampleForm({ disabled = false }: { disabled?: boolean }) {
 
 export const Default: Story = {
   render: () => <ExampleForm />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("form renders with name input and submit button", async () => {
+      const name = canvas.getByPlaceholderText("山田 太郎") as HTMLInputElement;
+      await expect(name).toBeInTheDocument();
+      const submit = canvas.getByRole("button", { name: "登録" });
+      await expect(submit).toBeInTheDocument();
+    });
+
+    await step("typing populates the name field", async () => {
+      const name = canvas.getByPlaceholderText("山田 太郎") as HTMLInputElement;
+      await userEvent.type(name, "佐藤");
+      await expect(name.value).toBe("佐藤");
+    });
+  },
 };
 
 // ─── Validated — pre-populated with invalid values ──────────────
 
-function ValidatedDemo() {
-  const form = useForm<FormValues>({
-    resolver,
-    defaultValues: { name: "", email: "not-an-email", age: 12, agree: false },
-    mode: "all",
-  });
-
-  return (
-    <Form<FormValues>
-      form={form}
-      onSubmit={() => undefined}
-      style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
-    >
-      <FormField<FormValues, "name"> name="name" label="氏名" required>
-        {({ value, onChange, onBlur, name, invalid }) => (
-          <Input
-            id={name}
-            name={name}
-            value={value ?? ""}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={onBlur}
-            status={invalid ? "error" : "default"}
-          />
-        )}
-      </FormField>
-      <FormField<FormValues, "email"> name="email" label="メール" required>
-        {({ value, onChange, onBlur, name, invalid }) => (
-          <Input
-            id={name}
-            name={name}
-            type="email"
-            value={value ?? ""}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={onBlur}
-            status={invalid ? "error" : "default"}
-          />
-        )}
-      </FormField>
-      <FormField<FormValues, "age"> name="age" label="年齢" required>
-        {({ value, onChange, onBlur, invalid }) => (
-          <InputNumber
-            value={value ?? undefined}
-            onValueChange={onChange}
-            onBlur={onBlur}
-            min={0}
-            status={invalid ? "error" : "default"}
-          />
-        )}
-      </FormField>
-      <FormField<FormValues, "agree"> name="agree">
-        {({ value, onChange, name, invalid }) => (
-          <label
-            htmlFor={name}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "var(--spacing-2)",
-            }}
-          >
-            <Checkbox
-              id={name}
-              checked={Boolean(value)}
-              onCheckedChange={(c) => onChange(c === true)}
-              aria-invalid={invalid || undefined}
-            />
-            <span style={{ fontSize: "var(--text-sm)" }}>利用規約に同意する</span>
-          </label>
-        )}
-      </FormField>
-      <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary">
-          確認
-        </Button>
-      </Flex>
-    </Form>
-  );
-}
-
 export const Validated: Story = {
-  render: () => <ValidatedDemo />,
+  render: function Validated() {
+    const form = useForm<FormValues>({
+      resolver,
+      defaultValues: { name: "", email: "not-an-email", age: 12, agree: false },
+      mode: "all",
+    });
+
+    return (
+      <Form<FormValues>
+        form={form}
+        onSubmit={() => undefined}
+        style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
+      >
+        <FormField<FormValues, "name"> name="name" label="氏名" required>
+          {({ value, onChange, onBlur, name, invalid }) => (
+            <Input
+              id={name}
+              name={name}
+              value={value ?? ""}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={onBlur}
+              status={invalid ? "error" : "default"}
+            />
+          )}
+        </FormField>
+        <FormField<FormValues, "email"> name="email" label="メール" required>
+          {({ value, onChange, onBlur, name, invalid }) => (
+            <Input
+              id={name}
+              name={name}
+              type="email"
+              value={value ?? ""}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={onBlur}
+              status={invalid ? "error" : "default"}
+            />
+          )}
+        </FormField>
+        <FormField<FormValues, "age"> name="age" label="年齢" required>
+          {({ value, onChange, onBlur, invalid }) => (
+            <InputNumber
+              value={value ?? undefined}
+              onValueChange={onChange}
+              onBlur={onBlur}
+              min={0}
+              status={invalid ? "error" : "default"}
+            />
+          )}
+        </FormField>
+        <FormField<FormValues, "agree"> name="agree">
+          {({ value, onChange, name, invalid }) => (
+            <label
+              htmlFor={name}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "var(--spacing-2)",
+              }}
+            >
+              <Checkbox
+                id={name}
+                checked={Boolean(value)}
+                onCheckedChange={(c) => onChange(c === true)}
+                aria-invalid={invalid || undefined}
+              />
+              <span style={{ fontSize: "var(--text-sm)" }}>利用規約に同意する</span>
+            </label>
+          )}
+        </FormField>
+        <Flex gap="small" justify="end">
+          <Button type="submit" variant="primary">
+            確認
+          </Button>
+        </Flex>
+      </Form>
+    );
+  },
 };
 
 // ─── Disabled ───────────────────────────────────────────────────

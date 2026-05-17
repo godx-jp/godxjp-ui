@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Switch } from "../../components/data-entry/Switch";
 import { Flex } from "../../components/layout";
 
@@ -23,6 +24,22 @@ type Story = StoryObj<typeof Switch>;
 
 export const Default: Story = {
   render: () => <Switch defaultChecked />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("default-checked starts true", async () => {
+      const sw = canvas.getByRole("switch");
+      await expect(sw).toHaveAttribute("aria-checked", "true");
+    });
+
+    await step("clicking toggles aria-checked", async () => {
+      const sw = canvas.getByRole("switch");
+      await userEvent.click(sw);
+      await waitFor(() => {
+        expect(sw).toHaveAttribute("aria-checked", "false");
+      });
+    });
+  },
 };
 
 export const Disabled: Story = {
@@ -34,20 +51,18 @@ export const Disabled: Story = {
   ),
 };
 
-function ControlledDemo() {
-  const [on, setOn] = useState(false);
-  return (
-    <Flex vertical gap="small" align="start">
-      <Switch checked={on} onCheckedChange={setOn} />
-      <code className="mono" style={{ fontSize: "var(--text-xs)" }}>
-        {on ? "ON" : "OFF"}
-      </code>
-    </Flex>
-  );
-}
-
 export const Controlled: Story = {
-  render: () => <ControlledDemo />,
+  render: function Controlled() {
+    const [on, setOn] = useState(false);
+    return (
+      <Flex vertical gap="small" align="start">
+        <Switch checked={on} onCheckedChange={setOn} />
+        <code className="mono" style={{ fontSize: "var(--text-xs)" }}>
+          {on ? "ON" : "OFF"}
+        </code>
+      </Flex>
+    );
+  },
 };
 
 export const WithLabel: Story = {

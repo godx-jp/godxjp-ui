@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState, useCallback, type ChangeEvent } from "react"
+import { forwardRef, useEffect, useMemo, useState, useCallback, type ChangeEvent } from "react"
 import { cn } from "../cn"
 import {
   Combobox,
@@ -65,8 +65,32 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(
     ref,
   ) {
     const isControlled = value !== undefined
-    const [internal, setInternal] = useState<string>(defaultValue ?? "")
-    const current = isControlled ? (value ?? "") : internal
+
+    // Displayed input text — what the user reads in the field.
+    // Held SEPARATELY from the committed value so the input can show
+    // the user-facing `label` while `onValueChange` reports the option
+    // `value` (the slug). When `value === label` (string-only options),
+    // they collapse to one and behave as a plain text input.
+    const initialText = useMemo(() => {
+      const seed = isControlled ? value : defaultValue
+      if (seed === undefined || seed === "") return ""
+      const opt = options.find((o) => o.value === seed)
+      return opt?.label ?? seed
+    }, [])  // eslint-disable-line react-hooks/exhaustive-deps -- intentional one-shot init
+
+    const [inputText, setInputText] = useState<string>(initialText)
+
+    // When the controlled `value` changes externally and matches an
+    // option, sync the displayed label. Skips when value is in
+    // free-text mode (no matching option) to avoid clobbering typing.
+    useEffect(() => {
+      if (!isControlled) return
+      const opt = options.find((o) => o.value === value)
+      if (opt && inputText !== opt.label) {
+        setInputText(opt.label)
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally not on inputText
+    }, [value, isControlled, options])
 
     const [isOpenInternal, setIsOpenInternal] = useState<boolean>(defaultOpen ?? false)
     const isOpenControlled = open !== undefined
@@ -80,31 +104,36 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(
       [isOpenControlled, onOpenChange],
     )
 
-    const commit = useCallback(
-      (next: string) => {
-        if (!isControlled) setInternal(next)
-        onValueChange?.(next)
-      },
-      [isControlled, onValueChange],
-    )
-
     const filtered = useMemo(() => {
-      const q = current.trim().toLowerCase()
+      const q = inputText.trim().toLowerCase()
       if (!q) return options
       return options.filter((o) => o.label.toLowerCase().includes(q) || o.value.toLowerCase().includes(q))
-    }, [options, current])
+    }, [options, inputText])
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
       const next = event.target.value
-      if (!isControlled) setInternal(next)
+      setInputText(next)
+      // Typing always re-commits as raw text — consumer sees the typed
+      // string until a suggestion is picked. allowCustomValue gates
+      // whether non-matching text "sticks" on blur (see handleBlur).
       onValueChange?.(next)
       if (!isOpen) setIsOpen(true)
     }
 
     const handleSelect = (selected: string) => {
-      const match = options.find((o) => o.value === selected) ?? options.find((o) => o.label === selected)
-      const next = match?.value ?? (allowCustomValue ? selected : current)
-      commit(next)
+      const opt =
+        options.find((o) => o.value === selected) ??
+        options.find((o) => o.label === selected)
+      if (opt) {
+        // Input shows the human-readable label; commit reports the
+        // machine value (slug). This is the Ant AutoComplete /
+        // shadcn Combobox convention.
+        setInputText(opt.label)
+        onValueChange?.(opt.value)
+      } else if (allowCustomValue) {
+        setInputText(selected)
+        onValueChange?.(selected)
+      }
       setIsOpen(false)
     }
 
@@ -119,7 +148,7 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(
             aria-autocomplete="list"
             disabled={disabled}
             placeholder={placeholder}
-            value={current}
+            value={inputText}
             onChange={handleInputChange}
             onFocus={() => !disabled && setIsOpen(true)}
             className={cn(
@@ -133,7 +162,15 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(
         <ComboboxContent
           align="start"
           sideOffset={4}
+          // Keep keyboard focus on the input — never steal it into the
+          // popover content.
           onOpenAutoFocus={(event) => event.preventDefault()}
+          // Radix Popover defaults: focus on the anchor counts as
+          // "outside" the content, so opening on focus would
+          // immediately re-close. Suppress focus-outside; pointer-
+          // outside (`onInteractOutside` via pointerdown) still fires
+          // when the user clicks elsewhere, so click-to-close works.
+          onFocusOutside={(event) => event.preventDefault()}
           shouldFilter={false}
         >
           <ComboboxList>

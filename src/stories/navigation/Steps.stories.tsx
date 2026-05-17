@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, within } from "storybook/test";
 import { Steps, Step } from "../../components/navigation/Steps";
 
 /**
@@ -33,6 +34,20 @@ export const Horizontal: Story = {
       <Step title="完了" description="—" />
     </Steps>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("active step has aria-current=step", async () => {
+      const active = canvasElement.querySelector('[aria-current="step"]');
+      await expect(active).not.toBeNull();
+      await expect(active).toHaveTextContent("承認待ち");
+    });
+
+    await step("all five steps render", async () => {
+      await expect(canvas.getByText("情報入力")).toBeInTheDocument();
+      await expect(canvas.getByText("完了")).toBeInTheDocument();
+    });
+  },
 };
 
 export const HorizontalFirst: Story = {

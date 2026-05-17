@@ -6,8 +6,12 @@ const config: StorybookConfig = {
     // Storybook 10 folded former addon-essentials features
     // (controls, viewport, backgrounds, toolbars, measure, outline)
     // into core. addon-docs still ships separately and powers the
-    // `tags: ["autodocs"]` Docs view.
+    // `tags: ["autodocs"]` Docs view + the Code panel.
     "@storybook/addon-docs",
+    // Turns every story's `play()` into a Vitest test (browser mode +
+    // Playwright provider) so interactive primitives are regression-
+    // gated by CI. See `vitest.config.ts` for the wiring.
+    "@storybook/addon-vitest",
   ],
   framework: {
     name: "@storybook/react-vite",

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { expect, within } from "storybook/test";
 import { Button } from "../../components/primitives";
 import { ProjectSwitcher } from "../../components/shell";
 import type { RecentProject } from "../../components/shell";
@@ -59,6 +60,15 @@ export const Default: Story = {
         onOpenChange={setOpen}
       />
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const portal = within(canvasElement.ownerDocument.body);
+
+    await step("popover renders a project from the active product", async () => {
+      const firstProject = PRODUCTS[1].projects[0].name;
+      const node = await portal.findByText(firstProject);
+      await expect(node).toBeVisible();
+    });
   },
 };
 

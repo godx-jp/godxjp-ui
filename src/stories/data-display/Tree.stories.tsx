@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Folder, FolderOpen, FileText } from "lucide-react";
 import { Tree } from "../../components/data-display/Tree";
 import type { TreeNode } from "../../components/data-display/Tree";
@@ -84,6 +85,26 @@ export const Default: Story = {
       defaultValue="fe"
     />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("initial selection has aria-selected on the leaf", async () => {
+      const selected = canvasElement.querySelectorAll("[aria-selected='true']");
+      await expect(selected.length).toBeGreaterThanOrEqual(1);
+    });
+
+    await step("clicking デザイン本部 expand toggle reveals its children", async () => {
+      const designRow = canvas.getByText("デザイン本部").closest("[role='treeitem']");
+      await expect(designRow).not.toBeNull();
+      const toggle = within(designRow as HTMLElement).getByRole("button", {
+        name: /Expand|Collapse/,
+      });
+      await userEvent.click(toggle);
+      await waitFor(() => {
+        expect(canvas.getByText("UI デザインチーム")).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── Multi-select with checkboxes ───────────────────────────────

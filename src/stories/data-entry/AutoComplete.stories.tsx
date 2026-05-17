@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { AutoComplete, type AutoCompleteOption } from "../../components/data-entry/AutoComplete";
 import { Flex } from "../../components/layout";
 
@@ -50,46 +51,73 @@ type Story = StoryObj<typeof AutoComplete>;
 
 // ─── Default ────────────────────────────────────────────────────
 
-function DefaultDemo() {
-  const [value, setValue] = useState("");
-  return (
-    <div style={{ maxWidth: 280 }}>
-      <AutoComplete
-        options={employees}
-        value={value}
-        onValueChange={setValue}
-        placeholder="名前を入力"
-      />
-    </div>
-  );
-}
-
 export const Default: Story = {
-  render: () => <DefaultDemo />,
+  render: function Default() {
+    const [value, setValue] = useState("");
+    return (
+      <div style={{ maxWidth: 280 }}>
+        <AutoComplete
+          options={employees}
+          value={value}
+          onValueChange={setValue}
+          placeholder="名前を入力"
+        />
+      </div>
+    );
+  },
+  // Regression pin for the "focus closes the dropdown" bug: Radix
+  // Popover treats the input anchor as outside its content, so without
+  // the `onFocusOutside` guard the popover opened-then-closed on the
+  // very first focus. This `play` would re-surface that regression in
+  // CI.
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox");
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("focus opens the dropdown", async () => {
+      await userEvent.click(input);
+      await expect(input).toHaveAttribute("aria-expanded", "true");
+    });
+
+    await step("dropdown stays open after focus settles", async () => {
+      await waitFor(() => {
+        expect(input.getAttribute("aria-expanded")).toBe("true");
+      });
+      const options = within(portal).getAllByRole("option");
+      await expect(options.length).toBeGreaterThan(0);
+    });
+
+    await step("typing filters options", async () => {
+      await userEvent.type(input, "田");
+      await waitFor(() => {
+        const visible = within(portal).queryAllByRole("option");
+        expect(visible.length).toBeLessThan(5);
+      });
+    });
+  },
 };
 
 // ─── WithCustomValue ────────────────────────────────────────────
 
-function CustomValueDemo() {
-  const [value, setValue] = useState("");
-  return (
-    <Flex vertical gap="small" style={{ maxWidth: 320 }}>
-      <AutoComplete
-        options={employees}
-        value={value}
-        onValueChange={setValue}
-        allowCustomValue
-        placeholder="社員名 or 自由入力"
-      />
-      <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
-        Current value: <code className="mono">{JSON.stringify(value)}</code>
-      </span>
-    </Flex>
-  );
-}
-
 export const WithCustomValue: Story = {
-  render: () => <CustomValueDemo />,
+  render: function WithCustomValue() {
+    const [value, setValue] = useState("");
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 320 }}>
+        <AutoComplete
+          options={employees}
+          value={value}
+          onValueChange={setValue}
+          allowCustomValue
+          placeholder="社員名 or 自由入力"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          Current value: <code className="mono">{JSON.stringify(value)}</code>
+        </span>
+      </Flex>
+    );
+  },
 };
 
 // ─── Sizes ──────────────────────────────────────────────────────

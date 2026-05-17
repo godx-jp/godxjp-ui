@@ -94,12 +94,18 @@ export const InputSearch = forwardRef<HTMLInputElement, InputSearchProps>(
         </button>
       ) : undefined;
 
+    // Pick controlled OR uncontrolled — passing both `value` and
+    // `defaultValue` to the inner <input> (even when one is undefined)
+    // trips React's "controlled ↔ uncontrolled" warning.
+    const valueProp =
+      controlledValue !== undefined
+        ? { value: controlledValue }
+        : { defaultValue }
     return (
       <Input
         ref={ref}
         type="search"
-        value={controlledValue}
-        defaultValue={controlledValue === undefined ? defaultValue : undefined}
+        {...valueProp}
         onChange={handleChange}
         prefix={searchIcon ?? <Search size={14} />}
         suffix={suffix ?? clearButton}

@@ -94,13 +94,19 @@ export const Slider = forwardRef<
   const thumbCount = range ? 2 : 1
   const span = max - min || 1
 
+  // Pass controlled OR uncontrolled, never both. Even passing
+  // `value={undefined}` alongside `defaultValue={…}` trips React's
+  // controlled/uncontrolled transition warning at the inner Primitive
+  // input level.
+  const valueProp =
+    radixValue !== undefined ? { value: radixValue } : { defaultValue: radixDefault }
+
   return (
     <div className="slider-wrap" data-orientation={orientation}>
       <SliderPrimitive.Root
         ref={ref}
         className={cn("slider", className)}
-        value={radixValue}
-        defaultValue={radixValue === undefined ? radixDefault : undefined}
+        {...valueProp}
         onValueChange={handleChange}
         min={min}
         max={max}

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, within } from "storybook/test";
 import { Upload } from "../../components/composites/upload/Upload";
 import {
   MediaUpload,
@@ -64,6 +65,18 @@ export const Generic_File: Story = {
       multiple
     />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("trigger button + hidden file input are present", async () => {
+      const trigger = canvas.getByRole("button");
+      await expect(trigger).toBeInTheDocument();
+      const fileInput = canvasElement.querySelector<HTMLInputElement>(
+        'input[type="file"]',
+      );
+      await expect(fileInput).not.toBeNull();
+    });
+  },
 };
 
 // ─── MediaUpload.Single ───────────────────────────────────────────

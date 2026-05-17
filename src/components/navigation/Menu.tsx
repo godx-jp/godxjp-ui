@@ -129,17 +129,29 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
 
 // ─── MenuGroup ───────────────────────────────────────────────────
 
-export interface MenuGroupProps extends ComponentProps<"li"> {
+export interface MenuGroupProps extends ComponentProps<"div"> {
   label?: ReactNode;
 }
 
-export const MenuGroup = forwardRef<HTMLLIElement, MenuGroupProps>(
+export const MenuGroup = forwardRef<HTMLDivElement, MenuGroupProps>(
   function MenuGroup({ label, children, className, ...rest }, ref) {
+    // ARIA menu pattern: a group inside a `<ul role="menu">` is a
+    // `role="group"` element. Items keep their own `role="menuitem"`
+    // (rendered as `<li>` in MenuItem). The wrapper used to be `<li>`,
+    // which produced invalid `<li>` → `<li>` nesting and a hydration
+    // warning. `<div role="group">` is the correct shape — ARIA
+    // explicitly allows a non-li group inside a menu/listbox.
     return (
-      <li ref={ref} role="none" className={cn(className)} {...rest}>
+      <div
+        ref={ref}
+        role="group"
+        aria-label={typeof label === "string" ? label : undefined}
+        className={cn(className)}
+        {...rest}
+      >
         {label && <div className="menu-group-label">{label}</div>}
         {children}
-      </li>
+      </div>
     );
   },
 );

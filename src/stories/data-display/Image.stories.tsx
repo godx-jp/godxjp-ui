@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Image } from "../../components/data-display/Image";
 import { Flex } from "../../components/layout";
 
@@ -53,6 +54,25 @@ export const Default: Story = {
   render: () => (
     <Image src={PHOTO} alt="サンプル画像" style={{ width: 320 }} />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = within(canvasElement.ownerDocument.body);
+
+    await step("clicking the loaded image opens the preview overlay", async () => {
+      const img = canvas.getByRole("img", { name: "サンプル画像" });
+      // wait for browser image fetch to settle so click triggers the overlay.
+      await waitFor(
+        () => {
+          const wrap = img.closest("[data-status]");
+          expect(wrap?.getAttribute("data-status")).toBe("loaded");
+        },
+        { timeout: 8000 },
+      );
+      await userEvent.click(img);
+      const dialog = await portal.findByRole("dialog", { name: "サンプル画像" });
+      await expect(dialog).toBeInTheDocument();
+    });
+  },
 };
 
 // ─── WithPreview — explicit prop ────────────────────────────────

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, within } from "storybook/test";
 import { today, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import { Calendar } from "../../components/data-display/Calendar";
 import { MiniMonth } from "../../components/data-display/calendar/MiniMonth";
@@ -61,6 +62,19 @@ export const Default: Story = {
   render: () => (
     <Calendar defaultValue={TODAY} aria-label="日付を選択" />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("calendar grid renders with day cells", async () => {
+      const grid = canvas.getByRole("grid");
+      await expect(grid).toBeInTheDocument();
+    });
+
+    await step("at least one selected day is in the grid", async () => {
+      const cells = canvasElement.querySelectorAll("[aria-selected='true']");
+      await expect(cells.length).toBeGreaterThanOrEqual(1);
+    });
+  },
 };
 
 // ─── MiniMonth (sidebar widget) ─────────────────────────────────
