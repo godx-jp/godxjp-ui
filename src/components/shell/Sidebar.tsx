@@ -2,7 +2,7 @@ import { ChevronDown } from "lucide-react";
 import type { ComponentType, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../cn";
-import type { ForgeProduct } from "../../data/products";
+import type { ForgeProduct } from "./types";
 
 // Sidebar item shape — what consumers pass to <Sidebar nav={…} />.
 //

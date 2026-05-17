@@ -1,57 +1,20 @@
-// Product / project registry — mock data layer.
+// Product / project registry — MOCK DATA used by Storybook stories
+// and `examples/screens/*` page-level samples ONLY. Shell primitives
+// (Sidebar / Topbar / Switchers / TweaksPanel) NEVER import this —
+// they accept products + projects via props per cardinal rule 28.
 //
-// Mirrors the design prototype's `PRODUCTS` array (shell.jsx). Today
-// this is a static fixture so the UI shell renders end-to-end; a
-// follow-up phase will swap it for `/api/v1/orgs/...` calls against
-// forge-service + identity-service.
-//
-// Vocabulary:
-//   Product = Org (GitHub-shaped tenant). Owns projects, members,
-//             domains, design tokens (per the OKLCH tenant override
-//             in tokens-ext.css).
-//   Project = Repo. Has a stack (e.g. "Vue 3 · Vite"), kind
-//             (service / web / desktop / mobile / library / infra /
-//             workstation), branch, lastCommit, openIssues, prs.
-//
-// Tenants must match a `[data-tenant="<id>"]` block in tokens-ext.css.
-export type ProjectKind =
-  | "service"
-  | "web"
-  | "desktop"
-  | "workstation"
-  | "mobile"
-  | "library"
-  | "infra";
+// Service consumers fetch their own catalogues from
+// forge-service / identity-service and pass them down through the
+// shell. This file exists purely so the storybook iframes render
+// realistic surfaces.
 
-export type ProjectStatus = "active" | "review" | "planning" | "archived";
+import type {
+  ForgeProduct,
+  ForgeProject,
+  ProjectKind,
+} from "../../components/shell/types";
 
-export type ForgeProject = {
-  id: string;
-  name: string;
-  stack: string;
-  kind: ProjectKind;
-  devs: number;
-  status: ProjectStatus;
-  branch: string;
-  lastCommit: string;
-  openIssues: number;
-  prs: number;
-  sandbox: boolean;
-};
-
-export type ForgeProduct = {
-  id: string;
-  name: string;
-  /** Tenant slug — matches `[data-tenant]` attribute. Operator-defined; not a closed enum. */
-  tenant: string;
-  role: string;
-  desc: string;
-  /** Brand color in OKLCH — used as the sidebar logo mark + accent. */
-  color: string;
-  owner: string;
-  devs: number;
-  projects: ForgeProject[];
-};
+export type { ForgeProduct, ForgeProject, ProjectKind };
 
 export const PRODUCTS: ForgeProduct[] = [
   {

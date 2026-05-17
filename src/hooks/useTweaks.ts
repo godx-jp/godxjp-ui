@@ -7,7 +7,7 @@
 // the Tweaks UI has a single dispatcher.
 import { useCallback, useEffect, useState } from "react";
 import i18n, { GODX_LOCALE_STORAGE_KEY, type GodxLocale } from "../i18n";
-import { PRODUCTS, type ForgeProduct } from "../data/products";
+import type { ForgeProduct } from "../components/shell/types";
 
 export type Density = "compact" | "default" | "comfortable";
 export type Theme = "light" | "dark";
@@ -92,4 +92,9 @@ export function useTweaks() {
   return { tweaks, setTweak, setTweaks } as const;
 }
 
-export const PRODUCT_OPTIONS = PRODUCTS.map((p) => ({ value: p.tenant, label: p.name }));
+/** Derive tenant-select options from a consumer-supplied product
+ * catalogue. Shell consumers pass their own products — useTweaks
+ * doesn't ship with mock data per cardinal rule 28. */
+export function productOptions(products: ForgeProduct[]): Array<{ value: string; label: string }> {
+  return products.map((p) => ({ value: p.tenant, label: p.name }));
+}

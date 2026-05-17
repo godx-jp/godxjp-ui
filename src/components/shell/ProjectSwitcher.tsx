@@ -3,7 +3,7 @@ import { Check, Clock, Search } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PRODUCTS, type ForgeProduct, type ForgeProject } from "../../data/products";
+import type { ForgeProduct, ForgeProject } from "./types";
 import { cn } from "../cn";
 
 export interface RecentProject {
@@ -39,7 +39,7 @@ export function ProjectSwitcher({
   activeProductId,
   activeProjectId,
   recent = [],
-  products = PRODUCTS,
+  products = [],
   onSelect,
   open,
   onOpenChange,

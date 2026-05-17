@@ -901,6 +901,80 @@ framework concept; inline duplication is rejected at review.
     file inside `src/components/<X>/` where `<X>` is not a canonical
     group is rejected.
 
+29. **Every story MUST consume the framework's primitives —
+    never raw HTML / inline-styled divs / one-off layout
+    elements.** Absolute.
+
+    Storybook is the marketing surface for the framework. A
+    consumer browsing `https://storybook.local.godx.jp/` reads
+    each story as the canonical *way* to use the component. If a
+    story renders an icon button as `<button style="border:1px
+    solid var(--border); padding: 6px 8px; …">×</button>` instead
+    of `<IconButton variant="ghost">×</IconButton>`, the framework
+    teaches consumers to bypass its own primitives. That breaks
+    the locked stack (cardinal rule 14), bypasses the vocabulary
+    (rule 23), and means new consumers ship one-off divs alongside
+    framework components — exactly the drift the framework
+    exists to prevent.
+
+    ### §A — What stories ARE allowed to use
+
+    - **Framework primitives** from `src/components/<group>/`:
+      Button, Typography, Card, Input, Select, Checkbox, Tag,
+      Avatar, IconButton, Badge, Statistic, … (the full
+      `primitives.ts` barrel).
+    - **Shell primitives** from `src/components/shell/`:
+      AppShell, Sidebar, Topbar, PageContent, … (when the story
+      illustrates a page-level surface).
+    - **Composites** from `src/components/composites/`:
+      Upload family, MediaUpload, AvatarUploader, LocaleInput.
+    - **Layout primitives** (Row/Col/Flex/Space/Grid/Masonry)
+      for arrangement.
+    - **Tokens via CSS classes** (`.row-between`, `.micro`,
+      `.stat`, `.delta`, …) when the story renders a design-canon
+      atom that doesn't yet have a React primitive (e.g. Card
+      sections A–H).
+    - **Lucide icons** (`lucide-react`) for icon needs.
+    - **HTML semantic elements** (`<section>`, `<article>`,
+      `<header>`, `<main>`, `<nav>`, `<table>`, `<ul>`, `<li>`,
+      `<a>`, `<p>`, `<form>`) for structure when no primitive
+      maps cleanly. These are HTML, not framework drift.
+
+    ### §B — Forbidden in stories
+
+    - Inline `style={{ … }}` overriding primitive visuals (recap
+      of rule 25). Layout-only `style` (display/grid-template/
+      flex-direction) is OK; visual-style overrides are not.
+    - Raw `<button>` / `<input>` / `<select>` when `Button` /
+      `Input` / `Select` primitives exist.
+    - Hand-rolled chip / badge / tag divs when `Tag` / `Badge` /
+      `Chip` exist.
+    - Hand-rolled spinner / skeleton divs when `Spinner` /
+      `Skeleton` exist.
+    - `<div className="some-ad-hoc-class">` for a region that
+      maps to a primitive (e.g. faking a Card with bordered div).
+    - Raw `<h1>` / `<h2>` / `<p>` when `Typography.Title` /
+      `Typography.Paragraph` cover the case (HTML semantics are
+      preserved by the primitive).
+    - Service-specific copy (org / project / user names) that
+      doesn't appear in `src/data/PRODUCTS` or shell test
+      fixtures — story copy stays generic.
+
+    ### §C — Verification
+
+    A reviewer scans each new story for:
+
+    1. `import` block — only framework imports + lucide-react +
+       react.
+    2. JSX — every visual atom is a primitive call OR a small
+       documented atom CSS class.
+    3. `style={{ … }}` — limited to layout/positioning, no
+       colours / borders / radii / shadows / typography.
+
+    Stories that don't conform are rejected at review even if
+    the rendered output looks correct — the *teaching surface*
+    matters, not just the pixels.
+
 - Component diff without paired story diff (rule 1).
 - Raw color utility (`bg-blue-500`) in a primitive (rule 2).
 - Hand-rolled focus / keyboard nav when Radix has it (rule 3).

@@ -2,7 +2,7 @@ import { Bell, ChevronDown, PanelLeftClose, PanelLeftOpen, Search, SlidersHorizo
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../cn";
-import type { ForgeProduct, ForgeProject } from "../../data/products";
+import type { ForgeProduct, ForgeProject } from "./types";
 
 // Topbar — sits across the top of every screen. Hosts:
 //

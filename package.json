@@ -62,10 +62,6 @@
       "types": "./dist/hooks.d.ts",
       "import": "./dist/hooks.js"
     },
-    "./data": {
-      "types": "./dist/data.d.ts",
-      "import": "./dist/data.js"
-    },
     "./primitives": {
       "types": "./dist/components/primitives.d.ts",
       "import": "./dist/components/primitives.js"
