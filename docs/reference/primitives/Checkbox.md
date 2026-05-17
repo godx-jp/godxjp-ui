@@ -16,28 +16,30 @@ lang: en
 ## Usage
 
 ```tsx
-import { Checkbox, Label } from "@godxjp/ui"
+import { Checkbox } from "@godxjp/ui"
 
-<div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
-  <Checkbox
-    id="agree"
-    checked={agreed}
-    onCheckedChange={setAgreed}
-  />
-  <Label htmlFor="agree">I accept the terms of service</Label>
-</div>
+<Checkbox defaultChecked>利用規約に同意する</Checkbox>
 ```
+
+Pass the label as `children` — the primitive wraps the box + label in
+a single `<label>` so clicking the text toggles the checkbox (Ant
+canonical pattern). For advanced layouts (table cell with header
+elsewhere) omit children and wire `aria-label` / `aria-labelledby`
+yourself.
 
 ## Props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
+| `children` | `ReactNode` | — | Label text. When set, primitive wraps box + text in a single `<label>`. Omit for box-only mode. |
 | `checked` | `boolean \| "indeterminate"` | — | Controlled state |
 | `onCheckedChange` | `(checked: boolean \| "indeterminate") => void` | — | Called when state changes |
 | `defaultChecked` | `boolean` | `false` | Uncontrolled default |
 | `disabled` | `boolean` | `false` | Disables interaction |
 | `name` | `string` | — | Form field name |
 | `value` | `string` | `"on"` | Form value when checked |
+| `className` | `string` | — | Merged onto the OUTER `<label>` when `children` is set, or onto the box otherwise. |
+| `boxClassName` | `string` | — | Merged onto the inner box (only honoured when `children` is set). |
 | `...rest` | `ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>` | — | All Radix Checkbox props |
 
 ## States
