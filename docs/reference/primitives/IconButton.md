@@ -67,9 +67,9 @@ import { Link } from "react-router-dom"
 </IconButton>
 
 // IconButton inside a Tooltip
-<SimpleTooltip title="設定">
+<Tooltip content="設定">
   <IconButton aria-label="Settings"><Settings size={16} /></IconButton>
-</SimpleTooltip>
+</Tooltip>
 
 // IconButton inside a PageHeader actions slot
 <PageHeader

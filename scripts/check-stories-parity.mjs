@@ -91,9 +91,9 @@ const PRIMITIVE_TO_STORY = {
   // Message file; the sibling Notification file is whitelisted under
   // STORY_EXEMPT so the reverse check passes.
   Toaster: "Message",
-  // SimpleTooltip — documented inside Tooltip.stories.tsx.
+  // Tooltip — merged SimpleTooltip into Tooltip primitive in v3.1
+  // (cardinal rule 31 — no parallel convenience wrappers).
   Tooltip: "Tooltip",
-  SimpleTooltip: "Tooltip",
   // Overlay aliases — consumer-facing story names differ from the
   // Radix-canonical primitive names.
   Sheet: "Drawer",
