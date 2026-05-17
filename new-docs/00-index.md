@@ -26,6 +26,7 @@ framework concept.
 | 02 | [Consumer contract](./02-consumer-contract.md) | Starting a new frontend that consumes `@godxjp/ui`; changing folder shape, theme.css, ESLint / Prettier / TS configs; building a new feature view; needing a primitive that does not exist yet — the §A-through-§I rules every consumer honours |
 | 03 | [Token system foundation](./03-token-system.md) | Adding / renaming / removing a design token; writing any CSS that needs a colour, spacing, padding, radius, shadow, motion, layout, or density value — three-tier architecture (primitives / semantic / variants), every category catalogued, anti-patterns + verification |
 | 04 | [Shared prop vocabulary](./04-prop-vocabulary.md) | Adding or renaming a prop on any primitive; authoring a new primitive — locked vocabulary table (size / variant / color / tone / accent / padding / density / shape / status / block / hoverable / boolean state / slot props / Card slots / band) + forbidden synonyms + cross-primitive consistency check |
+| 05 | [Design handoff formats](./05-design-handoff-formats.md) | Accepting a new handoff bundle (Claude Design HTML/CSS / google-labs DESIGN.md / W3C DTCG JSON / Figma export); adding lint guardrails (broken-ref / WCAG / orphaned tokens / section-ordering); export tokens to inter-tool formats |
 
 ## Reading order
 
