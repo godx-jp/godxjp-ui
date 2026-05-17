@@ -61,23 +61,30 @@ export function Grid({
   children,
   ...rest
 }: GridProps) {
-  const gridTemplateColumns = cols !== undefined ? resolveTemplate(cols) : undefined;
-  const gridTemplateRows = rows !== undefined ? resolveTemplate(rows) : undefined;
+  // Build style object dynamically — only spread defined keys.
+  //
+  // Why: assigning empty/undefined values to `columnGap` or `rowGap`
+  // resets the `gap` shorthand to its initial value (CSSStyleDeclaration
+  // behaviour). React's style serialization treats `undefined` as "remove
+  // this property", which on a fresh element manifests as an empty-string
+  // longhand assignment — which silently CLEARS the just-set `gap`.
+  // Guard each prop so the longhand keys never enter the style object
+  // unless the consumer asked for them.
+  const merged: NonNullable<ComponentProps<"div">["style"]> = {
+    display: "grid",
+    ...style,
+  };
+  if (cols !== undefined) merged.gridTemplateColumns = resolveTemplate(cols);
+  if (rows !== undefined) merged.gridTemplateRows = resolveTemplate(rows);
+  const gapResolved = resolveGap(gap);
+  if (gapResolved !== undefined) merged.gap = gapResolved;
+  const columnGapResolved = resolveGap(columnGap);
+  if (columnGapResolved !== undefined) merged.columnGap = columnGapResolved;
+  const rowGapResolved = resolveGap(rowGap);
+  if (rowGapResolved !== undefined) merged.rowGap = rowGapResolved;
 
   return (
-    <div
-      className={cn("grid", className)}
-      style={{
-        display: "grid",
-        gridTemplateColumns,
-        gridTemplateRows,
-        gap: resolveGap(gap),
-        columnGap: resolveGap(columnGap),
-        rowGap: resolveGap(rowGap),
-        ...style,
-      }}
-      {...rest}
-    >
+    <div className={cn("grid", className)} style={merged} {...rest}>
       {children}
     </div>
   );
