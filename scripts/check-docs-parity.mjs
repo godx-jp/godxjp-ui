@@ -67,7 +67,6 @@ const PRIMITIVE_TO_DOC = {
   Spinner: "Spinner",
   Toaster: "Toaster",
   Tooltip: "Tooltip",
-  SimpleTooltip: "Tooltip",
   // Overlay primitives keep their canonical Radix names in docs
   // (Sheet / Dialog / DropdownMenu / AlertDialog).
 };

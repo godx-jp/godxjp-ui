@@ -43,7 +43,7 @@ The root element is a `<section>` with `.ph` plus the variant + padding classes.
 ## Accessibility
 
 - The `<h1>` rendered for `title` should be the only `<h1>` on the page — semantic landmarks rely on a single top-level heading per document.
-- When the `actions` slot contains icon-only controls, those controls MUST have `aria-label` (cardinal rule for `<IconButton>`). Pair recurring icons with `<SimpleTooltip>` so sighted-but-unfamiliar users discover their function.
+- When the `actions` slot contains icon-only controls, those controls MUST have `aria-label` (cardinal rule for `<IconButton>`). Pair recurring icons with `<Tooltip>` so sighted-but-unfamiliar users discover their function.
 - `breadcrumb` is decorative chrome — wrap with `<Breadcrumb>` (which renders a `<nav aria-label="Breadcrumb">`) so screen readers identify the landmark.
 - `tabs` injects a second-row tab strip — pair with `<Tabs orientation="horizontal">` so the active tab is announced.
 

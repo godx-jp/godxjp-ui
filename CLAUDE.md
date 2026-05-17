@@ -1063,6 +1063,57 @@ framework concept; inline duplication is rejected at review.
     `render: () => <[A-Z][a-zA-Z0-9]+Demo` and reject PRs that
     introduce a zero-arg `Demo` wrapper.
 
+31. **No nested wrapper / convenience primitives.** Absolute.
+
+    The framework MUST NOT ship two primitives that wrap the same
+    Radix / cmdk / React-Aria base just to expose a "simpler" surface
+    over the other. `<SimpleTooltip>` wrapping `<Tooltip>`,
+    `<SimpleCard>` over `<Card>`, `<EasySelect>` over `<Select>`,
+    `<QuickModal>` over `<Modal>` — all forbidden.
+
+    Every primitive has ONE name + ONE surface. Convenience the
+    consumer needs comes through PROPS (`searchable`, `compact`,
+    `richItems`, `placeholder`, …) of the canonical primitive — not
+    through a second wrapper component. This is the dual of rule 23
+    §A (concept-first prop API): just as one prop carries one concept,
+    one primitive carries one identity.
+
+    Symptoms reviewers reject:
+
+    - Two primitives in the same group that both export from the
+      same Radix base (e.g. `Tooltip` + `SimpleTooltip` both wrapping
+      `@radix-ui/react-tooltip`).
+    - A primitive whose entire body is `<OtherPrimitive {...defaults}
+      {...rest} />` with no real logic.
+    - Stories that show "use `<SimpleX>` instead of `<X>` because it's
+      easier" — that's a sign the canonical `<X>` API is missing a
+      prop. Add the prop to `<X>`; do not ship `<SimpleX>`.
+
+    Allowed (these are NOT wrappers):
+
+    - Different Radix-base primitives that share a domain (`Tooltip`
+      uses `@radix-ui/react-tooltip`; `Popover` uses
+      `@radix-ui/react-popover` — different Radix packages, different
+      semantics, both valid).
+    - Composites under `src/components/composites/` that combine
+      multiple primitives for a specific use case (`AvatarUploader`,
+      `MediaUpload`). Composites are NOT primitives.
+    - Sub-components of a single primitive family (`<CardHeader>`,
+      `<CardBody>` — they're parts of `<Card>`, not a parallel
+      simpler-card primitive).
+
+    Exception process: if a wrapper primitive seems truly necessary
+    (e.g. a service migration needs a temporary stand-in), it MUST
+    have explicit developer approval recorded in `docs/adr/` BEFORE
+    landing. The ADR documents (a) why the canonical primitive's prop
+    surface can't absorb the use case, (b) the deprecation path, (c)
+    the planned merge date. Wrappers without an approved ADR are
+    rejected at review even when the PR ships green tests.
+
+    Historical case: `SimpleTooltip` shipped alongside `Tooltip` in
+    v3.0; the v3.1 audit flagged it as a rule 31 violation and merged
+    it back into `Tooltip` via a `content` prop + `placement` prop.
+
 ## Verification
 
 Full pre-commit gate is in [`./AGENTS.md`](./AGENTS.md) §Verification.

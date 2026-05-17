@@ -1,6 +1,6 @@
 ---
 title: "Tooltip"
-description: "Radix-backed floating label anchored to a trigger — compositional Tooltip/TooltipTrigger/TooltipContent OR convenience SimpleTooltip wrapper."
+description: "Radix-backed floating label — single Tooltip primitive with data-driven content prop OR compositional children."
 diataxis: reference
 audience: [developer]
 status: stable
@@ -12,53 +12,50 @@ library_version: 3.0.0
 
 # Tooltip
 
-> Radix-backed floating label anchored to a trigger — compositional and convenience surfaces both available.
+> Radix-backed floating label anchored to a trigger.
 
-Two surfaces:
+One primitive, two equivalent consumption modes (per cardinal rule 31 — no parallel convenience wrappers):
 
-- **Compositional** — `<TooltipProvider><Tooltip><TooltipTrigger>…<TooltipContent>…</TooltipContent></Tooltip></TooltipProvider>` mirrors `@radix-ui/react-tooltip` verbatim for full control.
-- **Convenience** — `<SimpleTooltip title="…">child</SimpleTooltip>` wires provider + root + trigger (`asChild`) + content for the common case.
+- **Data-driven** — `<Tooltip content="…" placement="top">trigger</Tooltip>` auto-wires provider + root + trigger (`asChild`) + content.
+- **Compositional** — omit `content`, hand-roll `<TooltipTrigger>` + `<TooltipContent>` children inside a `<TooltipProvider>` for shared `delayDuration`.
 
 Styled via `.tooltip-content` in `35-badge-tag-misc.css`; reads tokens and honours every theme / accent / density / font-size axis.
 
 ## Usage
 
 ```tsx
-import { SimpleTooltip, IconButton } from "@godxjp/ui"
+import { Tooltip, IconButton } from "@godxjp/ui"
 import { Settings } from "lucide-react"
 
-<SimpleTooltip title="設定" placement="bottom">
+<Tooltip content="設定" placement="bottom">
   <IconButton aria-label="Settings"><Settings size={16} /></IconButton>
-</SimpleTooltip>
+</Tooltip>
 ```
 
 ## Props
 
-### `SimpleTooltip`
+### `Tooltip` (root)
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `title` | `ReactNode` | required | Tooltip text / content |
-| `children` | `ReactNode` | required | Trigger element (wrapped via Radix `asChild`) |
-| `placement` | `"top" \| "right" \| "bottom" \| "left"` | `"top"` | Anchor side |
-| `delayDuration` | `number` | `200` | Open / close delay in ms |
+| `content` | `ReactNode` | — | Tooltip text / content. When set, auto-wires Provider + Trigger + Content. Omit for compositional mode. |
+| `children` | `ReactNode` | required | Trigger element (data-driven) OR Radix Root children (compositional). |
+| `placement` | `"top" \| "right" \| "bottom" \| "left"` | `"top"` | Anchor side (cardinal rule 23 §B vocabulary). Honoured only in data-driven mode. |
+| `delayDuration` | `number` | `200` | Open / close delay in ms. Sets `TooltipProvider.delayDuration` in data-driven mode. |
 | `open` | `boolean` | — | Controlled visibility |
 | `defaultOpen` | `boolean` | — | Uncontrolled initial visibility |
 | `onOpenChange` | `(open: boolean) => void` | — | Called when visibility changes |
 
-### Compositional surface
+### Compositional sub-components
 
-`TooltipProvider`, `Tooltip`, `TooltipTrigger`, `TooltipPortal` are direct re-exports of the matching Radix primitives. `TooltipContent` accepts everything `@radix-ui/react-tooltip`'s `Content` accepts (`side`, `sideOffset`, `align`, `alignOffset`, `avoidCollisions`, `collisionPadding`, …) plus the framework's `className` composition.
+`TooltipProvider`, `TooltipTrigger`, `TooltipPortal` re-export the Radix primitives directly. `TooltipContent` is the only styled wrapper:
 
 | Export | Description |
 |---|---|
-| `TooltipProvider` | Required ancestor — sets `delayDuration` and other defaults |
-| `Tooltip` | Root |
-| `TooltipTrigger` | The element that opens the tooltip on hover / focus |
-| `TooltipPortal` | Portal (also automatically inserted inside `TooltipContent`) |
-| `TooltipContent` | Floating content panel — accepts `side`, `sideOffset` (default 4), `className` |
-
-Vocabulary per cardinal rule 23 §B: `placement` is the positional-anchor name shared with Popover (`top` / `right` / `bottom` / `left`); `open` / `defaultOpen` / `onOpenChange` is the Radix-canonical overlay-visibility vocabulary.
+| `TooltipProvider` | Required ancestor in compositional mode — sets `delayDuration` and other defaults. |
+| `TooltipTrigger` | The element that opens the tooltip on hover / focus. |
+| `TooltipPortal` | Portal (also automatically inserted inside `TooltipContent`). |
+| `TooltipContent` | Floating content panel — accepts every Radix `Content` prop (`side`, `sideOffset` default 4, `align`, `alignOffset`, `avoidCollisions`, `collisionPadding`, …) plus the framework's `className` composition. |
 
 ## Accessibility
 
@@ -71,23 +68,23 @@ Vocabulary per cardinal rule 23 §B: `placement` is the positional-anchor name s
 ## Composition
 
 ```tsx
-// Four placements
+// Four placements — data-driven mode
 <Flex gap="large" align="center" style={{ padding: 80 }}>
-  <SimpleTooltip title="上に表示" placement="top">
+  <Tooltip content="上に表示" placement="top">
     <Button variant="secondary">Top</Button>
-  </SimpleTooltip>
-  <SimpleTooltip title="右に表示" placement="right">
+  </Tooltip>
+  <Tooltip content="右に表示" placement="right">
     <Button variant="secondary">Right</Button>
-  </SimpleTooltip>
-  <SimpleTooltip title="下に表示" placement="bottom">
+  </Tooltip>
+  <Tooltip content="下に表示" placement="bottom">
     <Button variant="secondary">Bottom</Button>
-  </SimpleTooltip>
-  <SimpleTooltip title="左に表示" placement="left">
+  </Tooltip>
+  <Tooltip content="左に表示" placement="left">
     <Button variant="secondary">Left</Button>
-  </SimpleTooltip>
+  </Tooltip>
 </Flex>
 
-// Compositional with custom content
+// Compositional with custom multi-line content
 <TooltipProvider delayDuration={150}>
   <Tooltip>
     <TooltipTrigger asChild>

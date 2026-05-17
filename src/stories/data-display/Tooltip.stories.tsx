@@ -1,7 +1,6 @@
 import type { Meta } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
-  SimpleTooltip,
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -14,19 +13,21 @@ import { Flex } from "../../components/layout";
  * data-display/Tooltip — Radix-backed
  * floating label.
  *
- * Two surfaces:
- *   • Compositional — `Tooltip` / `TooltipTrigger` / `TooltipContent`
- *     wrap Radix verbatim.
- *   • Convenience  — `SimpleTooltip` wires provider + root + trigger
- *     for the common case.
+ * Two equivalent modes on the SAME primitive (no `SimpleTooltip` —
+ * cardinal rule 31 forbids parallel convenience wrappers):
+ *
+ *   • Data-driven — `<Tooltip content="…" placement="top">child</Tooltip>`
+ *     auto-wires provider + root + trigger + content.
+ *   • Compositional — omit `content`, supply your own `TooltipTrigger` +
+ *     `TooltipContent` children inside a `<TooltipProvider>`.
  *
  * Per cardinal rule 23 §B the `placement` prop is the positional
  * anchor vocabulary shared with Popover (top / right / bottom / left).
  */
 
-const meta: Meta<typeof SimpleTooltip> = {
+const meta: Meta<typeof Tooltip> = {
   title: "Data Display/Tooltip",
-  component: SimpleTooltip,
+  component: Tooltip,
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
@@ -43,24 +44,24 @@ interactive primitives).
 };
 export default meta;
 
-// ─── SimpleTooltip · 4 placements ───────────────────────────────
+// ─── Default · 4 placements (data-driven) ───────────────────────
 
-export const SimpleTooltip_FourPlacements = {
-  name: "SimpleTooltip · top / right / bottom / left",
+export const FourPlacements = {
+  name: "Default · top / right / bottom / left (content prop)",
   render: () => (
     <Flex gap="large" align="center" style={{ padding: 80 }}>
-      <SimpleTooltip title="上に表示" placement="top">
+      <Tooltip content="上に表示" placement="top">
         <Button variant="secondary">Top</Button>
-      </SimpleTooltip>
-      <SimpleTooltip title="右に表示" placement="right">
+      </Tooltip>
+      <Tooltip content="右に表示" placement="right">
         <Button variant="secondary">Right</Button>
-      </SimpleTooltip>
-      <SimpleTooltip title="下に表示" placement="bottom">
+      </Tooltip>
+      <Tooltip content="下に表示" placement="bottom">
         <Button variant="secondary">Bottom</Button>
-      </SimpleTooltip>
-      <SimpleTooltip title="左に表示" placement="left">
+      </Tooltip>
+      <Tooltip content="左に表示" placement="left">
         <Button variant="secondary">Left</Button>
-      </SimpleTooltip>
+      </Tooltip>
     </Flex>
   ),
   play: async ({ canvasElement, step }: any) => {
@@ -83,10 +84,10 @@ export const SimpleTooltip_FourPlacements = {
   },
 };
 
-// ─── Compositional · custom Content ─────────────────────────────
+// ─── Compositional · rich Content ───────────────────────────────
 
 export const Compositional = {
-  name: "Compositional · Tooltip + Content (custom)",
+  name: "Compositional · custom multi-line content",
   render: () => (
     <TooltipProvider delayDuration={150}>
       <Tooltip>
@@ -104,18 +105,18 @@ export const Compositional = {
   ),
 };
 
-// ─── Delay · delayDuration=0 ────────────────────────────────────
+// ─── Delay variants ─────────────────────────────────────────────
 
 export const Delay = {
-  name: "Delay · delayDuration = 0",
+  name: "Delay · delayDuration = 0 / 500ms",
   render: () => (
     <Flex gap="middle" align="center">
-      <SimpleTooltip title="即座に表示" placement="top" delayDuration={0}>
+      <Tooltip content="即座に表示" placement="top" delayDuration={0}>
         <Button variant="secondary">No delay</Button>
-      </SimpleTooltip>
-      <SimpleTooltip title="500ms 後に表示" placement="top" delayDuration={500}>
+      </Tooltip>
+      <Tooltip content="500ms 後に表示" placement="top" delayDuration={500}>
         <Button variant="secondary">500ms delay</Button>
-      </SimpleTooltip>
+      </Tooltip>
     </Flex>
   ),
 };

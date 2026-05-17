@@ -400,9 +400,8 @@ export {
   TooltipContent,
   TooltipProvider,
   TooltipPortal,
-  SimpleTooltip,
 } from "./data-display/Tooltip"
-export type { TooltipContentProps, SimpleTooltipProps } from "./data-display/Tooltip"
+export type { TooltipProps, TooltipContentProps } from "./data-display/Tooltip"
 
 export { Timeline, TimelineItem } from "./data-display/Timeline"
 export type {

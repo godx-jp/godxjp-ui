@@ -10,21 +10,38 @@ import { cn } from "../cn";
 /**
  * Tooltip — Radix-backed floating label anchored to a trigger.
  *
- * Two surfaces:
- *   • Compositional — `<TooltipProvider><Tooltip><TooltipTrigger>...
- *     <TooltipContent>...</TooltipContent></Tooltip></TooltipProvider>`
- *     mirrors Radix verbatim for full control.
- *   • Convenience  — `<SimpleTooltip title="…">child</SimpleTooltip>`
- *     wires provider + root + trigger (asChild) + content for the
- *     common case.
+ * Two equivalent consumption modes per cardinal rule 23 (concept-first
+ * API + minimise sub-components) and rule 31 (no nested wrappers):
+ *
+ *   1. Data-driven (preferred) — pass `content`:
+ *
+ *        <Tooltip content="保存します" placement="top">
+ *          <Button>保存</Button>
+ *        </Tooltip>
+ *
+ *      Auto-wires `TooltipProvider` + `TooltipPrimitive.Root` +
+ *      `TooltipTrigger(asChild)` + `TooltipContent`.
+ *
+ *   2. Compositional (advanced) — omit `content`, supply children:
+ *
+ *        <TooltipProvider>
+ *          <Tooltip>
+ *            <TooltipTrigger asChild><Button /></TooltipTrigger>
+ *            <TooltipContent>rich JSX…</TooltipContent>
+ *          </Tooltip>
+ *        </TooltipProvider>
+ *
+ * The compositional mode exists ONLY because Radix Tooltip needs a
+ * shared `TooltipProvider` ancestor when multiple tooltips share a
+ * `delayDuration` config — the data-driven mode handles a single
+ * tooltip per consumer call.
  *
  * Styled via the canonical `.tooltip-content` class from
- * `src/styles/shell/35-badge-tag-misc.css` (cardinal rule 21 —
- * reads tokens, honours every axis).
+ * `src/styles/shell/35-badge-tag-misc.css` (cardinal rule 21 — reads
+ * tokens, honours every axis).
  */
 
 export const TooltipProvider = TooltipPrimitive.Provider;
-export const Tooltip = TooltipPrimitive.Root;
 export const TooltipTrigger = TooltipPrimitive.Trigger;
 export const TooltipPortal = TooltipPrimitive.Portal;
 
@@ -47,39 +64,63 @@ export const TooltipContent = forwardRef<
   );
 });
 
-export interface SimpleTooltipProps {
-  /** Tooltip text / content. */
-  title: ReactNode;
-  /** Trigger element. */
-  children: ReactNode;
-  /** Anchor side per §23.B `placement` vocabulary. */
+export interface TooltipProps {
+  /** Tooltip text / content. When set, primitive auto-wires
+   * `TooltipProvider` + `TooltipTrigger(asChild)` + `TooltipContent`
+   * around the child trigger element — the consumer just provides
+   * the trigger node. When omitted, the primitive falls back to
+   * compositional mode (consumer-rendered `<TooltipTrigger>` +
+   * `<TooltipContent>` children). */
+  content?: ReactNode;
+  /** Trigger element (data-driven mode) OR Radix Root children
+   * (compositional mode). */
+  children?: ReactNode;
+  /** Anchor side per cardinal rule 23 §B `placement` vocabulary.
+   * Default `top`. Honoured only in data-driven mode. */
   placement?: "top" | "right" | "bottom" | "left";
-  /** Open / close delay in ms. */
+  /** Open / close delay in ms. Default 200. Honoured in data-driven
+   * mode (sets `TooltipProvider.delayDuration`); in compositional
+   * mode the consumer's outer `<TooltipProvider>` controls timing. */
   delayDuration?: number;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
-export function SimpleTooltip({
-  title,
+export function Tooltip({
+  content,
   children,
   placement = "top",
   delayDuration = 200,
   open,
   defaultOpen,
   onOpenChange,
-}: SimpleTooltipProps) {
+}: TooltipProps) {
+  if (content === undefined) {
+    // Compositional — consumer's <TooltipProvider> wraps and they
+    // hand-roll <TooltipTrigger> + <TooltipContent> inside the
+    // children. We just pass-through the Radix Root.
+    return (
+      <TooltipPrimitive.Root
+        open={open}
+        defaultOpen={defaultOpen}
+        onOpenChange={onOpenChange}
+      >
+        {children}
+      </TooltipPrimitive.Root>
+    );
+  }
+  // Data-driven — auto-wire Provider + Root + Trigger + Content.
   return (
     <TooltipProvider delayDuration={delayDuration}>
-      <Tooltip
+      <TooltipPrimitive.Root
         open={open}
         defaultOpen={defaultOpen}
         onOpenChange={onOpenChange}
       >
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent side={placement}>{title}</TooltipContent>
-      </Tooltip>
+        <TooltipContent side={placement}>{content}</TooltipContent>
+      </TooltipPrimitive.Root>
     </TooltipProvider>
   );
 }
