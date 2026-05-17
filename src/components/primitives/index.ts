@@ -104,6 +104,24 @@ export type { EmptyProps } from "./Empty"
 export { Tag } from "./Tag"
 export type { TagProps, TagPresetColor } from "./Tag"
 
+export {
+  Typography,
+  Title as TypographyTitle,
+  Paragraph as TypographyParagraph,
+  Text as TypographyText,
+  Link as TypographyLink,
+} from "./Typography"
+export type {
+  TypographyColor,
+  TypographyTruncate,
+  TypographyCommonProps,
+  TitleSize,
+  TitleProps,
+  ParagraphProps,
+  TextProps,
+  LinkProps,
+} from "./Typography"
+
 export { Descriptions } from "./Descriptions"
 export type { DescriptionsProps, DescriptionsItemProps } from "./Descriptions"
 
