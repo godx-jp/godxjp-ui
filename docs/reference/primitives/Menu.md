@@ -2,10 +2,9 @@
 title: "Menu"
 description: "Persistent navigation list (sidebar / nav bar) with selection state — distinct from DropdownMenu (Radix overlay action menu)."
 diataxis: reference
-audience:
-  - developer
-status: draft
-last-updated: 2026-05-17
+audience: [developer]
+status: stable
+last-updated: 2026-05-18
 lang: en
 library: "@godxjp/ui"
 library_version: 3.0.0
@@ -13,15 +12,38 @@ library_version: 3.0.0
 
 # Menu
 
-Navigation list with selection state. Supports horizontal + vertical orientations; selection mirrors Tabs/Select vocabulary (`value` / `defaultValue` / `onValueChange`). Distinct from `<DropdownMenu>` (Radix overlay action menu): Menu is the persistent navigation surface (sidebar / nav bar); DropdownMenu is the trigger-bound popover.
+> Persistent navigation list — for sidebars and top-bar navigation, with selection state.
 
-## Import
+## When to use Menu vs DropdownMenu
 
-```ts
-import { Menu, MenuItem, MenuGroup, MenuDivider } from "@godxjp/ui/components/primitives"
+| Need | Use |
+|---|---|
+| Always-visible sidebar / nav bar with selection | **Menu** |
+| Trigger-bound popover with one-shot action items | **DropdownMenu** |
+
+Menu is the persistent navigation surface; DropdownMenu is the Radix overlay action menu. Vocabulary per cardinal rule 23 §B: `orientation`, `value` / `defaultValue` / `onValueChange` (Radix-style selection mirroring Tabs / Select).
+
+## Usage
+
+```tsx
+import { Menu, MenuItem, MenuGroup, MenuDivider } from "@godxjp/ui"
+
+<Menu defaultValue="dashboard">
+  <MenuItem value="dashboard" icon={<HomeIcon />}>ダッシュボード</MenuItem>
+  <MenuItem value="employees" icon={<UsersIcon />} extra="38">従業員</MenuItem>
+  <MenuItem value="reports" icon={<ChartIcon />}>レポート</MenuItem>
+  <MenuDivider />
+  <MenuGroup label="管理">
+    <MenuItem value="stores">店舗管理</MenuItem>
+    <MenuItem value="permissions">権限</MenuItem>
+    <MenuItem value="settings" icon={<SettingsIcon />}>設定</MenuItem>
+  </MenuGroup>
+</Menu>
 ```
 
-## Props (`Menu`)
+## Props
+
+### `Menu`
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
@@ -29,35 +51,72 @@ import { Menu, MenuItem, MenuGroup, MenuDivider } from "@godxjp/ui/components/pr
 | `value` | `string` | — | Controlled selected item value |
 | `defaultValue` | `string` | — | Uncontrolled initial selection |
 | `onValueChange` | `(value: string) => void` | — | Called when selection changes |
+| `...rest` | `Omit<ComponentProps<"ul">, "onChange">` | — | Standard `<ul>` props |
 
-## Props (`MenuItem`)
+### `MenuItem`
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `value *` | `string` | — | Item key |
-| `icon` | `ReactNode` | — | Leading icon |
+| `value` | `string` | required | Item key — matched against the Menu's `value` |
 | `disabled` | `boolean` | `false` | Disable interaction |
-| `extra` | `ReactNode` | — | Trailing slot |
+| `icon` | `ReactNode` | — | Leading icon slot |
+| `extra` | `ReactNode` | — | Trailing slot (badge count, kbd hint, …) |
+| `...rest` | `Omit<ComponentProps<"button">, "value">` | — | Standard `<button>` props (including `onClick`) |
 
-## Example
+### `MenuGroup`
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `label` | `ReactNode` | — | Group title |
+| `...rest` | `ComponentProps<"div">` | — | Standard `<div>` props |
+
+### `MenuDivider`
+
+A horizontal separator. Accepts `ComponentProps<"hr">`.
+
+## Accessibility
+
+- Root renders `<ul role="menu">` with `aria-orientation`. Each item is `<button role="menuitem">` inside `<li role="none" style={{ display: "contents" }}>`.
+- Selection state binds to `data-state="selected"` on the active item — pair with CSS that also adjusts contrast, never colour alone, per WCAG SC 1.4.1.
+- `MenuGroup` renders `<div role="group">` with `aria-label={label}` when `label` is a string. The wrapper is intentionally not an `<li>` to avoid invalid `<li>` → `<li>` nesting.
+- Keyboard: native Tab order through `<button>` items; Enter / Space activate. For full WAI-ARIA APG menu keyboard semantics (Arrow keys, Home / End) pair with custom roving-tab-index logic.
+- For collapsible navigation patterns, manage `aria-expanded` on the trigger that opens / closes the Menu so screen readers know the state.
+
+## Composition
 
 ```tsx
-<Menu defaultValue="dashboard">
-  <MenuItem value="dashboard" icon={<HomeIcon />}>ダッシュボード</MenuItem>
-  <MenuItem value="orders">注文管理</MenuItem>
-  <MenuDivider />
-  <MenuGroup label="管理">
-    <MenuItem value="users">ユーザー</MenuItem>
-  </MenuGroup>
-</Menu>
+// Sidebar nav inside an AppShell
+<div style={{ width: 240, border: "1px solid var(--border)", borderRadius: 6 }}>
+  <Menu defaultValue="dashboard">
+    <MenuItem value="dashboard" icon={<HomeIcon />}>ダッシュボード</MenuItem>
+    <MenuItem value="orders">注文管理</MenuItem>
+    <MenuDivider />
+    <MenuGroup label="管理">
+      <MenuItem value="users">ユーザー</MenuItem>
+      <MenuItem value="legacy" disabled>旧バージョン（廃止予定）</MenuItem>
+    </MenuGroup>
+  </Menu>
+</div>
+
+// Controlled — wire to router
+function NavMenu() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  return (
+    <Menu
+      value={location.pathname}
+      onValueChange={(v) => navigate(v)}
+    >
+      <MenuItem value="/">ダッシュボード</MenuItem>
+      <MenuItem value="/orders">注文管理</MenuItem>
+    </Menu>
+  )
+}
 ```
 
-## Related
+## See also
 
-- Story catalogue: [`Menu` stories](../../../src/stories/navigation/Menu.stories.tsx)
+- [DropdownMenu](./DropdownMenu.md) — trigger-bound action menu.
+- [Tabs](./Tabs.md) — shares the `value` / `onValueChange` vocabulary for selection.
+- [Sidebar](../shell/Sidebar.md) — typical host for a vertical Menu.
 - Source: [`src/components/navigation/Menu.tsx`](../../../src/components/navigation/Menu.tsx)
-- Cardinal rule 23 §B prop vocabulary: [`CLAUDE.md` §23.B](../../../CLAUDE.md#23)
-
-## Status
-
-`draft` — auto-generated stub. Detailed prop docs / accessibility notes / design rationale still to be filled in.

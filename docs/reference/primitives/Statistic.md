@@ -1,11 +1,10 @@
 ---
 title: "Statistic"
-description: "Ant-Design KPI tile with title, value, prefix/suffix slots, and numeric formatting hooks."
+description: "KPI tile with title, value, optional prefix/suffix, precision, and locale-aware grouping."
 diataxis: reference
-audience:
-  - developer
-status: draft
-last-updated: 2026-05-17
+audience: [developer]
+status: stable
+last-updated: 2026-05-18
 lang: en
 library: "@godxjp/ui"
 library_version: 3.0.0
@@ -13,42 +12,77 @@ library_version: 3.0.0
 
 # Statistic
 
-Ant-Design-shaped KPI tile. Three slots: `title` (micro-caption above the value), `value` with optional `prefix` / `suffix`, and `precision` / `formatter` for numeric formatting. Locale-aware grouping defaults on via `Intl.NumberFormat`. All visual values flow through `.statistic-*` classes — stories don't restyle.
+> KPI tile — title + headline number with optional prefix, suffix, decimal precision, and locale grouping.
 
-## Import
+## Usage
 
-```ts
-import { Statistic } from "@godxjp/ui/components/primitives"
+```tsx
+import { Statistic, Card } from "@godxjp/ui"
+
+<Card padding="default">
+  <Statistic title="本日の出勤者" value={42} />
+</Card>
+<Card padding="default">
+  <Statistic title="月次売上" value={1284560} prefix="¥" />
+</Card>
+<Card padding="default">
+  <Statistic title="出勤率" value={96.8} precision={1} suffix="%" />
+</Card>
 ```
 
 ## Props
 
+### `Statistic` (root)
+
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `title` | `ReactNode` | — | Micro-caption above the value |
-| `value *` | `number \| string` | — | The headline number / text |
-| `precision` | `number` | — | Decimal places (when value is a number) |
-| `prefix` | `ReactNode` | — | Prepended to value (e.g. `¥`, icon) |
-| `suffix` | `ReactNode` | — | Appended to value (e.g. `%`, `/mo`) |
-| `groupSeparator` | `boolean` | `true` | Use `Intl.NumberFormat` grouping |
-| `formatter` | `(value: number \| string) => ReactNode` | — | Custom format function; overrides `precision` + `groupSeparator` |
-| `align` | `"left" \| "right" \| "center"` | `"left"` | Tile text alignment |
-| `valueSize` | `number` | — | Font size of the value in px |
+| `title` | `ReactNode` | — | Caption above the value |
+| `value` | `number \| string` | required | The headline value. Strings (e.g. `"—"`) bypass formatting |
+| `precision` | `number` | — | Decimal places when `value` is a number |
+| `prefix` | `ReactNode` | — | Prepended to the value (`¥`, currency icon, …) |
+| `suffix` | `ReactNode` | — | Appended to the value (`%`, `/mo`, `+`, …) |
+| `groupSeparator` | `boolean` | `true` | Locale-aware thousands grouping via `Intl.NumberFormat` |
+| `formatter` | `(value: number \| string) => ReactNode` | — | Custom format function. Overrides `precision` + `groupSeparator` |
+| `align` | `"left" \| "right" \| "center"` | `"left"` | Text alignment for the tile |
+| `valueSize` | `number` | — | Override font-size of the value in pixels |
+| `...rest` | `Omit<ComponentProps<"div">, "title" \| "prefix">` | — | Standard `<div>` props |
 
-## Example
+## Accessibility
+
+- Renders a plain `<div>` group — screen readers read `title` then the number in document order.
+- For comparative views (year-over-year, period deltas), pair the Statistic with a `<Tag color="success">` or `<Badge>` rather than encoding the delta in the value itself — colour-only signals fail WCAG SC 1.4.1 (Use of Color).
+- When the value is a placeholder string (`"—"`, `"loading"`), include an `aria-label` on the wrapper or pair with a `<Spinner aria-label="…">` so assistive tech announces the loading state.
+
+## Composition
 
 ```tsx
-<Card padding="default">
-  <Statistic title="本日の出勤者" value={42} />
-</Card>
+// KPI row inside a dashboard
+<Flex gap="middle" wrap>
+  <Card padding="default">
+    <Statistic title="月次売上" value={1284560} prefix="¥" />
+  </Card>
+  <Card padding="default">
+    <Statistic title="出勤率" value={96.8} precision={1} suffix="%" />
+  </Card>
+  <Card padding="default">
+    <Statistic title="新規申請" value={12} suffix="+" />
+  </Card>
+</Flex>
+
+// Locale-aware currency via formatter
+<Statistic
+  title="月次売上"
+  value={1284560}
+  formatter={(v) =>
+    typeof v === "number"
+      ? new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" }).format(v)
+      : v
+  }
+/>
 ```
 
-## Related
+## See also
 
-- Story catalogue: [`Statistic` stories](../../../src/stories/data-display/Statistic.stories.tsx)
+- [Card](./Card.md) — typical wrapper for KPI grids.
+- [Tag](./Tag.md) — pair for delta / status indication.
 - Source: [`src/components/data-display/Statistic.tsx`](../../../src/components/data-display/Statistic.tsx)
-- Cardinal rule 23 §B prop vocabulary: [`CLAUDE.md` §23.B](../../../CLAUDE.md#23)
-
-## Status
-
-`draft` — auto-generated stub. Detailed prop docs / accessibility notes / design rationale still to be filled in.

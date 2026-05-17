@@ -1,11 +1,10 @@
 ---
 title: "Tag"
-description: "Ant-Design label chip with preset semantic colours, custom hex/oklch hues, optional close button, and leading icon slot."
+description: "Label chip with preset semantic colours, custom CSS colour input, optional close button, and leading icon slot."
 diataxis: reference
-audience:
-  - developer
-status: draft
-last-updated: 2026-05-17
+audience: [developer]
+status: stable
+last-updated: 2026-05-18
 lang: en
 library: "@godxjp/ui"
 library_version: 3.0.0
@@ -13,39 +12,72 @@ library_version: 3.0.0
 
 # Tag
 
-Ant-Design label chip. Distinct from `<Badge>` — Badge anchors a status pill (a number or a single short word); Tag labels collections (often many in a row, optionally closable). Preset `color` snaps to a semantic CSS variable (`var(--success)` etc.); custom CSS strings (`oklch(56% 0.15 240)`) are accepted too.
+> Label chip — preset semantic hues or any CSS colour, with an optional close button and leading icon.
 
-## Import
+## When to use Tag vs Badge
 
-```ts
-import { Tag } from "@godxjp/ui/components/primitives"
+| Need | Use |
+|---|---|
+| A status pill (one short word or a number) | **Badge** |
+| Free-form labels, often many in a row, optionally removable | **Tag** |
+
+Tag tints both background and border from the resolved hue via `color-mix(in oklch, …)` — preset names (`success`, `warning`, …) snap to a semantic token; any other string is passed through as a custom CSS colour.
+
+## Usage
+
+```tsx
+import { Tag } from "@godxjp/ui"
+import { Star } from "lucide-react"
+
+<Tag>渋谷本店</Tag>
+<Tag icon={<Star size={12} aria-hidden />}>お気に入り</Tag>
+<Tag color="primary">店長</Tag>
+<Tag color="success">承認済</Tag>
 ```
 
 ## Props
 
+### `Tag` (root)
+
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `color` | `"default" \| "primary" \| "success" \| "warning" \| "error" \| "info" \| "attention" \| string` | `"default"` | Preset semantic colour or any CSS colour string |
-| `bordered` | `boolean` | `true` | Show outline. `false` = solid-tinted background only |
-| `closable` | `boolean` | `false` | Show an × button |
-| `onClose` | `(e: MouseEvent<HTMLButtonElement>) => void` | — | Called when × is clicked |
-| `icon` | `ReactNode` | — | Leading icon |
+| `color` | `"default" \| "primary" \| "success" \| "warning" \| "error" \| "info" \| "attention" \| string` | `"default"` | Preset hue or any CSS colour string (`oklch(56% 0.15 240)`, `#3b82f6`, …) |
+| `bordered` | `boolean` | `true` | Show outline. `false` keeps the tinted background only |
+| `closable` | `boolean` | `false` | Render an × button after the label |
+| `onClose` | `(e: MouseEvent<HTMLButtonElement>) => void` | — | Called when the × button is clicked |
+| `icon` | `ReactNode` | — | Leading icon slot |
 | `...rest` | `Omit<ComponentProps<"span">, "color">` | — | Standard `<span>` props |
 
-## Example
+## Accessibility
+
+- Renders a native `<span>` so screen readers announce the label text in flow.
+- The × button has `aria-label="Remove tag"` and a real `<button>` element — keyboard accessible by default.
+- Colour is decorative — always include readable text content so users not relying on colour can identify the tag.
+- WCAG 2.1 SC 1.4.3: preset hues maintain readable contrast against the tinted background via `color-mix(in oklch, …, transparent)`; check custom colours when you pass arbitrary strings.
+
+## Composition
 
 ```tsx
-<Tag color="success">done</Tag>
-<Tag color="warning" icon={<Star size={12} />}>featured</Tag>
-<Tag closable onClose={() => remove("alpha")}>alpha</Tag>
+function FilterChips() {
+  const [tags, setTags] = useState(["渋谷本店", "新宿支店", "横浜支店"])
+  return (
+    <Flex gap="small" align="center" wrap>
+      {tags.map((t) => (
+        <Tag
+          key={t}
+          closable
+          onClose={() => setTags((rest) => rest.filter((x) => x !== t))}
+        >
+          {t}
+        </Tag>
+      ))}
+    </Flex>
+  )
+}
 ```
 
-## Related
+## See also
 
-- Story catalogue: [`Tag` stories](../../../src/stories/data-display/Tag.stories.tsx)
+- [Badge](./Badge.md) — single status pill alternative.
+- [IconButton](./IconButton.md) — the × close button pattern when used outside Tag.
 - Source: [`src/components/data-display/Tag.tsx`](../../../src/components/data-display/Tag.tsx)
-- Cardinal rule 23 §B prop vocabulary: [`CLAUDE.md` §23.B](../../../CLAUDE.md#23)
-
-## Status
-
-`draft` — auto-generated stub. Detailed prop docs / accessibility notes / design rationale still to be filled in.

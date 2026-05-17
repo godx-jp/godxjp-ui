@@ -2,10 +2,9 @@
 title: "Steps"
 description: "Wizard / progress indicator with horizontal or vertical orientation; each step carries title, description, and an optional icon."
 diataxis: reference
-audience:
-  - developer
-status: draft
-last-updated: 2026-05-17
+audience: [developer]
+status: stable
+last-updated: 2026-05-18
 lang: en
 library: "@godxjp/ui"
 library_version: 3.0.0
@@ -13,33 +12,13 @@ library_version: 3.0.0
 
 # Steps
 
-Wizard / progress indicator. Reuses `.steps-h` (horizontal) and `.steps-v` (vertical) CSS atoms from `shell.css` — both ported from the dxs-kintai design canon. Vocabulary per cardinal rule 23 §B: `orientation` (axis of stack); `current` (number, 0-based active index); per-step `color` (semantic role mapping — replaces Ant's `status` enum).
+> Wizard / progress indicator — sequence of titled nodes with an active index, in horizontal or vertical orientation.
 
-## Import
-
-```ts
-import { Steps, Step } from "@godxjp/ui/components/primitives"
-```
-
-## Props (`Steps`)
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Axis |
-| `current` | `number` | `0` | Zero-based index of the in-progress step |
-
-## Props (`Step`)
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `title` | `ReactNode` | — | Step title |
-| `description` | `ReactNode` | — | Step description |
-| `icon` | `ReactNode` | index / check | Override icon for the node |
-| `color` | `"default" \| "primary" \| "success" \| "info" \| "warning" \| "destructive"` | — | Override colour for the node |
-
-## Example
+## Usage
 
 ```tsx
+import { Steps, Step } from "@godxjp/ui"
+
 <Steps current={2}>
   <Step title="情報入力" description="5/14 09:22" />
   <Step title="確認" description="5/14 09:24" />
@@ -49,12 +28,68 @@ import { Steps, Step } from "@godxjp/ui/components/primitives"
 </Steps>
 ```
 
-## Related
+## Props
 
-- Story catalogue: [`Steps` stories](../../../src/stories/navigation/Steps.stories.tsx)
+### `Steps`
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Axis of stack |
+| `current` | `number` | `0` | Zero-based index of the in-progress step. Steps before are marked `done`, after are `dis` (disabled) |
+| `...rest` | `Omit<ComponentProps<"ol">, "color">` | — | Standard `<ol>` props |
+
+### `Step`
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `ReactNode` | — | Step title |
+| `description` | `ReactNode` | — | Step description (shown below in vertical / inline in horizontal) |
+| `icon` | `ReactNode` | index number / check | Override the node icon (default: index for current/upcoming, check for done) |
+| `color` | `"default" \| "primary" \| "success" \| "info" \| "warning" \| "destructive"` | — | Override the node colour (default: derived from current/done state) |
+| `...rest` | `Omit<ComponentProps<"li">, "color" \| "title">` | — | Standard `<li>` props |
+
+Vocabulary per cardinal rule 23 §B: `orientation` (axis of stack), `current` (number, active index), per-step `color` (semantic role mapping — replaces Ant's `status` enum).
+
+## Accessibility
+
+- Root renders `<ol>` with `aria-orientation` reflecting `orientation` — assistive tech reads steps as an ordered list.
+- The active step sets `aria-current="step"` so screen readers announce the user's position.
+- Each `<li>` carries its title and description in document order — no extra ARIA needed for the labels.
+- Done steps render a checkmark icon; the icon is decorative — the "done" state is communicated by document order and the active-step indicator.
+
+## Composition
+
+```tsx
+// Vertical wizard with multi-line descriptions
+<Steps orientation="vertical" current={2}>
+  <Step
+    title="会社情報を入力"
+    description="基本情報 · 締め日 · 通貨を設定済み"
+  />
+  <Step
+    title="従業員をインポート"
+    description="38 名 · CSV から一括登録"
+  />
+  <Step
+    title="シフトテンプレートを作成"
+    description="早番 / 遅番 / 通し のパターンを定義します"
+  />
+  <Step
+    title="給与連携を設定"
+    description="freee · マネーフォワードと接続"
+  />
+</Steps>
+
+// Custom icon
+<Steps current={1}>
+  <Step title="支払い" icon={<CreditCard size={14} />} />
+  <Step title="確認" icon={<CheckCircle size={14} />} />
+  <Step title="完了" icon={<Check size={14} />} />
+</Steps>
+```
+
+## See also
+
+- [Timeline](./Timeline.md) — for historical event lists rather than progress.
+- [Progress](./Progress.md) — for continuous (percentage) progress instead of discrete steps.
 - Source: [`src/components/navigation/Steps.tsx`](../../../src/components/navigation/Steps.tsx)
-- Cardinal rule 23 §B prop vocabulary: [`CLAUDE.md` §23.B](../../../CLAUDE.md#23)
-
-## Status
-
-`draft` — auto-generated stub. Detailed prop docs / accessibility notes / design rationale still to be filled in.
