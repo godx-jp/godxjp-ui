@@ -328,12 +328,12 @@ export const UserMenuPattern: Story = {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>
           <Flex vertical gap="small">
-            <strong style={{ fontSize: "var(--font-size-sm)" }}>
+            <strong style={{ fontSize: "var(--text-sm)" }}>
               Satoshi Nakamoto
             </strong>
             <span
               style={{
-                fontSize: "var(--font-size-xs)",
+                fontSize: "var(--text-xs)",
                 color: "var(--muted-foreground)",
               }}
             >
@@ -474,7 +474,7 @@ export const Controlled: Story = {
             Close externally
           </Button>
         </Flex>
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--muted-foreground)" }}>
+        <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
           External state: <code>{String(open)}</code>
         </span>
         <DropdownMenu open={open} onOpenChange={setOpen}>

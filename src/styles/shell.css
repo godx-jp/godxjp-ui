@@ -2064,7 +2064,7 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
 
 .app-root[data-collapsed="true"] .sb-brand-text { display: none; }
 
-.page-content { display: flex; flex-direction: column; gap: var(--spacing-4); max-width: var(--content-max-width, 1280px); margin: 0 auto; width: 100%; box-sizing: border-box; padding: var(--density-page); }
+.page-content { display: flex; flex-direction: column; gap: var(--spacing-4); max-width: var(--container-max-width); margin: 0 auto; width: 100%; box-sizing: border-box; padding: var(--density-page); }
 
 .page-content[data-padding="none"] { padding: 0; }
 
@@ -2310,7 +2310,7 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
 .me-page { max-width: 1120px; padding: var(--spacing-8) var(--spacing-10) var(--spacing-24); }
 
 /* Me hero. */
-.me-hero { display: flex; align-items: center; gap: var(--spacing-5); padding: var(--spacing-6) var(--spacing-7, 1.75rem); background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 28px; position: relative; overflow: hidden; }
+.me-hero { display: flex; align-items: center; gap: var(--spacing-5); padding: var(--spacing-6) 1.75rem; background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 28px; position: relative; overflow: hidden; }
 .me-hero-avatar { width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--primary); color: var(--primary-foreground); display: grid; place-items: center; font-weight: 700; font-size: var(--text-xl); letter-spacing: 0.02em; flex-shrink: 0; }
 .me-hero-body { flex: 1; min-width: 0; }
 .me-hero-name { font-size: var(--text-2xl); font-weight: 500; letter-spacing: -0.01em; line-height: 1.25; margin: 0; display: flex; align-items: center; gap: var(--spacing-2); flex-wrap: wrap; }

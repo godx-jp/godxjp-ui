@@ -284,7 +284,7 @@ export const Controlled: Story = {
             Close externally
           </Button>
         </Flex>
-        <span style={{ color: "var(--muted-foreground)", fontSize: "var(--font-size-sm)" }}>
+        <span style={{ color: "var(--muted-foreground)", fontSize: "var(--text-sm)" }}>
           External state: <code>{String(open)}</code>
         </span>
         <Dialog open={open} onOpenChange={setOpen}>

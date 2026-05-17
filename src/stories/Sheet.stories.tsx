@@ -408,7 +408,7 @@ export const Controlled: Story = {
             Close
           </Button>
         </Flex>
-        <span style={{ color: "var(--muted-foreground)", fontSize: "var(--font-size-sm)" }}>
+        <span style={{ color: "var(--muted-foreground)", fontSize: "var(--text-sm)" }}>
           External state: <code>{String(open)}</code>
         </span>
         <Sheet open={open} onOpenChange={setOpen}>

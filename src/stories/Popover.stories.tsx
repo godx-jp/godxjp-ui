@@ -66,7 +66,7 @@ export const Default: Story = {
         <Button variant="secondary">Open popover</Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div style={{ fontSize: "var(--font-size-sm)" }}>
+        <div style={{ fontSize: "var(--text-sm)" }}>
           Popover content — non-modal, portal rendered, keyboard
           dismissible via Esc.
         </div>
@@ -120,7 +120,7 @@ export const AnchoredToIcon: Story = {
   },
   render: () => (
     <Flex align="center" gap="small">
-      <span style={{ fontSize: "var(--font-size-sm)" }}>
+      <span style={{ fontSize: "var(--text-sm)" }}>
         Inter-service auth model
       </span>
       <Popover>
@@ -131,10 +131,10 @@ export const AnchoredToIcon: Story = {
         </PopoverTrigger>
         <PopoverContent align="start">
           <Flex vertical gap="small">
-            <strong style={{ fontSize: "var(--font-size-sm)" }}>
+            <strong style={{ fontSize: "var(--text-sm)" }}>
               RFC 8693 Token Exchange
             </strong>
-            <p style={{ margin: 0, fontSize: "var(--font-size-sm)" }}>
+            <p style={{ margin: 0, fontSize: "var(--text-sm)" }}>
               Inbound user JWT → exchanged at the gateway for an
               audience-scoped service token. Callees verify <code>aud</code>
               + signature; no shared bearers.
@@ -208,19 +208,19 @@ export const UserMetaCard: Story = {
           <Avatar size="lg" variant="brand">SN</Avatar>
           <Flex vertical gap="small" flex={1}>
             <Flex vertical gap="small">
-              <strong style={{ fontSize: "var(--font-size-sm)" }}>
+              <strong style={{ fontSize: "var(--text-sm)" }}>
                 Satoshi Nakamoto
               </strong>
               <span
                 style={{
-                  fontSize: "var(--font-size-xs)",
+                  fontSize: "var(--text-xs)",
                   color: "var(--muted-foreground)",
                 }}
               >
                 satoshi@famgia.com · human
               </span>
             </Flex>
-            <span style={{ fontSize: "var(--font-size-xs)" }}>
+            <span style={{ fontSize: "var(--text-xs)" }}>
               3 active sandboxes · 12 open PRs
             </span>
             <Flex gap="small">
@@ -262,7 +262,7 @@ export const WithAnchor: Story = {
         </PopoverTrigger>
         <PopoverContent align="start">
           <Flex vertical gap="small">
-            <strong style={{ fontSize: "var(--font-size-sm)" }}>
+            <strong style={{ fontSize: "var(--text-sm)" }}>
               Recent searches
             </strong>
             <Button variant="ghost" size="sm">
@@ -297,7 +297,7 @@ export const Uncontrolled: Story = {
         <Button variant="secondary">Re-open</Button>
       </PopoverTrigger>
       <PopoverContent>
-        <span style={{ fontSize: "var(--font-size-sm)" }}>
+        <span style={{ fontSize: "var(--text-sm)" }}>
           Opened via <code>defaultOpen</code> — Radix internal state from
           here on.
         </span>
@@ -326,7 +326,7 @@ export const Controlled: Story = {
             Close externally
           </Button>
         </Flex>
-        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--muted-foreground)" }}>
+        <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
           External state: <code>{String(open)}</code>
         </span>
         <Popover open={open} onOpenChange={setOpen}>
@@ -334,7 +334,7 @@ export const Controlled: Story = {
             <Button variant="ghost">Anchored trigger</Button>
           </PopoverTrigger>
           <PopoverContent>
-            <span style={{ fontSize: "var(--font-size-sm)" }}>
+            <span style={{ fontSize: "var(--text-sm)" }}>
               Open state lives in the parent via <code>useState</code>.
             </span>
           </PopoverContent>

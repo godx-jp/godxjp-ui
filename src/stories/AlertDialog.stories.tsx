@@ -281,7 +281,7 @@ export const Controlled: Story = {
         <Button variant="danger" onClick={() => setOpen(true)}>
           <Trash2 size={14} /> Trigger delete flow
         </Button>
-        <span style={{ color: "var(--muted-foreground)", fontSize: "var(--font-size-sm)" }}>
+        <span style={{ color: "var(--muted-foreground)", fontSize: "var(--text-sm)" }}>
           External state: <code>{String(open)}</code> / busy:{" "}
           <code>{String(busy)}</code>
         </span>

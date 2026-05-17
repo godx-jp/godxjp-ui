@@ -65,8 +65,8 @@
   --color-input: var(--input);
   --color-input-background: var(--input-background);
   --color-ring: var(--ring);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar-bg);
+  --color-sidebar-foreground: var(--sidebar-fg);
   --color-sidebar-border: var(--sidebar-border);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);

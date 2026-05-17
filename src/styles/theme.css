@@ -40,7 +40,6 @@
 
   --font-weight-normal: 400;   /* body */
   --font-weight-medium: 500;   /* heading default — freee vibes */
-  --font-weight-semibold: 600; /* legacy alias, prefer 700 */
   --font-weight-bold: 700;     /* emphasis only */
 
   --text-2xs: 0.6875rem; /* 11px — fine print */
@@ -82,13 +81,7 @@
   --wa-sumi:      #595857; /* 墨   ink (warm text) */
   --wa-nezu:      #949495; /* 鼠   mouse-grey (muted text) */
 
-  --gray-50: #f9fafb;  --gray-100:#f3f4f6;  --gray-200:#e5e7eb;
-  --gray-300:#d1d5db;  --gray-400:#9ca3af;  --gray-500:#6b7280;
-  --gray-600:#4b5563;  --gray-700:#374151;  --gray-800:#1f2937;
-  --gray-900:#111827;
 
-  --blue-50:#eff6ff;   --blue-100:#dbeafe;  --blue-500:#3b82f6;
-  --blue-600:#2563eb;  --blue-700:#1d4ed8;
 
   /* ── Spacing (4px grid) ──────────────────────────────────────────── */
   --spacing-0: 0;       --spacing-1: 0.25rem; --spacing-2: 0.5rem;
@@ -116,7 +109,6 @@
   --sidebar-width: 16rem;           /* 256px — design-handoff canonical (tokens.css:137) */
   --sidebar-collapsed-width: 4rem;  /* 64px */
   --sidebar-transition: 300ms;
-  --content-sidebar-width: 20rem;
   --container-max-width: 1280px;
 
   /* ── Responsive breakpoints (Tailwind v4 first-class) ────────────
@@ -141,7 +133,6 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-full: 9999px;
-  --border-width: 1px;
 
   /* ── Shadow ──────────────────────────────────────────────────────── */
   --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / .05);
@@ -162,8 +153,6 @@
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ── Aspect ratios (decorative — never for type scale) ──────────── */
-  --aspect-silver: 1.4142;          /* 白銀比 (hakuginhi) — A4, manga */
-  --aspect-golden: 1.618;           /* 黄金比 — Western */
 }
 
 
@@ -203,7 +192,6 @@
   --info:              oklch(55% 0.12 265);   /* 群青 #4c6cb3 */
   --info-foreground:   oklch(99% 0.002 60);
   --error:             oklch(52% 0.18 25);    /* 茜 #b7282e */
-  --error-foreground:  oklch(99% 0.002 60);
   --attention:         oklch(66% 0.19 45);    /* 朱 #eb6101 — softer than red */
   --attention-foreground: oklch(99% 0.002 60);
 
@@ -220,7 +208,6 @@
   --surface-1: oklch(99% 0.002 60);   /* card, popover */
   --surface-2: oklch(97% 0.003 60);   /* page bg subtle */
   --surface-3: oklch(95% 0.004 60);   /* hover, accent */
-  --surface-inset: oklch(96% 0.004 60);
 
   --kbd-bg: oklch(94% 0.005 60);
 
@@ -237,12 +224,6 @@
   --accent-color-soft: color-mix(in oklch, var(--accent-color) 14%, transparent);
 
   /* Status dot tokens — use as bg-color */
-  --dot-success: var(--success);
-  --dot-warning: var(--warning);
-  --dot-error: var(--error);
-  --dot-info: var(--info);
-  --dot-attention: var(--attention);
-  --dot-muted: var(--muted-foreground);
 
   /* Brand stripe — used by `.sb-logo-mark`, `.avatar.brand`, `.auth-art`,
    * `.sb-brand-avatar`. Defaults to Famgia emerald; `[data-accent]`
@@ -332,7 +313,6 @@
   --surface-1: oklch(22% 0.005 60);
   --surface-2: oklch(20% 0.005 60);
   --surface-3: oklch(28% 0.008 60);
-  --surface-inset: oklch(24% 0.006 60);
 
   --kbd-bg: oklch(28% 0.008 60);
 
