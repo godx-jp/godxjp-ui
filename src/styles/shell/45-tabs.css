@@ -355,7 +355,17 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   box-shadow: 0 4px 12px -2px color-mix(in oklch, var(--foreground) 14%, transparent),
     0 0 0 1px color-mix(in oklch, var(--foreground) 4%, transparent);
   font-size: var(--text-sm);
-  animation: fade-in var(--transition-fast) var(--ease-out) both;
+  /* Use a dialog-specific keyframes that preserves the centering
+   * `translate(-50%, -50%)` offset throughout the fade. The generic
+   * `fade-in` keyframes end with `transform: none`, which would wipe
+   * the centering offset and leave the modal anchored from its
+   * top-left corner instead of its center. */
+  animation: dialog-fade-in var(--transition-fast) var(--ease-out) both;
+}
+
+@keyframes dialog-fade-in {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 4px)); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
 }
 
 .dialog-header {
