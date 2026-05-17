@@ -58,13 +58,13 @@ const cssFiles = walk(join(ROOT, "src"), [".css"]);
 const tsxFiles = walk(join(ROOT, "src"), [".tsx", ".ts"]).filter(
   (f) => !f.includes("__tests__") && !f.endsWith(".stories.tsx") && !f.endsWith(".test.tsx") && !f.endsWith(".test.ts"),
 );
-// Lint only authoritative stories — `new-primitives/` is the
-// post-refactor source of truth (user 2026-05-16). Legacy stories
-// under `src/stories/<X>.stories.tsx` carry pre-refactor drift; we
-// don't lint them so the lint catches real issues in the new world
-// without false noise from legacy.
+// Lint all stories under src/stories/ — flattened from the previous
+// `new-primitives/components/<group>/` nesting on 2026-05-17. The
+// legacy story files at src/stories/ root were already cleaned out
+// in the prior cleanup, so any *.stories.tsx anywhere under
+// src/stories/ is canonical.
 const storyFiles = walk(join(ROOT, "src"), [".stories.tsx"]).filter(
-  (f) => f.includes("/src/stories/new-primitives/"),
+  (f) => f.includes("/src/stories/"),
 );
 const newDocsFiles = (() => {
   try { return walk(join(ROOT, "new-docs"), [".md"]); }
