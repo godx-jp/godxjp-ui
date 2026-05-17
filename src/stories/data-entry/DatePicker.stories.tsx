@@ -184,6 +184,12 @@ export const Placeholder: Story = {
       />
     </Flex>
   ),
+  play: async ({ canvasElement, step }) => {
+    await step("date segments render in placeholder mode", async () => {
+      const segments = canvasElement.querySelectorAll(".dt-seg");
+      await expect(segments.length).toBeGreaterThan(0);
+    });
+  },
 };
 
 // ─── Granularity — date + time segments (hour / minute) ─────────

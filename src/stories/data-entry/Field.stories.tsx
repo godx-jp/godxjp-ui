@@ -124,6 +124,15 @@ export const WithError: Story = {
       </Field>
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("error helper text renders below the field", async () => {
+      await expect(
+        canvas.getByText("8 文字以上、英数字+記号を含めてください。"),
+      ).toBeInTheDocument();
+    });
+  },
 };
 
 // ─── WithCount — textarea + character count ─────────────────────

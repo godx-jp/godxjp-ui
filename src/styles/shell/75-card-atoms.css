@@ -18,6 +18,18 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+/* `.micro.primary` — pricing-tier kicker / accent caption. */
+.micro.primary { color: var(--primary); }
+
+/* ── Semantic text colours — used inline alongside layout-only `style`
+ * blocks where a full primitive (Tag / Alert / Chip) would be too
+ * heavy. Compose with `.micro` / `.tag` / etc. when applicable. */
+.text-primary     { color: var(--primary); }
+.text-success     { color: var(--success); }
+.text-attention   { color: var(--attention); }
+.text-warning     { color: var(--warning); }
+.text-info        { color: var(--info); }
+.text-destructive { color: var(--destructive); }
 
 /* `.stat` — big tabular-numeric KPI number used inside cards. */
 .stat {

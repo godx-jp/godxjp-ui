@@ -164,6 +164,22 @@ export const ProductCategory: Story = {
       </Flex>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("opening + clicking a parent reveals the child column", async () => {
+      const trigger = canvas.getByRole("combobox");
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByText("食品")).toBeInTheDocument();
+      });
+      await userEvent.click(within(portal).getByText("アパレル"));
+      await waitFor(() => {
+        expect(within(portal).getByText("トップス")).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── Disabled ───────────────────────────────────────────────────

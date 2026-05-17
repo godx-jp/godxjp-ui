@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Label } from "../../components/data-entry/Label";
 import { Input } from "../../components/data-entry/Input";
 import { Field, FieldHelp } from "../../components/data-entry/Field";
@@ -47,6 +48,18 @@ export const Default: Story = {
       <Input id="display-name" placeholder="田中 美咲" />
     </Flex>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("clicking the label focuses the associated input", async () => {
+      const label = canvas.getByText("表示名");
+      const input = canvas.getByPlaceholderText("田中 美咲") as HTMLInputElement;
+      await userEvent.click(label);
+      await waitFor(() => {
+        expect(document.activeElement).toBe(input);
+      });
+    });
+  },
 };
 
 // ─── Required — visible asterisk ─────────────────────────────────

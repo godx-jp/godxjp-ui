@@ -102,6 +102,25 @@ export const WithFormat: Story = {
       </Flex>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("formatter renders the ¥ + comma display value", async () => {
+      const input = canvas.getByDisplayValue("¥2,900") as HTMLInputElement;
+      await expect(input).toBeInTheDocument();
+    });
+
+    await step("ArrowUp steps by 100; blur re-applies the formatter", async () => {
+      const input = canvas.getByDisplayValue("¥2,900") as HTMLInputElement;
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowUp}");
+      // While focused the raw numeric string shows; blurring reformats.
+      await userEvent.tab();
+      await waitFor(() => {
+        expect(input.value).toBe("¥3,000");
+      });
+    });
+  },
 };
 
 // ─── MinMax ─────────────────────────────────────────────────────
