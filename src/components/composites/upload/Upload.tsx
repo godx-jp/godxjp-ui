@@ -82,7 +82,7 @@ function UploadListItem({
           {onPreview && file.status === "success" && (
             <Button
               type="button"
-              size="sm"
+              size="small"
               variant="ghost"
               aria-label={labels.preview}
               onClick={() => onPreview(file)}
@@ -93,7 +93,7 @@ function UploadListItem({
           {file.status === "error" && (
             <Button
               type="button"
-              size="sm"
+              size="small"
               variant="ghost"
               aria-label={labels.retry}
               onClick={() => onRetry(file.uid)}
@@ -104,7 +104,7 @@ function UploadListItem({
           )}
           <Button
             type="button"
-            size="sm"
+            size="small"
             variant="ghost"
             aria-label={labels.remove}
             onClick={() => onRemove(file.uid)}
@@ -171,7 +171,7 @@ function UploadListItem({
       {file.status === "success" && onPreview && (
         <Button
           type="button"
-          size="sm"
+          size="small"
           variant="ghost"
           aria-label={labels.preview}
           onClick={() => onPreview(file)}
@@ -183,7 +183,7 @@ function UploadListItem({
       {file.status === "error" && (
         <Button
           type="button"
-          size="sm"
+          size="small"
           variant="ghost"
           aria-label={labels.retry}
           onClick={() => onRetry(file.uid)}
@@ -194,7 +194,7 @@ function UploadListItem({
       )}
       <Button
         type="button"
-        size="sm"
+        size="small"
         variant="ghost"
         aria-label={labels.remove}
         onClick={() => onRemove(file.uid)}

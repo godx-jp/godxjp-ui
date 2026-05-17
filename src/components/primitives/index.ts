@@ -30,7 +30,7 @@ export { Badge } from "./Badge"
 export type { BadgeProps, BadgeVariant } from "./Badge"
 
 export { Button } from "./Button"
-export type { ButtonProps, ButtonVariant, ButtonSize, ButtonTone } from "./Button"
+export type { ButtonProps, ButtonVariant, ButtonSize } from "./Button"
 
 export { Card, CardHeader, CardTitle, CardSubtitle, CardBody, CardFooter, CardContent } from "./Card"
 export type {

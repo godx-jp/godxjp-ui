@@ -90,7 +90,7 @@ export function CalendarSidebar({
           <span className="ml-auto" style={{ display: "flex", gap: 2 }}>
             <Button
               variant="ghost"
-              size="sm"
+              size="small"
               style={{ width: 22, height: 22, padding: 0 }}
               onClick={onPrevMonth}
               aria-label="Previous month"
@@ -99,7 +99,7 @@ export function CalendarSidebar({
             </Button>
             <Button
               variant="ghost"
-              size="sm"
+              size="small"
               style={{ width: 22, height: 22, padding: 0 }}
               onClick={onNextMonth}
               aria-label="Next month"
@@ -151,7 +151,7 @@ export function CalendarSidebar({
         <div style={{ padding: "4px 14px 16px" }}>
           <Button
             variant="ghost"
-            size="sm"
+            size="small"
             onClick={onAddCalendar}
             style={{
               padding: "0 6px",

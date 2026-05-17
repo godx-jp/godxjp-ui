@@ -17,7 +17,7 @@ import { Flex, Row, Col } from "../../../components/primitives/layout";
  */
 
 const meta: Meta = {
-  title: "new-primitives/theme/Colors",
+  title: "new-primitives/Theme/Colors",
   tags: ["autodocs"],
   parameters: {
     docs: {

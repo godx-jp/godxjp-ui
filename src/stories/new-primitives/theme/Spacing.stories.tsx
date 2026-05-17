@@ -22,7 +22,7 @@ import { Flex, Row, Col } from "../../../components/primitives/layout";
  */
 
 const meta: Meta = {
-  title: "new-primitives/theme/Spacing",
+  title: "new-primitives/Theme/Spacing",
   tags: ["autodocs"],
   parameters: {
     docs: {

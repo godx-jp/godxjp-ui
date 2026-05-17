@@ -23,7 +23,12 @@ import { cn } from "./cn";
  */
 
 export type InputSize = "small" | "default" | "large";
-export type InputStatus = "default" | "error" | "warning";
+/**
+ * Form-field validation state per cardinal rule 23 §B vocabulary
+ * (`"default" | "success" | "warning" | "error"`). Drives the border
+ * + ring + helper-text color via the semantic chain.
+ */
+export type InputStatus = "default" | "success" | "warning" | "error";
 
 export interface InputProps
   extends Omit<ComponentProps<"input">, "prefix" | "size"> {
@@ -45,8 +50,9 @@ const SIZE_CLASS: Record<InputSize, string> = {
 
 const STATUS_CLASS: Record<InputStatus, string> = {
   default: "",
-  error: "input-status-error",
+  success: "input-status-success",
   warning: "input-status-warning",
+  error: "input-status-error",
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(

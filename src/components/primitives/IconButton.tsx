@@ -24,7 +24,7 @@ import { cn } from "./cn";
  * @example
  *   <IconButton aria-label="戻る"><ArrowLeft size={14} /></IconButton>
  *   <IconButton variant="ghost" aria-label="More"><MoreHorizontal size={16} /></IconButton>
- *   <IconButton variant="primary" size="lg" aria-label="Save"><Check size={18} /></IconButton>
+ *   <IconButton variant="primary" size="large" aria-label="Save"><Check size={18} /></IconButton>
  */
 
 export type IconButtonVariant = "secondary" | "ghost" | "primary";

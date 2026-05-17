@@ -1,6 +1,6 @@
 # @godxjp/ui — cardinal rules
 
-Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 24
+Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 25
 cardinal rules below are non-negotiable; anything older that
 contradicts them is wrong.
 
@@ -536,6 +536,94 @@ framework concept; inline duplication is rejected at review.
       target floor wins.
     - Stories that only render at desktop width without a docs
       note explaining the breakpoint gate.
+
+25. **Stories are docs; the UI is the primitive — refactor the
+    primitive, never paper over with a story tweak.** Absolute.
+
+    Stories under `src/stories/new-primitives/components/<group>/<Name>.stories.tsx`
+    catalogue WHAT a primitive does — they show variants, axis
+    sweeps, design-canon examples. They are documentation; they
+    are NOT the implementation.
+
+    When the design canon shifts, when a vocabulary violation is
+    found, when the user reports "this looks wrong" — the fix is
+    in the primitive (`src/components/primitives/<Name>.tsx` +
+    associated CSS in `src/styles/shell.css` + tokens in
+    `src/styles/theme.css`), NOT in the story.
+
+    ### When the story is "wrong"
+
+    Rewriting the story so it renders something different is
+    NEVER the right answer. If the story renders the wrong
+    visual, one of these is true:
+
+    a) The primitive's PROPS don't expose the right concept →
+       extend the primitive's API (per rule 23 §B vocabulary;
+       per rule 23 §D deep-research).
+    b) The primitive's CSS hardcodes a value or shape that
+       drifts from the design canon → fix the CSS (per rule 22
+       100% match).
+    c) The token chain is wrong → fix the token (per rule 22 +
+       new-docs/03 §J component-scope tokens).
+    d) The primitive doesn't honour an axis (theme / accent /
+       density / font-size) → fix the primitive's token reads
+       (per rule 21 axes-aware).
+
+    None of these are fixed by editing the story. The story
+    becomes correct AUTOMATICALLY when the primitive becomes
+    correct.
+
+    ### What stories ARE for
+
+    - Render the primitive in its intended variants (one story
+      per variant family per rule 1 storybook-mandatory).
+    - Demonstrate prop-axis sweeps (size × variant × color).
+    - Port design-canon section examples (`comp-<name>.html`
+      sections A–Z → stories) so reviewers can compare the
+      primitive's output to the canon side-by-side.
+    - Drive Playwright snapshot tests (cardinal rule 1).
+    - Drive a11y axe-core checks (cardinal rule 6).
+
+    ### What stories ARE NOT for
+
+    - Defining "the look" of the primitive — that's the CSS in
+      `shell.css` + the tokens in `theme.css`.
+    - Containing inline `style={{ … }}` overrides that work
+      around a primitive's missing prop — extend the primitive.
+    - Containing `className="text-blue-500 px-3 py-2"` Tailwind
+      utility stacks that re-shape the primitive — extend the
+      primitive's variant enum.
+    - Containing per-story `<style>` blocks that override CSS —
+      fix the CSS upstream.
+
+    ### Anti-patterns (rejected at review)
+
+    - PR description: "fixed the Card story to match design".
+      → Wrong. The Card PRIMITIVE was wrong; the story was
+      showing what the primitive did. Fix the primitive.
+    - Story diff > 50 lines while primitive diff = 0 — drift is
+      being papered over.
+    - Story using `style={{ borderLeft: "3px solid var(--primary)" }}`
+      when the primitive should expose `accent="primary"`.
+    - Adding a CSS file under `src/stories/` — stories don't ship
+      CSS; all visual contract lives in `shell.css` / `theme.css`.
+
+    ### The discipline
+
+    When user reports drift on a primitive:
+    1. Read the design canon line for that primitive.
+    2. Read the primitive's `.tsx` + the matching CSS in
+       `shell.css`.
+    3. Identify which of (a)/(b)/(c)/(d) above is the gap.
+    4. Fix the PRIMITIVE / CSS / TOKEN — never the story.
+    5. Re-render the story (no code change to the story) and
+       confirm it now renders correctly.
+    6. If the story needs cosmetic updates (new variant added,
+       new example pattern from design canon) — those are
+       additive, not "fixes".
+
+    Story file diffs without a corresponding primitive / CSS /
+    token diff are rejected at review.
 
 - Component diff without paired story diff (rule 1).
 - Raw color utility (`bg-blue-500`) in a primitive (rule 2).

@@ -83,7 +83,7 @@ export function FindATimePanel({
         <div className="row gap-1" style={{ marginLeft: 6 }}>
           <Button
             variant="ghost"
-            size="sm"
+            size="small"
             style={{ width: 26, padding: 0 }}
             onClick={onPrev}
             aria-label="Previous"
@@ -92,7 +92,7 @@ export function FindATimePanel({
           </Button>
           <Button
             variant="ghost"
-            size="sm"
+            size="small"
             style={{ width: 26, padding: 0 }}
             onClick={onNext}
             aria-label="Next"
@@ -109,10 +109,10 @@ export function FindATimePanel({
           {labels.durationLabel}
         </Badge>
         <div className="ml-auto row gap-2">
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="small">
             {labels.expandHours}
           </Button>
-          <Button variant="primary" tone="accent" size="sm">
+          <Button variant="primary" size="small">
             {labels.apply}
           </Button>
         </div>

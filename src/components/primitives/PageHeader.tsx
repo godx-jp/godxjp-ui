@@ -39,7 +39,7 @@ import { cn } from "./cn";
  *   <PageHeader
  *     title="従業員シフト · カレンダー"
  *     subtitle="月単位の一括割当"
- *     actions={<><Button size="sm">＋ 一括割当</Button></>}
+ *     actions={<><Button size="small">＋ 一括割当</Button></>}
  *   />
  *
  * @example stacked + tabs

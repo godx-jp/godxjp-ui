@@ -18,7 +18,7 @@ import { Flex } from "../../../../components/primitives/layout";
  */
 
 const meta: Meta<typeof Grid> = {
-  title: "new-primitives/components/layout/Grid",
+  title: "new-primitives/Components/Layout/Grid",
   component: Grid,
   tags: ["autodocs"],
   parameters: {

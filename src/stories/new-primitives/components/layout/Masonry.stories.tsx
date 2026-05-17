@@ -19,7 +19,7 @@ import { Flex } from "../../../../components/primitives/layout";
  */
 
 const meta: Meta<typeof Masonry> = {
-  title: "new-primitives/components/layout/Masonry",
+  title: "new-primitives/Components/Layout/Masonry",
   component: Masonry,
   tags: ["autodocs"],
   parameters: {

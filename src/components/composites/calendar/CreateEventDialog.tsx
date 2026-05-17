@@ -197,7 +197,7 @@ export function CreateEventDialog({
           <IconRow icon={<Globe size={15} />} align="center">
             <div className="row gap-2" style={{ width: "100%" }}>
               <input className="input" placeholder={labels.locationPlaceholder} style={{ flex: 1 }} />
-              <Button variant="secondary" size="sm">
+              <Button variant="secondary" size="small">
                 <Zap size={13} /> {labels.createMeet}
               </Button>
             </div>
@@ -226,8 +226,8 @@ export function CreateEventDialog({
             >
               <Button
                 variant="ghost"
-                size="sm"
-                tone="accent"
+                size="small"
+
                 style={{ padding: 0, height: "auto" }}
               >
                 {labels.findATime}
@@ -252,14 +252,14 @@ export function CreateEventDialog({
         </div>
 
         <div className="cal-create-foot">
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="small">
             {labels.detailsButton}
           </Button>
           <div className="ml-auto row gap-2">
-            <Button variant="secondary" size="sm" onClick={onCancel}>
+            <Button variant="secondary" size="small" onClick={onCancel}>
               {labels.cancel}
             </Button>
-            <Button variant="primary" tone="accent" size="sm" onClick={onSave}>
+            <Button variant="primary" size="small" onClick={onSave}>
               {labels.save}
             </Button>
           </div>
@@ -327,8 +327,8 @@ export function CreateEventDialog({
             {notificationsList}
             <Button
               variant="ghost"
-              size="sm"
-              tone="accent"
+              size="small"
+
               style={{ padding: 0, height: 22, fontSize: 11, justifyContent: "flex-start" }}
             >
               <Plus size={11} /> {labels.rail.addNotification}

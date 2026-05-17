@@ -17,7 +17,7 @@ import { Card } from "../../../../components/primitives/Card";
  */
 
 const meta: Meta<typeof Flex> = {
-  title: "new-primitives/components/layout/Flex",
+  title: "new-primitives/Components/Layout/Flex",
   component: Flex,
   tags: ["autodocs"],
   parameters: {

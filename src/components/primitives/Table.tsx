@@ -110,8 +110,8 @@ export const TableCaption = forwardRef<HTMLTableCaptionElement, ComponentPropsWi
  *   <TableToolbar>
  *     <span className="selection-count">3 selected</span>
  *     <span className="spacer" />
- *     <Button size="sm" variant="ghost">Archive</Button>
- *     <Button size="sm" variant="danger">Delete</Button>
+ *     <Button size="small" variant="ghost">Archive</Button>
+ *     <Button size="small" variant="destructive">Delete</Button>
  *   </TableToolbar>
  */
 export const TableToolbar = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(

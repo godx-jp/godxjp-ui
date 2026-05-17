@@ -12,7 +12,7 @@ import { Flex } from "../../../components/primitives/layout";
  */
 
 const meta: Meta = {
-  title: "new-primitives/theme/Radius · Shadow · Motion",
+  title: "new-primitives/Theme/Radius · Shadow · Motion",
   tags: ["autodocs"],
   parameters: {
     docs: {

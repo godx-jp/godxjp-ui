@@ -93,7 +93,7 @@ export function EventDetailPanel({
         <div className="row gap-1">
           <Button
             variant="ghost"
-            size="sm"
+            size="small"
             onClick={onEdit}
             style={{ width: 26, padding: 0 }}
             aria-label="Edit"
@@ -102,7 +102,7 @@ export function EventDetailPanel({
           </Button>
           <Button
             variant="ghost"
-            size="sm"
+            size="small"
             onClick={onDelete}
             style={{ width: 26, padding: 0 }}
             aria-label="Delete"
@@ -111,7 +111,7 @@ export function EventDetailPanel({
           </Button>
           <Button
             variant="ghost"
-            size="sm"
+            size="small"
             onClick={onClose}
             style={{ width: 26, padding: 0 }}
             aria-label="Close"
@@ -187,7 +187,7 @@ export function EventDetailPanel({
           </div>
           <Button
             variant="ghost"
-            size="sm"
+            size="small"
             style={{
               marginTop: 6,
               padding: "0 6px",
@@ -213,8 +213,8 @@ export function EventDetailPanel({
         <div className="row" style={{ gap: 6 }}>
           <Button
             variant="primary"
-            tone="accent"
-            size="sm"
+
+            size="small"
             style={{ flex: 1 }}
             onClick={() => onRSVP?.("yes")}
           >
@@ -222,7 +222,7 @@ export function EventDetailPanel({
           </Button>
           <Button
             variant="secondary"
-            size="sm"
+            size="small"
             style={{ flex: 1 }}
             onClick={() => onRSVP?.("maybe")}
           >
@@ -230,7 +230,7 @@ export function EventDetailPanel({
           </Button>
           <Button
             variant="secondary"
-            size="sm"
+            size="small"
             style={{ flex: 1 }}
             onClick={() => onRSVP?.("no")}
           >

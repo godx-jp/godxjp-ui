@@ -19,7 +19,7 @@ import type { Breakpoint } from "../../../hooks/useBreakpoint";
  */
 
 const meta: Meta = {
-  title: "new-primitives/theme/Responsive",
+  title: "new-primitives/Theme/Responsive",
   tags: ["autodocs"],
   parameters: {
     docs: {

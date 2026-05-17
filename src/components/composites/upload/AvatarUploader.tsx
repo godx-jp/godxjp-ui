@@ -317,7 +317,7 @@ export function AvatarUploader({
               {progress}%
             </span>
           </Flex>
-          <Button type="button" variant="secondary" size="sm" onClick={handleCancel}>
+          <Button type="button" variant="secondary" size="small" onClick={handleCancel}>
             <X size={16} />
             {labels.cancelUpload}
           </Button>
@@ -329,7 +329,7 @@ export function AvatarUploader({
           <span style={{ fontSize: "var(--text-sm)", color: "var(--success)" }}>
             {labels.uploadSuccess}
           </span>
-          <Button type="button" variant="ghost" size="sm" onClick={reset}>
+          <Button type="button" variant="ghost" size="small" onClick={reset}>
             <RotateCw size={16} />
             {labels.change}
           </Button>
@@ -345,13 +345,13 @@ export function AvatarUploader({
             <Button
               type="button"
               variant="secondary"
-              size="sm"
+              size="small"
               onClick={() => inputRef.current?.click()}
             >
               <RotateCw size={16} />
               {labels.tryAgain}
             </Button>
-            <Button type="button" variant="ghost" size="sm" onClick={reset}>
+            <Button type="button" variant="ghost" size="small" onClick={reset}>
               {labels.cancel}
             </Button>
           </Space>

@@ -457,29 +457,164 @@
   justify-content: flex-end;
 }
 
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--spacing-2); height: var(--density-element); padding: 0 var(--spacing-3); border-radius: var(--radius-md); border: 1px solid transparent; font-size: var(--text-sm); font-weight: 500; line-height: 1; transition: background var(--transition-fast), border-color var(--transition-fast); white-space: nowrap; }
+/* ─── Button · canonical dxs-kintai primitive ───────────────────────
+ *  Source: design-handoff/ui-system/dxs-kintai-design-system/project/
+ *  preview/comp-buttons.html
+ *  Cardinal rule 22 — every literal token-pinned. Cardinal rule 24 —
+ *  mobile-first touch target floor on `xs/sm` viewports.
+ *
+ *  Variants: primary · secondary · outline · ghost · destructive · link
+ *  Sizes:    x-small · small · default · large
+ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  height: var(--density-element);            /* 32px default */
+  padding: 0 var(--spacing-3);                /* 12px x-pad */
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
-.btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+/* ── Variants ─────────────────────────────────────────────────── */
 
-.btn-primary { background: var(--primary); color: var(--primary-foreground); }
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.btn-primary:hover {
+  background: color-mix(in oklch, var(--primary) 88%, black);
+}
 
-.btn-primary:hover { background: color-mix(in oklch, var(--primary) 88%, black); }
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.btn-secondary:hover {
+  background: color-mix(in oklch, var(--secondary) 80%, var(--border));
+}
 
-.btn-secondary { background: var(--surface-1); color: var(--foreground); border-color: var(--border); }
+.btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.btn-outline:hover {
+  background: var(--accent);
+  border-color: var(--ring);
+}
 
-.btn-secondary:hover { background: var(--surface-3); }
+.btn-ghost {
+  background: transparent;
+  color: var(--foreground);
+}
+.btn-ghost:hover {
+  background: var(--accent);
+}
 
-.btn-ghost { background: transparent; color: var(--foreground); }
+.btn-destructive {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+.btn-destructive:hover {
+  background: color-mix(in oklch, var(--destructive) 88%, black);
+}
 
-.btn-ghost:hover { background: var(--surface-3); }
+.btn-link {
+  background: transparent;
+  color: var(--primary);
+  padding: 0;
+  height: auto;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.btn-link:hover {
+  color: color-mix(in oklch, var(--primary) 80%, black);
+}
 
-.btn-danger { background: var(--destructive); color: var(--destructive-foreground); }
+/* ── Sizes ────────────────────────────────────────────────────── */
 
-.btn-danger:hover { background: color-mix(in oklch, var(--destructive) 90%, black); }
+.btn-xs {
+  height: var(--density-element-xs);          /* 24px */
+  padding: 0 var(--spacing-2);                /* 8px */
+  font-size: var(--text-2xs);
+  gap: var(--spacing-1);
+}
+.btn-sm {
+  height: var(--density-element-sm);          /* 28px */
+  padding: 0 var(--spacing-2);
+  font-size: var(--text-xs);
+}
+.btn-lg {
+  height: var(--density-element-lg);          /* 36px */
+  padding: 0 var(--spacing-4);                /* 16px */
+  font-size: var(--text-base);
+}
 
-.btn-sm { height: var(--density-element-sm); padding: 0 var(--spacing-2); font-size: var(--text-xs); }
+/* ── Modifiers ────────────────────────────────────────────────── */
 
-.btn-lg { height: var(--density-element-lg); padding: 0 var(--spacing-4); }
+.btn-block {
+  width: 100%;
+  display: flex;
+}
+
+.btn-loading {
+  cursor: progress;
+}
+.btn-loading > :not(.btn-spinner) {
+  opacity: 0.7;
+}
+.btn-spinner {
+  display: inline-block;
+  width: 0.875em;
+  height: 0.875em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-spinner { animation: none; }
+}
+
+/* ── Mobile-first touch-target floor (cardinal rule 24 §B) ───────
+ *  WCAG 2.1 AA: 44×44 px touch target on touch surfaces. On
+ *  `xs / sm` viewports every button — regardless of `size` prop —
+ *  floors to `--touch-target-min`. `.btn-link` is text-style and
+ *  exempt. Breakpoint matches `--breakpoint-md: 768px`. */
+@media (max-width: 767px) {
+  .btn:not(.btn-link) {
+    min-height: var(--touch-target-min);     /* 44px floor */
+  }
+}
 
 /* ── Input — canonical dxs-kintai design system primitives ───────────────
  * Mirrors design-handoff/.../preview/comp-inputs.html (lines 45–93).
@@ -542,6 +677,23 @@
 .input-status-warning:focus-visible {
   border-color: var(--warning);
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--warning) 22%, transparent);
+}
+
+.input-status-success { border-color: var(--success); }
+.input-status-success:focus,
+.input-status-success:focus-visible {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--success) 22%, transparent);
+}
+
+/* Mobile-first touch-target floor — cardinal rule 24 §B.
+ * Inputs are interactive surfaces; on `xs/sm` viewports they
+ * floor to `--touch-target-min` (44px) regardless of `size`. */
+@media (max-width: 767px) {
+  .input,
+  .input-wrap {
+    min-height: var(--touch-target-min);
+  }
 }
 
 textarea.input {
@@ -2208,11 +2360,6 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
 .ds-section-label { font-size: var(--text-2xs); font-weight: 500; letter-spacing: 0.08em; color: var(--muted-foreground); text-transform: uppercase; margin-bottom: var(--spacing-3); }
 .ds-cards { display: flex; flex-direction: column; gap: var(--spacing-3); }
 
-/* Black primary button — console variant. */
-.btn-primary { background: oklch(20% 0.006 60); color: white; border: 0; }
-.btn-primary:hover { background: oklch(28% 0.006 60); }
-.btn-primary[disabled] { background: var(--surface-3); color: var(--muted-foreground); cursor: not-allowed; }
-
 /* ── Dashboard tiles (used by console + me) ─────────────────────────── */
 
 .prod-card { display: flex; align-items: center; gap: var(--spacing-4); padding: var(--spacing-4) var(--spacing-5); background: var(--card); border: 1px solid var(--border); border-radius: 10px; transition: border-color .15s, box-shadow .15s; }
@@ -2519,24 +2666,6 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   aspect-ratio: 1 / 1;
   background: var(--surface-2);
 }
-
-/* ── Button — accent tone ────────────────────────────────────────────
- * Repaints `btn-primary` / `btn-secondary` to consume the consumer-
- * overridable `--accent-color` slot (see tokens.css). Default tone
- * stays brand `--primary`.
- */
-.btn-primary.btn-tone-accent { background: var(--accent-color); color: white; }
-.btn-primary.btn-tone-accent:hover { background: color-mix(in oklch, var(--accent-color) 88%, black); }
-.btn-secondary.btn-tone-accent {
-  background: var(--accent-color-soft);
-  color: var(--accent-color);
-  border-color: var(--accent-color);
-}
-.btn-secondary.btn-tone-accent:hover {
-  background: color-mix(in oklch, var(--accent-color) 18%, transparent);
-}
-.btn-ghost.btn-tone-accent { color: var(--accent-color); }
-.btn-ghost.btn-tone-accent:hover { background: color-mix(in oklch, var(--accent-color) 10%, transparent); }
 
 /* ─ Calendar app ──────────────────────────────────────────────────────
  * Class blocks for the calendar / scheduling primitives. Every rule

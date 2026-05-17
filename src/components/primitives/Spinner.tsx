@@ -21,7 +21,7 @@ import { cn } from "./cn";
  *
  * @example
  *   <Spinner />
- *   <Spinner size="lg" tone="primary" aria-label="Saving…" />
+ *   <Spinner size="large" tone="primary" aria-label="Saving…" />
  */
 
 export type SpinnerSize = "sm" | "md" | "lg";

@@ -11,7 +11,7 @@ import { Flex } from "../../../components/primitives/layout";
  */
 
 const meta: Meta = {
-  title: "new-primitives/theme/Prop vocabulary",
+  title: "new-primitives/Theme/Prop vocabulary",
   tags: ["autodocs"],
   parameters: {
     docs: {

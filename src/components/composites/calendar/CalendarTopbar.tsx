@@ -78,13 +78,13 @@ export function CalendarTopbar<V extends string = string>({
         {tenant && <span className="cal-topbar-tenant">{tenant}</span>}
       </div>
 
-      <Button variant="secondary" size="sm" onClick={onToday}>
+      <Button variant="secondary" size="small" onClick={onToday}>
         {todayLabel}
       </Button>
       <div className="row" style={{ marginLeft: 2 }}>
         <Button
           variant="ghost"
-          size="sm"
+          size="small"
           onClick={onPrev}
           style={{ width: 28, padding: 0 }}
           aria-label="Previous"
@@ -93,7 +93,7 @@ export function CalendarTopbar<V extends string = string>({
         </Button>
         <Button
           variant="ghost"
-          size="sm"
+          size="small"
           onClick={onNext}
           style={{ width: 28, padding: 0 }}
           aria-label="Next"
@@ -119,7 +119,7 @@ export function CalendarTopbar<V extends string = string>({
         </button>
         <Button
           variant="ghost"
-          size="sm"
+          size="small"
           style={{ width: 30, padding: 0 }}
           onClick={onNotificationsOpen}
           aria-label="Notifications"
@@ -128,7 +128,7 @@ export function CalendarTopbar<V extends string = string>({
         </Button>
         <Button
           variant="ghost"
-          size="sm"
+          size="small"
           style={{ width: 30, padding: 0 }}
           onClick={onSettingsOpen}
           aria-label="Settings"
