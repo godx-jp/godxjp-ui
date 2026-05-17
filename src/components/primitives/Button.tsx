@@ -23,6 +23,20 @@ import { cn } from "./cn";
  * Slot props (§N):
  *   startContent — ReactNode rendered before children (left icon)
  *   endContent   — ReactNode rendered after children (right icon)
+ *
+ * When `asChild` is true, Radix Slot merges Button's classes onto
+ * the caller's single child element. The slot props
+ * (`startContent` / `endContent` / `loading` spinner) are then
+ * INERT — the caller's element owns its content. Compose icons
+ * inline inside the slotted element:
+ *
+ *   <Button asChild>
+ *     <a href="/x"><Icon /> Label</a>      ← icon wired inline
+ *   </Button>
+ *
+ *   <Button asChild startContent={<Icon />}>← `startContent` IGNORED
+ *     <a href="/x">Label</a>
+ *   </Button>
  */
 
 export type ButtonVariant =
@@ -88,6 +102,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 ) {
   const Component = asChild ? Slot : "button";
   const isDisabled = disabled || loading;
+
+  // Radix Slot requires exactly ONE React element child (it merges
+  // props into that child). When `asChild` is true the caller's
+  // slotted element OWNS the content — slots like `startContent` /
+  // `endContent` / `loading spinner` are inert and must be wired
+  // inline inside the caller's element. When `asChild` is false we
+  // wrap the slot content + children with the standard composition.
+  const content = asChild ? (
+    children
+  ) : (
+    <>
+      {loading ? <span className="btn-spinner" aria-hidden /> : startContent}
+      {children}
+      {endContent}
+    </>
+  );
+
   return (
     <Component
       ref={ref as never}
@@ -106,9 +137,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       )}
       {...rest}
     >
-      {loading ? <span className="btn-spinner" aria-hidden /> : startContent}
-      {children}
-      {endContent}
+      {content}
     </Component>
   );
 });
