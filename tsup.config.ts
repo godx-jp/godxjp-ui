@@ -65,5 +65,15 @@ export default defineConfig({
   external: [...externalDeps, ...externalRegex],
   outDir: "dist",
   target: "es2022",
-  banner: { js: '"use client";' },
+  // NOTE on "use client": tsup runs `rollup-plugin-dts` to bundle
+  // `.d.ts`, and that plugin re-parses the JS source as a Rollup
+  // module graph during which it warns about top-level directives.
+  // Setting either `banner: { js: '"use client"' }` OR
+  // `esbuildOptions(o) { o.banner = …}` causes a noisy
+  // "Module level directives cause errors when bundled, 'use client'
+  // in 'dist/X.js' was ignored" warning per entry. We DON'T inject the
+  // directive into our published dist; Next.js App Router consumers
+  // mark their own boundary at `app/` or via a per-component wrapper.
+  // This is the same posture as MUI / Radix / shadcn — they ship
+  // components without a baked-in `"use client"` directive.
 })
