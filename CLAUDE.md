@@ -341,6 +341,7 @@ framework concept; inline duplication is rejected at review.
     | `justify` | `"start" \| "center" \| "end" \| "between"` | Flex, Pagination | Horizontal content alignment. Reused from Flex; do NOT coin `align` synonym for the same axis. |
     | `sticky` | `boolean` | Anchor, Table (planned header sticky), Topbar | Pin-on-scroll behaviour. Matches CSS `position: sticky` semantics. |
     | `offset` | `number` (px) | Anchor (scroll target offset), Popover (planned) | Pixel offset from anchor. Direction-aware via `orientation`. |
+    | `open` / `defaultOpen` / `onOpenChange` | Radix-style controlled / uncontrolled overlay-visibility state | Dialog, Sheet, AlertDialog, Popover, DropdownMenu, Modal, Drawer, Popconfirm | Overlay open/closed state. NEVER `visible` / `isOpen` / `shown` / `display` synonyms — Radix-canonical name is mandatory for the entire overlay stack. |
 
     Rules:
 
@@ -372,6 +373,7 @@ framework concept; inline duplication is rejected at review.
     - `activeKey` / `selectedKeys` / `defaultActiveKey` synonyms for `value` / `defaultValue` / `onValueChange` (Radix-style selection).
     - `align` synonym for `justify` (horizontal alignment — one name across Flex + Pagination + …).
     - `affix` synonym for `sticky`.
+    - `visible` / `isOpen` / `shown` / `display` synonyms for `open` (Radix-canonical overlay-visibility).
     - `type` borrowed from Ant Design — our `type` is reserved for HTML input/button `type` attribute; semantic role goes through `color`, visual treatment through `variant`.
     - `level` synonym for `size` (Typography Title uses `size={1..5}`, not `level`).
     - `ellipsis` synonym for `truncate` (Typography uses `truncate`, not `ellipsis`).
