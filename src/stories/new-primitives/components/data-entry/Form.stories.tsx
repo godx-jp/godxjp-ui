@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useForm, type Resolver } from "react-hook-form";
-import { Form, FormField } from "../../../../components/primitives/Form";
-import { Input } from "../../../../components/primitives/Input";
-import { InputNumber } from "../../../../components/primitives/InputNumber";
-import { Checkbox } from "../../../../components/primitives/Checkbox";
-import { Button } from "../../../../components/primitives/Button";
-import { Flex } from "../../../../components/primitives/layout";
+import { Form, FormField } from "../../../../components/data-entry/Form";
+import { Input } from "../../../../components/data-entry/Input";
+import { InputNumber } from "../../../../components/data-entry/InputNumber";
+import { Checkbox } from "../../../../components/data-entry/Checkbox";
+import { Button } from "../../../../components/general/Button";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Form — react-hook-form wrapper.

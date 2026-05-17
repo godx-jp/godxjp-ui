@@ -1,18 +1,18 @@
 import { FileText, Globe, RefreshCw, Repeat, Users, Zap, Plus } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { Button } from "../../primitives/Button";
+import { Button } from "../../general/Button";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
-} from "../../primitives/Tabs";
+} from "../../navigation/Tabs";
 import {
   AttendeeChip,
   CalendarOption,
   IconRow,
   type CalendarRef,
   type PersonRef,
-} from "../../primitives/calendar/index";
+} from "../../data-display/calendar/index";
 
 /**
  * CreateEventDialog — 880×640 modal-shaped create form. Two-column

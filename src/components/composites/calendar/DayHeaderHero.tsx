@@ -1,4 +1,4 @@
-import { cn } from "../../primitives/cn";
+import { cn } from "../../cn";
 
 /**
  * DayHeaderHero — page-header strip rendered above `DayView`: large

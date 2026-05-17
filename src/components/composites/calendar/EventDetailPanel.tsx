@@ -11,15 +11,15 @@ import {
   X,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { Badge } from "../../primitives/Badge";
-import { Button } from "../../primitives/Button";
+import { Badge } from "../../data-display/Badge";
+import { Button } from "../../general/Button";
 import {
   AttendeeListItem,
   IconRow,
   type CalendarEvent,
   type CalendarRef,
   type PersonRef,
-} from "../../primitives/calendar/index";
+} from "../../data-display/calendar/index";
 
 /**
  * EventDetailPanel — 360px right-rail panel for an opened event.

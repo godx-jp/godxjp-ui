@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { AutoComplete, type AutoCompleteOption } from "../../../../components/primitives/AutoComplete";
-import { Flex } from "../../../../components/primitives/layout";
+import { AutoComplete, type AutoCompleteOption } from "../../../../components/data-entry/AutoComplete";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/AutoComplete — Combobox-backed

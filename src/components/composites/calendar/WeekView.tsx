@@ -12,7 +12,7 @@ import {
   type CalendarRef,
   type EventBlockVariant,
   type TimeLocale,
-} from "../../primitives/calendar/index";
+} from "../../data-display/calendar/index";
 
 /**
  * WeekView — 7-column scrolling time grid with all-day band on top.

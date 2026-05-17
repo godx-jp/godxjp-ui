@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { Time } from "@internationalized/date";
-import { TimeField } from "../../../../components/primitives/DateTimePicker";
-import { TimeInput } from "../../../../components/primitives/TimeInput";
-import { Flex } from "../../../../components/primitives/layout";
+import { TimeField } from "../../../../components/data-entry/DateTimePicker";
+import { TimeInput } from "../../../../components/data-entry/TimeInput";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/TimePicker — time input atoms.

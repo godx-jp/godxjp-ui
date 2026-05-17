@@ -1,16 +1,24 @@
-// Public surface for the atomic primitive layer. Each component is a
-// thin wrapper around a canonical CSS class from `@godxjp/ui/tokens` —
-// the visual contract stays mastered in CSS variables + class names,
-// and React adds ergonomics (props, refs, ARIA, Radix wiring).
+// Public surface for the atomic primitive layer.
+//
+// Per cardinal rule 27 the primitive sources live under
+// `src/components/<group>/<Name>.tsx` (six groups: general / layout /
+// data-display / data-entry / feedback / navigation) — this barrel
+// re-exports them so the published import path
+// `@godxjp/ui/components/primitives` stays stable for consumers.
+//
+// Each component is a thin wrapper around a canonical CSS class from
+// `@godxjp/ui/tokens` — the visual contract stays mastered in CSS
+// variables + class names, and React adds ergonomics (props, refs,
+// ARIA, Radix wiring).
 //
 // Don't add a primitive that re-encodes a token in Tailwind utilities.
 // If a new atom is needed, add the CSS class to tokens.css first, then
 // wrap it here. See BRAND.md "Forbidden patterns" for the full rule.
 
-export { cn } from "./cn"
+export { cn } from "../cn"
 
 // ── Layout primitives (Ant-Design-shaped: Row/Col/Flex/Space) ────
-export { Row, Col, Flex, Space, useRowGutter } from "./layout";
+export { Row, Col, Flex, Space, useRowGutter } from "../layout";
 export type {
   RowProps,
   ColProps,
@@ -24,15 +32,15 @@ export type {
   FlexJustify,
   FlexAlign,
   SpaceSize,
-} from "./layout";
+} from "../layout";
 
-export { Badge } from "./Badge"
-export type { BadgeProps, BadgeVariant } from "./Badge"
+export { Badge } from "../data-display/Badge"
+export type { BadgeProps, BadgeVariant } from "../data-display/Badge"
 
-export { Button } from "./Button"
-export type { ButtonProps, ButtonVariant, ButtonSize } from "./Button"
+export { Button } from "../general/Button"
+export type { ButtonProps, ButtonVariant, ButtonSize } from "../general/Button"
 
-export { Card, CardHeader, CardTitle, CardSubtitle, CardBody, CardFooter, CardContent } from "./Card"
+export { Card, CardHeader, CardTitle, CardSubtitle, CardBody, CardFooter, CardContent } from "../data-display/Card"
 export type {
   CardProps,
   CardHeaderProps,
@@ -43,96 +51,96 @@ export type {
   CardTone,
   CardAccent,
   CardBand,
-} from "./Card"
+} from "../data-display/Card"
 
-export { Input, Textarea } from "./Input"
-export type { InputProps, TextareaProps, InputSize, InputStatus, TextareaResize } from "./Input"
+export { Input, Textarea } from "../data-entry/Input"
+export type { InputProps, TextareaProps, InputSize, InputStatus, TextareaResize } from "../data-entry/Input"
 
-export { InputPassword } from "./InputPassword"
-export type { InputPasswordProps } from "./InputPassword"
+export { InputPassword } from "../data-entry/InputPassword"
+export type { InputPasswordProps } from "../data-entry/InputPassword"
 
-export { InputSearch } from "./InputSearch"
-export type { InputSearchProps } from "./InputSearch"
+export { InputSearch } from "../data-entry/InputSearch"
+export type { InputSearchProps } from "../data-entry/InputSearch"
 
-export { InputNumber } from "./InputNumber"
-export type { InputNumberProps } from "./InputNumber"
+export { InputNumber } from "../data-entry/InputNumber"
+export type { InputNumberProps } from "../data-entry/InputNumber"
 
 export {
   Form,
   FormField,
   FormItem,
   useFormContext,
-} from "./Form"
+} from "../data-entry/Form"
 export type {
   FormProps,
   FormFieldProps,
   FormFieldRenderArg,
   FormItemProps,
-} from "./Form"
+} from "../data-entry/Form"
 
-export { Transfer } from "./Transfer"
-export type { TransferProps, TransferItem, TransferSize } from "./Transfer"
+export { Transfer } from "../data-entry/Transfer"
+export type { TransferProps, TransferItem, TransferSize } from "../data-entry/Transfer"
 
-export { Field, FieldLabel, FieldHelp, FieldCount, FieldRowHelp } from "./Field"
+export { Field, FieldLabel, FieldHelp, FieldCount, FieldRowHelp } from "../data-entry/Field"
 export type {
   FieldProps,
   FieldLabelProps,
   FieldHelpProps,
   FieldHelpTone,
   FieldCountProps,
-} from "./Field"
+} from "../data-entry/Field"
 
-export { LocaleTabs } from "./LocaleTabs"
-export type { LocaleTabsProps, LocaleTabItem, LocaleTabStatus } from "./LocaleTabs"
+export { LocaleTabs } from "../data-entry/LocaleTabs"
+export type { LocaleTabsProps, LocaleTabItem, LocaleTabStatus } from "../data-entry/LocaleTabs"
 
-export { Checklist } from "./Checklist"
-export type { ChecklistProps, ChecklistItem } from "./Checklist"
+export { Checklist } from "../data-entry/Checklist"
+export type { ChecklistProps, ChecklistItem } from "../data-entry/Checklist"
 
-export { Spinner } from "./Spinner"
-export type { SpinnerProps, SpinnerSize, SpinnerTone } from "./Spinner"
+export { Spinner } from "../feedback/Spinner"
+export type { SpinnerProps, SpinnerSize, SpinnerTone } from "../feedback/Spinner"
 
-export { IconButton } from "./IconButton"
-export type { IconButtonProps, IconButtonVariant, IconButtonSize } from "./IconButton"
+export { IconButton } from "../data-display/IconButton"
+export type { IconButtonProps, IconButtonVariant, IconButtonSize } from "../data-display/IconButton"
 
-export { PageHeader } from "./PageHeader"
-export type { PageHeaderProps, PageHeaderVariant } from "./PageHeader"
+export { PageHeader } from "../data-display/PageHeader"
+export type { PageHeaderProps, PageHeaderVariant } from "../data-display/PageHeader"
 
-export { SegmentedControl, SegmentedControlButton } from "./SegmentedControl"
+export { SegmentedControl, SegmentedControlButton } from "../data-display/SegmentedControl"
 export type {
   SegmentedControlProps,
   SegmentedControlVariant,
   SegmentedControlSize,
   SegmentedControlItem,
   SegmentedControlButtonProps,
-} from "./SegmentedControl"
+} from "../data-display/SegmentedControl"
 
-export { Label } from "./Label"
+export { Label } from "../data-entry/Label"
 
-export { Tabs, TabsList, TabsTrigger, TabsContent } from "./Tabs"
+export { Tabs, TabsList, TabsTrigger, TabsContent } from "../navigation/Tabs"
 export type {
   TabsProps,
   TabsVariant,
   TabsOrientation,
   TabsPlacement,
-} from "./Tabs"
+} from "../navigation/Tabs"
 
-export { Avatar } from "./Avatar"
-export type { AvatarProps, AvatarShape, AvatarSize, AvatarSizeToken } from "./Avatar"
+export { Avatar } from "../data-display/Avatar"
+export type { AvatarProps, AvatarShape, AvatarSize, AvatarSizeToken } from "../data-display/Avatar"
 
-export { Statistic } from "./Statistic"
-export type { StatisticProps } from "./Statistic"
+export { Statistic } from "../data-display/Statistic"
+export type { StatisticProps } from "../data-display/Statistic"
 
-export { Empty } from "./Empty"
-export type { EmptyProps } from "./Empty"
+export { Empty } from "../data-display/Empty"
+export type { EmptyProps } from "../data-display/Empty"
 
-export { Tag } from "./Tag"
-export type { TagProps, TagPresetColor } from "./Tag"
+export { Tag } from "../data-display/Tag"
+export type { TagProps, TagPresetColor } from "../data-display/Tag"
 
-export { Alert } from "./Alert"
-export type { AlertProps, AlertColor, AlertVariant } from "./Alert"
+export { Alert } from "../feedback/Alert"
+export type { AlertProps, AlertColor, AlertVariant } from "../feedback/Alert"
 
-export { Result } from "./Result"
-export type { ResultProps, ResultColor } from "./Result"
+export { Result } from "../feedback/Result"
+export type { ResultProps, ResultColor } from "../feedback/Result"
 
 export {
   Typography,
@@ -140,7 +148,7 @@ export {
   Paragraph as TypographyParagraph,
   Text as TypographyText,
   Link as TypographyLink,
-} from "./Typography"
+} from "../general/Typography"
 export type {
   TypographyColor,
   TypographyTruncate,
@@ -150,19 +158,19 @@ export type {
   ParagraphProps,
   TextProps,
   LinkProps,
-} from "./Typography"
+} from "../general/Typography"
 
-export { Descriptions } from "./Descriptions"
-export type { DescriptionsProps, DescriptionsItemProps } from "./Descriptions"
+export { Descriptions } from "../data-display/Descriptions"
+export type { DescriptionsProps, DescriptionsItemProps } from "../data-display/Descriptions"
 
-export { Separator } from "./Separator"
+export { Separator } from "../data-display/Separator"
 
 export {
   Popover,
   PopoverAnchor,
   PopoverContent,
   PopoverTrigger,
-} from "./Popover"
+} from "../data-display/Popover"
 
 export {
   DropdownMenu,
@@ -176,9 +184,9 @@ export {
   DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuTrigger,
-} from "./DropdownMenu"
+} from "../navigation/DropdownMenu"
 
-export { Calendar } from "./Calendar"
+export { Calendar } from "../data-display/Calendar"
 
 export {
   Dialog,
@@ -191,7 +199,7 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
-} from "./Dialog"
+} from "../feedback/Dialog"
 
 export {
   Sheet,
@@ -204,8 +212,8 @@ export {
   SheetPortal,
   SheetTitle,
   SheetTrigger,
-} from "./Sheet"
-export type { SheetContentProps, SheetSide } from "./Sheet"
+} from "../feedback/Sheet"
+export type { SheetContentProps, SheetSide } from "../feedback/Sheet"
 
 export {
   AlertDialog,
@@ -219,7 +227,7 @@ export {
   AlertDialogPortal,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./AlertDialog"
+} from "../feedback/AlertDialog"
 
 export {
   Select,
@@ -234,20 +242,20 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "./Select"
+} from "../data-entry/Select"
 
-export { Switch } from "./Switch"
+export { Switch } from "../data-entry/Switch"
 
-export { Checkbox } from "./Checkbox"
+export { Checkbox } from "../data-entry/Checkbox"
 
-export { CheckboxGroup } from "./CheckboxGroup"
-export type { CheckboxGroupProps, CheckboxOption } from "./CheckboxGroup"
+export { CheckboxGroup } from "../data-entry/CheckboxGroup"
+export type { CheckboxGroupProps, CheckboxOption } from "../data-entry/CheckboxGroup"
 
-export { Radio, RadioGroup } from "./Radio"
-export type { RadioProps, RadioGroupProps, RadioOption } from "./Radio"
+export { Radio, RadioGroup } from "../data-entry/Radio"
+export type { RadioProps, RadioGroupProps, RadioOption } from "../data-entry/Radio"
 
-export { Slider } from "./Slider"
-export type { SliderProps } from "./Slider"
+export { Slider } from "../data-entry/Slider"
+export type { SliderProps } from "../data-entry/Slider"
 
 export {
   Table,
@@ -259,11 +267,11 @@ export {
   TableHeader,
   TableRow,
   TableToolbar,
-} from "./Table"
-export type { TableProps, TableDensity } from "./Table"
+} from "../data-display/Table"
+export type { TableProps, TableDensity } from "../data-display/Table"
 
-export { TimeInput } from "./TimeInput"
-export type { TimeInputProps } from "./TimeInput"
+export { TimeInput } from "../data-entry/TimeInput"
+export type { TimeInputProps } from "../data-entry/TimeInput"
 
 export {
   Combobox,
@@ -274,99 +282,99 @@ export {
   ComboboxItem,
   ComboboxList,
   ComboboxTrigger,
-} from "./combobox"
-export type { ComboboxContentProps } from "./combobox"
+} from "../data-entry/combobox"
+export type { ComboboxContentProps } from "../data-entry/combobox"
 
-export { Toaster, toast } from "./toaster"
-export type { ToasterProps } from "./toaster"
+export { Toaster, toast } from "../feedback/toaster"
+export type { ToasterProps } from "../feedback/toaster"
 
-export { Skeleton } from "./Skeleton"
-export type { SkeletonProps } from "./Skeleton"
+export { Skeleton } from "../feedback/Skeleton"
+export type { SkeletonProps } from "../feedback/Skeleton"
 
-export { Watermark } from "./Watermark"
-export type { WatermarkProps } from "./Watermark"
+export { Watermark } from "../feedback/Watermark"
+export type { WatermarkProps } from "../feedback/Watermark"
 
-export { Popconfirm } from "./Popconfirm"
-export type { PopconfirmProps } from "./Popconfirm"
+export { Popconfirm } from "../feedback/Popconfirm"
+export type { PopconfirmProps } from "../feedback/Popconfirm"
 
-export { Breadcrumb, BreadcrumbItem, BreadcrumbSep } from "./Breadcrumb"
-export type { BreadcrumbProps, BreadcrumbItemProps } from "./Breadcrumb"
+export { Breadcrumb, BreadcrumbItem, BreadcrumbSep } from "../navigation/Breadcrumb"
+export type { BreadcrumbProps, BreadcrumbItemProps } from "../navigation/Breadcrumb"
 
-export { Anchor, AnchorLink } from "./Anchor"
+export { Anchor, AnchorLink } from "../navigation/Anchor"
 export type {
   AnchorProps,
   AnchorLinkProps,
   AnchorItem,
   AnchorOrientation,
-} from "./Anchor"
+} from "../navigation/Anchor"
 
-export { Menu, MenuItem, MenuGroup, MenuDivider } from "./Menu"
+export { Menu, MenuItem, MenuGroup, MenuDivider } from "../navigation/Menu"
 export type {
   MenuProps,
   MenuItemProps,
   MenuGroupProps,
   MenuOrientation,
-} from "./Menu"
+} from "../navigation/Menu"
 
-export { Pagination } from "./Pagination"
+export { Pagination } from "../navigation/Pagination"
 export type {
   PaginationProps,
   PaginationSize,
   PaginationVariant,
   PaginationJustify,
-} from "./Pagination"
+} from "../navigation/Pagination"
 
-export { Steps, Step } from "./Steps"
+export { Steps, Step } from "../navigation/Steps"
 export type {
   StepsProps,
   StepProps,
   StepsOrientation,
   StepColor,
-} from "./Steps"
+} from "../navigation/Steps"
 
-export { Progress } from "./Progress"
+export { Progress } from "../feedback/Progress"
 export type {
   ProgressProps,
   ProgressVariant,
   ProgressColor,
   ProgressSize,
-} from "./Progress"
+} from "../feedback/Progress"
 
 // ── Calendar / scheduling primitives ─────────────────────────────
 // `MiniMonth`, `EventBlock`, `TimeGrid` family, `AvailabilityRow`, etc.
 // Mirror discipline: each atom is a thin wrapper over a `.cal-*` /
 // `.tg-*` class in shell.css; no service-specific defaults per
 // cardinal rule #19.
-export * from "./calendar/index"
+export * from "../data-display/calendar/index"
 
 // ── Date / time pickers — React Aria + @internationalized/date ──
 // DateField, TimeField (segmented inputs), DatePicker, DateRangePicker
 // (trigger + popover + Calendar / RangeCalendar). Mirrors the
 // dxs-kintai design-system patterns A-E.
-export { DateField, TimeField, DatePicker, DateRangePicker } from "./DateTimePicker"
+export { DateField, TimeField, DatePicker, DateRangePicker } from "../data-entry/DateTimePicker"
 export type {
   DateFieldProps,
   TimeFieldProps,
   DatePickerProps,
   DateRangePickerProps,
-} from "./DateTimePicker"
+} from "../data-entry/DateTimePicker"
 
 // ── Combobox-flavoured Data Entry primitives ─────────────────────
 // AutoComplete: filtered text input over Combobox.
 // Cascader: nested column navigation (Popover + horizontal columns).
 // TreeSelect: recursive tree Select (Popover + expandable nodes,
 // single or multi select).
-export { AutoComplete } from "./AutoComplete"
-export type { AutoCompleteProps, AutoCompleteOption } from "./AutoComplete"
+export { AutoComplete } from "../data-entry/AutoComplete"
+export type { AutoCompleteProps, AutoCompleteOption } from "../data-entry/AutoComplete"
 
-export { Cascader } from "./Cascader"
-export type { CascaderProps, CascaderOption } from "./Cascader"
+export { Cascader } from "../data-entry/Cascader"
+export type { CascaderProps, CascaderOption } from "../data-entry/Cascader"
 
-export { TreeSelect } from "./TreeSelect"
-export type { TreeSelectProps, TreeSelectOption } from "./TreeSelect"
+export { TreeSelect } from "../data-entry/TreeSelect"
+export type { TreeSelectProps, TreeSelectOption } from "../data-entry/TreeSelect"
 
-export { ColorPicker } from "./ColorPicker"
-export type { ColorPickerProps, ColorPickerSize } from "./ColorPicker"
+export { ColorPicker } from "../data-entry/ColorPicker"
+export type { ColorPickerProps, ColorPickerSize } from "../data-entry/ColorPicker"
 
-export { Rate } from "./Rate"
-export type { RateProps, RateSize } from "./Rate"
+export { Rate } from "../data-entry/Rate"
+export type { RateProps, RateSize } from "../data-entry/Rate"

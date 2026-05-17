@@ -1,12 +1,12 @@
 import { ChevronDown, ChevronLeft, ChevronRight, Plus, Search } from "lucide-react";
 import type { ReactNode } from "react";
-import { Button } from "../../primitives/Button";
+import { Button } from "../../general/Button";
 import {
   ColorSwatchCheckbox,
   MiniMonth,
   type CalendarRef,
   type MiniMonthYMD,
-} from "../../primitives/calendar/index";
+} from "../../data-display/calendar/index";
 
 /**
  * CalendarSidebar — left rail for the calendar screen:

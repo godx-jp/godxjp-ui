@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "../../../../components/primitives/Card";
-import { Button } from "../../../../components/primitives/Button";
+import { Card } from "../../../../components/data-display/Card";
+import { Button } from "../../../../components/general/Button";
 
 /**
  * Components/Data Display/Card — surface container.

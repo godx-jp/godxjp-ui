@@ -7,7 +7,7 @@ import type {
   CalendarEvent,
   CalendarRef,
   PersonRef,
-} from "../components/primitives/calendar";
+} from "../components/data-display/calendar";
 
 export const TODAY = { y: 2026, m: 5, d: 20 } as const;
 export const WEEK_START = { y: 2026, m: 5, d: 18 } as const;

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { Switch } from "../../../../components/primitives/Switch";
-import { Flex } from "../../../../components/primitives/layout";
+import { Switch } from "../../../../components/data-entry/Switch";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Switch — boolean toggle.

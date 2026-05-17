@@ -6,11 +6,11 @@ import {
   Settings,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { Button } from "../../primitives/Button";
+import { Button } from "../../general/Button";
 import {
   SegmentedControl,
   type SegmentedControlItem,
-} from "../../primitives/SegmentedControl";
+} from "../../data-display/SegmentedControl";
 
 /**
  * CalendarTopbar — top rail for the calendar screen:

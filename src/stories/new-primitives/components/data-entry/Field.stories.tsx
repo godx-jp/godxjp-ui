@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { Info } from "lucide-react";
-import { Field } from "../../../../components/primitives/Field";
-import { Input, Textarea } from "../../../../components/primitives/Input";
-import { Flex } from "../../../../components/primitives/layout";
+import { Field } from "../../../../components/data-entry/Field";
+import { Input, Textarea } from "../../../../components/data-entry/Input";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Field — label + control + help.

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Megaphone } from "lucide-react";
-import { Alert } from "../../../../components/primitives/Alert";
-import { Button } from "../../../../components/primitives/Button";
-import { Space } from "../../../../components/primitives/layout";
+import { Alert } from "../../../../components/feedback/Alert";
+import { Button } from "../../../../components/general/Button";
+import { Space } from "../../../../components/layout";
 
 /**
  * Components/Feedback/Alert — banner-style notice.

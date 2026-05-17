@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Sparkles } from "lucide-react";
-import { Result } from "../../../../components/primitives/Result";
-import { Button } from "../../../../components/primitives/Button";
+import { Result } from "../../../../components/feedback/Result";
+import { Button } from "../../../../components/general/Button";
 
 /**
  * Components/Feedback/Result — page-level outcome surface.

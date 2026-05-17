@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Skeleton } from "../../../../components/primitives/Skeleton";
-import { Card, CardBody, CardHeader } from "../../../../components/primitives/Card";
-import { Space } from "../../../../components/primitives/layout";
+import { Skeleton } from "../../../../components/feedback/Skeleton";
+import { Card, CardBody, CardHeader } from "../../../../components/data-display/Card";
+import { Space } from "../../../../components/layout";
 
 /**
  * Components/Feedback/Skeleton — loading placeholder atom.

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { Slider } from "../../../../components/primitives/Slider";
-import { Flex } from "../../../../components/primitives/layout";
+import { Slider } from "../../../../components/data-entry/Slider";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Slider — range input.

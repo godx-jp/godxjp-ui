@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ColorPicker } from "../../../../components/primitives/ColorPicker";
-import { Flex } from "../../../../components/primitives/layout";
+import { ColorPicker } from "../../../../components/data-entry/ColorPicker";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/ColorPicker — decorative

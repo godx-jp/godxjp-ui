@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Flex } from "../../../../components/primitives/layout";
-import { Card } from "../../../../components/primitives/Card";
+import { Flex } from "../../../../components/layout";
+import { Card } from "../../../../components/data-display/Card";
 
 /**
  * new-primitives/components/layout/Flex — flexbox container.

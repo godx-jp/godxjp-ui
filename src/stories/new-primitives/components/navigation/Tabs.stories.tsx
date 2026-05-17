@@ -4,8 +4,8 @@ import {
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "../../../../components/primitives/Tabs";
-import { Typography } from "../../../../components/primitives/Typography";
+} from "../../../../components/navigation/Tabs";
+import { Typography } from "../../../../components/general/Typography";
 
 const { Paragraph } = Typography;
 

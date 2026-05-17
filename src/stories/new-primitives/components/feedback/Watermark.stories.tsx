@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Watermark } from "../../../../components/primitives/Watermark";
+import { Watermark } from "../../../../components/feedback/Watermark";
 import {
   Card,
   CardBody,
   CardHeader,
   CardTitle,
   CardSubtitle,
-} from "../../../../components/primitives/Card";
+} from "../../../../components/data-display/Card";
 
 /**
  * Components/Feedback/Watermark — repeating SVG-tile overlay used to

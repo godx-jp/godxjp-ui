@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useEffect, useState } from "react";
-import { Card } from "../../../components/primitives/Card";
-import { Flex, Row, Col } from "../../../components/primitives/layout";
+import { Card } from "../../../components/data-display/Card";
+import { Flex, Row, Col } from "../../../components/layout";
 import { useBreakpoint, matchBreakpoint } from "../../../hooks/useBreakpoint";
 import type { Breakpoint } from "../../../hooks/useBreakpoint";
 

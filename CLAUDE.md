@@ -777,6 +777,53 @@ framework concept; inline duplication is rejected at review.
     moves a file out of `src/stories/` runs the §F checklist
     BEFORE landing.
 
+27. **Per-group folder structure — primitives live under
+    `src/components/<group>/<Name>.tsx`.** Absolute.
+
+    The component source tree mirrors the Storybook taxonomy
+    consumers see at `/docs/new-primitives-components-<group>/`.
+    Six groups (matching Ant Design's component taxonomy):
+
+    | Group | Components |
+    |---|---|
+    | `general` | Button, Typography |
+    | `layout` | Row, Col, Flex, Space, Grid, Masonry |
+    | `data-display` | Avatar, Badge, Card, Calendar, Descriptions, Empty, Popover, Tooltip, SegmentedControl, Statistic, Table, Tag, Carousel, Collapse, Image, List, QRCode, Timeline, Tour, Tree |
+    | `data-entry` | Input, Field, Select, Checkbox, Radio, Switch, Slider, AutoComplete, Cascader, ColorPicker, DateTimePicker, TimeInput, TreeSelect, Rate, InputNumber, Form, Transfer, CheckboxGroup, … |
+    | `feedback` | Alert, Dialog, AlertDialog, Sheet, Popconfirm, Progress, Result, Skeleton, Spinner, Toaster, Watermark |
+    | `navigation` | Anchor, Breadcrumb, DropdownMenu, Menu, Pagination, Steps, Tabs |
+
+    Shared helpers (`cn`, internal hooks) live at
+    `src/components/cn.ts` etc. — one level above the groups so
+    every group has a uniform `import "../cn"` path.
+
+    Stories MUST mirror the same group hierarchy:
+    `src/stories/new-primitives/components/<group>/<Name>.stories.tsx`
+    with title `new-primitives/Components/<Group>/<Name>`.
+
+    The legacy `src/components/primitives/index.ts` barrel re-
+    exports from the group folders so the published import path
+    `@godxjp/ui/components/primitives` stays stable for consumers.
+    New primitive files are NEVER added to a flat `primitives/`
+    folder — always under their group.
+
+    Cross-group imports use relative paths:
+    `import { Button } from "../general/Button"` from any
+    sibling group. The cardinal rule 14 ecosystem (Radix /
+    cmdk / sonner / lucide-react) is consumed directly by name
+    regardless of group.
+
+    Forbidden (rejected at review):
+    - New `.tsx` file at `src/components/primitives/<Name>.tsx`
+      flat — pick a group folder.
+    - Group folder mismatch between source location and
+      Storybook title (`Tabs` in `src/components/navigation/` but
+      story titled `Components/Data Display/Tabs` — pick one and
+      align).
+    - Helpers proliferating per-group (each group importing its
+      own copy of `cn.ts`) — `cn` lives once at
+      `src/components/cn.ts`.
+
 - Component diff without paired story diff (rule 1).
 - Raw color utility (`bg-blue-500`) in a primitive (rule 2).
 - Hand-rolled focus / keyboard nav when Radix has it (rule 3).

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Spinner } from "../../../../components/primitives/Spinner";
-import { Button } from "../../../../components/primitives/Button";
-import { Space } from "../../../../components/primitives/layout";
+import { Spinner } from "../../../../components/feedback/Spinner";
+import { Button } from "../../../../components/general/Button";
+import { Space } from "../../../../components/layout";
 
 /**
  * Components/Feedback/Spin — small inline circular loading indicator

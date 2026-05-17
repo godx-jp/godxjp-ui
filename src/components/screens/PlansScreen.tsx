@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { cn } from "../primitives/cn";
+import { cn } from "../cn";
 
 type Phase = "plan" | "do" | "check" | "act";
 type Health = "ok" | "at-risk" | "off-track";

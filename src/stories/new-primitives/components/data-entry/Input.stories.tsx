@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { CheckCircle2, CircleAlert, Mail, Search } from "lucide-react";
-import { Input, Textarea } from "../../../../components/primitives/Input";
-import { InputPassword } from "../../../../components/primitives/InputPassword";
-import { InputSearch } from "../../../../components/primitives/InputSearch";
-import { Flex } from "../../../../components/primitives/layout";
+import { Input, Textarea } from "../../../../components/data-entry/Input";
+import { InputPassword } from "../../../../components/data-entry/InputPassword";
+import { InputSearch } from "../../../../components/data-entry/InputSearch";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Input — text input family.

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Popconfirm } from "../../../../components/primitives/Popconfirm";
-import { Button } from "../../../../components/primitives/Button";
+import { Popconfirm } from "../../../../components/feedback/Popconfirm";
+import { Button } from "../../../../components/general/Button";
 
 /**
  * Components/Feedback/Popconfirm — compact confirm-or-cancel

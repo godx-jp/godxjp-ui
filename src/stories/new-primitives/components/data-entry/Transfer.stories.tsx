@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { Transfer, type TransferItem } from "../../../../components/primitives/Transfer";
-import { Flex } from "../../../../components/primitives/layout";
+import { Transfer, type TransferItem } from "../../../../components/data-entry/Transfer";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Transfer — dual list-box.

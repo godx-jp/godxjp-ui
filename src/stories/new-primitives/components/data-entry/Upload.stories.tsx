@@ -6,7 +6,7 @@ import {
   MediaUploadMultiple,
   MediaUploadAvatar,
 } from "../../../../components/composites/upload/MediaUpload";
-import { Flex } from "../../../../components/primitives/layout";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Upload — file + media uploaders.

@@ -8,8 +8,8 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "../../../../components/primitives/Select";
-import { Flex } from "../../../../components/primitives/layout";
+} from "../../../../components/data-entry/Select";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Select — Radix-backed dropdown.

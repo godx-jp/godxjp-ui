@@ -7,8 +7,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "../../../../components/primitives/DropdownMenu";
-import { Button } from "../../../../components/primitives/Button";
+} from "../../../../components/navigation/DropdownMenu";
+import { Button } from "../../../../components/general/Button";
 
 /**
  * Components/Navigation/Dropdown — overlay action menu.

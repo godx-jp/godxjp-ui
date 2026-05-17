@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { InputNumber } from "../../../../components/primitives/InputNumber";
-import { Flex } from "../../../../components/primitives/layout";
+import { InputNumber } from "../../../../components/data-entry/InputNumber";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/InputNumber — numeric input atom.

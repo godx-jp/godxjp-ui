@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "../primitives/cn";
+import { cn } from "../cn";
 
 // PageContent — canonical page container for every screen rendered
 // inside <AppShell>. Inspired by Ant Design's PageContainer:

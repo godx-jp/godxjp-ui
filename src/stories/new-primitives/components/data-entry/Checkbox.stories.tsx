@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { Checkbox } from "../../../../components/primitives/Checkbox";
-import { CheckboxGroup } from "../../../../components/primitives/CheckboxGroup";
-import { Flex } from "../../../../components/primitives/layout";
+import { Checkbox } from "../../../../components/data-entry/Checkbox";
+import { CheckboxGroup } from "../../../../components/data-entry/CheckboxGroup";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Checkbox — boolean + group selection.

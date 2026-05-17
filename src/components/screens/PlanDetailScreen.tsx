@@ -1,7 +1,7 @@
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { cn } from "../primitives/cn";
+import { cn } from "../cn";
 
 type Phase = "plan" | "do" | "check" | "act";
 

@@ -6,8 +6,8 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { Button } from "../../../../components/primitives/Button";
-import { Flex } from "../../../../components/primitives/layout";
+import { Button } from "../../../../components/general/Button";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/general/Button — canonical action atom.

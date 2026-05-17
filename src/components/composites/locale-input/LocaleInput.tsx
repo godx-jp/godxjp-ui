@@ -6,7 +6,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { cn } from "../../primitives/cn";
+import { cn } from "../../cn";
 
 /**
  * LocaleInput — multilingual text field with a tab strip switcher.

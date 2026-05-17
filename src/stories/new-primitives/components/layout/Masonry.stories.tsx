@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Masonry, MasonryItem } from "../../../../components/primitives/layout";
-import { Card } from "../../../../components/primitives/Card";
-import { Tag } from "../../../../components/primitives/Tag";
-import { Flex } from "../../../../components/primitives/layout";
+import { Masonry, MasonryItem } from "../../../../components/layout";
+import { Card } from "../../../../components/data-display/Card";
+import { Tag } from "../../../../components/data-display/Tag";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/layout/Masonry — Pinterest-style

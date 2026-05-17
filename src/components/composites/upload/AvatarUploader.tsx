@@ -17,8 +17,8 @@
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import { Camera, RotateCw, Upload as UploadIcon, X } from "lucide-react";
-import { Button } from "../../primitives/Button";
-import { Flex, Space } from "../../primitives/layout";
+import { Button } from "../../general/Button";
+import { Flex, Space } from "../../layout";
 import { validateFile } from "./shared/validate";
 import { DEFAULT_UPLOAD_LABELS } from "./shared/types";
 

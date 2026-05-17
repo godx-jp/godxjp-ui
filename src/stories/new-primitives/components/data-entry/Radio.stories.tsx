@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { Radio, RadioGroup } from "../../../../components/primitives/Radio";
-import { Flex } from "../../../../components/primitives/layout";
+import { Radio, RadioGroup } from "../../../../components/data-entry/Radio";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Radio — single-select group.

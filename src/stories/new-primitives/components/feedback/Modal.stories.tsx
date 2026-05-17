@@ -7,11 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../../components/primitives/Dialog";
-import { Button } from "../../../../components/primitives/Button";
-import { Input } from "../../../../components/primitives/Input";
-import { Field, FieldLabel } from "../../../../components/primitives/Field";
-import { Space } from "../../../../components/primitives/layout";
+} from "../../../../components/feedback/Dialog";
+import { Button } from "../../../../components/general/Button";
+import { Input } from "../../../../components/data-entry/Input";
+import { Field, FieldLabel } from "../../../../components/data-entry/Field";
+import { Space } from "../../../../components/layout";
 
 /**
  * Components/Feedback/Modal — modal surface built on the Dialog

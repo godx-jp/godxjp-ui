@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Progress } from "../../../../components/primitives/Progress";
-import { Space } from "../../../../components/primitives/layout";
+import { Progress } from "../../../../components/feedback/Progress";
+import { Space } from "../../../../components/layout";
 
 /**
  * Components/Feedback/Progress — linear or circular progress indicator.

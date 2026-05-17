@@ -33,7 +33,7 @@ The framework owns the entire visual + interaction layer:
 |---|---|---|
 | Design tokens (color, spacing, density, dark, motion, theme axes) | `src/tokens/`, `src/styles/theme.css` | NO — `@import "@godxjp/ui/tailwind.css"` in one file |
 | Tailwind v4 entry + `@theme inline` mapping | `src/tokens/tailwind.css` | NO — that single import is enough |
-| Visual primitives (Button, Card, Input, Table, Dialog, Sheet, Tabs, Avatar, Badge, Calendar, …) | `src/components/primitives/` | NO — import from `@godxjp/ui` |
+| Visual primitives — grouped by Storybook taxonomy under `src/components/<group>/<Name>.tsx`: `general` (Button, Typography), `layout` (Row, Col, Flex, Space, Grid, Masonry), `data-display` (Avatar, Badge, Card, Calendar, Descriptions, Empty, Popover, Tooltip, SegmentedControl, Statistic, Table, Tag, Carousel, Collapse, Image, List, QRCode, Timeline, Tour, Tree), `data-entry` (Input, Field, Select, Checkbox, Radio, Switch, Slider, AutoComplete, Cascader, ColorPicker, DateTimePicker, TimeInput, TreeSelect, Rate, InputNumber, Form, Transfer, CheckboxGroup, …), `feedback` (Alert, Dialog/Modal, Sheet/Drawer, AlertDialog, Popconfirm, Progress, Result, Skeleton, Spinner, Toaster, Watermark), `navigation` (Anchor, Breadcrumb, DropdownMenu, Menu, Pagination, Steps, Tabs) | NO — import from `@godxjp/ui` |
 | Shell primitives (AppShell, Sidebar, Topbar, CommandPalette, TweaksPanel, ProductSwitcher) | `src/components/shell/` | NO — compose, don't reimplement |
 | Composite widgets (Upload family, LocaleInput, …) | `src/components/composites/` | NO — extend via PR if missing |
 | Calendar atoms + screens (EventBlock, MiniMonth, TimeGrid, MonthView, WeekView, DayView, AgendaView, …) | `src/components/{primitives,composites}/calendar/` | NO |

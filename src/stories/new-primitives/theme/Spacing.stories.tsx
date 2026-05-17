@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card, CardHeader, CardBody } from "../../../components/primitives/Card";
-import { Flex, Row, Col } from "../../../components/primitives/layout";
+import { Card, CardHeader, CardBody } from "../../../components/data-display/Card";
+import { Flex, Row, Col } from "../../../components/layout";
 
 /**
  * new-primitives/Spacing — visual catalogue for the framework's

@@ -13,9 +13,9 @@
 
 import { useCallback, useId, useRef, useState, type DragEvent } from "react";
 import { File as FileIcon, Image as ImageIcon, RotateCw, Trash2, Upload as UploadIcon } from "lucide-react";
-import { Button } from "../../primitives/Button";
-import { Flex } from "../../primitives/layout";
-import { cn } from "../../primitives/cn";
+import { Button } from "../../general/Button";
+import { Flex } from "../../layout";
+import { cn } from "../../cn";
 import type { UploadFile, UploadProps } from "./shared/types";
 import { DEFAULT_UPLOAD_LABELS } from "./shared/types";
 import { useUpload } from "./shared/useUpload";

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { Pagination } from "../../../../components/primitives/Pagination";
+import { Pagination } from "../../../../components/navigation/Pagination";
 
 /**
  * Components/Navigation/Pagination — page jumper.

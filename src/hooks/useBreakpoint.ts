@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Breakpoint } from "../components/primitives/layout/Row";
+import type { Breakpoint } from "../components/layout/Row";
 
 /**
  * useBreakpoint — reads the framework's responsive breakpoint
@@ -15,7 +15,7 @@ import type { Breakpoint } from "../components/primitives/layout/Row";
  *
  * Per cardinal rule 23 §B the breakpoint name vocabulary is locked
  * across the framework — the `Breakpoint` type lives in
- * `components/primitives/layout/Row.ts` and is imported here so
+ * `components/layout/Row.ts` and is imported here so
  * consumers see exactly one definition.
  *
  * @example

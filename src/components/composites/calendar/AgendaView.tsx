@@ -5,7 +5,7 @@ import {
   type CalendarRef,
   type PersonRef,
   type TimeLocale,
-} from "../../primitives/calendar/index";
+} from "../../data-display/calendar/index";
 
 /**
  * AgendaView — date-grouped list of events for the next N days. Each

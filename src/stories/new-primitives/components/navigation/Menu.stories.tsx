@@ -4,7 +4,7 @@ import {
   MenuItem,
   MenuGroup,
   MenuDivider,
-} from "../../../../components/primitives/Menu";
+} from "../../../../components/navigation/Menu";
 
 /**
  * Components/Navigation/Menu — persistent navigation list with

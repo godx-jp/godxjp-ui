@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Toaster, toast } from "../../../../components/primitives/toaster";
-import { Button } from "../../../../components/primitives/Button";
-import { Space } from "../../../../components/primitives/layout";
+import { Toaster, toast } from "../../../../components/feedback/toaster";
+import { Button } from "../../../../components/general/Button";
+import { Space } from "../../../../components/layout";
 
 /**
  * Components/Feedback/Message — ephemeral inline feedback toasts.

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { TreeSelect, type TreeSelectOption } from "../../../../components/primitives/TreeSelect";
-import { Flex } from "../../../../components/primitives/layout";
+import { TreeSelect, type TreeSelectOption } from "../../../../components/data-entry/TreeSelect";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/TreeSelect — tree-structured

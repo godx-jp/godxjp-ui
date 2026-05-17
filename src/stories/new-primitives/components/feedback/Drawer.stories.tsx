@@ -7,12 +7,12 @@ import {
   SheetHeader as DrawerHeader,
   SheetTitle as DrawerTitle,
   SheetTrigger as DrawerTrigger,
-} from "../../../../components/primitives/Sheet";
-import { Button } from "../../../../components/primitives/Button";
-import { Input } from "../../../../components/primitives/Input";
-import { Field, FieldLabel } from "../../../../components/primitives/Field";
-import { Space } from "../../../../components/primitives/layout";
-import { Menu, MenuItem, MenuGroup } from "../../../../components/primitives/Menu";
+} from "../../../../components/feedback/Sheet";
+import { Button } from "../../../../components/general/Button";
+import { Input } from "../../../../components/data-entry/Input";
+import { Field, FieldLabel } from "../../../../components/data-entry/Field";
+import { Space } from "../../../../components/layout";
+import { Menu, MenuItem, MenuGroup } from "../../../../components/navigation/Menu";
 
 /**
  * Components/Feedback/Drawer — side-anchored panel built on the

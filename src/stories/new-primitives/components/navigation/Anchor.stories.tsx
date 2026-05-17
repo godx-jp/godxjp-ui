@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Anchor, AnchorLink } from "../../../../components/primitives/Anchor";
-import { Typography } from "../../../../components/primitives/Typography";
+import { Anchor, AnchorLink } from "../../../../components/navigation/Anchor";
+import { Typography } from "../../../../components/general/Typography";
 
 const { Title, Paragraph } = Typography;
 

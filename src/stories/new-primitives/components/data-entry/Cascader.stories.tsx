@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { Cascader, type CascaderOption } from "../../../../components/primitives/Cascader";
-import { Flex } from "../../../../components/primitives/layout";
+import { Cascader, type CascaderOption } from "../../../../components/data-entry/Cascader";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Cascader — nested column

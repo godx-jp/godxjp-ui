@@ -3,7 +3,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbSep,
-} from "../../../../components/primitives/Breadcrumb";
+} from "../../../../components/navigation/Breadcrumb";
 
 /**
  * Components/Navigation/Breadcrumb — hierarchy path indicator.

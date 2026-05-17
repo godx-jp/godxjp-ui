@@ -20,9 +20,9 @@ import {
   type DragEvent,
 } from "react";
 import { ImagePlus, RotateCw, X } from "lucide-react";
-import { Button } from "../../primitives/Button";
-import { Flex } from "../../primitives/layout";
-import { cn } from "../../primitives/cn";
+import { Button } from "../../general/Button";
+import { Flex } from "../../layout";
+import { cn } from "../../cn";
 import {
   fetchMedia,
   fetchMediaBatch,

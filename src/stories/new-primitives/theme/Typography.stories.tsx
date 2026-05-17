@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "../../../components/primitives/Card";
-import { Flex } from "../../../components/primitives/layout";
+import { Card } from "../../../components/data-display/Card";
+import { Flex } from "../../../components/layout";
 
 /**
  * new-primitives/Typography — visual catalogue for the type scale,

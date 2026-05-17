@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Heart } from "lucide-react";
-import { Rate } from "../../../../components/primitives/Rate";
-import { Flex } from "../../../../components/primitives/layout";
+import { Rate } from "../../../../components/data-entry/Rate";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/Rate — star-rating primitive.

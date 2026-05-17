@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Steps, Step } from "../../../../components/primitives/Steps";
+import { Steps, Step } from "../../../../components/navigation/Steps";
 
 /**
  * Components/Navigation/Steps — wizard / progress indicator.

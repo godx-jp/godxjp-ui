@@ -4,8 +4,8 @@ import {
   DateField,
   DatePicker,
   DateRangePicker,
-} from "../../../../components/primitives/DateTimePicker";
-import { Flex } from "../../../../components/primitives/layout";
+} from "../../../../components/data-entry/DateTimePicker";
+import { Flex } from "../../../../components/layout";
 
 /**
  * new-primitives/components/data-entry/DatePicker — date input atoms.
