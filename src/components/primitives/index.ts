@@ -378,3 +378,47 @@ export type { ColorPickerProps, ColorPickerSize } from "../data-entry/ColorPicke
 
 export { Rate } from "../data-entry/Rate"
 export type { RateProps, RateSize } from "../data-entry/Rate"
+
+export { Carousel, CarouselSlide } from "../data-display/Carousel"
+export type { CarouselProps, CarouselSlideProps } from "../data-display/Carousel"
+
+export { Collapse, CollapsePanel } from "../data-display/Collapse"
+export type { CollapseProps, CollapsePanelProps } from "../data-display/Collapse"
+
+export { List, ListItem } from "../data-display/List"
+export type { ListProps, ListItemProps } from "../data-display/List"
+
+export { Image } from "../data-display/Image"
+export type { ImageProps } from "../data-display/Image"
+
+export { QRCode } from "../data-display/QRCode"
+export type { QRCodeProps } from "../data-display/QRCode"
+
+export {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+  TooltipPortal,
+  SimpleTooltip,
+} from "../data-display/Tooltip"
+export type { TooltipContentProps, SimpleTooltipProps } from "../data-display/Tooltip"
+
+export { Timeline, TimelineItem } from "../data-display/Timeline"
+export type {
+  TimelineProps,
+  TimelineItemProps,
+  TimelineVariant,
+  TimelineColor,
+} from "../data-display/Timeline"
+
+export { Tree } from "../data-display/Tree"
+export type { TreeProps, TreeNode } from "../data-display/Tree"
+
+export { Tour } from "../data-display/Tour"
+export type {
+  TourProps,
+  TourStep,
+  TourPlacement,
+  TourLabels,
+} from "../data-display/Tour"

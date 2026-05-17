@@ -260,3 +260,572 @@
   isolation: isolate;
 }
 
+/* ── Carousel — slide-deck (rule 22 token-pinned) ───────────────── */
+.carousel {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+.carousel-viewport {
+  overflow: hidden;
+}
+.carousel-track {
+  display: flex;
+  transition: transform var(--transition-base) var(--ease-in-out);
+  will-change: transform;
+}
+.carousel[data-orientation="vertical"] .carousel-viewport {
+  height: 100%;
+}
+.carousel-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.carousel-arrow {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: color-mix(in oklch, var(--background) 80%, transparent);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background var(--transition-fast) var(--ease-out);
+}
+.carousel-arrow:hover {
+  background: var(--background);
+}
+.carousel-arrow:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.carousel-arrow.prev {
+  top: 50%;
+  left: var(--spacing-2);
+  transform: translateY(-50%);
+}
+.carousel-arrow.next {
+  top: 50%;
+  right: var(--spacing-2);
+  transform: translateY(-50%);
+}
+.carousel[data-orientation="vertical"] .carousel-arrow.prev {
+  top: var(--spacing-2);
+  left: 50%;
+  transform: translateX(-50%);
+}
+.carousel[data-orientation="vertical"] .carousel-arrow.next {
+  top: auto;
+  bottom: var(--spacing-2);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+.carousel-dots {
+  position: absolute;
+  bottom: var(--spacing-2);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--spacing-1);
+  align-items: center;
+}
+.carousel[data-orientation="vertical"] .carousel-dots {
+  bottom: auto;
+  top: 50%;
+  left: auto;
+  right: var(--spacing-2);
+  transform: translateY(-50%);
+  flex-direction: column;
+}
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: color-mix(in oklch, var(--foreground) 30%, transparent);
+  cursor: pointer;
+  transition:
+    width var(--transition-fast) var(--ease-out),
+    background var(--transition-fast) var(--ease-out);
+}
+.carousel-dot:hover {
+  background: color-mix(in oklch, var(--foreground) 50%, transparent);
+}
+.carousel-dot[data-active="true"] {
+  background: var(--primary);
+  width: 20px;
+  border-radius: var(--radius-sm);
+}
+.carousel[data-orientation="vertical"] .carousel-dot[data-active="true"] {
+  width: 8px;
+  height: 20px;
+}
+
+/* ── Collapse — accordion panel group ───────────────────────────── */
+.collapse {
+  display: flex;
+  flex-direction: column;
+}
+.collapse-panel {
+  border-bottom: 1px solid var(--border);
+}
+.collapse-panel:last-child {
+  border-bottom: 0;
+}
+.collapse-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  background: transparent;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background var(--transition-fast) var(--ease-out);
+}
+.collapse-trigger:hover {
+  background: var(--accent);
+}
+.collapse-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.collapse-chevron {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  transition: transform var(--transition-fast) var(--ease-out);
+}
+.collapse-panel[data-state="open"] .collapse-chevron {
+  transform: rotate(90deg);
+}
+.collapse-title {
+  flex: 1;
+  font-weight: var(--font-weight-medium);
+}
+.collapse-extra {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+}
+.collapse-content {
+  padding: 0 var(--spacing-4) var(--spacing-3) calc(var(--spacing-4) + var(--spacing-4));
+  color: var(--foreground);
+}
+.collapse-size-small .collapse-trigger {
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--text-xs);
+}
+.collapse-size-small .collapse-content {
+  padding: 0 var(--spacing-3) var(--spacing-2) calc(var(--spacing-3) + var(--spacing-4));
+  font-size: var(--text-xs);
+}
+.collapse-size-large .collapse-trigger {
+  padding: var(--spacing-4) var(--spacing-5);
+  font-size: var(--text-md);
+}
+.collapse-size-large .collapse-content {
+  padding: 0 var(--spacing-5) var(--spacing-4) calc(var(--spacing-5) + var(--spacing-4));
+}
+.collapse-variant-ghost .collapse-panel {
+  border-bottom: 0;
+}
+.collapse-variant-outlined {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* ── List — header + items + footer ─────────────────────────────── */
+.list {
+  display: flex;
+  flex-direction: column;
+}
+.list-title {
+  padding: var(--spacing-2) 0;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-md);
+}
+.list-header {
+  padding: var(--spacing-3) 0;
+  border-bottom: 1px solid var(--border);
+  font-weight: var(--font-weight-medium);
+}
+.list-footer {
+  padding: var(--spacing-3) 0;
+  border-top: 1px solid var(--border);
+}
+.list-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.list[data-bordered="true"] {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0 var(--spacing-3);
+}
+.list[data-bordered="true"] .list-header,
+.list[data-bordered="true"] .list-footer {
+  padding-left: 0;
+  padding-right: 0;
+}
+.list-item-wrapper {
+  /* wrapper only when data-driven; sits as a list item */
+}
+.list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) 0;
+}
+.list[data-split="true"] .list-items > .list-item + .list-item,
+.list[data-split="true"] .list-items > .list-item-wrapper + .list-item-wrapper {
+  border-top: 1px solid var(--border);
+}
+.list-item-avatar {
+  flex-shrink: 0;
+}
+.list-item-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+.list-item-title {
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+}
+.list-item-desc {
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+  line-height: var(--leading-body);
+}
+.list-item-extra {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+}
+.list-item-actions {
+  display: flex;
+  gap: var(--spacing-2);
+  align-items: center;
+  flex-shrink: 0;
+}
+.list-size-small .list-item {
+  padding: var(--spacing-2) 0;
+  font-size: var(--text-xs);
+}
+.list-size-large .list-item {
+  padding: var(--spacing-4) 0;
+  font-size: var(--text-md);
+}
+.list-grid .list-grid-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-3);
+}
+@media (min-width: 640px) {
+  .list-grid[data-cols="2"] .list-grid-inner,
+  .list-grid[data-cols="3"] .list-grid-inner,
+  .list-grid[data-cols="4"] .list-grid-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .list-grid[data-cols="3"] .list-grid-inner {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .list-grid[data-cols="4"] .list-grid-inner {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.list-empty,
+.list-loading {
+  padding: var(--spacing-6) 0;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: var(--text-sm);
+}
+
+/* ── Tree (standalone hierarchical view, not a Popover) ──────────
+ * Sibling of TreeSelect. Atoms here intentionally stay distinct
+ * from `.treeselect-*` so the surface differences (row hover tint,
+ * connector lines, indent guides) can evolve independently.
+ */
+.tree {
+  font-size: var(--text-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tree-node {
+  list-style: none;
+}
+.tree-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tree-children[data-expanded="false"] {
+  display: none;
+}
+.tree[data-show-line="true"] .tree-children {
+  border-left: 1px dashed var(--border);
+  margin-left: calc(var(--spacing-2) + var(--spacing-1));
+  padding-left: var(--spacing-3);
+}
+.tree-node-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+}
+.tree-node-row:hover {
+  background: var(--accent);
+}
+.tree-node-row[data-selected="true"] {
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  color: var(--primary);
+}
+.tree-node-row[data-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.tree-toggle {
+  width: var(--spacing-4);
+  height: var(--spacing-4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.tree-toggle-icon {
+  width: var(--spacing-3);
+  height: var(--spacing-3);
+  transition: transform var(--transition-fast);
+}
+.tree-toggle[data-expanded="true"] .tree-toggle-icon {
+  transform: rotate(90deg);
+}
+.tree-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+.tree-label {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+  text-align: left;
+  color: inherit;
+}
+.tree-checkbox {
+  flex-shrink: 0;
+}
+
+/* ── Tour (multi-step product walkthrough) ───────────────────────
+ * Fixed overlay + popover callout anchored near a target rect (or
+ * page-centred when `placement="center"`). v1 mask is a single
+ * semi-transparent layer; the highlight rect lives above it to
+ * draw attention without a true cutout.
+ */
+.tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: auto;
+}
+.tour-mask {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklch, var(--foreground) 45%, transparent);
+  transition: opacity var(--transition-base);
+}
+.tour-highlight {
+  position: absolute;
+  z-index: 81;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 2px var(--primary);
+  pointer-events: none;
+  transition:
+    top var(--transition-base),
+    left var(--transition-base),
+    width var(--transition-base),
+    height var(--transition-base);
+}
+.tour-callout {
+  position: absolute;
+  z-index: 82;
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow-lg);
+  width: 320px;
+  max-width: calc(100vw - var(--spacing-4));
+}
+.tour-callout-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.tour-callout-title {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-sm);
+  margin-bottom: var(--spacing-1);
+  color: var(--foreground);
+}
+.tour-callout-desc {
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+  line-height: var(--leading-body);
+  margin-bottom: var(--spacing-3);
+}
+.tour-callout-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+.tour-callout-progress {
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+.tour-callout-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+/* ── Image — display + click-to-preview lightbox ─────────────────
+ * Wrapper inherits caller sizing; the `<img>` fills the wrapper.
+ * Preview overlay is fullscreen, dimmed, dismissable via Esc /
+ * outside-click / the corner × button. All values token-pinned. */
+.image-wrap {
+  display: inline-block;
+  position: relative;
+  line-height: 0;
+}
+.image-wrap img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.image-wrap[data-preview="true"][data-status="loaded"] img {
+  cursor: zoom-in;
+}
+.image-placeholder,
+.image-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  min-width: 64px;
+  min-height: 64px;
+  font-size: var(--text-xs);
+}
+.image-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in oklch, var(--foreground) 85%, transparent);
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade-in var(--transition-fast) var(--ease-out);
+}
+.image-preview-overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: var(--radius-md);
+}
+.image-preview-close {
+  position: absolute;
+  top: var(--spacing-4);
+  right: var(--spacing-4);
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--card);
+  color: var(--foreground);
+  font-size: var(--text-xl);
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast) var(--ease-out);
+}
+.image-preview-close:hover {
+  background: var(--muted);
+}
+
+/* ── QRCode — SVG matrix render with optional centre overlay ─────
+ * Colour defaults to `currentColor` from the component prop so the
+ * QR follows the surrounding text colour — `data-theme` flips,
+ * `data-accent` ignored (deliberate; QR contrast requirement). */
+.qrcode {
+  display: inline-block;
+  color: var(--foreground);
+  background: var(--card);
+  padding: var(--spacing-2);
+  border-radius: var(--radius-md);
+  position: relative;
+  line-height: 0;
+}
+.qrcode svg {
+  display: block;
+}
+.qrcode-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--card);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Tooltip — Radix-backed floating label ───────────────────────
+ * Inverted surface (foreground on background) for contrast against
+ * any underlying card / page surface. */
+.tooltip-content {
+  background: var(--foreground);
+  color: var(--background);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  max-width: 280px;
+  z-index: 60;
+  animation: fade-in var(--transition-fast) var(--ease-out);
+}
+
