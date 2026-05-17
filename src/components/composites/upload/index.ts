@@ -41,3 +41,21 @@ export type {
   MediaUploadSize,
   MediaUploadShape,
 } from "./MediaUpload";
+
+// Media-service HTTP client — co-located with MediaUpload (the
+// only consumer) per cardinal rule 28 §A. Advanced callers can
+// import the client directly for non-Upload use cases.
+export {
+  initUpload,
+  putToPresigned,
+  promoteUpload,
+  fetchMedia,
+  fetchMediaBatch,
+  uploadFile,
+  setMediaBaseURL,
+  MediaClientError,
+} from "./media-client";
+export type {
+  MediaItem,
+  MediaInitResponse,
+} from "./media-client";

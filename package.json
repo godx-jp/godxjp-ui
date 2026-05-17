@@ -78,10 +78,6 @@
       "types": "./dist/components/shell.d.ts",
       "import": "./dist/components/shell.js"
     },
-    "./components/screens": {
-      "types": "./dist/components/screens.d.ts",
-      "import": "./dist/components/screens.js"
-    },
     "./components/composites": {
       "types": "./dist/components/composites.d.ts",
       "import": "./dist/components/composites.js"
@@ -89,10 +85,6 @@
     "./preferences": {
       "types": "./dist/preferences.d.ts",
       "import": "./dist/preferences.js"
-    },
-    "./clients/media": {
-      "types": "./dist/clients/media.d.ts",
-      "import": "./dist/clients/media.js"
     },
     "./eslint-config": "./config/eslint.js",
     "./prettier-config": "./config/prettier.cjs",

@@ -824,6 +824,83 @@ framework concept; inline duplication is rejected at review.
       own copy of `cn.ts`) — `cn` lives once at
       `src/components/cn.ts`.
 
+28. **`src/` folder taxonomy — strict separation of consumer dist
+    surface vs Storybook-only artefacts vs build-input-only.**
+    Absolute.
+
+    Three classes of file live under `src/`. Each has ONE home and
+    a strict rule about whether it ships:
+
+    ### §A — Consumer-facing surface (ships to dist)
+
+    Every consumer-facing directory under `src/` has a matching
+    `tsup` entry + `package.json::exports` sub-path. Adding a new
+    directory at this level requires updating BOTH files +
+    documenting the entry purpose.
+
+    | Path | Entry | Purpose |
+    |---|---|---|
+    | `src/index.ts` | `index` | Root barrel — re-exports primitives + hooks + i18n |
+    | `src/components/primitives.ts` | `components/primitives` | Barrel for `general/` + `layout/` + `data-display/` + `data-entry/` + `feedback/` + `navigation/` group folders (cardinal rule 27) |
+    | `src/components/composites/` | `components/composites` | Composite widgets that wrap multiple primitives (Upload family, AvatarUploader, LocaleInput, calendar app, …). Service-clients used ONLY by one composite live under the composite's folder, NOT at `src/clients/` |
+    | `src/components/shell/` | `components/shell` | AppShell + chrome (Sidebar, Topbar, CommandPalette, TweaksPanel) |
+    | `src/i18n/` | `i18n` | i18next singleton + base dictionary |
+    | `src/hooks/` | `hooks` | Reusable hooks (`useTweaks`, `useDebouncedValue`, `usePreferences`, `useBreakpoint`, …) |
+    | `src/data/` | `data` | Generic data catalogues consumed by shell primitives (`PRODUCTS` for ProductSwitcher) |
+    | `src/preferences/` | `preferences` | `PreferencesProvider` — locale + timezone React context |
+    | `src/styles/` | (CSS source) | `theme.css`, `shell.css` + `shell/<NN-component>.css` files. Imported via `@godxjp/ui/styles/...` or `@godxjp/ui/tailwind.css` |
+    | `src/tokens/` | (CSS source) | Tailwind v4 entry (`tailwind.css`) |
+
+    ### §B — Storybook-only (NEVER shipped)
+
+    Lives under `src/stories/` and is excluded from the
+    `package.json::files` whitelist:
+
+    | Path | Purpose |
+    |---|---|
+    | `src/stories/{theme,general,layout,data-display,data-entry,feedback,navigation}/` | Per-group story catalogues mirroring the Storybook sidebar taxonomy (cardinal rule 27) |
+    | `src/stories/examples/` | Page-level example screens (DashboardScreen, IdeasScreen, PlansScreen, WikiScreen, etc.). These are illustrative compositions of primitives + shell, NOT consumer-importable surfaces. Use them as reference; copy-paste-and-modify per consumer app |
+    | `src/stories/calendar-fixtures.ts` | Shared helper data for calendar stories |
+
+    ### §C — Build-input-only (not user-imported)
+
+    Stuff that exists to support the build but isn't itself a
+    consumer entry. Lives under `src/` but isn't in `tsup`'s entry
+    map and isn't in `package.json::exports`:
+
+    | Path | Purpose |
+    |---|---|
+    | `src/components/cn.ts` | Shared `cn()` helper imported by every primitive |
+    | per-group `*.tsx` files under `src/components/<group>/` | Implementation files — consumed via the `primitives.ts` barrel, never directly via `@godxjp/ui/components/<group>` |
+
+    ### §D — Forbidden
+
+    Rejected at review:
+
+    - A new top-level directory at `src/` not in §A, §B, or §C.
+      `src/clients/`, `src/lib/`, `src/utils/`, `src/internal/`,
+      `src/screens/` — all forbidden as standalone surfaces.
+      Service clients live with the composite that uses them. Utils
+      live with the primitive that uses them.
+    - A `tsup` entry / `package.json::export` referring to
+      Storybook content (`components/screens` etc.). Storybook
+      content never reaches consumers.
+    - A primitive file outside its `src/components/<group>/`
+      folder (rule 27 repeat).
+    - `src/components/<X>/` where `<X>` is anything other than the
+      six canonical group names (`general`, `layout`, `data-display`,
+      `data-entry`, `feedback`, `navigation`), `composites/`, or
+      `shell/`. Notably: NO `src/components/screens/` (those are
+      examples, not primitives).
+
+    ### §E — Verification at review
+
+    A PR that adds a new top-level `src/<X>/` directory MUST cite
+    one of the three classes in its description. A PR that adds a
+    `tsup` entry MUST cite the consumer use case. A PR that adds a
+    file inside `src/components/<X>/` where `<X>` is not a canonical
+    group is rejected.
+
 - Component diff without paired story diff (rule 1).
 - Raw color utility (`bg-blue-500`) in a primitive (rule 2).
 - Hand-rolled focus / keyboard nav when Radix has it (rule 3).

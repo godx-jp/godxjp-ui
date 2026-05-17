@@ -1,6 +1,6 @@
 import { GitBranch } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { PROJECT_KIND, type ForgeProduct, type ForgeProject } from "../../data/products";
+import { PROJECT_KIND, type ForgeProduct, type ForgeProject } from "../../../data/products";
 
 // ProjectsListScreen — every project owning the active product, in a
 // design-system `.table` shape. Click a row to drill in.

@@ -28,7 +28,7 @@ import {
   fetchMediaBatch,
   uploadFile,
   type MediaItem,
-} from "../../../clients/media";
+} from "./media-client";
 import { AvatarUploader } from "./AvatarUploader";
 
 // ─── Shared types ─────────────────────────────────────────────────
@@ -669,4 +669,4 @@ export const MediaUpload = {
   Avatar: MediaUploadAvatar,
 };
 
-export type { MediaItem } from "../../../clients/media";
+export type { MediaItem } from "./media-client";

@@ -2,7 +2,7 @@ import * as Popover from "@radix-ui/react-popover";
 import { ArrowLeft, ChevronRight, Send } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { cn } from "../cn";
+import { cn } from "../../../components/cn";
 
 type Tab = "conversation" | "checklist" | "code" | "history";
 type IssueStatus = "backlog" | "in-progress" | "review" | "done" | "abandoned";

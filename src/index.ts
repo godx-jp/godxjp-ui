@@ -8,7 +8,6 @@
 //   import "@godxjp/ui/tokens"                              // CSS — required ONCE at app entry
 //   import { Badge, Button, Card } from "@godxjp/ui"
 //   import { AppShell, Sidebar, Topbar } from "@godxjp/ui/components/shell"
-//   import { DashboardScreen } from "@godxjp/ui/components/screens"
 //   import { useTweaks } from "@godxjp/ui/hooks"
 //   import { initI18n } from "@godxjp/ui/i18n"
 //   import { products } from "@godxjp/ui/data"

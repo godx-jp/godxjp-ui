@@ -1,6 +1,6 @@
 import { Activity, BugPlay, Rocket, TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { ForgeProduct } from "../../data/products";
+import type { ForgeProduct } from "../../../data/products";
 
 // DashboardScreen — product-level dashboard. KPI strip + recent
 // activity + quick actions. Mirrors the design's
