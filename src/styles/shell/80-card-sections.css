@@ -279,6 +279,25 @@
 .tl-item.primary::before   { border-color: var(--primary);   background: var(--primary); }
 .tl-item.attention::before { border-color: var(--attention); background: var(--attention); }
 .tl-item.current::before   { border-color: var(--primary);   background: var(--card); border-width: 2px; }
+/* `.tl-animate` — pulsing ring on the current marker (Timeline
+ * `animate` prop). Box-shadow ripple emanates from the dot's primary
+ * colour and fades out. Honours `prefers-reduced-motion`. */
+.tl-animate.tl-list .tl-item.current::before {
+  animation: tl-pulse 1.8s var(--ease-out, ease-out) infinite;
+}
+.tl-animate.tl-br .row.current .node {
+  animation: tl-pulse 1.8s var(--ease-out, ease-out) infinite;
+}
+@keyframes tl-pulse {
+  0%   { box-shadow: 0 0 0 0    color-mix(in oklch, var(--primary) 45%, transparent); }
+  100% { box-shadow: 0 0 0 8px  color-mix(in oklch, var(--primary) 0%,  transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-animate.tl-list .tl-item.current::before,
+  .tl-animate.tl-br .row.current .node {
+    animation: none;
+  }
+}
 .tl-item .t-h {
   display: flex;
   gap: 8px;

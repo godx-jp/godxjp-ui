@@ -329,7 +329,6 @@ export type {
   StepsProps,
   StepProps,
   StepsOrientation,
-  StepColor,
 } from "./navigation/Steps"
 
 export { Progress } from "./feedback/Progress"

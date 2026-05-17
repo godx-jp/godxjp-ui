@@ -85,6 +85,11 @@ export interface TimelineProps {
   /** "Ongoing" trailing item — rendered after the last item with
    * `color: "default"` + `current: true`. */
   pending?: ReactNode;
+  /** Animate the `current: true` marker with a pulsing ring. Default
+   * `false`. Honours `prefers-reduced-motion` — the animation is
+   * suppressed when the user has reduced-motion enabled (rule 6 a11y
+   * baseline). */
+  animate?: boolean;
   className?: string;
 }
 
@@ -172,6 +177,7 @@ export function Timeline({
   variant = "list",
   reverse = false,
   pending,
+  animate = false,
   className,
 }: TimelineProps) {
   const ordered = reverse ? items.slice().reverse() : items;
@@ -193,6 +199,7 @@ export function Timeline({
     variant === "list" && "tl-list",
     variant === "branching" && "tl-br",
     variant === "feed" && "tl-feed",
+    animate && "tl-animate",
     className,
   );
 

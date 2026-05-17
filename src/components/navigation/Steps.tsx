@@ -19,9 +19,14 @@ import { cn } from "../cn";
  * Vocabulary (§23.B):
  *   - `orientation` — horizontal (default) | vertical
  *   - `current` (number) — active step index (0-based)
- *   - `color` per step — semantic role mapping (default/info/success/
- *     warning/destructive) instead of Ant's `status` enum
  *   - `title` / `description` / `icon` slots
+ *
+ * Visual state is derived from the index ↔ `current` comparison and
+ * locked to the dxs-kintai canon: `done` → `--success`, `cur` →
+ * `--primary`, future steps → `--muted-foreground`. There is no
+ * per-step `color` override — the canon (see
+ * `design-handoff/ui-system/dxs-kintai-design-system/project/preview/comp-card.html`
+ * §F6) treats the colour chain as a non-negotiable progress indicator.
  *
  * Reuses `.steps-h` (horizontal) and `.steps-v` (vertical) CSS atoms
  * from `shell.css` — both ported from the dxs-kintai design canon
@@ -29,13 +34,6 @@ import { cn } from "../cn";
  */
 
 export type StepsOrientation = "horizontal" | "vertical";
-export type StepColor =
-  | "default"
-  | "primary"
-  | "success"
-  | "info"
-  | "warning"
-  | "destructive";
 
 export interface StepsProps extends Omit<ComponentProps<"ol">, "color"> {
   orientation?: StepsOrientation;
@@ -43,13 +41,11 @@ export interface StepsProps extends Omit<ComponentProps<"ol">, "color"> {
   current?: number;
 }
 
-export interface StepProps extends Omit<ComponentProps<"li">, "color" | "title"> {
+export interface StepProps extends Omit<ComponentProps<"li">, "title"> {
   title?: ReactNode;
   description?: ReactNode;
   /** Override icon for the node (default: index number or check). */
   icon?: ReactNode;
-  /** Override color for the node (default: derived from current/done state). */
-  color?: StepColor;
 }
 
 interface InternalStepProps extends StepProps {
@@ -105,7 +101,6 @@ export const Step = forwardRef<HTMLLIElement, StepProps>(function Step(
     title,
     description,
     icon,
-    color,
     className,
     children,
     __index,
