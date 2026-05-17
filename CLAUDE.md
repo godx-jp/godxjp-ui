@@ -801,11 +801,11 @@ framework concept; inline duplication is rejected at review.
     `src/stories/new-primitives/components/<group>/<Name>.stories.tsx`
     with title `new-primitives/Components/<Group>/<Name>`.
 
-    The legacy `src/components/primitives/index.ts` barrel re-
-    exports from the group folders so the published import path
-    `@godxjp/ui/components/primitives` stays stable for consumers.
-    New primitive files are NEVER added to a flat `primitives/`
-    folder — always under their group.
+    The barrel at `src/components/primitives.ts` (single file, NOT
+    a folder) re-exports from the group folders so the published
+    import path `@godxjp/ui/components/primitives` stays stable for
+    consumers. New primitive files are NEVER added to a flat
+    `primitives/` folder — always under their group folder.
 
     Cross-group imports use relative paths:
     `import { Button } from "../general/Button"` from any

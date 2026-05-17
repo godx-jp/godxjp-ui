@@ -52,7 +52,7 @@ export default defineConfig({
     i18n: "src/i18n/index.ts",
     hooks: "src/hooks/index.ts",
     data: "src/data/index.ts",
-    "components/primitives": "src/components/primitives/index.ts",
+    "components/primitives": "src/components/primitives.ts",
     "components/shell": "src/components/shell/index.ts",
     "components/screens": "src/components/screens/index.ts",
     "components/composites": "src/components/composites/index.ts",
