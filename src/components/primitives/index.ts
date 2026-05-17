@@ -109,6 +109,12 @@ export type { EmptyProps } from "./Empty"
 export { Tag } from "./Tag"
 export type { TagProps, TagPresetColor } from "./Tag"
 
+export { Alert } from "./Alert"
+export type { AlertProps, AlertColor, AlertVariant } from "./Alert"
+
+export { Result } from "./Result"
+export type { ResultProps, ResultColor } from "./Result"
+
 export {
   Typography,
   Title as TypographyTitle,
@@ -249,6 +255,12 @@ export type { ToasterProps } from "./toaster"
 export { Skeleton } from "./Skeleton"
 export type { SkeletonProps } from "./Skeleton"
 
+export { Watermark } from "./Watermark"
+export type { WatermarkProps } from "./Watermark"
+
+export { Popconfirm } from "./Popconfirm"
+export type { PopconfirmProps } from "./Popconfirm"
+
 export { Breadcrumb, BreadcrumbItem, BreadcrumbSep } from "./Breadcrumb"
 export type { BreadcrumbProps, BreadcrumbItemProps } from "./Breadcrumb"
 
@@ -283,6 +295,14 @@ export type {
   StepsOrientation,
   StepColor,
 } from "./Steps"
+
+export { Progress } from "./Progress"
+export type {
+  ProgressProps,
+  ProgressVariant,
+  ProgressColor,
+  ProgressSize,
+} from "./Progress"
 
 // ── Calendar / scheduling primitives ─────────────────────────────
 // `MiniMonth`, `EventBlock`, `TimeGrid` family, `AvailabilityRow`, etc.

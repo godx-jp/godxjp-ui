@@ -105,3 +105,158 @@
 .descriptions-size-small .descriptions-item { padding: var(--spacing-1) var(--spacing-2); }
 .descriptions-size-large .descriptions-item-value { font-size: var(--text-md); }
 
+/* ── Alert ─────────────────────────────────────────────────────────
+ * Banner-style notice. Ant-Design `Alert` mapped to godxjp vocabulary:
+ *   color={default|info|success|warning|destructive}
+ *   variant={outlined|banner}
+ * Outlined = subtle tinted card with left accent edge (3px).
+ * Banner   = full-width, no border / no radius, heavier tint, no edge. */
+.alert {
+  --alert-role: var(--muted-foreground);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in oklch, var(--alert-role) 25%, transparent);
+  border-left: 3px solid var(--alert-role);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, var(--alert-role) 6%, var(--background));
+  color: var(--foreground);
+}
+
+.alert-color-default     { --alert-role: var(--muted-foreground); }
+.alert-color-info        { --alert-role: var(--info); }
+.alert-color-success     { --alert-role: var(--success); }
+.alert-color-warning     { --alert-role: var(--warning); }
+.alert-color-destructive { --alert-role: var(--destructive); }
+
+/* Default color uses neutral secondary surface (not a tint of muted-fg). */
+.alert-color-default {
+  background: var(--secondary);
+  border-color: var(--border);
+  border-left-color: var(--muted-foreground);
+}
+
+.alert-variant-banner {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  padding: 10px 16px;
+  background: color-mix(in oklch, var(--alert-role) 14%, var(--background));
+}
+.alert-variant-banner.alert-color-default {
+  background: var(--secondary);
+}
+
+.alert-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  color: var(--alert-role);
+}
+
+.alert-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.alert-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+.alert-desc {
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  line-height: 1.55;
+}
+
+.alert-actions {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+
+.alert-close {
+  border: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: auto;
+  font-size: 16px;
+  line-height: 1;
+  align-self: flex-start;
+  transition: color 120ms ease;
+}
+.alert-close:hover { color: var(--foreground); }
+
+/* ── Result — page-level outcome surface ────────────────────────────
+ * Mirrors Ant Design `Result` shape but with @godxjp/ui vocabulary:
+ *   color → semantic role; title / description / icon / extra slots.
+ * Color flows through the per-color `.result-icon` rule below; the
+ * rest of the surface reads canonical tokens so it inherits theme +
+ * accent + density + font-size axes (per cardinal rule 21).
+ */
+
+.result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-8) var(--spacing-4);
+  gap: var(--spacing-3);
+}
+.result-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+}
+.result-color-info        .result-icon { color: var(--info); }
+.result-color-success     .result-icon { color: var(--success); }
+.result-color-warning     .result-icon { color: var(--warning); }
+.result-color-destructive .result-icon { color: var(--destructive); }
+.result-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--foreground);
+}
+.result-desc {
+  font-size: var(--text-sm);
+  color: var(--muted-foreground);
+  line-height: var(--leading-body);
+  margin: 0;
+  max-width: 480px;
+}
+.result-extra {
+  margin-top: var(--spacing-3);
+  display: flex;
+  gap: var(--spacing-2);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Watermark — repeating SVG-tile overlay ──────────────────────
+ * The Watermark primitive draws its tile via an SVG using
+ * `fill='currentColor'` inside the data: URL; the wrapper sets
+ * `color` so the watermark inherits the muted-foreground theme
+ * token without per-instance overrides (rule 21 — theme axis).
+ */
+.watermark {
+  color: var(--muted-foreground);
+  isolation: isolate;
+}
+
