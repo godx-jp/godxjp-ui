@@ -155,23 +155,14 @@ export const Default: Story = {
         </FormField>
         <FormField<FormValues, "agree"> name="agree">
           {({ value, onChange, name, invalid }) => (
-            <label
-              htmlFor={name}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "var(--spacing-2)",
-                cursor: "pointer",
-              }}
+            <Checkbox
+              id={name}
+              checked={Boolean(value)}
+              onCheckedChange={(checked) => onChange(checked === true)}
+              aria-invalid={invalid || undefined}
             >
-              <Checkbox
-                id={name}
-                checked={Boolean(value)}
-                onCheckedChange={(checked) => onChange(checked === true)}
-                aria-invalid={invalid || undefined}
-              />
-              <span style={{ fontSize: "var(--text-sm)" }}>利用規約に同意する</span>
-            </label>
+              利用規約に同意する
+            </Checkbox>
           )}
         </FormField>
         <Flex gap="small" justify="end">
@@ -254,22 +245,14 @@ export const Validated: Story = {
         </FormField>
         <FormField<FormValues, "agree"> name="agree">
           {({ value, onChange, name, invalid }) => (
-            <label
-              htmlFor={name}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "var(--spacing-2)",
-              }}
+            <Checkbox
+              id={name}
+              checked={Boolean(value)}
+              onCheckedChange={(c) => onChange(c === true)}
+              aria-invalid={invalid || undefined}
             >
-              <Checkbox
-                id={name}
-                checked={Boolean(value)}
-                onCheckedChange={(c) => onChange(c === true)}
-                aria-invalid={invalid || undefined}
-              />
-              <span style={{ fontSize: "var(--text-sm)" }}>利用規約に同意する</span>
-            </label>
+              利用規約に同意する
+            </Checkbox>
           )}
         </FormField>
         <Flex gap="small" justify="end">
@@ -348,24 +331,15 @@ export const Disabled: Story = {
         </FormField>
         <FormField<FormValues, "agree"> name="agree">
           {({ value, onChange, name, invalid }) => (
-            <label
-              htmlFor={name}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "var(--spacing-2)",
-                cursor: "not-allowed",
-              }}
+            <Checkbox
+              id={name}
+              checked={Boolean(value)}
+              disabled
+              onCheckedChange={(checked) => onChange(checked === true)}
+              aria-invalid={invalid || undefined}
             >
-              <Checkbox
-                id={name}
-                checked={Boolean(value)}
-                disabled
-                onCheckedChange={(checked) => onChange(checked === true)}
-                aria-invalid={invalid || undefined}
-              />
-              <span style={{ fontSize: "var(--text-sm)" }}>利用規約に同意する</span>
-            </label>
+              利用規約に同意する
+            </Checkbox>
           )}
         </FormField>
         <Flex gap="small" justify="end">

@@ -606,6 +606,29 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   transform: translateX(1.375rem);
 }
 
+/* `.checkbox-label` — wrapper when consumer passes `children` to
+ * `<Checkbox>` for the canonical Ant pattern
+ * `<Checkbox>利用規約に同意する</Checkbox>`. Box + text live in a single
+ * `<label>` so clicking the text toggles the box and ARIA labelling
+ * is automatic. The label gates pointer-events so a disabled box
+ * disables the whole label visually too. */
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  user-select: none;
+}
+.checkbox-label:has(.checkbox-root[disabled]) {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.checkbox-label-text {
+  line-height: 1.4;
+}
+
 /* Checkbox dimensions follow the industry canon (shadcn / Ant /
  * Tailwind): 1rem (16px at base font-size) — NOT the density-element
  * scale, which is sized for full-height controls (button, input,

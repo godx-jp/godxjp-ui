@@ -24,12 +24,7 @@ export default meta;
 type Story = StoryObj<typeof Checkbox>;
 
 export const Single: Story = {
-  render: () => (
-    <label style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
-      <Checkbox defaultChecked />
-      <span>利用規約に同意する</span>
-    </label>
-  ),
+  render: () => <Checkbox defaultChecked>利用規約に同意する</Checkbox>,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -80,10 +75,7 @@ export const GroupVertical: Story = {
 export const Indeterminate: Story = {
   render: () => (
     <Flex vertical gap="small">
-      <label style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
-        <Checkbox checked="indeterminate" />
-        <span>すべて選択(部分選択中)</span>
-      </label>
+      <Checkbox checked="indeterminate">すべて選択(部分選択中)</Checkbox>
       <CheckboxGroup
         defaultValue={["a"]}
         options={[
