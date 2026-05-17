@@ -59,8 +59,10 @@ import { Timeline } from "@godxjp/ui"
 | `renderItem` | `(item, variant, index) => ReactNode` | — | Per-row custom renderer; bypasses default variant rendering when set |
 | `variant` | `"list" \| "branching" \| "feed"` | `"list"` | Visual treatment |
 | `reverse` | `boolean` | `false` | Render items last-first |
-| `pending` | `ReactNode` | — | Trailing "ongoing" marker appended after the last item |
+| `connector` | `boolean` | `true` | Show the vertical connector line that joins markers. Ignored by `feed` (no connector by design). |
 | `className` | `string` | — | Merged onto the variant root (`.tl-list` / `.tl-br` / `.tl-feed`) |
+
+> Note: there is intentionally no `pending` top-level prop. To render a trailing "ongoing" marker, append a regular item with `animate: true` (and typically `color: "primary"`) — cardinal rule 32 forbids redundant props that an existing field already covers.
 
 ### `TimelineItem` (item shape — plain object, NOT a sub-component)
 
@@ -68,7 +70,8 @@ import { Timeline } from "@godxjp/ui"
 |---|---|---|---|
 | `key` | `string \| number` | item index | Stable key for React reconciliation. Pass a real id when items can re-order. |
 | `color` | `"default" \| "primary" \| "success" \| "warning" \| "destructive" \| "info" \| "attention"` | `"default"` | Marker semantic role |
-| `current` | `boolean` | `false` | Pulsing "current" marker — visually emphasises the active item |
+| `current` | `boolean` | `false` | Heavier outline on the marker — typically the active step |
+| `animate` | `boolean` | `false` | Pulsing ring around the marker dot. Use on a `current` step to signal "in progress", or on a trailing item to signal "ongoing / pending". Honours `prefers-reduced-motion`. |
 | `time` | `ReactNode` | — | Timestamp slot — right label in `branching`, inline `.ts` in `list` / `feed` |
 | `avatar` | `ReactNode` | — | Avatar slot (used by `feed` variant) |
 | `title` | `ReactNode` | — | Headline |
@@ -110,13 +113,23 @@ import { Timeline } from "@godxjp/ui"
   ]}
 />
 
-// Reverse + trailing pending marker
+// Reverse + trailing "ongoing" marker — express via per-item animate
 <Timeline
   reverse
-  pending="次の同期を待機中…"
   items={[
     { color: "success", title: "データベース同期", time: "08:00" },
     { color: "success", title: "バックアップ作成", time: "08:15" },
+    { color: "primary", animate: true, title: "次の同期を待機中…" },
+  ]}
+/>
+
+// Branching with the connector line off
+<Timeline
+  variant="branching"
+  connector={false}
+  items={[
+    { color: "success", time: "09:30", title: "申請受領" },
+    { color: "primary", current: true, animate: true, time: "14:30", title: "役員審査中" },
   ]}
 />
 ```

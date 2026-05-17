@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect } from "storybook/test";
 import {
   Activity,
   FolderGit2,
@@ -120,6 +121,14 @@ export const Collapsed: Story = {
         />
       </div>
     );
+  },
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.getByRole("button", { name: "Dashboard" }),
+    ).toBeVisible();
+    await expect(canvas.queryByText("Dashboard")).not.toBeInTheDocument();
+    await expect(canvas.queryByText("Projects")).not.toBeInTheDocument();
+    await expect(canvas.queryByText("8")).not.toBeInTheDocument();
   },
 };
 

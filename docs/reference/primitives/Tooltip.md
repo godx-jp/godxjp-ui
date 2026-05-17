@@ -65,6 +65,21 @@ import { Settings } from "lucide-react"
 - Do not put critical information in a tooltip — touch-screen users may not be able to hover. Reserve tooltips for supplementary detail.
 - Tooltips on disabled controls do not appear by default (Radix limitation); wrap the disabled control in a focusable span if the tooltip must be discoverable.
 
+## Nested Provider behaviour
+
+When a data-driven `<Tooltip>` renders inside an ancestor `<TooltipProvider>`, the primitive detects the outer Provider (via a private React marker context the framework's `<TooltipProvider>` populates) and **skips wrapping with an inner Provider**. The outer Provider's `delayDuration` (and other Provider props) wins; the inner `delayDuration` prop is ignored in that case to avoid silent override.
+
+```tsx
+// One delayDuration governs every nested tooltip — no double-wrap.
+<TooltipProvider delayDuration={500}>
+  <Tooltip content="A">…</Tooltip>
+  <Tooltip content="B">…</Tooltip>
+  <Tooltip content="C">…</Tooltip>
+</TooltipProvider>
+```
+
+Caveat: detection only works when the ancestor Provider is the framework's `<TooltipProvider>` re-export (or `TooltipProvider` from `@godxjp/ui`). Consumers who import `TooltipProvider` directly from `@radix-ui/react-tooltip` bypass the marker context and will see double-wrap. Always use the framework export.
+
 ## Composition
 
 ```tsx

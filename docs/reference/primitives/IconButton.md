@@ -51,7 +51,12 @@ import { ArrowLeft, MoreHorizontal, Check } from "lucide-react"
 
 ## Accessibility
 
-- Always pass `aria-label` — icon-only controls are unintelligible to screen readers without a label. Stories and lint should catch missing labels.
+- **Always pass an accessible name** via one of `aria-label`, `aria-labelledby`, or `title`. Icon-only controls are unintelligible to screen readers without one.
+- **Dev-mode warning**: when none of those three is supplied, the primitive emits a single `console.warn` per mount in non-production builds (`process.env.NODE_ENV !== "production"`). Production bundles strip the check at build time. The warning text:
+
+  > `[@godxjp/ui] <IconButton> is missing an accessible name. Pass aria-label, aria-labelledby, or title …`
+
+  This is a developer aid; TypeScript types intentionally keep the props optional because React's HTML types do, but treat the warning as a build-blocker for the consuming app.
 - Renders a native `<button>` (or the `asChild` child element). Focus visible uses the framework's outline ring via tokens.
 - Keyboard: Space and Enter activate the control.
 - WCAG 2.1 SC 2.5.5 (Target Size): at `default` (32 px) and `sm` (28 px) the box is below the 44 × 44 px touch-target floor. On mobile layouts where touch is primary, prefer `size="lg"` or include an expanded touch area via padding.

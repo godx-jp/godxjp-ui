@@ -67,6 +67,7 @@ export const ListDefault: Story = {
         {
           color: "primary",
           current: true,
+          animate: true,
           title: "承認待ち",
           time: "進行中",
           description: "役員審査 — 概ね2営業日",
@@ -93,7 +94,6 @@ export const Branching: Story = {
   render: () => (
     <Timeline
       variant="branching"
-      animate
       items={[
         {
           color: "success",
@@ -110,6 +110,7 @@ export const Branching: Story = {
         {
           color: "primary",
           current: true,
+          animate: true,
           time: "05/09 14:30",
           title: "役員審査中",
           description: "財務担当 佐藤専務が確認中",
@@ -125,6 +126,40 @@ export const Branching: Story = {
           time: "予定",
           title: "支給",
           description: "月末締め払い",
+        },
+      ]}
+    />
+  ),
+};
+
+// ─── Branching without connector ────────────────────────────────
+
+export const BranchingNoConnector: Story = {
+  name: "Branching · connector=false",
+  render: () => (
+    <Timeline
+      variant="branching"
+      connector={false}
+      items={[
+        {
+          color: "success",
+          time: "05/08 09:30",
+          title: "申請受領",
+          description: "ID #2847 受領",
+        },
+        {
+          color: "success",
+          time: "05/08 11:02",
+          title: "一次承認",
+          description: "山田 健 によって承認",
+        },
+        {
+          color: "primary",
+          current: true,
+          animate: true,
+          time: "05/09 14:30",
+          title: "役員審査中",
+          description: "佐藤専務 確認中",
         },
       ]}
     />
@@ -184,13 +219,15 @@ export const Reverse: Story = {
   ),
 };
 
-// ─── WithPending — trailing "ongoing" marker ─────────────────────
+// ─── Pulsing trailing item — `animate: true` per-item, no separate
+// `pending` prop. A trailing "ongoing" marker is just a normal item
+// with `color: "primary"` + `animate: true` (cardinal rule 32 —
+// redundant top-level prop avoided).
 
 export const WithPending: Story = {
-  name: "WithPending · ongoing trailing item",
+  name: "WithPending · ongoing trailing item via animate",
   render: () => (
     <Timeline
-      pending="次の同期を待機中…"
       items={[
         {
           color: "success",
@@ -209,6 +246,11 @@ export const WithPending: Story = {
           title: "検証スクリプト実行",
           time: "08:20",
           description: "整合性チェック合格",
+        },
+        {
+          color: "primary",
+          animate: true,
+          title: "次の同期を待機中…",
         },
       ]}
     />

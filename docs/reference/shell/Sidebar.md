@@ -86,7 +86,8 @@ interface SidebarItem {
 - Disabled items use `aria-disabled="true"`.
 - The nav section renders `role="navigation"`.
 - The product chip uses `aria-label={product.name}`.
-- In collapsed mode, items show only the icon — add `title` or `aria-label` to items for tooltip / SR support.
+- In collapsed mode, items render only the icon while the button keeps
+  `aria-label` and `title` from the item label.
 - WCAG 2.1 SC 1.4.3: nav item text and active indicator meet contrast requirements.
 
 ## See also

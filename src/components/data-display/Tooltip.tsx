@@ -1,6 +1,8 @@
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import {
+  createContext,
   forwardRef,
+  useContext,
   type ComponentPropsWithoutRef,
   type ElementRef,
   type ReactNode,
@@ -36,12 +38,52 @@ import { cn } from "../cn";
  * `delayDuration` config — the data-driven mode handles a single
  * tooltip per consumer call.
  *
+ * Nested-provider safety: data-driven `<Tooltip>` calls detect an
+ * ancestor `<TooltipProvider>` (via a private React context the
+ * framework's `<TooltipProvider>` populates) and skip wrapping with
+ * an inner Provider when one is already present — the outer
+ * Provider's `delayDuration` is reused rather than silently
+ * overridden. NOTE: this detection only fires when the ancestor is
+ * the framework's `<TooltipProvider>` re-export. Consumers who use
+ * Radix's `TooltipProvider` directly from `@radix-ui/react-tooltip`
+ * fall back to the double-wrap behaviour — use the framework export
+ * to get the dedupe.
+ *
  * Styled via the canonical `.tooltip-content` class from
  * `src/styles/shell/35-badge-tag-misc.css` (cardinal rule 21 — reads
  * tokens, honours every axis).
  */
 
-export const TooltipProvider = TooltipPrimitive.Provider;
+/**
+ * Internal marker context — populated by the framework's
+ * `<TooltipProvider>` so that data-driven `<Tooltip>` calls can
+ * detect they're already inside a Provider and skip double-wrapping.
+ * NOT exported (rule 28 §D — internal surface).
+ */
+const TooltipProviderPresenceContext = createContext<boolean>(false);
+
+export type TooltipProviderProps = ComponentPropsWithoutRef<
+  typeof TooltipPrimitive.Provider
+>;
+
+/**
+ * `TooltipProvider` — wraps Radix's `Tooltip.Provider` AND populates
+ * the internal presence-marker context so nested data-driven
+ * `<Tooltip>` calls dedupe automatically.
+ */
+export function TooltipProvider({
+  children,
+  ...rest
+}: TooltipProviderProps) {
+  return (
+    <TooltipPrimitive.Provider {...rest}>
+      <TooltipProviderPresenceContext.Provider value={true}>
+        {children}
+      </TooltipProviderPresenceContext.Provider>
+    </TooltipPrimitive.Provider>
+  );
+}
+
 export const TooltipTrigger = TooltipPrimitive.Trigger;
 export const TooltipPortal = TooltipPrimitive.Portal;
 
@@ -96,6 +138,7 @@ export function Tooltip({
   defaultOpen,
   onOpenChange,
 }: TooltipProps) {
+  const hasAncestorProvider = useContext(TooltipProviderPresenceContext);
   if (content === undefined) {
     // Compositional — consumer's <TooltipProvider> wraps and they
     // hand-roll <TooltipTrigger> + <TooltipContent> inside the
@@ -110,17 +153,23 @@ export function Tooltip({
       </TooltipPrimitive.Root>
     );
   }
-  // Data-driven — auto-wire Provider + Root + Trigger + Content.
+  // Data-driven — auto-wire Root + Trigger + Content. Wrap with an
+  // inner <TooltipProvider> ONLY when there's no ancestor Provider;
+  // otherwise the outer Provider's delayDuration / disableHoverableContent
+  // would be silently overridden by the inner one (cardinal rule 31
+  // — no double-wrap).
+  const root = (
+    <TooltipPrimitive.Root
+      open={open}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+    >
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent side={placement}>{content}</TooltipContent>
+    </TooltipPrimitive.Root>
+  );
+  if (hasAncestorProvider) return root;
   return (
-    <TooltipProvider delayDuration={delayDuration}>
-      <TooltipPrimitive.Root
-        open={open}
-        defaultOpen={defaultOpen}
-        onOpenChange={onOpenChange}
-      >
-        <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent side={placement}>{content}</TooltipContent>
-      </TooltipPrimitive.Root>
-    </TooltipProvider>
+    <TooltipProvider delayDuration={delayDuration}>{root}</TooltipProvider>
   );
 }

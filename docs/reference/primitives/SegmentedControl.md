@@ -54,6 +54,7 @@ import { SegmentedControl } from "@godxjp/ui"
 | `onChange` | `(next: V) => void` | — | Called when selection changes |
 | `variant` | `"bar" \| "pill"` | `"bar"` | Visual treatment |
 | `size` | `"sm" \| "default"` | `"default"` | Dimensional scale |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Axis of the radiogroup. Controls which Arrow keys roam between items (Left/Right for horizontal, Up/Down for vertical) and the value of `aria-orientation`. |
 | `aria-label` | `string` | — | Accessible name for the radiogroup |
 | `...rest` | `Omit<HTMLAttributes<HTMLDivElement>, "onChange" \| "defaultValue">` | — | Standard `<div>` props |
 
@@ -72,10 +73,16 @@ Escape-hatch for composing items manually instead of passing the `items` array. 
 
 ## Accessibility
 
-- Root renders `role="radiogroup"`; each item renders `role="radio"` with `aria-checked`. This mirrors WAI-ARIA's radio-group pattern.
+- Root renders `role="radiogroup"` with `aria-orientation` reflecting the `orientation` prop; each item renders `role="radio"` with `aria-checked`. This mirrors the [WAI-ARIA APG radiogroup pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/).
 - Always pass `aria-label` on the group — screen readers need a discoverable name for the choice set.
-- Keyboard: focus the group, then Tab moves into the buttons and Arrow keys would normally move between radios. The current implementation relies on `<button>` tab order — for full WAI-ARIA APG compliance, pair with `<RadioGroup>` from `@radix-ui/react-radio-group` when the choice is logically a form field.
+- **Keyboard — roving tabindex** (APG-compliant):
+  - Tab enters the group at the currently-checked item (it carries `tabIndex={0}`); every other item carries `tabIndex={-1}`. Tab again leaves the group.
+  - Within the group, **Arrow keys move focus + selection** between items: Left/Right when `orientation="horizontal"` (default), Up/Down when `orientation="vertical"`.
+  - **Home** jumps to the first enabled item; **End** to the last.
+  - **Space** / **Enter** on an item re-asserts the selection (useful when the consumer's `onChange` is the only signal).
+  - Disabled items are skipped automatically by Arrow / Home / End navigation.
 - Active state is announced via `aria-checked="true"`; do not duplicate with `aria-selected` or `aria-current`.
+- For form fields where the choice persists into a submitted value, prefer `<RadioGroup>` from `@radix-ui/react-radio-group`; `<SegmentedControl>` is the toolbar / view-picker equivalent.
 
 ## Composition
 

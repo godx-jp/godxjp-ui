@@ -110,6 +110,7 @@ export type {
   SegmentedControlProps,
   SegmentedControlVariant,
   SegmentedControlSize,
+  SegmentedControlOrientation,
   SegmentedControlItem,
   SegmentedControlButtonProps,
 } from "./data-display/SegmentedControl"
@@ -400,7 +401,11 @@ export {
   TooltipProvider,
   TooltipPortal,
 } from "./data-display/Tooltip"
-export type { TooltipProps, TooltipContentProps } from "./data-display/Tooltip"
+export type {
+  TooltipProps,
+  TooltipContentProps,
+  TooltipProviderProps,
+} from "./data-display/Tooltip"
 
 export { Timeline } from "./data-display/Timeline"
 export type {

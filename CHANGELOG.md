@@ -7,6 +7,19 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Cardinal rule 32 — no redundant props.** A new top-level prop /
+  item field / variant is rejected at review if an existing prop /
+  item field / variant already covers the use case. Lifted from the
+  Timeline `pending` audit; future PRs must justify every new prop
+  against the existing surface.
+- **Timeline `connector` prop** — `boolean`, default `true`. Toggles
+  the vertical line that joins markers in `list` + `branching`
+  variants. `feed` variant has no connector by design.
+- **Timeline per-item `animate` field** — `TimelineItem.animate:
+  boolean` adds a pulsing ring around the marker dot for that single
+  item, replacing the previous top-level `animate` Timeline-level
+  prop (now removed — animate is a per-item concept). Honours
+  `prefers-reduced-motion`.
 - **Storybook test gate** — `@storybook/addon-vitest` wired with
   Playwright (browser-mode Chromium) so every `play()` runs as a
   Vitest test. `pnpm test:stories` → 419 tests / 89 files / ~7s.
@@ -50,6 +63,30 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- **Sidebar collapsed labels** — collapsed mode now omits nav label
+  and badge nodes from the DOM while preserving `aria-label` /
+  `title`, so standalone Sidebar stories cannot leak clipped text
+  when the wrapper selector changes.
+- **SegmentedControl WAI-ARIA roving-tabindex** — radiogroup now ships
+  the APG-compliant keyboard pattern: only the active radio carries
+  `tabIndex={0}`; Arrow keys (Left/Right or Up/Down per the new
+  `orientation` prop) move focus + selection; Home / End jump to
+  first / last enabled item; disabled items are skipped. Root reflects
+  `aria-orientation`. Replaces the previous native-Tab-order fallback
+  that the docs claimed but didn't implement.
+- **IconButton accessible-name warn** — dev-mode `console.warn` when
+  none of `aria-label` / `aria-labelledby` / `title` is supplied
+  (`process.env.NODE_ENV !== "production"` only — production bundles
+  strip the check). Catches the most common a11y regression on
+  icon-only controls without forcing a breaking TS signature.
+- **Tooltip nested-provider double-wrap** — data-driven `<Tooltip>`
+  detects an ancestor `<TooltipProvider>` (via a private React
+  marker context the framework's Provider populates) and skips its
+  inner Provider so the outer `delayDuration` / other Provider
+  config is no longer silently overridden. Falls back to the
+  previous double-wrap when the ancestor is Radix's Provider imported
+  directly (not the framework's re-export) — documented in the
+  Tooltip reference doc.
 - **AutoComplete focus closing the dropdown** —
   `onFocusOutside={preventDefault}` on `ComboboxContent` so opening
   on focus survives the focus-leaves-anchor lifecycle.
@@ -141,8 +178,24 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- **`Timeline pending` prop** — removed. The trailing "ongoing"
+  marker is now expressed as a regular item with
+  `{ animate: true, color: "primary", title: "…" }`. Per cardinal
+  rule 32 (no redundant props), a separate top-level prop was a
+  duplicate of the items-array shape.
+- **`Timeline animate` Timeline-level prop** — removed. `animate`
+  is a per-item concept: set `items[i].animate = true` on the items
+  that should pulse. The previous Timeline-level prop animated only
+  the `current` item, which couldn't express trailing-pending
+  markers or multi-item indication.
 - **`docs/reference/primitives` advisory drift** — 40 stubs landed,
   parity now strict at 63/63.
+- **`<Step color>` prop + `StepColor` type** — the prop was declared
+  but never read; per-step state is locked to the dxs-kintai canon
+  (`done` → `--success`, `cur` → `--primary`, future → `--muted-foreground`)
+  and not overridable. Consumers needing per-event colour should use
+  `<Timeline>` instead. No release migration needed — the prop had no
+  runtime effect.
 
 ## [3.0.0] — 2026-05-16
 

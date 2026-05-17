@@ -21,13 +21,16 @@ import { cn } from "../cn";
  *   - `variant` — visual treatment ("list" | "branching" | "feed").
  *   - `color` per item — semantic role of the marker.
  *   - `current` per item — boolean, marks the active item.
- *   - NEVER `mode` / `position` / `type` / `dot` synonyms.
+ *   - `animate` per item — pulsing ring around the marker.
+ *   - NEVER `mode` / `position` / `type` / `dot` / `pending` synonyms
+ *     (cardinal rule 32 — a separate `pending` prop is redundant when
+ *     a regular item with `animate: true` covers the same need).
  *
  * @example Data-driven (preferred)
  *   <Timeline
  *     items={[
  *       { color: "success", title: "申請", time: "09:30" },
- *       { color: "primary", current: true, title: "承認待ち" },
+ *       { color: "primary", current: true, animate: true, title: "承認待ち" },
  *     ]}
  *   />
  *
@@ -55,8 +58,12 @@ export interface TimelineItem {
   key?: string | number;
   /** Semantic role of the marker. Default "default". */
   color?: TimelineColor;
-  /** Pulsing "current" marker. */
+  /** Heavier outline on the marker — typically the active step. */
   current?: boolean;
+  /** Pulsing ring around the marker — typically paired with
+   * `current: true` on an in-progress item. Honours
+   * `prefers-reduced-motion` (rule 6 a11y baseline). */
+  animate?: boolean;
   /** Time / timestamp slot — right-side label in `branching`, inline
    * `.ts` in `list`, inline `.ts` in `feed`. */
   time?: ReactNode;
@@ -82,14 +89,10 @@ export interface TimelineProps {
   variant?: TimelineVariant;
   /** Render items last-first. */
   reverse?: boolean;
-  /** "Ongoing" trailing item — rendered after the last item with
-   * `color: "default"` + `current: true`. */
-  pending?: ReactNode;
-  /** Animate the `current: true` marker with a pulsing ring. Default
-   * `false`. Honours `prefers-reduced-motion` — the animation is
-   * suppressed when the user has reduced-motion enabled (rule 6 a11y
-   * baseline). */
-  animate?: boolean;
+  /** Show the vertical connector line that joins markers. Default
+   * `true` for `list` + `branching`; ignored by `feed` (feed has no
+   * connector by design). */
+  connector?: boolean;
   className?: string;
 }
 
@@ -123,7 +126,13 @@ function defaultRender(
   if (variant === "branching") {
     return (
       <div
-        className={cn("row", hue, item.current && "current", item.className)}
+        className={cn(
+          "row",
+          hue,
+          item.current && "current",
+          item.animate && "animate",
+          item.className,
+        )}
       >
         <span className="when">{item.time}</span>
         <div className="node" aria-hidden />
@@ -158,7 +167,15 @@ function defaultRender(
 
   // Default — list variant.
   return (
-    <li className={cn("tl-item", hue, item.current && "current", item.className)}>
+    <li
+      className={cn(
+        "tl-item",
+        hue,
+        item.current && "current",
+        item.animate && "animate",
+        item.className,
+      )}
+    >
       {(item.title !== undefined || item.time !== undefined) && (
         <div className="t-h">
           {item.title !== undefined && <span>{item.title}</span>}
@@ -176,19 +193,13 @@ export function Timeline({
   renderItem,
   variant = "list",
   reverse = false,
-  pending,
-  animate = false,
+  connector = true,
   className,
 }: TimelineProps) {
   const ordered = reverse ? items.slice().reverse() : items;
-  const trailing: TimelineItem | null =
-    pending !== undefined
-      ? { key: "__pending", color: "default", current: true, title: pending }
-      : null;
-  const all = trailing ? [...ordered, trailing] : ordered;
 
   const renderRow = renderItem ?? defaultRender;
-  const rows = all.map((item, i) => {
+  const rows = ordered.map((item, i) => {
     const key = item.key ?? i;
     const node = renderRow(item, variant, i);
     // Wrap to attach the key in a generic way regardless of returned tag.
@@ -199,7 +210,9 @@ export function Timeline({
     variant === "list" && "tl-list",
     variant === "branching" && "tl-br",
     variant === "feed" && "tl-feed",
-    animate && "tl-animate",
+    // Connector toggle — `feed` variant has no connector by design,
+    // so the prop is meaningful only for `list` + `branching`.
+    !connector && variant !== "feed" && "tl-no-connector",
     className,
   );
 

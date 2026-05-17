@@ -1,5 +1,5 @@
 import { Slot } from "@radix-ui/react-slot";
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../cn";
 
@@ -17,9 +17,12 @@ import { cn } from "../cn";
  *   - `default` → 32 px (page-header default)
  *   - `lg`      → 36 px (touch / hero contexts)
  *
- * `aria-label` is required for accessibility — icon-only controls must
- * carry a discoverable name. The component does not validate at
- * compile time, but stories + lint should catch missing labels.
+ * Accessible-name requirement: an icon-only control MUST carry a
+ * discoverable name via one of `aria-label` / `aria-labelledby` /
+ * `title`. React's HTML types make these always optional, so the
+ * component instead emits a `console.warn` in development when none
+ * is supplied. Production builds (`process.env.NODE_ENV === "production"`)
+ * skip the check.
  *
  * @example
  *   <IconButton aria-label="戻る"><ArrowLeft size={14} /></IconButton>
@@ -63,6 +66,35 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     },
     ref,
   ) {
+    // Dev-only accessible-name check. Stripped from production bundles
+    // because `process.env.NODE_ENV !== "production"` collapses to
+    // `false` in production builds and the dead branch is tree-shaken.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const warnedRef = useRef(false);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(() => {
+      if (process.env.NODE_ENV === "production") return;
+      if (warnedRef.current) return;
+      const props = rest as Record<string, unknown>;
+      const ariaLabel = props["aria-label"];
+      const ariaLabelledBy = props["aria-labelledby"];
+      const title = props.title;
+      const hasName =
+        (typeof ariaLabel === "string" && ariaLabel.trim() !== "") ||
+        (typeof ariaLabelledBy === "string" && ariaLabelledBy.trim() !== "") ||
+        (typeof title === "string" && title.trim() !== "");
+      if (!hasName) {
+        warnedRef.current = true;
+        // eslint-disable-next-line no-console
+        console.warn(
+          "[@godxjp/ui] <IconButton> is missing an accessible name. " +
+            "Pass `aria-label`, `aria-labelledby`, or `title` so " +
+            "screen-reader users can identify the control. " +
+            "See docs/reference/primitives/IconButton.md#accessibility.",
+        );
+      }
+    }, [rest]);
+
     const Component = asChild ? Slot : "button";
     return (
       <Component
