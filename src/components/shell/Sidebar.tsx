@@ -61,8 +61,12 @@ export function Sidebar({
   const { t } = useTranslation();
   void t; // future-proof — tooltips will localize here.
 
+  // Render inside a wrapper carrying `data-collapsed` so the collapsed-
+  // state CSS rules (`[data-collapsed="true"] .sb-label { display:none }`,
+  // etc.) attach without requiring an `.app-root` ancestor. Standalone
+  // Sidebar stories no longer leak label text past the icon column.
   return (
-    <>
+    <div className="sb-root" data-collapsed={collapsed ? "true" : undefined} style={{ display: "contents" }}>
       {brand !== undefined ? (
         <div className="sb-brand">{brand}</div>
       ) : product ? (
@@ -132,6 +136,6 @@ export function Sidebar({
       </div>
 
       {footer && <div className="sb-footer">{footer}</div>}
-    </>
+    </div>
   );
 }

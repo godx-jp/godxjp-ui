@@ -1,13 +1,124 @@
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
-import { forwardRef, type ComponentPropsWithoutRef, type ElementRef } from "react"
+import {
+  forwardRef,
+  Fragment,
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  type ReactNode,
+} from "react"
 import { cn } from "../cn"
 
 /**
- * Select — Radix-backed dropdown field. Trigger uses `.input` + `.select-trigger`;
- * list uses `.select-content` / `.select-item` from tokens.css.
+ * Select — Radix-backed dropdown field. Trigger uses `.input` +
+ * `.select-trigger`; list uses `.select-content` / `.select-item`
+ * from tokens.css.
+ *
+ * Two equivalent consumption modes per cardinal rule 23 (concept-first
+ * API + minimise sub-components):
+ *
+ *   1. Data-driven (Ant / MUI / Mantine canonical) — pass `options`:
+ *
+ *      <Select options={[
+ *        { value: "tokyo", label: "東京" },
+ *        { value: "osaka", label: "大阪" },
+ *      ]} placeholder="都道府県を選択" />
+ *
+ *   2. Compositional (shadcn / Radix canonical) — children:
+ *
+ *      <Select>
+ *        <SelectTrigger><SelectValue /></SelectTrigger>
+ *        <SelectContent>
+ *          <SelectItem value="tokyo">東京</SelectItem>
+ *        </SelectContent>
+ *      </Select>
+ *
+ * `options` is the simpler surface for the common case; children stay
+ * for advanced layouts (groups + dividers + custom item rendering).
  */
-export const Select = SelectPrimitive.Root
+
+export interface SelectOption {
+  value: string
+  /** Display content — usually a string, but ReactNode is fine for
+   * icon + label compositions. */
+  label: ReactNode
+  disabled?: boolean
+}
+
+export interface SelectOptionGroup {
+  /** Group heading text (rendered via `<SelectLabel>`). */
+  label: ReactNode
+  options: SelectOption[]
+}
+
+export type SelectOptions = ReadonlyArray<SelectOption | SelectOptionGroup>
+
+export interface SelectProps extends ComponentPropsWithoutRef<typeof SelectPrimitive.Root> {
+  /** Data-driven option list. When set, the children prop is ignored
+   * and trigger + content + items render automatically. */
+  options?: SelectOptions
+  /** Placeholder text shown via `<SelectValue placeholder={…}>` when
+   * no value is selected. Honoured only in data-driven mode. */
+  placeholder?: ReactNode
+  /** Extra class merged onto the trigger element (data-driven mode). */
+  triggerClassName?: string
+  /** Extra class merged onto the content surface (data-driven mode). */
+  contentClassName?: string
+}
+
+function isOptionGroup(opt: SelectOption | SelectOptionGroup): opt is SelectOptionGroup {
+  return Array.isArray((opt as SelectOptionGroup).options)
+}
+
+export function Select({
+  options,
+  placeholder,
+  triggerClassName,
+  contentClassName,
+  children,
+  ...rest
+}: SelectProps) {
+  if (options === undefined) {
+    return <SelectPrimitive.Root {...rest}>{children}</SelectPrimitive.Root>
+  }
+  return (
+    <SelectPrimitive.Root {...rest}>
+      <SelectTrigger className={triggerClassName}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent className={contentClassName}>
+        {options.map((opt, i) =>
+          isOptionGroup(opt) ? (
+            <Fragment key={`group-${i}`}>
+              <SelectGroup>
+                <SelectLabel>{opt.label}</SelectLabel>
+                {opt.options.map((leaf) => (
+                  <SelectItem
+                    key={leaf.value}
+                    value={leaf.value}
+                    disabled={leaf.disabled}
+                  >
+                    {leaf.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+              {i < options.length - 1 && <SelectSeparator />}
+            </Fragment>
+          ) : (
+            <SelectItem
+              key={opt.value}
+              value={opt.value}
+              disabled={opt.disabled}
+            >
+              {opt.label}
+            </SelectItem>
+          ),
+        )}
+      </SelectContent>
+    </SelectPrimitive.Root>
+  )
+}
+
 export const SelectGroup = SelectPrimitive.Group
 export const SelectValue = SelectPrimitive.Value
 export const SelectIcon = SelectPrimitive.Icon

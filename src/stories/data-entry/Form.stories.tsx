@@ -89,110 +89,99 @@ automatically via \`<FieldHelp tone="error">\`.
 export default meta;
 type Story = StoryObj;
 
-function ExampleForm({ disabled = false }: { disabled?: boolean }) {
-  const form = useForm<FormValues>({
-    resolver,
-    defaultValues: { name: "", email: "", age: 18, agree: false },
-    mode: "onTouched",
-  });
-
-  return (
-    <Form<FormValues>
-      form={form}
-      onSubmit={(values) => {
-        // eslint-disable-next-line no-console
-        console.log("submit", values);
-      }}
-      style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
-    >
-      <FormField<FormValues, "name"> name="name" label="氏名" required>
-        {({ value, onChange, onBlur, name, error, invalid }) => (
-          <Input
-            id={name}
-            name={name}
-            placeholder="山田 太郎"
-            value={value ?? ""}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={onBlur}
-            disabled={disabled}
-            status={invalid ? "error" : "default"}
-            aria-invalid={Boolean(error) || undefined}
-          />
-        )}
-      </FormField>
-
-      <FormField<FormValues, "email">
-        name="email"
-        label="メールアドレス"
-        required
-        description="ログイン ID として使用します"
-      >
-        {({ value, onChange, onBlur, name, error, invalid }) => (
-          <Input
-            id={name}
-            name={name}
-            type="email"
-            placeholder="taro@example.com"
-            value={value ?? ""}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={onBlur}
-            disabled={disabled}
-            status={invalid ? "error" : "default"}
-            aria-invalid={Boolean(error) || undefined}
-          />
-        )}
-      </FormField>
-
-      <FormField<FormValues, "age"> name="age" label="年齢" required>
-        {({ value, onChange, onBlur, invalid }) => (
-          <InputNumber
-            value={value ?? undefined}
-            onValueChange={(n) => onChange(n)}
-            onBlur={onBlur}
-            min={0}
-            max={150}
-            disabled={disabled}
-            status={invalid ? "error" : "default"}
-          />
-        )}
-      </FormField>
-
-      <FormField<FormValues, "agree"> name="agree">
-        {({ value, onChange, name, invalid }) => (
-          <label
-            htmlFor={name}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "var(--spacing-2)",
-              cursor: disabled ? "not-allowed" : "pointer",
-            }}
-          >
-            <Checkbox
-              id={name}
-              checked={Boolean(value)}
-              disabled={disabled}
-              onCheckedChange={(checked) => onChange(checked === true)}
-              aria-invalid={invalid || undefined}
-            />
-            <span style={{ fontSize: "var(--text-sm)" }}>利用規約に同意する</span>
-          </label>
-        )}
-      </FormField>
-
-      <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary" disabled={disabled}>
-          登録
-        </Button>
-      </Flex>
-    </Form>
-  );
-}
-
 // ─── Default ────────────────────────────────────────────────────
 
 export const Default: Story = {
-  render: () => <ExampleForm />,
+  render: function Default() {
+    const form = useForm<FormValues>({
+      resolver,
+      defaultValues: { name: "", email: "", age: 18, agree: false },
+      mode: "onTouched",
+    });
+    return (
+      <Form<FormValues>
+        form={form}
+        onSubmit={(values) => {
+          // eslint-disable-next-line no-console
+          console.log("submit", values);
+        }}
+        style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
+      >
+        <FormField<FormValues, "name"> name="name" label="氏名" required>
+          {({ value, onChange, onBlur, name, error, invalid }) => (
+            <Input
+              id={name}
+              name={name}
+              placeholder="山田 太郎"
+              value={value ?? ""}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={onBlur}
+              status={invalid ? "error" : "default"}
+              aria-invalid={Boolean(error) || undefined}
+            />
+          )}
+        </FormField>
+        <FormField<FormValues, "email">
+          name="email"
+          label="メールアドレス"
+          required
+          description="ログイン ID として使用します"
+        >
+          {({ value, onChange, onBlur, name, error, invalid }) => (
+            <Input
+              id={name}
+              name={name}
+              type="email"
+              placeholder="taro@example.com"
+              value={value ?? ""}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={onBlur}
+              status={invalid ? "error" : "default"}
+              aria-invalid={Boolean(error) || undefined}
+            />
+          )}
+        </FormField>
+        <FormField<FormValues, "age"> name="age" label="年齢" required>
+          {({ value, onChange, onBlur, invalid }) => (
+            <InputNumber
+              value={value ?? undefined}
+              onValueChange={(n) => onChange(n)}
+              onBlur={onBlur}
+              min={0}
+              max={150}
+              status={invalid ? "error" : "default"}
+            />
+          )}
+        </FormField>
+        <FormField<FormValues, "agree"> name="agree">
+          {({ value, onChange, name, invalid }) => (
+            <label
+              htmlFor={name}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "var(--spacing-2)",
+                cursor: "pointer",
+              }}
+            >
+              <Checkbox
+                id={name}
+                checked={Boolean(value)}
+                onCheckedChange={(checked) => onChange(checked === true)}
+                aria-invalid={invalid || undefined}
+              />
+              <span style={{ fontSize: "var(--text-sm)" }}>利用規約に同意する</span>
+            </label>
+          )}
+        </FormField>
+        <Flex gap="small" justify="end">
+          <Button type="submit" variant="primary">
+            登録
+          </Button>
+        </Flex>
+      </Form>
+    );
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -296,5 +285,95 @@ export const Validated: Story = {
 // ─── Disabled ───────────────────────────────────────────────────
 
 export const Disabled: Story = {
-  render: () => <ExampleForm disabled />,
+  render: function Disabled() {
+    const form = useForm<FormValues>({
+      resolver,
+      defaultValues: { name: "", email: "", age: 18, agree: false },
+      mode: "onTouched",
+    });
+    return (
+      <Form<FormValues>
+        form={form}
+        onSubmit={() => undefined}
+        style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
+      >
+        <FormField<FormValues, "name"> name="name" label="氏名" required>
+          {({ value, onChange, onBlur, name, error, invalid }) => (
+            <Input
+              id={name}
+              name={name}
+              placeholder="山田 太郎"
+              value={value ?? ""}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={onBlur}
+              disabled
+              status={invalid ? "error" : "default"}
+              aria-invalid={Boolean(error) || undefined}
+            />
+          )}
+        </FormField>
+        <FormField<FormValues, "email">
+          name="email"
+          label="メールアドレス"
+          required
+          description="ログイン ID として使用します"
+        >
+          {({ value, onChange, onBlur, name, error, invalid }) => (
+            <Input
+              id={name}
+              name={name}
+              type="email"
+              placeholder="taro@example.com"
+              value={value ?? ""}
+              onChange={(e) => onChange(e.target.value)}
+              onBlur={onBlur}
+              disabled
+              status={invalid ? "error" : "default"}
+              aria-invalid={Boolean(error) || undefined}
+            />
+          )}
+        </FormField>
+        <FormField<FormValues, "age"> name="age" label="年齢" required>
+          {({ value, onChange, onBlur, invalid }) => (
+            <InputNumber
+              value={value ?? undefined}
+              onValueChange={(n) => onChange(n)}
+              onBlur={onBlur}
+              min={0}
+              max={150}
+              disabled
+              status={invalid ? "error" : "default"}
+            />
+          )}
+        </FormField>
+        <FormField<FormValues, "agree"> name="agree">
+          {({ value, onChange, name, invalid }) => (
+            <label
+              htmlFor={name}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "var(--spacing-2)",
+                cursor: "not-allowed",
+              }}
+            >
+              <Checkbox
+                id={name}
+                checked={Boolean(value)}
+                disabled
+                onCheckedChange={(checked) => onChange(checked === true)}
+                aria-invalid={invalid || undefined}
+              />
+              <span style={{ fontSize: "var(--text-sm)" }}>利用規約に同意する</span>
+            </label>
+          )}
+        </FormField>
+        <Flex gap="small" justify="end">
+          <Button type="submit" variant="primary" disabled>
+            登録
+          </Button>
+        </Flex>
+      </Form>
+    );
+  },
 };

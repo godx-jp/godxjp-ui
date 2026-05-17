@@ -1035,16 +1035,29 @@ framework concept; inline duplication is rejected at review.
     extractor falls back to the literal source, which still contains
     `() =>` syntactic noise).
 
-    Allowed exceptions (rare):
+    No exceptions. Even a parameterised helper (e.g.
+    `<ExampleForm disabled={…} />`) is forbidden: the consumer
+    landing on `?path=/docs/.../disabled` sees `<ExampleForm
+    disabled />` — still opaque, still requires drilling into the
+    source repo to understand. If two stories share ~100 lines of
+    JSX, duplicate the body. Storybook's source view is the
+    teaching surface — what the consumer reads MUST be runnable
+    JSX they can copy-paste into their app.
 
-    - A helper component that takes PROPS and is reused across
-      multiple stories (e.g. `<ExampleForm disabled={…} />`). The
-      `<ExampleForm />` rendering is not opaque — the consumer can
-      see the prop differences between stories. Document the helper
-      definition near its consumers.
-    - A composition that exceeds ~100 lines and is repeated
-      verbatim. Document why the extract is justified in a comment
-      above the helper.
+    A separate `_RepeatedBlock.tsx` helper file is also forbidden;
+    if you reach for one, the right answer is either
+    (a) reduce the duplication by extracting a missing PRIMITIVE
+    into `src/components/<group>/` (the real fix), or
+    (b) accept the verbatim duplication for the sake of source
+    readability.
+
+    Historical context: the framework's earlier rule allowed
+    parameterised helpers (`<ExampleForm disabled />` style). The
+    pattern bled into ~14 stories in `data-entry/` (DefaultDemo /
+    ControlledDemo / ValidatedDemo / PrefectureDemo / ExampleForm
+    …), each producing an unhelpful `<XyzDemo />` in the source
+    panel. The v3 audit removed the exemption and inlined every
+    helper.
 
     Forbidden everywhere else. Reviewers grep for the anti-pattern
     `render: () => <[A-Z][a-zA-Z0-9]+Demo` and reject PRs that

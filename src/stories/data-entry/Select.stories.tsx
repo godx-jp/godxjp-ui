@@ -62,24 +62,23 @@ work via \`className\`. \`SelectGroup\` + \`SelectLabel\` +
 export default meta;
 type Story = StoryObj<typeof Select>;
 
-// ─── Default — 5 options ────────────────────────────────────────
+// ─── Default — data-driven via `options` prop ───────────────────
 
 export const Default: Story = {
-  name: "Default · 5 options",
+  name: "Default · options prop (Ant / MUI canonical)",
   render: () => (
     <div style={{ maxWidth: 240 }}>
-      <Select defaultValue="tokyo">
-        <SelectTrigger>
-          <SelectValue placeholder="拠点を選択" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="tokyo">東京本社</SelectItem>
-          <SelectItem value="osaka">大阪支社</SelectItem>
-          <SelectItem value="nagoya">名古屋支社</SelectItem>
-          <SelectItem value="fukuoka">福岡支社</SelectItem>
-          <SelectItem value="sapporo">札幌支社</SelectItem>
-        </SelectContent>
-      </Select>
+      <Select
+        defaultValue="tokyo"
+        placeholder="拠点を選択"
+        options={[
+          { value: "tokyo", label: "東京本社" },
+          { value: "osaka", label: "大阪支社" },
+          { value: "nagoya", label: "名古屋支社" },
+          { value: "fukuoka", label: "福岡支社" },
+          { value: "sapporo", label: "札幌支社" },
+        ]}
+      />
     </div>
   ),
   play: async ({ canvasElement, step }) => {

@@ -13,7 +13,39 @@ lang: en
 
 > Keyboard-navigable dropdown select backed by `@radix-ui/react-select`.
 
-## Usage
+## When to use Select vs Combobox
+
+| Need | Use |
+|---|---|
+| Fixed list, no search, < ~20 items | **Select** |
+| Search / filter input above the list | **Combobox** |
+| Allow free-text not in the list | **AutoComplete** (wraps Combobox) |
+| Hierarchical nested options | **Cascader** |
+| Tree-shaped options (org chart, file tree) | **TreeSelect** |
+
+Select and Combobox are NOT duplicates — Select is a simple keyboard-
+navigable dropdown without an input field. Combobox renders a search
+input that filters items as the user types. Pick by interaction need,
+not by visual similarity.
+
+## Usage — data-driven (preferred)
+
+```tsx
+import { Select } from "@godxjp/ui"
+
+<Select
+  value={status}
+  onValueChange={setStatus}
+  placeholder="Select status…"
+  options={[
+    { value: "open",        label: "Open" },
+    { value: "in-progress", label: "In progress" },
+    { value: "done",        label: "Done" },
+  ]}
+/>
+```
+
+## Usage — compositional (advanced)
 
 ```tsx
 import {
@@ -31,6 +63,11 @@ import {
   </SelectContent>
 </Select>
 ```
+
+The two modes are equivalent — pick `options` when the data is plain
+and you want minimum JSX (Ant Design / MUI / Mantine canonical),
+compositional when you need custom item layouts / `SelectGroup` +
+`SelectSeparator` for grouped lists.
 
 ## Exports
 

@@ -56,15 +56,20 @@
 
 .sb-nav-item[data-active="true"] .sb-badge { background: color-mix(in oklch, var(--primary) 18%, transparent); color: var(--primary); }
 
-.app-root[data-collapsed="true"] .sb-product-name,
-.app-root[data-collapsed="true"] .sb-product-tenant,
-.app-root[data-collapsed="true"] .sb-section-label,
-.app-root[data-collapsed="true"] .sb-label,
-.app-root[data-collapsed="true"] .sb-badge { display: none; }
+/* Collapsed sidebar rules. Selector broadened from
+ * `.app-root[data-collapsed="true"]` → `[data-collapsed="true"]` so the
+ * primitive works in BOTH contexts: (a) inside AppShell which sets the
+ * attribute on `.app-root`, and (b) a standalone Sidebar story that
+ * wraps the primitive in any element carrying `data-collapsed="true"`. */
+[data-collapsed="true"] .sb-product-name,
+[data-collapsed="true"] .sb-product-tenant,
+[data-collapsed="true"] .sb-section-label,
+[data-collapsed="true"] .sb-label,
+[data-collapsed="true"] .sb-badge { display: none; }
 
-.app-root[data-collapsed="true"] .sb-nav-item { justify-content: center; padding: 0; width: var(--density-element-sm); margin: 0 auto; }
+[data-collapsed="true"] .sb-nav-item { justify-content: center; padding: 0; width: var(--density-element-sm); margin: 0 auto; }
 
-.app-root[data-collapsed="true"] .sb-product { padding: 0; justify-content: center; }
+[data-collapsed="true"] .sb-product { padding: 0; justify-content: center; }
 
 .sb-footer { margin-top: auto; border-top: 1px solid var(--sidebar-border); padding: var(--spacing-3) var(--spacing-2); }
 

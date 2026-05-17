@@ -67,73 +67,83 @@ const employees: Employee[] = [
   { value: "watanabe-yui", label: "渡辺 結衣", role: "アルバイト · 新宿支店" },
 ];
 
-// ─── Default — filterable employee picker ────────────────────────
+// ─── Default — data-driven via `options` prop ────────────────────
 
 export const Default: Story = {
-  name: "Default · filterable employee picker",
+  name: "Default · options prop (Ant / MUI canonical)",
   render: function Default() {
-    const [open, setOpen] = useState(false);
-    const [selected, setSelected] = useState<Employee | null>(null);
-
+    const [value, setValue] = useState<string>("");
     return (
-      <div style={{ maxWidth: 280 }}>
-        <Combobox open={open} onOpenChange={setOpen}>
-          <ComboboxTrigger asChild>
-            <Button
-              variant="secondary"
-              endContent={<ChevronsUpDown size={14} aria-hidden />}
-              style={{ justifyContent: "space-between", width: "100%" }}
-            >
-              {selected ? selected.label : "従業員を選択"}
-            </Button>
-          </ComboboxTrigger>
-          <ComboboxContent style={{ width: 260 }}>
-            <ComboboxInput placeholder="名前で検索" />
-            <ComboboxList>
-              <ComboboxEmpty>該当する従業員がいません。</ComboboxEmpty>
-              {employees.map((emp) => (
-                <ComboboxItem
-                  key={emp.value}
-                  value={emp.value}
-                  onSelect={() => {
-                    setSelected(emp);
-                    setOpen(false);
-                  }}
-                >
-                  <Flex
-                    justify="space-between"
-                    align="center"
-                    style={{ width: "100%" }}
-                  >
-                    <Flex vertical gap={2}>
-                      <span>{emp.label}</span>
-                      <span className="muted" style={{ fontSize: 11 }}>
-                        {emp.role}
-                      </span>
-                    </Flex>
-                    {selected?.value === emp.value && (
-                      <Check size={14} aria-hidden />
-                    )}
-                  </Flex>
-                </ComboboxItem>
-              ))}
-            </ComboboxList>
-          </ComboboxContent>
-        </Combobox>
+      <div style={{ width: 240 }}>
+        <Combobox
+          options={employees.map((e) => ({ value: e.value, label: e.label }))}
+          triggerLabel="従業員を選択"
+          placeholder="名前で検索"
+          emptyLabel="該当する従業員がいません。"
+          value={value}
+          onValueChange={setValue}
+        />
       </div>
     );
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const portal = canvasElement.ownerDocument.body;
-
     await step("trigger opens command surface", async () => {
-      const trigger = canvas.getByRole("button", { name: /従業員を選択/ });
-      await userEvent.click(trigger);
+      await userEvent.click(canvas.getByRole("button", { name: /従業員を選択/ }));
       await waitFor(() => {
         expect(within(portal).getByPlaceholderText("名前で検索")).toBeInTheDocument();
       });
     });
+  },
+};
+
+// ─── WithSelection — rich items + check indicator + controlled state ─
+
+export const WithSelection: Story = {
+  name: "WithSelection · controlled state + check indicator + role meta",
+  render: function WithSelection() {
+    const [open, setOpen] = useState(false);
+    const [selected, setSelected] = useState<Employee | null>(null);
+    return (
+      <Combobox open={open} onOpenChange={setOpen}>
+        <ComboboxTrigger asChild>
+          <Button
+            variant="secondary"
+            endContent={<ChevronsUpDown size={14} aria-hidden />}
+            style={{ justifyContent: "space-between", width: 240 }}
+          >
+            {selected ? selected.label : "従業員を選択"}
+          </Button>
+        </ComboboxTrigger>
+        <ComboboxContent style={{ width: 240 }}>
+          <ComboboxInput placeholder="名前で検索" />
+          <ComboboxList>
+            <ComboboxEmpty>該当する従業員がいません。</ComboboxEmpty>
+            {employees.map((emp) => (
+              <ComboboxItem
+                key={emp.value}
+                value={emp.value}
+                onSelect={() => {
+                  setSelected(emp);
+                  setOpen(false);
+                }}
+              >
+                <Flex justify="space-between" align="center" style={{ width: "100%" }}>
+                  <Flex vertical gap={2}>
+                    <span>{emp.label}</span>
+                    <span className="muted" style={{ fontSize: 11 }}>
+                      {emp.role}
+                    </span>
+                  </Flex>
+                  {selected?.value === emp.value && <Check size={14} aria-hidden />}
+                </Flex>
+              </ComboboxItem>
+            ))}
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+    );
   },
 };
 
