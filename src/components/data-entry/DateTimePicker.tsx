@@ -133,12 +133,15 @@ export function DatePicker<T extends DateValue = DateValue>({
     <RACDatePicker {...rest} className={cn("field", className)}>
       {label != null && <RACLabel>{label}</RACLabel>}
       <RACGroup className="dt-trigger">
-        <CalendarIcon aria-hidden size={14} strokeWidth={1.5} className="ico" />
         <RACDateInput className="dt-segments dt-segments-inline">
           {(segment) => <RACDateSegment segment={segment} className="dt-seg" />}
         </RACDateInput>
+        {/* Trigger button on the right uses a calendar icon
+         * (Ant Design / shadcn convention). The previous `▾` chevron
+         * read as a generic dropdown affordance — calendar matches the
+         * primitive's purpose. */}
         <RACButton className="dt-trigger-btn" aria-label="Open calendar">
-          <span aria-hidden>▾</span>
+          <CalendarIcon aria-hidden size={14} strokeWidth={1.75} />
         </RACButton>
       </RACGroup>
       {description != null && (
