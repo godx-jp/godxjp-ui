@@ -8,37 +8,41 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { I18nProvider as RACI18nProvider } from "react-aria-components";
+import { InternalTooltipProvider } from "../components/data-display/Tooltip";
 import {
-  getPreferences,
-  setPreferences as setHolder,
-  subscribePreferences,
-  type Preferences,
+  getGodxConfig,
+  setGodxConfig as setHolder,
+  subscribeGodxConfig,
+  type GodxConfig,
 } from "./holder";
 import {
   readStored,
   writeStored,
   type CookieOptions,
-  type PreferenceStorage,
+  type GodxConfigStorage,
 } from "./storage";
 
 const LOCALE_KEY = "godx-locale";
 const TIMEZONE_KEY = "godx-timezone";
+const CURRENCY_KEY = "godx-currency";
 
-export interface PreferencesContextValue extends Preferences {
+export interface GodxConfigContextValue extends GodxConfig {
   setLocale: (locale: string) => void;
   setTimezone: (timezone: string) => void;
-  setPreferences: (partial: Partial<Preferences>) => void;
+  setCurrency: (currency: string) => void;
+  setGodxConfig: (partial: Partial<GodxConfig>) => void;
   reset: () => void;
   /** Build the canonical request headers (Accept-Language + X-Timezone). */
   headers: () => Record<string, string>;
 }
 
-const Ctx = createContext<PreferencesContextValue | null>(null);
+const Ctx = createContext<GodxConfigContextValue | null>(null);
 
-export interface PreferencesProviderProps {
+export interface GodxConfigProviderProps {
   children: ReactNode;
   /** Where to persist — defaults to localStorage. */
-  storage?: PreferenceStorage;
+  storage?: GodxConfigStorage;
   /** Cookie options when storage is "cookie" or "both". */
   cookieOptions?: CookieOptions;
   /**
@@ -53,10 +57,31 @@ export interface PreferencesProviderProps {
    */
   defaultTimezone?: string;
   /**
-   * Called whenever preferences change. Useful for syncing the
+   * Default currency code (ISO 4217) for `formatCurrency()` calls
+   * that omit a `currency` option. Optional.
+   */
+  defaultCurrency?: string;
+  /**
+   * Open delay applied to every `<Tooltip>` in the tree (ms). The
+   * provider mounts a single Radix Tooltip Provider internally so
+   * the entire app shares this timing — and so the consumer never
+   * has to import a separate `TooltipProvider`. Per-tooltip overrides
+   * still flow through the `delayDuration` prop on `<Tooltip>`.
+   * Default 200.
+   */
+  tooltipDelay?: number;
+  /**
+   * Skip-delay duration applied to every `<Tooltip>` in the tree
+   * (ms). When the cursor moves between adjacent tooltipped elements
+   * within this window the next tooltip opens immediately. Default
+   * follows Radix (300ms).
+   */
+  tooltipSkipDelay?: number;
+  /**
+   * Called whenever config changes. Useful for syncing the
    * `<html lang>` attribute or pushing to analytics.
    */
-  onChange?: (prefs: Preferences) => void;
+  onChange?: (config: GodxConfig) => void;
 }
 
 function detectLocale(fallback: string): string {
@@ -74,23 +99,35 @@ function detectTimezone(fallback: string): string {
   }
 }
 
-export function PreferencesProvider({
+/**
+ * Root provider for `@godxjp/ui` consumer apps. Carries locale,
+ * timezone, and currency defaults; auto-wires React Aria's
+ * `<I18nProvider>` so every date / time / number primitive picks up
+ * the locale. Persists to localStorage / cookie / both.
+ *
+ * Mount once at the top of every service frontend's React tree.
+ */
+export function GodxConfigProvider({
   children,
   storage = "localStorage",
   cookieOptions,
   defaultLocale = "ja",
   defaultTimezone = "Asia/Tokyo",
+  defaultCurrency,
+  tooltipDelay = 200,
+  tooltipSkipDelay,
   onChange,
-}: PreferencesProviderProps) {
-  // Resolve initial preferences: stored → detected → fallback.
-  const initial = useRef<Preferences>({
+}: GodxConfigProviderProps) {
+  // Resolve initial config: stored → detected → fallback.
+  const initial = useRef<GodxConfig>({
     locale:
       readStored(storage, LOCALE_KEY) ?? detectLocale(defaultLocale),
     timezone:
       readStored(storage, TIMEZONE_KEY) ?? detectTimezone(defaultTimezone),
+    currency: readStored(storage, CURRENCY_KEY) ?? defaultCurrency,
   });
 
-  const [prefs, setPrefsState] = useState<Preferences>(initial.current);
+  const [config, setConfigState] = useState<GodxConfig>(initial.current);
 
   // Sync initial values into the module holder so non-React readers
   // (axios interceptor, etc.) pick them up immediately.
@@ -102,8 +139,8 @@ export function PreferencesProvider({
   // holder (e.g. another tab via a future BroadcastChannel listener)
   // we re-render.
   useEffect(() => {
-    return subscribePreferences((next) => {
-      setPrefsState(next);
+    return subscribeGodxConfig((next) => {
+      setConfigState(next);
     });
   }, []);
 
@@ -111,28 +148,31 @@ export function PreferencesProvider({
   // pick up locale changes.
   useEffect(() => {
     if (typeof document !== "undefined") {
-      document.documentElement.lang = prefs.locale;
+      document.documentElement.lang = config.locale;
     }
-  }, [prefs.locale]);
+  }, [config.locale]);
 
   // Persist + notify subscribers via the holder.
   const writeAndBroadcast = useCallback(
-    (partial: Partial<Preferences>) => {
+    (partial: Partial<GodxConfig>) => {
       if (partial.locale !== undefined) {
         writeStored(storage, LOCALE_KEY, partial.locale, cookieOptions);
       }
       if (partial.timezone !== undefined) {
         writeStored(storage, TIMEZONE_KEY, partial.timezone, cookieOptions);
       }
-      setHolder(partial); // holder → subscribers → setPrefsState
+      if (partial.currency !== undefined) {
+        writeStored(storage, CURRENCY_KEY, partial.currency, cookieOptions);
+      }
+      setHolder(partial); // holder → subscribers → setConfigState
     },
     [storage, cookieOptions],
   );
 
   // onChange callback — fires AFTER state settles.
   useEffect(() => {
-    onChange?.(prefs);
-  }, [prefs, onChange]);
+    onChange?.(config);
+  }, [config, onChange]);
 
   const setLocale = useCallback(
     (locale: string) => writeAndBroadcast({ locale }),
@@ -142,48 +182,66 @@ export function PreferencesProvider({
     (timezone: string) => writeAndBroadcast({ timezone }),
     [writeAndBroadcast],
   );
+  const setCurrency = useCallback(
+    (currency: string) => writeAndBroadcast({ currency }),
+    [writeAndBroadcast],
+  );
   const setAll = useCallback(
-    (partial: Partial<Preferences>) => writeAndBroadcast(partial),
+    (partial: Partial<GodxConfig>) => writeAndBroadcast(partial),
     [writeAndBroadcast],
   );
   const reset = useCallback(() => {
     writeStored(storage, LOCALE_KEY, null, cookieOptions);
     writeStored(storage, TIMEZONE_KEY, null, cookieOptions);
-    const next: Preferences = {
+    writeStored(storage, CURRENCY_KEY, null, cookieOptions);
+    const next: GodxConfig = {
       locale: detectLocale(defaultLocale),
       timezone: detectTimezone(defaultTimezone),
+      currency: defaultCurrency,
     };
     setHolder(next);
-  }, [storage, cookieOptions, defaultLocale, defaultTimezone]);
+  }, [storage, cookieOptions, defaultLocale, defaultTimezone, defaultCurrency]);
 
   const headers = useCallback((): Record<string, string> => {
-    const current = getPreferences();
+    const current = getGodxConfig();
     return {
       "Accept-Language": current.locale,
       "X-Timezone": current.timezone,
     };
   }, []);
 
-  const value = useMemo<PreferencesContextValue>(
+  const value = useMemo<GodxConfigContextValue>(
     () => ({
-      ...prefs,
+      ...config,
       setLocale,
       setTimezone,
-      setPreferences: setAll,
+      setCurrency,
+      setGodxConfig: setAll,
       reset,
       headers,
     }),
-    [prefs, setLocale, setTimezone, setAll, reset, headers],
+    [config, setLocale, setTimezone, setCurrency, setAll, reset, headers],
   );
 
-  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={value}>
+      <RACI18nProvider locale={config.locale}>
+        <InternalTooltipProvider
+          delayDuration={tooltipDelay}
+          skipDelayDuration={tooltipSkipDelay}
+        >
+          {children}
+        </InternalTooltipProvider>
+      </RACI18nProvider>
+    </Ctx.Provider>
+  );
 }
 
-export function usePreferences(): PreferencesContextValue {
+export function useGodxConfig(): GodxConfigContextValue {
   const ctx = useContext(Ctx);
   if (!ctx) {
     throw new Error(
-      "usePreferences must be used within <PreferencesProvider>",
+      "useGodxConfig must be used within <GodxConfigProvider>",
     );
   }
   return ctx;

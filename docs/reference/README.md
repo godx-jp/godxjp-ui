@@ -89,7 +89,7 @@ Organism-level compositions that form the portal chrome (8).
 | [useTweaks](./hooks/useTweaks.md) | Persistent theme axes state (theme / accent / density / font-size + locale) |
 
 Additional hooks (`useBreakpoint`, `useDebouncedValue`,
-`usePreferences`) shipped from `@godxjp/ui/hooks` — reference pages
+`useGodxConfig`) shipped from `@godxjp/ui/hooks` — reference pages
 TODO.
 
 ## Catalogues

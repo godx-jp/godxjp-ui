@@ -7,6 +7,41 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **`GodxConfigProvider` + format helpers** — canonical alias of
+  `PreferencesProvider` per ADR 0005. The provider now wraps
+  children in React Aria's `<I18nProvider>` so every date / time /
+  number primitive picks up the locale automatically. Three thin
+  helper files (`src/i18n/format.ts`, `src/i18n/relative.ts`,
+  `src/hooks/useFormatters.ts`) wrap native `Intl` APIs +
+  `@internationalized/date` values; no new runtime dependency. The
+  legacy `PreferencesProvider` / `usePreferences` names remain as
+  deprecated aliases until v4.0.0.
+- **`currency` preference + `setCurrency`** — `Preferences.currency`
+  carries an ISO 4217 default for `formatCurrency()`. Persisted to
+  the same storage backend as locale / timezone.
+- **Timeline `time` accepts temporal values** — `time` now takes
+  `Date | CalendarDate | CalendarDateTime | ZonedDateTime` (in
+  addition to `ReactNode`). The active provider's locale + timezone
+  format it via `useFormatters` per the new `timeFormat` prop
+  (`"relative" | "datetime" | "date" | "time"`, default
+  `"relative"` for `feed`, `"datetime"` elsewhere).
+- **Separator labels** — horizontal `Separator` now accepts
+  `children`, `titlePlacement`, `orientationMargin`, and `variant`
+  for Ant Design-style labeled dividers, replacing manual Flex +
+  two-separator composition. Prop vocabulary docs and the
+  Storybook vocabulary catalogue now include those concepts.
+- **Descriptions data API** — `Descriptions` now renders from
+  `items` and supports `renderItem` for custom rows. The
+  `Descriptions.Item` sub-component shape was removed so consumers
+  use one component consistently.
+- **Table data API** — `Table` is now a single-component TanStack
+  Table wrapper. Legacy table subcomponent exports were removed
+  from the public surface; use `columns`, `data`, `ColumnDef.cell`,
+  and the `toolbar` prop.
+- **Statistic loading + animation** — `loading` renders skeleton
+  placeholders with `aria-busy`, while `animated` /
+  `animationDuration` count finite numeric values from zero /
+  previous value and respect `prefers-reduced-motion`.
 - **Cardinal rule 32 — no redundant props.** A new top-level prop /
   item field / variant is rejected at review if an existing prop /
   item field / variant already covers the use case. Lifted from the
@@ -63,6 +98,15 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- **Separator vertical styling** — vertical separators now render via
+  `.divider-vertical` instead of inline style, so Card divider stories
+  can compose the Separator primitive without raw `<hr>` elements.
+- **Skeleton default animation** — ported Ant Design's active
+  skeleton gradient pattern (`25% / 37% / 63%`, `400% 100%`,
+  `1.4s ease`) to godx tokens, with reduced-motion fallback.
+- **Skeleton shape atoms** — `.sk-line` / `.sk-block` now have
+  explicit full-width defaults and `.sk-circle` keeps its 34px
+  width in flex rows, fixing list/table loading stories.
 - **Sidebar collapsed labels** — collapsed mode now omits nav label
   and badge nodes from the DOM while preserving `aria-label` /
   `title`, so standalone Sidebar stories cannot leak clipped text
@@ -323,8 +367,7 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
   use `.btn` / `.btn-primary` / `.btn-secondary`).
 - **Select** family (`Select*`, `SelectPortal`, scroll buttons, separator).
 - **Switch**, **Checkbox** (Radix) with `.switch-*` / `.checkbox-*`.
-- **Table** family (`Table` scroll wrapper + `TableHeader` / `Body` /
-  `Footer` / `Row` / `Head` / `Cell` / `Caption`) using the `.table` atom.
+- **Table** data display primitive using the `.table` atom.
 - Dependencies: `@radix-ui/react-alert-dialog`, `@radix-ui/react-checkbox`.
 
 ### Fixed

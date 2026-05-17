@@ -51,3 +51,19 @@ export function initI18n(): typeof i18next {
 }
 
 export default i18next;
+
+export {
+  formatDate,
+  formatTime,
+  formatDateTime,
+  formatNumber,
+  formatCurrency,
+  type DateLike,
+  type TimeLike,
+  type FormatOptions,
+  type FormatDateOptions,
+  type FormatNumberOptions,
+  type FormatCurrencyOptions,
+} from "./format";
+
+export { formatRelative, type RelativeOptions } from "./relative";

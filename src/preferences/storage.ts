@@ -8,7 +8,7 @@
 //   <name>=<value>; Max-Age=<s>; Path=/; SameSite=Lax; [Secure]; [Domain=<d>]
 // We DO set `Secure` automatically when the page is https.
 
-export type PreferenceStorage = "localStorage" | "cookie" | "both";
+export type GodxConfigStorage = "localStorage" | "cookie" | "both";
 
 export interface CookieOptions {
   /** Cookie domain, e.g. ".godx.jp" (omit for host-only). */
@@ -92,7 +92,7 @@ export function writeCookie(
 // ── Combined read/write per storage policy ────────────────────────
 
 export function readStored(
-  storage: PreferenceStorage,
+  storage: GodxConfigStorage,
   key: string,
 ): string | null {
   if (storage === "localStorage") return readLocalStorage(key);
@@ -102,7 +102,7 @@ export function readStored(
 }
 
 export function writeStored(
-  storage: PreferenceStorage,
+  storage: GodxConfigStorage,
   key: string,
   value: string | null,
   cookieOptions?: CookieOptions,

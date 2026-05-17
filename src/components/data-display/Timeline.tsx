@@ -1,5 +1,11 @@
 import { type ReactNode } from "react";
+import {
+  type CalendarDate,
+  type CalendarDateTime,
+  type ZonedDateTime,
+} from "@internationalized/date";
 import { cn } from "../cn";
+import { useFormatters } from "../../hooks/useFormatters";
 
 /**
  * Timeline — chronological event rail.
@@ -65,8 +71,17 @@ export interface TimelineItem {
    * `prefers-reduced-motion` (rule 6 a11y baseline). */
   animate?: boolean;
   /** Time / timestamp slot — right-side label in `branching`, inline
-   * `.ts` in `list`, inline `.ts` in `feed`. */
-  time?: ReactNode;
+   * `.ts` in `list`, inline `.ts` in `feed`. Accepts a temporal value
+   * (`Date`, ISO string, or any `@internationalized/date` value) — in
+   * that case the active provider's locale + timezone format it via
+   * `useFormatters` (`format` or `relative` controlled by the
+   * Timeline `timeFormat` prop). Pass `ReactNode` to opt out. */
+  time?:
+    | ReactNode
+    | Date
+    | CalendarDate
+    | CalendarDateTime
+    | ZonedDateTime;
   /** Avatar slot — `feed` variant only. */
   avatar?: ReactNode;
   title?: ReactNode;
@@ -93,7 +108,55 @@ export interface TimelineProps {
    * `true` for `list` + `branching`; ignored by `feed` (feed has no
    * connector by design). */
   connector?: boolean;
+  /** How to render temporal `time` values. `"relative"` (default for
+   * `feed`) renders "2 時間前" / "2 hours ago" via `useFormatters`.
+   * `"datetime"` renders an absolute "MMM d, HH:mm" style. `"time"`
+   * renders the time-of-day portion only. Ignored when `time` is a
+   * `ReactNode` (string / JSX). */
+  timeFormat?: "relative" | "datetime" | "date" | "time";
   className?: string;
+}
+
+type TimeFormat = NonNullable<TimelineProps["timeFormat"]>;
+type TemporalValue =
+  | Date
+  | CalendarDate
+  | CalendarDateTime
+  | ZonedDateTime;
+
+function isTemporal(value: unknown): value is TemporalValue {
+  if (value instanceof Date) return true;
+  if (
+    typeof value === "object" &&
+    value !== null &&
+    "toDate" in value &&
+    typeof (value as { toDate: unknown }).toDate === "function"
+  ) {
+    return true;
+  }
+  return false;
+}
+
+// Pure helper — given the formatter surface (resolved once in Timeline)
+// + a TimelineItem.time value + the active `timeFormat` mode, return
+// the renderable node. ReactNode values pass through untouched.
+function formatTimeNode(
+  value: TimelineItem["time"],
+  format: TimeFormat,
+  fmt: ReturnType<typeof useFormatters>,
+): ReactNode {
+  if (!isTemporal(value)) return value as ReactNode;
+  switch (format) {
+    case "relative":
+      return fmt.formatRelative(value);
+    case "date":
+      return fmt.formatDate(value);
+    case "time":
+      return fmt.formatTime(value);
+    case "datetime":
+    default:
+      return fmt.formatDateTime(value);
+  }
 }
 
 // Map the semantic color vocabulary onto the canonical .tl-* atom
@@ -120,8 +183,11 @@ function colorClass(color: TimelineColor = "default"): string {
 function defaultRender(
   item: TimelineItem,
   variant: TimelineVariant,
+  timeFormat: TimeFormat,
+  fmt: ReturnType<typeof useFormatters>,
 ): ReactNode {
   const hue = colorClass(item.color);
+  const time = formatTimeNode(item.time, timeFormat, fmt);
 
   if (variant === "branching") {
     return (
@@ -134,7 +200,7 @@ function defaultRender(
           item.className,
         )}
       >
-        <span className="when">{item.time}</span>
+        <span className="when">{time}</span>
         <div className="node" aria-hidden />
         <div className="body">
           {item.title !== undefined && <div className="t">{item.title}</div>}
@@ -154,7 +220,7 @@ function defaultRender(
         <div className="body">
           <div className="h">
             {item.title !== undefined && <b>{item.title}</b>}
-            {item.time !== undefined && <span className="ts">{item.time}</span>}
+            {time !== undefined && <span className="ts">{time}</span>}
           </div>
           {item.description !== undefined && (
             <div className="d">{item.description}</div>
@@ -176,10 +242,10 @@ function defaultRender(
         item.className,
       )}
     >
-      {(item.title !== undefined || item.time !== undefined) && (
+      {(item.title !== undefined || time !== undefined) && (
         <div className="t-h">
           {item.title !== undefined && <span>{item.title}</span>}
-          {item.time !== undefined && <span className="ts">{item.time}</span>}
+          {time !== undefined && <span className="ts">{time}</span>}
         </div>
       )}
       {item.description !== undefined && <div className="t-d">{item.description}</div>}
@@ -194,14 +260,21 @@ export function Timeline({
   variant = "list",
   reverse = false,
   connector = true,
+  timeFormat,
   className,
 }: TimelineProps) {
   const ordered = reverse ? items.slice().reverse() : items;
+  const fmt = useFormatters();
+  // Feed reads as a social timeline so default to "X時間前" relative
+  // time; list + branching default to absolute "datetime" output.
+  const effectiveFormat: TimeFormat =
+    timeFormat ?? (variant === "feed" ? "relative" : "datetime");
 
-  const renderRow = renderItem ?? defaultRender;
   const rows = ordered.map((item, i) => {
     const key = item.key ?? i;
-    const node = renderRow(item, variant, i);
+    const node = renderItem
+      ? renderItem(item, variant, i)
+      : defaultRender(item, variant, effectiveFormat, fmt);
     // Wrap to attach the key in a generic way regardless of returned tag.
     return <RowKey key={key}>{node}</RowKey>;
   });

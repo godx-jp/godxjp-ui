@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Timeline } from "../../components/data-display/Timeline";
 import { Avatar } from "../../components/data-display/Avatar";
+import { GodxConfigProvider } from "../../preferences";
 
 /**
  * data-display/Timeline — chronological rail.
@@ -216,6 +217,61 @@ export const Reverse: Story = {
         { color: "primary", current: true, title: "ステップ 3", time: "11:45", description: "現在の作業" },
       ]}
     />
+  ),
+};
+
+// ─── Temporal values — `time` accepts Date / ISO; the active provider
+// formats them via `useFormatters`. Switching locale in the
+// `<GodxConfigProvider>` re-renders the timeline in that locale.
+
+const NOW = new Date("2026-05-18T09:00:00Z");
+const TEMPORAL_ITEMS = [
+  {
+    color: "success" as const,
+    title: "data sync",
+    time: new Date(NOW.getTime() - 2 * 60 * 60 * 1000),
+    description: "completed",
+  },
+  {
+    color: "success" as const,
+    title: "backup",
+    time: new Date(NOW.getTime() - 90 * 60 * 1000),
+    description: "completed",
+  },
+  {
+    color: "primary" as const,
+    current: true,
+    animate: true,
+    title: "verification",
+    time: new Date(NOW.getTime() - 30 * 60 * 1000),
+    description: "in progress",
+  },
+];
+
+export const TemporalJA: Story = {
+  name: "Temporal · ja (datetime)",
+  render: () => (
+    <GodxConfigProvider defaultLocale="ja" defaultTimezone="Asia/Tokyo">
+      <Timeline items={TEMPORAL_ITEMS} />
+    </GodxConfigProvider>
+  ),
+};
+
+export const TemporalEN: Story = {
+  name: "Temporal · en-US (datetime)",
+  render: () => (
+    <GodxConfigProvider defaultLocale="en-US" defaultTimezone="America/New_York">
+      <Timeline items={TEMPORAL_ITEMS} />
+    </GodxConfigProvider>
+  ),
+};
+
+export const TemporalRelative: Story = {
+  name: "Temporal · relative format",
+  render: () => (
+    <GodxConfigProvider defaultLocale="ja" defaultTimezone="Asia/Tokyo">
+      <Timeline items={TEMPORAL_ITEMS} timeFormat="relative" />
+    </GodxConfigProvider>
   ),
 };
 

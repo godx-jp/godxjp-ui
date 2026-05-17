@@ -34,7 +34,7 @@ are explanatory / task-mode companions.
 | | | [Versioning](./explanation/versioning.md) |
 | | | [Compatibility](./explanation/compatibility.md) |
 | | | [Tokens architecture](./explanation/tokens-architecture.md) |
-| | | [Preferences](./explanation/preferences.md) |
+| | | [Preferences](./explanation/godx-config.md) |
 | | | [ADRs](./adr/) |
 | **Application** (working) | **How-to** | **Reference** |
 | | [Override tokens](./how-to/override-tokens.md) | [Primitives](./reference/primitives/) |
@@ -42,6 +42,6 @@ are explanatory / task-mode companions.
 | | [Add a locale](./how-to/add-locale.md) | [Hooks](./reference/hooks/) |
 | | [Customise density](./how-to/customise-density.md) | [Tokens](./reference/tokens.md) |
 | | [Customize theme](./how-to/customize-theme.md) | [i18n](./reference/i18n.md) |
-| | [Wire preferences](./how-to/wire-preferences.md) | [Exports](./reference/exports.md) |
+| | [Wire preferences](./how-to/wire-godx-config.md) | [Exports](./reference/exports.md) |
 | | [Contribute a primitive](./how-to/contribute-primitive.md) | [Types](./reference/types.md) |
 | | [Consume from a service](./how-to/consume-from-service.md) |  |

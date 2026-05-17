@@ -3,11 +3,11 @@ import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "../../components/data-display/Tooltip";
 import { Button } from "../../components/general/Button";
 import { Flex } from "../../components/layout";
+import { GodxConfigProvider } from "../../preferences";
 
 /**
  * data-display/Tooltip — Radix-backed
@@ -17,9 +17,13 @@ import { Flex } from "../../components/layout";
  * cardinal rule 31 forbids parallel convenience wrappers):
  *
  *   • Data-driven — `<Tooltip content="…" placement="top">child</Tooltip>`
- *     auto-wires provider + root + trigger + content.
+ *     auto-wires root + trigger + content.
  *   • Compositional — omit `content`, supply your own `TooltipTrigger` +
- *     `TooltipContent` children inside a `<TooltipProvider>`.
+ *     `TooltipContent` children.
+ *
+ * App-wide timing flows through `<GodxConfigProvider tooltipDelay={…}>` —
+ * the consumer never imports a separate `TooltipProvider`. Per-tooltip
+ * overrides use the `delayDuration` prop on `<Tooltip>` itself.
  *
  * Per cardinal rule 23 §B the `placement` prop is the positional
  * anchor vocabulary shared with Popover (top / right / bottom / left).
@@ -89,26 +93,24 @@ export const FourPlacements = {
 export const Compositional = {
   name: "Compositional · custom multi-line content",
   render: () => (
-    <TooltipProvider delayDuration={150}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="primary">Hover me</Button>
-        </TooltipTrigger>
-        <TooltipContent side="top" sideOffset={8}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <strong>カスタム本文</strong>
-            <span>複数行の説明も表示できます。</span>
-          </div>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="primary">Hover me</Button>
+      </TooltipTrigger>
+      <TooltipContent side="top" sideOffset={8}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <strong>カスタム本文</strong>
+          <span>複数行の説明も表示できます。</span>
+        </div>
+      </TooltipContent>
+    </Tooltip>
   ),
 };
 
-// ─── Delay variants ─────────────────────────────────────────────
+// ─── Delay variants — per-tooltip override ──────────────────────
 
 export const Delay = {
-  name: "Delay · delayDuration = 0 / 500ms",
+  name: "Delay · delayDuration prop overrides the app-wide setting",
   render: () => (
     <Flex gap="middle" align="center">
       <Tooltip content="即座に表示" placement="top" delayDuration={0}>
@@ -121,36 +123,36 @@ export const Delay = {
   ),
 };
 
-// ─── Nested · data-driven Tooltip inside TooltipProvider ────────
+// ─── App-wide via GodxConfigProvider ───────────────────────────
 
-export const NestedProvider = {
-  name: "Nested · data-driven inside TooltipProvider (no double-wrap)",
+export const SharedTiming = {
+  name: "App-wide · GodxConfigProvider tooltipDelay=0",
   render: () => (
-    // Outer provider sets the shared delay. Inner data-driven
-    // <Tooltip>s detect it and skip their own Provider — the outer
-    // delayDuration governs every tip.
-    <TooltipProvider delayDuration={0}>
+    // App roots mount <GodxConfigProvider> exactly once. The
+    // `tooltipDelay` (+ optional `tooltipSkipDelay`) flows into every
+    // nested <Tooltip>; the consumer never imports a separate
+    // TooltipProvider.
+    <GodxConfigProvider tooltipDelay={0}>
       <Flex gap="middle" align="center">
-        <Tooltip content="共有 Provider 1" placement="top">
+        <Tooltip content="共有設定 1" placement="top">
           <Button variant="secondary">A</Button>
         </Tooltip>
-        <Tooltip content="共有 Provider 2" placement="top">
+        <Tooltip content="共有設定 2" placement="top">
           <Button variant="secondary">B</Button>
         </Tooltip>
       </Flex>
-    </TooltipProvider>
+    </GodxConfigProvider>
   ),
   play: async ({ canvasElement, step }: any) => {
     const canvas = within(canvasElement);
     const portal = canvasElement.ownerDocument.body;
 
-    await step("outer-provider delay (0ms) opens tooltip near-instantly", async () => {
+    await step("provider delay (0ms) opens tooltip near-instantly", async () => {
       const trigger = canvas.getByRole("button", { name: "A" });
       await userEvent.hover(trigger);
-      // With outer delay=0 the tip should appear quickly.
       await waitFor(
         () => {
-          const matches = within(portal).getAllByText("共有 Provider 1");
+          const matches = within(portal).getAllByText("共有設定 1");
           expect(matches.length).toBeGreaterThan(0);
         },
         { timeout: 500 },

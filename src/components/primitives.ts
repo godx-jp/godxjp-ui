@@ -258,18 +258,8 @@ export type { RadioProps, RadioGroupProps, RadioOption } from "./data-entry/Radi
 export { Slider } from "./data-entry/Slider"
 export type { SliderProps } from "./data-entry/Slider"
 
-export {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableToolbar,
-} from "./data-display/Table"
-export type { TableProps, TableDensity } from "./data-display/Table"
+export { Table } from "./data-display/Table"
+export type { TableColumn, TableDensity, TableProps } from "./data-display/Table"
 
 export { TimeInput } from "./data-entry/TimeInput"
 export type { TimeInputProps } from "./data-entry/TimeInput"
@@ -398,13 +388,11 @@ export {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-  TooltipProvider,
   TooltipPortal,
 } from "./data-display/Tooltip"
 export type {
   TooltipProps,
   TooltipContentProps,
-  TooltipProviderProps,
 } from "./data-display/Tooltip"
 
 export { Timeline } from "./data-display/Timeline"
