@@ -36,31 +36,17 @@ Steps shows where you ARE in a defined process; Timeline shows what HAS HAPPENED
 ## Usage
 
 ```tsx
-import { Timeline, TimelineItem } from "@godxjp/ui"
+import { Timeline } from "@godxjp/ui"
 
-<Timeline>
-  <TimelineItem
-    color="success"
-    title="申請を提出"
-    time="09:30"
-    description="2026年5月10日 月曜日"
-  />
-  <TimelineItem
-    color="success"
-    title="部長確認"
-    time="10:15"
-    description="経理部 田中部長"
-  />
-  <TimelineItem
-    color="primary"
-    current
-    title="承認待ち"
-    time="進行中"
-    description="役員審査 — 概ね2営業日"
-  />
-  <TimelineItem color="default" title="支給予定" description="承認後の月末に振込" />
-  <TimelineItem color="default" title="完了" description="経費清算終了" />
-</Timeline>
+<Timeline
+  items={[
+    { color: "success", title: "申請を提出",  time: "09:30",  description: "2026年5月10日 月曜日" },
+    { color: "success", title: "部長確認",    time: "10:15",  description: "経理部 田中部長" },
+    { color: "primary", current: true, title: "承認待ち", time: "進行中", description: "役員審査 — 概ね2営業日" },
+    { color: "default", title: "支給予定", description: "承認後の月末に振込" },
+    { color: "default", title: "完了",     description: "経費清算終了" },
+  ]}
+/>
 ```
 
 ## Props
@@ -69,22 +55,25 @@ import { Timeline, TimelineItem } from "@godxjp/ui"
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
+| `items` | `TimelineItem[]` | required | Rows to render (see TimelineItem shape below) |
+| `renderItem` | `(item, variant, index) => ReactNode` | — | Per-row custom renderer; bypasses default variant rendering when set |
 | `variant` | `"list" \| "branching" \| "feed"` | `"list"` | Visual treatment |
 | `reverse` | `boolean` | `false` | Render items last-first |
-| `pending` | `ReactNode` | — | Trailing "ongoing" marker appended after the last child |
+| `pending` | `ReactNode` | — | Trailing "ongoing" marker appended after the last item |
 | `className` | `string` | — | Merged onto the variant root (`.tl-list` / `.tl-br` / `.tl-feed`) |
-| `children` | `ReactNode` | — | `<TimelineItem>` children |
 
-### `TimelineItem`
+### `TimelineItem` (item shape — plain object, NOT a sub-component)
 
-| Prop | Type | Default | Description |
+| Field | Type | Default | Description |
 |---|---|---|---|
+| `key` | `string \| number` | item index | Stable key for React reconciliation. Pass a real id when items can re-order. |
 | `color` | `"default" \| "primary" \| "success" \| "warning" \| "destructive" \| "info" \| "attention"` | `"default"` | Marker semantic role |
 | `current` | `boolean` | `false` | Pulsing "current" marker — visually emphasises the active item |
 | `time` | `ReactNode` | — | Timestamp slot — right label in `branching`, inline `.ts` in `list` / `feed` |
 | `avatar` | `ReactNode` | — | Avatar slot (used by `feed` variant) |
 | `title` | `ReactNode` | — | Headline |
 | `description` | `ReactNode` | — | Body text |
+| `children` | `ReactNode` | — | Extra content rendered after `title` + `description` |
 | `className` | `string` | — | Merged onto the per-variant item root |
 
 ## Accessibility
@@ -98,32 +87,38 @@ import { Timeline, TimelineItem } from "@godxjp/ui"
 
 ```tsx
 // Branching variant — approval pipeline
-<Timeline variant="branching">
-  <TimelineItem color="success" time="05/08 09:30" title="申請受領"
-    description="申請ID #2847 を受領しました" />
-  <TimelineItem color="success" time="05/08 11:02" title="一次承認"
-    description="マネージャー 山田 健 によって承認" />
-  <TimelineItem color="primary" current time="05/09 14:30" title="役員審査中"
-    description="財務担当 佐藤専務が確認中" />
-  <TimelineItem color="attention" time="予定" title="経理処理"
-    description="承認後 翌営業日" />
-</Timeline>
+<Timeline
+  variant="branching"
+  items={[
+    { color: "success", time: "05/08 09:30", title: "申請受領",   description: "申請ID #2847 を受領しました" },
+    { color: "success", time: "05/08 11:02", title: "一次承認",   description: "マネージャー 山田 健 によって承認" },
+    { color: "primary", current: true, time: "05/09 14:30", title: "役員審査中", description: "財務担当 佐藤専務が確認中" },
+    { color: "attention", time: "予定", title: "経理処理", description: "承認後 翌営業日" },
+  ]}
+/>
 
 // Feed variant — avatar-led social timeline
-<Timeline variant="feed">
-  <TimelineItem
-    avatar={<Avatar name="田中 美香" size="sm" />}
-    title="田中 美香 が新規プロジェクトを作成しました"
-    time="2時間前"
-    description="「2026年Q3 渋谷店リニューアル」"
-  />
-</Timeline>
+<Timeline
+  variant="feed"
+  items={[
+    {
+      avatar: <Avatar name="田中 美香" size="sm" />,
+      title: "田中 美香 が新規プロジェクトを作成しました",
+      time: "2時間前",
+      description: "「2026年Q3 渋谷店リニューアル」",
+    },
+  ]}
+/>
 
 // Reverse + trailing pending marker
-<Timeline reverse pending="次の同期を待機中…">
-  <TimelineItem color="success" title="データベース同期" time="08:00" />
-  <TimelineItem color="success" title="バックアップ作成" time="08:15" />
-</Timeline>
+<Timeline
+  reverse
+  pending="次の同期を待機中…"
+  items={[
+    { color: "success", title: "データベース同期", time: "08:00" },
+    { color: "success", title: "バックアップ作成", time: "08:15" },
+  ]}
+/>
 ```
 
 ## See also
