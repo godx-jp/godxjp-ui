@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Card } from "../../components/data-display/Card";
 import { Button } from "../../components/general/Button";
+import { Input } from "../../components/data-entry/Input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/data-entry/Select";
 
 /**
  * Data Display/Card — surface container.
@@ -754,9 +762,16 @@ export const D4_SettingsRows: Story = {
           <div style={{ fontSize: 13, fontWeight: 500 }}>締め日</div>
           <div className="muted" style={{ fontSize: 11, lineHeight: 1.55 }}>給与計算の基準となる日付。</div>
         </div>
-        <select className="input" style={{ width: 120, height: 28, fontSize: 12 }}>
-          <option>月末</option><option>20日</option><option>15日</option>
-        </select>
+        <Select defaultValue="月末">
+          <SelectTrigger className="input" style={{ width: 120, height: 28, fontSize: 12 }}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="月末">月末</SelectItem>
+            <SelectItem value="20日">20日</SelectItem>
+            <SelectItem value="15日">15日</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </Card>
   ),
@@ -1459,10 +1474,10 @@ export const H8_Tabs: Story = {
     <Card padding="none">
       <div className="card-header-tabs">
         <span className="t">勤怠</span>
-        <button className="tab on">月次 <span className="pill">22</span></button>
-        <button className="tab">日次</button>
-        <button className="tab">承認待ち <span className="pill" style={{ background: "color-mix(in oklch, var(--attention) 18%, transparent)", color: "var(--attention)" }}>3</span></button>
-        <button className="tab">エラー</button>
+        <Button variant="ghost" className="tab on">月次 <span className="pill">22</span></Button>
+        <Button variant="ghost" className="tab">日次</Button>
+        <Button variant="ghost" className="tab">承認待ち <span className="pill" style={{ background: "color-mix(in oklch, var(--attention) 18%, transparent)", color: "var(--attention)" }}>3</span></Button>
+        <Button variant="ghost" className="tab">エラー</Button>
         <div className="spacer" />
         <div className="right">
           <Button variant="ghost" size="x-small" aria-label="フィルタ">
@@ -1487,10 +1502,10 @@ export const H9_Filters: Story = {
       <div className="card-header-filters">
         <span className="t">従業員</span>
         <span style={{ fontSize: 11, color: "var(--muted-foreground)" }}>フィルタ:</span>
-        <button className="chip-fl on">渋谷本店</button>
-        <button className="chip-fl on">正社員</button>
-        <button className="chip-fl">遅刻あり</button>
-        <button className="chip-fl">＋ 追加</button>
+        <Button variant="ghost" className="chip-fl on">渋谷本店</Button>
+        <Button variant="ghost" className="chip-fl on">正社員</Button>
+        <Button variant="ghost" className="chip-fl">遅刻あり</Button>
+        <Button variant="ghost" className="chip-fl">＋ 追加</Button>
         <span className="spacer" />
         <span style={{ fontSize: 11, color: "var(--muted-foreground)", fontVariantNumeric: "tabular-nums" }}>14 / 38 件</span>
       </div>
@@ -1512,7 +1527,7 @@ export const H10_Search: Story = {
           <svg className="si-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
             <circle cx={11} cy={11} r={8} /><line x1={21} y1={21} x2={16.65} y2={16.65} />
           </svg>
-          <input placeholder="名前 / メール / コード" />
+          <Input placeholder="名前 / メール / コード" />
           <span className="kbd">⌘K</span>
         </div>
       </div>
@@ -1599,9 +1614,9 @@ export const H15_Toolbar: Story = {
       <div className="card-header-toolbar">
         <span className="t">シフト</span>
         <div className="seg">
-          <button>日</button>
-          <button className="on">週</button>
-          <button>月</button>
+          <Button variant="ghost">日</Button>
+          <Button variant="ghost" className="on">週</Button>
+          <Button variant="ghost">月</Button>
         </div>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
           <Button variant="ghost" size="x-small" aria-label="前週">
