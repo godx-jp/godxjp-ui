@@ -1,34 +1,41 @@
-import {
-  Children,
-  createContext,
-  isValidElement,
-  useContext,
-  type ReactNode,
-} from "react";
+import { type ReactNode } from "react";
 import { cn } from "../cn";
 
 /**
  * Timeline — chronological event rail.
  *
+ * Data-driven API (cardinal rule 23 + rule 31 — no parallel
+ * sub-component primitives). Consumers pass an `items` array; the
+ * primitive renders the rail end-to-end. Per-item customisation
+ * flows through optional `renderItem` for advanced cases.
+ *
  * Three visual variants, each backed by an existing CSS atom shipped
  * with the dxs-kintai card canon (`src/styles/shell/80-card-sections.css`):
  *
  *   - `"list"` (default) — vertical rail with markers, `.tl-list` + `.tl-item`.
- *   - `"branching"` — approval-pipeline shape with left-aligned timestamp,
- *     dot, and body. `.tl-br` + `.row`.
+ *   - `"branching"` — approval pipeline with left timestamp, dot, body.
+ *     `.tl-br` + `.row`.
  *   - `"feed"` — social-style avatar feed. `.tl-feed` + `.item`.
  *
  * Vocabulary (cardinal rule 23 §B):
  *   - `variant` — visual treatment ("list" | "branching" | "feed").
- *   - `color` (TimelineItem) — semantic role of the marker.
- *   - `current` — boolean, marks the active item.
+ *   - `color` per item — semantic role of the marker.
+ *   - `current` per item — boolean, marks the active item.
  *   - NEVER `mode` / `position` / `type` / `dot` synonyms.
  *
- * @example
- *   <Timeline>
- *     <TimelineItem color="success" title="申請" time="09:30" />
- *     <TimelineItem color="primary" current title="承認待ち" />
- *   </Timeline>
+ * @example Data-driven (preferred)
+ *   <Timeline
+ *     items={[
+ *       { color: "success", title: "申請", time: "09:30" },
+ *       { color: "primary", current: true, title: "承認待ち" },
+ *     ]}
+ *   />
+ *
+ * @example With renderItem (full custom)
+ *   <Timeline
+ *     items={events}
+ *     renderItem={(it) => <RichRow data={it} />}
+ *   />
  */
 
 export type TimelineVariant = "list" | "branching" | "feed";
@@ -42,91 +49,49 @@ export type TimelineColor =
   | "info"
   | "attention";
 
-interface TimelineCtx {
-  variant: TimelineVariant;
-}
-
-const TimelineContext = createContext<TimelineCtx | null>(null);
-
-function useTimelineCtx(): TimelineCtx {
-  return useContext(TimelineContext) ?? { variant: "list" };
-}
-
-export interface TimelineProps {
-  /** Visual variant — list (default), branching, or feed. */
-  variant?: TimelineVariant;
-  /** Render items last-first. */
-  reverse?: boolean;
-  /** "Ongoing" item rendered after the last child. */
-  pending?: ReactNode;
-  className?: string;
-  children?: ReactNode;
-}
-
-export function Timeline({
-  variant = "list",
-  reverse = false,
-  pending,
-  className,
-  children,
-}: TimelineProps) {
-  const items = Children.toArray(children).filter(isValidElement);
-  const ordered = reverse ? items.slice().reverse() : items;
-  const trailing =
-    pending !== undefined ? (
-      <TimelineItem
-        key="__pending"
-        color="default"
-        current
-        title={pending}
-      />
-    ) : null;
-
-  const className_ = cn(
-    variant === "list" && "tl-list",
-    variant === "branching" && "tl-br",
-    variant === "feed" && "tl-feed",
-    className,
-  );
-
-  const inner = (
-    <>
-      {ordered}
-      {trailing}
-    </>
-  );
-
-  return (
-    <TimelineContext.Provider value={{ variant }}>
-      {variant === "list" ? (
-        <ul className={className_}>{inner}</ul>
-      ) : (
-        <div className={className_}>{inner}</div>
-      )}
-    </TimelineContext.Provider>
-  );
-}
-
-export interface TimelineItemProps {
+export interface TimelineItem {
+  /** Stable key for React reconciliation. Defaults to the item index
+   * but consumers should pass a real id for lists that re-order. */
+  key?: string | number;
   /** Semantic role of the marker. Default "default". */
   color?: TimelineColor;
   /** Pulsing "current" marker. */
   current?: boolean;
-  /** Time / timestamp slot — right-side label in `branching`,
-   *  inline `.ts` in `list`, inline `.ts` in `feed`. */
+  /** Time / timestamp slot — right-side label in `branching`, inline
+   * `.ts` in `list`, inline `.ts` in `feed`. */
   time?: ReactNode;
-  /** Avatar slot — feed variant only. */
+  /** Avatar slot — `feed` variant only. */
   avatar?: ReactNode;
   title?: ReactNode;
   description?: ReactNode;
-  className?: string;
+  /** Extra content rendered after `title` + `description`. */
   children?: ReactNode;
+  /** Per-item class merged onto the row. */
+  className?: string;
 }
 
-// Map our framework color vocabulary onto the existing tl-* atom
-// classes shipped with the card canon. Atoms cover the canonical
-// subset; the rest fall through to the neutral marker.
-function colorClass(color: TimelineColor): string {
+export interface TimelineProps {
+  /** Items to render. Each row is a single object — no sub-component
+   * ceremony. */
+  items: TimelineItem[];
+  /** Custom row renderer. When set, takes priority over the default
+   * variant rendering — receives the item + the active variant +
+   * index, returns the full row JSX. */
+  renderItem?: (item: TimelineItem, variant: TimelineVariant, index: number) => ReactNode;
+  /** Visual variant. Default `list`. */
+  variant?: TimelineVariant;
+  /** Render items last-first. */
+  reverse?: boolean;
+  /** "Ongoing" trailing item — rendered after the last item with
+   * `color: "default"` + `current: true`. */
+  pending?: ReactNode;
+  className?: string;
+}
+
+// Map the semantic color vocabulary onto the canonical .tl-* atom
+// hues shipped with the card design system. Atoms cover a subset;
+// the rest fall back to the neutral marker.
+function colorClass(color: TimelineColor = "default"): string {
   switch (color) {
     case "success":
       return "success";
@@ -144,32 +109,25 @@ function colorClass(color: TimelineColor): string {
   }
 }
 
-export function TimelineItem({
-  color = "default",
-  current = false,
-  time,
-  avatar,
-  title,
-  description,
-  className,
-  children,
-}: TimelineItemProps) {
-  const { variant } = useTimelineCtx();
-  const hue = colorClass(color);
+function defaultRender(
+  item: TimelineItem,
+  variant: TimelineVariant,
+): ReactNode {
+  const hue = colorClass(item.color);
 
   if (variant === "branching") {
     return (
       <div
-        className={cn("row", hue, current && "current", className)}
+        className={cn("row", hue, item.current && "current", item.className)}
       >
-        <span className="when">{time}</span>
+        <span className="when">{item.time}</span>
         <div className="node" aria-hidden />
         <div className="body">
-          {title !== undefined && <div className="t">{title}</div>}
-          {description !== undefined && (
-            <div className="d">{description}</div>
+          {item.title !== undefined && <div className="t">{item.title}</div>}
+          {item.description !== undefined && (
+            <div className="d">{item.description}</div>
           )}
-          {children}
+          {item.children}
         </div>
       </div>
     );
@@ -177,17 +135,17 @@ export function TimelineItem({
 
   if (variant === "feed") {
     return (
-      <div className={cn("item", className)}>
-        {avatar}
+      <div className={cn("item", item.className)}>
+        {item.avatar}
         <div className="body">
           <div className="h">
-            {title !== undefined && <b>{title}</b>}
-            {time !== undefined && <span className="ts">{time}</span>}
+            {item.title !== undefined && <b>{item.title}</b>}
+            {item.time !== undefined && <span className="ts">{item.time}</span>}
           </div>
-          {description !== undefined && (
-            <div className="d">{description}</div>
+          {item.description !== undefined && (
+            <div className="d">{item.description}</div>
           )}
-          {children}
+          {item.children}
         </div>
       </div>
     );
@@ -195,15 +153,60 @@ export function TimelineItem({
 
   // Default — list variant.
   return (
-    <li className={cn("tl-item", hue, current && "current", className)}>
-      {(title !== undefined || time !== undefined) && (
+    <li className={cn("tl-item", hue, item.current && "current", item.className)}>
+      {(item.title !== undefined || item.time !== undefined) && (
         <div className="t-h">
-          {title !== undefined && <span>{title}</span>}
-          {time !== undefined && <span className="ts">{time}</span>}
+          {item.title !== undefined && <span>{item.title}</span>}
+          {item.time !== undefined && <span className="ts">{item.time}</span>}
         </div>
       )}
-      {description !== undefined && <div className="t-d">{description}</div>}
-      {children}
+      {item.description !== undefined && <div className="t-d">{item.description}</div>}
+      {item.children}
     </li>
   );
+}
+
+export function Timeline({
+  items,
+  renderItem,
+  variant = "list",
+  reverse = false,
+  pending,
+  className,
+}: TimelineProps) {
+  const ordered = reverse ? items.slice().reverse() : items;
+  const trailing: TimelineItem | null =
+    pending !== undefined
+      ? { key: "__pending", color: "default", current: true, title: pending }
+      : null;
+  const all = trailing ? [...ordered, trailing] : ordered;
+
+  const renderRow = renderItem ?? defaultRender;
+  const rows = all.map((item, i) => {
+    const key = item.key ?? i;
+    const node = renderRow(item, variant, i);
+    // Wrap to attach the key in a generic way regardless of returned tag.
+    return <RowKey key={key}>{node}</RowKey>;
+  });
+
+  const className_ = cn(
+    variant === "list" && "tl-list",
+    variant === "branching" && "tl-br",
+    variant === "feed" && "tl-feed",
+    className,
+  );
+
+  return variant === "list" ? (
+    <ul className={className_}>{rows}</ul>
+  ) : (
+    <div className={className_}>{rows}</div>
+  );
+}
+
+/** Internal helper — React needs the key on the element returned by
+ * `.map()`. `RowKey` is a transparent wrapper that lets us assign the
+ * key without forcing the renderer to do so. Returns the child verbatim
+ * via Fragment so it doesn't alter the DOM. */
+function RowKey({ children }: { children: ReactNode }): ReactNode {
+  return <>{children}</>;
 }
