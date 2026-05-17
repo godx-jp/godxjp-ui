@@ -1,6 +1,6 @@
 # @godxjp/ui — cardinal rules
 
-Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 25
+Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 26
 cardinal rules below are non-negotiable; anything older that
 contradicts them is wrong.
 
@@ -624,6 +624,139 @@ framework concept; inline duplication is rejected at review.
 
     Story file diffs without a corresponding primitive / CSS /
     token diff are rejected at review.
+
+26. **Library isolation — consumers ship only what they import.**
+    Absolute.
+
+    The `dist/` artefact published to npm carries the UI framework
+    surface ONLY: primitives + composites + shell + hooks + i18n +
+    preferences + data + tokens (CSS). Nothing else — no
+    Storybook, no dev tooling, no test helpers, no probe scripts,
+    no design-handoff bundle. Consumers who `import "@godxjp/ui"`
+    get a tight tree-shakable surface; consumers who use only
+    one primitive pull in only that primitive's transitive cost.
+
+    ### §A — What ships in `dist/`
+
+    Every entry in `tsup.config.ts` corresponds to a sub-path in
+    `package.json::exports`. Today's set:
+
+    - `index`                   — root barrel
+    - `i18n`                    — i18next singleton + initI18n
+    - `hooks`                   — useTweaks / useBreakpoint / …
+    - `data`                    — products catalogue
+    - `components/primitives`   — Button / Input / Card / …
+    - `components/shell`        — AppShell / Sidebar / Topbar
+    - `components/screens`      — DashboardScreen / PlansScreen
+    - `components/composites`   — Upload / LocaleInput / Calendar
+    - `preferences`             — PreferencesProvider
+
+    Adding a new entry: append to `tsup.config.ts::entry` AND
+    `package.json::exports`. Both mirror.
+
+    ### §B — What MUST NOT ship in `dist/`
+
+    - `src/stories/**`              — Storybook stories (dev docs)
+    - `.storybook/**`               — Storybook config
+    - `scripts/**`                  — lint-tokens / probes / build helpers
+    - `__tests__/**`                — Vitest specs
+    - `*.test.{ts,tsx}` / `*.spec.{ts,tsx}` — same
+    - `design-handoff/**`           — design canon bundle (operator-only)
+    - `card-verify.cjs` / probe-*.cjs — throwaway Playwright probes
+    - `design/**`                   — Sketch / Figma exports
+
+    Verification — `pnpm pack` then untar the tarball; only
+    `dist/` + `src/tokens/` + `config/` + `BRAND.md` + `CHANGELOG.md`
+    + `LICENSE` + `README.md` + `package.json` should appear.
+
+    ### §C — What MUST NOT be bundled into `dist/*.js`
+
+    Every npm `dependencies` entry is `external` in
+    `tsup.config.ts`. Tsup config auto-derives the list from
+    `package.json::dependencies`:
+
+    ```ts
+    const externalDeps = [
+      ...Object.keys(pkg.dependencies ?? {}),
+      ...Object.keys(pkg.peerDependencies ?? {}),
+    ]
+    ```
+
+    Consumer's package manager (pnpm / npm / yarn) resolves them
+    once, deduped across the dep tree. Double-bundling = the same
+    Radix / Sonner / Lucide code appearing in TWO places in the
+    consumer's app, defeating dedup + tree-shake.
+
+    Plus regex matchers for sub-path imports
+    (`react/jsx-runtime`, `react-dom/client`, `@radix-ui/*/dist`,
+    `@internationalized/date/*`).
+
+    ### §D — `package.json::files` whitelist
+
+    Only the strict consumer surface ships:
+
+    ```json
+    "files": [
+      "dist",
+      "src/tokens",
+      "config",
+      "BRAND.md",
+      "CHANGELOG.md"
+    ]
+    ```
+
+    `src/components/`, `src/stories/`, `src/hooks/`, `src/styles/`
+    DO NOT appear — they're build inputs, not consumer surfaces.
+    Consumer imports the BUILT JS at `dist/*` (resolved via
+    `package.json::exports`).
+
+    `src/tokens/` ships as RAW CSS for consumers that import
+    `@godxjp/ui/tailwind.css` (Tailwind v4 `@import` entry).
+
+    ### §E — Forbidden patterns
+
+    - **Importing a story or design-handoff file from a primitive
+      source.** A primitive must not transitively pull a story or
+      a design canon file — those are not in `dist/`.
+    - **Adding a `devDependency` to `dependencies`.** Storybook,
+      Vitest, Playwright, tsup ARE devDependencies. They must
+      never become runtime deps.
+    - **`import "../../stories/<X>.stories"` from primitive
+      code.** Stories import primitives, never the reverse.
+    - **`tsup` entry pointing at a story / test / script file.**
+      The entry list is the public surface contract.
+    - **`package.json::files` listing `src/`.** That ships every
+      story + every internal helper to npm — the opposite of
+      isolation.
+
+    ### §F — Verification at PR review
+
+    1. `pnpm build` — confirm `dist/` shape matches §A; no story
+       files; no test files.
+    2. `node -e "console.log(require('./libs/ts/godxjp-ui/dist/components/primitives.cjs') ? 'ok' : 'missing')"`
+       — or the ESM equivalent — confirms the consumer-shaped
+       module resolves cleanly.
+    3. `grep -r "@storybook\|vitest\|playwright" libs/ts/godxjp-ui/dist/` —
+       MUST return 0 matches. Any hit = a dev tool leaked into
+       the consumer surface; investigate immediately.
+    4. `du -sh libs/ts/godxjp-ui/dist/components/primitives.js` —
+       track size; sudden 2× growth often signals a bundled lib
+       that should be external. Set a rough budget of 100 KB for
+       primitives.js / 200 KB for index.js (advisory).
+
+    ### Why this rule exists
+
+    Consumer apps consuming `@godxjp/ui` should pay ONLY for the
+    visual layer they use. If a service's frontend bundles 800 KB
+    of Storybook addon code because we accidentally shipped it,
+    that service's page-load suffers — and the user blames their
+    own SPA, not the framework. Isolation is the contract that
+    keeps `@godxjp/ui` adoption frictionless.
+
+    The discipline: every PR that adds an entry point (`tsup
+    entry` / `package.json::exports`), bumps a dependency, or
+    moves a file out of `src/stories/` runs the §F checklist
+    BEFORE landing.
 
 - Component diff without paired story diff (rule 1).
 - Raw color utility (`bg-blue-500`) in a primitive (rule 2).
