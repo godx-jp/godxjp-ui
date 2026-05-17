@@ -114,14 +114,14 @@ export const A2_StatWithChip: Story = {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]">
       <Card>
         <div className="row-between" style={{ marginBottom: 6 }}>
-          <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>月間アクティブ</div>
+          <div className="muted" style={{ fontSize: 12 }}>月間アクティブ</div>
           <span className="chip chip-success">+5.2%</span>
         </div>
         <div className="stat">12,840</div>
         <div className="muted" style={{ fontSize: 11, marginTop: 2 }}>先月比 +632 · MAU</div>
       </Card>
       <Card>
-        <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 6 }}>今月の勤怠</div>
+        <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>今月の勤怠</div>
         <div className="row-between" style={{ alignItems: "flex-end" }}>
           <div className="stat">168.5<span className="unit">h</span></div>
           <span className="delta down">▲ 2.1h</span>
@@ -129,14 +129,14 @@ export const A2_StatWithChip: Story = {
         <div className="muted" style={{ fontSize: 11, marginTop: 2 }}>先月比 · 上限 180h</div>
       </Card>
       <Card>
-        <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 8 }}>有給残</div>
+        <div className="muted" style={{ fontSize: 12, marginBottom: 8 }}>有給残</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <div>
             <div className="stat" style={{ fontSize: 20 }}>12.0<span className="unit">日</span></div>
             <div className="muted" style={{ fontSize: 10 }}>残</div>
           </div>
           <div>
-            <div className="stat" style={{ fontSize: 20, color: "var(--muted-foreground)" }}>8.0<span className="unit">日</span></div>
+            <div className="stat muted" style={{ fontSize: 20 }}>8.0<span className="unit">日</span></div>
             <div className="muted" style={{ fontSize: 10 }}>取得済</div>
           </div>
         </div>
@@ -152,9 +152,9 @@ export const A4_StatSparkline: Story = {
       <Card>
         <div className="row-between">
           <div>
-            <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>売上 (今週)</div>
+            <div className="muted" style={{ fontSize: 12 }}>売上 (今週)</div>
             <div className="stat" style={{ marginTop: 4 }}>¥ 4.82M</div>
-            <div style={{ marginTop: 2, fontSize: 11, color: "var(--muted-foreground)" }}>
+            <div className="muted" style={{ marginTop: 2, fontSize: 11 }}>
               先週 ¥ 4.55M · <span className="delta up" style={{ padding: 0 }}>+5.9%</span>
             </div>
           </div>
@@ -176,7 +176,7 @@ export const A4_StatSparkline: Story = {
             <i style={{ height: "40%", background: "color-mix(in oklch, var(--border) 80%, transparent)" }} />
             <i style={{ height: "0%", background: "color-mix(in oklch, var(--border) 80%, transparent)" }} />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 10, color: "var(--muted-foreground)", fontVariantNumeric: "tabular-nums" }}>
+          <div className="muted tnum" style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 10 }}>
             <span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span><span>日</span>
           </div>
         </CardBody>
@@ -197,7 +197,7 @@ export const A6_ProgressQuota: Story = {
       <Card>
         <div className="row-between" style={{ marginBottom: 8 }}>
           <div style={{ fontSize: 13, fontWeight: 500 }}>ストレージ使用量</div>
-          <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: "var(--muted-foreground)" }}>42.8 / 50 GB</span>
+          <span className="mono muted" style={{ fontSize: 11 }}>42.8 / 50 GB</span>
         </div>
         <div className="prog warning"><i style={{ width: "85%" }} /></div>
         <div className="muted" style={{ fontSize: 11, marginTop: 6, display: "flex", gap: 6, alignItems: "center" }}>
@@ -216,7 +216,7 @@ export const A6_ProgressQuota: Story = {
         </div>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 6, marginBottom: 8 }}>
           <div className="stat" style={{ fontSize: 20 }}>¥ 2.18M</div>
-          <div style={{ fontSize: 11, color: "var(--muted-foreground)", paddingBottom: 4 }}>/ ¥ 3.00M</div>
+          <div className="muted" style={{ fontSize: 11, paddingBottom: 4 }}>/ ¥ 3.00M</div>
           <span className="delta up" style={{ marginLeft: "auto", marginBottom: 4 }}>73%</span>
         </div>
         <div className="prog success"><i style={{ width: "73%" }} /></div>
@@ -266,10 +266,10 @@ export const A8_InlineTable: Story = {
           <tr><th style={{ width: 22 }} /><th>店舗</th><th>売上</th><th>前年比</th><th>達成率</th></tr>
         </thead>
         <tbody>
-          <tr><td style={{ color: "var(--muted-foreground)" }}>01</td><td>渋谷本店</td><td>¥ 4,820,500</td><td><span className="delta up">+12.4%</span></td><td>83%</td></tr>
-          <tr><td style={{ color: "var(--muted-foreground)" }}>02</td><td>表参道店</td><td>¥ 3,142,800</td><td><span className="delta up">+8.1%</span></td><td>71%</td></tr>
-          <tr><td style={{ color: "var(--muted-foreground)" }}>03</td><td>自由が丘店</td><td>¥ 2,890,300</td><td><span className="delta down">−3.2%</span></td><td>64%</td></tr>
-          <tr><td style={{ color: "var(--muted-foreground)" }}>04</td><td>新宿西口店</td><td>¥ 2,104,200</td><td><span className="delta flat">±0.0%</span></td><td>52%</td></tr>
+          <tr><td className="muted">01</td><td>渋谷本店</td><td>¥ 4,820,500</td><td><span className="delta up">+12.4%</span></td><td>83%</td></tr>
+          <tr><td className="muted">02</td><td>表参道店</td><td>¥ 3,142,800</td><td><span className="delta up">+8.1%</span></td><td>71%</td></tr>
+          <tr><td className="muted">03</td><td>自由が丘店</td><td>¥ 2,890,300</td><td><span className="delta down">−3.2%</span></td><td>64%</td></tr>
+          <tr><td className="muted">04</td><td>新宿西口店</td><td>¥ 2,104,200</td><td><span className="delta flat">±0.0%</span></td><td>52%</td></tr>
         </tbody>
       </table>
       <CardFooter block style={{ justifyContent: "center" }}>
@@ -341,9 +341,9 @@ export const B3_ProfileRich: Story = {
           <div className="muted" style={{ fontSize: 11 }}>店長 · 渋谷本店 · 入社 2020年 4月</div>
         </CardBody>
         <CardFooter block style={{ gap: 18, color: "var(--foreground)" }}>
-          <div><div style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>12</div><div className="muted" style={{ fontSize: 10 }}>担当チーム</div></div>
-          <div><div style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>98.4%</div><div className="muted" style={{ fontSize: 10 }}>勤怠率</div></div>
-          <div><div style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>5.0</div><div className="muted" style={{ fontSize: 10 }}>評価</div></div>
+          <div><div className="tnum" style={{ fontSize: 14, fontWeight: 600 }}>12</div><div className="muted" style={{ fontSize: 10 }}>担当チーム</div></div>
+          <div><div className="tnum" style={{ fontSize: 14, fontWeight: 600 }}>98.4%</div><div className="muted" style={{ fontSize: 10 }}>勤怠率</div></div>
+          <div><div className="tnum" style={{ fontSize: 14, fontWeight: 600 }}>5.0</div><div className="muted" style={{ fontSize: 10 }}>評価</div></div>
         </CardFooter>
       </Card>
       <Card>
@@ -444,7 +444,7 @@ export const C1_ArticleProduct: Story = {
           <div className="muted" style={{ fontSize: 11, lineHeight: 1.55, marginTop: 6 }}>
             シフト自動最適化と多店舗在庫連携を導入します。詳細とロードマップを公開しました。
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 10, fontSize: 11, color: "var(--muted-foreground)" }}>
+          <div className="muted" style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 10, fontSize: 11 }}>
             <span className="ava sm">編</span><span>編集部</span>
             <span style={{ marginLeft: "auto" }}>3 分</span>
           </div>
@@ -453,11 +453,11 @@ export const C1_ArticleProduct: Story = {
       <Card padding="none">
         <div className="ph striped tinted-warm" style={{ aspectRatio: "1" }}>800 × 800 · 商品写真</div>
         <CardBody block style={{ padding: "12px 14px 14px" }}>
-          <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 2 }}>和食 · 寿司</div>
+          <div className="muted" style={{ fontSize: 12, marginBottom: 2 }}>和食 · 寿司</div>
           <div style={{ fontSize: 13, fontWeight: 500 }}>特選 まぐろ握り 6貫盛り合わせ</div>
           <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 8 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>¥ 2,480</div>
-            <div style={{ fontSize: 11, color: "var(--muted-foreground)", textDecoration: "line-through" }}>¥ 2,980</div>
+            <div className="tnum" style={{ fontSize: 18, fontWeight: 600 }}>¥ 2,480</div>
+            <div className="muted" style={{ fontSize: 11, textDecoration: "line-through" }}>¥ 2,980</div>
             <span className="chip chip-attention" style={{ marginLeft: "auto" }}>-17%</span>
           </div>
           <Button size="small" block style={{ marginTop: 10 }}>カートに追加</Button>
@@ -466,7 +466,7 @@ export const C1_ArticleProduct: Story = {
       <Card>
         <div className="row-between" style={{ marginBottom: 10 }}>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <span className="ic xl" style={{ background: "color-mix(in oklch, var(--destructive) 12%, var(--card))", color: "var(--destructive)", borderColor: "color-mix(in oklch, var(--destructive) 22%, transparent)" }}>PDF</span>
+            <span className="ic xl destructive">PDF</span>
             <div>
               <div style={{ fontSize: 13, fontWeight: 500 }}>就業規則_2026年版.pdf</div>
               <div className="muted" style={{ fontSize: 11 }}>2.4 MB · 24 ページ</div>
@@ -488,16 +488,16 @@ export const C3_PricingTier: Story = {
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]" style={{ paddingTop: 14 }}>
       <Card>
-        <div style={{ fontSize: 11, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Starter</div>
+        <div className="micro">Starter</div>
         <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 8 }}>
           <div className="stat" style={{ fontSize: 24 }}>¥ 0</div>
-          <div style={{ fontSize: 11, color: "var(--muted-foreground)" }}>/月</div>
+          <div className="muted" style={{ fontSize: 11 }}>/月</div>
         </div>
         <div className="muted" style={{ fontSize: 11, marginTop: 6 }}>10 名まで · 基本機能</div>
         <ul style={{ listStyle: "none", padding: 0, margin: "14px 0 0", display: "flex", flexDirection: "column", gap: 6, fontSize: 12 }}>
           <li style={{ display: "flex", gap: 6 }}><Check />勤怠打刻</li>
           <li style={{ display: "flex", gap: 6 }}><Check />シフト管理</li>
-          <li style={{ display: "flex", gap: 6, color: "var(--muted-foreground)" }}>
+          <li className="muted" style={{ display: "flex", gap: 6 }}>
             <svg className="si-sm" style={{ marginTop: 3 }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
               <line x1={18} y1={6} x2={6} y2={18} strokeLinecap="round" />
               <line x1={6} y1={6} x2={18} y2={18} strokeLinecap="round" />
@@ -511,7 +511,7 @@ export const C3_PricingTier: Story = {
         <div style={{ fontSize: 11, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 500 }}>Pro</div>
         <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 8 }}>
           <div className="stat" style={{ fontSize: 24 }}>¥ 480</div>
-          <div style={{ fontSize: 11, color: "var(--muted-foreground)" }}>/ 名 / 月</div>
+          <div className="muted" style={{ fontSize: 11 }}>/ 名 / 月</div>
         </div>
         <div className="muted" style={{ fontSize: 11, marginTop: 6 }}>無制限 · 全機能 + API</div>
         <ul style={{ listStyle: "none", padding: 0, margin: "14px 0 0", display: "flex", flexDirection: "column", gap: 6, fontSize: 12 }}>
@@ -522,7 +522,7 @@ export const C3_PricingTier: Story = {
         <Button block style={{ marginTop: 14 }}>アップグレード</Button>
       </Card>
       <Card>
-        <div style={{ fontSize: 11, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Enterprise</div>
+        <div className="micro">Enterprise</div>
         <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 8 }}>
           <div className="stat" style={{ fontSize: 24 }}>お見積</div>
         </div>
@@ -663,7 +663,7 @@ export const D1_Approval: Story = {
         <dl className="dl left" style={{ gridTemplateColumns: "80px 1fr" }}>
           <dt>期間</dt><dd>5月 22日 (木) — 5月 23日 (金) · 2 日</dd>
           <dt>残数</dt><dd>12.0 日 → 10.0 日</dd>
-          <dt>理由</dt><dd style={{ fontWeight: 400, color: "var(--muted-foreground)" }}>私用のため</dd>
+          <dt>理由</dt><dd className="muted" style={{ fontWeight: 400 }}>私用のため</dd>
         </dl>
       </CardBody>
     </Card>
@@ -691,7 +691,7 @@ export const D2_StepsWizard: Story = {
           <Button size="small" style={{ marginTop: 8 }}>続ける</Button>
         </div>
         <div className="tl-item">
-          <div className="t-h" style={{ color: "var(--muted-foreground)" }}>給与連携を設定</div>
+          <div className="t-h muted">給与連携を設定</div>
           <div className="t-d">freee · マネーフォワードと接続</div>
         </div>
       </div>
@@ -787,7 +787,7 @@ export const D5_CTA: Story = {
             <div className="muted" style={{ fontSize: 11 }}>2026年 5月 17日 (土)</div>
             <div style={{ fontSize: 13, fontWeight: 500 }}>早番シフト · 8:00–17:00</div>
           </div>
-          <div style={{ fontSize: 24, fontWeight: 500, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.01em" }}>07:58:42</div>
+          <div className="tnum" style={{ fontSize: 24, fontWeight: 500, letterSpacing: "-0.01em" }}>07:58:42</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 8 }}>
           <Button size="large" style={{ height: 48, fontSize: 15 }}>出勤 · Check In</Button>
@@ -926,7 +926,7 @@ export const E4_Skeleton: Story = {
             <span className="sk sk-line short" />
           </div>
         </div>
-        <div className="muted" style={{ fontSize: 10, fontFamily: "var(--font-mono)", marginTop: 10, paddingTop: 8, borderTop: "1px dashed var(--border)" }}>person card</div>
+        <div className="muted mono" style={{ fontSize: 10, marginTop: 10, paddingTop: 8, borderTop: "1px dashed var(--border)" }}>person card</div>
       </Card>
       <Card>
         <span className="sk sk-line short" style={{ width: "35%" }} />
@@ -934,7 +934,7 @@ export const E4_Skeleton: Story = {
         <span className="sk" style={{ height: 28, width: "55%", borderRadius: 4 }} />
         <div style={{ height: 8 }} />
         <span className="sk" style={{ height: 32, borderRadius: 3 }} />
-        <div className="muted" style={{ fontSize: 10, fontFamily: "var(--font-mono)", marginTop: 10, paddingTop: 8, borderTop: "1px dashed var(--border)" }}>stat + sparkline</div>
+        <div className="muted mono" style={{ fontSize: 10, marginTop: 10, paddingTop: 8, borderTop: "1px dashed var(--border)" }}>stat + sparkline</div>
       </Card>
       <Card padding="none">
         <span className="sk" style={{ display: "block", aspectRatio: "16/9", borderRadius: "6px 6px 0 0" }} />
@@ -946,7 +946,7 @@ export const E4_Skeleton: Story = {
           <span className="sk sk-title" style={{ width: "80%" }} />
           <span className="sk sk-line med" />
           <span className="sk sk-line short" />
-          <div className="muted" style={{ fontSize: 10, fontFamily: "var(--font-mono)", marginTop: 6, paddingTop: 8, borderTop: "1px dashed var(--border)" }}>article with thumb</div>
+          <div className="muted mono" style={{ fontSize: 10, marginTop: 6, paddingTop: 8, borderTop: "1px dashed var(--border)" }}>article with thumb</div>
         </div>
       </Card>
     </div>
@@ -966,7 +966,7 @@ export const E5_Health: Story = {
           <li key={row.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", borderBottom: i < arr.length - 1 ? "1px solid var(--border)" : 0, fontSize: 12 }}>
             <span className={`dot ${row.colors.every((c) => c === "var(--success)") ? "success pulse" : "warning"}`} style={{ color: "var(--success)" }} />
             <span style={{ flex: 1 }}>{row.name}</span>
-            <span className="mono" style={{ fontSize: 10, color: "var(--muted-foreground)", fontVariantNumeric: "tabular-nums" }}>{row.up}</span>
+            <span className="mono muted tnum" style={{ fontSize: 10 }}>{row.up}</span>
             <span style={{ display: "flex", gap: 1 }}>
               {row.colors.map((c, j) => (<i key={j} style={{ width: 3, height: 14, background: c }} />))}
             </span>
@@ -1008,22 +1008,22 @@ export const F1_Shift: Story = {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card accent="primary">
         <div className="row-between" style={{ marginBottom: 6 }}>
-          <div style={{ fontSize: 11, color: "var(--muted-foreground)" }}>5月 17日 (土)</div>
+          <div className="muted" style={{ fontSize: 11 }}>5月 17日 (土)</div>
           <span className="chip chip-primary">早番</span>
         </div>
-        <div style={{ fontSize: 18, fontWeight: 500, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.01em" }}>8:00 — 17:00</div>
+        <div className="tnum" style={{ fontSize: 18, fontWeight: 500, letterSpacing: "-0.01em" }}>8:00 — 17:00</div>
         <div className="muted" style={{ fontSize: 11, marginTop: 2 }}>休憩 60分 · 実働 8h</div>
         <div style={{ display: "flex", gap: 6, marginTop: 10, alignItems: "center" }}>
           <span className="dot primary" />
-          <span style={{ fontSize: 11, color: "var(--muted-foreground)" }}>ベトヤ渋谷店 · キッチン</span>
+          <span className="muted" style={{ fontSize: 11 }}>ベトヤ渋谷店 · キッチン</span>
         </div>
       </Card>
       <Card accent="attention">
         <div className="row-between" style={{ marginBottom: 6 }}>
-          <div style={{ fontSize: 11, color: "var(--muted-foreground)" }}>5月 18日 (日)</div>
+          <div className="muted" style={{ fontSize: 11 }}>5月 18日 (日)</div>
           <span className="chip chip-attention">人手不足</span>
         </div>
-        <div style={{ fontSize: 18, fontWeight: 500, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.01em", color: "var(--muted-foreground)" }}>— 未割当 —</div>
+        <div className="muted tnum" style={{ fontSize: 18, fontWeight: 500, letterSpacing: "-0.01em" }}>— 未割当 —</div>
         <div className="muted" style={{ fontSize: 11, marginTop: 2 }}>遅番 17:00–22:00 · 残 2 名</div>
         <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
           <Button size="small">割当</Button>
@@ -1040,7 +1040,7 @@ export const F2_Calendar: Story = {
     <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6 }}>
       <div className="cal-day"><span className="d">月 12</span><span className="time">8:00–17:00</span><span className="role">早番 · キッチン</span></div>
       <div className="cal-day"><span className="d">火 13</span><span className="time">11:00–20:00</span><span className="role">中番 · ホール</span></div>
-      <div className="cal-day"><span className="d" style={{ color: "var(--muted-foreground)" }}>水 14</span><span className="time" style={{ color: "var(--muted-foreground)" }}>休</span><span className="role">公休</span></div>
+      <div className="cal-day"><span className="d">水 14</span><span className="time muted">休</span><span className="role">公休</span></div>
       <div className="cal-day"><span className="d">木 15</span><span className="time">8:00–17:00</span><span className="role">早番 · キッチン</span></div>
       <div className="cal-day today"><span className="d" style={{ color: "var(--primary)" }}>金 17 · 本日</span><span className="time">8:00–17:00</span><span className="role">早番 · キッチン</span></div>
       <div className="cal-day"><span className="d" style={{ color: "var(--attention)" }}>土 18</span><span className="time" style={{ color: "var(--attention)" }}>未割当</span><span className="role">遅番候補</span></div>
@@ -1062,7 +1062,7 @@ export const F3_ListRows: Story = {
           <li key={r.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", borderBottom: i < arr.length - 1 ? "1px solid var(--border)" : 0, fontSize: 12 }}>
             <span className={`ava sm ${r.avaCls || ""}`}>{r.ava}</span>
             <span style={{ flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.name}</span>
-            <span className="mono" style={{ color: "var(--muted-foreground)", fontVariantNumeric: "tabular-nums" }}>{r.time}</span>
+            <span className="mono muted tnum">{r.time}</span>
             <span className={`chip ${r.chipCls}`}>{r.chip}</span>
           </li>
         ))}
@@ -1119,7 +1119,7 @@ export const F7_DateGrouped: Story = {
     <Card>
       <div className="tl-grp">
         <div className="grp-h">2026/05/17 (土) <span className="badge">本日</span>
-          <span style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" }}>3 件</span>
+          <span className="mono tnum" style={{ marginLeft: "auto" }}>3 件</span>
         </div>
         <div className="row">
           <span className="ts">14:35</span>
@@ -1134,7 +1134,7 @@ export const F7_DateGrouped: Story = {
           <div className="body"><b>田中 美咲</b>が打刻 · 出勤<div className="meta">渋谷本店 · GPS 確認済</div></div>
         </div>
         <div className="grp-h">2026/05/16 (金)
-          <span style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" }}>2 件</span>
+          <span className="mono tnum" style={{ marginLeft: "auto" }}>2 件</span>
         </div>
         <div className="row">
           <span className="ts">19:42</span>
@@ -1173,10 +1173,10 @@ export const F8_Branching: Story = {
           </div>
         </div>
         <div className="row">
-          <span className="when" style={{ color: "var(--muted-foreground)" }}>予定</span>
+          <span className="when muted">予定</span>
           <div className="node" />
           <div className="body">
-            <div className="t" style={{ color: "var(--muted-foreground)" }}>給与システムへ反映</div>
+            <div className="t muted">給与システムへ反映</div>
             <div className="d">自動 · 承認確定後 5 分以内</div>
           </div>
         </div>
@@ -1230,17 +1230,17 @@ export const G1_PlainRules: Story = {
   name: "Plain rules — solid · dashed · dotted · thick · gradient",
   render: () => (
     <Card>
-      <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>Solid (default)</div>
+      <div className="muted" style={{ fontSize: 12 }}>Solid (default)</div>
       <hr className="dv" />
-      <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>Dashed</div>
+      <div className="muted" style={{ fontSize: 12 }}>Dashed</div>
       <hr className="dv dashed" />
-      <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>Dotted</div>
+      <div className="muted" style={{ fontSize: 12 }}>Dotted</div>
       <hr className="dv dotted" />
-      <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>Thick</div>
+      <div className="muted" style={{ fontSize: 12 }}>Thick</div>
       <hr className="dv thick" />
-      <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>Gradient (fades at edges)</div>
+      <div className="muted" style={{ fontSize: 12 }}>Gradient (fades at edges)</div>
       <hr className="dv gradient" />
-      <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 0 }}>After gradient</div>
+      <div className="muted" style={{ fontSize: 12, marginBottom: 0 }}>After gradient</div>
     </Card>
   ),
 };
@@ -1250,21 +1250,21 @@ export const G2_LabelChip: Story = {
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card>
-        <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>前のコンテンツ…</div>
+        <div className="muted" style={{ fontSize: 12 }}>前のコンテンツ…</div>
         <div className="dv-label">または</div>
-        <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>後のコンテンツ…</div>
+        <div className="muted" style={{ fontSize: 12 }}>後のコンテンツ…</div>
         <div className="dv-label dashed">承認後の処理</div>
-        <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>…</div>
+        <div className="muted" style={{ fontSize: 12 }}>…</div>
         <div className="dv-label left">
           <svg className="si-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
             <circle cx={12} cy={12} r={10} /><polyline points="12 6 12 12 16 14" />
           </svg>
           履歴
         </div>
-        <div style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "var(--font-mono)" }}>2026/05/14 10:08 · 申請作成</div>
+        <div className="muted mono" style={{ fontSize: 12 }}>2026/05/14 10:08 · 申請作成</div>
       </Card>
       <Card>
-        <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>ログイン方法を選択</div>
+        <div className="muted" style={{ fontSize: 12 }}>ログイン方法を選択</div>
         <div className="dv-chip"><span className="pill">OR</span></div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <Button variant="outline" size="small">パスワードでログイン</Button>
@@ -1286,18 +1286,18 @@ export const G3_SectionHeading: Story = {
         <div className="c">従業員の基本属性</div>
         <span className="meta">last edit 2026/05/14</span>
       </div>
-      <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 6 }}>氏名 · 入社日 · 部門 · 役職 …</div>
+      <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>氏名 · 入社日 · 部門 · 役職 …</div>
       <div className="dv-section">
         <div className="t">給与</div>
         <div className="c">基本給 · 手当 · 控除</div>
         <span className="meta" style={{ color: "var(--attention)" }}>未保存</span>
       </div>
-      <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 6 }}>基本給 ¥240,000 · 通勤費 ¥8,500 …</div>
+      <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>基本給 ¥240,000 · 通勤費 ¥8,500 …</div>
       <div className="dv-section">
         <div className="t">権限 · ロール</div>
         <div className="c">アクセス可能な機能</div>
       </div>
-      <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>店長 · 渋谷本店 · 承認権限あり</div>
+      <div className="muted" style={{ fontSize: 12 }}>店長 · 渋谷本店 · 承認権限あり</div>
     </Card>
   ),
 };
@@ -1309,16 +1309,16 @@ export const G4_DateSeparator: Story = {
       <div className="dv-date"><span className="pill">2026/05/14 木</span></div>
       <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "6px 0" }}>
         <span className="ava sm">山</span>
-        <div style={{ flex: 1, fontSize: 12 }}><b>山田 太郎</b> · 09:22<div style={{ color: "var(--muted-foreground)", marginTop: 2 }}>有給申請を提出 (5/22–5/23)</div></div>
+        <div style={{ flex: 1, fontSize: 12 }}><b>山田 太郎</b> · 09:22<div className="muted" style={{ marginTop: 2 }}>有給申請を提出 (5/22–5/23)</div></div>
       </div>
       <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "6px 0" }}>
         <span className="ava sm">田</span>
-        <div style={{ flex: 1, fontSize: 12 }}><b>田中 美咲</b> · 11:08<div style={{ color: "var(--muted-foreground)", marginTop: 2 }}>承認しました</div></div>
+        <div style={{ flex: 1, fontSize: 12 }}><b>田中 美咲</b> · 11:08<div className="muted" style={{ marginTop: 2 }}>承認しました</div></div>
       </div>
       <div className="dv-date"><span className="pill">2026/05/15 金 · 本日</span></div>
       <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "6px 0" }}>
         <span className="ava sm wairo-gunjo">人</span>
-        <div style={{ flex: 1, fontSize: 12 }}><b>人事部</b> · 09:00<div style={{ color: "var(--muted-foreground)", marginTop: 2 }}>最終承認の確認中…</div></div>
+        <div style={{ flex: 1, fontSize: 12 }}><b>人事部</b> · 09:00<div className="muted" style={{ marginTop: 2 }}>最終承認の確認中…</div></div>
       </div>
     </Card>
   ),
@@ -1329,7 +1329,7 @@ export const G5_StackedList: Story = {
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card>
-        <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 10 }}>通常 (solid)</div>
+        <div className="muted" style={{ fontSize: 12, marginBottom: 10 }}>通常 (solid)</div>
         <div className="dv-stack">
           <div style={{ fontSize: 12 }}><b>渋谷本店</b><div className="muted" style={{ fontSize: 11 }}>12 名 · 売上 ¥4.8M</div></div>
           <div style={{ fontSize: 12 }}><b>表参道店</b><div className="muted" style={{ fontSize: 11 }}>8 名 · 売上 ¥3.1M</div></div>
@@ -1338,7 +1338,7 @@ export const G5_StackedList: Story = {
         </div>
       </Card>
       <Card>
-        <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 10 }}>Dashed (より控えめ)</div>
+        <div className="muted" style={{ fontSize: 12, marginBottom: 10 }}>Dashed (より控えめ)</div>
         <div className="dv-stack dashed">
           <div style={{ fontSize: 12, display: "flex", justifyContent: "space-between" }}><span>基本給</span><span className="mono">¥ 240,000</span></div>
           <div style={{ fontSize: 12, display: "flex", justifyContent: "space-between" }}><span>残業手当</span><span className="mono">¥ 22,800</span></div>
@@ -1377,17 +1377,17 @@ export const H1_H3_Simple: Story = {
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px]">
       <Card padding="none" title="タイトルのみ">
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           最小限のヘッダー。情報密度が高い表 / list に。
         </CardBody>
       </Card>
       <Card padding="none" title="スタック構成" subtitle="タイトル + 補足 (1 行ずつ縦に積む)">
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           subtitle dài 1–2 dòng OK · không nằm bên phải tránh tràn.
         </CardBody>
       </Card>
       <Card padding="none" title="メタ右" meta="5月 17日 · 14 件">
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           timestamp / count thuần → right-aligned, font monospace.
         </CardBody>
       </Card>
@@ -1400,7 +1400,7 @@ export const H4_H5_WithActions: Story = {
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="none" title="承認待ち一覧" meta="12 件" extra={<Button variant="outline" size="x-small">一括承認</Button>}>
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           1 chính + meta — action ngắn, không vượt 8 ký tự.
         </CardBody>
       </Card>
@@ -1420,7 +1420,7 @@ export const H4_H5_WithActions: Story = {
           <Button size="x-small">＋ 新規</Button>
         </>
       )}>
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           Icon-only buttons phía bên trái, labeled buttons phía bên phải — luôn theo thứ tự danger → standard → primary.
         </CardBody>
       </Card>
@@ -1441,11 +1441,11 @@ export const H6_H7_IconAvatar: Story = {
           </span>
           <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
             <span className="card-title">本日の打刻</span>
-            <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>リアルタイム · 自動更新</span>
+            <span className="muted" style={{ fontSize: 10 }}>リアルタイム · 自動更新</span>
           </div>
           <span style={{ marginLeft: "auto" }} className="live-dot">LIVE</span>
         </div>
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           Icon w/ tinted background — semantic. Phù hợp cho stat cards có category rõ ràng.
         </CardBody>
       </Card>
@@ -1454,13 +1454,13 @@ export const H6_H7_IconAvatar: Story = {
           <span className="ava sm">田</span>
           <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.25 }}>
             <span className="card-title" style={{ fontSize: 12 }}>田中 美咲</span>
-            <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>店長 · 渋谷本店</span>
+            <span className="muted" style={{ fontSize: 10 }}>店長 · 渋谷本店</span>
           </div>
-          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--muted-foreground)" }}>
+          <span className="muted" style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11 }}>
             <span className="dot success" />勤務中
           </span>
         </div>
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           Avatar — chuyên cho entity card (người, công ty, team). Status dot bên phải.
         </CardBody>
       </Card>
@@ -1488,7 +1488,7 @@ export const H8_Tabs: Story = {
           <Button size="x-small">エクスポート</Button>
         </div>
       </div>
-      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+      <CardBody block className="muted" style={{ fontSize: 11 }}>
         Tabs in-header — phù hợp cho card có 2–5 views cùng dataset. Count pill match màu trạng thái.
       </CardBody>
     </Card>
@@ -1501,15 +1501,15 @@ export const H9_Filters: Story = {
     <Card padding="none">
       <div className="card-header-filters">
         <span className="t">従業員</span>
-        <span style={{ fontSize: 11, color: "var(--muted-foreground)" }}>フィルタ:</span>
+        <span className="muted" style={{ fontSize: 11 }}>フィルタ:</span>
         <Button variant="ghost" className="chip-fl on">渋谷本店</Button>
         <Button variant="ghost" className="chip-fl on">正社員</Button>
         <Button variant="ghost" className="chip-fl">遅刻あり</Button>
         <Button variant="ghost" className="chip-fl">＋ 追加</Button>
         <span className="spacer" />
-        <span style={{ fontSize: 11, color: "var(--muted-foreground)", fontVariantNumeric: "tabular-nums" }}>14 / 38 件</span>
+        <span className="muted tnum" style={{ fontSize: 11 }}>14 / 38 件</span>
       </div>
-      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+      <CardBody block className="muted" style={{ fontSize: 11 }}>
         Chips "đang active" có icon × để remove · clear-all không cần (×× từng cái dễ hơn).
       </CardBody>
     </Card>
@@ -1522,7 +1522,7 @@ export const H10_Search: Story = {
     <Card padding="none">
       <div className="card-header-search">
         <span className="t">従業員一覧</span>
-        <span style={{ fontSize: 11, color: "var(--muted-foreground)" }}>· 38 名</span>
+        <span className="muted" style={{ fontSize: 11 }}>· 38 名</span>
         <div className="wrap">
           <svg className="si-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
             <circle cx={11} cy={11} r={8} /><line x1={21} y1={21} x2={16.65} y2={16.65} />
@@ -1531,7 +1531,7 @@ export const H10_Search: Story = {
           <span className="kbd">⌘K</span>
         </div>
       </div>
-      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+      <CardBody block className="muted" style={{ fontSize: 11 }}>
         Search input căn phải, max-width 280px — không tràn cả header. Đếm result luôn cạnh title.
       </CardBody>
     </Card>
@@ -1559,12 +1559,12 @@ export const H12_Kicker: Story = {
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="none" kicker="5月度 · 暫定" title="¥ 8,420,500" subtitle="支払合計 · 38 名 · 振込日 5/25">
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           Kicker (uppercase) làm context · title kích thước to (h2 spec).
         </CardBody>
       </Card>
       <Card padding="none" kicker="特集記事" title="2026 年 6 月リリース予定の新機能" subtitle="シフト自動最適化と多店舗在庫連携を導入">
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           Article / content card có hierarchy 3 cấp: category → title → tagline.
         </CardBody>
       </Card>
@@ -1586,7 +1586,7 @@ export const H13_H14_Hero: Story = {
             <Button variant="ghost" size="small" style={{ color: "white" }}>あとで</Button>
           </div>
         </div>
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           Hero — branded promo. White text trên gradient wa-iro. Luôn có CTA.
         </CardBody>
       </Card>
@@ -1599,7 +1599,7 @@ export const H13_H14_Hero: Story = {
             <Button size="small" style={{ background: "white", color: "var(--wa-akane)" }}>詳細を見る</Button>
           </div>
         </div>
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           Warm variant cho marketing / urgency. Wa-iro 茜×朱 gradient.
         </CardBody>
       </Card>
@@ -1624,7 +1624,7 @@ export const H15_Toolbar: Story = {
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </Button>
-          <span style={{ fontSize: 12, fontVariantNumeric: "tabular-nums", fontFamily: "var(--font-mono)", padding: "0 6px" }}>5/12 – 5/18</span>
+          <span className="mono tnum" style={{ fontSize: 12, padding: "0 6px" }}>5/12 – 5/18</span>
           <Button variant="ghost" size="x-small" aria-label="翌週">
             <svg className="si-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6" />
@@ -1635,7 +1635,7 @@ export const H15_Toolbar: Story = {
         <div className="spacer" />
         <Button variant="secondary" size="x-small">＋ シフト追加</Button>
       </div>
-      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+      <CardBody block className="muted" style={{ fontSize: 11 }}>
         Calendar-style toolbar — view seg + date nav + primary action. Phổ biến nhất cho schedule UI.
       </CardBody>
     </Card>
@@ -1648,7 +1648,7 @@ export const H16_Breadcrumb: Story = {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
       <Card padding="none">
         <div className="card-header-stack card-header-block" style={{ paddingBottom: 10 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--muted-foreground)", marginBottom: 2 }}>
+          <div className="muted" style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, marginBottom: 2 }}>
             <a className="lnk" style={{ fontWeight: 400 }}>famgia</a>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" style={{ width: 10, height: 10 }}>
               <polyline points="9 18 15 12 9 6" />
@@ -1661,7 +1661,7 @@ export const H16_Breadcrumb: Story = {
           </div>
           <span className="card-title" style={{ fontSize: 15 }}>田中 美咲</span>
         </div>
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           Breadcrumb in-card — cho detail page sâu, link cấp trên ngắn ngọn.
         </CardBody>
       </Card>
@@ -1679,7 +1679,7 @@ export const H16_Breadcrumb: Story = {
             <Button size="x-small">保存</Button>
           </span>
         </div>
-        <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
+        <CardBody block className="muted" style={{ fontSize: 11 }}>
           Edit-mode header — back arrow + save status + actions. Background tint phân biệt với view mode.
         </CardBody>
       </Card>
@@ -1694,9 +1694,9 @@ export const H17_StickyShadow: Story = {
       <div className="card-header-row card-header-block" style={{ boxShadow: "0 2px 4px -2px rgba(0,0,0,0.08)", position: "relative", zIndex: 1 }}>
         <span className="card-title">取引履歴</span>
         <span className="card-meta">2,481 件</span>
-        <span className="card-header-extra" style={{ fontSize: 11, color: "var(--muted-foreground)", fontFamily: "var(--font-mono)" }}>スクロール中</span>
+        <span className="card-header-extra muted mono" style={{ fontSize: 11 }}>スクロール中</span>
       </div>
-      <CardBody block style={{ fontSize: 11, color: "var(--muted-foreground)", maxHeight: 140, overflowY: "auto" }}>
+      <CardBody block className="muted" style={{ fontSize: 11, maxHeight: 140, overflowY: "auto" }}>
         <div style={{ fontSize: 11, lineHeight: 1.7 }}>
           2026/05/17 14:32 · ¥4,500 · 渋谷本店<br />
           2026/05/17 14:28 · ¥3,200 · 渋谷本店<br />
