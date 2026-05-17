@@ -118,6 +118,18 @@ export const WithCustomValue: Story = {
       </Flex>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("typing a non-matching value commits the custom text", async () => {
+      const input = canvas.getByRole("combobox") as HTMLInputElement;
+      await userEvent.click(input);
+      await userEvent.type(input, "新規候補者");
+      await waitFor(() => {
+        expect(input.value).toBe("新規候補者");
+      });
+    });
+  },
 };
 
 // ─── Sizes ──────────────────────────────────────────────────────

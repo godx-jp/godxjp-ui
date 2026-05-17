@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { expect, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Transfer, type TransferItem } from "../../components/data-entry/Transfer";
 import { Flex } from "../../components/layout";
 
@@ -103,6 +103,21 @@ export const WithSearch: Story = {
       searchPlaceholder="名前で検索"
     />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("ticking a left item + Move right grows the target column", async () => {
+      await expect(canvas.getByText(/プロジェクト参加 \(1\)/)).toBeInTheDocument();
+      // First checkbox in the left column corresponds to a non-disabled item.
+      const checkboxes = canvas.getAllByRole("checkbox");
+      await userEvent.click(checkboxes[0]);
+      const moveRight = canvas.getByRole("button", { name: /Move right/i });
+      await userEvent.click(moveRight);
+      await waitFor(() => {
+        expect(canvas.getByText(/プロジェクト参加 \(2\)/)).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── Sizes ──────────────────────────────────────────────────────

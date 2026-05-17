@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Time } from "@internationalized/date";
 import { TimeField } from "../../components/data-entry/DateTimePicker";
 import { TimeInput } from "../../components/data-entry/TimeInput";
@@ -88,6 +89,18 @@ function ControlledTimeInput() {
 export const TimeInputStory: Story = {
   name: "TimeInput · plain HH:MM input",
   render: () => <ControlledTimeInput />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("typing a new HH:MM value updates the input", async () => {
+      const input = canvas.getByDisplayValue("09:30") as HTMLInputElement;
+      await userEvent.clear(input);
+      await userEvent.type(input, "18:45");
+      await waitFor(() => {
+        expect(input.value).toBe("18:45");
+      });
+    });
+  },
 };
 
 // ─── Disabled ───────────────────────────────────────────────────

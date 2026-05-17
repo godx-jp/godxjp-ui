@@ -130,6 +130,23 @@ export const Grouped: Story = {
       </Select>
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("selecting an item closes the listbox", async () => {
+      const trigger = canvas.getByRole("combobox");
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(trigger).toHaveAttribute("aria-expanded", "true");
+      });
+      const option = within(portal).getByRole("option", { name: /人事/ });
+      await userEvent.click(option);
+      await waitFor(() => {
+        expect(trigger).toHaveAttribute("aria-expanded", "false");
+      });
+    });
+  },
 };
 
 // ─── Sizes — small / default / large ────────────────────────────

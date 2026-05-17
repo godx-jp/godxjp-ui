@@ -167,6 +167,22 @@ export const Multi: Story = {
       </Flex>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("opening + ticking a node grows the selected array", async () => {
+      const trigger = canvas.getByRole("combobox");
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByText("バックエンド")).toBeInTheDocument();
+      });
+      await userEvent.click(within(portal).getByText("バックエンド"));
+      await waitFor(() => {
+        expect(canvas.getByText(/"backend"/)).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── ExpandedByDefault ──────────────────────────────────────────

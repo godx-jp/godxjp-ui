@@ -139,6 +139,18 @@ export const WithPanel: Story = {
       </Flex>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("switching to en tab swaps the panel content", async () => {
+      const textarea = canvas.getByRole("textbox") as HTMLTextAreaElement;
+      await expect(textarea.value).toBe("渋谷本店のシフトを公開しました。");
+      await userEvent.click(canvas.getByRole("tab", { name: /English/ }));
+      await waitFor(() => {
+        expect(textarea.value).toBe("Shibuya HQ shift schedule is now published.");
+      });
+    });
+  },
 };
 
 // ─── AllStatuses — translated / draft / missing dots ─────────────

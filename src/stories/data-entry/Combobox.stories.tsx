@@ -183,6 +183,17 @@ export const Empty: Story = {
       </div>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("ComboboxEmpty surface renders for no-match query", async () => {
+      await waitFor(() => {
+        expect(
+          within(portal).getByText("該当する従業員がいません。"),
+        ).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── Async — deferred load with loading row ──────────────────────

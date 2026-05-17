@@ -46,6 +46,22 @@ export const Default: Story = {
 
 export const AllowHalf: Story = {
   render: () => <Rate defaultValue={3.5} allowHalf />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("rate renders 5 radio stars", async () => {
+      const stars = canvas.getAllByRole("radio");
+      await expect(stars.length).toBe(5);
+    });
+
+    await step("clicking a star commits its value", async () => {
+      const stars = canvas.getAllByRole("radio");
+      await userEvent.click(stars[1]);
+      await waitFor(() => {
+        expect(stars[1]).toHaveAttribute("aria-checked", "true");
+      });
+    });
+  },
 };
 
 export const Sizes: Story = {

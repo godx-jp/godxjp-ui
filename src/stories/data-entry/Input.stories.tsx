@@ -209,6 +209,19 @@ export const Password: Story = {
       />
     </Flex>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("clicking the first toggle flips its input from password → text", async () => {
+      const toggles = canvas.getAllByRole("button", { name: /Show password/i });
+      const toggle = toggles[0];
+      const wrap = toggle.closest(".input-wrap");
+      const input = wrap?.querySelector("input") as HTMLInputElement;
+      await expect(input).toHaveAttribute("type", "password");
+      await userEvent.click(toggle);
+      await expect(input).toHaveAttribute("type", "text");
+    });
+  },
 };
 
 // ─── InputSearch — leading icon + clear ─────────────────────────

@@ -59,6 +59,23 @@ export const WithPresets: Story = {
   render: () => (
     <ColorPicker defaultValue="#3b82f6" presets={BRAND_PRESETS} />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("clicking a preset updates the trigger hex label", async () => {
+      const trigger = canvas.getByRole("button", { name: /Choose color/i });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByRole("listbox", { name: /Preset colors/i })).toBeInTheDocument();
+      });
+      const greenPreset = within(portal).getByRole("option", { name: /#10b981/i });
+      await userEvent.click(greenPreset);
+      await waitFor(() => {
+        expect(trigger).toHaveTextContent("#10b981");
+      });
+    });
+  },
 };
 
 export const Sizes: Story = {
