@@ -13,7 +13,47 @@ lang: en
 
 > Searchable select — a Popover surface wrapping `cmdk` Command for filterable option lists.
 
-## Usage
+## When to use Combobox vs Select
+
+| Need | Use |
+|---|---|
+| Fixed list, no search, < ~20 items | **Select** |
+| Search / filter input above the list | **Combobox** |
+| Allow free-text not in the list | **AutoComplete** (wraps Combobox) |
+| Hierarchical nested options | **Cascader** |
+| Tree-shaped options (org chart, file tree) | **TreeSelect** |
+
+Combobox is the filter-aware sibling of Select — it renders a search
+input above the result list. Use it when the option count is large
+enough that a user wants to type to filter (>~20). For a fixed short
+list use Select instead.
+
+## Usage — data-driven (preferred)
+
+```tsx
+import { Combobox } from "@godxjp/ui"
+import { useState } from "react"
+
+function FrameworkPicker() {
+  const [value, setValue] = useState("")
+  return (
+    <Combobox
+      options={[
+        { value: "react", label: "React" },
+        { value: "vue",   label: "Vue" },
+        { value: "solid", label: "SolidJS" },
+      ]}
+      triggerLabel="Select framework…"
+      placeholder="Search…"
+      emptyLabel="No results found."
+      value={value}
+      onValueChange={setValue}
+    />
+  )
+}
+```
+
+## Usage — compositional (advanced)
 
 ```tsx
 import {
