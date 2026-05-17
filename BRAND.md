@@ -15,33 +15,40 @@ import "./app.tsx";
 ```
 
 That single import wires:
-- type scale, color palette, OKLCH dark mode, four tenants
-  (godx / kintai / tempo / betoya), density modes, spacing grid,
-  shadows, motion
+- type scale, color palette, OKLCH dark mode, four canonical theme
+  axes (`data-theme` / `data-accent` / `data-density` /
+  `data-font-size` per cardinal rule 21), spacing grid, shadows,
+  motion
 - all application-shell CSS classes (`.app-root`, `.sb-*`, `.tb-*`,
   `.btn`, `.badge`, `.card`, `.kanban`, `.diff`, `.prose`,
   `.auth-shell`, …)
 
-For React: also pull pre-built primitives + screens:
+For React: also pull pre-built primitives + shell:
 
 ```tsx
 import { AppShell, Sidebar, Topbar, TweaksPanel } from "@godxjp/ui/components/shell";
-import { DashboardScreen, PlansScreen, IssuesScreen, WikiScreen } from "@godxjp/ui/components/screens";
+import { Button, Card, Input, Field } from "@godxjp/ui/components/primitives";
 import { useTweaks } from "@godxjp/ui/hooks";
 import { initI18n } from "@godxjp/ui/i18n";
 ```
+
+(Page-level example screens — `DashboardScreen`, `PlansScreen`,
+etc. — live in Storybook under `src/stories/examples/` only. There
+is no `@godxjp/ui/components/screens` export per cardinal rule
+28 §D — copy-paste-and-modify the example screens into your app.)
 
 **There is no theming step.** No per-service "wire up tokens" boilerplate. If a screen needs more than this provides, the answer is to add the primitive to `@godxjp/ui`, not fork.
 
 ## Optional service-local overlay
 
-If — and only if — a service has a **brand-approved** deviation (e.g.
-a new tenant variant, a service-specific accent), the service ships
-a single overlay file:
+If — and only if — a service has a **brand-approved** deviation
+(e.g. a service-specific accent palette), the service ships a
+single overlay file under the `data-accent` axis (per cardinal
+rule 19 — the legacy `[data-tenant]` block is removed):
 
 ```css
 /* services/<svc>/frontend/src/theme.css */
-[data-tenant="my-svc"] {
+[data-accent="my-svc"] {
   --primary: oklch(56% 0.15 200);  /* still chroma ≤ 0.18 */
   --ring: oklch(56% 0.15 200);
 }
@@ -54,8 +61,8 @@ import "@godxjp/ui/tokens";
 import "./theme.css";   // overlay
 ```
 
-The overlay can **only** redeclare brand-token CSS variables under a
-`[data-tenant]` or `[data-theme]` attribute selector. Editing
+The overlay can **only** redeclare brand-token CSS variables under
+a `[data-accent]` or `[data-theme]` attribute selector. Editing
 foundational variables on `:root`, redefining the type scale, or
 overriding shell classes is forbidden and a review-block.
 
@@ -85,11 +92,13 @@ enterprise aesthetics):
 These are NOT taste choices — they're brand contracts. Any visual
 direction that breaks them needs operator sign-off in advance.
 
-## Token surface (read from `src/tokens/tokens.css`)
+## Token surface (read from `src/styles/theme.css`)
 
-One file. Variables + application-shell classes mastered together so
-consumers do `import "@godxjp/ui/tokens"` once and get everything. The
-design handoff bundle split them into `tokens.css` + `tokens-ext.css`
+Tokens + application-shell classes mastered together so consumers
+do `import "@godxjp/ui/tokens"` once and get everything. Variables
+live in `src/styles/theme.css` (canonical) + `src/styles/shell.css`
+(shell-extension); the design handoff bundle originally split them
+into `tokens.css` + `tokens-ext.css`
 for portability to Figma / theme tools — that split is preserved
 verbatim under `design/source-2026-05-13/` as an audit trail; the
 consumable artefact in `src/tokens/` is intentionally merged.
@@ -124,10 +133,11 @@ enterprise vibe: `--heading-h1 = 20px`, `--heading-h2 = 18px`,
 
 ### Color — OKLCH only
 
-Primary palette mastered in OKLCH so dark mode + tenant overrides are
+Primary palette mastered in OKLCH so dark mode + accent overrides are
 mechanical. Never override `--primary` / `--foreground` /
 `--background` / `--card` / `--muted` in app code; switch via
-`[data-tenant]` or `[data-theme="dark"]` attributes.
+`[data-accent="<palette>"]` or `[data-theme="dark"]` attributes
+(per cardinal rule 19 — `[data-tenant]` is removed).
 
 ```
 --background     warm off-white  oklch(99% 0.002 60)
@@ -148,20 +158,19 @@ as a button color; use `--destructive`). The palette:
 `--wa-moegi` `--wa-yamabuki` `--wa-shu` `--wa-akane` `--wa-enji`
 `--wa-sakura` `--wa-sumi` `--wa-nezu`.
 
-### Tenant overrides
+### Accent overrides
 
-Brand palette swaps via `[data-tenant="<slug>"]` at `<html>` or any
-ancestor. Defined slugs:
-
-- `godx` (default) — Famgia emerald accent + SmartHR blue primary
-- `kintai` — SmartHR blue primary
-- `tempo` — deeper indigo
-- `betoya` — Vietnamese green (Betoya restaurant brand)
+Brand palette swaps via `[data-accent="<palette>"]` at `<html>` or
+any ancestor (per cardinal rule 19 — the legacy `[data-tenant]`
+axis was collapsed into `data-accent`). Six framework-shipped
+palettes: `blue` (default) · `green` · `violet` · `amber` · `rose`
+· `slate`. Consumers register their own palettes in a service
+`theme.css` overlay.
 
 ### Dark mode
 
-`[data-theme="dark"]` flips every surface + tenant. Already wired in
-`tokens-ext.css`.
+`[data-theme="dark"]` flips every surface + accent. Already wired
+in `src/styles/shell.css`.
 
 ### Density
 
@@ -272,8 +281,9 @@ and match its visual rhythm. Don't redesign solo without a precedent.
 
 When the operator approves a brand change:
 
-1. Update `src/tokens/tokens.css` and/or `tokens-ext.css` here in
-   `packages/godxjp-ui`.
+1. Update `src/styles/theme.css` (canonical tokens) and/or
+   `src/styles/shell.css` (shell-extension tokens) here in
+   `libs/ts/godxjp-ui`.
 2. Bump the package version.
 3. Bump the submodule pointer in `godx-admin` umbrella.
 4. Each portal pulls the new submodule SHA in a follow-up PR.

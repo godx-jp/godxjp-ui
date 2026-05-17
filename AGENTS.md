@@ -102,17 +102,16 @@ libs/ts/godxjp-ui/
 
 | What | Path |
 |---|---|
-| Source-of-truth tokens | `src/tokens/tokens.css` + `tokens-ext.css` |
+| Source-of-truth tokens | `src/styles/theme.css` + `src/styles/shell.css` |
 | Tailwind v4 theme map | `src/tokens/tailwind.css` (single consumer entry) |
-| Primitives barrel | `src/components/primitives/index.ts` |
+| Primitives barrel | `src/components/primitives.ts` (single barrel file — group sources under `src/components/<group>/<Name>.tsx` per cardinal rule 27) |
 | Shell barrel | `src/components/shell/index.ts` |
-| Screens barrel | `src/components/screens/index.ts` |
+| Composites barrel | `src/components/composites/index.ts` |
 | Main barrel | `src/index.ts` |
 | i18n init | `src/i18n/index.ts::initI18n()` |
-| Tenant catalog | `src/data/products.ts` |
 | Public exports surface | `package.json::exports` |
 | Storybook config | `.storybook/main.ts` + `.storybook/preview.ts` |
-| Storybook stories | `stories/<kind>/<Name>.stories.tsx` |
+| Storybook stories | `src/stories/<group>/<Name>.stories.tsx` |
 | Docs (Diátaxis) | `docs/` |
 | Changelog | `CHANGELOG.md` |
 
@@ -159,14 +158,17 @@ The rule is binding for three reasons:
 
 ### When you create a primitive
 
-1. Add `src/components/primitives/<Name>.tsx`.
-2. Add `src/components/primitives/<Name>.css` (if it ships its
-   own canonical class) OR add the class to
-   `src/tokens/tokens.css`.
-3. Export from `src/components/primitives/index.ts`.
+1. Add `src/components/<group>/<Name>.tsx` (group ∈ general /
+   layout / data-display / data-entry / feedback / navigation per
+   cardinal rule 27).
+2. Add the canonical CSS class to `src/styles/theme.css` or
+   `src/styles/shell.css` (no per-primitive `.css` files —
+   tokens-first per rules 2 + 15).
+3. Re-export from `src/components/primitives.ts` (the single
+   barrel file).
 4. Add `docs/reference/primitives/<Name>.md` (Diátaxis reference
    per [new-docs/09 §Library docs](../../../new-docs/09-service-docs.md)).
-5. **Add `stories/primitives/<Name>.stories.tsx`** — covers
+5. **Add `src/stories/<group>/<Name>.stories.tsx`** — covers
    every variant + state (default, hover, active, focused,
    disabled, loading, error). Both light and dark theme.
 6. Update `CHANGELOG.md` under `## Unreleased / ### Added`.
@@ -174,10 +176,10 @@ The rule is binding for three reasons:
 
 ### When you edit a primitive
 
-1. Modify `src/components/primitives/<Name>.tsx`.
+1. Modify `src/components/<group>/<Name>.tsx`.
 2. Update `docs/reference/primitives/<Name>.md` (prop table /
    variants / a11y notes must reflect the change).
-3. **Update `stories/primitives/<Name>.stories.tsx`** (new
+3. **Update `src/stories/<group>/<Name>.stories.tsx`** (new
    variant → new story; renamed prop → updated story).
 4. Update `CHANGELOG.md`. Bump per SemVer:
    - Breaking change → major.
@@ -188,21 +190,22 @@ The rule is binding for three reasons:
 
 1. Mark deprecated in `package.json::exports` for one major
    version (export the legacy name pointing at the new one).
-2. Delete `src/components/primitives/<Name>.tsx`.
+2. Delete `src/components/<group>/<Name>.tsx`.
 3. Delete `docs/reference/primitives/<Name>.md`.
-4. **Delete `stories/primitives/<Name>.stories.tsx`.**
-5. Document removal in `CHANGELOG.md / ### Removed`.
-6. Bump major version.
+4. **Delete `src/stories/<group>/<Name>.stories.tsx`.**
+5. Remove the re-export from `src/components/primitives.ts`.
+6. Document removal in `CHANGELOG.md / ### Removed`.
+7. Bump major version.
 
 ### Story template (canonical)
 
 ```tsx
-// stories/primitives/<Name>.stories.tsx
+// src/stories/<group>/<Name>.stories.tsx
 import type { Meta, StoryObj } from "@storybook/react"
-import { <Name> } from "../../src/components/primitives/<Name>"
+import { <Name> } from "../../components/<group>/<Name>"
 
 const meta: Meta<typeof <Name>> = {
-  title: "Primitives/<Name>",
+  title: "<Group>/<Name>",
   component: <Name>,
   parameters: {
     layout: "centered",
@@ -254,8 +257,8 @@ See "When you create a primitive" above. Follow the full
 6-step process; CI rejects partial submissions.
 
 ### Override or extend a token
-1. Edit `src/tokens/tokens.css` (canonical) or `tokens-ext.css`
-   (extensions).
+1. Edit `src/styles/theme.css` (canonical tokens) or
+   `src/styles/shell.css` (shell-extension tokens).
 2. Update `docs/reference/tokens.md`.
 3. Update the Tailwind theme map in `src/tokens/tailwind.css`
    if a new utility class should resolve the token.
@@ -296,12 +299,10 @@ See "When you create a primitive" above. Follow the full
 - **Public API surface** in `package.json::exports` without an
   ADR. Adding an export is fine (minor). Removing or renaming is
   a major.
-- **Default token values** in `src/tokens/tokens.css` without
+- **Default token values** in `src/styles/theme.css` without
   visual review. A consumer's existing UI may shift.
 - **The Tailwind theme map** in `src/tokens/tailwind.css` —
   break the consumer's utility classes.
-- **`src/data/products.ts`** without an operator brief. The
-  tenant catalog is consumed by the shell.
 - **`i18n` base dictionary** — services extend with
   `addResourceBundle`; the base is shared.
 - **Storybook config** — global decorators affect every story.
@@ -381,7 +382,7 @@ grep -rln "export (function|const) <CandidateName>" src/components/
 grep -rln "export interface <CandidateName>Props" src/components/
 
 # Does a sibling primitive cover the same DOM shape?
-ls src/components/primitives/  # Read peer .tsx files end-to-end.
+ls src/components/{general,layout,data-display,data-entry,feedback,navigation}/  # Read peer .tsx files end-to-end.
 
 # Is the primitive in the design canon?
 ls design-handoff/ui-system/<latest>/project/preview/comp-*.html

@@ -137,12 +137,13 @@ framework concept; inline duplication is rejected at review.
     needs a new color / spacing / radius adds it to `tokens.css`
     (or `tokens-ext.css`) FIRST, then references it.
 
-17. **`stories/` ↔ `src/components/` parity.** The set of files
-    under `stories/primitives/` matches the set exported from
-    `src/components/primitives/index.ts`. Same for `shell/` and
-    `screens/`. CI-checked via `scripts/check-stories-parity.mjs`.
+17. **`src/stories/` ↔ `src/components/` parity.** The set of
+    files under `src/stories/<group>/` matches the set exported
+    from the `src/components/primitives.ts` barrel (sourced from
+    the six group folders per rule 27). Same for `shell/`.
+    CI-checked via `scripts/check-stories-parity.mjs`.
 
-18. **`docs/reference/primitives/` ↔ `src/components/primitives/`
+18. **`docs/reference/primitives/` ↔ `src/components/<group>/`
     parity.** Every primitive has a reference page; every
     reference page maps to an exported primitive. CI-checked via
     `scripts/check-docs-parity.mjs`.
@@ -154,16 +155,17 @@ framework concept; inline duplication is rejected at review.
     deployment brand color lives at `[data-accent="<palette>"]`
     (see [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md)
     + [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) §A).
-    `src/data/products.ts` stays as a generic product catalog
-    consumed by the ProductSwitcher shell primitive; its `tenant`
-    field is typed `string` (open union) so downstream apps can
-    register their own without modifying the framework, but it
-    does NOT drive CSS token bindings.
+    Generic product catalogues (`PRODUCTS`, `ForgeProduct`, …) are
+    consumed by the `ProductSwitcher` shell primitive via props —
+    consumers pass their own catalogue. Per cardinal rule 28 §D the
+    standalone `src/data/` folder is forbidden; the framework does
+    NOT ship a `@godxjp/ui/data` entry.
 
 20. **No "platform-only" exports.** Every primitive ships in
     `package.json::exports` so external godx-jp projects can
-    consume it. Internal-only helpers stay un-exported under
-    `src/internal/` or `_`-prefixed files.
+    consume it. Internal-only helpers stay un-exported (under-scored
+    file names or non-barrelled paths). Per cardinal rule 28 §D
+    `src/internal/` is forbidden as a top-level surface.
 
 21. **Every component supports all four theme axes.** A new or
     edited primitive / composite / shell composition MUST honour
@@ -356,9 +358,10 @@ framework concept; inline duplication is rejected at review.
       concept.
     - When TWO primitives need the same enum (e.g. semantic color
       values), promote it to a shared type
-      (`SemanticColor = "primary" | …`) in
-      `src/components/primitives/types.ts` and import. Don't
-      redeclare per primitive.
+      (`SemanticColor = "primary" | …`) in a shared per-group
+      `types.ts` (e.g. `src/components/data-display/types.ts` or
+      promote to a sibling group file) and import. Don't redeclare
+      per primitive.
 
     Forbidden:
 
@@ -414,7 +417,7 @@ framework concept; inline duplication is rejected at review.
     A new primitive is a long-term commitment. Before writing the
     first line of `<Name>.tsx`:
 
-    1. Grep the existing barrels (`src/components/primitives/index.ts`,
+    1. Grep the existing barrels (`src/components/primitives.ts`,
        `src/components/shell/index.ts`, `src/components/composites/index.ts`)
        for the same concept. The primitive may already exist under
        a different name.
@@ -559,14 +562,14 @@ framework concept; inline duplication is rejected at review.
 25. **Stories are docs; the UI is the primitive — refactor the
     primitive, never paper over with a story tweak.** Absolute.
 
-    Stories under `src/stories/new-primitives/components/<group>/<Name>.stories.tsx`
+    Stories under `src/stories/<group>/<Name>.stories.tsx`
     catalogue WHAT a primitive does — they show variants, axis
     sweeps, design-canon examples. They are documentation; they
     are NOT the implementation.
 
     When the design canon shifts, when a vocabulary violation is
     found, when the user reports "this looks wrong" — the fix is
-    in the primitive (`src/components/primitives/<Name>.tsx` +
+    in the primitive (`src/components/<group>/<Name>.tsx` +
     associated CSS in `src/styles/shell.css` + tokens in
     `src/styles/theme.css`), NOT in the story.
 
@@ -781,15 +784,17 @@ framework concept; inline duplication is rejected at review.
     `src/components/<group>/<Name>.tsx`.** Absolute.
 
     The component source tree mirrors the Storybook taxonomy
-    consumers see at `/docs/new-primitives-components-<group>/`.
+    consumers see at `/docs/components-<group>/` (the legacy
+    `new-primitives/` umbrella was flattened — see
+    [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) §A-2).
     Six groups (matching Ant Design's component taxonomy):
 
     | Group | Components |
     |---|---|
     | `general` | Button, Typography |
     | `layout` | Row, Col, Flex, Space, Grid, Masonry |
-    | `data-display` | Avatar, Badge, Card, Calendar, Descriptions, Empty, Popover, Tooltip, SegmentedControl, Statistic, Table, Tag, Carousel, Collapse, Image, List, QRCode, Timeline, Tour, Tree |
-    | `data-entry` | Input, Field, Select, Checkbox, Radio, Switch, Slider, AutoComplete, Cascader, ColorPicker, DateTimePicker, TimeInput, TreeSelect, Rate, InputNumber, Form, Transfer, CheckboxGroup, … |
+    | `data-display` | Avatar, Badge, Card, Calendar, Carousel, Collapse, Descriptions, Empty, IconButton, Image, List, PageHeader, Popover, QRCode, SegmentedControl, Separator, Statistic, Table, Tag, Timeline, Tooltip, Tour, Tree |
+    | `data-entry` | Input, Textarea, InputPassword, InputSearch, InputNumber, TimeInput, Field, Label, Checkbox, CheckboxGroup, Radio, Switch, Slider, Select, AutoComplete, Cascader, ColorPicker, DateTimePicker, TreeSelect, Rate, Form, Transfer, Checklist, LocaleTabs, combobox |
     | `feedback` | Alert, Dialog, AlertDialog, Sheet, Popconfirm, Progress, Result, Skeleton, Spinner, Toaster, Watermark |
     | `navigation` | Anchor, Breadcrumb, DropdownMenu, Menu, Pagination, Steps, Tabs |
 
@@ -798,8 +803,8 @@ framework concept; inline duplication is rejected at review.
     every group has a uniform `import "../cn"` path.
 
     Stories MUST mirror the same group hierarchy:
-    `src/stories/new-primitives/components/<group>/<Name>.stories.tsx`
-    with title `new-primitives/Components/<Group>/<Name>`.
+    `src/stories/<group>/<Name>.stories.tsx` with title
+    `<Group>/<Name>` (no `new-primitives/` prefix).
 
     The barrel at `src/components/primitives.ts` (single file, NOT
     a folder) re-exports from the group folders so the published
@@ -815,7 +820,9 @@ framework concept; inline duplication is rejected at review.
 
     Forbidden (rejected at review):
     - New `.tsx` file at `src/components/primitives/<Name>.tsx`
-      flat — pick a group folder.
+      flat — pick a group folder. The flat
+      `src/components/primitives/` directory does NOT exist;
+      `primitives.ts` is a single barrel file.
     - Group folder mismatch between source location and
       Storybook title (`Tabs` in `src/components/navigation/` but
       story titled `Components/Data Display/Tabs` — pick one and
@@ -846,7 +853,6 @@ framework concept; inline duplication is rejected at review.
     | `src/components/shell/` | `components/shell` | AppShell + chrome (Sidebar, Topbar, CommandPalette, TweaksPanel) |
     | `src/i18n/` | `i18n` | i18next singleton + base dictionary |
     | `src/hooks/` | `hooks` | Reusable hooks (`useTweaks`, `useDebouncedValue`, `usePreferences`, `useBreakpoint`, …) |
-    | `src/data/` | `data` | Generic data catalogues consumed by shell primitives (`PRODUCTS` for ProductSwitcher) |
     | `src/preferences/` | `preferences` | `PreferencesProvider` — locale + timezone React context |
     | `src/styles/` | (CSS source) | `theme.css`, `shell.css` + `shell/<NN-component>.css` files. Imported via `@godxjp/ui/styles/...` or `@godxjp/ui/tailwind.css` |
     | `src/tokens/` | (CSS source) | Tailwind v4 entry (`tailwind.css`) |
@@ -858,9 +864,8 @@ framework concept; inline duplication is rejected at review.
 
     | Path | Purpose |
     |---|---|
-    | `src/stories/{theme,general,layout,data-display,data-entry,feedback,navigation}/` | Per-group story catalogues mirroring the Storybook sidebar taxonomy (cardinal rule 27) |
+    | `src/stories/{theme,general,layout,data-display,data-entry,feedback,navigation,shell}/` | Per-group story catalogues mirroring the Storybook sidebar taxonomy (cardinal rule 27) |
     | `src/stories/examples/` | Page-level example screens (DashboardScreen, IdeasScreen, PlansScreen, WikiScreen, etc.). These are illustrative compositions of primitives + shell, NOT consumer-importable surfaces. Use them as reference; copy-paste-and-modify per consumer app |
-    | `src/stories/calendar-fixtures.ts` | Shared helper data for calendar stories |
 
     ### §C — Build-input-only (not user-imported)
 
@@ -957,8 +962,8 @@ framework concept; inline duplication is rejected at review.
       `Typography.Paragraph` cover the case (HTML semantics are
       preserved by the primitive).
     - Service-specific copy (org / project / user names) that
-      doesn't appear in `src/data/PRODUCTS` or shell test
-      fixtures — story copy stays generic.
+      doesn't appear in `src/stories/examples/` fixtures — story
+      copy stays generic.
 
     ### §C — Verification
 
@@ -1004,7 +1009,11 @@ Pre-commit hook enforces it; `--no-verify` is forbidden.
 - In-repo agent skills (works when this repo is cloned standalone
   without the umbrella): [`./.claude/skills/`](./.claude/skills/README.md)
   (Claude Code) and [`./.codex/skills/`](./.codex/skills/README.md)
-  (Codex) — byte-identical via `scripts/sync-skills.sh`.
+  (Codex) — byte-identical via `scripts/sync-skills.sh`. Today's
+  skills: `new-godx-design-to-component` (design-canon → primitive
+  port procedure) and `godx-ui-doc-writing` (binding doc-authoring
+  procedure — frontmatter per file type, Diátaxis quadrant, upstream
+  spec re-fetch cadence).
 - Brand bible: [`./BRAND.md`](./BRAND.md)
 - Change log: [`./CHANGELOG.md`](./CHANGELOG.md)
 - Diátaxis manual: [`./docs/`](./docs/)

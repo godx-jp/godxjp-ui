@@ -102,7 +102,7 @@ sidebar groups:
 | Shell | `src/components/shell/` | AppShell, Sidebar, Topbar, ProductSwitcher, ProjectSwitcher, CommandPalette, TweaksPanel, PageContent (8) |
 | Usage Cases | `src/stories/examples/` | Dashboard, IdeasBoard, Issues, IssueDetail, Plans, PlanDetail, ProjectsList, Wiki (illustrative compositions — never shipped) |
 
-Total: **61 React primitives + composites + shell** (plus the
+Total: **73 React primitives + composites + shell** (plus the
 Upload family + MediaUpload + AvatarUploader + LocaleInput composites
 under `src/components/composites/`).
 

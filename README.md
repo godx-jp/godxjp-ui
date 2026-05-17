@@ -84,11 +84,12 @@ export default mergeConfig(base, { test: {} })
 | `@godxjp/ui/tokens.css` | Raw CSS custom properties only (no Tailwind) |
 | `@godxjp/ui/tokens-ext.css` | Extended tokens (dark mode, tenants, sidebar vars) |
 | `@godxjp/ui/sonner.css` | Sonner toast animations (import after tokens) |
-| `@godxjp/ui/components/shell` | `AppShell`, `Sidebar`, `Topbar`, `TweaksPanel`, `CommandPalette`, `ProductSwitcher`, `ProjectSwitcher` |
-| `@godxjp/ui/components/screens` | `DashboardScreen`, `PlansScreen`, `IssuesScreen`, `WikiScreen`, `PlanDetailScreen`, `IssueDetailScreen`, `ProjectsListScreen`, `IdeasScreen` |
+| `@godxjp/ui/components/primitives` | All primitives — see [`src/components/primitives.ts`](src/components/primitives.ts) (single barrel; 73+ surfaces re-exported from six group folders per cardinal rule 27) |
+| `@godxjp/ui/components/shell` | `AppShell`, `Sidebar`, `Topbar`, `TweaksPanel`, `CommandPalette`, `ProductSwitcher`, `ProjectSwitcher`, `PageContent` |
+| `@godxjp/ui/components/composites` | Upload family, `MediaUpload`, `AvatarUploader`, `LocaleInput`, calendar app composite |
 | `@godxjp/ui/i18n` | `initI18n()`, `SUPPORTED_LOCALES`, `GodxLocale` |
 | `@godxjp/ui/hooks` | `useTweaks()`, `Tweaks`, `Density`, `Theme` |
-| `@godxjp/ui/data` | `ForgeProduct`, `ForgeProject`, `PRODUCTS`, `findProductByTenant` |
+| `@godxjp/ui/preferences` | `PreferencesProvider` — locale + timezone React context |
 | `@godxjp/ui/eslint-config` | Shared ESLint flat config |
 | `@godxjp/ui/prettier-config` | Shared Prettier config |
 | `@godxjp/ui/tsconfig` | Strict TypeScript base |
@@ -148,7 +149,7 @@ The short version:
 
 1. Import `@godxjp/ui/tailwind.css` (or `/tokens.css`) once at app entry.
 2. Never redefine `--primary`, `--foreground`, `--background`, or any base token in app code.
-3. Only `[data-tenant="<id>"]`-scoped overrides in a service `theme.css`.
+3. Per-deployment brand-color overrides live under `[data-accent="<palette>"]` in a service `theme.css` (per cardinal rule 19 — `[data-tenant]` is removed).
 4. No `@mui/material`, `chakra-ui`, `antd`, or any other component library.
 5. All primitive needs → add to `@godxjp/ui` first, then consume.
 6. Shell (AppShell + Sidebar + Topbar) is one component set — no hand-rolled grids.

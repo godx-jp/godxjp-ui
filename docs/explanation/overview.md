@@ -29,7 +29,7 @@ The package delivers four things:
    density / font-size) is a single `data-*` attribute change on
    `<html>`.
 
-2. **Primitive components** — 61 React surfaces grouped under
+2. **Primitive components** — 73 React surfaces grouped under
    `src/components/<group>/` (general / layout / data-display /
    data-entry / feedback / navigation per cardinal rule 27), each
    backed by a Radix UI / cmdk / sonner / react-aria-components

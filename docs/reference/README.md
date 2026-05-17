@@ -52,8 +52,10 @@ listed below; missing pages are tracked as TODO follow-on.
 | [TimeInput](./primitives/TimeInput.md) | stable | `react-aria-components` |
 | [Toaster](./primitives/Toaster.md) | stable | `sonner` |
 
-The framework ships **61 primitives** across the six groups; a
-backfill PR will add reference pages for every primitive missing
+The framework ships **73 primitives** across the six groups
+(general 2 / layout 6 / data-display 23 / data-entry 24 /
+feedback 11 / navigation 7); a backfill PR will add reference
+pages for every primitive missing
 above (Alert, Anchor, AutoComplete, Carousel, Cascader, CheckboxGroup,
 Checklist, Col, Collapse, ColorPicker, DateTimePicker, Descriptions,
 Empty, Field, Flex, Form, Grid, IconButton, Image, InputNumber,

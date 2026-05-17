@@ -20,7 +20,7 @@ component taxonomy (cardinal rule 27).
 ```mermaid
 flowchart TD
     CSS["Token CSS (theme.css + shell.css)\nCSS custom properties\nNo React dependencies"]
-    PRIMS["Primitives (atoms) — 61 React surfaces\nsrc/components/{general,layout,data-display,data-entry,feedback,navigation}/"]
+    PRIMS["Primitives (atoms) — 73 React surfaces\nsrc/components/{general,layout,data-display,data-entry,feedback,navigation}/"]
     SHELL["Shell (organisms) — 8 compositions\nsrc/components/shell/"]
     COMP["Composites — Upload family, MediaUpload, AvatarUploader, LocaleInput, calendar\nsrc/components/composites/"]
     HOOKS["Hooks\nsrc/hooks/\nuseTweaks · useBreakpoint · useDebouncedValue · usePreferences"]
@@ -55,7 +55,7 @@ three-tier architecture (primitive → semantic → variant).
 
 Per cardinal rule 27 primitives live under
 `src/components/<group>/<Name>.tsx` where `<group>` is one of six
-canonical Ant-shaped names (61 React surfaces total):
+canonical Ant-shaped names (73 React surfaces total):
 
 | Group | Source | Count | Examples |
 |---|---|---|---|

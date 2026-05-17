@@ -108,8 +108,9 @@ import {
   ProjectSwitcher,
 } from "@godxjp/ui/components/shell"
 import { useTweaks } from "@godxjp/ui/hooks"
-import { PRODUCTS } from "@godxjp/ui/data"
-import { NAV_SECTIONS, COMMANDS } from "./nav"
+// Per cardinal rule 28 §D the framework does NOT ship a
+// `@godxjp/ui/data` entry — consumers define their own catalogue.
+import { PRODUCTS, NAV_SECTIONS, COMMANDS } from "./nav"
 
 export default function App() {
   const { tweaks, setTweak } = useTweaks()

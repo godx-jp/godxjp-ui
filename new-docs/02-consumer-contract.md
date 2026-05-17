@@ -29,7 +29,7 @@ tightly scoped surface. Today's eight entries:
 | `@godxjp/ui/i18n` | `initI18n`, `SUPPORTED_LOCALES`, base dictionary | 5 |
 | `@godxjp/ui/hooks` | `useTweaks`, `useBreakpoint`, `useDebouncedValue`, `usePreferences`, … | 26 §A |
 | `@godxjp/ui/preferences` | `PreferencesProvider` (locale + timezone context) | 26 §A |
-| `@godxjp/ui/components/primitives` | All primitive components — 61 React surfaces re-exported from the six group folders via `src/components/primitives.ts` (single barrel file) | 27 + 28 §A |
+| `@godxjp/ui/components/primitives` | All primitive components — 73 React surfaces re-exported from the six group folders via `src/components/primitives.ts` (single barrel file) | 27 + 28 §A |
 | `@godxjp/ui/components/shell` | `AppShell`, `Sidebar`, `Topbar`, `ProductSwitcher`, `ProjectSwitcher`, `CommandPalette`, `TweaksPanel`, `PageContent` (8) | 26 §A |
 | `@godxjp/ui/components/composites` | Upload family, MediaUpload, AvatarUploader, LocaleInput, calendar app — composites that wrap multiple primitives | 26 §A |
 | `@godxjp/ui/tailwind.css` (+ `./styles/{theme,base,shell,sonner}.css`) | Tokens + Tailwind v4 entry + shell base. `theme.css` is the canonical token home; `tailwind.css` is the consumer entry point | 26 §D |
@@ -70,12 +70,12 @@ taxonomy. Primitive files live under
 `src/components/<group>/<Name>.tsx` where `<group>` is one of six
 canonical names (matching Ant Design's component taxonomy):
 
-| Group | Source folder | Components (61 total) |
+| Group | Source folder | Components (73 total) |
 |---|---|---|
 | `general` | `src/components/general/` | Button, Typography (2) |
 | `layout` | `src/components/layout/` | Row, Col, Flex, Space, Grid, Masonry (6) |
-| `data-display` | `src/components/data-display/` | Avatar, Badge, Card, Calendar, Carousel, Collapse, Descriptions, Empty, Image, List, Popover, QRCode, SegmentedControl, Statistic, Table, Tag, Timeline, Tooltip, Tour, Tree (20) |
-| `data-entry` | `src/components/data-entry/` | Input, Textarea, InputPassword, InputSearch, Field, Label, Checkbox, CheckboxGroup, Radio, Switch, Slider, Select, AutoComplete, Cascader, ColorPicker, DateTimePicker, TimeInput, TreeSelect, Rate, InputNumber, Form, Transfer, Checklist, LocaleTabs (24) |
+| `data-display` | `src/components/data-display/` | Avatar, Badge, Card, Calendar, Carousel, Collapse, Descriptions, Empty, IconButton, Image, List, PageHeader, Popover, QRCode, SegmentedControl, Separator, Statistic, Table, Tag, Timeline, Tooltip, Tour, Tree (23) |
+| `data-entry` | `src/components/data-entry/` | Input, Textarea, InputPassword, InputSearch, Field, Label, Checkbox, CheckboxGroup, Radio, Switch, Slider, Select, AutoComplete, Cascader, ColorPicker, DateTimePicker, TimeInput, TreeSelect, Rate, InputNumber, Form, Transfer, Checklist, LocaleTabs, combobox (24) |
 | `feedback` | `src/components/feedback/` | Alert, Dialog, AlertDialog, Sheet, Popconfirm, Progress, Result, Skeleton, Spinner, Toaster, Watermark (11) |
 | `navigation` | `src/components/navigation/` | Anchor, Breadcrumb, DropdownMenu, Menu, Pagination, Steps, Tabs (7) |
 
@@ -123,7 +123,7 @@ The framework owns the entire visual + interaction layer:
 |---|---|---|
 | Design tokens (color, spacing, density, dark, motion, theme axes) | `src/tokens/`, `src/styles/theme.css` | NO — `@import "@godxjp/ui/tailwind.css"` in one file |
 | Tailwind v4 entry + `@theme inline` mapping | `src/tokens/tailwind.css` | NO — that single import is enough |
-| 61 visual primitives (six groups per §A-2) | `src/components/<group>/<Name>.tsx` → `@godxjp/ui/components/primitives` | NO — import from the barrel |
+| 73 visual primitives (six groups per §A-2) | `src/components/<group>/<Name>.tsx` → `@godxjp/ui/components/primitives` | NO — import from the barrel |
 | Shell primitives (AppShell, Sidebar, Topbar, CommandPalette, TweaksPanel, ProductSwitcher, ProjectSwitcher, PageContent) | `src/components/shell/` → `@godxjp/ui/components/shell` | NO — compose, don't reimplement |
 | Composite widgets (Upload family, MediaUpload, AvatarUploader, LocaleInput, calendar app) | `src/components/composites/` → `@godxjp/ui/components/composites` | NO — extend via PR if missing |
 | i18next singleton + base dictionary | `src/i18n/` → `@godxjp/ui/i18n` | NO — extend with `addResourceBundle` |

@@ -11,6 +11,7 @@ umbrella loads from `<umbrella>/.claude/skills/`.
 | Skill | Trigger |
 |---|---|
 | [`new-godx-design-to-component`](./new-godx-design-to-component/SKILL.md) | BEFORE writing or refactoring any primitive / composite / shell to match a Claude Design handoff. 10-step conversion procedure — read mockup → literal manifest → token-pin → DOM verbatim → axes coverage → Playwright probe → port stories. |
+| [`godx-ui-doc-writing`](./godx-ui-doc-writing/SKILL.md) | BEFORE editing any `.md` file in this repo — CLAUDE.md, AGENTS.md, new-docs/, docs/, ADRs, SKILL.md, CHANGELOG.md. Frontmatter shape per file type, upstream-spec citation requirement, Diátaxis quadrant discipline, cardinal rules every doc must respect. |
 
 ## Mirror discipline
 
