@@ -334,6 +334,13 @@ framework concept; inline duplication is rejected at review.
     | `density` | `"compact" \| "default" \| "comfortable"` (usually inherited from `[data-density]` axis — only set explicitly when overriding the page-level axis) | (theme axis primarily; explicit prop on Table?) | Page-level spacing scale |
     | `disabled` / `loading` / `readOnly` / `required` | boolean | Forms / inputs | Interaction state |
     | `prefix` / `suffix` / `addonBefore` / `addonAfter` | `ReactNode` | Input, Button (icon slots) | Decorative / functional slots |
+    | `orientation` | `"horizontal" \| "vertical"` | Tabs, Menu, Steps, Anchor, Separator | Axis of stack / progression. Replaces Ant's `mode` (Menu) / `direction` (Steps, Anchor) / axis-of-`tabPosition` (Tabs) under one name. Matches Radix + ARIA `aria-orientation`. |
+    | `placement` | `"top" \| "right" \| "bottom" \| "left"` (+ `"start"` / `"end"` when document-flow direction matters) | Tabs (tab-bar), Steps (labels), Popover, Tooltip | Positional anchor of a region relative to its host. Replaces Ant's `tabPosition` / `labelPlacement`. Same name as Radix Tooltip/Popover. |
+    | `current` | `boolean` per item OR `number \| string` for selection state | Breadcrumb (boolean — `aria-current="page"`), Steps (number — active index) | "This item is the current one" (boolean) OR "active index" (number). Booleans bind to `aria-current`; numbers bind to Radix-style selection. |
+    | `value` / `defaultValue` / `onValueChange` | Radix-style controlled / uncontrolled selection | Tabs, Select, Combobox, Menu (planned), Pagination (planned) | Selection state. NEVER `defaultSelectedKeys` / `activeKey` — those are Ant aliases for the same concept. |
+    | `justify` | `"start" \| "center" \| "end" \| "between"` | Flex, Pagination | Horizontal content alignment. Reused from Flex; do NOT coin `align` synonym for the same axis. |
+    | `sticky` | `boolean` | Anchor, Table (planned header sticky), Topbar | Pin-on-scroll behaviour. Matches CSS `position: sticky` semantics. |
+    | `offset` | `number` (px) | Anchor (scroll target offset), Popover (planned) | Pixel offset from anchor. Direction-aware via `orientation`. |
 
     Rules:
 
@@ -360,6 +367,14 @@ framework concept; inline duplication is rejected at review.
     - `appearance` / `look` / `style` synonyms for `variant`.
     - `tint` / `intent` / `theme` synonyms for `color`.
     - `compactness` / `spacing` synonyms for `padding` / `density`.
+    - `mode` / `direction` / `tabPosition` synonyms for `orientation` (axis of stack).
+    - `tabPosition` / `labelPlacement` synonyms for `placement` (positional anchor).
+    - `activeKey` / `selectedKeys` / `defaultActiveKey` synonyms for `value` / `defaultValue` / `onValueChange` (Radix-style selection).
+    - `align` synonym for `justify` (horizontal alignment — one name across Flex + Pagination + …).
+    - `affix` synonym for `sticky`.
+    - `type` borrowed from Ant Design — our `type` is reserved for HTML input/button `type` attribute; semantic role goes through `color`, visual treatment through `variant`.
+    - `level` synonym for `size` (Typography Title uses `size={1..5}`, not `level`).
+    - `ellipsis` synonym for `truncate` (Typography uses `truncate`, not `ellipsis`).
 
     ### §C — Always check if a token already exists
 
