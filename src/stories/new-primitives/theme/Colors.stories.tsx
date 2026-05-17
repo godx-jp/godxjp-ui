@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "../../components/primitives/Card";
-import { Flex, Row, Col } from "../../components/primitives/layout";
+import { Card } from "../../../components/primitives/Card";
+import { Flex, Row, Col } from "../../../components/primitives/layout";
 
 /**
  * new-primitives/Colors — visual catalogue for the framework's
@@ -17,7 +17,7 @@ import { Flex, Row, Col } from "../../components/primitives/layout";
  */
 
 const meta: Meta = {
-  title: "new-primitives/Colors",
+  title: "new-primitives/theme/Colors",
   tags: ["autodocs"],
   parameters: {
     docs: {

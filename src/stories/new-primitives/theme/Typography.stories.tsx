@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "../../components/primitives/Card";
-import { Flex } from "../../components/primitives/layout";
+import { Card } from "../../../components/primitives/Card";
+import { Flex } from "../../../components/primitives/layout";
 
 /**
  * new-primitives/Typography — visual catalogue for the type scale,
@@ -14,7 +14,7 @@ import { Flex } from "../../components/primitives/layout";
  */
 
 const meta: Meta = {
-  title: "new-primitives/Typography",
+  title: "new-primitives/theme/Typography",
   tags: ["autodocs"],
   parameters: {
     docs: {

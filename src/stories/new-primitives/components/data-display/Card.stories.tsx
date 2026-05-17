@@ -29,16 +29,16 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-} from "../components/primitives/Card";
-import { Button } from "../components/primitives/Button";
-import { Tag } from "../components/primitives/Tag";
-import { Badge } from "../components/primitives/Badge";
-import { Avatar } from "../components/primitives/Avatar";
-import { Statistic } from "../components/primitives/Statistic";
-import { Flex, Row, Col, Space } from "../components/primitives/layout";
+} from "../../../../components/primitives/Card";
+import { Button } from "../../../../components/primitives/Button";
+import { Tag } from "../../../../components/primitives/Tag";
+import { Badge } from "../../../../components/primitives/Badge";
+import { Avatar } from "../../../../components/primitives/Avatar";
+import { Statistic } from "../../../../components/primitives/Statistic";
+import { Flex, Row, Col, Space } from "../../../../components/primitives/layout";
 
 const meta: Meta<typeof Card> = {
-  title: "Primitives/Card",
+  title: "new-primitives/components/data-display/Card",
   component: Card,
   tags: ["autodocs"],
   parameters: {

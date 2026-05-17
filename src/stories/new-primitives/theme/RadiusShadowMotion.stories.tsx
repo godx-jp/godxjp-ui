@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "../../components/primitives/Card";
-import { Flex } from "../../components/primitives/layout";
+import { Card } from "../../../components/primitives/Card";
+import { Flex } from "../../../components/primitives/layout";
 
 /**
  * new-primitives/Radius & Shadow & Motion — three foundation
@@ -12,7 +12,7 @@ import { Flex } from "../../components/primitives/layout";
  */
 
 const meta: Meta = {
-  title: "new-primitives/Radius · Shadow · Motion",
+  title: "new-primitives/theme/Radius · Shadow · Motion",
   tags: ["autodocs"],
   parameters: {
     docs: {

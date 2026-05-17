@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "../../components/primitives/Card";
-import { Flex } from "../../components/primitives/layout";
+import { Card } from "../../../components/primitives/Card";
+import { Flex } from "../../../components/primitives/layout";
 
 /**
  * new-primitives/Prop vocabulary — visual catalogue for the
@@ -11,7 +11,7 @@ import { Flex } from "../../components/primitives/layout";
  */
 
 const meta: Meta = {
-  title: "new-primitives/Prop vocabulary",
+  title: "new-primitives/theme/Prop vocabulary",
   tags: ["autodocs"],
   parameters: {
     docs: {
