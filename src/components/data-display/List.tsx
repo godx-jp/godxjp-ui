@@ -1,5 +1,7 @@
 import {
+  cloneElement,
   forwardRef,
+  isValidElement,
   type ComponentProps,
   type ReactNode,
 } from "react";
@@ -91,11 +93,17 @@ export function List<T = unknown>({
         );
       }
       if (!renderItem) return null;
-      return dataSource.map((item, i) => (
-        <li key={i} className="list-item-wrapper">
-          {renderItem(item, i)}
-        </li>
-      ));
+      // `renderItem` returns a `<ListItem>` (which is itself an
+      // `<li>`); wrapping it in another `<li>` produces invalid
+      // nested-`<li>` HTML and a hydration warning. Clone to inject
+      // the key without changing semantics.
+      return dataSource.map((item, i) => {
+        const node = renderItem(item, i);
+        if (isValidElement(node)) {
+          return cloneElement(node, { key: node.key ?? i });
+        }
+        return node;
+      });
     }
     return children;
   })();
@@ -117,7 +125,7 @@ export function List<T = unknown>({
       {title !== undefined && <div className="list-title">{title}</div>}
       {header !== undefined && <div className="list-header">{header}</div>}
       {isGrid ? (
-        <div className="list-grid-inner">{items}</div>
+        <ul className="list-items list-grid-inner">{items}</ul>
       ) : (
         <ul className="list-items">{items}</ul>
       )}

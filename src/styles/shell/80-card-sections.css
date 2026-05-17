@@ -156,8 +156,10 @@
 .mini-table tr:last-child td { border-bottom: 0; }
 
 /* Image placeholder (.ph) — striped pattern + monospace caption.
- * Distinct from the shell-primitive .ph (page header skeleton):
- * scope it with .ph.striped so both can coexist. */
+ * Distinct from the shell-primitive .ph (page header skeleton in
+ * 70-calendar-app.css which carries border + radius + margin-bottom).
+ * `.ph.striped` is meant to live as a banner INSIDE a Card with its
+ * own outer chrome, so the page-header chrome is reset explicitly. */
 .ph.striped {
   background: repeating-linear-gradient(
     45deg,
@@ -170,8 +172,14 @@
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--muted-foreground);
-  border-bottom: 1px solid var(--border);
   position: relative;
+  /* Reset page-header chrome inherited from `.ph` — banner sits flush
+   * inside the Card's rounded clip; outer border + radius + margin
+   * would all produce visible drift against the Card's own chrome. */
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  margin-bottom: 0;
 }
 .ph.striped.tinted-info {
   background: repeating-linear-gradient(
@@ -562,28 +570,37 @@
 }
 .card-header-tabs .t {
   font-size: var(--text-sm);
-  font-weight: 500;
-  padding: 0 8px;
+  font-weight: 600;
+  padding: 0 8px 0 0;
   height: 42px;
   display: inline-flex;
   align-items: center;
   margin-right: 8px;
   flex-shrink: 0;
 }
+/* Tabs sit on the same 42px baseline as the title and read at the same
+ * `text-sm` scale — visual weight difference comes from the title's
+ * `font-weight: 600` vs the tab's `500` (active) / `400` (inactive).
+ *
+ * `border-radius: 0` is explicit because consumers occasionally drop a
+ * `<Button>` here; the Button primitive's own radius would round the
+ * underline indicator otherwise. */
 .card-header-tabs .tab {
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   padding: 0 12px;
-  height: 34px;
+  height: 42px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   color: var(--muted-foreground);
   border: 0;
   border-bottom: 2px solid transparent;
+  border-radius: 0;
   cursor: pointer;
   margin-bottom: -1px;
   background: transparent;
   font-family: inherit;
+  font-weight: 400;
 }
 .card-header-tabs .tab:hover { color: var(--foreground); }
 .card-header-tabs .tab.on {

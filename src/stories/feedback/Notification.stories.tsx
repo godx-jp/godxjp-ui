@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Toaster, toast } from "../../components/feedback/toaster";
 import { Button } from "../../components/general/Button";
 
@@ -48,6 +49,18 @@ export const WithDescription: Story = {
       </Button>
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = within(canvasElement.ownerDocument.body);
+
+    await step("clicking trigger renders the rich notification text", async () => {
+      const trigger = canvas.getByRole("button", { name: /description つきで表示/ });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(portal.getByText("シフトが更新されました")).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 export const WithAction: Story = {

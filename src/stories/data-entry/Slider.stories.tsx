@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Slider } from "../../components/data-entry/Slider";
 import { Flex } from "../../components/layout";
 
@@ -27,6 +28,23 @@ export const Default: Story = {
       <Slider defaultValue={30} />
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("slider thumb renders with default value 30", async () => {
+      const thumb = canvas.getByRole("slider");
+      await expect(thumb).toHaveAttribute("aria-valuenow", "30");
+    });
+
+    await step("ArrowRight increments the value", async () => {
+      const thumb = canvas.getByRole("slider");
+      thumb.focus();
+      await userEvent.keyboard("{ArrowRight}");
+      await waitFor(() => {
+        expect(thumb.getAttribute("aria-valuenow")).not.toBe("30");
+      });
+    });
+  },
 };
 
 export const Range: Story = {
@@ -91,18 +109,16 @@ export const Disabled_Range: Story = {
   ),
 };
 
-function ControlledDemo() {
-  const [value, setValue] = useState<number | [number, number]>(35);
-  return (
-    <Flex vertical gap="small" style={{ width: 320 }}>
-      <Slider value={value} onValueChange={setValue} />
-      <code className="mono" style={{ fontSize: "var(--text-xs)" }}>
-        {JSON.stringify(value)}
-      </code>
-    </Flex>
-  );
-}
-
 export const Controlled: Story = {
-  render: () => <ControlledDemo />,
+  render: function Controlled() {
+    const [value, setValue] = useState<number | [number, number]>(35);
+    return (
+      <Flex vertical gap="small" style={{ width: 320 }}>
+        <Slider value={value} onValueChange={setValue} />
+        <code className="mono" style={{ fontSize: "var(--text-xs)" }}>
+          {JSON.stringify(value)}
+        </code>
+      </Flex>
+    );
+  },
 };

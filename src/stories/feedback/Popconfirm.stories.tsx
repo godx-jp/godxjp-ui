@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Popconfirm } from "../../components/feedback/Popconfirm";
 import { Button } from "../../components/general/Button";
 
@@ -50,6 +51,27 @@ export const Default: Story = {
       <Button variant="destructive">削除</Button>
     </Popconfirm>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("clicking trigger opens the confirm popover", async () => {
+      const trigger = canvas.getByRole("button", { name: "削除" });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        // Popconfirm is built on Popover (Radix renders role=dialog).
+        expect(within(portal).getByText(/削除しますか/)).toBeInTheDocument();
+      });
+    });
+
+    await step("cancel closes the popover", async () => {
+      const cancel = within(portal).getByRole("button", { name: /キャンセル/ });
+      await userEvent.click(cancel);
+      await waitFor(() => {
+        expect(within(portal).queryByText(/削除しますか/)).toBeNull();
+      });
+    });
+  },
 };
 
 export const Simple: Story = {

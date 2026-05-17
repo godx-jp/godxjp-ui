@@ -759,6 +759,10 @@
   margin-bottom: var(--spacing-3);
 }
 
+/* `.ph-bar` baseline: single-row compact layout uses the page-chrome
+ * height token; stacked variant + the explicit `padding` prop both
+ * release the fixed height and switch to vertical padding so two-line
+ * (breadcrumb + title) content has breathing room. */
 .ph-bar {
   display: flex;
   align-items: center;
@@ -767,6 +771,18 @@
   padding: 0 var(--spacing-4);
   border-bottom: 1px solid var(--border);
 }
+.ph-stacked .ph-bar,
+.ph-padding-tight .ph-bar,
+.ph-padding-cozy .ph-bar,
+.ph-padding-none .ph-bar {
+  height: auto;
+}
+.ph-stacked .ph-bar {
+  padding: var(--spacing-3) var(--spacing-4);
+}
+.ph-padding-tight .ph-bar { padding: var(--spacing-2) var(--spacing-3); }
+.ph-padding-cozy .ph-bar  { padding: var(--spacing-5) var(--spacing-6); }
+.ph-padding-none .ph-bar  { padding: 0; }
 
 .ph-title {
   display: flex;

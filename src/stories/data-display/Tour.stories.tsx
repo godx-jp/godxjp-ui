@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Tour } from "../../components/data-display/Tour";
 import { Button } from "../../components/general/Button";
 import { Flex } from "../../components/layout";
@@ -47,6 +48,18 @@ type Story = StoryObj<typeof Tour>;
 
 export const Default: Story = {
   name: "Default · 3-step onboarding tour",
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("clicking ツアー開始 launches the tour", async () => {
+      const startBtn = canvas.getByRole("button", { name: "ツアー開始" });
+      await userEvent.click(startBtn);
+      await waitFor(() => {
+        expect(within(portal).getByText("新規作成ボタン")).toBeInTheDocument();
+      });
+    });
+  },
   render: () => {
     const [open, setOpen] = useState(false);
     return (

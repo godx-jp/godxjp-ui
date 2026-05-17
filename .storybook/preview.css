@@ -15,10 +15,13 @@ body,
   min-height: 100vh;
 }
 
+/* Stage wrapper applied via the preview decorator. NO `min-height: 100vh`
+ * here — body already paints the same background full-height for Story
+ * view, and on the Docs view each story block would otherwise inherit a
+ * ~700px frame regardless of content. Height tracks the rendered story. */
 .sb-stage {
   display: block;
   padding: var(--density-page);
-  min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
 }
@@ -62,4 +65,31 @@ body,
   background: var(--surface-3) !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius-md) !important;
+}
+
+/* Storybook 10's Prism theme on the Docs Source block sets
+ * `border: 1px solid <token-color>` per Prism token, which renders as
+ * a chip / pill around every JSX node and makes the snippet
+ * unreadable. Force plain syntax highlighting — colour only, no chip
+ * borders or backgrounds. Targets every Prism container Storybook
+ * may emit (`pre.prismjs` in docs, fallback `pre code`). */
+pre.prismjs,
+.docblock-source pre,
+.sbdocs-preview pre {
+  border: 0 !important;
+}
+pre.prismjs .token,
+.docblock-source pre .token,
+.sbdocs-preview pre .token {
+  /* `display: inline` (NOT `inline-flex`) is critical — Storybook 10's
+   * theme renders tokens as inline-flex chips, which both produces the
+   * pill rendering AND collapses adjacent whitespace tokens (because
+   * flex containers strip text whitespace between item boundaries).
+   * Forcing `inline` restores plain syntax-highlighted text. */
+  display: inline !important;
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
 }

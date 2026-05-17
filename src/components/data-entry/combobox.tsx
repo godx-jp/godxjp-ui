@@ -46,6 +46,13 @@ export const ComboboxContent = forwardRef<
   },
   ref,
 ) {
+  // cmdk's `Command` renders a Radix Primitive.input under the hood;
+  // passing `value` AND `defaultValue` (even both undefined) trips
+  // React's controlled / uncontrolled warning on the inner input.
+  // Conditional spread so only one prop reaches Command.
+  const commandValueProp =
+    value !== undefined ? { value } : defaultValue !== undefined ? { defaultValue } : {}
+
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
@@ -59,8 +66,7 @@ export const ComboboxContent = forwardRef<
           className={cn("combobox-command", commandClassName)}
           shouldFilter={shouldFilter}
           filter={filter}
-          value={value}
-          defaultValue={defaultValue}
+          {...commandValueProp}
           onValueChange={onValueChange}
           loop={loop}
           label={label}

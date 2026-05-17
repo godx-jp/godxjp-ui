@@ -5,3 +5,11 @@ dist/
 .tsbuildinfo
 *.tgz
 storybook-static/
+
+# Local debug artefacts — Playwright MCP screenshots / cache.
+.playwright-mcp/
+*.png
+# But keep the design-handoff bundle and any in-tree image asset.
+!docs/**/*.png
+!design-handoff/**/*.png
+!src/**/*.png

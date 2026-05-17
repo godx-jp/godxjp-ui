@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Toaster, toast } from "../../components/feedback/toaster";
 import { Button } from "../../components/general/Button";
 import { Space } from "../../components/layout";
@@ -43,6 +44,18 @@ export const Info: Story = {
       </Button>
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = within(canvasElement.ownerDocument.body);
+
+    await step("clicking trigger renders the toast text", async () => {
+      const trigger = canvas.getByRole("button", { name: /info を表示/ });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(portal.getByText("通知を確認しました")).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 export const Success: Story = {

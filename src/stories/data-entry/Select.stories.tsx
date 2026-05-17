@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   Select,
   SelectContent,
@@ -81,6 +82,25 @@ export const Default: Story = {
       </Select>
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("trigger renders with default value", async () => {
+      const trigger = canvas.getByRole("combobox");
+      await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    });
+
+    await step("clicking trigger opens listbox with options", async () => {
+      const trigger = canvas.getByRole("combobox");
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(trigger).toHaveAttribute("aria-expanded", "true");
+      });
+      const options = within(portal).getAllByRole("option");
+      await expect(options.length).toBeGreaterThanOrEqual(5);
+    });
+  },
 };
 
 // ─── Grouped — labels + separator ───────────────────────────────

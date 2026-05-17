@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Heart } from "lucide-react";
 import { Rate } from "../../components/data-entry/Rate";
 import { Flex } from "../../components/layout";
@@ -23,6 +24,24 @@ type Story = StoryObj<typeof Rate>;
 
 export const Default: Story = {
   render: () => <Rate defaultValue={3} />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("rate renders as radiogroup with 5 stars", async () => {
+      const group = canvas.getByRole("radiogroup");
+      await expect(group).toBeInTheDocument();
+      const stars = canvas.getAllByRole("radio");
+      await expect(stars.length).toBe(5);
+    });
+
+    await step("clicking the 5th star selects it", async () => {
+      const stars = canvas.getAllByRole("radio");
+      await userEvent.click(stars[4]);
+      await waitFor(() => {
+        expect(stars[4]).toHaveAttribute("aria-checked", "true");
+      });
+    });
+  },
 };
 
 export const AllowHalf: Story = {

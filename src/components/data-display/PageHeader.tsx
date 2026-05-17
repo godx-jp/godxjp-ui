@@ -53,6 +53,7 @@ import { cn } from "../cn";
  */
 
 export type PageHeaderVariant = "compact" | "overflow" | "stacked";
+export type PageHeaderPadding = "tight" | "default" | "cozy" | "none";
 
 export interface PageHeaderProps
   extends Omit<HTMLAttributes<HTMLElement>, "title"> {
@@ -68,7 +69,18 @@ export interface PageHeaderProps
   body?: ReactNode;
   /** Layout variant — defaults to `compact`. */
   variant?: PageHeaderVariant;
+  /** Internal-spacing density. Shares the vocabulary with `<Card>`
+   * (cardinal rule 23 §B): tight (10/12) · default (14/16) · cozy
+   * (20/24) · none (consumer pads the inside). Default `default`. */
+  padding?: PageHeaderPadding;
 }
+
+const PADDING_CLASS: Record<PageHeaderPadding, string> = {
+  tight: "ph-padding-tight",
+  default: "",
+  cozy: "ph-padding-cozy",
+  none: "ph-padding-none",
+};
 
 export const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(
   function PageHeader(
@@ -80,6 +92,7 @@ export const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(
       tabs,
       body,
       variant,
+      padding = "default",
       className,
       ...rest
     },
@@ -94,7 +107,7 @@ export const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(
     return (
       <section
         ref={ref}
-        className={cn("ph", `ph-${resolved}`, className)}
+        className={cn("ph", `ph-${resolved}`, PADDING_CLASS[padding], className)}
         {...rest}
       >
         <div className="ph-bar">

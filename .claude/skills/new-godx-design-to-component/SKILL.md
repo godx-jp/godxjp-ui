@@ -364,6 +364,15 @@ example HTML using the primitive's props + composition.
 Add a "Pattern matrix" story that crams all primitive variants
 into one Row/Col grid for axes-sweep verification.
 
+Before naming the primitive's root CSS class, consult
+[`../../../AGENTS.md`](../../../AGENTS.md) §"Storybook gotchas" —
+Tailwind v4 utility names (`collapse`, `block`, `flex`, `grid`,
+`hidden`, `visible`, `static`, `fixed`, `absolute`, `relative`,
+`sticky`, `table`, `contents`, …) silently override same-named
+component classes via `@layer utilities`. Use `<name>-root` for
+the wrapper. Same section also covers `play` function API
+gotchas + when a `getComputedStyle` smoke check is worth writing.
+
 # Part 3 — Anti-patterns
 
 - "I'll use `--spacing-3` instead of adding a `--card-pad-y-header`

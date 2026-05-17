@@ -98,10 +98,25 @@
 .descriptions-item-value { color: var(--foreground); font-size: var(--text-sm); min-width: 0; overflow-wrap: anywhere; }
 .descriptions-vertical .descriptions-item { flex-direction: column; gap: var(--spacing-1); align-items: stretch; }
 .descriptions-vertical .descriptions-item-label { min-width: 0; }
-.descriptions-bordered { border: 1px solid var(--border); border-radius: var(--radius-lg); }
-.descriptions-bordered .descriptions-body { gap: 0; }
-.descriptions-bordered .descriptions-item { padding: var(--spacing-2) var(--spacing-3); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
-.descriptions-bordered .descriptions-item:last-child { border-bottom: 0; }
+/* Bordered variant — frame wraps the BODY only (title sits above,
+ * outside the box) so the title is not glued to the inner edge.
+ *
+ * Grid hairlines use the "gap-as-border" trick: 1px gap between cells
+ * lets the body's `--border` background bleed through as inner
+ * dividers; cell `--card` background covers everything else. This way
+ * the border math is independent of the `column` prop — works for
+ * column=2, 3, 4, etc., without nth-child gymnastics. */
+.descriptions-bordered .descriptions-body {
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.descriptions-bordered .descriptions-item {
+  padding: var(--spacing-2) var(--spacing-3);
+  background: var(--card);
+}
 .descriptions-size-small .descriptions-item { padding: var(--spacing-1) var(--spacing-2); }
 .descriptions-size-large .descriptions-item-value { font-size: var(--text-md); }
 
@@ -274,7 +289,14 @@
   transition: transform var(--transition-base) var(--ease-in-out);
   will-change: transform;
 }
-.carousel[data-orientation="vertical"] .carousel-viewport {
+/* Vertical: consumer wraps the carousel in a height-constrained
+ * container. The carousel adopts that height and the track + slides
+ * cascade 100% along the main axis so the viewport's `overflow: hidden`
+ * actually clips inactive slides. Without these rules the track grows
+ * to its content and every slide is visible at once. */
+.carousel[data-orientation="vertical"],
+.carousel[data-orientation="vertical"] .carousel-viewport,
+.carousel[data-orientation="vertical"] .carousel-track {
   height: 100%;
 }
 .carousel-slide {
@@ -368,7 +390,11 @@
 }
 
 /* ── Collapse — accordion panel group ───────────────────────────── */
-.collapse {
+/* Root class is `.collapse-root` (not `.collapse`) because Tailwind v4
+ * ships a `collapse` utility (`visibility: collapse`) in `@layer
+ * utilities` that would otherwise win the cascade and hide the entire
+ * accordion subtree via inherited `visibility: collapse`. */
+.collapse-root {
   display: flex;
   flex-direction: column;
 }
@@ -478,17 +504,13 @@
   padding-left: 0;
   padding-right: 0;
 }
-.list-item-wrapper {
-  /* wrapper only when data-driven; sits as a list item */
-}
 .list-item {
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-3);
   padding: var(--spacing-3) 0;
 }
-.list[data-split="true"] .list-items > .list-item + .list-item,
-.list[data-split="true"] .list-items > .list-item-wrapper + .list-item-wrapper {
+.list[data-split="true"] .list-items > .list-item + .list-item {
   border-top: 1px solid var(--border);
 }
 .list-item-avatar {
@@ -738,15 +760,21 @@
 }
 .image-placeholder,
 .image-fallback {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--muted-foreground);
-  background: var(--muted);
-  border-radius: var(--radius-md);
+  text-align: center;
+  width: 100%;
+  height: 100%;
   min-width: 64px;
   min-height: 64px;
+  padding: var(--spacing-3);
+  color: var(--muted-foreground);
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   font-size: var(--text-xs);
+  line-height: 1.4;
 }
 .image-preview-overlay {
   position: fixed;

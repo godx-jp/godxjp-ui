@@ -7,6 +7,7 @@ import {
   Settings,
 } from "lucide-react";
 import { useState } from "react";
+import { expect, within } from "storybook/test";
 import { Avatar, Button, Typography } from "../../components/primitives";
 import {
   AppShell,
@@ -144,6 +145,16 @@ function ShellPlayground({
 
 export const Default: Story = {
   render: () => <ShellPlayground />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("sidebar + topbar landmarks render", async () => {
+      const navs = canvas.getAllByRole("navigation");
+      await expect(navs.length).toBeGreaterThan(0);
+      const banners = canvas.getAllByRole("banner");
+      await expect(banners.length).toBeGreaterThan(0);
+    });
+  },
 };
 
 export const WithFooter: Story = {

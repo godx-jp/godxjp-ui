@@ -250,6 +250,102 @@ Storybook runs with:
 - `pnpm run storybook:build` — static deploy artefact.
 - `pnpm run storybook:test` — Playwright snapshot test (CI).
 
+### Storybook gotchas
+
+Lessons captured from real regressions. Skim before authoring a
+new primitive root class or adding `play` functions.
+
+#### Tailwind v4 utility class name collisions
+
+Tailwind v4 ships a fixed catalogue of utility class names —
+`collapse`, `block`, `flex`, `grid`, `hidden`, `visible`,
+`static`, `fixed`, `absolute`, `relative`, `sticky`, `table`,
+`contents`, `list-item`, `inline`, `inline-block`, `inline-flex`,
+`inline-grid` — that ALL live in `@layer utilities`. Tailwind's
+utility layer wins the cascade against `.<name>` rules declared
+outside `@layer utilities` (which is where our `shell.css` lives).
+
+If a primitive root class collides, the utility silently
+re-binds the property:
+
+- `<div class="collapse">` → `visibility: collapse` →
+  the entire subtree becomes invisible via inherited
+  `visibility: collapse`.
+- `<div class="hidden">` → `display: none`.
+- `<div class="static">` → `position: static` (overrides the
+  primitive's intended `relative` / `absolute`).
+
+The fix is renaming, not specificity. Use a non-colliding root
+class — convention is `<name>-root` (matches the per-region
+pattern `<name>-header`, `<name>-body`, …):
+
+```css
+/* WRONG — collides with Tailwind utility */
+.collapse { display: flex; flex-direction: column; }
+
+/* RIGHT — Tailwind has no `.<thing>-root` utility */
+.collapse-root { display: flex; flex-direction: column; }
+```
+
+Before naming a new primitive's root class, grep the Tailwind v4
+utility catalogue (or just try the class in a JSX `className=""`
+and inspect the computed style — if Tailwind owns it, the
+computed value won't match your CSS).
+
+#### Storybook 10 `play` function API — easy gotchas
+
+Today's stories don't use `play`. When we add interaction or
+assertion checks, get these right or vitest fails in confusing
+ways:
+
+- `canvas`, `userEvent`, `canvasElement` come from **play
+  arguments**, NOT imports:
+  `async ({ canvas, userEvent, canvasElement }) => { … }`. Never
+  `import { userEvent } from 'storybook/test'`; never write
+  `const canvas = within(canvasElement)` — both are provided.
+- `expect`, `waitFor` come from `'storybook/test'` — import
+  those.
+- `within` is only for portal queries against the OUTER document
+  (e.g. `within(canvasElement.ownerDocument.body).findByTestId(…)`).
+  Do not use it for content rendered inside the canvas.
+- Portal stories: if a primitive renders to `document.body`
+  (Dialog, Sheet, AlertDialog, Popover, DropdownMenu, Tooltip),
+  query the portaled content through
+  `canvasElement.ownerDocument.body`, not `canvas`.
+
+#### `getComputedStyle` smoke check (when a play is justified)
+
+Per cardinal rule 22, design-canon literals are token-pinned.
+A `getComputedStyle` assert inside a `play` catches silent token
+regressions that `toBeVisible` doesn't notice:
+
+```tsx
+export const Default: Story = {
+  args: { children: "Order" },
+  play: async ({ canvas }) => {
+    const btn = canvas.getByRole("button", { name: /order/i });
+    // `--primary` at default accent=blue resolves to oklch(56% 0.13 246)
+    // — fails if the token chain regressed or the CSS import broke.
+    await expect(getComputedStyle(btn).backgroundColor)
+      .toBe("oklch(0.56 0.13 246)");
+  },
+};
+```
+
+Use sparingly. One per primitive is enough; chaining `getComputedStyle`
+asserts across every variant duplicates the Playwright probe
+([`./.claude/skills/new-godx-design-to-component/SKILL.md`](./.claude/skills/new-godx-design-to-component/SKILL.md)
+§Step 9) without adding signal.
+
+#### Skip `play` for variant-only stories
+
+A `play` is worth writing only when it asserts something the
+render alone doesn't prove. Skip for stories that just swap
+`args` (size / variant / color sweeps) — the render itself
+already fails if the component throws or doesn't mount.
+Naked `await expect(canvas.getByRole('button')).toBeVisible()`
+adds zero signal.
+
 ## Common tasks
 
 ### Add a new primitive

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Cascader, type CascaderOption } from "../../components/data-entry/Cascader";
 import { Flex } from "../../components/layout";
 
@@ -112,49 +113,57 @@ type Story = StoryObj<typeof Cascader>;
 
 // ─── PrefectureCityWard ─────────────────────────────────────────
 
-function PrefectureDemo() {
-  const [path, setPath] = useState<string[]>([]);
-  return (
-    <Flex vertical gap="small" style={{ maxWidth: 360 }}>
-      <Cascader
-        options={prefectureTree}
-        value={path}
-        onValueChange={(next) => setPath(next)}
-        placeholder="都道府県 → 市区 → 町名"
-      />
-      <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
-        Selected path: <code className="mono">{JSON.stringify(path)}</code>
-      </span>
-    </Flex>
-  );
-}
-
 export const PrefectureCityWard: Story = {
-  render: () => <PrefectureDemo />,
+  render: function PrefectureCityWard() {
+    const [path, setPath] = useState<string[]>([]);
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 360 }}>
+        <Cascader
+          options={prefectureTree}
+          value={path}
+          onValueChange={(next) => setPath(next)}
+          placeholder="都道府県 → 市区 → 町名"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          Selected path: <code className="mono">{JSON.stringify(path)}</code>
+        </span>
+      </Flex>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("clicking trigger opens the first column", async () => {
+      const trigger = canvas.getByText("都道府県 → 市区 → 町名");
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByText("東京都")).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── ProductCategory ────────────────────────────────────────────
 
-function ProductCategoryDemo() {
-  const [path, setPath] = useState<string[]>(["electronics", "smartphones"]);
-  return (
-    <Flex vertical gap="small" style={{ maxWidth: 320 }}>
-      <Cascader
-        options={productCategories}
-        value={path}
-        onValueChange={(next) => setPath(next)}
-        showFullPath={false}
-        placeholder="カテゴリ"
-      />
-      <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
-        Leaf only: <code className="mono">{JSON.stringify(path)}</code>
-      </span>
-    </Flex>
-  );
-}
-
 export const ProductCategory: Story = {
-  render: () => <ProductCategoryDemo />,
+  render: function ProductCategory() {
+    const [path, setPath] = useState<string[]>(["electronics", "smartphones"]);
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 320 }}>
+        <Cascader
+          options={productCategories}
+          value={path}
+          onValueChange={(next) => setPath(next)}
+          showFullPath={false}
+          placeholder="カテゴリ"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          Leaf only: <code className="mono">{JSON.stringify(path)}</code>
+        </span>
+      </Flex>
+    );
+  },
 };
 
 // ─── Disabled ───────────────────────────────────────────────────

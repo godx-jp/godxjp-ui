@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { TreeSelect, type TreeSelectOption } from "../../components/data-entry/TreeSelect";
 import { Flex } from "../../components/layout";
 
@@ -110,49 +111,62 @@ type Story = StoryObj<typeof TreeSelect>;
 
 // ─── Single (org tree) ──────────────────────────────────────────
 
-function SingleDemo() {
-  const [value, setValue] = useState<string | string[]>("frontend");
-  return (
-    <Flex vertical gap="small" style={{ maxWidth: 320 }}>
-      <TreeSelect
-        options={orgTree}
-        value={value}
-        onValueChange={setValue}
-        placeholder="所属部署を選択"
-      />
-      <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
-        Selected: <code className="mono">{JSON.stringify(value)}</code>
-      </span>
-    </Flex>
-  );
-}
-
 export const Single: Story = {
-  render: () => <SingleDemo />,
+  render: function Single() {
+    const [value, setValue] = useState<string | string[]>("frontend");
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 320 }}>
+        <TreeSelect
+          options={orgTree}
+          value={value}
+          onValueChange={setValue}
+          placeholder="所属部署を選択"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          Selected: <code className="mono">{JSON.stringify(value)}</code>
+        </span>
+      </Flex>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("trigger shows initial selection", async () => {
+      const trigger = canvas.getByRole("combobox");
+      await expect(trigger).toBeInTheDocument();
+    });
+
+    await step("clicking trigger opens the tree popover", async () => {
+      const trigger = canvas.getByRole("combobox");
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(within(portal).getByText("GoDX 東京本社")).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── Multi (departments multi-select) ───────────────────────────
 
-function MultiDemo() {
-  const [value, setValue] = useState<string | string[]>(["frontend", "sales"]);
-  return (
-    <Flex vertical gap="small" style={{ maxWidth: 360 }}>
-      <TreeSelect
-        options={departments}
-        value={value}
-        onValueChange={setValue}
-        multiple
-        placeholder="部門を複数選択"
-      />
-      <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
-        Selected: <code className="mono">{JSON.stringify(value)}</code>
-      </span>
-    </Flex>
-  );
-}
-
 export const Multi: Story = {
-  render: () => <MultiDemo />,
+  render: function Multi() {
+    const [value, setValue] = useState<string | string[]>(["frontend", "sales"]);
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 360 }}>
+        <TreeSelect
+          options={departments}
+          value={value}
+          onValueChange={setValue}
+          multiple
+          placeholder="部門を複数選択"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          Selected: <code className="mono">{JSON.stringify(value)}</code>
+        </span>
+      </Flex>
+    );
+  },
 };
 
 // ─── ExpandedByDefault ──────────────────────────────────────────

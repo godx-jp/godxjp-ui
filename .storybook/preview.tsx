@@ -14,15 +14,45 @@ initI18n();
 const preview: Preview = {
   parameters: {
     layout: "padded",
+    // Make the Code panel the default tab in the bottom addons drawer
+    // so the source JSX is the first thing reviewers see on every
+    // Story view — no Controls/Actions click-through.
+    options: {
+      selectedPanel: "storybook/docs/panel",
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
     },
+    // Auto-instrument every callback prop matching `onValueChange`,
+    // `onOpenChange`, `onClick`, `onSelect`, `onChange`, … so the
+    // Actions panel logs every invocation without per-story wiring.
+    // The regex matches React event/handler conventions (`on` +
+    // PascalCase). Stories can still override per-arg via argTypes.
+    actions: { argTypesRegex: "^on[A-Z].*" },
     backgrounds: { disable: true },
     docs: {
       toc: { headingSelector: "h2, h3" },
+      // Storybook 10 ships an inline Code panel via `@storybook/addon-docs`
+      // (the replacement for the discontinued `addon-storysource`).
+      // Toggle it on so the Story view (`?viewMode=story`) carries a
+      // "Code" tab beside Controls / Actions / Interactions — same
+      // snippet the Source doc block renders, with `args` inlined.
+      codePanel: true,
+      // Keep the Docs view collapsed by default (`hidden`) — auto-
+      // expanding source under every story bloats the Docs page to
+      // unreadable heights when a component ships 5+ stories. Source
+      // remains one click away via "Show code", and consumers chasing
+      // a single story should use the Story view's Code panel.
+      canvas: { sourceState: "hidden" },
+      // `type: "dynamic"` lets Storybook render just the JSX (with
+      // current `args` inlined) instead of the literal story-object
+      // wrapper `{ name: "...", render: () => … }`. Reads as a clean
+      // copy-paste-able snippet that consumers can drop into their
+      // own code, matching the Ant / MUI / shadcn doc convention.
+      source: { type: "dynamic" },
     },
   },
   globalTypes: {

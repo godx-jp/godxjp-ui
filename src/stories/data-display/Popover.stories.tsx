@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   Popover,
   PopoverContent,
@@ -65,6 +66,24 @@ export const Default: Story = {
       </PopoverContent>
     </Popover>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("clicking trigger opens popover content", async () => {
+      const trigger = canvas.getByRole("button", { name: /詳細を表示/ });
+      await expect(trigger).toHaveAttribute("aria-expanded", "false");
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(trigger).toHaveAttribute("aria-expanded", "true");
+      });
+      await waitFor(() => {
+        expect(
+          within(portal).getByText("渋谷本店 · 田中 美咲 さんの勤怠詳細"),
+        ).toBeInTheDocument();
+      });
+    });
+  },
 };
 
 // ─── WithRichContent — multi-line + actions ─────────────────────

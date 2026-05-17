@@ -6,15 +6,30 @@ description: "Binding doc-authoring procedure for @godxjp/ui. Read BEFORE editin
 # godx-ui-doc-writing
 
 The binding procedure for writing or editing **any** Markdown file
-under `libs/ts/godxjp-ui/`. Mirrors the umbrella rule 13
-(`<umbrella>/new-docs/13-meta-doc-standards.md`) but scoped to this
-submodule's tree so an agent cloning the repo standalone has the
-discipline locally available.
+in this repo (`@godxjp/ui`). **This skill is the authoritative source.**
 
 The procedure is **non-skippable**. Doc drift is the most expensive
 class of bug an agent can ship in a documentation-heavy framework
 like this one: a single stale path or rule reference teaches
 consumers to do the wrong thing for every future PR.
+
+## A note on "umbrella" references
+
+`@godxjp/ui` is consumed by godx-jp's internal monorepo (the
+"umbrella") as a git submodule pinned by SHA. The umbrella has its
+own `new-docs/` with cross-cutting platform rules (consumer SPA
+wiring, monorepo CI, lockfile parity, etc.) that this submodule
+does NOT carry.
+
+When this repo is cloned standalone from
+`github.com/godx-jp/godxjp-ui`, the umbrella is not present and
+its rules are not reachable. **This skill, plus this repo's
+`CLAUDE.md` / `AGENTS.md` / `new-docs/`, is sufficient on its own**
+— there is nothing outside this tree an agent needs to consult.
+
+References to "umbrella rule N" elsewhere in this skill are
+informational provenance (where the discipline originated), not a
+binding source. The rule as written below is what applies.
 
 ## When to invoke
 
@@ -43,9 +58,9 @@ rejected at review.
 | `AGENTS.md` (root or nested) | **NONE.** Pure markdown. | https://agents.md/ |
 | `.claude/skills/<name>/SKILL.md` | YAML — `name`, `description` (≤200 chars, used by RAG) | https://code.claude.com/docs/en/skills.md |
 | `.codex/skills/<name>/SKILL.md` | Byte-identical mirror of `.claude/` | (mirror — `scripts/sync-skills.sh`) |
-| `new-docs/*.md` (this repo's binding rules) | **NONE.** Pure markdown — these are agent-binding rule files, not Diátaxis content. | umbrella rule 13 §B.1 |
-| `docs/**/*.md` (non-ADR leaves) | YAML — see §B.3 below | umbrella rule 13 §B.3 |
-| `docs/**/README.md` (Diátaxis index) | YAML — `diataxis: index` | umbrella rule 13 §B.3 |
+| `new-docs/*.md` (this repo's binding rules) | **NONE.** Pure markdown — these are agent-binding rule files, not Diátaxis content. | this skill §A |
+| `docs/**/*.md` (non-ADR leaves) | YAML — see §A below | https://diataxis.fr + this skill §A |
+| `docs/**/README.md` (Diátaxis index) | YAML — `diataxis: index` | this skill §A |
 | `docs/adr/*.md` | YAML — MADR 3.0 frontmatter | https://adr.github.io/madr/ |
 | `CHANGELOG.md` | **NONE.** | https://keepachangelog.com/en/1.1.0/ |
 | `BRAND.md`, `LICENSE` | **NONE.** | n/a |
@@ -120,11 +135,10 @@ invoke the skill.
 
 # Part 2 — Re-fetch upstream specs each session
 
-The umbrella's rule 13 §A is binding: before writing or editing any
-agent-manifest file (CLAUDE.md, AGENTS.md, SKILL.md, ADR), open the
-canonical upstream documentation in your current session and re-read
-it. Cache is not a substitute. Cite the URL + last-fetched date in
-your PR body.
+Binding: before writing or editing any agent-manifest file
+(CLAUDE.md, AGENTS.md, SKILL.md, ADR), open the canonical upstream
+documentation in your current session and re-read it. Cache is not a
+substitute. Cite the URL + last-fetched date in your PR body.
 
 The reason: vendor specs ship new keys, new validation rules, new
 defaults without versioned release notes. The drift between "the way
@@ -215,7 +229,7 @@ Before editing any doc:
 
 4. **Check frontmatter against §1**. If the file should have
    frontmatter, validate every required key. If it shouldn't,
-   strip any stray frontmatter (umbrella rule 13 §B.1).
+   strip any stray frontmatter (per §1's "NONE" rows).
 
 5. **Update the `last-updated:` field** to today's ISO date.
 
@@ -253,7 +267,7 @@ Before editing any doc:
   AND `last-updated:` (most recent edit) AND `status:`.
 - Editing a `docs/` file without bumping `last-updated:`.
 - A doc using `updated:` instead of `last-updated:` (legacy key
-  name — umbrella schema rejects it).
+  name — §A specifies `last-updated:` only).
 - A doc lacking `title:` / `lang:` / `status:` (required by §B.3).
 - A doc referencing `src/components/primitives/<X>.tsx` flat —
   primitives live under `src/components/<group>/<X>.tsx` per
@@ -265,8 +279,6 @@ Before editing any doc:
 
 # Part 8 — Connected rules
 
-- **Umbrella rule 13** (`<umbrella>/new-docs/13-meta-doc-standards.md`)
-  — canonical source for frontmatter shapes + upstream spec list.
 - **Cardinal rule 9** — no marketing speak.
 - **Cardinal rule 10** — English is canonical.
 - **Cardinal rule 27** — per-group folder structure (any doc

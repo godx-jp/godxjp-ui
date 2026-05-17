@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { LocaleTabs } from "../../components/data-entry/LocaleTabs";
 import { Textarea } from "../../components/data-entry/Input";
 import { Flex } from "../../components/layout";
@@ -46,88 +47,98 @@ type Story = StoryObj<typeof LocaleTabs>;
 
 // ─── Default — ja / en / vi mix of statuses ──────────────────────
 
-function DefaultDemo() {
-  const [active, setActive] = useState("ja");
-  return (
-    <LocaleTabs
-      locales={[
-        { code: "ja", label: "日本語", status: "translated" },
-        { code: "en", label: "English", status: "translated" },
-        { code: "vi", label: "Tiếng Việt", status: "draft" },
-      ]}
-      value={active}
-      onChange={setActive}
-      meta="3 / 3 編集中"
-    />
-  );
-}
-
 export const Default: Story = {
   name: "Default · ja / en / vi",
-  render: () => <DefaultDemo />,
-};
-
-// ─── WithAddButton — onAdd handler renders "⊕ 追加" ──────────────
-
-function AddButtonDemo() {
-  const [active, setActive] = useState("ja");
-  return (
-    <LocaleTabs
-      locales={[
-        { code: "ja", label: "日本語", status: "translated" },
-        { code: "en", label: "English", status: "translated" },
-        { code: "vi", label: "Tiếng Việt", status: "draft" },
-        { code: "zh", label: "简体中文", status: "missing" },
-      ]}
-      value={active}
-      onChange={setActive}
-      meta="2 / 4 翻訳済"
-      onAdd={() => {
-        /* open add-locale picker */
-      }}
-    />
-  );
-}
-
-export const WithAddButton: Story = {
-  name: "WithAddButton · onAdd handler + meta",
-  render: () => <AddButtonDemo />,
-};
-
-// ─── WithPanel — header + textarea panel composition ─────────────
-
-function PanelDemo() {
-  const [active, setActive] = useState("ja");
-  const copy: Record<string, string> = {
-    ja: "渋谷本店のシフトを公開しました。",
-    en: "Shibuya HQ shift schedule is now published.",
-    vi: "",
-  };
-  return (
-    <Flex vertical gap="small" style={{ maxWidth: 480 }}>
+  render: function Default() {
+    const [active, setActive] = useState("ja");
+    return (
       <LocaleTabs
         locales={[
           { code: "ja", label: "日本語", status: "translated" },
           { code: "en", label: "English", status: "translated" },
-          { code: "vi", label: "Tiếng Việt", status: "missing" },
+          { code: "vi", label: "Tiếng Việt", status: "draft" },
         ]}
         value={active}
         onChange={setActive}
-        meta="2 / 3 翻訳済"
+        meta="3 / 3 編集中"
       />
-      <Textarea
-        rows={4}
-        value={copy[active]}
-        placeholder="未翻訳"
-        readOnly
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("ja tab is the initially selected tab", async () => {
+      const jaTab = canvas.getByRole("tab", { name: /日本語/ });
+      await expect(jaTab).toHaveAttribute("aria-selected", "true");
+    });
+
+    await step("clicking en tab switches selection", async () => {
+      const enTab = canvas.getByRole("tab", { name: /English/ });
+      await userEvent.click(enTab);
+      await waitFor(() => {
+        expect(enTab).toHaveAttribute("aria-selected", "true");
+      });
+    });
+  },
+};
+
+// ─── WithAddButton — onAdd handler renders "⊕ 追加" ──────────────
+
+export const WithAddButton: Story = {
+  name: "WithAddButton · onAdd handler + meta",
+  render: function WithAddButton() {
+    const [active, setActive] = useState("ja");
+    return (
+      <LocaleTabs
+        locales={[
+          { code: "ja", label: "日本語", status: "translated" },
+          { code: "en", label: "English", status: "translated" },
+          { code: "vi", label: "Tiếng Việt", status: "draft" },
+          { code: "zh", label: "简体中文", status: "missing" },
+        ]}
+        value={active}
+        onChange={setActive}
+        meta="2 / 4 翻訳済"
+        onAdd={() => {
+          /* open add-locale picker */
+        }}
       />
-    </Flex>
-  );
-}
+    );
+  },
+};
+
+// ─── WithPanel — header + textarea panel composition ─────────────
 
 export const WithPanel: Story = {
   name: "WithPanel · header + textarea body",
-  render: () => <PanelDemo />,
+  render: function WithPanel() {
+    const [active, setActive] = useState("ja");
+    const copy: Record<string, string> = {
+      ja: "渋谷本店のシフトを公開しました。",
+      en: "Shibuya HQ shift schedule is now published.",
+      vi: "",
+    };
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 480 }}>
+        <LocaleTabs
+          locales={[
+            { code: "ja", label: "日本語", status: "translated" },
+            { code: "en", label: "English", status: "translated" },
+            { code: "vi", label: "Tiếng Việt", status: "missing" },
+          ]}
+          value={active}
+          onChange={setActive}
+          meta="2 / 3 翻訳済"
+        />
+        <Textarea
+          rows={4}
+          value={copy[active]}
+          placeholder="未翻訳"
+          readOnly
+        />
+      </Flex>
+    );
+  },
 };
 
 // ─── AllStatuses — translated / draft / missing dots ─────────────

@@ -606,10 +606,15 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   transform: translateX(1.375rem);
 }
 
+/* Checkbox dimensions follow the industry canon (shadcn / Ant /
+ * Tailwind): 1rem (16px at base font-size) — NOT the density-element
+ * scale, which is sized for full-height controls (button, input,
+ * select). The `rem` unit lets the font-size axis (rule 21) rescale
+ * the box naturally without the box swelling to button height. */
 .checkbox-root {
   display: flex;
-  height: var(--density-element-sm);
-  width: var(--density-element-sm);
+  height: 1rem;
+  width: 1rem;
   flex-shrink: 0;
   cursor: pointer;
   align-items: center;

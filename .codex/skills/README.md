@@ -1,10 +1,9 @@
 # `@godxjp/ui` — agent skills
 
 This repo is an **independent npm package** (`@godxjp/ui`) consumed
-by every GoDX frontend. When you work on this repo standalone (clone
-from `github.com/godx-jp/godxjp-ui` without the umbrella checkout),
-these in-repo skills are the binding procedures — same content the
-umbrella loads from `<umbrella>/.claude/skills/`.
+by every GoDX frontend. The skills below are the binding procedures
+for agents working in this repo — self-contained, no external
+dependencies.
 
 ## Skills
 

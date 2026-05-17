@@ -467,12 +467,16 @@ textarea.input {
  * `.radio-root` is the circular control button; `.radio-indicator`
  * is the filled centre dot that shows when Radix data-state="checked".
  */
+/* Radio dimensions match Checkbox per industry canon (shadcn / Ant /
+ * Tailwind) — 1rem (16px @ base) circle. NOT the density-element
+ * scale, which is sized for full-height controls. `rem` flows the
+ * font-size axis (rule 21) without swelling to button height. */
 .radio-root {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--density-element-sm);
-  height: var(--density-element-sm);
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
   border-radius: var(--radius-full);
   border: 1px solid var(--input);
@@ -515,13 +519,13 @@ textarea.input {
 }
 
 .radio-group-item[data-size="small"] .radio-root {
-  width: calc(var(--density-element-sm) - var(--spacing-1));
-  height: calc(var(--density-element-sm) - var(--spacing-1));
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .radio-group-item[data-size="large"] .radio-root {
-  width: var(--density-element);
-  height: var(--density-element);
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 /* ─── Slider (Radix) ──────────────────────────────────────────────

@@ -6,6 +6,7 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { Button } from "../../components/general/Button";
 import { Flex } from "../../components/layout";
 
@@ -60,9 +61,10 @@ type Story = StoryObj<typeof Button>;
 // ─── Variants ───────────────────────────────────────────────────
 
 export const Variants: Story = {
-  render: () => (
+  args: { onClick: fn() },
+  render: (args) => (
     <Flex gap="small" wrap>
-      <Button variant="primary">Primary</Button>
+      <Button variant="primary" onClick={args.onClick}>Primary</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="ghost">Ghost</Button>
@@ -70,6 +72,15 @@ export const Variants: Story = {
       <Button variant="link">Link</Button>
     </Flex>
   ),
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("clicking the primary button fires onClick", async () => {
+      const btn = canvas.getByRole("button", { name: /primary/i });
+      await userEvent.click(btn);
+      await expect(args.onClick).toHaveBeenCalled();
+    });
+  },
 };
 
 // ─── Sizes ──────────────────────────────────────────────────────

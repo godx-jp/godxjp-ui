@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, within } from "storybook/test";
 import { Button } from "../../components/primitives";
 import { CommandPalette } from "../../components/shell";
 import type { CommandItem } from "../../components/shell";
@@ -84,6 +85,14 @@ export const Default: Story = {
         <CommandPalette open={open} onOpenChange={setOpen} commands={COMMANDS} />
       </>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const portal = within(canvasElement.ownerDocument.body);
+
+    await step("palette is open with a search input visible", async () => {
+      const search = await portal.findByPlaceholderText(/search…|検索…/i);
+      await expect(search).toBeVisible();
+    });
   },
 };
 

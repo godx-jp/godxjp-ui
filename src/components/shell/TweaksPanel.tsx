@@ -32,7 +32,10 @@ export function TweaksPanel({ open, onOpenChange, products = [] }: TweaksPanelPr
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-black/30 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <Dialog.Content className="fixed right-0 top-0 z-50 h-full w-80 bg-popover text-popover-foreground border-l border-border shadow-2xl data-[state=open]:animate-in data-[state=open]:slide-in-from-right">
+        <Dialog.Content
+          className="fixed right-0 top-0 z-50 h-full w-80 bg-popover text-popover-foreground border-l border-border shadow-2xl data-[state=open]:animate-in data-[state=open]:slide-in-from-right"
+          aria-describedby={undefined}
+        >
           <div className="flex items-center justify-between border-b border-border px-4 h-12">
             <Dialog.Title className="font-medium text-sm">
               {t("tweaks.title")}

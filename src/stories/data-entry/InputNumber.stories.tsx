@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { InputNumber } from "../../components/data-entry/InputNumber";
 import { Flex } from "../../components/layout";
 
@@ -55,37 +56,52 @@ export const Default: Story = {
       <InputNumber defaultValue={3} placeholder="数量" />
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("input renders with default value 3", async () => {
+      const input = canvas.getByDisplayValue("3") as HTMLInputElement;
+      await expect(input).toBeInTheDocument();
+    });
+
+    await step("ArrowUp increments the value", async () => {
+      const input = canvas.getByDisplayValue("3") as HTMLInputElement;
+      await userEvent.click(input);
+      await userEvent.keyboard("{ArrowUp}");
+      await waitFor(() => {
+        expect(input.value).toBe("4");
+      });
+    });
+  },
 };
 
 // ─── WithFormat — ¥ + 桁区切り ──────────────────────────────────
 
-function CurrencyDemo() {
-  const [value, setValue] = useState<number | null>(2900);
-  return (
-    <Flex vertical gap="small" style={{ maxWidth: 220 }}>
-      <InputNumber
-        value={value ?? undefined}
-        onValueChange={setValue}
-        step={100}
-        min={0}
-        format={(n) => `¥${n.toLocaleString("ja-JP")}`}
-        parse={(t) => {
-          const cleaned = t.replace(/[¥,\s]/g, "");
-          if (!cleaned) return null;
-          const n = Number(cleaned);
-          return Number.isNaN(n) ? null : n;
-        }}
-      />
-      <span style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>
-        現在の値: {value ?? "(空)"}
-      </span>
-    </Flex>
-  );
-}
-
 export const WithFormat: Story = {
   name: "WithFormat · ¥ + commas",
-  render: () => <CurrencyDemo />,
+  render: function WithFormat() {
+    const [value, setValue] = useState<number | null>(2900);
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 220 }}>
+        <InputNumber
+          value={value ?? undefined}
+          onValueChange={setValue}
+          step={100}
+          min={0}
+          format={(n) => `¥${n.toLocaleString("ja-JP")}`}
+          parse={(t) => {
+            const cleaned = t.replace(/[¥,\s]/g, "");
+            if (!cleaned) return null;
+            const n = Number(cleaned);
+            return Number.isNaN(n) ? null : n;
+          }}
+        />
+        <span style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>
+          現在の値: {value ?? "(空)"}
+        </span>
+      </Flex>
+    );
+  },
 };
 
 // ─── MinMax ─────────────────────────────────────────────────────

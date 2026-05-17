@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import {
   Menu,
   MenuItem,
@@ -88,6 +89,22 @@ export const VerticalSidebar: Story = {
       </Menu>
     </div>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("dashboard item is the initial selection", async () => {
+      const dashboard = canvas.getByRole("menuitem", { name: /ダッシュボード/ });
+      await expect(dashboard).toHaveAttribute("data-state", "selected");
+    });
+
+    await step("clicking employees switches the selection", async () => {
+      const employees = canvas.getByRole("menuitem", { name: /従業員/ });
+      await userEvent.click(employees);
+      await waitFor(() => {
+        expect(employees).toHaveAttribute("data-state", "selected");
+      });
+    });
+  },
 };
 
 // ════════════════════════════════════════════════════════════════

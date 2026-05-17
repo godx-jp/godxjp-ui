@@ -32,10 +32,15 @@
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:stories": "vitest run --project storybook",
+    "test:unit": "vitest run --project unit",
     "lint:tokens": "node scripts/lint-tokens.mjs",
+    "check:stories-parity": "node scripts/check-stories-parity.mjs",
+    "check:docs-parity": "node scripts/check-docs-parity.mjs",
     "sync:skills": "bash scripts/sync-skills.sh",
     "sync:skills:apply": "bash scripts/sync-skills.sh --apply",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "husky"
   },
   "exports": {
     ".": {
@@ -125,13 +130,18 @@
   },
   "devDependencies": {
     "@storybook/addon-docs": "^10.4.0",
+    "@storybook/addon-vitest": "^10.4.0",
     "@storybook/react": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",
     "@tailwindcss/vite": "^4.3.0",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vitest/browser": "^4.1.6",
+    "@vitest/browser-playwright": "^4.1.6",
     "axios": "^1.16.1",
+    "husky": "^9.1.7",
+    "playwright": "^1.60.0",
     "storybook": "^10.4.0",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",

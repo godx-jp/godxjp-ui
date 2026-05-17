@@ -185,13 +185,18 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       mergedStyle.overflowY = "auto";
     }
 
+    // Pick controlled OR uncontrolled — passing both `value` and
+    // `defaultValue` (even when one is undefined) trips React's
+    // "controlled ↔ uncontrolled transition" warning.
+    const valueProp =
+      value !== undefined ? { value } : { defaultValue };
+
     const textareaEl = (
       <textarea
         ref={ref}
         rows={rows}
         maxLength={maxLength}
-        value={value}
-        defaultValue={defaultValue}
+        {...valueProp}
         readOnly={readOnly}
         className={cn(
           "input",
