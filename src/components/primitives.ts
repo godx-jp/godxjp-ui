@@ -259,7 +259,7 @@ export { Slider } from "./data-entry/Slider"
 export type { SliderProps } from "./data-entry/Slider"
 
 export { Table } from "./data-display/Table"
-export type { TableColumn, TableDensity, TableProps } from "./data-display/Table"
+export type { TableDensity, TableProps } from "./data-display/Table"
 
 export { TimeInput } from "./data-entry/TimeInput"
 export type { TimeInputProps } from "./data-entry/TimeInput"
