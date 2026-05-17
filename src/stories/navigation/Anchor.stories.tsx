@@ -19,14 +19,14 @@ const meta: Meta<typeof Anchor> = {
   title: "Navigation/Anchor",
   component: Anchor,
   tags: ["autodocs"],
-  parameters: { layout: "padded" },
+  parameters: { layout: "fullscreen" },
 };
 export default meta;
 
 type Story = StoryObj<typeof Anchor>;
 
 const SectionBlock = ({ id, title }: { id: string; title: string }) => (
-  <section id={id} style={{ minHeight: 320, padding: "var(--spacing-4) 0" }}>
+  <section id={id} style={{ minHeight: 480, padding: "var(--spacing-6) 0", borderBottom: "1px dashed var(--border)" }}>
     <Title size={3}>{title}</Title>
     <Paragraph>
       コンテンツブロック。スクロールするとアンカーがハイライトされます。
@@ -43,15 +43,15 @@ const SectionBlock = ({ id, title }: { id: string; title: string }) => (
 export const Vertical: Story = {
   name: "Vertical · compositional",
   render: () => (
-    <div style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: "var(--spacing-6)" }}>
-      <Anchor sticky offset={20}>
+    <div style={{ display: "flex", gap: "var(--spacing-6)", padding: "var(--spacing-6)", alignItems: "flex-start" }}>
+      <Anchor sticky offset={20} style={{ flexShrink: 0, width: 200, top: 20 }}>
         <AnchorLink href="#intro">概要</AnchorLink>
         <AnchorLink href="#install">インストール</AnchorLink>
         <AnchorLink href="#api">API リファレンス</AnchorLink>
         <AnchorLink href="#examples">使用例</AnchorLink>
         <AnchorLink href="#faq">よくある質問</AnchorLink>
       </Anchor>
-      <div>
+      <div style={{ flex: 1, minWidth: 0 }}>
         <SectionBlock id="intro" title="概要" />
         <SectionBlock id="install" title="インストール" />
         <SectionBlock id="api" title="API リファレンス" />
@@ -69,8 +69,8 @@ export const Vertical: Story = {
 export const Horizontal: Story = {
   name: "Horizontal · top-bar style",
   render: () => (
-    <div>
-      <Anchor orientation="horizontal" sticky>
+    <div style={{ padding: "var(--spacing-6)" }}>
+      <Anchor orientation="horizontal" sticky offset={20} style={{ top: 0, background: "var(--background)", zIndex: 10 }}>
         <AnchorLink href="#overview">概要</AnchorLink>
         <AnchorLink href="#features">機能</AnchorLink>
         <AnchorLink href="#pricing">プラン</AnchorLink>
@@ -93,8 +93,11 @@ export const Horizontal: Story = {
 export const DataDriven: Story = {
   name: "Data-driven · items array",
   render: () => (
-    <div style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: "var(--spacing-6)" }}>
+    <div style={{ display: "flex", gap: "var(--spacing-6)", padding: "var(--spacing-6)", alignItems: "flex-start" }}>
       <Anchor
+        sticky
+        offset={20}
+        style={{ flexShrink: 0, width: 200, top: 20 }}
         items={[
           { href: "#section-1", label: "第 1 章" },
           { href: "#section-2", label: "第 2 章" },
@@ -102,7 +105,7 @@ export const DataDriven: Story = {
           { href: "#section-4", label: "第 4 章" },
         ]}
       />
-      <div>
+      <div style={{ flex: 1, minWidth: 0 }}>
         <SectionBlock id="section-1" title="第 1 章" />
         <SectionBlock id="section-2" title="第 2 章" />
         <SectionBlock id="section-3" title="第 3 章" />

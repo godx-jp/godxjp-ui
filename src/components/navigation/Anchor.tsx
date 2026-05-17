@@ -122,7 +122,14 @@ export const Anchor = forwardRef<HTMLElement, AnchorProps>(function Anchor(
       const el = document.querySelector(href);
       if (!el) return;
       e.preventDefault();
-      const top = (el as HTMLElement).offsetTop - offset;
+      // Use getBoundingClientRect + window.scrollY so the scroll
+      // target is correct regardless of `offsetParent` — when
+      // sections are nested inside a flex/grid container (e.g.
+      // a docs layout with sidebar + content), `offsetTop` is
+      // measured relative to that parent, not the document, so
+      // window.scrollTo lands at the wrong place.
+      const rect = (el as HTMLElement).getBoundingClientRect();
+      const top = rect.top + window.scrollY - offset;
       window.scrollTo({ top, behavior: "smooth" });
       if (value === undefined) setInternalActive(href);
       onValueChange?.(href);
