@@ -120,3 +120,42 @@ export const Delay = {
     </Flex>
   ),
 };
+
+// ─── Nested · data-driven Tooltip inside TooltipProvider ────────
+
+export const NestedProvider = {
+  name: "Nested · data-driven inside TooltipProvider (no double-wrap)",
+  render: () => (
+    // Outer provider sets the shared delay. Inner data-driven
+    // <Tooltip>s detect it and skip their own Provider — the outer
+    // delayDuration governs every tip.
+    <TooltipProvider delayDuration={0}>
+      <Flex gap="middle" align="center">
+        <Tooltip content="共有 Provider 1" placement="top">
+          <Button variant="secondary">A</Button>
+        </Tooltip>
+        <Tooltip content="共有 Provider 2" placement="top">
+          <Button variant="secondary">B</Button>
+        </Tooltip>
+      </Flex>
+    </TooltipProvider>
+  ),
+  play: async ({ canvasElement, step }: any) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+
+    await step("outer-provider delay (0ms) opens tooltip near-instantly", async () => {
+      const trigger = canvas.getByRole("button", { name: "A" });
+      await userEvent.hover(trigger);
+      // With outer delay=0 the tip should appear quickly.
+      await waitFor(
+        () => {
+          const matches = within(portal).getAllByText("共有 Provider 1");
+          expect(matches.length).toBeGreaterThan(0);
+        },
+        { timeout: 500 },
+      );
+      await userEvent.unhover(trigger);
+    });
+  },
+};

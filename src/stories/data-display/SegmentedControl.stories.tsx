@@ -66,6 +66,20 @@ export const Default: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
+    await step("only the active radio is in the Tab order (roving tabindex)", async () => {
+      const dayRadio = canvas.getByRole("radio", { name: "日" });
+      const weekRadio = canvas.getByRole("radio", { name: "週" });
+      const monthRadio = canvas.getByRole("radio", { name: "月" });
+      await expect(dayRadio).toHaveAttribute("tabIndex", "-1");
+      await expect(weekRadio).toHaveAttribute("tabIndex", "-1");
+      await expect(monthRadio).toHaveAttribute("tabIndex", "0");
+    });
+
+    await step("radiogroup carries aria-orientation", async () => {
+      const group = canvas.getByRole("radiogroup");
+      await expect(group).toHaveAttribute("aria-orientation", "horizontal");
+    });
+
     await step("clicking a different segment moves active state", async () => {
       const dayRadio = canvas.getByRole("radio", { name: "日" });
       await expect(dayRadio).toHaveAttribute("aria-checked", "false");
@@ -75,6 +89,43 @@ export const Default: Story = {
       });
       const monthRadio = canvas.getByRole("radio", { name: "月" });
       await expect(monthRadio).toHaveAttribute("aria-checked", "false");
+      // Tab stop follows selection.
+      await expect(dayRadio).toHaveAttribute("tabIndex", "0");
+      await expect(monthRadio).toHaveAttribute("tabIndex", "-1");
+    });
+
+    await step("ArrowRight moves selection forward, wraps at end", async () => {
+      const dayRadio = canvas.getByRole("radio", { name: "日" });
+      const weekRadio = canvas.getByRole("radio", { name: "週" });
+      const monthRadio = canvas.getByRole("radio", { name: "月" });
+      dayRadio.focus();
+      await userEvent.keyboard("{ArrowRight}");
+      await waitFor(() => {
+        expect(weekRadio).toHaveAttribute("aria-checked", "true");
+      });
+      await userEvent.keyboard("{ArrowRight}");
+      await waitFor(() => {
+        expect(monthRadio).toHaveAttribute("aria-checked", "true");
+      });
+      // Wrap around to first.
+      await userEvent.keyboard("{ArrowRight}");
+      await waitFor(() => {
+        expect(dayRadio).toHaveAttribute("aria-checked", "true");
+      });
+    });
+
+    await step("Home/End jump to first/last enabled item", async () => {
+      const dayRadio = canvas.getByRole("radio", { name: "日" });
+      const monthRadio = canvas.getByRole("radio", { name: "月" });
+      dayRadio.focus();
+      await userEvent.keyboard("{End}");
+      await waitFor(() => {
+        expect(monthRadio).toHaveAttribute("aria-checked", "true");
+      });
+      await userEvent.keyboard("{Home}");
+      await waitFor(() => {
+        expect(dayRadio).toHaveAttribute("aria-checked", "true");
+      });
     });
   },
 };
