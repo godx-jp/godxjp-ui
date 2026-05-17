@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import { today, getLocalTimeZone } from "@internationalized/date";
+import {
+  CalendarDate,
+  now,
+  parseDate,
+  today,
+  getLocalTimeZone,
+} from "@internationalized/date";
+import { I18nProvider } from "react-aria-components";
 import {
   DateField,
   DatePicker,
@@ -152,4 +159,100 @@ export const Disabled: Story = {
       />
     </Flex>
   ),
+};
+
+// ─── Empty + placeholderValue — segment formatting before input ─
+
+export const Placeholder: Story = {
+  name: "Placeholder · empty state shows segment format",
+  render: () => (
+    <Flex vertical gap="middle" style={{ maxWidth: 380 }}>
+      <DateField
+        label="生年月日"
+        description="未入力時は yyyy/mm/dd 形式の placeholder が見えます。"
+        placeholderValue={new CalendarDate(1990, 1, 1)}
+      />
+      <DatePicker
+        label="申請日"
+        description="`placeholderValue` で空欄時の format hint をコントロール。"
+        placeholderValue={today(getLocalTimeZone())}
+      />
+      <DateRangePicker
+        label="勤務期間"
+        description="開始 / 終了の両セグメントが placeholder を継承。"
+        placeholderValue={today(getLocalTimeZone())}
+      />
+    </Flex>
+  ),
+};
+
+// ─── Granularity — date + time segments (hour / minute) ─────────
+
+export const Granularity_DateTime: Story = {
+  name: "Granularity · day · hour · minute (datetime input)",
+  render: () => (
+    <Flex vertical gap="middle" style={{ maxWidth: 380 }}>
+      <DatePicker
+        label="打刻時刻 (分単位)"
+        description='`granularity="minute"` で時刻セグメントが付与される。'
+        granularity="minute"
+        hourCycle={24}
+        placeholderValue={now(getLocalTimeZone())}
+      />
+      <DatePicker
+        label="会議 (時単位 · 12h cycle)"
+        description='`granularity="hour"` + `hourCycle={12}` で AM/PM 表示。'
+        granularity="hour"
+        hourCycle={12}
+        placeholderValue={now(getLocalTimeZone())}
+      />
+    </Flex>
+  ),
+};
+
+// ─── Min/Max — date range constraint ────────────────────────────
+
+export const MinMaxConstrained: Story = {
+  name: "Min / Max · constrained selectable range",
+  render: () => {
+    const anchor = today(getLocalTimeZone());
+    return (
+      <Flex vertical gap="middle" style={{ maxWidth: 380 }}>
+        <DatePicker
+          label="入社希望日 (今日以降のみ)"
+          description="`minValue={today}` で過去日を非活性化。"
+          minValue={anchor}
+          placeholderValue={anchor}
+        />
+        <DatePicker
+          label="申請日 (90日先まで)"
+          description="`maxValue={today.add({ days: 90 })}` で未来 3 か月以内に制約。"
+          maxValue={anchor.add({ days: 90 })}
+          placeholderValue={anchor}
+        />
+      </Flex>
+    );
+  },
+};
+
+// ─── Locale formatting — JP / US / DE rendering ─────────────────
+
+export const Format_Locales: Story = {
+  name: "Format · locale-aware segment order (ja-JP · en-US · de-DE)",
+  render: () => {
+    const date = parseDate("2026-05-17");
+    return (
+      <Flex vertical gap="middle" style={{ maxWidth: 380 }}>
+        <I18nProvider locale="ja-JP">
+          <DateField label="ja-JP" defaultValue={date} description="年/月/日 順 · 西暦" />
+        </I18nProvider>
+        <I18nProvider locale="en-US">
+          <DateField label="en-US" defaultValue={date} description="month / day / year" />
+        </I18nProvider>
+        <I18nProvider locale="de-DE">
+          <DateField label="de-DE" defaultValue={date} description="dd.mm.yyyy" />
+        </I18nProvider>
+      </Flex>
+    );
+  },
 };
