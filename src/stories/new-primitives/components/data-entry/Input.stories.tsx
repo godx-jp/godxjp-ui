@@ -2,25 +2,28 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { CheckCircle2, CircleAlert, Mail, Search } from "lucide-react";
 import { Input, Textarea } from "../../../../components/primitives/Input";
+import { InputPassword } from "../../../../components/primitives/InputPassword";
+import { InputSearch } from "../../../../components/primitives/InputSearch";
 import { Flex } from "../../../../components/primitives/layout";
 
 /**
- * new-primitives/components/data-entry/Input — text input atom.
+ * new-primitives/components/data-entry/Input — text input family.
  *
- * 100% mapped to dxs-kintai design canon
- * (`design-handoff/.../preview/comp-inputs.html` — 619-line spec).
+ * Four primitives:
+ *   - `<Input>`          — base text input + slot props.
+ *   - `<Textarea>`       — multi-line variant (autoSize, showCount).
+ *   - `<InputPassword>`  — show/hide toggle.
+ *   - `<InputSearch>`    — leading magnifier + trailing clear.
  *
  * Cardinal rules honoured:
- *   §14 — native `<input>` (no Radix needed at this level)
- *   §21 — every axis (theme/accent/density/font-size)
- *   §22 — every literal token-pinned (.input height = --density-element-*)
+ *   §14 — native `<input>` (no Radix needed at this level).
+ *   §21 — every axis (theme/accent/density/font-size).
+ *   §22 — every literal token-pinned (.input height = --density-element-*).
  *   §23 — vocabulary: `size` ("small" | "default" | "large"),
  *          `status` ("default" | "success" | "warning" | "error"),
- *          slot props (`prefix` / `suffix` / `addonBefore` /
- *          `addonAfter`) per new-docs/04 §J
- *   §24 — mobile-first touch-target floor (@media <md → 44px)
- *   §25 — story is docs; primitive is the UI (see Input.tsx +
- *          `.input` / `.input-wrap` CSS in shell.css)
+ *          slot props (`prefix` / `suffix` / `addonBefore` / `addonAfter`).
+ *   §24 — mobile-first touch-target floor (44px on xs/sm).
+ *   §25 — story is docs; primitive is the UI.
  */
 
 const meta: Meta<typeof Input> = {
@@ -28,17 +31,17 @@ const meta: Meta<typeof Input> = {
   component: Input,
   tags: ["autodocs"],
   parameters: {
+    layout: "padded",
     docs: {
       description: {
         component: `
-**Input** — canonical text input atom. Three sizes × four status
-states + four slot positions (\`prefix\` / \`suffix\` INSIDE the
+**Input family** — canonical text input atoms. Three sizes × four
+status states + four slot positions (\`prefix\` / \`suffix\` INSIDE the
 chrome; \`addonBefore\` / \`addonAfter\` OUTSIDE).
 
 Vocabulary per cardinal rule 23 §B:
 - \`size\`: \`"small" | "default" | "large"\`
 - \`status\`: \`"default" | "success" | "warning" | "error"\`
-  (form-field validation state — drives border + ring + helper)
 
 Mobile-first per cardinal rule 24: input height floors to 44px on
 \`xs/sm\` viewports for WCAG touch-target compliance.
@@ -53,10 +56,52 @@ type Story = StoryObj<typeof Input>;
 // ─── Default ────────────────────────────────────────────────────
 
 export const Default: Story = {
-  render: () => <Input placeholder="名前を入力" />,
+  render: () => (
+    <div style={{ maxWidth: 280 }}>
+      <Input placeholder="名前を入力" />
+    </div>
+  ),
 };
 
-// ─── Sizes ──────────────────────────────────────────────────────
+// ─── WithPrefix — prefix / suffix slot props ────────────────────
+
+export const WithPrefix: Story = {
+  name: "WithPrefix · prefix and suffix slots",
+  render: () => (
+    <Flex vertical gap="small" style={{ maxWidth: 320 }}>
+      <Input prefix={<Search size={14} aria-hidden />} placeholder="検索…" />
+      <Input
+        prefix={<Mail size={14} aria-hidden />}
+        placeholder="メールアドレス"
+        type="email"
+      />
+      <Input
+        status="success"
+        defaultValue="example@famgia.com"
+        suffix={
+          <CheckCircle2
+            size={14}
+            aria-hidden
+            style={{ color: "var(--success)" }}
+          />
+        }
+      />
+      <Input
+        status="error"
+        defaultValue="invalid-email"
+        suffix={
+          <CircleAlert
+            size={14}
+            aria-hidden
+            style={{ color: "var(--destructive)" }}
+          />
+        }
+      />
+    </Flex>
+  ),
+};
+
+// ─── Sizes — small / default / large ────────────────────────────
 
 export const Sizes: Story = {
   render: () => (
@@ -68,7 +113,7 @@ export const Sizes: Story = {
   ),
 };
 
-// ─── Status (validation) ────────────────────────────────────────
+// ─── Status — success / warning / error ─────────────────────────
 
 export const Status: Story = {
   render: () => (
@@ -81,143 +126,100 @@ export const Status: Story = {
   ),
 };
 
-// ─── Affixes — prefix / suffix INSIDE the chrome ────────────────
+// ─── Disabled ───────────────────────────────────────────────────
 
-export const Affixes: Story = {
-  name: "Slots · prefix / suffix",
-  render: () => (
-    <Flex vertical gap="small" style={{ maxWidth: 320 }}>
-      <Input prefix={<Search size={14} aria-hidden />} placeholder="検索…" />
-      <Input prefix={<Mail size={14} aria-hidden />} placeholder="メール" type="email" />
-      <Input
-        status="success"
-        defaultValue="example@famgia.com"
-        suffix={<CheckCircle2 size={14} aria-hidden style={{ color: "var(--success)" }} />}
-      />
-      <Input
-        status="error"
-        defaultValue="invalid-email"
-        suffix={<CircleAlert size={14} aria-hidden style={{ color: "var(--destructive)" }} />}
-      />
-    </Flex>
-  ),
-};
-
-// ─── Addons — addonBefore / addonAfter OUTSIDE the chrome ───────
-
-export const Addons: Story = {
-  name: "Slots · addonBefore / addonAfter",
-  render: () => (
-    <Flex vertical gap="small" style={{ maxWidth: 360 }}>
-      <Input addonBefore="https://" placeholder="example" addonAfter=".com" />
-      <Input addonBefore="¥" type="number" defaultValue="2900" addonAfter="/月" />
-      <Input addonBefore="+81" placeholder="090-1234-5678" type="tel" />
-    </Flex>
-  ),
-};
-
-// ─── States ─────────────────────────────────────────────────────
-
-export const States: Story = {
+export const Disabled: Story = {
   render: () => (
     <Flex vertical gap="small" style={{ maxWidth: 280 }}>
-      <Input placeholder="enabled" />
-      <Input placeholder="disabled" disabled />
-      <Input value="readonly value" readOnly />
-      <Input placeholder="required" required />
+      <Input placeholder="入力できません" disabled />
+      <Input value="読み取り専用の値" readOnly />
+      <Input
+        prefix={<Mail size={14} aria-hidden />}
+        defaultValue="example@famgia.com"
+        disabled
+      />
     </Flex>
   ),
 };
 
-// ─── Controlled ─────────────────────────────────────────────────
+// ─── Textarea — autoSize + showCount ────────────────────────────
 
-function ControlledDemo() {
-  const [value, setValue] = useState("");
+function AutoSizeDemo() {
+  const [value, setValue] = useState(
+    "auto-grow に応じて高さが自動で広がります。\n改行を増やしてみてください。",
+  );
   return (
-    <Flex vertical gap="small" style={{ maxWidth: 320 }}>
-      <Input
-        placeholder="Type something"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        suffix={
-          value
-            ? <CheckCircle2 size={14} aria-hidden style={{ color: "var(--success)" }} />
-            : undefined
-        }
-        status={value ? "success" : "default"}
-      />
-      <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
-        Current value: <code className="mono">{JSON.stringify(value)}</code>
-      </span>
-    </Flex>
+    <Textarea
+      autoSize={{ minRows: 2, maxRows: 6 }}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+    />
   );
 }
 
-export const Controlled: Story = {
-  render: () => <ControlledDemo />,
-};
-
-// ─── Textarea ───────────────────────────────────────────────────
-
-export const TextareaBase: Story = {
-  name: "Textarea · base",
+export const TextareaStory: Story = {
+  name: "Textarea · autoSize + showCount",
   render: () => (
-    <Textarea rows={4} placeholder="複数行入力" style={{ maxWidth: 360 }} />
-  ),
-};
-
-export const TextareaWithCount: Story = {
-  name: "Textarea · showCount + maxLength",
-  render: () => (
-    <div style={{ maxWidth: 360 }}>
+    <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
+      <Textarea rows={3} placeholder="複数行の入力" />
+      <AutoSizeDemo />
       <Textarea
         rows={4}
         showCount
         maxLength={140}
         defaultValue="入力できる残り文字数を右下に表示します。"
       />
-    </div>
-  ),
-};
-
-export const TextareaResize: Story = {
-  name: "Textarea · resize axis",
-  render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
-      <div>
-        <div style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", marginBottom: 4 }}>
-          resize="none" (default)
-        </div>
-        <Textarea rows={3} resize="none" defaultValue="フレームは固定" />
-      </div>
-      <div>
-        <div style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", marginBottom: 4 }}>
-          resize="vertical"
-        </div>
-        <Textarea rows={3} resize="vertical" defaultValue="縦方向にリサイズ可" />
-      </div>
     </Flex>
   ),
 };
 
-// ─── Mobile-first touch target ──────────────────────────────────
+// ─── InputPassword — show / hide toggle ─────────────────────────
 
-export const MobileTouchTarget: Story = {
-  name: "Mobile-first touch target (cardinal rule 24)",
-  parameters: {
-    docs: {
-      description: {
-        story: `Resize the Storybook canvas (Viewports toolbar) to **mobile1**
-(< 768px) and observe every input flooring to 44px min-height —
-WCAG 2.1 AA touch target.`.trim(),
-      },
-    },
-  },
+export const Password: Story = {
+  name: "InputPassword · toggle visibility",
   render: () => (
     <Flex vertical gap="small" style={{ maxWidth: 320 }}>
-      <Input size="small" placeholder="small (floors to 44 on mobile)" />
-      <Input size="default" placeholder="default" />
-      <Input size="large" placeholder="large" />
+      <InputPassword placeholder="••••••••••" />
+      <InputPassword
+        defaultValue="Sup3rSecret!"
+        defaultRevealed
+        toggleLabels={{ show: "表示", hide: "非表示" }}
+      />
+      <InputPassword
+        placeholder="無効化された状態"
+        defaultValue="cannot-edit"
+        disabled
+      />
     </Flex>
   ),
+};
+
+// ─── InputSearch — leading icon + clear ─────────────────────────
+
+function ControlledSearch() {
+  const [q, setQ] = useState("企画");
+  return (
+    <Flex vertical gap="small" style={{ maxWidth: 320 }}>
+      <InputSearch placeholder="従業員を検索" />
+      <InputSearch
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        onClear={() => setQ("")}
+        placeholder="検索ワード (制御モード)"
+      />
+      <span
+        style={{
+          fontSize: "var(--text-xs)",
+          color: "var(--muted-foreground)",
+        }}
+      >
+        Current query: <code className="mono">{JSON.stringify(q)}</code>
+      </span>
+    </Flex>
+  );
+}
+
+export const SearchStory: Story = {
+  name: "InputSearch · with clear button",
+  render: () => <ControlledSearch />,
 };

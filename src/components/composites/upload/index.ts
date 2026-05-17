@@ -11,6 +11,12 @@
 export { Upload } from "./Upload";
 export { ImageUpload } from "./ImageUpload";
 export { AvatarUploader } from "./AvatarUploader";
+export {
+  MediaUpload,
+  MediaUploadSingle,
+  MediaUploadMultiple,
+  MediaUploadAvatar,
+} from "./MediaUpload";
 
 export type {
   UploadFile,
@@ -28,3 +34,10 @@ export type {
   AvatarUploaderLabels,
   AvatarUploadCallbackParams,
 } from "./AvatarUploader";
+export type {
+  MediaUploadSingleProps,
+  MediaUploadMultipleProps,
+  MediaUploadAvatarProps,
+  MediaUploadSize,
+  MediaUploadShape,
+} from "./MediaUpload";

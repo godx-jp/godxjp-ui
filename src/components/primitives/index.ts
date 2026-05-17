@@ -54,6 +54,25 @@ export type { InputPasswordProps } from "./InputPassword"
 export { InputSearch } from "./InputSearch"
 export type { InputSearchProps } from "./InputSearch"
 
+export { InputNumber } from "./InputNumber"
+export type { InputNumberProps } from "./InputNumber"
+
+export {
+  Form,
+  FormField,
+  FormItem,
+  useFormContext,
+} from "./Form"
+export type {
+  FormProps,
+  FormFieldProps,
+  FormFieldRenderArg,
+  FormItemProps,
+} from "./Form"
+
+export { Transfer } from "./Transfer"
+export type { TransferProps, TransferItem, TransferSize } from "./Transfer"
+
 export { Field, FieldLabel, FieldHelp, FieldCount, FieldRowHelp } from "./Field"
 export type {
   FieldProps,
@@ -221,6 +240,15 @@ export { Switch } from "./Switch"
 
 export { Checkbox } from "./Checkbox"
 
+export { CheckboxGroup } from "./CheckboxGroup"
+export type { CheckboxGroupProps, CheckboxOption } from "./CheckboxGroup"
+
+export { Radio, RadioGroup } from "./Radio"
+export type { RadioProps, RadioGroupProps, RadioOption } from "./Radio"
+
+export { Slider } from "./Slider"
+export type { SliderProps } from "./Slider"
+
 export {
   Table,
   TableBody,
@@ -322,3 +350,23 @@ export type {
   DatePickerProps,
   DateRangePickerProps,
 } from "./DateTimePicker"
+
+// ── Combobox-flavoured Data Entry primitives ─────────────────────
+// AutoComplete: filtered text input over Combobox.
+// Cascader: nested column navigation (Popover + horizontal columns).
+// TreeSelect: recursive tree Select (Popover + expandable nodes,
+// single or multi select).
+export { AutoComplete } from "./AutoComplete"
+export type { AutoCompleteProps, AutoCompleteOption } from "./AutoComplete"
+
+export { Cascader } from "./Cascader"
+export type { CascaderProps, CascaderOption } from "./Cascader"
+
+export { TreeSelect } from "./TreeSelect"
+export type { TreeSelectProps, TreeSelectOption } from "./TreeSelect"
+
+export { ColorPicker } from "./ColorPicker"
+export type { ColorPickerProps, ColorPickerSize } from "./ColorPicker"
+
+export { Rate } from "./Rate"
+export type { RateProps, RateSize } from "./Rate"

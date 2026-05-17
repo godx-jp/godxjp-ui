@@ -7,6 +7,10 @@ export {
   Upload,
   ImageUpload,
   AvatarUploader,
+  MediaUpload,
+  MediaUploadSingle,
+  MediaUploadMultiple,
+  MediaUploadAvatar,
 } from "./upload";
 export type {
   UploadFile,
@@ -20,6 +24,11 @@ export type {
   AvatarUploaderProps,
   AvatarUploaderLabels,
   AvatarUploadCallbackParams,
+  MediaUploadSingleProps,
+  MediaUploadMultipleProps,
+  MediaUploadAvatarProps,
+  MediaUploadSize,
+  MediaUploadShape,
 } from "./upload";
 
 export { LocaleInput, LocaleRowInput } from "./locale-input";

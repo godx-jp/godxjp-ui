@@ -57,6 +57,7 @@ export default defineConfig({
     "components/screens": "src/components/screens/index.ts",
     "components/composites": "src/components/composites/index.ts",
     preferences: "src/preferences/index.ts",
+    "clients/media": "src/clients/media/index.ts",
   },
   format: ["esm"],
   dts: true,
