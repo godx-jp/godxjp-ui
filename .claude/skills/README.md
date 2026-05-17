@@ -1,0 +1,31 @@
+# `@godxjp/ui` — agent skills
+
+This repo is an **independent npm package** (`@godxjp/ui`) consumed
+by every GoDX frontend. When you work on this repo standalone (clone
+from `github.com/godx-jp/godxjp-ui` without the umbrella checkout),
+these in-repo skills are the binding procedures — same content the
+umbrella loads from `<umbrella>/.claude/skills/`.
+
+## Skills
+
+| Skill | Trigger |
+|---|---|
+| [`new-godx-design-to-component`](./new-godx-design-to-component/SKILL.md) | BEFORE writing or refactoring any primitive / composite / shell to match a Claude Design handoff. 10-step conversion procedure — read mockup → literal manifest → token-pin → DOM verbatim → axes coverage → Playwright probe → port stories. |
+
+## Mirror discipline
+
+`.claude/skills/` (Claude Code) and `.codex/skills/` (Codex) hold
+**byte-identical** copies of every skill. Edit one → run
+`scripts/sync-skills.sh` to mirror to the other. Pre-commit hook
+enforces the parity gate.
+
+## Binding rules these skills implement
+
+- [`CLAUDE.md`](../../CLAUDE.md) §22 — 100% match to design canon.
+- [`CLAUDE.md`](../../CLAUDE.md) §21 — every component honours all four theme axes.
+- [`CLAUDE.md`](../../CLAUDE.md) §23 — concept-first API, prop reuse, token existence check, peer-primitive read.
+- [`CLAUDE.md`](../../CLAUDE.md) §25 — primitive is the canon; stories are docs.
+- [`new-docs/05-design-handoff-formats.md`](../../new-docs/05-design-handoff-formats.md) — multi-format input + lint guardrails.
+
+The skill body cites the rule numbers; the rules cite the skill —
+neither half stands alone.

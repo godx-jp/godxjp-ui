@@ -404,8 +404,10 @@ framework concept; inline duplication is rejected at review.
     2. Check the design handoff bundle. Is this primitive shown in
        `design-handoff/ui-system/<latest>/project/preview/`? If
        yes, follow the
-       [`new-godx-design-to-component`](../../../.claude/skills/new-godx-design-to-component/SKILL.md)
-       skill. If no, STOP — ask the user to mock it on Claude
+       [`new-godx-design-to-component`](./.claude/skills/new-godx-design-to-component/SKILL.md)
+       skill (mirrored at `./.codex/skills/` for Codex sessions —
+       both copies kept byte-identical via `scripts/sync-skills.sh`).
+       If no, STOP — ask the user to mock it on Claude
        Design first (cardinal rule 22).
     3. Check the shadcn / Radix / React Aria ecosystem (per
        cardinal rule 14). The new primitive MUST wrap one of
@@ -784,6 +786,10 @@ Pre-commit hook enforces it; `--no-verify` is forbidden.
   — theme axes, consumer contract, future rules. Index at
   [`./new-docs/00-index.md`](./new-docs/00-index.md).
 - Agent recipes + gotchas: [`./AGENTS.md`](./AGENTS.md)
+- In-repo agent skills (works when this repo is cloned standalone
+  without the umbrella): [`./.claude/skills/`](./.claude/skills/README.md)
+  (Claude Code) and [`./.codex/skills/`](./.codex/skills/README.md)
+  (Codex) — byte-identical via `scripts/sync-skills.sh`.
 - Brand bible: [`./BRAND.md`](./BRAND.md)
 - Change log: [`./CHANGELOG.md`](./CHANGELOG.md)
 - Diátaxis manual: [`./docs/`](./docs/)

@@ -33,6 +33,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint:tokens": "node scripts/lint-tokens.mjs",
+    "sync:skills": "bash scripts/sync-skills.sh",
+    "sync:skills:apply": "bash scripts/sync-skills.sh --apply",
     "prepublishOnly": "npm run build"
   },
   "exports": {
