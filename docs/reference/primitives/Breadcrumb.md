@@ -1,10 +1,12 @@
 ---
+title: "Breadcrumb"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Breadcrumb
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Breadcrumb

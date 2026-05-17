@@ -6,8 +6,9 @@ adr: "0001"
 title: Use Radix UI as the accessibility foundation for interactive primitives
 status: accepted
 date: 2026-01-14
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
 ---
 
 # ADR 0001 — Use Radix UI as the accessibility foundation

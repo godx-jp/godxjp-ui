@@ -1,9 +1,12 @@
 ---
+title: "Tutorial 03 — Shell composition: AppShell + Sidebar + Topbar + CommandPalette"
 diataxis: tutorial
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # Tutorial 03 — Shell composition: AppShell + Sidebar + Topbar + CommandPalette

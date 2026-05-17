@@ -1,5 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { cn } from "../../../components/cn";
+import { Badge, type BadgeVariant } from "../../../components/data-display/Badge";
+import { PageHeader } from "../../../components/data-display/PageHeader";
+import { Button } from "../../../components/general/Button";
+import { Typography } from "../../../components/general/Typography";
 
 type Phase = "plan" | "do" | "check" | "act";
 type Health = "ok" | "at-risk" | "off-track";
@@ -23,10 +27,10 @@ const PLANS: PlanCardData[] = [
 ];
 
 const PHASE_LABEL: Record<Phase, string> = { plan: "Plan", do: "Do", check: "Check", act: "Act" };
-const HEALTH_TONE: Record<Health, string> = {
-  ok: "badge-success",
-  "at-risk": "badge-warning",
-  "off-track": "badge-error",
+const HEALTH_TONE: Record<Health, BadgeVariant> = {
+  ok: "success",
+  "at-risk": "warning",
+  "off-track": "error",
 };
 
 export interface PlansScreenProps {
@@ -37,15 +41,11 @@ export function PlansScreen({ onOpenPlan }: PlansScreenProps) {
   const { t } = useTranslation();
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">{t("nav.plans")}</h1>
-          <p className="page-subtitle">{PLANS.length} plans · PDCA cycle</p>
-        </div>
-        <div className="page-actions">
-          <button className="btn btn-primary">+ {t("common.new")}</button>
-        </div>
-      </div>
+      <PageHeader
+        title={t("nav.plans")}
+        subtitle={`${PLANS.length} plans · PDCA cycle`}
+        actions={<Button variant="primary">+ {t("common.new")}</Button>}
+      />
 
       <div className="grid grid-cols-2 gap-3">
         {PLANS.map((plan) => (
@@ -56,23 +56,18 @@ export function PlansScreen({ onOpenPlan }: PlansScreenProps) {
             className="card text-left hover:border-primary transition-colors"
           >
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-mono text-muted-foreground">#{plan.id}</span>
-              <span className="badge badge-neutral">
-                <span className="dot" /> {PHASE_LABEL[plan.phase]}
-              </span>
-              <span className={cn("badge", HEALTH_TONE[plan.health])}>
-                <span className="dot" />
-                {plan.health}
-              </span>
+              <Typography.Text code>#{plan.id}</Typography.Text>
+              <Badge variant="neutral">{PHASE_LABEL[plan.phase]}</Badge>
+              <Badge variant={HEALTH_TONE[plan.health]}>{plan.health}</Badge>
             </div>
-            <h3 className="text-base font-medium mb-2">{plan.title}</h3>
+            <Typography.Title size={5} className="mb-2">{plan.title}</Typography.Title>
             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
               <span>@{plan.owner}</span>
               <span>·</span>
               <span>{plan.due}</span>
             </div>
             <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
-              <div className="h-full bg-primary transition-all" style={{ width: `${plan.progress}%` }} />
+              <div className={cn("h-full bg-primary transition-all")} style={{ width: `${plan.progress}%` }} />
             </div>
             <span className="text-[10px] text-muted-foreground mt-1 block tnum">{plan.progress}%</span>
           </button>

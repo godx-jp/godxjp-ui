@@ -1,15 +1,3 @@
----
-title: Theme axes
-status: binding
-authority: this-file
-applies-to:
-  - src/tokens/**
-  - src/styles/**
-  - .storybook/preview.tsx
-  - src/hooks/useTweaks.ts
-last-reviewed: 2026-05-16
----
-
 # 01 — Theme axes
 
 **Status:** Binding. Read before adding, renaming, or deleting any
@@ -47,6 +35,21 @@ Axes are **declarative** — the value of an axis is the only state.
 You read `document.documentElement.dataset.theme` to query and
 write `document.documentElement.dataset.theme = "dark"` to set.
 The visual change is automatic on the next paint frame.
+
+## Related vocabulary entries
+
+The four axes are GLOBAL preferences set on `<html>`. Several
+per-primitive props in [`04-prop-vocabulary.md`](./04-prop-vocabulary.md)
+shadow the axis name when the caller needs to OVERRIDE the axis at
+one region:
+
+| Axis on `<html>` | Equivalent prop (when explicit override needed) | Rule |
+|---|---|---|
+| `data-density` | [`density`](./04-prop-vocabulary.md#h--density) on Table | almost always inherit from axis; explicit prop is the exception |
+| `data-accent` | (none — set globally; never per-component) | cardinal rule 19 — no per-component brand-color prop |
+
+Per cardinal rule 23 §B don't coin a per-component synonym for an
+axis. The four axes are the canonical names; props echo them.
 
 ## Why "theme axes" and not "theme"
 

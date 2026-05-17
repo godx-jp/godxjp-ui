@@ -1,10 +1,12 @@
 ---
+title: "AppShell"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: AppShell
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # AppShell
@@ -65,7 +67,7 @@ The grid dimensions use CSS custom properties from tokens:
 
 - Control collapse state via `sidebarCollapsed` prop — typically driven by `useTweaks().tweaks.sidebarCollapsed`.
 - Inject per-page breadcrumbs or actions via the `rightSlot` prop of `Topbar` (not via AppShell directly).
-- Add a `data-tenant`, `data-theme`, or `data-density` attribute to the `<html>` element (via `useTweaks`) to change the visual layer without touching AppShell.
+- Set any of the four theme-axis attributes (`data-theme`, `data-accent`, `data-density`, `data-font-size`) on the `<html>` element (via `useTweaks`) to change the visual layer without touching AppShell. See [01 — theme axes](../../../new-docs/01-theme-axes.md).
 
 ## Accessibility
 

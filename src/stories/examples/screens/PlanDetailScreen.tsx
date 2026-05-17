@@ -2,6 +2,11 @@ import { ArrowLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../../components/cn";
+import { Badge } from "../../../components/data-display/Badge";
+import { Card } from "../../../components/data-display/Card";
+import { IconButton } from "../../../components/data-display/IconButton";
+import { PageHeader } from "../../../components/data-display/PageHeader";
+import { Typography } from "../../../components/general/Typography";
 
 type Phase = "plan" | "do" | "check" | "act";
 
@@ -49,27 +54,19 @@ export function PlanDetailScreen({ planId, onBack, onOpenIssue }: PlanDetailScre
   return (
     <>
       <div className="flex items-center gap-2 mb-4 text-xs">
-        <button onClick={onBack} className="tb-icon-btn" aria-label={t("common.back")}>
+        <IconButton onClick={onBack} variant="ghost" size="sm" aria-label={t("common.back")}>
           <ArrowLeft size={14} />
-        </button>
-        <span className="text-muted-foreground">{t("nav.plans")}</span>
+        </IconButton>
+        <Typography.Text color="secondary">{t("nav.plans")}</Typography.Text>
         <ChevronRight size={12} className="text-muted-foreground" />
-        <span className="font-mono">{planId}</span>
+        <Typography.Text code>{planId}</Typography.Text>
       </div>
 
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">OAuth migration kickoff</h1>
-          <p className="page-subtitle">
-            Q2 PDCA — moving the legacy admin login chain to OIDC end-to-end
-          </p>
-        </div>
-        <div className="page-actions">
-          <span className="badge badge-warning">
-            <span className="dot" /> at risk
-          </span>
-        </div>
-      </div>
+      <PageHeader
+        title="OAuth migration kickoff"
+        subtitle="Q2 PDCA — moving the legacy admin login chain to OIDC end-to-end"
+        actions={<Badge variant="warning">at risk</Badge>}
+      />
 
       <div className="grid grid-cols-4 gap-2 mb-6">
         {PHASES.map((p, idx) => {
@@ -85,8 +82,8 @@ export function PlanDetailScreen({ planId, onBack, onOpenIssue }: PlanDetailScre
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
                 Step {idx + 1}
               </span>
-              <h3 className="text-base font-medium mt-1">{t(`pdca.${p.id}`)}</h3>
-              <p className="text-xs text-muted-foreground mt-1">{p.description}</p>
+              <Typography.Title size={5} className="mt-1">{t(`pdca.${p.id}`)}</Typography.Title>
+              <Typography.Paragraph color="secondary" className="mt-1">{p.description}</Typography.Paragraph>
               {idx < PHASES.length - 1 && (
                 <ChevronRight
                   size={14}
@@ -99,29 +96,27 @@ export function PlanDetailScreen({ planId, onBack, onOpenIssue }: PlanDetailScre
       </div>
 
       {phase === "plan" && (
-        <section className="card">
-          <h2 className="card-title mb-3">{t("pdca.hypothesis")}</h2>
-          <p className="text-sm">
+        <Card title={t("pdca.hypothesis")}>
+          <Typography.Paragraph>
             Replacing the legacy admin password form with the OIDC chain will
             cut authentication failures by 40% within one quarter.
-          </p>
-          <h3 className="card-title mt-6 mb-2">{t("pdca.metrics")}</h3>
+          </Typography.Paragraph>
+          <Typography.Title size={5} className="mt-6 mb-2">{t("pdca.metrics")}</Typography.Title>
           <ul className="text-sm list-disc pl-5">
             <li>Auth failures &lt; 0.5% of attempts</li>
             <li>Time-to-sign-in &lt; 3s p95</li>
             <li>Zero password resets logged for SSO users</li>
           </ul>
-          <h3 className="card-title mt-6 mb-2">{t("pdca.risks")}</h3>
+          <Typography.Title size={5} className="mt-6 mb-2">{t("pdca.risks")}</Typography.Title>
           <ul className="text-sm list-disc pl-5 text-muted-foreground">
             <li>Identity-portal cookie domain drift between envs</li>
             <li>RFC 9457 problem-detail rollout coupling</li>
           </ul>
-        </section>
+        </Card>
       )}
 
       {phase === "do" && (
-        <section className="card">
-          <h2 className="card-title mb-3">{t("pdca.linkedTasks")}</h2>
+        <Card title={t("pdca.linkedTasks")}>
           <table className="table">
             <thead>
               <tr>
@@ -138,15 +133,13 @@ export function PlanDetailScreen({ planId, onBack, onOpenIssue }: PlanDetailScre
                   <td>{task.title}</td>
                   <td className="muted">@{task.owner}</td>
                   <td>
-                    <span className="badge badge-neutral">
-                      <span className="dot" /> {task.state}
-                    </span>
+                    <Badge variant="neutral">{task.state}</Badge>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </section>
+        </Card>
       )}
 
       {phase === "check" && (
@@ -162,25 +155,24 @@ export function PlanDetailScreen({ planId, onBack, onOpenIssue }: PlanDetailScre
               </div>
             ))}
           </div>
-          <section className="card">
-            <h2 className="card-title mb-3">{t("pdca.review")}</h2>
+          <Card title={t("pdca.review")}>
             <Sparkline />
-          </section>
+          </Card>
         </>
       )}
 
       {phase === "act" && (
         <div className="grid grid-cols-2 gap-3">
           {ADOPTION.map((a) => (
-            <div key={a.tag} className="card flex flex-col gap-2">
+            <Card key={a.tag} className="flex flex-col gap-2">
               <span
                 className="text-[10px] font-medium uppercase tracking-wider"
                 style={{ color: a.color }}
               >
                 {a.tag}
               </span>
-              <p className="text-sm">{a.title}</p>
-            </div>
+              <Typography.Paragraph>{a.title}</Typography.Paragraph>
+            </Card>
           ))}
         </div>
       )}

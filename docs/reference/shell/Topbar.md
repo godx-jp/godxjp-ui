@@ -1,10 +1,12 @@
 ---
+title: "Topbar"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Topbar
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Topbar

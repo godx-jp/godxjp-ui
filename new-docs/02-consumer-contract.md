@@ -1,31 +1,121 @@
----
-title: Consumer contract
-status: binding
-authority: this-file
-applies-to:
-  - any consumer of "@godxjp/ui" (service frontends, apps, demos)
-last-reviewed: 2026-05-16
----
-
 # 02 — Consumer contract
 
 **Status:** Binding. Read before starting a new frontend that
 consumes `@godxjp/ui`, before adding a feature that touches UI in
-an existing consumer, and before changing the consumer's folder
-shape / config files.
+an existing consumer, before changing the consumer's folder shape
+or config files, AND before adding a new file under the framework's
+own `src/` tree.
 
 `@godxjp/ui` is THE UI framework for godx-jp. A "consumer" is any
 project that depends on it — most commonly a `services/<svc>/frontend/`
 SPA, but also `apps/<app>/`, demos, and the framework's own
 Storybook. This document specifies the contract every consumer must
-honour.
+honour PLUS the framework's own per-group source taxonomy (cardinal
+rules 27 + 28) that determines what consumers can import.
 
 The framework gives consumers a lot for free; in return the
 consumer must NOT redo or shadow anything the framework already
 ships. Drift in either direction (consumer re-implementing,
 consumer escaping the contract) is a tracked bug.
 
-## §A — What the framework ships (and consumers do NOT redo)
+## §A — Consumer dist surface (eight entries)
+
+Per cardinal rule 26 the dist artefact published to npm exposes a
+tightly scoped surface. Today's eight entries:
+
+| Import path | Purpose | Cardinal rule |
+|---|---|---|
+| `@godxjp/ui` | Root barrel — re-exports primitives + hooks + i18n helpers + preferences | 26 §A |
+| `@godxjp/ui/i18n` | `initI18n`, `SUPPORTED_LOCALES`, base dictionary | 5 |
+| `@godxjp/ui/hooks` | `useTweaks`, `useBreakpoint`, `useDebouncedValue`, `usePreferences`, … | 26 §A |
+| `@godxjp/ui/preferences` | `PreferencesProvider` (locale + timezone context) | 26 §A |
+| `@godxjp/ui/components/primitives` | All primitive components — 61 React surfaces re-exported from the six group folders via `src/components/primitives.ts` (single barrel file) | 27 + 28 §A |
+| `@godxjp/ui/components/shell` | `AppShell`, `Sidebar`, `Topbar`, `ProductSwitcher`, `ProjectSwitcher`, `CommandPalette`, `TweaksPanel`, `PageContent` (8) | 26 §A |
+| `@godxjp/ui/components/composites` | Upload family, MediaUpload, AvatarUploader, LocaleInput, calendar app — composites that wrap multiple primitives | 26 §A |
+| `@godxjp/ui/tailwind.css` (+ `./styles/{theme,base,shell,sonner}.css`) | Tokens + Tailwind v4 entry + shell base. `theme.css` is the canonical token home; `tailwind.css` is the consumer entry point | 26 §D |
+
+**Removed exports** (rejected at review if reintroduced):
+
+- ~~`@godxjp/ui/data`~~ — generic catalogs like `PRODUCTS` are
+  consumed via shell primitives directly; consumers register their
+  own catalogs. Per cardinal rule 28 §D the standalone `src/data/`
+  folder is removed.
+- ~~`@godxjp/ui/components/screens`~~ — example screens are
+  Storybook-only under `src/stories/examples/` (rendered as Usage
+  Cases). Consumers copy-paste-and-modify, never `import`. Per
+  cardinal rule 28 §D.
+- ~~`@godxjp/ui/clients/media`~~ — folded into the Upload composite
+  (`src/components/composites/upload/media-client.ts`) so the
+  service-client travels with its sole consumer. The `MediaUpload`
+  surface re-exports any caller-needed helpers through
+  `@godxjp/ui/components/composites`. Per cardinal rule 28 §D
+  service clients live with the composite that uses them.
+
+Toolchain configs ship as separate sub-paths:
+
+| Import path | File |
+|---|---|
+| `@godxjp/ui/eslint-config` | `config/eslint.js` |
+| `@godxjp/ui/prettier-config` | `config/prettier.cjs` |
+| `@godxjp/ui/tsconfig` | `config/tsconfig.base.json` |
+| `@godxjp/ui/vitest-config` | `config/vitest.base.ts` |
+
+Adding an entry → update `tsup.config.ts::entry` AND
+`package.json::exports` AND this table. The three mirror.
+
+## §A-2 — Per-group source taxonomy (cardinal rules 27 + 28)
+
+The framework's own `src/components/` mirrors the Storybook sidebar
+taxonomy. Primitive files live under
+`src/components/<group>/<Name>.tsx` where `<group>` is one of six
+canonical names (matching Ant Design's component taxonomy):
+
+| Group | Source folder | Components (61 total) |
+|---|---|---|
+| `general` | `src/components/general/` | Button, Typography (2) |
+| `layout` | `src/components/layout/` | Row, Col, Flex, Space, Grid, Masonry (6) |
+| `data-display` | `src/components/data-display/` | Avatar, Badge, Card, Calendar, Carousel, Collapse, Descriptions, Empty, Image, List, Popover, QRCode, SegmentedControl, Statistic, Table, Tag, Timeline, Tooltip, Tour, Tree (20) |
+| `data-entry` | `src/components/data-entry/` | Input, Textarea, InputPassword, InputSearch, Field, Label, Checkbox, CheckboxGroup, Radio, Switch, Slider, Select, AutoComplete, Cascader, ColorPicker, DateTimePicker, TimeInput, TreeSelect, Rate, InputNumber, Form, Transfer, Checklist, LocaleTabs (24) |
+| `feedback` | `src/components/feedback/` | Alert, Dialog, AlertDialog, Sheet, Popconfirm, Progress, Result, Skeleton, Spinner, Toaster, Watermark (11) |
+| `navigation` | `src/components/navigation/` | Anchor, Breadcrumb, DropdownMenu, Menu, Pagination, Steps, Tabs (7) |
+
+Plus two non-group folders:
+
+- `src/components/shell/` — AppShell + chrome (Sidebar, Topbar,
+  ProductSwitcher, ProjectSwitcher, CommandPalette, TweaksPanel,
+  PageContent).
+- `src/components/composites/` — composites wrapping multiple
+  primitives (Upload family, MediaUpload, AvatarUploader,
+  LocaleInput, calendar app).
+
+The barrel `src/components/primitives.ts` (single file, NOT a
+folder) re-exports from every group so consumers consume one stable
+path. Shared helpers (`cn`) live at `src/components/cn.ts` — one
+level above the groups so every group has a uniform `../cn` path.
+
+**Forbidden** (rejected at review):
+
+- New `.tsx` file at `src/components/primitives/<Name>.tsx` flat —
+  pick a group folder. The flat `src/components/primitives/`
+  directory does not exist.
+- Group folder mismatch between source location and Storybook
+  title (e.g. `Tabs` under `src/components/navigation/` but story
+  titled `Components/Data Display/Tabs`).
+- `src/components/<X>/` where `<X>` is anything other than the six
+  canonical group names, `composites/`, or `shell/`. Notably: NO
+  `src/components/screens/` (examples live under
+  `src/stories/examples/`).
+- A top-level `src/` directory not in the cardinal rule 28 §A / §B
+  / §C catalogue: `src/clients/`, `src/screens/`, `src/data/`,
+  `src/lib/`, `src/utils/`, `src/internal/` are forbidden as
+  standalone surfaces. Service clients live with the composite
+  that uses them; utils live with the primitive that uses them.
+
+Stories MUST mirror the same group hierarchy:
+`src/stories/<group>/<Name>.stories.tsx` with title `<Group>/<Name>`
+(no `new-primitives/` prefix — the legacy umbrella was flattened).
+
+## §B — What the framework ships (and consumers do NOT redo)
 
 The framework owns the entire visual + interaction layer:
 
@@ -33,12 +123,11 @@ The framework owns the entire visual + interaction layer:
 |---|---|---|
 | Design tokens (color, spacing, density, dark, motion, theme axes) | `src/tokens/`, `src/styles/theme.css` | NO — `@import "@godxjp/ui/tailwind.css"` in one file |
 | Tailwind v4 entry + `@theme inline` mapping | `src/tokens/tailwind.css` | NO — that single import is enough |
-| Visual primitives — grouped by Storybook taxonomy under `src/components/<group>/<Name>.tsx`: `general` (Button, Typography), `layout` (Row, Col, Flex, Space, Grid, Masonry), `data-display` (Avatar, Badge, Card, Calendar, Descriptions, Empty, Popover, Tooltip, SegmentedControl, Statistic, Table, Tag, Carousel, Collapse, Image, List, QRCode, Timeline, Tour, Tree), `data-entry` (Input, Field, Select, Checkbox, Radio, Switch, Slider, AutoComplete, Cascader, ColorPicker, DateTimePicker, TimeInput, TreeSelect, Rate, InputNumber, Form, Transfer, CheckboxGroup, …), `feedback` (Alert, Dialog/Modal, Sheet/Drawer, AlertDialog, Popconfirm, Progress, Result, Skeleton, Spinner, Toaster, Watermark), `navigation` (Anchor, Breadcrumb, DropdownMenu, Menu, Pagination, Steps, Tabs) | NO — import from `@godxjp/ui` |
-| Shell primitives (AppShell, Sidebar, Topbar, CommandPalette, TweaksPanel, ProductSwitcher) | `src/components/shell/` | NO — compose, don't reimplement |
-| Composite widgets (Upload family, LocaleInput, …) | `src/components/composites/` | NO — extend via PR if missing |
-| Calendar atoms + screens (EventBlock, MiniMonth, TimeGrid, MonthView, WeekView, DayView, AgendaView, …) | `src/components/{primitives,composites}/calendar/` | NO |
-| i18next singleton + base dictionary | `src/i18n/` | NO — extend with `addResourceBundle` |
-| Hooks (`useTweaks`, `useDebouncedValue`, `usePreferences`, …) | `src/hooks/` | NO |
+| 61 visual primitives (six groups per §A-2) | `src/components/<group>/<Name>.tsx` → `@godxjp/ui/components/primitives` | NO — import from the barrel |
+| Shell primitives (AppShell, Sidebar, Topbar, CommandPalette, TweaksPanel, ProductSwitcher, ProjectSwitcher, PageContent) | `src/components/shell/` → `@godxjp/ui/components/shell` | NO — compose, don't reimplement |
+| Composite widgets (Upload family, MediaUpload, AvatarUploader, LocaleInput, calendar app) | `src/components/composites/` → `@godxjp/ui/components/composites` | NO — extend via PR if missing |
+| i18next singleton + base dictionary | `src/i18n/` → `@godxjp/ui/i18n` | NO — extend with `addResourceBundle` |
+| Hooks (`useTweaks`, `useBreakpoint`, `useDebouncedValue`, `usePreferences`, …) | `src/hooks/` → `@godxjp/ui/hooks` | NO |
 | ESLint + Prettier + TS strict + Vitest configs | `config/` | NO — one-line re-export |
 
 The consumer's only first-class file that touches visual layer is
@@ -51,7 +140,7 @@ The consumer's only first-class file that touches visual layer is
 
 /* Optional: per-deployment accent palette ONLY. Omit entirely if
    the consumer inherits all defaults unchanged. Per cardinal
-   rule #19 no service-specific names here — register a
+   rule 19 no service-specific names here — register a
    `[data-accent]` palette, never a `[data-tenant]` block. */
 [data-accent="acme"] {
   --primary:           oklch(58% 0.17 290);
@@ -70,19 +159,22 @@ rejected diff.
 If a primitive the consumer needs is missing in `@godxjp/ui`, the
 move is **add it upstream**, not "build a local copy". See §H.
 
-## §B — No `className` for visual styling
+## §C — No `className` for visual styling
 
 Visual configuration goes through **props** on the primitive, not
-through Tailwind utility classes on the JSX. The framework's
-primitives are Ant-Design-shaped:
+through Tailwind utility classes on the JSX. Every prop name maps
+to a row in [`04-prop-vocabulary.md`](./04-prop-vocabulary.md) §A
+(the locked vocabulary).
 
 ```tsx
 // CORRECT — props carry the visual contract
-<Card title="Profile" extra={<Button>Edit</Button>} variant="ghost">…</Card>
+<Card title="Profile" extra={<Button>Edit</Button>} tone="muted">…</Card>
 <Input prefix={<MailIcon />} suffix={<XIcon />} size="large" status="error" />
-<Avatar shape="square" size="xl" name="Alice Nguyen" />
+<Avatar shape="square" size="x-large" name="Alice Nguyen" />
 <Statistic prefix="¥" value={123456} precision={2} />
 <Tag color="success">Active</Tag>
+<Tabs orientation="vertical" placement="left" value={tab} onValueChange={setTab}>…</Tabs>
+<Dialog open={open} onOpenChange={setOpen}>…</Dialog>
 <Row gutter={16}>
   <Col xs={24} md={8}>…</Col>
   <Col xs={24} md={16}>…</Col>
@@ -107,25 +199,31 @@ on `@godxjp/ui` covers this?". If the answer is "none", **extend
 the primitive in the framework first** (§H) — don't paper over with
 consumer-side classes.
 
-Concept check — the framework exposes:
+Concept check — the framework exposes (mapped to vocabulary entries
+in [`04-prop-vocabulary.md`](./04-prop-vocabulary.md)):
 
 - **Layout**: `Row`/`Col` (12-col grid), `Flex` (CSS flex wrapper),
-  `Space` (gap-spaced inline group), `Stack` (vertical Flex sugar).
+  `Space` (gap-spaced inline group), `Grid`, `Masonry`.
 - **Surface**: `Card` (title/extra/footer slots), `Sheet`, `Dialog`,
   `AlertDialog`, `Popover`, `Tooltip`.
 - **Data display**: `Table` (density prop), `Tag`, `Badge` (variant
-  + appearance props), `Avatar` (shape/size/name props),
-  `Statistic`, `Empty`.
-- **Forms**: `Input` (prefix/suffix/addon/size/status props),
-  `InputPassword`, `InputSearch`, `LocaleInput`, `Select`,
-  `Combobox`, `Switch`, `Checkbox`, `Field` (label/help/error slot).
-- **Navigation**: `Tabs` (variant prop: line/pills/segmented),
-  `Breadcrumb`, `SegmentedControl`, `PageHeader`.
+  + color), `Avatar` (shape/size/name), `Statistic`, `Empty`.
+- **Forms**: `Input` (prefix/suffix/addon/size/status), `Field`
+  (label/help/error slot), `InputPassword`, `InputSearch`, `Select`,
+  `AutoComplete`, `Switch`, `Checkbox`, `Radio`, `Form`.
+- **Navigation**: `Tabs` (orientation / placement / value /
+  onValueChange), `Breadcrumb` (item-level `current`), `Steps`
+  (orientation + current), `Menu` (orientation), `Anchor`
+  (orientation + sticky + offset), `SegmentedControl`, `Pagination`
+  (justify).
+- **Overlays**: every overlay uses Radix-canonical `open` /
+  `defaultOpen` / `onOpenChange` — never `visible` / `isOpen` /
+  `shown` / `display`.
 
 If the consumer reaches for raw Tailwind utilities, check this list
 first.
 
-## §C — Search before you create
+## §D — Search before you create
 
 Before adding a new component to the consumer's
 `src/components/` or `features/<domain>/components/`:
@@ -134,8 +232,9 @@ Before adding a new component to the consumer's
 # Step 1 — grep the framework for the primitive name
 grep -rln "export.*<Name>" libs/ts/godxjp-ui/src/components/
 
-# Step 2 — read the index barrels
-cat libs/ts/godxjp-ui/src/components/primitives/index.ts
+# Step 2 — read the index barrel + group folders
+cat libs/ts/godxjp-ui/src/components/primitives.ts
+ls libs/ts/godxjp-ui/src/components/{general,layout,data-display,data-entry,feedback,navigation}/
 cat libs/ts/godxjp-ui/src/components/shell/index.ts
 cat libs/ts/godxjp-ui/src/components/composites/index.ts
 
@@ -153,14 +252,14 @@ exception is narrow:
 |---|---|
 | Button, Card, Dialog, Tabs, Table, Avatar (generic primitives) | A `ProfileForm` that wires `/api/v1/profile` to `<Input>` + `<Button>` |
 | AppShell, Sidebar, Topbar (shell compositions) | A `SettingsScreen` that arranges feature widgets in a unique layout |
-| `useTweaks`, `useDebouncedValue`, `useMediaQuery` (generic hooks) | `useProfile` — TanStack Query wrapper around a specific endpoint |
+| `useTweaks`, `useDebouncedValue`, `useBreakpoint` (generic hooks) | `useProfile` — TanStack Query wrapper around a specific endpoint |
 | LocaleInput, AvatarUploader (cross-consumer composites) | A consumer-specific footer with the consumer's own links |
 | Calendar atoms + screen compositions | A consumer-specific empty-state illustration |
 
 If you find yourself building a "generic-looking" thing locally,
 **stop** and follow §H instead.
 
-## §D — Folder shape (consumer SPA)
+## §E — Folder shape (consumer SPA)
 
 Every consumer SPA follows this Bulletproof React-strict layout.
 Drift between consumers is a tracked bug.
@@ -226,6 +325,11 @@ Drift between consumers is a tracked bug.
     └── utils/              # pure utility functions (no I/O, no React)
 ```
 
+Note: a consumer's `src/lib/` and `src/utils/` ARE allowed (consumer
+flexibility). The framework's own `src/lib/` / `src/utils/` are
+forbidden per cardinal rule 28 §D — framework utilities live with
+the primitive that uses them.
+
 **Forbidden** (review-rejected):
 
 - A `pages/` directory (Next.js-style routing). Use Vite + React
@@ -238,7 +342,7 @@ Drift between consumers is a tracked bug.
 - A `utils/` or `helpers/` folder named that vaguely. Use concept
   names (`lib/api.ts`, `lib/design-system.ts`, `i18n/`, …).
 
-## §E — Service-layer pattern (the four-layer transport rule)
+## §F — Service-layer pattern (the four-layer transport rule)
 
 Components NEVER call `axios` or `fetch` directly. Four layers:
 
@@ -335,7 +439,7 @@ export function ProfileForm() {
 
 TanStack Query v5 is locked. Migrating to v6+ requires an ADR.
 
-## §F — i18n bootstrap
+## §G — i18n bootstrap
 
 The framework ships **one** i18next singleton at `@godxjp/ui/i18n`.
 Consumers extend it with `addResourceBundle`; they do not create
@@ -397,7 +501,7 @@ lints parity. Add more locales freely; never remove these four.
 - A consumer-local i18next singleton. Use the shared one.
 - Out-of-tree locale files — every locale lives under `src/i18n/`.
 
-## §G — Config inheritance (ESLint / Prettier / TS / Vitest / Playwright)
+## §H — Config inheritance (ESLint / Prettier / TS / Vitest / Playwright)
 
 The framework publishes config presets as sub-path exports.
 Consumers consume them as **one-line re-exports** — never re-configured
@@ -445,7 +549,7 @@ The locked stack (do not change without an ADR):
 - Vite 8+
 - TypeScript 6.x strict
 - TanStack Query v5
-- react-i18next v15 (aligned with `@godxjp/ui`'s singleton)
+- react-i18next v17 (aligned with `@godxjp/ui`'s singleton)
 - axios 1.x
 - Vitest 4.x + React Testing Library
 - Playwright 1.x + @axe-core/playwright
@@ -453,7 +557,7 @@ The locked stack (do not change without an ADR):
   plugin-react-hooks 5.x + plugin-jsx-a11y 6.x + plugin-import 2.x +
   plugin-tanstack
 - Prettier 3
-- shadcn/ui (via `@godxjp/ui`) + Radix primitives
+- shadcn/ui ownership model + Radix primitives (cardinal rule 4)
 - Tailwind v4
 
 Pre-commit hook (consumer-side, `.lefthook.yml` / `.husky/`):
@@ -477,7 +581,7 @@ pre-commit:
   markdown tables).
 - `--no-verify` on `git commit`.
 
-## §H — Extending the framework when a primitive is missing
+## §I — Extending the framework when a primitive is missing
 
 When a needed primitive does not exist in `@godxjp/ui`, **the clause
 is not "build it locally"**. The clause is "extend the framework",
@@ -485,16 +589,27 @@ which means:
 
 1. Branch the submodule: `cd libs/ts/godxjp-ui && git checkout -b feat/<primitive>`.
 2. Add the primitive under
-   `src/components/{primitives|composites|shell}/<Name>.tsx`,
-   following Storybook discipline (cardinal rule 1 — story alongside).
-3. Tokens it needs go into `src/tokens/` (or `src/styles/theme.css`)
-   FIRST per cardinal rule 16.
-4. Export from the appropriate barrel
-   (`src/components/{primitives|composites|shell}/index.ts`) and
-   the package root (`src/index.ts`).
-5. tsup build + a11y check + story snapshot all green.
-6. Commit + push + PR in the submodule repo. Review + merge.
-7. Umbrella bumps the pin: `git -C libs/ts/godxjp-ui pull --ff-only origin <branch>`,
+   `src/components/<group>/<Name>.tsx` per cardinal rule 27 — pick the
+   group that matches the Storybook taxonomy (general / layout /
+   data-display / data-entry / feedback / navigation). Composites
+   go under `src/components/composites/<name>/`; shell additions
+   under `src/components/shell/`.
+3. Tokens it needs go into `src/styles/theme.css` (or
+   `src/tokens/`) FIRST per cardinal rule 16. Reference
+   [03-token-system.md](./03-token-system.md) §M for the "add a
+   token" recipe.
+4. Every prop maps to a row in
+   [04-prop-vocabulary.md](./04-prop-vocabulary.md) §A. New vocabulary
+   entries require a §section in that doc first (cardinal rule 23 §B).
+5. Re-export from `src/components/primitives.ts` (the single-file
+   barrel — NOT a folder). For shell or composites, re-export from
+   `src/components/shell/index.ts` / `src/components/composites/index.ts`.
+6. Story under `src/stories/<group>/<Name>.stories.tsx` with title
+   `<Group>/<Name>` (cardinal rule 29 — every story consumes
+   framework primitives, no raw HTML / inline-styled divs).
+7. tsup build + a11y check + story snapshot all green.
+8. Commit + push + PR in the submodule repo. Review + merge.
+9. Umbrella bumps the pin: `git -C libs/ts/godxjp-ui pull --ff-only origin <branch>`,
    then `git add libs/ts/godxjp-ui` and commit the umbrella with
    `chore(godxjp-ui): bump pin — <primitive>`.
 
@@ -515,13 +630,18 @@ data into existing primitives", it stays in the consumer's
 `features/<domain>/components/`. Don't pollute the framework with
 domain shapes.
 
-## §I — Storybook adoption (consumer side)
+## §J — Storybook adoption (consumer side)
 
 A consumer that imports `@godxjp/ui` automatically inherits the
 framework's tokens, primitives, and shell. The consumer does NOT
 ship its own Storybook of framework primitives — those stories live
 in the framework and are served at the umbrella's
 `storybook.<publicDomain>` (a platform concern, not framework's).
+
+The framework's Storybook sidebar is flattened to root groups:
+Theme, General, Layout, Data Display, Data Entry, Feedback,
+Navigation, Shell, Usage Cases. There is no `new-primitives/`
+umbrella prefix.
 
 A consumer MAY ship a Storybook of its own **screens** (composed
 feature views) for design / QA. That Storybook reuses the
@@ -541,10 +661,12 @@ the framework — it should ship as an export.
   variant matches our Diátaxis service boundary).
 - **Atomic Design** (Brad Frost, 2013) — primitives → composites →
   shell hierarchy.
+- **Ant Design component taxonomy** — general / layout / data-display /
+  data-entry / feedback / navigation grouping (cardinal rule 27).
 - **shadcn/ui** — primitive ownership model (per cardinal rule 4).
 - **Radix UI** — interactive primitive base (per cardinal rule 3).
 - **TanStack Query v5** — server-state cache (`tanstack.com/query/latest`).
-- **react-i18next v15** — i18n singleton (`react.i18next.com`).
+- **react-i18next v17** — i18n singleton (`react.i18next.com`).
 - **Tailwind CSS v4** — utility surface + `@theme inline`
   (`tailwindcss.com`).
 - **WCAG 2.1 AA** — a11y baseline (cardinal rule 6).
@@ -569,14 +691,26 @@ Verifies:
 - `theme.css` does ONLY `@import "@godxjp/ui/tailwind.css"` plus
   optional `[data-accent="…"]` overrides.
 - ESLint + Prettier + TS configs are one-line re-exports.
-- Folder shape matches §D (no `pages/`, no `App.tsx` at `src/` root,
+- Folder shape matches §E (no `pages/`, no `App.tsx` at `src/` root,
   no `__tests__/` aggregation directory, no mega `utils/`).
 - No `axios` / `fetch` import inside `.tsx`.
 - No `className="bg-*"` / `text-blue-*` / `text-zinc-*` raw color
   utilities in consumer code (per cardinal rule 2).
-- No `<Button className="…">` carrying visual tweaks (per §B).
+- No `<Button className="…">` carrying visual tweaks (per §C).
 - Every visible string is wrapped in `t(...)` (i18n coverage).
 - All four mandatory locales (`ja`, `en`, `vi`, `fil`) present and
   parity-clean.
 
-CI blocks merge on any violation. `--no-verify` is forbidden per §G.
+CI blocks merge on any violation. `--no-verify` is forbidden per §H.
+
+## Cross-references
+
+- [`00-index.md`](./00-index.md) — trigger table + reading order.
+- [`01-theme-axes.md`](./01-theme-axes.md) — four axes governing
+  every consumer page.
+- [`03-token-system.md`](./03-token-system.md) — what tokens
+  consumers consume + override patterns.
+- [`04-prop-vocabulary.md`](./04-prop-vocabulary.md) — every prop
+  name a consumer reaches for.
+- [`05-design-handoff-formats.md`](./05-design-handoff-formats.md)
+  — what handoff formats land in `design-handoff/`.

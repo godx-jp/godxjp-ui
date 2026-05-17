@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { PageHeader } from "../../../components/data-display/PageHeader";
+import { Button } from "../../../components/general/Button";
 
 // WikiScreen — 3-column wiki layout (TOC · prose · meta). Content is
 // a static placeholder; consumers replace `children` with their
@@ -20,15 +22,11 @@ export function WikiScreen({ toc = DEFAULT_TOC, children, meta }: WikiScreenProp
   const { t } = useTranslation();
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">{t("nav.wiki")}</h1>
-          <p className="page-subtitle">Living documentation</p>
-        </div>
-        <div className="page-actions">
-          <button className="btn btn-primary">+ {t("common.new")}</button>
-        </div>
-      </div>
+      <PageHeader
+        title={t("nav.wiki")}
+        subtitle="Living documentation"
+        actions={<Button variant="primary">+ {t("common.new")}</Button>}
+      />
 
       <div className="wiki-layout">
         <nav className="wiki-toc" aria-label="Table of contents">

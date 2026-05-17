@@ -3,6 +3,14 @@ import { ArrowLeft, ChevronRight, Send } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../../components/cn";
+import { Avatar } from "../../../components/data-display/Avatar";
+import { Badge } from "../../../components/data-display/Badge";
+import { Card } from "../../../components/data-display/Card";
+import { IconButton } from "../../../components/data-display/IconButton";
+import { PageHeader } from "../../../components/data-display/PageHeader";
+import { Tag } from "../../../components/data-display/Tag";
+import { Button } from "../../../components/general/Button";
+import { Typography } from "../../../components/general/Typography";
 
 type Tab = "conversation" | "checklist" | "code" | "history";
 type IssueStatus = "backlog" | "in-progress" | "review" | "done" | "abandoned";
@@ -65,28 +73,24 @@ export function IssueDetailScreen({ issueId, onBack, onOpenPlan }: IssueDetailSc
     >
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-4 text-xs">
-          <button onClick={onBack} className="tb-icon-btn" aria-label={t("common.back")}>
+          <IconButton onClick={onBack} variant="ghost" size="sm" aria-label={t("common.back")}>
             <ArrowLeft size={14} />
-          </button>
-          <span className="text-muted-foreground">{t("nav.issues")}</span>
+          </IconButton>
+          <Typography.Text color="secondary">{t("nav.issues")}</Typography.Text>
           <ChevronRight size={12} className="text-muted-foreground" />
-          <span className="font-mono">{issueId}</span>
+          <Typography.Text code>{issueId}</Typography.Text>
         </div>
 
-        <div className="page-header">
-          <div>
-            <h1 className="page-title">
-              Wire sticky QuickComposer for backlog-style edits
-            </h1>
-            <p className="page-subtitle">@naoki opened · 2 days ago</p>
-          </div>
-          <div className="page-actions">
-            <span className="badge badge-info">
-              <span className="dot" /> {STATUS_LABEL[status]}
-            </span>
-            <span className="badge badge-warning">{PRIORITY_LABEL[priority]}</span>
-          </div>
-        </div>
+        <PageHeader
+          title="Wire sticky QuickComposer for backlog-style edits"
+          subtitle="@naoki opened · 2 days ago"
+          actions={
+            <>
+              <Badge variant="info">{STATUS_LABEL[status]}</Badge>
+              <Badge variant="warning" dot={false}>{PRIORITY_LABEL[priority]}</Badge>
+            </>
+          }
+        />
 
         <div className="grid gap-6" style={{ gridTemplateColumns: "1fr 240px" }}>
           <div>
@@ -108,29 +112,29 @@ export function IssueDetailScreen({ issueId, onBack, onOpenPlan }: IssueDetailSc
             {tab === "conversation" && (
               <ul className="flex flex-col gap-3">
                 {COMMENTS.map((c) => (
-                  <li key={c.id} className="card">
-                    <header className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                      <span className="avatar" style={{ width: 24, height: 24, fontSize: 10 }}>
-                        {c.who[0]?.toUpperCase()}
-                      </span>
-                      <span className="font-medium text-foreground">@{c.who}</span>
-                      <span>·</span>
-                      <span>{c.when}</span>
-                    </header>
-                    <p className="text-sm">{c.body}</p>
+                  <li key={c.id}>
+                    <Card>
+                      <header className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                        <Avatar name={c.who} size="sm" />
+                        <Typography.Text strong>@{c.who}</Typography.Text>
+                        <span>·</span>
+                        <span>{c.when}</span>
+                      </header>
+                      <Typography.Paragraph>{c.body}</Typography.Paragraph>
+                    </Card>
                   </li>
                 ))}
               </ul>
             )}
             {tab === "checklist" && (
-              <div className="card">
+              <Card>
                 <ul className="flex flex-col gap-2 text-sm">
                   <li><label className="flex items-center gap-2"><input type="checkbox" defaultChecked /> Sticky composer renders at 52px</label></li>
                   <li><label className="flex items-center gap-2"><input type="checkbox" defaultChecked /> Expand on focus, collapse on outside click</label></li>
                   <li><label className="flex items-center gap-2"><input type="checkbox" /> Status/assignee/priority pickers</label></li>
                   <li><label className="flex items-center gap-2"><input type="checkbox" /> ⌘+Enter submit</label></li>
                 </ul>
-              </div>
+              </Card>
             )}
             {tab === "code" && (
               <div className="diff">
@@ -152,16 +156,16 @@ export function IssueDetailScreen({ issueId, onBack, onOpenPlan }: IssueDetailSc
           <aside className="flex flex-col gap-3 text-xs">
             <SidebarField label={t("issue.assignee")}>@{assignee}</SidebarField>
             <SidebarField label={t("issue.labels")}>
-              <span className="chip">design-system</span>
-              <span className="chip">frontend</span>
+              <Tag>design-system</Tag>
+              <Tag>frontend</Tag>
             </SidebarField>
             <SidebarField label={t("issue.milestone")}>2026-Q2 release</SidebarField>
             <SidebarField label={t("issue.sprint")}>Sprint 12</SidebarField>
             <SidebarField label={t("issue.points")}>5</SidebarField>
             <SidebarField label={t("issue.relatedPlan")}>
-              <button onClick={() => onOpenPlan("PDCA-Q2-001")} className="underline text-primary">
+              <Typography.Link onClick={() => onOpenPlan("PDCA-Q2-001")}>
                 PDCA-Q2-001
-              </button>
+              </Typography.Link>
             </SidebarField>
           </aside>
         </div>
@@ -177,11 +181,11 @@ export function IssueDetailScreen({ issueId, onBack, onOpenPlan }: IssueDetailSc
             className="flex w-full items-center gap-2 text-xs text-muted-foreground hover:text-foreground py-1"
             onClick={() => setComposerOpen(true)}
           >
-            <span className="avatar" style={{ width: 24, height: 24, fontSize: 10 }}>S</span>
+            <Avatar name="Satoshi" size="sm" />
             <span>{issueId} · {t("issue.addComment")}</span>
             <span className="ml-auto flex items-center gap-2">
-              <span className="chip">{STATUS_LABEL[status]}</span>
-              <span className="chip">{PRIORITY_LABEL[priority]}</span>
+              <Tag>{STATUS_LABEL[status]}</Tag>
+              <Tag>{PRIORITY_LABEL[priority]}</Tag>
               <kbd className="kbd">C</kbd>
             </span>
           </button>
@@ -224,20 +228,22 @@ export function IssueDetailScreen({ issueId, onBack, onOpenPlan }: IssueDetailSc
               </PillPicker>
 
               {hasChanges && (
-                <span className="badge badge-attention">↻ {t("issue.submitWithChanges")}</span>
+                <Badge variant="attention">↻ {t("issue.submitWithChanges")}</Badge>
               )}
 
-              <button
-                type="button"
-                className="btn btn-primary btn-sm ml-auto"
+              <Button
+                variant="primary"
+                size="small"
+                className="ml-auto"
+                startContent={<Send size={12} />}
                 onClick={() => {
                   setBody("");
                   setComposerOpen(false);
                 }}
                 disabled={!body.trim()}
               >
-                <Send size={12} /> {t("common.submit")}
-              </button>
+                {t("common.submit")}
+              </Button>
             </div>
           </div>
         )}
@@ -268,16 +274,13 @@ function PillPicker({
 }) {
   return (
     <Popover.Root>
-      <Popover.Trigger asChild>
-        <button
-          type="button"
-          className={cn(
-            "chip text-xs cursor-pointer",
-            changed && "border border-[var(--attention)] text-[var(--attention)]",
-          )}
-        >
-          {label}: {value}
-        </button>
+      <Popover.Trigger
+        className={cn(
+          "chip cursor-pointer text-xs",
+          changed && "border border-[var(--attention)] text-[var(--attention)]",
+        )}
+      >
+        {label}: {value}
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content className="sw-pop" align="start" sideOffset={4} style={{ width: 200 }}>

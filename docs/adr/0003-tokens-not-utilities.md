@@ -6,8 +6,9 @@ adr: "0003"
 title: CSS custom property tokens, not raw Tailwind utilities
 status: accepted
 date: 2026-01-14
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
 ---
 
 # ADR 0003 — CSS custom property tokens, not raw Tailwind utilities
@@ -32,7 +33,9 @@ Tailwind CSS provides two ways to express a color on an element:
    with no rebuild.
 
 GoDX is a multi-tenant platform. Operators can configure their own brand
-colors via `[data-tenant="<slug>"]` CSS attribute selectors. Users can switch
+colors via `[data-accent="<palette>"]` CSS attribute selectors (per cardinal
+rule 19; the ADR was originally drafted around `[data-tenant]`, since
+collapsed into the `data-accent` axis). Users can switch
 between light and dark themes via `[data-theme]`. Density can change per user
 via `[data-density]`. All three dimensions require runtime-configurable visual
 values.
@@ -72,10 +75,14 @@ decorative palette). Rules:
    `tokens.css` `@layer components {}` blocks. Primitives apply these class
    names; they do not inline-compose the constituent utilities.
 
-5. **`[data-tenant]`, `[data-theme]`, and `[data-density]` attribute selectors
-   are the only runtime override surfaces.** Operator brand customization,
-   dark mode, and density scaling all work by redefining tokens under these
-   selectors. No JavaScript-driven style mutations.
+5. **`data-*` theme axes on `<html>` are the only runtime override
+   surfaces** — `data-theme`, `data-accent`, `data-density`,
+   `data-font-size` (cardinal rule 21 + [01 — theme axes](../../new-docs/01-theme-axes.md)).
+   Operator brand customization, dark mode, and density scaling all
+   work by redefining tokens under these selectors. No
+   JavaScript-driven style mutations. (Historical note: the original
+   ADR cited `[data-tenant]` as the brand-color axis; cardinal rule
+   19 collapsed tenant + accent into a single `data-accent` axis.)
 
 ---
 
@@ -83,7 +90,7 @@ decorative palette). Rules:
 
 **Positive:**
 
-- A single operator deployment configuration (`[data-tenant="acme"]` in a
+- A single operator deployment configuration (`[data-accent="acme"]` in a
   `theme.css` file) can rebrand every surface of the product without touching
   component source or rebuilding the SPA.
 - Dark mode and density switching apply with zero JS style mutation — the
@@ -115,7 +122,5 @@ decorative palette). Rules:
 - [Reference: Tokens](../reference/tokens.md) — full token catalogue.
 - [Explanation: Brand bible](../explanation/brand-bible.md) — why OKLCH, why
   chroma ≤ 0.18.
-- [How-to: Override tokens](../how-to/override-tokens.md) — per-tenant
-  `[data-tenant]` customization.
-- [How-to: Add a tenant theme](../how-to/add-tenant-theme.md) — step-by-step
-  for operators.
+- [How-to: Override tokens](../how-to/override-tokens.md) —
+  per-deployment `[data-accent]` palette customization.

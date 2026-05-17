@@ -1,10 +1,12 @@
 ---
+title: "Switch"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Switch
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Switch

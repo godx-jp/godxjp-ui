@@ -1,10 +1,12 @@
 ---
+title: "Skeleton"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Skeleton
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Skeleton

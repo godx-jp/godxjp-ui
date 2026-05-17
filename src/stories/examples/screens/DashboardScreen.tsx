@@ -1,5 +1,8 @@
 import { Activity, BugPlay, Rocket, TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Button } from "../../../components/general/Button";
+import { Card } from "../../../components/data-display/Card";
+import { PageHeader } from "../../../components/data-display/PageHeader";
 import type { ForgeProduct } from "../products";
 
 // DashboardScreen — product-level dashboard. KPI strip + recent
@@ -31,12 +34,10 @@ export function DashboardScreen({ product }: DashboardScreenProps) {
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">{product.name} · {t("nav.dashboard")}</h1>
-          <p className="page-subtitle">{product.desc}</p>
-        </div>
-      </div>
+      <PageHeader
+        title={`${product.name} · ${t("nav.dashboard")}`}
+        subtitle={product.desc}
+      />
 
       <div className="grid grid-cols-4 gap-3 mb-6">
         <Kpi label={t("kpi.activeDevs")} value={String(product.devs)} icon={Activity} delta="+1" />
@@ -46,10 +47,10 @@ export function DashboardScreen({ product }: DashboardScreenProps) {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <section className="card col-span-2">
-          <header className="card-header">
-            <h2 className="card-title">{t("kpi.recentActivity")}</h2>
-          </header>
+        <Card
+          title={t("kpi.recentActivity")}
+          className="col-span-2"
+        >
           <ul className="flex flex-col gap-1">
             {ACTIVITY.map((a) => (
               <li key={a.id} className="log-line">
@@ -59,19 +60,16 @@ export function DashboardScreen({ product }: DashboardScreenProps) {
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
 
-        <section className="card">
-          <header className="card-header">
-            <h2 className="card-title">{t("kpi.quickActions")}</h2>
-          </header>
+        <Card title={t("kpi.quickActions")}>
           <div className="flex flex-col gap-2">
-            <button className="btn btn-secondary justify-start">{t("nav.plans")}</button>
-            <button className="btn btn-secondary justify-start">{t("nav.issues")}</button>
-            <button className="btn btn-secondary justify-start">{t("nav.ideas")}</button>
-            <button className="btn btn-secondary justify-start">{t("nav.gantt")}</button>
+            <Button variant="secondary" className="justify-start">{t("nav.plans")}</Button>
+            <Button variant="secondary" className="justify-start">{t("nav.issues")}</Button>
+            <Button variant="secondary" className="justify-start">{t("nav.ideas")}</Button>
+            <Button variant="secondary" className="justify-start">{t("nav.gantt")}</Button>
           </div>
-        </section>
+        </Card>
       </div>
     </>
   );
@@ -88,6 +86,9 @@ function Kpi({
   icon: React.ComponentType<{ size?: number }>;
   delta?: string;
 }) {
+  // .kpi / .kpi-label / .kpi-value / .kpi-delta are documented
+  // atom CSS classes (per rule 29 §A) — no React primitive yet
+  // exposes "icon + value + delta" in one tile.
   return (
     <div className="kpi">
       <span className="kpi-label">

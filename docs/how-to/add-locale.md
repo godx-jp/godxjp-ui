@@ -1,9 +1,12 @@
 ---
+title: "How to add a locale to your service"
 diataxis: how-to
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer]
+lang: en
+status: published
 ---
 
 # How to add a locale to your service

@@ -1,10 +1,12 @@
 ---
+title: "TweaksPanel"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: TweaksPanel
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # TweaksPanel

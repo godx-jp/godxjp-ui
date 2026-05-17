@@ -1,4 +1,7 @@
 import { useTranslation } from "react-i18next";
+import { Button } from "../../../components/general/Button";
+import { PageHeader } from "../../../components/data-display/PageHeader";
+import { Tag } from "../../../components/data-display/Tag";
 
 type IssueStatus = "backlog" | "in-progress" | "review" | "done";
 type IssuePriority = "low" | "medium" | "high" | "urgent";
@@ -43,15 +46,11 @@ export function IssuesScreen({ onOpenIssue }: IssuesScreenProps) {
   const { t } = useTranslation();
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">{t("nav.issues")}</h1>
-          <p className="page-subtitle">{ISSUES.length} issues</p>
-        </div>
-        <div className="page-actions">
-          <button className="btn btn-primary">+ {t("common.new")}</button>
-        </div>
-      </div>
+      <PageHeader
+        title={t("nav.issues")}
+        subtitle={`${ISSUES.length} issues`}
+        actions={<Button variant="primary">+ {t("common.new")}</Button>}
+      />
 
       <div className="kanban">
         {COLS.map((col) => {
@@ -76,7 +75,7 @@ export function IssuesScreen({ onOpenIssue }: IssuesScreenProps) {
                       style={{ background: PRIO_DOT[issue.priority] }}
                       aria-label={issue.priority}
                     />
-                    <span className="chip ml-auto">{issue.type}</span>
+                    <Tag className="ml-auto">{issue.type}</Tag>
                   </div>
                   <span className="issue-title">{issue.title}</span>
                   <span className="text-[10px] text-muted-foreground">@{issue.assignee}</span>

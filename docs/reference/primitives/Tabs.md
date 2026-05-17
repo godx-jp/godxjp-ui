@@ -1,10 +1,12 @@
 ---
+title: "Tabs"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Tabs
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Tabs

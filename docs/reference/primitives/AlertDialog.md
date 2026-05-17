@@ -1,10 +1,12 @@
 ---
+title: "AlertDialog"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: AlertDialog
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # AlertDialog

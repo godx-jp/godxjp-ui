@@ -1,10 +1,12 @@
 ---
+title: "Table"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Table
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Table

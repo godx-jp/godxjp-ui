@@ -1,9 +1,12 @@
 ---
+title: "TypeScript types"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
-updated: 2026-05-16
+last-updated: 2026-05-17
 audience: [developer, agent]
+lang: en
+status: published
 ---
 
 # TypeScript types
@@ -263,51 +266,51 @@ interface ProjectSwitcherProps {
 
 ## Data
 
-### ForgeProduct (`@godxjp/ui/data`)
+> The `@godxjp/ui/data` export was removed per cardinal rule 28 §D.
+> Consumers register their own product / project catalogues and
+> pass them as props to `ProductSwitcher` / `ProjectSwitcher`.
+> The shapes below are the type contracts those props expect.
+
+### ProductSwitcher product shape (`@godxjp/ui/components/shell`)
 
 ```ts
-type ForgeProduct = {
+type ShellProduct = {
   id: string
   name: string
-  tenant: string      // matches [data-tenant] attribute — operator-defined, not a closed enum
-  role: string
-  desc: string
-  color: string       // OKLCH color string for logo mark
-  owner: string
-  devs: number
-  projects: ForgeProject[]
+  accent?: string     // optional accent palette slug — drives [data-accent="<slug>"]
+  role?: string
+  desc?: string
+  color?: string      // OKLCH color string for logo mark
+  owner?: string
+  devs?: number
+  projects?: ShellProject[]
 }
 ```
 
-### ForgeProject (`@godxjp/ui/data`)
+### ProjectSwitcher project shape (`@godxjp/ui/components/shell`)
 
 ```ts
-type ForgeProject = {
+type ShellProject = {
   id: string
   name: string
-  stack: string
-  kind: ProjectKind
-  devs: number
-  status: ProjectStatus
-  branch: string
-  lastCommit: string
-  openIssues: number
-  prs: number
-  sandbox: boolean
+  stack?: string
+  kind?: ShellProjectKind
+  devs?: number
+  status?: ShellProjectStatus
+  branch?: string
+  lastCommit?: string
+  openIssues?: number
+  prs?: number
+  sandbox?: boolean
 }
+
+type ShellProjectKind = "service" | "web" | "desktop" | "workstation" | "mobile" | "library" | "infra"
+type ShellProjectStatus = "active" | "review" | "planning" | "archived"
 ```
 
-### ProjectKind (`@godxjp/ui/data`)
-
-```ts
-type ProjectKind = "service" | "web" | "desktop" | "workstation" | "mobile" | "library" | "infra"
-```
-
-### ProjectStatus (`@godxjp/ui/data`)
-
-```ts
-type ProjectStatus = "active" | "review" | "planning" | "archived"
-```
+The exact prop names exposed by `ProductSwitcher` /
+`ProjectSwitcher` are listed in their respective reference pages —
+the shapes above are typical consumer catalogues.
 
 ---
 

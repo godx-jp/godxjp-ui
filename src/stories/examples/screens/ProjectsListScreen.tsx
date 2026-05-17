@@ -1,5 +1,9 @@
 import { GitBranch } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Card } from "../../../components/data-display/Card";
+import { PageHeader } from "../../../components/data-display/PageHeader";
+import { Tag } from "../../../components/data-display/Tag";
+import { Button } from "../../../components/general/Button";
 import { PROJECT_KIND, type ForgeProduct, type ForgeProject } from "../products";
 
 // ProjectsListScreen — every project owning the active product, in a
@@ -13,19 +17,13 @@ export function ProjectsListScreen({ product, onSelect }: ProjectsListScreenProp
   const { t } = useTranslation();
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">{t("nav.projects")}</h1>
-          <p className="page-subtitle">
-            {product.name} · {product.projects.length} {t("nav.projects").toLowerCase()}
-          </p>
-        </div>
-        <div className="page-actions">
-          <button className="btn btn-primary">+ {t("common.new")}</button>
-        </div>
-      </div>
+      <PageHeader
+        title={t("nav.projects")}
+        subtitle={`${product.name} · ${product.projects.length} ${t("nav.projects").toLowerCase()}`}
+        actions={<Button variant="primary">+ {t("common.new")}</Button>}
+      />
 
-      <div className="card p-0 overflow-hidden">
+      <Card padding="none" className="overflow-hidden">
         <table className="table">
           <thead>
             <tr>
@@ -45,9 +43,9 @@ export function ProjectsListScreen({ product, onSelect }: ProjectsListScreenProp
                 <td className="font-medium">{p.name}</td>
                 <td className="muted">{p.stack}</td>
                 <td>
-                  <span className="chip" style={{ color: PROJECT_KIND[p.kind].color }}>
+                  <Tag color={PROJECT_KIND[p.kind].color}>
                     {PROJECT_KIND[p.kind].label}
-                  </span>
+                  </Tag>
                 </td>
                 <td className="num">{p.devs}</td>
                 <td className="num">{p.openIssues}</td>
@@ -62,7 +60,7 @@ export function ProjectsListScreen({ product, onSelect }: ProjectsListScreenProp
             ))}
           </tbody>
         </table>
-      </div>
+      </Card>
     </>
   );
 }

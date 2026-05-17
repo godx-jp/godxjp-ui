@@ -1,15 +1,3 @@
----
-title: Design handoff formats
-status: binding
-authority: this-file
-applies-to:
-  - design-handoff/**
-  - scripts/lint-tokens.mjs (planned)
-  - scripts/export-tokens-dtcg.mjs (planned)
-  - .claude/skills/new-godx-design-to-component/SKILL.md
-last-reviewed: 2026-05-16
----
-
 # 05 — Design handoff formats
 
 **Status:** Binding. Catalogue of supported design-handoff input
@@ -116,7 +104,7 @@ Primary is SmartHR-blue (#0077C7) — chosen for trust + neutrality. …
 | `typography.<role>` | `--text-<size>` + `--font-weight-<weight>` + `--leading-<height>` |
 | `spacing[i]` | `--spacing-<i>` token |
 | `rounded.<size>` | `--radius-<size>` token |
-| `components.<name>` | Storybook story under `new-primitives/components/<group>/<Name>` |
+| `components.<name>` | Storybook story under `<Group>/<Name>` (Theme, General, Layout, Data Display, Data Entry, Feedback, Navigation, Shell, Usage Cases — flattened to root; no `new-primitives/` prefix) |
 | `{colors.primary}` token reference | `var(--primary)` |
 | Markdown prose | `docs/explanation/<topic>.md` or `new-docs/<N>-<topic>.md` |
 

@@ -1,15 +1,3 @@
----
-title: Token system foundation
-status: binding
-authority: this-file
-applies-to:
-  - src/styles/theme.css
-  - src/tokens/**
-  - src/styles/shell.css (must read tokens, never hardcode)
-  - every primitive / composite / shell CSS
-last-reviewed: 2026-05-16
----
-
 # 03 — Token system foundation
 
 **Status:** Binding. The design system's source-of-truth for every
@@ -289,11 +277,11 @@ via the `@theme inline` map in `src/tokens/tailwind.css`.
 `[data-density]` rebinds the density chain ([01-theme-axes.md §3](./01-theme-axes.md#3--data-density--spacing-density)):
 
 ```css
---density-element-xs   /* button-extra-small  */
---density-element-sm   /* button-small        */
+--density-element-xs   /* button-extra-small — 24px DEFAULT */
+--density-element-sm   /* button-small        — 28px DEFAULT */
 --density-element      /* button / input / picker — DEFAULT 32px */
---density-element-lg   /* button-large        */
---density-element-xl   /* login form floor    */
+--density-element-lg   /* button-large        — 36px DEFAULT */
+--density-element-xl   /* login form floor    — 44px = touch-target */
 --density-card         /* card inner padding  */
 --density-dialog       /* dialog padding      */
 --density-page         /* page top padding    */
@@ -303,6 +291,12 @@ via the `@theme inline` map in `src/tokens/tailwind.css`.
 --header-height        /* topbar              */
 --touch-target-min     /* WCAG floor — NOT scalable */
 ```
+
+The `size` vocabulary in
+[`04-prop-vocabulary.md`](./04-prop-vocabulary.md) §B maps directly
+onto this chain: `size="x-small"` → `--density-element-xs`,
+`size="small"` → `-sm`, `size="default"` → `--density-element`,
+`size="large"` → `-lg`, `size="x-large"` → `-xl`.
 
 | Token                  | compact | default | comfortable |
 |------------------------|--------:|--------:|------------:|
@@ -387,13 +381,17 @@ Conventions:
 ## §I — Layout
 
 ```css
---header-height:           3rem        /* 48px */
+--header-height:           3rem        /* 48px — topbar (rescales per density) */
 --sidebar-width:           16rem       /* 256px */
 --sidebar-collapsed-width: 4rem        /* 64px */
 --sidebar-transition:      300ms
 --content-sidebar-width:   20rem
 --container-max-width:     1280px
+--touch-target-min:        44px        /* WCAG 2.1 AA — never scales */
 ```
+
+`--touch-target-min: 44px` is set at `:root` and is NOT rebound by
+any axis. The WCAG floor wins over both density and font-size.
 
 ## §I-2 — Responsive breakpoints
 

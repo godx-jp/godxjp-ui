@@ -1,10 +1,12 @@
 ---
+title: "DropdownMenu"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: DropdownMenu
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # DropdownMenu

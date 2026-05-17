@@ -1,10 +1,12 @@
 ---
+title: "Dialog"
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Dialog
 status: stable
 audience: [developer, agent]
+lang: en
 ---
 
 # Dialog
