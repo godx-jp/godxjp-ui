@@ -1,0 +1,42 @@
+/* ─── Sparkline + bar-chart utility ──────────────────────────────
+ *  `.spark`  inline SVG sparkline — caller writes the <path>.
+ *  `.bars`   bar chart strip used in A5 trend cards.
+ */
+
+.spark {
+  display: block;
+  width: 100%;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 54px;
+}
+.bars > i {
+  flex: 1;
+  background: color-mix(in oklch, var(--primary) 22%, transparent);
+  border-radius: 2px 2px 0 0;
+  display: block;
+}
+.bars > i.on { background: var(--primary); }
+
+/* Mono utility — terse alias used inside cards for tabular numerics. */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Pill utility — small badge-like span used in G2 / G4 / H8. */
+.pill-inline {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--spacing-2);
+  border-radius: var(--radius-full);
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  font-size: var(--card-meta-size);
+  color: var(--muted-foreground);
+}
+

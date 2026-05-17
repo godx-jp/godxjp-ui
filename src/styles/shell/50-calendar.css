@@ -1,0 +1,203 @@
+/* react-day-picker v9 — all theming via the documented CSS variables.
+ * Variable list: https://daypicker.dev/docs/css-variables.
+ * Class-selector overrides only where v9's variables don't cover. */
+/* Calendar — React Aria Components `<Calendar>` / `<RangeCalendar>`.
+ *
+ * React Aria emits semantic DOM with `[role="grid"]` + ARIA APG nav;
+ * each cell carries `data-*` attributes that we hook for styling:
+ *   data-selected, data-selection-start, data-selection-end,
+ *   data-outside-month, data-disabled, data-unavailable,
+ *   data-hovered, data-pressed, data-focus-visible, data-today.
+ *
+ * Class names below (`.calendar`, `.calendar-header`, `.calendar-title`,
+ * `.calendar-nav`, `.calendar-weekday`, `.calendar-day`) are emitted
+ * by our `<Calendar>` primitive wrapper in `primitives/Calendar.tsx`.
+ * Tokens flow through `--primary` / `--ring` / `--muted-foreground`
+ * etc., so accent + theme axes apply automatically. */
+.calendar {
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  padding: var(--spacing-2);
+  display: inline-block;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  padding: 0 var(--spacing-1) var(--spacing-2);
+}
+
+.calendar-title {
+  margin: 0;
+  font-weight: 500;
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  text-align: center;
+  flex: 1;
+}
+
+.calendar-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+}
+.calendar-nav:hover:not([data-disabled]) { background: var(--surface-2); }
+.calendar-nav[data-focus-visible] { outline: 2px solid var(--ring); outline-offset: 2px; }
+.calendar-nav[data-disabled] { opacity: 0.35; cursor: not-allowed; }
+
+.calendar-weekday {
+  font-weight: 500;
+  color: var(--muted-foreground);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: var(--spacing-1);
+  text-align: center;
+}
+
+.calendar-day {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+.calendar-day[data-hovered]:not([data-selected]):not([data-disabled]) {
+  background: color-mix(in oklch, var(--primary) 14%, transparent);
+}
+.calendar-day[data-focus-visible] {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.calendar-day[data-today]:not([data-selected]) {
+  color: var(--primary);
+  font-weight: 500;
+}
+.calendar-day[data-selected] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.calendar-day[data-outside-month] { opacity: 0.5; }
+.calendar-day[data-disabled],
+.calendar-day[data-unavailable] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* RangeCalendar middle-of-range cells get a soft tint; endpoints
+ * (selection-start / selection-end) override with solid primary. */
+.calendar-range .calendar-day[data-selected]:not([data-selection-start]):not([data-selection-end]) {
+  background: color-mix(in oklch, var(--primary) 16%, transparent);
+  color: var(--foreground);
+  border-radius: 0;
+}
+.calendar-range .calendar-day[data-selection-start] {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.calendar-range .calendar-day[data-selection-end] {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.calendar .rdp-day_button:hover:not(:disabled) { background: var(--surface-2); }
+
+.calendar .rdp-day_button:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+
+.calendar .rdp-today:not(.rdp-selected) .rdp-day_button { color: var(--primary); font-weight: 600; }
+
+.time-input {
+  display: inline-flex;
+  align-items: center;
+  height: var(--density-element);
+  padding: 0 var(--spacing-3);
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  background: var(--input-background);
+  color: var(--foreground);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  width: 5.5rem;
+}
+
+.time-input:focus { outline: 2px solid var(--ring); outline-offset: -1px; border-color: transparent; }
+
+.time-input[aria-invalid="true"] { border-color: var(--destructive); }
+
+.time-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.combobox-content {
+  padding: 0;
+  min-width: min(100vw - var(--spacing-8), 14rem);
+  overflow: hidden;
+}
+
+.combobox-command {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: min(18rem, 55dvh);
+}
+
+.combobox-input {
+  margin: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  height: var(--density-element);
+}
+
+.combobox-input:focus {
+  outline-offset: -2px;
+}
+
+.combobox-list {
+  overflow-y: auto;
+  padding: var(--spacing-1);
+  max-height: min(16rem, 50dvh);
+}
+
+.combobox-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2);
+  border-radius: var(--radius-sm, 4px);
+  font-size: var(--text-sm);
+  color: var(--foreground);
+  cursor: default;
+  user-select: none;
+  outline: none;
+}
+
+.combobox-item[data-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.combobox-item[data-selected="true"] {
+  background: var(--surface-3);
+}
+
+.combobox-empty {
+  padding: var(--spacing-6) var(--spacing-3);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--muted-foreground);
+}
+

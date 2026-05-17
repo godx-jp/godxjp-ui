@@ -1,0 +1,149 @@
+/* ─── Typography — Title / Paragraph / Text / Link ──────────────
+ * Sizes + weights pinned to the existing `theme.css` token scale
+ * (`--text-*`, `--font-weight-*`, `--leading-*`, semantic colors);
+ * heading sizes follow the canon mapping declared in `theme.css`
+ * (each `--text-*` line carries an inline "h1 cap" / "h2" / "page
+ * title" comment). No new tokens introduced — every value flows through
+ * the four theme axes (theme / accent / density / font-size).
+ *
+ * One root class `.typography`, four shape variants
+ * (`.typography-title-<n>`, `.typography-paragraph`, `.typography-text`,
+ * `.typography-link`), and orthogonal modifier classes wired to the
+ * HTML5 semantic inline elements (strong / italic / underline /
+ * delete / mark / code / keyboard).
+ */
+
+.typography {
+  color: var(--foreground);
+  font-family: var(--font-sans-jp);
+}
+
+/* Title — sizes pinned to `theme.css` heading-axis tokens; the
+ * inline comments next to each `--text-*` line in `theme.css`
+ * declare the canon heading mapping (h1 cap, h2, h3 / page title,
+ * subheading, content body). `--text-3xl` is an outlier slot in
+ * `theme.css` — no heading binding — so it is intentionally NOT
+ * mapped to any level here. */
+.typography-title {
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.01em;
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+.typography-title-1 { font-size: var(--text-4xl); }  /* canon: h1 cap */
+.typography-title-2 { font-size: var(--text-2xl); }  /* canon: h2 */
+.typography-title-3 { font-size: var(--text-xl); }   /* canon: h3 / page title */
+.typography-title-4 { font-size: var(--text-lg); }   /* canon: subheading */
+.typography-title-5 { font-size: var(--text-md); }   /* canon: content-heavy body */
+
+/* Paragraph — default body block. */
+.typography-paragraph {
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  margin: 0;
+}
+.typography-paragraph + .typography-paragraph { margin-top: var(--spacing-3); }
+
+/* Text — inline span, inherits parent size by default. */
+.typography-text {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Link — anchor primitive in primary hue with hover underline. */
+.typography-link {
+  color: var(--primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.typography-link:hover { text-decoration: underline; }
+.typography-link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Semantic colors (Ant `type` prop, mapped to our `color` vocabulary). */
+.typography-color-secondary   { color: var(--muted-foreground); }
+.typography-color-success     { color: var(--success); }
+.typography-color-warning     { color: var(--warning); }
+.typography-color-attention   { color: var(--attention); }
+.typography-color-info        { color: var(--info); }
+.typography-color-destructive { color: var(--destructive); }
+
+/* Disabled — for any typography element. */
+.typography-disabled {
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Inline marks — strong / italic / underline / delete / mark / code /
+ * keyboard. Compose via modifier classes (multiple can co-apply). */
+.typography-strong    { font-weight: var(--font-weight-bold); }
+.typography-italic    { font-style: italic; }
+.typography-underline { text-decoration: underline; text-underline-offset: 2px; }
+.typography-delete    { text-decoration: line-through; }
+.typography-mark {
+  background: color-mix(in oklch, var(--warning) 28%, transparent);
+  padding: 0 2px;
+  border-radius: 2px;
+  color: inherit;
+}
+.typography-code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 6px;
+  color: var(--foreground);
+}
+.typography-keyboard {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  padding: 1px 6px;
+  color: var(--foreground);
+}
+
+/* Copyable + Editable affordance — small inline icon button. */
+.typography-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  width: 16px;
+  height: 16px;
+  border: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color var(--transition-fast);
+}
+.typography-action:hover { color: var(--primary); }
+.typography-action:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+.typography-action.copied { color: var(--success); }
+
+/* Ellipsis — single-line truncate (rows=1) or multi-line clamp. */
+.typography-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.typography-ellipsis-multi {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+

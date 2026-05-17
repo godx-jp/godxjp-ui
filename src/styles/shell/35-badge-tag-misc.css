@@ -1,0 +1,107 @@
+/* ── Badge / chip — canonical dxs-kintai design system ───────────────
+ * Mirrors design-handoff/.../preview/comp-badges.html + _card.css.
+ *
+ * Two appearance modes per SKILL.md:
+ *   • `chip-soft`   — translucent tint (transient state: 申請中, draft)
+ *   • `chip-{role}` solid (terminal state: 承認済, 却下)
+ *
+ * `chip-outline` is a third mode (hairline border, transparent fill).
+ *
+ * Variant names follow the canonical (`chip-destructive`, not legacy
+ * `badge-error`). `<Badge>` React primitive maps its `variant="error"`
+ * to the `chip-destructive` class for backwards compat.
+ *
+ * Base `.chip` (no role suffix) is the neutral muted variant. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: 2px var(--spacing-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  line-height: 1.5;
+  height: 22px;
+  white-space: nowrap;
+}
+
+.chip .dot { width: 6px; height: 6px; border-radius: var(--radius-full); flex-shrink: 0; background: currentColor; }
+
+/* Solid role variants — full role color, no border. */
+.chip-primary    { background: var(--primary);     color: var(--primary-foreground);     border-color: transparent; }
+.chip-success    { background: var(--success);     color: var(--success-foreground);     border-color: transparent; }
+.chip-warning    { background: var(--warning);     color: var(--warning-foreground);     border-color: transparent; }
+.chip-info       { background: var(--info);        color: var(--info-foreground);        border-color: transparent; }
+.chip-destructive{ background: var(--destructive); color: var(--destructive-foreground); border-color: transparent; }
+.chip-attention  { background: var(--attention);   color: var(--attention-foreground);   border-color: transparent; }
+
+.chip-outline    { background: transparent; color: var(--muted-foreground); border-color: var(--border); }
+
+/* Soft (translucent) modifier — composes with a role variant. */
+.chip-soft.chip-primary    { background: color-mix(in oklch, var(--primary) 14%, transparent);     color: color-mix(in oklch, var(--primary) 80%, var(--foreground));     border-color: transparent; }
+.chip-soft.chip-success    { background: color-mix(in oklch, var(--success) 14%, transparent);     color: color-mix(in oklch, var(--success) 80%, var(--foreground));     border-color: transparent; }
+.chip-soft.chip-warning    { background: color-mix(in oklch, var(--warning) 18%, transparent);     color: color-mix(in oklch, var(--warning) 50%, var(--foreground));     border-color: transparent; }
+.chip-soft.chip-info       { background: color-mix(in oklch, var(--info) 14%, transparent);        color: color-mix(in oklch, var(--info) 80%, var(--foreground));        border-color: transparent; }
+.chip-soft.chip-destructive{ background: color-mix(in oklch, var(--destructive) 14%, transparent); color: color-mix(in oklch, var(--destructive) 80%, var(--foreground)); border-color: transparent; }
+.chip-soft.chip-attention  { background: color-mix(in oklch, var(--attention) 14%, transparent);   color: color-mix(in oklch, var(--attention) 80%, var(--foreground));   border-color: transparent; }
+
+/* Soft modifier without role = neutral surface-3 tint. */
+.chip-soft { background: var(--surface-3); color: var(--muted-foreground); border-color: transparent; }
+
+/* Legacy aliases — keep callers compiling during the migration window.
+ * `<Badge>` emits `.chip` (canonical) now; these survive only for
+ * external services that imported `@godxjp/ui/styles/shell.css` and
+ * targeted `.badge*` directly. Slated for removal once every consumer
+ * migrates to the chip family. */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 1px var(--spacing-2); border-radius: var(--radius-full); font-size: var(--text-2xs); font-weight: 500; line-height: 1.5; border: 1px solid transparent; }
+.badge .dot { width: 6px; height: 6px; border-radius: 99px; flex-shrink: 0; background: currentColor; }
+.badge-success   { background: color-mix(in oklch, var(--success) 14%, transparent);   color: color-mix(in oklch, var(--success) 80%, var(--foreground)); }
+.badge-warning   { background: color-mix(in oklch, var(--warning) 18%, transparent);   color: color-mix(in oklch, var(--warning) 50%, var(--foreground)); }
+.badge-info      { background: color-mix(in oklch, var(--info) 14%, transparent);      color: color-mix(in oklch, var(--info) 80%, var(--foreground)); }
+.badge-error     { background: color-mix(in oklch, var(--error) 14%, transparent);     color: color-mix(in oklch, var(--error) 80%, var(--foreground)); }
+.badge-attention { background: color-mix(in oklch, var(--attention) 14%, transparent); color: color-mix(in oklch, var(--attention) 80%, var(--foreground)); }
+.badge-neutral   { background: var(--surface-3); color: var(--muted-foreground); }
+.badge-outline   { background: transparent; border-color: var(--border); color: var(--muted-foreground); }
+
+/* ── Statistic ──────────────────────────────────────────────────── */
+.statistic { display: flex; flex-direction: column; gap: var(--spacing-1); }
+.statistic-title { font-size: var(--text-xs); color: var(--muted-foreground); }
+.statistic-value { display: inline-flex; align-items: baseline; gap: var(--spacing-1); font-size: var(--text-2xl); font-weight: 500; line-height: 1.1; letter-spacing: -0.01em; color: var(--foreground); font-variant-numeric: tabular-nums; }
+.statistic-prefix, .statistic-suffix { font-size: var(--text-sm); color: var(--muted-foreground); font-weight: 400; }
+.statistic-number { line-height: 1; }
+
+/* ── Empty ──────────────────────────────────────────────────────── */
+.empty { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-3); padding: var(--spacing-6) var(--spacing-4); color: var(--muted-foreground); }
+.empty-image { color: var(--muted-foreground); }
+.empty-description { margin: 0; font-size: var(--text-sm); }
+.empty-footer { display: flex; gap: var(--spacing-2); }
+
+/* ── Tag ────────────────────────────────────────────────────────── */
+.tag { display: inline-flex; align-items: center; gap: var(--spacing-1); padding: 1px 8px; border-radius: var(--radius-md); border: 1px solid; font-size: var(--text-2xs); line-height: 1.5; vertical-align: middle; max-width: 100%; }
+.tag-borderless { border-color: transparent; }
+.tag-icon { display: inline-flex; align-items: center; }
+.tag-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tag-close { border: 0; background: transparent; color: inherit; cursor: pointer; padding: 0; margin-left: 4px; font-size: 13px; line-height: 1; opacity: 0.6; }
+.tag-close:hover { opacity: 1; }
+
+/* ── Descriptions ───────────────────────────────────────────────── */
+.descriptions { display: flex; flex-direction: column; gap: var(--spacing-3); }
+.descriptions-header { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-2); }
+.descriptions-title { margin: 0; font-size: var(--text-base); font-weight: 500; }
+.descriptions-extra { display: flex; gap: var(--spacing-2); color: var(--muted-foreground); }
+.descriptions-body { display: grid; gap: var(--spacing-3) var(--spacing-4); }
+.descriptions-item { display: flex; flex-direction: row; gap: var(--spacing-2); min-width: 0; align-items: baseline; }
+.descriptions-item-label { color: var(--muted-foreground); font-size: var(--text-xs); flex-shrink: 0; min-width: 80px; }
+.descriptions-item-value { color: var(--foreground); font-size: var(--text-sm); min-width: 0; overflow-wrap: anywhere; }
+.descriptions-vertical .descriptions-item { flex-direction: column; gap: var(--spacing-1); align-items: stretch; }
+.descriptions-vertical .descriptions-item-label { min-width: 0; }
+.descriptions-bordered { border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.descriptions-bordered .descriptions-body { gap: 0; }
+.descriptions-bordered .descriptions-item { padding: var(--spacing-2) var(--spacing-3); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+.descriptions-bordered .descriptions-item:last-child { border-bottom: 0; }
+.descriptions-size-small .descriptions-item { padding: var(--spacing-1) var(--spacing-2); }
+.descriptions-size-large .descriptions-item-value { font-size: var(--text-md); }
+
