@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import { forwardRef, type ComponentProps, type ReactNode } from "react";
 import { cn } from "./cn";
 
 /**
@@ -123,23 +123,26 @@ const BAND_CLASS: Record<CardBand, string> = {
   dotted: "card-band-dotted",
 };
 
-export function Card({
-  title,
-  subtitle,
-  kicker,
-  meta,
-  extra,
-  band,
-  footer,
-  actions,
-  padding = "default",
-  tone = "default",
-  accent,
-  hoverable,
-  className,
-  children,
-  ...rest
-}: CardProps) {
+export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
+  {
+    title,
+    subtitle,
+    kicker,
+    meta,
+    extra,
+    band,
+    footer,
+    actions,
+    padding = "default",
+    tone = "default",
+    accent,
+    hoverable,
+    className,
+    children,
+    ...rest
+  },
+  ref,
+) {
   const hasHeader =
     title !== undefined ||
     subtitle !== undefined ||
@@ -150,6 +153,7 @@ export function Card({
 
   return (
     <div
+      ref={ref}
       className={cn(
         "card",
         PADDING_CLASS[padding],
@@ -182,7 +186,7 @@ export function Card({
       )}
     </div>
   );
-}
+});
 
 // ─── Compositional atoms (for flush / padding="none" cards) ──────────
 
