@@ -6,10 +6,20 @@ import {
   type FieldPath,
   type FieldValues,
 } from "react-hook-form";
+import { AutoComplete } from "./AutoComplete";
+import { Cascader } from "./Cascader";
 import { Checkbox } from "./Checkbox";
+import { CheckboxGroup } from "./CheckboxGroup";
+import { ColorPicker } from "./ColorPicker";
 import { Field, type FieldHelpTone } from "./Field";
 import { InputNumber } from "./InputNumber";
+import { RadioGroup } from "./Radio";
+import { Rate } from "./Rate";
 import { Select } from "./Select";
+import { Slider } from "./Slider";
+import { Switch } from "./Switch";
+import { Transfer } from "./Transfer";
+import { TreeSelect } from "./TreeSelect";
 
 export interface FormFieldProps<
   T extends FieldValues = FieldValues,
@@ -27,12 +37,16 @@ export interface FormFieldProps<
 }
 
 /**
- * Form-wired Field. Reads its value/onChange/error from the surrounding
+ * Form-wired Field. Reads value/onChange/error from the surrounding
  * `<Form>` via react-hook-form's `useController`, then clones its single
- * child with the right adapter (text input · InputNumber · Checkbox).
+ * child with the right adapter:
  *
- * Use `<Field>` directly when you want the structural label / help layout
- * outside a Form (e.g. read-only displays, custom local state).
+ *   - Checkbox / Switch     → checked + onCheckedChange
+ *   - InputNumber           → value (number) + onValueChange
+ *   - Select / AutoComplete / ColorPicker / RadioGroup / Rate / Slider /
+ *     Cascader / Transfer / TreeSelect → value + onValueChange
+ *   - default (Input / Textarea / InputSearch / etc.)
+ *                           → value + onChange(event)
  */
 export function FormField<
   T extends FieldValues = FieldValues,
@@ -73,12 +87,26 @@ type ControllerField = ReturnType<
   typeof useController<FieldValues, string>
 >["field"];
 
+const BOOLEAN_TOGGLES = new Set<unknown>([Checkbox, Switch]);
+const VALUE_CHANGE_TYPES = new Set<unknown>([
+  Select,
+  AutoComplete,
+  CheckboxGroup,
+  ColorPicker,
+  RadioGroup,
+  Rate,
+  Slider,
+  Cascader,
+  Transfer,
+  TreeSelect,
+]);
+
 function adaptChild(
   child: ReactElement,
   field: ControllerField,
   invalid: boolean,
 ): ReactElement {
-  if (child.type === Checkbox) {
+  if (BOOLEAN_TOGGLES.has(child.type)) {
     return cloneElement(child as ReactElement<Record<string, unknown>>, {
       checked: Boolean(field.value),
       onCheckedChange: (next: boolean | "indeterminate") =>
@@ -95,12 +123,13 @@ function adaptChild(
       status: invalid ? "error" : undefined,
     });
   }
-  if (child.type === Select) {
+  if (VALUE_CHANGE_TYPES.has(child.type)) {
     return cloneElement(child as ReactElement<Record<string, unknown>>, {
-      value: typeof field.value === "string" ? field.value : undefined,
-      onValueChange: (next: string) => field.onChange(next),
+      value: field.value,
+      onValueChange: (next: unknown) => field.onChange(next),
       onBlur: field.onBlur,
       status: invalid ? "error" : undefined,
+      "aria-invalid": invalid || undefined,
     });
   }
   return cloneElement(child as ReactElement<Record<string, unknown>>, {
