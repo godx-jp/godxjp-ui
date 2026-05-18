@@ -60,23 +60,28 @@ export const WithError: Story = {
   ),
 };
 
-function CountDemo() {
-  const [value, setValue] = useState("承認時に表示するコメントを記入してください。");
-  return (
-    <Field
-      label="承認コメント"
-      optional
-      help="承認者のみ閲覧できます。"
-      count={{ current: value.length, max: 200 }}
-    >
-      <Textarea rows={4} maxLength={200} value={value} onChange={(event) => setValue(event.target.value)} />
-    </Field>
-  );
-}
-
 export const WithCount: Story = {
   name: "WithCount · textarea + count",
-  render: () => <div style={{ maxWidth: 360 }}><CountDemo /></div>,
+  render: function WithCount() {
+    const [value, setValue] = useState("承認時に表示するコメントを記入してください。");
+    return (
+      <div style={{ maxWidth: 360 }}>
+        <Field
+          label="承認コメント"
+          optional
+          help="承認者のみ閲覧できます。"
+          count={{ current: value.length, max: 200 }}
+        >
+          <Textarea
+            rows={4}
+            maxLength={200}
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+          />
+        </Field>
+      </div>
+    );
+  },
 };
 
 export const Horizontal: Story = {

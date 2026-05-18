@@ -61,39 +61,29 @@ const SECTIONS: SidebarSection[] = [
   },
 ];
 
-function SidebarFrame({ children }: { children: React.ReactNode }) {
-  // Layout-only style — width + height + bg/border to give the
-  // story a realistic frame. No visual overrides on the primitive.
-  return (
-    <div
-      style={{
-        width: "var(--sidebar-width, 16rem)",
-        height: "32rem",
-        display: "flex",
-        flexDirection: "column",
-        borderRight: "1px solid var(--border)",
-        background: "var(--sidebar-bg)",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
+const FRAME_STYLE = {
+  width: "var(--sidebar-width, 16rem)",
+  height: "32rem",
+  display: "flex",
+  flexDirection: "column",
+  borderRight: "1px solid var(--border)",
+  background: "var(--sidebar-bg)",
+} as const;
 
 const ACTIVE_PRODUCT = PRODUCTS[1];
 
 export const Default: Story = {
-  render: () => {
+  render: function Default() {
     const [activeId, setActiveId] = useState("dashboard");
     return (
-      <SidebarFrame>
+      <div style={FRAME_STYLE}>
         <Sidebar
           activeId={activeId}
           onSelect={setActiveId}
           sections={SECTIONS}
           product={ACTIVE_PRODUCT}
         />
-      </SidebarFrame>
+      </div>
     );
   },
 };
@@ -144,7 +134,7 @@ export const MultipleProducts: Story = {
       PRODUCTS.find((p) => p.id === activeProductId) ?? ACTIVE_PRODUCT;
 
     return (
-      <SidebarFrame>
+      <div style={FRAME_STYLE}>
         <ProductSwitcher
           trigger={<span />}
           activeId={activeProductId}
@@ -163,7 +153,7 @@ export const MultipleProducts: Story = {
           product={product}
           onProductClick={() => setProductOpen(true)}
         />
-      </SidebarFrame>
+      </div>
     );
   },
 };
@@ -173,7 +163,7 @@ export const Empty: Story = {
   render: () => {
     const [activeId, setActiveId] = useState("dashboard");
     return (
-      <SidebarFrame>
+      <div style={FRAME_STYLE}>
         <Sidebar
           activeId={activeId}
           onSelect={setActiveId}
@@ -182,7 +172,7 @@ export const Empty: Story = {
             <Typography.Text strong>No tenant selected</Typography.Text>
           }
         />
-      </SidebarFrame>
+      </div>
     );
   },
 };

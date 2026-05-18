@@ -37,41 +37,32 @@ type Story = StoryObj<typeof Topbar>;
 const ACTIVE_PRODUCT = PRODUCTS[1];
 const ACTIVE_PROJECT = ACTIVE_PRODUCT.projects[0];
 
-function TopbarFrame({ children }: { children: React.ReactNode }) {
-  // Layout-only frame: full-width rail, fixed height, border.
-  return (
-    <header
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--spacing-2)",
-        height: "var(--header-height, 3rem)",
-        padding: "0 var(--spacing-3)",
-        borderBottom: "1px solid var(--border)",
-        background: "var(--background)",
-        width: "100%",
-      }}
-    >
-      {children}
-    </header>
-  );
-}
+const FRAME_STYLE = {
+  display: "flex",
+  alignItems: "center",
+  gap: "var(--spacing-2)",
+  height: "var(--header-height, 3rem)",
+  padding: "0 var(--spacing-3)",
+  borderBottom: "1px solid var(--border)",
+  background: "var(--background)",
+  width: "100%",
+} as const;
 
 export const Default: Story = {
   render: () => (
-    <TopbarFrame>
+    <header style={FRAME_STYLE}>
       <Topbar
         product={ACTIVE_PRODUCT}
         project={ACTIVE_PROJECT}
         onSearchOpen={() => undefined}
         onTweaksOpen={() => undefined}
       />
-    </TopbarFrame>
+    </header>
   ),
 };
 
 export const WithProductSwitcher: Story = {
-  render: () => {
+  render: function WithProductSwitcher() {
     const [productOpen, setProductOpen] = useState(false);
     const [projectOpen, setProjectOpen] = useState(false);
     const [productId, setProductId] = useState(ACTIVE_PRODUCT.id);
@@ -83,7 +74,7 @@ export const WithProductSwitcher: Story = {
       product.projects.find((p) => p.id === projectId) ?? product.projects[0];
 
     return (
-      <TopbarFrame>
+      <header style={FRAME_STYLE}>
         <ProductSwitcher
           trigger={<span />}
           activeId={productId}
@@ -117,7 +108,7 @@ export const WithProductSwitcher: Story = {
           onSearchOpen={() => undefined}
           onTweaksOpen={() => undefined}
         />
-      </TopbarFrame>
+      </header>
     );
   },
 };
@@ -125,20 +116,20 @@ export const WithProductSwitcher: Story = {
 export const WithSearch: Story = {
   name: "With search (⌘K)",
   render: () => (
-    <TopbarFrame>
+    <header style={FRAME_STYLE}>
       <Topbar
         product={ACTIVE_PRODUCT}
         project={ACTIVE_PROJECT}
         onSearchOpen={() => undefined}
       />
-    </TopbarFrame>
+    </header>
   ),
 };
 
 export const WithNotifications: Story = {
   name: "With notifications (unread)",
   render: () => (
-    <TopbarFrame>
+    <header style={FRAME_STYLE}>
       <Topbar
         product={ACTIVE_PRODUCT}
         project={ACTIVE_PROJECT}
@@ -148,6 +139,6 @@ export const WithNotifications: Story = {
         unread
         user={<Avatar size="sm" alt="Satoshi" />}
       />
-    </TopbarFrame>
+    </header>
   ),
 };

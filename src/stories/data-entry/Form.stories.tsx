@@ -107,26 +107,28 @@ const meta: Meta<typeof Form> = {
 export default meta;
 type Story = StoryObj;
 
-function FormExample({ disabled = false, defaults }: { disabled?: boolean; defaults: FormValues }) {
-  const form = useForm<FormValues>({ resolver, defaultValues: defaults, mode: "onTouched" });
-  return (
-    <Form<FormValues>
-      form={form}
-      fields={makeFields(disabled)}
-      onSubmit={(values) => console.log("submit", values)}
-      style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
-    >
-      <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary" disabled={disabled}>
-          {disabled ? "登録" : "確認"}
-        </Button>
-      </Flex>
-    </Form>
-  );
-}
-
 export const Default: Story = {
-  render: () => <FormExample defaults={{ name: "", email: "", age: 18, agree: false }} />,
+  render: function Default() {
+    const form = useForm<FormValues>({
+      resolver,
+      defaultValues: { name: "", email: "", age: 18, agree: false },
+      mode: "onTouched",
+    });
+    return (
+      <Form<FormValues>
+        form={form}
+        fields={makeFields(false)}
+        onSubmit={(values) => console.log("submit", values)}
+        style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
+      >
+        <Flex gap="small" justify="end">
+          <Button type="submit" variant="primary">
+            確認
+          </Button>
+        </Flex>
+      </Form>
+    );
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step("form renders with name input and submit button", async () => {
@@ -143,9 +145,49 @@ export const Default: Story = {
 };
 
 export const Validated: Story = {
-  render: () => <FormExample defaults={{ name: "", email: "not-an-email", age: 12, agree: false }} />,
+  render: function Validated() {
+    const form = useForm<FormValues>({
+      resolver,
+      defaultValues: { name: "", email: "not-an-email", age: 12, agree: false },
+      mode: "onTouched",
+    });
+    return (
+      <Form<FormValues>
+        form={form}
+        fields={makeFields(false)}
+        onSubmit={(values) => console.log("submit", values)}
+        style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
+      >
+        <Flex gap="small" justify="end">
+          <Button type="submit" variant="primary">
+            確認
+          </Button>
+        </Flex>
+      </Form>
+    );
+  },
 };
 
 export const Disabled: Story = {
-  render: () => <FormExample disabled defaults={{ name: "", email: "", age: 18, agree: false }} />,
+  render: function Disabled() {
+    const form = useForm<FormValues>({
+      resolver,
+      defaultValues: { name: "", email: "", age: 18, agree: false },
+      mode: "onTouched",
+    });
+    return (
+      <Form<FormValues>
+        form={form}
+        fields={makeFields(true)}
+        onSubmit={(values) => console.log("submit", values)}
+        style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
+      >
+        <Flex gap="small" justify="end">
+          <Button type="submit" variant="primary" disabled>
+            登録
+          </Button>
+        </Flex>
+      </Form>
+    );
+  },
 };

@@ -162,33 +162,29 @@ export const Disabled: Story = {
 
 // ─── Textarea — autoSize + showCount ────────────────────────────
 
-function AutoSizeDemo() {
-  const [value, setValue] = useState(
-    "auto-grow に応じて高さが自動で広がります。\n改行を増やしてみてください。",
-  );
-  return (
-    <Textarea
-      autoSize={{ minRows: 2, maxRows: 6 }}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    />
-  );
-}
-
 export const TextareaStory: Story = {
   name: "Textarea · autoSize + showCount",
-  render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
-      <Textarea rows={3} placeholder="複数行の入力" />
-      <AutoSizeDemo />
-      <Textarea
-        rows={4}
-        showCount
-        maxLength={140}
-        defaultValue="入力できる残り文字数を右下に表示します。"
-      />
-    </Flex>
-  ),
+  render: function TextareaStory() {
+    const [value, setValue] = useState(
+      "auto-grow に応じて高さが自動で広がります。\n改行を増やしてみてください。",
+    );
+    return (
+      <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
+        <Textarea rows={3} placeholder="複数行の入力" />
+        <Textarea
+          autoSize={{ minRows: 2, maxRows: 6 }}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+        <Textarea
+          rows={4}
+          showCount
+          maxLength={140}
+          defaultValue="入力できる残り文字数を右下に表示します。"
+        />
+      </Flex>
+    );
+  },
 };
 
 // ─── InputPassword — show / hide toggle ─────────────────────────
@@ -227,30 +223,28 @@ export const Password: Story = {
 
 // ─── InputSearch — leading icon + clear ─────────────────────────
 
-function ControlledSearch() {
-  const [q, setQ] = useState("企画");
-  return (
-    <Flex vertical gap="small" style={{ maxWidth: 320 }}>
-      <InputSearch placeholder="従業員を検索" />
-      <InputSearch
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        onClear={() => setQ("")}
-        placeholder="検索ワード (制御モード)"
-      />
-      <span
-        style={{
-          fontSize: "var(--text-xs)",
-          color: "var(--muted-foreground)",
-        }}
-      >
-        Current query: <code className="mono">{JSON.stringify(q)}</code>
-      </span>
-    </Flex>
-  );
-}
-
 export const SearchStory: Story = {
   name: "InputSearch · with clear button",
-  render: () => <ControlledSearch />,
+  render: function SearchStory() {
+    const [q, setQ] = useState("企画");
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 320 }}>
+        <InputSearch placeholder="従業員を検索" />
+        <InputSearch
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          onClear={() => setQ("")}
+          placeholder="検索ワード (制御モード)"
+        />
+        <span
+          style={{
+            fontSize: "var(--text-xs)",
+            color: "var(--muted-foreground)",
+          }}
+        >
+          Current query: <code className="mono">{JSON.stringify(q)}</code>
+        </span>
+      </Flex>
+    );
+  },
 };
