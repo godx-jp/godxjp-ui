@@ -73,6 +73,80 @@ const FRAME_STYLE = {
 const ACTIVE_PRODUCT = PRODUCTS[1];
 
 export const Default: Story = {
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { useState } from "react"
+import {
+  Activity,
+  FolderGit2,
+  GitBranch,
+  LayoutDashboard,
+  ListChecks,
+  Settings,
+  Users,
+} from "lucide-react"
+import { Sidebar, type ForgeProduct, type SidebarSection } from "@godxjp/ui"
+
+const sections: SidebarSection[] = [
+  {
+    label: "Workspace",
+    items: [
+      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { id: "projects", label: "Projects", icon: FolderGit2, badge: 8 },
+      { id: "branches", label: "Branches", icon: GitBranch },
+      { id: "issues", label: "Issues", icon: ListChecks, badge: 12 },
+      { id: "activity", label: "Activity", icon: Activity },
+    ],
+  },
+  {
+    label: "Admin",
+    items: [
+      { id: "members", label: "Members", icon: Users },
+      { id: "settings", label: "Settings", icon: Settings },
+    ],
+  },
+]
+
+const activeProduct: ForgeProduct = {
+  id: "godx",
+  name: "godx-admin",
+  tenant: "godx",
+  role: "Platform admin",
+  desc: "GoDX Forge developer workspace",
+  color: "oklch(60% 0.137 163)",
+  owner: "Satoshi F",
+  devs: 4,
+  projects: [],
+}
+
+export function SidebarExample() {
+  const [activeId, setActiveId] = useState("dashboard")
+
+  return (
+    <div
+      style={{
+        width: "var(--sidebar-width, 16rem)",
+        height: "32rem",
+        display: "flex",
+        flexDirection: "column",
+        borderRight: "1px solid var(--border)",
+        background: "var(--sidebar-bg)",
+      }}
+    >
+      <Sidebar
+        activeId={activeId}
+        onSelect={setActiveId}
+        sections={sections}
+        product={activeProduct}
+      />
+    </div>
+  )
+}`,
+      },
+    },
+  },
   render: function Default() {
     const [activeId, setActiveId] = useState("dashboard");
     return (
@@ -89,6 +163,81 @@ export const Default: Story = {
 };
 
 export const Collapsed: Story = {
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { useState } from "react"
+import {
+  Activity,
+  FolderGit2,
+  GitBranch,
+  LayoutDashboard,
+  ListChecks,
+  Settings,
+  Users,
+} from "lucide-react"
+import { Sidebar, type ForgeProduct, type SidebarSection } from "@godxjp/ui"
+
+const sections: SidebarSection[] = [
+  {
+    label: "Workspace",
+    items: [
+      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { id: "projects", label: "Projects", icon: FolderGit2, badge: 8 },
+      { id: "branches", label: "Branches", icon: GitBranch },
+      { id: "issues", label: "Issues", icon: ListChecks, badge: 12 },
+      { id: "activity", label: "Activity", icon: Activity },
+    ],
+  },
+  {
+    label: "Admin",
+    items: [
+      { id: "members", label: "Members", icon: Users },
+      { id: "settings", label: "Settings", icon: Settings },
+    ],
+  },
+]
+
+const activeProduct: ForgeProduct = {
+  id: "godx",
+  name: "godx-admin",
+  tenant: "godx",
+  role: "Platform admin",
+  desc: "GoDX Forge developer workspace",
+  color: "oklch(60% 0.137 163)",
+  owner: "Satoshi F",
+  devs: 4,
+  projects: [],
+}
+
+export function CollapsedSidebarExample() {
+  const [activeId, setActiveId] = useState("dashboard")
+
+  return (
+    <div
+      style={{
+        width: "var(--sidebar-width-collapsed, 4rem)",
+        height: "32rem",
+        display: "flex",
+        flexDirection: "column",
+        borderRight: "1px solid var(--border)",
+        background: "var(--sidebar-bg)",
+      }}
+    >
+      <Sidebar
+        activeId={activeId}
+        onSelect={setActiveId}
+        sections={sections}
+        product={activeProduct}
+        collapsed
+      />
+    </div>
+  )
+}`,
+      },
+    },
+  },
   render: () => {
     const [activeId, setActiveId] = useState("dashboard");
     return (
@@ -124,6 +273,127 @@ export const Collapsed: Story = {
 
 export const MultipleProducts: Story = {
   name: "With ProductSwitcher",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { useState } from "react"
+import {
+  Activity,
+  FolderGit2,
+  GitBranch,
+  LayoutDashboard,
+  ListChecks,
+  Settings,
+  Users,
+} from "lucide-react"
+import {
+  ProductSwitcher,
+  Sidebar,
+  type ForgeProduct,
+  type SidebarSection,
+} from "@godxjp/ui"
+
+const sections: SidebarSection[] = [
+  {
+    label: "Workspace",
+    items: [
+      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { id: "projects", label: "Projects", icon: FolderGit2, badge: 8 },
+      { id: "branches", label: "Branches", icon: GitBranch },
+      { id: "issues", label: "Issues", icon: ListChecks, badge: 12 },
+      { id: "activity", label: "Activity", icon: Activity },
+    ],
+  },
+  {
+    label: "Admin",
+    items: [
+      { id: "members", label: "Members", icon: Users },
+      { id: "settings", label: "Settings", icon: Settings },
+    ],
+  },
+]
+
+const products: ForgeProduct[] = [
+  {
+    id: "restaurant",
+    name: "godx-restaurant",
+    tenant: "restaurant",
+    role: "レストラン管理",
+    desc: "店舗向け統合管理プラットフォーム",
+    color: "oklch(58% 0.18 25)",
+    owner: "Satoshi F",
+    devs: 6,
+    projects: [],
+  },
+  {
+    id: "godx",
+    name: "godx-admin",
+    tenant: "godx",
+    role: "Platform admin",
+    desc: "GoDX Forge developer workspace",
+    color: "oklch(60% 0.137 163)",
+    owner: "Satoshi F",
+    devs: 4,
+    projects: [],
+  },
+  {
+    id: "kintai",
+    name: "dxs-kintai",
+    tenant: "kintai",
+    role: "HR / Attendance",
+    desc: "勤怠管理プラットフォーム",
+    color: "oklch(56% 0.15 240)",
+    owner: "Naoki N",
+    devs: 3,
+    projects: [],
+  },
+]
+
+const activeProduct = products[1]
+
+export function ProductSidebarExample() {
+  const [activeId, setActiveId] = useState("dashboard")
+  const [productOpen, setProductOpen] = useState(false)
+  const [activeProductId, setActiveProductId] = useState(activeProduct.id)
+  const product =
+    products.find((item) => item.id === activeProductId) ?? activeProduct
+
+  return (
+    <div
+      style={{
+        width: "var(--sidebar-width, 16rem)",
+        height: "32rem",
+        display: "flex",
+        flexDirection: "column",
+        borderRight: "1px solid var(--border)",
+        background: "var(--sidebar-bg)",
+      }}
+    >
+      <ProductSwitcher
+        trigger={<span />}
+        activeId={activeProductId}
+        products={products}
+        onSelect={(nextProduct) => {
+          setActiveProductId(nextProduct.id)
+          setProductOpen(false)
+        }}
+        open={productOpen}
+        onOpenChange={setProductOpen}
+      />
+      <Sidebar
+        activeId={activeId}
+        onSelect={setActiveId}
+        sections={sections}
+        product={product}
+        onProductClick={() => setProductOpen(true)}
+      />
+    </div>
+  )
+}`,
+      },
+    },
+  },
   render: () => {
     const [activeId, setActiveId] = useState("dashboard");
     const [productOpen, setProductOpen] = useState(false);
@@ -160,6 +430,70 @@ export const MultipleProducts: Story = {
 
 export const Empty: Story = {
   name: "No product (brand slot)",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { useState } from "react"
+import {
+  Activity,
+  FolderGit2,
+  GitBranch,
+  LayoutDashboard,
+  ListChecks,
+  Settings,
+  Users,
+} from "lucide-react"
+import { Sidebar, Typography, type SidebarSection } from "@godxjp/ui"
+
+const sections: SidebarSection[] = [
+  {
+    label: "Workspace",
+    items: [
+      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { id: "projects", label: "Projects", icon: FolderGit2, badge: 8 },
+      { id: "branches", label: "Branches", icon: GitBranch },
+      { id: "issues", label: "Issues", icon: ListChecks, badge: 12 },
+      { id: "activity", label: "Activity", icon: Activity },
+    ],
+  },
+  {
+    label: "Admin",
+    items: [
+      { id: "members", label: "Members", icon: Users },
+      { id: "settings", label: "Settings", icon: Settings },
+    ],
+  },
+]
+
+export function SidebarBrandExample() {
+  const [activeId, setActiveId] = useState("dashboard")
+
+  return (
+    <div
+      style={{
+        width: "var(--sidebar-width, 16rem)",
+        height: "32rem",
+        display: "flex",
+        flexDirection: "column",
+        borderRight: "1px solid var(--border)",
+        background: "var(--sidebar-bg)",
+      }}
+    >
+      <Sidebar
+        activeId={activeId}
+        onSelect={setActiveId}
+        sections={sections}
+        brand={
+          <Typography.Text strong>No tenant selected</Typography.Text>
+        }
+      />
+    </div>
+  )
+}`,
+      },
+    },
+  },
   render: () => {
     const [activeId, setActiveId] = useState("dashboard");
     return (

@@ -80,6 +80,54 @@ const ORG_TREE: TreeNode[] = [
 
 export const Default: Story = {
   name: "Default · org tree (3 levels)",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { Tree, type TreeNode } from "@godxjp/ui"
+
+const treeData: TreeNode[] = [
+  {
+    key: "company",
+    title: "ファミギア株式会社",
+    children: [
+      {
+        key: "eng",
+        title: "エンジニアリング本部",
+        children: [
+          { key: "fe", title: "フロントエンドチーム" },
+          { key: "be", title: "バックエンドチーム" },
+          { key: "infra", title: "インフラチーム" },
+        ],
+      },
+      {
+        key: "design",
+        title: "デザイン本部",
+        children: [
+          { key: "ui", title: "UI デザインチーム" },
+          { key: "ux", title: "UX リサーチチーム" },
+        ],
+      },
+      {
+        key: "ops",
+        title: "コーポレート本部",
+        children: [
+          { key: "hr", title: "人事部" },
+          { key: "fin", title: "経理部" },
+        ],
+      },
+    ],
+  },
+]
+
+export function Example() {
+  return (
+    <Tree treeData={treeData} defaultExpandedKeys={["company", "eng"]} defaultValue="fe" />
+  )
+}`,
+      },
+    },
+  },
   render: () => (
     <Tree treeData={ORG_TREE} defaultExpandedKeys={["company", "eng"]} defaultValue="fe" />
   ),
@@ -108,6 +156,59 @@ export const Default: Story = {
 
 export const MultipleCheckable: Story = {
   name: "Multiple · checkable departments",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { Tree, type TreeNode } from "@godxjp/ui"
+
+const treeData: TreeNode[] = [
+  {
+    key: "company",
+    title: "ファミギア株式会社",
+    children: [
+      {
+        key: "eng",
+        title: "エンジニアリング本部",
+        children: [
+          { key: "fe", title: "フロントエンドチーム" },
+          { key: "be", title: "バックエンドチーム" },
+          { key: "infra", title: "インフラチーム" },
+        ],
+      },
+      {
+        key: "design",
+        title: "デザイン本部",
+        children: [
+          { key: "ui", title: "UI デザインチーム" },
+          { key: "ux", title: "UX リサーチチーム" },
+        ],
+      },
+      {
+        key: "ops",
+        title: "コーポレート本部",
+        children: [
+          { key: "hr", title: "人事部" },
+          { key: "fin", title: "経理部" },
+        ],
+      },
+    ],
+  },
+]
+
+export function Example() {
+  return (
+    <Tree
+      treeData={treeData}
+      checkable
+      defaultExpandedKeys={["company", "eng", "design"]}
+      defaultValue={["fe", "ui"]}
+    />
+  )
+}`,
+      },
+    },
+  },
   render: () => (
     <Tree
       treeData={ORG_TREE}
@@ -171,6 +272,56 @@ const FILE_TREE: TreeNode[] = [
 
 export const WithLines: Story = {
   name: "WithLines · file explorer w/ connector lines",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { Tree, type TreeNode } from "@godxjp/ui"
+import { FileText, Folder, FolderOpen } from "lucide-react"
+
+const treeData: TreeNode[] = [
+  {
+    key: "src",
+    title: "src",
+    icon: <Folder size={14} />,
+    children: [
+      {
+        key: "components",
+        title: "components",
+        icon: <Folder size={14} />,
+        children: [
+          { key: "btn", title: "Button.tsx", icon: <FileText size={14} /> },
+          { key: "input", title: "Input.tsx", icon: <FileText size={14} /> },
+          { key: "card", title: "Card.tsx", icon: <FileText size={14} /> },
+        ],
+      },
+      {
+        key: "hooks",
+        title: "hooks",
+        icon: <FolderOpen size={14} />,
+        children: [
+          { key: "use-bp", title: "useBreakpoint.ts", icon: <FileText size={14} /> },
+        ],
+      },
+      { key: "index", title: "index.ts", icon: <FileText size={14} /> },
+    ],
+  },
+]
+
+export function Example() {
+  return (
+    <Tree
+      treeData={treeData}
+      showLine
+      density="compact"
+      defaultExpandedKeys={["src", "components", "hooks"]}
+      defaultValue="btn"
+    />
+  )
+}`,
+      },
+    },
+  },
   render: () => (
     <Tree
       treeData={FILE_TREE}
@@ -186,6 +337,71 @@ export const WithLines: Story = {
 
 export const Density: Story = {
   name: "Density · compact / default / comfortable",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { Tree, type TreeNode } from "@godxjp/ui"
+import { FileText, Folder, FolderOpen } from "lucide-react"
+
+const treeData: TreeNode[] = [
+  {
+    key: "src",
+    title: "src",
+    icon: <Folder size={14} />,
+    children: [
+      {
+        key: "components",
+        title: "components",
+        icon: <Folder size={14} />,
+        children: [
+          { key: "btn", title: "Button.tsx", icon: <FileText size={14} /> },
+          { key: "input", title: "Input.tsx", icon: <FileText size={14} /> },
+          { key: "card", title: "Card.tsx", icon: <FileText size={14} /> },
+        ],
+      },
+      {
+        key: "hooks",
+        title: "hooks",
+        icon: <FolderOpen size={14} />,
+        children: [
+          { key: "use-bp", title: "useBreakpoint.ts", icon: <FileText size={14} /> },
+        ],
+      },
+      { key: "index", title: "index.ts", icon: <FileText size={14} /> },
+    ],
+  },
+]
+
+export function Example() {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16 }}>
+      <Tree
+        treeData={treeData}
+        showLine
+        density="compact"
+        defaultExpandedKeys={["src", "components", "hooks"]}
+        defaultValue="btn"
+      />
+      <Tree
+        treeData={treeData}
+        showLine
+        defaultExpandedKeys={["src", "components", "hooks"]}
+        defaultValue="btn"
+      />
+      <Tree
+        treeData={treeData}
+        showLine
+        density="comfortable"
+        defaultExpandedKeys={["src", "components", "hooks"]}
+        defaultValue="btn"
+      />
+    </div>
+  )
+}`,
+      },
+    },
+  },
   render: () => (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16 }}>
       <Tree
@@ -216,6 +432,65 @@ export const Density: Story = {
 
 export const CustomItem: Story = {
   name: "CustomItem · renderItem prop",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { Tree, type TreeNode } from "@godxjp/ui"
+import { FileText, Folder, FolderOpen } from "lucide-react"
+
+const treeData: TreeNode[] = [
+  {
+    key: "src",
+    title: "src",
+    icon: <Folder size={14} />,
+    children: [
+      {
+        key: "components",
+        title: "components",
+        icon: <Folder size={14} />,
+        children: [
+          { key: "btn", title: "Button.tsx", icon: <FileText size={14} /> },
+          { key: "input", title: "Input.tsx", icon: <FileText size={14} /> },
+          { key: "card", title: "Card.tsx", icon: <FileText size={14} /> },
+        ],
+      },
+      {
+        key: "hooks",
+        title: "hooks",
+        icon: <FolderOpen size={14} />,
+        children: [
+          { key: "use-bp", title: "useBreakpoint.ts", icon: <FileText size={14} /> },
+        ],
+      },
+      { key: "index", title: "index.ts", icon: <FileText size={14} /> },
+    ],
+  },
+]
+
+export function Example() {
+  return (
+    <Tree
+      treeData={treeData}
+      defaultExpandedKeys={["src", "components"]}
+      defaultValue="btn"
+      renderItem={({ node, level }) => (
+        <>
+          {node.icon !== undefined && (
+            <span className="tree-icon" aria-hidden>
+              {node.icon}
+            </span>
+          )}
+          <span className="tree-label">{node.title}</span>
+          <span className="tree-item-meta">L{level}</span>
+        </>
+      )}
+    />
+  )
+}`,
+      },
+    },
+  },
   render: () => (
     <Tree
       treeData={FILE_TREE}
@@ -240,6 +515,54 @@ export const CustomItem: Story = {
 
 export const ExpandedByDefault: Story = {
   name: "ExpandedByDefault · org tree all open",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { Tree, type TreeNode } from "@godxjp/ui"
+
+const treeData: TreeNode[] = [
+  {
+    key: "company",
+    title: "ファミギア株式会社",
+    children: [
+      {
+        key: "eng",
+        title: "エンジニアリング本部",
+        children: [
+          { key: "fe", title: "フロントエンドチーム" },
+          { key: "be", title: "バックエンドチーム" },
+          { key: "infra", title: "インフラチーム" },
+        ],
+      },
+      {
+        key: "design",
+        title: "デザイン本部",
+        children: [
+          { key: "ui", title: "UI デザインチーム" },
+          { key: "ux", title: "UX リサーチチーム" },
+        ],
+      },
+      {
+        key: "ops",
+        title: "コーポレート本部",
+        children: [
+          { key: "hr", title: "人事部" },
+          { key: "fin", title: "経理部" },
+        ],
+      },
+    ],
+  },
+]
+
+export function Example() {
+  return (
+    <Tree treeData={treeData} defaultExpandedKeys={["company", "eng", "design", "ops"]} />
+  )
+}`,
+      },
+    },
+  },
   render: () => (
     <Tree treeData={ORG_TREE} defaultExpandedKeys={["company", "eng", "design", "ops"]} />
   ),
@@ -274,6 +597,49 @@ const TREE_WITH_DISABLED: TreeNode[] = [
 
 export const Disabled: Story = {
   name: "Disabled · per-node + per-branch disable",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { Tree, type TreeNode } from "@godxjp/ui"
+
+const treeData: TreeNode[] = [
+  {
+    key: "available",
+    title: "利用可能なリソース",
+    children: [
+      { key: "r1", title: "サーバー A" },
+      { key: "r2", title: "サーバー B" },
+      {
+        key: "r3",
+        title: "サーバー C (メンテナンス中)",
+        disabled: true,
+      },
+    ],
+  },
+  {
+    key: "archive",
+    title: "アーカイブ (読み取り専用)",
+    disabled: true,
+    children: [
+      { key: "a1", title: "旧サーバー X", disabled: true },
+      { key: "a2", title: "旧サーバー Y", disabled: true },
+    ],
+  },
+]
+
+export function Example() {
+  return (
+    <Tree
+      treeData={treeData}
+      defaultExpandedKeys={["available", "archive"]}
+      defaultValue="r1"
+    />
+  )
+}`,
+      },
+    },
+  },
   render: () => (
     <Tree
       treeData={TREE_WITH_DISABLED}
