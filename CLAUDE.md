@@ -176,6 +176,22 @@ Absolute. CI / pre-commit / review reject anything that violates.
     in stories / docs (source may keep an alias for a deprecation
     cycle, but the marketing surfaces use the canonical name only).
     Rename PR runs `grep -rn '<oldName>' src docs` and clears it.
+34. **Storybook source panel = real, copy-paste-ready code.**
+    Storybook's react-docgen serializer strips every function value
+    (`cell: ({row}) => <JSX/>`, `render: ({field}) => <Input/>`,
+    `rowClassName`, `renderItem`, …) to `() => {}`. Any story whose
+    `render` passes a function-valued prop, references a module-level
+    helper (`StatusBadge`, `EMPLOYEE_COLUMNS`, etc.), or uses a
+    render-prop pattern MUST override
+    `parameters.docs.source.code` with the literal copy-paste-ready
+    snippet — type aliases, helper functions spelled out, column
+    definitions with cell JSX visible, inline data array. The
+    `render()` callback stays as-is (module-level constants are fine
+    for runtime performance); `source.code` is the marketing
+    surface. Skip ONLY for stories whose JSX is purely static
+    primitives Storybook can serialize verbatim
+    (`<Button variant="primary">Click</Button>`). The exemplar is
+    `Table.Default` in `src/stories/data-display/Table.stories.tsx`.
 
 ## Links
 
