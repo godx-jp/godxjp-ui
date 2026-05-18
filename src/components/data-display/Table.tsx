@@ -11,6 +11,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import {
+  Fragment,
   isValidElement,
   useEffect,
   useMemo,
@@ -85,7 +86,12 @@ export interface TableSort {
   direction: "asc" | "desc";
 }
 
-export interface TablePaginationConfig {
+/** Multi-sort: ordered list whose head is the primary key. */
+export type TableSortState = TableSort | TableSort[] | null;
+
+/** Numbered pagination (default behaviour for general lists). */
+export interface TablePaginationNumberedConfig {
+  type?: "numbered";
   current: number;
   pageSize: number;
   total: number;
@@ -96,6 +102,44 @@ export interface TablePaginationConfig {
   showTotal?: (total: number, range: [number, number]) => ReactNode;
   onChange?: (page: number, pageSize: number) => void;
 }
+
+/** Back-compat alias — numbered pagination is the legacy config. */
+export type TablePaginationConfig = TablePaginationNumberedConfig;
+
+/** Load-more pagination (feed-like activity / notification lists). */
+export interface TablePaginationLoadMoreConfig {
+  type: "load-more";
+  hasMore: boolean;
+  onLoadMore: () => void;
+  currentCount: number;
+  total: number;
+  batchSize?: number;
+  loadingMore?: boolean;
+  loadMoreLabel?: ReactNode;
+  progressLabel?: (currentCount: number, total: number) => ReactNode;
+}
+
+/** Cursor pagination (time-series jump-to-period for kintai / payroll). */
+export interface TablePaginationCursorConfig {
+  type: "cursor";
+  value: string;
+  onChange: (value: string) => void;
+  label: ReactNode;
+  prevLabel?: ReactNode;
+  nextLabel?: ReactNode;
+  jumpToLatestLabel?: ReactNode;
+  /** HTML input type — `"month"` (default), `"date"`, or `"week"`. */
+  inputType?: "month" | "date" | "week";
+  onPrev?: () => void;
+  onNext?: () => void;
+  onJumpToLatest?: () => void;
+  disabled?: boolean;
+}
+
+export type TablePaginationVariantConfig =
+  | TablePaginationNumberedConfig
+  | TablePaginationLoadMoreConfig
+  | TablePaginationCursorConfig;
 
 export interface TableViewSnapshot {
   filters?: TableFilter[];
@@ -194,13 +238,81 @@ export interface TableFilterItem {
 }
 
 export type TableFilterBar = ReactNode | TableFilterItem[];
-export type TablePagination = ReactNode | false | TablePaginationConfig;
+export type TablePagination =
+  | ReactNode
+  | false
+  | TablePaginationVariantConfig;
 export type TableToolbar = ReactNode | false | TableToolbarConfig;
 export type TableViews = ReactNode | false | TableViewsConfig;
 export type TableBatchActions<TData> =
   | ReactNode
   | false
   | TableBatchActionsConfig<TData>;
+
+/** Expand-row config (rule 32 — no `expanded`-singular / `expand` synonyms). */
+export interface TableExpandableConfig<TData> {
+  /** Rows whose expand panel is open. */
+  expandedRowKeys?: string[];
+  defaultExpandedRowKeys?: string[];
+  onExpandedRowsChange?: (keys: string[]) => void;
+  /** Renders the inline detail panel. */
+  renderExpandedRow: (row: Row<TData>) => ReactNode;
+  /** Allows more than one open expand panel at a time. Default `false`. */
+  allowMultiple?: boolean;
+  /** Hide the expand toggle for rows that have no detail panel. */
+  rowExpandable?: (row: Row<TData>) => boolean;
+}
+
+/** Inline-edit config — single editing row, multi-row dirty tracking. */
+export interface TableEditingConfig<TData> {
+  /** The row currently in editing mode. `null` exits editing. */
+  rowId: string | null;
+  onStart?: (rowId: string) => void;
+  onCommit?: (rowId: string, patch: Record<string, unknown>) => void;
+  onCancel?: (rowId: string) => void;
+  /** Renders an inline editor for a cell. Return `null` to fall back to the column's normal cell. */
+  renderEditCell?: (
+    column: TableColumn<TData, unknown>,
+    row: Row<TData>,
+  ) => ReactNode;
+  /** Rows that should be read-only (confirmed records / locked rows). */
+  isRowReadOnly?: (row: Row<TData>) => boolean;
+  /** Row + cell ids that carry unsaved changes — for the warning dot + footer banner. */
+  dirtyRowIds?: string[];
+  dirtyCellIds?: string[];
+  /** Footer banner — show "N rows unsaved" + Save-all / Cancel-all controls. */
+  onSaveAll?: () => void;
+  onCancelAll?: () => void;
+  saveAllLabel?: ReactNode;
+  cancelAllLabel?: ReactNode;
+  unsavedLabel?: (count: number) => ReactNode;
+}
+
+/** Row-group config — either a key resolver or a richer descriptor. */
+export interface TableGroupDescriptor {
+  key: string;
+  label: ReactNode;
+  count?: ReactNode;
+  total?: ReactNode;
+}
+export type TableGroupBy<TData> = (
+  row: TData,
+) => string | TableGroupDescriptor | undefined;
+
+/** Tree-row config. Children are resolved per parent row. */
+export interface TableTreeConfig<TData> {
+  children: (row: TData) => TData[] | undefined;
+  defaultExpandedNodes?: string[];
+  expandedNodes?: string[];
+  onExpandedNodesChange?: (keys: string[]) => void;
+  /** Hard cap on nesting depth (defaults to a reasonable 8). */
+  maxDepth?: number;
+}
+
+/** Column-pinning callback (TanStack-canonical name). */
+export type TableColumnPinningChange = (
+  pinning: ColumnPinningState,
+) => void;
 
 export interface TableProps<TData> extends Omit<
   HTMLAttributes<HTMLTableElement>,
@@ -223,8 +335,24 @@ export interface TableProps<TData> extends Omit<
   defaultColumnVisibility?: TableColumnVisibility;
   columnVisibility?: TableColumnVisibility;
   onColumnVisibilityChange?: (columnVisibility: TableColumnVisibility) => void;
-  sort?: TableSort | null;
-  onSortChange?: (sort: TableSort | null) => void;
+  /**
+   * Active sort. Pass a single `TableSort` for single-key sort (legacy)
+   * or `TableSort[]` for multi-sort (shift-click adds keys; canon ⑤).
+   */
+  sort?: TableSortState;
+  onSortChange?: (sort: TableSortState) => void;
+  /** Enable per-column horizontal resize handles (canon ⑤). */
+  resizable?: boolean;
+  /** Inline expand-row config (canon ⑥). */
+  expandable?: TableExpandableConfig<TData>;
+  /** Inline editing config (canon ⑦). */
+  editing?: TableEditingConfig<TData>;
+  /** Row-group descriptor — same vocabulary as TanStack `getGroupedRowModel`. */
+  groupBy?: TableGroupBy<TData>;
+  /** Tree-row resolver (canon ⑧, hierarchical rows). */
+  tree?: TableTreeConfig<TData>;
+  /** Receives column-pinning changes from the column manager lock toggle (canon ⑨). */
+  onColumnPinningChange?: TableColumnPinningChange;
   filterBar?: TableFilterBar;
   pagination?: TablePagination;
   footer?: ReactNode;
@@ -460,18 +588,26 @@ function resolveUpdater<T>(updater: Updater<T>, previous: T): T {
     : updater;
 }
 
-function isTablePaginationConfig(
+function isTablePaginationVariantConfig(
   value: TablePagination | undefined,
-): value is TablePaginationConfig {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value) &&
-    !isValidElement(value) &&
-    "total" in value &&
-    "current" in value &&
-    "pageSize" in value
-  );
+): value is TablePaginationVariantConfig {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    Array.isArray(value) ||
+    isValidElement(value)
+  )
+    return false;
+  const candidate = value as { type?: string };
+  if (candidate.type === "load-more" || candidate.type === "cursor")
+    return true;
+  return "total" in value && "current" in value && "pageSize" in value;
+}
+
+function isNumberedPaginationConfig(
+  value: TablePaginationVariantConfig,
+): value is TablePaginationNumberedConfig {
+  return value.type === undefined || value.type === "numbered";
 }
 
 function isTableToolbarConfig(
@@ -704,12 +840,22 @@ function getColumnSettingsLabel<TData>(column: Column<TData, unknown>) {
   return label;
 }
 
+interface PaginationRendered {
+  variant: TablePaginationVariantConfig["type"];
+  node: ReactNode;
+}
+
 function renderTablePagination(
   pagination: TablePagination | undefined,
   t: (key: string, options?: Record<string, unknown>) => string,
-) {
+): PaginationRendered | null {
   if (pagination === undefined || pagination === false) return null;
-  if (!isTablePaginationConfig(pagination)) return pagination;
+  if (!isTablePaginationVariantConfig(pagination))
+    return { variant: undefined, node: pagination as ReactNode };
+  if (pagination.type === "load-more")
+    return { variant: "load-more", node: renderLoadMore(pagination, t) };
+  if (pagination.type === "cursor")
+    return { variant: "cursor", node: renderCursor(pagination, t) };
   const config = pagination;
 
   const total = Math.max(config.total, 0);
@@ -736,7 +882,7 @@ function renderTablePagination(
     config.onChange?.(1, nextPageSize);
   }
 
-  return (
+  const node = (
     <>
       <div className="info">
         {config.showTotal?.(total, [start, end]) ??
@@ -799,6 +945,83 @@ function renderTablePagination(
           {">"}
         </button>
       </div>
+    </>
+  );
+  return { variant: "numbered", node };
+}
+
+function renderLoadMore(
+  config: TablePaginationLoadMoreConfig,
+  t: (key: string, options?: Record<string, unknown>) => string,
+): ReactNode {
+  const remaining = Math.max(config.total - config.currentCount, 0);
+  const batch =
+    config.batchSize !== undefined
+      ? Math.min(config.batchSize, remaining)
+      : remaining;
+  const defaultLabel = t("table.loadMore", { count: batch });
+  return (
+    <div className="tbl-load-more">
+      <Button
+        size="small"
+        variant="outline"
+        disabled={!config.hasMore || config.loadingMore === true}
+        onClick={config.onLoadMore}
+      >
+        {config.loadMoreLabel ?? defaultLabel}
+      </Button>
+      <div className="tbl-load-more-progress">
+        {config.progressLabel?.(config.currentCount, config.total) ??
+          t("table.loadMoreProgress", {
+            current: config.currentCount,
+            total: config.total,
+          })}
+      </div>
+    </div>
+  );
+}
+
+function renderCursor(
+  config: TablePaginationCursorConfig,
+  t: (key: string, options?: Record<string, unknown>) => string,
+): ReactNode {
+  const inputType = config.inputType ?? "month";
+  return (
+    <>
+      <Button
+        size="x-small"
+        variant="ghost"
+        disabled={config.disabled}
+        onClick={config.onJumpToLatest}
+      >
+        {config.jumpToLatestLabel ?? t("table.jumpToLatest")}
+      </Button>
+      <Button
+        size="x-small"
+        variant="outline"
+        disabled={config.disabled}
+        onClick={config.onPrev}
+      >
+        {config.prevLabel ?? t("table.previousPeriod")}
+      </Button>
+      <span className="spacer" />
+      <div className="label">{config.label}</div>
+      <span className="spacer" />
+      <input
+        type={inputType}
+        value={config.value}
+        disabled={config.disabled}
+        aria-label={t("table.jumpToPeriod")}
+        onChange={(event) => config.onChange(event.target.value)}
+      />
+      <Button
+        size="x-small"
+        variant="outline"
+        disabled={config.disabled}
+        onClick={config.onNext}
+      >
+        {config.nextLabel ?? t("table.nextPeriod")}
+      </Button>
     </>
   );
 }
@@ -966,13 +1189,48 @@ function deriveFilterBar<TData>(
   });
 }
 
-function nextSort(
-  current: TableSort | null | undefined,
+function asSortArray(sort: TableSortState | undefined): TableSort[] {
+  if (sort === undefined || sort === null) return [];
+  return Array.isArray(sort) ? sort : [sort];
+}
+
+function findSortEntry(sort: TableSortState | undefined, key: string) {
+  const list = asSortArray(sort);
+  const index = list.findIndex((item) => item.key === key);
+  return index === -1 ? undefined : { entry: list[index], index, list };
+}
+
+/** Single-click cycle: asc → desc → off. Replaces the head of the list. */
+function nextSingleSort(
+  current: TableSortState | null | undefined,
   key: string,
-): TableSort | null {
-  if (current?.key !== key) return { key, direction: "asc" };
-  if (current.direction === "asc") return { key, direction: "desc" };
+): TableSortState {
+  const entry = findSortEntry(current, key);
+  if (entry === undefined) return { key, direction: "asc" };
+  if (entry.entry.direction === "asc") return { key, direction: "desc" };
   return null;
+}
+
+/** Shift-click: extend the list. Same key → cycle that entry's direction or drop it. */
+function nextMultiSort(
+  current: TableSortState | null | undefined,
+  key: string,
+): TableSortState {
+  const list = asSortArray(current);
+  const index = list.findIndex((item) => item.key === key);
+  if (index === -1) {
+    return [...list, { key, direction: "asc" }];
+  }
+  const existing = list[index];
+  const next = [...list];
+  if (existing.direction === "asc") {
+    next[index] = { key, direction: "desc" };
+  } else {
+    next.splice(index, 1);
+  }
+  if (next.length === 0) return null;
+  if (next.length === 1) return next[0];
+  return next;
 }
 
 function deriveColumnPinning<TData>(
@@ -1033,6 +1291,12 @@ export function Table<TData>({
   onColumnVisibilityChange,
   sort,
   onSortChange,
+  resizable,
+  expandable,
+  editing,
+  groupBy,
+  tree,
+  onColumnPinningChange,
   filterBar,
   pagination,
   footer,
@@ -1060,7 +1324,53 @@ export function Table<TData>({
     );
   const effectiveColumnVisibility =
     columnVisibility ?? internalColumnVisibility;
-  const columnPinning = deriveColumnPinning(columns);
+  const [internalColumnPinning, setInternalColumnPinning] =
+    useState<ColumnPinningState>(() => deriveColumnPinning(columns));
+  const columnPinning = internalColumnPinning;
+  const handleColumnPinningChange = (updater: Updater<ColumnPinningState>) => {
+    const next = resolveUpdater(updater, columnPinning);
+    setInternalColumnPinning(next);
+    onColumnPinningChange?.(next);
+  };
+  // Expand-row + tree-row + editing internal state.
+  const [internalExpandedRowKeys, setInternalExpandedRowKeys] = useState<
+    string[]
+  >(() => expandable?.defaultExpandedRowKeys ?? []);
+  const expandedRowKeys =
+    expandable?.expandedRowKeys ?? internalExpandedRowKeys;
+  const expandedRowKeySet = new Set(expandedRowKeys);
+  function toggleExpandedRow(rowId: string) {
+    if (expandable === undefined) return;
+    const allowMultiple = expandable.allowMultiple === true;
+    const nextSet = new Set(expandedRowKeys);
+    if (nextSet.has(rowId)) {
+      nextSet.delete(rowId);
+    } else {
+      if (!allowMultiple) nextSet.clear();
+      nextSet.add(rowId);
+    }
+    const next = Array.from(nextSet);
+    if (expandable.expandedRowKeys === undefined)
+      setInternalExpandedRowKeys(next);
+    expandable.onExpandedRowsChange?.(next);
+  }
+  const [internalTreeExpandedNodes, setInternalTreeExpandedNodes] = useState<
+    string[]
+  >(() => tree?.defaultExpandedNodes ?? []);
+  const treeExpandedNodes =
+    tree?.expandedNodes ?? internalTreeExpandedNodes;
+  const treeExpandedSet = new Set(treeExpandedNodes);
+  function toggleTreeNode(nodeKey: string) {
+    if (tree === undefined) return;
+    const nextSet = new Set(treeExpandedNodes);
+    if (nextSet.has(nodeKey)) nextSet.delete(nodeKey);
+    else nextSet.add(nodeKey);
+    const next = Array.from(nextSet);
+    if (tree.expandedNodes === undefined) setInternalTreeExpandedNodes(next);
+    tree.onExpandedNodesChange?.(next);
+  }
+  const dirtyRowSet = new Set(editing?.dirtyRowIds ?? []);
+  const dirtyCellSet = new Set(editing?.dirtyCellIds ?? []);
   const resolveGetRowId =
     getRowId ??
     ((row: TData, index: number) =>
@@ -1082,7 +1392,10 @@ export function Table<TData>({
     getCoreRowModel: getCoreRowModel(),
     getRowId: resolveGetRowId,
     enableColumnPinning: true,
+    enableColumnResizing: resizable === true,
+    columnResizeMode: "onChange",
     onColumnVisibilityChange: handleColumnVisibilityChange,
+    onColumnPinningChange: handleColumnPinningChange,
     state: { columnPinning, columnVisibility: effectiveColumnVisibility },
   });
   useEffect(() => {
@@ -1105,7 +1418,6 @@ export function Table<TData>({
       (column) =>
         getColumnKey(column.columnDef) !== undefined &&
         column.columnDef.meta?.hideable !== false &&
-        column.columnDef.meta?.sticky === undefined &&
         column.getCanHide(),
     );
   const batchConfig = isTableBatchActionsConfig(batchActions)
@@ -1144,7 +1456,9 @@ export function Table<TData>({
           : batchConfig.actions
         : undefined;
   const colSpan = Math.max(
-    leafColumns.length + (batchConfig === undefined ? 0 : 1),
+    leafColumns.length +
+      (batchConfig === undefined ? 0 : 1) +
+      (expandable === undefined ? 0 : 1),
     1,
   );
   const activeFilterBar =
@@ -1162,7 +1476,9 @@ export function Table<TData>({
   );
   const currentViewSnapshot: TableViewSnapshot = {
     filters: filters ?? [],
-    sort: sort ?? null,
+    // Snapshot stores the primary sort entry for back-compat; multi-
+    // sort is preserved at runtime through `sort` directly.
+    sort: Array.isArray(sort) ? (sort[0] ?? null) : (sort ?? null),
     columnVisibility: effectiveColumnVisibility,
   };
   const duplicateView = viewItems.find((view) =>
@@ -1245,6 +1561,287 @@ export function Table<TData>({
     </Empty>
   );
 
+  function renderDataRow(row: Row<TData>): ReactNode {
+    const isEditingRow = editing?.rowId === row.id;
+    const isReadOnly = editing?.isRowReadOnly?.(row) === true;
+    const isDirtyRow = dirtyRowSet.has(row.id);
+    const customClass = resolveCellClass(rowClassName, row);
+    const stateClass = cn(
+      customClass,
+      isEditingRow && "is-editing",
+      isDirtyRow && !isEditingRow && "is-dirty",
+    );
+    const isExpanded = expandedRowKeySet.has(row.id);
+    const canExpand =
+      expandable !== undefined &&
+      (expandable.rowExpandable === undefined ||
+        expandable.rowExpandable(row));
+    const rowNodes: ReactNode[] = [];
+    rowNodes.push(
+      <tr
+        key={row.id}
+        className={cn(stateClass, isExpanded && "expanded")}
+        onDoubleClick={
+          editing !== undefined && !isReadOnly && !isEditingRow
+            ? () => editing.onStart?.(row.id)
+            : undefined
+        }
+        data-row-id={row.id}
+      >
+        {batchConfig !== undefined && (
+          <td className="check">
+            <Checkbox
+              aria-label={t("table.selectRow", { row: row.id })}
+              checked={selectedRowKeySet.has(row.id)}
+              disabled={batchConfig.getCheckboxDisabled?.(row)}
+              onCheckedChange={(checked) => {
+                const next = new Set(batchConfig.selectedRowKeys);
+                if (checked === true) next.add(row.id);
+                else next.delete(row.id);
+                batchConfig.onSelectedRowKeysChange(Array.from(next));
+              }}
+            />
+          </td>
+        )}
+        {expandable !== undefined && (
+          <td className="expand-cell" style={{ width: 32 }}>
+            {canExpand && (
+              <button
+                type="button"
+                className={cn("expand-toggle", isExpanded && "open")}
+                aria-label={
+                  isExpanded ? t("table.collapseRow") : t("table.expandRow")
+                }
+                aria-expanded={isExpanded}
+                onClick={() => toggleExpandedRow(row.id)}
+              >
+                ▶
+              </button>
+            )}
+          </td>
+        )}
+        {row.getVisibleCells().map((cell) => {
+          const meta = cell.column.columnDef.meta;
+          const cellId = `${row.id}:${cell.column.id}`;
+          const isDirtyCell = dirtyCellSet.has(cellId);
+          const cellContent =
+            isEditingRow && !isReadOnly && editing?.renderEditCell
+              ? (editing.renderEditCell(cell.column.columnDef, row) ??
+                flexRender(cell.column.columnDef.cell, cell.getContext()))
+              : flexRender(cell.column.columnDef.cell, cell.getContext());
+          return (
+            <td
+              key={cell.id}
+              className={cn(
+                meta?.className,
+                cell.column.getIsPinned() &&
+                  `table-pinned-${cell.column.getIsPinned()}`,
+                resolveCellClass(meta?.cellClassName, row),
+                isDirtyCell && "cell-dirty",
+              )}
+              style={getColumnStyle(cell.column, {
+                ...meta?.style,
+                ...resolveCellStyle(meta?.cellStyle, row),
+              })}
+            >
+              {cellContent}
+            </td>
+          );
+        })}
+      </tr>,
+    );
+    if (expandable !== undefined && isExpanded) {
+      rowNodes.push(
+        <tr key={`${row.id}:expand`} className="expand-panel">
+          <td colSpan={colSpan}>{expandable.renderExpandedRow(row)}</td>
+        </tr>,
+      );
+    }
+    return <Fragment key={`${row.id}:wrap`}>{rowNodes}</Fragment>;
+  }
+
+  function renderTreeRow(
+    item: TData,
+    depth: number,
+    nodes: ReactNode[],
+  ): void {
+    const id = String(resolveGetRowId(item, nodes.length));
+    const children = tree?.children(item);
+    const hasChildren = (children?.length ?? 0) > 0;
+    const isOpen = treeExpandedSet.has(id);
+    const visibleColumns = table.getVisibleLeafColumns();
+    nodes.push(
+      <tr key={id} className={resolveCellClass(rowClassName, {
+        id,
+        original: item,
+        getVisibleCells: () => [],
+      } as unknown as Row<TData>)}>
+        {visibleColumns.map((column, columnIndex) => {
+          const meta = column.columnDef.meta;
+          const isFirst = columnIndex === 0;
+          const indents = isFirst && depth > 0
+            ? Array.from({ length: depth }, (_, i) => (
+                <span key={i} className="indent" aria-hidden />
+              ))
+            : null;
+          const twirl = isFirst && hasChildren ? (
+            <button
+              type="button"
+              className={cn("twirl-btn", isOpen && "open")}
+              aria-label={isOpen ? t("table.collapseRow") : t("table.expandRow")}
+              aria-expanded={isOpen}
+              onClick={() => toggleTreeNode(id)}
+            >
+              ▶
+            </button>
+          ) : isFirst ? (
+            <span className="indent" aria-hidden />
+          ) : null;
+          // Render the cell by calling the column's accessor manually.
+          const accessor = (column.columnDef as { accessorKey?: string })
+            .accessorKey;
+          let content: ReactNode = null;
+          if (typeof column.columnDef.cell === "function") {
+            content = column.columnDef.cell({
+              row: { original: item, id } as Row<TData>,
+              column,
+              table,
+              getValue: () =>
+                accessor !== undefined
+                  ? (item as Record<string, unknown>)[accessor]
+                  : undefined,
+              renderValue: () =>
+                accessor !== undefined
+                  ? (item as Record<string, unknown>)[accessor]
+                  : undefined,
+              cell: {} as never,
+            } as never);
+          } else if (accessor !== undefined) {
+            const raw = (item as Record<string, unknown>)[accessor];
+            content = raw === undefined || raw === null ? "" : String(raw);
+          }
+          return (
+            <td
+              key={column.id}
+              className={cn(
+                meta?.className,
+                column.getIsPinned() && `table-pinned-${column.getIsPinned()}`,
+              )}
+              style={getColumnStyle(column, { ...meta?.style })}
+            >
+              {indents}
+              {twirl}
+              {twirl !== null ? " " : null}
+              {content}
+            </td>
+          );
+        })}
+      </tr>,
+    );
+    if (hasChildren && isOpen && tree !== undefined) {
+      const maxDepth = tree.maxDepth ?? 8;
+      if (depth + 1 <= maxDepth) {
+        for (const child of children ?? []) {
+          renderTreeRow(child, depth + 1, nodes);
+        }
+      }
+    }
+  }
+
+  function renderBodyRows(): ReactNode {
+    const rows = table.getRowModel().rows;
+    if (rows.length === 0) {
+      return (
+        <tr>
+          <td colSpan={colSpan} className="muted">
+            {emptyContent}
+          </td>
+        </tr>
+      );
+    }
+    // Tree mode: ignore TanStack's flat row model; walk `data` recursively.
+    if (tree !== undefined) {
+      const nodes: ReactNode[] = [];
+      for (const item of data) renderTreeRow(item, 0, nodes);
+      return nodes;
+    }
+    // Group mode: bucket rows by group key.
+    if (groupBy !== undefined) {
+      const buckets = new Map<
+        string,
+        { descriptor: TableGroupDescriptor; rows: Row<TData>[] }
+      >();
+      const order: string[] = [];
+      for (const row of rows) {
+        const raw = groupBy(row.original);
+        if (raw === undefined) continue;
+        const descriptor: TableGroupDescriptor =
+          typeof raw === "string" ? { key: raw, label: raw } : raw;
+        const bucket = buckets.get(descriptor.key);
+        if (bucket === undefined) {
+          buckets.set(descriptor.key, { descriptor, rows: [row] });
+          order.push(descriptor.key);
+        } else {
+          bucket.rows.push(row);
+        }
+      }
+      const nodes: ReactNode[] = [];
+      for (const key of order) {
+        const bucket = buckets.get(key);
+        if (bucket === undefined) continue;
+        const groupOpen = !treeExpandedSet.has(`group:${key}`)
+          ? true
+          : treeExpandedSet.has(`group:${key}`);
+        // Group rows are open by default — toggle stored as collapse flag.
+        const isCollapsed = treeExpandedSet.has(`group:collapse:${key}`);
+        nodes.push(
+          <tr key={`group:${key}`} className="group-row">
+            <td colSpan={colSpan}>
+              <button
+                type="button"
+                className="twirl"
+                aria-label={
+                  isCollapsed
+                    ? t("table.expandRow")
+                    : t("table.collapseRow")
+                }
+                aria-expanded={!isCollapsed}
+                onClick={() => toggleTreeNode(`group:collapse:${key}`)}
+                style={{
+                  background: "transparent",
+                  border: 0,
+                  padding: 0,
+                  cursor: "pointer",
+                  font: "inherit",
+                  color: "inherit",
+                }}
+              >
+                {isCollapsed ? "▶" : "▼"}
+              </button>{" "}
+              {bucket.descriptor.label}
+              {bucket.descriptor.count !== undefined && (
+                <span className="gcount">{bucket.descriptor.count}</span>
+              )}
+              {bucket.descriptor.total !== undefined && (
+                <span className="gtotal">{bucket.descriptor.total}</span>
+              )}
+            </td>
+          </tr>,
+        );
+        if (!isCollapsed) {
+          for (const row of bucket.rows) {
+            nodes.push(renderDataRow(row));
+          }
+        }
+        // touch groupOpen to silence "unused" — semantic is via isCollapsed.
+        void groupOpen;
+      }
+      return nodes;
+    }
+    // Default — flat list with optional expand panels.
+    return rows.map((row) => renderDataRow(row));
+  }
+
   return (
     <div
       className={cn("table-stack", containerClassName)}
@@ -1315,6 +1912,9 @@ export function Table<TData>({
                     />
                   </th>
                 )}
+                {expandable !== undefined && (
+                  <th className="expand-col" style={{ width: 32 }} />
+                )}
                 {headerGroup.headers.map((header) => {
                   const meta = header.column.columnDef.meta;
                   const columnKey = getColumnKey(header.column.columnDef);
@@ -1322,9 +1922,14 @@ export function Table<TData>({
                     meta?.sortable === true &&
                     columnKey !== undefined &&
                     onSortChange !== undefined;
-                  const sortedDirection =
-                    columnKey !== undefined && sort?.key === columnKey
-                      ? sort.direction
+                  const sortEntry =
+                    columnKey !== undefined
+                      ? findSortEntry(sort, columnKey)
+                      : undefined;
+                  const sortedDirection = sortEntry?.entry.direction;
+                  const multiSortIndex =
+                    sortEntry !== undefined && sortEntry.list.length > 1
+                      ? sortEntry.index + 1
                       : undefined;
                   const headerContent = header.isPlaceholder
                     ? null
@@ -1332,6 +1937,8 @@ export function Table<TData>({
                         header.column.columnDef.header,
                         header.getContext(),
                       );
+                  const canResize =
+                    resizable === true && header.column.getCanResize();
                   return (
                     <th
                       key={header.id}
@@ -1342,6 +1949,7 @@ export function Table<TData>({
                         header.column.getIsPinned() &&
                           `table-pinned-${header.column.getIsPinned()}`,
                         isSortable && "sortable",
+                        canResize && "has-resize",
                       )}
                       style={getColumnStyle(header.column, {
                         ...meta?.style,
@@ -1355,13 +1963,16 @@ export function Table<TData>({
                             : undefined
                       }
                     >
-                      {isSortable ? (
+                      {isSortable && columnKey !== undefined ? (
                         <button
                           type="button"
                           className="table-sort-button"
-                          onClick={() =>
-                            onSortChange(nextSort(sort, columnKey))
-                          }
+                          onClick={(event) => {
+                            const next = event.shiftKey
+                              ? nextMultiSort(sort, columnKey)
+                              : nextSingleSort(sort, columnKey);
+                            onSortChange(next);
+                          }}
                         >
                           {headerContent}
                           <span className="sort" aria-hidden>
@@ -1380,9 +1991,27 @@ export function Table<TData>({
                               ▼
                             </span>
                           </span>
+                          {multiSortIndex !== undefined && (
+                            <span className="multi" aria-hidden>
+                              {multiSortIndex}
+                            </span>
+                          )}
                         </button>
                       ) : (
                         headerContent
+                      )}
+                      {canResize && (
+                        <button
+                          type="button"
+                          aria-label={t("table.resizeColumn") || "Resize column"}
+                          className="resize"
+                          data-resizing={
+                            header.column.getIsResizing() ? "true" : undefined
+                          }
+                          onMouseDown={header.getResizeHandler()}
+                          onTouchStart={header.getResizeHandler()}
+                          onDoubleClick={() => header.column.resetSize()}
+                        />
                       )}
                     </th>
                   );
@@ -1390,61 +2019,7 @@ export function Table<TData>({
               </tr>
             ))}
           </thead>
-          <tbody>
-            {table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className={resolveCellClass(rowClassName, row)}
-                >
-                  {batchConfig !== undefined && (
-                    <td className="check">
-                      <Checkbox
-                        aria-label={t("table.selectRow", { row: row.id })}
-                        checked={selectedRowKeySet.has(row.id)}
-                        disabled={batchConfig.getCheckboxDisabled?.(row)}
-                        onCheckedChange={(checked) => {
-                          const next = new Set(batchConfig.selectedRowKeys);
-                          if (checked === true) next.add(row.id);
-                          else next.delete(row.id);
-                          batchConfig.onSelectedRowKeysChange(Array.from(next));
-                        }}
-                      />
-                    </td>
-                  )}
-                  {row.getVisibleCells().map((cell) => {
-                    const meta = cell.column.columnDef.meta;
-                    return (
-                      <td
-                        key={cell.id}
-                        className={cn(
-                          meta?.className,
-                          cell.column.getIsPinned() &&
-                            `table-pinned-${cell.column.getIsPinned()}`,
-                          resolveCellClass(meta?.cellClassName, row),
-                        )}
-                        style={getColumnStyle(cell.column, {
-                          ...meta?.style,
-                          ...resolveCellStyle(meta?.cellStyle, row),
-                        })}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={colSpan} className="muted">
-                  {emptyContent}
-                </td>
-              </tr>
-            )}
-          </tbody>
+          <tbody>{renderBodyRows()}</tbody>
           {hasFooter && (
             <tfoot>
               {table.getFooterGroups().map((footerGroup) => (
@@ -1474,8 +2049,56 @@ export function Table<TData>({
         </table>
       </div>
       {footer !== undefined && <div className="tbl-footer">{footer}</div>}
+      {editing !== undefined && dirtyRowSet.size > 0 && (
+        <div className="tbl-footer" data-state="dirty">
+          <span className="tbl-footer-icon" aria-hidden>
+            <svg
+              width={13}
+              height={13}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx={12} cy={12} r={10} />
+              <line x1={12} y1={8} x2={12} y2={12} />
+              <line x1={12} y1={16} x2={12.01} y2={16} />
+            </svg>
+          </span>
+          <span>
+            {editing.unsavedLabel?.(dirtyRowSet.size) ??
+              t("table.unsavedChanges", { count: dirtyRowSet.size })}
+          </span>
+          <span className="spacer" />
+          {editing.onCancelAll !== undefined && (
+            <Button
+              size="x-small"
+              variant="ghost"
+              onClick={editing.onCancelAll}
+            >
+              {editing.cancelAllLabel ?? t("table.cancelAll")}
+            </Button>
+          )}
+          {editing.onSaveAll !== undefined && (
+            <Button size="x-small" onClick={editing.onSaveAll}>
+              {editing.saveAllLabel ?? t("table.saveAll")}
+            </Button>
+          )}
+        </div>
+      )}
       {paginationContent !== null && (
-        <div className="tbl-pagination">{paginationContent}</div>
+        <div
+          className={
+            paginationContent.variant === "load-more"
+              ? undefined
+              : "tbl-pagination"
+          }
+          data-variant={paginationContent.variant}
+        >
+          {paginationContent.node}
+        </div>
       )}
       {columnSettingsOpen &&
         isTableToolbarConfig(toolbar) &&
@@ -1508,18 +2131,50 @@ export function Table<TData>({
             }
           >
             <div className="table-filter-field-list">
-              {columnSettingsColumns.map((column) => (
-                <section key={column.id} className="table-column-field">
-                  <Checkbox
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(checked) =>
-                      column.toggleVisibility(checked === true)
-                    }
-                  >
-                    {getColumnSettingsLabel(column)}
-                  </Checkbox>
-                </section>
-              ))}
+              {columnSettingsColumns.map((column) => {
+                const pinned = column.getIsPinned();
+                return (
+                  <section key={column.id} className="table-column-field">
+                    <Checkbox
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(checked) =>
+                        column.toggleVisibility(checked === true)
+                      }
+                    >
+                      {getColumnSettingsLabel(column)}
+                    </Checkbox>
+                    <button
+                      type="button"
+                      className="col-lock"
+                      aria-label={
+                        pinned === false
+                          ? t("table.lockColumn")
+                          : t("table.unlockColumn")
+                      }
+                      aria-pressed={pinned !== false}
+                      data-locked={pinned !== false ? "true" : "false"}
+                      onClick={() => {
+                        const next: ColumnPinningState = {
+                          left: [...(columnPinning.left ?? [])],
+                          right: [...(columnPinning.right ?? [])],
+                        };
+                        next.left = (next.left ?? []).filter(
+                          (id) => id !== column.id,
+                        );
+                        next.right = (next.right ?? []).filter(
+                          (id) => id !== column.id,
+                        );
+                        if (pinned === false) {
+                          next.left = [...(next.left ?? []), column.id];
+                        }
+                        handleColumnPinningChange(next);
+                      }}
+                    >
+                      {pinned === false ? "🔓" : "🔒"}
+                    </button>
+                  </section>
+                );
+              })}
             </div>
           </Sheet>
         )}

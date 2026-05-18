@@ -92,8 +92,14 @@ const columns: TableColumn<Project>[] = [
 | `defaultColumnVisibility`  | `TableColumnVisibility`                              | `{}`                       | Initial column visibility when no persisted value exists                               |
 | `columnVisibility`         | `TableColumnVisibility`                              | internal state             | Controlled column visibility map                                                       |
 | `onColumnVisibilityChange` | `(visibility) => void`                               | —                          | Receives column visibility changes from TanStack Table                                 |
-| `sort`                     | `TableSort \| null`                                  | —                          | Active controlled sort                                                                 |
-| `onSortChange`             | `(sort) => void`                                     | —                          | Receives sortable header clicks; cycles asc → desc → none                              |
+| `sort`                     | `TableSortState`                                     | —                          | Active controlled sort. `TableSort \| null` for single sort or `TableSort[]` for multi-sort (canon ⑤) |
+| `onSortChange`             | `(sort) => void`                                     | —                          | Receives sortable header clicks. Single click cycles asc → desc → none; shift-click adds to multi-sort list |
+| `resizable`                | `boolean`                                            | `false`                    | Enables the 4px right-edge column-resize grip (canon ⑤). Double-click auto-fits         |
+| `expandable`               | `TableExpandableConfig<TData>`                       | —                          | Inline detail-panel row (canon ⑥)                                                       |
+| `editing`                  | `TableEditingConfig<TData>`                          | —                          | Inline-edit + dirty banner footer (canon ⑦)                                             |
+| `groupBy`                  | `(row) => string \| TableGroupDescriptor`            | —                          | Render full-width group header rows (canon ⑧)                                           |
+| `tree`                     | `TableTreeConfig<TData>`                             | —                          | Hierarchical rows with 14px / level indent + twirl button (canon ⑧)                     |
+| `onColumnPinningChange`    | `(pinning: ColumnPinningState) => void`              | —                          | Receives pin / unpin changes from the column-manager lock toggle (canon ⑨)              |
 | `filterBar`                | `ReactNode \| TableFilterItem[]`                     | —                          | Escape hatch for custom active-filter UI                                               |
 | `footer`                   | `ReactNode`                                          | —                          | Totals / summary row below the table                                                   |
 | `pagination`               | `TablePagination`                                    | —                          | Built-in pagination config, `false`, or custom node below the footer                   |
@@ -498,6 +504,261 @@ The Storybook stories mirror `design-handoff/ui-system/dxs-kintai-design-system/
 - `onResetFilters` renders the reset action only when active filters exist.
 - `rowClassName` demonstrates selected, new, error, disabled, and editing rows.
 - `footer` and `pagination` render totals and page controls inside the same table shell.
+
+## Sort and resize (A5)
+
+Pass `sort` as a single `TableSort` for the legacy single-sort flow.
+Pass `TableSort[]` to drive multi-sort — the head of the list is the
+primary key (priority 1), the next is priority 2, etc. The header
+renders a numbered badge (1 / 2 / 3) at the right edge when multi-sort
+is active.
+
+```tsx
+const [sort, setSort] = useState<TableSortState>([
+  { key: "date", direction: "desc" },
+  { key: "hours", direction: "asc" },
+]);
+
+<Table
+  columns={columns}
+  data={rows}
+  resizable
+  sort={sort}
+  onSortChange={setSort}
+/>
+```
+
+- **Single click** on a sortable header replaces the head of the
+  list with `{ key, direction: "asc" }`, then cycles to `desc`,
+  then drops the entry.
+- **Shift-click** appends (or cycles within) the multi-sort list.
+- **Resize** — set `resizable` to enable per-column resize grips
+  on the right edge of each header. Drag to resize, double-click
+  to auto-fit (TanStack `column.resetSize()`).
+
+## Expand row (A6)
+
+```tsx
+<Table
+  columns={columns}
+  data={rows}
+  expandable={{
+    expandedRowKeys,
+    onExpandedRowsChange: setExpandedRowKeys,
+    rowExpandable: (row) => row.original.detail !== undefined,
+    renderExpandedRow: (row) => (
+      <div className="expand-body">
+        <h4>Detail</h4>
+        <dl className="grid">{/* … */}</dl>
+      </div>
+    ),
+  }}
+/>
+```
+
+- A `▶` button appears in a 32px first cell. Active rows get the
+  `expanded` class so the panel below visually attaches to the row
+  via the canonical 3px primary left border.
+- The toggle is **exclusive** by default — opening one row closes
+  the previous. Set `allowMultiple` to keep the previous open.
+- Hide the toggle on rows that have no detail panel via
+  `rowExpandable`.
+
+### `TableExpandableConfig`
+
+| Field                   | Type                                        | Description |
+|-------------------------|---------------------------------------------|-------------|
+| `expandedRowKeys`       | `string[]`                                  | Controlled open keys |
+| `defaultExpandedRowKeys`| `string[]`                                  | Initial open keys (uncontrolled) |
+| `onExpandedRowsChange`  | `(keys: string[]) => void`                  | Receives toggle changes |
+| `renderExpandedRow`     | `(row: Row<TData>) => ReactNode`            | Required — panel body |
+| `allowMultiple`         | `boolean`                                   | Default `false`; opens stay open |
+| `rowExpandable`         | `(row: Row<TData>) => boolean`              | Hide the toggle on rows that can't expand |
+
+## Editable row (A7)
+
+```tsx
+<Table
+  columns={columns}
+  data={rows}
+  editing={{
+    rowId: editingRowId,
+    dirtyRowIds,
+    dirtyCellIds,                  // ["k2:hours", "k2:kind"]
+    isRowReadOnly: (row) => row.original.status === "confirmed",
+    onStart: (id) => setEditingRowId(id),
+    onCancel: () => { /* … */ },
+    onCommit: () => { /* … */ },
+    onSaveAll: () => { /* … */ },
+    onCancelAll: () => { /* … */ },
+    renderEditCell: (column, row) => {
+      const accessor = (column as { accessorKey?: string }).accessorKey;
+      if (accessor === "kind") {
+        return (
+          <select className="cell-select">{/* … */}</select>
+        );
+      }
+      return <input className="cell-input" />;
+    },
+  }}
+/>
+```
+
+- **Double-click** on any row (except confirmed ones) triggers
+  `editing.onStart`. The row gets the `is-editing` class —
+  yellow-tinted background per the canon.
+- Cells with unsaved changes are flagged via `dirtyCellIds`
+  (string `"<rowId>:<columnId>"`). Each gets a 5px warning dot
+  at the top-right.
+- When `dirtyRowIds.length > 0`, the framework renders a second
+  footer band (`tbl-footer[data-state="dirty"]`) with the unsaved
+  count + Save-all / Cancel-all controls.
+- Read-only rows — set `isRowReadOnly`. Double-click is suppressed;
+  confirmed `(確定済)` rows in the canon use this.
+
+## Grouped + tree rows (A8)
+
+### Grouped rows
+
+```tsx
+<Table
+  columns={columns}
+  data={rows}
+  groupBy={(row) => ({
+    key: row.shop,
+    label: row.shop,
+    count: <>{row.count} 名</>,
+    total: <>{row.totalHours} h</>,
+  })}
+/>
+```
+
+The framework buckets rows by `key`, emits a full-width
+`.group-row` `<tr>` per bucket with the title + count badge
+(left) + total (right-floated), and renders the bucket's rows
+inside. Each header has a built-in ▼ / ▶ collapse toggle.
+
+### Tree rows
+
+```tsx
+<Table
+  columns={columns}
+  data={orgRoots}
+  tree={{
+    children: (row) => row.children,
+    expandedNodes,
+    onExpandedNodesChange: setExpandedNodes,
+    maxDepth: 8,
+  }}
+/>
+```
+
+Tree mode replaces TanStack's flat row model with a recursive walk
+of `data` — `children` returns a row's children. Per level the
+first cell gets 14px indent + a twirl button on parents.
+
+## Sticky columns (A9)
+
+Pin a column with `meta.sticky: "left" | "right"`. Multiple columns
+can pin to the same side. Both ends pin simultaneously when both
+are set.
+
+```tsx
+const columns: TableColumn<Row>[] = [
+  { accessorKey: "name", header: "Employee", meta: { sticky: "left" } },
+  { accessorKey: "shop", header: "Shop" },
+  // …
+  { id: "actions", header: "操作", meta: { sticky: "right" } },
+];
+```
+
+The column-manager Sheet (via `toolbar={{ columns: {} }}`)
+includes a 🔒 / 🔓 toggle next to each visible column row so users
+can pin / unpin at runtime. Changes fire via
+`onColumnPinningChange(pinning: ColumnPinningState)` —
+the same shape TanStack uses for `columnPinning`.
+
+## Pagination variants (A10)
+
+`TablePaginationVariantConfig` is the discriminated union; pick the
+shape via `type`:
+
+```tsx
+pagination={{
+  type: "numbered",            // legacy default; type optional
+  current: 1, pageSize: 25, total: 1284,
+  onChange: (page, size) => { /* … */ },
+}}
+
+pagination={{
+  type: "load-more",
+  hasMore: true,
+  currentCount: 25,
+  total: 1284,
+  batchSize: 50,
+  onLoadMore: () => { /* … */ },
+  loadingMore: false,
+}}
+
+pagination={{
+  type: "cursor",
+  value: "2026-05",
+  inputType: "month",          // "month" | "date" | "week"
+  label: <>2026年 5月 (820 件)</>,
+  onChange: (next) => { /* … */ },
+  onPrev: () => { /* … */ },
+  onNext: () => { /* … */ },
+  onJumpToLatest: () => { /* … */ },
+}}
+```
+
+| Variant | When to use |
+|---|---|
+| `numbered` | Default. Lists < 10k rows — user thinks in "page 47". |
+| `load-more` | Feed-like / activity logs — user wants "show me more". |
+| `cursor` | Time-series (`勤怠` / `給与`) — user thinks in "month" / "week". |
+
+The legacy `TablePaginationConfig` shape is still accepted (it's a
+back-compat alias for `TablePaginationNumberedConfig`).
+
+## Import / Export composite (A11)
+
+`<TableImportFlow>` and `<TableExportDialog>` are a separate
+composite — NOT props on `<Table>` — per cardinal rule 32. Import
+them from `@godxjp/ui/components/composites`:
+
+```tsx
+import {
+  TableImportFlow,
+  TableExportDialog,
+} from "@godxjp/ui/components/composites";
+
+<TableImportFlow
+  title="勤怠データ取り込み"
+  currentStep="validate"
+  file={{ name: "kintai_2026_05.csv", progress: 798 / 1284, … }}
+  errors={[{ line: "L 124", message: "日付形式が不正", value: "26/5/14" }]}
+  actions={<Button>エラー行をスキップして取込</Button>}
+/>
+
+<TableExportDialog
+  open={open}
+  onOpenChange={setOpen}
+  format={format}
+  onFormatChange={setFormat}
+  range={range}
+  onRangeChange={setRange}
+  includeHiddenColumns={includeHidden}
+  onIncludeHiddenColumnsChange={setIncludeHidden}
+  rangeCounts={{ currentFilter: 1284, selected: 3, all: 12408 }}
+  columnCounts={{ visible: 8, total: 12 }}
+  onExport={() => downloadExport(format, range, includeHidden)}
+/>
+```
+
+Default format is `csv-utf8` (UTF-8 with BOM — Excel-safe).
+`csv-shift-jis` covers legacy Japanese systems. Default range is
+`current-filter` — matches what the user is looking at.
 
 ## See also
 

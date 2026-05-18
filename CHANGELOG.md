@@ -20,6 +20,40 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Table A5 — sort + resize** — `sort` accepts
+  `TableSort | TableSort[] | null`; shift-click on a sortable header
+  extends the multi-sort list and the header renders a numbered
+  priority badge (1 / 2 / 3) at the right edge. `resizable` enables
+  a 4px right-edge grip on each header; double-click auto-fits via
+  TanStack `column.resetSize()`.
+- **Table A6 — expand row** — `expandable` adds a 32px first cell
+  with a ▶ toggle; the detail panel sits in a full-width row with
+  the canonical 3px primary left border. Exclusive by default;
+  `allowMultiple` keeps prior opens.
+- **Table A7 — inline editing** — `editing` carries `rowId` (current
+  editing row), `dirtyRowIds` / `dirtyCellIds` (warning-dot
+  tracking), `renderEditCell`, `isRowReadOnly`, and a built-in
+  footer banner (`.tbl-footer[data-state="dirty"]`) with Save-all /
+  Cancel-all when any row is dirty. Confirmed rows are read-only
+  via `isRowReadOnly` — double-click is suppressed.
+- **Table A8 — grouped + tree rows** — `groupBy` buckets rows by
+  key, emits a full-width `.group-row` header with title + count
+  badge + right-floated total. `tree.children` walks data
+  recursively, emitting 14px / level indent and a twirl button on
+  parent rows.
+- **Table A9 — column-manager lock toggle** — the column-manager
+  Sheet renders a 🔒 / 🔓 button next to each row to pin / unpin
+  columns at runtime; changes fire through `onColumnPinningChange`
+  (TanStack-canonical `ColumnPinningState`).
+- **Table A10 — pagination variants** — `TablePaginationVariantConfig`
+  discriminates on `type`: `numbered` (default + back-compat),
+  `load-more` (feed lists with `hasMore` + `onLoadMore`), and
+  `cursor` (time-series jump-to-month via `value` + `inputType`).
+- **Table A11 — Import / Export composite** — new
+  `TableImportFlow` (4-step stepper + file card + error preview)
+  and `TableExportDialog` (format / range / hidden-column toggles)
+  in `@godxjp/ui/components/composites`. Separate from the Table
+  primitive per cardinal rule 32 (no redundant props on Table).
 - **Table saved views** — `TableViewsConfig` now lets saved-view tabs
   apply `filters`, `sort`, and `columnVisibility` snapshots while
   keeping persistence in consumer state. The Table story opens a

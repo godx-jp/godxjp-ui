@@ -119,6 +119,11 @@ const STORY_EXEMPT = new Set([
   // Notification is a second story file for the Toaster primitive
   // (one Sonner-backed toast surface, two consumer-facing flavours).
   "Notification",
+  // TableImportExport is a composite (TableImportFlow + TableExportDialog)
+  // that ships from `composites/table-import-export`, not from
+  // primitives.ts. Lives in data-display alongside Table for
+  // Storybook proximity (canon ⑪).
+  "TableImportExport",
 ]);
 
 function readPrimitiveExports() {
