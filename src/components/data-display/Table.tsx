@@ -1386,6 +1386,15 @@ export function Table<TData>({
     if (columnVisibility === undefined) setInternalColumnVisibility(next);
     onColumnVisibilityChange?.(next);
   };
+  // Memoise the controlled-state object so the reference stays stable
+  // across renders when the underlying values haven't changed. Without
+  // this, TanStack receives a fresh object literal each render which
+  // can amplify re-render churn (especially under React 19 strict mode
+  // dev double-rendering).
+  const tableState = useMemo(
+    () => ({ columnPinning, columnVisibility: effectiveColumnVisibility }),
+    [columnPinning, effectiveColumnVisibility],
+  );
   const table = useReactTable({
     data,
     columns,
@@ -1396,7 +1405,7 @@ export function Table<TData>({
     columnResizeMode: "onChange",
     onColumnVisibilityChange: handleColumnVisibilityChange,
     onColumnPinningChange: handleColumnPinningChange,
-    state: { columnPinning, columnVisibility: effectiveColumnVisibility },
+    state: tableState,
   });
   useEffect(() => {
     writePersistedColumnVisibility(

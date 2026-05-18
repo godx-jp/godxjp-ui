@@ -350,6 +350,14 @@ export const Default: Story = {
 
 export const PackagedFeatures: Story = {
   name: "Packaged features · views · columns · batch actions",
+  parameters: {
+    // The story's prop tree (TanStack column defs + view items + batch
+    // actions JSX + 12-row dataset) overflows Storybook's runtime
+    // `prettyPrint2` serializer (RangeError: Invalid string length).
+    // Pin the Code panel to the static source extracted at build time
+    // instead of the dynamic runtime walk.
+    docs: { source: { type: "code" } },
+  },
   render: () => {
     const [activeViewKey, setActiveViewKey] = useState("all");
     const [filters, setFilters] = useState<TableFilter[]>([]);
