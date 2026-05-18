@@ -65,30 +65,28 @@ export const TimeFieldStory: Story = {
 
 // ─── TimeInput — plain text HH:MM ───────────────────────────────
 
-function ControlledTimeInput() {
-  const [value, setValue] = useState("09:30");
-  return (
-    <Flex vertical gap="small" style={{ maxWidth: 200 }}>
-      <label htmlFor="ti-demo" style={{ fontSize: "var(--text-xs)" }}>
-        退勤時刻
-      </label>
-      <TimeInput id="ti-demo" value={value} onChange={setValue} />
-      <span
-        style={{
-          fontSize: "var(--text-xs)",
-          color: "var(--muted-foreground)",
-        }}
-      >
-        Normalized value:{" "}
-        <code className="mono">{JSON.stringify(value)}</code>
-      </span>
-    </Flex>
-  );
-}
-
 export const TimeInputStory: Story = {
   name: "TimeInput · plain HH:MM input",
-  render: () => <ControlledTimeInput />,
+  render: function TimeInputStory() {
+    const [value, setValue] = useState("09:30");
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 200 }}>
+        <label htmlFor="ti-demo" style={{ fontSize: "var(--text-xs)" }}>
+          退勤時刻
+        </label>
+        <TimeInput id="ti-demo" value={value} onChange={setValue} />
+        <span
+          style={{
+            fontSize: "var(--text-xs)",
+            color: "var(--muted-foreground)",
+          }}
+        >
+          Normalized value:{" "}
+          <code className="mono">{JSON.stringify(value)}</code>
+        </span>
+      </Flex>
+    );
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 

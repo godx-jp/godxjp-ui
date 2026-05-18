@@ -74,53 +74,6 @@ Tailwind \`2xl:\` utility variant aliases to \`--breakpoint-xxl\`.`.trim(),
   ),
 };
 
-function LiveReadout() {
-  const bp = useBreakpoint();
-  const [width, setWidth] = useState(() =>
-    typeof window === "undefined" ? 0 : window.innerWidth,
-  );
-  useEffect(() => {
-    const onResize = () => setWidth(window.innerWidth);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  return (
-    <Card
-      title="Live viewport"
-      meta={`useBreakpoint() = "${bp}"`}
-      accent="primary"
-    >
-      <Flex vertical gap="small">
-        <Flex align="baseline" gap="middle">
-          <span className="stat lg">{width}<span className="unit">px</span></span>
-          <span style={muted}>resize your browser to watch this re-render</span>
-        </Flex>
-        <div className="dv-stack" style={{ marginTop: 8 }}>
-          {BREAKPOINTS.map(([target]) => (
-            <Flex key={target} align="center" gap="middle">
-              <code className="mono" style={{ width: 60, fontSize: "var(--text-xs)" }}>{target}</code>
-              <code className="mono" style={muted}>matchBreakpoint(bp, "{target}")</code>
-              <span
-                className="dot"
-                style={{
-                  background: matchBreakpoint(bp, target) ? "var(--success)" : "var(--muted-foreground)",
-                  marginLeft: "auto",
-                  width: 8,
-                  height: 8,
-                }}
-              />
-              <span style={{ ...muted, width: 40 }}>
-                {matchBreakpoint(bp, target) ? "true" : "false"}
-              </span>
-            </Flex>
-          ))}
-        </div>
-      </Flex>
-    </Card>
-  );
-}
-
 export const LiveReadoutStory: StoryObj = {
   name: "Live viewport readout (useBreakpoint)",
   parameters: {
@@ -133,7 +86,51 @@ Token chain: \`getComputedStyle(:root).--breakpoint-md\` → matchMedia
       },
     },
   },
-  render: () => <LiveReadout />,
+  render: function LiveReadoutStory() {
+    const bp = useBreakpoint();
+    const [width, setWidth] = useState(() =>
+      typeof window === "undefined" ? 0 : window.innerWidth,
+    );
+    useEffect(() => {
+      const onResize = () => setWidth(window.innerWidth);
+      window.addEventListener("resize", onResize);
+      return () => window.removeEventListener("resize", onResize);
+    }, []);
+    return (
+      <Card
+        title="Live viewport"
+        meta={`useBreakpoint() = "${bp}"`}
+        accent="primary"
+      >
+        <Flex vertical gap="small">
+          <Flex align="baseline" gap="middle">
+            <span className="stat lg">{width}<span className="unit">px</span></span>
+            <span style={muted}>resize your browser to watch this re-render</span>
+          </Flex>
+          <div className="dv-stack" style={{ marginTop: 8 }}>
+            {BREAKPOINTS.map(([target]) => (
+              <Flex key={target} align="center" gap="middle">
+                <code className="mono" style={{ width: 60, fontSize: "var(--text-xs)" }}>{target}</code>
+                <code className="mono" style={muted}>matchBreakpoint(bp, "{target}")</code>
+                <span
+                  className="dot"
+                  style={{
+                    background: matchBreakpoint(bp, target) ? "var(--success)" : "var(--muted-foreground)",
+                    marginLeft: "auto",
+                    width: 8,
+                    height: 8,
+                  }}
+                />
+                <span style={{ ...muted, width: 40 }}>
+                  {matchBreakpoint(bp, target) ? "true" : "false"}
+                </span>
+              </Flex>
+            ))}
+          </div>
+        </Flex>
+      </Card>
+    );
+  },
 };
 
 export const RowColResponsive: StoryObj = {

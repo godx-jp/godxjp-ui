@@ -63,7 +63,7 @@ Hooks:
 export default meta;
 type Story = StoryObj;
 
-function LocaleDemo() {
+function ProviderPanel() {
   const { locale, timezone, setLocale, setTimezone } = useGodxConfig();
   const fmt = useFormatters();
   const now = new Date();
@@ -145,7 +145,7 @@ export const Default: Story = {
         defaultTimezone="Asia/Tokyo"
         defaultCurrency="JPY"
       >
-        <LocaleDemo />
+        <ProviderPanel />
       </GodxConfigProvider>
     );
   },
@@ -164,7 +164,7 @@ export const Switching: Story = {
   render: function Switching() {
     return (
       <GodxConfigProvider defaultLocale="en-US" defaultTimezone="Asia/Tokyo">
-        <LocaleDemo />
+        <ProviderPanel />
       </GodxConfigProvider>
     );
   },
@@ -194,13 +194,13 @@ so values stay fresh as the user changes them.`,
   render: function HeadersAxios() {
     return (
       <GodxConfigProvider defaultLocale="ja" defaultTimezone="Asia/Tokyo">
-        <HeadersInspector />
+        <HeadersPanel />
       </GodxConfigProvider>
     );
   },
 };
 
-function HeadersInspector() {
+function HeadersPanel() {
   const { headers, locale, timezone, setLocale, setTimezone } = useGodxConfig();
   const [snapshot, setSnapshot] = useState<Record<string, string> | null>(null);
 

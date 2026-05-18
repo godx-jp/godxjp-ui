@@ -67,84 +67,66 @@ const SECTIONS: SidebarSection[] = [
 const ACTIVE_PRODUCT = PRODUCTS[1]; // godx
 const ACTIVE_PROJECT = ACTIVE_PRODUCT.projects[0];
 
-function ShellPlayground({
-  collapsed = false,
-  footer,
-}: {
-  collapsed?: boolean;
-  footer?: boolean;
-}) {
-  const [activeId, setActiveId] = useState("dashboard");
-  const [productOpen, setProductOpen] = useState(false);
-  const [projectOpen, setProjectOpen] = useState(false);
-
-  return (
-    <AppShell
-      sidebarCollapsed={collapsed}
-      sidebar={
-        <Sidebar
-          activeId={activeId}
-          onSelect={setActiveId}
-          sections={SECTIONS}
-          product={ACTIVE_PRODUCT}
-          onProductClick={() => setProductOpen(true)}
-          collapsed={collapsed}
-        />
-      }
-      topbar={
-        <>
-          <ProductSwitcher
-            trigger={<span />}
-            activeId={ACTIVE_PRODUCT.id}
-            products={PRODUCTS}
-            onSelect={() => setProductOpen(false)}
-            open={productOpen}
-            onOpenChange={setProductOpen}
-          />
-          <ProjectSwitcher
-            trigger={<span />}
-            activeProductId={ACTIVE_PRODUCT.id}
-            activeProjectId={ACTIVE_PROJECT.id}
-            products={PRODUCTS}
-            onSelect={() => setProjectOpen(false)}
-            open={projectOpen}
-            onOpenChange={setProjectOpen}
-          />
-          <Topbar
-            product={ACTIVE_PRODUCT}
-            project={ACTIVE_PROJECT}
-            onProductOpen={() => setProductOpen(true)}
-            onProjectOpen={() => setProjectOpen(true)}
-            onSearchOpen={() => undefined}
-            onTweaksOpen={() => undefined}
-            user={<Avatar size="sm" alt="Satoshi" />}
-          />
-        </>
-      }
-      footer={
-        footer ? (
-          <Typography.Text color="secondary">
-            © 2026 GoDX Forge · build {ACTIVE_PROJECT.lastCommit}
-          </Typography.Text>
-        ) : undefined
-      }
-    >
-      <PageContent
-        title="Dashboard"
-        subtitle="Workspace activity, KPIs, and recent commits"
-        extra={<Button variant="primary">New issue</Button>}
-      >
-        <Typography.Paragraph>
-          Main content area. Pages drop their content here — KPI tiles,
-          tables, kanban boards. The shell handles every chrome region.
-        </Typography.Paragraph>
-      </PageContent>
-    </AppShell>
-  );
-}
-
 export const Default: Story = {
-  render: () => <ShellPlayground />,
+  render: function Default() {
+    const [activeId, setActiveId] = useState("dashboard");
+    const [productOpen, setProductOpen] = useState(false);
+    const [projectOpen, setProjectOpen] = useState(false);
+    return (
+      <AppShell
+        sidebar={
+          <Sidebar
+            activeId={activeId}
+            onSelect={setActiveId}
+            sections={SECTIONS}
+            product={ACTIVE_PRODUCT}
+            onProductClick={() => setProductOpen(true)}
+          />
+        }
+        topbar={
+          <>
+            <ProductSwitcher
+              trigger={<span />}
+              activeId={ACTIVE_PRODUCT.id}
+              products={PRODUCTS}
+              onSelect={() => setProductOpen(false)}
+              open={productOpen}
+              onOpenChange={setProductOpen}
+            />
+            <ProjectSwitcher
+              trigger={<span />}
+              activeProductId={ACTIVE_PRODUCT.id}
+              activeProjectId={ACTIVE_PROJECT.id}
+              products={PRODUCTS}
+              onSelect={() => setProjectOpen(false)}
+              open={projectOpen}
+              onOpenChange={setProjectOpen}
+            />
+            <Topbar
+              product={ACTIVE_PRODUCT}
+              project={ACTIVE_PROJECT}
+              onProductOpen={() => setProductOpen(true)}
+              onProjectOpen={() => setProjectOpen(true)}
+              onSearchOpen={() => undefined}
+              onTweaksOpen={() => undefined}
+              user={<Avatar size="sm" alt="Satoshi" />}
+            />
+          </>
+        }
+      >
+        <PageContent
+          title="Dashboard"
+          subtitle="Workspace activity, KPIs, and recent commits"
+          extra={<Button variant="primary">New issue</Button>}
+        >
+          <Typography.Paragraph>
+            Main content area. Pages drop their content here — KPI tiles,
+            tables, kanban boards. The shell handles every chrome region.
+          </Typography.Paragraph>
+        </PageContent>
+      </AppShell>
+    );
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -159,10 +141,133 @@ export const Default: Story = {
 
 export const WithFooter: Story = {
   name: "With footer band",
-  render: () => <ShellPlayground footer />,
+  render: function WithFooter() {
+    const [activeId, setActiveId] = useState("dashboard");
+    const [productOpen, setProductOpen] = useState(false);
+    const [projectOpen, setProjectOpen] = useState(false);
+    return (
+      <AppShell
+        sidebar={
+          <Sidebar
+            activeId={activeId}
+            onSelect={setActiveId}
+            sections={SECTIONS}
+            product={ACTIVE_PRODUCT}
+            onProductClick={() => setProductOpen(true)}
+          />
+        }
+        topbar={
+          <>
+            <ProductSwitcher
+              trigger={<span />}
+              activeId={ACTIVE_PRODUCT.id}
+              products={PRODUCTS}
+              onSelect={() => setProductOpen(false)}
+              open={productOpen}
+              onOpenChange={setProductOpen}
+            />
+            <ProjectSwitcher
+              trigger={<span />}
+              activeProductId={ACTIVE_PRODUCT.id}
+              activeProjectId={ACTIVE_PROJECT.id}
+              products={PRODUCTS}
+              onSelect={() => setProjectOpen(false)}
+              open={projectOpen}
+              onOpenChange={setProjectOpen}
+            />
+            <Topbar
+              product={ACTIVE_PRODUCT}
+              project={ACTIVE_PROJECT}
+              onProductOpen={() => setProductOpen(true)}
+              onProjectOpen={() => setProjectOpen(true)}
+              onSearchOpen={() => undefined}
+              onTweaksOpen={() => undefined}
+              user={<Avatar size="sm" alt="Satoshi" />}
+            />
+          </>
+        }
+        footer={
+          <Typography.Text color="secondary">
+            © 2026 GoDX Forge · build {ACTIVE_PROJECT.lastCommit}
+          </Typography.Text>
+        }
+      >
+        <PageContent
+          title="Dashboard"
+          subtitle="Workspace activity, KPIs, and recent commits"
+          extra={<Button variant="primary">New issue</Button>}
+        >
+          <Typography.Paragraph>
+            Main content area. Pages drop their content here — KPI tiles,
+            tables, kanban boards. The shell handles every chrome region.
+          </Typography.Paragraph>
+        </PageContent>
+      </AppShell>
+    );
+  },
 };
 
 export const Collapsed: Story = {
   name: "Sidebar collapsed",
-  render: () => <ShellPlayground collapsed />,
+  render: function Collapsed() {
+    const [activeId, setActiveId] = useState("dashboard");
+    const [productOpen, setProductOpen] = useState(false);
+    const [projectOpen, setProjectOpen] = useState(false);
+    return (
+      <AppShell
+        sidebarCollapsed
+        sidebar={
+          <Sidebar
+            activeId={activeId}
+            onSelect={setActiveId}
+            sections={SECTIONS}
+            product={ACTIVE_PRODUCT}
+            onProductClick={() => setProductOpen(true)}
+            collapsed
+          />
+        }
+        topbar={
+          <>
+            <ProductSwitcher
+              trigger={<span />}
+              activeId={ACTIVE_PRODUCT.id}
+              products={PRODUCTS}
+              onSelect={() => setProductOpen(false)}
+              open={productOpen}
+              onOpenChange={setProductOpen}
+            />
+            <ProjectSwitcher
+              trigger={<span />}
+              activeProductId={ACTIVE_PRODUCT.id}
+              activeProjectId={ACTIVE_PROJECT.id}
+              products={PRODUCTS}
+              onSelect={() => setProjectOpen(false)}
+              open={projectOpen}
+              onOpenChange={setProjectOpen}
+            />
+            <Topbar
+              product={ACTIVE_PRODUCT}
+              project={ACTIVE_PROJECT}
+              onProductOpen={() => setProductOpen(true)}
+              onProjectOpen={() => setProjectOpen(true)}
+              onSearchOpen={() => undefined}
+              onTweaksOpen={() => undefined}
+              user={<Avatar size="sm" alt="Satoshi" />}
+            />
+          </>
+        }
+      >
+        <PageContent
+          title="Dashboard"
+          subtitle="Workspace activity, KPIs, and recent commits"
+          extra={<Button variant="primary">New issue</Button>}
+        >
+          <Typography.Paragraph>
+            Main content area. Pages drop their content here — KPI tiles,
+            tables, kanban boards. The shell handles every chrome region.
+          </Typography.Paragraph>
+        </PageContent>
+      </AppShell>
+    );
+  },
 };
