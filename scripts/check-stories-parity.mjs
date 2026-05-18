@@ -119,6 +119,11 @@ const STORY_EXEMPT = new Set([
   // Notification is a second story file for the Toaster primitive
   // (one Sonner-backed toast surface, two consumer-facing flavours).
   "Notification",
+  // TableImportExport is a composite (TableImportFlow + TableExportDialog)
+  // that ships from `composites/table-import-export`, not from
+  // primitives.ts. Lives in data-display alongside Table for
+  // Storybook proximity (canon ⑪).
+  "TableImportExport",
 ]);
 
 function readPrimitiveExports() {
@@ -162,7 +167,7 @@ function expectedStoryFor(primitive) {
   // Sub-exports of a family share the parent's story file. We treat
   // any name whose root matches a `<Family>` + suffix as belonging to
   // that family if `<Family>` is itself an exported primitive. This is
-  // the "Card → CardHeader / CardBody / …" pattern.
+  // the "Card → Card header / Card body / …" pattern.
   if (PRIMITIVE_TO_STORY[primitive]) return PRIMITIVE_TO_STORY[primitive];
   if (CALENDAR_RE.test(primitive)) return "Calendar";
   return primitive;
@@ -176,8 +181,8 @@ function main() {
   const exports = readPrimitiveExports();
   const stories = readStoryFiles();
 
-  // Sub-export normalisation. CardHeader / CardBody / DialogTrigger /
-  // PopoverContent / … don't ship their own story file — they're part
+  // Sub-export normalisation. Card header / Card body / Popover /
+  // … don't ship their own story file — they're part
   // of the family's compositional API. We collapse them onto the
   // family root ONLY when (a) the name starts with another exported
   // primitive followed by an UPPERCASE letter (so "ColorPicker" with
@@ -195,7 +200,7 @@ function main() {
       if (candidate === name) continue;
       if (!name.startsWith(candidate)) continue;
       const suffix = name.slice(candidate.length);
-      if (!/^[A-Z]/.test(suffix)) continue;   // ColorPicker / Col guard
+      if (!/^[A-Z]/.test(suffix)) continue; // ColorPicker / Col guard
       if (!best || candidate.length > best.length) best = candidate;
     }
     return best;
@@ -243,7 +248,9 @@ function main() {
     process.exit(0);
   }
 
-  console.error(`stories ↔ primitives parity: ${violations.length} violation(s)`);
+  console.error(
+    `stories ↔ primitives parity: ${violations.length} violation(s)`,
+  );
   for (const v of violations) console.error(v);
   process.exit(1);
 }

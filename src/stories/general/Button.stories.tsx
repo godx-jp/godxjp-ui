@@ -21,7 +21,7 @@ import { Flex } from "../../components/layout";
  *   §21 — every axis (theme/accent/density/font-size)
  *   §22 — every literal token-pinned
  *   §23 — vocabulary (`size`, `variant`, `block`, `loading`,
- *          `startContent`, `endContent` per new-docs/04)
+ *          `startContent`, `endContent` per docs/specs/04)
  *   §24 — mobile-first touch-target floor (@media <md → 44px)
  *   §25 — story is docs; primitive is the UI (see Button.tsx +
  *          .btn CSS in shell.css for the implementation)
@@ -47,9 +47,9 @@ Vocabulary per cardinal rule 23 §B:
 - \`block\`: full-width modifier
 - \`loading\`: spinner + disabled
 
-Mobile-first per cardinal rule 24: on \`xs/sm\` viewports every
-button (except \`link\`) floors to \`--touch-target-min\` (44px) —
-WCAG 2.1 AA touch surface.
+Mobile-first per cardinal rule 24: on \`xs/sm\` viewports visual
+height still follows \`size\` + density. The 44px floor is a hit-area
+requirement, not a mobile visual-height override.
         `.trim(),
       },
     },
@@ -169,8 +169,8 @@ export const Block: Story = {
     docs: {
       description: {
         story: `\`block\` stretches the button to fill its parent. Common on
-mobile form submit. Per cardinal rule 24 §B the button floors to
-44px on \`xs/sm\` viewports regardless of \`size\`.`.trim(),
+mobile form submit. Per cardinal rule 24 §B the painted height still
+follows \`size\` + density on \`xs/sm\`; 44px is a hit-area floor.`.trim(),
       },
     },
   },
@@ -217,16 +217,16 @@ export const MobileTouchTarget: Story = {
     docs: {
       description: {
         story: `Resize the Storybook canvas (Viewports toolbar) to **mobile1**
-(< 768px) and observe every button — regardless of \`size\` —
-flooring to 44px min-height. \`variant="link"\` is text-style and
-exempt.`.trim(),
+(< 768px) and observe that visual height still follows \`size\` +
+density. The 44px floor is handled as hit-area, not painted height.
+\`variant="link"\` is text-style and exempt.`.trim(),
       },
     },
   },
   render: () => (
     <Flex vertical gap="small" align="start">
-      <Button size="x-small">x-small (floors to 44 on mobile)</Button>
-      <Button size="small">small (floors to 44 on mobile)</Button>
+      <Button size="x-small">x-small</Button>
+      <Button size="small">small</Button>
       <Button size="default">default</Button>
       <Button size="large">large</Button>
       <Button variant="link">link (text-style — exempt)</Button>

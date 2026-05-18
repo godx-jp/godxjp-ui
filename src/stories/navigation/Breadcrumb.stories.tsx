@@ -1,27 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbSep,
-} from "../../components/navigation/Breadcrumb";
+import { Breadcrumb } from "../../components/navigation/Breadcrumb";
 
 /**
  * Navigation/Breadcrumb — hierarchy path indicator.
  *
- * Compositional API:
- *   <Breadcrumb>
- *     <BreadcrumbItem href="/">famgia</BreadcrumbItem>
- *     <BreadcrumbSep />
- *     <BreadcrumbItem href="/shibuya">渋谷本店</BreadcrumbItem>
- *     <BreadcrumbSep />
- *     <BreadcrumbItem current>田中 美咲</BreadcrumbItem>
- *   </Breadcrumb>
- *
  * Vocabulary (per cardinal rule 23 §B):
  *   - `current: boolean` per item — sets `aria-current="page"`.
  *   - `href` — anchor element; omit for non-link items.
- *   - Compositional separators via `<BreadcrumbSep />` — caller picks
- *     `/`, `›`, `→` etc. (no `separator` prop conflated into the root).
+ *   - `separator` — root-level visual separator.
  */
 
 const meta: Meta<typeof Breadcrumb> = {
@@ -37,40 +23,39 @@ type Story = StoryObj<typeof Breadcrumb>;
 export const Default: Story = {
   name: "Default · 3 levels",
   render: () => (
-    <Breadcrumb>
-      <BreadcrumbItem href="/">famgia</BreadcrumbItem>
-      <BreadcrumbSep />
-      <BreadcrumbItem href="/shibuya">渋谷本店</BreadcrumbItem>
-      <BreadcrumbSep />
-      <BreadcrumbItem current>田中 美咲</BreadcrumbItem>
-    </Breadcrumb>
+    <Breadcrumb
+      items={[
+        { href: "/", label: "famgia" },
+        { href: "/shibuya", label: "渋谷本店" },
+        { current: true, label: "田中 美咲" },
+      ]}
+    />
   ),
 };
 
 export const WithSubsections: Story = {
   name: "Deep path · 5 levels",
   render: () => (
-    <Breadcrumb>
-      <BreadcrumbItem href="/">famgia</BreadcrumbItem>
-      <BreadcrumbSep />
-      <BreadcrumbItem href="/orgs">組織</BreadcrumbItem>
-      <BreadcrumbSep />
-      <BreadcrumbItem href="/orgs/betoya">Betoya</BreadcrumbItem>
-      <BreadcrumbSep />
-      <BreadcrumbItem href="/orgs/betoya/stores">店舗</BreadcrumbItem>
-      <BreadcrumbSep />
-      <BreadcrumbItem current>渋谷本店</BreadcrumbItem>
-    </Breadcrumb>
+    <Breadcrumb
+      items={[
+        { href: "/", label: "famgia" },
+        { href: "/orgs", label: "組織" },
+        { href: "/orgs/betoya", label: "Betoya" },
+        { href: "/orgs/betoya/stores", label: "店舗" },
+        { current: true, label: "渋谷本店" },
+      ]}
+    />
   ),
 };
 
 export const TwoLevels: Story = {
   name: "Shallow · 2 levels",
   render: () => (
-    <Breadcrumb>
-      <BreadcrumbItem href="/dashboard">ダッシュボード</BreadcrumbItem>
-      <BreadcrumbSep />
-      <BreadcrumbItem current>勤怠サマリー</BreadcrumbItem>
-    </Breadcrumb>
+    <Breadcrumb
+      items={[
+        { href: "/dashboard", label: "ダッシュボード" },
+        { current: true, label: "勤怠サマリー" },
+      ]}
+    />
   ),
 };

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { Steps, Step } from "../../components/navigation/Steps";
+import { Steps } from "../../components/navigation/Steps";
 
 /**
  * Navigation/Steps — wizard / progress indicator.
@@ -26,13 +26,16 @@ type Story = StoryObj<typeof Steps>;
 export const Horizontal: Story = {
   name: "Horizontal · 5 steps · current = 2",
   render: () => (
-    <Steps current={2}>
-      <Step title="情報入力" description="5/14 09:22" />
-      <Step title="確認" description="5/14 09:24" />
-      <Step title="承認待ち" description="進行中" />
-      <Step title="支払い" description="—" />
-      <Step title="完了" description="—" />
-    </Steps>
+    <Steps
+      current={2}
+      items={[
+        { title: "情報入力", description: "5/14 09:22" },
+        { title: "確認", description: "5/14 09:24" },
+        { title: "承認待ち", description: "進行中" },
+        { title: "支払い", description: "—" },
+        { title: "完了", description: "—" },
+      ]}
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -53,47 +56,45 @@ export const Horizontal: Story = {
 export const HorizontalFirst: Story = {
   name: "Horizontal · current = 0",
   render: () => (
-    <Steps current={0}>
-      <Step title="会社情報" description="基本情報を入力" />
-      <Step title="従業員" description="一括登録" />
-      <Step title="シフト" description="テンプレート作成" />
-      <Step title="給与連携" description="freee 連携" />
-    </Steps>
+    <Steps
+      current={0}
+      items={[
+        { title: "会社情報", description: "基本情報を入力" },
+        { title: "従業員", description: "一括登録" },
+        { title: "シフト", description: "テンプレート作成" },
+        { title: "給与連携", description: "freee 連携" },
+      ]}
+    />
   ),
 };
 
 export const HorizontalLast: Story = {
   name: "Horizontal · final step",
   render: () => (
-    <Steps current={3}>
-      <Step title="申請" description="完了" />
-      <Step title="一次承認" description="完了" />
-      <Step title="最終承認" description="完了" />
-      <Step title="支払い反映" description="進行中" />
-    </Steps>
+    <Steps
+      current={3}
+      items={[
+        { title: "申請", description: "完了" },
+        { title: "一次承認", description: "完了" },
+        { title: "最終承認", description: "完了" },
+        { title: "支払い反映", description: "進行中" },
+      ]}
+    />
   ),
 };
 
 export const Vertical: Story = {
   name: "Vertical · 4 steps",
   render: () => (
-    <Steps orientation="vertical" current={2}>
-      <Step
-        title="会社情報を入力"
-        description="基本情報 · 締め日 · 通貨を設定済み"
-      />
-      <Step
-        title="従業員をインポート"
-        description="38 名 · CSV から一括登録"
-      />
-      <Step
-        title="シフトテンプレートを作成"
-        description="早番 / 遅番 / 通し のパターンを定義します"
-      />
-      <Step
-        title="給与連携を設定"
-        description="freee · マネーフォワードと接続"
-      />
-    </Steps>
+    <Steps
+      orientation="vertical"
+      current={2}
+      items={[
+        { title: "会社情報を入力", description: "基本情報 · 締め日 · 通貨を設定済み" },
+        { title: "従業員をインポート", description: "38 名 · CSV から一括登録" },
+        { title: "シフトテンプレートを作成", description: "早番 / 遅番 / 通し のパターンを定義します" },
+        { title: "給与連携を設定", description: "freee · マネーフォワードと接続" },
+      ]}
+    />
   ),
 };

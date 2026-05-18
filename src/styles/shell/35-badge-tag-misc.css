@@ -28,50 +28,174 @@
   white-space: nowrap;
 }
 
-.chip .dot { width: 6px; height: 6px; border-radius: var(--radius-full); flex-shrink: 0; background: currentColor; }
+.chip .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  background: currentColor;
+}
 
 /* Solid role variants — full role color, no border. */
-.chip-primary    { background: var(--primary);     color: var(--primary-foreground);     border-color: transparent; }
-.chip-success    { background: var(--success);     color: var(--success-foreground);     border-color: transparent; }
-.chip-warning    { background: var(--warning);     color: var(--warning-foreground);     border-color: transparent; }
-.chip-info       { background: var(--info);        color: var(--info-foreground);        border-color: transparent; }
-.chip-destructive{ background: var(--destructive); color: var(--destructive-foreground); border-color: transparent; }
-.chip-attention  { background: var(--attention);   color: var(--attention-foreground);   border-color: transparent; }
+.chip-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: transparent;
+}
+.chip-success {
+  background: var(--success);
+  color: var(--success-foreground);
+  border-color: transparent;
+}
+.chip-warning {
+  background: var(--warning);
+  color: var(--warning-foreground);
+  border-color: transparent;
+}
+.chip-info {
+  background: var(--info);
+  color: var(--info-foreground);
+  border-color: transparent;
+}
+.chip-destructive {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+  border-color: transparent;
+}
+.chip-attention {
+  background: var(--attention);
+  color: var(--attention-foreground);
+  border-color: transparent;
+}
 
-.chip-outline    { background: transparent; color: var(--muted-foreground); border-color: var(--border); }
+.chip-outline {
+  background: transparent;
+  color: var(--muted-foreground);
+  border-color: var(--border);
+}
 
 /* Soft (translucent) modifier — composes with a role variant. */
-.chip-soft.chip-primary    { background: color-mix(in oklch, var(--primary) 14%, transparent);     color: color-mix(in oklch, var(--primary) 80%, var(--foreground));     border-color: transparent; }
-.chip-soft.chip-success    { background: color-mix(in oklch, var(--success) 14%, transparent);     color: color-mix(in oklch, var(--success) 80%, var(--foreground));     border-color: transparent; }
-.chip-soft.chip-warning    { background: color-mix(in oklch, var(--warning) 18%, transparent);     color: color-mix(in oklch, var(--warning) 50%, var(--foreground));     border-color: transparent; }
-.chip-soft.chip-info       { background: color-mix(in oklch, var(--info) 14%, transparent);        color: color-mix(in oklch, var(--info) 80%, var(--foreground));        border-color: transparent; }
-.chip-soft.chip-destructive{ background: color-mix(in oklch, var(--destructive) 14%, transparent); color: color-mix(in oklch, var(--destructive) 80%, var(--foreground)); border-color: transparent; }
-.chip-soft.chip-attention  { background: color-mix(in oklch, var(--attention) 14%, transparent);   color: color-mix(in oklch, var(--attention) 80%, var(--foreground));   border-color: transparent; }
+.chip-soft.chip-primary {
+  background: color-mix(in oklch, var(--primary) 14%, transparent);
+  color: color-mix(in oklch, var(--primary) 80%, var(--foreground));
+  border-color: transparent;
+}
+.chip-soft.chip-success {
+  background: color-mix(in oklch, var(--success) 14%, transparent);
+  color: color-mix(in oklch, var(--success) 80%, var(--foreground));
+  border-color: transparent;
+}
+.chip-soft.chip-warning {
+  background: color-mix(in oklch, var(--warning) 18%, transparent);
+  color: color-mix(in oklch, var(--warning) 50%, var(--foreground));
+  border-color: transparent;
+}
+.chip-soft.chip-info {
+  background: color-mix(in oklch, var(--info) 14%, transparent);
+  color: color-mix(in oklch, var(--info) 80%, var(--foreground));
+  border-color: transparent;
+}
+.chip-soft.chip-destructive {
+  background: color-mix(in oklch, var(--destructive) 14%, transparent);
+  color: color-mix(in oklch, var(--destructive) 80%, var(--foreground));
+  border-color: transparent;
+}
+.chip-soft.chip-attention {
+  background: color-mix(in oklch, var(--attention) 14%, transparent);
+  color: color-mix(in oklch, var(--attention) 80%, var(--foreground));
+  border-color: transparent;
+}
 
 /* Soft modifier without role = neutral surface-3 tint. */
-.chip-soft { background: var(--surface-3); color: var(--muted-foreground); border-color: transparent; }
+.chip-soft {
+  background: var(--surface-3);
+  color: var(--muted-foreground);
+  border-color: transparent;
+}
 
 /* Legacy aliases — keep callers compiling during the migration window.
  * `<Badge>` emits `.chip` (canonical) now; these survive only for
  * external services that imported `@godxjp/ui/styles/shell.css` and
  * targeted `.badge*` directly. Slated for removal once every consumer
  * migrates to the chip family. */
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 1px var(--spacing-2); border-radius: var(--radius-full); font-size: var(--text-2xs); font-weight: 500; line-height: 1.5; border: 1px solid transparent; }
-.badge .dot { width: 6px; height: 6px; border-radius: 99px; flex-shrink: 0; background: currentColor; }
-.badge-success   { background: color-mix(in oklch, var(--success) 14%, transparent);   color: color-mix(in oklch, var(--success) 80%, var(--foreground)); }
-.badge-warning   { background: color-mix(in oklch, var(--warning) 18%, transparent);   color: color-mix(in oklch, var(--warning) 50%, var(--foreground)); }
-.badge-info      { background: color-mix(in oklch, var(--info) 14%, transparent);      color: color-mix(in oklch, var(--info) 80%, var(--foreground)); }
-.badge-error     { background: color-mix(in oklch, var(--error) 14%, transparent);     color: color-mix(in oklch, var(--error) 80%, var(--foreground)); }
-.badge-attention { background: color-mix(in oklch, var(--attention) 14%, transparent); color: color-mix(in oklch, var(--attention) 80%, var(--foreground)); }
-.badge-neutral   { background: var(--surface-3); color: var(--muted-foreground); }
-.badge-outline   { background: transparent; border-color: var(--border); color: var(--muted-foreground); }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px var(--spacing-2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  line-height: 1.5;
+  border: 1px solid transparent;
+}
+.badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  flex-shrink: 0;
+  background: currentColor;
+}
+.badge-success {
+  background: color-mix(in oklch, var(--success) 14%, transparent);
+  color: color-mix(in oklch, var(--success) 80%, var(--foreground));
+}
+.badge-warning {
+  background: color-mix(in oklch, var(--warning) 18%, transparent);
+  color: color-mix(in oklch, var(--warning) 50%, var(--foreground));
+}
+.badge-info {
+  background: color-mix(in oklch, var(--info) 14%, transparent);
+  color: color-mix(in oklch, var(--info) 80%, var(--foreground));
+}
+.badge-error {
+  background: color-mix(in oklch, var(--error) 14%, transparent);
+  color: color-mix(in oklch, var(--error) 80%, var(--foreground));
+}
+.badge-attention {
+  background: color-mix(in oklch, var(--attention) 14%, transparent);
+  color: color-mix(in oklch, var(--attention) 80%, var(--foreground));
+}
+.badge-neutral {
+  background: var(--surface-3);
+  color: var(--muted-foreground);
+}
+.badge-outline {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--muted-foreground);
+}
 
 /* ── Statistic ──────────────────────────────────────────────────── */
-.statistic { display: flex; flex-direction: column; gap: var(--spacing-1); }
-.statistic-title { font-size: var(--text-xs); color: var(--muted-foreground); }
-.statistic-value { display: inline-flex; align-items: baseline; gap: var(--spacing-1); font-size: var(--text-2xl); font-weight: 500; line-height: 1.1; letter-spacing: -0.01em; color: var(--foreground); font-variant-numeric: tabular-nums; }
-.statistic-prefix, .statistic-suffix { font-size: var(--text-sm); color: var(--muted-foreground); font-weight: 400; }
-.statistic-number { line-height: 1; }
+.statistic {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+.statistic-title {
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+}
+.statistic-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--spacing-1);
+  font-size: var(--text-2xl);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+}
+.statistic-prefix,
+.statistic-suffix {
+  font-size: var(--text-sm);
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+.statistic-number {
+  line-height: 1;
+}
 /* `bordered` — standalone card surface so consumers stop wrapping the
  * tile with `<Card>` just to inherit border + padding (rule 31 / 23 §A
  * — convenience belongs on the canonical primitive, not in a wrapper). */
@@ -83,30 +207,119 @@
 }
 
 /* ── Empty ──────────────────────────────────────────────────────── */
-.empty { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-3); padding: var(--spacing-6) var(--spacing-4); color: var(--muted-foreground); }
-.empty-image { color: var(--muted-foreground); }
-.empty-description { margin: 0; font-size: var(--text-sm); }
-.empty-footer { display: flex; gap: var(--spacing-2); }
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-6) var(--spacing-4);
+  color: var(--muted-foreground);
+}
+.empty-image {
+  color: var(--muted-foreground);
+}
+.empty-description {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+.empty-footer {
+  display: flex;
+  gap: var(--spacing-2);
+}
 
 /* ── Tag ────────────────────────────────────────────────────────── */
-.tag { display: inline-flex; align-items: center; gap: var(--spacing-1); padding: 1px 8px; border-radius: var(--radius-md); border: 1px solid; font-size: var(--text-2xs); line-height: 1.5; vertical-align: middle; max-width: 100%; }
-.tag-borderless { border-color: transparent; }
-.tag-icon { display: inline-flex; align-items: center; }
-.tag-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tag-close { border: 0; background: transparent; color: inherit; cursor: pointer; padding: 0; margin-left: 4px; font-size: 13px; line-height: 1; opacity: 0.6; }
-.tag-close:hover { opacity: 1; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: 1px 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  font-size: var(--text-2xs);
+  line-height: 1.5;
+  vertical-align: middle;
+  max-width: 100%;
+}
+.tag-borderless {
+  border-color: transparent;
+}
+.tag-icon {
+  display: inline-flex;
+  align-items: center;
+}
+.tag-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tag-close {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  font-size: 13px;
+  line-height: 1;
+  opacity: 0.6;
+}
+.tag-close:hover {
+  opacity: 1;
+}
 
 /* ── Descriptions ───────────────────────────────────────────────── */
-.descriptions { display: flex; flex-direction: column; gap: var(--spacing-3); }
-.descriptions-header { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-2); }
-.descriptions-title { margin: 0; font-size: var(--text-base); font-weight: 500; }
-.descriptions-extra { display: flex; gap: var(--spacing-2); color: var(--muted-foreground); }
-.descriptions-body { display: grid; gap: var(--spacing-3) var(--spacing-4); }
-.descriptions-item { display: flex; flex-direction: row; gap: var(--spacing-2); min-width: 0; align-items: baseline; }
-.descriptions-item-label { color: var(--muted-foreground); font-size: var(--text-xs); flex-shrink: 0; min-width: 80px; }
-.descriptions-item-value { color: var(--foreground); font-size: var(--text-sm); min-width: 0; overflow-wrap: anywhere; }
-.descriptions-vertical .descriptions-item { flex-direction: column; gap: var(--spacing-1); align-items: stretch; }
-.descriptions-vertical .descriptions-item-label { min-width: 0; }
+.descriptions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+.descriptions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+.descriptions-title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+.descriptions-extra {
+  display: flex;
+  gap: var(--spacing-2);
+  color: var(--muted-foreground);
+}
+.descriptions-body {
+  display: grid;
+  gap: var(--spacing-3) var(--spacing-4);
+}
+.descriptions-item {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-2);
+  min-width: 0;
+  align-items: baseline;
+}
+.descriptions-item-label {
+  color: var(--muted-foreground);
+  font-size: var(--text-xs);
+  flex-shrink: 0;
+  min-width: 80px;
+}
+.descriptions-item-value {
+  color: var(--foreground);
+  font-size: var(--text-sm);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.descriptions-vertical .descriptions-item {
+  flex-direction: column;
+  gap: var(--spacing-1);
+  align-items: stretch;
+}
+.descriptions-vertical .descriptions-item-label {
+  min-width: 0;
+}
 /* Bordered variant — frame wraps the BODY only (title sits above,
  * outside the box) so the title is not glued to the inner edge.
  *
@@ -126,8 +339,12 @@
   padding: var(--spacing-2) var(--spacing-3);
   background: var(--card);
 }
-.descriptions-size-small .descriptions-item { padding: var(--spacing-1) var(--spacing-2); }
-.descriptions-size-large .descriptions-item-value { font-size: var(--text-md); }
+.descriptions-size-small .descriptions-item {
+  padding: var(--spacing-1) var(--spacing-2);
+}
+.descriptions-size-large .descriptions-item-value {
+  font-size: var(--text-md);
+}
 
 /* ── Alert ─────────────────────────────────────────────────────────
  * Banner-style notice. Ant-Design `Alert` mapped to godxjp vocabulary:
@@ -148,11 +365,21 @@
   color: var(--foreground);
 }
 
-.alert-color-default     { --alert-role: var(--muted-foreground); }
-.alert-color-info        { --alert-role: var(--info); }
-.alert-color-success     { --alert-role: var(--success); }
-.alert-color-warning     { --alert-role: var(--warning); }
-.alert-color-destructive { --alert-role: var(--destructive); }
+.alert-color-default {
+  --alert-role: var(--muted-foreground);
+}
+.alert-color-info {
+  --alert-role: var(--info);
+}
+.alert-color-success {
+  --alert-role: var(--success);
+}
+.alert-color-warning {
+  --alert-role: var(--warning);
+}
+.alert-color-destructive {
+  --alert-role: var(--destructive);
+}
 
 /* Default color uses neutral secondary surface (not a tint of muted-fg). */
 .alert-color-default {
@@ -222,7 +449,9 @@
   align-self: flex-start;
   transition: color 120ms ease;
 }
-.alert-close:hover { color: var(--foreground); }
+.alert-close:hover {
+  color: var(--foreground);
+}
 
 /* ── Result — page-level outcome surface ────────────────────────────
  * Mirrors Ant Design `Result` shape but with @godxjp/ui vocabulary:
@@ -246,10 +475,18 @@
   justify-content: center;
   color: var(--muted-foreground);
 }
-.result-color-info        .result-icon { color: var(--info); }
-.result-color-success     .result-icon { color: var(--success); }
-.result-color-warning     .result-icon { color: var(--warning); }
-.result-color-destructive .result-icon { color: var(--destructive); }
+.result-color-info .result-icon {
+  color: var(--info);
+}
+.result-color-success .result-icon {
+  color: var(--success);
+}
+.result-color-warning .result-icon {
+  color: var(--warning);
+}
+.result-color-destructive .result-icon {
+  color: var(--destructive);
+}
 .result-title {
   font-size: var(--text-xl);
   font-weight: var(--font-weight-medium);
@@ -594,46 +831,90 @@
  * connector lines, indent guides) can evolve independently.
  */
 .tree {
+  --tree-gap: var(--spacing-2);
+  --tree-indent: var(--spacing-4);
+  --tree-pad-x: var(--spacing-2);
+  --tree-pad-y: var(--spacing-1);
   font-size: var(--text-sm);
-  list-style: none;
   margin: 0;
   padding: 0;
+}
+.tree[data-density="compact"] {
+  --tree-gap: var(--spacing-1);
+  --tree-indent: var(--spacing-4);
+  --tree-pad-x: var(--spacing-1);
+  --tree-pad-y: 0;
+}
+.tree[data-density="comfortable"] {
+  --tree-gap: var(--spacing-3);
+  --tree-indent: var(--spacing-4);
+  --tree-pad-x: var(--spacing-3);
+  --tree-pad-y: var(--spacing-2);
 }
 .tree-node {
-  list-style: none;
-}
-.tree-children {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.tree-children[data-expanded="false"] {
-  display: none;
-}
-.tree[data-show-line="true"] .tree-children {
-  border-left: 1px dashed var(--border);
-  margin-left: calc(var(--spacing-2) + var(--spacing-1));
-  padding-left: var(--spacing-3);
-}
-.tree-node-row {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-1) var(--spacing-2);
+  gap: 0;
+  padding: var(--tree-pad-y) var(--tree-pad-x);
   border-radius: var(--radius-sm);
   cursor: pointer;
   user-select: none;
 }
-.tree-node-row:hover {
+.tree-node:hover,
+.tree-node[data-hovered] {
   background: var(--accent);
 }
-.tree-node-row[data-selected="true"] {
+.tree-node[data-selected] {
   background: color-mix(in oklch, var(--primary) 12%, transparent);
   color: var(--primary);
 }
-.tree-node-row[data-disabled="true"] {
+.tree-node[data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
+}
+.tree-node[data-focus-visible] {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.tree-guides {
+  display: inline-flex;
+  align-self: stretch;
+  flex: 0 0 auto;
+}
+.tree-guide {
+  position: relative;
+  flex: 0 0 var(--tree-indent);
+  width: var(--tree-indent);
+}
+.tree-guide::before,
+.tree-guide-branch::after {
+  content: "";
+  position: absolute;
+  display: none;
+  pointer-events: none;
+}
+.tree-guide::before {
+  top: calc(-1 * var(--spacing-1));
+  bottom: calc(-1 * var(--spacing-1));
+  left: 50%;
+  border-left: 1px solid var(--border);
+}
+.tree-guide-branch::before {
+  bottom: 0;
+}
+.tree-guide-branch[data-last="true"]::before {
+  bottom: 50%;
+}
+.tree-guide-branch::after {
+  top: 50%;
+  left: 50%;
+  width: calc(var(--tree-indent) / 2 + var(--spacing-4) + var(--tree-gap));
+  border-top: 1px solid var(--border);
+}
+.tree[data-show-line="true"] .tree-guide[data-continuation="true"]::before,
+.tree[data-show-line="true"] .tree-guide-branch::before,
+.tree[data-show-line="true"] .tree-guide-branch::after {
+  display: block;
 }
 .tree-toggle {
   width: var(--spacing-4);
@@ -647,14 +928,28 @@
   color: var(--muted-foreground);
   cursor: pointer;
   flex-shrink: 0;
+  margin-right: var(--tree-gap);
 }
 .tree-toggle-icon {
   width: var(--spacing-3);
   height: var(--spacing-3);
   transition: transform var(--transition-fast);
 }
-.tree-toggle[data-expanded="true"] .tree-toggle-icon {
+.tree-node[data-expanded] .tree-toggle-icon {
   transform: rotate(90deg);
+}
+.tree-selection {
+  display: none;
+}
+.tree-checkbox {
+  margin-right: var(--tree-gap);
+}
+.tree-row-content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tree-gap);
+  flex: 1;
+  min-width: 0;
 }
 .tree-icon {
   display: inline-flex;
@@ -670,15 +965,21 @@
   text-align: left;
   color: inherit;
 }
+.tree-item-meta {
+  flex: 0 0 auto;
+  font-size: var(--text-xs);
+  line-height: var(--leading-body);
+  color: var(--muted-foreground);
+}
 .tree-checkbox {
   flex-shrink: 0;
 }
 
 /* ── Tour (multi-step product walkthrough) ───────────────────────
  * Fixed overlay + popover callout anchored near a target rect (or
- * page-centred when `placement="center"`). v1 mask is a single
- * semi-transparent layer; the highlight rect lives above it to
- * draw attention without a true cutout.
+ * page-centred when `placement="center"`). The mask uses an SVG
+ * cutout so the target stays visually undimmed while the rest of
+ * the viewport is subdued.
  */
 .tour-overlay {
   position: fixed;
@@ -689,8 +990,12 @@
 .tour-mask {
   position: absolute;
   inset: 0;
-  background: color-mix(in oklch, var(--foreground) 45%, transparent);
+  width: 100%;
+  height: 100%;
   transition: opacity var(--transition-base);
+}
+.tour-mask-scrim {
+  fill: color-mix(in oklch, var(--foreground) 45%, transparent);
 }
 .tour-highlight {
   position: absolute;
@@ -865,4 +1170,3 @@
   z-index: 60;
   animation: fade-in var(--transition-fast) var(--ease-out);
 }
-

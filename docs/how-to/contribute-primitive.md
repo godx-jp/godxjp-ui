@@ -16,9 +16,9 @@ it belongs in the shared framework (not in a single service).
 
 **Prerequisites:** Write access to `libs/ts/godxjp-ui`. Familiarity
 with the binding rules in
-[`new-docs/`](../../new-docs/00-index.md) — esp.
-[03 — token system](../../new-docs/03-token-system.md),
-[04 — prop vocabulary](../../new-docs/04-prop-vocabulary.md),
+[`docs/specs/`](../specs/README.md) — esp.
+[03 — token system](../specs/03-token-system.md),
+[04 — prop vocabulary](../specs/04-prop-vocabulary.md),
 and cardinal rules 14 + 22 + 23 + 27 in [CLAUDE.md](../../CLAUDE.md).
 
 ---
@@ -54,7 +54,7 @@ and cardinal rules 14 + 22 + 23 + 27 in [CLAUDE.md](../../CLAUDE.md).
    (cardinal rule 16 + 22). Token-pin every literal the design
    canon shows. Use existing tokens where they cover the value;
    add component-scope tokens (`--<component>-<aspect>`) only when
-   nothing maps. See [03 §M](../../new-docs/03-token-system.md#m--how-to-extend).
+   nothing maps. See [03 §M](../specs/03-token-system.md#m--how-to-extend).
 
 5. **Pick the group folder** (cardinal rule 27). Place the file at
    `src/components/<group>/<Name>.tsx` where `<group>` is one of:
@@ -75,7 +75,7 @@ and cardinal rules 14 + 22 + 23 + 27 in [CLAUDE.md](../../CLAUDE.md).
      primitive if keyboard nav / ARIA / focus management is needed
      (cardinal rule 14).
    - Every prop maps to a row in
-     [04 — prop vocabulary](../../new-docs/04-prop-vocabulary.md).
+     [04 — prop vocabulary](../specs/04-prop-vocabulary.md).
      New vocabulary entries require a §section in that doc PLUS a
      row in CLAUDE.md §23.B FIRST.
    - Use `forwardRef` (cardinal rule 13).
@@ -103,8 +103,8 @@ and cardinal rules 14 + 22 + 23 + 27 in [CLAUDE.md](../../CLAUDE.md).
    `<input>` / inline-styled divs (rule 29).
 
 9. **Write the reference doc** (cardinal rule 18):
-   `docs/reference/primitives/<Name>.md`. Add to the index tables
-   in `docs/reference/primitives/README.md` and `docs/reference/README.md`.
+   `docs/reference/<group>/<Name>.md`. Add to the index tables
+   in `docs/reference/<group>/README.md` and `docs/reference/README.md`.
 
 10. **Verify**:
 
@@ -145,14 +145,14 @@ and cardinal rules 14 + 22 + 23 + 27 in [CLAUDE.md](../../CLAUDE.md).
 | `pnpm type-check` errors on new file | Missing type annotation | Add explicit return type to the component function (cardinal rule 13) |
 | CSS class not applying | Class added to wrong CSS file | Confirm it is in `shell.css` (component classes) or `theme.css` (tokens) |
 | PR fails review for hard-coded color | Used a Tailwind color utility | Replace with `var(--token)` or a token-mapped class (cardinal rule 2) |
-| PR fails for vocabulary drift | Prop name uses Ant synonym (`mode`, `visible`, `kind`, …) | Match the row in [04 — prop vocabulary](../../new-docs/04-prop-vocabulary.md) |
+| PR fails for vocabulary drift | Prop name uses Ant synonym (`mode`, `visible`, `kind`, …) | Match the row in [04 — prop vocabulary](../specs/04-prop-vocabulary.md) |
 | PR fails for wrong folder | Primitive at `src/components/primitives/<Name>.tsx` flat | Move under `src/components/<group>/<Name>.tsx` per cardinal rule 27 |
 
 ---
 
 ## Related
 
-- [02 — Consumer contract §I (extending the framework)](../../new-docs/02-consumer-contract.md)
+- [02 — Consumer contract §I (extending the framework)](../specs/02-consumer-contract.md)
 - [Tutorial 04: Add a new primitive](../tutorials/04-add-a-new-primitive.md)
 - [ADR 0001: Radix as foundation](../adr/0001-radix-as-foundation.md)
 - [ADR 0002: shadcn-style not MUI](../adr/0002-shadcn-style-not-mui.md)

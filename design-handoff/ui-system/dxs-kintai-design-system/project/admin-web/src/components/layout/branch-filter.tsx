@@ -18,13 +18,11 @@
 
 import {
   Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectMenu,
+  SelectOptionRow,
+  SelectControl,
+  SelectDisplay,
   Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from "@godxjp/ui";
 import { Lock } from "lucide-react";
 
@@ -70,7 +68,7 @@ export function BranchFilter({
   };
 
   const trigger = (
-    <SelectTrigger
+    <SelectControl
       className="h-8 w-44 text-xs"
       disabled={locked}
       aria-label="Branch filter"
@@ -78,25 +76,25 @@ export function BranchFilter({
     >
       <div className="flex items-center gap-1.5 truncate">
         {locked && <Lock className="text-muted-foreground size-3 shrink-0" />}
-        <SelectValue placeholder={allShopsLabel} />
+        <SelectDisplay placeholder={allShopsLabel} />
       </div>
-    </SelectTrigger>
+    </SelectControl>
   );
 
   const select = (
     <Select value={selectValue} onValueChange={handleChange} disabled={locked}>
       {trigger}
-      <SelectContent>
-        <SelectItem value={ALL_SHOPS}>{allShopsLabel}</SelectItem>
+      <SelectMenu>
+        <SelectOptionRow value={ALL_SHOPS}>{allShopsLabel}</SelectOptionRow>
         {options.map((opt) => (
-          <SelectItem key={opt.id} value={opt.id}>
+          <SelectOptionRow key={opt.id} value={opt.id}>
             <span className="truncate">{opt.name}</span>
             {opt.brand_name && (
               <span className="text-muted-foreground ml-2 text-[10px]">{opt.brand_name}</span>
             )}
-          </SelectItem>
+          </SelectOptionRow>
         ))}
-      </SelectContent>
+      </SelectMenu>
     </Select>
   );
 
@@ -107,13 +105,10 @@ export function BranchFilter({
   // visual language stays identical for admin vs shop_manager.
   return (
     <div data-slot="branch-filter" data-locked="true">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          {/* span wrapper — disabled SelectTrigger swallows pointer events,
-              which would also block tooltip detection without a live host. */}
-          <span className="inline-flex">{select}</span>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">{tooltipText}</TooltipContent>
+      <Tooltip content={tooltipText} placement="bottom">
+        {/* span wrapper — disabled SelectControl swallows pointer events,
+            which would also block tooltip detection without a live host. */}
+        <span className="inline-flex">{select}</span>
       </Tooltip>
     </div>
   );

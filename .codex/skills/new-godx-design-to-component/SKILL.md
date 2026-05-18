@@ -67,7 +67,7 @@ Apply when filling a gap the bundle doesn't cover.
   distinctive body face with `--font-mono` for tabular numeric
   alignment (`font-variant-numeric: tabular-nums`).
 - **Color & Theme**: Commit to the token system
-  (`new-docs/03-token-system.md`). Wa-iro is decorative —
+  (`docs/specs/03-token-system.md`). Wa-iro is decorative —
   charts, tags, tenant branding — NEVER semantic. Semantic role
   colors are fixed and don't substitute (success = 若竹,
   warning = 山吹, info = 群青, attention = 朱, destructive = 茜).
@@ -105,7 +105,7 @@ inform Part 2; they do not replace it.
 ## Step 1 — Locate the canonical mockup
 
 The framework supports multiple handoff input formats — see
-`new-docs/05-design-handoff-formats.md` for the
+`docs/specs/05-design-handoff-formats.md` for the
 full catalogue. Pick the format the bundle uses:
 
 ### Format A — Claude Design HTML/CSS prototype (default)
@@ -141,7 +141,7 @@ When you encounter this format:
 
 - Read the YAML front matter — `colors / typography / spacing /
   rounded / components`. Map each to the corresponding entry in
-  `theme.css :root` (see new-docs/05 §C for the mapping table).
+  `theme.css :root` (see docs/specs/05 §C for the mapping table).
 - Read the markdown prose AFTER — it carries the "why" rationale
   for the token values + design philosophy.
 - Token references in component bindings (`{colors.primary}`)
@@ -306,7 +306,7 @@ Rules:
  */
 
 .<canonical-class> {
-  /* Region styles using tokens from §M of new-docs/03-token-system.md */
+  /* Region styles using tokens from §M of docs/specs/03-token-system.md */
 }
 ```
 
@@ -421,9 +421,9 @@ reviewers manually check.
 | **broken-token-ref** | `var(--non-existent)` in any CSS / `style=` prop | Add the missing token in `theme.css` OR remove the dangling reference |
 | **wcag-contrast** | Color pairs that fail 4.5:1 contrast at AA | Pick a higher-contrast token; document if intentional in `docs/explanation/accessibility.md` |
 | **orphaned-token** | Token declared but referenced nowhere | Remove (or document why kept) |
-| **section-ordering** | new-docs files that violate §A → §Z canonical order | Reorder sections |
+| **section-ordering** | docs/specs files that violate §A → §Z canonical order | Reorder sections |
 | **duplicate-token** | Two tokens with identical value | Consolidate |
-| **prop-vocabulary** | Prop name not in `new-docs/04` | Rename to vocabulary entry, or document divergence |
+| **prop-vocabulary** | Prop name not in `docs/specs/04` | Rename to vocabulary entry, or document divergence |
 | **density-axis-coverage** | Primitive hardcodes height instead of `var(--density-element)` | Replace with token chain |
 
 Source: [`google-labs-code/design.md`](https://github.com/google-labs-code/design.md)
@@ -447,13 +447,13 @@ applied to our existing token system.
   grep the token catalogue BEFORE adding any new token; read
   the closest peer primitive end-to-end BEFORE writing the new
   primitive. Violations rejected automatically at review.
-- Token system foundation — `new-docs/03-token-system.md`
+- Token system foundation — `docs/specs/03-token-system.md`
   (the full token catalogue).
-- Theme axes — `new-docs/01-theme-axes.md` (the
+- Theme axes — `docs/specs/01-theme-axes.md` (the
   four canonical axes).
-- Consumer contract — `new-docs/02-consumer-contract.md`
+- Consumer contract — `docs/specs/02-consumer-contract.md`
   (what consumers must do when depending on `@godxjp/ui`).
-- **Design handoff formats — `new-docs/05-design-handoff-formats.md`**
+- **Design handoff formats — `docs/specs/05-design-handoff-formats.md`**
   (multi-format input: Claude Design HTML/CSS + google-labs
   DESIGN.md + W3C DTCG JSON + Figma; lint guardrails;
   cross-format token-reference syntax + canonical section

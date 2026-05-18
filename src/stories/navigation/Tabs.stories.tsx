@@ -1,11 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "../../components/navigation/Tabs";
+import { Tabs, type TabsItem } from "../../components/navigation/Tabs";
 import { Typography } from "../../components/general/Typography";
 
 const { Paragraph } = Typography;
@@ -42,6 +37,13 @@ const Body = ({ label }: { label: string }) => (
   </div>
 );
 
+const makeItems = (items: Array<[string, string]>): TabsItem[] =>
+  items.map(([value, label]) => ({
+    value,
+    label,
+    content: <Body label={label.replace(/\s*\(.+\)$/, "")} />,
+  }));
+
 // ════════════════════════════════════════════════════════════════
 // Variant · line (default)
 // ════════════════════════════════════════════════════════════════
@@ -49,16 +51,14 @@ const Body = ({ label }: { label: string }) => (
 export const Line: Story = {
   name: "Variant · line",
   render: () => (
-    <Tabs defaultValue="open">
-      <TabsList>
-        <TabsTrigger value="open">未対応 (12)</TabsTrigger>
-        <TabsTrigger value="processing">進行中 (5)</TabsTrigger>
-        <TabsTrigger value="closed">完了 (108)</TabsTrigger>
-      </TabsList>
-      <TabsContent value="open"><Body label="未対応" /></TabsContent>
-      <TabsContent value="processing"><Body label="進行中" /></TabsContent>
-      <TabsContent value="closed"><Body label="完了" /></TabsContent>
-    </Tabs>
+    <Tabs
+      defaultValue="open"
+      items={makeItems([
+        ["open", "未対応 (12)"],
+        ["processing", "進行中 (5)"],
+        ["closed", "完了 (108)"],
+      ])}
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -87,18 +87,16 @@ export const Line: Story = {
 export const Pills: Story = {
   name: "Variant · pills",
   render: () => (
-    <Tabs defaultValue="day" variant="pills">
-      <TabsList>
-        <TabsTrigger value="day">日</TabsTrigger>
-        <TabsTrigger value="week">週</TabsTrigger>
-        <TabsTrigger value="month">月</TabsTrigger>
-        <TabsTrigger value="year">年</TabsTrigger>
-      </TabsList>
-      <TabsContent value="day"><Body label="日次" /></TabsContent>
-      <TabsContent value="week"><Body label="週次" /></TabsContent>
-      <TabsContent value="month"><Body label="月次" /></TabsContent>
-      <TabsContent value="year"><Body label="年次" /></TabsContent>
-    </Tabs>
+    <Tabs
+      defaultValue="day"
+      variant="pills"
+      items={makeItems([
+        ["day", "日"],
+        ["week", "週"],
+        ["month", "月"],
+        ["year", "年"],
+      ])}
+    />
   ),
 };
 
@@ -110,18 +108,16 @@ export const PlacementLeft: Story = {
   name: "Placement · left",
   render: () => (
     <div style={{ minHeight: 300 }}>
-      <Tabs defaultValue="profile" placement="left">
-        <TabsList>
-          <TabsTrigger value="profile">プロフィール</TabsTrigger>
-          <TabsTrigger value="security">セキュリティ</TabsTrigger>
-          <TabsTrigger value="notifications">通知</TabsTrigger>
-          <TabsTrigger value="billing">支払い</TabsTrigger>
-        </TabsList>
-        <TabsContent value="profile"><Body label="プロフィール" /></TabsContent>
-        <TabsContent value="security"><Body label="セキュリティ" /></TabsContent>
-        <TabsContent value="notifications"><Body label="通知" /></TabsContent>
-        <TabsContent value="billing"><Body label="支払い" /></TabsContent>
-      </Tabs>
+      <Tabs
+        defaultValue="profile"
+        placement="left"
+        items={makeItems([
+          ["profile", "プロフィール"],
+          ["security", "セキュリティ"],
+          ["notifications", "通知"],
+          ["billing", "支払い"],
+        ])}
+      />
     </div>
   ),
 };
@@ -134,16 +130,15 @@ export const PlacementRight: Story = {
   name: "Placement · right",
   render: () => (
     <div style={{ minHeight: 300 }}>
-      <Tabs defaultValue="overview" placement="right">
-        <TabsList>
-          <TabsTrigger value="overview">概要</TabsTrigger>
-          <TabsTrigger value="activity">アクティビティ</TabsTrigger>
-          <TabsTrigger value="settings">設定</TabsTrigger>
-        </TabsList>
-        <TabsContent value="overview"><Body label="概要" /></TabsContent>
-        <TabsContent value="activity"><Body label="アクティビティ" /></TabsContent>
-        <TabsContent value="settings"><Body label="設定" /></TabsContent>
-      </Tabs>
+      <Tabs
+        defaultValue="overview"
+        placement="right"
+        items={makeItems([
+          ["overview", "概要"],
+          ["activity", "アクティビティ"],
+          ["settings", "設定"],
+        ])}
+      />
     </div>
   ),
 };
@@ -155,15 +150,14 @@ export const PlacementRight: Story = {
 export const PlacementBottom: Story = {
   name: "Placement · bottom",
   render: () => (
-    <Tabs defaultValue="kintai" placement="bottom">
-      <TabsList>
-        <TabsTrigger value="kintai">勤怠</TabsTrigger>
-        <TabsTrigger value="shifts">シフト</TabsTrigger>
-        <TabsTrigger value="payroll">給与</TabsTrigger>
-      </TabsList>
-      <TabsContent value="kintai"><Body label="勤怠" /></TabsContent>
-      <TabsContent value="shifts"><Body label="シフト" /></TabsContent>
-      <TabsContent value="payroll"><Body label="給与" /></TabsContent>
-    </Tabs>
+    <Tabs
+      defaultValue="kintai"
+      placement="bottom"
+      items={makeItems([
+        ["kintai", "勤怠"],
+        ["shifts", "シフト"],
+        ["payroll", "給与"],
+      ])}
+    />
   ),
 };

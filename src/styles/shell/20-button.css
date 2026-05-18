@@ -2,12 +2,13 @@
  *  Source: design-handoff/ui-system/dxs-kintai-design-system/project/
  *  preview/comp-buttons.html
  *  Cardinal rule 22 — every literal token-pinned. Cardinal rule 24 —
- *  mobile-first touch target floor on `xs/sm` viewports.
+ *  touch target support must not change the visual size.
  *
  *  Variants: primary · secondary · outline · ghost · destructive · link
  *  Sizes:    x-small · small · default · large
  */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -146,13 +147,15 @@
   .btn-spinner { animation: none; }
 }
 
-/* ── Mobile-first touch-target floor (cardinal rule 24 §B) ───────
- *  WCAG 2.1 AA: 44×44 px touch target on touch surfaces. On
- *  `xs / sm` viewports every button — regardless of `size` prop —
- *  floors to `--touch-target-min`. `.btn-link` is text-style and
- *  exempt. Breakpoint matches `--breakpoint-md: 768px`. */
+/* ── Mobile-first touch target without visual inflation ───────────
+ *  Keep the button's visible height controlled by `size` + density.
+ *  The invisible hit area reaches the 44px floor on touch viewports
+ *  so SP does not render larger controls than desktop. */
 @media (max-width: 767px) {
-  .btn:not(.btn-link) {
-    min-height: var(--touch-target-min);     /* 44px floor */
+  .btn:not(.btn-link)::after {
+    content: "";
+    position: absolute;
+    inset-block: min(0px, calc((100% - var(--touch-target-min)) / 2));
+    inset-inline: min(0px, calc((100% - var(--touch-target-min)) / 2));
   }
 }

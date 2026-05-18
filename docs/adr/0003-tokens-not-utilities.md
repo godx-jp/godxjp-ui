@@ -77,7 +77,7 @@ decorative palette). Rules:
 
 5. **`data-*` theme axes on `<html>` are the only runtime override
    surfaces** — `data-theme`, `data-accent`, `data-density`,
-   `data-font-size` (cardinal rule 21 + [01 — theme axes](../../new-docs/01-theme-axes.md)).
+   `data-font-size` (cardinal rule 21 + [01 — theme axes](../specs/01-theme-axes.md)).
    Operator brand customization, dark mode, and density scaling all
    work by redefining tokens under these selectors. No
    JavaScript-driven style mutations. (Historical note: the original
@@ -120,7 +120,6 @@ decorative palette). Rules:
 ## See also
 
 - [Reference: Tokens](../reference/tokens.md) — full token catalogue.
-- [Explanation: Brand bible](../explanation/brand-bible.md) — why OKLCH, why
-  chroma ≤ 0.18.
+- [`BRAND.md`](../../BRAND.md) — why OKLCH, why chroma ≤ 0.18.
 - [How-to: Override tokens](../how-to/override-tokens.md) —
   per-deployment `[data-accent]` palette customization.

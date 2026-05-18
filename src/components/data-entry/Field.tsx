@@ -34,16 +34,45 @@ import { cn } from "../cn";
  */
 
 export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
+  label?: ReactNode;
+  help?: ReactNode;
+  count?: { current: number; max?: number; warnAt?: number };
+  required?: boolean;
+  optional?: boolean;
+  optionalLabel?: ReactNode;
+  tone?: FieldHelpTone;
   children: ReactNode;
 }
 
-const FieldRoot = forwardRef<HTMLDivElement, FieldProps>(function FieldRoot(
-  { className, children, ...rest },
+export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
+  {
+    className,
+    label,
+    help,
+    count,
+    required,
+    optional,
+    optionalLabel,
+    tone,
+    children,
+    ...rest
+  },
   ref,
 ) {
   return (
     <div ref={ref} className={cn("field", className)} {...rest}>
+      {label !== undefined && (
+        <LabelControl required={required} optional={optional} optionalLabel={optionalLabel}>
+          {label}
+        </LabelControl>
+      )}
       {children}
+      {(help !== undefined || count !== undefined) && (
+        <div className={count !== undefined ? "row-help" : undefined}>
+          {help !== undefined && <HelpText tone={tone}>{help}</HelpText>}
+          {count !== undefined && <CountText {...count} />}
+        </div>
+      )}
     </div>
   );
 });
@@ -64,8 +93,8 @@ export interface FieldLabelProps
   extra?: ReactNode;
 }
 
-const FieldLabel = forwardRef<HTMLLabelElement, FieldLabelProps>(
-  function FieldLabel(
+const LabelControl = forwardRef<HTMLLabelElement, FieldLabelProps>(
+  function LabelControl(
     {
       className,
       children,
@@ -121,7 +150,7 @@ const TONE_CLASS: Record<FieldHelpTone, string> = {
   success: "ok",
 };
 
-const FieldHelp = forwardRef<HTMLDivElement, FieldHelpProps>(function FieldHelp(
+const HelpText = forwardRef<HTMLDivElement, FieldHelpProps>(function HelpText(
   {
     className,
     tone,
@@ -159,8 +188,8 @@ export interface FieldCountProps extends HTMLAttributes<HTMLDivElement> {
   warnAt?: number;
 }
 
-const FieldCount = forwardRef<HTMLDivElement, FieldCountProps>(
-  function FieldCount(
+const CountText = forwardRef<HTMLDivElement, FieldCountProps>(
+  function CountText(
     { className, current, max, warnAt = 0.9, ...rest },
     ref,
   ) {
@@ -188,8 +217,8 @@ const FieldCount = forwardRef<HTMLDivElement, FieldCountProps>(
 
 // ─── Field.RowHelp ────────────────────────────────────────────────────
 
-const FieldRowHelp = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  function FieldRowHelp({ className, children, ...rest }, ref) {
+const RowHelp = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  function RowHelp({ className, children, ...rest }, ref) {
     return (
       <div ref={ref} className={cn("row-help", className)} {...rest}>
         {children}
@@ -197,14 +226,3 @@ const FieldRowHelp = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     );
   },
 );
-
-// ─── Public surface ───────────────────────────────────────────────────
-
-export const Field = Object.assign(FieldRoot, {
-  Label: FieldLabel,
-  Help: FieldHelp,
-  Count: FieldCount,
-  RowHelp: FieldRowHelp,
-});
-
-export { FieldLabel, FieldHelp, FieldCount, FieldRowHelp };

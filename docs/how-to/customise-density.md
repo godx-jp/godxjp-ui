@@ -3,7 +3,7 @@ title: "How to customise density"
 diataxis: how-to
 library: "@godxjp/ui"
 library_version: 3.0.0
-last-updated: 2026-05-17
+last-updated: 2026-05-18
 audience: [developer]
 lang: en
 status: published
@@ -93,7 +93,7 @@ The token selectors are ancestor-aware, so the `[data-density="compact"]` block 
 |---|---|---|
 | Setting density has no effect | `tokens-ext.css` not loaded | Use `@godxjp/ui/tailwind.css` (not `tokens.css`) — density scaling is in `tokens-ext.css` |
 | Density resets on reload | Not using `useTweaks` | Use `useTweaks` — it persists to `localStorage` |
-| Comfortable density buttons are too wide | Touch-target scaling by design | The 44 px minimum is required by WCAG SC 2.5.5 and Digital Agency rules |
+| Buttons become taller only on mobile | Mobile CSS is using `--touch-target-min` as visual height | Keep visible height on `--density-element-*`; meet the 44 px floor with an invisible hit area or an explicit larger `size` |
 
 ---
 

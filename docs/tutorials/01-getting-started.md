@@ -66,16 +66,16 @@ before any other stylesheet:
 
 ```tsx
 // src/main.tsx
-import "@godxjp/ui/tailwind.css"   // tokens + Tailwind v4 utilities
-import { StrictMode } from "react"
-import { createRoot } from "react-dom/client"
-import App from "./App.tsx"
+import "@godxjp/ui/tailwind.css"; // tokens + Tailwind v4 utilities
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
   </StrictMode>,
-)
+);
 ```
 
 `@godxjp/ui/tailwind.css` includes:
@@ -96,19 +96,19 @@ before you render anything that uses translated strings:
 
 ```tsx
 // src/main.tsx
-import "@godxjp/ui/tailwind.css"
-import { initI18n } from "@godxjp/ui/i18n"
-import { StrictMode } from "react"
-import { createRoot } from "react-dom/client"
-import App from "./App.tsx"
+import "@godxjp/ui/tailwind.css";
+import { initI18n } from "@godxjp/ui/i18n";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
 
-initI18n()   // configure i18next before first render
+initI18n(); // configure i18next before first render
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
   </StrictMode>,
-)
+);
 ```
 
 If you omit `initI18n()`, components that use translated strings (such as
@@ -122,16 +122,16 @@ Replace the contents of `src/App.tsx` with:
 
 ```tsx
 // src/App.tsx
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@godxjp/ui"
+import { Button, Card, Card content, Card header, Card title } from "@godxjp/ui"
 
 export default function App() {
   return (
     <main style={{ padding: "2rem", maxWidth: "480px" }}>
       <Card>
-        <CardHeader>
-          <CardTitle>Hello from @godxjp/ui</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <Card title="PLACEHOLDER">
+          Hello from @godxjp/ui
+
+        <div className="card-body">
           <p style={{ marginBottom: "1rem" }}>
             The design tokens are active. This card uses <code>--card</code>{" "}
             surface color, token border-radius, and token shadow.
@@ -142,7 +142,7 @@ export default function App() {
             <Button variant="ghost">Learn more</Button>
             <Button variant="danger">Delete</Button>
           </div>
-        </CardContent>
+        </div>
       </Card>
     </main>
   )
@@ -177,13 +177,13 @@ Remove the attribute to return to light mode.
 
 ## Troubleshooting
 
-| Problem | Likely cause | Fix |
-|---|---|---|
-| Buttons render with no styling | The CSS import is missing or placed after app styles | Move `import "@godxjp/ui/tailwind.css"` to the very first line of `main.tsx` |
-| Components have no color (raw `var(--primary)` in DevTools) | The tokens CSS was not loaded | Confirm the import path is `@godxjp/ui/tailwind.css`, not `@godxjp/ui/styles` |
-| TypeScript error: "Cannot find module '@godxjp/ui'" | Package not installed | Run `pnpm add @godxjp/ui` |
-| `initI18n is not a function` | Importing from wrong entry | Use `import { initI18n } from "@godxjp/ui/i18n"` |
-| Buttons render as plain `<div>` | `react` peer dep missing | Run `pnpm add react react-dom` |
+| Problem                                                     | Likely cause                                         | Fix                                                                           |
+| ----------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Buttons render with no styling                              | The CSS import is missing or placed after app styles | Move `import "@godxjp/ui/tailwind.css"` to the very first line of `main.tsx`  |
+| Components have no color (raw `var(--primary)` in DevTools) | The tokens CSS was not loaded                        | Confirm the import path is `@godxjp/ui/tailwind.css`, not `@godxjp/ui/styles` |
+| TypeScript error: "Cannot find module '@godxjp/ui'"         | Package not installed                                | Run `pnpm add @godxjp/ui`                                                     |
+| `initI18n is not a function`                                | Importing from wrong entry                           | Use `import { initI18n } from "@godxjp/ui/i18n"`                              |
+| Buttons render as plain `<div>`                             | `react` peer dep missing                             | Run `pnpm add react react-dom`                                                |
 
 ---
 

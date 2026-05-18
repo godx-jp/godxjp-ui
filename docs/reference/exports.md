@@ -13,7 +13,7 @@ status: published
 
 Every entry in `package.json::exports` for `@godxjp/ui@3.0.0`. The
 binding source of truth is
-[02 — consumer contract §A](../../new-docs/02-consumer-contract.md).
+[02 — consumer contract §A](../specs/02-consumer-contract.md).
 
 ---
 
@@ -79,6 +79,6 @@ manager dedupes them. Per-primitive cost paid only on import.
 
 ## See also
 
-- [02 — Consumer contract §A](../../new-docs/02-consumer-contract.md) — binding source of the dist surface.
+- [02 — Consumer contract §A](../specs/02-consumer-contract.md) — binding source of the dist surface.
 - [Reference: Types](./types.md).
 - [How-to: Consume from a service](../how-to/consume-from-service.md).

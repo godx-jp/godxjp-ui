@@ -2,12 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Plus, Filter, Download } from "lucide-react";
 import { PageHeader } from "../../components/data-display/PageHeader";
 import { Button } from "../../components/general/Button";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbSep,
-} from "../../components/navigation/Breadcrumb";
-import { Tabs, TabsList, TabsTrigger } from "../../components/navigation/Tabs";
+import { Breadcrumb } from "../../components/navigation/Breadcrumb";
+import { Tabs } from "../../components/navigation/Tabs";
 
 /**
  * data-display/PageHeader — page chrome strip with title + subtitle +
@@ -63,13 +59,13 @@ export const WithBreadcrumb: Story = {
   render: () => (
     <PageHeader
       breadcrumb={
-        <Breadcrumb>
-          <BreadcrumbItem href="#">GoDX</BreadcrumbItem>
-          <BreadcrumbSep />
-          <BreadcrumbItem href="#">勤怠</BreadcrumbItem>
-          <BreadcrumbSep />
-          <BreadcrumbItem current>月次レポート</BreadcrumbItem>
-        </Breadcrumb>
+        <Breadcrumb
+          items={[
+            { href: "#", label: "GoDX" },
+            { href: "#", label: "勤怠" },
+            { current: true, label: "月次レポート" },
+          ]}
+        />
       }
       title="店舗別 · 月次レポート"
     />
@@ -125,13 +121,13 @@ export const AllSlots: Story = {
     <PageHeader
       variant="stacked"
       breadcrumb={
-        <Breadcrumb>
-          <BreadcrumbItem href="#">GoDX</BreadcrumbItem>
-          <BreadcrumbSep />
-          <BreadcrumbItem href="#">勤怠</BreadcrumbItem>
-          <BreadcrumbSep />
-          <BreadcrumbItem current>月次レポート</BreadcrumbItem>
-        </Breadcrumb>
+        <Breadcrumb
+          items={[
+            { href: "#", label: "GoDX" },
+            { href: "#", label: "勤怠" },
+            { current: true, label: "月次レポート" },
+          ]}
+        />
       }
       title="店舗別 · 月次レポート"
       subtitle="2026年5月"
@@ -154,13 +150,15 @@ export const AllSlots: Story = {
         </>
       }
       tabs={
-        <Tabs defaultValue="overview" variant="line">
-          <TabsList>
-            <TabsTrigger value="overview">概要</TabsTrigger>
-            <TabsTrigger value="by-store">店舗別</TabsTrigger>
-            <TabsTrigger value="by-staff">担当者別</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <Tabs
+          defaultValue="overview"
+          variant="line"
+          items={[
+            { value: "overview", label: "概要" },
+            { value: "by-store", label: "店舗別" },
+            { value: "by-staff", label: "担当者別" },
+          ]}
+        />
       }
       body="渋谷本店 · 田中 美咲 さんを含む 24 名のシフトを表示しています。"
     />

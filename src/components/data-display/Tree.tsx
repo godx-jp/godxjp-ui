@@ -1,18 +1,22 @@
+import { forwardRef, useMemo, useState, type ReactNode } from "react"
 import {
-  forwardRef,
-  useCallback,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
-import { ChevronRight } from "lucide-react";
-import { cn } from "../cn";
-import { Checkbox } from "../data-entry/Checkbox";
+  Button as AriaButton,
+  Checkbox as AriaCheckbox,
+  SelectionIndicator,
+  Tree as AriaTree,
+  TreeItem as AriaTreeItem,
+  TreeItemContent,
+  type Key,
+  type Selection,
+} from "react-aria-components"
+import { ChevronRight } from "lucide-react"
+import { cn } from "../cn"
 
 /**
  * Tree — standalone hierarchical view (no popover).
  *
- * Sibling of `<TreeSelect>` — same recursive shape, but renders inline.
+ * React Aria-backed sibling of `<TreeSelect>` — same recursive shape,
+ * but renders inline with ARIA tree keyboard navigation and selection.
  * Useful for org charts, file explorers, category navigators where the
  * tree IS the surface (not a dropdown).
  *
@@ -23,7 +27,8 @@ import { Checkbox } from "../data-entry/Checkbox";
  *   - `expandedKeys` / `defaultExpandedKeys` / `onExpandedKeysChange`
  *     — expansion state.
  *   - `checkable` — render checkboxes alongside labels.
- *   - `showLine` — render dashed indent guides.
+ *   - `showLine` — render connector guides.
+ *   - `density` — local row spacing override for tree-heavy surfaces.
  *
  * @example
  *   <Tree
@@ -38,139 +43,162 @@ import { Checkbox } from "../data-entry/Checkbox";
  */
 
 export interface TreeNode {
-  key: string;
-  title: ReactNode;
-  icon?: ReactNode;
-  disabled?: boolean;
-  selectable?: boolean;
-  children?: TreeNode[];
+  key: string
+  title: ReactNode
+  icon?: ReactNode
+  disabled?: boolean
+  selectable?: boolean
+  children?: TreeNode[]
 }
 
+export interface TreeRenderItemState {
+  node: TreeNode
+  isExpanded: boolean
+  isSelected: boolean
+  isDisabled: boolean
+  hasChildren: boolean
+  level: number
+}
+
+export type TreeDensity = "compact" | "default" | "comfortable"
+
 export interface TreeProps {
-  treeData: TreeNode[];
+  treeData: TreeNode[]
   /** Selected key(s). */
-  value?: string | string[];
-  defaultValue?: string | string[];
-  onValueChange?: (value: string | string[]) => void;
+  value?: string | string[]
+  defaultValue?: string | string[]
+  onValueChange?: (value: string | string[]) => void
   /** Allow multi-select. */
-  multiple?: boolean;
+  multiple?: boolean
   /** Initially-expanded node keys. */
-  defaultExpandedKeys?: string[];
+  defaultExpandedKeys?: string[]
   /** Controlled expanded keys. */
-  expandedKeys?: string[];
-  onExpandedKeysChange?: (keys: string[]) => void;
+  expandedKeys?: string[]
+  onExpandedKeysChange?: (keys: string[]) => void
   /** Render checkboxes (multi-select via checkbox). Implies `multiple`. */
-  checkable?: boolean;
-  /** Render dashed connector lines between depths. */
-  showLine?: boolean;
-  className?: string;
+  checkable?: boolean
+  /** Render connector lines between depths. */
+  showLine?: boolean
+  /** Local row spacing override. Defaults to the page density. */
+  density?: TreeDensity
+  /** Override the row's icon + label content without replacing the ARIA tree. */
+  renderItem?: (state: TreeRenderItemState) => ReactNode
+  className?: string
 }
 
 function normalizeIn(raw: string | string[] | undefined): string[] {
-  if (raw === undefined) return [];
-  return Array.isArray(raw) ? raw : raw ? [raw] : [];
+  if (raw === undefined) return []
+  return Array.isArray(raw) ? raw : raw ? [raw] : []
 }
 
 interface NodeRowProps {
-  node: TreeNode;
-  depth: number;
-  multiple: boolean;
-  checkable: boolean;
-  selectedSet: Set<string>;
-  expandedSet: Set<string>;
-  onToggleExpand: (key: string) => void;
-  onSelect: (node: TreeNode) => void;
+  node: TreeNode
+  checkable: boolean
+  depth: number
+  guides: boolean[]
+  isLast: boolean
+  renderItem?: TreeProps["renderItem"]
 }
 
-function NodeRow({
-  node,
-  depth,
-  multiple,
-  checkable,
-  selectedSet,
-  expandedSet,
-  onToggleExpand,
-  onSelect,
-}: NodeRowProps): ReactNode {
-  const hasChildren = !!node.children && node.children.length > 0;
-  const isExpanded = expandedSet.has(node.key);
-  const isSelected = selectedSet.has(node.key);
-  const isSelectable = node.selectable !== false && !node.disabled;
+function NodeRow({ node, checkable, depth, guides, isLast, renderItem }: NodeRowProps): ReactNode {
+  const hasChildren = !!node.children && node.children.length > 0
+  const childGuides = depth === 0 ? [] : [...guides, !isLast]
   return (
-    <li
+    <AriaTreeItem
       className="tree-node"
-      role="treeitem"
-      aria-expanded={hasChildren ? isExpanded : undefined}
-      aria-selected={isSelected || undefined}
-      aria-disabled={node.disabled || undefined}
+      id={node.key}
+      textValue={String(node.title)}
+      isDisabled={node.disabled}
     >
-      <div
-        className="tree-node-row"
-        data-selected={isSelected ? "true" : undefined}
-        data-disabled={node.disabled ? "true" : undefined}
-        style={{
-          paddingLeft: `calc(var(--spacing-2) + ${depth} * var(--spacing-4))`,
+      <TreeItemContent>
+        {({ hasChildItems, isExpanded, isSelected, isDisabled, level }) => {
+          const content = renderItem?.({
+            node,
+            isExpanded,
+            isSelected,
+            isDisabled,
+            hasChildren: hasChildItems,
+            level,
+          }) ?? (
+            <>
+              {node.icon !== undefined && (
+                <span className="tree-icon" aria-hidden>
+                  {node.icon}
+                </span>
+              )}
+              <span className="tree-label">{node.title}</span>
+            </>
+          )
+
+          return (
+            <>
+              <span className="tree-guides" aria-hidden>
+                {guides.map((continues, index) => (
+                  <span
+                    key={index}
+                    className="tree-guide"
+                    data-continuation={continues ? "true" : undefined}
+                  />
+                ))}
+                {depth > 0 && (
+                  <span
+                    className="tree-guide tree-guide-branch"
+                    data-last={isLast ? "true" : undefined}
+                  />
+                )}
+              </span>
+              {hasChildItems ? (
+                <AriaButton slot="chevron" className="tree-toggle">
+                  <ChevronRight aria-hidden className="tree-toggle-icon" />
+                </AriaButton>
+              ) : (
+                <span className="tree-toggle" aria-hidden />
+              )}
+              {checkable ? (
+                <AriaCheckbox slot="selection" className="tree-checkbox" />
+              ) : (
+                <SelectionIndicator className="tree-selection" />
+              )}
+              <span className="tree-row-content">{content}</span>
+            </>
+          )
         }}
-        onClick={() => isSelectable && onSelect(node)}
-      >
-        {hasChildren ? (
-          <button
-            type="button"
-            className="tree-toggle"
-            aria-label={isExpanded ? "Collapse" : "Expand"}
-            data-expanded={isExpanded ? "true" : "false"}
-            onClick={(event) => {
-              event.stopPropagation();
-              onToggleExpand(node.key);
-            }}
-          >
-            <ChevronRight aria-hidden className="tree-toggle-icon" />
-          </button>
-        ) : (
-          <span className="tree-toggle" aria-hidden />
-        )}
-        {checkable ? (
-          <Checkbox
-            className="tree-checkbox"
-            checked={isSelected}
-            disabled={node.disabled}
-            onCheckedChange={() => isSelectable && onSelect(node)}
-            onClick={(event) => event.stopPropagation()}
-          />
-        ) : null}
-        {node.icon !== undefined && (
-          <span className="tree-icon" aria-hidden>
-            {node.icon}
-          </span>
-        )}
-        <span className="tree-label">{node.title}</span>
-      </div>
-      {hasChildren ? (
-        <ul
-          className="tree-children"
-          role="group"
-          data-expanded={isExpanded ? "true" : "false"}
-        >
-          {node.children!.map((child) => (
+      </TreeItemContent>
+      {hasChildren
+        ? node.children!.map((child, index) => (
             <NodeRow
               key={child.key}
               node={child}
-              depth={depth + 1}
-              multiple={multiple}
               checkable={checkable}
-              selectedSet={selectedSet}
-              expandedSet={expandedSet}
-              onToggleExpand={onToggleExpand}
-              onSelect={onSelect}
+              depth={depth + 1}
+              guides={childGuides}
+              isLast={index === node.children!.length - 1}
+              renderItem={renderItem}
             />
-          ))}
-        </ul>
-      ) : null}
-    </li>
-  );
+          ))
+        : null}
+    </AriaTreeItem>
+  )
 }
 
-export const Tree = forwardRef<HTMLUListElement, TreeProps>(function Tree(
+function collectKeys(nodes: TreeNode[], predicate: (node: TreeNode) => boolean): string[] {
+  const out: string[] = []
+  const walk = (items: TreeNode[]) => {
+    for (const item of items) {
+      if (predicate(item)) out.push(item.key)
+      if (item.children) walk(item.children)
+    }
+  }
+  walk(nodes)
+  return out
+}
+
+function selectionFromKeys(keys: Iterable<Key> | "all"): string[] {
+  if (keys === "all") return []
+  return Array.from(keys, String)
+}
+
+export const Tree = forwardRef<HTMLDivElement, TreeProps>(function Tree(
   {
     treeData,
     value,
@@ -182,76 +210,66 @@ export const Tree = forwardRef<HTMLUListElement, TreeProps>(function Tree(
     onExpandedKeysChange,
     checkable = false,
     showLine = false,
+    density,
+    renderItem,
     className,
   },
   ref,
 ) {
-  const isMulti = multiple || checkable;
-  const isControlled = value !== undefined;
-  const [internal, setInternal] = useState<string[]>(normalizeIn(defaultValue));
-  const currentArray = isControlled ? normalizeIn(value) : internal;
-  const selectedSet = useMemo(() => new Set(currentArray), [currentArray]);
+  const isMulti = multiple || checkable
+  const isControlled = value !== undefined
+  const [internal, setInternal] = useState<string[]>(normalizeIn(defaultValue))
+  const selectedKeys = isControlled ? normalizeIn(value) : internal
 
-  const isExpandControlled = expandedKeys !== undefined;
-  const [internalExpanded, setInternalExpanded] = useState<string[]>(
-    defaultExpandedKeys ?? [],
-  );
-  const expandedArray = isExpandControlled
-    ? (expandedKeys ?? [])
-    : internalExpanded;
-  const expandedSet = useMemo(() => new Set(expandedArray), [expandedArray]);
+  const disabledKeys = useMemo(
+    () => collectKeys(treeData, (node) => node.disabled === true),
+    [treeData],
+  )
 
-  const handleToggleExpand = useCallback(
-    (key: string) => {
-      const next = new Set(expandedArray);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      const nextArr = Array.from(next);
-      if (!isExpandControlled) setInternalExpanded(nextArr);
-      onExpandedKeysChange?.(nextArr);
-    },
-    [expandedArray, isExpandControlled, onExpandedKeysChange],
-  );
+  const selectableKeys = useMemo(
+    () => new Set(collectKeys(treeData, (node) => node.selectable !== false)),
+    [treeData],
+  )
 
-  const handleSelect = useCallback(
-    (node: TreeNode) => {
-      if (node.disabled || node.selectable === false) return;
-      let nextArr: string[];
-      if (isMulti) {
-        const next = new Set(currentArray);
-        if (next.has(node.key)) next.delete(node.key);
-        else next.add(node.key);
-        nextArr = Array.from(next);
-      } else {
-        nextArr = [node.key];
-      }
-      if (!isControlled) setInternal(nextArr);
-      if (isMulti) onValueChange?.(nextArr);
-      else onValueChange?.(nextArr[0] ?? "");
-    },
-    [isMulti, currentArray, isControlled, onValueChange],
-  );
+  const handleSelectionChange = (keys: Selection) => {
+    const next = selectionFromKeys(keys).filter((key) => selectableKeys.has(key))
+    const nextValue = isMulti ? next : next.slice(0, 1)
+    if (!isControlled) setInternal(nextValue)
+    if (isMulti) onValueChange?.(nextValue)
+    else onValueChange?.(nextValue[0] ?? "")
+  }
+
+  const handleExpandedChange = (keys: Set<Key>) => {
+    onExpandedKeysChange?.(Array.from(keys, String))
+  }
 
   return (
-    <ul
+    <AriaTree
       ref={ref}
+      aria-label="Tree"
       className={cn("tree", className)}
-      role="tree"
       data-show-line={showLine ? "true" : undefined}
+      data-density={density}
+      selectionMode={isMulti ? "multiple" : "single"}
+      selectionBehavior={checkable ? "toggle" : "replace"}
+      selectedKeys={new Set(selectedKeys)}
+      onSelectionChange={handleSelectionChange}
+      disabledKeys={disabledKeys}
+      expandedKeys={expandedKeys}
+      defaultExpandedKeys={expandedKeys === undefined ? defaultExpandedKeys : undefined}
+      onExpandedChange={handleExpandedChange}
     >
-      {treeData.map((node) => (
+      {treeData.map((node, index) => (
         <NodeRow
           key={node.key}
           node={node}
-          depth={0}
-          multiple={isMulti}
           checkable={checkable}
-          selectedSet={selectedSet}
-          expandedSet={expandedSet}
-          onToggleExpand={handleToggleExpand}
-          onSelect={handleSelect}
+          depth={0}
+          guides={[]}
+          isLast={index === treeData.length - 1}
+          renderItem={renderItem}
         />
       ))}
-    </ul>
-  );
-});
+    </AriaTree>
+  )
+})

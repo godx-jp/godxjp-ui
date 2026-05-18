@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card, CardHeader, CardBody } from "../../components/data-display/Card";
+import { Card } from "../../components/data-display/Card";
 import { Tag } from "../../components/data-display/Tag";
 import { Typography } from "../../components/primitives";
 
@@ -61,7 +61,7 @@ interface ProviderRow {
 const ROWS: ProviderRow[] = [
   {
     name: "GodxConfigProvider",
-    importPath: '@godxjp/ui/preferences',
+    importPath: "@godxjp/ui/preferences",
     responsibility:
       "Locale (BCP 47) + IANA timezone + currency defaults. Wraps children in React Aria's <I18nProvider> so every date / time / number primitive auto-localises.",
     tags: ["locale", "timezone", "currency", "i18n", "react-aria"],
@@ -71,17 +71,17 @@ const ROWS: ProviderRow[] = [
   },
   {
     name: "I18nextProvider",
-    importPath: 'react-i18next',
+    importPath: "react-i18next",
     responsibility:
       "i18next translation-string context. `@godxjp/ui` ships ONE shared singleton (ADR 0004) — consumers extend via `i18next.addResourceBundle(locale, namespace, dict)`.",
     tags: ["i18n", "translation"],
     notes:
-      'Mount AFTER `initI18n()`. The Provider reads locale from `<GodxConfigProvider>` indirectly via the i18next singleton.',
+      "Mount AFTER `initI18n()`. The Provider reads locale from `<GodxConfigProvider>` indirectly via the i18next singleton.",
     required: "required",
   },
   {
     name: "<Toaster /> (root-mount component)",
-    importPath: '@godxjp/ui',
+    importPath: "@godxjp/ui",
     responsibility:
       "Portal target for the `toast()` API (sonner). Not a React provider, but a singleton consumers mount once near the root so any `toast.success(...)` / `toast.error(...)` call elsewhere in the tree renders into this surface.",
     tags: ["toast", "sonner", "feedback"],
@@ -94,11 +94,23 @@ const ROWS: ProviderRow[] = [
 const required = (tone: ProviderRow["required"]) => {
   switch (tone) {
     case "required":
-      return <Tag color="primary" bordered={false}>required</Tag>;
+      return (
+        <Tag color="primary" bordered={false}>
+          required
+        </Tag>
+      );
     case "recommended":
-      return <Tag color="success" bordered={false}>recommended</Tag>;
+      return (
+        <Tag color="success" bordered={false}>
+          recommended
+        </Tag>
+      );
     case "optional":
-      return <Tag color="default" bordered={false}>optional</Tag>;
+      return (
+        <Tag color="default" bordered={false}>
+          optional
+        </Tag>
+      );
   }
 };
 
@@ -109,7 +121,7 @@ export const Overview: Story = {
       <div style={{ display: "grid", gap: 16, maxWidth: 880 }}>
         {ROWS.map((row) => (
           <Card key={row.name} padding="cozy">
-            <CardHeader>
+            <div className="card-header-stack">
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <Typography.Title size={4} style={{ margin: 0 }}>
                   {row.name}
@@ -119,13 +131,16 @@ export const Overview: Story = {
               <Typography.Text code style={{ fontSize: "var(--text-xs)" }}>
                 {row.importPath}
               </Typography.Text>
-            </CardHeader>
-            <CardBody>
+            </div>
+            <div className="card-body">
               <Typography.Paragraph style={{ margin: 0, marginBottom: 8 }}>
                 {row.responsibility}
               </Typography.Paragraph>
               {row.notes ? (
-                <Typography.Paragraph color="secondary" style={{ margin: 0, marginBottom: 8 }}>
+                <Typography.Paragraph
+                  color="secondary"
+                  style={{ margin: 0, marginBottom: 8 }}
+                >
                   {row.notes}
                 </Typography.Paragraph>
               ) : null}
@@ -134,7 +149,7 @@ export const Overview: Story = {
                   <Tag key={t}>{t}</Tag>
                 ))}
               </div>
-            </CardBody>
+            </div>
           </Card>
         ))}
       </div>
@@ -147,15 +162,15 @@ export const MountingOrder: Story = {
   render: function MountingOrder() {
     return (
       <Card padding="cozy">
-        <CardHeader>
+        <div className="card-header-stack">
           <Typography.Title size={4} style={{ margin: 0 }}>
             Root composition
           </Typography.Title>
           <Typography.Text color="secondary">
             Mount each provider exactly once at the top of your tree.
           </Typography.Text>
-        </CardHeader>
-        <CardBody>
+        </div>
+        <div className="card-body">
           <pre
             style={{
               margin: 0,
@@ -167,7 +182,7 @@ export const MountingOrder: Story = {
               overflowX: "auto",
             }}
           >
-{`import { GodxConfigProvider } from "@godxjp/ui/preferences"
+            {`import { GodxConfigProvider } from "@godxjp/ui/preferences"
 import { Toaster } from "@godxjp/ui"
 import { I18nextProvider } from "react-i18next"
 import { initI18n } from "@godxjp/ui/i18n"
@@ -189,7 +204,7 @@ function Root() {
   )
 }`}
           </pre>
-        </CardBody>
+        </div>
       </Card>
     );
   },

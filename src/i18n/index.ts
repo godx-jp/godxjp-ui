@@ -5,7 +5,8 @@
 //   2. navigator.language prefix     (ja-JP → ja, en-US → en, vi-VN → vi)
 //   3. JA fallback                   (design's primary locale)
 //
-// Supported locales: ja / en / vi / fil (required by new-docs/12 §6).
+// Supported locales: ja / en / vi / fil (required by the umbrella
+// frontend-architecture spec §6).
 // Services may add extra locales via `i18n.addResourceBundle` — never
 // replace the base set.
 import i18next from "i18next";

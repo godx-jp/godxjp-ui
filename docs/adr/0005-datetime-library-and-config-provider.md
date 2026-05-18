@@ -366,7 +366,7 @@ Small, mergeable steps. Each step is one PR, gated by CI.
    timezone change via the new provider switching all four locales
    live. No primitive code changes — verifies the wiring works.
 6. **PR-6 — deprecation cycle for `PreferencesProvider`.** Update
-   AGENTS.md + new-docs/02-consumer-contract.md to document
+   AGENTS.md + docs/specs/02-consumer-contract.md to document
    `GodxConfigProvider` as the canonical name. Add a `CHANGELOG.md`
    `### Changed` entry under `## Unreleased`.
 
@@ -466,6 +466,6 @@ shadcn / Radix recommended" gate without a fresh ADR for a new peer.
 - [ADR 0004 — i18next singleton](./0004-i18next-singleton-shared.md)
 - [`./AGENTS.md`](../../AGENTS.md) §Third-party libraries — the
   locked stack table.
-- [`./new-docs/02-consumer-contract.md`](../../new-docs/02-consumer-contract.md) —
+- [`docs/specs/02-consumer-contract.md`](../specs/02-consumer-contract.md) —
   consumer setup; will gain `<GodxConfigProvider>` instructions after
   PR-2 lands.

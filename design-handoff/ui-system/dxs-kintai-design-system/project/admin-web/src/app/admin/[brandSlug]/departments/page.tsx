@@ -8,9 +8,6 @@ import {
   Button,
   Card,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   Table,
   TableBody,
   TableCell,
@@ -83,18 +80,22 @@ export default function DepartmentsListPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                    <DropdownMenu
+                      align="end"
+                      trigger={
                         <Button variant="ghost" size="sm">
                           <MoreHorizontal className="size-4" />
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                          <Link href={`/admin/${brandSlug}/departments/${dept.id}/edit`}>Sửa</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={async () => {
+                      }
+                      items={[
+                        {
+                          key: "edit",
+                          label: <Link href={`/admin/${brandSlug}/departments/${dept.id}/edit`}>Sửa</Link>,
+                        },
+                        {
+                          key: "delete",
+                          variant: "destructive",
+                          onSelect: async () => {
                             const ok = await confirm({
                               title: "削除確認",
                               description: `部門「${dept.name}」を削除しますか？`,
@@ -102,12 +103,11 @@ export default function DepartmentsListPage() {
                               variant: "destructive",
                             });
                             if (ok) del.mutate(dept.id);
-                          }}
-                        >
-                          Xóa
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                          },
+                          label: "Xóa",
+                        },
+                      ]}
+                    />
                   </TableCell>
                 </TableRow>
               ))}

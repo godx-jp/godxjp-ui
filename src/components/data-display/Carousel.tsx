@@ -1,11 +1,8 @@
 import {
-  Children,
-  forwardRef,
   useCallback,
   useEffect,
   useRef,
   useState,
-  type ComponentProps,
   type ReactNode,
 } from "react";
 import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from "lucide-react";
@@ -14,8 +11,8 @@ import { cn } from "../cn";
 /**
  * Carousel — image / content slide deck.
  *
- * Compositional: pass `<CarouselSlide>` children, one per slide. The
- * track translates by index along the configured `orientation`. Plain
+ * Pass `slides`, one ReactNode per slide. The track translates by
+ * index along the configured `orientation`. Plain
  * React + CSS transform — no external dep. Autoplay pauses on hover
  * (mouseenter / mouseleave handlers; CSS `:hover` cannot reach JS).
  *
@@ -24,11 +21,6 @@ import { cn } from "../cn";
  * index), `orientation`, `autoplay` (ms), `loop`, `arrows`, `dots`.
  * NEVER Ant's `activeKey` / `autoplaySpeed`.
  *
- * @example
- *   <Carousel autoplay={3000}>
- *     <CarouselSlide><img src="…" alt="…" /></CarouselSlide>
- *     <CarouselSlide><img src="…" alt="…" /></CarouselSlide>
- *   </Carousel>
  */
 
 export interface CarouselProps {
@@ -48,24 +40,8 @@ export interface CarouselProps {
   /** Stack axis. Default "horizontal". */
   orientation?: "horizontal" | "vertical";
   className?: string;
-  children?: ReactNode;
+  slides: ReactNode[];
 }
-
-export interface CarouselSlideProps extends ComponentProps<"div"> {}
-
-export const CarouselSlide = forwardRef<HTMLDivElement, CarouselSlideProps>(
-  function CarouselSlide({ className, ...rest }, ref) {
-    return (
-      <div
-        ref={ref}
-        role="group"
-        aria-roledescription="slide"
-        className={cn("carousel-slide", className)}
-        {...rest}
-      />
-    );
-  },
-);
 
 export function Carousel({
   value: controlled,
@@ -77,9 +53,8 @@ export function Carousel({
   dots = true,
   orientation = "horizontal",
   className,
-  children,
+  slides,
 }: CarouselProps) {
-  const slides = Children.toArray(children);
   const count = slides.length;
 
   const [internal, setInternal] = useState(defaultValue);
@@ -133,7 +108,16 @@ export function Carousel({
     >
       <div className="carousel-viewport">
         <div className="carousel-track" style={trackStyle}>
-          {slides}
+          {slides.map((slide, index) => (
+            <div
+              key={index}
+              role="group"
+              aria-roledescription="slide"
+              className="carousel-slide"
+            >
+              {slide}
+            </div>
+          ))}
         </div>
       </div>
 

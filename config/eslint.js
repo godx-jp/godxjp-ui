@@ -5,7 +5,7 @@
 //   // eslint.config.js
 //   export { default } from "@godxjp/ui/eslint-config"
 //
-// Locked stack (new-docs/12 §9):
+// Locked stack (umbrella frontend-architecture spec §9):
 //   ESLint 9.x + typescript-eslint 8.x (strict + stylistic)
 //   eslint-plugin-react 7.x + eslint-plugin-react-hooks 5.x
 //   eslint-plugin-jsx-a11y 6.x (WCAG 2.1 AA in JSX)

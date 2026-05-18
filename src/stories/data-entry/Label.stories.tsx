@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Label } from "../../components/data-entry/Label";
 import { Input } from "../../components/data-entry/Input";
-import { Field, FieldHelp } from "../../components/data-entry/Field";
+import { Field } from "../../components/data-entry/Field";
 import { Flex } from "../../components/layout";
 
 /**
@@ -27,7 +27,7 @@ const meta: Meta<typeof Label> = {
       description: {
         component: `
 **Label** — Radix Label wrapper. Pair with \`Input\` via \`htmlFor\`
-for click-to-focus. Compose with \`Field\` + \`FieldHelp\` when the
+for click-to-focus. Compose with \`Field\` help when the
 input needs a description, or use directly for a bare label + input
 pair.
         `.trim(),
@@ -103,10 +103,9 @@ export const Disabled: Story = {
 export const WithDescription: Story = {
   name: "WithDescription · label + input + help line",
   render: () => (
-    <Field style={{ maxWidth: 360 }}>
+    <Field style={{ maxWidth: 360 }} help="所属メンバーに公開されます。">
       <Label htmlFor="display-name-help">表示名</Label>
       <Input id="display-name-help" placeholder="田中 美咲" />
-      <FieldHelp>所属メンバーに公開されます。</FieldHelp>
     </Field>
   ),
 };

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Toaster, toast } from "../../components/feedback/toaster";
 import { Button } from "../../components/general/Button";
-import { Card, CardHeader, CardBody } from "../../components/data-display/Card";
+import { Card } from "../../components/data-display/Card";
 import { Typography } from "../../components/primitives";
 
 /**
@@ -64,18 +64,21 @@ export const Default: Story = {
   render: function Default() {
     return (
       <Card padding="cozy">
-        <CardHeader>
+        <div className="card-header-stack">
           <Typography.Title size={4} style={{ margin: 0 }}>
             Click to emit a toast
           </Typography.Title>
           <Typography.Text color="secondary">
             The toast renders into the single `<Toaster />` mounted below.
           </Typography.Text>
-        </CardHeader>
-        <CardBody>
+        </div>
+        <div className="card-body">
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <Button onClick={() => toast("プレーン通知")}>plain</Button>
-            <Button variant="primary" onClick={() => toast.success("保存しました")}>
+            <Button
+              variant="primary"
+              onClick={() => toast.success("保存しました")}
+            >
               success
             </Button>
             <Button
@@ -84,10 +87,7 @@ export const Default: Story = {
             >
               error
             </Button>
-            <Button
-              variant="ghost"
-              onClick={() => toast.info("読み込み中…")}
-            >
+            <Button variant="ghost" onClick={() => toast.info("読み込み中…")}>
               info
             </Button>
             <Button
@@ -101,7 +101,7 @@ export const Default: Story = {
               with action
             </Button>
           </div>
-        </CardBody>
+        </div>
         <Toaster />
       </Card>
     );
@@ -121,16 +121,16 @@ export const Positions: Story = {
   render: function Positions() {
     return (
       <Card padding="cozy">
-        <CardHeader>
+        <div className="card-header-stack">
           <Typography.Title size={4} style={{ margin: 0 }}>
             position="bottom-right"
           </Typography.Title>
-        </CardHeader>
-        <CardBody>
+        </div>
+        <div className="card-body">
           <Button onClick={() => toast.success("bottom-right stack")}>
             fire toast
           </Button>
-        </CardBody>
+        </div>
         <Toaster position="bottom-right" />
       </Card>
     );

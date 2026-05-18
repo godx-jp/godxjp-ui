@@ -1,9 +1,10 @@
 ---
 title: "Accessibility approach"
+description: "Accessibility requirements and implementation patterns for @godxjp/ui primitives."
 diataxis: explanation
 library: "@godxjp/ui"
 library_version: 3.0.0
-last-updated: 2026-05-17
+last-updated: 2026-05-18
 audience: [developer]
 lang: en
 status: published
@@ -21,7 +22,7 @@ the relevant reference page.
 ## Foundation: Radix UI primitives
 
 Every interactive primitive — Button, Dialog, Select, Tabs, AlertDialog,
-Switch, Checkbox, Combobox, DropdownMenu, Popover, Sheet, Calendar — wraps the
+Switch, Checkbox, DropdownMenu, Popover, Sheet, Calendar — wraps the
 corresponding Radix UI primitive (ADR-0001). Radix handles:
 
 - ARIA role injection (`role="dialog"`, `role="listbox"`, `role="combobox"`, etc.)
@@ -42,14 +43,14 @@ The token system enforces contrast by design rather than by convention.
 
 Foreground/background pairings in `tokens.css`:
 
-| Pair | Minimum ratio | Coverage |
-|---|---|---|
-| `--foreground` on `--background` | 4.5:1 | Body text |
-| `--foreground` on `--card` | 4.5:1 | Card body text |
-| `--primary-foreground` on `--primary` | 4.5:1 | Primary button label |
-| `--destructive-foreground` on `--destructive` | 4.5:1 | Danger button label |
-| `--muted-foreground` on `--background` | 3:1 | Large-text / non-text secondary |
-| `--muted-foreground` on `--card` | 3:1 | Secondary on card |
+| Pair                                          | Minimum ratio | Coverage                        |
+| --------------------------------------------- | ------------- | ------------------------------- |
+| `--foreground` on `--background`              | 4.5:1         | Body text                       |
+| `--foreground` on `--card`                    | 4.5:1         | Card body text                  |
+| `--primary-foreground` on `--primary`         | 4.5:1         | Primary button label            |
+| `--destructive-foreground` on `--destructive` | 4.5:1         | Danger button label             |
+| `--muted-foreground` on `--background`        | 3:1           | Large-text / non-text secondary |
+| `--muted-foreground` on `--card`              | 3:1           | Secondary on card               |
 
 Token values are OKLCH. In OKLCH the lightness axis (`L`) maps
 perceptually uniformly to human brightness perception, so the L-delta between
@@ -71,7 +72,7 @@ WCAG 2.4.11 (Level AA in WCAG 2.2) requires a visible focus indicator.
 `@godxjp/ui` implements this through a single token:
 
 ```css
---ring: oklch(56% 0.15 240);         /* primary blue ring */
+--ring: oklch(56% 0.15 240); /* primary blue ring */
 --ring-offset: 2px;
 ```
 
@@ -99,17 +100,16 @@ Radix covers keyboard contracts for its composites. The full contracts are
 defined in the WAI-ARIA Authoring Practices Guide 1.2 (APG) patterns; below
 is a summary of primitives in `@godxjp/ui`:
 
-| Primitive | Key contract |
-|---|---|
-| Button | Enter / Space activates. Focus received by Tab. |
-| Dialog / AlertDialog | Trap focus inside. Escape closes. |
-| Select | Arrow keys move options. Home/End jump. Escape closes. Type-to-focus on character. |
-| Tabs | Arrow keys move between triggers. Tabs navigate in/out. |
-| Checkbox | Space toggles. Indeterminate is navigable but does not toggle via Space alone (host code decides). |
-| Switch | Space / Enter toggles. |
-| Combobox | Arrow keys move list. Enter selects. Escape closes. Char input filters. |
-| DropdownMenu | Arrow keys move items. Escape closes. Enter activates. |
-| Calendar | Arrow keys move days. Page Up/Down move months. Home/End jump to first/last day. |
+| Primitive            | Key contract                                                                                       |
+| -------------------- | -------------------------------------------------------------------------------------------------- |
+| Button               | Enter / Space activates. Focus received by Tab.                                                    |
+| Dialog / AlertDialog | Trap focus inside. Escape closes.                                                                  |
+| Select               | Arrow keys move options. Home/End jump. Escape closes. Type-to-focus on character. `searchable` mode swaps the type-to-focus for a cmdk filter input. |
+| Tabs                 | Arrow keys move between triggers. Tabs navigate in/out.                                            |
+| Checkbox             | Space toggles. Indeterminate is navigable but does not toggle via Space alone (host code decides). |
+| Switch               | Space / Enter toggles.                                                                             |
+| DropdownMenu         | Arrow keys move items. Escape closes. Enter activates.                                             |
+| Calendar             | Arrow keys move days. Page Up/Down move months. Home/End jump to first/last day.                   |
 
 For screen-reader users, ARIA live regions are used by Toaster/sonner to
 announce toast messages with `aria-live="polite"`. Destructive toasts use
@@ -124,11 +124,10 @@ Unlabelled interactive elements fail WCAG 4.1.2. Patterns in `@godxjp/ui`:
 - `Input` and `Textarea` accept any HTML attribute, including `id`, so the
   caller can pair with `<label htmlFor="...">`. The `Label` primitive wraps
   Radix Label and provides the visual and semantic label.
-- `Dialog` exposes `DialogTitle` and `DialogDescription`, which Radix wires
-  to `aria-labelledby` and `aria-describedby` on the dialog element. Both
-  must be present — `DialogTitle` is mandatory; `DialogDescription` is
-  strongly recommended.
-- `AlertDialog` enforces both `AlertDialogTitle` and `AlertDialogDescription`
+- `Dialog` accepts `title` and `description`, which Radix wires to
+  `aria-labelledby` and `aria-describedby` on the dialog element. `title` is
+  mandatory; `description` is strongly recommended.
+- `AlertDialog` enforces both `AlertDialog` and `AlertDialog`
   because the pattern models a modal interruption that must be comprehensible
   to screen-reader users before the action buttons.
 - `TimeInput` sets `aria-invalid="true"` when the entered value fails the
@@ -179,20 +178,18 @@ user browser font-size preference (WCAG 1.4.4 — resize text).
 
 ## Testing
 
-Each primitive is tested against axe-core as part of the component test suite.
-The Storybook integration (planned for v3.1.0) will run `@storybook/addon-a11y`
-on every story as a CI gate. Until Storybook lands, the test suite uses
-`@testing-library/react` + `jest-axe` or `vitest-axe` to assert no a11y
-violations on render.
+Each primitive is tested against axe-core via Storybook's
+`@storybook/addon-a11y` (cardinal rule 1 + 6). Every story doubles as the
+a11y test surface; CI runs the addon on every story as a gate.
 
-Engineers adding a new primitive must include an a11y test case. The
-`godx-test-discipline` skill details the case ID format and coverage floor.
+Engineers adding a new primitive must include a story covering every
+variant + state on both `[data-theme="light"]` and `[data-theme="dark"]`.
 
 ---
 
 ## See also
 
-- [Reference: Primitives](../reference/primitives/README.md) — per-primitive
+- [Reference: Components](../reference/README.md) — per-component
   ARIA and keyboard contract.
 - [Explanation: Design philosophy](./design-philosophy.md) — 渋み / 間 /
   簡素 and why functional elements carry no decoration.

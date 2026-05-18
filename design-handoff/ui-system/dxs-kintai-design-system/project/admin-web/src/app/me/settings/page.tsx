@@ -2,15 +2,15 @@
 
 import {
   Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+  CardSection,
+  Card,
+  CardTitleText,
   Label,
   Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectMenu,
+  SelectOptionRow,
+  SelectControl,
+  SelectDisplay,
 } from "@godxjp/ui";
 
 import { PageContent } from "@/components/layout/page-content";
@@ -37,41 +37,41 @@ export default function SettingsPage() {
       <PageHeader title={t("nav.me.settings")} />
       <PageContent>
         <Card className="max-w-xl">
-          <CardHeader>
-            <CardTitle>Ngôn ngữ & Múi giờ</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          <Card>
+            <CardTitleText>Ngôn ngữ & Múi giờ</CardTitleText>
+          </Card>
+          <CardSection className="space-y-4">
             <div className="space-y-2">
               <Label>Ngôn ngữ</Label>
               <Select value={locale} onValueChange={(v) => setLocale(v as typeof locale)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
+                <SelectControl>
+                  <SelectDisplay />
+                </SelectControl>
+                <SelectMenu>
                   {(Object.keys(locales) as Array<keyof typeof locales>).map((l) => (
-                    <SelectItem key={l} value={l}>
+                    <SelectOptionRow key={l} value={l}>
                       {l}
-                    </SelectItem>
+                    </SelectOptionRow>
                   ))}
-                </SelectContent>
+                </SelectMenu>
               </Select>
             </div>
             <div className="space-y-2">
               <Label>Múi giờ</Label>
               <Select value={timezone} onValueChange={(v) => setTimezone(v)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
+                <SelectControl>
+                  <SelectDisplay />
+                </SelectControl>
+                <SelectMenu>
                   {timezones.map((tz) => (
-                    <SelectItem key={tz} value={tz}>
+                    <SelectOptionRow key={tz} value={tz}>
                       {tz}
-                    </SelectItem>
+                    </SelectOptionRow>
                   ))}
-                </SelectContent>
+                </SelectMenu>
               </Select>
             </div>
-          </CardContent>
+          </CardSection>
         </Card>
       </PageContent>
     </>

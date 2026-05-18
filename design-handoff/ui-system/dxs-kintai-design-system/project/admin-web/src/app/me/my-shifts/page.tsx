@@ -5,11 +5,7 @@ import { useState } from "react";
 import {
   Button,
   Card,
-  CardContent,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
+  CardSection,
   Input,
   Badge,
   Table,
@@ -60,25 +56,25 @@ export default function MyShiftsPage() {
         }
       />
       <PageContent>
-        <Tabs defaultValue="calendar">
-          <TabsList>
-            <TabsTrigger value="calendar">Lịch</TabsTrigger>
-            <TabsTrigger value="list">Danh sách</TabsTrigger>
-            <TabsTrigger value="requests">Yêu cầu đổi ca</TabsTrigger>
-          </TabsList>
+        <div data-default-value="calendar">
+          <div className="tabs">
+            <button type="button" className="tab" data-value="calendar">Lịch</button>
+            <button type="button" className="tab" data-value="list">Danh sách</button>
+            <button type="button" className="tab" data-value="requests">Yêu cầu đổi ca</button>
+          </div>
 
-          <TabsContent value="calendar">
+          <section data-value="calendar">
             <Card>
-              <CardContent className="p-4">
+              <CardSection className="p-4">
                 <CalendarGrid
                   month={month}
                   days={(calendar.data?.data.days ?? {}) as Record<string, CalendarDay>}
                 />
-              </CardContent>
+              </CardSection>
             </Card>
-          </TabsContent>
+          </section>
 
-          <TabsContent value="list">
+          <section data-value="list">
             <Card>
               <Table>
                 <TableHeader>
@@ -108,9 +104,9 @@ export default function MyShiftsPage() {
                 </TableBody>
               </Table>
             </Card>
-          </TabsContent>
+          </section>
 
-          <TabsContent value="requests">
+          <section data-value="requests">
             <Card>
               <Table>
                 <TableHeader>
@@ -162,8 +158,8 @@ export default function MyShiftsPage() {
                 </TableBody>
               </Table>
             </Card>
-          </TabsContent>
-        </Tabs>
+          </section>
+        </div>
       </PageContent>
       {confirmDialog}
     </>

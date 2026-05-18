@@ -1,0 +1,127 @@
+[
+  {
+    "id": "emp-001",
+    "date": "05/14 (水)",
+    "name": "田中 美咲",
+    "role": "店長",
+    "shop": "渋谷",
+    "kind": "paid",
+    "hours": "8.0h",
+    "status": "active"
+  },
+  {
+    "id": "emp-002",
+    "date": "05/14 (水)",
+    "name": "Nguyễn Lan",
+    "role": "スタッフ",
+    "shop": "表参道",
+    "kind": "late",
+    "hours": "0.2h",
+    "status": "pending",
+    "state": "selected"
+  },
+  {
+    "id": "emp-003",
+    "date": "05/14 (水)",
+    "name": "佐藤 健一",
+    "role": "副店長",
+    "shop": "自由が丘",
+    "kind": "trip",
+    "hours": "—",
+    "status": "leave",
+    "state": "new"
+  },
+  {
+    "id": "emp-004",
+    "date": "05/13 (火)",
+    "name": "山田 太郎",
+    "role": "スタッフ",
+    "shop": "渋谷",
+    "kind": "absence",
+    "hours": "—",
+    "status": "leave",
+    "state": "error"
+  },
+  {
+    "id": "emp-005",
+    "date": "04/30 (水)",
+    "name": "高橋 由美",
+    "role": "スタッフ",
+    "shop": "渋谷",
+    "kind": "normal",
+    "hours": "8.0h",
+    "status": "active",
+    "state": "disabled"
+  },
+  {
+    "id": "emp-006",
+    "date": "05/12 (月)",
+    "name": "鈴木 さくら",
+    "role": "アルバイト",
+    "shop": "新宿",
+    "kind": "late",
+    "hours": "0.5h",
+    "status": "pending",
+    "state": "editing"
+  },
+  {
+    "id": "emp-007",
+    "date": "05/11 (日)",
+    "name": "渡辺 颯太",
+    "role": "スタッフ",
+    "shop": "表参道",
+    "kind": "normal",
+    "hours": "8.0h",
+    "status": "active"
+  },
+  {
+    "id": "emp-008",
+    "date": "05/10 (土)",
+    "name": "山本 結衣",
+    "role": "スタッフ",
+    "shop": "渋谷",
+    "kind": "paid",
+    "hours": "7.5h",
+    "status": "active"
+  },
+  {
+    "id": "emp-009",
+    "date": "05/09 (金)",
+    "name": "中村 陽斗",
+    "role": "アルバイト",
+    "shop": "新宿",
+    "kind": "late",
+    "hours": "0.1h",
+    "status": "pending"
+  },
+  {
+    "id": "emp-010",
+    "date": "05/08 (木)",
+    "name": "小林 凛",
+    "role": "アルバイト",
+    "shop": "自由が丘",
+    "kind": "trip",
+    "hours": "—",
+    "status": "active"
+  },
+  {
+    "id": "emp-011",
+    "date": "05/07 (水)",
+    "name": "加藤 大翔",
+    "role": "アルバイト",
+    "shop": "表参道",
+    "kind": "normal",
+    "hours": "6.0h",
+    "status": "active"
+  },
+  {
+    "id": "emp-012",
+    "date": "05/06 (火)",
+    "name": "井上 真央",
+    "role": "スタッフ",
+    "shop": "渋谷",
+    "kind": "absence",
+    "hours": "—",
+    "status": "leave"
+  }
+]

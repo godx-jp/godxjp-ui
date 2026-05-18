@@ -1,0 +1,12 @@
+{
+  "name": "LeadSource",
+  "kind": "enum",
+  "displayName": { "ja": "リードソース", "en": "Lead Source" },
+  "values": [
+    { "value": "web",       "label": { "ja": "Web",         "en": "Web" } },
+    { "value": "referral",  "label": { "ja": "紹介",        "en": "Referral" } },
+    { "value": "event",     "label": { "ja": "イベント",    "en": "Event" } },
+    { "value": "cold-call", "label": { "ja": "テレアポ",    "en": "Cold Call" } },
+    { "value": "other",     "label": { "ja": "その他",      "en": "Other" } }
+  ]
+}

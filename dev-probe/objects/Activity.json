@@ -1,0 +1,44 @@
+{
+  "name": "Activity",
+  "displayName": { "ja": "活動", "en": "Activity" },
+  "titleIndex": "subject",
+  "options": { "timestamps": true },
+  "properties": {
+    "subject": {
+      "type": "String",
+      "displayName": { "ja": "件名", "en": "Subject" },
+      "required": true
+    },
+    "kind": {
+      "type": "EnumRef",
+      "enum": "ActivityKind",
+      "displayName": { "ja": "種別", "en": "Kind" },
+      "default": "task"
+    },
+    "dueDate": {
+      "type": "Date",
+      "displayName": { "ja": "期限", "en": "Due Date" }
+    },
+    "relatedTo": {
+      "type": "Association",
+      "relation": "ManyToOne",
+      "target": "Contact",
+      "displayName": { "ja": "関連先", "en": "Related To" }
+    },
+    "owner": {
+      "type": "Association",
+      "relation": "ManyToOne",
+      "target": "User",
+      "displayName": { "ja": "所有者", "en": "Owner" }
+    },
+    "done": {
+      "type": "Boolean",
+      "displayName": { "ja": "完了", "en": "Done" },
+      "default": false
+    },
+    "createdAt": {
+      "type": "Timestamp",
+      "displayName": { "ja": "作成日時", "en": "Created At" }
+    }
+  }
+}

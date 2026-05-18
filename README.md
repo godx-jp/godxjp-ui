@@ -48,8 +48,8 @@ That is the entire integration surface. No theming step. No per-service token fi
 
 ## Zero-config toolchain
 
-Per `new-docs/12-frontend-architecture.md` (zero-config principle), services inherit
-the full toolchain from this package:
+Per the umbrella's frontend-architecture spec (zero-config principle), services
+inherit the full toolchain from this package:
 
 ```js
 // eslint.config.js — one line
@@ -103,13 +103,13 @@ export default mergeConfig(base, { test: {} })
 |---|---|---|---|
 | `Badge` | — | WCAG 2.1 AA | production |
 | `Button` | `@radix-ui/react-slot` | focus-visible, keyboard | production |
-| `Card`, `CardHeader`, `CardTitle`, `CardContent` | — | — | production |
+| `Card` | — | — | production |
 | `Input`, `Textarea` | — | aria-invalid, label wire | production |
 | `Label` | `@radix-ui/react-label` | for/id | production |
-| `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | `@radix-ui/react-tabs` | roving tabindex | production |
+| `Tabs`, `Tabs`, `Tabs`, `Tabs` | `@radix-ui/react-tabs` | roving tabindex | production |
 | `Avatar` | — | aria-label | production |
 | `Separator` | `@radix-ui/react-separator` | role separator | production |
-| `Popover`, `PopoverTrigger`, `PopoverContent` | `@radix-ui/react-popover` | focus trap | production |
+| `Popover`, `Popover`, `Popover` | `@radix-ui/react-popover` | focus trap | production |
 | `DropdownMenu` family | `@radix-ui/react-dropdown-menu` | keyboard nav | production |
 | `Calendar` | `react-day-picker` | ARIA grid | production |
 | `TimeInput` | — | aria-invalid | production |
@@ -123,13 +123,13 @@ export default mergeConfig(base, { test: {} })
 | `Combobox` family | `cmdk` + Popover | keyboard nav | production |
 | `Toaster`, `toast` | `sonner` | aria-live | production |
 | `Skeleton` | — | aria-hidden | production |
-| `Breadcrumb`, `BreadcrumbItem`, `BreadcrumbSep` | — | aria-label, aria-current | production |
+| `Breadcrumb`, `Breadcrumb`, `Breadcrumb` | — | aria-label, aria-current | production |
 
 ---
 
 ## i18n
 
-Mandatory locales per `new-docs/12-frontend-architecture.md §6`:
+Mandatory locales per the umbrella frontend-architecture spec §6:
 
 | Locale | Status |
 |---|---|

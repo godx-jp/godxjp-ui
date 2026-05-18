@@ -1,10 +1,8 @@
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import {
   createContext,
-  forwardRef,
   useContext,
   type ComponentPropsWithoutRef,
-  type ElementRef,
   type ReactNode,
 } from "react";
 import { cn } from "../cn";
@@ -22,13 +20,6 @@ import { cn } from "../cn";
  *        </Tooltip>
  *
  *      Auto-wires the Radix Root + Trigger(asChild) + Content.
- *
- *   2. Compositional (advanced) — omit `content`, supply children:
- *
- *        <Tooltip>
- *          <TooltipTrigger asChild><Button /></TooltipTrigger>
- *          <TooltipContent>rich JSX…</TooltipContent>
- *        </Tooltip>
  *
  * Shared timing across the app is configured once on
  * `<GodxConfigProvider>` — the consumer never imports a separate
@@ -76,35 +67,26 @@ export function InternalTooltipProvider({
   );
 }
 
-export const TooltipTrigger = TooltipPrimitive.Trigger;
-export const TooltipPortal = TooltipPrimitive.Portal;
-
-export interface TooltipContentProps
+interface TooltipFloatingProps
   extends ComponentPropsWithoutRef<typeof TooltipPrimitive.Content> {}
 
-export const TooltipContent = forwardRef<
-  ElementRef<typeof TooltipPrimitive.Content>,
-  TooltipContentProps
->(function TooltipContent({ className, sideOffset = 4, ...rest }, ref) {
+function TooltipFloating({ className, sideOffset = 4, ...rest }: TooltipFloatingProps) {
   return (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Content
-        ref={ref}
         sideOffset={sideOffset}
         className={cn("tooltip-content", className)}
         {...rest}
       />
     </TooltipPrimitive.Portal>
   );
-});
+}
 
 export interface TooltipProps {
   /** Tooltip text / content. When set, primitive auto-wires the
    * Radix Root + Trigger(asChild) + Content around the child trigger
    * element — the consumer just provides the trigger node. When
-   * omitted, the primitive falls back to compositional mode
-   * (consumer-rendered `<TooltipTrigger>` + `<TooltipContent>`
-   * children). */
+   * omitted, the primitive renders children without tooltip wiring. */
   content?: ReactNode;
   /** Trigger element (data-driven mode) OR Radix Root children
    * (compositional mode). */
@@ -131,27 +113,7 @@ export function Tooltip({
   onOpenChange,
 }: TooltipProps) {
   const hasAncestorProvider = useContext(TooltipProviderPresenceContext);
-  if (content === undefined) {
-    // Compositional — consumer hand-rolled <TooltipTrigger> +
-    // <TooltipContent> inside the children. Pass-through the Radix
-    // Root. Outside of <GodxConfigProvider> we mount an ad-hoc
-    // Provider so Radix's Root still has its required context.
-    const compositionalRoot = (
-      <TooltipPrimitive.Root
-        open={open}
-        defaultOpen={defaultOpen}
-        onOpenChange={onOpenChange}
-      >
-        {children}
-      </TooltipPrimitive.Root>
-    );
-    if (hasAncestorProvider) return compositionalRoot;
-    return (
-      <InternalTooltipProvider delayDuration={delayDuration}>
-        {compositionalRoot}
-      </InternalTooltipProvider>
-    );
-  }
+  if (content === undefined) return <>{children}</>;
   // Data-driven — auto-wire Root + Trigger + Content. Wrap with an
   // ad-hoc Provider ONLY when there's no ancestor Provider (e.g.
   // isolated Storybook render without <GodxConfigProvider>); otherwise
@@ -163,8 +125,8 @@ export function Tooltip({
       defaultOpen={defaultOpen}
       onOpenChange={onOpenChange}
     >
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent side={placement}>{content}</TooltipContent>
+      <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
+      <TooltipFloating side={placement}>{content}</TooltipFloating>
     </TooltipPrimitive.Root>
   );
   if (hasAncestorProvider) return root;

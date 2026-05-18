@@ -14,11 +14,9 @@ import { useParams } from "next/navigation";
 
 import {
   Alert,
-  AlertDescription,
-  AlertTitle,
   Button,
   Card,
-  CardContent,
+  CardSection,
   Skeleton,
 } from "@godxjp/ui";
 import { CalendarDays, Info, Plus } from "lucide-react";
@@ -94,7 +92,7 @@ export default function Page() {
       </PageHeader>
       <PageContent>
         <Card>
-          <CardContent className="p-4">
+          <CardSection className="p-4">
             {loading ? (
               <div className="grid grid-cols-7 gap-1">
                 {Array.from({ length: 42 }).map((_, i) => (
@@ -104,15 +102,16 @@ export default function Page() {
             ) : (
               <CalendarGrid month={month} data={data} />
             )}
-          </CardContent>
+          </CardSection>
         </Card>
 
         {empty && (
-          <Alert className="mt-4">
-            <Info className="size-4" />
-            <AlertTitle>{t("admin.shifts.calendar.empty_title")}</AlertTitle>
-            <AlertDescription>{t("admin.shifts.calendar.empty_description")}</AlertDescription>
-          </Alert>
+          <Alert
+            className="mt-4"
+            icon={<Info className="size-4" />}
+            title={t("admin.shifts.calendar.empty_title")}
+            description={t("admin.shifts.calendar.empty_description")}
+          />
         )}
 
         <BulkAssignDialog

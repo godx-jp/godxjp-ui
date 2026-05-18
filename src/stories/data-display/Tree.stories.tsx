@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { expect, userEvent, waitFor, within } from "storybook/test";
-import { Folder, FolderOpen, FileText } from "lucide-react";
-import { Tree } from "../../components/data-display/Tree";
-import type { TreeNode } from "../../components/data-display/Tree";
+import type { Meta, StoryObj } from "@storybook/react"
+import { expect, userEvent, waitFor, within } from "storybook/test"
+import { Folder, FolderOpen, FileText } from "lucide-react"
+import { Tree } from "../../components/data-display/Tree"
+import type { TreeNode } from "../../components/data-display/Tree"
 
 /**
  * data-display/Tree — hierarchical view.
@@ -12,7 +12,7 @@ import type { TreeNode } from "../../components/data-display/Tree";
  * Documented props (per `Tree.tsx`):
  *   treeData, value, defaultValue, onValueChange, multiple,
  *   defaultExpandedKeys, expandedKeys, onExpandedKeysChange,
- *   checkable, showLine, className
+ *   checkable, showLine, density, renderItem, className
  *
  * Stories use the documented APIs only (cardinal rule 25).
  */
@@ -31,14 +31,16 @@ const meta: Meta<typeof Tree> = {
 Vocabulary (cardinal rule 23 §B): \`value\` / \`defaultValue\` /
 \`onValueChange\` for selection, \`expandedKeys\` / \`defaultExpandedKeys\`
 / \`onExpandedKeysChange\` for expansion, \`multiple\`, \`checkable\`,
-\`showLine\` for visual variants.
+\`showLine\` for visual variants, \`density\` for local row spacing override,
+and \`renderItem\` for custom row content without replacing the React
+Aria tree engine.
         `.trim(),
       },
     },
   },
-};
-export default meta;
-type Story = StoryObj<typeof Tree>;
+}
+export default meta
+type Story = StoryObj<typeof Tree>
 
 // ─── Org chart — three levels ───────────────────────────────────
 
@@ -74,38 +76,33 @@ const ORG_TREE: TreeNode[] = [
       },
     ],
   },
-];
+]
 
 export const Default: Story = {
   name: "Default · org tree (3 levels)",
   render: () => (
-    <Tree
-      treeData={ORG_TREE}
-      defaultExpandedKeys={["company", "eng"]}
-      defaultValue="fe"
-    />
+    <Tree treeData={ORG_TREE} defaultExpandedKeys={["company", "eng"]} defaultValue="fe" />
   ),
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+    const canvas = within(canvasElement)
 
     await step("initial selection has aria-selected on the leaf", async () => {
-      const selected = canvasElement.querySelectorAll("[aria-selected='true']");
-      await expect(selected.length).toBeGreaterThanOrEqual(1);
-    });
+      const selected = canvasElement.querySelectorAll("[aria-selected='true']")
+      await expect(selected.length).toBeGreaterThanOrEqual(1)
+    })
 
     await step("clicking デザイン本部 expand toggle reveals its children", async () => {
-      const designRow = canvas.getByText("デザイン本部").closest("[role='treeitem']");
-      await expect(designRow).not.toBeNull();
-      const toggle = within(designRow as HTMLElement).getByRole("button", {
-        name: /Expand|Collapse/,
-      });
-      await userEvent.click(toggle);
+      const designRow = canvas.getByRole("row", { name: "デザイン本部" })
+      const toggle = within(designRow).getByRole("button", {
+        name: /Expand/,
+      })
+      await userEvent.click(toggle)
       await waitFor(() => {
-        expect(canvas.getByText("UI デザインチーム")).toBeInTheDocument();
-      });
-    });
+        expect(canvas.getByText("UI デザインチーム")).toBeInTheDocument()
+      })
+    })
   },
-};
+}
 
 // ─── Multi-select with checkboxes ───────────────────────────────
 
@@ -119,7 +116,7 @@ export const MultipleCheckable: Story = {
       defaultValue={["fe", "ui"]}
     />
   ),
-};
+}
 
 // ─── With connector lines ───────────────────────────────────────
 
@@ -170,7 +167,7 @@ const FILE_TREE: TreeNode[] = [
       },
     ],
   },
-];
+]
 
 export const WithLines: Story = {
   name: "WithLines · file explorer w/ connector lines",
@@ -178,28 +175,75 @@ export const WithLines: Story = {
     <Tree
       treeData={FILE_TREE}
       showLine
+      density="compact"
       defaultExpandedKeys={["src", "components", "hooks"]}
       defaultValue="btn"
     />
   ),
-};
+}
+
+// ─── Density — row gap + indentation scale ──────────────────────
+
+export const Density: Story = {
+  name: "Density · compact / default / comfortable",
+  render: () => (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16 }}>
+      <Tree
+        treeData={FILE_TREE}
+        showLine
+        density="compact"
+        defaultExpandedKeys={["src", "components", "hooks"]}
+        defaultValue="btn"
+      />
+      <Tree
+        treeData={FILE_TREE}
+        showLine
+        defaultExpandedKeys={["src", "components", "hooks"]}
+        defaultValue="btn"
+      />
+      <Tree
+        treeData={FILE_TREE}
+        showLine
+        density="comfortable"
+        defaultExpandedKeys={["src", "components", "hooks"]}
+        defaultValue="btn"
+      />
+    </div>
+  ),
+}
+
+// ─── Custom item content ────────────────────────────────────────
+
+export const CustomItem: Story = {
+  name: "CustomItem · renderItem prop",
+  render: () => (
+    <Tree
+      treeData={FILE_TREE}
+      defaultExpandedKeys={["src", "components"]}
+      defaultValue="btn"
+      renderItem={({ node, level }) => (
+        <>
+          {node.icon !== undefined && (
+            <span className="tree-icon" aria-hidden>
+              {node.icon}
+            </span>
+          )}
+          <span className="tree-label">{node.title}</span>
+          <span className="tree-item-meta">L{level}</span>
+        </>
+      )}
+    />
+  ),
+}
 
 // ─── ExpandedByDefault — every node open ────────────────────────
 
 export const ExpandedByDefault: Story = {
   name: "ExpandedByDefault · org tree all open",
   render: () => (
-    <Tree
-      treeData={ORG_TREE}
-      defaultExpandedKeys={[
-        "company",
-        "eng",
-        "design",
-        "ops",
-      ]}
-    />
+    <Tree treeData={ORG_TREE} defaultExpandedKeys={["company", "eng", "design", "ops"]} />
   ),
-};
+}
 
 // ─── Disabled nodes ─────────────────────────────────────────────
 
@@ -226,7 +270,7 @@ const TREE_WITH_DISABLED: TreeNode[] = [
       { key: "a2", title: "旧サーバー Y", disabled: true },
     ],
   },
-];
+]
 
 export const Disabled: Story = {
   name: "Disabled · per-node + per-branch disable",
@@ -237,4 +281,4 @@ export const Disabled: Story = {
       defaultValue="r1"
     />
   ),
-};
+}

@@ -1,19 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import {
-  Sheet as Drawer,
-  SheetContent as DrawerContent,
-  SheetDescription as DrawerDescription,
-  SheetFooter as DrawerFooter,
-  SheetHeader as DrawerHeader,
-  SheetTitle as DrawerTitle,
-  SheetTrigger as DrawerTrigger,
-} from "../../components/feedback/Sheet";
+import { Sheet as Drawer } from "../../components/feedback/Sheet";
 import { Button } from "../../components/general/Button";
 import { Input } from "../../components/data-entry/Input";
-import { Field, FieldLabel } from "../../components/data-entry/Field";
 import { Space } from "../../components/layout";
-import { Menu, MenuItem, MenuGroup } from "../../components/navigation/Menu";
+import { Menu } from "../../components/navigation/Menu";
 
 /**
  * Feedback/Drawer — side-anchored panel built on the
@@ -45,32 +36,28 @@ type Story = StoryObj;
 
 export const Right: Story = {
   render: () => (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="primary">右から開く</Button>
-      </DrawerTrigger>
-      <DrawerContent side="right">
-        <DrawerHeader>
-          <DrawerTitle>シフトを編集</DrawerTitle>
-          <DrawerDescription>
-            5月17日 (土) のシフトを変更します。
-          </DrawerDescription>
-        </DrawerHeader>
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-          <Field>
-            <FieldLabel>開始時刻</FieldLabel>
-            <Input defaultValue="08:00" />
-          </Field>
-          <Field>
-            <FieldLabel>終了時刻</FieldLabel>
-            <Input defaultValue="17:00" />
-          </Field>
-        </Space>
-        <DrawerFooter>
+    <Drawer
+      trigger={<Button variant="primary">右から開く</Button>}
+      side="right"
+      title="シフトを編集"
+      description="5月17日 (土) のシフトを変更します。"
+      footer={
+        <>
           <Button variant="ghost">キャンセル</Button>
           <Button variant="primary">保存</Button>
-        </DrawerFooter>
-      </DrawerContent>
+        </>
+      }
+    >
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <label className="field">
+            <span>開始時刻</span>
+            <Input defaultValue="08:00" />
+          </label>
+          <label className="field">
+            <span>終了時刻</span>
+            <Input defaultValue="17:00" />
+          </label>
+        </Space>
     </Drawer>
   ),
   play: async ({ canvasElement, step }) => {
@@ -90,50 +77,44 @@ export const Right: Story = {
 
 export const Left: Story = {
   render: () => (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="primary">左から開く</Button>
-      </DrawerTrigger>
-      <DrawerContent side="left">
-        <DrawerHeader>
-          <DrawerTitle>メニュー</DrawerTitle>
-          <DrawerDescription>
-            主要セクションへのナビゲーション。
-          </DrawerDescription>
-        </DrawerHeader>
-        <Menu>
-          <MenuGroup label="ナビゲーション">
-            <MenuItem value="dashboard">ダッシュボード</MenuItem>
-            <MenuItem value="attendance">勤怠</MenuItem>
-            <MenuItem value="shift">シフト</MenuItem>
-            <MenuItem value="requests">申請</MenuItem>
-          </MenuGroup>
-        </Menu>
-      </DrawerContent>
+    <Drawer
+      trigger={<Button variant="primary">左から開く</Button>}
+      side="left"
+      title="メニュー"
+      description="主要セクションへのナビゲーション。"
+    >
+        <Menu
+          items={[
+            {
+              type: "group",
+              label: "ナビゲーション",
+              items: [
+                { value: "dashboard", label: "ダッシュボード" },
+                { value: "attendance", label: "勤怠" },
+                { value: "shift", label: "シフト" },
+                { value: "requests", label: "申請" },
+              ],
+            },
+          ]}
+        />
     </Drawer>
   ),
 };
 
 export const Bottom: Story = {
   render: () => (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="primary">下から開く</Button>
-      </DrawerTrigger>
-      <DrawerContent side="bottom">
-        <DrawerHeader>
-          <DrawerTitle>クイックアクション</DrawerTitle>
-          <DrawerDescription>
-            よく使う操作にすぐアクセスできます。
-          </DrawerDescription>
-        </DrawerHeader>
+    <Drawer
+      trigger={<Button variant="primary">下から開く</Button>}
+      side="bottom"
+      title="クイックアクション"
+      description="よく使う操作にすぐアクセスできます。"
+    >
         <Space size="small" wrap>
           <Button variant="secondary">打刻する</Button>
           <Button variant="secondary">シフトを見る</Button>
           <Button variant="secondary">申請を作成</Button>
           <Button variant="secondary">承認待ち</Button>
         </Space>
-      </DrawerContent>
     </Drawer>
   ),
 };

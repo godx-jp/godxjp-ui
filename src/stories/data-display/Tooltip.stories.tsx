@@ -1,10 +1,6 @@
 import type { Meta } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "../../components/data-display/Tooltip";
+import { Tooltip } from "../../components/data-display/Tooltip";
 import { Button } from "../../components/general/Button";
 import { Flex } from "../../components/layout";
 import { GodxConfigProvider } from "../../preferences";
@@ -18,9 +14,6 @@ import { GodxConfigProvider } from "../../preferences";
  *
  *   • Data-driven — `<Tooltip content="…" placement="top">child</Tooltip>`
  *     auto-wires root + trigger + content.
- *   • Compositional — omit `content`, supply your own `TooltipTrigger` +
- *     `TooltipContent` children.
- *
  * App-wide timing flows through `<GodxConfigProvider tooltipDelay={…}>` —
  * the consumer never imports a separate `TooltipProvider`. Per-tooltip
  * overrides use the `delayDuration` prop on `<Tooltip>` itself.
@@ -86,25 +79,6 @@ export const FourPlacements = {
       );
     });
   },
-};
-
-// ─── Compositional · rich Content ───────────────────────────────
-
-export const Compositional = {
-  name: "Compositional · custom multi-line content",
-  render: () => (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="primary">Hover me</Button>
-      </TooltipTrigger>
-      <TooltipContent side="top" sideOffset={8}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <strong>カスタム本文</strong>
-          <span>複数行の説明も表示できます。</span>
-        </div>
-      </TooltipContent>
-    </Tooltip>
-  ),
 };
 
 // ─── Delay variants — per-tooltip override ──────────────────────

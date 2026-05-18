@@ -10,11 +10,11 @@ Bugs below are present in the code — not speculative.
 
 ## Bug class A — primitive without inline-flex context
 
-### A1. `.tab` (TabsTrigger) has no flex / align-items
+### A1. `.tab` (legacy tab trigger part) has no flex / align-items
 
 - **Symbol** `src/styles/shell.css:274` —
   `.tab { padding: var(--spacing-2) var(--spacing-3); font-size: var(--text-sm); color: var(--muted-foreground); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; user-select: none; }`
-- **Symptom** Every `TabsTrigger` whose children are `<Icon /> Label`
+- **Symptom** Every legacy tab trigger part whose children are `<Icon /> Label`
   renders the icon and text on the page without aligning them — Radix
   emits a native `<button>` (inline-block by default), so the SVG sits
   on the text baseline instead of the optical center. Visible in
@@ -28,7 +28,18 @@ Bugs below are present in the code — not speculative.
     `<ShieldCheck /> Security <Badge>1</Badge>` triple-stack
 - **Fix** Replace the `.tab` selector with:
   ```css
-  .tab { display: inline-flex; align-items: center; gap: var(--spacing-1); padding: var(--spacing-2) var(--spacing-3); font-size: var(--text-sm); color: var(--muted-foreground); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; user-select: none; }
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-1);
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    user-select: none;
+  }
   ```
   Same shape as the breadcrumb-crumb fix that just shipped.
 
@@ -47,7 +58,13 @@ Bugs below are present in the code — not speculative.
   of Tailwind contexts.
 - **Fix** Add to `shell.css`:
   ```css
-  .sb-product-meta { display: flex; flex-direction: column; flex: 1; min-width: 0; overflow: hidden; }
+  .sb-product-meta {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
   ```
   And drop the inline `style={{ display: "flex" }}` + the Tailwind
   utilities from Sidebar.tsx line 83-84 (rule 12 — every visual lives
@@ -66,15 +83,14 @@ Bugs below are present in the code — not speculative.
     margin-top: var(--spacing-4);
   }
   ```
-- **Symptom** Same exact shape as the `.sb-stage` bug. `<DialogFooter>`
-  / `<AlertDialogFooter>` containing `<Button>` (inline-flex) children
+- **Symptom** Same exact shape as the `.sb-stage` bug. Dialog footer
+  containers with `<Button>` (inline-flex) children
   stretches every button to the dialog's full width because default
   `align-items: stretch` applies on a column flex container. shadcn's
   source has the responsive variant `flex flex-col-reverse sm:flex-row
-  sm:justify-end` — this port dropped the desktop row + the
+sm:justify-end` — this port dropped the desktop row + the
   align-items. Visible in every Dialog story
-  (`stories/Dialog.stories.tsx` lines 75, 102, 149, 185, 218, 254, 300,
-  362) and every AlertDialog story
+  (`stories/Dialog.stories.tsx` lines 75, 102, 149, 185, 218, 254, 300, 362) and every AlertDialog story
   (`stories/AlertDialog.stories.tsx` lines 77, 116, 155, 193, 224, 256).
 - **Fix** Replace with the responsive shape consumers expect:
   ```css
@@ -86,7 +102,11 @@ Bugs below are present in the code — not speculative.
     margin-top: var(--spacing-4);
   }
   @media (min-width: 640px) {
-    .dialog-footer { flex-direction: row; align-items: center; justify-content: flex-end; }
+    .dialog-footer {
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+    }
   }
   ```
   Drop `align-items: stretch` if the intent was always inline
@@ -138,7 +158,7 @@ Bugs below are present in the code — not speculative.
   Used on `OnButton`, `OnAvatar`, `OnIcon`, `NotificationDot` stories
   (lines 138-200, 246-270).
 - **Symptom** The wrapping `<span style={corner()}>` is `position:
-  absolute` with only `top` + `right` — it sizes to content, which is
+absolute` with only `top` + `right` — it sizes to content, which is
   correct for a Badge alone. But when `<Badge variant="error">5</Badge>`
   is the child and the badge itself is `display: inline-flex` (correct
   per `.badge` rule line 226) with `padding: 1px 8px`, the resulting
@@ -150,6 +170,7 @@ Bugs below are present in the code — not speculative.
   alignment quirks appear when the absolute child has `inline-flex`
   display itself (the parent inline span swallows whitespace, content
   alignment differs by browser).
+
 - **Fix** Tighten the helper:
   ```ts
   function corner(): React.CSSProperties {
@@ -163,8 +184,25 @@ Bugs below are present in the code — not speculative.
 
 - **Symbol** `src/styles/shell.css:1376` and `:1301` —
   ```css
-  .tb-bell-dot { position: absolute; top: var(--spacing-1); right: var(--spacing-1); width: 6px; height: 6px; border-radius: var(--radius-full); background: var(--attention); pointer-events: none; }
-  .me-icon-btn .ind { position: absolute; top: var(--spacing-2); right: var(--spacing-2); width: 6px; height: 6px; border-radius: var(--radius-full); background: var(--attention); }
+  .tb-bell-dot {
+    position: absolute;
+    top: var(--spacing-1);
+    right: var(--spacing-1);
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--attention);
+    pointer-events: none;
+  }
+  .me-icon-btn .ind {
+    position: absolute;
+    top: var(--spacing-2);
+    right: var(--spacing-2);
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--attention);
+  }
   ```
   Both define explicit width/height, so they size correctly.
 - **Fix** Not a bug — both have explicit pixel boxes, so the corner
@@ -207,33 +245,128 @@ Bugs below are present in the code — not speculative.
   Also `Textarea` emits `.textarea-with-count` (line 205) and
   `.textarea-count` (line 207) — both undefined; the showCount count
   has no styling.
+
 - **Fix** Add the missing rules. Minimal repair (copy the shapes from
   the JSDoc intent + tokens):
+
   ```css
-  .input-shell { display: inline-flex; align-items: center; gap: var(--spacing-2); width: 100%; height: var(--density-element); padding: 0 var(--spacing-3); border: 1px solid var(--input); border-radius: var(--radius-md); background: var(--input-background); color: var(--foreground); font-size: var(--text-sm); }
-  .input-shell:focus-within { outline: 2px solid var(--ring); outline-offset: -1px; border-color: transparent; }
-  .input-shell .input-inner { flex: 1; min-width: 0; border: 0; background: transparent; color: inherit; font-size: inherit; outline: 0; padding: 0; }
-  .input-shell .input-affix { display: inline-flex; align-items: center; color: var(--muted-foreground); flex-shrink: 0; }
+  .input-shell {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    width: 100%;
+    height: var(--density-element);
+    padding: 0 var(--spacing-3);
+    border: 1px solid var(--input);
+    border-radius: var(--radius-md);
+    background: var(--input-background);
+    color: var(--foreground);
+    font-size: var(--text-sm);
+  }
+  .input-shell:focus-within {
+    outline: 2px solid var(--ring);
+    outline-offset: -1px;
+    border-color: transparent;
+  }
+  .input-shell .input-inner {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    outline: 0;
+    padding: 0;
+  }
+  .input-shell .input-affix {
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted-foreground);
+    flex-shrink: 0;
+  }
 
-  .input-size-small, .input-shell.input-size-small { height: var(--density-element-sm); font-size: var(--text-xs); }
-  .input-size-large, .input-shell.input-size-large { height: var(--density-element-lg); font-size: var(--text-base); }
+  .input-size-small,
+  .input-shell.input-size-small {
+    height: var(--density-element-sm);
+    font-size: var(--text-xs);
+  }
+  .input-size-large,
+  .input-shell.input-size-large {
+    height: var(--density-element-lg);
+    font-size: var(--text-base);
+  }
 
-  .input-status-error, .input-shell.input-status-error { border-color: var(--destructive); }
-  .input-status-warning, .input-shell.input-status-warning { border-color: var(--warning); }
-  .input-status-error:focus, .input-shell.input-status-error:focus-within { outline-color: var(--destructive); }
-  .input-status-warning:focus, .input-shell.input-status-warning:focus-within { outline-color: var(--warning); }
+  .input-status-error,
+  .input-shell.input-status-error {
+    border-color: var(--destructive);
+  }
+  .input-status-warning,
+  .input-shell.input-status-warning {
+    border-color: var(--warning);
+  }
+  .input-status-error:focus,
+  .input-shell.input-status-error:focus-within {
+    outline-color: var(--destructive);
+  }
+  .input-status-warning:focus,
+  .input-shell.input-status-warning:focus-within {
+    outline-color: var(--warning);
+  }
 
-  .input-group { display: inline-flex; align-items: stretch; width: 100%; }
-  .input-group .input-addon { display: inline-flex; align-items: center; padding: 0 var(--spacing-3); background: var(--surface-2); border: 1px solid var(--input); color: var(--muted-foreground); font-size: var(--text-sm); }
-  .input-group .input-addon:first-child { border-right: 0; border-top-left-radius: var(--radius-md); border-bottom-left-radius: var(--radius-md); }
-  .input-group .input-addon:last-child  { border-left: 0;  border-top-right-radius: var(--radius-md); border-bottom-right-radius: var(--radius-md); }
-  .input-group .input-shell, .input-group .input { border-radius: 0; }
-  .input-group .input-shell:first-child, .input-group .input:first-child { border-top-left-radius: var(--radius-md); border-bottom-left-radius: var(--radius-md); }
-  .input-group .input-shell:last-child,  .input-group .input:last-child  { border-top-right-radius: var(--radius-md); border-bottom-right-radius: var(--radius-md); }
-  .input-shell-grouped { border-radius: 0; }
+  .input-group {
+    display: inline-flex;
+    align-items: stretch;
+    width: 100%;
+  }
+  .input-group .input-addon {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--spacing-3);
+    background: var(--surface-2);
+    border: 1px solid var(--input);
+    color: var(--muted-foreground);
+    font-size: var(--text-sm);
+  }
+  .input-group .input-addon:first-child {
+    border-right: 0;
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+  }
+  .input-group .input-addon:last-child {
+    border-left: 0;
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+  }
+  .input-group .input-shell,
+  .input-group .input {
+    border-radius: 0;
+  }
+  .input-group .input-shell:first-child,
+  .input-group .input:first-child {
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+  }
+  .input-group .input-shell:last-child,
+  .input-group .input:last-child {
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+  }
+  .input-shell-grouped {
+    border-radius: 0;
+  }
 
-  .textarea-with-count { position: relative; display: block; }
-  .textarea-with-count .textarea-count { position: absolute; bottom: var(--spacing-2); right: var(--spacing-3); font-size: var(--text-2xs); color: var(--muted-foreground); pointer-events: none; }
+  .textarea-with-count {
+    position: relative;
+    display: block;
+  }
+  .textarea-with-count .textarea-count {
+    position: absolute;
+    bottom: var(--spacing-2);
+    right: var(--spacing-3);
+    font-size: var(--text-2xs);
+    color: var(--muted-foreground);
+    pointer-events: none;
+  }
   ```
 
 ### D2. Toaster emits `.toaster` and seven `.toast*` variants that don't exist
@@ -256,20 +389,56 @@ Bugs below are present in the code — not speculative.
   `.toast-icon`, `.toast-loader`, `.toast-btn`, `.toast-close` rules
   DO exist (shell.css:977-1035), so the inner pieces would render —
   but the surrounding chip has no surface.
+
 - **Fix** Add to `shell.css`:
   ```css
-  .toaster { font-family: var(--font-sans-jp); }
-  .toast { position: relative; display: flex; align-items: flex-start; gap: var(--spacing-3); width: min(360px, calc(100vw - var(--spacing-6))); padding: var(--spacing-3) var(--spacing-4); background: var(--popover); color: var(--popover-foreground); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); font-size: var(--text-sm); }
-  .toast--success { border-color: color-mix(in oklch, var(--success) 40%, var(--border)); }
-  .toast--success .toast-icon { color: var(--success); }
-  .toast--error { border-color: color-mix(in oklch, var(--destructive) 40%, var(--border)); }
-  .toast--error .toast-icon { color: var(--destructive); }
-  .toast--warning { border-color: color-mix(in oklch, var(--warning) 40%, var(--border)); }
-  .toast--warning .toast-icon { color: var(--warning); }
-  .toast--info { border-color: color-mix(in oklch, var(--info) 40%, var(--border)); }
-  .toast--info .toast-icon { color: var(--info); }
-  .toast--loading .toast-icon { color: var(--muted-foreground); }
-  .toast--default { /* base */ }
+  .toaster {
+    font-family: var(--font-sans-jp);
+  }
+  .toast {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+    width: min(360px, calc(100vw - var(--spacing-6)));
+    padding: var(--spacing-3) var(--spacing-4);
+    background: var(--popover);
+    color: var(--popover-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    font-size: var(--text-sm);
+  }
+  .toast--success {
+    border-color: color-mix(in oklch, var(--success) 40%, var(--border));
+  }
+  .toast--success .toast-icon {
+    color: var(--success);
+  }
+  .toast--error {
+    border-color: color-mix(in oklch, var(--destructive) 40%, var(--border));
+  }
+  .toast--error .toast-icon {
+    color: var(--destructive);
+  }
+  .toast--warning {
+    border-color: color-mix(in oklch, var(--warning) 40%, var(--border));
+  }
+  .toast--warning .toast-icon {
+    color: var(--warning);
+  }
+  .toast--info {
+    border-color: color-mix(in oklch, var(--info) 40%, var(--border));
+  }
+  .toast--info .toast-icon {
+    color: var(--info);
+  }
+  .toast--loading .toast-icon {
+    color: var(--muted-foreground);
+  }
+  .toast--default {
+    /* base */
+  }
   ```
 
 ### D3. Sidebar emits `.sb-product-meta` which has no CSS rule
@@ -294,7 +463,14 @@ Bugs below are present in the code — not speculative.
   in Safari (Safari historically needs `min-width: 0` for shrink).
 - **Fix**
   ```css
-  .sb-product-name { font-weight: 500; font-size: var(--text-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .sb-product-name {
+    font-weight: 500;
+    font-size: var(--text-sm);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
   ```
 
 ### E2. `.sb-nav-item .sb-label` missing `white-space: nowrap` + `min-width: 0`
@@ -310,7 +486,14 @@ Bugs below are present in the code — not speculative.
   Also missing `min-width: 0` so Safari may not shrink.
 - **Fix**
   ```css
-  .sb-nav-item .sb-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+  .sb-nav-item .sb-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+  }
   ```
 
 ### E3. `.tag-label` ellipsis without `min-width: 0` on the flex parent
@@ -321,12 +504,18 @@ Bugs below are present in the code — not speculative.
 - **Symptom** The label has nowrap+ellipsis but no `min-width: 0`
   on itself and no `flex: 1` either — when a Tag has an icon + a
   long label, the label's natural width pushes out of the `max-width:
-  100%` constraint instead of shrinking to fit. Visible in
+100%` constraint instead of shrinking to fit. Visible in
   `stories/Tag.stories.tsx` `WithIcon` if any of the example labels
   were longer; latent bug.
 - **Fix**
   ```css
-  .tag-label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tag-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   ```
 
 ### E4. `.tb-chip` `max-width: 240px` without `min-width: 0` on children
@@ -343,7 +532,14 @@ Bugs below are present in the code — not speculative.
   ellipsizing because `.tb-chip-label` has no `flex` value.
 - **Fix**
   ```css
-  .tb-chip-label { flex: 1; min-width: 0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tb-chip-label {
+    flex: 1;
+    min-width: 0;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   ```
 
 ## Bug class F — inline button drift
@@ -354,7 +550,7 @@ Bugs below are present in the code — not speculative.
   `stories/Tabs.stories.tsx`, `stories/DropdownMenu.stories.tsx`,
   `stories/AppShell.stories.tsx`) — every `<Button>` rendering icon +
   text inherits `.btn { display: inline-flex; align-items: center;
-  gap: var(--spacing-2); }` from `shell.css:192`. ✔
+gap: var(--spacing-2); }` from `shell.css:192`. ✔
 - Bare `<button>` elements in the codebase: `tb-icon-btn` (display:
   grid place-items: center, good), `tb-search` (flex/center, good),
   `tb-chip` (inline-flex, good), `tb-org-btn` (flex/center, good),
@@ -376,7 +572,7 @@ Bugs below are present in the code — not speculative.
      renders unstyled. Add 11 missing rules to `shell.css` — this is
      by far the largest gap, affecting every login form, filter bar,
      and validation flow.
-  2. **A1 — `.tab` not inline-flex**: every `<TabsTrigger>` with an
+  2. **A1 — `.tab` not inline-flex**: every legacy tab trigger with an
      icon + label looks broken in every story; the Settings tabs
      pattern (icon + label + badge) is unusable today. Add
      `display: inline-flex; align-items: center; gap: var(--spacing-1);`.

@@ -15,7 +15,7 @@ lang: en
 > locale, sidebar-collapsed.
 
 Mirrors the four canonical theme axes specified in
-[01 — theme axes](../../../new-docs/01-theme-axes.md). Per cardinal
+[01 — theme axes](../../specs/01-theme-axes.md). Per cardinal
 rule 19 there is no `tenant` axis — accent is the single
 brand-color dimension.
 
@@ -122,7 +122,7 @@ function DensityToggle() {
 
 ## See also
 
-- [01 — theme axes](../../../new-docs/01-theme-axes.md) — binding rule for the axes this hook drives.
+- [01 — theme axes](../../specs/01-theme-axes.md) — binding rule for the axes this hook drives.
 - [TweaksPanel](../shell/TweaksPanel.md) — visual UI for all tweaks.
 - [How-to: Customise density](../../how-to/customise-density.md).
 - [Reference: i18n](../i18n.md) — how locale interacts with i18next.

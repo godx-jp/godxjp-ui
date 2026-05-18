@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useMemo, useState } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import { cn } from "../cn"
-import { Popover, PopoverAnchor, PopoverContent } from "../data-display/Popover"
+import { Popover } from "../data-display/Popover"
 
 /**
  * Cascader — nested column navigation. Renders a Popover whose body
@@ -145,8 +145,13 @@ export const Cascader = forwardRef<HTMLButtonElement, CascaderProps>(
         : labels[labels.length - 1]
 
     return (
-      <Popover open={isOpen} onOpenChange={handleOpenChange}>
-        <PopoverAnchor asChild>
+      <Popover
+        open={isOpen}
+        onOpenChange={handleOpenChange}
+        align="start"
+        sideOffset={4}
+        className="cascader-content"
+        trigger={
           <button
             ref={ref}
             type="button"
@@ -171,8 +176,8 @@ export const Cascader = forwardRef<HTMLButtonElement, CascaderProps>(
               style={{ width: "var(--spacing-4)", height: "var(--spacing-4)", flexShrink: 0 }}
             />
           </button>
-        </PopoverAnchor>
-        <PopoverContent align="start" sideOffset={4} className="cascader-content">
+        }
+      >
           <div className="cascader-columns" role="tree">
             {columns.map((column, depth) => (
               <ul key={depth} className="cascader-column" role="group">
@@ -206,7 +211,6 @@ export const Cascader = forwardRef<HTMLButtonElement, CascaderProps>(
               </ul>
             ))}
           </div>
-        </PopoverContent>
       </Popover>
     )
   },

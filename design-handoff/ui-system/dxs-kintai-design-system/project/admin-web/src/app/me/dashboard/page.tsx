@@ -2,9 +2,9 @@
 
 import {
   Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+  CardSection,
+  Card,
+  CardTitleText,
   Table,
   TableBody,
   TableCell,
@@ -42,45 +42,45 @@ export default function DashboardPage() {
           </div>
           <div className="grid grid-cols-2 gap-4 lg:col-span-2">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-muted-foreground text-sm">Tổng giờ làm</CardTitle>
-              </CardHeader>
-              <CardContent className="text-2xl font-bold">
+              <Card>
+                <CardTitleText className="text-muted-foreground text-sm">Tổng giờ làm</CardTitleText>
+              </Card>
+              <CardSection className="text-2xl font-bold">
                 {fmtMinutes(stats.data?.data.total_work_minutes ?? 0)}
-              </CardContent>
+              </CardSection>
             </Card>
             <Card>
-              <CardHeader>
-                <CardTitle className="text-muted-foreground text-sm">Overtime</CardTitle>
-              </CardHeader>
-              <CardContent className="text-2xl font-bold">
+              <Card>
+                <CardTitleText className="text-muted-foreground text-sm">Overtime</CardTitleText>
+              </Card>
+              <CardSection className="text-2xl font-bold">
                 {fmtMinutes(stats.data?.data.overtime_minutes ?? 0)}
-              </CardContent>
+              </CardSection>
             </Card>
             <Card>
-              <CardHeader>
-                <CardTitle className="text-muted-foreground text-sm">Ngày đi làm</CardTitle>
-              </CardHeader>
-              <CardContent className="text-2xl font-bold">
+              <Card>
+                <CardTitleText className="text-muted-foreground text-sm">Ngày đi làm</CardTitleText>
+              </Card>
+              <CardSection className="text-2xl font-bold">
                 {stats.data?.data.days_worked ?? 0}
-              </CardContent>
+              </CardSection>
             </Card>
             <Card>
-              <CardHeader>
-                <CardTitle className="text-muted-foreground text-sm">Số phút đến trễ</CardTitle>
-              </CardHeader>
-              <CardContent className="text-2xl font-bold">
+              <Card>
+                <CardTitleText className="text-muted-foreground text-sm">Số phút đến trễ</CardTitleText>
+              </Card>
+              <CardSection className="text-2xl font-bold">
                 {stats.data?.data.late_minutes ?? 0}m
-              </CardContent>
+              </CardSection>
             </Card>
           </div>
         </div>
 
         <Card className="mt-4">
-          <CardHeader>
-            <CardTitle>7 ngày gần nhất</CardTitle>
-          </CardHeader>
-          <CardContent>
+          <Card>
+            <CardTitleText>7 ngày gần nhất</CardTitleText>
+          </Card>
+          <CardSection>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -110,7 +110,7 @@ export default function DashboardPage() {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
+          </CardSection>
         </Card>
       </PageContent>
     </>

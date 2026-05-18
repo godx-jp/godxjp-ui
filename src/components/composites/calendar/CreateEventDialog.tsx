@@ -1,11 +1,7 @@
 import { FileText, Globe, RefreshCw, Repeat, Users, Zap, Plus } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Button } from "../../general/Button";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "../../navigation/Tabs";
+import { Tabs } from "../../navigation/Tabs";
 import {
   AttendeeChip,
   CalendarOption,
@@ -137,15 +133,12 @@ export function CreateEventDialog({
           />
         </div>
 
-        <Tabs value={tab} onValueChange={setTab}>
-          <TabsList style={{ padding: "0 20px" }}>
-            {tabs.map((t) => (
-              <TabsTrigger key={t.id} value={t.id}>
-                {t.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+        <Tabs
+          value={tab}
+          onValueChange={setTab}
+          listClassName="cal-create-tabs"
+          items={tabs.map((t) => ({ value: t.id, label: t.label }))}
+        />
 
         <div className="cal-create-body">
           <IconRow icon={<RefreshCw size={15} />} align="center">

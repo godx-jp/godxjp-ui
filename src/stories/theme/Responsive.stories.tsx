@@ -9,7 +9,7 @@ import type { Breakpoint } from "../../hooks/useBreakpoint";
  * Theme/theme/Responsive — breakpoint token catalogue +
  * live readout.
  *
- * Source-of-truth: `new-docs/03-token-system.md` §I-2.
+ * Source-of-truth: `docs/specs/03-token-system.md` §I-2.
  *
  * Per cardinal rule 22 every breakpoint value is token-pinned
  * (`--breakpoint-{xs,sm,md,lg,xl,xxl}`). Components NEVER hardcode

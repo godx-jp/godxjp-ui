@@ -11,7 +11,7 @@ Month, Day + EventDetail, Agenda) plus the two flow artboards
 consume the components 1:1.
 
 CLAUDE.md gate: every primitive added MUST ship a paired
-`src/stories/<Name>.stories.tsx`, a `docs/reference/primitives/<Name>.md`,
+`src/stories/<Name>.stories.tsx`, a `docs/reference/<group>/<Name>.md`,
 add tokens FIRST to `src/styles/theme.css`/`tokens-ext.css` if needed,
 and follow cardinal rules 1, 2, 13, 17, 18, 19. The calendar product is
 service-specific (`暦`/Koyomi), so all `Cal*` / `Koyomi` page-level

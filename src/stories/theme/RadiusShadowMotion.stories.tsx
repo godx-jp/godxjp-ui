@@ -7,7 +7,7 @@ import { Flex } from "../../components/layout";
  * showcases consolidated in one file (each is small, related,
  * usually consulted together).
  *
- * Source-of-truth: `new-docs/03-token-system.md` §F (radius),
+ * Source-of-truth: `docs/specs/03-token-system.md` §F (radius),
  * §G (shadow), §H (motion).
  */
 

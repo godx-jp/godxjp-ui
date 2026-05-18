@@ -1,6 +1,7 @@
 import type { ForgeTranslations } from "./ja";
 
-// Filipino (Tagalog) translation — mandatory locale per new-docs/12 §6.
+// Filipino (Tagalog) translation — mandatory locale per the umbrella
+// frontend-architecture spec §6.
 const fil: ForgeTranslations = {
   brand: {
     forge: "GoDX Forge",
@@ -82,6 +83,55 @@ const fil: ForgeTranslations = {
     empty: "Walang datos",
     back: "Bumalik",
     backToProduct: "Bumalik sa produkto",
+  },
+  table: {
+    conditions: "Mga kondisyon",
+    emptyDescription: "Walang tumutugmang datos",
+    resetFilters: "I-reset ang mga filter",
+    searchPlaceholder: "Maghanap…",
+    detailFilter: "Detalyadong filter",
+    columnSettings: "Mga column",
+    columnSettingsDescription:
+      "Piliin ang mga column na ipapakita. Palaging nakikita ang fixed at action columns.",
+    showAllColumns: "Ipakita lahat",
+    closeColumnSettings: "Isara",
+    newRecord: "+ Bago",
+    saveView: "+ I-save ang view",
+    deleteView: "Tanggalin ang view",
+    saveViewTitle: "I-save ang view",
+    saveViewDescription:
+      "I-save ang kasalukuyang filters, sort, at column visibility bilang view.",
+    defaultViewName: "Naka-save na view {{count}}",
+    viewName: "Pangalan ng view",
+    viewNamePlaceholder: "Ilagay ang pangalan ng view",
+    duplicateViewTitle: "Kapareho ng filters at columns ng “{{name}}”.",
+    duplicateViewDescription: "I-save ang parehong state gamit ang ibang pangalan?",
+    continueSaveView: "Magpatuloy at i-save",
+    selectedRows: "{{count}} ang napili",
+    selectAllVisible: "Piliin ang nakikitang {{count}}",
+    clearSelection: "Alisin ang pagpili",
+    selectAllRows: "Piliin lahat ng row",
+    selectRow: "Piliin ang row {{row}}",
+    paginationTotal: "{{start}}–{{end}} sa {{total}}",
+    pageSize: "Bilang ng row",
+    firstPage: "Unang pahina",
+    previousPage: "Nakaraang pahina",
+    nextPage: "Susunod na pahina",
+    loadMore: "Mag-load pa ng {{count}}",
+    loadMoreProgress: "{{current}} / {{total}} ang ipinakita",
+    jumpToLatest: "<< Pinakabago",
+    previousPeriod: "← Nakaraan",
+    nextPeriod: "Susunod →",
+    jumpToPeriod: "Tumalon sa panahon",
+    expandRow: "Palawakin ang row",
+    collapseRow: "Tiklupin ang row",
+    cellEditor: "Tagaedit ng cell",
+    saveAll: "I-save lahat",
+    cancelAll: "Kanselahin lahat",
+    unsavedChanges: "{{count}} hindi naka-save na pagbabago",
+    unsavedChanges_other: "{{count}} hindi naka-save na pagbabago",
+    lockColumn: "I-lock ang column",
+    unlockColumn: "I-unlock ang column",
   },
   workspace: {
     files: "Mga file",

@@ -1,53 +1,24 @@
-import {
-  createContext,
-  forwardRef,
-  useContext,
-  useState,
-  type ComponentProps,
-  type ReactNode,
-} from "react";
+import { forwardRef, useState, type ComponentProps, type ReactNode } from "react";
 import { cn } from "../cn";
-
-/**
- * Menu — navigation list with selection state. Supports horizontal +
- * vertical orientations; selection mirrors Tabs/Select vocabulary
- * (`value` / `defaultValue` / `onValueChange`).
- *
- *   <Menu defaultValue="dashboard">
- *     <MenuItem value="dashboard" icon={<HomeIcon />}>ダッシュボード</MenuItem>
- *     <MenuItem value="orders">注文管理</MenuItem>
- *     <MenuDivider />
- *     <MenuGroup label="管理">
- *       <MenuItem value="users">ユーザー</MenuItem>
- *     </MenuGroup>
- *   </Menu>
- *
- * Vocabulary (§23.B):
- *   - `orientation` — vertical (default) | horizontal
- *   - `value` / `defaultValue` / `onValueChange` — selection state
- *   - `disabled` per item — interaction state
- *   - `icon` slot — decorative ReactNode per MenuItem
- *
- * Distinct from `DropdownMenu` (Radix overlay action menu): Menu is
- * the persistent navigation surface (sidebar / nav bar); DropdownMenu
- * is the trigger-bound popover.
- */
 
 export type MenuOrientation = "horizontal" | "vertical";
 
-interface MenuContextValue {
+export interface MenuOption {
   value?: string;
-  onValueChange?: (v: string) => void;
-  orientation: MenuOrientation;
+  label?: ReactNode;
+  disabled?: boolean;
+  icon?: ReactNode;
+  extra?: ReactNode;
+  type?: "item" | "group" | "divider";
+  items?: MenuOption[];
 }
 
-const MenuContext = createContext<MenuContextValue | null>(null);
-
-export interface MenuProps extends Omit<ComponentProps<"ul">, "onChange"> {
+export interface MenuProps extends Omit<ComponentProps<"ul">, "onChange" | "children"> {
   orientation?: MenuOrientation;
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
+  items: MenuOption[];
 }
 
 export const Menu = forwardRef<HTMLUListElement, MenuProps>(function Menu(
@@ -56,117 +27,97 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(function Menu(
     value,
     defaultValue,
     onValueChange,
+    items,
     className,
-    children,
     ...rest
   },
   ref,
 ) {
   const [internal, setInternal] = useState<string | undefined>(defaultValue);
   const active = value ?? internal;
-  const handleChange = (v: string) => {
-    if (value === undefined) setInternal(v);
-    onValueChange?.(v);
+  const handleChange = (nextValue: string) => {
+    if (value === undefined) setInternal(nextValue);
+    onValueChange?.(nextValue);
   };
+
   return (
-    <MenuContext.Provider
-      value={{ value: active, onValueChange: handleChange, orientation }}
+    <ul
+      ref={ref}
+      role="menu"
+      className={cn("menu", className)}
+      data-orientation={orientation}
+      aria-orientation={orientation}
+      {...rest}
     >
-      <ul
-        ref={ref}
-        role="menu"
-        className={cn("menu", className)}
-        data-orientation={orientation}
-        aria-orientation={orientation}
-        {...rest}
-      >
-        {children}
-      </ul>
-    </MenuContext.Provider>
+      {items.map((item, index) => {
+        if (item.type === "divider") {
+          return (
+            <hr
+              key={`divider-${index}`}
+              role="separator"
+              className="menu-divider"
+            />
+          );
+        }
+        if (item.type === "group") {
+          return (
+            <div
+              key={`group-${index}`}
+              role="group"
+              aria-label={typeof item.label === "string" ? item.label : undefined}
+            >
+              {item.label && <div className="menu-group-label">{item.label}</div>}
+              {item.items?.map((child) => (
+                <MenuButton
+                  key={child.value}
+                  item={child}
+                  active={active}
+                  onValueChange={handleChange}
+                />
+              ))}
+            </div>
+          );
+        }
+        return (
+          <MenuButton
+            key={item.value ?? index}
+            item={item}
+            active={active}
+            onValueChange={handleChange}
+          />
+        );
+      })}
+    </ul>
   );
 });
 
-// ─── MenuItem ────────────────────────────────────────────────────
-
-export interface MenuItemProps extends Omit<ComponentProps<"button">, "value"> {
-  value: string;
-  disabled?: boolean;
-  icon?: ReactNode;
-  extra?: ReactNode;
-}
-
-export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
-  function MenuItem(
-    { value, disabled, icon, extra, className, children, onClick, ...rest },
-    ref,
-  ) {
-    const ctx = useContext(MenuContext);
-    const selected = ctx?.value === value;
-    return (
-      <li role="none" style={{ display: "contents" }}>
-        <button
-          ref={ref}
-          type="button"
-          role="menuitem"
-          className={cn("menu-item", className)}
-          data-state={selected ? "selected" : undefined}
-          aria-disabled={disabled || undefined}
-          disabled={disabled}
-          onClick={(e) => {
-            onClick?.(e);
-            if (!e.defaultPrevented && !disabled) ctx?.onValueChange?.(value);
-          }}
-          {...rest}
-        >
-          {icon && <span className="menu-item-icon">{icon}</span>}
-          <span className="menu-item-label">{children}</span>
-          {extra && <span className="menu-item-extra">{extra}</span>}
-        </button>
-      </li>
-    );
-  },
-);
-
-// ─── MenuGroup ───────────────────────────────────────────────────
-
-export interface MenuGroupProps extends ComponentProps<"div"> {
-  label?: ReactNode;
-}
-
-export const MenuGroup = forwardRef<HTMLDivElement, MenuGroupProps>(
-  function MenuGroup({ label, children, className, ...rest }, ref) {
-    // ARIA menu pattern: a group inside a `<ul role="menu">` is a
-    // `role="group"` element. Items keep their own `role="menuitem"`
-    // (rendered as `<li>` in MenuItem). The wrapper used to be `<li>`,
-    // which produced invalid `<li>` → `<li>` nesting and a hydration
-    // warning. `<div role="group">` is the correct shape — ARIA
-    // explicitly allows a non-li group inside a menu/listbox.
-    return (
-      <div
-        ref={ref}
-        role="group"
-        aria-label={typeof label === "string" ? label : undefined}
-        className={cn(className)}
-        {...rest}
+function MenuButton({
+  item,
+  active,
+  onValueChange,
+}: {
+  item: MenuOption;
+  active?: string;
+  onValueChange: (value: string) => void;
+}) {
+  const selected = item.value !== undefined && active === item.value;
+  return (
+    <li role="none" style={{ display: "contents" }}>
+      <button
+        type="button"
+        role="menuitem"
+        className="menu-item"
+        data-state={selected ? "selected" : undefined}
+        aria-disabled={item.disabled || undefined}
+        disabled={item.disabled}
+        onClick={() => {
+          if (!item.disabled && item.value !== undefined) onValueChange(item.value);
+        }}
       >
-        {label && <div className="menu-group-label">{label}</div>}
-        {children}
-      </div>
-    );
-  },
-);
-
-// ─── MenuDivider ─────────────────────────────────────────────────
-
-export const MenuDivider = forwardRef<HTMLHRElement, ComponentProps<"hr">>(
-  function MenuDivider({ className, ...rest }, ref) {
-    return (
-      <hr
-        ref={ref}
-        role="separator"
-        className={cn("menu-divider", className)}
-        {...rest}
-      />
-    );
-  },
-);
+        {item.icon && <span className="menu-item-icon">{item.icon}</span>}
+        <span className="menu-item-label">{item.label}</span>
+        {item.extra && <span className="menu-item-extra">{item.extra}</span>}
+      </button>
+    </li>
+  );
+}

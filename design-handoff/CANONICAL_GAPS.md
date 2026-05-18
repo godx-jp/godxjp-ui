@@ -355,7 +355,7 @@ But Tabs.tsx:40 sets `data-active={undefined}` — explicitly overrides what sho
 - TSX — Tabs.tsx:40 — **bug fix**: remove the line `data-active={undefined}`. Radix already sets `data-state="active"` on the active trigger; the override clears nothing and disables the active style. Replace shell.css:278 selector with `.tab[data-state="active"]` OR keep `.tab[data-active="true"]` and have Tabs.tsx forward `data-active={active ? "true" : "false"}` via Radix's render-prop or a hook. Simplest: change shell.css:278 selector to `.tab[data-state="active"]`.
 - CSS — shell.css:272 — `gap: 0` matches canonical (canonical comp-tabs.html line 4 uses `gap:4px` but that's the design preview's small horizontal padding inside the strip). The padding on each `.tab` already covers visual spacing. Keep `gap: 0`.
 - CSS — shell.css:274 — `padding: var(--spacing-2) var(--spacing-3)` → matches `8px 12px`. ✅
-- TSX — Add `TabsList` variant prop. Define new `variant: "line" | "pills" | "segment"`. Currently only line exists.
+- TSX — Add a root `Tabs` variant prop. Define new `variant: "line" | "pills" | "segment"`. Currently only line exists.
 - CSS — Add `.tabs-pills` + `.tabs-segment` variants:
   ```css
   .tabs-pills { display: flex; gap: 4px; background: var(--secondary);
@@ -369,7 +369,7 @@ But Tabs.tsx:40 sets `data-active={undefined}` — explicitly overrides what sho
   .tabs-segment .tab + .tab { border-left: 1px solid var(--border); }
   .tabs-segment .tab[data-state="active"] { background: var(--secondary); color: var(--foreground); font-weight: 500; border-bottom: 0; }
   ```
-- TSX — Pass `variant` to TabsList: `<TabsList variant="pills">`. Add classname based on variant.
+- TSX — Pass `variant` to the root tabs primitive: `<Tabs variant="pills" ... />`. Add classname based on variant.
 - Stories — Tabs.stories.tsx must demo line (default), pills, segment, with badges (count chip in tab — see `K:comp-tabs.html:7` and `K:comp-sidebar.html:47`), vertical orientation already present per existing story.
 
 ### Badges
@@ -777,7 +777,7 @@ Storybook story.
 | 5 | `U:src/styles/shell.css` `.chip` + variants + soft family; reroute `.badge-*` → `.chip-soft *` | medium | Badge.stories.tsx + Table.stories.tsx + Sidebar.stories.tsx (in-row badge). Side-by-side `K:comp-badges.html`. |
 | 6 | `U:src/components/primitives/Badge.tsx` → optional rename to `Chip`, add `solid`+`size` | small | Re-export `Badge` for back-compat. Verify consumer compiles. |
 | 7 | `U:src/styles/shell.css` `.tabs`/`.tab` + add `.tabs-pills`/`.tabs-segment`; fix `.tab[data-state="active"]` | small | Tabs.stories.tsx — pills + segment new stories. Side-by-side `K:comp-tabs.html`. |
-| 8 | `U:src/components/primitives/Tabs.tsx` — remove `data-active={undefined}` bug; add `variant` prop on `TabsList` | small | Active tab now visually styles correctly. |
+| 8 | `U:src/components/primitives/Tabs.tsx` — remove `data-active={undefined}` bug; add root `Tabs` variant prop | small | Active tab now visually styles correctly. |
 | 9 | `U:src/styles/shell.css` `.table` + `--density-table-body` | small | Table.stories.tsx — default + compact density variants. Side-by-side `K:comp-table.html`. |
 | 10 | `U:src/styles/shell.css` `.sb-nav-item` height 32px; `.sb-section` padding; `.sb-icon`/`.sb-chev` stroke | small | Sidebar.stories.tsx + AppShell.stories.tsx. Side-by-side `K:comp-sidebar.html`. |
 | 11 | NEW `U:src/components/primitives/IconButton.tsx` + `.icon-btn`/`.icon-btn.ghost` | small | New IconButton.stories.tsx. |

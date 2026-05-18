@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -14,9 +15,8 @@ import { cn } from "../cn";
 /**
  * Tour — multi-step product walkthrough.
  *
- * Overlays the viewport, highlights a target with a popover callout,
- * advances step-by-step. v1 uses a single semi-transparent mask
- * (no true cutout) and positions the callout near the target's
+ * Overlays the viewport, highlights a target through a true cutout,
+ * advances step-by-step. The callout positions near the target's
  * bounding rect (or page-centre when `placement="center"`).
  *
  * Vocabulary (cardinal rule 23 §B):
@@ -85,6 +85,7 @@ interface CalloutPosition {
 const CALLOUT_GAP = 12;
 const CALLOUT_WIDTH = 320;
 const CALLOUT_HEIGHT_ESTIMATE = 160;
+const TARGET_PADDING = 4;
 
 function resolveTarget(
   target: TourStep["target"],
@@ -185,6 +186,8 @@ export function Tour({
   const [pos, setPos] = useState<CalloutPosition | null>(null);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const rafRef = useRef<number | null>(null);
+  const reactMaskId = useId();
+  const maskId = `tour-mask-${reactMaskId.replace(/:/g, "")}`;
 
   const recompute = useCallback(() => {
     if (!isOpen || !step) {
@@ -262,10 +265,10 @@ export function Tour({
   const highlightStyle =
     targetRect !== null
       ? {
-          top: targetRect.top - 4,
-          left: targetRect.left - 4,
-          width: targetRect.width + 8,
-          height: targetRect.height + 8,
+          top: targetRect.top - TARGET_PADDING,
+          left: targetRect.left - TARGET_PADDING,
+          width: targetRect.width + TARGET_PADDING * 2,
+          height: targetRect.height + TARGET_PADDING * 2,
         }
       : null;
 
@@ -276,7 +279,31 @@ export function Tour({
       aria-modal="true"
       aria-labelledby="tour-callout-title"
     >
-      <div className="tour-mask" aria-hidden onClick={handleClose} />
+      <svg className="tour-mask" aria-hidden onClick={handleClose}>
+        <defs>
+          <mask id={maskId}>
+            <rect width="100%" height="100%" fill="white" />
+            {highlightStyle !== null && (
+              <rect
+                className="tour-mask-cutout"
+                x={highlightStyle.left}
+                y={highlightStyle.top}
+                width={highlightStyle.width}
+                height={highlightStyle.height}
+                rx={8}
+                ry={8}
+                fill="black"
+              />
+            )}
+          </mask>
+        </defs>
+        <rect
+          className="tour-mask-scrim"
+          width="100%"
+          height="100%"
+          mask={`url(#${maskId})`}
+        />
+      </svg>
       {highlightStyle !== null && (
         <div
           className="tour-highlight"

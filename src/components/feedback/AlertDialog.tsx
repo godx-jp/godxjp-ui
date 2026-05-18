@@ -1,68 +1,81 @@
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
-import { forwardRef, type ComponentPropsWithoutRef, type ElementRef, type HTMLAttributes } from "react"
+import {
+  forwardRef,
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  type ReactNode,
+} from "react"
 import { cn } from "../cn"
 
-/**
- * AlertDialog — modal that traps focus until confirmed or cancelled.
- * Uses `.dialog-*` surfaces from tokens.css; actions use `.btn` atoms.
- */
-export const AlertDialog = AlertDialogPrimitive.Root
-export const AlertDialogTrigger = AlertDialogPrimitive.Trigger
-export const AlertDialogPortal = AlertDialogPrimitive.Portal
+export interface AlertDialogProps
+  extends Omit<ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Root>, "children"> {
+  trigger?: ReactNode
+  title: ReactNode
+  description?: ReactNode
+  children?: ReactNode
+  cancel?: ReactNode
+  action?: ReactNode
+  footer?: ReactNode
+  className?: string
+  contentProps?: Omit<ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>, "children">
+}
 
-export const AlertDialogOverlay = forwardRef<
-  ElementRef<typeof AlertDialogPrimitive.Overlay>,
-  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
->(function AlertDialogOverlay({ className, ...rest }, ref) {
-  return <AlertDialogPrimitive.Overlay ref={ref} className={cn("dialog-overlay", className)} {...rest} />
-})
-
-export const AlertDialogContent = forwardRef<
+export const AlertDialog = forwardRef<
   ElementRef<typeof AlertDialogPrimitive.Content>,
-  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(function AlertDialogContent({ className, ...rest }, ref) {
+  AlertDialogProps
+>(function AlertDialog(
+  {
+    trigger,
+    title,
+    description,
+    children,
+    cancel,
+    action,
+    footer,
+    className,
+    contentProps,
+    ...rootProps
+  },
+  ref,
+) {
   return (
-    <AlertDialogPortal>
-      <AlertDialogOverlay />
-      <AlertDialogPrimitive.Content ref={ref} className={cn("dialog-content", className)} {...rest} />
-    </AlertDialogPortal>
+    <AlertDialogPrimitive.Root {...rootProps}>
+      {trigger && <AlertDialogPrimitive.Trigger asChild>{trigger}</AlertDialogPrimitive.Trigger>}
+      <AlertDialogPrimitive.Portal>
+        <AlertDialogPrimitive.Overlay className="dialog-overlay" />
+        <AlertDialogPrimitive.Content
+          ref={ref}
+          {...contentProps}
+          className={cn("dialog-content", className, contentProps?.className)}
+        >
+          <div className="dialog-header">
+            <AlertDialogPrimitive.Title className="dialog-title">
+              {title}
+            </AlertDialogPrimitive.Title>
+            {description && (
+              <AlertDialogPrimitive.Description className="dialog-description">
+                {description}
+              </AlertDialogPrimitive.Description>
+            )}
+          </div>
+          {children}
+          {(footer || cancel || action) && (
+            <div className="dialog-footer">
+              {footer}
+              {cancel && (
+                <AlertDialogPrimitive.Cancel className="btn btn-secondary">
+                  {cancel}
+                </AlertDialogPrimitive.Cancel>
+              )}
+              {action && (
+                <AlertDialogPrimitive.Action className="btn btn-primary">
+                  {action}
+                </AlertDialogPrimitive.Action>
+              )}
+            </div>
+          )}
+        </AlertDialogPrimitive.Content>
+      </AlertDialogPrimitive.Portal>
+    </AlertDialogPrimitive.Root>
   )
-})
-
-export function AlertDialogHeader({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("dialog-header", className)} {...rest} />
-}
-
-export function AlertDialogFooter({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("dialog-footer", className)} {...rest} />
-}
-
-export const AlertDialogTitle = forwardRef<
-  ElementRef<typeof AlertDialogPrimitive.Title>,
-  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
->(function AlertDialogTitle({ className, ...rest }, ref) {
-  return <AlertDialogPrimitive.Title ref={ref} className={cn("dialog-title", className)} {...rest} />
-})
-
-export const AlertDialogDescription = forwardRef<
-  ElementRef<typeof AlertDialogPrimitive.Description>,
-  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
->(function AlertDialogDescription({ className, ...rest }, ref) {
-  return (
-    <AlertDialogPrimitive.Description ref={ref} className={cn("dialog-description", className)} {...rest} />
-  )
-})
-
-export const AlertDialogAction = forwardRef<
-  ElementRef<typeof AlertDialogPrimitive.Action>,
-  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
->(function AlertDialogAction({ className, ...rest }, ref) {
-  return <AlertDialogPrimitive.Action ref={ref} className={cn("btn", "btn-primary", className)} {...rest} />
-})
-
-export const AlertDialogCancel = forwardRef<
-  ElementRef<typeof AlertDialogPrimitive.Cancel>,
-  ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
->(function AlertDialogCancel({ className, ...rest }, ref) {
-  return <AlertDialogPrimitive.Cancel ref={ref} className={cn("btn", "btn-secondary", className)} {...rest} />
 })

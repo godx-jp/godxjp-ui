@@ -6,7 +6,7 @@ import { Flex } from "../../components/layout";
  * Theme/Typography — visual catalogue for the type scale,
  * heading aliases, weights, line-heights, and family stacks.
  *
- * Source-of-truth: `new-docs/03-token-system.md` §C.
+ * Source-of-truth: `docs/specs/03-token-system.md` §C.
  *
  * Brand voice (簡素 — kanso): three weights only (400 / 500 / 700);
  * line-height 1.7 for JP body (間 — ma); intentionally small

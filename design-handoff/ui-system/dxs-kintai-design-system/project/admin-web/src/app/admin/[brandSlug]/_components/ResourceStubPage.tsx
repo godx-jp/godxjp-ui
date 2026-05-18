@@ -7,9 +7,6 @@ import {
   Button,
   Card,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   Table,
   TableBody,
   TableCell,
@@ -131,37 +128,44 @@ export function ResourceStubPage({
                       </TableCell>
                     ))}
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                      <DropdownMenu
+                        align="end"
+                        trigger={
                           <Button variant="ghost" size="sm">
                             <MoreHorizontal className="size-4" />
                           </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link
-                              href={`/admin/${brandSlug}/${path}/${id}${viewOnly ? "" : "/edit"}`}
-                            >
-                              {viewOnly ? t("common.view_detail") : t("common.edit")}
-                            </Link>
-                          </DropdownMenuItem>
-                          {!disableDelete && (
-                            <DropdownMenuItem
-                              onClick={async () => {
-                                const ok = await confirm({
-                                  title: "削除確認",
-                                  description: "この項目を削除しますか？",
-                                  confirmLabel: "削除",
-                                  variant: "destructive",
-                                });
-                                if (ok) del.mutate(id);
-                              }}
-                            >
-                              {t("common.delete")}
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                        }
+                        items={[
+                          {
+                            key: "details",
+                            label: (
+                              <Link
+                                href={`/admin/${brandSlug}/${path}/${id}${viewOnly ? "" : "/edit"}`}
+                              >
+                                {viewOnly ? t("common.view_detail") : t("common.edit")}
+                              </Link>
+                            ),
+                          },
+                          ...(!disableDelete
+                            ? [
+                                {
+                                  key: "delete",
+                                  variant: "destructive" as const,
+                                  onSelect: async () => {
+                                    const ok = await confirm({
+                                      title: "削除確認",
+                                      description: "この項目を削除しますか？",
+                                      confirmLabel: "削除",
+                                      variant: "destructive",
+                                    });
+                                    if (ok) del.mutate(id);
+                                  },
+                                  label: t("common.delete"),
+                                },
+                              ]
+                            : []),
+                        ]}
+                      />
                     </TableCell>
                   </TableRow>
                 );

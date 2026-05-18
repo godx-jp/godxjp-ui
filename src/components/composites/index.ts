@@ -41,3 +41,21 @@ export type {
 // Calendar / scheduling screen compositions (Week / Month / Day /
 // Agenda / EventDetail / CreateEvent / FindATime).
 export * from "./calendar/index";
+
+// Table import / export flow + dialog (canon ⑪). Lives next to the
+// `<Table>` primitive but is NOT a Table prop — keeps the primitive
+// focused on rows + columns (cardinal rule 32).
+export {
+  TableImportFlow,
+  TableExportDialog,
+} from "./table-import-export";
+export type {
+  TableImportFlowProps,
+  TableImportStep,
+  TableImportStepperLabels,
+  TableImportFileInfo,
+  TableImportErrorRow,
+  TableExportDialogProps,
+  TableExportFormat,
+  TableExportRange,
+} from "./table-import-export";

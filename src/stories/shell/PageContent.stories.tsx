@@ -4,16 +4,9 @@ import {
   Button,
   Card,
   Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
   Typography,
 } from "../../components/primitives";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbSep,
-} from "../../components/navigation/Breadcrumb";
+import { Breadcrumb } from "../../components/navigation/Breadcrumb";
 import { PageContent } from "../../components/shell";
 
 /**
@@ -45,13 +38,13 @@ export default meta;
 type Story = StoryObj<typeof PageContent>;
 
 const BREADCRUMB = (
-  <Breadcrumb>
-    <BreadcrumbItem href="/">Workspace</BreadcrumbItem>
-    <BreadcrumbSep />
-    <BreadcrumbItem href="/projects">Projects</BreadcrumbItem>
-    <BreadcrumbSep />
-    <BreadcrumbItem current>godx-admin-frontend</BreadcrumbItem>
-  </Breadcrumb>
+  <Breadcrumb
+    items={[
+      { href: "/", label: "Workspace" },
+      { href: "/projects", label: "Projects" },
+      { current: true, label: "godx-admin-frontend" },
+    ]}
+  />
 );
 
 export const Default: Story = {
@@ -104,18 +97,15 @@ export const WithTabs: Story = {
       subtitle="Repository activity, branches, open issues"
       breadcrumb={BREADCRUMB}
       tabs={
-        <Tabs defaultValue="overview">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="branches">Branches</TabsTrigger>
-            <TabsTrigger value="issues">Issues</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
-          <TabsContent value="overview" />
-          <TabsContent value="branches" />
-          <TabsContent value="issues" />
-          <TabsContent value="settings" />
-        </Tabs>
+        <Tabs
+          defaultValue="overview"
+          items={[
+            { value: "overview", label: "Overview" },
+            { value: "branches", label: "Branches" },
+            { value: "issues", label: "Issues" },
+            { value: "settings", label: "Settings" },
+          ]}
+        />
       }
     >
       <Card title="Overview">

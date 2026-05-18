@@ -1,73 +1,39 @@
-import type { ComponentProps, ReactNode } from "react";
-import { cn } from "../cn";
+import type { ComponentProps, ReactNode } from "react"
+import { cn } from "../cn"
 
-/**
- * Descriptions — Ant-Design label/value table for static info.
- *
- *   <Descriptions title="User info" column={2}>
- *     <Descriptions.Item label="Name">Yuki Tanaka</Descriptions.Item>
- *     <Descriptions.Item label="Email">yuki@example.com</Descriptions.Item>
- *     <Descriptions.Item label="Role" span={2}>Owner · Operations</Descriptions.Item>
- *   </Descriptions>
- */
-
-export interface DescriptionsProps extends Omit<ComponentProps<"div">, "title"> {
-  title?: ReactNode;
-  extra?: ReactNode;
-  /** Columns at default breakpoint (1..6). */
-  column?: number;
-  /** Layout — `horizontal` (default) puts label inline-left of value;
-   * `vertical` stacks label above value. */
-  layout?: "horizontal" | "vertical";
-  /** Show outer + inner borders (Ant default `false`). */
-  bordered?: boolean;
-  /** Density step. */
-  size?: "small" | "default" | "large";
-  children?: ReactNode;
+export interface DescriptionsOption {
+  label: ReactNode
+  value: ReactNode
+  span?: number
+  className?: string
 }
 
-export interface DescriptionsItemProps extends ComponentProps<"div"> {
-  label: ReactNode;
-  /** Columns this item spans (1..column). */
-  span?: number;
-  children?: ReactNode;
+export interface DescriptionsProps extends Omit<ComponentProps<"div">, "title"> {
+  title?: ReactNode
+  extra?: ReactNode
+  items: DescriptionsOption[]
+  column?: number
+  layout?: "horizontal" | "vertical"
+  bordered?: boolean
+  size?: "small" | "default" | "large"
 }
 
 const SIZE_CLASS: Record<NonNullable<DescriptionsProps["size"]>, string> = {
   small: "descriptions-size-small",
   default: "",
   large: "descriptions-size-large",
-};
+}
 
-const Item = function DescriptionsItem({
-  label,
-  span = 1,
-  className,
-  children,
-  ...rest
-}: DescriptionsItemProps) {
-  return (
-    <div
-      className={cn("descriptions-item", className)}
-      style={{ gridColumn: `span ${span}` }}
-      {...rest}
-    >
-      <div className="descriptions-item-label">{label}</div>
-      <div className="descriptions-item-value">{children}</div>
-    </div>
-  );
-};
-
-function DescriptionsRoot({
+export function Descriptions({
   title,
   extra,
+  items,
   column = 3,
   layout = "horizontal",
   bordered = false,
   size = "default",
   className,
   style,
-  children,
   ...rest
 }: DescriptionsProps) {
   return (
@@ -101,10 +67,17 @@ function DescriptionsRoot({
           gridTemplateColumns: `repeat(${column}, minmax(0, 1fr))`,
         }}
       >
-        {children}
+        {items.map((item, index) => (
+          <div
+            key={`${String(item.label)}-${index}`}
+            className={cn("descriptions-item", item.className)}
+            style={{ gridColumn: `span ${item.span ?? 1}` }}
+          >
+            <div className="descriptions-item-label">{item.label}</div>
+            <div className="descriptions-item-value">{item.value}</div>
+          </div>
+        ))}
       </div>
     </div>
-  );
+  )
 }
-
-export const Descriptions = Object.assign(DescriptionsRoot, { Item });

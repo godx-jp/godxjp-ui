@@ -2,10 +2,6 @@ import {
   useLocale,
   Button,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
 } from "@godxjp/ui";
 import { GlobeIcon } from "lucide-react";
 
@@ -111,8 +107,9 @@ export function LocaleSwitcher({
   const resolvedSize = size ?? (hasText ? "default" : "icon");
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu
+      align={align}
+      trigger={
         <Button variant={variant} size={resolvedSize} className={cn("gap-2", className)}>
           {showFlag ? (
             <span className="text-base leading-none">{deriveFlag(currentLocale, flags)}</span>
@@ -122,19 +119,19 @@ export function LocaleSwitcher({
           {showLabel && <span>{currentLabel}</span>}
           {showCode && !showLabel && <span>{currentLocale.split("-")[0].toUpperCase()}</span>}
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align={align}>
-        <DropdownMenuRadioGroup value={currentLocale} onValueChange={setLocale}>
-          {entries.map(([code, label]) => (
-            <DropdownMenuRadioItem key={code} value={code}>
-              {showFlag && (
-                <span className="mr-2 text-base leading-none">{deriveFlag(code, flags)}</span>
-              )}
-              {label}
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      }
+      items={entries.map(([code, label]) => ({
+        key: code,
+        onSelect: () => setLocale(code),
+        label: (
+          <>
+            {showFlag && (
+              <span className="mr-2 text-base leading-none">{deriveFlag(code, flags)}</span>
+            )}
+            {label}
+          </>
+        ),
+      }))}
+    />
   );
 }

@@ -16,9 +16,8 @@ import { cn } from "../cn";
  *   §14 — shadcn / Radix recipe (Slot for asChild)
  *   §21 — every axis (theme/accent/density/font-size)
  *   §22 — every literal token-pinned (height = --density-element-*)
- *   §23 — vocabulary (`size` + `variant` per new-docs/04 §B)
- *   §24 — mobile-first touch-target floor enforced via .btn CSS
- *          (@media max-width: 767px → min-height: 44px)
+ *   §23 — vocabulary (`size` + `variant` per docs/specs/04 §B)
+ *   §24 — mobile touch target handled without changing visual size
  *
  * Slot props (§N):
  *   startContent — ReactNode rendered before children (left icon)

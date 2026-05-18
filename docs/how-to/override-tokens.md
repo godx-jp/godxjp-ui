@@ -81,7 +81,7 @@ status: published
   rules if the base dark derivation does not look correct.
 - Per cardinal rule 19 do NOT add `[data-tenant="<slug>"]` blocks
   back. The framework collapsed tenant + accent into a single
-  axis (see [01 — theme axes](../../new-docs/01-theme-axes.md)).
+  axis (see [01 — theme axes](../specs/01-theme-axes.md)).
 
 ---
 
@@ -97,7 +97,7 @@ status: published
 
 ## Related
 
-- [01 — Theme axes](../../new-docs/01-theme-axes.md) — accent axis specification.
-- [03 — Token system](../../new-docs/03-token-system.md) — token catalogue.
+- [01 — Theme axes](../specs/01-theme-axes.md) — accent axis specification.
+- [03 — Token system](../specs/03-token-system.md) — token catalogue.
 - [Reference: Tokens](../reference/tokens.md).
 - [ADR 0003: Tokens not utilities](../adr/0003-tokens-not-utilities.md).

@@ -15,17 +15,16 @@ import { useParams } from "next/navigation";
 
 import {
   Alert,
-  AlertDescription,
   Badge,
   Button,
   Card,
   Checkbox,
   Input,
   Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectMenu,
+  SelectOptionRow,
+  SelectControl,
+  SelectDisplay,
   Skeleton,
   Spinner,
   Table,
@@ -163,17 +162,17 @@ export default function AbsencesPage() {
               value={typeFilter || "all"}
               onValueChange={(v) => setTypeFilter(v === "all" ? "" : (v as AbsenceType))}
             >
-              <SelectTrigger>
-                <SelectValue placeholder={t("common.all")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("common.all")}</SelectItem>
+              <SelectControl>
+                <SelectDisplay placeholder={t("common.all")} />
+              </SelectControl>
+              <SelectMenu>
+                <SelectOptionRow value="all">{t("common.all")}</SelectOptionRow>
                 {ABSENCE_TYPES.map((tt) => (
-                  <SelectItem key={tt} value={tt}>
+                  <SelectOptionRow key={tt} value={tt}>
                     {t(`absence.type.${tt}`)}
-                  </SelectItem>
+                  </SelectOptionRow>
                 ))}
-              </SelectContent>
+              </SelectMenu>
             </Select>
           </div>
           <div>
@@ -184,17 +183,17 @@ export default function AbsencesPage() {
               value={statusFilter || "all"}
               onValueChange={(v) => setStatusFilter(v === "all" ? "" : (v as AbsenceStatus))}
             >
-              <SelectTrigger>
-                <SelectValue placeholder={t("common.all")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("common.all")}</SelectItem>
+              <SelectControl>
+                <SelectDisplay placeholder={t("common.all")} />
+              </SelectControl>
+              <SelectMenu>
+                <SelectOptionRow value="all">{t("common.all")}</SelectOptionRow>
                 {ABSENCE_STATUSES.map((s) => (
-                  <SelectItem key={s} value={s}>
+                  <SelectOptionRow key={s} value={s}>
                     {t(`absence.status.${s}`)}
-                  </SelectItem>
+                  </SelectOptionRow>
                 ))}
-              </SelectContent>
+              </SelectMenu>
             </Select>
           </div>
           <div>
@@ -244,13 +243,9 @@ export default function AbsencesPage() {
             <Skeleton className="h-8 w-full" />
           </div>
         ) : query.isError ? (
-          <Alert variant="destructive" className="m-4">
-            <AlertDescription>{t("common.error.load_failed")}</AlertDescription>
-          </Alert>
+          <Alert color="destructive" className="m-4" description={t("common.error.load_failed")} />
         ) : rows.length === 0 ? (
-          <Alert className="m-4">
-            <AlertDescription>{t("absence.empty")}</AlertDescription>
-          </Alert>
+          <Alert className="m-4" description={t("absence.empty")} />
         ) : (
           <Table>
             <TableHeader>

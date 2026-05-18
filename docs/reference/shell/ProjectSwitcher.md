@@ -40,7 +40,7 @@ import { ProjectSwitcher } from "@godxjp/ui/components/shell"
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `trigger` | `ReactNode` | required | Trigger element (wrapped with `PopoverTrigger asChild`) |
+| `trigger` | `ReactNode` | required | Trigger element (wrapped with `Popover asChild`) |
 | `activeProductId` | `string` | — | ID of the currently active product — used for the `✓` marker |
 | `activeProjectId` | `string` | — | ID of the currently active project — used for the `✓` marker |
 | `recent` | `RecentProject[]` | `[]` | Up to 3 recently visited projects shown before search results |

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card, CardHeader, CardBody } from "../../components/data-display/Card";
+import { Card } from "../../components/data-display/Card";
 import { Flex, Row, Col } from "../../components/layout";
 
 /**
@@ -18,7 +18,7 @@ import { Flex, Row, Col } from "../../components/layout";
  * hardcoded literals. Per cardinal rule 22 the values are pinned
  * to the dxs-kintai canon (`design-handoff/.../colors_and_type.css`).
  *
- * Source-of-truth: `new-docs/03-token-system.md` §D + §E.
+ * Source-of-truth: `docs/specs/03-token-system.md` §D + §E.
  */
 
 const meta: Meta = {
@@ -29,7 +29,7 @@ const meta: Meta = {
       description: {
         component: `
 **Spacing** — the framework's two-layer spacing system. Source-of-truth:
-[\`new-docs/03-token-system.md\`](https://github.com/godx-jp/godxjp-ui/blob/main/new-docs/03-token-system.md)
+[\`docs/specs/03-token-system.md\`](https://github.com/godx-jp/godxjp-ui/blob/main/docs/specs/03-token-system.md)
 §D (spacing scale) + §E (density chain).
         `.trim(),
       },
@@ -38,9 +38,16 @@ const meta: Meta = {
 };
 export default meta;
 
-const muted = { fontSize: "var(--card-meta-size)", color: "var(--muted-foreground)" } as const;
+const muted = {
+  fontSize: "var(--card-meta-size)",
+  color: "var(--muted-foreground)",
+} as const;
 const tokenLabel = { width: 200, fontSize: "var(--text-2xs)" } as const;
-const tokenValue = { width: 150, fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" } as const;
+const tokenValue = {
+  width: 150,
+  fontSize: "var(--text-2xs)",
+  color: "var(--muted-foreground)",
+} as const;
 
 const SPACING_SCALE: Array<[string, string, number]> = [
   ["--spacing-0", "0", 0],
@@ -90,9 +97,20 @@ the visual bar.`.trim(),
       <div className="dv-stack">
         {SPACING_SCALE.map(([name, val, w]) => (
           <Flex key={name} align="center" gap="middle">
-            <code className="mono" style={tokenLabel}>{name}</code>
-            <span className="mono" style={tokenValue}>{val}</span>
-            <span style={{ height: 6, width: w, background: "var(--primary)", borderRadius: 2 }} />
+            <code className="mono" style={tokenLabel}>
+              {name}
+            </code>
+            <span className="mono" style={tokenValue}>
+              {val}
+            </span>
+            <span
+              style={{
+                height: 6,
+                width: w,
+                background: "var(--primary)",
+                borderRadius: 2,
+              }}
+            />
           </Flex>
         ))}
       </div>
@@ -103,7 +121,9 @@ the visual bar.`.trim(),
 function DensityRow({ token }: { token: string }) {
   return (
     <Flex align="center" gap="middle">
-      <code className="mono" style={tokenLabel}>{token}</code>
+      <code className="mono" style={tokenLabel}>
+        {token}
+      </code>
       <span
         style={{
           height: 6,
@@ -113,7 +133,9 @@ function DensityRow({ token }: { token: string }) {
           borderRadius: 2,
         }}
       />
-      <span className="mono" style={{ ...muted, marginLeft: "auto" }}>var({token})</span>
+      <span className="mono" style={{ ...muted, marginLeft: "auto" }}>
+        var({token})
+      </span>
     </Flex>
   );
 }
@@ -156,7 +178,9 @@ to see the matrix shift.`.trim(),
   },
   render: () => (
     <Flex vertical gap="middle">
-      <div style={muted}>Density axis lives on Storybook toolbar — switch & observe.</div>
+      <div style={muted}>
+        Density axis lives on Storybook toolbar — switch & observe.
+      </div>
       <Row gutter={[14, 14]}>
         {(["tight", "default", "cozy"] as const).map((p) => (
           <Col span={8} key={p}>
@@ -194,13 +218,21 @@ literal 10/14/10 px vertical pad; horizontal pad reads
           ["--card-pad-y-footer", "0.625rem · 10px", "design `.cf` pad-y"],
           ["--card-header-gap", "0.625rem · 10px", "design `.ch` gap"],
           ["--card-title-size", "0.8125rem · 13px", "design `.ch .t`"],
-          ["--card-meta-size", "0.6875rem · 11px", "design `.ch .sub` / `.micro`"],
+          [
+            "--card-meta-size",
+            "0.6875rem · 11px",
+            "design `.ch .sub` / `.micro`",
+          ],
           ["--card-kicker-size", "0.625rem · 10px", "design `.ch-kicker .k`"],
           ["--card-band-height", "4px · literal", "design `.ch-band`"],
         ].map(([tok, val, src]) => (
           <Flex key={tok} gap="middle" align="center">
-            <code className="mono" style={tokenLabel}>{tok}</code>
-            <span className="mono" style={tokenValue}>{val}</span>
+            <code className="mono" style={tokenLabel}>
+              {tok}
+            </code>
+            <span className="mono" style={tokenValue}>
+              {val}
+            </span>
             <span style={{ ...muted, marginLeft: "auto" }}>{src}</span>
           </Flex>
         ))}
