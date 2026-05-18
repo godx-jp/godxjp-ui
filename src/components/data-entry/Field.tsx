@@ -6,36 +6,10 @@ import type {
 } from "react";
 import { cn } from "../cn";
 
-/**
- * Field — label + control + help vertical group, matching the canonical
- * `.field` atom from `K:comp-inputs.html:45-52`.
- *
- * Composes from sub-primitives so consumers stay structural:
- *
- *   <Field>
- *     <Field.Label required info="Hover tip…">従業員コード</Field.Label>
- *     <Input placeholder="EMP-0001" />
- *     <Field.Help>英数字 4–8 文字</Field.Help>
- *   </Field>
- *
- *   <Field>
- *     <Field.Label optional>早退理由</Field.Label>
- *     <Textarea rows={3} />
- *     <Field.RowHelp>
- *       <Field.Help>承認者のみ閲覧可</Field.Help>
- *       <Field.Count current={182} max={200} />
- *     </Field.RowHelp>
- *   </Field>
- *
- * Visual contract maps 1:1 to the dxs-kintai field hierarchy. Tone
- * variants (`error`, `warn`, `info`, `success`) re-target the help
- * line through the canonical `.help.err` / `.help.warn` / `.help.info` /
- * `.help.ok` modifiers from `shell.css`.
- */
-
 export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
   label?: ReactNode;
   help?: ReactNode;
+  description?: ReactNode;
   count?: { current: number; max?: number; warnAt?: number };
   required?: boolean;
   optional?: boolean;
@@ -49,6 +23,7 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
     className,
     label,
     help,
+    description,
     count,
     required,
     optional,
@@ -59,17 +34,24 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
   },
   ref,
 ) {
+  const helpContent = help ?? description;
   return (
     <div ref={ref} className={cn("field", className)} {...rest}>
       {label !== undefined && (
-        <LabelControl required={required} optional={optional} optionalLabel={optionalLabel}>
+        <LabelControl
+          required={required}
+          optional={optional}
+          optionalLabel={optionalLabel}
+        >
           {label}
         </LabelControl>
       )}
       {children}
-      {(help !== undefined || count !== undefined) && (
+      {(helpContent !== undefined || count !== undefined) && (
         <div className={count !== undefined ? "row-help" : undefined}>
-          {help !== undefined && <HelpText tone={tone}>{help}</HelpText>}
+          {helpContent !== undefined && (
+            <HelpText tone={tone}>{helpContent}</HelpText>
+          )}
           {count !== undefined && <CountText {...count} />}
         </div>
       )}
@@ -210,18 +192,6 @@ const CountText = forwardRef<HTMLDivElement, FieldCountProps>(
         {...rest}
       >
         {typeof max === "number" ? `${current} / ${max}` : current}
-      </div>
-    );
-  },
-);
-
-// ─── Field.RowHelp ────────────────────────────────────────────────────
-
-const RowHelp = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  function RowHelp({ className, children, ...rest }, ref) {
-    return (
-      <div ref={ref} className={cn("row-help", className)} {...rest}>
-        {children}
       </div>
     );
   },
