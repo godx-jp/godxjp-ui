@@ -6,6 +6,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { cn } from "../cn";
+import type { FeedbackColorProp } from "../../props";
 
 /**
  * Result — page-level outcome surface (Ant-Design `Result` shape).
@@ -27,12 +28,9 @@ import { cn } from "../cn";
  *   - Ant `extra`        → `extra`        (matches Card footer slot)
  */
 
-export type ResultColor =
-  | "default"
-  | "info"
-  | "success"
-  | "warning"
-  | "destructive";
+/** Alias of the shared `FeedbackColorProp` — same shape as
+ *  AlertColor / ProgressColor; kept as a named export for back-compat. */
+export type ResultColor = FeedbackColorProp;
 
 export interface ResultProps
   extends Omit<ComponentProps<"div">, "color" | "title"> {

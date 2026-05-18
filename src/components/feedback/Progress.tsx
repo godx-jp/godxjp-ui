@@ -1,5 +1,6 @@
 import { forwardRef, type ComponentProps, type ReactNode } from "react";
 import { cn } from "../cn";
+import type { FeedbackColorProp } from "../../props";
 
 /**
  * Progress — linear or circular progress indicator.
@@ -21,12 +22,9 @@ import { cn } from "../cn";
  */
 
 export type ProgressVariant = "line" | "circle";
-export type ProgressColor =
-  | "default"
-  | "info"
-  | "success"
-  | "warning"
-  | "destructive";
+/** Alias of the shared `FeedbackColorProp` — same shape as
+ *  AlertColor / ResultColor; kept as a named export for back-compat. */
+export type ProgressColor = FeedbackColorProp;
 export type ProgressSize = "small" | "default" | "large";
 
 export interface ProgressProps extends Omit<ComponentProps<"div">, "color"> {

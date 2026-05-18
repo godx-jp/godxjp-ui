@@ -6,6 +6,7 @@ import {
 } from "@internationalized/date";
 import { cn } from "../cn";
 import { useFormatters } from "../../hooks/useFormatters";
+import type { ColorProp } from "../../props";
 
 /**
  * Timeline — chronological event rail.
@@ -49,14 +50,10 @@ import { useFormatters } from "../../hooks/useFormatters";
 
 export type TimelineVariant = "list" | "branching" | "feed";
 
-export type TimelineColor =
-  | "default"
-  | "primary"
-  | "success"
-  | "warning"
-  | "destructive"
-  | "info"
-  | "attention";
+/** Identical to `TagPresetColor` — the framework's semantic palette
+ *  minus `"secondary"` (which is Typography's text-dimming slot).
+ *  Aliased so any colour added to `ColorProp` lights up here too. */
+export type TimelineColor = Exclude<ColorProp, "secondary">;
 
 export interface TimelineItem {
   /** Stable key for React reconciliation. Defaults to the item index
