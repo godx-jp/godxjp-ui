@@ -1,3 +1,18 @@
+/**
+ * @godxjp/ui Table — slim primitive.
+ *
+ * Renders columns × rows. Sort indicators, resize handles, checkbox
+ * column (driven by `selection`), expand toggles, tree twirls, group
+ * banners, inline editing, sticky columns. The chrome — view tabs,
+ * toolbar, filter chips, batch action band, pagination, column
+ * manager Sheet, save-view Dialog — lives on the `<DataTable>`
+ * composite (`src/components/composites/data-table/`).
+ *
+ * v5.0.0 (Stage 4b, Plan §3). The legacy chrome props (`toolbar`,
+ * `views`, `batchActions`, `filters`, `onFiltersChange`, `filterBar`,
+ * `onResetFilters`, `pagination`, `tableKey`) were removed in this
+ * release. See `docs/how-to/migrate-to-data-table.md`.
+ */
 import {
   flexRender,
   getCoreRowModel,
@@ -9,13 +24,10 @@ import {
   type Updater,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { Lock, LockOpen, Search } from "lucide-react";
 import { matchBreakpoint, useBreakpoint } from "../../hooks/useBreakpoint";
 import type { Breakpoint } from "../layout/Row";
 import {
   Fragment,
-  isValidElement,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -25,528 +37,73 @@ import {
 import { useTranslation } from "react-i18next";
 import { cn } from "../cn";
 import { Checkbox } from "../data-entry/Checkbox";
-import { Input } from "../data-entry/Input";
-import { InputSearch } from "../data-entry/InputSearch";
-import { Select } from "../data-entry/Select";
-import { Alert } from "../feedback/Alert";
-import { Dialog } from "../feedback/Dialog";
-import { Sheet } from "../feedback/Sheet";
 import { Button } from "../general/Button";
-import { Pagination } from "../navigation/Pagination";
-import { Badge } from "./Badge";
 import { Empty } from "./Empty";
-import {
-  MAX_PERSISTED_TABLE_VIEWS,
-  readPersistedColumnPinning,
-  readPersistedColumnVisibility,
-  readPersistedTableViews,
-  writePersistedColumnPinning,
-  writePersistedColumnVisibility,
-  writePersistedTableViews,
-} from "./Table.persistence";
 import type {
-  TableBatchActions,
-  TableBatchActionsConfig,
   TableColumn,
   TableColumnVisibility,
-  TableEditingConfig,
-  TableExpandableConfig,
-  TableFilter,
-  TableFilterBar,
-  TableFilterItem,
-  TableFilterOperator,
-  TableFilterOption,
-  TableGroupBy,
   TableGroupDescriptor,
-  TablePagination,
-  TablePaginationCursorConfig,
-  TablePaginationLoadMoreConfig,
-  TablePaginationNumberedConfig,
-  TablePaginationVariantConfig,
   TableProps,
   TableRowKey,
   TableSort,
   TableSortState,
   TableStickyConfig,
   TableStickySide,
-  TableToolbar,
-  TableToolbarButtonConfig,
-  TableToolbarConfig,
-  TableTreeConfig,
-  TableViewItem,
-  TableViews,
-  TableViewsConfig,
-  TableViewSnapshot,
 } from "./Table.types";
 // Re-export the type surface so existing `from "./data-display/Table"`
 // imports continue to resolve identically to before the Stage 4 split.
 export type {
-  TableBatchActions,
-  TableBatchActionsConfig,
-  TableBatchActionsContext,
   TableColumn,
   TableColumnPinningChange,
   TableColumnVisibility,
   TableDensity,
   TableEditingConfig,
   TableExpandableConfig,
+  TableGroupBy,
+  TableGroupDescriptor,
+  TableProps,
+  TableRowKey,
+  TableSelectionConfig,
+  TableSort,
+  TableSortState,
+  TableStickyConfig,
+  TableStickySide,
+  TableTreeConfig,
+} from "./Table.types";
+// Chrome-shaped types remain importable from this module for the
+// composite consumers that still reference them (PR 4/4 of stage 4b
+// will move them into `composites/data-table/DataTable.types.ts`).
+export type {
+  TableBatchActions,
+  TableBatchActionsConfig,
+  TableBatchActionsContext,
   TableFilter,
   TableFilterBar,
   TableFilterItem,
   TableFilterOperator,
   TableFilterOption,
-  TableGroupBy,
-  TableGroupDescriptor,
   TablePagination,
   TablePaginationConfig,
   TablePaginationCursorConfig,
   TablePaginationLoadMoreConfig,
   TablePaginationNumberedConfig,
   TablePaginationVariantConfig,
-  TableProps,
-  TableRowKey,
-  TableSort,
-  TableSortState,
-  TableStickyConfig,
-  TableStickySide,
   TableToolbar,
   TableToolbarButtonConfig,
   TableToolbarColumnConfig,
   TableToolbarConfig,
   TableToolbarFilterConfig,
   TableToolbarSearchConfig,
-  TableTreeConfig,
   TableViewItem,
   TableViewSnapshot,
   TableViews,
   TableViewsConfig,
 } from "./Table.types";
-export {
-  getTableColumnPinningStorageKey,
-  getTableColumnVisibilityStorageKey,
-  getTableViewsStorageKey,
-} from "./Table.persistence";
-import { Tag } from "./Tag";
-
-
-// ── Stage 4b deprecation warner ────────────────────────────────────
-// Module-level Set dedupes the warning to once-per-prop per session.
-const warnedDeprecatedProps = new Set<string>();
-function warnDeprecatedChromeProp(prop: string) {
-  if (warnedDeprecatedProps.has(prop)) return;
-  warnedDeprecatedProps.add(prop);
-  // eslint-disable-next-line no-console
-  console.warn(
-    `[@godxjp/ui Table] prop \`${prop}\` is deprecated on the primitive and will be removed in v5. ` +
-      `Move to the <DataTable> composite (see docs/how-to/migrate-to-data-table.md).`,
-  );
-}
-
-function normalizeFilters(filters: TableFilter[] | undefined) {
-  return (filters ?? [])
-    .map((filter) => ({
-      key: filter.key,
-      operator: filter.operator ?? "eq",
-      value: filter.value ?? null,
-    }))
-    .sort((left, right) => left.key.localeCompare(right.key));
-}
-
-function normalizeVisibility(columnVisibility: TableColumnVisibility | undefined) {
-  return Object.fromEntries(
-    Object.entries(columnVisibility ?? {}).sort(([left], [right]) =>
-      left.localeCompare(right),
-    ),
-  );
-}
-
-function sameViewSnapshot(
-  view: TableViewItem,
-  snapshot: TableViewSnapshot,
-) {
-  return (
-    JSON.stringify(normalizeFilters(view.filters)) ===
-      JSON.stringify(normalizeFilters(snapshot.filters)) &&
-    JSON.stringify(view.sort ?? null) === JSON.stringify(snapshot.sort ?? null) &&
-    JSON.stringify(normalizeVisibility(view.columnVisibility)) ===
-      JSON.stringify(normalizeVisibility(snapshot.columnVisibility))
-  );
-}
 
 function resolveUpdater<T>(updater: Updater<T>, previous: T): T {
   return typeof updater === "function"
     ? (updater as (old: T) => T)(previous)
     : updater;
-}
-
-function isTablePaginationVariantConfig(
-  value: TablePagination | undefined,
-): value is TablePaginationVariantConfig {
-  if (
-    typeof value !== "object" ||
-    value === null ||
-    Array.isArray(value) ||
-    isValidElement(value)
-  )
-    return false;
-  const candidate = value as { type?: string };
-  if (candidate.type === "load-more" || candidate.type === "cursor")
-    return true;
-  return "total" in value && "current" in value && "pageSize" in value;
-}
-
-function isNumberedPaginationConfig(
-  value: TablePaginationVariantConfig,
-): value is TablePaginationNumberedConfig {
-  return value.type === undefined || value.type === "numbered";
-}
-
-function isTableToolbarConfig(
-  value: TableToolbar | undefined,
-): value is TableToolbarConfig {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value) &&
-    !isValidElement(value) &&
-    ("search" in value ||
-      "filter" in value ||
-      "columns" in value ||
-      "primaryAction" in value ||
-      "actions" in value)
-  );
-}
-
-function isTableViewsConfig(
-  value: TableViews | undefined,
-): value is TableViewsConfig {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value) &&
-    !isValidElement(value) &&
-    "items" in value
-  );
-}
-
-function isTableBatchActionsConfig<TData>(
-  value: TableBatchActions<TData> | undefined,
-): value is TableBatchActionsConfig<TData> {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value) &&
-    !isValidElement(value) &&
-    "selectedRowKeys" in value &&
-    "onSelectedRowKeysChange" in value &&
-    "actions" in value
-  );
-}
-
-function isToolbarButtonConfig(
-  value: ReactNode | TableToolbarButtonConfig,
-): value is TableToolbarButtonConfig {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value) &&
-    !isValidElement(value) &&
-    ("label" in value || "onClick" in value || "disabled" in value)
-  );
-}
-
-function renderTableViews(
-  views: TableViewsConfig,
-  items: TableViewItem[],
-  applyView: (view: TableViewItem) => void,
-  deleteView: (view: TableViewItem) => void,
-  saveView: () => void,
-  defaultSaveLabel: string,
-  defaultDeleteLabel: string,
-) {
-  return (
-    <>
-      {items.map((view) => (
-        <span
-          key={view.key}
-          className={view.key === views.activeKey ? "tab-wrap on" : "tab-wrap"}
-        >
-          <button
-            type="button"
-            className="tab"
-            disabled={view.disabled}
-            onClick={() => applyView(view)}
-          >
-            {view.dotColor !== undefined && (
-              <span
-                className="dot"
-                style={{ background: view.dotColor }}
-                aria-hidden
-              />
-            )}
-            {view.label}
-            {view.count !== undefined && (
-              <span className="count">{view.count}</span>
-            )}
-          </button>
-          {view.deletable === true && (
-            <button
-              type="button"
-              className="tab-delete"
-              aria-label={`${views.deleteLabel ?? defaultDeleteLabel}: ${String(view.label)}`}
-              disabled={view.disabled}
-              onClick={(event) => {
-                event.stopPropagation();
-                deleteView(view);
-              }}
-            >
-              ×
-            </button>
-          )}
-        </span>
-      ))}
-      <span className="spacer" />
-      {views.saveable !== false && (
-        <button type="button" className="tab add" onClick={saveView}>
-          {views.saveLabel ?? defaultSaveLabel}
-        </button>
-      )}
-    </>
-  );
-}
-
-function renderToolbarPrimaryAction(
-  primaryAction: TableToolbarConfig["primaryAction"],
-  defaultLabel: string,
-) {
-  if (primaryAction === undefined || primaryAction === false) return null;
-  if (!isToolbarButtonConfig(primaryAction)) return primaryAction;
-  return (
-    <Button
-      className="tbl-primary-action"
-      size="small"
-      onClick={primaryAction.onClick}
-      disabled={primaryAction.disabled}
-    >
-      {primaryAction.label ?? defaultLabel}
-    </Button>
-  );
-}
-
-function renderTableToolbar(
-  toolbar: TableToolbar | undefined,
-  t: (key: string, options?: Record<string, unknown>) => string,
-  onColumnSettingsClick: () => void,
-) {
-  if (toolbar === undefined || toolbar === false) return null;
-  if (!isTableToolbarConfig(toolbar)) return toolbar;
-
-  return (
-    <>
-      {toolbar.search !== undefined && toolbar.search !== false && (
-        <InputSearch
-          ref={toolbar.search.inputRef}
-          aria-label={toolbar.search.ariaLabel ?? t("common.search")}
-          className="tbl-search-input"
-          size="small"
-          placeholder={
-            toolbar.search.placeholder ?? t("table.searchPlaceholder")
-          }
-          value={toolbar.search.value}
-          disabled={toolbar.search.disabled}
-          onChange={(event) =>
-            toolbar.search !== false &&
-            toolbar.search?.onValueChange(event.target.value)
-          }
-          onSearch={toolbar.search.onSearch}
-          onClear={() => {
-            if (toolbar.search === false) return;
-            toolbar.search?.onValueChange("");
-            toolbar.search?.onSearch?.("");
-            toolbar.search?.onClear?.();
-          }}
-          suffix={toolbar.search.suffix}
-        />
-      )}
-      {toolbar.search !== undefined && toolbar.search !== false && (
-        <Button
-          className="tbl-search-action"
-          size="small"
-          variant="primary"
-          aria-label={t("common.search")}
-          disabled={toolbar.search.disabled}
-          startContent={<Search aria-hidden="true" focusable="false" />}
-          onClick={() =>
-            toolbar.search !== false &&
-            toolbar.search?.onSearch?.(toolbar.search.value)
-          }
-        >
-          <span className="tbl-search-action-label">{t("common.search")}</span>
-        </Button>
-      )}
-      {toolbar.filter !== undefined && toolbar.filter !== false && (
-        <Button
-          className="tbl-filter-action"
-          size="small"
-          variant="outline"
-          disabled={toolbar.filter.disabled}
-          onClick={toolbar.filter.onClick}
-        >
-          {toolbar.filter.label ?? t("table.detailFilter")}
-          {toolbar.filter.count !== undefined && toolbar.filter.count > 0 && (
-            <>
-              {" "}
-              <Badge variant="primary" dot={false}>
-                {toolbar.filter.count}
-              </Badge>
-            </>
-          )}
-        </Button>
-      )}
-      <span className="spacer" />
-      <span className="tbl-extra-actions">
-        {toolbar.columns !== undefined && toolbar.columns !== false && (
-          <Button
-            className="tbl-column-action"
-            size="small"
-            variant="outline"
-            disabled={toolbar.columns.disabled}
-            onClick={toolbar.columns.onClick ?? onColumnSettingsClick}
-          >
-            {toolbar.columns.label ?? t("table.columnSettings")}
-          </Button>
-        )}
-        {renderToolbarPrimaryAction(
-          toolbar.primaryAction,
-          t("table.newRecord"),
-        )}
-        {toolbar.actions}
-      </span>
-    </>
-  );
-}
-
-function getColumnSettingsLabel<TData>(column: Column<TData, unknown>) {
-  const label = labelForColumn(column.columnDef, column.id);
-  if (label === undefined || label === null || typeof label === "boolean")
-    return column.id;
-  return label;
-}
-
-interface PaginationRendered {
-  variant: TablePaginationVariantConfig["type"];
-  node: ReactNode;
-}
-
-function renderTablePagination(
-  pagination: TablePagination | undefined,
-  t: (key: string, options?: Record<string, unknown>) => string,
-): PaginationRendered | null {
-  if (pagination === undefined || pagination === false) return null;
-  if (!isTablePaginationVariantConfig(pagination))
-    return { variant: undefined, node: pagination as ReactNode };
-  if (pagination.type === "load-more")
-    return { variant: "load-more", node: renderLoadMore(pagination, t) };
-  if (pagination.type === "cursor")
-    return { variant: "cursor", node: renderCursor(pagination, t) };
-  const config = pagination;
-  return {
-    variant: "numbered",
-    node: (
-      <Pagination
-        variant="embedded"
-        showFirstLast
-        total={config.total}
-        pageSize={config.pageSize}
-        value={config.current}
-        onValueChange={(page) => config.onChange?.(page, config.pageSize)}
-        onPageSizeChange={(size) => config.onChange?.(1, size)}
-        pageSizeOptions={config.pageSizeOptions}
-        showSizeChanger={config.showSizeChanger}
-        showTotal={
-          config.showTotal !== undefined ? config.showTotal : true
-        }
-        hideOnSinglePage={config.hideOnSinglePage}
-        disabled={config.disabled}
-      />
-    ),
-  };
-}
-
-function renderLoadMore(
-  config: TablePaginationLoadMoreConfig,
-  t: (key: string, options?: Record<string, unknown>) => string,
-): ReactNode {
-  const remaining = Math.max(config.total - config.currentCount, 0);
-  const batch =
-    config.batchSize !== undefined
-      ? Math.min(config.batchSize, remaining)
-      : remaining;
-  const defaultLabel = t("table.loadMore", { count: batch });
-  return (
-    <div className="tbl-load-more">
-      <Button
-        size="small"
-        variant="outline"
-        disabled={!config.hasMore || config.loadingMore === true}
-        onClick={config.onLoadMore}
-      >
-        {config.loadMoreLabel ?? defaultLabel}
-      </Button>
-      <div className="tbl-load-more-progress">
-        {config.progressLabel?.(config.currentCount, config.total) ??
-          t("table.loadMoreProgress", {
-            current: config.currentCount,
-            total: config.total,
-          })}
-      </div>
-    </div>
-  );
-}
-
-function renderCursor(
-  config: TablePaginationCursorConfig,
-  t: (key: string, options?: Record<string, unknown>) => string,
-): ReactNode {
-  const inputType = config.inputType ?? "month";
-  return (
-    <>
-      <Button
-        size="x-small"
-        variant="ghost"
-        disabled={config.disabled}
-        onClick={config.onJumpToLatest}
-      >
-        {config.jumpToLatestLabel ?? t("table.jumpToLatest")}
-      </Button>
-      <Button
-        size="x-small"
-        variant="outline"
-        disabled={config.disabled}
-        onClick={config.onPrev}
-      >
-        {config.prevLabel ?? t("table.previousPeriod")}
-      </Button>
-      <span className="spacer" />
-      <div className="label">{config.label}</div>
-      <span className="spacer" />
-      <input
-        type={inputType}
-        value={config.value}
-        disabled={config.disabled}
-        aria-label={t("table.jumpToPeriod")}
-        onChange={(event) => config.onChange(event.target.value)}
-      />
-      <Button
-        size="x-small"
-        variant="outline"
-        disabled={config.disabled}
-        onClick={config.onNext}
-      >
-        {config.nextLabel ?? t("table.nextPeriod")}
-      </Button>
-    </>
-  );
 }
 
 function resolveRowKey<TData>(
@@ -588,78 +145,6 @@ function resolveCellStyle<TData>(
   return typeof value === "function" ? value(row) : value;
 }
 
-function isFilterItems(
-  filterBar: TableFilterBar | undefined,
-): filterBar is TableFilterItem[] {
-  return Array.isArray(filterBar);
-}
-
-function operatorSymbol(operator: TableFilterOperator | undefined): string {
-  switch (operator) {
-    case "neq": return "≠";
-    case "contains": return "∋";
-    case "startsWith": return "≻";
-    case "endsWith": return "≺";
-    case "gt": return ">";
-    case "gte": return "≥";
-    case "lt": return "<";
-    case "lte": return "≤";
-    case "between": return "..";
-    case "in": return "∈";
-    case "eq":
-    case undefined:
-    default:
-      return "=";
-  }
-}
-
-function renderFilterBar(filterBar: TableFilterBar, label: string) {
-  if (!isFilterItems(filterBar)) return filterBar;
-  return (
-    <>
-      <span className="lbl">{label}:</span>
-      {filterBar.map((item) => {
-        if (item.options !== undefined) {
-          return (
-            <span key={item.key} className="table-filter-select-wrap">
-              <Select
-                value={item.value ?? ""}
-                onValueChange={item.onValueChange}
-                options={item.options.map((option) => ({
-                  ...option,
-                  label: `${item.label}: ${option.label}`,
-                }))}
-                triggerClassName="table-filter-select"
-              />
-              {item.onClose !== undefined && (
-                <button
-                  type="button"
-                  className="table-filter-clear"
-                  onClick={item.onClose}
-                  aria-label={`${item.label} clear`}
-                >
-                  ×
-                </button>
-              )}
-            </span>
-          );
-        }
-        return (
-          <Tag
-            key={item.key}
-            color={item.color ?? "primary"}
-            closable={item.closable ?? item.onClose !== undefined}
-            onClose={item.onClose}
-          >
-            {item.label} {operatorSymbol(item.operator)}{" "}
-            {item.valueLabel ?? item.value}
-          </Tag>
-        );
-      })}
-    </>
-  );
-}
-
 function getColumnKey<TData>(
   column: TableColumn<TData, unknown>,
 ): string | undefined {
@@ -668,69 +153,6 @@ function getColumnKey<TData>(
   if (typeof maybeAccessor.accessorKey === "string")
     return maybeAccessor.accessorKey;
   return undefined;
-}
-
-function labelForColumn<TData>(
-  column: TableColumn<TData, unknown>,
-  key: string,
-): ReactNode {
-  if (column.meta?.filterLabel !== undefined) return column.meta.filterLabel;
-  if (typeof column.header === "string") return column.header;
-  return key;
-}
-
-function valueLabelFor(
-  optionList: TableFilterOption[] | undefined,
-  value: TableFilter["value"],
-) {
-  const option = optionList?.find((item) => item.value === String(value));
-  return option?.label ?? value;
-}
-
-function deriveFilterBar<TData>(
-  columns: TableColumn<TData, unknown>[],
-  filters: TableFilter[] | undefined,
-  onFiltersChange: ((filters: TableFilter[]) => void) | undefined,
-): TableFilterItem[] {
-  if (filters === undefined || filters.length === 0) return [];
-  return filters.flatMap((filter) => {
-    const column = columns.find((item) => getColumnKey(item) === filter.key);
-    if (column !== undefined && column.meta?.filterable !== true) return [];
-    const options = column?.meta?.filterOptions;
-    return [
-      {
-        key: filter.key,
-        label: column ? labelForColumn(column, filter.key) : filter.key,
-        value: filter.value == null ? undefined : String(filter.value),
-        valueLabel: filter.valueLabel ?? valueLabelFor(options, filter.value),
-        operator: filter.operator,
-        options,
-        onValueChange:
-          options !== undefined && onFiltersChange !== undefined
-            ? (value) =>
-                onFiltersChange(
-                  filters.map((item) =>
-                    item.key === filter.key
-                      ? {
-                          ...item,
-                          value,
-                          valueLabel: valueLabelFor(options, value),
-                        }
-                      : item,
-                  ),
-                )
-            : undefined,
-        closable: onFiltersChange !== undefined,
-        onClose:
-          onFiltersChange !== undefined
-            ? () =>
-                onFiltersChange(
-                  filters.filter((item) => item.key !== filter.key),
-                )
-            : undefined,
-      },
-    ];
-  });
 }
 
 function asSortArray(sort: TableSortState | undefined): TableSort[] {
@@ -837,12 +259,6 @@ export function Table<TData>({
   rowKey = "id" as TableRowKey<TData>,
   getRowId,
   caption,
-  views,
-  toolbar,
-  batchActions,
-  filters,
-  onFiltersChange,
-  tableKey,
   defaultColumnVisibility,
   columnVisibility,
   onColumnVisibilityChange,
@@ -854,11 +270,9 @@ export function Table<TData>({
   groupBy,
   tree,
   onColumnPinningChange,
-  filterBar,
-  pagination,
+  selection,
   footer,
   empty,
-  onResetFilters,
   rowClassName,
   className,
   instance,
@@ -866,57 +280,22 @@ export function Table<TData>({
 }: TableProps<TData>) {
   const { t } = useTranslation();
   const warnedRowKeys = useRef(new Set<string>());
-  // ── Stage 4b deprecation. When `instance` is provided, this is the
-  // composite path: chrome is rendered by `<DataTable>`. When it's
-  // undefined and chrome props are passed, the primitive is being
-  // used standalone with the legacy fat surface — warn the consumer.
-  if (instance === undefined) {
-    if (toolbar !== undefined) warnDeprecatedChromeProp("toolbar");
-    if (views !== undefined) warnDeprecatedChromeProp("views");
-    if (batchActions !== undefined) warnDeprecatedChromeProp("batchActions");
-    if (filters !== undefined) warnDeprecatedChromeProp("filters");
-    if (onFiltersChange !== undefined)
-      warnDeprecatedChromeProp("onFiltersChange");
-    if (filterBar !== undefined) warnDeprecatedChromeProp("filterBar");
-    if (onResetFilters !== undefined)
-      warnDeprecatedChromeProp("onResetFilters");
-    if (pagination !== undefined) warnDeprecatedChromeProp("pagination");
-    if (tableKey !== undefined) warnDeprecatedChromeProp("tableKey");
-  }
-  const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
-  const [saveViewOpen, setSaveViewOpen] = useState(false);
-  const [saveViewName, setSaveViewName] = useState("");
-  const [internalSavedViews, setInternalSavedViews] = useState<TableViewItem[]>(
-    () => readPersistedTableViews(tableKey, columns),
-  );
   const [internalColumnVisibility, setInternalColumnVisibility] =
     useState<TableColumnVisibility>(
-      () =>
-        columnVisibility ??
-        readPersistedColumnVisibility(tableKey, columns) ??
-        defaultColumnVisibility ??
-        {},
+      () => columnVisibility ?? defaultColumnVisibility ?? {},
     );
   const effectiveColumnVisibility =
     columnVisibility ?? internalColumnVisibility;
   // Auto-pinning is derived from `meta.sticky` against the current
   // breakpoint, so `{ side: "right", from: "md" }` only sticks on md+.
-  // User-toggled pins (Sheet lock button) live in a separate state
-  // and are persisted to localStorage; the effective pinning is the
-  // union of both.
+  // User-toggled pins live in the `<DataTable>` composite.
   const bp = useBreakpoint();
   const autoColumnPinning = useMemo(
     () => deriveColumnPinning(columns, bp),
     [columns, bp],
   );
   const [userColumnPinning, setUserColumnPinning] =
-    useState<ColumnPinningState>(
-      () =>
-        readPersistedColumnPinning(tableKey, columns) ?? {
-          left: [],
-          right: [],
-        },
-    );
+    useState<ColumnPinningState>({ left: [], right: [] });
   const columnPinning = useMemo<ColumnPinningState>(() => {
     const dedupe = (list: string[]) => Array.from(new Set(list));
     return {
@@ -994,15 +373,14 @@ export function Table<TData>({
     if (columnVisibility === undefined) setInternalColumnVisibility(next);
     onColumnVisibilityChange?.(next);
   };
-  // Memoise the controlled-state object so the reference stays stable
-  // across renders when the underlying values haven't changed. Without
-  // this, TanStack receives a fresh object literal each render which
-  // can amplify re-render churn (especially under React 19 strict mode
-  // dev double-rendering).
   const tableState = useMemo(
     () => ({ columnPinning, columnVisibility: effectiveColumnVisibility }),
     [columnPinning, effectiveColumnVisibility],
   );
+  // Always-call-the-hook pattern: the local `useReactTable` runs
+  // unconditionally so the rules-of-hooks invariant holds. When an
+  // external `instance` is supplied (typically by `<DataTable>` via
+  // `useDataTable`) we defer to it for state + row model.
   const localTable = useReactTable({
     data,
     columns,
@@ -1015,180 +393,36 @@ export function Table<TData>({
     onColumnPinningChange: handleColumnPinningChange,
     state: tableState,
   });
-  // Stage 4b — `<DataTable>` composite owns `useReactTable` and
-  // passes the resulting instance via `instance`. Always call the
-  // local hook (rules-of-hooks) but defer to the composite-supplied
-  // instance when present.
   const table: ReactTable<TData> = instance ?? localTable;
-  const isComposite = instance !== undefined;
-  useEffect(() => {
-    if (isComposite) return;
-    writePersistedColumnVisibility(
-      tableKey,
-      columns,
-      effectiveColumnVisibility,
-    );
-  }, [columns, effectiveColumnVisibility, tableKey, isComposite]);
-  useEffect(() => {
-    if (isComposite) return;
-    writePersistedColumnPinning(tableKey, columns, userColumnPinning);
-  }, [columns, userColumnPinning, tableKey, isComposite]);
-  useEffect(() => {
-    if (isComposite) return;
-    writePersistedTableViews(tableKey, columns, internalSavedViews);
-  }, [columns, internalSavedViews, tableKey, isComposite]);
   const leafColumns = table.getVisibleLeafColumns();
   const hasFooter = leafColumns.some(
     (column) => column.columnDef.footer !== undefined,
   );
-  const columnSettingsColumns = table
-    .getAllLeafColumns()
-    .filter(
-      (column) =>
-        getColumnKey(column.columnDef) !== undefined &&
-        column.columnDef.meta?.hideable !== false &&
-        column.getCanHide(),
-    );
-  const batchConfig = isTableBatchActionsConfig(batchActions)
-    ? batchActions
-    : undefined;
-  const selectedRowKeySet = new Set(batchConfig?.selectedRowKeys ?? []);
+
+  // ── Selection wiring (checkbox column only) ──────────────────────
+  const selectedRowKeySet = new Set(selection?.selectedRowKeys ?? []);
   const selectableRows = table
     .getRowModel()
-    .rows.filter((row) => batchConfig?.getCheckboxDisabled?.(row) !== true);
-  const selectedRows = table
-    .getRowModel()
-    .rows.filter((row) => selectedRowKeySet.has(row.id));
+    .rows.filter((row) => selection?.getCheckboxDisabled?.(row) !== true);
   const allVisibleSelected =
+    selection !== undefined &&
     selectableRows.length > 0 &&
     selectableRows.every((row) => selectedRowKeySet.has(row.id));
   const selectAllVisible = () => {
-    if (batchConfig === undefined) return;
-    const next = new Set(batchConfig.selectedRowKeys);
+    if (selection === undefined) return;
+    const next = new Set(selection.selectedRowKeys);
     if (allVisibleSelected) selectableRows.forEach((row) => next.delete(row.id));
     else selectableRows.forEach((row) => next.add(row.id));
-    batchConfig.onSelectedRowKeysChange(Array.from(next));
+    selection.onSelectedRowKeysChange(Array.from(next));
   };
-  const clearSelection = () => batchConfig?.onSelectedRowKeysChange([]);
-  const batchActionsContent: ReactNode | undefined | false =
-    batchConfig === undefined
-      ? (batchActions as ReactNode | undefined | false)
-      : batchConfig.selectedRowKeys.length > 0
-        ? typeof batchConfig.actions === "function"
-          ? batchConfig.actions({
-              selectedRowKeys: batchConfig.selectedRowKeys,
-              selectedRows,
-              totalSelectableCount: selectableRows.length,
-              selectAllVisible,
-              clearSelection,
-            })
-          : batchConfig.actions
-        : undefined;
+
   const colSpan = Math.max(
     leafColumns.length +
-      (batchConfig === undefined ? 0 : 1) +
+      (selection === undefined ? 0 : 1) +
       (expandable === undefined ? 0 : 1),
     1,
   );
-  const activeFilterBar =
-    filterBar ?? deriveFilterBar(columns, filters, onFiltersChange);
-  const hasFilterBar =
-    activeFilterBar !== undefined &&
-    (!isFilterItems(activeFilterBar) || activeFilterBar.length > 0);
-  const viewsConfig = isTableViewsConfig(views) ? views : undefined;
-  const viewItems = useMemo(
-    () =>
-      viewsConfig === undefined
-        ? []
-        : [...viewsConfig.items, ...internalSavedViews],
-    [internalSavedViews, viewsConfig],
-  );
-  const currentViewSnapshot: TableViewSnapshot = {
-    filters: filters ?? [],
-    // Snapshot stores the primary sort entry for back-compat; multi-
-    // sort is preserved at runtime through `sort` directly.
-    sort: Array.isArray(sort) ? (sort[0] ?? null) : (sort ?? null),
-    columnVisibility: effectiveColumnVisibility,
-  };
-  const duplicateView = viewItems.find((view) =>
-    sameViewSnapshot(view, currentViewSnapshot),
-  );
-  const applyView = (view: TableViewItem) => {
-    if (isTableViewsConfig(views)) {
-      views.onActiveKeyChange?.(view.key);
-      if (views.onViewApply !== undefined) {
-        views.onViewApply(view);
-        return;
-      }
-    }
-    if (view.filters !== undefined) onFiltersChange?.(view.filters);
-    if ("sort" in view) onSortChange?.(view.sort ?? null);
-    if (view.columnVisibility !== undefined)
-      onColumnVisibilityChange?.(view.columnVisibility);
-  };
-  const deleteView = (view: TableViewItem) => {
-    if (internalSavedViews.some((item) => item.key === view.key)) {
-      const nextViews = internalSavedViews.filter((item) => item.key !== view.key);
-      setInternalSavedViews(nextViews);
-      viewsConfig?.onItemsChange?.([...viewsConfig.items, ...nextViews]);
-      if (viewsConfig?.activeKey === view.key && viewsConfig.items[0] !== undefined)
-        applyView(viewsConfig.items[0]);
-      return;
-    }
-    viewsConfig?.onDeleteView?.(view);
-  };
-  const openSaveView = () => {
-    if (viewsConfig?.onSaveCurrent !== undefined) {
-      viewsConfig.onSaveCurrent();
-      return;
-    }
-    setSaveViewName(t("table.defaultViewName", { count: internalSavedViews.length + 1 }));
-    setSaveViewOpen(true);
-  };
-  const confirmSaveView = () => {
-    const label = saveViewName.trim();
-    if (label === "") return;
-    const nextView: TableViewItem = {
-      key: `saved-${Date.now()}`,
-      label,
-      deletable: true,
-      ...currentViewSnapshot,
-    };
-    const nextViews = [...internalSavedViews, nextView].slice(
-      -MAX_PERSISTED_TABLE_VIEWS,
-    );
-    setInternalSavedViews(nextViews);
-    viewsConfig?.onItemsChange?.([...(viewsConfig.items ?? []), ...nextViews]);
-    viewsConfig?.onActiveKeyChange?.(nextView.key);
-    setSaveViewOpen(false);
-  };
-  const viewsContent: ReactNode | null =
-    views === undefined || views === false
-      ? null
-      : viewsConfig === undefined
-        ? (views as ReactNode)
-        : renderTableViews(
-            viewsConfig,
-            viewItems,
-            applyView,
-            deleteView,
-            openSaveView,
-            t("table.saveView"),
-            t("table.deleteView"),
-          );
-  const toolbarContent = renderTableToolbar(toolbar, t, () =>
-    setColumnSettingsOpen(true),
-  );
-  const paginationContent = renderTablePagination(pagination, t);
-  const emptyContent = empty ?? (
-    <Empty description={t("table.emptyDescription")}>
-      {hasFilterBar && onResetFilters !== undefined && (
-        <Button size="small" variant="outline" onClick={onResetFilters}>
-          {t("table.resetFilters")}
-        </Button>
-      )}
-    </Empty>
-  );
+  const emptyContent = empty ?? <Empty description={t("table.emptyDescription")} />;
 
   function renderDataRow(row: Row<TData>): ReactNode {
     const isEditingRow = editing?.rowId === row.id;
@@ -1217,17 +451,17 @@ export function Table<TData>({
         }
         data-row-id={row.id}
       >
-        {batchConfig !== undefined && (
+        {selection !== undefined && (
           <td className="check">
             <Checkbox
               aria-label={t("table.selectRow", { row: row.id })}
               checked={selectedRowKeySet.has(row.id)}
-              disabled={batchConfig.getCheckboxDisabled?.(row)}
+              disabled={selection.getCheckboxDisabled?.(row)}
               onCheckedChange={(checked) => {
-                const next = new Set(batchConfig.selectedRowKeys);
+                const next = new Set(selection.selectedRowKeys);
                 if (checked === true) next.add(row.id);
                 else next.delete(row.id);
-                batchConfig.onSelectedRowKeysChange(Array.from(next));
+                selection.onSelectedRowKeysChange(Array.from(next));
               }}
             />
           </td>
@@ -1326,7 +560,6 @@ export function Table<TData>({
           ) : isFirst ? (
             <span className="indent" aria-hidden />
           ) : null;
-          // Render the cell by calling the column's accessor manually.
           const accessor = (column.columnDef as { accessorKey?: string })
             .accessorKey;
           let content: ReactNode = null;
@@ -1388,13 +621,11 @@ export function Table<TData>({
         </tr>
       );
     }
-    // Tree mode: ignore TanStack's flat row model; walk `data` recursively.
     if (tree !== undefined) {
       const nodes: ReactNode[] = [];
       for (const item of data) renderTreeRow(item, 0, nodes);
       return nodes;
     }
-    // Group mode: bucket rows by group key.
     if (groupBy !== undefined) {
       const buckets = new Map<
         string,
@@ -1418,10 +649,6 @@ export function Table<TData>({
       for (const key of order) {
         const bucket = buckets.get(key);
         if (bucket === undefined) continue;
-        const groupOpen = !treeExpandedSet.has(`group:${key}`)
-          ? true
-          : treeExpandedSet.has(`group:${key}`);
-        // Group rows are open by default — toggle stored as collapse flag.
         const isCollapsed = treeExpandedSet.has(`group:collapse:${key}`);
         nodes.push(
           <tr key={`group:${key}`} className="group-row">
@@ -1462,12 +689,9 @@ export function Table<TData>({
             nodes.push(renderDataRow(row));
           }
         }
-        // touch groupOpen to silence "unused" — semantic is via isCollapsed.
-        void groupOpen;
       }
       return nodes;
     }
-    // Default — flat list with optional expand panels.
     return rows.map((row) => renderDataRow(row));
   }
 
@@ -1476,54 +700,6 @@ export function Table<TData>({
       className={cn("table-stack", containerClassName)}
       data-density={density}
     >
-      {!isComposite && viewsContent !== null && (
-        <div className="tbl-views">{viewsContent}</div>
-      )}
-      {!isComposite && toolbarContent !== null && (
-        <div className="table-toolbar">{toolbarContent}</div>
-      )}
-      {!isComposite && batchActionsContent !== undefined &&
-        batchActionsContent !== false && (
-          <div className="tbl-batch-bar">
-            {batchConfig !== undefined && (
-              <>
-                <span className="count">
-                  {batchConfig.selectedLabel?.(batchConfig.selectedRowKeys.length) ??
-                    t("table.selectedRows", {
-                      count: batchConfig.selectedRowKeys.length,
-                    })}
-                </span>
-                {!allVisibleSelected && selectableRows.length > 0 && (
-                  <Button size="small" variant="ghost" onClick={selectAllVisible}>
-                    {batchConfig.selectAllLabel?.(selectableRows.length) ??
-                      t("table.selectAllVisible", {
-                        count: selectableRows.length,
-                      })}
-                  </Button>
-                )}
-              </>
-            )}
-            {batchActionsContent}
-            {batchConfig !== undefined && (
-              <>
-                <span className="spacer" />
-                <Button size="small" variant="ghost" onClick={clearSelection}>
-                  {batchConfig.clearLabel ?? t("table.clearSelection")}
-                </Button>
-              </>
-            )}
-          </div>
-        )}
-      {!isComposite && hasFilterBar && (
-        <div className="tbl-filter-bar">
-          {renderFilterBar(activeFilterBar, t("table.conditions"))}
-          {onResetFilters !== undefined && (
-            <Button size="x-small" variant="ghost" onClick={onResetFilters}>
-              {t("table.resetFilters")}
-            </Button>
-          )}
-        </div>
-      )}
       <div className="table-scroll">
         <table
           data-density={density}
@@ -1535,7 +711,7 @@ export function Table<TData>({
           <thead data-sticky={stickyHeader ? "true" : undefined}>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {batchConfig !== undefined && (
+                {selection !== undefined && (
                   <th className="check">
                     <Checkbox
                       aria-label={t("table.selectAllRows")}
@@ -1719,168 +895,6 @@ export function Table<TData>({
             </Button>
           )}
         </div>
-      )}
-      {!isComposite &&
-        paginationContent !== null &&
-        (paginationContent.variant === "numbered" ? (
-          // <Pagination variant="embedded"> owns its <nav> wrapper.
-          paginationContent.node
-        ) : (
-          <div
-            className={
-              paginationContent.variant === "load-more"
-                ? undefined
-                : "tbl-pagination"
-            }
-            data-variant={paginationContent.variant}
-          >
-            {paginationContent.node}
-          </div>
-        ))}
-      {!isComposite && columnSettingsOpen &&
-        isTableToolbarConfig(toolbar) &&
-        toolbar.columns !== undefined &&
-        toolbar.columns !== false &&
-        toolbar.columns.onClick === undefined && (
-          <Sheet
-            open={columnSettingsOpen}
-            onOpenChange={setColumnSettingsOpen}
-            className="table-filter-sheet"
-            side="right"
-            title={t("table.columnSettings")}
-            description={t("table.columnSettingsDescription")}
-            footer={
-              <>
-                <Button
-                  size="small"
-                  variant="ghost"
-                  onClick={() => handleColumnVisibilityChange({})}
-                >
-                  {t("table.showAllColumns")}
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => setColumnSettingsOpen(false)}
-                >
-                  {t("table.closeColumnSettings")}
-                </Button>
-              </>
-            }
-          >
-            <div className="table-filter-field-list">
-              {columnSettingsColumns.map((column) => {
-                const pinned = column.getIsPinned();
-                const isAutoPinned =
-                  (autoColumnPinning.left ?? []).includes(column.id) ||
-                  (autoColumnPinning.right ?? []).includes(column.id);
-                return (
-                  <section key={column.id} className="table-column-field">
-                    <Checkbox
-                      checked={column.getIsVisible()}
-                      disabled={pinned !== false}
-                      onCheckedChange={(checked) =>
-                        column.toggleVisibility(checked === true)
-                      }
-                    >
-                      {getColumnSettingsLabel(column)}
-                    </Checkbox>
-                    <button
-                      type="button"
-                      className="col-lock"
-                      aria-label={
-                        pinned === false
-                          ? t("table.lockColumn")
-                          : t("table.unlockColumn")
-                      }
-                      aria-pressed={pinned !== false}
-                      data-locked={pinned !== false ? "true" : "false"}
-                      disabled={isAutoPinned}
-                      onClick={() => {
-                        const next: ColumnPinningState = {
-                          left: [...(columnPinning.left ?? [])],
-                          right: [...(columnPinning.right ?? [])],
-                        };
-                        next.left = (next.left ?? []).filter(
-                          (id) => id !== column.id,
-                        );
-                        next.right = (next.right ?? []).filter(
-                          (id) => id !== column.id,
-                        );
-                        if (pinned === false) {
-                          next.left = [...(next.left ?? []), column.id];
-                          if (!column.getIsVisible())
-                            column.toggleVisibility(true);
-                        }
-                        handleColumnPinningChange(next);
-                      }}
-                    >
-                      {pinned === false ? (
-                        <LockOpen aria-hidden="true" focusable="false" />
-                      ) : (
-                        <Lock aria-hidden="true" focusable="false" />
-                      )}
-                    </button>
-                  </section>
-                );
-              })}
-            </div>
-          </Sheet>
-        )}
-      {!isComposite && saveViewOpen &&
-        viewsConfig !== undefined &&
-        viewsConfig.onSaveCurrent === undefined && (
-        <Dialog
-          open={saveViewOpen}
-          onOpenChange={setSaveViewOpen}
-          title={t("table.saveViewTitle")}
-          description={t("table.saveViewDescription")}
-          form={{
-            onSubmit: (event) => {
-              event.preventDefault();
-              confirmSaveView();
-            },
-          }}
-          footer={
-            <>
-              <Button
-                type="button"
-                variant="ghost"
-                size="small"
-                onClick={() => setSaveViewOpen(false)}
-              >
-                {t("common.cancel")}
-              </Button>
-              <Button
-                type="submit"
-                size="small"
-                disabled={saveViewName.trim() === ""}
-              >
-                {duplicateView === undefined
-                  ? t("common.save")
-                  : t("table.continueSaveView")}
-              </Button>
-            </>
-          }
-        >
-          <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
-            <Input
-              autoFocus
-              aria-label={t("table.viewName")}
-              value={saveViewName}
-              onChange={(event) => setSaveViewName(event.target.value)}
-              placeholder={t("table.viewNamePlaceholder")}
-            />
-            {duplicateView !== undefined && (
-              <Alert
-                color="warning"
-                title={t("table.duplicateViewTitle", {
-                  name: String(duplicateView.label),
-                })}
-                description={t("table.duplicateViewDescription")}
-              />
-            )}
-          </div>
-        </Dialog>
       )}
     </div>
   );

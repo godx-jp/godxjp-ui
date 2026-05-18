@@ -224,34 +224,16 @@ export type {
 export { Slider } from "./data-entry/Slider";
 export type { SliderProps } from "./data-entry/Slider";
 
-export {
-  getTableColumnVisibilityStorageKey,
-  getTableViewsStorageKey,
-  Table,
-} from "./data-display/Table";
+export { Table } from "./data-display/Table";
 export type {
   TableColumn,
   TableColumnVisibility,
   TableDensity,
-  TableFilter,
-  TableFilterBar,
-  TableFilterItem,
-  TableFilterOperator,
-  TableFilterOption,
-  TablePagination,
-  TablePaginationConfig,
   TableProps,
   TableRowKey,
+  TableSelectionConfig,
   TableSort,
-  TableToolbar,
-  TableToolbarButtonConfig,
-  TableToolbarConfig,
-  TableToolbarFilterConfig,
-  TableToolbarSearchConfig,
-  TableViewItem,
-  TableViews,
-  TableViewsConfig,
-  TableViewSnapshot,
+  TableSortState,
 } from "./data-display/Table";
 
 export { TimeInput } from "./data-entry/TimeInput";

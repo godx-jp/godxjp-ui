@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useMemo, useState } from "react";
+import { expect, within } from "storybook/test";
 import { Badge } from "../../components/data-display/Badge";
 import type {
   TableColumn,
@@ -21,6 +22,10 @@ import {
   useTableViews,
 } from "../../hooks";
 import employeeRows from "../data-display/fixtures/table-employees.json";
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 /**
  * Composites/DataTable — packaged table built over the slim `<Table>`
@@ -537,6 +542,211 @@ export const PersistentVisibility: Story = {
       toolbar: { columns: {} },
     });
 
+    return <DataTable table={table} containerClassName="tbl-shell" />;
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────
+// 5 — WithToolbar. Raw-node toolbar slot (Stage 4b — moved from
+//     Data Display/Table; chrome lives on the composite).
+// ─────────────────────────────────────────────────────────────────
+
+export const WithToolbar: Story = {
+  name: "WithToolbar · toolbar slot · raw node",
+  render: function WithToolbar() {
+    const table = useDataTable({
+      data: EMPLOYEES,
+      columns: COLUMNS,
+      rowKey: "id",
+      defaultColumnVisibility: DEFAULT_VISIBILITY,
+    });
+    return (
+      <DataTable
+        table={table}
+        slots={{
+          toolbar: (
+            <div className="table-toolbar">
+              <span className="selection-count">3 件選択中</span>
+              <span className="spacer" />
+              <Button size="small" variant="ghost">
+                アーカイブ
+              </Button>
+              <Button size="small" variant="destructive">
+                削除
+              </Button>
+            </div>
+          ),
+        }}
+      />
+    );
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────
+// 6 — InteractionRegression. Play-test that exercises the column
+//     manager Sheet, save-view Dialog, and batch action band end-
+//     to-end through the composite (Stage 4b — moved from
+//     Data Display/Table). Reuses the PackagedFeatures render.
+// ─────────────────────────────────────────────────────────────────
+
+export const InteractionRegression: Story = {
+  ...PackagedFeatures,
+  name: "InteractionRegression · views · column manager · batch band",
+  tags: ["!autodocs"],
+  play: async ({ canvasElement, userEvent }) => {
+    const canvas = within(canvasElement);
+    const body = within(canvasElement.ownerDocument.body);
+    await expect(canvas.getByText("田中 美咲")).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: /承認待ち/ }));
+    await expect(canvas.getByText("Nguyễn Lan")).toBeVisible();
+    await expect(canvas.queryByText("田中 美咲")).toBeNull();
+
+    const savedViewLabel = `Story regression view ${Date.now()}`;
+    await userEvent.click(
+      canvas.getByRole("button", { name: /列設定|Columns|Cột|Mga column/ }),
+    );
+    await body.findByRole("dialog", { name: /列設定|Columns|Cột|Mga column/ });
+    await userEvent.click(
+      body.getByRole("button", { name: /閉じる|Close|Đóng|Isara/ }),
+    );
+    await expect(
+      body.queryByRole("heading", { name: /列設定|Columns|Cột|Mga column/ }),
+    ).toBeNull();
+
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: /ビューを保存|Save view|Lưu view|I-save ang view/,
+      }),
+    );
+    await body.findByRole("dialog", {
+      name: /ビューを保存|Save view|Lưu view|I-save ang view/,
+    });
+    const viewName = body.getByLabelText(
+      /ビュー名|View name|Tên view|Pangalan ng view/,
+    );
+    await userEvent.clear(viewName);
+    await userEvent.type(viewName, savedViewLabel);
+    await userEvent.click(
+      body.getByRole("button", {
+        name: /保存|Save|Continue|Lưu|Tiếp tục|I-save|Magpatuloy/,
+      }),
+    );
+    await expect(await canvas.findByText(savedViewLabel)).toBeVisible();
+    const deleteButton = await canvas.findByRole("button", {
+      name: new RegExp(
+        `(削除|Delete|Xóa|Tanggalin).*${escapeRegExp(savedViewLabel)}`,
+      ),
+    });
+    await userEvent.click(deleteButton);
+    await expect(canvas.queryByText(savedViewLabel)).toBeNull();
+
+    await userEvent.click(
+      canvas.getByLabelText(/Select row emp-001|row emp-001/),
+    );
+    await expect(
+      canvas.getByText(/件選択中|selected|Đã chọn|ang napili/),
+    ).toBeVisible();
+    await expect(
+      canvas.getByRole("button", {
+        name: /選択解除|Clear selection|Bỏ chọn|Alisin/,
+      }),
+    ).toBeVisible();
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────
+// 7 — Pagination variants. A10a / A10b / A10c (Stage 4b — moved
+//     from Data Display/Table; pagination lives on the composite).
+// ─────────────────────────────────────────────────────────────────
+
+export const Pagination_Numbered: Story = {
+  name: "A10a · Pagination — numbered (default)",
+  tags: ["!autodocs"],
+  render: function PaginationNumbered() {
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(25);
+    const table = useDataTable({
+      data: EMPLOYEES.slice(0, pageSize),
+      columns: COLUMNS,
+      rowKey: "id",
+      paginationConfig: {
+        type: "numbered",
+        current: page,
+        pageSize,
+        total: 1284,
+        pageSizeOptions: [25, 50, 100],
+        onChange: (nextPage, nextPageSize) => {
+          setPage(nextPage);
+          setPageSize(nextPageSize);
+        },
+      },
+    });
+    return <DataTable table={table} containerClassName="tbl-shell" />;
+  },
+};
+
+export const Pagination_LoadMore: Story = {
+  name: "A10b · Pagination — load-more (feed)",
+  tags: ["!autodocs"],
+  render: function PaginationLoadMore() {
+    const [count, setCount] = useState(25);
+    const table = useDataTable({
+      data: EMPLOYEES.slice(0, 3),
+      columns: COLUMNS,
+      rowKey: "id",
+      paginationConfig: {
+        type: "load-more",
+        hasMore: count < 1284,
+        onLoadMore: () =>
+          setCount((current) => Math.min(current + 50, 1284)),
+        currentCount: count,
+        total: 1284,
+        batchSize: 50,
+        loadMoreLabel: <>さらに 50 件読み込む</>,
+        progressLabel: (current, total) => (
+          <>{`${current} / ${total.toLocaleString()} 件 表示中`}</>
+        ),
+      },
+    });
+    return <DataTable table={table} containerClassName="tbl-shell" />;
+  },
+};
+
+export const Pagination_Cursor: Story = {
+  name: "A10c · Pagination — cursor (jump-to-month)",
+  tags: ["!autodocs"],
+  render: function PaginationCursor() {
+    const [month, setMonth] = useState("2026-05");
+    const table = useDataTable({
+      data: EMPLOYEES.slice(0, 3),
+      columns: COLUMNS,
+      rowKey: "id",
+      paginationConfig: {
+        type: "cursor",
+        value: month,
+        inputType: "month",
+        label: <>{`${month.replace("-", "年 ")}月 (820 件)`}</>,
+        onChange: (next) => setMonth(next),
+        prevLabel: <>← 前の月</>,
+        nextLabel: <>次の月 →</>,
+        jumpToLatestLabel: <>{"<< 最新"}</>,
+        onJumpToLatest: () => setMonth("2026-05"),
+        onPrev: () => {
+          const [y, m] = month.split("-").map(Number);
+          const d = new Date(y, m - 2, 1);
+          setMonth(
+            `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`,
+          );
+        },
+        onNext: () => {
+          const [y, m] = month.split("-").map(Number);
+          const d = new Date(y, m, 1);
+          setMonth(
+            `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`,
+          );
+        },
+      },
+    });
     return <DataTable table={table} containerClassName="tbl-shell" />;
   },
 };

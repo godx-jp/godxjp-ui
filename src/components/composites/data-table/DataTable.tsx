@@ -184,10 +184,17 @@ export function DataTable<TData>({
       </Empty>
     );
 
-  // ── Build batchActions prop to forward to <Table> (for checkbox column) ──
+  // ── Build selection prop to forward to <Table> (for checkbox column) ──
   // The primitive needs the selection state to render the checkbox
   // column; the chrome batch-action band is rendered here separately.
-  const batchActionsForPrimitive = chrome.batchActions;
+  const selectionForPrimitive =
+    batchConfig !== undefined
+      ? {
+          selectedRowKeys: batchConfig.selectedRowKeys,
+          onSelectedRowKeysChange: batchConfig.onSelectedRowKeysChange,
+          getCheckboxDisabled: batchConfig.getCheckboxDisabled,
+        }
+      : undefined;
 
   // touch the unused-locally-derived `views` so lint stays calm.
   void views;
@@ -201,7 +208,7 @@ export function DataTable<TData>({
       {viewsConfig !== undefined && (
         <ViewTabs
           config={viewsConfig}
-          items={viewsConfig.items}
+          items={[...viewsConfig.items, ...chrome.savedViews]}
           applyView={applyView}
           deleteView={deleteView}
           saveView={openSaveView}
@@ -241,7 +248,7 @@ export function DataTable<TData>({
       <Table
         {...tableProps}
         instance={instance}
-        batchActions={batchActionsForPrimitive}
+        selection={selectionForPrimitive}
         className={cn(tableProps.className, className)}
         empty={emptyContent}
         footer={slots?.footer ?? tableProps.footer}
