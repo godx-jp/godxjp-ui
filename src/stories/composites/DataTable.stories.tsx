@@ -238,6 +238,12 @@ const meta: Meta<typeof DataTable> = {
   parameters: {
     layout: "padded",
     docs: {
+      // Pin every story's Code panel to the static source extract.
+      // Storybook's runtime `prettyPrint2` chokes on the TanStack
+      // column-def + composite prop tree (RangeError: Invalid string
+      // length) and freezes the autodocs view when several heavy
+      // stories render at once.
+      source: { type: "code" },
       description: {
         component: `
 **DataTable** — packaged table composite. Pairs the slim
@@ -339,6 +345,11 @@ export const BulkActions: Story = {
 
 export const PackagedFeatures: Story = {
   name: "PackagedFeatures · views · toolbar · batch · persisted views",
+  // Excluded from the autodocs view — mounting this on the same page
+  // as the other DataTable stories froze Storybook (4 TanStack
+  // instances + cmdk + sheet + dialog all simultaneously). Still
+  // available via the sidebar.
+  tags: ["!autodocs"],
   parameters: { docs: { source: { type: "code" } } },
   render: function PackagedFeatures() {
     const [filters, setFilters] = useState<TableFilter[]>([]);
