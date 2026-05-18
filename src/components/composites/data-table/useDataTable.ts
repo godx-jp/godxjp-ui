@@ -1,4 +1,23 @@
-import { type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  getCoreRowModel,
+  useReactTable,
+  type ColumnPinningState,
+  type Table as ReactTable,
+  type Updater,
+  type VisibilityState,
+} from "@tanstack/react-table";
+import { matchBreakpoint, useBreakpoint } from "../../../hooks/useBreakpoint";
+import type { Breakpoint } from "../../layout/Row";
+import {
+  MAX_PERSISTED_TABLE_VIEWS,
+  readPersistedColumnPinning,
+  readPersistedColumnVisibility,
+  readPersistedTableViews,
+  writePersistedColumnPinning,
+  writePersistedColumnVisibility,
+  writePersistedTableViews,
+} from "../../data-display/Table.persistence";
 import type {
   TableBatchActionsConfig,
   TableColumn,
@@ -10,31 +29,28 @@ import type {
   TableFilter,
   TableFilterBar,
   TableGroupBy,
+  TablePagination,
   TableRowKey,
   TableSortState,
+  TableStickyConfig,
+  TableStickySide,
   TableToolbar,
   TableTreeConfig,
   TableViewItem,
   TableViews,
-} from "../../data-display/Table";
+  TableViewSnapshot,
+} from "../../data-display/Table.types";
 import type { UseTablePaginationResult } from "../../../hooks/useTablePagination";
 import type { UseTableSelectionResult } from "../../../hooks/useTableSelection";
 import type { UseTableViewsResult } from "../../../hooks/useTableViews";
 
-/**
- * Options accepted by `useDataTable`. Mirrors `<Table>` props, but
- * lifts pagination / selection / views into hook slices so consumers
- * compose state ergonomically.
- */
 export interface UseDataTableOptions<TData> {
   data: TData[];
   columns: TableColumn<TData, unknown>[];
   rowKey?: TableRowKey<TData>;
   getRowId?: (row: TData, index: number) => string;
 
-  /** Selection slice (from `useTableSelection`). Wires into `batchActions`. */
   selection?: UseTableSelectionResult;
-  /** Batch actions JSX or config. If `selection` is set, this can be a node-only payload. */
   batchActions?:
     | ReactNode
     | TableBatchActionsConfig<TData>
@@ -48,40 +64,33 @@ export interface UseDataTableOptions<TData> {
         clearLabel?: TableBatchActionsConfig<TData>["clearLabel"];
       };
 
-  /** Pagination slice (from `useTablePagination`). Wires into `pagination`. */
   pagination?: UseTablePaginationResult;
-  /** Total row count for pagination. Defaults to `data.length` when omitted. */
   total?: number;
   pageSizeOptions?: number[];
   showSizeChanger?: boolean;
   showTotal?: (total: number, range: [number, number]) => ReactNode;
+  /** Direct pagination config — bypasses the `UseTablePaginationResult` slice. */
+  paginationConfig?: TablePagination;
 
-  /** Saved-views slice (from `useTableViews`). Wires into `views`. */
   views?: UseTableViewsResult;
-  /** Apply view callback — typically setFilters + setSort + setColumnVisibility from snapshot. */
   onViewApply?: (view: TableViewItem) => void;
 
-  /** Controlled filters state. */
   filters?: TableFilter[];
   onFiltersChange?: (filters: TableFilter[]) => void;
   filterBar?: TableFilterBar;
   onResetFilters?: () => void;
 
-  /** Controlled sort state. */
   sort?: TableSortState;
   onSortChange?: (sort: TableSortState) => void;
   resizable?: boolean;
 
-  /** Controlled column visibility. */
   columnVisibility?: TableColumnVisibility;
   defaultColumnVisibility?: TableColumnVisibility;
   onColumnVisibilityChange?: (columnVisibility: TableColumnVisibility) => void;
   onColumnPinningChange?: TableColumnPinningChange;
 
-  /** Toolbar slot — pass false to suppress, a config for typed defaults, or any ReactNode. */
   toolbar?: TableToolbar;
 
-  /** Expand / tree / editing / grouping — forwarded verbatim. */
   expandable?: TableExpandableConfig<TData>;
   tree?: TableTreeConfig<TData>;
   editing?: TableEditingConfig<TData>;
@@ -93,70 +102,107 @@ export interface UseDataTableOptions<TData> {
   caption?: ReactNode;
   footer?: ReactNode;
   empty?: ReactNode;
-  /** Persistence prefix forwarded to `<Table tableKey>`. */
   tableKey?: string;
-  /** Outer `.table-stack` wrapper className. */
   containerClassName?: string;
   className?: string;
 }
 
-/**
- * Normalised "table instance" — what `useDataTable` returns and
- * `<DataTable>` consumes. Slot consumers can also destructure for
- * partial composition.
- */
-export interface DataTableInstance<TData> {
-  /** Resolved Table props ready to spread. */
-  tableProps: {
-    columns: TableColumn<TData, unknown>[];
-    data: TData[];
-    rowKey?: TableRowKey<TData>;
-    getRowId?: (row: TData, index: number) => string;
-    density?: TableDensity;
-    stickyHeader?: boolean;
-    resizable?: boolean;
-    caption?: ReactNode;
-    footer?: ReactNode;
-    empty?: ReactNode;
-    tableKey?: string;
-    containerClassName?: string;
-    className?: string;
-    rowClassName?:
-      | string
-      | ((row: { original: TData }) => string | undefined);
-    views?: TableViews;
-    toolbar?: TableToolbar;
-    batchActions?: ReactNode | TableBatchActionsConfig<TData>;
-    filters?: TableFilter[];
-    onFiltersChange?: (filters: TableFilter[]) => void;
-    filterBar?: TableFilterBar;
-    onResetFilters?: () => void;
-    sort?: TableSortState;
-    onSortChange?: (sort: TableSortState) => void;
-    columnVisibility?: TableColumnVisibility;
-    defaultColumnVisibility?: TableColumnVisibility;
-    onColumnVisibilityChange?: (
-      columnVisibility: TableColumnVisibility,
-    ) => void;
-    onColumnPinningChange?: TableColumnPinningChange;
-    pagination?: {
-      current: number;
-      pageSize: number;
-      total: number;
-      pageSizeOptions?: number[];
-      showSizeChanger?: boolean;
-      showTotal?: (total: number, range: [number, number]) => ReactNode;
-      onChange?: (page: number, pageSize: number) => void;
-    };
-    expandable?: TableExpandableConfig<TData>;
-    tree?: TableTreeConfig<TData>;
-    editing?: TableEditingConfig<TData>;
-    groupBy?: TableGroupBy<TData>;
-  };
-  /** Slice references (so consumer hooks remain visible). */
-  selection: UseTableSelectionResult | undefined;
-  pagination: UseTablePaginationResult | undefined;
-  views: UseTableViewsResult | undefined;
+// ── Helpers (private; mirror primitive internals while Stage 4b lands) ──
+
+function resolveUpdater<T>(updater: Updater<T>, previous: T): T {
+  return typeof updater === "function"
+    ? (updater as (old: T) => T)(previous)
+    : updater;
+}
+
+function getColumnKey<TData>(
+  column: TableColumn<TData, unknown>,
+): string | undefined {
+  const maybeAccessor = column as { accessorKey?: unknown; id?: string };
+  if (typeof maybeAccessor.id === "string") return maybeAccessor.id;
+  if (typeof maybeAccessor.accessorKey === "string")
+    return maybeAccessor.accessorKey;
+  return undefined;
+}
+
+function resolveStickySide(
+  config: TableStickyConfig | undefined,
+  bp: Breakpoint,
+): TableStickySide | undefined {
+  if (config === undefined || config === false) return undefined;
+  if (typeof config === "string") return config;
+  if (config.from !== undefined && !matchBreakpoint(bp, config.from))
+    return undefined;
+  return config.side;
+}
+
+function deriveColumnPinning<TData>(
+  columns: TableColumn<TData, unknown>[],
+  bp: Breakpoint,
+): ColumnPinningState {
+  return columns.reduce<ColumnPinningState>(
+    (state, column) => {
+      const key = getColumnKey(column);
+      if (key === undefined) return state;
+      const side = resolveStickySide(column.meta?.sticky, bp);
+      if (side === undefined) return state;
+      return { ...state, [side]: [...(state[side] ?? []), key] };
+    },
+    { left: [], right: [] },
+  );
+}
+
+function resolveRowKey<TData>(
+  row: TData,
+  index: number,
+  rowKey: TableRowKey<TData>,
+  warnMissingRowKey: (rowKey: string) => void,
+) {
+  if (typeof rowKey === "function") {
+    const value = rowKey(row, index);
+    return String(value);
+  }
+  if (
+    typeof row === "object" &&
+    row !== null &&
+    Object.prototype.hasOwnProperty.call(row, rowKey)
+  ) {
+    const value = (row as Record<string, unknown>)[rowKey];
+    if (value !== undefined && value !== null) return String(value);
+  }
+  warnMissingRowKey(rowKey);
+  return String(index);
+}
+
+function normalizeFilters(filters: TableFilter[] | undefined) {
+  return (filters ?? [])
+    .map((filter) => ({
+      key: filter.key,
+      operator: filter.operator ?? "eq",
+      value: filter.value ?? null,
+    }))
+    .sort((left, right) => left.key.localeCompare(right.key));
+}
+
+function normalizeVisibility(columnVisibility: TableColumnVisibility | undefined) {
+  return Object.fromEntries(
+    Object.entries(columnVisibility ?? {}).sort(([left], [right]) =>
+      left.localeCompare(right),
+    ),
+  );
+}
+
+function sameViewSnapshot(
+  view: TableViewItem,
+  snapshot: TableViewSnapshot,
+) {
+  return (
+    JSON.stringify(normalizeFilters(view.filters)) ===
+      JSON.stringify(normalizeFilters(snapshot.filters)) &&
+    JSON.stringify(view.sort ?? null) === JSON.stringify(snapshot.sort ?? null) &&
+    JSON.stringify(normalizeVisibility(view.columnVisibility)) ===
+      JSON.stringify(normalizeVisibility(snapshot.columnVisibility))
+  );
 }
 
 function buildBatchActions<TData>(
@@ -164,7 +210,6 @@ function buildBatchActions<TData>(
   batchActions: UseDataTableOptions<TData>["batchActions"],
 ): ReactNode | TableBatchActionsConfig<TData> | undefined {
   if (batchActions === undefined) return undefined;
-  // Already a full config?
   if (
     batchActions !== null &&
     typeof batchActions === "object" &&
@@ -173,7 +218,6 @@ function buildBatchActions<TData>(
   ) {
     return batchActions as TableBatchActionsConfig<TData>;
   }
-  // Selection slice + node/partial config — wire the slice.
   if (selection === undefined) return batchActions as ReactNode;
   if (
     batchActions !== null &&
@@ -195,7 +239,6 @@ function buildBatchActions<TData>(
       clearLabel: partial.clearLabel,
     };
   }
-  // Bare ReactNode actions — wrap into a minimal config.
   return {
     selectedRowKeys: selection.selectedRowKeys,
     onSelectedRowKeysChange: selection.setSelectedRowKeys,
@@ -206,7 +249,7 @@ function buildBatchActions<TData>(
 function buildViewsConfig(
   views: UseTableViewsResult | undefined,
   onViewApply: UseDataTableOptions<unknown>["onViewApply"],
-): TableViews | undefined {
+): import("../../data-display/Table.types").TableViewsConfig | undefined {
   if (views === undefined) return undefined;
   return {
     items: views.items,
@@ -220,28 +263,70 @@ function buildViewsConfig(
   };
 }
 
+// ── Public surface ────────────────────────────────────────────────
+
+export interface DataTableInstance<TData> {
+  /** Resolved props ready to spread on `<Table>` — already strips chrome. */
+  tableProps: {
+    columns: TableColumn<TData, unknown>[];
+    data: TData[];
+    rowKey?: TableRowKey<TData>;
+    getRowId?: (row: TData, index: number) => string;
+    density?: TableDensity;
+    stickyHeader?: boolean;
+    resizable?: boolean;
+    caption?: ReactNode;
+    footer?: ReactNode;
+    empty?: ReactNode;
+    tableKey?: string;
+    containerClassName?: string;
+    className?: string;
+    rowClassName?:
+      | string
+      | ((row: { original: TData }) => string | undefined);
+    sort?: TableSortState;
+    onSortChange?: (sort: TableSortState) => void;
+    expandable?: TableExpandableConfig<TData>;
+    tree?: TableTreeConfig<TData>;
+    editing?: TableEditingConfig<TData>;
+    groupBy?: TableGroupBy<TData>;
+  };
+  /** TanStack instance built by the hook (Stage 4b — hoisted from the primitive). */
+  instance: ReactTable<TData>;
+  /** Chrome config — consumed by `<DataTable>`'s renderers, not by the primitive. */
+  chromeProps: {
+    views: TableViews | undefined;
+    toolbar: TableToolbar | undefined;
+    batchActions: ReactNode | TableBatchActionsConfig<TData> | undefined;
+    filterBar: TableFilterBar | undefined;
+    filters: TableFilter[] | undefined;
+    onFiltersChange: ((filters: TableFilter[]) => void) | undefined;
+    onResetFilters: (() => void) | undefined;
+    pagination: TablePagination | undefined;
+    columnVisibility: TableColumnVisibility;
+    columnPinning: ColumnPinningState;
+    autoColumnPinning: ColumnPinningState;
+    setColumnPinning: (pinning: ColumnPinningState) => void;
+    setColumnVisibility: (visibility: TableColumnVisibility) => void;
+    currentViewSnapshot: TableViewSnapshot;
+    duplicateView: TableViewItem | undefined;
+    savedViews: TableViewItem[];
+    setSavedViews: (views: TableViewItem[]) => void;
+    saveViewDefaultName: (count: number) => string;
+  };
+  /** Slice references (so consumer hooks remain visible). */
+  selection: UseTableSelectionResult | undefined;
+  pagination: UseTablePaginationResult | undefined;
+  views: UseTableViewsResult | undefined;
+}
+
 /**
- * useDataTable — composite-level config builder.
+ * useDataTable — composite-level state + TanStack instance builder.
  *
- * Threads `useTablePagination` / `useTableSelection` / `useTableViews`
- * slices into the prop bag expected by `<DataTable>` (and ultimately
- * by `<Table>`). Returns a typed `instance` you spread into the
- * composite.
- *
- * @example
- *   const pagination = useTablePagination({ defaultPageSize: 20 });
- *   const selection  = useTableSelection({ defaultSelected: [] });
- *   const views      = useTableViews({ items: BUILT_IN_VIEWS });
- *
- *   const table = useDataTable({
- *     data: rows, columns, rowKey: "id",
- *     pagination, selection, views,
- *     total: matched.length,
- *     filters, onFiltersChange,
- *     sort,    onSortChange,
- *   });
- *
- *   <DataTable table={table} slots={{ primaryAction: <Button>＋ 新規</Button> }} />
+ * Stage 4b of the Table refactor (Plan §3). The TanStack instance and
+ * the chrome-related state (column visibility, column pinning, saved
+ * views) live here on the composite side; `<DataTable>` renders the
+ * chrome around the slim `<Table>` primitive.
  */
 export function useDataTable<TData>(
   options: UseDataTableOptions<TData>,
@@ -253,30 +338,222 @@ export function useDataTable<TData>(
     pageSizeOptions,
     showSizeChanger,
     showTotal,
+    paginationConfig,
     views,
     onViewApply,
     batchActions,
-    ...rest
+    columns,
+    data,
+    rowKey = "id" as TableRowKey<TData>,
+    getRowId,
+    columnVisibility: controlledColumnVisibility,
+    defaultColumnVisibility,
+    onColumnVisibilityChange,
+    onColumnPinningChange,
+    sort,
+    onSortChange,
+    resizable,
+    expandable,
+    editing,
+    groupBy,
+    tree,
+    filterBar,
+    filters,
+    onFiltersChange,
+    onResetFilters,
+    toolbar,
+    footer,
+    empty,
+    rowClassName,
+    density,
+    stickyHeader,
+    caption,
+    tableKey,
+    containerClassName,
+    className,
   } = options;
 
-  const paginationProp = pagination
-    ? {
-        current: pagination.page,
-        pageSize: pagination.pageSize,
-        total: total ?? rest.data.length,
-        pageSizeOptions,
-        showSizeChanger,
-        showTotal,
-        onChange: pagination.onChange,
-      }
-    : undefined;
+  // ── Column visibility ────────────────────────────────────────────
+  const [internalColumnVisibility, setInternalColumnVisibility] =
+    useState<TableColumnVisibility>(
+      () =>
+        controlledColumnVisibility ??
+        readPersistedColumnVisibility(tableKey, columns) ??
+        defaultColumnVisibility ??
+        {},
+    );
+  const effectiveColumnVisibility =
+    controlledColumnVisibility ?? internalColumnVisibility;
+
+  // ── Column pinning (auto + user) ─────────────────────────────────
+  const bp = useBreakpoint();
+  const autoColumnPinning = useMemo(
+    () => deriveColumnPinning(columns, bp),
+    [columns, bp],
+  );
+  const [userColumnPinning, setUserColumnPinning] =
+    useState<ColumnPinningState>(
+      () =>
+        readPersistedColumnPinning(tableKey, columns) ?? {
+          left: [],
+          right: [],
+        },
+    );
+  const columnPinning = useMemo<ColumnPinningState>(() => {
+    const dedupe = (list: string[]) => Array.from(new Set(list));
+    return {
+      left: dedupe([
+        ...(autoColumnPinning.left ?? []),
+        ...(userColumnPinning.left ?? []),
+      ]),
+      right: dedupe([
+        ...(autoColumnPinning.right ?? []),
+        ...(userColumnPinning.right ?? []),
+      ]),
+    };
+  }, [autoColumnPinning, userColumnPinning]);
+
+  // ── Saved views (persisted) ─────────────────────────────────────
+  const [internalSavedViews, setInternalSavedViews] = useState<TableViewItem[]>(
+    () => readPersistedTableViews(tableKey, columns),
+  );
+
+  // Persistence effects
+  useEffect(() => {
+    writePersistedColumnVisibility(tableKey, columns, effectiveColumnVisibility);
+  }, [columns, effectiveColumnVisibility, tableKey]);
+  useEffect(() => {
+    writePersistedColumnPinning(tableKey, columns, userColumnPinning);
+  }, [columns, userColumnPinning, tableKey]);
+  useEffect(() => {
+    writePersistedTableViews(tableKey, columns, internalSavedViews);
+  }, [columns, internalSavedViews, tableKey]);
+
+  // ── TanStack instance (hoisted from the primitive) ──────────────
+  const warnedRowKeys = useRef(new Set<string>());
+  const resolveGetRowId =
+    getRowId ??
+    ((row: TData, index: number) =>
+      resolveRowKey(row, index, rowKey, (missingRowKey) => {
+        if (warnedRowKeys.current.has(missingRowKey)) return;
+        warnedRowKeys.current.add(missingRowKey);
+        console.warn(
+          `[godx-ui/Table] rowKey "${missingRowKey}" was not found on a row. Pass rowKey or getRowId to provide a stable row id.`,
+        );
+      }));
+
+  const handleColumnVisibilityChange = (updater: Updater<VisibilityState>) => {
+    const next = resolveUpdater(updater, effectiveColumnVisibility);
+    if (controlledColumnVisibility === undefined) setInternalColumnVisibility(next);
+    onColumnVisibilityChange?.(next);
+  };
+  const handleColumnPinningChange = (updater: Updater<ColumnPinningState>) => {
+    const next = resolveUpdater(updater, columnPinning);
+    const autoLeft = new Set(autoColumnPinning.left ?? []);
+    const autoRight = new Set(autoColumnPinning.right ?? []);
+    setUserColumnPinning({
+      left: (next.left ?? []).filter((key) => !autoLeft.has(key)),
+      right: (next.right ?? []).filter((key) => !autoRight.has(key)),
+    });
+    onColumnPinningChange?.(next);
+  };
+
+  const tableState = useMemo(
+    () => ({ columnPinning, columnVisibility: effectiveColumnVisibility }),
+    [columnPinning, effectiveColumnVisibility],
+  );
+  const instance = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getRowId: resolveGetRowId,
+    enableColumnPinning: true,
+    enableColumnResizing: resizable === true,
+    columnResizeMode: "onChange",
+    onColumnVisibilityChange: handleColumnVisibilityChange,
+    onColumnPinningChange: handleColumnPinningChange,
+    state: tableState,
+  });
+
+  // ── Pagination ──────────────────────────────────────────────────
+  const paginationProp: TablePagination | undefined = paginationConfig
+    ? paginationConfig
+    : pagination
+      ? {
+          current: pagination.page,
+          pageSize: pagination.pageSize,
+          total: total ?? data.length,
+          pageSizeOptions,
+          showSizeChanger,
+          showTotal,
+          onChange: pagination.onChange,
+        }
+      : undefined;
+
+  // ── Views snapshot + duplicate detection ────────────────────────
+  const currentViewSnapshot: TableViewSnapshot = {
+    filters: filters ?? [],
+    sort: Array.isArray(sort) ? (sort[0] ?? null) : (sort ?? null),
+    columnVisibility: effectiveColumnVisibility,
+  };
+  const builtInViewsConfig = buildViewsConfig(views, onViewApply);
+  const viewItems = builtInViewsConfig
+    ? [...(views?.items ?? []), ...internalSavedViews]
+    : [];
+  const duplicateView = viewItems.find((view) =>
+    sameViewSnapshot(view, currentViewSnapshot),
+  );
+
+  const setSavedViews = (next: TableViewItem[]) => {
+    const trimmed = next.slice(-MAX_PERSISTED_TABLE_VIEWS);
+    setInternalSavedViews(trimmed);
+    builtInViewsConfig?.onItemsChange?.([...(views?.items ?? []), ...trimmed]);
+  };
 
   return {
     tableProps: {
-      ...rest,
-      pagination: paginationProp,
+      columns,
+      data,
+      rowKey,
+      getRowId,
+      density,
+      stickyHeader,
+      resizable,
+      caption,
+      footer,
+      empty,
+      tableKey,
+      containerClassName,
+      className,
+      rowClassName,
+      sort,
+      onSortChange,
+      expandable,
+      tree,
+      editing,
+      groupBy,
+    },
+    instance,
+    chromeProps: {
+      views: builtInViewsConfig,
+      toolbar,
       batchActions: buildBatchActions(selection, batchActions),
-      views: buildViewsConfig(views, onViewApply),
+      filterBar,
+      filters,
+      onFiltersChange,
+      onResetFilters,
+      pagination: paginationProp,
+      columnVisibility: effectiveColumnVisibility,
+      columnPinning,
+      autoColumnPinning,
+      setColumnPinning: handleColumnPinningChange,
+      setColumnVisibility: handleColumnVisibilityChange,
+      currentViewSnapshot,
+      duplicateView,
+      savedViews: internalSavedViews,
+      setSavedViews,
+      saveViewDefaultName: (count: number) =>
+        `View ${internalSavedViews.length + count}`,
     },
     selection,
     pagination,
