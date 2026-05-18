@@ -3,10 +3,8 @@ import {
   getCoreRowModel,
   useReactTable,
   type Column,
-  type ColumnDef,
   type ColumnPinningState,
   type Row,
-  type RowData,
   type Updater,
   type VisibilityState,
 } from "@tanstack/react-table";
@@ -21,9 +19,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type HTMLAttributes,
   type ReactNode,
-  type Ref,
 } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../cn";
@@ -35,608 +31,102 @@ import { Alert } from "../feedback/Alert";
 import { Dialog } from "../feedback/Dialog";
 import { Sheet } from "../feedback/Sheet";
 import { Button } from "../general/Button";
+import { Pagination } from "../navigation/Pagination";
 import { Badge } from "./Badge";
 import { Empty } from "./Empty";
-import { Tag, type TagPresetColor } from "./Tag";
+import {
+  MAX_PERSISTED_TABLE_VIEWS,
+  readPersistedColumnPinning,
+  readPersistedColumnVisibility,
+  readPersistedTableViews,
+  writePersistedColumnPinning,
+  writePersistedColumnVisibility,
+  writePersistedTableViews,
+} from "./Table.persistence";
+import type {
+  TableBatchActions,
+  TableBatchActionsConfig,
+  TableColumn,
+  TableColumnVisibility,
+  TableEditingConfig,
+  TableExpandableConfig,
+  TableFilter,
+  TableFilterBar,
+  TableFilterItem,
+  TableFilterOperator,
+  TableFilterOption,
+  TableGroupBy,
+  TableGroupDescriptor,
+  TablePagination,
+  TablePaginationCursorConfig,
+  TablePaginationLoadMoreConfig,
+  TablePaginationNumberedConfig,
+  TablePaginationVariantConfig,
+  TableProps,
+  TableRowKey,
+  TableSort,
+  TableSortState,
+  TableStickyConfig,
+  TableStickySide,
+  TableToolbar,
+  TableToolbarButtonConfig,
+  TableToolbarConfig,
+  TableTreeConfig,
+  TableViewItem,
+  TableViews,
+  TableViewsConfig,
+  TableViewSnapshot,
+} from "./Table.types";
+// Re-export the type surface so existing `from "./data-display/Table"`
+// imports continue to resolve identically to before the Stage 4 split.
+export type {
+  TableBatchActions,
+  TableBatchActionsConfig,
+  TableBatchActionsContext,
+  TableColumn,
+  TableColumnPinningChange,
+  TableColumnVisibility,
+  TableDensity,
+  TableEditingConfig,
+  TableExpandableConfig,
+  TableFilter,
+  TableFilterBar,
+  TableFilterItem,
+  TableFilterOperator,
+  TableFilterOption,
+  TableGroupBy,
+  TableGroupDescriptor,
+  TablePagination,
+  TablePaginationConfig,
+  TablePaginationCursorConfig,
+  TablePaginationLoadMoreConfig,
+  TablePaginationNumberedConfig,
+  TablePaginationVariantConfig,
+  TableProps,
+  TableRowKey,
+  TableSort,
+  TableSortState,
+  TableStickyConfig,
+  TableStickySide,
+  TableToolbar,
+  TableToolbarButtonConfig,
+  TableToolbarColumnConfig,
+  TableToolbarConfig,
+  TableToolbarFilterConfig,
+  TableToolbarSearchConfig,
+  TableTreeConfig,
+  TableViewItem,
+  TableViewSnapshot,
+  TableViews,
+  TableViewsConfig,
+} from "./Table.types";
+export {
+  getTableColumnPinningStorageKey,
+  getTableColumnVisibilityStorageKey,
+  getTableViewsStorageKey,
+} from "./Table.persistence";
+import { Tag } from "./Tag";
 
-export type TableStickySide = "left" | "right";
-export type TableStickyConfig =
-  | TableStickySide
-  | false
-  | { side: TableStickySide; from?: Breakpoint };
-
-declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData extends RowData, TValue> {
-    className?: string;
-    headerClassName?: string;
-    cellClassName?: string | ((row: Row<TData>) => string | undefined);
-    style?: CSSProperties;
-    headerStyle?: CSSProperties;
-    cellStyle?:
-      | CSSProperties
-      | ((row: Row<TData>) => CSSProperties | undefined);
-    filterable?: boolean;
-    filterLabel?: ReactNode;
-    filterOptions?: TableFilterOption[];
-    sortable?: boolean;
-    sticky?: TableStickyConfig;
-    hideable?: boolean;
-  }
-}
-
-export type TableDensity = "default" | "compact";
-export type TableColumn<TData, TValue = unknown> = ColumnDef<TData, TValue>;
-export type TableColumnVisibility = VisibilityState;
-export type TableRowKey<TData> =
-  | Extract<keyof TData, string>
-  | ((row: TData, index: number) => string | number);
-export type TableFilterOperator =
-  | "eq"
-  | "neq"
-  | "contains"
-  | "startsWith"
-  | "endsWith"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte"
-  | "between"
-  | "in";
-
-export interface TableFilter {
-  key: string;
-  operator?: TableFilterOperator;
-  value?: string | number | boolean | null;
-  valueLabel?: ReactNode;
-}
-
-export interface TableSort {
-  key: string;
-  direction: "asc" | "desc";
-}
-
-/** Multi-sort: ordered list whose head is the primary key. */
-export type TableSortState = TableSort | TableSort[] | null;
-
-/** Numbered pagination (default behaviour for general lists). */
-export interface TablePaginationNumberedConfig {
-  type?: "numbered";
-  current: number;
-  pageSize: number;
-  total: number;
-  pageSizeOptions?: number[];
-  showSizeChanger?: boolean;
-  hideOnSinglePage?: boolean;
-  disabled?: boolean;
-  showTotal?: (total: number, range: [number, number]) => ReactNode;
-  onChange?: (page: number, pageSize: number) => void;
-}
-
-/** Back-compat alias — numbered pagination is the legacy config. */
-export type TablePaginationConfig = TablePaginationNumberedConfig;
-
-/** Load-more pagination (feed-like activity / notification lists). */
-export interface TablePaginationLoadMoreConfig {
-  type: "load-more";
-  hasMore: boolean;
-  onLoadMore: () => void;
-  currentCount: number;
-  total: number;
-  batchSize?: number;
-  loadingMore?: boolean;
-  loadMoreLabel?: ReactNode;
-  progressLabel?: (currentCount: number, total: number) => ReactNode;
-}
-
-/** Cursor pagination (time-series jump-to-period for kintai / payroll). */
-export interface TablePaginationCursorConfig {
-  type: "cursor";
-  value: string;
-  onChange: (value: string) => void;
-  label: ReactNode;
-  prevLabel?: ReactNode;
-  nextLabel?: ReactNode;
-  jumpToLatestLabel?: ReactNode;
-  /** HTML input type — `"month"` (default), `"date"`, or `"week"`. */
-  inputType?: "month" | "date" | "week";
-  onPrev?: () => void;
-  onNext?: () => void;
-  onJumpToLatest?: () => void;
-  disabled?: boolean;
-}
-
-export type TablePaginationVariantConfig =
-  | TablePaginationNumberedConfig
-  | TablePaginationLoadMoreConfig
-  | TablePaginationCursorConfig;
-
-export interface TableViewSnapshot {
-  filters?: TableFilter[];
-  sort?: TableSort | null;
-  columnVisibility?: TableColumnVisibility;
-}
-
-export interface TableViewItem extends TableViewSnapshot {
-  key: string;
-  label: ReactNode;
-  count?: ReactNode;
-  dotColor?: string;
-  disabled?: boolean;
-  deletable?: boolean;
-}
-
-export interface TableViewsConfig {
-  items: TableViewItem[];
-  activeKey?: string;
-  onActiveKeyChange?: (key: string) => void;
-  onViewApply?: (view: TableViewItem) => void;
-  onDeleteView?: (view: TableViewItem) => void;
-  onItemsChange?: (items: TableViewItem[]) => void;
-  saveable?: boolean;
-  saveLabel?: ReactNode;
-  deleteLabel?: string;
-  onSaveCurrent?: () => void;
-}
-
-export interface TableToolbarSearchConfig {
-  value: string;
-  onValueChange: (value: string) => void;
-  onSearch?: (value: string) => void;
-  onClear?: () => void;
-  placeholder?: string;
-  ariaLabel?: string;
-  inputRef?: Ref<HTMLInputElement>;
-  suffix?: ReactNode;
-  disabled?: boolean;
-}
-
-export interface TableToolbarButtonConfig {
-  label?: ReactNode;
-  onClick?: () => void;
-  disabled?: boolean;
-}
-
-export interface TableToolbarFilterConfig extends TableToolbarButtonConfig {
-  count?: number;
-}
-
-export type TableToolbarColumnConfig = TableToolbarButtonConfig;
-
-export interface TableToolbarConfig {
-  search?: false | TableToolbarSearchConfig;
-  filter?: false | TableToolbarFilterConfig;
-  columns?: false | TableToolbarColumnConfig;
-  primaryAction?: false | ReactNode | TableToolbarButtonConfig;
-  actions?: ReactNode;
-}
-
-export interface TableBatchActionsContext<TData> {
-  selectedRowKeys: string[];
-  selectedRows: Row<TData>[];
-  totalSelectableCount: number;
-  selectAllVisible: () => void;
-  clearSelection: () => void;
-}
-
-export interface TableBatchActionsConfig<TData> {
-  selectedRowKeys: string[];
-  onSelectedRowKeysChange: (keys: string[]) => void;
-  actions: ReactNode | ((context: TableBatchActionsContext<TData>) => ReactNode);
-  getCheckboxDisabled?: (row: Row<TData>) => boolean;
-  selectedLabel?: (count: number) => ReactNode;
-  selectAllLabel?: (count: number) => ReactNode;
-  clearLabel?: ReactNode;
-}
-
-export interface TableFilterOption {
-  value: string;
-  label: ReactNode;
-  disabled?: boolean;
-}
-
-export interface TableFilterItem {
-  key: string;
-  label: ReactNode;
-  value?: string;
-  valueLabel?: ReactNode;
-  operator?: TableFilterOperator;
-  options?: TableFilterOption[];
-  onValueChange?: (value: string) => void;
-  color?: TagPresetColor | string;
-  closable?: boolean;
-  onClose?: () => void;
-}
-
-export type TableFilterBar = ReactNode | TableFilterItem[];
-export type TablePagination =
-  | ReactNode
-  | false
-  | TablePaginationVariantConfig;
-export type TableToolbar = ReactNode | false | TableToolbarConfig;
-export type TableViews = ReactNode | false | TableViewsConfig;
-export type TableBatchActions<TData> =
-  | ReactNode
-  | false
-  | TableBatchActionsConfig<TData>;
-
-/** Expand-row config (rule 32 — no `expanded`-singular / `expand` synonyms). */
-export interface TableExpandableConfig<TData> {
-  /** Rows whose expand panel is open. */
-  expandedRowKeys?: string[];
-  defaultExpandedRowKeys?: string[];
-  onExpandedRowsChange?: (keys: string[]) => void;
-  /** Renders the inline detail panel. */
-  renderExpandedRow: (row: Row<TData>) => ReactNode;
-  /** Allows more than one open expand panel at a time. Default `false`. */
-  allowMultiple?: boolean;
-  /** Hide the expand toggle for rows that have no detail panel. */
-  rowExpandable?: (row: Row<TData>) => boolean;
-}
-
-/** Inline-edit config — single editing row, multi-row dirty tracking. */
-export interface TableEditingConfig<TData> {
-  /** The row currently in editing mode. `null` exits editing. */
-  rowId: string | null;
-  onStart?: (rowId: string) => void;
-  onCommit?: (rowId: string, patch: Record<string, unknown>) => void;
-  onCancel?: (rowId: string) => void;
-  /** Renders an inline editor for a cell. Return `null` to fall back to the column's normal cell. */
-  renderEditCell?: (
-    column: TableColumn<TData, unknown>,
-    row: Row<TData>,
-  ) => ReactNode;
-  /** Rows that should be read-only (confirmed records / locked rows). */
-  isRowReadOnly?: (row: Row<TData>) => boolean;
-  /** Row + cell ids that carry unsaved changes — for the warning dot + footer banner. */
-  dirtyRowIds?: string[];
-  dirtyCellIds?: string[];
-  /** Footer banner — show "N rows unsaved" + Save-all / Cancel-all controls. */
-  onSaveAll?: () => void;
-  onCancelAll?: () => void;
-  saveAllLabel?: ReactNode;
-  cancelAllLabel?: ReactNode;
-  unsavedLabel?: (count: number) => ReactNode;
-}
-
-/** Row-group config — either a key resolver or a richer descriptor. */
-export interface TableGroupDescriptor {
-  key: string;
-  label: ReactNode;
-  count?: ReactNode;
-  total?: ReactNode;
-}
-export type TableGroupBy<TData> = (
-  row: TData,
-) => string | TableGroupDescriptor | undefined;
-
-/** Tree-row config. Children are resolved per parent row. */
-export interface TableTreeConfig<TData> {
-  children: (row: TData) => TData[] | undefined;
-  defaultExpandedNodes?: string[];
-  expandedNodes?: string[];
-  onExpandedNodesChange?: (keys: string[]) => void;
-  /** Hard cap on nesting depth (defaults to a reasonable 8). */
-  maxDepth?: number;
-}
-
-/** Column-pinning callback (TanStack-canonical name). */
-export type TableColumnPinningChange = (
-  pinning: ColumnPinningState,
-) => void;
-
-export interface TableProps<TData> extends Omit<
-  HTMLAttributes<HTMLTableElement>,
-  "children"
-> {
-  columns: TableColumn<TData, unknown>[];
-  data: TData[];
-  density?: TableDensity;
-  containerClassName?: string;
-  stickyHeader?: boolean;
-  rowKey?: TableRowKey<TData>;
-  getRowId?: (row: TData, index: number) => string;
-  caption?: ReactNode;
-  views?: TableViews;
-  toolbar?: TableToolbar;
-  batchActions?: TableBatchActions<TData>;
-  filters?: TableFilter[];
-  onFiltersChange?: (filters: TableFilter[]) => void;
-  tableKey?: string;
-  defaultColumnVisibility?: TableColumnVisibility;
-  columnVisibility?: TableColumnVisibility;
-  onColumnVisibilityChange?: (columnVisibility: TableColumnVisibility) => void;
-  /**
-   * Active sort. Pass a single `TableSort` for single-key sort (legacy)
-   * or `TableSort[]` for multi-sort (shift-click adds keys; canon ⑤).
-   */
-  sort?: TableSortState;
-  onSortChange?: (sort: TableSortState) => void;
-  /** Enable per-column horizontal resize handles (canon ⑤). */
-  resizable?: boolean;
-  /** Inline expand-row config (canon ⑥). */
-  expandable?: TableExpandableConfig<TData>;
-  /** Inline editing config (canon ⑦). */
-  editing?: TableEditingConfig<TData>;
-  /** Row-group descriptor — same vocabulary as TanStack `getGroupedRowModel`. */
-  groupBy?: TableGroupBy<TData>;
-  /** Tree-row resolver (canon ⑧, hierarchical rows). */
-  tree?: TableTreeConfig<TData>;
-  /** Receives column-pinning changes from the column manager lock toggle (canon ⑨). */
-  onColumnPinningChange?: TableColumnPinningChange;
-  filterBar?: TableFilterBar;
-  pagination?: TablePagination;
-  footer?: ReactNode;
-  empty?: ReactNode;
-  onResetFilters?: () => void;
-  rowClassName?: string | ((row: Row<TData>) => string | undefined);
-}
-
-export function getTableColumnVisibilityStorageKey(tableKey: string) {
-  return `godxui:table:${tableKey}:columnVisibility`;
-}
-
-export function getTableColumnPinningStorageKey(tableKey: string) {
-  return `godxui:table:${tableKey}:columnPinning`;
-}
-
-export function getTableViewsStorageKey(tableKey: string) {
-  return `godxui:table:${tableKey}:views`;
-}
-
-interface PersistedColumnVisibility {
-  version: 1;
-  columnKeys: string[];
-  visibility: TableColumnVisibility;
-}
-
-interface PersistedColumnPinning {
-  version: 2;
-  columnKeys: string[];
-  pinning: { left: string[]; right: string[] };
-}
-
-interface PersistedTableView {
-  key: string;
-  label: string;
-  filters?: TableFilter[];
-  sort?: TableSort | null;
-  columnVisibility?: TableColumnVisibility;
-}
-
-interface PersistedTableViews {
-  version: 1;
-  columnKeys: string[];
-  views: PersistedTableView[];
-}
-
-const MAX_PERSISTED_TABLE_VIEWS = 20;
-
-function isColumnVisibility(value: unknown): value is TableColumnVisibility {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value) &&
-    Object.values(value).every((item) => typeof item === "boolean")
-  );
-}
-
-function getColumnKeys<TData>(columns: TableColumn<TData, unknown>[]) {
-  return columns
-    .map((column) => getColumnKey(column))
-    .filter((key): key is string => key !== undefined)
-    .sort();
-}
-
-function hasSameColumnKeys(left: string[], right: string[]) {
-  return (
-    left.length === right.length &&
-    left.every((key, index) => key === right[index])
-  );
-}
-
-function isPersistedColumnVisibility(
-  value: unknown,
-): value is PersistedColumnVisibility {
-  if (typeof value !== "object" || value === null || Array.isArray(value))
-    return false;
-  const candidate = value as {
-    version?: unknown;
-    columnKeys?: unknown;
-    visibility?: unknown;
-  };
-  return (
-    candidate.version === 1 &&
-    Array.isArray(candidate.columnKeys) &&
-    candidate.columnKeys.every((item) => typeof item === "string") &&
-    isColumnVisibility(candidate.visibility)
-  );
-}
-
-function readPersistedColumnVisibility<TData>(
-  tableKey: string | undefined,
-  columns: TableColumn<TData, unknown>[],
-): TableColumnVisibility | undefined {
-  if (tableKey === undefined || typeof window === "undefined") return undefined;
-  try {
-    const stored = window.localStorage.getItem(
-      getTableColumnVisibilityStorageKey(tableKey),
-    );
-    if (stored === null) return undefined;
-    const parsed = JSON.parse(stored) as unknown;
-    if (!isPersistedColumnVisibility(parsed)) return undefined;
-    if (!hasSameColumnKeys(parsed.columnKeys, getColumnKeys(columns)))
-      return undefined;
-    return parsed.visibility;
-  } catch {
-    return undefined;
-  }
-}
-
-function writePersistedColumnVisibility<TData>(
-  tableKey: string | undefined,
-  columns: TableColumn<TData, unknown>[],
-  columnVisibility: TableColumnVisibility,
-) {
-  if (tableKey === undefined || typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(
-      getTableColumnVisibilityStorageKey(tableKey),
-      JSON.stringify({
-        version: 1,
-        columnKeys: getColumnKeys(columns),
-        visibility: columnVisibility,
-      } satisfies PersistedColumnVisibility),
-    );
-  } catch {
-    // localStorage can be unavailable in private browsing or sandboxed iframes.
-  }
-}
-
-function isPersistedColumnPinning(
-  value: unknown,
-): value is PersistedColumnPinning {
-  if (typeof value !== "object" || value === null || Array.isArray(value))
-    return false;
-  const candidate = value as {
-    version?: unknown;
-    columnKeys?: unknown;
-    pinning?: unknown;
-  };
-  if (
-    candidate.version !== 2 ||
-    !Array.isArray(candidate.columnKeys) ||
-    !candidate.columnKeys.every((item) => typeof item === "string") ||
-    typeof candidate.pinning !== "object" ||
-    candidate.pinning === null
-  )
-    return false;
-  const pinning = candidate.pinning as { left?: unknown; right?: unknown };
-  const isStringArray = (value: unknown): value is string[] =>
-    Array.isArray(value) && value.every((item) => typeof item === "string");
-  return isStringArray(pinning.left) && isStringArray(pinning.right);
-}
-
-function readPersistedColumnPinning<TData>(
-  tableKey: string | undefined,
-  columns: TableColumn<TData, unknown>[],
-): ColumnPinningState | undefined {
-  if (tableKey === undefined || typeof window === "undefined") return undefined;
-  try {
-    const stored = window.localStorage.getItem(
-      getTableColumnPinningStorageKey(tableKey),
-    );
-    if (stored === null) return undefined;
-    const parsed = JSON.parse(stored) as unknown;
-    if (!isPersistedColumnPinning(parsed)) return undefined;
-    if (!hasSameColumnKeys(parsed.columnKeys, getColumnKeys(columns)))
-      return undefined;
-    return { left: parsed.pinning.left, right: parsed.pinning.right };
-  } catch {
-    return undefined;
-  }
-}
-
-function writePersistedColumnPinning<TData>(
-  tableKey: string | undefined,
-  columns: TableColumn<TData, unknown>[],
-  columnPinning: ColumnPinningState,
-) {
-  if (tableKey === undefined || typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(
-      getTableColumnPinningStorageKey(tableKey),
-      JSON.stringify({
-        version: 2,
-        columnKeys: getColumnKeys(columns),
-        pinning: {
-          left: columnPinning.left ?? [],
-          right: columnPinning.right ?? [],
-        },
-      } satisfies PersistedColumnPinning),
-    );
-  } catch {
-    // localStorage can be unavailable in private browsing or sandboxed iframes.
-  }
-}
-
-function isPersistedTableView(value: unknown): value is PersistedTableView {
-  if (typeof value !== "object" || value === null || Array.isArray(value))
-    return false;
-  const candidate = value as Partial<PersistedTableView>;
-  return (
-    typeof candidate.key === "string" &&
-    typeof candidate.label === "string" &&
-    (candidate.filters === undefined || Array.isArray(candidate.filters)) &&
-    (candidate.columnVisibility === undefined ||
-      isColumnVisibility(candidate.columnVisibility))
-  );
-}
-
-function readPersistedTableViews<TData>(
-  tableKey: string | undefined,
-  columns: TableColumn<TData, unknown>[],
-): TableViewItem[] {
-  if (tableKey === undefined || typeof window === "undefined") return [];
-  try {
-    const stored = window.localStorage.getItem(getTableViewsStorageKey(tableKey));
-    if (stored === null) return [];
-    const parsed = JSON.parse(stored) as unknown;
-    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
-      return [];
-    const candidate = parsed as Partial<PersistedTableViews>;
-    if (
-      candidate.version !== 1 ||
-      !Array.isArray(candidate.columnKeys) ||
-      !hasSameColumnKeys(candidate.columnKeys, getColumnKeys(columns)) ||
-      !Array.isArray(candidate.views)
-    )
-      return [];
-    return candidate.views
-      .filter(isPersistedTableView)
-      .slice(-MAX_PERSISTED_TABLE_VIEWS)
-      .map((view) => ({
-        ...view,
-        deletable: true,
-      }));
-  } catch {
-    return [];
-  }
-}
-
-function writePersistedTableViews<TData>(
-  tableKey: string | undefined,
-  columns: TableColumn<TData, unknown>[],
-  views: TableViewItem[],
-) {
-  if (tableKey === undefined || typeof window === "undefined") return;
-  try {
-    const persistedViews = views
-      .flatMap((view): PersistedTableView[] =>
-        typeof view.label === "string"
-          ? [
-              {
-                key: view.key,
-                label: view.label,
-                filters: view.filters,
-                sort: view.sort,
-                columnVisibility: view.columnVisibility,
-              },
-            ]
-          : [],
-      )
-      .slice(-MAX_PERSISTED_TABLE_VIEWS);
-    window.localStorage.setItem(
-      getTableViewsStorageKey(tableKey),
-      JSON.stringify({
-        version: 1,
-        columnKeys: getColumnKeys(columns),
-        views: persistedViews,
-      } satisfies PersistedTableViews),
-    );
-  } catch {
-    // localStorage can be unavailable in private browsing or sandboxed iframes.
-  }
-}
 
 function normalizeFilters(filters: TableFilter[] | undefined) {
   return (filters ?? [])
@@ -934,54 +424,6 @@ interface PaginationRendered {
   node: ReactNode;
 }
 
-/**
- * Laravel-style page range — always show the first + last page, the
- * current page, and `sibling` pages on each side. Insert `"gap"`
- * markers (rendered as `…`) where pages are elided.
- *
- *   computePageRange(1, 52)   →  [1, 2, 3, "gap", 52]
- *   computePageRange(25, 52)  →  [1, "gap", 24, 25, 26, "gap", 52]
- *   computePageRange(52, 52)  →  [1, "gap", 50, 51, 52]
- *   computePageRange(3, 6)    →  [1, 2, 3, 4, 5, 6]   // no gap needed
- *
- * Matches the design canon (`comp-table.html` ⑩) — `<button>1</button>
- * <button>2</button><button>3</button><button>4</button>
- * <button>5</button><span class="gap">…</span><button>52</button>`.
- */
-function computePageRange(
-  current: number,
-  total: number,
-  sibling = 1,
-  boundary = 1,
-): Array<number | "gap"> {
-  if (total <= 1) return [1];
-  // If the window plus boundaries already covers every page, just list
-  // them flat — avoids "1 … 2 3 4 … 6" silliness on small counts.
-  const windowSize = 2 * sibling + 1 + 2 * boundary + 2; // +2 for the two gap slots
-  if (total <= windowSize) {
-    return Array.from({ length: total }, (_, i) => i + 1);
-  }
-  const startPages = Array.from({ length: boundary }, (_, i) => i + 1);
-  const endPages = Array.from({ length: boundary }, (_, i) => total - boundary + 1 + i);
-  const siblingStart = Math.max(
-    Math.min(current - sibling, total - boundary - 2 * sibling - 1),
-    boundary + 2,
-  );
-  const siblingEnd = Math.min(
-    Math.max(current + sibling, boundary + 2 * sibling + 2),
-    endPages[0] - 2,
-  );
-  const items: Array<number | "gap"> = [];
-  items.push(...startPages);
-  if (siblingStart > boundary + 2) items.push("gap");
-  else if (boundary + 1 < endPages[0]) items.push(boundary + 1);
-  for (let p = siblingStart; p <= siblingEnd; p++) items.push(p);
-  if (siblingEnd < endPages[0] - 2) items.push("gap");
-  else if (endPages[0] - 1 > boundary) items.push(endPages[0] - 1);
-  items.push(...endPages);
-  return items;
-}
-
 function renderTablePagination(
   pagination: TablePagination | undefined,
   t: (key: string, options?: Record<string, unknown>) => string,
@@ -994,101 +436,27 @@ function renderTablePagination(
   if (pagination.type === "cursor")
     return { variant: "cursor", node: renderCursor(pagination, t) };
   const config = pagination;
-
-  const total = Math.max(config.total, 0);
-  const pageSize = Math.max(config.pageSize, 1);
-  const pageCount = Math.max(Math.ceil(total / pageSize), 1);
-  const current = Math.min(Math.max(config.current, 1), pageCount);
-  const start = total === 0 ? 0 : (current - 1) * pageSize + 1;
-  const end = Math.min(current * pageSize, total);
-  const disabled = config.disabled === true;
-  const showSizeChanger = config.showSizeChanger !== false;
-  const pageSizeOptions = Array.from(
-    new Set([...(config.pageSizeOptions ?? [10, 20, 50, 100]), pageSize]),
-  ).sort((left, right) => left - right);
-
-  if (config.hideOnSinglePage === true && total <= pageSize) return null;
-
-  function changePage(nextPage: number) {
-    if (disabled) return;
-    config.onChange?.(Math.min(Math.max(nextPage, 1), pageCount), pageSize);
-  }
-
-  function changePageSize(nextPageSize: number) {
-    if (disabled) return;
-    config.onChange?.(1, nextPageSize);
-  }
-
-  const node = (
-    <>
-      <div className="info">
-        {config.showTotal?.(total, [start, end]) ??
-          t("table.paginationTotal", { start, end, total })}
-      </div>
-      {showSizeChanger && (
-        <div className="ps">
-          <span>{t("table.pageSize")}</span>
-          <select
-            aria-label={t("table.pageSize")}
-            value={pageSize}
-            disabled={disabled}
-            onChange={(event) => changePageSize(Number(event.target.value))}
-          >
-            {pageSizeOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-      <div className="spacer" />
-      <div className="pgn">
-        <button
-          className={current === 1 ? "disabled" : ""}
-          disabled={disabled || current === 1}
-          onClick={() => changePage(1)}
-          aria-label={t("table.firstPage")}
-        >
-          {"<<"}
-        </button>
-        <button
-          className={current === 1 ? "disabled" : ""}
-          disabled={disabled || current === 1}
-          onClick={() => changePage(current - 1)}
-          aria-label={t("table.previousPage")}
-        >
-          {"<"}
-        </button>
-        {computePageRange(current, pageCount).map((item, index) =>
-          item === "gap" ? (
-            <span key={`gap-${index}`} className="gap" aria-hidden>
-              …
-            </span>
-          ) : (
-            <button
-              key={item}
-              className={item === current ? "on" : ""}
-              disabled={disabled}
-              onClick={() => changePage(item)}
-              aria-current={item === current ? "page" : undefined}
-            >
-              {item}
-            </button>
-          ),
-        )}
-        <button
-          className={current === pageCount ? "disabled" : ""}
-          disabled={disabled || current === pageCount}
-          onClick={() => changePage(current + 1)}
-          aria-label={t("table.nextPage")}
-        >
-          {">"}
-        </button>
-      </div>
-    </>
-  );
-  return { variant: "numbered", node };
+  return {
+    variant: "numbered",
+    node: (
+      <Pagination
+        variant="embedded"
+        showFirstLast
+        total={config.total}
+        pageSize={config.pageSize}
+        value={config.current}
+        onValueChange={(page) => config.onChange?.(page, config.pageSize)}
+        onPageSizeChange={(size) => config.onChange?.(1, size)}
+        pageSizeOptions={config.pageSizeOptions}
+        showSizeChanger={config.showSizeChanger}
+        showTotal={
+          config.showTotal !== undefined ? config.showTotal : true
+        }
+        hideOnSinglePage={config.hideOnSinglePage}
+        disabled={config.disabled}
+      />
+    ),
+  };
 }
 
 function renderLoadMore(
@@ -2308,18 +1676,22 @@ export function Table<TData>({
           )}
         </div>
       )}
-      {paginationContent !== null && (
-        <div
-          className={
-            paginationContent.variant === "load-more"
-              ? undefined
-              : "tbl-pagination"
-          }
-          data-variant={paginationContent.variant}
-        >
-          {paginationContent.node}
-        </div>
-      )}
+      {paginationContent !== null &&
+        (paginationContent.variant === "numbered" ? (
+          // <Pagination variant="embedded"> owns its <nav> wrapper.
+          paginationContent.node
+        ) : (
+          <div
+            className={
+              paginationContent.variant === "load-more"
+                ? undefined
+                : "tbl-pagination"
+            }
+            data-variant={paginationContent.variant}
+          >
+            {paginationContent.node}
+          </div>
+        ))}
       {columnSettingsOpen &&
         isTableToolbarConfig(toolbar) &&
         toolbar.columns !== undefined &&

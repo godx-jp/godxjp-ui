@@ -115,6 +115,7 @@ const en: ForgeTranslations = {
     firstPage: "First page",
     previousPage: "Previous page",
     nextPage: "Next page",
+    lastPage: "Last page",
     loadMore: "Load {{count}} more",
     loadMoreProgress: "{{current}} / {{total}} shown",
     jumpToLatest: "<< Latest",

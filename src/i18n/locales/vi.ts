@@ -115,6 +115,7 @@ const vi: ForgeTranslations = {
     firstPage: "Trang đầu",
     previousPage: "Trang trước",
     nextPage: "Trang sau",
+    lastPage: "Trang cuối",
     loadMore: "Tải thêm {{count}}",
     loadMoreProgress: "{{current}} / {{total}} đang hiển thị",
     jumpToLatest: "<< Mới nhất",

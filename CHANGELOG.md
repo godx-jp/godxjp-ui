@@ -5,20 +5,58 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Removed
+### Added
 
-- **`Combobox` primitive** — merged into `<Select searchable>`. Same
-  cmdk + Popover render tree, single primitive surface. See
-  [Select reference §Migration from Combobox](./docs/reference/data-entry/Select.md#migration-from-combobox)
-  for the rename diff. Rationale: Combobox and Select carry the same
-  concept (single-select from a constrained list) — keeping two
-  primitives for one concept violates cardinal rules 23 §A / 31. The
-  `.combobox-*` CSS classes are retained because Cascader / TreeSelect
-  / AutoComplete continue to use them. BREAKING.
+- **`<DataTable>` composite + table hooks** (ADR-0006). New
+  ergonomic surface for the "data-table page" pattern. Pairs the
+  `<Table>` primitive with hook-based state slices:
+  - `useTablePagination` — page + pageSize slice with unified
+    `onChange`, `resetPage`, `reset`.
+  - `useTableSelection` — row selection with single / multiple mode +
+    `toggle` / `select` / `deselect` / `clear` helpers.
+  - `useTableViews` — saved-view state for tabbed table headers;
+    optional localStorage persistence via `storageKey`.
+  - `useTableState` — versioned localStorage useState (storageKey,
+    version, migrate, custom storage adapter). The canonical
+    persistence helper — industry-standard pattern (TanStack / MRT /
+    MantineRT).
+  - `useDataTable` — composite-level config builder that threads the
+    slices into a typed instance ready for `<DataTable table={…}>`.
+  Exported from `@godxjp/ui` (hooks) and `@godxjp/ui/components/composites`
+  (composite). See [`docs/reference/composites/DataTable.md`](docs/reference/composites/DataTable.md)
+  and [`docs/how-to/migrate-to-data-table.md`](docs/how-to/migrate-to-data-table.md).
+- **`<Pagination variant="embedded">`** — table-footer layout
+  (info + page-size changer + numeric pager with optional first / last
+  chevron buttons). Reused inside `<Table pagination=…>`. New props on
+  the existing `<Pagination>`: `defaultPageSize` / `onPageSizeChange`,
+  `pageSizeOptions`, `showSizeChanger`, `showFirstLast`,
+  `hideOnSinglePage`, `boundary`, `firstPageLabel` / `previousPageLabel`
+  / `nextPageLabel` / `lastPageLabel` / `pageSizeLabel`. Exported
+  helper `computePageRange(current, total, sibling, boundary)`.
+- **i18n key `table.lastPage`** added to all four locales
+  (ja / en / vi / fil) for the new last-page button.
+- **ADR-0006** documenting the Table primitive vs DataTable
+  composite split.
 
 ### Changed
 
-- **`Select` gained `searchable`** + `searchPlaceholder`, `emptyLabel`,
+- **`<Table>` file split** — extracted types + ColumnMeta
+  augmentation into `Table.types.ts` and localStorage helpers into
+  `Table.persistence.ts`. Public API unchanged; existing
+  `from "@godxjp/ui"` imports of any Table-related symbol continue
+  to resolve. Source file dropped from 2,353 → 1,838 lines (~22%).
+- **`<Pagination>` is now the single pagination primitive** —
+  the inline numbered renderer that lived inside `<Table>` is gone;
+  `<Table pagination={{ type: "numbered", … }}>` now renders
+  `<Pagination variant="embedded">` under the hood. Cardinal rule 32
+  (no redundant components) is now satisfied.
+- **`.tbl-pagination` numbered styles** migrated to
+  `.pagination[data-variant="embedded"]` in `90-navigation.css`.
+  `.tbl-pagination` remains the layout wrapper for the load-more and
+  cursor pagination variants only.
+- **Lucide icons** replace the inline SVG chevrons inside
+  `<Pagination>` (rule 14 — locked stack).
+- **`<Select>` gained `searchable`** + `searchPlaceholder`, `emptyLabel`,
   `loading`, `loadingLabel` props. When `searchable` is set the
   primitive flips from Radix Select to a cmdk + Popover render tree
   with a filter input above the list; value semantics stay constrained
@@ -159,13 +197,10 @@ boolean` adds a pulsing ring around the marker dot for that single
   (hour / minute via `granularity` + `hourCycle`), `MinMaxConstrained`,
   `Format_Locales` (ja-JP / en-US / de-DE segment order via
   `I18nProvider`).
-- **Select + Combobox `options` prop** — Ant / MUI / Mantine canonical
-  data-driven API. `<Select options={[{value,label}]} />` or
-  `<Combobox options={…} triggerLabel placeholder emptyLabel />`.
-  Children API remains for advanced layouts (groups / dividers / custom
-  item rendering).
-- **Combobox `WithSelection` story** — controlled state + check
-  indicator + role meta pattern (the old verbose Default).
+- **`Select` `options` prop** — Ant / MUI / Mantine canonical
+  data-driven API. `<Select options={[{value,label}]} />`. Children
+  API remains for advanced layouts (groups / dividers / custom item
+  rendering).
 - **40 reference doc stubs** — `docs/reference/<group>/<Name>.md`
   draft scaffold for the previously undocumented primitives (Flex,
   Form, Transfer, Field, LocaleTabs, Checklist, Spinner, IconButton,
@@ -175,8 +210,6 @@ boolean` adds a pulsing ring around the marker dot for that single
   AutoComplete, Cascader, Tree, ColorPicker, Rate, Carousel, Collapse,
   List, Image, QRCode, Tooltip, Timeline, Tour). `check:docs-parity`
   now exits clean at 63/63.
-- **Combobox vs Select decision table** in Select.md + Combobox.md —
-  fixed list / search / free-text / hierarchical / tree.
 
 ### Fixed
 
@@ -214,14 +247,11 @@ boolean` adds a pulsing ring around the marker dot for that single
   directly (not the framework's re-export) — documented in the
   Tooltip reference doc.
 - **AutoComplete focus closing the dropdown** —
-  `onFocusOutside={preventDefault}` on `Combobox` so opening
-  on focus survives the focus-leaves-anchor lifecycle.
+  `onFocusOutside={preventDefault}` so opening on focus survives the
+  focus-leaves-anchor lifecycle.
 - **AutoComplete label vs value** — input shows the selected option's
   `label`; `onValueChange` reports the option's `value` (Ant / shadcn
-  Combobox convention).
-- **Combobox cmdk Command `value` + `defaultValue`** — conditional
-  spread so the inner Primitive.input never receives both
-  (controlled / uncontrolled warning silenced).
+  convention).
 - **`<List>` and `<Menu>` nested `<li>`** — `List` renderItem no
   longer wraps in an extra `<li>`; `Menu` switched from
   `<li role="none">` to `<div role="group">` (ARIA-compliant).
@@ -436,10 +466,8 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
   `tokens.css`). Optional **`@godxjp/ui/sonner.css`** import (after
   tokens) pulls in sonner’s stacking / motion stylesheet and resets
   toaster `font-family` to inherit.
-- **Combobox** family — `Combobox` / `Combobox` / `Combobox`
-  (Popover aliases), `Combobox` (wraps inner `cmdk` `Command`),
-  `Combobox`, `Combobox`, `Combobox`, `Combobox`.
-  New `.combobox-*` atoms in `tokens.css`.
+- New `.combobox-*` atoms in `tokens.css` (filter list / item / empty
+  styles shared by `AutoComplete`, `Cascader`, `TreeSelect`).
 - Dependency: **`sonner`** (`cmdk` already present).
 
 ## [2.3.0] — 2026-05-16
