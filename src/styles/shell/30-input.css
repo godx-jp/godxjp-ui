@@ -240,12 +240,14 @@ textarea.input {
 
 .form-vertical .field { display: flex; flex-direction: column; }
 
-/* horizontal: vertical on mobile, label-left from md (768px) up */
+/* horizontal: vertical on mobile, label-left from md (768px) up.
+   Label column uses minmax so nested grid layouts (姓+名 side by side)
+   stay readable when each cell shrinks. */
 .form-horizontal .field { display: flex; flex-direction: column; }
 @media (min-width: 768px) {
   .form-horizontal .field {
     display: grid;
-    grid-template-columns: 10rem 1fr;
+    grid-template-columns: minmax(6rem, 10rem) 1fr;
     align-items: start;
     column-gap: var(--spacing-3);
   }

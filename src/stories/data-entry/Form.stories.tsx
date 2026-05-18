@@ -387,20 +387,22 @@ export const TwoColumnsHorizontal: Story = {
       resolver={zodResolver(profileSchema)}
       defaultValues={{ lastName: "", firstName: "", lastNameKana: "", firstNameKana: "", email: "" }}
       onSubmit={(v) => console.log(v)}
-      style={{ maxWidth: 720 }}
+      style={{ maxWidth: 760 }}
     >
-      <FormField name="lastName" label="姓" required>
-        <Input placeholder="山田" />
-      </FormField>
-      <FormField name="firstName" label="名" required>
-        <Input placeholder="太郎" />
-      </FormField>
-      <FormField name="lastNameKana" label="姓 (カナ)">
-        <Input placeholder="ヤマダ" />
-      </FormField>
-      <FormField name="firstNameKana" label="名 (カナ)">
-        <Input placeholder="タロウ" />
-      </FormField>
+      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+        <FormField name="lastName" label="姓" required>
+          <Input placeholder="山田" />
+        </FormField>
+        <FormField name="firstName" label="名" required>
+          <Input placeholder="太郎" />
+        </FormField>
+        <FormField name="lastNameKana" label="姓 (カナ)">
+          <Input placeholder="ヤマダ" />
+        </FormField>
+        <FormField name="firstNameKana" label="名 (カナ)">
+          <Input placeholder="タロウ" />
+        </FormField>
+      </div>
       <FormField name="email" label="メールアドレス" required>
         <Input type="email" placeholder="taro@example.com" />
       </FormField>
@@ -676,20 +678,22 @@ export const OptionalMixHorizontal: Story = {
       resolver={zodResolver(profileSchema)}
       defaultValues={{ lastName: "", firstName: "", lastNameKana: "", firstNameKana: "", email: "" }}
       onSubmit={(v) => console.log(v)}
-      style={{ maxWidth: 720 }}
+      style={{ maxWidth: 760 }}
     >
-      <FormField name="lastName" label="姓" required>
-        <Input placeholder="山田" />
-      </FormField>
-      <FormField name="firstName" label="名" required>
-        <Input placeholder="太郎" />
-      </FormField>
-      <FormField name="lastNameKana" label="姓 (カナ)" optional>
-        <Input placeholder="ヤマダ" />
-      </FormField>
-      <FormField name="firstNameKana" label="名 (カナ)" optional>
-        <Input placeholder="タロウ" />
-      </FormField>
+      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+        <FormField name="lastName" label="姓" required>
+          <Input placeholder="山田" />
+        </FormField>
+        <FormField name="firstName" label="名" required>
+          <Input placeholder="太郎" />
+        </FormField>
+        <FormField name="lastNameKana" label="姓 (カナ)" optional>
+          <Input placeholder="ヤマダ" />
+        </FormField>
+        <FormField name="firstNameKana" label="名 (カナ)" optional>
+          <Input placeholder="タロウ" />
+        </FormField>
+      </div>
       <FormField name="email" label="メールアドレス" required>
         <Input type="email" placeholder="taro@example.com" />
       </FormField>
