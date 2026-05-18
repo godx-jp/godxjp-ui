@@ -70,6 +70,9 @@ export type { InputNumberProps } from "./data-entry/InputNumber";
 export { Form, useFormContext } from "./data-entry/Form";
 export type { FormProps } from "./data-entry/Form";
 
+export { FormField } from "./data-entry/FormField";
+export type { FormFieldProps } from "./data-entry/FormField";
+
 export { Transfer } from "./data-entry/Transfer";
 export type {
   TransferProps,

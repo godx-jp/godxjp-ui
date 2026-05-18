@@ -1,19 +1,10 @@
-import { Children, cloneElement, forwardRef, isValidElement } from "react";
+import { forwardRef } from "react";
 import type {
   HTMLAttributes,
   LabelHTMLAttributes,
-  ReactElement,
   ReactNode,
 } from "react";
-import {
-  useController,
-  type ControllerFieldState,
-  type FieldPath,
-  type FieldValues,
-} from "react-hook-form";
 import { cn } from "../cn";
-import { Checkbox } from "./Checkbox";
-import { InputNumber } from "./InputNumber";
 
 export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
   label?: ReactNode;
@@ -24,143 +15,49 @@ export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
   optional?: boolean;
   optionalLabel?: ReactNode;
   tone?: FieldHelpTone;
-  /** When set, Field binds its child to react-hook-form via `useController` and
-   * clones the child with the correct value / onChange / onBlur adapter. */
-  name?: FieldPath<FieldValues>;
   children: ReactNode;
 }
 
 export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
-  props,
-  ref,
-) {
-  if (props.name) {
-    return <ControlledField ref={ref} {...props} name={props.name} />;
-  }
-  return <StructuralField ref={ref} {...props} />;
-});
-
-const StructuralField = forwardRef<HTMLDivElement, FieldProps>(
-  function StructuralField(
-    {
-      className,
-      label,
-      help,
-      description,
-      count,
-      required,
-      optional,
-      optionalLabel,
-      tone,
-      children,
-      name: _name,
-      ...rest
-    },
-    ref,
-  ) {
-    const helpContent = help ?? description;
-    return (
-      <div ref={ref} className={cn("field", className)} {...rest}>
-        {label !== undefined && (
-          <LabelControl
-            required={required}
-            optional={optional}
-            optionalLabel={optionalLabel}
-          >
-            {label}
-          </LabelControl>
-        )}
-        {children}
-        {(helpContent !== undefined || count !== undefined) && (
-          <div className={count !== undefined ? "row-help" : undefined}>
-            {helpContent !== undefined && (
-              <HelpText tone={tone}>{helpContent}</HelpText>
-            )}
-            {count !== undefined && <CountText {...count} />}
-          </div>
-        )}
-      </div>
-    );
+  {
+    className,
+    label,
+    help,
+    description,
+    count,
+    required,
+    optional,
+    optionalLabel,
+    tone,
+    children,
+    ...rest
   },
-);
-
-const ControlledField = forwardRef<
-  HTMLDivElement,
-  FieldProps & { name: FieldPath<FieldValues> }
->(function ControlledField(
-  { name, description, tone, children, ...rest },
   ref,
 ) {
-  const { field, fieldState } = useController({ name });
-  const error = extractErrorMessage(fieldState);
-  const invalid = fieldState.invalid;
-  const child = Children.only(children);
-  const wired = isValidElement(child)
-    ? adaptChild(child as ReactElement, field, invalid)
-    : child;
-  const resolvedTone: FieldHelpTone | undefined = error
-    ? "error"
-    : (tone ?? (description !== undefined ? "default" : undefined));
+  const helpContent = help ?? description;
   return (
-    <StructuralField
-      ref={ref}
-      tone={resolvedTone}
-      help={error ?? rest.help ?? description}
-      {...rest}
-    >
-      {wired}
-    </StructuralField>
+    <div ref={ref} className={cn("field", className)} {...rest}>
+      {label !== undefined && (
+        <LabelControl
+          required={required}
+          optional={optional}
+          optionalLabel={optionalLabel}
+        >
+          {label}
+        </LabelControl>
+      )}
+      {children}
+      {(helpContent !== undefined || count !== undefined) && (
+        <div className={count !== undefined ? "row-help" : undefined}>
+          {helpContent !== undefined && (
+            <HelpText tone={tone}>{helpContent}</HelpText>
+          )}
+          {count !== undefined && <CountText {...count} />}
+        </div>
+      )}
+    </div>
   );
 });
-
-type ControllerField = ReturnType<typeof useController>["field"];
-
-function adaptChild(
-  child: ReactElement,
-  field: ControllerField,
-  invalid: boolean,
-): ReactElement {
-  if (child.type === Checkbox) {
-    return cloneElement(child as ReactElement<Record<string, unknown>>, {
-      checked: Boolean(field.value),
-      onCheckedChange: (next: boolean | "indeterminate") =>
-        field.onChange(next === true),
-      onBlur: field.onBlur,
-      "aria-invalid": invalid || undefined,
-    });
-  }
-  if (child.type === InputNumber) {
-    return cloneElement(child as ReactElement<Record<string, unknown>>, {
-      value: typeof field.value === "number" ? field.value : undefined,
-      onValueChange: (next: number | null) => field.onChange(next),
-      onBlur: field.onBlur,
-      status: invalid ? "error" : undefined,
-    });
-  }
-  return cloneElement(child as ReactElement<Record<string, unknown>>, {
-    value: field.value ?? "",
-    onChange: (event: unknown) => {
-      if (event && typeof event === "object" && "target" in event) {
-        const target = (event as { target: { value: unknown } }).target;
-        field.onChange(target.value);
-      } else {
-        field.onChange(event);
-      }
-    },
-    onBlur: field.onBlur,
-    ref: field.ref,
-    status: invalid ? "error" : undefined,
-    "aria-invalid": invalid || undefined,
-  });
-}
-
-function extractErrorMessage(state: ControllerFieldState): string | undefined {
-  const err = state.error;
-  if (!err) return undefined;
-  if (typeof err.message === "string" && err.message) return err.message;
-  if (err.type) return `Invalid (${err.type})`;
-  return "Invalid value";
-}
 
 // ─── Field.Label ──────────────────────────────────────────────────────
 

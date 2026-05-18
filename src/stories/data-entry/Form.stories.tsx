@@ -3,7 +3,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form } from "../../components/data-entry/Form";
-import { Field } from "../../components/data-entry/Field";
+import { FormField } from "../../components/data-entry/FormField";
 import { Input } from "../../components/data-entry/Input";
 import { InputNumber } from "../../components/data-entry/InputNumber";
 import { Checkbox } from "../../components/data-entry/Checkbox";
@@ -37,23 +37,23 @@ export const Default: Story = {
       onSubmit={(values) => console.log("submit", values)}
       style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
     >
-      <Field name="name" label="氏名" required>
+      <FormField name="name" label="氏名" required>
         <Input placeholder="山田 太郎" />
-      </Field>
-      <Field
+      </FormField>
+      <FormField
         name="email"
         label="メールアドレス"
         required
         description="ログイン ID として使用します"
       >
         <Input type="email" placeholder="taro@example.com" />
-      </Field>
-      <Field name="age" label="年齢" required>
+      </FormField>
+      <FormField name="age" label="年齢" required>
         <InputNumber min={0} max={150} />
-      </Field>
-      <Field name="agree">
+      </FormField>
+      <FormField name="agree">
         <Checkbox>利用規約に同意する</Checkbox>
-      </Field>
+      </FormField>
       <Flex gap="small" justify="end">
         <Button type="submit" variant="primary">
           確認
@@ -92,23 +92,23 @@ export const Validated: Story = {
       onSubmit={(values) => console.log("submit", values)}
       style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
     >
-      <Field name="name" label="氏名" required>
+      <FormField name="name" label="氏名" required>
         <Input placeholder="山田 太郎" />
-      </Field>
-      <Field
+      </FormField>
+      <FormField
         name="email"
         label="メールアドレス"
         required
         description="ログイン ID として使用します"
       >
         <Input type="email" placeholder="taro@example.com" />
-      </Field>
-      <Field name="age" label="年齢" required>
+      </FormField>
+      <FormField name="age" label="年齢" required>
         <InputNumber min={0} max={150} />
-      </Field>
-      <Field name="agree">
+      </FormField>
+      <FormField name="agree">
         <Checkbox>利用規約に同意する</Checkbox>
-      </Field>
+      </FormField>
       <Flex gap="small" justify="end">
         <Button type="submit" variant="primary">
           確認
@@ -126,23 +126,23 @@ export const Disabled: Story = {
       onSubmit={(values) => console.log("submit", values)}
       style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}
     >
-      <Field name="name" label="氏名" required>
+      <FormField name="name" label="氏名" required>
         <Input placeholder="山田 太郎" disabled />
-      </Field>
-      <Field
+      </FormField>
+      <FormField
         name="email"
         label="メールアドレス"
         required
         description="ログイン ID として使用します"
       >
         <Input type="email" placeholder="taro@example.com" disabled />
-      </Field>
-      <Field name="age" label="年齢" required>
+      </FormField>
+      <FormField name="age" label="年齢" required>
         <InputNumber min={0} max={150} disabled />
-      </Field>
-      <Field name="agree">
+      </FormField>
+      <FormField name="agree">
         <Checkbox disabled>利用規約に同意する</Checkbox>
-      </Field>
+      </FormField>
       <Flex gap="small" justify="end">
         <Button type="submit" variant="primary" disabled>
           登録
