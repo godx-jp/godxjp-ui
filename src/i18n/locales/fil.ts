@@ -117,6 +117,7 @@ const fil: ForgeTranslations = {
     firstPage: "Unang pahina",
     previousPage: "Nakaraang pahina",
     nextPage: "Susunod na pahina",
+    lastPage: "Huling pahina",
     loadMore: "Mag-load pa ng {{count}}",
     loadMoreProgress: "{{current}} / {{total}} ang ipinakita",
     jumpToLatest: "<< Pinakabago",

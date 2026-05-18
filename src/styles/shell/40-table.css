@@ -658,6 +658,12 @@
   min-width: 0;
 }
 
+/* Outer wrapper used by Table for cursor + (legacy) embedded
+ * pagination variants. The numbered variant now ships from
+ * `<Pagination variant="embedded">` (see 90-navigation.css), which
+ * brings its own root. The cursor variant still relies on this
+ * wrapper for layout (.spacer between prev / label / input / next).
+ */
 .tbl-pagination {
   display: flex;
   align-items: center;
@@ -670,62 +676,9 @@
   color: var(--muted-foreground);
   flex-wrap: wrap;
 }
-.tbl-pagination .info {
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
 .tbl-pagination .spacer {
   flex: 1;
   min-width: 0;
-}
-.tbl-pagination .ps {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-1);
-  white-space: nowrap;
-}
-.tbl-pagination select {
-  height: 24px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--card);
-  padding: 0 6px;
-  font-size: var(--text-2xs);
-  color: inherit;
-}
-.pgn {
-  display: inline-flex;
-  gap: 2px;
-  align-items: center;
-  flex-shrink: 0;
-}
-.pgn button {
-  width: 24px;
-  height: 24px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--foreground);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: var(--text-2xs);
-  font-variant-numeric: tabular-nums;
-}
-.pgn button:hover {
-  background: var(--accent);
-}
-.pgn button.on {
-  background: var(--card);
-  border-color: var(--border);
-  font-weight: 500;
-  color: var(--primary);
-}
-.pgn button.disabled {
-  color: var(--muted-foreground);
-  cursor: not-allowed;
-}
-.pgn .gap {
-  padding: 0 2px;
-  color: var(--muted-foreground);
 }
 
 .tbl-footer {

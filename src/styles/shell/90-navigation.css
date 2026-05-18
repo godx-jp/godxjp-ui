@@ -191,6 +191,88 @@
   margin-right: var(--spacing-2);
 }
 
+/* Embedded variant — table-footer layout: info + page-size changer +
+ * numeric pager. Used by <Pagination variant="embedded"> inside the
+ * <Table> footer. Mirrors the canonical comp-table.html ⑩ layout.
+ */
+.pagination[data-variant="embedded"] {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  row-gap: var(--spacing-1);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-top: 1px solid var(--border);
+  background: var(--card);
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  flex-wrap: wrap;
+}
+.pagination[data-variant="embedded"] .info {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.pagination[data-variant="embedded"] .spacer {
+  flex: 1;
+  min-width: 0;
+}
+.pagination[data-variant="embedded"] .ps {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  white-space: nowrap;
+}
+.pagination[data-variant="embedded"] select {
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  padding: 0 6px;
+  font-size: var(--text-2xs);
+  color: inherit;
+}
+.pagination[data-variant="embedded"] .pgn {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.pagination[data-variant="embedded"] .pgn button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--foreground);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--text-2xs);
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pagination[data-variant="embedded"] .pgn button svg {
+  width: 14px;
+  height: 14px;
+}
+.pagination[data-variant="embedded"] .pgn button:hover {
+  background: var(--accent);
+}
+.pagination[data-variant="embedded"] .pgn button.on {
+  background: var(--card);
+  border-color: var(--border);
+  font-weight: 500;
+  color: var(--primary);
+}
+.pagination[data-variant="embedded"] .pgn button.disabled,
+.pagination[data-variant="embedded"] .pgn button:disabled {
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+}
+.pagination[data-variant="embedded"] .pgn .gap {
+  padding: 0 2px;
+  color: var(--muted-foreground);
+}
+
 /* Steps wrapping — vertical orientation extends the existing
  * horizontal `.steps-h` atom. */
 .steps-v {
