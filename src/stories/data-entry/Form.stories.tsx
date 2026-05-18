@@ -17,6 +17,20 @@ import { Card } from "../../components/data-display/Card";
 import { Separator } from "../../components/data-display/Separator";
 import { Avatar } from "../../components/data-display/Avatar";
 import { Typography } from "../../components/general/Typography";
+import { AutoComplete } from "../../components/data-entry/AutoComplete";
+import { Cascader } from "../../components/data-entry/Cascader";
+import { CheckboxGroup } from "../../components/data-entry/CheckboxGroup";
+import { ColorPicker } from "../../components/data-entry/ColorPicker";
+import { DateField, TimeField } from "../../components/data-entry/DateTimePicker";
+import { InputPassword } from "../../components/data-entry/InputPassword";
+import { InputSearch } from "../../components/data-entry/InputSearch";
+import { RadioGroup } from "../../components/data-entry/Radio";
+import { Rate } from "../../components/data-entry/Rate";
+import { Slider } from "../../components/data-entry/Slider";
+import { Switch } from "../../components/data-entry/Switch";
+import { Transfer } from "../../components/data-entry/Transfer";
+import { TreeSelect } from "../../components/data-entry/TreeSelect";
+import { CalendarDate, Time } from "@internationalized/date";
 
 // ─── Schemas ─────────────────────────────────────────────────────
 
@@ -945,6 +959,609 @@ export const SkeletonState: Story = {
         <Skeleton className="h-9 w-20 rounded-md" />
         <Skeleton className="h-9 w-20 rounded-md" />
       </Flex>
+    </Card>
+  ),
+};
+
+// ─── EventRegistration — DateField + TimeField + Select + CheckboxGroup ─
+
+const eventSchema = z.object({
+  ticketType: z.string(),
+  dietary: z.array(z.string()).optional(),
+  notes: z.string().max(300).optional(),
+});
+type EventValues = z.infer<typeof eventSchema>;
+
+const TICKET_OPTIONS = [
+  { value: "general", label: "一般 — ¥3,000" },
+  { value: "student", label: "学生 — ¥1,500" },
+  { value: "vip", label: "VIP — ¥10,000" },
+];
+const DIETARY_OPTIONS = [
+  { value: "veg", label: "ベジタリアン" },
+  { value: "halal", label: "ハラール" },
+  { value: "gluten-free", label: "グルテンフリー" },
+  { value: "allergy", label: "食物アレルギー" },
+];
+
+export const EventRegistration: Story = {
+  name: "Event registration · DateField + TimeField + CheckboxGroup",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="イベント参加登録"
+      subtitle="2026 GoDX Forge Conf · Tokyo"
+      style={{ maxWidth: 640 }}
+    >
+      <Form<EventValues>
+        resolver={zodResolver(eventSchema)}
+        defaultValues={{ ticketType: "general", dietary: [], notes: "" }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+          <Field label="参加日" required>
+            <DateField defaultValue={new CalendarDate(2026, 6, 12)} />
+          </Field>
+          <div className="grid grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+            <Field label="開始時刻">
+              <TimeField defaultValue={new Time(10, 0)} />
+            </Field>
+            <Field label="終了時刻">
+              <TimeField defaultValue={new Time(18, 0)} />
+            </Field>
+          </div>
+        </div>
+        <FormField name="ticketType" label="チケット種別" required>
+          <Select options={TICKET_OPTIONS} />
+        </FormField>
+        <FormField name="dietary" label="食事の制限" optional description="該当する項目をすべて選択してください">
+          <CheckboxGroup options={DIETARY_OPTIONS} />
+        </FormField>
+        <FormField name="notes" label="備考" optional>
+          <Textarea rows={3} maxLength={300} placeholder="アクセシビリティ要件・付き添い者など" />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button variant="ghost" type="button">キャンセル</Button>
+          <Button type="submit" variant="primary">参加登録</Button>
+        </Flex>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── ProductReview — Rate + RadioGroup + Textarea + Switch ───────
+
+const reviewSchema = z.object({
+  rating: z.number().min(1, "評価を選択してください"),
+  recommend: z.string(),
+  review: z.string().min(10, "10 文字以上で入力してください"),
+  publicReview: z.boolean(),
+});
+type ReviewValues = z.infer<typeof reviewSchema>;
+
+const RECOMMEND_OPTIONS = [
+  { value: "definitely", label: "強くおすすめする" },
+  { value: "maybe", label: "条件付きでおすすめする" },
+  { value: "no", label: "おすすめしない" },
+];
+
+export const ProductReview: Story = {
+  name: "Product review · Rate + RadioGroup + Switch",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="レビューを投稿"
+      subtitle="購入された商品の感想を教えてください。"
+      style={{ maxWidth: 560 }}
+    >
+      <Form<ReviewValues>
+        resolver={zodResolver(reviewSchema)}
+        defaultValues={{ rating: 4, recommend: "definitely", review: "", publicReview: true }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <FormField name="rating" label="総合評価" required>
+          <Rate count={5} />
+        </FormField>
+        <FormField name="recommend" label="他の人に勧めますか?" required>
+          <RadioGroup options={RECOMMEND_OPTIONS} />
+        </FormField>
+        <FormField name="review" label="レビュー本文" required description="10 文字以上で具体的に">
+          <Textarea rows={4} maxLength={500} placeholder="使い心地・気に入った点・改善してほしい点など" />
+        </FormField>
+        <FormField name="publicReview" label="公開設定">
+          <Switch />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button variant="ghost" type="button">下書き保存</Button>
+          <Button type="submit" variant="primary">レビューを投稿</Button>
+        </Flex>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── PricingPlan — Slider + InputNumber + Switch ─────────────────
+
+const pricingSchema = z.object({
+  monthlyPrice: z.number().min(0).max(50000),
+  maxUsers: z.number().min(1).max(1000),
+  autoRenew: z.boolean(),
+  billingNotice: z.boolean(),
+  trialEnabled: z.boolean(),
+});
+type PricingValues = z.infer<typeof pricingSchema>;
+
+export const PricingPlan: Story = {
+  name: "Pricing plan · Slider + Switch toggles",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="プラン設定"
+      subtitle="チーム規模と機能に合わせて調整できます。"
+      style={{ maxWidth: 640 }}
+    >
+      <Form<PricingValues>
+        resolver={zodResolver(pricingSchema)}
+        defaultValues={{
+          monthlyPrice: 12000,
+          maxUsers: 25,
+          autoRenew: true,
+          billingNotice: true,
+          trialEnabled: false,
+        }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <FormField name="monthlyPrice" label="月額料金 (円)" description="0〜50,000 円の範囲で設定できます">
+          <Slider min={0} max={50000} step={500} />
+        </FormField>
+        <FormField name="maxUsers" label="最大ユーザー数">
+          <InputNumber min={1} max={1000} step={5} />
+        </FormField>
+
+        <Separator />
+        <Typography.Title size={5}>支払い設定</Typography.Title>
+        <FormField name="autoRenew" label="自動更新">
+          <Switch />
+        </FormField>
+        <FormField name="billingNotice" label="支払い通知" description="課金 3 日前にメール通知します">
+          <Switch />
+        </FormField>
+        <FormField name="trialEnabled" label="無料トライアル" description="初月を無料に設定します">
+          <Switch />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button variant="ghost" type="button">キャンセル</Button>
+          <Button type="submit" variant="primary">プランを保存</Button>
+        </Flex>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── ThemeBranding — ColorPicker + Select ────────────────────────
+
+const brandingSchema = z.object({
+  primaryColor: z.string(),
+  accentColor: z.string(),
+  fontFamily: z.string(),
+  darkModeDefault: z.boolean(),
+});
+type BrandingValues = z.infer<typeof brandingSchema>;
+
+const FONT_OPTIONS = [
+  { value: "inter", label: "Inter (sans-serif)" },
+  { value: "ibm-plex", label: "IBM Plex Sans" },
+  { value: "noto-sans-jp", label: "Noto Sans JP" },
+  { value: "geist", label: "Geist" },
+];
+
+export const ThemeBranding: Story = {
+  name: "Theme branding · ColorPicker + Switch",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="ブランドカスタマイズ"
+      subtitle="ワークスペース全体のテーマを設定します。"
+      style={{ maxWidth: 560 }}
+    >
+      <Form<BrandingValues>
+        resolver={zodResolver(brandingSchema)}
+        defaultValues={{
+          primaryColor: "#3b82f6",
+          accentColor: "#10b981",
+          fontFamily: "inter",
+          darkModeDefault: false,
+        }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+          <FormField name="primaryColor" label="プライマリカラー" description="ボタン・リンクに使用">
+            <ColorPicker />
+          </FormField>
+          <FormField name="accentColor" label="アクセントカラー" description="ハイライト・タグに使用">
+            <ColorPicker />
+          </FormField>
+        </div>
+        <FormField name="fontFamily" label="フォント">
+          <Select options={FONT_OPTIONS} />
+        </FormField>
+        <FormField name="darkModeDefault" label="ダークモードをデフォルト">
+          <Switch />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button variant="ghost" type="button">既定値に戻す</Button>
+          <Button type="submit" variant="primary">テーマを適用</Button>
+        </Flex>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── TeamInvite — RadioGroup + CheckboxGroup ─────────────────────
+
+const inviteSchema = z.object({
+  email: z.string().email(),
+  role: z.string(),
+  permissions: z.array(z.string()),
+  message: z.string().optional(),
+});
+type InviteValues = z.infer<typeof inviteSchema>;
+
+const ROLE_OPTIONS = [
+  { value: "owner", label: "Owner — 全権限" },
+  { value: "admin", label: "Admin — メンバー管理 + 設定変更" },
+  { value: "member", label: "Member — プロジェクト編集" },
+  { value: "guest", label: "Guest — 閲覧のみ" },
+];
+
+const PERMISSION_OPTIONS = [
+  { value: "billing", label: "請求情報の閲覧" },
+  { value: "analytics", label: "アナリティクスへのアクセス" },
+  { value: "export", label: "データのエクスポート" },
+  { value: "delete", label: "プロジェクトの削除" },
+];
+
+export const TeamInvite: Story = {
+  name: "Team invite · RadioGroup + CheckboxGroup",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="メンバーを招待"
+      subtitle="Acme Forge ワークスペースに新しいメンバーを追加します。"
+      style={{ maxWidth: 560 }}
+    >
+      <Form<InviteValues>
+        resolver={zodResolver(inviteSchema)}
+        defaultValues={{
+          email: "",
+          role: "member",
+          permissions: ["analytics"],
+          message: "",
+        }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <FormField name="email" label="招待先メールアドレス" required>
+          <Input type="email" placeholder="hanako@example.com" />
+        </FormField>
+        <FormField name="role" label="役割" required>
+          <RadioGroup options={ROLE_OPTIONS} orientation="vertical" />
+        </FormField>
+        <FormField name="permissions" label="追加権限" description="役割に加えて個別に許可する操作">
+          <CheckboxGroup options={PERMISSION_OPTIONS} />
+        </FormField>
+        <FormField name="message" label="招待メッセージ" optional>
+          <Textarea rows={3} placeholder="任意のメッセージ (例: チームへようこそ!)" />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button variant="ghost" type="button">キャンセル</Button>
+          <Button type="submit" variant="primary">招待を送信</Button>
+        </Flex>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── CategoryCascader — nested category picker ───────────────────
+
+const CATEGORY_TREE = [
+  {
+    value: "electronics",
+    label: "電子機器",
+    children: [
+      {
+        value: "phones",
+        label: "スマートフォン",
+        children: [
+          { value: "iphone", label: "iPhone" },
+          { value: "android", label: "Android" },
+        ],
+      },
+      {
+        value: "laptops",
+        label: "ノート PC",
+        children: [
+          { value: "macbook", label: "MacBook" },
+          { value: "thinkpad", label: "ThinkPad" },
+        ],
+      },
+    ],
+  },
+  {
+    value: "apparel",
+    label: "ファッション",
+    children: [
+      {
+        value: "mens",
+        label: "メンズ",
+        children: [
+          { value: "shirts", label: "シャツ" },
+          { value: "shoes", label: "靴" },
+        ],
+      },
+    ],
+  },
+];
+
+const cascaderSchema = z.object({
+  category: z.array(z.string()).min(1, "カテゴリを選択してください"),
+  sku: z.string().min(1),
+});
+type CascaderValues = z.infer<typeof cascaderSchema>;
+
+export const CategoryCascader: Story = {
+  name: "Category cascader · nested picker",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="商品カテゴリ"
+      subtitle="3 階層から商品の所属カテゴリを選択します。"
+      style={{ maxWidth: 520 }}
+    >
+      <Form<CascaderValues>
+        resolver={zodResolver(cascaderSchema)}
+        defaultValues={{ category: ["electronics", "phones", "iphone"], sku: "" }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <FormField name="category" label="カテゴリ" required>
+          <Cascader options={CATEGORY_TREE} placeholder="カテゴリを選択..." />
+        </FormField>
+        <FormField name="sku" label="SKU" required>
+          <Input placeholder="例: IPH15-256-BLK" />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button variant="ghost" type="button">キャンセル</Button>
+          <Button type="submit" variant="primary">商品を登録</Button>
+        </Flex>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── PermissionsTree — TreeSelect for nested resources ───────────
+
+const RESOURCE_TREE = [
+  {
+    value: "workspace",
+    label: "ワークスペース",
+    children: [
+      {
+        value: "projects",
+        label: "プロジェクト",
+        children: [
+          { value: "projects.read", label: "閲覧" },
+          { value: "projects.write", label: "編集" },
+          { value: "projects.delete", label: "削除" },
+        ],
+      },
+      {
+        value: "members",
+        label: "メンバー",
+        children: [
+          { value: "members.read", label: "閲覧" },
+          { value: "members.invite", label: "招待" },
+          { value: "members.remove", label: "削除" },
+        ],
+      },
+    ],
+  },
+  {
+    value: "billing",
+    label: "課金",
+    children: [
+      { value: "billing.read", label: "閲覧" },
+      { value: "billing.write", label: "編集" },
+    ],
+  },
+];
+
+const permSchema = z.object({
+  resources: z.array(z.string()).min(1, "1 つ以上の権限を選択してください"),
+});
+type PermValues = z.infer<typeof permSchema>;
+
+export const PermissionsTree: Story = {
+  name: "Permissions tree · TreeSelect",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="API キーの権限"
+      subtitle="このキーがアクセスできるリソースを選択します。"
+      style={{ maxWidth: 560 }}
+    >
+      <Form<PermValues>
+        resolver={zodResolver(permSchema)}
+        defaultValues={{ resources: ["projects.read", "members.read"] }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <FormField name="resources" label="許可するリソース" required>
+          <TreeSelect options={RESOURCE_TREE} multiple placeholder="リソースを選択..." />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button variant="ghost" type="button">キャンセル</Button>
+          <Button type="submit" variant="primary">API キーを作成</Button>
+        </Flex>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── MemberTransfer — Transfer for moving members between groups ─
+
+const ALL_MEMBERS = [
+  { key: "u1", label: "山田 太郎" },
+  { key: "u2", label: "佐藤 花子" },
+  { key: "u3", label: "Nguyễn Văn A" },
+  { key: "u4", label: "Maria Cruz" },
+  { key: "u5", label: "鈴木 一郎" },
+  { key: "u6", label: "高橋 美咲" },
+];
+
+const transferSchema = z.object({
+  selectedMembers: z.array(z.string()),
+});
+type TransferValues = z.infer<typeof transferSchema>;
+
+export const MemberTransfer: Story = {
+  name: "Member transfer · move between groups",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="チームメンバー設定"
+      subtitle="左の一覧から、このチームに含めるメンバーを右に移動してください。"
+      style={{ maxWidth: 720 }}
+    >
+      <Form<TransferValues>
+        resolver={zodResolver(transferSchema)}
+        defaultValues={{ selectedMembers: ["u1", "u3"] }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <FormField name="selectedMembers" label="メンバー">
+          <Transfer dataSource={ALL_MEMBERS} titles={["未参加", "参加中"]} />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button variant="ghost" type="button">キャンセル</Button>
+          <Button type="submit" variant="primary">メンバーを更新</Button>
+        </Flex>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── AutocompleteSearch — AutoComplete with suggestions ──────────
+
+const COMPANY_SUGGESTIONS = [
+  { value: "acme", label: "Acme Forge Inc." },
+  { value: "wayne", label: "Wayne Enterprises" },
+  { value: "stark", label: "Stark Industries" },
+  { value: "umbrella", label: "Umbrella Corp." },
+  { value: "initech", label: "Initech" },
+];
+
+const acSchema = z.object({
+  company: z.string().min(1),
+  query: z.string().optional(),
+});
+type AcValues = z.infer<typeof acSchema>;
+
+export const AutocompleteSearch: Story = {
+  name: "Autocomplete + search · global picker",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="顧客検索"
+      subtitle="社名で検索 — 入力中に候補が表示されます。"
+      style={{ maxWidth: 480 }}
+    >
+      <Form<AcValues>
+        resolver={zodResolver(acSchema)}
+        defaultValues={{ company: "", query: "" }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <FormField name="company" label="社名" required description="既存の顧客から候補が出ます">
+          <AutoComplete options={COMPANY_SUGGESTIONS} placeholder="例: Acme..." />
+        </FormField>
+        <FormField name="query" label="フリーワード">
+          <InputSearch placeholder="案件名・担当者名・タグなど" />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button type="submit" variant="primary">検索</Button>
+        </Flex>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── PasswordReset — InputPassword + strength hint ───────────────
+
+const pwSchema = z
+  .object({
+    current: z.string().min(1, "現在のパスワードを入力してください"),
+    next: z
+      .string()
+      .min(8, "8 文字以上で入力してください")
+      .regex(/[A-Z]/, "大文字を 1 つ以上含めてください")
+      .regex(/\d/, "数字を 1 つ以上含めてください"),
+    confirm: z.string().min(1),
+  })
+  .refine((data) => data.next === data.confirm, {
+    message: "新しいパスワードと一致しません",
+    path: ["confirm"],
+  });
+type PwValues = z.infer<typeof pwSchema>;
+
+export const PasswordReset: Story = {
+  name: "Password reset · InputPassword",
+  parameters: { layout: "padded" },
+  render: () => (
+    <Card
+      title="パスワード変更"
+      subtitle="現在のパスワードを確認した上で、新しいパスワードを設定します。"
+      style={{ maxWidth: 480 }}
+    >
+      <Form<PwValues>
+        resolver={zodResolver(pwSchema)}
+        defaultValues={{ current: "", next: "", confirm: "" }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <FormField name="current" label="現在のパスワード" required>
+          <InputPassword placeholder="••••••••" />
+        </FormField>
+        <FormField
+          name="next"
+          label="新しいパスワード"
+          required
+          description="8 文字以上 / 大文字 1 文字以上 / 数字 1 文字以上"
+        >
+          <InputPassword placeholder="••••••••" />
+        </FormField>
+        <FormField name="confirm" label="新しいパスワード (確認)" required>
+          <InputPassword placeholder="••••••••" />
+        </FormField>
+
+        <Separator />
+        <Flex gap="small" justify="end">
+          <Button variant="ghost" type="button">キャンセル</Button>
+          <Button type="submit" variant="primary">パスワードを変更</Button>
+        </Flex>
+      </Form>
     </Card>
   ),
 };
