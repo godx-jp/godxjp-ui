@@ -1,6 +1,7 @@
 import { forwardRef, type ComponentProps, type ReactNode } from "react";
 import { Info, CheckCircle2, AlertTriangle, AlertOctagon } from "lucide-react";
 import { cn } from "../cn";
+import type { FeedbackColorProp } from "../../props";
 
 /**
  * Alert — Ant-Design banner-style notice.
@@ -28,12 +29,9 @@ import { cn } from "../cn";
  *   - Ant `onClose`     → onClose callback
  */
 
-export type AlertColor =
-  | "default"
-  | "info"
-  | "success"
-  | "warning"
-  | "destructive";
+/** Alias of the shared `FeedbackColorProp` — same shape as
+ *  ResultColor / ProgressColor; kept as a named export for back-compat. */
+export type AlertColor = FeedbackColorProp;
 
 export type AlertVariant = "outlined" | "banner";
 
