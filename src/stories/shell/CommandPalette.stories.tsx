@@ -75,6 +75,71 @@ const COMMANDS: CommandItem[] = [
 ];
 
 export const Default: Story = {
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { useState } from "react";
+import { Button, CommandPalette, type CommandItem } from "@godxjp/ui";
+
+export default function Example() {
+  const [open, setOpen] = useState(true);
+  const commands: CommandItem[] = [
+    {
+      id: "go-dashboard",
+      label: "Go to dashboard",
+      group: "Navigate",
+      hint: "G D",
+      onSelect: () => console.log("go-dashboard"),
+    },
+    {
+      id: "go-projects",
+      label: "Go to projects",
+      group: "Navigate",
+      hint: "G P",
+      onSelect: () => console.log("go-projects"),
+    },
+    {
+      id: "go-issues",
+      label: "Go to issues",
+      group: "Navigate",
+      hint: "G I",
+      onSelect: () => console.log("go-issues"),
+    },
+    {
+      id: "new-issue",
+      label: "New issue",
+      group: "Create",
+      hint: "C I",
+      onSelect: () => console.log("new-issue"),
+    },
+    {
+      id: "new-plan",
+      label: "New plan",
+      group: "Create",
+      hint: "C P",
+      onSelect: () => console.log("new-plan"),
+    },
+    {
+      id: "toggle-theme",
+      label: "Toggle theme",
+      group: "Tweaks",
+      onSelect: () => console.log("toggle-theme"),
+    },
+  ];
+
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Open command palette
+      </Button>
+      <CommandPalette open={open} onOpenChange={setOpen} commands={commands} />
+    </>
+  );
+}`,
+      },
+    },
+  },
   render: () => {
     const [open, setOpen] = useState(true);
     return (
@@ -98,6 +163,28 @@ export const Default: Story = {
 
 export const Empty: Story = {
   name: "Empty (commands=[])",
+  parameters: {
+    docs: {
+      source: {
+        language: "tsx",
+        code: `import { useState } from "react";
+import { Button, CommandPalette } from "@godxjp/ui";
+
+export default function Example() {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Open command palette
+      </Button>
+      <CommandPalette open={open} onOpenChange={setOpen} commands={[]} />
+    </>
+  );
+}`,
+      },
+    },
+  },
   render: () => {
     const [open, setOpen] = useState(true);
     return (
