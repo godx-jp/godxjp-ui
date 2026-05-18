@@ -1,5 +1,6 @@
 import type { ComponentProps, CSSProperties, MouseEvent, ReactNode } from "react";
 import { cn } from "../cn";
+import type { ColorProp } from "../../props";
 
 /**
  * Tag — Ant-Design label chip.
@@ -15,14 +16,13 @@ import { cn } from "../cn";
  * potentially closable).
  */
 
-export type TagPresetColor =
-  | "default"
-  | "success"
-  | "warning"
-  | "error"
-  | "info"
-  | "attention"
-  | "primary";
+/**
+ * Tag accepts the framework's full semantic palette except `"secondary"`
+ * (that one is reserved for Typography text-dimming). Aliased from the
+ * shared `ColorProp` so the vocabulary stays in lockstep with Alert,
+ * Result, Timeline, etc.
+ */
+export type TagPresetColor = Exclude<ColorProp, "secondary">;
 
 export interface TagProps extends Omit<ComponentProps<"span">, "color"> {
   /** Preset hue or a custom CSS color. */
@@ -40,7 +40,7 @@ const PRESET_VAR: Record<TagPresetColor, string> = {
   default: "var(--muted-foreground)",
   success: "var(--success)",
   warning: "var(--warning)",
-  error: "var(--destructive)",
+  destructive: "var(--destructive)",
   info: "var(--info)",
   attention: "var(--attention)",
   primary: "var(--primary)",

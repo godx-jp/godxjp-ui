@@ -51,7 +51,7 @@ const PRESETS = [
   "primary",
   "success",
   "warning",
-  "error",
+  "destructive",
   "info",
   "attention",
 ] as const;
