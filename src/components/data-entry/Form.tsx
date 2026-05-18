@@ -10,7 +10,7 @@ import {
   type UseFormReturn,
 } from "react-hook-form";
 import { cn } from "../cn";
-import type { LoadingProp } from "./loading";
+import type { LoadingProp } from "../../props";
 
 export type FormLayout = "vertical" | "horizontal" | "inline";
 
