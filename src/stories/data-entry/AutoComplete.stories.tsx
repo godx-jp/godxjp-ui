@@ -136,3 +136,101 @@ export const Disabled: Story = {
     </div>
   ),
 };
+
+// ─── EmailDomain · autocomplete email suffix ────────────────────
+
+const emailDomains: AutoCompleteOption[] = [
+  { value: "gmail.com", label: "@gmail.com" },
+  { value: "outlook.com", label: "@outlook.com" },
+  { value: "yahoo.co.jp", label: "@yahoo.co.jp" },
+  { value: "icloud.com", label: "@icloud.com" },
+  { value: "famgia.com", label: "@famgia.com (社内)" },
+];
+
+export const EmailDomain: Story = {
+  name: "Email domain · autocomplete suffix",
+  render: function EmailDomain() {
+    const [value, setValue] = useState("");
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 320 }}>
+        <AutoComplete
+          options={emailDomains}
+          value={value}
+          onValueChange={setValue}
+          allowCustomValue
+          placeholder="example@gmail.com"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          ドメイン候補が表示されます
+        </span>
+      </Flex>
+    );
+  },
+};
+
+// ─── Tags · suggest existing tags ───────────────────────────────
+
+const tagSuggestions: AutoCompleteOption[] = [
+  { value: "frontend", label: "frontend" },
+  { value: "react", label: "react" },
+  { value: "typescript", label: "typescript" },
+  { value: "tailwind", label: "tailwind" },
+  { value: "backend", label: "backend" },
+  { value: "node", label: "node" },
+  { value: "postgres", label: "postgres" },
+  { value: "design-system", label: "design-system" },
+  { value: "a11y", label: "a11y" },
+  { value: "performance", label: "performance" },
+];
+
+export const TagSuggest: Story = {
+  name: "Tag suggest · existing tags + new",
+  render: function TagSuggest() {
+    const [value, setValue] = useState("");
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 320 }}>
+        <AutoComplete
+          options={tagSuggestions}
+          value={value}
+          onValueChange={setValue}
+          allowCustomValue
+          placeholder="タグを入力 (例: react)"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          既存タグから補完。新規タグも作成できます。
+        </span>
+      </Flex>
+    );
+  },
+};
+
+// ─── LocationSearch · cities ────────────────────────────────────
+
+const cities: AutoCompleteOption[] = [
+  { value: "tokyo", label: "東京 — JP" },
+  { value: "osaka", label: "大阪 — JP" },
+  { value: "kyoto", label: "京都 — JP" },
+  { value: "hokkaido", label: "札幌 — JP" },
+  { value: "fukuoka", label: "福岡 — JP" },
+  { value: "hanoi", label: "Hà Nội — VN" },
+  { value: "hcm", label: "TP Hồ Chí Minh — VN" },
+  { value: "manila", label: "Manila — PH" },
+  { value: "cebu", label: "Cebu — PH" },
+];
+
+export const LocationSearch: Story = {
+  name: "Location search · global cities",
+  render: function LocationSearch() {
+    const [value, setValue] = useState("");
+    return (
+      <div style={{ maxWidth: 320 }}>
+        <AutoComplete
+          options={cities}
+          value={value}
+          onValueChange={setValue}
+          placeholder="都市を検索"
+        />
+      </div>
+    );
+  },
+};

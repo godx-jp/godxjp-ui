@@ -91,3 +91,81 @@ export const Sizes: Story = {
 export const Disabled: Story = {
   render: () => <ColorPicker defaultValue="#64748b" disabled />,
 };
+
+// ─── ThemePalette · 4 brand colors side by side ─────────────────
+
+export const ThemePalette: Story = {
+  name: "Theme palette · primary + accent + success + danger",
+  render: () => (
+    <Flex gap="middle" align="center">
+      <Flex vertical gap="small" align="center">
+        <ColorPicker defaultValue="#3b82f6" presets={BRAND_PRESETS} />
+        <span style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>
+          Primary
+        </span>
+      </Flex>
+      <Flex vertical gap="small" align="center">
+        <ColorPicker defaultValue="#10b981" presets={BRAND_PRESETS} />
+        <span style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>
+          Accent
+        </span>
+      </Flex>
+      <Flex vertical gap="small" align="center">
+        <ColorPicker defaultValue="#22c55e" presets={BRAND_PRESETS} />
+        <span style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>
+          Success
+        </span>
+      </Flex>
+      <Flex vertical gap="small" align="center">
+        <ColorPicker defaultValue="#ef4444" presets={BRAND_PRESETS} />
+        <span style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>
+          Danger
+        </span>
+      </Flex>
+    </Flex>
+  ),
+};
+
+// ─── ChartSeries · assign color per data series ─────────────────
+
+const CHART_PRESETS = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ec4899",
+  "#8b5cf6",
+  "#06b6d4",
+];
+
+export const ChartSeries: Story = {
+  name: "Chart series · color per dataset",
+  render: () => (
+    <Flex vertical gap="small" style={{ maxWidth: 280 }}>
+      {[
+        ["売上 (¥)", "#3b82f6"],
+        ["利益率 (%)", "#10b981"],
+        ["返品数", "#f59e0b"],
+        ["新規顧客", "#ec4899"],
+      ].map(([label, color]) => (
+        <Flex key={label as string} align="center" justify="space-between">
+          <span style={{ fontSize: "var(--text-sm)" }}>{label}</span>
+          <ColorPicker defaultValue={color as string} presets={CHART_PRESETS} size="small" />
+        </Flex>
+      ))}
+    </Flex>
+  ),
+};
+
+// ─── WithAlpha · RGBA picker ────────────────────────────────────
+
+export const WithAlpha: Story = {
+  name: "With alpha · RGBA picker",
+  render: () => (
+    <Flex vertical gap="small" align="start">
+      <ColorPicker defaultValue="#3b82f680" showAlpha />
+      <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+        透明度スライダーが追加されます
+      </span>
+    </Flex>
+  ),
+};
