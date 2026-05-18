@@ -58,6 +58,16 @@ const filterSchema = z.object({
 });
 type FilterValues = z.infer<typeof filterSchema>;
 
+const settingsSchema = z.object({
+  workspaceName: z.string().min(1),
+  visibility: z.string(),
+  defaultLocale: z.string(),
+  notifyOnComment: z.boolean(),
+  notifyOnMention: z.boolean(),
+  digestFrequency: z.string(),
+});
+type SettingsValues = z.infer<typeof settingsSchema>;
+
 // ─── Option lists ────────────────────────────────────────────────
 
 const PREFECTURE_OPTIONS = [
@@ -87,6 +97,25 @@ const SHOP_OPTIONS = [
   { value: "ikebukuro", label: "池袋店" },
 ];
 
+const VISIBILITY_OPTIONS = [
+  { value: "private", label: "プライベート" },
+  { value: "internal", label: "社内公開" },
+  { value: "public", label: "公開" },
+];
+
+const LOCALE_OPTIONS = [
+  { value: "ja", label: "日本語" },
+  { value: "en-US", label: "English (US)" },
+  { value: "vi", label: "Tiếng Việt" },
+  { value: "fil", label: "Filipino" },
+];
+
+const DIGEST_OPTIONS = [
+  { value: "off", label: "なし" },
+  { value: "daily", label: "毎日" },
+  { value: "weekly", label: "週次" },
+];
+
 const meta: Meta<typeof Form<RegistrationValues>> = {
   title: "Data Entry/Form",
   component: Form,
@@ -95,9 +124,10 @@ const meta: Meta<typeof Form<RegistrationValues>> = {
 export default meta;
 type Story = StoryObj<typeof Form<RegistrationValues>>;
 
-// ─── Default · 4-field registration ──────────────────────────────
+// ─── Registration · vertical ─────────────────────────────────────
 
-export const Default: Story = {
+export const RegistrationVertical: Story = {
+  name: "Registration · vertical",
   render: () => (
     <Form<RegistrationValues>
       resolver={zodResolver(registrationSchema)}
@@ -123,9 +153,7 @@ export const Default: Story = {
         <Checkbox>利用規約に同意する</Checkbox>
       </FormField>
       <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary">
-          確認
-        </Button>
+        <Button type="submit" variant="primary">確認</Button>
       </Flex>
     </Form>
   ),
@@ -140,19 +168,51 @@ export const Default: Story = {
   },
 };
 
-// ─── Validated · invalid defaults, errors visible ────────────────
+// ─── Registration · horizontal ───────────────────────────────────
 
-export const Validated: Story = {
+export const RegistrationHorizontal: Story = {
+  name: "Registration · horizontal",
+  render: () => (
+    <Form<RegistrationValues>
+      layout="horizontal"
+      resolver={zodResolver(registrationSchema)}
+      defaultValues={{ name: "", email: "", age: 18, agree: true }}
+      onSubmit={(values) => console.log("submit", values)}
+      style={{ maxWidth: 640 }}
+    >
+      <FormField name="name" label="氏名" required>
+        <Input placeholder="山田 太郎" />
+      </FormField>
+      <FormField
+        name="email"
+        label="メールアドレス"
+        required
+        description="ログイン ID として使用します"
+      >
+        <Input type="email" placeholder="taro@example.com" />
+      </FormField>
+      <FormField name="age" label="年齢" required>
+        <InputNumber min={0} max={150} />
+      </FormField>
+      <FormField name="agree">
+        <Checkbox>利用規約に同意する</Checkbox>
+      </FormField>
+      <Flex gap="small" justify="end">
+        <Button type="submit" variant="primary">確認</Button>
+      </Flex>
+    </Form>
+  ),
+};
+
+// ─── Validated · vertical (errors visible) ───────────────────────
+
+export const ValidatedVertical: Story = {
+  name: "Validated · vertical",
   render: () => (
     <Form<RegistrationValues>
       resolver={zodResolver(registrationSchema)}
       defaultValues={
-        {
-          name: "",
-          email: "not-an-email",
-          age: 12,
-          agree: false,
-        } as unknown as RegistrationValues
+        { name: "", email: "not-an-email", age: 12, agree: false } as unknown as RegistrationValues
       }
       mode="onChange"
       onSubmit={(v) => console.log(v)}
@@ -176,67 +236,24 @@ export const Validated: Story = {
         <Checkbox>利用規約に同意する</Checkbox>
       </FormField>
       <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary">
-          確認
-        </Button>
+        <Button type="submit" variant="primary">確認</Button>
       </Flex>
     </Form>
   ),
 };
 
-// ─── Disabled · whole form locked ────────────────────────────────
+// ─── Validated · horizontal ──────────────────────────────────────
 
-export const Disabled: Story = {
-  render: () => (
-    <Form<RegistrationValues>
-      resolver={zodResolver(registrationSchema)}
-      defaultValues={{ name: "", email: "", age: 18, agree: true }}
-      onSubmit={(v) => console.log(v)}
-      style={{ maxWidth: 360 }}
-    >
-      <FormField name="name" label="氏名" required>
-        <Input placeholder="山田 太郎" disabled />
-      </FormField>
-      <FormField
-        name="email"
-        label="メールアドレス"
-        required
-        description="ログイン ID として使用します"
-      >
-        <Input type="email" placeholder="taro@example.com" disabled />
-      </FormField>
-      <FormField name="age" label="年齢" required>
-        <InputNumber min={0} max={150} disabled />
-      </FormField>
-      <FormField name="agree">
-        <Checkbox disabled>利用規約に同意する</Checkbox>
-      </FormField>
-      <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary" disabled>
-          登録
-        </Button>
-      </Flex>
-    </Form>
-  ),
-};
-
-// ─── Horizontal · label-left from md ─────────────────────────────
-
-export const Horizontal: Story = {
-  name: "Horizontal · label-left from md",
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Mobile-first: stays vertical on xs/sm, label moves to the left at md (≥768px). Use `layout=\"horizontal\"`.",
-      },
-    },
-  },
+export const ValidatedHorizontal: Story = {
+  name: "Validated · horizontal",
   render: () => (
     <Form<RegistrationValues>
       layout="horizontal"
       resolver={zodResolver(registrationSchema)}
-      defaultValues={{ name: "", email: "", age: 18, agree: true }}
+      defaultValues={
+        { name: "", email: "not-an-email", age: 12, agree: false } as unknown as RegistrationValues
+      }
+      mode="onChange"
       onSubmit={(v) => console.log(v)}
       style={{ maxWidth: 640 }}
     >
@@ -258,77 +275,85 @@ export const Horizontal: Story = {
         <Checkbox>利用規約に同意する</Checkbox>
       </FormField>
       <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary">
-          確認
-        </Button>
+        <Button type="submit" variant="primary">確認</Button>
       </Flex>
     </Form>
   ),
 };
 
-// ─── Inline · single-row search/filter (mobile stacks) ───────────
+// ─── Disabled · vertical ─────────────────────────────────────────
 
-export const Inline: Story = {
-  name: "Inline · single-row filter",
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Mobile-first: stacks on xs, collapses to one row at sm (≥640px). Common for table filters and search bars.",
-      },
-    },
-  },
+export const DisabledVertical: Story = {
+  name: "Disabled · vertical",
   render: () => (
-    <Form<FilterValues>
-      layout="inline"
-      defaultValues={{ query: "", status: "active", shop: "shibuya" }}
+    <Form<RegistrationValues>
+      resolver={zodResolver(registrationSchema)}
+      defaultValues={{ name: "佐藤 花子", email: "hanako@example.com", age: 32, agree: true }}
       onSubmit={(v) => console.log(v)}
+      style={{ maxWidth: 360 }}
     >
-      <FormField name="query" label="キーワード">
-        <Input placeholder="名前 / メール / 電話番号" />
+      <FormField name="name" label="氏名" required>
+        <Input placeholder="山田 太郎" disabled />
       </FormField>
-      <FormField name="status" label="ステータス">
-        <Select options={STATUS_OPTIONS} />
+      <FormField name="email" label="メールアドレス" required description="ログイン ID として使用します">
+        <Input type="email" placeholder="taro@example.com" disabled />
       </FormField>
-      <FormField name="shop" label="店舗">
-        <Select options={SHOP_OPTIONS} />
+      <FormField name="age" label="年齢" required>
+        <InputNumber min={0} max={150} disabled />
       </FormField>
-      <Button type="submit" variant="primary">
-        検索
-      </Button>
+      <FormField name="agree">
+        <Checkbox disabled>利用規約に同意する</Checkbox>
+      </FormField>
+      <Flex gap="small" justify="end">
+        <Button type="submit" variant="primary" disabled>登録</Button>
+      </Flex>
     </Form>
   ),
 };
 
-// ─── TwoColumns · 姓 + 名 ────────────────────────────────────────
+// ─── Disabled · horizontal ───────────────────────────────────────
 
-export const TwoColumns: Story = {
-  name: "Two columns · 姓 + 名",
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Mobile-first 2-column grid: 1 column on xs, 2 columns at sm (≥640px). Common for name pairs.",
-      },
-    },
-  },
+export const DisabledHorizontal: Story = {
+  name: "Disabled · horizontal",
+  render: () => (
+    <Form<RegistrationValues>
+      layout="horizontal"
+      resolver={zodResolver(registrationSchema)}
+      defaultValues={{ name: "佐藤 花子", email: "hanako@example.com", age: 32, agree: true }}
+      onSubmit={(v) => console.log(v)}
+      style={{ maxWidth: 640 }}
+    >
+      <FormField name="name" label="氏名" required>
+        <Input placeholder="山田 太郎" disabled />
+      </FormField>
+      <FormField name="email" label="メールアドレス" required description="ログイン ID として使用します">
+        <Input type="email" placeholder="taro@example.com" disabled />
+      </FormField>
+      <FormField name="age" label="年齢" required>
+        <InputNumber min={0} max={150} disabled />
+      </FormField>
+      <FormField name="agree">
+        <Checkbox disabled>利用規約に同意する</Checkbox>
+      </FormField>
+      <Flex gap="small" justify="end">
+        <Button type="submit" variant="primary" disabled>登録</Button>
+      </Flex>
+    </Form>
+  ),
+};
+
+// ─── TwoColumns · vertical (mobile-first 1→2 col grid) ──────────
+
+export const TwoColumnsVertical: Story = {
+  name: "Two columns · vertical",
   render: () => (
     <Form<ProfileValues>
       resolver={zodResolver(profileSchema)}
-      defaultValues={{
-        lastName: "",
-        firstName: "",
-        lastNameKana: "",
-        firstNameKana: "",
-        email: "",
-      }}
+      defaultValues={{ lastName: "", firstName: "", lastNameKana: "", firstNameKana: "", email: "" }}
       onSubmit={(v) => console.log(v)}
       style={{ maxWidth: 480 }}
     >
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2"
-        style={{ gap: "var(--spacing-3)" }}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
         <FormField name="lastName" label="姓" required>
           <Input placeholder="山田" />
         </FormField>
@@ -346,46 +371,61 @@ export const TwoColumns: Story = {
         <Input type="email" placeholder="taro@example.com" />
       </FormField>
       <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary">
-          保存
-        </Button>
+        <Button type="submit" variant="primary">保存</Button>
       </Flex>
     </Form>
   ),
 };
 
-// ─── Address · 3-column row + multi-line ─────────────────────────
+// ─── TwoColumns · horizontal ─────────────────────────────────────
 
-export const Address: Story = {
-  name: "Address · 郵便番号 / 都道府県 / 市区町村",
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Mobile-first 3-column grid for the prefecture row. Postal code on its own row; street + building stacked below.",
-      },
-    },
-  },
+export const TwoColumnsHorizontal: Story = {
+  name: "Two columns · horizontal",
+  render: () => (
+    <Form<ProfileValues>
+      layout="horizontal"
+      resolver={zodResolver(profileSchema)}
+      defaultValues={{ lastName: "", firstName: "", lastNameKana: "", firstNameKana: "", email: "" }}
+      onSubmit={(v) => console.log(v)}
+      style={{ maxWidth: 720 }}
+    >
+      <FormField name="lastName" label="姓" required>
+        <Input placeholder="山田" />
+      </FormField>
+      <FormField name="firstName" label="名" required>
+        <Input placeholder="太郎" />
+      </FormField>
+      <FormField name="lastNameKana" label="姓 (カナ)">
+        <Input placeholder="ヤマダ" />
+      </FormField>
+      <FormField name="firstNameKana" label="名 (カナ)">
+        <Input placeholder="タロウ" />
+      </FormField>
+      <FormField name="email" label="メールアドレス" required>
+        <Input type="email" placeholder="taro@example.com" />
+      </FormField>
+      <Flex gap="small" justify="end">
+        <Button type="submit" variant="primary">保存</Button>
+      </Flex>
+    </Form>
+  ),
+};
+
+// ─── Address · vertical ──────────────────────────────────────────
+
+export const AddressVertical: Story = {
+  name: "Address · vertical",
   render: () => (
     <Form<AddressValues>
       resolver={zodResolver(addressSchema)}
-      defaultValues={{
-        postalCode: "",
-        prefecture: "13",
-        city: "",
-        street: "",
-        building: "",
-      }}
+      defaultValues={{ postalCode: "", prefecture: "13", city: "", street: "", building: "" }}
       onSubmit={(v) => console.log(v)}
       style={{ maxWidth: 560 }}
     >
       <FormField name="postalCode" label="郵便番号" required>
         <Input placeholder="100-0001" style={{ maxWidth: "8rem" }} />
       </FormField>
-      <div
-        className="grid grid-cols-1 sm:grid-cols-3"
-        style={{ gap: "var(--spacing-3)" }}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: "var(--spacing-3)" }}>
         <FormField name="prefecture" label="都道府県" required>
           <Select options={PREFECTURE_OPTIONS} />
         </FormField>
@@ -396,34 +436,54 @@ export const Address: Story = {
           <Input placeholder="1-1-1" />
         </FormField>
       </div>
-      <FormField
-        name="building"
-        label="建物名 / 部屋番号"
-        description="マンション名・部屋番号があれば入力してください"
-      >
+      <FormField name="building" label="建物名 / 部屋番号" description="マンション名・部屋番号があれば入力してください">
         <Input placeholder="○○マンション 101 号室" />
       </FormField>
       <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary">
-          保存
-        </Button>
+        <Button type="submit" variant="primary">保存</Button>
       </Flex>
     </Form>
   ),
 };
 
-// ─── PhoneNumber · country code + number + ext ───────────────────
+// ─── Address · horizontal ────────────────────────────────────────
 
-export const PhoneNumber: Story = {
-  name: "Phone · 国番号 + 番号 + 内線",
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Mobile-first phone composition: stacked on xs, 3-column at sm. Three separate FormFields share a single visual row.",
-      },
-    },
-  },
+export const AddressHorizontal: Story = {
+  name: "Address · horizontal",
+  render: () => (
+    <Form<AddressValues>
+      layout="horizontal"
+      resolver={zodResolver(addressSchema)}
+      defaultValues={{ postalCode: "", prefecture: "13", city: "", street: "", building: "" }}
+      onSubmit={(v) => console.log(v)}
+      style={{ maxWidth: 720 }}
+    >
+      <FormField name="postalCode" label="郵便番号" required>
+        <Input placeholder="100-0001" style={{ maxWidth: "10rem" }} />
+      </FormField>
+      <FormField name="prefecture" label="都道府県" required>
+        <Select options={PREFECTURE_OPTIONS} />
+      </FormField>
+      <FormField name="city" label="市区町村" required>
+        <Input placeholder="千代田区" />
+      </FormField>
+      <FormField name="street" label="番地" required>
+        <Input placeholder="1-1-1" />
+      </FormField>
+      <FormField name="building" label="建物名 / 部屋番号" description="マンション名・部屋番号があれば入力してください">
+        <Input placeholder="○○マンション 101 号室" />
+      </FormField>
+      <Flex gap="small" justify="end">
+        <Button type="submit" variant="primary">保存</Button>
+      </Flex>
+    </Form>
+  ),
+};
+
+// ─── Phone · vertical ────────────────────────────────────────────
+
+export const PhoneVertical: Story = {
+  name: "Phone · vertical (3-col row)",
   render: () => (
     <Form<PhoneValues>
       resolver={zodResolver(phoneSchema)}
@@ -446,18 +506,44 @@ export const PhoneNumber: Story = {
         </FormField>
       </div>
       <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary">
-          保存
-        </Button>
+        <Button type="submit" variant="primary">保存</Button>
       </Flex>
     </Form>
   ),
 };
 
-// ─── WithDescriptions · explainer text per field ────────────────
+// ─── Phone · horizontal ──────────────────────────────────────────
 
-export const WithDescriptions: Story = {
-  name: "With descriptions · manual hints",
+export const PhoneHorizontal: Story = {
+  name: "Phone · horizontal",
+  render: () => (
+    <Form<PhoneValues>
+      layout="horizontal"
+      resolver={zodResolver(phoneSchema)}
+      defaultValues={{ countryCode: "+81", number: "", ext: "" }}
+      onSubmit={(v) => console.log(v)}
+      style={{ maxWidth: 640 }}
+    >
+      <FormField name="countryCode" label="国番号" required>
+        <Select options={COUNTRY_CODES} />
+      </FormField>
+      <FormField name="number" label="電話番号" required>
+        <Input placeholder="80-1234-5678" />
+      </FormField>
+      <FormField name="ext" label="内線">
+        <Input placeholder="123" style={{ maxWidth: "6rem" }} />
+      </FormField>
+      <Flex gap="small" justify="end">
+        <Button type="submit" variant="primary">保存</Button>
+      </Flex>
+    </Form>
+  ),
+};
+
+// ─── WithDescriptions · vertical ─────────────────────────────────
+
+export const WithDescriptionsVertical: Story = {
+  name: "With descriptions · vertical",
   render: () => (
     <Form<RegistrationValues>
       resolver={zodResolver(registrationSchema)}
@@ -465,90 +551,96 @@ export const WithDescriptions: Story = {
       onSubmit={(v) => console.log(v)}
       style={{ maxWidth: 420 }}
     >
-      <FormField
-        name="name"
-        label="氏名"
-        required
-        description="戸籍に記載されている氏名を入力してください"
-      >
+      <FormField name="name" label="氏名" required description="戸籍に記載されている氏名を入力してください">
         <Input placeholder="山田 太郎" />
       </FormField>
-      <FormField
-        name="email"
-        label="メールアドレス"
-        required
-        description="ログイン ID として使用します。受信できるアドレスを設定してください"
-      >
+      <FormField name="email" label="メールアドレス" required description="ログイン ID として使用します。受信できるアドレスを設定してください">
         <Input type="email" placeholder="taro@example.com" />
       </FormField>
-      <FormField
-        name="age"
-        label="年齢"
-        required
-        description="18 歳以上のみ登録できます"
-      >
+      <FormField name="age" label="年齢" required description="18 歳以上のみ登録できます">
         <InputNumber min={0} max={150} />
       </FormField>
       <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary">
-          確認
-        </Button>
+        <Button type="submit" variant="primary">確認</Button>
       </Flex>
     </Form>
   ),
 };
 
-// ─── WithCounter · textarea + char count ─────────────────────────
+// ─── WithDescriptions · horizontal ───────────────────────────────
 
-export const WithCounter: Story = {
-  name: "With counter · textarea + maxLength",
-  render: function WithCounter() {
-    const [bio, setBio] = useState(
-      "プロダクト開発者。マネジメントよりは現場で手を動かしたい派。",
-    );
+export const WithDescriptionsHorizontal: Story = {
+  name: "With descriptions · horizontal",
+  render: () => (
+    <Form<RegistrationValues>
+      layout="horizontal"
+      resolver={zodResolver(registrationSchema)}
+      defaultValues={{ name: "", email: "", age: 18, agree: true }}
+      onSubmit={(v) => console.log(v)}
+      style={{ maxWidth: 720 }}
+    >
+      <FormField name="name" label="氏名" required description="戸籍に記載されている氏名を入力してください">
+        <Input placeholder="山田 太郎" />
+      </FormField>
+      <FormField name="email" label="メールアドレス" required description="ログイン ID として使用します。受信できるアドレスを設定してください">
+        <Input type="email" placeholder="taro@example.com" />
+      </FormField>
+      <FormField name="age" label="年齢" required description="18 歳以上のみ登録できます">
+        <InputNumber min={0} max={150} />
+      </FormField>
+      <Flex gap="small" justify="end">
+        <Button type="submit" variant="primary">確認</Button>
+      </Flex>
+    </Form>
+  ),
+};
+
+// ─── WithCounter · vertical (uses Field directly) ───────────────
+
+export const WithCounterVertical: Story = {
+  name: "With counter · vertical",
+  render: function WithCounterVertical() {
+    const [bio, setBio] = useState("プロダクト開発者。マネジメントよりは現場で手を動かしたい派。");
     return (
-      <Form
-        defaultValues={{}}
-        onSubmit={(v) => console.log(v)}
-        style={{ maxWidth: 480 }}
-      >
-        <Field
-          label="自己紹介"
-          optional
-          count={{ current: bio.length, max: 200 }}
-          help="プロフィール画面に表示されます"
-        >
-          <Textarea
-            rows={4}
-            maxLength={200}
-            value={bio}
-            onChange={(event) => setBio(event.target.value)}
-          />
+      <Form defaultValues={{}} onSubmit={(v) => console.log(v)} style={{ maxWidth: 480 }}>
+        <Field label="自己紹介" optional count={{ current: bio.length, max: 200 }} help="プロフィール画面に表示されます">
+          <Textarea rows={4} maxLength={200} value={bio} onChange={(event) => setBio(event.target.value)} />
         </Field>
         <Flex gap="small" justify="end">
-          <Button type="submit" variant="primary">
-            保存
-          </Button>
+          <Button type="submit" variant="primary">保存</Button>
         </Flex>
       </Form>
     );
   },
 };
 
-// ─── OptionalMix · required vs optional ──────────────────────────
+// ─── WithCounter · horizontal ────────────────────────────────────
 
-export const OptionalMix: Story = {
-  name: "Optional mix · required + 任意 badge",
+export const WithCounterHorizontal: Story = {
+  name: "With counter · horizontal",
+  render: function WithCounterHorizontal() {
+    const [bio, setBio] = useState("プロダクト開発者。マネジメントよりは現場で手を動かしたい派。");
+    return (
+      <Form layout="horizontal" defaultValues={{}} onSubmit={(v) => console.log(v)} style={{ maxWidth: 720 }}>
+        <Field label="自己紹介" optional count={{ current: bio.length, max: 200 }} help="プロフィール画面に表示されます">
+          <Textarea rows={4} maxLength={200} value={bio} onChange={(event) => setBio(event.target.value)} />
+        </Field>
+        <Flex gap="small" justify="end">
+          <Button type="submit" variant="primary">保存</Button>
+        </Flex>
+      </Form>
+    );
+  },
+};
+
+// ─── OptionalMix · vertical ──────────────────────────────────────
+
+export const OptionalMixVertical: Story = {
+  name: "Optional mix · vertical",
   render: () => (
     <Form<ProfileValues>
       resolver={zodResolver(profileSchema)}
-      defaultValues={{
-        lastName: "",
-        firstName: "",
-        lastNameKana: "",
-        firstNameKana: "",
-        email: "",
-      }}
+      defaultValues={{ lastName: "", firstName: "", lastNameKana: "", firstNameKana: "", email: "" }}
       onSubmit={(v) => console.log(v)}
       style={{ maxWidth: 420 }}
     >
@@ -568,27 +660,51 @@ export const OptionalMix: Story = {
         <Input type="email" placeholder="taro@example.com" />
       </FormField>
       <Flex gap="small" justify="end">
-        <Button type="submit" variant="primary">
-          保存
-        </Button>
+        <Button type="submit" variant="primary">保存</Button>
       </Flex>
     </Form>
   ),
 };
 
-// ─── Loading · async submit + spinner ────────────────────────────
+// ─── OptionalMix · horizontal ────────────────────────────────────
 
-export const Loading: Story = {
-  name: "Loading · async submit",
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Submit button shows the `loading` spinner while the async submit handler runs.",
-      },
-    },
-  },
-  render: function Loading() {
+export const OptionalMixHorizontal: Story = {
+  name: "Optional mix · horizontal",
+  render: () => (
+    <Form<ProfileValues>
+      layout="horizontal"
+      resolver={zodResolver(profileSchema)}
+      defaultValues={{ lastName: "", firstName: "", lastNameKana: "", firstNameKana: "", email: "" }}
+      onSubmit={(v) => console.log(v)}
+      style={{ maxWidth: 720 }}
+    >
+      <FormField name="lastName" label="姓" required>
+        <Input placeholder="山田" />
+      </FormField>
+      <FormField name="firstName" label="名" required>
+        <Input placeholder="太郎" />
+      </FormField>
+      <FormField name="lastNameKana" label="姓 (カナ)" optional>
+        <Input placeholder="ヤマダ" />
+      </FormField>
+      <FormField name="firstNameKana" label="名 (カナ)" optional>
+        <Input placeholder="タロウ" />
+      </FormField>
+      <FormField name="email" label="メールアドレス" required>
+        <Input type="email" placeholder="taro@example.com" />
+      </FormField>
+      <Flex gap="small" justify="end">
+        <Button type="submit" variant="primary">保存</Button>
+      </Flex>
+    </Form>
+  ),
+};
+
+// ─── Loading · vertical ──────────────────────────────────────────
+
+export const LoadingVertical: Story = {
+  name: "Loading · vertical (async submit)",
+  render: function LoadingVertical() {
     const [submitting, setSubmitting] = useState(false);
     return (
       <Form<RegistrationValues>
@@ -615,35 +731,147 @@ export const Loading: Story = {
           <Checkbox>利用規約に同意する</Checkbox>
         </FormField>
         <Flex gap="small" justify="end">
-          <Button type="submit" variant="primary" loading={submitting}>
-            送信
-          </Button>
+          <Button type="submit" variant="primary" loading={submitting}>送信</Button>
         </Flex>
       </Form>
     );
   },
 };
 
-// ─── SkeletonLoading · while initial data fetches ────────────────
+// ─── Loading · horizontal ────────────────────────────────────────
+
+export const LoadingHorizontal: Story = {
+  name: "Loading · horizontal",
+  render: function LoadingHorizontal() {
+    const [submitting, setSubmitting] = useState(false);
+    return (
+      <Form<RegistrationValues>
+        layout="horizontal"
+        resolver={zodResolver(registrationSchema)}
+        defaultValues={{ name: "佐藤 花子", email: "hanako@example.com", age: 28, agree: true }}
+        onSubmit={async (values) => {
+          setSubmitting(true);
+          await new Promise((r) => setTimeout(r, 1500));
+          setSubmitting(false);
+          console.log("submitted", values);
+        }}
+        style={{ maxWidth: 640 }}
+      >
+        <FormField name="name" label="氏名" required>
+          <Input />
+        </FormField>
+        <FormField name="email" label="メールアドレス" required>
+          <Input type="email" />
+        </FormField>
+        <FormField name="age" label="年齢" required>
+          <InputNumber min={0} max={150} />
+        </FormField>
+        <FormField name="agree">
+          <Checkbox>利用規約に同意する</Checkbox>
+        </FormField>
+        <Flex gap="small" justify="end">
+          <Button type="submit" variant="primary" loading={submitting}>送信</Button>
+        </Flex>
+      </Form>
+    );
+  },
+};
+
+// ─── Settings · horizontal (admin pattern) ───────────────────────
+
+export const SettingsHorizontal: Story = {
+  name: "Settings · horizontal (admin pattern)",
+  parameters: {
+    docs: {
+      description: {
+        story: "Horizontal layout shines in admin / settings screens — label-on-left makes the key/value pairs read as a config sheet.",
+      },
+    },
+  },
+  render: () => (
+    <Form<SettingsValues>
+      layout="horizontal"
+      resolver={zodResolver(settingsSchema)}
+      defaultValues={{
+        workspaceName: "Acme Forge",
+        visibility: "internal",
+        defaultLocale: "ja",
+        notifyOnComment: true,
+        notifyOnMention: true,
+        digestFrequency: "weekly",
+      }}
+      onSubmit={(v) => console.log(v)}
+      style={{ maxWidth: 720 }}
+    >
+      <FormField name="workspaceName" label="ワークスペース名" required>
+        <Input placeholder="Acme Forge" />
+      </FormField>
+      <FormField name="visibility" label="公開範囲" required description="プロジェクトに参加していないメンバーが閲覧できるかを決定します">
+        <Select options={VISIBILITY_OPTIONS} />
+      </FormField>
+      <FormField name="defaultLocale" label="既定の言語">
+        <Select options={LOCALE_OPTIONS} />
+      </FormField>
+      <FormField name="notifyOnComment">
+        <Checkbox>コメントが付いたら通知</Checkbox>
+      </FormField>
+      <FormField name="notifyOnMention">
+        <Checkbox>メンションされたら通知</Checkbox>
+      </FormField>
+      <FormField name="digestFrequency" label="ダイジェスト送信頻度">
+        <Select options={DIGEST_OPTIONS} />
+      </FormField>
+      <Flex gap="small" justify="end">
+        <Button type="submit" variant="primary">設定を保存</Button>
+      </Flex>
+    </Form>
+  ),
+};
+
+// ─── Inline · single-row filter ──────────────────────────────────
+
+export const InlineFilter: Story = {
+  name: "Inline · single-row filter",
+  parameters: {
+    docs: {
+      description: {
+        story: "Mobile-first: stacks on xs, single row at sm (≥640px). Common for table filters and search bars.",
+      },
+    },
+  },
+  render: () => (
+    <Form<FilterValues>
+      layout="inline"
+      defaultValues={{ query: "", status: "active", shop: "shibuya" }}
+      onSubmit={(v) => console.log(v)}
+    >
+      <FormField name="query" label="キーワード">
+        <Input placeholder="名前 / メール / 電話番号" />
+      </FormField>
+      <FormField name="status" label="ステータス">
+        <Select options={STATUS_OPTIONS} />
+      </FormField>
+      <FormField name="shop" label="店舗">
+        <Select options={SHOP_OPTIONS} />
+      </FormField>
+      <Button type="submit" variant="primary">検索</Button>
+    </Form>
+  ),
+};
+
+// ─── Skeleton · loading initial data ─────────────────────────────
 
 export const SkeletonLoading: Story = {
   name: "Skeleton · loading initial data",
   parameters: {
     docs: {
       description: {
-        story:
-          "Form chrome while the consumer fetches its defaults. Each Field shows a Skeleton in place of the control.",
+        story: "Form chrome while the consumer fetches its defaults. Each Field shows a Skeleton in place of the control.",
       },
     },
   },
   render: () => (
-    <div
-      style={{
-        display: "grid",
-        gap: "var(--spacing-3)",
-        maxWidth: 360,
-      }}
-    >
+    <div style={{ display: "grid", gap: "var(--spacing-3)", maxWidth: 360 }}>
       <Field label="氏名" required>
         <Skeleton className="h-9 w-full rounded-md" />
       </Field>
