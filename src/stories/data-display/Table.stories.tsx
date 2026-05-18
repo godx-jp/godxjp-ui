@@ -1,22 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useMemo, useState } from "react";
-import { expect, within } from "storybook/test";
 import { Badge } from "../../components/data-display/Badge";
 import {
   Table,
   type TableColumn,
-  type TableColumnVisibility,
-  type TableFilter,
   type TableSort,
   type TableSortState,
-  type TableViewItem,
 } from "../../components/data-display/Table";
 import { InputSearch } from "../../components/data-entry/InputSearch";
 import { Button } from "../../components/general/Button";
-import {
-  useTablePagination,
-  useTableSelection,
-} from "../../hooks";
+import { Flex } from "../../components/layout";
 import employeeRows from "./fixtures/table-employees.json";
 
 const meta: Meta<typeof Table> = {
@@ -70,64 +63,6 @@ const KIND_OPTIONS = [
   { value: "normal", label: "通常" },
 ];
 
-const COLUMN_SETTINGS = [
-  { key: "date", label: "日付" },
-  { key: "name", label: "従業員" },
-  { key: "role", label: "役職" },
-  { key: "shop", label: "店舗" },
-  { key: "kind", label: "区分" },
-  { key: "hours", label: "時間" },
-  { key: "status", label: "状態" },
-] as const;
-
-const DEFAULT_COLUMN_VISIBILITY: TableColumnVisibility = { hours: false };
-const DEFAULT_SORT: TableSort = { key: "date", direction: "desc" };
-
-interface StoryTableView extends TableViewItem {
-  key: string;
-  label: string;
-  filters: TableFilter[];
-  sort: TableSort | null;
-  columnVisibility: TableColumnVisibility;
-}
-
-const BUILT_IN_VIEWS: StoryTableView[] = [
-  {
-    key: "all",
-    label: "すべて",
-    filters: [],
-    sort: DEFAULT_SORT,
-    columnVisibility: DEFAULT_COLUMN_VISIBILITY,
-  },
-  {
-    key: "pending",
-    label: "承認待ち",
-    filters: [{ key: "status", operator: "eq", value: "pending" }],
-    sort: DEFAULT_SORT,
-    columnVisibility: DEFAULT_COLUMN_VISIBILITY,
-  },
-  {
-    key: "late",
-    label: "遅刻 / 早退",
-    filters: [{ key: "kind", operator: "eq", value: "late" }],
-    sort: DEFAULT_SORT,
-    columnVisibility: DEFAULT_COLUMN_VISIBILITY,
-  },
-  {
-    key: "confirmed",
-    label: "今月確定",
-    filters: [{ key: "status", operator: "eq", value: "active" }],
-    sort: DEFAULT_SORT,
-    columnVisibility: { ...DEFAULT_COLUMN_VISIBILITY, status: false },
-  },
-  {
-    key: "shibuya",
-    label: "マイビュー · 渋谷店のみ",
-    filters: [{ key: "shop", operator: "eq", value: "渋谷" }],
-    sort: DEFAULT_SORT,
-    columnVisibility: { ...DEFAULT_COLUMN_VISIBILITY, shop: true },
-  },
-];
 
 function getSearchShortcutLabel() {
   if (typeof navigator === "undefined") return "Ctrl K";
@@ -296,93 +231,6 @@ function rowState(row: { original: EmployeeRow }) {
   return undefined;
 }
 
-function matchesTableFilters(row: EmployeeRow, filters: TableFilter[]) {
-  return filters.every((filter) => {
-    const value = String(filter.value ?? "").trim();
-    if (value === "") return true;
-    if (filter.key === "name") {
-      return `${row.name} ${row.kana ?? ""} ${row.shop} ${row.role}`
-        .toLowerCase()
-        .includes(value.toLowerCase());
-    }
-    if (filter.key === "shop") return row.shop === value;
-    if (filter.key === "kind") return row.kind === value;
-    if (filter.key === "status") return row.status === value;
-    return true;
-  });
-}
-
-function sortEmployees(rows: EmployeeRow[], sort: TableSortState) {
-  const head = Array.isArray(sort) ? (sort[0] ?? null) : sort;
-  if (head === null) return rows;
-  const direction = head.direction === "asc" ? 1 : -1;
-  return [...rows].sort((a, b) => {
-    if (head.key === "hours") {
-      const toNum = (v: string) =>
-        v === "—" ? Number.NEGATIVE_INFINITY : Number(v.replace("h", ""));
-      return (toNum(a.hours) - toNum(b.hours)) * direction;
-    }
-    const left = String(a[head.key as keyof EmployeeRow] ?? "");
-    const right = String(b[head.key as keyof EmployeeRow] ?? "");
-    return left.localeCompare(right) * direction;
-  });
-}
-
-function replaceFilter(
-  filters: TableFilter[],
-  next: TableFilter,
-): TableFilter[] {
-  const rest = filters.filter((f) => f.key !== next.key);
-  const value = String(next.value ?? "").trim();
-  return value === "" ? rest : [...rest, next];
-}
-
-function sumHours(rows: EmployeeRow[]) {
-  return rows
-    .filter((row) => row.hours !== "—")
-    .reduce((sum, row) => sum + Number(row.hours.replace("h", "")), 0);
-}
-
-function countRowsForView(view: StoryTableView) {
-  return EMPLOYEES.filter((row) => matchesTableFilters(row, view.filters))
-    .length;
-}
-
-function escapeRegExp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function decorateView(view: StoryTableView): TableViewItem {
-  const isBuiltInView = BUILT_IN_VIEWS.some((item) => item.key === view.key);
-  return {
-    ...view,
-    count: countRowsForView(view),
-    deletable: !isBuiltInView,
-    dotColor:
-      view.key === "pending"
-        ? "var(--warning)"
-        : view.key === "late"
-          ? "var(--attention)"
-          : undefined,
-  };
-}
-
-function batchActionsFor(
-) {
-  return (
-    <>
-      <Button size="small" variant="outline">
-        一括承認
-      </Button>
-      <Button size="small" variant="outline">
-        CSV 出力
-      </Button>
-      <Button size="small" variant="destructive">
-        却下
-      </Button>
-    </>
-  );
-}
 
 export const Default: Story = {
   name: "Default · plain table",
@@ -417,7 +265,7 @@ export const SearchMode_Submit: Story = {
     }, [query]);
 
     return (
-      <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+      <Flex vertical gap="middle">
         <InputSearch
           aria-label="送信型検索"
           style={{ maxWidth: 360 }}
@@ -440,7 +288,7 @@ export const SearchMode_Submit: Story = {
           getRowId={(row) => row.id}
           rowClassName={rowState}
         />
-      </div>
+      </Flex>
     );
   },
 };
@@ -809,12 +657,12 @@ export const ExpandRow: Story = {
                 <div className="meta">
                   <span>{detail.submittedAt}</span>
                   <span>{detail.updatedAt}</span>
-                  <span style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
+                  <Flex gap={6} style={{ marginLeft: "auto" }}>
                     <Button size="x-small" variant="ghost">
                       却下
                     </Button>
                     <Button size="x-small">承認</Button>
-                  </span>
+                  </Flex>
                 </div>
               </div>
             );
@@ -1368,7 +1216,7 @@ export const StickyColumns: Story = {
     docs: {
       description: {
         story:
-          "`meta.sticky: 'left' | 'right'` pins columns at the table edges. The column-manager Sheet renders a lock toggle (lucide `Lock` / `LockOpen`) so users can lock / unlock columns at runtime. The canvas is narrow — scroll horizontally to confirm both sticky bands stay put.",
+          "`meta.sticky: 'left' | 'right'` pins columns at the table edges — primitive concern, driven by column metadata. The canvas is narrow — scroll horizontally to confirm both sticky bands stay put. Runtime lock/unlock toggling lives on the `<DataTable>` composite's column-manager Sheet.",
       },
     },
   },
