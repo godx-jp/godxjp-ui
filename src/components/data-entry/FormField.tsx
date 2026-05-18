@@ -16,7 +16,7 @@ import { ColorPicker } from "./ColorPicker";
 import { Field, type FieldHelpTone } from "./Field";
 import { useFormLoading } from "./Form";
 import { InputNumber } from "./InputNumber";
-import { normalizeLoading, type LoadingProp } from "./loading";
+import { normalizeLoading, type LoadingProp } from "../../props";
 import { RadioGroup } from "./Radio";
 import { Rate } from "./Rate";
 import { Select } from "./Select";

@@ -86,13 +86,13 @@ export type {
   OrientationProp,
   DensityProp,
 } from "../props";
-export { normalizeLoading } from "./data-entry/loading";
+export { normalizeLoading } from "../props";
 export type {
   LoadingProp,
   LoadingKind,
   LoadingOptions,
   NormalizedLoading,
-} from "./data-entry/loading";
+} from "../props";
 
 export { Transfer } from "./data-entry/Transfer";
 export type {
