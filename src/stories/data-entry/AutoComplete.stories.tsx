@@ -5,11 +5,11 @@ import { AutoComplete, type AutoCompleteOption } from "../../components/data-ent
 import { Flex } from "../../components/layout";
 
 /**
- * data-entry/AutoComplete — Combobox-backed
- * filtered text input.
+ * data-entry/AutoComplete — free-text input with
+ * filtered suggestions (cmdk + Radix Popover).
  *
  * Cardinal rules honoured:
- *   §3  — Radix Popover + cmdk via Combobox primitives
+ *   §3  — Radix Popover + cmdk for keyboard / ARIA
  *   §21 — every axis (theme/accent/density/font-size)
  *   §23 — vocabulary: `value` / `defaultValue` / `onValueChange`,
  *          `size`, `disabled`, `open` / `defaultOpen` / `onOpenChange`,
@@ -33,9 +33,9 @@ const meta: Meta<typeof AutoComplete> = {
     docs: {
       description: {
         component: `
-**AutoComplete** — Combobox-backed text input with case-insensitive
-suggestion filtering. Selecting a suggestion commits its \`value\`;
-typing keeps the popover open so the dropdown stays in-sync.
+**AutoComplete** — free-text input with case-insensitive suggestion
+filtering (cmdk + Radix Popover). Selecting a suggestion commits its
+\`value\`; typing keeps the popover open so the dropdown stays in-sync.
 
 Vocabulary per cardinal rule 23 §B:
 - \`value\` / \`defaultValue\` / \`onValueChange\` — selection state

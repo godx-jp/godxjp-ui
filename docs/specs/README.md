@@ -1,18 +1,18 @@
-# @godxjp/ui canonical rules
+# @godxjp/ui canonical specs
 
 **Status:** Binding. Every rule in this folder OVERRIDES anything
 older in `docs/`, `CLAUDE.md`, `AGENTS.md`, or skill bodies that
 contradicts it.
 
 Why this folder exists: `@godxjp/ui` is the visual + interaction
-contract for every godx-jp frontend. The 29 cardinal rules in
-[`../CLAUDE.md`](../CLAUDE.md) keep the day-to-day shape honest;
-this `new-docs/` folder holds the **deeper architectural concepts**
+contract for every godx-jp frontend. The cardinal rules in
+[`../../CLAUDE.md`](../../CLAUDE.md) keep the day-to-day shape honest;
+this `docs/specs/` folder holds the **deeper architectural concepts**
 that underpin them — the kind of concept where a small drift
 silently degrades the whole product.
 
 Mirrors the umbrella convention at
-[`../../../new-docs/`](../../../new-docs/). The umbrella covers
+[`../../../../new-docs/`](../../../../new-docs/). The umbrella covers
 repo-wide platform rules; this folder covers `@godxjp/ui`-specific
 rules. Each fact has **one home** (per umbrella rule 10); the
 umbrella's binding table links here when the source of truth is a
@@ -79,10 +79,10 @@ PR + umbrella pin bump. Don't edit a rule to accommodate a one-off
 
 When you add a new rule, append it as `02-`, `03-`, … (chronological,
 never reorganised). Update this index. Update the binding pointer at
-the top of [`../CLAUDE.md`](../CLAUDE.md) that lists every numbered
+the top of [`../../CLAUDE.md`](../../CLAUDE.md) that lists every numbered
 rule by title. If the umbrella needs to route work into the new
 rule, add a row to the umbrella binding table in
-[`../../../CLAUDE.md`](../../../CLAUDE.md) that links here.
+[`../../../../CLAUDE.md`](../../../../CLAUDE.md) that links here.
 
 ## Storybook sidebar taxonomy
 
@@ -109,9 +109,9 @@ under `src/components/composites/`).
 The legacy `new-primitives/` Storybook title prefix is removed —
 groups appear flat at the sidebar root.
 
-## Relationship to `docs/`
+## Relationship to the rest of `docs/`
 
-- `new-docs/` = **binding rules** (you MUST conform).
+- `docs/specs/` (this folder) = **binding rules** (you MUST conform).
 - `docs/explanation/` = **why** (background / philosophy).
 - `docs/how-to/` = **task recipes** (do X step by step).
 - `docs/reference/` = **API surface** (every primitive / token /
@@ -121,8 +121,8 @@ groups appear flat at the sidebar root.
   binding decisions — Radix base, shadcn ownership, tokens-not-
   utilities, i18next singleton).
 
-When a `docs/` page and a `new-docs/` rule conflict, `new-docs/`
-wins; the `docs/` page is stale and should be updated.
+When a sibling `docs/` page and a `docs/specs/` rule conflict, `docs/specs/`
+wins; the sibling page is stale and should be updated.
 
 ## Migration status
 

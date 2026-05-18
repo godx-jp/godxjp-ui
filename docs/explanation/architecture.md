@@ -48,7 +48,7 @@ tokens via `@theme inline`.
 This layer has no React dependency. Services import it once
 (`import "@godxjp/ui/tailwind.css"`) and gain the full token system.
 
-See [03 — token system](../../new-docs/03-token-system.md) for the
+See [03 — token system](../specs/03-token-system.md) for the
 three-tier architecture (primitive → semantic → variant).
 
 ### Layer 2 — Primitives (atoms)
@@ -77,7 +77,7 @@ Each primitive:
   where keyboard navigation, ARIA, or focus management is needed
   (cardinal rule 14).
 - Exports its props type explicitly with `forwardRef`.
-- Honours every prop in [04 — prop vocabulary](../../new-docs/04-prop-vocabulary.md).
+- Honours every prop in [04 — prop vocabulary](../specs/04-prop-vocabulary.md).
 
 Primitives know nothing about the shell layout or the i18n system.
 
@@ -132,7 +132,7 @@ copy-paste-and-modify those examples; they do NOT `import` them.
 
 The package boundary is the `package.json::exports` map. Today's
 eight runtime entries are listed in
-[02 — consumer contract §A](../../new-docs/02-consumer-contract.md#a--consumer-dist-surface-eight-entries).
+[02 — consumer contract §A](../specs/02-consumer-contract.md#a--consumer-dist-surface-eight-entries).
 
 Nothing outside that map is part of the public API. Internal helpers
 (e.g. `src/components/cn.ts`) are in-package utilities and are not
@@ -169,6 +169,6 @@ on the submodule remote.
 ## See also
 
 - [Design philosophy](./design-philosophy.md) — the three pillars that shaped this architecture.
-- [00 — index](../../new-docs/00-index.md) — full binding-rule trigger table.
-- [02 — consumer contract §A-2](../../new-docs/02-consumer-contract.md) — per-group source taxonomy.
+- [Specs index](../specs/README.md) — full binding-rule trigger table.
+- [02 — consumer contract §A-2](../specs/02-consumer-contract.md) — per-group source taxonomy.
 - [ADR 0001](../adr/0001-radix-as-foundation.md), [ADR 0002](../adr/0002-shadcn-style-not-mui.md), [ADR 0003](../adr/0003-tokens-not-utilities.md).

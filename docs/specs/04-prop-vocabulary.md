@@ -490,7 +490,7 @@ region-atoms like Card) marks the region as "flush block"
 | `required` | Input family, Field | Marks field as required; renders asterisk |
 | `autoFocus` | Input, Button | Focused on mount |
 | `defaultChecked` / `checked` | Checkbox, Switch, Radio | Boolean value |
-| `defaultValue` / `value` | Input, Slider, Combobox, RangeCalendar, … | Controlled / uncontrolled value |
+| `defaultValue` / `value` | Input, Slider, Select, RangeCalendar, … | Controlled / uncontrolled value |
 
 Every state prop is a single-concept boolean. Don't pack multiple
 states (`busy={true}` meaning loading-or-disabled).
@@ -694,7 +694,7 @@ cardinal rule 23 §D deep-research pre-flight:
 2. Check the design canon — is the concept shown? If yes, port
    the name from the design. If no, STOP and ask the user.
 3. If the concept is genuinely new, add it to this catalogue
-   (`new-docs/04-prop-vocabulary.md`) in a new §section AND to
+   (`docs/specs/04-prop-vocabulary.md`) in a new §section AND to
    CLAUDE.md §23.B, THEN add it to the primitive.
 
 Don't ship a prop without the vocabulary entry. Reviewers reject.

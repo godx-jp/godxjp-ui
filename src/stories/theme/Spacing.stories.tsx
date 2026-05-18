@@ -18,7 +18,7 @@ import { Flex, Row, Col } from "../../components/layout";
  * hardcoded literals. Per cardinal rule 22 the values are pinned
  * to the dxs-kintai canon (`design-handoff/.../colors_and_type.css`).
  *
- * Source-of-truth: `new-docs/03-token-system.md` §D + §E.
+ * Source-of-truth: `docs/specs/03-token-system.md` §D + §E.
  */
 
 const meta: Meta = {
@@ -29,7 +29,7 @@ const meta: Meta = {
       description: {
         component: `
 **Spacing** — the framework's two-layer spacing system. Source-of-truth:
-[\`new-docs/03-token-system.md\`](https://github.com/godx-jp/godxjp-ui/blob/main/new-docs/03-token-system.md)
+[\`docs/specs/03-token-system.md\`](https://github.com/godx-jp/godxjp-ui/blob/main/docs/specs/03-token-system.md)
 §D (spacing scale) + §E (density chain).
         `.trim(),
       },

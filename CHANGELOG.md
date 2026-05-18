@@ -5,6 +5,33 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Removed
+
+- **`Combobox` primitive** — merged into `<Select searchable>`. Same
+  cmdk + Popover render tree, single primitive surface. See
+  [Select reference §Migration from Combobox](./docs/reference/data-entry/Select.md#migration-from-combobox)
+  for the rename diff. Rationale: Combobox and Select carry the same
+  concept (single-select from a constrained list) — keeping two
+  primitives for one concept violates cardinal rules 23 §A / 31. The
+  `.combobox-*` CSS classes are retained because Cascader / TreeSelect
+  / AutoComplete continue to use them. BREAKING.
+
+### Changed
+
+- **`Select` gained `searchable`** + `searchPlaceholder`, `emptyLabel`,
+  `loading`, `loadingLabel` props. When `searchable` is set the
+  primitive flips from Radix Select to a cmdk + Popover render tree
+  with a filter input above the list; value semantics stay constrained
+  to `options[i].value`.
+- **Docs consolidation** — moved the five canonical specs from
+  `new-docs/` to `docs/specs/` so the framework ships ONE
+  documentation tree. The umbrella binding table, CLAUDE.md
+  trigger table, AGENTS.md routing table, and every doc /
+  story / source comment that referenced `new-docs/*` now
+  cite `docs/specs/*`. Pruned outdated `docs/explanation/`
+  pages (brand-bible, compatibility, versioning,
+  tokens-architecture) that duplicated specs/BRAND.md/CLAUDE.md.
+
 ### Fixed
 
 - **Tour spotlight cutout** — the target area now uses an SVG mask
@@ -303,14 +330,14 @@ block>` React sub-components per rule 29.
 ## [3.0.0] — 2026-05-16
 
 `@godxjp/ui` v3 is a clean-break major that fulfils the **zero-config professional
-framework** promise described in `new-docs/12-frontend-architecture.md`. Services
+framework** promise described in the umbrella's frontend-architecture spec. Services
 upgrading from 2.x gain a complete toolchain preset and a fourth mandatory locale
 (`fil`) with no API removals beyond the deprecated symbol renames below.
 
 ### Added
 
 - **Filipino (`fil`) locale** — `src/i18n/locales/fil.ts`. Full key parity with
-  `ja`. Mandatory per `new-docs/12-frontend-architecture.md §6` (all four
+  `ja`. Mandatory per the umbrella frontend-architecture spec §6 (all four
   locales: `ja`, `en`, `vi`, `fil`).
 - **`GodxLocale` type** — replaces the Forge-branded `ForgeLocale`. Both are
   exported; `ForgeLocale` is `@deprecated` but still resolves to the same type so

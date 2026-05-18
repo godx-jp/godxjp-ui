@@ -48,8 +48,8 @@ That is the entire integration surface. No theming step. No per-service token fi
 
 ## Zero-config toolchain
 
-Per `new-docs/12-frontend-architecture.md` (zero-config principle), services inherit
-the full toolchain from this package:
+Per the umbrella's frontend-architecture spec (zero-config principle), services
+inherit the full toolchain from this package:
 
 ```js
 // eslint.config.js — one line
@@ -129,7 +129,7 @@ export default mergeConfig(base, { test: {} })
 
 ## i18n
 
-Mandatory locales per `new-docs/12-frontend-architecture.md §6`:
+Mandatory locales per the umbrella frontend-architecture spec §6:
 
 | Locale | Status |
 |---|---|

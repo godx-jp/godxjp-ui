@@ -34,7 +34,7 @@ palette.
 `@godxjp/ui` does not use JavaScript for dark mode or theming. All
 visual switching happens via CSS attribute selectors on the
 `<html>` element. There are **four orthogonal axes** (see
-[01 — theme axes](../../new-docs/01-theme-axes.md)):
+[01 — theme axes](../specs/01-theme-axes.md)):
 
 | Attribute        | Values                                                                                            | What changes                       |
 | ---------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------- |

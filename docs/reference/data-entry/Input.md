@@ -103,5 +103,5 @@ function LoginForm() {
 ## See also
 
 - [Label](./Label.md) — always pair Input with Label.
-- [Select](./Select.md) — dropdown alternative to text input.
-- [Combobox](./Combobox.md) — searchable select.
+- [Select](./Select.md) — dropdown alternative; pass `searchable` for a filter input.
+- [AutoComplete](./AutoComplete.md) — free-text input with suggestion dropdown.

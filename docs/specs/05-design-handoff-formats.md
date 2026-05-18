@@ -22,7 +22,7 @@ existing handoff bundle workflow.
 | Format | Where | Use when | Maps to |
 |---|---|---|---|
 | **Claude Design HTML/CSS prototype** | `design-handoff/ui-system/<bundle>/project/preview/comp-<name>.html` | Default. User mocks on `claude.ai/design`, exports the bundle. | new-godx-design-to-component skill 10-step procedure |
-| **`DESIGN.md` (google-labs)** | `design-handoff/<bundle>/DESIGN.md` (planned) | Token-first handoff — YAML front matter + markdown prose | Direct mapping to `theme.css :root` + new-docs/03 §B–§I + per-component story binding |
+| **`DESIGN.md` (google-labs)** | `design-handoff/<bundle>/DESIGN.md` (planned) | Token-first handoff — YAML front matter + markdown prose | Direct mapping to `theme.css :root` + docs/specs/03 §B–§I + per-component story binding |
 | **W3C DTCG JSON** | `design-handoff/<bundle>/tokens.dtcg.json` (planned) | Inter-tool exchange (Figma plugins, Penpot, Style Dictionary) | Imported via `scripts/import-tokens-dtcg.mjs` (planned) → `theme.css :root` |
 | **Figma JSON export** | `design-handoff/<bundle>/figma.json` (planned) | Designer ships from Figma directly | Importer extracts colors / type / spacing → maps to existing token names |
 
@@ -106,7 +106,7 @@ Primary is SmartHR-blue (#0077C7) — chosen for trust + neutrality. …
 | `rounded.<size>` | `--radius-<size>` token |
 | `components.<name>` | Storybook story under `<Group>/<Name>` (Theme, General, Layout, Data Display, Data Entry, Feedback, Navigation, Shell, Usage Cases — flattened to root; no `new-primitives/` prefix) |
 | `{colors.primary}` token reference | `var(--primary)` |
-| Markdown prose | `docs/explanation/<topic>.md` or `new-docs/<N>-<topic>.md` |
+| Markdown prose | `docs/explanation/<topic>.md` or `docs/specs/<N>-<topic>.md` |
 
 ### Workflow when a `DESIGN.md` lands
 
@@ -131,9 +131,9 @@ existing token system:
 | **broken-token-ref** | `var(--non-existent)` in any CSS / `style=` prop |
 | **wcag-contrast** | Color pairs (background + foreground) that fail 4.5:1 contrast at AA |
 | **orphaned-token** | A token declared in `theme.css` but referenced nowhere |
-| **section-ordering** | new-docs files that violate canonical §A → §Z ordering |
+| **section-ordering** | docs/specs files that violate canonical §A → §Z ordering |
 | **duplicate-token** | Two tokens with the same value (consolidate) |
-| **prop-vocabulary** | A prop name not in `new-docs/04` (cardinal rule 23 §B) |
+| **prop-vocabulary** | A prop name not in `docs/specs/04` (cardinal rule 23 §B) |
 | **density-axis-coverage** | A primitive that hardcodes a height instead of reading `--density-element` |
 
 These are enforced by `scripts/lint-tokens.mjs` (planned) +
@@ -204,7 +204,7 @@ exporters emit the format-specific syntax for the target.
 ## §G — Canonical section ordering (cross-format)
 
 Adopted from google-labs DESIGN.md `section-ordering` rule. Every
-design-handoff doc + every `new-docs/` doc + every primitive's
+design-handoff doc + every `docs/specs/` doc + every primitive's
 `docs/reference/<group>/<Name>.md` follows:
 
 ```

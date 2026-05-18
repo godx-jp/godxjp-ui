@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * lint-tokens.mjs — enforce the 7 lint rules from
- * `new-docs/05-design-handoff-formats.md` §C + skill Part 5.5.
+ * `docs/specs/05-design-handoff-formats.md` §C + skill Part 5.5.
  *
  * Each rule scans the framework's CSS / TSX surface and emits
  * violations. Non-zero exit code on any failure.
@@ -15,9 +15,9 @@
  *   R1 broken-token-ref      var(--non-existent) in any CSS / style=
  *   R2 wcag-contrast         color pairs failing 4.5:1 AA (deferred)
  *   R3 orphaned-token        token declared but referenced nowhere
- *   R4 section-ordering      new-docs files with non-monotonic §A→§Z
+ *   R4 section-ordering      docs/specs files with non-monotonic §A→§Z
  *   R5 duplicate-token       two tokens with identical value
- *   R6 prop-vocabulary       prop name not in new-docs/04 vocabulary
+ *   R6 prop-vocabulary       prop name not in docs/specs/04 vocabulary
  *   R7 density-axis-coverage primitive hardcodes height (interactive
  *                            element pixel literal outside exceptions)
  */
@@ -66,8 +66,8 @@ const tsxFiles = walk(join(ROOT, "src"), [".tsx", ".ts"]).filter(
 const storyFiles = walk(join(ROOT, "src"), [".stories.tsx"]).filter(
   (f) => f.includes("/src/stories/"),
 );
-const newDocsFiles = (() => {
-  try { return walk(join(ROOT, "new-docs"), [".md"]); }
+const specsFiles = (() => {
+  try { return walk(join(ROOT, "docs/specs"), [".md"]); }
   catch { return []; }
 })();
 
@@ -279,8 +279,8 @@ function r3_OrphanedToken(tokens, refs) {
 
 function r4_SectionOrdering() {
   const violations = [];
-  for (const file of newDocsFiles) {
-    if (file.endsWith("00-index.md")) continue; // index has no sections
+  for (const file of specsFiles) {
+    if (file.endsWith("README.md")) continue; // index has no sections
     const txt = readFileSync(file, "utf-8");
     const rel = relative(ROOT, file);
     const lines = txt.split("\n");
@@ -318,7 +318,7 @@ function r5_DuplicateToken(tokens) {
   // fill — they map together to ONE accent hue per palette but
   // semantically remain distinct props on the consumer side.
   // Design-canon-documented intentional groups. Each is cited in
-  // new-docs/03 §B–§E or the dxs-kintai SKILL.md. Cardinal rule
+  // docs/specs/03 §B–§E or the dxs-kintai SKILL.md. Cardinal rule
   // 23 §A still applies: each token encodes ONE concept; these are
   // deliberate cross-mappings where multiple semantic roles
   // resolve to the same value at a specific density / theme.
@@ -326,14 +326,14 @@ function r5_DuplicateToken(tokens) {
   const intentionalGroups = [
     // Brand chain — `primary` / `ring` / `brand` / `sidebar-active-fg`
     // intentionally share the accent hue per palette + dark variant.
-    // Cited in new-docs/03 §B "Brand chain rules".
+    // Cited in docs/specs/03 §B "Brand chain rules".
     new Set(["primary", "ring", "brand", "sidebar-active-fg"]),
     // `destructive` ↔ `error` — `error` is the documented alias of
     // `destructive` for form-validation contexts.
-    // Cited in new-docs/03 §B "Semantic chain".
+    // Cited in docs/specs/03 §B "Semantic chain".
     new Set(["destructive", "error"]),
     // Light-mode warm off-white shared across page / card / popover
-    // / input-bg / surface-1. Cited in new-docs/03 §B "Surface chain".
+    // / input-bg / surface-1. Cited in docs/specs/03 §B "Surface chain".
     new Set(["background", "card", "popover", "input-background", "surface-1"]),
     // Warm off-black text on every light-mode surface.
     new Set(["foreground", "card-foreground", "popover-foreground",
@@ -348,7 +348,7 @@ function r5_DuplicateToken(tokens) {
     // border = input (both hairline grey).
     new Set(["border", "input"]),
     // Density values at default — design canon's 1rem step for
-    // card / page / section. Cited in new-docs/03 §E.
+    // card / page / section. Cited in docs/specs/03 §E.
     new Set(["density-card", "density-page", "density-section"]),
     new Set(["density-dialog", "density-page-title"]),
     new Set(["density-element", "density-table-head"]),
@@ -356,10 +356,10 @@ function r5_DuplicateToken(tokens) {
     new Set(["density-element-xs", "density-dialog"]),
     new Set(["density-element-xl", "header-height"]),
     // Card chrome — design canon pins .ch / .cf / .ch-kicker / .ch
-    // gap all to 10px. Cited in new-docs/03 §J "Component-scope tokens".
+    // gap all to 10px. Cited in docs/specs/03 §J "Component-scope tokens".
     new Set(["card-pad-y-header", "card-pad-y-footer",
              "card-header-gap", "card-kicker-size"]),
-    // Dark-mode surface collapse documented in new-docs/03 §L.
+    // Dark-mode surface collapse documented in docs/specs/03 §L.
     new Set(["sidebar-bg", "topbar-bg", "surface-2"]),
     new Set(["sidebar-border", "topbar-border"]),
     new Set(["popover", "input-background"]),
@@ -434,7 +434,7 @@ function r5_DuplicateToken(tokens) {
 // ─── Rule R6 — prop-vocabulary (stub — manual review until full impl) ───
 
 const LOCKED_VOCAB = new Set([
-  // From new-docs/04 §A
+  // From docs/specs/04 §A
   "size", "variant", "color", "tone", "accent", "padding", "density",
   "shape", "status", "block", "hoverable",
   "disabled", "loading", "readOnly", "required", "autoFocus",

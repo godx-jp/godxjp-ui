@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
+import { useEffect, useState } from "react";
 import { Select } from "../../components/data-entry/Select";
 import { Flex } from "../../components/layout";
 
@@ -214,4 +215,96 @@ export const WithPlaceholder: Story = {
       />
     </div>
   ),
+};
+
+// ─── Searchable — cmdk-backed filter (former Combobox) ──────────
+
+const employees = [
+  { value: "tanaka-misaki", label: "田中 美咲" },
+  { value: "sato-kenta", label: "佐藤 健太" },
+  { value: "suzuki-rina", label: "鈴木 莉奈" },
+  { value: "takahashi-haruto", label: "高橋 陽斗" },
+  { value: "watanabe-yui", label: "渡辺 結衣" },
+];
+
+export const Searchable: Story = {
+  name: "Searchable · cmdk filter input",
+  render: function Searchable() {
+    const [value, setValue] = useState<string>();
+    return (
+      <div style={{ width: 240 }}>
+        <Select
+          searchable
+          options={employees}
+          placeholder="従業員を選択"
+          searchPlaceholder="名前で検索"
+          emptyLabel="該当する従業員がいません。"
+          value={value}
+          onValueChange={setValue}
+        />
+      </div>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const portal = canvasElement.ownerDocument.body;
+    await step("trigger opens command surface", async () => {
+      await userEvent.click(canvas.getByRole("button", { name: /従業員を選択/ }));
+      await waitFor(() => {
+        expect(
+          within(portal).getByPlaceholderText("名前で検索"),
+        ).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+export const SearchableEmpty: Story = {
+  name: "Searchable · empty state",
+  render: () => (
+    <div style={{ width: 260 }}>
+      <Select
+        searchable
+        defaultOpen
+        options={[]}
+        placeholder="従業員を選択"
+        searchPlaceholder="名前で検索"
+        emptyLabel="該当する従業員がいません。"
+      />
+    </div>
+  ),
+};
+
+export const SearchableAsync: Story = {
+  name: "Searchable · deferred load + loading row",
+  render: function SearchableAsync() {
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [items, setItems] = useState<typeof employees>([]);
+    useEffect(() => {
+      if (!open) return;
+      setLoading(true);
+      setItems([]);
+      const timer = window.setTimeout(() => {
+        setItems(employees);
+        setLoading(false);
+      }, 600);
+      return () => window.clearTimeout(timer);
+    }, [open]);
+    return (
+      <div style={{ width: 260 }}>
+        <Select
+          searchable
+          open={open}
+          onOpenChange={setOpen}
+          options={items}
+          placeholder="従業員を読み込む"
+          searchPlaceholder="名前で検索"
+          emptyLabel="該当する従業員がいません。"
+          loading={loading}
+          loadingLabel="読み込み中…"
+        />
+      </div>
+    );
+  },
 };

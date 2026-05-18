@@ -112,5 +112,4 @@ status: published
 
 - [Tutorial 01: Getting started](../tutorials/01-getting-started.md)
 - [How-to: Compose shell](./compose-shell.md)
-- [Explanation: Compatibility](../explanation/compatibility.md)
-- CLAUDE.md hard rule #15 — adoption tracker mandatory for every service frontend
+- [02 — Consumer contract](../specs/02-consumer-contract.md) — full dist surface + folder shape.

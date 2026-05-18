@@ -908,7 +908,7 @@
 .tree-guide-branch::after {
   top: 50%;
   left: 50%;
-  width: calc(var(--tree-indent) / 2);
+  width: calc(var(--tree-indent) / 2 + var(--spacing-4) + var(--tree-gap));
   border-top: 1px solid var(--border);
 }
 .tree[data-show-line="true"] .tree-guide[data-continuation="true"]::before,

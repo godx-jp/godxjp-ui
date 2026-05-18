@@ -12,22 +12,22 @@ inside `libs/ts/godxjp-ui/`.
 
 Two layers of binding rules apply. Framework-internal concepts
 (theme axes, the consumer contract, …) live in this submodule's
-own [`new-docs/`](./new-docs/). Umbrella-platform concerns
+own [`docs/specs/`](./docs/specs/). Umbrella-platform concerns
 (monorepo layout, submodule + CI wiring, service naming, …) live
 in the umbrella's [`new-docs/`](../../../new-docs/). Read the
 framework's own first; the umbrella's second.
 
 | Trigger | Required reading |
 |---------|------------------|
-| **Add / rename a `data-*` attribute on `<html>` that re-binds design tokens; add a user preference toggle (theme / accent / density / font-size / new axis)** | [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
-| **Build any feature that consumes the framework (or audit one); change `theme.css`, ESLint / Prettier / TS configs in a consumer; need a primitive that does not exist; add a `className` for visual styling** | [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
+| **Add / rename a `data-*` attribute on `<html>` that re-binds design tokens; add a user preference toggle (theme / accent / density / font-size / new axis)** | [`./docs/specs/01-theme-axes.md`](./docs/specs/01-theme-axes.md) |
+| **Build any feature that consumes the framework (or audit one); change `theme.css`, ESLint / Prettier / TS configs in a consumer; need a primitive that does not exist; add a `className` for visual styling** | [`./docs/specs/02-consumer-contract.md`](./docs/specs/02-consumer-contract.md) |
 | Editing any source file inside this submodule | [`./CLAUDE.md`](./CLAUDE.md) (20 cardinal framework rules) |
 | Layout / monorepo position | [`../../../new-docs/05-monorepo-layout.md`](../../../new-docs/05-monorepo-layout.md) |
 | README + AGENTS skeleton | [`../../../new-docs/07-service-readme.md`](../../../new-docs/07-service-readme.md) + [`../../../new-docs/08-service-agents-md.md`](../../../new-docs/08-service-agents-md.md) |
 | `docs/` Diátaxis tree | [`../../../new-docs/09-service-docs.md`](../../../new-docs/09-service-docs.md) §Library docs |
 | Doc deduplication (DRY) | [`../../../new-docs/10-doc-deduplication.md`](../../../new-docs/10-doc-deduplication.md) |
 | Branch + PR + CI workflow | [`../../../new-docs/11-workflow-branching.md`](../../../new-docs/11-workflow-branching.md) |
-| Monorepo-platform wiring of consumer frontends (pnpm workspace, submodule pin, extraction invariant, Renovate, CI gates) | [`../../../new-docs/12-frontend-architecture.md`](../../../new-docs/12-frontend-architecture.md) — umbrella scope; framework consumer contract lives in [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
+| Monorepo-platform wiring of consumer frontends (pnpm workspace, submodule pin, extraction invariant, Renovate, CI gates) | [`../../../new-docs/12-frontend-architecture.md`](../../../new-docs/12-frontend-architecture.md) — umbrella scope; framework consumer contract lives in [`./docs/specs/02-consumer-contract.md`](./docs/specs/02-consumer-contract.md) |
 
 There is no "small exception". International-standard means every
 change conforms.
@@ -87,7 +87,7 @@ libs/ts/godxjp-ui/
 │   ├── primitives/                 # one .stories.tsx per primitive
 │   ├── shell/                      # one per shell composition
 │   └── screens/                    # one per screen recipe
-├── docs/                           # Diátaxis tree per new-docs/09 §Library docs
+├── docs/                           # Diátaxis tree per umbrella service-docs spec §Library docs
 │   ├── README.md                   # 2×2 grid index
 │   ├── tutorials/                  # 01-getting-started, 02-theming, …
 │   ├── how-to/                     # override-tokens, compose-shell, contribute-primitive, customize-theme, …
@@ -122,8 +122,8 @@ Per [umbrella rule 10](../../../new-docs/10-doc-deduplication.md):
 | Topic | Home |
 |---|---|
 | What the package is | [`README.md`](./README.md) |
-| **Theme axes** (theme / accent / density / font-size + cascade layering) | [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
-| **Consumer contract** (mandatory consumption, no-className-for-visual, search-first, folder shape, service-layer + TanStack Query, i18n bootstrap, config inheritance, primitive extension) | [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
+| **Theme axes** (theme / accent / density / font-size + cascade layering) | [`./docs/specs/01-theme-axes.md`](./docs/specs/01-theme-axes.md) |
+| **Consumer contract** (mandatory consumption, no-className-for-visual, search-first, folder shape, service-layer + TanStack Query, i18n bootstrap, config inheritance, primitive extension) | [`./docs/specs/02-consumer-contract.md`](./docs/specs/02-consumer-contract.md) |
 | Per-primitive API | `docs/reference/<group>/<Name>.md` |
 | Per-shell-component API | `docs/reference/shell/<Name>.md` |
 | Per-hook API | `docs/reference/hooks/<Name>.md` |
@@ -132,8 +132,8 @@ Per [umbrella rule 10](../../../new-docs/10-doc-deduplication.md):
 | Every export entry | `docs/reference/exports.md` |
 | Design philosophy | `docs/explanation/design-philosophy.md` |
 | WCAG 2.1 AA approach | `docs/explanation/accessibility.md` |
-| Versioning policy | `docs/explanation/versioning.md` |
-| Brand bible | [`BRAND.md`](./BRAND.md) (referenced from `docs/explanation/brand-bible.md`) |
+| Versioning policy | [`CHANGELOG.md`](./CHANGELOG.md) + CLAUDE.md cardinal rule 7 |
+| Brand bible | [`BRAND.md`](./BRAND.md) |
 | Change log | [`CHANGELOG.md`](./CHANGELOG.md) |
 | Architecture decisions | `docs/adr/` |
 
@@ -167,7 +167,7 @@ The rule is binding for three reasons:
 3. Re-export from `src/components/primitives.ts` (the single
    barrel file).
 4. Add `docs/reference/<group>/<Name>.md` (Diátaxis reference
-   per [new-docs/09 §Library docs](../../../new-docs/09-service-docs.md)).
+   per [umbrella service-docs spec §Library docs](../../../new-docs/09-service-docs.md)).
 5. **Add `src/stories/<group>/<Name>.stories.tsx`** — covers
    every variant + state (default, hover, active, focused,
    disabled, loading, error). Both light and dark theme.
@@ -236,7 +236,7 @@ export const Dark: Story = {
 - `.storybook/main.ts` — addons (a11y, themes, viewports,
   controls, docs).
 - `.storybook/preview.tsx` — global decorators wiring the four
-  canonical theme axes ([`new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md))
+  canonical theme axes ([`docs/specs/01-theme-axes.md`](./docs/specs/01-theme-axes.md))
   as toolbar globals: **theme** (light/dark), **accent** /
   Color theme (blue/green/violet/amber/rose/slate), **density**
   (compact/default/comfortable), **font-size** (sm/base/lg/xl).
@@ -548,7 +548,7 @@ grep -E "^\s*--(text-|spacing-|density-|radius-|shadow-)" src/styles/theme.css
 grep -E "^\s*--<component>-" src/styles/theme.css
 
 # The full token catalogue is at:
-#   new-docs/03-token-system.md
+#   docs/specs/03-token-system.md
 ```
 
 Decision tree:
@@ -602,7 +602,7 @@ PR description must cite the peer ("modeled prop shape after
 ## Axes compliance recipe (cardinal rule 21)
 
 **Every component supports all four theme axes** —
-[`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) defines
+[`./docs/specs/01-theme-axes.md`](./docs/specs/01-theme-axes.md) defines
 the axes; cardinal rule 21 binds it; this section is the
 step-by-step recipe.
 
@@ -704,7 +704,7 @@ The recommendation pool (in priority order):
 
 1. **shadcn/ui** — primitive structure + ownership model.
 2. **Radix UI** — interactive primitives (Dialog, Popover, Tabs,
-   Combobox, DropdownMenu, …).
+   Select, DropdownMenu, …).
 3. **React Aria Components (Adobe)** — accessibility-first
    primitives the shadcn community recommends where Radix doesn't
    cover the capability. Currently used for date input.
@@ -870,7 +870,7 @@ When the user posts a new design-handoff URL:
 
 ## Cross-references
 
-- **Framework binding rules** (this submodule): [`./new-docs/`](./new-docs/) — index at [`./new-docs/00-index.md`](./new-docs/00-index.md), theme axes at [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md), consumer contract at [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md)
+- **Framework binding rules** (this submodule): [`./docs/specs/`](./docs/specs/) — index at [`./docs/specs/README.md`](./docs/specs/README.md), theme axes at [`./docs/specs/01-theme-axes.md`](./docs/specs/01-theme-axes.md), consumer contract at [`./docs/specs/02-consumer-contract.md`](./docs/specs/02-consumer-contract.md)
 - Cardinal rules (this package): [`./CLAUDE.md`](./CLAUDE.md)
 - Brand bible: [`./BRAND.md`](./BRAND.md)
 - Change log: [`./CHANGELOG.md`](./CHANGELOG.md)

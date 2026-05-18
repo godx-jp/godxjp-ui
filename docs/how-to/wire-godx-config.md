@@ -173,5 +173,4 @@ change on one portal propagates to siblings.
 ## Related
 
 - [User preferences (explanation)](../explanation/godx-config.md) — design rationale + standards.
-- new-docs/12 Clause 6 — i18n layer (mandatory).
-- new-docs/12 Clause 4 — service-layer pattern (where this hooks in).
+- [02 — Consumer contract](../specs/02-consumer-contract.md) — i18n bootstrap + service-layer pattern.

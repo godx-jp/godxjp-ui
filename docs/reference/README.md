@@ -16,7 +16,7 @@ accurate description of one export. Use them to look up a prop
 table, a token name, or a type signature.
 
 For BINDING vocabulary (prop names, axes, dist surface), see the
-[`new-docs/`](../../new-docs/00-index.md) index — the reference
+[`docs/specs/`](../specs/README.md) index — the reference
 pages below cite the canonical rule for each surface.
 
 ## Component Groups
@@ -47,7 +47,6 @@ are tracked as TODO follow-on.
 | [Calendar](./data-display/Calendar.md)       | stable | `react-aria-components` + `@internationalized/date` |
 | [Card](./data-display/Card.md)               | stable | —                                                   |
 | [Checkbox](./data-entry/Checkbox.md)         | stable | `@radix-ui/react-checkbox`                          |
-| [Combobox](./data-entry/Combobox.md)         | stable | `cmdk` + Popover                                    |
 | [Dialog](./feedback/Dialog.md)               | stable | `@radix-ui/react-dialog`                            |
 | [DropdownMenu](./navigation/DropdownMenu.md) | stable | `@radix-ui/react-dropdown-menu`                     |
 | [Input / Textarea](./data-entry/Input.md)    | stable | —                                                   |
@@ -75,7 +74,7 @@ PageHeader, Pagination, Popconfirm, Progress, QRCode, Radio, Rate,
 Result, Row, SegmentedControl, Slider, Space, Spinner, Statistic,
 Steps, Tag, Textarea, Timeline, Tooltip, Tour, Transfer, Tree,
 TreeSelect, Typography, Watermark — see
-[02 — consumer contract §A-2](../../new-docs/02-consumer-contract.md)
+[02 — consumer contract §A-2](../specs/02-consumer-contract.md)
 for the full per-group catalogue).
 
 ## Shell

@@ -2,7 +2,7 @@
 
 This file is loaded into every conversation context. Keep it terse.
 Detailed recipes live in [`AGENTS.md`](./AGENTS.md); deep binding
-specs live in [`new-docs/`](./new-docs/00-index.md).
+specs live in [`docs/specs/`](./docs/specs/README.md).
 
 ## Repo at a glance
 
@@ -37,11 +37,11 @@ type-check (~5s). `--no-verify` is forbidden.
 
 | You are about to… | Read |
 |---|---|
-| Add / rename `data-*` axis on `<html>`; add a user preference toggle | [`new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
-| Start a new consumer; change consumer folder shape; add a primitive | [`new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
-| Add / rename / remove a design token; write CSS needing a value | [`new-docs/03-token-system.md`](./new-docs/03-token-system.md) |
-| Add / rename a prop; author a new primitive's API | [`new-docs/04-prop-vocabulary.md`](./new-docs/04-prop-vocabulary.md) |
-| Accept a new design handoff bundle; add lint guardrails | [`new-docs/05-design-handoff-formats.md`](./new-docs/05-design-handoff-formats.md) |
+| Add / rename `data-*` axis on `<html>`; add a user preference toggle | [`docs/specs/01-theme-axes.md`](./docs/specs/01-theme-axes.md) |
+| Start a new consumer; change consumer folder shape; add a primitive | [`docs/specs/02-consumer-contract.md`](./docs/specs/02-consumer-contract.md) |
+| Add / rename / remove a design token; write CSS needing a value | [`docs/specs/03-token-system.md`](./docs/specs/03-token-system.md) |
+| Add / rename a prop; author a new primitive's API | [`docs/specs/04-prop-vocabulary.md`](./docs/specs/04-prop-vocabulary.md) |
+| Accept a new design handoff bundle; add lint guardrails | [`docs/specs/05-design-handoff-formats.md`](./docs/specs/05-design-handoff-formats.md) |
 
 For workflows (per-PR gates, design-canon port procedure, ADR
 authoring) read [`AGENTS.md`](./AGENTS.md).
@@ -113,7 +113,7 @@ Absolute. CI / pre-commit / review reject anything that violates.
     (compact / default / comfortable), `data-font-size` (sm / base /
     lg / xl). Read from tokens, never hardcode values. Verify every
     PR via the Storybook toolbar sweep. Details:
-    [`new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md).
+    [`docs/specs/01-theme-axes.md`](./docs/specs/01-theme-axes.md).
 22. **100% match to the design canon.** Every visual literal comes
     from `design-handoff/ui-system/<latest-bundle>/`. Token-pin
     canon literals; never substitute "close enough". If the bundle
@@ -125,7 +125,7 @@ Absolute. CI / pre-commit / review reject anything that violates.
     `value` / `defaultValue` / `onValueChange`,
     `open` / `defaultOpen` / `onOpenChange`, `justify`, `sticky`,
     `offset`). Full table:
-    [`new-docs/04-prop-vocabulary.md`](./new-docs/04-prop-vocabulary.md).
+    [`docs/specs/04-prop-vocabulary.md`](./docs/specs/04-prop-vocabulary.md).
     Before adding a new prop or token: grep for an existing one.
     Before authoring a primitive: grep the barrels + read the peer
     primitive end-to-end.
@@ -180,7 +180,7 @@ Absolute. CI / pre-commit / review reject anything that violates.
 ## Links
 
 - Recipes / workflows / gotchas: [`AGENTS.md`](./AGENTS.md)
-- Framework binding rules: [`new-docs/`](./new-docs/00-index.md)
+- Framework binding rules: [`docs/specs/`](./docs/specs/README.md)
 - ADRs: [`docs/adr/`](./docs/adr/README.md)
 - Diátaxis manual: [`docs/`](./docs/)
 - Brand bible: [`BRAND.md`](./BRAND.md)

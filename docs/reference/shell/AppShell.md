@@ -67,7 +67,7 @@ The grid dimensions use CSS custom properties from tokens:
 
 - Control collapse state via `sidebarCollapsed` prop — typically driven by `useTweaks().tweaks.sidebarCollapsed`.
 - Inject per-page breadcrumbs or actions via the `rightSlot` prop of `Topbar` (not via AppShell directly).
-- Set any of the four theme-axis attributes (`data-theme`, `data-accent`, `data-density`, `data-font-size`) on the `<html>` element (via `useTweaks`) to change the visual layer without touching AppShell. See [01 — theme axes](../../../new-docs/01-theme-axes.md).
+- Set any of the four theme-axis attributes (`data-theme`, `data-accent`, `data-density`, `data-font-size`) on the `<html>` element (via `useTweaks`) to change the visual layer without touching AppShell. See [01 — theme axes](../../specs/01-theme-axes.md).
 
 ## Accessibility
 

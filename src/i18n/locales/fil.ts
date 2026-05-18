@@ -1,6 +1,7 @@
 import type { ForgeTranslations } from "./ja";
 
-// Filipino (Tagalog) translation — mandatory locale per new-docs/12 §6.
+// Filipino (Tagalog) translation — mandatory locale per the umbrella
+// frontend-architecture spec §6.
 const fil: ForgeTranslations = {
   brand: {
     forge: "GoDX Forge",

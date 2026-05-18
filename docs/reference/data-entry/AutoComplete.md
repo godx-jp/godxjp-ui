@@ -1,6 +1,6 @@
 ---
 title: "AutoComplete"
-description: "Combobox-backed text input with case-insensitive suggestion filtering and optional free-text commit."
+description: "Free-text input with case-insensitive suggestion filtering and optional custom-value commit. Backed by cmdk + Popover."
 diataxis: reference
 audience: [developer]
 status: stable
@@ -12,20 +12,20 @@ library_version: 3.0.0
 
 # AutoComplete
 
-> Combobox-backed text input — type to filter suggestions; pick to commit the option's `value`.
+> Free-text input with filtered suggestions — type anything; optionally pick a suggestion to commit its `value`.
 
-Thin wrapper over the `Combobox*` primitives (cmdk + Radix Popover). Free-text typing is always allowed; selecting a suggestion commits that option's `value` via `onValueChange`. With `allowCustomValue`, typed text that does not match any option still commits on blur — useful when the suggestion list is a hint, not a constraint.
+Built on cmdk + Radix Popover. Free-text typing is always allowed; selecting a suggestion commits that option's `value` via `onValueChange`. With `allowCustomValue`, typed text that does not match any option still commits on blur — useful when the suggestion list is a hint, not a constraint.
 
 ## When to use
 
 See [Select](./Select.md) for the canonical decision table. In short:
 
-| Need                                                 | Use                       |
-| ---------------------------------------------------- | ------------------------- |
-| Search / filter input above the list                 | [Combobox](./Combobox.md) |
-| Free-text typing in addition to filtered suggestions | **AutoComplete**          |
-| Fixed list, no search                                | [Select](./Select.md)     |
-| Hierarchical / nested options                        | [Cascader](./Cascader.md) |
+| Need                                                 | Use                                |
+| ---------------------------------------------------- | ---------------------------------- |
+| Search / filter input above a constrained list       | [`<Select searchable>`](./Select.md) |
+| Free-text typing in addition to filtered suggestions | **AutoComplete**                   |
+| Fixed list, no search                                | [Select](./Select.md)              |
+| Hierarchical / nested options                        | [Cascader](./Cascader.md)          |
 
 ## Usage
 
@@ -116,7 +116,7 @@ function NameOrAdHocInput() {
 
 ## See also
 
-- [Combobox](./Combobox.md) — underlying primitive without the free-text commit shortcut.
+- [`<Select searchable>`](./Select.md) — constrained list with a filter input; commits a value from the options only.
 - [Select](./Select.md) — fixed-list dropdown with the canonical decision table.
 - [Cascader](./Cascader.md) — nested-column variant for hierarchical data.
 - Source: [`src/components/data-entry/AutoComplete.tsx`](../../../src/components/data-entry/AutoComplete.tsx)

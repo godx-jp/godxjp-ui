@@ -45,7 +45,7 @@ describe("locale parity", () => {
 })
 
 describe("SUPPORTED_LOCALES", () => {
-  it("includes all four mandatory locales (new-docs/12 §6)", async () => {
+  it("includes all four mandatory locales (umbrella frontend-architecture §6)", async () => {
     const { SUPPORTED_LOCALES } = await import("../index")
     expect(Array.from(SUPPORTED_LOCALES)).toEqual(expect.arrayContaining(["ja", "en", "vi", "fil"]))
   })

@@ -6,7 +6,7 @@ import { Table, type TableColumn } from "../../components/data-display/Table";
  * locked shared prop axes (cardinal rule 23 §B). Walks through
  * every prop name + type + usage.
  *
- * Source-of-truth: `new-docs/04-prop-vocabulary.md`.
+ * Source-of-truth: `docs/specs/04-prop-vocabulary.md`.
  */
 
 const meta: Meta = {
@@ -21,7 +21,7 @@ Every primitive's prop names map to one of these rows; synonyms
 (\`scale\` for \`size\`, \`kind\` for \`variant\`, \`intent\` for
 \`color\`, \`compactness\` for \`padding\`, …) are rejected at review.
 
-Source: [\`new-docs/04-prop-vocabulary.md\`](https://github.com/godx-jp/godxjp-ui/blob/main/new-docs/04-prop-vocabulary.md).
+Source: [\`docs/specs/04-prop-vocabulary.md\`](https://github.com/godx-jp/godxjp-ui/blob/main/docs/specs/04-prop-vocabulary.md).
         `.trim(),
       },
     },

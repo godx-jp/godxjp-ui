@@ -22,7 +22,7 @@ the relevant reference page.
 ## Foundation: Radix UI primitives
 
 Every interactive primitive — Button, Dialog, Select, Tabs, AlertDialog,
-Switch, Checkbox, Combobox, DropdownMenu, Popover, Sheet, Calendar — wraps the
+Switch, Checkbox, DropdownMenu, Popover, Sheet, Calendar — wraps the
 corresponding Radix UI primitive (ADR-0001). Radix handles:
 
 - ARIA role injection (`role="dialog"`, `role="listbox"`, `role="combobox"`, etc.)
@@ -104,11 +104,10 @@ is a summary of primitives in `@godxjp/ui`:
 | -------------------- | -------------------------------------------------------------------------------------------------- |
 | Button               | Enter / Space activates. Focus received by Tab.                                                    |
 | Dialog / AlertDialog | Trap focus inside. Escape closes.                                                                  |
-| Select               | Arrow keys move options. Home/End jump. Escape closes. Type-to-focus on character.                 |
+| Select               | Arrow keys move options. Home/End jump. Escape closes. Type-to-focus on character. `searchable` mode swaps the type-to-focus for a cmdk filter input. |
 | Tabs                 | Arrow keys move between triggers. Tabs navigate in/out.                                            |
 | Checkbox             | Space toggles. Indeterminate is navigable but does not toggle via Space alone (host code decides). |
 | Switch               | Space / Enter toggles.                                                                             |
-| Combobox             | Arrow keys move list. Enter selects. Escape closes. Char input filters.                            |
 | DropdownMenu         | Arrow keys move items. Escape closes. Enter activates.                                             |
 | Calendar             | Arrow keys move days. Page Up/Down move months. Home/End jump to first/last day.                   |
 
@@ -179,14 +178,12 @@ user browser font-size preference (WCAG 1.4.4 — resize text).
 
 ## Testing
 
-Each primitive is tested against axe-core as part of the component test suite.
-The Storybook integration (planned for v3.1.0) will run `@storybook/addon-a11y`
-on every story as a CI gate. Until Storybook lands, the test suite uses
-`@testing-library/react` + `jest-axe` or `vitest-axe` to assert no a11y
-violations on render.
+Each primitive is tested against axe-core via Storybook's
+`@storybook/addon-a11y` (cardinal rule 1 + 6). Every story doubles as the
+a11y test surface; CI runs the addon on every story as a gate.
 
-Engineers adding a new primitive must include an a11y test case. The
-`godx-test-discipline` skill details the case ID format and coverage floor.
+Engineers adding a new primitive must include a story covering every
+variant + state on both `[data-theme="light"]` and `[data-theme="dark"]`.
 
 ---
 

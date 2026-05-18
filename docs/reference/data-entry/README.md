@@ -21,7 +21,6 @@ Input, form, and selection primitives. This folder mirrors `src/components/data-
 | [Checkbox](./Checkbox.md)         | stable |
 | [Checklist](./Checklist.md)       | stable |
 | [ColorPicker](./ColorPicker.md)   | stable |
-| [Combobox](./Combobox.md)         | stable |
 | [DatePicker](./DatePicker.md)     | stable |
 | [Field](./Field.md)               | stable |
 | [Form](./Form.md)                 | stable |

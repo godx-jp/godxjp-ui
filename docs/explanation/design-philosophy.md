@@ -102,7 +102,7 @@ The design tokens encode three Japanese enterprise aesthetic principles:
 
 These are brand contracts, not taste choices. Deviations require operator sign-off.
 
-**See also:** [BRAND.md](../../BRAND.md), [brand-bible](./brand-bible.md).
+**See also:** [BRAND.md](../../BRAND.md).
 
 ---
 

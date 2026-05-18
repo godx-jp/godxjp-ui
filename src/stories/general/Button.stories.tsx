@@ -21,7 +21,7 @@ import { Flex } from "../../components/layout";
  *   §21 — every axis (theme/accent/density/font-size)
  *   §22 — every literal token-pinned
  *   §23 — vocabulary (`size`, `variant`, `block`, `loading`,
- *          `startContent`, `endContent` per new-docs/04)
+ *          `startContent`, `endContent` per docs/specs/04)
  *   §24 — mobile-first touch-target floor (@media <md → 44px)
  *   §25 — story is docs; primitive is the UI (see Button.tsx +
  *          .btn CSS in shell.css for the implementation)

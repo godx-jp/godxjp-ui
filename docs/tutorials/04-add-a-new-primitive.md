@@ -105,7 +105,7 @@ Token rules to observe (cardinal rules 2 + 15 + 16 + 22):
 
 - Background colors use semantic tokens (`--border`, `--primary`).
 - Spacing comes from `--spacing-4`, not a literal pixel value.
-- The 1px hairline is a documented exception ([03 §F](../../new-docs/03-token-system.md#f--radius)).
+- The 1px hairline is a documented exception ([03 §F](../specs/03-token-system.md#f--radius)).
 
 ---
 
@@ -160,7 +160,7 @@ Notes:
 - `forwardRef` per cardinal rule 13.
 - `cn` imported from `"../cn"` (one level above the group folder).
 - The `accent` prop matches the vocabulary row in
-  [04 — prop vocabulary §F](../../new-docs/04-prop-vocabulary.md).
+  [04 — prop vocabulary §F](../specs/04-prop-vocabulary.md).
 
 ---
 
@@ -280,7 +280,7 @@ import { Slat } from "@godxjp/ui"
 
 ## See also
 
-- [04 — prop vocabulary §F (accent)](../../new-docs/04-prop-vocabulary.md)
+- [04 — prop vocabulary §F (accent)](../specs/04-prop-vocabulary.md)
 ```
 
 ---
@@ -332,5 +332,5 @@ companion reference doc (cardinal rule 18).
 **See also:**
 
 - [How-to: Contribute a primitive](../how-to/contribute-primitive.md) — task-mode summary.
-- [02 — Consumer contract §I (extending the framework)](../../new-docs/02-consumer-contract.md).
-- [04 — Prop vocabulary](../../new-docs/04-prop-vocabulary.md).
+- [02 — Consumer contract §I (extending the framework)](../specs/02-consumer-contract.md).
+- [04 — Prop vocabulary](../specs/04-prop-vocabulary.md).

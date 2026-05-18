@@ -42,7 +42,7 @@ import { cn } from "../cn"
  * segmented inputs are timezone-correct and locale-aware.
  *
  * Visual theming flows through the four theme axes
- * (`new-docs/01-theme-axes.md`): `data-theme`, `data-accent`,
+ * (`docs/specs/01-theme-axes.md`): `data-theme`, `data-accent`,
  * `data-density`, `data-font-size`.
  */
 

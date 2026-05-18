@@ -62,7 +62,7 @@ one-liners.
 The primary consumers are GoDX platform service frontends. Each
 service frontend declares `@godxjp/ui` as a dependency and imports
 from its sub-path exports (eight today — see
-[02 — consumer contract §A](../../new-docs/02-consumer-contract.md)).
+[02 — consumer contract §A](../specs/02-consumer-contract.md)).
 The package is also publishable to npm for external godx-adjacent
 projects that want to build with the same visual language.
 
@@ -96,5 +96,5 @@ general-purpose library. An operator deploying on GoDX must use
 
 - [Design philosophy](./design-philosophy.md) — the three founding pillars.
 - [Architecture](./architecture.md) — how the atoms, molecules, and organisms relate.
-- [00 — index](../../new-docs/00-index.md) — full binding-rule trigger table.
+- [Specs index](../specs/README.md) — full binding-rule trigger table.
 - [BRAND.md](../../BRAND.md) — the visual language specification.

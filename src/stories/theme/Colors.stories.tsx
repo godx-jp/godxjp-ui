@@ -5,7 +5,7 @@ import { Flex, Row, Col } from "../../components/layout";
 /**
  * Theme/Colors — visual catalogue for the framework's
  * color system. Source-of-truth:
- * `new-docs/03-token-system.md` §B (Colour).
+ * `docs/specs/03-token-system.md` §B (Colour).
  *
  * Layers:
  *   1. Brand chain (--primary family) — rescales per data-accent

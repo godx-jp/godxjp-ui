@@ -115,7 +115,7 @@ function buildColumns(
     cell: ({ row }) => (
       <DropdownMenu
         trigger={
-          <IconButton variant="ghost" size="small" aria-label="row menu">
+          <IconButton variant="ghost" size="sm" aria-label="row menu">
             <MoreHorizontal size={16} />
           </IconButton>
         }
@@ -154,10 +154,11 @@ function buildFilterBar(
 ): TableFilterItem[] {
   const obj = OBJECTS_BY_NAME[objectName]!;
   const out: TableFilterItem[] = [];
-  for (const [name, raw] of Object.entries(obj.properties)) {
+  for (const f of filters) {
+    const raw = obj.properties[f.key];
+    if (!raw) continue;
     const prop = raw as PropertyDef;
     if (prop.type !== "EnumRef" && prop.type !== "Boolean") continue;
-    const current = filters.find((f) => f.key === name);
     let options: Array<{ value: string; label: string }> = [];
     if (prop.type === "EnumRef") {
       options = enumOptions((prop as EnumRefPropertyDef).enum, locale);
@@ -168,19 +169,17 @@ function buildFilterBar(
       ];
     }
     out.push({
-      key: name,
-      label: localize(prop.displayName, locale, name),
-      value: current ? String(current.value ?? "") : undefined,
-      valueLabel: current
-        ? options.find((o) => o.value === String(current.value))?.label
-        : undefined,
+      key: f.key,
+      label: localize(prop.displayName, locale, f.key),
+      value: String(f.value ?? ""),
+      valueLabel: options.find((o) => o.value === String(f.value))?.label,
       options,
       onValueChange: (v: string) => {
-        const others = filters.filter((f) => f.key !== name);
-        setFilters(v ? [...others, { key: name, operator: "eq", value: v }] : others);
+        const others = filters.filter((x) => x.key !== f.key);
+        setFilters(v ? [...others, { key: f.key, operator: "eq", value: v }] : others);
       },
-      closable: !!current,
-      onClose: () => setFilters(filters.filter((f) => f.key !== name)),
+      closable: true,
+      onClose: () => setFilters(filters.filter((x) => x.key !== f.key)),
     });
   }
   return out;
@@ -263,7 +262,7 @@ function ListPage({ objectName, locale }: Props) {
       key: "all",
       label: locale === "ja" ? "すべて" : "All",
       filters: [],
-      sort,
+      sort: Array.isArray(sort) ? (sort[0] ?? null) : sort,
       count: filtered.length,
     },
   ];

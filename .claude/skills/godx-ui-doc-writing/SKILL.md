@@ -1,6 +1,6 @@
 ---
 name: godx-ui-doc-writing
-description: "Binding doc-authoring procedure for @godxjp/ui. Read BEFORE editing any .md file in this repo — CLAUDE.md, AGENTS.md, new-docs/, docs/, SKILL.md, ADRs, or CHANGELOG.md. Specifies frontmatter shape per file type, upstream-spec re-fetch cadence, Diátaxis quadrant discipline, cross-link patterns, and the cardinal rules every doc must respect (27 per-group folder, 28 src/ taxonomy, 29 stories-use-primitives)."
+description: "Binding doc-authoring procedure for @godxjp/ui. Read BEFORE editing any .md file in this repo — CLAUDE.md, AGENTS.md, docs/specs/, docs/, SKILL.md, ADRs, or CHANGELOG.md. Specifies frontmatter shape per file type, upstream-spec re-fetch cadence, Diátaxis quadrant discipline, cross-link patterns, and the cardinal rules every doc must respect (27 per-group folder, 28 src/ taxonomy, 29 stories-use-primitives)."
 ---
 
 # godx-ui-doc-writing
@@ -24,7 +24,7 @@ does NOT carry.
 When this repo is cloned standalone from
 `github.com/godx-jp/godxjp-ui`, the umbrella is not present and
 its rules are not reachable. **This skill, plus this repo's
-`CLAUDE.md` / `AGENTS.md` / `new-docs/`, is sufficient on its own**
+`CLAUDE.md` / `AGENTS.md` / `docs/specs/`, is sufficient on its own**
 — there is nothing outside this tree an agent needs to consult.
 
 References to "umbrella rule N" elsewhere in this skill are
@@ -34,7 +34,7 @@ binding source. The rule as written below is what applies.
 ## When to invoke
 
 - BEFORE editing this repo's `CLAUDE.md`, `AGENTS.md`, or `BRAND.md`.
-- BEFORE writing or editing a file under `new-docs/`, `docs/`,
+- BEFORE writing or editing a file under `docs/specs/`, `docs/`,
   `.claude/skills/`, or `.codex/skills/`.
 - BEFORE adding a new ADR under `docs/adr/`.
 - BEFORE bumping a section header / renaming a key concept
@@ -58,7 +58,7 @@ rejected at review.
 | `AGENTS.md` (root or nested) | **NONE.** Pure markdown. | https://agents.md/ |
 | `.claude/skills/<name>/SKILL.md` | YAML — `name`, `description` (≤200 chars, used by RAG) | https://code.claude.com/docs/en/skills.md |
 | `.codex/skills/<name>/SKILL.md` | Byte-identical mirror of `.claude/` | (mirror — `scripts/sync-skills.sh`) |
-| `new-docs/*.md` (this repo's binding rules) | **NONE.** Pure markdown — these are agent-binding rule files, not Diátaxis content. | this skill §A |
+| `docs/specs/*.md` (this repo's binding rules) | **NONE.** Pure markdown — these are agent-binding rule files, not Diátaxis content. | this skill §A |
 | `docs/**/*.md` (non-ADR leaves) | YAML — see §A below | https://diataxis.fr + this skill §A |
 | `docs/**/README.md` (Diátaxis index) | YAML — `diataxis: index` | this skill §A |
 | `docs/adr/*.md` | YAML — MADR 3.0 frontmatter | https://adr.github.io/madr/ |
@@ -179,13 +179,13 @@ is the #1 cause of doc drift.
 
 # Part 4 — Cross-link discipline
 
-Every doc points to the rule it implements (in `new-docs/`) and the
+Every doc points to the rule it implements (in `docs/specs/`) and the
 ADR(s) it builds on (in `docs/adr/`).
 
 ```markdown
 This page implements [cardinal rule 23 (concept-first API)](../../CLAUDE.md#23)
 and the vocabulary specified in
-[04 — prop vocabulary](../../new-docs/04-prop-vocabulary.md).
+[04 — prop vocabulary](../specs/04-prop-vocabulary.md).
 ```
 
 Use **repo-relative paths** in markdown links, never absolute URLs
@@ -216,7 +216,7 @@ These apply to every doc body:
 Before editing any doc:
 
 1. **Pick the right file**. Is this content actually a binding rule
-   (→ `new-docs/` + CLAUDE.md), a reference (→ `docs/reference/`),
+   (→ `docs/specs/` + CLAUDE.md), a reference (→ `docs/reference/`),
    a recipe (→ `docs/how-to/`), or a learning journey (→
    `docs/tutorials/`)? Wrong-quadrant content is the #1 cause of
    doc drift — pick once, commit.
@@ -255,7 +255,7 @@ Before editing any doc:
 
 # Part 7 — Anti-patterns (rejected at review)
 
-- Inserting frontmatter into `CLAUDE.md` / `AGENTS.md` / `new-docs/`
+- Inserting frontmatter into `CLAUDE.md` / `AGENTS.md` / `docs/specs/`
   / `CHANGELOG.md` / `README.md` / `BRAND.md`. These have NO
   frontmatter by spec.
 - A doc that doesn't cite the cardinal rule it implements.

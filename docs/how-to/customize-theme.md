@@ -211,7 +211,7 @@ For the full inventory of tokens you can override, read the file:
 
 Or for the architectural reasoning behind the layering:
 
-- [Tokens architecture (explanation)](../explanation/tokens-architecture.md)
+- [03 — Token system](../specs/03-token-system.md)
 
 For Tailwind v4 utility naming + which tokens drive which utility:
 
@@ -219,6 +219,6 @@ For Tailwind v4 utility naming + which tokens drive which utility:
 
 ## Related
 
-- new-docs/12 Clause 1 — `@godxjp/ui` mandatory
-- new-docs/12 §1 — `theme.css` is the ONE service-local CSS file
+- [02 — Consumer contract](../specs/02-consumer-contract.md) — `@godxjp/ui` is mandatory; `theme.css` is the ONE service-local CSS file.
+- [03 — Token system](../specs/03-token-system.md) — three-tier architecture (primitives / semantic / variants).
 - shadcn/ui Tailwind v4 docs — `https://ui.shadcn.com/docs/tailwind-v4`

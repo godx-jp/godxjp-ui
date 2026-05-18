@@ -206,14 +206,20 @@ function employeeColumns(): TableColumn<EmployeeRow>[] {
       size: 112,
       minSize: 112,
       maxSize: 112,
-      meta: { sortable: true },
+      meta: {
+        sortable: true,
+        sticky: { side: "left", from: "md" },
+      },
     },
     {
       accessorKey: "name",
       header: "従業員",
       minSize: 180,
       cell: ({ row }) => <AvatarCell row={row.original} />,
-      meta: { filterable: true },
+      meta: {
+        filterable: true,
+        sticky: { side: "left", from: "md" },
+      },
     },
     {
       accessorKey: "role",
@@ -230,17 +236,20 @@ function employeeColumns(): TableColumn<EmployeeRow>[] {
     {
       accessorKey: "kind",
       header: "区分",
+      minSize: 88,
       cell: ({ row }) => <KindBadge kind={row.original.kind} />,
       meta: { filterable: true, filterOptions: KIND_OPTIONS },
     },
     {
       accessorKey: "hours",
       header: "時間",
+      minSize: 80,
       meta: { className: "num", sortable: true },
     },
     {
       accessorKey: "status",
       header: "状態",
+      minSize: 96,
       cell: ({ row }) => <StatusBadge status={row.original.status} />,
       meta: {
         filterable: true,
@@ -264,7 +273,11 @@ function employeeColumns(): TableColumn<EmployeeRow>[] {
           </button>
         </span>
       ),
-      meta: { className: "actions", sticky: "right", hideable: false },
+      meta: {
+        className: "actions",
+        sticky: { side: "right", from: "md" },
+        hideable: false,
+      },
     },
   ];
 }
@@ -293,6 +306,37 @@ function matchesTableFilters(row: EmployeeRow, filters: TableFilter[]) {
     if (filter.key === "status") return row.status === value;
     return true;
   });
+}
+
+function sortEmployees(rows: EmployeeRow[], sort: TableSortState) {
+  const head = Array.isArray(sort) ? (sort[0] ?? null) : sort;
+  if (head === null) return rows;
+  const direction = head.direction === "asc" ? 1 : -1;
+  return [...rows].sort((a, b) => {
+    if (head.key === "hours") {
+      const toNum = (v: string) =>
+        v === "—" ? Number.NEGATIVE_INFINITY : Number(v.replace("h", ""));
+      return (toNum(a.hours) - toNum(b.hours)) * direction;
+    }
+    const left = String(a[head.key as keyof EmployeeRow] ?? "");
+    const right = String(b[head.key as keyof EmployeeRow] ?? "");
+    return left.localeCompare(right) * direction;
+  });
+}
+
+function replaceFilter(
+  filters: TableFilter[],
+  next: TableFilter,
+): TableFilter[] {
+  const rest = filters.filter((f) => f.key !== next.key);
+  const value = String(next.value ?? "").trim();
+  return value === "" ? rest : [...rest, next];
+}
+
+function sumHours(rows: EmployeeRow[]) {
+  return rows
+    .filter((row) => row.hours !== "—")
+    .reduce((sum, row) => sum + Number(row.hours.replace("h", "")), 0);
 }
 
 function countRowsForView(view: StoryTableView) {
@@ -358,150 +402,125 @@ export const PackagedFeatures: Story = {
     // instead of the dynamic runtime walk.
     docs: { source: { type: "code" } },
   },
-  render: () => {
+  render: function PackagedFeatures() {
     const [activeViewKey, setActiveViewKey] = useState("all");
     const [filters, setFilters] = useState<TableFilter[]>([]);
     const [sort, setSort] = useState<TableSortState>(DEFAULT_SORT);
+    const [searchDraft, setSearchDraft] = useState("");
     const [selectedIds, setSelectedIds] = useState<string[]>(["emp-002"]);
     const [columnVisibility, setColumnVisibility] =
       useState<TableColumnVisibility>(DEFAULT_COLUMN_VISIBILITY);
-    const viewItems = useMemo(
-      () => BUILT_IN_VIEWS.map(decorateView),
-      [],
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+
+    const matched = useMemo(
+      () =>
+        sortEmployees(
+          EMPLOYEES.filter((row) => matchesTableFilters(row, filters)),
+          sort,
+        ),
+      [filters, sort],
     );
-
-    function markCustomView() {
-      setActiveViewKey("custom");
-    }
-
-    function setFilterValue(
-      key: string,
-      value: string,
-      operator: TableFilter["operator"] = "eq",
-    ) {
-      setFilters((current) => {
-        const next = current.filter((filter) => filter.key !== key);
-        if (value.trim() === "") return next;
-        return [...next, { key, operator, value }];
-      });
-      markCustomView();
-    }
-
-    function updateFilters(nextFilters: TableFilter[]) {
-      setFilters(nextFilters);
-      markCustomView();
-    }
+    const rows = useMemo(
+      () => matched.slice((page - 1) * pageSize, page * pageSize),
+      [matched, page, pageSize],
+    );
+    const viewItems = useMemo(() => BUILT_IN_VIEWS.map(decorateView), []);
+    const markCustom = () => setActiveViewKey("custom");
 
     function applyView(view: TableViewItem) {
       setActiveViewKey(view.key);
       setFilters(view.filters ?? []);
       setSort("sort" in view ? (view.sort ?? null) : DEFAULT_SORT);
       setColumnVisibility(view.columnVisibility ?? DEFAULT_COLUMN_VISIBILITY);
+      setSearchDraft("");
+      setPage(1);
     }
 
-    const filtered = useMemo(() => {
-      return EMPLOYEES.filter((row) => matchesTableFilters(row, filters));
-    }, [filters]);
-
-    const sortedRows = useMemo(() => {
-      const head = Array.isArray(sort) ? (sort[0] ?? null) : sort;
-      if (head === null) return filtered;
-      return [...filtered].sort((a, b) => {
-        const direction = head.direction === "asc" ? 1 : -1;
-        if (head.key === "hours") {
-          const left =
-            a.hours === "—"
-              ? Number.NEGATIVE_INFINITY
-              : Number(a.hours.replace("h", ""));
-          const right =
-            b.hours === "—"
-              ? Number.NEGATIVE_INFINITY
-              : Number(b.hours.replace("h", ""));
-          return (left - right) * direction;
-        }
-        const left = String(a[head.key as keyof EmployeeRow] ?? "");
-        const right = String(b[head.key as keyof EmployeeRow] ?? "");
-        return left.localeCompare(right) * direction;
-      });
-    }, [filtered, sort]);
-
-    const allSelectableRows = sortedRows.filter(
-      (row) => row.state !== "disabled",
-    );
-
-    function reset() {
-      const defaultView = BUILT_IN_VIEWS[0];
-      setActiveViewKey(defaultView.key);
-      setFilters(defaultView.filters);
-      setSort(defaultView.sort);
-      setColumnVisibility(defaultView.columnVisibility);
-    }
-
-    function updateColumnVisibility(nextVisibility: TableColumnVisibility) {
-      setColumnVisibility(nextVisibility);
-      markCustomView();
+    function commitSearch(value: string) {
+      setFilters((prev) =>
+        replaceFilter(prev, { key: "name", operator: "contains", value }),
+      );
+      setPage(1);
+      markCustom();
     }
 
     return (
-        <Table
-          containerClassName="tbl-shell"
-          columns={EMPLOYEE_COLUMNS}
-          data={sortedRows}
-          defaultColumnVisibility={DEFAULT_COLUMN_VISIBILITY}
-          columnVisibility={columnVisibility}
-          onColumnVisibilityChange={updateColumnVisibility}
-          rowKey="id"
-          rowClassName={(row) =>
-            selectedIds.includes(row.original.id) ? "selected" : rowState(row)
-          }
-          views={{
-            items: viewItems,
-            activeKey: activeViewKey,
-            onActiveKeyChange: setActiveViewKey,
-            onViewApply: applyView,
-          }}
-          toolbar={{
-            columns: {},
-            primaryAction: {
-              label: "＋ 新規申請",
-            },
-          }}
-          filters={filters}
-          onFiltersChange={updateFilters}
-          batchActions={{
-            selectedRowKeys: selectedIds,
-            onSelectedRowKeysChange: setSelectedIds,
-            getCheckboxDisabled: (row) => row.original.state === "disabled",
-            selectAllLabel: () => `全 ${allSelectableRows.length} 件を選択`,
-            actions: batchActionsFor(),
-          }}
-          sort={sort}
-          onSortChange={(nextSort) => {
-            setSort(nextSort);
-            markCustomView();
-          }}
-          onResetFilters={reset}
-          footer={
-            <div className="totals">
-              <span>
-                選択 <b>{selectedIds.length}</b> 件
-              </span>
-              <span>
-                表示中の合計{" "}
-                <b>
-                  {sortedRows
-                    .filter((row) => row.hours !== "—")
-                    .reduce(
-                      (sum, row) => sum + Number(row.hours.replace("h", "")),
-                      0,
-                    )
-                    .toFixed(1)}{" "}
-                  h
-                </b>
-              </span>
-            </div>
-          }
-        />
+      <Table
+        tableKey="data-display/Table/PackagedFeatures"
+        containerClassName="tbl-shell"
+        columns={EMPLOYEE_COLUMNS}
+        data={rows}
+        rowKey="id"
+        rowClassName={(row) =>
+          selectedIds.includes(row.original.id) ? "selected" : rowState(row)
+        }
+        defaultColumnVisibility={DEFAULT_COLUMN_VISIBILITY}
+        columnVisibility={columnVisibility}
+        onColumnVisibilityChange={(next) => {
+          setColumnVisibility(next);
+          markCustom();
+        }}
+        views={{
+          items: viewItems,
+          activeKey: activeViewKey,
+          onActiveKeyChange: setActiveViewKey,
+          onViewApply: applyView,
+        }}
+        toolbar={{
+          search: {
+            value: searchDraft,
+            onValueChange: setSearchDraft,
+            onSearch: commitSearch,
+            onClear: () => commitSearch(""),
+            placeholder: "名前 / かな / 役職 / 店舗 で検索",
+            suffix: (
+              <span className="table-kbd">{getSearchShortcutLabel()}</span>
+            ),
+          },
+          columns: {},
+          primaryAction: { label: "＋ 新規申請" },
+        }}
+        filters={filters}
+        onFiltersChange={(next) => {
+          setFilters(next);
+          setPage(1);
+          markCustom();
+        }}
+        pagination={{
+          current: page,
+          pageSize,
+          total: matched.length,
+          showSizeChanger: true,
+          pageSizeOptions: [5, 10, 20],
+          onChange: (nextPage, nextSize) => {
+            setPage(nextPage);
+            setPageSize(nextSize);
+          },
+        }}
+        batchActions={{
+          selectedRowKeys: selectedIds,
+          onSelectedRowKeysChange: setSelectedIds,
+          getCheckboxDisabled: (row) => row.original.state === "disabled",
+          actions: batchActionsFor(),
+        }}
+        sort={sort}
+        onSortChange={(next) => {
+          setSort(next);
+          markCustom();
+        }}
+        onResetFilters={() => applyView(BUILT_IN_VIEWS[0])}
+        footer={
+          <div className="totals">
+            <span>
+              選択 <b>{selectedIds.length}</b> 件
+            </span>
+            <span>
+              表示中の合計 <b>{sumHours(rows).toFixed(1)} h</b>
+            </span>
+          </div>
+        }
+      />
     );
   },
 };
@@ -1587,7 +1606,7 @@ export const StickyColumns: Story = {
     docs: {
       description: {
         story:
-          "`meta.sticky: 'left' | 'right'` pins columns at the table edges. The column-manager Sheet renders a 🔒 / 🔓 toggle so users can lock / unlock columns at runtime. The canvas is narrow — scroll horizontally to confirm both sticky bands stay put.",
+          "`meta.sticky: 'left' | 'right'` pins columns at the table edges. The column-manager Sheet renders a lock toggle (lucide `Lock` / `LockOpen`) so users can lock / unlock columns at runtime. The canvas is narrow — scroll horizontally to confirm both sticky bands stay put.",
       },
     },
   },

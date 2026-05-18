@@ -258,9 +258,6 @@ export type {
 export { TimeInput } from "./data-entry/TimeInput";
 export type { TimeInputProps } from "./data-entry/TimeInput";
 
-export { Combobox } from "./data-entry/combobox";
-export type { ComboboxProps, ComboboxOption } from "./data-entry/combobox";
-
 export { Toaster, toast } from "./feedback/toaster";
 export type { ToasterProps } from "./feedback/toaster";
 
@@ -337,11 +334,12 @@ export type {
   DateRangePickerProps,
 } from "./data-entry/DateTimePicker";
 
-// ── Combobox-flavoured Data Entry primitives ─────────────────────
-// AutoComplete: filtered text input over Combobox.
+// ── cmdk-flavoured Data Entry primitives ─────────────────────────
+// AutoComplete: free-text input with suggestion dropdown.
 // Cascader: nested column navigation (Popover + horizontal columns).
 // TreeSelect: recursive tree Select (Popover + expandable nodes,
 // single or multi select).
+// (Searchable single-select lives on `<Select searchable>` itself.)
 export { AutoComplete } from "./data-entry/AutoComplete";
 export type {
   AutoCompleteProps,

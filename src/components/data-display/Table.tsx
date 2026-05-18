@@ -10,6 +10,9 @@ import {
   type Updater,
   type VisibilityState,
 } from "@tanstack/react-table";
+import { Lock, LockOpen, Search } from "lucide-react";
+import { matchBreakpoint, useBreakpoint } from "../../hooks/useBreakpoint";
+import type { Breakpoint } from "../layout/Row";
 import {
   Fragment,
   isValidElement,
@@ -36,6 +39,12 @@ import { Badge } from "./Badge";
 import { Empty } from "./Empty";
 import { Tag, type TagPresetColor } from "./Tag";
 
+export type TableStickySide = "left" | "right";
+export type TableStickyConfig =
+  | TableStickySide
+  | false
+  | { side: TableStickySide; from?: Breakpoint };
+
 declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> {
     className?: string;
@@ -50,7 +59,7 @@ declare module "@tanstack/react-table" {
     filterLabel?: ReactNode;
     filterOptions?: TableFilterOption[];
     sortable?: boolean;
-    sticky?: "left" | "right";
+    sticky?: TableStickyConfig;
     hideable?: boolean;
   }
 }
@@ -230,6 +239,7 @@ export interface TableFilterItem {
   label: ReactNode;
   value?: string;
   valueLabel?: ReactNode;
+  operator?: TableFilterOperator;
   options?: TableFilterOption[];
   onValueChange?: (value: string) => void;
   color?: TagPresetColor | string;
@@ -365,6 +375,10 @@ export function getTableColumnVisibilityStorageKey(tableKey: string) {
   return `godxui:table:${tableKey}:columnVisibility`;
 }
 
+export function getTableColumnPinningStorageKey(tableKey: string) {
+  return `godxui:table:${tableKey}:columnPinning`;
+}
+
 export function getTableViewsStorageKey(tableKey: string) {
   return `godxui:table:${tableKey}:views`;
 }
@@ -373,6 +387,12 @@ interface PersistedColumnVisibility {
   version: 1;
   columnKeys: string[];
   visibility: TableColumnVisibility;
+}
+
+interface PersistedColumnPinning {
+  version: 2;
+  columnKeys: string[];
+  pinning: { left: string[]; right: string[] };
 }
 
 interface PersistedTableView {
@@ -466,6 +486,73 @@ function writePersistedColumnVisibility<TData>(
         columnKeys: getColumnKeys(columns),
         visibility: columnVisibility,
       } satisfies PersistedColumnVisibility),
+    );
+  } catch {
+    // localStorage can be unavailable in private browsing or sandboxed iframes.
+  }
+}
+
+function isPersistedColumnPinning(
+  value: unknown,
+): value is PersistedColumnPinning {
+  if (typeof value !== "object" || value === null || Array.isArray(value))
+    return false;
+  const candidate = value as {
+    version?: unknown;
+    columnKeys?: unknown;
+    pinning?: unknown;
+  };
+  if (
+    candidate.version !== 2 ||
+    !Array.isArray(candidate.columnKeys) ||
+    !candidate.columnKeys.every((item) => typeof item === "string") ||
+    typeof candidate.pinning !== "object" ||
+    candidate.pinning === null
+  )
+    return false;
+  const pinning = candidate.pinning as { left?: unknown; right?: unknown };
+  const isStringArray = (value: unknown): value is string[] =>
+    Array.isArray(value) && value.every((item) => typeof item === "string");
+  return isStringArray(pinning.left) && isStringArray(pinning.right);
+}
+
+function readPersistedColumnPinning<TData>(
+  tableKey: string | undefined,
+  columns: TableColumn<TData, unknown>[],
+): ColumnPinningState | undefined {
+  if (tableKey === undefined || typeof window === "undefined") return undefined;
+  try {
+    const stored = window.localStorage.getItem(
+      getTableColumnPinningStorageKey(tableKey),
+    );
+    if (stored === null) return undefined;
+    const parsed = JSON.parse(stored) as unknown;
+    if (!isPersistedColumnPinning(parsed)) return undefined;
+    if (!hasSameColumnKeys(parsed.columnKeys, getColumnKeys(columns)))
+      return undefined;
+    return { left: parsed.pinning.left, right: parsed.pinning.right };
+  } catch {
+    return undefined;
+  }
+}
+
+function writePersistedColumnPinning<TData>(
+  tableKey: string | undefined,
+  columns: TableColumn<TData, unknown>[],
+  columnPinning: ColumnPinningState,
+) {
+  if (tableKey === undefined || typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(
+      getTableColumnPinningStorageKey(tableKey),
+      JSON.stringify({
+        version: 2,
+        columnKeys: getColumnKeys(columns),
+        pinning: {
+          left: columnPinning.left ?? [],
+          right: columnPinning.right ?? [],
+        },
+      } satisfies PersistedColumnPinning),
     );
   } catch {
     // localStorage can be unavailable in private browsing or sandboxed iframes.
@@ -782,13 +869,15 @@ function renderTableToolbar(
           className="tbl-search-action"
           size="small"
           variant="primary"
+          aria-label={t("common.search")}
           disabled={toolbar.search.disabled}
+          startContent={<Search aria-hidden="true" focusable="false" />}
           onClick={() =>
             toolbar.search !== false &&
             toolbar.search?.onSearch?.(toolbar.search.value)
           }
         >
-          {t("common.search")}
+          <span className="tbl-search-action-label">{t("common.search")}</span>
         </Button>
       )}
       {toolbar.filter !== undefined && toolbar.filter !== false && (
@@ -1123,6 +1212,25 @@ function isFilterItems(
   return Array.isArray(filterBar);
 }
 
+function operatorSymbol(operator: TableFilterOperator | undefined): string {
+  switch (operator) {
+    case "neq": return "≠";
+    case "contains": return "∋";
+    case "startsWith": return "≻";
+    case "endsWith": return "≺";
+    case "gt": return ">";
+    case "gte": return "≥";
+    case "lt": return "<";
+    case "lte": return "≤";
+    case "between": return "..";
+    case "in": return "∈";
+    case "eq":
+    case undefined:
+    default:
+      return "=";
+  }
+}
+
 function renderFilterBar(filterBar: TableFilterBar, label: string) {
   if (!isFilterItems(filterBar)) return filterBar;
   return (
@@ -1133,7 +1241,7 @@ function renderFilterBar(filterBar: TableFilterBar, label: string) {
           return (
             <span key={item.key} className="table-filter-select-wrap">
               <Select
-                value={item.value}
+                value={item.value ?? ""}
                 onValueChange={item.onValueChange}
                 options={item.options.map((option) => ({
                   ...option,
@@ -1161,7 +1269,8 @@ function renderFilterBar(filterBar: TableFilterBar, label: string) {
             closable={item.closable ?? item.onClose !== undefined}
             onClose={item.onClose}
           >
-            {item.label} = {item.valueLabel ?? item.value}
+            {item.label} {operatorSymbol(item.operator)}{" "}
+            {item.valueLabel ?? item.value}
           </Tag>
         );
       })}
@@ -1212,6 +1321,7 @@ function deriveFilterBar<TData>(
         label: column ? labelForColumn(column, filter.key) : filter.key,
         value: filter.value == null ? undefined : String(filter.value),
         valueLabel: filter.valueLabel ?? valueLabelFor(options, filter.value),
+        operator: filter.operator,
         options,
         onValueChange:
           options !== undefined && onFiltersChange !== undefined
@@ -1285,14 +1395,27 @@ function nextMultiSort(
   return next;
 }
 
+function resolveStickySide(
+  config: TableStickyConfig | undefined,
+  bp: Breakpoint,
+): TableStickySide | undefined {
+  if (config === undefined || config === false) return undefined;
+  if (typeof config === "string") return config;
+  if (config.from !== undefined && !matchBreakpoint(bp, config.from))
+    return undefined;
+  return config.side;
+}
+
 function deriveColumnPinning<TData>(
   columns: TableColumn<TData, unknown>[],
+  bp: Breakpoint,
 ): ColumnPinningState {
   return columns.reduce<ColumnPinningState>(
     (state, column) => {
       const key = getColumnKey(column);
-      if (key === undefined || column.meta?.sticky === undefined) return state;
-      const side = column.meta.sticky;
+      if (key === undefined) return state;
+      const side = resolveStickySide(column.meta?.sticky, bp);
+      if (side === undefined) return state;
       return { ...state, [side]: [...(state[side] ?? []), key] };
     },
     { left: [], right: [] },
@@ -1376,12 +1499,45 @@ export function Table<TData>({
     );
   const effectiveColumnVisibility =
     columnVisibility ?? internalColumnVisibility;
-  const [internalColumnPinning, setInternalColumnPinning] =
-    useState<ColumnPinningState>(() => deriveColumnPinning(columns));
-  const columnPinning = internalColumnPinning;
+  // Auto-pinning is derived from `meta.sticky` against the current
+  // breakpoint, so `{ side: "right", from: "md" }` only sticks on md+.
+  // User-toggled pins (Sheet lock button) live in a separate state
+  // and are persisted to localStorage; the effective pinning is the
+  // union of both.
+  const bp = useBreakpoint();
+  const autoColumnPinning = useMemo(
+    () => deriveColumnPinning(columns, bp),
+    [columns, bp],
+  );
+  const [userColumnPinning, setUserColumnPinning] =
+    useState<ColumnPinningState>(
+      () =>
+        readPersistedColumnPinning(tableKey, columns) ?? {
+          left: [],
+          right: [],
+        },
+    );
+  const columnPinning = useMemo<ColumnPinningState>(() => {
+    const dedupe = (list: string[]) => Array.from(new Set(list));
+    return {
+      left: dedupe([
+        ...(autoColumnPinning.left ?? []),
+        ...(userColumnPinning.left ?? []),
+      ]),
+      right: dedupe([
+        ...(autoColumnPinning.right ?? []),
+        ...(userColumnPinning.right ?? []),
+      ]),
+    };
+  }, [autoColumnPinning, userColumnPinning]);
   const handleColumnPinningChange = (updater: Updater<ColumnPinningState>) => {
     const next = resolveUpdater(updater, columnPinning);
-    setInternalColumnPinning(next);
+    const autoLeft = new Set(autoColumnPinning.left ?? []);
+    const autoRight = new Set(autoColumnPinning.right ?? []);
+    setUserColumnPinning({
+      left: (next.left ?? []).filter((key) => !autoLeft.has(key)),
+      right: (next.right ?? []).filter((key) => !autoRight.has(key)),
+    });
     onColumnPinningChange?.(next);
   };
   // Expand-row + tree-row + editing internal state.
@@ -1466,6 +1622,9 @@ export function Table<TData>({
       effectiveColumnVisibility,
     );
   }, [columns, effectiveColumnVisibility, tableKey]);
+  useEffect(() => {
+    writePersistedColumnPinning(tableKey, columns, userColumnPinning);
+  }, [columns, userColumnPinning, tableKey]);
   useEffect(() => {
     writePersistedTableViews(tableKey, columns, internalSavedViews);
   }, [columns, internalSavedViews, tableKey]);
@@ -2194,10 +2353,14 @@ export function Table<TData>({
             <div className="table-filter-field-list">
               {columnSettingsColumns.map((column) => {
                 const pinned = column.getIsPinned();
+                const isAutoPinned =
+                  (autoColumnPinning.left ?? []).includes(column.id) ||
+                  (autoColumnPinning.right ?? []).includes(column.id);
                 return (
                   <section key={column.id} className="table-column-field">
                     <Checkbox
                       checked={column.getIsVisible()}
+                      disabled={pinned !== false}
                       onCheckedChange={(checked) =>
                         column.toggleVisibility(checked === true)
                       }
@@ -2214,6 +2377,7 @@ export function Table<TData>({
                       }
                       aria-pressed={pinned !== false}
                       data-locked={pinned !== false ? "true" : "false"}
+                      disabled={isAutoPinned}
                       onClick={() => {
                         const next: ColumnPinningState = {
                           left: [...(columnPinning.left ?? [])],
@@ -2227,11 +2391,17 @@ export function Table<TData>({
                         );
                         if (pinned === false) {
                           next.left = [...(next.left ?? []), column.id];
+                          if (!column.getIsVisible())
+                            column.toggleVisibility(true);
                         }
                         handleColumnPinningChange(next);
                       }}
                     >
-                      {pinned === false ? "🔓" : "🔒"}
+                      {pinned === false ? (
+                        <LockOpen aria-hidden="true" focusable="false" />
+                      ) : (
+                        <Lock aria-hidden="true" focusable="false" />
+                      )}
                     </button>
                   </section>
                 );

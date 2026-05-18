@@ -200,7 +200,7 @@ Status quo — no source changes. Documentation tightening only:
 2. Add a migration note for Ant Design users:
    `<Select showSearch />` → `<Combobox options={…} />`.
 3. Update the prop-vocabulary doc
-   ([`./../../new-docs/04-prop-vocabulary.md`](../../new-docs/04-prop-vocabulary.md))
+   ([`../specs/04-prop-vocabulary.md`](../specs/04-prop-vocabulary.md))
    to record that `searchable` is NOT a Select prop — searchable
    dropdowns use `Combobox`. Prevents future re-litigation.
 4. (Optional, separate PR) Re-export `Combobox` aliases

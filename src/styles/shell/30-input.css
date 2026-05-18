@@ -699,7 +699,7 @@ textarea.input {
 }
 
 /* ─── Cascader / TreeSelect ───────────────────────────────────────
- * Combobox-flavoured triggers (Cascader / TreeSelect) share the
+ * cmdk-flavoured triggers (Cascader / TreeSelect) share the
  * `.input` chrome so height + border + focus ring stay axis-aware.
  * Popover bodies render either horizontally-flowing columns
  * (Cascader) or a recursive tree (TreeSelect).
