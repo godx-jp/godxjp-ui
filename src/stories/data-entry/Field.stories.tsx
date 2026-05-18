@@ -87,8 +87,8 @@ export const WithCount: Story = {
 export const Horizontal: Story = {
   name: "Horizontal · Flex row composition",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 480 }}>
-      <Flex align="center" gap="middle">
+    <Flex vertical gap="default" style={{ maxWidth: 480 }}>
+      <Flex align="center" gap="default">
         <label htmlFor="hz-name" style={{ flex: "0 0 120px", fontSize: "var(--text-sm)" }}>
           氏名
         </label>

@@ -117,13 +117,13 @@ export const WithTabs: Story = {
   ),
 };
 
-export const Compact: Story = {
-  name: "Padding · compact",
+export const Tight: Story = {
+  name: "Padding · tight",
   render: () => (
     <PageContent
-      title="Compact padding"
-      subtitle={'padding="compact" — tight density for dashboards'}
-      padding="compact"
+      title="Tight padding"
+      subtitle={'padding="tight" — minimal gutter for dashboards'}
+      padding="tight"
     >
       <Card title="Body">
         <Typography.Paragraph>12px page padding.</Typography.Paragraph>
@@ -132,13 +132,13 @@ export const Compact: Story = {
   ),
 };
 
-export const Comfortable: Story = {
-  name: "Padding · comfortable",
+export const Cozy: Story = {
+  name: "Padding · cozy",
   render: () => (
     <PageContent
-      title="Comfortable padding"
-      subtitle={'padding="comfortable" — relaxed density for forms'}
-      padding="comfortable"
+      title="Cozy padding"
+      subtitle={'padding="cozy" — relaxed gutter for forms'}
+      padding="cozy"
     >
       <Card title="Body">
         <Typography.Paragraph>20px page padding.</Typography.Paragraph>

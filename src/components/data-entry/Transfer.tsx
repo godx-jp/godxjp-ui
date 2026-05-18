@@ -177,7 +177,7 @@ export const Transfer = forwardRef<HTMLDivElement, TransferProps>(
             aria-label="Move right"
             disabled={disabled || selectedLeft.size === 0}
             onClick={moveRight}
-            size={size === "small" ? "sm" : "default"}
+            size={size === "small" ? "sm" : "md"}
           >
             <ChevronRight size={14} aria-hidden />
           </IconButton>
@@ -185,7 +185,7 @@ export const Transfer = forwardRef<HTMLDivElement, TransferProps>(
             aria-label="Move left"
             disabled={disabled || selectedRight.size === 0}
             onClick={moveLeft}
-            size={size === "small" ? "sm" : "default"}
+            size={size === "small" ? "sm" : "md"}
           >
             <ChevronLeft size={14} aria-hidden />
           </IconButton>

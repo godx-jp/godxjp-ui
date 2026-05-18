@@ -8,7 +8,7 @@ import { Card } from "../../components/data-display/Card";
  * Per cardinal rule 23 §B:
  *   vertical?: boolean        direction (false = horizontal, true = vertical)
  *   wrap?: …                  wrap mode
- *   gap?: FlexGap             "small" | "middle" | "large" | number
+ *   gap?: FlexGap             "small" | "default" | "large" | number
  *   justify?: FlexJustify     start / end / center / space-between / -around / -evenly
  *   align?: FlexAlign         start / end / center / stretch / baseline
  *   flex?: string | number    container flex value
@@ -53,7 +53,7 @@ const Box = ({ label }: { label: string }) => (
 
 export const Horizontal: Story = {
   render: () => (
-    <Flex gap="middle">
+    <Flex gap="default">
       <Box label="A" /><Box label="B" /><Box label="C" />
     </Flex>
   ),
@@ -61,7 +61,7 @@ export const Horizontal: Story = {
 
 export const Vertical: Story = {
   render: () => (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       <Box label="A" /><Box label="B" /><Box label="C" />
     </Flex>
   ),
@@ -71,7 +71,7 @@ export const Gaps: Story = {
   name: "Gap axis (small / middle / large)",
   render: () => (
     <Flex vertical gap="large">
-      {(["small", "middle", "large"] as const).map((g) => (
+      {(["small", "default", "large"] as const).map((g) => (
         <Card key={g} padding="tight" title={`gap="${g}"`}>
           <Flex gap={g}>
             <Box label="A" /><Box label="B" /><Box label="C" />
@@ -85,7 +85,7 @@ export const Gaps: Story = {
 export const Justify: Story = {
   name: "Justify axis",
   render: () => (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       {(["start", "center", "end", "space-between", "space-around", "space-evenly"] as const).map((j) => (
         <Card key={j} padding="tight" title={`justify="${j}"`}>
           <Flex gap="small" justify={j} style={{ width: 480 }}>
@@ -100,7 +100,7 @@ export const Justify: Story = {
 export const Align: Story = {
   name: "Align axis",
   render: () => (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       {(["start", "center", "end", "stretch", "baseline"] as const).map((a) => (
         <Card key={a} padding="tight" title={`align="${a}"`}>
           <Flex gap="small" align={a} style={{ height: 60 }}>

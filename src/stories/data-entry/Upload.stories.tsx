@@ -179,7 +179,7 @@ export const Image_Multiple_FromUUIDs: Story = {
 export const Avatar_Crop: Story = {
   name: "Avatar · Crop",
   render: () => (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       <MediaUploadAvatar aspect={1} />
     </Flex>
   ),
@@ -205,7 +205,7 @@ export const Avatar_FromUUID: Story = {
 export const Namespace_Access: Story = {
   name: "Namespace · MediaUpload.*",
   render: () => (
-    <Flex gap="middle" align="start">
+    <Flex gap="default" align="start">
       <MediaUpload.Single
         defaultValue={{
           id: "n-1",

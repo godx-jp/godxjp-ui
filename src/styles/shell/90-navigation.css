@@ -141,7 +141,7 @@
 }
 .pagination[data-justify="center"] { justify-content: center; }
 .pagination[data-justify="end"]    { justify-content: flex-end; }
-.pagination[data-justify="between"]{ justify-content: space-between; }
+.pagination[data-justify="space-between"]{ justify-content: space-between; }
 .pagination-item {
   min-width: var(--density-element);
   height: var(--density-element);

@@ -39,7 +39,7 @@ const tokenLabel = { width: 220, fontSize: "var(--text-2xs)" } as const;
 
 function Swatch({ token, hint }: { token: string; hint?: string }) {
   return (
-    <Flex align="center" gap="middle">
+    <Flex align="center" gap="default">
       <span
         style={{
           width: 32,
@@ -175,7 +175,7 @@ model of the role colors).`.trim(),
     <Card title="Wa-iro decorative palette" meta="charts · tags · tints">
       <div className="dv-stack">
         {WAIRO_PALETTE.map(([tok, name, hint]) => (
-          <Flex key={tok} align="center" gap="middle">
+          <Flex key={tok} align="center" gap="default">
             <span
               style={{
                 width: 32, height: 32, borderRadius: "var(--radius-md)",

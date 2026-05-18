@@ -362,7 +362,7 @@ export const DisabledNodes: Story = {
 export const Sizes: Story = {
   name: "Sizes · small / default / large",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
+    <Flex vertical gap="default" style={{ maxWidth: 360 }}>
       <TreeSelect options={orgTree} size="small" placeholder="Small" />
       <TreeSelect options={orgTree} placeholder="Default" />
       <TreeSelect options={orgTree} size="large" placeholder="Large" />

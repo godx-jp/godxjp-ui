@@ -124,7 +124,7 @@ export const WithSearch: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       <div>
         <div style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)", marginBottom: 4 }}>
           size="small"

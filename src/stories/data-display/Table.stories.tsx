@@ -98,7 +98,7 @@ function KindBadge({ kind }: { kind: EmployeeRow["kind"] }) {
     );
   if (kind === "absence")
     return (
-      <Badge variant="error" dot={false}>
+      <Badge variant="destructive" dot={false}>
         欠勤
       </Badge>
     );
@@ -237,7 +237,7 @@ export const SearchMode_Submit: Story = {
     }, [query]);
 
     return (
-      <Flex vertical gap="middle">
+      <Flex vertical gap="default">
         <InputSearch
           aria-label="送信型検索"
           style={{ maxWidth: 360 }}

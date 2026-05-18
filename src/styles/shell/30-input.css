@@ -227,6 +227,7 @@ textarea.input {
 .spinner-tone-success     { border-color: color-mix(in oklch, var(--success) 30%, transparent);          border-top-color: var(--success); }
 .spinner-tone-warning     { border-color: color-mix(in oklch, var(--warning) 30%, transparent);          border-top-color: var(--warning); }
 .spinner-tone-destructive { border-color: color-mix(in oklch, var(--destructive) 30%, transparent);      border-top-color: var(--destructive); }
+.spinner-tone-attention   { border-color: color-mix(in oklch, var(--attention) 30%, transparent);        border-top-color: var(--attention); }
 
 @keyframes gxui-spin { to { transform: rotate(360deg); } }
 

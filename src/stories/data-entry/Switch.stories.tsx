@@ -49,7 +49,7 @@ export const Default: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <Flex gap="middle" align="center">
+    <Flex gap="default" align="center">
       <Switch disabled />
       <Switch disabled defaultChecked />
     </Flex>
@@ -97,14 +97,14 @@ export const FeatureFlags: Story = {
       subtitle="ベータ機能を有効にすると、リリース前の機能を試せます。"
       style={{ maxWidth: 560 }}
     >
-      <Flex vertical gap="middle">
+      <Flex vertical gap="default">
         {[
           { name: "AI 自動要約", help: "コメントスレッドを自動で要約します", on: true },
           { name: "コマンドパレット", help: "⌘K で全機能にジャンプできます", on: true },
           { name: "デスクトップ通知", help: "ブラウザを開いていなくても通知を受信", on: false },
           { name: "リッチテキストエディタ v2", help: "新しい Markdown エディタを試す", on: false },
         ].map((flag) => (
-          <Flex key={flag.name} align="center" justify="space-between" gap="middle">
+          <Flex key={flag.name} align="center" justify="space-between" gap="default">
             <Flex vertical gap="small">
               <Typography.Text strong>{flag.name}</Typography.Text>
               <Typography.Text color="secondary" style={{ fontSize: "var(--text-xs)" }}>
@@ -130,7 +130,7 @@ export const NotificationCenter: Story = {
       subtitle="チャンネルごとに通知の有無を設定できます。"
       style={{ maxWidth: 640 }}
     >
-      <Flex vertical gap="middle">
+      <Flex vertical gap="default">
         <Typography.Title size={5}>メール</Typography.Title>
         {[
           ["週次ダイジェスト", true],
@@ -189,7 +189,7 @@ export const AccessibilitySettings: Story = {
       subtitle="表示と操作を環境に合わせて調整できます。"
       style={{ maxWidth: 560 }}
     >
-      <Flex vertical gap="middle">
+      <Flex vertical gap="default">
         {[
           {
             name: "ハイコントラスト表示",
@@ -212,7 +212,7 @@ export const AccessibilitySettings: Story = {
             help: "装飾要素の aria-hidden を強制します",
           },
         ].map((item, idx) => (
-          <Flex key={item.name} align="center" justify="space-between" gap="middle">
+          <Flex key={item.name} align="center" justify="space-between" gap="default">
             <Flex vertical gap="small">
               <Typography.Text strong>{item.name}</Typography.Text>
               <Typography.Text color="secondary" style={{ fontSize: "var(--text-xs)" }}>
@@ -238,7 +238,7 @@ export const SecurityToggles: Story = {
       subtitle="アカウントの保護レベルを管理します。"
       style={{ maxWidth: 560 }}
     >
-      <Flex vertical gap="middle">
+      <Flex vertical gap="default">
         <Field label="2 段階認証" help="ログイン時に SMS で送信される 6 桁コードを要求します">
           <Switch defaultChecked />
         </Field>

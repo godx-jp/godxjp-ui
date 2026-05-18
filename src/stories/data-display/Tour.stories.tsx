@@ -76,7 +76,7 @@ export const Default: Story = {
     const [open, setOpen] = useState(false);
     return (
       <Flex vertical gap="large">
-        <Flex gap="middle">
+        <Flex gap="default">
           <Button id="tour-new-btn" variant="primary">
             新規作成
           </Button>
@@ -170,7 +170,7 @@ export const Controlled: Story = {
     const [step, setStep] = useState(0);
     return (
       <Flex vertical gap="large">
-        <Flex gap="middle">
+        <Flex gap="default">
           <Button id="ctrl-step-a" variant="primary">
             ステップ A
           </Button>
@@ -178,7 +178,7 @@ export const Controlled: Story = {
             ステップ B
           </Button>
         </Flex>
-        <Flex gap="middle">
+        <Flex gap="default">
           <Button
             variant="outline"
             onClick={() => {

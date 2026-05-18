@@ -1,6 +1,6 @@
 // <Space> — inline spacing between children (Ant Design model).
 //
-//   <Space size="middle">
+//   <Space size="default">
 //     <Button>One</Button>
 //     <Button>Two</Button>
 //   </Space>
@@ -12,12 +12,16 @@
 
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../cn";
+import type { SizeProp } from "../../props";
 
-export type SpaceSize = number | "small" | "middle" | "large";
+/** Inline-spacing scale. Accepts the shared `SizeProp` vocabulary plus
+ *  a raw pixel number for one-off gaps. Renamed from Ant's `"middle"`
+ *  → `"default"` to match the framework-wide size axis. */
+export type SpaceSize = number | SizeProp;
 
 const SIZE_TOKEN: Record<Exclude<SpaceSize, number>, string> = {
   small: "var(--spacing-1)",
-  middle: "var(--spacing-2)",
+  default: "var(--spacing-2)",
   large: "var(--spacing-3)",
 };
 

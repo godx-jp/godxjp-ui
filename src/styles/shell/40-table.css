@@ -232,6 +232,26 @@
   font-size: var(--text-xs);
 }
 
+/* Comfortable density — 40 / 44 row heights, generous breathing room. */
+.table-stack[data-density="comfortable"] .table thead tr,
+.table-stack[data-density="comfortable"] .table thead th,
+.table[data-density="comfortable"] thead tr,
+.table[data-density="comfortable"] thead th {
+  height: 40px;
+}
+.table-stack[data-density="comfortable"] .table tbody tr,
+.table-stack[data-density="comfortable"] .table tbody td,
+.table[data-density="comfortable"] tbody tr,
+.table[data-density="comfortable"] tbody td {
+  height: 44px;
+}
+.table-stack[data-density="comfortable"] .table tfoot tr,
+.table-stack[data-density="comfortable"] .table tfoot td,
+.table[data-density="comfortable"] tfoot tr,
+.table[data-density="comfortable"] tfoot td {
+  height: 40px;
+}
+
 .table .num,
 .table .col-num {
   font-variant-numeric: tabular-nums;

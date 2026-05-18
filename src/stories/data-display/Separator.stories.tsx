@@ -43,7 +43,7 @@ type Story = StoryObj<typeof Separator>;
 export const Default: Story = {
   name: "Default · horizontal",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
+    <Flex vertical gap="default" style={{ maxWidth: 360 }}>
       <Text>渋谷本店 · 田中 美咲</Text>
       <Separator />
       <Text>新宿支店 · 佐藤 健太</Text>
@@ -58,7 +58,7 @@ export const Vertical: Story = {
   render: () => (
     <Flex
       align="center"
-      gap="middle"
+      gap="default"
       style={{ height: 24, maxWidth: 360 }}
     >
       <Text>渋谷本店</Text>

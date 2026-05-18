@@ -254,7 +254,7 @@ export const ProfileEditVertical: Story = {
         }}
         onSubmit={(v) => console.log(v)}
       >
-        <Flex align="center" gap="middle" style={{ marginBottom: "var(--spacing-2)" }}>
+        <Flex align="center" gap="default" style={{ marginBottom: "var(--spacing-2)" }}>
           <Avatar size="lg" alt="山田 太郎" />
           <Flex vertical gap={2}>
             <Button variant="outline" size="small" type="button">写真を変更</Button>
@@ -328,7 +328,7 @@ export const ProfileEditHorizontal: Story = {
         onSubmit={(v) => console.log(v)}
       >
         <Field label="プロフィール写真">
-          <Flex align="center" gap="middle">
+          <Flex align="center" gap="default">
             <Avatar size="lg" alt="山田 太郎" />
             <Flex vertical gap={2}>
               <Button variant="outline" size="small" type="button">写真を変更</Button>

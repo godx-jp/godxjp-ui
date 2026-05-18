@@ -346,7 +346,7 @@ export const RegionPicker: Story = {
 export const Sizes: Story = {
   name: "Sizes · small / default / large",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
+    <Flex vertical gap="default" style={{ maxWidth: 360 }}>
       <Cascader options={prefectureTree} size="small" placeholder="Small" />
       <Cascader options={prefectureTree} placeholder="Default" />
       <Cascader options={prefectureTree} size="large" placeholder="Large" />

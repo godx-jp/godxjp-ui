@@ -66,7 +66,7 @@ export const Tones: Story = {
 export const Embedded_In_Button: Story = {
   name: "Embedded in Button — loading state",
   render: () => (
-    <Space size="middle" align="center">
+    <Space size="default" align="center">
       <Button variant="primary" disabled>
         <Spinner size="sm" aria-label="保存中" />
         保存中…

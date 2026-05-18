@@ -24,7 +24,11 @@ import { cn } from "../cn";
 // re-implement a page header / hero / content wrapper. Compose this
 // instead.
 
-export type PageContentPadding = "compact" | "default" | "comfortable" | "none";
+// Aliased to the shared `PaddingProp` so Card / PageHeader / PageContent
+// all speak the same vocabulary (`tight` / `default` / `cozy` / `none`).
+// Renamed from the previous density-style names (`compact` / `comfortable`).
+import type { PaddingProp } from "../../props";
+export type PageContentPadding = PaddingProp;
 
 export interface PageContentProps {
   /** Page title — usually rendered as <h1>. */

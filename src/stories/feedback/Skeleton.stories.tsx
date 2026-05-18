@@ -55,11 +55,11 @@ export const List_Shape: Story = {
   render: () => (
     <Card style={{ width: 420 }}>
       <div className="card-body">
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space direction="vertical" size="default" style={{ width: "100%" }}>
           {[0, 1, 2, 3].map((i) => (
             <Space
               key={i}
-              size="middle"
+              size="default"
               align="center"
               style={{ width: "100%" }}
             >
@@ -82,14 +82,14 @@ export const Table_Shape: Story = {
     <Card style={{ width: 540 }}>
       <div className="card-body">
         <Space direction="vertical" size="small" style={{ width: "100%" }}>
-          <Space size="middle" style={{ width: "100%" }}>
+          <Space size="default" style={{ width: "100%" }}>
             <Skeleton className="sk-line short" style={{ flex: 1 }} />
             <Skeleton className="sk-line short" style={{ flex: 1 }} />
             <Skeleton className="sk-line short" style={{ flex: 1 }} />
             <Skeleton className="sk-line short" style={{ flex: 1 }} />
           </Space>
           {[0, 1, 2, 3, 4].map((i) => (
-            <Space key={i} size="middle" style={{ width: "100%" }}>
+            <Space key={i} size="default" style={{ width: "100%" }}>
               <Skeleton className="sk-line" style={{ flex: 1 }} />
               <Skeleton className="sk-line" style={{ flex: 1 }} />
               <Skeleton className="sk-line" style={{ flex: 1 }} />
@@ -107,7 +107,7 @@ export const Block_Media: Story = {
   render: () => (
     <Card style={{ width: 360 }}>
       <div className="card-body">
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space direction="vertical" size="default" style={{ width: "100%" }}>
           <Skeleton className="sk-block" style={{ width: "100%" }} />
           <Skeleton className="sk-title" />
           <Skeleton className="sk-line med" />

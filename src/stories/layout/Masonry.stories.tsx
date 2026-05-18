@@ -57,7 +57,7 @@ const COPY = [
 export const ThreeCols: Story = {
   name: "3 columns (default)",
   render: () => (
-    <Masonry cols={3} gap="middle">
+    <Masonry cols={3} gap="default">
       {COPY.map((c, i) => (
         <MasonryItem key={i}>
           <Card padding="default" title={c.t} meta={`item ${i + 1}`}>
@@ -74,7 +74,7 @@ export const ThreeCols: Story = {
 export const FourCols: Story = {
   name: "4 columns",
   render: () => (
-    <Masonry cols={4} gap="middle">
+    <Masonry cols={4} gap="default">
       {COPY.map((c, i) => (
         <MasonryItem key={i}>
           <Card padding="tight" title={c.t}>
@@ -91,8 +91,8 @@ export const FourCols: Story = {
 export const GapVariants: Story = {
   name: "Gap axis (small / middle / large)",
   render: () => (
-    <Flex vertical gap="middle">
-      {(["small", "middle", "large"] as const).map((g) => (
+    <Flex vertical gap="default">
+      {(["small", "default", "large"] as const).map((g) => (
         <Card key={g} padding="tight" title={`gap="${g}"`}>
           <Masonry cols={3} gap={g}>
             {COPY.slice(0, 6).map((c, i) => (

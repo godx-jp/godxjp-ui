@@ -30,7 +30,7 @@ const STATUS_TONE: Record<IdeaStatus, BadgeVariant> = {
   under_review: "info",
   scored: "warning",
   accepted: "success",
-  rejected: "error",
+  rejected: "destructive",
 };
 
 const STATUS_LABEL: Record<IdeaStatus, string> = {

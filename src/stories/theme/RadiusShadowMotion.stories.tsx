@@ -56,7 +56,7 @@ reserved for accent edges + focus rings.`.trim(),
           ["--radius-xl",   "calc(--radius + 4px) · 10px", "hero / large surfaces"],
           ["--radius-full", "9999px",                       "pills, dots, avatars"],
         ].map(([tok, val, hint]) => (
-          <Flex key={tok} align="center" gap="middle">
+          <Flex key={tok} align="center" gap="default">
             <code style={tokenLabel}>{tok}</code>
             <code style={valLabel}>{val}</code>
             <span
@@ -100,7 +100,7 @@ backing is rejected at review.`.trim(),
           ["--shadow-2xl",   "5px deep",            "command palette"],
           ["--shadow-inner", "inset depression",    "inset input bg"],
         ].map(([tok, val, hint]) => (
-          <Flex key={tok} align="center" gap="middle">
+          <Flex key={tok} align="center" gap="default">
             <code style={tokenLabel}>{tok}</code>
             <code style={valLabel}>{val}</code>
             <span
@@ -123,7 +123,7 @@ backing is rejected at review.`.trim(),
 
 function MotionRow({ tok, val }: { tok: string; val: string }) {
   return (
-    <Flex align="center" gap="middle">
+    <Flex align="center" gap="default">
       <code style={tokenLabel}>{tok}</code>
       <code style={valLabel}>{val}</code>
       <div
@@ -189,7 +189,7 @@ close = \`--transition-base + ease-out\`. Long transitions =
           ["--ease-out",    "cubic-bezier(0, 0, 0.2, 1)",   "decelerate out (default)"],
           ["--ease-in-out", "cubic-bezier(0.4, 0, 0.2, 1)", "smooth two-sided"],
         ].map(([tok, val, hint]) => (
-          <Flex key={tok} align="center" gap="middle">
+          <Flex key={tok} align="center" gap="default">
             <code style={tokenLabel}>{tok}</code>
             <code style={valLabel}>{val}</code>
             <span style={muted}>{hint}</span>

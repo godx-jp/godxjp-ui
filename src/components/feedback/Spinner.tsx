@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import type { HTMLAttributes } from "react";
 import { cn } from "../cn";
+import type { ColorProp, IconSizeProp } from "../../props";
 
 /**
  * Spinner — small inline circular loading indicator.
@@ -24,14 +25,15 @@ import { cn } from "../cn";
  *   <Spinner size="large" tone="primary" aria-label="Saving…" />
  */
 
-export type SpinnerSize = "sm" | "md" | "lg";
-export type SpinnerTone =
-  | "info"
-  | "muted"
-  | "primary"
-  | "success"
-  | "warning"
-  | "destructive";
+/** Alias of the shared `IconSizeProp` — Spinner is icon-symbol shaped. */
+export type SpinnerSize = IconSizeProp;
+/**
+ * Full semantic palette + `"muted"`. `default` falls back to `info`'s
+ * CSS class for backwards compatibility (existing CSS chain was rooted
+ * on info). `secondary` is excluded — it's Typography text-dimming
+ * which doesn't translate to a rotating arc.
+ */
+export type SpinnerTone = Exclude<ColorProp, "secondary"> | "muted";
 
 export interface SpinnerProps extends HTMLAttributes<HTMLSpanElement> {
   /** 10 / 12 / 16 px — defaults to `md`. */
@@ -49,12 +51,14 @@ const SIZE_CLASS: Record<SpinnerSize, string> = {
 };
 
 const TONE_CLASS: Record<SpinnerTone, string> = {
+  default: "",
   info: "",
   muted: "spinner-tone-muted",
   primary: "spinner-tone-primary",
   success: "spinner-tone-success",
   warning: "spinner-tone-warning",
   destructive: "spinner-tone-destructive",
+  attention: "spinner-tone-attention",
 };
 
 export const Spinner = forwardRef<HTMLSpanElement, SpinnerProps>(

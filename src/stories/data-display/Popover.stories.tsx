@@ -50,7 +50,7 @@ export const FormContent: Story = {
 
 export const Placements: Story = {
   render: () => (
-    <Flex gap="middle" wrap style={{ padding: 80 }}>
+    <Flex gap="default" wrap style={{ padding: 80 }}>
       {(["top", "right", "bottom", "left"] as const).map((side) => (
         <Popover
           key={side}

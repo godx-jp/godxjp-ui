@@ -60,7 +60,7 @@ export const Line_Default: Story = {
 
 export const Line_ColorSweep: Story = {
   render: () => (
-    <Space direction="vertical" size="middle" style={{ width: 360 }}>
+    <Space direction="vertical" size="default" style={{ width: 360 }}>
       <Progress value={45} />
       <Progress value={45} color="info" />
       <Progress value={45} color="success" />
@@ -72,7 +72,7 @@ export const Line_ColorSweep: Story = {
 
 export const Line_Sizes: Story = {
   render: () => (
-    <Space direction="vertical" size="middle" style={{ width: 360 }}>
+    <Space direction="vertical" size="default" style={{ width: 360 }}>
       <Progress value={60} size="small" />
       <Progress value={60} />
       <Progress value={60} size="large" />
@@ -96,7 +96,7 @@ export const Circle_Default: Story = {
 
 export const Circle_ColorSweep: Story = {
   render: () => (
-    <Space size="middle">
+    <Space size="default">
       <Progress variant="circle" value={30} />
       <Progress variant="circle" value={55} color="info" />
       <Progress variant="circle" value={80} color="success" />
@@ -108,7 +108,7 @@ export const Circle_ColorSweep: Story = {
 
 export const Circle_Sizes: Story = {
   render: () => (
-    <Space size="middle" align="center">
+    <Space size="default" align="center">
       <Progress variant="circle" value={62} size="small" />
       <Progress variant="circle" value={62} />
       <Progress variant="circle" value={62} size="large" />

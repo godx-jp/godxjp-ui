@@ -135,11 +135,11 @@ export const Default: Story = {
 export const Sizes: Story = {
   name: "Sizes · sm · default × bar · pill",
   render: () => (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       <SegmentedControl
         items={[...DAY_WEEK_MONTH]}
         defaultValue="month"
-        size="sm"
+        size="small"
         aria-label="表示単位 (sm · bar)"
       />
       <SegmentedControl
@@ -151,7 +151,7 @@ export const Sizes: Story = {
         items={[...DAY_WEEK_MONTH]}
         defaultValue="month"
         variant="pill"
-        size="sm"
+        size="small"
         aria-label="表示単位 (sm · pill)"
       />
       <SegmentedControl

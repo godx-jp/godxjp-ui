@@ -19,11 +19,15 @@ import { cn } from "../cn";
  * Flex / Grid (`GridGap = number | "small" | "middle" | "large"`).
  */
 
-export type MasonryGap = number | "small" | "middle" | "large";
+import type { SizeProp } from "../../props";
+
+/** Masonry gap scale — accepts the shared `SizeProp` vocabulary plus
+ *  a raw pixel number. Renamed Ant's `"middle"` → `"default"`. */
+export type MasonryGap = number | SizeProp;
 
 const GAP_TOKEN: Record<Exclude<MasonryGap, number>, string> = {
   small: "var(--spacing-2)",   /* 8px */
-  middle: "var(--spacing-3)",  /* 12px */
+  default: "var(--spacing-3)", /* 12px */
   large: "var(--spacing-4)",   /* 16px */
 };
 

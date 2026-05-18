@@ -30,7 +30,7 @@ import { cn } from "../cn";
  *   - `pageSize` / `defaultPageSize` / `onPageSizeChange` — rows per page
  *   - `size` — "small" | "default" — dimensional scale (default + simple)
  *   - `variant` — visual treatment (above)
- *   - `justify` — "start" | "center" | "end" | "between"
+ *   - `justify` — "start" | "center" | "end" | "space-between" (matches FlexJustify)
  *   - `disabled` — interaction state
  *   - `showTotal`, `showSizeChanger`, `showFirstLast`, `hideOnSinglePage`
  *     — adjective-boolean toggles
@@ -38,7 +38,14 @@ import { cn } from "../cn";
 
 export type PaginationSize = "small" | "default";
 export type PaginationVariant = "default" | "simple" | "embedded";
-export type PaginationJustify = "start" | "center" | "end" | "between";
+/** Justify values match FlexJustify spelling (`"space-between"`) so the
+ *  vocabulary stays uniform across layout primitives. Pagination ships
+ *  4 of FlexJustify's 6 values (no `space-around` / `space-evenly`). */
+export type PaginationJustify =
+  | "start"
+  | "center"
+  | "end"
+  | "space-between";
 
 export interface PaginationProps
   extends Omit<
