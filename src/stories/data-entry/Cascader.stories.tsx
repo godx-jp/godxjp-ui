@@ -195,3 +195,161 @@ export const Disabled: Story = {
     </div>
   ),
 };
+
+// ─── OrgChart · company > department > team ─────────────────────
+
+const orgChart: CascaderOption[] = [
+  {
+    value: "acme",
+    label: "Acme Forge",
+    children: [
+      {
+        value: "engineering",
+        label: "Engineering",
+        children: [
+          { value: "platform", label: "Platform" },
+          { value: "growth", label: "Growth" },
+          { value: "infra", label: "Infra" },
+        ],
+      },
+      {
+        value: "design",
+        label: "Design",
+        children: [
+          { value: "product-design", label: "Product Design" },
+          { value: "brand", label: "Brand" },
+        ],
+      },
+      {
+        value: "ops",
+        label: "Ops",
+        children: [
+          { value: "finance", label: "Finance" },
+          { value: "people", label: "People & Culture" },
+        ],
+      },
+    ],
+  },
+];
+
+export const OrgChart: Story = {
+  name: "Org chart · company > dept > team",
+  render: function OrgChart() {
+    const [path, setPath] = useState<string[]>(["acme", "engineering", "platform"]);
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 360 }}>
+        <Cascader
+          options={orgChart}
+          value={path}
+          onValueChange={(next) => setPath(next)}
+          placeholder="所属チームを選択"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          所属: <code className="mono">{path.join(" / ")}</code>
+        </span>
+      </Flex>
+    );
+  },
+};
+
+// ─── RegionPicker · country > state > city (worldwide) ──────────
+
+const regions: CascaderOption[] = [
+  {
+    value: "jp",
+    label: "🇯🇵 日本",
+    children: [
+      {
+        value: "kanto",
+        label: "関東",
+        children: [
+          { value: "tokyo", label: "東京" },
+          { value: "kanagawa", label: "神奈川" },
+          { value: "saitama", label: "埼玉" },
+        ],
+      },
+      {
+        value: "kansai",
+        label: "関西",
+        children: [
+          { value: "osaka", label: "大阪" },
+          { value: "kyoto", label: "京都" },
+        ],
+      },
+    ],
+  },
+  {
+    value: "us",
+    label: "🇺🇸 United States",
+    children: [
+      {
+        value: "ca",
+        label: "California",
+        children: [
+          { value: "sf", label: "San Francisco" },
+          { value: "la", label: "Los Angeles" },
+        ],
+      },
+      {
+        value: "ny",
+        label: "New York",
+        children: [
+          { value: "nyc", label: "New York City" },
+          { value: "buffalo", label: "Buffalo" },
+        ],
+      },
+    ],
+  },
+  {
+    value: "vn",
+    label: "🇻🇳 Việt Nam",
+    children: [
+      {
+        value: "north",
+        label: "Miền Bắc",
+        children: [
+          { value: "hanoi", label: "Hà Nội" },
+          { value: "haiphong", label: "Hải Phòng" },
+        ],
+      },
+      {
+        value: "south",
+        label: "Miền Nam",
+        children: [
+          { value: "hcm", label: "TP Hồ Chí Minh" },
+          { value: "danang", label: "Đà Nẵng" },
+        ],
+      },
+    ],
+  },
+];
+
+export const RegionPicker: Story = {
+  name: "Region picker · 国 > 地方 > 市",
+  render: function RegionPicker() {
+    const [path, setPath] = useState<string[]>(["jp", "kanto", "tokyo"]);
+    return (
+      <div style={{ maxWidth: 360 }}>
+        <Cascader
+          options={regions}
+          value={path}
+          onValueChange={(next) => setPath(next)}
+          placeholder="地域を選択"
+        />
+      </div>
+    );
+  },
+};
+
+// ─── Sizes · small / default / large ─────────────────────────────
+
+export const Sizes: Story = {
+  name: "Sizes · small / default / large",
+  render: () => (
+    <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
+      <Cascader options={prefectureTree} size="small" placeholder="Small" />
+      <Cascader options={prefectureTree} placeholder="Default" />
+      <Cascader options={prefectureTree} size="large" placeholder="Large" />
+    </Flex>
+  ),
+};

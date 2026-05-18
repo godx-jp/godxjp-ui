@@ -199,3 +199,173 @@ export const ExpandedByDefault: Story = {
     </div>
   ),
 };
+
+// ─── FileSystem · folders + files ───────────────────────────────
+
+const fileSystem: TreeSelectOption[] = [
+  {
+    value: "src",
+    label: "src/",
+    children: [
+      {
+        value: "components",
+        label: "components/",
+        children: [
+          { value: "Button.tsx", label: "Button.tsx" },
+          { value: "Input.tsx", label: "Input.tsx" },
+          { value: "Form.tsx", label: "Form.tsx" },
+        ],
+      },
+      {
+        value: "hooks",
+        label: "hooks/",
+        children: [
+          { value: "useFormatters.ts", label: "useFormatters.ts" },
+          { value: "useBreakpoint.ts", label: "useBreakpoint.ts" },
+        ],
+      },
+      { value: "main.tsx", label: "main.tsx" },
+    ],
+  },
+  {
+    value: "docs",
+    label: "docs/",
+    children: [
+      { value: "README.md", label: "README.md" },
+      { value: "CHANGELOG.md", label: "CHANGELOG.md" },
+    ],
+  },
+  { value: "package.json", label: "package.json" },
+];
+
+export const FileSystem: Story = {
+  name: "File system · folder + file picker",
+  render: function FileSystem() {
+    const [value, setValue] = useState<string | string[]>(["Button.tsx", "Input.tsx"]);
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 360 }}>
+        <TreeSelect
+          options={fileSystem}
+          value={value}
+          onValueChange={setValue}
+          multiple
+          placeholder="ファイル / フォルダを選択"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          公開対象: <code className="mono">{Array.isArray(value) ? value.join(", ") : value}</code>
+        </span>
+      </Flex>
+    );
+  },
+};
+
+// ─── ResourcePermissions · 4-level nested ───────────────────────
+
+const resourceTree: TreeSelectOption[] = [
+  {
+    value: "workspace",
+    label: "ワークスペース",
+    children: [
+      {
+        value: "projects",
+        label: "プロジェクト",
+        children: [
+          { value: "projects.read", label: "閲覧" },
+          { value: "projects.write", label: "編集" },
+          { value: "projects.delete", label: "削除" },
+        ],
+      },
+      {
+        value: "members",
+        label: "メンバー",
+        children: [
+          { value: "members.read", label: "閲覧" },
+          { value: "members.invite", label: "招待" },
+          { value: "members.remove", label: "削除" },
+        ],
+      },
+    ],
+  },
+  {
+    value: "billing",
+    label: "課金",
+    children: [
+      { value: "billing.read", label: "閲覧" },
+      { value: "billing.write", label: "編集" },
+    ],
+  },
+];
+
+export const ResourcePermissions: Story = {
+  name: "API permissions · nested resources",
+  render: function ResourcePermissions() {
+    const [value, setValue] = useState<string | string[]>([
+      "projects.read",
+      "members.read",
+    ]);
+    return (
+      <Flex vertical gap="small" style={{ maxWidth: 360 }}>
+        <TreeSelect
+          options={resourceTree}
+          value={value}
+          onValueChange={setValue}
+          multiple
+          placeholder="許可するリソースを選択"
+        />
+        <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+          選択中: {Array.isArray(value) ? value.length : value ? 1 : 0} 件
+        </span>
+      </Flex>
+    );
+  },
+};
+
+// ─── DisabledNodes · with disabled options ──────────────────────
+
+const disabledOrg: TreeSelectOption[] = [
+  {
+    value: "active",
+    label: "アクティブ部署",
+    children: [
+      { value: "engineering", label: "エンジニアリング" },
+      { value: "design", label: "デザイン" },
+      { value: "product", label: "プロダクト" },
+    ],
+  },
+  {
+    value: "archived",
+    label: "アーカイブ済み (選択不可)",
+    disabled: true,
+    children: [
+      { value: "old-team-1", label: "旧チーム A" },
+      { value: "old-team-2", label: "旧チーム B" },
+    ],
+  },
+];
+
+export const DisabledNodes: Story = {
+  name: "Disabled nodes · mixed active + archived",
+  render: () => (
+    <div style={{ maxWidth: 360 }}>
+      <TreeSelect
+        options={disabledOrg}
+        defaultValue="engineering"
+        defaultExpandAll
+        placeholder="部署を選択"
+      />
+    </div>
+  ),
+};
+
+// ─── Sizes · small / default / large ────────────────────────────
+
+export const Sizes: Story = {
+  name: "Sizes · small / default / large",
+  render: () => (
+    <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
+      <TreeSelect options={orgTree} size="small" placeholder="Small" />
+      <TreeSelect options={orgTree} placeholder="Default" />
+      <TreeSelect options={orgTree} size="large" placeholder="Large" />
+    </Flex>
+  ),
+};
