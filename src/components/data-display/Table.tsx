@@ -845,6 +845,54 @@ interface PaginationRendered {
   node: ReactNode;
 }
 
+/**
+ * Laravel-style page range — always show the first + last page, the
+ * current page, and `sibling` pages on each side. Insert `"gap"`
+ * markers (rendered as `…`) where pages are elided.
+ *
+ *   computePageRange(1, 52)   →  [1, 2, 3, "gap", 52]
+ *   computePageRange(25, 52)  →  [1, "gap", 24, 25, 26, "gap", 52]
+ *   computePageRange(52, 52)  →  [1, "gap", 50, 51, 52]
+ *   computePageRange(3, 6)    →  [1, 2, 3, 4, 5, 6]   // no gap needed
+ *
+ * Matches the design canon (`comp-table.html` ⑩) — `<button>1</button>
+ * <button>2</button><button>3</button><button>4</button>
+ * <button>5</button><span class="gap">…</span><button>52</button>`.
+ */
+function computePageRange(
+  current: number,
+  total: number,
+  sibling = 1,
+  boundary = 1,
+): Array<number | "gap"> {
+  if (total <= 1) return [1];
+  // If the window plus boundaries already covers every page, just list
+  // them flat — avoids "1 … 2 3 4 … 6" silliness on small counts.
+  const windowSize = 2 * sibling + 1 + 2 * boundary + 2; // +2 for the two gap slots
+  if (total <= windowSize) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  const startPages = Array.from({ length: boundary }, (_, i) => i + 1);
+  const endPages = Array.from({ length: boundary }, (_, i) => total - boundary + 1 + i);
+  const siblingStart = Math.max(
+    Math.min(current - sibling, total - boundary - 2 * sibling - 1),
+    boundary + 2,
+  );
+  const siblingEnd = Math.min(
+    Math.max(current + sibling, boundary + 2 * sibling + 2),
+    endPages[0] - 2,
+  );
+  const items: Array<number | "gap"> = [];
+  items.push(...startPages);
+  if (siblingStart > boundary + 2) items.push("gap");
+  else if (boundary + 1 < endPages[0]) items.push(boundary + 1);
+  for (let p = siblingStart; p <= siblingEnd; p++) items.push(p);
+  if (siblingEnd < endPages[0] - 2) items.push("gap");
+  else if (endPages[0] - 1 > boundary) items.push(endPages[0] - 1);
+  items.push(...endPages);
+  return items;
+}
+
 function renderTablePagination(
   pagination: TablePagination | undefined,
   t: (key: string, options?: Record<string, unknown>) => string,
@@ -923,16 +971,20 @@ function renderTablePagination(
         >
           {"<"}
         </button>
-        {Array.from({ length: pageCount }, (_, index) => index + 1).map(
-          (page) => (
+        {computePageRange(current, pageCount).map((item, index) =>
+          item === "gap" ? (
+            <span key={`gap-${index}`} className="gap" aria-hidden>
+              …
+            </span>
+          ) : (
             <button
-              key={page}
-              className={page === current ? "on" : ""}
+              key={item}
+              className={item === current ? "on" : ""}
               disabled={disabled}
-              onClick={() => changePage(page)}
-              aria-current={page === current ? "page" : undefined}
+              onClick={() => changePage(item)}
+              aria-current={item === current ? "page" : undefined}
             >
-              {page}
+              {item}
             </button>
           ),
         )}

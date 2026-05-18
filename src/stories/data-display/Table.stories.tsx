@@ -548,13 +548,15 @@ export const InteractionRegression: Story = {
     await expect(
       await canvas.findByText(savedViewLabel),
     ).toBeVisible();
-    await userEvent.click(
-      canvas.getByRole("button", {
-        name: new RegExp(
-          `(削除|Delete|Xóa|Tanggalin).*${escapeRegExp(savedViewLabel)}`,
-        ),
-      }),
-    );
+    // Use findByRole so we wait for the delete button — the saved-view
+    // label and the adjacent delete button render together but the
+    // synchronous getByRole can race the second commit.
+    const deleteButton = await canvas.findByRole("button", {
+      name: new RegExp(
+        `(削除|Delete|Xóa|Tanggalin).*${escapeRegExp(savedViewLabel)}`,
+      ),
+    });
+    await userEvent.click(deleteButton);
     await expect(canvas.queryByText(savedViewLabel)).toBeNull();
 
     await userEvent.click(canvas.getByLabelText(/Select row emp-001|row emp-001/));
