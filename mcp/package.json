@@ -1,0 +1,56 @@
+{
+  "name": "@godxjp/ui-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for @godxjp/ui — gives Claude / Cursor / any MCP-aware agent live access to the component catalog, prop vocabulary, design tokens, cardinal rules, and copy-paste-ready patterns.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "godx-ui-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godx-jp/godxjp-ui.git",
+    "directory": "mcp"
+  },
+  "homepage": "https://github.com/godx-jp/godxjp-ui/tree/main/mcp#readme",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/index.js",
+    "inspect": "npx @modelcontextprotocol/inspector node dist/index.js",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.6"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "godxjp",
+    "ui",
+    "design-system",
+    "react",
+    "claude",
+    "cursor"
+  ]
+}
