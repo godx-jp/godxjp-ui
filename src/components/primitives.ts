@@ -85,6 +85,10 @@ export type {
   HelpToneProp,
   OrientationProp,
   DensityProp,
+  SideProp,
+  PlacementProp,
+  PaddingProp,
+  AlignProp,
 } from "../props";
 export { normalizeLoading } from "../props";
 export type {

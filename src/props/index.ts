@@ -22,6 +22,9 @@ export type { SizeProp, SizeWithXSProp, IconSizeProp } from "./size";
 export type { StatusProp, ToneProp, HelpToneProp } from "./status";
 export type { OrientationProp } from "./orientation";
 export type { DensityProp } from "./density";
+export type { SideProp, PlacementProp } from "./side";
+export type { PaddingProp } from "./padding";
+export type { AlignProp } from "./align";
 export {
   normalizeLoading,
   type LoadingKind,
