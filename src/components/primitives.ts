@@ -68,11 +68,7 @@ export { InputNumber } from "./data-entry/InputNumber";
 export type { InputNumberProps } from "./data-entry/InputNumber";
 
 export { Form, useFormContext } from "./data-entry/Form";
-export type {
-  FormProps,
-  FormFieldConfig,
-  FormRenderArg,
-} from "./data-entry/Form";
+export type { FormProps } from "./data-entry/Form";
 
 export { Transfer } from "./data-entry/Transfer";
 export type {
