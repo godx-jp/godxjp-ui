@@ -89,6 +89,8 @@ export type {
   PlacementProp,
   PaddingProp,
   AlignProp,
+  ColorProp,
+  FeedbackColorProp,
 } from "../props";
 export { normalizeLoading } from "../props";
 export type {
