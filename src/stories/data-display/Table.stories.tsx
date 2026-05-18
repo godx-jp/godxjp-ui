@@ -15,7 +15,6 @@ import { InputSearch } from "../../components/data-entry/InputSearch";
 import { Select } from "../../components/data-entry/Select";
 import { Sheet } from "../../components/feedback/Sheet";
 import { Button } from "../../components/general/Button";
-import { DropdownMenu } from "../../components/navigation/DropdownMenu";
 import employeeRows from "./fixtures/table-employees.json";
 
 const meta: Meta<typeof Table> = {
@@ -291,21 +290,9 @@ function employeeColumns(): TableColumn<EmployeeRow>[] {
       maxSize: 56,
       cell: () => (
         <span className="row-actions">
-          <DropdownMenu
-            align="end"
-            trigger={
-              <button className="iconbtn" aria-label="操作メニュー">
-                ⋯
-              </button>
-            }
-            items={[
-              { key: "detail", label: "詳細を表示" },
-              { key: "edit", label: "編集" },
-              { key: "duplicate", label: "複製" },
-              { key: "sep", type: "separator" },
-              { key: "delete", label: "削除", variant: "destructive" },
-            ]}
-          />
+          <button className="iconbtn" aria-label="操作メニュー">
+            ⋯
+          </button>
         </span>
       ),
       meta: { className: "actions", sticky: "right", hideable: false },
@@ -342,6 +329,10 @@ function matchesTableFilters(row: EmployeeRow, filters: TableFilter[]) {
 function countRowsForView(view: StoryTableView) {
   return EMPLOYEES.filter((row) => matchesTableFilters(row, view.filters))
     .length;
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function decorateView(view: StoryTableView): TableViewItem {
@@ -759,6 +750,14 @@ export const InteractionRegression: Story = {
     await expect(
       await canvas.findByText(savedViewLabel),
     ).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: new RegExp(
+          `(削除|Delete|Xóa|Tanggalin).*${escapeRegExp(savedViewLabel)}`,
+        ),
+      }),
+    );
+    await expect(canvas.queryByText(savedViewLabel)).toBeNull();
 
     await userEvent.click(canvas.getByLabelText(/Select row emp-001|row emp-001/));
     await expect(
