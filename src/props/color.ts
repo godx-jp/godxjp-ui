@@ -13,10 +13,11 @@
  * — point their aliases at `Extract<ColorProp, …>` instead of
  * redeclaring the literals inline.
  *
- * Vocabulary note: the canonical name for the danger / error slot is
- * `"destructive"` (4 of 6 primitives already use it). Tag's
- * `TagPresetColor` still uses `"error"` for legacy reasons — that
- * alias should migrate in a follow-up.
+ * Vocabulary note: the canonical name for the danger slot in this
+ * palette is `"destructive"` — every primitive that exposes a `color`
+ * prop now uses that name. The shared `StatusProp` (form-field
+ * validation) uses `"error"` deliberately — form errors are NOT
+ * destructive actions; the two concerns deserve distinct verbs.
  */
 
 export type ColorProp =

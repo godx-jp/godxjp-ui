@@ -41,7 +41,7 @@ import { Star } from "lucide-react"
 
 | Prop       | Type                                                                                             | Default     | Description                                                               |
 | ---------- | ------------------------------------------------------------------------------------------------ | ----------- | ------------------------------------------------------------------------- |
-| `color`    | `"default" \| "primary" \| "success" \| "warning" \| "error" \| "info" \| "attention" \| string` | `"default"` | Preset hue or any CSS colour string (`oklch(56% 0.15 240)`, `#3b82f6`, …) |
+| `color`    | `"default" \| "primary" \| "success" \| "warning" \| "destructive" \| "info" \| "attention" \| string` | `"default"` | Preset hue or any CSS colour string (`oklch(56% 0.15 240)`, `#3b82f6`, …). Aliased to `Exclude<ColorProp, "secondary">`. |
 | `bordered` | `boolean`                                                                                        | `true`      | Show outline. `false` keeps the tinted background only                    |
 | `closable` | `boolean`                                                                                        | `false`     | Render an × button after the label                                        |
 | `onClose`  | `(e: MouseEvent<HTMLButtonElement>) => void`                                                     | —           | Called when the × button is clicked                                       |
