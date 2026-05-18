@@ -4,7 +4,7 @@ library: "@godxjp/ui"
 library_version: 4.0.0
 adr: "0006"
 title: "Table primitive vs DataTable composite"
-status: accepted
+status: superseded by 0007
 date: 2026-05-18
 last-updated: 2026-05-18
 audience: [developer]
@@ -15,9 +15,11 @@ lang: en
 
 ## Status
 
-Accepted (2026-05-18). Stages 1–4 landed on `feat/table-canon-full`
-(`<Pagination>` merge, table hooks, `<DataTable>` composite, `Table.tsx`
-file split). Stage 5 is this ADR + migration guide + CHANGELOG entry.
+**Superseded by [ADR-0007](./0007-table-stage4b-chrome-to-composite.md)**
+(v5.0.0). Stage 4b shipped in v5.0.0 — the chrome moved off the
+primitive entirely. This ADR is preserved for the historical record
+of the four-stage rollout (`<Pagination>` merge, table hooks,
+`<DataTable>` composite scaffolding, `Table.tsx` file split).
 
 ---
 
