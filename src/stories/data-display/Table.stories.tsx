@@ -13,6 +13,10 @@ import {
 } from "../../components/data-display/Table";
 import { InputSearch } from "../../components/data-entry/InputSearch";
 import { Button } from "../../components/general/Button";
+import {
+  useTablePagination,
+  useTableSelection,
+} from "../../hooks";
 import employeeRows from "./fixtures/table-employees.json";
 
 const meta: Meta<typeof Table> = {
@@ -395,23 +399,25 @@ export const Default: Story = {
 export const PackagedFeatures: Story = {
   name: "Packaged features · views · columns · batch actions",
   parameters: {
-    // The story's prop tree (TanStack column defs + view items + batch
-    // actions JSX + 12-row dataset) overflows Storybook's runtime
-    // `prettyPrint2` serializer (RangeError: Invalid string length).
-    // Pin the Code panel to the static source extracted at build time
-    // instead of the dynamic runtime walk.
-    docs: { source: { type: "code" } },
+    docs: {
+      source: { type: "code" },
+      description: {
+        story:
+          "Composing `<Table>` with every packaged feature wired by hand — toolbar (search + columns + primary action), tabbed views, sort, filters, batch actions, pagination.\n\nFor the **ergonomic hook-based equivalent**, see [`Composites / DataTable / PackagedFeatures`](?path=/story/composites-datatable--packaged-features) — `useDataTable` + slice hooks let you drop a lot of this plumbing.",
+      },
+    },
   },
   render: function PackagedFeatures() {
+    // Slice hooks replace inline useState plumbing for selection +
+    // pagination — the rest stays as plain useState so the wiring is
+    // visible end-to-end.
+    const selection = useTableSelection({ defaultSelected: ["emp-002"] });
+    const pagination = useTablePagination({ defaultPageSize: 5 });
+
     const [activeViewKey, setActiveViewKey] = useState("all");
     const [filters, setFilters] = useState<TableFilter[]>([]);
     const [sort, setSort] = useState<TableSortState>(DEFAULT_SORT);
     const [searchDraft, setSearchDraft] = useState("");
-    const [selectedIds, setSelectedIds] = useState<string[]>(["emp-002"]);
-    const [columnVisibility, setColumnVisibility] =
-      useState<TableColumnVisibility>(DEFAULT_COLUMN_VISIBILITY);
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
 
     const matched = useMemo(
       () =>
@@ -422,8 +428,12 @@ export const PackagedFeatures: Story = {
       [filters, sort],
     );
     const rows = useMemo(
-      () => matched.slice((page - 1) * pageSize, page * pageSize),
-      [matched, page, pageSize],
+      () =>
+        matched.slice(
+          (pagination.page - 1) * pagination.pageSize,
+          pagination.page * pagination.pageSize,
+        ),
+      [matched, pagination.page, pagination.pageSize],
     );
     const viewItems = useMemo(() => BUILT_IN_VIEWS.map(decorateView), []);
     const markCustom = () => setActiveViewKey("custom");
@@ -432,35 +442,28 @@ export const PackagedFeatures: Story = {
       setActiveViewKey(view.key);
       setFilters(view.filters ?? []);
       setSort("sort" in view ? (view.sort ?? null) : DEFAULT_SORT);
-      setColumnVisibility(view.columnVisibility ?? DEFAULT_COLUMN_VISIBILITY);
       setSearchDraft("");
-      setPage(1);
+      pagination.resetPage();
     }
 
     function commitSearch(value: string) {
       setFilters((prev) =>
         replaceFilter(prev, { key: "name", operator: "contains", value }),
       );
-      setPage(1);
+      pagination.resetPage();
       markCustom();
     }
 
     return (
       <Table
-        tableKey="data-display/Table/PackagedFeatures"
         containerClassName="tbl-shell"
         columns={EMPLOYEE_COLUMNS}
         data={rows}
         rowKey="id"
         rowClassName={(row) =>
-          selectedIds.includes(row.original.id) ? "selected" : rowState(row)
+          selection.isSelected(row.original.id) ? "selected" : rowState(row)
         }
         defaultColumnVisibility={DEFAULT_COLUMN_VISIBILITY}
-        columnVisibility={columnVisibility}
-        onColumnVisibilityChange={(next) => {
-          setColumnVisibility(next);
-          markCustom();
-        }}
         views={{
           items: viewItems,
           activeKey: activeViewKey,
@@ -484,23 +487,19 @@ export const PackagedFeatures: Story = {
         filters={filters}
         onFiltersChange={(next) => {
           setFilters(next);
-          setPage(1);
+          pagination.resetPage();
           markCustom();
         }}
         pagination={{
-          current: page,
-          pageSize,
+          current: pagination.page,
+          pageSize: pagination.pageSize,
           total: matched.length,
-          showSizeChanger: true,
           pageSizeOptions: [5, 10, 20],
-          onChange: (nextPage, nextSize) => {
-            setPage(nextPage);
-            setPageSize(nextSize);
-          },
+          onChange: pagination.onChange,
         }}
         batchActions={{
-          selectedRowKeys: selectedIds,
-          onSelectedRowKeysChange: setSelectedIds,
+          selectedRowKeys: selection.selectedRowKeys,
+          onSelectedRowKeysChange: selection.setSelectedRowKeys,
           getCheckboxDisabled: (row) => row.original.state === "disabled",
           actions: batchActionsFor(),
         }}
@@ -510,16 +509,6 @@ export const PackagedFeatures: Story = {
           markCustom();
         }}
         onResetFilters={() => applyView(BUILT_IN_VIEWS[0])}
-        footer={
-          <div className="totals">
-            <span>
-              選択 <b>{selectedIds.length}</b> 件
-            </span>
-            <span>
-              表示中の合計 <b>{sumHours(rows).toFixed(1)} h</b>
-            </span>
-          </div>
-        }
       />
     );
   },
