@@ -48,22 +48,6 @@ interface EmployeeRow {
 
 const EMPLOYEES = employeeRows as EmployeeRow[];
 
-const SHOP_OPTIONS = [
-  { value: "渋谷", label: "渋谷" },
-  { value: "表参道", label: "表参道" },
-  { value: "新宿", label: "新宿" },
-  { value: "自由が丘", label: "自由が丘" },
-];
-
-const KIND_OPTIONS = [
-  { value: "late", label: "遅刻" },
-  { value: "paid", label: "有給" },
-  { value: "trip", label: "出張" },
-  { value: "absence", label: "欠勤" },
-  { value: "normal", label: "通常" },
-];
-
-
 function getSearchShortcutLabel() {
   if (typeof navigator === "undefined") return "Ctrl K";
   const agent = navigator as Navigator & {
@@ -156,7 +140,6 @@ function employeeColumns(): TableColumn<EmployeeRow>[] {
       minSize: 180,
       cell: ({ row }) => <AvatarCell row={row.original} />,
       meta: {
-        filterable: true,
         sticky: { side: "left", from: "md" },
       },
     },
@@ -170,14 +153,12 @@ function employeeColumns(): TableColumn<EmployeeRow>[] {
       header: "店舗",
       minSize: 96,
       cell: ({ row }) => <span className="c-mono">{row.original.shop}</span>,
-      meta: { filterable: true, filterOptions: SHOP_OPTIONS },
     },
     {
       accessorKey: "kind",
       header: "区分",
       minSize: 88,
       cell: ({ row }) => <KindBadge kind={row.original.kind} />,
-      meta: { filterable: true, filterOptions: KIND_OPTIONS },
     },
     {
       accessorKey: "hours",
@@ -190,14 +171,6 @@ function employeeColumns(): TableColumn<EmployeeRow>[] {
       header: "状態",
       minSize: 96,
       cell: ({ row }) => <StatusBadge status={row.original.status} />,
-      meta: {
-        filterable: true,
-        filterOptions: [
-          { value: "active", label: "稼働中" },
-          { value: "pending", label: "申請中" },
-          { value: "leave", label: "休職" },
-        ],
-      },
     },
     {
       id: "actions",
@@ -215,7 +188,6 @@ function employeeColumns(): TableColumn<EmployeeRow>[] {
       meta: {
         className: "actions",
         sticky: { side: "right", from: "md" },
-        hideable: false,
       },
     },
   ];
@@ -1206,7 +1178,7 @@ const WEEK_COLUMNS: TableColumn<WeekRow>[] = [
         </button>
       </span>
     ),
-    meta: { className: "actions", sticky: "right", hideable: false },
+    meta: { className: "actions", sticky: "right" },
   },
 ];
 
