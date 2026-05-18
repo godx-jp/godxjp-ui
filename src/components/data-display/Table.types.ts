@@ -32,6 +32,17 @@ export type TableStickyConfig =
   | { side: TableStickySide; from?: Breakpoint };
 
 declare module "@tanstack/react-table" {
+  /**
+   * Primitive-level `ColumnMeta` — fields consumed by the `<Table>`
+   * primitive itself: cell rendering, sort UI in headers, sticky
+   * positioning.
+   *
+   * Composite-only fields (`filterable`, `filterLabel`,
+   * `filterOptions`, `hideable`) live in
+   * `composites/data-table/DataTable.types.ts` and are merged into
+   * `ColumnMeta` whenever a consumer imports from
+   * `@godxjp/ui/components/composites`.
+   */
   interface ColumnMeta<TData extends RowData, TValue> {
     className?: string;
     headerClassName?: string;
@@ -41,12 +52,8 @@ declare module "@tanstack/react-table" {
     cellStyle?:
       | CSSProperties
       | ((row: Row<TData>) => CSSProperties | undefined);
-    filterable?: boolean;
-    filterLabel?: ReactNode;
-    filterOptions?: TableFilterOption[];
     sortable?: boolean;
     sticky?: TableStickyConfig;
-    hideable?: boolean;
   }
 }
 

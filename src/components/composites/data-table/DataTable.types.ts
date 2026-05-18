@@ -9,6 +9,7 @@
  * `<Table>` primitive props remain in `data-display/Table.types`.
  */
 import type { ReactNode } from "react";
+import type { RowData } from "@tanstack/react-table";
 import type {
   TableBatchActionsConfig,
   TableColumn,
@@ -19,6 +20,7 @@ import type {
   TableExpandableConfig,
   TableFilter,
   TableFilterBar,
+  TableFilterOption,
   TableGroupBy,
   TablePagination,
   TableRowKey,
@@ -32,6 +34,26 @@ import type {
 import type { UseTablePaginationResult } from "../../../hooks/useTablePagination";
 import type { UseTableSelectionResult } from "../../../hooks/useTableSelection";
 import type { UseTableViewsResult } from "../../../hooks/useTableViews";
+
+/**
+ * Composite-only `ColumnMeta` extension. The `<Table>` primitive
+ * does not render filter UI or the column manager — these fields
+ * are consumed exclusively by `<DataTable>`'s chrome
+ * (`DataTableChrome` filter chip bar + `ColumnManagerSheet`).
+ *
+ * Augmentation merges with the primitive declaration in
+ * `data-display/Table.types.ts` whenever this module is in the
+ * TypeScript program (i.e. as soon as a consumer imports anything
+ * from `@godxjp/ui/components/composites`).
+ */
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    filterable?: boolean;
+    filterLabel?: ReactNode;
+    filterOptions?: TableFilterOption[];
+    hideable?: boolean;
+  }
+}
 
 /**
  * Selection slice the slim primitive understands — strictly the
