@@ -67,11 +67,19 @@ export type { InputSearchProps } from "./data-entry/InputSearch";
 export { InputNumber } from "./data-entry/InputNumber";
 export type { InputNumberProps } from "./data-entry/InputNumber";
 
-export { Form, useFormContext } from "./data-entry/Form";
-export type { FormProps } from "./data-entry/Form";
+export { Form, useFormContext, useFormLoading } from "./data-entry/Form";
+export type { FormProps, FormLayout } from "./data-entry/Form";
 
 export { FormField } from "./data-entry/FormField";
 export type { FormFieldProps } from "./data-entry/FormField";
+
+export { normalizeLoading } from "./data-entry/loading";
+export type {
+  LoadingProp,
+  LoadingKind,
+  LoadingOptions,
+  NormalizedLoading,
+} from "./data-entry/loading";
 
 export { Transfer } from "./data-entry/Transfer";
 export type {

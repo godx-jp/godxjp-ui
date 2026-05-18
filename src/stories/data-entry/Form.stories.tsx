@@ -1527,6 +1527,165 @@ const pwSchema = z
   });
 type PwValues = z.infer<typeof pwSchema>;
 
+// ─── FormInitSkeleton — Form loading={{ kind: "skeleton" }} ──────
+
+export const FormInitSkeleton: Story = {
+  name: "Form loading · init skeleton (Form-level)",
+  parameters: {
+    layout: "padded",
+    docs: {
+      description: {
+        story:
+          "Setting `<Form loading={{ kind: \"skeleton\" }}>` cascades to every `<FormField>` inside. Use this for the **initial data fetch** state — UX nuance: skeleton on first load, spinner during subsequent saves.",
+      },
+    },
+  },
+  render: () => (
+    <Card
+      title="プロフィール"
+      subtitle="サーバーから既存データを読み込んでいます..."
+      style={{ maxWidth: 640 }}
+    >
+      <Form<ProfileValues>
+        loading={{ kind: "skeleton" }}
+        defaultValues={{
+          lastName: "",
+          firstName: "",
+          lastNameKana: "",
+          firstNameKana: "",
+          displayName: "",
+          bio: "",
+        }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <div className="grid grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+          <FormField name="lastName" label="姓" required>
+            <Input />
+          </FormField>
+          <FormField name="firstName" label="名" required>
+            <Input />
+          </FormField>
+        </div>
+        <FormField name="displayName" label="表示名" required>
+          <Input />
+        </FormField>
+        <FormField name="bio" label="自己紹介" optional>
+          <Textarea rows={3} />
+        </FormField>
+      </Form>
+    </Card>
+  ),
+};
+
+// ─── FormSubmitSpinner — Form loading={true} during async submit ──
+
+export const FormSubmitSpinner: Story = {
+  name: "Form loading · spinner during submit (Form-level)",
+  parameters: {
+    layout: "padded",
+    docs: {
+      description: {
+        story:
+          "Setting `<Form loading>` (boolean true) shows a spinner overlay on every field — the controls dim but the layout doesn't jump. Use this during **save / submit**.",
+      },
+    },
+  },
+  render: function FormSubmitSpinner() {
+    const [submitting, setSubmitting] = useState(false);
+    return (
+      <Card
+        title="プロフィール"
+        subtitle="保存中はフォーム全体がロックされます。"
+        style={{ maxWidth: 640 }}
+      >
+        <Form<ProfileValues>
+          loading={submitting}
+          defaultValues={{
+            lastName: "山田",
+            firstName: "太郎",
+            lastNameKana: "ヤマダ",
+            firstNameKana: "タロウ",
+            displayName: "Taro Y.",
+            bio: "",
+          }}
+          onSubmit={async () => {
+            setSubmitting(true);
+            await new Promise((r) => setTimeout(r, 2000));
+            setSubmitting(false);
+          }}
+        >
+          <div className="grid grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+            <FormField name="lastName" label="姓" required>
+              <Input />
+            </FormField>
+            <FormField name="firstName" label="名" required>
+              <Input />
+            </FormField>
+          </div>
+          <FormField name="displayName" label="表示名" required>
+            <Input />
+          </FormField>
+
+          <Separator />
+          <Flex gap="small" justify="end">
+            <Button variant="ghost" type="button" disabled={submitting}>キャンセル</Button>
+            <Button type="submit" variant="primary" loading={submitting}>保存</Button>
+          </Flex>
+        </Form>
+      </Card>
+    );
+  },
+};
+
+// ─── FormFieldPerFieldLoading — mix kinds across fields ──────────
+
+export const FormFieldPerFieldLoading: Story = {
+  name: "FormField loading · per-field override",
+  parameters: {
+    layout: "padded",
+    docs: {
+      description: {
+        story:
+          "Per-field `loading` overrides the Form default. Mix `skeleton` (still fetching) with `spinner` (revalidating) on the same form.",
+      },
+    },
+  },
+  render: () => (
+    <Card
+      title="顧客情報"
+      subtitle="一部のフィールドはまだ取得中、一部は再検証中です。"
+      style={{ maxWidth: 640 }}
+    >
+      <Form<ProfileValues>
+        defaultValues={{
+          lastName: "山田",
+          firstName: "太郎",
+          lastNameKana: "",
+          firstNameKana: "",
+          displayName: "Taro Y.",
+          bio: "",
+        }}
+        onSubmit={(v) => console.log(v)}
+      >
+        <div className="grid grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+          <FormField name="lastName" label="姓" required>
+            <Input />
+          </FormField>
+          <FormField name="firstName" label="名" required>
+            <Input />
+          </FormField>
+        </div>
+        <FormField name="displayName" label="表示名 (再検証中)" required loading>
+          <Input />
+        </FormField>
+        <FormField name="bio" label="自己紹介 (取得中)" loading={{ kind: "skeleton" }}>
+          <Textarea rows={3} />
+        </FormField>
+      </Form>
+    </Card>
+  ),
+};
+
 export const PasswordReset: Story = {
   name: "Password reset · InputPassword",
   parameters: { layout: "padded" },

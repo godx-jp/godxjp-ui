@@ -1,4 +1,4 @@
-import { type ComponentProps } from "react";
+import { createContext, useContext, type ComponentProps } from "react";
 import {
   FormProvider,
   useForm,
@@ -10,6 +10,7 @@ import {
   type UseFormReturn,
 } from "react-hook-form";
 import { cn } from "../cn";
+import type { LoadingProp } from "./loading";
 
 export type FormLayout = "vertical" | "horizontal" | "inline";
 
@@ -23,6 +24,20 @@ export interface FormProps<T extends FieldValues = FieldValues>
   /** Visual layout. Mobile-first: every layout collapses to vertical at `xs`;
    * `horizontal` becomes label-left at `md`, `inline` becomes single-row at `sm`. */
   layout?: FormLayout;
+  /** When set, every `<FormField>` inside this form renders its loading
+   * state (spinner by default, skeleton via `{ kind: "skeleton" }`).
+   * Each `<FormField>` can override with its own `loading` prop. */
+  loading?: LoadingProp;
+}
+
+interface FormLoadingContext {
+  loading: LoadingProp | undefined;
+}
+const FormLoadingCtx = createContext<FormLoadingContext>({ loading: undefined });
+
+/** Read the surrounding Form's loading state (used by `<FormField>`). */
+export function useFormLoading(): LoadingProp | undefined {
+  return useContext(FormLoadingCtx).loading;
 }
 
 export function Form<T extends FieldValues>({
@@ -32,6 +47,7 @@ export function Form<T extends FieldValues>({
   mode = "onTouched",
   onSubmit,
   layout = "vertical",
+  loading,
   className,
   children,
   ...rest
@@ -44,14 +60,16 @@ export function Form<T extends FieldValues>({
   const active = form ?? local;
   return (
     <FormProvider {...active}>
-      <form
-        className={cn("form", `form-${layout}`, className)}
-        onSubmit={onSubmit ? active.handleSubmit(onSubmit) : undefined}
-        noValidate
-        {...rest}
-      >
-        {children}
-      </form>
+      <FormLoadingCtx.Provider value={{ loading }}>
+        <form
+          className={cn("form", `form-${layout}`, className)}
+          onSubmit={onSubmit ? active.handleSubmit(onSubmit) : undefined}
+          noValidate
+          {...rest}
+        >
+          {children}
+        </form>
+      </FormLoadingCtx.Provider>
     </FormProvider>
   );
 }

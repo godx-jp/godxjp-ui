@@ -6,13 +6,17 @@ import {
   type FieldPath,
   type FieldValues,
 } from "react-hook-form";
+import { Skeleton } from "../feedback/Skeleton";
+import { Spinner } from "../feedback/Spinner";
 import { AutoComplete } from "./AutoComplete";
 import { Cascader } from "./Cascader";
 import { Checkbox } from "./Checkbox";
 import { CheckboxGroup } from "./CheckboxGroup";
 import { ColorPicker } from "./ColorPicker";
 import { Field, type FieldHelpTone } from "./Field";
+import { useFormLoading } from "./Form";
 import { InputNumber } from "./InputNumber";
+import { normalizeLoading, type LoadingProp } from "./loading";
 import { RadioGroup } from "./Radio";
 import { Rate } from "./Rate";
 import { Select } from "./Select";
@@ -33,6 +37,10 @@ export interface FormFieldProps<
   /** Override the auto-derived help tone (defaults to `"error"` when invalid,
    * `"default"` when `description` is set, otherwise undefined). */
   tone?: FieldHelpTone;
+  /** Per-field loading override. `true` → spinner. `{ kind: "skeleton" }` →
+   * skeleton placeholder (use during initial data fetch). When omitted,
+   * inherits from the surrounding `<Form loading={…}>`. */
+  loading?: LoadingProp;
   children: ReactElement;
 }
 
@@ -58,9 +66,14 @@ export function FormField<
   required,
   optional,
   tone,
+  loading,
   children,
 }: FormFieldProps<T, TName>) {
   const { field, fieldState } = useController<T, TName>({ name });
+  const formLoading = useFormLoading();
+  const { active: isLoading, kind: loadKind, label: loadLabel } =
+    normalizeLoading(loading ?? formLoading);
+
   const error = extractErrorMessage(fieldState);
   const invalid = fieldState.invalid;
   const child = Children.only(children);
@@ -70,6 +83,23 @@ export function FormField<
   const resolvedTone: FieldHelpTone | undefined = error
     ? "error"
     : (tone ?? (description !== undefined ? "default" : undefined));
+
+  let body: ReactElement | ReactNode;
+  if (isLoading && loadKind === "skeleton") {
+    body = <Skeleton className="h-9 w-full rounded-md" aria-label={loadLabel} />;
+  } else if (isLoading && loadKind === "spinner") {
+    body = (
+      <div className="form-field-spin">
+        <span className="form-field-spin__control">{wired}</span>
+        <span className="form-field-spin__overlay" aria-hidden>
+          <Spinner size="sm" aria-label={loadLabel ?? "読み込み中"} />
+        </span>
+      </div>
+    );
+  } else {
+    body = wired;
+  }
+
   return (
     <Field
       label={label}
@@ -78,7 +108,7 @@ export function FormField<
       tone={resolvedTone}
       help={error ?? description}
     >
-      {wired}
+      {body}
     </Field>
   );
 }
