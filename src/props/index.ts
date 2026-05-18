@@ -25,6 +25,7 @@ export type { DensityProp } from "./density";
 export type { SideProp, PlacementProp } from "./side";
 export type { PaddingProp } from "./padding";
 export type { AlignProp } from "./align";
+export type { ColorProp, FeedbackColorProp } from "./color";
 export {
   normalizeLoading,
   type LoadingKind,
