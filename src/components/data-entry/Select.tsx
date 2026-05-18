@@ -193,8 +193,13 @@ function SearchableSelect({
           className={cn("input", "select-trigger", triggerClassName)}
           disabled={disabled}
           aria-haspopup="listbox"
+          title={
+            selected && typeof selected.label === "string"
+              ? selected.label
+              : undefined
+          }
         >
-          <span className={selected ? undefined : "muted"}>
+          <span className={cn("select-trigger-text", !selected && "muted")}>
             {selected ? selected.label : placeholder}
           </span>
           <ChevronDown

@@ -479,6 +479,7 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
 .select-trigger {
   display: inline-flex;
   width: 100%;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-2);
@@ -489,8 +490,22 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   color: var(--muted-foreground);
 }
 
+/* Single-line truncation in the trigger; full text shown via title= */
+.select-trigger-text,
+.select-trigger > span,
+.select-trigger [data-radix-select-value] {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: start;
+  display: inline-block;
+}
+
 .select-content {
   overflow: hidden;
+  min-width: var(--radix-select-trigger-width, var(--radix-popover-trigger-width));
   background: var(--popover);
   color: var(--popover-foreground);
   border: 1px solid var(--border);
