@@ -7,7 +7,6 @@ import type {
   TableColumnVisibility,
   TableFilter,
   TableSortState,
-  TableViewItem,
 } from "../../components/data-display/Table";
 import {
   DataTable,
@@ -20,136 +19,15 @@ import {
   useTableState,
   useTableViews,
 } from "../../hooks";
-import {
-  BUILT_IN_VIEWS,
-  fetchEmployees,
-  KIND_OPTIONS,
-  SHOP_OPTIONS,
-  type EmployeeRow,
-  type FetchEmployeesResponse,
-} from "./fixtures/employees-api";
 
 /**
  * Composites/DataTable — packaged table built over the slim `<Table>`
- * primitive + the table hooks (`useTablePagination`,
- * `useTableSelection`, `useTableViews`, `useTableState`).
- *
- * Stories fetch employee data via a mock `fetchEmployees()` async
- * helper. The "fetch on dependency change → setState" pattern in each
- * `render` body is the canonical integration path — swap
- * `fetchEmployees` for your real HTTP client (REST, GraphQL,
- * tRPC, …) and the rest carries over.
+ * primitive + the table hooks. Every story below is **self-contained**:
+ * the row type, the column defs, and the mock `fetchEmployees`
+ * function are all inline so the Storybook Code panel shows
+ * **copy-paste-runnable** code. Swap the inline `fetchEmployees` for
+ * your real HTTP client (REST / GraphQL / tRPC / whatever) and ship.
  */
-
-function StatusBadge({ status }: { status: EmployeeRow["status"] }) {
-  if (status === "active")
-    return (
-      <Badge variant="success" dot>
-        稼働中
-      </Badge>
-    );
-  if (status === "pending")
-    return (
-      <Badge variant="warning" dot>
-        申請中
-      </Badge>
-    );
-  return (
-    <Badge variant="neutral" dot>
-      休職
-    </Badge>
-  );
-}
-
-function KindBadge({ kind }: { kind: EmployeeRow["kind"] }) {
-  const map = {
-    paid: { variant: "primary" as const, label: "有給" },
-    late: { variant: "attention" as const, label: "遅刻" },
-    trip: { variant: "info" as const, label: "出張" },
-    absence: { variant: "error" as const, label: "欠勤" },
-    normal: { variant: "neutral" as const, label: "通常" },
-  };
-  const { variant, label } = map[kind];
-  return (
-    <Badge variant={variant} dot={false}>
-      {label}
-    </Badge>
-  );
-}
-
-const COLUMNS: TableColumn<EmployeeRow>[] = [
-  {
-    accessorKey: "date",
-    header: "日付",
-    size: 112,
-    minSize: 112,
-    meta: { sortable: true, sticky: { side: "left", from: "md" } },
-  },
-  {
-    accessorKey: "name",
-    header: "従業員",
-    minSize: 180,
-    meta: { filterable: true, sticky: { side: "left", from: "md" } },
-  },
-  { accessorKey: "role", header: "役職", minSize: 120 },
-  {
-    accessorKey: "shop",
-    header: "店舗",
-    minSize: 96,
-    meta: { filterable: true, filterOptions: SHOP_OPTIONS },
-  },
-  {
-    accessorKey: "kind",
-    header: "区分",
-    minSize: 88,
-    cell: ({ row }) => <KindBadge kind={row.original.kind} />,
-    meta: { filterable: true, filterOptions: KIND_OPTIONS },
-  },
-  {
-    accessorKey: "hours",
-    header: "時間",
-    minSize: 80,
-    meta: { className: "num", sortable: true },
-  },
-  {
-    accessorKey: "status",
-    header: "状態",
-    minSize: 96,
-    cell: ({ row }) => <StatusBadge status={row.original.status} />,
-    meta: {
-      filterable: true,
-      filterOptions: [
-        { value: "active", label: "稼働中" },
-        { value: "pending", label: "申請中" },
-        { value: "leave", label: "休職" },
-      ],
-    },
-  },
-  {
-    id: "actions",
-    header: "操作",
-    size: 56,
-    minSize: 56,
-    maxSize: 56,
-    cell: () => (
-      <span className="row-actions">
-        <button className="iconbtn" aria-label="操作メニュー">
-          ⋯
-        </button>
-      </span>
-    ),
-    meta: {
-      className: "actions",
-      sticky: { side: "right", from: "md" },
-      hideable: false,
-    },
-  },
-];
-
-const DEFAULT_VISIBILITY: TableColumnVisibility = { hours: false };
-const DEFAULT_SORT = { key: "date", direction: "desc" as const };
-
-const EMPTY_RESPONSE: FetchEmployeesResponse = { rows: [], total: 0 };
 
 const meta: Meta<typeof DataTable> = {
   title: "Composites/DataTable",
@@ -158,25 +36,18 @@ const meta: Meta<typeof DataTable> = {
   parameters: {
     layout: "padded",
     docs: {
-      // Pin every story's Code panel to the static source extract.
-      // Storybook's runtime `prettyPrint2` chokes on the TanStack
-      // column-def + composite prop tree and freezes the autodocs
-      // view when several heavy stories render at once.
       source: { type: "code" },
       description: {
         component: `
 **DataTable** — packaged table composite. Pairs the slim
 \`<Table>\` primitive with hook-based state slices
 (\`useTablePagination\`, \`useTableSelection\`, \`useTableViews\`,
-\`useTableState\`). Reach for it when you need the canonical
-"data-table page" experience; reach for \`<Table>\` directly when
-you only need rows + columns rendering.
+\`useTableState\`).
 
-Every story fetches via the \`fetchEmployees(params)\` mock so the
-Code panel shows the canonical pattern: \`useEffect\` re-fetches on
-pagination / filter / sort / view changes, the response feeds
-\`useDataTable({ data, total })\`. Replace the import with your real
-HTTP client to ship.
+Every story is self-contained: row type + columns + mock API are
+inline inside the \`render\` function. The Code panel content is
+runnable — copy it into a fresh component file, replace
+\`fetchEmployees\` with your real HTTP call, done.
         `.trim(),
       },
     },
@@ -192,8 +63,53 @@ type Story = StoryObj<typeof DataTable>;
 export const Basic: Story = {
   name: "Basic · fetch + pagination",
   render: function Basic() {
-    const pagination = useTablePagination({ defaultPageSize: 5 });
-    const [data, setData] = useState<FetchEmployeesResponse>(EMPTY_RESPONSE);
+    interface Employee {
+      id: string;
+      name: string;
+      role: string;
+      shop: string;
+      hours: string;
+    }
+
+    // Replace with your real API client (REST / GraphQL / tRPC / …).
+    async function fetchEmployees(params: {
+      page: number;
+      pageSize: number;
+    }): Promise<{ rows: Employee[]; total: number }> {
+      const all: Employee[] = [
+        { id: "e1", name: "田中 美咲", role: "店長", shop: "渋谷", hours: "8.0h" },
+        { id: "e2", name: "Nguyễn Lan", role: "スタッフ", shop: "表参道", hours: "7.5h" },
+        { id: "e3", name: "佐藤 健一", role: "副店長", shop: "自由が丘", hours: "8.0h" },
+        { id: "e4", name: "山田 太郎", role: "スタッフ", shop: "渋谷", hours: "—" },
+        { id: "e5", name: "鈴木 さくら", role: "アルバイト", shop: "新宿", hours: "6.0h" },
+        { id: "e6", name: "渡辺 颯太", role: "スタッフ", shop: "表参道", hours: "7.0h" },
+        { id: "e7", name: "山本 結衣", role: "スタッフ", shop: "渋谷", hours: "8.0h" },
+      ];
+      await new Promise((r) => setTimeout(r, 80));
+      const start = (params.page - 1) * params.pageSize;
+      return {
+        rows: all.slice(start, start + params.pageSize),
+        total: all.length,
+      };
+    }
+
+    const columns: TableColumn<Employee>[] = [
+      { accessorKey: "name", header: "従業員", minSize: 180 },
+      { accessorKey: "role", header: "役職", minSize: 120 },
+      { accessorKey: "shop", header: "店舗", minSize: 96 },
+      {
+        accessorKey: "hours",
+        header: "時間",
+        minSize: 80,
+        meta: { className: "num" },
+      },
+    ];
+
+    const pagination = useTablePagination({ defaultPageSize: 3 });
+    const [data, setData] = useState<{ rows: Employee[]; total: number }>({
+      rows: [],
+      total: 0,
+    });
 
     useEffect(() => {
       fetchEmployees({
@@ -204,11 +120,10 @@ export const Basic: Story = {
 
     const table = useDataTable({
       data: data.rows,
-      columns: COLUMNS,
+      columns,
       rowKey: "id",
       pagination,
       total: data.total,
-      defaultColumnVisibility: DEFAULT_VISIBILITY,
     });
 
     return <DataTable table={table} containerClassName="tbl-shell" />;
@@ -216,15 +131,51 @@ export const Basic: Story = {
 };
 
 // ─────────────────────────────────────────────────────────────────
-// 2 — Bulk actions. Selection slice + batch band.
+// 2 — BulkActions. Selection slice + batch band.
 // ─────────────────────────────────────────────────────────────────
 
 export const BulkActions: Story = {
   name: "BulkActions · useTableSelection slice",
   render: function BulkActions() {
+    interface Employee {
+      id: string;
+      name: string;
+      role: string;
+      shop: string;
+      disabled?: boolean;
+    }
+
+    async function fetchEmployees(params: {
+      page: number;
+      pageSize: number;
+    }): Promise<{ rows: Employee[]; total: number }> {
+      const all: Employee[] = [
+        { id: "e1", name: "田中 美咲", role: "店長", shop: "渋谷" },
+        { id: "e2", name: "Nguyễn Lan", role: "スタッフ", shop: "表参道" },
+        { id: "e3", name: "佐藤 健一", role: "副店長", shop: "自由が丘" },
+        { id: "e4", name: "山田 太郎", role: "スタッフ", shop: "渋谷", disabled: true },
+        { id: "e5", name: "鈴木 さくら", role: "アルバイト", shop: "新宿" },
+      ];
+      await new Promise((r) => setTimeout(r, 80));
+      const start = (params.page - 1) * params.pageSize;
+      return {
+        rows: all.slice(start, start + params.pageSize),
+        total: all.length,
+      };
+    }
+
+    const columns: TableColumn<Employee>[] = [
+      { accessorKey: "name", header: "従業員", minSize: 180 },
+      { accessorKey: "role", header: "役職", minSize: 120 },
+      { accessorKey: "shop", header: "店舗", minSize: 96 },
+    ];
+
     const pagination = useTablePagination({ defaultPageSize: 5 });
-    const selection = useTableSelection({ defaultSelected: ["emp-002"] });
-    const [data, setData] = useState<FetchEmployeesResponse>(EMPTY_RESPONSE);
+    const selection = useTableSelection({ defaultSelected: ["e2"] });
+    const [data, setData] = useState<{ rows: Employee[]; total: number }>({
+      rows: [],
+      total: 0,
+    });
 
     useEffect(() => {
       fetchEmployees({
@@ -235,12 +186,11 @@ export const BulkActions: Story = {
 
     const table = useDataTable({
       data: data.rows,
-      columns: COLUMNS,
+      columns,
       rowKey: "id",
       pagination,
       total: data.total,
       selection,
-      defaultColumnVisibility: DEFAULT_VISIBILITY,
       batchActions: {
         actions: (
           <>
@@ -259,7 +209,7 @@ export const BulkActions: Story = {
             </Button>
           </>
         ),
-        getCheckboxDisabled: (row) => row.original.state === "disabled",
+        getCheckboxDisabled: (row) => row.original.disabled === true,
       },
     });
 
@@ -274,8 +224,43 @@ export const BulkActions: Story = {
 export const WithToolbar: Story = {
   name: "WithToolbar · primary action + columns button",
   render: function WithToolbar() {
+    interface Employee {
+      id: string;
+      name: string;
+      role: string;
+      shop: string;
+    }
+
+    async function fetchEmployees(params: {
+      page: number;
+      pageSize: number;
+    }): Promise<{ rows: Employee[]; total: number }> {
+      const all: Employee[] = [
+        { id: "e1", name: "田中 美咲", role: "店長", shop: "渋谷" },
+        { id: "e2", name: "Nguyễn Lan", role: "スタッフ", shop: "表参道" },
+        { id: "e3", name: "佐藤 健一", role: "副店長", shop: "自由が丘" },
+        { id: "e4", name: "山田 太郎", role: "スタッフ", shop: "渋谷" },
+        { id: "e5", name: "鈴木 さくら", role: "アルバイト", shop: "新宿" },
+      ];
+      await new Promise((r) => setTimeout(r, 80));
+      const start = (params.page - 1) * params.pageSize;
+      return {
+        rows: all.slice(start, start + params.pageSize),
+        total: all.length,
+      };
+    }
+
+    const columns: TableColumn<Employee>[] = [
+      { accessorKey: "name", header: "従業員", minSize: 180 },
+      { accessorKey: "role", header: "役職", minSize: 120 },
+      { accessorKey: "shop", header: "店舗", minSize: 96 },
+    ];
+
     const pagination = useTablePagination({ defaultPageSize: 5 });
-    const [data, setData] = useState<FetchEmployeesResponse>(EMPTY_RESPONSE);
+    const [data, setData] = useState<{ rows: Employee[]; total: number }>({
+      rows: [],
+      total: 0,
+    });
 
     useEffect(() => {
       fetchEmployees({
@@ -286,11 +271,10 @@ export const WithToolbar: Story = {
 
     const table = useDataTable({
       data: data.rows,
-      columns: COLUMNS,
+      columns,
       rowKey: "id",
       pagination,
       total: data.total,
-      defaultColumnVisibility: DEFAULT_VISIBILITY,
       toolbar: {
         columns: {},
         primaryAction: { label: "＋ 新規申請" },
@@ -302,16 +286,506 @@ export const WithToolbar: Story = {
 };
 
 // ─────────────────────────────────────────────────────────────────
-// 4 — PackagedFeatures. The full integration — fetch with all params.
+// 4 — Pagination · numbered (default).
+// ─────────────────────────────────────────────────────────────────
+
+export const Pagination_Numbered: Story = {
+  name: "Pagination · numbered",
+  render: function PaginationNumbered() {
+    interface Employee {
+      id: string;
+      name: string;
+      role: string;
+      shop: string;
+    }
+
+    async function fetchEmployees(params: {
+      page: number;
+      pageSize: number;
+    }): Promise<{ rows: Employee[]; total: number }> {
+      const all: Employee[] = Array.from({ length: 87 }, (_, i) => ({
+        id: `e${i + 1}`,
+        name: `従業員 ${i + 1}`,
+        role: i % 3 === 0 ? "店長" : i % 3 === 1 ? "スタッフ" : "アルバイト",
+        shop: ["渋谷", "表参道", "新宿", "自由が丘"][i % 4]!,
+      }));
+      await new Promise((r) => setTimeout(r, 80));
+      const start = (params.page - 1) * params.pageSize;
+      return {
+        rows: all.slice(start, start + params.pageSize),
+        total: all.length,
+      };
+    }
+
+    const columns: TableColumn<Employee>[] = [
+      { accessorKey: "name", header: "従業員", minSize: 180 },
+      { accessorKey: "role", header: "役職", minSize: 120 },
+      { accessorKey: "shop", header: "店舗", minSize: 96 },
+    ];
+
+    const pagination = useTablePagination({ defaultPageSize: 10 });
+    const [data, setData] = useState<{ rows: Employee[]; total: number }>({
+      rows: [],
+      total: 0,
+    });
+
+    useEffect(() => {
+      fetchEmployees({
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+      }).then(setData);
+    }, [pagination.page, pagination.pageSize]);
+
+    const table = useDataTable({
+      data: data.rows,
+      columns,
+      rowKey: "id",
+      pagination,
+      total: data.total,
+      pageSizeOptions: [5, 10, 20, 50],
+      showSizeChanger: true,
+    });
+
+    return <DataTable table={table} containerClassName="tbl-shell" />;
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────
+// 5 — Pagination · load-more (feed style).
+// ─────────────────────────────────────────────────────────────────
+
+export const Pagination_LoadMore: Story = {
+  name: "Pagination · load-more (feed)",
+  render: function PaginationLoadMore() {
+    interface Notification {
+      id: string;
+      message: string;
+      time: string;
+    }
+
+    const PAGE_SIZE = 4;
+
+    async function fetchNotifications(params: {
+      page: number;
+      pageSize: number;
+    }): Promise<{ rows: Notification[]; total: number }> {
+      const all: Notification[] = Array.from({ length: 16 }, (_, i) => ({
+        id: `n${i + 1}`,
+        message: `通知 #${i + 1} — 何かが起きました`,
+        time: `${i + 1} 分前`,
+      }));
+      await new Promise((r) => setTimeout(r, 80));
+      const start = (params.page - 1) * params.pageSize;
+      return {
+        rows: all.slice(start, start + params.pageSize),
+        total: all.length,
+      };
+    }
+
+    const columns: TableColumn<Notification>[] = [
+      { accessorKey: "message", header: "通知", minSize: 240 },
+      { accessorKey: "time", header: "時刻", minSize: 96 },
+    ];
+
+    const [page, setPage] = useState(1);
+    const [accumulated, setAccumulated] = useState<Notification[]>([]);
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+      setLoading(true);
+      fetchNotifications({ page, pageSize: PAGE_SIZE }).then((response) => {
+        setAccumulated((prev) =>
+          page === 1 ? response.rows : [...prev, ...response.rows],
+        );
+        setTotal(response.total);
+        setLoading(false);
+      });
+    }, [page]);
+
+    const table = useDataTable({
+      data: accumulated,
+      columns,
+      rowKey: "id",
+    });
+
+    return (
+      <DataTable
+        table={{
+          ...table,
+          chromeProps: {
+            ...table.chromeProps,
+            pagination: {
+              type: "load-more",
+              hasMore: accumulated.length < total,
+              currentCount: accumulated.length,
+              total,
+              loadingMore: loading,
+              onLoadMore: () => setPage((p) => p + 1),
+            },
+          },
+        }}
+        containerClassName="tbl-shell"
+      />
+    );
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────
+// 6 — Pagination · cursor (period jumper).
+// ─────────────────────────────────────────────────────────────────
+
+export const Pagination_Cursor: Story = {
+  name: "Pagination · cursor (period jumper)",
+  render: function PaginationCursor() {
+    interface KintaiRow {
+      id: string;
+      name: string;
+      hours: string;
+    }
+
+    async function fetchKintaiByMonth(month: string): Promise<KintaiRow[]> {
+      await new Promise((r) => setTimeout(r, 80));
+      return [
+        { id: `${month}-1`, name: "田中 美咲", hours: "168h" },
+        { id: `${month}-2`, name: "Nguyễn Lan", hours: "152h" },
+        { id: `${month}-3`, name: "佐藤 健一", hours: "176h" },
+      ];
+    }
+
+    const columns: TableColumn<KintaiRow>[] = [
+      { accessorKey: "name", header: "従業員", minSize: 180 },
+      {
+        accessorKey: "hours",
+        header: "勤務時間",
+        minSize: 96,
+        meta: { className: "num" },
+      },
+    ];
+
+    const [period, setPeriod] = useState("2025-05");
+    const [rows, setRows] = useState<KintaiRow[]>([]);
+
+    useEffect(() => {
+      fetchKintaiByMonth(period).then(setRows);
+    }, [period]);
+
+    function shiftMonth(delta: number) {
+      const [y, m] = period.split("-").map(Number) as [number, number];
+      const next = new Date(y, m - 1 + delta, 1);
+      setPeriod(
+        `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`,
+      );
+    }
+
+    const table = useDataTable({ data: rows, columns, rowKey: "id" });
+
+    return (
+      <DataTable
+        table={{
+          ...table,
+          chromeProps: {
+            ...table.chromeProps,
+            pagination: {
+              type: "cursor",
+              value: period,
+              onChange: setPeriod,
+              label: `${period.replace("-", " / ")} の勤怠`,
+              inputType: "month",
+              onPrev: () => shiftMonth(-1),
+              onNext: () => shiftMonth(1),
+              onJumpToLatest: () => setPeriod("2025-05"),
+            },
+          },
+        }}
+        containerClassName="tbl-shell"
+      />
+    );
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────
+// 7 — PersistentVisibility. useTableState across reloads.
+// ─────────────────────────────────────────────────────────────────
+
+export const PersistentVisibility: Story = {
+  name: "PersistentVisibility · useTableState",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Persists column visibility under a versioned localStorage key via `useTableState`. Toggle visibility, reload, settings stick.",
+      },
+    },
+  },
+  render: function PersistentVisibility() {
+    interface Employee {
+      id: string;
+      name: string;
+      role: string;
+      shop: string;
+      hours: string;
+    }
+
+    async function fetchEmployees(params: {
+      page: number;
+      pageSize: number;
+    }): Promise<{ rows: Employee[]; total: number }> {
+      const all: Employee[] = [
+        { id: "e1", name: "田中 美咲", role: "店長", shop: "渋谷", hours: "8.0h" },
+        { id: "e2", name: "Nguyễn Lan", role: "スタッフ", shop: "表参道", hours: "7.5h" },
+        { id: "e3", name: "佐藤 健一", role: "副店長", shop: "自由が丘", hours: "8.0h" },
+        { id: "e4", name: "山田 太郎", role: "スタッフ", shop: "渋谷", hours: "—" },
+        { id: "e5", name: "鈴木 さくら", role: "アルバイト", shop: "新宿", hours: "6.0h" },
+      ];
+      await new Promise((r) => setTimeout(r, 80));
+      const start = (params.page - 1) * params.pageSize;
+      return {
+        rows: all.slice(start, start + params.pageSize),
+        total: all.length,
+      };
+    }
+
+    const columns: TableColumn<Employee>[] = [
+      { accessorKey: "name", header: "従業員", minSize: 180 },
+      { accessorKey: "role", header: "役職", minSize: 120 },
+      { accessorKey: "shop", header: "店舗", minSize: 96 },
+      {
+        accessorKey: "hours",
+        header: "時間",
+        minSize: 80,
+        meta: { className: "num" },
+      },
+    ];
+
+    const pagination = useTablePagination({ defaultPageSize: 8 });
+    const [columnVisibility, setColumnVisibility] =
+      useTableState<TableColumnVisibility>({
+        storageKey: "composites.DataTable.persistent.columnVisibility",
+        defaultValue: { hours: false },
+        version: 1,
+      });
+    const [data, setData] = useState<{ rows: Employee[]; total: number }>({
+      rows: [],
+      total: 0,
+    });
+
+    useEffect(() => {
+      fetchEmployees({
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+      }).then(setData);
+    }, [pagination.page, pagination.pageSize]);
+
+    const table = useDataTable({
+      data: data.rows,
+      columns,
+      rowKey: "id",
+      pagination,
+      total: data.total,
+      columnVisibility,
+      onColumnVisibilityChange: setColumnVisibility,
+      toolbar: { columns: {} },
+    });
+
+    return <DataTable table={table} containerClassName="tbl-shell" />;
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────
+// 8 — PackagedFeatures. Full integration: views + toolbar + batch
+//     + search + filters + sort + pagination + persistence.
+//
+// Long story because every wired feature is demonstrated at once.
+// For a quicker copy-paste starting point, see `Basic`,
+// `BulkActions`, or `WithToolbar` above.
 // ─────────────────────────────────────────────────────────────────
 
 export const PackagedFeatures: Story = {
   name: "PackagedFeatures · views · toolbar · batch · search",
-  tags: ["!autodocs"], // heavy story — keep off the docs page
+  tags: ["!autodocs"],
   parameters: { docs: { source: { type: "code" } } },
   render: function PackagedFeatures() {
+    interface Employee {
+      id: string;
+      date: string;
+      name: string;
+      kana?: string;
+      role: string;
+      shop: string;
+      kind: "paid" | "late" | "trip" | "absence" | "normal";
+      status: "active" | "leave" | "pending";
+      hours: string;
+    }
+
+    const DATASET: Employee[] = [
+      { id: "e1", date: "05/14", name: "田中 美咲", role: "店長", shop: "渋谷", kind: "normal", status: "active", hours: "8.0h" },
+      { id: "e2", date: "05/14", name: "Nguyễn Lan", role: "スタッフ", shop: "表参道", kind: "late", status: "pending", hours: "7.5h" },
+      { id: "e3", date: "05/14", name: "佐藤 健一", role: "副店長", shop: "自由が丘", kind: "trip", status: "leave", hours: "8.0h" },
+      { id: "e4", date: "05/13", name: "山田 太郎", role: "スタッフ", shop: "渋谷", kind: "absence", status: "leave", hours: "—" },
+      { id: "e5", date: "05/12", name: "鈴木 さくら", role: "アルバイト", shop: "新宿", kind: "paid", status: "pending", hours: "6.0h" },
+      { id: "e6", date: "05/11", name: "渡辺 颯太", role: "スタッフ", shop: "表参道", kind: "normal", status: "active", hours: "7.0h" },
+      { id: "e7", date: "05/10", name: "山本 結衣", role: "スタッフ", shop: "渋谷", kind: "normal", status: "active", hours: "8.0h" },
+      { id: "e8", date: "05/09", name: "中村 陽斗", role: "アルバイト", shop: "新宿", kind: "late", status: "pending", hours: "5.0h" },
+    ];
+
+    async function fetchEmployees(params: {
+      page: number;
+      pageSize: number;
+      filters?: TableFilter[];
+      sort?: TableSortState;
+      q?: string;
+    }): Promise<{ rows: Employee[]; total: number }> {
+      let result = DATASET.slice();
+      if (params.q !== undefined && params.q.trim() !== "") {
+        const q = params.q.trim().toLowerCase();
+        result = result.filter((row) =>
+          `${row.name} ${row.kana ?? ""} ${row.shop} ${row.role}`
+            .toLowerCase()
+            .includes(q),
+        );
+      }
+      for (const filter of params.filters ?? []) {
+        const value = String(filter.value ?? "").trim();
+        if (value === "") continue;
+        result = result.filter((row) => {
+          if (filter.key === "shop") return row.shop === value;
+          if (filter.key === "kind") return row.kind === value;
+          if (filter.key === "status") return row.status === value;
+          return true;
+        });
+      }
+      const head = Array.isArray(params.sort)
+        ? (params.sort[0] ?? null)
+        : (params.sort ?? null);
+      if (head !== null) {
+        const direction = head.direction === "asc" ? 1 : -1;
+        result = [...result].sort((a, b) => {
+          const left = String(a[head.key as keyof Employee] ?? "");
+          const right = String(b[head.key as keyof Employee] ?? "");
+          return left.localeCompare(right) * direction;
+        });
+      }
+      await new Promise((r) => setTimeout(r, 80));
+      const start = (params.page - 1) * params.pageSize;
+      return {
+        rows: result.slice(start, start + params.pageSize),
+        total: result.length,
+      };
+    }
+
+    function StatusBadge({ status }: { status: Employee["status"] }) {
+      if (status === "active")
+        return <Badge variant="success" dot>稼働中</Badge>;
+      if (status === "pending")
+        return <Badge variant="warning" dot>申請中</Badge>;
+      return <Badge variant="neutral" dot>休職</Badge>;
+    }
+
+    function KindBadge({ kind }: { kind: Employee["kind"] }) {
+      const map = {
+        paid: { variant: "primary" as const, label: "有給" },
+        late: { variant: "attention" as const, label: "遅刻" },
+        trip: { variant: "info" as const, label: "出張" },
+        absence: { variant: "error" as const, label: "欠勤" },
+        normal: { variant: "neutral" as const, label: "通常" },
+      };
+      const { variant, label } = map[kind];
+      return <Badge variant={variant} dot={false}>{label}</Badge>;
+    }
+
+    const columns: TableColumn<Employee>[] = [
+      {
+        accessorKey: "date",
+        header: "日付",
+        size: 88,
+        minSize: 88,
+        meta: { sortable: true, sticky: { side: "left", from: "md" } },
+      },
+      {
+        accessorKey: "name",
+        header: "従業員",
+        minSize: 180,
+        meta: { filterable: true, sticky: { side: "left", from: "md" } },
+      },
+      { accessorKey: "role", header: "役職", minSize: 120 },
+      {
+        accessorKey: "shop",
+        header: "店舗",
+        minSize: 96,
+        meta: {
+          filterable: true,
+          filterOptions: [
+            { value: "渋谷", label: "渋谷" },
+            { value: "表参道", label: "表参道" },
+            { value: "新宿", label: "新宿" },
+            { value: "自由が丘", label: "自由が丘" },
+          ],
+        },
+      },
+      {
+        accessorKey: "kind",
+        header: "区分",
+        minSize: 88,
+        cell: ({ row }) => <KindBadge kind={row.original.kind} />,
+        meta: {
+          filterable: true,
+          filterOptions: [
+            { value: "late", label: "遅刻" },
+            { value: "paid", label: "有給" },
+            { value: "trip", label: "出張" },
+            { value: "absence", label: "欠勤" },
+            { value: "normal", label: "通常" },
+          ],
+        },
+      },
+      {
+        accessorKey: "hours",
+        header: "時間",
+        minSize: 80,
+        meta: { className: "num", sortable: true },
+      },
+      {
+        accessorKey: "status",
+        header: "状態",
+        minSize: 96,
+        cell: ({ row }) => <StatusBadge status={row.original.status} />,
+        meta: {
+          filterable: true,
+          filterOptions: [
+            { value: "active", label: "稼働中" },
+            { value: "pending", label: "申請中" },
+            { value: "leave", label: "休職" },
+          ],
+        },
+      },
+    ];
+
+    const BUILT_IN_VIEWS = [
+      {
+        key: "all",
+        label: "すべて",
+        filters: [],
+        sort: { key: "date", direction: "desc" as const },
+      },
+      {
+        key: "pending",
+        label: "承認待ち",
+        filters: [
+          { key: "status", operator: "eq" as const, value: "pending" },
+        ],
+        sort: { key: "date", direction: "desc" as const },
+      },
+      {
+        key: "late",
+        label: "遅刻 / 早退",
+        filters: [{ key: "kind", operator: "eq" as const, value: "late" }],
+        sort: { key: "date", direction: "desc" as const },
+      },
+    ];
+
     const pagination = useTablePagination({ defaultPageSize: 5 });
-    const selection = useTableSelection({ defaultSelected: ["emp-002"] });
+    const selection = useTableSelection({ defaultSelected: ["e2"] });
     const views = useTableViews({
       items: BUILT_IN_VIEWS,
       storageKey: "composites.DataTable.packaged.views",
@@ -319,16 +793,20 @@ export const PackagedFeatures: Story = {
     const [columnVisibility, setColumnVisibility] =
       useTableState<TableColumnVisibility>({
         storageKey: "composites.DataTable.packaged.columnVisibility",
-        defaultValue: DEFAULT_VISIBILITY,
+        defaultValue: { hours: false },
         version: 1,
       });
-
     const [filters, setFilters] = useState<TableFilter[]>([]);
-    const [sort, setSort] = useState<TableSortState>(DEFAULT_SORT);
+    const [sort, setSort] = useState<TableSortState>({
+      key: "date",
+      direction: "desc",
+    });
     const [searchDraft, setSearchDraft] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
-
-    const [data, setData] = useState<FetchEmployeesResponse>(EMPTY_RESPONSE);
+    const [data, setData] = useState<{ rows: Employee[]; total: number }>({
+      rows: [],
+      total: 0,
+    });
 
     useEffect(() => {
       fetchEmployees({
@@ -338,17 +816,11 @@ export const PackagedFeatures: Story = {
         sort,
         q: searchQuery,
       }).then(setData);
-    }, [
-      pagination.page,
-      pagination.pageSize,
-      filters,
-      sort,
-      searchQuery,
-    ]);
+    }, [pagination.page, pagination.pageSize, filters, sort, searchQuery]);
 
     const table = useDataTable({
       data: data.rows,
-      columns: COLUMNS,
+      columns,
       rowKey: "id",
       pagination,
       total: data.total,
@@ -356,7 +828,6 @@ export const PackagedFeatures: Story = {
       selection,
       views,
       columnVisibility,
-      defaultColumnVisibility: DEFAULT_VISIBILITY,
       onColumnVisibilityChange: (next) => {
         setColumnVisibility(next);
         views.markCustom();
@@ -373,19 +844,16 @@ export const PackagedFeatures: Story = {
         views.markCustom();
       },
       onResetFilters: () => {
-        const defaultView = BUILT_IN_VIEWS[0];
-        setFilters(defaultView.filters ?? []);
-        setSort(defaultView.sort ?? null);
+        setFilters([]);
+        setSort({ key: "date", direction: "desc" });
         setSearchDraft("");
         setSearchQuery("");
         pagination.resetPage();
-        views.setActiveKey(defaultView.key);
+        views.setActiveKey("all");
       },
       onViewApply: (view) => {
         setFilters(view.filters ?? []);
         setSort(view.sort ?? null);
-        if (view.columnVisibility !== undefined)
-          setColumnVisibility(view.columnVisibility);
         setSearchDraft("");
         setSearchQuery("");
         pagination.resetPage();
@@ -412,18 +880,11 @@ export const PackagedFeatures: Story = {
       batchActions: {
         actions: (
           <>
-            <Button size="small" variant="outline">
-              一括承認
-            </Button>
-            <Button size="small" variant="outline">
-              CSV 出力
-            </Button>
-            <Button size="small" variant="destructive">
-              却下
-            </Button>
+            <Button size="small" variant="outline">一括承認</Button>
+            <Button size="small" variant="outline">CSV 出力</Button>
+            <Button size="small" variant="destructive">却下</Button>
           </>
         ),
-        getCheckboxDisabled: (row) => row.original.state === "disabled",
       },
     });
 
@@ -435,12 +896,8 @@ export const PackagedFeatures: Story = {
           primaryAction: { label: "＋ 新規申請" },
           footer: (
             <div className="totals">
-              <span>
-                選択 <b>{selection.count}</b> 件
-              </span>
-              <span>
-                該当 <b>{data.total}</b> 件
-              </span>
+              <span>選択 <b>{selection.count}</b> 件</span>
+              <span>該当 <b>{data.total}</b> 件</span>
             </div>
           ),
         }}
@@ -448,57 +905,6 @@ export const PackagedFeatures: Story = {
     );
   },
 };
-
-// ─────────────────────────────────────────────────────────────────
-// 5 — PersistentVisibility. useTableState across reloads.
-// ─────────────────────────────────────────────────────────────────
-
-export const PersistentVisibility: Story = {
-  name: "PersistentVisibility · useTableState",
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Persists column visibility under a versioned localStorage key via `useTableState`. Refresh the page after toggling visibility — settings stick.",
-      },
-    },
-  },
-  render: function PersistentVisibility() {
-    const pagination = useTablePagination({ defaultPageSize: 8 });
-    const [columnVisibility, setColumnVisibility] =
-      useTableState<TableColumnVisibility>({
-        storageKey: "composites.DataTable.persistent.columnVisibility",
-        defaultValue: DEFAULT_VISIBILITY,
-        version: 1,
-      });
-    const [data, setData] = useState<FetchEmployeesResponse>(EMPTY_RESPONSE);
-
-    useEffect(() => {
-      fetchEmployees({
-        page: pagination.page,
-        pageSize: pagination.pageSize,
-      }).then(setData);
-    }, [pagination.page, pagination.pageSize]);
-
-    const table = useDataTable({
-      data: data.rows,
-      columns: COLUMNS,
-      rowKey: "id",
-      pagination,
-      total: data.total,
-      columnVisibility,
-      defaultColumnVisibility: DEFAULT_VISIBILITY,
-      onColumnVisibilityChange: setColumnVisibility,
-      toolbar: { columns: {} },
-    });
-
-    return <DataTable table={table} containerClassName="tbl-shell" />;
-  },
-};
-
-// ─────────────────────────────────────────────────────────────────
-// 6 — InteractionRegression. Smoke test for views + columns + select.
-// ─────────────────────────────────────────────────────────────────
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -513,8 +919,6 @@ export const InteractionRegression: Story = {
     await expect(await canvas.findByText("田中 美咲")).toBeVisible();
     await userEvent.click(canvas.getByRole("button", { name: /承認待ち/ }));
     await expect(await canvas.findByText("Nguyễn Lan")).toBeVisible();
-    // `fetchEmployees` has an 80ms artificial delay — wait for the
-    // pending-only response to land before asserting Tanaka is gone.
     await waitFor(() =>
       expect(canvas.queryByText("田中 美咲")).toBeNull(),
     );
@@ -558,10 +962,8 @@ export const InteractionRegression: Story = {
     await userEvent.click(deleteButton);
     await expect(canvas.queryByText(savedViewLabel)).toBeNull();
 
-    // Wait for the re-fetch triggered by view-delete → fallback view
-    // to repopulate the table with the unfiltered first page.
     const rowCheckbox = await canvas.findByLabelText(
-      /Select row emp-001|row emp-001/,
+      /Select row e1|row e1/,
     );
     await userEvent.click(rowCheckbox);
     await expect(
@@ -572,140 +974,5 @@ export const InteractionRegression: Story = {
         name: /選択解除|Clear selection|Bỏ chọn|Alisin/,
       }),
     ).toBeVisible();
-  },
-};
-
-// ─────────────────────────────────────────────────────────────────
-// 7 — Pagination variants (numbered / load-more / cursor).
-// ─────────────────────────────────────────────────────────────────
-
-export const Pagination_Numbered: Story = {
-  name: "Pagination · numbered",
-  render: function PaginationNumbered() {
-    const pagination = useTablePagination({ defaultPageSize: 5 });
-    const [data, setData] = useState<FetchEmployeesResponse>(EMPTY_RESPONSE);
-
-    useEffect(() => {
-      fetchEmployees({
-        page: pagination.page,
-        pageSize: pagination.pageSize,
-      }).then(setData);
-    }, [pagination.page, pagination.pageSize]);
-
-    const table = useDataTable({
-      data: data.rows,
-      columns: COLUMNS,
-      rowKey: "id",
-      pagination,
-      total: data.total,
-      pageSizeOptions: [5, 10, 20, 50],
-      showSizeChanger: true,
-      defaultColumnVisibility: DEFAULT_VISIBILITY,
-    });
-
-    return <DataTable table={table} containerClassName="tbl-shell" />;
-  },
-};
-
-export const Pagination_LoadMore: Story = {
-  name: "Pagination · load-more (feed)",
-  render: function PaginationLoadMore() {
-    const PAGE_SIZE = 4;
-    const [page, setPage] = useState(1);
-    const [accumulated, setAccumulated] = useState<EmployeeRow[]>([]);
-    const [total, setTotal] = useState(0);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-      setLoading(true);
-      fetchEmployees({ page, pageSize: PAGE_SIZE }).then((response) => {
-        setAccumulated((prev) =>
-          page === 1 ? response.rows : [...prev, ...response.rows],
-        );
-        setTotal(response.total);
-        setLoading(false);
-      });
-    }, [page]);
-
-    const table = useDataTable({
-      data: accumulated,
-      columns: COLUMNS,
-      rowKey: "id",
-      defaultColumnVisibility: DEFAULT_VISIBILITY,
-    });
-
-    return (
-      <DataTable
-        table={{
-          ...table,
-          tableProps: { ...table.tableProps },
-          chromeProps: {
-            ...table.chromeProps,
-            pagination: {
-              type: "load-more",
-              hasMore: accumulated.length < total,
-              currentCount: accumulated.length,
-              total,
-              loadingMore: loading,
-              onLoadMore: () => setPage((p) => p + 1),
-            },
-          },
-        }}
-        containerClassName="tbl-shell"
-      />
-    );
-  },
-};
-
-export const Pagination_Cursor: Story = {
-  name: "Pagination · cursor (period jumper)",
-  render: function PaginationCursor() {
-    const [period, setPeriod] = useState("2025-05");
-    const pagination = useTablePagination({ defaultPageSize: 5 });
-    const [data, setData] = useState<FetchEmployeesResponse>(EMPTY_RESPONSE);
-
-    useEffect(() => {
-      fetchEmployees({
-        page: pagination.page,
-        pageSize: pagination.pageSize,
-      }).then(setData);
-    }, [pagination.page, pagination.pageSize, period]);
-
-    const table = useDataTable({
-      data: data.rows,
-      columns: COLUMNS,
-      rowKey: "id",
-      defaultColumnVisibility: DEFAULT_VISIBILITY,
-    });
-
-    return (
-      <DataTable
-        table={{
-          ...table,
-          chromeProps: {
-            ...table.chromeProps,
-            pagination: {
-              type: "cursor",
-              value: period,
-              onChange: setPeriod,
-              label: `${period.replace("-", " / ")} の勤怠`,
-              inputType: "month",
-              onPrev: () => {
-                const [y, m] = period.split("-").map(Number);
-                const next = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
-                setPeriod(next);
-              },
-              onNext: () => {
-                const [y, m] = period.split("-").map(Number);
-                const next = m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, "0")}`;
-                setPeriod(next);
-              },
-              onJumpToLatest: () => setPeriod("2025-05"),
-            },
-          },
-        }}
-        containerClassName="tbl-shell"
-      />
-    );
   },
 };
