@@ -3,6 +3,59 @@
 All notable changes to `@godxjp/ui`. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] — 2026-05-18
+
+### BREAKING CHANGES
+
+- **`<Table>` chrome props removed.** The legacy "data-table page"
+  props moved off the primitive into the `<DataTable>` composite.
+  TypeScript compilation will fail for any call site that passes:
+  `toolbar`, `views`, `batchActions`, `filters`, `onFiltersChange`,
+  `filterBar`, `onResetFilters`, `pagination`, `tableKey`. See
+  ADR-0007 and `docs/how-to/migrate-to-data-table.md` for the
+  required migration (1:1 prop-to-hook diff for every removed prop).
+- **`<Table batchActions>` → `<Table selection>`.** Consumers that
+  used the primitive's batch-actions config strictly for the
+  checkbox column switch to the slimmer `selection` prop. Same
+  `selectedRowKeys` / `onSelectedRowKeysChange` /
+  `getCheckboxDisabled` shape; the batch action band UI moves to
+  the composite.
+- **`Table.persistence.ts` relocated** to
+  `src/components/composites/data-table/persistence.ts`. The slim
+  primitive no longer reads or writes localStorage; the composite
+  threads persistence through `useDataTable`.
+
+### Changed
+
+- **`Table.tsx`: 1,842 → 901 lines** (~51% reduction). Forking the
+  primitive in place (rule 4) is achievable again.
+- **`DataTable.tsx`: 86 → ~280 lines.** The composite renders view
+  tabs, toolbar bar, batch action band, filter chip bar, pagination
+  band, column manager Sheet, and save-view Dialog directly.
+  TanStack `useReactTable` lives in `useDataTable`; the primitive
+  accepts the instance via a new `instance?` prop and falls back to
+  a local hook only when standalone.
+- **CSS split** — chrome rules moved from
+  `src/styles/shell/40-table.css` into a new
+  `src/styles/shell/41-data-table.css`. `shell.css` imports the new
+  file directly after the old one so cascade order is unchanged.
+- **Story migration** — `WithToolbar`, `InteractionRegression`,
+  `Pagination_Numbered`, `Pagination_LoadMore`, `Pagination_Cursor`
+  moved from `data-display/Table.stories.tsx` to
+  `composites/DataTable.stories.tsx`. Bare-primitive stories that
+  passed chrome props (`StickyColumns`) updated to drop them.
+  `Table.stories::BulkActions` deleted (covered by the composite
+  story of the same name).
+
+### Migration
+
+- See [`docs/how-to/migrate-to-data-table.md`](docs/how-to/migrate-to-data-table.md)
+  for the required v5 codemod. Each removed prop has a 1:1
+  composite + hook equivalent — there is no functionality loss.
+- Consumers on v4 that still pass chrome props see a once-per-prop
+  `console.warn` from the primitive (introduced in
+  4.0.x → 5.0.0-prep). The warning text links to the migration guide.
+
 ## [Unreleased]
 
 ### Added

@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/ui",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "GoDX professional UI framework — design tokens, primitives, shell, i18n, hooks, and toolchain config shared across every service frontend. Source of truth for the GoDX visual language.",
   "type": "module",
   "main": "./dist/index.js",
