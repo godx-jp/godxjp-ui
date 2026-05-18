@@ -51,6 +51,7 @@ export default defineConfig({
     // package.json so consumers can do `@godxjp/ui/i18n` etc.
     i18n: "src/i18n/index.ts",
     hooks: "src/hooks/index.ts",
+    props: "src/props/index.ts",
     "components/primitives": "src/components/primitives.ts",
     "components/shell": "src/components/shell/index.ts",
     "components/composites": "src/components/composites/index.ts",
