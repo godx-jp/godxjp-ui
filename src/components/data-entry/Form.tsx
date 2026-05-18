@@ -11,6 +11,8 @@ import {
 } from "react-hook-form";
 import { cn } from "../cn";
 
+export type FormLayout = "vertical" | "horizontal" | "inline";
+
 export interface FormProps<T extends FieldValues = FieldValues>
   extends Omit<ComponentProps<"form">, "onSubmit" | "defaultValue"> {
   form?: UseFormReturn<T>;
@@ -18,6 +20,9 @@ export interface FormProps<T extends FieldValues = FieldValues>
   resolver?: Resolver<T>;
   mode?: UseFormProps<T>["mode"];
   onSubmit?: (values: T) => void | Promise<void>;
+  /** Visual layout. Mobile-first: every layout collapses to vertical at `xs`;
+   * `horizontal` becomes label-left at `md`, `inline` becomes single-row at `sm`. */
+  layout?: FormLayout;
 }
 
 export function Form<T extends FieldValues>({
@@ -26,6 +31,7 @@ export function Form<T extends FieldValues>({
   resolver,
   mode = "onTouched",
   onSubmit,
+  layout = "vertical",
   className,
   children,
   ...rest
@@ -39,7 +45,7 @@ export function Form<T extends FieldValues>({
   return (
     <FormProvider {...active}>
       <form
-        className={cn("form", className)}
+        className={cn("form", `form-${layout}`, className)}
         onSubmit={onSubmit ? active.handleSubmit(onSubmit) : undefined}
         noValidate
         {...rest}

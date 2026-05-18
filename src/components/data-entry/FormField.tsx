@@ -9,6 +9,7 @@ import {
 import { Checkbox } from "./Checkbox";
 import { Field, type FieldHelpTone } from "./Field";
 import { InputNumber } from "./InputNumber";
+import { Select } from "./Select";
 
 export interface FormFieldProps<
   T extends FieldValues = FieldValues,
@@ -90,6 +91,14 @@ function adaptChild(
     return cloneElement(child as ReactElement<Record<string, unknown>>, {
       value: typeof field.value === "number" ? field.value : undefined,
       onValueChange: (next: number | null) => field.onChange(next),
+      onBlur: field.onBlur,
+      status: invalid ? "error" : undefined,
+    });
+  }
+  if (child.type === Select) {
+    return cloneElement(child as ReactElement<Record<string, unknown>>, {
+      value: typeof field.value === "string" ? field.value : undefined,
+      onValueChange: (next: string) => field.onChange(next),
       onBlur: field.onBlur,
       status: invalid ? "error" : undefined,
     });
