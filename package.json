@@ -69,6 +69,10 @@
       "types": "./dist/hooks.d.ts",
       "import": "./dist/hooks.js"
     },
+    "./props": {
+      "types": "./dist/props.d.ts",
+      "import": "./dist/props.js"
+    },
     "./primitives": {
       "types": "./dist/components/primitives.d.ts",
       "import": "./dist/components/primitives.js"

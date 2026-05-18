@@ -73,6 +73,19 @@ export type { FormProps, FormLayout } from "./data-entry/Form";
 export { FormField } from "./data-entry/FormField";
 export type { FormFieldProps } from "./data-entry/FormField";
 
+// Shared prop-vocabulary types. Canonical home is `@godxjp/ui/props` —
+// these re-exports are here so existing primitives-barrel users get
+// them without a second import path.
+export type {
+  SizeProp,
+  SizeWithXSProp,
+  IconSizeProp,
+  StatusProp,
+  ToneProp,
+  HelpToneProp,
+  OrientationProp,
+  DensityProp,
+} from "../props";
 export { normalizeLoading } from "./data-entry/loading";
 export type {
   LoadingProp,
