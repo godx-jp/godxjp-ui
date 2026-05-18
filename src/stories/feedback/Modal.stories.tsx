@@ -49,7 +49,7 @@ export const Default: Story = {
         </>
       }
     >
-      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+      <Space direction="vertical" size="default" style={{ width: "100%" }}>
         <Field label="開始時刻">
           <Input defaultValue="08:00" />
         </Field>

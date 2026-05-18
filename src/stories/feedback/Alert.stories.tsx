@@ -61,7 +61,7 @@ export const Default: Story = {
 export const Colors_Sweep: Story = {
   name: "Colors — success / info / warning / destructive",
   render: () => (
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+    <Space direction="vertical" size="default" style={{ width: "100%" }}>
       <Alert
         color="success"
         title="4月度の勤怠が確定しました"

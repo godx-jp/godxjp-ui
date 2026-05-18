@@ -53,7 +53,7 @@ type Story = StoryObj<typeof Avatar>;
 export const Default: Story = {
   name: "Default · initials from `name`",
   render: () => (
-    <Flex gap="middle" align="center">
+    <Flex gap="default" align="center">
       <Avatar name="田中 美咲" />
       <Avatar name="佐藤 健太" />
       <Avatar name="鈴木 さくら" />
@@ -67,7 +67,7 @@ export const Default: Story = {
 export const WithImage: Story = {
   name: "WithImage · `src` wins over fallback chain",
   render: () => (
-    <Flex gap="middle" align="center">
+    <Flex gap="default" align="center">
       <Avatar
         src="https://i.pravatar.cc/96?img=12"
         alt="田中 美咲"
@@ -92,7 +92,7 @@ export const WithImage: Story = {
 export const Sizes: Story = {
   name: "Sizes · xs · sm · default · lg · xl",
   render: () => (
-    <Flex gap="middle" align="center">
+    <Flex gap="default" align="center">
       <Avatar size="xs" name="田中 美咲" />
       <Avatar size="sm" name="田中 美咲" />
       <Avatar size="default" name="田中 美咲" />
@@ -107,7 +107,7 @@ export const Sizes: Story = {
 export const Shapes: Story = {
   name: "Shapes · circle · square",
   render: () => (
-    <Flex gap="middle" align="center">
+    <Flex gap="default" align="center">
       <Avatar shape="circle" size="lg" name="渋谷本店" />
       <Avatar shape="square" size="lg" name="渋谷本店" />
       <Avatar
@@ -131,7 +131,7 @@ export const Shapes: Story = {
 export const Colors: Story = {
   name: "Colors · semantic role tint",
   render: () => (
-    <Flex gap="middle" align="center" wrap>
+    <Flex gap="default" align="center" wrap>
       <Avatar
         size="lg"
         name="田中 美咲"

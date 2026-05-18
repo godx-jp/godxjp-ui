@@ -179,7 +179,7 @@ export const Sizes: Story = {
 export const Disabled: Story = {
   name: "Disabled · trigger and per-item",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 260 }}>
+    <Flex vertical gap="default" style={{ maxWidth: 260 }}>
       <Select
         defaultValue="tokyo"
         disabled

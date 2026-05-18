@@ -687,7 +687,7 @@ export const PackagedFeatures: Story = {
         paid: { variant: "primary" as const, label: "有給" },
         late: { variant: "attention" as const, label: "遅刻" },
         trip: { variant: "info" as const, label: "出張" },
-        absence: { variant: "error" as const, label: "欠勤" },
+        absence: { variant: "destructive" as const, label: "欠勤" },
         normal: { variant: "neutral" as const, label: "通常" },
       };
       const { variant, label } = map[kind];

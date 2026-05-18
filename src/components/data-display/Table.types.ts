@@ -50,7 +50,12 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export type TableDensity = "default" | "compact";
+// Aliased to the shared `DensityProp` so adding a new density value
+// (today: `"comfortable"`) lights up across the framework. The Table
+// CSS already had the `compact` rule and the `default` baseline; the
+// new `comfortable` class is defined in `40-table.css`.
+import type { DensityProp } from "../../props";
+export type TableDensity = DensityProp;
 export type TableColumn<TData, TValue = unknown> = ColumnDef<TData, TValue>;
 export type TableColumnVisibility = VisibilityState;
 export type TableRowKey<TData> =

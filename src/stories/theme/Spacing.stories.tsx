@@ -96,7 +96,7 @@ the visual bar.`.trim(),
     <Card title="Spacing scale" meta="4px grid">
       <div className="dv-stack">
         {SPACING_SCALE.map(([name, val, w]) => (
-          <Flex key={name} align="center" gap="middle">
+          <Flex key={name} align="center" gap="default">
             <code className="mono" style={tokenLabel}>
               {name}
             </code>
@@ -120,7 +120,7 @@ the visual bar.`.trim(),
 
 function DensityRow({ token }: { token: string }) {
   return (
-    <Flex align="center" gap="middle">
+    <Flex align="center" gap="default">
       <code className="mono" style={tokenLabel}>
         {token}
       </code>
@@ -177,7 +177,7 @@ to see the matrix shift.`.trim(),
     },
   },
   render: () => (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       <div style={muted}>
         Density axis lives on Storybook toolbar — switch & observe.
       </div>
@@ -226,7 +226,7 @@ literal 10/14/10 px vertical pad; horizontal pad reads
           ["--card-kicker-size", "0.625rem · 10px", "design `.ch-kicker .k`"],
           ["--card-band-height", "4px · literal", "design `.ch-band`"],
         ].map(([tok, val, src]) => (
-          <Flex key={tok} gap="middle" align="center">
+          <Flex key={tok} gap="default" align="center">
             <code className="mono" style={tokenLabel}>
               {tok}
             </code>

@@ -931,7 +931,7 @@
   background: var(--background);
 }
 
-.segmented-sm { height: 26px; }
+.segmented-small { height: 26px; }
 
 .segmented .segmented-item {
   border: 0;

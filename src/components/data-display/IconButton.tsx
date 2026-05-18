@@ -27,11 +27,16 @@ import { cn } from "../cn";
  * @example
  *   <IconButton aria-label="戻る"><ArrowLeft size={14} /></IconButton>
  *   <IconButton variant="ghost" aria-label="More"><MoreHorizontal size={16} /></IconButton>
- *   <IconButton variant="primary" size="large" aria-label="Save"><Check size={18} /></IconButton>
+ *   <IconButton variant="primary" size="lg" aria-label="Save"><Check size={18} /></IconButton>
  */
 
+import type { IconSizeProp } from "../../props";
+
 export type IconButtonVariant = "secondary" | "ghost" | "primary";
-export type IconButtonSize = "sm" | "default" | "lg";
+/** Alias of the shared `IconSizeProp` (`sm | md | lg`) — IconButton is
+ *  icon-symbol shaped, same axis as Spinner. Renamed `"default"` → `"md"`
+ *  so the verb stays consistent across icon-only primitives. */
+export type IconButtonSize = IconSizeProp;
 
 export interface IconButtonProps extends Omit<
   ComponentProps<"button">,
@@ -51,7 +56,7 @@ const VARIANT_CLASS: Record<IconButtonVariant, string> = {
 
 const SIZE_CLASS: Record<IconButtonSize, string> = {
   sm: "icon-btn-sm",
-  default: "",
+  md: "",
   lg: "icon-btn-lg",
 };
 
@@ -59,7 +64,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   function IconButton(
     {
       variant = "secondary",
-      size = "default",
+      size = "md",
       asChild = false,
       className,
       type = "button",

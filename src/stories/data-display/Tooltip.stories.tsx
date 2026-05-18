@@ -86,7 +86,7 @@ export const FourPlacements = {
 export const Delay = {
   name: "Delay · delayDuration prop overrides the app-wide setting",
   render: () => (
-    <Flex gap="middle" align="center">
+    <Flex gap="default" align="center">
       <Tooltip content="即座に表示" placement="top" delayDuration={0}>
         <Button variant="secondary">No delay</Button>
       </Tooltip>
@@ -107,7 +107,7 @@ export const SharedTiming = {
     // nested <Tooltip>; the consumer never imports a separate
     // TooltipProvider.
     <GodxConfigProvider tooltipDelay={0}>
-      <Flex gap="middle" align="center">
+      <Flex gap="default" align="center">
         <Tooltip content="共有設定 1" placement="top">
           <Button variant="secondary">A</Button>
         </Tooltip>

@@ -218,7 +218,7 @@ export function ImageUpload({
                 onCropComplete={onCropComplete}
               />
             </div>
-            <Flex vertical gap="middle" style={{ padding: "var(--spacing-3)" }}>
+            <Flex vertical gap="default" style={{ padding: "var(--spacing-3)" }}>
               <Flex align="center" gap="small">
                 <span
                   style={{

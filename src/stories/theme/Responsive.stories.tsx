@@ -63,7 +63,7 @@ Tailwind \`2xl:\` utility variant aliases to \`--breakpoint-xxl\`.`.trim(),
     <Card title="Breakpoint scale" meta="mobile-first min-width">
       <div className="dv-stack">
         {BREAKPOINTS.map(([bp, px, hint]) => (
-          <Flex key={bp} align="center" gap="middle">
+          <Flex key={bp} align="center" gap="default">
             <code style={tokenLabel}>--breakpoint-{bp}</code>
             <code style={valLabel}>{px}</code>
             <span style={muted}>{hint}</span>
@@ -103,13 +103,13 @@ Token chain: \`getComputedStyle(:root).--breakpoint-md\` → matchMedia
         accent="primary"
       >
         <Flex vertical gap="small">
-          <Flex align="baseline" gap="middle">
+          <Flex align="baseline" gap="default">
             <span className="stat lg">{width}<span className="unit">px</span></span>
             <span style={muted}>resize your browser to watch this re-render</span>
           </Flex>
           <div className="dv-stack" style={{ marginTop: 8 }}>
             {BREAKPOINTS.map(([target]) => (
-              <Flex key={target} align="center" gap="middle">
+              <Flex key={target} align="center" gap="default">
                 <code className="mono" style={{ width: 60, fontSize: "var(--text-xs)" }}>{target}</code>
                 <code className="mono" style={muted}>matchBreakpoint(bp, "{target}")</code>
                 <span

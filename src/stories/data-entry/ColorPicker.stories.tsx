@@ -97,7 +97,7 @@ export const Disabled: Story = {
 export const ThemePalette: Story = {
   name: "Theme palette · primary + accent + success + danger",
   render: () => (
-    <Flex gap="middle" align="center">
+    <Flex gap="default" align="center">
       <Flex vertical gap="small" align="center">
         <ColorPicker defaultValue="#3b82f6" presets={BRAND_PRESETS} />
         <span style={{ fontSize: "var(--text-2xs)", color: "var(--muted-foreground)" }}>

@@ -117,7 +117,7 @@ export const DateRange: Story = {
 export const DateFieldOnly: Story = {
   name: "DateField · segmented input",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 320 }}>
+    <Flex vertical gap="default" style={{ maxWidth: 320 }}>
       <DateField
         label="生年月日"
         description="YYYY/MM/DD で直接入力可能。"
@@ -138,7 +138,7 @@ export const DateFieldOnly: Story = {
 export const Disabled: Story = {
   name: "Disabled · all three variants",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 380 }}>
+    <Flex vertical gap="default" style={{ maxWidth: 380 }}>
       <DateField
         label="DateField (disabled)"
         defaultValue={today(getLocalTimeZone())}
@@ -166,7 +166,7 @@ export const Disabled: Story = {
 export const Placeholder: Story = {
   name: "Placeholder · empty state shows segment format",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 380 }}>
+    <Flex vertical gap="default" style={{ maxWidth: 380 }}>
       <DateField
         label="生年月日"
         description="未入力時は yyyy/mm/dd 形式の placeholder が見えます。"
@@ -197,7 +197,7 @@ export const Placeholder: Story = {
 export const Granularity_DateTime: Story = {
   name: "Granularity · day · hour · minute (datetime input)",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 380 }}>
+    <Flex vertical gap="default" style={{ maxWidth: 380 }}>
       <DatePicker
         label="打刻時刻 (分単位)"
         description='`granularity="minute"` で時刻セグメントが付与される。'
@@ -223,7 +223,7 @@ export const MinMaxConstrained: Story = {
   render: () => {
     const anchor = today(getLocalTimeZone());
     return (
-      <Flex vertical gap="middle" style={{ maxWidth: 380 }}>
+      <Flex vertical gap="default" style={{ maxWidth: 380 }}>
         <DatePicker
           label="入社希望日 (今日以降のみ)"
           description="`minValue={today}` で過去日を非活性化。"
@@ -248,7 +248,7 @@ export const Format_Locales: Story = {
   render: () => {
     const date = parseDate("2026-05-17");
     return (
-      <Flex vertical gap="middle" style={{ maxWidth: 380 }}>
+      <Flex vertical gap="default" style={{ maxWidth: 380 }}>
         <I18nProvider locale="ja-JP">
           <DateField label="ja-JP" defaultValue={date} description="年/月/日 順 · 西暦" />
         </I18nProvider>

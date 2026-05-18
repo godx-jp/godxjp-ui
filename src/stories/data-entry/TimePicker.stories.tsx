@@ -106,7 +106,7 @@ export const TimeInputStory: Story = {
 export const Disabled: Story = {
   name: "Disabled · both variants",
   render: () => (
-    <Flex vertical gap="middle" style={{ maxWidth: 240 }}>
+    <Flex vertical gap="default" style={{ maxWidth: 240 }}>
       <TimeField
         label="TimeField (disabled)"
         defaultValue={new Time(17, 30)}

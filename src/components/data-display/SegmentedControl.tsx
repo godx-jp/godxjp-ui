@@ -54,8 +54,12 @@ import { cn } from "../cn";
  *   />
  */
 
+import type { SizeProp } from "../../props";
+
 export type SegmentedControlVariant = "bar" | "pill";
-export type SegmentedControlSize = "sm" | "default";
+/** Subset of the shared `SizeProp` — SegmentedControl only ships the
+ *  two compact-side rungs in practice (no `"large"` design canon yet). */
+export type SegmentedControlSize = Exclude<SizeProp, "large">;
 export type SegmentedControlOrientation = "horizontal" | "vertical";
 
 export interface SegmentedControlItem<V extends string = string> {
@@ -178,7 +182,7 @@ export function SegmentedControl<V extends string = string>({
       aria-orientation={orientation}
       className={cn(
         rootClass,
-        size === "sm" && "segmented-sm",
+        size === "small" && "segmented-small",
         className,
       )}
       {...rest}

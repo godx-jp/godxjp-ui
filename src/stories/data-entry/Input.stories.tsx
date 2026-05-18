@@ -169,7 +169,7 @@ export const TextareaStory: Story = {
       "auto-grow に応じて高さが自動で広がります。\n改行を増やしてみてください。",
     );
     return (
-      <Flex vertical gap="middle" style={{ maxWidth: 360 }}>
+      <Flex vertical gap="default" style={{ maxWidth: 360 }}>
         <Textarea rows={3} placeholder="複数行の入力" />
         <Textarea
           autoSize={{ minRows: 2, maxRows: 6 }}

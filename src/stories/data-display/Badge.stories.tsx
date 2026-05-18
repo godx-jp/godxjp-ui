@@ -48,9 +48,9 @@ type Story = StoryObj<typeof Badge>;
 export const Default: Story = {
   name: "Default · numeric count (children = 5)",
   render: () => (
-    <Flex gap="middle" align="center">
+    <Flex gap="default" align="center">
       <Badge variant="primary" dot={false}>5</Badge>
-      <Badge variant="error" dot={false}>5</Badge>
+      <Badge variant="destructive" dot={false}>5</Badge>
       <Badge variant="success" dot={false}>5</Badge>
     </Flex>
   ),
@@ -61,11 +61,11 @@ export const Default: Story = {
 export const Dot: Story = {
   name: "Dot · leading colored dot",
   render: () => (
-    <Flex gap="middle" align="center">
+    <Flex gap="default" align="center">
       <Badge variant="success" dot>稼働中</Badge>
       <Badge variant="warning" dot>申請中</Badge>
       <Badge variant="attention" dot>遅刻</Badge>
-      <Badge variant="error" dot>却下</Badge>
+      <Badge variant="destructive" dot>却下</Badge>
       <Badge variant="neutral" dot>下書き</Badge>
     </Flex>
   ),
@@ -76,12 +76,12 @@ export const Dot: Story = {
 export const MaxCount: Story = {
   name: "MaxCount · cap at 99+ via children",
   render: () => (
-    <Flex gap="middle" align="center">
-      <Badge variant="error" dot={false}>9</Badge>
-      <Badge variant="error" dot={false}>42</Badge>
-      <Badge variant="error" dot={false}>99</Badge>
-      <Badge variant="error" dot={false}>99+</Badge>
-      <Badge variant="error" dot={false}>999+</Badge>
+    <Flex gap="default" align="center">
+      <Badge variant="destructive" dot={false}>9</Badge>
+      <Badge variant="destructive" dot={false}>42</Badge>
+      <Badge variant="destructive" dot={false}>99</Badge>
+      <Badge variant="destructive" dot={false}>99+</Badge>
+      <Badge variant="destructive" dot={false}>999+</Badge>
     </Flex>
   ),
 };
@@ -91,14 +91,14 @@ export const MaxCount: Story = {
 export const Status: Story = {
   name: "Status · success · warning · error · info",
   render: () => (
-    <Flex gap="middle" align="center" wrap>
+    <Flex gap="default" align="center" wrap>
       <Badge variant="success" appearance="solid">承認済</Badge>
       <Badge variant="warning" appearance="solid">要対応</Badge>
-      <Badge variant="error" appearance="solid">却下</Badge>
+      <Badge variant="destructive" appearance="solid">却下</Badge>
       <Badge variant="info" appearance="solid">通知</Badge>
       <Badge variant="success">承認済</Badge>
       <Badge variant="warning">要対応</Badge>
-      <Badge variant="error">却下</Badge>
+      <Badge variant="destructive">却下</Badge>
       <Badge variant="info">通知</Badge>
     </Flex>
   ),
@@ -126,7 +126,7 @@ export const WithChildren: Story = {
             right: -6,
           }}
         >
-          <Badge variant="error" dot={false}>3</Badge>
+          <Badge variant="destructive" dot={false}>3</Badge>
         </span>
       </span>
       <span
@@ -145,7 +145,7 @@ export const WithChildren: Story = {
             right: -6,
           }}
         >
-          <Badge variant="error" dot={false}>99+</Badge>
+          <Badge variant="destructive" dot={false}>99+</Badge>
         </span>
       </span>
     </Flex>

@@ -48,7 +48,7 @@ export const Right: Story = {
         </>
       }
     >
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Space direction="vertical" size="default" style={{ width: "100%" }}>
           <label className="field">
             <span>開始時刻</span>
             <Input defaultValue="08:00" />

@@ -8,8 +8,9 @@
  * `chip-outline` is a third mode (hairline border, transparent fill).
  *
  * Variant names follow the canonical (`chip-destructive`, not legacy
- * `badge-error`). `<Badge>` React primitive maps its `variant="error"`
- * to the `chip-destructive` class for backwards compat.
+ * `badge-error` — the framework migrated `"error"` → `"destructive"`
+ * in the Badge / Tag colour vocabulary; old `.badge-error` selectors
+ * have been renamed to `.badge-destructive`).
  *
  * Base `.chip` (no role suffix) is the neutral muted variant. */
 .chip {
@@ -148,9 +149,9 @@
   background: color-mix(in oklch, var(--info) 14%, transparent);
   color: color-mix(in oklch, var(--info) 80%, var(--foreground));
 }
-.badge-error {
-  background: color-mix(in oklch, var(--error) 14%, transparent);
-  color: color-mix(in oklch, var(--error) 80%, var(--foreground));
+.badge-destructive {
+  background: color-mix(in oklch, var(--destructive) 14%, transparent);
+  color: color-mix(in oklch, var(--destructive) 80%, var(--foreground));
 }
 .badge-attention {
   background: color-mix(in oklch, var(--attention) 14%, transparent);

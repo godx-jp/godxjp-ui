@@ -230,7 +230,7 @@ export function AvatarUploader({
   }, [selectedFile, imageSrc, croppedArea, onUpload, onSuccess, errorMapper]);
 
   return (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       <input
         ref={inputRef}
         type="file"
@@ -255,7 +255,7 @@ export function AvatarUploader({
         ))}
 
       {phase === "cropping" && imageSrc && (
-        <Flex vertical gap="middle">
+        <Flex vertical gap="default">
           <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1" }}>
             <Cropper
               image={imageSrc}
@@ -293,7 +293,7 @@ export function AvatarUploader({
 
       {phase === "uploading" && (
         <Flex vertical gap="small">
-          <Flex align="center" gap="middle">
+          <Flex align="center" gap="default">
             <div
               style={{
                 height: "8px",
@@ -325,7 +325,7 @@ export function AvatarUploader({
       )}
 
       {phase === "success" && (
-        <Flex align="center" gap="middle">
+        <Flex align="center" gap="default">
           <span style={{ fontSize: "var(--text-sm)", color: "var(--success)" }}>
             {labels.uploadSuccess}
           </span>

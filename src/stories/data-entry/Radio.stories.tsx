@@ -70,7 +70,7 @@ export const Vertical: Story = {
 export const WithSizes: Story = {
   name: "With sizes",
   render: () => (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       <RadioGroup
         size="small"
         defaultValue="a"

@@ -1,6 +1,6 @@
 // <Flex> — flex container with prop-driven config (Ant Design model).
 //
-//   <Flex gap="middle" vertical justify="space-between" align="center" wrap>
+//   <Flex gap="default" vertical justify="space-between" align="center" wrap>
 //
 // Replaces `<div className="flex items-center gap-2 …">` patterns.
 // Prop names mirror Ant Design exactly so the API is familiar to
@@ -8,8 +8,12 @@
 
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../cn";
+import type { SizeProp } from "../../props";
 
-export type FlexGap = number | "small" | "middle" | "large";
+/** Flex gap scale. Accepts the shared `SizeProp` vocabulary plus a raw
+ *  pixel number for one-off gaps. Renamed from Ant's `"middle"` →
+ *  `"default"` to match the framework-wide size axis. */
+export type FlexGap = number | SizeProp;
 export type FlexJustify =
   | "start"
   | "end"
@@ -21,7 +25,7 @@ export type FlexAlign = "start" | "end" | "center" | "stretch" | "baseline";
 
 const GAP_TOKEN: Record<Exclude<FlexGap, number>, string> = {
   small: "var(--spacing-2)",
-  middle: "var(--spacing-3)",
+  default: "var(--spacing-3)",
   large: "var(--spacing-4)",
 };
 

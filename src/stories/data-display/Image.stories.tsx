@@ -94,7 +94,7 @@ export const WithPreview: Story = {
 export const Sizes: Story = {
   name: "Sizes · 200 / 400 / 600px",
   render: () => (
-    <Flex gap="middle" align="start" wrap>
+    <Flex gap="default" align="start" wrap>
       <Image src={PHOTO} alt="200px" style={{ width: 200 }} />
       <Image src={PHOTO} alt="400px" style={{ width: 400 }} />
       <Image src={PHOTO} alt="600px" style={{ width: 600 }} />
@@ -107,7 +107,7 @@ export const Sizes: Story = {
 export const Fit_Cover_vs_Contain: Story = {
   name: "Fit · cover vs contain",
   render: () => (
-    <Flex gap="middle" align="start">
+    <Flex gap="default" align="start">
       <div style={{ width: 240, height: 180, background: "var(--muted)" }}>
         <Image
           src={PHOTO_TALL}

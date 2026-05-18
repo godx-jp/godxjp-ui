@@ -30,7 +30,7 @@ const PHASE_LABEL: Record<Phase, string> = { plan: "Plan", do: "Do", check: "Che
 const HEALTH_TONE: Record<Health, BadgeVariant> = {
   ok: "success",
   "at-risk": "warning",
-  "off-track": "error",
+  "off-track": "destructive",
 };
 
 export interface PlansScreenProps {

@@ -64,7 +64,7 @@ is the JP-density default body size. Rescales with the
     <Card title="Type scale" meta="lang='ja'">
       <div className="dv-stack">
         {TYPE_SCALE.map(([tok, val, hint]) => (
-          <Flex key={tok} align="baseline" gap="middle">
+          <Flex key={tok} align="baseline" gap="default">
             <code style={tokenLabel}>{tok}</code>
             <code style={valLabel}>{val}</code>
             <span style={{ fontSize: `var(${tok})`, fontWeight: 500 }} lang="ja">あア漢 Aa 123</span>
@@ -97,7 +97,7 @@ the raw scale.`.trim(),
           ["--heading-h3", "var(--text-base) · 14px", "card title-ish"],
           ["--heading-h4", "var(--text-sm) · 13px", "sub-section"],
         ].map(([tok, val, hint]) => (
-          <Flex key={tok} align="baseline" gap="middle">
+          <Flex key={tok} align="baseline" gap="default">
             <code style={tokenLabel}>{tok}</code>
             <code style={valLabel}>{val}</code>
             <span style={{ fontSize: `var(${tok})`, fontWeight: 500 }} lang="ja">勤怠ダッシュボード</span>
@@ -129,7 +129,7 @@ uses 500 or 700.`.trim(),
           ["--font-weight-medium", "500", "heading default · freee vibes"],
           ["--font-weight-bold", "700", "emphasis only"],
         ].map(([tok, w, hint]) => (
-          <Flex key={tok} align="baseline" gap="middle">
+          <Flex key={tok} align="baseline" gap="default">
             <code style={tokenLabel}>{tok}</code>
             <code style={valLabel}>{w}</code>
             <span style={{ fontSize: "var(--text-base)", fontWeight: w as React.CSSProperties["fontWeight"] }} lang="ja">
@@ -166,7 +166,7 @@ export const LineHeights: StoryObj = {
           ["--leading-relaxed", "1.625", ""],
           ["--leading-loose",   "2",     ""],
         ].map(([tok, val, hint]) => (
-          <Flex key={tok} align="start" gap="middle">
+          <Flex key={tok} align="start" gap="default">
             <code style={tokenLabel}>{tok}</code>
             <code style={valLabel}>{val}</code>
             <p
@@ -202,7 +202,7 @@ Anthropic frontend-design skill anti-pattern.`.trim(),
     },
   },
   render: () => (
-    <Flex vertical gap="middle">
+    <Flex vertical gap="default">
       <Card title="--font-sans-jp" meta="M PLUS 2 + JP fallback chain">
         <p lang="ja" style={{ margin: 0, fontFamily: "var(--font-sans-jp)", fontSize: "var(--text-base)", lineHeight: "var(--leading-body)" }}>
           勤怠ダッシュボード — Attendance Dashboard<br/>

@@ -31,7 +31,7 @@ import { cn } from "../cn"
  * @example
  *   <Badge variant="success" dot>Healthy</Badge>          // soft (default)
  *   <Badge variant="success" appearance="solid">承認済</Badge>
- *   <Badge variant="error" appearance="solid">却下</Badge>
+ *   <Badge variant="destructive" appearance="solid">却下</Badge>
  *   <Badge variant="attention" dot>遅刻</Badge>
  */
 export type BadgeVariant =
@@ -39,7 +39,7 @@ export type BadgeVariant =
   | "success"
   | "warning"
   | "info"
-  | "error"
+  | "destructive"
   | "attention"
   | "neutral"
   | "outline"
@@ -60,9 +60,7 @@ const VARIANT_CLASS: Record<BadgeVariant, string | null> = {
   success: "chip-success",
   warning: "chip-warning",
   info: "chip-info",
-  // Canonical name is `destructive`; React API keeps `error` for
-  // backwards compat with existing callsites.
-  error: "chip-destructive",
+  destructive: "chip-destructive",
   attention: "chip-attention",
   // Neutral = base `.chip` (no role suffix).
   neutral: null,
