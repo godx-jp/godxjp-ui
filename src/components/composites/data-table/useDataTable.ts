@@ -17,7 +17,7 @@ import {
   writePersistedColumnPinning,
   writePersistedColumnVisibility,
   writePersistedTableViews,
-} from "../../data-display/Table.persistence";
+} from "./persistence";
 import type {
   TableBatchActionsConfig,
   TableColumn,
@@ -278,7 +278,6 @@ export interface DataTableInstance<TData> {
     caption?: ReactNode;
     footer?: ReactNode;
     empty?: ReactNode;
-    tableKey?: string;
     containerClassName?: string;
     className?: string;
     rowClassName?:
@@ -522,7 +521,6 @@ export function useDataTable<TData>(
       caption,
       footer,
       empty,
-      tableKey,
       containerClassName,
       className,
       rowClassName,

@@ -1,18 +1,17 @@
 /**
- * @godxjp/ui Table — localStorage persistence helpers.
+ * @godxjp/ui DataTable — localStorage persistence helpers.
  *
- * Split out of `Table.tsx` in Stage 4 of the refactor (Plan §3). These
- * helpers back the legacy `<Table tableKey>` prop's auto-persistence
- * (column visibility, column pinning, saved views).
+ * Moved out of `data-display/Table.persistence.ts` in Stage 4b
+ * (Plan §3). The `<DataTable>` composite owns persistence; the slim
+ * `<Table>` primitive no longer reads or writes localStorage.
  *
- * **Industry standard.** Modern table libraries (TanStack, Material
+ * Industry standard. Modern table libraries (TanStack, Material
  * React Table, Mantine React Table) recommend persistence as
- * *consumer code* via `useState` + `on[StateName]Change` callbacks
+ * consumer code via `useState` + `on[StateName]Change` callbacks
  * rather than a built-in primitive feature. The same pattern is
  * available via the `useTableState` hook (see
  * `docs/reference/hooks/useTableState.md`) — that's the preferred
- * surface for new consumers. These helpers remain for backward
- * compatibility with existing `<Table tableKey>` callers.
+ * surface for new consumers.
  */
 import type { ColumnPinningState } from "@tanstack/react-table";
 import type {
@@ -21,7 +20,7 @@ import type {
   TableFilter,
   TableSort,
   TableViewItem,
-} from "./Table.types";
+} from "../../data-display/Table.types";
 
 export const MAX_PERSISTED_TABLE_VIEWS = 20;
 

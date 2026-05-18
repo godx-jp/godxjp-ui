@@ -312,6 +312,17 @@ export type TableColumnPinningChange = (
   pinning: ColumnPinningState,
 ) => void;
 
+/**
+ * Selection slice the slim primitive understands — strictly the
+ * checkbox column wiring. The batch action band that surfaces
+ * actions lives on the `<DataTable>` composite (Stage 4b, v5.0.0).
+ */
+export interface TableSelectionConfig<TData> {
+  selectedRowKeys: string[];
+  onSelectedRowKeysChange: (keys: string[]) => void;
+  getCheckboxDisabled?: (row: Row<TData>) => boolean;
+}
+
 export interface TableProps<TData>
   extends Omit<HTMLAttributes<HTMLTableElement>, "children"> {
   columns: TableColumn<TData, unknown>[];
@@ -322,12 +333,6 @@ export interface TableProps<TData>
   rowKey?: TableRowKey<TData>;
   getRowId?: (row: TData, index: number) => string;
   caption?: ReactNode;
-  views?: TableViews;
-  toolbar?: TableToolbar;
-  batchActions?: TableBatchActions<TData>;
-  filters?: TableFilter[];
-  onFiltersChange?: (filters: TableFilter[]) => void;
-  tableKey?: string;
   defaultColumnVisibility?: TableColumnVisibility;
   columnVisibility?: TableColumnVisibility;
   onColumnVisibilityChange?: (columnVisibility: TableColumnVisibility) => void;
@@ -349,17 +354,16 @@ export interface TableProps<TData>
   tree?: TableTreeConfig<TData>;
   /** Receives column-pinning changes from the column manager lock toggle (canon ⑨). */
   onColumnPinningChange?: TableColumnPinningChange;
-  filterBar?: TableFilterBar;
-  pagination?: TablePagination;
+  /** Checkbox-column wiring. Use the `<DataTable>` composite for the batch action band. */
+  selection?: TableSelectionConfig<TData>;
   footer?: ReactNode;
   empty?: ReactNode;
-  onResetFilters?: () => void;
   rowClassName?: string | ((row: Row<TData>) => string | undefined);
   /**
    * Pre-built TanStack `useReactTable` instance, supplied by the
    * `<DataTable>` composite. When provided, the primitive skips
-   * its internal `useReactTable` + chrome rendering and consumes
-   * the externally-managed instance. Stage 4b (Plan §3).
+   * its internal `useReactTable` and consumes the externally-managed
+   * instance.
    */
   instance?: ReactTable<TData>;
 }
