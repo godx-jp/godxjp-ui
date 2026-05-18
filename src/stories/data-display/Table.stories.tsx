@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { expect, within } from "storybook/test";
 import { Badge } from "../../components/data-display/Badge";
 import {
@@ -10,10 +10,7 @@ import {
   type TableSort,
   type TableViewItem,
 } from "../../components/data-display/Table";
-import { Input } from "../../components/data-entry/Input";
 import { InputSearch } from "../../components/data-entry/InputSearch";
-import { Select } from "../../components/data-entry/Select";
-import { Sheet } from "../../components/feedback/Sheet";
 import { Button } from "../../components/general/Button";
 import employeeRows from "./fixtures/table-employees.json";
 
@@ -66,35 +63,6 @@ const KIND_OPTIONS = [
   { value: "trip", label: "出張" },
   { value: "absence", label: "欠勤" },
   { value: "normal", label: "通常" },
-];
-
-const DETAIL_FILTER_FIELDS = [
-  { key: "name", label: "従業員", description: "従業員名・かなで検索" },
-  {
-    key: "shop",
-    label: "店舗",
-    description: "店舗を選択",
-    options: SHOP_OPTIONS,
-    control: "dropdown",
-  },
-  {
-    key: "kind",
-    label: "区分",
-    description: "申請区分を選択",
-    options: KIND_OPTIONS,
-    control: "buttons",
-  },
-  {
-    key: "status",
-    label: "状態",
-    description: "稼働状態を選択",
-    control: "dropdown",
-    options: [
-      { value: "active", label: "稼働中" },
-      { value: "pending", label: "申請中" },
-      { value: "leave", label: "休職" },
-    ],
-  },
 ];
 
 const COLUMN_SETTINGS = [
@@ -385,51 +353,13 @@ export const PackagedFeatures: Story = {
     const [activeViewKey, setActiveViewKey] = useState("all");
     const [filters, setFilters] = useState<TableFilter[]>([]);
     const [sort, setSort] = useState<TableSort | null>(DEFAULT_SORT);
-    const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
-    const [filterFieldQuery, setFilterFieldQuery] = useState("");
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(3);
     const [selectedIds, setSelectedIds] = useState<string[]>(["emp-002"]);
     const [columnVisibility, setColumnVisibility] =
       useState<TableColumnVisibility>(DEFAULT_COLUMN_VISIBILITY);
-    const searchRef = useRef<HTMLInputElement>(null);
-    const search = String(
-      filters.find((filter) => filter.key === "name")?.value ?? "",
-    );
-    const [draftSearch, setDraftSearch] = useState(search);
-    const shop = filters.find((filter) => filter.key === "shop")?.value;
-    const kind = filters.find((filter) => filter.key === "kind")?.value;
-    const status = filters.find((filter) => filter.key === "status")?.value;
-    const filterableFields = useMemo(() => {
-      const query = filterFieldQuery.trim().toLowerCase();
-      if (query === "") return DETAIL_FILTER_FIELDS;
-      return DETAIL_FILTER_FIELDS.filter((field) =>
-        `${field.label} ${field.description}`.toLowerCase().includes(query),
-      );
-    }, [filterFieldQuery]);
     const viewItems = useMemo(
       () => BUILT_IN_VIEWS.map(decorateView),
       [],
     );
-
-    useEffect(() => {
-      setDraftSearch(search);
-    }, [search]);
-
-    useEffect(() => {
-      function handleShortcut(event: KeyboardEvent) {
-        if (event.defaultPrevented) return;
-        if (
-          !(event.metaKey || event.ctrlKey) ||
-          event.key.toLowerCase() !== "k"
-        )
-          return;
-        event.preventDefault();
-        searchRef.current?.focus();
-      }
-      window.addEventListener("keydown", handleShortcut);
-      return () => window.removeEventListener("keydown", handleShortcut);
-    }, []);
 
     function markCustomView() {
       setActiveViewKey("custom");
@@ -445,23 +375,12 @@ export const PackagedFeatures: Story = {
         if (value.trim() === "") return next;
         return [...next, { key, operator, value }];
       });
-      setPage(1);
       markCustomView();
     }
 
     function updateFilters(nextFilters: TableFilter[]) {
       setFilters(nextFilters);
-      setPage(1);
       markCustomView();
-    }
-
-    function addFilter(
-      key: string,
-      value: string,
-      operator: TableFilter["operator"] = "eq",
-    ) {
-      setFilterValue(key, value, operator);
-      setFilterDrawerOpen(false);
     }
 
     function applyView(view: TableViewItem) {
@@ -469,7 +388,6 @@ export const PackagedFeatures: Story = {
       setFilters(view.filters ?? []);
       setSort("sort" in view ? (view.sort ?? null) : DEFAULT_SORT);
       setColumnVisibility(view.columnVisibility ?? DEFAULT_COLUMN_VISIBILITY);
-      setPage(1);
     }
 
     const filtered = useMemo(() => {
@@ -497,12 +415,6 @@ export const PackagedFeatures: Story = {
       });
     }, [filtered, sort]);
 
-    const pageCount = Math.max(Math.ceil(sortedRows.length / pageSize), 1);
-    const safePage = Math.min(page, pageCount);
-    const pageRows = sortedRows.slice(
-      (safePage - 1) * pageSize,
-      safePage * pageSize,
-    );
     const allSelectableRows = sortedRows.filter(
       (row) => row.state !== "disabled",
     );
@@ -513,7 +425,6 @@ export const PackagedFeatures: Story = {
       setFilters(defaultView.filters);
       setSort(defaultView.sort);
       setColumnVisibility(defaultView.columnVisibility);
-      setPage(1);
     }
 
     function updateColumnVisibility(nextVisibility: TableColumnVisibility) {
@@ -522,11 +433,10 @@ export const PackagedFeatures: Story = {
     }
 
     return (
-      <>
         <Table
           containerClassName="tbl-shell"
           columns={EMPLOYEE_COLUMNS}
-          data={pageRows}
+          data={sortedRows}
           defaultColumnVisibility={DEFAULT_COLUMN_VISIBILITY}
           columnVisibility={columnVisibility}
           onColumnVisibilityChange={updateColumnVisibility}
@@ -541,21 +451,6 @@ export const PackagedFeatures: Story = {
             onViewApply: applyView,
           }}
           toolbar={{
-            search: {
-              inputRef: searchRef,
-              ariaLabel: "検索",
-              placeholder: "従業員名 · 店舗 · 申請番号で検索…",
-              value: draftSearch,
-              onValueChange: setDraftSearch,
-              onSearch: (value) => setFilterValue("name", value, "contains"),
-              suffix: (
-                <span className="table-kbd">{getSearchShortcutLabel()}</span>
-              ),
-            },
-            filter: {
-              count: filters.length,
-              onClick: () => setFilterDrawerOpen(true),
-            },
             columns: {},
             primaryAction: {
               label: "＋ 新規申請",
@@ -573,7 +468,6 @@ export const PackagedFeatures: Story = {
           sort={sort}
           onSortChange={(nextSort) => {
             setSort(nextSort);
-            setPage(1);
             markCustomView();
           }}
           onResetFilters={reset}
@@ -585,7 +479,7 @@ export const PackagedFeatures: Story = {
               <span>
                 表示中の合計{" "}
                 <b>
-                  {pageRows
+                  {sortedRows
                     .filter((row) => row.hours !== "—")
                     .reduce(
                       (sum, row) => sum + Number(row.hours.replace("h", "")),
@@ -597,101 +491,7 @@ export const PackagedFeatures: Story = {
               </span>
             </div>
           }
-          pagination={{
-            current: safePage,
-            pageSize,
-            total: sortedRows.length,
-            pageSizeOptions: [3, 5, 10],
-            onChange: (nextPage, nextPageSize) => {
-              setPage(nextPage);
-              setPageSize(nextPageSize);
-            },
-          }}
         />
-        {filterDrawerOpen && (
-          <Sheet
-            open={filterDrawerOpen}
-            onOpenChange={setFilterDrawerOpen}
-            className="table-filter-sheet"
-            side="right"
-            title="詳細フィルタ"
-            description="フィルタ可能な項目を検索して条件に追加します。"
-            footer={
-              <>
-                <Button size="small" variant="ghost" onClick={reset}>
-                  条件をリセット
-                </Button>
-                <Button size="small" onClick={() => setFilterDrawerOpen(false)}>
-                  閉じる
-                </Button>
-              </>
-            }
-          >
-            <InputSearch
-              aria-label="フィルタ項目を検索"
-              size="small"
-              placeholder="項目名で検索…"
-              value={filterFieldQuery}
-              onChange={(event) => setFilterFieldQuery(event.target.value)}
-              onClear={() => setFilterFieldQuery("")}
-            />
-            <div className="table-filter-field-list">
-              {filterableFields.map((field) => (
-                <section key={field.key} className="table-filter-field">
-                  <div>
-                    <h4>{field.label}</h4>
-                    <p>{field.description}</p>
-                  </div>
-                  {"options" in field && field.options !== undefined ? (
-                    field.control === "dropdown" ? (
-                      <Select
-                        value={String(
-                          filters.find((filter) => filter.key === field.key)
-                            ?.value ?? "",
-                        )}
-                        onValueChange={(value) => addFilter(field.key, value)}
-                        placeholder={`${field.label}を選択`}
-                        options={field.options}
-                        triggerClassName="table-filter-drawer-select"
-                      />
-                    ) : (
-                      <div className="table-filter-options">
-                        {field.options.map((option) => (
-                          <Button
-                            key={option.value}
-                            size="small"
-                            variant={
-                              filters.some(
-                                (filter) =>
-                                  filter.key === field.key &&
-                                  filter.value === option.value,
-                              )
-                                ? "primary"
-                                : "outline"
-                            }
-                            onClick={() => addFilter(field.key, option.value)}
-                          >
-                            {option.label}
-                          </Button>
-                        ))}
-                      </div>
-                    )
-                  ) : (
-                    <Button
-                      size="x-small"
-                      variant="outline"
-                      disabled={search.trim() === ""}
-                      onClick={() => addFilter(field.key, search, "contains")}
-                    >
-                      現在の検索語で追加
-                    </Button>
-                  )}
-                </section>
-              ))}
-            </div>
-          </Sheet>
-        )}
-      </>
     );
   },
 };
@@ -702,22 +502,10 @@ export const InteractionRegression: Story = {
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
     const body = within(canvasElement.ownerDocument.body);
-    await userEvent.type(canvas.getByLabelText("検索"), "Nguyễn");
     await expect(canvas.getByText("田中 美咲")).toBeVisible();
-    await userEvent.keyboard("{Enter}");
+    await userEvent.click(canvas.getByRole("button", { name: /承認待ち/ }));
     await expect(canvas.getByText("Nguyễn Lan")).toBeVisible();
     await expect(canvas.queryByText("田中 美咲")).toBeNull();
-    await userEvent.clear(canvas.getByLabelText("検索"));
-    await userEvent.keyboard("{Enter}");
-    await userEvent.selectOptions(
-      canvas.getByRole("combobox", {
-        name: /表示件数|Rows per page|Số dòng|Bilang ng row/,
-      }),
-      "5",
-    );
-    await expect(
-      canvasElement.querySelector(".tbl-pagination .info")?.textContent,
-    ).toMatch(/1.*5.*12/);
 
     const savedViewLabel = `Story regression view ${Date.now()}`;
     await userEvent.click(
