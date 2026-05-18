@@ -206,6 +206,146 @@ function rowState(row: { original: EmployeeRow }) {
 
 export const Default: Story = {
   name: "Default · plain table",
+  parameters: {
+    docs: {
+      source: {
+        // Override the auto-generated source — Storybook's react-docgen
+        // serializer strips every `cell: ({ row }) => <JSX/>` to
+        // `cell: () => {}` (it can't introspect function bodies). The
+        // literal string below is what dev sees in the Code panel and
+        // is copy-paste-ready: column-by-column with the inline JSX
+        // renderers, the data array, and the row helpers (StatusBadge,
+        // KindBadge, AvatarCell, rowState) declared as locals.
+        language: "tsx",
+        code: `import { Table, type TableColumn } from "@godxjp/ui"
+import { Badge, Avatar, Typography, Flex } from "@godxjp/ui"
+
+type EmployeeRow = {
+  id: string
+  date: string
+  name: string
+  role: string
+  shop: string
+  kind: "paid" | "late" | "trip" | "absence" | "normal"
+  hours: string
+  status: "active" | "pending" | "leave"
+  kana?: string
+  state?: "new" | "error" | "disabled" | "editing" | "selected"
+}
+
+// ── Inline cell helpers ────────────────────────────────────────
+function StatusBadge({ status }: { status: EmployeeRow["status"] }) {
+  if (status === "active")  return <Badge variant="success" dot>稼働中</Badge>
+  if (status === "pending") return <Badge variant="warning" dot>申請中</Badge>
+  return <Badge variant="neutral" dot>休職</Badge>
+}
+
+function KindBadge({ kind }: { kind: EmployeeRow["kind"] }) {
+  if (kind === "paid")    return <Badge variant="primary"     dot={false}>有給</Badge>
+  if (kind === "late")    return <Badge variant="attention"   dot={false}>遅刻</Badge>
+  if (kind === "trip")    return <Badge variant="info"        dot={false}>出張</Badge>
+  if (kind === "absence") return <Badge variant="destructive" dot={false}>欠勤</Badge>
+  return <Badge variant="neutral" dot={false}>通常</Badge>
+}
+
+function AvatarCell({ row }: { row: EmployeeRow }) {
+  return (
+    <Flex align="center" gap="small">
+      <Avatar size="sm" alt={row.name} />
+      <Flex vertical gap={2}>
+        <Typography.Text strong>{row.name}</Typography.Text>
+        {row.kana && (
+          <Typography.Text color="secondary" style={{ fontSize: "var(--text-xs)" }}>
+            {row.kana}
+          </Typography.Text>
+        )}
+      </Flex>
+    </Flex>
+  )
+}
+
+function rowState(row: { original: EmployeeRow }) {
+  if (row.original.state === "new")      return "is-new"
+  if (row.original.state === "error")    return "is-error"
+  if (row.original.state === "disabled") return "disabled"
+  if (row.original.state === "editing")  return "is-editing"
+  return undefined
+}
+
+// ── Column definitions ────────────────────────────────────────
+const columns: TableColumn<EmployeeRow>[] = [
+  {
+    accessorKey: "date",
+    header: "日付",
+    size: 112, minSize: 112, maxSize: 112,
+    meta: { sortable: true, sticky: { side: "left", from: "md" } },
+  },
+  {
+    accessorKey: "name",
+    header: "従業員",
+    minSize: 180,
+    cell: ({ row }) => <AvatarCell row={row.original} />,
+    meta: { sticky: { side: "left", from: "md" } },
+  },
+  { accessorKey: "role",  header: "役職",  minSize: 120 },
+  {
+    accessorKey: "shop",
+    header: "店舗",
+    minSize: 96,
+    cell: ({ row }) => <span className="c-mono">{row.original.shop}</span>,
+  },
+  {
+    accessorKey: "kind",
+    header: "区分",
+    minSize: 88,
+    cell: ({ row }) => <KindBadge kind={row.original.kind} />,
+  },
+  {
+    accessorKey: "hours",
+    header: "時間",
+    minSize: 80,
+    meta: { className: "num", sortable: true },
+  },
+  {
+    accessorKey: "status",
+    header: "状態",
+    minSize: 96,
+    cell: ({ row }) => <StatusBadge status={row.original.status} />,
+  },
+  {
+    id: "actions",
+    header: "操作",
+    size: 56, minSize: 56, maxSize: 56,
+    meta: { className: "actions", sticky: { side: "right", from: "md" } },
+    cell: () => (
+      <span className="row-actions">
+        <button className="iconbtn" aria-label="操作メニュー">⋯</button>
+      </span>
+    ),
+  },
+]
+
+const data: EmployeeRow[] = [
+  { id: "emp-001", date: "05/14 (水)", name: "田中 美咲",   role: "店長",     shop: "渋谷",     kind: "paid",    hours: "8.0h", status: "active" },
+  { id: "emp-002", date: "05/14 (水)", name: "Nguyễn Lan", role: "スタッフ", shop: "表参道",   kind: "late",    hours: "0.2h", status: "pending", state: "selected" },
+  { id: "emp-003", date: "05/14 (水)", name: "佐藤 健一",   role: "副店長",   shop: "自由が丘", kind: "trip",    hours: "—",    status: "leave",   state: "new" },
+  { id: "emp-004", date: "05/13 (火)", name: "山田 太郎",   role: "アルバイト", shop: "新宿",   kind: "absence", hours: "—",    status: "leave" },
+  { id: "emp-005", date: "04/30 (水)", name: "高橋 由美",   role: "スタッフ", shop: "渋谷",     kind: "normal",  hours: "8.0h", status: "active",  state: "disabled" },
+]
+
+export default function () {
+  return (
+    <Table
+      columns={columns}
+      data={data}
+      rowKey="id"
+      rowClassName={rowState}
+    />
+  )
+}`,
+      },
+    },
+  },
   render: () => (
     <Table
       columns={EMPLOYEE_COLUMNS}
