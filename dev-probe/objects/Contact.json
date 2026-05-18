@@ -1,0 +1,46 @@
+{
+  "name": "Contact",
+  "displayName": { "ja": "取引先責任者", "en": "Contact" },
+  "titleIndex": "lastName",
+  "options": { "timestamps": true },
+  "properties": {
+    "firstName": {
+      "type": "String",
+      "displayName": { "ja": "名", "en": "First Name" }
+    },
+    "lastName": {
+      "type": "String",
+      "displayName": { "ja": "姓", "en": "Last Name" },
+      "required": true
+    },
+    "email": {
+      "type": "Email",
+      "unique": true,
+      "displayName": { "ja": "メール", "en": "Email" }
+    },
+    "phone": {
+      "type": "String",
+      "displayName": { "ja": "電話番号", "en": "Phone" }
+    },
+    "title": {
+      "type": "String",
+      "displayName": { "ja": "役職", "en": "Title" }
+    },
+    "account": {
+      "type": "Association",
+      "relation": "ManyToOne",
+      "target": "Account",
+      "displayName": { "ja": "取引先", "en": "Account" }
+    },
+    "owner": {
+      "type": "Association",
+      "relation": "ManyToOne",
+      "target": "User",
+      "displayName": { "ja": "所有者", "en": "Owner" }
+    },
+    "createdAt": {
+      "type": "Timestamp",
+      "displayName": { "ja": "作成日時", "en": "Created At" }
+    }
+  }
+}

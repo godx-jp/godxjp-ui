@@ -1,0 +1,11 @@
+{
+  "name": "LeadStatus",
+  "kind": "enum",
+  "displayName": { "ja": "リードステータス", "en": "Lead Status" },
+  "values": [
+    { "value": "new",         "label": { "ja": "新規",     "en": "New" } },
+    { "value": "working",     "label": { "ja": "対応中",   "en": "Working" } },
+    { "value": "qualified",   "label": { "ja": "見込み",   "en": "Qualified" } },
+    { "value": "unqualified", "label": { "ja": "対象外",   "en": "Unqualified" } }
+  ]
+}

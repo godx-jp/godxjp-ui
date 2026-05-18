@@ -1,1308 +1,188 @@
-# @godxjp/ui — cardinal rules
+# @godxjp/ui — agent quick reference
 
-Binding. Read before any edit inside `libs/ts/godxjp-ui/`. The 26
-cardinal rules below are non-negotiable; anything older that
-contradicts them is wrong.
+This file is loaded into every conversation context. Keep it terse.
+Detailed recipes live in [`AGENTS.md`](./AGENTS.md); deep binding
+specs live in [`new-docs/`](./new-docs/00-index.md).
 
-> **Read [`./AGENTS.md`](./AGENTS.md) first.** This file carries
-> the cardinal *rules* (the WHAT — concise, non-negotiable);
-> AGENTS.md carries the *recipes* (the HOW — package map, topic
-> homes, workflows, verification gates, design-system handoff,
-> third-party library policy, gotchas). Per umbrella rule 10
-> (one-fact-one-home) the recipe content lives there, not here.
-> If you find yourself wanting to expand a rule below into a
-> recipe, write it in AGENTS.md and leave the rule short.
+## Repo at a glance
 
-For deeper architectural binding rules specific to `@godxjp/ui`
-(theme axes, consumer contract, future rules) see
-[`./new-docs/`](./new-docs/) — index at
-[`./new-docs/00-index.md`](./new-docs/00-index.md). For umbrella-wide
-binding rules see [`../../../new-docs/`](../../../new-docs/).
+- React 19 + Tailwind v4 component library. Submodule of the
+  godx-jp umbrella; commits to `github.com/godx-jp/godxjp-ui`.
+- Source: `src/components/<group>/<Name>.tsx` — six groups
+  (`general`, `layout`, `data-display`, `data-entry`, `feedback`,
+  `navigation`) + `shell/` + `composites/`.
+- Stories mirror source 1:1 at `src/stories/<group>/<Name>.stories.tsx`.
+- Reference docs at `docs/reference/<group>/<Name>.md`.
+- Tokens live in `src/tokens/` (`tailwind.css`) +
+  `src/styles/theme.css`; per-component CSS in
+  `src/styles/shell/NN-*.css`.
 
-## STOP — framework-specific binding rules
+## Common commands
 
-| Trigger | Required reading |
+```sh
+pnpm type-check                         # tsc --noEmit
+pnpm test:stories                       # vitest browser mode (play tests)
+pnpm lint:tokens                        # token / vocabulary lints
+pnpm build                              # tsup ESM + DTS
+node scripts/check-stories-parity.mjs   # rule 17
+node scripts/check-docs-parity.mjs      # rule 18
+pnpm exec storybook dev -p 6006         # local Storybook
+pnpm exec vite --config dev-probe/vite.config.ts   # standalone sandbox (dev-only)
+```
+
+Pre-commit hook (Husky) runs lint:tokens + parity + sync:skills +
+type-check (~5s). `--no-verify` is forbidden.
+
+## Triggers — when to open a deep doc
+
+| You are about to… | Read |
 |---|---|
-| Add / rename a `data-*` attribute on `<html>` that re-binds design tokens; add a user preference toggle (theme / accent / density / font-size / new axis) | [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
-| Start a new frontend that consumes `@godxjp/ui`; change consumer folder shape, theme.css, ESLint / Prettier / TS configs; build a new feature view; need a primitive that does not exist yet | [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
-| Add / rename / remove a design token; write any CSS that needs a colour / spacing / padding / radius / shadow / motion / layout / density value | [`./new-docs/03-token-system.md`](./new-docs/03-token-system.md) |
-| Add / rename a prop on any primitive; author a new primitive's API | [`./new-docs/04-prop-vocabulary.md`](./new-docs/04-prop-vocabulary.md) |
-| Accept a new design-handoff bundle (Claude Design / google-labs DESIGN.md / W3C DTCG / Figma); add lint guardrails; export tokens to inter-tool formats | [`./new-docs/05-design-handoff-formats.md`](./new-docs/05-design-handoff-formats.md) |
+| Add / rename `data-*` axis on `<html>`; add a user preference toggle | [`new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
+| Start a new consumer; change consumer folder shape; add a primitive | [`new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
+| Add / rename / remove a design token; write CSS needing a value | [`new-docs/03-token-system.md`](./new-docs/03-token-system.md) |
+| Add / rename a prop; author a new primitive's API | [`new-docs/04-prop-vocabulary.md`](./new-docs/04-prop-vocabulary.md) |
+| Accept a new design handoff bundle; add lint guardrails | [`new-docs/05-design-handoff-formats.md`](./new-docs/05-design-handoff-formats.md) |
 
-These rules live next to the framework they govern. The umbrella's
-binding table routes work here when the source of truth is a
-framework concept; inline duplication is rejected at review.
+For workflows (per-PR gates, design-canon port procedure, ADR
+authoring) read [`AGENTS.md`](./AGENTS.md).
 
 ## Cardinal rules
 
-1. **Storybook is mandatory.** Every primitive, shell composition,
-   and screen has `stories/<kind>/<Name>.stories.tsx`. Create / edit
-   / delete a component → update the story in the same PR. CI
-   rejects component diffs without a paired story diff. Stories
-   cover every variant + state (default, hover, active, focused,
-   disabled, loading, error) on light + dark. Template in
-   [`./AGENTS.md`](./AGENTS.md) §Storybook.
+Absolute. CI / pre-commit / review reject anything that violates.
 
+1. **Storybook is mandatory.** Every primitive / shell / composite has
+   a paired story under `src/stories/<group>/<Name>.stories.tsx`
+   covering every variant + state on light + dark.
 2. **Tokens, not utilities.** Visual values come from CSS custom
-   properties in `src/tokens/{tokens,tokens-ext}.css`. Token-named
-   Tailwind utilities (`bg-background`, `text-foreground`) are
-   fine. Raw value utilities (`bg-blue-500`, `text-zinc-900`) are
-   forbidden. ADR-0003.
-
-3. **Radix for interactive primitives.** Anything with keyboard
-   nav, focus, ARIA, or portal rendering wraps the relevant Radix
-   primitive. We do not reinvent accessibility. ADR-0001.
-
+   properties in `src/tokens/` + `src/styles/theme.css`. Token-named
+   Tailwind utilities (`bg-background`) are fine; raw value utilities
+   (`bg-blue-500`) are forbidden. (ADR-0003)
+3. **Radix for interactive primitives.** Anything with keyboard /
+   ARIA / portal wraps the relevant Radix primitive. (ADR-0001)
 4. **shadcn-style ownership.** Primitives are thin wrappers;
-   consumers can fork any primitive's source without leaving the
-   ecosystem. ADR-0002.
-
-5. **One i18next singleton.** `initI18n()` in `src/i18n/index.ts`
-   is THE instance. Consumers extend via `addResourceBundle`; they
-   do not create their own. ADR-0004.
-
+   consumers can fork the source in place. (ADR-0002)
+5. **One i18next singleton.** `initI18n()` in `src/i18n/index.ts` is
+   THE instance; consumers extend via `addResourceBundle`. (ADR-0004)
 6. **WCAG 2.1 AA baseline.** Every interactive primitive passes
-   axe-core: keyboard nav, ARIA, focus-visible, 4.5:1 contrast,
-   `prefers-reduced-motion`. Stories double as a11y test surfaces.
-
-7. **SemVer 2.0.0 + Keep a Changelog 1.1.0.** Every release-worthy
-   change updates `CHANGELOG.md` under `## Unreleased` in the same
-   PR.
-
+   axe-core (keyboard nav, ARIA, focus-visible, 4.5:1 contrast,
+   `prefers-reduced-motion`). Stories double as a11y test surfaces.
+7. **SemVer 2.0 + Keep a Changelog 1.1.** Every release-worthy change
+   updates `CHANGELOG.md` under `## Unreleased` in the same PR.
 8. **Inclusive naming.** `allowlist` / `denylist`, `main` /
-   `primary`, `replica` / `secondary`, `they/them`. Never
+   `primary` / `replica` / `secondary`, `they/them`. Never
    `whitelist` / `blacklist` / `master` / `slave`. Lint-enforced.
-
-9. **No marketing speak.** Banned in prose: "powerful", "robust",
-   "blazing fast", "best-in-class", "seamless", "enterprise-grade".
-   State what it does.
-
-10. **English is canonical for docs.** Localised docs live in
-    `docs/i18n/<bcp47>/`. Front-matter tracks staleness.
-
-11. **Submodule discipline.** Commits go to
-    `github.com/godx-jp/godxjp-ui`; the umbrella sees only the SHA
-    pin. Two-PR workflow: (1) submodule PR → merge to `main` here,
-    (2) umbrella PR → bump the pin. Never push a pin to a SHA that
-    isn't on the submodule remote.
-
+9. **No marketing speak.** Banned: "powerful", "robust", "blazing
+   fast", "best-in-class", "seamless", "enterprise-grade". State
+   what it does.
+10. **English is canonical for docs.** Localised docs at
+    `docs/i18n/<bcp47>/`; front-matter tracks staleness.
+11. **Submodule discipline.** Two-PR workflow: (1) submodule PR →
+    `main`, (2) umbrella PR → bump pin. Never push a pin to a SHA
+    not on the submodule remote.
 12. **Branch + PR workflow.** `feat/<scope>` / `fix/<scope>` →
-    submodule `main`. CI green (build + test + Storybook + a11y)
-    required. Squash-merge. Direct push to `main` forbidden.
-    `--no-verify` forbidden.
-
+    submodule `main`. CI green + squash-merge. No direct push to
+    `main`. `--no-verify` forbidden.
 13. **TypeScript strict.** Explicit types on every export.
     `forwardRef` for components; `ComponentPropsWithoutRef` for
-    extension. No `any`. No `@ts-ignore` without comment + issue
-    link.
-
+    extension. No `any`. No `@ts-ignore` without comment + issue link.
 14. **Every third-party library is shadcn / Radix-recommended.**
-    Any new external dependency consumed by a component MUST be one
-    that shadcn/ui OR Radix UI (or the React Aria / Adobe React
-    Spectrum companion stack — same recommendation pool) ship as
-    their official choice for that capability. The goal is one
-    cohesive interaction + accessibility surface across every
-    primitive; reaching for a library outside the recommendation
-    pool fractures behaviour, a11y, and theming.
-
-    Current locked stack:
-    - React 19, Tailwind v4 (locked at the framework level).
-    - **Radix UI** — interactive primitive base (per cardinal rule 3).
-    - **shadcn/ui ownership model** — primitive structure (per rule 4).
-    - **cmdk** — command palette (shadcn-canonical).
-    - **sonner** — toast (shadcn-canonical).
-    - **lucide-react** — icon set (shadcn-canonical).
-    - **react-aria-components** + **@internationalized/date** — date
-      picker / calendar (shadcn community-recommended replacement
-      for react-day-picker; ARIA APG-compliant, timezone-correct).
-    - **i18next** + **react-i18next** — i18n singleton (rule 5).
-    - **class-variance-authority** + **clsx** + **tailwind-merge** —
-      class composition (shadcn-canonical).
-
-    Adding a new peer → write `docs/adr/NNNN-<slug>.md` documenting
-    why the chosen library IS the shadcn/Radix recommendation for
-    that capability. If shadcn/Radix don't recommend any library for
-    the capability, the ADR proposes the library, links the shadcn
-    community discussion, and gets review approval. **No silent
-    "I picked this because it's popular"** — popularity does not
-    substitute for ecosystem cohesion.
-
-15. **`@apply` re-encoding tokens is forbidden.** Inside primitive
-    `.tsx`, do not `@apply` a Tailwind utility that re-encodes a
-    token value — reference the canonical CSS class from
-    `tokens.css` instead. Composite token-named utilities
-    (`bg-background border-border`) remain fine.
-
-16. **CSS source-of-truth is `src/tokens/`.** A primitive that
-    needs a new color / spacing / radius adds it to `tokens.css`
-    (or `tokens-ext.css`) FIRST, then references it.
-
-17. **`src/stories/` ↔ `src/components/` parity.** The set of
-    files under `src/stories/<group>/` matches the set exported
-    from the `src/components/primitives.ts` barrel (sourced from
-    the six group folders per rule 27). Same for `shell/`.
-    CI-checked via `scripts/check-stories-parity.mjs`.
-
-18. **`docs/reference/<group>/` ↔ `src/components/<group>/`
-    parity.** Every primitive has a reference page; every
-    reference page maps to an exported primitive. CI-checked via
-    `scripts/check-docs-parity.mjs`.
-
-19. **No service-specific anything.** This is a generic UI
-    framework. `me-service`, `forge-service`, `admin-service`,
-    etc., never appear in source comments, prop names, or default
-    values. `[data-tenant="<svc>"]` CSS blocks are removed — per-
-    deployment brand color lives at `[data-accent="<palette>"]`
-    (see [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md)
-    + [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) §A).
-    Generic product catalogues (`PRODUCTS`, `ForgeProduct`, …) are
-    consumed by the `ProductSwitcher` shell primitive via props —
-    consumers pass their own catalogue. Per cardinal rule 28 §D the
-    standalone `src/data/` folder is forbidden; the framework does
-    NOT ship a `@godxjp/ui/data` entry.
-
-20. **No "platform-only" exports.** Every primitive ships in
-    `package.json::exports` so external godx-jp projects can
-    consume it. Internal-only helpers stay un-exported (under-scored
-    file names or non-barrelled paths). Per cardinal rule 28 §D
-    `src/internal/` is forbidden as a top-level surface.
-
-21. **Every component supports all four theme axes.** A new or
-    edited primitive / composite / shell composition MUST honour
-    every axis defined in
-    [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md)
-    without per-component overrides:
-
-    - **`data-theme`** (light / dark) — every color reads from a
-      semantic token (`--background`, `--foreground`, `--card`,
-      `--border`, `--muted-foreground`, `--primary`, `--ring`, …).
-      No hardcoded hex / OKLCH literals in a component CSS rule.
-      Verify: switch `[data-theme="dark"]` on `<html>` and confirm
-      the component still has 4.5:1 contrast + sensible surfaces.
-    - **`data-accent`** (blue / green / violet / amber / rose /
-      slate) — brand color flows through `--primary`, `--ring`,
-      `--brand`, `--sidebar-active-*`. A component that renders
-      "the brand color" reads `var(--primary)` (or its derivatives
-      via `color-mix(in oklch, …)`), never a fixed hue.
-    - **`data-density`** (compact / default / comfortable) —
-      heights / paddings that scale with density use the density
-      tokens (`--density-element`, `--density-card`,
-      `--density-page`, `--header-height`, `--density-table-head`).
-      A component that hardcodes `height: 32px` breaks compact +
-      comfortable. Use `var(--density-element)` or the named
-      Tailwind utility (`h-[var(--density-element)]`).
-    - **`data-font-size`** (sm / base / lg / xl) — rem-based sizes
-      rescale automatically. Pixel literals freeze the size and
-      break the axis; use `rem` (or the `--text-*` / `--spacing-*`
-      tokens) for anything the user should be able to grow / shrink.
-      Exceptions documented at the rule (touch-target-min: 44px,
-      hairline borders: 1px).
-
-    **Verification before review**: every PR touching a primitive
-    /composite / shell adds (or already has) a Storybook story for
-    that surface. The reviewer flips the Storybook toolbar through
-    every combination of `theme × accent × density × fontSize` and
-    confirms the component reads right at each. AGENTS.md §"Axes
-    compliance recipe" carries the step-by-step.
-
-    No component is exempt. If a primitive cannot honour an axis
-    (e.g. a fixed-aspect-ratio media element ignoring font-size),
-    that's documented in the primitive's reference doc with the
-    reason — not silently absorbed.
-
-22. **100% match to the design canon — absolute.** Every visual
-    decision (padding, height, gap, font-size, font-weight,
-    line-height, border-width, border-color, radius, shadow,
-    spacing inside a region, divider presence, region order,
-    icon size, dot size, transition timing) MUST come from the
-    canonical design bundle at
-    `design-handoff/ui-system/<latest-bundle>/`. Implementations
-    that ship "close enough" are rejected — close-enough is the
-    reason design systems drift.
-
-    Process:
-
-    1. **Read first**: before writing CSS, open the matching
-       `project/preview/comp-<name>.html` in the bundle. Read it
-       top to bottom. Note every literal value (px, rem, percent,
-       color-mix expression, var-token reference) used by the
-       primitive's regions.
-    2. **Token-pin those literals**: express each literal as a
-       token reference (`var(--…)`), in `rem` for user-scalable
-       quantities, in `px` for the documented exceptions (44px
-       touch target, 1px hairline, SVG viewBox). The token's
-       DEFAULT value matches the design literal exactly (at
-       `data-density="default"` + `data-font-size="base"`).
-    3. **Honour axes via the token chain**: rule 21. Token
-       rescales naturally with density / font-size; literal value
-       at default density / base font-size matches the design
-       pixel-for-pixel.
-    4. **Verify with `getComputedStyle`**: a Playwright probe on
-       the rendered primitive reads `getComputedStyle(element)` and
-       compares to the design literal at default-density / base-
-       font-size. Drift in a single px is a bug, not a
-       discretionary judgement.
-    5. **Missing from the bundle?** STOP. Tell the user:
-       > "The design bundle at `design-handoff/ui-system/<latest>/`
-       > does not cover X. Please mock it on Claude Design
-       > (claude.ai/design) and share the new handoff URL — I'll
-       > re-fetch + implement."
-       Never improvise. Never "fill in a gap" with your own
-       visual judgement. The bundle is the contract.
-
-    Anti-patterns (rejected at review):
-
-    - "Used `--spacing-3` (12px) where the design shows 10px
-      because 12 was already in the token system." → Add the
-      missing 10px token, or use the closest design-matching
-      rem value, or add a per-component variable. Never
-      substitute.
-    - "Used `--text-base` (14px) where the design shows 13px
-      because we already have base." → Same. Add the missing
-      token, don't substitute.
-    - "Used `border-bottom: 1px solid var(--border)` on the
-      header because Tabs has one." → If the design's header in
-      this context has NO divider, your header has NO divider.
-      No cross-component borrowing.
-    - "Switched the order of subtitle + extra because it read
-      better." → No. Region order is the design's contract.
-
-    Honest variances are documented:
-
-    - If a design literal cannot map cleanly to the token system
-      (e.g. the design says 10px but we have `--spacing-2` = 8px
-      and `--spacing-3` = 12px), add a new token in
-      `src/styles/theme.css` that pins the exact value, then
-      reference it. Document the addition in CHANGELOG.md under
-      `### Added` so reviewers see why a new token landed.
-
-    The whole reason `design-handoff/ui-system/` exists is to
-    serve as the verifiable contract. Bypassing it is the most
-    expensive bug class this framework can ship.
-
-23. **Concept-first component API — separate every concept, reuse
-    every shared axis, deep-research before authoring a primitive.**
-    Absolute. Bypassing any of the three sub-rules below produces
-    duplicated concepts and an incoherent API surface — the most
-    expensive long-term debt this framework can ship.
-
-    ### §A — Separate every concept cleanly
-
-    A component prop carries ONE concept. If two concepts overlap
-    in a single prop, the API confuses callers and drift becomes
-    inevitable. Examples:
-
-    - `size` carries ONE concept (component height / dimensional
-      scale). It does NOT also encode density, padding, font-size,
-      or visual emphasis. Those are separate props.
-    - `color` carries ONE concept (semantic role: `primary`,
-      `success`, `warning`, `attention`, `info`, `destructive`,
-      `default`). It does NOT also encode appearance (`soft` vs
-      `solid` vs `outline`); appearance is a separate prop.
-    - `variant` carries the visual treatment (`primary` /
-      `secondary` / `ghost` / `outline` / `link` for buttons,
-      `soft` / `solid` / `outline` for badges). It does NOT also
-      encode the semantic color; combine `variant` + `color` for
-      the full surface.
-    - `padding` (Card) carries density-of-internal-spacing.
-      It does NOT also encode background tone, border accent,
-      or shadow — `tone`, `accent`, `hoverable` are separate axes.
-
-    Rejected at review:
-
-    - A single `kind` / `style` / `mode` prop that conflates two
-      orthogonal axes ("compact-success-soft" instead of
-      `size="small" color="success" variant="soft"`).
-    - A boolean prop where a value enum is honest (`primary` bool
-      on Button instead of `variant="primary"`).
-    - Reusing one prop name for two different concepts in two
-      different primitives (e.g. `kind` meaning size in one
-      primitive and semantic role in another).
-
-    ### §B — Reuse the shared prop vocabulary
-
-    Before declaring a new prop on a new primitive, **check the
-    existing primitive surface** for a matching vocabulary. The
-    shared prop axes locked across the framework are:
-
-    | Prop | Type | Used by | Concept |
-    |---|---|---|---|
-    | `size` | `"small" \| "default" \| "large"` (+ `"x-small"` / `"x-large"` when scale needs) | Button, Input, Avatar, Tag, Badge, IconButton, Spinner, … | Dimensional scale of the primitive itself |
-    | `variant` | primitive-specific enum (e.g. `"primary" \| "secondary" \| "ghost" \| "outline" \| "link"` for Button; `"soft" \| "solid" \| "outline"` for Badge; `"solid" \| "dashed" \| "dotted"` for Separator) | Button, Badge, Tag, Separator, Card?, Alert | Visual treatment (fill / outline / ghost / line style) |
-    | `color` | `"primary" \| "success" \| "warning" \| "attention" \| "info" \| "destructive" \| "default"` | Tag, Badge, Alert, Dot, Delta, IconSquare | Semantic role |
-    | `tone` | `"default" \| "muted" \| "outline-only"` | Card | Surface tint / background treatment |
-    | `accent` | semantic color enum (left-edge or full-ring) | Card | Semantic edge indicator |
-    | `padding` | `"tight" \| "default" \| "cozy" \| "none"` | Card, Dialog (planned), Sheet (planned) | Internal-spacing density |
-    | `density` | `"compact" \| "default" \| "comfortable"` (usually inherited from `[data-density]` axis — only set explicitly when overriding the page-level axis) | (theme axis primarily; explicit prop on Table?) | Page-level spacing scale |
-    | `disabled` / `loading` / `readOnly` / `required` | boolean | Forms / inputs | Interaction state |
-    | `prefix` / `suffix` / `addonBefore` / `addonAfter` | `ReactNode` | Input, Button (icon slots) | Decorative / functional slots |
-    | `orientation` | `"horizontal" \| "vertical"` | Tabs, Menu, Steps, Anchor, Separator | Axis of stack / progression. Replaces Ant's `mode` (Menu) / `direction` (Steps, Anchor) / axis-of-`tabPosition` (Tabs) under one name. Matches Radix + ARIA `aria-orientation`. |
-    | `placement` | `"top" \| "right" \| "bottom" \| "left"` (+ `"start"` / `"end"` when document-flow direction matters) | Tabs (tab-bar), Steps (labels), Popover, Tooltip | Positional anchor of a region relative to its host. Replaces Ant's `tabPosition` / `labelPlacement`. Same name as Radix Tooltip/Popover. |
-    | `titlePlacement` | `"start" \| "center" \| "end"` | Separator | Inline label placement inside a horizontal separator. Distinct from `placement`, which anchors external regions. |
-    | `orientationMargin` | `number \| string` | Separator | Distance from the closest edge for `titlePlacement="start"` / `"end"` labels. Numbers resolve to px. |
-    | `current` | `boolean` per item OR `number \| string` for selection state | Breadcrumb (boolean — `aria-current="page"`), Steps (number — active index) | "This item is the current one" (boolean) OR "active index" (number). Booleans bind to `aria-current`; numbers bind to Radix-style selection. |
-    | `value` / `defaultValue` / `onValueChange` | Radix-style controlled / uncontrolled selection | Tabs, Select, Combobox, Menu (planned), Pagination (planned) | Selection state. NEVER `defaultSelectedKeys` / `activeKey` — those are Ant aliases for the same concept. |
-    | `justify` | `"start" \| "center" \| "end" \| "between"` | Flex, Pagination | Horizontal content alignment. Reused from Flex; do NOT coin `align` synonym for the same axis. |
-    | `sticky` | `boolean` | Anchor, Table (planned header sticky), Topbar | Pin-on-scroll behaviour. Matches CSS `position: sticky` semantics. |
-    | `offset` | `number` (px) | Anchor (scroll target offset), Popover (planned) | Pixel offset from anchor. Direction-aware via `orientation`. |
-    | `open` / `defaultOpen` / `onOpenChange` | Radix-style controlled / uncontrolled overlay-visibility state | Dialog, Sheet, AlertDialog, Popover, DropdownMenu, Modal, Drawer, Popconfirm | Overlay open/closed state. NEVER `visible` / `isOpen` / `shown` / `display` synonyms — Radix-canonical name is mandatory for the entire overlay stack. |
-    | `items` | typed object array | Descriptions, Timeline, SegmentedControl, Checklist, Anchor | Data-driven rows/options owned by the primitive. Prefer this over sub-components for repeated item layout. |
-    | `renderItem` | `(item, index) => ReactNode` | Descriptions, Timeline, List, Transfer | Escape hatch for custom item rendering while keeping the primitive data-driven. |
-    | `children` | `ReactNode` | Button, Tag, Badge, Typography, Separator | Primary content slot for leaf primitives. Do not use it to define repeated data rows. |
-
-    Rules:
-
-    - When designing a new primitive's prop surface, FIRST grep
-      the existing primitives for the same concept. Match the
-      vocabulary verbatim (`size` not `scale`, `variant` not
-      `kind`, `color` not `intent`).
-    - When the existing vocabulary is wrong for the new primitive
-      AND extending it would force a breaking change, document
-      the divergence in `docs/reference/<group>/<Name>.md` with
-      the reason. Don't silently coin a new name for the same
-      concept.
-    - When TWO primitives need the same enum (e.g. semantic color
-      values), promote it to a shared type
-      (`SemanticColor = "primary" | …`) in a shared per-group
-      `types.ts` (e.g. `src/components/data-display/types.ts` or
-      promote to a sibling group file) and import. Don't redeclare
-      per primitive.
-
-    Forbidden:
-
-    - `size: "sm" | "md" | "lg"` in one primitive while another
-      uses `size: "small" | "default" | "large"`. Pick one
-      framework-wide.
-    - `appearance` / `look` / `style` synonyms for `variant`.
-    - `tint` / `intent` / `theme` synonyms for `color`.
-    - `compactness` / `spacing` synonyms for `padding` / `density`.
-    - `mode` / `direction` / `tabPosition` synonyms for `orientation` (axis of stack).
-    - `tabPosition` / `labelPlacement` synonyms for `placement` (positional anchor); for inline Separator labels use `titlePlacement`, not `labelPlacement`.
-    - `activeKey` / `selectedKeys` / `defaultActiveKey` synonyms for `value` / `defaultValue` / `onValueChange` (Radix-style selection).
-    - `align` synonym for `justify` (horizontal alignment — one name across Flex + Pagination + …).
-    - `affix` synonym for `sticky`.
-    - `visible` / `isOpen` / `shown` / `display` synonyms for `open` (Radix-canonical overlay-visibility).
-    - `type` borrowed from Ant Design — our `type` is reserved for HTML input/button `type` attribute; semantic role goes through `color`, visual treatment through `variant`.
-    - `level` synonym for `size` (Typography Title uses `size={1..5}`, not `level`).
-    - `ellipsis` synonym for `truncate` (Typography uses `truncate`, not `ellipsis`).
-
-    ### §C — Always check if a token already exists
-
-    Before adding a new design token (`--<name>: <value>`),
-    grep the existing token catalogue in
-    [`./new-docs/03-token-system.md`](./new-docs/03-token-system.md)
-    + `src/styles/theme.css` + `src/tokens/`. Map the value you
-    need against:
-
-    1. Semantic tokens (`--primary`, `--background`, `--success`,
-       `--card`, `--ring`, `--muted-foreground`, …).
-    2. Scale tokens (`--text-*`, `--spacing-*`, `--density-*`,
-       `--radius-*`, `--shadow-*`).
-    3. Component-scope tokens (`--card-pad-y-*`, `--card-title-size`,
-       `--card-band-height`, …).
-    4. Layout tokens (`--header-height`, `--sidebar-width`).
-
-    Only if NO existing token covers the literal AND the literal
-    cannot be a generic addition (per cardinal rule 22 → must
-    match design canon) do you add a NEW component-scope token.
-    Naming convention `--<component>-<aspect>-<axis>?`.
-
-    Forbidden:
-
-    - Declaring `--button-padding-y: 8px` when `--spacing-2` is
-      already 8px. Use the scale token.
-    - Re-coining `--card-divider-color` when `--border` covers it.
-    - Creating per-state tokens (`--button-hover-bg`,
-      `--button-active-bg`) when `color-mix(in oklch, var(--primary)
-      N%, transparent)` derives them. Tokens encode VALUES; states
-      derive via `color-mix` or per-state class hooks.
-
-    ### §D — Deep-research before authoring a primitive
-
-    A new primitive is a long-term commitment. Before writing the
-    first line of `<Name>.tsx`:
-
-    1. Grep the existing barrels (`src/components/primitives.ts`,
-       `src/components/shell/index.ts`, `src/components/composites/index.ts`)
-       for the same concept. The primitive may already exist under
-       a different name.
-    2. Check the design handoff bundle. Is this primitive shown in
-       `design-handoff/ui-system/<latest>/project/preview/`? If
-       yes, follow the
-       [`new-godx-design-to-component`](./.claude/skills/new-godx-design-to-component/SKILL.md)
-       skill (mirrored at `./.codex/skills/` for Codex sessions —
-       both copies kept byte-identical via `scripts/sync-skills.sh`).
-       If no, STOP — ask the user to mock it on Claude
-       Design first (cardinal rule 22).
-    3. Check the shadcn / Radix / React Aria ecosystem (per
-       cardinal rule 14). The new primitive MUST wrap one of
-       those libraries unless it's purely structural (a div with
-       tokens).
-    4. Read the closest peer primitive's `.tsx` end-to-end. The
-       new primitive's prop shape, forwardRef usage, className
-       composition pattern, story shape MUST mirror the peer.
-
-    Forbidden:
-
-    - Writing a `<Pill>` primitive when `<Tag>` covers it — same
-      concept, different name. Extend `<Tag>` with a `shape`
-      prop instead, or use it directly.
-    - Writing a `<Statistic>` primitive AND a `<KpiNumber>`
-      primitive that emit identical DOM. Pick one.
-    - Creating `<HBox>` / `<VBox>` when `<Flex>` covers row vs
-      column via `direction`/`vertical` prop.
-    - Skipping the peer-primitive read because "I know what
-      buttons look like". The framework's conventions are not
-      generic; read the peer.
-
-    ### Verification at review
-
-    Reviewers check:
-
-    1. Every new prop maps to a row in the §B vocabulary table OR
-       has a documented divergence in `docs/reference/<group>/<Name>.md`.
-    2. Every new token maps to a §M row in
-       [`./new-docs/03-token-system.md`](./new-docs/03-token-system.md)
-       OR has a citation to the design canon literal it pins.
-    3. The PR description cites the peer primitive read in §D.4
-       (e.g. "modeled prop shape after `Button.tsx`").
-    4. No prop name collides with an existing vocabulary entry
-       under a different meaning.
-
-    Rejection is automatic for vocabulary-drift, concept-conflation,
-    or duplicate-primitive PRs. The framework's coherence is
-    impossible to recover incrementally once it fractures.
-
-24. **Mobile-first design — always.** Every primitive / composite /
-    shell / story is designed FIRST for the smallest viewport
-    (`xs` — phone portrait ≥0px) and progressively enhanced for
-    wider screens via the `sm` / `md` / `lg` / `xl` / `xxl`
-    breakpoint tokens (cardinal rule 22 + new-docs/03 §I-2).
-
-    Token vocabulary (single source-of-truth in `theme.css`):
-
-    ```css
-    --breakpoint-xs:  0;       /* phone portrait — mobile-first base */
-    --breakpoint-sm:  640px;   /* phone landscape / tablet portrait */
-    --breakpoint-md:  768px;   /* tablet landscape */
-    --breakpoint-lg:  1024px;  /* laptop */
-    --breakpoint-xl:  1280px;  /* desktop */
-    --breakpoint-xxl: 1536px;  /* wide desktop */
-    ```
-
-    ### §A — Mobile-first defaults
-
-    The DEFAULT (no media query, no breakpoint variant) targets
-    `xs` (phone portrait). Every `<= xs` style is written as
-    base CSS / Tailwind utility without a `<bp>:` prefix.
-    Larger-viewport styles are progressive enhancements via
-    `sm:` / `md:` / `lg:` / `xl:` / `2xl:` utility variants.
-
-    ```tsx
-    /* CORRECT — phone-first, then tablet+ override */
-    <div className="grid grid-cols-1 md:grid-cols-3">
-
-    /* WRONG — desktop-first, then narrow override */
-    <div className="grid grid-cols-3 sm:grid-cols-1">
-    ```
-
-    ### §B — Touch targets
-
-    On mobile every interactive primitive MUST meet the WCAG 2.1 AA
-    touch-target floor: **44 × 44 px** (`--touch-target-min`).
-    Cardinal rule 21 covers density-axis flow; `--touch-target-min`
-    does NOT scale with density.
-
-    This is a hit-area requirement, NOT permission to inflate visual
-    size. Visible control height MUST remain driven by the component's
-    `size` prop and the `[data-density]` token chain
-    (`--density-element-*`). Do not add mobile CSS that changes a
-    `small` / `default` / `large` button, input, select, table toolbar,
-    or row action into a 44px-tall visual control. If a compact visual
-    control needs a larger touch target, add an invisible hit area
-    (`::before` / `::after`, wrapper padding that does not change the
-    painted control, or a documented component-specific hit target).
-
-    ### §C — Responsive primitives reach for tokens
-
-    Components reading viewport state JS-side go through:
-
-    ```ts
-    import { useBreakpoint, matchBreakpoint } from "@godxjp/ui/hooks"
-
-    const bp = useBreakpoint()
-    if (bp === "xs" || bp === "sm") return <MobileShell />
-    ```
-
-    NEVER `window.innerWidth >= 768`. NEVER hardcoded media
-    queries with px literals in component CSS. Tailwind utility
-    variants (`md:`, `lg:`, …) for compile-time; `useBreakpoint`
-    for runtime.
-
-    ### §D — Story coverage
-
-    Every Storybook story renders FIRST at narrow viewport
-    (Storybook default for `iframe.html` is ~1280; resize the
-    Storybook canvas via the Viewports toolbar to `xs` /
-    `mobile1` / etc. and confirm the story still reads).
-    Stories that depend on wide-viewport layout (multi-col grids)
-    add a docs-block note explaining the breakpoint break.
-
-    ### §E — Mobile-first patterns
-
-    | Surface | Mobile (`xs/sm`) | Tablet+ (`md`+) |
-    |---|---|---|
-    | Page shell | Sidebar collapses to drawer; topbar full-width | Sidebar pinned `--sidebar-width: 16rem`; topbar inside |
-    | Card grid | `grid-cols-1` | `md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` |
-    | Filter row | Stacked or sheet | Inline row |
-    | Tables | Card-list fallback (1 card per row) | Real `<table>` |
-    | Dialogs | Bottom-sheet (`bottom: 0; max-height: 90vh`) | Centred modal |
-    | Forms | Single column; full-width inputs | Two-column on `md+` |
-
-    ### Anti-patterns (rejected at review)
-
-    - `window.innerWidth >= 768` — hardcoded literal. Use
-      `useBreakpoint` / `matchBreakpoint`.
-    - `@media (min-width: 768px)` in a primitive's CSS without
-      pinning to a token + comment citing it.
-    - `grid-cols-3` at base (no breakpoint prefix) when the
-      primitive is consumed at viewport < 768px. Use
-      `grid-cols-1 md:grid-cols-3`.
-    - Mobile CSS that sets visual `height` / `min-height` to
-      `--touch-target-min` for controls whose `size` / density token
-      says otherwise. The 44px floor applies to hit area, not painted
-      control size.
-    - Primitive hit areas that violate `--touch-target-min: 44px`
-      on `xs` / `sm` without a documented exception.
-    - Stories that only render at desktop width without a docs
-      note explaining the breakpoint gate.
-
-25. **Stories are docs; the UI is the primitive — refactor the
-    primitive, never paper over with a story tweak.** Absolute.
-
-    Stories under `src/stories/<group>/<Name>.stories.tsx`
-    catalogue WHAT a primitive does — they show variants, axis
-    sweeps, design-canon examples. They are documentation; they
-    are NOT the implementation.
-
-    When the design canon shifts, when a vocabulary violation is
-    found, when the user reports "this looks wrong" — the fix is
-    in the primitive (`src/components/<group>/<Name>.tsx` +
-    associated CSS in `src/styles/shell.css` + tokens in
-    `src/styles/theme.css`), NOT in the story.
-
-    ### When the story is "wrong"
-
-    Rewriting the story so it renders something different is
-    NEVER the right answer. If the story renders the wrong
-    visual, one of these is true:
-
-    a) The primitive's PROPS don't expose the right concept →
-       extend the primitive's API (per rule 23 §B vocabulary;
-       per rule 23 §D deep-research).
-    b) The primitive's CSS hardcodes a value or shape that
-       drifts from the design canon → fix the CSS (per rule 22
-       100% match).
-    c) The token chain is wrong → fix the token (per rule 22 +
-       new-docs/03 §J component-scope tokens).
-    d) The primitive doesn't honour an axis (theme / accent /
-       density / font-size) → fix the primitive's token reads
-       (per rule 21 axes-aware).
-
-    None of these are fixed by editing the story. The story
-    becomes correct AUTOMATICALLY when the primitive becomes
-    correct.
-
-    ### What stories ARE for
-
-    - Render the primitive in its intended variants (one story
-      per variant family per rule 1 storybook-mandatory).
-    - Demonstrate prop-axis sweeps (size × variant × color).
-    - Port design-canon section examples (`comp-<name>.html`
-      sections A–Z → stories) so reviewers can compare the
-      primitive's output to the canon side-by-side.
-    - Drive Playwright snapshot tests (cardinal rule 1).
-    - Drive a11y axe-core checks (cardinal rule 6).
-
-    ### What stories ARE NOT for
-
-    - Defining "the look" of the primitive — that's the CSS in
-      `shell.css` + the tokens in `theme.css`.
-    - Containing inline `style={{ … }}` overrides that work
-      around a primitive's missing prop — extend the primitive.
-    - Containing `className="text-blue-500 px-3 py-2"` Tailwind
-      utility stacks that re-shape the primitive — extend the
-      primitive's variant enum.
-    - Containing per-story `<style>` blocks that override CSS —
-      fix the CSS upstream.
-
-    ### Anti-patterns (rejected at review)
-
-    - PR description: "fixed the Card story to match design".
-      → Wrong. The Card PRIMITIVE was wrong; the story was
-      showing what the primitive did. Fix the primitive.
-    - Story diff > 50 lines while primitive diff = 0 — drift is
-      being papered over.
-    - Story using `style={{ borderLeft: "3px solid var(--primary)" }}`
-      when the primitive should expose `accent="primary"`.
-    - Adding a CSS file under `src/stories/` — stories don't ship
-      CSS; all visual contract lives in `shell.css` / `theme.css`.
-
-    ### The discipline
-
-    When user reports drift on a primitive:
-    1. Read the design canon line for that primitive.
-    2. Read the primitive's `.tsx` + the matching CSS in
-       `shell.css`.
-    3. Identify which of (a)/(b)/(c)/(d) above is the gap.
-    4. Fix the PRIMITIVE / CSS / TOKEN — never the story.
-    5. Re-render the story (no code change to the story) and
-       confirm it now renders correctly.
-    6. If the story needs cosmetic updates (new variant added,
-       new example pattern from design canon) — those are
-       additive, not "fixes".
-
-    Story file diffs without a corresponding primitive / CSS /
-    token diff are rejected at review.
-
-26. **Library isolation — consumers ship only what they import.**
-    Absolute.
-
-    The `dist/` artefact published to npm carries the UI framework
-    surface ONLY: primitives + composites + shell + hooks + i18n +
-    preferences + data + tokens (CSS). Nothing else — no
-    Storybook, no dev tooling, no test helpers, no probe scripts,
-    no design-handoff bundle. Consumers who `import "@godxjp/ui"`
-    get a tight tree-shakable surface; consumers who use only
-    one primitive pull in only that primitive's transitive cost.
-
-    ### §A — What ships in `dist/`
-
-    Every entry in `tsup.config.ts` corresponds to a sub-path in
-    `package.json::exports`. Today's set:
-
-    - `index`                   — root barrel
-    - `i18n`                    — i18next singleton + initI18n
-    - `hooks`                   — useTweaks / useBreakpoint / …
-    - `data`                    — products catalogue
-    - `components/primitives`   — Button / Input / Card / …
-    - `components/shell`        — AppShell / Sidebar / Topbar
-    - `components/screens`      — DashboardScreen / PlansScreen
-    - `components/composites`   — Upload / LocaleInput / Calendar
-    - `preferences`             — PreferencesProvider
-
-    Adding a new entry: append to `tsup.config.ts::entry` AND
-    `package.json::exports`. Both mirror.
-
-    ### §B — What MUST NOT ship in `dist/`
-
-    - `src/stories/**`              — Storybook stories (dev docs)
-    - `.storybook/**`               — Storybook config
-    - `scripts/**`                  — lint-tokens / probes / build helpers
-    - `__tests__/**`                — Vitest specs
-    - `*.test.{ts,tsx}` / `*.spec.{ts,tsx}` — same
-    - `design-handoff/**`           — design canon bundle (operator-only)
-    - `card-verify.cjs` / probe-*.cjs — throwaway Playwright probes
-    - `design/**`                   — Sketch / Figma exports
-
-    Verification — `pnpm pack` then untar the tarball; only
-    `dist/` + `src/tokens/` + `config/` + `BRAND.md` + `CHANGELOG.md`
-    + `LICENSE` + `README.md` + `package.json` should appear.
-
-    ### §C — What MUST NOT be bundled into `dist/*.js`
-
-    Every npm `dependencies` entry is `external` in
-    `tsup.config.ts`. Tsup config auto-derives the list from
-    `package.json::dependencies`:
-
-    ```ts
-    const externalDeps = [
-      ...Object.keys(pkg.dependencies ?? {}),
-      ...Object.keys(pkg.peerDependencies ?? {}),
-    ]
-    ```
-
-    Consumer's package manager (pnpm / npm / yarn) resolves them
-    once, deduped across the dep tree. Double-bundling = the same
-    Radix / Sonner / Lucide code appearing in TWO places in the
-    consumer's app, defeating dedup + tree-shake.
-
-    Plus regex matchers for sub-path imports
-    (`react/jsx-runtime`, `react-dom/client`, `@radix-ui/*/dist`,
-    `@internationalized/date/*`).
-
-    ### §D — `package.json::files` whitelist
-
-    Only the strict consumer surface ships:
-
-    ```json
-    "files": [
-      "dist",
-      "src/tokens",
-      "config",
-      "BRAND.md",
-      "CHANGELOG.md"
-    ]
-    ```
-
-    `src/components/`, `src/stories/`, `src/hooks/`, `src/styles/`
-    DO NOT appear — they're build inputs, not consumer surfaces.
-    Consumer imports the BUILT JS at `dist/*` (resolved via
-    `package.json::exports`).
-
-    `src/tokens/` ships as RAW CSS for consumers that import
-    `@godxjp/ui/tailwind.css` (Tailwind v4 `@import` entry).
-
-    ### §E — Forbidden patterns
-
-    - **Importing a story or design-handoff file from a primitive
-      source.** A primitive must not transitively pull a story or
-      a design canon file — those are not in `dist/`.
-    - **Adding a `devDependency` to `dependencies`.** Storybook,
-      Vitest, Playwright, tsup ARE devDependencies. They must
-      never become runtime deps.
-    - **`import "../../stories/<X>.stories"` from primitive
-      code.** Stories import primitives, never the reverse.
-    - **`tsup` entry pointing at a story / test / script file.**
-      The entry list is the public surface contract.
-    - **`package.json::files` listing `src/`.** That ships every
-      story + every internal helper to npm — the opposite of
-      isolation.
-
-    ### §F — Verification at PR review
-
-    1. `pnpm build` — confirm `dist/` shape matches §A; no story
-       files; no test files.
-    2. `node -e "console.log(require('./libs/ts/godxjp-ui/dist/components/primitives.cjs') ? 'ok' : 'missing')"`
-       — or the ESM equivalent — confirms the consumer-shaped
-       module resolves cleanly.
-    3. `grep -r "@storybook\|vitest\|playwright" libs/ts/godxjp-ui/dist/` —
-       MUST return 0 matches. Any hit = a dev tool leaked into
-       the consumer surface; investigate immediately.
-    4. `du -sh libs/ts/godxjp-ui/dist/components/primitives.js` —
-       track size; sudden 2× growth often signals a bundled lib
-       that should be external. Set a rough budget of 100 KB for
-       primitives.js / 200 KB for index.js (advisory).
-
-    ### Why this rule exists
-
-    Consumer apps consuming `@godxjp/ui` should pay ONLY for the
-    visual layer they use. If a service's frontend bundles 800 KB
-    of Storybook addon code because we accidentally shipped it,
-    that service's page-load suffers — and the user blames their
-    own SPA, not the framework. Isolation is the contract that
-    keeps `@godxjp/ui` adoption frictionless.
-
-    The discipline: every PR that adds an entry point (`tsup
-    entry` / `package.json::exports`), bumps a dependency, or
-    moves a file out of `src/stories/` runs the §F checklist
-    BEFORE landing.
-
-27. **Per-group folder structure — primitives live under
-    `src/components/<group>/<Name>.tsx`.** Absolute.
-
-    The component source tree mirrors the Storybook taxonomy
-    consumers see at `/docs/components-<group>/` (the legacy
-    `new-primitives/` umbrella was flattened — see
-    [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) §A-2).
-    Six groups (matching Ant Design's component taxonomy):
-
-    | Group | Components |
-    |---|---|
-    | `general` | Button, Typography |
-    | `layout` | Row, Col, Flex, Space, Grid, Masonry |
-    | `data-display` | Avatar, Badge, Card, Calendar, Carousel, Collapse, Descriptions, Empty, IconButton, Image, List, PageHeader, Popover, QRCode, SegmentedControl, Separator, Statistic, Table, Tag, Timeline, Tooltip, Tour, Tree |
-    | `data-entry` | Input, Textarea, InputPassword, InputSearch, InputNumber, TimeInput, Field, Label, Checkbox, CheckboxGroup, Radio, Switch, Slider, Select, AutoComplete, Cascader, ColorPicker, DateTimePicker, TreeSelect, Rate, Form, Transfer, Checklist, LocaleTabs, combobox |
-    | `feedback` | Alert, Dialog, AlertDialog, Sheet, Popconfirm, Progress, Result, Skeleton, Spinner, Toaster, Watermark |
-    | `navigation` | Anchor, Breadcrumb, DropdownMenu, Menu, Pagination, Steps, Tabs |
-
-    Shared helpers (`cn`, internal hooks) live at
-    `src/components/cn.ts` etc. — one level above the groups so
-    every group has a uniform `import "../cn"` path.
-
-    Stories MUST mirror the same group hierarchy:
-    `src/stories/<group>/<Name>.stories.tsx` with title
-    `<Group>/<Name>` (no `new-primitives/` prefix).
-
-    The barrel at `src/components/primitives.ts` (single file, NOT
-    a folder) re-exports from the group folders so the published
-    import path `@godxjp/ui/components/primitives` stays stable for
-    consumers. New primitive files are NEVER added to a flat
-    `primitives/` folder — always under their group folder.
-
-    Cross-group imports use relative paths:
-    `import { Button } from "../general/Button"` from any
-    sibling group. The cardinal rule 14 ecosystem (Radix /
-    cmdk / sonner / lucide-react) is consumed directly by name
-    regardless of group.
-
-    Forbidden (rejected at review):
-    - New `.tsx` file at `src/components/primitives/<Name>.tsx`
-      flat — pick a group folder. The flat
-      `src/components/primitives/` directory does NOT exist;
-      `primitives.ts` is a single barrel file.
-    - Group folder mismatch between source location and
-      Storybook title (`Tabs` in `src/components/navigation/` but
-      story titled `Components/Data Display/Tabs` — pick one and
-      align).
-    - Helpers proliferating per-group (each group importing its
-      own copy of `cn.ts`) — `cn` lives once at
-      `src/components/cn.ts`.
-
-28. **`src/` folder taxonomy — strict separation of consumer dist
-    surface vs Storybook-only artefacts vs build-input-only.**
-    Absolute.
-
-    Three classes of file live under `src/`. Each has ONE home and
-    a strict rule about whether it ships:
-
-    ### §A — Consumer-facing surface (ships to dist)
-
-    Every consumer-facing directory under `src/` has a matching
-    `tsup` entry + `package.json::exports` sub-path. Adding a new
-    directory at this level requires updating BOTH files +
-    documenting the entry purpose.
-
-    | Path | Entry | Purpose |
-    |---|---|---|
-    | `src/index.ts` | `index` | Root barrel — re-exports primitives + hooks + i18n |
-    | `src/components/primitives.ts` | `components/primitives` | Barrel for `general/` + `layout/` + `data-display/` + `data-entry/` + `feedback/` + `navigation/` group folders (cardinal rule 27) |
-    | `src/components/composites/` | `components/composites` | Composite widgets that wrap multiple primitives (Upload family, AvatarUploader, LocaleInput, calendar app, …). Service-clients used ONLY by one composite live under the composite's folder, NOT at `src/clients/` |
-    | `src/components/shell/` | `components/shell` | AppShell + chrome (Sidebar, Topbar, CommandPalette, TweaksPanel) |
-    | `src/i18n/` | `i18n` | i18next singleton + base dictionary |
-    | `src/hooks/` | `hooks` | Reusable hooks (`useTweaks`, `useDebouncedValue`, `usePreferences`, `useBreakpoint`, …) |
-    | `src/preferences/` | `preferences` | `PreferencesProvider` — locale + timezone React context |
-    | `src/styles/` | (CSS source) | `theme.css`, `shell.css` + `shell/<NN-component>.css` files. Imported via `@godxjp/ui/styles/...` or `@godxjp/ui/tailwind.css` |
-    | `src/tokens/` | (CSS source) | Tailwind v4 entry (`tailwind.css`) |
-
-    ### §B — Storybook-only (NEVER shipped)
-
-    Lives under `src/stories/` and is excluded from the
-    `package.json::files` whitelist:
-
-    | Path | Purpose |
-    |---|---|
-    | `src/stories/{theme,general,layout,data-display,data-entry,feedback,navigation,shell}/` | Per-group story catalogues mirroring the Storybook sidebar taxonomy (cardinal rule 27) |
-    | `src/stories/examples/` | Page-level example screens (DashboardScreen, IdeasScreen, PlansScreen, WikiScreen, etc.). These are illustrative compositions of primitives + shell, NOT consumer-importable surfaces. Use them as reference; copy-paste-and-modify per consumer app |
-
-    ### §C — Build-input-only (not user-imported)
-
-    Stuff that exists to support the build but isn't itself a
-    consumer entry. Lives under `src/` but isn't in `tsup`'s entry
-    map and isn't in `package.json::exports`:
-
-    | Path | Purpose |
-    |---|---|
-    | `src/components/cn.ts` | Shared `cn()` helper imported by every primitive |
-    | per-group `*.tsx` files under `src/components/<group>/` | Implementation files — consumed via the `primitives.ts` barrel, never directly via `@godxjp/ui/components/<group>` |
-
-    ### §D — Forbidden
-
-    Rejected at review:
-
-    - A new top-level directory at `src/` not in §A, §B, or §C.
-      `src/clients/`, `src/lib/`, `src/utils/`, `src/internal/`,
-      `src/screens/` — all forbidden as standalone surfaces.
-      Service clients live with the composite that uses them. Utils
-      live with the primitive that uses them.
-    - A `tsup` entry / `package.json::export` referring to
-      Storybook content (`components/screens` etc.). Storybook
-      content never reaches consumers.
-    - A primitive file outside its `src/components/<group>/`
-      folder (rule 27 repeat).
-    - `src/components/<X>/` where `<X>` is anything other than the
-      six canonical group names (`general`, `layout`, `data-display`,
-      `data-entry`, `feedback`, `navigation`), `composites/`, or
-      `shell/`. Notably: NO `src/components/screens/` (those are
-      examples, not primitives).
-
-    ### §E — Verification at review
-
-    A PR that adds a new top-level `src/<X>/` directory MUST cite
-    one of the three classes in its description. A PR that adds a
-    `tsup` entry MUST cite the consumer use case. A PR that adds a
-    file inside `src/components/<X>/` where `<X>` is not a canonical
-    group is rejected.
-
-29. **Every story MUST consume the framework's primitives —
-    never raw HTML / inline-styled divs / one-off layout
-    elements.** Absolute.
-
-    Storybook is the marketing surface for the framework. A
-    consumer browsing `https://storybook.local.godx.jp/` reads
-    each story as the canonical *way* to use the component. If a
-    story renders an icon button as `<button style="border:1px
-    solid var(--border); padding: 6px 8px; …">×</button>` instead
-    of `<IconButton variant="ghost">×</IconButton>`, the framework
-    teaches consumers to bypass its own primitives. That breaks
-    the locked stack (cardinal rule 14), bypasses the vocabulary
-    (rule 23), and means new consumers ship one-off divs alongside
-    framework components — exactly the drift the framework
-    exists to prevent.
-
-    ### §A — What stories ARE allowed to use
-
-    - **Framework primitives** from `src/components/<group>/`:
-      Button, Typography, Card, Input, Select, Checkbox, Tag,
-      Avatar, IconButton, Badge, Statistic, … (the full
-      `primitives.ts` barrel).
-    - **Shell primitives** from `src/components/shell/`:
-      AppShell, Sidebar, Topbar, PageContent, … (when the story
-      illustrates a page-level surface).
-    - **Composites** from `src/components/composites/`:
-      Upload family, MediaUpload, AvatarUploader, LocaleInput.
-    - **Layout primitives** (Row/Col/Flex/Space/Grid/Masonry)
-      for arrangement.
-    - **Tokens via CSS classes** (`.row-between`, `.micro`,
-      `.stat`, `.delta`, …) when the story renders a design-canon
-      atom that doesn't yet have a React primitive (e.g. Card
-      sections A–H).
-    - **Lucide icons** (`lucide-react`) for icon needs.
-    - **HTML semantic elements** (`<section>`, `<article>`,
-      `<header>`, `<main>`, `<nav>`, `<table>`, `<ul>`, `<li>`,
-      `<a>`, `<p>`, `<form>`) for structure when no primitive
-      maps cleanly. These are HTML, not framework drift.
-
-    ### §B — Forbidden in stories
-
-    - Inline `style={{ … }}` overriding primitive visuals (recap
-      of rule 25). Layout-only `style` (display/grid-template/
-      flex-direction) is OK; visual-style overrides are not.
-    - Raw `<button>` / `<input>` / `<select>` when `Button` /
-      `Input` / `Select` primitives exist.
-    - Hand-rolled chip / badge / tag divs when `Tag` / `Badge` /
-      `Chip` exist.
-    - Hand-rolled spinner / skeleton divs when `Spinner` /
-      `Skeleton` exist.
-    - `<div className="some-ad-hoc-class">` for a region that
-      maps to a primitive (e.g. faking a Card with bordered div).
-    - Raw `<h1>` / `<h2>` / `<p>` when `Typography.Title` /
-      `Typography.Paragraph` cover the case (HTML semantics are
-      preserved by the primitive).
-    - Service-specific copy (org / project / user names) that
-      doesn't appear in `src/stories/examples/` fixtures — story
-      copy stays generic.
-
-    ### §C — Verification
-
-    A reviewer scans each new story for:
-
-    1. `import` block — only framework imports + lucide-react +
-       react.
-    2. JSX — every visual atom is a primitive call OR a small
-       documented atom CSS class.
-    3. `style={{ … }}` — limited to layout/positioning, no
-       colours / borders / radii / shadows / typography.
-
-    Stories that don't conform are rejected at review even if
-    the rendered output looks correct — the *teaching surface*
-    matters, not just the pixels.
-
-- Component diff without paired story diff (rule 1).
-- Raw color utility (`bg-blue-500`) in a primitive (rule 2).
-- Hand-rolled focus / keyboard nav when Radix has it (rule 3).
-- New primitive without `docs/reference/<group>/<Name>.md`
-  (rule 18).
-- `any` in an export signature (rule 13).
-- `// eslint-disable-line` without comment + issue link.
-- Banned terms (`master`, `whitelist`, `blacklist`, …) anywhere
-  (rule 8).
-- Marketing speak in README / docs / code comments (rule 9).
-- Service-specific reference (`me.profile`, `forge.workspace`) in
-  primitive source or comments (rule 19).
-- Submodule push that diverges from upstream, or direct push to
-  `main` (rules 11, 12).
-
-30. **Story `render` returns JSX directly — no opaque `<XyzDemo />`
-    wrapper components.** Absolute.
-
-    Storybook's docs page renders a source snippet of every story's
-    `render` function via `parameters.docs.source.type: "dynamic"`
-    (set in `.storybook/preview.tsx`). When the render is
-    `render: () => <DefaultDemo />`, the source the consumer sees in
-    the Docs view is the literal JSX — `<DefaultDemo />` — which is
-    opaque, copy-paste-useless, and teaches nothing. The consumer
-    must drill into the source repo to understand the story.
-
-    The fix is to inline the demo body into a NAMED render function
-    so Storybook can render the actual JSX:
-
-    ```tsx
-    // WRONG — story source shows `<DefaultDemo />`
-    function DefaultDemo() {
-      const [value, setValue] = useState("")
-      return (
-        <Select value={value} onValueChange={setValue}>…</Select>
-      )
-    }
-    export const Default: Story = { render: () => <DefaultDemo /> }
-
-    // RIGHT — story source shows the real Select usage
-    export const Default: Story = {
-      render: function Default() {
-        const [value, setValue] = useState("")
-        return (
-          <Select value={value} onValueChange={setValue}>…</Select>
-        )
-      },
-    }
-    ```
-
-    The named function (`function Default()` rather than `() =>`) lets
-    Storybook attribute the source to the story (otherwise the
-    extractor falls back to the literal source, which still contains
-    `() =>` syntactic noise).
-
-    No exceptions. Even a parameterised helper (e.g.
-    `<ExampleForm disabled={…} />`) is forbidden: the consumer
-    landing on `?path=/docs/.../disabled` sees `<ExampleForm
-    disabled />` — still opaque, still requires drilling into the
-    source repo to understand. If two stories share ~100 lines of
-    JSX, duplicate the body. Storybook's source view is the
-    teaching surface — what the consumer reads MUST be runnable
-    JSX they can copy-paste into their app.
-
-    A separate `_RepeatedBlock.tsx` helper file is also forbidden;
-    if you reach for one, the right answer is either
-    (a) reduce the duplication by extracting a missing PRIMITIVE
-    into `src/components/<group>/` (the real fix), or
-    (b) accept the verbatim duplication for the sake of source
-    readability.
-
-    Historical context: the framework's earlier rule allowed
-    parameterised helpers (`<ExampleForm disabled />` style). The
-    pattern bled into ~14 stories in `data-entry/` (DefaultDemo /
-    ControlledDemo / ValidatedDemo / PrefectureDemo / ExampleForm
-    …), each producing an unhelpful `<XyzDemo />` in the source
-    panel. The v3 audit removed the exemption and inlined every
-    helper.
-
-    Forbidden everywhere else. Reviewers grep for the anti-pattern
-    `render: () => <[A-Z][a-zA-Z0-9]+Demo` and reject PRs that
-    introduce a zero-arg `Demo` wrapper.
-
-31. **No nested wrapper / convenience primitives.** Absolute.
-
-    The framework MUST NOT ship two primitives that wrap the same
-    Radix / cmdk / React-Aria base just to expose a "simpler" surface
-    over the other. `<SimpleTooltip>` wrapping `<Tooltip>`,
-    `<SimpleCard>` over `<Card>`, `<EasySelect>` over `<Select>`,
-    `<QuickModal>` over `<Modal>` — all forbidden.
-
-    Every primitive has ONE name + ONE surface. Convenience the
-    consumer needs comes through PROPS (`searchable`, `compact`,
-    `richItems`, `placeholder`, …) of the canonical primitive — not
-    through a second wrapper component. This is the dual of rule 23
-    §A (concept-first prop API): just as one prop carries one concept,
-    one primitive carries one identity.
-
-    Symptoms reviewers reject:
-
-    - Two primitives in the same group that both export from the
-      same Radix base (e.g. `Tooltip` + `SimpleTooltip` both wrapping
-      `@radix-ui/react-tooltip`).
-    - A primitive whose entire body is `<OtherPrimitive {...defaults}
-      {...rest} />` with no real logic.
-    - Stories that show "use `<SimpleX>` instead of `<X>` because it's
-      easier" — that's a sign the canonical `<X>` API is missing a
-      prop. Add the prop to `<X>`; do not ship `<SimpleX>`.
-
-    Allowed (these are NOT wrappers):
-
-    - Different Radix-base primitives that share a domain (`Tooltip`
-      uses `@radix-ui/react-tooltip`; `Popover` uses
-      `@radix-ui/react-popover` — different Radix packages, different
-      semantics, both valid).
-    - Composites under `src/components/composites/` that combine
-      multiple primitives for a specific use case (`AvatarUploader`,
-      `MediaUpload`). Composites are NOT primitives.
-    - Sub-components of a single primitive family (`<Card title="…">`,
-      `<Card>` — they're parts of `<Card>`, not a parallel
-      simpler-card primitive).
-
-    Exception process: if a wrapper primitive seems truly necessary
-    (e.g. a service migration needs a temporary stand-in), it MUST
-    have explicit developer approval recorded in `docs/adr/` BEFORE
-    landing. The ADR documents (a) why the canonical primitive's prop
-    surface can't absorb the use case, (b) the deprecation path, (c)
-    the planned merge date. Wrappers without an approved ADR are
-    rejected at review even when the PR ships green tests.
-
-    Historical case: `SimpleTooltip` shipped alongside `Tooltip` in
-    v3.0; the v3.1 audit flagged it as a rule 31 violation and merged
-    it back into `Tooltip` via a `content` prop + `placement` prop.
-
-32. **No redundant props — if an existing prop / item field / variant
-    already covers the use case, do not add a new one.** Absolute.
-
-    A primitive's prop surface is its long-term contract. Every prop
-    landed becomes a thing reviewers must understand, consumers must
-    learn, and the framework must keep honouring. Coining a top-level
-    prop for what `items[i].<field>` already expresses, or coining a
-    variant flag for what a property on the existing data structure
-    already conveys, fractures the API and inflates the cognitive
-    cost of every primitive that follows.
-
-    Before adding ANY new prop / item field / variant:
-
-    1. Grep the primitive's existing surface (props + item interface
-       + variant enums) for a field that already carries the concept.
-    2. Grep the rule 23 §B shared vocabulary table for a name that
-       carries the concept across primitives.
-    3. If either exists, USE IT. Do not coin a synonym.
-
-    ### Forbidden patterns
-
-    - **Top-level prop that re-expresses an item field.** Timeline's
-      original `pending="次の同期を待機中…"` top-level prop was the
-      canonical example: it injected a trailing item with a pulsing
-      marker, which is EXACTLY what `items` + per-item
-      `animate: true` already expresses. The fix: remove the
-      `pending` prop; consumers append a regular item with
-      `animate: true`. Same for `dot` overrides at the Timeline
-      level when per-item `color` + `current` already cover it.
-    - **Singular boolean that re-expresses a value enum.** A `primary`
-      boolean on Button when `variant="primary"` exists. A `success`
-      boolean on Alert when `color="success"` exists.
-    - **Top-level flag that re-expresses inheritable axis state.** A
-      `dark` prop on a primitive when `[data-theme="dark"]` is the
-      framework-wide axis. A `compact` prop when
-      `[data-density="compact"]` covers it.
-    - **Cross-primitive synonym for an established prop name.** A
-      `tabPosition` prop on Tabs when `placement` is the locked
-      vocabulary (rule 23 §B).
-    - **Two props for one decision.** A `pending` prop AND a
-      `pendingDot` prop AND a `pendingText` prop, when one
-      `items[i]: { animate: true, title: "…" }` covers all three.
-
-    ### What IS legitimately new
-
-    - A prop that exposes behaviour the existing surface cannot
-      express. E.g. Timeline's `connector?: boolean` — controls a
-      VARIANT-LEVEL toggle (whether the vertical line between
-      markers renders), which no per-item field captures. The
-      connector is a property of the rail itself, not a property of
-      any single item.
-    - A prop that exposes an entirely new concept (cardinal rule 23
-      §A separation of concerns).
-    - A prop that the design canon (cardinal rule 22) shows as a
-      first-class variant — but ONLY if grep confirms no existing
-      field covers it.
-
-    ### Verification at review
-
-    Reviewers check:
-
-    1. Every new prop in the PR has a one-line justification: "covers
-       <concept>; no existing prop / item field carries this."
-    2. Where a new top-level prop has been coined, the PR description
-       proves no items-level field could express the same. Snapshot
-       the existing item interface in the PR description to make the
-       check trivial.
-    3. Where a new boolean prop has been coined, confirm a value enum
-       isn't the honest shape (rule 23 §A).
-    4. Where a new prop name has been coined, grep the existing
-       vocabulary (rule 23 §B) for a synonym. Reject vocabulary
-       drift.
-
-    Rejection is automatic for redundant-prop PRs. The framework's
-    surface is held together by absolute self-discipline; every
-    surplus prop is a fracture that can't be closed once shipped.
-
-    Historical case: Timeline v3.x shipped a top-level `pending`
-    prop that injected a trailing animated item. The v3.y audit
-    removed it — `items={[…, { animate: true, title }]}` is the
-    same shape, expressed in the existing vocabulary, with zero
-    prop-surface inflation. Cardinal rule 32 was lifted directly
-    from this incident.
-
-33. **Stories, source, and docs MUST be name-synchronized — no
-    legacy aliases, no out-of-date references, no two names for the
-    same thing across the surface.** Absolute.
-
-    Storybook is the teaching surface (cardinal rule 29). The
-    moment a consumer reads two stories that import two different
-    names for the same primitive / provider / hook, the consumer
-    asks "which one do I use?" — and the framework loses its
-    cohesion advertised under cardinal rule 23. Likewise a story
-    that imports a symbol that no longer exists in the source, or
-    references a prop that was renamed, teaches the consumer to
-    write code that won't compile.
-
-    ### Forbidden
-
-    - **Two names for the same export in different stories.**
-      `<PreferencesProvider>` in one story + `<GodxConfigProvider>`
-      in another, when source carries both as aliases. Pick the
-      canonical name and rip the alias out of source, stories, and
-      docs in one PR.
-    - **Stories that import a symbol that no longer exists** — the
-      story would crash on render. Always rename across the full
-      `src/**` + `docs/**` + `package.json::exports` surface in the
-      same PR.
-    - **Doc / story examples that use a prop name the source no
-      longer accepts** — e.g. doc shows `tabPosition` but the source
-      coerced to `placement`. Reviewer must spot-grep every PR that
-      renames a prop.
-    - **"Deprecated alias" left in source without a story-side
-      cleanup.** If source must keep the alias for a deprecation
-      cycle, the stories + docs STILL only use the canonical name —
-      consumers should never see the deprecated name in marketing
-      surfaces. Even better: ship the rename as a clean breaking
-      change at the next major and skip the alias cycle.
-
-    ### Required at every rename / removal PR
-
-    1. `grep -rn '<oldName>' src docs` — must return zero hits
-       (excluding ADRs documenting the rename).
-    2. The PR title cites the rename: `rename: <old> → <new>`.
-    3. CHANGELOG entry under `### Changed` (or `### Removed` if
-       outright deletion).
-    4. Migration note inline in the CHANGELOG + the affected
-       reference doc — one paragraph max, just the find/replace.
-
-    ### Why this rule exists
-
-    Framework coherence is the value `@godxjp/ui` ships. A consumer
-    deciding between `<PreferencesProvider>` and `<GodxConfigProvider>`
-    spends mental energy that the framework was supposed to absorb.
-    Two names = the consumer is doing the framework's job. Even worse:
-    once two names ship in stories, neither can be removed without
-    breaking the consumer's existing code, so the drift becomes
-    permanent.
-
-    Historical case: v3.x shipped both `<PreferencesProvider>` and
-    `<GodxConfigProvider>` for a deprecation cycle. The first
-    Storybook PR that introduced the new alias also created stories
-    referencing the old name → user reported the confusion within an
-    hour. The fix: delete the alias entirely, sync every story + doc
-    to the canonical name in one PR. Cardinal rule 33 was lifted
-    directly from this incident.
-
-## Verification
-
-Full pre-commit gate is in [`./AGENTS.md`](./AGENTS.md) §Verification.
-Pre-commit hook enforces it; `--no-verify` is forbidden.
+    Locked stack: Radix UI, cmdk, sonner, lucide-react,
+    react-aria-components + `@internationalized/date`, i18next +
+    react-i18next, class-variance-authority + clsx + tailwind-merge.
+    New peer → ADR documenting why it's the canonical choice.
+15. **No `@apply` re-encoding tokens.** Inside a primitive `.tsx`,
+    don't `@apply` a Tailwind utility that re-encodes a token —
+    reference the canonical CSS class from `tokens.css` instead.
+    Composite token-named utilities remain fine.
+16. **CSS source-of-truth is `src/tokens/` + `src/styles/theme.css`.**
+    A primitive that needs a new color / spacing / radius adds it
+    there FIRST, then references it.
+17. **`src/stories/` ↔ `src/components/` parity.** Story set matches
+    primitive set under each group. CI-checked via
+    `scripts/check-stories-parity.mjs`.
+18. **`docs/reference/<group>/` ↔ `src/components/<group>/` parity.**
+    Every primitive has a reference page; every page maps to a
+    primitive. CI-checked via `scripts/check-docs-parity.mjs`.
+19. **No service-specific anything.** `me-service`, `forge-service`,
+    `admin-service` never appear in source / comments / prop names.
+    Per-deployment brand color lives at `[data-accent="<palette>"]`.
+20. **No "platform-only" exports.** Every primitive ships via
+    `package.json::exports`. Internal-only helpers stay un-exported.
+21. **Every component honours every theme axis.** `data-theme`
+    (light / dark), `data-accent` (6 palettes), `data-density`
+    (compact / default / comfortable), `data-font-size` (sm / base /
+    lg / xl). Read from tokens, never hardcode values. Verify every
+    PR via the Storybook toolbar sweep. Details:
+    [`new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md).
+22. **100% match to the design canon.** Every visual literal comes
+    from `design-handoff/ui-system/<latest-bundle>/`. Token-pin
+    canon literals; never substitute "close enough". If the bundle
+    doesn't cover a case — STOP, ask the user to mock it. Recipe in
+    [`AGENTS.md`](./AGENTS.md) §Design-canon port.
+23. **Concept-first prop API.** One concept per prop. Reuse shared
+    vocabulary (`size`, `variant`, `color`, `tone`, `accent`,
+    `padding`, `density`, `orientation`, `placement`, `current`,
+    `value` / `defaultValue` / `onValueChange`,
+    `open` / `defaultOpen` / `onOpenChange`, `justify`, `sticky`,
+    `offset`). Full table:
+    [`new-docs/04-prop-vocabulary.md`](./new-docs/04-prop-vocabulary.md).
+    Before adding a new prop or token: grep for an existing one.
+    Before authoring a primitive: grep the barrels + read the peer
+    primitive end-to-end.
+24. **Mobile-first.** Defaults target `xs` (≥0px); progressive
+    enhancement via `sm:` / `md:` / `lg:` / `xl:` / `2xl:`. Touch
+    targets ≥ 44 × 44 px (`--touch-target-min`, does NOT scale with
+    density). Runtime viewport via `useBreakpoint`, never
+    `window.innerWidth`. Stories render at narrow viewport first.
+25. **Stories are docs; UI is the primitive.** When a story looks
+    wrong, fix the primitive / CSS / token. Never paper over with a
+    story tweak. Story-only diff without a paired primitive / CSS /
+    token diff is rejected.
+26. **Library isolation.** `dist/` ships only the consumer surface.
+    Storybook, tests, scripts, design-handoff, `dev-probe/` stay
+    out of npm. Every `dependencies` entry is `external` in `tsup`.
+    Verification via `pnpm pack` + grep of `dist/`.
+27. **Per-group folder structure.** Primitives at
+    `src/components/<group>/<Name>.tsx`; six canonical groups
+    (general, layout, data-display, data-entry, feedback, navigation).
+    Barrel = `src/components/primitives.ts` (single file). Stories
+    + reference docs mirror the same group hierarchy.
+28. **`src/` folder taxonomy.** Three classes: consumer surface
+    (matched by `tsup` entry + `package.json::exports`),
+    Storybook-only (`src/stories/`), build-input-only (`cn.ts`,
+    per-group sources consumed via the barrel). No `src/lib/`,
+    `src/utils/`, `src/internal/`, `src/clients/`, `src/screens/`.
+    Service clients live with the composite that uses them.
+29. **Stories consume framework primitives only.** No raw
+    `<button>` / `<input>` / hand-rolled chips when a primitive
+    exists. HTML semantics (`<section>`, `<article>`, …) for
+    structure are fine. Inline `style={{}}` limited to layout /
+    positioning; no colour / radius / typography overrides.
+30. **Story `render` returns JSX directly.** No opaque
+    `<XyzDemo />` wrapper components, no zero-arg `Demo` helpers.
+    Use `render: function StoryName() { … }` so Storybook's source
+    panel shows runnable JSX, not `<XyzDemo />`.
+31. **No nested wrapper / convenience primitives.** One Radix base
+    = one framework primitive. `<SimpleX>` over `<X>` is forbidden;
+    add a prop to `<X>` instead. Composites under
+    `src/components/composites/` that combine multiple primitives
+    are NOT wrappers.
+32. **No redundant props.** Before adding a prop / item field /
+    variant, grep the existing surface; if a field already covers
+    the concept, use it. Top-level prop that re-expresses an item
+    field (Timeline `pending` ↔ `items[i].animate`) is rejected.
+33. **Stories / source / docs name-synchronized.** No two names for
+    the same export across the framework surface; no legacy aliases
+    in stories / docs (source may keep an alias for a deprecation
+    cycle, but the marketing surfaces use the canonical name only).
+    Rename PR runs `grep -rn '<oldName>' src docs` and clears it.
 
 ## Links
 
-- Framework binding rules (this submodule): [`./new-docs/`](./new-docs/)
-  — theme axes, consumer contract, future rules. Index at
-  [`./new-docs/00-index.md`](./new-docs/00-index.md).
-- Agent recipes + gotchas: [`./AGENTS.md`](./AGENTS.md)
-- In-repo agent skills (works when this repo is cloned standalone
-  without the umbrella): [`./.claude/skills/`](./.claude/skills/README.md)
-  (Claude Code) and [`./.codex/skills/`](./.codex/skills/README.md)
-  (Codex) — byte-identical via `scripts/sync-skills.sh`. Today's
-  skills: `new-godx-design-to-component` (design-canon → primitive
-  port procedure) and `godx-ui-doc-writing` (binding doc-authoring
-  procedure — frontmatter per file type, Diátaxis quadrant, upstream
-  spec re-fetch cadence).
-- Brand bible: [`./BRAND.md`](./BRAND.md)
-- Change log: [`./CHANGELOG.md`](./CHANGELOG.md)
-- Diátaxis manual: [`./docs/`](./docs/)
-- Umbrella binding rules: [`../../../new-docs/`](../../../new-docs/)
-  — esp. rule 13 (doc authoring) + rule 12 (monorepo-platform
-  wiring of consumer frontends).
-- Repo-wide cardinal rules: [`../../../CLAUDE.md`](../../../CLAUDE.md)
-- Upstream: https://github.com/godx-jp/godxjp-ui
+- Recipes / workflows / gotchas: [`AGENTS.md`](./AGENTS.md)
+- Framework binding rules: [`new-docs/`](./new-docs/00-index.md)
+- ADRs: [`docs/adr/`](./docs/adr/README.md)
+- Diátaxis manual: [`docs/`](./docs/)
+- Brand bible: [`BRAND.md`](./BRAND.md)
+- Changelog: [`CHANGELOG.md`](./CHANGELOG.md)
+- Upstream: <https://github.com/godx-jp/godxjp-ui>

@@ -1,0 +1,11 @@
+{
+  "name": "ActivityKind",
+  "kind": "enum",
+  "displayName": { "ja": "活動種別", "en": "Activity Kind" },
+  "values": [
+    { "value": "call",    "label": { "ja": "電話",       "en": "Call" } },
+    { "value": "email",   "label": { "ja": "メール",     "en": "Email" } },
+    { "value": "meeting", "label": { "ja": "ミーティング", "en": "Meeting" } },
+    { "value": "task",    "label": { "ja": "タスク",     "en": "Task" } }
+  ]
+}
