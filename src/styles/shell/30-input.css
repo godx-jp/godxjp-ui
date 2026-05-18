@@ -263,6 +263,26 @@ textarea.input {
   .form-inline .field { flex-direction: column; min-width: 12rem; }
 }
 
+/* Spinner overlay used by FormField when loading.kind="spinner".
+   The control stays interactive but dims under the spinner so users
+   see "something is happening" without losing the layout. */
+.form-field-spin {
+  position: relative;
+  display: block;
+}
+.form-field-spin__control {
+  display: block;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.form-field-spin__overlay {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-2);
+  transform: translateY(-50%);
+  display: inline-flex;
+}
+
 /* ── Field group (label + control + help) ─────────────────────────── */
 .field {
   display: flex;
