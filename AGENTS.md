@@ -632,7 +632,8 @@ Open the four axes in your head:
 3. **Use rem, not px, for text + spacing the user should be able
    to scale.** Pixel literals freeze the size against the
    `data-font-size` axis. The only legitimate `px` literals:
-   - `--touch-target-min: 44px` (WCAG floor — must NOT scale).
+  - `--touch-target-min: 44px` (WCAG hit-area floor — must NOT
+    scale and must NOT inflate visual size).
    - Hairline borders (`1px` — half-pixel rendering is jarring).
    - SVG `viewBox` / icon size attributes (these are physical
      drawing units, not user-scalable).

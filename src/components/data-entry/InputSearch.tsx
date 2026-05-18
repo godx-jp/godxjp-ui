@@ -93,6 +93,13 @@ export const InputSearch = forwardRef<HTMLInputElement, InputSearchProps>(
           <X size={14} />
         </button>
       ) : undefined;
+    const suffixContent =
+      clearButton !== undefined || suffix !== undefined ? (
+        <>
+          {clearButton}
+          {suffix}
+        </>
+      ) : undefined;
 
     // Pick controlled OR uncontrolled — passing both `value` and
     // `defaultValue` to the inner <input> (even when one is undefined)
@@ -108,7 +115,7 @@ export const InputSearch = forwardRef<HTMLInputElement, InputSearchProps>(
         {...valueProp}
         onChange={handleChange}
         prefix={searchIcon ?? <Search size={14} />}
-        suffix={suffix ?? clearButton}
+        suffix={suffixContent}
         {...rest}
       />
     );

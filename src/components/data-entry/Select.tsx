@@ -1,5 +1,5 @@
 import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import {
   forwardRef,
   Fragment,
@@ -186,11 +186,6 @@ export const SelectItem = forwardRef<
 >(function SelectItem({ className, children, ...rest }, ref) {
   return (
     <SelectPrimitive.Item ref={ref} className={cn("select-item", className)} {...rest}>
-      <span className="select-item-indicator">
-        <SelectPrimitive.ItemIndicator>
-          <Check style={{ width: "var(--spacing-4)", height: "var(--spacing-4)" }} aria-hidden />
-        </SelectPrimitive.ItemIndicator>
-      </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   )

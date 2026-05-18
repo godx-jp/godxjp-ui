@@ -12,9 +12,9 @@ library_version: 3.0.0
 
 # Tour
 
-> Multi-step product walkthrough. Overlays the viewport, highlights a target, advances step-by-step.
+> Multi-step product walkthrough. Overlays the viewport, spotlights a target, advances step-by-step.
 
-v1 uses a single semi-transparent mask (no true cutout) and positions the callout near the target's bounding rect (or page-centre when `placement="center"`). Scroll / resize triggers a `requestAnimationFrame`-throttled recompute so the callout sticks to a moving target. Esc closes the tour (`onClose` fires).
+Tour uses an SVG mask cutout so the active target remains undimmed while the rest of the viewport is subdued. The callout positions near the target's bounding rect (or page-centre when `placement="center"`). Scroll / resize triggers a `requestAnimationFrame`-throttled recompute so the callout sticks to a moving target. Esc closes the tour (`onClose` fires).
 
 Vocabulary follows cardinal rule 23 §B: `open` / `defaultOpen` / `onOpenChange` (Radix overlay state), `current` / `defaultCurrent` / `onCurrentChange` (active step), `placement` (callout anchor).
 

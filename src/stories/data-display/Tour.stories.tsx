@@ -29,9 +29,9 @@ const meta: Meta<typeof Tour> = {
         component: `
 **Tour** — overlay walkthrough that highlights named targets step-by-step.
 
-v1 visual: a semi-transparent mask covers the viewport; a target rect
-(if resolvable) is outlined; the popover callout positions near the
-target (or page-centred for \`placement="center"\`).
+Visual: a semi-transparent mask covers the viewport; a target rect
+(if resolvable) is cut out and outlined so it stays bright; the popover
+callout positions near the target (or page-centred for \`placement="center"\`).
 
 Vocabulary (cardinal rule 23 §B): \`open\` / \`defaultOpen\` /
 \`onOpenChange\` (Radix-style); \`current\` / \`defaultCurrent\` /
@@ -58,6 +58,18 @@ export const Default: Story = {
       await waitFor(() => {
         expect(within(portal).getByText("新規作成ボタン")).toBeInTheDocument();
       });
+      const target = canvas.getByRole("button", { name: "新規作成" });
+      const targetRect = target.getBoundingClientRect();
+      const cutout = portal.querySelector<SVGRectElement>(".tour-mask-cutout");
+      expect(cutout).not.toBeNull();
+      expect(Number(cutout?.getAttribute("x"))).toBeCloseTo(targetRect.left - 4);
+      expect(Number(cutout?.getAttribute("y"))).toBeCloseTo(targetRect.top - 4);
+      expect(Number(cutout?.getAttribute("width"))).toBeCloseTo(
+        targetRect.width + 8,
+      );
+      expect(Number(cutout?.getAttribute("height"))).toBeCloseTo(
+        targetRect.height + 8,
+      );
     });
   },
   render: () => {

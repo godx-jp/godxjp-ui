@@ -102,14 +102,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         "input-wrap",
         sizeClass,
         statusClass,
+        prefix !== undefined && "input-has-prefix",
+        suffix !== undefined && "input-has-suffix",
         readOnly && "input-readonly",
         className,
       )}
     >
       {addonBefore !== undefined && (
-        <span className="affix pre">{addonBefore}</span>
+        <span className="affix addon pre">{addonBefore}</span>
       )}
-      {prefix !== undefined && <span className="affix pre">{prefix}</span>}
+      {prefix !== undefined && <span className="affix prefix pre">{prefix}</span>}
       <input
         ref={ref}
         type={type}
@@ -117,9 +119,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         style={inputStyle}
         {...rest}
       />
-      {suffix !== undefined && <span className="affix suf">{suffix}</span>}
+      {suffix !== undefined && <span className="affix suffix suf">{suffix}</span>}
       {addonAfter !== undefined && (
-        <span className="affix suf">{addonAfter}</span>
+        <span className="affix addon suf">{addonAfter}</span>
       )}
     </div>
   );

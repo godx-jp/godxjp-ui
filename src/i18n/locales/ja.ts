@@ -83,6 +83,11 @@ const ja = {
     back: "戻る",
     backToProduct: "プロダクトに戻る",
   },
+  table: {
+    conditions: "条件",
+    emptyDescription: "該当するデータがありません",
+    resetFilters: "条件をリセット",
+  },
   workspace: {
     files: "ファイル",
     commits: "コミット",

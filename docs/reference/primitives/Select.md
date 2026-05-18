@@ -112,6 +112,12 @@ compositional when you need custom item layouts / `SelectGroup` +
 - Type-ahead: typing a character jumps to the first matching item.
 - WCAG 2.1 SC 1.3.1: always pair `SelectTrigger` with a `<Label htmlFor>` or provide `aria-label`.
 
+## Visual Rules
+
+- Selected options use a primary-tinted background via `data-state="checked"`.
+- Do not render a leading check icon for selected options; it wastes horizontal space in dense table filters and mobile drawers.
+- If a selected row needs stronger emphasis, adjust the primary tint, not an extra icon column.
+
 ## Composition
 
 ```tsx

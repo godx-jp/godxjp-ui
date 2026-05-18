@@ -8,7 +8,7 @@ audience:
   - ai-agent
   - designer
 status: published
-last-updated: 2026-05-17
+last-updated: 2026-05-18
 lang: en
 ---
 
@@ -116,8 +116,8 @@ dark-mode/accent interplay — search `[data-theme="dark"][data-accent=` in `sty
 
 ## Recipe 4 — Override density
 
-Use case: a screen needs comfortable density (44px touch floor) even
-when the user prefers compact.
+Use case: a screen needs comfortable visual density even when the
+user prefers compact.
 
 Don't change density tokens globally — instead, scope `[data-density]`
 to a sub-tree:

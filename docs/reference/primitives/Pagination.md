@@ -51,7 +51,7 @@ Vocabulary per cardinal rule 23 §B: `value` / `defaultValue` / `onValueChange` 
 - The active page button sets `aria-current="page"`; previous / next buttons carry `aria-label="Previous page"` / `aria-label="Next page"`.
 - Ellipsis is `aria-hidden` — purely decorative.
 - Keyboard: native `<button>` Tab order; Enter / Space activate. The Prev / Next buttons disable themselves at the boundaries.
-- Touch-target consideration: at `size="small"` and `[data-density="compact"]` the buttons can fall below the 44 × 44 px touch-target floor. For mobile-first surfaces prefer `size="default"` or pair with `variant="simple"`.
+- Touch-target consideration: at `size="small"` and `[data-density="compact"]` the painted buttons can be smaller than 44 × 44 px. Do not inflate them with mobile-only visual height; use `size="default"`, `variant="simple"`, or an invisible hit area when the surrounding surface needs touch-primary pagination.
 
 ## Composition
 

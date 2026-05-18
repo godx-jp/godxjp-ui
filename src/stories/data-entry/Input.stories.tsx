@@ -44,8 +44,9 @@ Vocabulary per cardinal rule 23 §B:
 - \`size\`: \`"small" | "default" | "large"\`
 - \`status\`: \`"default" | "success" | "warning" | "error"\`
 
-Mobile-first per cardinal rule 24: input height floors to 44px on
-\`xs/sm\` viewports for WCAG touch-target compliance.
+Mobile-first per cardinal rule 24: input visual height follows
+\`size\` + density on \`xs/sm\`; the 44px touch floor is a hit-area
+requirement, not a mobile visual-height override.
         `.trim(),
       },
     },

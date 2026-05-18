@@ -534,18 +534,20 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
   background: var(--surface-3);
 }
 
+.select-item[data-state="checked"] {
+  background: color-mix(in oklch, var(--primary) 14%, transparent);
+  color: color-mix(in oklch, var(--primary) 82%, var(--foreground));
+  font-weight: 500;
+}
+
+.select-item[data-state="checked"][data-highlighted] {
+  background: color-mix(in oklch, var(--primary) 18%, transparent);
+}
+
 .select-item[data-disabled] {
   color: var(--muted-foreground);
   pointer-events: none;
   opacity: 0.5;
-}
-
-.select-item-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--spacing-3);
-  flex-shrink: 0;
 }
 
 .select-separator {

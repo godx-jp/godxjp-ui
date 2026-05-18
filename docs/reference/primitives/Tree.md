@@ -16,11 +16,11 @@ library_version: 3.0.0
 
 ## When to use
 
-| Need | Use |
-|---|---|
-| Tree inline (org chart, file explorer) | **Tree** |
-| Tree inside a popover trigger | [TreeSelect](./TreeSelect.md) |
-| Fixed-depth nested columns | [Cascader](./Cascader.md) |
+| Need                                   | Use                           |
+| -------------------------------------- | ----------------------------- |
+| Tree inline (org chart, file explorer) | **Tree**                      |
+| Tree inside a popover trigger          | [TreeSelect](./TreeSelect.md) |
+| Fixed-depth nested columns             | [Cascader](./Cascader.md)     |
 
 ## Usage
 
@@ -55,37 +55,50 @@ const ORG_TREE: TreeNode[] = [
 
 ### `Tree` (root)
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `treeData` | `TreeNode[]` | required | Recursive tree of nodes |
-| `value` | `string \| string[]` | — | Controlled selection — string for single, array for multiple |
-| `defaultValue` | `string \| string[]` | `[]` | Uncontrolled initial selection |
-| `onValueChange` | `(value: string \| string[]) => void` | — | Fires on selection change |
-| `multiple` | `boolean` | `false` | Multi-select mode |
-| `defaultExpandedKeys` | `string[]` | `[]` | Initially-expanded node keys |
-| `expandedKeys` | `string[]` | — | Controlled expansion state |
-| `onExpandedKeysChange` | `(keys: string[]) => void` | — | Fires when expand / collapse toggles |
-| `checkable` | `boolean` | `false` | Render `<Checkbox>` per row — implies `multiple` |
-| `showLine` | `boolean` | `false` | Render dashed connector lines between depths |
-| `className` | `string` | — | Merged onto the root `<ul class="tree">` |
+| Prop                   | Type                                        | Default  | Description                                                                 |
+| ---------------------- | ------------------------------------------- | -------- | --------------------------------------------------------------------------- |
+| `treeData`             | `TreeNode[]`                                | required | Recursive tree of nodes                                                     |
+| `value`                | `string \| string[]`                        | —        | Controlled selection — string for single, array for multiple                |
+| `defaultValue`         | `string \| string[]`                        | `[]`     | Uncontrolled initial selection                                              |
+| `onValueChange`        | `(value: string \| string[]) => void`       | —        | Fires on selection change                                                   |
+| `multiple`             | `boolean`                                   | `false`  | Multi-select mode                                                           |
+| `defaultExpandedKeys`  | `string[]`                                  | `[]`     | Initially-expanded node keys                                                |
+| `expandedKeys`         | `string[]`                                  | —        | Controlled expansion state                                                  |
+| `onExpandedKeysChange` | `(keys: string[]) => void`                  | —        | Fires when expand / collapse toggles                                        |
+| `checkable`            | `boolean`                                   | `false`  | Render `<Checkbox>` per row — implies `multiple`                            |
+| `showLine`             | `boolean`                                   | `false`  | Render dashed connector lines between depths                                |
+| `density`              | `"compact" \| "default" \| "comfortable"`   | —        | Local row spacing override; omit to inherit the page density                |
+| `renderItem`           | `(state: TreeRenderItemState) => ReactNode` | —        | Overrides row icon + label content while keeping the React Aria tree engine |
+| `className`            | `string`                                    | —        | Merged onto the root `<div class="tree">`                                   |
+
+### `TreeRenderItemState`
+
+| Field         | Type       | Description                        |
+| ------------- | ---------- | ---------------------------------- |
+| `node`        | `TreeNode` | Current tree node                  |
+| `isExpanded`  | `boolean`  | Whether this item is expanded      |
+| `isSelected`  | `boolean`  | Whether this item is selected      |
+| `isDisabled`  | `boolean`  | Whether this item is disabled      |
+| `hasChildren` | `boolean`  | Whether this item has child nodes  |
+| `level`       | `number`   | 1-based tree depth from React Aria |
 
 ### `TreeNode`
 
-| Field | Type | Description |
-|---|---|---|
-| `key` | `string` | Unique node identifier |
-| `title` | `ReactNode` | Display content for the row |
-| `icon` | `ReactNode` | Optional leading icon |
-| `disabled` | `boolean` | Non-selectable, non-expandable when `true` |
-| `selectable` | `boolean` | `false` to disable selection but keep expansion |
-| `children` | `TreeNode[]` | Recursive children |
+| Field        | Type         | Description                                     |
+| ------------ | ------------ | ----------------------------------------------- |
+| `key`        | `string`     | Unique node identifier                          |
+| `title`      | `ReactNode`  | Display content for the row                     |
+| `icon`       | `ReactNode`  | Optional leading icon                           |
+| `disabled`   | `boolean`    | Non-selectable, non-expandable when `true`      |
+| `selectable` | `boolean`    | `false` to disable selection but keep expansion |
+| `children`   | `TreeNode[]` | Recursive children                              |
 
 ## Accessibility
 
-- Root renders as `<ul role="tree">` with each row as `<li role="treeitem">`. Selection state mirrors to `aria-selected`; expansion state mirrors to `aria-expanded`; per-node disable mirrors to `aria-disabled`.
-- Each toggle button carries `aria-label="Expand"` / `"Collapse"` so screen readers announce the action.
-- When `checkable` is set, the underlying [`Checkbox`](./Checkbox.md) provides keyboard activation; clicking the row body also toggles selection.
-- WCAG 2.1 SC 4.1.2 (Name, Role, Value): `aria-selected` and `aria-expanded` make the row state programmatically determinable.
+- Tree is backed by `react-aria-components` `Tree`, which provides ARIA tree roles, keyboard navigation, selection, expansion, disabled handling, and typeahead.
+- Consumers customize row content with `renderItem`; they do not compose a separate public `TreeItem` component.
+- When `checkable` is set, React Aria's selection checkbox slot is rendered beside the row content.
+- WCAG 2.1 SC 4.1.2 (Name, Role, Value): React Aria owns the row roles and state attributes so selection and expansion are programmatically determinable.
 
 ## Composition
 
@@ -113,6 +126,7 @@ const FILE_TREE: TreeNode[] = [
 <Tree
   treeData={FILE_TREE}
   showLine
+  density="compact"
   defaultExpandedKeys={["src", "components"]}
   defaultValue="btn"
 />
@@ -123,6 +137,19 @@ const FILE_TREE: TreeNode[] = [
   checkable
   defaultExpandedKeys={["company", "eng", "design"]}
   defaultValue={["fe", "ui"]}
+/>
+
+// Custom row content
+<Tree
+  treeData={FILE_TREE}
+  defaultExpandedKeys={["src", "components"]}
+  renderItem={({ node, level }) => (
+    <>
+      {node.icon}
+      <span>{node.title}</span>
+      <span>L{level}</span>
+    </>
+  )}
 />
 ```
 

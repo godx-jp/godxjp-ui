@@ -62,14 +62,59 @@ const columns: TableColumn<Project>[] = [
 |---|---|---|---|
 | `columns` | `TableColumn<TData>[]` | required | TanStack column definitions |
 | `data` | `TData[]` | required | Rows to render |
-| `density` | `"default" \| "compact"` | `"default"` | Row density |
+| `density` | `"default" \| "compact"` | Global `data-density` axis | Local row and region-density override |
 | `containerClassName` | `string` | — | CSS class for the outer table stack |
 | `stickyHeader` | `boolean` | `false` | Pins the header via the existing sticky CSS hook |
 | `getRowId` | `(row, index) => string` | index | Stable row id resolver |
 | `caption` | `ReactNode` | — | Native `<caption>` content |
+| `views` | `ReactNode` | — | Saved-view tab strip above the toolbar |
 | `toolbar` | `ReactNode` | — | Action band rendered above the scroll container |
-| `empty` | `ReactNode` | `"No data"` | Empty state row |
+| `filters` | `TableFilter[]` | `[]` | Active filters. The default filter bar renders only when this list is non-empty |
+| `onFiltersChange` | `(filters) => void` | — | Receives chip remove / value-change updates |
+| `sort` | `TableSort \| null` | — | Active controlled sort |
+| `onSortChange` | `(sort) => void` | — | Receives sortable header clicks; cycles asc → desc → none |
+| `filterBar` | `ReactNode \| TableFilterItem[]` | — | Escape hatch for custom active-filter UI |
+| `footer` | `ReactNode` | — | Totals / summary row below the table |
+| `pagination` | `ReactNode` | — | Pagination controls below the footer |
+| `empty` | `ReactNode` | Localised `<Empty>` | Empty state row override |
+| `onResetFilters` | `() => void` | — | Shows the localised reset-filter action when active filters exist |
+| `rowClassName` | `string \| (row) => string` | — | Row state class such as `selected`, `is-new`, `is-error`, `disabled`, `is-editing` |
 | `...rest` | `Omit<HTMLAttributes<HTMLTableElement>, "children">` | — | Standard `<table>` props |
+
+## Column-driven filters
+
+Declare filter/sort capability on `ColumnDef.meta`, then pass active filter state. This keeps the table generic while allowing schema-driven screens to map `type`, `enum`, and `displayName` into table metadata later:
+
+```tsx
+<Table
+  columns={[
+    {
+      accessorKey: "shop",
+      header: "Shop",
+      meta: {
+        filterable: true,
+        sortable: true,
+        filterOptions: [
+          { value: "shibuya", label: "Shibuya" },
+          { value: "omotesando", label: "Omotesando" },
+        ],
+      },
+    },
+  ]}
+  data={rows}
+  filters={[{ key: "shop", operator: "eq", value: "shibuya" }]}
+  onFiltersChange={setFilters}
+  sort={{ key: "shop", direction: "asc" }}
+  onSortChange={setSort}
+  onResetFilters={resetFilters}
+/>
+```
+
+The default filter bar renders only when `filters.length > 0`. Enum-like fields use `meta.filterOptions` to render a value selector inside the active chip. Each chip can be removed; `onResetFilters` clears the whole active set. Use `filterBar` only for layouts that cannot be expressed through column metadata.
+
+## Density
+
+When `density` is omitted, Table inherits the global `data-density` axis from the application or Storybook toolbar. Pass `density="compact"` or `density="default"` only when a table needs a local override. Row height, toolbar spacing, active-filter spacing, footer spacing, pagination spacing, and filter-drawer spacing all follow the same density contract.
 
 ## Column customisation
 
@@ -108,6 +153,19 @@ const columns: TableColumn<Project>[] = [
 - `caption` renders a native `<caption>` element.
 - Horizontal scroll container (`table-scroll`) preserves native keyboard scrolling.
 - Keep row identity stable with `getRowId` whenever rows can reorder.
+
+## Design patterns
+
+The Storybook stories mirror `design-handoff/ui-system/dxs-kintai-design-system/project/preview/comp-table.html`:
+
+- `views` renders saved view tabs (`.tbl-views`).
+- `toolbar` renders search, import/export, density, column, and bulk-action controls.
+- The default `empty` state is localised and composes `Empty`; override `empty` only for custom layouts.
+- `toolbar` should compose native godx UI primitives (`InputSearch`, `Button`) instead of hand-rolled controls.
+- Prefer `filters` plus column `meta.filterOptions`; reserve `filterBar` for custom active-filter layouts.
+- `onResetFilters` renders the reset action only when active filters exist.
+- `rowClassName` demonstrates selected, new, error, disabled, and editing rows.
+- `footer` and `pagination` render totals and page controls inside the same table shell.
 
 ## See also
 

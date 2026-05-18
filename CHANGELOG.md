@@ -5,6 +5,19 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Tour spotlight cutout** — the target area now uses an SVG mask
+  cutout so the active element stays undimmed while the rest of the
+  viewport is subdued.
+- **Tree React Aria foundation** — `Tree` now delegates ARIA tree
+  keyboard navigation, selection, expansion, and disabled state to
+  `react-aria-components` while preserving the single public `Tree`
+  primitive. Row content customization now goes through `renderItem`;
+  local row spacing uses the shared `density` vocabulary, and
+  connector lines are rendered from tree structure instead of guessed
+  from the flattened React Aria DOM.
+
 ### Added
 
 - **`GodxConfigProvider` + format helpers** — canonical alias of
@@ -51,7 +64,7 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   the vertical line that joins markers in `list` + `branching`
   variants. `feed` variant has no connector by design.
 - **Timeline per-item `animate` field** — `TimelineItem.animate:
-  boolean` adds a pulsing ring around the marker dot for that single
+boolean` adds a pulsing ring around the marker dot for that single
   item, replacing the previous top-level `animate` Timeline-level
   prop (now removed — animate is a per-item concept). Honours
   `prefers-reduced-motion`.
@@ -64,7 +77,7 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `parameters.docs.codePanel: true` so consumers see runnable JSX
   beside Controls / Actions / Interactions without click-through.
 - **Actions panel auto-spy** — `parameters.actions.argTypesRegex:
-  "^on[A-Z].*"` logs every `on*` callback invocation globally.
+"^on[A-Z].*"` logs every `on*` callback invocation globally.
 - **Cardinal rule 30** — story `render` must return JSX directly. No
   `<XyzDemo />` wrapper components, no parameterised helpers. Storybook
   source view stays copy-pasteable.
@@ -161,7 +174,7 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `<CardFooter block>` sub-component pattern instead of raw
   `<div className="card-body">` (rule 29).
 - **Card H17 sticky-shadow scroll** — `max-height: 140 + overflow-y:
-  auto` instead of `height: 80 + overflow: hidden` so the story
+auto` instead of `height: 80 + overflow: hidden` so the story
   actually demonstrates scrolling.
 - **Descriptions bordered title overflow** — gap-as-border trick (1px
   body bg) so the outer frame wraps the body only, title sits above.
@@ -171,7 +184,7 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Checkbox glyph stroke** — `strokeWidth=3` +
   `absoluteStrokeWidth` so the check / minus glyphs read at 12px.
 - **Image fallback visible** — fills wrapper 100% with secondary bg
-  + border instead of 64×64 inline-flex chip against near-white body.
+  - border instead of 64×64 inline-flex chip against near-white body.
 - **PageHeader `padding` prop** — vocabulary aligned with Card per
   rule 23 §B (`tight` / `default` / `cozy` / `none`). Stacked variant
   releases the fixed `--header-height` so breadcrumb + title get
@@ -213,7 +226,7 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   also removed.
 - **`Card.stories.tsx` raw card-body / card-footer divs** —
   ~27 occurrences replaced with `<CardBody block>` / `<CardFooter
-  block>` React sub-components per rule 29.
+block>` React sub-components per rule 29.
 - **`docs.source.type`** — `"dynamic"` (was `"code"`) so the source
   view renders the JSX, not the wrapping story object.
 - **`docs.canvas.sourceState`** — `"hidden"` (was attempted `"shown"`)
@@ -318,6 +331,7 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 
 5. **Zero-config toolchain (optional, strongly recommended):**
    Adopt the new preset exports to reduce per-service boilerplate:
+
    ```bash
    # eslint.config.js — replace existing content with:
    # export { default } from "@godxjp/ui/eslint-config"
@@ -343,6 +357,7 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 ## [2.4.0] — 2026-05-16
 
 ### Added
+
 - **Toaster** + **`toast`** — thin wrapper around `sonner` with token
   class names (default `unstyled` so chrome comes from `.toast*` in
   `tokens.css`). Optional **`@godxjp/ui/sonner.css`** import (after
@@ -357,6 +372,7 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 ## [2.3.0] — 2026-05-16
 
 ### Added
+
 - **Dialog** family (`Dialog`, `DialogTrigger`, `DialogPortal`, `DialogClose`,
   `DialogOverlay`, `DialogContent`, `DialogHeader`, `DialogFooter`,
   `DialogTitle`, `DialogDescription`) — Radix Dialog + `.dialog-*` in
@@ -371,12 +387,14 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 - Dependencies: `@radix-ui/react-alert-dialog`, `@radix-ui/react-checkbox`.
 
 ### Fixed
+
 - Removed invalid `composes:` from `.popover-content` in `tokens.css`
   (plain CSS does not support CSS-modules `composes`).
 
 ## [2.1.0] — 2026-05-13
 
 ### Added
+
 - **Popover** primitive (`Popover`, `PopoverTrigger`, `PopoverContent`,
   `PopoverAnchor`) wrapping `@radix-ui/react-popover`. Visual contract
   in the new `.popover-content` class in `tokens.css` — brand-tokenised
@@ -400,6 +418,7 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 - `react-day-picker` added as a dependency.
 
 ### Notes
+
 - This release fills the gap that blocked
   `services/forge-service/frontend/` from migrating off the public
   TempoFast `@godxjp/ui@0.2.0`. After 2.1.0 every primitive forge
@@ -428,6 +447,7 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 ### Added
 
 ### Added
+
 - **BRAND.md** — the brand bible (locked 2026-05-13 from Claude Design
   handoff bundle). Spells out the 渋み / 間 / 簡素 design philosophy
   and lists the forbidden patterns reviewers reject.
@@ -444,6 +464,7 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 - **`./components/primitives` export path** for explicit imports.
 
 ### Changed
+
 - **`tokens.css` is now the single CSS entry point.** The handoff's
   `tokens.css` + `tokens-ext.css` were merged so consumers do one
   import (`@godxjp/ui/tokens`). The split is preserved verbatim under
@@ -456,6 +477,7 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
   consumers can `import { Badge, Button } from "@godxjp/ui"`.
 
 ### Removed
+
 - `src/tokens/tokens-ext.css` (merged into `tokens.css`).
 - `src/tokens/index.css` (no longer needed — `tokens.css` is the entry).
 

@@ -98,9 +98,14 @@ type Size =
 | `"small"` | `var(--density-element-sm)` | 1.75rem (28px) |
 | `"default"` | `var(--density-element)` | 2rem (32px) |
 | `"large"` | `var(--density-element-lg)` | 2.25rem (36px) |
-| `"x-large"` | `var(--density-element-xl)` | 2.75rem (44px — WCAG touch floor) |
+| `"x-large"` | `var(--density-element-xl)` | 2.75rem (44px — large visual control) |
 
 Rescales with `[data-density]` axis (cardinal rule 21).
+
+Touch-target compliance does not change this mapping. Do not make
+`size="small"` render at `--touch-target-min` on mobile. The 44px
+floor is a hit-area contract; if the painted control is smaller, use
+an invisible hit target or choose a larger explicit `size`.
 
 **Examples**:
 
@@ -627,6 +632,11 @@ Quick-reference: which vocabulary entries each primitive consumes.
 | Form | – | – | – | – | – | – | – | – |
 | Transfer | e+ | – | e+ | – | – | – | – | e+ |
 | Checklist | – | – | – | – | – | – | – | e+ |
+
+Select item selection is indicated by the row state itself
+(`data-state="checked"` with a primary-tinted background). Do not add a
+leading check icon / indicator column to `SelectItem`; it wastes
+horizontal space in dense table filters and mobile drawers.
 | LocaleTabs | – | – | – | – | – | – | – | e+ |
 
 ### feedback (11)

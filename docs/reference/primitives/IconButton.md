@@ -59,7 +59,7 @@ import { ArrowLeft, MoreHorizontal, Check } from "lucide-react"
   This is a developer aid; TypeScript types intentionally keep the props optional because React's HTML types do, but treat the warning as a build-blocker for the consuming app.
 - Renders a native `<button>` (or the `asChild` child element). Focus visible uses the framework's outline ring via tokens.
 - Keyboard: Space and Enter activate the control.
-- WCAG 2.1 SC 2.5.5 (Target Size): at `default` (32 px) and `sm` (28 px) the box is below the 44 × 44 px touch-target floor. On mobile layouts where touch is primary, prefer `size="lg"` or include an expanded touch area via padding.
+- WCAG 2.1 SC 2.5.5 (Target Size): at `default` (32 px) and `sm` (28 px) the painted box is below the 44 × 44 px touch-target floor. On touch-primary layouts, prefer `size="lg"` or include an invisible expanded hit area; do not use mobile-only CSS to inflate the visual box.
 - WCAG 2.1 SC 1.1.1: pair with a `<Tooltip>` when the icon meaning is not universally clear so sighted-but-unfamiliar users can still discover the function.
 
 ## Composition

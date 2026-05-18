@@ -83,6 +83,11 @@ const fil: ForgeTranslations = {
     back: "Bumalik",
     backToProduct: "Bumalik sa produkto",
   },
+  table: {
+    conditions: "Mga kondisyon",
+    emptyDescription: "Walang tumutugmang datos",
+    resetFilters: "I-reset ang mga filter",
+  },
   workspace: {
     files: "Mga file",
     commits: "Mga commit",

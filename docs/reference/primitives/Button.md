@@ -1,11 +1,13 @@
 ---
 title: "Button"
+description: "Action button with density-aware sizes, variants, loading state, and Radix Slot composition."
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: Button
 status: stable
 audience: [developer, agent]
+last-updated: 2026-05-18
 lang: en
 ---
 
@@ -78,7 +80,7 @@ Filled button with `--destructive` background. Use for destructive actions (dele
 | `md` | 32 px | Default UI (most buttons) |
 | `lg` | 36 px | Page hero calls-to-action |
 
-Size tokens scale with `[data-density]` — in `comfortable` mode, the 44 px touch target minimum is honored per WCAG SC 2.5.5.
+Size tokens scale with `[data-density]`. The 44 px touch-target floor is a hit-area requirement, not a mobile visual-height override; do not force smaller button sizes to render as 44 px on SP.
 
 ## Accessibility
 

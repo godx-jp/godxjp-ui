@@ -82,6 +82,11 @@ const en: ForgeTranslations = {
     back: "Back",
     backToProduct: "Back to product",
   },
+  table: {
+    conditions: "Conditions",
+    emptyDescription: "No matching data",
+    resetFilters: "Reset filters",
+  },
   workspace: {
     files: "Files",
     commits: "Commits",

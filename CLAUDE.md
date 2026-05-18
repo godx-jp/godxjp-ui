@@ -513,6 +513,16 @@ framework concept; inline duplication is rejected at review.
     Cardinal rule 21 covers density-axis flow; `--touch-target-min`
     does NOT scale with density.
 
+    This is a hit-area requirement, NOT permission to inflate visual
+    size. Visible control height MUST remain driven by the component's
+    `size` prop and the `[data-density]` token chain
+    (`--density-element-*`). Do not add mobile CSS that changes a
+    `small` / `default` / `large` button, input, select, table toolbar,
+    or row action into a 44px-tall visual control. If a compact visual
+    control needs a larger touch target, add an invisible hit area
+    (`::before` / `::after`, wrapper padding that does not change the
+    painted control, or a documented component-specific hit target).
+
     ### §C — Responsive primitives reach for tokens
 
     Components reading viewport state JS-side go through:
@@ -558,9 +568,12 @@ framework concept; inline duplication is rejected at review.
     - `grid-cols-3` at base (no breakpoint prefix) when the
       primitive is consumed at viewport < 768px. Use
       `grid-cols-1 md:grid-cols-3`.
-    - Primitive heights that violate `--touch-target-min: 44px`
-      on `xs` / `sm` — even when density="compact", the touch
-      target floor wins.
+    - Mobile CSS that sets visual `height` / `min-height` to
+      `--touch-target-min` for controls whose `size` / density token
+      says otherwise. The 44px floor applies to hit area, not painted
+      control size.
+    - Primitive hit areas that violate `--touch-target-min: 44px`
+      on `xs` / `sm` without a documented exception.
     - Stories that only render at desktop width without a docs
       note explaining the breakpoint gate.
 

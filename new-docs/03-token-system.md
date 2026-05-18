@@ -307,6 +307,12 @@ onto this chain: `size="x-small"` → `--density-element-xs`,
 | `--density-table-head` |  1.75rem |  2rem  |     2.5rem  |
 
 `--touch-target-min: 44px` does NOT scale — WCAG 2.1 AA floor.
+It defines the minimum interactive hit area, not the painted control
+height. Visible sizing stays on the `--density-element-*` chain.
+Never set mobile `height` / `min-height` to `--touch-target-min` for
+buttons, inputs, selects, table toolbars, row actions, or pagination
+when their `size` / density token is smaller. Use an invisible hit
+area or choose an explicit larger `size` instead.
 
 ## §F — Radius
 
@@ -391,7 +397,9 @@ Conventions:
 ```
 
 `--touch-target-min: 44px` is set at `:root` and is NOT rebound by
-any axis. The WCAG floor wins over both density and font-size.
+any axis. The WCAG floor wins for hit-area calculations only; it does
+not override visual density. A compact table action may remain 24–32px
+tall visually if its interactive hit area reaches the floor.
 
 ## §I-2 — Responsive breakpoints
 

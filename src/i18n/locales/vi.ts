@@ -82,6 +82,11 @@ const vi: ForgeTranslations = {
     back: "Quay lại",
     backToProduct: "Quay về sản phẩm",
   },
+  table: {
+    conditions: "Điều kiện",
+    emptyDescription: "Không có dữ liệu phù hợp",
+    resetFilters: "Đặt lại điều kiện",
+  },
   workspace: {
     files: "File",
     commits: "Commit",
