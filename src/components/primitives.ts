@@ -287,7 +287,7 @@ export type {
   MenuOrientation,
 } from "./navigation/Menu";
 
-export { Pagination } from "./navigation/Pagination";
+export { Pagination, computePageRange } from "./navigation/Pagination";
 export type {
   PaginationProps,
   PaginationSize,

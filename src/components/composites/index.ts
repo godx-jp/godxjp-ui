@@ -59,3 +59,16 @@ export type {
   TableExportFormat,
   TableExportRange,
 } from "./table-import-export";
+
+// DataTable — packaged-table composite (Stage 3 of the Table refactor).
+// Thin orchestrator over the <Table> primitive, consuming a typed
+// instance from `useDataTable`. Persistence + per-slice state live in
+// the hooks (`useTablePagination`, `useTableSelection`, `useTableViews`,
+// `useTableState`).
+export { DataTable, useDataTable } from "./data-table";
+export type {
+  DataTableProps,
+  DataTableSlots,
+  DataTableInstance,
+  UseDataTableOptions,
+} from "./data-table";

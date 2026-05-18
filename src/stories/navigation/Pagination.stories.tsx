@@ -86,24 +86,113 @@ export const Disabled: Story = {
 
 export const Controlled: Story = {
   name: "Controlled · state",
-  render: () => {
-    const Controlled = () => {
-      const [page, setPage] = useState(1);
-      return (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <Pagination
-            total={500}
-            pageSize={20}
-            value={page}
-            onValueChange={setPage}
-            showTotal
-          />
-          <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>
-            controlled current page = <strong>{page}</strong>
-          </div>
+  render: function Controlled() {
+    const [page, setPage] = useState(1);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <Pagination
+          total={500}
+          pageSize={20}
+          value={page}
+          onValueChange={setPage}
+          showTotal
+        />
+        <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>
+          controlled current page = <strong>{page}</strong>
         </div>
-      );
-    };
-    return <Controlled />;
+      </div>
+    );
+  },
+};
+
+export const Embedded: Story = {
+  name: "Variant · embedded (table footer)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Embedded variant mirrors the layout `<Table pagination={…}>` uses internally — info on the left, optional page-size changer, then the numeric pager (with first/last chevron buttons when `showFirstLast` is on). Reuse this anywhere you want the table-footer rhythm outside a `<Table>`.",
+      },
+    },
+  },
+  render: function Embedded() {
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
+    return (
+      <Pagination
+        variant="embedded"
+        showFirstLast
+        total={520}
+        pageSize={pageSize}
+        value={page}
+        onValueChange={setPage}
+        onPageSizeChange={(next) => {
+          setPageSize(next);
+          setPage(1);
+        }}
+        pageSizeOptions={[10, 20, 50, 100]}
+        showTotal
+      />
+    );
+  },
+};
+
+export const EmbeddedManyPages: Story = {
+  name: "Variant · embedded · Laravel-style ellipsis",
+  render: function EmbeddedManyPages() {
+    const [page, setPage] = useState(25);
+    return (
+      <Pagination
+        variant="embedded"
+        showFirstLast
+        total={520}
+        pageSize={10}
+        value={page}
+        onValueChange={setPage}
+        showSizeChanger={false}
+        showTotal
+      />
+    );
+  },
+};
+
+export const EmbeddedNoSizeChanger: Story = {
+  name: "Variant · embedded · without size changer",
+  render: () => (
+    <Pagination
+      variant="embedded"
+      total={120}
+      pageSize={10}
+      defaultValue={1}
+      showSizeChanger={false}
+      showTotal
+    />
+  ),
+};
+
+export const HideOnSinglePage: Story = {
+  name: "hideOnSinglePage · suppresses render",
+  render: () => (
+    <Pagination total={5} pageSize={10} defaultValue={1} hideOnSinglePage />
+  ),
+};
+
+export const WiderWindow: Story = {
+  name: "Wider window · siblings=2 boundary=2",
+  render: function WiderWindow() {
+    const [page, setPage] = useState(25);
+    return (
+      <Pagination
+        variant="embedded"
+        total={520}
+        pageSize={10}
+        value={page}
+        onValueChange={setPage}
+        siblings={2}
+        boundary={2}
+        showSizeChanger={false}
+        showTotal
+      />
+    );
   },
 };

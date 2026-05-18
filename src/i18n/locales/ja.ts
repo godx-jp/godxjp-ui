@@ -115,6 +115,7 @@ const ja = {
     firstPage: "最初のページ",
     previousPage: "前のページ",
     nextPage: "次のページ",
+    lastPage: "最後のページ",
     loadMore: "さらに {{count}} 件読み込む",
     loadMoreProgress: "{{current}} / {{total}} 件 表示中",
     jumpToLatest: "<< 最新",
