@@ -1,9 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, within } from "storybook/test";
-import {
-  Collapse,
-  CollapsePanel,
-} from "../../components/data-display/Collapse";
+import { Collapse } from "../../components/data-display/Collapse";
 
 /**
  * Data Display/Collapse — accordion panel group.
@@ -49,16 +46,16 @@ const FAQ = [
   },
 ];
 
+const faqItems = FAQ.map((q) => ({
+  value: q.value,
+  title: q.title,
+  content: <p style={{ margin: 0 }}>{q.body}</p>,
+}));
+
 export const Default: Story = {
   render: () => (
     <div style={{ maxWidth: 640 }}>
-      <Collapse defaultValue="q1">
-        {FAQ.map((q) => (
-          <CollapsePanel key={q.value} value={q.value} title={q.title}>
-            <p style={{ margin: 0 }}>{q.body}</p>
-          </CollapsePanel>
-        ))}
-      </Collapse>
+      <Collapse defaultValue="q1" items={faqItems} />
     </div>
   ),
   // Regression pin for the "Tailwind .collapse utility hides the whole
@@ -93,13 +90,7 @@ export const Default: Story = {
 export const Multiple: Story = {
   render: () => (
     <div style={{ maxWidth: 640 }}>
-      <Collapse multiple defaultValue={["q1", "q2"]}>
-        {FAQ.map((q) => (
-          <CollapsePanel key={q.value} value={q.value} title={q.title}>
-            <p style={{ margin: 0 }}>{q.body}</p>
-          </CollapsePanel>
-        ))}
-      </Collapse>
+      <Collapse multiple defaultValue={["q1", "q2"]} items={faqItems} />
     </div>
   ),
 };
@@ -107,13 +98,7 @@ export const Multiple: Story = {
 export const Ghost: Story = {
   render: () => (
     <div style={{ maxWidth: 640 }}>
-      <Collapse variant="ghost" defaultValue="q1">
-        {FAQ.map((q) => (
-          <CollapsePanel key={q.value} value={q.value} title={q.title}>
-            <p style={{ margin: 0 }}>{q.body}</p>
-          </CollapsePanel>
-        ))}
-      </Collapse>
+      <Collapse variant="ghost" defaultValue="q1" items={faqItems} />
     </div>
   ),
 };
@@ -121,18 +106,11 @@ export const Ghost: Story = {
 export const Outlined: Story = {
   render: () => (
     <div style={{ maxWidth: 640 }}>
-      <Collapse variant="outlined" defaultValue="q1">
-        {FAQ.map((q) => (
-          <CollapsePanel
-            key={q.value}
-            value={q.value}
-            title={q.title}
-            extra={<span>必読</span>}
-          >
-            <p style={{ margin: 0 }}>{q.body}</p>
-          </CollapsePanel>
-        ))}
-      </Collapse>
+      <Collapse
+        variant="outlined"
+        defaultValue="q1"
+        items={faqItems.map((item) => ({ ...item, extra: <span>必読</span> }))}
+      />
     </div>
   ),
 };
@@ -140,13 +118,7 @@ export const Outlined: Story = {
 export const Disabled: Story = {
   render: () => (
     <div style={{ maxWidth: 640 }}>
-      <Collapse disabled defaultValue="q1">
-        {FAQ.slice(0, 3).map((q) => (
-          <CollapsePanel key={q.value} value={q.value} title={q.title}>
-            <p style={{ margin: 0 }}>{q.body}</p>
-          </CollapsePanel>
-        ))}
-      </Collapse>
+      <Collapse disabled defaultValue="q1" items={faqItems.slice(0, 3)} />
     </div>
   ),
 };

@@ -191,6 +191,22 @@ textarea.input {
 
 .input-pass-toggle:hover { color: var(--foreground); background: var(--accent); }
 
+.input-search-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.input-search-button:hover { color: var(--foreground); }
+
 .input-loading-spinner,
 .spinner {
   display: inline-block;

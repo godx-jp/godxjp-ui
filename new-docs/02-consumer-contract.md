@@ -622,7 +622,7 @@ The bar for "framework-worthy":
 - Composes existing primitives or wraps a Radix primitive (per
   cardinal rule 3 — Radix for interactive).
 - Has a story (cardinal rule 1).
-- Has a reference doc at `docs/reference/primitives/<Name>.md`
+- Has a reference doc at `docs/reference/<group>/<Name>.md`
   (cardinal rule 18).
 
 If the answer is "one-consumer-only feature view that just wires

@@ -1,28 +1,21 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { expect, within } from "storybook/test";
 import { Badge } from "../../components/data-display/Badge";
-import { Table, type TableColumn, type TableFilter, type TableSort } from "../../components/data-display/Table";
-import { Checkbox } from "../../components/data-entry/Checkbox";
+import {
+  Table,
+  type TableColumn,
+  type TableColumnVisibility,
+  type TableFilter,
+  type TableSort,
+  type TableViewItem,
+} from "../../components/data-display/Table";
+import { Input } from "../../components/data-entry/Input";
 import { InputSearch } from "../../components/data-entry/InputSearch";
 import { Select } from "../../components/data-entry/Select";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "../../components/feedback/Sheet";
+import { Sheet } from "../../components/feedback/Sheet";
 import { Button } from "../../components/general/Button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../components/navigation/DropdownMenu";
+import { DropdownMenu } from "../../components/navigation/DropdownMenu";
 import employeeRows from "./fixtures/table-employees.json";
 
 const meta: Meta<typeof Table> = {
@@ -78,8 +71,20 @@ const KIND_OPTIONS = [
 
 const DETAIL_FILTER_FIELDS = [
   { key: "name", label: "従業員", description: "従業員名・かなで検索" },
-  { key: "shop", label: "店舗", description: "店舗を選択", options: SHOP_OPTIONS, control: "dropdown" },
-  { key: "kind", label: "区分", description: "申請区分を選択", options: KIND_OPTIONS, control: "buttons" },
+  {
+    key: "shop",
+    label: "店舗",
+    description: "店舗を選択",
+    options: SHOP_OPTIONS,
+    control: "dropdown",
+  },
+  {
+    key: "kind",
+    label: "区分",
+    description: "申請区分を選択",
+    options: KIND_OPTIONS,
+    control: "buttons",
+  },
   {
     key: "status",
     label: "状態",
@@ -103,20 +108,114 @@ const COLUMN_SETTINGS = [
   { key: "status", label: "状態" },
 ] as const;
 
-type ColumnSettingKey = typeof COLUMN_SETTINGS[number]["key"];
+const DEFAULT_COLUMN_VISIBILITY: TableColumnVisibility = { hours: false };
+const DEFAULT_SORT: TableSort = { key: "date", direction: "desc" };
+
+interface StoryTableView extends TableViewItem {
+  key: string;
+  label: string;
+  filters: TableFilter[];
+  sort: TableSort | null;
+  columnVisibility: TableColumnVisibility;
+}
+
+const BUILT_IN_VIEWS: StoryTableView[] = [
+  {
+    key: "all",
+    label: "すべて",
+    filters: [],
+    sort: DEFAULT_SORT,
+    columnVisibility: DEFAULT_COLUMN_VISIBILITY,
+  },
+  {
+    key: "pending",
+    label: "承認待ち",
+    filters: [{ key: "status", operator: "eq", value: "pending" }],
+    sort: DEFAULT_SORT,
+    columnVisibility: DEFAULT_COLUMN_VISIBILITY,
+  },
+  {
+    key: "late",
+    label: "遅刻 / 早退",
+    filters: [{ key: "kind", operator: "eq", value: "late" }],
+    sort: DEFAULT_SORT,
+    columnVisibility: DEFAULT_COLUMN_VISIBILITY,
+  },
+  {
+    key: "confirmed",
+    label: "今月確定",
+    filters: [{ key: "status", operator: "eq", value: "active" }],
+    sort: DEFAULT_SORT,
+    columnVisibility: { ...DEFAULT_COLUMN_VISIBILITY, status: false },
+  },
+  {
+    key: "shibuya",
+    label: "マイビュー · 渋谷店のみ",
+    filters: [{ key: "shop", operator: "eq", value: "渋谷" }],
+    sort: DEFAULT_SORT,
+    columnVisibility: { ...DEFAULT_COLUMN_VISIBILITY, shop: true },
+  },
+];
+
+function getSearchShortcutLabel() {
+  if (typeof navigator === "undefined") return "Ctrl K";
+  const agent = navigator as Navigator & {
+    userAgentData?: { platform?: string };
+  };
+  const platform = agent.userAgentData?.platform ?? navigator.platform;
+  return /mac|iphone|ipad|ipod/i.test(platform) ? "⌘ K" : "Ctrl K";
+}
 
 function StatusBadge({ status }: { status: EmployeeRow["status"] }) {
-  if (status === "active") return <Badge variant="success" dot>稼働中</Badge>;
-  if (status === "pending") return <Badge variant="warning" dot>申請中</Badge>;
-  return <Badge variant="neutral" dot>休職</Badge>;
+  if (status === "active")
+    return (
+      <Badge variant="success" dot>
+        稼働中
+      </Badge>
+    );
+  if (status === "pending")
+    return (
+      <Badge variant="warning" dot>
+        申請中
+      </Badge>
+    );
+  return (
+    <Badge variant="neutral" dot>
+      休職
+    </Badge>
+  );
 }
 
 function KindBadge({ kind }: { kind: EmployeeRow["kind"] }) {
-  if (kind === "paid") return <Badge variant="primary" dot={false}>有給</Badge>;
-  if (kind === "late") return <Badge variant="attention" dot={false}>遅刻</Badge>;
-  if (kind === "trip") return <Badge variant="info" dot={false}>出張</Badge>;
-  if (kind === "absence") return <Badge variant="error" dot={false}>欠勤</Badge>;
-  return <Badge variant="neutral" dot={false}>通常</Badge>;
+  if (kind === "paid")
+    return (
+      <Badge variant="primary" dot={false}>
+        有給
+      </Badge>
+    );
+  if (kind === "late")
+    return (
+      <Badge variant="attention" dot={false}>
+        遅刻
+      </Badge>
+    );
+  if (kind === "trip")
+    return (
+      <Badge variant="info" dot={false}>
+        出張
+      </Badge>
+    );
+  if (kind === "absence")
+    return (
+      <Badge variant="error" dot={false}>
+        欠勤
+      </Badge>
+    );
+  return (
+    <Badge variant="neutral" dot={false}>
+      通常
+    </Badge>
+  );
 }
 
 function AvatarCell({ row }: { row: EmployeeRow }) {
@@ -131,109 +230,90 @@ function AvatarCell({ row }: { row: EmployeeRow }) {
   );
 }
 
-function employeeColumns(
-  selectedIds?: Set<string>,
-  onToggle?: (id: string) => void,
-  onToggleAll?: () => void,
-  allSelected?: boolean,
-): TableColumn<EmployeeRow>[] {
+function employeeColumns(): TableColumn<EmployeeRow>[] {
   return [
-  {
-    id: "check",
-    size: 32,
-    header: () => onToggleAll
-      ? <input type="checkbox" className="rb" aria-label="Select all" checked={allSelected ?? false} onChange={onToggleAll} />
-      : <input type="checkbox" className="rb" aria-label="Select all" readOnly />,
-    cell: ({ row }) => onToggle
-      ? <input type="checkbox" className="rb" aria-label={`${row.original.name} を選択`} checked={selectedIds?.has(row.original.id) ?? false} disabled={row.original.state === "disabled"} onChange={() => onToggle(row.original.id)} />
-      : <input type="checkbox" className="rb" aria-label={`${row.original.name} を選択`} defaultChecked={row.original.state === "selected"} disabled={row.original.state === "disabled"} readOnly />,
-    meta: { className: "check" },
-  },
-  {
-    accessorKey: "date",
-    header: "日付",
-    size: 112,
-    minSize: 112,
-    maxSize: 112,
-    meta: { sortable: true },
-  },
-  {
-    accessorKey: "name",
-    header: "従業員",
-    minSize: 180,
-    cell: ({ row }) => <AvatarCell row={row.original} />,
-    meta: { filterable: true },
-  },
-  {
-    accessorKey: "role",
-    header: "役職",
-    minSize: 120,
-  },
-  {
-    accessorKey: "shop",
-    header: "店舗",
-    minSize: 96,
-    cell: ({ row }) => <span className="c-mono">{row.original.shop}</span>,
-    meta: { filterable: true, filterOptions: SHOP_OPTIONS },
-  },
-  {
-    accessorKey: "kind",
-    header: "区分",
-    cell: ({ row }) => <KindBadge kind={row.original.kind} />,
-    meta: { filterable: true, filterOptions: KIND_OPTIONS },
-  },
-  {
-    accessorKey: "hours",
-    header: "時間",
-    meta: { className: "num", sortable: true },
-  },
-  {
-    accessorKey: "status",
-    header: "状態",
-    cell: ({ row }) => <StatusBadge status={row.original.status} />,
-    meta: {
-      filterable: true,
-      filterOptions: [
-        { value: "active", label: "稼働中" },
-        { value: "pending", label: "申請中" },
-        { value: "leave", label: "休職" },
-      ],
+    {
+      accessorKey: "date",
+      header: "日付",
+      size: 112,
+      minSize: 112,
+      maxSize: 112,
+      meta: { sortable: true },
     },
-  },
-  {
-    id: "actions",
-    header: "操作",
-    size: 56,
-    minSize: 56,
-    maxSize: 56,
-    cell: () => (
-      <span className="row-actions">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="iconbtn" aria-label="操作メニュー">⋯</button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>詳細を表示</DropdownMenuItem>
-            <DropdownMenuItem>編集</DropdownMenuItem>
-            <DropdownMenuItem>複製</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </span>
-    ),
-    meta: { className: "actions", sticky: "right" },
-  },
+    {
+      accessorKey: "name",
+      header: "従業員",
+      minSize: 180,
+      cell: ({ row }) => <AvatarCell row={row.original} />,
+      meta: { filterable: true },
+    },
+    {
+      accessorKey: "role",
+      header: "役職",
+      minSize: 120,
+    },
+    {
+      accessorKey: "shop",
+      header: "店舗",
+      minSize: 96,
+      cell: ({ row }) => <span className="c-mono">{row.original.shop}</span>,
+      meta: { filterable: true, filterOptions: SHOP_OPTIONS },
+    },
+    {
+      accessorKey: "kind",
+      header: "区分",
+      cell: ({ row }) => <KindBadge kind={row.original.kind} />,
+      meta: { filterable: true, filterOptions: KIND_OPTIONS },
+    },
+    {
+      accessorKey: "hours",
+      header: "時間",
+      meta: { className: "num", sortable: true },
+    },
+    {
+      accessorKey: "status",
+      header: "状態",
+      cell: ({ row }) => <StatusBadge status={row.original.status} />,
+      meta: {
+        filterable: true,
+        filterOptions: [
+          { value: "active", label: "稼働中" },
+          { value: "pending", label: "申請中" },
+          { value: "leave", label: "休職" },
+        ],
+      },
+    },
+    {
+      id: "actions",
+      header: "操作",
+      size: 56,
+      minSize: 56,
+      maxSize: 56,
+      cell: () => (
+        <span className="row-actions">
+          <DropdownMenu
+            align="end"
+            trigger={
+              <button className="iconbtn" aria-label="操作メニュー">
+                ⋯
+              </button>
+            }
+            items={[
+              { key: "detail", label: "詳細を表示" },
+              { key: "edit", label: "編集" },
+              { key: "duplicate", label: "複製" },
+              { key: "sep", type: "separator" },
+              { key: "delete", label: "削除", variant: "destructive" },
+            ]}
+          />
+        </span>
+      ),
+      meta: { className: "actions", sticky: "right", hideable: false },
+    },
   ];
 }
 
 const EMPLOYEE_COLUMNS = employeeColumns();
-
-function storyColumnKey(column: TableColumn<EmployeeRow>): string | undefined {
-  const candidate = column as { id?: string; accessorKey?: unknown };
-  if (candidate.id !== undefined) return candidate.id;
-  return typeof candidate.accessorKey === "string" ? candidate.accessorKey : undefined;
-}
 
 function rowState(row: { original: EmployeeRow }) {
   if (row.original.state === "new") return "is-new";
@@ -243,107 +323,89 @@ function rowState(row: { original: EmployeeRow }) {
   return undefined;
 }
 
-type ViewKey = "all" | "pending" | "late" | "confirmed" | "shibuya";
-
-const VIEW_LABEL: Record<ViewKey, string> = {
-  all: "すべて",
-  pending: "承認待ち",
-  late: "遅刻 / 早退",
-  confirmed: "今月確定",
-  shibuya: "マイビュー · 渋谷店のみ",
-};
-
-function viewsFor(view: ViewKey, rows: EmployeeRow[], setView: (view: ViewKey) => void) {
-  const counts: Record<ViewKey, number> = {
-    all: rows.length,
-    pending: rows.filter((row) => row.status === "pending").length,
-    late: rows.filter((row) => row.kind === "late").length,
-    confirmed: rows.filter((row) => row.status === "active").length,
-    shibuya: rows.filter((row) => row.shop === "渋谷").length,
-  };
-  return (
-    <>
-      {(["all", "pending", "late", "confirmed", "shibuya"] as ViewKey[]).map((key) => (
-        <button key={key} className={key === view ? "tab on" : "tab"} onClick={() => setView(key)}>
-          {key === "pending" && <span className="dot" style={{ background: "var(--warning)" }} />}
-          {key === "late" && <span className="dot" style={{ background: "var(--attention)" }} />}
-          {VIEW_LABEL[key]} <span className="count">{counts[key]}</span>
-        </button>
-      ))}
-      <span className="spacer" />
-      <button className="tab add">＋ ビューを保存</button>
-    </>
-  );
+function matchesTableFilters(row: EmployeeRow, filters: TableFilter[]) {
+  return filters.every((filter) => {
+    const value = String(filter.value ?? "").trim();
+    if (value === "") return true;
+    if (filter.key === "name") {
+      return `${row.name} ${row.kana ?? ""} ${row.shop} ${row.role}`
+        .toLowerCase()
+        .includes(value.toLowerCase());
+    }
+    if (filter.key === "shop") return row.shop === value;
+    if (filter.key === "kind") return row.kind === value;
+    if (filter.key === "status") return row.status === value;
+    return true;
+  });
 }
 
-function toolbarFor(
-  search: string,
-  setSearch: (value: string) => void,
-  openFilters: () => void,
-  openColumns: () => void,
-  filterCount = 0,
+function countRowsForView(view: StoryTableView) {
+  return EMPLOYEES.filter((row) => matchesTableFilters(row, view.filters))
+    .length;
+}
+
+function decorateView(view: StoryTableView): TableViewItem {
+  const isBuiltInView = BUILT_IN_VIEWS.some((item) => item.key === view.key);
+  return {
+    ...view,
+    count: countRowsForView(view),
+    deletable: !isBuiltInView,
+    dotColor:
+      view.key === "pending"
+        ? "var(--warning)"
+        : view.key === "late"
+          ? "var(--attention)"
+          : undefined,
+  };
+}
+
+function batchActionsFor(
 ) {
   return (
     <>
-      <InputSearch
-        aria-label="検索"
-        className="tbl-search-input"
-        size="small"
-        placeholder="従業員名 · 店舗 · 申請番号で検索…"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-        onClear={() => setSearch("")}
-        suffix={<span className="table-kbd">⌘ K</span>}
-      />
-      <Button className="tbl-filter-action" size="small" variant="outline" onClick={openFilters}>
-        詳細フィルタ {filterCount > 0 && <Badge variant="primary" dot={false}>{filterCount}</Badge>}
+      <Button size="small" variant="outline">
+        一括承認
       </Button>
-      <span className="spacer" />
-      <span className="tbl-extra-actions">
-        <Button className="tbl-column-action" size="small" variant="outline" onClick={openColumns}>列設定</Button>
-        <Button className="tbl-primary-action" size="small">＋ 新規申請</Button>
-      </span>
-    </>
-  );
-}
-
-function paginationFor(page: number, pageSize: number, total: number, setPage: (page: number) => void, setPageSize: (size: number) => void) {
-  const pageCount = Math.max(Math.ceil(total / pageSize), 1);
-  const start = total === 0 ? 0 : (page - 1) * pageSize + 1;
-  const end = Math.min(page * pageSize, total);
-  return (
-    <>
-      <div className="info">{start} – {end} 件 / 全 {total} 件</div>
-      <div className="ps"><span>表示件数</span><select aria-label="表示件数" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setPage(1); }}><option>3</option><option>5</option><option>10</option></select></div>
-      <div className="spacer" />
-      <div className="pgn">
-        <button className={page === 1 ? "disabled" : ""} disabled={page === 1} onClick={() => setPage(1)}>{"<<"}</button>
-        <button className={page === 1 ? "disabled" : ""} disabled={page === 1} onClick={() => setPage(Math.max(page - 1, 1))}>{"<"}</button>
-        {Array.from({ length: pageCount }, (_, index) => index + 1).map((item) => (
-          <button key={item} className={item === page ? "on" : ""} onClick={() => setPage(item)}>{item}</button>
-        ))}
-        <button className={page === pageCount ? "disabled" : ""} disabled={page === pageCount} onClick={() => setPage(Math.min(page + 1, pageCount))}>{">"}</button>
-      </div>
+      <Button size="small" variant="outline">
+        CSV 出力
+      </Button>
+      <Button size="small" variant="destructive">
+        却下
+      </Button>
     </>
   );
 }
 
 export const Default: Story = {
-  name: "Default · interactive list page",
+  name: "Default · plain table",
+  render: () => (
+    <Table
+      columns={EMPLOYEE_COLUMNS}
+      data={EMPLOYEES.slice(0, 5)}
+      rowKey="id"
+      rowClassName={rowState}
+    />
+  ),
+};
+
+export const PackagedFeatures: Story = {
+  name: "Packaged features · views · columns · batch actions",
   render: () => {
-    const [view, setView] = useState<ViewKey>("all");
+    const [activeViewKey, setActiveViewKey] = useState("all");
     const [filters, setFilters] = useState<TableFilter[]>([]);
-    const [sort, setSort] = useState<TableSort | null>({ key: "date", direction: "desc" });
+    const [sort, setSort] = useState<TableSort | null>(DEFAULT_SORT);
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
-    const [columnDrawerOpen, setColumnDrawerOpen] = useState(false);
     const [filterFieldQuery, setFilterFieldQuery] = useState("");
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(3);
-    const [selectedIds, setSelectedIds] = useState(() => new Set(["emp-002"]));
-    const [visibleColumnKeys, setVisibleColumnKeys] = useState<Set<ColumnSettingKey>>(
-      () => new Set(COLUMN_SETTINGS.map((column) => column.key)),
+    const [selectedIds, setSelectedIds] = useState<string[]>(["emp-002"]);
+    const [columnVisibility, setColumnVisibility] =
+      useState<TableColumnVisibility>(DEFAULT_COLUMN_VISIBILITY);
+    const searchRef = useRef<HTMLInputElement>(null);
+    const search = String(
+      filters.find((filter) => filter.key === "name")?.value ?? "",
     );
-    const search = String(filters.find((filter) => filter.key === "name")?.value ?? "");
+    const [draftSearch, setDraftSearch] = useState(search);
     const shop = filters.find((filter) => filter.key === "shop")?.value;
     const kind = filters.find((filter) => filter.key === "kind")?.value;
     const status = filters.find((filter) => filter.key === "status")?.value;
@@ -354,48 +416,88 @@ export const Default: Story = {
         `${field.label} ${field.description}`.toLowerCase().includes(query),
       );
     }, [filterFieldQuery]);
+    const viewItems = useMemo(
+      () => BUILT_IN_VIEWS.map(decorateView),
+      [],
+    );
 
-    function setFilterValue(key: string, value: string, operator: TableFilter["operator"] = "eq") {
+    useEffect(() => {
+      setDraftSearch(search);
+    }, [search]);
+
+    useEffect(() => {
+      function handleShortcut(event: KeyboardEvent) {
+        if (event.defaultPrevented) return;
+        if (
+          !(event.metaKey || event.ctrlKey) ||
+          event.key.toLowerCase() !== "k"
+        )
+          return;
+        event.preventDefault();
+        searchRef.current?.focus();
+      }
+      window.addEventListener("keydown", handleShortcut);
+      return () => window.removeEventListener("keydown", handleShortcut);
+    }, []);
+
+    function markCustomView() {
+      setActiveViewKey("custom");
+    }
+
+    function setFilterValue(
+      key: string,
+      value: string,
+      operator: TableFilter["operator"] = "eq",
+    ) {
       setFilters((current) => {
         const next = current.filter((filter) => filter.key !== key);
         if (value.trim() === "") return next;
         return [...next, { key, operator, value }];
       });
       setPage(1);
+      markCustomView();
     }
 
     function updateFilters(nextFilters: TableFilter[]) {
       setFilters(nextFilters);
       setPage(1);
+      markCustomView();
     }
 
-    function addFilter(key: string, value: string, operator: TableFilter["operator"] = "eq") {
+    function addFilter(
+      key: string,
+      value: string,
+      operator: TableFilter["operator"] = "eq",
+    ) {
       setFilterValue(key, value, operator);
       setFilterDrawerOpen(false);
     }
 
+    function applyView(view: TableViewItem) {
+      setActiveViewKey(view.key);
+      setFilters(view.filters ?? []);
+      setSort("sort" in view ? (view.sort ?? null) : DEFAULT_SORT);
+      setColumnVisibility(view.columnVisibility ?? DEFAULT_COLUMN_VISIBILITY);
+      setPage(1);
+    }
+
     const filtered = useMemo(() => {
-      const query = search.trim().toLowerCase();
-      return EMPLOYEES.filter((row) => {
-        if (view === "pending" && row.status !== "pending") return false;
-        if (view === "late" && row.kind !== "late") return false;
-        if (view === "confirmed" && row.status !== "active") return false;
-        if (view === "shibuya" && row.shop !== "渋谷") return false;
-        if (shop !== undefined && row.shop !== shop) return false;
-        if (kind !== undefined && row.kind !== kind) return false;
-        if (status !== undefined && row.status !== status) return false;
-        if (query && !`${row.name} ${row.shop} ${row.role}`.toLowerCase().includes(query)) return false;
-        return true;
-      });
-    }, [kind, search, shop, status, view]);
+      return EMPLOYEES.filter((row) => matchesTableFilters(row, filters));
+    }, [filters]);
 
     const sortedRows = useMemo(() => {
       if (sort === null) return filtered;
       return [...filtered].sort((a, b) => {
         const direction = sort.direction === "asc" ? 1 : -1;
         if (sort.key === "hours") {
-          const left = a.hours === "—" ? Number.NEGATIVE_INFINITY : Number(a.hours.replace("h", ""));
-          const right = b.hours === "—" ? Number.NEGATIVE_INFINITY : Number(b.hours.replace("h", ""));
+          const left =
+            a.hours === "—"
+              ? Number.NEGATIVE_INFINITY
+              : Number(a.hours.replace("h", ""));
+          const right =
+            b.hours === "—"
+              ? Number.NEGATIVE_INFINITY
+              : Number(b.hours.replace("h", ""));
           return (left - right) * direction;
         }
         const left = String(a[sort.key as keyof EmployeeRow] ?? "");
@@ -406,83 +508,134 @@ export const Default: Story = {
 
     const pageCount = Math.max(Math.ceil(sortedRows.length / pageSize), 1);
     const safePage = Math.min(page, pageCount);
-    const pageRows = sortedRows.slice((safePage - 1) * pageSize, safePage * pageSize);
-    const visibleSelectable = pageRows.filter((row) => row.state !== "disabled");
-    const allVisibleSelected = visibleSelectable.length > 0 && visibleSelectable.every((row) => selectedIds.has(row.id));
-
-    function toggle(id: string) {
-      setSelectedIds((current) => {
-        const next = new Set(current);
-        if (next.has(id)) next.delete(id);
-        else next.add(id);
-        return next;
-      });
-    }
-
-    function toggleAll() {
-      setSelectedIds((current) => {
-        const next = new Set(current);
-        if (allVisibleSelected) visibleSelectable.forEach((row) => next.delete(row.id));
-        else visibleSelectable.forEach((row) => next.add(row.id));
-        return next;
-      });
-    }
+    const pageRows = sortedRows.slice(
+      (safePage - 1) * pageSize,
+      safePage * pageSize,
+    );
+    const allSelectableRows = sortedRows.filter(
+      (row) => row.state !== "disabled",
+    );
 
     function reset() {
-      setView("all");
-      setFilters([]);
+      const defaultView = BUILT_IN_VIEWS[0];
+      setActiveViewKey(defaultView.key);
+      setFilters(defaultView.filters);
+      setSort(defaultView.sort);
+      setColumnVisibility(defaultView.columnVisibility);
       setPage(1);
     }
 
-    function setColumnVisible(key: ColumnSettingKey, visible: boolean | "indeterminate") {
-      setVisibleColumnKeys((current) => {
-        const next = new Set(current);
-        if (visible === true) next.add(key);
-        else next.delete(key);
-        return next;
-      });
+    function updateColumnVisibility(nextVisibility: TableColumnVisibility) {
+      setColumnVisibility(nextVisibility);
+      markCustomView();
     }
-
-    function resetColumns() {
-      setVisibleColumnKeys(new Set(COLUMN_SETTINGS.map((column) => column.key)));
-    }
-
-    const columns = employeeColumns(selectedIds, toggle, toggleAll, allVisibleSelected).filter((column) => {
-      const key = storyColumnKey(column);
-      if (key === undefined || !COLUMN_SETTINGS.some((setting) => setting.key === key)) return true;
-      return visibleColumnKeys.has(key as ColumnSettingKey);
-    });
 
     return (
       <>
         <Table
           containerClassName="tbl-shell"
-          columns={columns}
+          columns={EMPLOYEE_COLUMNS}
           data={pageRows}
-          getRowId={(row) => row.id}
-          rowClassName={(row) => selectedIds.has(row.original.id) ? "selected" : rowState(row)}
-          views={viewsFor(view, EMPLOYEES, (nextView) => { setView(nextView); setPage(1); })}
-          toolbar={toolbarFor(
-            search,
-            (value) => setFilterValue("name", value, "contains"),
-            () => setFilterDrawerOpen(true),
-            () => setColumnDrawerOpen(true),
-            filters.length,
-          )}
+          defaultColumnVisibility={DEFAULT_COLUMN_VISIBILITY}
+          columnVisibility={columnVisibility}
+          onColumnVisibilityChange={updateColumnVisibility}
+          rowKey="id"
+          rowClassName={(row) =>
+            selectedIds.includes(row.original.id) ? "selected" : rowState(row)
+          }
+          views={{
+            items: viewItems,
+            activeKey: activeViewKey,
+            onActiveKeyChange: setActiveViewKey,
+            onViewApply: applyView,
+          }}
+          toolbar={{
+            search: {
+              inputRef: searchRef,
+              ariaLabel: "検索",
+              placeholder: "従業員名 · 店舗 · 申請番号で検索…",
+              value: draftSearch,
+              onValueChange: setDraftSearch,
+              onSearch: (value) => setFilterValue("name", value, "contains"),
+              suffix: (
+                <span className="table-kbd">{getSearchShortcutLabel()}</span>
+              ),
+            },
+            filter: {
+              count: filters.length,
+              onClick: () => setFilterDrawerOpen(true),
+            },
+            columns: {},
+            primaryAction: {
+              label: "＋ 新規申請",
+            },
+          }}
           filters={filters}
           onFiltersChange={updateFilters}
+          batchActions={{
+            selectedRowKeys: selectedIds,
+            onSelectedRowKeysChange: setSelectedIds,
+            getCheckboxDisabled: (row) => row.original.state === "disabled",
+            selectAllLabel: () => `全 ${allSelectableRows.length} 件を選択`,
+            actions: batchActionsFor(),
+          }}
           sort={sort}
-          onSortChange={(nextSort) => { setSort(nextSort); setPage(1); }}
+          onSortChange={(nextSort) => {
+            setSort(nextSort);
+            setPage(1);
+            markCustomView();
+          }}
           onResetFilters={reset}
-          footer={<div className="totals"><span>表示中 <b>{pageRows.length}</b> 件 / 全 <b>{sortedRows.length}</b> 件</span><span>選択 <b>{selectedIds.size}</b> 件</span><span>合計 <b>{pageRows.filter((row) => row.hours !== "—").reduce((sum, row) => sum + Number(row.hours.replace("h", "")), 0).toFixed(1)} h</b></span></div>}
-          pagination={paginationFor(safePage, pageSize, sortedRows.length, setPage, setPageSize)}
+          footer={
+            <div className="totals">
+              <span>
+                選択 <b>{selectedIds.length}</b> 件
+              </span>
+              <span>
+                表示中の合計{" "}
+                <b>
+                  {pageRows
+                    .filter((row) => row.hours !== "—")
+                    .reduce(
+                      (sum, row) => sum + Number(row.hours.replace("h", "")),
+                      0,
+                    )
+                    .toFixed(1)}{" "}
+                  h
+                </b>
+              </span>
+            </div>
+          }
+          pagination={{
+            current: safePage,
+            pageSize,
+            total: sortedRows.length,
+            pageSizeOptions: [3, 5, 10],
+            onChange: (nextPage, nextPageSize) => {
+              setPage(nextPage);
+              setPageSize(nextPageSize);
+            },
+          }}
         />
-        <Sheet open={filterDrawerOpen} onOpenChange={setFilterDrawerOpen}>
-          <SheetContent className="table-filter-sheet" side="right">
-            <SheetHeader>
-              <SheetTitle>詳細フィルタ</SheetTitle>
-              <SheetDescription>フィルタ可能な項目を検索して条件に追加します。</SheetDescription>
-            </SheetHeader>
+        {filterDrawerOpen && (
+          <Sheet
+            open={filterDrawerOpen}
+            onOpenChange={setFilterDrawerOpen}
+            className="table-filter-sheet"
+            side="right"
+            title="詳細フィルタ"
+            description="フィルタ可能な項目を検索して条件に追加します。"
+            footer={
+              <>
+                <Button size="small" variant="ghost" onClick={reset}>
+                  条件をリセット
+                </Button>
+                <Button size="small" onClick={() => setFilterDrawerOpen(false)}>
+                  閉じる
+                </Button>
+              </>
+            }
+          >
             <InputSearch
               aria-label="フィルタ項目を検索"
               size="small"
@@ -501,7 +654,10 @@ export const Default: Story = {
                   {"options" in field && field.options !== undefined ? (
                     field.control === "dropdown" ? (
                       <Select
-                        value={String(filters.find((filter) => filter.key === field.key)?.value ?? "")}
+                        value={String(
+                          filters.find((filter) => filter.key === field.key)
+                            ?.value ?? "",
+                        )}
                         onValueChange={(value) => addFilter(field.key, value)}
                         placeholder={`${field.label}を選択`}
                         options={field.options}
@@ -513,7 +669,15 @@ export const Default: Story = {
                           <Button
                             key={option.value}
                             size="small"
-                            variant={filters.some((filter) => filter.key === field.key && filter.value === option.value) ? "primary" : "outline"}
+                            variant={
+                              filters.some(
+                                (filter) =>
+                                  filter.key === field.key &&
+                                  filter.value === option.value,
+                              )
+                                ? "primary"
+                                : "outline"
+                            }
                             onClick={() => addFilter(field.key, option.value)}
                           >
                             {option.label}
@@ -534,51 +698,119 @@ export const Default: Story = {
                 </section>
               ))}
             </div>
-            <SheetFooter>
-              <Button size="small" variant="ghost" onClick={reset}>条件をリセット</Button>
-              <SheetClose asChild>
-                <Button size="small">閉じる</Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
-        <Sheet open={columnDrawerOpen} onOpenChange={setColumnDrawerOpen}>
-          <SheetContent className="table-filter-sheet" side="right">
-            <SheetHeader>
-              <SheetTitle>列設定</SheetTitle>
-              <SheetDescription>表示する列を選択します。選択列と操作列は常に表示されます。</SheetDescription>
-            </SheetHeader>
-            <div className="table-filter-field-list">
-              {COLUMN_SETTINGS.map((column) => (
-                <section key={column.key} className="table-column-field">
-                  <Checkbox
-                    checked={visibleColumnKeys.has(column.key)}
-                    onCheckedChange={(checked) => setColumnVisible(column.key, checked)}
-                  >
-                    {column.label}
-                  </Checkbox>
-                </section>
-              ))}
-            </div>
-            <SheetFooter>
-              <Button size="small" variant="ghost" onClick={resetColumns}>すべて表示</Button>
-              <SheetClose asChild>
-                <Button size="small">閉じる</Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
+          </Sheet>
+        )}
       </>
     );
   },
+};
+
+export const InteractionRegression: Story = {
+  ...PackagedFeatures,
+  name: "Default · interaction regression",
   play: async ({ canvasElement, userEvent }) => {
     const canvas = within(canvasElement);
+    const body = within(canvasElement.ownerDocument.body);
     await userEvent.type(canvas.getByLabelText("検索"), "Nguyễn");
+    await expect(canvas.getByText("田中 美咲")).toBeVisible();
+    await userEvent.keyboard("{Enter}");
     await expect(canvas.getByText("Nguyễn Lan")).toBeVisible();
     await expect(canvas.queryByText("田中 美咲")).toBeNull();
     await userEvent.clear(canvas.getByLabelText("検索"));
-    await userEvent.selectOptions(canvas.getByLabelText("表示件数"), "5");
-    await expect(canvas.getByText(/1 –/)).toBeVisible();
+    await userEvent.keyboard("{Enter}");
+    await userEvent.selectOptions(
+      canvas.getByRole("combobox", {
+        name: /表示件数|Rows per page|Số dòng|Bilang ng row/,
+      }),
+      "5",
+    );
+    await expect(
+      canvasElement.querySelector(".tbl-pagination .info")?.textContent,
+    ).toMatch(/1.*5.*12/);
+
+    const savedViewLabel = `Story regression view ${Date.now()}`;
+    await userEvent.click(
+      canvas.getByRole("button", { name: /列設定|Columns|Cột|Mga column/ }),
+    );
+    await body.findByRole("dialog", { name: /列設定|Columns|Cột|Mga column/ });
+    await userEvent.click(
+      body.getByRole("button", { name: /閉じる|Close|Đóng|Isara/ }),
+    );
+    await expect(
+      body.queryByRole("heading", { name: /列設定|Columns|Cột|Mga column/ }),
+    ).toBeNull();
+
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: /ビューを保存|Save view|Lưu view|I-save ang view/,
+      }),
+    );
+    await body.findByRole("dialog", {
+      name: /ビューを保存|Save view|Lưu view|I-save ang view/,
+    });
+    const viewName = body.getByLabelText(/ビュー名|View name|Tên view|Pangalan ng view/);
+    await userEvent.clear(viewName);
+    await userEvent.type(viewName, savedViewLabel);
+    await userEvent.click(
+      body.getByRole("button", {
+        name: /保存|Save|Continue|Lưu|Tiếp tục|I-save|Magpatuloy/,
+      }),
+    );
+    await expect(
+      await canvas.findByText(savedViewLabel),
+    ).toBeVisible();
+
+    await userEvent.click(canvas.getByLabelText(/Select row emp-001|row emp-001/));
+    await expect(
+      canvas.getByText(/件選択中|selected|Đã chọn|ang napili/),
+    ).toBeVisible();
+    await expect(
+      canvas.getByRole("button", { name: /選択解除|Clear selection|Bỏ chọn|Alisin/ }),
+    ).toBeVisible();
+  },
+};
+
+export const SearchMode_Submit: Story = {
+  name: "SearchMode · submit only",
+  render: () => {
+    const [draft, setDraft] = useState("");
+    const [query, setQuery] = useState("");
+    const rows = useMemo(() => {
+      const normalized = query.trim().toLowerCase();
+      if (normalized === "") return EMPLOYEES.slice(0, 5);
+      return EMPLOYEES.filter((row) =>
+        `${row.name} ${row.kana ?? ""} ${row.shop} ${row.role}`
+          .toLowerCase()
+          .includes(normalized),
+      );
+    }, [query]);
+
+    return (
+      <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+        <InputSearch
+          aria-label="送信型検索"
+          style={{ maxWidth: 360 }}
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          onSearch={setQuery}
+          onClear={() => {
+            setDraft("");
+            setQuery("");
+          }}
+          placeholder="Enter または検索アイコンで検索"
+          suffix={<span className="table-kbd">{getSearchShortcutLabel()}</span>}
+        />
+        <p className="muted" style={{ margin: 0 }}>
+          検索条件: {query === "" ? "未実行" : query}
+        </p>
+        <Table
+          columns={EMPLOYEE_COLUMNS}
+          data={rows}
+          getRowId={(row) => row.id}
+          rowClassName={rowState}
+        />
+      </div>
+    );
   },
 };
 
@@ -632,8 +864,12 @@ export const WithToolbar: Story = {
         <>
           <span className="selection-count">3 件選択中</span>
           <span className="spacer" />
-          <Button size="small" variant="ghost">アーカイブ</Button>
-          <Button size="small" variant="destructive">削除</Button>
+          <Button size="small" variant="ghost">
+            アーカイブ
+          </Button>
+          <Button size="small" variant="destructive">
+            削除
+          </Button>
         </>
       }
     />
@@ -652,11 +888,19 @@ export const BulkActions: Story = {
       toolbar={
         <>
           <span className="selection-count">3 件選択中</span>
-          <Button size="small" variant="ghost">全 1,284 件を選択</Button>
+          <Button size="small" variant="ghost">
+            全 1,284 件を選択
+          </Button>
           <span className="spacer" />
-          <Button size="small" variant="ghost">一括承認</Button>
-          <Button size="small" variant="outline">CSV 出力</Button>
-          <Button size="small" variant="destructive">却下</Button>
+          <Button size="small" variant="ghost">
+            一括承認
+          </Button>
+          <Button size="small" variant="outline">
+            CSV 出力
+          </Button>
+          <Button size="small" variant="destructive">
+            却下
+          </Button>
         </>
       }
     />

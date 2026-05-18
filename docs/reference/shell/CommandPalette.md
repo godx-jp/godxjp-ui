@@ -1,11 +1,13 @@
 ---
 title: "CommandPalette"
+description: "Keyboard command dialog backed by cmdk."
 diataxis: reference
 library: "@godxjp/ui"
 library_version: 3.0.0
 component: CommandPalette
 status: stable
 audience: [developer, agent]
+last-updated: 2026-05-18
 lang: en
 ---
 
@@ -34,11 +36,11 @@ const COMMANDS: CommandItem[] = [
 
 ## Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `open` | `boolean` | required | Controlled open state |
+| Prop           | Type                      | Default  | Description                    |
+| -------------- | ------------------------- | -------- | ------------------------------ |
+| `open`         | `boolean`                 | required | Controlled open state          |
 | `onOpenChange` | `(open: boolean) => void` | required | Called when open state changes |
-| `commands` | `CommandItem[]` | required | List of available commands |
+| `commands`     | `CommandItem[]`           | required | List of available commands     |
 
 ## Types
 
@@ -46,11 +48,11 @@ const COMMANDS: CommandItem[] = [
 
 ```ts
 interface CommandItem {
-  id: string
-  label: string
-  group?: string      // Groups items under a section heading
-  hint?: string       // Keyboard hint shown on the right (e.g. "⌘K", "P")
-  onSelect: () => void  // Called when the command is selected
+  id: string;
+  label: string;
+  group?: string; // Groups items under a section heading
+  hint?: string; // Keyboard hint shown on the right (e.g. "⌘K", "P")
+  onSelect: () => void; // Called when the command is selected
 }
 ```
 
@@ -65,7 +67,7 @@ interface CommandItem {
 
 ## Accessibility
 
-- The dialog renders `role="dialog"` with an SR-only `DialogTitle` (`t("common.search")`).
+- The dialog renders `role="dialog"` with an SR-only Radix title (`t("common.search")`).
 - `cmdk` Command handles `role="listbox"` and `role="option"` with `aria-selected`.
 - Keyboard: Arrow Down / Up moves between items. Enter activates. Escape closes.
 - Focus returns to the trigger (or last focused element) on close.

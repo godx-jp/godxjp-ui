@@ -92,7 +92,7 @@ The team evaluated:
   changes to the upstream source.
 - The ownership model only works when the source is genuinely thin. Thick
   wrappers with complex internal state defeat the fork story.
-- CI requires `docs/reference/primitives/` parity with the barrel at
+- CI requires `docs/reference/<group>/` parity with the barrel at
   `src/components/primitives.ts` (which re-exports from the six
   group folders under `src/components/<group>/` per cardinal rule
   27). A new primitive must have a reference page (cardinal rule

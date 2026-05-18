@@ -5,12 +5,6 @@ import {
   AvatarFallback,
   Button,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
   SidebarTrigger,
 } from "@godxjp/ui";
 import { Languages, LogOut, Monitor, Moon, Settings, Sun, User } from "lucide-react";
@@ -85,27 +79,28 @@ export function TopBar({
         {children}
 
         {/* Language Switcher */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        <DropdownMenu
+          align="end"
+          trigger={
             <Button variant="ghost" size="sm" className="size-8 p-0">
               <Languages className="size-4" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              {(Object.keys(locales) as LocaleCode[]).map((loc) => (
-                <DropdownMenuItem key={loc} onClick={() => setLocale(loc)} className="h-7 text-sm">
-                  <span className={locale === loc ? "font-medium" : ""}>{locales[loc]}</span>
-                  {locale === loc && (
-                    <span className="text-muted-foreground ml-auto text-xs">
-                      {loc.toUpperCase()}
-                    </span>
-                  )}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          }
+          items={(Object.keys(locales) as LocaleCode[]).map((loc) => ({
+            key: loc,
+            onSelect: () => setLocale(loc),
+            label: (
+              <>
+                <span className={locale === loc ? "font-medium" : ""}>{locales[loc]}</span>
+                {locale === loc && (
+                  <span className="text-muted-foreground ml-auto text-xs">
+                    {loc.toUpperCase()}
+                  </span>
+                )}
+              </>
+            ),
+          }))}
+        />
 
         {/* Theme Toggle */}
         <Button variant="ghost" size="sm" className="size-8 p-0" onClick={cycleTheme}>
@@ -115,8 +110,10 @@ export function TopBar({
         <div className="bg-border mx-1 h-4 w-px" />
 
         {/* User Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        <DropdownMenu
+          align="end"
+          contentClassName="w-48"
+          trigger={
             <Button variant="ghost" size="sm" className="h-8 gap-2 px-2">
               <Avatar className="size-6">
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
@@ -130,34 +127,30 @@ export function TopBar({
                 )}
               </div>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel className="py-1.5">
-                <div className="text-sm font-medium">{userName}</div>
-                {userEmail && <div className="text-muted-foreground text-xs">{userEmail}</div>}
-              </DropdownMenuLabel>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="h-7 text-sm">
-                <User className="size-3.5" />
-                {t("common.profile")}
-              </DropdownMenuItem>
-              <DropdownMenuItem className="h-7 text-sm">
-                <Settings className="size-3.5" />
-                {t("common.settings")}
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="text-destructive h-7 text-sm" onClick={logout}>
-                <LogOut className="size-3.5" />
-                {t("common.logout")}
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          }
+          items={[
+            {
+              key: "user",
+              type: "label",
+              label: (
+                <div className="py-1.5">
+                  <div className="text-sm font-medium">{userName}</div>
+                  {userEmail && <div className="text-muted-foreground text-xs">{userEmail}</div>}
+                </div>
+              ),
+            },
+            { key: "user-separator", type: "separator" },
+            { key: "profile", label: <><User className="size-3.5" />{t("common.profile")}</> },
+            { key: "settings", label: <><Settings className="size-3.5" />{t("common.settings")}</> },
+            { key: "logout-separator", type: "separator" },
+            {
+              key: "logout",
+              variant: "destructive",
+              onSelect: logout,
+              label: <><LogOut className="size-3.5" />{t("common.logout")}</>,
+            },
+          ]}
+        />
       </div>
     </header>
   );

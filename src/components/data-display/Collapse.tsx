@@ -1,12 +1,4 @@
-import {
-  Children,
-  createContext,
-  isValidElement,
-  useCallback,
-  useContext,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import { cn } from "../cn";
 
@@ -21,36 +13,22 @@ import { cn } from "../cn";
  * `size` for dimensional scale. NEVER `activeKey` / `accordion` /
  * `bordered`.
  *
- * @example
- *   <Collapse defaultValue="q1">
- *     <CollapsePanel value="q1" title="Question one">…</CollapsePanel>
- *     <CollapsePanel value="q2" title="Question two">…</CollapsePanel>
- *   </Collapse>
  */
 
 type CollapseValue = string | string[] | undefined;
-
-interface CollapseContext {
-  expanded: string[];
-  toggle: (value: string) => void;
-  multiple: boolean;
-  size: "small" | "default" | "large";
-  disabled: boolean;
-}
-
-const CollapseCtx = createContext<CollapseContext | null>(null);
-
-function useCollapseCtx(): CollapseContext {
-  const ctx = useContext(CollapseCtx);
-  if (!ctx)
-    throw new Error("<CollapsePanel> must be rendered inside <Collapse>");
-  return ctx;
-}
 
 function normalize(value: CollapseValue, multiple: boolean): string[] {
   if (value === undefined) return [];
   if (Array.isArray(value)) return multiple ? value : value.slice(0, 1);
   return [value];
+}
+
+export interface CollapseItem {
+  value: string;
+  title: ReactNode;
+  extra?: ReactNode;
+  disabled?: boolean;
+  content?: ReactNode;
 }
 
 export interface CollapseProps {
@@ -66,8 +44,8 @@ export interface CollapseProps {
   size?: "small" | "default" | "large";
   /** Disable every panel. */
   disabled?: boolean;
+  items: CollapseItem[];
   className?: string;
-  children?: ReactNode;
 }
 
 export function Collapse({
@@ -78,8 +56,8 @@ export function Collapse({
   variant = "default",
   size = "default",
   disabled = false,
+  items,
   className,
-  children,
 }: CollapseProps) {
   const [internal, setInternal] = useState<string[]>(
     normalize(defaultValue, multiple),
@@ -105,76 +83,49 @@ export function Collapse({
   );
 
   return (
-    <CollapseCtx.Provider
-      value={{ expanded, toggle, multiple, size, disabled }}
-    >
-      <div
-        className={cn(
-          "collapse-root",
-          `collapse-variant-${variant}`,
-          `collapse-size-${size}`,
-          className,
-        )}
-        data-disabled={disabled || undefined}
-      >
-        {Children.map(children, (child) =>
-          isValidElement(child) ? child : null,
-        )}
-      </div>
-    </CollapseCtx.Provider>
-  );
-}
-
-export interface CollapsePanelProps {
-  /** Panel key — referenced by `Collapse.value` / `defaultValue`. */
-  value: string;
-  /** Trigger label. */
-  title: ReactNode;
-  /** Right-aligned slot inside the trigger header. */
-  extra?: ReactNode;
-  /** Disable this panel only. */
-  disabled?: boolean;
-  children?: ReactNode;
-}
-
-export function CollapsePanel({
-  value,
-  title,
-  extra,
-  disabled: panelDisabled,
-  children,
-}: CollapsePanelProps) {
-  const { expanded, toggle, disabled: rootDisabled } = useCollapseCtx();
-  const isOpen = expanded.includes(value);
-  const isDisabled = rootDisabled || panelDisabled;
-
-  return (
     <div
-      className="collapse-panel"
-      data-state={isOpen ? "open" : "closed"}
-      data-disabled={isDisabled || undefined}
-    >
-      <button
-        type="button"
-        className="collapse-trigger"
-        aria-expanded={isOpen}
-        aria-controls={`collapse-content-${value}`}
-        disabled={isDisabled}
-        onClick={() => toggle(value)}
-      >
-        <ChevronRight className="collapse-chevron" size={14} aria-hidden />
-        <span className="collapse-title">{title}</span>
-        {extra !== undefined && <span className="collapse-extra">{extra}</span>}
-      </button>
-      {isOpen && (
-        <div
-          id={`collapse-content-${value}`}
-          role="region"
-          className="collapse-content"
-        >
-          {children}
-        </div>
+      className={cn(
+        "collapse-root",
+        `collapse-variant-${variant}`,
+        `collapse-size-${size}`,
+        className,
       )}
-    </div>
+      data-disabled={disabled || undefined}
+    >
+      {items.map((item) => {
+        const isOpen = expanded.includes(item.value);
+        const isDisabled = disabled || item.disabled;
+        return (
+          <div
+            key={item.value}
+            className="collapse-panel"
+            data-state={isOpen ? "open" : "closed"}
+            data-disabled={isDisabled || undefined}
+          >
+            <button
+              type="button"
+              className="collapse-trigger"
+              aria-expanded={isOpen}
+              aria-controls={`collapse-content-${item.value}`}
+              disabled={isDisabled}
+              onClick={() => toggle(item.value)}
+            >
+              <ChevronRight className="collapse-chevron" size={14} aria-hidden />
+              <span className="collapse-title">{item.title}</span>
+              {item.extra !== undefined && <span className="collapse-extra">{item.extra}</span>}
+            </button>
+            {isOpen && (
+              <div
+                id={`collapse-content-${item.value}`}
+                role="region"
+                className="collapse-content"
+              >
+                {item.content}
+              </div>
+            )}
+          </div>
+        );
+      })}
+        </div>
   );
 }

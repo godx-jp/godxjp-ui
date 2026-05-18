@@ -1,12 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Watermark } from "../../components/feedback/Watermark";
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  CardSubtitle,
-} from "../../components/data-display/Card";
+import { Card } from "../../components/data-display/Card";
 
 /**
  * Feedback/Watermark — repeating SVG-tile overlay used to
@@ -46,15 +40,15 @@ export const Default: Story = {
   render: () => (
     <Watermark content="Famgia · Confidential" style={{ padding: 24 }}>
       <Card style={{ width: 480 }}>
-        <CardHeader>
-          <CardTitle>5月度 勤怠サマリー</CardTitle>
-          <CardSubtitle>確定前のドラフトです</CardSubtitle>
-        </CardHeader>
-        <CardBody>
+        <div className="card-header-stack">
+          <h3 className="card-title">5月度 勤怠サマリー</h3>
+          <span className="card-subtitle">確定前のドラフトです</span>
+        </div>
+        <div className="card-body">
           <p>承認: 山田 太郎</p>
           <p>合計勤務時間: 168h 30m</p>
           <p>残業: 12h 45m</p>
-        </CardBody>
+        </div>
       </Card>
     </Watermark>
   ),
@@ -67,13 +61,15 @@ export const MultiLine: Story = {
       style={{ padding: 24, minHeight: 320 }}
     >
       <Card style={{ width: 480 }}>
-        <CardHeader>
-          <CardTitle>個人配布資料</CardTitle>
-          <CardSubtitle>本資料は閲覧者本人のみが利用できます</CardSubtitle>
-        </CardHeader>
-        <CardBody>
+        <div className="card-header-stack">
+          <h3 className="card-title">個人配布資料</h3>
+          <span className="card-subtitle">
+            本資料は閲覧者本人のみが利用できます
+          </span>
+        </div>
+        <div className="card-body">
           <p>所有者ごとに透かしを焼き込んでから配布します。</p>
-        </CardBody>
+        </div>
       </Card>
     </Watermark>
   ),
@@ -88,14 +84,14 @@ export const Sparse: Story = {
       style={{ padding: 24, minHeight: 320, width: 640 }}
     >
       <Card>
-        <CardHeader>
-          <CardTitle>申請書(下書き)</CardTitle>
-          <CardSubtitle>送信前 · 承認は走っていません</CardSubtitle>
-        </CardHeader>
-        <CardBody>
+        <div className="card-header-stack">
+          <h3 className="card-title">申請書(下書き)</h3>
+          <span className="card-subtitle">送信前 · 承認は走っていません</span>
+        </div>
+        <div className="card-body">
           <p>件名: 出張旅費精算</p>
           <p>金額: ¥38,420</p>
-        </CardBody>
+        </div>
       </Card>
     </Watermark>
   ),
@@ -110,13 +106,13 @@ export const Dense: Story = {
       style={{ padding: 24, minHeight: 240, width: 480 }}
     >
       <Card>
-        <CardHeader>
-          <CardTitle>密度高めの透かし</CardTitle>
-          <CardSubtitle>細かいタイルを敷き詰める</CardSubtitle>
-        </CardHeader>
-        <CardBody>
+        <div className="card-header-stack">
+          <h3 className="card-title">密度高めの透かし</h3>
+          <span className="card-subtitle">細かいタイルを敷き詰める</span>
+        </div>
+        <div className="card-body">
           <p>サンプル · 画像書き出し前のプレビュー用</p>
-        </CardBody>
+        </div>
       </Card>
     </Watermark>
   ),

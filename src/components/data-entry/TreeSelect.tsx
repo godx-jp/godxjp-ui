@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useMemo, useState, type ReactNode } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import { cn } from "../cn"
-import { Popover, PopoverAnchor, PopoverContent } from "../data-display/Popover"
+import { Popover } from "../data-display/Popover"
 import { Checkbox } from "./Checkbox"
 
 /**
@@ -265,8 +265,13 @@ export const TreeSelect = forwardRef<HTMLButtonElement, TreeSelectProps>(
     }, [currentArray, labelMap, multiple])
 
     return (
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverAnchor asChild>
+      <Popover
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        align="start"
+        sideOffset={4}
+        className="treeselect-content"
+        trigger={
           <button
             ref={ref}
             type="button"
@@ -291,8 +296,8 @@ export const TreeSelect = forwardRef<HTMLButtonElement, TreeSelectProps>(
               style={{ width: "var(--spacing-4)", height: "var(--spacing-4)", flexShrink: 0 }}
             />
           </button>
-        </PopoverAnchor>
-        <PopoverContent align="start" sideOffset={4} className="treeselect-content">
+        }
+      >
           <ul className="treeselect-tree" role="tree">
             {options.map((option) => (
               <TreeNode
@@ -307,7 +312,6 @@ export const TreeSelect = forwardRef<HTMLButtonElement, TreeSelectProps>(
               />
             ))}
           </ul>
-        </PopoverContent>
       </Popover>
     )
   },

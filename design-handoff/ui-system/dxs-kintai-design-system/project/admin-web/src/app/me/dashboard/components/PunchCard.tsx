@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from "@godxjp/ui";
+import { Badge, Button, Card, CardSection, Card, CardTitleText } from "@godxjp/ui";
 
 import { useMyStats } from "@/hooks/api/employee/use-my-time";
 import { usePunch } from "@/hooks/api/employee/use-punch";
@@ -58,13 +58,13 @@ export function PunchCard({ defaultLocationId }: { defaultLocationId?: number | 
 
   return (
     <Card data-slot="punch-card">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+      <Card>
+        <CardTitleText className="flex items-center justify-between">
           <span>Chấm công</span>
           {statusInfo && <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+        </CardTitleText>
+      </Card>
+      <CardSection className="space-y-4">
         <div className="grid grid-cols-2 gap-2">
           {punchButtons.map((b) => (
             <Button
@@ -84,7 +84,7 @@ export function PunchCard({ defaultLocationId }: { defaultLocationId?: number | 
             {stats.data.data.last_punch.timestamp}
           </p>
         )}
-      </CardContent>
+      </CardSection>
     </Card>
   );
 }

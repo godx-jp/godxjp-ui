@@ -20,6 +20,14 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **Table saved views** — `TableViewsConfig` now lets saved-view tabs
+  apply `filters`, `sort`, and `columnVisibility` snapshots while
+  keeping persistence in consumer state. The Table story opens a
+  naming dialog before saving and warns when another view already
+  has the same filters and column visibility. Views can opt into
+  deletion with `deletable` + `onDeleteView`, while built-in views
+  remain protected by default. `getTableViewsStorageKey` provides
+  the localStorage namespace next to column visibility.
 - **`GodxConfigProvider` + format helpers** — canonical alias of
   `PreferencesProvider` per ADR 0005. The provider now wraps
   children in React Aria's `<I18nProvider>` so every date / time /
@@ -97,7 +105,7 @@ boolean` adds a pulsing ring around the marker dot for that single
   item rendering).
 - **Combobox `WithSelection` story** — controlled state + check
   indicator + role meta pattern (the old verbose Default).
-- **40 reference doc stubs** — `docs/reference/primitives/<Name>.md`
+- **40 reference doc stubs** — `docs/reference/<group>/<Name>.md`
   draft scaffold for the previously undocumented primitives (Flex,
   Form, Transfer, Field, LocaleTabs, Checklist, Spinner, IconButton,
   PageHeader, SegmentedControl, Statistic, Empty, Tag, Alert, Result,
@@ -145,7 +153,7 @@ boolean` adds a pulsing ring around the marker dot for that single
   directly (not the framework's re-export) — documented in the
   Tooltip reference doc.
 - **AutoComplete focus closing the dropdown** —
-  `onFocusOutside={preventDefault}` on `ComboboxContent` so opening
+  `onFocusOutside={preventDefault}` on `Combobox` so opening
   on focus survives the focus-leaves-anchor lifecycle.
 - **AutoComplete label vs value** — input shows the selected option's
   `label`; `onValueChange` reports the option's `value` (Ant / shadcn
@@ -154,7 +162,7 @@ boolean` adds a pulsing ring around the marker dot for that single
   spread so the inner Primitive.input never receives both
   (controlled / uncontrolled warning silenced).
 - **`<List>` and `<Menu>` nested `<li>`** — `List` renderItem no
-  longer wraps in an extra `<li>`; `MenuGroup` switched from
+  longer wraps in an extra `<li>`; `Menu` switched from
   `<li role="none">` to `<div role="group">` (ARIA-compliant).
 - **`Collapse` Tailwind utility collision** — root class renamed
   `.collapse` → `.collapse-root` so Tailwind v4's
@@ -170,8 +178,8 @@ boolean` adds a pulsing ring around the marker dot for that single
   `<Button>` for tab elements + `border-radius: 0` explicit on
   `.card-header-tabs .tab` so an accidental `<Button>` doesn't
   contaminate the underline.
-- **Card H13 / H14 / H17 stories** — `<CardBody block>` /
-  `<CardFooter block>` sub-component pattern instead of raw
+- **Card H13 / H14 / H17 stories** — `<div className="card-body-block">` /
+  `<Card footer block>` sub-component pattern instead of raw
   `<div className="card-body">` (rule 29).
 - **Card H17 sticky-shadow scroll** — `max-height: 140 + overflow-y:
 auto` instead of `height: 80 + overflow: hidden` so the story
@@ -225,7 +233,7 @@ auto` instead of `height: 80 + overflow: hidden` so the story
   dynamic source shows real JSX. `<ExampleForm disabled />` exemption
   also removed.
 - **`Card.stories.tsx` raw card-body / card-footer divs** —
-  ~27 occurrences replaced with `<CardBody block>` / `<CardFooter
+  ~27 occurrences replaced with `<div className="card-body-block">` / `<Card footer
 block>` React sub-components per rule 29.
 - **`docs.source.type`** — `"dynamic"` (was `"code"`) so the source
   view renders the JSX, not the wrapping story object.
@@ -235,6 +243,10 @@ block>` React sub-components per rule 29.
 
 ### Removed
 
+- **Dialog legacy compositional API** — removed the multi-part modal
+  surface. `Dialog` is now the single public component with `trigger`,
+  `title`, `description`, `children`, `footer`, and optional `form`
+  props.
 - **`Timeline pending` prop** — removed. The trailing "ongoing"
   marker is now expressed as a regular item with
   `{ animate: true, color: "primary", title: "…" }`. Per cardinal
@@ -347,10 +359,10 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
    `"godx" | "kintai" | "tempo" | "betoya" | "restaurant"` for type narrowing,
    the type is now `string`. Add your own type guard if needed:
    ```ts
-   const KNOWN_TENANTS = ["godx", "kintai", "tempo", "betoya"] as const
-   type KnownTenant = (typeof KNOWN_TENANTS)[number]
+   const KNOWN_TENANTS = ["godx", "kintai", "tempo", "betoya"] as const;
+   type KnownTenant = (typeof KNOWN_TENANTS)[number];
    function isKnownTenant(t: string): t is KnownTenant {
-     return KNOWN_TENANTS.includes(t as KnownTenant)
+     return KNOWN_TENANTS.includes(t as KnownTenant);
    }
    ```
 
@@ -363,9 +375,9 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
   `tokens.css`). Optional **`@godxjp/ui/sonner.css`** import (after
   tokens) pulls in sonner’s stacking / motion stylesheet and resets
   toaster `font-family` to inherit.
-- **Combobox** family — `Combobox` / `ComboboxTrigger` / `ComboboxAnchor`
-  (Popover aliases), `ComboboxContent` (wraps inner `cmdk` `Command`),
-  `ComboboxInput`, `ComboboxList`, `ComboboxItem`, `ComboboxEmpty`.
+- **Combobox** family — `Combobox` / `Combobox` / `Combobox`
+  (Popover aliases), `Combobox` (wraps inner `cmdk` `Command`),
+  `Combobox`, `Combobox`, `Combobox`, `Combobox`.
   New `.combobox-*` atoms in `tokens.css`.
 - Dependency: **`sonner`** (`cmdk` already present).
 
@@ -373,13 +385,10 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 
 ### Added
 
-- **Dialog** family (`Dialog`, `DialogTrigger`, `DialogPortal`, `DialogClose`,
-  `DialogOverlay`, `DialogContent`, `DialogHeader`, `DialogFooter`,
-  `DialogTitle`, `DialogDescription`) — Radix Dialog + `.dialog-*` in
-  `tokens.css`.
-- **Sheet** family (Radix Dialog; `SheetContent` with `side` + `.sheet-*`
+- **Dialog** family — Radix Dialog + `.dialog-*` in `tokens.css`.
+- **Sheet** family (Radix Dialog; `Sheet` with `side` + `.sheet-*`
   animation tokens).
-- **AlertDialog** family (`AlertDialog*`, `AlertDialogAction` / `Cancel`
+- **AlertDialog** family (`AlertDialog*`, `AlertDialog` / `Cancel`
   use `.btn` / `.btn-primary` / `.btn-secondary`).
 - **Select** family (`Select*`, `SelectPortal`, scroll buttons, separator).
 - **Switch**, **Checkbox** (Radix) with `.switch-*` / `.checkbox-*`.
@@ -395,15 +404,15 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 
 ### Added
 
-- **Popover** primitive (`Popover`, `PopoverTrigger`, `PopoverContent`,
-  `PopoverAnchor`) wrapping `@radix-ui/react-popover`. Visual contract
+- **Popover** primitive (`Popover`, `Popover`, `Popover`,
+  `Popover`) wrapping `@radix-ui/react-popover`. Visual contract
   in the new `.popover-content` class in `tokens.css` — brand-tokenised
   surface (`--popover`), border, and elevation.
-- **DropdownMenu** primitive (`DropdownMenu`, `DropdownMenuTrigger`,
-  `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuSeparator`,
-  `DropdownMenuLabel`, `DropdownMenuShortcut`, `DropdownMenuGroup`,
-  `DropdownMenuPortal`, `DropdownMenuSub`, `DropdownMenuRadioGroup`)
-  wrapping `@radix-ui/react-dropdown-menu`. `<DropdownMenuItem>`
+- **DropdownMenu** primitive (`DropdownMenu`, `DropdownMenu`,
+  `DropdownMenu`, `DropdownMenu`, `DropdownMenu`,
+  `DropdownMenu`, `DropdownMenu`, `DropdownMenu`,
+  `DropdownMenu`, `DropdownMenu`, `DropdownMenu`)
+  wrapping `@radix-ui/react-dropdown-menu`. `<DropdownMenu>`
   supports `variant="destructive"` + `inset` matching the public v0.2
   surface so call sites migrate by dep bump only.
 - **Calendar** primitive — `react-day-picker` themed via the new
@@ -456,9 +465,9 @@ upgrading from 2.x gain a complete toolchain preset and a fourth mandatory local
 - **`design/godx-admin-2026-05-13.tar.gz`** — original archive from
   `api.anthropic.com/v1/design/h/7Ya1OxEEfiaI2SWojzuP9A`. Kept so the
   brand can be re-extracted on any fresh checkout.
-- **Atomic primitives**: `Badge`, `Button`, `Card` (+ `CardHeader`,
-  `CardTitle`, `CardSubtitle`, `CardContent`), `Input`, `Textarea`,
-  `Label`, `Tabs` (+ `TabsList`, `TabsTrigger`, `TabsContent`),
+- **Atomic primitives**: `Badge`, `Button`, `Card` (+ `Card header`,
+  `Card title`, `Card subtitle`, `Card content`), `Input`, `Textarea`,
+  `Label`, `Tabs` (+ `Tabs`, `Tabs`, `Tabs`),
   `Avatar`, `Separator`. Each maps onto a canonical CSS class from
   `tokens.css` — no Tailwind utility re-encoding.
 - **`./components/primitives` export path** for explicit imports.

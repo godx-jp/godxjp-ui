@@ -1,102 +1,79 @@
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
-import { forwardRef, type ComponentPropsWithoutRef, type ElementRef, type HTMLAttributes } from "react"
+import { type ComponentPropsWithoutRef, type ReactNode } from "react"
 import { cn } from "../cn"
 
-/**
- * DropdownMenu — Radix-backed action menu opened from a trigger
- * (kebab, caret, button…). Styled via canonical `.dropdown-menu-*`
- * classes from tokens.css.
- *
- * Items support `variant="destructive"` for dangerous actions and
- * `inset` for left-padding alignment when icons aren't on every row.
- *
- * @example
- *   <DropdownMenu>
- *     <DropdownMenuTrigger asChild>
- *       <Button variant="ghost"><MoreVertical /></Button>
- *     </DropdownMenuTrigger>
- *     <DropdownMenuContent align="end">
- *       <DropdownMenuItem onSelect={onEdit}>Edit</DropdownMenuItem>
- *       <DropdownMenuSeparator />
- *       <DropdownMenuItem variant="destructive" onSelect={onDelete}>
- *         Delete
- *       </DropdownMenuItem>
- *     </DropdownMenuContent>
- *   </DropdownMenu>
- */
-export const DropdownMenu = DropdownMenuPrimitive.Root
-export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
-export const DropdownMenuGroup = DropdownMenuPrimitive.Group
-export const DropdownMenuPortal = DropdownMenuPrimitive.Portal
-export const DropdownMenuSub = DropdownMenuPrimitive.Sub
-export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
-
-export const DropdownMenuContent = forwardRef<
-  ElementRef<typeof DropdownMenuPrimitive.Content>,
-  ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
->(function DropdownMenuContent({ className, sideOffset = 6, ...rest }, ref) {
-  return (
-    <DropdownMenuPrimitive.Portal>
-      <DropdownMenuPrimitive.Content
-        ref={ref}
-        sideOffset={sideOffset}
-        className={cn("dropdown-menu-content", className)}
-        {...rest}
-      />
-    </DropdownMenuPrimitive.Portal>
-  )
-})
-
-type DropdownItemProps = ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
-  inset?: boolean
+export interface DropdownMenuOption {
+  key: string
+  label?: ReactNode
+  onSelect?: ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item>["onSelect"]
+  disabled?: boolean
   variant?: "default" | "destructive"
+  shortcut?: ReactNode
+  type?: "item" | "label" | "separator"
 }
 
-export const DropdownMenuItem = forwardRef<
-  ElementRef<typeof DropdownMenuPrimitive.Item>,
-  DropdownItemProps
->(function DropdownMenuItem({ className, inset, variant = "default", ...rest }, ref) {
-  return (
-    <DropdownMenuPrimitive.Item
-      ref={ref}
-      className={cn("dropdown-menu-item", className)}
-      data-variant={variant === "destructive" ? "destructive" : undefined}
-      data-inset={inset ? "true" : undefined}
-      {...rest}
-    />
-  )
-})
+export interface DropdownMenuProps
+  extends Omit<ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>, "children"> {
+  trigger: ReactNode
+  items: DropdownMenuOption[]
+  align?: ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>["align"]
+  sideOffset?: number
+  contentClassName?: string
+}
 
-export const DropdownMenuSeparator = forwardRef<
-  ElementRef<typeof DropdownMenuPrimitive.Separator>,
-  ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
->(function DropdownMenuSeparator({ className, ...rest }, ref) {
+export function DropdownMenu({
+  trigger,
+  items,
+  align,
+  sideOffset = 6,
+  contentClassName,
+  ...rootProps
+}: DropdownMenuProps) {
   return (
-    <DropdownMenuPrimitive.Separator
-      ref={ref}
-      className={cn("dropdown-menu-separator", className)}
-      {...rest}
-    />
+    <DropdownMenuPrimitive.Root {...rootProps}>
+      <DropdownMenuPrimitive.Trigger asChild>{trigger}</DropdownMenuPrimitive.Trigger>
+      <DropdownMenuPrimitive.Portal>
+        <DropdownMenuPrimitive.Content
+          align={align}
+          sideOffset={sideOffset}
+          className={cn("dropdown-menu-content", contentClassName)}
+        >
+          {items.map((item) => {
+            if (item.type === "separator") {
+              return (
+                <DropdownMenuPrimitive.Separator
+                  key={item.key}
+                  className="dropdown-menu-separator"
+                />
+              )
+            }
+            if (item.type === "label") {
+              return (
+                <DropdownMenuPrimitive.Label
+                  key={item.key}
+                  className="dropdown-menu-label"
+                >
+                  {item.label}
+                </DropdownMenuPrimitive.Label>
+              )
+            }
+            return (
+              <DropdownMenuPrimitive.Item
+                key={item.key}
+                disabled={item.disabled}
+                onSelect={item.onSelect}
+                className="dropdown-menu-item"
+                data-variant={item.variant === "destructive" ? "destructive" : undefined}
+              >
+                {item.label}
+                {item.shortcut && (
+                  <span className="dropdown-menu-shortcut">{item.shortcut}</span>
+                )}
+              </DropdownMenuPrimitive.Item>
+            )
+          })}
+        </DropdownMenuPrimitive.Content>
+      </DropdownMenuPrimitive.Portal>
+    </DropdownMenuPrimitive.Root>
   )
-})
-
-export const DropdownMenuLabel = forwardRef<
-  ElementRef<typeof DropdownMenuPrimitive.Label>,
-  ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & { inset?: boolean }
->(function DropdownMenuLabel({ className, inset, ...rest }, ref) {
-  return (
-    <DropdownMenuPrimitive.Label
-      ref={ref}
-      className={cn("dropdown-menu-label", className)}
-      data-inset={inset ? "true" : undefined}
-      {...rest}
-    />
-  )
-})
-
-export function DropdownMenuShortcut({
-  className,
-  ...rest
-}: HTMLAttributes<HTMLSpanElement>) {
-  return <span className={cn("dropdown-menu-shortcut", className)} {...rest} />
 }

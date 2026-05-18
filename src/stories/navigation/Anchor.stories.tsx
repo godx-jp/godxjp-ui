@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Anchor, AnchorLink } from "../../components/navigation/Anchor";
+import { Anchor } from "../../components/navigation/Anchor";
 import { Typography } from "../../components/general/Typography";
 
 const { Title, Paragraph } = Typography;
@@ -37,20 +37,25 @@ const SectionBlock = ({ id, title }: { id: string; title: string }) => (
 );
 
 // ════════════════════════════════════════════════════════════════
-// Vertical (default) — compositional
+// Vertical (default)
 // ════════════════════════════════════════════════════════════════
 
 export const Vertical: Story = {
-  name: "Vertical · compositional",
+  name: "Vertical · items",
   render: () => (
     <div style={{ display: "flex", gap: "var(--spacing-6)", padding: "var(--spacing-6)", alignItems: "flex-start" }}>
-      <Anchor sticky offset={20} style={{ flexShrink: 0, width: 200, top: 20 }}>
-        <AnchorLink href="#intro">概要</AnchorLink>
-        <AnchorLink href="#install">インストール</AnchorLink>
-        <AnchorLink href="#api">API リファレンス</AnchorLink>
-        <AnchorLink href="#examples">使用例</AnchorLink>
-        <AnchorLink href="#faq">よくある質問</AnchorLink>
-      </Anchor>
+      <Anchor
+        sticky
+        offset={20}
+        style={{ flexShrink: 0, width: 200, top: 20 }}
+        items={[
+          { href: "#intro", label: "概要" },
+          { href: "#install", label: "インストール" },
+          { href: "#api", label: "API リファレンス" },
+          { href: "#examples", label: "使用例" },
+          { href: "#faq", label: "よくある質問" },
+        ]}
+      />
       <div style={{ flex: 1, minWidth: 0 }}>
         <SectionBlock id="intro" title="概要" />
         <SectionBlock id="install" title="インストール" />
@@ -70,12 +75,18 @@ export const Horizontal: Story = {
   name: "Horizontal · top-bar style",
   render: () => (
     <div style={{ padding: "var(--spacing-6)" }}>
-      <Anchor orientation="horizontal" sticky offset={20} style={{ top: 0, background: "var(--background)", zIndex: 10 }}>
-        <AnchorLink href="#overview">概要</AnchorLink>
-        <AnchorLink href="#features">機能</AnchorLink>
-        <AnchorLink href="#pricing">プラン</AnchorLink>
-        <AnchorLink href="#contact">お問い合わせ</AnchorLink>
-      </Anchor>
+      <Anchor
+        orientation="horizontal"
+        sticky
+        offset={20}
+        style={{ top: 0, background: "var(--background)", zIndex: 10 }}
+        items={[
+          { href: "#overview", label: "概要" },
+          { href: "#features", label: "機能" },
+          { href: "#pricing", label: "プラン" },
+          { href: "#contact", label: "お問い合わせ" },
+        ]}
+      />
       <div style={{ paddingTop: "var(--spacing-4)" }}>
         <SectionBlock id="overview" title="概要" />
         <SectionBlock id="features" title="機能" />

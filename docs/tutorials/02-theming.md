@@ -36,12 +36,12 @@ visual switching happens via CSS attribute selectors on the
 `<html>` element. There are **four orthogonal axes** (see
 [01 — theme axes](../../new-docs/01-theme-axes.md)):
 
-| Attribute | Values | What changes |
-|---|---|---|
-| `data-theme` | `light` (default) \| `dark` | Surface colors, foreground, border |
-| `data-accent` | `blue` (default) \| `green` \| `violet` \| `amber` \| `rose` \| `slate` \| any registered palette | Primary, ring, brand chain |
-| `data-density` | `compact` \| `default` \| `comfortable` | Element / card / page heights |
-| `data-font-size` | `sm` \| `base` (default) \| `lg` \| `xl` | Root rem scale |
+| Attribute        | Values                                                                                            | What changes                       |
+| ---------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `data-theme`     | `light` (default) \| `dark`                                                                       | Surface colors, foreground, border |
+| `data-accent`    | `blue` (default) \| `green` \| `violet` \| `amber` \| `rose` \| `slate` \| any registered palette | Primary, ring, brand chain         |
+| `data-density`   | `compact` \| `default` \| `comfortable`                                                           | Element / card / page heights      |
+| `data-font-size` | `sm` \| `base` (default) \| `lg` \| `xl`                                                          | Root rem scale                     |
 
 `tailwind.css` (which transitively imports `theme.css`) declares
 every variant. Setting `document.documentElement.dataset.theme =
@@ -60,7 +60,7 @@ Update `src/App.tsx` to toggle `data-theme` on the document root:
 ```tsx
 // src/App.tsx
 import { useState } from "react"
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@godxjp/ui"
+import { Button, Card, Card content, Card header, Card title } from "@godxjp/ui"
 
 export default function App() {
   const [dark, setDark] = useState(false)
@@ -97,17 +97,19 @@ preference to `localStorage` and keeps the `<html>` attributes in sync automatic
 
 ```tsx
 // src/App.tsx
-import { Button, Card } from "@godxjp/ui"
-import { useTweaks } from "@godxjp/ui/hooks"
+import { Button, Card } from "@godxjp/ui";
+import { useTweaks } from "@godxjp/ui/hooks";
 
 export default function App() {
-  const { tweaks, setTweak } = useTweaks()
+  const { tweaks, setTweak } = useTweaks();
 
   return (
     <main style={{ padding: "2rem", maxWidth: "480px" }}>
       <Button
         variant="ghost"
-        onClick={() => setTweak("theme", tweaks.theme === "dark" ? "light" : "dark")}
+        onClick={() =>
+          setTweak("theme", tweaks.theme === "dark" ? "light" : "dark")
+        }
         style={{ marginBottom: "1rem" }}
       >
         Theme: {tweaks.theme}
@@ -120,7 +122,7 @@ export default function App() {
         </p>
       </Card>
     </main>
-  )
+  );
 }
 ```
 
@@ -140,10 +142,10 @@ Create a `src/theme.css` file in your service's frontend directory:
 
 /* Accent palette "myapp" — green */
 [data-accent="myapp"] {
-  --primary:           oklch(56% 0.15 155);   /* chroma = 0.15 — within the 0.18 cap */
-  --primary-foreground:oklch(98% 0.01 155);
-  --ring:              oklch(56% 0.15 155);
-  --brand:             oklch(56% 0.15 155);
+  --primary: oklch(56% 0.15 155); /* chroma = 0.15 — within the 0.18 cap */
+  --primary-foreground: oklch(98% 0.01 155);
+  --ring: oklch(56% 0.15 155);
+  --brand: oklch(56% 0.15 155);
   --sidebar-active-bg: oklch(95% 0.02 155);
   --sidebar-active-fg: oklch(56% 0.15 155);
 }
@@ -151,29 +153,29 @@ Create a `src/theme.css` file in your service's frontend directory:
 /* Optional explicit dark variant */
 [data-theme="dark"][data-accent="myapp"] {
   --primary: oklch(70% 0.15 155);
-  --ring:    oklch(70% 0.15 155);
+  --ring: oklch(70% 0.15 155);
 }
 ```
 
 Import it in `main.tsx`:
 
 ```tsx
-import "./theme.css"               // chains @godxjp/ui/tailwind.css first
-import { initI18n } from "@godxjp/ui/i18n"
+import "./theme.css"; // chains @godxjp/ui/tailwind.css first
+import { initI18n } from "@godxjp/ui/i18n";
 // …
 ```
 
 Activate the palette in your App:
 
 ```tsx
-document.documentElement.dataset.accent = "myapp"
+document.documentElement.dataset.accent = "myapp";
 ```
 
 Or use `useTweaks`:
 
 ```tsx
-const { setTweak } = useTweaks()
-setTweak("accent", "myapp")
+const { setTweak } = useTweaks();
+setTweak("accent", "myapp");
 ```
 
 ---
@@ -190,12 +192,12 @@ Values above 0.18 are saturated neon — outside the brand contract and will fai
 
 ## Troubleshooting
 
-| Problem | Likely cause | Fix |
-|---|---|---|
-| Dark mode toggle has no visible effect | `theme.css` did not `@import "@godxjp/ui/tailwind.css"` | Add the import at the top of `theme.css` |
-| Accent color does not appear | `data-accent` value mismatch between CSS and `<html>` | Confirm `dataset.accent` matches the CSS selector slug |
-| Custom color looks wrong in dark mode | Dark variant not specified | Add `[data-theme="dark"][data-accent="myapp"]` rule in `theme.css` |
-| `useTweaks` import fails | Wrong sub-path | Use `import { useTweaks } from "@godxjp/ui/hooks"` |
+| Problem                                | Likely cause                                            | Fix                                                                |
+| -------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------ |
+| Dark mode toggle has no visible effect | `theme.css` did not `@import "@godxjp/ui/tailwind.css"` | Add the import at the top of `theme.css`                           |
+| Accent color does not appear           | `data-accent` value mismatch between CSS and `<html>`   | Confirm `dataset.accent` matches the CSS selector slug             |
+| Custom color looks wrong in dark mode  | Dark variant not specified                              | Add `[data-theme="dark"][data-accent="myapp"]` rule in `theme.css` |
+| `useTweaks` import fails               | Wrong sub-path                                          | Use `import { useTweaks } from "@godxjp/ui/hooks"`                 |
 
 ---
 

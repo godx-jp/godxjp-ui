@@ -4,7 +4,7 @@ import {
   type ChangeEvent,
   type ReactNode,
 } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../data-display/Popover";
+import { Popover } from "../data-display/Popover";
 import { cn } from "../cn";
 
 /**
@@ -147,8 +147,12 @@ export const ColorPicker = forwardRef<HTMLButtonElement, ColorPickerProps>(
     };
 
     return (
-      <Popover open={currentOpen} onOpenChange={disabled ? undefined : setOpen}>
-        <PopoverTrigger asChild>
+      <Popover
+        open={currentOpen}
+        onOpenChange={disabled ? undefined : setOpen}
+        align="start"
+        className="colorpicker-panel"
+        trigger={
           <button
             ref={ref}
             type="button"
@@ -168,8 +172,8 @@ export const ColorPicker = forwardRef<HTMLButtonElement, ColorPickerProps>(
             />
             <span className="colorpicker-trigger-label">{currentValue}</span>
           </button>
-        </PopoverTrigger>
-        <PopoverContent className="colorpicker-panel" align="start">
+        }
+      >
           <div
             className="colorpicker-preview"
             style={{ background: currentValue }}
@@ -223,7 +227,6 @@ export const ColorPicker = forwardRef<HTMLButtonElement, ColorPickerProps>(
               })}
             </div>
           )}
-        </PopoverContent>
       </Popover>
     );
   },

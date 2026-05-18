@@ -1,17 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../components/feedback/Dialog";
+import { Dialog } from "../../components/feedback/Dialog";
 import { Button } from "../../components/general/Button";
 import { Input } from "../../components/data-entry/Input";
-import { Field, FieldLabel } from "../../components/data-entry/Field";
+import { Field } from "../../components/data-entry/Field";
 import { Space } from "../../components/layout";
 
 /**
@@ -46,32 +38,25 @@ type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="primary">シフトを編集</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>シフトを編集</DialogTitle>
-          <DialogDescription>
-            5月17日 (土) のシフト時間を変更します。
-          </DialogDescription>
-        </DialogHeader>
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-          <Field>
-            <FieldLabel>開始時刻</FieldLabel>
-            <Input defaultValue="08:00" />
-          </Field>
-          <Field>
-            <FieldLabel>終了時刻</FieldLabel>
-            <Input defaultValue="17:00" />
-          </Field>
-        </Space>
-        <DialogFooter>
+    <Dialog
+      trigger={<Button variant="primary">シフトを編集</Button>}
+      title="シフトを編集"
+      description="5月17日 (土) のシフト時間を変更します。"
+      footer={
+        <>
           <Button variant="ghost">キャンセル</Button>
           <Button variant="primary">保存</Button>
-        </DialogFooter>
-      </DialogContent>
+        </>
+      }
+    >
+      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Field label="開始時刻">
+          <Input defaultValue="08:00" />
+        </Field>
+        <Field label="終了時刻">
+          <Input defaultValue="17:00" />
+        </Field>
+      </Space>
     </Dialog>
   ),
   play: async ({ canvasElement, step }) => {
@@ -102,22 +87,16 @@ export const Default: Story = {
 export const Confirmation: Story = {
   name: "Confirmation — discard unsaved changes",
   render: () => (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="destructive">閉じる</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>保存せずに閉じますか?</DialogTitle>
-          <DialogDescription>
-            未保存の変更は失われます。続行するには「破棄」を選んでください。
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
+    <Dialog
+      trigger={<Button variant="destructive">閉じる</Button>}
+      title="保存せずに閉じますか?"
+      description="未保存の変更は失われます。続行するには「破棄」を選んでください。"
+      footer={
+        <>
           <Button variant="ghost">キャンセル</Button>
           <Button variant="destructive">破棄</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    />
   ),
 };

@@ -1,65 +1,77 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { forwardRef, type ComponentPropsWithoutRef, type ElementRef, type HTMLAttributes } from "react"
+import {
+  forwardRef,
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  type FormHTMLAttributes,
+  type ReactNode,
+} from "react"
 import { cn } from "../cn"
-
-/**
- * Sheet — slide-over panel built on Radix Dialog. Same accessibility
- * model as Dialog; `.sheet-content` positions per `side` using tokens.
- */
-export const Sheet = DialogPrimitive.Root
-export const SheetTrigger = DialogPrimitive.Trigger
-export const SheetClose = DialogPrimitive.Close
-export const SheetPortal = DialogPrimitive.Portal
-
-export const SheetOverlay = forwardRef<
-  ElementRef<typeof DialogPrimitive.Overlay>,
-  ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(function SheetOverlay({ className, ...rest }, ref) {
-  return <DialogPrimitive.Overlay ref={ref} className={cn("sheet-overlay", className)} {...rest} />
-})
 
 export type SheetSide = "top" | "right" | "bottom" | "left"
 
-export type SheetContentProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+export interface SheetProps
+  extends Omit<ComponentPropsWithoutRef<typeof DialogPrimitive.Root>, "children"> {
+  trigger?: ReactNode
+  title?: ReactNode
+  description?: ReactNode
+  footer?: ReactNode
+  children?: ReactNode
   side?: SheetSide
+  className?: string
+  contentProps?: Omit<ComponentPropsWithoutRef<typeof DialogPrimitive.Content>, "children">
+  form?: FormHTMLAttributes<HTMLFormElement>
 }
 
-export const SheetContent = forwardRef<ElementRef<typeof DialogPrimitive.Content>, SheetContentProps>(
-  function SheetContent({ side = "right", className, children, ...rest }, ref) {
-    return (
-      <SheetPortal>
-        <SheetOverlay />
+export const Sheet = forwardRef<
+  ElementRef<typeof DialogPrimitive.Content>,
+  SheetProps
+>(function Sheet(
+  {
+    trigger,
+    title,
+    description,
+    footer,
+    children,
+    side = "right",
+    className,
+    contentProps,
+    form,
+    ...rootProps
+  },
+  ref,
+) {
+  const body = (
+    <>
+      {(title || description) && (
+        <div className="dialog-header">
+          {title && <DialogPrimitive.Title className="dialog-title">{title}</DialogPrimitive.Title>}
+          {description && (
+            <DialogPrimitive.Description className="dialog-description">
+              {description}
+            </DialogPrimitive.Description>
+          )}
+        </div>
+      )}
+      {children}
+      {footer && <div className="dialog-footer">{footer}</div>}
+    </>
+  )
+
+  return (
+    <DialogPrimitive.Root {...rootProps}>
+      {trigger && <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>}
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="sheet-overlay" />
         <DialogPrimitive.Content
           ref={ref}
           data-side={side}
-          className={cn("sheet-content", className)}
-          {...rest}
+          {...contentProps}
+          className={cn("sheet-content", className, contentProps?.className)}
         >
-          {children}
+          {form ? <form {...form}>{body}</form> : body}
         </DialogPrimitive.Content>
-      </SheetPortal>
-    )
-  },
-)
-
-export function SheetHeader({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("dialog-header", className)} {...rest} />
-}
-
-export function SheetFooter({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("dialog-footer", className)} {...rest} />
-}
-
-export const SheetTitle = forwardRef<
-  ElementRef<typeof DialogPrimitive.Title>,
-  ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(function SheetTitle({ className, ...rest }, ref) {
-  return <DialogPrimitive.Title ref={ref} className={cn("dialog-title", className)} {...rest} />
-})
-
-export const SheetDescription = forwardRef<
-  ElementRef<typeof DialogPrimitive.Description>,
-  ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
->(function SheetDescription({ className, ...rest }, ref) {
-  return <DialogPrimitive.Description ref={ref} className={cn("dialog-description", className)} {...rest} />
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
+  )
 })

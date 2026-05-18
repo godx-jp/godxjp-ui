@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import {
   Card,
-  CardContent,
+  CardSection,
   Input,
   Table,
   TableBody,
@@ -51,7 +51,7 @@ export default function TimesheetPage() {
       />
       <PageContent>
         <Card>
-          <CardContent className="p-4">
+          <CardSection className="p-4">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -91,7 +91,7 @@ export default function TimesheetPage() {
                   ))}
               </TableBody>
             </Table>
-          </CardContent>
+          </CardSection>
         </Card>
       </PageContent>
     </>

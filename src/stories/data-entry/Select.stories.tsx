@@ -1,23 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/data-entry/Select";
+import { Select } from "../../components/data-entry/Select";
 import { Flex } from "../../components/layout";
 
 /**
  * data-entry/Select — Radix-backed dropdown.
  *
- * Compositional API: Radix Select with `<SelectTrigger>` styled as
- * `.input` + `.select-trigger`, content styled as `.select-content`,
- * items as `.select-item`. Stories below render the documented variants.
+ * Data API: pass `options` and let the primitive render trigger,
+ * content, grouped labels, separators, and items.
  *
  * Cardinal rules honoured:
  *   §3  — Radix Select for keyboard / portal / ARIA.
@@ -37,23 +27,20 @@ const meta: Meta<typeof Select> = {
     docs: {
       description: {
         component: `
-**Select** — Radix-backed dropdown field. Compositional API:
+**Select** — Radix-backed dropdown field. Single-component API:
 
 \`\`\`tsx
-<Select defaultValue="tokyo">
-  <SelectTrigger>
-    <SelectValue placeholder="拠点を選択" />
-  </SelectTrigger>
-  <SelectContent>
-    <SelectItem value="tokyo">東京</SelectItem>
-  </SelectContent>
-</Select>
+<Select
+  defaultValue="tokyo"
+  placeholder="拠点を選択"
+  options={[{ value: "tokyo", label: "東京" }]}
+/>
 \`\`\`
 
 Trigger reuses \`.input\` + \`.select-trigger\` so the three input
 sizes (\`.input-size-small\` / default / \`.input-size-large\`)
-work via \`className\`. \`SelectGroup\` + \`SelectLabel\` +
-\`SelectSeparator\` for grouped option lists.
+work via \`triggerClassName\`. Grouped options render labels and
+separators from the same \`options\` prop.
         `.trim(),
       },
     },
@@ -108,26 +95,27 @@ export const Grouped: Story = {
   name: "Grouped · labels + separator",
   render: () => (
     <div style={{ maxWidth: 260 }}>
-      <Select>
-        <SelectTrigger>
-          <SelectValue placeholder="部署を選択" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>本社</SelectLabel>
-            <SelectItem value="engineering">エンジニアリング</SelectItem>
-            <SelectItem value="design">デザイン</SelectItem>
-            <SelectItem value="product">プロダクト</SelectItem>
-          </SelectGroup>
-          <SelectSeparator />
-          <SelectGroup>
-            <SelectLabel>コーポレート</SelectLabel>
-            <SelectItem value="hr">人事</SelectItem>
-            <SelectItem value="finance">経理</SelectItem>
-            <SelectItem value="legal">法務</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+      <Select
+        placeholder="部署を選択"
+        options={[
+          {
+            label: "本社",
+            options: [
+              { value: "engineering", label: "エンジニアリング" },
+              { value: "design", label: "デザイン" },
+              { value: "product", label: "プロダクト" },
+            ],
+          },
+          {
+            label: "コーポレート",
+            options: [
+              { value: "hr", label: "人事" },
+              { value: "finance", label: "経理" },
+              { value: "legal", label: "法務" },
+            ],
+          },
+        ]}
+      />
     </div>
   ),
   play: async ({ canvasElement, step }) => {
@@ -155,33 +143,32 @@ export const Sizes: Story = {
   name: "Sizes · small / default / large",
   render: () => (
     <Flex vertical gap="small" style={{ maxWidth: 240 }}>
-      <Select defaultValue="a">
-        <SelectTrigger className="input-size-small">
-          <SelectValue placeholder="small" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="a">小サイズ A</SelectItem>
-          <SelectItem value="b">小サイズ B</SelectItem>
-        </SelectContent>
-      </Select>
-      <Select defaultValue="a">
-        <SelectTrigger>
-          <SelectValue placeholder="default" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="a">既定 A</SelectItem>
-          <SelectItem value="b">既定 B</SelectItem>
-        </SelectContent>
-      </Select>
-      <Select defaultValue="a">
-        <SelectTrigger className="input-size-large">
-          <SelectValue placeholder="large" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="a">大サイズ A</SelectItem>
-          <SelectItem value="b">大サイズ B</SelectItem>
-        </SelectContent>
-      </Select>
+      <Select
+        defaultValue="a"
+        placeholder="small"
+        triggerClassName="input-size-small"
+        options={[
+          { value: "a", label: "小サイズ A" },
+          { value: "b", label: "小サイズ B" },
+        ]}
+      />
+      <Select
+        defaultValue="a"
+        placeholder="default"
+        options={[
+          { value: "a", label: "既定 A" },
+          { value: "b", label: "既定 B" },
+        ]}
+      />
+      <Select
+        defaultValue="a"
+        placeholder="large"
+        triggerClassName="input-size-large"
+        options={[
+          { value: "a", label: "大サイズ A" },
+          { value: "b", label: "大サイズ B" },
+        ]}
+      />
     </Flex>
   ),
 };
@@ -192,27 +179,20 @@ export const Disabled: Story = {
   name: "Disabled · trigger and per-item",
   render: () => (
     <Flex vertical gap="middle" style={{ maxWidth: 260 }}>
-      <Select defaultValue="tokyo" disabled>
-        <SelectTrigger>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="tokyo">東京本社</SelectItem>
-        </SelectContent>
-      </Select>
+      <Select
+        defaultValue="tokyo"
+        disabled
+        options={[{ value: "tokyo", label: "東京本社" }]}
+      />
 
-      <Select>
-        <SelectTrigger>
-          <SelectValue placeholder="権限の状態" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="active">有効</SelectItem>
-          <SelectItem value="suspended" disabled>
-            停止中 (選択不可)
-          </SelectItem>
-          <SelectItem value="archived">アーカイブ</SelectItem>
-        </SelectContent>
-      </Select>
+      <Select
+        placeholder="権限の状態"
+        options={[
+          { value: "active", label: "有効" },
+          { value: "suspended", label: "停止中 (選択不可)", disabled: true },
+          { value: "archived", label: "アーカイブ" },
+        ]}
+      />
     </Flex>
   ),
 };
@@ -223,17 +203,15 @@ export const WithPlaceholder: Story = {
   name: "WithPlaceholder · uncontrolled empty state",
   render: () => (
     <div style={{ maxWidth: 240 }}>
-      <Select>
-        <SelectTrigger>
-          <SelectValue placeholder="未選択 — 言語を選んでください" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="ja">日本語</SelectItem>
-          <SelectItem value="en">English</SelectItem>
-          <SelectItem value="ko">한국어</SelectItem>
-          <SelectItem value="zh">中文</SelectItem>
-        </SelectContent>
-      </Select>
+      <Select
+        placeholder="未選択 — 言語を選んでください"
+        options={[
+          { value: "ja", label: "日本語" },
+          { value: "en", label: "English" },
+          { value: "ko", label: "한국어" },
+          { value: "zh", label: "中文" },
+        ]}
+      />
     </div>
   ),
 };

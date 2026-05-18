@@ -205,7 +205,7 @@ exporters emit the format-specific syntax for the target.
 
 Adopted from google-labs DESIGN.md `section-ordering` rule. Every
 design-handoff doc + every `new-docs/` doc + every primitive's
-`docs/reference/primitives/<Name>.md` follows:
+`docs/reference/<group>/<Name>.md` follows:
 
 ```
 1. Overview          (what it is, who it's for)

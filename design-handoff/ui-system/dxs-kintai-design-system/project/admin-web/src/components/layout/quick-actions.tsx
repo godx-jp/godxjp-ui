@@ -17,9 +17,6 @@ import Link from "next/link";
 import {
   Button,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "@godxjp/ui";
 import { ClipboardCheck, Plus, UserPlus } from "lucide-react";
 
@@ -80,8 +77,10 @@ export function QuickActions({ role: roleOverride }: QuickActionsProps = {}) {
   if (actions.length === 0) return null;
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu
+      align="end"
+      contentClassName="w-56"
+      trigger={
         <Button
           variant="outline"
           size="sm"
@@ -94,20 +93,19 @@ export function QuickActions({ role: roleOverride }: QuickActionsProps = {}) {
             {t("admin.quick.trigger_label")}
           </span>
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        {actions.map((action) => {
-          const Icon = action.icon;
-          return (
-            <DropdownMenuItem key={action.key} asChild className="h-8">
-              <Link href={action.href} className="flex items-center gap-2 text-sm">
-                <Icon className="size-3.5" />
-                {t(action.labelKey)}
-              </Link>
-            </DropdownMenuItem>
-          );
-        })}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      }
+      items={actions.map((action) => {
+        const Icon = action.icon;
+        return {
+          key: action.key,
+          label: (
+            <Link href={action.href} className="flex items-center gap-2 text-sm">
+              <Icon className="size-3.5" />
+              {t(action.labelKey)}
+            </Link>
+          ),
+        };
+      })}
+    />
   );
 }

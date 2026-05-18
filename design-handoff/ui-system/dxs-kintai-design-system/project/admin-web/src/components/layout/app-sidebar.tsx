@@ -14,11 +14,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from "@godxjp/ui";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, ChevronsUpDown, Search, Store, Tags } from "lucide-react";
@@ -109,11 +104,12 @@ export function AppSidebar({ brandName, mode = "brand", navGroups }: AppSidebarP
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu
+              align="start"
+              contentClassName="w-60"
               onOpenChange={(open) => {
                 if (open && !hasOpened) setHasOpened(true);
               }}
-            >
-              <DropdownMenuTrigger asChild>
+              trigger={
                 <SidebarMenuButton className="h-9 w-full justify-between">
                   <div className="flex items-center gap-2 overflow-hidden">
                     <div className="bg-primary text-primary-foreground flex size-5 shrink-0 items-center justify-center rounded text-[10px] font-bold">
@@ -123,90 +119,103 @@ export function AppSidebar({ brandName, mode = "brand", navGroups }: AppSidebarP
                   </div>
                   <ChevronsUpDown className="text-muted-foreground size-3.5 shrink-0" />
                 </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" side="bottom" className="w-60">
-                {brands.length > 0 && (
-                  <>
-                    <div className="flex items-center gap-1.5 px-2 py-1.5">
-                      <Tags className="text-muted-foreground size-3" />
-                      <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-widest">
-                        {t("select_context.brands")}
-                      </span>
-                      {brandTotal > brands.length && (
-                        <span className="text-muted-foreground ml-auto text-[10px]">
-                          {brands.length} / {brandTotal}
-                        </span>
-                      )}
-                    </div>
-                    <DropdownMenuGroup>
-                      {brands.map((b) => {
-                        const isActive = activeBrandSlug === b.slug && mode === "brand";
-                        return (
-                          <DropdownMenuItem
-                            key={b.slug}
-                            className="h-8 gap-2 pl-3 text-sm"
-                            onClick={() => router.push(`/admin/${b.slug}`)}
-                          >
-                            <div className="bg-primary text-primary-foreground flex size-5 shrink-0 items-center justify-center rounded text-[10px] font-bold">
-                              {b.name.charAt(0)}
-                            </div>
-                            <span className={isActive ? "font-medium" : ""}>{b.name}</span>
-                            {isActive && <span className="text-primary ml-auto text-xs">●</span>}
-                          </DropdownMenuItem>
-                        );
-                      })}
-                    </DropdownMenuGroup>
-                    {shops.length > 0 && <DropdownMenuSeparator />}
-                  </>
-                )}
-                {shops.length > 0 && (
-                  <>
-                    <div className="flex items-center gap-1.5 px-2 py-1.5">
-                      <Store className="text-muted-foreground size-3" />
-                      <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-widest">
-                        {t("select_context.shops")}
-                      </span>
-                      {shopTotal > shops.length && (
-                        <span className="text-muted-foreground ml-auto text-[10px]">
-                          {shops.length} / {shopTotal}
-                        </span>
-                      )}
-                    </div>
-                    <DropdownMenuGroup>
-                      {shops.map((s) => {
-                        const isActive = activeShopSlug === s.slug && mode === "shop";
-                        return (
-                          <DropdownMenuItem
-                            key={s.slug}
-                            className="h-8 gap-2 pl-3 text-sm"
-                            onClick={() => router.push(`/shop/${s.slug}/dashboard`)}
-                          >
-                            <div className="bg-muted text-muted-foreground flex size-5 shrink-0 items-center justify-center rounded">
-                              <Store className="size-3" />
-                            </div>
-                            <span className={isActive ? "font-medium" : ""}>{s.name}</span>
-                            {s.brand_name && (
+              }
+              items={[
+                ...(brands.length > 0
+                  ? [
+                      {
+                        key: "brands-label",
+                        type: "label" as const,
+                        label: (
+                          <div className="flex items-center gap-1.5 px-2 py-1.5">
+                            <Tags className="text-muted-foreground size-3" />
+                            <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-widest">
+                              {t("select_context.brands")}
+                            </span>
+                            {brandTotal > brands.length && (
                               <span className="text-muted-foreground ml-auto text-[10px]">
-                                {s.brand_name}
+                                {brands.length} / {brandTotal}
                               </span>
                             )}
-                          </DropdownMenuItem>
-                        );
-                      })}
-                    </DropdownMenuGroup>
-                  </>
-                )}
-                {(brands.length > 0 || shops.length > 0) && hasMore && <DropdownMenuSeparator />}
-                <DropdownMenuItem
-                  className="h-8 gap-2 pl-3 text-sm"
-                  onClick={() => router.push("/select-context")}
-                >
-                  <Search className="size-3.5" />
-                  <span>{t("select_context.search_placeholder")}</span>
-                  <ArrowRight className="text-muted-foreground ml-auto size-3.5" />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                          </div>
+                        ),
+                      },
+                      ...brands.map((b) => {
+                        const isActive = activeBrandSlug === b.slug && mode === "brand";
+                        return {
+                          key: `brand-${b.slug}`,
+                          onSelect: () => router.push(`/admin/${b.slug}`),
+                          label: (
+                            <>
+                              <div className="bg-primary text-primary-foreground flex size-5 shrink-0 items-center justify-center rounded text-[10px] font-bold">
+                                {b.name.charAt(0)}
+                              </div>
+                              <span className={isActive ? "font-medium" : ""}>{b.name}</span>
+                              {isActive && <span className="text-primary ml-auto text-xs">●</span>}
+                            </>
+                          ),
+                        };
+                      }),
+                      ...(shops.length > 0
+                        ? [{ key: "brand-shop-separator", type: "separator" as const }]
+                        : []),
+                    ]
+                  : []),
+                ...(shops.length > 0
+                  ? [
+                      {
+                        key: "shops-label",
+                        type: "label" as const,
+                        label: (
+                          <div className="flex items-center gap-1.5 px-2 py-1.5">
+                            <Store className="text-muted-foreground size-3" />
+                            <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-widest">
+                              {t("select_context.shops")}
+                            </span>
+                            {shopTotal > shops.length && (
+                              <span className="text-muted-foreground ml-auto text-[10px]">
+                                {shops.length} / {shopTotal}
+                              </span>
+                            )}
+                          </div>
+                        ),
+                      },
+                      ...shops.map((s) => {
+                        const isActive = activeShopSlug === s.slug && mode === "shop";
+                        return {
+                          key: `shop-${s.slug}`,
+                          onSelect: () => router.push(`/shop/${s.slug}/dashboard`),
+                          label: (
+                            <>
+                              <div className="bg-muted text-muted-foreground flex size-5 shrink-0 items-center justify-center rounded">
+                                <Store className="size-3" />
+                              </div>
+                              <span className={isActive ? "font-medium" : ""}>{s.name}</span>
+                              {s.brand_name && (
+                                <span className="text-muted-foreground ml-auto text-[10px]">
+                                  {s.brand_name}
+                                </span>
+                              )}
+                            </>
+                          ),
+                        };
+                      }),
+                    ]
+                  : []),
+                ...(hasMore ? [{ key: "more-separator", type: "separator" as const }] : []),
+                {
+                  key: "search",
+                  onSelect: () => router.push("/select-context"),
+                  label: (
+                    <>
+                      <Search className="size-3.5" />
+                      <span>{t("select_context.search_placeholder")}</span>
+                      <ArrowRight className="text-muted-foreground ml-auto size-3.5" />
+                    </>
+                  ),
+                },
+              ]}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

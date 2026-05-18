@@ -33,8 +33,10 @@ import { cn } from "../cn";
 export type IconButtonVariant = "secondary" | "ghost" | "primary";
 export type IconButtonSize = "sm" | "default" | "lg";
 
-export interface IconButtonProps
-  extends Omit<ComponentProps<"button">, "children"> {
+export interface IconButtonProps extends Omit<
+  ComponentProps<"button">,
+  "children"
+> {
   variant?: IconButtonVariant;
   size?: IconButtonSize;
   asChild?: boolean;
@@ -90,7 +92,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
           "[@godxjp/ui] <IconButton> is missing an accessible name. " +
             "Pass `aria-label`, `aria-labelledby`, or `title` so " +
             "screen-reader users can identify the control. " +
-            "See docs/reference/primitives/IconButton.md#accessibility.",
+            "See docs/reference/data-display/IconButton.md#accessibility.",
         );
       }
     }, [rest]);

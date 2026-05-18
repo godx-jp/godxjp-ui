@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import {
-  List,
-  ListItem,
-} from "../../components/data-display/List";
+import type { ReactNode } from "react";
+import { List } from "../../components/data-display/List";
 import { Avatar } from "../../components/data-display/Avatar";
 import { Button } from "../../components/general/Button";
 import { Tag } from "../../components/data-display/Tag";
@@ -10,8 +8,7 @@ import { Tag } from "../../components/data-display/Tag";
 /**
  * Data Display/List — header + items + footer surface.
  *
- * Both data-driven (`dataSource` + `renderItem`) and compositional
- * (`<ListItem>` children) shapes supported. Grid mode via `cols`.
+ * Data-driven (`dataSource` + `renderItem`). Grid mode via `cols`.
  */
 
 const meta: Meta<typeof List> = {
@@ -50,6 +47,38 @@ const STATUS_LABEL: Record<Employee["status"], string> = {
   leave: "休暇中",
 };
 
+const EmployeeRow = ({
+  avatar,
+  title,
+  description,
+  extra,
+  actions,
+}: {
+  avatar?: ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  extra?: ReactNode;
+  actions?: ReactNode[];
+}) => (
+  <>
+    {avatar !== undefined && <div className="list-item-avatar">{avatar}</div>}
+    <div className="list-item-meta">
+      <div className="list-item-title">{title}</div>
+      {description !== undefined && <div className="list-item-desc">{description}</div>}
+    </div>
+    {extra !== undefined && <div className="list-item-extra">{extra}</div>}
+    {actions && (
+      <div className="list-item-actions">
+        {actions.map((action, index) => (
+          <span key={index} className="list-item-action">
+            {action}
+          </span>
+        ))}
+      </div>
+    )}
+  </>
+);
+
 export const Default: Story = {
   render: () => (
     <div style={{ maxWidth: 720 }}>
@@ -57,7 +86,7 @@ export const Default: Story = {
         title="社員一覧"
         dataSource={EMPLOYEES}
         renderItem={(emp) => (
-          <ListItem
+          <EmployeeRow
             avatar={<Avatar>{emp.name.charAt(0)}</Avatar>}
             title={emp.name}
             description={emp.role}
@@ -77,7 +106,7 @@ export const Bordered: Story = {
         header="今週の出勤予定"
         dataSource={EMPLOYEES.slice(0, 4)}
         renderItem={(emp) => (
-          <ListItem
+          <EmployeeRow
             avatar={<Avatar>{emp.name.charAt(0)}</Avatar>}
             title={emp.name}
             description={emp.role}
@@ -156,7 +185,7 @@ export const WithFooter: Story = {
         header="申請一覧 (page 1 / 5)"
         dataSource={EMPLOYEES}
         renderItem={(emp) => (
-          <ListItem
+          <EmployeeRow
             avatar={<Avatar>{emp.name.charAt(0)}</Avatar>}
             title={emp.name}
             description={`${emp.role} — 申請日: 2026-05-${10 + Number(emp.id)}`}

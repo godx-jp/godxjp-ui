@@ -1,9 +1,5 @@
 import { useState, type ReactNode } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../data-display/Popover";
+import { Popover } from "../data-display/Popover";
 import { Button } from "../general/Button";
 import { cn } from "../cn";
 
@@ -108,37 +104,37 @@ export function Popconfirm({
     confirmVariant === "destructive" ? "var(--destructive)" : "var(--warning)";
 
   return (
-    <Popover open={currentOpen} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent
-        side={placement}
-        align="center"
-        className={cn("popconfirm", className)}
-      >
-        <div className="popconfirm-body">
-          <span className="popconfirm-icon" style={{ color: iconColor }}>
-            {icon ?? <DefaultIcon />}
-          </span>
-          <div className="popconfirm-text">
-            <div className="popconfirm-title">{title}</div>
-            {description && (
-              <div className="popconfirm-desc">{description}</div>
-            )}
-          </div>
+    <Popover
+      open={currentOpen}
+      onOpenChange={setOpen}
+      trigger={children}
+      side={placement}
+      align="center"
+      className={cn("popconfirm", className)}
+    >
+      <div className="popconfirm-body">
+        <span className="popconfirm-icon" style={{ color: iconColor }}>
+          {icon ?? <DefaultIcon />}
+        </span>
+        <div className="popconfirm-text">
+          <div className="popconfirm-title">{title}</div>
+          {description && (
+            <div className="popconfirm-desc">{description}</div>
+          )}
         </div>
-        <div className="popconfirm-actions">
-          <Button variant="ghost" size="x-small" onClick={handleCancel}>
-            {cancelLabel}
-          </Button>
-          <Button
-            variant={confirmVariant}
-            size="x-small"
-            onClick={handleConfirm}
-          >
-            {confirmLabel}
-          </Button>
-        </div>
-      </PopoverContent>
+      </div>
+      <div className="popconfirm-actions">
+        <Button variant="ghost" size="x-small" onClick={handleCancel}>
+          {cancelLabel}
+        </Button>
+        <Button
+          variant={confirmVariant}
+          size="x-small"
+          onClick={handleConfirm}
+        >
+          {confirmLabel}
+        </Button>
+      </div>
     </Popover>
   );
 }

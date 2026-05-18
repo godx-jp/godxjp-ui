@@ -124,7 +124,7 @@ Per [umbrella rule 10](../../../new-docs/10-doc-deduplication.md):
 | What the package is | [`README.md`](./README.md) |
 | **Theme axes** (theme / accent / density / font-size + cascade layering) | [`./new-docs/01-theme-axes.md`](./new-docs/01-theme-axes.md) |
 | **Consumer contract** (mandatory consumption, no-className-for-visual, search-first, folder shape, service-layer + TanStack Query, i18n bootstrap, config inheritance, primitive extension) | [`./new-docs/02-consumer-contract.md`](./new-docs/02-consumer-contract.md) |
-| Per-primitive API | `docs/reference/primitives/<Name>.md` |
+| Per-primitive API | `docs/reference/<group>/<Name>.md` |
 | Per-shell-component API | `docs/reference/shell/<Name>.md` |
 | Per-hook API | `docs/reference/hooks/<Name>.md` |
 | Every CSS token | `docs/reference/tokens.md` |
@@ -149,7 +149,7 @@ The rule is binding for three reasons:
 
 1. **Visual regression** — stories are the Playwright snapshot
    targets. A primitive without a story has no regression net.
-2. **Documentation parity** — `docs/reference/primitives/<Name>.md`
+2. **Documentation parity** — `docs/reference/<group>/<Name>.md`
    shows code; the story shows the rendered result. Both must
    exist for a primitive to be considered shipped.
 3. **Discoverability** — consumers (operator + agent) browse the
@@ -166,7 +166,7 @@ The rule is binding for three reasons:
    tokens-first per rules 2 + 15).
 3. Re-export from `src/components/primitives.ts` (the single
    barrel file).
-4. Add `docs/reference/primitives/<Name>.md` (Diátaxis reference
+4. Add `docs/reference/<group>/<Name>.md` (Diátaxis reference
    per [new-docs/09 §Library docs](../../../new-docs/09-service-docs.md)).
 5. **Add `src/stories/<group>/<Name>.stories.tsx`** — covers
    every variant + state (default, hover, active, focused,
@@ -177,7 +177,7 @@ The rule is binding for three reasons:
 ### When you edit a primitive
 
 1. Modify `src/components/<group>/<Name>.tsx`.
-2. Update `docs/reference/primitives/<Name>.md` (prop table /
+2. Update `docs/reference/<group>/<Name>.md` (prop table /
    variants / a11y notes must reflect the change).
 3. **Update `src/stories/<group>/<Name>.stories.tsx`** (new
    variant → new story; renamed prop → updated story).
@@ -191,7 +191,7 @@ The rule is binding for three reasons:
 1. Mark deprecated in `package.json::exports` for one major
    version (export the legacy name pointing at the new one).
 2. Delete `src/components/<group>/<Name>.tsx`.
-3. Delete `docs/reference/primitives/<Name>.md`.
+3. Delete `docs/reference/<group>/<Name>.md`.
 4. **Delete `src/stories/<group>/<Name>.stories.tsx`.**
 5. Remove the re-export from `src/components/primitives.ts`.
 6. Document removal in `CHANGELOG.md / ### Removed`.
@@ -211,7 +211,7 @@ const meta: Meta<typeof <Name>> = {
     layout: "centered",
     docs: {
       description: {
-        component: "One-sentence purpose — same as docs/reference/primitives/<Name>.md.",
+        component: "One-sentence purpose — same as docs/reference/<group>/<Name>.md.",
       },
     },
     a11y: { config: { rules: [] } },
@@ -595,7 +595,7 @@ PR description must cite the peer ("modeled prop shape after
   different concept.
 - New token re-encoding a value an existing token covers.
 - Prop missing from the §B vocabulary table without a documented
-  divergence in `docs/reference/primitives/<Name>.md`.
+  divergence in `docs/reference/<group>/<Name>.md`.
 - `<Name>.tsx` written without reading the peer primitive
   end-to-end.
 
@@ -690,7 +690,7 @@ reference the rendered element's `backgroundColor` /
 
 If a primitive cannot honour an axis (rare — fixed-aspect media,
 chart libraries that emit hardcoded sizes), document the
-exception in `docs/reference/primitives/<Name>.md` with the
+exception in `docs/reference/<group>/<Name>.md` with the
 reason. Silent non-compliance is rejected at review.
 
 ## Third-party library policy (cardinal rule 14)

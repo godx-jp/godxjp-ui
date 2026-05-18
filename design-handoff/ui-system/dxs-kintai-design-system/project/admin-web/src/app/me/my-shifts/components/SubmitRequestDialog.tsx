@@ -5,18 +5,12 @@ import { useState } from "react";
 import {
   Button,
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
   Label,
   Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectMenu,
+  SelectOptionRow,
+  SelectControl,
+  SelectDisplay,
   Spinner,
   Textarea,
 } from "@godxjp/ui";
@@ -38,7 +32,8 @@ export function SubmitRequestDialog({ shifts }: SubmitRequestDialogProps) {
   const [reason, setReason] = useState("");
   const submit = useSubmitChangeRequest();
 
-  const canSubmit = fromShiftId !== "" && reason.trim().length > 0 && !submit.isPending;
+  const canSubmit =
+    fromShiftId !== "" && reason.trim().length > 0 && !submit.isPending;
 
   const handleSubmit = () => {
     if (!canSubmit) {
@@ -62,72 +57,19 @@ export function SubmitRequestDialog({ shifts }: SubmitRequestDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+      trigger={
         <Button size="sm" data-slot="submit-request-dialog-trigger">
           Tạo yêu cầu đổi ca
         </Button>
-      </DialogTrigger>
-      <DialogContent data-slot="submit-request-dialog">
-        <DialogHeader>
-          <DialogTitle>Yêu cầu đổi ca</DialogTitle>
-          <DialogDescription>
-            Chọn ca bạn muốn thay đổi và lý do. Quản lý sẽ review yêu cầu.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Loại yêu cầu</Label>
-            <Select value={type} onValueChange={(v) => setType(v as RequestType)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Cancel">Hủy ca</SelectItem>
-                <SelectItem value="ChangeShift">Đổi ca khác</SelectItem>
-                <SelectItem value="Swap">Đổi với đồng nghiệp</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Ca hiện tại</Label>
-            <Select value={fromShiftId} onValueChange={setFromShiftId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Chọn ca" />
-              </SelectTrigger>
-              <SelectContent>
-                {shifts.length === 0 && (
-                  <SelectItem value="none" disabled>
-                    Không có ca trong tháng
-                  </SelectItem>
-                )}
-                {shifts.map((s) => (
-                  <SelectItem key={s.id} value={String(s.id)}>
-                    {s.date} · {s.shift?.name ?? `Shift #${s.shift_id}`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Lý do</Label>
-            <Textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="Lý do tạo yêu cầu"
-              rows={3}
-            />
-          </div>
-
-          {submit.isError && (
-            <p className="text-destructive text-sm">Không thể gửi yêu cầu. Vui lòng thử lại.</p>
-          )}
-        </div>
-
-        <DialogFooter>
+      }
+      title="Yêu cầu đổi ca"
+      description="Chọn ca bạn muốn thay đổi và lý do. Quản lý sẽ review yêu cầu."
+      contentProps={{ "data-slot": "submit-request-dialog" }}
+      footer={
+        <>
           <Button variant="outline" onClick={() => setOpen(false)}>
             Hủy
           </Button>
@@ -135,8 +77,61 @@ export function SubmitRequestDialog({ shifts }: SubmitRequestDialogProps) {
             {submit.isPending && <Spinner className="mr-2 size-4" />}
             Gửi yêu cầu
           </Button>
-        </DialogFooter>
-      </DialogContent>
+        </>
+      }
+    >
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label>Loại yêu cầu</Label>
+          <Select value={type} onValueChange={(v) => setType(v as RequestType)}>
+            <SelectControl>
+              <SelectDisplay />
+            </SelectControl>
+            <SelectMenu>
+              <SelectOptionRow value="Cancel">Hủy ca</SelectOptionRow>
+              <SelectOptionRow value="ChangeShift">Đổi ca khác</SelectOptionRow>
+              <SelectOptionRow value="Swap">Đổi với đồng nghiệp</SelectOptionRow>
+            </SelectMenu>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Ca hiện tại</Label>
+          <Select value={fromShiftId} onValueChange={setFromShiftId}>
+            <SelectControl>
+              <SelectDisplay placeholder="Chọn ca" />
+            </SelectControl>
+            <SelectMenu>
+              {shifts.length === 0 && (
+                <SelectOptionRow value="none" disabled>
+                  Không có ca trong tháng
+                </SelectOptionRow>
+              )}
+              {shifts.map((s) => (
+                <SelectOptionRow key={s.id} value={String(s.id)}>
+                  {s.date} · {s.shift?.name ?? `Shift #${s.shift_id}`}
+                </SelectOptionRow>
+              ))}
+            </SelectMenu>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Lý do</Label>
+          <Textarea
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Lý do tạo yêu cầu"
+            rows={3}
+          />
+        </div>
+
+        {submit.isError && (
+          <p className="text-destructive text-sm">
+            Không thể gửi yêu cầu. Vui lòng thử lại.
+          </p>
+        )}
+      </div>
     </Dialog>
   );
 }

@@ -143,7 +143,7 @@ framework concept; inline duplication is rejected at review.
     the six group folders per rule 27). Same for `shell/`.
     CI-checked via `scripts/check-stories-parity.mjs`.
 
-18. **`docs/reference/primitives/` ↔ `src/components/<group>/`
+18. **`docs/reference/<group>/` ↔ `src/components/<group>/`
     parity.** Every primitive has a reference page; every
     reference page maps to an exported primitive. CI-checked via
     `scripts/check-docs-parity.mjs`.
@@ -358,7 +358,7 @@ framework concept; inline duplication is rejected at review.
       `kind`, `color` not `intent`).
     - When the existing vocabulary is wrong for the new primitive
       AND extending it would force a breaking change, document
-      the divergence in `docs/reference/primitives/<Name>.md` with
+      the divergence in `docs/reference/<group>/<Name>.md` with
       the reason. Don't silently coin a new name for the same
       concept.
     - When TWO primitives need the same enum (e.g. semantic color
@@ -460,7 +460,7 @@ framework concept; inline duplication is rejected at review.
     Reviewers check:
 
     1. Every new prop maps to a row in the §B vocabulary table OR
-       has a documented divergence in `docs/reference/primitives/<Name>.md`.
+       has a documented divergence in `docs/reference/<group>/<Name>.md`.
     2. Every new token maps to a §M row in
        [`./new-docs/03-token-system.md`](./new-docs/03-token-system.md)
        OR has a citation to the design canon literal it pins.
@@ -1001,7 +1001,7 @@ framework concept; inline duplication is rejected at review.
 - Component diff without paired story diff (rule 1).
 - Raw color utility (`bg-blue-500`) in a primitive (rule 2).
 - Hand-rolled focus / keyboard nav when Radix has it (rule 3).
-- New primitive without `docs/reference/primitives/<Name>.md`
+- New primitive without `docs/reference/<group>/<Name>.md`
   (rule 18).
 - `any` in an export signature (rule 13).
 - `// eslint-disable-line` without comment + issue link.
@@ -1116,8 +1116,8 @@ framework concept; inline duplication is rejected at review.
     - Composites under `src/components/composites/` that combine
       multiple primitives for a specific use case (`AvatarUploader`,
       `MediaUpload`). Composites are NOT primitives.
-    - Sub-components of a single primitive family (`<CardHeader>`,
-      `<CardBody>` — they're parts of `<Card>`, not a parallel
+    - Sub-components of a single primitive family (`<Card title="…">`,
+      `<Card>` — they're parts of `<Card>`, not a parallel
       simpler-card primitive).
 
     Exception process: if a wrapper primitive seems truly necessary

@@ -1,10 +1,4 @@
-import {
-  cloneElement,
-  forwardRef,
-  isValidElement,
-  type ComponentProps,
-  type ReactNode,
-} from "react";
+import { type ReactNode } from "react";
 import { cn } from "../cn";
 
 /**
@@ -12,9 +6,7 @@ import { cn } from "../cn";
  *
  * Two consumption modes:
  *
- *  1. Data-driven: pass `dataSource` + `renderItem`. The renderItem
- *     callback returns a `<ListItem>` (or any node) per row.
- *  2. Compositional: render `<ListItem>` children inline.
+ * Data-driven: pass `dataSource` + `renderItem`.
  *
  * Prop vocabulary follows cardinal rule 23 §B: `size` for dimensional
  * scale, `bordered` boolean for surface treatment, `cols` for grid
@@ -25,21 +17,16 @@ import { cn } from "../cn";
  *   <List
  *     dataSource={users}
  *     renderItem={(u) => (
- *       <ListItem avatar={<Avatar src={u.photo} />} title={u.name} description={u.role} />
+ *       <UserRow avatar={<Avatar src={u.photo} />} title={u.name} description={u.role} />
  *     )}
  *   />
  *
- * @example compositional
- *   <List bordered>
- *     <ListItem title="Item 1" />
- *     <ListItem title="Item 2" />
- *   </List>
  */
 
 export interface ListProps<T = unknown> {
   /** Data array; required for data-driven mode. Omit when using children. */
   dataSource?: T[];
-  /** Render fn for each datum. Required when `dataSource` is provided. */
+  /** Render fn for each datum. */
   renderItem?: (item: T, index: number) => ReactNode;
   /** Optional header content. */
   header?: ReactNode;
@@ -60,7 +47,6 @@ export interface ListProps<T = unknown> {
   /** Grid mode — number of columns. Omit for list (1 column) layout. */
   cols?: number;
   className?: string;
-  children?: ReactNode;
 }
 
 export function List<T = unknown>({
@@ -76,7 +62,6 @@ export function List<T = unknown>({
   loading = false,
   cols,
   className,
-  children,
 }: ListProps<T>) {
   const splitOn = split ?? bordered;
 
@@ -93,19 +78,16 @@ export function List<T = unknown>({
         );
       }
       if (!renderItem) return null;
-      // `renderItem` returns a `<ListItem>` (which is itself an
-      // `<li>`); wrapping it in another `<li>` produces invalid
-      // nested-`<li>` HTML and a hydration warning. Clone to inject
-      // the key without changing semantics.
       return dataSource.map((item, i) => {
         const node = renderItem(item, i);
-        if (isValidElement(node)) {
-          return cloneElement(node, { key: node.key ?? i });
-        }
-        return node;
+        return (
+          <li key={i} className="list-item">
+            {node}
+          </li>
+        );
       });
     }
-    return children;
+    return null;
   })();
 
   const isGrid = typeof cols === "number" && cols > 1;
@@ -133,59 +115,3 @@ export function List<T = unknown>({
     </div>
   );
 }
-
-export interface ListItemProps extends Omit<ComponentProps<"li">, "title"> {
-  /** Right-aligned action slot (typically buttons / links). */
-  actions?: ReactNode[];
-  /** Avatar / icon slot on the left side. */
-  avatar?: ReactNode;
-  /** Primary line of content. */
-  title?: ReactNode;
-  /** Secondary line beneath the title. */
-  description?: ReactNode;
-  /** Extra slot rendered to the right of the meta column. */
-  extra?: ReactNode;
-}
-
-export const ListItem = forwardRef<HTMLLIElement, ListItemProps>(
-  function ListItem(
-    { actions, avatar, title, description, extra, className, children, ...rest },
-    ref,
-  ) {
-    const hasMeta = title !== undefined || description !== undefined;
-    return (
-      <li ref={ref} className={cn("list-item", className)} {...rest}>
-        {avatar !== undefined && (
-          <div className="list-item-avatar">{avatar}</div>
-        )}
-        {hasMeta ? (
-          <div className="list-item-meta">
-            {title !== undefined && (
-              <div className="list-item-title">{title}</div>
-            )}
-            {description !== undefined && (
-              <div className="list-item-desc">{description}</div>
-            )}
-            {children}
-          </div>
-        ) : (
-          children !== undefined && (
-            <div className="list-item-meta">{children}</div>
-          )
-        )}
-        {extra !== undefined && (
-          <div className="list-item-extra">{extra}</div>
-        )}
-        {actions && actions.length > 0 && (
-          <div className="list-item-actions">
-            {actions.map((action, i) => (
-              <span key={i} className="list-item-action">
-                {action}
-              </span>
-            ))}
-          </div>
-        )}
-      </li>
-    );
-  },
-);

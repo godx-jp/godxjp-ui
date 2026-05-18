@@ -1,13 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import {
-  GodxConfigProvider,
-  useGodxConfig,
-} from "../../preferences";
+import { GodxConfigProvider, useGodxConfig } from "../../preferences";
 import { useFormatters } from "../../hooks/useFormatters";
 import { Button } from "../../components/general/Button";
 import { Tag } from "../../components/data-display/Tag";
-import { Card, CardHeader, CardBody } from "../../components/data-display/Card";
+import { Card } from "../../components/data-display/Card";
 import { Typography } from "../../components/primitives";
 
 /**
@@ -73,16 +70,20 @@ function LocaleDemo() {
 
   return (
     <Card padding="cozy">
-      <CardHeader>
+      <div className="card-header-stack">
         <Typography.Title size={4} style={{ margin: 0 }}>
           Active config
         </Typography.Title>
         <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
-          <Tag color="primary" bordered={false}>locale: {locale}</Tag>
-          <Tag color="primary" bordered={false}>tz: {timezone}</Tag>
+          <Tag color="primary" bordered={false}>
+            locale: {locale}
+          </Tag>
+          <Tag color="primary" bordered={false}>
+            tz: {timezone}
+          </Tag>
         </div>
-      </CardHeader>
-      <CardBody>
+      </div>
+      <div className="card-body">
         <div style={{ display: "grid", gap: 8, marginBottom: 16 }}>
           <Typography.Text>
             <strong>Date:</strong> {fmt.formatDate(now)}
@@ -106,10 +107,18 @@ function LocaleDemo() {
           </Typography.Text>
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <Button size="small" onClick={() => setLocale("ja")}>ja</Button>
-          <Button size="small" onClick={() => setLocale("en-US")}>en-US</Button>
-          <Button size="small" onClick={() => setLocale("vi")}>vi</Button>
-          <Button size="small" onClick={() => setLocale("fil")}>fil</Button>
+          <Button size="small" onClick={() => setLocale("ja")}>
+            ja
+          </Button>
+          <Button size="small" onClick={() => setLocale("en-US")}>
+            en-US
+          </Button>
+          <Button size="small" onClick={() => setLocale("vi")}>
+            vi
+          </Button>
+          <Button size="small" onClick={() => setLocale("fil")}>
+            fil
+          </Button>
           <Button
             size="small"
             variant="ghost"
@@ -122,7 +131,7 @@ function LocaleDemo() {
             toggle tz
           </Button>
         </div>
-      </CardBody>
+      </div>
     </Card>
   );
 }
@@ -154,10 +163,7 @@ export const Switching: Story = {
   },
   render: function Switching() {
     return (
-      <GodxConfigProvider
-        defaultLocale="en-US"
-        defaultTimezone="Asia/Tokyo"
-      >
+      <GodxConfigProvider defaultLocale="en-US" defaultTimezone="Asia/Tokyo">
         <LocaleDemo />
       </GodxConfigProvider>
     );
@@ -200,15 +206,15 @@ function HeadersInspector() {
 
   return (
     <Card padding="cozy">
-      <CardHeader>
+      <div className="card-header-stack">
         <Typography.Title size={4} style={{ margin: 0 }}>
           headers()
         </Typography.Title>
         <Typography.Text color="secondary">
           Inspect the headers axios would send right now.
         </Typography.Text>
-      </CardHeader>
-      <CardBody>
+      </div>
+      <div className="card-body">
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
           <Button size="small" onClick={() => setSnapshot(headers())}>
             snapshot
@@ -246,7 +252,7 @@ function HeadersInspector() {
             {JSON.stringify(snapshot, null, 2)}
           </pre>
         ) : null}
-      </CardBody>
+      </div>
     </Card>
   );
 }

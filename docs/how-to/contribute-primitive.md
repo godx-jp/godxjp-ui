@@ -103,8 +103,8 @@ and cardinal rules 14 + 22 + 23 + 27 in [CLAUDE.md](../../CLAUDE.md).
    `<input>` / inline-styled divs (rule 29).
 
 9. **Write the reference doc** (cardinal rule 18):
-   `docs/reference/primitives/<Name>.md`. Add to the index tables
-   in `docs/reference/primitives/README.md` and `docs/reference/README.md`.
+   `docs/reference/<group>/<Name>.md`. Add to the index tables
+   in `docs/reference/<group>/README.md` and `docs/reference/README.md`.
 
 10. **Verify**:
 

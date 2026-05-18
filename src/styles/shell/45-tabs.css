@@ -702,7 +702,7 @@ a.breadcrumb-crumb:hover { color: var(--foreground); }
  * The existing `.tabs` / `.tabs-pills` classes style the tab-bar
  * itself. `.tabs-root` is the new root wrapper that flips flex
  * direction based on `data-placement` so `left` / `right` / `bottom`
- * variants compose naturally with the same TabsList children.
+ * variants compose naturally with the same tab item children.
  */
 .tabs-root {
   display: flex;

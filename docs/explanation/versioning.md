@@ -138,7 +138,7 @@ When Storybook lands:
 - A component diff without a paired story diff will be rejected at review.
 
 Until Storybook lands, primitives are documented through inline `tsx` code
-blocks in `docs/reference/primitives/<Name>.md`, and a11y coverage is
+blocks in `docs/reference/<group>/<Name>.md`, and a11y coverage is
 provided by `jest-axe` / `vitest-axe` assertions in the component test suite.
 
 ### Zero-config presets

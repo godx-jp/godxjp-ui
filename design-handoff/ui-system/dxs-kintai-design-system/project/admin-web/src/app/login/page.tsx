@@ -4,7 +4,7 @@ import { Suspense } from "react";
 
 import { useSearchParams } from "next/navigation";
 
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui";
+import { Button, Card, CardSection, Card, CardTitleText } from "@godxjp/ui";
 
 function LoginContent() {
   const searchParams = useSearchParams();
@@ -24,15 +24,15 @@ function LoginContent() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">DXS Product</CardTitle>
-          <CardDescription>Sign in with your organization account</CardDescription>
-        </CardHeader>
-        <CardContent>
+        <Card className="text-center">
+          <CardTitleText className="text-2xl font-bold">DXS Product</CardTitleText>
+          <p className="text-muted-foreground text-sm">Sign in with your organization account</p>
+        </Card>
+        <CardSection>
           <Button onClick={handleSsoLogin} className="w-full" size="lg">
             Sign in with SSO
           </Button>
-        </CardContent>
+        </CardSection>
       </Card>
     </div>
   );

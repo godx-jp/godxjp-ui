@@ -9,14 +9,10 @@ import {
   AvatarFallback,
   Button,
   Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+  CardSection,
+  Card,
+  CardTitleText,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   Input,
   Skeleton,
 } from "@godxjp/ui";
@@ -143,27 +139,28 @@ export default function SelectContextPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
       <div className="absolute right-4 top-4 flex items-center gap-1">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        <DropdownMenu
+          align="end"
+          trigger={
             <Button variant="ghost" size="sm" className="size-8 p-0">
               <Languages className="size-4" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              {(Object.keys(locales) as LocaleCode[]).map((loc) => (
-                <DropdownMenuItem key={loc} onClick={() => setLocale(loc)} className="h-7 text-sm">
-                  <span className={locale === loc ? "font-medium" : ""}>{locales[loc]}</span>
-                  {locale === loc && (
-                    <span className="text-muted-foreground ml-auto text-xs">
-                      {loc.toUpperCase()}
-                    </span>
-                  )}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          }
+          items={(Object.keys(locales) as LocaleCode[]).map((loc) => ({
+            key: loc,
+            onSelect: () => setLocale(loc),
+            label: (
+              <>
+                <span className={locale === loc ? "font-medium" : ""}>{locales[loc]}</span>
+                {locale === loc && (
+                  <span className="text-muted-foreground ml-auto text-xs">
+                    {loc.toUpperCase()}
+                  </span>
+                )}
+              </>
+            ),
+          }))}
+        />
 
         <Button
           variant="ghost"
@@ -248,7 +245,7 @@ export default function SelectContextPage() {
                   className="hover:bg-muted/50 cursor-pointer transition-colors"
                   onClick={() => router.push(`/admin/${brand.slug}`)}
                 >
-                  <CardContent className="flex items-center gap-3 p-3">
+                  <CardSection className="flex items-center gap-3 p-3">
                     <div className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-md text-sm font-bold">
                       {brand.name.charAt(0)}
                     </div>
@@ -258,7 +255,7 @@ export default function SelectContextPage() {
                         <div className="text-muted-foreground text-xs">{brand.description}</div>
                       )}
                     </div>
-                  </CardContent>
+                  </CardSection>
                 </Card>
               ))}
             </div>
@@ -283,7 +280,7 @@ export default function SelectContextPage() {
                   className="hover:bg-muted/50 cursor-pointer transition-colors"
                   onClick={() => router.push(`/shop/${shop.slug}/dashboard`)}
                 >
-                  <CardContent className="flex items-center gap-3 p-3">
+                  <CardSection className="flex items-center gap-3 p-3">
                     <div className="bg-muted flex size-8 shrink-0 items-center justify-center rounded-md text-sm font-medium">
                       <Store className="size-4" />
                     </div>
@@ -293,7 +290,7 @@ export default function SelectContextPage() {
                         <div className="text-muted-foreground text-xs">{shop.brand_name}</div>
                       )}
                     </div>
-                  </CardContent>
+                  </CardSection>
                 </Card>
               ))}
             </div>
@@ -308,14 +305,14 @@ export default function SelectContextPage() {
 
         {showOnboardingEmpty && (
           <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">{t("select_context.no_workspaces")}</CardTitle>
-            </CardHeader>
-            <CardContent>
+            <Card>
+              <CardTitleText className="text-sm">{t("select_context.no_workspaces")}</CardTitleText>
+            </Card>
+            <CardSection>
               <p className="text-muted-foreground text-sm">
                 {t("select_context.no_workspaces_description")}
               </p>
-            </CardContent>
+            </CardSection>
           </Card>
         )}
       </div>

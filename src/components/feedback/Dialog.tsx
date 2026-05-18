@@ -1,55 +1,74 @@
-import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { forwardRef, type ComponentPropsWithoutRef, type ElementRef, type HTMLAttributes } from "react"
-import { cn } from "../cn"
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import {
+  type ComponentPropsWithoutRef,
+  type FormHTMLAttributes,
+  type ReactNode,
+} from "react";
+import { cn } from "../cn";
 
-/**
- * Dialog — modal surface (Radix Dialog). Overlay + content use
- * `.dialog-*` classes from tokens.css (card surface, token shadow).
- */
-export const Dialog = DialogPrimitive.Root
-export const DialogTrigger = DialogPrimitive.Trigger
-export const DialogPortal = DialogPrimitive.Portal
-export const DialogClose = DialogPrimitive.Close
+export interface DialogProps extends ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Root
+> {
+  trigger?: ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  footer?: ReactNode;
+  children?: ReactNode;
+  className?: string;
+  contentProps?: Omit<
+    ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
+    "children" | "className"
+  >;
+  form?: FormHTMLAttributes<HTMLFormElement>;
+}
 
-export const DialogOverlay = forwardRef<
-  ElementRef<typeof DialogPrimitive.Overlay>,
-  ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(function DialogOverlay({ className, ...rest }, ref) {
-  return <DialogPrimitive.Overlay ref={ref} className={cn("dialog-overlay", className)} {...rest} />
-})
+export function Dialog({
+  trigger,
+  title,
+  description,
+  footer,
+  children,
+  className,
+  contentProps,
+  form,
+  ...rootProps
+}: DialogProps) {
+  const content = (
+    <>
+      <div className="dialog-header">
+        <DialogPrimitive.Title className="dialog-title">
+          {title}
+        </DialogPrimitive.Title>
+        {description !== undefined && (
+          <DialogPrimitive.Description className="dialog-description">
+            {description}
+          </DialogPrimitive.Description>
+        )}
+      </div>
+      {children}
+      {footer !== undefined && <div className="dialog-footer">{footer}</div>}
+    </>
+  );
+  const descriptionProps =
+    description === undefined
+      ? ({ "aria-describedby": undefined } as const)
+      : {};
 
-export const DialogContent = forwardRef<
-  ElementRef<typeof DialogPrimitive.Content>,
-  ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(function DialogContent({ className, children, ...rest }, ref) {
   return (
-    <DialogPortal>
-      <DialogOverlay />
-      <DialogPrimitive.Content ref={ref} className={cn("dialog-content", className)} {...rest}>
-        {children}
-      </DialogPrimitive.Content>
-    </DialogPortal>
-  )
-})
-
-export function DialogHeader({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("dialog-header", className)} {...rest} />
+    <DialogPrimitive.Root {...rootProps}>
+      {trigger !== undefined && (
+        <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>
+      )}
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="dialog-overlay" />
+        <DialogPrimitive.Content
+          {...contentProps}
+          {...descriptionProps}
+          className={cn("dialog-content", className)}
+        >
+          {form !== undefined ? <form {...form}>{content}</form> : content}
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
+  );
 }
-
-export function DialogFooter({ className, ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("dialog-footer", className)} {...rest} />
-}
-
-export const DialogTitle = forwardRef<
-  ElementRef<typeof DialogPrimitive.Title>,
-  ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(function DialogTitle({ className, ...rest }, ref) {
-  return <DialogPrimitive.Title ref={ref} className={cn("dialog-title", className)} {...rest} />
-})
-
-export const DialogDescription = forwardRef<
-  ElementRef<typeof DialogPrimitive.Description>,
-  ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
->(function DialogDescription({ className, ...rest }, ref) {
-  return <DialogPrimitive.Description ref={ref} className={cn("dialog-description", className)} {...rest} />
-})

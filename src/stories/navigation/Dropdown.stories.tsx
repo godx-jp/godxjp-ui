@@ -1,14 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "../../components/navigation/DropdownMenu";
+import { DropdownMenu } from "../../components/navigation/DropdownMenu";
 import { Button } from "../../components/general/Button";
 
 /**
@@ -38,28 +30,18 @@ type Story = StoryObj<typeof DropdownMenu>;
 export const Default: Story = {
   name: "Default · action menu",
   render: () => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="small">アクション ▾</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>操作</DropdownMenuLabel>
-        <DropdownMenuItem>
-          編集<DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          複製<DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          エクスポート<DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem style={{ color: "var(--destructive)" }}>
-          削除<DropdownMenuShortcut>⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <DropdownMenu
+      trigger={<Button variant="outline" size="small">アクション ▾</Button>}
+      items={[
+        { key: "label", type: "label", label: "操作" },
+        { key: "edit", label: "編集", shortcut: "⌘E" },
+        { key: "duplicate", label: "複製", shortcut: "⌘D" },
+        { key: "sep-1", type: "separator" },
+        { key: "export", label: "エクスポート", shortcut: "⌘E" },
+        { key: "sep-2", type: "separator" },
+        { key: "delete", label: "削除", shortcut: "⌫", variant: "destructive" },
+      ]}
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -84,39 +66,35 @@ export const Default: Story = {
 export const WithDisabled: Story = {
   name: "With disabled items",
   render: () => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="small">承認 ▾</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem>一括承認</DropdownMenuItem>
-        <DropdownMenuItem>差戻し</DropdownMenuItem>
-        <DropdownMenuItem disabled>承認権限なし</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem disabled>削除（管理者のみ）</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <DropdownMenu
+      trigger={<Button variant="outline" size="small">承認 ▾</Button>}
+      items={[
+        { key: "approve", label: "一括承認" },
+        { key: "reject", label: "差戻し" },
+        { key: "no-permission", label: "承認権限なし", disabled: true },
+        { key: "sep", type: "separator" },
+        { key: "delete", label: "削除（管理者のみ）", disabled: true },
+      ]}
+    />
   ),
 };
 
 export const Grouped: Story = {
   name: "Grouped · with labels",
   render: () => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="small">表示 ▾</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>レイアウト</DropdownMenuLabel>
-        <DropdownMenuItem>テーブル表示</DropdownMenuItem>
-        <DropdownMenuItem>カード表示</DropdownMenuItem>
-        <DropdownMenuItem>タイムライン表示</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel>並び替え</DropdownMenuLabel>
-        <DropdownMenuItem>名前順</DropdownMenuItem>
-        <DropdownMenuItem>作成日順</DropdownMenuItem>
-        <DropdownMenuItem>更新日順</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <DropdownMenu
+      trigger={<Button variant="outline" size="small">表示 ▾</Button>}
+      items={[
+        { key: "layout", type: "label", label: "レイアウト" },
+        { key: "table", label: "テーブル表示" },
+        { key: "card", label: "カード表示" },
+        { key: "timeline", label: "タイムライン表示" },
+        { key: "sep", type: "separator" },
+        { key: "sort", type: "label", label: "並び替え" },
+        { key: "name", label: "名前順" },
+        { key: "created", label: "作成日順" },
+        { key: "updated", label: "更新日順" },
+      ]}
+    />
   ),
 };

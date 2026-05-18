@@ -28,7 +28,7 @@ rules table grows, this doc grows with it.
 | [`padding`](#g--padding) | `"tight" \| "default" \| "cozy" \| "none"` | Internal spacing density | Card, Dialog (planned), Sheet (planned), Popover (planned) |
 | [`density`](#h--density) | `"compact" \| "default" \| "comfortable"` | Page-level spacing — usually inherited via `[data-density]` axis; explicit prop only when overriding the axis | Table (explicit), inherited by every other primitive |
 | [`shape`](#i--shape) | `"square" \| "circle"` | Geometric form (Avatar, IconButton) | Avatar, IconButton |
-| [`status`](#j--status) | `"default" \| "success" \| "warning" \| "error"` | Form-field validation state | Input family, Field, FormItem |
+| [`status`](#j--status) | `"default" \| "success" \| "warning" \| "error"` | Form-field validation state | Input family, Field, Form |
 | [`orientation`](#k--orientation) | `"horizontal" \| "vertical"` | Axis of stack / progression — replaces Ant's `mode` / `direction` / `tabPosition` axis | Tabs, Menu, Steps, Anchor, Separator |
 | [`placement`](#l--placement) | `"top" \| "right" \| "bottom" \| "left"` (+ `"start"` / `"end"` when direction matters) | Positional anchor of a region relative to its host | Tabs (tab-bar), Steps (labels), Popover, Tooltip, DropdownMenu |
 | [`current`](#m--current) | `boolean` per item OR `number \| string` for selection | "This item is the current one" (boolean → `aria-current`) OR "active index" (number → Radix selection) | Breadcrumb (boolean), Steps (number) |
@@ -37,7 +37,7 @@ rules table grows, this doc grows with it.
 | [`sticky`](#p--sticky) | `boolean` | Pin-on-scroll behaviour (CSS `position: sticky` semantics) | Anchor, Table (planned header), Topbar |
 | [`offset`](#q--offset) | `number` (px) | Pixel offset from anchor (direction-aware via `orientation`) | Anchor (scroll target), Popover (planned), Tooltip (planned) |
 | [`open` / `defaultOpen` / `onOpenChange`](#r--open-overlay-state) | Radix-style controlled / uncontrolled overlay-visibility state | Overlay open/closed — NEVER `visible` / `isOpen` / `shown` / `display` | Dialog, AlertDialog, Sheet, Popover, DropdownMenu, Popconfirm, Tooltip |
-| [`block`](#s--block) | `boolean` | Stretches to fill available width | Button, CardHeader, CardBody, CardFooter |
+| [`block`](#s--block) | `boolean` | Stretches to fill available width | Button, Card, Card, Card |
 | [`hoverable`](#t--hoverable) | `boolean` | Adds hover-affordance (border + shadow lift + cursor pointer) | Card |
 | [`disabled` / `loading` / `readOnly` / `required`](#u--interaction-state) | `boolean` | Interaction state | Forms |
 | [`prefix` / `suffix` / `addonBefore` / `addonAfter`](#v--slot-props) | `ReactNode` | Decorative / functional slots | Input, Button, InputPassword, InputSearch |
@@ -240,7 +240,7 @@ page-level axis).
 | `"tight"` | 12px (= `var(--density-card)` × 0.75) |
 | `"default"` | 16px (= `var(--density-card)` × 1) |
 | `"cozy"` | 20px (= `var(--density-card)` × 1.25) |
-| `"none"` | 0 (flush — for cards with explicit CardHeader/CardBody/CardFooter) |
+| `"none"` | 0 (flush — for cards with explicit Card/Card/Card) |
 
 **Used by**: Card. Future: Dialog, Sheet, Popover.
 
@@ -279,7 +279,7 @@ by every other primitive via token chain.
 **Type**: `"default" | "success" | "warning" | "error"`.
 
 **Used by**: Input, InputPassword, InputSearch, InputNumber,
-TimeInput, DateTimePicker, Field, FormItem.
+TimeInput, DateTimePicker, Field, Form.
 
 ```tsx
 <Input status="error" />
@@ -454,18 +454,18 @@ stack.
 ## §S — `block`
 
 **Concept**: stretches to fill available width, OR (for
-region-atoms like CardHeader) marks the region as "flush block"
+region-atoms like Card) marks the region as "flush block"
 (own padding + divider).
 
 **Type**: `boolean`. **Default**: `false`.
 
-**Used by**: Button, CardHeader, CardBody, CardFooter.
+**Used by**: Button, Card, Card, Card.
 
 ```tsx
 <Button block>送信する</Button>          // full-width form submit
 <Card padding="none">
-  <CardHeader block title="…" />        // flush header with divider
-  <CardBody block>…</CardBody>
+  <Card block title="…" />        // flush header with divider
+  <Card block>…</Card>
 </Card>
 ```
 
@@ -484,7 +484,7 @@ region-atoms like CardHeader) marks the region as "flush block"
 
 | Prop | Used by | Description |
 |---|---|---|
-| `disabled` | Button, Input family, Tabs item, Checkbox, Switch, MenuItem | Cannot be interacted with; renders muted; not in tab order |
+| `disabled` | Button, Input family, Tabs item, Checkbox, Switch, Menu | Cannot be interacted with; renders muted; not in tab order |
 | `loading` | Button, IconButton | Shows spinner + disables interaction |
 | `readOnly` | Input family | Value visible but not editable; still in tab order |
 | `required` | Input family, Field | Marks field as required; renders asterisk |
@@ -635,7 +635,7 @@ Quick-reference: which vocabulary entries each primitive consumes.
 
 Select item selection is indicated by the row state itself
 (`data-state="checked"` with a primary-tinted background). Do not add a
-leading check icon / indicator column to `SelectItem`; it wastes
+leading check icon / indicator column to `select option`; it wastes
 horizontal space in dense table filters and mobile drawers.
 | LocaleTabs | – | – | – | – | – | – | – | e+ |
 
@@ -709,7 +709,7 @@ A future lint script (`scripts/lint-prop-vocabulary.mjs`) will:
    of `size`, `kind` instead of `variant`, `mode` instead of
    `orientation`, `visible` instead of `open`, etc.).
 4. Fail if a primitive declares a prop name NOT in the catalogue
-   AND no `docs/reference/primitives/<Name>.md` divergence section
+   AND no `docs/reference/<group>/<Name>.md` divergence section
    documents the reason.
 
 Until the script lands, reviewers manually check at PR review.

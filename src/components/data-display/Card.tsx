@@ -36,8 +36,7 @@ import { cn } from "../cn";
  * (H4/H5/H7 patterns).
  *
  * For flush cards with internal sections (H1-H17 variants), use
- * `padding="none"` + the compositional atoms <CardHeader> /
- * <CardBody> / <CardFooter>.
+ * `padding="none"` plus `footer` / `actions` and normal body content.
  */
 
 // ─── Prop axes ─────────────────────────────────────────────────────
@@ -164,9 +163,11 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       )}
       {...rest}
     >
-      {band && <div className={cn("card-band", BAND_CLASS[band])} aria-hidden />}
+      {band && (
+        <div className={cn("card-band", BAND_CLASS[band])} aria-hidden />
+      )}
       {hasHeader && (
-        <CardHeader
+        <HeaderSection
           title={title}
           subtitle={subtitle}
           kicker={kicker}
@@ -177,20 +178,20 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       )}
       {flush ? children : <div className="card-body">{children}</div>}
       {footer !== undefined && (
-        <CardFooter block={flush}>{footer}</CardFooter>
+        <FooterSection block={flush}>{footer}</FooterSection>
       )}
       {actions !== undefined && (
-        <CardFooter block={flush} actions>
+        <FooterSection block={flush} actions>
           {actions}
-        </CardFooter>
+        </FooterSection>
       )}
     </div>
   );
 });
 
-// ─── Compositional atoms (for flush / padding="none" cards) ──────────
+// ─── Internal sections (for flush / padding="none" cards) ──────────
 
-export interface CardHeaderProps extends Omit<ComponentProps<"div">, "title"> {
+interface HeaderSectionProps extends Omit<ComponentProps<"div">, "title"> {
   title?: ReactNode;
   subtitle?: ReactNode;
   kicker?: ReactNode;
@@ -203,7 +204,7 @@ export interface CardHeaderProps extends Omit<ComponentProps<"div">, "title"> {
   block?: boolean;
 }
 
-export function CardHeader({
+function HeaderSection({
   title,
   subtitle,
   kicker,
@@ -213,17 +214,13 @@ export function CardHeader({
   className,
   children,
   ...rest
-}: CardHeaderProps) {
+}: HeaderSectionProps) {
   // Header shape selector per design canon:
   //   kicker present                → `.ch-kicker` (3-tier column)
   //   subtitle present, no kicker   → `.ch-stack`  (2-tier column)
   //   else                          → `.ch`        (row with optional meta-right)
   const shape: "kicker" | "stack" | "row" =
-    kicker !== undefined
-      ? "kicker"
-      : subtitle !== undefined
-        ? "stack"
-        : "row";
+    kicker !== undefined ? "kicker" : subtitle !== undefined ? "stack" : "row";
   const shapeClass =
     shape === "kicker"
       ? "card-header-kicker"
@@ -233,11 +230,7 @@ export function CardHeader({
 
   return (
     <div
-      className={cn(
-        shapeClass,
-        block && "card-header-block",
-        className,
-      )}
+      className={cn(shapeClass, block && "card-header-block", className)}
       {...rest}
     >
       {shape === "kicker" && (
@@ -273,25 +266,7 @@ export function CardHeader({
   );
 }
 
-export interface CardBodyProps extends ComponentProps<"div"> {
-  /** When `true`, the body pads itself — the `.cb` block in flush cards. */
-  block?: boolean;
-}
-
-export function CardBody({
-  block = false,
-  className,
-  ...rest
-}: CardBodyProps) {
-  return (
-    <div
-      className={cn(block ? "card-body-block" : "card-body", className)}
-      {...rest}
-    />
-  );
-}
-
-export interface CardFooterProps extends ComponentProps<"div"> {
+interface FooterSectionProps extends ComponentProps<"div"> {
   /** Right-aligned action bar, transparent bg, no muted tint. */
   actions?: boolean;
   /** When `true`, the footer pads itself + draws a top divider — the
@@ -299,12 +274,12 @@ export interface CardFooterProps extends ComponentProps<"div"> {
   block?: boolean;
 }
 
-export function CardFooter({
+function FooterSection({
   actions,
   block = false,
   className,
   ...rest
-}: CardFooterProps) {
+}: FooterSectionProps) {
   return (
     <div
       className={cn(
@@ -316,19 +291,3 @@ export function CardFooter({
     />
   );
 }
-
-// ─── Direct-control atoms (when the slot API doesn't fit) ───────────
-
-export function CardTitle({ className, ...rest }: ComponentProps<"h3">) {
-  return <h3 className={cn("card-title", className)} {...rest} />;
-}
-
-export interface CardSubtitleProps extends ComponentProps<"span"> {
-  children?: ReactNode;
-}
-export function CardSubtitle({ className, ...rest }: CardSubtitleProps) {
-  return <span className={cn("card-subtitle", className)} {...rest} />;
-}
-
-// Legacy alias — older code imports CardContent.
-export const CardContent = CardBody;

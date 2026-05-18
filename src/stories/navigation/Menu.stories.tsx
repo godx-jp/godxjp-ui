@@ -1,11 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import {
-  Menu,
-  MenuItem,
-  MenuGroup,
-  MenuDivider,
-} from "../../components/navigation/Menu";
+import { Menu } from "../../components/navigation/Menu";
 
 /**
  * Navigation/Menu — persistent navigation list with
@@ -65,28 +60,25 @@ export const VerticalSidebar: Story = {
   name: "Vertical · sidebar nav",
   render: () => (
     <div style={{ width: 240, border: "1px solid var(--border)", borderRadius: 6 }}>
-      <Menu defaultValue="dashboard">
-        <MenuItem value="dashboard" icon={<HomeIcon />}>
-          ダッシュボード
-        </MenuItem>
-        <MenuItem value="employees" icon={<UsersIcon />} extra="38">
-          従業員
-        </MenuItem>
-        <MenuItem value="reports" icon={<ChartIcon />}>
-          レポート
-        </MenuItem>
-        <MenuDivider />
-        <MenuGroup label="管理">
-          <MenuItem value="stores">店舗管理</MenuItem>
-          <MenuItem value="permissions">権限</MenuItem>
-          <MenuItem value="settings" icon={<SettingsIcon />}>
-            設定
-          </MenuItem>
-          <MenuItem value="legacy" disabled>
-            旧バージョン（廃止予定）
-          </MenuItem>
-        </MenuGroup>
-      </Menu>
+      <Menu
+        defaultValue="dashboard"
+        items={[
+          { value: "dashboard", label: "ダッシュボード", icon: <HomeIcon /> },
+          { value: "employees", label: "従業員", icon: <UsersIcon />, extra: "38" },
+          { value: "reports", label: "レポート", icon: <ChartIcon /> },
+          { type: "divider" },
+          {
+            type: "group",
+            label: "管理",
+            items: [
+              { value: "stores", label: "店舗管理" },
+              { value: "permissions", label: "権限" },
+              { value: "settings", label: "設定", icon: <SettingsIcon /> },
+              { value: "legacy", label: "旧バージョン（廃止予定）", disabled: true },
+            ],
+          },
+        ]}
+      />
     </div>
   ),
   play: async ({ canvasElement, step }) => {
@@ -114,14 +106,16 @@ export const VerticalSidebar: Story = {
 export const HorizontalTopNav: Story = {
   name: "Horizontal · top nav",
   render: () => (
-    <Menu orientation="horizontal" defaultValue="kintai">
-      <MenuItem value="kintai">勤怠</MenuItem>
-      <MenuItem value="shifts">シフト</MenuItem>
-      <MenuItem value="payroll">給与</MenuItem>
-      <MenuItem value="reports">レポート</MenuItem>
-      <MenuItem value="legacy" disabled>
-        旧画面
-      </MenuItem>
-    </Menu>
+    <Menu
+      orientation="horizontal"
+      defaultValue="kintai"
+      items={[
+        { value: "kintai", label: "勤怠" },
+        { value: "shifts", label: "シフト" },
+        { value: "payroll", label: "給与" },
+        { value: "reports", label: "レポート" },
+        { value: "legacy", label: "旧画面", disabled: true },
+      ]}
+    />
   ),
 };

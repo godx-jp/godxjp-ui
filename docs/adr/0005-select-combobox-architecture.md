@@ -25,8 +25,8 @@ Proposed.
 
 - **`Select`** (`src/components/data-entry/Select.tsx`) — wraps
   `@radix-ui/react-select`. Listbox UX. Has the Ant-style `options`
-  prop AND the shadcn-style compositional `SelectTrigger` /
-  `SelectContent` / `SelectItem` API.
+  prop AND the shadcn-style compositional `Select trigger` /
+  `Select content` / `Select option` API.
 - **`Combobox`** (`src/components/data-entry/combobox.tsx`) — wraps
   `@radix-ui/react-popover` + `cmdk` `Command`. Command-palette UX
   with an input + filtered list. Same dual `options` / compositional
@@ -36,13 +36,13 @@ Both primitives are exported from `src/components/primitives.ts`,
 both have full Storybook coverage, and `AutoComplete` already wraps
 `Combobox` to add free-text typing. The industry split:
 
-| Library | Architecture |
-|---|---|
-| Ant Design 5 | Merged — `<Select showSearch />` |
-| Mantine 7 | Merged — `<Select searchable />` |
-| shadcn/ui | Separate — `Select` + `Combobox` (Combobox is a documented composition pattern) |
-| MUI 5 | Separate — `<Select>` + `<Autocomplete>` |
-| Radix UI | Separate — `Select` (single-base, no search); community uses `cmdk` for combobox |
+| Library      | Architecture                                                                     |
+| ------------ | -------------------------------------------------------------------------------- |
+| Ant Design 5 | Merged — `<Select showSearch />`                                                 |
+| Mantine 7    | Merged — `<Select searchable />`                                                 |
+| shadcn/ui    | Separate — `Select` + `Combobox` (Combobox is a documented composition pattern)  |
+| MUI 5        | Separate — `<Select>` + `<Autocomplete>`                                         |
+| Radix UI     | Separate — `Select` (single-base, no search); community uses `cmdk` for combobox |
 
 The question: do we collapse `Combobox` into `Select` via a
 `searchable` boolean (Ant / Mantine), or stay with the
@@ -53,13 +53,13 @@ shadcn / MUI / Radix split (status quo)?
 ## Decision Drivers
 
 1. **Cardinal rule 23 §A** — every prop carries ONE concept; merging
-   means `searchable` would *secretly* swap the entire ARIA role +
+   means `searchable` would _secretly_ swap the entire ARIA role +
    keyboard contract, not just toggle a feature.
 2. **Cardinal rule 14** — every interactive primitive wraps the
    shadcn/Radix-recommended library. `Select` → `@radix-ui/react-select`;
    `Combobox` → `cmdk`. Different libraries, different roles.
 3. **WCAG 2.1 / WAI-ARIA APG 1.2** — `role="listbox"` (Radix Select)
-   and `role="combobox"` (cmdk Command) are *different* ARIA
+   and `role="combobox"` (cmdk Command) are _different_ ARIA
    patterns with different keyboard contracts.
 4. **Bundle cost** — `@radix-ui/react-select` and `cmdk` are both
    already in `dependencies`. The current `AutoComplete` consumer
@@ -106,7 +106,7 @@ Reasons:
 3. **Radix `Select` cannot be made filterable without
    substitution.** `@radix-ui/react-select@2.2.6` exposes no
    `shouldFilter` / `filter` / input child surface. A filterable
-   `Select` mode would require swapping the *entire* implementation
+   `Select` mode would require swapping the _entire_ implementation
    to cmdk when `searchable` is true. That is two implementations
    behind one name, not one merged primitive.
 4. **No bundle savings.** Both libraries already ship today
@@ -141,10 +141,10 @@ Reasons:
   `combobox.tsx`, update `primitives.ts`, fold `Combobox.stories.tsx`
   (64 Combobox references) into `Select.stories.tsx` (105 Select
   references), rewrite `AutoComplete.tsx` (8 ComboboxX imports).
-- ✗ Documentation drift: `docs/reference/primitives/Combobox.md`
-  + `Select.md` collapse into one page that must explain *both*
-  ARIA patterns under one heading — confusing for the audience
-  the framework targets.
+- ✗ Documentation drift: `docs/reference/data-entry/Combobox.md`
+  - `Select.md` collapse into one page that must explain _both_
+    ARIA patterns under one heading — confusing for the audience
+    the framework targets.
 
 ### B — Keep separate (status quo)
 
@@ -159,10 +159,10 @@ Reasons:
 - ✓ Mirrors shadcn/ui, MUI, Radix — the libraries our locked
   stack is aligned with.
 - ✗ Two imports, two reference pages. Mitigated by cross-linking
-  + a decision table in each page.
+  - a decision table in each page.
 - ✗ Consumers migrating from Ant Design must learn that
   `showSearch` → switch from `Select` to `Combobox`. Mitigated
-  by a migration note in `docs/reference/primitives/Select.md`.
+  by a migration note in `docs/reference/data-entry/Select.md`.
 
 ---
 
@@ -170,7 +170,7 @@ Reasons:
 
 Importers of `Combobox` (full sub-component family):
 
-- `src/components/data-entry/AutoComplete.tsx` — wraps Combobox*
+- `src/components/data-entry/AutoComplete.tsx` — wraps Combobox\*
 - `src/components/primitives.ts` — re-exports the family
 - `src/stories/data-entry/Combobox.stories.tsx` — 64 references
 
@@ -195,8 +195,8 @@ build on Combobox, not Select).
 Status quo — no source changes. Documentation tightening only:
 
 1. Add a "When to use Select vs Combobox" decision table at the
-   top of `docs/reference/primitives/Select.md` and
-   `docs/reference/primitives/Combobox.md` (cross-linked).
+   top of `docs/reference/data-entry/Select.md` and
+   `docs/reference/data-entry/Combobox.md` (cross-linked).
 2. Add a migration note for Ant Design users:
    `<Select showSearch />` → `<Combobox options={…} />`.
 3. Update the prop-vocabulary doc

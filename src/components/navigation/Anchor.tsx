@@ -1,10 +1,7 @@
 import {
-  createContext,
   forwardRef,
   useCallback,
-  useContext,
   useEffect,
-  useId,
   useMemo,
   useState,
   type ComponentProps,
@@ -15,13 +12,6 @@ import { cn } from "../cn";
 
 /**
  * Anchor — in-page scroll-spy navigation.
- *
- * Compositional API:
- *   <Anchor orientation="vertical">
- *     <AnchorLink href="#intro">Intro</AnchorLink>
- *     <AnchorLink href="#install">Install</AnchorLink>
- *     <AnchorLink href="#api">API</AnchorLink>
- *   </Anchor>
  *
  * Data-driven API:
  *   <Anchor items={[{ href: "#intro", label: "Intro" }, …]} />
@@ -48,8 +38,7 @@ export interface AnchorProps
   sticky?: boolean;
   /** Pixel offset from the top of the viewport for scroll-spy detection. */
   offset?: number;
-  /** Data-driven children. If omitted, render compositional `<AnchorLink>` children. */
-  items?: AnchorItem[];
+  items: AnchorItem[];
   /** Controlled active href (`#intro` etc.). */
   value?: string;
   /** Uncontrolled initial active href. */
@@ -67,7 +56,6 @@ export const Anchor = forwardRef<HTMLElement, AnchorProps>(function Anchor(
     defaultValue,
     onValueChange,
     className,
-    children,
     ...rest
   },
   ref,
@@ -77,21 +65,12 @@ export const Anchor = forwardRef<HTMLElement, AnchorProps>(function Anchor(
   );
   const active = value ?? internalActive;
 
-  const hrefs = useMemo(() => {
-    if (items) return items.map((i) => i.href);
-    // Compositional path — caller handles its own children; scroll-spy
-    // still walks the DOM via document.querySelectorAll inside the effect.
-    return [];
-  }, [items]);
+  const hrefs = useMemo(() => items.map((i) => i.href), [items]);
 
   // Scroll-spy: watch each target section's visibility.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const allHrefs = hrefs.length
-      ? hrefs
-      : Array.from(document.querySelectorAll<HTMLAnchorElement>(".anchor-link"))
-          .map((a) => a.getAttribute("href") ?? "")
-          .filter((h) => h.startsWith("#"));
+    const allHrefs = hrefs;
 
     const targets = allHrefs
       .map((h) => document.querySelector(h))
@@ -137,73 +116,30 @@ export const Anchor = forwardRef<HTMLElement, AnchorProps>(function Anchor(
     [offset, value, onValueChange],
   );
 
-  const renderedChildren = items
-    ? items.map((it) => (
-        <AnchorLink
-          key={it.href}
-          href={it.href}
-          active={active === it.href}
-          onClick={(e) => handleClick(e, it.href)}
-        >
-          {it.label}
-        </AnchorLink>
-      ))
-    : children;
-
   return (
-    <AnchorContext.Provider value={{ active, onClick: handleClick }}>
-      <nav
-        ref={ref}
-        className={cn("anchor", className)}
-        data-orientation={orientation}
-        data-sticky={sticky ? "true" : undefined}
-        aria-orientation={orientation}
-        {...rest}
-      >
-        {renderedChildren}
-      </nav>
-    </AnchorContext.Provider>
+    <nav
+      ref={ref}
+      className={cn("anchor", className)}
+      data-orientation={orientation}
+      data-sticky={sticky ? "true" : undefined}
+      aria-orientation={orientation}
+      {...rest}
+    >
+      {items.map((item) => {
+        const isActive = active === item.href;
+        return (
+          <a
+            key={item.href}
+            href={item.href}
+            className="anchor-link"
+            data-active={isActive ? "true" : undefined}
+            aria-current={isActive ? "location" : undefined}
+            onClick={(event) => handleClick(event, item.href)}
+          >
+            {item.label}
+          </a>
+        );
+      })}
+    </nav>
   );
 });
-
-// ─── Compositional <AnchorLink> ──────────────────────────────────
-
-interface AnchorContextValue {
-  active?: string;
-  onClick: (e: MouseEvent<HTMLAnchorElement>, href: string) => void;
-}
-
-const AnchorContext = createContext<AnchorContextValue | null>(null);
-
-export interface AnchorLinkProps extends ComponentProps<"a"> {
-  href: string;
-  /** Active state override — defaults to the parent Anchor's scroll-spy. */
-  active?: boolean;
-}
-
-export const AnchorLink = forwardRef<HTMLAnchorElement, AnchorLinkProps>(
-  function AnchorLink({ href, active, onClick, className, children, ...rest }, ref) {
-    const ctx = useContext(AnchorContext);
-    // Stable id for screen-reader navigation breadcrumb.
-    const ariaId = useId();
-    const isActive = active ?? (ctx?.active === href);
-    const handle = (e: MouseEvent<HTMLAnchorElement>) => {
-      onClick?.(e);
-      if (!e.defaultPrevented && ctx) ctx.onClick(e, href);
-    };
-    return (
-      <a
-        ref={ref}
-        href={href}
-        id={`anchor-${ariaId}`}
-        className={cn("anchor-link", className)}
-        data-active={isActive ? "true" : undefined}
-        aria-current={isActive ? "location" : undefined}
-        onClick={handle}
-        {...rest}
-      >
-        {children}
-      </a>
-    );
-  },
-);

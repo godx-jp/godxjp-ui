@@ -1,14 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import {
-  Carousel,
-  CarouselSlide,
-} from "../../components/data-display/Carousel";
+import { Carousel } from "../../components/data-display/Carousel";
 
 /**
  * Data Display/Carousel — slide deck primitive.
  *
- * Compositional API — pass `<CarouselSlide>` children. Selection
+ * Data API — pass `slides`. Selection
  * state via `value` / `defaultValue` / `onValueChange` per cardinal
  * rule 23 §B. NEVER Ant's `activeKey` / `autoplaySpeed`.
  */
@@ -32,8 +29,7 @@ const PALETTE = [
 
 function Slide({ bg, label }: { bg: string; label: string }) {
   return (
-    <CarouselSlide>
-      <div
+    <div
         style={{
           background: bg,
           color: "white",
@@ -50,18 +46,15 @@ function Slide({ bg, label }: { bg: string; label: string }) {
       >
         {label}
       </div>
-    </CarouselSlide>
   );
 }
+
+const slides = PALETTE.map((p) => <Slide key={p.label} {...p} />);
 
 export const Default: Story = {
   render: () => (
     <div style={{ maxWidth: 640 }}>
-      <Carousel>
-        {PALETTE.map((p, i) => (
-          <Slide key={i} {...p} />
-        ))}
-      </Carousel>
+      <Carousel slides={slides} />
     </div>
   ),
 };
@@ -69,11 +62,7 @@ export const Default: Story = {
 export const WithoutDots: Story = {
   render: () => (
     <div style={{ maxWidth: 640 }}>
-      <Carousel dots={false}>
-        {PALETTE.map((p, i) => (
-          <Slide key={i} {...p} />
-        ))}
-      </Carousel>
+      <Carousel dots={false} slides={slides} />
     </div>
   ),
 };
@@ -81,11 +70,7 @@ export const WithoutDots: Story = {
 export const Autoplay: Story = {
   render: () => (
     <div style={{ maxWidth: 640 }}>
-      <Carousel autoplay={3000}>
-        {PALETTE.map((p, i) => (
-          <Slide key={i} {...p} />
-        ))}
-      </Carousel>
+      <Carousel autoplay={3000} slides={slides} />
       <p
         style={{
           marginTop: 12,
@@ -102,11 +87,7 @@ export const Autoplay: Story = {
 export const Vertical: Story = {
   render: () => (
     <div style={{ maxWidth: 480, height: 320 }}>
-      <Carousel orientation="vertical">
-        {PALETTE.map((p, i) => (
-          <Slide key={i} {...p} />
-        ))}
-      </Carousel>
+      <Carousel orientation="vertical" slides={slides} />
     </div>
   ),
   // Regression pin for the "vertical carousel renders every slide
@@ -141,11 +122,7 @@ export const Vertical: Story = {
 export const NoLoop: Story = {
   render: () => (
     <div style={{ maxWidth: 640 }}>
-      <Carousel loop={false}>
-        {PALETTE.map((p, i) => (
-          <Slide key={i} {...p} />
-        ))}
-      </Carousel>
+      <Carousel loop={false} slides={slides} />
       <p
         style={{
           marginTop: 12,

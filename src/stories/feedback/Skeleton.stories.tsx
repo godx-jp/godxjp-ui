@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Skeleton } from "../../components/feedback/Skeleton";
-import { Card, CardBody, CardHeader } from "../../components/data-display/Card";
+import { Card } from "../../components/data-display/Card";
 import { Space } from "../../components/layout";
 
 /**
@@ -35,17 +35,17 @@ export const Card_Shape: Story = {
   name: "Card shape — header + body + footer",
   render: () => (
     <Card style={{ width: 360 }}>
-      <CardHeader>
+      <div className="card-header-stack">
         <Skeleton className="sk-title" />
         <Skeleton className="sk-line short" />
-      </CardHeader>
-      <CardBody>
+      </div>
+      <div className="card-body">
         <Space direction="vertical" size="small" style={{ width: "100%" }}>
           <Skeleton className="sk-line" />
           <Skeleton className="sk-line med" />
           <Skeleton className="sk-line short" />
         </Space>
-      </CardBody>
+      </div>
     </Card>
   ),
 };
@@ -54,10 +54,15 @@ export const List_Shape: Story = {
   name: "List shape — avatar + 2 lines × 4",
   render: () => (
     <Card style={{ width: 420 }}>
-      <CardBody>
+      <div className="card-body">
         <Space direction="vertical" size="middle" style={{ width: "100%" }}>
           {[0, 1, 2, 3].map((i) => (
-            <Space key={i} size="middle" align="center" style={{ width: "100%" }}>
+            <Space
+              key={i}
+              size="middle"
+              align="center"
+              style={{ width: "100%" }}
+            >
               <Skeleton className="sk-circle" />
               <Space direction="vertical" size="small" style={{ flex: 1 }}>
                 <Skeleton className="sk-title" />
@@ -66,7 +71,7 @@ export const List_Shape: Story = {
             </Space>
           ))}
         </Space>
-      </CardBody>
+      </div>
     </Card>
   ),
 };
@@ -75,7 +80,7 @@ export const Table_Shape: Story = {
   name: "Table shape — header row + 5 body rows",
   render: () => (
     <Card style={{ width: 540 }}>
-      <CardBody>
+      <div className="card-body">
         <Space direction="vertical" size="small" style={{ width: "100%" }}>
           <Space size="middle" style={{ width: "100%" }}>
             <Skeleton className="sk-line short" style={{ flex: 1 }} />
@@ -92,7 +97,7 @@ export const Table_Shape: Story = {
             </Space>
           ))}
         </Space>
-      </CardBody>
+      </div>
     </Card>
   ),
 };
@@ -101,13 +106,13 @@ export const Block_Media: Story = {
   name: "Block — media placeholder",
   render: () => (
     <Card style={{ width: 360 }}>
-      <CardBody>
+      <div className="card-body">
         <Space direction="vertical" size="middle" style={{ width: "100%" }}>
           <Skeleton className="sk-block" style={{ width: "100%" }} />
           <Skeleton className="sk-title" />
           <Skeleton className="sk-line med" />
         </Space>
-      </CardBody>
+      </div>
     </Card>
   ),
 };

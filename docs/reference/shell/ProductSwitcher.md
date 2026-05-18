@@ -38,7 +38,7 @@ import { ProductSwitcher } from "@godxjp/ui/components/shell"
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `trigger` | `ReactNode` | required | Trigger element (wrapped with `PopoverTrigger asChild`) |
+| `trigger` | `ReactNode` | required | Trigger element (wrapped with `Popover asChild`) |
 | `activeId` | `string` | required | ID of the currently active product |
 | `products` | `ForgeProduct[]` | `PRODUCTS` | List of products to display |
 | `onSelect` | `(product: ForgeProduct) => void` | required | Called when a product row is selected |
