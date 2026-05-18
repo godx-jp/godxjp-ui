@@ -5,6 +5,7 @@ import {
   type Column,
   type ColumnPinningState,
   type Row,
+  type Table as ReactTable,
   type Updater,
   type VisibilityState,
 } from "@tanstack/react-table";
@@ -127,6 +128,19 @@ export {
 } from "./Table.persistence";
 import { Tag } from "./Tag";
 
+
+// ── Stage 4b deprecation warner ────────────────────────────────────
+// Module-level Set dedupes the warning to once-per-prop per session.
+const warnedDeprecatedProps = new Set<string>();
+function warnDeprecatedChromeProp(prop: string) {
+  if (warnedDeprecatedProps.has(prop)) return;
+  warnedDeprecatedProps.add(prop);
+  // eslint-disable-next-line no-console
+  console.warn(
+    `[@godxjp/ui Table] prop \`${prop}\` is deprecated on the primitive and will be removed in v5. ` +
+      `Move to the <DataTable> composite (see docs/how-to/migrate-to-data-table.md).`,
+  );
+}
 
 function normalizeFilters(filters: TableFilter[] | undefined) {
   return (filters ?? [])
@@ -847,10 +861,28 @@ export function Table<TData>({
   onResetFilters,
   rowClassName,
   className,
+  instance,
   ...rest
 }: TableProps<TData>) {
   const { t } = useTranslation();
   const warnedRowKeys = useRef(new Set<string>());
+  // ── Stage 4b deprecation. When `instance` is provided, this is the
+  // composite path: chrome is rendered by `<DataTable>`. When it's
+  // undefined and chrome props are passed, the primitive is being
+  // used standalone with the legacy fat surface — warn the consumer.
+  if (instance === undefined) {
+    if (toolbar !== undefined) warnDeprecatedChromeProp("toolbar");
+    if (views !== undefined) warnDeprecatedChromeProp("views");
+    if (batchActions !== undefined) warnDeprecatedChromeProp("batchActions");
+    if (filters !== undefined) warnDeprecatedChromeProp("filters");
+    if (onFiltersChange !== undefined)
+      warnDeprecatedChromeProp("onFiltersChange");
+    if (filterBar !== undefined) warnDeprecatedChromeProp("filterBar");
+    if (onResetFilters !== undefined)
+      warnDeprecatedChromeProp("onResetFilters");
+    if (pagination !== undefined) warnDeprecatedChromeProp("pagination");
+    if (tableKey !== undefined) warnDeprecatedChromeProp("tableKey");
+  }
   const [columnSettingsOpen, setColumnSettingsOpen] = useState(false);
   const [saveViewOpen, setSaveViewOpen] = useState(false);
   const [saveViewName, setSaveViewName] = useState("");
@@ -971,7 +1003,7 @@ export function Table<TData>({
     () => ({ columnPinning, columnVisibility: effectiveColumnVisibility }),
     [columnPinning, effectiveColumnVisibility],
   );
-  const table = useReactTable({
+  const localTable = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -983,19 +1015,28 @@ export function Table<TData>({
     onColumnPinningChange: handleColumnPinningChange,
     state: tableState,
   });
+  // Stage 4b — `<DataTable>` composite owns `useReactTable` and
+  // passes the resulting instance via `instance`. Always call the
+  // local hook (rules-of-hooks) but defer to the composite-supplied
+  // instance when present.
+  const table: ReactTable<TData> = instance ?? localTable;
+  const isComposite = instance !== undefined;
   useEffect(() => {
+    if (isComposite) return;
     writePersistedColumnVisibility(
       tableKey,
       columns,
       effectiveColumnVisibility,
     );
-  }, [columns, effectiveColumnVisibility, tableKey]);
+  }, [columns, effectiveColumnVisibility, tableKey, isComposite]);
   useEffect(() => {
+    if (isComposite) return;
     writePersistedColumnPinning(tableKey, columns, userColumnPinning);
-  }, [columns, userColumnPinning, tableKey]);
+  }, [columns, userColumnPinning, tableKey, isComposite]);
   useEffect(() => {
+    if (isComposite) return;
     writePersistedTableViews(tableKey, columns, internalSavedViews);
-  }, [columns, internalSavedViews, tableKey]);
+  }, [columns, internalSavedViews, tableKey, isComposite]);
   const leafColumns = table.getVisibleLeafColumns();
   const hasFooter = leafColumns.some(
     (column) => column.columnDef.footer !== undefined,
@@ -1435,42 +1476,45 @@ export function Table<TData>({
       className={cn("table-stack", containerClassName)}
       data-density={density}
     >
-      {viewsContent !== null && <div className="tbl-views">{viewsContent}</div>}
-      {toolbarContent !== null && (
+      {!isComposite && viewsContent !== null && (
+        <div className="tbl-views">{viewsContent}</div>
+      )}
+      {!isComposite && toolbarContent !== null && (
         <div className="table-toolbar">{toolbarContent}</div>
       )}
-      {batchActionsContent !== undefined && batchActionsContent !== false && (
-        <div className="tbl-batch-bar">
-          {batchConfig !== undefined && (
-            <>
-              <span className="count">
-                {batchConfig.selectedLabel?.(batchConfig.selectedRowKeys.length) ??
-                  t("table.selectedRows", {
-                    count: batchConfig.selectedRowKeys.length,
-                  })}
-              </span>
-              {!allVisibleSelected && selectableRows.length > 0 && (
-                <Button size="small" variant="ghost" onClick={selectAllVisible}>
-                  {batchConfig.selectAllLabel?.(selectableRows.length) ??
-                    t("table.selectAllVisible", {
-                      count: selectableRows.length,
+      {!isComposite && batchActionsContent !== undefined &&
+        batchActionsContent !== false && (
+          <div className="tbl-batch-bar">
+            {batchConfig !== undefined && (
+              <>
+                <span className="count">
+                  {batchConfig.selectedLabel?.(batchConfig.selectedRowKeys.length) ??
+                    t("table.selectedRows", {
+                      count: batchConfig.selectedRowKeys.length,
                     })}
+                </span>
+                {!allVisibleSelected && selectableRows.length > 0 && (
+                  <Button size="small" variant="ghost" onClick={selectAllVisible}>
+                    {batchConfig.selectAllLabel?.(selectableRows.length) ??
+                      t("table.selectAllVisible", {
+                        count: selectableRows.length,
+                      })}
+                  </Button>
+                )}
+              </>
+            )}
+            {batchActionsContent}
+            {batchConfig !== undefined && (
+              <>
+                <span className="spacer" />
+                <Button size="small" variant="ghost" onClick={clearSelection}>
+                  {batchConfig.clearLabel ?? t("table.clearSelection")}
                 </Button>
-              )}
-            </>
-          )}
-          {batchActionsContent}
-          {batchConfig !== undefined && (
-            <>
-              <span className="spacer" />
-              <Button size="small" variant="ghost" onClick={clearSelection}>
-                {batchConfig.clearLabel ?? t("table.clearSelection")}
-              </Button>
-            </>
-          )}
-        </div>
-      )}
-      {hasFilterBar && (
+              </>
+            )}
+          </div>
+        )}
+      {!isComposite && hasFilterBar && (
         <div className="tbl-filter-bar">
           {renderFilterBar(activeFilterBar, t("table.conditions"))}
           {onResetFilters !== undefined && (
@@ -1676,7 +1720,8 @@ export function Table<TData>({
           )}
         </div>
       )}
-      {paginationContent !== null &&
+      {!isComposite &&
+        paginationContent !== null &&
         (paginationContent.variant === "numbered" ? (
           // <Pagination variant="embedded"> owns its <nav> wrapper.
           paginationContent.node
@@ -1692,7 +1737,7 @@ export function Table<TData>({
             {paginationContent.node}
           </div>
         ))}
-      {columnSettingsOpen &&
+      {!isComposite && columnSettingsOpen &&
         isTableToolbarConfig(toolbar) &&
         toolbar.columns !== undefined &&
         toolbar.columns !== false &&
@@ -1781,7 +1826,7 @@ export function Table<TData>({
             </div>
           </Sheet>
         )}
-      {saveViewOpen &&
+      {!isComposite && saveViewOpen &&
         viewsConfig !== undefined &&
         viewsConfig.onSaveCurrent === undefined && (
         <Dialog

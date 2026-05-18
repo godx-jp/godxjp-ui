@@ -13,6 +13,7 @@ import type {
   ColumnPinningState,
   Row,
   RowData,
+  Table as ReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
 import type {
@@ -354,4 +355,11 @@ export interface TableProps<TData>
   empty?: ReactNode;
   onResetFilters?: () => void;
   rowClassName?: string | ((row: Row<TData>) => string | undefined);
+  /**
+   * Pre-built TanStack `useReactTable` instance, supplied by the
+   * `<DataTable>` composite. When provided, the primitive skips
+   * its internal `useReactTable` + chrome rendering and consumes
+   * the externally-managed instance. Stage 4b (Plan §3).
+   */
+  instance?: ReactTable<TData>;
 }
