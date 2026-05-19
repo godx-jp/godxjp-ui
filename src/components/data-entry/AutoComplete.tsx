@@ -117,7 +117,7 @@ export const AutoComplete = forwardRef<HTMLInputElement, AutoCompleteProps>(
       <Popover
         open={currentOpen}
         onOpenChange={setOpen}
-        trigger={input}
+        anchor={input}
         align="start"
         sideOffset={4}
         className="combobox-content"

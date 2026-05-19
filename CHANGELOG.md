@@ -3,6 +3,24 @@
 All notable changes to `@godxjp/ui`. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.2] — 2026-05-19
+
+### Added
+
+- **`<Popover anchor>` prop** — positioning-only anchor for the
+  combobox / typeahead / focus-managed pattern. Unlike `trigger`,
+  `anchor` does NOT register a click toggle handler. Parent controls
+  `open` directly.
+
+### Fixed
+
+- **`<AutoComplete>` no longer closes the instant it opens.** The
+  primitive opened on `input.onFocus` AND was wrapped in a Radix
+  `PopoverTrigger` that toggled on click. A single click fired both
+  paths — open via focus, then close via trigger toggle. Switched to
+  the new `<Popover anchor={input}>` shape so focus-managed open/close
+  stays authoritative.
+
 ## [5.0.1] — 2026-05-18
 
 ### Fixed
