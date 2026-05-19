@@ -201,4 +201,10 @@ Absolute. CI / pre-commit / review reject anything that violates.
 - Diátaxis manual: [`docs/`](./docs/)
 - Brand bible: [`BRAND.md`](./BRAND.md)
 - Changelog: [`CHANGELOG.md`](./CHANGELOG.md)
+- **MCP server for consumer agents**: [`mcp/`](./mcp/README.md) — `@godxjp/ui-mcp`
+  exposes the catalog + 12 taste skills + anti-AI-tells + redesign audit to
+  Claude Code / Codex CLI / Cursor / Cline / any MCP-aware agent. Token-
+  efficient: agents call `route_task` → `get_skill_section` for ~3 KB total
+  instead of dumping 50+ KB. Consumer install: `npx @godxjp/ui-mcp` +
+  [config snippet](./mcp/README.md#configure-your-agent).
 - Upstream: <https://github.com/godx-jp/godxjp-ui>

@@ -76,6 +76,24 @@ export const TOOL_DEFINITIONS = [
 
   // ── DRILL-DOWN (medium responses) ──────────────────────────────
   {
+    name: "get_anti_ai_tell",
+    description: "Fetch ONE anti-AI-tell — full body + concrete fix. Use after `list_anti_ai_tells`.",
+    inputSchema: {
+      type: "object",
+      properties: { name: { type: "string", description: "Exact tell name from list_anti_ai_tells." } },
+      required: ["name"],
+    },
+  },
+  {
+    name: "get_redesign_check",
+    description: "Fetch redesign check(s) matching a symptom snippet. Returns full fix + UI note. Use after `list_redesign_checks`.",
+    inputSchema: {
+      type: "object",
+      properties: { symptom: { type: "string", description: "Fragment of the symptom text (e.g. 'Inter everywhere' / '100vh')." } },
+      required: ["symptom"],
+    },
+  },
+  {
     name: "get_skill_section",
     description:
       "Fetch ONE section of ONE skill — token-efficient. E.g. `skill='soft', section='double-bezel'`. Use after `list_skills` narrowed the relevant skill + section.",
@@ -188,6 +206,8 @@ export async function dispatchTool(
     case "list_patterns":        return listPatterns();
     case "list_anti_ai_tells":   return listAntiAiTells(args.category as AiTell["category"] | undefined);
     case "list_redesign_checks": return listRedesignChecks(args.category as AuditCheck["category"] | undefined);
+    case "get_anti_ai_tell":     return getAntiAiTell(String(args.name ?? ""));
+    case "get_redesign_check":   return getRedesignCheck(String(args.symptom ?? ""));
     // Drill-down
     case "get_skill_section":    return getSkillSection(String(args.skill ?? ""), String(args.section ?? ""));
     case "get_component":        return getComponent(String(args.name ?? ""));
@@ -245,38 +265,64 @@ function listPatterns(): string {
 
 function listAntiAiTells(cat?: AiTell["category"]): string {
   const list = cat ? aiTellsByCategory(cat) : ANTI_AI_TELLS;
+  // Compact list — names only. Use `get_anti_ai_tell` for full body + fix.
   let out = `# AI tells to AVOID${cat ? ` — ${cat}` : ""} (${list.length})\n\n`;
+  out += `_Compact list. Use \`get_anti_ai_tell name="<name>"\` for the full body + fix._\n\n`;
   const grouped = list.reduce<Record<string, typeof list>>((acc, t) => {
     (acc[t.category] ??= []).push(t);
     return acc;
   }, {});
   for (const [c, items] of Object.entries(grouped)) {
-    out += `## ${c}\n\n`;
-    for (const t of items) {
-      out += `- **${t.name}** — ${t.body.split("\n")[0]}  \n  → **Fix:** ${t.fix.split("\n")[0]}\n`;
-    }
+    out += `## ${c}\n`;
+    for (const t of items) out += `- ${t.name}\n`;
     out += "\n";
   }
   return out;
 }
 
+function getAntiAiTell(name: string): string {
+  const t = ANTI_AI_TELLS.find((x) => x.name.toLowerCase() === name.trim().toLowerCase());
+  if (!t) {
+    let out = `Anti-AI-tell "${name}" not found. Use \`list_anti_ai_tells\` to discover. Closest:\n\n`;
+    for (const x of ANTI_AI_TELLS.slice(0, 8)) out += `- ${x.name} (${x.category})\n`;
+    return out;
+  }
+  return `# ${t.name}\n\n**Category:** ${t.category}\n\n## Symptom\n\n${t.body}\n\n## Fix\n\n${t.fix}\n`;
+}
+
 function listRedesignChecks(cat?: AuditCheck["category"]): string {
   const list = cat ? checksByCategory(cat) : REDESIGN_CHECKS;
+  // Compact list — symptoms only. Use `get_redesign_check` for the full fix + ui-note.
   let out = `# Redesign audit${cat ? ` — ${cat}` : ""} (${list.length} checks)\n\n`;
   if (!cat) {
-    out += `## Fix priority\n${FIX_PRIORITY.map((p) => `${p}`).join("\n")}\n\n`;
+    out += `## Fix priority\n${FIX_PRIORITY.map((p) => p).join("\n")}\n\n`;
     out += `## Rules\n${REDESIGN_RULES.map((r) => `- ${r}`).join("\n")}\n\n`;
   }
+  out += `_Compact list of symptoms. Use \`get_redesign_check symptom="<text snippet>"\` for the full fix + UI note._\n\n`;
   const grouped = list.reduce<Record<string, typeof list>>((acc, c) => {
     (acc[c.category] ??= []).push(c);
     return acc;
   }, {});
   for (const [c, items] of Object.entries(grouped)) {
-    out += `## ${c}\n\n`;
-    for (const item of items) {
-      out += `- **Symptom:** ${item.symptom}  \n  **Fix:** ${item.fix}${item.uiNote ? `  \n  _UI note:_ ${item.uiNote}` : ""}\n`;
-    }
+    out += `## ${c}\n`;
+    for (const item of items) out += `- ${item.symptom}\n`;
     out += "\n";
+  }
+  return out;
+}
+
+function getRedesignCheck(snippet: string): string {
+  const q = snippet.trim().toLowerCase();
+  if (!q) return "Pass `symptom` — a fragment matching the audit check symptom (e.g. 'Inter everywhere' / '100vh' / 'Acme').";
+  const matches = REDESIGN_CHECKS.filter(
+    (c) => c.symptom.toLowerCase().includes(q) || c.fix.toLowerCase().includes(q),
+  );
+  if (!matches.length) {
+    return `No redesign check matches "${snippet}". Use \`list_redesign_checks\` to see all.`;
+  }
+  let out = `# Redesign checks matching "${snippet}" (${matches.length})\n\n`;
+  for (const c of matches) {
+    out += `## ${c.category}\n\n**Symptom:** ${c.symptom}\n\n**Fix:** ${c.fix}\n${c.uiNote ? `\n_UI note:_ ${c.uiNote}\n` : ""}\n`;
   }
   return out;
 }
@@ -427,10 +473,11 @@ function searchComponents(query: string): string {
 function lintJsx(jsx: string): string {
   const issues: string[] = [];
   const check = (regex: RegExp, msg: string) => { if (regex.test(jsx)) issues.push(msg); };
-  check(/<button[\s>]/i, "Use `<Button>` instead of raw `<button>` (rule 29).");
-  check(/<input[\s>]/i, "Use `<Input>` instead of raw `<input>` (rule 29).");
-  check(/<select[\s>]/i, "Use `<Select>` instead of raw `<select>` (rule 29).");
-  check(/<textarea[\s>]/i, "Use `<Textarea>` instead of raw `<textarea>` (rule 29).");
+  // Lowercase HTML tags only — React PascalCase (Button) MUST NOT match.
+  check(/<button[\s>]/, "Use `<Button>` instead of raw `<button>` (rule 29).");
+  check(/<input[\s>]/, "Use `<Input>` instead of raw `<input>` (rule 29).");
+  check(/<select[\s>]/, "Use `<Select>` instead of raw `<select>` (rule 29).");
+  check(/<textarea[\s>]/, "Use `<Textarea>` instead of raw `<textarea>` (rule 29).");
   check(/bg-(red|blue|green|yellow|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/, "Use semantic token utilities (`bg-primary`/`bg-destructive`) not raw color scales (rule 2).");
   check(/<Tag[\s\S]*?color=["']error["']/i, 'Tag `color="error"` → `"destructive"` (v5.0, PR #60).');
   check(/<Badge[\s\S]*?variant=["']error["']/i, 'Badge `variant="error"` → `"destructive"` (v5.0, PR #63).');
