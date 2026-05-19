@@ -147,8 +147,15 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | npx @godxjp/
    Add `list_skills` + `get_skill_section` + `route_task` tools.
    Add Codex CLI install instructions to README.
 
-3. ⏳ (next iteration) Refactor large data modules into sections for
-   on-demand drill-down. Reduce default tool response size to ≤ 3 KB.
+3. ✅ Refactored. `list_anti_ai_tells` + `list_redesign_checks` now
+   return COMPACT (names / symptoms only); paired `get_anti_ai_tell`
+   + `get_redesign_check` for drill-down. 26 unit tests covering
+   tool dispatch + data integrity (`vitest`). Lint regexes
+   case-sensitive so React PascalCase doesn't false-positive. Main
+   repo CLAUDE.md links to the MCP. Version bumped to 0.2.0.
+
+4. ⏳ (when ready) `npm publish` from `mcp/` directory once user
+   confirms scope ownership + npm credentials.
 
 ## Constraints
 
