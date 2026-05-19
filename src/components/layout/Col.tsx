@@ -94,14 +94,22 @@ export function Col({
     resolved = xs;
   }
 
+  // Note: when `flex` is undefined we deliberately omit the key from the
+  // style object. React 19 serialises `flex: undefined` as `element.style
+  // .flex = ""`, and because `flex` is a CSS shorthand that clears
+  // `flex-grow` / `flex-shrink` / `flex-basis`, the empty assignment wipes
+  // the `flexBasis: 50%` we just set. The spread-only-when-present pattern
+  // keeps the longhand intact.
   const merged: CSSProperties = {
     flexBasis: flex !== undefined ? undefined : `${SPAN_TO_PCT(resolved)}%`,
     maxWidth: flex !== undefined ? undefined : `${SPAN_TO_PCT(resolved)}%`,
-    flex: typeof flex === "number" ? `${flex} ${flex} auto` : flex,
     paddingLeft: h ? `${h / 2}px` : undefined,
     paddingRight: h ? `${h / 2}px` : undefined,
     marginLeft: offset ? `${SPAN_TO_PCT(offset)}%` : undefined,
     order: order,
+    ...(flex !== undefined && {
+      flex: typeof flex === "number" ? `${flex} ${flex} auto` : flex,
+    }),
     ...style,
   };
   void push; // reserved — Ant supports push/pull; rarely used, add if needed
