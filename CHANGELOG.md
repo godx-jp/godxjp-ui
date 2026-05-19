@@ -3,6 +3,18 @@
 All notable changes to `@godxjp/ui`. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.1] — 2026-05-18
+
+### Fixed
+
+- **`<Col>` no longer wipes `flex-basis` on default-span renders.** React
+  19 serializes `flex: undefined` as `element.style.flex = ""`, and
+  because `flex` is a CSS shorthand it clears the `flex-basis: ${span}%`
+  longhand set on the line above. Result: every `<Row gutter><Col xs=
+  {24} md={12}>` was collapsing to content width instead of the
+  half-width the API promised. Conditional spread keeps the `flex` key
+  out of the style object unless actually defined (#70).
+
 ## [5.0.0] — 2026-05-18
 
 ### BREAKING CHANGES
