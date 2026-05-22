@@ -23,7 +23,7 @@ function DomainsScreen({ locale }) {
         <div className="row gap-3">
           <div className="col grow">
             <span className="muted" style={{ fontSize: "var(--text-xs)" }}>パブリックドメイン</span>
-            <span className="mono" style={{ fontSize: "var(--text-base)", fontWeight: 500 }}>local.godx.jp</span>
+            <span className="mono" style={{ fontSize: "var(--text-base)", fontWeight: 500 }}>example.test</span>
           </div>
           <div className="col">
             <span className="muted" style={{ fontSize: "var(--text-xs)" }}>合計マッピング</span>
@@ -54,7 +54,7 @@ function DomainsScreen({ locale }) {
               { sub: "mailpit-f-satoshi", proj: "—", dev: "f-satoshi", target: "127.0.0.1:11007", tls: true, health: "ok" },
             ].map((d, i) => (
               <tr key={i}>
-                <td><span className="mono" style={{ fontWeight: 500 }}>{d.sub}</span><span className="muted">.local.godx.jp</span></td>
+                <td><span className="mono" style={{ fontWeight: 500 }}>{d.sub}</span><span className="muted">.example.test</span></td>
                 <td>{d.proj === "—" ? <span className="muted">—</span> : <span className="row gap-1"><span className="dot" style={{ background: "var(--primary)" }}/>{d.proj}</span>}</td>
                 <td><div className="row gap-1"><Avatar name={d.dev}/><span style={{ fontSize: "var(--text-sm)" }}>{d.dev}</span></div></td>
                 <td className="mono" style={{ color: "var(--muted-foreground)" }}>{d.target}</td>

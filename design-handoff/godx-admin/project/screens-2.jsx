@@ -41,8 +41,8 @@ function DevPanelScreen({ locale }) {
           <table className="table">
             <thead><tr><th>ラベル</th><th>パス</th><th>ポート</th><th>URL</th><th>状態</th></tr></thead>
             <tbody>
-              <tr><td className="mono">api</td><td className="mono muted">backend</td><td className="num mono tnum">9100</td><td className="mono"><a href="#" style={{ color: "var(--primary)" }}>api-kintai-f-satoshi.local.godx.jp</a></td><td><Badge kind="success">起動中</Badge></td></tr>
-              <tr><td className="mono">app</td><td className="mono muted">frontend</td><td className="num mono tnum">9101</td><td className="mono"><a href="#" style={{ color: "var(--primary)" }}>app-kintai-f-satoshi.local.godx.jp</a></td><td><Badge kind="success">起動中</Badge></td></tr>
+              <tr><td className="mono">api</td><td className="mono muted">backend</td><td className="num mono tnum">9100</td><td className="mono"><a href="#" style={{ color: "var(--primary)" }}>api-kintai-f-satoshi.example.test</a></td><td><Badge kind="success">起動中</Badge></td></tr>
+              <tr><td className="mono">app</td><td className="mono muted">frontend</td><td className="num mono tnum">9101</td><td className="mono"><a href="#" style={{ color: "var(--primary)" }}>app-kintai-f-satoshi.example.test</a></td><td><Badge kind="success">起動中</Badge></td></tr>
               <tr><td className="mono">storybook</td><td className="mono muted">frontend</td><td className="num mono tnum">9102</td><td className="muted">—</td><td><Badge kind="neutral">停止</Badge></td></tr>
             </tbody>
           </table>

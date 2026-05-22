@@ -15,7 +15,7 @@ exported the artefacts so a coding agent can recreate them inside
 
 Source plan: **gx cloud plan #11 "Login UI wa-iro design integration
 (identity-portal redesign)"** at
-`https://local.godx.jp/godx-jp/godx-admin/plans/11`.
+gx cloud plan #11 (`godx-jp/godx-admin`).
 
 Foundation plan: legacy filesystem **Plan #39** at
 `docs/plans/done/plan-39-custom-login-ui.md`.

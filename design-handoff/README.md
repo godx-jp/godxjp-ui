@@ -29,6 +29,6 @@ mockups (pixel-perfect intent, not literal DOM copy).
 2. Open `project/design-canvas.jsx` top-to-bottom → see the visual.
 3. Pick a primitive → find its usage in design-canvas → match
    `src/styles/shell.css` + the primitive's source.
-4. Verify via Storybook at `https://storybook.local.godx.jp/`
+4. Verify via Storybook at `https://storybook.<publicDomain>/`
    (needs Playwright MCP for side-by-side; ask the user to
    `/mcp` reconnect if dead).
