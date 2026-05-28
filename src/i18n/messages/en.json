@@ -1,0 +1,171 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "delete": "Delete",
+    "error": "Something went wrong",
+    "working": "Working…",
+    "retry": "Retry",
+    "search": "Search",
+    "clearSearch": "Clear search",
+    "clearFilters": "Clear filters",
+    "first": "First",
+    "next": "Next →",
+    "selectedCount": "{count} selected",
+    "typeToConfirm": "Type {phrase} to confirm"
+  },
+  "dataEntry": {
+    "datePicker": {
+      "placeholder": "Select date"
+    },
+    "dateRangePicker": {
+      "placeholder": "Select date range"
+    },
+    "timePicker": {
+      "placeholder": "Select time",
+      "hour": "Hour",
+      "minute": "Minute",
+      "typeLabel": "Type time HH:mm"
+    },
+    "searchInput": {
+      "placeholder": "Search…"
+    },
+    "autocomplete": {
+      "placeholder": "Search or select…",
+      "empty": "No results found"
+    },
+    "colorPicker": {
+      "ariaLabel": "Pick color"
+    },
+    "upload": {
+      "dropzoneLabel": "Upload files",
+      "dropzoneHint": "Drag and drop files here, or click to browse",
+      "dropzoneMeta": "Uploads go to temp storage — promote on form save",
+      "buttonLabel": "Choose file",
+      "addImage": "Add image",
+      "uploading": "Uploading…",
+      "pendingReplace": "New image",
+      "pendingReplaceHint": "New image staged — save form to apply",
+      "avatarLabel": "Profile photo",
+      "change": "Change",
+      "removeAvatar": "Remove photo",
+      "markedForDelete": "Photo will be removed when you save",
+      "undo": "Undo",
+      "cropTitle": "Crop photo",
+      "cropZoom": "Zoom",
+      "cropConfirm": "Use photo"
+    },
+    "cascader": {
+      "placeholder": "Select…",
+      "searchPlaceholder": "Search…",
+      "empty": "No results"
+    },
+    "treeSelect": {
+      "placeholder": "Select…",
+      "searchPlaceholder": "Search…",
+      "empty": "No data",
+      "expand": "Expand",
+      "collapse": "Collapse"
+    },
+    "transfer": {
+      "source": "Source",
+      "target": "Target",
+      "searchPlaceholder": "Search…",
+      "empty": "No data",
+      "moveRight": "Move to target",
+      "moveLeft": "Move to source"
+    }
+  },
+  "feedback": {
+    "errorPanel": {
+      "title": "Couldn't load this section"
+    },
+    "genericError": "Something went wrong. Please retry."
+  },
+  "navigation": {
+    "localePicker": {
+      "ariaLabel": "Language"
+    },
+    "timezonePicker": {
+      "ariaLabel": "Timezone"
+    },
+    "timeFormatPicker": {
+      "ariaLabel": "Time format"
+    },
+    "dateFormatPicker": {
+      "ariaLabel": "Date format"
+    },
+    "pagination": {
+      "ariaLabel": "Pagination",
+      "prev": "Previous page",
+      "next": "Next page",
+      "page": "Page {page}",
+      "pageSize": "Page size",
+      "pageSizeOption": "{size} / page",
+      "total": "Total {total} items"
+    }
+  },
+  "locale": {
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "ja": "日本語"
+  },
+  "timeFormat": {
+    "24h": "24-hour",
+    "12h": "12-hour (AM/PM)"
+  },
+  "dateFormat": {
+    "iso": "ISO (yyyy-MM-dd)",
+    "dmy": "Day / Month / Year",
+    "mdy": "Month / Day / Year"
+  },
+  "timezone": {
+    "Asia/Ho_Chi_Minh": "Vietnam (Ho Chi Minh)",
+    "Asia/Tokyo": "Japan (Tokyo)",
+    "Asia/Bangkok": "Thailand (Bangkok)",
+    "Asia/Singapore": "Singapore",
+    "Asia/Seoul": "Korea (Seoul)",
+    "Asia/Shanghai": "China (Shanghai)",
+    "Asia/Taipei": "Taiwan (Taipei)",
+    "Asia/Hong_Kong": "Hong Kong",
+    "UTC": "UTC",
+    "Europe/London": "UK (London)",
+    "America/Los_Angeles": "US (Los Angeles)",
+    "America/New_York": "US (New York)"
+  },
+  "dataTable": {
+    "selectAll": "Select all rows",
+    "selectRow": "Select row {id}",
+    "bulkActions": "Bulk actions",
+    "densityCompact": "Compact",
+    "densityComfortable": "Comfortable",
+    "densitySwitch": "Switch to {density} density",
+    "rowActions": "Row actions"
+  },
+  "status": {
+    "active": "Active",
+    "completed": "Completed",
+    "delivered": "Delivered",
+    "done": "Done",
+    "permanent": "Permanent",
+    "succeeded": "Succeeded",
+    "draft": "Draft",
+    "pending": "Pending",
+    "scheduled": "Scheduled",
+    "sending": "Sending",
+    "temporary": "Temporary",
+    "bounced": "Bounced",
+    "cancelled": "Cancelled",
+    "deleted": "Deleted",
+    "failed": "Failed",
+    "private": "Private",
+    "internal": "Internal",
+    "public": "Public",
+    "ASSIGNMENT_STATUS_ACTIVE": "Active",
+    "ASSIGNMENT_STATUS_SUSPENDED": "Suspended",
+    "ASSIGNMENT_STATUS_TERMINATED": "Terminated"
+  },
+  "query": {
+    "loadMore": "Load more"
+  }
+}

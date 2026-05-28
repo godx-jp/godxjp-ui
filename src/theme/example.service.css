@@ -1,0 +1,37 @@
+/* Service theme — the ONLY file apps may use to customize design tokens.
+ * Copy to: apps/<your-app>/src/theme.css
+ * Import this file once in main.tsx (instead of @godxjp/ui/styles directly). */
+
+@import "@godxjp/ui/styles";
+
+/* Override tokens below. Do NOT add component styles or Tailwind utilities here. */
+:root {
+  /* Brand — pair primary with a focus ring and tinted accent: */
+  /* --primary: 211 73% 15%; */
+  /* --primary-foreground: 0 0% 100%; */
+  /* --ring: 24 99% 46%; */
+  /* --accent: 24 99% 95%; */
+  /* --accent-foreground: 24 99% 28%; */
+
+  /* Semantic status (optional — defaults in base.css): */
+  /* --success: 146 40% 58%; */
+  /* --warning: 44 100% 49%; */
+  /* --info: 223 42% 50%; */
+  /* --attention: 24 99% 46%; */
+
+  /* Tracking-code identity (optional — do not reuse for status): */
+  /* --tracking-internal: 211 73% 15%; */
+  /* --tracking-seller: 44 5% 42%; */
+  /* --tracking-yamato: 24 99% 46%; */
+
+  /* Layout density (optional): */
+  /* --space-page-x: var(--space-8); */
+
+  /* Primitive component tokens — override tokens only, no selector CSS: */
+  /* --card-space-inset: var(--space-section-active); */
+  /* --card-space-header-y: var(--space-stack-sm); */
+  /* --card-space-body-y: var(--space-section-active); */
+  /* --card-space-footer-y: var(--space-stack-sm); */
+  /* --card-title-font-size: var(--font-size-base); */
+  /* --card-header-background-alpha: 0.55; */
+}

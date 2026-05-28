@@ -1,0 +1,10 @@
+/* Table primitive tokens: row height, cell padding. */
+
+:root {
+  --table-row-height-compact: 1.75rem;
+  --table-row-height-default: 2rem;
+  --table-row-height-comfortable: 2.75rem;
+  --table-row-height: var(--table-row-height-default);
+  --table-cell-padding-y: var(--space-2);
+  --space-table-cell-x: var(--control-padding-x);
+}

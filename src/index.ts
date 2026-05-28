@@ -1,23 +1,3 @@
-// @godxjp/ui — public API barrel.
-//
-// Flat top-level export re-surfaces primitives (Badge, Button, Card,
-// Input, Label, Tabs, Avatar, Separator, cn) + every public hook /
-// i18n helper / data type. Sub-path imports stay available for callers
-// that want a smaller payload:
-//
-//   import "@godxjp/ui/tokens"                              // CSS — required ONCE at app entry
-//   import { Badge, Button, Card } from "@godxjp/ui"
-//   import { AppShell, Sidebar, Topbar } from "@godxjp/ui/components/shell"
-//   import { useTweaks } from "@godxjp/ui/hooks"
-//   import { initI18n } from "@godxjp/ui/i18n"
-//   import { PRODUCTS } from "@godxjp/ui/components/shell"
-//
-// Drop-in rule: a new service needs only the tokens import + whatever
-// React surface it consumes. No theming step, no per-service tokens.
-// See BRAND.md for the brand contract.
-
-export * from "./components/primitives"
-export * from "./components/composites"
-export * from "./hooks"
-
-export * from "./i18n"
+export * from "./components/admin";
+export * from "./form";
+export { cn } from "./lib/utils";

@@ -1,0 +1,151 @@
+/* Foundation tokens: color, typography, raw spacing, ratio, radius, shadow. */
+
+:root {
+  /* Color system (HSL components) — dxs-kintai: warm hue-60 neutral spine,
+   * SmartHR blue primary, 和色/wa-iro semantics. */
+  --background: 60 33% 99%; /* #fdfdfb warm off-white */
+  --foreground: 48 8% 13%; /* #23221e SmartHR TEXT_BLACK */
+  --card: 60 33% 99%;
+  --card-foreground: 48 8% 13%;
+  --popover: 60 33% 99%;
+  --popover-foreground: 48 8% 13%;
+  --primary: 204 100% 39%; /* SmartHR MAIN #0077c7 */
+  --primary-foreground: 60 33% 99%;
+  --secondary: 45 15% 95%; /* #f4f3f0 */
+  --secondary-foreground: 48 8% 13%;
+  --muted: 45 15% 95%;
+  --muted-foreground: 44 5% 42%; /* #706d65 SmartHR TEXT_GREY */
+  --accent: 40 13% 91%; /* #ebe9e5 */
+  --accent-foreground: 48 8% 13%;
+  --destructive: 357 64% 44%; /* 茜 #b7282e */
+  --destructive-foreground: 60 33% 99%;
+  --border: 30 7% 83%; /* #d6d3d0 SmartHR BORDER */
+  --input: 30 7% 83%;
+  --ring: 204 100% 39%;
+  --success: 146 40% 58%; /* 若竹 #68be8d */
+  --success-foreground: 60 33% 99%;
+  --warning: 44 100% 49%; /* 山吹 #f8b500 */
+  --warning-foreground: 48 8% 13%;
+  --info: 221 40% 50%; /* 群青 #4c6cb3 */
+  --info-foreground: 60 33% 99%;
+  --attention: 25 99% 46%; /* 朱 #eb6101 */
+  --attention-foreground: 60 33% 99%;
+  --tracking-internal: 204 100% 39%;
+  --tracking-seller: 44 5% 42%;
+  --tracking-yamato: 25 99% 46%;
+
+  /* 和色 (wa-iro) — traditional Japanese accent palette for charts, tags,
+   * decoration. Decorative hex (NOT semantic): never remap a wa-iro to a
+   * semantic role beyond the five canonical mappings used above. */
+  --wa-ai: #165e83; /* 藍   indigo */
+  --wa-gunjo: #4c6cb3; /* 群青 ultramarine */
+  --wa-ruri: #1e50a2; /* 瑠璃 lapis */
+  --wa-kon: #223a70; /* 紺   navy */
+  --wa-wakatake: #68be8d; /* 若竹 young bamboo */
+  --wa-moegi: #006e54; /* 萌葱 spring green */
+  --wa-yamabuki: #f8b500; /* 山吹 mountain yellow */
+  --wa-shu: #eb6101; /* 朱   vermilion */
+  --wa-akane: #b7282e; /* 茜   madder */
+  --wa-enji: #b94047; /* 臙脂 cochineal */
+  --wa-sakura: #fef4f4; /* 桜   cherry (soft bg) */
+  --wa-sumi: #595857; /* 墨   warm ink */
+  --wa-nezu: #949495; /* 鼠   mouse-grey */
+
+  /* Neutral + blue ramps (data viz, fine UI shading). */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --blue-50: #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+
+  /* Shape and elevation */
+  --radius: 0.375rem;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+
+  /* Typography scale — M PLUS 2 (JIS L1+L2 kanji, Vietnamese subset), one notch
+   * larger than the JP-dense base for comfortable reading (body 14px). */
+  --font-family-sans:
+    "M PLUS 2", "Be Vietnam Pro", "Hiragino Sans", "Noto Sans JP", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-size-xs: 0.8125rem; /* 13px */
+  --font-size-sm: 0.875rem; /* 14px — body */
+  --font-size-base: 0.9375rem; /* 15px */
+  --font-size-lg: 1.1875rem; /* 19px */
+  --font-size-xl: 1.375rem; /* 22px */
+  --font-size-2xl: 1.625rem; /* 26px */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-body: 1.7;
+  --letter-spacing-tight: 0;
+
+  /* Raw spacing scale */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Golden ratio scale */
+  --ratio-phi: 1.6180339887;
+  --phi-unit: var(--space-4);
+  --phi-n2: calc(var(--phi-unit) / var(--ratio-phi) / var(--ratio-phi));
+  --phi-n1: calc(var(--phi-unit) / var(--ratio-phi));
+  --phi-0: var(--phi-unit);
+  --phi-p1: calc(var(--phi-unit) * var(--ratio-phi));
+  --phi-p2: calc(var(--phi-p1) * var(--ratio-phi));
+}
+
+.dark {
+  /* Warm-tinted dark spine — keeps the hue-60 character at low lightness. */
+  --background: 48 9% 9%;
+  --foreground: 60 20% 96%;
+  --card: 48 8% 12%;
+  --card-foreground: 60 20% 96%;
+  --popover: 48 8% 12%;
+  --popover-foreground: 60 20% 96%;
+  --primary: 204 90% 60%; /* SmartHR blue lifted for dark contrast */
+  --primary-foreground: 48 9% 9%;
+  --secondary: 45 6% 18%;
+  --secondary-foreground: 60 20% 96%;
+  --muted: 45 6% 18%;
+  --muted-foreground: 44 6% 64%;
+  --accent: 45 7% 22%;
+  --accent-foreground: 60 20% 96%;
+  --destructive: 357 55% 52%;
+  --destructive-foreground: 60 20% 96%;
+  --border: 45 6% 22%;
+  --input: 45 6% 22%;
+  --ring: 204 90% 60%;
+  --success: 146 45% 55%;
+  --success-foreground: 48 9% 9%;
+  --warning: 44 95% 55%;
+  --warning-foreground: 48 9% 9%;
+  --info: 221 55% 62%;
+  --info-foreground: 48 9% 9%;
+  --attention: 25 95% 56%;
+  --attention-foreground: 48 9% 9%;
+  --tracking-internal: 204 90% 60%;
+  --tracking-seller: 44 6% 64%;
+  --tracking-yamato: 25 95% 56%;
+}

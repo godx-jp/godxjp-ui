@@ -1,0 +1,43 @@
+/*
+ * DENSITY — one knob retunes φ-unit, controls, tables (PageContainer density prop).
+ * Owner: .ui-density-* classes only. Apps use <PageContainer density>, never these classes.
+ */
+
+@layer components {
+  .ui-density-compact {
+    --control-height: var(--control-height-compact);
+    --control-padding-x: var(--control-padding-x-compact);
+    --table-row-height: var(--table-row-height-compact);
+    --phi-unit: var(--space-3);
+    --checkbox-size: 0.875rem;
+    --switch-width: 2rem;
+    --switch-height: 1.125rem;
+    --switch-thumb-size: 0.875rem;
+    --switch-thumb-translate: 0.875rem;
+    --table-cell-padding-y: var(--space-1);
+  }
+
+  .ui-density-default {
+    --control-height: var(--control-height-default);
+    --control-padding-x: var(--control-padding-x-default);
+    --table-row-height: var(--table-row-height-default);
+    --table-cell-padding-y: var(--space-2);
+  }
+
+  .ui-density-comfortable {
+    --control-height: var(--control-height-comfortable);
+    /* Comfortable steps 44 → 36 → 32 (design spacing-density), steeper than the
+     * default 4px step so sm/xs aren't left 4px too tall. */
+    --control-height-sm: calc(var(--control-height) - 0.5rem);
+    --control-height-xs: calc(var(--control-height) - 0.75rem);
+    --control-padding-x: var(--control-padding-x-comfortable);
+    --table-row-height: var(--table-row-height-comfortable);
+    --phi-unit: var(--space-6);
+    --checkbox-size: 1.125rem;
+    --switch-width: 2.5rem;
+    --switch-height: 1.375rem;
+    --switch-thumb-size: 1.125rem;
+    --switch-thumb-translate: 1.125rem;
+    --table-cell-padding-y: var(--space-2);
+  }
+}

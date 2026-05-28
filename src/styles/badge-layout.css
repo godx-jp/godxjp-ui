@@ -1,0 +1,22 @@
+/*
+ * STATUS BADGE — compact chip spacing + semantic tones (control-styles.ts maps tones).
+ */
+
+@layer components {
+  [data-slot="status-badge"] {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-badge-gap);
+    padding: var(--space-badge-y) var(--space-badge-x);
+    border-radius: var(--radius-md);
+    border-width: 1px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+  }
+
+  [data-slot="status-badge-icon"] {
+    width: 0.75rem;
+    height: 0.75rem;
+    flex-shrink: 0;
+  }
+}

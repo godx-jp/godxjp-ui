@@ -1,0 +1,17 @@
+/* Feedback primitive tokens: dialog, alert, empty state. */
+
+:root {
+  --space-dialog-inset: var(--space-5);
+  --space-dialog-gap: var(--space-stack-md);
+  --space-dialog-close-offset: var(--space-4);
+  --space-alert-inset: var(--space-section-active);
+  --space-alert-gap: var(--space-inline-md);
+  --space-alert-inner-gap: var(--space-stack-sm);
+  --space-alert-dismiss-offset: var(--space-3);
+  --space-empty-state-y: var(--space-10);
+  --space-empty-state-x: var(--space-6);
+  --skeleton-row-gap: var(--space-stack-sm);
+  --skeleton-cell-gap: var(--space-inline-lg);
+  --skeleton-card-inset: var(--space-section-active);
+  --skeleton-radius: var(--radius);
+}

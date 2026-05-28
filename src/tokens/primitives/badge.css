@@ -1,0 +1,13 @@
+/* Badge primitive tokens. */
+
+:root {
+  --space-badge-gap: var(--space-inline-xs);
+  --space-badge-x: var(--space-2);
+  --space-badge-y: var(--space-1);
+  --code-badge-height: 1.75rem;
+  --code-badge-gap: var(--space-inline-sm);
+  --code-badge-padding-x: var(--space-2);
+  --code-badge-bg-alpha: 0.055;
+  --code-badge-border-alpha: 0.28;
+  --code-badge-separator-alpha: 0.22;
+}

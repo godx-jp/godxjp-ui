@@ -1,0 +1,55 @@
+/* Control primitive tokens: heights, horizontal padding, adjacent control sizes. */
+
+:root {
+  --control-height-compact: 1.75rem;
+  --control-height-default: 2rem;
+  --control-height-comfortable: 2.75rem;
+  --control-padding-x-compact: var(--space-2);
+  --control-padding-x-default: var(--space-3);
+  --control-padding-x-comfortable: var(--space-4);
+
+  --control-height: var(--control-height-default);
+  /* Adjacent control sizes, derived from the active --control-height.
+   * Default/compact use a 4px/8px step; density overrides comfortable
+   * (which steps 44→36→32 per the design's spacing-density spec). */
+  --control-height-sm: calc(var(--control-height) - 0.25rem);
+  --control-height-lg: calc(var(--control-height) + 0.25rem);
+  --control-height-xs: calc(var(--control-height) - 0.5rem);
+  --control-padding-x: var(--control-padding-x-default);
+  --control-gap: var(--space-inline-sm);
+  --control-gap-sm: var(--space-inline-xs);
+  --control-radius: var(--radius);
+  --control-icon-size: 1rem;
+  --control-icon-size-sm: 0.875rem;
+  --control-focus-ring-width: 2px;
+
+  --checkbox-size: 1rem;
+  --choice-gap: var(--space-inline-sm);
+  --choice-group-gap-x: var(--space-6);
+  --choice-group-gap-y: var(--space-3);
+  --choice-description-gap: 0.125rem;
+  --choice-control-offset: 0.125rem;
+
+  --switch-width: 2.25rem;
+  --switch-height: 1.25rem;
+  --switch-thumb-size: 1rem;
+  --switch-thumb-translate: 1rem;
+
+  --slider-track-height: 0.375rem;
+  --slider-thumb-size: 1rem;
+
+  --color-picker-input-width: 6.5rem;
+
+  --command-list-max-height: min(300px, 50vh);
+  --command-input-padding-x: var(--space-3);
+  --command-group-padding: var(--space-1);
+  --command-item-padding-y: var(--space-2);
+  --command-item-padding-x: var(--space-2);
+  --search-input-edge-inset: var(--space-3);
+  --search-input-start-padding: calc(
+    var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap)
+  );
+  --search-input-end-padding: calc(
+    var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap)
+  );
+}

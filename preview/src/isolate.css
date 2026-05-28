@@ -1,0 +1,30 @@
+/* Isolate page — component only. No preview chrome, no full-viewport shell. */
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  min-height: 0;
+  background: transparent;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.preview-runtime-loading,
+.preview-runtime-error {
+  padding: 16px;
+  font-size: var(--font-size-sm);
+  color: hsl(var(--foreground));
+}
+
+.preview-runtime-error pre {
+  margin: 8px 0 0;
+  white-space: pre-wrap;
+  font-size: 12px;
+}

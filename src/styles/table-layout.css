@@ -1,0 +1,109 @@
+/*
+ * TABLE — cell padding + typography owned here (density-aware via --table-cell-* tokens).
+ */
+
+@layer components {
+  [data-slot="table-head"] {
+    height: var(--table-row-height);
+    padding: var(--table-cell-padding-y) var(--space-table-cell-x);
+    text-align: left;
+    vertical-align: middle;
+    background: hsl(var(--secondary));
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: hsl(var(--muted-foreground));
+    white-space: nowrap;
+  }
+
+  [data-slot="table-head"]:has([role="checkbox"]) {
+    padding-right: 0;
+  }
+
+  [data-slot="table-cell"] {
+    padding: var(--table-cell-padding-y) var(--space-table-cell-x);
+    vertical-align: middle;
+  }
+
+  [data-slot="table-cell"]:has([role="checkbox"]) {
+    padding-right: 0;
+  }
+
+  .ui-data-table-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-inline-md);
+  }
+
+  .ui-data-table-bulk {
+    display: flex;
+    align-items: center;
+    gap: var(--space-inline-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .ui-data-table-bulk-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-inline-sm);
+  }
+
+  .ui-data-table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-inline-sm);
+    padding-top: var(--space-stack-sm);
+  }
+
+  .ui-data-table-root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-stack-sm);
+  }
+
+  .ui-data-table-surface {
+    overflow: hidden;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-md);
+  }
+
+  [data-slot="card-content"][data-flush] .ui-data-table-root {
+    gap: 0;
+  }
+
+  [data-slot="card-content"][data-flush] .ui-data-table-toolbar {
+    border-bottom: 1px solid hsl(var(--card-border-token));
+    padding: var(--card-space-header-y) var(--card-space-inset);
+  }
+
+  .ui-data-table-sort-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-inline-xs);
+  }
+
+  .ui-data-table-scroll {
+    overflow-x: auto;
+    margin-inline: calc(-1 * var(--space-page-active-x));
+    padding-inline: var(--space-page-active-x);
+  }
+
+  [data-slot="card-content"][data-flush] .ui-data-table-scroll {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  [data-slot="card-content"][data-flush] .ui-data-table-surface {
+    border-width: 0;
+    border-radius: 0;
+  }
+
+  @media (min-width: 640px) {
+    .ui-data-table-scroll {
+      margin-inline: 0;
+      padding-inline: 0;
+    }
+  }
+}

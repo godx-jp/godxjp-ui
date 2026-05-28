@@ -1,16 +1,105 @@
-/* @godxjp/ui — styles entry.
- *
- * Loads:
- *   1. theme   — tokens (primitives + semantic + theme/density/tenant variants).
- *   2. base    — element resets + typography defaults (@layer base).
- *   3. shell   — chrome + page component CSS.
- *   4. sonner  — toast theme overrides.
- *
- * Service `theme.css` consumes `@godxjp/ui/tailwind.css` — which
- * adds the Tailwind v4 utilities + the `@theme inline { … }`
- * mapping on top of this index.
- */
-@import "./theme.css";
-@import "./base.css";
-@import "./shell.css";
-@import "./sonner.css";
+@import "sonner/dist/styles.css";
+@import "react-day-picker/style.css";
+/* Default sans font — self-contained so consumers need no font config (subsetted: latin/vi/jp). */
+@import "@fontsource/m-plus-2/400.css";
+@import "@fontsource/m-plus-2/500.css";
+@import "@fontsource/m-plus-2/600.css";
+@import "@fontsource/m-plus-2/700.css";
+@import "tailwindcss";
+@source "../**/*.{tsx,ts}";
+@import "../tokens/base.css";
+@import "./density.css";
+@import "./shell-layout.css";
+@import "./layout.css";
+@import "./control.css";
+@import "./card-layout.css";
+@import "./table-layout.css";
+@import "./dialog-layout.css";
+@import "./alert-layout.css";
+@import "./badge-layout.css";
+@import "./data-display-layout.css";
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+  --color-attention: hsl(var(--attention));
+  --color-attention-foreground: hsl(var(--attention-foreground));
+  --color-tracking-internal: hsl(var(--tracking-internal));
+  --color-tracking-seller: hsl(var(--tracking-seller));
+  --color-tracking-yamato: hsl(var(--tracking-yamato));
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  /* Wire Tailwind's font-sans/mono (and preflight) to the design-system fonts. */
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
+  /* 和色 (wa-iro) accents → bg-wa / text-wa utilities (charts, tags, decoration). */
+  --color-wa-ai: var(--wa-ai);
+  --color-wa-gunjo: var(--wa-gunjo);
+  --color-wa-ruri: var(--wa-ruri);
+  --color-wa-kon: var(--wa-kon);
+  --color-wa-wakatake: var(--wa-wakatake);
+  --color-wa-moegi: var(--wa-moegi);
+  --color-wa-yamabuki: var(--wa-yamabuki);
+  --color-wa-shu: var(--wa-shu);
+  --color-wa-akane: var(--wa-akane);
+  --color-wa-enji: var(--wa-enji);
+  --color-wa-sakura: var(--wa-sakura);
+  --color-wa-sumi: var(--wa-sumi);
+  --color-wa-nezu: var(--wa-nezu);
+  /* Wire Tailwind text-* utilities to runtime typography tokens (fontSize toolbar). */
+  --text-xs: var(--font-size-xs);
+  --text-sm: var(--font-size-sm);
+  --text-base: var(--font-size-base);
+  --text-lg: var(--font-size-lg);
+  --text-xl: var(--font-size-xl);
+  --text-2xl: var(--font-size-2xl);
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-body);
+    font-feature-settings:
+      "cv02",
+      "cv03",
+      "cv04",
+      "cv11",
+      "rlig" 1,
+      "calt" 1;
+  }
+
+  code {
+    font-family: var(--font-family-mono);
+  }
+}

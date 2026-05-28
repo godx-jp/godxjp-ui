@@ -1,0 +1,20 @@
+/* Layout primitive tokens: page, section, stack, inline. */
+
+:root {
+  --space-page-x: var(--phi-0);
+  --space-page-y: var(--phi-0);
+  --space-section: var(--phi-0);
+  --space-stack-xs: var(--space-1);
+  --space-stack-sm: var(--space-2);
+  --space-stack-md: var(--phi-0);
+  --space-stack-lg: var(--phi-p1);
+  --space-stack-xl: var(--phi-p2);
+  --space-inline-xs: var(--space-1);
+  --space-inline-sm: var(--space-2);
+  --space-inline-md: var(--phi-n1);
+  --space-inline-lg: var(--phi-0);
+
+  --space-page-active-x: var(--space-page-x);
+  --space-page-active-y: var(--space-page-y);
+  --space-section-active: var(--space-section);
+}

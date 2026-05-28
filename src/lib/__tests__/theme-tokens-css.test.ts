@@ -1,0 +1,118 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { describe, expect, it } from "vitest";
+
+const root = join(dirname(fileURLToPath(import.meta.url)), "../..");
+
+function readSrc(relative: string): string {
+  return readFileSync(join(root, relative), "utf8");
+}
+
+function readStyle(name: string): string {
+  return readSrc(`styles/${name}`);
+}
+
+describe("theme CSS tokens (base.css + layout owners)", () => {
+  const base = readSrc("tokens/base.css");
+  const tokenCss = [
+    base,
+    readSrc("tokens/foundation.css"),
+    readSrc("tokens/primitives/layout.css"),
+    readSrc("tokens/primitives/control.css"),
+    readSrc("tokens/primitives/card.css"),
+    readSrc("tokens/primitives/table.css"),
+    readSrc("tokens/primitives/feedback.css"),
+    readSrc("tokens/primitives/badge.css"),
+  ].join("\n");
+  const index = readSrc("styles/index.css");
+  const density = readStyle("density.css");
+  const control = readStyle("control.css");
+
+  it("defines semantic color tokens in :root", () => {
+    for (const token of [
+      "--primary:",
+      "--accent:",
+      "--ring:",
+      "--success:",
+      "--warning:",
+      "--info:",
+      "--attention:",
+      "--tracking-internal:",
+      "--tracking-seller:",
+      "--tracking-yamato:",
+      "--destructive:",
+    ]) {
+      expect(tokenCss, `missing ${token} in token graph`).toContain(token);
+    }
+  });
+
+  it("defines density primitives in :root", () => {
+    for (const token of [
+      "--control-height-compact",
+      "--control-height-default",
+      "--control-height-comfortable",
+      "--table-row-height-compact",
+      "--table-row-height-default",
+      "--table-row-height-comfortable",
+      "--table-cell-padding-y",
+    ]) {
+      expect(tokenCss, `missing ${token}`).toContain(token);
+    }
+  });
+
+  it("uses base.css as the token manifest", () => {
+    for (const file of [
+      "foundation.css",
+      "primitives/layout.css",
+      "primitives/control.css",
+      "primitives/card.css",
+      "primitives/table.css",
+      "primitives/feedback.css",
+      "primitives/badge.css",
+    ]) {
+      expect(base).toContain(`@import "./${file}"`);
+    }
+  });
+
+  it("maps semantic colors in @theme for Tailwind", () => {
+    for (const token of [
+      "--color-primary:",
+      "--color-accent:",
+      "--color-ring:",
+      "--color-success:",
+      "--color-warning:",
+      "--color-info:",
+      "--color-attention:",
+      "--color-tracking-internal:",
+      "--color-tracking-seller:",
+      "--color-tracking-yamato:",
+    ]) {
+      expect(index, `missing ${token} in index.css @theme`).toContain(token);
+    }
+  });
+
+  it("defines ui-control utilities in control.css", () => {
+    expect(control).toContain(".ui-control {");
+    expect(control).toContain("height: var(--control-height)");
+    expect(control).toContain(".ui-control-multiline {");
+    expect(control).toContain("font-size: var(--font-size-sm)");
+  });
+
+  it("sets --table-cell-padding-y per density class", () => {
+    expect(density).toContain(".ui-density-compact {");
+    expect(density).toMatch(/ui-density-compact[\s\S]*--table-cell-padding-y/);
+    expect(density).toMatch(/ui-density-comfortable[\s\S]*--table-cell-padding-y/);
+  });
+
+  it("wires Tailwind text-* to typography tokens", () => {
+    expect(index).toContain("--text-sm: var(--font-size-sm)");
+    expect(index).toContain("--text-xs: var(--font-size-xs)");
+  });
+
+  it("imports split layout CSS owners", () => {
+    for (const file of ["density.css", "layout.css", "card-layout.css", "table-layout.css"]) {
+      expect(index).toContain(`@import "./${file}"`);
+    }
+  });
+});

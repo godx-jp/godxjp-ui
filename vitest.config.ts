@@ -1,55 +1,37 @@
-import { defineConfig } from "vitest/config"
-import { storybookTest } from "@storybook/addon-vitest/vitest-plugin"
-import { playwright } from "@vitest/browser-playwright"
-import { fileURLToPath } from "node:url"
+/// <reference types="vitest" />
+import path from "node:path";
+import { createRequire } from "node:module";
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
 
-const dirname = fileURLToPath(new URL(".", import.meta.url))
+const require = createRequire(import.meta.url);
+const reactDir = path.dirname(require.resolve("react/package.json"));
+const reactDomDir = path.dirname(require.resolve("react-dom/package.json"));
 
-/**
- * Vitest is the single test runner for `@godxjp/ui`.
- *
- * Two project shapes share the config:
- *
- *   1. **unit** — plain Vitest specs (`src/**\/*.test.ts(x)`) that run in
- *      Node. For pure logic (formatters, hooks without DOM, helpers).
- *
- *   2. **storybook** — every story file's `play()` is converted into a
- *      Vitest test via `@storybook/addon-vitest`. Runs in a real
- *      Chromium browser via Playwright so Radix / cmdk / focus / portal
- *      behaviour matches what users see. This is the regression gate
- *      for interactive primitives (AutoComplete focus, Collapse panel,
- *      Carousel nav, Dialog overlay, …).
- *
- * Run:
- *   pnpm test                 # both projects, headless, single pass
- *   pnpm test:watch           # watch + browser UI
- *   pnpm test -- --project storybook  # only play() tests
- */
 export default defineConfig({
-  test: {
-    projects: [
-      {
-        extends: true,
-        test: {
-          name: "unit",
-          environment: "node",
-          include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
-          globals: false,
-        },
-      },
-      {
-        extends: true,
-        plugins: [storybookTest({ configDir: `${dirname}/.storybook` })],
-        test: {
-          name: "storybook",
-          browser: {
-            enabled: true,
-            provider: playwright(),
-            headless: true,
-            instances: [{ browser: "chromium" }],
-          },
-        },
-      },
-    ],
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      react: reactDir,
+      "react/jsx-runtime": path.join(reactDir, "jsx-runtime.js"),
+      "react/jsx-dev-runtime": path.join(reactDir, "jsx-dev-runtime.js"),
+      "react-dom": reactDomDir,
+      "react-dom/client": path.join(reactDomDir, "client.js"),
+    },
   },
-})
+  test: {
+    environment: "jsdom",
+    globals: false,
+    setupFiles: ["./vitest.setup.ts"],
+    include: ["src/**/*.test.{ts,tsx}"],
+    testTimeout: 8_000,
+    pool: "forks",
+    fileParallelism: false,
+    coverage: {
+      provider: "v8",
+      include: ["src/components/**", "src/form/**", "src/lib/**"],
+      exclude: ["**/*.test.*", "**/index.ts"],
+    },
+  },
+});

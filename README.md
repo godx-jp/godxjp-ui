@@ -1,181 +1,140 @@
 # @godxjp/ui
 
-**Version 3.0.0** — GoDX professional UI framework
+The shared React UI framework for every godx surface (admin, agency portal,
+handheld). Built on shadcn + Radix UI + Tailwind CSS v4.
 
-[![npm](https://img.shields.io/npm/v/@godxjp/ui)](https://www.npmjs.com/package/@godxjp/ui)
-[![License](https://img.shields.io/github/license/godx-jp/godxjp-ui)](LICENSE)
-[![Types included](https://img.shields.io/badge/types-included-blue)](src/)
-
-`@godxjp/ui` is the **single source of visual truth** for the GoDX platform.
-Every service frontend (admin-platform, forge-service, console-service, me-service,
-chat-service, knowledge-service, …) consumes this package. No service reimplements
-a button, dialog, sidebar, or design token.
-
-The framework enforces three Japanese-enterprise design principles:
-
-| Principle | Meaning | What it enforces |
-|---|---|---|
-| **渋み** (shibumi) | Restrained elegance | OKLCH primary chroma ≤ 0.18. No neon. No gradients on functional UI. |
-| **間** (ma) | Vertical breathing room | Body `line-height: 1.7`. Generous spacing. Density toggle for dense tables. |
-| **簡素** (kanso) | Simplicity | Three font weights: 400 (body), 500 (heading), 700 (emphasis). No 600 in new code. |
+Location: `packages/godx-ui/` (linked into the app as a `file:` dependency at
+`@godxjp/ui`).
 
 ---
 
-## Quick start
+## Role & boundary — read this first
 
-A new service needs three lines to be fully brand-compliant:
+This package is **the single source of UI truth**. It is shared, versioned
+infrastructure, which means two things are non-negotiable:
+
+- **Editing it requires explicit session permission** (the hard gate — see
+  [DEVELOPMENT.md](./docs/DEVELOPMENT.md#0-what-this-package-is--and-the-boundary-it-must-keep)).
+  By default the package is off-limits; consumers _compose_ its primitives, they
+  don't fork them.
+- **It is generic and presentational only.** No app i18n (`useTranslation`), no
+  Inertia (`router`/`<Form>`), no Wayfinder routes, no business entities or domain
+  logic, no product copy, no raw colors. Those are **consumer-layer** concerns — they
+  must never leak into this package. The framework ships **its own theme**, so a
+  consumer imports the styles and needs **zero** extra theme configuration.
+
+> Deciding whether a component belongs here vs. app-level? Use the
+> **`godx-ui-component-placement`** skill.
+
+Full contributor rules: **[docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)**.
+
+---
+
+## Architecture (bottom-up)
+
+```
+src/tokens/      Design tokens — the single source of values
+  foundation.css   :root + .dark: colors, fonts, type scale, spacing, radius, wa-iro
+  primitives/      Per-domain primitive tokens (card, table, control, badge, …)
+src/styles/      CSS that styles components by [data-slot]; density.css = the one density knob
+  index.css        Entry: fontsource → tailwindcss → @theme (token→utility map) → *-layout.css
+src/components/  React components by group (data-display, data-entry, layout, feedback, …)
+src/props/       Prop type system: vocabulary/ (atomic) + components/ + registry.ts
+src/lib/         cn(), control-styles, variants
+examples/        *.preview.tsx — Storybook-style stories
+docs/primitives/ <component>/index.tsx demo + examples/ + generated .md
+preview/         The preview app (vite, :6008) rendering examples + docs
+```
+
+A value is defined **once** as a CSS var (`--primary`), mapped to a utility in the
+`@theme` block (`--color-primary: hsl(var(--primary))`), and consumed as `bg-primary`.
+Components emit `data-slot` / `data-*`; the look lives in `styles/*-layout.css`. See
+[DEVELOPMENT.md §1](./docs/DEVELOPMENT.md#1-architecture--the-layers-bottom-up).
+
+---
+
+## Component groups
+
+| Group              | Import                    | Examples                                                                        |
+| ------------------ | ------------------------- | ------------------------------------------------------------------------------- |
+| **Layout**         | `@godxjp/ui/layout`       | `PageContainer`, `Stack`, `Inline`, `ResponsiveGrid`                            |
+| **General**        | `@godxjp/ui/general`      | `Button`                                                                        |
+| **Data Entry**     | `@godxjp/ui/data-entry`   | `Input`, `Select`, `FormField`, `DatePicker`, `Switch`                          |
+| **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `Badge`, `KeyValueGrid`, `Timeline`, `EmptyState` |
+| **Feedback**       | `@godxjp/ui/feedback`     | `Dialog`, `Sheet`, `Toast`, `Skeleton`, `Alert`                                 |
+| **Query**          | `@godxjp/ui/query`        | `DataState`, `InfiniteQueryState`, `PrefetchLink`, `MutationFeedback`           |
+| **Navigation**     | `@godxjp/ui/navigation`   | `Tabs`, `FilterBar`, `DropdownMenu`, `Steps`, `Pagination`, `LocalePicker`      |
+| **App**            | `@godxjp/ui/app`          | `AppProvider`, `useDateTime`                                                    |
+| **Datetime**       | `@godxjp/ui/datetime`     | `formatDate` (mandatory for display)                                            |
+| **shadcn paths**   | `@godxjp/ui/ui`           | Thin re-exports for shadcn-style imports                                        |
+| **Admin (legacy)** | `@godxjp/ui/admin`        | Compound admin exports                                                          |
+
+---
+
+## Consumer setup — theme is self-contained
+
+The framework ships colors, fonts (M PLUS 2 via `@fontsource`), the type scale, and
+the wa-iro palette. A consumer's entire styling surface is **one import + content
+sources** — no `:root` overrides, no font `<link>`:
+
+```css
+/* resources/css/app.css */
+@import "@godxjp/ui/styles";
+@source '../js/**/*.{ts,tsx}';
+@source '../views';
+```
 
 ```tsx
-// services/<slug>-service/frontend/src/main.tsx
-import "@godxjp/ui/tailwind.css"   // tokens + Tailwind v4 utilities — ONE import
-import { initI18n } from "@godxjp/ui/i18n"
-import { AppShell, Sidebar, Topbar } from "@godxjp/ui/components/shell"
-
-initI18n()
-
-createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
-    <AppShell sidebar={<Sidebar nav={MY_NAV} />} topbar={<Topbar />}>
-      <Routes>{/* service-specific routes */}</Routes>
-    </AppShell>
-  </BrowserRouter>,
-)
+import { AppProvider } from "@godxjp/ui/app"; // locale, tz, date/time format
+import { PageContainer } from "@godxjp/ui/layout"; // every page wraps in this
 ```
 
-That is the entire integration surface. No theming step. No per-service token file.
+### Mandatory consumer rules
+
+1. **Every page** uses `<PageContainer title subtitle extra footer>`.
+2. **Mobile-first** — verify at 320–390px in preview / browser.
+3. **Spacing via `Stack`/`Inline` `gap` + `ResponsiveGrid`** — no Tailwind `p-*` /
+   `gap-*` / `space-x|y-*` for app layout (see `docs/SPACING.md`).
+4. **Semantic tokens only** — no raw colors / hex / `dark:` overrides.
+5. **Dates** display via `formatDate` from `@godxjp/ui/datetime`.
+6. **`AppProvider`** wraps the app for locale / timezone / date-time format.
+7. **Audit** — `npm run ui:audit` must report 0 errors for touched files.
+
+Full app-developer rules: [ui-standardization.md](../../.claude/skills/frontend-design/rules/ui-standardization.md).
 
 ---
 
-## Zero-config toolchain
+## Golden ratio (φ ≈ 1.618)
 
-Per the umbrella's frontend-architecture spec (zero-config principle), services
-inherit the full toolchain from this package:
+One token `--phi-unit` drives page/section/card spacing; micro control gaps use the
+4px grid. Density (`compact` | `default` | `comfortable`) retunes `--phi-unit` with
+control + table heights together.
 
-```js
-// eslint.config.js — one line
-export { default } from "@godxjp/ui/eslint-config"
+| App API             | φ level             |
+| ------------------- | ------------------- |
+| `<Stack gap="md">`  | φ⁰ (default)        |
+| `<Stack gap="lg">`  | φ¹                  |
+| `<Stack gap="xl">`  | φ²                  |
+| Card shell / footer | base × φ / base ÷ φ |
+
+---
+
+## Working on the framework
+
+```bash
+pnpm preview          # preview app → http://localhost:6008 (fixed port, kills stale)
+pnpm preview:build    # static build — the integration test for examples + docs
+pnpm docs:sync-primitives   # regenerate docs/primitives/**/*.md from source
+pnpm typecheck && pnpm audit && pnpm test
 ```
 
-```json
-// package.json
-"prettier": "@godxjp/ui/prettier-config"
-```
+→ **[docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)** is the contributor guideline (the
+boundary, the layers, how to add/extend a component, verification).
 
-```json
-// tsconfig.json
-{ "extends": "@godxjp/ui/tsconfig" }
-```
+## Docs index
 
-```ts
-// vitest.config.ts
-import base from "@godxjp/ui/vitest-config"
-import { mergeConfig } from "vitest/config"
-export default mergeConfig(base, { test: {} })
-```
-
----
-
-## Import surface
-
-| Import | What you get |
-|---|---|
-| `@godxjp/ui` | All primitives + hooks + i18n helpers (barrel) |
-| `@godxjp/ui/tailwind.css` | Tailwind v4 + design tokens + base styles |
-| `@godxjp/ui/tokens.css` | Raw CSS custom properties only (no Tailwind) |
-| `@godxjp/ui/tokens-ext.css` | Extended tokens (dark mode, tenants, sidebar vars) |
-| `@godxjp/ui/sonner.css` | Sonner toast animations (import after tokens) |
-| `@godxjp/ui/components/primitives` | All primitives — see [`src/components/primitives.ts`](src/components/primitives.ts) (single barrel; 73+ surfaces re-exported from six group folders per cardinal rule 27) |
-| `@godxjp/ui/components/shell` | `AppShell`, `Sidebar`, `Topbar`, `TweaksPanel`, `CommandPalette`, `ProductSwitcher`, `ProjectSwitcher`, `PageContent` |
-| `@godxjp/ui/components/composites` | Upload family, `MediaUpload`, `AvatarUploader`, `LocaleInput`, calendar app composite |
-| `@godxjp/ui/i18n` | `initI18n()`, `SUPPORTED_LOCALES`, `GodxLocale` |
-| `@godxjp/ui/hooks` | `useTweaks()`, `Tweaks`, `Density`, `Theme` |
-| `@godxjp/ui/preferences` | `PreferencesProvider` — locale + timezone React context |
-| `@godxjp/ui/eslint-config` | Shared ESLint flat config |
-| `@godxjp/ui/prettier-config` | Shared Prettier config |
-| `@godxjp/ui/tsconfig` | Strict TypeScript base |
-| `@godxjp/ui/vitest-config` | Vitest base with jsdom + coverage thresholds |
-
----
-
-## Primitives (v3)
-
-| Component | Radix backing | A11y | Status |
-|---|---|---|---|
-| `Badge` | — | WCAG 2.1 AA | production |
-| `Button` | `@radix-ui/react-slot` | focus-visible, keyboard | production |
-| `Card` | — | — | production |
-| `Input`, `Textarea` | — | aria-invalid, label wire | production |
-| `Label` | `@radix-ui/react-label` | for/id | production |
-| `Tabs`, `Tabs`, `Tabs`, `Tabs` | `@radix-ui/react-tabs` | roving tabindex | production |
-| `Avatar` | — | aria-label | production |
-| `Separator` | `@radix-ui/react-separator` | role separator | production |
-| `Popover`, `Popover`, `Popover` | `@radix-ui/react-popover` | focus trap | production |
-| `DropdownMenu` family | `@radix-ui/react-dropdown-menu` | keyboard nav | production |
-| `Calendar` | `react-day-picker` | ARIA grid | production |
-| `TimeInput` | — | aria-invalid | production |
-| `Dialog` family | `@radix-ui/react-dialog` | focus trap, aria-modal | production |
-| `Sheet` family | `@radix-ui/react-dialog` | focus trap, aria-modal | production |
-| `AlertDialog` family | `@radix-ui/react-alert-dialog` | focus trap | production |
-| `Select` family | `@radix-ui/react-select` | keyboard nav | production |
-| `Switch` | `@radix-ui/react-switch` | role switch | production |
-| `Checkbox` | `@radix-ui/react-checkbox` | role checkbox | production |
-| `Table` family | — | role table | production |
-| `Combobox` family | `cmdk` + Popover | keyboard nav | production |
-| `Toaster`, `toast` | `sonner` | aria-live | production |
-| `Skeleton` | — | aria-hidden | production |
-| `Breadcrumb`, `Breadcrumb`, `Breadcrumb` | — | aria-label, aria-current | production |
-
----
-
-## i18n
-
-Mandatory locales per the umbrella frontend-architecture spec §6:
-
-| Locale | Status |
-|---|---|
-| `ja` | production (primary) |
-| `en` | production |
-| `vi` | production |
-| `fil` | production (added v3.0.0) |
-
-Services add extra namespaces via `i18n.addResourceBundle(locale, "my-ns", {…})`.
-
----
-
-## MUST RULES (review-blocking)
-
-See [`README.md § MUST RULES`](README.md) and [`BRAND.md`](BRAND.md) for the full list.
-The short version:
-
-1. Import `@godxjp/ui/tailwind.css` (or `/tokens.css`) once at app entry.
-2. Never redefine `--primary`, `--foreground`, `--background`, or any base token in app code.
-3. Per-deployment brand-color overrides live under `[data-accent="<palette>"]` in a service `theme.css` (per cardinal rule 19 — `[data-tenant]` is removed).
-4. No `@mui/material`, `chakra-ui`, `antd`, or any other component library.
-5. All primitive needs → add to `@godxjp/ui` first, then consume.
-6. Shell (AppShell + Sidebar + Topbar) is one component set — no hand-rolled grids.
-
----
-
-## Adoption tracker
-
-| Service | Status | Notes |
-|---|---|---|
-| `calendar-service/frontend` | adopted | Greenfield; compliant from first commit. |
-| `forge-service/frontend` | adopting (phase 1) | Reference implementation for migration pattern. |
-| `admin-platform/frontend` | partial | Omnify tokens overlap ~90%; full migration pending. |
-| `me-service/frontend` | adopting | Plan #31 R6 — active migration. |
-| `console-service/frontend` | adopting | Epic #1412; AppShell + tokens wired. |
-| `agent-service/frontend` | not started | Plan #21 G17. |
-| `knowledge-service/frontend` | not started | Plan #18 K-phase. |
-| `chat-service/frontend` | adopting | Plan #30 completion phase. |
-
----
-
-## Versioning
-
-`@godxjp/ui` follows [Semantic Versioning](https://semver.org/).
-Breaking changes require a cross-service audit + major bump.
-See [`CHANGELOG.md`](CHANGELOG.md) for the full history.
-
-Source: `github.com/godx-jp/godxjp-ui` (Apache-2.0).
-The umbrella repo (`godx-jp/godx-admin`) pins this as a git submodule at `libs/ts/godxjp-ui/`.
+- [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) — contributor guideline (start here to edit the package)
+- [docs/COMPONENTS.md](./docs/COMPONENTS.md) · [docs/TOKENS.md](./docs/TOKENS.md) · [docs/SPACING.md](./docs/SPACING.md)
+- [docs/PROPS-VOCABULARY.md](./docs/PROPS-VOCABULARY.md) · [docs/PROPS-REGISTRY.md](./docs/PROPS-REGISTRY.md)
+- [docs/DATETIME.md](./docs/DATETIME.md) · [docs/FORMS.md](./docs/FORMS.md) · [docs/TESTING.md](./docs/TESTING.md)
+- MCP: **godxjp-ui-mcp** (`.mcp.json`)

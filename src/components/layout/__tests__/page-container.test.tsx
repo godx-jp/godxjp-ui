@@ -1,0 +1,69 @@
+import { describe, expect, it } from "vitest";
+import { renderWithUi, screen } from "@/test/render";
+import { PageContainer } from "../page-container";
+import { Button } from "../../general/button";
+
+describe("PageContainer", () => {
+  it("renders title as h1", () => {
+    renderWithUi(<PageContainer title="Customers" />);
+    expect(screen.getByRole("heading", { level: 1, name: "Customers" })).toBeInTheDocument();
+  });
+
+  it("renders subtitle when provided", () => {
+    renderWithUi(<PageContainer title="Customers" subtitle="CRM list" />);
+    expect(screen.getByText("CRM list")).toHaveClass("ui-page-subtitle");
+  });
+
+  it("renders extra slot in header row", () => {
+    renderWithUi(<PageContainer title="Customers" extra={<Button>Create</Button>} />);
+    expect(screen.getByRole("button", { name: "Create" })).toBeInTheDocument();
+  });
+
+  it("renders footer slot", () => {
+    renderWithUi(<PageContainer title="Edit" footer={<Button>Save</Button>} />);
+    expect(screen.getByRole("contentinfo")).toContainElement(
+      screen.getByRole("button", { name: "Save" }),
+    );
+  });
+
+  it("renders breadcrumb trail with links", () => {
+    renderWithUi(
+      <PageContainer
+        title="Detail"
+        breadcrumb={[
+          { label: "CRM", to: "/crm" },
+          { label: "Customers", to: "/crm/customers" },
+          { label: "Detail" },
+        ]}
+      />,
+    );
+    const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
+    expect(nav).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "CRM" })).toHaveAttribute("href", "/crm");
+    expect(nav).toHaveTextContent("Detail");
+  });
+
+  it("applies density class on root", () => {
+    const { container } = renderWithUi(<PageContainer title="Compact" density="compact" />);
+    expect(container.firstChild).toHaveClass("ui-density-compact");
+  });
+
+  it("applies variant modifier class", () => {
+    const { container } = renderWithUi(<PageContainer title="List" variant="flush" />);
+    expect(container.firstChild).toHaveClass("ui-page-container--flush");
+  });
+
+  it("applies sticky footer modifier when enabled", () => {
+    const { container } = renderWithUi(<PageContainer title="Form" stickyFooter />);
+    expect(container.firstChild).toHaveClass("ui-page-container--sticky-footer");
+  });
+
+  it("renders children in page body", () => {
+    renderWithUi(
+      <PageContainer title="Page">
+        <p>Body content</p>
+      </PageContainer>,
+    );
+    expect(screen.getByText("Body content")).toBeInTheDocument();
+  });
+});

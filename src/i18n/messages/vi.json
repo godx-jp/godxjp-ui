@@ -1,0 +1,171 @@
+{
+  "common": {
+    "cancel": "Hủy",
+    "continue": "Tiếp tục",
+    "delete": "Xóa",
+    "error": "Đã xảy ra lỗi",
+    "working": "Đang xử lý…",
+    "retry": "Thử lại",
+    "search": "Tìm kiếm",
+    "clearSearch": "Xóa tìm kiếm",
+    "clearFilters": "Xóa bộ lọc",
+    "first": "Đầu",
+    "next": "Tiếp →",
+    "selectedCount": "{count} đã chọn",
+    "typeToConfirm": "Nhập {phrase} để xác nhận"
+  },
+  "dataEntry": {
+    "datePicker": {
+      "placeholder": "Chọn ngày"
+    },
+    "dateRangePicker": {
+      "placeholder": "Chọn khoảng ngày"
+    },
+    "timePicker": {
+      "placeholder": "Chọn giờ",
+      "hour": "Giờ",
+      "minute": "Phút",
+      "typeLabel": "Nhập giờ HH:mm"
+    },
+    "searchInput": {
+      "placeholder": "Tìm kiếm…"
+    },
+    "autocomplete": {
+      "placeholder": "Tìm hoặc chọn…",
+      "empty": "Không tìm thấy kết quả"
+    },
+    "colorPicker": {
+      "ariaLabel": "Chọn màu"
+    },
+    "upload": {
+      "dropzoneLabel": "Tải file lên",
+      "dropzoneHint": "Kéo thả file vào đây, hoặc bấm để chọn",
+      "dropzoneMeta": "Upload vào temp — promote khi lưu form",
+      "buttonLabel": "Chọn file",
+      "addImage": "Thêm ảnh",
+      "uploading": "Đang tải lên…",
+      "pendingReplace": "Ảnh mới",
+      "pendingReplaceHint": "Ảnh mới đang chờ — lưu form để áp dụng",
+      "avatarLabel": "Ảnh đại diện",
+      "change": "Đổi",
+      "removeAvatar": "Xóa ảnh",
+      "markedForDelete": "Ảnh sẽ bị xóa khi bạn lưu",
+      "undo": "Hoàn tác",
+      "cropTitle": "Cắt ảnh",
+      "cropZoom": "Thu phóng",
+      "cropConfirm": "Dùng ảnh này"
+    },
+    "cascader": {
+      "placeholder": "Chọn…",
+      "searchPlaceholder": "Tìm kiếm…",
+      "empty": "Không có kết quả"
+    },
+    "treeSelect": {
+      "placeholder": "Chọn…",
+      "searchPlaceholder": "Tìm kiếm…",
+      "empty": "Không có dữ liệu",
+      "expand": "Mở rộng",
+      "collapse": "Thu gọn"
+    },
+    "transfer": {
+      "source": "Nguồn",
+      "target": "Đích",
+      "searchPlaceholder": "Tìm kiếm…",
+      "empty": "Không có dữ liệu",
+      "moveRight": "Chuyển sang đích",
+      "moveLeft": "Chuyển về nguồn"
+    }
+  },
+  "feedback": {
+    "errorPanel": {
+      "title": "Không tải được nội dung này"
+    },
+    "genericError": "Đã xảy ra lỗi. Vui lòng thử lại."
+  },
+  "navigation": {
+    "localePicker": {
+      "ariaLabel": "Ngôn ngữ"
+    },
+    "timezonePicker": {
+      "ariaLabel": "Múi giờ"
+    },
+    "timeFormatPicker": {
+      "ariaLabel": "Định dạng giờ"
+    },
+    "dateFormatPicker": {
+      "ariaLabel": "Định dạng ngày"
+    },
+    "pagination": {
+      "ariaLabel": "Phân trang",
+      "prev": "Trang trước",
+      "next": "Trang sau",
+      "page": "Trang {page}",
+      "pageSize": "Số dòng mỗi trang",
+      "pageSizeOption": "{size} / trang",
+      "total": "Tổng {total} mục"
+    }
+  },
+  "locale": {
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "ja": "日本語"
+  },
+  "timeFormat": {
+    "24h": "24 giờ",
+    "12h": "12 giờ (SA/CH)"
+  },
+  "dateFormat": {
+    "iso": "ISO (yyyy-MM-dd)",
+    "dmy": "Ngày / Tháng / Năm",
+    "mdy": "Tháng / Ngày / Năm"
+  },
+  "timezone": {
+    "Asia/Ho_Chi_Minh": "Việt Nam (HCM)",
+    "Asia/Tokyo": "Nhật Bản (Tokyo)",
+    "Asia/Bangkok": "Thái Lan (Bangkok)",
+    "Asia/Singapore": "Singapore",
+    "Asia/Seoul": "Hàn Quốc (Seoul)",
+    "Asia/Shanghai": "Trung Quốc (Shanghai)",
+    "Asia/Taipei": "Đài Loan (Taipei)",
+    "Asia/Hong_Kong": "Hồng Kông",
+    "UTC": "UTC",
+    "Europe/London": "Anh (London)",
+    "America/Los_Angeles": "Mỹ (Los Angeles)",
+    "America/New_York": "Mỹ (New York)"
+  },
+  "dataTable": {
+    "selectAll": "Chọn tất cả các dòng",
+    "selectRow": "Chọn dòng {id}",
+    "bulkActions": "Thao tác hàng loạt",
+    "densityCompact": "Gọn",
+    "densityComfortable": "Thoải mái",
+    "densitySwitch": "Chuyển sang mật độ {density}",
+    "rowActions": "Thao tác dòng"
+  },
+  "status": {
+    "active": "Đang hoạt động",
+    "completed": "Hoàn thành",
+    "delivered": "Đã giao",
+    "done": "Xong",
+    "permanent": "Vĩnh viễn",
+    "succeeded": "Thành công",
+    "draft": "Nháp",
+    "pending": "Chờ xử lý",
+    "scheduled": "Đã lên lịch",
+    "sending": "Đang gửi",
+    "temporary": "Tạm thời",
+    "bounced": "Bị trả lại",
+    "cancelled": "Đã hủy",
+    "deleted": "Đã xóa",
+    "failed": "Thất bại",
+    "private": "Riêng tư",
+    "internal": "Nội bộ",
+    "public": "Công khai",
+    "ASSIGNMENT_STATUS_ACTIVE": "Đang hoạt động",
+    "ASSIGNMENT_STATUS_SUSPENDED": "Tạm ngưng",
+    "ASSIGNMENT_STATUS_TERMINATED": "Chấm dứt"
+  },
+  "query": {
+    "loadMore": "Tải thêm"
+  }
+}

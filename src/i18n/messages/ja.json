@@ -1,0 +1,171 @@
+{
+  "common": {
+    "cancel": "キャンセル",
+    "continue": "続行",
+    "delete": "削除",
+    "error": "エラーが発生しました",
+    "working": "処理中…",
+    "retry": "再試行",
+    "search": "検索",
+    "clearSearch": "検索をクリア",
+    "clearFilters": "フィルターをクリア",
+    "first": "最初",
+    "next": "次へ →",
+    "selectedCount": "{count} 件選択",
+    "typeToConfirm": "確認のため {phrase} と入力"
+  },
+  "dataEntry": {
+    "datePicker": {
+      "placeholder": "日付を選択"
+    },
+    "dateRangePicker": {
+      "placeholder": "期間を選択"
+    },
+    "timePicker": {
+      "placeholder": "時刻を選択",
+      "hour": "時",
+      "minute": "分",
+      "typeLabel": "HH:mm を入力"
+    },
+    "searchInput": {
+      "placeholder": "検索…"
+    },
+    "autocomplete": {
+      "placeholder": "検索または選択…",
+      "empty": "結果が見つかりません"
+    },
+    "colorPicker": {
+      "ariaLabel": "色を選択"
+    },
+    "upload": {
+      "dropzoneLabel": "ファイルをアップロード",
+      "dropzoneHint": "ここにドラッグ＆ドロップ、またはクリックして選択",
+      "dropzoneMeta": "一時ストレージに保存 — フォーム保存時に promote",
+      "buttonLabel": "ファイルを選択",
+      "addImage": "画像を追加",
+      "uploading": "アップロード中…",
+      "pendingReplace": "新しい画像",
+      "pendingReplaceHint": "新しい画像を保留中 — 保存で反映",
+      "avatarLabel": "プロフィール写真",
+      "change": "変更",
+      "removeAvatar": "写真を削除",
+      "markedForDelete": "保存時に写真が削除されます",
+      "undo": "元に戻す",
+      "cropTitle": "写真を切り抜き",
+      "cropZoom": "ズーム",
+      "cropConfirm": "この写真を使用"
+    },
+    "cascader": {
+      "placeholder": "選択…",
+      "searchPlaceholder": "検索…",
+      "empty": "結果なし"
+    },
+    "treeSelect": {
+      "placeholder": "選択…",
+      "searchPlaceholder": "検索…",
+      "empty": "データなし",
+      "expand": "展開",
+      "collapse": "折りたたむ"
+    },
+    "transfer": {
+      "source": "ソース",
+      "target": "ターゲット",
+      "searchPlaceholder": "検索…",
+      "empty": "データなし",
+      "moveRight": "ターゲットへ移動",
+      "moveLeft": "ソースへ戻す"
+    }
+  },
+  "feedback": {
+    "errorPanel": {
+      "title": "このセクションを読み込めませんでした"
+    },
+    "genericError": "問題が発生しました。もう一度お試しください。"
+  },
+  "navigation": {
+    "localePicker": {
+      "ariaLabel": "言語"
+    },
+    "timezonePicker": {
+      "ariaLabel": "タイムゾーン"
+    },
+    "timeFormatPicker": {
+      "ariaLabel": "時刻形式"
+    },
+    "dateFormatPicker": {
+      "ariaLabel": "日付形式"
+    },
+    "pagination": {
+      "ariaLabel": "ページネーション",
+      "prev": "前のページ",
+      "next": "次のページ",
+      "page": "ページ {page}",
+      "pageSize": "ページサイズ",
+      "pageSizeOption": "{size} / ページ",
+      "total": "全 {total} 件"
+    }
+  },
+  "locale": {
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "ja": "日本語"
+  },
+  "timeFormat": {
+    "24h": "24時間",
+    "12h": "12時間 (午前/午後)"
+  },
+  "dateFormat": {
+    "iso": "YYYY-MM-DD（年-月-日）",
+    "dmy": "日/月/年",
+    "mdy": "月/日/年"
+  },
+  "timezone": {
+    "Asia/Ho_Chi_Minh": "ベトナム（ホーチミン）",
+    "Asia/Tokyo": "日本（東京）",
+    "Asia/Bangkok": "タイ（バンコク）",
+    "Asia/Singapore": "シンガポール",
+    "Asia/Seoul": "韓国（ソウル）",
+    "Asia/Shanghai": "中国（上海）",
+    "Asia/Taipei": "台湾（台北）",
+    "Asia/Hong_Kong": "香港",
+    "UTC": "UTC",
+    "Europe/London": "英国（ロンドン）",
+    "America/Los_Angeles": "米国（ロサンゼルス）",
+    "America/New_York": "米国（ニューヨーク）"
+  },
+  "dataTable": {
+    "selectAll": "すべての行を選択",
+    "selectRow": "行 {id} を選択",
+    "bulkActions": "一括操作",
+    "densityCompact": "コンパクト",
+    "densityComfortable": "快適",
+    "densitySwitch": "{density} 表示に切り替え",
+    "rowActions": "行の操作"
+  },
+  "status": {
+    "active": "有効",
+    "completed": "完了",
+    "delivered": "配達済み",
+    "done": "完了",
+    "permanent": "永久",
+    "succeeded": "成功",
+    "draft": "下書き",
+    "pending": "保留",
+    "scheduled": "予定",
+    "sending": "送信中",
+    "temporary": "一時",
+    "bounced": "バウンス",
+    "cancelled": "キャンセル",
+    "deleted": "削除済み",
+    "failed": "失敗",
+    "private": "非公開",
+    "internal": "内部",
+    "public": "公開",
+    "ASSIGNMENT_STATUS_ACTIVE": "有効",
+    "ASSIGNMENT_STATUS_SUSPENDED": "停止",
+    "ASSIGNMENT_STATUS_TERMINATED": "終了"
+  },
+  "query": {
+    "loadMore": "さらに読み込む"
+  }
+}

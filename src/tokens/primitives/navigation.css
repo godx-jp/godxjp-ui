@@ -1,0 +1,13 @@
+/* Navigation primitive tokens: pagination, filters, compact pickers. */
+
+:root {
+  --pagination-gap: var(--space-inline-sm);
+  --pagination-item-gap: var(--space-inline-xs);
+  --pagination-size-width: 5.5rem;
+  --pagination-total-font-size: var(--font-size-sm);
+  --filter-bar-gap: var(--space-3);
+  --filter-bar-padding-y: var(--space-2);
+  --filter-label-font-size: var(--font-size-xs);
+  --filter-picker-width-sm: 11rem;
+  --filter-picker-width-md: 14rem;
+}

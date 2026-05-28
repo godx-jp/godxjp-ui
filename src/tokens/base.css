@@ -1,0 +1,13 @@
+/* @godxjp/ui — token manifest.
+ * Services MUST NOT edit package token files directly.
+ * App-specific overrides live in app theme.css after importing @godxjp/ui/styles.
+ */
+
+@import "./foundation.css";
+@import "./primitives/layout.css";
+@import "./primitives/control.css";
+@import "./primitives/card.css";
+@import "./primitives/table.css";
+@import "./primitives/feedback.css";
+@import "./primitives/badge.css";
+@import "./primitives/navigation.css";

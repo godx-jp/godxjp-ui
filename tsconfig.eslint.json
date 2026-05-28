@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src",
+    "docs",
+    "examples",
+    "preview",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "../frontend-tooling/test/**/*.ts",
+    "../frontend-tooling/test/**/*.tsx"
+  ]
+}

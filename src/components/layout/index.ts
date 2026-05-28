@@ -1,33 +1,31 @@
-// @godxjp/ui — layout primitives (Ant-Design-shaped).
-//
-// One concept, one component:
-//
-//   <Row>     + <Col>   — 24-column responsive flexbox grid (Ant)
-//   <Flex>             — flex container, prop-driven config
-//   <Space>            — inline group with prop-driven gap + optional split
-//   <Grid>             — CSS Grid wrapper (fixed N cols or template)
-//   <Masonry>          — staggered column-flow (Pinterest-style)
-
-export { Row, useRowGutter } from "./Row";
+export { PageContainer } from "./page-container";
 export type {
-  RowProps,
-  GutterValue,
-  Breakpoint,
-  Justify,
-  Align,
-} from "./Row";
-
-export { Col } from "./Col";
-export type { ColProps } from "./Col";
-
-export { Flex } from "./Flex";
-export type { FlexProps, FlexGap, FlexJustify, FlexAlign } from "./Flex";
-
-export { Space } from "./Space";
-export type { SpaceProps, SpaceSize } from "./Space";
-
-export { Grid } from "./Grid";
-export type { GridProps, GridGap } from "./Grid";
-
-export { Masonry, MasonryItem } from "./Masonry";
-export type { MasonryProps, MasonryItemProps, MasonryGap } from "./Masonry";
+  PageContainerProp,
+  PageContainerProps,
+  BreadcrumbItem,
+  BreadcrumbItemProp,
+} from "./page-container";
+export { PageInset } from "./page-inset";
+export type { PageInsetProp, PageInsetProps } from "./page-inset";
+export { Stack } from "./stack";
+export type { StackProp, StackProps } from "./stack";
+export { Inline } from "./inline";
+export type { InlineProp, InlineProps } from "./inline";
+export { AppShell } from "./app-shell";
+export type { AppShellProps } from "./app-shell";
+export { ShellApp } from "./shell-app";
+export type { ShellAppProps } from "./shell-app";
+export { Menu } from "./menu";
+export type { MenuItem, MenuProps, MenuSection } from "./menu";
+export { Breadcrumb } from "./breadcrumb";
+export type { BreadcrumbProps } from "./breadcrumb";
+export { Sidebar } from "./sidebar";
+export type { SidebarItem, SidebarProduct, SidebarProps, SidebarSection } from "./sidebar";
+export { Topbar } from "./topbar";
+export type { TopbarProduct, TopbarProject, TopbarProps } from "./topbar";
+export { ResponsiveGrid } from "./responsive-grid";
+export type { ResponsiveGridProps } from "./responsive-grid";
+export { SplitPane } from "./split-pane";
+export type { SplitPaneProps } from "./split-pane";
+export { MobileFrame } from "./mobile-frame";
+export type { MobileFrameNavItem, MobileFrameProps } from "./mobile-frame";

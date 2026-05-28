@@ -1,0 +1,191 @@
+/*
+ * ALERT — inset, gaps, dismiss offset; colors via data-variant + semantic tokens.
+ */
+
+@layer components {
+  [data-slot="alert"] {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-alert-gap);
+    width: 100%;
+    border-radius: var(--radius-md);
+    border-width: 1px;
+    padding: var(--space-alert-inset);
+    font-size: var(--font-size-sm);
+  }
+
+  [data-slot="alert"][data-variant="default"] {
+    border-color: hsl(var(--border));
+    background-color: hsl(var(--muted) / 0.4);
+    color: hsl(var(--foreground));
+  }
+
+  [data-slot="alert"][data-variant="destructive"] {
+    border-color: hsl(var(--destructive) / 0.3);
+    background-color: hsl(var(--destructive) / 0.05);
+    color: hsl(var(--foreground));
+  }
+
+  [data-slot="alert"][data-variant="warning"] {
+    border-color: hsl(var(--warning) / 0.3);
+    background-color: hsl(var(--warning) / 0.05);
+    color: hsl(var(--foreground));
+  }
+
+  [data-slot="alert"][data-variant="success"] {
+    border-color: hsl(var(--success) / 0.3);
+    background-color: hsl(var(--success) / 0.05);
+    color: hsl(var(--foreground));
+  }
+
+  [data-slot="alert"][data-dismissible] {
+    padding-right: calc(var(--space-alert-inset) + var(--space-8));
+  }
+
+  [data-slot="alert-icon"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+
+  [data-slot="alert-icon"][data-variant="default"] {
+    color: hsl(var(--foreground));
+  }
+
+  [data-slot="alert-icon"][data-variant="destructive"] {
+    color: hsl(var(--destructive));
+  }
+
+  [data-slot="alert-icon"][data-variant="warning"] {
+    color: hsl(var(--warning));
+  }
+
+  [data-slot="alert-icon"][data-variant="success"] {
+    color: hsl(var(--success));
+  }
+
+  [data-slot="alert-body"] {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--space-alert-inner-gap);
+  }
+
+  @media (min-width: 640px) {
+    [data-slot="alert-body"] {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+  }
+
+  [data-slot="alert-title"] {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+  }
+
+  [data-slot="alert-title"][data-variant="destructive"] {
+    color: hsl(var(--destructive));
+  }
+
+  [data-slot="alert-title"][data-variant="warning"] {
+    color: hsl(var(--warning));
+  }
+
+  [data-slot="alert-title"][data-variant="success"] {
+    color: hsl(var(--success));
+  }
+
+  [data-slot="alert-description"] {
+    margin-top: var(--space-1);
+    font-size: var(--font-size-sm);
+    color: hsl(var(--muted-foreground));
+    overflow-wrap: break-word;
+  }
+
+  [data-slot="alert-actions"] {
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: var(--space-inline-sm);
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    [data-slot="alert-actions"] {
+      width: auto;
+      justify-content: flex-end;
+    }
+  }
+
+  [data-slot="alert-dismiss"] {
+    position: absolute;
+    top: var(--space-alert-dismiss-offset);
+    right: var(--space-alert-dismiss-offset);
+    border-radius: var(--radius-sm);
+    opacity: 0.7;
+  }
+
+  .ui-skeleton-block {
+    border-radius: var(--skeleton-radius);
+    background: hsl(var(--muted));
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .ui-skeleton-rows,
+  .ui-skeleton-detail-stack,
+  .ui-skeleton-card {
+    display: grid;
+    gap: var(--skeleton-row-gap);
+  }
+
+  .ui-skeleton-row,
+  .ui-skeleton-table-row {
+    display: flex;
+    align-items: center;
+    gap: var(--skeleton-cell-gap);
+  }
+
+  .ui-skeleton-table {
+    overflow: hidden;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--skeleton-radius);
+  }
+
+  .ui-skeleton-table-head {
+    display: flex;
+    align-items: center;
+    gap: var(--skeleton-cell-gap);
+    padding-inline: var(--space-3);
+    background: hsl(var(--muted) / 0.5);
+  }
+
+  .ui-skeleton-table-body {
+    display: grid;
+  }
+
+  .ui-skeleton-table-row + .ui-skeleton-table-row {
+    border-top: 1px solid hsl(var(--border));
+  }
+
+  .ui-skeleton-detail {
+    max-width: 56rem;
+  }
+
+  .ui-skeleton-detail-box,
+  .ui-skeleton-card {
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--skeleton-radius);
+    padding: var(--skeleton-card-inset);
+  }
+
+  @keyframes pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+}
