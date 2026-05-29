@@ -3,6 +3,11 @@
   "version": "6.0.0",
   "type": "module",
   "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
+  "files": [
+    "src",
+    "scripts/ui-audit.mjs",
+    "README.md"
+  ],
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
