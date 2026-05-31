@@ -1,9 +1,10 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { render, renderHook, act, waitFor } from "@testing-library/react";
 import * as React from "react";
 import { AppProvider, useAppContext } from "../app-provider";
 import { getAppRequestHeaders, resetAppRequestHeaders } from "../request-headers";
 import { resetI18nLocale } from "../../i18n/translate";
+import { formatDate, resetDatetimeContextForTests } from "../../lib/datetime";
 import { readStoredPreferences, writeStoredPreferences } from "../storage";
 
 const STORAGE_KEY = "godxjp.app.test";
@@ -26,6 +27,7 @@ describe("AppProvider", () => {
   beforeEach(() => {
     resetAppRequestHeaders();
     resetI18nLocale();
+    resetDatetimeContextForTests();
     localStorage.removeItem(STORAGE_KEY);
   });
 
@@ -46,6 +48,27 @@ describe("AppProvider", () => {
       "x-time-format": "24h",
       "x-date-format": "dmy",
     });
+  });
+
+  it("syncs datetime context before children render", () => {
+    function DirectFormatter() {
+      return <span>{formatDate("2026-05-01T14:30:00Z", { kind: "datetime" })}</span>;
+    }
+
+    const { getByText } = render(
+      <AppProvider
+        storageKey={STORAGE_KEY}
+        persist={false}
+        defaultLocale="ja"
+        defaultTimezone="Asia/Tokyo"
+        defaultDateFormat="iso"
+        defaultTimeFormat="24h"
+      >
+        <DirectFormatter />
+      </AppProvider>,
+    );
+
+    expect(getByText("2026-05-01 23:30")).toBeInTheDocument();
   });
 
   it("updates headers when locale and timezone change", () => {
@@ -89,7 +112,7 @@ describe("AppProvider", () => {
     });
   });
 
-  it("restores persisted preferences on mount", () => {
+  it("restores persisted preferences after hydration", async () => {
     writeStoredPreferences(STORAGE_KEY, {
       locale: "ja",
       timezone: "Asia/Singapore",
@@ -101,10 +124,12 @@ describe("AppProvider", () => {
       wrapper: ({ children }) => wrapper({ children, persist: true }),
     });
 
-    expect(result.current.locale).toBe("ja");
-    expect(result.current.timezone).toBe("Asia/Singapore");
-    expect(result.current.timeFormat).toBe("12h");
-    expect(result.current.dateFormat).toBe("iso");
+    await waitFor(() => {
+      expect(result.current.locale).toBe("ja");
+      expect(result.current.timezone).toBe("Asia/Singapore");
+      expect(result.current.timeFormat).toBe("12h");
+      expect(result.current.dateFormat).toBe("iso");
+    });
   });
 
   it("calls onLocaleChange and onTimezoneChange", () => {

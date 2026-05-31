@@ -301,6 +301,16 @@ describe("Card", () => {
     expect(screen.getByTestId("delta")).toBeInTheDocument();
     expect(card.querySelector("[data-slot='card-stat-value-row']")).toBeTruthy();
   });
+
+  it("CardStat color-codes signed deltas and supports inverse semantics", () => {
+    const { rerender } = renderWithUi(<CardStat label="Churn" value="4%" delta="-2%" />);
+
+    expect(screen.getByText("-2%")).toHaveClass("text-destructive");
+
+    rerender(<CardStat label="Churn" value="4%" delta="-2%" inverse />);
+
+    expect(screen.getByText("-2%")).toHaveClass("text-success");
+  });
 });
 
 describe("Table", () => {

@@ -309,10 +309,12 @@ DataTable.Content = function DataTableContent() {
               {columns.map((col) => (
                 <TableHead
                   key={col.key}
+                  data-empty={!col.header || undefined}
                   className={cn(
                     col.width,
                     col.align === "right" && "text-right",
                     col.align === "center" && "text-center",
+                    col.hiddenOnMobile && "hidden md:table-cell",
                     col.sortable && onSortChange && "cursor-pointer select-none",
                   )}
                   onClick={() => {
@@ -384,6 +386,7 @@ DataTable.Content = function DataTableContent() {
                         col.width,
                         col.align === "right" && "text-right",
                         col.align === "center" && "text-center",
+                        col.hiddenOnMobile && "hidden md:table-cell",
                       )}
                     >
                       {col.render

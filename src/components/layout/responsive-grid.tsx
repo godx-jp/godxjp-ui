@@ -5,7 +5,7 @@ export type ResponsiveGridProps = {
   children: ReactNode;
 };
 
-export function ResponsiveGrid({ columns = 3, children }: ResponsiveGridProps) {
+export function ResponsiveGrid({ columns = 4, children }: ResponsiveGridProps) {
   return (
     <div className="ui-responsive-grid" data-columns={columns}>
       {children}

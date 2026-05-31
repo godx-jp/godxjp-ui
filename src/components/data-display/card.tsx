@@ -147,7 +147,24 @@ export type CardStatProps = React.HTMLAttributes<HTMLDivElement> &
     layout?: "stacked" | "inline";
     /** Align the metric group. */
     align?: "start" | "end";
+    /** Flip delta semantics for metrics where lower is better. */
+    inverse?: boolean;
   };
+
+function getDeltaTone(
+  delta: React.ReactNode,
+  inverse: boolean,
+): "positive" | "negative" | undefined {
+  const text = typeof delta === "string" || typeof delta === "number" ? String(delta).trim() : "";
+  const sign = text.match(/^[+\-−]/)?.[0];
+
+  if (!sign) return undefined;
+
+  const isPositive = sign === "+";
+  const semanticPositive = inverse ? !isPositive : isPositive;
+
+  return semanticPositive ? "positive" : "negative";
+}
 
 /** KPI / stat tile — token-driven layout aligned to dashboard KPI cards. */
 export function CardStat({
@@ -157,10 +174,13 @@ export function CardStat({
   delta,
   layout = "stacked",
   align = "start",
+  inverse = false,
   className,
   size = "compact",
   ...props
 }: CardStatProps) {
+  const deltaTone = getDeltaTone(delta, inverse);
+
   return (
     <Card
       size={size ?? "compact"}
@@ -177,7 +197,18 @@ export function CardStat({
       <div>
         <div data-slot="card-stat-value-row">
           <span data-slot="card-stat-value">{value}</span>
-          {delta ? <span data-slot="card-stat-delta">{delta}</span> : null}
+          {delta ? (
+            <span
+              data-slot="card-stat-delta"
+              data-delta-tone={deltaTone}
+              className={cn(
+                deltaTone === "positive" && "text-success",
+                deltaTone === "negative" && "text-destructive",
+              )}
+            >
+              {delta}
+            </span>
+          ) : null}
         </div>
         {hint && layout !== "inline" ? <div data-slot="card-stat-hint">{hint}</div> : null}
       </div>
