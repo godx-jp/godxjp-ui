@@ -22,6 +22,25 @@ describe("DataTable", () => {
     expect(screen.getByText("Ken Tanaka")).toBeInTheDocument();
   });
 
+  it("can hide lower-priority columns below md", () => {
+    renderWithUi(
+      <DataTable
+        data={rows}
+        columns={[columns[0], { ...columns[1], hiddenOnMobile: true }]}
+        getRowId={(row) => row.id}
+      />,
+    );
+
+    expect(screen.getByRole("columnheader", { name: "Trạng thái" })).toHaveClass(
+      "hidden",
+      "md:table-cell",
+    );
+    expect(screen.getAllByRole("cell", { name: "active" })[0]).toHaveClass(
+      "hidden",
+      "md:table-cell",
+    );
+  });
+
   it("applies ui-density class wrapper for token-based row height", () => {
     const { container } = renderWithUi(
       <DataTable data={rows} columns={[...columns]} getRowId={(row) => row.id} density="compact" />,

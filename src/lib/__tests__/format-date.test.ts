@@ -2,6 +2,7 @@ import { describe, expect, it, beforeEach } from "vitest";
 import { getDateFnsLocale } from "../../app/locales";
 import {
   detectFormatDateKind,
+  disableLiveRelativeFormatting,
   formatDate,
   formatCalendarDate,
   resetDatetimeContextForTests,
@@ -83,6 +84,16 @@ describe("formatDate (unified) — regression suite", () => {
       dateFnsLocale: getDateFnsLocale("en"),
     });
     expect(formatDate("2026-05-01")).toBe("05/01/2026");
+  });
+
+  it("uses deterministic absolute output for initial relative formatting", () => {
+    const value = "2026-05-01T14:30:00Z";
+
+    disableLiveRelativeFormatting();
+
+    expect(formatDate(value, { kind: "relative" })).toBe(
+      formatDate(value, { kind: "datetime" }),
+    );
   });
 
   it("formatCalendarDate respects dateFormat override per call", () => {

@@ -10,6 +10,7 @@ import {
 } from "./format";
 import { detectFormatDateKind, type FormatDateKind } from "./detect";
 import { isValidHhmm, parseDateInput } from "./parse";
+import { canUseLiveRelativeFormatting } from "./sync";
 
 const EMPTY = "—";
 
@@ -30,6 +31,14 @@ function resolveKind(
   if (options?.kind && options.kind !== "auto") return options.kind;
   if (options?.calendar && value instanceof Date) return "calendar";
   return detectFormatDateKind(value);
+}
+
+function formatInitialRelative(
+  value: string | Date | null | undefined,
+  options?: FormatDateOptions,
+): string {
+  if (canUseLiveRelativeFormatting()) return formatAppRelative(value, options);
+  return formatAppDateTime(value, options);
 }
 
 /**
@@ -61,7 +70,7 @@ export function formatDate(
       case "long":
         return formatAppDateLong(trimmed, options);
       case "relative":
-        return formatAppRelative(trimmed, options);
+        return formatInitialRelative(trimmed, options);
       case "calendar":
       case "datetime":
       default:
@@ -82,7 +91,7 @@ export function formatDate(
     case "long":
       return formatAppDateLong(value, options);
     case "relative":
-      return formatAppRelative(value, options);
+      return formatInitialRelative(value, options);
     case "datetime":
     default:
       return formatAppDateTime(value, options);

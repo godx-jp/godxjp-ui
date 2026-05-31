@@ -22,6 +22,7 @@ const defaultContext = (): DatetimeContext => ({
 });
 
 let syncedContext: DatetimeContext = defaultContext();
+let liveRelativeFormattingEnabled = true;
 
 /** Sync module-level datetime prefs from AppProvider (mirrors syncI18nLocale). */
 export function syncDatetimeContext(
@@ -42,7 +43,20 @@ export function getDatetimeContext(): Readonly<DatetimeContext> {
   return syncedContext;
 }
 
+export function enableLiveRelativeFormatting(): void {
+  liveRelativeFormattingEnabled = true;
+}
+
+export function disableLiveRelativeFormatting(): void {
+  liveRelativeFormattingEnabled = false;
+}
+
+export function canUseLiveRelativeFormatting(): boolean {
+  return liveRelativeFormattingEnabled;
+}
+
 /** Vitest only — reset to defaults between cases. */
 export function resetDatetimeContextForTests(): void {
   syncedContext = defaultContext();
+  liveRelativeFormattingEnabled = true;
 }
