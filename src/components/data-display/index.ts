@@ -15,6 +15,7 @@ export type { CardStatProps } from "./card";
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 export { KeyValueGrid } from "./key-value-grid";
 export { StatusBadge } from "./status-badge";
+export type { StatusBadgeTone } from "./status-badge";
 export { DataTable } from "./data-table";
 export type { ColumnDef, Density as TableDensity } from "./data-table";
 export { EmptyState } from "./empty-state";

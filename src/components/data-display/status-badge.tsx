@@ -23,7 +23,10 @@ import {
   toneWarningClass,
 } from "../../lib/control-styles";
 
-type Tone = "success" | "warning" | "destructive" | "info" | "neutral";
+/** Semantic colour tones a StatusBadge can render. */
+export type StatusBadgeTone = "success" | "warning" | "destructive" | "info" | "neutral";
+
+type Tone = StatusBadgeTone;
 
 interface StatusDef {
   tone: Tone;
@@ -66,17 +69,30 @@ interface StatusBadgeProps {
   status: string;
   className?: string;
   label?: React.ReactNode;
+  /**
+   * Override the auto-resolved tone. Escape hatch for domain values that are
+   * not in STATUS_MAP (e.g. localized labels or categorical tiers) — without
+   * this they all fall back to the neutral grey tone.
+   */
+  tone?: Tone;
+  /**
+   * Override the auto-resolved icon. Pass `null` to render no icon — preferred
+   * for categorical / tier badges where a lifecycle glyph (✓ / ○ / clock) would
+   * be misleading.
+   */
+  icon?: LucideIcon | null;
 }
 
-export function StatusBadge({ status, className, label: labelOverride }: StatusBadgeProps) {
+export function StatusBadge({ status, className, label: labelOverride, tone, icon }: StatusBadgeProps) {
   const { t } = useTranslation();
   const def = STATUS_MAP[status] ?? { tone: "neutral" as const, icon: Circle };
-  const Icon = def.icon;
+  const resolvedTone = tone ?? def.tone;
+  const ResolvedIcon = icon === undefined ? def.icon : icon;
   const resolvedLabel = labelOverride ?? (status in STATUS_MAP ? t(`status.${status}`) : status);
 
   return (
-    <span data-slot="status-badge" className={cn(TONE_CLASSES[def.tone], className)}>
-      <Icon data-slot="status-badge-icon" aria-hidden="true" />
+    <span data-slot="status-badge" className={cn(TONE_CLASSES[resolvedTone], className)}>
+      {ResolvedIcon ? <ResolvedIcon data-slot="status-badge-icon" aria-hidden="true" /> : null}
       <span>{resolvedLabel}</span>
     </span>
   );
