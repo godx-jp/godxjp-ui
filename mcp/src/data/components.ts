@@ -390,23 +390,27 @@ const columns: ColumnDef<Member>[] = [
   {
     name: "CardStat",
     group: "data-display",
-    tagline: "KPI tile with label, value, optional hint and delta. NO accent prop (accent is a Card prop).",
+    tagline: "KPI tile. ⚠️ CardStat IS ALREADY a bordered Card — render it DIRECTLY in ResponsiveGrid. NEVER wrap it in <Card>/<CardContent> (that double-borders it → looks too thick). NO accent prop (accent is a Card prop).",
     props: [
       { name: "label", type: "ReactNode", required: true, description: "Metric name." },
       { name: "value", type: "ReactNode", required: true, description: "Metric value (string/number/ReactNode)." },
       { name: "hint", type: "ReactNode", description: "Secondary context below the value." },
-      { name: "delta", type: "ReactNode", description: "Compact trend text beside the value." },
+      { name: "delta", type: "ReactNode", description: "Compact trend text beside the value. Sign-aware tone (+ green / - red)." },
       { name: "layout", type: '"stacked" | "inline"', defaultValue: '"stacked"', description: "stacked = label over value; inline = label left / value right." },
       { name: "align", type: '"start" | "end"', description: "Align the metric group." },
     ],
     example: `import { CardStat } from "@godxjp/ui/data-display";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
 
+// ✅ CardStat sits directly in the grid — it draws its own card + border.
 <ResponsiveGrid columns={3}>
   <CardStat label="総会員数" value="12,450" hint="先月比 +3%" />
   <CardStat label="月次売上" value="¥8,200,000" delta="+12%" />
   <CardStat label="利用率" value="68.4%" />
-</ResponsiveGrid>`,
+</ResponsiveGrid>
+
+// ❌ Double border — do NOT wrap CardStat in a Card:
+// <Card><CardContent><CardStat label="x" value="1" /></CardContent></Card>`,
     storyPath: "data-display/CardStat.stories.tsx",
     rules: [],
   },
