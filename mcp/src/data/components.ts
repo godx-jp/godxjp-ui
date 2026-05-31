@@ -186,10 +186,12 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       { name: "product", type: "{ name: string; role?: string; color?: string }", description: "Product/workspace block at the top." },
       { name: "brand", type: "ReactNode", description: "Custom brand node replacing the product block." },
       { name: "collapsed", type: "boolean", defaultValue: "false", description: "Icon-only mode; labels/section headings hidden." },
-      { name: "footer", type: "ReactNode", description: "Bottom slot (user info, logout)." },
+      { name: "footer", type: "ReactNode", description: "Bottom slot (user info, logout). The .sb-footer wrapper supplies the top border + padding; YOUR content must use SEMANTIC token classes — `text-muted-foreground text-xs` outer with a `text-foreground font-medium` primary line. Do NOT use raw `opacity-*` / arbitrary `text-[11px]` (washed-out, off-design)." },
     ],
     example: `import { Sidebar } from "@godxjp/ui/layout";
-import { LayoutDashboard, Users } from "lucide-react";
+import { Stack } from "@godxjp/ui/layout";
+import { Button } from "@godxjp/ui/general";
+import { LayoutDashboard, Users, LogOut } from "lucide-react";
 import { router, usePage } from "@inertiajs/react";
 
 export function AppSidebar() {
@@ -203,11 +205,23 @@ export function AppSidebar() {
         { id: "/members", label: "会員管理", icon: Users },
       ] }]}
       product={{ name: "JOVY CRM", role: "本部" }}
+      footer={
+        // Canonical footer: semantic tokens only (see Sidebar story).
+        <Stack gap="sm">
+          <div className="text-muted-foreground text-xs">
+            <div className="text-foreground font-medium">山田 花子</div>
+            <div>ABCファーマシー</div>
+          </div>
+          <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => router.post("/logout")}>
+            <LogOut className="size-4" />ログアウト
+          </Button>
+        </Stack>
+      }
     />
   );
 }`,
     storyPath: "layout/Sidebar.stories.tsx",
-    rules: [23],
+    rules: [2, 23],
   },
   {
     name: "Topbar",
@@ -376,23 +390,27 @@ const columns: ColumnDef<Member>[] = [
   {
     name: "CardStat",
     group: "data-display",
-    tagline: "KPI tile with label, value, optional hint and delta. NO accent prop (accent is a Card prop).",
+    tagline: "KPI tile. ⚠️ CardStat IS ALREADY a bordered Card — render it DIRECTLY in ResponsiveGrid. NEVER wrap it in <Card>/<CardContent> (that double-borders it → looks too thick). NO accent prop (accent is a Card prop).",
     props: [
       { name: "label", type: "ReactNode", required: true, description: "Metric name." },
       { name: "value", type: "ReactNode", required: true, description: "Metric value (string/number/ReactNode)." },
       { name: "hint", type: "ReactNode", description: "Secondary context below the value." },
-      { name: "delta", type: "ReactNode", description: "Compact trend text beside the value." },
+      { name: "delta", type: "ReactNode", description: "Compact trend text beside the value. Sign-aware tone (+ green / - red)." },
       { name: "layout", type: '"stacked" | "inline"', defaultValue: '"stacked"', description: "stacked = label over value; inline = label left / value right." },
       { name: "align", type: '"start" | "end"', description: "Align the metric group." },
     ],
     example: `import { CardStat } from "@godxjp/ui/data-display";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
 
+// ✅ CardStat sits directly in the grid — it draws its own card + border.
 <ResponsiveGrid columns={3}>
   <CardStat label="総会員数" value="12,450" hint="先月比 +3%" />
   <CardStat label="月次売上" value="¥8,200,000" delta="+12%" />
   <CardStat label="利用率" value="68.4%" />
-</ResponsiveGrid>`,
+</ResponsiveGrid>
+
+// ❌ Double border — do NOT wrap CardStat in a Card:
+// <Card><CardContent><CardStat label="x" value="1" /></CardContent></Card>`,
     storyPath: "data-display/CardStat.stories.tsx",
     rules: [],
   },
