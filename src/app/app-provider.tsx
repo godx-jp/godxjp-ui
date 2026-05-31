@@ -3,7 +3,11 @@ import { resolveDefaultDateFormat } from "./date-format-labels";
 import { getDateFnsLocale, getDayPickerLocale } from "./locales";
 import { syncAppRequestHeaders } from "./request-headers";
 import { syncI18nLocale } from "../i18n/translate";
-import { syncDatetimeContext } from "../lib/datetime";
+import {
+  disableLiveRelativeFormatting,
+  enableLiveRelativeFormatting,
+  syncDatetimeContext,
+} from "../lib/datetime";
 import { DEFAULT_STORAGE_KEY, readStoredPreferences, writeStoredPreferences } from "./storage";
 import { resolveDefaultTimeFormat } from "./time-format-labels";
 import { resolveDefaultTimezone } from "./timezones";
@@ -58,6 +62,14 @@ function buildRequestHeaders(
   };
 }
 
+function resolveHydrationSafeTimezone(
+  defaultTimezone: "browser" | "system" | (string & {}),
+  systemTimezone?: string,
+): string {
+  if (defaultTimezone === "browser") return systemTimezone ?? "UTC";
+  return resolveDefaultTimezone(defaultTimezone, systemTimezone);
+}
+
 export function AppProvider({
   children,
   defaultLocale = "vi",
@@ -74,25 +86,57 @@ export function AppProvider({
   onTimeFormatChange,
   onDateFormatChange,
 }: AppProviderProp) {
-  const stored = React.useMemo(
-    () => (persist ? readStoredPreferences(storageKey) : {}),
-    [persist, storageKey],
-  );
-
-  const initialLocale = stored.locale ?? defaultLocale;
+  const initialLocale = defaultLocale;
 
   const [locale, setLocaleState] = React.useState<AppLocale>(initialLocale);
   const [timezone, setTimezoneState] = React.useState<AppTimezone>(
-    stored.timezone ?? resolveDefaultTimezone(defaultTimezone, systemTimezone),
+    resolveHydrationSafeTimezone(defaultTimezone, systemTimezone),
   );
   const [timeFormat, setTimeFormatState] = React.useState<AppTimeFormat>(() =>
-    resolveInitialTimeFormat(stored.timeFormat, defaultTimeFormat, initialLocale),
+    resolveInitialTimeFormat(undefined, defaultTimeFormat, initialLocale),
   );
   const [dateFormat, setDateFormatState] = React.useState<AppDateFormat>(() =>
-    resolveInitialDateFormat(stored.dateFormat, defaultDateFormat, initialLocale),
+    resolveInitialDateFormat(undefined, defaultDateFormat, initialLocale),
   );
 
+  const hasMountedRef = React.useRef(false);
   const prefsRef = React.useRef({ locale, timezone, timeFormat, dateFormat });
+
+  React.useEffect(() => {
+    const stored = persist ? readStoredPreferences(storageKey) : {};
+    const nextLocale = stored.locale ?? defaultLocale;
+    const nextTimezone =
+      stored.timezone ?? resolveDefaultTimezone(defaultTimezone, systemTimezone);
+    const nextTimeFormat = resolveInitialTimeFormat(
+      stored.timeFormat,
+      defaultTimeFormat,
+      nextLocale,
+    );
+    const nextDateFormat = resolveInitialDateFormat(
+      stored.dateFormat,
+      defaultDateFormat,
+      nextLocale,
+    );
+
+    prefsRef.current = {
+      locale: nextLocale,
+      timezone: nextTimezone,
+      timeFormat: nextTimeFormat,
+      dateFormat: nextDateFormat,
+    };
+    setLocaleState(nextLocale);
+    setTimezoneState(nextTimezone);
+    setTimeFormatState(nextTimeFormat);
+    setDateFormatState(nextDateFormat);
+  }, [
+    defaultDateFormat,
+    defaultLocale,
+    defaultTimeFormat,
+    defaultTimezone,
+    persist,
+    storageKey,
+    systemTimezone,
+  ]);
 
   React.useEffect(() => {
     prefsRef.current = { locale, timezone, timeFormat, dateFormat };
@@ -143,17 +187,28 @@ export function AppProvider({
     [locale, timezone, timeFormat, dateFormat],
   );
 
+  const dateFnsLocale = getDateFnsLocale(locale);
+
+  syncI18nLocale(locale, fallbackLocale);
+  syncDatetimeContext({
+    locale,
+    timezone,
+    timeFormat,
+    dateFormat,
+    dateFnsLocale,
+  });
+  if (!hasMountedRef.current) {
+    disableLiveRelativeFormatting();
+  }
+
   React.useEffect(() => {
     syncAppRequestHeaders(requestHeaders);
-    syncI18nLocale(locale, fallbackLocale);
-    syncDatetimeContext({
-      locale,
-      timezone,
-      timeFormat,
-      dateFormat,
-      dateFnsLocale: getDateFnsLocale(locale),
-    });
-  }, [requestHeaders, locale, fallbackLocale, timezone, timeFormat, dateFormat]);
+  }, [requestHeaders]);
+
+  React.useEffect(() => {
+    hasMountedRef.current = true;
+    enableLiveRelativeFormatting();
+  }, []);
 
   const value = React.useMemo<AppContextValue>(
     () => ({
@@ -162,7 +217,7 @@ export function AppProvider({
       timezone,
       timeFormat,
       dateFormat,
-      dateFnsLocale: getDateFnsLocale(locale),
+      dateFnsLocale,
       dayPickerLocale: getDayPickerLocale(locale),
       requestHeaders,
       timezoneOptions,
@@ -177,6 +232,7 @@ export function AppProvider({
       timezone,
       timeFormat,
       dateFormat,
+      dateFnsLocale,
       requestHeaders,
       timezoneOptions,
       setLocale,

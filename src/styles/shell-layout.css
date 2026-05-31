@@ -77,6 +77,10 @@
     gap: var(--space-2);
   }
 
+  .app-topbar-left:has(.app-mobile-sidebar-trigger) {
+    display: none;
+  }
+
   .app-topbar-spacer {
     flex: 1;
   }
@@ -86,6 +90,25 @@
     padding: var(--space-2) var(--space-4);
     color: hsl(var(--muted-foreground));
     font-size: var(--font-size-sm);
+  }
+
+  @media (max-width: 1023px) {
+    .app-root,
+    .app-root[data-collapsed="true"] {
+      grid-template-areas:
+        "topbar"
+        "main"
+        "footer";
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .app-sidebar {
+      display: none;
+    }
+
+    .app-topbar-left:has(.app-mobile-sidebar-trigger) {
+      display: flex;
+    }
   }
 
   .sb-root {

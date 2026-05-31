@@ -19,6 +19,13 @@
     padding-right: 0;
   }
 
+  /* A column with an empty header (icon / action column) shouldn't paint the
+   * header band — keep its cell transparent so the empty header visually
+   * disappears instead of showing a blank grey block. */
+  [data-slot="table-head"][data-empty] {
+    background: transparent;
+  }
+
   [data-slot="table-cell"] {
     padding: var(--table-cell-padding-y) var(--space-table-cell-x);
     vertical-align: middle;
@@ -90,14 +97,31 @@
   }
 
   .ui-data-table-scroll {
+    position: relative;
     overflow-x: auto;
     margin-inline: calc(-1 * var(--space-page-active-x));
     padding-inline: var(--space-page-active-x);
   }
 
+  .ui-data-table-scroll::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: var(--space-page-active-x);
+    bottom: 0;
+    z-index: 20;
+    width: 1.75rem;
+    pointer-events: none;
+    background: linear-gradient(to left, hsl(var(--background) / 0.88), transparent);
+  }
+
   [data-slot="card-content"][data-flush] .ui-data-table-scroll {
     margin-inline: 0;
     padding-inline: 0;
+  }
+
+  [data-slot="card-content"][data-flush] .ui-data-table-scroll::after {
+    right: 0;
   }
 
   [data-slot="card-content"][data-flush] .ui-data-table-surface {
@@ -109,6 +133,10 @@
     .ui-data-table-scroll {
       margin-inline: 0;
       padding-inline: 0;
+    }
+
+    .ui-data-table-scroll::after {
+      right: 0;
     }
   }
 }

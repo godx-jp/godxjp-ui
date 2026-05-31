@@ -18,6 +18,7 @@ export { StatusBadge } from "./status-badge";
 export type { StatusBadgeTone } from "./status-badge";
 export { DataTable } from "./data-table";
 export type { ColumnDef, Density as TableDensity } from "./data-table";
+export type { SortStateProp } from "../../props/vocabulary";
 export { EmptyState } from "./empty-state";
 export { CodeBadge } from "./code-badge";
 export type { CodeBadgeKind, CodeBadgeProps } from "./code-badge";

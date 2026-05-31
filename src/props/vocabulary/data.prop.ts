@@ -20,6 +20,7 @@ export type ColumnDefProp<T> = {
   sortable?: boolean;
   width?: string;
   align?: ColumnAlignProp;
+  hiddenOnMobile?: boolean;
 };
 
 /** Set of selected row IDs. */

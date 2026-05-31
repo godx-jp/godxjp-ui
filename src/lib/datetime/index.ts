@@ -1,6 +1,8 @@
 export {
   syncDatetimeContext,
   getDatetimeContext,
+  enableLiveRelativeFormatting,
+  disableLiveRelativeFormatting,
   resetDatetimeContextForTests,
   type DatetimeContext,
 } from "./sync";

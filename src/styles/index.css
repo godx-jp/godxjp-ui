@@ -47,6 +47,12 @@
   --color-info-foreground: hsl(var(--info-foreground));
   --color-attention: hsl(var(--attention));
   --color-attention-foreground: hsl(var(--attention-foreground));
+  --color-chart-1: #0077c7;
+  --color-chart-2: #006e54;
+  --color-chart-3: #f8b500;
+  --color-chart-4: #b7282e;
+  --color-chart-5: #4c6cb3;
+  --color-chart-6: #eb6101;
   --color-tracking-internal: hsl(var(--tracking-internal));
   --color-tracking-seller: hsl(var(--tracking-seller));
   --color-tracking-yamato: hsl(var(--tracking-yamato));
