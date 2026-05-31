@@ -186,10 +186,12 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       { name: "product", type: "{ name: string; role?: string; color?: string }", description: "Product/workspace block at the top." },
       { name: "brand", type: "ReactNode", description: "Custom brand node replacing the product block." },
       { name: "collapsed", type: "boolean", defaultValue: "false", description: "Icon-only mode; labels/section headings hidden." },
-      { name: "footer", type: "ReactNode", description: "Bottom slot (user info, logout)." },
+      { name: "footer", type: "ReactNode", description: "Bottom slot (user info, logout). The .sb-footer wrapper supplies the top border + padding; YOUR content must use SEMANTIC token classes — `text-muted-foreground text-xs` outer with a `text-foreground font-medium` primary line. Do NOT use raw `opacity-*` / arbitrary `text-[11px]` (washed-out, off-design)." },
     ],
     example: `import { Sidebar } from "@godxjp/ui/layout";
-import { LayoutDashboard, Users } from "lucide-react";
+import { Stack } from "@godxjp/ui/layout";
+import { Button } from "@godxjp/ui/general";
+import { LayoutDashboard, Users, LogOut } from "lucide-react";
 import { router, usePage } from "@inertiajs/react";
 
 export function AppSidebar() {
@@ -203,11 +205,23 @@ export function AppSidebar() {
         { id: "/members", label: "会員管理", icon: Users },
       ] }]}
       product={{ name: "JOVY CRM", role: "本部" }}
+      footer={
+        // Canonical footer: semantic tokens only (see Sidebar story).
+        <Stack gap="sm">
+          <div className="text-muted-foreground text-xs">
+            <div className="text-foreground font-medium">山田 花子</div>
+            <div>ABCファーマシー</div>
+          </div>
+          <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => router.post("/logout")}>
+            <LogOut className="size-4" />ログアウト
+          </Button>
+        </Stack>
+      }
     />
   );
 }`,
     storyPath: "layout/Sidebar.stories.tsx",
-    rules: [23],
+    rules: [2, 23],
   },
   {
     name: "Topbar",
