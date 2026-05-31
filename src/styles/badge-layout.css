@@ -12,6 +12,9 @@
     border-width: 1px;
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
+    /* A status chip must read as one unit — never wrap its label across lines,
+     * especially inside narrow table cells. */
+    white-space: nowrap;
   }
 
   [data-slot="status-badge-icon"] {

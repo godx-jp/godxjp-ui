@@ -22,6 +22,11 @@
   [data-slot="table-cell"] {
     padding: var(--table-cell-padding-y) var(--space-table-cell-x);
     vertical-align: middle;
+    /* Don't let a narrow column crush cell text — in CJK this collapses to one
+     * character per line. Keep each cell on one line; the scroll container
+     * (.ui-data-table-scroll, overflow-x:auto) scrolls instead. A column that
+     * genuinely needs wrapping opts in with `whitespace-normal` via col.width. */
+    white-space: nowrap;
   }
 
   [data-slot="table-cell"]:has([role="checkbox"]) {
