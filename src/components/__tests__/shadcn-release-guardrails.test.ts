@@ -24,12 +24,16 @@ describe("shadcn release guardrails", () => {
   });
 
   it("exports shadcn-compatible entrypoints from package.json", () => {
-    const pkg = readJson<{ exports?: Record<string, string>; scripts?: Record<string, string> }>(
-      "package.json",
-    );
+    const pkg = readJson<{
+      exports?: Record<string, string | { import?: string; types?: string }>;
+      scripts?: Record<string, string>;
+    }>("package.json");
     const exports = pkg.exports ?? {};
 
-    expect(exports["./ui"]).toBe("./src/components/ui/index.tsx");
+    // Post dist-build the `./ui` subpath resolves to the built bundle.
+    const uiExport = exports["./ui"];
+    const uiImport = typeof uiExport === "string" ? uiExport : uiExport?.import;
+    expect(uiImport).toBe("./dist/components/ui/index.js");
     for (const key of [
       "button",
       "select",
@@ -46,7 +50,8 @@ describe("shadcn release guardrails", () => {
     ]) {
       expect(exports[`./ui/${key}`], `missing ./ui/${key}`).toBeDefined();
     }
-    expect(pkg.scripts?.["verify:release"]).toContain("preview:build");
+    expect(pkg.scripts?.["verify:release"]).toContain("build");
+    expect(pkg.scripts?.["verify:release"]).toContain("test");
   });
 
   it("keeps bridge files present for installed shadcn components", () => {

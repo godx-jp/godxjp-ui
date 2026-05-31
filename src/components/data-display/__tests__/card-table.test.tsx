@@ -336,3 +336,37 @@ describe("Table", () => {
     expect(screen.getByRole("cell", { name: "GX-001" })).toBeInTheDocument();
   });
 });
+
+describe("CardStat delta tone", () => {
+  function deltaEl(container: HTMLElement): HTMLElement {
+    return container.querySelector('[data-slot="card-stat-delta"]') as HTMLElement;
+  }
+
+  it("renders label + value, no delta element when delta is omitted", () => {
+    const { container } = renderWithUi(<CardStat label="売上" value="¥8.2M" />);
+    expect(screen.getByText("売上")).toBeInTheDocument();
+    expect(screen.getByText("¥8.2M")).toBeInTheDocument();
+    expect(container.querySelector('[data-slot="card-stat-delta"]')).toBeNull();
+  });
+
+  it("colours a positive delta (+) with the success tone", () => {
+    const { container } = renderWithUi(<CardStat label="x" value="1" delta="+12%" />);
+    const delta = deltaEl(container);
+    expect(delta.getAttribute("data-delta-tone")).toBe("positive");
+    expect(delta.className).toContain("text-success");
+  });
+
+  it("colours a negative delta (-) with the destructive tone", () => {
+    const { container } = renderWithUi(<CardStat label="x" value="1" delta="-5%" />);
+    const delta = deltaEl(container);
+    expect(delta.getAttribute("data-delta-tone")).toBe("negative");
+    expect(delta.className).toContain("text-destructive");
+  });
+
+  it("flips delta semantics when inverse is set (lower is better)", () => {
+    const { container } = renderWithUi(<CardStat label="x" value="1" delta="+12%" inverse />);
+    const delta = deltaEl(container);
+    expect(delta.getAttribute("data-delta-tone")).toBe("negative");
+    expect(delta.className).toContain("text-destructive");
+  });
+});
