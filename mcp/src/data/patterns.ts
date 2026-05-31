@@ -21,6 +21,63 @@ export interface PatternEntry {
 
 export const PATTERNS: PatternEntry[] = [
   {
+    name: "common-fixes",
+    tagline: "Fix the most common @godxjp/ui consumer mistakes & visual bugs (CardStat double-border, grey StatusBadge, crushed/empty table headers, washed-out sidebar footer, Inertia layout crash, SSR hydration). Before → after.",
+    tags: ["fixes", "migration", "bug", "cardstat", "statusbadge", "datatable", "sidebar", "gotcha", "review"],
+    code: `// ───────────────────────────────────────────────────────────────────────
+// 1) CardStat shows a DOUBLE border (too thick)
+//    Cause: CardStat IS already a bordered Card. Don't wrap it.
+// ❌  <Card><CardContent><CardStat label="x" value="1" /></CardContent></Card>
+// ✅  <ResponsiveGrid columns={4}><CardStat label="x" value="1" /></ResponsiveGrid>
+//    Need a section title? Use a heading, NOT a Card:
+// ✅  <Stack gap="sm"><div className="text-sm font-medium">KPI</div>
+//        <ResponsiveGrid columns={4}><CardStat .../></ResponsiveGrid></Stack>
+
+// 2) StatusBadge renders grey with a ○ (no colour) for localized/tier labels
+//    Cause: it auto-maps only English lifecycle keys. (@godxjp/ui >= 6.1)
+// ❌  <StatusBadge status="プレミアム" />
+// ✅  <StatusBadge status="プレミアム" tone="success" icon={null} />   // tier → pill, no icon
+// ✅  <StatusBadge status="active" label="公開中" />                   // lifecycle → keep icon
+
+// 3) Table text collapses to one char per line, or a chip wraps
+//    Cause: pre-6.1.2. (@godxjp/ui >= 6.1.2 → cells + chips are nowrap)
+// ✅  npm i @godxjp/ui@^6.2.0
+// ✅  give long columns a width:  { key: "name", header: "氏名", width: "w-64" }
+
+// 4) Empty (icon/action) column header shows a blank grey block
+//    (@godxjp/ui >= 6.2.0 auto-hides it: [data-slot=table-head][data-empty] → transparent)
+// ✅  npm i @godxjp/ui@^6.2.0   // header: "" now renders a transparent cell
+
+// 5) DataTable columns are crushed / squeezed
+//    Cause: the table is nested in a narrow grid column.
+// ❌  <ResponsiveGrid columns={3}><div className="lg:col-span-2"><Card><DataTable/></Card></div></ResponsiveGrid>
+// ✅  Table gets its OWN full-width row: <Card><CardContent flush><DataTable/></CardContent></Card>
+
+// 6) FilterBar has no padding (sticks to the edge)
+//    Cause: it's inside CardContent flush (flush strips padding — that's for tables).
+// ❌  <Card><CardContent flush><FilterBar/><DataTable/></CardContent></Card>
+// ✅  <FilterBar/>  then  <Card><CardContent flush><DataTable/></CardContent></Card>
+
+// 7) Sidebar footer looks washed-out / off-design
+//    Cause: raw opacity-*/text-[11px]. Use semantic tokens.
+// ✅  <div className="text-muted-foreground text-xs">
+//        <div className="text-foreground font-medium">{name}</div><div>{role}</div></div>
+
+// 8) Inertia: "Objects are not valid as a React child {errors, auth, …}"
+//    Cause: persistent layout passed as a render fn. Use the ARRAY form.
+// ❌  Page.layout = (page) => <Layout>{page}</Layout>
+// ✅  Page.layout = [Layout]            // Layout is ({children}) => ...
+
+// 9) Inertia v3 hydration mismatch ("server rendered text didn't match the client")
+//    Cause: Math.random()/argless new Date() during render (SSR ≠ client).
+// ✅  seed deterministically by index, or compute in an event handler.
+
+// 10) Hide a column on mobile / sign-aware KPI delta (@godxjp/ui >= 6.2.0)
+// ✅  columns: [{ key: "email", header: "メール", hiddenOnMobile: true }]
+// ✅  <CardStat label="売上" value="¥8.2M" delta="+12%" />   // + green / - red; inverse flips`,
+  },
+
+  {
     name: "signup-form",
     tagline: "Card-wrapped sign-up form using react-hook-form + zod with FormField/Input and a CardFooter action bar (real @godxjp/ui API).",
     tags: ["form", "auth", "sign-up", "zod", "validation", "react-hook-form"],
