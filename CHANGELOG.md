@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.10.0] - 2026-06-01
+
+### Changed
+
+- **`SearchSelect` now supersedes `Autocomplete`.** It accepts EITHER a static `options` array
+  (client-side filter) OR async `loadOptions`, so it covers both small static lists and remote
+  datasets. Added a `renderOption` prop for custom per-option rendering (Ant-Design style).
+  Option labels are no longer bold (normal weight); group headings use the standard
+  muted-foreground tone (same as command-group headings).
+- **`Autocomplete` is deprecated** — reimplemented as a thin wrapper over `SearchSelect` (static
+  options) so there is a single combobox implementation. Its API is unchanged.
+
+### Props
+
+- Added `EmptyMessageProp` to the vocabulary (shared by `SearchSelect` + `Autocomplete`).
+- De-duplicated the inline `name: string` concept across data-entry props to the vocabulary
+  `NameProp`. Registered `SearchSelect*` + `EmptyMessageProp` in the props registry.
+
 ## [6.9.0] - 2026-06-01
 
 ### Added

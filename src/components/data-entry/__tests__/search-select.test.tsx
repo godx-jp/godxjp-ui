@@ -55,4 +55,43 @@ describe("SearchSelect", () => {
     // The debounced search term reaches the loader (page resets to 1).
     await vi.waitFor(() => expect(loadOptions).toHaveBeenCalledWith({ query: "預金", page: 1 }));
   });
+
+  it("works as a static combobox (no loadOptions) — supersedes Autocomplete", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithUi(
+      <SearchSelect
+        value=""
+        onChange={onChange}
+        options={[
+          { value: "osaka", label: "Osaka Hub" },
+          { value: "tokyo", label: "Tokyo Hub" },
+        ]}
+      />,
+    );
+    await user.click(screen.getByRole("combobox"));
+    await screen.findByText("Osaka Hub");
+    // Client-side filter narrows the static list (after the debounce).
+    await user.type(screen.getByRole("textbox"), "tok");
+    await vi.waitFor(() => {
+      expect(screen.getByText("Tokyo Hub")).toBeInTheDocument();
+      expect(screen.queryByText("Osaka Hub")).not.toBeInTheDocument();
+    });
+    await user.click(screen.getByText("Tokyo Hub"));
+    expect(onChange).toHaveBeenCalledWith("tokyo", expect.objectContaining({ value: "tokyo" }));
+  });
+
+  it("renders a custom option via renderOption", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <SearchSelect
+        value=""
+        onChange={() => undefined}
+        options={[{ value: "1", label: "Cash" }]}
+        renderOption={(option) => <span>custom:{option.label}</span>}
+      />,
+    );
+    await user.click(screen.getByRole("combobox"));
+    expect(await screen.findByText("custom:Cash")).toBeInTheDocument();
+  });
 });

@@ -24,16 +24,19 @@ export type {
 const DEBOUNCE_MS = 250;
 
 /**
- * SearchSelect — an async, searchable single-select combobox. Unlike `Autocomplete` (static
- * options) this loads options REMOTELY via `loadOptions({ query, page })`, with a debounced
- * search box, infinite-scroll pagination, and loading/empty states. Data-agnostic: pass any
- * fetcher (REST, GraphQL, a cached query client…). Form-submittable via `name`; e2e-testable
- * by the trigger's `data-testid` and each option's `${data-testid}-option-${value}` handle.
+ * SearchSelect — a searchable single-select combobox with a debounced search box, optional
+ * optgroup-style grouping (`option.group`), and loading/empty states. Drive it EITHER remotely
+ * with `loadOptions({ query, page })` (server search + infinite scroll) OR with a static
+ * `options` array (client-side filter) — the latter supersedes the legacy `Autocomplete`.
+ * Custom per-option rendering via `renderOption` (Ant-Design style). Form-submittable via
+ * `name`; e2e-testable by the trigger's `data-testid` + each option's `${data-testid}-option-${value}`.
  */
 export function SearchSelect({
   value = "",
   onChange,
+  options: staticOptions,
   loadOptions,
+  renderOption,
   selectedLabel,
   placeholder,
   searchPlaceholder,
@@ -51,7 +54,7 @@ export function SearchSelect({
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
-  const [options, setOptions] = React.useState<SearchSelectOptionProp[]>([]);
+  const [loaded, setLoaded] = React.useState<SearchSelectOptionProp[]>([]);
   const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -59,6 +62,28 @@ export function SearchSelect({
   const [picked, setPicked] = React.useState<SearchSelectOptionProp | null>(null);
 
   const reqId = React.useRef(0);
+
+  // Provide ONE of `loadOptions` (remote) or `options` (static, client-side filtered). With a
+  // static list this becomes a plain searchable combobox — superseding the legacy Autocomplete.
+  const resolvedLoad = React.useMemo<NonNullable<SearchSelectProp["loadOptions"]>>(
+    () =>
+      loadOptions ??
+      (async ({ query: search }) => {
+        const needle = search.trim().toLowerCase();
+        const list = staticOptions ?? [];
+        return {
+          options: needle
+            ? list.filter(
+                (option) =>
+                  option.label.toLowerCase().includes(needle) ||
+                  option.value.toLowerCase().includes(needle),
+              )
+            : list,
+          hasMore: false,
+        };
+      }),
+    [loadOptions, staticOptions],
+  );
 
   // Debounce the search term — one fetch per pause, not per keystroke.
   React.useEffect(() => {
@@ -71,16 +96,16 @@ export function SearchSelect({
       const ticket = ++reqId.current;
       setLoading(true);
       try {
-        const result = await loadOptions({ query: search, page: nextPage });
+        const result = await resolvedLoad({ query: search, page: nextPage });
         if (ticket !== reqId.current) return; // a newer request superseded this one
-        setOptions((prev) => (append ? [...prev, ...result.options] : result.options));
+        setLoaded((prev) => (append ? [...prev, ...result.options] : result.options));
         setHasMore(Boolean(result.hasMore));
         setPage(nextPage);
       } finally {
         if (ticket === reqId.current) setLoading(false);
       }
     },
-    [loadOptions],
+    [resolvedLoad],
   );
 
   // (Re)load the first page when opened or the search term changes.
@@ -95,7 +120,7 @@ export function SearchSelect({
   const grouped = React.useMemo(() => {
     const order: string[] = [];
     const buckets = new Map<string, SearchSelectOptionProp[]>();
-    for (const option of options) {
+    for (const option of loaded) {
       const key = option.group ?? "";
       if (!buckets.has(key)) {
         buckets.set(key, []);
@@ -108,7 +133,7 @@ export function SearchSelect({
       heading: key || undefined,
       items: (buckets.get(key) ?? []).map((option) => ({ option, index: flatIndex++ })),
     }));
-  }, [options]);
+  }, [loaded]);
   const flatOrdered = React.useMemo(
     () => grouped.flatMap((group) => group.items.map((entry) => entry.option)),
     [grouped],
@@ -221,14 +246,18 @@ export function SearchSelect({
                   onMouseEnter={() => setActiveIndex(index)}
                   onSelect={() => select(option)}
                 >
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-sm font-medium">{option.label}</span>
-                    {option.sublabel ? (
-                      <span className="text-muted-foreground truncate text-xs">
-                        {option.sublabel}
-                      </span>
-                    ) : null}
-                  </div>
+                  {renderOption ? (
+                    <div className="min-w-0 flex-1">{renderOption(option)}</div>
+                  ) : (
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate text-sm">{option.label}</span>
+                      {option.sublabel ? (
+                        <span className="text-muted-foreground truncate text-xs">
+                          {option.sublabel}
+                        </span>
+                      ) : null}
+                    </div>
+                  )}
                   {value === option.value ? (
                     <Check className="text-primary size-4 shrink-0" aria-hidden="true" />
                   ) : null}
@@ -249,7 +278,7 @@ export function SearchSelect({
                 {loadingMessage ?? t("dataEntry.searchSelect.loading")}
               </div>
             ) : null}
-            {!loading && options.length === 0 ? (
+            {!loading && loaded.length === 0 ? (
               <div className="text-muted-foreground px-2 py-6 text-center text-sm">
                 {emptyMessage ?? t("dataEntry.searchSelect.empty")}
               </div>

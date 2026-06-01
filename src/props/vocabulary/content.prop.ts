@@ -33,3 +33,6 @@ export type CancelLabelProp = React.ReactNode;
 
 /** Toolbar actions slot in tables and filter rows. */
 export type ActionsProp = React.ReactNode;
+
+/** "No results / no data" message in lists, selects, and empty states. */
+export type EmptyMessageProp = string;
