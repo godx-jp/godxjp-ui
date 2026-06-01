@@ -8,6 +8,7 @@ export {
 } from "./sync";
 export {
   parseDateInput,
+  toIsoDate,
   calendarDateToTZDate,
   isValidHhmm,
   normalizeHhmm,

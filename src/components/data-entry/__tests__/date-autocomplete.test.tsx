@@ -14,18 +14,31 @@ describe("Calendar", () => {
 });
 
 describe("DatePicker", () => {
-  it("shows placeholder and opens calendar popover", async () => {
+  it("exposes a typeable combobox input and opens the calendar via the icon", async () => {
     const user = userEvent.setup();
     renderWithUi(<DatePicker placeholder="Chọn ngày ETD" />);
-    const trigger = screen.getByRole("button", { name: /chọn ngày etd/i });
-    expect(trigger).toBeInTheDocument();
-    await user.click(trigger);
+    // The value lives on a real, typeable input (WAI-ARIA date combobox) — not a button.
+    const input = screen.getByRole("combobox");
+    expect(input).toHaveAttribute("placeholder", "Chọn ngày ETD");
+    await user.click(screen.getByRole("button"));
     await waitFor(() => {
       expect(screen.getByRole("grid")).toBeInTheDocument();
     });
   });
 
-  it("calls onChange when a day is selected", async () => {
+  it("emits an ISO-8601 value when the user types, and submits as a form field", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithUi(<DatePicker name="etd" onChange={onChange} />);
+    const input = screen.getByRole<HTMLInputElement>("combobox");
+    await user.type(input, "2024-04-15");
+    expect(onChange).toHaveBeenCalled();
+    // Form-submittable: the input carries the name and the ISO value.
+    expect(input).toHaveAttribute("name", "etd");
+    expect(input.value).toBe("2024-04-15");
+  });
+
+  it("calls onChange when a day is selected from the calendar", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     renderWithUi(<DatePicker value={new Date(2026, 4, 1)} onChange={onChange} />);

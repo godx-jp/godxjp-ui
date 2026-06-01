@@ -16,7 +16,8 @@
   },
   "dataEntry": {
     "datePicker": {
-      "placeholder": "Select date"
+      "placeholder": "Select date",
+      "openCalendar": "Open calendar"
     },
     "dateRangePicker": {
       "placeholder": "Select date range"

@@ -159,6 +159,8 @@ export type DatePickerProp = {
   disabled?: DisabledProp;
   className?: ClassNameProp;
   id?: IdProp;
+  /** Form field name — emits the value as an ISO-8601 `yyyy-MM-dd` string for native submission. */
+  name?: string;
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;

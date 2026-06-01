@@ -16,7 +16,8 @@
   },
   "dataEntry": {
     "datePicker": {
-      "placeholder": "日付を選択"
+      "placeholder": "日付を選択",
+      "openCalendar": "カレンダーを開く"
     },
     "dateRangePicker": {
       "placeholder": "期間を選択"
