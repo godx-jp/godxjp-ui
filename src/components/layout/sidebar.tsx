@@ -3,6 +3,7 @@ import { ChevronDown } from "lucide-react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../data-display/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
 import { cn } from "../../lib/utils";
 import type { SidebarItemProp, SidebarProp } from "../../props/components/layout.prop";
 
@@ -86,75 +87,80 @@ function NavGroup({ item, activeId, onSelect }: RowProps) {
 }
 
 /**
- * Collapsed rail row — the icon, with a hover/focus flyout that PORTALS out of the rail (so it is
- * never clipped by the sidebar's overflow). A leaf shows its label as a tooltip; a group reveals
- * its submenu so collapsed items stay identifiable and reachable.
+ * Collapsed rail row — the icon only. HOVER (or keyboard focus) shows the label as a portaled
+ * tooltip; CLICK navigates a leaf, or opens the group's submenu as a portaled menu. Both overlays
+ * portal to the page root so they are never clipped by the sidebar's overflow.
  */
 function CollapsedRow({ item, activeId, onSelect }: RowProps) {
-  const [open, setOpen] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const Icon = item.icon;
   const active = isItemActive(item, activeId);
   const children = item.children ?? [];
   const hasChildren = children.length > 0;
-  const show = () => setOpen(true);
-  const hide = () => setOpen(false);
 
+  const iconButton = (
+    <button
+      type="button"
+      className="sb-nav-item"
+      data-active={active ? "true" : undefined}
+      aria-current={!hasChildren && active ? "page" : undefined}
+      aria-label={item.label}
+      aria-haspopup={hasChildren ? "menu" : undefined}
+      aria-expanded={hasChildren ? menuOpen : undefined}
+      aria-disabled={item.disabled}
+      onClick={() => {
+        if (!hasChildren && !item.disabled) onSelect?.(item.id);
+      }}
+    >
+      <span className="sb-icon">
+        <Icon aria-hidden="true" />
+      </span>
+    </button>
+  );
+
+  // Leaf: hover → label tooltip, click → navigate.
+  if (!hasChildren) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{iconButton}</TooltipTrigger>
+        <TooltipContent side="right">{item.label}</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  // Group: hover → label tooltip, click → open the submenu menu. The tooltip auto-closes on click.
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="sb-nav-item"
-          data-active={active ? "true" : undefined}
-          aria-current={!hasChildren && active ? "page" : undefined}
-          aria-label={item.label}
-          aria-haspopup={hasChildren ? "menu" : undefined}
-          aria-disabled={item.disabled}
-          onMouseEnter={show}
-          onMouseLeave={hide}
-          onFocus={show}
-          onBlur={hide}
-          onClick={() => {
-            if (!hasChildren && !item.disabled) onSelect?.(item.id);
-          }}
-        >
-          <span className="sb-icon">
-            <Icon aria-hidden="true" />
-          </span>
-        </button>
-      </PopoverTrigger>
+    <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>{iconButton}</PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent side="right">{item.label}</TooltipContent>
+      </Tooltip>
       <PopoverContent
         side="right"
         align="start"
         sideOffset={8}
-        role={hasChildren ? "menu" : undefined}
-        onMouseEnter={show}
-        onMouseLeave={hide}
-        className={cn("sb-flyout-pop", !hasChildren && "sb-flyout-pop--label")}
+        role="menu"
+        className="sb-flyout-pop"
       >
-        {hasChildren ? (
-          <>
-            <div className="sb-flyout-title">{item.label}</div>
-            {children.map((child) => (
-              <button
-                key={child.id}
-                type="button"
-                role="menuitem"
-                className="sb-nav-item"
-                data-active={child.id === activeId ? "true" : undefined}
-                aria-current={child.id === activeId ? "page" : undefined}
-                onClick={() => {
-                  hide();
-                  if (!child.disabled) onSelect?.(child.id);
-                }}
-              >
-                <span className="sb-label">{child.label}</span>
-              </button>
-            ))}
-          </>
-        ) : (
-          <span className="sb-flyout-label">{item.label}</span>
-        )}
+        <div className="sb-flyout-title">{item.label}</div>
+        {children.map((child) => (
+          <button
+            key={child.id}
+            type="button"
+            role="menuitem"
+            className="sb-nav-item"
+            data-active={child.id === activeId ? "true" : undefined}
+            aria-current={child.id === activeId ? "page" : undefined}
+            onClick={() => {
+              setMenuOpen(false);
+              if (!child.disabled) onSelect?.(child.id);
+            }}
+          >
+            <span className="sb-label">{child.label}</span>
+          </button>
+        ))}
       </PopoverContent>
     </Popover>
   );

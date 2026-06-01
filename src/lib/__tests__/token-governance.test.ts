@@ -28,6 +28,7 @@ const MIGRATED_LAYOUT_COMPONENTS = [
 
 /** Pending migration — tracked separately; do not add new files without a layout owner. */
 const SPACING_UTILITY_ALLOWLIST = new Set([
+  "tooltip.tsx",
   "calendar.tsx",
   "command.tsx",
   "upload.tsx",

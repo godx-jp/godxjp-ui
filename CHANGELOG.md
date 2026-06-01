@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.7.0] - 2026-06-01
+
+### Added
+
+- **`Tooltip`** (`@godxjp/ui/feedback`) — a portaled, self-contained Radix tooltip
+  (`Tooltip` / `TooltipTrigger` / `TooltipContent`, plus an optional `TooltipProvider`).
+  No app-level provider required; controllable via `open`/`onOpenChange`.
+
+### Changed
+
+- **Sidebar collapsed rail interaction.** Hovering (or focusing) a collapsed item now shows
+  its label as a **tooltip**; **clicking** a group opens its submenu as a portaled menu (a leaf
+  navigates). Previously both opened on hover, which conflated the tooltip and the menu.
+
 ## [6.6.0] - 2026-06-01
 
 ### Fixed

@@ -41,16 +41,16 @@ describe("Sidebar submenu", () => {
     expect(onSelect).toHaveBeenCalledWith("journals");
   });
 
-  it("collapsed: a leaf keeps its label and a group reveals its submenu on hover", async () => {
+  it("collapsed: a leaf keeps its label and clicking a group opens its submenu", async () => {
     const user = userEvent.setup();
-    renderWithUi(
-      <Sidebar activeId="settings" sections={sections} onSelect={() => undefined} collapsed />,
-    );
-    // Collapsed leaf keeps an accessible name so the rail is usable.
+    const onSelect = vi.fn();
+    renderWithUi(<Sidebar activeId="settings" sections={sections} onSelect={onSelect} collapsed />);
+    // Collapsed leaf keeps an accessible name so the rail is usable (hover shows it as a tooltip).
     expect(screen.getByRole("button", { name: "Settings" })).toBeInTheDocument();
-    // Hovering a collapsed group opens its portaled flyout menu with the children.
-    await user.hover(screen.getByRole("button", { name: "Accounting" }));
+    // Clicking a collapsed group opens its portaled submenu menu (not on hover).
+    await user.click(screen.getByRole("button", { name: "Accounting" }));
     expect(await screen.findByRole("menu")).toBeInTheDocument();
-    expect(screen.getByRole("menuitem", { name: "Journals" })).toBeInTheDocument();
+    await user.click(screen.getByRole("menuitem", { name: "Journals" }));
+    expect(onSelect).toHaveBeenCalledWith("journals");
   });
 });

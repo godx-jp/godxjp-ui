@@ -351,17 +351,6 @@
     padding: var(--space-1);
   }
 
-  .sb-flyout-pop.sb-flyout-pop--label {
-    min-width: 0;
-    padding: var(--space-1) var(--space-2);
-  }
-
-  .sb-flyout-label {
-    white-space: nowrap;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-  }
-
   .sb-flyout-title {
     padding: var(--space-1) var(--space-2);
     color: hsl(var(--muted-foreground));
