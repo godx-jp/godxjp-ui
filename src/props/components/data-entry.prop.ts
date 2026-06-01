@@ -174,6 +174,8 @@ export type DateRangePickerProp = {
   disabled?: DisabledProp;
   className?: ClassNameProp;
   id?: IdProp;
+  /** Form field name — emits the range as `${name}_from` / `${name}_to` ISO `yyyy-MM-dd` fields. */
+  name?: string;
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;
@@ -188,6 +190,8 @@ export type TimePickerProp = {
   disabled?: DisabledProp;
   className?: ClassNameProp;
   id?: IdProp;
+  /** Form field name — emits the value as a canonical 24h `HH:mm` string for native submission. */
+  name?: string;
   /** Minute column step — default 5 (logistics cut-offs). */
   minuteStep?: number;
 };

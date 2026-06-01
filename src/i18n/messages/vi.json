@@ -20,13 +20,17 @@
       "openCalendar": "Mở lịch"
     },
     "dateRangePicker": {
-      "placeholder": "Chọn khoảng ngày"
+      "placeholder": "Chọn khoảng ngày",
+      "from": "Từ",
+      "to": "Đến",
+      "openCalendar": "Mở lịch"
     },
     "timePicker": {
       "placeholder": "Chọn giờ",
       "hour": "Giờ",
       "minute": "Phút",
-      "typeLabel": "Nhập giờ HH:mm"
+      "typeLabel": "Nhập giờ HH:mm",
+      "openPicker": "Mở chọn giờ"
     },
     "searchInput": {
       "placeholder": "Tìm kiếm…"

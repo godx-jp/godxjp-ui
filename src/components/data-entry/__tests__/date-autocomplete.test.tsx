@@ -52,15 +52,20 @@ describe("DatePicker", () => {
 });
 
 describe("DateRangePicker", () => {
-  it("renders trigger with formatted range", () => {
+  it("renders editable ISO inputs for the range edges and submits as form fields", () => {
     renderWithUi(
       <DateRangePicker
         value={{ from: new Date(2026, 4, 1), to: new Date(2026, 4, 10) }}
         onChange={() => undefined}
+        name="period"
       />,
     );
-    expect(screen.getByRole("button")).toHaveTextContent("01/05/2026");
-    expect(screen.getByRole("button")).toHaveTextContent("10/05/2026");
+    const from = screen.getByRole<HTMLInputElement>("textbox", { name: /from|từ|開始/i });
+    const to = screen.getByRole<HTMLInputElement>("textbox", { name: /to|đến|終了/i });
+    expect(from.value).toBe("2026-05-01");
+    expect(to.value).toBe("2026-05-10");
+    expect(from).toHaveAttribute("name", "period_from");
+    expect(to).toHaveAttribute("name", "period_to");
   });
 });
 

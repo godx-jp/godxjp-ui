@@ -20,13 +20,17 @@
       "openCalendar": "カレンダーを開く"
     },
     "dateRangePicker": {
-      "placeholder": "期間を選択"
+      "placeholder": "期間を選択",
+      "from": "開始",
+      "to": "終了",
+      "openCalendar": "カレンダーを開く"
     },
     "timePicker": {
       "placeholder": "時刻を選択",
       "hour": "時",
       "minute": "分",
-      "typeLabel": "HH:mm を入力"
+      "typeLabel": "HH:mm を入力",
+      "openPicker": "時刻を選択"
     },
     "searchInput": {
       "placeholder": "検索…"

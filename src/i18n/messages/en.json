@@ -20,13 +20,17 @@
       "openCalendar": "Open calendar"
     },
     "dateRangePicker": {
-      "placeholder": "Select date range"
+      "placeholder": "Select date range",
+      "from": "From",
+      "to": "To",
+      "openCalendar": "Open calendar"
     },
     "timePicker": {
       "placeholder": "Select time",
       "hour": "Hour",
       "minute": "Minute",
-      "typeLabel": "Type time HH:mm"
+      "typeLabel": "Type time HH:mm",
+      "openPicker": "Open time picker"
     },
     "searchInput": {
       "placeholder": "Search…"
