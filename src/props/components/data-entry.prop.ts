@@ -225,6 +225,51 @@ export type AutocompleteProp = {
   id?: IdProp;
 };
 
+/** A SearchSelect option row. `group` buckets it under an optgroup-style heading. */
+export type SearchSelectOptionProp = {
+  value: string;
+  label: string;
+  sublabel?: string;
+  /** Optgroup-style heading this option belongs to (rendered once, in first-seen order). */
+  group?: string;
+  disabled?: boolean;
+};
+
+export type SearchSelectLoadParamsProp = {
+  query: string;
+  /** 1-based page for infinite scroll. */
+  page: number;
+};
+
+export type SearchSelectLoadResultProp = {
+  options: SearchSelectOptionProp[];
+  /** True if another page is available (drives infinite scroll). */
+  hasMore?: boolean;
+};
+
+/** @see SearchSelect — async, searchable, optionally grouped single-select combobox. */
+export type SearchSelectProp = {
+  value?: ValueProp;
+  onChange?: (value: string, option?: SearchSelectOptionProp) => void;
+  /** Remote fetcher — debounced search + infinite-scroll pagination call into this. */
+  loadOptions: (params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>;
+  /** Label for the current value when its option isn't in the loaded page (avoids a flash of id). */
+  selectedLabel?: string;
+  placeholder?: PlaceholderProp;
+  searchPlaceholder?: PlaceholderProp;
+  emptyMessage?: string;
+  loadingMessage?: string;
+  clearLabel?: string;
+  /** Show a "clear" row when a value is selected (default true). */
+  clearable?: boolean;
+  disabled?: DisabledProp;
+  /** Form field name — submits the selected value via a hidden input. */
+  name?: string;
+  id?: IdProp;
+  className?: ClassNameProp;
+  "data-testid"?: string;
+};
+
 /** @see UploadFileItem */
 export type UploadFileItemProp = UploadFileItem;
 

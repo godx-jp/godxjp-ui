@@ -79,6 +79,13 @@
       "empty": "Không có dữ liệu",
       "moveRight": "Chuyển sang đích",
       "moveLeft": "Chuyển về nguồn"
+    },
+    "searchSelect": {
+      "placeholder": "Chọn…",
+      "search": "Tìm kiếm",
+      "clear": "Xóa lựa chọn",
+      "loading": "Đang tải…",
+      "empty": "Không có kết quả"
     }
   },
   "feedback": {

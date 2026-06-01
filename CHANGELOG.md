@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.9.0] - 2026-06-01
+
+### Added
+
+- **`SearchSelect`** (`@godxjp/ui/data-entry`) — an async, searchable single-select combobox.
+  Unlike `Autocomplete` (static options), it loads options REMOTELY via a `loadOptions({ query,
+page })` fetcher with a debounced search box, infinite-scroll pagination, and loading/empty
+  states. Options support **optgroup-style grouping** (`option.group` renders a heading) and a
+  `sublabel`. Data-agnostic (REST/GraphQL/cached client), form-submittable via `name`,
+  e2e-testable via `data-testid` (+ `${data-testid}-option-${value}` per option).
+
 ## [6.8.0] - 2026-06-01
 
 ### Added

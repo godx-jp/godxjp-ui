@@ -79,6 +79,13 @@
       "empty": "No data",
       "moveRight": "Move to target",
       "moveLeft": "Move to source"
+    },
+    "searchSelect": {
+      "placeholder": "Select…",
+      "search": "Search",
+      "clear": "Clear selection",
+      "loading": "Loading…",
+      "empty": "No results"
     }
   },
   "feedback": {
