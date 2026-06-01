@@ -1,7 +1,8 @@
 import { ChevronDown } from "lucide-react";
 
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../data-display/collapsible";
 import { cn } from "../../lib/utils";
-import type { SidebarProp } from "../../props/components/layout.prop";
+import type { SidebarItemProp, SidebarProp } from "../../props/components/layout.prop";
 
 export type {
   SidebarItemProp as SidebarItem,
@@ -10,6 +11,125 @@ export type {
   SidebarProp as SidebarProps,
   SidebarSectionProp as SidebarSection,
 } from "../../props/components/layout.prop";
+
+/** An item is active when it is the active id, or — for a group — when any descendant is. */
+function isItemActive(item: SidebarItemProp, activeId: string): boolean {
+  if (item.id === activeId) return true;
+  return (item.children ?? []).some((child) => isItemActive(child, activeId));
+}
+
+type RowProps = {
+  item: SidebarItemProp;
+  activeId: string;
+  collapsed: boolean;
+  onSelect?: (id: string) => void;
+  sub?: boolean;
+};
+
+/** A leaf nav row — icon + label (+ badge). When collapsed it carries a hover flyout tooltip. */
+function NavLeaf({ item, activeId, collapsed, onSelect, sub = false }: RowProps) {
+  const Icon = item.icon;
+  const active = item.id === activeId;
+
+  return (
+    <button
+      type="button"
+      className={cn("sb-nav-item", sub && "sb-nav-item--sub")}
+      data-active={active ? "true" : undefined}
+      aria-current={active ? "page" : undefined}
+      aria-disabled={item.disabled}
+      aria-label={collapsed ? item.label : undefined}
+      onClick={() => {
+        if (!item.disabled) onSelect?.(item.id);
+      }}
+    >
+      {!sub ? (
+        <span className="sb-icon">
+          <Icon aria-hidden="true" />
+        </span>
+      ) : null}
+      {!collapsed && <span className="sb-label">{item.label}</span>}
+      {!collapsed && item.badge !== undefined && item.badge !== "" ? (
+        <span className="sb-badge">{item.badge}</span>
+      ) : null}
+      {collapsed && !sub ? <span className="sb-flyout">{item.label}</span> : null}
+    </button>
+  );
+}
+
+/** A group row with a collapsible submenu. Auto-open when a child is active; parent reads active too. */
+function NavGroup({ item, activeId, collapsed, onSelect }: RowProps) {
+  const Icon = item.icon;
+  const active = isItemActive(item, activeId);
+  const children = item.children ?? [];
+
+  // Collapsed rail: no room to expand inline — reveal the submenu as a hover/focus flyout.
+  // The flyout is a SIBLING of the trigger (never nest buttons) so its child links are valid.
+  if (collapsed) {
+    return (
+      <div className="sb-nav-fly">
+        <button
+          type="button"
+          className="sb-nav-item"
+          data-active={active ? "true" : undefined}
+          aria-label={item.label}
+          aria-haspopup="menu"
+        >
+          <span className="sb-icon">
+            <Icon aria-hidden="true" />
+          </span>
+        </button>
+        <span className="sb-flyout sb-flyout--group" role="menu">
+          <span className="sb-flyout-title">{item.label}</span>
+          {children.map((child) => (
+            <button
+              key={child.id}
+              type="button"
+              role="menuitem"
+              className="sb-nav-item sb-nav-item--sub"
+              data-active={child.id === activeId ? "true" : undefined}
+              aria-current={child.id === activeId ? "page" : undefined}
+              onClick={() => {
+                if (!child.disabled) onSelect?.(child.id);
+              }}
+            >
+              <span className="sb-label">{child.label}</span>
+            </button>
+          ))}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <Collapsible defaultOpen={active}>
+      <CollapsibleTrigger
+        className="sb-nav-item sb-nav-group-trigger"
+        data-active={active ? "true" : undefined}
+      >
+        <span className="sb-icon">
+          <Icon aria-hidden="true" />
+        </span>
+        <span className="sb-label">{item.label}</span>
+        <ChevronDown className="sb-chevron" aria-hidden="true" />
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="sb-nav-sub">
+          {children.map((child) => (
+            <NavLeaf
+              key={child.id}
+              item={child}
+              activeId={activeId}
+              collapsed={false}
+              onSelect={onSelect}
+              sub
+            />
+          ))}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
 
 export function Sidebar({
   activeId,
@@ -59,34 +179,25 @@ export function Sidebar({
               <div className="sb-section-label">{section.label}</div>
             ) : null}
             <div className="sb-nav" role="navigation">
-              {section.items.map((item) => {
-                const Icon = item.icon;
-                const isActive = item.id === activeId;
-
-                return (
-                  <button
-                    type="button"
-                    className={cn("sb-nav-item")}
-                    data-active={isActive ? "true" : undefined}
-                    aria-current={isActive ? "page" : undefined}
-                    aria-disabled={item.disabled}
-                    aria-label={collapsed ? item.label : undefined}
-                    title={collapsed ? item.label : undefined}
+              {section.items.map((item) =>
+                item.children && item.children.length > 0 ? (
+                  <NavGroup
                     key={item.id}
-                    onClick={() => {
-                      if (!item.disabled) onSelect?.(item.id);
-                    }}
-                  >
-                    <span className="sb-icon">
-                      <Icon aria-hidden="true" />
-                    </span>
-                    {!collapsed && <span className="sb-label">{item.label}</span>}
-                    {!collapsed && item.badge !== undefined && item.badge !== "" ? (
-                      <span className="sb-badge">{item.badge}</span>
-                    ) : null}
-                  </button>
-                );
-              })}
+                    item={item}
+                    activeId={activeId}
+                    collapsed={collapsed}
+                    onSelect={onSelect}
+                  />
+                ) : (
+                  <NavLeaf
+                    key={item.id}
+                    item={item}
+                    activeId={activeId}
+                    collapsed={collapsed}
+                    onSelect={onSelect}
+                  />
+                ),
+              )}
             </div>
           </div>
         ))}

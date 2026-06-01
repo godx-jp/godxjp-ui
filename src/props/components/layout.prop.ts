@@ -73,6 +73,8 @@ export type SidebarItemProp = {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   badge?: ReactNode;
   disabled?: boolean;
+  /** Nested rows — renders a collapsible submenu group (the parent reads active when any child is). */
+  children?: SidebarItemProp[];
 };
 
 /** @see Sidebar */

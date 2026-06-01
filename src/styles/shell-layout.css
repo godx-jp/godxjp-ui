@@ -339,6 +339,81 @@
     opacity: 1;
   }
 
+  /* Collapsed rail flyout — names a leaf item (tooltip) or reveals a group's submenu on
+   * hover/focus, since the rail hides labels. Hidden by default; shown only when collapsed. */
+  .sb-nav-fly {
+    position: relative;
+  }
+
+  .sb-flyout {
+    display: none;
+  }
+
+  [data-collapsed="true"] .sb-nav-item {
+    position: relative;
+  }
+
+  [data-collapsed="true"] .sb-flyout {
+    position: absolute;
+    inset-inline-start: 100%;
+    top: 0;
+    z-index: 50;
+    margin-inline-start: var(--space-2);
+    min-width: 11rem;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-1);
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    background: hsl(var(--popover, var(--background)));
+    color: hsl(var(--popover-foreground, var(--foreground)));
+    box-shadow:
+      0 4px 6px -1px hsl(var(--foreground) / 0.1),
+      0 2px 4px -2px hsl(var(--foreground) / 0.1);
+    white-space: nowrap;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Leaf tooltip — a single label chip, vertically centered on the icon row. */
+  [data-collapsed="true"] .sb-nav-item > .sb-flyout:not(.sb-flyout--group) {
+    top: 50%;
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+    transform: translateY(-50%);
+    padding: var(--space-1) var(--space-2);
+    font-weight: 500;
+  }
+
+  [data-collapsed="true"] .sb-flyout-title {
+    padding: var(--space-1) var(--space-2);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+  }
+
+  /* Submenu rows inside a collapsed flyout read as normal (full) nav rows, not dotted children. */
+  [data-collapsed="true"] .sb-flyout .sb-nav-item--sub {
+    height: var(--control-height);
+    font-size: var(--font-size-sm);
+  }
+
+  [data-collapsed="true"] .sb-flyout .sb-nav-item--sub::before {
+    content: none;
+  }
+
+  [data-collapsed="true"] .sb-flyout .sb-label {
+    display: inline;
+  }
+
+  /* Reveal on hover / keyboard focus. */
+  [data-collapsed="true"] .sb-nav-item:hover > .sb-flyout,
+  [data-collapsed="true"] .sb-nav-item:focus-visible > .sb-flyout,
+  [data-collapsed="true"] .sb-nav-fly:hover .sb-flyout,
+  [data-collapsed="true"] .sb-nav-fly:focus-within .sb-flyout {
+    display: flex;
+  }
+
   /* Footer user — circular avatar with live dot + overflow menu, design `.sb-user`. */
   .sb-user {
     display: flex;

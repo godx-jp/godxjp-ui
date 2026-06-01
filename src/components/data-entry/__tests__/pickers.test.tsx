@@ -40,9 +40,12 @@ describe("ColorPicker", () => {
 });
 
 describe("TimePicker", () => {
-  it("renders trigger button with clock and formatted time", () => {
-    renderWithUi(<TimePicker defaultValue="09:30" id="cutoff" />);
-    expect(screen.getByRole("button", { name: /09:30|9:30/i })).toBeInTheDocument();
+  it("exposes the time on a typeable combobox input (form-submittable)", () => {
+    renderWithUi(<TimePicker defaultValue="09:30" id="cutoff" name="cutoff" />);
+    const input = screen.getByRole<HTMLInputElement>("combobox");
+    expect(input.value).toBe("09:30");
+    expect(input).toHaveAttribute("id", "cutoff");
+    expect(input).toHaveAttribute("name", "cutoff");
   });
 
   it("opens panel and selects minute", async () => {

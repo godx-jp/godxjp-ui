@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.4.0] - 2026-06-01
+
+### Added
+
+- **`Sidebar` submenus.** `SidebarItem` now accepts `children` — a nested item renders a
+  collapsible group (Radix `Collapsible`) using the existing `sb-nav-group-trigger` /
+  `sb-chevron` / `sb-nav-sub` / `sb-nav-item--sub` design. The **parent reads active when any
+  descendant is active** and the group auto-opens to reveal the active child.
+- **Collapsed-rail flyout tooltips.** When the sidebar is collapsed, hovering (or keyboard-
+  focusing) a leaf shows its label as a flyout tooltip, and a group reveals its submenu as a
+  flyout menu — so collapsed items are identifiable and reachable. Replaces the native `title`
+  attribute; no new dependency.
+
 ## [6.3.0] - 2026-06-01
 
 ### Changed
