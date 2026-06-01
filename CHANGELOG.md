@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.3.0] - 2026-06-01
+
+### Changed
+
+- **`DatePicker`, `TimePicker`, `DateRangePicker` are now WAI-ARIA combobox inputs.**
+  The value lives on a real, typeable `<input>` (ISO-8601 `yyyy-MM-dd` for the date
+  pickers, canonical 24h `HH:mm` for `TimePicker`) instead of a button-only popover.
+  This makes the controls **form-submittable**, screen-reader friendly, and natively
+  **e2e-testable by filling the input** — no hidden mirror elements. The calendar /
+  time-column / range popover remains as the visual affordance and stays in sync with
+  typing. Prop APIs are backward-compatible (same `value` / `onChange`); the rendered
+  element changes from a `<button>` to an `<input>`, so consumers asserting the old
+  button text should target the input value instead.
+
+### Added
+
+- **`name` prop** on `DatePicker`, `TimePicker`, and `DateRangePicker` for native form
+  submission. `DateRangePicker` emits `${name}_from` / `${name}_to` ISO fields.
+- **`toIsoDate(date)`** in `@godxjp/ui` datetime helpers — formats a calendar `Date` to
+  an ISO-8601 `yyyy-MM-dd` string from its local Y/M/D.
+
 ## [6.2.0] - 2026-06-01
 
 ### Added
