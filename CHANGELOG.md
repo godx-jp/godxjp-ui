@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.8.0] - 2026-06-01
+
+### Added
+
+- **`Topbar` `productMenu` / `projectMenu`.** Pass a `DropdownMenuContent` to turn the
+  product (or project) chip into a real dropdown switcher — e.g. an active-entity picker —
+  instead of just firing `onProductOpen`.
+
+### Changed
+
+- **`Topbar` project chip is hidden when unused.** It now only renders when `project` or
+  `projectMenu` is set, so apps that don't use it no longer get a dead "Pick project"
+  placeholder.
+
 ## [6.7.0] - 2026-06-01
 
 ### Added

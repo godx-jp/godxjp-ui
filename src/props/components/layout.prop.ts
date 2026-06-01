@@ -110,6 +110,12 @@ export type TopbarProjectProp = {
 export type TopbarProp = {
   product: TopbarProductProp;
   project?: TopbarProjectProp | null;
+  /** Dropdown content for the product chip — renders a `DropdownMenuContent`. Turns the chip
+   *  into a switcher (e.g. an active-entity picker) instead of firing `onProductOpen`. */
+  productMenu?: ReactNode;
+  /** Dropdown content for the project chip. When neither `project` nor `projectMenu` is set the
+   *  project chip is hidden (no dead "Pick project" placeholder). */
+  projectMenu?: ReactNode;
   onProductOpen?: () => void;
   onProjectOpen?: () => void;
   onSearchOpen?: () => void;
