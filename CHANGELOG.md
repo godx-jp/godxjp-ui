@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.6.0] - 2026-06-01
+
+### Fixed
+
+- **Sidebar collapsed flyout no longer clipped.** The hover/focus flyout (label tooltip for
+  leaves, submenu for groups) now renders through a portaled Radix `Popover` to the page root,
+  so it escapes the sidebar's `overflow:hidden` instead of being cut off. It also opens reliably
+  on hover and keyboard focus.
+- **Sidebar rows are full width.** `.sb-nav-item` is now `width:100%`, so a collapsible group
+  trigger (nested inside the `Collapsible` wrapper) fills the rail and its chevron sits flush at
+  the right edge — matching flat rows.
+
 ## [6.5.0] - 2026-06-01
 
 ### Fixed
