@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/ui",
-  "version": "6.4.0",
+  "version": "6.5.0",
   "type": "module",
   "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
   "files": [
