@@ -352,7 +352,7 @@ const columns: ColumnDef<Member>[] = [
   {
     name: "Card",
     group: "data-display",
-    tagline: "Surface container with optional accent stripe, variant fill, size, and density. Compose with CardHeader/CardTitle/CardContent/CardFooter.",
+    tagline: "Surface container with optional accent stripe, variant fill, size, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className=\"p-4\"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter.",
     props: [
       { name: "accent", type: '"primary" | "success" | "warning" | "info" | "attention" | "destructive"', description: "3px left-edge semantic accent stripe." },
       { name: "variant", type: '"default" | "muted" | "outline" | "featured"', defaultValue: '"default"', description: "Surface fill style." },

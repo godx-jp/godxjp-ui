@@ -25,6 +25,19 @@ export const PATTERNS: PatternEntry[] = [
     tagline: "Fix the most common @godxjp/ui consumer mistakes & visual bugs (CardStat double-border, grey StatusBadge, crushed/empty table headers, washed-out sidebar footer, Inertia layout crash, SSR hydration). Before → after.",
     tags: ["fixes", "migration", "bug", "cardstat", "statusbadge", "datatable", "sidebar", "gotcha", "review"],
     code: `// ───────────────────────────────────────────────────────────────────────
+// 0) ★ MOST COMMON: <Card> body has NO padding (content is flush against the edges)
+//    Cause: the bare <Card> has ZERO inner padding — it MUST contain <CardContent>.
+//    Don't hand-roll padding with className="p-4" on the Card either.
+// ❌  <Card><Stack gap="md">…fields…</Stack></Card>          // flush, no padding
+// ❌  <Card className="p-4">…fields…</Card>                   // hand-rolled padding
+// ✅  <Card><CardContent><Stack gap="md">…fields…</Stack></CardContent></Card>
+//    Titles → <CardHeader><CardTitle>. Only go flush deliberately for a full-bleed table:
+// ✅  <Card><CardContent flush><DataTable/></CardContent></Card>
+//    GENERAL RULE — compose godx-ui primitives FULLY; never hand-roll what one ships:
+//      padding → CardContent (not p-4) · controls → Input/Select/Button (not raw <input>/<select>/<button>)
+//      empty rows → DataTable's built-in empty / <EmptyState> (not a custom data.length===0 guard).
+//    If a primitive exists, USE it — don't reinvent it.
+
 // 1) CardStat shows a DOUBLE border (too thick)
 //    Cause: CardStat IS already a bordered Card. Don't wrap it.
 // ❌  <Card><CardContent><CardStat label="x" value="1" /></CardContent></Card>
