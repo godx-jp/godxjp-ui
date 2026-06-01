@@ -6,7 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [6.10.0] - 2026-06-01
+## [6.11.0] - 2026-06-01
+
+### Changed
+
+- **One `Select` for every single-select (Ant-style).** `Select` is now polymorphic: keep using
+  the compound API (`<Select><SelectTrigger/><SelectContent><SelectItem/></Select>`) for full
+  control, OR pass `options` / `loadOptions` for a data-driven select. `showSearch` toggles a
+  searchable combobox (the `SearchSelect` engine — async + infinite scroll) vs a plain no-search
+  Radix listbox; both support optgroup grouping and `renderOption`. Fully backward-compatible —
+  existing compound usage is unchanged.
+- **`SearchSelect` is deprecated** in favour of `<Select options showSearch>` (it remains the
+  engine behind it and is still exported). `Autocomplete` likewise stays a deprecated wrapper.
+  So the family is now: **`Select`** (everything) · `SearchSelect`/`Autocomplete` (deprecated
+  aliases).
 
 ### Changed
 

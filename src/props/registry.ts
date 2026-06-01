@@ -451,7 +451,21 @@ export const COMPONENT_PROP_REGISTRY = {
       "IdProp",
       "ClassNameProp",
     ],
-    note: "Searchable single-select combobox (static `options` OR async `loadOptions`), optgroup grouping, custom `renderOption`. Supersedes Autocomplete.",
+    note: "Deprecated — the searchable engine behind `<Select options showSearch>`; prefer Select.",
+  },
+  SelectDataProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "PlaceholderProp",
+      "EmptyMessageProp",
+      "DisabledProp",
+      "NameProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
+    note: "Ant-style data-driven form of Select (options|loadOptions + showSearch). One Select for all single-selects.",
   },
   SearchSelectOptionProp: {
     group: "data-entry",

@@ -253,7 +253,11 @@ export type SearchSelectLoadResultProp = {
   hasMore?: boolean;
 };
 
-/** @see SearchSelect — searchable, optionally grouped single-select combobox (static or async). */
+/**
+ * @see SearchSelect — searchable, optionally grouped single-select combobox (static or async).
+ * @deprecated Prefer `<Select options|loadOptions showSearch …/>` — `Select` is now the single
+ *   data-driven entry point and uses this engine internally. `SearchSelect` stays exported.
+ */
 export type SearchSelectProp = {
   value?: ValueProp;
   onChange?: (value: string, option?: SearchSelectOptionProp) => void;
@@ -279,6 +283,16 @@ export type SearchSelectProp = {
   id?: IdProp;
   className?: ClassNameProp;
   "data-testid"?: string;
+};
+
+/**
+ * Data-driven (Ant-style) form of {@link Select} — one component covering static `options` or
+ * async `loadOptions`, with `showSearch` toggling the searchable combobox vs a plain listbox.
+ * Passing `options`/`loadOptions` to `<Select>` switches it from the compound API to this one.
+ */
+export type SelectDataProp = SearchSelectProp & {
+  /** Show the search box (combobox). Defaults to true when `loadOptions` is set, otherwise false. */
+  showSearch?: boolean;
 };
 
 /** @see UploadFileItem */

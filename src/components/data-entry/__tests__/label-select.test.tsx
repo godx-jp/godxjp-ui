@@ -60,3 +60,39 @@ describe("Select", () => {
     expect(trigger).toHaveAttribute("data-size", "default");
   });
 });
+
+describe("Select (data-driven, Ant-style)", () => {
+  it("renders a no-search Radix listbox when given options without showSearch", () => {
+    renderWithUi(
+      <Select
+        value=""
+        onChange={() => undefined}
+        placeholder="Pick"
+        options={[{ value: "1", label: "Cash" }]}
+      />,
+    );
+    // No search box — it's the plain Radix listbox trigger.
+    expect(screen.getByRole("combobox")).toHaveAttribute("data-slot", "select-trigger");
+  });
+
+  it("becomes a searchable combobox with showSearch (one Select, Ant-style)", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithUi(
+      <Select
+        value=""
+        onChange={onChange}
+        showSearch
+        options={[
+          { value: "1", label: "Cash" },
+          { value: "2", label: "Sales" },
+        ]}
+      />,
+    );
+    await user.click(screen.getByRole("combobox"));
+    // The search box appears (SearchSelect engine) and selecting fires onChange with the option.
+    expect(await screen.findByRole("textbox")).toBeInTheDocument();
+    await user.click(await screen.findByText("Sales"));
+    expect(onChange).toHaveBeenCalledWith("2", expect.objectContaining({ value: "2" }));
+  });
+});
