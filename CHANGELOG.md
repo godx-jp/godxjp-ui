@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.12.0] - 2026-06-02
+
+### Changed
+
+- **`godxjp-ui-audit` (the `ui:audit` checker) now catches more consumer mistakes:** raw `<input>`
+  and `<button>` (were missing — only `<select>`/`<table>`/`<textarea>` were checked), hand-rolled
+  `<Card className="p-4">` padding, and — via a new whole-file structural check — a bare `<Card>`
+  whose body is not wrapped in `<CardContent>` (renders flush). New rule ids: `no-raw-input`,
+  `no-raw-button`, `card-manual-padding`, `card-needs-content`.
+
 ## [6.11.0] - 2026-06-01
 
 ### Changed
