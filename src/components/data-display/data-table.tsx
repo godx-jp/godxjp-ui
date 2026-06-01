@@ -17,6 +17,7 @@ import { ArrowDown, ArrowUp, ChevronsUpDown, Layers, Layers2, MoreHorizontal } f
 import { useTranslation } from "../../i18n/use-translation";
 import { Inline } from "../layout/inline";
 import { Button } from "../general/button";
+import { EmptyState } from "./empty-state";
 import {
   Table,
   TableBody,
@@ -52,6 +53,9 @@ interface DataTableContextValue<T = unknown> {
   onRowClick?: (row: T) => void;
   sort?: SortStateProp;
   onSortChange?: (sort: SortStateProp | undefined) => void;
+  loading: boolean;
+  empty?: React.ReactNode;
+  emptyColSpan: number;
 }
 
 const DataTableContext = React.createContext<DataTableContextValue | null>(null);
@@ -79,6 +83,10 @@ interface DataTableProps<T> {
   onDensityChange?: (d: Density) => void;
   sort?: SortStateProp;
   onSortChange?: (sort: SortStateProp | undefined) => void;
+  /** Show a loading row instead of data. */
+  loading?: boolean;
+  /** Custom empty content when `data` is empty; defaults to a built-in EmptyState. */
+  empty?: React.ReactNode;
   className?: string;
   children?: React.ReactNode;
 }
@@ -102,6 +110,8 @@ export function DataTable<T>({
   onDensityChange,
   sort,
   onSortChange,
+  loading = false,
+  empty,
   className,
   children,
 }: DataTableProps<T>) {
@@ -125,6 +135,7 @@ export function DataTable<T>({
     else next.add(id);
     setSelected(next);
   };
+  const emptyColSpan = columns.length + (selectable ? 1 : 0);
   const allSelected = data.length > 0 && data.every((r) => selected.has(getRowId(r)));
   const someSelected = !allSelected && data.some((r) => selected.has(getRowId(r)));
   const toggleSelectAll = () => {
@@ -147,6 +158,9 @@ export function DataTable<T>({
     onRowClick,
     sort,
     onSortChange,
+    loading,
+    empty,
+    emptyColSpan,
   };
 
   // Determine if children include a Content slot — if not, render default.
@@ -278,6 +292,9 @@ DataTable.Content = function DataTableContent() {
     onRowClick,
     sort,
     onSortChange,
+    loading,
+    empty,
+    emptyColSpan,
   } = useDataTableContext();
   const { t } = useTranslation();
 
@@ -343,65 +360,79 @@ DataTable.Content = function DataTableContent() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((row) => {
-              const id = getRowId(row);
-              const isSelected = selected.has(id);
-              return (
-                <TableRow
-                  key={id}
-                  data-state={isSelected ? "selected" : undefined}
-                  onClick={(e) => {
-                    // Don't trigger row click if user clicked on an interactive child.
-                    const target = e.target as HTMLElement;
-                    if (target.closest("button, a, input, select, textarea, [role=menuitem]"))
-                      return;
-                    onRowClick?.(row);
-                  }}
-                  className={cn(
-                    rowPadding,
-                    onRowClick && "hover:bg-muted/50 cursor-pointer",
-                    isSelected && "bg-muted/30",
-                  )}
-                >
-                  {selectable && (
-                    <TableCell className={cellPadding}>
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => {
-                          toggleSelect(id);
-                        }}
-                        aria-label={t("dataTable.selectRow", { id })}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      />
-                    </TableCell>
-                  )}
-                  {columns.map((col) => (
-                    <TableCell
-                      key={col.key}
-                      className={cn(
-                        cellPadding,
-                        col.width,
-                        col.align === "right" && "text-right",
-                        col.align === "center" && "text-center",
-                        col.hiddenOnMobile && "hidden md:table-cell",
-                      )}
-                    >
-                      {col.render
-                        ? col.render(row)
-                        : (() => {
-                            const v = (row as Record<string, unknown>)[col.key];
-                            if (v == null) return "—";
-                            if (typeof v === "string" || typeof v === "number") return String(v);
-                            return "—";
-                          })()}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })}
+            {loading ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={emptyColSpan} className="h-32 text-center">
+                  <span className="text-muted-foreground text-sm">{t("dataTable.loading")}</span>
+                </TableCell>
+              </TableRow>
+            ) : data.length === 0 ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={emptyColSpan} className="ui-data-table-empty">
+                  {empty ?? <EmptyState title={t("dataTable.empty")} />}
+                </TableCell>
+              </TableRow>
+            ) : (
+              data.map((row) => {
+                const id = getRowId(row);
+                const isSelected = selected.has(id);
+                return (
+                  <TableRow
+                    key={id}
+                    data-state={isSelected ? "selected" : undefined}
+                    onClick={(e) => {
+                      // Don't trigger row click if user clicked on an interactive child.
+                      const target = e.target as HTMLElement;
+                      if (target.closest("button, a, input, select, textarea, [role=menuitem]"))
+                        return;
+                      onRowClick?.(row);
+                    }}
+                    className={cn(
+                      rowPadding,
+                      onRowClick && "hover:bg-muted/50 cursor-pointer",
+                      isSelected && "bg-muted/30",
+                    )}
+                  >
+                    {selectable && (
+                      <TableCell className={cellPadding}>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => {
+                            toggleSelect(id);
+                          }}
+                          aria-label={t("dataTable.selectRow", { id })}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        />
+                      </TableCell>
+                    )}
+                    {columns.map((col) => (
+                      <TableCell
+                        key={col.key}
+                        className={cn(
+                          cellPadding,
+                          col.width,
+                          col.align === "right" && "text-right",
+                          col.align === "center" && "text-center",
+                          col.hiddenOnMobile && "hidden md:table-cell",
+                        )}
+                      >
+                        {col.render
+                          ? col.render(row)
+                          : (() => {
+                              const v = (row as Record<string, unknown>)[col.key];
+                              if (v == null) return "—";
+                              if (typeof v === "string" || typeof v === "number") return String(v);
+                              return "—";
+                            })()}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
         </Table>
       </div>

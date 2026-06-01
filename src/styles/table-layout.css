@@ -81,6 +81,11 @@
     border-radius: var(--radius-md);
   }
 
+  /* Empty-state cell hosts the built-in EmptyState (which brings its own padding). */
+  .ui-data-table-empty {
+    padding: 0;
+  }
+
   [data-slot="card-content"][data-flush] .ui-data-table-root {
     gap: 0;
   }

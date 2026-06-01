@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.5.0] - 2026-06-01
+
+### Fixed
+
+- **`DataTable` now renders its empty + loading states.** The `empty` and `loading` props
+  were declared but never used, so a table with no rows showed a bare header. An empty
+  `data` now renders a built-in `EmptyState` (or the custom `empty` node if provided), and
+  `loading` renders a loading row — both spanning all columns. No page-level
+  `data.length === 0 ? <EmptyState/> : <DataTable/>` guard is needed anymore.
+
+### Added
+
+- `dataTable.empty` / `dataTable.loading` i18n strings (en/ja/vi).
+
 ## [6.4.0] - 2026-06-01
 
 ### Added
