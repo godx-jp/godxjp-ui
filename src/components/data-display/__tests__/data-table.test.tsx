@@ -130,4 +130,18 @@ describe("DataTable", () => {
     expect(screen.getByText("Đang tải…")).toBeInTheDocument();
     expect(screen.queryByText("Chưa có dữ liệu")).not.toBeInTheDocument();
   });
+
+  it("flags an empty-header column with data-empty so its header band auto-hides", () => {
+    const { container } = renderWithUi(
+      <DataTable
+        data={rows}
+        columns={[columns[0], { key: "actions", header: "" }]}
+        getRowId={(row) => row.id}
+      />,
+    );
+    const heads = container.querySelectorAll('[data-slot="table-head"]');
+    // Labeled column keeps the header band; the empty action column is flagged transparent.
+    expect(heads[0].hasAttribute("data-empty")).toBe(false);
+    expect(heads[heads.length - 1].hasAttribute("data-empty")).toBe(true);
+  });
 });
