@@ -19,7 +19,7 @@ function normalizeHex(value: string): string {
 
 export function ColorPicker({
   value = "#2563eb",
-  onChange,
+  onValueChange,
   disabled,
   className,
   id,
@@ -36,7 +36,7 @@ export function ColorPicker({
       return;
     }
     setDraft(null);
-    onChange?.(normalized);
+    onValueChange?.(normalized);
   };
 
   return (

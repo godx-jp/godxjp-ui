@@ -55,7 +55,7 @@ function fileMatchesAccept(file: File, accept?: string): boolean {
 function useUploadList(
   controlled: UploadFileItem[] | undefined,
   defaultValue: UploadFileItem[] | undefined,
-  onChange: UploadProp["onChange"],
+  onValueChange: UploadProp["onValueChange"],
 ) {
   const [internal, setInternal] = React.useState<UploadFileItem[]>(defaultValue ?? []);
   const items = controlled ?? internal;
@@ -64,9 +64,9 @@ function useUploadList(
     (next: UploadFileItem[] | ((prev: UploadFileItem[]) => UploadFileItem[])) => {
       const resolved = typeof next === "function" ? next(items) : next;
       if (controlled === undefined) setInternal(resolved);
-      onChange?.(resolved);
+      onValueChange?.(resolved);
     },
-    [controlled, items, onChange],
+    [controlled, items, onValueChange],
   );
 
   return [items, setItems] as const;
@@ -108,7 +108,7 @@ export function Upload({
   variant = "dropzone",
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   accept: acceptProp,
   multiple: multipleProp,
   maxCount: maxCountProp,
@@ -126,7 +126,7 @@ export function Upload({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = React.useState(false);
   const [cropFile, setCropFile] = React.useState<File | null>(null);
-  const [items, setItems] = useUploadList(value, defaultValue, onChange);
+  const [items, setItems] = useUploadList(value, defaultValue, onValueChange);
 
   const isSingleAvatar =
     variant === "avatar" || variant === "avatar-crop" || (variant === "picture" && maxCount === 1);

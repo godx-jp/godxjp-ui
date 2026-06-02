@@ -49,7 +49,7 @@ export const PATTERNS: PatternEntry[] = [
 // 2) Badge renders grey with a ○ (no colour) for localized/tier labels
 //    Cause: it auto-maps only English lifecycle keys. (@godxjp/ui >= 6.1)
 // ❌  <Badge status="プレミアム" />
-// ✅  <Badge status="プレミアム" variant="success" icon={null} />   // tier → pill, no icon
+// ✅  <Badge status="プレミアム" tone="success" icon={null} />   // tier → pill, no icon
 // ✅  <Badge status="active">公開中</Badge>                   // lifecycle → keep icon
 
 // 3) Table text collapses to one char per line, or a chip wraps
@@ -203,11 +203,11 @@ export function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolea
           <DialogDescription>この操作は取り消せません。確認のためプロジェクト名 "{slug}" と入力してください。</DialogDescription>
         </DialogHeader>
         <Stack gap="md">
-          <Input value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder={slug} />
+          <Input value={confirm} onValueChange={(e) => setConfirm(e.target.value)} placeholder={slug} />
         </Stack>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>キャンセル</Button>
-          <Button variant="destructive" disabled={confirm !== slug} onClick={() => { toast.success("削除しました"); onOpenChange(false); }}>完全に削除</Button>
+          <Button tone="destructive" disabled={confirm !== slug} onClick={() => { toast.success("削除しました"); onOpenChange(false); }}>完全に削除</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -275,7 +275,7 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
   // ColumnDef = { key, header, render?, align?: "left"|"center"|"right", sortable?, width? }
   const columns: ColumnDef<Coupon>[] = [
     { key: "name", header: "クーポン名", render: (c) => <span className="font-medium">{c.name}</span> },
-    { key: "scope", header: "スコープ", render: (c) => <Badge status={c.scope} variant="info" icon={null} /> },
+    { key: "scope", header: "スコープ", render: (c) => <Badge status={c.scope} tone="info" icon={null} /> },
     { key: "status", header: "ステータス", render: (c) => <Badge status={c.status} /> },
     { key: "valid", header: "有効期間", render: (c) => \`\${formatDate(c.validFrom)} 〜 \${formatDate(c.validTo)}\` },
     { key: "usage", header: "利用数", align: "right", render: (c) => c.usage.toLocaleString() },
@@ -317,7 +317,7 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
           </Card>
 
           {filtered.length > PAGE_SIZE && (
-            <Pagination current={page} total={filtered.length} pageSize={PAGE_SIZE} showTotal onChange={(p) => setPage(p)} />
+            <Pagination current={page} total={filtered.length} pageSize={PAGE_SIZE} showTotal onValueChange={(p) => setPage(p)} />
           )}
         </Stack>
       </PageContainer>
@@ -374,7 +374,7 @@ function MemberShow({ id }: { id: string }) {
               {/* Descriptions is COMPOUND — value goes in children, not a prop */}
               <Descriptions columns={2}>
                 <Descriptions.Item label="氏名">{member.name}</Descriptions.Item>
-                <Descriptions.Item label="ランク"><Badge status={member.rank} variant="info" icon={null} /></Descriptions.Item>
+                <Descriptions.Item label="ランク"><Badge status={member.rank} tone="info" icon={null} /></Descriptions.Item>
                 <Descriptions.Item label="ステータス"><Badge status={member.status} /></Descriptions.Item>
                 <Descriptions.Item label="登録日">{formatDate(member.registeredAt)}</Descriptions.Item>
               </Descriptions>
@@ -439,12 +439,12 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
 <Badge status="active">公開中</Badge>        // green ✓ 公開中
 
 // 2) Unknown label — set tone explicitly (no icon, since the key is unknown):
-<Badge status="公開中" variant="success" />
+<Badge status="公開中" tone="success" />
 
 // 3) Tier / category — coloured pill, drop the misleading glyph with icon={null}:
-<Badge status="プレミアム" variant="success" icon={null} />
-<Badge status="ゴールド"   variant="warning" icon={null} />
-<Badge status="法人共通"   variant="info"    icon={null} />
+<Badge status="プレミアム" tone="success" icon={null} />
+<Badge status="ゴールド"   tone="warning" icon={null} />
+<Badge status="法人共通"   tone="info"    icon={null} />
 
 // tone: "success" | "warning" | "destructive" | "info" | "neutral"  (import type BadgeTone)
 // RULE: a chip never wraps — it is pinned white-space: nowrap, so it stays one line in

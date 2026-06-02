@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------
  * Card* components emit data-slot + data-* flags ONLY. All inset/gap padding lives here.
  *
- * Uses card primitive tokens from src/tokens/primitives/card.css.
+ * Uses card component tokens from src/tokens/components/card.css.
  * Card tokens derive from foundation/layout primitives and are coordinated by tokens/base.css.
  *
  * Slot ownership — one token per vertical gap:
@@ -17,10 +17,10 @@
 
 [data-slot="card"] {
   min-width: 0;
-  border-color: hsl(var(--card-border-token));
+  border-color: hsl(var(--card-border));
   border-radius: var(--card-radius);
   background: hsl(var(--card-background));
-  color: hsl(var(--card-foreground-token));
+  color: hsl(var(--card-foreground));
   overflow: hidden;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .ui-card-header--banded {
-  border-bottom: 1px solid hsl(var(--card-border-token));
+  border-bottom: 1px solid hsl(var(--card-border));
   background-color: hsl(var(--card-header-background) / var(--card-header-background-alpha));
 }
 
@@ -270,7 +270,7 @@
 }
 
 [data-slot="card-footer"][data-separated] {
-  border-top: 1px solid hsl(var(--card-border-token));
+  border-top: 1px solid hsl(var(--card-border));
   padding-block: var(--card-space-footer-y);
   justify-content: flex-end;
 }

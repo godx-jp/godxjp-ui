@@ -6,14 +6,15 @@ Every visual dimension has **one canonical owner**. Apps never patch spacing, de
 
 ```
 src/tokens/base.css          ← token manifest; imports every base token file
-src/tokens/foundation.css    ← color, typography, raw spacing, ratio, radius, shadow
-src/tokens/primitives/       ← primitive component token files
+src/tokens/foundation.css    ← primitive color accents, typography, raw spacing, ratio, radius, shadow
+src/tokens/semantic/         ← semantic aliases by UI role
   layout.css                 ← page/section/stack/inline tokens
+src/tokens/components/       ← component token files
   control.css                ← control height + control padding
-  card.css                   ← Card primitive tokens
-  table.css                  ← Table primitive tokens
-  feedback.css               ← Dialog/Alert/EmptyState primitive tokens
-  badge.css                  ← Badge primitive tokens
+  card.css                   ← Card component tokens
+  table.css                  ← Table component tokens
+  feedback.css               ← Dialog/Alert/EmptyState component tokens
+  badge.css                  ← Badge component tokens
 src/styles/
   index.css                  ← @theme bridge (Tailwind ↔ tokens) + body defaults
   density.css                ← .ui-density-* (PageContainer density prop)
@@ -41,7 +42,7 @@ src/styles/
 | App `theme.css`                         | Override `:root` only — never component CSS                         |
 | `alert-layout.css`, `control-styles.ts` | Semantic tones (`success`, `warning`, …) — never `text-emerald-600` |
 
-Default brand tokens use the GodX Agent Portal palette: navy primary, 朱 orange focus/accent, warm neutral surfaces. Tracking-code identity tokens are separate from semantic status colors: `--tracking-internal`, `--tracking-seller`, `--tracking-yamato`.
+Default brand tokens use the GodX Agent Portal palette: navy primary, 朱 orange focus/accent, warm neutral surfaces. App or customer identity colors belong in the consuming app theme, not in package tokens.
 
 ### Typography
 
@@ -67,9 +68,9 @@ Runtime scale: app `theme.css` overrides → `--font-size-sm` on root.
 
 **Apps:** no Tailwind `p-*`, `m-*`, `gap-*`, `space-*`.
 
-### Primitive Component Tokens
+### Component Tokens
 
-Each primitive component owns a token file under `src/tokens/primitives/`. The file may only derive from foundation/layout/control tokens; component CSS may only consume those primitive tokens.
+Each component owns a token file under `src/tokens/components/`. The file may only derive from foundation, semantic, or other component tokens; component CSS may only consume those component tokens.
 
 Card primitive tokens:
 
@@ -124,7 +125,7 @@ See `docs/SPACING.md` for Card slot matrix. Same pattern everywhere:
 
 ## Adding a new component
 
-1. Add/update the primitive token file in `src/tokens/primitives/`.
+1. Add/update the component token file in `src/tokens/components/`.
 2. Add `src/styles/<component>-layout.css` with `[data-slot="…"]` rules.
 3. Import in `index.css`.
 4. Component TSX: structure + `data-slot` only.

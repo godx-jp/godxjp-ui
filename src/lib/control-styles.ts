@@ -30,4 +30,6 @@ export const toneInfoClass = "border-info/30 bg-info/10 text-info";
 
 export const toneDestructiveClass = "border-destructive/30 bg-destructive/10 text-destructive";
 
+export const toneMutedClass = "border-border bg-muted text-muted-foreground";
+
 export const toneNeutralClass = "border-border bg-muted text-muted-foreground";

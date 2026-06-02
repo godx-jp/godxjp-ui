@@ -60,7 +60,7 @@ export type StepsProp = {
   status?: StepStatusProp;
   orientation?: "horizontal" | "vertical";
   type?: "default" | "dot";
-  size?: "default" | "small";
+  size?: "default" | "sm";
   titlePlacement?: "horizontal" | "vertical";
   onChange?: (current: number) => void;
   className?: ClassNameProp;

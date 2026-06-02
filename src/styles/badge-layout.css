@@ -6,8 +6,8 @@
   [data-slot="badge"] {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-badge-gap);
-    padding: var(--space-badge-y) var(--space-badge-x);
+    gap: var(--badge-space-gap);
+    padding: var(--badge-space-y) var(--badge-space-x);
     border-radius: var(--radius-md);
     border-width: 1px;
     font-size: var(--font-size-xs);

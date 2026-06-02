@@ -13,7 +13,7 @@ export default function Demo() {
       total={248}
       showSizeChanger
       showTotal
-      onChange={(nextPage, nextSize) => {
+      onValueChange={(nextPage, nextSize) => {
         setPage(nextPage);
         setSize(nextSize);
       }}

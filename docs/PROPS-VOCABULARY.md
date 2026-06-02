@@ -2,7 +2,7 @@
 
 Atomic prop types live in `src/props/vocabulary/`. Every type name ends with **`Prop`**.
 
-Import: `import type { TitleProp, StackGapProp } from "@godxjp/ui/props/vocabulary"`
+Import: `import type { TitleProp, GapProp } from "@godxjp/ui/props/vocabulary"`
 
 ---
 
@@ -45,8 +45,7 @@ Import: `import type { TitleProp, StackGapProp } from "@godxjp/ui/props/vocabula
 | Type               | Values                              | Scope                     |
 | ------------------ | ----------------------------------- | ------------------------- |
 | `PageDensityProp`  | `compact \| default \| comfortable` | **PageContainer** subtree |
-| `StackGapProp`     | `xs \| sm \| md \| lg \| xl`        | `<Stack gap>`             |
-| `InlineGapProp`    | `xs \| sm \| md \| lg`              | `<Inline gap>`            |
+| `GapProp`          | `xs \| sm \| md \| lg \| xl`        | `<Stack gap>`, `<Inline gap>` (Inline excludes `xl`) |
 | `TableDensityProp` | `compact \| comfortable`            | **DataTable** rows only   |
 
 > **Critical:** `PageDensityProp` ≠ `TableDensityProp`. Never use bare `density` in new APIs.
@@ -58,7 +57,7 @@ Import: `import type { TitleProp, StackGapProp } from "@godxjp/ui/props/vocabula
 | `ButtonVariantProp`  | `default \| destructive \| outline \| secondary \| ghost \| link` |
 | `ButtonSizeProp`     | `default \| sm \| lg \| icon`                                     |
 | `ConfirmVariantProp` | `default \| destructive`                                          |
-| `StatusToneProp`     | `default \| success \| warning \| destructive \| muted`           |
+| `ToneProp`           | `default \| success \| warning \| destructive \| info \| muted \| neutral` |
 | `SortDirectionProp`  | `asc \| desc`                                                     |
 | `ColumnAlignProp`    | `left \| center \| right`                                         |
 | `SortStateProp`      | `{ key: string; direction: SortDirectionProp }`                   |
@@ -69,7 +68,7 @@ Import: `import type { TitleProp, StackGapProp } from "@godxjp/ui/props/vocabula
 | -------------------- | ----------------------------------- |
 | `BreadcrumbItemProp` | `{ label: LabelProp; to?: string }` |
 | `BreadcrumbProp`     | `BreadcrumbItemProp[]`              |
-| `PageTitleProp`      | alias of `TitleProp`                |
+| `TitleProp`          | primary heading text                |
 
 ## Data collections
 
@@ -96,6 +95,6 @@ See `PROP_ALIASES_FORBIDDEN` in `@godxjp/ui/props/registry`:
 | bare `description` in dialogs | `DescriptionProp`                       |
 | `actions` on page header      | `ExtraProp`                             |
 | bare `density`                | `PageDensityProp` or `TableDensityProp` |
-| bare `gap`                    | `StackGapProp` or `InlineGapProp`       |
+| component-specific gap unions | `GapProp` or documented `Extract`/`Exclude` subset |
 | `onClear`                     | `OnClearFiltersProp`                    |
 | `loading` on buttons          | `PendingProp`                           |

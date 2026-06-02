@@ -60,7 +60,7 @@ function TreeSelectRoot({
   treeData: treeDataProp,
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   multiple,
   treeCheckable,
   treeCheckStrictly,
@@ -101,7 +101,7 @@ function TreeSelectRoot({
 
   const commit = (next: string[]) => {
     if (!isControlled) setInternal(next);
-    onChange?.(checkable || multiple ? next : (next[0] ?? undefined));
+    onValueChange?.(checkable || multiple ? next : (next[0] ?? undefined));
   };
 
   const toggleExpand = (key: string) => {

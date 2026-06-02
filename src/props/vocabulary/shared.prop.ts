@@ -16,6 +16,9 @@ export type IdProp = string;
 /** Controlled open state for panels (Dialog, Sheet, Popover). */
 export type OpenProp = boolean;
 
+/** Uncontrolled initial open state for panels (Dialog, Sheet, Popover). */
+export type DefaultOpenProp = boolean;
+
 /** Callback when open state changes. */
 export type OnOpenChangeProp = (open: boolean) => void;
 
@@ -46,8 +49,14 @@ export type PlaceholderProp = string;
 /** HTML input `name` attribute. */
 export type NameProp = string;
 
-/** HTML input `value` — string form. */
-export type ValueProp = string;
+/** Abstract controlled value. */
+export type ValueProp<T = string> = T;
+
+/** Abstract uncontrolled initial value. */
+export type DefaultValueProp<T = string> = T;
+
+/** Callback when an abstract value changes. */
+export type OnValueChangeProp<T = string> = (value: T) => void;
 
 /** Change handler for text inputs. */
 export type OnChangeProp = React.ChangeEventHandler<HTMLInputElement>;

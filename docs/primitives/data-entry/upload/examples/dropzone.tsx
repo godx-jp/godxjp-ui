@@ -17,7 +17,7 @@ export default function Demo() {
     <Upload
       variant="dropzone"
       value={items}
-      onChange={setItems}
+      onValueChange={setItems}
       maxCount={5}
       onUpload={mockUpload}
       className="max-w-lg"

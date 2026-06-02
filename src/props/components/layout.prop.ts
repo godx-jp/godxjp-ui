@@ -3,21 +3,20 @@ import type * as React from "react";
 import type { ComponentType, ReactNode, SVGProps } from "react";
 import type {
   BreadcrumbProp,
-  PageTitleProp,
+  TitleProp,
   SubtitleProp,
   ExtraProp,
   FooterProp,
   PageDensityProp,
   PageContainerVariantProp,
-  StackGapProp,
-  InlineGapProp,
+  GapProp,
   ClassNameProp,
   ChildrenProp,
 } from "../vocabulary";
 
 /** @see PageContainer */
 export type PageContainerProp = {
-  title: PageTitleProp;
+  title: TitleProp;
   subtitle?: SubtitleProp;
   extra?: ExtraProp;
   footer?: FooterProp;
@@ -32,12 +31,12 @@ export type PageContainerProp = {
 
 /** @see Stack */
 export type StackProp = React.HTMLAttributes<HTMLDivElement> & {
-  gap?: StackGapProp;
+  gap?: GapProp;
 };
 
 /** @see Inline */
 export type InlineProp = React.HTMLAttributes<HTMLDivElement> & {
-  gap?: InlineGapProp;
+  gap?: Exclude<GapProp, "xl">;
 };
 
 /** @see PageInset — padded strip inside flush PageContainer (FilterBar, intro). */
@@ -130,7 +129,7 @@ export type TopbarProp = {
 
 /** @deprecated Use PageContainerProp — header-only legacy shell. */
 export type PageHeaderProp = {
-  title: PageTitleProp;
+  title: TitleProp;
   description?: SubtitleProp;
   breadcrumb?: BreadcrumbProp;
   actions?: ExtraProp;

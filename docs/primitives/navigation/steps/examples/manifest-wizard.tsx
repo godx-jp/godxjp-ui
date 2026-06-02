@@ -14,7 +14,7 @@ export default function Demo() {
 
   return (
     <Stack gap="md" className="max-w-2xl">
-      <Steps current={current} onChange={setCurrent} items={items} />
+      <Steps current={current} onValueChange={setCurrent} items={items} />
       <p className="text-muted-foreground text-sm">Bước hiện tại: {current + 1}</p>
     </Stack>
   );

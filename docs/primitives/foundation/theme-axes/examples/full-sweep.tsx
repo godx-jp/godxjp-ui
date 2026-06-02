@@ -56,7 +56,7 @@ export default function Demo() {
           </SelectContent>
         </Select>
         <Inline gap="md" className="flex-wrap items-end">
-          <DatePicker value={new Date(2026, 4, 1)} onChange={() => undefined} />
+          <DatePicker value={new Date(2026, 4, 1)} onValueChange={() => undefined} />
           <TimePicker defaultValue="14:30" />
         </Inline>
         <div className="flex items-center justify-between gap-4">
@@ -91,7 +91,7 @@ export default function Demo() {
           current={1}
           items={[{ title: "Draft" }, { title: "Review" }, { title: "Fulfilled" }]}
         />
-        <Pagination current={2} total={160} pageSize={20} onChange={() => undefined} />
+        <Pagination current={2} total={160} pageSize={20} onValueChange={() => undefined} />
       </Stack>
 
       <Stack gap="sm">
@@ -99,7 +99,7 @@ export default function Demo() {
         <Inline gap="sm" className="flex-wrap">
           <Badge>Batch #0524</Badge>
           <Badge variant="secondary">VIP</Badge>
-          <Badge variant="success">Fulfilled</Badge>
+          <Badge tone="success">Fulfilled</Badge>
           <Badge variant="outline">Draft</Badge>
         </Inline>
         <Inline gap="sm" className="flex-wrap">

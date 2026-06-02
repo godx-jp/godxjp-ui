@@ -31,7 +31,7 @@ Do not rebuild sidebar or topbar chrome inside product previews or apps. Compose
 
 | Prop         | Vocabulary        | Required          |
 | ------------ | ----------------- | ----------------- |
-| `title`      | `PageTitleProp`   | ✅                |
+| `title`      | `TitleProp`       | ✅                |
 | `subtitle`   | `SubtitleProp`    |                   |
 | `extra`      | `ExtraProp`       |                   |
 | `footer`     | `FooterProp`      |                   |
@@ -49,8 +49,8 @@ All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640
 
 | Component | Prop         | Key props            |
 | --------- | ------------ | -------------------- |
-| `Stack`   | `StackProp`  | `gap: StackGapProp`  |
-| `Inline`  | `InlineProp` | `gap: InlineGapProp` |
+| `Stack`   | `StackProp`  | `gap: GapProp`       |
+| `Inline`  | `InlineProp` | `gap: GapProp` subset |
 
 ---
 
@@ -91,7 +91,7 @@ All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640
 | `EmptyState`   | `EmptyStateProp`   | `icon`, `title`, `description`, `action` |
 | `DataTable`    | `DataTableProp<T>` | `columns`, `density: TableDensityProp`   |
 | `Descriptions` | `DescriptionsProp` | `items[]`                                |
-| `Badge`  | `BadgeProp`  | `status`, `tone: StatusToneProp`         |
+| `Badge`  | `BadgeProp`  | `status`, `tone: ToneProp`               |
 | `Badge`        | `BadgeProp`        | shadcn badge variants                    |
 | `Popover`      | Radix primitives   | floating content panel                   |
 | `ScrollArea`   | Radix primitives   | scrollable regions                       |

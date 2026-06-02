@@ -5,5 +5,5 @@ import { LocalePicker } from "@godxjp/ui/navigation";
 
 export default function Demo() {
   const [value, setValue] = useState<AppLocale>("vi");
-  return <LocalePicker value={value} onChange={setValue} />;
+  return <LocalePicker value={value} onValueChange={setValue} />;
 }

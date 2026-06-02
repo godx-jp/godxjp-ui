@@ -38,7 +38,7 @@ export function Cascader({
   options: optionsProp,
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   multiple,
   changeOnSelect,
   showSearch,
@@ -85,7 +85,7 @@ export function Cascader({
 
   const commitSingle = (path: string[]) => {
     if (!isControlledSingle) setInternalSingle(path);
-    onChange?.(path, getNodeByPath(options, path));
+    onValueChange?.(path, getNodeByPath(options, path));
     setOpen(false);
     setActivePath([]);
     setSearch("");
@@ -93,7 +93,7 @@ export function Cascader({
 
   const commitMulti = (paths: string[][]) => {
     if (!isControlledMulti) setInternalMulti(paths);
-    onChange?.(
+    onValueChange?.(
       paths,
       paths.map((p) => getNodeByPath(options, p)),
     );

@@ -22,15 +22,15 @@ export function TimeFormatPicker({
   disabled,
   id,
   value,
-  onChange,
+  onValueChange,
 }: TimeFormatPickerProp) {
   const ctx = useOptionalAppContext();
   const { t, locale, fallbackLocale } = useTranslation();
   const current = value ?? ctx?.timeFormat;
-  const handleChange = onChange ?? ctx?.setTimeFormat;
+  const handleChange = onValueChange ?? ctx?.setTimeFormat;
 
   if (current === undefined || !handleChange) {
-    throw new Error("TimeFormatPicker requires <AppProvider> or controlled value + onChange");
+    throw new Error("TimeFormatPicker requires <AppProvider> or controlled value + onValueChange");
   }
 
   return (

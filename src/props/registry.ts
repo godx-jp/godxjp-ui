@@ -26,6 +26,11 @@ export const VOCABULARY_REGISTRY = {
     category: "shared",
     description: "Dialog/Sheet/Popover open state",
   },
+  DefaultOpenProp: {
+    file: "vocabulary/shared.prop.ts",
+    category: "shared",
+    description: "Dialog/Sheet/Popover initial uncontrolled open state",
+  },
   OnOpenChangeProp: {
     file: "vocabulary/shared.prop.ts",
     category: "shared",
@@ -76,7 +81,21 @@ export const VOCABULARY_REGISTRY = {
     category: "shared",
     description: "Form field name",
   },
-  ValueProp: { file: "vocabulary/shared.prop.ts", category: "shared", description: "String value" },
+  ValueProp: {
+    file: "vocabulary/shared.prop.ts",
+    category: "shared",
+    description: "Abstract controlled value",
+  },
+  DefaultValueProp: {
+    file: "vocabulary/shared.prop.ts",
+    category: "shared",
+    description: "Abstract uncontrolled initial value",
+  },
+  OnValueChangeProp: {
+    file: "vocabulary/shared.prop.ts",
+    category: "shared",
+    description: "Abstract value change handler",
+  },
   OnChangeProp: {
     file: "vocabulary/shared.prop.ts",
     category: "shared",
@@ -156,20 +175,20 @@ export const VOCABULARY_REGISTRY = {
     category: "layout",
     description: "Page padding / control scale",
   },
+  DensityProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description: "Canonical page/subtree density",
+  },
   PageContainerVariantProp: {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
     description: "Page shell layout — default, narrow, flush, ghost",
   },
-  StackGapProp: {
+  GapProp: {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
-    description: "Vertical Stack gap",
-  },
-  InlineGapProp: {
-    file: "vocabulary/layout.prop.ts",
-    category: "layout",
-    description: "Horizontal Inline gap",
+    description: "Shared gap scale; components may document subsets",
   },
   TableDensityProp: {
     file: "vocabulary/layout.prop.ts",
@@ -186,17 +205,22 @@ export const VOCABULARY_REGISTRY = {
   ButtonSizeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Button size preset",
+    description: "Button size preset; includes documented icon-only subset",
+  },
+  SizeProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Shared size names xs | sm | md | lg",
   },
   ConfirmVariantProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
     description: "Dialog confirm emphasis",
   },
-  StatusToneProp: {
+  ToneProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Badge color tone",
+    description: "Semantic status/color intent",
   },
   AlertVariantProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -230,10 +254,25 @@ export const VOCABULARY_REGISTRY = {
     category: "navigation",
     description: "Breadcrumb trail array",
   },
-  PageTitleProp: {
-    file: "vocabulary/navigation.prop.ts",
-    category: "navigation",
-    description: "Alias of TitleProp in page context",
+  ZodSchemaProp: {
+    file: "components/form.prop.ts",
+    category: "form",
+    description: "Zod 4 schema passed to form helpers",
+  },
+  UseZodFormOptionsProp: {
+    file: "components/form.prop.ts",
+    category: "form",
+    description: "react-hook-form options accepted by useZodForm",
+  },
+  UseZodFormReturnProp: {
+    file: "components/form.prop.ts",
+    category: "form",
+    description: "react-hook-form return object from useZodForm",
+  },
+  FieldErrorMessageProp: {
+    file: "components/form.prop.ts",
+    category: "form",
+    description: "Mapped field error message displayed through FormField",
   },
 
   // data.prop.ts
@@ -292,21 +331,26 @@ export const VOCABULARY_REGISTRY = {
 export type VocabularyPropName = keyof typeof VOCABULARY_REGISTRY;
 
 export const COMPONENT_PROP_REGISTRY = {
+  AppProviderProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ChildrenProp"] },
+  LocalePickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"] },
+  TimezonePickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"] },
+  TimeFormatPickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"] },
+  DateFormatPickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"] },
   PageContainerProp: {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
-      "PageTitleProp",
+      "TitleProp",
       "SubtitleProp",
       "ExtraProp",
       "FooterProp",
       "BreadcrumbProp",
-      "PageDensityProp",
+      "DensityProp",
       "PageContainerVariantProp",
     ],
   },
-  StackProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["StackGapProp"] },
-  InlineProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["InlineGapProp"] },
+  StackProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["GapProp"] },
+  InlineProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["GapProp"] },
   PageInsetProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -317,17 +361,17 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["ChildrenProp"],
   },
-  SidebarProductProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
-  SidebarItemProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
-  SidebarSectionProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
-  SidebarProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
-  TopbarProductProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
-  TopbarProjectProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
-  TopbarProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  SidebarProductProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["LabelProp"] },
+  SidebarItemProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["IdProp", "LabelProp", "DisabledProp", "ChildrenProp"] },
+  SidebarSectionProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["LabelProp"] },
+  SidebarProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["IdProp", "OnValueChangeProp", "ChildrenProp"] },
+  TopbarProductProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["LabelProp"] },
+  TopbarProjectProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["LabelProp"] },
+  TopbarProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["ChildrenProp", "OnOpenChangeProp", "OnValueChangeProp"] },
   PageHeaderProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["PageTitleProp", "SubtitleProp", "ExtraProp", "BreadcrumbProp"],
+    vocabulary: ["TitleProp", "SubtitleProp", "ExtraProp", "BreadcrumbProp"],
     deprecated: true,
   },
   ButtonProp: {
@@ -335,7 +379,7 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/general.prop.ts",
     vocabulary: [
       "ButtonVariantProp",
-      "ButtonSizeProp",
+      "SizeProp",
       "AsChildProp",
       "DisabledProp",
       "OnClickProp",
@@ -369,18 +413,18 @@ export const COMPONENT_PROP_REGISTRY = {
   CheckboxGroupProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["DisabledProp"],
+    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "DisabledProp"],
   },
-  ChoiceOptionProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: [] },
+  ChoiceOptionProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: ["LabelProp", "ValueProp", "DisabledProp", "DescriptionProp"] },
   RadioProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["DisabledProp"],
+    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "DisabledProp"],
   },
   RadioGroupProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["DisabledProp"],
+    vocabulary: ["SizeProp", "DisabledProp"],
   },
   SwitchProp: {
     group: "data-entry",
@@ -392,6 +436,21 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["IdProp", "LabelProp", "ClassNameProp"],
   },
+  CountryOptionProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["LabelProp", "ValueProp"],
+  },
+  CountryOptionLabelProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
+  CountrySelectProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["IdProp", "NameProp", "DefaultValueProp", "RequiredProp", "PlaceholderProp"],
+  },
   SliderProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -401,22 +460,22 @@ export const COMPONENT_PROP_REGISTRY = {
   DatePickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["PlaceholderProp", "DisabledProp", "IdProp"],
+    vocabulary: ["ValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "IdProp"],
   },
   DateRangePickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["PlaceholderProp", "DisabledProp", "IdProp"],
+    vocabulary: ["ValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "IdProp"],
   },
   TimePickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["DisabledProp"],
+    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "DisabledProp"],
   },
   ColorPickerProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["DisabledProp", "IdProp"],
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp"],
   },
   AutocompleteProp: {
     group: "data-entry",
@@ -424,6 +483,7 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [
       "PlaceholderProp",
       "ValueProp",
+      "OnValueChangeProp",
       "DisabledProp",
       "IdProp",
       "EmptyMessageProp",
@@ -431,11 +491,17 @@ export const COMPONENT_PROP_REGISTRY = {
     ],
     note: "Deprecated — a thin wrapper over SearchSelect (static options).",
   },
+  AutocompleteOptionProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ValueProp", "LabelProp"],
+  },
   SearchSelectProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: [
       "ValueProp",
+      "OnValueChangeProp",
       "PlaceholderProp",
       "EmptyMessageProp",
       "DisabledProp",
@@ -450,6 +516,7 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: [
       "ValueProp",
+      "OnValueChangeProp",
       "PlaceholderProp",
       "EmptyMessageProp",
       "DisabledProp",
@@ -462,7 +529,7 @@ export const COMPONENT_PROP_REGISTRY = {
   SearchSelectOptionProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: [],
+    vocabulary: ["ValueProp", "LabelProp", "DisabledProp"],
   },
   SearchSelectLoadParamsProp: {
     group: "data-entry",
@@ -477,7 +544,7 @@ export const COMPONENT_PROP_REGISTRY = {
   UploadProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["DisabledProp", "ClassNameProp"],
+    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
   },
   UploadFileItemProp: {
     group: "data-entry",
@@ -485,21 +552,25 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: [],
   },
   UploadVariantProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: [] },
-  TreeOptionProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: [] },
+  TreeOptionProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ValueProp", "LabelProp", "DisabledProp", "ChildrenProp"],
+  },
   TreeFieldNamesProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: [],
+    vocabulary: ["LabelProp", "ValueProp", "ChildrenProp"],
   },
   CascaderProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["PlaceholderProp", "DisabledProp", "ClassNameProp", "IdProp"],
+    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "ClassNameProp", "IdProp"],
   },
   TreeSelectProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["PlaceholderProp", "DisabledProp", "ClassNameProp", "IdProp"],
+    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "ClassNameProp", "IdProp"],
   },
   ShowCheckedStrategyProp: {
     group: "data-entry",
@@ -511,7 +582,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["DisabledProp", "ClassNameProp"],
   },
-  TransferItemProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: [] },
+  TransferItemProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["TitleProp", "DescriptionProp", "DisabledProp"],
+  },
   EmptyStateProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
@@ -520,17 +595,22 @@ export const COMPONENT_PROP_REGISTRY = {
   DescriptionsProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: [],
+    vocabulary: ["ClassNameProp"],
+  },
+  DescriptionsItemProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["LabelProp", "ValueProp"],
   },
   BadgeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["ChildrenProp", "ClassNameProp"],
+    vocabulary: ["ToneProp", "ChildrenProp", "ClassNameProp"],
   },
   DataTableProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["ColumnDefProp", "TableDensityProp", "SortStateProp", "SelectedIdsProp"],
+    vocabulary: ["ColumnDefProp", "DensityProp", "SortStateProp", "SelectedIdsProp"],
   },
   DialogConfirmProp: {
     group: "feedback",
@@ -543,7 +623,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "ConfirmLabelProp",
       "CancelLabelProp",
       "ConfirmVariantProp",
-      "HandlerProp",
+      "OnValueChangeProp",
       "PendingProp",
     ],
   },
@@ -551,9 +631,13 @@ export const COMPONENT_PROP_REGISTRY = {
   MutationFeedbackProp: {
     group: "query",
     file: "components/query.prop.ts",
-    vocabulary: ["HandlerProp"],
+    vocabulary: ["OnValueChangeProp"],
   },
-  QueryRefetchButtonProp: { group: "query", file: "components/query.prop.ts", vocabulary: [] },
+  QueryRefetchButtonProp: {
+    group: "query",
+    file: "components/query.prop.ts",
+    vocabulary: ["LabelProp", "ClassNameProp"],
+  },
   InfiniteQueryStateProp: {
     group: "query",
     file: "components/query.prop.ts",
@@ -568,7 +652,7 @@ export const COMPONENT_PROP_REGISTRY = {
   AlertProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",
-    vocabulary: ["AlertVariantProp", "IconProp", "HandlerProp", "ClassNameProp", "ChildrenProp"],
+    vocabulary: ["AlertVariantProp", "ToneProp", "IconProp", "OnValueChangeProp", "ClassNameProp", "ChildrenProp"],
   },
   AlertTitleProp: {
     group: "feedback",
@@ -609,20 +693,35 @@ export const COMPONENT_PROP_REGISTRY = {
   StepsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["ClassNameProp"],
+    vocabulary: ["SizeProp", "OnValueChangeProp", "ClassNameProp"],
   },
-  StepItemProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
+  StepItemProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: ["TitleProp", "DescriptionProp", "IconProp", "DisabledProp"] },
   StepStatusProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
   TabsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["ClassNameProp"],
+    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "ClassNameProp"],
   },
-  TabItemProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
+  TabItemProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: ["ValueProp", "LabelProp", "ChildrenProp", "DisabledProp"] },
   FormRootProp: {
     group: "form",
     file: "components/form.prop.ts",
     vocabulary: ["UseZodFormReturnProp", "ZodSchemaProp"],
+  },
+  ZodSchemaProp: {
+    group: "form",
+    file: "components/form.prop.ts",
+    vocabulary: ["ZodSchemaProp"],
+  },
+  UseZodFormReturnProp: {
+    group: "form",
+    file: "components/form.prop.ts",
+    vocabulary: ["UseZodFormReturnProp"],
+  },
+  FieldErrorMessageProp: {
+    group: "form",
+    file: "components/form.prop.ts",
+    vocabulary: ["FieldErrorMessageProp"],
   },
   FormFieldControlProp: {
     group: "form",
@@ -643,7 +742,7 @@ export const PROP_ALIASES_FORBIDDEN = {
   description: "Use SubtitleProp (pages) or DescriptionProp (dialogs/empty states)",
   actions: "Use ExtraProp (page header) or ActionsProp (toolbars)",
   density: "Disambiguate: PageDensityProp vs TableDensityProp",
-  gap: "Disambiguate: StackGapProp vs InlineGapProp",
+  gap: "Use GapProp; document any component-specific subset with a registry reason",
   onClear: "Use OnClearFiltersProp",
   pending: "Use PendingProp",
   loading: "Use PendingProp or DataStateProp (query group)",

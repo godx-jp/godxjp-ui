@@ -20,7 +20,7 @@ export default function Demo() {
           <Inline gap="sm">
             <Button>Primary action</Button>
             <Button variant="outline">Secondary</Button>
-            <Badge variant="success">Success</Badge>
+            <Badge tone="success">Success</Badge>
             <Badge status="pending" />
           </Inline>
           <pre className="bg-muted overflow-auto rounded-md p-3 text-xs">

@@ -16,6 +16,7 @@ import type {
   SortStateProp,
   TableDensityProp,
   ChildrenProp,
+  ToneProp,
 } from "../vocabulary";
 
 /** @see EmptyState */
@@ -42,7 +43,8 @@ export type DescriptionsItemProp = {
 
 /** @see Badge */
 export type BadgeProp = {
-  variant?: "default" | "secondary" | "outline" | "success" | "warning" | "destructive" | "info" | "neutral";
+  variant?: "default" | "secondary" | "outline";
+  tone?: ToneProp;
   status?: string;
   icon?: React.ComponentType<{ className?: string }> | null;
   className?: ClassNameProp;

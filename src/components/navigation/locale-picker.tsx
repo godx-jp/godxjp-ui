@@ -17,14 +17,14 @@ export type {
   LocalePickerProp as LocalePickerProps,
 } from "../../props/components/app.prop";
 
-export function LocalePicker({ className, disabled, id, value, onChange }: LocalePickerProp) {
+export function LocalePicker({ className, disabled, id, value, onValueChange }: LocalePickerProp) {
   const ctx = useOptionalAppContext();
   const { t } = useTranslation();
   const current = value ?? ctx?.locale;
-  const handleChange = onChange ?? ctx?.setLocale;
+  const handleChange = onValueChange ?? ctx?.setLocale;
 
   if (current === undefined || !handleChange) {
-    throw new Error("LocalePicker requires <AppProvider> or controlled value + onChange");
+    throw new Error("LocalePicker requires <AppProvider> or controlled value + onValueChange");
   }
 
   return (

@@ -96,7 +96,7 @@ export function Pagination({
       {showSizeChanger && (
         <Select
           value={String(pageSize)}
-          onValueChange={(v) => go(1, Number(v))}
+          onValueChange={(v: string) => go(1, Number(v))}
           disabled={disabled}
         >
           <SelectTrigger

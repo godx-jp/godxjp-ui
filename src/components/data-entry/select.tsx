@@ -193,7 +193,7 @@ function DataSelect({
   loadOptions,
   showSearch,
   value = "",
-  onChange,
+  onValueChange,
   renderOption,
   selectedLabel,
   placeholder,
@@ -214,7 +214,7 @@ function DataSelect({
     return (
       <SearchSelect
         value={value}
-        onChange={onChange}
+        onValueChange={onValueChange}
         options={options}
         loadOptions={loadOptions}
         renderOption={renderOption}
@@ -252,7 +252,7 @@ function DataSelect({
       data-slot="select"
       value={value || undefined}
       onValueChange={(next) =>
-        onChange?.(
+        onValueChange?.(
           next,
           options.find((option) => option.value === next),
         )

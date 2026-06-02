@@ -26,7 +26,7 @@ describe("Badge", () => {
   });
 
   it("success variant uses semantic success token (not green-*)", () => {
-    renderWithUi(<Badge variant="success">OK</Badge>);
+    renderWithUi(<Badge tone="success">OK</Badge>);
     const el = screen.getByText("OK");
     expect(el.className).toContain("success");
     expect(el.className).not.toMatch(/green-/);

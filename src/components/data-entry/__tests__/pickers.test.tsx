@@ -30,7 +30,7 @@ describe("ColorPicker", () => {
   it("calls onChange with hex value on blur", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    renderWithUi(<ColorPicker value="#2563eb" onChange={onChange} />);
+    renderWithUi(<ColorPicker value="#2563eb" onValueChange={onChange} />);
     const hexInput = screen.getByRole("textbox");
     await user.clear(hexInput);
     await user.type(hexInput, "#ff0000");
@@ -51,7 +51,7 @@ describe("TimePicker", () => {
   it("opens panel and selects minute", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    renderWithUi(<TimePicker defaultValue="09:00" onChange={onChange} minuteStep={15} id="t" />);
+    renderWithUi(<TimePicker defaultValue="09:00" onValueChange={onChange} minuteStep={15} id="t" />);
 
     await user.click(screen.getByRole("button"));
     expect(screen.getByText("Giờ")).toBeInTheDocument();

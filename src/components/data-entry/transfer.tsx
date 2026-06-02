@@ -129,7 +129,7 @@ function TransferPanel({
 export function Transfer({
   dataSource,
   targetKeys,
-  onChange,
+  onValueChange,
   titles,
   showSearch,
   oneWay,
@@ -161,7 +161,7 @@ export function Transfer({
         ? [...targetKeys, ...keys.filter((k) => !targetKeys.includes(k))]
         : targetKeys.filter((k) => !keys.includes(k));
 
-    onChange?.(nextTarget, direction, keys);
+    onValueChange?.(nextTarget, direction, keys);
     const cleared: [string[], string[]] = fromSide === 0 ? [[], selected[1]] : [selected[0], []];
     if (selectedKeysProp) onSelectChange?.(cleared[0], cleared[1]);
     else setInternalSelected(cleared);

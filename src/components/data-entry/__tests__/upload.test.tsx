@@ -109,7 +109,7 @@ describe("Upload", () => {
           status: "done",
         },
       ]);
-      return <Upload variant="avatar" value={items} onChange={setItems} removable />;
+      return <Upload variant="avatar" value={items} onValueChange={setItems} removable />;
     }
 
     renderWithUi(<AvatarDemo />);
@@ -119,7 +119,7 @@ describe("Upload", () => {
   });
 
   it("renders avatar placeholder when empty", () => {
-    renderWithUi(<Upload variant="avatar" value={[]} onChange={() => undefined} />);
+    renderWithUi(<Upload variant="avatar" value={[]} onValueChange={() => undefined} />);
     expect(screen.getByRole("button", { name: /ảnh đại diện/i })).toBeInTheDocument();
   });
 });

@@ -5,6 +5,7 @@ export type {
   ChildrenProp,
   IdProp,
   OpenProp,
+  DefaultOpenProp,
   OnOpenChangeProp,
   HandlerProp,
   PendingProp,
@@ -16,6 +17,8 @@ export type {
   PlaceholderProp,
   NameProp,
   ValueProp,
+  DefaultValueProp,
+  OnValueChangeProp,
   OnChangeProp,
   OnClickProp,
   AsChildProp,
@@ -38,27 +41,24 @@ export type {
 export type {
   PageDensityProp,
   PageContainerVariantProp,
-  StackGapProp,
-  InlineGapProp,
   TableDensityProp,
-  /** @deprecated Alias — use PageDensityProp */
   DensityProp,
-  /** @deprecated Alias — use StackGapProp */
   GapProp,
 } from "./layout.prop";
 
 export type {
   ButtonVariantProp,
   ButtonSizeProp,
+  SizeProp,
   ConfirmVariantProp,
-  StatusToneProp,
+  ToneProp,
   AlertVariantProp,
   SortDirectionProp,
   ColumnAlignProp,
   SortStateProp,
 } from "./interaction.prop";
 
-export type { BreadcrumbItemProp, BreadcrumbProp, PageTitleProp } from "./navigation.prop";
+export type { BreadcrumbItemProp, BreadcrumbProp } from "./navigation.prop";
 
 export type {
   GetRowIdProp,

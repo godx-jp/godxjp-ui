@@ -23,17 +23,17 @@ export function TimezonePicker({
   disabled,
   id,
   value,
-  onChange,
+  onValueChange,
   options: optionsProp,
 }: TimezonePickerProp) {
   const ctx = useOptionalAppContext();
   const { t, locale, fallbackLocale } = useTranslation();
   const current = value ?? ctx?.timezone;
-  const handleChange = onChange ?? ctx?.setTimezone;
+  const handleChange = onValueChange ?? ctx?.setTimezone;
   const configured = optionsProp ?? ctx?.timezoneOptions;
 
   if (current === undefined || !handleChange) {
-    throw new Error("TimezonePicker requires <AppProvider> or controlled value + onChange");
+    throw new Error("TimezonePicker requires <AppProvider> or controlled value + onValueChange");
   }
 
   const options = React.useMemo(

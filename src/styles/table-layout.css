@@ -5,7 +5,7 @@
 @layer components {
   [data-slot="table-head"] {
     height: var(--table-row-height);
-    padding: var(--table-cell-padding-y) var(--space-table-cell-x);
+    padding: var(--table-cell-padding-y) var(--table-cell-space-x);
     text-align: left;
     vertical-align: middle;
     background: hsl(var(--secondary));
@@ -27,7 +27,7 @@
   }
 
   [data-slot="table-cell"] {
-    padding: var(--table-cell-padding-y) var(--space-table-cell-x);
+    padding: var(--table-cell-padding-y) var(--table-cell-space-x);
     vertical-align: middle;
     /* Don't let a narrow column crush cell text — in CJK this collapses to one
      * character per line. Keep each cell on one line; the scroll container
@@ -91,7 +91,7 @@
   }
 
   [data-slot="card-content"][data-flush] .ui-data-table-toolbar {
-    border-bottom: 1px solid hsl(var(--card-border-token));
+    border-bottom: 1px solid hsl(var(--card-border));
     padding: var(--card-space-header-y) var(--card-space-inset);
   }
 

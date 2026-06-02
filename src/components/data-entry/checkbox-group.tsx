@@ -29,7 +29,7 @@ function useControllableArray(
 export function CheckboxGroup({
   value: controlledValue,
   defaultValue = [],
-  onChange,
+  onValueChange,
   options,
   orientation = "vertical",
   disabled,
@@ -45,7 +45,7 @@ export function CheckboxGroup({
       ? value.filter((v) => v !== optionValue)
       : [...value, optionValue];
     setValue(next);
-    onChange?.(next);
+    onValueChange?.(next);
   };
 
   if (options && options.length > 0) {

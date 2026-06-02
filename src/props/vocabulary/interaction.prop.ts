@@ -13,24 +13,26 @@ export type ButtonVariantProp =
   | "link";
 
 /** Button size preset. */
-export type ButtonSizeProp =
-  | "default"
-  | "xs"
-  | "sm"
-  | "lg"
-  | "icon"
-  | "icon-xs"
-  | "icon-sm"
-  | "icon-lg";
+export type SizeProp = "xs" | "sm" | "md" | "lg";
+
+/** Button size preset; icon-only sizes are a documented Button subset. */
+export type ButtonSizeProp = SizeProp | "default" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
 
 /** Dialog confirm button emphasis. */
 export type ConfirmVariantProp = "default" | "destructive";
 
-/** Badge / status pill color mapping key. */
-export type StatusToneProp = "default" | "success" | "warning" | "destructive" | "muted";
+/** Semantic color/status intent. */
+export type ToneProp =
+  | "default"
+  | "success"
+  | "warning"
+  | "destructive"
+  | "info"
+  | "muted"
+  | "neutral";
 
-/** Inline Alert banner — default maps to informational tone. */
-export type AlertVariantProp = "default" | "destructive" | "warning" | "success";
+/** Inline Alert visual treatment. */
+export type AlertVariantProp = "default";
 
 /** Sort direction for table columns. */
 export type SortDirectionProp = "asc" | "desc";

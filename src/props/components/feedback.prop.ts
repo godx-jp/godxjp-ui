@@ -13,6 +13,7 @@ import type {
   OpenProp,
   OnOpenChangeProp,
   PendingProp,
+  ToneProp,
   TitleProp,
 } from "../vocabulary";
 
@@ -42,6 +43,7 @@ export type AlertQueryErrorProp = {
 /** @see Alert */
 export type AlertProp = React.HTMLAttributes<HTMLDivElement> & {
   variant?: AlertVariantProp;
+  tone?: ToneProp;
   /** Pass `false` to hide the default variant icon. */
   icon?: IconProp | false;
   onDismiss?: HandlerProp;

@@ -83,12 +83,12 @@ describe("token governance", () => {
   const tokenCss = [
     base,
     readFileSync(join(root, "tokens/foundation.css"), "utf8"),
-    readFileSync(join(root, "tokens/primitives/layout.css"), "utf8"),
-    readFileSync(join(root, "tokens/primitives/control.css"), "utf8"),
-    readFileSync(join(root, "tokens/primitives/card.css"), "utf8"),
-    readFileSync(join(root, "tokens/primitives/table.css"), "utf8"),
-    readFileSync(join(root, "tokens/primitives/feedback.css"), "utf8"),
-    readFileSync(join(root, "tokens/primitives/badge.css"), "utf8"),
+    readFileSync(join(root, "tokens/semantic/layout.css"), "utf8"),
+    readFileSync(join(root, "tokens/components/control.css"), "utf8"),
+    readFileSync(join(root, "tokens/components/card.css"), "utf8"),
+    readFileSync(join(root, "tokens/components/table.css"), "utf8"),
+    readFileSync(join(root, "tokens/components/feedback.css"), "utf8"),
+    readFileSync(join(root, "tokens/components/badge.css"), "utf8"),
   ].join("\n");
 
   it("imports all layout CSS owners from index.css", () => {
@@ -103,12 +103,12 @@ describe("token governance", () => {
   it("uses base.css as the token manifest", () => {
     for (const file of [
       "foundation.css",
-      "primitives/layout.css",
-      "primitives/control.css",
-      "primitives/card.css",
-      "primitives/table.css",
-      "primitives/feedback.css",
-      "primitives/badge.css",
+      "semantic/layout.css",
+      "components/control.css",
+      "components/card.css",
+      "components/table.css",
+      "components/feedback.css",
+      "components/badge.css",
     ]) {
       expect(base).toContain(`@import "./${file}"`);
     }
@@ -116,10 +116,10 @@ describe("token governance", () => {
 
   it("defines component slot tokens in the token graph", () => {
     for (const token of [
-      "--space-dialog-inset",
-      "--space-alert-inset",
-      "--space-table-cell-x",
-      "--space-badge-x",
+      "--dialog-space-inset",
+      "--alert-space-inset",
+      "--table-cell-space-x",
+      "--badge-space-x",
       "--card-title-font-size",
       "--control-height-default",
     ]) {

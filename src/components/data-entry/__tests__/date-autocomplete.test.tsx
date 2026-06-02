@@ -29,7 +29,7 @@ describe("DatePicker", () => {
   it("emits an ISO-8601 value when the user types, and submits as a form field", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    renderWithUi(<DatePicker name="etd" onChange={onChange} />);
+    renderWithUi(<DatePicker name="etd" onValueChange={onChange} />);
     const input = screen.getByRole<HTMLInputElement>("combobox");
     await user.type(input, "2024-04-15");
     expect(onChange).toHaveBeenCalled();
@@ -41,7 +41,7 @@ describe("DatePicker", () => {
   it("calls onChange when a day is selected from the calendar", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    renderWithUi(<DatePicker value={new Date(2026, 4, 1)} onChange={onChange} />);
+    renderWithUi(<DatePicker value={new Date(2026, 4, 1)} onValueChange={onChange} />);
     await user.click(screen.getByRole("button"));
     const dayButtons = screen.getAllByRole("gridcell").filter((cell) => cell.textContent === "15");
     const dayButton = dayButtons[0]?.querySelector("button");
@@ -56,7 +56,7 @@ describe("DateRangePicker", () => {
     renderWithUi(
       <DateRangePicker
         value={{ from: new Date(2026, 4, 1), to: new Date(2026, 4, 10) }}
-        onChange={() => undefined}
+        onValueChange={() => undefined}
         name="period"
       />,
     );

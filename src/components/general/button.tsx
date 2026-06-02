@@ -19,6 +19,7 @@ const buttonVariants = cva("ui-button", {
     },
     size: {
       default: "ui-button--default-size py-2 has-[>svg]:px-3",
+      md: "ui-button--default-size py-2 has-[>svg]:px-3",
       xs: "h-[calc(var(--control-height)-0.75rem)] gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
       sm: "ui-button--sm gap-1.5 rounded-md has-[>svg]:px-2.5",
       lg: "ui-button--lg rounded-md has-[>svg]:px-4",

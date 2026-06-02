@@ -306,7 +306,7 @@
     align-items: center;
     gap: var(--space-stack-md);
     text-align: center;
-    padding: var(--space-empty-state-y) var(--space-empty-state-x);
+    padding: var(--empty-state-space-y) var(--empty-state-space-x);
   }
 
   .ui-empty-state-title {

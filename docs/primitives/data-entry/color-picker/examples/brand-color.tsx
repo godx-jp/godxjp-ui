@@ -7,7 +7,7 @@ export default function Demo() {
 
   return (
     <FormField id="brand-color" label="Màu chiến dịch" className="max-w-xs">
-      <ColorPicker value={value} onChange={setValue} />
+      <ColorPicker value={value} onValueChange={setValue} />
     </FormField>
   );
 }

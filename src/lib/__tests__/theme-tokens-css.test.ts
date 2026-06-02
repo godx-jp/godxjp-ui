@@ -18,12 +18,12 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
   const tokenCss = [
     base,
     readSrc("tokens/foundation.css"),
-    readSrc("tokens/primitives/layout.css"),
-    readSrc("tokens/primitives/control.css"),
-    readSrc("tokens/primitives/card.css"),
-    readSrc("tokens/primitives/table.css"),
-    readSrc("tokens/primitives/feedback.css"),
-    readSrc("tokens/primitives/badge.css"),
+    readSrc("tokens/semantic/layout.css"),
+    readSrc("tokens/components/control.css"),
+    readSrc("tokens/components/card.css"),
+    readSrc("tokens/components/table.css"),
+    readSrc("tokens/components/feedback.css"),
+    readSrc("tokens/components/badge.css"),
   ].join("\n");
   const index = readSrc("styles/index.css");
   const density = readStyle("density.css");
@@ -38,9 +38,6 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
       "--warning:",
       "--info:",
       "--attention:",
-      "--tracking-internal:",
-      "--tracking-seller:",
-      "--tracking-yamato:",
       "--destructive:",
     ]) {
       expect(tokenCss, `missing ${token} in token graph`).toContain(token);
@@ -64,12 +61,12 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
   it("uses base.css as the token manifest", () => {
     for (const file of [
       "foundation.css",
-      "primitives/layout.css",
-      "primitives/control.css",
-      "primitives/card.css",
-      "primitives/table.css",
-      "primitives/feedback.css",
-      "primitives/badge.css",
+      "semantic/layout.css",
+      "components/control.css",
+      "components/card.css",
+      "components/table.css",
+      "components/feedback.css",
+      "components/badge.css",
     ]) {
       expect(base).toContain(`@import "./${file}"`);
     }
@@ -84,9 +81,8 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
       "--color-warning:",
       "--color-info:",
       "--color-attention:",
-      "--color-tracking-internal:",
-      "--color-tracking-seller:",
-      "--color-tracking-yamato:",
+      "--color-chart-1:",
+      "--color-chart-6:",
     ]) {
       expect(index, `missing ${token} in index.css @theme`).toContain(token);
     }

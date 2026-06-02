@@ -11,7 +11,7 @@ export default function Demo() {
 
   return (
     <>
-      <DateRangePicker value={range} onChange={setRange} />
+      <DateRangePicker value={range} onValueChange={setRange} />
       <DateRangePicker disabled />
     </>
   );

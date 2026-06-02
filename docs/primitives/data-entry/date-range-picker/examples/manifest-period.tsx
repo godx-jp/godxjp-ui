@@ -11,7 +11,7 @@ export default function Demo() {
 
   return (
     <FormField id="manifest-period" label="Kỳ lô hàng" className="max-w-sm">
-      <DateRangePicker value={range} onChange={setRange} />
+      <DateRangePicker value={range} onValueChange={setRange} />
     </FormField>
   );
 }

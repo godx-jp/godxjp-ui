@@ -887,7 +887,7 @@ function MyShell({ children }: { content: React.ReactNode }) {
     ],
     useCases: [
       'Primary form submission in a Dialog or Sheet (e.g. `<Button type="submit" disabled={form.processing}>保存</Button>`) — the `disabled` prop greys it out and blocks pointer events, preventing double-submit during async operations.',
-      'Destructive confirmation inside a Dialog — pair `variant="destructive"` Button as the confirm action and `variant="outline"` as Cancel; never use `variant="default"` for a delete action.',
+      'Destructive confirmation inside a Dialog — pair `tone="destructive"` Button as the confirm action and `variant="outline"` as Cancel; never use `variant="default"` for a delete action.',
       'Icon-only toolbar actions in a DataTable column (edit, delete, copy) using `size="icon-sm"` + `variant="ghost"` + a Lucide icon child — gives equal-width square targets that don\'t distort the row.',
       "Navigation links styled as buttons (e.g. 'New Invoice', 'Back to list') using `asChild` + Inertia `<Link>` — preserves SPA navigation while using the button's visual treatment.",
       "Async mutation trigger in an accounting workflow (e.g. 'Sync from MF', 'Export CSV') — disable on processing state; pair with `MutationFeedback` for error/retry UI rather than inline `try/catch` alerts.",
@@ -1319,7 +1319,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     ],
     useCases: [
       'Category or tier labels on table rows — e.g. plan tier (`<Badge variant="secondary">Pro</Badge>`), document type (`<Badge variant="outline">Invoice</Badge>`), or locale tag (`<Badge variant="secondary">EN</Badge>`).',
-      'Approval or review state in an accounting list where the value is not a lifecycle key in Badge\'s STATUS_MAP — e.g. a custom approval tier like `<Badge variant="success">承認済</Badge>` or `<Badge variant="warning">要確認</Badge>`.',
+      'Approval or review state in an accounting list where the value is not a lifecycle key in Badge\'s STATUS_MAP — e.g. a custom approval tier like `<Badge tone="success">承認済</Badge>` or `<Badge tone="warning">要確認</Badge>`.',
       "Inline count or highlight next to a heading or nav item — e.g. `<Badge variant=\"destructive\">3</Badge>` beside 'Overdue invoices' to draw attention to a non-zero count.",
       'Feature flags or experiment variant labels on admin records — e.g. `<Badge variant="outline">A/B</Badge>` alongside a campaign row to indicate it is in a split test.',
       "Read-only metadata chips inside a Descriptions.Item or Card header where a lifecycle icon would be visually heavy — e.g. currency code, payment method, or region tag.",
@@ -1331,7 +1331,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
 
 <Badge variant="secondary">A/B</Badge>
 <Badge status="active">公開中</Badge>
-<Badge status="プレミアム" variant="success" icon={null}>プレミアム</Badge>`,
+<Badge status="プレミアム" tone="success" icon={null}>プレミアム</Badge>`,
     storyPath: "data-display/Badge.stories.tsx",
     rules: [35],
   },
@@ -1452,7 +1452,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "DON'T use Progress for editable numeric input or range selection — it has no callbacks, no interactivity, and no form `name` prop. Use Slider (bounded range input) or Input (free-form number) for data-entry scenarios.",
     ],
     useCases: [
-      'Budget utilisation in an accounting dashboard — show how much of a monthly budget has been consumed, switching to `variant="warning"` when the figure crosses 80%.',
+      'Budget utilisation in an accounting dashboard — show how much of a monthly budget has been consumed, switching to `tone="warning"` when the figure crosses 80%.',
       'Invoice payment progress — display the proportion of an invoice total that has been settled (e.g. partial payments), with a label like `"¥45,000 / ¥60,000 支払済"` computed before passing `value`.',
       "Storage or quota indicator in an admin panel — visualise disk usage, API quota, or seat licence consumption against a fixed limit.",
       "Sync / import job completion feedback — surface the completion percentage of a long-running background job (polling the server) without giving the user an interactive control.",
@@ -1777,7 +1777,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     example: `import { FormField, Input } from "@godxjp/ui/data-entry";
 
 <FormField id="coupon-name" label="クーポン名" required error={errors.name} helper="最大50文字">
-  <Input id="coupon-name" placeholder="春の花粉症対策15%OFF" value={name} onChange={(e) => setName(e.target.value)} />
+  <Input id="coupon-name" placeholder="春の花粉症対策15%OFF" value={name} onValueChange={(e) => setName(e.target.value)} />
 </FormField>`,
     storyPath: "data-entry/FormField.stories.tsx",
     rules: [23],
@@ -1821,7 +1821,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     ],
     example: `import { Input } from "@godxjp/ui/data-entry";
 
-<Input id="qty" type="number" placeholder="例: 500" value={value} onChange={(e) => setValue(e.target.value)} />`,
+<Input id="qty" type="number" placeholder="例: 500" value={value} onValueChange={(e) => setValue(e.target.value)} />`,
     storyPath: "data-entry/Input.stories.tsx",
     rules: [],
   },
@@ -2032,7 +2032,7 @@ export function StatusSelect({ value, onChange }) {
   return (
     <Select
       value={value}
-      onChange={onChange}
+      onValueChange={onChange}
       options={[
         { value: "draft",    label: "Draft" },
         { value: "sent",     label: "Sent" },
@@ -2051,7 +2051,7 @@ export function CurrencySelect({ value, onChange }) {
   return (
     <Select
       value={value}
-      onChange={onChange}
+      onValueChange={onChange}
       showSearch
       options={[
         { value: "JPY", label: "Japanese Yen",  group: "Asia" },
@@ -2077,7 +2077,7 @@ export function AccountSelect({ value, onChange, selectedLabel }) {
   return (
     <Select
       value={value}
-      onChange={onChange}
+      onValueChange={onChange}
       loadOptions={loadOptions}
       selectedLabel={selectedLabel}
       placeholder="Search accounts…"
@@ -2201,7 +2201,7 @@ export function PrioritySelect({ value, onValueChange }) {
     ],
     example: `import { Textarea } from "@godxjp/ui/data-entry";
 
-<Textarea id="notes" rows={4} placeholder="自由記述" value={notes} onChange={(e) => setNotes(e.target.value)} />`,
+<Textarea id="notes" rows={4} placeholder="自由記述" value={notes} onValueChange={(e) => setNotes(e.target.value)} />`,
     storyPath: "data-entry/Textarea.stories.tsx",
     rules: [],
   },
@@ -2446,7 +2446,7 @@ export function InvoiceDueDateField() {
         id="due-date"
         name="due_date"
         value={dueDate}
-        onChange={setDueDate}
+        onValueChange={setDueDate}
         fromDate={new Date()}
         placeholder="yyyy-mm-dd"
       />
@@ -2595,7 +2595,7 @@ import { Button } from "@godxjp/ui/general";
       },
     ],
     usage: [
-      'DO compose with sub-parts in order: wrap text content in `<Alert.Content>` (or bare `<AlertContent>`), then `<Alert.Title>` + `<Alert.Description>` inside it, then `<Alert.Actions>` for any retry/CTA buttons. Example: `<Alert variant="destructive"><Alert.Content><Alert.Title>Error</Alert.Title><Alert.Description>{msg}</Alert.Description></Alert.Content><Alert.Actions><Button …/></Alert.Actions></Alert>`.',
+      'DO compose with sub-parts in order: wrap text content in `<Alert.Content>` (or bare `<AlertContent>`), then `<Alert.Title>` + `<Alert.Description>` inside it, then `<Alert.Actions>` for any retry/CTA buttons. Example: `<Alert tone="destructive"><Alert.Content><Alert.Title>Error</Alert.Title><Alert.Description>{msg}</Alert.Description></Alert.Content><Alert.Actions><Button …/></Alert.Actions></Alert>`.',
       "DO use `Alert.QueryError` (alias `AlertQueryError`) for TanStack Query / API failure surfaces — it already renders humanError(error), an i18n title, and an optional Retry button. Never hand-roll that pattern.",
       'DON\'T pass raw action elements directly as top-level children of `<Alert>` without wrapping them in `<Alert.Actions>` — the layout slot only activates correctly via the `data-slot="alert-actions"` wrapper.',
       'DON\'T hand-roll a dismiss ✕ button — pass `onDismiss` to `<Alert>` and the component renders its own accessible dismiss button with `aria-label="Dismiss"`. The `onDismiss` handler may return a Promise.',
@@ -2603,12 +2603,12 @@ import { Button } from "@godxjp/ui/general";
       "DO NOT use `Alert` for transient ephemeral feedback (e.g. 'saved successfully'). Use `toast()` from sonner + `<Toaster>` for that. `Alert` is for persistent, page-scoped banners that stay visible until the user acts or dismisses.",
     ],
     useCases: [
-      'Page-level error banner after a form submission fails server-side validation — `variant="destructive"` with `Alert.Title` summarising the error and `Alert.Description` listing field issues, paired with `onDismiss` so the user can clear it.',
+      'Page-level error banner after a form submission fails server-side validation — `tone="destructive"` with `Alert.Title` summarising the error and `Alert.Description` listing field issues, paired with `onDismiss` so the user can clear it.',
       "Inline warning at the top of an accounting invoice list when the OAuth token for the MF sync is about to expire — `variant=\"warning\"` with an `Alert.Actions` containing a 'Reconnect' Button.",
-      'Success confirmation banner rendered after a bulk-import job completes and the user returns to the list page — `variant="success"` with `Alert.Description` showing the record count imported.',
+      'Success confirmation banner rendered after a bulk-import job completes and the user returns to the list page — `tone="success"` with `Alert.Description` showing the record count imported.',
       "TanStack Query data-fetch failure inside a Card body — use `<Alert.QueryError error={error} onRetry={refetch} />` instead of writing a custom error state.",
       "Informational notice at the top of a settings page when a feature is in beta or requires a plan upgrade — `variant=\"default\"` (Info icon) with a short description and an `Alert.Actions` 'Learn more' link.",
-      'Dismissible billing-overdue notice at the top of the dashboard — `variant="destructive"` with `onDismiss` that sets a session flag so it does not reappear until the next login.',
+      'Dismissible billing-overdue notice at the top of the dashboard — `tone="destructive"` with `onDismiss` that sets a session flag so it does not reappear until the next login.',
     ],
     related: [
       "Toaster — use for transient, auto-dismissing feedback ('Record saved', 'Deleted'). Alert is for persistent page-scoped banners; Toaster is for fire-and-forget notifications triggered by toast() from sonner.",
@@ -2618,7 +2618,7 @@ import { Button } from "@godxjp/ui/general";
     ],
     example: `import { Alert, AlertTitle, AlertDescription } from "@godxjp/ui/feedback";
 
-<Alert variant="warning">
+<Alert tone="warning">
   <AlertTitle>3 件の打刻漏れがあります</AlertTitle>
   <AlertDescription>本日中に確認してください。</AlertDescription>
 </Alert>`,
@@ -2945,7 +2945,7 @@ import { SearchInput, Select, SelectTrigger, SelectValue, SelectContent, SelectI
     ],
     example: `import { Pagination } from "@godxjp/ui/navigation";
 
-<Pagination current={page} total={filtered.length} pageSize={10} showTotal onChange={(p) => setPage(p)} />`,
+<Pagination current={page} total={filtered.length} pageSize={10} showTotal onValueChange={(p) => setPage(p)} />`,
     storyPath: "navigation/Pagination.stories.tsx",
     rules: [40],
   },
@@ -2992,7 +2992,7 @@ import { Button } from "@godxjp/ui/general";
   <DropdownMenuContent>
     <DropdownMenuItem>編集</DropdownMenuItem>
     <DropdownMenuSeparator />
-    <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
+    <DropdownMenuItem tone="destructive">削除</DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>`,
     storyPath: "navigation/DropdownMenu.stories.tsx",
@@ -3259,7 +3259,7 @@ export function ShiftStartField() {
         id="shift-start"
         name="shift_start"
         value={startTime}
-        onChange={setStartTime}
+        onValueChange={setStartTime}
         minuteStep={15}
         className="w-36"
       />
@@ -3389,7 +3389,7 @@ export function InvoicePeriodFilter() {
         id="invoice-period"
         name="period"
         value={range}
-        onChange={setRange}
+        onValueChange={setRange}
         fromDate={new Date(2020, 0, 1)}
         toDate={new Date(2030, 11, 31)}
       />
@@ -3556,7 +3556,7 @@ function RegionPicker() {
     <Cascader
       options={REGIONS}
       value={path}
-      onChange={(v) => setPath(v as string[])}
+      onValueChange={(v) => setPath(v as string[])}
       showSearch
       placeholder="Select region…"
     />
@@ -3572,7 +3572,7 @@ function MultiRegionPicker() {
       options={REGIONS}
       multiple
       value={paths}
-      onChange={(v) => setPaths(v as string[][])}
+      onValueChange={(v) => setPaths(v as string[][])}
       showSearch
     />
   );
@@ -3589,7 +3589,7 @@ function MultiRegionPicker() {
 <Cascader
   options={REGIONS}
   changeOnSelect
-  onChange={(v) => console.log("path", v)}
+  onValueChange={(v) => console.log("path", v)}
 />
 \`}`,
     storyPath: "data-entry/Cascader.stories.tsx",
@@ -3766,7 +3766,7 @@ export function AccountPicker() {
         id="account-picker"
         treeData={accountTree}
         value={account}
-        onChange={(v) => setAccount(v as string | undefined)}
+        onValueChange={(v) => setAccount(v as string | undefined)}
         showSearch
         treeDefaultExpandAll
         placeholder="Select account…"
@@ -3784,7 +3784,7 @@ export function DepartmentFilter() {
       id="dept-filter"
       treeData={accountTree}
       value={selected}
-      onChange={(v) => setSelected(v as string[])}
+      onValueChange={(v) => setSelected(v as string[])}
       treeCheckable
       showCheckedStrategy={TreeSelect.SHOW_PARENT}
       showSearch
@@ -3868,7 +3868,7 @@ export function DepartmentFilter() {
       },
     ],
     usage: [
-      "DO own `targetKeys` in state and update it inside `onChange`: `const [targetKeys, setTargetKeys] = useState<string[]>([]); onChange={(next) => setTargetKeys(next)}`.",
+      "DO own `targetKeys` in state and update it inside `onChange`: `const [targetKeys, setTargetKeys] = useState<string[]>([]); onValueChange={(next) => setTargetKeys(next)}`.",
       "DO NOT hand-roll a two-panel checkbox picker — Transfer ships the full shuttle UX (select-all header, indeterminate state, search, move buttons, empty state) out of the box.",
       "DO enable `showSearch` for lists longer than ~10 items; the built-in SearchInput filters by both `title` and `description` text content, including ReactNode content via `reactNodeText`.",
       "DO use `oneWay={true}` for append-only flows (e.g. adding permissions to a role) where items must never be moved back.",
@@ -3907,7 +3907,7 @@ export function AccountMapping() {
     <Transfer
       dataSource={ALL_ACCOUNTS}
       targetKeys={targetKeys}
-      onChange={(nextKeys) => setTargetKeys(nextKeys)}
+      onValueChange={(nextKeys) => setTargetKeys(nextKeys)}
       titles={["Available Accounts", "Mapped Accounts"]}
       showSearch
     />
@@ -4050,7 +4050,7 @@ export function AvatarUploadForm() {
       <Upload
         variant="avatar-crop"
         value={items}
-        onChange={setItems}
+        onValueChange={setItems}
         onUpload={handleUpload}
         maxSizeBytes={5 * 1024 * 1024}
       />
@@ -4067,7 +4067,7 @@ export function DocumentUploadDropzone() {
     <Upload
       variant="dropzone"
       value={items}
-      onChange={setItems}
+      onValueChange={setItems}
       accept=".pdf,.xlsx"
       maxCount={10}
       maxSizeBytes={20 * 1024 * 1024}
@@ -4161,7 +4161,7 @@ export function AvatarField() {
 
   return (
     <>
-      <input type="file" accept="image/*" onChange={handleFileChange} />
+      <input type="file" accept="image/*" onValueChange={handleFileChange} />
       <UploadCropDialog
         open={cropFile !== null}
         onOpenChange={(open) => { if (!open) setCropFile(null); }}
@@ -4224,7 +4224,7 @@ export function AvatarField() {
       },
     ],
     usage: [
-      "DO wrap in FormField when a label or validation message is needed — pass the same id to both FormField and ColorPicker so htmlFor wires up correctly: `<FormField id='brand' label='Brand color'><ColorPicker id='brand' value={v} onChange={setV} /></FormField>`.",
+      "DO wrap in FormField when a label or validation message is needed — pass the same id to both FormField and ColorPicker so htmlFor wires up correctly: `<FormField id='brand' label='Brand color'><ColorPicker id='brand' value={v} onValueChange={setV} /></FormField>`.",
       "DO use controlled mode (value + onChange) — there is no defaultValue/uncontrolled path; always supply value.",
       "DON'T pass an invalid or empty string to value — the component will flash the invalid color on the preview swatch. Always initialize state to a valid 3- or 6-digit hex (e.g. '#2563eb').",
       "The hex Input is a live draft field — onChange is NOT called until the user presses Enter or blurs; only then is the value validated and the parent notified. Do not rely on onChange firing on every keystroke.",
@@ -4254,7 +4254,7 @@ export function BrandColorField() {
       <ColorPicker
         id="brand-color"
         value={color}
-        onChange={setColor}
+        onValueChange={setColor}
       />
     </FormField>
   );
@@ -4263,7 +4263,7 @@ export function BrandColorField() {
 // Compact swatch-only variant (no hex input)
 export function SwatchOnly() {
   const [color, setColor] = useState("#16a34a");
-  return <ColorPicker value={color} onChange={setColor} showHexInput={false} />;
+  return <ColorPicker value={color} onValueChange={setColor} showHexInput={false} />;
 }
 
 // Disabled state
@@ -5256,7 +5256,7 @@ export function ControlledExample() {
       name="permissions"
       options={PERMISSIONS}
       value={selected}
-      onChange={setSelected}
+      onValueChange={setSelected}
     />
   );
 }`,
@@ -5516,7 +5516,7 @@ function LegacyAccountPicker({ value, onChange }) {
   return (
     <SearchSelect
       value={value}
-      onChange={onChange}
+      onValueChange={onChange}
       options={[
         { value: "acc-001", label: "Cash", sublabel: "Current assets", group: "Assets" },
         { value: "acc-002", label: "Accounts Receivable", group: "Assets" },
@@ -5540,7 +5540,7 @@ function LegacyVendorPicker({ value, currentVendorName, onChange }) {
   return (
     <SearchSelect
       value={value}
-      onChange={onChange}
+      onValueChange={onChange}
       loadOptions={fetchVendors}
       selectedLabel={currentVendorName}
       placeholder="Select vendor"
@@ -5634,7 +5634,7 @@ import { Autocomplete } from "@godxjp/ui/data-entry";
 
 // ✅ Replace with:
 // import { Select } from "@godxjp/ui/data-entry";
-// <Select options={options} showSearch placeholder="Search…" onChange={setValue} value={value} />
+// <Select options={options} showSearch placeholder="Search…" onValueChange={setValue} value={value} />
 
 // Legacy usage (backward compat only):
 import { Autocomplete } from "@godxjp/ui/data-entry";
@@ -6177,10 +6177,10 @@ export function LegacyInvoiceHeader() {
     ],
     useCases: [
       "App shell / top-nav language switcher that persists the user's locale preference via AppProvider and localStorage without any extra state.",
-      "Settings page 'Language' field where locale is part of a form submitted to the backend — use controlled mode: value={form.locale} onChange={(v) => form.setLocale(v)}.",
+      "Settings page 'Language' field where locale is part of a form submitted to the backend — use controlled mode: value={form.locale} onValueChange={(v) => form.setLocale(v)}.",
       "Onboarding wizard step that lets the user pick their language before the rest of the app is configured — mount with AppProvider persist={false} and a controlled value to keep state local to the wizard.",
       "Admin user-profile form where locale is one of several preferences (alongside timezone and date/time format) — pair with TimezonePicker, DateFormatPicker, TimeFormatPicker under the same AppProvider.",
-      "Storybook / test harness where AppProvider is not present — render in fully controlled mode: <LocalePicker value='en' onChange={fn} />.",
+      "Storybook / test harness where AppProvider is not present — render in fully controlled mode: <LocalePicker value='en' onValueChange={fn} />.",
       "Localization QA tool that cycles through locales programmatically — drive via controlled value to switch the UI language without user interaction.",
     ],
     related: [
@@ -6212,7 +6212,7 @@ export function LocaleField() {
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor="locale-picker">Language</label>
-      <LocalePicker id="locale-picker" value={locale} onChange={setLocale} />
+      <LocalePicker id="locale-picker" value={locale} onValueChange={setLocale} />
     </div>
   );
 }\`}`,
@@ -6258,7 +6258,7 @@ export function LocaleField() {
     ],
     usage: [
       "DO: Wrap with <AppProvider> and omit value/onChange — the picker reads and writes context automatically. This is the canonical zero-prop usage: <TimezonePicker />.",
-      "DO: Pass value + onChange for fully controlled standalone usage (e.g. a form field that posts the timezone string): <TimezonePicker value={tz} onChange={setTz} />. AppProvider is not required in this mode.",
+      "DO: Pass value + onChange for fully controlled standalone usage (e.g. a form field that posts the timezone string): <TimezonePicker value={tz} onValueChange={setTz} />. AppProvider is not required in this mode.",
       "DON'T: Omit BOTH AppProvider context AND controlled props — the component throws at runtime: 'TimezonePicker requires <AppProvider> or controlled value + onChange'.",
       "DO: Pass options={['Asia/Tokyo', 'UTC']} to restrict the list. The current value is automatically prepended if it is missing from the list, so the picker never shows an empty/invalid selection.",
       "DON'T: Hand-roll a timezone <select> or a custom combobox — TimezonePicker already handles locale-aware labels (translated city + GMT offset), the full IANA list, and ARIA semantics.",
@@ -6287,7 +6287,7 @@ export function TimezoneField() {
   return (
     <TimezonePicker
       value={tz}
-      onChange={setTz}
+      onValueChange={setTz}
       options={["Asia/Tokyo", "Asia/Ho_Chi_Minh", "UTC"]}
     />
   );
@@ -6400,7 +6400,7 @@ export function ExportDialog() {
   return (
     <div className="flex items-center gap-2">
       <label htmlFor="export-fmt">Export date format</label>
-      <DateFormatPicker id="export-fmt" value={fmt} onChange={setFmt} />
+      <DateFormatPicker id="export-fmt" value={fmt} onValueChange={setFmt} />
     </div>
   );
 }\`}`,
@@ -6444,7 +6444,7 @@ export function ExportDialog() {
     ],
     usage: [
       "DO use inside <AppProvider> with no extra props to let it read/write the global time-format automatically: <AppProvider defaultTimeFormat='24h'><TimeFormatPicker /></AppProvider>",
-      "DO switch to fully controlled mode when you need to manage the value yourself — supply BOTH value and onChange, or the component will throw: <TimeFormatPicker value={fmt} onChange={setFmt} />",
+      "DO switch to fully controlled mode when you need to manage the value yourself — supply BOTH value and onChange, or the component will throw: <TimeFormatPicker value={fmt} onValueChange={setFmt} />",
       "DON'T omit both AppProvider and controlled props — the component throws an Error at render time: 'TimeFormatPicker requires <AppProvider> or controlled value + onChange'. There is no silent fallback.",
       "DON'T hand-roll a time-format <select> — the locale-aware labels (e.g. '24 giờ' for vi, '24-hour' for en) are generated internally from the i18n layer; reinventing this loses those translations.",
       "DO wire a <label htmlFor={id}> when using the id prop for accessibility; the SelectTrigger already sets aria-label from i18n but a visible label improves discoverability.",
@@ -6487,7 +6487,7 @@ export function SettingsForm() {
   return (
     <div>
       <label htmlFor="time-fmt">Time format</label>
-      <TimeFormatPicker id="time-fmt" value={fmt} onChange={setFmt} />
+      <TimeFormatPicker id="time-fmt" value={fmt} onValueChange={setFmt} />
     </div>
   );
 }\`}
