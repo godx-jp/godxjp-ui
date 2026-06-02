@@ -1,0 +1,7 @@
+/* Badge component tokens. */
+
+:root {
+  --badge-space-gap: var(--space-inline-xs);
+  --badge-space-x: var(--space-2);
+  --badge-space-y: var(--space-1);
+}

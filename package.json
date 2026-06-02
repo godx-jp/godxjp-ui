@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/ui",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "type": "module",
   "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
   "files": [
@@ -235,10 +235,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm test",
-    "verify:release": "pnpm typecheck && pnpm lint && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm build && pnpm test",
+    "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm test",
+    "verify:release": "pnpm typecheck && pnpm lint && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm build && pnpm test",
     "check:mcp-sync": "node scripts/check-mcp-sync.mjs",
     "check:mcp-orphans": "node scripts/check-mcp-orphans.mjs",
+    "check:prop-vocabulary": "node scripts/check-prop-vocabulary.mjs",
+    "check:token-tiers": "node scripts/check-token-tiers.mjs",
     "release": "node scripts/release.mjs",
     "preview": "node preview/scripts/kill-port.mjs && vite --config preview/vite.config.ts --port 6008 --strictPort",
     "preview:build": "vite build --config preview/vite.config.ts",

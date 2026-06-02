@@ -72,7 +72,7 @@ describe("Cascader", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithUi(<Cascader options={REGION_OPTIONS} onChange={onChange} />);
+    renderWithUi(<Cascader options={REGION_OPTIONS} onValueChange={onChange} />);
     await user.click(screen.getByRole("combobox"));
 
     await user.click(screen.getByRole("button", { name: /việt nam/i }));
@@ -110,7 +110,7 @@ describe("Cascader", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithUi(<Cascader options={REGION_OPTIONS} showSearch onChange={onChange} />);
+    renderWithUi(<Cascader options={REGION_OPTIONS} showSearch onValueChange={onChange} />);
     await user.click(screen.getByRole("combobox"));
     await user.type(screen.getByPlaceholderText(/tìm kiếm/i), "quận 3");
 
@@ -157,7 +157,7 @@ describe("Cascader", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithUi(<Cascader options={REGION_OPTIONS} changeOnSelect onChange={onChange} />);
+    renderWithUi(<Cascader options={REGION_OPTIONS} changeOnSelect onValueChange={onChange} />);
     await user.click(screen.getByRole("combobox"));
     await user.click(screen.getByRole("button", { name: /việt nam/i }));
 
@@ -169,7 +169,7 @@ describe("Cascader", () => {
     const onChange = vi.fn();
 
     renderWithUi(
-      <Cascader options={REGION_OPTIONS} defaultValue={["vn", "hcm", "q1"]} onChange={onChange} />,
+      <Cascader options={REGION_OPTIONS} defaultValue={["vn", "hcm", "q1"]} onValueChange={onChange} />,
     );
 
     const combobox = screen.getByRole("combobox");
@@ -204,7 +204,7 @@ describe("Cascader", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithUi(<Cascader options={REGION_OPTIONS} multiple showSearch onChange={onChange} />);
+    renderWithUi(<Cascader options={REGION_OPTIONS} multiple showSearch onValueChange={onChange} />);
     await user.click(screen.getByRole("combobox"));
     await user.type(screen.getByPlaceholderText(/tìm kiếm/i), "quận 1");
     await user.click(await screen.findByRole("button", { name: /quận 1/i }));
@@ -230,7 +230,7 @@ describe("Cascader", () => {
 
   it("reflects controlled single value on trigger", () => {
     renderWithUi(
-      <Cascader options={REGION_OPTIONS} value={["jp", "tokyo", "shibuya"]} onChange={vi.fn()} />,
+      <Cascader options={REGION_OPTIONS} value={["jp", "tokyo", "shibuya"]} onValueChange={vi.fn()} />,
     );
     expect(screen.getByRole("combobox")).toHaveTextContent("日本 / 東京都 / 渋谷区");
   });
@@ -247,7 +247,7 @@ describe("TreeSelect", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithUi(<TreeSelect treeData={ORG_TREE} treeDefaultExpandAll onChange={onChange} />);
+    renderWithUi(<TreeSelect treeData={ORG_TREE} treeDefaultExpandAll onValueChange={onChange} />);
     await user.click(screen.getByRole("combobox"));
     await user.click(screen.getByRole("button", { name: /kho osaka/i }));
 
@@ -291,7 +291,7 @@ describe("TreeSelect", () => {
           treeCheckable
           treeDefaultExpandAll
           value={value}
-          onChange={(v) => {
+          onValueChange={(v) => {
             setValue(Array.isArray(v) ? v : v ? [v] : []);
             onChange(v);
           }}
@@ -315,7 +315,7 @@ describe("TreeSelect", () => {
         treeData={ORG_TREE}
         treeDefaultExpandAll
         defaultValue="warehouse-osaka"
-        onChange={onChange}
+        onValueChange={onChange}
       />,
     );
 
@@ -340,7 +340,7 @@ describe("Transfer", () => {
         <Transfer
           dataSource={TRANSFER_MOCK}
           targetKeys={targetKeys}
-          onChange={(next, direction, moveKeys) => {
+          onValueChange={(next, direction, moveKeys) => {
             setTargetKeys(next);
             onChange(next, direction, moveKeys);
           }}
@@ -360,7 +360,7 @@ describe("Transfer", () => {
     const user = userEvent.setup();
 
     renderWithUi(
-      <Transfer dataSource={TRANSFER_MOCK} targetKeys={[]} onChange={vi.fn()} showSearch />,
+      <Transfer dataSource={TRANSFER_MOCK} targetKeys={[]} onValueChange={vi.fn()} showSearch />,
     );
     const searchInputs = screen.getAllByRole("searchbox");
     await user.type(searchInputs[0], "NV-012");
@@ -381,7 +381,7 @@ describe("Transfer", () => {
         <Transfer
           dataSource={TRANSFER_MOCK}
           targetKeys={targetKeys}
-          onChange={(next, direction, moveKeys) => {
+          onValueChange={(next, direction, moveKeys) => {
             setTargetKeys(next);
             onChange(next, direction, moveKeys);
           }}
@@ -401,7 +401,7 @@ describe("Transfer", () => {
     const onChange = vi.fn();
 
     renderWithUi(
-      <Transfer dataSource={TRANSFER_MOCK} targetKeys={[]} onChange={onChange} showSearch />,
+      <Transfer dataSource={TRANSFER_MOCK} targetKeys={[]} onValueChange={onChange} showSearch />,
     );
 
     const selectAll = screen.getAllByRole("checkbox", { name: /select all source/i })[0];

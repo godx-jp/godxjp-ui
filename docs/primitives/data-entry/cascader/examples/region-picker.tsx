@@ -28,7 +28,7 @@ export default function Demo() {
       <Cascader
         options={options}
         value={value}
-        onChange={(next) => setValue(next as string[])}
+        onValueChange={(next) => setValue(next as string[])}
         showSearch
       />
     </FormField>

@@ -6,7 +6,7 @@ import { Alert, AlertActions, AlertContent, AlertDescription, AlertTitle } from 
 describe("Alert", () => {
   it("renders with role=alert and variant styling", () => {
     renderWithUi(
-      <Alert variant="warning">
+      <Alert tone="warning">
         <AlertContent>
           <AlertTitle>Pin lithium</AlertTitle>
           <AlertDescription>MSDS bắt buộc trước khi xuất kho.</AlertDescription>
@@ -14,21 +14,21 @@ describe("Alert", () => {
       </Alert>,
     );
     const alert = screen.getByRole("alert");
-    expect(alert).toHaveAttribute("data-variant", "warning");
+    expect(alert).toHaveAttribute("data-tone", "warning");
     expect(screen.getByText("Pin lithium")).toBeInTheDocument();
     expect(screen.getByText(/MSDS/)).toBeInTheDocument();
   });
 
   it("renders destructive variant for API errors", () => {
     renderWithUi(
-      <Alert variant="destructive">
+      <Alert tone="destructive">
         <AlertContent>
           <AlertTitle>Không tải được</AlertTitle>
           <AlertDescription>503 Service Unavailable</AlertDescription>
         </AlertContent>
       </Alert>,
     );
-    expect(screen.getByRole("alert")).toHaveAttribute("data-variant", "destructive");
+    expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "destructive");
     expect(screen.getByText("Không tải được")).toHaveAttribute("data-slot", "alert-title");
   });
 
@@ -56,7 +56,7 @@ describe("Alert", () => {
     const user = userEvent.setup();
     const onDismiss = vi.fn();
     renderWithUi(
-      <Alert variant="success" onDismiss={onDismiss}>
+      <Alert tone="success" onDismiss={onDismiss}>
         <AlertContent>
           <AlertTitle>Đã lưu template Zalo</AlertTitle>
           <AlertDescription>Thay đổi có hiệu lực ngay.</AlertDescription>
@@ -69,7 +69,7 @@ describe("Alert", () => {
 
   it("hides icon when icon={false}", () => {
     const { container } = renderWithUi(
-      <Alert variant="warning" icon={false}>
+      <Alert tone="warning" icon={false}>
         <AlertContent>
           <AlertTitle>No icon</AlertTitle>
         </AlertContent>
@@ -80,14 +80,14 @@ describe("Alert", () => {
 
   it("renders success variant styling", () => {
     renderWithUi(
-      <Alert variant="success">
+      <Alert tone="success">
         <AlertContent>
           <AlertTitle>Template saved</AlertTitle>
           <AlertDescription>Zalo OA preview ready.</AlertDescription>
         </AlertContent>
       </Alert>,
     );
-    expect(screen.getByRole("alert")).toHaveAttribute("data-variant", "success");
+    expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "success");
   });
 
   it("renders default variant without destructive classes", () => {
@@ -122,6 +122,6 @@ describe("Alert.QueryError", () => {
 
   it("uses destructive Alert styling", () => {
     renderWithUi(<Alert.QueryError error={new Error("503")} onRetry={() => undefined} />);
-    expect(screen.getByRole("alert")).toHaveAttribute("data-variant", "destructive");
+    expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "destructive");
   });
 });

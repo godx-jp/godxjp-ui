@@ -14,7 +14,7 @@ import { humanError } from "../../lib/format";
 import { cn } from "../../lib/utils";
 import { Inline } from "../layout/inline";
 import { Button } from "../general/button";
-import type { AlertVariantProp } from "../../props/vocabulary";
+import type { ToneProp } from "../../props/vocabulary";
 import type {
   AlertActionsProp,
   AlertContentProp,
@@ -39,32 +39,36 @@ export type {
   AlertQueryErrorProp as AlertQueryErrorProps,
 } from "../../props/components/feedback.prop";
 
-const AlertContext = React.createContext<AlertVariantProp>("default");
+const AlertContext = React.createContext<ToneProp>("default");
 
-const DEFAULT_ICONS: Record<AlertVariantProp, LucideIcon> = {
+const DEFAULT_ICONS: Record<ToneProp, LucideIcon> = {
   default: Info,
   destructive: AlertCircle,
   warning: TriangleAlert,
   success: CheckCircle2,
+  info: Info,
+  muted: Info,
+  neutral: Info,
 };
 
 const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
-  ({ variant = "default", icon, onDismiss, className, children, ...props }, ref) => {
-    const IconComponent = icon === false ? null : (icon ?? DEFAULT_ICONS[variant]);
+  ({ variant = "default", tone = "default", icon, onDismiss, className, children, ...props }, ref) => {
+    const IconComponent = icon === false ? null : (icon ?? DEFAULT_ICONS[tone]);
 
     return (
-      <AlertContext.Provider value={variant}>
+      <AlertContext.Provider value={tone}>
         <div
           ref={ref}
           role="alert"
           data-slot="alert"
           data-variant={variant}
+          data-tone={tone}
           data-dismissible={onDismiss ? "" : undefined}
           className={className}
           {...props}
         >
           {IconComponent && (
-            <IconComponent data-slot="alert-icon" data-variant={variant} aria-hidden="true" />
+            <IconComponent data-slot="alert-icon" data-tone={tone} aria-hidden="true" />
           )}
           <div data-slot="alert-body">{children}</div>
           {onDismiss && (
@@ -89,12 +93,12 @@ AlertBase.displayName = "Alert";
 
 export const AlertTitle = React.forwardRef<HTMLParagraphElement, AlertTitleProp>(
   ({ className, ...props }, ref) => {
-    const variant = React.useContext(AlertContext);
+    const tone = React.useContext(AlertContext);
     return (
       <p
         ref={ref}
         data-slot="alert-title"
-        data-variant={variant}
+        data-tone={tone}
         className={className}
         {...props}
       />
@@ -129,11 +133,11 @@ export const AlertActions = React.forwardRef<HTMLDivElement, AlertActionsProp>(
 );
 AlertActions.displayName = "AlertActions";
 
-/** TanStack Query / API failure preset — same visual as `Alert variant="destructive"`. Used by `DataState` (@godxjp/ui/query). */
+/** TanStack Query / API failure preset — same visual as `Alert tone="destructive"`. Used by `DataState` (@godxjp/ui/query). */
 export function AlertQueryError({ error, onRetry, className }: AlertQueryErrorProp) {
   const { t } = useTranslation();
   return (
-    <Alert variant="destructive" className={className}>
+    <Alert tone="destructive" className={className}>
       <AlertTitle>{t("common.error")}</AlertTitle>
       <AlertDescription>{humanError(error)}</AlertDescription>
       {onRetry && (

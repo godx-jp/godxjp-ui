@@ -29,7 +29,7 @@ export default function Demo() {
         treeDefaultExpandAll
         showSearch
         value={value}
-        onChange={(next) => setValue(Array.isArray(next) ? next : next ? [next] : [])}
+        onValueChange={(next) => setValue(Array.isArray(next) ? next : next ? [next] : [])}
       />
     </FormField>
   );

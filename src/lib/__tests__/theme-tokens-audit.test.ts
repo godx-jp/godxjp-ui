@@ -147,8 +147,8 @@ describe("theme token audit (components)", () => {
 
   it("dialog close offset uses logical CSS", () => {
     const content = readFileSync(join(srcRoot, "styles/dialog-layout.css"), "utf8");
-    expect(content).toContain("inset-inline-end: var(--space-dialog-close-offset)");
-    expect(content).not.toContain("right: var(--space-dialog-close-offset)");
+    expect(content).toContain("inset-inline-end: var(--dialog-close-space-offset)");
+    expect(content).not.toContain("right: var(--dialog-close-space-offset)");
   });
 });
 

@@ -16,7 +16,7 @@ describe("SearchSelect", () => {
   it("loads options remotely on open and groups them under headings", async () => {
     const user = userEvent.setup();
     const loadOptions = loader();
-    renderWithUi(<SearchSelect value="" onChange={() => undefined} loadOptions={loadOptions} />);
+    renderWithUi(<SearchSelect value="" onValueChange={() => undefined} loadOptions={loadOptions} />);
 
     await user.click(screen.getByRole("combobox"));
 
@@ -33,7 +33,7 @@ describe("SearchSelect", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     const { container } = renderWithUi(
-      <SearchSelect value="" onChange={onChange} loadOptions={loader()} name="account_id" />,
+      <SearchSelect value="" onValueChange={onChange} loadOptions={loader()} name="account_id" />,
     );
 
     await user.click(screen.getByRole("combobox"));
@@ -46,7 +46,7 @@ describe("SearchSelect", () => {
   it("refetches with the debounced query when the user types", async () => {
     const user = userEvent.setup();
     const loadOptions = loader();
-    renderWithUi(<SearchSelect value="" onChange={() => undefined} loadOptions={loadOptions} />);
+    renderWithUi(<SearchSelect value="" onValueChange={() => undefined} loadOptions={loadOptions} />);
 
     await user.click(screen.getByRole("combobox"));
     await screen.findByText("現金");
@@ -62,7 +62,7 @@ describe("SearchSelect", () => {
     renderWithUi(
       <SearchSelect
         value=""
-        onChange={onChange}
+        onValueChange={onChange}
         options={[
           { value: "osaka", label: "Osaka Hub" },
           { value: "tokyo", label: "Tokyo Hub" },
@@ -86,7 +86,7 @@ describe("SearchSelect", () => {
     renderWithUi(
       <SearchSelect
         value=""
-        onChange={() => undefined}
+        onValueChange={() => undefined}
         options={[{ value: "1", label: "Cash" }]}
         renderOption={(option) => <span>custom:{option.label}</span>}
       />,

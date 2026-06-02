@@ -8,7 +8,7 @@ export default function Demo() {
   return (
     <TimezonePicker
       value={value}
-      onChange={setValue}
+      onValueChange={setValue}
       options={["Asia/Tokyo", "Asia/Ho_Chi_Minh", "UTC"]}
     />
   );

@@ -24,7 +24,7 @@ const ISO_HINT = "yyyy-mm-dd";
  */
 export function DatePicker({
   value,
-  onChange,
+  onValueChange,
   placeholder,
   disabled,
   className,
@@ -38,7 +38,7 @@ export function DatePicker({
   const { dayPickerLocale } = usePickerLocales(localeProp);
   const [open, setOpen] = React.useState(false);
   // Local text mirrors the input while the user types a (possibly incomplete) date; the committed
-  // value flows back through `onChange`. Kept in sync whenever the controlled `value` changes.
+  // value flows back through `onValueChange`. Kept in sync whenever the controlled `value` changes.
   const [text, setText] = React.useState(() => toIsoDate(value));
 
   React.useEffect(() => {
@@ -50,12 +50,12 @@ export function DatePicker({
   const commit = (raw: string) => {
     const trimmed = raw.trim();
     if (trimmed === "") {
-      onChange?.(undefined);
+      onValueChange?.(undefined);
       return;
     }
     const parsed = parseDateInput(trimmed);
     if (parsed) {
-      onChange?.(parsed);
+      onValueChange?.(parsed);
     }
   };
 
@@ -103,7 +103,7 @@ export function DatePicker({
             mode="single"
             selected={value}
             onSelect={(date) => {
-              onChange?.(date);
+              onValueChange?.(date);
               setText(toIsoDate(date));
               setOpen(false);
             }}

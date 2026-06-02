@@ -8,7 +8,7 @@ export default function Demo() {
 
   return (
     <>
-      <Button variant="destructive" onClick={() => setOpen(true)}>
+      <Button tone="destructive" onClick={() => setOpen(true)}>
         Hủy đơn hàng đã chọn
       </Button>
       <DialogConfirm
@@ -18,7 +18,7 @@ export default function Demo() {
         description="Đơn sẽ bị đóng và không còn xuất hiện trong danh sách xử lý."
         confirmLabel="Hủy đơn"
         cancelLabel="Giữ lại"
-        variant="destructive"
+        tone="destructive"
         onConfirm={() => undefined}
       />
     </>

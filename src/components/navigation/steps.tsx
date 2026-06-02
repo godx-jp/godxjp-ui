@@ -84,7 +84,7 @@ export function Steps({
 }: StepsProp) {
   const base = initial;
   const isVertical = orientation === "vertical";
-  const compact = size === "small";
+  const compact = size === "sm";
 
   return (
     <ol

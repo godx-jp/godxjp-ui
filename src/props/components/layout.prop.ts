@@ -3,21 +3,20 @@ import type * as React from "react";
 import type { ComponentType, ReactNode, SVGProps } from "react";
 import type {
   BreadcrumbProp,
-  PageTitleProp,
+  TitleProp,
   SubtitleProp,
   ExtraProp,
   FooterProp,
   PageDensityProp,
   PageContainerVariantProp,
-  StackGapProp,
-  InlineGapProp,
+  GapProp,
   ClassNameProp,
   ChildrenProp,
 } from "../vocabulary";
 
 /** @see PageContainer */
 export type PageContainerProp = {
-  title: PageTitleProp;
+  title: TitleProp;
   subtitle?: SubtitleProp;
   extra?: ExtraProp;
   footer?: FooterProp;
@@ -30,17 +29,30 @@ export type PageContainerProp = {
   className?: ClassNameProp;
 };
 
-/** @see Stack */
-export type StackProp = React.HTMLAttributes<HTMLDivElement> & {
-  gap?: StackGapProp;
+export type FlexDirectionProp = "row" | "col";
+export type FlexAlignProp = "start" | "center" | "end" | "stretch" | "baseline";
+export type FlexJustifyProp = "start" | "center" | "end" | "between" | "around" | "evenly";
+
+/** @see Flex */
+export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
+  direction?: FlexDirectionProp;
+  gap?: GapProp;
+  align?: FlexAlignProp;
+  justify?: FlexJustifyProp;
+  wrap?: boolean;
 };
+
+/** @see Stack — deprecated alias for Flex direction="col" */
+export type StackProp = Omit<FlexProp, "direction" | "wrap">;
 
 /** @see Inline */
-export type InlineProp = React.HTMLAttributes<HTMLDivElement> & {
-  gap?: InlineGapProp;
+export type InlineProp = Omit<FlexProp, "direction" | "wrap" | "gap"> & {
+  gap?: Exclude<GapProp, "xl">;
 };
 
-/** @see PageInset — padded strip inside flush PageContainer (FilterBar, intro). */
+export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
+
+/** @see PageInset — deprecated alias for PageContainer.Inset. */
 export type PageInsetProp = React.HTMLAttributes<HTMLDivElement> & {
   children?: ChildrenProp;
   className?: ClassNameProp;
@@ -130,7 +142,7 @@ export type TopbarProp = {
 
 /** @deprecated Use PageContainerProp — header-only legacy shell. */
 export type PageHeaderProp = {
-  title: PageTitleProp;
+  title: TitleProp;
   description?: SubtitleProp;
   breadcrumb?: BreadcrumbProp;
   actions?: ExtraProp;

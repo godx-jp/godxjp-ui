@@ -22,15 +22,15 @@ export function DateFormatPicker({
   disabled,
   id,
   value,
-  onChange,
+  onValueChange,
 }: DateFormatPickerProp) {
   const ctx = useOptionalAppContext();
   const { t, locale, fallbackLocale } = useTranslation();
   const current = value ?? ctx?.dateFormat;
-  const handleChange = onChange ?? ctx?.setDateFormat;
+  const handleChange = onValueChange ?? ctx?.setDateFormat;
 
   if (current === undefined || !handleChange) {
-    throw new Error("DateFormatPicker requires <AppProvider> or controlled value + onChange");
+    throw new Error("DateFormatPicker requires <AppProvider> or controlled value + onValueChange");
   }
 
   return (

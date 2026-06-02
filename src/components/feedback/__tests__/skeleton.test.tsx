@@ -20,6 +20,6 @@ describe("Skeleton", () => {
 
   it("SkeletonCard renders stat tile shape", () => {
     const { container } = renderWithUi(<SkeletonCard />);
-    expect(container.querySelector(".ui-skeleton-card")).toBeInTheDocument();
+    expect(container.querySelector(".ui-skeleton-stat")).toBeInTheDocument();
   });
 });

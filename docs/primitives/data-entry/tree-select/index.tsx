@@ -15,7 +15,7 @@ export default function Demo() {
         treeCheckable
         treeDefaultExpandAll
         value={value}
-        onChange={(next) => setValue(Array.isArray(next) ? next : next ? [next] : [])}
+        onValueChange={(next) => setValue(Array.isArray(next) ? next : next ? [next] : [])}
       />
       <TreeSelect treeData={treeData} disabled />
     </>

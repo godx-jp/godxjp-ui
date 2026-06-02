@@ -165,7 +165,7 @@ function TimePickerPanel({ value, minuteStep, onChange, onDone }: TimePickerPane
 export function TimePicker({
   value: controlledValue,
   defaultValue,
-  onChange,
+  onValueChange,
   placeholder,
   disabled,
   className,
@@ -179,7 +179,7 @@ export function TimePicker({
   const isControlled = controlledValue !== undefined;
   const value = isControlled ? controlledValue : internal;
   const resolvedPlaceholder = placeholder ?? t("dataEntry.timePicker.placeholder") ?? "hh:mm";
-  // Local text mirrors the input while typing; the canonical HH:mm flows out through onChange.
+  // Local text mirrors the input while typing; the canonical HH:mm flows out through onValueChange.
   const [text, setText] = React.useState(value);
 
   React.useEffect(() => {
@@ -188,7 +188,7 @@ export function TimePicker({
 
   const setValue = (next: string) => {
     if (!isControlled) setInternal(next);
-    onChange?.(next);
+    onValueChange?.(next);
   };
 
   return (

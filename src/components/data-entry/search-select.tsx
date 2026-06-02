@@ -33,7 +33,7 @@ const DEBOUNCE_MS = 250;
  */
 export function SearchSelect({
   value = "",
-  onChange,
+  onValueChange,
   options: staticOptions,
   loadOptions,
   renderOption,
@@ -147,13 +147,13 @@ export function SearchSelect({
   const select = (option: SearchSelectOptionProp) => {
     if (option.disabled) return;
     setPicked(option);
-    onChange?.(option.value, option);
+    onValueChange?.(option.value, option);
     setOpen(false);
   };
 
   const clear = () => {
     setPicked(null);
-    onChange?.("", undefined);
+    onValueChange?.("", undefined);
     setOpen(false);
   };
 

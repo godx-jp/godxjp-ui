@@ -49,6 +49,28 @@ const RULES = [
       "Use semantic tokens (bg-primary, text-muted-foreground…), not raw palette colors (rules §4).",
   },
   {
+    id: "status-tone-not-variant",
+    severity: "error",
+    test: /\bvariant=["'](?:success|warning|destructive|info|neutral)["']/,
+    message:
+      "Status/color intent uses tone, not variant. Use tone='success|warning|destructive|info|neutral'.",
+  },
+  {
+    id: "no-domain-tracking-token",
+    severity: "error",
+    test: /--(?:color-)?tracking-|--(?:tracking|color-tracking)-(?:internal|seller|yamato)/,
+    message:
+      "Package tracking/domain tokens are forbidden. Use semantic tokens or app-local theme overrides.",
+  },
+  {
+    id: "value-callback-on-value-change",
+    severity: "error",
+    test:
+      /<(?:Checkbox\.Group|Upload|Cascader|TreeSelect|Transfer|SearchSelect|DatePicker|DateRangePicker|TimePicker|ColorPicker|LocalePicker|TimezonePicker|DateFormatPicker|TimeFormatPicker)\b[^>]*\bonChange=/,
+    message:
+      "Abstract value components use onValueChange, not onChange. Reserve onChange for DOM events.",
+  },
+  {
     id: "no-arbitrary-hex",
     severity: "error",
     test: /(bg|text|border|ring|fill|stroke|from|to|via)-\[#[0-9a-fA-F]{3,8}\]/,

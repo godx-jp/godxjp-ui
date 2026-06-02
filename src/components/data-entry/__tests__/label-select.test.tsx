@@ -66,7 +66,7 @@ describe("Select (data-driven, Ant-style)", () => {
     renderWithUi(
       <Select
         value=""
-        onChange={() => undefined}
+        onValueChange={() => undefined}
         placeholder="Pick"
         options={[{ value: "1", label: "Cash" }]}
       />,
@@ -81,7 +81,7 @@ describe("Select (data-driven, Ant-style)", () => {
     renderWithUi(
       <Select
         value=""
-        onChange={onChange}
+        onValueChange={onChange}
         showSearch
         options={[
           { value: "1", label: "Cash" },

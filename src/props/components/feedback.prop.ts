@@ -13,11 +13,12 @@ import type {
   OpenProp,
   OnOpenChangeProp,
   PendingProp,
+  ToneProp,
   TitleProp,
 } from "../vocabulary";
 
-/** @see Dialog.Confirm */
-export type DialogConfirmProp = {
+/** @see AlertDialog */
+export type AlertDialogProp = {
   open: OpenProp;
   onOpenChange: OnOpenChangeProp;
   title: TitleProp;
@@ -32,6 +33,9 @@ export type DialogConfirmProp = {
   pending?: PendingProp;
 };
 
+/** @see DialogConfirm — deprecated alias for AlertDialog. */
+export type DialogConfirmProp = AlertDialogProp;
+
 /** @see Alert */
 export type AlertQueryErrorProp = {
   error: unknown;
@@ -42,6 +46,7 @@ export type AlertQueryErrorProp = {
 /** @see Alert */
 export type AlertProp = React.HTMLAttributes<HTMLDivElement> & {
   variant?: AlertVariantProp;
+  tone?: ToneProp;
   /** Pass `false` to hide the default variant icon. */
   icon?: IconProp | false;
   onDismiss?: HandlerProp;

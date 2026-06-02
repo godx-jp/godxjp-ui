@@ -15,17 +15,17 @@ export default function Demo() {
           <AlertDescription>AlertDescription</AlertDescription>
         </AlertContent>
       </Alert>
-      <Alert variant="warning">
+      <Alert tone="warning">
         <AlertTitle>Warning</AlertTitle>
         <AlertContent>
           <AlertDescription>AlertDescription</AlertDescription>
           <AlertActions>AlertActions</AlertActions>
         </AlertContent>
       </Alert>
-      <Alert variant="success">
+      <Alert tone="success">
         <AlertTitle>Success</AlertTitle>
       </Alert>
-      <Alert variant="destructive">
+      <Alert tone="destructive">
         <AlertTitle>Destructive</AlertTitle>
       </Alert>
     </>

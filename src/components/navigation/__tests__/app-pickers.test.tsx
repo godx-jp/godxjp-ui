@@ -23,7 +23,7 @@ describe("LocalePicker", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    render(<LocalePicker value="en" onChange={onChange} />);
+    render(<LocalePicker value="en" onValueChange={onChange} />);
     await user.click(screen.getByRole("combobox", { name: "Ngôn ngữ" }));
     await user.click(screen.getByRole("option", { name: "日本語" }));
 
@@ -80,7 +80,7 @@ describe("DateFormatPicker", () => {
 
     render(
       <AppProvider persist={false} defaultLocale="en">
-        <DateFormatPicker value="mdy" onChange={onChange} />
+        <DateFormatPicker value="mdy" onValueChange={onChange} />
       </AppProvider>,
     );
     await user.click(screen.getByRole("combobox", { name: "Date format" }));
@@ -107,7 +107,7 @@ describe("TimeFormatPicker", () => {
 
     render(
       <AppProvider persist={false} defaultLocale="en">
-        <TimeFormatPicker value="24h" onChange={onChange} />
+        <TimeFormatPicker value="24h" onValueChange={onChange} />
       </AppProvider>,
     );
     await user.click(screen.getByRole("combobox", { name: "Time format" }));

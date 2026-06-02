@@ -14,7 +14,7 @@ export default function Demo() {
         <Download aria-hidden="true" />
         Tải packing list
       </Button>
-      <Button variant="destructive" size="sm">
+      <Button tone="destructive" size="sm">
         <Trash2 aria-hidden="true" />
         Xóa chiến dịch
       </Button>

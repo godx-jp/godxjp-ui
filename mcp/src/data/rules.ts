@@ -53,6 +53,31 @@ export const CARDINAL_RULES: CardinalRule[] = [
   { number: 40, title: "Pages are mobile-first", body: "Author and verify every page at 320–390px FIRST. Spacing comes only from `Stack` / `Inline` `gap` + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout. Wide tables scroll horizontally on small screens (don't force-fit them); dialogs and sheets are full-height on mobile. Touch targets ≥ 44×44px." },
 ];
 
+export const VOCABULARY_TOKEN_RULES: CardinalRule[] = [
+  { number: 1, title: "Prop Registry Entry", body: "Prop vocabulary: every exported `*Prop` type in `src/props/components/` MUST have exactly one `COMPONENT_PROP_REGISTRY` entry." },
+  { number: 2, title: "Public Field Mapping", body: "Prop vocabulary: every public property in an exported component prop type MUST map to one `VOCABULARY_REGISTRY` entry or to a `local: true` registry record with a non-empty `reason`." },
+  { number: 3, title: "Vocabulary Exists", body: "Prop vocabulary: every vocabulary name referenced by `COMPONENT_PROP_REGISTRY[*].vocabulary` MUST exist in `VOCABULARY_REGISTRY`." },
+  { number: 4, title: "Shared Concepts", body: "Prop vocabulary: the same prop spelling, value kind, and semantic role used by two or more components MUST use one shared vocabulary entry." },
+  { number: 5, title: "GapProp", body: "Prop vocabulary: `gap` MUST use `GapProp`; `StackGapProp` and `InlineGapProp` MUST NOT be canonical registry entries." },
+  { number: 6, title: "TitleProp", body: "Prop vocabulary: primary heading text MUST use `TitleProp`; `PageTitleProp` MUST NOT be a canonical registry entry." },
+  { number: 7, title: "Value Props", body: "Prop vocabulary: abstract controlled values MUST use `value?: ValueProp<T>`, `defaultValue?: DefaultValueProp<T>`, and `onValueChange?: OnValueChangeProp<T>`; `onChange` MAY be used only for DOM event handlers or explicitly local compatibility wrappers." },
+  { number: 8, title: "Open Props", body: "Prop vocabulary: disclosure/open state MUST use `open?: OpenProp`, `defaultOpen?: DefaultOpenProp`, and `onOpenChange?: OnOpenChangeProp`." },
+  { number: 9, title: "ToneProp", body: "Prop vocabulary: semantic color/status intent MUST use `tone` with `ToneProp` or a documented status-specific subtype; `variant` MUST NOT include status-only values such as `success`, `warning`, `info`, or `neutral`." },
+  { number: 10, title: "Variant Scope", body: "Prop vocabulary: `variant` MAY be component-specific only when its registry entry documents the component semantics and allowed values; one global `VariantProp` MUST NOT be used to collapse non-interchangeable value unions." },
+  { number: 11, title: "SizeProp", body: "Prop vocabulary: public `size` values MUST use shared `SizeProp` names or a documented component-specific subset; aliases such as `small` MUST be renamed to the canonical shared value." },
+  { number: 12, title: "DensityProp", body: "Prop vocabulary: public density MUST use `DensityProp` when the component participates in page/subtree density; component-specific density subsets MUST be documented with a registry reason." },
+  { number: 13, title: "Named Events", body: "Prop vocabulary: no new public `HandlerProp` use is allowed for named user events; command callbacks MUST have event-specific names such as `onConfirm`, `onRetry`, `onDismiss`, or `onValueChange`." },
+  { number: 14, title: "Token Tiers", body: "Design tokens: package tokens MUST be organized into primitive, semantic, and component tiers." },
+  { number: 15, title: "Tier Roles", body: "Design tokens: primitive tokens MUST define raw scales or palettes only; semantic tokens MUST alias primitives by UI role; component tokens MUST alias semantic or primitive tokens by component part/state." },
+  { number: 16, title: "No Domain Nouns", body: "Design tokens: package CSS custom properties and Tailwind `@theme` exports MUST NOT contain app, customer, or business-domain nouns." },
+  { number: 17, title: "No Tracking Tokens", body: "Design tokens: `--tracking-*` and `--color-tracking-*` are forbidden in package source." },
+  { number: 18, title: "Component Token Names", body: "Design tokens: component-scoped tokens MUST live in the component tier and use `--{component}-{part}-{property}` or `--{component}-{property}-{state}` naming consistently." },
+  { number: 19, title: "Theme References", body: "Design tokens: Tailwind `@theme` color exports MUST reference package tokens; literal colors are allowed only when first registered as primitive or semantic tokens." },
+  { number: 20, title: "Decorative Primitives", body: "Design tokens: public raw/decorative primitive exports are allowed only under documented neutral namespaces such as `wa-*` or `chart-*`; undocumented raw ramps such as public `gray-*`/`blue-*` exports are forbidden." },
+  { number: 21, title: "Dark Semantic Overrides", body: "Design tokens: dark mode MUST override semantic tokens by role; component-token dark overrides require a documented component contrast reason." },
+  { number: 22, title: "Density Aliases", body: "Design tokens: density CSS MUST select token aliases and MUST NOT introduce new raw component dimensions when a token tier can hold the value." },
+];
+
 export function findRule(num: number): CardinalRule | undefined {
   return CARDINAL_RULES.find((r) => r.number === num);
 }

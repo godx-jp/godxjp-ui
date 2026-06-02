@@ -10,7 +10,7 @@ import { Button } from "@godxjp/ui/general";
 export default function Demo() {
   return (
     <div className="grid max-w-2xl gap-3">
-      <Alert variant="warning">
+      <Alert tone="warning">
         <AlertTitle>Đơn hàng cần xác minh thanh toán</AlertTitle>
         <AlertContent>
           <AlertDescription>
@@ -23,10 +23,10 @@ export default function Demo() {
           </AlertActions>
         </AlertContent>
       </Alert>
-      <Alert variant="success">
+      <Alert tone="success">
         <AlertTitle>Template đã lưu</AlertTitle>
       </Alert>
-      <Alert variant="destructive">
+      <Alert tone="destructive">
         <AlertTitle>Không đủ quyền duyệt lô đơn hàng</AlertTitle>
       </Alert>
     </div>

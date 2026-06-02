@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { cn } from "../../lib/utils";
 import { Checkbox } from "./checkbox";
-import { ChoiceField } from "./choice-field";
+import { Field } from "./choice-field";
 import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
 import type { CheckboxGroupProp } from "../../props/components/data-entry.prop";
 
@@ -29,7 +29,7 @@ function useControllableArray(
 export function CheckboxGroup({
   value: controlledValue,
   defaultValue = [],
-  onChange,
+  onValueChange,
   options,
   orientation = "vertical",
   disabled,
@@ -45,7 +45,7 @@ export function CheckboxGroup({
       ? value.filter((v) => v !== optionValue)
       : [...value, optionValue];
     setValue(next);
-    onChange?.(next);
+    onValueChange?.(next);
   };
 
   if (options && options.length > 0) {
@@ -60,7 +60,7 @@ export function CheckboxGroup({
           const id = `${reactId}-${opt.value}-${index}`;
           const checked = value.includes(opt.value);
           return (
-            <ChoiceField key={opt.value} id={id} label={opt.label} description={opt.description}>
+            <Field key={opt.value} id={id} label={opt.label} description={opt.description}>
               <Checkbox
                 id={id}
                 name={name}
@@ -71,7 +71,7 @@ export function CheckboxGroup({
                   toggle(opt.value);
                 }}
               />
-            </ChoiceField>
+            </Field>
           );
         })}
       </div>

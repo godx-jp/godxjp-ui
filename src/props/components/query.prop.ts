@@ -30,8 +30,8 @@ type MutationLike = Pick<
   "isError" | "error" | "isPending"
 >;
 
-/** @see MutationFeedback — inline mutation error (form submit, simulator run). */
-export type MutationFeedbackProp = {
+/** @see Alert.QueryError — inline mutation error (form submit, simulator run). */
+export type AlertMutationFeedbackProp = {
   mutation: MutationLike;
   onRetry?: HandlerProp;
   showRetry?: boolean;
@@ -40,13 +40,19 @@ export type MutationFeedbackProp = {
   className?: ClassNameProp;
 };
 
+/** @see MutationFeedback — deprecated alias for AlertMutationFeedback. */
+export type MutationFeedbackProp = AlertMutationFeedbackProp;
+
 type QueryRefetchLike = Pick<UseQueryResult<unknown>, "isFetching" | "refetch">;
 
-/** @see QueryRefetchButton — header Refresh wired to `query.refetch()`. */
-export type QueryRefetchButtonProp = Omit<ButtonProp, "onClick" | "disabled"> & {
+/** @see ButtonRefetch — Button recipe wired to `query.refetch()`. */
+export type ButtonRefetchProp = Omit<ButtonProp, "onClick" | "disabled"> & {
   query: QueryRefetchLike;
   label?: React.ReactNode;
 };
+
+/** @see QueryRefetchButton — deprecated alias for ButtonRefetch. */
+export type QueryRefetchButtonProp = ButtonRefetchProp;
 
 type InfiniteQueryLike<TPage> = Pick<
   UseInfiniteQueryResult<InfiniteData<TPage>, unknown>,

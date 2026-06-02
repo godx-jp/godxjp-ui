@@ -19,7 +19,7 @@ export default function Demo() {
           total={248}
           pageSize={10}
           showTotal
-          onChange={setPage}
+          onValueChange={setPage}
         />
       </CardFooter>
     </Card>

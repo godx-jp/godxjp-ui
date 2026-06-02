@@ -10,17 +10,26 @@ export { PageHeader } from "../navigation/page-header";
 export type { PageHeaderProp } from "../../props/components/layout.prop";
 
 export { PageContainer } from "../layout/page-container";
-export { Stack, Inline } from "../layout";
-export type { StackProp, InlineProp } from "../../props/components/layout.prop";
+export { Flex, Stack, Inline } from "../layout";
+export type { FlexProp, StackProp, InlineProp } from "../../props/components/layout.prop";
 
 export { EmptyState } from "../data-display/empty-state";
 export { Badge } from "../data-display/badge";
 export { FormField } from "../data-entry/form-field";
+export { Field, ChoiceField } from "../data-entry/choice-field";
 export { Descriptions } from "../data-display/descriptions";
-export { SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonCard } from "../feedback/skeleton";
+export {
+  SkeletonRows,
+  SkeletonTable,
+  SkeletonDetail,
+  SkeletonStat,
+  SkeletonCard,
+} from "../feedback/skeleton";
 export {
   DataState,
+  AlertMutationFeedback,
   MutationFeedback,
+  ButtonRefetch,
   QueryRefetchButton,
   InfiniteQueryState,
   flattenItemPages,
@@ -52,7 +61,7 @@ export {
   TabsList,
   TabsTrigger,
 } from "../navigation";
-export { FilterBar, FilterGroup } from "../navigation/filter-bar";
+export { FilterBar, FilterGroup, Toolbar, ToolbarGroup } from "../navigation/filter-bar";
 export {
   Dialog,
   DialogTrigger,
@@ -61,6 +70,7 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
+  AlertDialog,
   DialogConfirm,
 } from "../feedback/dialog";
 export { DataTable } from "../data-display/data-table";

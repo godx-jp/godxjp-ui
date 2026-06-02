@@ -23,8 +23,7 @@ import {
 | `FooterProp`        | content     | content.prop.ts     | Page bottom bar                         |
 | `PageDensityProp`   | layout      | layout.prop.ts      | Page spacing scale                      |
 | `TableDensityProp`  | layout      | layout.prop.ts      | Table row height                        |
-| `StackGapProp`      | layout      | layout.prop.ts      | Vertical gap                            |
-| `InlineGapProp`     | layout      | layout.prop.ts      | Horizontal gap                          |
+| `GapProp`           | layout      | layout.prop.ts      | Shared layout gap                       |
 | `ButtonVariantProp` | interaction | interaction.prop.ts | Button style                            |
 | `ButtonSizeProp`    | interaction | interaction.prop.ts | Button size                             |
 | `BreadcrumbProp`    | navigation  | navigation.prop.ts  | Breadcrumb trail                        |
@@ -35,7 +34,7 @@ import {
 
 | Name                | Group        | Vocabulary used                                                                     |
 | ------------------- | ------------ | ----------------------------------------------------------------------------------- |
-| `PageContainerProp` | layout       | PageTitleProp, SubtitleProp, ExtraProp, FooterProp, BreadcrumbProp, PageDensityProp |
+| `PageContainerProp` | layout       | TitleProp, SubtitleProp, ExtraProp, FooterProp, BreadcrumbProp, DensityProp |
 | `ButtonProp`        | general      | ButtonVariantProp, ButtonSizeProp, AsChildProp                                      |
 | `DataTableProp`     | data-display | ColumnDefProp, TableDensityProp, SortStateProp                                      |
 | `DialogConfirmProp` | feedback     | OpenProp, TitleProp, DescriptionProp, HandlerProp, PendingProp                      |
@@ -57,6 +56,6 @@ import {
 | `description` (dialogs)          | `DescriptionProp`                       |
 | `actions` (header)               | `extra` → `ExtraProp`                   |
 | `density` (ambiguous)            | `PageDensityProp` or `TableDensityProp` |
-| `gap` (ambiguous)                | `StackGapProp` or `InlineGapProp`       |
+| `gap` (component subset)         | `GapProp` with documented subset        |
 | `onClear`                        | `OnClearFiltersProp`                    |
 | `loading` / `pending` on actions | `PendingProp`                           |

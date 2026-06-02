@@ -17,10 +17,12 @@ import type {
   LabelProp,
   NameProp,
   OnChangeProp,
+  OnValueChangeProp,
   OnSearchChangeProp,
   PlaceholderProp,
   RequiredProp,
   ValueProp,
+  DefaultValueProp,
 } from "../vocabulary";
 
 /** @see Input */
@@ -67,9 +69,9 @@ export type ChoiceOptionProp = {
 
 /** @see Checkbox.Group */
 export type CheckboxGroupProp = {
-  value?: string[];
-  defaultValue?: string[];
-  onChange?: (value: string[]) => void;
+  value?: ValueProp<string[]>;
+  defaultValue?: DefaultValueProp<string[]>;
+  onValueChange?: OnValueChangeProp<string[]>;
   options?: ChoiceOptionProp[];
   orientation?: "horizontal" | "vertical";
   disabled?: DisabledProp;
@@ -80,9 +82,9 @@ export type CheckboxGroupProp = {
 
 /** @see Radio.Group */
 export type RadioGroupProp = {
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
+  value?: ValueProp;
+  defaultValue?: DefaultValueProp;
+  onValueChange?: OnValueChangeProp;
   options?: ChoiceOptionProp[];
   orientation?: "horizontal" | "vertical";
   disabled?: DisabledProp;
@@ -99,14 +101,17 @@ export type SwitchProp = React.ComponentPropsWithoutRef<typeof SwitchPrimitive.R
   size?: "sm" | "default";
 };
 
-/** @see ChoiceField — inline control + label + description wrapper. */
-export type ChoiceFieldProp = {
+/** @see Field — inline control + label + description wrapper. */
+export type FieldProp = {
   id: IdProp;
   label: LabelProp;
   description?: React.ReactNode;
   className?: ClassNameProp;
   children: React.ReactNode;
 };
+
+/** @see ChoiceField — deprecated alias for Field. */
+export type ChoiceFieldProp = FieldProp;
 
 /** Country row accepted by CountrySelect / CountryOptionLabel.
  *  Accepts either a select-option (`value`) or a summary (`code`). */
@@ -148,7 +153,7 @@ export type CalendarProp = DayPickerProps;
 /** @see DatePicker */
 export type DatePickerProp = {
   value?: Date;
-  onChange?: (date: Date | undefined) => void;
+  onValueChange?: OnValueChangeProp<Date | undefined>;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
   className?: ClassNameProp;
@@ -163,7 +168,7 @@ export type DatePickerProp = {
 /** @see DateRangePicker */
 export type DateRangePickerProp = {
   value?: DateRange;
-  onChange?: (range: DateRange | undefined) => void;
+  onValueChange?: OnValueChangeProp<DateRange | undefined>;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
   className?: ClassNameProp;
@@ -177,9 +182,9 @@ export type DateRangePickerProp = {
 
 /** @see TimePicker — popover HH:mm picker (canonical 24h storage). */
 export type TimePickerProp = {
-  value?: string;
-  defaultValue?: string;
-  onChange?: (value: string) => void;
+  value?: ValueProp;
+  defaultValue?: DefaultValueProp;
+  onValueChange?: OnValueChangeProp;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
   className?: ClassNameProp;
@@ -192,8 +197,8 @@ export type TimePickerProp = {
 
 /** @see ColorPicker */
 export type ColorPickerProp = {
-  value?: string;
-  onChange?: (hex: string) => void;
+  value?: ValueProp;
+  onValueChange?: OnValueChangeProp;
   disabled?: DisabledProp;
   className?: ClassNameProp;
   id?: IdProp;
@@ -214,7 +219,7 @@ export type AutocompleteOptionProp = {
 export type AutocompleteProp = {
   options: AutocompleteOptionProp[];
   value?: ValueProp;
-  onValueChange?: (value: string) => void;
+  onValueChange?: OnValueChangeProp;
   placeholder?: PlaceholderProp;
   searchPlaceholder?: PlaceholderProp;
   emptyMessage?: EmptyMessageProp;
@@ -252,7 +257,7 @@ export type SearchSelectLoadResultProp = {
  */
 export type SearchSelectProp = {
   value?: ValueProp;
-  onChange?: (value: string, option?: SearchSelectOptionProp) => void;
+  onValueChange?: (value: string, option?: SearchSelectOptionProp) => void;
   /** Static option list (client-side filtered). Provide this OR `loadOptions`, not both. */
   options?: SearchSelectOptionProp[];
   /** Remote fetcher — debounced search + infinite-scroll pagination call into this. Provide this
@@ -302,9 +307,9 @@ export type UploadVariantProp =
 /** @see Upload — presentational; wire `onUpload` to media-service in app api.ts */
 export type UploadProp = {
   variant?: UploadVariantProp;
-  value?: UploadFileItemProp[];
-  defaultValue?: UploadFileItemProp[];
-  onChange?: (items: UploadFileItemProp[]) => void;
+  value?: ValueProp<UploadFileItemProp[]>;
+  defaultValue?: DefaultValueProp<UploadFileItemProp[]>;
+  onValueChange?: OnValueChangeProp<UploadFileItemProp[]>;
   accept?: string;
   multiple?: boolean;
   maxCount?: number;
@@ -339,9 +344,9 @@ export type TreeFieldNamesProp = {
 /** @see Cascader — cascade picker (Popover + multi-column). */
 export type CascaderProp = {
   options: TreeOptionProp[];
-  value?: string[] | string[][];
-  defaultValue?: string[] | string[][];
-  onChange?: (
+  value?: ValueProp<string[] | string[][]>;
+  defaultValue?: DefaultValueProp<string[] | string[][]>;
+  onValueChange?: (
     value: string[] | string[][],
     selectedOptions?: TreeOptionProp[] | TreeOptionProp[][],
   ) => void;
@@ -362,9 +367,9 @@ export type ShowCheckedStrategyProp = "SHOW_CHILD" | "SHOW_PARENT" | "SHOW_ALL";
 /** @see TreeSelect — tree in Popover (cmdk search + expand/collapse). */
 export type TreeSelectProp = {
   treeData: TreeOptionProp[];
-  value?: string | string[];
-  defaultValue?: string | string[];
-  onChange?: (value: string | string[] | undefined) => void;
+  value?: ValueProp<string | string[]>;
+  defaultValue?: DefaultValueProp<string | string[]>;
+  onValueChange?: OnValueChangeProp<string | string[] | undefined>;
   multiple?: boolean;
   treeCheckable?: boolean;
   treeCheckStrictly?: boolean;
@@ -391,7 +396,7 @@ export type TransferItemProp = {
 export type TransferProp = {
   dataSource: TransferItemProp[];
   targetKeys: string[];
-  onChange?: (targetKeys: string[], direction: "left" | "right", moveKeys: string[]) => void;
+  onValueChange?: (targetKeys: string[], direction: "left" | "right", moveKeys: string[]) => void;
   titles?: [React.ReactNode, React.ReactNode];
   showSearch?: boolean;
   oneWay?: boolean;

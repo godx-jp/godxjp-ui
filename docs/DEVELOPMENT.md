@@ -81,7 +81,7 @@ keeps density and theming centralized.
 ```css
 /* styles/card-layout.css: owns the look */
 [data-slot="card"] {
-  border: 1px solid hsl(var(--card-border-token));
+  border: 1px solid hsl(var(--card-border));
   border-radius: var(--card-radius);
 }
 [data-slot="card"][data-density="tight"] {

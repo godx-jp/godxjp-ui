@@ -7,6 +7,14 @@ export type {
 } from "./page-container";
 export { PageInset } from "./page-inset";
 export type { PageInsetProp, PageInsetProps } from "./page-inset";
+export { Flex } from "./flex";
+export type {
+  FlexAlignProp,
+  FlexDirectionProp,
+  FlexJustifyProp,
+  FlexProp,
+  FlexProps,
+} from "./flex";
 export { Stack } from "./stack";
 export type { StackProp, StackProps } from "./stack";
 export { Inline } from "./inline";

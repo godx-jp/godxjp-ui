@@ -2,17 +2,16 @@ import * as React from "react";
 
 import { cn } from "../../lib/utils";
 import { Label } from "./label";
+import type { FieldProp } from "../../props/components/data-entry.prop";
 
-export interface ChoiceFieldProps {
-  id: string;
-  label: React.ReactNode;
-  description?: React.ReactNode;
-  className?: string;
-  children: React.ReactNode;
-}
+export type { FieldProp, FieldProp as FieldProps } from "../../props/components/data-entry.prop";
+export type {
+  ChoiceFieldProp,
+  ChoiceFieldProp as ChoiceFieldProps,
+} from "../../props/components/data-entry.prop";
 
 /** Label + optional description beside a checkbox/radio/switch control. */
-export function ChoiceField({ id, label, description, className, children }: ChoiceFieldProps) {
+export function Field({ id, label, description, className, children }: FieldProp) {
   return (
     <div className={cn("ui-choice-field", className)}>
       <div className="ui-choice-control">{children}</div>
@@ -25,3 +24,6 @@ export function ChoiceField({ id, label, description, className, children }: Cho
     </div>
   );
 }
+
+/** @deprecated Use Field. */
+export const ChoiceField = Field;

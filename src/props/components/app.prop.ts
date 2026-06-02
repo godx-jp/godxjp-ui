@@ -9,7 +9,14 @@ import type {
   AppTimezoneDefault,
   AppDateFormat,
 } from "../../app/types";
-import type { ChildrenProp, ClassNameProp, DisabledProp, IdProp } from "../vocabulary";
+import type {
+  ChildrenProp,
+  ClassNameProp,
+  DisabledProp,
+  IdProp,
+  OnValueChangeProp,
+  ValueProp,
+} from "../vocabulary";
 
 /** @see AppProvider */
 export type AppProviderProp = {
@@ -47,8 +54,8 @@ export type LocalePickerProp = {
   disabled?: DisabledProp;
   id?: IdProp;
   /** Controlled value; default reads/writes AppProvider. */
-  value?: AppLocale;
-  onChange?: (locale: AppLocale) => void;
+  value?: ValueProp<AppLocale>;
+  onValueChange?: OnValueChangeProp<AppLocale>;
 };
 
 /** @see TimezonePicker */
@@ -56,8 +63,8 @@ export type TimezonePickerProp = {
   className?: ClassNameProp;
   disabled?: DisabledProp;
   id?: IdProp;
-  value?: AppTimezone;
-  onChange?: (timezone: AppTimezone) => void;
+  value?: ValueProp<AppTimezone>;
+  onValueChange?: OnValueChangeProp<AppTimezone>;
   /** Override AppProvider list; omit to use context or full IANA. */
   options?: readonly AppTimezone[];
 };
@@ -67,8 +74,8 @@ export type TimeFormatPickerProp = {
   className?: ClassNameProp;
   disabled?: DisabledProp;
   id?: IdProp;
-  value?: AppTimeFormat;
-  onChange?: (timeFormat: AppTimeFormat) => void;
+  value?: ValueProp<AppTimeFormat>;
+  onValueChange?: OnValueChangeProp<AppTimeFormat>;
 };
 
 /** @see DateFormatPicker */
@@ -76,8 +83,8 @@ export type DateFormatPickerProp = {
   className?: ClassNameProp;
   disabled?: DisabledProp;
   id?: IdProp;
-  value?: AppDateFormat;
-  onChange?: (dateFormat: AppDateFormat) => void;
+  value?: ValueProp<AppDateFormat>;
+  onValueChange?: OnValueChangeProp<AppDateFormat>;
 };
 
 /** Value exposed by `useAppContext`. */

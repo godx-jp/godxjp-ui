@@ -15,7 +15,7 @@ export default function Demo() {
 
   return (
     <>
-      <Cascader options={options} value={value} onChange={(next) => setValue(next as string[])} />
+      <Cascader options={options} value={value} onValueChange={(next) => setValue(next as string[])} />
       <Cascader options={options} showSearch />
       <Cascader options={options} multiple showSearch />
       <Cascader options={options} disabled />

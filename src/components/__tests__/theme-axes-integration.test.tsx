@@ -93,7 +93,7 @@ describe("theme axes integration (render + class contracts)", () => {
 
   describe("semantic badges — token tone classes (no raw palette)", () => {
     it("Badge success variant uses success token", () => {
-      renderWithTheme(<Badge variant="success">Cleared</Badge>);
+      renderWithTheme(<Badge tone="success">Cleared</Badge>);
       const el = screen.getByText("Cleared");
       expect(el.className).toContain("success");
       expect(el.className).not.toMatch(/green-/);

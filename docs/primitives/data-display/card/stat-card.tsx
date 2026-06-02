@@ -7,7 +7,7 @@ export default function Demo() {
         label="Backlog"
         value="128"
         hint="22 đơn cần xử lý"
-        delta={<Badge variant="warning">+8%</Badge>}
+        delta={<Badge tone="warning">+8%</Badge>}
       />
       <StatCard
         align="end"
@@ -15,7 +15,7 @@ export default function Demo() {
         label="SLA"
         value="96.4%"
         hint="rolling 24h window"
-        delta={<Badge variant="success">on track</Badge>}
+        delta={<Badge tone="success">on track</Badge>}
       />
     </div>
   );

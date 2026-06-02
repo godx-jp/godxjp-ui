@@ -22,7 +22,7 @@ describe("Checkbox.Group", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     renderWithUi(
-      <Checkbox.Group options={exportDocs} defaultValue={["invoice"]} onChange={onChange} />,
+      <Checkbox.Group options={exportDocs} defaultValue={["invoice"]} onValueChange={onChange} />,
     );
 
     await user.click(screen.getByRole("checkbox", { name: /Packing list/ }));

@@ -79,9 +79,9 @@ function DensityFrame({ density }: { density: Density }) {
       <Stack gap="md">
         <ResponsiveGrid columns={4}>
           <StatCard label="Pending" value="128" delta={<Badge variant="secondary">+18</Badge>} />
-          <StatCard label="Ready" value="42" delta={<Badge variant="success">8 booked</Badge>} />
+          <StatCard label="Ready" value="42" delta={<Badge tone="success">8 booked</Badge>} />
           <StatCard label="Cut-off" value="15:40" hint="Section rhythm sample" />
-          <StatCard label="Issues" value="7" delta={<Badge variant="destructive">check</Badge>} />
+          <StatCard label="Issues" value="7" delta={<Badge tone="destructive">check</Badge>} />
         </ResponsiveGrid>
 
         <SplitPane
@@ -119,7 +119,7 @@ function DensityFrame({ density }: { density: Density }) {
                 </CardFooter>
               </Card>
 
-              <Alert variant="warning">
+              <Alert tone="warning">
                 <AlertTitle>Warning rhythm</AlertTitle>
                 <AlertContent>
                   <AlertDescription>

@@ -16,7 +16,7 @@ export default function Demo() {
     <Transfer
       dataSource={items}
       targetKeys={targetKeys}
-      onChange={setTargetKeys}
+      onValueChange={setTargetKeys}
       showSearch
       titles={["Nhân viên", "Được truy cập"]}
     />

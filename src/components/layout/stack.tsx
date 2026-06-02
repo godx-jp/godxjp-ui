@@ -1,13 +1,9 @@
-import { cn } from "../../lib/utils";
-import { stackGapClass } from "../../lib/variants";
 import type { StackProp } from "../../props/components/layout.prop";
+import { Flex } from "./flex";
 
 export type { StackProp, StackProp as StackProps } from "../../props/components/layout.prop";
 
-export function Stack({ gap = "md", className, children, ...props }: StackProp) {
-  return (
-    <div className={cn(stackGapClass[gap], className)} {...props}>
-      {children}
-    </div>
-  );
+/** @deprecated Use Flex with direction="col". */
+export function Stack(props: StackProp) {
+  return <Flex direction="col" {...props} />;
 }

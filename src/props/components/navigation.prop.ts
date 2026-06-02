@@ -9,20 +9,26 @@ import type {
   OnClearFiltersProp,
 } from "../vocabulary";
 
-/** @see FilterBar */
-export type FilterBarProp = {
+/** @see Toolbar */
+export type ToolbarProp = {
   onClear?: OnClearFiltersProp;
   hasActiveFilters?: HasActiveFiltersProp;
   className?: ClassNameProp;
   children: ChildrenProp;
 };
 
-/** @see FilterGroup */
-export type FilterGroupProp = {
+/** @see ToolbarGroup */
+export type ToolbarGroupProp = {
   label: LabelProp;
   className?: ClassNameProp;
   children: ChildrenProp;
 };
+
+/** @see FilterBar — deprecated alias for Toolbar. */
+export type FilterBarProp = ToolbarProp;
+
+/** @see FilterGroup — deprecated alias for ToolbarGroup. */
+export type FilterGroupProp = ToolbarGroupProp;
 
 /** @see Pagination — offset/page-based (distinct from DataTable cursor pagination). */
 export type PaginationProp = {
@@ -60,7 +66,7 @@ export type StepsProp = {
   status?: StepStatusProp;
   orientation?: "horizontal" | "vertical";
   type?: "default" | "dot";
-  size?: "default" | "small";
+  size?: "default" | "sm";
   titlePlacement?: "horizontal" | "vertical";
   onChange?: (current: number) => void;
   className?: ClassNameProp;

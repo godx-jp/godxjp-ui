@@ -15,7 +15,7 @@ export default function Demo() {
       <CardContent className="space-y-6">
         <Steps
           current={step}
-          onChange={setStep}
+          onValueChange={setStep}
           items={[
             { title: "Chọn chi nhánh", content: "Osaka Store" },
             { title: "Thêm đơn hàng", content: "Import CSV hoặc scan" },

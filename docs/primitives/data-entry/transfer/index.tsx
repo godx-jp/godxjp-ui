@@ -13,8 +13,8 @@ export default function Demo() {
 
   return (
     <>
-      <Transfer dataSource={items} targetKeys={targetKeys} onChange={setTargetKeys} showSearch />
-      <Transfer dataSource={items} targetKeys={[]} onChange={() => undefined} oneWay />
+      <Transfer dataSource={items} targetKeys={targetKeys} onValueChange={setTargetKeys} showSearch />
+      <Transfer dataSource={items} targetKeys={[]} onValueChange={() => undefined} oneWay />
     </>
   );
 }

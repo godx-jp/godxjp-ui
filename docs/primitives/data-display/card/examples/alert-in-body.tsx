@@ -12,7 +12,7 @@ export default function Demo() {
           <AlertTitle>Temp bucket</AlertTitle>
           <AlertDescription>File upload vào temp — promote khi biết owner entity.</AlertDescription>
         </Alert>
-        <Alert variant="destructive">
+        <Alert tone="destructive">
           <AlertTitle>Thiếu tài liệu</AlertTitle>
           <AlertDescription>Đơn #3 không thể xử lý cho đến khi khách bổ sung.</AlertDescription>
         </Alert>

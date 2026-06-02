@@ -4,10 +4,10 @@
  */
 
 @import "./foundation.css";
-@import "./primitives/layout.css";
-@import "./primitives/control.css";
-@import "./primitives/card.css";
-@import "./primitives/table.css";
-@import "./primitives/feedback.css";
-@import "./primitives/badge.css";
-@import "./primitives/navigation.css";
+@import "./semantic/layout.css";
+@import "./components/control.css";
+@import "./components/card.css";
+@import "./components/table.css";
+@import "./components/feedback.css";
+@import "./components/badge.css";
+@import "./components/navigation.css";

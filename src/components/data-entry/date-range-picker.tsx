@@ -24,7 +24,7 @@ const ISO_HINT = "yyyy-mm-dd";
  */
 export function DateRangePicker({
   value,
-  onChange,
+  onValueChange,
   placeholder,
   disabled,
   className,
@@ -47,7 +47,7 @@ export function DateRangePicker({
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.dateRangePicker.placeholder") ?? ISO_HINT;
 
-  const emit = (next: DateRange | undefined) => onChange?.(next);
+  const emit = (next: DateRange | undefined) => onValueChange?.(next);
 
   const commitEdge = (edge: "from" | "to", raw: string) => {
     const parsed = raw.trim() === "" ? undefined : (parseDateInput(raw.trim()) ?? undefined);

@@ -30,7 +30,7 @@ export function Autocomplete({
     <SearchSelect
       id={id}
       value={value}
-      onChange={(next) => onValueChange?.(next)}
+      onValueChange={(next) => onValueChange?.(next)}
       options={options}
       clearable={false}
       placeholder={placeholder}

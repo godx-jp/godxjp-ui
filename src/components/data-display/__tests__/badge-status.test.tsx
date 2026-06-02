@@ -23,12 +23,12 @@ describe("Badge", () => {
   });
 
   it("honours an explicit tone override (escape hatch for tier labels)", () => {
-    const { container } = renderWithUi(<Badge status="プレミアム" variant="success" />);
+    const { container } = renderWithUi(<Badge status="プレミアム" tone="success" />);
     expect(badgeEl(container).className).toContain("text-success");
   });
 
   it("hides the icon when icon={null} (category / tier badge)", () => {
-    const { container } = renderWithUi(<Badge status="プレミアム" variant="info" icon={null} />);
+    const { container } = renderWithUi(<Badge status="プレミアム" tone="info" icon={null} />);
     const badge = badgeEl(container);
     expect(badge.querySelector('[data-slot="badge-icon"]')).toBeNull();
     expect(badge.className).toContain("text-info");

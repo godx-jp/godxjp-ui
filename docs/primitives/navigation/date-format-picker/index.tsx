@@ -5,5 +5,5 @@ import { DateFormatPicker } from "@godxjp/ui/navigation";
 
 export default function Demo() {
   const [value, setValue] = useState<AppDateFormat>("iso");
-  return <DateFormatPicker value={value} onChange={setValue} />;
+  return <DateFormatPicker value={value} onValueChange={setValue} />;
 }

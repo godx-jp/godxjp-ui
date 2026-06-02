@@ -9,11 +9,11 @@
     --control-padding-x: var(--control-padding-x-compact);
     --table-row-height: var(--table-row-height-compact);
     --phi-unit: var(--space-3);
-    --checkbox-size: 0.875rem;
-    --switch-width: 2rem;
-    --switch-height: 1.125rem;
-    --switch-thumb-size: 0.875rem;
-    --switch-thumb-translate: 0.875rem;
+    --checkbox-size: var(--checkbox-size-compact);
+    --switch-width: var(--switch-width-compact);
+    --switch-height: var(--switch-height-compact);
+    --switch-thumb-size: var(--switch-thumb-size-compact);
+    --switch-thumb-translate: var(--switch-thumb-translate-compact);
     --table-cell-padding-y: var(--space-1);
   }
 
@@ -33,11 +33,11 @@
     --control-padding-x: var(--control-padding-x-comfortable);
     --table-row-height: var(--table-row-height-comfortable);
     --phi-unit: var(--space-6);
-    --checkbox-size: 1.125rem;
-    --switch-width: 2.5rem;
-    --switch-height: 1.375rem;
-    --switch-thumb-size: 1.125rem;
-    --switch-thumb-translate: 1.125rem;
+    --checkbox-size: var(--checkbox-size-comfortable);
+    --switch-width: var(--switch-width-comfortable);
+    --switch-height: var(--switch-height-comfortable);
+    --switch-thumb-size: var(--switch-thumb-size-comfortable);
+    --switch-thumb-translate: var(--switch-thumb-translate-comfortable);
     --table-cell-padding-y: var(--space-2);
   }
 }

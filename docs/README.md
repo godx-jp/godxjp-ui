@@ -44,7 +44,7 @@ docs/
 
 ```
 src/props/
-├── vocabulary/     ← atomic reusable concepts (TitleProp, StackGapProp, …)
+├── vocabulary/     ← atomic reusable concepts (TitleProp, GapProp, …)
 ├── components/     ← per-component interfaces (PageContainerProp, ButtonProp, …)
 ├── registry.ts     ← canonical catalog — check before adding new props
 └── index.ts        ← public export @godxjp/ui/props
