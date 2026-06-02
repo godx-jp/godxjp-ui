@@ -34,8 +34,7 @@ const ALLOWLIST = new Set([
 // component is its wrapper in the group folder).
 const EXCLUDE_DIRS = new Set(["ui", "__tests__"]);
 
-const pascal = (kebab) =>
-  kebab.replace(/(^|-)([a-z0-9])/g, (_, _d, c) => c.toUpperCase());
+const pascal = (kebab) => kebab.replace(/(^|-)([a-z0-9])/g, (_, _d, c) => c.toUpperCase());
 
 /** All PascalCase names exported anywhere in a file. */
 function exportsOf(src) {
@@ -45,7 +44,12 @@ function exportsOf(src) {
   }
   for (const m of src.matchAll(/export\s+\{([^}]+)\}/g)) {
     for (const part of m[1].split(",")) {
-      const name = part.trim().replace(/^type\s+/, "").split(/\s+as\s+/).pop()?.trim();
+      const name = part
+        .trim()
+        .replace(/^type\s+/, "")
+        .split(/\s+as\s+/)
+        .pop()
+        ?.trim();
       if (name && /^[A-Z][A-Za-z0-9]*$/.test(name)) names.add(name);
     }
   }
@@ -78,13 +82,15 @@ function primaryComponents() {
   return found;
 }
 
+// Anchor on the entry-level `name:` field (4-space indent) so sample data inside
+// examples/props (e.g. `{ name: "Vietnam" }`) is not mistaken for a catalog entry.
 const mcpNames = new Set(
-  [...readFileSync(MCP_DATA, "utf8").matchAll(/name:\s*"([A-Z][A-Za-z0-9]*)"/g)].map((m) => m[1]),
+  [...readFileSync(MCP_DATA, "utf8").matchAll(/^    name: "([A-Z][A-Za-z0-9]*)"/gm)].map(
+    (m) => m[1],
+  ),
 );
 
-const orphans = primaryComponents().filter(
-  (c) => !mcpNames.has(c.name) && !ALLOWLIST.has(c.name),
-);
+const orphans = primaryComponents().filter((c) => !mcpNames.has(c.name) && !ALLOWLIST.has(c.name));
 
 if (process.argv.includes("--json")) {
   process.stdout.write(JSON.stringify({ orphans }, null, 2) + "\n");
@@ -97,7 +103,9 @@ if (process.argv.includes("--json")) {
   for (const o of orphans) {
     console.error(`  ${o.name}  (${o.rel}) — add an entry to mcp/src/data/components.ts`);
   }
-  console.error("\n  (If a component is intentionally not catalogued, add it to ALLOWLIST in this script.)");
+  console.error(
+    "\n  (If a component is intentionally not catalogued, add it to ALLOWLIST in this script.)",
+  );
 }
 
 process.exit(orphans.length > 0 ? 1 : 0);

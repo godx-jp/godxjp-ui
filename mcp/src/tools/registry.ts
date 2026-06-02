@@ -22,7 +22,13 @@ import { CARDINAL_RULES, findRule } from "../data/rules.js";
 import { PATTERNS, findPattern, searchPatterns } from "../data/patterns.js";
 import { SKILLS, findSkill, findSection, routeTask } from "../data/skills-index.js";
 import { ANTI_AI_TELLS, aiTellsByCategory, type AiTell } from "../data/anti-ai-tells.js";
-import { REDESIGN_CHECKS, FIX_PRIORITY, REDESIGN_RULES, checksByCategory, type AuditCheck } from "../data/redesign-audit.js";
+import {
+  REDESIGN_CHECKS,
+  FIX_PRIORITY,
+  REDESIGN_RULES,
+  checksByCategory,
+  type AuditCheck,
+} from "../data/redesign-audit.js";
 
 export const TOOL_DEFINITIONS = [
   // ── DISCOVERY (small responses) ────────────────────────────────
@@ -41,14 +47,25 @@ export const TOOL_DEFINITIONS = [
       properties: {
         group: {
           type: "string",
-          enum: ["general", "layout", "data-display", "data-entry", "feedback", "navigation", "composites", "shell", "providers"],
+          enum: [
+            "general",
+            "layout",
+            "data-display",
+            "data-entry",
+            "feedback",
+            "navigation",
+            "composites",
+            "shell",
+            "providers",
+          ],
         },
       },
     },
   },
   {
     name: "list_patterns",
-    description: "List every canonical code pattern (registration-form / settings-page / data-table / confirm-destructive / app-shell / filter-bar / loading-states). ~500 bytes. Use before `get_pattern`.",
+    description:
+      "List every canonical code pattern (registration-form / settings-page / data-table / confirm-destructive / app-shell / filter-bar / loading-states). ~500 bytes. Use before `get_pattern`.",
     inputSchema: { type: "object", properties: {} },
   },
   {
@@ -58,7 +75,10 @@ export const TOOL_DEFINITIONS = [
     inputSchema: {
       type: "object",
       properties: {
-        category: { type: "string", enum: ["visual", "layout", "copy", "interaction", "imagery", "structure"] },
+        category: {
+          type: "string",
+          enum: ["visual", "layout", "copy", "interaction", "imagery", "structure"],
+        },
       },
     },
   },
@@ -69,7 +89,20 @@ export const TOOL_DEFINITIONS = [
     inputSchema: {
       type: "object",
       properties: {
-        category: { type: "string", enum: ["typography", "color-surface", "layout", "interactivity", "content", "components", "iconography", "code-quality", "omissions"] },
+        category: {
+          type: "string",
+          enum: [
+            "typography",
+            "color-surface",
+            "layout",
+            "interactivity",
+            "content",
+            "components",
+            "iconography",
+            "code-quality",
+            "omissions",
+          ],
+        },
       },
     },
   },
@@ -77,19 +110,28 @@ export const TOOL_DEFINITIONS = [
   // ── DRILL-DOWN (medium responses) ──────────────────────────────
   {
     name: "get_anti_ai_tell",
-    description: "Fetch ONE anti-AI-tell — full body + concrete fix. Use after `list_anti_ai_tells`.",
+    description:
+      "Fetch ONE anti-AI-tell — full body + concrete fix. Use after `list_anti_ai_tells`.",
     inputSchema: {
       type: "object",
-      properties: { name: { type: "string", description: "Exact tell name from list_anti_ai_tells." } },
+      properties: {
+        name: { type: "string", description: "Exact tell name from list_anti_ai_tells." },
+      },
       required: ["name"],
     },
   },
   {
     name: "get_redesign_check",
-    description: "Fetch redesign check(s) matching a symptom snippet. Returns full fix + UI note. Use after `list_redesign_checks`.",
+    description:
+      "Fetch redesign check(s) matching a symptom snippet. Returns full fix + UI note. Use after `list_redesign_checks`.",
     inputSchema: {
       type: "object",
-      properties: { symptom: { type: "string", description: "Fragment of the symptom text (e.g. 'Inter everywhere' / '100vh')." } },
+      properties: {
+        symptom: {
+          type: "string",
+          description: "Fragment of the symptom text (e.g. 'Inter everywhere' / '100vh').",
+        },
+      },
       required: ["symptom"],
     },
   },
@@ -108,10 +150,13 @@ export const TOOL_DEFINITIONS = [
   },
   {
     name: "get_component",
-    description: "Full API for one @godxjp/ui component — props, types, default, example, story + doc paths, cardinal rules. ~2KB.",
+    description:
+      "Full guide for one @godxjp/ui component — import path, props/types/defaults, HOW to use it (DO/DON'T), WHEN to reach for it (use cases), related components (don't reinvent/confuse), a copy-paste example, story path, and cardinal rules. Use this before hand-rolling anything.",
     inputSchema: {
       type: "object",
-      properties: { name: { type: "string", description: "Component name (e.g. 'Button', 'DataTable')." } },
+      properties: {
+        name: { type: "string", description: "Component name (e.g. 'Button', 'DataTable')." },
+      },
       required: ["name"],
     },
   },
@@ -120,7 +165,9 @@ export const TOOL_DEFINITIONS = [
     description: "Full code snippet for one canonical pattern — copy-paste-ready.",
     inputSchema: {
       type: "object",
-      properties: { name: { type: "string", description: "Pattern slug (use list_patterns first)." } },
+      properties: {
+        name: { type: "string", description: "Pattern slug (use list_patterns first)." },
+      },
       required: ["name"],
     },
   },
@@ -134,7 +181,8 @@ export const TOOL_DEFINITIONS = [
   },
   {
     name: "get_vocab",
-    description: "Read shared prop-vocabulary type (`SizeProp`, `StatusProp`, `ColorProp`, `LoadingProp`, etc.) OR all if no name.",
+    description:
+      "Read shared prop-vocabulary type (`SizeProp`, `StatusProp`, `ColorProp`, `LoadingProp`, etc.) OR all if no name.",
     inputSchema: {
       type: "object",
       properties: { name: { type: "string", description: "Vocab type name." } },
@@ -146,7 +194,20 @@ export const TOOL_DEFINITIONS = [
     inputSchema: {
       type: "object",
       properties: {
-        category: { type: "string", enum: ["color", "spacing", "typography", "radius", "shadow", "motion", "breakpoint", "density", "z-index"] },
+        category: {
+          type: "string",
+          enum: [
+            "color",
+            "spacing",
+            "typography",
+            "radius",
+            "shadow",
+            "motion",
+            "breakpoint",
+            "density",
+            "z-index",
+          ],
+        },
       },
     },
   },
@@ -195,33 +256,48 @@ export const TOOL_DEFINITIONS = [
   },
 ];
 
-export async function dispatchTool(
-  name: string,
-  args: Record<string, unknown>,
-): Promise<string> {
+export async function dispatchTool(name: string, args: Record<string, unknown>): Promise<string> {
   switch (name) {
     // Discovery
-    case "list_skills":          return listSkills();
-    case "list_primitives":      return listPrimitives(args.group as ComponentGroup | undefined);
-    case "list_patterns":        return listPatterns();
-    case "list_anti_ai_tells":   return listAntiAiTells(args.category as AiTell["category"] | undefined);
-    case "list_redesign_checks": return listRedesignChecks(args.category as AuditCheck["category"] | undefined);
-    case "get_anti_ai_tell":     return getAntiAiTell(String(args.name ?? ""));
-    case "get_redesign_check":   return getRedesignCheck(String(args.symptom ?? ""));
+    case "list_skills":
+      return listSkills();
+    case "list_primitives":
+      return listPrimitives(args.group as ComponentGroup | undefined);
+    case "list_patterns":
+      return listPatterns();
+    case "list_anti_ai_tells":
+      return listAntiAiTells(args.category as AiTell["category"] | undefined);
+    case "list_redesign_checks":
+      return listRedesignChecks(args.category as AuditCheck["category"] | undefined);
+    case "get_anti_ai_tell":
+      return getAntiAiTell(String(args.name ?? ""));
+    case "get_redesign_check":
+      return getRedesignCheck(String(args.symptom ?? ""));
     // Drill-down
-    case "get_skill_section":    return getSkillSection(String(args.skill ?? ""), String(args.section ?? ""));
-    case "get_component":        return getComponent(String(args.name ?? ""));
-    case "get_pattern":          return getPattern(String(args.name ?? ""));
-    case "get_rule":             return getRule(typeof args.number === "number" ? args.number : undefined);
-    case "get_vocab":            return getVocab(args.name as string | undefined);
-    case "get_tokens":           return getTokens(args.category as TokenCategory | undefined);
+    case "get_skill_section":
+      return getSkillSection(String(args.skill ?? ""), String(args.section ?? ""));
+    case "get_component":
+      return getComponent(String(args.name ?? ""));
+    case "get_pattern":
+      return getPattern(String(args.name ?? ""));
+    case "get_rule":
+      return getRule(typeof args.number === "number" ? args.number : undefined);
+    case "get_vocab":
+      return getVocab(args.name as string | undefined);
+    case "get_tokens":
+      return getTokens(args.category as TokenCategory | undefined);
     // Task routing
-    case "route_task":           return routeTaskTool(String(args.task ?? ""));
-    case "suggest_primitive":    return suggestPrimitive(String(args.use_case ?? ""));
-    case "search_components":    return searchComponents(String(args.query ?? ""));
+    case "route_task":
+      return routeTaskTool(String(args.task ?? ""));
+    case "suggest_primitive":
+      return suggestPrimitive(String(args.use_case ?? ""));
+    case "search_components":
+      return searchComponents(String(args.query ?? ""));
     // Lint
-    case "lint_jsx":             return lintJsx(String(args.jsx ?? ""));
-    default:                     return `Unknown tool: ${name}`;
+    case "lint_jsx":
+      return lintJsx(String(args.jsx ?? ""));
+    default:
+      return `Unknown tool: ${name}`;
   }
 }
 
@@ -235,7 +311,10 @@ function listSkills(): string {
     out += `**When to use:** ${s.whenToUse}\n\n`;
     out += `**Sections:** ${s.sections.map((sec) => `\`${sec.id}\``).join(", ")}\n\n`;
   }
-  out += `\n_Source: ${SKILLS.map((s) => s.source).filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).join("; ")}, …_`;
+  out += `\n_Source: ${SKILLS.map((s) => s.source)
+    .filter((v, i, a) => a.indexOf(v) === i)
+    .slice(0, 3)
+    .join("; ")}, …_`;
   return out;
 }
 
@@ -313,7 +392,8 @@ function listRedesignChecks(cat?: AuditCheck["category"]): string {
 
 function getRedesignCheck(snippet: string): string {
   const q = snippet.trim().toLowerCase();
-  if (!q) return "Pass `symptom` — a fragment matching the audit check symptom (e.g. 'Inter everywhere' / '100vh' / 'Acme').";
+  if (!q)
+    return "Pass `symptom` — a fragment matching the audit check symptom (e.g. 'Inter everywhere' / '100vh' / 'Acme').";
   const matches = REDESIGN_CHECKS.filter(
     (c) => c.symptom.toLowerCase().includes(q) || c.fix.toLowerCase().includes(q),
   );
@@ -348,7 +428,8 @@ function getComponent(name: string): string {
   const c = findComponent(name);
   if (!c) return `Component "${name}" not found. Use \`list_primitives\` to discover.`;
   let out = `# ${c.name}\n\n**Group:** ${c.group}`;
-  out += `  ·  **Import:** \`import { ${c.name} } from "@godxjp/ui/${c.group === "providers" ? "app" : c.group}"\`\n\n`;
+  const importPath = c.importPath ?? `@godxjp/ui/${c.group === "providers" ? "app" : c.group}`;
+  out += `  ·  **Import:** \`import { ${c.name} } from "${importPath}"\`\n\n`;
   if (c.deprecated) {
     out += `> ⚠️ **DEPRECATED.** Kept catalogued so you're steered to the replacement — see the tagline / Related below. Do not use in new code.\n\n`;
   }
@@ -433,14 +514,16 @@ function getTokens(cat?: TokenCategory): string {
   }, {});
   for (const [c, items] of Object.entries(grouped)) {
     out += `## ${c}\n\n| Name | Role | Value | Axis |\n|---|---|---|---|\n`;
-    for (const t of items) out += `| \`${t.name}\` | ${t.role} | ${t.value ?? "—"} | ${t.axis ?? "—"} |\n`;
+    for (const t of items)
+      out += `| \`${t.name}\` | ${t.role} | ${t.value ?? "—"} | ${t.axis ?? "—"} |\n`;
     out += "\n";
   }
   return out;
 }
 
 function routeTaskTool(task: string): string {
-  if (!task.trim()) return "Describe the task (e.g. 'design a premium agency hero', 'audit existing settings page').";
+  if (!task.trim())
+    return "Describe the task (e.g. 'design a premium agency hero', 'audit existing settings page').";
   const results = routeTask(task);
   let out = `# Routing "${task}"\n\n`;
   for (const r of results) {
@@ -458,17 +541,48 @@ function suggestPrimitive(useCase: string): string {
   const check = (kw: string[], component: string, rationale: string, weight = 2) => {
     if (kw.some((k) => q.includes(k))) suggestions.push({ component, rationale, score: weight });
   };
-  check(["form", "submit", "validation", "register", "sign up"], "Form + FormField", "RHF + zod composition.", 5);
-  check(["table", "rows", "columns"], "DataTable / Table", "DataTable for chrome (toolbar+pagination+batch). Table for slim primitive.", 5);
-  check(["modal", "dialog", "confirm"], "Dialog / AlertDialog", "Radix Dialog. AlertDialog for destructive.", 4);
+  check(
+    ["form", "submit", "validation", "register", "sign up"],
+    "Form + FormField",
+    "RHF + zod composition.",
+    5,
+  );
+  check(
+    ["table", "rows", "columns"],
+    "DataTable / Table",
+    "DataTable for chrome (toolbar+pagination+batch). Table for slim primitive.",
+    5,
+  );
+  check(
+    ["modal", "dialog", "confirm"],
+    "Dialog / AlertDialog",
+    "Radix Dialog. AlertDialog for destructive.",
+    4,
+  );
   check(["drawer", "side panel", "sheet"], "Sheet", "Side panel for filters/settings.", 4);
   check(["toast", "notification"], "toast / Toaster", "Sonner-backed.", 4);
-  check(["loading", "saving", "spinner"], "Spinner / Form loading prop", "Spinner=active work, Skeleton=init fetch.", 3);
+  check(
+    ["loading", "saving", "spinner"],
+    "Spinner / Form loading prop",
+    "Spinner=active work, Skeleton=init fetch.",
+    3,
+  );
   check(["alert", "banner"], "Alert", "5 semantic colors × outlined/banner.", 3);
-  check(["select", "dropdown"], "Select / AutoComplete", "Select=discrete options, AutoComplete=free-text+suggestions.", 3);
+  check(
+    ["select", "dropdown"],
+    "Select / AutoComplete",
+    "Select=discrete options, AutoComplete=free-text+suggestions.",
+    3,
+  );
   check(["filter"], "Form layout='inline' + pattern 'filter-bar'", "Inline form above table.", 4);
-  check(["delete", "destructive"], "Pattern 'confirm-destructive'", "Card accent='destructive' + typed-name confirm.", 4);
-  if (!suggestions.length) return `No direct match for "${useCase}". Try \`list_primitives\` or \`search_components\`.`;
+  check(
+    ["delete", "destructive"],
+    "Pattern 'confirm-destructive'",
+    "Card accent='destructive' + typed-name confirm.",
+    4,
+  );
+  if (!suggestions.length)
+    return `No direct match for "${useCase}". Try \`list_primitives\` or \`search_components\`.`;
   suggestions.sort((a, b) => b.score - a.score);
   let out = `# Suggestions for "${useCase}"\n\n`;
   for (const s of suggestions) out += `- **${s.component}** — ${s.rationale}\n`;
@@ -490,40 +604,84 @@ function searchComponents(query: string): string {
     .slice(0, 12);
   if (!matches.length) return `No matches for "${query}".`;
   let out = `# Search "${query}" — ${matches.length} matches\n\n`;
-  for (const { c, score } of matches) out += `- **${c.name}** (${c.group}, ${score}) — ${c.tagline}\n`;
+  for (const { c, score } of matches)
+    out += `- **${c.name}** (${c.group}, ${score}) — ${c.tagline}\n`;
   return out;
 }
 
 function lintJsx(jsx: string): string {
   const issues: string[] = [];
-  const check = (regex: RegExp, msg: string) => { if (regex.test(jsx)) issues.push(msg); };
+  const check = (regex: RegExp, msg: string) => {
+    if (regex.test(jsx)) issues.push(msg);
+  };
   // Lowercase HTML tags only — React PascalCase (Button) MUST NOT match.
   check(/<button[\s>]/, "Use `<Button>` instead of raw `<button>` (rule 29).");
   check(/<input[\s>]/, "Use `<Input>` instead of raw `<input>` (rule 29).");
   check(/<select[\s>]/, "Use `<Select>` instead of raw `<select>` (rule 29).");
   check(/<textarea[\s>]/, "Use `<Textarea>` instead of raw `<textarea>` (rule 29).");
-  check(/bg-(red|blue|green|yellow|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/, "Use semantic token utilities (`bg-primary`/`bg-destructive`) not raw color scales (rule 2).");
-  check(/<Tag[\s\S]*?color=["']error["']/i, 'Tag `color="error"` → `"destructive"` (v5.0, PR #60).');
-  check(/<Badge[\s\S]*?variant=["']error["']/i, 'Badge `variant="error"` → `"destructive"` (v5.0, PR #63).');
-  check(/(Flex|Space|Grid|Masonry)[\s\S]*?(gap|size)=["']middle["']/i, '`"middle"` → `"default"` for Flex/Space/Grid/Masonry (v5.0).');
+  check(
+    /bg-(red|blue|green|yellow|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/,
+    "Use semantic token utilities (`bg-primary`/`bg-destructive`) not raw color scales (rule 2).",
+  );
+  check(
+    /<Tag[\s\S]*?color=["']error["']/i,
+    'Tag `color="error"` → `"destructive"` (v5.0, PR #60).',
+  );
+  check(
+    /<Badge[\s\S]*?variant=["']error["']/i,
+    'Badge `variant="error"` → `"destructive"` (v5.0, PR #63).',
+  );
+  check(
+    /(Flex|Space|Grid|Masonry)[\s\S]*?(gap|size)=["']middle["']/i,
+    '`"middle"` → `"default"` for Flex/Space/Grid/Masonry (v5.0).',
+  );
   check(/<IconButton[\s\S]*?size=["']default["']/i, 'IconButton `size="default"` → `"md"` (v5.0).');
-  check(/<SegmentedControl[\s\S]*?size=["']sm["']/i, 'SegmentedControl `size="sm"` → `"small"` (v5.0).');
-  check(/<PageContent[\s\S]*?padding=["'](compact|comfortable)["']/i, 'PageContent `padding="compact"/"comfortable"` → `"tight"/"cozy"` (v5.0).');
-  check(/<Pagination[\s\S]*?justify=["']between["']/i, 'Pagination `justify="between"` → `"space-between"` (v5.0).');
+  check(
+    /<SegmentedControl[\s\S]*?size=["']sm["']/i,
+    'SegmentedControl `size="sm"` → `"small"` (v5.0).',
+  );
+  check(
+    /<PageContent[\s\S]*?padding=["'](compact|comfortable)["']/i,
+    'PageContent `padding="compact"/"comfortable"` → `"tight"/"cozy"` (v5.0).',
+  );
+  check(
+    /<Pagination[\s\S]*?justify=["']between["']/i,
+    'Pagination `justify="between"` → `"space-between"` (v5.0).',
+  );
   if (/<IconButton(?![^>]*aria-label)/i.test(jsx) && !/asChild/i.test(jsx)) {
     issues.push("`<IconButton>` should have `aria-label` (rule 6 — WCAG).");
   }
-  if (/cell:\s*\(\{?\s*row\s*\}?\)\s*=>/i.test(jsx) && /export\s+const\s+\w+\s*:\s*Story/i.test(jsx)) {
+  if (
+    /cell:\s*\(\{?\s*row\s*\}?\)\s*=>/i.test(jsx) &&
+    /export\s+const\s+\w+\s*:\s*Story/i.test(jsx)
+  ) {
     if (!/parameters[\s\S]{0,200}source[\s\S]{0,100}code:/i.test(jsx)) {
-      issues.push("Stories with function-valued cell renderers MUST override `parameters.docs.source.code` (rule 34).");
+      issues.push(
+        "Stories with function-valued cell renderers MUST override `parameters.docs.source.code` (rule 34).",
+      );
     }
   }
   // Anti-AI tells
-  if (/text-(red|blue|green|yellow)-\d{2,3}\b/.test(jsx)) issues.push("Hard-coded color scales — use semantic tokens. Tells AI-slop palette (rule 2 + anti-AI-tells.visual.rainbow-chip-wall).");
-  if (/h-\[?100vh\]?/.test(jsx)) issues.push("`100vh` causes iOS Safari viewport jump — use `min-h-[100dvh]` (redesign.layout / soft.absolute-zero).");
-  if (/className=["'][^"']*(?:shadow-md|shadow-lg|shadow-xl)["']/.test(jsx)) issues.push("Tailwind heavy shadows are an AI tell — use ultra-diffuse low-opacity (< 0.05) or tinted shadows (soft.absolute-zero, minimalist).");
-  if (/Inter|Roboto|Helvetica|Open\s*Sans/i.test(jsx)) issues.push("Banned default fonts (Inter/Roboto/Helvetica/Open Sans). Use Geist/Clash Display/PP Editorial New (soft.absolute-zero, minimalist.negative-constraints).");
-  if (/Acme|NovaCore|Flowbit|Quantix|VeloPay|John\s+Doe|Jane\s+Smith|Lorem\s+Ipsum/i.test(jsx)) issues.push("Generic placeholder content (Acme/NovaCore/John Doe/Lorem Ipsum). Use believable real-sounding names (anti-AI-tells.copy).");
+  if (/text-(red|blue|green|yellow)-\d{2,3}\b/.test(jsx))
+    issues.push(
+      "Hard-coded color scales — use semantic tokens. Tells AI-slop palette (rule 2 + anti-AI-tells.visual.rainbow-chip-wall).",
+    );
+  if (/h-\[?100vh\]?/.test(jsx))
+    issues.push(
+      "`100vh` causes iOS Safari viewport jump — use `min-h-[100dvh]` (redesign.layout / soft.absolute-zero).",
+    );
+  if (/className=["'][^"']*(?:shadow-md|shadow-lg|shadow-xl)["']/.test(jsx))
+    issues.push(
+      "Tailwind heavy shadows are an AI tell — use ultra-diffuse low-opacity (< 0.05) or tinted shadows (soft.absolute-zero, minimalist).",
+    );
+  if (/Inter|Roboto|Helvetica|Open\s*Sans/i.test(jsx))
+    issues.push(
+      "Banned default fonts (Inter/Roboto/Helvetica/Open Sans). Use Geist/Clash Display/PP Editorial New (soft.absolute-zero, minimalist.negative-constraints).",
+    );
+  if (/Acme|NovaCore|Flowbit|Quantix|VeloPay|John\s+Doe|Jane\s+Smith|Lorem\s+Ipsum/i.test(jsx))
+    issues.push(
+      "Generic placeholder content (Acme/NovaCore/John Doe/Lorem Ipsum). Use believable real-sounding names (anti-AI-tells.copy).",
+    );
   if (issues.length === 0) return "✅ No issues found against the heuristic checks.";
   let out = `# Lint findings — ${issues.length} issue${issues.length === 1 ? "" : "s"}\n\n`;
   for (const i of issues) out += `- ${i}\n`;

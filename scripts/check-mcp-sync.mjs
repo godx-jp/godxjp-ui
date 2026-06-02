@@ -32,7 +32,12 @@ function libExports() {
         }
         for (const m of src.matchAll(/export\s+\{([^}]+)\}/g)) {
           for (const part of m[1].split(",")) {
-            const name = part.trim().replace(/^type\s+/, "").split(/\s+as\s+/).pop()?.trim();
+            const name = part
+              .trim()
+              .replace(/^type\s+/, "")
+              .split(/\s+as\s+/)
+              .pop()
+              ?.trim();
             if (name && /^[A-Z][A-Za-z0-9]*$/.test(name)) names.add(name);
           }
         }
@@ -44,18 +49,24 @@ function libExports() {
 }
 
 const exported = libExports();
-const mcpNames = [...readFileSync(MCP_DATA, "utf8").matchAll(/name:\s*"([A-Z][A-Za-z0-9]*)"/g)].map(
-  (m) => m[1],
-);
+// Anchor on the entry-level `name:` field (4-space indent) so sample data inside
+// examples/props (e.g. `{ name: "Vietnam" }`) is not mistaken for a catalog entry.
+const mcpNames = [
+  ...readFileSync(MCP_DATA, "utf8").matchAll(/^    name: "([A-Z][A-Za-z0-9]*)"/gm),
+].map((m) => m[1]);
 
 const stale = [...new Set(mcpNames)].filter((name) => !exported.has(name));
 
 if (process.argv.includes("--json")) {
   process.stdout.write(JSON.stringify({ stale }, null, 2) + "\n");
 } else if (stale.length === 0) {
-  console.log(`✓ MCP registry in sync — all ${new Set(mcpNames).size} catalogued components exist in the library.`);
+  console.log(
+    `✓ MCP registry in sync — all ${new Set(mcpNames).size} catalogued components exist in the library.`,
+  );
 } else {
-  console.error(`✗ ${stale.length} @godxjp/ui-mcp entr(ies) name a component the library no longer exports (drift):`);
+  console.error(
+    `✗ ${stale.length} @godxjp/ui-mcp entr(ies) name a component the library no longer exports (drift):`,
+  );
   for (const name of stale) {
     console.error(`  "${name}" — renamed/removed? update mcp/src/data/components.ts`);
   }
