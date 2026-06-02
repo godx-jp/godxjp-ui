@@ -16,16 +16,21 @@
   },
   "dataEntry": {
     "datePicker": {
-      "placeholder": "Select date"
+      "placeholder": "Select date",
+      "openCalendar": "Open calendar"
     },
     "dateRangePicker": {
-      "placeholder": "Select date range"
+      "placeholder": "Select date range",
+      "from": "From",
+      "to": "To",
+      "openCalendar": "Open calendar"
     },
     "timePicker": {
       "placeholder": "Select time",
       "hour": "Hour",
       "minute": "Minute",
-      "typeLabel": "Type time HH:mm"
+      "typeLabel": "Type time HH:mm",
+      "openPicker": "Open time picker"
     },
     "searchInput": {
       "placeholder": "Search…"
@@ -74,6 +79,13 @@
       "empty": "No data",
       "moveRight": "Move to target",
       "moveLeft": "Move to source"
+    },
+    "searchSelect": {
+      "placeholder": "Select…",
+      "search": "Search",
+      "clear": "Clear selection",
+      "loading": "Loading…",
+      "empty": "No results"
     }
   },
   "feedback": {
@@ -140,7 +152,9 @@
     "densityCompact": "Compact",
     "densityComfortable": "Comfortable",
     "densitySwitch": "Switch to {density} density",
-    "rowActions": "Row actions"
+    "rowActions": "Row actions",
+    "empty": "No data",
+    "loading": "Loading…"
   },
   "status": {
     "active": "Active",

@@ -101,6 +101,36 @@ describe("DataTable", () => {
     expect(screen.getByRole("button", { name: "Xóa" })).toBeInTheDocument();
   });
 
+  it("shows a built-in empty state when there are no rows (never a bare header)", () => {
+    renderWithUi(
+      <DataTable data={[] as Row[]} columns={[...columns]} getRowId={(row) => row.id} />,
+    );
+    // Headers still render, but the body shows the default EmptyState, not a blank table.
+    expect(screen.getByRole("columnheader", { name: "Khách hàng" })).toBeInTheDocument();
+    expect(screen.getByText("Chưa có dữ liệu")).toBeInTheDocument();
+  });
+
+  it("renders a custom empty node when provided", () => {
+    renderWithUi(
+      <DataTable
+        data={[] as Row[]}
+        columns={[...columns]}
+        getRowId={(row) => row.id}
+        empty={<div>Không có khách hàng nào</div>}
+      />,
+    );
+    expect(screen.getByText("Không có khách hàng nào")).toBeInTheDocument();
+    expect(screen.queryByText("Chưa có dữ liệu")).not.toBeInTheDocument();
+  });
+
+  it("shows a loading row instead of data/empty when loading", () => {
+    renderWithUi(
+      <DataTable data={[] as Row[]} columns={[...columns]} getRowId={(row) => row.id} loading />,
+    );
+    expect(screen.getByText("Đang tải…")).toBeInTheDocument();
+    expect(screen.queryByText("Chưa có dữ liệu")).not.toBeInTheDocument();
+  });
+
   it("flags an empty-header column with data-empty so its header band auto-hides", () => {
     const { container } = renderWithUi(
       <DataTable

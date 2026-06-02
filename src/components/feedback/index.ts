@@ -51,3 +51,5 @@ export type {
   AlertQueryErrorProp,
   AlertQueryErrorProps,
 } from "./alert";
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./tooltip";

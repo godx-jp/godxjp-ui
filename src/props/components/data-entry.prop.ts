@@ -10,10 +10,12 @@ import type { UploadFileItem } from "../../components/data-entry/upload-types";
 import type {
   ClassNameProp,
   DisabledProp,
+  EmptyMessageProp,
   ErrorProp,
   HelperProp,
   IdProp,
   LabelProp,
+  NameProp,
   OnChangeProp,
   OnSearchChangeProp,
   PlaceholderProp,
@@ -71,7 +73,7 @@ export type CheckboxGroupProp = {
   options?: ChoiceOptionProp[];
   orientation?: "horizontal" | "vertical";
   disabled?: DisabledProp;
-  name?: string;
+  name?: NameProp;
   className?: ClassNameProp;
   children?: React.ReactNode;
 };
@@ -84,7 +86,7 @@ export type RadioGroupProp = {
   options?: ChoiceOptionProp[];
   orientation?: "horizontal" | "vertical";
   disabled?: DisabledProp;
-  name?: string;
+  name?: NameProp;
   className?: ClassNameProp;
   children?: React.ReactNode;
 };
@@ -101,7 +103,7 @@ export type SwitchProp = React.ComponentPropsWithoutRef<typeof SwitchPrimitive.R
 export type SwitchFieldProp = {
   id: IdProp;
   label: LabelProp;
-  name: string;
+  name: NameProp;
   required?: RequiredProp;
   helper?: HelperProp;
   error?: ErrorProp;
@@ -135,7 +137,7 @@ export type CountryOptionLabelProp = {
 /** @see CountrySelect — country picker built on Select. */
 export type CountrySelectProp = {
   id: IdProp;
-  name: string;
+  name: NameProp;
   options: CountryOptionProp[];
   defaultValue?: string | null;
   required?: RequiredProp;
@@ -159,6 +161,8 @@ export type DatePickerProp = {
   disabled?: DisabledProp;
   className?: ClassNameProp;
   id?: IdProp;
+  /** Form field name — emits the value as an ISO-8601 `yyyy-MM-dd` string for native submission. */
+  name?: NameProp;
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;
@@ -172,6 +176,8 @@ export type DateRangePickerProp = {
   disabled?: DisabledProp;
   className?: ClassNameProp;
   id?: IdProp;
+  /** Form field name — emits the range as `${name}_from` / `${name}_to` ISO `yyyy-MM-dd` fields. */
+  name?: NameProp;
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;
@@ -186,6 +192,8 @@ export type TimePickerProp = {
   disabled?: DisabledProp;
   className?: ClassNameProp;
   id?: IdProp;
+  /** Form field name — emits the value as a canonical 24h `HH:mm` string for native submission. */
+  name?: NameProp;
   /** Minute column step — default 5 (logistics cut-offs). */
   minuteStep?: number;
 };
@@ -206,17 +214,85 @@ export type AutocompleteOptionProp = {
   label: string;
 };
 
-/** @see Autocomplete — searchable combobox. */
+/**
+ * @see Autocomplete — searchable combobox over a static list.
+ * @deprecated Use `SearchSelect` with a static `options` array — it is a superset (grouping,
+ *   sublabels, async, custom render). `Autocomplete` is kept as a thin compatibility wrapper.
+ */
 export type AutocompleteProp = {
   options: AutocompleteOptionProp[];
   value?: ValueProp;
   onValueChange?: (value: string) => void;
   placeholder?: PlaceholderProp;
   searchPlaceholder?: PlaceholderProp;
-  emptyMessage?: string;
+  emptyMessage?: EmptyMessageProp;
   disabled?: DisabledProp;
   className?: ClassNameProp;
   id?: IdProp;
+};
+
+/** A SearchSelect option row. `group` buckets it under an optgroup-style heading. */
+export type SearchSelectOptionProp = {
+  value: string;
+  label: string;
+  sublabel?: string;
+  /** Optgroup-style heading this option belongs to (rendered once, in first-seen order). */
+  group?: string;
+  disabled?: boolean;
+};
+
+export type SearchSelectLoadParamsProp = {
+  query: string;
+  /** 1-based page for infinite scroll. */
+  page: number;
+};
+
+export type SearchSelectLoadResultProp = {
+  options: SearchSelectOptionProp[];
+  /** True if another page is available (drives infinite scroll). */
+  hasMore?: boolean;
+};
+
+/**
+ * @see SearchSelect — searchable, optionally grouped single-select combobox (static or async).
+ * @deprecated Prefer `<Select options|loadOptions showSearch …/>` — `Select` is now the single
+ *   data-driven entry point and uses this engine internally. `SearchSelect` stays exported.
+ */
+export type SearchSelectProp = {
+  value?: ValueProp;
+  onChange?: (value: string, option?: SearchSelectOptionProp) => void;
+  /** Static option list (client-side filtered). Provide this OR `loadOptions`, not both. */
+  options?: SearchSelectOptionProp[];
+  /** Remote fetcher — debounced search + infinite-scroll pagination call into this. Provide this
+   *  OR `options`. */
+  loadOptions?: (params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>;
+  /** Custom per-option renderer (Ant-Design style). Defaults to label + optional sublabel. */
+  renderOption?: (option: SearchSelectOptionProp) => React.ReactNode;
+  /** Label for the current value when its option isn't in the loaded page (avoids a flash of id). */
+  selectedLabel?: string;
+  placeholder?: PlaceholderProp;
+  searchPlaceholder?: PlaceholderProp;
+  emptyMessage?: EmptyMessageProp;
+  loadingMessage?: string;
+  clearLabel?: string;
+  /** Show a "clear" row when a value is selected (default true). */
+  clearable?: boolean;
+  disabled?: DisabledProp;
+  /** Form field name — submits the selected value via a hidden input. */
+  name?: NameProp;
+  id?: IdProp;
+  className?: ClassNameProp;
+  "data-testid"?: string;
+};
+
+/**
+ * Data-driven (Ant-style) form of {@link Select} — one component covering static `options` or
+ * async `loadOptions`, with `showSearch` toggling the searchable combobox vs a plain listbox.
+ * Passing `options`/`loadOptions` to `<Select>` switches it from the compound API to this one.
+ */
+export type SelectDataProp = SearchSelectProp & {
+  /** Show the search box (combobox). Defaults to true when `loadOptions` is set, otherwise false. */
+  showSearch?: boolean;
 };
 
 /** @see UploadFileItem */

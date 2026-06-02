@@ -44,6 +44,13 @@ export { ColorPicker } from "./color-picker";
 export type { ColorPickerProps } from "./color-picker";
 export { Autocomplete } from "./autocomplete";
 export type { AutocompleteProps } from "./autocomplete";
+export { SearchSelect } from "./search-select";
+export type {
+  SearchSelectProps,
+  SearchSelectOption,
+  SearchSelectLoadParamsProp,
+  SearchSelectLoadResultProp,
+} from "./search-select";
 export { Upload, collectUploadCommitActions, createUploadItem, useUploadDraft } from "./upload";
 export type { UploadProps, UploadFileItem, UploadVariant, UploadCommitAction } from "./upload";
 export { Cascader } from "./cascader";

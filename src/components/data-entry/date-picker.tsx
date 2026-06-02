@@ -1,9 +1,10 @@
 import * as React from "react";
 import { CalendarIcon } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
-import { formatDate } from "../../lib/datetime";
+import { parseDateInput, toIsoDate } from "../../lib/datetime/parse";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
+import { Input } from "./input";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
 import type { DatePickerProp } from "../../props/components/data-entry.prop";
@@ -13,6 +14,14 @@ export type {
   DatePickerProp as DatePickerProps,
 } from "../../props/components/data-entry.prop";
 
+const ISO_HINT = "yyyy-mm-dd";
+
+/**
+ * DatePicker — WAI-ARIA date combobox. A real, typeable `<input>` holds the value as an
+ * ISO-8601 `yyyy-MM-dd` string (the international standard): it is form-submittable (give it a
+ * `name`), screen-reader friendly, and e2e-testable by simply filling the input. The calendar
+ * popover is the visual affordance; typing and the calendar stay in sync.
+ */
 export function DatePicker({
   value,
   onChange,
@@ -20,6 +29,7 @@ export function DatePicker({
   disabled,
   className,
   id,
+  name,
   locale: localeProp,
   fromDate,
   toDate,
@@ -27,43 +37,86 @@ export function DatePicker({
   const { t } = useTranslation();
   const { dayPickerLocale } = usePickerLocales(localeProp);
   const [open, setOpen] = React.useState(false);
-  const resolvedPlaceholder = placeholder ?? t("dataEntry.datePicker.placeholder");
+  // Local text mirrors the input while the user types a (possibly incomplete) date; the committed
+  // value flows back through `onChange`. Kept in sync whenever the controlled `value` changes.
+  const [text, setText] = React.useState(() => toIsoDate(value));
+
+  React.useEffect(() => {
+    setText(toIsoDate(value));
+  }, [value]);
+
+  const resolvedPlaceholder = placeholder ?? t("dataEntry.datePicker.placeholder") ?? ISO_HINT;
+
+  const commit = (raw: string) => {
+    const trimmed = raw.trim();
+    if (trimmed === "") {
+      onChange?.(undefined);
+      return;
+    }
+    const parsed = parseDateInput(trimmed);
+    if (parsed) {
+      onChange?.(parsed);
+    }
+  };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          id={id}
-          type="button"
-          variant="outline"
-          disabled={disabled}
-          className={cn(
-            "w-full justify-start text-left font-normal",
-            !value && "text-muted-foreground",
-            className,
-          )}
-        >
-          <CalendarIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
-          {value ? formatDate(value, { kind: "calendar" }) : resolvedPlaceholder}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={value}
-          onSelect={(date) => {
-            onChange?.(date);
-            setOpen(false);
-          }}
-          locale={dayPickerLocale}
-          disabled={[
-            ...(fromDate ? [{ before: fromDate }] : []),
-            ...(toDate ? [{ after: toDate }] : []),
-          ]}
-          startMonth={fromDate}
-          endMonth={toDate}
-        />
-      </PopoverContent>
-    </Popover>
+    <div className={cn("relative", className)}>
+      <Input
+        id={id}
+        name={name}
+        value={text}
+        disabled={disabled}
+        placeholder={resolvedPlaceholder}
+        inputMode="numeric"
+        autoComplete="off"
+        // Combobox semantics: the input owns the value, the calendar is a secondary popup.
+        role="combobox"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        className="pr-10"
+        onChange={(event) => {
+          setText(event.target.value);
+          commit(event.target.value);
+        }}
+        onBlur={(event) => {
+          // Normalise a valid entry back to canonical ISO; revert an unparseable one.
+          const parsed = parseDateInput(event.target.value.trim());
+          setText(parsed ? toIsoDate(parsed) : toIsoDate(value));
+        }}
+      />
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            disabled={disabled}
+            tabIndex={-1}
+            aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
+            className="text-muted-foreground absolute inset-y-0 right-0 h-full px-2 hover:bg-transparent"
+          >
+            <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="end">
+          <Calendar
+            mode="single"
+            selected={value}
+            onSelect={(date) => {
+              onChange?.(date);
+              setText(toIsoDate(date));
+              setOpen(false);
+            }}
+            locale={dayPickerLocale}
+            disabled={[
+              ...(fromDate ? [{ before: fromDate }] : []),
+              ...(toDate ? [{ after: toDate }] : []),
+            ]}
+            startMonth={fromDate}
+            endMonth={toDate}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }

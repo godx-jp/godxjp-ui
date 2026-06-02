@@ -16,16 +16,21 @@
   },
   "dataEntry": {
     "datePicker": {
-      "placeholder": "Chọn ngày"
+      "placeholder": "Chọn ngày",
+      "openCalendar": "Mở lịch"
     },
     "dateRangePicker": {
-      "placeholder": "Chọn khoảng ngày"
+      "placeholder": "Chọn khoảng ngày",
+      "from": "Từ",
+      "to": "Đến",
+      "openCalendar": "Mở lịch"
     },
     "timePicker": {
       "placeholder": "Chọn giờ",
       "hour": "Giờ",
       "minute": "Phút",
-      "typeLabel": "Nhập giờ HH:mm"
+      "typeLabel": "Nhập giờ HH:mm",
+      "openPicker": "Mở chọn giờ"
     },
     "searchInput": {
       "placeholder": "Tìm kiếm…"
@@ -74,6 +79,13 @@
       "empty": "Không có dữ liệu",
       "moveRight": "Chuyển sang đích",
       "moveLeft": "Chuyển về nguồn"
+    },
+    "searchSelect": {
+      "placeholder": "Chọn…",
+      "search": "Tìm kiếm",
+      "clear": "Xóa lựa chọn",
+      "loading": "Đang tải…",
+      "empty": "Không có kết quả"
     }
   },
   "feedback": {
@@ -140,7 +152,9 @@
     "densityCompact": "Gọn",
     "densityComfortable": "Thoải mái",
     "densitySwitch": "Chuyển sang mật độ {density}",
-    "rowActions": "Thao tác dòng"
+    "rowActions": "Thao tác dòng",
+    "empty": "Chưa có dữ liệu",
+    "loading": "Đang tải…"
   },
   "status": {
     "active": "Đang hoạt động",

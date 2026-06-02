@@ -2,7 +2,7 @@ import * as React from "react";
 import { Clock } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
-import { formatTimeOfDay, isValidHhmm, normalizeHhmm } from "../../lib/datetime";
+import { isValidHhmm, normalizeHhmm } from "../../lib/datetime";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -157,6 +157,11 @@ function TimePickerPanel({ value, minuteStep, onChange, onDone }: TimePickerPane
   );
 }
 
+/**
+ * TimePicker — WAI-ARIA time combobox. The value lives on a real, typeable `HH:mm` `<input>`
+ * (24h canonical): form-submittable (give it a `name`), screen-reader friendly, and e2e-testable
+ * by filling the input. The HH/mm column popover is the visual affordance and stays in sync.
+ */
 export function TimePicker({
   value: controlledValue,
   defaultValue,
@@ -165,6 +170,7 @@ export function TimePicker({
   disabled,
   className,
   id,
+  name,
   minuteStep = 5,
 }: TimePickerProp) {
   const { t } = useTranslation();
@@ -172,43 +178,71 @@ export function TimePicker({
   const [internal, setInternal] = React.useState(defaultValue ?? "");
   const isControlled = controlledValue !== undefined;
   const value = isControlled ? controlledValue : internal;
-  const resolvedPlaceholder = placeholder ?? t("dataEntry.timePicker.placeholder");
+  const resolvedPlaceholder = placeholder ?? t("dataEntry.timePicker.placeholder") ?? "hh:mm";
+  // Local text mirrors the input while typing; the canonical HH:mm flows out through onChange.
+  const [text, setText] = React.useState(value);
+
+  React.useEffect(() => {
+    setText(value);
+  }, [value]);
 
   const setValue = (next: string) => {
     if (!isControlled) setInternal(next);
     onChange?.(next);
   };
 
-  const display = value && isValidHhmm(value) ? formatTimeOfDay(value) : value || null;
-
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          id={id}
-          type="button"
-          variant="outline"
-          disabled={disabled}
-          className={cn(
-            "w-full justify-start text-left font-normal tabular-nums",
-            !display && "text-muted-foreground",
-            className,
-          )}
-        >
-          <Clock className="mr-2 size-4 shrink-0" aria-hidden="true" />
-          {display ?? resolvedPlaceholder}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <TimePickerPanel
-          value={value || "09:00"}
-          minuteStep={minuteStep}
-          onChange={setValue}
-          onDone={() => {
-            setOpen(false);
-          }}
-        />
-      </PopoverContent>
-    </Popover>
+    <div className={cn("relative", className)}>
+      <Input
+        id={id}
+        name={name}
+        value={text}
+        disabled={disabled}
+        placeholder={resolvedPlaceholder}
+        inputMode="numeric"
+        autoComplete="off"
+        role="combobox"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        className="pr-10 tabular-nums"
+        onChange={(event) => {
+          setText(event.target.value);
+          const normalized = normalizeHhmm(event.target.value);
+          if (normalized) setValue(normalized);
+        }}
+        onBlur={(event) => {
+          const normalized = normalizeHhmm(event.target.value);
+          setText(normalized ?? (isValidHhmm(value) ? value : ""));
+        }}
+      />
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            disabled={disabled}
+            tabIndex={-1}
+            aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
+            className="text-muted-foreground absolute inset-y-0 right-0 h-full px-2 hover:bg-transparent"
+          >
+            <Clock className="size-4 shrink-0" aria-hidden="true" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="end">
+          <TimePickerPanel
+            value={value || "09:00"}
+            minuteStep={minuteStep}
+            onChange={(next) => {
+              setValue(next);
+              setText(next);
+            }}
+            onDone={() => {
+              setOpen(false);
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }

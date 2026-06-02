@@ -144,6 +144,11 @@ export const VOCABULARY_REGISTRY = {
     category: "content",
     description: "Toolbar actions slot",
   },
+  EmptyMessageProp: {
+    file: "vocabulary/content.prop.ts",
+    category: "content",
+    description: "No-results / no-data message in lists, selects, empty states",
+  },
 
   // layout.prop.ts
   PageDensityProp: {
@@ -424,7 +429,58 @@ export const COMPONENT_PROP_REGISTRY = {
   AutocompleteProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["PlaceholderProp", "ValueProp", "DisabledProp", "IdProp"],
+    vocabulary: [
+      "PlaceholderProp",
+      "ValueProp",
+      "DisabledProp",
+      "IdProp",
+      "EmptyMessageProp",
+      "ClassNameProp",
+    ],
+    note: "Deprecated — a thin wrapper over SearchSelect (static options).",
+  },
+  SearchSelectProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "PlaceholderProp",
+      "EmptyMessageProp",
+      "DisabledProp",
+      "NameProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
+    note: "Deprecated — the searchable engine behind `<Select options showSearch>`; prefer Select.",
+  },
+  SelectDataProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "PlaceholderProp",
+      "EmptyMessageProp",
+      "DisabledProp",
+      "NameProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
+    note: "Ant-style data-driven form of Select (options|loadOptions + showSearch). One Select for all single-selects.",
+  },
+  SearchSelectOptionProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  SearchSelectLoadParamsProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
+  SearchSelectLoadResultProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
   },
   UploadProp: {
     group: "data-entry",

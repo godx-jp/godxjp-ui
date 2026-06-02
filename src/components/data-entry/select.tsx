@@ -3,8 +3,29 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { controlTriggerClass } from "../../lib/control-styles";
+import { SearchSelect } from "./search-select";
+import type {
+  SearchSelectOptionProp,
+  SelectDataProp,
+} from "../../props/components/data-entry.prop";
 
-export function Select(props: React.ComponentProps<typeof SelectPrimitive.Root>) {
+export type SelectProp = SelectDataProp | React.ComponentProps<typeof SelectPrimitive.Root>;
+
+function isDataSelect(props: SelectProp): props is SelectDataProp {
+  return "options" in props || "loadOptions" in props;
+}
+
+/**
+ * Select — one component for every single-select. Use the compound API for full control
+ * (`<Select><SelectTrigger/><SelectContent><SelectItem/></SelectContent></Select>`), OR the
+ * data-driven (Ant-style) API by passing `options` / `loadOptions`: `showSearch` toggles a
+ * searchable combobox (powered by SearchSelect) vs a plain no-search listbox; supports async,
+ * optgroup grouping, and `renderOption`.
+ */
+export function Select(props: SelectProp) {
+  if (isDataSelect(props)) {
+    return <DataSelect {...props} />;
+  }
   return <SelectPrimitive.Root data-slot="select" {...props} />;
 }
 
@@ -147,3 +168,113 @@ export const SelectSeparator = React.forwardRef<
   />
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
+
+// ── Data-driven (Ant-style) Select ─────────────────────────────────────────
+// Rendered when `<Select>` receives `options` / `loadOptions`. With search (or async) it
+// delegates to the SearchSelect combobox; without, it builds a plain Radix listbox from the
+// options (best keyboard support) with optgroup-style grouping + optional custom rendering.
+
+function groupDataOptions(options: SearchSelectOptionProp[]) {
+  const order: string[] = [];
+  const buckets = new Map<string, SearchSelectOptionProp[]>();
+  for (const option of options) {
+    const key = option.group ?? "";
+    if (!buckets.has(key)) {
+      buckets.set(key, []);
+      order.push(key);
+    }
+    buckets.get(key)!.push(option);
+  }
+  return order.map((key) => ({ heading: key || undefined, items: buckets.get(key) ?? [] }));
+}
+
+function DataSelect({
+  options = [],
+  loadOptions,
+  showSearch,
+  value = "",
+  onChange,
+  renderOption,
+  selectedLabel,
+  placeholder,
+  searchPlaceholder,
+  emptyMessage,
+  loadingMessage,
+  clearLabel,
+  clearable,
+  disabled,
+  name,
+  id,
+  className,
+  "data-testid": dataTestId,
+}: SelectDataProp) {
+  const searchable = showSearch ?? Boolean(loadOptions);
+
+  if (searchable) {
+    return (
+      <SearchSelect
+        value={value}
+        onChange={onChange}
+        options={options}
+        loadOptions={loadOptions}
+        renderOption={renderOption}
+        selectedLabel={selectedLabel}
+        placeholder={placeholder}
+        searchPlaceholder={searchPlaceholder}
+        emptyMessage={emptyMessage}
+        loadingMessage={loadingMessage}
+        clearLabel={clearLabel}
+        clearable={clearable}
+        disabled={disabled}
+        name={name}
+        id={id}
+        className={className}
+        data-testid={dataTestId}
+      />
+    );
+  }
+
+  const optionTestId = (optionValue: string) =>
+    dataTestId ? `${dataTestId}-option-${optionValue}` : undefined;
+  const renderItem = (option: SearchSelectOptionProp) => (
+    <SelectItem
+      key={option.value}
+      value={option.value}
+      disabled={option.disabled}
+      data-testid={optionTestId(option.value)}
+    >
+      {renderOption ? renderOption(option) : option.label}
+    </SelectItem>
+  );
+
+  return (
+    <SelectPrimitive.Root
+      data-slot="select"
+      value={value || undefined}
+      onValueChange={(next) =>
+        onChange?.(
+          next,
+          options.find((option) => option.value === next),
+        )
+      }
+      disabled={disabled}
+      name={name}
+    >
+      <SelectTrigger id={id} data-testid={dataTestId} className={className}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        {groupDataOptions(options).map((group) =>
+          group.heading ? (
+            <SelectGroup key={group.heading}>
+              <SelectLabel>{group.heading}</SelectLabel>
+              {group.items.map(renderItem)}
+            </SelectGroup>
+          ) : (
+            <React.Fragment key="__ungrouped">{group.items.map(renderItem)}</React.Fragment>
+          ),
+        )}
+      </SelectContent>
+    </SelectPrimitive.Root>
+  );
+}

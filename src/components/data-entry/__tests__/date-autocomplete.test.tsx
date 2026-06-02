@@ -14,18 +14,31 @@ describe("Calendar", () => {
 });
 
 describe("DatePicker", () => {
-  it("shows placeholder and opens calendar popover", async () => {
+  it("exposes a typeable combobox input and opens the calendar via the icon", async () => {
     const user = userEvent.setup();
     renderWithUi(<DatePicker placeholder="Chọn ngày ETD" />);
-    const trigger = screen.getByRole("button", { name: /chọn ngày etd/i });
-    expect(trigger).toBeInTheDocument();
-    await user.click(trigger);
+    // The value lives on a real, typeable input (WAI-ARIA date combobox) — not a button.
+    const input = screen.getByRole("combobox");
+    expect(input).toHaveAttribute("placeholder", "Chọn ngày ETD");
+    await user.click(screen.getByRole("button"));
     await waitFor(() => {
       expect(screen.getByRole("grid")).toBeInTheDocument();
     });
   });
 
-  it("calls onChange when a day is selected", async () => {
+  it("emits an ISO-8601 value when the user types, and submits as a form field", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithUi(<DatePicker name="etd" onChange={onChange} />);
+    const input = screen.getByRole<HTMLInputElement>("combobox");
+    await user.type(input, "2024-04-15");
+    expect(onChange).toHaveBeenCalled();
+    // Form-submittable: the input carries the name and the ISO value.
+    expect(input).toHaveAttribute("name", "etd");
+    expect(input.value).toBe("2024-04-15");
+  });
+
+  it("calls onChange when a day is selected from the calendar", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     renderWithUi(<DatePicker value={new Date(2026, 4, 1)} onChange={onChange} />);
@@ -39,15 +52,20 @@ describe("DatePicker", () => {
 });
 
 describe("DateRangePicker", () => {
-  it("renders trigger with formatted range", () => {
+  it("renders editable ISO inputs for the range edges and submits as form fields", () => {
     renderWithUi(
       <DateRangePicker
         value={{ from: new Date(2026, 4, 1), to: new Date(2026, 4, 10) }}
         onChange={() => undefined}
+        name="period"
       />,
     );
-    expect(screen.getByRole("button")).toHaveTextContent("01/05/2026");
-    expect(screen.getByRole("button")).toHaveTextContent("10/05/2026");
+    const from = screen.getByRole<HTMLInputElement>("textbox", { name: /from|từ|開始/i });
+    const to = screen.getByRole<HTMLInputElement>("textbox", { name: /to|đến|終了/i });
+    expect(from.value).toBe("2026-05-01");
+    expect(to.value).toBe("2026-05-10");
+    expect(from).toHaveAttribute("name", "period_from");
+    expect(to).toHaveAttribute("name", "period_to");
   });
 });
 

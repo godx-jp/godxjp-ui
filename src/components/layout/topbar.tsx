@@ -7,6 +7,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 
+import { DropdownMenu, DropdownMenuTrigger } from "../navigation/dropdown-menu";
 import type { TopbarProp } from "../../props/components/layout.prop";
 
 export type {
@@ -19,6 +20,8 @@ export type {
 export function Topbar({
   product,
   project,
+  productMenu,
+  projectMenu,
   onProductOpen,
   onProjectOpen,
   onSearchOpen,
@@ -30,6 +33,43 @@ export function Topbar({
   onNotificationsOpen,
   user,
 }: TopbarProp) {
+  const productChip = (
+    <button
+      type="button"
+      className="tb-chip"
+      aria-label={product.name}
+      onClick={productMenu ? undefined : onProductOpen}
+    >
+      <span
+        className="tb-chip-icon"
+        style={{ background: product.color ?? "hsl(var(--attention))" }}
+      >
+        {product.name[0]?.toUpperCase() ?? "?"}
+      </span>
+      <span className="tb-chip-label">{product.name}</span>
+      <span className="tb-chip-caret">
+        <ChevronDown aria-hidden="true" />
+      </span>
+    </button>
+  );
+
+  // The project chip is optional chrome — only render it when there is a project or a project
+  // menu to show, so consumers that don't use it don't get a dead "Pick project" placeholder.
+  const showProject = project != null || projectMenu != null;
+  const projectChip = (
+    <button
+      type="button"
+      className={`tb-chip ${project ? "" : "tb-chip-empty"}`}
+      aria-label={project ? project.name : "Pick project"}
+      onClick={projectMenu ? undefined : onProjectOpen}
+    >
+      <span className="tb-chip-label">{project ? project.name : "Pick project"}</span>
+      <span className="tb-chip-caret">
+        <ChevronDown aria-hidden="true" />
+      </span>
+    </button>
+  );
+
   return (
     <>
       {onToggleCollapsed ? (
@@ -45,30 +85,25 @@ export function Topbar({
       ) : null}
 
       <div className="tb-switcher">
-        <button type="button" className="tb-chip" aria-label={product.name} onClick={onProductOpen}>
-          <span
-            className="tb-chip-icon"
-            style={{ background: product.color ?? "hsl(var(--attention))" }}
-          >
-            {product.name[0]?.toUpperCase() ?? "?"}
-          </span>
-          <span className="tb-chip-label">{product.name}</span>
-          <span className="tb-chip-caret">
-            <ChevronDown aria-hidden="true" />
-          </span>
-        </button>
-        <span className="tb-chip-sep">/</span>
-        <button
-          type="button"
-          className={`tb-chip ${project ? "" : "tb-chip-empty"}`}
-          aria-label={project ? project.name : "Pick project"}
-          onClick={onProjectOpen}
-        >
-          <span className="tb-chip-label">{project ? project.name : "Pick project"}</span>
-          <span className="tb-chip-caret">
-            <ChevronDown aria-hidden="true" />
-          </span>
-        </button>
+        {productMenu ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>{productChip}</DropdownMenuTrigger>
+            {productMenu}
+          </DropdownMenu>
+        ) : (
+          productChip
+        )}
+        {showProject ? <span className="tb-chip-sep">/</span> : null}
+        {showProject ? (
+          projectMenu ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>{projectChip}</DropdownMenuTrigger>
+              {projectMenu}
+            </DropdownMenu>
+          ) : (
+            projectChip
+          )
+        ) : null}
       </div>
 
       <button type="button" className="tb-search" onClick={onSearchOpen}>

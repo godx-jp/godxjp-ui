@@ -32,6 +32,7 @@ export type {
   ConfirmLabelProp,
   CancelLabelProp,
   ActionsProp,
+  EmptyMessageProp,
 } from "./content.prop";
 
 export type {

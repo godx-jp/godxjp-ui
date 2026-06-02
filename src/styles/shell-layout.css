@@ -218,6 +218,7 @@
 
   .sb-nav-item {
     display: flex;
+    width: 100%;
     height: var(--control-height);
     min-width: 0;
     align-items: center;
@@ -337,6 +338,25 @@
   .sb-nav-item--sub[data-active="true"]::before {
     background: hsl(var(--primary));
     opacity: 1;
+  }
+
+  /* Collapsed-rail flyout — PORTALED (Radix Popover) so it escapes the sidebar's overflow and is
+   * never clipped: names a leaf item (tooltip) or reveals a group's submenu on hover/focus. */
+  .sb-flyout-pop {
+    display: flex;
+    width: auto;
+    min-width: 11rem;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-1);
+  }
+
+  .sb-flyout-title {
+    padding: var(--space-1) var(--space-2);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    white-space: nowrap;
   }
 
   /* Footer user — circular avatar with live dot + overflow menu, design `.sb-user`. */

@@ -73,6 +73,8 @@ export type SidebarItemProp = {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   badge?: ReactNode;
   disabled?: boolean;
+  /** Nested rows — renders a collapsible submenu group (the parent reads active when any child is). */
+  children?: SidebarItemProp[];
 };
 
 /** @see Sidebar */
@@ -108,6 +110,12 @@ export type TopbarProjectProp = {
 export type TopbarProp = {
   product: TopbarProductProp;
   project?: TopbarProjectProp | null;
+  /** Dropdown content for the product chip — renders a `DropdownMenuContent`. Turns the chip
+   *  into a switcher (e.g. an active-entity picker) instead of firing `onProductOpen`. */
+  productMenu?: ReactNode;
+  /** Dropdown content for the project chip. When neither `project` nor `projectMenu` is set the
+   *  project chip is hidden (no dead "Pick project" placeholder). */
+  projectMenu?: ReactNode;
   onProductOpen?: () => void;
   onProjectOpen?: () => void;
   onSearchOpen?: () => void;

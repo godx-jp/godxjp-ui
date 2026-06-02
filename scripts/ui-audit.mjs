@@ -73,6 +73,25 @@ const RULES = [
     message: "Use <Textarea> from @godxjp/ui, not a raw <textarea> (rules §3).",
   },
   {
+    id: "no-raw-input",
+    severity: "error",
+    test: /<input[\s>]/,
+    message: "Use <Input> from @godxjp/ui, not a raw <input> (rules §3).",
+  },
+  {
+    id: "no-raw-button",
+    severity: "error",
+    test: /<button[\s>]/,
+    message: "Use <Button> from @godxjp/ui, not a raw <button> (rules §3).",
+  },
+  {
+    id: "card-manual-padding",
+    severity: "error",
+    test: /<Card\b[^>]*\bp-[1-9]/,
+    message:
+      "Don't hand-roll padding on <Card> (className='p-4'…) — wrap the body in <CardContent>. (p-0 for a full-bleed table is fine.)",
+  },
+  {
     id: "no-dark-color-override",
     severity: "warn",
     test: /\bdark:(bg|text|border|ring|fill|stroke)-/,
@@ -120,11 +139,18 @@ function walk(dir, acc = []) {
   return acc;
 }
 
+// Structural: a <Card> (without p-0) whose first child is body content rather than a Card
+// sub-component sits FLUSH (no padding). Per-line regexes can't see across lines, so this is a
+// whole-file pass. The body must be wrapped in <CardContent> (titles in <CardHeader>).
+const CARD_FLUSH =
+  /<Card(?![^>]*\bp-0\b)(?:\s[^>]*)?>\s*<(?!CardContent|CardHeader|CardCover|CardFooter|\/Card)/g;
+
 const findings = [];
 for (const dir of SCAN_DIRS) {
   for (const file of walk(join(CWD, dir))) {
     const rel = relative(CWD, file);
-    const lines = readFileSync(file, "utf8").split("\n");
+    const content = readFileSync(file, "utf8");
+    const lines = content.split("\n");
     lines.forEach((line, i) => {
       for (const rule of RULES) {
         if (rule.test.test(line)) {
@@ -139,6 +165,17 @@ for (const dir of SCAN_DIRS) {
         }
       }
     });
+    for (const match of content.matchAll(CARD_FLUSH)) {
+      findings.push({
+        file: rel,
+        line: content.slice(0, match.index).split("\n").length,
+        rule: "card-needs-content",
+        severity: "error",
+        message:
+          "<Card> body content must be wrapped in <CardContent> (it has NO padding otherwise) — use <CardContent flush> only for a full-bleed table.",
+        snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
+      });
+    }
   }
 }
 

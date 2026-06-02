@@ -167,7 +167,10 @@ pnpm typecheck            # tsc --noEmit
 pnpm test                 # vitest per component
 pnpm preview:build        # integration test: examples + docs must build
 pnpm audit                # godxjp-ui-audit — 0 errors for touched files
+pnpm check:mcp-sync       # MCP registry ↔ library export drift guard
 ```
+
+`pnpm verify` and `pnpm verify:release` run these together (verify:release also builds).
 
 All gates are **self-contained** — no internal/external tooling package required.
 The eslint, prettier, and vitest setup live in the package (`eslint.config.js`,
@@ -176,6 +179,30 @@ lint/type-check/test without anything beyond the declared devDependencies.
 
 The app side additionally runs **`npm run ui:audit`** (the design-system linter) and
 must report 0 errors for touched files.
+
+---
+
+## 6. Releasing — the lib and its MCP, in lockstep
+
+This repo publishes **two packages** that must agree: `@godxjp/ui` (the browser component
+library, root `package.json`, 6.x) and `@godxjp/ui-mcp` (the Node MCP server that tells agents
+how to use it, `mcp/`, 0.x). They stay **separate** on purpose — the MCP pulls the MCP SDK,
+which has no business in a consumer's browser bundle. Two guards keep them honest:
+
+- **Drift guard** (`pnpm check:mcp-sync`) — every component the MCP catalogs must still be a real
+  library export. Runs inside `verify` / `verify:release`, so a rename that forgets the MCP fails
+  before publish, not after agents start citing a component that no longer exists.
+- **Coordinated release** (`pnpm release`):
+
+  ```bash
+  pnpm release --ui minor --mcp patch   # bump + verify:release + build + publish + commit, both
+  pnpm release --ui patch               # ui only (mcp skipped)
+  pnpm release --mcp minor              # mcp only
+  ```
+
+  It refuses a dirty tree, runs the full `verify:release` gate (incl. the drift guard) before
+  publishing the lib, bumps each package's own version line, `npm publish`es each, and commits the
+  version bumps. Push the commit when ready. Never hand-publish one package and forget the other.
 
 ---
 
