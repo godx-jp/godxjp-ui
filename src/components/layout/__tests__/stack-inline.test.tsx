@@ -5,11 +5,11 @@ import { Inline } from "../inline";
 
 describe("Stack", () => {
   it.each([
-    ["xs", "ui-stack-xs"],
-    ["sm", "ui-stack-sm"],
-    ["md", "ui-stack-md"],
-    ["lg", "ui-stack-lg"],
-    ["xl", "ui-stack-xl"],
+    ["xs", "ui-flex-gap-xs"],
+    ["sm", "ui-flex-gap-sm"],
+    ["md", "ui-flex-gap-md"],
+    ["lg", "ui-flex-gap-lg"],
+    ["xl", "ui-flex-gap-xl"],
   ] as const)("applies gap=%s → %s", (gap, cls) => {
     const { container } = renderWithUi(
       <Stack gap={gap}>
@@ -23,10 +23,10 @@ describe("Stack", () => {
 
 describe("Inline", () => {
   it.each([
-    ["xs", "ui-inline-xs"],
-    ["sm", "ui-inline-sm"],
-    ["md", "ui-inline-md"],
-    ["lg", "ui-inline-lg"],
+    ["xs", "ui-flex-gap-xs"],
+    ["sm", "ui-flex-gap-sm"],
+    ["md", "ui-flex-gap-md"],
+    ["lg", "ui-flex-gap-lg"],
   ] as const)("applies gap=%s → %s", (gap, cls) => {
     const { container } = renderWithUi(
       <Inline gap={gap}>

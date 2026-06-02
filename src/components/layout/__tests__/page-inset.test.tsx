@@ -9,6 +9,6 @@ describe("PageInset", () => {
         <p>Filter zone</p>
       </PageInset>,
     );
-    expect(screen.getByText("Filter zone").parentElement).toHaveClass("ui-page-inset");
+    expect(screen.getByText("Filter zone").parentElement).toHaveClass("ui-page-container-inset");
   });
 });
