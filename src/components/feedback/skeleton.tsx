@@ -86,12 +86,15 @@ export function SkeletonDetail() {
 }
 
 /** Skeleton matching a stat card / dashboard tile. */
-export function SkeletonCard() {
+export function SkeletonStat() {
   return (
-    <div className="ui-skeleton-card" aria-busy="true">
+    <div className="ui-skeleton-stat" aria-busy="true">
       <Skeleton className="h-3 w-24" />
       <Skeleton className="h-[length:var(--control-height)] w-32" />
       <Skeleton className="h-3 w-20" />
     </div>
   );
 }
+
+/** @deprecated Use SkeletonStat. */
+export const SkeletonCard = SkeletonStat;

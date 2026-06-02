@@ -3,7 +3,7 @@ import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { Circle } from "lucide-react";
 
 import { cn } from "../../lib/utils";
-import { ChoiceField } from "./choice-field";
+import { Field } from "./choice-field";
 import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
 import type { RadioGroupProp } from "../../props/components/data-entry.prop";
 
@@ -75,9 +75,9 @@ function RadioGroupOptions({
         {options.map((opt: ChoiceOption, index) => {
           const id = `${reactId}-${opt.value}-${index}`;
           return (
-            <ChoiceField key={opt.value} id={id} label={opt.label} description={opt.description}>
+            <Field key={opt.value} id={id} label={opt.label} description={opt.description}>
               <RadioItem id={id} value={opt.value} disabled={opt.disabled} />
-            </ChoiceField>
+            </Field>
           );
         })}
       </RadioGroupRoot>

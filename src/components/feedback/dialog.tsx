@@ -9,9 +9,11 @@ import { useTranslation } from "../../i18n/use-translation";
 import { Button } from "../general/button";
 import { Input } from "../data-entry/input";
 import { Label } from "../data-entry/label";
-import type { DialogConfirmProp } from "../../props/components/feedback.prop";
+import type { AlertDialogProp } from "../../props/components/feedback.prop";
 
 export type {
+  AlertDialogProp,
+  AlertDialogProp as AlertDialogProps,
   DialogConfirmProp,
   DialogConfirmProp as DialogConfirmProps,
 } from "../../props/components/feedback.prop";
@@ -211,7 +213,7 @@ const DialogCancel = React.forwardRef<
 DialogCancel.displayName = "DialogCancel";
 
 /** Preset: confirm / destructive / type-to-confirm — use case `mode="confirm"` without compound markup. */
-function DialogConfirm({
+function AlertDialog({
   open,
   onOpenChange,
   title,
@@ -223,7 +225,7 @@ function DialogConfirm({
   onConfirm,
   keepOpenOnConfirm = false,
   pending = false,
-}: DialogConfirmProp) {
+}: AlertDialogProp) {
   const { t } = useTranslation();
   const [typed, setTyped] = React.useState("");
   const inputId = React.useId();
@@ -305,8 +307,11 @@ export const Dialog = Object.assign(DialogRoot, {
   Close: DialogClose,
   Action: DialogAction,
   Cancel: DialogCancel,
-  Confirm: DialogConfirm,
+  Confirm: AlertDialog,
 });
+
+/** @deprecated Use AlertDialog. */
+const DialogConfirm = AlertDialog;
 
 export {
   DialogRoot,
@@ -321,5 +326,6 @@ export {
   DialogClose,
   DialogAction,
   DialogCancel,
+  AlertDialog,
   DialogConfirm,
 };

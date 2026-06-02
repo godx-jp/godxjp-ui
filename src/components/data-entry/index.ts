@@ -19,8 +19,8 @@ export { Radio, RadioGroup, RadioItem, RadioGroupRoot } from "./radio";
 export { Textarea } from "./textarea";
 export type { TextareaProps } from "./textarea";
 export { FormField } from "./form-field";
-export { ChoiceField } from "./choice-field";
-export type { ChoiceFieldProps } from "./choice-field";
+export { Field, ChoiceField } from "./choice-field";
+export type { ChoiceFieldProps, FieldProps } from "./choice-field";
 export { CountrySelect, CountryOptionLabel } from "./country-select";
 export type {
   CountrySelectProps,

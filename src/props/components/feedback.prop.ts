@@ -17,8 +17,8 @@ import type {
   TitleProp,
 } from "../vocabulary";
 
-/** @see Dialog.Confirm */
-export type DialogConfirmProp = {
+/** @see AlertDialog */
+export type AlertDialogProp = {
   open: OpenProp;
   onOpenChange: OnOpenChangeProp;
   title: TitleProp;
@@ -32,6 +32,9 @@ export type DialogConfirmProp = {
   keepOpenOnConfirm?: boolean;
   pending?: PendingProp;
 };
+
+/** @see DialogConfirm — deprecated alias for AlertDialog. */
+export type DialogConfirmProp = AlertDialogProp;
 
 /** @see Alert */
 export type AlertQueryErrorProp = {

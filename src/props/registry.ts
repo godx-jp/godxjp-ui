@@ -351,6 +351,21 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   StackProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["GapProp"] },
   InlineProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["GapProp"] },
+  FlexDirectionProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  FlexAlignProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  FlexJustifyProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  FlexProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      { field: "direction", local: true, reason: "Flex-specific axis control." },
+      "GapProp",
+      { field: "align", local: true, reason: "Flex-specific align-items keyword subset." },
+      { field: "justify", local: true, reason: "Flex-specific justify-content keyword subset." },
+      { field: "wrap", local: true, reason: "Flex-specific boolean shorthand for flex-wrap." },
+    ],
+  },
+  ResponsiveGridColumnsProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
   PageInsetProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -430,6 +445,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: ["DisabledProp"],
+  },
+  FieldProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["IdProp", "LabelProp", "DescriptionProp", "ClassNameProp", "ChildrenProp"],
   },
   ChoiceFieldProp: {
     group: "data-entry",
@@ -627,11 +647,47 @@ export const COMPONENT_PROP_REGISTRY = {
       "PendingProp",
     ],
   },
+  AlertDialogProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    vocabulary: [
+      "OpenProp",
+      "OnOpenChangeProp",
+      "TitleProp",
+      "DescriptionProp",
+      "ConfirmLabelProp",
+      "CancelLabelProp",
+      "ConfirmVariantProp",
+      { field: "confirmPhrase", local: true, reason: "Destructive-dialog type-to-confirm friction phrase." },
+      "HandlerProp",
+      { field: "keepOpenOnConfirm", local: true, reason: "AlertDialog-specific async completion behavior." },
+      "PendingProp",
+    ],
+  },
   DataStateProp: { group: "query", file: "components/query.prop.ts", vocabulary: ["HandlerProp"] },
+  AlertMutationFeedbackProp: {
+    group: "query",
+    file: "components/query.prop.ts",
+    vocabulary: [
+      { field: "mutation", local: true, reason: "TanStack mutation lifecycle object consumed by this helper." },
+      "HandlerProp",
+      { field: "showRetry", local: true, reason: "Query helper retry affordance toggle." },
+      { field: "pending", local: true, reason: "Inline pending ReactNode slot, not boolean PendingProp state." },
+      "ClassNameProp",
+    ],
+  },
   MutationFeedbackProp: {
     group: "query",
     file: "components/query.prop.ts",
     vocabulary: ["OnValueChangeProp"],
+  },
+  ButtonRefetchProp: {
+    group: "query",
+    file: "components/query.prop.ts",
+    vocabulary: [
+      { field: "query", local: true, reason: "TanStack query refetch handle consumed by this helper." },
+      "LabelProp",
+    ],
   },
   QueryRefetchButtonProp: {
     group: "query",
@@ -684,6 +740,16 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: ["LabelProp", "ChildrenProp"],
+  },
+  ToolbarProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["OnClearFiltersProp", "HasActiveFiltersProp", "ClassNameProp", "ChildrenProp"],
+  },
+  ToolbarGroupProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["LabelProp", "ClassNameProp", "ChildrenProp"],
   },
   PaginationProp: {
     group: "navigation",

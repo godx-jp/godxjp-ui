@@ -241,6 +241,76 @@ import { Button } from "@godxjp/ui/general";
     rules: [2],
   },
   {
+    name: "Flex",
+    group: "layout",
+    tagline:
+      "Token-spaced flex primitive with explicit direction, alignment, justification, and wrapping controls.",
+    props: [
+      {
+        name: "direction",
+        type: '"row" | "col"',
+        defaultValue: '"col"',
+        description: "Main axis direction. Use row for horizontal runs, col for vertical stacks.",
+      },
+      {
+        name: "gap",
+        type: '"xs" | "sm" | "md" | "lg" | "xl"',
+        defaultValue: '"md"',
+        description: "Token gap between children, shared with Stack and Inline.",
+      },
+      {
+        name: "align",
+        type: '"start" | "center" | "end" | "stretch" | "baseline"',
+        description: "Cross-axis alignment, emitted as a data attribute for the layout CSS.",
+      },
+      {
+        name: "justify",
+        type: '"start" | "center" | "end" | "between" | "around" | "evenly"',
+        description: "Main-axis distribution, emitted as a data attribute for the layout CSS.",
+      },
+      {
+        name: "wrap",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Allows children to wrap onto additional flex lines.",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/layout` and reach for Flex when the axis, alignment, justification, or wrap behavior is part of the component contract: `import { Flex } from "@godxjp/ui/layout"`.',
+      "DO keep spacing on the `gap` prop instead of raw `gap-*`, `space-*`, or padding utilities. Flex uses the same token scale as Stack and Inline, so spacing remains tied to the design system.",
+      'DO use `direction="row"` with `wrap` for responsive control rows, chip clusters, and action groups that need more control than Inline exposes.',
+      'DO use `direction="col"` for vertical groupings that need explicit `align` or `justify` behavior. If all you need is a vertical gap, Stack is the thinner alias.',
+      "DON'T override the axis with `className` after choosing a direction prop. Keep the layout intent in props so catalog guidance and data attributes stay accurate.",
+      "Flex is a plain div with React.HTMLAttributes<HTMLDivElement>; pass `id`, `role`, `aria-*`, `data-*`, and structural className values as needed, but do not use it as a semantic form or button wrapper.",
+    ],
+    useCases: [
+      "Toolbar internals where controls should sit in a row, wrap on narrow widths, and stay vertically centered.",
+      "Card headers that need title content on the left and actions on the right via `justify='between'` without hand-rolling flex utility classes.",
+      "Empty-state or loading blocks that center content on both axes using `align='center'` and `justify='center'`.",
+      "Form sub-sections where a vertical group needs stretched children or centered helper content beyond what Stack exposes.",
+      "Badge, chip, or tag clusters where wrapping is required but the caller also needs a larger token gap than Inline's default.",
+      "Low-level layout composition inside custom components where Stack and Inline are too opinionated but raw flex classes would duplicate the primitive.",
+    ],
+    related: [
+      "Stack — thin `direction='col'` alias of Flex. Use Stack for ordinary vertical block spacing; use Flex when you need align, justify, or wrap control.",
+      "Inline — thin `direction='row'` alias of Flex with wrapping and centered alignment. Use Inline for simple horizontal groups; use Flex for explicit axis/distribution control.",
+      "ResponsiveGrid — use for equal-width, multi-column tile layouts. Flex arranges children on one flex axis and does not provide column-count behavior.",
+      "PageContainer — page scaffold and padding context. Flex is an inner layout primitive used inside page sections, cards, dialogs, and toolbars.",
+    ],
+    example: `import { Flex } from "@godxjp/ui/layout";
+import { Button } from "@godxjp/ui/general";
+
+<Flex direction="row" gap="sm" align="center" justify="between" wrap>
+  <SearchSummary />
+  <Flex direction="row" gap="xs" align="center" wrap>
+    <Button variant="outline">リセット</Button>
+    <Button>適用</Button>
+  </Flex>
+</Flex>`,
+    storyPath: "layout/Flex.stories.tsx",
+    rules: [2, 40],
+  },
+  {
     name: "ResponsiveGrid",
     group: "layout",
     tagline:

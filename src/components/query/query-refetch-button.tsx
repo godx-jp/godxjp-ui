@@ -1,15 +1,17 @@
 import { RefreshCw } from "lucide-react";
 
 import { Button } from "../general/button";
-import type { QueryRefetchButtonProp } from "../../props/components/query.prop";
+import type { ButtonRefetchProp } from "../../props/components/query.prop";
 
 export type {
+  ButtonRefetchProp,
+  ButtonRefetchProp as ButtonRefetchProps,
   QueryRefetchButtonProp,
   QueryRefetchButtonProp as QueryRefetchButtonProps,
 } from "../../props/components/query.prop";
 
 /** Page-header Refresh — spins while `query.isFetching`, calls `query.refetch()`. */
-export function QueryRefetchButton({
+export function ButtonRefetch({
   query,
   label = "Refresh",
   children,
@@ -17,7 +19,7 @@ export function QueryRefetchButton({
   size = "sm",
   className,
   ...props
-}: QueryRefetchButtonProp) {
+}: ButtonRefetchProp) {
   const text = children ?? label;
 
   return (
@@ -39,3 +41,6 @@ export function QueryRefetchButton({
     </Button>
   );
 }
+
+/** @deprecated Use ButtonRefetch or Button. */
+export const QueryRefetchButton = ButtonRefetch;

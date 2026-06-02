@@ -29,17 +29,30 @@ export type PageContainerProp = {
   className?: ClassNameProp;
 };
 
-/** @see Stack */
-export type StackProp = React.HTMLAttributes<HTMLDivElement> & {
+export type FlexDirectionProp = "row" | "col";
+export type FlexAlignProp = "start" | "center" | "end" | "stretch" | "baseline";
+export type FlexJustifyProp = "start" | "center" | "end" | "between" | "around" | "evenly";
+
+/** @see Flex */
+export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
+  direction?: FlexDirectionProp;
   gap?: GapProp;
+  align?: FlexAlignProp;
+  justify?: FlexJustifyProp;
+  wrap?: boolean;
 };
 
+/** @see Stack — deprecated alias for Flex direction="col" */
+export type StackProp = Omit<FlexProp, "direction" | "wrap">;
+
 /** @see Inline */
-export type InlineProp = React.HTMLAttributes<HTMLDivElement> & {
+export type InlineProp = Omit<FlexProp, "direction" | "wrap" | "gap"> & {
   gap?: Exclude<GapProp, "xl">;
 };
 
-/** @see PageInset — padded strip inside flush PageContainer (FilterBar, intro). */
+export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
+
+/** @see PageInset — deprecated alias for PageContainer.Inset. */
 export type PageInsetProp = React.HTMLAttributes<HTMLDivElement> & {
   children?: ChildrenProp;
   className?: ClassNameProp;

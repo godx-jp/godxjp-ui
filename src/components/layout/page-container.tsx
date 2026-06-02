@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import { densityClass, pageContainerVariantClass } from "../../lib/variants";
-import type { PageContainerProp } from "../../props/components/layout.prop";
+import type { PageContainerProp, PageInsetProp } from "../../props/components/layout.prop";
 
 export type {
   PageContainerProp,
@@ -15,7 +15,15 @@ export type {
   BreadcrumbItemProp as BreadcrumbItem,
 } from "../../props/vocabulary/navigation.prop";
 
-export function PageContainer({
+export function PageContainerInset({ className, children, ...props }: PageInsetProp) {
+  return (
+    <div className={cn("ui-page-container-inset", className)} {...props}>
+      {children}
+    </div>
+  );
+}
+
+function PageContainerRoot({
   title,
   subtitle,
   extra,
@@ -79,3 +87,7 @@ export function PageContainer({
     </div>
   );
 }
+
+export const PageContainer = Object.assign(PageContainerRoot, {
+  Inset: PageContainerInset,
+});

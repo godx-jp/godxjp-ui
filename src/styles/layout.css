@@ -1,6 +1,6 @@
 /*
- * LAYOUT — Stack / Inline / Page shell / EmptyState.
- * Apps: <Stack gap> · <Inline gap> · <PageContainer> — never ui-stack-* or Tailwind gap-*.
+ * LAYOUT — Flex / Page shell / EmptyState.
+ * Apps: <Flex gap> · <PageContainer> — never ui-flex-* or Tailwind gap-*.
  */
 
 @layer components {
@@ -23,26 +23,102 @@
     overflow: hidden;
   }
 
+  .ui-flex,
   .ui-stack-xs {
     display: flex;
+  }
+
+  .ui-flex[data-direction="row"] {
+    flex-direction: row;
+  }
+
+  .ui-flex[data-direction="col"] {
     flex-direction: column;
+  }
+
+  .ui-flex[data-wrap="true"] {
+    flex-wrap: wrap;
+  }
+
+  .ui-flex[data-align="start"] {
+    align-items: flex-start;
+  }
+
+  .ui-flex[data-align="center"] {
+    align-items: center;
+  }
+
+  .ui-flex[data-align="end"] {
+    align-items: flex-end;
+  }
+
+  .ui-flex[data-align="stretch"] {
+    align-items: stretch;
+  }
+
+  .ui-flex[data-align="baseline"] {
+    align-items: baseline;
+  }
+
+  .ui-flex[data-justify="start"] {
+    justify-content: flex-start;
+  }
+
+  .ui-flex[data-justify="center"] {
+    justify-content: center;
+  }
+
+  .ui-flex[data-justify="end"] {
+    justify-content: flex-end;
+  }
+
+  .ui-flex[data-justify="between"] {
+    justify-content: space-between;
+  }
+
+  .ui-flex[data-justify="around"] {
+    justify-content: space-around;
+  }
+
+  .ui-flex[data-justify="evenly"] {
+    justify-content: space-evenly;
+  }
+
+  .ui-flex-gap-xs,
+  .ui-stack-xs {
     gap: var(--space-stack-xs);
   }
+  .ui-flex-gap-sm {
+    gap: var(--space-stack-sm);
+  }
+
   .ui-stack-sm {
     display: flex;
     flex-direction: column;
     gap: var(--space-stack-sm);
   }
+  .ui-flex-gap-md {
+    gap: var(--space-stack-md);
+  }
+
   .ui-stack-md {
     display: flex;
     flex-direction: column;
     gap: var(--space-stack-md);
   }
+  .ui-flex-gap-lg {
+    gap: var(--space-stack-lg);
+  }
+
   .ui-stack-lg {
     display: flex;
     flex-direction: column;
     gap: var(--space-stack-lg);
   }
+  .ui-flex-gap-xl {
+    gap: var(--space-stack-xl);
+  }
+
   .ui-stack-xl {
     display: flex;
     flex-direction: column;
@@ -85,23 +161,20 @@
   }
 
   @container (min-width: 640px) {
-    .ui-responsive-grid[data-columns="2"] {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .ui-responsive-grid {
+      grid-template-columns: repeat(var(--responsive-grid-sm, 2), minmax(0, 1fr));
     }
+  }
 
-    .ui-responsive-grid[data-columns="3"],
-    .ui-responsive-grid[data-columns="4"] {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  @container (min-width: 768px) {
+    .ui-responsive-grid {
+      grid-template-columns: repeat(var(--responsive-grid-md, 3), minmax(0, 1fr));
     }
   }
 
   @container (min-width: 1024px) {
-    .ui-responsive-grid[data-columns="3"] {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .ui-responsive-grid[data-columns="4"] {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+    .ui-responsive-grid {
+      grid-template-columns: repeat(var(--responsive-grid-lg, 4), minmax(0, 1fr));
     }
   }
 
@@ -149,6 +222,7 @@
     padding-right: var(--space-page-active-x);
   }
 
+  .ui-page-container-inset,
   .ui-page-inset {
     padding-left: var(--space-page-active-x);
     padding-right: var(--space-page-active-x);
@@ -378,6 +452,7 @@
     font-variant-numeric: tabular-nums;
   }
 
+  .ui-toolbar,
   .ui-filter-bar {
     display: flex;
     flex-direction: column;
@@ -386,34 +461,40 @@
   }
 
   @media (min-width: 640px) {
+    .ui-toolbar,
     .ui-filter-bar {
       flex-flow: row wrap;
       align-items: flex-end;
     }
   }
 
+  .ui-toolbar-clear,
   .ui-filter-clear {
     width: 100%;
   }
 
   @media (min-width: 640px) {
+    .ui-toolbar-clear,
     .ui-filter-clear {
       width: auto;
       margin-left: auto;
     }
   }
 
+  .ui-toolbar-group,
   .ui-filter-group {
     min-width: 0;
     width: 100%;
   }
 
   @media (min-width: 640px) {
+    .ui-toolbar-group,
     .ui-filter-group {
       width: auto;
     }
   }
 
+  .ui-toolbar-label,
   .ui-filter-label {
     color: hsl(var(--muted-foreground));
     font-size: var(--filter-label-font-size);

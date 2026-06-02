@@ -156,6 +156,7 @@
 
   .ui-skeleton-rows,
   .ui-skeleton-detail-stack,
+  .ui-skeleton-stat,
   .ui-skeleton-card {
     display: grid;
     gap: var(--skeleton-row-gap);
@@ -195,6 +196,7 @@
   }
 
   .ui-skeleton-detail-box,
+  .ui-skeleton-stat,
   .ui-skeleton-card {
     border: 1px solid hsl(var(--border));
     border-radius: var(--skeleton-radius);

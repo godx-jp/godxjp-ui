@@ -101,14 +101,17 @@ export type SwitchProp = React.ComponentPropsWithoutRef<typeof SwitchPrimitive.R
   size?: "sm" | "default";
 };
 
-/** @see ChoiceField — inline control + label + description wrapper. */
-export type ChoiceFieldProp = {
+/** @see Field — inline control + label + description wrapper. */
+export type FieldProp = {
   id: IdProp;
   label: LabelProp;
   description?: React.ReactNode;
   className?: ClassNameProp;
   children: React.ReactNode;
 };
+
+/** @see ChoiceField — deprecated alias for Field. */
+export type ChoiceFieldProp = FieldProp;
 
 /** Country row accepted by CountrySelect / CountryOptionLabel.
  *  Accepts either a select-option (`value`) or a summary (`code`). */

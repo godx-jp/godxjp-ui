@@ -7,6 +7,7 @@ import type {
 
 export type Density = PageDensityProp;
 export type StackGap = GapProp;
+export type FlexGap = GapProp;
 export type InlineGap = Exclude<GapProp, "xl">;
 export type PageContainerVariant = PageContainerVariantProp;
 
@@ -36,4 +37,12 @@ export const inlineGapClass: Record<Exclude<GapProp, "xl">, string> = {
   sm: "ui-inline-sm",
   md: "ui-inline-md",
   lg: "ui-inline-lg",
+};
+
+export const flexGapClass: Record<GapProp, string> = {
+  xs: "ui-flex-gap-xs",
+  sm: "ui-flex-gap-sm",
+  md: "ui-flex-gap-md",
+  lg: "ui-flex-gap-lg",
+  xl: "ui-flex-gap-xl",
 };
