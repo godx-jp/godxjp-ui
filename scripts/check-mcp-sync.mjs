@@ -52,7 +52,7 @@ const exported = libExports();
 // Anchor on the entry-level `name:` field (4-space indent) so sample data inside
 // examples/props (e.g. `{ name: "Vietnam" }`) is not mistaken for a catalog entry.
 const mcpNames = [
-  ...readFileSync(MCP_DATA, "utf8").matchAll(/^    name: "([A-Z][A-Za-z0-9]*)"/gm),
+  ...readFileSync(MCP_DATA, "utf8").matchAll(/^ {4}name: "([A-Z][A-Za-z0-9]*)"/gm),
 ].map((m) => m[1]);
 
 const stale = [...new Set(mcpNames)].filter((name) => !exported.has(name));
