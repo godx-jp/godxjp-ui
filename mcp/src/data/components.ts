@@ -41,6 +41,14 @@ export interface ComponentEntry {
   group: ComponentGroup;
   tagline: string;
   props: ComponentProp[];
+  /** Detailed how-to-use guidance — DO/DON'T bullets (composition, controlled state, form name, a11y). */
+  usage?: string[];
+  /** Concrete scenarios this component is the right choice for. */
+  useCases?: string[];
+  /** Sibling/replacement components it is confused with, and when to pick each. */
+  related?: string[];
+  /** Deprecated components stay catalogued (so agents are steered to the replacement) but are flagged. */
+  deprecated?: boolean;
   example: string;
   docPath?: string;
   storyPath: string;

@@ -347,15 +347,39 @@ function getSkillSection(skillId: string, sectionId: string): string {
 function getComponent(name: string): string {
   const c = findComponent(name);
   if (!c) return `Component "${name}" not found. Use \`list_primitives\` to discover.`;
-  let out = `# ${c.name}\n\n**Group:** ${c.group}\n\n${c.tagline}\n\n## Props\n\n`;
+  let out = `# ${c.name}\n\n**Group:** ${c.group}`;
+  out += `  ·  **Import:** \`import { ${c.name} } from "@godxjp/ui/${c.group === "providers" ? "app" : c.group}"\`\n\n`;
+  if (c.deprecated) {
+    out += `> ⚠️ **DEPRECATED.** Kept catalogued so you're steered to the replacement — see the tagline / Related below. Do not use in new code.\n\n`;
+  }
+  out += `${c.tagline}\n\n## Props\n\n`;
   out += `| Name | Type | Required | Default | Description |\n|---|---|---|---|---|\n`;
   for (const p of c.props) {
     out += `| \`${p.name}\` | \`${p.type}\` | ${p.required ? "✓" : ""} | ${p.defaultValue ? `\`${p.defaultValue}\`` : ""} | ${p.description} |\n`;
   }
+  if (c.usage && c.usage.length) {
+    out += `\n## How to use it\n\n`;
+    for (const u of c.usage) out += `- ${u}\n`;
+  }
+  if (c.useCases && c.useCases.length) {
+    out += `\n## When to reach for it (use cases)\n\n`;
+    for (const u of c.useCases) out += `- ${u}\n`;
+  }
   out += `\n## Example\n\n\`\`\`tsx\n${c.example}\n\`\`\`\n\n`;
+  if (c.related && c.related.length) {
+    out += `## Related — don't confuse / don't reinvent\n\n`;
+    for (const r of c.related) out += `- ${r}\n`;
+    out += `\n`;
+  }
   if (c.docPath) out += `**Reference doc:** \`docs/reference/${c.docPath}\`\n\n`;
   out += `**Storybook:** \`src/stories/${c.storyPath}\`\n\n`;
-  out += `**Cardinal rules:** ${c.rules.map((n) => `#${n}`).join(", ")}\n`;
+  if (c.rules.length) {
+    out += `**Cardinal rules:**\n`;
+    for (const n of c.rules) {
+      const rule = findRule(n);
+      out += rule ? `- #${n} — ${rule.title}\n` : `- #${n}\n`;
+    }
+  }
   return out;
 }
 
