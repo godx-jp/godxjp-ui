@@ -126,7 +126,12 @@ pnpm preview          # preview app → http://localhost:6008 (fixed port, kills
 pnpm preview:build    # static build — the integration test for examples + docs
 pnpm docs:sync-primitives   # regenerate docs/primitives/**/*.md from source
 pnpm typecheck && pnpm audit && pnpm test
+pnpm check:mcp-sync   # MCP registry ↔ library export drift guard (also in verify)
+pnpm release --ui <patch|minor|major> --mcp <…|skip>   # publish lib + MCP in lockstep
 ```
+
+This repo ships two packages — `@godxjp/ui` (this dir) and `@godxjp/ui-mcp` (`mcp/`). They keep
+separate version lines but release together via `pnpm release`; see DEVELOPMENT.md §6.
 
 → **[docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)** is the contributor guideline (the
 boundary, the layers, how to add/extend a component, verification).

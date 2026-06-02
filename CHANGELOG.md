@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Tooling (monorepo — repo-internal, not shipped to consumers)
+
+- **MCP↔library drift guard** (`pnpm check:mcp-sync`, `scripts/check-mcp-sync.mjs`). Fails CI
+  if a component catalogued in `@godxjp/ui-mcp` (`mcp/src/data/components.ts`) names a component
+  the library no longer exports (rename/removal → stale agent guidance). Wired into `verify` and
+  `verify:release`. The lib and the MCP stay **separate published packages** (browser dep vs Node
+  server — merging would force the MCP SDK into every consumer bundle); this keeps them honest.
+- **Coordinated release** (`pnpm release`, `scripts/release.mjs`). `pnpm release --ui <bump>
+  --mcp <bump>` publishes `@godxjp/ui` and/or `@godxjp/ui-mcp` in lockstep (refuses a dirty tree,
+  runs `verify:release`, bumps, publishes, commits) so the two packages are never published out
+  of step by hand. Independent version lines (ui 6.x, mcp 0.x); only the *act* is coordinated.
+
 ## [6.12.0] - 2026-06-02
 
 ### Changed
@@ -196,7 +208,17 @@ page })` fetcher with a debounced search box, infinite-scroll pagination, and lo
   in the built-in English lifecycle map; `icon={null}` hides the glyph (for
   tier / category badges). Exports `StatusBadgeTone`. Backward compatible.
 
-[Unreleased]: https://github.com/godx-jp/godxjp-ui/compare/v6.2.0...HEAD
+[Unreleased]: https://github.com/godx-jp/godxjp-ui/compare/v6.12.0...HEAD
+[6.12.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.11.0...v6.12.0
+[6.11.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.10.0...v6.11.0
+[6.10.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.9.0...v6.10.0
+[6.9.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.8.0...v6.9.0
+[6.8.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.7.0...v6.8.0
+[6.7.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.6.0...v6.7.0
+[6.6.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.5.0...v6.6.0
+[6.5.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.4.0...v6.5.0
+[6.4.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.3.0...v6.4.0
+[6.3.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.2.0...v6.3.0
 [6.2.0]: https://github.com/godx-jp/godxjp-ui/compare/v6.1.2...v6.2.0
 [6.1.2]: https://github.com/godx-jp/godxjp-ui/compare/v6.1.1...v6.1.2
 [6.1.1]: https://github.com/godx-jp/godxjp-ui/compare/v6.1.0...v6.1.1
