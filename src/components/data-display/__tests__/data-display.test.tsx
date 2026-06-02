@@ -4,8 +4,7 @@ import { renderWithUi, screen } from "@/test/render";
 import { EmptyState } from "../empty-state";
 import { Button } from "../../general/button";
 import { Badge } from "../badge";
-import { KeyValueGrid } from "../key-value-grid";
-import { StatusBadge } from "../status-badge";
+import { Descriptions } from "../descriptions";
 
 describe("EmptyState", () => {
   it("renders title and description", () => {
@@ -34,13 +33,13 @@ describe("Badge", () => {
   });
 });
 
-describe("KeyValueGrid", () => {
+describe("Descriptions", () => {
   it("renders label/value pairs via Item children", () => {
     renderWithUi(
-      <KeyValueGrid>
-        <KeyValueGrid.Item label="ID">01HF</KeyValueGrid.Item>
-        <KeyValueGrid.Item label="Status">active</KeyValueGrid.Item>
-      </KeyValueGrid>,
+      <Descriptions>
+        <Descriptions.Item label="ID">01HF</Descriptions.Item>
+        <Descriptions.Item label="Status">active</Descriptions.Item>
+      </Descriptions>,
     );
     expect(screen.getByText("ID")).toBeInTheDocument();
     expect(screen.getByText("01HF")).toBeInTheDocument();
@@ -48,26 +47,26 @@ describe("KeyValueGrid", () => {
   });
 });
 
-describe("StatusBadge", () => {
+describe("Badge", () => {
   it("maps known status to label", () => {
-    renderWithUi(<StatusBadge status="pending" />);
+    renderWithUi(<Badge status="pending" />);
     expect(screen.getByText("Chờ xử lý")).toBeInTheDocument();
   });
 
   it("pending tone uses warning token on root badge element", () => {
-    renderWithUi(<StatusBadge status="pending" />);
+    renderWithUi(<Badge status="pending" />);
     const text = screen.getByText("Chờ xử lý");
-    expect(text.parentElement?.className).toContain("warning");
+    expect(text.closest('[data-slot="badge"]')?.className).toContain("warning");
   });
 
   it("scheduled tone uses info token on root badge element", () => {
-    renderWithUi(<StatusBadge status="scheduled" />);
+    renderWithUi(<Badge status="scheduled" />);
     const text = screen.getByText("Đã lên lịch");
-    expect(text.parentElement?.className).toContain("info");
+    expect(text.closest('[data-slot="badge"]')?.className).toContain("info");
   });
 
   it("falls back for unknown status", () => {
-    renderWithUi(<StatusBadge status="custom_unknown_xyz" />);
+    renderWithUi(<Badge status="custom_unknown_xyz" />);
     expect(screen.getByText("custom_unknown_xyz")).toBeInTheDocument();
   });
 });

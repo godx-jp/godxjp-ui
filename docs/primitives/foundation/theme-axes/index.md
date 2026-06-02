@@ -12,7 +12,7 @@ ThemeAxes — primitive UI từ @godxjp/ui.
 ## Import
 
 ```tsx
-import { Badge, StatusBadge, Button, Inline, Stack } from "@godxjp/ui/layout";
+import { Badge, Badge, Button, Inline, Stack } from "@godxjp/ui/layout";
 ```
 
 ## Components
@@ -46,9 +46,9 @@ Badge — phần con của compound primitive.
 | `tabIndex`   | `number` | —        | Thứ tự focus keyboard.         | Custom interactive div.                             |
 | `aria-label` | `string` | —        | Nhãn cho screen reader.        | Icon-only button không có text visible.             |
 
-### StatusBadge
+### Badge
 
-StatusBadge — phần con của compound primitive.
+Badge — phần con của compound primitive.
 
 **Use case:** Import cùng package với component cha; compose theo thứ tự trong demo.
 

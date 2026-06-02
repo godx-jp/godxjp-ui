@@ -6,8 +6,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  KeyValueGrid,
-  StatusBadge,
+  Descriptions,
+  Badge,
 } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 
@@ -20,20 +20,20 @@ export default function Demo() {
           <CardDescription>Case EXC-2026-0524-018</CardDescription>
         </div>
         <CardAction>
-          <StatusBadge status="failed" label="High" />
+          <Badge status="failed">High</Badge>
         </CardAction>
       </CardHeader>
       <CardContent>
-        <KeyValueGrid columns={2}>
-          <KeyValueGrid.Item label="Order">YMT-AGT-7622-1048</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Owner">Agent Ops</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Risk">
+        <Descriptions columns={2}>
+          <Descriptions.Item label="Order">YMT-AGT-7622-1048</Descriptions.Item>
+          <Descriptions.Item label="Owner">Agent Ops</Descriptions.Item>
+          <Descriptions.Item label="Risk">
             Receiver district differs from KYC profile.
-          </KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Suggested action">
+          </Descriptions.Item>
+          <Descriptions.Item label="Suggested action">
             Request proof of address before delivery.
-          </KeyValueGrid.Item>
-        </KeyValueGrid>
+          </Descriptions.Item>
+        </Descriptions>
       </CardContent>
       <CardFooter separated className="justify-between gap-2">
         <Button variant="outline" size="sm">

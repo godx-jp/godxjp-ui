@@ -5,7 +5,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  StatusBadge,
+  Badge,
   Table,
   TableBody,
   TableCell,
@@ -49,7 +49,7 @@ export default function Demo() {
                 </TableCell>
                 <TableCell>{s.customer}</TableCell>
                 <TableCell>
-                  <StatusBadge status={s.status} />
+                  <Badge status={s.status} />
                 </TableCell>
               </TableRow>
             ))}

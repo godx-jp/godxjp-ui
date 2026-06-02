@@ -33,7 +33,7 @@ docs/
       _shared.ts           ← prefix _ = not a story
 ```
 
-- **Menu** = folder tree; leaves = `.tsx` files (not `README.md`, not `_*.tsx`).
+- **Navigation** = folder tree; leaves = `.tsx` files (not `README.md`, not `_*.tsx`).
 - **Live demo** = `export default function Demo()` from the `.tsx` file.
 - **Imports** = `@godxjp/ui/{data-display,layout,general,…}` — same public paths as app code (`FORMS.md`). **Not** `@/components/…` (internal dev alias only).
 - **Code panel** = same `.tsx` file raw — no duplicate `parameters.docs.source.code`.

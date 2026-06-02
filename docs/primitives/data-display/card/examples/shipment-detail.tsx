@@ -6,8 +6,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  KeyValueGrid,
-  StatusBadge,
+  Descriptions,
+  Badge,
 } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 
@@ -20,19 +20,19 @@ export default function Demo() {
           <CardDescription>Consolidated order · Tokyo → Ho Chi Minh</CardDescription>
         </div>
         <CardAction>
-          <StatusBadge status="in_transit" label="In transit" />
+          <Badge status="in_transit">In transit</Badge>
         </CardAction>
       </CardHeader>
       <CardContent>
-        <KeyValueGrid columns={2}>
-          <KeyValueGrid.Item label="Vendor">Yamato Logistics</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Service">Express shipping</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Order value">¥842,000</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Items">18 items · 64.5 kg</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Ship to" span={2}>
+        <Descriptions columns={2}>
+          <Descriptions.Item label="Vendor">Yamato Logistics</Descriptions.Item>
+          <Descriptions.Item label="Service">Express shipping</Descriptions.Item>
+          <Descriptions.Item label="Order value">¥842,000</Descriptions.Item>
+          <Descriptions.Item label="Items">18 items · 64.5 kg</Descriptions.Item>
+          <Descriptions.Item label="Ship to" span={2}>
             District 1, Ho Chi Minh City, Vietnam
-          </KeyValueGrid.Item>
-        </KeyValueGrid>
+          </Descriptions.Item>
+        </Descriptions>
       </CardContent>
       <CardFooter separated className="justify-end gap-2">
         <Button variant="outline" size="sm">

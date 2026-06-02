@@ -19,7 +19,7 @@ const LAYOUT_CSS_FILES = [
 const MIGRATED_LAYOUT_COMPONENTS = [
   "components/data-display/table.tsx",
   "components/data-display/empty-state.tsx",
-  "components/data-display/status-badge.tsx",
+  "components/data-display/badge.tsx",
   "components/data-display/data-table.tsx",
   "components/feedback/dialog.tsx",
   "components/feedback/alert.tsx",
@@ -39,7 +39,7 @@ const SPACING_UTILITY_ALLOWLIST = new Set([
   "transfer.tsx",
   "time-picker.tsx",
   "tabs.tsx",
-  "tabs-items.tsx",
+  "tabs.tsx",
   "steps.tsx",
   "sheet.tsx",
   "dropdown-menu.tsx",
@@ -54,8 +54,8 @@ const SPACING_UTILITY_ALLOWLIST = new Set([
   "timezone-picker.tsx",
   "date-format-picker.tsx",
   "query-refetch-button.tsx",
-  "key-value-grid.tsx",
-  "card.tsx", // CardStat title uses text-2xl override (value typography)
+  "descriptions.tsx",
+  "card.tsx", // StatCard title uses text-2xl override (value typography)
   "button.tsx", // size variants use token-backed arbitrary lengths
 ]);
 

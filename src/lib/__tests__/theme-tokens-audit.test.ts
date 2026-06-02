@@ -160,8 +160,8 @@ describe("theme token audit (lib/datetime)", () => {
 });
 
 describe("theme token audit (badge/status)", () => {
-  it("status-badge uses tone classes from control-styles", () => {
-    const content = readFileSync(join(componentsRoot, "data-display/status-badge.tsx"), "utf8");
+  it("badge uses tone classes from control-styles", () => {
+    const content = readFileSync(join(componentsRoot, "data-display/badge.tsx"), "utf8");
     expect(content).toContain("toneSuccessClass");
     expect(content).toContain("toneWarningClass");
     expect(content).toContain("toneInfoClass");

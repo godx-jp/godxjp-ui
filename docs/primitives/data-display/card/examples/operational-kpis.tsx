@@ -1,4 +1,4 @@
-import { CardStat } from "@godxjp/ui/data-display";
+import { StatCard } from "@godxjp/ui/data-display";
 
 function Trend({ tone, children }: { tone: "good" | "bad" | "warn"; children: string }) {
   const color =
@@ -14,29 +14,29 @@ function Trend({ tone, children }: { tone: "good" | "bad" | "warn"; children: st
 export default function Demo() {
   return (
     <div className="grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <CardStat
+      <StatCard
         label="Backlog"
         value="128"
         hint="22 đơn cần xử lý"
-        delta={<Trend tone="warn">+8%</Trend>}
+        delta={<Trend variant="warn">+8%</Trend>}
       />
-      <CardStat
+      <StatCard
         label="SLA on-time"
         value="96.4%"
         hint="24h rolling window"
-        delta={<Trend tone="good">+1.2%</Trend>}
+        delta={<Trend variant="good">+1.2%</Trend>}
       />
-      <CardStat
+      <StatCard
         label="Exceptions"
         value="7"
         hint="3 high priority"
-        delta={<Trend tone="bad">+3</Trend>}
+        delta={<Trend variant="bad">+3</Trend>}
       />
-      <CardStat
+      <StatCard
         label="Revenue"
         value="¥4.8M"
         hint="Today gross sales"
-        delta={<Trend tone="good">+12%</Trend>}
+        delta={<Trend variant="good">+12%</Trend>}
       />
     </div>
   );

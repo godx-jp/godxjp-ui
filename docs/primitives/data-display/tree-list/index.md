@@ -20,7 +20,7 @@ import { TreeList } from "@godxjp/ui/data-display";
 
 | Prop    | Kiểu             | Mặc định     | Mô tả                | Use case                         |
 | ------- | ---------------- | ------------ | -------------------- | -------------------------------- |
-| `items` | `TreeListItem[]` | **bắt buộc** | Mảng item để render. | KeyValueGrid, Steps, Breadcrumb. |
+| `items` | `TreeListItem[]` | **bắt buộc** | Mảng item để render. | Descriptions, Steps, Breadcrumb. |
 
 ## Props hành động (events & callbacks)
 

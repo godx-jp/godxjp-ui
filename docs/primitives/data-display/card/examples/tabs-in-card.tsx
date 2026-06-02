@@ -1,7 +1,7 @@
 import { Package, Truck } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { TabsItems } from "@godxjp/ui/navigation";
+import { Tabs } from "@godxjp/ui/navigation";
 
 export default function Demo() {
   return (
@@ -11,32 +11,32 @@ export default function Demo() {
         <CardDescription>Osaka to HCM · 3 đơn hàng</CardDescription>
       </CardHeader>
       <CardContent tight flush>
-        <TabsItems
+        <Tabs
           variant="line"
           defaultValue="items"
           items={[
             {
-              key: "items",
+              value: "items",
               label: "Hàng hóa",
               icon: <Package className="size-4" aria-hidden="true" />,
-              children: (
+              content: (
                 <p className="text-muted-foreground text-sm">
                   Quần áo (3), Phụ kiện (2), Sách (1).
                 </p>
               ),
             },
             {
-              key: "logistics",
+              value: "logistics",
               label: "Vận chuyển",
               icon: <Truck className="size-4" aria-hidden="true" />,
-              children: (
+              content: (
                 <p className="text-muted-foreground text-sm">KIX to SGN · ETD 24/05 09:30 JST.</p>
               ),
             },
             {
-              key: "customs",
+              value: "customs",
               label: "Ghi chú",
-              children: (
+              content: (
                 <p className="text-muted-foreground text-sm">
                   Ghi chú nội bộ: chờ xác nhận từ nhà cung cấp.
                 </p>

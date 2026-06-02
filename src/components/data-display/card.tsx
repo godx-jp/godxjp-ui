@@ -136,7 +136,7 @@ export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
 );
 CardFooter.displayName = "CardFooter";
 
-export type CardStatProps = React.HTMLAttributes<HTMLDivElement> &
+export type StatCardProps = React.HTMLAttributes<HTMLDivElement> &
   VariantProps<typeof cardVariants> & {
     label: React.ReactNode;
     value: React.ReactNode;
@@ -167,7 +167,7 @@ function getDeltaTone(
 }
 
 /** KPI / stat tile — token-driven layout aligned to dashboard KPI cards. */
-export function CardStat({
+export function StatCard({
   label,
   value,
   hint,
@@ -178,28 +178,28 @@ export function CardStat({
   className,
   size = "compact",
   ...props
-}: CardStatProps) {
+}: StatCardProps) {
   const deltaTone = getDeltaTone(delta, inverse);
 
   return (
     <Card
       size={size ?? "compact"}
-      className={className}
+      className={cn("ui-stat-card", className)}
       data-stat-card=""
       data-stat-layout={layout}
       data-stat-align={align}
       {...props}
     >
-      <div data-slot="card-stat-body">
-        <div data-slot="card-stat-label">{label}</div>
-        {hint && layout === "inline" ? <div data-slot="card-stat-hint">{hint}</div> : null}
+      <div data-slot="stat-card-body">
+        <div data-slot="stat-card-label">{label}</div>
+        {hint && layout === "inline" ? <div data-slot="stat-card-hint">{hint}</div> : null}
       </div>
       <div>
-        <div data-slot="card-stat-value-row">
-          <span data-slot="card-stat-value">{value}</span>
+        <div data-slot="stat-card-value-row">
+          <span data-slot="stat-card-value">{value}</span>
           {delta ? (
             <span
-              data-slot="card-stat-delta"
+              data-slot="stat-card-delta"
               data-delta-tone={deltaTone}
               className={cn(
                 deltaTone === "positive" && "text-success",
@@ -210,7 +210,7 @@ export function CardStat({
             </span>
           ) : null}
         </div>
-        {hint && layout !== "inline" ? <div data-slot="card-stat-hint">{hint}</div> : null}
+        {hint && layout !== "inline" ? <div data-slot="stat-card-hint">{hint}</div> : null}
       </div>
     </Card>
   );

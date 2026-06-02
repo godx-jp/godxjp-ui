@@ -3,7 +3,7 @@ import { renderWithUi, screen, userEvent } from "@/test/render";
 import { Pagination } from "../pagination";
 import { buildPageRange } from "../pagination-utils";
 import { Steps } from "../steps";
-import { TabsItems } from "../tabs-items";
+import { Tabs } from "../tabs";
 
 describe("buildPageRange", () => {
   it("returns all pages when total is small", () => {
@@ -57,15 +57,15 @@ describe("Steps", () => {
   });
 });
 
-describe("TabsItems", () => {
+describe("Tabs", () => {
   it("switches panels via items API", async () => {
     const user = userEvent.setup();
     renderWithUi(
-      <TabsItems
+      <Tabs
         defaultValue="orders"
         items={[
-          { key: "orders", label: "Đơn hàng", children: "Panel đơn" },
-          { key: "shipments", label: "Kiện hàng", children: "Panel kiện" },
+          { value: "orders", label: "Đơn hàng", content: "Panel đơn" },
+          { value: "shipments", label: "Kiện hàng", content: "Panel kiện" },
         ]}
       />,
     );

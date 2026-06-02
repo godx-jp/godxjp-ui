@@ -1,6 +1,6 @@
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 
-import { CardStat } from "@godxjp/ui/data-display";
+import { StatCard } from "@godxjp/ui/data-display";
 
 function Delta({ trend }: { trend: "up" | "down" }) {
   return (
@@ -15,10 +15,10 @@ function Delta({ trend }: { trend: "up" | "down" }) {
 export default function Demo() {
   return (
     <div className="grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <CardStat label="Sent" value="12,400" delta={<Delta trend="up" />} />
-      <CardStat label="Opened" value="4,873" hint="39.3%" delta={<Delta trend="up" />} />
-      <CardStat label="Clicked" value="612" />
-      <CardStat label="Bounced" value="84" delta={<Delta trend="down" />} />
+      <StatCard label="Sent" value="12,400" delta={<Delta trend="up" />} />
+      <StatCard label="Opened" value="4,873" hint="39.3%" delta={<Delta trend="up" />} />
+      <StatCard label="Clicked" value="612" />
+      <StatCard label="Bounced" value="84" delta={<Delta trend="down" />} />
     </div>
   );
 }

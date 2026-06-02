@@ -20,7 +20,7 @@ import { FormField } from "@godxjp/ui/data-entry";
 
 | Prop         | Kiểu        | Mặc định     | Mô tả                                                                  | Use case                                                        |
 | ------------ | ----------- | ------------ | ---------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `label`      | `ReactNode` | **bắt buộc** | Nhãn mô tả — thường là dòng phụ, font nhỏ.                             | CardStat: tên chỉ số KPI; FormField: tên field.                 |
+| `label`      | `ReactNode` | **bắt buộc** | Nhãn mô tả — thường là dòng phụ, font nhỏ.                             | StatCard: tên chỉ số KPI; FormField: tên field.                 |
 | `required`   | `boolean`   | —            | Field bắt buộc.                                                        | FormField: hiện dấu \* và validate Zod.                         |
 | `helper`     | `ReactNode` | —            | Text gợi ý dưới field.                                                 | FormField: format mã, giới hạn ký tự.                           |
 | `error`      | `ReactNode` | —            | Thông báo lỗi validation.                                              | FormField: hiển thị khi Zod/RHF báo lỗi.                        |

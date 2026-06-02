@@ -22,7 +22,7 @@ export interface PatternEntry {
 export const PATTERNS: PatternEntry[] = [
   {
     name: "common-fixes",
-    tagline: "Fix the most common @godxjp/ui consumer mistakes & visual bugs (CardStat double-border, grey StatusBadge, crushed/empty table headers, washed-out sidebar footer, Inertia layout crash, SSR hydration). Before → after.",
+    tagline: "Fix the most common @godxjp/ui consumer mistakes & visual bugs (StatCard double-border, grey Badge, crushed/empty table headers, washed-out sidebar footer, Inertia layout crash, SSR hydration). Before → after.",
     tags: ["fixes", "migration", "bug", "cardstat", "statusbadge", "datatable", "sidebar", "gotcha", "review"],
     code: `// ───────────────────────────────────────────────────────────────────────
 // 0) ★ MOST COMMON: <Card> body has NO padding (content is flush against the edges)
@@ -38,19 +38,19 @@ export const PATTERNS: PatternEntry[] = [
 //      empty rows → DataTable's built-in empty / <EmptyState> (not a custom data.length===0 guard).
 //    If a primitive exists, USE it — don't reinvent it.
 
-// 1) CardStat shows a DOUBLE border (too thick)
-//    Cause: CardStat IS already a bordered Card. Don't wrap it.
-// ❌  <Card><CardContent><CardStat label="x" value="1" /></CardContent></Card>
-// ✅  <ResponsiveGrid columns={4}><CardStat label="x" value="1" /></ResponsiveGrid>
+// 1) StatCard shows a DOUBLE border (too thick)
+//    Cause: StatCard IS already a bordered Card. Don't wrap it.
+// ❌  <Card><CardContent><StatCard label="x" value="1" /></CardContent></Card>
+// ✅  <ResponsiveGrid columns={4}><StatCard label="x" value="1" /></ResponsiveGrid>
 //    Need a section title? Use a heading, NOT a Card:
 // ✅  <Stack gap="sm"><div className="text-sm font-medium">KPI</div>
-//        <ResponsiveGrid columns={4}><CardStat .../></ResponsiveGrid></Stack>
+//        <ResponsiveGrid columns={4}><StatCard .../></ResponsiveGrid></Stack>
 
-// 2) StatusBadge renders grey with a ○ (no colour) for localized/tier labels
+// 2) Badge renders grey with a ○ (no colour) for localized/tier labels
 //    Cause: it auto-maps only English lifecycle keys. (@godxjp/ui >= 6.1)
-// ❌  <StatusBadge status="プレミアム" />
-// ✅  <StatusBadge status="プレミアム" tone="success" icon={null} />   // tier → pill, no icon
-// ✅  <StatusBadge status="active" label="公開中" />                   // lifecycle → keep icon
+// ❌  <Badge status="プレミアム" />
+// ✅  <Badge status="プレミアム" variant="success" icon={null} />   // tier → pill, no icon
+// ✅  <Badge status="active">公開中</Badge>                   // lifecycle → keep icon
 
 // 3) Table text collapses to one char per line, or a chip wraps
 //    Cause: pre-6.1.2. (@godxjp/ui >= 6.1.2 → cells + chips are nowrap)
@@ -87,7 +87,7 @@ export const PATTERNS: PatternEntry[] = [
 
 // 10) Hide a column on mobile / sign-aware KPI delta (@godxjp/ui >= 6.2.0)
 // ✅  columns: [{ key: "email", header: "メール", hiddenOnMobile: true }]
-// ✅  <CardStat label="売上" value="¥8.2M" delta="+12%" />   // + green / - red; inverse flips`,
+// ✅  <StatCard label="売上" value="¥8.2M" delta="+12%" />   // + green / - red; inverse flips`,
   },
 
   {
@@ -246,12 +246,12 @@ export default function Coupons({ coupons }: { coupons?: Coupon[] }) {
 
   {
     name: "inertia-list-page",
-    tagline: "Inertia + @godxjp/ui list page — PageContainer + FilterBar + DataTable + StatusBadge + Pagination (current primitive API).",
+    tagline: "Inertia + @godxjp/ui list page — PageContainer + FilterBar + DataTable + Badge + Pagination (current primitive API).",
     tags: ["inertia", "list", "table", "page", "filter", "pagination", "datatable", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
 import { useMemo, useState } from "react"
 import { PageContainer, ResponsiveGrid, Stack } from "@godxjp/ui/layout"
-import { Card, CardContent, CardStat, DataTable, EmptyState, StatusBadge, type ColumnDef } from "@godxjp/ui/data-display"
+import { Card, CardContent, StatCard, DataTable, EmptyState, Badge, type ColumnDef } from "@godxjp/ui/data-display"
 import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry"
 import { FilterBar, FilterGroup, Pagination } from "@godxjp/ui/navigation"
 import { formatDate } from "@godxjp/ui/datetime"
@@ -275,8 +275,8 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
   // ColumnDef = { key, header, render?, align?: "left"|"center"|"right", sortable?, width? }
   const columns: ColumnDef<Coupon>[] = [
     { key: "name", header: "クーポン名", render: (c) => <span className="font-medium">{c.name}</span> },
-    { key: "scope", header: "スコープ", render: (c) => <StatusBadge status={c.scope} tone="info" icon={null} /> },
-    { key: "status", header: "ステータス", render: (c) => <StatusBadge status={c.status} /> },
+    { key: "scope", header: "スコープ", render: (c) => <Badge status={c.scope} variant="info" icon={null} /> },
+    { key: "status", header: "ステータス", render: (c) => <Badge status={c.status} /> },
     { key: "valid", header: "有効期間", render: (c) => \`\${formatDate(c.validFrom)} 〜 \${formatDate(c.validTo)}\` },
     { key: "usage", header: "利用数", align: "right", render: (c) => c.usage.toLocaleString() },
   ]
@@ -288,9 +288,9 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
       <PageContainer title="クーポン管理" subtitle="配信中のクーポン一覧">
         <Stack gap="lg">
           <ResponsiveGrid columns={3}>
-            <CardStat label="公開中" value={coupons.filter((c) => c.status === "公開中").length} />
-            <CardStat label="総利用数" value={coupons.reduce((s, c) => s + c.usage, 0).toLocaleString()} />
-            <CardStat label="件数" value={coupons.length} />
+            <StatCard label="公開中" value={coupons.filter((c) => c.status === "公開中").length} />
+            <StatCard label="総利用数" value={coupons.reduce((s, c) => s + c.usage, 0).toLocaleString()} />
+            <StatCard label="件数" value={coupons.length} />
           </ResponsiveGrid>
 
           <FilterBar hasActiveFilters={q !== "" || status !== "all"} onClear={() => { setQ(""); setStatus("all"); setPage(1) }}>
@@ -331,11 +331,11 @@ export default Coupons`,
 
   {
     name: "inertia-detail-page",
-    tagline: "Inertia detail page — receives {id} prop, KeyValueGrid (compound) + CardStat + EmptyState fallback.",
+    tagline: "Inertia detail page — receives {id} prop, Descriptions (compound) + StatCard + EmptyState fallback.",
     tags: ["inertia", "detail", "show", "page", "keyvaluegrid", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
 import { PageContainer, ResponsiveGrid, Stack } from "@godxjp/ui/layout"
-import { Card, CardContent, CardStat, EmptyState, KeyValueGrid, StatusBadge } from "@godxjp/ui/data-display"
+import { Card, CardContent, StatCard, EmptyState, Descriptions, Badge } from "@godxjp/ui/data-display"
 import { Button } from "@godxjp/ui/general"
 import { formatDate } from "@godxjp/ui/datetime"
 import { ArrowLeft } from "lucide-react"
@@ -364,20 +364,20 @@ function MemberShow({ id }: { id: string }) {
       <PageContainer title={member.name} subtitle={\`\${member.id} / \${member.rank}\`}>
         <Stack gap="lg">
           <ResponsiveGrid columns={4}>
-            <CardStat label="累計購入額" value={\`¥\${member.total.toLocaleString()}\`} />
-            <CardStat label="来店回数" value={member.visits} />
-            <CardStat label="ポイント" value={member.points.toLocaleString()} />
-            <CardStat label="LTV" value={\`¥\${member.ltv.toLocaleString()}\`} />
+            <StatCard label="累計購入額" value={\`¥\${member.total.toLocaleString()}\`} />
+            <StatCard label="来店回数" value={member.visits} />
+            <StatCard label="ポイント" value={member.points.toLocaleString()} />
+            <StatCard label="LTV" value={\`¥\${member.ltv.toLocaleString()}\`} />
           </ResponsiveGrid>
           <Card>
             <CardContent>
-              {/* KeyValueGrid is COMPOUND — value goes in children, not a prop */}
-              <KeyValueGrid columns={2}>
-                <KeyValueGrid.Item label="氏名">{member.name}</KeyValueGrid.Item>
-                <KeyValueGrid.Item label="ランク"><StatusBadge status={member.rank} tone="info" icon={null} /></KeyValueGrid.Item>
-                <KeyValueGrid.Item label="ステータス"><StatusBadge status={member.status} /></KeyValueGrid.Item>
-                <KeyValueGrid.Item label="登録日">{formatDate(member.registeredAt)}</KeyValueGrid.Item>
-              </KeyValueGrid>
+              {/* Descriptions is COMPOUND — value goes in children, not a prop */}
+              <Descriptions columns={2}>
+                <Descriptions.Item label="氏名">{member.name}</Descriptions.Item>
+                <Descriptions.Item label="ランク"><Badge status={member.rank} variant="info" icon={null} /></Descriptions.Item>
+                <Descriptions.Item label="ステータス"><Badge status={member.status} /></Descriptions.Item>
+                <Descriptions.Item label="登録日">{formatDate(member.registeredAt)}</Descriptions.Item>
+              </Descriptions>
             </CardContent>
           </Card>
         </Stack>
@@ -425,31 +425,31 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
   },
 
   {
-    name: "status-badge-coloring",
-    tagline: "Colour a StatusBadge for localized labels and tiers via tone + icon (escape-hatch props, @godxjp/ui ≥ 6.1).",
+    name: "badge-coloring",
+    tagline: "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props, @godxjp/ui ≥ 6.1).",
     tags: ["statusbadge", "badge", "tone", "color", "status", "tier", "table"],
-    code: `import { StatusBadge } from "@godxjp/ui/data-display"
+    code: `import { Badge } from "@godxjp/ui/data-display"
 
-// StatusBadge auto-colours a fixed set of English LIFECYCLE keys:
+// Badge auto-colours a fixed set of English LIFECYCLE keys:
 //   active/completed (success ✓) · draft (neutral ○) · pending/temporary (warning ⏱)
 //   scheduled/sending (info) · cancelled (neutral) · failed/deleted/bounced (destructive ✕)
 // Anything else (localized labels, tiers) falls back to neutral grey ○ unless you override.
 
 // 1) Lifecycle with localized text — map to the key, keep JP via \`label\` (icon stays):
-<StatusBadge status="active" label="公開中" />        // green ✓ 公開中
+<Badge status="active">公開中</Badge>        // green ✓ 公開中
 
 // 2) Unknown label — set tone explicitly (no icon, since the key is unknown):
-<StatusBadge status="公開中" tone="success" />
+<Badge status="公開中" variant="success" />
 
 // 3) Tier / category — coloured pill, drop the misleading glyph with icon={null}:
-<StatusBadge status="プレミアム" tone="success" icon={null} />
-<StatusBadge status="ゴールド"   tone="warning" icon={null} />
-<StatusBadge status="法人共通"   tone="info"    icon={null} />
+<Badge status="プレミアム" variant="success" icon={null} />
+<Badge status="ゴールド"   variant="warning" icon={null} />
+<Badge status="法人共通"   variant="info"    icon={null} />
 
-// tone: "success" | "warning" | "destructive" | "info" | "neutral"  (import type StatusBadgeTone)
+// tone: "success" | "warning" | "destructive" | "info" | "neutral"  (import type BadgeTone)
 // RULE: a chip never wraps — it is pinned white-space: nowrap, so it stays one line in
 // narrow table cells. Centralize the domain→tone map in ONE small consumer wrapper and
-// import that instead of the raw StatusBadge across pages.`,
+// import that instead of the raw Badge across pages.`,
   },
 ];
 

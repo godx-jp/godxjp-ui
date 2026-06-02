@@ -4,7 +4,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  StatusBadge,
+  Badge,
 } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Inline } from "@godxjp/ui/layout";
@@ -18,7 +18,7 @@ export default function Demo() {
             <CardTitle>REC-8801</CardTitle>
             <p className="text-muted-foreground text-sm">Tokyo to HCM · Osaka Store</p>
           </div>
-          <StatusBadge status="in_transit" />
+          <Badge status="in_transit" />
         </Inline>
       </CardHeader>
       <CardContent className="space-y-2 text-sm">

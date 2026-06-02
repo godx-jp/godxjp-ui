@@ -16,7 +16,6 @@ import {
 import { Checkbox } from "../data-entry/checkbox";
 import { Switch } from "../data-entry/switch";
 import { Badge } from "../data-display/badge";
-import { StatusBadge } from "../data-display/status-badge";
 import {
   Table,
   TableBody,
@@ -44,7 +43,7 @@ function readComponent(relative: string): string {
 
 function statusBadgeRoot(label: string): HTMLElement {
   const text = screen.getByText(label);
-  const root = text.parentElement;
+  const root = text.closest('[data-slot="badge"]') as HTMLElement | null;
   expect(root).toBeTruthy();
   return root!;
 }
@@ -100,22 +99,22 @@ describe("theme axes integration (render + class contracts)", () => {
       expect(el.className).not.toMatch(/green-/);
     });
 
-    it("StatusBadge pending uses warning token", () => {
-      renderWithTheme(<StatusBadge status="pending" />);
+    it("Badge pending uses warning token", () => {
+      renderWithTheme(<Badge status="pending" />);
       const el = statusBadgeRoot("Chờ xử lý");
       expect(el.className).toContain("warning");
       expect(el.className).not.toMatch(/amber-/);
     });
 
-    it("StatusBadge scheduled uses info token", () => {
-      renderWithTheme(<StatusBadge status="scheduled" />);
+    it("Badge scheduled uses info token", () => {
+      renderWithTheme(<Badge status="scheduled" />);
       const el = statusBadgeRoot("Đã lên lịch");
       expect(el.className).toContain("info");
       expect(el.className).not.toMatch(/blue-/);
     });
 
-    it("StatusBadge active uses success token", () => {
-      renderWithTheme(<StatusBadge status="active" />);
+    it("Badge active uses success token", () => {
+      renderWithTheme(<Badge status="active" />);
       const el = statusBadgeRoot("Đang hoạt động");
       expect(el.className).toContain("success");
     });
@@ -226,7 +225,7 @@ describe("theme axes — control-styles import contracts", () => {
     { file: "data-display/badge.tsx", exportName: "toneSuccessClass" },
     { file: "data-display/table.tsx", exportName: "tableHeadHeightClass" },
     { file: "data-display/data-table.tsx", exportName: "tableRowHeightClass" },
-    { file: "data-display/status-badge.tsx", exportName: "toneSuccessClass" },
+    { file: "data-display/badge.tsx", exportName: "toneSuccessClass" },
     { file: "navigation/steps.tsx", exportName: "controlIconClass" },
     { file: "feedback/skeleton.tsx", exportName: "tableRowHeightClass" },
   ];

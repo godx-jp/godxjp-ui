@@ -17,13 +17,13 @@
   --card-header-background: var(--muted);
   --card-header-background-alpha: 0.55;
   --card-radius: var(--radius);
-  --card-stat-label-font-size: var(--font-size-xs);
-  --card-stat-label-font-weight: var(--font-weight-medium);
-  --card-stat-label-letter-spacing: 0.04em;
-  --card-stat-value-font-size: 1.625rem;
-  --card-stat-value-line-height: 1.1;
-  --card-stat-value-font-weight: var(--font-weight-semibold);
-  --card-stat-hint-font-size: var(--font-size-xs);
-  --card-stat-gap: var(--space-stack-xs);
-  --card-stat-icon-size: 2.25rem;
+  --stat-card-label-font-size: var(--font-size-xs);
+  --stat-card-label-font-weight: var(--font-weight-medium);
+  --stat-card-label-letter-spacing: 0.04em;
+  --stat-card-value-font-size: 1.625rem;
+  --stat-card-value-line-height: 1.1;
+  --stat-card-value-font-weight: var(--font-weight-semibold);
+  --stat-card-hint-font-size: var(--font-size-xs);
+  --stat-card-gap: var(--space-stack-xs);
+  --stat-card-icon-size: 2.25rem;
 }

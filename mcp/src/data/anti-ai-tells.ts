@@ -101,7 +101,7 @@ content, system-bar safe area. The framework's \`useBreakpoint\`
     body: `10+ tabs at the top of a screen, no priority. User has to read all
 of them to find the right one. AI default: "more tabs = more
 features = better".`,
-    fix: `2-4 tabs max. If you have more categories, use a sidebar (Menu),
+    fix: `2-4 tabs max. If you have more categories, use a sidebar (Sidebar),
 or a Cascader / Tree picker. Tabs are for switching between PEERS
 (2-4 mutually exclusive views of the same data).`,
   },

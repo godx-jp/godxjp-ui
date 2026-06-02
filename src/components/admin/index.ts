@@ -14,9 +14,9 @@ export { Stack, Inline } from "../layout";
 export type { StackProp, InlineProp } from "../../props/components/layout.prop";
 
 export { EmptyState } from "../data-display/empty-state";
-export { StatusBadge } from "../data-display/status-badge";
+export { Badge } from "../data-display/badge";
 export { FormField } from "../data-entry/form-field";
-export { KeyValueGrid } from "../data-display/key-value-grid";
+export { Descriptions } from "../data-display/descriptions";
 export { SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonCard } from "../feedback/skeleton";
 export {
   DataState,
@@ -47,7 +47,6 @@ export { Transfer } from "../data-entry/transfer";
 export {
   Pagination,
   Steps,
-  TabsItems,
   Tabs,
   TabsContent,
   TabsList,

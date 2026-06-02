@@ -3,8 +3,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  KeyValueGrid,
-  StatusBadge,
+  Descriptions,
+  Badge,
 } from "@godxjp/ui/data-display";
 
 export default function Demo() {
@@ -15,12 +15,12 @@ export default function Demo() {
           <CardTitle>Order</CardTitle>
         </CardHeader>
         <CardContent>
-          <KeyValueGrid columns={1}>
-            <KeyValueGrid.Item label="Order Ref" mono>
+          <Descriptions columns={1}>
+            <Descriptions.Item label="Order Ref" mono>
               REF-00991
-            </KeyValueGrid.Item>
-            <KeyValueGrid.Item label="Location">Osaka Store to Customer</KeyValueGrid.Item>
-          </KeyValueGrid>
+            </Descriptions.Item>
+            <Descriptions.Item label="Location">Osaka Store to Customer</Descriptions.Item>
+          </Descriptions>
         </CardContent>
       </Card>
       <Card>
@@ -28,12 +28,12 @@ export default function Demo() {
           <CardTitle>Internal Note</CardTitle>
         </CardHeader>
         <CardContent>
-          <KeyValueGrid columns={1}>
-            <KeyValueGrid.Item label="Status">
-              <StatusBadge status="pending" label="Pending" />
-            </KeyValueGrid.Item>
-            <KeyValueGrid.Item label="Category">Apparel, accessories, books</KeyValueGrid.Item>
-          </KeyValueGrid>
+          <Descriptions columns={1}>
+            <Descriptions.Item label="Status">
+              <Badge status="pending">Pending</Badge>
+            </Descriptions.Item>
+            <Descriptions.Item label="Category">Apparel, accessories, books</Descriptions.Item>
+          </Descriptions>
         </CardContent>
       </Card>
     </div>

@@ -4,7 +4,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  StatusBadge,
+  Badge,
 } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Inline, Stack } from "@godxjp/ui/layout";
@@ -21,7 +21,7 @@ export default function Demo() {
             <Button>Primary action</Button>
             <Button variant="outline">Secondary</Button>
             <Badge variant="success">Success</Badge>
-            <StatusBadge status="pending" />
+            <Badge status="pending" />
           </Inline>
           <pre className="bg-muted overflow-auto rounded-md p-3 text-xs">
             {`:root {

@@ -10,7 +10,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardStat,
+  StatCard,
   CardTitle,
 } from "../card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../table";
@@ -282,9 +282,9 @@ describe("Card", () => {
     expect(screen.getByTestId("content")).toHaveAttribute("data-solo", "");
   });
 
-  it("CardStat uses compact stat slot token path", () => {
+  it("StatCard uses compact stat slot token path", () => {
     renderWithUi(
-      <CardStat
+      <StatCard
         label="Đơn hôm nay"
         value={128}
         delta={<span data-testid="delta">+12%</span>}
@@ -295,19 +295,19 @@ describe("Card", () => {
     expect(card).toHaveAttribute("data-size", "compact");
     expect(card).toHaveAttribute("data-stat-card", "");
     expect(card).toHaveAttribute("data-stat-layout", "stacked");
-    expect(screen.getByText("Đơn hôm nay")).toHaveAttribute("data-slot", "card-stat-label");
-    expect(screen.getByText("128")).toHaveAttribute("data-slot", "card-stat-value");
+    expect(screen.getByText("Đơn hôm nay")).toHaveAttribute("data-slot", "stat-card-label");
+    expect(screen.getByText("128")).toHaveAttribute("data-slot", "stat-card-value");
     expect(screen.getByText("128")).toBeInTheDocument();
     expect(screen.getByTestId("delta")).toBeInTheDocument();
-    expect(card.querySelector("[data-slot='card-stat-value-row']")).toBeTruthy();
+    expect(card.querySelector("[data-slot='stat-card-value-row']")).toBeTruthy();
   });
 
-  it("CardStat color-codes signed deltas and supports inverse semantics", () => {
-    const { rerender } = renderWithUi(<CardStat label="Churn" value="4%" delta="-2%" />);
+  it("StatCard color-codes signed deltas and supports inverse semantics", () => {
+    const { rerender } = renderWithUi(<StatCard label="Churn" value="4%" delta="-2%" />);
 
     expect(screen.getByText("-2%")).toHaveClass("text-destructive");
 
-    rerender(<CardStat label="Churn" value="4%" delta="-2%" inverse />);
+    rerender(<StatCard label="Churn" value="4%" delta="-2%" inverse />);
 
     expect(screen.getByText("-2%")).toHaveClass("text-success");
   });
@@ -337,34 +337,34 @@ describe("Table", () => {
   });
 });
 
-describe("CardStat delta tone", () => {
+describe("StatCard delta tone", () => {
   function deltaEl(container: HTMLElement): HTMLElement {
-    return container.querySelector('[data-slot="card-stat-delta"]') as HTMLElement;
+    return container.querySelector('[data-slot="stat-card-delta"]') as HTMLElement;
   }
 
   it("renders label + value, no delta element when delta is omitted", () => {
-    const { container } = renderWithUi(<CardStat label="売上" value="¥8.2M" />);
+    const { container } = renderWithUi(<StatCard label="売上" value="¥8.2M" />);
     expect(screen.getByText("売上")).toBeInTheDocument();
     expect(screen.getByText("¥8.2M")).toBeInTheDocument();
-    expect(container.querySelector('[data-slot="card-stat-delta"]')).toBeNull();
+    expect(container.querySelector('[data-slot="stat-card-delta"]')).toBeNull();
   });
 
   it("colours a positive delta (+) with the success tone", () => {
-    const { container } = renderWithUi(<CardStat label="x" value="1" delta="+12%" />);
+    const { container } = renderWithUi(<StatCard label="x" value="1" delta="+12%" />);
     const delta = deltaEl(container);
     expect(delta.getAttribute("data-delta-tone")).toBe("positive");
     expect(delta.className).toContain("text-success");
   });
 
   it("colours a negative delta (-) with the destructive tone", () => {
-    const { container } = renderWithUi(<CardStat label="x" value="1" delta="-5%" />);
+    const { container } = renderWithUi(<StatCard label="x" value="1" delta="-5%" />);
     const delta = deltaEl(container);
     expect(delta.getAttribute("data-delta-tone")).toBe("negative");
     expect(delta.className).toContain("text-destructive");
   });
 
   it("flips delta semantics when inverse is set (lower is better)", () => {
-    const { container } = renderWithUi(<CardStat label="x" value="1" delta="+12%" inverse />);
+    const { container } = renderWithUi(<StatCard label="x" value="1" delta="+12%" inverse />);
     const delta = deltaEl(container);
     expect(delta.getAttribute("data-delta-tone")).toBe("negative");
     expect(delta.className).toContain("text-destructive");

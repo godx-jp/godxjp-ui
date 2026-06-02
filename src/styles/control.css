@@ -3,6 +3,74 @@
  */
 
 @layer components {
+  .ui-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-inline-xs);
+    border-radius: var(--radius-md);
+    color: hsl(var(--foreground));
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .ui-toggle-default {
+    border: 1px solid transparent;
+  }
+
+  .ui-toggle-outline {
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--background));
+  }
+
+  .ui-toggle-default-size {
+    min-height: var(--control-height);
+    padding-inline: var(--space-3);
+  }
+
+  .ui-toggle-sm {
+    min-height: var(--control-height-sm);
+    padding-inline: var(--space-2);
+    font-size: var(--font-size-xs);
+  }
+
+  .ui-toggle-lg {
+    min-height: var(--control-height-lg);
+    padding-inline: var(--space-4);
+  }
+
+  .ui-toggle:hover {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-toggle[data-state="on"] {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .ui-toggle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.35);
+  }
+
+  .ui-toggle:disabled,
+  .ui-toggle[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+
+  .ui-toggle-group {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
   .ui-button {
     display: inline-flex;
     align-items: center;

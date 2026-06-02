@@ -21,7 +21,7 @@ import { Autocomplete } from "@godxjp/ui/data-entry";
 | Prop                | Kiểu                       | Mặc định     | Mô tả                                  | Use case                                                  |
 | ------------------- | -------------------------- | ------------ | -------------------------------------- | --------------------------------------------------------- |
 | `options`           | `AutocompleteOptionProp[]` | **bắt buộc** | Danh sách lựa chọn `{ label, value }`. | Select, Radio.Group, Checkbox.Group.                      |
-| `value`             | `string`                   | —            | Giá trị hiển thị chính.                | CardStat: số KPI; Select controlled: option đang chọn.    |
+| `value`             | `string`                   | —            | Giá trị hiển thị chính.                | StatCard: số KPI; Select controlled: option đang chọn.    |
 | `placeholder`       | `string`                   | —            | Placeholder khi chưa có giá trị.       | Input/Select: gợi ý format hoặc hành động.                |
 | `searchPlaceholder` | `string`                   | —            | Input placeholder                      | Xem demo và source component để biết ngữ cảnh cụ thể.     |
 | `emptyMessage`      | `string`                   | —            | Prop `emptyMessage`.                   | Tham chiếu type trong source `src/props/` hoặc component. |
