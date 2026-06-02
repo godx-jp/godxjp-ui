@@ -45,4 +45,4 @@ ADV-STRICT, ADV-PRAGMATIC, ADV-SQ, SKEPTIC (red-team all), JUDGE (scores; writes
 "## RULES" section + cleanup list; records dissent).
 
 ## Status
-r0-pending
+decided
