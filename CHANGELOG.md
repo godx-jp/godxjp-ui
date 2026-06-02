@@ -12,8 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   of the sync guard: every PUBLIC primary component must HAVE a `@godxjp/ui-mcp` catalog entry, else
   CI fails — so the catalog can't silently rot as new components ship (an uncatalogued component is
   one an agent searches for, doesn't find, and hand-rolls). Wired into `verify` + `verify:release`.
-  Filling the 36 components it caught brought `@godxjp/ui-mcp` to **0.7.0** (full catalog: 85 entries,
-  each with usage / use-cases / related guidance).
+  Filling the 36 components it caught brought `@godxjp/ui-mcp` to **0.7.0**; **0.8.0** then enriched
+  the remaining 44 core entries, so all **85 entries** now carry usage (DO/DON'T) / use-cases /
+  related guidance — `get_component` fully teaches every component, not just lists its props.
 - **MCP↔library drift guard** (`pnpm check:mcp-sync`, `scripts/check-mcp-sync.mjs`). Fails CI
   if a component catalogued in `@godxjp/ui-mcp` (`mcp/src/data/components.ts`) names a component
   the library no longer exports (rename/removal → stale agent guidance). Wired into `verify` and
