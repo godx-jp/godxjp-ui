@@ -3,7 +3,7 @@ import * as React from "react";
 import { cn } from "../../lib/utils";
 import { Label } from "./label";
 
-interface ChoiceFieldProps {
+export interface ChoiceFieldProps {
   id: string;
   label: React.ReactNode;
   description?: React.ReactNode;
@@ -11,7 +11,7 @@ interface ChoiceFieldProps {
   children: React.ReactNode;
 }
 
-/** Label + optional description beside a checkbox/radio control. */
+/** Label + optional description beside a checkbox/radio/switch control. */
 export function ChoiceField({ id, label, description, className, children }: ChoiceFieldProps) {
   return (
     <div className={cn("ui-choice-field", className)}>

@@ -20,7 +20,7 @@ import { ColorPicker } from "@godxjp/ui/data-entry";
 
 | Prop           | Kiểu      | Mặc định | Mô tả                   | Use case                                                  |
 | -------------- | --------- | -------- | ----------------------- | --------------------------------------------------------- |
-| `value`        | `string`  | —        | Giá trị hiển thị chính. | CardStat: số KPI; Select controlled: option đang chọn.    |
+| `value`        | `string`  | —        | Giá trị hiển thị chính. | StatCard: số KPI; Select controlled: option đang chọn.    |
 | `disabled`     | `boolean` | —        | Vô hiệu hóa tương tác.  | Chưa đủ điều kiện submit; đang pending API.               |
 | `showHexInput` | `boolean` | —        | Prop `showHexInput`.    | Tham chiếu type trong source `src/props/` hoặc component. |
 

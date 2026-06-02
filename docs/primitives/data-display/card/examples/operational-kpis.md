@@ -4,4 +4,4 @@ layout: padded
 lang: vi
 ---
 
-CardStat grid cho dashboard vận hành: backlog, SLA, exception, revenue.
+StatCard grid cho dashboard vận hành: backlog, SLA, exception, revenue.

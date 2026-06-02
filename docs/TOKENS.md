@@ -23,7 +23,7 @@ src/styles/
   table-layout.css           ← Table + DataTable chrome
   dialog-layout.css          ← Dialog* slots
   alert-layout.css           ← Alert* slots + semantic variant colors
-  badge-layout.css           ← StatusBadge spacing
+  badge-layout.css           ← Badge spacing
 ```
 
 **Components emit `data-slot` + flags. Layout CSS applies padding/margin/gap/font-size/color.**
@@ -116,10 +116,10 @@ See `docs/SPACING.md` for Card slot matrix. Same pattern everywhere:
 
 | Need            | Use                              |
 | --------------- | -------------------------------- |
-| KPI stat tile   | `<CardStat label value delta />` |
+| KPI stat tile   | `<StatCard label value delta />` |
 | Page sections   | `<Stack gap="md">`               |
 | Row of controls | `<Inline gap="sm">`              |
-| Status enum     | `<StatusBadge status="…" />`     |
+| Status enum     | `<Badge status="…" />`     |
 | Empty list      | `<EmptyState … />`               |
 
 ## Adding a new component

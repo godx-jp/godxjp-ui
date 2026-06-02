@@ -21,7 +21,7 @@ import { QueryRefetchButton } from "@godxjp/ui/query";
 | Prop    | Kiểu               | Mặc định     | Mô tả                                      | Use case                                                  |
 | ------- | ------------------ | ------------ | ------------------------------------------ | --------------------------------------------------------- |
 | `query` | `QueryRefetchLike` | **bắt buộc** | Prop `query`.                              | Tham chiếu type trong source `src/props/` hoặc component. |
-| `label` | `ReactNode`        | —            | Nhãn mô tả — thường là dòng phụ, font nhỏ. | CardStat: tên chỉ số KPI; FormField: tên field.           |
+| `label` | `ReactNode`        | —            | Nhãn mô tả — thường là dòng phụ, font nhỏ. | StatCard: tên chỉ số KPI; FormField: tên field.           |
 
 ## Props hành động (events & callbacks)
 

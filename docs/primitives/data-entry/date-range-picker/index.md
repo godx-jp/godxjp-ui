@@ -20,7 +20,7 @@ import { DateRangePicker } from "@godxjp/ui/data-entry";
 
 | Prop          | Kiểu                       | Mặc định | Mô tả                            | Use case                                                  |
 | ------------- | -------------------------- | -------- | -------------------------------- | --------------------------------------------------------- |
-| `value`       | `DateRange`                | —        | Giá trị hiển thị chính.          | CardStat: số KPI; Select controlled: option đang chọn.    |
+| `value`       | `DateRange`                | —        | Giá trị hiển thị chính.          | StatCard: số KPI; Select controlled: option đang chọn.    |
 | `placeholder` | `string`                   | —        | Placeholder khi chưa có giá trị. | Input/Select: gợi ý format hoặc hành động.                |
 | `disabled`    | `boolean`                  | —        | Vô hiệu hóa tương tác.           | Chưa đủ điều kiện submit; đang pending API.               |
 | `locale`      | `DayPickerProps["locale"]` | —        | Prop `locale`.                   | Tham chiếu type trong source `src/props/` hoặc component. |

@@ -47,11 +47,10 @@ export type {
 } from "./data-entry.prop";
 export type {
   EmptyStateProp,
-  KeyValueGridProp,
-  KeyValueGridItemProp,
-  StatusBadgeProp,
-  DataTableProp,
+  DescriptionsProp,
+  DescriptionsItemProp,
   BadgeProp,
+  DataTableProp,
 } from "./data-display.prop";
 export type {
   DialogConfirmProp,
@@ -78,7 +77,7 @@ export type {
   StepsProp,
   StepItemProp,
   StepStatusProp,
-  TabsItemsProp,
+  TabsProp,
   TabItemProp,
 } from "./navigation.prop";
 export type {

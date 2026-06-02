@@ -28,7 +28,8 @@ export {
 } from "./sheet";
 export { Toaster } from "./sonner";
 export { toast, useToast, type LegacyToastOptions } from "./use-toast";
-export { SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonCard } from "./skeleton";
+export { Skeleton, SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonCard } from "./skeleton";
+export type { SkeletonProps } from "./skeleton";
 export {
   Alert,
   AlertTitle,

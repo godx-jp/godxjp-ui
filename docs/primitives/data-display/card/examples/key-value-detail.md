@@ -4,4 +4,4 @@ layout: padded
 lang: vi
 ---
 
-Detail card dùng `KeyValueGrid` cho customer/account metadata.
+Detail card dùng `Descriptions` cho customer/account metadata.

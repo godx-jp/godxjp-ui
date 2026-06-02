@@ -21,7 +21,7 @@ import { DateFormatPicker } from "@godxjp/ui/navigation";
 | Prop       | Kiểu            | Mặc định | Mô tả                   | Use case                                               |
 | ---------- | --------------- | -------- | ----------------------- | ------------------------------------------------------ |
 | `disabled` | `boolean`       | —        | Vô hiệu hóa tương tác.  | Chưa đủ điều kiện submit; đang pending API.            |
-| `value`    | `AppDateFormat` | —        | Giá trị hiển thị chính. | CardStat: số KPI; Select controlled: option đang chọn. |
+| `value`    | `AppDateFormat` | —        | Giá trị hiển thị chính. | StatCard: số KPI; Select controlled: option đang chọn. |
 
 ## Props hành động (events & callbacks)
 

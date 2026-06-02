@@ -14,7 +14,6 @@ import type {
   OnTableDensityChangeProp,
   SelectedIdsProp,
   SortStateProp,
-  StatusToneProp,
   TableDensityProp,
   ChildrenProp,
 } from "../vocabulary";
@@ -28,24 +27,26 @@ export type EmptyStateProp = {
   className?: ClassNameProp;
 };
 
-/** @see KeyValueGrid */
-export type KeyValueGridProp = {
-  items: KeyValueGridItemProp[];
+/** @see Descriptions */
+export type DescriptionsProp = {
+  items: DescriptionsItemProp[];
   columns?: 1 | 2 | 3;
   className?: ClassNameProp;
 };
 
-export type KeyValueGridItemProp = {
+export type DescriptionsItemProp = {
   label: React.ReactNode;
   value: React.ReactNode;
   mono?: boolean;
 };
 
-/** @see StatusBadge */
-export type StatusBadgeProp = {
-  status: string;
-  tone?: StatusToneProp;
+/** @see Badge */
+export type BadgeProp = {
+  variant?: "default" | "secondary" | "outline" | "success" | "warning" | "destructive" | "info" | "neutral";
+  status?: string;
+  icon?: React.ComponentType<{ className?: string }> | null;
   className?: ClassNameProp;
+  children?: ChildrenProp;
 };
 
 /** @see DataTable */
@@ -65,9 +66,4 @@ export type DataTableProp<T> = {
   empty?: React.ReactNode;
   className?: ClassNameProp;
   children?: ChildrenProp;
-};
-
-/** @see Badge */
-export type BadgeProp = React.HTMLAttributes<HTMLDivElement> & {
-  variant?: "default" | "secondary" | "destructive" | "outline" | "success" | "warning";
 };

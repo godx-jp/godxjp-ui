@@ -20,7 +20,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
 
 | Prop       | Kiểu          | Mặc định     | Mô tả                                    | Use case                                                        |
 | ---------- | ------------- | ------------ | ---------------------------------------- | --------------------------------------------------------------- |
-| `columns`  | `2`, `3`, `4` | —            | Số cột layout.                           | KeyValueGrid: 1–3 cột; DataTable column defs.                   |
+| `columns`  | `2`, `3`, `4` | —            | Số cột layout.                           | Descriptions: 1–3 cột; DataTable column defs.                   |
 | `children` | `ReactNode`   | **bắt buộc** | Nội dung con render bên trong component. | Text, icon, hoặc component con — ví dụ label Badge, body Alert. |
 
 ## Props hành động (events & callbacks)

@@ -1,4 +1,4 @@
-import { Badge, StatusBadge } from "@godxjp/ui/data-display";
+import { Badge, Badge } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Inline, Stack } from "@godxjp/ui/layout";
 
@@ -22,7 +22,7 @@ export default function Demo() {
       <Inline gap="sm">
         <Badge>Batch #0524</Badge>
         <Badge variant="secondary">VIP</Badge>
-        <StatusBadge status="pending" />
+        <Badge status="pending" />
       </Inline>
     </Stack>
   );

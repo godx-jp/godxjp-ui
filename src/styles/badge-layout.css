@@ -3,7 +3,7 @@
  */
 
 @layer components {
-  [data-slot="status-badge"] {
+  [data-slot="badge"] {
     display: inline-flex;
     align-items: center;
     gap: var(--space-badge-gap);
@@ -17,7 +17,7 @@
     white-space: nowrap;
   }
 
-  [data-slot="status-badge-icon"] {
+  [data-slot="badge-icon"] {
     width: 0.75rem;
     height: 0.75rem;
     flex-shrink: 0;

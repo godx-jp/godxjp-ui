@@ -1,4 +1,5 @@
 import path from "node:path";
+import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { defineConfig, type Plugin } from "vite";
@@ -12,19 +13,25 @@ const previewRoot = path.dirname(fileURLToPath(import.meta.url));
 const uiRoot = path.resolve(previewRoot, "..");
 const fontDir = path.dirname(require.resolve("@fontsource/m-plus-2/package.json"));
 
-/** Mirror package.json exports so doc demos import like app consumers. */
+/**
+ * Mirror package.json exports so doc demos import like app consumers — but resolve to
+ * the SOURCE (for live HMR), not the published `dist`. The exports map points each subpath
+ * at a built `./dist/*.js` (often via a conditional `{ types, import }` object); we reverse
+ * that to the matching `src/*.{ts,tsx}` entry (same logic as tsup.config.ts entriesFromExports).
+ */
+type ExportTarget = string | { types?: string; import?: string };
 function packageExportAliases(): Array<{ find: string | RegExp; replacement: string }> {
   const entries: Array<{ find: string; replacement: string }> = [];
-  const exports = pkg.exports as Record<string, string>;
+  const exports = pkg.exports as Record<string, ExportTarget>;
 
   for (const [subpath, target] of Object.entries(exports)) {
-    if (!target.endsWith(".ts") && !target.endsWith(".tsx")) continue;
-    const resolved = path.resolve(uiRoot, target.replace(/^\.\//, ""));
-    if (subpath === ".") {
-      entries.push({ find: "@godxjp/ui", replacement: resolved });
-    } else {
-      entries.push({ find: `@godxjp/ui${subpath.slice(1)}`, replacement: resolved });
-    }
+    const dist = typeof target === "string" ? target : target.import;
+    if (!dist || !dist.endsWith(".js")) continue; // skip css / type-only targets
+    const base = dist.replace(/^\.\//, "").replace(/^dist\//, "src/").replace(/\.js$/, "");
+    const srcRel = [".tsx", ".ts"].map((ext) => base + ext).find((p) => existsSync(path.resolve(uiRoot, p)));
+    if (!srcRel) continue; // no source entry → leave to node resolution
+    const replacement = path.resolve(uiRoot, srcRel);
+    entries.push({ find: subpath === "." ? "@godxjp/ui" : `@godxjp/ui${subpath.slice(1)}`, replacement });
   }
 
   // Longest match first — avoid `@godxjp/ui` swallowing `/data-display` subpaths.

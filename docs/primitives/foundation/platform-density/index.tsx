@@ -7,11 +7,11 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardStat,
+  StatCard,
   CardTitle,
   DataTable,
   EmptyState,
-  StatusBadge,
+  Badge,
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import {
@@ -57,7 +57,7 @@ const columns: ColumnDef<Row>[] = [
   {
     key: "status",
     header: "Status",
-    render: (row) => <StatusBadge status={row.status} />,
+    render: (row) => <Badge status={row.status} />,
   },
 ];
 
@@ -78,10 +78,10 @@ function DensityFrame({ density }: { density: Density }) {
     >
       <Stack gap="md">
         <ResponsiveGrid columns={4}>
-          <CardStat label="Pending" value="128" delta={<Badge variant="secondary">+18</Badge>} />
-          <CardStat label="Ready" value="42" delta={<Badge variant="success">8 booked</Badge>} />
-          <CardStat label="Cut-off" value="15:40" hint="Section rhythm sample" />
-          <CardStat label="Issues" value="7" delta={<Badge variant="destructive">check</Badge>} />
+          <StatCard label="Pending" value="128" delta={<Badge variant="secondary">+18</Badge>} />
+          <StatCard label="Ready" value="42" delta={<Badge variant="success">8 booked</Badge>} />
+          <StatCard label="Cut-off" value="15:40" hint="Section rhythm sample" />
+          <StatCard label="Issues" value="7" delta={<Badge variant="destructive">check</Badge>} />
         </ResponsiveGrid>
 
         <SplitPane

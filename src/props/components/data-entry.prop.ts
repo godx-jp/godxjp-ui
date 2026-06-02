@@ -99,21 +99,13 @@ export type SwitchProp = React.ComponentPropsWithoutRef<typeof SwitchPrimitive.R
   size?: "sm" | "default";
 };
 
-/** @see SwitchField — labelled switch with hidden input for HTML forms. */
-export type SwitchFieldProp = {
+/** @see ChoiceField — inline control + label + description wrapper. */
+export type ChoiceFieldProp = {
   id: IdProp;
   label: LabelProp;
-  name: NameProp;
-  required?: RequiredProp;
-  helper?: HelperProp;
-  error?: ErrorProp;
-  labelAddon?: React.ReactNode;
+  description?: React.ReactNode;
   className?: ClassNameProp;
-  checked?: boolean;
-  defaultChecked?: boolean;
-  onCheckedChange?: (checked: boolean) => void;
-  disabled?: DisabledProp;
-  size?: SwitchProp["size"];
+  children: React.ReactNode;
 };
 
 /** Country row accepted by CountrySelect / CountryOptionLabel.

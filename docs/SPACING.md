@@ -43,8 +43,8 @@ Implementation: `src/tokens/base.css` (values) · layout owners: `src/styles/*-l
 
 | Component                 | Use                                                |
 | ------------------------- | -------------------------------------------------- |
-| `CardStat`                | KPI / stat tile (`size="compact"` + `solo` path)   |
-| `CardContent solo`        | Body-only card (same padding as `CardStat`)        |
+| `StatCard`                | KPI / stat tile (`size="compact"` + `solo` path)   |
+| `CardContent solo`        | Body-only card (same padding as `StatCard`)        |
 | `CardContent flush tight` | Edge-to-edge table/tabs in card                    |
 | `ui-card-inset-x`         | Align nested cells to shell (tables in flush body) |
 

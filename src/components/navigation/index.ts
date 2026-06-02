@@ -1,5 +1,4 @@
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
-export { TabsItems } from "./tabs-items";
 export { Pagination } from "./pagination";
 export { Steps } from "./steps";
 export { FilterBar, FilterGroup } from "./filter-bar";

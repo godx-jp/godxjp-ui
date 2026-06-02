@@ -90,8 +90,8 @@ All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640
 | -------------- | ------------------ | ---------------------------------------- |
 | `EmptyState`   | `EmptyStateProp`   | `icon`, `title`, `description`, `action` |
 | `DataTable`    | `DataTableProp<T>` | `columns`, `density: TableDensityProp`   |
-| `KeyValueGrid` | `KeyValueGridProp` | `items[]`                                |
-| `StatusBadge`  | `StatusBadgeProp`  | `status`, `tone: StatusToneProp`         |
+| `Descriptions` | `DescriptionsProp` | `items[]`                                |
+| `Badge`  | `BadgeProp`  | `status`, `tone: StatusToneProp`         |
 | `Badge`        | `BadgeProp`        | shadcn badge variants                    |
 | `Popover`      | Radix primitives   | floating content panel                   |
 | `ScrollArea`   | Radix primitives   | scrollable regions                       |

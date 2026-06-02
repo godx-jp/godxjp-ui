@@ -196,7 +196,7 @@ export const VOCABULARY_REGISTRY = {
   StatusToneProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "StatusBadge color tone",
+    description: "Badge color tone",
   },
   AlertVariantProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -387,18 +387,10 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["DisabledProp"],
   },
-  SwitchFieldProp: {
+  ChoiceFieldProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: [
-      "IdProp",
-      "LabelProp",
-      "RequiredProp",
-      "HelperProp",
-      "ErrorProp",
-      "DisabledProp",
-      "ClassNameProp",
-    ],
+    vocabulary: ["IdProp", "LabelProp", "ClassNameProp"],
   },
   SliderProp: {
     group: "data-entry",
@@ -525,22 +517,21 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: ["IconProp", "TitleProp", "DescriptionProp", "ActionProp"],
   },
-  KeyValueGridProp: {
+  DescriptionsProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
     vocabulary: [],
   },
-  StatusBadgeProp: {
+  BadgeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["StatusToneProp"],
+    vocabulary: ["ChildrenProp", "ClassNameProp"],
   },
   DataTableProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
     vocabulary: ["ColumnDefProp", "TableDensityProp", "SortStateProp", "SelectedIdsProp"],
   },
-  BadgeProp: { group: "data-display", file: "components/data-display.prop.ts", vocabulary: [] },
   DialogConfirmProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",
@@ -622,7 +613,7 @@ export const COMPONENT_PROP_REGISTRY = {
   },
   StepItemProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
   StepStatusProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
-  TabsItemsProp: {
+  TabsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: ["ClassNameProp"],

@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  KeyValueGrid,
+  Descriptions,
 } from "@godxjp/ui/data-display";
 
 export default function Demo() {
@@ -15,15 +15,15 @@ export default function Demo() {
         <CardDescription>CUS-2026-1182</CardDescription>
       </CardHeader>
       <CardContent>
-        <KeyValueGrid columns={2}>
-          <KeyValueGrid.Item label="Họ tên">Nguyễn Minh Anh</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Email">minh.anh@example.com</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Điện thoại">+84 901 234 567</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Tổng chi tiêu">¥842,000</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Ghi chú CS" span={2}>
+        <Descriptions columns={2}>
+          <Descriptions.Item label="Họ tên">Nguyễn Minh Anh</Descriptions.Item>
+          <Descriptions.Item label="Email">minh.anh@example.com</Descriptions.Item>
+          <Descriptions.Item label="Điện thoại">+84 901 234 567</Descriptions.Item>
+          <Descriptions.Item label="Tổng chi tiêu">¥842,000</Descriptions.Item>
+          <Descriptions.Item label="Ghi chú CS" span={2}>
             VIP buyer, ưu tiên consolidate cuối tuần.
-          </KeyValueGrid.Item>
-        </KeyValueGrid>
+          </Descriptions.Item>
+        </Descriptions>
       </CardContent>
     </Card>
   );

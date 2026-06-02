@@ -20,7 +20,7 @@ import { CheckboxGroup } from "@godxjp/ui/data-entry";
 
 | Prop           | Kiểu                     | Mặc định | Mô tả                                        | Use case                                                        |
 | -------------- | ------------------------ | -------- | -------------------------------------------- | --------------------------------------------------------------- |
-| `value`        | `string[]`               | —        | Giá trị hiển thị chính.                      | CardStat: số KPI; Select controlled: option đang chọn.          |
+| `value`        | `string[]`               | —        | Giá trị hiển thị chính.                      | StatCard: số KPI; Select controlled: option đang chọn.          |
 | `defaultValue` | `string[]`               | —        | Giá trị khởi tạo (uncontrolled).             | Input/RadioGroup khi không cần controlled state.                |
 | `options`      | `ChoiceOptionProp[]`     | —        | Danh sách lựa chọn `{ label, value }`.       | Select, Radio.Group, Checkbox.Group.                            |
 | `orientation`  | `horizontal`, `vertical` | —        | Prop `orientation`.                          | Tham chiếu type trong source `src/props/` hoặc component.       |

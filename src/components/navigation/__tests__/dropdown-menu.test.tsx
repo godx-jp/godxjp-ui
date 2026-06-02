@@ -40,7 +40,7 @@ describe("DropdownMenu", () => {
     renderWithUi(
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button type="button">Menu</Button>
+          <Button type="button">Actions</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
@@ -49,7 +49,7 @@ describe("DropdownMenu", () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     );
-    await user.click(screen.getByRole("button", { name: "Menu" }));
+    await user.click(screen.getByRole("button", { name: "Actions" }));
     expect(screen.getByText("Hành động")).toHaveAttribute("data-slot", "dropdown-menu-label");
     expect(screen.getByRole("menuitem", { name: "Sửa" })).toBeInTheDocument();
   });

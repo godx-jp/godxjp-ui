@@ -68,16 +68,15 @@ export type StepsProp = {
 
 /** Tab pane — Ant Design `items` entry. */
 export type TabItemProp = {
-  key: string;
+  value: string;
   label: React.ReactNode;
-  children: React.ReactNode;
+  content: React.ReactNode;
   disabled?: boolean;
-  icon?: React.ReactNode;
 };
 
-/** @see TabsItems — high-level tabs with `items` array. */
-export type TabsItemsProp = {
-  items: TabItemProp[];
+/** @see Tabs — high-level tabs with optional `items` array. */
+export type TabsProp = {
+  items?: TabItemProp[];
   value?: string;
   defaultValue?: string;
   onValueChange?: (key: string) => void;

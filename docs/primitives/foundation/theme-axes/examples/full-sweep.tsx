@@ -16,7 +16,7 @@ import {
 } from "@godxjp/ui/data-entry";
 import {
   Badge,
-  StatusBadge,
+  Badge,
   Table,
   TableBody,
   TableCell,
@@ -26,7 +26,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { SkeletonCard, SkeletonTable } from "@godxjp/ui/feedback";
 import { Inline, Stack } from "@godxjp/ui/layout";
-import { Pagination, Steps, Tabs, TabsItems, TabsList, TabsTrigger } from "@godxjp/ui/navigation";
+import { Pagination, Steps, Tabs, Tabs, TabsList, TabsTrigger } from "@godxjp/ui/navigation";
 
 export default function Demo() {
   return (
@@ -79,12 +79,12 @@ export default function Demo() {
             <TabsTrigger value="import">Import</TabsTrigger>
           </TabsList>
         </Tabs>
-        <TabsItems
+        <Tabs
           variant="line"
           defaultValue="line-a"
           items={[
-            { key: "line-a", label: "Line tabs", children: null },
-            { key: "line-b", label: "Secondary", children: null },
+            { value: "line-a", label: "Line tabs", content: null },
+            { value: "line-b", label: "Secondary", content: null },
           ]}
         />
         <Steps
@@ -103,10 +103,10 @@ export default function Demo() {
           <Badge variant="outline">Draft</Badge>
         </Inline>
         <Inline gap="sm" className="flex-wrap">
-          <StatusBadge status="active" />
-          <StatusBadge status="pending" />
-          <StatusBadge status="failed" />
-          <StatusBadge status="scheduled" />
+          <Badge status="active" />
+          <Badge status="pending" />
+          <Badge status="failed" />
+          <Badge status="scheduled" />
         </Inline>
         <div className="overflow-hidden rounded-md border">
           <Table>

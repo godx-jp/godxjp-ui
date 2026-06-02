@@ -49,7 +49,7 @@ Nhóm filter trong FilterBar.
 
 | Prop       | Kiểu        | Mặc định     | Mô tả                                      | Use case                                                        |
 | ---------- | ----------- | ------------ | ------------------------------------------ | --------------------------------------------------------------- |
-| `label`    | `ReactNode` | **bắt buộc** | Nhãn mô tả — thường là dòng phụ, font nhỏ. | CardStat: tên chỉ số KPI; FormField: tên field.                 |
+| `label`    | `ReactNode` | **bắt buộc** | Nhãn mô tả — thường là dòng phụ, font nhỏ. | StatCard: tên chỉ số KPI; FormField: tên field.                 |
 | `children` | `ReactNode` | **bắt buộc** | Nội dung con render bên trong component.   | Text, icon, hoặc component con — ví dụ label Badge, body Alert. |
 
 #### Props hành động (events & callbacks)

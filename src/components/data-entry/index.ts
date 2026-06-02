@@ -19,8 +19,8 @@ export { Radio, RadioGroup, RadioItem, RadioGroupRoot } from "./radio";
 export { Textarea } from "./textarea";
 export type { TextareaProps } from "./textarea";
 export { FormField } from "./form-field";
-export { SwitchField } from "./switch-field";
-export type { SwitchFieldProps } from "./switch-field";
+export { ChoiceField } from "./choice-field";
+export type { ChoiceFieldProps } from "./choice-field";
 export { CountrySelect, CountryOptionLabel } from "./country-select";
 export type {
   CountrySelectProps,
@@ -30,6 +30,9 @@ export type {
 export { SearchInput } from "./search-input";
 export { Switch } from "./switch";
 export type { SwitchProps } from "./switch";
+export { Toggle } from "./toggle";
+export type { ToggleProps } from "./toggle";
+export { ToggleGroup, ToggleGroupItem } from "./toggle-group";
 export { Slider } from "./slider";
 export type { SliderProps } from "./slider";
 export { Calendar } from "./calendar";

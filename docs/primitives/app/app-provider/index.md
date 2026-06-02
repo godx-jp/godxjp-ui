@@ -51,7 +51,7 @@ DateFormatPicker — phần con của compound primitive.
 | Prop       | Kiểu            | Mặc định | Mô tả                   | Use case                                               |
 | ---------- | --------------- | -------- | ----------------------- | ------------------------------------------------------ |
 | `disabled` | `boolean`       | —        | Vô hiệu hóa tương tác.  | Chưa đủ điều kiện submit; đang pending API.            |
-| `value`    | `AppDateFormat` | —        | Giá trị hiển thị chính. | CardStat: số KPI; Select controlled: option đang chọn. |
+| `value`    | `AppDateFormat` | —        | Giá trị hiển thị chính. | StatCard: số KPI; Select controlled: option đang chọn. |
 
 #### Props hành động (events & callbacks)
 
@@ -77,7 +77,7 @@ LocalePicker — phần con của compound primitive.
 | Prop       | Kiểu        | Mặc định | Mô tả                   | Use case                                               |
 | ---------- | ----------- | -------- | ----------------------- | ------------------------------------------------------ |
 | `disabled` | `boolean`   | —        | Vô hiệu hóa tương tác.  | Chưa đủ điều kiện submit; đang pending API.            |
-| `value`    | `AppLocale` | —        | Giá trị hiển thị chính. | CardStat: số KPI; Select controlled: option đang chọn. |
+| `value`    | `AppLocale` | —        | Giá trị hiển thị chính. | StatCard: số KPI; Select controlled: option đang chọn. |
 
 #### Props hành động (events & callbacks)
 
@@ -103,7 +103,7 @@ TimeFormatPicker — phần con của compound primitive.
 | Prop       | Kiểu            | Mặc định | Mô tả                   | Use case                                               |
 | ---------- | --------------- | -------- | ----------------------- | ------------------------------------------------------ |
 | `disabled` | `boolean`       | —        | Vô hiệu hóa tương tác.  | Chưa đủ điều kiện submit; đang pending API.            |
-| `value`    | `AppTimeFormat` | —        | Giá trị hiển thị chính. | CardStat: số KPI; Select controlled: option đang chọn. |
+| `value`    | `AppTimeFormat` | —        | Giá trị hiển thị chính. | StatCard: số KPI; Select controlled: option đang chọn. |
 
 #### Props hành động (events & callbacks)
 
@@ -129,7 +129,7 @@ TimezonePicker — phần con của compound primitive.
 | Prop       | Kiểu                     | Mặc định | Mô tả                                  | Use case                                               |
 | ---------- | ------------------------ | -------- | -------------------------------------- | ------------------------------------------------------ |
 | `disabled` | `boolean`                | —        | Vô hiệu hóa tương tác.                 | Chưa đủ điều kiện submit; đang pending API.            |
-| `value`    | `AppTimezone`            | —        | Giá trị hiển thị chính.                | CardStat: số KPI; Select controlled: option đang chọn. |
+| `value`    | `AppTimezone`            | —        | Giá trị hiển thị chính.                | StatCard: số KPI; Select controlled: option đang chọn. |
 | `options`  | `readonly AppTimezone[]` | —        | Danh sách lựa chọn `{ label, value }`. | Select, Radio.Group, Checkbox.Group.                   |
 
 #### Props hành động (events & callbacks)

@@ -8,7 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  StatusBadge,
+  Badge,
 } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Inline } from "@godxjp/ui/layout";
@@ -26,7 +26,7 @@ export default function Demo() {
         <div className="min-w-0 space-y-1">
           <Inline gap="sm" className="flex-wrap items-center">
             <CardTitle>REC-8801</CardTitle>
-            <StatusBadge status="in_transit" />
+            <Badge status="in_transit" />
             <Badge variant="outline">VIP</Badge>
             <Badge variant="secondary">Acme Inc</Badge>
           </Inline>
@@ -53,7 +53,7 @@ export default function Demo() {
         </CardAction>
       </CardHeader>
       <CardContent className="text-sm">
-        Badge + StatusBadge trong header; menu cho secondary actions.
+        Badge + Badge trong header; menu cho secondary actions.
       </CardContent>
     </Card>
   );

@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0]
+
+### BREAKING
+
+- Removed `ScanPanel`; migrate scan/upload placeholders to `EmptyState`, `Skeleton`, or a product-specific upload surface.
+- Removed `CodeBadge`; migrate typed code chips to `Badge` with consumer-owned prefix/icon content.
+- Removed `ShellApp`; compose production shells with `AppShell`, `Sidebar`, `Topbar`, and `Breadcrumb`.
+- Removed `Menu`; use `Sidebar` directly for persistent left-rail navigation.
+- Removed `MobileFrame`; use app/page layout primitives instead of the phone-frame wrapper.
+- Renamed `KeyValueGrid` to `Descriptions`; migrate `KeyValueGrid.Item` to `Descriptions.Item`.
+- Renamed `ProgressMeter` to `Progress`; import `Progress` from `@godxjp/ui/data-display`.
+- Renamed `CardStat` to `StatCard`; keep rendering it directly in grids, not wrapped in `Card`.
+- Merged `StatusBadge` into `Badge`; migrate `tone` to `variant`, use `status` for lifecycle mapping, and pass `icon={null}` for tier/category chips.
+- Merged `TabsItems` into `Tabs`; pass `items={[{ value, label, content }]}` to `Tabs`.
+- Merged `SwitchField` into `ChoiceField` + `Switch`; wrap `<Switch name="..." />` in `<ChoiceField id label description>`.
+- `Sheet` is unchanged; a future `Drawer` will be a distinct bottom-sheet primitive.
+
+### Added
+
+- Added `Avatar`, `Separator`, base `Skeleton`, `Toggle`, `ToggleGroup`, `AspectRatio`, and `Progress`.
+
 ### Tooling (monorepo — repo-internal, not shipped to consumers)
 
 - **Reverse drift guard** (`pnpm check:mcp-orphans`, `scripts/check-mcp-orphans.mjs`). The complement
@@ -173,7 +194,7 @@ page })` fetcher with a debounced search box, infinite-scroll pagination, and lo
 
 - **`ColumnDef.hiddenOnMobile`** — a `DataTable` column can now be hidden below
   the `md` breakpoint (`hidden md:table-cell`), keeping mobile tables readable.
-- **`CardStat.inverse`** + **sign-aware delta tone** — a `delta` starting with
+- **`StatCard.inverse`** + **sign-aware delta tone** — a `delta` starting with
   `+` renders in the success tone and `-` / `−` in the destructive tone;
   `inverse` flips that for metrics where lower is better.
 - **`DataTable` horizontal scroll-fade** — a subtle gradient affordance appears

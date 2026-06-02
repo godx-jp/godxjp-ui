@@ -2,19 +2,85 @@ import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "../../lib/utils";
 
+export type TabsItem = {
+  value: string;
+  label: React.ReactNode;
+  content: React.ReactNode;
+  disabled?: boolean;
+};
+
+export type TabsProps = React.ComponentProps<typeof TabsPrimitive.Root> & {
+  items?: TabsItem[];
+  variant?: "default" | "line" | "card";
+  listClassName?: string;
+  contentClassName?: string;
+};
+
 export function Tabs({
   className,
   orientation = "horizontal",
+  items,
+  value,
+  defaultValue,
+  variant = "default",
+  listClassName,
+  contentClassName,
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Root>) {
+}: TabsProps) {
+  const firstValue = items?.[0]?.value;
+  const resolvedDefault = defaultValue ?? firstValue;
+
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
       data-orientation={orientation}
       orientation={orientation}
+      value={value}
+      defaultValue={value === undefined ? resolvedDefault : undefined}
       className={cn("group/tabs flex gap-2 data-[orientation=horizontal]:flex-col", className)}
       {...props}
-    />
+    >
+      {items ? (
+        <>
+          <TabsList
+            data-slot="tabs-list"
+            className={cn(
+              variant === "line" &&
+                "h-auto w-full justify-start rounded-none border-b bg-transparent p-0",
+              variant === "card" && "w-full justify-start",
+              listClassName,
+            )}
+          >
+            {items.map((item) => (
+              <TabsTrigger
+                key={item.value}
+                value={item.value}
+                disabled={item.disabled}
+                className={cn(
+                  variant === "line" &&
+                    "data-[state=active]:border-primary rounded-none border-b-2 border-transparent bg-transparent px-4 py-2 shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                  variant === "card" && "data-[state=active]:shadow-sm",
+                )}
+              >
+                {item.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {items.map((item) => (
+            <TabsContent
+              key={item.value}
+              value={item.value}
+              data-slot="tabs-panel"
+              className={cn(variant === "line" && "mt-0", contentClassName)}
+            >
+              {item.content}
+            </TabsContent>
+          ))}
+        </>
+      ) : (
+        props.children
+      )}
+    </TabsPrimitive.Root>
   );
 }
 

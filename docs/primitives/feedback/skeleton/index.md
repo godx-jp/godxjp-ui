@@ -13,10 +13,16 @@ Skeleton — Primitive phản hồi — thông báo, xác nhận, trạng thái 
 ## Import
 
 ```tsx
-import { SkeletonCard, SkeletonDetail, SkeletonRows, SkeletonTable } from "@godxjp/ui/feedback";
+import { Skeleton, SkeletonCard, SkeletonDetail, SkeletonRows, SkeletonTable } from "@godxjp/ui/feedback";
 ```
 
 ## Components
+
+### Skeleton
+
+Skeleton block cơ bản.
+
+**Use case:** Loading placeholder một dòng hoặc một khối tùy chỉnh.
 
 ### SkeletonCard
 

@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  StatusBadge,
+  Badge,
 } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Inline } from "@godxjp/ui/layout";
@@ -21,7 +21,7 @@ export default function Demo() {
           <CardTitle>invoice_msds.pdf</CardTitle>
           <CardDescription className="font-mono text-xs">media_01k9x...</CardDescription>
         </div>
-        <StatusBadge status="temporary" />
+        <Badge status="temporary" />
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="bg-muted/50 flex h-32 items-center justify-center rounded-md border">

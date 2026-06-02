@@ -98,7 +98,7 @@ Body chính của card.
 | `children` | `ReactNode` | —        | Nội dung con render bên trong component.        | Text, icon, hoặc component con — ví dụ label Badge, body Alert. |
 | `flush`    | `boolean`   | —        | Full-bleed — bỏ padding ngang.                  | CardContent: table; CardFooter: action bar sát mép.             |
 | `tight`    | `boolean`   | —        | Không gap sau header.                           | CardContent sát tabs/toolbar.                                   |
-| `solo`     | `boolean`   | —        | Không có header phía trên — padding top đầy đủ. | CardStat, KPI tile chỉ có body.                                 |
+| `solo`     | `boolean`   | —        | Không có header phía trên — padding top đầy đủ. | StatCard, KPI tile chỉ có body.                                 |
 
 #### Props hành động (events & callbacks)
 
@@ -150,7 +150,7 @@ Media full-bleed phía trên card — ảnh cover, banner.
 
 Dòng mô tả phụ trong header.
 
-**Use case:** CardStat: render `label` KPI; card thường: subtitle ngắn.
+**Use case:** StatCard: render `label` KPI; card thường: subtitle ngắn.
 
 #### Props hiển thị & cấu hình
 
@@ -240,7 +240,7 @@ Vùng header card — title, description, actions.
 
 Heading `<h3>` trong card.
 
-**Use case:** Tiêu đề card; CardStat dùng cho số KPI (`text-2xl`).
+**Use case:** Tiêu đề card; StatCard dùng cho số KPI (`text-2xl`).
 
 #### Props hiển thị & cấu hình
 
