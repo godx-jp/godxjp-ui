@@ -5,6 +5,17 @@
 @import "@fontsource/m-plus-2/500.css";
 @import "@fontsource/m-plus-2/700.css";
 @import "tailwindcss";
+
+/* Guarantee the full set of semantic color utilities ships in the compiled CSS
+ * even when the library itself only references a few — consumers (and the token
+ * docs) must be able to use bg/text/border for EVERY semantic role. Without this
+ * Tailwind's JIT drops unused roles (success/info/attention) → transparent. */
+@source inline(
+  "{bg,text,border,ring}-{primary,secondary,muted,accent,destructive,success,warning,info,attention}"
+);
+@source inline(
+  "{bg,text}-{primary,secondary,muted,accent,destructive,success,warning,info,attention}-foreground"
+);
 @source "../**/*.{tsx,ts}";
 @import "../tokens/base.css";
 @import "./density.css";

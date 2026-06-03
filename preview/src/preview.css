@@ -641,6 +641,19 @@ button {
   padding: 16px;
 }
 
+/* The preview app loads several CSS graphs at once; their @layer ordering can let
+ * Tailwind's preflight reset (`*{padding:0}` in @layer base) win over the
+ * PageContainer gutter rule (@layer components) for demos rendered inside the
+ * demo-block — collapsing page padding to 0. Re-assert the gutter UNLAYERED here
+ * so framed page demos keep their inset. (The standalone library is unaffected —
+ * /isolate/ renders the same PageContainer with the correct 24px.) */
+.demo-block .ui-page-container .ui-page-header,
+.demo-block .ui-page-container .ui-page-footer,
+.demo-block .ui-page-container:not(.ui-page-container--flush) .ui-page-body {
+  padding-left: var(--space-page-active-x);
+  padding-right: var(--space-page-active-x);
+}
+
 .demo-block-footer {
   display: flex;
   align-items: center;

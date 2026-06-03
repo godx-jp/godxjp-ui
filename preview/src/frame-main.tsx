@@ -1,4 +1,4 @@
-import "../../src/styles/index.css";
+import "./preview-tailwind.css";
 import "./frame.css";
 
 import * as React from "react";

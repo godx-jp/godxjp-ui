@@ -1,0 +1,12 @@
+/* Preview-only Tailwind entry.
+ *
+ * Re-exports the library stylesheet (which owns `@import "tailwindcss"` + @theme
+ * + the component layers) and registers the sibling docs/ + examples/ trees as
+ * Tailwind sources. The Vite root is preview/, so Tailwind would otherwise never
+ * scan those trees and demo-only utilities (h-16, w-24, bg-success, …) would not
+ * be generated. Because @source must live in the Tailwind-root graph, it goes
+ * here (which @imports the root) — NOT in the shipped library index.css, so the
+ * published package never carries doc-scanning source paths. */
+@import "../../src/styles/index.css";
+@source "../../docs";
+@source "../../examples";
