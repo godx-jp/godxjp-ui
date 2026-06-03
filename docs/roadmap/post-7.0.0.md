@@ -1,80 +1,39 @@
-# @godxjp/ui — Roadmap after 7.0.0
+# @godxjp/ui — Roadmap & shipped log (post-7.0.0)
 
-Master implementation plan consolidating: issue #82 (missing primitives), issue #83 +
-`debate/framework-boundary-dedup` (boundary/dedup), and `debate/props-vocab-token-consistency`
-(vocabulary + token standardization). Sequenced so each release tells one coherent story and every
-breaking change is paid once.
+Status of the consolidation that followed three multi-agent ADR debates (`debate/`): scope (#82),
+framework boundary/dedup, and prop-vocabulary/token consistency. **7.0.0 had no external consumers,
+so breaking churn was front-loaded into one place rather than spread across many releases.**
 
-Every milestone ends with the same gate: `pnpm verify:release` (typecheck · lint · check:mcp-sync ·
-check:mcp-orphans · build · test) green → verify in the MF consumer (tsc + vite build, e2e where it
-applies) → `pnpm release` → update MF. New components ship a story + docs + MCP entry (parity guards).
-
----
-
-## ✅ 7.0.0 — naming cleanup + #82 P1 (DONE, published)
-Removed 5, renamed 3, merged 3 (StatusBadge→Badge, TabsItems→Tabs, SwitchField→ChoiceField+Switch),
-added Avatar/Separator/Skeleton/Toggle/ToggleGroup/AspectRatio/Progress. Kept Sheet. MF migrated.
-
-## 🩹 7.0.1 — dead-token cleanup (PATCH, fast, non-breaking)
-The domain tokens `--tracking-yamato / --tracking-seller / --tracking-internal` survived CodeBadge's
-removal (`src/styles/index.css:56-58`, `theme/example.service.css`, `lib/__tests__/theme-tokens-*`).
-They are dead + violate rule #19. Remove the vars, the `--color-tracking-*` mappings, and the test
-assertions. Pure deletion → patch.
-
-## 🔼 7.1.x → 7.4.x — #82 P2/P3 primitives (MINOR, additive, low-risk)
-Ship in small additive minors (each: ui/ wrapper + group export + story + docs + MCP entry):
-- **7.1 overlays/nav:** Accordion, ContextMenu, HoverCard, Menubar, NavigationMenu (Radix).
-- **7.2 layout/scroll:** bottom-sheet **Drawer** (vaul, distinct from side Sheet — the reserved name),
-  Resizable (react-resizable-panels), Carousel (embla).
-- **7.3 form inputs:** InputOTP, Combobox (single+multi, builds on the Select engine), PasswordInput,
-  TimeInput, Rating, TagInput.
-- **7.4 hooks:** useIsMobile, useMediaQuery (the `useBreakpoint` family).
-
-## 🧱 8.0.0 — CONSISTENCY pass (BREAKING): vocabulary + tokens + concept merges
-The one breaking release that makes the API uniform. Three coordinated workstreams:
-
-### 8a. Prop-vocabulary standardization  ← rules + exact set finalized by `debate/props-vocab-token-consistency`
-- Collapse duplicate prop names to one concept: `GapProp` (drop Inline/StackGapProp), `VariantProp`
-  (drop Button/Alert/Confirm/PageContainerVariant — keep per-component *value enums* only where truly
-  distinct), `DensityProp` (drop Page/TableDensity), `TitleProp` (drop PageTitle).
-- Adopt the full controlled vocabulary: `value`/`defaultValue`/`onValueChange`, `open`/`defaultOpen`/
-  `onOpenChange`; generic `SizeProp`/`ToneProp`. Migrate ad-hoc `onChange`/`on*` to the standard names.
-- Every component prop must resolve to a `props/registry.ts` entry; add a **vocabulary-coverage check**
-  (CI guard) so new props can't drift.
-
-### 8b. Token standardization (W3C Design-Tokens / Style-Dictionary 3-tier)
-- Three tiers: **primitive** (raw palette `--gray-*`/`--blue-*`, spacing scale) → **semantic**
-  (`--primary`, `--destructive`, `--muted`…) → **component** (`--card-*`, `--control-*`). Public/consumer
-  surface = semantic only; raw palette is private/internal.
-- Normalize scales (space, radius, size, z-index, motion) into documented, evenly-stepped sets.
-- Add a **token-governance check** (extend the existing token tests): no raw palette in component CSS,
-  no domain tokens, every semantic token has a `-foreground` pair where it's a surface.
-
-### 8c. Concept merges (from the boundary debate)
-- `Stack` + `Inline` → one direction-aware **`Flex`** (keep Stack/Inline as thin aliases).
-- `ChoiceField` → **`Field`** · `FilterBar` → **`Toolbar`** · `FilterGroup` → `Fieldset`.
-- `MutationFeedback` → `Alert`'s query-error preset · `QueryRefetchButton` → `Button` recipe.
-- `SkeletonCard` → `SkeletonStat` · `PageInset` → `PageContainer` slot · `DialogConfirm` → `AlertDialog` preset.
-- Decouple (data/policy → prop/slot, stay in core): *Pickers (drop `APP_LOCALES`), AppShell/Sidebar/
-  Topbar/PageContainer (product/router → slots), Badge (injectable status map), ResponsiveGrid (richer API).
-
-## 📦 9.0.0 — PACKAGE BOUNDARY (BREAKING): extract runtime adapters → `@godxjp/ui-app`
-Per the boundary ADR (KIT + adapter rule): extract whole-components that import a foreign runtime/provider.
-- New package `@godxjp/ui-app` (or `@godxjp/ui/integrations` subpath): AppProvider, `formatDate`, i18n
-  singleton/catalog, CountrySelect, DataState, InfiniteQueryState, query flatten helpers, PrefetchLink.
-- Core's root/default exports must not force React Router, TanStack Query, GODX headers, or locale catalogs.
-- Codemod + migration guide for consumers (MF first).
+Every breaking release ships behind the same gate: `pnpm verify:release` (typecheck · lint ·
+check:prop-vocabulary · check:token-tiers · check:mcp-sync · check:mcp-orphans · build · test ·
+**check:core-isolation**) → verified in the MF consumer → `pnpm release`.
 
 ---
 
-## Cross-cutting (write rules, not just code)
-- **RULES** from the vocab/token debate → write into: `docs/` (a vocabulary + token standard doc),
-  the `@godxjp/ui-mcp` rules data (so agents follow them), and the `godxjp-ui-audit` linter (enforce in
-  consumers). The MCP `prop-vocabulary` + `tokens` data must mirror the canonical set.
-- Keep MF as the live consumer/proving ground for every breaking step (verify before publish).
-- One ADR per breaking decision under `debate/`; one tracking issue per major (#82, #83, + new for 8.0.0/9.0.0).
+## ✅ Shipped
 
-## Sequencing rationale
-7.0.1 (bugfix) and 7.1–7.4 (additive) ship NOW with zero/again-additive risk. 8.0.0 batches ALL the
-breaking vocab/token/merge churn into ONE migration (consumers pay once). 9.0.0 is a separate, bigger
-architectural split (package extraction) so it isn't rushed under 8.0.0's deadline.
+| Version     | What                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **7.0.0**   | Naming cleanup (remove 5, rename 3, merge 3) + #82 **P1 primitives** (Avatar, Separator, base Skeleton, Toggle, ToggleGroup, AspectRatio, Progress). Kept `Sheet` (a distinct bottom-sheet `Drawer` came later).                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| **8.0.0**   | **Consistency pass** (ADR: PRAGMATIC-SHARED). Vocabulary: full controlled vocab (`value`/`defaultValue`/`onValueChange`, `open`/`defaultOpen`/`onOpenChange`), status `variant→tone`, `onChange→onValueChange`, gap×3→`GapProp`, registry made normative. Tokens: 3-tier (primitive/semantic/component), removed domain `--tracking-*`. **22 rules** → `docs/STANDARDS-vocabulary-tokens.md` + MCP + audit. New CI guards `check:prop-vocabulary` + `check:token-tiers`. Concept merges (Stack+Inline→`Flex`, ChoiceField→`Field`, FilterBar→`Toolbar`, SkeletonCard→`SkeletonStat`, PageInset→PageContainer, MutationFeedback/QueryRefetchButton→presets) with thin aliases kept. |
+| **8.1–8.3** | All remaining **#82 primitives** — Accordion, HoverCard, PasswordInput, Drawer (vaul bottom-sheet), InputOTP, Rating, TagInput, ContextMenu, Menubar, NavigationMenu, Resizable, Carousel, Combobox, TimeInput + `useIsMobile`/`useMediaQuery` (`@godxjp/ui/hooks`). **#82 closed.**                                                                                                                                                                                                                                                                                                                                                                                               |
+| **9.0.0**   | **Core runtime isolation** (ADR: KIT + adapter rule, issue #83). Root `@godxjp/ui` no longer forces a foreign runtime: dropped `./form` (react-hook-form) + query adapters (@tanstack) from the root barrel (still on `@godxjp/ui/form` + `/query`); decoupled Breadcrumb/PageContainer/PageHeader from `react-router-dom` (injectable `linkComponent`, default `<a>`). New `check:core-isolation` guard (traces the root dist graph) wired into verify. **#83 closed.**                                                                                                                                                                                                           |
+| **9.1.0**   | Removed the confirm-dialog **duplication** — dropped `DialogConfirm` + `Dialog mode="confirm"`; `AlertDialog` is the sole confirm/destructive dialog; `Dialog` is role=dialog only.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **9.2.0**   | #90 GitHub-Pages preview deploy (`godx-jp.github.io/godxjp-ui/`); #91 `sideEffects:false` tree-shaking + completed AlertDialog/Pagination composables + `./ui` barrel consistency (Separator/Tooltip); #92 `PasswordStrength` + `usePasswordStrength`. Boundary decouple gaps: `LocalePicker` accepts `options` (no required provider), `Topbar` `projectPlaceholder`, `Sidebar` composition escape hatch (`renderItem` + `SidebarHeader`/`SidebarSection`/`SidebarItem` children, alongside `sections`).                                                                                                                                                                          |
+
+## Key decisions (so the ADRs aren't re-litigated)
+
+- **No `@godxjp/ui-app` package split.** The boundary ADR's "extract runtime adapters" goal is met by the
+  **subpath architecture + `check:core-isolation`** (root stays neutral; adapters live on `./query`/`./form`/`./app`).
+  A separate package was judged unnecessary churn (Skeptic's version-sync dissent) — revisit only if a real consumer needs it.
+- **`variant` stays component-specific** (not one global enum); status intent is a separate `tone`.
+- **KIT, not primitives-only.** Domain-neutral kit components (shell, pickers, query helpers) stay in core as long as
+  the ROOT export forces no foreign runtime and hardcoded data becomes props.
+
+## Open / future (not blocking)
+
+- **AppShell/Topbar full composition-API rewrite** — Sidebar now has a composition escape hatch; AppShell/Topbar
+  remain config-driven, which is valid under KIT. A full slot rewrite is optional future work, not a committed plan.
+- **MF consumer** carries ~400 pre-existing wayfinder/route tsc errors from its own accounting-roadmap work —
+  unrelated to `@godxjp/ui`; a separate MF cleanup.
+- One ADR per breaking decision lives under `debate/`; the design standard is `docs/STANDARDS-vocabulary-tokens.md`.

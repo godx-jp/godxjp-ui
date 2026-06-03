@@ -91,6 +91,9 @@ export type SidebarItemProp = {
 };
 
 /** @see Sidebar */
+export type SidebarItemData = SidebarItemProp;
+
+/** @see Sidebar */
 export type SidebarSectionProp = {
   label?: string;
   items: SidebarItemProp[];
@@ -100,11 +103,13 @@ export type SidebarSectionProp = {
 export type SidebarProp = {
   activeId: string;
   onSelect?: (id: string) => void;
-  sections: SidebarSectionProp[];
+  sections?: SidebarSectionProp[];
   product?: SidebarProductProp;
   onProductClick?: () => void;
   brand?: ReactNode;
   collapsed?: boolean;
+  children?: ChildrenProp;
+  renderItem?: (item: SidebarItemData) => ReactNode;
   footer?: ReactNode;
 };
 
@@ -137,6 +142,8 @@ export type TopbarProp = {
   onToggleCollapsed?: () => void;
   rightSlot?: ReactNode;
   unread?: boolean;
+  /** Accessible placeholder when project is intentionally unset but a project chip is rendered. */
+  projectPlaceholder?: string;
   onNotificationsOpen?: () => void;
   user?: ReactNode;
 };
