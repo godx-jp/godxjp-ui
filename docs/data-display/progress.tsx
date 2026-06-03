@@ -19,7 +19,9 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Tones</CardTitle>
-            <CardDescription>Tone carries meaning — success / info / warning / destructive.</CardDescription>
+            <CardDescription>
+              Tone carries meaning — success / info / warning / destructive.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">

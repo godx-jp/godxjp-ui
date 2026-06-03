@@ -7,7 +7,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 /**
  * TagInput — free-form multi-value chips input. value is string[] (NOT string).
  * Enter or comma commits a tag; Backspace on empty removes the last chip.
- * Use Select (multiple) or multi-Combobox instead when the set of values is fixed.
+ * Use Select (multiple, with showSearch) instead when the set of values is fixed.
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {

@@ -332,22 +332,7 @@ export type VocabularyPropName = keyof typeof VOCABULARY_REGISTRY;
 
 export const COMPONENT_PROP_REGISTRY = {
   AppProviderProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ChildrenProp"] },
-  LocalePickerProp: {
-    group: "app",
-    file: "components/app.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
-  },
-  TimezonePickerProp: {
-    group: "app",
-    file: "components/app.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
-  },
-  TimeFormatPickerProp: {
-    group: "app",
-    file: "components/app.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
-  },
-  DateFormatPickerProp: {
+  AppSettingPickerProp: {
     group: "app",
     file: "components/app.prop.ts",
     vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
@@ -492,26 +477,6 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: ["IdProp", "LabelProp", "DescriptionProp", "ClassNameProp", "ChildrenProp"],
-  },
-  ChoiceFieldProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["IdProp", "LabelProp", "ClassNameProp"],
-  },
-  CountryOptionProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["LabelProp", "ValueProp"],
-  },
-  CountryOptionLabelProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["ClassNameProp"],
-  },
-  CountrySelectProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["IdProp", "NameProp", "DefaultValueProp", "RequiredProp", "PlaceholderProp"],
   },
   SliderProp: {
     group: "data-entry",

@@ -183,10 +183,6 @@
       "types": "./dist/components/data-entry/transfer.d.ts",
       "import": "./dist/components/data-entry/transfer.js"
     },
-    "./ui/combobox": {
-      "types": "./dist/components/data-entry/combobox.d.ts",
-      "import": "./dist/components/data-entry/combobox.js"
-    },
     "./ui/command": {
       "types": "./dist/components/data-entry/command.d.ts",
       "import": "./dist/components/data-entry/command.js"

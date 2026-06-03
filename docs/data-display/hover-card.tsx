@@ -20,12 +20,17 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="HoverCard" subtitle="Rich preview on hover/focus — entity peek, user card">
+    <PageContainer
+      title="HoverCard"
+      subtitle="Rich preview on hover/focus — entity peek, user card"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Hover a reference</CardTitle>
-            <CardDescription>Hover the link to preview the partner without leaving the page.</CardDescription>
+            <CardDescription>
+              Hover the link to preview the partner without leaving the page.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <HoverCard>
@@ -39,7 +44,9 @@ export default function Demo() {
                   </Avatar>
                   <div>
                     <div className="text-sm font-medium">株式会社ベトヤ</div>
-                    <div className="text-muted-foreground text-xs">取引先 · BTY-0012 · 売掛 ¥482,000</div>
+                    <div className="text-muted-foreground text-xs">
+                      取引先 · BTY-0012 · 売掛 ¥482,000
+                    </div>
                   </div>
                 </Flex>
               </HoverCardContent>

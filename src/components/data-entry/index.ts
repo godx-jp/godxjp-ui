@@ -19,19 +19,11 @@ export { Radio, RadioGroup, RadioItem, RadioGroupRoot } from "./radio";
 export { Textarea } from "./textarea";
 export type { TextareaProps } from "./textarea";
 export { FormField } from "./form-field";
-export { Field } from "./choice-field";
-export type { ChoiceFieldProps, FieldProps } from "./choice-field";
-export { CountrySelect, CountryOptionLabel } from "./country-select";
-export type {
-  CountrySelectProps,
-  CountryOptionProp,
-  CountryOptionLabelProp,
-} from "./country-select";
+export { Field } from "./field";
+export type { FieldProps } from "./field";
 export { SearchInput } from "./search-input";
 export { Switch } from "./switch";
 export type { SwitchProps } from "./switch";
-export { Combobox } from "./combobox";
-export type { ComboboxOption, ComboboxProps } from "./combobox";
 export { Toggle } from "./toggle";
 export type { ToggleProps } from "./toggle";
 export { ToggleGroup, ToggleGroupItem } from "./toggle-group";
@@ -47,12 +39,13 @@ export { TimePicker } from "./time-picker";
 export type { TimePickerProps } from "./time-picker";
 export { ColorPicker } from "./color-picker";
 export type { ColorPickerProps } from "./color-picker";
-export { SearchSelect } from "./search-select";
+// Searchable / async single-select is the data-driven `Select` (showSearch / loadOptions);
+// `SearchSelect` is its internal engine and is intentionally not part of the public API.
+export type { SelectProp, SelectProp as SelectProps } from "./select";
 export type {
-  SearchSelectProps,
-  SearchSelectOption,
-  SearchSelectLoadParamsProp,
-  SearchSelectLoadResultProp,
+  SearchSelectOptionProp as SelectOption,
+  SearchSelectLoadParamsProp as SelectLoadParams,
+  SearchSelectLoadResultProp as SelectLoadResult,
 } from "./search-select";
 export { Upload, collectUploadCommitActions, createUploadItem, useUploadDraft } from "./upload";
 export type { UploadProps, UploadFileItem, UploadVariant, UploadCommitAction } from "./upload";

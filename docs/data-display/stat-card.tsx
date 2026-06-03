@@ -9,7 +9,10 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="StatCard" subtitle="KPI tiles — label · value · delta · hint, in a ResponsiveGrid">
+    <PageContainer
+      title="StatCard"
+      subtitle="KPI tiles — label · value · delta · hint, in a ResponsiveGrid"
+    >
       <Flex direction="col" gap="lg">
         <Flex direction="col" gap="sm">
           <div className="text-sm font-medium">KPI row (stacked)</div>
@@ -26,7 +29,13 @@ export default function Demo() {
           <ResponsiveGrid columns={{ sm: 2, md: 3 }}>
             <StatCard label="新規取引先" value="24" delta="+6" />
             <StatCard label="遅延請求書" value="7" delta="-3" />
-            <StatCard label="平均処理コスト" value="¥1,180" delta="-15%" inverse hint="低いほど良い" />
+            <StatCard
+              label="平均処理コスト"
+              value="¥1,180"
+              delta="-15%"
+              inverse
+              hint="低いほど良い"
+            />
           </ResponsiveGrid>
         </Flex>
 

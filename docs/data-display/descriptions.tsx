@@ -40,7 +40,7 @@ export default function Demo() {
                 <span className="tabular-nums">¥43,818</span>
               </Descriptions.Item>
               <Descriptions.Item label="合計">
-                <span className="tabular-nums font-medium">¥482,000</span>
+                <span className="font-medium tabular-nums">¥482,000</span>
               </Descriptions.Item>
               <Descriptions.Item label="摘要">INV-2024-0312 / 4月分 受注</Descriptions.Item>
             </Descriptions>

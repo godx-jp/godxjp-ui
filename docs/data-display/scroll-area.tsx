@@ -13,11 +13,17 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * on the wrapper or the scrollbar never appears. Composed only from real
  * @godxjp/ui components.
  */
-const entries = Array.from({ length: 18 }, (_, i) => `仕訳 #2024-${String(312 - i).padStart(4, "0")}`);
+const entries = Array.from(
+  { length: 18 },
+  (_, i) => `仕訳 #2024-${String(312 - i).padStart(4, "0")}`,
+);
 
 export default function Demo() {
   return (
-    <PageContainer title="ScrollArea" subtitle="Custom scrollbar container — needs an explicit height">
+    <PageContainer
+      title="ScrollArea"
+      subtitle="Custom scrollbar container — needs an explicit height"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>

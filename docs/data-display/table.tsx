@@ -20,12 +20,17 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="Table" subtitle="Primitive table shell — prefer DataTable for admin lists">
+    <PageContainer
+      title="Table"
+      subtitle="Primitive table shell — prefer DataTable for admin lists"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>仕訳明細</CardTitle>
-            <CardDescription>A fixed double-entry breakdown — no sorting/selection needed.</CardDescription>
+            <CardDescription>
+              A fixed double-entry breakdown — no sorting/selection needed.
+            </CardDescription>
           </CardHeader>
           <CardContent flush>
             <Table>

@@ -71,7 +71,10 @@ function Block() {
 export default function Demo() {
   return (
     <QueryClientProvider client={queryClient}>
-      <PageContainer title="PrefetchLink" subtitle="Router Link that prefetches the destination query on hover/focus">
+      <PageContainer
+        title="PrefetchLink"
+        subtitle="Router Link that prefetches the destination query on hover/focus"
+      >
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>

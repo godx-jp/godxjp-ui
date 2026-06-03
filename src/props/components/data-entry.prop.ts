@@ -110,40 +110,6 @@ export type FieldProp = {
   children: React.ReactNode;
 };
 
-/** @see ChoiceField — deprecated alias for Field. */
-export type ChoiceFieldProp = FieldProp;
-
-/** Country row accepted by CountrySelect / CountryOptionLabel.
- *  Accepts either a select-option (`value`) or a summary (`code`). */
-export type CountryOptionProp = {
-  name: string;
-  nativeName?: string | null;
-  flagSvgPath?: string | null;
-  value?: string;
-  code?: string;
-  label?: string;
-};
-
-/** @see CountryOptionLabel — flag + name (+ optional code) row. */
-export type CountryOptionLabelProp = {
-  country: CountryOptionProp;
-  showCode?: boolean;
-  className?: ClassNameProp;
-};
-
-/** @see CountrySelect — country picker built on Select. */
-export type CountrySelectProp = {
-  id: IdProp;
-  name: NameProp;
-  options: CountryOptionProp[];
-  defaultValue?: string | null;
-  required?: RequiredProp;
-  allowEmpty?: boolean;
-  emptyLabel?: string;
-  placeholder?: PlaceholderProp;
-  invalid?: boolean;
-};
-
 /** @see Slider — numeric range (Radix Slider). */
 export type SliderProp = React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
 

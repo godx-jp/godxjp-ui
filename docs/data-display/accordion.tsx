@@ -18,12 +18,17 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="Accordion" subtitle="Collapsible stacked sections — FAQ, grouped settings">
+    <PageContainer
+      title="Accordion"
+      subtitle="Collapsible stacked sections — FAQ, grouped settings"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>単一開閉 (type=&quot;single&quot;)</CardTitle>
-            <CardDescription>One section open at a time; collapsible allows closing it.</CardDescription>
+            <CardDescription>
+              One section open at a time; collapsible allows closing it.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Accordion type="single" collapsible defaultValue="tax">

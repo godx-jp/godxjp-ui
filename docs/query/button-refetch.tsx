@@ -59,7 +59,10 @@ function Block() {
 export default function Demo() {
   return (
     <QueryClientProvider client={queryClient}>
-      <PageContainer title="ButtonRefetch" subtitle="Refresh button bound to a useQuery — spins while fetching">
+      <PageContainer
+        title="ButtonRefetch"
+        subtitle="Refresh button bound to a useQuery — spins while fetching"
+      >
         <Flex direction="col" gap="lg">
           <Block />
         </Flex>

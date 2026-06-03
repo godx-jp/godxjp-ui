@@ -19,13 +19,23 @@ type Invoice = {
 };
 
 const invoices: Invoice[] = [
-  { id: "INV-0312", partner: "株式会社ベトヤ", amount: 482000, status: "active", date: "2024-04-12" },
+  {
+    id: "INV-0312",
+    partner: "株式会社ベトヤ",
+    amount: 482000,
+    status: "active",
+    date: "2024-04-12",
+  },
   { id: "INV-0311", partner: "ハノイ物流", amount: 128400, status: "pending", date: "2024-04-11" },
   { id: "INV-0310", partner: "GMO決済", amount: 64800, status: "draft", date: "2024-04-10" },
   { id: "INV-0309", partner: "東京ロジ", amount: 312000, status: "failed", date: "2024-04-09" },
 ];
 
-const yen = new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY", maximumFractionDigits: 0 });
+const yen = new Intl.NumberFormat("ja-JP", {
+  style: "currency",
+  currency: "JPY",
+  maximumFractionDigits: 0,
+});
 
 const columns: ColumnDef<Invoice>[] = [
   { key: "id", header: "請求書番号", width: "w-32" },
@@ -101,7 +111,9 @@ export default function Demo() {
         </DataTable>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">Empty state (rendered automatically when data is empty)</div>
+          <div className="text-sm font-medium">
+            Empty state (rendered automatically when data is empty)
+          </div>
           <DataTable data={[]} columns={columns} getRowId={(row) => row.id} />
         </Flex>
       </Flex>

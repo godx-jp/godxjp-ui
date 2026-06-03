@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -50,12 +44,14 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="sm">
               <p className="text-sm leading-[1.7]">
-                本文 14px / 1.7 — 漢字の密度に合わせて行間を広めに取り、読み疲れを抑えます。Body copy mixes
-                日本語 and Latin without breaking rhythm.
+                本文 14px / 1.7 — 漢字の密度に合わせて行間を広めに取り、読み疲れを抑えます。Body
+                copy mixes 日本語 and Latin without breaking rhythm.
               </p>
               <Flex direction="col" gap="xs">
                 <p className="text-sm font-normal">400 normal — 通常の本文 · regular body</p>
-                <p className="text-sm font-medium">500 medium — 見出し・ラベル · headings, labels</p>
+                <p className="text-sm font-medium">
+                  500 medium — 見出し・ラベル · headings, labels
+                </p>
                 <p className="text-sm font-bold">700 bold — 強調のみ · emphasis only</p>
               </Flex>
             </Flex>

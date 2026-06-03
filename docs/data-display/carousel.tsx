@@ -33,7 +33,9 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>月次 KPI</CardTitle>
-            <CardDescription>Use prev/next to step through cards on narrow surfaces.</CardDescription>
+            <CardDescription>
+              Use prev/next to step through cards on narrow surfaces.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Carousel className="px-10">

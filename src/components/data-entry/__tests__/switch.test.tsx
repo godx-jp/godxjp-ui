@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen } from "@/test/render";
 import userEvent from "@testing-library/user-event";
 
-import { Field } from "../choice-field";
+import { Field } from "../field";
 import { Switch } from "../switch";
 
 describe("Switch", () => {

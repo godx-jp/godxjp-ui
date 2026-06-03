@@ -22,12 +22,17 @@ const items: TimelineItem[] = [
 
 export default function Demo() {
   return (
-    <PageContainer title="Timeline" subtitle="Vertical event list — the current item is highlighted">
+    <PageContainer
+      title="Timeline"
+      subtitle="Vertical event list — the current item is highlighted"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>承認フロー</CardTitle>
-            <CardDescription>Pass an items array; mark the active step with current: true.</CardDescription>
+            <CardDescription>
+              Pass an items array; mark the active step with current: true.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Timeline items={items} />

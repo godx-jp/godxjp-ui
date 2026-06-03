@@ -9,7 +9,6 @@ export * from "./carousel";
 export * from "./card";
 export * from "./checkbox";
 export * from "./color-picker";
-export * from "./combobox";
 export * from "./command";
 export * from "./context-menu";
 export * from "./menubar";

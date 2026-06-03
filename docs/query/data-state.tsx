@@ -50,7 +50,10 @@ function SuccessBlock() {
 }
 
 function LoadingBlock() {
-  const query = useQuery({ queryKey: ["ds-loading"], queryFn: () => new Promise<Invoice[]>(() => {}) });
+  const query = useQuery({
+    queryKey: ["ds-loading"],
+    queryFn: () => new Promise<Invoice[]>(() => {}),
+  });
   return (
     <DataState query={query} skeleton={<SkeletonTable />}>
       {(d) => <DataTable data={d} columns={columns} getRowId={(r) => r.id} />}
@@ -75,12 +78,17 @@ function ErrorBlock() {
 export default function Demo() {
   return (
     <QueryClientProvider client={queryClient}>
-      <PageContainer title="DataState" subtitle="useQuery lifecycle — skeleton / error / empty / success in one widget">
+      <PageContainer
+        title="DataState"
+        subtitle="useQuery lifecycle — skeleton / error / empty / success in one widget"
+      >
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
               <CardTitle>Success</CardTitle>
-              <CardDescription>Resolved data renders through the children function.</CardDescription>
+              <CardDescription>
+                Resolved data renders through the children function.
+              </CardDescription>
             </CardHeader>
             <CardContent flush>
               <SuccessBlock />

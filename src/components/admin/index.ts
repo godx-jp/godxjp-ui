@@ -15,7 +15,7 @@ export type { FlexProp, StackProp, InlineProp } from "../../props/components/lay
 export { EmptyState } from "../data-display/empty-state";
 export { Badge } from "../data-display/badge";
 export { FormField } from "../data-entry/form-field";
-export { Field } from "../data-entry/choice-field";
+export { Field } from "../data-entry/field";
 export { Descriptions } from "../data-display/descriptions";
 export { SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonStat } from "../feedback/skeleton";
 // Query/router adapters intentionally NOT re-exported here — import from "@godxjp/ui/query"

@@ -4574,121 +4574,6 @@ export function ReportRangeFilter() {
     rules: [3, 5, 6, 23],
   },
   {
-    name: "CountrySelect",
-    group: "data-entry",
-    tagline:
-      "Flag-and-name country picker built on Select; always uncontrolled — pass `name` for form submission and `defaultValue` to pre-select, not `value`/`onChange`.",
-    props: [
-      {
-        name: "id",
-        type: "string",
-        required: true,
-        description: "HTML id forwarded to the SelectTrigger for label association and a11y.",
-      },
-      {
-        name: "name",
-        type: "string",
-        required: true,
-        description:
-          "Form field name. The selected country code (value) is submitted under this key via the hidden native select that Select wraps.",
-      },
-      {
-        name: "options",
-        type: "CountryOptionProp[]",
-        required: true,
-        description:
-          "List of country options. Each entry must have at least `name` and either `value` or `code` (the country ISO code). Optionally include `nativeName`, `flagSvgPath`, and `label`.",
-      },
-      {
-        name: "defaultValue",
-        type: "string | null",
-        description:
-          "Pre-selected country code. When omitted (and allowEmpty is false), defaults to the first option's value. Pass null or empty string to show the placeholder.",
-      },
-      {
-        name: "required",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Marks the field as required via aria-required on the trigger.",
-      },
-      {
-        name: "allowEmpty",
-        type: "boolean",
-        defaultValue: "false",
-        description:
-          "When true, prepends an empty sentinel option (value '0') rendered as emptyLabel. Lets the user submit no country. Without this, the picker always has a real country selected.",
-      },
-      {
-        name: "emptyLabel",
-        type: "string",
-        defaultValue: "—",
-        description: "Label shown for the empty option when allowEmpty is true.",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        description:
-          "Placeholder text shown inside the trigger when no value is selected (relevant when defaultValue is null/empty and allowEmpty is true).",
-      },
-      {
-        name: "invalid",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Sets aria-invalid on the SelectTrigger to indicate a validation error.",
-      },
-    ],
-    usage: [
-      "DO: Always pass both `id` and `name` — `id` wires up a `<label htmlFor>`, `name` is the form submission key for the selected country code.",
-      "DO NOT: Pass `value`/`onChange` — CountrySelect is UNCONTROLLED only. It uses `defaultValue` (passed to the underlying Select). For controlled scenarios wrap the underlying `Select` primitive directly.",
-      "DO: Populate `options` with objects satisfying CountryOptionProp — each needs `name` plus either `value` (preferred) or `code` as the ISO code. Add `flagSvgPath` for flag images and `nativeName` for bilingual display.",
-      "DO: Use `allowEmpty` when the country field is optional — it inserts a sentinel '0' entry. Without it, a country is always pre-selected (falls back to options[0] if defaultValue is absent), so the form will always submit a real code.",
-      "DO: Set `invalid={true}` in error state to surface aria-invalid to assistive technology; pair it with a visible error message adjacent to the control.",
-      "DO NOT: Hand-roll a flag+name row or a custom country dropdown — use CountrySelect (for form submission) or CountryOptionLabel standalone (for display-only read-only rows).",
-    ],
-    useCases: [
-      "Billing / shipping address forms where the user must pick a country before proceeding and the code is submitted to the server.",
-      "Account settings pages where a user sets their home country or tax residency — use `defaultValue` with the stored ISO code to pre-populate.",
-      "Invoice creation forms in an accounting app that require a supplier or customer country, with `allowEmpty={false}` to guarantee a code is always present.",
-      "Optional 'country of origin' filter fields — use `allowEmpty={true}` so users can clear the selection back to 'no filter'.",
-      "Multi-step onboarding flows that must pre-select a country inferred from the user's locale, then let them correct it.",
-      "Read-only display of a country name + flag in a Descriptions or DataTable cell — use `CountryOptionLabel` directly (not CountrySelect) for non-interactive display.",
-    ],
-    related: [
-      "Select — the generic primitive CountrySelect is built on; use Select directly when you need a controlled picker or options that are not country objects.",
-      "CountryOptionLabel — the flag + name row exported from the same module; use it standalone in read-only contexts (table cells, detail views) where no picker interaction is needed.",
-      "DatePicker — another uncontrolled data-entry primitive that submits via a hidden form value; same pattern but for dates.",
-    ],
-    example: `import { CountrySelect } from "@godxjp/ui/data-entry";
-
-const countries = [
-  { value: "JP", name: "Japan", nativeName: "日本", flagSvgPath: "/flags/jp.svg" },
-  { value: "US", name: "United States", nativeName: "United States", flagSvgPath: "/flags/us.svg" },
-  { value: "VN", name: "Vietnam", nativeName: "Việt Nam", flagSvgPath: "/flags/vn.svg" },
-];
-
-// Required country field — pre-select Japan
-<CountrySelect
-  id="billing-country"
-  name="billingCountry"
-  options={countries}
-  defaultValue="JP"
-  required
-  invalid={!!errors.billingCountry}
-/>
-
-// Optional country field — allow clearing
-<CountrySelect
-  id="filter-country"
-  name="filterCountry"
-  options={countries}
-  allowEmpty
-  emptyLabel="All countries"
-  placeholder="Select a country"
-/>`,
-    storyPath: "data-entry/CountrySelect.stories.tsx",
-    rules: [3, 6, 23, 31],
-  },
-  {
     name: "Command",
     group: "data-entry",
     tagline:
@@ -5119,178 +5004,6 @@ function CustomRadioGroup() {
     rules: [3, 6, 13, 23],
   },
   {
-    name: "SearchSelect",
-    group: "data-entry",
-    deprecated: true,
-    tagline:
-      "DEPRECATED searchable single-select combobox (static or async) — use <Select options showSearch> instead; SearchSelect stays exported but Select is now the single data-driven entry point.",
-    props: [
-      {
-        name: "value",
-        type: "string",
-        defaultValue: '""',
-        description: "Controlled selected value. Empty string means nothing selected.",
-      },
-      {
-        name: "onChange",
-        type: "(value: string, option?: SearchSelectOptionProp) => void",
-        description:
-          "Called with the new value string and the full option object on selection, or with ('', undefined) when cleared.",
-      },
-      {
-        name: "options",
-        type: "SearchSelectOptionProp[]",
-        description:
-          "Static option list — filtered client-side by query. Provide this OR loadOptions, not both.",
-      },
-      {
-        name: "loadOptions",
-        type: "(params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>",
-        description:
-          "Async fetcher called with { query, page } — supports debounced search and infinite-scroll pagination. Provide this OR options, not both.",
-      },
-      {
-        name: "renderOption",
-        type: "(option: SearchSelectOptionProp) => React.ReactNode",
-        description:
-          "Custom per-option renderer (Ant-Design style). Defaults to label + optional sublabel layout.",
-      },
-      {
-        name: "selectedLabel",
-        type: "string",
-        description:
-          "Label to display for the current value when its option is not in the currently loaded page (prevents a flash of the raw ID string).",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        description:
-          "Trigger button placeholder when no value is selected. Defaults to i18n key dataEntry.searchSelect.placeholder.",
-      },
-      {
-        name: "searchPlaceholder",
-        type: "string",
-        description:
-          "Placeholder inside the search input inside the popover. Defaults to i18n key dataEntry.searchSelect.search.",
-      },
-      {
-        name: "emptyMessage",
-        type: "string",
-        description:
-          "Message shown when no options match the search query. Defaults to i18n key dataEntry.searchSelect.empty.",
-      },
-      {
-        name: "loadingMessage",
-        type: "string",
-        description:
-          "Message shown during async fetch. Defaults to i18n key dataEntry.searchSelect.loading.",
-      },
-      {
-        name: "clearLabel",
-        type: "string",
-        description:
-          "Label for the clear row that appears at the top when a value is selected and clearable is true.",
-      },
-      {
-        name: "clearable",
-        type: "boolean",
-        defaultValue: "true",
-        description: "Show a clear row at the top of the list when a value is selected.",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Disables the trigger button and prevents opening the popover.",
-      },
-      {
-        name: "name",
-        type: "string",
-        description:
-          "HTML form field name — injects a hidden <input> so the selected value submits with native forms.",
-      },
-      {
-        name: "id",
-        type: "string",
-        description: "ID forwarded to the trigger button, used to associate a <label htmlFor>.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description:
-          "Additional Tailwind classes applied to the trigger button (w-full by default).",
-      },
-      {
-        name: "data-testid",
-        type: "string",
-        description:
-          "Test ID on the trigger button. Each option gets a derived ID: ${data-testid}-option-${value}. The clear row gets ${data-testid}-option-none.",
-      },
-    ],
-    usage: [
-      "DEPRECATED — prefer <Select options={...} showSearch /> or <Select loadOptions={...} showSearch /> which uses the same engine internally. SearchSelect remains exported for backwards compatibility only.",
-      "Provide exactly ONE of `options` (static, client-side filtered) or `loadOptions` (async, debounced, paginated). Passing both is unsupported; loadOptions takes precedence.",
-      "Always pass `name` when used inside a native <form> so the hidden input submits the value correctly. Without `name` the selection does not participate in FormData.",
-      "When using `loadOptions` with a paginated endpoint, return `hasMore: true` in the result to enable infinite scroll — the component appends the next page when scrolled within 48px of the bottom.",
-      "Pass `selectedLabel` when `value` might not appear in the first loaded page (e.g. an edit form pre-populated from the server) — otherwise the trigger shows the placeholder text instead of the selected item's label.",
-      "Do NOT render a SearchSelect inside a form and also pass a compound <Select> — choose one API. For new code always prefer <Select options showSearch> from @godxjp/ui/data-entry to avoid the deprecated path.",
-    ],
-    useCases: [
-      "Legacy code that already uses SearchSelect and has not yet been migrated to <Select options showSearch>.",
-      "A vendor/account picker with a large server-side list: pass loadOptions calling your API endpoint, return pages of results with hasMore, and use selectedLabel to display the pre-saved label on an edit form.",
-      "A client-side filtered dropdown over a moderate static list (e.g. currency codes, department names) where the list fits in memory — pass options array.",
-      "A grouped picker (e.g. account chart by category) — add option.group to each option; the component auto-renders optgroup-style headings in first-seen order.",
-      "Custom option rendering (e.g. showing an avatar + name + role) — pass renderOption returning JSX; the default label+sublabel layout is bypassed.",
-    ],
-    related: [
-      "Select — THE modern replacement: pass options or loadOptions to <Select> and add showSearch to get the same combobox behavior. For all new code use Select, not SearchSelect.",
-      "Select with showSearch — use Select (with the `showSearch` prop) for typeahead/autocomplete lookup patterns; the separate Autocomplete component has been removed.",
-      "Command — low-level primitive (Popover + Command list) that SearchSelect is built on; reach for it only if you need a fully custom command-palette UI that does not fit either Select or SearchSelect.",
-    ],
-    example: `import { SearchSelect } from "@godxjp/ui/data-entry";
-
-// Static list (client-side filtered) — DEPRECATED pattern, prefer <Select options showSearch>
-function LegacyAccountPicker({ value, onChange }) {
-  return (
-    <SearchSelect
-      value={value}
-      onValueChange={onChange}
-      options={[
-        { value: "acc-001", label: "Cash", sublabel: "Current assets", group: "Assets" },
-        { value: "acc-002", label: "Accounts Receivable", group: "Assets" },
-        { value: "acc-010", label: "Revenue", group: "Income" },
-      ]}
-      placeholder="Select account"
-      name="account_id"
-      data-testid="account-picker"
-    />
-  );
-}
-
-// Async / paginated — DEPRECATED pattern, prefer <Select loadOptions showSearch>
-async function fetchVendors({ query, page }) {
-  const res = await fetch(\`/api/vendors?q=\${query}&page=\${page}\`);
-  const json = await res.json();
-  return { options: json.data, hasMore: json.meta.hasNextPage };
-}
-
-function LegacyVendorPicker({ value, currentVendorName, onChange }) {
-  return (
-    <SearchSelect
-      value={value}
-      onValueChange={onChange}
-      loadOptions={fetchVendors}
-      selectedLabel={currentVendorName}
-      placeholder="Select vendor"
-      name="vendor_id"
-      data-testid="vendor-picker"
-    />
-  );
-}`,
-    storyPath: "data-entry/SearchSelect.stories.tsx",
-    rules: [3, 6, 33],
-  },
-  {
     name: "Popover",
     group: "data-display",
     tagline:
@@ -5683,365 +5396,6 @@ export function ChartOfAccounts() {
 }`,
     storyPath: "data-display/TreeList.stories.tsx",
     rules: [3, 6, 23, 31],
-  },
-  {
-    name: "LocalePicker",
-    group: "navigation",
-    tagline:
-      "Language selector that reads/writes AppProvider locale automatically — throws if used without AppProvider AND without controlled value+onChange.",
-    props: [
-      {
-        name: "value",
-        type: "AppLocale",
-        description:
-          "Controlled locale value. Must be one of 'vi' | 'en' | 'ja'. When omitted, reads the current locale from AppProvider context.",
-      },
-      {
-        name: "onChange",
-        type: "(locale: AppLocale) => void",
-        description:
-          "Controlled change handler. When omitted, calls AppProvider's setLocale. Required when value is provided without AppProvider.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description:
-          "Extra CSS classes merged onto the SelectTrigger element. Default trigger width is w-full sm:w-40.",
-      },
-      { name: "disabled", type: "boolean", description: "Disables the Select control." },
-      {
-        name: "id",
-        type: "string",
-        description: "HTML id forwarded to the SelectTrigger for label association.",
-      },
-    ],
-    usage: [
-      "DO: Wrap the component in AppProvider for zero-config uncontrolled use — locale is read and written via context automatically, no props needed. DO NOT use without AppProvider unless you also supply both value and onChange.",
-      "DO: Use controlled mode (value + onChange) when you need to manage locale state outside of AppProvider — for example in a standalone settings form or a Storybook story. Both props are required together in this mode.",
-      "DO NOT: Pass only value without onChange, or only onChange without value in controlled mode. The component throws at render time if neither AppProvider context nor both controlled props are present: 'LocalePicker requires <AppProvider> or controlled value + onChange'.",
-      "DO: The locale list is fixed to APP_LOCALES = ['vi', 'en', 'ja']. Option labels are rendered via the translation system (t('locale.vi') etc.) — ensure AppProvider is initialized with the correct defaultLocale so labels display in the right language.",
-      "DO: Use the id prop to associate a <label> element with the trigger for accessible forms. The trigger already carries an aria-label from the translation key navigation.localePicker.ariaLabel, so a visible label is optional but still preferred for sighted users.",
-      "DON'T hand-roll a locale Select with raw <select> or godx-ui Select — LocalePicker already composes the full Select + Languages icon + translated options + context wiring. Use it directly.",
-    ],
-    useCases: [
-      "App shell / top-nav language switcher that persists the user's locale preference via AppProvider and localStorage without any extra state.",
-      "Settings page 'Language' field where locale is part of a form submitted to the backend — use controlled mode: value={form.locale} onValueChange={(v) => form.setLocale(v)}.",
-      "Onboarding wizard step that lets the user pick their language before the rest of the app is configured — mount with AppProvider persist={false} and a controlled value to keep state local to the wizard.",
-      "Admin user-profile form where locale is one of several preferences (alongside timezone and date/time format) — pair with TimezonePicker, DateFormatPicker, TimeFormatPicker under the same AppProvider.",
-      "Storybook / test harness where AppProvider is not present — render in fully controlled mode: <LocalePicker value='en' onValueChange={fn} />.",
-      "Localization QA tool that cycles through locales programmatically — drive via controlled value to switch the UI language without user interaction.",
-    ],
-    related: [
-      "TimezonePicker — same family, same pattern (uncontrolled via AppProvider or controlled). Pick LocalePicker for language, TimezonePicker for IANA timezone.",
-      "DateFormatPicker — picks 'dmy' | 'mdy' | 'iso' display format. Use alongside LocalePicker in a preferences form; locale defaults the format automatically.",
-      "TimeFormatPicker — picks '12h' | '24h'. Same composition pattern; locale defaults it. Use all four pickers together in a unified settings panel.",
-      "AppProvider — required peer unless running in fully controlled mode. Provides the locale, setLocale, and i18n context that LocalePicker depends on.",
-    ],
-    example: `{\`// Uncontrolled — AppProvider manages state and persists to localStorage
-import { AppProvider } from "@godxjp/ui/providers";
-import { LocalePicker } from "@godxjp/ui/navigation";
-
-export function AppShell() {
-  return (
-    <AppProvider defaultLocale="vi">
-      {/* Anywhere inside the tree */}
-      <LocalePicker />
-    </AppProvider>
-  );
-}
-
-// Controlled — no AppProvider required (e.g. a standalone settings form)
-import { useState } from "react";
-import { LocalePicker } from "@godxjp/ui/navigation";
-import type { AppLocale } from "@godxjp/ui/navigation";
-
-export function LocaleField() {
-  const [locale, setLocale] = useState<AppLocale>("en");
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor="locale-picker">Language</label>
-      <LocalePicker id="locale-picker" value={locale} onValueChange={setLocale} />
-    </div>
-  );
-}\`}`,
-    storyPath: "navigation/LocalePicker.stories.tsx",
-    rules: [3, 5, 6, 23],
-  },
-  {
-    name: "TimezonePicker",
-    group: "navigation",
-    tagline:
-      "Globe-icon Select for picking an IANA timezone — throws at runtime if neither AppProvider context nor controlled value+onChange is supplied.",
-    props: [
-      {
-        name: "value",
-        type: "AppTimezone",
-        description:
-          'Controlled IANA timezone string (e.g. "Asia/Tokyo", "UTC"). Required when used outside AppProvider; reads from AppProvider context when omitted.',
-      },
-      {
-        name: "onChange",
-        type: "(timezone: AppTimezone) => void",
-        description:
-          "Change handler receiving the selected IANA id. Required when used outside AppProvider; falls back to AppProvider setTimezone when omitted.",
-      },
-      {
-        name: "options",
-        type: "readonly AppTimezone[]",
-        description:
-          "Restrict the dropdown to this list of IANA ids. Omit to inherit AppProvider timezoneOptions, or fall back to the full runtime IANA list. The current value is always injected at the top if absent from the list.",
-      },
-      {
-        name: "id",
-        type: "string",
-        description: "HTML id forwarded to the trigger element, useful for pairing with a <label>.",
-      },
-      { name: "disabled", type: "boolean", description: "Disables the picker trigger." },
-      {
-        name: "className",
-        type: "string",
-        description:
-          "Additional Tailwind classes merged onto the SelectTrigger (default width: w-full sm:w-56).",
-      },
-    ],
-    usage: [
-      "DO: Wrap with <AppProvider> and omit value/onChange — the picker reads and writes context automatically. This is the canonical zero-prop usage: <TimezonePicker />.",
-      "DO: Pass value + onChange for fully controlled standalone usage (e.g. a form field that posts the timezone string): <TimezonePicker value={tz} onValueChange={setTz} />. AppProvider is not required in this mode.",
-      "DON'T: Omit BOTH AppProvider context AND controlled props — the component throws at runtime: 'TimezonePicker requires <AppProvider> or controlled value + onChange'.",
-      "DO: Pass options={['Asia/Tokyo', 'UTC']} to restrict the list. The current value is automatically prepended if it is missing from the list, so the picker never shows an empty/invalid selection.",
-      "DON'T: Hand-roll a timezone <select> or a custom combobox — TimezonePicker already handles locale-aware labels (translated city + GMT offset), the full IANA list, and ARIA semantics.",
-      "NOTE: Labels are locale-aware via i18n keys (e.g. 'Japan (Tokyo)' in en, translated equivalents in vi/ja). Labels are derived from AppProvider locale; in controlled mode outside AppProvider the locale defaults to the library fallback. No extra i18n wiring is needed.",
-    ],
-    useCases: [
-      "User profile / settings page: let the user pick their display timezone; pair with DateFormatPicker and TimeFormatPicker in a settings panel.",
-      "AppProvider bootstrap: pass timezoneOptions={APP_TIMEZONE_PRESET} to AppProvider to restrict the dropdown to a curated Asia-Pacific list, then render <TimezonePicker /> anywhere in the tree.",
-      "Multi-tenant admin: render TimezonePicker in a form that POSTs a per-organization timezone; use controlled mode (value/onChange) and submit the selected IANA string.",
-      "Shell / top-bar: drop <TimezonePicker /> into an AppShell header or Sidebar alongside LocalePicker so users can adjust timezone globally without a full settings page.",
-      "System-timezone default: pass defaultTimezone='system' systemTimezone='Asia/Tokyo' to AppProvider so the picker initializes to the backend timezone; users can still override it.",
-    ],
-    related: [
-      "LocalePicker — sibling picker for language/locale; use alongside TimezonePicker in settings panels. Both read/write AppProvider context.",
-      "TimeFormatPicker — picks 12h/24h clock format; same controlled/context dual-mode API.",
-      "DateFormatPicker — picks date display format (dmy/mdy/iso); same dual-mode API.",
-      "Select — the underlying primitive TimezonePicker is built on; use Select directly only when you need a non-timezone dropdown, not for timezone selection.",
-    ],
-    example: `import { useState } from "react";
-import type { AppTimezone } from "@godxjp/ui/app";
-import { TimezonePicker } from "@godxjp/ui/navigation";
-
-// --- Controlled (no AppProvider required) ---
-export function TimezoneField() {
-  const [tz, setTz] = useState<AppTimezone>("Asia/Tokyo");
-  return (
-    <TimezonePicker
-      value={tz}
-      onValueChange={setTz}
-      options={["Asia/Tokyo", "Asia/Ho_Chi_Minh", "UTC"]}
-    />
-  );
-}
-
-// --- Context-driven (zero props inside AppProvider) ---
-import { AppProvider } from "@godxjp/ui/app";
-import { APP_TIMEZONE_PRESET } from "@godxjp/ui/navigation";
-
-export function Shell({ children }: { content: React.ReactNode }) {
-  return (
-    <AppProvider
-      defaultLocale="ja"
-      fallbackLocale="en"
-      defaultTimezone="system"
-      systemTimezone="Asia/Tokyo"
-      timezoneOptions={APP_TIMEZONE_PRESET}
-    >
-      {children}
-    </AppProvider>
-  );
-}
-
-// Anywhere inside Shell:
-// <TimezonePicker />   ← reads/writes AppProvider context automatically`,
-    storyPath: "navigation/TimezonePicker.stories.tsx",
-    rules: [3, 5, 23, 31],
-  },
-  {
-    name: "DateFormatPicker",
-    group: "navigation",
-    tagline:
-      "Locale-aware date format selector (ISO / DMY / MDY) — throws at runtime if neither AppProvider nor controlled value+onChange is provided.",
-    props: [
-      {
-        name: "value",
-        type: "AppDateFormat | undefined",
-        description:
-          'Controlled date format value. One of `"iso"` (yyyy-MM-dd), `"dmy"` (dd/MM/yyyy), or `"mdy"` (MM/dd/yyyy). When omitted the component reads from AppProvider context.',
-      },
-      {
-        name: "onChange",
-        type: "((dateFormat: AppDateFormat) => void) | undefined",
-        description:
-          "Callback fired when the user picks a new format. When omitted the component writes back to AppProvider context via `ctx.setDateFormat`.",
-      },
-      {
-        name: "className",
-        type: "string | undefined",
-        description:
-          "Extra CSS classes merged onto the SelectTrigger. Trigger defaults to `w-full sm:w-44`.",
-      },
-      {
-        name: "disabled",
-        type: "boolean | undefined",
-        description: "Disables the select trigger and prevents user interaction.",
-      },
-      {
-        name: "id",
-        type: "string | undefined",
-        description:
-          "HTML id forwarded to the SelectTrigger; use with a `<label htmlFor>` for accessible form binding.",
-      },
-    ],
-    usage: [
-      "DO wrap with `<AppProvider>` (uncontrolled) OR supply both `value` and `onChange` (controlled). Omitting both causes a runtime throw: `DateFormatPicker requires <AppProvider> or controlled value + onChange`.",
-      "DO NOT pass `value` without `onChange` or vice-versa in controlled mode — the component falls back to context for whichever prop is missing, which produces split ownership bugs.",
-      "DO use `id` + `<label htmlFor={id}>` for accessible form labeling; the trigger already carries an i18n `aria-label` but an explicit label wins for sighted users.",
-      'DO NOT hand-roll a date format `<select>` — `DateFormatPicker` reads the locale from context and shows human-readable, locale-translated option labels (e.g. `"Ngày / Tháng / Năm"` in vi, `"YYYY-MM-DD（年-月-日）"` in ja). A raw select cannot do this.',
-      "When AppProvider is present and you need to react to changes globally (e.g. re-format all displayed dates), use `AppProvider`'s `onDateFormatChange` callback instead of threading `onChange` through every picker.",
-      'The `AppDateFormat` type is `"iso" | "dmy" | "mdy"`. Import it from `@godxjp/ui/navigation` alongside the component (it is re-exported) — do not duplicate the string-union inline.',
-    ],
-    useCases: [
-      "Settings / Preferences page: let users switch how dates are displayed app-wide (place inside AppProvider, omit value/onChange and it auto-reads/writes context).",
-      "Controlled preview panel: show the effect of a date format choice before saving — pass `value` + `onChange` to a local state and commit only on Save.",
-      "Admin user-profile form: bind with `id` and a visible `<label>` alongside other pickers (LocalePicker, TimezonePicker, TimeFormatPicker) in a preferences card.",
-      "Multi-entity accounting dashboard where different entities prefer different regional date conventions — render a per-entity DateFormatPicker in controlled mode, persist choice per entity.",
-      "Onboarding wizard step: collect locale + date format + time format together before creating the user account; all four app pickers compose naturally inside a single AppProvider.",
-      "Export/report dialog: let the user choose the date format for a CSV or PDF export independently of the global app setting — use controlled mode so the choice is scoped to the dialog.",
-    ],
-    related: [
-      "LocalePicker — picks the UI language (AppLocale). Use DateFormatPicker alongside LocalePicker, not instead of it; locale affects translation strings while date format controls the display pattern.",
-      "TimeFormatPicker — picks 12h vs 24h clock. Sister component; same AppProvider / controlled-mode contract.",
-      "TimezonePicker — picks the IANA timezone. Same contract; also accepts an `options` prop to restrict the list.",
-      "DatePicker — a calendar-based date input for picking a specific calendar date. Use DatePicker for data entry; use DateFormatPicker in settings to control how those dates are displayed.",
-    ],
-    example: `{\`// Uncontrolled — reads/writes AppProvider context automatically
-import { AppProvider } from "@godxjp/ui/navigation";
-import { DateFormatPicker } from "@godxjp/ui/navigation";
-
-export function AppSettings() {
-  return (
-    <AppProvider defaultLocale="vi" defaultDateFormat="locale" persist>
-      <div className="flex flex-col gap-4">
-        <label htmlFor="date-fmt">Date format</label>
-        <DateFormatPicker id="date-fmt" />
-      </div>
-    </AppProvider>
-  );
-}
-
-// Controlled — local state, no AppProvider required
-import { useState } from "react";
-import { DateFormatPicker } from "@godxjp/ui/navigation";
-import type { AppDateFormat } from "@godxjp/ui/navigation";
-
-export function ExportDialog() {
-  const [fmt, setFmt] = useState<AppDateFormat>("iso");
-
-  return (
-    <div className="flex items-center gap-2">
-      <label htmlFor="export-fmt">Export date format</label>
-      <DateFormatPicker id="export-fmt" value={fmt} onValueChange={setFmt} />
-    </div>
-  );
-}\`}`,
-    storyPath: "navigation/DateFormatPicker.stories.tsx",
-    rules: [3, 5, 6, 13],
-  },
-  {
-    name: "TimeFormatPicker",
-    group: "navigation",
-    tagline:
-      "Clock-format selector (12h / 24h) that reads/writes AppProvider context by default — throws if neither AppProvider nor controlled value+onChange is supplied.",
-    props: [
-      {
-        name: "value",
-        type: "AppTimeFormat | undefined",
-        description:
-          "Controlled clock format ('12h' | '24h'). If omitted the picker reads from the nearest AppProvider context.",
-      },
-      {
-        name: "onChange",
-        type: "(timeFormat: AppTimeFormat) => void | undefined",
-        description:
-          "Controlled change handler. If omitted the picker writes back to AppProvider via setTimeFormat.",
-      },
-      {
-        name: "className",
-        type: "string | undefined",
-        description:
-          "Additional CSS classes merged onto the SelectTrigger. Default width is 'w-full sm:w-44'.",
-      },
-      {
-        name: "disabled",
-        type: "boolean | undefined",
-        description: "Disables the underlying Select control.",
-      },
-      {
-        name: "id",
-        type: "string | undefined",
-        description: "HTML id forwarded to the SelectTrigger, useful for associating a <label>.",
-      },
-    ],
-    usage: [
-      "DO use inside <AppProvider> with no extra props to let it read/write the global time-format automatically: <AppProvider defaultTimeFormat='24h'><TimeFormatPicker /></AppProvider>",
-      "DO switch to fully controlled mode when you need to manage the value yourself — supply BOTH value and onChange, or the component will throw: <TimeFormatPicker value={fmt} onValueChange={setFmt} />",
-      "DON'T omit both AppProvider and controlled props — the component throws an Error at render time: 'TimeFormatPicker requires <AppProvider> or controlled value + onChange'. There is no silent fallback.",
-      "DON'T hand-roll a time-format <select> — the locale-aware labels (e.g. '24 giờ' for vi, '24-hour' for en) are generated internally from the i18n layer; reinventing this loses those translations.",
-      "DO wire a <label htmlFor={id}> when using the id prop for accessibility; the SelectTrigger already sets aria-label from i18n but a visible label improves discoverability.",
-      "AppTimeFormat is exported from '@godxjp/ui/app' — import it from there for type-safe controlled state: import type { AppTimeFormat } from '@godxjp/ui/app'.",
-    ],
-    useCases: [
-      "User preferences / settings panel — place alongside LocalePicker, TimezonePicker, and DateFormatPicker so users can configure their entire display environment in one block.",
-      "AppShell top-bar or sidebar controls — the default sm:w-44 width makes it compact enough to sit inline in a toolbar without a wrapper.",
-      "Admin dashboard that serves multiple locales (vi/ja default 24h, en defaults 12h) — AppProvider + resolveDefaultTimeFormat already handle the per-locale default, so no manual logic is needed.",
-      "Controlled settings form where the time format is saved to a server — use value+onChange, call your API in onChange, then update state on success.",
-      "Onboarding wizard step that collects user preferences before creating an account — use controlled mode (no AppProvider yet) and collect all picker values into a single form state.",
-      "Multi-entity accounting app (e.g. CoreBooks) where different legal entities may have different locale settings — wrap each entity's UI subtree in its own AppProvider with the entity's persisted preferences.",
-    ],
-    related: [
-      "LocalePicker (@godxjp/ui/navigation) — sibling picker for UI language; often placed adjacent to TimeFormatPicker in a preferences panel.",
-      "TimezonePicker (@godxjp/ui/navigation) — sibling for IANA timezone selection; shares the same AppProvider context pattern.",
-      "DateFormatPicker (@godxjp/ui/navigation) — sibling for date display format (dmy/mdy/iso); use all four together for a complete locale preferences block.",
-      "AppProvider (@godxjp/ui/app) — required context provider when using any picker in uncontrolled mode; set defaultTimeFormat='locale' to auto-derive from the selected locale.",
-    ],
-    example: `
-{\`// Uncontrolled — reads/writes AppProvider automatically
-import { AppProvider } from "@godxjp/ui/app";
-import { TimeFormatPicker } from "@godxjp/ui/navigation";
-
-export function PreferencesPanel() {
-  return (
-    <AppProvider defaultLocale="vi" defaultTimeFormat="24h" persist>
-      <TimeFormatPicker />
-    </AppProvider>
-  );
-}
-
-// Controlled — manage value yourself (no AppProvider needed)
-import { useState } from "react";
-import type { AppTimeFormat } from "@godxjp/ui/app";
-import { TimeFormatPicker } from "@godxjp/ui/navigation";
-
-export function SettingsForm() {
-  const [fmt, setFmt] = useState<AppTimeFormat>("12h");
-  return (
-    <div>
-      <label htmlFor="time-fmt">Time format</label>
-      <TimeFormatPicker id="time-fmt" value={fmt} onValueChange={setFmt} />
-    </div>
-  );
-}\`}
-`,
-    storyPath: "navigation/TimeFormatPicker.stories.tsx",
-    rules: [3, 5, 6, 13],
   },
   {
     name: "Tooltip",
@@ -6983,38 +6337,6 @@ export default function PasswordBlock() {
 </Carousel>`,
   },
   {
-    name: "Combobox",
-    group: "data-entry",
-    tagline: "Single-select searchable combobox composed from Popover + Command + Button.",
-    props: [
-      {
-        name: "options",
-        type: "{ value: string; label: string }[]",
-        required: true,
-        description: "Available selection entries.",
-      },
-      { name: "value", type: "string", description: "Controlled selected value." },
-      { name: "defaultValue", type: "string", description: "Uncontrolled initial value." },
-      {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description: "Selection callback.",
-      },
-      { name: "placeholder", type: "string", description: "Trigger placeholder." },
-      { name: "searchPlaceholder", type: "string", description: "Input placeholder in popover." },
-      { name: "emptyText", type: "string", description: "Fallback when there are no matches." },
-    ],
-    useCases: ["Searchable single-select", "Lookup pickers", "Static option lists"],
-    storyPath: "data-entry/Combobox.stories.tsx",
-    rules: [3, 6],
-    example: `import { Combobox } from "@godxjp/ui/data-entry";
-
-<Combobox
-  options={[{ value: "a", label: "A" }, { value: "b", label: "B" }]}
-  onValueChange={(value) => console.log(value)}
-/>`,
-  },
-  {
     name: "TimeInput",
     group: "data-entry",
     tagline: "Masking HH:mm input with validation and optional minute step quantization.",
@@ -7039,6 +6361,136 @@ export default function PasswordBlock() {
     example: `import { TimeInput } from "@godxjp/ui/data-entry";
 
 <TimeInput value="09:00" step={15} onValueChange={(time) => console.log(time)} />`,
+  },
+  {
+    name: "AppSettingPicker",
+    group: "navigation",
+    tagline:
+      "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat) — replaces the former Locale/Timezone/Date-format/Time-format pickers. Throws if used without AppProvider AND without controlled value+onValueChange.",
+    props: [
+      {
+        name: "kind",
+        type: '"locale" | "timezone" | "dateFormat" | "timeFormat"',
+        description:
+          "Which AppProvider setting this picker reads and writes. Determines the option list, icon, trigger width, and the context value/setter used.",
+      },
+      {
+        name: "value",
+        type: "string",
+        description:
+          "Controlled value for the chosen kind. When omitted, reads the current value from AppProvider context for that kind.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description:
+          "Controlled change handler. When omitted, calls the matching AppProvider setter (setLocale/setTimezone/setDateFormat/setTimeFormat). Required together with value when no AppProvider is present.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Extra CSS classes merged onto the SelectTrigger.",
+      },
+      { name: "disabled", type: "boolean", description: "Disables the Select control." },
+      {
+        name: "id",
+        type: "string",
+        description: "HTML id forwarded to the SelectTrigger for label association.",
+      },
+    ],
+    usage: [
+      "DO: Mount inside <AppProvider> for zero-config use — the picker reads and writes the context value named by kind, no value/onValueChange needed.",
+      "DO: Use controlled mode (value + onValueChange) when managing state outside AppProvider, e.g. a standalone settings form or a Storybook story. Both are required together in this mode.",
+      "DO NOT: Render without AppProvider and without both controlled props — it throws 'AppSettingPicker requires <AppProvider> or controlled value + onValueChange'.",
+      "DO: Render four instances with different kind values to build a full preferences panel; they all share the same AppProvider context and stay in sync.",
+      "DON'T hand-roll a locale/timezone/format Select — AppSettingPicker already composes Select + the right icon + translated, context-wired options. There is no separate LocalePicker/TimezonePicker/DateFormatPicker/TimeFormatPicker anymore; use kind.",
+    ],
+    useCases: [
+      'App-shell top-nav language switcher: <AppSettingPicker kind="locale" /> under AppProvider, persisting to localStorage with no extra state.',
+      "User settings page with all four preferences — render kind=locale, kind=timezone, kind=dateFormat, kind=timeFormat together under one AppProvider.",
+      "Onboarding step that picks language/timezone before the rest of the app is configured — AppProvider persist={false} + controlled values to keep state local.",
+      'Storybook/test harness without AppProvider — fully controlled: <AppSettingPicker kind="timeFormat" value="24h" onValueChange={fn} />.',
+    ],
+    related: [
+      "AppProvider — required peer unless fully controlled. Supplies locale/timezone/dateFormat/timeFormat plus their setters and the i18n context.",
+      "Select — the data-entry primitive AppSettingPicker is built on; reach for Select directly for any non-AppProvider dropdown.",
+      "formatDate — reads the same AppProvider date/time context that kind='dateFormat'/'timeFormat' write to.",
+    ],
+    example: `{\`// Uncontrolled — AppProvider manages and persists every setting
+import { AppProvider } from "@godxjp/ui/app";
+import { AppSettingPicker } from "@godxjp/ui/navigation";
+
+export function SettingsPanel() {
+  return (
+    <AppProvider defaultLocale="ja" defaultTimezone="Asia/Tokyo">
+      <AppSettingPicker kind="locale" />
+      <AppSettingPicker kind="timezone" />
+      <AppSettingPicker kind="dateFormat" />
+      <AppSettingPicker kind="timeFormat" />
+    </AppProvider>
+  );
+}
+
+// Controlled — no AppProvider required
+import { useState } from "react";
+import { AppSettingPicker } from "@godxjp/ui/navigation";
+
+export function LocaleField() {
+  const [locale, setLocale] = useState("en");
+  return <AppSettingPicker kind="locale" value={locale} onValueChange={setLocale} />;
+}\`}`,
+    storyPath: "navigation/AppSettingPicker.stories.tsx",
+    rules: [3, 5, 6, 23],
+  },
+  {
+    name: "Field",
+    group: "data-entry",
+    tagline:
+      "Label + optional description laid out beside a single checkbox/radio/switch control — the inline alternative to FormField's full block layout.",
+    props: [
+      {
+        name: "id",
+        type: "string",
+        description: "id wired to the control via htmlFor; pass the same id to the child control.",
+      },
+      { name: "label", type: "ReactNode", description: "The field label, rendered as a <Label>." },
+      {
+        name: "description",
+        type: "ReactNode",
+        description: "Optional helper text rendered under the label.",
+      },
+      {
+        name: "children",
+        type: "ReactNode",
+        description: "The control (Checkbox/Radio/Switch) placed beside the label.",
+      },
+      { name: "className", type: "string", description: "Extra CSS classes on the wrapper." },
+    ],
+    usage: [
+      "DO: Use Field to label a single boolean/choice control (Switch, Checkbox, Radio) in a compact two-column row — control beside label + description.",
+      "DO: Match the child control's id to Field's id so the label is correctly associated.",
+      "DON'T: Use Field for text inputs needing helper/error/required slots — use FormField (block layout) instead. There is no ChoiceField anymore; Field is the canonical name.",
+    ],
+    useCases: [
+      "A settings list of toggle rows (notifications, auto-save) where each Switch has a label + description.",
+      "A consent checkbox with an explanatory description beside it.",
+      "A radio option row in a preferences form.",
+    ],
+    related: [
+      "FormField — block label/helper/error/required layout for text inputs; use it instead when those slots are needed.",
+      "Switch / Checkbox / Radio — the controls Field typically wraps.",
+    ],
+    example: `{\`import { Field, Switch } from "@godxjp/ui/data-entry";
+
+export function NotifyRow() {
+  return (
+    <Field id="notify" label="メール通知" description="重要な更新をメールで受け取る">
+      <Switch id="notify" defaultChecked />
+    </Field>
+  );
+}\`}`,
+    storyPath: "data-entry/Field.stories.tsx",
+    rules: [23],
   },
 ];
 

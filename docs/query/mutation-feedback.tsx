@@ -57,7 +57,10 @@ function Block() {
 export default function Demo() {
   return (
     <QueryClientProvider client={queryClient}>
-      <PageContainer title="AlertMutationFeedback" subtitle="Inline useMutation error + retry, below a submit button">
+      <PageContainer
+        title="AlertMutationFeedback"
+        subtitle="Inline useMutation error + retry, below a submit button"
+      >
         <Flex direction="col" gap="lg">
           <Block />
         </Flex>

@@ -22,7 +22,9 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Image + fallback</CardTitle>
-            <CardDescription>A missing image falls back to initials — never a blank circle.</CardDescription>
+            <CardDescription>
+              A missing image falls back to initials — never a blank circle.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="row" wrap align="center" gap="md">
@@ -47,7 +49,9 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Sizes</CardTitle>
-            <CardDescription>Set the size with a className utility (size-8 / size-10 / size-12).</CardDescription>
+            <CardDescription>
+              Set the size with a className utility (size-8 / size-10 / size-12).
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="row" wrap align="center" gap="md">

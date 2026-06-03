@@ -38,7 +38,10 @@ function Block() {
     queryKey: ["activity-feed"],
     queryFn: async ({ pageParam }) => {
       const start = pageParam;
-      return { items: feed.slice(start, start + PAGE), nextCursor: start + PAGE < feed.length ? start + PAGE : null };
+      return {
+        items: feed.slice(start, start + PAGE),
+        nextCursor: start + PAGE < feed.length ? start + PAGE : null,
+      };
     },
     initialPageParam: 0,
     getNextPageParam: (last) => last.nextCursor,
@@ -69,7 +72,10 @@ function Block() {
 export default function Demo() {
   return (
     <QueryClientProvider client={queryClient}>
-      <PageContainer title="InfiniteQueryState" subtitle="useInfiniteQuery — flatten pages + load-more footer">
+      <PageContainer
+        title="InfiniteQueryState"
+        subtitle="useInfiniteQuery — flatten pages + load-more footer"
+      >
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>

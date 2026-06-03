@@ -25,7 +25,9 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Trigger + content</CardTitle>
-            <CardDescription>Common for compact filter / settings panels off a button.</CardDescription>
+            <CardDescription>
+              Common for compact filter / settings panels off a button.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Popover>

@@ -26,8 +26,8 @@ const MCP_DATA = join(ROOT, "mcp/src/data/components.ts");
 // context values, sub-parts whose filename is PascalCase, primitives covered by a
 // sibling entry). Keep this list short and justified.
 const ALLOWLIST = new Set([
-  // (empty) — every public primary component is expected to have a catalog entry.
   // Add a name here only with a one-line justification if it is intentionally uncatalogued.
+  "SearchSelect", // internal search engine of <Select> (showSearch/loadOptions); not a public component.
 ]);
 
 // The internal styling-primitive layer is never catalogued directly (the public

@@ -10,7 +10,10 @@ import { Inbox, Plus, SearchX } from "lucide-react";
  */
 export default function Demo() {
   return (
-    <PageContainer title="EmptyState" subtitle="Centred zero-state — icon · title · description · optional CTA">
+    <PageContainer
+      title="EmptyState"
+      subtitle="Centred zero-state — icon · title · description · optional CTA"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardContent>

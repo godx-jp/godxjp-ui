@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
@@ -55,8 +49,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Semantic surfaces</CardTitle>
             <CardDescription>
-              Page / raised / muted neutrals. Use these — never invent a new grey. Each box shows its
-              own foreground text token.
+              Page / raised / muted neutrals. Use these — never invent a new grey. Each box shows
+              its own foreground text token.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -109,8 +103,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>和色 wa-iro — decorative only</CardTitle>
             <CardDescription>
-              Traditional Japanese accents for charts / tags / tenant theming. NEVER map a wa-iro hue
-              to a semantic role beyond the five canonical ones above.
+              Traditional Japanese accents for charts / tags / tenant theming. NEVER map a wa-iro
+              hue to a semantic role beyond the five canonical ones above.
             </CardDescription>
           </CardHeader>
           <CardContent>
