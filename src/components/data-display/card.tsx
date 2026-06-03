@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "../../lib/utils";
 
-type CardSize = "default" | "compact";
+type CardSize = "md" | "compact";
 /** Semantic 3px left-edge accent stripe. */
 type CardAccent = "primary" | "success" | "warning" | "info" | "attention" | "destructive";
 /** Surface fill — plain card, muted band, borderless outline, or emphasized featured ring. */
@@ -14,11 +14,11 @@ type CardDensity = "tight" | "cozy";
 const cardVariants = cva("group/card border", {
   variants: {
     size: {
-      default: "",
+      md: "",
       compact: "",
     },
   },
-  defaultVariants: { size: "default" },
+  defaultVariants: { size: "md" },
 });
 
 export type CardProps = React.HTMLAttributes<HTMLDivElement> &
@@ -30,7 +30,7 @@ export type CardProps = React.HTMLAttributes<HTMLDivElement> &
   };
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, size = "default", accent, variant, density, ...props }, ref) => (
+  ({ className, size = "md", accent, variant, density, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(cardVariants({ size }), className)}

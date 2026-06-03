@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Eye, EyeOff } from "lucide-react";
 
+import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { Input } from "../data-entry/input";
 
@@ -8,6 +9,7 @@ export type PasswordInputProps = Omit<React.ComponentPropsWithoutRef<typeof Inpu
 
 export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ className, ...props }, ref) => {
+    const { t } = useTranslation();
     const [visible, setVisible] = React.useState(false);
     return (
       <div className="ui-password-input" data-slot="password-input">
@@ -21,8 +23,8 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
           type="button"
           className="ui-password-input-toggle"
           onClick={() => setVisible((v) => !v)}
-          aria-label={visible ? "パスワードを隠す" : "パスワードを表示"}
-          tabIndex={-1}
+          aria-label={visible ? t("ui.passwordInput.hide") : t("ui.passwordInput.show")}
+          aria-pressed={visible}
         >
           {visible ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
         </button>

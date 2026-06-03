@@ -40,9 +40,9 @@ export function SelectValue(props: React.ComponentProps<typeof SelectPrimitive.V
 export const SelectTrigger = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
-    size?: "sm" | "default";
+    size?: "sm" | "md";
   }
->(({ className, children, size = "default", ...props }, ref) => (
+>(({ className, children, size = "md", ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     data-slot="select-trigger"

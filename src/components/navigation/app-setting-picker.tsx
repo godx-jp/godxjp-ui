@@ -49,73 +49,73 @@ const ARIA_KEY: Record<AppSettingKind, string> = {
  * Locale/Timezone/Date-format/Time-format pickers. Mount under `<AppProvider>` and it
  * reads/writes the matching context (`kind`); or pass value + onValueChange to control it.
  */
-export function AppSettingPicker({
-  kind,
-  className,
-  disabled,
-  id,
-  value,
-  onValueChange,
-}: AppSettingPickerProp) {
-  const ctx = useOptionalAppContext();
-  const { t, locale, fallbackLocale } = useTranslation();
+export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPickerProp>(
+  function AppSettingPicker({ kind, className, disabled, id, name, value, onValueChange }, ref) {
+    const ctx = useOptionalAppContext();
+    const { t, locale, fallbackLocale } = useTranslation();
 
-  const current = value ?? ctx?.[kind];
-  const setter = ctx
-    ? {
-        locale: ctx.setLocale,
-        timezone: ctx.setTimezone,
-        dateFormat: ctx.setDateFormat,
-        timeFormat: ctx.setTimeFormat,
-      }[kind]
-    : undefined;
-  const handleChange = onValueChange ?? (setter as ((value: string) => void) | undefined);
+    const current = value ?? ctx?.[kind];
+    const setter = ctx
+      ? {
+          locale: ctx.setLocale,
+          timezone: ctx.setTimezone,
+          dateFormat: ctx.setDateFormat,
+          timeFormat: ctx.setTimeFormat,
+        }[kind]
+      : undefined;
+    const handleChange = onValueChange ?? (setter as ((value: string) => void) | undefined);
 
-  const items = React.useMemo<{ value: string; label: React.ReactNode }[]>(() => {
-    switch (kind) {
-      case "locale":
-        return APP_LOCALES.map((code) => ({ value: code, label: t(`locale.${code}`) }));
-      case "timezone":
-        return resolveTimezonePickerOptions(ctx?.timezoneOptions, current ?? "").map((tz) => ({
-          value: tz,
-          label: getTimezoneLabel(tz, locale, fallbackLocale),
-        }));
-      case "dateFormat":
-        return APP_DATE_FORMAT_OPTIONS.map((option) => ({
-          value: option.value,
-          label: getDateFormatLabel(option.value, locale, fallbackLocale),
-        }));
-      case "timeFormat":
-        return APP_TIME_FORMAT_OPTIONS.map((option) => ({
-          value: option.value,
-          label: getTimeFormatLabel(option.value, locale, fallbackLocale),
-        }));
-    }
-  }, [kind, ctx?.timezoneOptions, current, t, locale, fallbackLocale]);
+    const items = React.useMemo<{ value: string; label: React.ReactNode }[]>(() => {
+      switch (kind) {
+        case "locale":
+          return APP_LOCALES.map((code) => ({ value: code, label: t(`locale.${code}`) }));
+        case "timezone":
+          return resolveTimezonePickerOptions(ctx?.timezoneOptions, current ?? "").map((tz) => ({
+            value: tz,
+            label: getTimezoneLabel(tz, locale, fallbackLocale),
+          }));
+        case "dateFormat":
+          return APP_DATE_FORMAT_OPTIONS.map((option) => ({
+            value: option.value,
+            label: getDateFormatLabel(option.value, locale, fallbackLocale),
+          }));
+        case "timeFormat":
+          return APP_TIME_FORMAT_OPTIONS.map((option) => ({
+            value: option.value,
+            label: getTimeFormatLabel(option.value, locale, fallbackLocale),
+          }));
+      }
+    }, [kind, ctx?.timezoneOptions, current, t, locale, fallbackLocale]);
 
-  if (current === undefined || !handleChange) {
-    throw new Error("AppSettingPicker requires <AppProvider> or controlled value + onValueChange");
-  }
+    // Outside <AppProvider> and uncontrolled: render disabled rather than throwing — ergonomics
+    // parity with the other data-entry controls.
+    const unbound = current === undefined || !handleChange;
+    const Icon = ICON[kind];
 
-  const Icon = ICON[kind];
-
-  return (
-    <Select value={current} onValueChange={handleChange} disabled={disabled}>
-      <SelectTrigger
-        id={id}
-        className={cn("w-full", TRIGGER_WIDTH[kind], className)}
-        aria-label={t(ARIA_KEY[kind])}
+    return (
+      <Select
+        value={current ?? ""}
+        onValueChange={handleChange ?? (() => {})}
+        disabled={disabled || unbound}
+        name={name}
       >
-        <Icon className="mr-2 size-4 shrink-0 opacity-70" aria-hidden="true" />
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        {items.map((item) => (
-          <SelectItem key={item.value} value={item.value}>
-            {item.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-}
+        <SelectTrigger
+          ref={ref}
+          id={id}
+          className={cn("w-full", TRIGGER_WIDTH[kind], className)}
+          aria-label={t(ARIA_KEY[kind])}
+        >
+          <Icon className="me-2 size-4 shrink-0 opacity-70" aria-hidden="true" />
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {items.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              {item.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  },
+);

@@ -78,3 +78,17 @@
 Phase 3 breaking renames + the earlier SearchSelect→internal change require the MF app
 (`resources/js`) to migrate on its next `@godxjp/ui` bump (Steps/Pagination props, size values,
 SearchSelect→`Select loadOptions`).
+
+## Breaking changes (Phase 3)
+
+Controlled-vocabulary renames now applied. MF-app consumers must migrate every call-site:
+
+- **Steps** — `current`→`value`, `initial`→`defaultValue`, `onChange`→`onValueChange`.
+- **StepItem** — `subTitle`→`subtitle`, `content`→`description` (the `content` alias is removed; use
+  `description`).
+- **Pagination** — `current`→`value`, `onChange`→`onValueChange` (handler signature unchanged:
+  `(page, pageSize) => void`).
+- **size `"default"` → `"md"`** on `Switch`, `Steps`, `Select` (`SelectTrigger` size), `Toggle`, and
+  `Card`. `Button` is intentionally unchanged (its `ButtonSizeProp` still documents `"default"`).
+- **SearchInput** — prop type `onDebouncedChange`→`onSearchChange`.
+- **Tabs** — `onValueChange` callback parameter renamed `key`→`value` (type-only; no runtime change).

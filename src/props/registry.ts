@@ -795,17 +795,17 @@ export const COMPONENT_PROP_REGISTRY = {
   PaginationProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["DisabledProp", "ClassNameProp"],
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
   },
   StepsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["SizeProp", "OnValueChangeProp", "ClassNameProp"],
+    vocabulary: ["ValueProp", "DefaultValueProp", "SizeProp", "OnValueChangeProp", "ClassNameProp"],
   },
   StepItemProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["TitleProp", "DescriptionProp", "IconProp", "DisabledProp"],
+    vocabulary: ["TitleProp", "SubtitleProp", "DescriptionProp", "IconProp", "DisabledProp"],
   },
   StepStatusProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
   TabsProp: {

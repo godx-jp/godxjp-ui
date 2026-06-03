@@ -78,7 +78,7 @@ All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640
 | `Input`       | `InputProp`       | extends native input                               |
 | `Textarea`    | `TextareaProp`    | extends native textarea                            |
 | `FormField`   | `FormFieldProp`   | `id`, `label`, `required`, `helper`, `error`       |
-| `SearchInput` | `SearchInputProp` | `onDebouncedChange: OnSearchChangeProp`            |
+| `SearchInput` | `SearchInputProp` | `onSearchChange: OnSearchChangeProp`               |
 | `Checkbox`    | `CheckboxProp`    | Radix checkbox; `Checkbox.Group` với `options`     |
 | `Radio`       | `RadioGroupProp`  | `Radio.Group` single-select; `Radio.Root` compound |
 

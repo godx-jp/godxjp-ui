@@ -670,6 +670,12 @@
   gap: var(--space-1);
 }
 .ui-rating-star {
+  /* ≥24px hit area (WCAG 2.5.8) around the 20px glyph */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
   background: transparent;
   border: 0;
   padding: 0;
@@ -727,7 +733,13 @@
   color: hsl(var(--secondary-foreground));
 }
 .ui-tag-input-remove {
+  /* ≥24px hit area (WCAG 2.5.8) around the 12px glyph; negative inline margin keeps the chip tight */
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  margin-inline-end: -0.25rem;
   background: transparent;
   border: 0;
   padding: 0;

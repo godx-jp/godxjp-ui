@@ -14,6 +14,7 @@ import type {
   ClassNameProp,
   DisabledProp,
   IdProp,
+  NameProp,
   OnValueChangeProp,
   ValueProp,
 } from "../vocabulary";
@@ -61,6 +62,8 @@ export type AppSettingPickerProp = {
   className?: ClassNameProp;
   disabled?: DisabledProp;
   id?: IdProp;
+  /** Form field name — submits the selected value with the form. */
+  name?: NameProp;
   /** Controlled value; default reads/writes the matching AppProvider context. */
   value?: ValueProp<string>;
   onValueChange?: OnValueChangeProp<string>;

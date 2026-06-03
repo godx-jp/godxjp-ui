@@ -37,6 +37,16 @@ function maskTime(raw: string) {
   return `${digits.slice(0, 2)}:${digits.slice(2)}`;
 }
 
+/** Step the current HH:mm by `delta` minutes, wrapping across the 24h day. */
+function stepTime(value: string, deltaMinutes: number): string {
+  const normalized = normalizeHhmm(value) ?? "00:00";
+  const [hourText, minuteText] = normalized.split(":");
+  const total = (Number(hourText) * 60 + Number(minuteText) + deltaMinutes + 24 * 60) % (24 * 60);
+  const hour = Math.floor(total / 60);
+  const minute = total % 60;
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+}
+
 export function TimeInput({
   value: controlledValue,
   defaultValue = "",
@@ -87,6 +97,8 @@ export function TimeInput({
     [isControlled, onValueChange, safeStep, value],
   );
 
+  const valid = isValidHhmm(value);
+
   return (
     <input
       id={id}
@@ -94,6 +106,11 @@ export function TimeInput({
       value={displayValue}
       data-slot="time-input"
       className={cn("ui-time-input", className)}
+      role="spinbutton"
+      aria-valuemin={0}
+      aria-valuemax={24 * 60 - 1}
+      aria-valuenow={valid ? Number(value.slice(0, 2)) * 60 + Number(value.slice(3, 5)) : undefined}
+      aria-valuetext={valid ? value : undefined}
       aria-invalid={displayValue !== "" && !isValidHhmm(displayValue) ? "true" : undefined}
       placeholder={placeholder ?? "HH:mm"}
       inputMode="numeric"
@@ -126,6 +143,15 @@ export function TimeInput({
       onKeyDown={(event) => {
         if (event.key === "Enter") {
           commit(event.currentTarget.value, true);
+        } else if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+          event.preventDefault();
+          const base = isValidHhmm(displayValue) ? displayValue : value || "00:00";
+          const next = stepTime(base, event.key === "ArrowUp" ? safeStep : -safeStep);
+          setDisplayValue(next);
+          if (!isControlled) {
+            setInternal(next);
+          }
+          onValueChange?.(next);
         }
         props.onKeyDown?.(event);
       }}

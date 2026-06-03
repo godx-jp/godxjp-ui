@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { DropdownMenu, DropdownMenuTrigger } from "../navigation/dropdown-menu";
+import { useTranslation } from "../../i18n/use-translation";
 import type { TopbarProp } from "../../props/components/layout.prop";
 
 export type {
@@ -34,6 +35,7 @@ export function Topbar({
   onNotificationsOpen,
   user,
 }: TopbarProp) {
+  const { t } = useTranslation();
   const productChip = (
     <button
       type="button"
@@ -77,7 +79,7 @@ export function Topbar({
         <button
           type="button"
           className="tb-icon-btn"
-          aria-label="Toggle sidebar"
+          aria-label={t("layout.topbar.toggleSidebar")}
           aria-pressed={collapsed}
           onClick={onToggleCollapsed}
         >
@@ -107,9 +109,15 @@ export function Topbar({
         ) : null}
       </div>
 
-      <button type="button" className="tb-search" onClick={onSearchOpen}>
+      <button
+        type="button"
+        className="tb-search"
+        aria-label={t("layout.topbar.search")}
+        aria-keyshortcuts="Meta+K"
+        onClick={onSearchOpen}
+      >
         <Search aria-hidden="true" />
-        <span>Search...</span>
+        <span>{t("layout.topbar.searchPlaceholder")}</span>
         <kbd className="kbd">⌘K</kbd>
       </button>
 
@@ -119,7 +127,7 @@ export function Topbar({
         <button
           type="button"
           className="tb-icon-btn tb-bell"
-          aria-label="Notifications"
+          aria-label={t("layout.topbar.notifications")}
           onClick={onNotificationsOpen}
         >
           <Bell aria-hidden="true" />
@@ -133,7 +141,7 @@ export function Topbar({
         <button
           type="button"
           className="tb-icon-btn"
-          aria-label="Open tweaks"
+          aria-label={t("layout.topbar.tweaks")}
           onClick={onTweaksOpen}
         >
           <SlidersHorizontal aria-hidden="true" />

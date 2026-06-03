@@ -18,9 +18,9 @@ const approvalSteps = [
 ];
 
 const onboardingSteps = [
-  { title: "基本情報", subTitle: "必須" },
-  { title: "法人設定", subTitle: "税務情報" },
-  { title: "銀行口座", subTitle: "入出金" },
+  { title: "基本情報", subtitle: "必須" },
+  { title: "法人設定", subtitle: "税務情報" },
+  { title: "銀行口座", subtitle: "入出金" },
   { title: "確認・完了" },
 ];
 
@@ -45,7 +45,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Steps current={approvalCurrent} items={approvalSteps} />
+            <Steps value={approvalCurrent} items={approvalSteps} />
           </CardContent>
         </Card>
 
@@ -54,16 +54,16 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>インタラクティブ — ステップを進む / 戻る</CardTitle>
             <CardDescription>
-              onChange を渡すと各ステップがクリッカブルになる。ボタンで current
+              onValueChange を渡すと各ステップがクリッカブルになる。ボタンで value
               を制御することもできる。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <Steps
-                current={approvalCurrent}
+                value={approvalCurrent}
                 items={approvalSteps}
-                onChange={setApprovalCurrent}
+                onValueChange={setApprovalCurrent}
               />
               <Flex direction="row" gap="sm">
                 <Button
@@ -97,7 +97,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Steps current={2} status={hasError ? "error" : "process"} items={approvalSteps} />
+              <Steps value={2} status={hasError ? "error" : "process"} items={approvalSteps} />
               <Button size="sm" variant="outline" onClick={() => setHasError((e) => !e)}>
                 {hasError ? "エラーをクリア" : "エラーを発生させる"}
               </Button>
@@ -117,9 +117,9 @@ export default function Demo() {
             <Flex direction="row" gap="xl">
               <Steps
                 orientation="vertical"
-                current={wizardCurrent}
+                value={wizardCurrent}
                 items={onboardingSteps}
-                onChange={setWizardCurrent}
+                onValueChange={setWizardCurrent}
               />
               <Flex direction="col" gap="md" className="flex-1">
                 <p className="text-sm font-medium">
@@ -164,7 +164,7 @@ export default function Demo() {
               type="dot"
               size="sm"
               orientation="vertical"
-              current={2}
+              value={2}
               items={[
                 { title: "会社情報", status: "finish" },
                 { title: "代表者情報", status: "finish" },

@@ -51,6 +51,9 @@ export function SearchSelect({
   "data-testid": dataTestId,
 }: SearchSelectProp) {
   const { t } = useTranslation();
+  const reactId = React.useId();
+  const listId = `${reactId}-listbox`;
+  const optionDomId = (optionValue: string) => `${reactId}-opt-${optionValue}`;
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
@@ -183,6 +186,9 @@ export function SearchSelect({
   const optionTestId = (optionValue: string) =>
     dataTestId ? `${dataTestId}-option-${optionValue}` : undefined;
 
+  const activeOption = flatOrdered[activeIndex];
+  const activeOptionId = activeOption ? optionDomId(activeOption.value) : undefined;
+
   return (
     <Popover
       open={open}
@@ -202,10 +208,10 @@ export function SearchSelect({
           data-testid={dataTestId}
           className={cn("w-full justify-between font-normal", className)}
         >
-          <span className={cn("truncate text-left", !value && "text-muted-foreground")}>
+          <span className={cn("truncate text-start", !value && "text-muted-foreground")}>
             {currentLabel}
           </span>
-          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" aria-hidden="true" />
+          <ChevronsUpDown className="ms-2 size-4 shrink-0 opacity-50" aria-hidden="true" />
         </Button>
       </PopoverTrigger>
       {/* Hidden field so the selection submits with a native form. */}
@@ -220,13 +226,23 @@ export function SearchSelect({
           <div className="border-border shrink-0 border-b p-2">
             <Input
               autoFocus
+              role="combobox"
+              aria-expanded={open}
+              aria-controls={listId}
+              aria-autocomplete="list"
+              aria-activedescendant={activeOptionId}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               onKeyDown={onKeyDown}
               placeholder={searchPlaceholder ?? t("dataEntry.searchSelect.search")}
             />
           </div>
-          <CommandList className="min-h-0 flex-1 overflow-y-auto p-1" onScroll={onScroll}>
+          <CommandList
+            id={listId}
+            role="listbox"
+            className="min-h-0 flex-1 overflow-y-auto p-1"
+            onScroll={onScroll}
+          >
             {clearable && value ? (
               <CommandItem value="" data-testid={optionTestId("none")} onSelect={clear}>
                 <span className="text-muted-foreground text-sm">
@@ -238,6 +254,8 @@ export function SearchSelect({
               const rows = group.items.map(({ option, index }) => (
                 <CommandItem
                   key={option.value}
+                  id={optionDomId(option.value)}
+                  role="option"
                   value={option.value}
                   data-testid={optionTestId(option.value)}
                   aria-selected={activeIndex === index}

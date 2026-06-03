@@ -12,13 +12,13 @@ const toggleVariants = cva("ui-toggle", {
     },
     size: {
       sm: "ui-toggle-sm",
-      default: "ui-toggle-default-size",
+      md: "ui-toggle-default-size",
       lg: "ui-toggle-lg",
     },
   },
   defaultVariants: {
     variant: "default",
-    size: "default",
+    size: "md",
   },
 });
 

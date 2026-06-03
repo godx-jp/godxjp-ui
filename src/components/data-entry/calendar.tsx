@@ -51,7 +51,7 @@ export function Calendar({
         day: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20",
           "[&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50",
-          "[&:has([aria-selected].day-range-end)]:rounded-r-md",
+          "[&:has([aria-selected].day-range-end)]:rounded-e-md",
           classNames?.day,
         ),
         day_button: cn(
@@ -59,8 +59,8 @@ export function Calendar({
           "size-[length:var(--control-height)] p-0 font-normal aria-selected:opacity-100",
           classNames?.day_button,
         ),
-        range_start: cn("day-range-start rounded-l-md", classNames?.range_start),
-        range_end: cn("day-range-end rounded-r-md", classNames?.range_end),
+        range_start: cn("day-range-start rounded-s-md", classNames?.range_start),
+        range_end: cn("day-range-end rounded-e-md", classNames?.range_end),
         range_middle: cn(
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
           classNames?.range_middle,

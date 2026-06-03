@@ -41,6 +41,9 @@ export type {
 
 const AlertContext = React.createContext<ToneProp>("default");
 
+/** Tones that warrant an assertive `role="alert"`; all others use the polite `role="status"`. */
+const ASSERTIVE_TONES: ReadonlySet<ToneProp> = new Set<ToneProp>(["destructive", "warning"]);
+
 const DEFAULT_ICONS: Record<ToneProp, LucideIcon> = {
   default: Info,
   destructive: AlertCircle,
@@ -56,13 +59,14 @@ const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
     { variant = "default", tone = "default", icon, onDismiss, className, children, ...props },
     ref,
   ) => {
+    const { t } = useTranslation();
     const IconComponent = icon === false ? null : (icon ?? DEFAULT_ICONS[tone]);
 
     return (
       <AlertContext.Provider value={tone}>
         <div
           ref={ref}
-          role="alert"
+          role={ASSERTIVE_TONES.has(tone) ? "alert" : "status"}
           data-slot="alert"
           data-variant={variant}
           data-tone={tone}
@@ -82,7 +86,7 @@ const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
               }}
               data-slot="alert-dismiss"
               className="ring-offset-background focus-visible:ring-ring transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-              aria-label="Dismiss"
+              aria-label={t("feedback.alert.dismiss")}
             >
               <X className="size-4" aria-hidden="true" />
             </button>

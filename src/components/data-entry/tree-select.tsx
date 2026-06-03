@@ -89,6 +89,8 @@ function TreeSelectRoot({
 
   const isControlled = value !== undefined;
   const [internal, setInternal] = React.useState<string[]>(() => toArray(defaultValue));
+  const [activeKey, setActiveKey] = React.useState<string | null>(null);
+  const treeItemRefs = React.useRef(new Map<string, HTMLDivElement | null>());
 
   const selected = isControlled ? toArray(value) : internal;
 
@@ -151,6 +153,70 @@ function TreeSelectRoot({
     commit([]);
   };
 
+  // The roving-tabindex anchor: the active treeitem, falling back to the first visible node so
+  // exactly one treeitem is in the Tab order at all times (WAI-ARIA APG tree pattern).
+  const rovingKey =
+    (activeKey && visible.some(({ node }) => node.value === activeKey) ? activeKey : null) ??
+    visible[0]?.node.value ??
+    null;
+
+  // Move DOM focus to the active treeitem after it changes (keyboard navigation only).
+  React.useEffect(() => {
+    if (!open || !activeKey) return;
+    treeItemRefs.current.get(activeKey)?.focus();
+  }, [activeKey, open, visible]);
+
+  const focusByOffset = (currentValue: string, delta: number) => {
+    const index = visible.findIndex(({ node }) => node.value === currentValue);
+    if (index === -1) return;
+    const next = visible[index + delta];
+    if (next) setActiveKey(next.node.value);
+  };
+
+  const onTreeItemKeyDown = (
+    event: React.KeyboardEvent<HTMLDivElement>,
+    node: NormalizedTreeOption,
+    hasChildren: boolean,
+    expanded: boolean,
+  ) => {
+    switch (event.key) {
+      case "ArrowDown": {
+        event.preventDefault();
+        focusByOffset(node.value, 1);
+        break;
+      }
+      case "ArrowUp": {
+        event.preventDefault();
+        focusByOffset(node.value, -1);
+        break;
+      }
+      case "ArrowRight": {
+        event.preventDefault();
+        if (hasChildren && !expanded) {
+          toggleExpand(node.value);
+        } else if (hasChildren && expanded) {
+          focusByOffset(node.value, 1);
+        }
+        break;
+      }
+      case "ArrowLeft": {
+        event.preventDefault();
+        if (hasChildren && expanded) {
+          toggleExpand(node.value);
+        }
+        break;
+      }
+      case "Enter":
+      case " ": {
+        event.preventDefault();
+        toggleSelect(node);
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -170,13 +236,16 @@ function TreeSelectRoot({
           <span className="truncate">
             {displayKeys.length ? displayLabel : resolvedPlaceholder}
           </span>
-          <span className="ml-2 flex shrink-0 items-center gap-1">
+          <span className="ms-2 flex shrink-0 items-center gap-1">
             {allowClear && displayKeys.length > 0 && !disabled && (
-              <X
-                className="size-4 opacity-50 hover:opacity-100"
-                aria-hidden="true"
+              <button
+                type="button"
+                aria-label={t("dataEntry.treeSelect.clear")}
+                className="flex size-4 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
                 onClick={clearValue}
-              />
+              >
+                <X className="size-4" aria-hidden="true" />
+              </button>
             )}
             <ChevronsUpDown className="size-4 opacity-50" aria-hidden="true" />
           </span>
@@ -211,16 +280,23 @@ function TreeSelectRoot({
                 return (
                   <div
                     key={node.value}
+                    ref={(el) => {
+                      treeItemRefs.current.set(node.value, el);
+                    }}
                     role="treeitem"
+                    tabIndex={node.disabled ? -1 : rovingKey === node.value ? 0 : -1}
                     aria-expanded={hasChildren ? expanded : undefined}
                     aria-selected={isSelected}
+                    onFocus={() => setActiveKey(node.value)}
+                    onKeyDown={(event) => onTreeItemKeyDown(event, node, hasChildren, expanded)}
                     className={cn(
-                      "flex items-center rounded-sm py-1.5 pr-2 text-sm outline-none",
+                      "flex items-center rounded-sm py-1.5 pe-2 text-sm outline-none",
                       "hover:bg-accent hover:text-accent-foreground",
+                      "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-1",
                       isSelected && "bg-accent/60",
                       node.disabled && "pointer-events-none opacity-50",
                     )}
-                    style={{ paddingLeft: `${depth * 1.25 + 0.5}rem` }}
+                    style={{ paddingInlineStart: `${depth * 1.25 + 0.5}rem` }}
                   >
                     <button
                       type="button"
@@ -231,7 +307,7 @@ function TreeSelectRoot({
                           : t("dataEntry.treeSelect.expand")
                       }
                       className={cn(
-                        "mr-1 flex size-5 shrink-0 items-center justify-center rounded-sm",
+                        "me-1 flex size-5 shrink-0 items-center justify-center rounded-sm",
                         !hasChildren && "invisible",
                       )}
                       onClick={() => toggleExpand(node.value)}
@@ -246,6 +322,7 @@ function TreeSelectRoot({
                       <label className="flex flex-1 cursor-pointer items-center gap-2">
                         <Checkbox
                           checked={isSelected}
+                          tabIndex={-1}
                           disabled={Boolean(node.disabled) || Boolean(node.disableCheckbox)}
                           onCheckedChange={() => toggleSelect(node)}
                         />
@@ -254,7 +331,8 @@ function TreeSelectRoot({
                     ) : (
                       <button
                         type="button"
-                        className="flex-1 truncate text-left"
+                        tabIndex={-1}
+                        className="flex-1 truncate text-start"
                         disabled={node.disabled}
                         onClick={() => toggleSelect(node)}
                       >

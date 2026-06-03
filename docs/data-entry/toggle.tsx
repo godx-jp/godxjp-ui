@@ -72,14 +72,14 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Sizes</CardTitle>
-            <CardDescription>sm / default / lg — match surrounding density.</CardDescription>
+            <CardDescription>sm / md / lg — match surrounding density.</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="row" gap="md" align="center">
               <Toggle size="sm" aria-label="小サイズ">
                 小
               </Toggle>
-              <Toggle size="default" aria-label="標準サイズ">
+              <Toggle size="md" aria-label="標準サイズ">
                 標準
               </Toggle>
               <Toggle size="lg" aria-label="大サイズ">

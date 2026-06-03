@@ -18,7 +18,7 @@ import { Pagination } from "@godxjp/ui/navigation";
 
 /**
  * Pagination — fully controlled offset/page bar. Sits BELOW a table card.
- * Pass total as raw item count (not page count). onChange receives (page, pageSize).
+ * Pass total as raw item count (not page count). onValueChange receives (page, pageSize).
  * Composed only from real @godxjp/ui components.
  */
 const invoices = Array.from({ length: 47 }, (_, i) => ({
@@ -55,8 +55,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>請求書一覧 (47 件)</CardTitle>
             <CardDescription>
-              Pagination sits BELOW the card. current + pageSize are controlled state. showTotal
-              shows the built-in i18n count label. showSizeChanger lets users pick rows per page.
+              Pagination sits BELOW the card. value + pageSize are controlled state. showTotal shows
+              the built-in i18n count label. showSizeChanger lets users pick rows per page.
             </CardDescription>
           </CardHeader>
           <CardContent flush>
@@ -85,13 +85,13 @@ export default function Demo() {
 
         {/* Pagination component itself — outside the card, below it */}
         <Pagination
-          current={page}
+          value={page}
           total={invoices.length}
           pageSize={pageSize}
           showTotal
           showSizeChanger
           pageSizeOptions={[5, 10, 20, 50]}
-          onChange={handleChange}
+          onValueChange={handleChange}
         />
 
         {/* showTotal custom label */}
@@ -105,11 +105,11 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Pagination
-              current={page}
+              value={page}
               total={invoices.length}
               pageSize={pageSize}
               showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件の請求書`}
-              onChange={handleChange}
+              onValueChange={handleChange}
             />
           </CardContent>
         </Card>
@@ -126,10 +126,10 @@ export default function Demo() {
           <CardContent>
             <Pagination
               simple
-              current={simplePage}
+              value={simplePage}
               total={200}
               pageSize={20}
-              onChange={(p) => setSimplePage(p)}
+              onValueChange={(p) => setSimplePage(p)}
             />
           </CardContent>
         </Card>
@@ -144,12 +144,12 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Pagination
-              current={1}
+              value={1}
               total={100}
               pageSize={10}
               showTotal
               disabled
-              onChange={() => {}}
+              onValueChange={() => {}}
             />
           </CardContent>
         </Card>

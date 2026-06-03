@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Star } from "lucide-react";
 
+import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 
 export type RatingProps = {
@@ -30,6 +31,7 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
     },
     ref,
   ) => {
+    const { t } = useTranslation();
     const [internal, setInternal] = React.useState(defaultValue);
     const current = value ?? internal;
     const [hover, setHover] = React.useState<number | null>(null);
@@ -42,13 +44,42 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
       onValueChange?.(next);
     };
 
+    // Roving tabindex: only the checked star is tabbable; if nothing is checked the first star is,
+    // so the radiogroup always exposes a single tab stop (APG radiogroup pattern).
+    const focusableStar = current > 0 ? current : 1;
+
+    const onKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, star: number) => {
+      if (!interactive) return;
+      let next: number | null = null;
+      switch (e.key) {
+        case "ArrowRight":
+        case "ArrowUp":
+          next = Math.min(max, star + 1);
+          break;
+        case "ArrowLeft":
+        case "ArrowDown":
+          next = Math.max(1, star - 1);
+          break;
+        case "Home":
+          next = 1;
+          break;
+        case "End":
+          next = max;
+          break;
+        default:
+          return;
+      }
+      e.preventDefault();
+      select(next);
+    };
+
     return (
       <div
         ref={ref}
         role="radiogroup"
         data-slot="rating"
         className={cn("ui-rating", className)}
-        aria-label={rest["aria-label"] ?? "評価"}
+        aria-label={rest["aria-label"] ?? t("ui.rating.ariaLabel")}
       >
         {Array.from({ length: max }, (_, i) => i + 1).map((star) => (
           <button
@@ -56,13 +87,14 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
             type="button"
             role="radio"
             aria-checked={current === star}
-            aria-label={String(star)}
+            aria-label={t("ui.rating.starLabel", { star, max })}
             disabled={disabled || readOnly}
-            tabIndex={interactive ? 0 : -1}
+            tabIndex={interactive && star === focusableStar ? 0 : -1}
             className={cn("ui-rating-star", star <= display && "ui-rating-star-filled")}
             onMouseEnter={() => interactive && setHover(star)}
             onMouseLeave={() => setHover(null)}
             onClick={() => select(star)}
+            onKeyDown={(e) => onKeyDown(e, star)}
           >
             <Star aria-hidden="true" />
           </button>

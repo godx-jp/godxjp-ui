@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import type { ElementType } from "react";
 
+import { useTranslation } from "../../i18n/use-translation";
 import type { BreadcrumbProp } from "../../props/vocabulary/navigation.prop";
 
 export type BreadcrumbProps = {
@@ -9,8 +10,10 @@ export type BreadcrumbProps = {
 };
 
 export function Breadcrumb({ items, linkComponent: LinkComponent = "a" }: BreadcrumbProps) {
+  const { t } = useTranslation();
+
   return (
-    <nav aria-label="Breadcrumb" className="ui-breadcrumb">
+    <nav aria-label={t("navigation.breadcrumb.ariaLabel")} className="ui-breadcrumb">
       <ol className="ui-breadcrumb-list">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;

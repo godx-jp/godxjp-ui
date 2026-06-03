@@ -23,7 +23,8 @@ const ISO_HINT = "yyyy-mm-dd";
  * friendly, e2e-testable by filling either input). The range calendar is the visual affordance.
  */
 export function DateRangePicker({
-  value,
+  value: valueProp,
+  defaultValue,
   onValueChange,
   placeholder,
   disabled,
@@ -37,6 +38,10 @@ export function DateRangePicker({
   const { t } = useTranslation();
   const { dayPickerLocale } = usePickerLocales(localeProp);
   const [open, setOpen] = React.useState(false);
+  // Controlled-ness fixed at mount; uncontrolled state seeds from `defaultValue`.
+  const isControlled = React.useRef(valueProp !== undefined).current;
+  const [internalValue, setInternalValue] = React.useState<DateRange | undefined>(defaultValue);
+  const value = isControlled ? valueProp : internalValue;
   const [fromText, setFromText] = React.useState(() => toIsoDate(value?.from));
   const [toText, setToText] = React.useState(() => toIsoDate(value?.to));
 
@@ -47,7 +52,10 @@ export function DateRangePicker({
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.dateRangePicker.placeholder") ?? ISO_HINT;
 
-  const emit = (next: DateRange | undefined) => onValueChange?.(next);
+  const emit = (next: DateRange | undefined) => {
+    if (!isControlled) setInternalValue(next);
+    onValueChange?.(next);
+  };
 
   const commitEdge = (edge: "from" | "to", raw: string) => {
     const parsed = raw.trim() === "" ? undefined : (parseDateInput(raw.trim()) ?? undefined);

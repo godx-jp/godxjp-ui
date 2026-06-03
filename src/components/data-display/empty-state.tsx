@@ -8,7 +8,7 @@ export type {
 
 export function EmptyState({ icon: Icon, title, description, action, className }: EmptyStateProp) {
   return (
-    <div data-slot="empty-state" className={cn("ui-empty-state", className)}>
+    <div data-slot="empty-state" role="status" className={cn("ui-empty-state", className)}>
       {Icon && (
         <div className="ui-empty-state-icon">
           <Icon className="text-muted-foreground size-6" aria-hidden="true" />

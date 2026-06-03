@@ -23,7 +23,8 @@ const ISO_HINT = "yyyy-mm-dd";
  * popover is the visual affordance; typing and the calendar stay in sync.
  */
 export function DatePicker({
-  value,
+  value: valueProp,
+  defaultValue,
   onValueChange,
   placeholder,
   disabled,
@@ -37,6 +38,15 @@ export function DatePicker({
   const { t } = useTranslation();
   const { dayPickerLocale } = usePickerLocales(localeProp);
   const [open, setOpen] = React.useState(false);
+  // Controlled-ness is fixed at mount so a controlled `value={undefined}` (no selection) isn't
+  // mistaken for uncontrolled. Uncontrolled state seeds from `defaultValue`.
+  const isControlled = React.useRef(valueProp !== undefined).current;
+  const [internalValue, setInternalValue] = React.useState<Date | undefined>(defaultValue);
+  const value = isControlled ? valueProp : internalValue;
+  const emit = (next: Date | undefined) => {
+    if (!isControlled) setInternalValue(next);
+    onValueChange?.(next);
+  };
   // Local text mirrors the input while the user types a (possibly incomplete) date; the committed
   // value flows back through `onValueChange`. Kept in sync whenever the controlled `value` changes.
   const [text, setText] = React.useState(() => toIsoDate(value));
@@ -50,12 +60,12 @@ export function DatePicker({
   const commit = (raw: string) => {
     const trimmed = raw.trim();
     if (trimmed === "") {
-      onValueChange?.(undefined);
+      emit(undefined);
       return;
     }
     const parsed = parseDateInput(trimmed);
     if (parsed) {
-      onValueChange?.(parsed);
+      emit(parsed);
     }
   };
 
@@ -73,7 +83,7 @@ export function DatePicker({
         role="combobox"
         aria-expanded={open}
         aria-haspopup="dialog"
-        className="pr-10"
+        className="pe-10"
         onChange={(event) => {
           setText(event.target.value);
           commit(event.target.value);
@@ -93,7 +103,7 @@ export function DatePicker({
             disabled={disabled}
             tabIndex={-1}
             aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
-            className="text-muted-foreground absolute inset-y-0 right-0 h-full px-2 hover:bg-transparent"
+            className="text-muted-foreground absolute inset-y-0 end-0 h-full px-2 hover:bg-transparent"
           >
             <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
           </Button>
@@ -103,7 +113,7 @@ export function DatePicker({
             mode="single"
             selected={value}
             onSelect={(date) => {
-              onValueChange?.(date);
+              emit(date);
               setText(toIsoDate(date));
               setOpen(false);
             }}

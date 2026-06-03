@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Check, Circle, Loader2, X } from "lucide-react";
 
+import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { controlIconClass } from "../../lib/control-styles";
 import type { StepStatusProp, StepsProp } from "../../props/components/navigation.prop";
@@ -72,17 +73,18 @@ function StepIcon({
 
 export function Steps({
   items = [],
-  current = 0,
-  initial = 0,
+  value: current = 0,
+  defaultValue = 0,
   status: currentStatus = "process",
   orientation = "horizontal",
   type = "default",
-  size = "default",
+  size = "md",
   titlePlacement = "horizontal",
-  onChange,
+  onValueChange,
   className,
 }: StepsProp) {
-  const base = initial;
+  const { t } = useTranslation();
+  const base = defaultValue;
   const isVertical = orientation === "vertical";
   const compact = size === "sm";
 
@@ -93,17 +95,62 @@ export function Steps({
         isVertical ? "flex-col gap-0" : "flex-row items-start",
         className,
       )}
-      aria-label="Progress"
+      aria-label={t("navigation.steps.ariaLabel")}
     >
       {items.map((item, index) => {
         const absoluteIndex = base + index;
         const stepStatus = resolveStepStatus(absoluteIndex, current, item.status, currentStatus);
-        const clickable = Boolean(onChange) && !item.disabled;
-        const description = item.content ?? item.description;
+        const interactive = Boolean(onValueChange);
+        const clickable = interactive && !item.disabled;
+        const description = item.description;
+        const isCurrent = absoluteIndex === current;
+
+        // When `onValueChange` is provided the step is an actionable control (a real <button> that
+        // may be disabled). When it is not, the steps are purely informational, so render a non-button
+        // wrapper to keep disabled steps out of the tab order (WAI-ARIA: don't emit dead buttons).
+        const stepClassName = cn(
+          "group flex min-w-0",
+          isVertical ? "flex-row items-start gap-3" : "flex-col items-center",
+          clickable ? "cursor-pointer" : "cursor-default",
+        );
+
+        const stepInner = (
+          <>
+            <StepIcon status={stepStatus} icon={item.icon} type={type} />
+            <div
+              className={cn(
+                "min-w-0",
+                isVertical ? "pt-1 text-left" : "mt-2 px-2",
+                titlePlacement === "vertical" && !isVertical && "mt-1",
+              )}
+            >
+              <div
+                className={cn(
+                  "font-medium",
+                  compact ? "text-xs" : "text-sm",
+                  stepStatus === "process" && "text-foreground",
+                  stepStatus === "wait" && "text-muted-foreground",
+                  stepStatus === "error" && "text-destructive",
+                )}
+              >
+                {item.title}
+              </div>
+              {item.subtitle && (
+                <div className="text-muted-foreground text-xs">{item.subtitle}</div>
+              )}
+              {description && (
+                <div className={cn("text-muted-foreground", compact ? "text-xs" : "text-sm")}>
+                  {description}
+                </div>
+              )}
+            </div>
+          </>
+        );
 
         return (
           <li
             key={index}
+            aria-current={isCurrent ? "step" : undefined}
             className={cn(
               "relative flex min-w-0 flex-1",
               isVertical ? "flex-row gap-3 pb-8 last:pb-0" : "flex-col items-center text-center",
@@ -115,46 +162,18 @@ export function Steps({
                 "after:left-[calc(50%+1.25rem)] after:w-[calc(100%-2.5rem)]",
             )}
           >
-            <button
-              type="button"
-              disabled={!clickable}
-              onClick={clickable ? () => onChange?.(absoluteIndex) : undefined}
-              className={cn(
-                "group flex min-w-0",
-                isVertical ? "flex-row items-start gap-3" : "flex-col items-center",
-                clickable && "cursor-pointer",
-                !clickable && "cursor-default",
-              )}
-            >
-              <StepIcon status={stepStatus} icon={item.icon} type={type} />
-              <div
-                className={cn(
-                  "min-w-0",
-                  isVertical ? "pt-1 text-left" : "mt-2 px-2",
-                  titlePlacement === "vertical" && !isVertical && "mt-1",
-                )}
+            {interactive ? (
+              <button
+                type="button"
+                disabled={!clickable}
+                onClick={clickable ? () => onValueChange?.(absoluteIndex) : undefined}
+                className={stepClassName}
               >
-                <div
-                  className={cn(
-                    "font-medium",
-                    compact ? "text-xs" : "text-sm",
-                    stepStatus === "process" && "text-foreground",
-                    stepStatus === "wait" && "text-muted-foreground",
-                    stepStatus === "error" && "text-destructive",
-                  )}
-                >
-                  {item.title}
-                </div>
-                {item.subTitle && (
-                  <div className="text-muted-foreground text-xs">{item.subTitle}</div>
-                )}
-                {description && (
-                  <div className={cn("text-muted-foreground", compact ? "text-xs" : "text-sm")}>
-                    {description}
-                  </div>
-                )}
-              </div>
-            </button>
+                {stepInner}
+              </button>
+            ) : (
+              <span className={stepClassName}>{stepInner}</span>
+            )}
           </li>
         );
       })}

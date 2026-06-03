@@ -19,13 +19,27 @@ export function FormField({
   className,
   children,
 }: FormFieldProp) {
-  const helperId = helper && !error ? `${id}-helper` : undefined;
+  const helperId = helper ? `${id}-helper` : undefined;
   const errorId = error ? `${id}-error` : undefined;
-  const describedBy = errorId ?? helperId;
+
+  if (
+    typeof process !== "undefined" &&
+    process.env?.NODE_ENV !== "production" &&
+    !React.isValidElement(children)
+  ) {
+    // FormField wires aria-* onto a single control; multiple/no/text children can't receive them.
+    console.warn(
+      "FormField expects a single React element child to receive aria-describedby/aria-errormessage; " +
+        "the helper text and error message will not be associated with the control.",
+    );
+  }
 
   const childWithA11y = React.isValidElement(children)
     ? React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
-        "aria-describedby": describedBy,
+        // Helper and error can coexist: helper stays on aria-describedby, the error on
+        // aria-errormessage (surfaced when aria-invalid is true).
+        "aria-describedby": helperId,
+        "aria-errormessage": errorId,
         "aria-required": required ? true : undefined,
         "aria-invalid": !!error || undefined,
       })
@@ -45,13 +59,14 @@ export function FormField({
         {labelAddon}
       </div>
       {childWithA11y}
+      {helper ? (
+        <p id={helperId} className="text-muted-foreground text-xs">
+          {helper}
+        </p>
+      ) : null}
       {error ? (
         <p id={errorId} role="alert" className="text-destructive text-xs">
           {error}
-        </p>
-      ) : helper ? (
-        <p id={helperId} className="text-muted-foreground text-xs">
-          {helper}
         </p>
       ) : null}
     </div>

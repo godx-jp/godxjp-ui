@@ -7,15 +7,7 @@ export type { SwitchProp, SwitchProp as SwitchProps } from "../../props/componen
 
 export const Switch = React.forwardRef<React.ComponentRef<typeof SwitchPrimitive.Root>, SwitchProp>(
   (
-    {
-      className,
-      size = "default",
-      name,
-      checked,
-      defaultChecked = false,
-      onCheckedChange,
-      ...props
-    },
+    { className, size = "md", name, checked, defaultChecked = false, onCheckedChange, ...props },
     ref,
   ) => {
     const [internalChecked, setInternalChecked] = React.useState(defaultChecked);

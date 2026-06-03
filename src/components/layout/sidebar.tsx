@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../data-display/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../feedback/tooltip";
+import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import type {
   SidebarItemData,
@@ -269,6 +270,7 @@ export function Sidebar({
   renderItem,
   footer,
 }: SidebarProp) {
+  const { t } = useTranslation();
   const resolvedSections = sections ?? [];
 
   return (
@@ -302,7 +304,7 @@ export function Sidebar({
         </button>
       ) : null}
 
-      <div className="sb-nav-scroll">
+      <nav className="sb-nav-scroll" aria-label={t("layout.sidebar.ariaLabel")}>
         {children ??
           resolvedSections.map((section, sectionIndex) => (
             <SidebarSection
@@ -333,7 +335,7 @@ export function Sidebar({
               )}
             </SidebarSection>
           ))}
-      </div>
+      </nav>
 
       {footer ? <div className="sb-footer">{footer}</div> : null}
     </div>

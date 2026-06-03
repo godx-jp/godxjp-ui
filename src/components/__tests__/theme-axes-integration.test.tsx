@@ -198,7 +198,7 @@ describe("theme axes integration (render + class contracts)", () => {
   describe("pagination + calendar avoid legacy hardcoded sizes", () => {
     it("pagination prev button uses semantic compact icon class", () => {
       renderWithTheme(
-        <Pagination current={2} total={100} pageSize={20} onChange={() => undefined} />,
+        <Pagination value={2} total={100} pageSize={20} onValueChange={() => undefined} />,
       );
       const prev = screen.getByRole("button", { name: /trang trước/i });
       expect(prev.className).not.toMatch(/\bsize-8\b/);

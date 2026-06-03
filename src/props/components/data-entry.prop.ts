@@ -51,7 +51,7 @@ export type SearchInputProp = {
   placeholder?: PlaceholderProp;
   value?: ValueProp;
   onChange?: OnChangeProp;
-  onDebouncedChange?: OnSearchChangeProp;
+  onSearchChange?: OnSearchChangeProp;
   debounceMs?: number;
   className?: ClassNameProp;
 };
@@ -98,7 +98,7 @@ export type RadioProp = React.ComponentPropsWithoutRef<typeof RadioGroupPrimitiv
 
 /** @see Switch — extends Radix switch root props. */
 export type SwitchProp = React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root> & {
-  size?: "sm" | "default";
+  size?: "sm" | "md";
 };
 
 /** @see Field — inline control + label + description wrapper. */
@@ -118,7 +118,8 @@ export type CalendarProp = DayPickerProps;
 
 /** @see DatePicker */
 export type DatePickerProp = {
-  value?: Date;
+  value?: ValueProp<Date>;
+  defaultValue?: DefaultValueProp<Date | undefined>;
   onValueChange?: OnValueChangeProp<Date | undefined>;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
@@ -133,7 +134,8 @@ export type DatePickerProp = {
 
 /** @see DateRangePicker */
 export type DateRangePickerProp = {
-  value?: DateRange;
+  value?: ValueProp<DateRange>;
+  defaultValue?: DefaultValueProp<DateRange | undefined>;
   onValueChange?: OnValueChangeProp<DateRange | undefined>;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
