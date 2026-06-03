@@ -6,7 +6,7 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardStat,
+  StatCard,
   CardTitle,
 } from "../../src/components/data-display/card";
 import { Button } from "../../src/components/general/button";
@@ -86,17 +86,17 @@ function ExampleShell({ collapsed = false }: { collapsed?: boolean }) {
               gap: "var(--space-3)",
             }}
           >
-            <CardStat
+            <StatCard
               label="Orders inbox"
               value="128"
               delta={<Badge variant="secondary">+18 today</Badge>}
             />
-            <CardStat
+            <StatCard
               label="Fulfilled"
               value="42"
               delta={<Badge variant="success">8 dispatched</Badge>}
             />
-            <CardStat
+            <StatCard
               label="Exceptions"
               value="7"
               delta={<Badge variant="destructive">needs check</Badge>}

@@ -1,7 +1,6 @@
 import { Download } from "lucide-react";
 
 import {
-  Badge,
   Card,
   CardContent,
   CardDescription,

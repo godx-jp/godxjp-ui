@@ -1,18 +1,30 @@
+import { useState } from "react";
+
 import {
   Dialog,
-  DialogAction,
-  DialogCancel,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  AlertDialog,
   DialogTrigger,
 } from "@godxjp/ui/feedback";
 
 export default function Demo() {
+  const [open, setOpen] = useState(false);
+
   return (
     <>
+      <AlertDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Confirm title"
+        description="Confirm description"
+        confirmLabel="Confirm"
+        cancelLabel="Cancel"
+        onConfirm={() => undefined}
+      />
       <Dialog>
         <DialogTrigger asChild>
           <button type="button">Open Dialog</button>
@@ -23,21 +35,6 @@ export default function Demo() {
             <DialogDescription>DialogDescription</DialogDescription>
           </DialogHeader>
           <DialogFooter>DialogFooter</DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog mode="confirm">
-        <DialogTrigger asChild>
-          <button type="button">Open Confirm</button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm title</DialogTitle>
-            <DialogDescription>Confirm description</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogCancel>Cancel</DialogCancel>
-            <DialogAction>Confirm</DialogAction>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

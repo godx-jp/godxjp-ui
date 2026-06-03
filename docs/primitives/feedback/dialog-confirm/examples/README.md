@@ -1,3 +1,3 @@
 # Examples
 
-Pattern thực tế cho **DialogConfirm**.
+Pattern thực tế cho **AlertDialog**.

@@ -1,9 +1,9 @@
 ---
-title: DialogConfirm
+title: AlertDialog
 lang: vi
 ---
 
-Dialog xác nhận có sẵn footer Cancel/Confirm.
+Dialog xác nhận với cấu trúc mặc định và hành vi confirm.
 
 ## Khi nào dùng
 
@@ -14,7 +14,7 @@ Dialog xác nhận có sẵn footer Cancel/Confirm.
 ## Import
 
 ```tsx
-import { DialogConfirm } from "@godxjp/ui/feedback";
+import { AlertDialog } from "@godxjp/ui/feedback";
 ```
 
 ## Props hiển thị & cấu hình
@@ -24,19 +24,19 @@ import { DialogConfirm } from "@godxjp/ui/feedback";
 | `open`              | `boolean`                | **bắt buộc** | Trạng thái mở (controlled).                         | Dialog/Sheet/Popover — bind với state `useState`.                        |
 | `title`             | `ReactNode`              | **bắt buộc** | Tiêu đề chính.                                      | Dialog/PageHeader/EmptyState — dòng heading nổi bật nhất.                |
 | `description`       | `ReactNode`              | —            | Nội dung mô tả chi tiết.                            | Dialog/EmptyState/Alert — body text giải thích.                          |
-| `confirmLabel`      | `ReactNode`              | —            | Nhãn nút xác nhận.                                  | DialogConfirm: đổi "OK" → "Xóa vĩnh viễn".                               |
-| `cancelLabel`       | `ReactNode`              | —            | Nhãn nút hủy.                                       | DialogConfirm: "Hủy" / "Quay lại".                                       |
+| `confirmLabel`      | `ReactNode`              | —            | Nhãn nút xác nhận.                                  | AlertDialog: đổi "OK" → "Xóa vĩnh viễn".                                 |
+| `cancelLabel`       | `ReactNode`              | —            | Nhãn nút hủy.                                       | AlertDialog: "Hủy" / "Quay lại".                                         |
 | `variant`           | `default`, `destructive` | —            | Biến thể giao diện semantic.                        | Button/Badge/Alert — chọn tone phù hợp ngữ cảnh (primary, destructive…). |
 | `confirmPhrase`     | `string`                 | —            | Chuỗi user phải gõ để xác nhận hành động nguy hiểm. | Xóa tenant, xóa dữ liệu production — friction kiểu GitHub.               |
 | `keepOpenOnConfirm` | `boolean`                | —            | Giữ dialog mở sau khi confirm.                      | Multi-step confirm hoặc chờ parent đóng.                                 |
-| `pending`           | `boolean`                | —            | Đang xử lý — disable nút, hiện spinner.             | DialogConfirm onConfirm async; MutationFeedback.                         |
+| `pending`           | `boolean`                | —            | Đang xử lý — disable nút, hiện spinner.             | AlertDialog onConfirm async; MutationFeedback.                            |
 
 ## Props hành động (events & callbacks)
 
 | Prop           | Kiểu                          | Mặc định     | Mô tả                                | Use case                                                         |
 | -------------- | ----------------------------- | ------------ | ------------------------------------ | ---------------------------------------------------------------- |
 | `onOpenChange` | `(open: boolean) => void`     | **bắt buộc** | Callback khi panel mở/đóng thay đổi. | Dialog/Sheet/Popover — sync `open` state; reset form khi đóng.   |
-| `onConfirm`    | `() => void`, `Promise<void>` | **bắt buộc** | Xử lý khi user xác nhận.             | DialogConfirm — gọi API delete/submit; có thể async + `pending`. |
+| `onConfirm`    | `() => void`, `Promise<void>` | **bắt buộc** | Xử lý khi user xác nhận.             | AlertDialog — gọi API delete/submit; có thể async + `pending`. |
 | `onClick`      | `(e: MouseEvent) => void`     | —            | Xử lý khi user click.                | Button submit; row click; dismiss icon.                          |
 | `onKeyDown`    | `(e: KeyboardEvent) => void`  | —            | Phím bấm.                            | Enter submit; Escape đóng dialog.                                |
 

@@ -1,4 +1,4 @@
-import { Badge, Badge } from "@godxjp/ui/data-display";
+import { Badge } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Inline, Stack } from "@godxjp/ui/layout";
 

@@ -6,9 +6,8 @@ import { Stack } from "../../src/components/layout/stack";
 import { Inline } from "../../src/components/layout/inline";
 import { Button } from "../../src/components/general/button";
 import { DataTable, type ColumnDef } from "../../src/components/data-display/data-table";
-import { StatusBadge } from "../../src/components/data-display/status-badge";
 import { Badge } from "../../src/components/data-display/badge";
-import { KeyValueGrid } from "../../src/components/data-display/key-value-grid";
+import { Descriptions } from "../../src/components/data-display/descriptions";
 import { FilterBar, FilterGroup } from "../../src/components/navigation/filter-bar";
 import { Input } from "../../src/components/data-entry/input";
 import { SearchInput } from "../../src/components/data-entry/search-input";
@@ -39,7 +38,7 @@ const customerColumns: ColumnDef<CustomerRow>[] = [
   {
     key: "status",
     header: "Trạng thái",
-    render: (row) => <StatusBadge status={row.status} />,
+    render: (row) => <Badge status={row.status} />,
   },
   {
     key: "tags",
@@ -207,25 +206,25 @@ export const CustomerDetail: Story = {
     children: (
       <Stack gap="lg">
         <Inline gap="sm">
-          <StatusBadge status="active" />
+          <Badge status="active" />
           <Badge variant="secondary">VIP</Badge>
           <Badge variant="outline">Wholesale</Badge>
         </Inline>
-        <KeyValueGrid columns={2}>
-          <KeyValueGrid.Item label="Mã khách hàng" mono>
+        <Descriptions columns={2}>
+          <Descriptions.Item label="Mã khách hàng" mono>
             {customerDetail.id}
-          </KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Thành viên từ">{customerDetail.memberSince}</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Tổng chi tiêu">{customerDetail.totalSpent}</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Đơn đang mở">{customerDetail.openOrders} đơn</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="ID liên hệ" mono>
+          </Descriptions.Item>
+          <Descriptions.Item label="Thành viên từ">{customerDetail.memberSince}</Descriptions.Item>
+          <Descriptions.Item label="Tổng chi tiêu">{customerDetail.totalSpent}</Descriptions.Item>
+          <Descriptions.Item label="Đơn đang mở">{customerDetail.openOrders} đơn</Descriptions.Item>
+          <Descriptions.Item label="ID liên hệ" mono>
             {customerDetail.zaloId}
-          </KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Địa chỉ giao hàng">{customerDetail.address}</KeyValueGrid.Item>
-          <KeyValueGrid.Item label="Ghi chú nội bộ" span={2}>
+          </Descriptions.Item>
+          <Descriptions.Item label="Địa chỉ giao hàng">{customerDetail.address}</Descriptions.Item>
+          <Descriptions.Item label="Ghi chú nội bộ" span={2}>
             {customerDetail.note}
-          </KeyValueGrid.Item>
-        </KeyValueGrid>
+          </Descriptions.Item>
+        </Descriptions>
       </Stack>
     ),
   },

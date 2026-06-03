@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { DialogConfirm } from "@godxjp/ui/feedback";
+import { AlertDialog } from "@godxjp/ui/feedback";
 import { Button } from "@godxjp/ui/general";
 
 export default function Demo() {
@@ -11,7 +11,7 @@ export default function Demo() {
       <Button tone="destructive" onClick={() => setOpen(true)}>
         Hủy đơn hàng đã chọn
       </Button>
-      <DialogConfirm
+      <AlertDialog
         open={open}
         onOpenChange={setOpen}
         title="Hủy đơn hàng này?"

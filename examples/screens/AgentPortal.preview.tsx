@@ -3,7 +3,6 @@ import type { PreviewMeta, PreviewCase } from "../preview-types";
 import {
   Archive,
   Boxes,
-  CalendarClock,
   ClipboardCheck,
   Package,
   PackageCheck,
@@ -24,15 +23,12 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardStat,
+  StatCard,
   CardTitle,
 } from "../../src/components/data-display/card";
-import { CodeBadge } from "../../src/components/data-display/code-badge";
 import { DataTable, type ColumnDef } from "../../src/components/data-display/data-table";
-import { KeyValueGrid } from "../../src/components/data-display/key-value-grid";
-import { ProgressMeter } from "../../src/components/data-display/progress-meter";
-import { ScanPanel } from "../../src/components/data-display/scan-panel";
-import { StatusBadge } from "../../src/components/data-display/status-badge";
+import { Descriptions } from "../../src/components/data-display/descriptions";
+import { Progress } from "../../src/components/data-display/progress";
 import { Timeline, type TimelineItem } from "../../src/components/data-display/timeline";
 import { TreeList, type TreeListItem } from "../../src/components/data-display/tree-list";
 import { Input } from "../../src/components/data-entry/input";
@@ -47,14 +43,14 @@ import {
 import { Button } from "../../src/components/general/button";
 import { Breadcrumb } from "../../src/components/layout/breadcrumb";
 import { Inline } from "../../src/components/layout/inline";
-import { Menu, type MenuSection } from "../../src/components/layout/menu";
-import { MobileFrame, type MobileFrameNavItem } from "../../src/components/layout/mobile-frame";
+import { Sidebar, type SidebarSection } from "../../src/components/layout/sidebar";
 import { PageContainer } from "../../src/components/layout/page-container";
 import { PageInset } from "../../src/components/layout/page-inset";
 import { ResponsiveGrid } from "../../src/components/layout/responsive-grid";
-import { ShellApp } from "../../src/components/layout/shell-app";
+import { AppShell } from "../../src/components/layout/app-shell";
 import { SplitPane } from "../../src/components/layout/split-pane";
 import { Stack } from "../../src/components/layout/stack";
+import { Topbar } from "../../src/components/layout/topbar";
 import { FilterBar, FilterGroup } from "../../src/components/navigation/filter-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../src/components/navigation/tabs";
 
@@ -185,7 +181,7 @@ const dispatchQueue: DispatchRow[] = [
   },
 ];
 
-const baseMenu: MenuSection[] = [
+const baseSections: SidebarSection[] = [
   {
     label: "Operations",
     items: [
@@ -205,21 +201,41 @@ const baseMenu: MenuSection[] = [
   },
 ];
 
-function menuItems(activeId: string): MenuSection[] {
-  return baseMenu.map((section) => ({
-    ...section,
-    items: section.items.map((item) => ({ ...item, active: item.id === activeId })),
-  }));
-}
-
 function PortalShell({ activeId, children }: { activeId: string; children: React.ReactNode }) {
   return (
-    <ShellApp
-      menu={<Menu items={menuItems(activeId)} />}
+    <AppShell
+      sidebar={
+        <Sidebar
+          activeId={activeId}
+          onSelect={() => undefined}
+          sections={baseSections}
+          product={{
+            name: "Acme Inc",
+            role: "Admin Console",
+            color: "hsl(var(--attention))",
+          }}
+          footer={
+            <div className="text-muted-foreground text-xs">
+              <div className="text-foreground font-medium">Operations desk</div>
+              <div>Online · Tokyo branch</div>
+            </div>
+          }
+        />
+      }
+      topbar={
+        <Topbar
+          product={{ name: "Acme", color: "hsl(var(--attention))" }}
+          project={{ name: "Orders & Customers" }}
+          onToggleCollapsed={() => undefined}
+          onSearchOpen={() => undefined}
+          onNotificationsOpen={() => undefined}
+          unread
+        />
+      }
       breadcrumb={<Breadcrumb items={[{ label: "Admin Console" }, { label: activeId }]} />}
     >
       {children}
-    </ShellApp>
+    </AppShell>
   );
 }
 
@@ -243,14 +259,13 @@ function FlightSlot({
               <CardTitle>{lane}</CardTitle>
               <CardDescription>{date}</CardDescription>
             </div>
-            <StatusBadge
-              status={
-                status === "closed" ? "cancelled" : status === "filling" ? "pending" : "active"
-              }
-              label={status === "closed" ? "Closed" : status === "filling" ? "Filling" : "Open"}
-            />
+            <Badge
+              status={status === "closed" ? "cancelled" : status === "filling" ? "pending" : "active"}
+            >
+              {status === "closed" ? "Closed" : status === "filling" ? "Filling" : "Open"}
+            </Badge>
           </Inline>
-          <ProgressMeter
+          <Progress
             value={load}
             tone={status === "filling" ? "warning" : "success"}
             label={`${load}% booked by weight`}
@@ -265,7 +280,7 @@ const itemColumns: ColumnDef<ItemRow>[] = [
   {
     key: "sellerCode",
     header: "Seller code",
-    render: (row) => <CodeBadge kind="seller" value={row.sellerCode} />,
+    render: (row) => <Badge icon={null} variant="secondary">{row.sellerCode}</Badge>,
   },
   { key: "customer", header: "Customer", sortable: true },
   { key: "description", header: "Item description" },
@@ -279,7 +294,7 @@ const itemColumns: ColumnDef<ItemRow>[] = [
         packed: ["completed", "Packed"],
         exception: ["failed", "Exception"],
       } as const;
-      return <StatusBadge status={map[row.status][0]} label={map[row.status][1]} />;
+      return <Badge status={map[row.status][0]}>{map[row.status][1]}</Badge>;
     },
   },
   { key: "receivedAt", header: "Received", align: "right" },
@@ -289,7 +304,7 @@ const packageColumns: ColumnDef<PackageRow>[] = [
   {
     key: "internalId",
     header: "Internal ID",
-    render: (row) => <CodeBadge kind="internal" value={row.internalId} />,
+    render: (row) => <Badge icon={null} variant="secondary">{row.internalId}</Badge>,
   },
   { key: "customer", header: "Customer" },
   { key: "items", header: "Items", align: "right" },
@@ -304,7 +319,7 @@ const packageColumns: ColumnDef<PackageRow>[] = [
         booked: ["scheduled", "Booked"],
         dispatched: ["sending", "Dispatched"],
       } as const;
-      return <StatusBadge status={map[row.status][0]} label={map[row.status][1]} />;
+      return <Badge status={map[row.status][0]}>{map[row.status][1]}</Badge>;
     },
   },
 ];
@@ -313,7 +328,7 @@ const dispatchColumns: ColumnDef<DispatchRow>[] = [
   {
     key: "internalId",
     header: "Package",
-    render: (row) => <CodeBadge kind="internal" value={row.internalId} />,
+    render: (row) => <Badge icon={null} variant="secondary">{row.internalId}</Badge>,
   },
   { key: "customer", header: "Customer" },
   {
@@ -325,7 +340,7 @@ const dispatchColumns: ColumnDef<DispatchRow>[] = [
   {
     key: "yamatoCode",
     header: "Provider ref",
-    render: (row) => (row.yamatoCode ? <CodeBadge kind="yamato" value={row.yamatoCode} /> : "—"),
+    render: (row) => (row.yamatoCode ? <Badge icon={null} variant="secondary">{row.yamatoCode}</Badge> : "—"),
   },
   {
     key: "status",
@@ -336,7 +351,7 @@ const dispatchColumns: ColumnDef<DispatchRow>[] = [
         label: ["pending", "Label ready"],
         queued: ["draft", "Queued"],
       } as const;
-      return <StatusBadge status={map[row.status][0]} label={map[row.status][1]} />;
+      return <Badge status={map[row.status][0]}>{map[row.status][1]}</Badge>;
     },
   },
 ];
@@ -362,18 +377,18 @@ function DashboardLayout() {
       >
         <Stack gap="md">
           <ResponsiveGrid columns={4}>
-            <CardStat
+            <StatCard
               label="Orders awaiting processing"
               value="128"
               delta={<Badge variant="secondary">+18 today</Badge>}
             />
-            <CardStat
+            <StatCard
               label="Batches ready"
               value="42"
               delta={<Badge variant="success">8 dispatched</Badge>}
             />
-            <CardStat label="Dispatch cut-off" value="15:40" hint="Batch A closes in 5h 12m" />
-            <CardStat
+            <StatCard label="Dispatch cut-off" value="15:40" hint="Batch A closes in 5h 12m" />
+            <StatCard
               label="Exceptions"
               value="7"
               delta={<Badge variant="destructive">needs check</Badge>}
@@ -417,9 +432,9 @@ function DashboardLayout() {
                   </CardHeader>
                   <CardContent>
                     <Stack gap="sm">
-                      <CodeBadge kind="internal" value="REC-8801" />
-                      <CodeBadge kind="seller" value="VND-ITM-7734-2108" />
-                      <CodeBadge kind="yamato" value="VND-AGT-7622-1048" />
+                      <Badge icon={null} variant="secondary">REC-8801</Badge>
+                      <Badge icon={null} variant="secondary">VND-ITM-7734-2108</Badge>
+                      <Badge icon={null} variant="secondary">VND-AGT-7622-1048</Badge>
                     </Stack>
                   </CardContent>
                 </Card>
@@ -520,17 +535,17 @@ function ReceivePackLayout() {
                 </CardHeader>
                 <CardContent>
                   <Stack gap="sm">
-                    <KeyValueGrid columns={1}>
-                      <KeyValueGrid.Item label="Selected orders">{selected.size}</KeyValueGrid.Item>
-                      <KeyValueGrid.Item label="Customer match">
+                    <Descriptions columns={1}>
+                      <Descriptions.Item label="Selected orders">{selected.size}</Descriptions.Item>
+                      <Descriptions.Item label="Customer match">
                         Nguyen Mai · 100%
-                      </KeyValueGrid.Item>
-                      <KeyValueGrid.Item label="Batch type">
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Batch type">
                         Standard single-customer
-                      </KeyValueGrid.Item>
-                      <KeyValueGrid.Item label="Estimated weight">3.57 kg</KeyValueGrid.Item>
-                    </KeyValueGrid>
-                    <StatusBadge status="completed" label="Vendor code collision check passed" />
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Estimated weight">3.57 kg</Descriptions.Item>
+                    </Descriptions>
+                    <Badge status="completed">Vendor code collision check passed</Badge>
                   </Stack>
                 </CardContent>
                 <CardFooter separated>
@@ -666,22 +681,22 @@ function PackageTreeLayout() {
               <CardContent>
                 <Stack gap="md">
                   <Inline gap="sm">
-                    <CodeBadge kind="internal" value="REC-8801" />
-                    <CodeBadge kind="seller" value="VND-ITM-7734-2108" />
-                    <CodeBadge kind="yamato" value="VND-AGT-7622-1048" />
+                    <Badge icon={null} variant="secondary">REC-8801</Badge>
+                    <Badge icon={null} variant="secondary">VND-ITM-7734-2108</Badge>
+                    <Badge icon={null} variant="secondary">VND-AGT-7622-1048</Badge>
                   </Inline>
-                  <KeyValueGrid columns={2}>
-                    <KeyValueGrid.Item label="Customer">Nguyen Mai · CUST-0148</KeyValueGrid.Item>
-                    <KeyValueGrid.Item label="Status">
-                      <StatusBadge status="scheduled" label="Slot confirmed" />
-                    </KeyValueGrid.Item>
-                    <KeyValueGrid.Item label="Gross weight">8.34 kg</KeyValueGrid.Item>
-                    <KeyValueGrid.Item label="Dimensions">48 x 36 x 31 cm</KeyValueGrid.Item>
-                    <KeyValueGrid.Item label="Dispatch slot">Batch A · 27 May</KeyValueGrid.Item>
-                    <KeyValueGrid.Item label="Lock state">
+                  <Descriptions columns={2}>
+                    <Descriptions.Item label="Customer">Nguyen Mai · CUST-0148</Descriptions.Item>
+                    <Descriptions.Item label="Status">
+                      <Badge status="scheduled">Slot confirmed</Badge>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Gross weight">8.34 kg</Descriptions.Item>
+                    <Descriptions.Item label="Dimensions">48 x 36 x 31 cm</Descriptions.Item>
+                    <Descriptions.Item label="Dispatch slot">Batch A · 27 May</Descriptions.Item>
+                    <Descriptions.Item label="Lock state">
                       Editable until dispatch label printed
-                    </KeyValueGrid.Item>
-                  </KeyValueGrid>
+                    </Descriptions.Item>
+                  </Descriptions>
                 </Stack>
               </CardContent>
             </Card>
@@ -840,9 +855,9 @@ function TrackingTimelineLayout() {
                   onSearch={() => undefined}
                 />
                 <Inline gap="sm">
-                  <CodeBadge kind="internal" value="REC-8801" />
-                  <CodeBadge kind="seller" value="VND-ITM-7734-2108" />
-                  <CodeBadge kind="yamato" value="VND-AGT-7622-1048" />
+                  <Badge icon={null} variant="secondary">REC-8801</Badge>
+                  <Badge icon={null} variant="secondary">VND-ITM-7734-2108</Badge>
+                  <Badge icon={null} variant="secondary">VND-AGT-7622-1048</Badge>
                 </Inline>
               </Stack>
             </CardContent>
@@ -854,15 +869,15 @@ function TrackingTimelineLayout() {
                   <CardTitle>Linked context</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <KeyValueGrid columns={1}>
-                    <KeyValueGrid.Item label="Customer">Nguyen Mai</KeyValueGrid.Item>
-                    <KeyValueGrid.Item label="Batch">Parent + 3 children</KeyValueGrid.Item>
-                    <KeyValueGrid.Item label="Slot">Batch A · 27 May</KeyValueGrid.Item>
-                    <KeyValueGrid.Item label="Dispatch">Provider label ready</KeyValueGrid.Item>
-                    <KeyValueGrid.Item label="Current state">
-                      <StatusBadge status="scheduled" label="Booked" />
-                    </KeyValueGrid.Item>
-                  </KeyValueGrid>
+                  <Descriptions columns={1}>
+                    <Descriptions.Item label="Customer">Nguyen Mai</Descriptions.Item>
+                    <Descriptions.Item label="Batch">Parent + 3 children</Descriptions.Item>
+                    <Descriptions.Item label="Slot">Batch A · 27 May</Descriptions.Item>
+                    <Descriptions.Item label="Dispatch">Provider label ready</Descriptions.Item>
+                    <Descriptions.Item label="Current state">
+                      <Badge status="scheduled">Booked</Badge>
+                    </Descriptions.Item>
+                  </Descriptions>
                 </CardContent>
               </Card>
             }
@@ -882,45 +897,6 @@ function TrackingTimelineLayout() {
         </Stack>
       </PageContainer>
     </PortalShell>
-  );
-}
-
-function HandheldScanLayout() {
-  const navItems: MobileFrameNavItem[] = [
-    { label: "Scan", icon: ScanLine, active: true },
-    { label: "Receive", icon: Archive },
-    { label: "Pack", icon: Package },
-    { label: "Flight", icon: CalendarClock },
-  ];
-
-  return (
-    <MobileFrame title="Tokyo scan" subtitle="Branch handheld" status="Online" navItems={navItems}>
-      <Stack gap="md">
-        <Card>
-          <CardContent solo>
-            <ScanPanel title="Scan any code" description="Internal, vendor, or provider ref" />
-          </CardContent>
-        </Card>
-        <ResponsiveGrid columns={2}>
-          <Button variant="outline">Receive</Button>
-          <Button variant="outline">Batch</Button>
-          <Button variant="outline">Merge</Button>
-          <Button variant="outline">Dispatch</Button>
-        </ResponsiveGrid>
-        <Card>
-          <CardHeader banded>
-            <CardTitle>Last scan</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Stack gap="sm">
-              <CodeBadge kind="seller" value="VND-ITM-7734-2108" />
-              <span>Sneakers linked to Nguyen Mai.</span>
-              <StatusBadge status="pending" label="Awaiting processing" />
-            </Stack>
-          </CardContent>
-        </Card>
-      </Stack>
-    </MobileFrame>
   );
 }
 
@@ -966,14 +942,4 @@ export const BookingDispatch: Story = {
 export const TrackingSearch: Story = {
   name: "Journey C · tracking timeline",
   render: () => <TrackingTimelineLayout />,
-};
-
-export const HandheldScan: Story = {
-  name: "Journey D · handheld scan",
-  parameters: {
-    viewport: {
-      defaultViewport: "mobile1",
-    },
-  },
-  render: () => <HandheldScanLayout />,
 };
