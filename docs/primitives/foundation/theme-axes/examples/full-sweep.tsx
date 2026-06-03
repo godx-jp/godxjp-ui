@@ -16,7 +16,6 @@ import {
 } from "@godxjp/ui/data-entry";
 import {
   Badge,
-  Badge,
   Table,
   TableBody,
   TableCell,
@@ -26,7 +25,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { SkeletonCard, SkeletonTable } from "@godxjp/ui/feedback";
 import { Inline, Stack } from "@godxjp/ui/layout";
-import { Pagination, Steps, Tabs, Tabs, TabsList, TabsTrigger } from "@godxjp/ui/navigation";
+import { Pagination, Steps, Tabs, TabsList, TabsTrigger } from "@godxjp/ui/navigation";
 
 export default function Demo() {
   return (

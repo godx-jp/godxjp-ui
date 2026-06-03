@@ -1,6 +1,5 @@
 import { Alert, AlertContent, AlertDescription, AlertTitle } from "@godxjp/ui/feedback";
 import {
-  Badge,
   Card,
   CardAction,
   CardContent,
@@ -11,7 +10,6 @@ import {
   CardTitle,
   DataTable,
   EmptyState,
-  Badge,
   type ColumnDef,
 } from "@godxjp/ui/data-display";
 import {

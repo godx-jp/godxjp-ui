@@ -1,15 +1,15 @@
 import { useState } from "react";
 
-import { DialogConfirm } from "@godxjp/ui/feedback";
+import { AlertDialog } from "@godxjp/ui/feedback";
 
 export default function Demo() {
   const [open, setOpen] = useState(true);
 
   return (
-    <DialogConfirm
+    <AlertDialog
       open={open}
       onOpenChange={setOpen}
-      title="DialogConfirm"
+      title="Alert dialog"
       description="Description"
       onConfirm={() => undefined}
     />

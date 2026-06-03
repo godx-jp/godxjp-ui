@@ -1,7 +1,6 @@
 import type { PreviewMeta, PreviewCase } from "../preview-types";
 import { Inline } from "../../src/components/layout/inline";
 import { Button } from "../../src/components/general/button";
-import { StatusBadge } from "../../src/components/data-display/status-badge";
 import { Badge } from "../../src/components/data-display/badge";
 
 const meta: PreviewMeta<typeof Inline> = {
@@ -36,7 +35,7 @@ export const OrderMetaRow: Story = {
   render: () => (
     <Inline gap="sm" className="flex-wrap items-center text-sm">
       <span className="font-mono text-xs">ORD-2026-8842</span>
-      <StatusBadge status="sending" />
+      <Badge status="sending" />
       <Badge variant="outline">Osaka → HCM</Badge>
       <Badge variant="secondary">2.4 kg</Badge>
       <span className="text-muted-foreground">Cập nhật 14:32 JST</span>

@@ -10,13 +10,12 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardStat,
+  StatCard,
   CardTitle,
 } from "../../src/components/data-display/card";
 import { EmptyState } from "../../src/components/data-display/empty-state";
-import { KeyValueGrid } from "../../src/components/data-display/key-value-grid";
-import { ProgressMeter } from "../../src/components/data-display/progress-meter";
-import { StatusBadge } from "../../src/components/data-display/status-badge";
+import { Descriptions } from "../../src/components/data-display/descriptions";
+import { Progress } from "../../src/components/data-display/progress";
 import {
   Table,
   TableBody,
@@ -164,18 +163,18 @@ export const StatKpis: Story = {
   name: "A · KPI stat",
   render: () => (
     <ResponsiveGrid columns={3}>
-      <CardStat
+      <StatCard
         label="Đơn chờ xử lý"
         value="128"
         delta={<Badge variant="secondary">+18 hôm nay</Badge>}
       />
-      <CardStat
+      <StatCard
         label="Đã hoàn tất"
         value="42"
         hint="8 đơn mới trong ngày"
         delta={<Badge variant="success">+8</Badge>}
       />
-      <CardStat
+      <StatCard
         label="Ngoại lệ"
         value="7"
         delta={<Badge variant="destructive">cần kiểm tra</Badge>}
@@ -193,12 +192,12 @@ export const SummaryAndQuota: Story = {
           <CardTitle>Tổng kết tháng 5</CardTitle>
         </CardHeader>
         <CardContent>
-          <KeyValueGrid columns={1}>
-            <KeyValueGrid.Item label="Đơn hàng nhận">1,284</KeyValueGrid.Item>
-            <KeyValueGrid.Item label="Đã xử lý">1,116</KeyValueGrid.Item>
-            <KeyValueGrid.Item label="Đã giao hàng">842</KeyValueGrid.Item>
-            <KeyValueGrid.Item label="Ngoại lệ">12</KeyValueGrid.Item>
-          </KeyValueGrid>
+          <Descriptions columns={1}>
+            <Descriptions.Item label="Đơn hàng nhận">1,284</Descriptions.Item>
+            <Descriptions.Item label="Đã xử lý">1,116</Descriptions.Item>
+            <Descriptions.Item label="Đã giao hàng">842</Descriptions.Item>
+            <Descriptions.Item label="Ngoại lệ">12</Descriptions.Item>
+          </Descriptions>
         </CardContent>
       </Card>
       <Card>
@@ -210,7 +209,7 @@ export const SummaryAndQuota: Story = {
         </CardHeader>
         <CardContent>
           <Stack gap="sm">
-            <ProgressMeter value={85} tone="warning" label="42.8 / 50 GB đã dùng" />
+            <Progress value={85} tone="warning" label="42.8 / 50 GB đã dùng" />
             <CardDescription>Còn 7.2 GB · cân nhắc nâng gói lưu trữ.</CardDescription>
           </Stack>
         </CardContent>
@@ -352,13 +351,13 @@ export const WorkflowAndTimeline: Story = {
           <CardDescription>Yêu cầu #4821 · Nguyễn Lan</CardDescription>
         </CardHeader>
         <CardContent>
-          <KeyValueGrid columns={1}>
-            <KeyValueGrid.Item label="Loại">Nghỉ phép năm</KeyValueGrid.Item>
-            <KeyValueGrid.Item label="Thời gian">28/5 — 30/5 (3 ngày)</KeyValueGrid.Item>
-            <KeyValueGrid.Item label="Trạng thái">
-              <StatusBadge status="pending" label="Chờ duyệt" />
-            </KeyValueGrid.Item>
-          </KeyValueGrid>
+          <Descriptions columns={1}>
+            <Descriptions.Item label="Loại">Nghỉ phép năm</Descriptions.Item>
+            <Descriptions.Item label="Thời gian">28/5 — 30/5 (3 ngày)</Descriptions.Item>
+            <Descriptions.Item label="Trạng thái">
+              <Badge status="pending" icon={null}>Chờ duyệt</Badge>
+            </Descriptions.Item>
+          </Descriptions>
         </CardContent>
         <CardFooter separated>
           <Button variant="outline" size="sm">

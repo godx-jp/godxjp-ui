@@ -1,7 +1,6 @@
 import type { PreviewMeta, PreviewCase } from "../preview-types";
 import { Inline } from "../../src/components/layout/inline";
 import { Stack } from "../../src/components/layout/stack";
-import { StatusBadge } from "../../src/components/data-display/status-badge";
 import { Badge } from "../../src/components/data-display/badge";
 import { Card, CardContent } from "../../src/components/data-display/card";
 
@@ -63,7 +62,7 @@ export const ShipmentQueue: Story = {
               </Stack>
               <Stack gap="xs" className="items-end text-right">
                 <span className="text-muted-foreground">{shipment.weight}</span>
-                <StatusBadge status={shipment.status} />
+                <Badge status={shipment.status} />
               </Stack>
             </div>
           </CardContent>

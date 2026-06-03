@@ -1,7 +1,6 @@
 import { Download, MoreHorizontal, Pencil } from "lucide-react";
 
 import {
-  Badge,
   Card,
   CardAction,
   CardContent,
