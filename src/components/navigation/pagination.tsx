@@ -27,10 +27,11 @@ const PaginationContent = React.forwardRef<
 });
 PaginationContent.displayName = "PaginationContent";
 
-const PaginationItem = React.forwardRef<
-  HTMLLIElement,
-  React.LiHTMLAttributes<HTMLLIElement>
->(({ className, ...props }, ref) => <li ref={ref} className={cn("ui-pagination-item", className)} {...props} />);
+const PaginationItem = React.forwardRef<HTMLLIElement, React.LiHTMLAttributes<HTMLLIElement>>(
+  ({ className, ...props }, ref) => (
+    <li ref={ref} className={cn("ui-pagination-item", className)} {...props} />
+  ),
+);
 PaginationItem.displayName = "PaginationItem";
 
 type PaginationLinkProps = React.ComponentPropsWithoutRef<"a"> & {
@@ -38,40 +39,35 @@ type PaginationLinkProps = React.ComponentPropsWithoutRef<"a"> & {
   disabled?: boolean;
 };
 
-const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(({
-  className,
-  isActive,
-  disabled,
-  children,
-  onClick,
-  ...props
-}, ref) => (
-  <a
-    ref={ref}
-    data-active={isActive || undefined}
-    aria-current={isActive ? "page" : undefined}
-    aria-disabled={disabled || undefined}
-    data-state={disabled ? "disabled" : undefined}
-    className={cn(
-      "ui-pagination-link ui-button--compact-icon ui-pagination-page",
-      isActive ? "ui-pagination-link-active" : undefined,
-      disabled ? "ui-pagination-link-disabled" : undefined,
-      className,
-    )}
-    role="button"
-    onClick={(event) => {
-      if (disabled) {
-        event.preventDefault();
-        return;
-      }
+const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
+  ({ className, isActive, disabled, children, onClick, ...props }, ref) => (
+    <a
+      ref={ref}
+      data-active={isActive || undefined}
+      aria-current={isActive ? "page" : undefined}
+      aria-disabled={disabled || undefined}
+      data-state={disabled ? "disabled" : undefined}
+      className={cn(
+        "ui-pagination-link ui-button--compact-icon ui-pagination-page",
+        isActive ? "ui-pagination-link-active" : undefined,
+        disabled ? "ui-pagination-link-disabled" : undefined,
+        className,
+      )}
+      role="button"
+      onClick={(event) => {
+        if (disabled) {
+          event.preventDefault();
+          return;
+        }
 
-      onClick?.(event);
-    }}
-    {...props}
-  >
-    {children}
-  </a>
-));
+        onClick?.(event);
+      }}
+      {...props}
+    >
+      {children}
+    </a>
+  ),
+);
 PaginationLink.displayName = "PaginationLink";
 
 const PaginationEllipsis = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
@@ -86,36 +82,33 @@ const PaginationEllipsis = ({ className, ...props }: React.HTMLAttributes<HTMLSp
 );
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
-const PaginationPrevious = React.forwardRef<
-  HTMLAnchorElement,
-  PaginationLinkProps
->(({ className, children, ...props }, ref) => (
-  <PaginationLink
-    ref={ref}
-    className={cn("ui-pagination-prev", className)}
-    disabled={props.disabled}
-    {...props}
-  >
-    {children}
-  </PaginationLink>
-));
+const PaginationPrevious = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
+  ({ className, children, ...props }, ref) => (
+    <PaginationLink
+      ref={ref}
+      className={cn("ui-pagination-prev", className)}
+      disabled={props.disabled}
+      {...props}
+    >
+      {children}
+    </PaginationLink>
+  ),
+);
 PaginationPrevious.displayName = "PaginationPrevious";
 
-const PaginationNext = React.forwardRef<
-  HTMLAnchorElement,
-  PaginationLinkProps
->(({ className, children, ...props }, ref) => (
-  <PaginationLink
-    ref={ref}
-    className={cn("ui-pagination-next", className)}
-    disabled={props.disabled}
-    {...props}
-  >
-    {children}
-  </PaginationLink>
-));
+const PaginationNext = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
+  ({ className, children, ...props }, ref) => (
+    <PaginationLink
+      ref={ref}
+      className={cn("ui-pagination-next", className)}
+      disabled={props.disabled}
+      {...props}
+    >
+      {children}
+    </PaginationLink>
+  ),
+);
 PaginationNext.displayName = "PaginationNext";
-
 
 export function Pagination({
   current = 1,
@@ -186,7 +179,10 @@ export function Pagination({
   }
 
   return (
-    <nav aria-label={t("navigation.pagination.ariaLabel")} className={cn("ui-pagination", className)}>
+    <nav
+      aria-label={t("navigation.pagination.ariaLabel")}
+      className={cn("ui-pagination", className)}
+    >
       {totalLabel && <span className="ui-pagination-total">{totalLabel}</span>}
 
       {showSizeChanger && (
@@ -195,7 +191,10 @@ export function Pagination({
           onValueChange={(v: string) => go(1, Number(v))}
           disabled={disabled}
         >
-          <SelectTrigger className="ui-pagination-size-trigger" aria-label={t("navigation.pagination.pageSize")}>
+          <SelectTrigger
+            className="ui-pagination-size-trigger"
+            aria-label={t("navigation.pagination.pageSize")}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

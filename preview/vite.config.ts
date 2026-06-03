@@ -27,11 +27,19 @@ function packageExportAliases(): Array<{ find: string | RegExp; replacement: str
   for (const [subpath, target] of Object.entries(exports)) {
     const dist = typeof target === "string" ? target : target.import;
     if (!dist || !dist.endsWith(".js")) continue; // skip css / type-only targets
-    const base = dist.replace(/^\.\//, "").replace(/^dist\//, "src/").replace(/\.js$/, "");
-    const srcRel = [".tsx", ".ts"].map((ext) => base + ext).find((p) => existsSync(path.resolve(uiRoot, p)));
+    const base = dist
+      .replace(/^\.\//, "")
+      .replace(/^dist\//, "src/")
+      .replace(/\.js$/, "");
+    const srcRel = [".tsx", ".ts"]
+      .map((ext) => base + ext)
+      .find((p) => existsSync(path.resolve(uiRoot, p)));
     if (!srcRel) continue; // no source entry → leave to node resolution
     const replacement = path.resolve(uiRoot, srcRel);
-    entries.push({ find: subpath === "." ? "@godxjp/ui" : `@godxjp/ui${subpath.slice(1)}`, replacement });
+    entries.push({
+      find: subpath === "." ? "@godxjp/ui" : `@godxjp/ui${subpath.slice(1)}`,
+      replacement,
+    });
   }
 
   // Longest match first — avoid `@godxjp/ui` swallowing `/data-display` subpaths.

@@ -20,12 +20,7 @@ export * from "./date-picker";
 export * from "./date-range-picker";
 export * from "./dialog";
 export { Separator } from "./separator";
-export {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from "../feedback/tooltip";
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../feedback/tooltip";
 export * from "./dropdown-menu";
 export * from "./input";
 export * from "./time-input";

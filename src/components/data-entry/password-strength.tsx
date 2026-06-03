@@ -26,7 +26,10 @@ export type PasswordStrengthReturn = {
   checks: Record<PasswordRule, boolean>;
 };
 
-export function usePasswordStrength(value: string, rules: PasswordRule[] = [...DEFAULT_PASSWORD_RULES]): PasswordStrengthReturn {
+export function usePasswordStrength(
+  value: string,
+  rules: PasswordRule[] = [...DEFAULT_PASSWORD_RULES],
+): PasswordStrengthReturn {
   const uniqueRules = [...new Set(rules)];
   const checks: Record<PasswordRule, boolean> = {
     length: value.length >= 8,
@@ -66,9 +69,13 @@ export function PasswordStrength({
 
   return (
     <div className="ui-password-strength">
-      <div className="ui-password-strength-track" role="img" aria-label={`Password strength ${score}/4`}>
+      <div
+        className="ui-password-strength-track"
+        role="img"
+        aria-label={`Password strength ${score}/4`}
+      >
         {segments.map((_, index) => {
-          const filled = index < (score + 1);
+          const filled = index < score + 1;
           return (
             <span
               key={index}

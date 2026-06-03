@@ -7296,9 +7296,8 @@ export function InvoiceListHeader() {
       },
       {
         name: "rules",
-        type: 'PasswordRule[]',
-        description:
-          "`length` | `upper` | `lower` | `number` | `symbol`. Omit to use defaults.",
+        type: "PasswordRule[]",
+        description: "`length` | `upper` | `lower` | `number` | `symbol`. Omit to use defaults.",
       },
       {
         name: "showChecklist",
@@ -7317,7 +7316,11 @@ export function InvoiceListHeader() {
       "DO keep `rules` stable (default list is recommended for broad UI compatibility).",
       "DON'T treat the score as cryptographic strength; use it as a UI hint only.",
     ],
-    useCases: ["Account signup password field", "Password reset workflow", "Admin user invite form"],
+    useCases: [
+      "Account signup password field",
+      "Password reset workflow",
+      "Admin user invite form",
+    ],
     related: ["PasswordInput", "FormField", "Input"],
     example: `import { PasswordInput, PasswordStrength } from "@godxjp/ui/data-entry";
 

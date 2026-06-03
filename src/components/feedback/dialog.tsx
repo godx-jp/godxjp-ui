@@ -118,7 +118,7 @@ const DialogDescription = React.forwardRef<
       {...props}
     />
   );
-  });
+});
 DialogDescription.displayName = "DialogDescription";
 
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
