@@ -3,6 +3,12 @@ import { resolveDefaultDateFormat } from "./date-format-labels";
 import { getDateFnsLocale, getDayPickerLocale } from "./locales";
 import { syncAppRequestHeaders } from "./request-headers";
 import { syncI18nLocale } from "../i18n/translate";
+
+/** BCP-47 primary subtags that render right-to-left (forward-compat — current AppLocales are LTR). */
+const RTL_LANGUAGE_SUBTAGS = new Set(["ar", "he", "fa", "ur", "ps", "sd", "yi", "dv", "ckb"]);
+function localeDirection(locale: string): "rtl" | "ltr" {
+  return RTL_LANGUAGE_SUBTAGS.has(locale.split("-")[0]?.toLowerCase() ?? "") ? "rtl" : "ltr";
+}
 import {
   disableLiveRelativeFormatting,
   enableLiveRelativeFormatting,
@@ -203,6 +209,14 @@ export function AppProvider({
   React.useEffect(() => {
     syncAppRequestHeaders(requestHeaders);
   }, [requestHeaders]);
+
+  // Reflect the locale's writing direction on <html dir> so logical CSS properties (ms/me/ps/pe,
+  // start/end) flip correctly under RTL locales (Unicode bidi). Current AppLocales are all LTR.
+  React.useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.dir = localeDirection(locale);
+    }
+  }, [locale]);
 
   React.useEffect(() => {
     hasMountedRef.current = true;

@@ -6,23 +6,40 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
  * Country picker — a RECIPE, not a component. There is no CountrySelect in @godxjp/ui:
- * a country picker is just a data-driven `Select` whose options carry a flag-prefixed label.
- * showSearch makes a long country list filterable; name= submits the ISO code with the form.
- * Build the options array from your own country data. Composed only from real @godxjp/ui.
+ * a country picker is just a data-driven `Select`. The INTERNATIONAL-STANDARD way to build it:
+ *   - values are ISO 3166-1 alpha-2 codes (you keep only the code array);
+ *   - labels are derived at render time from CLDR via `Intl.DisplayNames(locale, {type:"region"})`,
+ *     so they are correct AND localized — never hardcode country names per language;
+ *   - do NOT use emoji regional-indicator flags (🇯🇵): they do not render on Windows / many Linux.
+ *     If you want flags, ship an SVG set.
+ * showSearch filters a long list; name= submits the ISO code with the form. Real @godxjp/ui only.
  */
 
-const COUNTRIES = [
-  { value: "JP", label: "🇯🇵 日本", group: "アジア" },
-  { value: "CN", label: "🇨🇳 中国", group: "アジア" },
-  { value: "KR", label: "🇰🇷 韓国", group: "アジア" },
-  { value: "VN", label: "🇻🇳 ベトナム", group: "アジア" },
-  { value: "SG", label: "🇸🇬 シンガポール", group: "アジア" },
-  { value: "US", label: "🇺🇸 アメリカ合衆国", group: "その他" },
-  { value: "GB", label: "🇬🇧 イギリス", group: "ヨーロッパ" },
-  { value: "DE", label: "🇩🇪 ドイツ", group: "ヨーロッパ" },
-  { value: "FR", label: "🇫🇷 フランス", group: "ヨーロッパ" },
-  { value: "AU", label: "🇦🇺 オーストラリア", group: "その他" },
-];
+// You bundle the ISO 3166-1 alpha-2 codes you support (there is no Intl enumerator for "all regions").
+const COUNTRY_CODES = ["JP", "CN", "KR", "VN", "SG", "US", "GB", "DE", "FR", "AU"] as const;
+
+const REGION_GROUP: Record<string, string> = {
+  JP: "アジア",
+  CN: "アジア",
+  KR: "アジア",
+  VN: "アジア",
+  SG: "アジア",
+  GB: "ヨーロッパ",
+  DE: "ヨーロッパ",
+  FR: "ヨーロッパ",
+  US: "その他",
+  AU: "その他",
+};
+
+// Localized display names come from CLDR. In a real app pass the active locale (e.g. from
+// useAppContext().locale); here we render Japanese names to match the surrounding demo.
+const regionNames = new Intl.DisplayNames(["ja"], { type: "region" });
+
+const COUNTRIES = COUNTRY_CODES.map((code) => ({
+  value: code,
+  label: regionNames.of(code) ?? code,
+  group: REGION_GROUP[code],
+}));
 
 export default function Demo() {
   const [billing, setBilling] = useState("JP");

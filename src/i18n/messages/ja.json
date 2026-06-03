@@ -10,7 +10,7 @@
     "clearSearch": "検索をクリア",
     "clearFilters": "フィルターをクリア",
     "first": "最初",
-    "next": "次へ →",
+    "next": "次へ",
     "selectedCount": "{count} 件選択",
     "typeToConfirm": "確認のため {phrase} と入力"
   },
@@ -30,7 +30,10 @@
       "hour": "時",
       "minute": "分",
       "typeLabel": "HH:mm を入力",
-      "openPicker": "時刻を選択"
+      "openPicker": "時刻を選択",
+      "meridiem": "午前/午後",
+      "am": "午前",
+      "pm": "午後"
     },
     "searchInput": {
       "placeholder": "検索…"
@@ -40,7 +43,8 @@
       "empty": "結果が見つかりません"
     },
     "colorPicker": {
-      "ariaLabel": "色を選択"
+      "ariaLabel": "色を選択",
+      "hexLabel": "カラーコード（HEX）"
     },
     "upload": {
       "dropzoneLabel": "ファイルをアップロード",
@@ -58,19 +62,28 @@
       "undo": "元に戻す",
       "cropTitle": "写真を切り抜き",
       "cropZoom": "ズーム",
-      "cropConfirm": "この写真を使用"
+      "cropConfirm": "この写真を使用",
+      "inputLabel": "ファイルを選択",
+      "statusUploading": "{count} 件をアップロード中…",
+      "statusReady": "{count} 件中 {done} 件アップロード済み",
+      "statusFailed": "{count} 件のアップロードに失敗",
+      "removeImage": "画像を削除",
+      "removeFile": "{name} を削除",
+      "cropDescription": "ズームスライダーを調整し、保存すると写真を正方形に切り抜きます。"
     },
     "cascader": {
       "placeholder": "選択…",
       "searchPlaceholder": "検索…",
-      "empty": "結果なし"
+      "empty": "結果なし",
+      "clear": "選択をクリア"
     },
     "treeSelect": {
       "placeholder": "選択…",
       "searchPlaceholder": "検索…",
       "empty": "データなし",
       "expand": "展開",
-      "collapse": "折りたたむ"
+      "collapse": "折りたたむ",
+      "clear": "選択をクリア"
     },
     "transfer": {
       "source": "ソース",
@@ -78,7 +91,9 @@
       "searchPlaceholder": "検索…",
       "empty": "データなし",
       "moveRight": "ターゲットへ移動",
-      "moveLeft": "ソースへ戻す"
+      "moveLeft": "ソースへ戻す",
+      "selectAllSource": "ソースをすべて選択",
+      "selectAllTarget": "ターゲットをすべて選択"
     },
     "searchSelect": {
       "placeholder": "選択…",
@@ -92,9 +107,63 @@
     "errorPanel": {
       "title": "このセクションを読み込めませんでした"
     },
-    "genericError": "問題が発生しました。もう一度お試しください。"
+    "genericError": "問題が発生しました。もう一度お試しください。",
+    "alert": {
+      "dismiss": "閉じる"
+    }
+  },
+  "layout": {
+    "sidebar": {
+      "ariaLabel": "メインナビゲーション"
+    },
+    "appShell": {
+      "sidebarLabel": "サイドバー",
+      "headerLabel": "ヘッダー",
+      "mainLabel": "メインコンテンツ",
+      "footerLabel": "フッター"
+    },
+    "topbar": {
+      "toggleSidebar": "サイドバーの切り替え",
+      "search": "検索",
+      "searchPlaceholder": "検索...",
+      "notifications": "通知",
+      "tweaks": "設定を開く"
+    }
+  },
+  "dataDisplay": {
+    "carousel": {
+      "roleDescription": "カルーセル",
+      "ariaLabel": "カルーセル",
+      "slideLabel": "{total} 件中 {index} 件目",
+      "previous": "前へ",
+      "next": "次へ"
+    }
+  },
+  "ui": {
+    "rating": {
+      "ariaLabel": "評価",
+      "starLabel": "{star} / {max}"
+    },
+    "tagInput": {
+      "inputLabel": "タグを追加",
+      "removeTag": "{tag} を削除",
+      "tagCount": "{count} 件のタグ"
+    },
+    "passwordInput": {
+      "show": "パスワードを表示",
+      "hide": "パスワードを隠す"
+    }
   },
   "navigation": {
+    "steps": {
+      "ariaLabel": "進行状況"
+    },
+    "breadcrumb": {
+      "ariaLabel": "パンくずリスト"
+    },
+    "toolbar": {
+      "ariaLabel": "フィルター"
+    },
     "localePicker": {
       "ariaLabel": "言語"
     },
