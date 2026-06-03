@@ -2539,7 +2539,7 @@ export function InvoiceDueDateField() {
     name: "Dialog",
     group: "feedback",
     tagline:
-      'Compound modal. Controlled via open + onOpenChange. Parts available flat (DialogTrigger/DialogContent/…) or as Dialog.Trigger/Dialog.Content. mode="confirm" switches to alertdialog.',
+      "Compound modal. Controlled via open + onOpenChange. Parts available flat (DialogTrigger/DialogContent/…) or as Dialog.Trigger/Dialog.Content. Rendered with role=dialog.",
     props: [
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
@@ -2547,27 +2547,16 @@ export function InvoiceDueDateField() {
         type: "(open: boolean) => void",
         description: "Open-state change handler.",
       },
-      {
-        name: "mode",
-        type: '"form" | "confirm"',
-        defaultValue: '"form"',
-        description: "form = Radix Dialog (× close); confirm = AlertDialog (no ×).",
-      },
     ],
     usage: [
-      'DO use `mode="confirm"` (alertdialog role, no × button) for all destructive or irreversible actions — deletes, voids, bulk-overwrite — and `mode="form"` (default, dialog role, × button shown) for all data-entry or wizard steps. Never toggle these manually or add a custom close icon in confirm mode.',
-      "DO use `Dialog.Confirm` (or `DialogConfirm`) as the pre-built preset for confirm flows: pass `open`, `onOpenChange`, `title`, `description`, `onConfirm`, `pending`, and optionally `confirmPhrase` for type-to-confirm friction (GitHub/Stripe style). This eliminates boilerplate for the most common confirm pattern.",
+      "Use `Dialog` for form-style or wizard-style modal flows that need freeform content and a close action.",
       "DO always control open state via `open` + `onOpenChange`. Dialog has no uncontrolled shortcut — omitting `open` means the trigger alone drives state, which is fine for simple trigger-only cases, but any async submission flow must use controlled state so you can hold the dialog open while `pending=true` and close it only on success.",
-      "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. Radix requires an accessible title for screen readers; omitting it triggers a console warning and breaks a11y. In confirm mode `DialogTitle` maps to `AlertDialogPrimitive.Title` automatically.",
-      "DON'T put `DialogContent` outside a `Dialog` (or `DialogRoot`) — the `mode` context won't be set and the sub-parts will render as the wrong Radix primitive (dialog vs alertdialog), breaking keyboard focus trap and role semantics.",
-      'DON\'T add a manual × close button in confirm mode — `DialogContent` only renders the `X` button when `mode="form"` (`showCloseButton` defaults to `true`). For confirm flows, pass `showCloseButton={false}` or use `mode="confirm"`, which suppresses it automatically. Pressing Escape still closes both modes via Radix defaults.',
+      "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. Radix requires an accessible title for screen readers; omitting it triggers a console warning and breaks a11y.",
     ],
     useCases: [
-      'Inline form dialog — create or edit a record (invoice line, supplier, coupon) without navigating away. Use `mode="form"`, place `FormField`/`Input`/`Select` inside `DialogContent`, and wire the submit button to your mutation; hold `open` while `pending` to prevent double-submit.',
-      "Destructive confirm — delete a journal entry, void an invoice, or remove a user. Use `Dialog.Confirm` with `variant=\"destructive\"` and optionally `confirmPhrase` (the record name or 'DELETE') to add type-to-confirm friction for high-stakes ops.",
-      "Wizard / multi-step flow — step through entity setup (legal entity → fiscal year → opening balances) using a single Dialog whose `DialogContent` conditionally renders different step panels. Control which step is shown in local state; use `keepOpenOnConfirm` if the confirm action advances steps rather than closing.",
-      'Read-only detail popup — show a full transaction audit trail, attachment preview, or approval history in a modal without leaving the list page. Use `mode="form"` with no `DialogFooter` action buttons, just a close trigger.',
-      "Batch action confirmation — confirm bulk-approve or bulk-archive of selected rows. Use `Dialog.Confirm` wired to a selection count message; pass `pending` from the mutation to disable the confirm button while the batch runs.",
+      "Inline form dialog — create or edit a record (invoice line, supplier, coupon) without navigating away. Place `FormField`/`Input`/`Select` inside `DialogContent`, wire the submit button to your mutation, and hold `open` while `pending` to prevent double-submit.",
+      "Read-only detail popup — show a full transaction audit trail, attachment preview, or approval history in a modal without leaving the list page. Use `Dialog` with no `DialogFooter` action buttons, just a close trigger.",
+      "Wizard / multi-step flow — step through entity setup (legal entity → fiscal year → opening balances) using a single Dialog whose `DialogContent` conditionally renders different step panels. Control which step is shown in local state.",
     ],
     related: [
       "Sheet — use Sheet instead of Dialog when the content is a slide-in panel (filters, detail sidebar, settings drawer). Sheet uses `side` prop and is better suited for wide filter forms or contextual detail panels that don't demand full focus interruption.",
@@ -2599,6 +2588,92 @@ function CreateDialog() {
   );
 }`,
     storyPath: "feedback/Dialog.stories.tsx",
+    rules: [23, 3],
+  },
+  {
+    name: "AlertDialog",
+    group: "feedback",
+    tagline:
+      'Canonical modal confirmation flow (destructive / high-stakes decisions). Preserves confirm semantics with `role="alertdialog"` and built-in cancel/confirm handling.',
+    props: [
+      { name: "open", type: "boolean", description: "Controlled open state." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state change handler.",
+      },
+      {
+        name: "title",
+        type: "string",
+        required: true,
+        description: "Accessible title/announcement for the alertdialog.",
+      },
+      { name: "description", type: "string", description: "Optional supporting explanatory text." },
+      {
+        name: "confirmLabel",
+        type: "string",
+        description: "Primary action label (defaults to translated continue).",
+      },
+      {
+        name: "cancelLabel",
+        type: "string",
+        description: "Dismiss action label (defaults to translated cancel).",
+      },
+      {
+        name: "variant",
+        type: '"default" | "destructive"',
+        defaultValue: '"default"',
+        description: "Variant passed through to the confirm button.",
+      },
+      {
+        name: "confirmPhrase",
+        type: "string",
+        description: "Optional type-to-confirm phrase to prevent accidental confirm.",
+      },
+      {
+        name: "onConfirm",
+        type: "() => Promise<void> | void",
+        description: "Primary action handler.",
+      },
+      {
+        name: "keepOpenOnConfirm",
+        type: "boolean",
+        description: "Keep modal open after confirm when true.",
+      },
+      {
+        name: "pending",
+        type: "boolean",
+        description: "Disable actions while async work is running.",
+      },
+    ],
+    usage: [
+      "Use `AlertDialog` for destructive/irreversible actions (delete, void, unpublish, archive, etc.).",
+      "Use `confirmPhrase` for high-friction operations (e.g. requiring `DELETE`) to reduce accidental confirmation.",
+      "Pass `keepOpenOnConfirm` when the confirm handler advances a multi-step flow and should not close immediately.",
+    ],
+    useCases: [
+      "Dangerous delete or irreversible workflow confirmation that should block the background UI.",
+      "Destructive batch operations that should remain modal and explicit until action is intentionally confirmed.",
+    ],
+    related: [
+      "Dialog — use for form-style and non-destructive modal flows, no confirm preset behavior.",
+    ],
+    example: `import { AlertDialog } from "@godxjp/ui/feedback";
+
+<AlertDialog
+  open={open}
+  onOpenChange={setOpen}
+  title="Delete project"
+  description="This action cannot be undone."
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  onConfirm={async () => {
+    await deleteProject();
+    setOpen(false);
+  }}
+  variant="destructive"
+/>`,
+    storyPath: "feedback/AlertDialog.stories.tsx",
     rules: [23, 3],
   },
   {

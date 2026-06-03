@@ -53,7 +53,6 @@ export type {
   DataTableProp,
 } from "./data-display.prop";
 export type {
-  DialogConfirmProp,
   AlertQueryErrorProp,
   AlertProp,
   AlertTitleProp,

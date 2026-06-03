@@ -3,15 +3,13 @@ import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import {
   Dialog,
-  DialogAction,
-  DialogCancel,
-  DialogConfirm,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  AlertDialog,
 } from "../dialog";
 import { Button } from "../../general/button";
 
@@ -22,7 +20,7 @@ function PhraseResetHarness() {
       <button type="button" onClick={() => setOpen(true)}>
         Reopen
       </button>
-      <DialogConfirm
+      <AlertDialog
         open={open}
         onOpenChange={setOpen}
         title="Purge?"
@@ -79,67 +77,10 @@ describe("Dialog form mode", () => {
   });
 });
 
-describe("Dialog confirm mode (compound)", () => {
-  it("uses alertdialog role and has no close icon", () => {
-    renderWithUi(
-      <Dialog mode="confirm" open onOpenChange={() => undefined}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Proceed?</DialogTitle>
-            <DialogDescription>This cannot be undone.</DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>,
-    );
-    expect(screen.getByRole("alertdialog")).toHaveAttribute("data-slot", "dialog-content");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /close/i })).not.toBeInTheDocument();
-  });
-
-  it("calls onOpenChange(false) when cancel clicked", async () => {
-    const user = userEvent.setup();
-    const onOpenChange = vi.fn();
-    renderWithUi(
-      <Dialog mode="confirm" open onOpenChange={onOpenChange}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Proceed?</DialogTitle>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogCancel asChild>
-              <Button variant="ghost">Cancel</Button>
-            </DialogCancel>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>,
-    );
-    await user.click(screen.getByRole("button", { name: "Cancel" }));
-    expect(onOpenChange).toHaveBeenCalledWith(false);
-  });
-
-  it("renders DialogAction", () => {
-    renderWithUi(
-      <Dialog mode="confirm" open onOpenChange={() => undefined}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Seal manifest</DialogTitle>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogAction asChild>
-              <Button>Seal</Button>
-            </DialogAction>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>,
-    );
-    expect(screen.getByRole("button", { name: "Seal" })).toBeInTheDocument();
-  });
-});
-
-describe("Dialog.Confirm preset", () => {
+describe("AlertDialog", () => {
   it("renders alertdialog with title and description", () => {
     renderWithUi(
-      <DialogConfirm
+      <AlertDialog
         open
         onOpenChange={() => undefined}
         title="Chốt manifest?"
@@ -158,7 +99,7 @@ describe("Dialog.Confirm preset", () => {
     const onOpenChange = vi.fn();
     const onConfirm = vi.fn();
     renderWithUi(
-      <DialogConfirm
+      <AlertDialog
         open
         onOpenChange={onOpenChange}
         title="Confirm?"
@@ -179,7 +120,7 @@ describe("Dialog.Confirm preset", () => {
     const onOpenChange = vi.fn();
     const onConfirm = vi.fn();
     renderWithUi(
-      <DialogConfirm open onOpenChange={onOpenChange} title="Confirm?" onConfirm={onConfirm} />,
+      <AlertDialog open onOpenChange={onOpenChange} title="Confirm?" onConfirm={onConfirm} />,
     );
 
     await user.click(screen.getByRole("button", { name: "Hủy" }));
@@ -189,7 +130,7 @@ describe("Dialog.Confirm preset", () => {
 
   it("disables both buttons when pending", () => {
     renderWithUi(
-      <DialogConfirm
+      <AlertDialog
         open
         onOpenChange={() => undefined}
         title="Wait"
@@ -205,7 +146,7 @@ describe("Dialog.Confirm preset", () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
     renderWithUi(
-      <DialogConfirm
+      <AlertDialog
         open
         onOpenChange={onOpenChange}
         title="Next step"
@@ -221,7 +162,7 @@ describe("Dialog.Confirm preset", () => {
   describe("confirmPhrase", () => {
     it("shows type-to-confirm field and defaults confirm label to delete", () => {
       renderWithUi(
-        <DialogConfirm
+        <AlertDialog
           open
           onOpenChange={() => undefined}
           title="Purge?"
@@ -237,7 +178,7 @@ describe("Dialog.Confirm preset", () => {
     it("enables confirm only when phrase matches exactly", async () => {
       const user = userEvent.setup();
       renderWithUi(
-        <DialogConfirm
+        <AlertDialog
           open
           onOpenChange={() => undefined}
           title="Purge?"
@@ -273,10 +214,6 @@ describe("Dialog.Confirm preset", () => {
 });
 
 describe("Dialog namespace", () => {
-  it("exposes Confirm preset on Dialog.Confirm", () => {
-    expect(Dialog.Confirm).toBe(DialogConfirm);
-  });
-
   it("supports shadcn showCloseButton naming", () => {
     renderWithUi(
       <Dialog open onOpenChange={() => undefined}>

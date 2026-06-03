@@ -56,7 +56,6 @@ export {
   DialogTitle,
   DialogDescription,
   AlertDialog,
-  DialogConfirm,
 } from "../feedback/dialog";
 export { DataTable } from "../data-display/data-table";
 export type { ColumnDef, Density } from "../data-display/data-table";
