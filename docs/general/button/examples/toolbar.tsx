@@ -1,4 +1,4 @@
-import { Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
+import { Badge, Card, CardContent, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import {
   AppShell,
@@ -23,8 +23,9 @@ import {
 /**
  * List page — the toolbar is NOT hand-rolled: the page title + primary/secondary
  * actions live in PageContainer's `title` + `extra`, and per-row ghost icon
- * Buttons sit in a DataTable action column. variant="flush" lets the table go
- * full-bleed.
+ * Buttons sit in a DataTable action column. The table is wrapped in a Card
+ * (CardContent flush) inside a padded PageContainer so it stays on the same
+ * gutters as the header.
  */
 const sections: SidebarSection[] = [
   {
@@ -48,8 +49,20 @@ type Invoice = {
 };
 
 const invoices: Invoice[] = [
-  { id: "INV-2024-0312", partner: "株式会社ベトヤ", amount: 482000, status: "active", date: "2024-04-12" },
-  { id: "INV-2024-0311", partner: "ハノイ物流", amount: 128400, status: "pending", date: "2024-04-11" },
+  {
+    id: "INV-2024-0312",
+    partner: "株式会社ベトヤ",
+    amount: 482000,
+    status: "active",
+    date: "2024-04-12",
+  },
+  {
+    id: "INV-2024-0311",
+    partner: "ハノイ物流",
+    amount: 128400,
+    status: "pending",
+    date: "2024-04-11",
+  },
   { id: "INV-2024-0310", partner: "GMO決済", amount: 64800, status: "draft", date: "2024-04-10" },
 ];
 
@@ -109,7 +122,6 @@ export default function Demo() {
         title="請求書 一覧"
         subtitle="直近30日間の受注データ"
         breadcrumb={[{ label: "請求書" }]}
-        variant="flush"
         extra={
           <Flex direction="row" wrap align="center" gap="sm">
             <Button variant="outline" size="sm">
@@ -123,7 +135,11 @@ export default function Demo() {
           </Flex>
         }
       >
-        <DataTable data={invoices} columns={columns} getRowId={(row) => row.id} />
+        <Card>
+          <CardContent flush>
+            <DataTable data={invoices} columns={columns} getRowId={(row) => row.id} />
+          </CardContent>
+        </Card>
       </PageContainer>
     </AppShell>
   );
