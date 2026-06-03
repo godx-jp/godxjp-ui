@@ -7297,6 +7297,87 @@ export function InvoiceListHeader() {
     storyPath: "data-entry/InputOTP.stories.tsx",
     rules: [3, 6],
   },
+  {
+    name: "Rating",
+    group: "data-entry",
+    tagline:
+      "Star-rating input (radiogroup) — controlled via value/onValueChange, form-submittable via name, supports readOnly display.",
+    props: [
+      { name: "value", type: "number", description: "Controlled rating (1..max)." },
+      {
+        name: "defaultValue",
+        type: "number",
+        defaultValue: "0",
+        description: "Uncontrolled initial rating.",
+      },
+      { name: "onValueChange", type: "(value: number) => void", description: "Rating callback." },
+      { name: "max", type: "number", defaultValue: "5", description: "Number of stars." },
+      { name: "readOnly", type: "boolean", description: "Display-only (e.g. an average score)." },
+      {
+        name: "name",
+        type: "string",
+        description: "Hidden input name for native form submission.",
+      },
+    ],
+    usage: [
+      "DO use readOnly to DISPLAY a score (e.g. product average); interactive (default) for collecting a rating.",
+      "DO pass `name` to submit the value in a plain form.",
+      "DON'T render raw star icons for input — this handles keyboard (radiogroup), hover preview, and a11y.",
+    ],
+    useCases: [
+      "Product / vendor review input",
+      "Display an average score (readOnly)",
+      "Feedback / CSAT survey",
+      "Priority or quality scoring in admin",
+    ],
+    related: ["RadioGroup (non-star single choice)", "Slider (continuous 0-100 value)"],
+    example: `import { Rating } from "@godxjp/ui/data-entry";
+
+<Rating name="score" defaultValue={4} onValueChange={(v) => console.log(v)} />`,
+    storyPath: "data-entry/Rating.stories.tsx",
+    rules: [3, 6, 23],
+  },
+  {
+    name: "TagInput",
+    group: "data-entry",
+    tagline:
+      "Chips/tags input — type + Enter (or comma) to add a tag, Backspace to remove the last; controlled via value/onValueChange (string[]).",
+    props: [
+      { name: "value", type: "string[]", description: "Controlled tag list." },
+      { name: "defaultValue", type: "string[]", description: "Uncontrolled initial tags." },
+      {
+        name: "onValueChange",
+        type: "(tags: string[]) => void",
+        description: "Tag-list callback.",
+      },
+      { name: "placeholder", type: "string", description: "Shown when empty." },
+      {
+        name: "name",
+        type: "string",
+        description: "Hidden input (comma-joined) for native form submission.",
+      },
+    ],
+    usage: [
+      "DO use for free-form multi-value entry (labels, emails, keywords) where options aren't a fixed list.",
+      "DO note dedupe is built in; Enter/comma commits, Backspace on empty removes the last chip.",
+      "DON'T use for choosing from a KNOWN set — use Select (multiple) or a multi-Combobox instead.",
+    ],
+    useCases: [
+      "Labels / tags on a record",
+      "Recipient email entry",
+      "Keyword / skill lists",
+      "Ad-hoc filter terms",
+    ],
+    related: [
+      "Select (multiple) — when the values come from a fixed option set",
+      "Combobox (multi) — searchable known set",
+    ],
+    example: `import { TagInput } from "@godxjp/ui/data-entry";
+
+<TagInput name="labels" placeholder="ラベルを追加…" onValueChange={(tags) => setTags(tags)} />`,
+    storyPath: "data-entry/TagInput.stories.tsx",
+    rules: [3, 6, 23],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {

@@ -73,3 +73,7 @@ export {
 export { PasswordInput } from "./password-input";
 export type { PasswordInputProps } from "./password-input";
 export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "./input-otp";
+export { Rating } from "./rating";
+export type { RatingProps } from "./rating";
+export { TagInput } from "./tag-input";
+export type { TagInputProps } from "./tag-input";
