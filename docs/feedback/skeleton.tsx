@@ -1,4 +1,4 @@
-import { Skeleton, SkeletonCard, SkeletonTable } from "@godxjp/ui/feedback";
+import { Skeleton, SkeletonDetail, SkeletonStat, SkeletonTable } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
@@ -6,21 +6,22 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
  * Skeleton — loading placeholders. Three levels:
  *   Skeleton — custom pulsing block (h + w via className).
  *   SkeletonTable — pre-mount DataTable placeholder (rows, columns props).
- *   SkeletonCard — StatCard/KPI tile placeholder (no props; use in ResponsiveGrid).
+ *   SkeletonStat — StatCard/KPI tile placeholder (no props; use in ResponsiveGrid).
+ *   SkeletonDetail — single-record detail placeholder (title + metadata rows, no props).
  * Never use a spinner overlay on skeletonable content.
  */
 export default function Demo() {
   return (
     <PageContainer
       title="Skeleton"
-      subtitle="loading placeholders — Skeleton (custom block) · SkeletonTable (DataTable pre-mount) · SkeletonCard (KPI tile)"
+      subtitle="loading placeholders — Skeleton (custom block) · SkeletonTable (DataTable pre-mount) · SkeletonStat (KPI tile) · SkeletonDetail (record page)"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Skeleton — custom pulsing blocks</CardTitle>
             <CardDescription>
-              Base primitive. Pass className for h + w. Use when SkeletonTable / SkeletonCard do not
+              Base primitive. Pass className for h + w. Use when SkeletonTable / SkeletonStat do not
               match the target layout (e.g. a single loading line, a media placeholder, inline
               metadata).
             </CardDescription>
@@ -57,46 +58,33 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>SkeletonCard — KPI / StatCard tile placeholder</CardTitle>
+            <CardTitle>SkeletonStat — KPI / StatCard tile placeholder</CardTitle>
             <CardDescription>
-              Use inside a ResponsiveGrid — one SkeletonCard per expected StatCard. No props. Do NOT
-              wrap in an extra Card (SkeletonCard owns its own bordered box).
+              Use inside a ResponsiveGrid — one SkeletonStat per expected StatCard. No props. Do NOT
+              wrap in an extra Card (SkeletonStat owns its own bordered box).
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveGrid columns={4}>
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
+              <SkeletonStat />
+              <SkeletonStat />
+              <SkeletonStat />
+              <SkeletonStat />
             </ResponsiveGrid>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Skeleton composition — detail page loading state</CardTitle>
+            <CardTitle>SkeletonDetail — single-record detail loading state</CardTitle>
             <CardDescription>
-              Compose multiple Skeleton blocks to mirror a single-record detail layout (title +
-              metadata rows). Useful when SkeletonTable and SkeletonCard do not match the target
-              shape.
+              The ready-made detail placeholder (title + metadata rows). Reach for this on a record
+              / show page while the record loads — do NOT hand-compose it from base Skeleton blocks.
+              No props.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <Flex direction="row" justify="between" align="center">
-                <Skeleton className="h-6 w-40" />
-                <Skeleton className="h-8 w-24 rounded-md" />
-              </Flex>
-              <Flex direction="col" gap="xs">
-                {["w-72", "w-64", "w-56", "w-48"].map((w) => (
-                  <Flex key={w} direction="row" gap="md">
-                    <Skeleton className="h-4 w-28 shrink-0" />
-                    <Skeleton className={`h-4 ${w}`} />
-                  </Flex>
-                ))}
-              </Flex>
-            </Flex>
+            <SkeletonDetail />
           </CardContent>
         </Card>
       </Flex>
