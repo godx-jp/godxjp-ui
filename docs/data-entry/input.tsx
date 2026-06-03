@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Input } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -15,7 +9,10 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="Input" subtitle="Text field — pair with FormField for label / helper / error">
+    <PageContainer
+      title="Input"
+      subtitle="Text field — pair with FormField for label / helper / error"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
@@ -34,7 +31,9 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>In FormField — label / helper / required / error</CardTitle>
-            <CardDescription>FormField wires the label and aria-describedby for you.</CardDescription>
+            <CardDescription>
+              FormField wires the label and aria-describedby for you.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">

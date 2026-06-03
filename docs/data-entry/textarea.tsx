@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Textarea } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -14,7 +8,10 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="Textarea" subtitle="Multi-line text — pair with FormField for label / helper">
+    <PageContainer
+      title="Textarea"
+      subtitle="Multi-line text — pair with FormField for label / helper"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>

@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { RadioGroup } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -15,7 +9,10 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="RadioGroup" subtitle="Mutually-exclusive choices, all visible — options array">
+    <PageContainer
+      title="RadioGroup"
+      subtitle="Mutually-exclusive choices, all visible — options array"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
@@ -37,7 +34,7 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Horizontal</CardTitle>
-            <CardDescription>orientation="horizontal" for compact rows.</CardDescription>
+            <CardDescription>orientation=“horizontal” for compact rows.</CardDescription>
           </CardHeader>
           <CardContent>
             <RadioGroup

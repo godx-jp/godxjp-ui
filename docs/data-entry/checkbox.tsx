@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Checkbox, CheckboxGroup, Field } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -15,12 +9,17 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="Checkbox" subtitle="Single checkbox (in Field) or a CheckboxGroup from options">
+    <PageContainer
+      title="Checkbox"
+      subtitle="Single checkbox (in Field) or a CheckboxGroup from options"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Single — labelled with Field</CardTitle>
-            <CardDescription>Field pairs the control with a label + optional description.</CardDescription>
+            <CardDescription>
+              Field pairs the control with a label + optional description.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">

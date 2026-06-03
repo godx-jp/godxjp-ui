@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Input, Select } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -16,7 +10,10 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="FormField" subtitle="Label · helper · required · error — a11y wired for the control">
+    <PageContainer
+      title="FormField"
+      subtitle="Label · helper · required · error — a11y wired for the control"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
@@ -30,7 +27,11 @@ export default function Demo() {
               <FormField id="ff-name" label="取引先名" required helper="最大50文字">
                 <Input id="ff-name" placeholder="株式会社..." />
               </FormField>
-              <FormField id="ff-email" label="メール" error="メールアドレスの形式が正しくありません">
+              <FormField
+                id="ff-email"
+                label="メール"
+                error="メールアドレスの形式が正しくありません"
+              >
                 <Input id="ff-email" type="email" defaultValue="invalid@" />
               </FormField>
               <FormField id="ff-status" label="状態" helper="未選択の場合は下書きになります">

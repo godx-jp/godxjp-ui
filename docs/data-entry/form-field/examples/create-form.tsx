@@ -85,7 +85,11 @@ export default function Demo() {
           <FormField id="cf-memo" label="メモ" helper="任意">
             <Textarea id="cf-memo" placeholder="例: 4月分から取引開始" />
           </FormField>
-          <Field id="cf-active" label="取引を有効にする" description="無効にすると新規取引を登録できません">
+          <Field
+            id="cf-active"
+            label="取引を有効にする"
+            description="無効にすると新規取引を登録できません"
+          >
             <Switch id="cf-active" defaultChecked />
           </Field>
         </Flex>

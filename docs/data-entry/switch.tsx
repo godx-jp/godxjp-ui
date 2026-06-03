@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Field, Switch } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -24,7 +18,11 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Field id="invoice-mail" label="請求書をメール送信" description="発行時に取引先へ自動送信します">
+              <Field
+                id="invoice-mail"
+                label="請求書をメール送信"
+                description="発行時に取引先へ自動送信します"
+              >
                 <Switch id="invoice-mail" defaultChecked />
               </Field>
               <Field id="reminder" label="支払期日リマインダー" description="期日3日前に通知します">

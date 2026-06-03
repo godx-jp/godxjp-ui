@@ -1,12 +1,6 @@
 import { useState } from "react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import {
   FormField,
   Select,
@@ -28,12 +22,17 @@ export default function Demo() {
   const [priority, setPriority] = useState("medium");
 
   return (
-    <PageContainer title="Select" subtitle="Single-select — data-driven options, searchable, or compound">
+    <PageContainer
+      title="Select"
+      subtitle="Single-select — data-driven options, searchable, or compound"
+    >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Data-driven (options)</CardTitle>
-            <CardDescription>Pass an options array; name= submits the value with the form.</CardDescription>
+            <CardDescription>
+              Pass an options array; name= submits the value with the form.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <FormField id="status" label="状態">
@@ -57,7 +56,9 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Searchable + grouped</CardTitle>
-            <CardDescription>showSearch enables client-side filtering; group buckets options.</CardDescription>
+            <CardDescription>
+              showSearch enables client-side filtering; group buckets options.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <FormField id="currency" label="通貨">
@@ -83,7 +84,9 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Compound API (custom trigger)</CardTitle>
-            <CardDescription>Compose sub-parts when the trigger needs custom content.</CardDescription>
+            <CardDescription>
+              Compose sub-parts when the trigger needs custom content.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Select value={priority} onValueChange={setPriority}>
