@@ -114,7 +114,7 @@
       "page": "Page {page}",
       "pageSize": "Page size",
       "pageSizeOption": "{size} / page",
-      "total": "Total {total} items"
+      "total": { "one": "Total {total} item", "other": "Total {total} items" }
     }
   },
   "locale": {
