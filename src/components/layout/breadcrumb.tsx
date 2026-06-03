@@ -1,13 +1,14 @@
 import { ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import type { ElementType } from "react";
 
 import type { BreadcrumbProp } from "../../props/vocabulary/navigation.prop";
 
 export type BreadcrumbProps = {
   items: BreadcrumbProp;
+  linkComponent?: ElementType;
 };
 
-export function Breadcrumb({ items }: BreadcrumbProps) {
+export function Breadcrumb({ items, linkComponent: LinkComponent = "a" }: BreadcrumbProps) {
   return (
     <nav aria-label="Breadcrumb" className="ui-breadcrumb">
       <ol className="ui-breadcrumb-list">
@@ -17,9 +18,9 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
           return (
             <li key={item.to ?? index} className="ui-breadcrumb-item">
               {item.to && !isLast ? (
-                <Link to={item.to} className="ui-breadcrumb-link">
+                <LinkComponent href={item.to} to={item.to} className="ui-breadcrumb-link">
                   {item.label}
-                </Link>
+                </LinkComponent>
               ) : (
                 <span className="ui-breadcrumb-current" aria-current={isLast ? "page" : undefined}>
                   {item.label}

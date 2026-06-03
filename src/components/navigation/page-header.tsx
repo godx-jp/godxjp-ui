@@ -1,6 +1,5 @@
 /** @deprecated Prefer PageContainer. Header-only legacy shell. */
 /* eslint-disable @typescript-eslint/no-deprecated -- legacy component intentionally uses PageHeaderProp */
-import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
 import { cn } from "../../lib/utils";
@@ -9,7 +8,14 @@ import type { PageHeaderProp } from "../../props/components/layout.prop";
 export type { PageHeaderProp } from "../../props/components/layout.prop";
 export type { BreadcrumbItemProp as BreadcrumbItem } from "../../props/vocabulary/navigation.prop";
 
-export function PageHeader({ title, description, breadcrumb, actions, className }: PageHeaderProp) {
+export function PageHeader({
+  title,
+  description,
+  breadcrumb,
+  actions,
+  linkComponent: LinkComponent = "a",
+  className,
+}: PageHeaderProp) {
   return (
     <header className={cn("ui-page-header", className)}>
       {breadcrumb && breadcrumb.length > 0 && (
@@ -20,9 +26,13 @@ export function PageHeader({ title, description, breadcrumb, actions, className 
               return (
                 <li key={i} className="ui-inline-xs">
                   {item.to && !isLast ? (
-                    <Link to={item.to} className="hover:text-foreground hover:underline">
+                    <LinkComponent
+                      href={item.to}
+                      to={item.to}
+                      className="hover:text-foreground hover:underline"
+                    >
                       {item.label}
-                    </Link>
+                    </LinkComponent>
                   ) : (
                     <span
                       className={isLast ? "text-foreground" : ""}

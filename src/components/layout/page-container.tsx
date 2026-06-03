@@ -1,5 +1,4 @@
 /** PageContainer — mandatory shell for every admin page (Ant Design PageHeader equivalent). */
-import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
 import { cn } from "../../lib/utils";
@@ -29,6 +28,7 @@ function PageContainerRoot({
   extra,
   footer,
   breadcrumb,
+  linkComponent: LinkComponent = "a",
   density = "default",
   variant = "default",
   stickyFooter = false,
@@ -54,9 +54,13 @@ function PageContainerRoot({
                 return (
                   <li key={i} className="ui-inline-xs">
                     {item.to && !isLast ? (
-                      <Link to={item.to} className="hover:text-foreground hover:underline">
+                      <LinkComponent
+                        href={item.to}
+                        to={item.to}
+                        className="hover:text-foreground hover:underline"
+                      >
                         {item.label}
-                      </Link>
+                      </LinkComponent>
                     ) : (
                       <span
                         className={isLast ? "text-foreground" : ""}
