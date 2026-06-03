@@ -21,6 +21,7 @@ export type PageContainerProp = {
   extra?: ExtraProp;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;
+  linkComponent?: React.ElementType;
   density?: PageDensityProp;
   variant?: PageContainerVariantProp;
   /** Pin footer to viewport bottom on scroll — pairs well with `variant="narrow"`. */
@@ -145,6 +146,7 @@ export type PageHeaderProp = {
   title: TitleProp;
   description?: SubtitleProp;
   breadcrumb?: BreadcrumbProp;
+  linkComponent?: React.ElementType;
   actions?: ExtraProp;
   className?: ClassNameProp;
 };
