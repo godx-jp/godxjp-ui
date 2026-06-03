@@ -36,3 +36,5 @@ export {
 } from "./popover";
 export { ScrollArea, ScrollBar } from "./scroll-area";
 export { Collapsible, CollapsibleTrigger, CollapsibleContent } from "./collapsible";
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./accordion";
+export { HoverCard, HoverCardTrigger, HoverCardContent } from "./hover-card";

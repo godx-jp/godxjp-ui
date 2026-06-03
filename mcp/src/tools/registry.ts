@@ -513,9 +513,8 @@ function getTokens(cat?: TokenCategory): string {
     return acc;
   }, {});
   for (const [c, items] of Object.entries(grouped)) {
-    out += `## ${c}\n\n| Name | Role | Value | Axis |\n|---|---|---|---|\n`;
-    for (const t of items)
-      out += `| \`${t.name}\` | ${t.role} | ${t.value ?? "—"} | ${t.axis ?? "—"} |\n`;
+    out += `## ${c}\n\n| Name | Role | Tier |\n|---|---|---|\n`;
+    for (const t of items) out += `| \`${t.name}\` | ${t.role} | ${t.tier} |\n`;
     out += "\n";
   }
   return out;
