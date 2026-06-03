@@ -1365,19 +1365,26 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         name: "variant",
         type: '"default" | "secondary" | "outline" | "success" | "warning" | "destructive" | "info" | "neutral"',
         defaultValue: '"default"',
-        description: "Visual variant. Overrides the auto-mapped status tone when status is provided.",
+        description:
+          "Visual variant. Overrides the auto-mapped status tone when status is provided.",
       },
       {
         name: "status",
         type: "string",
-        description: "Lifecycle key. Known keys auto-map to variant + icon + i18n label; unknown keys fall back to neutral.",
+        description:
+          "Lifecycle key. Known keys auto-map to variant + icon + i18n label; unknown keys fall back to neutral.",
       },
       {
         name: "icon",
         type: "React.ComponentType<{ className?: string }> | null",
         description: "Leading icon override. Pass null to suppress the auto status icon.",
       },
-      { name: "children", type: "ReactNode", description: "Badge label. When omitted with status, Badge renders the translated lifecycle label or raw status." },
+      {
+        name: "children",
+        type: "ReactNode",
+        description:
+          "Badge label. When omitted with status, Badge renders the translated lifecycle label or raw status.",
+      },
     ],
     usage: [
       "DO pick the correct variant semantically: `success` (approved/paid), `warning` (pending/overdue), `destructive` (rejected/error), `secondary` (neutral category), `outline` (subtle label), `default` (primary accent). Never force a colour just for aesthetics — agents and screen readers read the variant as intent.",
@@ -2827,7 +2834,8 @@ toast.error("保存に失敗しました");`,
       {
         name: "items",
         type: "{ value: string; label: React.ReactNode; content: React.ReactNode; disabled?: boolean }[]",
-        description: "Optional data-driven tab list. When provided, Tabs renders all triggers and content panels.",
+        description:
+          "Optional data-driven tab list. When provided, Tabs renders all triggers and content panels.",
       },
       { name: "value", type: "string", description: "Controlled active tab key." },
       { name: "defaultValue", type: "string", description: "Uncontrolled initial tab key." },
@@ -3470,7 +3478,7 @@ export function InvoicePeriodFilter() {
     storyPath: "data-entry/DateRangePicker.stories.tsx",
     rules: [3, 6, 23, 31],
   },
-    {
+  {
     name: "Cascader",
     group: "data-entry",
     tagline:
@@ -6565,7 +6573,7 @@ export function SettingsForm() {
     storyPath: "navigation/TimeFormatPicker.stories.tsx",
     rules: [3, 5, 6, 13],
   },
-    {
+  {
     name: "Tooltip",
     group: "feedback",
     tagline:
@@ -6888,7 +6896,11 @@ export function InvoiceListHeader() {
     group: "data-display",
     tagline: "Radix Avatar wrapper with image and fallback slots for users, teams, and entities.",
     props: [
-      { name: "children", type: "ReactNode", description: "Compose AvatarImage and AvatarFallback." },
+      {
+        name: "children",
+        type: "ReactNode",
+        description: "Compose AvatarImage and AvatarFallback.",
+      },
       { name: "className", type: "string", description: "Extra classes on the avatar root." },
     ],
     usage: [
@@ -6911,11 +6923,28 @@ export function InvoiceListHeader() {
     group: "layout",
     tagline: "Radix Separator wrapper for tokenized horizontal or vertical dividers.",
     props: [
-      { name: "orientation", type: '"horizontal" | "vertical"', defaultValue: '"horizontal"', description: "Divider direction." },
-      { name: "decorative", type: "boolean", defaultValue: "true", description: "Whether the separator is decorative for assistive tech." },
+      {
+        name: "orientation",
+        type: '"horizontal" | "vertical"',
+        defaultValue: '"horizontal"',
+        description: "Divider direction.",
+      },
+      {
+        name: "decorative",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Whether the separator is decorative for assistive tech.",
+      },
     ],
-    usage: ["DO use Separator for section dividers instead of raw border divs.", "DO set orientation='vertical' only when the parent gives it a stable height."],
-    useCases: ["Separating toolbar groups", "Dividing stacked page sections", "Vertical split between metadata groups"],
+    usage: [
+      "DO use Separator for section dividers instead of raw border divs.",
+      "DO set orientation='vertical' only when the parent gives it a stable height.",
+    ],
+    useCases: [
+      "Separating toolbar groups",
+      "Dividing stacked page sections",
+      "Vertical split between metadata groups",
+    ],
     related: ["Stack — use for vertical spacing without a visible rule."],
     example: `import { Separator } from "@godxjp/ui/layout";
 
@@ -6930,8 +6959,15 @@ export function InvoiceListHeader() {
     props: [
       { name: "className", type: "string", description: "Size and layout classes for the block." },
     ],
-    usage: ["DO use Skeleton for a custom block when SkeletonRows/Table/Card do not match the final layout.", "DON'T use a spinner overlay for skeletonable page content."],
-    useCases: ["Single loading line", "Custom card media placeholder", "Inline metadata placeholder"],
+    usage: [
+      "DO use Skeleton for a custom block when SkeletonRows/Table/Card do not match the final layout.",
+      "DON'T use a spinner overlay for skeletonable page content.",
+    ],
+    useCases: [
+      "Single loading line",
+      "Custom card media placeholder",
+      "Inline metadata placeholder",
+    ],
     related: ["SkeletonRows", "SkeletonTable", "SkeletonCard"],
     example: `import { Skeleton } from "@godxjp/ui/feedback";
 
@@ -6945,11 +6981,28 @@ export function InvoiceListHeader() {
     tagline: "Radix Toggle wrapper with default/outline variants and tokenized sizes.",
     props: [
       { name: "pressed", type: "boolean", description: "Controlled pressed state." },
-      { name: "onPressedChange", type: "(pressed: boolean) => void", description: "Pressed-state callback." },
-      { name: "variant", type: '"default" | "outline"', defaultValue: '"default"', description: "Visual style." },
-      { name: "size", type: '"sm" | "default" | "lg"', defaultValue: '"default"', description: "Control size." },
+      {
+        name: "onPressedChange",
+        type: "(pressed: boolean) => void",
+        description: "Pressed-state callback.",
+      },
+      {
+        name: "variant",
+        type: '"default" | "outline"',
+        defaultValue: '"default"',
+        description: "Visual style.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "default" | "lg"',
+        defaultValue: '"default"',
+        description: "Control size.",
+      },
     ],
-    usage: ["DO provide an accessible label when the toggle only contains an icon.", "DON'T use Toggle for multi-option selection; use ToggleGroup."],
+    usage: [
+      "DO provide an accessible label when the toggle only contains an icon.",
+      "DON'T use Toggle for multi-option selection; use ToggleGroup.",
+    ],
     useCases: ["Bold/italic toolbar buttons", "Pinned filter toggles", "Compact view mode buttons"],
     related: ["ToggleGroup", "Button"],
     example: `import { Toggle } from "@godxjp/ui/data-entry";
@@ -6963,11 +7016,23 @@ export function InvoiceListHeader() {
     group: "data-entry",
     tagline: "Radix ToggleGroup wrapper for single or multiple toggle selection.",
     props: [
-      { name: "type", type: '"single" | "multiple"', required: true, description: "Selection mode." },
+      {
+        name: "type",
+        type: '"single" | "multiple"',
+        required: true,
+        description: "Selection mode.",
+      },
       { name: "value", type: "string | string[]", description: "Controlled selected value(s)." },
-      { name: "onValueChange", type: "(value: string | string[]) => void", description: "Selection callback." },
+      {
+        name: "onValueChange",
+        type: "(value: string | string[]) => void",
+        description: "Selection callback.",
+      },
     ],
-    usage: ["DO choose type='single' for mutually exclusive toolbar modes.", "DO choose type='multiple' for independent formatting toggles."],
+    usage: [
+      "DO choose type='single' for mutually exclusive toolbar modes.",
+      "DO choose type='multiple' for independent formatting toggles.",
+    ],
     useCases: ["Text alignment selector", "Formatting toolbar", "View density switcher"],
     related: ["Toggle", "RadioGroup"],
     example: `import { ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
@@ -6983,10 +7048,18 @@ export function InvoiceListHeader() {
     group: "layout",
     tagline: "Radix AspectRatio wrapper for stable media and preview frames.",
     props: [
-      { name: "ratio", type: "number", defaultValue: "16 / 9", description: "Width divided by height." },
+      {
+        name: "ratio",
+        type: "number",
+        defaultValue: "16 / 9",
+        description: "Width divided by height.",
+      },
       { name: "children", type: "ReactNode", description: "Content constrained to the ratio." },
     ],
-    usage: ["DO use AspectRatio for media, maps, charts, or previews that must not jump during load.", "DON'T use it for unconstrained text content."],
+    usage: [
+      "DO use AspectRatio for media, maps, charts, or previews that must not jump during load.",
+      "DON'T use it for unconstrained text content.",
+    ],
     useCases: ["Video embed frame", "Image preview slot", "Dashboard chart placeholder"],
     related: ["CardCover", "Skeleton"],
     example: `import { AspectRatio } from "@godxjp/ui/layout";
@@ -6994,6 +7067,110 @@ export function InvoiceListHeader() {
 <AspectRatio ratio={16 / 9}>...</AspectRatio>`,
     storyPath: "layout/AspectRatio.stories.tsx",
     rules: [2, 3],
+  },
+  {
+    name: "Accordion",
+    group: "data-display",
+    tagline:
+      "Radix accordion — vertically stacked, collapsible sections. Compose Accordion > AccordionItem > AccordionTrigger + AccordionContent.",
+    props: [
+      {
+        name: "type",
+        type: '"single" | "multiple"',
+        required: true,
+        description: "single = one open at a time; multiple = independent.",
+      },
+      {
+        name: "collapsible",
+        type: "boolean",
+        description: "When type=single, allow closing the open item.",
+      },
+      { name: "value", type: "string | string[]", description: "Controlled open item(s)." },
+      {
+        name: "defaultValue",
+        type: "string | string[]",
+        description: "Uncontrolled initial open item(s).",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string | string[]) => void",
+        description: "Open-state callback.",
+      },
+    ],
+    usage: [
+      'DO compose the full set: <Accordion type="single" collapsible><AccordionItem value="a"><AccordionTrigger/><AccordionContent/></AccordionItem></Accordion>.',
+      "DO give each AccordionItem a unique `value`.",
+      "DON'T use it for primary navigation — that's Sidebar/Tabs. Accordion is for collapsible content/FAQ.",
+    ],
+    useCases: [
+      "FAQ lists",
+      "Grouped settings sections",
+      "Collapsible detail panels on a record page",
+      "Filter facet groups in a sidebar",
+    ],
+    related: [
+      "Collapsible (single open/close region, no item set)",
+      "Tabs (mutually-exclusive views, always one visible)",
+    ],
+    example: `import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@godxjp/ui/data-display";
+
+<Accordion type="single" collapsible>
+  <AccordionItem value="ship">
+    <AccordionTrigger>配送について</AccordionTrigger>
+    <AccordionContent>3〜5営業日でお届けします。</AccordionContent>
+  </AccordionItem>
+</Accordion>`,
+    storyPath: "data-display/Accordion.stories.tsx",
+    rules: [3, 6],
+  },
+  {
+    name: "HoverCard",
+    group: "data-display",
+    tagline:
+      "Radix hover card — a rich popover shown on hover/focus of a trigger (for sighted-pointer affordances; not a replacement for Tooltip's short text).",
+    props: [
+      {
+        name: "openDelay",
+        type: "number",
+        defaultValue: "700",
+        description: "ms before opening on hover.",
+      },
+      {
+        name: "closeDelay",
+        type: "number",
+        defaultValue: "300",
+        description: "ms before closing.",
+      },
+      { name: "open", type: "boolean", description: "Controlled open state." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state callback.",
+      },
+    ],
+    usage: [
+      "DO compose HoverCard > HoverCardTrigger > HoverCardContent.",
+      "DO use for RICH preview content (a card, avatar + bio); for short plain-text hints use Tooltip.",
+      "DON'T rely on it for essential info — hover isn't available on touch; provide the same content on click/tap elsewhere.",
+    ],
+    useCases: [
+      "User/profile preview on @mention hover",
+      "Entity preview (customer/account) on a table cell",
+      "Glossary term definitions",
+      "Commit/PR preview links",
+    ],
+    related: [
+      "Tooltip (short text label, not rich content)",
+      "Popover (click-triggered, interactive content)",
+    ],
+    example: `import { HoverCard, HoverCardTrigger, HoverCardContent } from "@godxjp/ui/data-display";
+
+<HoverCard>
+  <HoverCardTrigger>@yamada</HoverCardTrigger>
+  <HoverCardContent>山田太郎 — 経理部</HoverCardContent>
+</HoverCard>`,
+    storyPath: "data-display/HoverCard.stories.tsx",
+    rules: [3, 6],
   },
 ];
 
