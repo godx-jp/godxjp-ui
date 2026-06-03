@@ -211,3 +211,58 @@
   color: hsl(var(--popover-foreground)); padding: var(--space-4);
   box-shadow: var(--shadow-md); outline: none;
 }
+
+.ui-carousel {
+  position: relative;
+}
+
+.ui-carousel-viewport {
+  overflow: hidden;
+}
+
+.ui-carousel-content {
+  display: flex;
+  margin-inline: calc(var(--space-4) * -1);
+}
+
+.ui-carousel-item {
+  position: relative;
+  min-width: 100%;
+  padding-inline: var(--space-4);
+}
+
+.ui-carousel-previous,
+.ui-carousel-next {
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 9999px;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  transition: background-color 150ms ease;
+  transform: translateY(-50%);
+}
+
+.ui-carousel-previous {
+  left: var(--space-2);
+}
+
+.ui-carousel-next {
+  right: var(--space-2);
+}
+
+.ui-carousel-previous:hover,
+.ui-carousel-next:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.ui-carousel-arrow {
+  width: 1rem;
+  height: 1rem;
+}

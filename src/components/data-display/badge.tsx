@@ -71,7 +71,8 @@ const badgeVariants = cva(
 );
 
 export interface BadgeProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
+  extends
+    Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
     Omit<VariantProps<typeof badgeVariants>, "variant"> {
   variant?: BadgeVariant | null;
   tone?: BadgeTone | null;
@@ -92,7 +93,9 @@ const badgeToneClass: Record<BadgeTone, string | undefined> = {
 
 export function Badge({ className, variant, tone, icon, status, children, ...props }: BadgeProps) {
   const { t } = useTranslation();
-  const statusDef = status ? (STATUS_MAP[status] ?? { tone: "neutral" as const, icon: Circle }) : null;
+  const statusDef = status
+    ? (STATUS_MAP[status] ?? { tone: "neutral" as const, icon: Circle })
+    : null;
   const resolvedTone = tone ?? statusDef?.tone ?? "default";
   const ResolvedIcon = icon === undefined ? statusDef?.icon : icon;
   const resolvedChildren =

@@ -7378,6 +7378,226 @@ export function InvoiceListHeader() {
     storyPath: "data-entry/TagInput.stories.tsx",
     rules: [3, 6, 23],
   },
+  {
+    name: "ContextMenu",
+    group: "navigation",
+    tagline:
+      "Context menu primitives with keyboard support and compound parts for command-style action surfaces.",
+    props: [
+      { name: "open", type: "boolean", description: "Controlled open state." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state callback.",
+      },
+      { name: "value", type: "string", description: "Selected value (for controlled patterns)." },
+    ],
+    useCases: [
+      "Right-click action menu",
+      "Contextual menus for rows and cards",
+      "Nested action rows with shortcuts",
+    ],
+    storyPath: "navigation/ContextMenu.stories.tsx",
+    rules: [3, 6],
+    example: `import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+} from "@godxjp/ui/navigation";
+
+<ContextMenu>
+  <ContextMenuTrigger>open</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>Edit</ContextMenuItem>
+    <ContextMenuItem>Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>`,
+  },
+  {
+    name: "Menubar",
+    group: "navigation",
+    tagline: "Application menubar primitives (menus, sub-menus, and check/radio items).",
+    props: [
+      {
+        name: "defaultValue",
+        type: "string",
+        description: "Uncontrolled initial selected value.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Selection callback.",
+      },
+    ],
+    useCases: [
+      "Top-bar application command menus",
+      "Workspace menus with nested items",
+      "Desktop-like navigation shells",
+    ],
+    storyPath: "navigation/Menubar.stories.tsx",
+    rules: [3, 6],
+    example: `import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem } from "@godxjp/ui/navigation";
+
+<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>ファイル</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>新規作成</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>`,
+  },
+  {
+    name: "NavigationMenu",
+    group: "navigation",
+    tagline:
+      "Horizontal navigation menu with trigger/content/link primitives and viewport support.",
+    props: [
+      {
+        name: "orientation",
+        type: '"horizontal" | "vertical"',
+        defaultValue: '"horizontal"',
+        description: "Main-axis arrangement for the nav menu.",
+      },
+      {
+        name: "defaultValue",
+        type: "string",
+        description: "Uncontrolled initial selected value.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Selection callback.",
+      },
+    ],
+    useCases: ["Primary app navigation", "Sectioned marketing navigation", "Nested link groups"],
+    storyPath: "navigation/NavigationMenu.stories.tsx",
+    rules: [3, 6],
+    example: `import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger } from "@godxjp/ui/navigation";
+
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>ページ</NavigationMenuTrigger>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>`,
+  },
+  {
+    name: "ResizablePanel",
+    group: "layout",
+    tagline: "Resizable panel group/child/handle primitives from react-resizable-panels.",
+    props: [
+      { name: "id", type: "string", description: "Panel identifier for persistence." },
+      { name: "defaultSize", type: "number", description: "Initial panel size (percent/units)." },
+      { name: "minSize", type: "number", description: "Minimum size constraint." },
+      { name: "maxSize", type: "number", description: "Maximum size constraint." },
+    ],
+    useCases: ["Split-pane layouts", "Resizable sidebars", "Code editors with adjustable zones"],
+    storyPath: "layout/ResizablePanel.stories.tsx",
+    rules: [3, 6],
+    example: `import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@godxjp/ui/layout";
+
+<ResizablePanelGroup>
+  <ResizablePanel>Panel A</ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel>Panel B</ResizablePanel>
+</ResizablePanelGroup>`,
+  },
+  {
+    name: "Carousel",
+    group: "data-display",
+    tagline: "Embla-backed carousel primitives including previous/next controls and context API.",
+    props: [
+      {
+        name: "opts",
+        type: "Parameters<typeof useEmblaCarousel>[0]",
+        description: "Embla options.",
+      },
+      {
+        name: "plugins",
+        type: "Parameters<typeof useEmblaCarousel>[1]",
+        description: "Embla plugins.",
+      },
+      {
+        name: "setApi",
+        type: "(api: CarouselApi) => void",
+        description: "Receive carousel API for custom logic.",
+      },
+    ],
+    useCases: ["Feature cards", "Image galleries", "Horizontal stepping lists"],
+    storyPath: "data-display/Carousel.stories.tsx",
+    rules: [3, 6],
+    example: `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@godxjp/ui/data-display";
+
+<Carousel>
+  <CarouselContent>
+    <CarouselItem>1</CarouselItem>
+    <CarouselItem>2</CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>`,
+  },
+  {
+    name: "Combobox",
+    group: "data-entry",
+    tagline: "Single-select searchable combobox composed from Popover + Command + Button.",
+    props: [
+      {
+        name: "options",
+        type: "{ value: string; label: string }[]",
+        required: true,
+        description: "Available selection entries.",
+      },
+      { name: "value", type: "string", description: "Controlled selected value." },
+      { name: "defaultValue", type: "string", description: "Uncontrolled initial value." },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Selection callback.",
+      },
+      { name: "placeholder", type: "string", description: "Trigger placeholder." },
+      { name: "searchPlaceholder", type: "string", description: "Input placeholder in popover." },
+      { name: "emptyText", type: "string", description: "Fallback when there are no matches." },
+    ],
+    useCases: ["Searchable single-select", "Lookup pickers", "Static option lists"],
+    storyPath: "data-entry/Combobox.stories.tsx",
+    rules: [3, 6],
+    example: `import { Combobox } from "@godxjp/ui/data-entry";
+
+<Combobox
+  options={[{ value: "a", label: "A" }, { value: "b", label: "B" }]}
+  onValueChange={(value) => console.log(value)}
+/>`,
+  },
+  {
+    name: "TimeInput",
+    group: "data-entry",
+    tagline: "Masking HH:mm input with validation and optional minute step quantization.",
+    props: [
+      { name: "value", type: "string", description: "Controlled HH:mm value." },
+      {
+        name: "defaultValue",
+        type: "string",
+        description: "Uncontrolled initial HH:mm value.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Validated value callback.",
+      },
+      { name: "step", type: "number", defaultValue: "1", description: "Minute step." },
+      { name: "name", type: "string", description: "Form field name." },
+    ],
+    useCases: ["Time filters", "Schedule pickers (calendar-free)", "HH:mm-only forms"],
+    storyPath: "data-entry/TimeInput.stories.tsx",
+    rules: [3, 6],
+    example: `import { TimeInput } from "@godxjp/ui/data-entry";
+
+<TimeInput value="09:00" step={15} onValueChange={(time) => console.log(time)} />`,
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {

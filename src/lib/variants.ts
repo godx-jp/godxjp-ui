@@ -1,9 +1,5 @@
 /** Prop → internal class maps. Apps use component props, never these classes directly. */
-import type {
-  GapProp,
-  PageContainerVariantProp,
-  PageDensityProp,
-} from "../props/vocabulary";
+import type { GapProp, PageContainerVariantProp, PageDensityProp } from "../props/vocabulary";
 
 export type Density = PageDensityProp;
 export type StackGap = GapProp;

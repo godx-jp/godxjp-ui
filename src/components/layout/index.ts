@@ -17,6 +17,7 @@ export type {
 } from "./flex";
 export { Stack } from "./stack";
 export type { StackProp, StackProps } from "./stack";
+export { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "./resizable";
 export { Inline } from "./inline";
 export type { InlineProp, InlineProps } from "./inline";
 export { AppShell } from "./app-shell";

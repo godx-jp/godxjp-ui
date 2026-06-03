@@ -105,8 +105,7 @@ export function AppProvider({
   React.useEffect(() => {
     const stored = persist ? readStoredPreferences(storageKey) : {};
     const nextLocale = stored.locale ?? defaultLocale;
-    const nextTimezone =
-      stored.timezone ?? resolveDefaultTimezone(defaultTimezone, systemTimezone);
+    const nextTimezone = stored.timezone ?? resolveDefaultTimezone(defaultTimezone, systemTimezone);
     const nextTimeFormat = resolveInitialTimeFormat(
       stored.timeFormat,
       defaultTimeFormat,

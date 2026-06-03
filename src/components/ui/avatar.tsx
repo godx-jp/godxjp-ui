@@ -7,7 +7,12 @@ export const Avatar = React.forwardRef<
   React.ComponentRef<typeof AvatarPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
 >(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Root ref={ref} data-slot="avatar" className={cn("ui-avatar", className)} {...props} />
+  <AvatarPrimitive.Root
+    ref={ref}
+    data-slot="avatar"
+    className={cn("ui-avatar", className)}
+    {...props}
+  />
 ));
 Avatar.displayName = AvatarPrimitive.Root.displayName;
 

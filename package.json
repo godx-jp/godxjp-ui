@@ -89,6 +89,10 @@
       "types": "./dist/lib/utils.d.ts",
       "import": "./dist/lib/utils.js"
     },
+    "./hooks": {
+      "types": "./dist/lib/hooks.d.ts",
+      "import": "./dist/lib/hooks.js"
+    },
     "./ui/button": {
       "types": "./dist/components/general/button.d.ts",
       "import": "./dist/components/general/button.js"
@@ -165,6 +169,10 @@
       "types": "./dist/components/data-entry/cascader.d.ts",
       "import": "./dist/components/data-entry/cascader.js"
     },
+    "./ui/carousel": {
+      "types": "./dist/components/data-display/carousel.d.ts",
+      "import": "./dist/components/data-display/carousel.js"
+    },
     "./ui/tree-select": {
       "types": "./dist/components/data-entry/tree-select.d.ts",
       "import": "./dist/components/data-entry/tree-select.js"
@@ -173,9 +181,29 @@
       "types": "./dist/components/data-entry/transfer.d.ts",
       "import": "./dist/components/data-entry/transfer.js"
     },
+    "./ui/combobox": {
+      "types": "./dist/components/data-entry/combobox.d.ts",
+      "import": "./dist/components/data-entry/combobox.js"
+    },
     "./ui/command": {
       "types": "./dist/components/data-entry/command.d.ts",
       "import": "./dist/components/data-entry/command.js"
+    },
+    "./ui/context-menu": {
+      "types": "./dist/components/navigation/context-menu.d.ts",
+      "import": "./dist/components/navigation/context-menu.js"
+    },
+    "./ui/menubar": {
+      "types": "./dist/components/navigation/menubar.d.ts",
+      "import": "./dist/components/navigation/menubar.js"
+    },
+    "./ui/navigation-menu": {
+      "types": "./dist/components/navigation/navigation-menu.d.ts",
+      "import": "./dist/components/navigation/navigation-menu.js"
+    },
+    "./ui/resizable": {
+      "types": "./dist/components/layout/resizable.d.ts",
+      "import": "./dist/components/layout/resizable.js"
     },
     "./ui/scroll-area": {
       "types": "./dist/components/data-display/scroll-area.d.ts",
@@ -188,6 +216,10 @@
     "./ui/textarea": {
       "types": "./dist/components/data-entry/textarea.d.ts",
       "import": "./dist/components/data-entry/textarea.js"
+    },
+    "./ui/time-input": {
+      "types": "./dist/components/data-entry/time-input.d.ts",
+      "import": "./dist/components/data-entry/time-input.js"
     },
     "./ui/dialog": {
       "types": "./dist/components/feedback/dialog.d.ts",
@@ -269,10 +301,13 @@
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-context": "^1.1.2",
+    "@radix-ui/react-context-menu": "^2.2.16",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-hover-card": "^1.1.15",
     "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-menubar": "^1.1.16",
+    "@radix-ui/react-navigation-menu": "^1.2.14",
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-radio-group": "^1.3.8",
     "@radix-ui/react-scroll-area": "^1.2.10",
@@ -289,9 +324,11 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^1.14.0",
     "react-day-picker": "^10.0.1",
+    "react-resizable-panels": "^4.11.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",

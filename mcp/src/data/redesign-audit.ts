@@ -34,7 +34,8 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
     category: "typography",
     symptom: "Inter / Roboto / Open Sans everywhere — the AI default.",
     fix: "Pick a font with character: Geist, Outfit, Cabinet Grotesk, Satoshi for sans. For editorial / creative — pair a serif heading (Newsreader, Lyon, Playfair) with a sans body.",
-    uiNote: "Override --font-sans + --font-serif at the consumer's root CSS. Framework reads from these tokens.",
+    uiNote:
+      "Override --font-sans + --font-serif at the consumer's root CSS. Framework reads from these tokens.",
   },
   {
     category: "typography",
@@ -57,7 +58,8 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
     category: "typography",
     symptom: "Numbers in proportional font — columns jitter in tables.",
     fix: "`font-variant-numeric: tabular-nums` for data, or a monospace font like Geist Mono.",
-    uiNote: "Table primitive already uses `tabular-nums` on `.num` cells. For ad-hoc numeric labels, add the CSS prop manually.",
+    uiNote:
+      "Table primitive already uses `tabular-nums` on `.num` cells. For ad-hoc numeric labels, add the CSS prop manually.",
   },
   {
     category: "typography",
@@ -75,7 +77,8 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
     category: "color-surface",
     symptom: "Pure #000000 background.",
     fix: "Replace with off-black (#0A0A0A) / dark charcoal (#121212) / tinted dark (deep navy).",
-    uiNote: "Framework dark theme already uses tinted dark values — verify the consumer's override didn't force pure black.",
+    uiNote:
+      "Framework dark theme already uses tinted dark values — verify the consumer's override didn't force pure black.",
   },
   {
     category: "color-surface",
@@ -86,7 +89,8 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
     category: "color-surface",
     symptom: "More than one accent color competing.",
     fix: "Pick ONE. Remove the rest. Consistency beats variety in palette.",
-    uiNote: "Set ONE `data-accent` at `<html>` root. Use semantic colors (success / warning / destructive) only for genuinely semantic content.",
+    uiNote:
+      "Set ONE `data-accent` at `<html>` root. Use semantic colors (success / warning / destructive) only for genuinely semantic content.",
   },
   {
     category: "color-surface",
@@ -119,7 +123,8 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
     category: "layout",
     symptom: "Three equal card columns as feature row — the most generic AI layout.",
     fix: "Replace with 2-column zig-zag, asymmetric grid, horizontal scroll, or masonry. The 3-equal-cols pattern is RED FLAG #1.",
-    uiNote: "Use Bento Grid (custom CSS grid with `gridColumn: 'span N'`) instead of `<Grid cols={3}>` for hero sections.",
+    uiNote:
+      "Use Bento Grid (custom CSS grid with `gridColumn: 'span N'`) instead of `<Grid cols={3}>` for hero sections.",
   },
   {
     category: "layout",
@@ -130,7 +135,8 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
     category: "layout",
     symptom: "No max-width container — content stretches edge-to-edge.",
     fix: "Add a container constraint (1200-1440px) with `margin: auto`. Or use `max-w-4xl / max-w-5xl` for content-heavy pages.",
-    uiNote: "Framework's PageContent constrains via `var(--container-max-width)`. Consumer may override.",
+    uiNote:
+      "Framework's PageContent constrains via `var(--container-max-width)`. Consumer may override.",
   },
   {
     category: "layout",
@@ -153,7 +159,8 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
     category: "layout",
     symptom: "Dashboard ALWAYS has a left sidebar.",
     fix: "Consider top navigation, floating command menu, or collapsible panel. Sidebar isn't the only chrome.",
-    uiNote: "Framework supports both — AppShell with sidebar slot is optional; can use Topbar-only for some flows.",
+    uiNote:
+      "Framework supports both — AppShell with sidebar slot is optional; can use Topbar-only for some flows.",
   },
 
   // ── interactivity ──────────────────────────────────────────────
@@ -177,7 +184,8 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
     category: "interactivity",
     symptom: "Generic circular spinner for page-level loading.",
     fix: "Replace with Skeleton placeholders matching the eventual content shape.",
-    uiNote: "Framework Skeleton + Form `loading={{ kind: 'skeleton' }}` handles cascading initial-fetch state.",
+    uiNote:
+      "Framework Skeleton + Form `loading={{ kind: 'skeleton' }}` handles cascading initial-fetch state.",
   },
   {
     category: "interactivity",
@@ -219,9 +227,11 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
   },
   {
     category: "content",
-    symptom: "AI copy clichés — 'elevate', 'seamless', 'unleash', 'next-gen', 'game-changer', 'delve', 'tapestry', 'in the world of'.",
+    symptom:
+      "AI copy clichés — 'elevate', 'seamless', 'unleash', 'next-gen', 'game-changer', 'delve', 'tapestry', 'in the world of'.",
     fix: "Plain specific language. Numbers, nouns, verbs.",
-    uiNote: "Framework's cardinal rule 9 bans this in framework docs; same discipline applies to consumer copy.",
+    uiNote:
+      "Framework's cardinal rule 9 bans this in framework docs; same discipline applies to consumer copy.",
   },
   {
     category: "content",
@@ -277,7 +287,8 @@ export const REDESIGN_CHECKS: AuditCheck[] = [
     category: "iconography",
     symptom: "Lucide or Feather icons exclusively.",
     fix: "Use Phosphor (Bold / Fill), Heroicons, or a custom set. AI default tell.",
-    uiNote: "Framework ships with lucide as locked dependency (rule 14). For editorial differentiation, layer Phosphor on top.",
+    uiNote:
+      "Framework ships with lucide as locked dependency (rule 14). For editorial differentiation, layer Phosphor on top.",
   },
   {
     category: "iconography",

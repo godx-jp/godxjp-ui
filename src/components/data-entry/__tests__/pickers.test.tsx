@@ -51,7 +51,9 @@ describe("TimePicker", () => {
   it("opens panel and selects minute", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    renderWithUi(<TimePicker defaultValue="09:00" onValueChange={onChange} minuteStep={15} id="t" />);
+    renderWithUi(
+      <TimePicker defaultValue="09:00" onValueChange={onChange} minuteStep={15} id="t" />,
+    );
 
     await user.click(screen.getByRole("button"));
     expect(screen.getByText("Giờ")).toBeInTheDocument();

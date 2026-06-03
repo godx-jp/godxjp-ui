@@ -91,9 +91,7 @@ describe("formatDate (unified) — regression suite", () => {
 
     disableLiveRelativeFormatting();
 
-    expect(formatDate(value, { kind: "relative" })).toBe(
-      formatDate(value, { kind: "datetime" }),
-    );
+    expect(formatDate(value, { kind: "relative" })).toBe(formatDate(value, { kind: "datetime" }));
   });
 
   it("formatCalendarDate respects dateFormat override per call", () => {

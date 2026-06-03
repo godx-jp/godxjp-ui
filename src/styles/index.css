@@ -18,6 +18,8 @@
 @import "./alert-layout.css";
 @import "./badge-layout.css";
 @import "./data-display-layout.css";
+@import "./data-entry-layout.css";
+@import "./navigation-layout.css";
 
 @theme {
   --color-background: hsl(var(--background));

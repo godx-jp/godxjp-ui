@@ -30,6 +30,8 @@ export type {
 export { SearchInput } from "./search-input";
 export { Switch } from "./switch";
 export type { SwitchProps } from "./switch";
+export { Combobox } from "./combobox";
+export type { ComboboxOption, ComboboxProps } from "./combobox";
 export { Toggle } from "./toggle";
 export type { ToggleProps } from "./toggle";
 export { ToggleGroup, ToggleGroupItem } from "./toggle-group";
@@ -60,6 +62,8 @@ export { Cascader } from "./cascader";
 export type { CascaderProps, TreeOption, TreeFieldNames } from "./cascader";
 export { TreeSelect, SHOW_CHILD, SHOW_PARENT, SHOW_ALL } from "./tree-select";
 export type { TreeSelectProps } from "./tree-select";
+export { TimeInput } from "./time-input";
+export type { TimeInputProps } from "./time-input";
 export { Transfer } from "./transfer";
 export type { TransferProps, TransferItemProp } from "./transfer";
 export {

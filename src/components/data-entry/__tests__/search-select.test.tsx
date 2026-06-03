@@ -16,7 +16,9 @@ describe("SearchSelect", () => {
   it("loads options remotely on open and groups them under headings", async () => {
     const user = userEvent.setup();
     const loadOptions = loader();
-    renderWithUi(<SearchSelect value="" onValueChange={() => undefined} loadOptions={loadOptions} />);
+    renderWithUi(
+      <SearchSelect value="" onValueChange={() => undefined} loadOptions={loadOptions} />,
+    );
 
     await user.click(screen.getByRole("combobox"));
 
@@ -46,7 +48,9 @@ describe("SearchSelect", () => {
   it("refetches with the debounced query when the user types", async () => {
     const user = userEvent.setup();
     const loadOptions = loader();
-    renderWithUi(<SearchSelect value="" onValueChange={() => undefined} loadOptions={loadOptions} />);
+    renderWithUi(
+      <SearchSelect value="" onValueChange={() => undefined} loadOptions={loadOptions} />,
+    );
 
     await user.click(screen.getByRole("combobox"));
     await screen.findByText("現金");

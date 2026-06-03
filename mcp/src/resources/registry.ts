@@ -29,7 +29,8 @@ export const RESOURCE_DEFINITIONS = [
   {
     uri: "godx-ui://prop-vocabulary",
     name: "Shared prop vocabulary",
-    description: "Cross-cutting prop types (SizeProp, StatusProp, ColorProp, LoadingProp, …) as JSON.",
+    description:
+      "Cross-cutting prop types (SizeProp, StatusProp, ColorProp, LoadingProp, …) as JSON.",
     mimeType: "application/json",
   },
   {
@@ -47,7 +48,8 @@ export const RESOURCE_DEFINITIONS = [
   {
     uri: "godx-ui://patterns",
     name: "Code patterns",
-    description: "Canonical pattern catalog (registration-form, settings-page, data-table, …) as JSON.",
+    description:
+      "Canonical pattern catalog (registration-form, settings-page, data-table, …) as JSON.",
     mimeType: "application/json",
   },
 ];
@@ -92,7 +94,11 @@ export async function readResource(uri: string): Promise<string> {
   }
 
   if (uri === "godx-ui://patterns") {
-    return JSON.stringify(PATTERNS.map(({ name, tagline, tags }) => ({ name, tagline, tags })), null, 2);
+    return JSON.stringify(
+      PATTERNS.map(({ name, tagline, tags }) => ({ name, tagline, tags })),
+      null,
+      2,
+    );
   }
   if (uri.startsWith("godx-ui://patterns/")) {
     const name = uri.slice("godx-ui://patterns/".length);

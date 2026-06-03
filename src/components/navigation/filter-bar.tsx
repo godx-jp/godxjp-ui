@@ -14,12 +14,7 @@ export type {
   ToolbarProp as ToolbarProps,
 } from "../../props/components/navigation.prop";
 
-export function Toolbar({
-  onClear,
-  hasActiveFilters = true,
-  className,
-  children,
-}: ToolbarProp) {
+export function Toolbar({ onClear, hasActiveFilters = true, className, children }: ToolbarProp) {
   const { t } = useTranslation();
 
   return (

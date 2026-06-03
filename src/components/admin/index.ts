@@ -53,14 +53,7 @@ export {
 export { Cascader } from "../data-entry/cascader";
 export { TreeSelect } from "../data-entry/tree-select";
 export { Transfer } from "../data-entry/transfer";
-export {
-  Pagination,
-  Steps,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../navigation";
+export { Pagination, Steps, Tabs, TabsContent, TabsList, TabsTrigger } from "../navigation";
 export { FilterBar, FilterGroup, Toolbar, ToolbarGroup } from "../navigation/filter-bar";
 export {
   Dialog,

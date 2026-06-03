@@ -22,8 +22,19 @@ export interface PatternEntry {
 export const PATTERNS: PatternEntry[] = [
   {
     name: "common-fixes",
-    tagline: "Fix the most common @godxjp/ui consumer mistakes & visual bugs (StatCard double-border, grey Badge, crushed/empty table headers, washed-out sidebar footer, Inertia layout crash, SSR hydration). Before → after.",
-    tags: ["fixes", "migration", "bug", "cardstat", "statusbadge", "datatable", "sidebar", "gotcha", "review"],
+    tagline:
+      "Fix the most common @godxjp/ui consumer mistakes & visual bugs (StatCard double-border, grey Badge, crushed/empty table headers, washed-out sidebar footer, Inertia layout crash, SSR hydration). Before → after.",
+    tags: [
+      "fixes",
+      "migration",
+      "bug",
+      "cardstat",
+      "statusbadge",
+      "datatable",
+      "sidebar",
+      "gotcha",
+      "review",
+    ],
     code: `// ───────────────────────────────────────────────────────────────────────
 // 0) ★ MOST COMMON: <Card> body has NO padding (content is flush against the edges)
 //    Cause: the bare <Card> has ZERO inner padding — it MUST contain <CardContent>.
@@ -92,7 +103,8 @@ export const PATTERNS: PatternEntry[] = [
 
   {
     name: "signup-form",
-    tagline: "Card-wrapped sign-up form using react-hook-form + zod with FormField/Input and a CardFooter action bar (real @godxjp/ui API).",
+    tagline:
+      "Card-wrapped sign-up form using react-hook-form + zod with FormField/Input and a CardFooter action bar (real @godxjp/ui API).",
     tags: ["form", "auth", "sign-up", "zod", "validation", "react-hook-form"],
     code: `import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -138,7 +150,8 @@ export function SignUpCard() {
 
   {
     name: "settings-tabs",
-    tagline: "Sectioned settings inside a Card with Tabs + FormField + Select + Switch (real @godxjp/ui API).",
+    tagline:
+      "Sectioned settings inside a Card with Tabs + FormField + Select + Switch (real @godxjp/ui API).",
     tags: ["settings", "form", "tabs", "admin"],
     code: `import { Card, CardContent } from "@godxjp/ui/data-display";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@godxjp/ui/navigation";
@@ -184,7 +197,8 @@ export function WorkspaceSettings() {
 
   {
     name: "confirm-destructive",
-    tagline: "Type-to-confirm destructive dialog — Dialog mode=\"confirm\" + Input gate + toast (real @godxjp/ui API).",
+    tagline:
+      'Type-to-confirm destructive dialog — Dialog mode="confirm" + Input gate + toast (real @godxjp/ui API).',
     tags: ["dialog", "confirm", "destructive", "delete"],
     code: `import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@godxjp/ui/feedback";
@@ -217,7 +231,8 @@ export function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolea
 
   {
     name: "deferred-loading",
-    tagline: "Inertia deferred props with a Skeleton fallback — SkeletonTable while data loads, then DataTable (real @godxjp/ui API).",
+    tagline:
+      "Inertia deferred props with a Skeleton fallback — SkeletonTable while data loads, then DataTable (real @godxjp/ui API).",
     tags: ["loading", "skeleton", "deferred", "inertia", "table"],
     code: `// Server (Laravel): defer the heavy prop
 //   Inertia::render('crm/coupons/index', [
@@ -246,7 +261,8 @@ export default function Coupons({ coupons }: { coupons?: Coupon[] }) {
 
   {
     name: "inertia-list-page",
-    tagline: "Inertia + @godxjp/ui list page — PageContainer + FilterBar + DataTable + Badge + Pagination (current primitive API).",
+    tagline:
+      "Inertia + @godxjp/ui list page — PageContainer + FilterBar + DataTable + Badge + Pagination (current primitive API).",
     tags: ["inertia", "list", "table", "page", "filter", "pagination", "datatable", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
 import { useMemo, useState } from "react"
@@ -331,7 +347,8 @@ export default Coupons`,
 
   {
     name: "inertia-detail-page",
-    tagline: "Inertia detail page — receives {id} prop, Descriptions (compound) + StatCard + EmptyState fallback.",
+    tagline:
+      "Inertia detail page — receives {id} prop, Descriptions (compound) + StatCard + EmptyState fallback.",
     tags: ["inertia", "detail", "show", "page", "keyvaluegrid", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
 import { PageContainer, ResponsiveGrid, Stack } from "@godxjp/ui/layout"
@@ -392,7 +409,8 @@ export default MemberShow`,
 
   {
     name: "inertia-persistent-layout",
-    tagline: "Inertia persistent layout (AppShell+Sidebar) — the array-form gotcha + the SSR/Math.random gotcha.",
+    tagline:
+      "Inertia persistent layout (AppShell+Sidebar) — the array-form gotcha + the SSR/Math.random gotcha.",
     tags: ["inertia", "layout", "appshell", "sidebar", "ssr", "hydration", "gotcha"],
     code: `// resources/js/layouts/crm-layout.tsx
 import { router, usePage } from "@inertiajs/react"
@@ -426,7 +444,8 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
 
   {
     name: "badge-coloring",
-    tagline: "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props, @godxjp/ui ≥ 6.1).",
+    tagline:
+      "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props, @godxjp/ui ≥ 6.1).",
     tags: ["statusbadge", "badge", "tone", "color", "status", "tier", "table"],
     code: `import { Badge } from "@godxjp/ui/data-display"
 
