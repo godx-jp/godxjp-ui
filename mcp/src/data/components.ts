@@ -7172,6 +7172,87 @@ export function InvoiceListHeader() {
     storyPath: "data-display/HoverCard.stories.tsx",
     rules: [3, 6],
   },
+  {
+    name: "PasswordInput",
+    group: "data-entry",
+    tagline:
+      "Input for passwords with a built-in show/hide eye toggle. Accepts all Input props except `type`.",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        description: "Controlled value (or use defaultValue/uncontrolled).",
+      },
+      { name: "name", type: "string", description: "Form field name for native submission." },
+      { name: "placeholder", type: "string", description: "Placeholder text." },
+      { name: "disabled", type: "boolean", description: "Disables the field + toggle." },
+    ],
+    usage: [
+      'DO use for any password / secret field instead of `<Input type="password">` so users get the show/hide affordance.',
+      'DO pass `name` + `autoComplete="current-password"|"new-password"` for correct form/password-manager behavior.',
+      "DON'T add your own eye button — it's built in (and excluded from the tab order).",
+    ],
+    useCases: [
+      "Login password field",
+      "Sign-up / change-password forms (new-password)",
+      "API key / secret entry in settings",
+    ],
+    related: [
+      "Input (the base text field this wraps)",
+      "FormField (label + error wrapper around it)",
+    ],
+    example: `import { PasswordInput } from "@godxjp/ui/data-entry";
+
+<PasswordInput name="password" autoComplete="current-password" placeholder="パスワード" />`,
+    storyPath: "data-entry/PasswordInput.stories.tsx",
+    rules: [3, 6],
+  },
+  {
+    name: "Drawer",
+    group: "feedback",
+    tagline:
+      "Bottom-sheet (vaul) — a draggable sheet that slides up from the screen edge. DISTINCT from Sheet (the side panel); use Drawer for mobile/touch bottom sheets.",
+    props: [
+      { name: "open", type: "boolean", description: "Controlled open state." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state callback.",
+      },
+      {
+        name: "shouldScaleBackground",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Scale the page behind the sheet (iOS-style).",
+      },
+    ],
+    usage: [
+      "DO compose Drawer > DrawerTrigger > DrawerContent (> DrawerHeader/DrawerTitle + body + DrawerFooter).",
+      "DO use Drawer for mobile/touch bottom sheets; use Sheet for a desktop side panel and Dialog for a centered modal.",
+      "DON'T confuse with Sheet — Sheet slides from a side edge, Drawer is the draggable bottom sheet.",
+    ],
+    useCases: [
+      "Mobile action sheet / menu",
+      "Filter panel on small screens",
+      "Quick-create form on touch",
+      "Detail peek that drags up",
+    ],
+    related: [
+      "Sheet (side panel, same Radix Dialog base, different placement)",
+      "Dialog (centered modal)",
+    ],
+    example: `import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from "@godxjp/ui/feedback";
+
+<Drawer>
+  <DrawerTrigger>絞り込み</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader><DrawerTitle>絞り込み</DrawerTitle></DrawerHeader>
+    {/* filters */}
+  </DrawerContent>
+</Drawer>`,
+    storyPath: "feedback/Drawer.stories.tsx",
+    rules: [3, 6, 24],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {

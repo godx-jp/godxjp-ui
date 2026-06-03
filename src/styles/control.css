@@ -570,3 +570,14 @@
     }
   }
 }
+
+/* PasswordInput */
+.ui-password-input { position: relative; display: block; }
+.ui-password-input-field { padding-right: 2.5rem; }
+.ui-password-input-toggle {
+  position: absolute; inset-block: 0; inset-inline-end: 0; display: inline-flex;
+  align-items: center; justify-content: center; width: 2.5rem;
+  color: hsl(var(--muted-foreground)); background: transparent; border: 0; cursor: pointer;
+}
+.ui-password-input-toggle:hover { color: hsl(var(--foreground)); }
+.ui-password-input-toggle svg { width: 1rem; height: 1rem; }
