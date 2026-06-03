@@ -229,6 +229,29 @@ button {
   border: 1px solid hsl(var(--border));
 }
 
+/* Top-level group = Storybook-style section header: muted, non-interactive,
+ * no caret, contents always shown. */
+.preview-tree-section {
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: hsl(var(--muted-foreground));
+  padding-top: 10px;
+  padding-bottom: 6px;
+  margin-top: 4px;
+  cursor: default;
+}
+
+.preview-tree-section:hover {
+  background: transparent;
+}
+
+.preview-tree-section .preview-tree-count {
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+}
+
 .preview-tree-group {
   font-weight: 500;
 }

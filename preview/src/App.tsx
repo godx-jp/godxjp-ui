@@ -153,39 +153,46 @@ function StoryTreeNode({
   activeLeafRef: React.RefObject<HTMLButtonElement | null>;
 }) {
   const groupKey = group.path.join("/");
-  const expanded = expandedKeys.has(groupKey);
+  const isTopLevel = depth === 0;
+  // Top-level groups are Storybook-style section headers: a muted, non-collapsible
+  // title with their contents always shown. Only nested groups collapse.
+  const expanded = isTopLevel ? true : expandedKeys.has(groupKey);
   const indentStyle = { ["--depth" as string]: depth };
   const total = countExamples(group);
-  const isTopLevel = depth === 0;
   const onActivePath = isGroupOnActivePath(group, activeStory);
 
   return (
     <li className="preview-tree-item" data-depth={depth}>
-      <button
-        type="button"
-        className={
-          isTopLevel ? "preview-tree-row preview-tree-root" : "preview-tree-row preview-tree-group"
-        }
-        style={indentStyle}
-        onClick={() => toggle(groupKey)}
-        aria-expanded={expanded}
-        data-active-path={onActivePath}
-      >
-        <span className="preview-tree-caret" data-open={expanded} aria-hidden="true">
-          <svg viewBox="0 0 12 12" width="10" height="10">
-            <path
-              d="M4 2 L8 6 L4 10"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
-        <span className="preview-tree-label">{group.name}</span>
-        <span className="preview-tree-count">{total}</span>
-      </button>
+      {isTopLevel ? (
+        <div className="preview-tree-row preview-tree-section" style={indentStyle}>
+          <span className="preview-tree-label">{group.name}</span>
+          <span className="preview-tree-count">{total}</span>
+        </div>
+      ) : (
+        <button
+          type="button"
+          className="preview-tree-row preview-tree-group"
+          style={indentStyle}
+          onClick={() => toggle(groupKey)}
+          aria-expanded={expanded}
+          data-active-path={onActivePath}
+        >
+          <span className="preview-tree-caret" data-open={expanded} aria-hidden="true">
+            <svg viewBox="0 0 12 12" width="10" height="10">
+              <path
+                d="M4 2 L8 6 L4 10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+          <span className="preview-tree-label">{group.name}</span>
+          <span className="preview-tree-count">{total}</span>
+        </button>
+      )}
       {expanded ? (
         <ul className="preview-tree-list">
           {group.examples.map((story) => {
