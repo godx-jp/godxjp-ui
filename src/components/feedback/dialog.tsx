@@ -14,43 +14,15 @@ import type { AlertDialogProp } from "../../props/components/feedback.prop";
 export type {
   AlertDialogProp,
   AlertDialogProp as AlertDialogProps,
-  DialogConfirmProp,
-  DialogConfirmProp as DialogConfirmProps,
 } from "../../props/components/feedback.prop";
 
-/** form = nhập liệu / wizard (role=dialog, có nút X). confirm = quyết định (role=alertdialog, không X). */
-export type DialogMode = "form" | "confirm";
+type DialogRootProps = React.ComponentProps<typeof DialogPrimitive.Root> & {};
 
-const DialogModeContext = React.createContext<DialogMode>("form");
-
-function useDialogMode(): DialogMode {
-  return React.useContext(DialogModeContext);
-}
-
-type DialogRootProps = React.ComponentProps<typeof DialogPrimitive.Root> & {
-  mode?: DialogMode;
-};
-
-function DialogRoot({ mode = "form", ...props }: DialogRootProps) {
-  if (mode === "confirm") {
-    return (
-      <DialogModeContext.Provider value="confirm">
-        <AlertDialogPrimitive.Root data-slot="dialog" {...props} />
-      </DialogModeContext.Provider>
-    );
-  }
-  return (
-    <DialogModeContext.Provider value="form">
-      <DialogPrimitive.Root data-slot="dialog" {...props} />
-    </DialogModeContext.Provider>
-  );
+function DialogRoot(props: DialogRootProps) {
+  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
 
 function DialogTrigger(props: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
-  const mode = useDialogMode();
-  if (mode === "confirm") {
-    return <AlertDialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
-  }
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
 }
 
@@ -85,30 +57,6 @@ const DialogContent = React.forwardRef<
     showCloseButton?: boolean;
   }
 >(({ className, children, showClose, showCloseButton: showCloseButtonProp, ...props }, ref) => {
-  const mode = useDialogMode();
-
-  if (mode === "confirm") {
-    return (
-      <AlertDialogPrimitive.Portal>
-        <AlertDialogPrimitive.Overlay
-          data-slot="dialog-overlay"
-          className="ui-dialog-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0"
-        />
-        <AlertDialogPrimitive.Content
-          ref={ref}
-          data-slot="dialog-content"
-          className={cn(
-            "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 duration-200 outline-none",
-            className,
-          )}
-          {...props}
-        >
-          {children}
-        </AlertDialogPrimitive.Content>
-      </AlertDialogPrimitive.Portal>
-    );
-  }
-
   const showCloseButton = showCloseButtonProp ?? showClose ?? true;
   return (
     <DialogPortal>
@@ -152,13 +100,7 @@ const DialogTitle = React.forwardRef<
   HTMLHeadingElement,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({ className, ...props }, ref) => {
-  const mode = useDialogMode();
   const cls = cn(className);
-  if (mode === "confirm") {
-    return (
-      <AlertDialogPrimitive.Title ref={ref} data-slot="dialog-title" className={cls} {...props} />
-    );
-  }
   return <DialogPrimitive.Title ref={ref} data-slot="dialog-title" className={cls} {...props} />;
 });
 DialogTitle.displayName = "DialogTitle";
@@ -167,18 +109,7 @@ const DialogDescription = React.forwardRef<
   HTMLParagraphElement,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, ...props }, ref) => {
-  const mode = useDialogMode();
   const cls = cn(className);
-  if (mode === "confirm") {
-    return (
-      <AlertDialogPrimitive.Description
-        ref={ref}
-        data-slot="dialog-description"
-        className={cls}
-        {...props}
-      />
-    );
-  }
   return (
     <DialogPrimitive.Description
       ref={ref}
@@ -212,7 +143,7 @@ const DialogCancel = React.forwardRef<
 ));
 DialogCancel.displayName = "DialogCancel";
 
-/** Preset: confirm / destructive / type-to-confirm — use case `mode="confirm"` without compound markup. */
+/** Preset: confirm / destructive / type-to-confirm without compound markup. */
 function AlertDialog({
   open,
   onOpenChange,
@@ -250,48 +181,63 @@ function AlertDialog({
   };
 
   return (
-    <DialogRoot mode="confirm" open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description ? <DialogDescription>{description}</DialogDescription> : null}
-        </DialogHeader>
+    <AlertDialogPrimitive.Root data-slot="dialog" open={open} onOpenChange={handleOpenChange}>
+      <AlertDialogPrimitive.Portal>
+        <AlertDialogPrimitive.Overlay
+          data-slot="dialog-overlay"
+          className="ui-dialog-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0"
+        />
+        <AlertDialogPrimitive.Content
+          data-slot="dialog-content"
+          className="data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 duration-200 outline-none"
+        >
+          <DialogHeader>
+            <AlertDialogPrimitive.Title data-slot="dialog-title">
+              {title}
+            </AlertDialogPrimitive.Title>
+            {description ? (
+              <AlertDialogPrimitive.Description data-slot="dialog-description">
+                {description}
+              </AlertDialogPrimitive.Description>
+            ) : null}
+          </DialogHeader>
 
-        {needsPhrase && (
-          <div className="ui-stack-xs">
-            <Label htmlFor={inputId} className="text-sm">
-              {t("common.typeToConfirm", { phrase: confirmPhrase })}
-            </Label>
-            <Input
-              id={inputId}
-              value={typed}
-              onChange={(e) => {
-                setTyped(e.target.value);
-              }}
-              autoComplete="off"
-              spellCheck={false}
-              placeholder={confirmPhrase}
-              aria-required="true"
-            />
-          </div>
-        )}
+          {needsPhrase && (
+            <div className="ui-stack-xs">
+              <Label htmlFor={inputId} className="text-sm">
+                {t("common.typeToConfirm", { phrase: confirmPhrase })}
+              </Label>
+              <Input
+                id={inputId}
+                value={typed}
+                onChange={(e) => {
+                  setTyped(e.target.value);
+                }}
+                autoComplete="off"
+                spellCheck={false}
+                placeholder={confirmPhrase}
+                aria-required="true"
+              />
+            </div>
+          )}
 
-        <DialogFooter>
-          <DialogCancel asChild>
-            <Button variant="ghost" disabled={pending}>
-              {resolvedCancel}
+          <DialogFooter>
+            <DialogCancel asChild>
+              <Button variant="ghost" disabled={pending}>
+                {resolvedCancel}
+              </Button>
+            </DialogCancel>
+            <Button
+              variant={effectiveVariant === "destructive" ? "destructive" : "default"}
+              onClick={handleConfirm}
+              disabled={pending || !phraseMatches}
+            >
+              {pending ? t("common.working") : resolvedConfirm}
             </Button>
-          </DialogCancel>
-          <Button
-            variant={effectiveVariant === "destructive" ? "destructive" : "default"}
-            onClick={handleConfirm}
-            disabled={pending || !phraseMatches}
-          >
-            {pending ? t("common.working") : resolvedConfirm}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </DialogRoot>
+          </DialogFooter>
+        </AlertDialogPrimitive.Content>
+      </AlertDialogPrimitive.Portal>
+    </AlertDialogPrimitive.Root>
   );
 }
 
@@ -307,11 +253,7 @@ export const Dialog = Object.assign(DialogRoot, {
   Close: DialogClose,
   Action: DialogAction,
   Cancel: DialogCancel,
-  Confirm: AlertDialog,
 });
-
-/** @deprecated Use AlertDialog. */
-const DialogConfirm = AlertDialog;
 
 export {
   DialogRoot,
@@ -327,5 +269,4 @@ export {
   DialogAction,
   DialogCancel,
   AlertDialog,
-  DialogConfirm,
 };

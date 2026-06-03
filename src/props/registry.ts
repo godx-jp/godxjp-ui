@@ -696,21 +696,6 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: ["ColumnDefProp", "DensityProp", "SortStateProp", "SelectedIdsProp"],
   },
-  DialogConfirmProp: {
-    group: "feedback",
-    file: "components/feedback.prop.ts",
-    vocabulary: [
-      "OpenProp",
-      "OnOpenChangeProp",
-      "TitleProp",
-      "DescriptionProp",
-      "ConfirmLabelProp",
-      "CancelLabelProp",
-      "ConfirmVariantProp",
-      "OnValueChangeProp",
-      "PendingProp",
-    ],
-  },
   AlertDialogProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",

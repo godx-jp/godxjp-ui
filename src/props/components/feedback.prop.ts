@@ -33,9 +33,6 @@ export type AlertDialogProp = {
   pending?: PendingProp;
 };
 
-/** @see DialogConfirm — deprecated alias for AlertDialog. */
-export type DialogConfirmProp = AlertDialogProp;
-
 /** @see Alert */
 export type AlertQueryErrorProp = {
   error: unknown;

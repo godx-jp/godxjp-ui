@@ -12,15 +12,8 @@ export {
   DialogAction,
   DialogCancel,
   AlertDialog,
-  DialogConfirm,
 } from "./dialog";
-export type {
-  AlertDialogProp,
-  AlertDialogProps,
-  DialogMode,
-  DialogConfirmProp,
-  DialogConfirmProps,
-} from "./dialog";
+export type { AlertDialogProp, AlertDialogProps } from "./dialog";
 export {
   Sheet,
   SheetClose,
