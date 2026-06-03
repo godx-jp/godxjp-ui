@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { renderWithUi } from "@/test/render";
-import { Stack } from "../stack";
-import { Inline } from "../inline";
+import { Flex } from "../flex";
 
 describe("Stack", () => {
   it.each([
@@ -12,10 +11,10 @@ describe("Stack", () => {
     ["xl", "ui-flex-gap-xl"],
   ] as const)("applies gap=%s → %s", (gap, cls) => {
     const { container } = renderWithUi(
-      <Stack gap={gap}>
+      <Flex direction="col" gap={gap}>
         <span>a</span>
         <span>b</span>
-      </Stack>,
+      </Flex>,
     );
     expect(container.firstChild).toHaveClass(cls);
   });
@@ -29,10 +28,10 @@ describe("Inline", () => {
     ["lg", "ui-flex-gap-lg"],
   ] as const)("applies gap=%s → %s", (gap, cls) => {
     const { container } = renderWithUi(
-      <Inline gap={gap}>
+      <Flex direction="row" wrap align="center" gap={gap}>
         <span>a</span>
         <span>b</span>
-      </Inline>,
+      </Flex>,
     );
     expect(container.firstChild).toHaveClass(cls);
   });

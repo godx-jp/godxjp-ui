@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { FilterBar, FilterGroup } from "../filter-bar";
-import { PageHeader } from "../page-header";
+import { Toolbar, ToolbarGroup } from "../filter-bar";
+import { PageContainer } from "../../layout/page-container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs";
 
 describe("FilterBar", () => {
@@ -9,11 +9,11 @@ describe("FilterBar", () => {
     const user = userEvent.setup();
     const onClear = vi.fn();
     renderWithUi(
-      <FilterBar onClear={onClear} hasActiveFilters>
-        <FilterGroup label="Status">
+      <Toolbar onClear={onClear} hasActiveFilters>
+        <ToolbarGroup label="Status">
           <span>Active</span>
-        </FilterGroup>
-      </FilterBar>,
+        </ToolbarGroup>
+      </Toolbar>,
     );
     await user.click(screen.getByRole("button", { name: /xóa bộ lọc/i }));
     expect(onClear).toHaveBeenCalledOnce();
@@ -21,9 +21,9 @@ describe("FilterBar", () => {
 
   it("hides clear when hasActiveFilters=false", () => {
     renderWithUi(
-      <FilterBar onClear={() => undefined} hasActiveFilters={false}>
+      <Toolbar onClear={() => undefined} hasActiveFilters={false}>
         <span>f</span>
-      </FilterBar>,
+      </Toolbar>,
     );
     expect(screen.queryByRole("button", { name: /xóa bộ lọc/i })).not.toBeInTheDocument();
   });
@@ -32,7 +32,7 @@ describe("FilterBar", () => {
 describe("PageHeader", () => {
   it("renders title and description (legacy)", () => {
     renderWithUi(
-      <PageHeader title="Legacy" description="Sub" actions={<button type="button">Go</button>} />,
+      <PageContainer title="Legacy" subtitle="Sub" extra={<button type="button">Go</button>} />,
     );
     expect(screen.getByRole("heading", { name: "Legacy" })).toBeInTheDocument();
     expect(screen.getByText("Sub")).toBeInTheDocument();

@@ -2,6 +2,9 @@ import * as React from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 
+import { Card, CardContent } from "@godxjp/ui/data-display";
+import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
+
 import { AppProvider } from "../../src/app/app-provider";
 import { StoryDemoBlock } from "./demo-block";
 import { SimpleDemoBlock } from "./simple-demo-block";
@@ -254,31 +257,44 @@ function DocPage({
 
   return (
     <div className="preview-stage">
-      <article className="doc-page">
-        <header className="doc-page-header">
-          <h1 className="doc-page-title">{entry.storyName}</h1>
-          {groupIntro ? <Markdown source={groupIntro} className="doc-page-intro" /> : null}
-        </header>
-        {entry.storyDoc ? <Markdown source={entry.storyDoc} className="doc-story-body" /> : null}
+      <PageContainer title={entry.storyName} subtitle={entry.groupPath.join(" / ")} variant="flush">
+        <Flex direction="col" gap="xl">
+          <Card>
+            <CardContent>
+              <Flex direction="col" gap="md">
+                {groupIntro ? <Markdown source={groupIntro} className="doc-page-intro" /> : null}
+                {entry.storyDoc ? (
+                  <Markdown source={entry.storyDoc} className="doc-story-body" />
+                ) : null}
+              </Flex>
+            </CardContent>
+          </Card>
 
-        {isPrimitive ? (
-          <SimpleDemoBlock source={source} loading={loading} error={error}>
-            {demo}
-          </SimpleDemoBlock>
-        ) : (
-          <StoryDemoBlock
-            storyId={entry.id}
-            source={source}
-            layout={entry.layout}
-            viewportWidth={entry.viewportWidth}
-            viewportHeight={entry.viewportHeight}
-            loading={loading}
-            error={error}
-          >
-            {demo}
-          </StoryDemoBlock>
-        )}
-      </article>
+          <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 1 }}>
+            <Card>
+              <CardContent>
+                {isPrimitive ? (
+                  <SimpleDemoBlock source={source} loading={loading} error={error}>
+                    {demo}
+                  </SimpleDemoBlock>
+                ) : (
+                  <StoryDemoBlock
+                    storyId={entry.id}
+                    source={source}
+                    layout={entry.layout}
+                    viewportWidth={entry.viewportWidth}
+                    viewportHeight={entry.viewportHeight}
+                    loading={loading}
+                    error={error}
+                  >
+                    {demo}
+                  </StoryDemoBlock>
+                )}
+              </CardContent>
+            </Card>
+          </ResponsiveGrid>
+        </Flex>
+      </PageContainer>
     </div>
   );
 }
@@ -312,27 +328,31 @@ function StoryCanvas({
 
   return (
     <div className="preview-stage">
-      <div className="preview-example-page">
-        <header className="doc-page-header">
-          <h1 className="doc-page-title">{entry.storyName}</h1>
-          <p className="doc-p">{entry.fullTitle}</p>
-        </header>
-        <StoryDemoBlock
-          storyId={entry.id}
-          source={source}
-          layout={entry.layout}
-          viewportWidth={entry.viewportWidth}
-          viewportHeight={entry.viewportHeight}
-          loading={loading}
-          error={error}
-        >
-          {Render ? (
-            <StoryErrorBoundary storyId={entry.id}>
-              <Render />
-            </StoryErrorBoundary>
-          ) : null}
-        </StoryDemoBlock>
-      </div>
+      <PageContainer title={entry.storyName} subtitle={entry.fullTitle} variant="flush">
+        <Flex direction="col" gap="xl">
+          <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 1 }}>
+            <Card>
+              <CardContent>
+                <StoryDemoBlock
+                  storyId={entry.id}
+                  source={source}
+                  layout={entry.layout}
+                  viewportWidth={entry.viewportWidth}
+                  viewportHeight={entry.viewportHeight}
+                  loading={loading}
+                  error={error}
+                >
+                  {Render ? (
+                    <StoryErrorBoundary storyId={entry.id}>
+                      <Render />
+                    </StoryErrorBoundary>
+                  ) : null}
+                </StoryDemoBlock>
+              </CardContent>
+            </Card>
+          </ResponsiveGrid>
+        </Flex>
+      </PageContainer>
     </div>
   );
 }

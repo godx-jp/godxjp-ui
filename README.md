@@ -65,21 +65,21 @@ Components emit `data-slot` / `data-*`; the look lives in `styles/*-layout.css`.
 
 ## Component groups
 
-| Group              | Import                    | Examples                                                                                                  |
-| ------------------ | ------------------------- | -------------------------------------------------------------------------------------------------------- |
-| **Layout**         | `@godxjp/ui/layout`       | `Flex` (+ `Stack`/`Inline`), `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Separator`, `AspectRatio`, `Resizable` |
-| **General**        | `@godxjp/ui/general`      | `Button`                                                                                                  |
+| Group              | Import                    | Examples                                                                                                                                                                                                                                |
+| ------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Layout**         | `@godxjp/ui/layout`       | `Flex` (+ `Stack`/`Inline`), `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Separator`, `AspectRatio`, `Resizable`                                                                                                          |
+| **General**        | `@godxjp/ui/general`      | `Button`                                                                                                                                                                                                                                |
 | **Data Entry**     | `@godxjp/ui/data-entry`   | `Input`, `Select`, `FormField`, `Field`, `DatePicker`, `TimePicker`, `Combobox`, `Switch`, `Toggle`, `Upload`, `Cascader`, `TreeSelect`, `ColorPicker`, `Slider`, `PasswordInput`, `PasswordStrength`, `InputOTP`, `Rating`, `TagInput` |
-| **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `Accordion`, `HoverCard`, `Carousel`, `Popover`, `Collapsible` |
-| **Feedback**       | `@godxjp/ui/feedback`     | `Dialog`, `AlertDialog`, `Sheet` (side), `Drawer` (bottom-sheet), `Toast`, `Skeleton`, `Alert`, `Tooltip` |
-| **Query**          | `@godxjp/ui/query`        | `DataState`, `InfiniteQueryState`, `PrefetchLink` (adapter subpath — pulls TanStack Query)                |
-| **Navigation**     | `@godxjp/ui/navigation`   | `Tabs`, `Toolbar` (+ `FilterBar`), `DropdownMenu`, `ContextMenu`, `Menubar`, `NavigationMenu`, `Steps`, `Pagination`, `Breadcrumb`, `LocalePicker` |
-| **App**            | `@godxjp/ui/app`          | `AppProvider`, `useDateTime` (adapter — i18n/datetime singleton)                                          |
-| **Datetime**       | `@godxjp/ui/datetime`     | `formatDate` (mandatory for display)                                                                      |
-| **Form**           | `@godxjp/ui/form`         | `useZodForm`, `FormRoot` (adapter subpath — pulls react-hook-form)                                        |
-| **Hooks**          | `@godxjp/ui/hooks`        | `useIsMobile`, `useMediaQuery`                                                                            |
-| **shadcn paths**   | `@godxjp/ui/ui`           | Thin re-exports for shadcn-style imports (tree-shakeable)                                                 |
-| **Admin (legacy)** | `@godxjp/ui/admin`        | Compound admin exports                                                                                    |
+| **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `Accordion`, `HoverCard`, `Carousel`, `Popover`, `Collapsible`                                                       |
+| **Feedback**       | `@godxjp/ui/feedback`     | `Dialog`, `AlertDialog`, `Sheet` (side), `Drawer` (bottom-sheet), `Toast`, `Skeleton`, `Alert`, `Tooltip`                                                                                                                               |
+| **Query**          | `@godxjp/ui/query`        | `DataState`, `InfiniteQueryState`, `PrefetchLink` (adapter subpath — pulls TanStack Query)                                                                                                                                              |
+| **Navigation**     | `@godxjp/ui/navigation`   | `Tabs`, `Toolbar` (+ `FilterBar`), `DropdownMenu`, `ContextMenu`, `Menubar`, `NavigationMenu`, `Steps`, `Pagination`, `Breadcrumb`, `LocalePicker`                                                                                      |
+| **App**            | `@godxjp/ui/app`          | `AppProvider`, `useDateTime` (adapter — i18n/datetime singleton)                                                                                                                                                                        |
+| **Datetime**       | `@godxjp/ui/datetime`     | `formatDate` (mandatory for display)                                                                                                                                                                                                    |
+| **Form**           | `@godxjp/ui/form`         | `useZodForm`, `FormRoot` (adapter subpath — pulls react-hook-form)                                                                                                                                                                      |
+| **Hooks**          | `@godxjp/ui/hooks`        | `useIsMobile`, `useMediaQuery`                                                                                                                                                                                                          |
+| **shadcn paths**   | `@godxjp/ui/ui`           | Thin re-exports for shadcn-style imports (tree-shakeable)                                                                                                                                                                               |
+| **Admin (legacy)** | `@godxjp/ui/admin`        | Compound admin exports                                                                                                                                                                                                                  |
 
 > **Renamed in 8.0** (thin aliases kept): `Stack`/`Inline`→`Flex`, `KeyValueGrid`→`Descriptions`,
 > `ProgressMeter`→`Progress`, `CardStat`→`StatCard`, `FilterBar`→`Toolbar`, `ChoiceField`→`Field`,
@@ -146,13 +146,13 @@ pnpm release --ui <patch|minor|major> --mcp <…|skip>   # publish lib + MCP in 
 
 **Five CI guards** (wired into `verify` / `verify:release`) keep the library honest:
 
-| Guard | Enforces |
-| --- | --- |
-| `check:prop-vocabulary` | every public `*Prop` field maps to the registry (no ad-hoc props) |
-| `check:token-tiers` | 3-tier tokens; no domain/raw-palette tokens in component CSS |
-| `check:mcp-sync` | every MCP catalog entry is a real export (no stale agent guidance) |
-| `check:mcp-orphans` | every public component HAS a catalog entry (catalog can't rot) |
-| `check:core-isolation` | the root export pulls no foreign runtime (adapters stay on subpaths) |
+| Guard                   | Enforces                                                             |
+| ----------------------- | -------------------------------------------------------------------- |
+| `check:prop-vocabulary` | every public `*Prop` field maps to the registry (no ad-hoc props)    |
+| `check:token-tiers`     | 3-tier tokens; no domain/raw-palette tokens in component CSS         |
+| `check:mcp-sync`        | every MCP catalog entry is a real export (no stale agent guidance)   |
+| `check:mcp-orphans`     | every public component HAS a catalog entry (catalog can't rot)       |
+| `check:core-isolation`  | the root export pulls no foreign runtime (adapters stay on subpaths) |
 
 This repo ships two packages — `@godxjp/ui` (this dir) and `@godxjp/ui-mcp` (`mcp/`). They keep
 separate version lines but release together via `pnpm release`; see DEVELOPMENT.md §6.

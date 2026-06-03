@@ -19,7 +19,7 @@ export { Radio, RadioGroup, RadioItem, RadioGroupRoot } from "./radio";
 export { Textarea } from "./textarea";
 export type { TextareaProps } from "./textarea";
 export { FormField } from "./form-field";
-export { Field, ChoiceField } from "./choice-field";
+export { Field } from "./choice-field";
 export type { ChoiceFieldProps, FieldProps } from "./choice-field";
 export { CountrySelect, CountryOptionLabel } from "./country-select";
 export type {
@@ -47,8 +47,6 @@ export { TimePicker } from "./time-picker";
 export type { TimePickerProps } from "./time-picker";
 export { ColorPicker } from "./color-picker";
 export type { ColorPickerProps } from "./color-picker";
-export { Autocomplete } from "./autocomplete";
-export type { AutocompleteProps } from "./autocomplete";
 export { SearchSelect } from "./search-select";
 export type {
   SearchSelectProps,

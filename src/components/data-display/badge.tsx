@@ -57,7 +57,7 @@ const STATUS_MAP: Record<string, StatusDef> = {
 };
 
 const badgeVariants = cva(
-  "inline-flex items-center border text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring",
+  "inline-flex items-center border text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring",
   {
     variants: {
       variant: {

@@ -12,7 +12,7 @@ import {
 import { useTranslation } from "../../i18n/use-translation";
 import { humanError } from "../../lib/format";
 import { cn } from "../../lib/utils";
-import { Inline } from "../layout/inline";
+import { Flex } from "../layout/flex";
 import { Button } from "../general/button";
 import type { ToneProp } from "../../props/vocabulary";
 import type {
@@ -146,10 +146,10 @@ export function AlertQueryError({ error, onRetry, className }: AlertQueryErrorPr
               void onRetry();
             }}
           >
-            <Inline gap="xs">
+            <Flex direction="row" wrap align="center" gap="xs">
               <RefreshCw className="size-4" aria-hidden="true" />
               {t("common.retry")}
-            </Inline>
+            </Flex>
           </Button>
         </AlertActions>
       )}

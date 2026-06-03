@@ -1,13 +1,13 @@
 export { DataState } from "./data-state";
 export type { DataStateProp, DataStateProps } from "./data-state";
-export { AlertMutationFeedback, MutationFeedback } from "./mutation-feedback";
+export { AlertMutationFeedback } from "./mutation-feedback";
 export type {
   AlertMutationFeedbackProp,
   AlertMutationFeedbackProps,
   MutationFeedbackProp,
   MutationFeedbackProps,
 } from "./mutation-feedback";
-export { ButtonRefetch, QueryRefetchButton } from "./query-refetch-button";
+export { ButtonRefetch } from "./query-refetch-button";
 export type {
   ButtonRefetchProp,
   ButtonRefetchProps,

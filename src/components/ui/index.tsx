@@ -1,7 +1,6 @@
 export * from "./alert";
 export * from "./alert-dialog";
 export * from "./aspect-ratio";
-export * from "./autocomplete";
 export * from "./avatar";
 export * from "./badge";
 export * from "./button";

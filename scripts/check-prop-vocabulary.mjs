@@ -5,9 +5,13 @@ import { join } from "node:path";
 const root = process.cwd();
 const propsDir = join(root, "src/props/components");
 const registrySrc = readFileSync(join(root, "src/props/registry.ts"), "utf8");
-const vocabularyBlock = registrySrc.match(/export const VOCABULARY_REGISTRY = \{([\s\S]*?)\n\} as const;/)?.[1] ?? "";
-const componentBlock = registrySrc.match(/export const COMPONENT_PROP_REGISTRY = \{([\s\S]*?)\n\} as const;/)?.[1] ?? "";
-const vocabulary = new Set([...vocabularyBlock.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*Prop):/gm)].map((m) => m[1]));
+const vocabularyBlock =
+  registrySrc.match(/export const VOCABULARY_REGISTRY = \{([\s\S]*?)\n\} as const;/)?.[1] ?? "";
+const componentBlock =
+  registrySrc.match(/export const COMPONENT_PROP_REGISTRY = \{([\s\S]*?)\n\} as const;/)?.[1] ?? "";
+const vocabulary = new Set(
+  [...vocabularyBlock.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*Prop):/gm)].map((m) => m[1]),
+);
 const components = new Map();
 
 for (const match of componentBlock.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*Prop):\s*\{/gm)) {
@@ -123,7 +127,8 @@ for (const file of walk(propsDir)) {
       failures.push(`${rel}: exported ${name} has no COMPONENT_PROP_REGISTRY entry`);
       continue;
     }
-    if (entry.file !== rel) failures.push(`${name}: registry file is ${entry.file}, expected ${rel}`);
+    if (entry.file !== rel)
+      failures.push(`${name}: registry file is ${entry.file}, expected ${rel}`);
     const refs = entry.vocabulary ?? [];
     for (const ref of refs) {
       if (typeof ref === "string" && !vocabulary.has(ref)) {
@@ -148,7 +153,8 @@ for (const [name, entry] of components) {
 
 const canonicalAliases = ["PageTitleProp", "StackGapProp", "InlineGapProp", "StatusToneProp"];
 for (const alias of canonicalAliases) {
-  if (vocabulary.has(alias)) failures.push(`${alias}: forbidden canonical alias in VOCABULARY_REGISTRY`);
+  if (vocabulary.has(alias))
+    failures.push(`${alias}: forbidden canonical alias in VOCABULARY_REGISTRY`);
 }
 
 if (failures.length) {

@@ -41,6 +41,3 @@ export function ButtonRefetch({
     </Button>
   );
 }
-
-/** @deprecated Use ButtonRefetch or Button. */
-export const QueryRefetchButton = ButtonRefetch;

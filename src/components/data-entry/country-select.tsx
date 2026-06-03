@@ -3,7 +3,7 @@ import type {
   CountryOptionLabelProp,
   CountrySelectProp,
 } from "../../props/components/data-entry.prop";
-import { Inline } from "../layout/inline";
+import { Flex } from "../layout/flex";
 import {
   Select,
   SelectContent,
@@ -33,7 +33,7 @@ export function CountryOptionLabel({
       : country.name;
 
   return (
-    <Inline gap="xs" className={cn("items-center", className)}>
+    <Flex direction="row" wrap align="center" gap="xs" className={cn("items-center", className)}>
       {country.flagSvgPath != null && country.flagSvgPath !== "" && (
         <img
           src={country.flagSvgPath}
@@ -46,7 +46,7 @@ export function CountryOptionLabel({
         {text}
         {showCode && code !== "" && <span className="text-muted-foreground"> · {code}</span>}
       </span>
-    </Inline>
+    </Flex>
   );
 }
 

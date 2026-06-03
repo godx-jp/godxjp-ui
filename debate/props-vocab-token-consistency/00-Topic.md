@@ -1,9 +1,11 @@
 # Debate — Prop-vocabulary + design-token consistency standard for @godxjp/ui
 
 ## Question
+
 A professional UI framework must have a SYNCHRONIZED prop vocabulary and a STANDARDIZED token system.
 Evaluate the current state (`context/snapshot.md` + the real source under `src/props/vocabulary/`,
 `src/props/registry.ts`, `src/tokens/`, `src/styles/`) and decide the governing STANDARD, against:
+
 1. **Vocabulary completeness** — are all props that components use registered in the shared vocabulary? What's missing?
 2. **Concept clarity** — is each prop one clear concept? Any vaguely-named props?
 3. **Duplication** — duplicate prop NAMES for one concept (GapProp/InlineGapProp/StackGapProp), and duplicate
@@ -14,6 +16,7 @@ Evaluate the current state (`context/snapshot.md` + the real source under `src/p
 The deliverable is a STANDARD expressed as concrete, enforceable RULES + a cleanup list.
 
 ## Discrete OPTIONS
+
 - **STRICT-CANON.** One canonical vocabulary: collapse every duplicate to a single concept (one `GapProp`,
   one `VariantProp`, one `DensityProp`, one `TitleProp`); adopt the full controlled-input vocabulary
   (`value`/`defaultValue`/`onValueChange`, `open`/`defaultOpen`/`onOpenChange`), generic `SizeProp`/`ToneProp`;
@@ -27,6 +30,7 @@ The deliverable is a STANDARD expressed as concrete, enforceable RULES + a clean
   tokens, merge the 3 gap props); no broad vocabulary unification.
 
 ## Hard constraints
+
 - Library rules in force: #19 domain-neutral, #23 concept-first prop API (one concept per prop; reuse shared
   vocabulary), #32 no redundant props, #2/#15/#16 tokens are the source of truth. A `props/registry.ts` already exists.
 - Real comparison required: how do Radix, MUI, Chakra, Ant, Tailwind, Radix Themes, and the W3C Design Tokens
@@ -34,6 +38,7 @@ The deliverable is a STANDARD expressed as concrete, enforceable RULES + a clean
 - Some unification is breaking (prop renames). Migration cost is real but secondary to a coherent standard.
 
 ## Scoring rubric (weights sum 100)
+
 - **Consistency & predictability of the API** — 30
 - **Completeness (no gaps in vocabulary/tokens)** — 20
 - **Standards alignment (peer frameworks + W3C-DTCG)** — 20
@@ -41,8 +46,10 @@ The deliverable is a STANDARD expressed as concrete, enforceable RULES + a clean
 - **Migration cost** — 15
 
 ## Roster
+
 ADV-STRICT, ADV-PRAGMATIC, ADV-SQ, SKEPTIC (red-team all), JUDGE (scores; writes 04-Decision.md WITH a concrete
 "## RULES" section + cleanup list; records dissent).
 
 ## Status
+
 decided

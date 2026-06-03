@@ -1,9 +1,11 @@
 # Debate — How to fix the @godxjp/ui preview (overview spacing + sparse examples)
 
 ## Question
+
 The preview app (`preview/` + `examples/**/*.preview.tsx`, deployed to GitHub Pages) is the design
 system's reference site — it is BOTH user-facing docs AND a library of real usage examples. Two problems
 to fix, and a hard rule:
+
 1. **Overview spacing is raw/cramped.** Components in the overview are separated by ad-hoc margins or bare
    line breaks (read `preview/App.tsx`, `preview/demo-block.tsx`, `preview/catalog.ts`). It should use the
    framework's own layout primitives (`Stack`/`Inline`/`ResponsiveGrid`/`Flex` `gap`, `PageContainer`,
@@ -17,6 +19,7 @@ to fix, and a hard rule:
 What is the right STRATEGY/scope to fix this?
 
 ## Discrete OPTIONS
+
 - **Option POLISH — fix in place.** Keep the current preview architecture. Replace the overview's raw
   margins/line-breaks with framework layout primitives (one shared spacing recipe). Enrich each existing
   `*.preview.tsx` with realistic content + real images (via a neutral source). Smallest change; no new files.
@@ -30,6 +33,7 @@ What is the right STRATEGY/scope to fix this?
   (no raw HTML controls / no local components) so "chế cháo" can never creep back. Most structural.
 
 ## Hard constraints
+
 - Examples/overview use ONLY existing `@godxjp/ui` components — enforce, don't just request.
 - `pnpm preview:build` MUST stay green (it's the Pages gate) — examples can't reference removed/renamed parts.
 - Real images must come from a neutral, license-safe source (e.g. picsum/unsplash-source or committed neutral
@@ -37,6 +41,7 @@ What is the right STRATEGY/scope to fix this?
 - Spacing must come from layout primitives + tokens, never raw `p-*`/`gap-*`/`<br>`/margins in examples.
 
 ## Scoring rubric (weights sum 100)
+
 - **Fixes the user's two asks (spacing + realistic examples)** — 30
 - **Constraint adherence (only existing components; enforceable)** — 20
 - **Reference/teaching value (does it make the component obvious to a consumer)** — 20
@@ -44,9 +49,11 @@ What is the right STRATEGY/scope to fix this?
 - **Maintainability (examples don't rot; parity with the component set)** — 15
 
 ## Roster
+
 ADV-POLISH, ADV-RECIPES, ADV-SYSTEMATIZE, SKEPTIC (red-team all), JUDGE (scores rubric; writes
 04-Decision.md WITH a concrete execution plan — which files, which scenario screens, which spacing recipe,
 what guard; records dissent).
 
 ## Status
+
 decided

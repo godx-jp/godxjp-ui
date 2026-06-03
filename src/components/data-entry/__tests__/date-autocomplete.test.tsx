@@ -3,7 +3,6 @@ import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { Calendar } from "../calendar";
 import { DatePicker } from "../date-picker";
 import { DateRangePicker } from "../date-range-picker";
-import { Autocomplete } from "../autocomplete";
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "../command";
 
 describe("Calendar", () => {
@@ -66,29 +65,6 @@ describe("DateRangePicker", () => {
     expect(to.value).toBe("2026-05-10");
     expect(from).toHaveAttribute("name", "period_from");
     expect(to).toHaveAttribute("name", "period_to");
-  });
-});
-
-describe("Autocomplete", () => {
-  const options = [
-    { value: "osaka", label: "Osaka Hub" },
-    { value: "tokyo", label: "Tokyo Hub" },
-  ];
-
-  it("opens list and selects option", async () => {
-    const user = userEvent.setup();
-    const onValueChange = vi.fn();
-    renderWithUi(
-      <Autocomplete
-        options={options}
-        value="osaka"
-        onValueChange={onValueChange}
-        placeholder="Chọn hub"
-      />,
-    );
-    await user.click(screen.getByRole("combobox"));
-    await user.click(screen.getByRole("option", { name: "Tokyo Hub" }));
-    expect(onValueChange).toHaveBeenCalledWith("tokyo");
   });
 });
 

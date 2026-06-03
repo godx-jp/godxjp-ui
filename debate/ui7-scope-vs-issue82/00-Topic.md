@@ -1,7 +1,9 @@
 # Debate — What should @godxjp/ui 7.0.0 actually change?
 
 ## Question
+
 We are cutting a breaking `@godxjp/ui` **7.0.0**. Three inputs are in tension:
+
 1. **Already-decided cleanup** (locked, not up for debate): REMOVE 5 domain/dup components
    (ScanPanel, CodeBadge, ShellApp, Menu, MobileFrame); MERGE StatusBadge→Badge(`status`),
    TabsItems→Tabs(`items`), SwitchField→ChoiceField+Switch; RENAME KeyValueGrid→Descriptions,
@@ -17,6 +19,7 @@ We are cutting a breaking `@godxjp/ui` **7.0.0**. Three inputs are in tension:
    directly conflicts with the audit's suggestion to rename Sheet→Drawer.
 
 ## The discrete OPTIONS (mutually exclusive scope for 7.0.0)
+
 - **Option A — Conservative cleanup.** Ship ONLY the locked cleanup (input 1) + the 2–3
   unambiguously-canonical renames already implied (Descriptions, Progress). REJECT the audit's
   further renames/redesigns as over-engineering / churn. KEEP `Sheet` (do NOT rename to Drawer —
@@ -30,12 +33,14 @@ We are cutting a breaking `@godxjp/ui` **7.0.0**. Three inputs are in tension:
   Sheet→Drawer, etc.) + add #82's primitives. One sweeping 7.0.0.
 
 ## Hard constraints
+
 - Hard rename, NO deprecated aliases (already chosen). Domain-neutral (rule #19). Breaking release.
 - The library is consumed by a real app (MF: StatusBadge×59, KeyValueGrid/Sheet/CardStat usages) →
   migration cost is real. The library's own rules #19/#23/#31/#32/#33 are the design canon.
 - "Internationally standard naming" and "correct component design philosophy" are explicit goals.
 
 ## Scoring rubric (Judge scores each option; weights sum 100)
+
 - **Standards & design-philosophy fit** — 30 (does it make names/APIs genuinely more canonical?)
 - **Consumer migration cost / churn risk** — 25 (breakage vs value; needless renames are pure churn)
 - **Coherence & completeness** — 15 (does 7.0.0 tell one coherent story; does it leave obvious gaps?)
@@ -43,8 +48,10 @@ We are cutting a breaking `@godxjp/ui` **7.0.0**. Three inputs are in tension:
 - **Reversibility** — 15 (how hard to undo a wrong call later)
 
 ## Roster
+
 ADV-A (Conservative), ADV-B (#82-aligned middle), ADV-C (Maximalist audit), SKEPTIC (red-team all),
 JUDGE (neutral; scores rubric; writes 04-Decision.md; records dissent).
 
 ## Status
+
 decided

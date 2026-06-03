@@ -5,26 +5,19 @@ export type {
   PageContainerProp as PageContainerProps,
 } from "../../props/components/layout.prop";
 
-export { PageHeader } from "../navigation/page-header";
 /* eslint-disable-next-line @typescript-eslint/no-deprecated -- backward-compat export */
 export type { PageHeaderProp } from "../../props/components/layout.prop";
 
 export { PageContainer } from "../layout/page-container";
-export { Flex, Stack, Inline } from "../layout";
+export { Flex } from "../layout";
 export type { FlexProp, StackProp, InlineProp } from "../../props/components/layout.prop";
 
 export { EmptyState } from "../data-display/empty-state";
 export { Badge } from "../data-display/badge";
 export { FormField } from "../data-entry/form-field";
-export { Field, ChoiceField } from "../data-entry/choice-field";
+export { Field } from "../data-entry/choice-field";
 export { Descriptions } from "../data-display/descriptions";
-export {
-  SkeletonRows,
-  SkeletonTable,
-  SkeletonDetail,
-  SkeletonStat,
-  SkeletonCard,
-} from "../feedback/skeleton";
+export { SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonStat } from "../feedback/skeleton";
 // Query/router adapters intentionally NOT re-exported here — import from "@godxjp/ui/query"
 // so the root @godxjp/ui surface stays runtime-neutral (issue #83 / check-core-isolation).
 export {
@@ -46,7 +39,7 @@ export { Cascader } from "../data-entry/cascader";
 export { TreeSelect } from "../data-entry/tree-select";
 export { Transfer } from "../data-entry/transfer";
 export { Pagination, Steps, Tabs, TabsContent, TabsList, TabsTrigger } from "../navigation";
-export { FilterBar, FilterGroup, Toolbar, ToolbarGroup } from "../navigation/filter-bar";
+export { Toolbar, ToolbarGroup } from "../navigation/filter-bar";
 export {
   Dialog,
   DialogTrigger,

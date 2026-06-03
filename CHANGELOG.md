@@ -42,9 +42,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `verify:release`. The lib and the MCP stay **separate published packages** (browser dep vs Node
   server — merging would force the MCP SDK into every consumer bundle); this keeps them honest.
 - **Coordinated release** (`pnpm release`, `scripts/release.mjs`). `pnpm release --ui <bump>
-  --mcp <bump>` publishes `@godxjp/ui` and/or `@godxjp/ui-mcp` in lockstep (refuses a dirty tree,
+--mcp <bump>` publishes `@godxjp/ui` and/or `@godxjp/ui-mcp` in lockstep (refuses a dirty tree,
   runs `verify:release`, bumps, publishes, commits) so the two packages are never published out
-  of step by hand. Independent version lines (ui 6.x, mcp 0.x); only the *act* is coordinated.
+  of step by hand. Independent version lines (ui 6.x, mcp 0.x); only the _act_ is coordinated.
 
 ## [6.12.0] - 2026-06-02
 

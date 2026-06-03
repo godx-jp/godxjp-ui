@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { renderWithUi, screen } from "@/test/render";
-import { PageInset } from "../page-inset";
+import { PageContainer } from "../page-container";
 
 describe("PageInset", () => {
   it("renders children with inset class", () => {
     renderWithUi(
-      <PageInset>
+      <PageContainer.Inset>
         <p>Filter zone</p>
-      </PageInset>,
+      </PageContainer.Inset>,
     );
     expect(screen.getByText("Filter zone").parentElement).toHaveClass("ui-page-container-inset");
   });

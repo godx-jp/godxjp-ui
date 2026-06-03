@@ -95,6 +95,3 @@ export function SkeletonStat() {
     </div>
   );
 }
-
-/** @deprecated Use SkeletonStat. */
-export const SkeletonCard = SkeletonStat;

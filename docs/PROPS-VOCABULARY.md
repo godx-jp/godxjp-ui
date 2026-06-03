@@ -42,25 +42,25 @@ Import: `import type { TitleProp, GapProp } from "@godxjp/ui/props/vocabulary"`
 
 ## Layout & density
 
-| Type               | Values                              | Scope                     |
-| ------------------ | ----------------------------------- | ------------------------- |
-| `PageDensityProp`  | `compact \| default \| comfortable` | **PageContainer** subtree |
+| Type               | Values                              | Scope                                                |
+| ------------------ | ----------------------------------- | ---------------------------------------------------- |
+| `PageDensityProp`  | `compact \| default \| comfortable` | **PageContainer** subtree                            |
 | `GapProp`          | `xs \| sm \| md \| lg \| xl`        | `<Stack gap>`, `<Inline gap>` (Inline excludes `xl`) |
-| `TableDensityProp` | `compact \| comfortable`            | **DataTable** rows only   |
+| `TableDensityProp` | `compact \| comfortable`            | **DataTable** rows only                              |
 
 > **Critical:** `PageDensityProp` ≠ `TableDensityProp`. Never use bare `density` in new APIs.
 
 ## Interaction variants
 
-| Type                 | Values                                                            |
-| -------------------- | ----------------------------------------------------------------- |
-| `ButtonVariantProp`  | `default \| destructive \| outline \| secondary \| ghost \| link` |
-| `ButtonSizeProp`     | `default \| sm \| lg \| icon`                                     |
-| `ConfirmVariantProp` | `default \| destructive`                                          |
+| Type                 | Values                                                                     |
+| -------------------- | -------------------------------------------------------------------------- |
+| `ButtonVariantProp`  | `default \| destructive \| outline \| secondary \| ghost \| link`          |
+| `ButtonSizeProp`     | `default \| sm \| lg \| icon`                                              |
+| `ConfirmVariantProp` | `default \| destructive`                                                   |
 | `ToneProp`           | `default \| success \| warning \| destructive \| info \| muted \| neutral` |
-| `SortDirectionProp`  | `asc \| desc`                                                     |
-| `ColumnAlignProp`    | `left \| center \| right`                                         |
-| `SortStateProp`      | `{ key: string; direction: SortDirectionProp }`                   |
+| `SortDirectionProp`  | `asc \| desc`                                                              |
+| `ColumnAlignProp`    | `left \| center \| right`                                                  |
+| `SortStateProp`      | `{ key: string; direction: SortDirectionProp }`                            |
 
 ## Navigation
 
@@ -89,12 +89,12 @@ Import: `import type { TitleProp, GapProp } from "@godxjp/ui/props/vocabulary"`
 
 See `PROP_ALIASES_FORBIDDEN` in `@godxjp/ui/props/registry`:
 
-| Don't use                     | Use instead                             |
-| ----------------------------- | --------------------------------------- |
-| bare `description` on pages   | `SubtitleProp`                          |
-| bare `description` in dialogs | `DescriptionProp`                       |
-| `actions` on page header      | `ExtraProp`                             |
-| bare `density`                | `PageDensityProp` or `TableDensityProp` |
+| Don't use                     | Use instead                                        |
+| ----------------------------- | -------------------------------------------------- |
+| bare `description` on pages   | `SubtitleProp`                                     |
+| bare `description` in dialogs | `DescriptionProp`                                  |
+| `actions` on page header      | `ExtraProp`                                        |
+| bare `density`                | `PageDensityProp` or `TableDensityProp`            |
 | component-specific gap unions | `GapProp` or documented `Extract`/`Exclude` subset |
-| `onClear`                     | `OnClearFiltersProp`                    |
-| `loading` on buttons          | `PendingProp`                           |
+| `onClear`                     | `OnClearFiltersProp`                               |
+| `loading` on buttons          | `PendingProp`                                      |

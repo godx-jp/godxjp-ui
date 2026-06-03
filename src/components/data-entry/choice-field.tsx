@@ -24,6 +24,3 @@ export function Field({ id, label, description, className, children }: FieldProp
     </div>
   );
 }
-
-/** @deprecated Use Field. */
-export const ChoiceField = Field;

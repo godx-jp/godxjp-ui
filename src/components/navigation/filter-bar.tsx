@@ -38,9 +38,3 @@ export function ToolbarGroup({ label, className, children }: ToolbarGroupProp) {
     </div>
   );
 }
-
-/** @deprecated Use Toolbar. */
-export const FilterBar = Toolbar;
-
-/** @deprecated Use ToolbarGroup. */
-export const FilterGroup = ToolbarGroup;

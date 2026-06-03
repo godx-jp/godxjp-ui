@@ -15,7 +15,7 @@ import * as React from "react";
 import { ArrowDown, ArrowUp, ChevronsUpDown, Layers, Layers2, MoreHorizontal } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
-import { Inline } from "../layout/inline";
+import { Flex } from "../layout/flex";
 import { Button } from "../general/button";
 import { EmptyState } from "./empty-state";
 import {
@@ -269,10 +269,10 @@ DataTable.DensityToggle = function DataTableDensityToggle() {
       }}
       aria-label={t("dataTable.densitySwitch", { density: nextLabel })}
     >
-      <Inline gap="xs">
+      <Flex direction="row" wrap align="center" gap="xs">
         <Icon className="size-4" aria-hidden="true" />
         {density === "compact" ? t("dataTable.densityCompact") : t("dataTable.densityComfortable")}
-      </Inline>
+      </Flex>
     </Button>
   );
 };

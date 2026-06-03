@@ -3,7 +3,6 @@
 /* Default sans font — self-contained so consumers need no font config (subsetted: latin/vi/jp). */
 @import "@fontsource/m-plus-2/400.css";
 @import "@fontsource/m-plus-2/500.css";
-@import "@fontsource/m-plus-2/600.css";
 @import "@fontsource/m-plus-2/700.css";
 @import "tailwindcss";
 @source "../**/*.{tsx,ts}";
@@ -102,6 +101,40 @@
       "cv11",
       "rlig" 1,
       "calt" 1;
+  }
+
+  /* Semantic heading scale — SEO + accessibility: real <h1>–<h6> elements carry
+   * the document outline (one <h1> per page, levels never skipped). Visual size
+   * follows the dxs-kintai scale; component titles override via their own class. */
+  h1 {
+    font-size: var(--heading-h1);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
+  }
+
+  h2 {
+    font-size: var(--heading-h2);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
+  }
+
+  h3 {
+    font-size: var(--heading-h3);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
+  }
+
+  h4 {
+    font-size: var(--heading-h4);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
+  }
+
+  h5,
+  h6 {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
   }
 
   code {

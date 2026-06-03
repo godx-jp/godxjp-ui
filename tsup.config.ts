@@ -24,7 +24,10 @@ function entriesFromExports(): string[] {
     if (!dist || !dist.endsWith(".js")) {
       continue;
     }
-    const base = dist.replace(/^\.\//, "").replace(/^dist\//, "src/").replace(/\.js$/, "");
+    const base = dist
+      .replace(/^\.\//, "")
+      .replace(/^dist\//, "src/")
+      .replace(/\.js$/, "");
     for (const ext of [".tsx", ".ts"]) {
       if (existsSync(join(import.meta.dirname, base + ext))) {
         seen.add(base + ext);

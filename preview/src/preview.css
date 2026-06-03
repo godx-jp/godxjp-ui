@@ -326,20 +326,7 @@ button {
   overflow: hidden;
 }
 
-/* ================ doc page (Ant Design style) ================ */
-
-.doc-page {
-  width: 100%;
-  /* Full-width column; horizontal inset only — no centered 960 cap */
-  padding: 24px 32px 32px;
-  background: hsl(var(--background));
-}
-
-.preview-example-page {
-  width: 100%;
-  padding: 24px 32px 32px;
-  background: hsl(var(--background));
-}
+/* ================ doc page (content tokens and typography) ================ */
 
 .doc-page-header {
   margin: 0 0 16px;
@@ -805,11 +792,6 @@ button {
 }
 
 @media (max-width: 639px) {
-  .doc-page,
-  .preview-example-page {
-    padding: 16px 20px 24px;
-  }
-
   .demo-block {
     margin-left: 0;
     margin-right: 0;

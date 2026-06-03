@@ -1,9 +1,11 @@
 # ADV-C Evidence Dossier — Option C
 
 ## Position
+
 - Option C should ship one hard 7.0.0 overhaul: locked cleanup, bulk audit renames/API redesigns, Sheet->Drawer, and #82 primitives. Reason: the project has already chosen hard renames with no deprecated aliases, so every deferred naming/API correction becomes a second migration instead of one coherent migration window (debate/ui7-scope-vs-issue82/00-Topic.md:28, debate/ui7-scope-vs-issue82/00-Topic.md:32).
 
 ## Assumptions
+
 - 7.0.0 is already a breaking release with no deprecated aliases.
 - Consumer migration cost is real, but a second later hard rename is worse than doing standards-aligned changes once.
 - The audit is candidate evidence, not authority; accept changes where source confirms non-canonical naming, domain coupling, router/query coupling, or composition problems.
@@ -11,6 +13,7 @@
 - Design-system facts from common systems are admissible: Radix/shadcn keep Dialog and AlertDialog separate; MUI uses AppBar, Container, Grid; Chakra uses SimpleGrid; Mantine uses AppShell; Ant/MUI/Carbon/Fluent do not ship app-specific country/locale/date-format widgets as core primitives; Radix/shadcn expose Select as a compound primitive and Combobox/Command-like search as a separate pattern.
 
 ## Accept: locked cleanup
+
 - Remove `ScanPanel`, `CodeBadge`, `ShellApp`, `Menu`, `MobileFrame`: locked scope says these are domain/duplicate components, and the layout barrel still exports `ShellApp`, `Menu`, and `MobileFrame` today (debate/ui7-scope-vs-issue82/00-Topic.md:5, src/components/layout/index.ts:16).
 - Merge `StatusBadge` into `Badge(status)`: locked scope; admin barrel still exports `StatusBadge`, so 7.0.0 must clear the legacy name instead of carrying two chip names (debate/ui7-scope-vs-issue82/00-Topic.md:6, src/components/admin/index.ts:17).
 - Rename `KeyValueGrid` -> `Descriptions`: locked scope; admin barrel still exports `KeyValueGrid` (debate/ui7-scope-vs-issue82/00-Topic.md:7, src/components/admin/index.ts:19).
@@ -20,6 +23,7 @@
 - Merge `SwitchField` -> `ChoiceField+Switch`: locked scope; data-entry barrel still exports `SwitchField` (debate/ui7-scope-vs-issue82/00-Topic.md:7, src/components/data-entry/index.ts:21).
 
 ## Accept: high-value audit renames/redesigns
+
 - `PageContainer` -> `PageShell` plus split header/body/footer slots: current implementation is title/header/body/footer shell, not a MUI-style width container, and it imports `react-router-dom` for breadcrumb links, which violates portability (src/components/layout/page-container.tsx:1, src/components/layout/page-container.tsx:2, src/components/layout/page-container.tsx:18, src/components/layout/page-container.tsx:40, src/components/layout/page-container.tsx:76).
 - `ResponsiveGrid` -> `SimpleGrid` with flexible columns/responsive value: current API is only `2 | 3 | 4`, confirming the audit's thin-wrapper concern; Chakra's canonical name is `SimpleGrid` (src/components/layout/responsive-grid.tsx:3, src/components/layout/responsive-grid.tsx:8, debate/ui7-scope-vs-issue82/context/audit-findings.md:7).
 - Keep `AppShell` name but redesign composition: Mantine makes `AppShell` a standard name, but current props mix full `topbar` with partial `topbarLeft`, `topbarRight`, `logo`, and `sidebarCollapsed`, violating one-concept-per-prop/single responsibility (src/props/components/layout.prop.ts:49, src/props/components/layout.prop.ts:53, src/props/components/layout.prop.ts:59, mcp/src/data/rules.ts:36).
@@ -58,10 +62,12 @@
 - `PrefetchLink` -> hook or Link prefetch prop: props import `react-router-dom` and TanStack query keys/functions, so it crosses router and data layers in one UI export (src/props/components/query.prop.ts:10, src/props/components/query.prop.ts:88, src/props/components/query.prop.ts:90).
 
 ## Accept: Sheet -> Drawer
+
 - Rename current `Sheet` to `Drawer` for the side-panel primitive in this maximalist option. The source is a side-positioned Dialog wrapper with `side: right|left|top|bottom`, and #82 requests a vaul bottom-sheet named `Drawer`; Option C intentionally resolves this by making `Drawer` the broad sliding-panel family now, rather than preserving a shadcn-specific `Sheet` name and adding a second adjacent overlay name (src/components/feedback/sheet.tsx:7, src/components/feedback/sheet.tsx:39, src/components/feedback/sheet.tsx:43, debate/ui7-scope-vs-issue82/context/issue-82.md:29).
 - Add a bottom-sheet/mobile behavior variant under `Drawer` using vaul-compatible semantics. Assumption: the library can choose a broader Drawer taxonomy even though #82 distinguishes side `Sheet` and bottom `Drawer`; this is a deliberate Option C tradeoff [unsupported beyond Option C topic at debate/ui7-scope-vs-issue82/00-Topic.md:28].
 
 ## Accept: #82 primitives
+
 - Add P1 in 7.0.0: `Avatar`, `Separator`, `Progress`, generic `Skeleton`, `Toggle`, `ToggleGroup`, `AspectRatio`; issue says a production migrator vendored these and they are standard Radix/community primitives (debate/ui7-scope-vs-issue82/context/issue-82.md:5, debate/ui7-scope-vs-issue82/context/issue-82.md:15).
 - Add P2 in 7.0.0 where dependencies are canonical: `Accordion`, `ContextMenu`, `HoverCard`, `Menubar`, `NavigationMenu`, `Drawer`, `Resizable`, `Carousel`; issue lists them as common overlays/navigation, with Radix/vaul/react-resizable-panels/embla sources (debate/ui7-scope-vs-issue82/context/issue-82.md:23).
 - Add P3 in 7.0.0 if API names are settled by the overhaul: `InputOTP`, `Combobox`, `PasswordInput`, `TimeInput`, `Rating`, `TagInput`; these close the primitive layer gap and prevent consumers from vendoring shadcn fragments again (debate/ui7-scope-vs-issue82/context/issue-82.md:33, debate/ui7-scope-vs-issue82/context/issue-82.md:49).
@@ -69,10 +75,12 @@
 - Add composable `AlertDialog` parts now, not later, because `Dialog` currently hides AlertDialog semantics behind `mode="confirm"` and #82 asks for lower-level composable parts (src/components/feedback/dialog.tsx:32, debate/ui7-scope-vs-issue82/context/issue-82.md:44).
 
 ## Reject or soften within Option C
+
 - Do not rename `Inline`; keep the name but add `align`, `justify`, `wrap`, `direction` or unify with `Stack`/`Flex`. The audit itself says `Inline` is legitimate; source confirms the current API only exposes `gap` (debate/ui7-scope-vs-issue82/context/audit-findings.md:6, src/components/layout/inline.tsx:7).
 - Do not rename `AppShell`; keep the Mantine-standard name, but redesign slots and move collapse ownership to Sidebar (debate/ui7-scope-vs-issue82/context/audit-findings.md:8, src/props/components/layout.prop.ts:49).
 - Do not rename `Sidebar`, `Breadcrumb`, `DataTable`, `Card`, `Badge`, `Timeline`, `SearchInput`, `Select`, `Checkbox`, `DatePicker`, `Dialog`, `SkeletonTable`, `Steps`, `TreeSelect`, `Upload`, `ColorPicker`, `Slider`, `Calendar`, `CheckboxGroup`, `Radio`, `Collapsible`, `TimezonePicker`, or `PrefetchLink` merely for novelty; where the audit calls the name standard, Option C should take the API redesign but keep the canonical name.
 - Do not keep `Sheet` alongside `Drawer` in Option C. This rejects #82's distinct naming preference, but it prevents two overlapping sliding-panel primitives in the same no-alias major and matches the Option C envelope (debate/ui7-scope-vs-issue82/00-Topic.md:16, debate/ui7-scope-vs-issue82/00-Topic.md:28).
 
 ## Confidence
+
 - 82/100. Strong confidence that Option C maximizes standards, coherence, and future migration efficiency; main risk is effort/deliverability, especially #82 P2/P3 and full Sidebar/AppShell/Select redesign.

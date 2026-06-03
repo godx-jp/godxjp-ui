@@ -5,8 +5,6 @@ export type {
   BreadcrumbItem,
   BreadcrumbItemProp,
 } from "./page-container";
-export { PageInset } from "./page-inset";
-export type { PageInsetProp, PageInsetProps } from "./page-inset";
 export { Flex } from "./flex";
 export type {
   FlexAlignProp,
@@ -15,11 +13,7 @@ export type {
   FlexProp,
   FlexProps,
 } from "./flex";
-export { Stack } from "./stack";
-export type { StackProp, StackProps } from "./stack";
 export { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "./resizable";
-export { Inline } from "./inline";
-export type { InlineProp, InlineProps } from "./inline";
 export { AppShell } from "./app-shell";
 export type { AppShellProps } from "./app-shell";
 export { Breadcrumb } from "./breadcrumb";
