@@ -2,6 +2,7 @@
   "name": "@godxjp/ui",
   "version": "9.2.0",
   "type": "module",
+  "packageManager": "pnpm@10.29.1",
   "sideEffects": false,
   "description": "@godxjp/ui — shared React UI framework (shadcn + Radix + Tailwind v4).",
   "files": [
