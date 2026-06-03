@@ -118,8 +118,97 @@ const DialogDescription = React.forwardRef<
       {...props}
     />
   );
-});
+  });
 DialogDescription.displayName = "DialogDescription";
+
+const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
+const AlertDialogPortal = AlertDialogPrimitive.Portal;
+const AlertDialogOverlay = React.forwardRef<
+  React.ComponentRef<typeof AlertDialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Overlay
+    ref={ref}
+    data-slot="dialog-overlay"
+    className={cn(
+      "ui-dialog-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+      className,
+    )}
+    {...props}
+  />
+));
+AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
+
+const AlertDialogContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> & {
+    showClose?: boolean;
+    showCloseButton?: boolean;
+  }
+>(({ className, children, showClose, showCloseButton: showCloseButtonProp, ...props }, ref) => {
+  const showCloseButton = showCloseButtonProp ?? showClose ?? false;
+  return (
+    <AlertDialogPrimitive.Content
+      ref={ref}
+      data-slot="dialog-content"
+      className={cn(
+        "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 duration-200 outline-none",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      {showCloseButton ? (
+        <AlertDialogPrimitive.Cancel asChild>
+          <button
+            type="button"
+            className="ring-offset-background focus:ring-ring transition-opacity focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+            aria-label="Close"
+          >
+            <X className="size-4" aria-hidden="true" />
+          </button>
+        </AlertDialogPrimitive.Cancel>
+      ) : null}
+    </AlertDialogPrimitive.Content>
+  );
+});
+AlertDialogContent.displayName = "AlertDialogContent";
+
+const AlertDialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div data-slot="dialog-header" className={cn(className)} {...props} />
+);
+AlertDialogHeader.displayName = "AlertDialogHeader";
+
+const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div data-slot="dialog-footer" className={cn(className)} {...props} />
+);
+AlertDialogFooter.displayName = "AlertDialogFooter";
+
+const AlertDialogTitle = React.forwardRef<
+  React.ComponentRef<typeof AlertDialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Title
+    ref={ref}
+    data-slot="dialog-title"
+    className={cn(className)}
+    {...props}
+  />
+));
+AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
+
+const AlertDialogDescription = React.forwardRef<
+  React.ComponentRef<typeof AlertDialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Description
+    ref={ref}
+    data-slot="dialog-description"
+    className={cn(className)}
+    {...props}
+  />
+));
+AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName;
 
 /** Confirm mode — primary action (maps to Radix AlertDialogAction). */
 const DialogAction = React.forwardRef<
@@ -142,6 +231,8 @@ const DialogCancel = React.forwardRef<
   />
 ));
 DialogCancel.displayName = "DialogCancel";
+const AlertDialogAction = DialogAction;
+const AlertDialogCancel = DialogCancel;
 
 /** Preset: confirm / destructive / type-to-confirm without compound markup. */
 function AlertDialog({
@@ -268,5 +359,15 @@ export {
   DialogClose,
   DialogAction,
   DialogCancel,
+  AlertDialogTrigger,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialog,
 };

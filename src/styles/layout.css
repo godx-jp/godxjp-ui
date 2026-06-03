@@ -473,11 +473,59 @@
     gap: var(--pagination-item-gap);
   }
 
+  .ui-pagination-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .ui-pagination-ellipsis {
     display: flex;
     align-items: center;
     justify-content: center;
     color: hsl(var(--muted-foreground));
+  }
+
+  .ui-pagination-link {
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    text-decoration: none;
+  }
+
+  .ui-pagination-link[data-active="true"] {
+    border-color: hsl(var(--ring) / 0.5);
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .ui-pagination-link:hover,
+  .ui-pagination-link[data-state="open"],
+  .ui-pagination-link[data-state="on"] {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-pagination-link[data-active="true"]:hover {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .ui-pagination-link[data-state="disabled"],
+  .ui-pagination-link[aria-disabled="true"],
+  .ui-pagination-link-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .ui-pagination-prev,
+  .ui-pagination-next {
+    gap: var(--space-2);
   }
 
   .ui-pagination-page {

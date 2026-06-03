@@ -7283,6 +7283,59 @@ export function InvoiceListHeader() {
     rules: [3, 6],
   },
   {
+    name: "PasswordStrength",
+    group: "data-entry",
+    tagline:
+      "Evaluates password quality with a 0-4 score and optional rule checklist. Use with PasswordInput in secure forms.",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        required: true,
+        description: "The current password value to evaluate.",
+      },
+      {
+        name: "rules",
+        type: 'PasswordRule[]',
+        description:
+          "`length` | `upper` | `lower` | `number` | `symbol`. Omit to use defaults.",
+      },
+      {
+        name: "showChecklist",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Render an optional checklist of rule checks below the bar.",
+      },
+      {
+        name: "labels",
+        type: "{ weak: string; fair: string; strong: string }",
+        description: "Text labels for the three score buckets.",
+      },
+    ],
+    usage: [
+      "DO show PasswordStrength immediately below PasswordInput so users understand password quality before submitting.",
+      "DO keep `rules` stable (default list is recommended for broad UI compatibility).",
+      "DON'T treat the score as cryptographic strength; use it as a UI hint only.",
+    ],
+    useCases: ["Account signup password field", "Password reset workflow", "Admin user invite form"],
+    related: ["PasswordInput", "FormField", "Input"],
+    example: `import { PasswordInput, PasswordStrength } from "@godxjp/ui/data-entry";
+
+const rules = ["length", "upper", "lower", "number", "symbol"] as const;
+
+export default function PasswordBlock() {
+  const [value, setValue] = useState("");
+  return (
+    <div className="ui-stack">
+      <PasswordInput value={value} onChange={(event) => setValue(event.target.value)} />
+      <PasswordStrength value={value} rules={rules} />
+    </div>
+  );
+}`,
+    storyPath: "data-entry/PasswordStrength.stories.tsx",
+    rules: [3, 6],
+  },
+  {
     name: "Drawer",
     group: "feedback",
     tagline:

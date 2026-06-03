@@ -11,6 +11,16 @@ export {
   DialogTrigger,
   DialogAction,
   DialogCancel,
+  AlertDialogTrigger,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialog,
 } from "./dialog";
 export type { AlertDialogProp, AlertDialogProps } from "./dialog";

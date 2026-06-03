@@ -66,6 +66,8 @@ function standaloneRoutePlugin(): Plugin {
 
 export default defineConfig({
   root: previewRoot,
+  // "/" for local dev; the Pages CI sets PREVIEW_BASE=/godxjp-ui/ for project-page asset paths.
+  base: process.env.PREVIEW_BASE ?? "/",
   plugins: [react(), tailwindcss(), standaloneRoutePlugin()],
   server: {
     port: 6008,
