@@ -52,7 +52,10 @@ const DEFAULT_ICONS: Record<ToneProp, LucideIcon> = {
 };
 
 const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
-  ({ variant = "default", tone = "default", icon, onDismiss, className, children, ...props }, ref) => {
+  (
+    { variant = "default", tone = "default", icon, onDismiss, className, children, ...props },
+    ref,
+  ) => {
     const IconComponent = icon === false ? null : (icon ?? DEFAULT_ICONS[tone]);
 
     return (
@@ -95,13 +98,7 @@ export const AlertTitle = React.forwardRef<HTMLParagraphElement, AlertTitleProp>
   ({ className, ...props }, ref) => {
     const tone = React.useContext(AlertContext);
     return (
-      <p
-        ref={ref}
-        data-slot="alert-title"
-        data-tone={tone}
-        className={className}
-        {...props}
-      />
+      <p ref={ref} data-slot="alert-title" data-tone={tone} className={className} {...props} />
     );
   },
 );

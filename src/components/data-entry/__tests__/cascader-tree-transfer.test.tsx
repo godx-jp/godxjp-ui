@@ -169,7 +169,11 @@ describe("Cascader", () => {
     const onChange = vi.fn();
 
     renderWithUi(
-      <Cascader options={REGION_OPTIONS} defaultValue={["vn", "hcm", "q1"]} onValueChange={onChange} />,
+      <Cascader
+        options={REGION_OPTIONS}
+        defaultValue={["vn", "hcm", "q1"]}
+        onValueChange={onChange}
+      />,
     );
 
     const combobox = screen.getByRole("combobox");
@@ -204,7 +208,9 @@ describe("Cascader", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    renderWithUi(<Cascader options={REGION_OPTIONS} multiple showSearch onValueChange={onChange} />);
+    renderWithUi(
+      <Cascader options={REGION_OPTIONS} multiple showSearch onValueChange={onChange} />,
+    );
     await user.click(screen.getByRole("combobox"));
     await user.type(screen.getByPlaceholderText(/tìm kiếm/i), "quận 1");
     await user.click(await screen.findByRole("button", { name: /quận 1/i }));
@@ -230,7 +236,11 @@ describe("Cascader", () => {
 
   it("reflects controlled single value on trigger", () => {
     renderWithUi(
-      <Cascader options={REGION_OPTIONS} value={["jp", "tokyo", "shibuya"]} onValueChange={vi.fn()} />,
+      <Cascader
+        options={REGION_OPTIONS}
+        value={["jp", "tokyo", "shibuya"]}
+        onValueChange={vi.fn()}
+      />,
     );
     expect(screen.getByRole("combobox")).toHaveTextContent("日本 / 東京都 / 渋谷区");
   });

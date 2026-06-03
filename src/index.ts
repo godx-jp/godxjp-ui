@@ -17,7 +17,4 @@ export { SkeletonStat } from "./components/feedback";
 export { AlertDialog } from "./components/feedback";
 export type { AlertDialogProps } from "./components/feedback";
 export { AlertMutationFeedback, ButtonRefetch } from "./components/query";
-export type {
-  AlertMutationFeedbackProps,
-  ButtonRefetchProps,
-} from "./components/query";
+export type { AlertMutationFeedbackProps, ButtonRefetchProps } from "./components/query";

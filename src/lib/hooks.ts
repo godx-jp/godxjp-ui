@@ -52,3 +52,41 @@ export function useTimeoutFlag(signal: unknown, ms = 2_000): boolean {
 
   return Boolean(signal) && active;
 }
+
+export function useMediaQuery(query: string): boolean {
+  const isBrowser = typeof window !== "undefined";
+
+  const getMatch = () => (isBrowser ? window.matchMedia(query).matches : false);
+
+  const [matches, setMatches] = useState<boolean>(getMatch());
+
+  useEffect(() => {
+    if (!isBrowser) return undefined;
+
+    const mediaQuery = window.matchMedia(query);
+
+    const updateMatch = () => {
+      setMatches(mediaQuery.matches);
+    };
+
+    updateMatch();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", updateMatch);
+      return () => {
+        mediaQuery.removeEventListener("change", updateMatch);
+      };
+    }
+
+    mediaQuery.addListener(updateMatch);
+    return () => {
+      mediaQuery.removeListener(updateMatch);
+    };
+  }, [isBrowser, query]);
+
+  return matches;
+}
+
+export function useIsMobile(): boolean {
+  return useMediaQuery("(max-width: 767px)");
+}

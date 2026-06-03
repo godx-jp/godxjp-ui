@@ -43,8 +43,7 @@ export const SKILLS: Skill[] = [
       {
         id: "mobile-first",
         title: "Mobile-first non-negotiable",
-        tagline:
-          "Defaults target xs (≥0px); enhance via sm: / md: / lg: / xl: / 2xl:",
+        tagline: "Defaults target xs (≥0px); enhance via sm: / md: / lg: / xl: / 2xl:",
         body: `Cardinal rule 24. Touch targets ≥ 44×44 px. NEVER read
 window.innerWidth — use useBreakpoint(). Stories render at narrow
 viewport first. Multi-column layouts: grid grid-cols-1 sm:grid-cols-N.
@@ -142,7 +141,8 @@ BANNED MOTION: linear / ease-in-out / instant → custom cubic-bezier
       {
         id: "vibe-archetypes",
         title: "3 Vibe Archetypes (pick 1)",
-        tagline: "Ethereal Glass (SaaS/AI) | Editorial Luxury (Lifestyle/Agency) | Soft Structuralism (Consumer/Health)",
+        tagline:
+          "Ethereal Glass (SaaS/AI) | Editorial Luxury (Lifestyle/Agency) | Soft Structuralism (Consumer/Health)",
         body: `1. ETHEREAL GLASS (SaaS / AI / Tech): OLED black #050505, radial
    mesh gradients (purple/emerald orbs), Vantablack cards with heavy
    backdrop-blur-2xl, white/10 hairlines. Wide geometric Grotesk.
@@ -157,7 +157,8 @@ BANNED MOTION: linear / ease-in-out / instant → custom cubic-bezier
       {
         id: "layout-archetypes",
         title: "3 Layout Archetypes (pick 1)",
-        tagline: "Asymmetric Bento | Z-Axis Cascade | Editorial Split — ALL collapse to single-col on mobile.",
+        tagline:
+          "Asymmetric Bento | Z-Axis Cascade | Editorial Split — ALL collapse to single-col on mobile.",
         body: `1. ASYMMETRIC BENTO: Masonry CSS Grid varying card sizes
    (col-span-8 row-span-2 next to stacked col-span-4). Mobile:
    grid-cols-1, gap-6, all col-span reset to 1.
@@ -202,7 +203,8 @@ icon translates diagonally + scales up — internal kinetic tension.`,
       {
         id: "magnetic-hover",
         title: "Magnetic button hover physics",
-        tagline: "Custom cubic-bezier, scale on press, internal translate on hover. NO linear easing.",
+        tagline:
+          "Custom cubic-bezier, scale on press, internal translate on hover. NO linear easing.",
         body: `Use group utility. Hover ≠ background color change. On hover:
 nested inner icon circle translates diagonally (group-hover:translate-
 x-1 group-hover:-translate-y-[1px]) AND scales up (scale-105). On
@@ -293,7 +295,8 @@ with gridColumn/gridRow span for the bento layout.`,
       {
         id: "components",
         title: "Component refinements",
-        tagline: "Primary CTA: solid black bg, 4-6px radius. Tags: pill + uppercase + 0.05em tracking + pastel.",
+        tagline:
+          "Primary CTA: solid black bg, 4-6px radius. Tags: pill + uppercase + 0.05em tracking + pastel.",
         body: `PRIMARY CTA: solid #111 bg, white text, 4-6px radius (NOT full pill),
 no shadow. Hover: shift to #333 or active:scale(0.98).
 TAGS/BADGES: pill (border-radius 9999px), text-xs UPPERCASE,
@@ -308,7 +311,8 @@ gray circles (macOS replica).`,
       {
         id: "motion",
         title: "Subtle invisible motion",
-        tagline: "Scroll-entry fade-up 600ms cubic-bezier(.16,1,.3,1). Card hover lift via shadow shift only.",
+        tagline:
+          "Scroll-entry fade-up 600ms cubic-bezier(.16,1,.3,1). Card hover lift via shadow shift only.",
         body: `Scroll entry: translateY(12px) + opacity(0) → 0/1 over 600ms with
 cubic-bezier(0.16, 1, 0.3, 1). IntersectionObserver, never raw scroll.
 Hover lift: box-shadow 0 → 0 2px 8px rgba(0,0,0,0.04) over 200ms.
@@ -331,7 +335,8 @@ position:fixed pointer-events-none layer.`,
       {
         id: "principles",
         title: "Brutalist principles",
-        tagline: "Raw mechanical interfaces — rigid grids, extreme type contrast, utilitarian color, analog degradation.",
+        tagline:
+          "Raw mechanical interfaces — rigid grids, extreme type contrast, utilitarian color, analog degradation.",
         body: `Rejects ornament. Embraces structure as aesthetic. Grids are visible
 (via borders or rules). Type scale is dramatically contrasted (massive
 display heading next to small tabular body). Color is utilitarian —
@@ -355,7 +360,8 @@ portfolios.`,
       {
         id: "principles",
         title: "GSAP motion + AIDA structure",
-        tagline: "Python-driven layout randomization, strict ScrollTrigger choreography, wide editorial typography.",
+        tagline:
+          "Python-driven layout randomization, strict ScrollTrigger choreography, wide editorial typography.",
         body: `AIDA (Attention/Interest/Desire/Action) page spine. Wide editorial
 typography — bans 6-line wraps (line lengths cap at ~5). Gapless bento
 grids (cards flush against each other, no gutter — outline borders
@@ -379,7 +385,8 @@ over current), scrubbing (animation tied to scroll progress).`,
       {
         id: "fix-priority",
         title: "Fix priority order",
-        tagline: "Font → palette → states → layout → components → loading/empty/error → typography polish.",
+        tagline:
+          "Font → palette → states → layout → components → loading/empty/error → typography polish.",
         body: `Apply in THIS order for max visual impact at min risk:
 
 1. FONT SWAP — biggest instant improvement, lowest risk.
@@ -397,7 +404,8 @@ over big rewrites.`,
       {
         id: "audit-checklist",
         title: "Audit checklist (8 categories)",
-        tagline: "Typography / color / layout / interactivity / content / components / iconography / code / omissions.",
+        tagline:
+          "Typography / color / layout / interactivity / content / components / iconography / code / omissions.",
         body: `See redesign-audit.ts (50+ checks). Common findings:
 
 TYPOGRAPHY: Inter everywhere, weak headlines, full-width paragraphs,
@@ -469,7 +477,8 @@ of writing it.`,
       {
         id: "principles",
         title: "Brandkit principles",
-        tagline: "Premium brand-guidelines boards — minimalist / cinematic / editorial / dark-tech / luxury / cultural variants.",
+        tagline:
+          "Premium brand-guidelines boards — minimalist / cinematic / editorial / dark-tech / luxury / cultural variants.",
         body: `Compositions for brand identity decks. Minimalist (workspace),
 cinematic (entertainment), editorial (publishing), dark-tech (SaaS),
 luxury (lifestyle), cultural (heritage), security (defense / fintech),
@@ -492,7 +501,8 @@ imagery. Flexible grid layouts.`,
       {
         id: "principles",
         title: "Stitch DESIGN.md principles",
-        tagline: "Agent-friendly design specs — strict type, calibrated color, asymmetric layout, micro-motion, hardware acceleration.",
+        tagline:
+          "Agent-friendly design specs — strict type, calibrated color, asymmetric layout, micro-motion, hardware acceleration.",
         body: `DESIGN.md = instruction set for downstream AI UI generators.
 Enforces: strict typography (no Inter, specific fonts named),
 calibrated color (specific hex, not "blue"), asymmetric layouts
@@ -515,7 +525,8 @@ expressive.`,
       {
         id: "principles",
         title: "Mobile image direction principles",
-        tagline: "App-native, premium, readable, flow-aware, platform-aware. Wrap in subtle premium phone mockup. Multi-screen consistency.",
+        tagline:
+          "App-native, premium, readable, flow-aware, platform-aware. Wrap in subtle premium phone mockup. Multi-screen consistency.",
         body: `Generate premium app-native mobile screen images + flow images
 (NOT generic AI mockups, NOT phone-shaped websites). Default mockup
 presence: subtle premium iPhone frame with visible chrome, focus
@@ -553,7 +564,8 @@ of 8: Hero", "Section 2 of 8: Trust bar").`,
       {
         id: "hero-composition-bias",
         title: "Hero composition variety",
-        tagline: "Left-text / right-image hero is the most overused AI pattern. Pick from 10 alternatives first.",
+        tagline:
+          "Left-text / right-image hero is the most overused AI pattern. Pick from 10 alternatives first.",
         body: `Before reaching for left-text/right-image hero, consider:
 - centered over background image
 - bottom-left over image
@@ -581,7 +593,8 @@ for the brand.`,
       {
         id: "workflow",
         title: "Image-to-code workflow",
-        tagline: "Generate design image → analyze → implement. Prefer large readable section-specific images.",
+        tagline:
+          "Generate design image → analyze → implement. Prefer large readable section-specific images.",
         body: `Workflow:
 1. Generate the design image FIRST (one per section, large + readable).
 2. Deeply analyze: composition, hierarchy, palette, typography, motion.
@@ -631,82 +644,123 @@ export function routeTask(task: string): RouteResult[] {
   };
 
   // Premium / agency / Awwwards
-  route(["premium", "awwwards", "agency", "linear", "apple", "high-end", "luxury"],
-    "soft", "vibe-archetypes",
+  route(
+    ["premium", "awwwards", "agency", "linear", "apple", "high-end", "luxury"],
+    "soft",
+    "vibe-archetypes",
     "Premium tier — pick a Vibe + Layout archetype + apply Double-Bezel.",
-    ["soft/double-bezel", "soft/magnetic-hover"]);
+    ["soft/double-bezel", "soft/magnetic-hover"],
+  );
 
   // Marketing / landing
-  route(["landing page", "marketing", "hero", "long scroll"],
-    "imagegen-web", "hero-composition-bias",
+  route(
+    ["landing page", "marketing", "hero", "long scroll"],
+    "imagegen-web",
+    "hero-composition-bias",
     "Landing pages benefit from hero composition variety + per-section image generation.",
-    ["gpt-tasteskill/principles", "soft/layout-archetypes"]);
+    ["gpt-tasteskill/principles", "soft/layout-archetypes"],
+  );
 
   // Mobile app screens
-  route(["mobile app", "ios", "android", "phone screen", "onboarding flow"],
-    "imagegen-mobile", "principles",
+  route(
+    ["mobile app", "ios", "android", "phone screen", "onboarding flow"],
+    "imagegen-mobile",
+    "principles",
     "Mobile app design — generate screens first, avoid phone-shaped-website.",
-    ["taste/mobile-first"]);
+    ["taste/mobile-first"],
+  );
 
   // Workspace / Notion-like
-  route(["workspace", "notion", "document", "editorial", "knowledge base"],
-    "minimalist", "palette",
+  route(
+    ["workspace", "notion", "document", "editorial", "knowledge base"],
+    "minimalist",
+    "palette",
     "Editorial workspace = warm monochrome + spot pastels + serif headings.",
-    ["minimalist/typography", "minimalist/bento-grids"]);
+    ["minimalist/typography", "minimalist/bento-grids"],
+  );
 
   // Data dashboard
-  route(["dashboard", "data heavy", "tabular", "ops table"],
-    "brutalist", "principles",
+  route(
+    ["dashboard", "data heavy", "tabular", "ops table"],
+    "brutalist",
+    "principles",
     "Data-heavy dashboards work with Brutalist (rigid grids, utilitarian color).",
-    ["taste/one-intent-per-screen"]);
+    ["taste/one-intent-per-screen"],
+  );
 
   // Brand work
-  route(["brand", "identity", "logo", "guidelines"],
-    "brandkit", "principles",
-    "Brand identity work — boards before screens.");
+  route(
+    ["brand", "identity", "logo", "guidelines"],
+    "brandkit",
+    "principles",
+    "Brand identity work — boards before screens.",
+  );
 
   // Existing project upgrade
-  route(["refactor", "redesign", "upgrade existing", "audit"],
-    "redesign", "fix-priority",
+  route(
+    ["refactor", "redesign", "upgrade existing", "audit"],
+    "redesign",
+    "fix-priority",
     "Existing project = run audit first, fix in priority order (font → palette → states → ...).",
-    ["redesign/audit-checklist"]);
+    ["redesign/audit-checklist"],
+  );
 
   // Form work
-  route(["form", "validation", "submit", "sign up", "registration"],
-    "taste", "form-discipline",
-    "Form must have explicit label + help + error wired via FormField (rule 34).");
+  route(
+    ["form", "validation", "submit", "sign up", "registration"],
+    "taste",
+    "form-discipline",
+    "Form must have explicit label + help + error wired via FormField (rule 34).",
+  );
 
   // Loading / saving
-  route(["loading", "saving", "skeleton", "spinner"],
-    "taste", "loading-states",
-    "Skeleton for INIT fetch, Spinner for active work. Never mix.");
+  route(
+    ["loading", "saving", "skeleton", "spinner"],
+    "taste",
+    "loading-states",
+    "Skeleton for INIT fetch, Spinner for active work. Never mix.",
+  );
 
   // Mobile-first concerns
-  route(["mobile first", "responsive", "breakpoint"],
-    "taste", "mobile-first",
-    "Default styles target xs. Touch targets ≥ 44px. Use useBreakpoint().");
+  route(
+    ["mobile first", "responsive", "breakpoint"],
+    "taste",
+    "mobile-first",
+    "Default styles target xs. Touch targets ≥ 44px. Use useBreakpoint().",
+  );
 
   // Output quality
-  route(["complete code", "full implementation", "no placeholder"],
-    "output", "banned",
-    "Banned: // ..., // TODO, 'for brevity'. Ship complete runnable code.");
+  route(
+    ["complete code", "full implementation", "no placeholder"],
+    "output",
+    "banned",
+    "Banned: // ..., // TODO, 'for brevity'. Ship complete runnable code.",
+  );
 
   // GSAP motion
-  route(["gsap", "scrolltrigger", "scroll choreography", "pinning"],
-    "gpt-tasteskill", "principles",
-    "GSAP ScrollTrigger — pinning, stacking, scrubbing.");
+  route(
+    ["gsap", "scrolltrigger", "scroll choreography", "pinning"],
+    "gpt-tasteskill",
+    "principles",
+    "GSAP ScrollTrigger — pinning, stacking, scrubbing.",
+  );
 
   // Image-first / design-first
-  route(["from image", "image to code", "design first"],
-    "image-to-code", "workflow",
-    "Generate design image first → analyze → implement.");
+  route(
+    ["from image", "image to code", "design first"],
+    "image-to-code",
+    "workflow",
+    "Generate design image first → analyze → implement.",
+  );
 
   if (matches.length === 0) {
-    return [{
-      skill: "taste",
-      section: "<see whenToUse>",
-      why: `No keyword match for "${task}". Default to the "taste" baseline — see whenToUse for sections.`,
-    }];
+    return [
+      {
+        skill: "taste",
+        section: "<see whenToUse>",
+        why: `No keyword match for "${task}". Default to the "taste" baseline — see whenToUse for sections.`,
+      },
+    ];
   }
 
   return matches;

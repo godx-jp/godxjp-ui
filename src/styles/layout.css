@@ -173,15 +173,47 @@
   }
 
   @container (min-width: 1024px) {
-    .ui-responsive-grid {
-      grid-template-columns: repeat(var(--responsive-grid-lg, 4), minmax(0, 1fr));
-    }
+  .ui-responsive-grid {
+    grid-template-columns: repeat(var(--responsive-grid-lg, 4), minmax(0, 1fr));
+  }
   }
 
   .ui-split-pane {
     display: grid;
     gap: var(--space-stack-md);
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ui-resizable-panel-group {
+    display: flex;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ui-resizable-panel {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .ui-resizable-handle {
+    width: var(--control-border-width);
+    background: hsl(var(--border));
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .ui-resizable-handle:hover,
+  .ui-resizable-handle[data-state="drag"] {
+    background: hsl(var(--accent));
+  }
+
+  .ui-resizable-handle:hover::after,
+  .ui-resizable-handle[data-state="drag"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: hsl(var(--accent-foreground) / 0.2);
   }
 
   @media (min-width: 1080px) {

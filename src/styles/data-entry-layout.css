@@ -1,0 +1,93 @@
+@layer components {
+  .ui-combobox-content {
+    min-width: 14rem;
+    width: min(22rem, 90vw);
+    padding: 0;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--popover));
+    color: hsl(var(--popover-foreground));
+  }
+
+  .ui-combobox-command {
+    width: 100%;
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .ui-combobox-search {
+    border: none;
+    border-radius: 0;
+    width: 100%;
+  }
+
+  .ui-combobox-list {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-1);
+  }
+
+  .ui-combobox-item {
+    position: relative;
+    width: 100%;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    border-radius: var(--radius-sm);
+    padding-inline: var(--space-2);
+    padding-block: var(--space-2);
+    font-size: var(--font-size-sm);
+    outline: none;
+  }
+
+  .ui-combobox-item[data-selected="true"] {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-combobox-item:hover,
+  .ui-combobox-item[data-state="active"] {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .ui-combobox-empty {
+    display: block;
+    padding: var(--space-3);
+    text-align: center;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-combobox-caret {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-bottom: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    transform: rotate(45deg);
+    margin-left: auto;
+    opacity: 0.7;
+  }
+
+  .ui-time-input {
+    width: 100%;
+    min-height: var(--control-height);
+    border-radius: var(--radius-md);
+    border: 1px solid hsl(var(--input));
+    background: hsl(var(--background));
+    padding-inline: var(--space-3);
+    padding-block: 0;
+    font-size: var(--font-size-sm);
+    color: hsl(var(--foreground));
+    outline: none;
+  }
+
+  .ui-time-input:focus-visible {
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.3);
+  }
+
+  .ui-time-input[aria-invalid="true"] {
+    border-color: hsl(var(--destructive));
+  }
+}

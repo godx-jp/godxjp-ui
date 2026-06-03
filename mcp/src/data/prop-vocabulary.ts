@@ -69,6 +69,11 @@ export const PROP_VOCABULARY: PropVocabEntry[] = [
 ];
 
 export function findVocab(name: string): PropVocabEntry | undefined {
-  const normalized = name.trim().toLowerCase().replace(/prop(?:<.*>)?$/i, "");
-  return PROP_VOCABULARY.find((v) => v.name.toLowerCase().replace(/prop(?:<.*>)?$/i, "") === normalized);
+  const normalized = name
+    .trim()
+    .toLowerCase()
+    .replace(/prop(?:<.*>)?$/i, "");
+  return PROP_VOCABULARY.find(
+    (v) => v.name.toLowerCase().replace(/prop(?:<.*>)?$/i, "") === normalized,
+  );
 }

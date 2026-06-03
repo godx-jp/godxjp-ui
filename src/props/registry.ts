@@ -332,10 +332,26 @@ export type VocabularyPropName = keyof typeof VOCABULARY_REGISTRY;
 
 export const COMPONENT_PROP_REGISTRY = {
   AppProviderProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ChildrenProp"] },
-  LocalePickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"] },
-  TimezonePickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"] },
-  TimeFormatPickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"] },
-  DateFormatPickerProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"] },
+  LocalePickerProp: {
+    group: "app",
+    file: "components/app.prop.ts",
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
+  },
+  TimezonePickerProp: {
+    group: "app",
+    file: "components/app.prop.ts",
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
+  },
+  TimeFormatPickerProp: {
+    group: "app",
+    file: "components/app.prop.ts",
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
+  },
+  DateFormatPickerProp: {
+    group: "app",
+    file: "components/app.prop.ts",
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
+  },
   PageContainerProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -376,13 +392,41 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["ChildrenProp"],
   },
-  SidebarProductProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["LabelProp"] },
-  SidebarItemProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["IdProp", "LabelProp", "DisabledProp", "ChildrenProp"] },
-  SidebarSectionProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["LabelProp"] },
-  SidebarProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["IdProp", "OnValueChangeProp", "ChildrenProp"] },
-  TopbarProductProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["LabelProp"] },
-  TopbarProjectProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["LabelProp"] },
-  TopbarProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: ["ChildrenProp", "OnOpenChangeProp", "OnValueChangeProp"] },
+  SidebarProductProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp"],
+  },
+  SidebarItemProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["IdProp", "LabelProp", "DisabledProp", "ChildrenProp"],
+  },
+  SidebarSectionProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp"],
+  },
+  SidebarProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["IdProp", "OnValueChangeProp", "ChildrenProp"],
+  },
+  TopbarProductProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp"],
+  },
+  TopbarProjectProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp"],
+  },
+  TopbarProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["ChildrenProp", "OnOpenChangeProp", "OnValueChangeProp"],
+  },
   PageHeaderProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -392,13 +436,7 @@ export const COMPONENT_PROP_REGISTRY = {
   ButtonProp: {
     group: "general",
     file: "components/general.prop.ts",
-    vocabulary: [
-      "ButtonVariantProp",
-      "SizeProp",
-      "AsChildProp",
-      "DisabledProp",
-      "OnClickProp",
-    ],
+    vocabulary: ["ButtonVariantProp", "SizeProp", "AsChildProp", "DisabledProp", "OnClickProp"],
   },
   InputProp: {
     group: "data-entry",
@@ -430,7 +468,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "DisabledProp"],
   },
-  ChoiceOptionProp: { group: "data-entry", file: "components/data-entry.prop.ts", vocabulary: ["LabelProp", "ValueProp", "DisabledProp", "DescriptionProp"] },
+  ChoiceOptionProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["LabelProp", "ValueProp", "DisabledProp", "DescriptionProp"],
+  },
   RadioProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
@@ -564,7 +606,13 @@ export const COMPONENT_PROP_REGISTRY = {
   UploadProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "ClassNameProp",
+    ],
   },
   UploadFileItemProp: {
     group: "data-entry",
@@ -585,12 +633,28 @@ export const COMPONENT_PROP_REGISTRY = {
   CascaderProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "ClassNameProp", "IdProp"],
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "PlaceholderProp",
+      "DisabledProp",
+      "ClassNameProp",
+      "IdProp",
+    ],
   },
   TreeSelectProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "PlaceholderProp", "DisabledProp", "ClassNameProp", "IdProp"],
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "PlaceholderProp",
+      "DisabledProp",
+      "ClassNameProp",
+      "IdProp",
+    ],
   },
   ShowCheckedStrategyProp: {
     group: "data-entry",
@@ -658,9 +722,17 @@ export const COMPONENT_PROP_REGISTRY = {
       "ConfirmLabelProp",
       "CancelLabelProp",
       "ConfirmVariantProp",
-      { field: "confirmPhrase", local: true, reason: "Destructive-dialog type-to-confirm friction phrase." },
+      {
+        field: "confirmPhrase",
+        local: true,
+        reason: "Destructive-dialog type-to-confirm friction phrase.",
+      },
       "HandlerProp",
-      { field: "keepOpenOnConfirm", local: true, reason: "AlertDialog-specific async completion behavior." },
+      {
+        field: "keepOpenOnConfirm",
+        local: true,
+        reason: "AlertDialog-specific async completion behavior.",
+      },
       "PendingProp",
     ],
   },
@@ -669,10 +741,18 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "query",
     file: "components/query.prop.ts",
     vocabulary: [
-      { field: "mutation", local: true, reason: "TanStack mutation lifecycle object consumed by this helper." },
+      {
+        field: "mutation",
+        local: true,
+        reason: "TanStack mutation lifecycle object consumed by this helper.",
+      },
       "HandlerProp",
       { field: "showRetry", local: true, reason: "Query helper retry affordance toggle." },
-      { field: "pending", local: true, reason: "Inline pending ReactNode slot, not boolean PendingProp state." },
+      {
+        field: "pending",
+        local: true,
+        reason: "Inline pending ReactNode slot, not boolean PendingProp state.",
+      },
       "ClassNameProp",
     ],
   },
@@ -685,7 +765,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "query",
     file: "components/query.prop.ts",
     vocabulary: [
-      { field: "query", local: true, reason: "TanStack query refetch handle consumed by this helper." },
+      {
+        field: "query",
+        local: true,
+        reason: "TanStack query refetch handle consumed by this helper.",
+      },
       "LabelProp",
     ],
   },
@@ -708,7 +792,14 @@ export const COMPONENT_PROP_REGISTRY = {
   AlertProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",
-    vocabulary: ["AlertVariantProp", "ToneProp", "IconProp", "OnValueChangeProp", "ClassNameProp", "ChildrenProp"],
+    vocabulary: [
+      "AlertVariantProp",
+      "ToneProp",
+      "IconProp",
+      "OnValueChangeProp",
+      "ClassNameProp",
+      "ChildrenProp",
+    ],
   },
   AlertTitleProp: {
     group: "feedback",
@@ -761,14 +852,22 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/navigation.prop.ts",
     vocabulary: ["SizeProp", "OnValueChangeProp", "ClassNameProp"],
   },
-  StepItemProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: ["TitleProp", "DescriptionProp", "IconProp", "DisabledProp"] },
+  StepItemProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["TitleProp", "DescriptionProp", "IconProp", "DisabledProp"],
+  },
   StepStatusProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
   TabsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: ["ValueProp", "DefaultValueProp", "OnValueChangeProp", "ClassNameProp"],
   },
-  TabItemProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: ["ValueProp", "LabelProp", "ChildrenProp", "DisabledProp"] },
+  TabItemProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["ValueProp", "LabelProp", "ChildrenProp", "DisabledProp"],
+  },
   FormRootProp: {
     group: "form",
     file: "components/form.prop.ts",
