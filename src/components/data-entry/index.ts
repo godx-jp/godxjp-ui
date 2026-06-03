@@ -72,3 +72,4 @@ export {
 } from "./command";
 export { PasswordInput } from "./password-input";
 export type { PasswordInputProps } from "./password-input";
+export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "./input-otp";

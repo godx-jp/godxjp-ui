@@ -7253,6 +7253,50 @@ export function InvoiceListHeader() {
     storyPath: "feedback/Drawer.stories.tsx",
     rules: [3, 6, 24],
   },
+  {
+    name: "InputOTP",
+    group: "data-entry",
+    tagline:
+      "One-time-code / 2FA input (input-otp) — N single-character slots that behave as one field. Compose InputOTP > InputOTPGroup > InputOTPSlot.",
+    props: [
+      {
+        name: "maxLength",
+        type: "number",
+        required: true,
+        description: "Number of slots (e.g. 6).",
+      },
+      { name: "value", type: "string", description: "Controlled value." },
+      {
+        name: "onChange",
+        type: "(value: string) => void",
+        description:
+          "Value callback (this is a true text input — onChange is the DOM-style value handler here).",
+      },
+      { name: "pattern", type: "string", description: "Allowed-char regex (e.g. digits only)." },
+    ],
+    usage: [
+      "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
+      "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",
+      "DON'T build N separate Inputs — this is ONE field with paste, arrow-key, and caret handling built in.",
+    ],
+    useCases: [
+      "2FA / OTP verification code",
+      "Email / SMS confirmation code",
+      "PIN entry",
+      "Invite / redemption code",
+    ],
+    related: ["Input (a normal single text field)", "PasswordInput (masked secret field)"],
+    example: `import { InputOTP, InputOTPGroup, InputOTPSlot } from "@godxjp/ui/data-entry";
+
+<InputOTP maxLength={6}>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} /><InputOTPSlot index={1} /><InputOTPSlot index={2} />
+    <InputOTPSlot index={3} /><InputOTPSlot index={4} /><InputOTPSlot index={5} />
+  </InputOTPGroup>
+</InputOTP>`,
+    storyPath: "data-entry/InputOTP.stories.tsx",
+    rules: [3, 6],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {
