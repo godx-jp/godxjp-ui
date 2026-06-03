@@ -76,6 +76,13 @@ export {
 } from "./command";
 export { PasswordInput } from "./password-input";
 export type { PasswordInputProps } from "./password-input";
+export { PasswordStrength, usePasswordStrength } from "./password-strength";
+export type {
+  PasswordRule,
+  PasswordStrengthLabels,
+  PasswordStrengthProps,
+  PasswordStrengthReturn,
+} from "./password-strength";
 export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "./input-otp";
 export { Rating } from "./rating";
 export type { RatingProps } from "./rating";

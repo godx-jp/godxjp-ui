@@ -15,7 +15,15 @@ export {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "./context-menu";
-export { Pagination } from "./pagination";
+export {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationEllipsis,
+  PaginationPrevious,
+  PaginationNext,
+} from "./pagination";
 export {
   Menubar,
   MenubarCheckboxItem,

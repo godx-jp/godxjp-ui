@@ -29,6 +29,26 @@ describe("LocalePicker", () => {
 
     expect(onChange).toHaveBeenCalledWith("ja");
   });
+
+  it("supports custom locale options in controlled mode", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+
+    render(
+      <LocalePicker
+        value="en"
+        onValueChange={onChange}
+        options={[
+          { value: "en", label: "English (en-US)" },
+          { value: "de", label: "Deutsch" },
+        ]}
+      />,
+    );
+
+    await user.click(screen.getByRole("combobox", { name: "Ngôn ngữ" }));
+    await user.click(screen.getByRole("option", { name: "Deutsch" }));
+    expect(onChange).toHaveBeenCalledWith("de");
+  });
 });
 
 describe("TimezonePicker", () => {

@@ -56,6 +56,8 @@ export type LocalePickerProp = {
   /** Controlled value; default reads/writes AppProvider. */
   value?: ValueProp<AppLocale>;
   onValueChange?: OnValueChangeProp<AppLocale>;
+  /** Override selectable locale list; omit to use APP_LOCALES. */
+  options?: readonly { value: string; label?: string }[];
 };
 
 /** @see TimezonePicker */

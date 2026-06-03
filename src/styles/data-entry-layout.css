@@ -90,4 +90,75 @@
   .ui-time-input[aria-invalid="true"] {
     border-color: hsl(var(--destructive));
   }
+
+  .ui-password-strength {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .ui-password-strength-track {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-1);
+  }
+
+  .ui-password-strength-segment {
+    height: 0.5rem;
+    border-radius: var(--radius-sm);
+    background: hsl(var(--muted));
+  }
+
+  .ui-password-strength-segment[data-tone="destructive"] {
+    background: hsl(var(--destructive));
+  }
+
+  .ui-password-strength-segment[data-tone="warning"] {
+    background: hsl(var(--warning));
+  }
+
+  .ui-password-strength-segment[data-tone="success"] {
+    background: hsl(var(--success));
+  }
+
+  .ui-password-strength-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .ui-password-strength-label {
+    color: hsl(var(--foreground));
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-password-strength-score {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-xs);
+  }
+
+  .ui-password-strength-checklist {
+    margin: 0;
+    display: grid;
+    gap: var(--space-1);
+    padding-inline: 0;
+    list-style: none;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-xs);
+  }
+
+  .ui-password-strength-checklist-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .ui-password-strength-checklist-item[data-state="passed"] svg {
+    color: hsl(var(--success));
+  }
+
+  .ui-password-strength-checklist-item[data-state="failed"] svg {
+    color: hsl(var(--destructive));
+  }
 }

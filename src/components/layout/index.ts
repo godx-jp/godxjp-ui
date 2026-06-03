@@ -24,8 +24,14 @@ export { AppShell } from "./app-shell";
 export type { AppShellProps } from "./app-shell";
 export { Breadcrumb } from "./breadcrumb";
 export type { BreadcrumbProps } from "./breadcrumb";
-export { Sidebar } from "./sidebar";
-export type { SidebarItem, SidebarProduct, SidebarProps, SidebarSection } from "./sidebar";
+export { Sidebar, SidebarHeader, SidebarItem, SidebarSection } from "./sidebar";
+export type {
+  SidebarItemData,
+  SidebarProductProp as SidebarProduct,
+  SidebarProp,
+  SidebarProp as SidebarProps,
+  SidebarSectionProp,
+} from "../../props/components/layout.prop";
 export { Topbar } from "./topbar";
 export type { TopbarProduct, TopbarProject, TopbarProps } from "./topbar";
 export { ResponsiveGrid } from "./responsive-grid";

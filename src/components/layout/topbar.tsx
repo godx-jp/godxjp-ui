@@ -22,6 +22,7 @@ export function Topbar({
   project,
   productMenu,
   projectMenu,
+  projectPlaceholder,
   onProductOpen,
   onProjectOpen,
   onSearchOpen,
@@ -60,10 +61,10 @@ export function Topbar({
     <button
       type="button"
       className={`tb-chip ${project ? "" : "tb-chip-empty"}`}
-      aria-label={project ? project.name : "Pick project"}
+      aria-label={project ? project.name : (projectPlaceholder ?? "")}
       onClick={projectMenu ? undefined : onProjectOpen}
     >
-      <span className="tb-chip-label">{project ? project.name : "Pick project"}</span>
+      <span className="tb-chip-label">{project ? project.name : (projectPlaceholder ?? "—")}</span>
       <span className="tb-chip-caret">
         <ChevronDown aria-hidden="true" />
       </span>

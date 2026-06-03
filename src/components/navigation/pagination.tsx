@@ -1,3 +1,4 @@
+import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
@@ -17,6 +18,97 @@ export type {
   PaginationProp,
   PaginationProp as PaginationProps,
 } from "../../props/components/navigation.prop";
+
+const PaginationContent = React.forwardRef<
+  HTMLUListElement,
+  React.HTMLAttributes<HTMLUListElement>
+>(({ className, ...props }, ref) => {
+  return <ul ref={ref} className={cn("ui-pagination-list", className)} role="list" {...props} />;
+});
+PaginationContent.displayName = "PaginationContent";
+
+const PaginationItem = React.forwardRef<HTMLLIElement, React.LiHTMLAttributes<HTMLLIElement>>(
+  ({ className, ...props }, ref) => (
+    <li ref={ref} className={cn("ui-pagination-item", className)} {...props} />
+  ),
+);
+PaginationItem.displayName = "PaginationItem";
+
+type PaginationLinkProps = React.ComponentPropsWithoutRef<"a"> & {
+  isActive?: boolean;
+  disabled?: boolean;
+};
+
+const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
+  ({ className, isActive, disabled, children, onClick, ...props }, ref) => (
+    <a
+      ref={ref}
+      data-active={isActive || undefined}
+      aria-current={isActive ? "page" : undefined}
+      aria-disabled={disabled || undefined}
+      data-state={disabled ? "disabled" : undefined}
+      className={cn(
+        "ui-pagination-link ui-button--compact-icon ui-pagination-page",
+        isActive ? "ui-pagination-link-active" : undefined,
+        disabled ? "ui-pagination-link-disabled" : undefined,
+        className,
+      )}
+      role="button"
+      onClick={(event) => {
+        if (disabled) {
+          event.preventDefault();
+          return;
+        }
+
+        onClick?.(event);
+      }}
+      {...props}
+    >
+      {children}
+    </a>
+  ),
+);
+PaginationLink.displayName = "PaginationLink";
+
+const PaginationEllipsis = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
+  <span
+    className={cn("ui-pagination-ellipsis ui-button--compact-icon", className)}
+    aria-hidden="true"
+    role="presentation"
+    {...props}
+  >
+    <MoreHorizontal />
+  </span>
+);
+PaginationEllipsis.displayName = "PaginationEllipsis";
+
+const PaginationPrevious = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
+  ({ className, children, ...props }, ref) => (
+    <PaginationLink
+      ref={ref}
+      className={cn("ui-pagination-prev", className)}
+      disabled={props.disabled}
+      {...props}
+    >
+      {children}
+    </PaginationLink>
+  ),
+);
+PaginationPrevious.displayName = "PaginationPrevious";
+
+const PaginationNext = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
+  ({ className, children, ...props }, ref) => (
+    <PaginationLink
+      ref={ref}
+      className={cn("ui-pagination-next", className)}
+      disabled={props.disabled}
+      {...props}
+    >
+      {children}
+    </PaginationLink>
+  ),
+);
+PaginationNext.displayName = "PaginationNext";
 
 export function Pagination({
   current = 1,
@@ -115,54 +207,69 @@ export function Pagination({
         </Select>
       )}
 
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        className="ui-button--compact-icon"
-        disabled={Boolean(disabled) || safeCurrent <= 1}
-        aria-label={t("navigation.pagination.prev")}
-        onClick={() => go(safeCurrent - 1)}
-      >
-        <ChevronLeft aria-hidden="true" />
-      </Button>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            href="#"
+            aria-label={t("navigation.pagination.prev")}
+            onClick={(event) => {
+              event.preventDefault();
+              go(safeCurrent - 1);
+            }}
+            className="ui-button--compact-icon"
+            disabled={Boolean(disabled) || safeCurrent <= 1}
+          >
+            <ChevronLeft aria-hidden="true" />
+          </PaginationPrevious>
+        </PaginationItem>
 
-      <ul className="ui-pagination-list">
         {pages.map((page, index) =>
           page === "ellipsis" ? (
-            <li key={`e-${index}`} className="ui-pagination-ellipsis ui-button--compact-icon">
-              <MoreHorizontal aria-hidden="true" />
-            </li>
+            <PaginationItem key={`e-${index}`}>
+              <PaginationEllipsis />
+            </PaginationItem>
           ) : (
-            <li key={page}>
-              <Button
-                type="button"
-                variant={page === safeCurrent ? "default" : "outline"}
-                size="icon"
-                className="ui-button--compact-icon ui-pagination-page"
-                disabled={disabled}
+            <PaginationItem key={page}>
+              <PaginationLink
+                isActive={page === safeCurrent}
                 aria-label={t("navigation.pagination.page", { page })}
-                aria-current={page === safeCurrent ? "page" : undefined}
-                onClick={() => go(page)}
+                onClick={(event) => {
+                  event.preventDefault();
+                  if (!disabled) go(page);
+                }}
+                href="#"
+                disabled={disabled}
               >
                 {page}
-              </Button>
-            </li>
+              </PaginationLink>
+            </PaginationItem>
           ),
         )}
-      </ul>
 
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        className="ui-button--compact-icon"
-        disabled={Boolean(disabled) || safeCurrent >= totalPages}
-        aria-label={t("navigation.pagination.next")}
-        onClick={() => go(safeCurrent + 1)}
-      >
-        <ChevronRight aria-hidden="true" />
-      </Button>
+        <PaginationItem>
+          <PaginationNext
+            href="#"
+            aria-label={t("navigation.pagination.next")}
+            onClick={(event) => {
+              event.preventDefault();
+              go(safeCurrent + 1);
+            }}
+            className="ui-button--compact-icon"
+            disabled={Boolean(disabled) || safeCurrent >= totalPages}
+          >
+            <ChevronRight aria-hidden="true" />
+          </PaginationNext>
+        </PaginationItem>
+      </PaginationContent>
     </nav>
   );
 }
+
+export {
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationEllipsis,
+  PaginationPrevious,
+  PaginationNext,
+};

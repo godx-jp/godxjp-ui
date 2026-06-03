@@ -1,7 +1,7 @@
-import { Boxes, FileText } from "lucide-react";
+import { Boxes, FileText, LayoutDashboard } from "lucide-react";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
-import { Sidebar } from "../sidebar";
+import { Sidebar, SidebarItem, SidebarSection } from "../sidebar";
 
 const sections = [
   {
@@ -52,5 +52,38 @@ describe("Sidebar submenu", () => {
     expect(await screen.findByRole("menu")).toBeInTheDocument();
     await user.click(screen.getByRole("menuitem", { name: "Journals" }));
     expect(onSelect).toHaveBeenCalledWith("journals");
+  });
+
+  it("renders custom rows with renderItem when sections are used", () => {
+    renderWithUi(
+      <Sidebar
+        activeId="settings"
+        sections={sections}
+        onSelect={() => undefined}
+        renderItem={(item) => <span>Custom {item.label}</span>}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Custom Settings" })).toBeInTheDocument();
+  });
+
+  it("renders custom children instead of sections", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+
+    renderWithUi(
+      <Sidebar activeId="custom" onSelect={onSelect}>
+        <SidebarSection label="Custom Section">
+          <SidebarItem
+            item={{ id: "custom", label: "Custom item", icon: LayoutDashboard }}
+            active={false}
+            onActivate={onSelect}
+          />
+        </SidebarSection>
+      </Sidebar>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Custom item" }));
+    expect(onSelect).toHaveBeenCalledWith("custom");
   });
 });

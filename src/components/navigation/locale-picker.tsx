@@ -17,11 +17,19 @@ export type {
   LocalePickerProp as LocalePickerProps,
 } from "../../props/components/app.prop";
 
-export function LocalePicker({ className, disabled, id, value, onValueChange }: LocalePickerProp) {
+export function LocalePicker({
+  className,
+  disabled,
+  id,
+  value,
+  onValueChange,
+  options: optionsProp,
+}: LocalePickerProp) {
   const ctx = useOptionalAppContext();
   const { t } = useTranslation();
   const current = value ?? ctx?.locale;
   const handleChange = onValueChange ?? ctx?.setLocale;
+  const options = optionsProp ?? APP_LOCALES;
 
   if (current === undefined || !handleChange) {
     throw new Error("LocalePicker requires <AppProvider> or controlled value + onValueChange");
@@ -38,11 +46,19 @@ export function LocalePicker({ className, disabled, id, value, onValueChange }: 
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {APP_LOCALES.map((code) => (
-          <SelectItem key={code} value={code}>
-            {t(`locale.${code}`)}
-          </SelectItem>
-        ))}
+        {options.map((option) => {
+          const code = typeof option === "string" ? option : option.value;
+          const label =
+            typeof option === "string"
+              ? t(`locale.${option}`)
+              : (option.label ?? t(`locale.${option.value}`));
+
+          return (
+            <SelectItem key={code} value={code}>
+              {label}
+            </SelectItem>
+          );
+        })}
       </SelectContent>
     </Select>
   );
