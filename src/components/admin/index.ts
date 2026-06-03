@@ -25,16 +25,8 @@ export {
   SkeletonStat,
   SkeletonCard,
 } from "../feedback/skeleton";
-export {
-  DataState,
-  AlertMutationFeedback,
-  MutationFeedback,
-  ButtonRefetch,
-  QueryRefetchButton,
-  InfiniteQueryState,
-  flattenItemPages,
-  PrefetchLink,
-} from "../query";
+// Query/router adapters intentionally NOT re-exported here — import from "@godxjp/ui/query"
+// so the root @godxjp/ui surface stays runtime-neutral (issue #83 / check-core-isolation).
 export {
   Alert,
   AlertTitle,
