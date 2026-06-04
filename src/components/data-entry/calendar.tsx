@@ -16,6 +16,12 @@ export function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProp) {
+  // Range mode defaults to resetOnSelect: once a range is complete, the next click
+  // starts a FRESH range from that day. RDP's default (false) instead mutates the
+  // nearest endpoint, which leaves the start date stuck — a user can never re-pick a
+  // start by clicking. Opt out per call by passing resetOnSelect={false}.
+  const rangeDefaults =
+    props.mode === "range" ? { resetOnSelect: props.resetOnSelect ?? true } : null;
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -88,6 +94,7 @@ export function Calendar({
         },
       }}
       {...props}
+      {...rangeDefaults}
     />
   );
 }

@@ -133,3 +133,27 @@ Ba lỗi showcase hay gặp nhất — chặn từ gốc:
    container. Chỉ full-width khi component BẢN CHẤT là full-width (Input, Textarea, Table, Card,
    ProgressBar). Dấu hiệu sai: một calendar/picker chiếm hết bề ngang card mà grid chỉ nằm một góc
    + khoảng trống lớn → co về `w-fit`.
+
+## Interaction hygiene — control có state phải cho phép thao tác lại (BẮT BUỘC)
+
+Layout đẹp chưa đủ — phải TỰ TAY thao tác (click/gõ/tab) mọi control có state qua browser thật, không
+chỉ ngắm ảnh tĩnh. Lỗi hành vi không lộ ra trên screenshot.
+
+1. **Selection nhiều bước phải reset được khi đã hoàn tất — KHÔNG được kẹt.** Bất kỳ control giữ một
+   selection nhiều bước (date **range**, multi-select có giới hạn, wizard, masked input) khi đã ở trạng
+   thái HOÀN TẤT thì cú thao tác kế tiếp phải cho người dùng **bắt đầu lại từ đầu**, không phải sửa lén
+   một đầu mút. Cụ thể với `Calendar`/`DateRangePicker` mode="range": mặc định của react-day-picker
+   (`resetOnSelect:false`) khi range đã đủ (from+to) sẽ **mutate đầu mút gần nhất** → người dùng KHÔNG
+   bao giờ đặt lại được ngày bắt đầu bằng cách click (start bị kẹt). Phải `resetOnSelect: true` (click
+   trên range đủ → mở range mới từ ngày vừa click). Wrapper `Calendar` đã default true cho range; nếu
+   tự gọi `DayPicker` thẳng thì phải set tay. Dấu hiệu sai: seed sẵn một range đầy rồi click ngày khác
+   mà range chỉ co/giãn quanh `from` cũ thay vì khởi tạo lại.
+
+2. **State khi nghỉ phải hiển thị được — đừng giấu giá trị đã chọn.** Control mở ra (calendar, dropdown,
+   combobox) phải `defaultMonth`/`scrollTo`/`defaultValue` nhảy tới đúng giá trị đang giữ, không bày
+   tháng/đầu danh sách hiện tại che mất lựa chọn cũ ở chỗ khác. Test: mở control khi đã có sẵn value →
+   value đó phải nằm trong tầm nhìn ngay.
+
+3. **Controlled value phải phản chiếu 2 chiều.** Gõ vào input có mirror text (date/range/masked) →
+   chỉ commit khi chuỗi HỢP LỆ & ĐỦ; partial không được ghi đè text đang gõ. Click trong popup → cập
+   nhật cả value lẫn text field. Test cả hai chiều (gõ ↔ click) trước khi tuyên bố xong.
