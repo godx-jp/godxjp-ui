@@ -89,6 +89,26 @@ repeatedly — treat each rule as non-negotiable.
   `XProp as XProps`; put the type in `src/props/components/*.prop.ts` and **register it in
   `src/props/registry.ts`** mapping to vocabulary entries.
 
+### 2e. Stateful interaction correctness — verify by hand in a real browser
+
+A control that holds state is not done when it renders correctly; it is done when it **behaves**
+correctly under real click/type/tab. Static screenshots hide behavioral bugs — drive the component
+in a real browser (Chrome DevTools MCP) before declaring it correct.
+
+- **Multi-step selection must be re-startable from a complete state — never trapped.** Any control
+  that accumulates a multi-step value (date **range**, capped multi-select, wizard, masked input):
+  once the value is COMPLETE, the next interaction must let the user **start over**, not silently
+  mutate one endpoint. For range mode the underlying lib (react-day-picker) defaults to
+  `resetOnSelect:false`, which mutates the nearest endpoint of a complete range — the start date
+  gets stuck and can never be re-picked by clicking. Wrap so range defaults to `resetOnSelect:true`
+  (Calendar already does); if you call `DayPicker` directly, set it yourself.
+- **Value held at rest must be visible when the surface opens.** Calendar/dropdown/combobox must
+  jump to the held value (`defaultMonth` / `scrollTo` / `defaultValue`), not show today/top and hide
+  an existing selection that lives elsewhere.
+- **Controlled value mirrors both ways.** Text-mirroring inputs (date/range/masked) commit only on a
+  VALID + COMPLETE string — a partial string must not overwrite what the user is typing; clicking in
+  the popup updates both the value and the text field. Test type↔click both directions.
+
 ## 3. Tokens
 
 - Semantic tokens only (`text-muted-foreground`, `bg-destructive`, `border-border`, Badge variants).
@@ -120,6 +140,9 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 - `Intl`-less number/currency/date formatting, or a hand-maintained currency/locale/country list.
 - Physical direction classes (`ml-/mr-/pl-/pr-/left-/right-`).
 - `size="default"`, `current`/`onChange` for controlled state, missing `defaultValue`.
+- A stateful multi-step control that traps the user in a complete state (range mode left on
+  `resetOnSelect:false` so the start can't be re-picked; held value hidden on open; partial text
+  overwriting a controlled mirror). Verify by hand in a real browser, not by screenshot.
 - A new component that duplicates a `Select`/existing primitive capability.
 - Shipping without an a11y test, an MCP entry, or a registry entry.
 
