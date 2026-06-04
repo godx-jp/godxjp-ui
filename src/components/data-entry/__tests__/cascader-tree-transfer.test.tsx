@@ -250,6 +250,91 @@ describe("Cascader", () => {
     );
     expect(screen.getByRole("combobox")).toHaveTextContent("日本 / 東京都 / 渋谷区");
   });
+
+  // ── Regression tests codifying browser-found behaviours (godxjp-ui-behavioral-test) ──
+
+  // Aggregate / flag fixtures (REGION_OPTIONS has no disabled/disableCheckbox nodes).
+  const AGG_OPTIONS = [
+    {
+      value: "ops",
+      label: "Ops",
+      children: [
+        { value: "a", label: "Alpha" },
+        { value: "b", label: "Bravo" },
+      ],
+    },
+  ];
+  const FLAG_OPTIONS = [
+    {
+      value: "dom",
+      label: "Domestic",
+      children: [
+        { value: "std", label: "Standard" },
+        { value: "exp", label: "Express", disableCheckbox: true },
+      ],
+    },
+  ];
+  const checkboxState = (optionName: RegExp) =>
+    screen
+      .getByRole("option", { name: optionName })
+      .querySelector('[data-slot="checkbox"]')
+      ?.getAttribute("data-state");
+
+  it("changeOnSelect: a parent click commits it but keeps the panel open to drill deeper", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithUi(<Cascader options={REGION_OPTIONS} changeOnSelect onValueChange={onChange} />);
+
+    await user.click(screen.getByRole("combobox"));
+    await user.click(screen.getByRole("option", { name: /việt nam/i }));
+    // Committed the intermediate node…
+    expect(onChange).toHaveBeenCalledWith(["vn"], expect.any(Array));
+    // …but the panel stayed open and expanded its children (drill must not close on parent click).
+    expect(screen.getByRole("option", { name: /tp\. hồ chí minh/i })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("option", { name: /tp\. hồ chí minh/i }));
+    await user.click(screen.getByRole("option", { name: /quận 1/i }));
+    expect(onChange).toHaveBeenLastCalledWith(["vn", "hcm", "q1"], expect.any(Array));
+  });
+
+  it("multiple: a disableCheckbox leaf cannot be toggled (but its siblings can)", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithUi(<Cascader options={FLAG_OPTIONS} multiple onValueChange={onChange} />);
+
+    await user.click(screen.getByRole("combobox"));
+    await user.click(screen.getByRole("option", { name: /domestic/i }));
+    await user.click(screen.getByRole("option", { name: /express/i }));
+    expect(onChange).not.toHaveBeenCalled(); // disableCheckbox path is not selectable
+
+    await user.click(screen.getByRole("option", { name: /standard/i }));
+    expect(onChange).toHaveBeenCalledWith([["dom", "std"]], expect.any(Array));
+  });
+
+  it("multiple: parent checkbox reflects descendant state (none → indeterminate → checked)", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<Cascader options={AGG_OPTIONS} multiple onValueChange={vi.fn()} />);
+
+    await user.click(screen.getByRole("combobox"));
+    await user.click(screen.getByRole("option", { name: /ops/i })); // expand
+    expect(checkboxState(/ops/i)).toBe("unchecked");
+
+    await user.click(screen.getByRole("option", { name: /alpha/i }));
+    expect(checkboxState(/ops/i)).toBe("indeterminate"); // some children selected
+
+    await user.click(screen.getByRole("option", { name: /bravo/i }));
+    expect(checkboxState(/ops/i)).toBe("checked"); // all children selected
+  });
+
+  it("multiple: option rows contain no nested <button> (valid HTML, no hydration error)", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<Cascader options={AGG_OPTIONS} multiple onValueChange={vi.fn()} />);
+
+    await user.click(screen.getByRole("combobox"));
+    for (const option of screen.getAllByRole("option")) {
+      expect(option.querySelector("button")).toBeNull();
+    }
+  });
 });
 
 describe("TreeSelect", () => {
