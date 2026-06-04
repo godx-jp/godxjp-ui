@@ -75,4 +75,20 @@ describe("TimePicker", () => {
     expect(screen.getByText("Phút")).toBeInTheDocument();
     expect(screen.getByLabelText("Nhập giờ HH:mm")).toBeInTheDocument();
   });
+
+  // Regression: clicking the INPUT (not only the Clock icon) must open the panel — the input
+  // declares aria-haspopup="dialog" so it has to control the popup. ArrowDown opens it too.
+  it("opens the panel when the input itself is clicked, and on ArrowDown", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<TimePicker defaultValue="17:00" id="t2" />);
+    const input = screen.getByRole("combobox");
+
+    await user.click(input);
+    expect(screen.getByText("Giờ")).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    input.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByText("Giờ")).toBeInTheDocument();
+  });
 });

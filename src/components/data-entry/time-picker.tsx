@@ -145,6 +145,7 @@ function TimeColumn({
 
 function TimePickerPanel({ value, minuteStep, use12h, onChange, onDone }: TimePickerPanelProps) {
   const { t } = useTranslation();
+  const draftId = React.useId();
   const { hour, minute } = parseHhmm(value);
   const minutes = buildMinutes(minuteStep);
   const snappedMinute = minutes.includes(minute) ? minute : minutes[0];
@@ -213,6 +214,7 @@ function TimePickerPanel({ value, minuteStep, use12h, onChange, onDone }: TimePi
       </div>
       <div className="border-t p-2">
         <Input
+          id={draftId}
           value={draft}
           onChange={(e) => {
             setDraft(e.target.value);
@@ -290,6 +292,20 @@ export function TimePicker({
         aria-expanded={open}
         aria-haspopup="dialog"
         className="pe-10 tabular-nums"
+        // Combobox semantics made real: clicking the field (or ArrowDown) opens the time panel —
+        // the input declares aria-haspopup="dialog" so it must control the popup, not only the
+        // icon. Focus stays on the input (PopoverContent.onOpenAutoFocus prevented) so it's typeable.
+        onClick={() => {
+          if (!disabled) setOpen(true);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            setOpen(true);
+          } else if (event.key === "Escape" && open) {
+            setOpen(false);
+          }
+        }}
         onChange={(event) => {
           setText(event.target.value);
           const normalized = normalizeHhmm(event.target.value);
@@ -314,7 +330,11 @@ export function TimePicker({
             <Clock className="size-4 shrink-0" aria-hidden="true" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent
+          className="w-auto p-0"
+          align="end"
+          onOpenAutoFocus={(event) => event.preventDefault()}
+        >
           <TimePickerPanel
             value={value || "09:00"}
             minuteStep={minuteStep}

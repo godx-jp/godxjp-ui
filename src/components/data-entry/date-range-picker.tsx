@@ -81,6 +81,18 @@ export function DateRangePicker({
         autoComplete="off"
         aria-label={t("dataEntry.dateRangePicker.from") ?? "From"}
         className="tabular-nums"
+        // Clicking a field (or ArrowDown) opens the calendar; focus stays on the field for typing.
+        onClick={() => {
+          if (!disabled) setOpen(true);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            setOpen(true);
+          } else if (event.key === "Escape" && open) {
+            setOpen(false);
+          }
+        }}
         onChange={(event) => {
           setFromText(event.target.value);
           commitEdge("from", event.target.value);
@@ -102,6 +114,17 @@ export function DateRangePicker({
         autoComplete="off"
         aria-label={t("dataEntry.dateRangePicker.to") ?? "To"}
         className="tabular-nums"
+        onClick={() => {
+          if (!disabled) setOpen(true);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            setOpen(true);
+          } else if (event.key === "Escape" && open) {
+            setOpen(false);
+          }
+        }}
         onChange={(event) => {
           setToText(event.target.value);
           commitEdge("to", event.target.value);
@@ -125,10 +148,15 @@ export function DateRangePicker({
             <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent
+          className="w-auto p-0"
+          align="end"
+          onOpenAutoFocus={(event) => event.preventDefault()}
+        >
           <Calendar
             mode="range"
             selected={value}
+            defaultMonth={value?.from}
             onSelect={(range) => {
               emit(range);
               setFromText(toIsoDate(range?.from));

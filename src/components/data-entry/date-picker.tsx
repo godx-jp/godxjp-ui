@@ -88,6 +88,21 @@ export function DatePicker({
         aria-expanded={open}
         aria-haspopup="dialog"
         className="pe-10"
+        // Combobox semantics made real: clicking the field (or ArrowDown) opens the calendar —
+        // the input declares aria-haspopup="dialog", so it must actually control the popup, not
+        // only the icon button. Focus stays on the input (PopoverContent.onOpenAutoFocus is
+        // prevented) so the field is still typeable while the calendar is visible.
+        onClick={() => {
+          if (!disabled) setOpen(true);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            setOpen(true);
+          } else if (event.key === "Escape" && open) {
+            setOpen(false);
+          }
+        }}
         onChange={(event) => {
           setText(event.target.value);
           commit(event.target.value);
@@ -112,10 +127,15 @@ export function DatePicker({
             <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent
+          className="w-auto p-0"
+          align="end"
+          onOpenAutoFocus={(event) => event.preventDefault()}
+        >
           <Calendar
             mode="single"
             selected={value}
+            defaultMonth={value}
             onSelect={(date) => {
               emit(date);
               setText(toIsoDate(date));

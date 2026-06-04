@@ -51,6 +51,37 @@ describe("DatePicker", () => {
     if (dayButton) await user.click(dayButton);
     expect(onChange).toHaveBeenCalled();
   });
+
+  // Regression (godxjp-ui-behavioral-test): the input declares aria-haspopup="dialog" so it must
+  // actually open the calendar — clicking only the icon was the reported "focus shows nothing" bug.
+  it("opens the calendar when the INPUT itself is clicked (not only the icon)", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<DatePicker value={new Date(2026, 0, 15)} onValueChange={vi.fn()} />);
+    const input = screen.getByRole("combobox");
+    expect(input).toHaveAttribute("aria-expanded", "false");
+    await user.click(input);
+    expect(await screen.findByRole("grid")).toBeInTheDocument();
+    expect(input).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("opens the calendar on ArrowDown from the input", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<DatePicker onValueChange={vi.fn()} />);
+    screen.getByRole("combobox").focus();
+    await user.keyboard("{ArrowDown}");
+    expect(await screen.findByRole("grid")).toBeInTheDocument();
+  });
+
+  it("opens on the value's month so the selected date is visible (defaultMonth)", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<DatePicker value={new Date(2026, 0, 15)} onValueChange={vi.fn()} />);
+    await user.click(screen.getByRole("combobox"));
+    const grid = await screen.findByRole("grid");
+    // With defaultMonth the selected day (Jan 15) is in view; without it the calendar opens on
+    // today's month and the selection is off-screen.
+    const selected = grid.querySelector('[aria-selected="true"]');
+    expect(selected).toHaveTextContent("15");
+  });
 });
 
 describe("DateRangePicker", () => {
@@ -68,6 +99,13 @@ describe("DateRangePicker", () => {
     expect(to.value).toBe("2026-05-10");
     expect(from).toHaveAttribute("name", "period_from");
     expect(to).toHaveAttribute("name", "period_to");
+  });
+
+  it("opens the calendar when a range field is clicked (not only the icon)", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<DateRangePicker onValueChange={() => undefined} />);
+    await user.click(screen.getByRole("textbox", { name: /from|từ|開始/i }));
+    expect(await screen.findByRole("grid")).toBeInTheDocument();
   });
 });
 
