@@ -38,7 +38,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>仕訳一覧フィルター（制御モード）</CardTitle>
             <CardDescription>
-              value + onSearch で制御。250 ms デバウンス後に onSearch が発火する。
+              value + onValueChange で即時制御（入力に追従）。onSearch は 250 ms デバウンス後に発火。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -46,7 +46,8 @@ export default function Demo() {
               <SearchInput
                 placeholder="仕訳ID・摘要で検索"
                 value={journalQuery}
-                onSearch={setJournalQuery}
+                onValueChange={setJournalQuery}
+                onSearch={() => {}}
               />
               <Flex direction="col" gap="sm">
                 {filtered.length === 0 ? (

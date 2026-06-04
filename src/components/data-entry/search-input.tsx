@@ -12,6 +12,8 @@ interface SearchInputProps {
   defaultValue?: string;
   placeholder?: string;
   debounce?: number;
+  /** Fires on EVERY keystroke (immediate) — required to keep a controlled `value` responsive. */
+  onValueChange?: (q: string) => void;
   onSearch: (q: string) => void;
   label?: React.ReactNode;
   ariaLabel?: string;
@@ -26,6 +28,7 @@ export function SearchInput({
   defaultValue = "",
   placeholder,
   debounce = 250,
+  onValueChange,
   onSearch,
   label,
   ariaLabel,
@@ -54,6 +57,7 @@ export function SearchInput({
 
   const setValue = (v: string) => {
     if (!isControlled) setInternal(v);
+    onValueChange?.(v);
   };
 
   return (
