@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronRight, ChevronsUpDown, X } from "lucide-react";
+import { Check, ChevronRight, ChevronsUpDown, Minus, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
@@ -41,27 +41,65 @@ function togglePath(values: string[][], path: string[]): string[][] {
  */
 function CheckboxVisual({
   checked,
+  indeterminate,
   disabled,
   className,
 }: {
   checked: boolean;
+  indeterminate?: boolean;
   disabled?: boolean;
   className?: string;
 }) {
+  const state = indeterminate ? "indeterminate" : checked ? "checked" : "unchecked";
   return (
     <span
       aria-hidden="true"
       data-slot="checkbox"
-      data-state={checked ? "checked" : "unchecked"}
+      data-state={state}
       className={cn(
         "ui-checkbox inline-flex items-center justify-center",
+        // The shared CSS fills the box for [data-state=checked]; mirror that fill for the
+        // indeterminate ("some children selected") state so a partial parent reads as partial.
+        "data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground",
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
     >
-      {checked ? <Check className="ui-checkbox-icon" aria-hidden="true" /> : null}
+      {indeterminate ? (
+        <Minus className="ui-checkbox-icon" aria-hidden="true" />
+      ) : checked ? (
+        <Check className="ui-checkbox-icon" aria-hidden="true" />
+      ) : null}
     </span>
   );
+}
+
+/**
+ * Aggregate the check state of a PARENT node from its selectable descendant leaves — the standard
+ * checkable-tree affordance: all selected → "checked", some → "indeterminate", none → "none".
+ * Disabled / checkbox-disabled leaves are excluded from the count (they can never be selected, so
+ * they must not block a parent from reading as fully checked).
+ */
+function aggregateCheckState(
+  node: NormalizedTreeOption,
+  path: string[],
+  values: string[][],
+): "checked" | "indeterminate" | "none" {
+  let total = 0;
+  let selected = 0;
+  const walk = (n: NormalizedTreeOption, p: string[]) => {
+    const isLeaf = (n.children?.length ?? 0) === 0 || n.isLeaf === true;
+    if (isLeaf) {
+      if (n.disabled || n.disableCheckbox) return;
+      total += 1;
+      if (pathInValues(p, values)) selected += 1;
+      return;
+    }
+    for (const child of n.children!) walk(child, [...p, child.value]);
+  };
+  for (const child of node.children ?? []) walk(child, [...path, child.value]);
+  if (total === 0 || selected === 0) return "none";
+  return selected === total ? "checked" : "indeterminate";
 }
 
 export function Cascader({
@@ -211,6 +249,11 @@ export function Cascader({
               const selected = multiple
                 ? pathInValues(path, multiValue)
                 : pathsEqual(path, singleValue);
+              // A multiple-mode parent can't be path-selected (clicking it expands), so its
+              // checkbox is a read-only aggregate of its descendant leaves: checked when all are
+              // selected, indeterminate when only some.
+              const aggregate =
+                multiple && hasChildren ? aggregateCheckState(node, path, multiValue) : undefined;
 
               return (
                 <li key={node.value} role="none">
@@ -240,7 +283,8 @@ export function Cascader({
                   >
                     {multiple && (
                       <CheckboxVisual
-                        checked={selected}
+                        checked={aggregate ? aggregate === "checked" : selected}
+                        indeterminate={aggregate === "indeterminate"}
                         disabled={node.disabled || node.disableCheckbox}
                         className="me-1"
                       />
