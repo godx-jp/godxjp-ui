@@ -47,7 +47,11 @@ function packageExportAliases(): Array<{ find: string | RegExp; replacement: str
   return entries;
 }
 
-/** `/isolate/:storyId` and `/frame/:storyId` → separate HTML entries (not SPA hash). */
+/**
+ * `/isolate/:storyId`, `/frame/:storyId`, and `/showcase/:caseId` → separate HTML
+ * entries (not SPA hash). Showcases are full standalone app pages — they must NOT
+ * render inside the preview catalog chrome, so they get their own document.
+ */
 function standaloneRoutePlugin(): Plugin {
   const rewrite = (req: { url?: string }, _res: unknown, next: () => void) => {
     const url = req.url ?? "";
@@ -57,6 +61,8 @@ function standaloneRoutePlugin(): Plugin {
       req.url = `/isolate.html${qs}`;
     } else if (pathname.startsWith("/frame/") && !pathname.includes(".")) {
       req.url = `/frame.html${qs}`;
+    } else if (pathname.startsWith("/showcase/") && !pathname.includes(".")) {
+      req.url = `/showcase.html${qs}`;
     }
     next();
   };
@@ -91,6 +97,7 @@ export default defineConfig({
         main: path.resolve(previewRoot, "index.html"),
         isolate: path.resolve(previewRoot, "isolate.html"),
         frame: path.resolve(previewRoot, "frame.html"),
+        showcase: path.resolve(previewRoot, "showcase.html"),
       },
     },
   },

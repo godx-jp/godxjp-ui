@@ -18,8 +18,11 @@ import {
   type StoryGroup,
 } from "./preview-catalog";
 import { queryClient, StoryErrorBoundary, useLazyStory } from "./preview-runtime";
+import { GetStartedPage } from "./get-started";
 
 const HOST_MOBILE_QUERY = "(max-width: 639px)";
+/** Special non-catalog route: the Get Started landing (lists standalone showcases). */
+const GET_STARTED_ID = "get-started";
 
 function parseHashPath(raw: string): string {
   return raw.replace(/^#\/?/, "").split("?")[0] ?? "";
@@ -27,7 +30,7 @@ function parseHashPath(raw: string): string {
 
 function isKnownStoryRoute(raw: string): boolean {
   const storyId = parseHashPath(raw.replace(/^#\/?/, ""));
-  return Boolean(storyId && STORY_MAP.has(storyId));
+  return Boolean(storyId && (storyId === GET_STARTED_ID || STORY_MAP.has(storyId)));
 }
 
 function useHostMobile(): { hostMobile: boolean; deviceWidth: number } {
@@ -71,7 +74,7 @@ function loadInitialRoute(defaultId: string): string {
 
   try {
     const stored = window.localStorage.getItem(ROUTE_STORAGE_KEY);
-    if (stored && STORY_MAP.has(stored)) return stored;
+    if (stored && (stored === GET_STARTED_ID || STORY_MAP.has(stored))) return stored;
   } catch {
     /* ignore */
   }
@@ -365,15 +368,13 @@ function StoryCanvas({
 }
 
 export function App() {
-  const initialId =
-    STORY_ENTRIES.find((e) => e.id === "primitives-data-display-overview")?.id ??
-    STORY_ENTRIES.find((e) => e.groupPath[0] === "Primitives")?.id ??
-    STORY_ENTRIES[0]?.id ??
-    "";
+  const initialId = GET_STARTED_ID;
   const [routeHash, setRouteId] = useHashRoute(initialId);
-  const storyId = parseHashPath(routeHash);
-  const story = STORY_MAP.get(storyId) ?? STORY_ENTRIES[0];
-  const { Render, loading, error, sourceVersion } = useLazyStory(story);
+  const routeId = parseHashPath(routeHash);
+  const isGetStarted = routeId === GET_STARTED_ID;
+  const story = STORY_MAP.get(routeId) ?? STORY_ENTRIES[0];
+  // Don't lazy-load a story component while the landing is showing.
+  const { Render, loading, error, sourceVersion } = useLazyStory(isGetStarted ? undefined : story);
 
   const [expandedKeys, setExpandedKeys] = React.useState<Set<string>>(() =>
     loadExpanded(defaultExpanded(STORY_TREE)),
@@ -464,7 +465,7 @@ export function App() {
     }
   }, [story]);
 
-  if (!story) {
+  if (!story && !isGetStarted) {
     return (
       <div className="preview-empty">
         No pages found. Add a <code>.tsx</code> file under <code>docs/</code>.
@@ -508,6 +509,16 @@ export function App() {
                 </button>
               </div>
               <span className="preview-sidebar-sub">{STORY_ENTRIES.length} examples</span>
+              <button
+                type="button"
+                className="preview-tree-row preview-tree-leaf"
+                data-active={isGetStarted}
+                aria-current={isGetStarted ? "page" : undefined}
+                onClick={() => selectStory(GET_STARTED_ID)}
+              >
+                <span className="preview-tree-bullet" aria-hidden="true" />
+                <span className="preview-tree-label">Bắt đầu · Showcase</span>
+              </button>
               <div className="preview-search">
                 <input
                   type="search"
@@ -560,18 +571,26 @@ export function App() {
                     </svg>
                   </button>
                   <div className="preview-toolbar-title">
-                    <strong className="preview-toolbar-story">{story.storyName}</strong>
-                    <span className="preview-toolbar-path">{story.groupPath.join(" / ")}</span>
+                    <strong className="preview-toolbar-story">
+                      {isGetStarted ? "Bắt đầu" : story.storyName}
+                    </strong>
+                    <span className="preview-toolbar-path">
+                      {isGetStarted ? "Showcase & preview" : story.groupPath.join(" / ")}
+                    </span>
                   </div>
                 </div>
               </header>
-              <StoryCanvas
-                entry={story}
-                Render={Render}
-                loading={loading}
-                error={error}
-                sourceVersion={sourceVersion}
-              />
+              {isGetStarted ? (
+                <GetStartedPage />
+              ) : (
+                <StoryCanvas
+                  entry={story}
+                  Render={Render}
+                  loading={loading}
+                  error={error}
+                  sourceVersion={sourceVersion}
+                />
+              )}
             </main>
           </div>
         </AppProvider>

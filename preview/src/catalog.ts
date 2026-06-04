@@ -85,6 +85,9 @@ function relFromDocs(filePath: string): string {
 
 function isStoryTsx(rel: string): boolean {
   const base = rel.split("/").pop() ?? "";
+  // `docs/showcase/*` are full standalone pages served at /showcase/<id> (see
+  // showcase-catalog.ts) — they must never appear inside the preview catalog tree.
+  if (rel.startsWith("showcase/")) return false;
   return !base.startsWith("_");
 }
 
