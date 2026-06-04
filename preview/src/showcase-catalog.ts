@@ -55,6 +55,10 @@ export const SHOWCASES: ShowcaseEntry[] = [
   { id: "table-conditional-format", title: "条件付き書式 (V19)", description: "Tô màu dòng/ô theo ngưỡng (遅刻≥5 → đỏ, 早退>2h → 朱), chỉ token semantic.", tag: "Bảng", load: () => import("../../docs/showcase/table-conditional-format") },
   { id: "table-master-detail", title: "マスター詳細 (V20)", description: "List + pane chi tiết (chọn dòng hiện chi tiết bên phải; mobile xếp dọc).", tag: "Bảng", load: () => import("../../docs/showcase/table-master-detail") },
   { id: "case4-login", title: "ログイン (Login)", description: "Màn đăng nhập: density comfortable (44px touch), Card shadow-lg, SSO, FormField, brand panel ẩn ở mobile.", tag: "Auth", load: () => import("../../docs/showcase/case4-login") },
+  { id: "case2-employee-me", title: "従業員 /me", description: "Trang cá nhân nhân viên: PunchCard chấm công, StatCard 2×2, bảng 7 ngày, tóm tắt hôm nay.", tag: "Employee", load: () => import("../../docs/showcase/case2-employee-me") },
+  { id: "case3-approval-workflow", title: "欠勤承認ワークフロー", description: "Màn admin phức tạp nhất: filter bar + DataTable chọn dòng + bulk approve/reject + badge trạng thái + reject prompt + states.", tag: "Admin", load: () => import("../../docs/showcase/case3-approval-workflow") },
+  { id: "case5-shift-calendar", title: "シフトカレンダー", description: "Lịch ca: grid tháng pill ca (palette 7 màu wa-iro), timeline tuần có now-line, tab tháng/tuần/ngày.", tag: "Admin", load: () => import("../../docs/showcase/case5-shift-calendar") },
+  { id: "case6-agency-handy", title: "代理店ハンディ (mobile)", description: "UI cầm tay đại lý (390×844): Sheet, nút scan, list-card, badge 1:1, segmented, Dialog, toast, select-mode bar — density comfortable.", tag: "Mobile", load: () => import("../../docs/showcase/case6-agency-handy") },
 ];
 
 export const SHOWCASE_MAP = new Map<string, ShowcaseEntry>(SHOWCASES.map((s) => [s.id, s]));
