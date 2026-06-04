@@ -8,3 +8,7 @@ coverage/
 .codegraph/
 /ui
 *.tgz
+
+# local design-handoff bundle + audit scratch (not part of the published lib)
+.design/
+.ux-audit/
