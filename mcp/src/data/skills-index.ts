@@ -662,6 +662,142 @@ real-screen docs page; verify typecheck/lint/audit/check:*/preview:build/test al
       },
     ],
   },
+
+  // ── design-to-page (consumer: handoff → real page) ─────────────
+  {
+    id: "design-to-page",
+    name: "Design handoff → real page (consumer build guide)",
+    whenToUse:
+      "You (a consumer agent) received a Claude Design handoff — a bundle/mock/screenshot/HTML prototype or a written brief — and must build it as a REAL page with @godxjp/ui. Read this BEFORE writing any JSX. It teaches: read intent, map every block to a real primitive via this MCP, consume existing tokens, apply the dxs-kintai DNA, treat tables as the centerpiece, resolve gaps by extend-or-ask, and verify.",
+    source: "@godxjp/ui .design/research (chats-intent, tables, atomic-components) + dxs-kintai SKILL/colors_and_type.css",
+    sections: [
+      {
+        id: "read-intent",
+        title: "Read the intent — chats before pixels",
+        tagline: "A handoff is a prototype, not production code. Build the intent, not the markup.",
+        body: `A Claude Design bundle is HTML/CSS/JS to LOOK AT — never transcribe its DOM.
+If the bundle has chats/*.md, read them FIRST: they hold what the user actually
+wanted after iterating, the directions rejected, and the explicit rules. The final
+HTML is just the last output; the chat is the intent. Then read the README/SKILL +
+colors_and_type.css for the DNA. Distil each screen to ONE primary question it
+answers (one-intent-per-screen) before choosing components. Honesty rules that
+recur in this DNA: render only VALID actions (no disabled-button noise — a punch
+card off-state shows Check-In only, never a greyed Check-Out); label = identity
+(never changes), helper row = state (error/help goes BELOW, never recolours the
+label); entry-point affordances live in chrome, not floating in content.`,
+      },
+      {
+        id: "map-to-primitives",
+        title: "Map every block to a real primitive — MCP-first, never hand-roll",
+        tagline: "For each visual block ask 'which @godxjp/ui component is this?' — list_primitives, then get_component.",
+        body: `NEVER hand-roll a styled <div> that looks like a Card, or use raw
+<input>/<select>/<button>/<table>. Decompose each screen into a shopping list and
+resolve each item through THIS MCP: list_primitives to discover, get_component to
+confirm the exact prop/union before you write (never guess a prop). Typical map:
+page chrome → AppShell/Sidebar/Topbar/PageContainer; stat row → ResponsiveGrid +
+StatCard; data grid → DataTable; status pill → Badge tone=…; filter row → Form
+inline + Select/Input; org→branch → Cascader/TreeSelect; date/time → DatePicker/
+TimePicker; ⌘K → Command; bulk drawer/detail → Drawer/Sheet/Dialog; split list+
+detail → SplitPane/Resizable; empty → EmptyState; confirm → AlertDialog; toast →
+Sonner. No duplication: Select (showSearch/loadOptions) is the ONLY searchable/
+async select (no Combobox/Autocomplete); the 4 i18n pickers are one AppSettingPicker
+kind=…. A table = Card + CardContent-flush + DataTable (not PageContainer flush).`,
+      },
+      {
+        id: "tokens-exist",
+        title: "Tokens already exist — consume var(--…), never redeclare",
+        tagline: "The design's colors_and_type.css is already implemented as foundation.css.",
+        body: `The handoff's colors_and_type.css (SmartHR blue, wa-iro, M PLUS 2, the
+density scale) is ALREADY shipped as @godxjp/ui's foundation tokens. Never paste a
+hex, never redeclare a token, never invent a neutral. Consume var(--…) and the
+semantic utilities. Use get_tokens (MCP) to find the right name — if a token seems
+missing it almost certainly exists under a different name. Soft tints come from
+color-mix(in oklch, var(--primary) 15%, transparent), NOT a new pale hex. Control
+heights come from the density scale (xs 24 / sm 28 / default 32 / lg 36 / xl 44),
+never a literal px. Radii: card 6px, control 4px, inner pill 2px.`,
+      },
+      {
+        id: "dna",
+        title: "Apply the dxs-kintai DNA",
+        tagline: "渋み / 間 / 簡素 — fixed color signaling, dense, small headings, 14/1.7, no emoji.",
+        body: `These rules survive when you drop the prototype's divs:
+• 渋み (restraint): primary chroma ≤ 0.18 — --primary is the single most-important
+  action + brand surfaces ONLY, never status. No gradients, no pill cards, no
+  saturated brand.
+• 間 (breathing): body 14px / 1.7 (NEVER 16/1.5); tabular-nums on every numeric
+  column/stat so digits align under 1.7 leading.
+• 簡素 (simplicity): three weights only — 400/500/700 (no 300, no 600). Headings
+  stay SMALL: h1 = 20px, h2 = 18 (not 32) — JP enterprise is dense, big headings
+  waste 間.
+• Color signaling is FIXED-mapping: success 若竹 · warning 山吹(yellow) · info 群青
+  · attention 朱(orange — PREFER over red for non-destructive: 遅刻/lateness) ·
+  danger 茜(destructive only). Wa-iro is decorative (charts/tags/tenant) — NEVER
+  remap a wa-iro hue to a semantic role.
+• Density up front: compact 28 (heavy tables) · default 32 · comfortable 44 (login/
+  mobile, 44px touch floor). Set on the container; don't mix mid-page.
+• Cards: 1px border, NO shadow at rest (shadows only on popover md / dialog xl).
+• Copy quiet & factual — 「承認しました」 not 「承認に成功しました🎉」. Empty state =
+  one calm sentence, no illustration. NO emoji in product UI; Lucide 1.5px icons,
+  currentColor, sized by context (14 table / 16 nav / 18 button / 20 header).
+• Multi-tenant: tenants override only --primary/--ring/--foreground; semantic
+  colors stay shared (a "rejected" badge means the same everywhere).`,
+      },
+      {
+        id: "tables-central",
+        title: "Tables are the centerpiece — DataTable + the variant catalogue",
+        tagline: "Enterprise 勤怠/admin lives in tables; showcase the family broadly.",
+        body: `Most of this DNA's real value is in tables — make DataTable the
+centerpiece. One shell: Card + CardContent-flush wrapping DataTable (1px border,
+6px radius, no shadow). Region order: view tabs · toolbar (search + ⌘K + density +
+columns + import/export + primary CTA) · active-filter chip bar · table · footer
+totals · pagination — every region optional. Build each pattern as its own block:
+assembled CRUD list · bulk-action toolbar (selection REPLACES toolbar; cross-page
+"select all 1,284"; destructive isolated last) · column manager · advanced filter
+AND/OR · sort/resize · expandable detail row · inline editable row (row-level
+commit, dirty dot, "未保存" footer) · grouped rows w/ subtotals · tree rows · sticky
+columns + horizontal scroll · pagination ×3 (numbered/load-more/cursor) · import/
+export stepper · empty/loading(Skeleton)/error/no-perm states · footer totals ·
+compact kintone grid · conditional row/cell formatting. Cells: status → Badge tone;
+identity → Avatar + two-line; numerics right-aligned tabular-nums with — for null;
+IDs mono. Confirmed (確定済) rows are frozen — no edit, no destructive bulk. Row
+states change only background via color-mix, never height/padding. get_component
+DataTable + get_vocab ColumnDef/TableDensity/SortState before you build.`,
+      },
+      {
+        id: "gaps-extend-or-ask",
+        title: "Gaps → extend or ask — never invent",
+        tagline: "A block no primitive expresses is a decision, not a hand-roll.",
+        body: `When a block has no clean primitive/prop/variant, do NOT bake a bespoke
+one-off into the page. First try to EXTEND: can an existing component take one more
+tone/size/variant/slot, or be composed from existing primitives (e.g. a punch-card
+FSM, a mobile selection-bar, an i18n locale-field are compositions over Button/Card/
+Badge/Tabs/Input, not new primitives)? If it's a genuine gap or you're unsure, STOP
+and ASK the user (or surface it as an ADR/decision) — name the gap, propose
+"new variant on <X> vs. app-level composition vs. new component", and converge
+before building. Known gaps to expect in this DNA (ask rather than invent): three-
+level table density (current is binary), multi-sort priority badges, column resize/
+manager, numbered/load-more pagination, expandable/editable/grouped/tree/sticky-col
+table modes, filter chip bar + AND/OR panel, saved-view tabs, week-timeline/staff×
+time calendar, multilingual-field, no-code builders. Never silently fill a gap.`,
+      },
+      {
+        id: "verify",
+        title: "Verify — states complete, a11y, build green",
+        tagline: "Every state shown, WCAG 2.2 AA, typecheck/lint/audit clean, eyeballed at 3 widths.",
+        body: `Before calling it done: every prop × union value × state is exercised
+(default/hover/focus/active/disabled/loading/empty/error) — Skeleton for INIT fetch,
+spinner/loading for active save, EmptyState for no-data, inline error near the field
+(not a disappearing toast). A11y: correct roles/landmarks, keyboard (arrows/Home/End/
+Enter/Esc, visible focus, no positive tabindex), ≥24px targets, never colour-only
+state (add sr-only text), icon-only buttons have a name; aim for 0 vitest-axe
+violations. i18n: zero hardcoded strings — every label + aria-label through t(),
+format numbers/dates via Intl. Then run the build: pnpm typecheck + pnpm lint +
+pnpm audit must be green, console clean, and eyeball the page at 390 / 768 / 1280
+(atoms never wrap, containers wrap with row-gap, tabs horizontal-scroll, grids
+minmax(0,1fr), heights never break).`,
+      },
+    ],
+  },
 ];
 
 export function findSkill(id: string): Skill | undefined {
@@ -805,6 +941,15 @@ export function routeTask(task: string): RouteResult[] {
     "image-to-code",
     "workflow",
     "Generate design image first → analyze → implement.",
+  );
+
+  // Design handoff → real page (consumer build)
+  route(
+    ["handoff", "design bundle", "claude design", "prototype", "build the page", "implement the design", "build this screen", "mockup"],
+    "design-to-page",
+    "map-to-primitives",
+    "Map every block to a real @godxjp/ui primitive (MCP-first), consume existing tokens, apply the dxs-kintai DNA, tables central, gaps → extend-or-ask, verify.",
+    ["design-to-page/read-intent", "design-to-page/dna", "design-to-page/tables-central"],
   );
 
   if (matches.length === 0) {
