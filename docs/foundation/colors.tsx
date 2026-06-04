@@ -60,7 +60,7 @@ export default function Demo() {
                   <div
                     className={`border-border flex h-14 items-end rounded-md border p-2 ${s.cls}`}
                   >
-                    <span className="font-mono text-[11px] leading-none">Aa 亜</span>
+                    <span className="font-mono text-xs leading-none">Aa 亜</span>
                   </div>
                   <div>
                     <div className="font-mono text-xs">{s.token}</div>
@@ -87,7 +87,7 @@ export default function Demo() {
                   <div
                     className={`border-border flex h-14 items-end rounded-md border p-2 ${s.cls}`}
                   >
-                    <span className="font-mono text-[11px] leading-none">Aa 亜</span>
+                    <span className="font-mono text-xs leading-none">Aa 亜</span>
                   </div>
                   <div>
                     <div className="font-mono text-xs">{s.token}</div>

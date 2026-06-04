@@ -51,9 +51,13 @@ const RULES = [
   {
     id: "status-tone-not-variant",
     severity: "error",
-    test: /\bvariant=["'](?:success|warning|destructive|info|neutral)["']/,
+    // Only the tone-driven status components (Badge/Tag/StatCard) are wrong here — they expose a
+    // `tone` prop and reserve `variant` for STRUCTURE (default|secondary|outline). Button, Alert,
+    // DropdownMenuItem, ContextMenuItem, AlertDialog etc. legitimately use `variant` for emphasis,
+    // so they must NOT be flagged.
+    test: /<(?:Badge|Tag|StatCard)\b[^>]*\bvariant=["'](?:success|warning|destructive|info|neutral)["']/,
     message:
-      "Status/color intent uses tone, not variant. Use tone='success|warning|destructive|info|neutral'.",
+      "Badge/Tag/StatCard status uses tone, not variant (variant is structural: default|secondary|outline). Use tone='success|warning|destructive|info|neutral'.",
   },
   {
     id: "no-domain-tracking-token",
@@ -175,6 +179,68 @@ const RULES = [
   },
 ];
 
+/**
+ * Blank out `//` line comments and block comments (incl. JSDoc) — replacing them with spaces and
+ * preserving newlines so line numbers stay accurate — while KEEPING string/template literals (the
+ * className values we actually want to scan). Prevents false positives like a doc-comment that
+ * literally says "Never a raw <input>".
+ */
+function stripComments(src) {
+  let out = "";
+  let state = "code"; // code | line | block | string
+  let quote = "";
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i];
+    const n = src[i + 1];
+    if (state === "code") {
+      if (c === "/" && n === "/") {
+        state = "line";
+        out += "  ";
+        i++;
+      } else if (c === "/" && n === "*") {
+        state = "block";
+        out += "  ";
+        i++;
+      } else if (c === '"' || c === "'" || c === "`") {
+        state = "string";
+        quote = c;
+        out += c;
+      } else {
+        out += c;
+      }
+    } else if (state === "line") {
+      if (c === "\n") {
+        state = "code";
+        out += c;
+      } else out += " ";
+    } else if (state === "block") {
+      if (c === "*" && n === "/") {
+        state = "code";
+        out += "  ";
+        i++;
+      } else out += c === "\n" ? "\n" : " ";
+    } else {
+      // string
+      out += c;
+      if (c === "\\") {
+        out += src[i + 1] ?? "";
+        i++;
+      } else if (c === quote) state = "code";
+    }
+  }
+  return out;
+}
+
+/** A finding is suppressed by `ui-audit-disable-line <rule>` on the same line, or
+ *  `ui-audit-disable-next-line <rule>` on the line above (explicit rule id required). */
+function isSuppressed(ruleId, sameLine, prevLine) {
+  const onSame = new RegExp(`ui-audit-disable-line\\b[^\\n]*\\b${ruleId}\\b`).test(sameLine ?? "");
+  const onPrev = new RegExp(`ui-audit-disable-next-line\\b[^\\n]*\\b${ruleId}\\b`).test(
+    prevLine ?? "",
+  );
+  return onSame || onPrev;
+}
+
 function walk(dir, acc = []) {
   let entries;
   try {
@@ -205,25 +271,30 @@ for (const dir of SCAN_DIRS) {
   for (const file of walk(join(CWD, dir))) {
     const rel = relative(CWD, file);
     const content = readFileSync(file, "utf8");
-    const lines = content.split("\n");
-    lines.forEach((line, i) => {
+    const origLines = content.split("\n");
+    const scanContent = stripComments(content); // comments blanked; strings + line numbers kept
+    const scanLines = scanContent.split("\n");
+    scanLines.forEach((line, i) => {
       for (const rule of RULES) {
-        if (rule.test.test(line)) {
+        if (rule.test.test(line) && !isSuppressed(rule.id, origLines[i], origLines[i - 1])) {
           findings.push({
             file: rel,
             line: i + 1,
             rule: rule.id,
             severity: rule.severity,
             message: rule.message,
-            snippet: line.trim().slice(0, 120),
+            snippet: (origLines[i] ?? line).trim().slice(0, 120),
           });
         }
       }
     });
-    for (const match of content.matchAll(CARD_FLUSH)) {
+    for (const match of scanContent.matchAll(CARD_FLUSH)) {
+      const lineNo = scanContent.slice(0, match.index).split("\n").length;
+      if (isSuppressed("card-needs-content", origLines[lineNo - 1], origLines[lineNo - 2]))
+        continue;
       findings.push({
         file: rel,
-        line: content.slice(0, match.index).split("\n").length,
+        line: lineNo,
         rule: "card-needs-content",
         severity: "error",
         message:

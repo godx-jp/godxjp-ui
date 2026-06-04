@@ -43,6 +43,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="sm">
+              {/* ui-audit-disable-next-line no-arbitrary-typography — specimen demonstrating the 14px/1.7 body leading */}
               <p className="text-sm leading-[1.7]">
                 本文 14px / 1.7 — 漢字の密度に合わせて行間を広めに取り、読み疲れを抑えます。Body
                 copy mixes 日本語 and Latin without breaking rhythm.

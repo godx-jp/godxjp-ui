@@ -12,7 +12,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Button"
-      subtitle="variant × size × state — the only action control (never a raw <button>)"
+      subtitle="variant × size × state — the only action control (never a raw button element)"
     >
       <Flex direction="col" gap="lg">
         <Card>

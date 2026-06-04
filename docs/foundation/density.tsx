@@ -47,7 +47,7 @@ export default function Demo() {
                     className="bg-secondary border-border w-20 rounded-md border"
                     style={{ height: `var(${s.token})` }}
                   />
-                  <span className="text-muted-foreground font-mono text-[11px]">{s.px}</span>
+                  <span className="text-muted-foreground font-mono text-xs">{s.px}</span>
                 </Flex>
               ))}
             </Flex>

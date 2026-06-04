@@ -36,6 +36,7 @@ export default function Demo() {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>会計</NavigationMenuTrigger>
                   <NavigationMenuContent>
+                    {/* ui-audit-disable-next-line no-arbitrary-size — NavigationMenu flyout panel width (demo layout) */}
                     <ul className="grid gap-2 p-4 md:w-[400px] md:grid-cols-2">
                       <li>
                         <NavigationMenuLink
@@ -88,6 +89,7 @@ export default function Demo() {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>レポート</NavigationMenuTrigger>
                   <NavigationMenuContent>
+                    {/* ui-audit-disable-next-line no-arbitrary-size — NavigationMenu flyout panel width (demo layout) */}
                     <ul className="grid gap-2 p-4 md:w-[360px]">
                       <li>
                         <NavigationMenuLink
