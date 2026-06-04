@@ -142,6 +142,29 @@ const ORG_UNITS = [
   },
 ];
 
+/**
+ * Resolve a value-path (string[]) to its human labels by walking the option tree.
+ * `value` carries machine codes; a readout must never show those — map to labels.
+ * `keys` adapts to fieldNames-mapped data (e.g. id/name/items).
+ */
+function pathToLabels(
+  options: readonly Record<string, any>[],
+  path: string[],
+  keys = { value: "value", label: "label", children: "children" },
+): string[] {
+  const labels: string[] = [];
+  let level: readonly Record<string, any>[] | undefined = options;
+  for (const seg of path) {
+    const node = level?.find((n) => n[keys.value] === seg);
+    if (!node) break;
+    labels.push(String(node[keys.label]));
+    level = node[keys.children] as readonly Record<string, any>[] | undefined;
+  }
+  return labels;
+}
+
+const ORG_KEYS = { value: "id", label: "name", children: "items" };
+
 export default function Demo() {
   const [categoryPath, setCategoryPath] = useState<string[]>([]);
   const [regionPath, setRegionPath] = useState<string[]>([]);
@@ -161,7 +184,9 @@ export default function Demo() {
             <CardTitle>経費カテゴリ選択（単一・検索付き）</CardTitle>
             <CardDescription>
               費用科目の階層パスを選択。showSearch でリーフまで全文検索できる。 選択パス:{" "}
-              {categoryPath.length > 0 ? categoryPath.join(" › ") : "未選択"}
+              {categoryPath.length > 0
+                ? pathToLabels(EXPENSE_CATEGORIES, categoryPath).join(" / ")
+                : "未選択"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -183,7 +208,7 @@ export default function Demo() {
             <CardTitle>地域選択（単一・changeOnSelect）</CardTitle>
             <CardDescription>
               changeOnSelect=true で中間ノードも確定値として選択可能。 選択パス:{" "}
-              {regionPath.length > 0 ? regionPath.join(" › ") : "未選択"}
+              {regionPath.length > 0 ? pathToLabels(REGIONS, regionPath).join(" / ") : "未選択"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -228,7 +253,8 @@ export default function Demo() {
             <CardTitle>地域選択（expandTrigger=&quot;hover&quot;）</CardTitle>
             <CardDescription>
               expandTrigger=&quot;hover&quot; で列のホバーだけで次の階層が展開（既定は &quot;click&quot;）。
-              リーフはクリックで確定。 選択パス: {hoverPath.length > 0 ? hoverPath.join(" › ") : "未選択"}
+              リーフはクリックで確定。 選択パス:{" "}
+              {hoverPath.length > 0 ? pathToLabels(REGIONS, hoverPath).join(" / ") : "未選択"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -273,7 +299,7 @@ export default function Demo() {
             <CardDescription>
               実 API 形状（id / name / items）を fieldNames=&#123;&#123; value: &quot;id&quot;, label:
               &quot;name&quot;, children: &quot;items&quot; &#125;&#125; で写像。 選択パス:{" "}
-              {orgPath.length > 0 ? orgPath.join(" › ") : "未選択"}
+              {orgPath.length > 0 ? pathToLabels(ORG_UNITS, orgPath, ORG_KEYS).join(" / ") : "未選択"}
             </CardDescription>
           </CardHeader>
           <CardContent>

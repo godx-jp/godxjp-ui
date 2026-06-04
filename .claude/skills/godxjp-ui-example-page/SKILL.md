@@ -89,7 +89,17 @@ container at a wide viewport**, not only by shrinking the window.)
 - **Straight ASCII quotes** in code-like labels (smart quotes break copy-paste).
 - **Override `parameters.docs.source.code`** with a literal snippet for function-valued props
   (`cell`/`render`/`renderItem`) — cardinal rule 34.
-- **JP demos stay fully JP**; on-screen copy must match the code and the component's own guidance.
+- **JP demos stay fully JP — including `t()`-driven COMPONENT CHROME, not just your own copy.**
+  The hardcoded demo strings being Japanese is not enough: a component's internal search
+  placeholder / clear-button aria / empty-state (all via `t()`) follow the **AppProvider locale**,
+  which defaults to `vi`. If the preview harness doesn't pin the locale, an all-JP demo renders a
+  Vietnamese search box ("Tìm kiếm…", "Xóa lựa chọn"). **Open the component in a real browser and
+  read its chrome** — every placeholder/aria must be the demo's language. Fix at the harness
+  (`isolate-main.tsx` / `frame-main.tsx` → `<AppProvider defaultLocale="ja">`), not per-demo.
+- **Readouts show human LABELS, never machine value codes.** A `value`/path is codes
+  (`["operating","selling"]`); a "selected path" / summary line must resolve them to labels
+  (`営業費用 / 販売費`) by walking the option tree or using the resolved-node callback arg — never
+  `value.join()`. Showing raw codes to the user is a showcase bug (and a real-app bug).
 
 ---
 
@@ -102,7 +112,7 @@ container at a wide viewport**, not only by shrinking the window.)
 - [ ] Every **WHY claim** has a live demo — Rule #4
 - [ ] **Real primitives only** (rule 29) · **tokens only** — Rule #5
 - [ ] Cards independent (own state + data) · providers mounted — Rule #6
-- [ ] ASCII quotes · `source.code` override for fn props · JP stays JP — Rule #7
+- [ ] ASCII quotes · `source.code` override for fn props · JP stays JP **incl. `t()` chrome (opened in browser)** · readouts show labels not codes — Rule #7
 - [ ] `pnpm audit` (ui-audit) 0 errors for the file
 - [ ] Verified in the isolate view at **390 / 768 / 1280** (a static screenshot at each proves it)
 

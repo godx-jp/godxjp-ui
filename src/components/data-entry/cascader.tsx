@@ -132,7 +132,12 @@ export function Cascader({
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
-    if (!next) {
+    if (next) {
+      // Seed the columns to the current selection so an existing value is VISIBLE and
+      // re-pickable the moment the panel opens — not hidden behind a collapsed root column.
+      // Single mode has one path to expand to; multiple has no single path, so stay at root.
+      setActivePath(multiple ? [] : singleValue);
+    } else {
       setSearch("");
       setActivePath([]);
     }
