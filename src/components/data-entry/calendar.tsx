@@ -19,7 +19,10 @@ export function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      // The calendar has an intrinsic width (7 fixed-size day columns); never stretch it to
+      // fill a wide container — w-fit shrink-wraps the grid so the nav sits beside it, not at
+      // the container edges. Consumers can still widen via `className` if they truly need to.
+      className={cn("w-fit p-3", className)}
       classNames={{
         months: cn("flex flex-col gap-4 sm:flex-row", classNames?.months),
         month: cn("relative flex flex-col gap-4", classNames?.month),

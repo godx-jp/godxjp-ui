@@ -179,3 +179,10 @@ Ba lỗi showcase hay gặp nhất — chặn từ gốc:
    giữa chừng kiểu "Showcase\n(1)". Giá trị dài thực sự → `truncate` + title tooltip; tiêu đề 1–2 từ
    KHÔNG bao giờ được vỡ nhiều dòng. Số/nhãn cố định dùng `tabular-nums` + nowrap. Header 2 phần
    (tiêu đề ↔ phụ đề/meta) ở hẹp thì stack dọc, không nhồi `justify-between` để cả hai cùng gãy.
+
+6. **Component có WIDTH TỰ NHIÊN không được stretch full-width.** Calendar, dropdown/picker panel,
+   color-picker, segmented, mọi lưới cố-định-cột — phải `w-fit` / để width nội dung, KHÔNG để
+   `width:100%` kéo giãn → tạo khoảng trống mênh mông và đẩy nav/control (mũi tên ‹ ›) ra sát mép
+   container. Chỉ full-width khi component BẢN CHẤT là full-width (Input, Textarea, Table, Card,
+   ProgressBar). Dấu hiệu sai: một calendar/picker chiếm hết bề ngang card mà grid chỉ nằm một góc
+   + khoảng trống lớn → co về `w-fit`.
