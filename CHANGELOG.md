@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.1]
+
+### Changed
+
+- `ui-audit` is now comment/doc-aware: it strips comments before scanning (so a JSDoc that says
+  "Never a raw <input>" is not flagged), scopes the status-vs-variant rule to `Badge`/`Tag`/`StatCard`
+  (Button/Alert/DropdownMenuItem use `variant` legitimately), and supports
+  `ui-audit-disable-line|next-line <rule>` suppression directives — eliminating false positives while
+  still catching real violations.
+
 ## [11.0.0]
 
 International-standardization release: i18n (Intl/CLDR), accessibility (WAI-ARIA APG + WCAG 2.2 AA),
