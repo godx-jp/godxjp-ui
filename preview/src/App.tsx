@@ -2,6 +2,9 @@ import * as React from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 
+import { Card, CardContent } from "@godxjp/ui/data-display";
+import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
+
 import { AppProvider } from "../../src/app/app-provider";
 import { StoryDemoBlock } from "./demo-block";
 import { SimpleDemoBlock } from "./simple-demo-block";
@@ -150,39 +153,46 @@ function StoryTreeNode({
   activeLeafRef: React.RefObject<HTMLButtonElement | null>;
 }) {
   const groupKey = group.path.join("/");
-  const expanded = expandedKeys.has(groupKey);
+  const isTopLevel = depth === 0;
+  // Top-level groups are Storybook-style section headers: a muted, non-collapsible
+  // title with their contents always shown. Only nested groups collapse.
+  const expanded = isTopLevel ? true : expandedKeys.has(groupKey);
   const indentStyle = { ["--depth" as string]: depth };
   const total = countExamples(group);
-  const isTopLevel = depth === 0;
   const onActivePath = isGroupOnActivePath(group, activeStory);
 
   return (
     <li className="preview-tree-item" data-depth={depth}>
-      <button
-        type="button"
-        className={
-          isTopLevel ? "preview-tree-row preview-tree-root" : "preview-tree-row preview-tree-group"
-        }
-        style={indentStyle}
-        onClick={() => toggle(groupKey)}
-        aria-expanded={expanded}
-        data-active-path={onActivePath}
-      >
-        <span className="preview-tree-caret" data-open={expanded} aria-hidden="true">
-          <svg viewBox="0 0 12 12" width="10" height="10">
-            <path
-              d="M4 2 L8 6 L4 10"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
-        <span className="preview-tree-label">{group.name}</span>
-        <span className="preview-tree-count">{total}</span>
-      </button>
+      {isTopLevel ? (
+        <div className="preview-tree-row preview-tree-section" style={indentStyle}>
+          <span className="preview-tree-label">{group.name}</span>
+          <span className="preview-tree-count">{total}</span>
+        </div>
+      ) : (
+        <button
+          type="button"
+          className="preview-tree-row preview-tree-group"
+          style={indentStyle}
+          onClick={() => toggle(groupKey)}
+          aria-expanded={expanded}
+          data-active-path={onActivePath}
+        >
+          <span className="preview-tree-caret" data-open={expanded} aria-hidden="true">
+            <svg viewBox="0 0 12 12" width="10" height="10">
+              <path
+                d="M4 2 L8 6 L4 10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+          <span className="preview-tree-label">{group.name}</span>
+          <span className="preview-tree-count">{total}</span>
+        </button>
+      )}
       {expanded ? (
         <ul className="preview-tree-list">
           {group.examples.map((story) => {
@@ -254,31 +264,44 @@ function DocPage({
 
   return (
     <div className="preview-stage">
-      <article className="doc-page">
-        <header className="doc-page-header">
-          <h1 className="doc-page-title">{entry.storyName}</h1>
-          {groupIntro ? <Markdown source={groupIntro} className="doc-page-intro" /> : null}
-        </header>
-        {entry.storyDoc ? <Markdown source={entry.storyDoc} className="doc-story-body" /> : null}
+      <PageContainer title={entry.storyName} subtitle={entry.groupPath.join(" / ")} variant="flush">
+        <Flex direction="col" gap="xl">
+          <Card>
+            <CardContent>
+              <Flex direction="col" gap="md">
+                {groupIntro ? <Markdown source={groupIntro} className="doc-page-intro" /> : null}
+                {entry.storyDoc ? (
+                  <Markdown source={entry.storyDoc} className="doc-story-body" />
+                ) : null}
+              </Flex>
+            </CardContent>
+          </Card>
 
-        {isPrimitive ? (
-          <SimpleDemoBlock source={source} loading={loading} error={error}>
-            {demo}
-          </SimpleDemoBlock>
-        ) : (
-          <StoryDemoBlock
-            storyId={entry.id}
-            source={source}
-            layout={entry.layout}
-            viewportWidth={entry.viewportWidth}
-            viewportHeight={entry.viewportHeight}
-            loading={loading}
-            error={error}
-          >
-            {demo}
-          </StoryDemoBlock>
-        )}
-      </article>
+          <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 1 }}>
+            <Card>
+              <CardContent>
+                {isPrimitive ? (
+                  <SimpleDemoBlock source={source} loading={loading} error={error}>
+                    {demo}
+                  </SimpleDemoBlock>
+                ) : (
+                  <StoryDemoBlock
+                    storyId={entry.id}
+                    source={source}
+                    layout={entry.layout}
+                    viewportWidth={entry.viewportWidth}
+                    viewportHeight={entry.viewportHeight}
+                    loading={loading}
+                    error={error}
+                  >
+                    {demo}
+                  </StoryDemoBlock>
+                )}
+              </CardContent>
+            </Card>
+          </ResponsiveGrid>
+        </Flex>
+      </PageContainer>
     </div>
   );
 }
@@ -312,27 +335,31 @@ function StoryCanvas({
 
   return (
     <div className="preview-stage">
-      <div className="preview-example-page">
-        <header className="doc-page-header">
-          <h1 className="doc-page-title">{entry.storyName}</h1>
-          <p className="doc-p">{entry.fullTitle}</p>
-        </header>
-        <StoryDemoBlock
-          storyId={entry.id}
-          source={source}
-          layout={entry.layout}
-          viewportWidth={entry.viewportWidth}
-          viewportHeight={entry.viewportHeight}
-          loading={loading}
-          error={error}
-        >
-          {Render ? (
-            <StoryErrorBoundary storyId={entry.id}>
-              <Render />
-            </StoryErrorBoundary>
-          ) : null}
-        </StoryDemoBlock>
-      </div>
+      <PageContainer title={entry.storyName} subtitle={entry.fullTitle} variant="flush">
+        <Flex direction="col" gap="xl">
+          <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 1 }}>
+            <Card>
+              <CardContent>
+                <StoryDemoBlock
+                  storyId={entry.id}
+                  source={source}
+                  layout={entry.layout}
+                  viewportWidth={entry.viewportWidth}
+                  viewportHeight={entry.viewportHeight}
+                  loading={loading}
+                  error={error}
+                >
+                  {Render ? (
+                    <StoryErrorBoundary storyId={entry.id}>
+                      <Render />
+                    </StoryErrorBoundary>
+                  ) : null}
+                </StoryDemoBlock>
+              </CardContent>
+            </Card>
+          </ResponsiveGrid>
+        </Flex>
+      </PageContainer>
     </div>
   );
 }

@@ -82,10 +82,8 @@ export type {
 export type {
   AppProviderProp,
   AppContextValue,
-  LocalePickerProp,
-  TimezonePickerProp,
-  TimeFormatPickerProp,
-  DateFormatPickerProp,
+  AppSettingKind,
+  AppSettingPickerProp,
 } from "./app.prop";
 export type {
   ZodSchemaProp,

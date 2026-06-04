@@ -32,14 +32,14 @@ import {
 
 ## Component props (composite)
 
-| Name                | Group        | Vocabulary used                                                                     |
-| ------------------- | ------------ | ----------------------------------------------------------------------------------- |
+| Name                | Group        | Vocabulary used                                                             |
+| ------------------- | ------------ | --------------------------------------------------------------------------- |
 | `PageContainerProp` | layout       | TitleProp, SubtitleProp, ExtraProp, FooterProp, BreadcrumbProp, DensityProp |
-| `ButtonProp`        | general      | ButtonVariantProp, ButtonSizeProp, AsChildProp                                      |
-| `DataTableProp`     | data-display | ColumnDefProp, TableDensityProp, SortStateProp                                      |
-| `DialogConfirmProp` | feedback     | OpenProp, TitleProp, DescriptionProp, HandlerProp, PendingProp                      |
-| `EmptyStateProp`    | data-display | IconProp, TitleProp, DescriptionProp, ActionProp                                    |
-| …                   |              | See `COMPONENT_PROP_REGISTRY`                                                       |
+| `ButtonProp`        | general      | ButtonVariantProp, ButtonSizeProp, AsChildProp                              |
+| `DataTableProp`     | data-display | ColumnDefProp, TableDensityProp, SortStateProp                              |
+| `DialogConfirmProp` | feedback     | OpenProp, TitleProp, DescriptionProp, HandlerProp, PendingProp              |
+| `EmptyStateProp`    | data-display | IconProp, TitleProp, DescriptionProp, ActionProp                            |
+| …                   |              | See `COMPONENT_PROP_REGISTRY`                                               |
 
 ## Before adding a new prop
 

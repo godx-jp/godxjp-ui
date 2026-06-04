@@ -31,6 +31,3 @@ export function AlertMutationFeedback({
     />
   );
 }
-
-/** @deprecated Use AlertMutationFeedback or Alert.QueryError. */
-export const MutationFeedback = AlertMutationFeedback;

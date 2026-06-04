@@ -150,7 +150,10 @@ export function Cascader({
         {columns.map((col, colIndex) => (
           <ul
             key={colIndex}
-            className="min-w-[9rem] border-r last:border-r-0"
+            role="listbox"
+            aria-orientation="vertical"
+            aria-multiselectable={multiple ? true : undefined}
+            className="min-w-[9rem] border-e last:border-e-0"
             onMouseLeave={
               expandTrigger === "hover"
                 ? () => setActivePath(activePath.slice(0, colIndex))
@@ -166,9 +169,13 @@ export function Cascader({
                 : pathsEqual(path, singleValue);
 
               return (
-                <li key={node.value}>
+                <li key={node.value} role="none">
                   <button
                     type="button"
+                    role="option"
+                    aria-selected={selected}
+                    aria-haspopup={hasChildren ? "menu" : undefined}
+                    aria-expanded={hasChildren ? active : undefined}
                     disabled={node.disabled}
                     className={cn(
                       "flex w-full items-center gap-1 px-3 py-2 text-sm outline-none",
@@ -187,15 +194,15 @@ export function Cascader({
                       <Checkbox
                         checked={selected}
                         disabled={node.disabled}
-                        className="mr-1"
+                        className="me-1"
                         aria-hidden
                         tabIndex={-1}
                       />
                     )}
                     {!multiple && selected && (
-                      <Check className="mr-1 size-4 shrink-0" aria-hidden="true" />
+                      <Check className="me-1 size-4 shrink-0" aria-hidden="true" />
                     )}
-                    <span className="flex-1 truncate text-left">{node.label}</span>
+                    <span className="flex-1 truncate text-start">{node.label}</span>
                     {hasChildren && (
                       <ChevronRight className="size-4 shrink-0 opacity-50" aria-hidden="true" />
                     )}
@@ -227,13 +234,16 @@ export function Cascader({
           )}
         >
           <span className="truncate">{displayLabel ?? resolvedPlaceholder}</span>
-          <span className="ml-2 flex shrink-0 items-center gap-1">
+          <span className="ms-2 flex shrink-0 items-center gap-1">
             {allowClear && displayLabel && !disabled && (
-              <X
-                className="size-4 opacity-50 hover:opacity-100"
-                aria-hidden="true"
+              <button
+                type="button"
+                aria-label={t("dataEntry.cascader.clear")}
+                className="flex size-4 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
                 onClick={clearValue}
-              />
+              >
+                <X className="size-4" aria-hidden="true" />
+              </button>
             )}
             <ChevronsUpDown className="size-4 opacity-50" aria-hidden="true" />
           </span>
@@ -256,7 +266,7 @@ export function Cascader({
         )}
         {isSearching ? (
           <ScrollArea className="max-h-[min(300px,50vh)]">
-            <div className="p-1">
+            <div className="p-1" role="listbox" aria-multiselectable={multiple ? true : undefined}>
               {searchResults.length === 0 ? (
                 <p className="text-muted-foreground py-6 text-center text-sm">
                   {t("dataEntry.cascader.empty")}
@@ -271,6 +281,8 @@ export function Cascader({
                     <button
                       key={pathKey(path)}
                       type="button"
+                      role="option"
+                      aria-selected={selected}
                       className={cn(
                         "flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none",
                         "hover:bg-accent hover:text-accent-foreground",
@@ -279,17 +291,17 @@ export function Cascader({
                       onClick={() => handleSelectNode({ value: path.at(-1)!, label }, path)}
                     >
                       {multiple ? (
-                        <Checkbox checked={selected} className="mr-2" aria-hidden tabIndex={-1} />
+                        <Checkbox checked={selected} className="me-2" aria-hidden tabIndex={-1} />
                       ) : (
                         <Check
                           className={cn(
-                            "mr-2 size-4 shrink-0",
+                            "me-2 size-4 shrink-0",
                             selected ? "opacity-100" : "opacity-0",
                           )}
                           aria-hidden="true"
                         />
                       )}
-                      <span className="truncate text-left">{label}</span>
+                      <span className="truncate text-start">{label}</span>
                     </button>
                   );
                 })

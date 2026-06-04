@@ -13,7 +13,14 @@ import { readFileSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 const ROOT_ENTRY = "dist/index.js";
-const FORBIDDEN = ["@tanstack/react-query", "react-router", "react-router-dom", "i18next", "react-hook-form", "@hookform"];
+const FORBIDDEN = [
+  "@tanstack/react-query",
+  "react-router",
+  "react-router-dom",
+  "i18next",
+  "react-hook-form",
+  "@hookform",
+];
 
 if (!existsSync(ROOT_ENTRY)) {
   console.error(`✗ ${ROOT_ENTRY} not found — run \`pnpm build\` first.`);
@@ -41,15 +48,25 @@ function walk(file) {
 }
 walk(ROOT_ENTRY);
 
-const leaks = [...bareSpecifiers].filter((s) => FORBIDDEN.some((f) => s === f || s.startsWith(f + "/")));
+const leaks = [...bareSpecifiers].filter((s) =>
+  FORBIDDEN.some((f) => s === f || s.startsWith(f + "/")),
+);
 
 if (process.argv.includes("--json")) {
-  process.stdout.write(JSON.stringify({ leaks, reachedSpecifiers: [...bareSpecifiers].sort() }, null, 2) + "\n");
+  process.stdout.write(
+    JSON.stringify({ leaks, reachedSpecifiers: [...bareSpecifiers].sort() }, null, 2) + "\n",
+  );
 } else if (leaks.length === 0) {
-  console.log(`✓ Core isolated — root @godxjp/ui pulls no foreign runtime (checked ${seen.size} dist chunks).`);
+  console.log(
+    `✓ Core isolated — root @godxjp/ui pulls no foreign runtime (checked ${seen.size} dist chunks).`,
+  );
 } else {
-  console.error(`✗ Root @godxjp/ui leaks foreign runtime(s) — these belong on a subpath, not the root barrel:`);
+  console.error(
+    `✗ Root @godxjp/ui leaks foreign runtime(s) — these belong on a subpath, not the root barrel:`,
+  );
   for (const l of leaks) console.error(`  ${l}`);
-  console.error(`\n  Move the offending re-export out of src/index.ts (keep it on ./query / ./form / ./app).`);
+  console.error(
+    `\n  Move the offending re-export out of src/index.ts (keep it on ./query / ./form / ./app).`,
+  );
 }
 process.exit(leaks.length > 0 ? 1 : 0);

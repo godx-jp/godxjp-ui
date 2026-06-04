@@ -184,32 +184,58 @@
     margin-top: var(--space-1);
     font-size: var(--font-size-sm);
   }
-
 }
 
 /* Accordion */
-.ui-accordion-item { border-bottom: 1px solid hsl(var(--border)); }
-.ui-accordion-header { display: flex; }
+.ui-accordion-item {
+  border-bottom: 1px solid hsl(var(--border));
+}
+.ui-accordion-header {
+  display: flex;
+}
 .ui-accordion-trigger {
-  display: flex; flex: 1; align-items: center; justify-content: space-between;
-  gap: var(--space-2); padding-block: var(--space-4); font-weight: 500; text-align: left;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  font-weight: 500;
+  text-align: left;
   transition: color 0.15s ease;
 }
-.ui-accordion-trigger:hover { text-decoration: underline; }
-.ui-accordion-chevron {
-  width: 1rem; height: 1rem; color: hsl(var(--muted-foreground));
-  transition: transform 0.2s ease; flex-shrink: 0;
+.ui-accordion-trigger:hover {
+  text-decoration: underline;
 }
-.ui-accordion-trigger[data-state="open"] .ui-accordion-chevron { transform: rotate(180deg); }
-.ui-accordion-content { overflow: hidden; font-size: 0.875rem; }
-.ui-accordion-content-inner { padding-bottom: var(--space-4); }
+.ui-accordion-chevron {
+  width: 1rem;
+  height: 1rem;
+  color: hsl(var(--muted-foreground));
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.ui-accordion-trigger[data-state="open"] .ui-accordion-chevron {
+  transform: rotate(180deg);
+}
+.ui-accordion-content {
+  overflow: hidden;
+  font-size: 0.875rem;
+}
+.ui-accordion-content-inner {
+  padding-bottom: var(--space-4);
+}
 
 /* HoverCard */
 .ui-hover-card-content {
-  z-index: 50; width: 16rem; border-radius: var(--radius-md);
-  border: 1px solid hsl(var(--border)); background: hsl(var(--popover));
-  color: hsl(var(--popover-foreground)); padding: var(--space-4);
-  box-shadow: var(--shadow-md); outline: none;
+  z-index: 50;
+  width: 16rem;
+  border-radius: var(--radius-md);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  padding: var(--space-4);
+  box-shadow: var(--shadow-md);
+  outline: none;
 }
 
 .ui-carousel {

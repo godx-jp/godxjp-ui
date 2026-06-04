@@ -1,3 +1,4 @@
+import { useTranslation } from "../../i18n/use-translation";
 import type { AppShellProp } from "../../props/components/layout.prop";
 
 export type {
@@ -16,6 +17,7 @@ export function AppShell({
   children,
   sidebarCollapsed = false,
 }: AppShellProp) {
+  const { t } = useTranslation();
   const resolvedTopbar =
     topbar !== undefined ? (
       topbar
@@ -30,13 +32,21 @@ export function AppShell({
 
   return (
     <div className="app-root" data-collapsed={sidebarCollapsed ? "true" : undefined}>
-      <aside className="app-sidebar">{sidebar}</aside>
-      <header className="app-topbar">{resolvedTopbar}</header>
-      <main className="app-main">
+      <aside className="app-sidebar" aria-label={t("layout.appShell.sidebarLabel")}>
+        {sidebar}
+      </aside>
+      <header className="app-topbar" aria-label={t("layout.appShell.headerLabel")}>
+        {resolvedTopbar}
+      </header>
+      <main className="app-main" aria-label={t("layout.appShell.mainLabel")}>
         {breadcrumb !== undefined && <div className="app-breadcrumb">{breadcrumb}</div>}
         {children}
       </main>
-      {footer !== undefined && <footer className="app-footer">{footer}</footer>}
+      {footer !== undefined && (
+        <footer className="app-footer" aria-label={t("layout.appShell.footerLabel")}>
+          {footer}
+        </footer>
+      )}
     </div>
   );
 }

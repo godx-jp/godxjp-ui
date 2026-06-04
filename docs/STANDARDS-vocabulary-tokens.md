@@ -36,7 +36,9 @@ type SelectLikeProp<T = string> = {
 ```
 
 ```tsx
-<Badge tone="success" variant="outline">公開中</Badge>
+<Badge tone="success" variant="outline">
+  公開中
+</Badge>
 ```
 
 ```css

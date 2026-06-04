@@ -57,7 +57,7 @@ describe("Select", () => {
     const trigger = screen.getByRole("combobox", { name: "Hub" });
     expect(trigger).toHaveClass("ui-control");
     expect(trigger).toHaveAttribute("data-slot", "select-trigger");
-    expect(trigger).toHaveAttribute("data-size", "default");
+    expect(trigger).toHaveAttribute("data-size", "md");
   });
 });
 

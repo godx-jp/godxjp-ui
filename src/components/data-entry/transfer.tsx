@@ -39,6 +39,8 @@ function TransferPanel({
   emptyText: string;
   direction: "left" | "right";
 }) {
+  const { t } = useTranslation();
+  const titleId = React.useId();
   const [query, setQuery] = React.useState("");
   const filtered = React.useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -69,9 +71,13 @@ function TransferPanel({
             checked={allChecked ? true : indeterminate ? "indeterminate" : false}
             disabled={Boolean(disabled) || enabledItems.length === 0}
             onCheckedChange={(v) => onSelectAll(v === true)}
-            aria-label={direction === "left" ? "Select all source" : "Select all target"}
+            aria-label={
+              direction === "left"
+                ? t("dataEntry.transfer.selectAllSource")
+                : t("dataEntry.transfer.selectAllTarget")
+            }
           />
-          <span>{title}</span>
+          <span id={titleId}>{title}</span>
         </label>
         <span className="text-muted-foreground text-xs">
           {selectedKeys.length}/{filtered.length}
@@ -89,7 +95,7 @@ function TransferPanel({
         </div>
       )}
       <ScrollArea className="flex-1">
-        <ul className="p-1">
+        <ul className="p-1" role="group" aria-labelledby={titleId}>
           {filtered.length === 0 ? (
             <li className="text-muted-foreground py-8 text-center text-sm">{emptyText}</li>
           ) : (

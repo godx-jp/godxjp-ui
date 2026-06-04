@@ -333,7 +333,7 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
           </Card>
 
           {filtered.length > PAGE_SIZE && (
-            <Pagination current={page} total={filtered.length} pageSize={PAGE_SIZE} showTotal onValueChange={(p) => setPage(p)} />
+            <Pagination value={page} total={filtered.length} pageSize={PAGE_SIZE} showTotal onValueChange={(p) => setPage(p)} />
           )}
         </Stack>
       </PageContainer>

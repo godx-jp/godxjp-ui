@@ -3,6 +3,7 @@
 Every message is one fenced envelope. Never rewrite earlier entries; only append.
 
 ---
+
 ```
 ### r0 · ADV-C → all · opening
 claim:       Option C is best for 7.0.0 because a hard, no-alias breaking release is the only defensible moment to collapse naming debt, app-layer leakage, and missing primitive gaps into one migration instead of forcing consumers through serial hard renames.
@@ -11,6 +12,7 @@ warrant:     These are not cosmetic renames: they remove router/data/app-domain 
 assumptions: 7.0.0 has enough implementation bandwidth; migration docs/codemods are part of the release; "bulk" means accepting source-supported audit changes while keeping names the audit itself marks standard; Sheet->Drawer is an intentional Option C taxonomy choice even though #82 prefers Sheet and Drawer distinct; production consumers prefer one larger migration over repeated major/minor churn.
 confidence:  82
 ```
+
 ```text
 ### r0 · ADV-A → all · opening
 claim:       Option A is best for 7.0.0 because this release should spend its no-alias breaking-change budget only on locked cleanup and truly canonical names, not on audit-driven renames that hide broad API redesigns or on additive primitives that can ship safely in 7.x.
@@ -28,6 +30,7 @@ warrant:     Additive P1 primitives improve standards/completeness with low cons
 assumptions: I assume Option B P1 means Avatar, Separator, generic Skeleton, Toggle, ToggleGroup, AspectRatio, and Progress via the locked rename; I assume these can be implemented as thin Radix/shadcn-style wrappers under existing token/rule constraints; I assume P2/P3 #82 items remain backlog except that a distinct vaul Drawer may be added now only if deliverable; I assume no deprecated aliases because the topic states hard renames only.
 confidence:  86
 ```
+
 ```
 ### r1 · SKEPTIC → all · rebuttal
 claim:       None of A/B/C is a clean 7.0.0 scope. A is under-scoped because it knowingly ships a "standard framework" major with already-reported P1 primitive holes; B is the least dangerous but still blurs the release story by mixing hard cleanup with new primitive parity work that does not need a major; C is correctness-risk, not ambition, because it accepts redesign-api scope creep and the Sheet→Drawer rename despite #82 explicitly defining Drawer as a distinct bottom-sheet. The biggest risk in A is reputational/completeness failure; in B, scope ambiguity and dependency/API settling under a major deadline; in C, irreversible semantic breakage plus a deliverability collapse.
@@ -37,6 +40,7 @@ warrant:     Sheet→Drawer is actually wrong for this library because it erases
 assumptions: Locked cleanup remains non-negotiable; "none" means none of the three described option envelopes, not "do nothing"; additive primitives can ship in 7.x without a major; if P1 primitives are added in 7.0.0, they must be explicitly frozen to P1 only and must not include Sheet→Drawer or P2/P3; audit findings are evidence only where source behavior and design-system precedent align.
 confidence:  79 (delta: +0 since r0, because: no prior SKEPTIC r0 baseline exists; the specific rival argument that most constrained my skepticism is B's production-vendoring evidence for P1 primitives, but it moves me only to "B is least dangerous," not to endorsing B as the right 7.0.0 envelope)
 ```
+
 ```
 ### r1 · ADV-B → all · rebuttal
 claim:       Option B still has the best 7.0.0 scope: ship the locked cleanup, keep `Sheet` as the side-panel primitive, add #82's P1 primitive gaps, and reject the audit's broad cosmetic/API overhaul for this release. `Drawer` may be added only as a distinct vaul bottom-sheet; it must not be the renamed `Sheet`.
@@ -56,6 +60,7 @@ warrant:     B beats A on "7.0.0 feels complete" for P1 primitive parity; I conc
 assumptions: New primitives can be added in any 7.x minor without breaking existing consumers; 7.0.0 implementation bandwidth and migration docs are finite; the stated production consumer cost matters more than audit-agent agreement; source-confirmed design debt should be queued into focused follow-up majors/minors only when the replacement API is proven; no deprecated aliases means every extra rename is immediate churn.
 confidence:  82 (delta: -4 since r0, because: ADV-B's specific production-migrator argument for additive P1 primitive parity is stronger than my r0 framing of #82 as merely backlog; it improves coherence/completeness, but does not overcome the fact that additions can ship safely in 7.x while extra audit renames cannot be undone cheaply)
 ```
+
 ```text
 ### r1 · ADV-C → all · rebuttal
 claim:       Option C remains the right 7.0.0 strategy, but it must be evidence-filtered maximalism: do the locked cleanup, add #82 primitives, and make the source-backed naming/design repairs in one no-alias major; drop audit items that are merely prettier vocabulary. I now carve out `Sheet`->`Drawer` as the biggest weak C item: keep `Sheet` for the Radix side panel and add a distinct vaul bottom-sheet `Drawer`, while still doing the broader PageShell/AppBar/Sidebar/Select/Dialog/Upload/query/app-domain redesigns in 7.0.0.

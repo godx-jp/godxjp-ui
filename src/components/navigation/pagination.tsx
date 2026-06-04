@@ -34,18 +34,22 @@ const PaginationItem = React.forwardRef<HTMLLIElement, React.LiHTMLAttributes<HT
 );
 PaginationItem.displayName = "PaginationItem";
 
-type PaginationLinkProps = React.ComponentPropsWithoutRef<"a"> & {
+// `href` is accepted for API back-compat but ignored — page controls are real <button>s so that
+// Space activates them and disabled items leave the tab order (instead of `<a aria-disabled>`).
+type PaginationLinkProps = Omit<React.ComponentPropsWithoutRef<"button">, "type"> & {
   isActive?: boolean;
   disabled?: boolean;
+  href?: string;
 };
 
-const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
-  ({ className, isActive, disabled, children, onClick, ...props }, ref) => (
-    <a
+const PaginationLink = React.forwardRef<HTMLButtonElement, PaginationLinkProps>(
+  ({ className, isActive, disabled, children, onClick, href: _href, ...props }, ref) => (
+    <button
       ref={ref}
+      type="button"
       data-active={isActive || undefined}
       aria-current={isActive ? "page" : undefined}
-      aria-disabled={disabled || undefined}
+      disabled={disabled || undefined}
       data-state={disabled ? "disabled" : undefined}
       className={cn(
         "ui-pagination-link ui-button--compact-icon ui-pagination-page",
@@ -53,19 +57,11 @@ const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
         disabled ? "ui-pagination-link-disabled" : undefined,
         className,
       )}
-      role="button"
-      onClick={(event) => {
-        if (disabled) {
-          event.preventDefault();
-          return;
-        }
-
-        onClick?.(event);
-      }}
+      onClick={onClick}
       {...props}
     >
       {children}
-    </a>
+    </button>
   ),
 );
 PaginationLink.displayName = "PaginationLink";
@@ -82,7 +78,7 @@ const PaginationEllipsis = ({ className, ...props }: React.HTMLAttributes<HTMLSp
 );
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
-const PaginationPrevious = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
+const PaginationPrevious = React.forwardRef<HTMLButtonElement, PaginationLinkProps>(
   ({ className, children, ...props }, ref) => (
     <PaginationLink
       ref={ref}
@@ -96,7 +92,7 @@ const PaginationPrevious = React.forwardRef<HTMLAnchorElement, PaginationLinkPro
 );
 PaginationPrevious.displayName = "PaginationPrevious";
 
-const PaginationNext = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
+const PaginationNext = React.forwardRef<HTMLButtonElement, PaginationLinkProps>(
   ({ className, children, ...props }, ref) => (
     <PaginationLink
       ref={ref}
@@ -111,7 +107,7 @@ const PaginationNext = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
 PaginationNext.displayName = "PaginationNext";
 
 export function Pagination({
-  current = 1,
+  value = 1,
   total = 0,
   pageSize = 10,
   pageSizeOptions = [10, 20, 50, 100],
@@ -120,17 +116,17 @@ export function Pagination({
   simple,
   disabled,
   className,
-  onChange,
+  onValueChange,
 }: PaginationProp) {
   const { t } = useTranslation();
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const safeCurrent = Math.min(Math.max(1, current), totalPages);
+  const safeCurrent = Math.min(Math.max(1, value), totalPages);
   const pages = buildPageRange(safeCurrent, totalPages);
 
   const go = (page: number, size = pageSize) => {
     if (disabled) return;
     const nextPage = Math.min(Math.max(1, page), Math.max(1, Math.ceil(total / size)));
-    onChange?.(nextPage, size);
+    onValueChange?.(nextPage, size);
   };
 
   const totalLabel =
@@ -210,12 +206,8 @@ export function Pagination({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href="#"
             aria-label={t("navigation.pagination.prev")}
-            onClick={(event) => {
-              event.preventDefault();
-              go(safeCurrent - 1);
-            }}
+            onClick={() => go(safeCurrent - 1)}
             className="ui-button--compact-icon"
             disabled={Boolean(disabled) || safeCurrent <= 1}
           >
@@ -233,11 +225,9 @@ export function Pagination({
               <PaginationLink
                 isActive={page === safeCurrent}
                 aria-label={t("navigation.pagination.page", { page })}
-                onClick={(event) => {
-                  event.preventDefault();
+                onClick={() => {
                   if (!disabled) go(page);
                 }}
-                href="#"
                 disabled={disabled}
               >
                 {page}
@@ -248,12 +238,8 @@ export function Pagination({
 
         <PaginationItem>
           <PaginationNext
-            href="#"
             aria-label={t("navigation.pagination.next")}
-            onClick={(event) => {
-              event.preventDefault();
-              go(safeCurrent + 1);
-            }}
+            onClick={() => go(safeCurrent + 1)}
             className="ui-button--compact-icon"
             disabled={Boolean(disabled) || safeCurrent >= totalPages}
           >

@@ -59,8 +59,10 @@ export function ColorPicker({
       </div>
       {showHexInput && (
         <Input
+          id={id ? `${id}-hex` : undefined}
           value={display}
           disabled={disabled}
+          aria-label={t("dataEntry.colorPicker.hexLabel")}
           onChange={(event) => setDraft(event.target.value)}
           onBlur={() => commit(display)}
           onKeyDown={(event) => {

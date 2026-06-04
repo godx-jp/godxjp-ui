@@ -608,6 +608,60 @@ visible on a small laptop.`,
       },
     ],
   },
+
+  // ── component discipline (hard contract) ───────────────────────
+  {
+    id: "component-discipline",
+    name: "Component discipline — international standards (hard contract)",
+    whenToUse:
+      "MANDATORY before creating or changing ANY @godxjp/ui component, recipe, doc, or example. Enforces real primitives only, no duplication, i18n (Intl/CLDR/ISO/IANA/BCP-47), WAI-ARIA APG + WCAG 2.2 AA, RTL, and the controlled-vocabulary API.",
+    source: "@godxjp/ui .claude/skills/godxjp-ui-component + international-standardization audit",
+    sections: [
+      {
+        id: "real-primitives",
+        title: "Real primitives only — never invent / fake / raw HTML",
+        tagline: "Compose installable @godxjp/ui only; no hand-rolled wrappers, no raw controls.",
+        body: `NEVER invent/hand-roll a component, fake the design with styled <div>s, or use raw
+<input>/<select>/<button>/<textarea>/<table>. Use Select, Input, Button, Textarea, DataTable,
+Checkbox, RadioGroup, Switch. Compose fully: CardContent for padding; a table = Card +
+CardContent flush + DataTable in a default padded PageContainer (NOT variant="flush").
+MCP-first: get_component before writing; never guess a prop. No duplication — Select
+(showSearch/loadOptions) is the only searchable/async select; there is no Combobox/SearchSelect/
+CountrySelect/Autocomplete; the 4 i18n pickers are one AppSettingPicker kind=…`,
+      },
+      {
+        id: "i18n-intl",
+        title: "i18n via t() + Intl/CLDR",
+        tagline: "Every string + aria-label through t(); format via Intl with the active locale.",
+        body: `Zero hardcoded English/Japanese. Numbers/currency (ISO 4217, minor units from
+resolvedOptions) + bytes via Intl.NumberFormat; dates via the date subsystem (Intl.DateTimeFormat,
+IANA tz, ISO-8601); names via Intl.DisplayNames (countries ISO 3166-1 alpha-2, languages BCP-47);
+plurals via Intl.PluralRules category maps. No emoji flags. No hand-maintained currency/country
+lists.`,
+      },
+      {
+        id: "a11y-apg",
+        title: "WAI-ARIA APG + WCAG 2.2 AA",
+        tagline: "Correct roles/aria/keyboard/focus + a vitest-axe test (0 violations).",
+        body: `Implement the APG pattern: role/landmark, aria-current/expanded/selected/sort/busy +
+aria-live/activedescendant, aria-errormessage+aria-invalid. Keyboard: roving tabindex, arrows,
+Home/End, Enter/Space, Esc, visible focus, no positive tabindex. ≥24px targets (2.5.8); never
+colour-only state (1.4.1 — add sr-only text); icon-only buttons need a name. Add a *.a11y.test.tsx
+with expectNoA11yViolations. Prefer Radix/cmdk/vaul for ARIA.`,
+      },
+      {
+        id: "rtl-vocab",
+        title: "RTL + controlled-vocabulary API",
+        tagline: "Logical CSS only; value/defaultValue/onValueChange; size md not default.",
+        body: `RTL: logical CSS only (ms/me/ps/pe, start/end, border-s/e, rounded-s/e, text-start/end)
+— never physical ml/mr/pl/pr/left/right. API: controlled triad value/defaultValue/onValueChange
+(open/onOpenChange; checked/onCheckedChange; pressed/onPressedChange); size ∈ xs|sm|md|lg (never
+"default"); positive booleans; tone for status; forward ref + ...props + className + id; export
+XProp + XProp as XProps and register in props/registry. Then: add an MCP catalog entry + a
+real-screen docs page; verify typecheck/lint/audit/check:*/preview:build/test all green.`,
+      },
+    ],
+  },
 ];
 
 export function findSkill(id: string): Skill | undefined {

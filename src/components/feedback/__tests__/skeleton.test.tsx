@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { renderWithUi } from "@/test/render";
-import { SkeletonCard, SkeletonDetail, SkeletonRows, SkeletonTable } from "../skeleton";
+import { SkeletonStat, SkeletonDetail, SkeletonRows, SkeletonTable } from "../skeleton";
 
 describe("Skeleton", () => {
   it("SkeletonRows marks busy state", () => {
@@ -19,7 +19,7 @@ describe("Skeleton", () => {
   });
 
   it("SkeletonCard renders stat tile shape", () => {
-    const { container } = renderWithUi(<SkeletonCard />);
+    const { container } = renderWithUi(<SkeletonStat />);
     expect(container.querySelector(".ui-skeleton-stat")).toBeInTheDocument();
   });
 });

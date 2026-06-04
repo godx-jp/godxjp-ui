@@ -1,8 +1,8 @@
 /**
  * Component catalog — the REAL published `@godxjp/ui` v6 primitive surface.
  * The MCP bundles this so an agent can author pages with the actual API
- * (PageContainer, Stack, ResponsiveGrid, DataTable + ColumnDef, Badge,
- * FormField, Select, Dialog, FilterBar, …) instead of guessing.
+ * (PageContainer, Flex, ResponsiveGrid, DataTable + ColumnDef, Badge,
+ * FormField, Select, Dialog, Toolbar, …) instead of guessing.
  *
  * Each entry maps to a real export. Import via the subpath in every example,
  * e.g. `import { DataTable } from "@godxjp/ui/data-display"`.
@@ -109,26 +109,26 @@ export const COMPONENTS: ComponentEntry[] = [
     usage: [
       "DO: Always wrap every page's content in PageContainer — it is the mandatory page shell. Pass `title` (required, rendered as `<h1>`) for every page; omitting it leaves the page without an accessible heading.",
       "DO: Use the `extra` prop (not a sibling div, not a wrapper) for action buttons or controls that sit right of the title row — e.g. `extra={<Button>新規作成</Button>}`. Use the `footer` prop for a pinned action bar below the body (e.g. Save/Cancel on a form page); combine with `stickyFooter` to pin it to the viewport bottom on scroll.",
-      "DO: Use `variant='flush'` when the page body contains a full-bleed component like DataTable. Inside a flush container, wrap any padded strips (FilterBar, intro text) in `<PageInset>` to align them with the header. Never add manual `px-*` or `p-*` padding to compensate — use PageInset.",
+      "DO: Use `variant='flush'` when the page body contains a full-bleed component like DataTable. Inside a flush container, wrap any padded strips (Toolbar, intro text) in `<PageContainer.Inset>` to align them with the header. Never add manual `px-*` or `p-*` padding to compensate — use PageContainer.Inset.",
       "DO: Pass `breadcrumb` as an ordered array of `{ label, to? }` objects from root to current page. The last item is automatically rendered without a link and receives `aria-current='page'`; earlier items with `to` become router `<Link>` elements. Never hand-roll a breadcrumb nav inside a PageContainer.",
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
-      "DON'T: Confuse PageContainer's prop names with the deprecated PageHeader's prop names — PageContainer uses `subtitle` (not `description`) and `extra` (not `actions`). If you see those legacy names in old code, it is PageHeader, not PageContainer.",
+      "DON'T: Confuse PageContainer's prop names with the old PageHeader's prop names — PageContainer uses `subtitle` (not `description`) and `extra` (not `actions`). If you see those legacy names in old code, migrate them to PageContainer.",
     ],
     useCases: [
-      "A master list page (e.g. invoices, journal entries, customers) where the header holds the page title, a 'New Invoice' button in `extra`, a breadcrumb trail, and a full-bleed DataTable as the body — use `variant='flush'` + `<PageInset>` for the FilterBar above the table.",
-      "A detail / edit form page where the footer holds Save and Cancel buttons — use `footer={<Inline><Button>保存</Button><Button variant='outline'>キャンセル</Button></Inline>}` with `stickyFooter` so the actions remain reachable as the form scrolls.",
+      "A master list page (e.g. invoices, journal entries, customers) where the header holds the page title, a 'New Invoice' button in `extra`, a breadcrumb trail, and a full-bleed DataTable as the body — use `variant='flush'` + `<PageContainer.Inset>` for the Toolbar above the table.",
+      "A detail / edit form page where the footer holds Save and Cancel buttons — use `footer={<Flex direction='row'><Button>保存</Button><Button variant='outline'>キャンセル</Button></Flex>}` with `stickyFooter` so the actions remain reachable as the form scrolls.",
       "A settings or narrow-form page (e.g. account profile, entity configuration) where `variant='narrow'` constrains content to a readable column width and `stickyFooter` pins the submit bar.",
-      "A dashboard page with KPI cards and chart sections — use `variant='default'` with `children={<Stack gap='lg'>…</Stack>}` to vertically stack multiple Card/StatCard sections beneath the page title.",
+      "A dashboard page with KPI cards and chart sections — use `variant='default'` with `children={<Flex direction='col' gap='lg'>…</Flex>}` to vertically stack multiple Card/StatCard sections beneath the page title.",
       "Any deep-nav page in a multi-level admin (e.g. Accounting > Ledger > Journal Entry #42) where a 3-segment breadcrumb trail provides back-navigation without browser history dependence.",
-      "A high-density data reconciliation page where an analyst needs to see maximum rows — use `density='compact'` to tighten all spacing across the DataTable, FilterBar, and controls in a single prop.",
+      "A high-density data reconciliation page where an analyst needs to see maximum rows — use `density='compact'` to tighten all spacing across the DataTable, Toolbar, and controls in a single prop.",
     ],
     related: [
-      "PageInset — use INSIDE a `variant='flush'` PageContainer to re-introduce horizontal padding for strips like FilterBar or intro text that should align with the page header, while the surrounding DataTable stays full-bleed. Not a standalone page shell.",
-      "PageHeader — DEPRECATED header-only predecessor to PageContainer. Has no `children`, `footer`, `variant`, `density`, or `stickyFooter` props. Use its prop-name aliases (`description` → `subtitle`, `actions` → `extra`) only when reading legacy code. Always prefer PageContainer for new pages.",
+      "PageContainer.Inset — use INSIDE a `variant='flush'` PageContainer to re-introduce horizontal padding for strips like Toolbar or intro text that should align with the page header, while the surrounding DataTable stays full-bleed. Not a standalone page shell.",
+      "PageContainer — always use PageContainer for new pages; it supports `children`, `footer`, `variant`, `density`, and `stickyFooter`. Legacy code using the old prop names (`description` → `subtitle`, `actions` → `extra`) should be migrated to PageContainer.",
       "AppShell — the outer shell that owns the sidebar/topbar layout grid; PageContainer lives inside AppShell's `children` slot. Do not put AppShell inside PageContainer — the nesting order is AppShell → PageContainer.",
       "SplitPane — use instead of PageContainer when the page body needs a fixed-width aside panel alongside main content (e.g. a detail drawer next to a list). PageContainer has no aside slot; SplitPane fills that gap and can itself be placed inside PageContainer's children.",
     ],
-    example: `import { PageContainer, Stack } from "@godxjp/ui/layout";
+    example: `import { PageContainer, Flex } from "@godxjp/ui/layout";
 import { Button } from "@godxjp/ui/general";
 
 export default function OrdersPage() {
@@ -139,106 +139,12 @@ export default function OrdersPage() {
       breadcrumb={[{ label: "ホーム", to: "/" }, { label: "注文一覧" }]}
       extra={<Button>新規注文</Button>}
     >
-      <Stack gap="lg">{/* page content */}</Stack>
+      <Flex direction="col" gap="lg">{/* page content */}</Flex>
     </PageContainer>
   );
 }`,
     storyPath: "layout/PageContainer.stories.tsx",
     rules: [23],
-  },
-  {
-    name: "Stack",
-    group: "layout",
-    tagline:
-      "Vertical flex column with token gap — the default block-stacking primitive (use instead of space-y-*).",
-    props: [
-      {
-        name: "gap",
-        type: '"xs" | "sm" | "md" | "lg" | "xl"',
-        defaultValue: '"md"',
-        description: "Vertical space between children (design tokens).",
-      },
-      { name: "className", type: "string", description: "Extra classes merged via cn()." },
-      { name: "children", type: "ReactNode", description: "Block-level children to stack." },
-    ],
-    usage: [
-      'DO use `<Stack gap="lg">` (or sm/md/xl/xs) to separate major page sections — KPI row, FilterBar, table card — instead of writing `space-y-*` or `flex flex-col gap-*` utilities on a raw div. Token gap values (`xs`|`sm`|`md`|`lg`|`xl`) map to CSS custom properties; raw Tailwind spacing utilities (`space-y-4`) are forbidden on page layouts (rule 40).',
-      "DO pass `className` only for structural overrides (e.g., `w-full`, `min-h-0`) — NEVER to smuggle spacing utilities like `p-4` or `gap-6` that duplicate what the `gap` prop already does. Every spacing value must trace back to a design token.",
-      'DO NOT use Stack for horizontal arrangements — that is `Inline`. Stack is vertical only (`flex-col`). Mixing `className="flex-row"` on a Stack to force horizontal is wrong; use `Inline` instead.',
-      'DO NOT nest multiple bare Stack wrappers just to get different gaps — compose them: a top-level `<Stack gap="xl">` for page sections, an inner `<Stack gap="sm">` for tightly-related fields. Each level should correspond to a real semantic grouping.',
-      'DO import from `@godxjp/ui/layout` (not the root `@godxjp/ui` barrel) — `import { Stack } from "@godxjp/ui/layout"`.',
-      "Stack is a plain `<div>` with `React.HTMLAttributes<HTMLDivElement>` — all standard HTML div props (`data-*`, `id`, `aria-*`, `role`) pass through. There is no controlled/uncontrolled state and no form submission role; use `FormField` for form layout concerns.",
-    ],
-    useCases: [
-      'Top-level page body: wrap KPI `ResponsiveGrid`, standalone `FilterBar`, and a table `Card` in a `<Stack gap="lg">` — this is the canonical inertia-list-page structure (rule 38 + rule 40).',
-      "Detail/form pages: stack a `PageHeader` (or `PageContainer` header), a facts `Card` with `Descriptions`, and an action `Card` with `FormField` rows, each separated by a semantically meaningful gap level.",
-      'Card body with multiple related fields: use `<Stack gap="sm">` inside `<CardContent>` to separate labelled input rows without resorting to `space-y-2` utilities.',
-      'Dashboard shells: `<Stack gap="xl">` as the page root, containing a `<ResponsiveGrid columns={4}>` of `StatCard` items followed by chart cards and a table card — each row is a Stack child.',
-      'Modal/Sheet interiors: `<Stack gap="md">` inside `<Dialog>` or `<Sheet>` content area to separate sections (description, form, preview) with consistent token spacing.',
-      'Empty/loading placeholder layout: wrap `<SkeletonTable>` or `<DataState>` in a `<Stack gap="md">` alongside a header block so the skeleton occupies the same vertical rhythm as the loaded page.',
-    ],
-    related: [
-      "Inline — horizontal counterpart; use for button groups, icon+label rows, badge clusters. When children should sit side-by-side, use Inline. When they should stack top-to-bottom, use Stack. Never use Stack with a flex-row className override.",
-      "ResponsiveGrid — use when children are card-shaped items that should tile into 2/3/4 columns on desktop and collapse to 1 column on mobile (e.g., StatCard KPI rows). Stack does not do multi-column layouts.",
-      "PageContainer — outer page wrapper that provides title, breadcrumb, and padding context. Stack is the layout primitive used INSIDE PageContainer's children area, not a replacement for it.",
-      "CardContent — for spacing inside a Card, always use CardContent (which adds consistent padding); don't wrap Card body in a bare Stack with padding classes. A Stack inside CardContent is correct when you need multiple vertically spaced sections within the card body.",
-    ],
-    example: `import { Stack } from "@godxjp/ui/layout";
-
-<Stack gap="lg">
-  <KpiRow />
-  <FilterBarBlock />
-  <TableCard />
-</Stack>`,
-    storyPath: "layout/Stack.stories.tsx",
-    rules: [2, 40],
-  },
-  {
-    name: "Inline",
-    group: "layout",
-    tagline:
-      "Horizontal flex row with token gap — the default inline/row arrangement (use instead of gap-* on a flex div).",
-    props: [
-      {
-        name: "gap",
-        type: '"xs" | "sm" | "md" | "lg"',
-        defaultValue: '"sm"',
-        description: "Horizontal space between children.",
-      },
-      { name: "className", type: "string", description: "Extra classes merged via cn()." },
-      { name: "children", type: "ReactNode", description: "Inline children in a row." },
-    ],
-    usage: [
-      'DO use `<Inline gap="sm">` instead of hand-rolling `flex gap-2 items-center` — the component bakes in `display:flex; flex-wrap:wrap; align-items:center` via the token class `ui-inline-*`, so you get consistent spacing and wrapping behavior without raw Tailwind utilities (rule 2).',
-      'DO pass extra layout modifiers through `className` (e.g. `className="justify-between"` to push items to opposite ends, or `className="flex-nowrap"` to prevent wrapping when overflow must be clipped) — `Inline` spreads all HTML div attributes, so className is merged via `cn()`.',
-      "DON'T use `Inline` for vertical stacking — it is always a row. For vertical spacing between block elements use `Stack` instead. The most common mistake is reaching for `Inline` when the children should stack, or reaching for `Stack` when the children should sit side-by-side.",
-      "DON'T nest an `Inline` just to group icon + label inside a `Button` — Button already handles its own internal row layout. Use `Inline` at the call-site level to space multiple sibling Buttons or controls apart.",
-      'DO use `gap="xs"` for tight icon+label pairs (e.g. flag + country name in CountrySelect) and `gap="sm"` (default) for button groups and toolbar-level groupings. `gap="md"` / `gap="lg"` suit section-header clusters with more breathing room.',
-      "NOTE: `Inline` has no alignment, justify, or wrap props beyond `gap` — any extra layout intent must come through `className`. There is no controlled/form-submission aspect; it is a pure layout shell with no ARIA role of its own.",
-    ],
-    useCases: [
-      "Action toolbar: grouping a primary Button and a secondary outline Button side-by-side at the bottom of a form or dialog (the catalog example shows exactly this).",
-      "Table/list toolbar: placing a `SearchInput` next to a `FilterBar` trigger or a `DateRangePicker` at the top of a DataTable page, so controls sit in a wrapping row with consistent gap.",
-      "Status chip row: rendering a cluster of `Badge` or `Badge` components inline (e.g. invoice tags: Paid + Overdue + Draft) without writing ad-hoc flex classes.",
-      'Icon + text label pair: wrapping a flag icon and country name in `CountrySelect`, or a lucide icon and a span, keeping them vertically centered with a tight `gap="xs"`.',
-      'Card header actions: grouping a `Button variant="ghost"` edit action and a `DropdownMenu` trigger on the right side of a `CardHeader`, using `className="justify-end"` on the Inline.',
-      'Alert action row: pairing two action links/buttons inside an `Alert` body (the godx-ui Alert component itself uses `<Inline gap="xs">` internally for its action cluster).',
-    ],
-    related: [
-      "Stack — use Stack when children should be arranged vertically (column direction). Inline is horizontal/row; Stack is vertical/column. They are the two axis-specific layout primitives and are often composed together (Stack of Inlines).",
-      "PageInset — use PageInset when you need a padded horizontal strip inside a flush PageContainer (e.g. for FilterBar or intro text above a full-bleed DataTable). PageInset adds top/side padding to a section; Inline only arranges children in a row with a gap.",
-      "FilterBar — use FilterBar (with FilterGroup) when the horizontal group of controls is a page-level filter row that semantically belongs together and may include responsive collapse behaviour. Use Inline for ad-hoc groupings of buttons or badges that don't need filter semantics.",
-      "ResponsiveGrid — use ResponsiveGrid when you need a multi-column grid of cards that collapses on mobile. Use Inline when children must stay in a single wrapping row at all breakpoints without explicit column counts.",
-    ],
-    example: `import { Inline } from "@godxjp/ui/layout";
-import { Button } from "@godxjp/ui/general";
-
-<Inline gap="sm">
-  <Button>保存</Button>
-  <Button variant="outline">キャンセル</Button>
-</Inline>`,
-    storyPath: "layout/Inline.stories.tsx",
-    rules: [2],
   },
   {
     name: "Flex",
@@ -256,7 +162,7 @@ import { Button } from "@godxjp/ui/general";
         name: "gap",
         type: '"xs" | "sm" | "md" | "lg" | "xl"',
         defaultValue: '"md"',
-        description: "Token gap between children, shared with Stack and Inline.",
+        description: "Token gap between children, shared with other layout primitives.",
       },
       {
         name: "align",
@@ -277,9 +183,9 @@ import { Button } from "@godxjp/ui/general";
     ],
     usage: [
       'DO import from `@godxjp/ui/layout` and reach for Flex when the axis, alignment, justification, or wrap behavior is part of the component contract: `import { Flex } from "@godxjp/ui/layout"`.',
-      "DO keep spacing on the `gap` prop instead of raw `gap-*`, `space-*`, or padding utilities. Flex uses the same token scale as Stack and Inline, so spacing remains tied to the design system.",
-      'DO use `direction="row"` with `wrap` for responsive control rows, chip clusters, and action groups that need more control than Inline exposes.',
-      'DO use `direction="col"` for vertical groupings that need explicit `align` or `justify` behavior. If all you need is a vertical gap, Stack is the thinner alias.',
+      "DO keep spacing on the `gap` prop instead of raw `gap-*`, `space-*`, or padding utilities. Flex uses the same token scale as other layout primitives, so spacing remains tied to the design system.",
+      'DO use `direction="row"` with `wrap` for responsive control rows, chip clusters, and action groups that need more control than simple row composition.',
+      'DO use `direction="col"` for vertical groupings that need explicit `align` or `justify` behavior. For pure vertical stacking without alignment control, `direction="col"` is sufficient.',
       "DON'T override the axis with `className` after choosing a direction prop. Keep the layout intent in props so catalog guidance and data attributes stay accurate.",
       "Flex is a plain div with React.HTMLAttributes<HTMLDivElement>; pass `id`, `role`, `aria-*`, `data-*`, and structural className values as needed, but do not use it as a semantic form or button wrapper.",
     ],
@@ -287,13 +193,13 @@ import { Button } from "@godxjp/ui/general";
       "Toolbar internals where controls should sit in a row, wrap on narrow widths, and stay vertically centered.",
       "Card headers that need title content on the left and actions on the right via `justify='between'` without hand-rolling flex utility classes.",
       "Empty-state or loading blocks that center content on both axes using `align='center'` and `justify='center'`.",
-      "Form sub-sections where a vertical group needs stretched children or centered helper content beyond what Stack exposes.",
-      "Badge, chip, or tag clusters where wrapping is required but the caller also needs a larger token gap than Inline's default.",
-      "Low-level layout composition inside custom components where Stack and Inline are too opinionated but raw flex classes would duplicate the primitive.",
+      "Form sub-sections where a vertical group needs stretched children or centered helper content beyond what a plain column Flex provides.",
+      "Badge, chip, or tag clusters where wrapping is required but the caller also needs explicit gap control.",
+      "Low-level layout composition inside custom components where raw flex classes would duplicate the primitive.",
     ],
     related: [
-      "Stack — thin `direction='col'` alias of Flex. Use Stack for ordinary vertical block spacing; use Flex when you need align, justify, or wrap control.",
-      "Inline — thin `direction='row'` alias of Flex with wrapping and centered alignment. Use Inline for simple horizontal groups; use Flex for explicit axis/distribution control.",
+      "Flex `direction='col'` — the standard pattern for ordinary vertical block spacing; use explicit `align`, `justify`, or `wrap` props when you need more control.",
+      "Flex `direction='row'` — the standard pattern for simple horizontal groups; add `wrap` and `align='center'` for the typical row with wrapped centered items.",
       "ResponsiveGrid — use for equal-width, multi-column tile layouts. Flex arranges children on one flex axis and does not provide column-count behavior.",
       "PageContainer — page scaffold and padding context. Flex is an inner layout primitive used inside page sections, cards, dialogs, and toolbars.",
     ],
@@ -334,22 +240,22 @@ import { Button } from "@godxjp/ui/general";
       "DO use columns={2|3|4} to declare the target desktop column count — the grid collapses automatically to 1 column on narrow containers (mobile-first via CSS container queries), via 2-column intermediate at ≥640px, then full target count at ≥1024px. There is no 'columns={1}' — omit the grid for single-column flows.",
       "DO NOT place a DataTable inside a ResponsiveGrid column beside a card or chart. DataTable must occupy its own full-width row in a Card with CardContent flush. Nesting a multi-column table in a grid column squeezes CJK text to one character per line (see rule 37).",
       "DO use ResponsiveGrid for page-level spacing — it applies the correct gap token (--space-stack-md) automatically. Never add raw gap-* / p-* / space-* utilities to the page layout around tiles; compose spacing through this component instead (rule 40).",
-      "DO render SkeletonCard children in place of StatCard tiles while KPIs are loading — same columns prop, same count as the real tiles. Switch to real StatCard once data resolves.",
+      "DO render SkeletonStat children in place of StatCard tiles while KPIs are loading — same columns prop, same count as the real tiles. Switch to real StatCard once data resolves.",
       "The grid uses CSS container queries, not viewport media queries — it responds to its containing block width, not the window. Ensure the container is not artificially constrained (e.g. inside a narrow SplitPane column) or column expansion will never trigger.",
     ],
     useCases: [
       "Dashboard KPI row: rendering 3–4 StatCard tiles (revenue, member count, active invoices, overdue amount) that reflow to a 2-column stacked grid on tablet and a single column on mobile.",
-      "Summary header above a list page: a 2-column grid of two StatCard totals (e.g. total payable vs total paid) sitting above a FilterBar and DataTable.",
+      "Summary header above a list page: a 2-column grid of two StatCard totals (e.g. total payable vs total paid) sitting above a Toolbar and DataTable.",
       "Accounting period overview: 4 StatCard tiles (opening balance, total debits, total credits, closing balance) that collapse gracefully on narrow viewports without any custom CSS.",
-      "Loading state for a KPI row: identical <ResponsiveGrid columns={4}> wrapping four <SkeletonCard /> placeholders rendered while async data is in flight, swapped for real StatCard tiles once resolved.",
+      "Loading state for a KPI row: identical <ResponsiveGrid columns={4}> wrapping four <SkeletonStat /> placeholders rendered while async data is in flight, swapped for real StatCard tiles once resolved.",
       "Settings or profile summary cards: 2- or 3-column grid of Card+CardContent blocks (not StatCard) showing categorized read-only data groups before a detail form below.",
       "Entity comparison panel: a columns={3} grid comparing three legal entities side-by-side with a Card+CardContent per entity, which collapses to 2-up on tablet and stacks on mobile.",
     ],
     related: [
-      "Stack — use Stack (vertical) or Inline (horizontal) for sequential blocks of mixed-width content (forms, description lists, button rows). Use ResponsiveGrid only when you want equal-width, auto-reflowing tile columns.",
+      "Flex — use Flex (direction col or row) for sequential blocks of mixed-width content (forms, description lists, button rows). Use ResponsiveGrid only when you want equal-width, auto-reflowing tile columns.",
       "SplitPane — use SplitPane for a fixed two-panel side-by-side layout with a defined primary/secondary ratio that does NOT collapse to stacked tiles. Use ResponsiveGrid when you want automatic column count collapse on narrow screens.",
       "StatCard — the canonical direct child of ResponsiveGrid for KPI tiles. StatCard is self-contained (draws its own bordered card); never wrap it in Card/CardContent when placing it inside ResponsiveGrid.",
-      "SkeletonCard — the loading-state sibling of StatCard, used as a drop-in placeholder child of ResponsiveGrid with the same columns count while KPI data is in flight.",
+      "SkeletonStat — the loading-state sibling of StatCard, used as a drop-in placeholder child of ResponsiveGrid with the same columns count while KPI data is in flight.",
     ],
     example: `import { ResponsiveGrid } from "@godxjp/ui/layout";
 import { StatCard } from "@godxjp/ui/data-display";
@@ -419,7 +325,7 @@ import { StatCard } from "@godxjp/ui/data-display";
       "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",
       "DO place breadcrumb content in AppShell's `breadcrumb` prop (renders in the `app-breadcrumb` div inside `<main>` ABOVE children) — do NOT hand-roll a breadcrumb bar as the first child of children, and do NOT put breadcrumbs inside <Sidebar>.",
       "DO NOT nest a second AppShell or AppShell inside AppShell's children — AppShell renders the root `app-root` div; nesting shells breaks the CSS grid layout.",
-      "DO NOT add padding directly to children expecting it to reach the viewport edge — AppShell's `<main>` is a scroll container; use <PageContainer> (or <PageInset> inside a flush PageContainer) inside children to get standard page padding.",
+      "DO NOT add padding directly to children expecting it to reach the viewport edge — AppShell's `<main>` is a scroll container; use <PageContainer> (or <PageContainer.Inset> inside a flush PageContainer) inside children to get standard page padding.",
     ],
     useCases: [
       "Full admin SPA shell: AppShell wraps a <Sidebar> nav rail and a <Topbar> (with productMenu entity-switcher, onSearchOpen, onNotificationsOpen, user avatar) and every Inertia page renders as children inside a <PageContainer>.",
@@ -780,50 +686,6 @@ function MyShell({ children }: { content: React.ReactNode }) {
     rules: [2, 3, 5, 6],
   },
   {
-    name: "PageInset",
-    group: "layout",
-    tagline:
-      'Padded horizontal strip aligned with the page header — use inside variant="flush" for filter bars / intros.',
-    props: [
-      {
-        name: "children",
-        type: "ReactNode",
-        description: "Content rendered with standard page horizontal padding.",
-      },
-      { name: "className", type: "string", description: "Extra classes." },
-    ],
-    usage: [
-      'DO use PageInset exclusively inside a `<PageContainer variant="flush">` — flush strips the left/right padding from the container body, and PageInset re-applies the exact same `--space-page-active-x` token so content aligns pixel-for-pixel with the page header and footer. Outside of a flush container it doubles the padding.',
-      "DO NOT use PageInset to add padding inside a standard (non-flush) PageContainer — the container body already has `--space-page-active-x` padding on both sides; wrapping content in PageInset produces doubled inset.",
-      'DO NOT hand-roll the padding with `className="px-6"` or `className="px-page"` — those values are not guaranteed to match the design token. PageInset is the only correct way to reproduce the page-header alignment inside a flush body.',
-      "DO place PageInset as a direct child of PageContainer's body (before or between full-bleed children such as DataTable or Table) — it is a plain `<div>` that wraps one cohesive strip (e.g., a FilterBar, a summary intro, or a quick-action toolbar) and does not provide vertical spacing itself.",
-      "DO accept all standard HTMLDivElement attributes (id, aria-*, data-*, style) via the spread — PageInsetProp extends React.HTMLAttributes<HTMLDivElement>, so accessibility attributes and test hooks pass through without extra wrappers.",
-      "COMMON MISTAKE: adding a PageInset around a DataTable inside a flush PageContainer — DataTable must remain full-bleed (no PageInset) so its borders reach the edges; only the filter/intro strips above or below the table need PageInset.",
-    ],
-    useCases: [
-      "Flush list page with a FilterBar above a full-bleed DataTable: wrap the FilterBar (or FilterBar + FilterGroup) in PageInset so it aligns with the page title, while DataTable sits edge-to-edge beneath it.",
-      "Invoice or transaction index where a SearchInput + date range picker toolbar sits above a borderless table — PageInset keeps the toolbar inset-aligned without breaking the table's flush left/right edges.",
-      "Dashboard section inside a flush PageContainer that shows a brief intro paragraph or status summary strip before a full-width chart or DataTable.",
-      "Multi-section flush page where two or more padded action bars (bulk-action toolbar, pagination row) appear between full-bleed tables — each strip gets its own PageInset.",
-      'Settings or form pages using variant="flush" where a prominent alert or MutationFeedback banner must align with the form fields rendered in a padded section below.',
-      "Accounting detail pages (e.g., journal entry list) where a summary Descriptions strip needs the same left-edge as the page header while the entry rows below are full-bleed.",
-    ],
-    related: [
-      'PageContainer — the required parent; PageInset only makes sense as a child of PageContainer variant="flush". Use PageContainer for all other padding needs (default variant already provides horizontal padding everywhere).',
-      "FilterBar — the most common direct child of PageInset; FilterBar itself has no page-level padding, so always wrap it in PageInset when inside a flush PageContainer.",
-      'CardContent — serves a similar "add-the-missing-padding" role but inside a Card, not a flush PageContainer. Use CardContent to pad content inside a Card; use PageInset to pad content inside a flush page body.',
-      "Stack — a vertical-spacing primitive that can wrap multiple PageInset strips but has no padding of its own; Stack and PageInset compose orthogonally (Stack for gaps, PageInset for horizontal alignment).",
-    ],
-    example: `import { PageContainer, PageInset } from "@godxjp/ui/layout";
-
-<PageContainer title="商品一覧" variant="flush">
-  <PageInset><FilterBarBlock /></PageInset>
-  {/* full-bleed table below */}
-</PageContainer>`,
-    storyPath: "layout/PageInset.stories.tsx",
-    rules: [],
-  },
-  {
     name: "SplitPane",
     group: "layout",
     tagline: "Two-column layout with a main content area and a fixed-width aside panel.",
@@ -845,7 +707,7 @@ function MyShell({ children }: { content: React.ReactNode }) {
     usage: [
       "DO: pass all right-panel content via the `aside` prop — it renders inside a semantic `<aside>` element at a fixed rem width (sm=20rem, md=22rem). The `children` prop fills the main `1fr` column. Both accept any ReactNode.",
       'DO: choose `asideWidth="sm"` for compact detail panels (filters, quick stats, key-value summaries) and the default `asideWidth="md"` for richer panels (forms, timelines, long metadata lists).',
-      "DO: wrap SplitPane inside `PageContainer` or `PageInset` — SplitPane provides no page padding of its own. It is a grid primitive, not a page scaffold.",
+      "DO: wrap SplitPane inside `PageContainer` or `PageContainer.Inset` — SplitPane provides no page padding of its own. It is a grid primitive, not a page scaffold.",
       "DON'T: expect two columns below 1080px. Below that breakpoint SplitPane stacks to a single column (main on top, aside below). Never use it for layouts that must remain side-by-side on tablet or mobile — use CSS Grid or `ResponsiveGrid` instead.",
       "DON'T: add a CSS `overflow: hidden` or fixed height on the SplitPane wrapper; both columns carry `min-width: 0` to handle overflow correctly, and the grid uses `minmax(0, 1fr)` — adding external constraints will break the overflow contract.",
       "DON'T: hand-roll a two-column div layout with flexbox or CSS Grid when SplitPane already ships — that duplicates the responsive breakpoint logic and the semantic `<aside>` element.",
@@ -861,7 +723,7 @@ function MyShell({ children }: { content: React.ReactNode }) {
       "ResponsiveGrid — use when you need more than two columns, or when both columns must have equal or percentage-based widths rather than a fixed-rem aside. SplitPane always gives main a `1fr` and aside a fixed rem width.",
       "PageContainer — use as the outer scaffold that provides page padding and vertical rhythm; nest SplitPane inside PageContainer, not the other way around.",
       "Sheet — use when the detail/context panel should slide in as an overlay (drawer) rather than sitting permanently beside the main content. Prefer Sheet on mobile or when the aside content is secondary and on-demand.",
-      "Stack — use when content is purely vertical (single column, sequential sections). SplitPane is the right pick only when a persistent side panel is needed at the same hierarchy level as the main content.",
+      "Flex direction='col' — use when content is purely vertical (single column, sequential sections). SplitPane is the right pick only when a persistent side panel is needed at the same hierarchy level as the main content.",
     ],
     example: `import { SplitPane } from "@godxjp/ui/layout";
 
@@ -960,13 +822,13 @@ function MyShell({ children }: { content: React.ReactNode }) {
       'Destructive confirmation inside a Dialog — pair `tone="destructive"` Button as the confirm action and `variant="outline"` as Cancel; never use `variant="default"` for a delete action.',
       'Icon-only toolbar actions in a DataTable column (edit, delete, copy) using `size="icon-sm"` + `variant="ghost"` + a Lucide icon child — gives equal-width square targets that don\'t distort the row.',
       "Navigation links styled as buttons (e.g. 'New Invoice', 'Back to list') using `asChild` + Inertia `<Link>` — preserves SPA navigation while using the button's visual treatment.",
-      "Async mutation trigger in an accounting workflow (e.g. 'Sync from MF', 'Export CSV') — disable on processing state; pair with `MutationFeedback` for error/retry UI rather than inline `try/catch` alerts.",
-      "Refetch / retry trigger when NOT using TanStack Query — for manual cache refresh inside a TanStack Query context use `QueryRefetchButton` instead, which owns its own `disabled`/`onClick` lifecycle.",
+      "Async mutation trigger in an accounting workflow (e.g. 'Sync from MF', 'Export CSV') — disable on processing state; pair with `AlertMutationFeedback` for error/retry UI rather than inline `try/catch` alerts.",
+      "Refetch / retry trigger when NOT using TanStack Query — for manual cache refresh inside a TanStack Query context use `ButtonRefetch` instead, which owns its own `disabled`/`onClick` lifecycle.",
     ],
     related: [
       "DropdownMenu — when a button needs to reveal a list of actions (e.g. 'Actions ▾' in a DataTable row), wrap the Button as a `DropdownMenuTrigger` inside a `DropdownMenu` compound; don't open a Sheet/Dialog just to show a list of options.",
-      "QueryRefetchButton — a pre-wired Button variant from `@godxjp/ui/query` that binds directly to a TanStack Query result (shows spinner, auto-disables while fetching, retries on click). Use it instead of a raw Button whenever the action is a query refetch — do not pass `onClick`/`disabled` to it manually.",
-      "MutationFeedback — for surfacing mutation errors and a retry action; it renders its own retry Button internally. Do not add a separate Button alongside MutationFeedback for the same mutation.",
+      "ButtonRefetch — a pre-wired Button variant from `@godxjp/ui/query` that binds directly to a TanStack Query result (shows spinner, auto-disables while fetching, retries on click). Use it instead of a raw Button whenever the action is a query refetch — do not pass `onClick`/`disabled` to it manually.",
+      "AlertMutationFeedback — for surfacing mutation errors and a retry action; it renders its own retry Button internally. Do not add a separate Button alongside AlertMutationFeedback for the same mutation.",
       "PrefetchLink — use when the goal is purely navigation with hover-prefetch (Inertia v3 prefetch); it renders as an `<a>` not a button. Only reach for `Button asChild + Link` when the navigation control must look like a button (primary CTA style).",
     ],
     example: `import { Button } from "@godxjp/ui/general";
@@ -1196,8 +1058,8 @@ export default function InvoiceList({
       },
       {
         name: "size",
-        type: '"default" | "compact"',
-        defaultValue: '"default"',
+        type: '"md" | "compact"',
+        defaultValue: '"md"',
         description: "Card size preset.",
       },
       {
@@ -1241,7 +1103,7 @@ export default function InvoiceList({
     name: "CardContent",
     group: "data-display",
     tagline:
-      "Card body. flush = edge-to-edge (for DataTable/tabs); tight = no top gap; solo = no header above. NEVER put a FilterBar inside flush (it loses padding).",
+      "Card body. flush = edge-to-edge (for DataTable/tabs); tight = no top gap; solo = no header above. NEVER put a Toolbar inside flush (it loses padding).",
     props: [
       {
         name: "flush",
@@ -1264,7 +1126,7 @@ export default function InvoiceList({
       "DO: Use <CardContent flush> for DataTable, Table, or Tabs — the flush prop removes horizontal padding so the content spans edge-to-edge inside the card border. Never add manual p-0 on the Card itself instead.",
       "DO: Use <CardContent tight> when placing a flush toolbar or a Tabs list directly below a CardHeader — tight removes the top gap so the header and the body connect without an awkward spacing gap.",
       "DO: Use <CardContent solo> when the card has no CardHeader above it — solo gives the top padding that matches the card shell, ensuring visual balance.",
-      "DON'T: Nest a FilterBar inside <CardContent flush> — flush strips horizontal padding and FilterBar will lose its own padding. Put FilterBar outside the flush CardContent or in a separate non-flush CardContent above it.",
+      "DON'T: Nest a Toolbar inside <CardContent flush> — flush strips horizontal padding and Toolbar will lose its own padding. Put Toolbar outside the flush CardContent or in a separate non-flush CardContent above it.",
       "DON'T: Wrap a StatCard inside <Card><CardContent> — StatCard already renders its own Card border; double-wrapping produces a double border. Render StatCard directly in a ResponsiveGrid.",
     ],
     useCases: [
@@ -1279,7 +1141,7 @@ export default function InvoiceList({
       "Card — the parent container; CardContent is always a direct child of Card. Card itself has zero internal padding; every visible body padding comes from CardContent (or CardHeader/CardFooter). Never put content directly inside Card.",
       "StatCard — a self-contained KPI tile that IS already a Card; do not wrap it in <Card><CardContent>. Use StatCard directly inside a ResponsiveGrid.",
       "ScrollArea — place ScrollArea inside CardContent (non-flush) when the card body needs to scroll; do not put ScrollArea outside CardContent or you lose the card's internal padding.",
-      "SkeletonCard — the loading placeholder for a Card+CardContent shape; swap in SkeletonCard while card data is loading instead of rendering an empty CardContent.",
+      "SkeletonStat — the loading placeholder for a StatCard tile; swap in SkeletonStat while KPI data is loading. For general Card loading shapes, use SkeletonTable or Skeleton primitives.",
     ],
     example: `import { Card, CardContent, DataTable } from "@godxjp/ui/data-display";
 
@@ -1324,7 +1186,7 @@ export default function InvoiceList({
       "DO use `hint` for secondary context (e.g. '先月比 +3%', 'last 30 days'). In the default `stacked` layout hint renders below the value; in `inline` layout it renders beside the label.",
       "DO NOT add an `accent` prop — accent is a Card prop and StatCard does not expose it. Passing accent has no effect and creates a false expectation.",
       "DO NOT hand-roll a KPI tile using a plain <Card><CardContent>. StatCard is the correct primitive and token-aligns the label/value/hint/delta slots automatically.",
-      "WHILE data is loading, replace each StatCard with a <SkeletonCard /> at the same grid position — never render an empty value string or a spinner inside StatCard itself.",
+      "WHILE data is loading, replace each StatCard with a <SkeletonStat /> at the same grid position — never render an empty value string or a spinner inside StatCard itself.",
     ],
     useCases: [
       "Dashboard KPI row: monthly revenue, invoice count, overdue balance, and collection rate displayed side-by-side in a ResponsiveGrid with delta trend vs previous period.",
@@ -1332,11 +1194,11 @@ export default function InvoiceList({
       "Coupon/membership admin overview: active members, live coupons, monthly redemptions, and total discount amount — the canonical example in the catalog.",
       "Inline variant for a narrow sidebar or detail panel where space is constrained: label on the left, large value on the right (layout='inline'), e.g. contract value next to a deal record.",
       "Cost or error-rate metrics where a falling number is positive: pass `inverse` so a '-15%' delta shows green, preventing misleading red-for-good UI.",
-      "Loading state for any KPI grid: render the same ResponsiveGrid columns filled with <SkeletonCard /> components while the query is in-flight, then replace with StatCard tiles once data resolves.",
+      "Loading state for any KPI grid: render the same ResponsiveGrid columns filled with <SkeletonStat /> components while the query is in-flight, then replace with StatCard tiles once data resolves.",
     ],
     related: [
       "ResponsiveGrid — required layout wrapper for StatCard grids; controls column count and responsive breakpoints. Always pair them together.",
-      "SkeletonCard — exact loading placeholder shaped like a StatCard tile; swap in while KPI data is fetching, then replace with the real StatCard.",
+      "SkeletonStat — exact loading placeholder shaped like a StatCard tile; swap in while KPI data is fetching, then replace with the real StatCard.",
       "Descriptions — use instead when displaying multiple label/value metadata pairs on a detail page (not headline KPIs); Descriptions is not card-bordered and does not show delta/hint slots.",
       "Card + CardContent — use when you need a general-purpose content container with a header, footer, or arbitrary body; do NOT wrap StatCard inside these.",
     ],
@@ -1451,7 +1313,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "Card / CardContent — Descriptions provides the internal grid layout; Card/CardContent provides the outer container, padding, and border. Always wrap Descriptions in CardContent (never add p-4 directly on Descriptions). Use Card when you need the visual surface; use Descriptions inside it for the label/value structure.",
       "DataTable — use DataTable when you have multiple rows of the same entity type that need sorting, filtering, or pagination. Use Descriptions when you have a single entity's fields laid out as labelled metadata (one row per field, not one row per record).",
       "Table — use Table (the lower-level primitive) for tabular data with explicit column headers and multiple data rows. Use Descriptions when the data is inherently label→value (no column headers needed, each field is its own row/cell).",
-      "Stack / Inline — use Stack or Inline for arbitrary vertical/horizontal layout of heterogeneous UI elements. Use Descriptions when every item follows the label-on-top / value-below pattern and you want responsive multi-column alignment for free.",
+      "Flex — use Flex for arbitrary vertical/horizontal layout of heterogeneous UI elements. Use Descriptions when every item follows the label-on-top / value-below pattern and you want responsive multi-column alignment for free.",
     ],
     example: `import { Descriptions } from "@godxjp/ui/data-display";
 
@@ -1487,7 +1349,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "First-run onboarding screens where no data has been created yet — e.g. 'No entities added yet' with an action button to create the first legal entity.",
       "Passed as the `empty=` prop inside `DataState` or `InfiniteQueryState` to satisfy the TanStack Query lifecycle widget's zero-items slot without hand-rolling markup.",
       "Standalone section within a `CardContent` to indicate a sub-section (e.g. attachments, comments, related records) has no entries yet, separate from the page-level list.",
-      "Error-adjacent zero states where the page loaded successfully but the filtered result set is empty — distinct from an error state handled by `DataState`/`MutationFeedback`.",
+      "Error-adjacent zero states where the page loaded successfully but the filtered result set is empty — distinct from an error state handled by `DataState`/`AlertMutationFeedback`.",
     ],
     related: [
       "DataTable — already embeds an EmptyState automatically when `data` is empty; customise via the `empty=` prop. Do NOT wrap DataTable in a `data.length === 0` guard that renders EmptyState separately.",
@@ -1660,7 +1522,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     ],
     usage: [
       "DO: pass a `UseQueryResult<T>` directly from `useQuery` — DataState reads `isPending`, `isError`, `isFetching`, `data`, and `error` off it; never destructure those fields manually and branch yourself.",
-      "DO: always provide a `skeleton` — it renders during both the initial pending phase and during a re-fetch after an error; pass `<SkeletonTable />` for tabular data or `<SkeletonCard />` for card lists — never `null` or a spinner div.",
+      "DO: always provide a `skeleton` — it renders during both the initial pending phase and during a re-fetch after an error; pass `<SkeletonTable />` for tabular data or `<SkeletonStat />` for stat card lists — never `null` or a spinner div.",
       'DO: provide `empty` + `isEmpty` together when the data can legitimately return 0 items — e.g. `isEmpty={(d) => d.items.length === 0}` paired with `empty={<EmptyState title="…" />}`. Omitting `empty` means an empty array still falls through to `children`, silently rendering a blank table.',
       "DON'T: wrap DataState in your own conditional — e.g. `{query.isSuccess && <DataState …>}`. DataState IS the conditional; the outer guard is redundant and breaks the retry/refetch skeleton.",
       "DON'T: use DataState for `useInfiniteQuery` results. The `query` prop type is `UseQueryResult<T>`, not `UseInfiniteQueryResult`. Use `InfiniteQueryState` (from `@godxjp/ui/query`) instead, which accepts `flatten` and renders a load-more footer.",
@@ -1675,9 +1537,9 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     ],
     related: [
       "InfiniteQueryState — use instead of DataState when the query is `useInfiniteQuery`; it accepts a `flatten` function to reduce pages and adds a load-more footer. DataState cannot accept `UseInfiniteQueryResult`.",
-      "SkeletonTable / SkeletonCard — pass as the `skeleton` prop of DataState; they are not standalone replacements for DataState, only the loading slot inside it.",
+      "SkeletonTable / SkeletonStat — pass as the `skeleton` prop of DataState; they are not standalone replacements for DataState, only the loading slot inside it.",
       "EmptyState — pass as the `empty` prop of DataState alongside a matching `isEmpty` predicate; do not hand-roll an empty-check outside DataState by inspecting `query.data` yourself.",
-      "MutationFeedback — sibling widget for mutation (not query) lifecycle; use it below a form submit button to surface `useMutation` errors, not DataState which only handles `useQuery`.",
+      "AlertMutationFeedback — sibling widget for mutation (not query) lifecycle; use it below a form submit button to surface `useMutation` errors, not DataState which only handles `useQuery`.",
     ],
     example: `import { DataState } from "@godxjp/ui/query";
 
@@ -1720,7 +1582,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     ],
     usage: [
       "DO: Import from `@godxjp/ui/query` (not `@godxjp/ui`). Use the bundled `flattenItemPages` helper for any API that returns `{ items: T[] }` pages — it handles `undefined` data safely. Custom page shapes require a custom `flatten` function.",
-      "DO: Always pass `skeleton` (e.g. `<SkeletonTable />` or `<SkeletonCard />`). It shows on initial `isPending`, on refetch-after-error, and whenever `data` is absent. Never show a blank area while loading.",
+      "DO: Always pass `skeleton` (e.g. `<SkeletonTable />` or `<SkeletonStat />`). It shows on initial `isPending`, on refetch-after-error, and whenever `data` is absent. Never show a blank area while loading.",
       "DO: Pass `empty` (an `<EmptyState>` node) to handle the zero-results case — without it the children render-prop is called with an empty array and you get a silent blank screen. Provide a custom `isEmpty` only when `TFlat` is not an array.",
       "DON'T: Hand-roll a load-more button. The component renders a default centered outline Button when `hasNextPage` is true. Override only via `loadMore` (custom node) or `showLoadMore={false}` (hide entirely). Never call `query.fetchNextPage()` outside the component for pagination.",
       "DON'T: Use `InfiniteQueryState` for a `useQuery` result — it expects `UseInfiniteQueryResult` shape (`pages`, `hasNextPage`, `fetchNextPage`, `isFetchingNextPage`). For regular `useQuery` use `DataState` instead.",
@@ -1737,8 +1599,8 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     related: [
       "DataState — use instead when the query is a plain `useQuery` (not infinite). Identical lifecycle surface (skeleton/empty/error/children) but expects a single page of data, not accumulated pages. Pick DataState for any paginated table where only one page is visible at a time.",
       "DataTable — use for tabular data with server-side pagination where pages are swapped, not appended. DataTable manages its own pagination UI (cursor buttons); InfiniteQueryState is for append-only / infinite-scroll patterns.",
-      "SkeletonTable / SkeletonCard — pass as the `skeleton` prop to InfiniteQueryState; do not render them manually alongside InfiniteQueryState since the component controls when skeleton is visible.",
-      "QueryRefetchButton — companion component for the page header refresh action wired to `query.refetch()`. Use alongside InfiniteQueryState when you want an explicit refresh control in addition to the built-in load-more footer.",
+      "SkeletonTable / SkeletonStat — pass as the `skeleton` prop to InfiniteQueryState; do not render them manually alongside InfiniteQueryState since the component controls when skeleton is visible.",
+      "ButtonRefetch — companion component for the page header refresh action wired to `query.refetch()`. Use alongside InfiniteQueryState when you want an explicit refresh control in addition to the built-in load-more footer.",
     ],
     example: `import { InfiniteQueryState, flattenItemPages } from "@godxjp/ui/query";
 
@@ -1746,48 +1608,6 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
   {(items) => items.map((a) => <ActivityRow key={a.id} activity={a} />)}
 </InfiniteQueryState>`,
     storyPath: "query/InfiniteQueryState.stories.tsx",
-    rules: [],
-  },
-  {
-    name: "MutationFeedback",
-    group: "data-display",
-    tagline:
-      "Inline mutation error — renders nothing when idle/successful. Import from @godxjp/ui/query.",
-    props: [
-      {
-        name: "mutation",
-        type: "{ isError, error, isPending }",
-        required: true,
-        description: "useMutation result.",
-      },
-      { name: "onRetry", type: "() => void", description: "Retry handler." },
-    ],
-    usage: [
-      "DO: Import exclusively from `@godxjp/ui/query` — it is NOT exported from the main `@godxjp/ui` barrel.",
-      "DO: Pass the full `useMutation` result object as `mutation`; the component reads `.isError`, `.error`, and `.isPending` — only those three fields are consumed, so a plain object mock works in tests.",
-      "DO: Supply `onRetry` when the user can meaningfully re-trigger the mutation (e.g. re-submit a form, re-run a simulation). The Retry button is rendered by `AlertQueryError` only when `onRetry` is provided AND `showRetry` is not `false`. Set `showRetry={false}` to hide the button when retry is semantically wrong (e.g. a destructive delete that must not auto-repeat).",
-      "DO: Use the `pending` prop to render an inline loading slot while `mutation.isPending` is true — it replaces the error area with arbitrary JSX (spinner, skeleton row) so the layout does not shift when the mutation transitions idle → pending → error.",
-      "DON'T: Render `MutationFeedback` for query (fetch) errors — use `DataState` for those. `MutationFeedback` is scoped to write operations (`useMutation`), not read operations (`useQuery`).",
-      "DON'T: Hand-roll an inline error alert for mutation failures — this component already wraps `Alert variant='destructive'` with i18n title, `humanError()` message formatting, and an accessible Retry button. Duplicating that logic breaks consistency and bypasses localisation.",
-    ],
-    useCases: [
-      "Form save failures — place `<MutationFeedback mutation={saveMutation} onRetry={saveMutation.mutate} />` directly below a submit button so the error appears inline next to the control that triggered it, keeping the user in context without a page-level toast.",
-      "Blocking simulator / calculation runs — when a long-running mutation (e.g. tax computation, invoice generation) fails and the page must stay on the form until the user corrects and retries, use `MutationFeedback` with `pending={<SkeletonTable />}` to show a skeleton while running and flip to an error banner on failure.",
-      "Multi-step wizard step submissions — show per-step mutation errors inline inside each `<Steps>` panel so the user sees exactly which step failed without scrolling to a page-level alert.",
-      "Admin destructive actions (delete, void, archive) — pass `showRetry={false}` so no Retry button appears after a failed irreversible operation, preventing accidental double-execution.",
-      "Accounting record mutations (journal entry save, invoice approval) — inline error keeps audit-sensitive feedback close to the triggering form rather than relying on a transient toast that the user might miss.",
-      "Background job kicks that surface an immediate API error — when a mutation POSTs to a job-dispatch endpoint and the server rejects synchronously, `MutationFeedback` surfaces the error inline with a retry CTA without requiring a separate alert component.",
-    ],
-    related: [
-      "Toaster — use `toast.error()` (sonner) via `Toaster` for transient, non-blocking save confirmations where the user does not need to retry in-place; prefer `MutationFeedback` when the error is blocking and must stay visible until the user acts.",
-      "DataState — use `DataState` for the full TanStack Query read lifecycle (pending skeleton / error / empty / data); `MutationFeedback` is the write-side counterpart for `useMutation` errors only.",
-      "Alert — the raw destructive alert primitive; use `Alert variant='destructive'` directly only when the error is not from a `useMutation` result and you need full compositional control; `MutationFeedback` is the correct abstraction when you have a mutation object.",
-      "QueryRefetchButton — for surfacing a manual refetch action on a `useQuery` result in a page header; `MutationFeedback` handles the equivalent retry on the mutation side and must not be conflated with query refetch patterns.",
-    ],
-    example: `import { MutationFeedback } from "@godxjp/ui/query";
-
-<MutationFeedback mutation={saveMutation} />`,
-    storyPath: "query/MutationFeedback.stories.tsx",
     rules: [],
   },
 
@@ -1834,21 +1654,21 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "DO pass a SINGLE React element as `children`. FormField calls `React.cloneElement` on it to inject `aria-describedby`, `aria-required`, and `aria-invalid` — if you pass a fragment or multiple nodes, cloneElement silently skips the injection and a11y attributes are lost.",
       "DO use the `error` prop (not a hand-rolled `<p>`) for validation messages — it renders with `role='alert'` and `text-destructive` styling and overrides `helper` automatically. Never render an error paragraph alongside FormField.",
       "DO use `labelAddon` (a ReactNode rendered inline after the label text) for supplementary controls such as a tooltip trigger or a 'copy' icon button — never insert such controls as siblings outside FormField, which breaks layout.",
-      "DON'T wrap `Switch` in FormField — use `ChoiceField` instead, which already handles the label, hidden `<input name>` for HTML form submission, error, and helper internally.",
-      "DON'T use FormField for checkbox-beside-label or radio-beside-label patterns — use `ChoiceField` (single checkbox/radio with description) or `CheckboxGroup` / `RadioGroup` (multiple options), which have their own integrated labelling.",
+      "DON'T wrap `Switch` in FormField — use `Field` instead, which already handles the label, hidden `<input name>` for HTML form submission, error, and helper internally.",
+      "DON'T use FormField for checkbox-beside-label or radio-beside-label patterns — use `Field` (single checkbox/radio with description) or `CheckboxGroup` / `RadioGroup` (multiple options), which have their own integrated labelling.",
     ],
     useCases: [
       "Labelling a text `Input` or `Textarea` in an invoice-entry form, showing a red asterisk for required fields and surfacing server validation errors returned from a Laravel FormRequest.",
       "Wrapping a `Select` or `DatePicker` inside a multi-field filter panel where each control needs a visible label, helper hint (e.g. 'YYYY/MM/DD'), and inline error state.",
       "Adding a `labelAddon` tooltip button next to a 'Tax rate' label in an accounting form to explain when different rates apply, without breaking the label–control association.",
       "Enclosing a `DateRangePicker` or `TimePicker` in an admin settings page where the field needs a label, a muted hint ('Inclusive of start and end date'), and conditional error display.",
-      "Wrapping a `SearchSelect` or `Autocomplete` control for vendor/account lookup in a journal-entry form where the `id` must be kept consistent for programmatic focus management.",
+      "Wrapping a `SearchSelect` or `Select` (with `showSearch`) control for vendor/account lookup in a journal-entry form where the `id` must be kept consistent for programmatic focus management.",
       "Providing structured error feedback for a `Cascader` or `TreeSelect` in a multi-level category assignment screen, replacing ad-hoc error rendering with the standardised `role='alert'` pattern.",
     ],
     related: [
       "Label — the bare Radix label component. Use directly only when you are building a fully custom layout that cannot accept FormField's stack wrapper, and you will manage aria-describedby/aria-invalid yourself. FormField is always preferred for standard form controls.",
-      "ChoiceField — a self-contained field for boolean toggles: it already includes its own label, hidden `<input name>` for HTML form submission, helper, and error. Never wrap a bare `Switch` in FormField.",
-      "ChoiceField — pairs a single checkbox or radio with a label and optional description in a horizontal layout (control beside text). Use ChoiceField instead of FormField when the control and its label sit side-by-side rather than stacked.",
+      "Field — a self-contained field for boolean toggles: it already includes its own label, hidden `<input name>` for HTML form submission, helper, and error. Never wrap a bare `Switch` in FormField.",
+      "Field — pairs a single checkbox or radio with a label and optional description in a horizontal layout (control beside text). Use Field instead of FormField when the control and its label sit side-by-side rather than stacked.",
       "CheckboxGroup / RadioGroup — for groups of options where FormField is not needed per-item; the group component handles its own legend/label and option layout.",
     ],
     example: `import { FormField, Input } from "@godxjp/ui/data-entry";
@@ -1936,10 +1756,10 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "DO: supply an `ariaLabel` (or visible `label`) when no adjacent label exists. Without either prop, SearchInput falls back to the i18n key `common.search` rendered as a visually-hidden `<Label>` — still accessible, but providing a context-specific string (e.g. `ariaLabel='請求書を検索'`) is more descriptive for screen readers.",
       "DON'T: use SearchInput inside a `<form>` expecting native form submission. The component has no `name` prop and does not emit a form field value — it is a filter-trigger widget. For a form search field, use a plain `Input` inside `FormField`.",
       "DON'T: hand-roll a debounced input when you need a search box. SearchInput ships the debounce, clear button (×), search icon, and accessible label — recreating these with a raw `<Input>` adds code and misses the UX contract.",
-      "DON'T: place SearchInput inside a `FilterGroup` wrapper — `FilterGroup` is for Select/DatePicker controls with a label chip. SearchInput goes directly as a child of `FilterBar` (or standalone above a table), not wrapped in `FilterGroup`.",
+      "DON'T: place SearchInput inside a `ToolbarGroup` wrapper — `ToolbarGroup` is for Select/DatePicker controls with a label chip. SearchInput goes directly as a child of `Toolbar` (or standalone above a table), not wrapped in `ToolbarGroup`.",
     ],
     useCases: [
-      "List-page filter bar: placed as the first child of `FilterBar` (before any `FilterGroup` children) to drive text-based filtering of a `DataTable`. The `onSearch` callback updates a query param or state variable that the table's data fetch reads.",
+      "List-page filter bar: placed as the first child of `Toolbar` (before any `ToolbarGroup` children) to drive text-based filtering of a `DataTable`. The `onSearch` callback updates a query param or state variable that the table's data fetch reads.",
       "Inline client-side search over a small in-memory list (e.g. a sidebar nav list, a transfer panel, a settings category list) where results narrow immediately as the user types without a server round-trip — use uncontrolled mode (`defaultValue`) so no state is needed in the parent.",
       "URL-synced search: controlled mode where `value` comes from `useSearchParams()` and `onSearch` pushes to the URL, enabling deep-linkable, bookmarkable filtered views on invoice/transaction/customer index pages.",
       "Panel or dialog search: filtering a long dropdown list, a tree, or a multi-item selection panel that does not use the built-in `Command` palette — SearchInput provides the search box while the parent renders the filtered result set.",
@@ -1947,7 +1767,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     ],
     related: [
       "Input — use `Input` (inside `FormField`) when the search field is part of a submitted form and needs a `name` attribute, or when you need full `onChange` control without any debounce or clear button. SearchInput is the right pick when the field only triggers filtering, not form submission.",
-      "FilterBar — SearchInput is almost always placed as a direct child of `FilterBar`, which provides the surrounding strip, clear-all button, and active-filter state. Do not use SearchInput as a standalone header widget when a full filter strip (with selects etc.) already exists — compose them together.",
+      "Toolbar — SearchInput is almost always placed as a direct child of `Toolbar`, which provides the surrounding strip, clear-all button, and active-filter state. Do not use SearchInput as a standalone header widget when a full filter strip (with selects etc.) already exists — compose them together.",
       "Command — use `Command` + `CommandInput` when you need a keyboard-navigable command palette or combobox list with grouped items and keyboard selection. `Command` is only meaningful when paired with `CommandList`; SearchInput is the right pick for a plain filter box with no item-selection behavior.",
       "Select (with showSearch) — when users must pick a value from a list AND search to narrow it, use `<Select options={...} showSearch>` (which has its own built-in search input). SearchInput is for filtering an external data set, not for value selection from an option list.",
     ],
@@ -2064,8 +1884,8 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       },
       {
         name: "SelectTrigger size",
-        type: '"sm" | "default"',
-        defaultValue: '"default"',
+        type: '"sm" | "md"',
+        defaultValue: '"md"',
         description: "Compound API only. Size variant on the SelectTrigger sub-component.",
       },
     ],
@@ -2089,7 +1909,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     related: [
       "SearchSelect — the combobox engine Select delegates to when showSearch=true or loadOptions is set. Prefer Select with showSearch instead of reaching for SearchSelect directly (SearchSelect is now deprecated as a public API).",
       "TreeSelect — use when options are hierarchical (parent/child tree). Not a drop-in for Select; has expand/collapse and a separate treeData prop.",
-      "Autocomplete — deprecated thin wrapper; replaced by Select with options + showSearch.",
+      "Select with showSearch — use Select (with the `showSearch` prop) for typeahead/autocomplete lookup patterns instead of the removed Autocomplete component.",
       "RadioGroup — use instead of Select when there are 2-4 mutually exclusive choices that must all be visible at once without opening a popover.",
       "Combobox (if present) — compound cmdk-powered combobox for free-text + suggestion; Select is for strict value lists only.",
     ],
@@ -2194,14 +2014,19 @@ export function PrioritySelect({ value, onValueChange }) {
   {
     name: "Switch",
     group: "data-entry",
-    tagline:
-      "Radix toggle switch (bare). For a labelled row with a hidden form input use ChoiceField.",
+    tagline: "Radix toggle switch (bare). For a labelled row with a hidden form input use Field.",
     props: [
       { name: "checked", type: "boolean", description: "Controlled checked state." },
       {
         name: "onCheckedChange",
         type: "(checked: boolean) => void",
         description: "Fires when toggled.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md"',
+        defaultValue: '"md"',
+        description: "Thumb size — 'sm' for dense rows.",
       },
       { name: "id", type: "string", description: "Links to a <Label htmlFor>." },
       {
@@ -2213,23 +2038,23 @@ export function PrioritySelect({ value, onValueChange }) {
     ],
     usage: [
       "DO use Switch (bare) only when you are building a custom inline toggle without a visible label — e.g., a DataTable row action column. Always pair it with a <Label htmlFor={id}> placed adjacent in the DOM; never leave it label-less for screen readers.",
-      "DO NOT pass a `name` prop to bare Switch expecting HTML form submission — Radix Switch renders no hidden input, so the value is silently dropped on submit. Use ChoiceField (which mirrors a hidden `0`/`1` input) for any field that must submit inside an HTML <form>.",
-      "DO use the `size` prop ('sm' | 'default') to control thumb size. 'sm' is appropriate in dense DataTable rows or filter bars; omit it (defaults to 'default') everywhere else.",
-      "DO wire controlled state: pass both `checked` (boolean) and `onCheckedChange` together. Passing only one causes a React controlled/uncontrolled warning. For uncontrolled use, pass neither — but bare Switch has no `defaultChecked` state management built in (ChoiceField handles that internally).",
-      "DON'T hand-roll a <div> + <label> wrapper with bare Switch to get a labelled field — that is exactly what ChoiceField provides, including aria-describedby, aria-invalid, error/helper text, and the hidden input. Reach for ChoiceField instead.",
+      "DO NOT pass a `name` prop to bare Switch expecting HTML form submission — Radix Switch renders no hidden input, so the value is silently dropped on submit. Use Field (which mirrors a hidden `0`/`1` input) for any field that must submit inside an HTML <form>.",
+      "DO use the `size` prop ('sm' | 'md') to control thumb size. 'sm' is appropriate in dense DataTable rows or filter bars; omit it (defaults to 'md') everywhere else.",
+      "DO wire controlled state: pass both `checked` (boolean) and `onCheckedChange` together. Passing only one causes a React controlled/uncontrolled warning. For uncontrolled use, pass neither — but bare Switch has no `defaultChecked` state management built in (Field handles that internally).",
+      "DON'T hand-roll a <div> + <label> wrapper with bare Switch to get a labelled field — that is exactly what Field provides, including aria-describedby, aria-invalid, error/helper text, and the hidden input. Reach for Field instead.",
       "DO link the switch to its label via matching `id` on Switch and `htmlFor` on Label. Without this pairing, clicking the label text does not toggle the switch and the a11y association is broken.",
     ],
     useCases: [
       "Inline toggle in a DataTable action cell (e.g., 'Active' column) where the label is already provided by the column header and no form submission is involved.",
-      "Settings panel where a React state boolean is toggled immediately via an optimistic API call — no <form> submit, so ChoiceField's hidden input is unnecessary.",
-      "Custom compound component where you compose Switch + Label yourself and need direct access to the Radix Root props (e.g., adding aria-controls or data-attributes not supported by ChoiceField).",
+      "Settings panel where a React state boolean is toggled immediately via an optimistic API call — no <form> submit, so Field's hidden input is unnecessary.",
+      "Custom compound component where you compose Switch + Label yourself and need direct access to the Radix Root props (e.g., adding aria-controls or data-attributes not supported by Field).",
       "Filter toolbar toggle (e.g., 'Show archived') rendered inline next to other filter controls, using size='sm' for density parity with adjacent inputs.",
       "Preview/demo UI where the switch controls a local display state (dark-mode preview, feature flag preview) with no server persistence.",
     ],
     related: [
-      "ChoiceField — use this instead of bare Switch whenever the toggle needs a visible label, helper text, error message, or must submit its value inside an HTML <form>. ChoiceField composes Label + Switch + hidden input automatically.",
+      "Field — use this instead of bare Switch whenever the toggle needs a visible label, helper text, error message, or must submit its value inside an HTML <form>. Field composes Label + Switch + hidden input automatically.",
       "Checkbox — use Checkbox (or CheckboxGroup) when the user is selecting one or more items from a set, or when the binary choice semantically means 'agree/select' rather than 'enable/disable'. Switch implies an immediate, persistent state change; Checkbox implies a form choice.",
-      "ChoiceField — use for a binary or small-set choice rendered as radio-style cards with rich descriptions, when the visual weight of a toggle is insufficient for the decision importance.",
+      "Field — use for a binary or small-set choice rendered as radio-style cards with rich descriptions, when the visual weight of a toggle is insufficient for the decision importance.",
       "RadioGroup — use when the user must choose exactly one option from 2–4 mutually exclusive values; Switch is only appropriate for a single on/off boolean.",
     ],
     example: `import { Switch, Label } from "@godxjp/ui/data-entry";
@@ -2274,7 +2099,7 @@ export function PrioritySelect({ value, onValueChange }) {
       "Input — use Input for single-line values (names, amounts, codes). Use Textarea only when the expected value spans multiple lines or could be longer than ~80 characters.",
       "FormField — always the parent wrapper for Textarea in forms; provides label, helper text, error message, and injects all required aria attributes onto the Textarea child automatically.",
       "Select — when the user must pick from a finite set of multi-line-looking options (e.g. template choices) use Select, not a Textarea presenting options as free text.",
-      "Autocomplete or SearchSelect — if the multi-line field is actually a tag/token input or a constrained lookup, prefer Autocomplete or SearchSelect over a Textarea that the user types into freely.",
+      "Select with showSearch or SearchSelect — if the multi-line field is actually a tag/token input or a constrained lookup, prefer Select (showSearch) or SearchSelect over a Textarea that the user types into freely.",
     ],
     example: `import { Textarea } from "@godxjp/ui/data-entry";
 
@@ -2294,23 +2119,23 @@ export function PrioritySelect({ value, onValueChange }) {
       "DO: always pass `htmlFor` matching the `id` of the associated control — this is the entire purpose of the component. Without it, clicking the label text does NOT focus or toggle the control, breaking a11y and UX.",
       'DO: import from `@godxjp/ui/data-entry` (not shadcn or Radix directly). The godx-ui Label extends Radix\'s LabelPrimitive with `data-slot="label"`, `select-none`, and `group-data-[disabled]` opacity-50 — hand-rolling a `<label>` loses all of these.',
       "DON'T: use Label as a standalone visible heading or section title. It is a form-control association primitive. For page/section headings use semantic HTML (`<h2>`, etc.) or a typography class instead.",
-      "DON'T: wrap Label around a control that is already labelled internally. FormField, ChoiceField, ChoiceField, and CheckboxGroup all render Label internally — adding a second Label creates a duplicate association and redundant screen-reader announcement.",
-      "DO: pair Label with Checkbox or Switch when NOT using the compound wrappers (ChoiceField / ChoiceField). In that case generate the shared id with `React.useId()` and pass it to both `id` on the control and `htmlFor` on Label.",
+      "DON'T: wrap Label around a control that is already labelled internally. FormField, Field, and CheckboxGroup all render Label internally — adding a second Label creates a duplicate association and redundant screen-reader announcement.",
+      "DO: pair Label with Checkbox or Switch when NOT using the compound wrapper (Field). In that case generate the shared id with `React.useId()` and pass it to both `id` on the control and `htmlFor` on Label.",
       "PREFER FormField over a bare Label + control pair whenever you also need helper text, error messages, or `required` asterisk. FormField injects `aria-describedby` and `aria-invalid` automatically; a bare Label does not.",
     ],
     useCases: [
-      "Pairing with a standalone Checkbox when ChoiceField's two-line layout is unnecessary — e.g. a single 'Remember me' option in a login form.",
-      "Labelling a bare Switch (not ChoiceField) in a settings row where the switch is controlled by parent state and no HTML form name attribute is needed.",
-      "Adding a visible label to a custom or third-party control that accepts an `id` prop but isn't wrapped by FormField or ChoiceField.",
+      "Pairing with a standalone Checkbox when Field's two-line layout is unnecessary — e.g. a single 'Remember me' option in a login form.",
+      "Labelling a bare Switch (not Field) in a settings row where the switch is controlled by parent state and no HTML form name attribute is needed.",
+      "Adding a visible label to a custom or third-party control that accepts an `id` prop but isn't wrapped by FormField or Field.",
       "Labelling a Textarea in a free-text form field when FormField's helper/error slots aren't needed, keeping the markup minimal.",
       "Rendering an accessible label inside a table row where a FormField's block layout would break the inline/grid structure.",
       "Adding a label to a DatePicker, TimePicker, or ColorPicker inside a simple layout that doesn't need the full FormField wrapper.",
     ],
     related: [
       "FormField — prefer this over a bare Label whenever the field needs helper text, an error message, or a required marker; FormField renders Label internally and wires aria-describedby/aria-invalid automatically.",
-      "ChoiceField — use for a Checkbox or Radio.Item that needs a visible label and optional description line; it renders Label internally — do NOT add a second Label around it.",
-      "ChoiceField — use instead of a bare Switch + Label pair when the control must submit a value via an HTML form name; ChoiceField owns the Label + hidden input composition.",
-      "Checkbox — the most common bare-Label partner; pair with Label via shared useId() id/htmlFor when ChoiceField's layout is too heavy.",
+      "Field — use for a Checkbox or Radio.Item that needs a visible label and optional description line; it renders Label internally — do NOT add a second Label around it.",
+      "Field — use instead of a bare Switch + Label pair when the control must submit a value via an HTML form name; Field owns the Label + hidden input composition.",
+      "Checkbox — the most common bare-Label partner; pair with Label via shared useId() id/htmlFor when Field's layout is too heavy.",
     ],
     example: `import { Label } from "@godxjp/ui/data-entry";
 
@@ -2338,24 +2163,24 @@ export function PrioritySelect({ value, onValueChange }) {
     usage: [
       "DO pair every standalone Checkbox with a `<Label htmlFor={id}>` — the id prop on Checkbox must match the htmlFor on Label so screen readers announce the label on focus. Without this pairing the control is inaccessible.",
       "DO use the controlled pattern (`checked` + `onCheckedChange`) for any form-bound checkbox. `onCheckedChange` receives `boolean | 'indeterminate'` — always coerce with `!!v` or an explicit guard before storing in state.",
-      "DO use `Checkbox.Group` (alias for CheckboxGroup) with the `options` prop when you have ≥2 choices from an array — it renders each item inside a `ChoiceField` (label + optional description), generates stable ids automatically, and manages the `string[]` value array. NEVER hand-roll a loop of bare `<Checkbox>` elements for a multi-select list.",
+      "DO use `Checkbox.Group` (alias for CheckboxGroup) with the `options` prop when you have ≥2 choices from an array — it renders each item inside a `Field` (label + optional description), generates stable ids automatically, and manages the `string[]` value array. NEVER hand-roll a loop of bare `<Checkbox>` elements for a multi-select list.",
       "DO pass `name` on `Checkbox.Group` (not on individual checkboxes) when the group must submit as form fields — the group propagates the name to each internal checkbox so the browser serialises all checked values under that key.",
       "DON'T use `checked='indeterminate'` on `Checkbox.Group` children — indeterminate is only meaningful on a parent 'select-all' control you wire manually; the group itself does not auto-compute it.",
-      "DON'T wrap a standalone Checkbox in `ChoiceField` manually — `ChoiceField` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, use `<div className='flex items-center gap-2'><Checkbox id='x' .../><Label htmlFor='x'>...</Label></div>` as shown in the catalog example; for a full labelled-checkbox with description, use `ChoiceField` directly only if you need a one-off item outside a group.",
+      "DON'T wrap a standalone Checkbox in `Field` manually — `Field` is the internal composition primitive that `Checkbox.Group` uses. For a single boolean with a label, use `<div className='flex items-center gap-2'><Checkbox id='x' .../><Label htmlFor='x'>...</Label></div>` as shown in the catalog example; for a full labelled-checkbox with description, use `Field` directly only if you need a one-off item outside a group.",
     ],
     useCases: [
       "A 'Select all' / bulk-action row above a DataTable — standalone Checkbox with `checked='indeterminate'` when some (not all) rows are selected, toggling between all-selected and none-selected.",
-      "A multi-step filter panel (e.g. filter invoices by payment status: Paid, Unpaid, Overdue) — `Checkbox.Group` with `options` prop and `orientation='vertical'`, controlled value wired to FilterBar state.",
+      "A multi-step filter panel (e.g. filter invoices by payment status: Paid, Unpaid, Overdue) — `Checkbox.Group` with `options` prop and `orientation='vertical'`, controlled value wired to Toolbar state.",
       "Confirmation or consent acknowledgement before a destructive action in a Dialog — standalone Checkbox with controlled state used to enable/disable the confirm Button.",
-      "Settings panel where each feature flag is a boolean toggle with a description line — `Checkbox.Group` with options carrying a `description` field so each row renders label + subtext via ChoiceField.",
+      "Settings panel where each feature flag is a boolean toggle with a description line — `Checkbox.Group` with options carrying a `description` field so each row renders label + subtext via Field.",
       "Bulk-edit form row in an accounting ledger (e.g. 'Apply to all selected entries') — standalone Checkbox with name + value inside a `<form>` for native HTML form submission.",
       "Onboarding checklist (e.g. 'I have read the terms', 'I consent to data processing') with multiple distinct items whose values are independent — two separate standalone Checkboxes, each with their own id/state, not a Checkbox.Group (since each item maps to a different boolean field).",
     ],
     related: [
-      "CheckboxGroup — use instead of bare Checkbox when you have a list of 2+ options from an array; it handles id generation, ChoiceField wrapping, value array management, and the `name` prop for form submission. Checkbox is for a single boolean; CheckboxGroup is for multi-select.",
-      "Switch / ChoiceField — use Switch when the action takes immediate effect (enable/disable a feature in settings) rather than selecting an option to be submitted later. Checkbox implies 'will be submitted as part of a form'; Switch implies 'applies now'. ChoiceField adds a hidden input for HTML form compatibility.",
+      "CheckboxGroup — use instead of bare Checkbox when you have a list of 2+ options from an array; it handles id generation, Field wrapping, value array management, and the `name` prop for form submission. Checkbox is for a single boolean; CheckboxGroup is for multi-select.",
+      "Switch / Field — use Switch when the action takes immediate effect (enable/disable a feature in settings) rather than selecting an option to be submitted later. Checkbox implies 'will be submitted as part of a form'; Switch implies 'applies now'. Field adds a hidden input for HTML form compatibility.",
       "RadioGroup — use when only one option in a group may be selected at a time (mutually exclusive). CheckboxGroup = multiple selections allowed; RadioGroup = single selection only.",
-      "ChoiceField — the internal layout primitive (control slot + Label + description) that Checkbox.Group renders per item. Use it directly only when you need a one-off labelled checkbox or radio item outside of a group, and you want the consistent indent/description layout without the group's value-management overhead.",
+      "Field — the internal layout primitive (control slot + Label + description) that Checkbox.Group renders per item. Use it directly only when you need a one-off labelled checkbox or radio item outside of a group, and you want the consistent indent/description layout without the group's value-management overhead.",
     ],
     example: `import { Checkbox, Label } from "@godxjp/ui/data-entry";
 
@@ -2390,10 +2215,10 @@ export function PrioritySelect({ value, onValueChange }) {
       },
     ],
     usage: [
-      "DO use the `options` prop for the data-driven path: pass `{ label, value, disabled?, description? }[]` and RadioGroup renders every option as a correctly labelled ChoiceField automatically — never hand-roll Radio.Item + Label pairs in a loop yourself.",
+      "DO use the `options` prop for the data-driven path: pass `{ label, value, disabled?, description? }[]` and RadioGroup renders every option as a correctly labelled Field automatically — never hand-roll Radio.Item + Label pairs in a loop yourself.",
       "DO provide `name` whenever the group lives inside an HTML form: Radix renders a hidden `<input name={name}>` carrying the selected string value, making the field natively form-submittable without a separate hidden input.",
       "DO use controlled mode (`value` + `onValueChange`) for any form managed by useForm or a state manager. Use `defaultValue` only for truly uncontrolled UI where you never need to read the value in code.",
-      "DO NOT reach for children / manual composition unless the options list is dynamic-JSX (e.g. each item needs a custom rendered label with an icon). When you do compose children manually, wrap each Radio.Item in a ChoiceField — rendering a bare Radio.Item without ChoiceField skips the label and breaks a11y.",
+      "DO NOT reach for children / manual composition unless the options list is dynamic-JSX (e.g. each item needs a custom rendered label with an icon). When you do compose children manually, wrap each Radio.Item in a Field — rendering a bare Radio.Item without Field skips the label and breaks a11y.",
       "DO NOT use RadioGroup when the user may select zero or multiple items — that is CheckboxGroup. RadioGroup enforces exactly one selection at all times (or none before first interaction when uncontrolled).",
       "A11y: the Radix root emits `role=radiogroup`; each item gets `role=radio` and is keyboard-navigable with arrow keys. Never suppress `name` on the Root when inside a form — without it the hidden input is unnamed and won't submit.",
     ],
@@ -2408,8 +2233,8 @@ export function PrioritySelect({ value, onValueChange }) {
     related: [
       "CheckboxGroup — use when the user may select zero or more values simultaneously (multi-select); RadioGroup enforces exactly one selection. Both share the same options array shape and orientation prop.",
       "Select — use when there are 5 or more options or the option list is dynamic/searchable; RadioGroup is preferred for 2-4 fixed visible choices where scanning all options at once matters.",
-      "ChoiceField — use when there are exactly two states that map to on/off (boolean); RadioGroup is the right pick when the two-or-more options are semantically distinct named values, not a toggle.",
-      "ChoiceField — the low-level label+description wrapper that RadioGroup uses internally for each item. Use it directly only when manually composing Radio.Item children inside Radio.Group; never hand-roll a label alongside a bare Radio.Item without it.",
+      "Field — use when there are exactly two states that map to on/off (boolean); RadioGroup is the right pick when the two-or-more options are semantically distinct named values, not a toggle.",
+      "Field — the low-level label+description wrapper that RadioGroup uses internally for each item. Use it directly only when manually composing Radio.Item children inside Radio.Group; never hand-roll a label alongside a bare Radio.Item without it.",
     ],
     example: `import { RadioGroup } from "@godxjp/ui/data-entry";
 
@@ -2562,7 +2387,7 @@ export function InvoiceDueDateField() {
       "Sheet — use Sheet instead of Dialog when the content is a slide-in panel (filters, detail sidebar, settings drawer). Sheet uses `side` prop and is better suited for wide filter forms or contextual detail panels that don't demand full focus interruption.",
       "Alert — use Alert for inline, non-modal status messages (validation errors, success banners on the page). Dialog is modal and focus-trapping; Alert is inline and never blocks interaction.",
       "Popover — use Popover for lightweight non-modal overlays anchored to a trigger (quick-edit a single field, tooltip-style confirmation for low-stakes actions). Dialog is full-modal; Popover stays near its trigger and doesn't dim the page.",
-      "MutationFeedback — use MutationFeedback for toast/inline feedback after the Dialog closes, not inside it. Putting a success toast inside a Dialog that is about to unmount causes it to disappear immediately; emit the feedback after `onOpenChange(false)` resolves.",
+      "AlertMutationFeedback — use AlertMutationFeedback for toast/inline feedback after the Dialog closes, not inside it. Putting a success toast inside a Dialog that is about to unmount causes it to disappear immediately; emit the feedback after `onOpenChange(false)` resolves.",
     ],
     example: `import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@godxjp/ui/feedback";
@@ -2706,7 +2531,7 @@ function CreateDialog() {
     ],
     related: [
       "Dialog — use Dialog (centered modal) when the action is destructive, requires full user focus, or needs a confirm/alertdialog (mode='confirm'). Use Sheet when the user benefits from seeing the page content behind the slide-over (filters, detail peek, quick-edit).",
-      "FilterBar/FilterGroup — use FilterBar for inline persistent filter controls above a DataTable (no overlay). Use Sheet when the filter set is large (>4 controls) or on mobile where inline controls collapse poorly.",
+      "Toolbar/ToolbarGroup — use Toolbar for inline persistent filter controls above a DataTable (no overlay). Use Sheet when the filter set is large (>4 controls) or on mobile where inline controls collapse poorly.",
       "Popover — use Popover for lightweight, anchor-positioned context menus or single-control overlays (date picker, color picker). Use Sheet when the panel has a header, multiple fields, or footer actions that need a dedicated panel.",
       "SplitPane — use SplitPane for a persistent side-by-side layout where both panes are always visible. Use Sheet when the secondary panel is transient and should overlay the primary content.",
     ],
@@ -2764,7 +2589,7 @@ import { Button } from "@godxjp/ui/general";
     ],
     related: [
       "Toaster — use for transient, auto-dismissing feedback ('Record saved', 'Deleted'). Alert is for persistent page-scoped banners; Toaster is for fire-and-forget notifications triggered by toast() from sonner.",
-      "MutationFeedback — use when you want inline success/error feedback tightly coupled to a form mutation's state (renders inline below the submit button). Alert requires you to manage show/hide state yourself.",
+      "AlertMutationFeedback — use when you want inline success/error feedback tightly coupled to a form mutation's state (renders inline below the submit button). Alert requires you to manage show/hide state yourself.",
       "DataState — use for full query lifecycle (loading skeleton + empty state + error) inside a data-fetching section. Alert.QueryError is the error sub-component DataState uses internally; prefer DataState when you also need the loading/empty states.",
       "EmptyState — use for the zero-data case inside a list or table section, not for errors or warnings. Alert is for status messages; EmptyState is for the absence of data.",
     ],
@@ -2810,46 +2635,12 @@ import { Button } from "@godxjp/ui/general";
     related: [
       "DataTable — sibling component that SkeletonTable precedes. Once DataTable mounts, use its `loading` prop (renders an in-table loading row) for subsequent refetches rather than swapping back to SkeletonTable. Pick SkeletonTable only for the pre-mount gap.",
       "DataState — query lifecycle widget from `@godxjp/ui/query`; accepts SkeletonTable as its `skeleton` prop and handles loading/empty/error transitions automatically. Prefer DataState + SkeletonTable over a hand-rolled ternary when the data comes from a useQuery hook.",
-      "SkeletonCard — sibling skeleton shaped like a StatCard tile; use inside a ResponsiveGrid to placeholder KPI dashboard cards, not tabular data.",
+      "SkeletonStat — sibling skeleton shaped like a StatCard tile; use inside a ResponsiveGrid to placeholder KPI dashboard cards, not tabular data.",
       "DataTable — when data is already mounted but re-fetching (e.g. pagination, filter change), set `loading={true}` on DataTable directly instead of unmounting it and swapping in SkeletonTable; avoids layout shift and preserves scroll position.",
     ],
     example: `import { SkeletonTable } from "@godxjp/ui/feedback";
 
 {!coupons ? <SkeletonTable rows={10} columns={6} /> : <DataTable data={coupons} columns={columns} />}`,
-    storyPath: "feedback/Skeleton.stories.tsx",
-    rules: [],
-  },
-  {
-    name: "SkeletonCard",
-    group: "feedback",
-    tagline:
-      "Loading placeholder shaped like a StatCard tile. Use inside a ResponsiveGrid while KPIs load.",
-    props: [],
-    usage: [
-      "DO render SkeletonCard directly inside a ResponsiveGrid (no Card wrapper needed) — it is a self-contained block with its own padding and shape, matching the three-layer anatomy of a StatCard tile (label line → value line → hint line).",
-      "DO render one SkeletonCard per expected StatCard tile so the grid dimensions stay stable during load. Four KPI tiles loading → four SkeletonCard siblings in the same ResponsiveGrid.",
-      "DON'T wrap SkeletonCard in <Card> or <CardContent> — it already owns its box layout. Double-wrapping adds unwanted padding and borders, identical to the StatCard double-border mistake.",
-      "DON'T use SkeletonCard for non-stat shapes: row lists → SkeletonTable or SkeletonRows; a single record detail page → SkeletonDetail. SkeletonCard is only correct when the loaded state is a stat/KPI tile.",
-      'DON\'T add aria-busy or aria-live yourself — the component sets aria-busy="true" on its root automatically. Adding them again duplicates announcements for screen readers.',
-      "DON'T pass any props — SkeletonCard takes none. If you need a different height or layout, check whether SkeletonDetail or a custom SkeletonBlock composition is the right tool instead.",
-    ],
-    useCases: [
-      "Dashboard KPI row loading: while a deferred prop or async query fetches aggregate figures (total revenue, open invoices, overdue count, cash balance), render four SkeletonCards in a ResponsiveGrid columns={4} so the page shell holds its layout without a spinner overlay.",
-      "Accounting summary header: the top-of-page stat strip on an invoice list or ledger view needs a stable layout before period-filtered totals resolve — SkeletonCard keeps each column's width locked.",
-      "Per-entity KPI switcher: when the user switches the active legal entity and a new round of stats is re-fetched, swap the StatCard tiles back to SkeletonCard during the transition to prevent stale values from flashing.",
-      "Report page initialisation: a profit-and-loss or balance-sheet summary card row uses SkeletonCard as the placeholder while the report query runs, then replaces each tile with a StatCard once data arrives.",
-      "Deferred prop shell (Inertia v3): pair SkeletonCard tiles with Inertia's Deferred component so the page shell renders instantly and the stat row hydrates when the deferred payload resolves.",
-    ],
-    related: [
-      "StatCard — the loaded counterpart. Replace SkeletonCard with StatCard (inside the same ResponsiveGrid slot) once data is available. StatCard also draws its own bordered card, so wrapping rules are identical — never add an extra Card around either.",
-      "SkeletonTable — use instead of SkeletonCard when the loading area will become a DataTable or row-list. SkeletonTable renders a header row plus N body rows; SkeletonCard renders a three-line KPI block.",
-      "SkeletonDetail — use instead of SkeletonCard when the loading area will become a single-record detail view (title + metadata key-value rows). Wrong pick: using SkeletonCard on a detail page leaves a mismatched shape.",
-      "DataState — use instead of SkeletonCard when the loading area is driven by a TanStack Query result; DataState handles the skeleton/empty/error lifecycle automatically and does not require manual SkeletonCard/SkeletonTable placement.",
-    ],
-    example: `import { SkeletonCard } from "@godxjp/ui/feedback";
-import { ResponsiveGrid } from "@godxjp/ui/layout";
-
-<ResponsiveGrid columns={4}><SkeletonCard /><SkeletonCard /><SkeletonCard /><SkeletonCard /></ResponsiveGrid>`,
     storyPath: "feedback/Skeleton.stories.tsx",
     rules: [],
   },
@@ -2878,13 +2669,13 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     useCases: [
       'After a successful form save (invoice, journal entry, vendor record) — show `toast.success("保存しました")` to confirm without blocking navigation.',
       'After a background job is enqueued (e.g. bulk sync or export) — show `toast.info("エクスポートを開始しました")` then later update with `toast.promise()` to track completion.',
-      "Mutation error fallback when the error is transient and retrying is the right UX — show `toast.error(message)` instead of replacing page content; reserve `MutationFeedback` for inline, persistent error display inside a form.",
+      "Mutation error fallback when the error is transient and retrying is the right UX — show `toast.error(message)` instead of replacing page content; reserve `AlertMutationFeedback` for inline, persistent error display inside a form.",
       'Soft destructive action confirmation outcome — e.g. "削除しました" after an item is removed, paired with an undo action via `toast("…", { action: { label: \'元に戻す\', onClick: undo } })`.',
       'OAuth / session expiry warnings — surface a brief `toast.warning("セッションの有効期限が近づいています")` without interrupting the user\'s current form state.',
     ],
     related: [
       "Alert — use for persistent, inline feedback that must stay visible (validation summaries, page-level warnings, destructive notices). Unlike Toaster, Alert does not auto-dismiss and lives in the document flow.",
-      "MutationFeedback — use when you have a TanStack `useMutation` result and want an inline error + retry UI inside a form or card. Renders nothing on success/idle; pairs naturally with a `toast.success` in `onSuccess`.",
+      "AlertMutationFeedback — use when you have a TanStack `useMutation` result and want an inline error + retry UI inside a form or card. Renders nothing on success/idle; pairs naturally with a `toast.success` in `onSuccess`.",
       "Dialog — use when the user must make a conscious decision (confirm delete, resolve conflict) before proceeding. Toaster toasts are fire-and-forget; Dialog blocks until the user responds.",
     ],
     example: `// app root — mount once
@@ -2937,7 +2728,7 @@ toast.error("保存に失敗しました");`,
     ],
     related: [
       "Steps (@godxjp/ui/navigation) — sequential wizard/progress indicator. Use Steps when order and completion state matter (multi-step forms, onboarding flows); use Tabs when panels are non-sequential and any tab can be visited freely.",
-      "FilterBar / FilterGroup (@godxjp/ui/navigation) — horizontal filter chip row. Visually resembles `line`-variant tabs but is semantically different: FilterBar filters a dataset, it does not switch content panels. Never use Tabs as a filter control.",
+      "Toolbar / ToolbarGroup (@godxjp/ui/navigation) — horizontal filter chip row. Visually resembles `line`-variant tabs but is semantically different: Toolbar filters a dataset, it does not switch content panels. Never use Tabs as a filter control.",
       "DropdownMenu (@godxjp/ui/navigation) — use for space-constrained contexts where showing all tab triggers at once is impractical (e.g. mobile overflow menu). If only 2-3 options exist and screen space is tight, a DropdownSidebar is a lighter alternative to a full tab strip.",
     ],
     example: `import { Tabs } from "@godxjp/ui/navigation";
@@ -2953,111 +2744,12 @@ toast.error("保存に失敗しました");`,
     rules: [],
   },
   {
-    name: "FilterBar",
-    group: "navigation",
-    tagline:
-      "Standard list-page filter strip. Place ABOVE the table Card — NEVER inside CardContent flush (it strips padding). Compose with FilterGroup + SearchInput + Select.",
-    props: [
-      {
-        name: "children",
-        type: "ReactNode",
-        required: true,
-        description: "Filter controls + FilterGroup wrappers.",
-      },
-      {
-        name: "hasActiveFilters",
-        type: "boolean",
-        description: "Shows a clear-all button when true.",
-      },
-      { name: "onClear", type: "() => void", description: "Clear-all handler." },
-    ],
-    usage: [
-      "DO place FilterBar ABOVE the table Card in the page layout — never inside CardContent or CardContent flush. It carries its own padding-block via CSS tokens; nesting it inside a flush card strips that spacing and breaks the visual rhythm. The correct pattern is: <PageInset><FilterBar …/></PageInset> then a sibling <Card><CardContent flush><DataTable /></CardContent></Card>.",
-      "DO wrap every labelled filter control (Select, DatePicker, DateRangePicker, etc.) in a FilterGroup with a descriptive label prop. A bare Select dropped directly in FilterBar has no label anchor and breaks the stacked-column layout on mobile. SearchInput is the one exception — it does NOT need a FilterGroup wrapper because it carries its own visible placeholder.",
-      "DO manage filter state yourself (controlled). FilterBar has no internal state — it is a layout shell. Pass your state values into the filter controls as value/onValueChange, derive hasActiveFilters from whether any filter value differs from its empty/default state, and clear all state in onClear. Do NOT rely on form name/submission; FilterBar filters are instant-apply, not form-submitted.",
-      "DO pass both hasActiveFilters AND onClear to show the clear-all button. The button only renders when BOTH props are truthy — passing onClear alone with hasActiveFilters defaulting to true shows the button even when no filters are active. Compute hasActiveFilters as a boolean expression over your state: hasActiveFilters={search !== '' || status !== 'all'}.",
-      "DON'T hand-roll a clear button inside children. FilterBar renders its own Button variant='ghost' size='sm' with the localised 'clear filters' label (via useTranslation). Adding a second clear button inside children causes duplication and i18n inconsistency.",
-      "DON'T use FilterBar for tab-like navigation between content panels. It is semantically a filter strip — switching dataset predicates, not rendering different pages or sections. For panel switching use Tabs / Tabs. The two look similar in line-variant style but FilterBar does not use role='tablist' and has no active-panel concept.",
-    ],
-    useCases: [
-      "Invoice / journal-entry list page: SearchInput for free-text search, FilterGroup wrapping a Select for status (draft/posted/void), FilterGroup wrapping a DateRangePicker for fiscal-period, all above a DataTable card — hasActiveFilters derived from all three states.",
-      "Partner / customer ledger list: FilterGroup for account type (AR/AP), FilterGroup for legal entity, SearchInput for partner name — clear-all resets the entity switcher back to 'all' as well as local filter state.",
-      "Transaction history with multi-dimension filtering: date range + account Select + currency Select — FilterBar's responsive flex-wrap layout automatically stacks filters vertically on mobile and flows them into a row on ≥640px without any custom CSS.",
-      "Admin user / permission list: SearchInput for email search + FilterGroup wrapping a Select for role — the clear button becomes visible only when either control departs from its default, so the toolbar stays clean on first load.",
-      "Report parameter bar above a read-only DataTable: two DatePickers inside FilterGroups set the report start/end dates, a Select picks the reporting entity — hasActiveFilters is always true once the user first applies the report, giving a one-click reset.",
-      "Any list page migrating away from hand-rolled Tailwind flex rows with inline labels — drop existing label+control pairs into FilterGroup to get consistent label colour (muted-foreground), gap, and the responsive stacking behaviour for free.",
-    ],
-    related: [
-      "FilterGroup (@godxjp/ui/navigation) — the required child wrapper for each labelled filter control inside FilterBar. Use FilterGroup for every Select/DatePicker/DateRangePicker slot; omit it only for SearchInput which does not need a visible label.",
-      "SearchInput (@godxjp/ui/data-entry) — the free-text search control placed directly as a child of FilterBar (no FilterGroup wrapper needed). SearchInput handles debounce and the clear-X icon internally; do not wrap it in a FilterGroup or compose it manually from Input.",
-      "Tabs / Tabs (@godxjp/ui/navigation) — for switching between content panels, not filtering a dataset. If the 'filter' is really changing which rendered section is visible (not which rows pass a predicate), use Tabs instead of FilterBar.",
-      "PageInset (@godxjp/ui/layout) — the layout wrapper that gives FilterBar its horizontal padding when the parent PageContainer is flush. Always wrap FilterBar in PageInset inside a flush container; in a non-flush container FilterBar's own padding-block tokens are sufficient.",
-    ],
-    example: `import { FilterBar, FilterGroup } from "@godxjp/ui/navigation";
-import { SearchInput, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@godxjp/ui/data-entry";
-
-<FilterBar hasActiveFilters={search !== ""} onClear={() => setSearch("")}>
-  <SearchInput placeholder="名前で検索" value={search} onSearch={setSearch} />
-  <FilterGroup label="ステータス">
-    <Select value={status} onValueChange={setStatus}>
-      <SelectTrigger><SelectValue /></SelectTrigger>
-      <SelectContent>
-        <SelectItem value="all">すべて</SelectItem>
-        <SelectItem value="active">有効</SelectItem>
-      </SelectContent>
-    </Select>
-  </FilterGroup>
-</FilterBar>`,
-    storyPath: "navigation/FilterBar.stories.tsx",
-    rules: [38, 40],
-  },
-  {
-    name: "FilterGroup",
-    group: "navigation",
-    tagline: "Labelled filter slot inside FilterBar — wraps a single Select/DatePicker.",
-    props: [
-      {
-        name: "label",
-        type: "ReactNode",
-        required: true,
-        description: "Label shown with the child control.",
-      },
-      { name: "children", type: "ReactNode", required: true, description: "The filter control." },
-    ],
-    usage: [
-      "DO: Always nest FilterGroup directly inside FilterBar — it renders a vertical label+control stack (ui-stack-xs) that aligns with FilterBar's flex-wrap row layout. Never use FilterGroup as a standalone wrapper outside FilterBar.",
-      "DO: Pass exactly ONE filter control as children (Select, DatePicker, DateRangePicker, SearchSelect, etc.). FilterGroup is a single-control labeled slot, not a multi-control panel — it renders the label div above the control and sizes the slot to full-width mobile / auto desktop.",
-      "DON'T: Pass a raw label string that contains complex JSX beyond text — label is ReactNode but is styled as muted small-size text (ui-filter-label). Do not add Tooltip or interactive elements inside the label as it is purely presentational.",
-      "DON'T: Place FilterGroup inside CardContent (including flush variant) — this breaks horizontal padding. FilterBar (and thus all its FilterGroups) must sit above the table Card as a standalone block. Page order: KPIs → FilterBar (containing FilterGroups) → Card wrapping DataTable.",
-      "DO: Use FilterGroup for every labelled filter slot; do NOT hand-roll a label+control pair with a div. The label placement, color (muted-foreground), and font-size are token-driven through ui-filter-label — duplicating this with raw Tailwind will drift from the design.",
-      "A11y: label is rendered as a visible div, not a form <label> element — it is not wired to the child control's id. If the child control (e.g. Select) has its own accessible label, that is sufficient. Do not add htmlFor on the FilterGroup label; instead ensure the inner control has aria-label or its own Label via the control's API.",
-    ],
-    useCases: [
-      "A list page for invoices/journal entries where each column value can be filtered: wrap each Select (status, period, entity) in its own FilterGroup inside a FilterBar placed above the DataTable card.",
-      "An admin transaction log page with a date range picker and a partner Select — each gets its own FilterGroup label so users can scan 'Period' / 'Partner' labels horizontally before interacting.",
-      "A report filter panel that shows 'Fiscal Year', 'Department', and 'Account Type' dropdowns — FilterGroups communicate the semantic name of each filter without requiring the controls themselves to have visible labels (where Select placeholder alone is ambiguous).",
-      "Mobile-first responsive filter strip: FilterBar + FilterGroups stack vertically on narrow screens (full-width per FilterGroup) and wrap into a horizontal row at sm:, making them safe for 320 px viewports without extra breakpoint overrides.",
-      "When a filter control (e.g. DateRangePicker) has no intrinsic visible label of its own — wrapping it in FilterGroup provides the visible label without hand-rolling a div/label pattern that would differ from design tokens.",
-    ],
-    related: [
-      "FilterBar — the required parent container. FilterGroup has no useful meaning outside FilterBar; FilterBar also owns the clear-all button (onClear + hasActiveFilters). Always compose FilterGroup inside FilterBar, never standalone.",
-      "SearchInput — sits directly inside FilterBar as a sibling to FilterGroup (not wrapped in FilterGroup) because it is self-labelling via its placeholder and search icon. Use FilterGroup only for controls that need a separate visible label.",
-      "Select — the canonical child for FilterGroup when filtering by a categorical value (status, type, entity). Pair with FilterGroup for the label; do not hand-roll a label+Select div.",
-      "Tabs — an alternative filtering/scoping pattern when the filter has exactly 2-4 mutually exclusive states and you want them visible as persistent tabs rather than a dropdown. Use Tabs+TabsList above the table instead of FilterBar+FilterGroup+Select when the values are few and well-known.",
-    ],
-    example: `import { FilterGroup } from "@godxjp/ui/navigation";
-
-<FilterGroup label="スコープ"><Select>{/* ... */}</Select></FilterGroup>`,
-    storyPath: "navigation/FilterBar.stories.tsx",
-    rules: [38],
-  },
-  {
     name: "Pagination",
     group: "navigation",
     tagline: "Offset/page-based pagination bar. Sits below a table card.",
     props: [
       {
-        name: "current",
+        name: "value",
         type: "number",
         defaultValue: "1",
         description: "Current page (1-indexed).",
@@ -3070,22 +2762,22 @@ import { SearchInput, Select, SelectTrigger, SelectValue, SelectContent, SelectI
         description: "Show total count, or a custom label fn.",
       },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "(page: number, pageSize: number) => void",
         description: "Page / page-size change handler.",
       },
     ],
     usage: [
-      "DO always control Pagination externally: store `current` and `pageSize` in React state (or URL params), and update both in the `onChange(page, pageSize)` callback. Pagination is fully controlled — it has no internal state and will not move unless `current` changes.",
+      "DO always control Pagination externally: store `value` (page) and `pageSize` in React state (or URL params), and update both in the `onValueChange(page, pageSize)` callback. Pagination is fully controlled — it has no internal state and will not move unless `value` changes.",
       "DO pass `total` as the raw item count (not page count). The component computes `Math.ceil(total / pageSize)` internally; passing a pre-computed page count as `total` will over-paginate.",
       "DO use `showSizeChanger` together with `pageSizeOptions` when the user needs density control (default options are [10, 20, 50, 100]). When `showSizeChanger` is omitted the page-size Select is not rendered at all — do NOT hand-roll your own Select beside Pagination.",
       "DO use `simple` mode for compact contexts (mobile, sidebars, sheet footers) — it renders Prev / `n / total` / Next with no page-number buttons. Use the full form for primary admin list pages.",
       "DO use `showTotal` to surface item counts: pass `true` for the built-in i18n label, or a function `(total, [from, to]) => ReactNode` for a custom range label like '1–10 of 342 invoices'. Never hard-code a total string beside the component.",
-      "DON'T use Pagination for cursor- or infinite-scroll-based lists. Pagination is strictly offset/page-based (`current` is a page number). For cursor pagination inside a DataTable use `DataTable.Pagination`; for infinite scroll use `InfiniteQueryState`.",
+      "DON'T use Pagination for cursor- or infinite-scroll-based lists. Pagination is strictly offset/page-based (`value` is a page number). For cursor pagination inside a DataTable use `DataTable.Pagination`; for infinite scroll use `InfiniteQueryState`.",
     ],
     useCases: [
       "Standalone offset-paginated admin list pages (e.g. invoice list, customer list, transaction history) rendered outside DataTable — place Pagination below the table card, outside the card border, with `showTotal` and optionally `showSizeChanger`.",
-      "Search results pages where the backend accepts `page` + `per_page` query parameters and returns a total count — wire `current` and `pageSize` to URL search params so the URL is shareable and browser-back works.",
+      "Search results pages where the backend accepts `page` + `per_page` query parameters and returns a total count — wire `value` and `pageSize` to URL search params so the URL is shareable and browser-back works.",
       "Reports and filtered data grids where the user needs to export 'all selected pages': `showTotal` with a custom function lets you show '1–50 of 1 200 rows' so the user understands the scope before exporting.",
       "Compact modal or sheet footers with a long list (e.g. selecting from a product catalog inside a dialog) — use `simple` mode to save horizontal space while keeping navigation accessible.",
       "DataTable instances where the server returns an offset-based total and `DataTable.Pagination` is not being used: attach a standalone Pagination below the card and pass the same `page` / `pageSize` state to both the DataTable `data` prop and the API fetch.",
@@ -3094,11 +2786,11 @@ import { SearchInput, Select, SelectTrigger, SelectValue, SelectContent, SelectI
       "DataTable.Pagination — use instead of standalone Pagination when the list is rendered inside a DataTable compound and uses cursor-based navigation (cursor + hasMore + onChange). DataTable.Pagination handles First/Next without page arithmetic; standalone Pagination requires a known total.",
       "InfiniteQueryState — use for infinite-scroll / load-more lists driven by useInfiniteQuery. It auto-manages skeleton, empty, and error states; Pagination is inappropriate here because there is no discrete page number.",
       "DataTable — when offset pagination is needed inside DataTable, prefer composing DataTable with a standalone Pagination below the card rather than DataTable.Pagination if the API is offset-based and returns a total count. DataTable itself does not paginate; you supply `data` for the current page.",
-      "SearchInput — often placed in the same toolbar as Pagination. Resetting `current` to 1 inside the search `onChange` handler is mandatory; forgetting this is the most common bug when combining search and Pagination.",
+      "SearchInput — often placed in the same toolbar as Pagination. Resetting `value` to page 1 inside the search `onSearchChange` handler is mandatory; forgetting this is the most common bug when combining search and Pagination.",
     ],
     example: `import { Pagination } from "@godxjp/ui/navigation";
 
-<Pagination current={page} total={filtered.length} pageSize={10} showTotal onValueChange={(p) => setPage(p)} />`,
+<Pagination value={page} total={filtered.length} pageSize={10} showTotal onValueChange={(p) => setPage(p)} />`,
     storyPath: "navigation/Pagination.stories.tsx",
     rules: [40],
   },
@@ -3159,13 +2851,19 @@ import { Button } from "@godxjp/ui/general";
       {
         name: "items",
         type: "StepItemProp[]",
-        description: "Array of { title, subTitle?, description?, icon?, status? }.",
+        description: "Array of { title, subtitle?, description?, icon?, status? }.",
       },
       {
-        name: "current",
+        name: "value",
         type: "number",
         defaultValue: "0",
         description: "Active step index (0-based).",
+      },
+      {
+        name: "defaultValue",
+        type: "number",
+        defaultValue: "0",
+        description: "Base offset for the first rendered step index.",
       },
       {
         name: "orientation",
@@ -3175,19 +2873,19 @@ import { Button } from "@godxjp/ui/general";
       },
     ],
     usage: [
-      "DO: Pass all steps via the `items` array (each `{ title, subTitle?, description?/content?, icon?, status?, disabled? }`) — Steps is a single-component API with no child sub-components to compose manually.",
-      "DO: Control the active step with `current` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
-      "DO: Use per-item `status` to pin individual steps independently of `current` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `current`.",
+      "DO: Pass all steps via the `items` array (each `{ title, subtitle?, description?, icon?, status?, disabled? }`) — Steps is a single-component API with no child sub-components to compose manually.",
+      "DO: Control the active step with `value` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
+      "DO: Use per-item `status` to pin individual steps independently of `value` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `value`.",
       "DON'T: Use Steps for navigation that needs URL routing or tab-switching — it has no built-in panel rendering. Pair it with your own conditional panel or a `Tabs`/`Tabs` body; Steps only renders the indicator bar.",
-      "DON'T: Wire `onChange` unless you actually support non-linear navigation. `onChange` makes every non-disabled step clickable (rendered as `<button>`); omitting it makes all steps non-interactive (`cursor-default`). Never set `disabled` on an item without also providing `onChange`, or the prop is meaningless.",
-      "A11y: The `<ol>` is given `aria-label='Progress'` automatically. Individual steps render as `<button type='button'>` when `onChange` is present — ensure each `item.title` is descriptive enough to serve as the button label; avoid icon-only steps without a visible title.",
+      "DON'T: Wire `onValueChange` unless you actually support non-linear navigation. `onValueChange` makes every non-disabled step clickable (rendered as `<button>`); omitting it makes all steps non-interactive (`cursor-default`). Never set `disabled` on an item without also providing `onValueChange`, or the prop is meaningless.",
+      "A11y: The `<ol>` is given `aria-label='Progress'` automatically. Individual steps render as `<button type='button'>` when `onValueChange` is present — ensure each `item.title` is descriptive enough to serve as the button label; avoid icon-only steps without a visible title.",
     ],
     useCases: [
       "Multi-step form wizard (entity onboarding, invoice creation): render Steps above a form, drive `current` from local state, advance on validated submit — use `status='error'` on the current step when server validation fails.",
       "Async background job tracker: display steps for a long-running import/export pipeline; poll job status and map job phases to `StepStatusProp` values (`'process'` with spinner for in-flight, `'finish'` for done, `'error'` for failed).",
       "Document approval workflow (accounting, contracts): map approval stages (Draft → Review → Approved → Archived) to `items` with per-item `status` reflecting the real state from the server — use `orientation='vertical'` for a sidebar timeline feel.",
-      "Onboarding checklist sidebar: `orientation='vertical'` + `type='dot'` + `size='small'` for a compact sidebar progress guide alongside a multi-section settings page.",
-      "Non-linear step navigation (e.g. revisit a previous step to correct data): provide `onChange` and leave only future steps `disabled`; past and current steps become clickable buttons.",
+      "Onboarding checklist sidebar: `orientation='vertical'` + `type='dot'` + `size='sm'` for a compact sidebar progress guide alongside a multi-section settings page.",
+      "Non-linear step navigation (e.g. revisit a previous step to correct data): provide `onValueChange` and leave only future steps `disabled`; past and current steps become clickable buttons.",
     ],
     related: [
       "Timeline — use Timeline (from @godxjp/ui) when you need a chronological event log with timestamps and variable content per entry; use Steps when the number of stages is fixed and forward-progress is the semantic.",
@@ -3197,7 +2895,7 @@ import { Button } from "@godxjp/ui/general";
     ],
     example: `import { Steps } from "@godxjp/ui/navigation";
 
-<Steps current={1} items={[{ title: "申請" }, { title: "審査中" }, { title: "完了" }]} />`,
+<Steps value={1} items={[{ title: "申請" }, { title: "審査中" }, { title: "完了" }]} />`,
     storyPath: "navigation/Steps.stories.tsx",
     rules: [],
   },
@@ -4294,7 +3992,7 @@ export function DocumentUploadDropzone() {
       "Upload (variant='picture-card') — multi-image grid upload without crop.",
     ],
     example: `{\`import { useState } from "react";
-import { UploadCropDialog } from "@godxjp/ui/data-entry";
+import { UploadCropDialog } from "@godxjp/ui/upload"; // internal — prefer Upload variant="avatar-crop" instead
 
 export function AvatarField() {
   const [cropFile, setCropFile] = useState<File | null>(null);
@@ -4888,222 +4586,6 @@ export function ReportRangeFilter() {
     rules: [3, 5, 6, 23],
   },
   {
-    name: "CountrySelect",
-    group: "data-entry",
-    tagline:
-      "Flag-and-name country picker built on Select; always uncontrolled — pass `name` for form submission and `defaultValue` to pre-select, not `value`/`onChange`.",
-    props: [
-      {
-        name: "id",
-        type: "string",
-        required: true,
-        description: "HTML id forwarded to the SelectTrigger for label association and a11y.",
-      },
-      {
-        name: "name",
-        type: "string",
-        required: true,
-        description:
-          "Form field name. The selected country code (value) is submitted under this key via the hidden native select that Select wraps.",
-      },
-      {
-        name: "options",
-        type: "CountryOptionProp[]",
-        required: true,
-        description:
-          "List of country options. Each entry must have at least `name` and either `value` or `code` (the country ISO code). Optionally include `nativeName`, `flagSvgPath`, and `label`.",
-      },
-      {
-        name: "defaultValue",
-        type: "string | null",
-        description:
-          "Pre-selected country code. When omitted (and allowEmpty is false), defaults to the first option's value. Pass null or empty string to show the placeholder.",
-      },
-      {
-        name: "required",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Marks the field as required via aria-required on the trigger.",
-      },
-      {
-        name: "allowEmpty",
-        type: "boolean",
-        defaultValue: "false",
-        description:
-          "When true, prepends an empty sentinel option (value '0') rendered as emptyLabel. Lets the user submit no country. Without this, the picker always has a real country selected.",
-      },
-      {
-        name: "emptyLabel",
-        type: "string",
-        defaultValue: "—",
-        description: "Label shown for the empty option when allowEmpty is true.",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        description:
-          "Placeholder text shown inside the trigger when no value is selected (relevant when defaultValue is null/empty and allowEmpty is true).",
-      },
-      {
-        name: "invalid",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Sets aria-invalid on the SelectTrigger to indicate a validation error.",
-      },
-    ],
-    usage: [
-      "DO: Always pass both `id` and `name` — `id` wires up a `<label htmlFor>`, `name` is the form submission key for the selected country code.",
-      "DO NOT: Pass `value`/`onChange` — CountrySelect is UNCONTROLLED only. It uses `defaultValue` (passed to the underlying Select). For controlled scenarios wrap the underlying `Select` primitive directly.",
-      "DO: Populate `options` with objects satisfying CountryOptionProp — each needs `name` plus either `value` (preferred) or `code` as the ISO code. Add `flagSvgPath` for flag images and `nativeName` for bilingual display.",
-      "DO: Use `allowEmpty` when the country field is optional — it inserts a sentinel '0' entry. Without it, a country is always pre-selected (falls back to options[0] if defaultValue is absent), so the form will always submit a real code.",
-      "DO: Set `invalid={true}` in error state to surface aria-invalid to assistive technology; pair it with a visible error message adjacent to the control.",
-      "DO NOT: Hand-roll a flag+name row or a custom country dropdown — use CountrySelect (for form submission) or CountryOptionLabel standalone (for display-only read-only rows).",
-    ],
-    useCases: [
-      "Billing / shipping address forms where the user must pick a country before proceeding and the code is submitted to the server.",
-      "Account settings pages where a user sets their home country or tax residency — use `defaultValue` with the stored ISO code to pre-populate.",
-      "Invoice creation forms in an accounting app that require a supplier or customer country, with `allowEmpty={false}` to guarantee a code is always present.",
-      "Optional 'country of origin' filter fields — use `allowEmpty={true}` so users can clear the selection back to 'no filter'.",
-      "Multi-step onboarding flows that must pre-select a country inferred from the user's locale, then let them correct it.",
-      "Read-only display of a country name + flag in a Descriptions or DataTable cell — use `CountryOptionLabel` directly (not CountrySelect) for non-interactive display.",
-    ],
-    related: [
-      "Select — the generic primitive CountrySelect is built on; use Select directly when you need a controlled picker or options that are not country objects.",
-      "CountryOptionLabel — the flag + name row exported from the same module; use it standalone in read-only contexts (table cells, detail views) where no picker interaction is needed.",
-      "DatePicker — another uncontrolled data-entry primitive that submits via a hidden form value; same pattern but for dates.",
-    ],
-    example: `import { CountrySelect } from "@godxjp/ui/data-entry";
-
-const countries = [
-  { value: "JP", name: "Japan", nativeName: "日本", flagSvgPath: "/flags/jp.svg" },
-  { value: "US", name: "United States", nativeName: "United States", flagSvgPath: "/flags/us.svg" },
-  { value: "VN", name: "Vietnam", nativeName: "Việt Nam", flagSvgPath: "/flags/vn.svg" },
-];
-
-// Required country field — pre-select Japan
-<CountrySelect
-  id="billing-country"
-  name="billingCountry"
-  options={countries}
-  defaultValue="JP"
-  required
-  invalid={!!errors.billingCountry}
-/>
-
-// Optional country field — allow clearing
-<CountrySelect
-  id="filter-country"
-  name="filterCountry"
-  options={countries}
-  allowEmpty
-  emptyLabel="All countries"
-  placeholder="Select a country"
-/>`,
-    storyPath: "data-entry/CountrySelect.stories.tsx",
-    rules: [3, 6, 23, 31],
-  },
-  {
-    name: "ChoiceField",
-    group: "data-entry",
-    tagline:
-      "Layout wrapper that pairs a checkbox/radio control with a Label and optional description — the `id` prop MUST match the control's `id` for the label click to work.",
-    props: [
-      {
-        name: "id",
-        type: "string",
-        required: true,
-        description:
-          "ID shared with the inner control (checkbox/radio). Used as `htmlFor` on the Label so clicking the label toggles the control. Must be unique per page.",
-      },
-      {
-        name: "label",
-        type: "React.ReactNode",
-        required: true,
-        description:
-          "The visible label text rendered beside the control. Accepts rich content (string, JSX, badges, etc.).",
-      },
-      {
-        name: "description",
-        type: "React.ReactNode",
-        description:
-          "Optional secondary line rendered below the label as a <p> element. Use for help text, hints, or elaborating on the choice.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description: "Extra CSS classes merged onto the outer wrapper div (ui-choice-field).",
-      },
-      {
-        name: "children",
-        type: "React.ReactNode",
-        required: true,
-        description:
-          "The interactive control to render — must be a single Checkbox or Radio.Item element with an `id` matching the `id` prop.",
-      },
-    ],
-    usage: [
-      "DO: always pass the same value to both `id` on ChoiceField and `id` on the inner control (Checkbox / Radio.Item). The Label uses `htmlFor={id}` — mismatching IDs breaks click-to-toggle.",
-      "DO: use `React.useId()` to generate unique IDs when rendering ChoiceField inside a list or map, as the parent Radio.Group and CheckboxGroup already do internally.",
-      "DON'T: use ChoiceField to wrap a raw `<input type='checkbox'>` or `<input type='radio'>` — always use the godx-ui Checkbox or Radio.Item primitives as children.",
-      "DON'T: hand-roll this layout (flex + label + description paragraph) yourself. ChoiceField already provides the correct ui-choice-field / ui-choice-control / ui-choice-content / ui-choice-label / ui-choice-description class structure.",
-      "PREFER: Radio.Group or Checkbox.Group with the `options` prop when you have a list of choices — they create ChoiceField internally with auto-generated IDs. Only reach for bare ChoiceField for custom compositions.",
-      "SKIP ChoiceField for standalone checkboxes that need NO label or description — use Checkbox directly in that case.",
-    ],
-    useCases: [
-      "Rendering a single opt-in checkbox with a descriptive sub-line, e.g. 'Receive email notifications / You can unsubscribe at any time'.",
-      "Custom radio group where each option needs a rich label (e.g. icon + text + badge) that the standard options API cannot express.",
-      "Building an agreement / terms-of-service checkbox where the label is a React node with a link inside.",
-      "Composing a vertically or horizontally oriented list of choices when you need full control over each item's checked state and ID.",
-      "Wrapping a Radix-based Radio.Item or Checkbox inside a settings panel where each row needs a two-line label + description layout.",
-      "Accessibility-correct label pairing when a third-party or custom control must appear beside descriptive text and clicking the text must activate the control.",
-    ],
-    related: [
-      "Radio.Group / RadioGroup — use this (not bare ChoiceField) for a full group of radio options; it creates ChoiceField internally with correct IDs and orientation.",
-      "Checkbox.Group / CheckboxGroup — same as Radio.Group but for multi-select; wraps ChoiceField automatically when you pass the `options` prop.",
-      "Checkbox — use standalone (no ChoiceField) when you need a bare control with no label or when the label is already provided by a FormField wrapper.",
-      "Radio / Radio.Item — the inner control that goes inside ChoiceField as children in a custom radio composition.",
-      "Label — ChoiceField renders Label internally; do NOT add a second Label around ChoiceField or you will double-label the control.",
-    ],
-    example: `{\`import { Checkbox, Radio, ChoiceField } from "@godxjp/ui/data-entry";
-import * as React from "react";
-
-// Example 1: Custom checkbox with description
-function NotificationToggle() {
-  const id = React.useId();
-  const [checked, setChecked] = React.useState(false);
-
-  return (
-    <ChoiceField
-      id={id}
-      label="Receive email notifications"
-      description="We will send updates about your account activity."
-    >
-      <Checkbox
-        id={id}
-        checked={checked}
-        onCheckedChange={(v) => setChecked(Boolean(v))}
-      />
-    </ChoiceField>
-  );
-}
-
-// Example 2: Custom radio item with rich label
-function PlanOption({ planId, name, price }: { planId: string; name: string; price: string }) {
-  const id = \\\`plan-\\\${planId}\\\`;
-  return (
-    <ChoiceField
-      id={id}
-      label={<span className="font-semibold">{name}</span>}
-      description={\\\`\\\${price} / month\\\`}
-    >
-      <Radio.Item id={id} value={planId} />
-    </ChoiceField>
-  );
-}\`}`,
-    storyPath: "data-entry/ChoiceField.stories.tsx",
-    rules: [6, 13, 23, 31],
-  },
-  {
     name: "Command",
     group: "data-entry",
     tagline:
@@ -5352,14 +4834,14 @@ function AccountQuickPick({ onSelect }: { onSelect: (id: string) => void }) {
         name: "children",
         type: "React.ReactNode",
         description:
-          "Manual children mode: used when `options` is omitted or empty. Render Checkbox items directly as children. You are responsible for composing each Checkbox with a ChoiceField for correct label/description layout.",
+          "Manual children mode: used when `options` is omitted or empty. Render Checkbox items directly as children. You are responsible for composing each Checkbox with a Field for correct label/description layout.",
       },
     ],
     usage: [
-      "DO use the `options` prop for any data-driven list — it auto-generates IDs, handles checked state, and wires up ChoiceField (label + description) for each item. NEVER hand-roll individual `<Checkbox>` elements inside a loop when you have an options array.",
+      "DO use the `options` prop for any data-driven list — it auto-generates IDs, handles checked state, and wires up Field (label + description) for each item. NEVER hand-roll individual `<Checkbox>` elements inside a loop when you have an options array.",
       "DO pass `name` when inside an HTML form so each checkbox submits its value under the same field name, giving the server a multi-value array. Without `name`, native form submission silently drops all values.",
       "Controlled vs uncontrolled: pass `value` + `onChange` together for controlled usage (e.g. react-hook-form). Pass `defaultValue` alone for uncontrolled usage. Do NOT mix both — if `value` is provided, `defaultValue` is ignored and onChange must update value externally or the UI freezes.",
-      "Each option's `description` renders as a secondary line below its label via ChoiceField — use it for help text or sub-copy; keep `label` short.",
+      "Each option's `description` renders as a secondary line below its label via Field — use it for help text or sub-copy; keep `label` short.",
       "Group-level `disabled` disables all checkboxes. Individual `options[n].disabled` disables only that item. Both can coexist.",
       'DO NOT wrap this inside another ARIA group or fieldset without removing the built-in `role="group"` — it already provides the correct grouping semantics. Pair the group with a `<legend>` or visible heading for a11y.',
     ],
@@ -5375,7 +4857,7 @@ function AccountQuickPick({ onSelect }: { onSelect: (id: string) => void }) {
       "RadioGroup — use when only ONE selection is allowed at a time (mutually exclusive). CheckboxGroup = multiple, RadioGroup = single.",
       "Checkbox (standalone) — use a bare `Checkbox` for a single boolean toggle (e.g. 'I agree to terms'). Use CheckboxGroup when you have 2+ related choices.",
       "Checkbox.Group — alias; the same component is also accessible as `Checkbox.Group` (the Checkbox export attaches CheckboxGroup as `.Group`). Both are equivalent — prefer the named `CheckboxGroup` import for clarity in larger files.",
-      "Switch / ChoiceField — for a single binary on/off toggle with immediate effect (not a form submission value). Do not use CheckboxGroup to fake toggle rows.",
+      "Switch / Field — for a single binary on/off toggle with immediate effect (not a form submission value). Do not use CheckboxGroup to fake toggle rows.",
       "Select (multi) — for a long list (10+ items) where space is limited; CheckboxGroup is better for ≤10 visible options that benefit from scanning all at once.",
     ],
     example: `import { CheckboxGroup } from "@godxjp/ui/data-entry";
@@ -5444,7 +4926,7 @@ export function ControlledExample() {
         name: "options",
         type: "ChoiceOptionProp[]",
         description:
-          "Declarative option list: { label: ReactNode; value: string; disabled?: boolean; description?: ReactNode }[]. When provided, Radio.Group renders each option as a labelled ChoiceField automatically. Omit to compose children manually.",
+          "Declarative option list: { label: ReactNode; value: string; disabled?: boolean; description?: ReactNode }[]. When provided, Radio.Group renders each option as a labelled Field automatically. Omit to compose children manually.",
       },
       {
         name: "orientation",
@@ -5474,15 +4956,15 @@ export function ControlledExample() {
         name: "children",
         type: "React.ReactNode",
         description:
-          "Manual composition fallback — used only when options is not provided. Render Radio.Item (+ ChoiceField wrapper) children directly inside Radio.Group.",
+          "Manual composition fallback — used only when options is not provided. Render Radio.Item (+ Field wrapper) children directly inside Radio.Group.",
       },
     ],
     usage: [
       "DO use Radio.Group (not the bare Radio export) as the root — it wires up Radix context, keyboard navigation, and the hidden form input. A lone Radio.Item outside a Radio.Group has no context and will not function.",
-      "DO prefer the options array API for static/data-driven option lists: pass options={[{ label, value, description?, disabled? }]} and Radio.Group renders each as a correctly-labelled ChoiceField automatically — no manual id/label wiring needed.",
+      "DO prefer the options array API for static/data-driven option lists: pass options={[{ label, value, description?, disabled? }]} and Radio.Group renders each as a correctly-labelled Field automatically — no manual id/label wiring needed.",
       "DO pass name to Radio.Group when the selection must be submitted via a native HTML form. Radix injects a hidden <input name={name} value={selected}> so the value is picked up by FormData/fetch without extra wiring.",
       "DO use controlled mode (value + onValueChange) when the selection drives other UI (conditional fields, preview panels). Use defaultValue for fire-and-forget uncontrolled forms.",
-      "DON'T hand-roll a label-plus-radio row with raw <input type='radio'> — use Radio.Group with options or compose Radio.Item inside ChoiceField for custom markup. Every option must be wrapped in ChoiceField (or equivalent) for the label htmlFor/id linkage.",
+      "DON'T hand-roll a label-plus-radio row with raw <input type='radio'> — use Radio.Group with options or compose Radio.Item inside Field for custom markup. Every option must be wrapped in Field (or equivalent) for the label htmlFor/id linkage.",
       "DON'T disable individual options inside the options array and ALSO set disabled on the group — group-level disabled wins and overrides all per-item disabled states.",
     ],
     useCases: [
@@ -5495,7 +4977,7 @@ export function ControlledExample() {
     ],
     related: [
       "Checkbox.Group — use when users may select multiple options simultaneously; Radio.Group enforces single-selection only.",
-      "Switch / ChoiceField — use for a single boolean on/off toggle (e.g. enable notifications); Radio.Group is for choosing one among three or more named options.",
+      "Switch / Field — use for a single boolean on/off toggle (e.g. enable notifications); Radio.Group is for choosing one among three or more named options.",
       "Select — use when there are many options (5+) and vertical screen space is limited; Radio.Group is preferable for 2-4 short options where all choices should be visible at a glance.",
     ],
     example: `{\`import { Radio } from "@godxjp/ui/data-entry";
@@ -5526,293 +5008,12 @@ function CustomRadioGroup() {
   return (
     <Radio.Group name="account_type" defaultValue="asset">
       <Radio.Item id="opt-asset" value="asset" />
-      {/* wrap each item in ChoiceField for label + description */}
+      {/* wrap each item in Field for label + description */}
     </Radio.Group>
   );
 }\`}`,
     storyPath: "data-entry/Radio.stories.tsx",
     rules: [3, 6, 13, 23],
-  },
-  {
-    name: "SearchSelect",
-    group: "data-entry",
-    deprecated: true,
-    tagline:
-      "DEPRECATED searchable single-select combobox (static or async) — use <Select options showSearch> instead; SearchSelect stays exported but Select is now the single data-driven entry point.",
-    props: [
-      {
-        name: "value",
-        type: "string",
-        defaultValue: '""',
-        description: "Controlled selected value. Empty string means nothing selected.",
-      },
-      {
-        name: "onChange",
-        type: "(value: string, option?: SearchSelectOptionProp) => void",
-        description:
-          "Called with the new value string and the full option object on selection, or with ('', undefined) when cleared.",
-      },
-      {
-        name: "options",
-        type: "SearchSelectOptionProp[]",
-        description:
-          "Static option list — filtered client-side by query. Provide this OR loadOptions, not both.",
-      },
-      {
-        name: "loadOptions",
-        type: "(params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>",
-        description:
-          "Async fetcher called with { query, page } — supports debounced search and infinite-scroll pagination. Provide this OR options, not both.",
-      },
-      {
-        name: "renderOption",
-        type: "(option: SearchSelectOptionProp) => React.ReactNode",
-        description:
-          "Custom per-option renderer (Ant-Design style). Defaults to label + optional sublabel layout.",
-      },
-      {
-        name: "selectedLabel",
-        type: "string",
-        description:
-          "Label to display for the current value when its option is not in the currently loaded page (prevents a flash of the raw ID string).",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        description:
-          "Trigger button placeholder when no value is selected. Defaults to i18n key dataEntry.searchSelect.placeholder.",
-      },
-      {
-        name: "searchPlaceholder",
-        type: "string",
-        description:
-          "Placeholder inside the search input inside the popover. Defaults to i18n key dataEntry.searchSelect.search.",
-      },
-      {
-        name: "emptyMessage",
-        type: "string",
-        description:
-          "Message shown when no options match the search query. Defaults to i18n key dataEntry.searchSelect.empty.",
-      },
-      {
-        name: "loadingMessage",
-        type: "string",
-        description:
-          "Message shown during async fetch. Defaults to i18n key dataEntry.searchSelect.loading.",
-      },
-      {
-        name: "clearLabel",
-        type: "string",
-        description:
-          "Label for the clear row that appears at the top when a value is selected and clearable is true.",
-      },
-      {
-        name: "clearable",
-        type: "boolean",
-        defaultValue: "true",
-        description: "Show a clear row at the top of the list when a value is selected.",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Disables the trigger button and prevents opening the popover.",
-      },
-      {
-        name: "name",
-        type: "string",
-        description:
-          "HTML form field name — injects a hidden <input> so the selected value submits with native forms.",
-      },
-      {
-        name: "id",
-        type: "string",
-        description: "ID forwarded to the trigger button, used to associate a <label htmlFor>.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description:
-          "Additional Tailwind classes applied to the trigger button (w-full by default).",
-      },
-      {
-        name: "data-testid",
-        type: "string",
-        description:
-          "Test ID on the trigger button. Each option gets a derived ID: ${data-testid}-option-${value}. The clear row gets ${data-testid}-option-none.",
-      },
-    ],
-    usage: [
-      "DEPRECATED — prefer <Select options={...} showSearch /> or <Select loadOptions={...} showSearch /> which uses the same engine internally. SearchSelect remains exported for backwards compatibility only.",
-      "Provide exactly ONE of `options` (static, client-side filtered) or `loadOptions` (async, debounced, paginated). Passing both is unsupported; loadOptions takes precedence.",
-      "Always pass `name` when used inside a native <form> so the hidden input submits the value correctly. Without `name` the selection does not participate in FormData.",
-      "When using `loadOptions` with a paginated endpoint, return `hasMore: true` in the result to enable infinite scroll — the component appends the next page when scrolled within 48px of the bottom.",
-      "Pass `selectedLabel` when `value` might not appear in the first loaded page (e.g. an edit form pre-populated from the server) — otherwise the trigger shows the placeholder text instead of the selected item's label.",
-      "Do NOT render a SearchSelect inside a form and also pass a compound <Select> — choose one API. For new code always prefer <Select options showSearch> from @godxjp/ui/data-entry to avoid the deprecated path.",
-    ],
-    useCases: [
-      "Legacy code that already uses SearchSelect and has not yet been migrated to <Select options showSearch>.",
-      "A vendor/account picker with a large server-side list: pass loadOptions calling your API endpoint, return pages of results with hasMore, and use selectedLabel to display the pre-saved label on an edit form.",
-      "A client-side filtered dropdown over a moderate static list (e.g. currency codes, department names) where the list fits in memory — pass options array.",
-      "A grouped picker (e.g. account chart by category) — add option.group to each option; the component auto-renders optgroup-style headings in first-seen order.",
-      "Custom option rendering (e.g. showing an avatar + name + role) — pass renderOption returning JSX; the default label+sublabel layout is bypassed.",
-    ],
-    related: [
-      "Select — THE modern replacement: pass options or loadOptions to <Select> and add showSearch to get the same combobox behavior. For all new code use Select, not SearchSelect.",
-      "Autocomplete — also deprecated; Autocomplete is a thin wrapper around SearchSelect kept for older call-sites. Do not use for new code.",
-      "Command — low-level primitive (Popover + Command list) that SearchSelect is built on; reach for it only if you need a fully custom command-palette UI that does not fit either Select or SearchSelect.",
-    ],
-    example: `import { SearchSelect } from "@godxjp/ui/data-entry";
-
-// Static list (client-side filtered) — DEPRECATED pattern, prefer <Select options showSearch>
-function LegacyAccountPicker({ value, onChange }) {
-  return (
-    <SearchSelect
-      value={value}
-      onValueChange={onChange}
-      options={[
-        { value: "acc-001", label: "Cash", sublabel: "Current assets", group: "Assets" },
-        { value: "acc-002", label: "Accounts Receivable", group: "Assets" },
-        { value: "acc-010", label: "Revenue", group: "Income" },
-      ]}
-      placeholder="Select account"
-      name="account_id"
-      data-testid="account-picker"
-    />
-  );
-}
-
-// Async / paginated — DEPRECATED pattern, prefer <Select loadOptions showSearch>
-async function fetchVendors({ query, page }) {
-  const res = await fetch(\`/api/vendors?q=\${query}&page=\${page}\`);
-  const json = await res.json();
-  return { options: json.data, hasMore: json.meta.hasNextPage };
-}
-
-function LegacyVendorPicker({ value, currentVendorName, onChange }) {
-  return (
-    <SearchSelect
-      value={value}
-      onValueChange={onChange}
-      loadOptions={fetchVendors}
-      selectedLabel={currentVendorName}
-      placeholder="Select vendor"
-      name="vendor_id"
-      data-testid="vendor-picker"
-    />
-  );
-}`,
-    storyPath: "data-entry/SearchSelect.stories.tsx",
-    rules: [3, 6, 33],
-  },
-  {
-    name: "Autocomplete",
-    group: "data-entry",
-    deprecated: true,
-    tagline:
-      "DEPRECATED thin wrapper over SearchSelect — use <Select options showSearch> instead; kept only for backward compatibility.",
-    props: [
-      {
-        name: "options",
-        type: "{ value: string; label: string }[]",
-        required: true,
-        description:
-          "Static list of option rows. Each entry must have a string value and a display label.",
-      },
-      {
-        name: "value",
-        type: "string",
-        description:
-          "Controlled selected value. When provided the component is fully controlled; omit for uncontrolled.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description:
-          "Callback fired with the newly selected string value. Required for controlled usage.",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        description: "Trigger button placeholder shown when no value is selected.",
-      },
-      {
-        name: "searchPlaceholder",
-        type: "string",
-        description: "Placeholder text inside the search input in the dropdown.",
-      },
-      {
-        name: "emptyMessage",
-        type: "string",
-        description: "Message shown in the dropdown when no options match the search query.",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Disables the control entirely — trigger becomes non-interactive.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description: "Extra Tailwind classes applied to the trigger wrapper.",
-      },
-      {
-        name: "id",
-        type: "string",
-        description:
-          "HTML id forwarded to the underlying trigger element; wire to a <label> for a11y.",
-      },
-    ],
-    usage: [
-      "DEPRECATED — do NOT use for new code. Replace with `<Select options={opts} showSearch />` (single data-driven entry point) or `<SearchSelect options={opts} />` for more control. Autocomplete is a thin shim kept only for backward compatibility.",
-      "DO pass a controlled `value` + `onValueChange` pair to keep state outside; without `value` the component is uncontrolled and you cannot read the selected item.",
-      "DO NOT expect optgroup grouping, sublabels, async loading, or a custom `renderOption` — Autocomplete's option type only has `{ value, label }`. Use SearchSelect or Select with showSearch for those features.",
-      "DO NOT use this inside an HTML `<form>` for native form submission — there is no `name` prop and no hidden input. Pair with React Hook Form or manage state manually via `onValueChange`.",
-      "Always provide a matching `<label htmlFor={id}>` when using `id` for screen-reader accessibility.",
-      "The internal clearable button is always hidden (hardcoded `clearable={false}`). If you need a clear/reset action use `<SearchSelect clearable />` or `<Select showSearch clearable />`.",
-    ],
-    useCases: [
-      "Migrating legacy code that already imports Autocomplete — keep it running without a rewrite while you schedule the migration to Select/SearchSelect.",
-      "Simple static list with client-side search where no grouping, sublabels, or async fetch is needed — though even here, prefer Select with showSearch for future-proofing.",
-      "Rapid prototyping where the exact API doesn't matter yet and you know it will be replaced before shipping.",
-    ],
-    related: [
-      "Select (with showSearch + options) — the CURRENT canonical replacement for Autocomplete; supports grouping, sublabels, async loadOptions, custom renderOption, clearable, multi, and form name prop. Use this for all new code.",
-      "SearchSelect — the direct engine Autocomplete delegates to; exported and stable, supports optgroups, sublabels, async infinite-scroll, and clearable. Use if you need SearchSelect-specific async or render props not yet exposed by Select.",
-      "Input with datalist — never hand-roll; use Select/SearchSelect primitives instead.",
-    ],
-    example: `{\`// ❌ DEPRECATED — do not use in new code
-import { Autocomplete } from "@godxjp/ui/data-entry";
-
-// ✅ Replace with:
-// import { Select } from "@godxjp/ui/data-entry";
-// <Select options={options} showSearch placeholder="Search…" onValueChange={setValue} value={value} />
-
-// Legacy usage (backward compat only):
-import { Autocomplete } from "@godxjp/ui/data-entry";
-
-const options = [
-  { value: "acme", label: "Acme Corp" },
-  { value: "globex", label: "Globex Inc" },
-];
-
-function LegacyVendorPicker() {
-  const [value, setValue] = React.useState("");
-  return (
-    <Autocomplete
-      id="vendor"
-      options={options}
-      value={value}
-      onValueChange={setValue}
-      placeholder="Select vendor…"
-      searchPlaceholder="Search vendors…"
-      emptyMessage="No vendor found"
-    />
-  );
-}\`}`,
-    storyPath: "data-entry/Autocomplete.stories.tsx",
-    rules: [6, 13, 23, 31],
   },
   {
     name: "Popover",
@@ -6209,446 +5410,6 @@ export function ChartOfAccounts() {
     rules: [3, 6, 23, 31],
   },
   {
-    name: "PageHeader",
-    group: "navigation",
-    deprecated: true,
-    tagline:
-      "DEPRECATED header-only shell — use PageContainer instead; PageHeader renders only the title/breadcrumb/actions strip with no body or footer slots.",
-    props: [
-      {
-        name: "title",
-        type: "React.ReactNode",
-        required: true,
-        description: "Page heading text rendered as an <h1>. Accepts a string or any ReactNode.",
-      },
-      {
-        name: "description",
-        type: "React.ReactNode",
-        description: "Optional subtitle rendered as a <p> below the title.",
-      },
-      {
-        name: "breadcrumb",
-        type: "BreadcrumbItemProp[]",
-        description:
-          "Ordered breadcrumb trail. Each item is { label: ReactNode; to?: string }. The last item is always rendered as a plain span (current page); earlier items with 'to' are router <Link>s.",
-      },
-      {
-        name: "actions",
-        type: "React.ReactNode",
-        description:
-          "Action controls (buttons, menus) rendered in the trailing slot of the header row. Equivalent to PageContainer's 'extra' prop.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description: "Additional CSS class names applied to the <header> element.",
-      },
-    ],
-    usage: [
-      "DEPRECATED — always prefer PageContainer for new pages. PageContainer provides body and footer slots, density/variant controls, and sticky footer support that PageHeader lacks.",
-      "DO pass breadcrumb items in order from root to current page. The last item is automatically marked aria-current='page' and rendered without a link regardless of whether 'to' is set.",
-      "DON'T place body content as children — PageHeader has no children slot. Use PageContainer with its children prop for page body content.",
-      "The 'actions' prop (not 'extra') is the slot for action buttons or menus in the trailing position. Note that PageContainer uses 'extra' for the same slot — they are intentionally different prop names.",
-      "Use 'description' (not 'subtitle') for the secondary text beneath the title — again, PageContainer uses 'subtitle' for the same concept.",
-      "If you must keep PageHeader for a legacy page, avoid adding new body layout inside the same file; migrate to PageContainer to get density and variant props for responsive layout.",
-    ],
-    useCases: [
-      "Maintaining or reading legacy pages that already use PageHeader and cannot be migrated in the current sprint.",
-      "Quick title + breadcrumb strip for a read-only display panel that embeds inside another layout shell (not a full page).",
-      "Regression tests and snapshot tests for the navigation module that must cover the legacy component path.",
-      "Any scenario where you intentionally render only a header row with no body — though even then, PageContainer with no children is the preferred modern approach.",
-    ],
-    related: [
-      "PageContainer — the current replacement for PageHeader; use this for all new pages. It adds children, footer, density, variant, stickyFooter, and uses 'subtitle'/'extra' instead of 'description'/'actions'.",
-      "AppShell — top-level layout shell that wraps sidebar, topbar, and the page area; PageContainer lives inside AppShell's content area.",
-      "Topbar — the fixed top bar with product/project chips and search; distinct from the per-page header rendered by PageContainer/PageHeader.",
-    ],
-    example: `import { PageHeader } from "@godxjp/ui/navigation";
-import { Button } from "@godxjp/ui/general";
-
-// DEPRECATED — use PageContainer for new pages.
-// Legacy usage only:
-export function LegacyInvoiceHeader() {
-  return (
-    <PageHeader
-      title="Invoices"
-      description="All issued invoices for the current entity"
-      breadcrumb={[
-        { label: "Home", to: "/" },
-        { label: "Accounting", to: "/accounting" },
-        { label: "Invoices" }, // last item — no 'to', rendered as current page
-      ]}
-      actions={
-        <Button variant="default" size="sm">
-          New Invoice
-        </Button>
-      }
-    />
-  );
-}`,
-    storyPath: "navigation/PageHeader.stories.tsx",
-    rules: [3, 23, 24, 33],
-  },
-  {
-    name: "LocalePicker",
-    group: "navigation",
-    tagline:
-      "Language selector that reads/writes AppProvider locale automatically — throws if used without AppProvider AND without controlled value+onChange.",
-    props: [
-      {
-        name: "value",
-        type: "AppLocale",
-        description:
-          "Controlled locale value. Must be one of 'vi' | 'en' | 'ja'. When omitted, reads the current locale from AppProvider context.",
-      },
-      {
-        name: "onChange",
-        type: "(locale: AppLocale) => void",
-        description:
-          "Controlled change handler. When omitted, calls AppProvider's setLocale. Required when value is provided without AppProvider.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description:
-          "Extra CSS classes merged onto the SelectTrigger element. Default trigger width is w-full sm:w-40.",
-      },
-      { name: "disabled", type: "boolean", description: "Disables the Select control." },
-      {
-        name: "id",
-        type: "string",
-        description: "HTML id forwarded to the SelectTrigger for label association.",
-      },
-    ],
-    usage: [
-      "DO: Wrap the component in AppProvider for zero-config uncontrolled use — locale is read and written via context automatically, no props needed. DO NOT use without AppProvider unless you also supply both value and onChange.",
-      "DO: Use controlled mode (value + onChange) when you need to manage locale state outside of AppProvider — for example in a standalone settings form or a Storybook story. Both props are required together in this mode.",
-      "DO NOT: Pass only value without onChange, or only onChange without value in controlled mode. The component throws at render time if neither AppProvider context nor both controlled props are present: 'LocalePicker requires <AppProvider> or controlled value + onChange'.",
-      "DO: The locale list is fixed to APP_LOCALES = ['vi', 'en', 'ja']. Option labels are rendered via the translation system (t('locale.vi') etc.) — ensure AppProvider is initialized with the correct defaultLocale so labels display in the right language.",
-      "DO: Use the id prop to associate a <label> element with the trigger for accessible forms. The trigger already carries an aria-label from the translation key navigation.localePicker.ariaLabel, so a visible label is optional but still preferred for sighted users.",
-      "DON'T hand-roll a locale Select with raw <select> or godx-ui Select — LocalePicker already composes the full Select + Languages icon + translated options + context wiring. Use it directly.",
-    ],
-    useCases: [
-      "App shell / top-nav language switcher that persists the user's locale preference via AppProvider and localStorage without any extra state.",
-      "Settings page 'Language' field where locale is part of a form submitted to the backend — use controlled mode: value={form.locale} onValueChange={(v) => form.setLocale(v)}.",
-      "Onboarding wizard step that lets the user pick their language before the rest of the app is configured — mount with AppProvider persist={false} and a controlled value to keep state local to the wizard.",
-      "Admin user-profile form where locale is one of several preferences (alongside timezone and date/time format) — pair with TimezonePicker, DateFormatPicker, TimeFormatPicker under the same AppProvider.",
-      "Storybook / test harness where AppProvider is not present — render in fully controlled mode: <LocalePicker value='en' onValueChange={fn} />.",
-      "Localization QA tool that cycles through locales programmatically — drive via controlled value to switch the UI language without user interaction.",
-    ],
-    related: [
-      "TimezonePicker — same family, same pattern (uncontrolled via AppProvider or controlled). Pick LocalePicker for language, TimezonePicker for IANA timezone.",
-      "DateFormatPicker — picks 'dmy' | 'mdy' | 'iso' display format. Use alongside LocalePicker in a preferences form; locale defaults the format automatically.",
-      "TimeFormatPicker — picks '12h' | '24h'. Same composition pattern; locale defaults it. Use all four pickers together in a unified settings panel.",
-      "AppProvider — required peer unless running in fully controlled mode. Provides the locale, setLocale, and i18n context that LocalePicker depends on.",
-    ],
-    example: `{\`// Uncontrolled — AppProvider manages state and persists to localStorage
-import { AppProvider } from "@godxjp/ui/providers";
-import { LocalePicker } from "@godxjp/ui/navigation";
-
-export function AppShell() {
-  return (
-    <AppProvider defaultLocale="vi">
-      {/* Anywhere inside the tree */}
-      <LocalePicker />
-    </AppProvider>
-  );
-}
-
-// Controlled — no AppProvider required (e.g. a standalone settings form)
-import { useState } from "react";
-import { LocalePicker } from "@godxjp/ui/navigation";
-import type { AppLocale } from "@godxjp/ui/navigation";
-
-export function LocaleField() {
-  const [locale, setLocale] = useState<AppLocale>("en");
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor="locale-picker">Language</label>
-      <LocalePicker id="locale-picker" value={locale} onValueChange={setLocale} />
-    </div>
-  );
-}\`}`,
-    storyPath: "navigation/LocalePicker.stories.tsx",
-    rules: [3, 5, 6, 23],
-  },
-  {
-    name: "TimezonePicker",
-    group: "navigation",
-    tagline:
-      "Globe-icon Select for picking an IANA timezone — throws at runtime if neither AppProvider context nor controlled value+onChange is supplied.",
-    props: [
-      {
-        name: "value",
-        type: "AppTimezone",
-        description:
-          'Controlled IANA timezone string (e.g. "Asia/Tokyo", "UTC"). Required when used outside AppProvider; reads from AppProvider context when omitted.',
-      },
-      {
-        name: "onChange",
-        type: "(timezone: AppTimezone) => void",
-        description:
-          "Change handler receiving the selected IANA id. Required when used outside AppProvider; falls back to AppProvider setTimezone when omitted.",
-      },
-      {
-        name: "options",
-        type: "readonly AppTimezone[]",
-        description:
-          "Restrict the dropdown to this list of IANA ids. Omit to inherit AppProvider timezoneOptions, or fall back to the full runtime IANA list. The current value is always injected at the top if absent from the list.",
-      },
-      {
-        name: "id",
-        type: "string",
-        description: "HTML id forwarded to the trigger element, useful for pairing with a <label>.",
-      },
-      { name: "disabled", type: "boolean", description: "Disables the picker trigger." },
-      {
-        name: "className",
-        type: "string",
-        description:
-          "Additional Tailwind classes merged onto the SelectTrigger (default width: w-full sm:w-56).",
-      },
-    ],
-    usage: [
-      "DO: Wrap with <AppProvider> and omit value/onChange — the picker reads and writes context automatically. This is the canonical zero-prop usage: <TimezonePicker />.",
-      "DO: Pass value + onChange for fully controlled standalone usage (e.g. a form field that posts the timezone string): <TimezonePicker value={tz} onValueChange={setTz} />. AppProvider is not required in this mode.",
-      "DON'T: Omit BOTH AppProvider context AND controlled props — the component throws at runtime: 'TimezonePicker requires <AppProvider> or controlled value + onChange'.",
-      "DO: Pass options={['Asia/Tokyo', 'UTC']} to restrict the list. The current value is automatically prepended if it is missing from the list, so the picker never shows an empty/invalid selection.",
-      "DON'T: Hand-roll a timezone <select> or a custom combobox — TimezonePicker already handles locale-aware labels (translated city + GMT offset), the full IANA list, and ARIA semantics.",
-      "NOTE: Labels are locale-aware via i18n keys (e.g. 'Japan (Tokyo)' in en, translated equivalents in vi/ja). Labels are derived from AppProvider locale; in controlled mode outside AppProvider the locale defaults to the library fallback. No extra i18n wiring is needed.",
-    ],
-    useCases: [
-      "User profile / settings page: let the user pick their display timezone; pair with DateFormatPicker and TimeFormatPicker in a settings panel.",
-      "AppProvider bootstrap: pass timezoneOptions={APP_TIMEZONE_PRESET} to AppProvider to restrict the dropdown to a curated Asia-Pacific list, then render <TimezonePicker /> anywhere in the tree.",
-      "Multi-tenant admin: render TimezonePicker in a form that POSTs a per-organization timezone; use controlled mode (value/onChange) and submit the selected IANA string.",
-      "Shell / top-bar: drop <TimezonePicker /> into an AppShell header or Sidebar alongside LocalePicker so users can adjust timezone globally without a full settings page.",
-      "System-timezone default: pass defaultTimezone='system' systemTimezone='Asia/Tokyo' to AppProvider so the picker initializes to the backend timezone; users can still override it.",
-    ],
-    related: [
-      "LocalePicker — sibling picker for language/locale; use alongside TimezonePicker in settings panels. Both read/write AppProvider context.",
-      "TimeFormatPicker — picks 12h/24h clock format; same controlled/context dual-mode API.",
-      "DateFormatPicker — picks date display format (dmy/mdy/iso); same dual-mode API.",
-      "Select — the underlying primitive TimezonePicker is built on; use Select directly only when you need a non-timezone dropdown, not for timezone selection.",
-    ],
-    example: `import { useState } from "react";
-import type { AppTimezone } from "@godxjp/ui/app";
-import { TimezonePicker } from "@godxjp/ui/navigation";
-
-// --- Controlled (no AppProvider required) ---
-export function TimezoneField() {
-  const [tz, setTz] = useState<AppTimezone>("Asia/Tokyo");
-  return (
-    <TimezonePicker
-      value={tz}
-      onValueChange={setTz}
-      options={["Asia/Tokyo", "Asia/Ho_Chi_Minh", "UTC"]}
-    />
-  );
-}
-
-// --- Context-driven (zero props inside AppProvider) ---
-import { AppProvider } from "@godxjp/ui/app";
-import { APP_TIMEZONE_PRESET } from "@godxjp/ui/navigation";
-
-export function Shell({ children }: { content: React.ReactNode }) {
-  return (
-    <AppProvider
-      defaultLocale="ja"
-      fallbackLocale="en"
-      defaultTimezone="system"
-      systemTimezone="Asia/Tokyo"
-      timezoneOptions={APP_TIMEZONE_PRESET}
-    >
-      {children}
-    </AppProvider>
-  );
-}
-
-// Anywhere inside Shell:
-// <TimezonePicker />   ← reads/writes AppProvider context automatically`,
-    storyPath: "navigation/TimezonePicker.stories.tsx",
-    rules: [3, 5, 23, 31],
-  },
-  {
-    name: "DateFormatPicker",
-    group: "navigation",
-    tagline:
-      "Locale-aware date format selector (ISO / DMY / MDY) — throws at runtime if neither AppProvider nor controlled value+onChange is provided.",
-    props: [
-      {
-        name: "value",
-        type: "AppDateFormat | undefined",
-        description:
-          'Controlled date format value. One of `"iso"` (yyyy-MM-dd), `"dmy"` (dd/MM/yyyy), or `"mdy"` (MM/dd/yyyy). When omitted the component reads from AppProvider context.',
-      },
-      {
-        name: "onChange",
-        type: "((dateFormat: AppDateFormat) => void) | undefined",
-        description:
-          "Callback fired when the user picks a new format. When omitted the component writes back to AppProvider context via `ctx.setDateFormat`.",
-      },
-      {
-        name: "className",
-        type: "string | undefined",
-        description:
-          "Extra CSS classes merged onto the SelectTrigger. Trigger defaults to `w-full sm:w-44`.",
-      },
-      {
-        name: "disabled",
-        type: "boolean | undefined",
-        description: "Disables the select trigger and prevents user interaction.",
-      },
-      {
-        name: "id",
-        type: "string | undefined",
-        description:
-          "HTML id forwarded to the SelectTrigger; use with a `<label htmlFor>` for accessible form binding.",
-      },
-    ],
-    usage: [
-      "DO wrap with `<AppProvider>` (uncontrolled) OR supply both `value` and `onChange` (controlled). Omitting both causes a runtime throw: `DateFormatPicker requires <AppProvider> or controlled value + onChange`.",
-      "DO NOT pass `value` without `onChange` or vice-versa in controlled mode — the component falls back to context for whichever prop is missing, which produces split ownership bugs.",
-      "DO use `id` + `<label htmlFor={id}>` for accessible form labeling; the trigger already carries an i18n `aria-label` but an explicit label wins for sighted users.",
-      'DO NOT hand-roll a date format `<select>` — `DateFormatPicker` reads the locale from context and shows human-readable, locale-translated option labels (e.g. `"Ngày / Tháng / Năm"` in vi, `"YYYY-MM-DD（年-月-日）"` in ja). A raw select cannot do this.',
-      "When AppProvider is present and you need to react to changes globally (e.g. re-format all displayed dates), use `AppProvider`'s `onDateFormatChange` callback instead of threading `onChange` through every picker.",
-      'The `AppDateFormat` type is `"iso" | "dmy" | "mdy"`. Import it from `@godxjp/ui/navigation` alongside the component (it is re-exported) — do not duplicate the string-union inline.',
-    ],
-    useCases: [
-      "Settings / Preferences page: let users switch how dates are displayed app-wide (place inside AppProvider, omit value/onChange and it auto-reads/writes context).",
-      "Controlled preview panel: show the effect of a date format choice before saving — pass `value` + `onChange` to a local state and commit only on Save.",
-      "Admin user-profile form: bind with `id` and a visible `<label>` alongside other pickers (LocalePicker, TimezonePicker, TimeFormatPicker) in a preferences card.",
-      "Multi-entity accounting dashboard where different entities prefer different regional date conventions — render a per-entity DateFormatPicker in controlled mode, persist choice per entity.",
-      "Onboarding wizard step: collect locale + date format + time format together before creating the user account; all four app pickers compose naturally inside a single AppProvider.",
-      "Export/report dialog: let the user choose the date format for a CSV or PDF export independently of the global app setting — use controlled mode so the choice is scoped to the dialog.",
-    ],
-    related: [
-      "LocalePicker — picks the UI language (AppLocale). Use DateFormatPicker alongside LocalePicker, not instead of it; locale affects translation strings while date format controls the display pattern.",
-      "TimeFormatPicker — picks 12h vs 24h clock. Sister component; same AppProvider / controlled-mode contract.",
-      "TimezonePicker — picks the IANA timezone. Same contract; also accepts an `options` prop to restrict the list.",
-      "DatePicker — a calendar-based date input for picking a specific calendar date. Use DatePicker for data entry; use DateFormatPicker in settings to control how those dates are displayed.",
-    ],
-    example: `{\`// Uncontrolled — reads/writes AppProvider context automatically
-import { AppProvider } from "@godxjp/ui/navigation";
-import { DateFormatPicker } from "@godxjp/ui/navigation";
-
-export function AppSettings() {
-  return (
-    <AppProvider defaultLocale="vi" defaultDateFormat="locale" persist>
-      <div className="flex flex-col gap-4">
-        <label htmlFor="date-fmt">Date format</label>
-        <DateFormatPicker id="date-fmt" />
-      </div>
-    </AppProvider>
-  );
-}
-
-// Controlled — local state, no AppProvider required
-import { useState } from "react";
-import { DateFormatPicker } from "@godxjp/ui/navigation";
-import type { AppDateFormat } from "@godxjp/ui/navigation";
-
-export function ExportDialog() {
-  const [fmt, setFmt] = useState<AppDateFormat>("iso");
-
-  return (
-    <div className="flex items-center gap-2">
-      <label htmlFor="export-fmt">Export date format</label>
-      <DateFormatPicker id="export-fmt" value={fmt} onValueChange={setFmt} />
-    </div>
-  );
-}\`}`,
-    storyPath: "navigation/DateFormatPicker.stories.tsx",
-    rules: [3, 5, 6, 13],
-  },
-  {
-    name: "TimeFormatPicker",
-    group: "navigation",
-    tagline:
-      "Clock-format selector (12h / 24h) that reads/writes AppProvider context by default — throws if neither AppProvider nor controlled value+onChange is supplied.",
-    props: [
-      {
-        name: "value",
-        type: "AppTimeFormat | undefined",
-        description:
-          "Controlled clock format ('12h' | '24h'). If omitted the picker reads from the nearest AppProvider context.",
-      },
-      {
-        name: "onChange",
-        type: "(timeFormat: AppTimeFormat) => void | undefined",
-        description:
-          "Controlled change handler. If omitted the picker writes back to AppProvider via setTimeFormat.",
-      },
-      {
-        name: "className",
-        type: "string | undefined",
-        description:
-          "Additional CSS classes merged onto the SelectTrigger. Default width is 'w-full sm:w-44'.",
-      },
-      {
-        name: "disabled",
-        type: "boolean | undefined",
-        description: "Disables the underlying Select control.",
-      },
-      {
-        name: "id",
-        type: "string | undefined",
-        description: "HTML id forwarded to the SelectTrigger, useful for associating a <label>.",
-      },
-    ],
-    usage: [
-      "DO use inside <AppProvider> with no extra props to let it read/write the global time-format automatically: <AppProvider defaultTimeFormat='24h'><TimeFormatPicker /></AppProvider>",
-      "DO switch to fully controlled mode when you need to manage the value yourself — supply BOTH value and onChange, or the component will throw: <TimeFormatPicker value={fmt} onValueChange={setFmt} />",
-      "DON'T omit both AppProvider and controlled props — the component throws an Error at render time: 'TimeFormatPicker requires <AppProvider> or controlled value + onChange'. There is no silent fallback.",
-      "DON'T hand-roll a time-format <select> — the locale-aware labels (e.g. '24 giờ' for vi, '24-hour' for en) are generated internally from the i18n layer; reinventing this loses those translations.",
-      "DO wire a <label htmlFor={id}> when using the id prop for accessibility; the SelectTrigger already sets aria-label from i18n but a visible label improves discoverability.",
-      "AppTimeFormat is exported from '@godxjp/ui/app' — import it from there for type-safe controlled state: import type { AppTimeFormat } from '@godxjp/ui/app'.",
-    ],
-    useCases: [
-      "User preferences / settings panel — place alongside LocalePicker, TimezonePicker, and DateFormatPicker so users can configure their entire display environment in one block.",
-      "AppShell top-bar or sidebar controls — the default sm:w-44 width makes it compact enough to sit inline in a toolbar without a wrapper.",
-      "Admin dashboard that serves multiple locales (vi/ja default 24h, en defaults 12h) — AppProvider + resolveDefaultTimeFormat already handle the per-locale default, so no manual logic is needed.",
-      "Controlled settings form where the time format is saved to a server — use value+onChange, call your API in onChange, then update state on success.",
-      "Onboarding wizard step that collects user preferences before creating an account — use controlled mode (no AppProvider yet) and collect all picker values into a single form state.",
-      "Multi-entity accounting app (e.g. CoreBooks) where different legal entities may have different locale settings — wrap each entity's UI subtree in its own AppProvider with the entity's persisted preferences.",
-    ],
-    related: [
-      "LocalePicker (@godxjp/ui/navigation) — sibling picker for UI language; often placed adjacent to TimeFormatPicker in a preferences panel.",
-      "TimezonePicker (@godxjp/ui/navigation) — sibling for IANA timezone selection; shares the same AppProvider context pattern.",
-      "DateFormatPicker (@godxjp/ui/navigation) — sibling for date display format (dmy/mdy/iso); use all four together for a complete locale preferences block.",
-      "AppProvider (@godxjp/ui/app) — required context provider when using any picker in uncontrolled mode; set defaultTimeFormat='locale' to auto-derive from the selected locale.",
-    ],
-    example: `
-{\`// Uncontrolled — reads/writes AppProvider automatically
-import { AppProvider } from "@godxjp/ui/app";
-import { TimeFormatPicker } from "@godxjp/ui/navigation";
-
-export function PreferencesPanel() {
-  return (
-    <AppProvider defaultLocale="vi" defaultTimeFormat="24h" persist>
-      <TimeFormatPicker />
-    </AppProvider>
-  );
-}
-
-// Controlled — manage value yourself (no AppProvider needed)
-import { useState } from "react";
-import type { AppTimeFormat } from "@godxjp/ui/app";
-import { TimeFormatPicker } from "@godxjp/ui/navigation";
-
-export function SettingsForm() {
-  const [fmt, setFmt] = useState<AppTimeFormat>("12h");
-  return (
-    <div>
-      <label htmlFor="time-fmt">Time format</label>
-      <TimeFormatPicker id="time-fmt" value={fmt} onValueChange={setFmt} />
-    </div>
-  );
-}\`}
-`,
-    storyPath: "navigation/TimeFormatPicker.stories.tsx",
-    rules: [3, 5, 6, 13],
-  },
-  {
     name: "Tooltip",
     group: "feedback",
     tagline:
@@ -6854,7 +5615,7 @@ export function ControlledExample() {
       "Link (react-router-dom) — use bare Link when no prefetching is needed or when the destination has no TanStack Query data (e.g. a static page or a form page that fetches nothing on load).",
       "DataState — the companion lifecycle widget for the destination page; ensures PrefetchLink's prefetch is consumed correctly via useQuery.",
       "InfiniteQueryState — use instead of PrefetchLink when the list itself is infinitely paginated and items are loaded lazily rather than navigated to.",
-      "QueryRefetchButton — for triggering a manual cache refresh on an already-loaded page, not for navigation prefetching.",
+      "ButtonRefetch — for triggering a manual cache refresh on an already-loaded page, not for navigation prefetching.",
     ],
     example: `import { PrefetchLink } from "@godxjp/ui/query";
 import { fetchInvoice } from "@/api/invoices";
@@ -6881,90 +5642,6 @@ import { fetchInvoice } from "@/api/invoices";
 </PrefetchLink>`,
     storyPath: "data-display/PrefetchLink.stories.tsx",
     rules: [2, 3, 31],
-  },
-  {
-    name: "QueryRefetchButton",
-    group: "data-display",
-    importPath: "@godxjp/ui/query",
-    tagline:
-      "Page-header Refresh button wired directly to a TanStack Query result — auto-disables and spins while fetching; never pass onClick or disabled yourself.",
-    props: [
-      {
-        name: "query",
-        type: "Pick<UseQueryResult<unknown>, 'isFetching' | 'refetch'>",
-        required: true,
-        description:
-          "The TanStack Query result object. The button calls query.refetch() on click and is disabled while query.isFetching is true. Pass the full useQuery result; only isFetching and refetch are consumed.",
-      },
-      {
-        name: "label",
-        type: "React.ReactNode",
-        defaultValue: '"Refresh"',
-        description: "Text label rendered inside the button. Ignored when children is provided.",
-      },
-      {
-        name: "children",
-        type: "React.ReactNode",
-        description:
-          "If provided, overrides label. Use for custom label content (e.g. translated strings, icons).",
-      },
-      {
-        name: "variant",
-        type: "ButtonProp['variant']",
-        defaultValue: '"outline"',
-        description: "Visual variant forwarded to the underlying Button primitive.",
-      },
-      {
-        name: "size",
-        type: "ButtonProp['size']",
-        defaultValue: '"sm"',
-        description: "Size forwarded to the underlying Button primitive.",
-      },
-      {
-        name: "className",
-        type: "string",
-        description: "Additional CSS classes applied to the Button root.",
-      },
-    ],
-    usage: [
-      "DO pass the raw useQuery result directly — the component only reads isFetching and refetch, so any UseQueryResult shape is safe: `<QueryRefetchButton query={invoicesQuery} />`",
-      "DON'T pass onClick or disabled — both are owned by QueryRefetchButton and forwarded internally. They are omitted from the prop type (Omit<ButtonProp, 'onClick' | 'disabled'>) so TypeScript will reject them at compile time.",
-      "DON'T use this for mutation triggers — it is wired to query.refetch(), not a mutation. For mutation actions use a plain Button + useMutation.",
-      "DO place it in a page header or toolbar beside a title — it renders as size='sm' variant='outline' by default, matching header action patterns.",
-      "The RefreshCw icon is always rendered automatically with a spin animation driven by data-fetching={query.isFetching} — do NOT add your own icon or loading spinner.",
-      "For i18n, pass a translated string as label or content: `<QueryRefetchButton query={q} label={t('refresh')} />` — the default label is the English string 'Refresh'.",
-    ],
-    useCases: [
-      "Toolbar 'Refresh' button on an invoice list page that re-fetches from the server without a full navigation.",
-      "Dashboard header action that re-polls live financial summaries when the user wants fresh data.",
-      "Admin data table header where stale data is a concern and users need manual control over re-fetching.",
-      "Any page using useQuery where you want a consistent, accessible Refresh affordance without wiring up onClick/disabled logic manually.",
-      "Pairing with DataState or a DataTable — place QueryRefetchButton in the page header while DataState manages the content area lifecycle.",
-    ],
-    related: [
-      "DataState — use DataState (not QueryRefetchButton) to handle the full query lifecycle (pending/error/empty/data states) in the content area; QueryRefetchButton is only the header action button.",
-      "InfiniteQueryState — for infinite-scroll / load-more lists; has its own refetch wiring; QueryRefetchButton is redundant alongside it.",
-      "MutationFeedback — for displaying mutation errors and a retry action; do not use QueryRefetchButton for mutation retries.",
-      "Button — the raw primitive; use Button directly when you need custom onClick logic or are not wired to a TanStack Query result.",
-    ],
-    example: `{\`import { useQuery } from "@tanstack/react-query";
-import { QueryRefetchButton } from "@godxjp/ui/query";
-
-export function InvoiceListHeader() {
-  const invoicesQuery = useQuery({
-    queryKey: ["invoices"],
-    queryFn: fetchInvoices,
-  });
-
-  return (
-    <div className="flex items-center justify-between">
-      <h1 className="text-xl font-semibold">Invoices</h1>
-      <QueryRefetchButton query={invoicesQuery} label="Refresh" />
-    </div>
-  );
-}\`}`,
-    storyPath: "data-display/QueryRefetchButton.stories.tsx",
-    rules: [3, 5, 6, 13],
   },
   {
     name: "Avatar",
@@ -7020,7 +5697,7 @@ export function InvoiceListHeader() {
       "Dividing stacked page sections",
       "Vertical split between metadata groups",
     ],
-    related: ["Stack — use for vertical spacing without a visible rule."],
+    related: ["Flex direction='col' — use for vertical spacing without a visible rule."],
     example: `import { Separator } from "@godxjp/ui/layout";
 
 <Separator />`,
@@ -7043,7 +5720,7 @@ export function InvoiceListHeader() {
       "Custom card media placeholder",
       "Inline metadata placeholder",
     ],
-    related: ["SkeletonRows", "SkeletonTable", "SkeletonCard"],
+    related: ["SkeletonRows", "SkeletonTable", "SkeletonStat"],
     example: `import { Skeleton } from "@godxjp/ui/feedback";
 
 <Skeleton className="h-6 w-48" />`,
@@ -7069,8 +5746,8 @@ export function InvoiceListHeader() {
       },
       {
         name: "size",
-        type: '"sm" | "default" | "lg"',
-        defaultValue: '"default"',
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"md"',
         description: "Control size.",
       },
     ],
@@ -7672,38 +6349,6 @@ export default function PasswordBlock() {
 </Carousel>`,
   },
   {
-    name: "Combobox",
-    group: "data-entry",
-    tagline: "Single-select searchable combobox composed from Popover + Command + Button.",
-    props: [
-      {
-        name: "options",
-        type: "{ value: string; label: string }[]",
-        required: true,
-        description: "Available selection entries.",
-      },
-      { name: "value", type: "string", description: "Controlled selected value." },
-      { name: "defaultValue", type: "string", description: "Uncontrolled initial value." },
-      {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description: "Selection callback.",
-      },
-      { name: "placeholder", type: "string", description: "Trigger placeholder." },
-      { name: "searchPlaceholder", type: "string", description: "Input placeholder in popover." },
-      { name: "emptyText", type: "string", description: "Fallback when there are no matches." },
-    ],
-    useCases: ["Searchable single-select", "Lookup pickers", "Static option lists"],
-    storyPath: "data-entry/Combobox.stories.tsx",
-    rules: [3, 6],
-    example: `import { Combobox } from "@godxjp/ui/data-entry";
-
-<Combobox
-  options={[{ value: "a", label: "A" }, { value: "b", label: "B" }]}
-  onValueChange={(value) => console.log(value)}
-/>`,
-  },
-  {
     name: "TimeInput",
     group: "data-entry",
     tagline: "Masking HH:mm input with validation and optional minute step quantization.",
@@ -7728,6 +6373,136 @@ export default function PasswordBlock() {
     example: `import { TimeInput } from "@godxjp/ui/data-entry";
 
 <TimeInput value="09:00" step={15} onValueChange={(time) => console.log(time)} />`,
+  },
+  {
+    name: "AppSettingPicker",
+    group: "navigation",
+    tagline:
+      "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat) — replaces the former Locale/Timezone/Date-format/Time-format pickers. Throws if used without AppProvider AND without controlled value+onValueChange.",
+    props: [
+      {
+        name: "kind",
+        type: '"locale" | "timezone" | "dateFormat" | "timeFormat"',
+        description:
+          "Which AppProvider setting this picker reads and writes. Determines the option list, icon, trigger width, and the context value/setter used.",
+      },
+      {
+        name: "value",
+        type: "string",
+        description:
+          "Controlled value for the chosen kind. When omitted, reads the current value from AppProvider context for that kind.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description:
+          "Controlled change handler. When omitted, calls the matching AppProvider setter (setLocale/setTimezone/setDateFormat/setTimeFormat). Required together with value when no AppProvider is present.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Extra CSS classes merged onto the SelectTrigger.",
+      },
+      { name: "disabled", type: "boolean", description: "Disables the Select control." },
+      {
+        name: "id",
+        type: "string",
+        description: "HTML id forwarded to the SelectTrigger for label association.",
+      },
+    ],
+    usage: [
+      "DO: Mount inside <AppProvider> for zero-config use — the picker reads and writes the context value named by kind, no value/onValueChange needed.",
+      "DO: Use controlled mode (value + onValueChange) when managing state outside AppProvider, e.g. a standalone settings form or a Storybook story. Both are required together in this mode.",
+      "DO NOT: Render without AppProvider and without both controlled props — it throws 'AppSettingPicker requires <AppProvider> or controlled value + onValueChange'.",
+      "DO: Render four instances with different kind values to build a full preferences panel; they all share the same AppProvider context and stay in sync.",
+      "DON'T hand-roll a locale/timezone/format Select — AppSettingPicker already composes Select + the right icon + translated, context-wired options. There is no separate LocalePicker/TimezonePicker/DateFormatPicker/TimeFormatPicker anymore; use kind.",
+    ],
+    useCases: [
+      'App-shell top-nav language switcher: <AppSettingPicker kind="locale" /> under AppProvider, persisting to localStorage with no extra state.',
+      "User settings page with all four preferences — render kind=locale, kind=timezone, kind=dateFormat, kind=timeFormat together under one AppProvider.",
+      "Onboarding step that picks language/timezone before the rest of the app is configured — AppProvider persist={false} + controlled values to keep state local.",
+      'Storybook/test harness without AppProvider — fully controlled: <AppSettingPicker kind="timeFormat" value="24h" onValueChange={fn} />.',
+    ],
+    related: [
+      "AppProvider — required peer unless fully controlled. Supplies locale/timezone/dateFormat/timeFormat plus their setters and the i18n context.",
+      "Select — the data-entry primitive AppSettingPicker is built on; reach for Select directly for any non-AppProvider dropdown.",
+      "formatDate — reads the same AppProvider date/time context that kind='dateFormat'/'timeFormat' write to.",
+    ],
+    example: `{\`// Uncontrolled — AppProvider manages and persists every setting
+import { AppProvider } from "@godxjp/ui/app";
+import { AppSettingPicker } from "@godxjp/ui/navigation";
+
+export function SettingsPanel() {
+  return (
+    <AppProvider defaultLocale="ja" defaultTimezone="Asia/Tokyo">
+      <AppSettingPicker kind="locale" />
+      <AppSettingPicker kind="timezone" />
+      <AppSettingPicker kind="dateFormat" />
+      <AppSettingPicker kind="timeFormat" />
+    </AppProvider>
+  );
+}
+
+// Controlled — no AppProvider required
+import { useState } from "react";
+import { AppSettingPicker } from "@godxjp/ui/navigation";
+
+export function LocaleField() {
+  const [locale, setLocale] = useState("en");
+  return <AppSettingPicker kind="locale" value={locale} onValueChange={setLocale} />;
+}\`}`,
+    storyPath: "navigation/AppSettingPicker.stories.tsx",
+    rules: [3, 5, 6, 23],
+  },
+  {
+    name: "Field",
+    group: "data-entry",
+    tagline:
+      "Label + optional description laid out beside a single checkbox/radio/switch control — the inline alternative to FormField's full block layout.",
+    props: [
+      {
+        name: "id",
+        type: "string",
+        description: "id wired to the control via htmlFor; pass the same id to the child control.",
+      },
+      { name: "label", type: "ReactNode", description: "The field label, rendered as a <Label>." },
+      {
+        name: "description",
+        type: "ReactNode",
+        description: "Optional helper text rendered under the label.",
+      },
+      {
+        name: "children",
+        type: "ReactNode",
+        description: "The control (Checkbox/Radio/Switch) placed beside the label.",
+      },
+      { name: "className", type: "string", description: "Extra CSS classes on the wrapper." },
+    ],
+    usage: [
+      "DO: Use Field to label a single boolean/choice control (Switch, Checkbox, Radio) in a compact two-column row — control beside label + description.",
+      "DO: Match the child control's id to Field's id so the label is correctly associated.",
+      "DON'T: Use Field for text inputs needing helper/error/required slots — use FormField (block layout) instead. There is no ChoiceField anymore; Field is the canonical name.",
+    ],
+    useCases: [
+      "A settings list of toggle rows (notifications, auto-save) where each Switch has a label + description.",
+      "A consent checkbox with an explanatory description beside it.",
+      "A radio option row in a preferences form.",
+    ],
+    related: [
+      "FormField — block label/helper/error/required layout for text inputs; use it instead when those slots are needed.",
+      "Switch / Checkbox / Radio — the controls Field typically wraps.",
+    ],
+    example: `{\`import { Field, Switch } from "@godxjp/ui/data-entry";
+
+export function NotifyRow() {
+  return (
+    <Field id="notify" label="メール通知" description="重要な更新をメールで受け取る">
+      <Switch id="notify" defaultChecked />
+    </Field>
+  );
+}\`}`,
+    storyPath: "data-entry/Field.stories.tsx",
+    rules: [23],
   },
 ];
 

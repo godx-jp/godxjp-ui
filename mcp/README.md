@@ -142,37 +142,37 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ### Discovery (small responses — start here)
 
-| Tool | Returns | Size |
-|---|---|---|
-| `list_skills` | 12 taste/design skills + section ids | ~1 KB |
-| `list_primitives` | All components, grouped + tagline. Optional `group` filter. | ~3 KB |
-| `list_patterns` | 7 canonical patterns + taglines | ~500 B |
-| `list_anti_ai_tells` | 20+ AI-tell patterns. Optional `category` filter. | ~2 KB |
-| `list_redesign_checks` | 50+ audit checks + fix priority. Optional `category` filter. | ~5 KB |
+| Tool                   | Returns                                                      | Size   |
+| ---------------------- | ------------------------------------------------------------ | ------ |
+| `list_skills`          | 12 taste/design skills + section ids                         | ~1 KB  |
+| `list_primitives`      | All components, grouped + tagline. Optional `group` filter.  | ~3 KB  |
+| `list_patterns`        | 7 canonical patterns + taglines                              | ~500 B |
+| `list_anti_ai_tells`   | 20+ AI-tell patterns. Optional `category` filter.            | ~2 KB  |
+| `list_redesign_checks` | 50+ audit checks + fix priority. Optional `category` filter. | ~5 KB  |
 
 ### Drill-down (medium responses — after discovery)
 
-| Tool | Returns | Size |
-|---|---|---|
-| `get_skill_section` | ONE section of ONE skill | ~2 KB |
-| `get_component` | Full API for one component | ~2 KB |
-| `get_pattern` | Full code snippet for one pattern | ~3 KB |
-| `get_rule` | One cardinal rule (or all 34) | ~500 B / ~10 KB |
-| `get_vocab` | One vocab type (or all 14) | ~500 B / ~3 KB |
-| `get_tokens` | Tokens (optionally by category) | ~5 KB |
+| Tool                | Returns                           | Size            |
+| ------------------- | --------------------------------- | --------------- |
+| `get_skill_section` | ONE section of ONE skill          | ~2 KB           |
+| `get_component`     | Full API for one component        | ~2 KB           |
+| `get_pattern`       | Full code snippet for one pattern | ~3 KB           |
+| `get_rule`          | One cardinal rule (or all 34)     | ~500 B / ~10 KB |
+| `get_vocab`         | One vocab type (or all 14)        | ~500 B / ~3 KB  |
+| `get_tokens`        | Tokens (optionally by category)   | ~5 KB           |
 
 ### Task routing (smallest — pointer only)
 
-| Tool | Returns | Size |
-|---|---|---|
-| `route_task` | `{ skill, section, why, alsoSee }` for a natural-language task | ~300 B |
-| `suggest_primitive` | Use case → recommended primitive + rationale | ~500 B |
-| `search_components` | Fuzzy-search by name / tagline / prop | ~1 KB |
+| Tool                | Returns                                                        | Size   |
+| ------------------- | -------------------------------------------------------------- | ------ |
+| `route_task`        | `{ skill, section, why, alsoSee }` for a natural-language task | ~300 B |
+| `suggest_primitive` | Use case → recommended primitive + rationale                   | ~500 B |
+| `search_components` | Fuzzy-search by name / tagline / prop                          | ~1 KB  |
 
 ### Lint (one-shot critique)
 
-| Tool | Returns | Size |
-|---|---|---|
+| Tool       | Returns                                                  | Size  |
+| ---------- | -------------------------------------------------------- | ----- |
 | `lint_jsx` | Heuristic findings (raw `<button>` / wrong vocab / etc.) | ~1 KB |
 
 ---
@@ -180,22 +180,23 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 ## Skills bundled (12)
 
 Synthesised from [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill)
-+ framework-native design knowledge:
 
-| Skill | When to use |
-|---|---|
-| `taste` | Default — production app screen baseline |
-| `soft` | Premium agency / Awwwards-tier ($150k brief) |
-| `minimalist` | Editorial workspace (Notion-like) — warm monochrome + bento |
-| `brutalist` | Data-heavy dashboards, declassified-blueprint feel |
-| `gpt-tasteskill` | Long-scroll marketing, GSAP ScrollTrigger choreography |
-| `redesign` | Auditing + upgrading EXISTING project |
-| `output` | Always — bans `// ...` / `// TODO` patterns |
-| `brandkit` | Brand identity boards before screens |
-| `stitch` | Generate DESIGN.md for Google Stitch / similar generators |
-| `imagegen-mobile` | Pre-code phase — mobile app screen mockups |
-| `imagegen-web` | Pre-code phase — landing page section images |
-| `image-to-code` | Visual brief → working frontend code |
+- framework-native design knowledge:
+
+| Skill             | When to use                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| `taste`           | Default — production app screen baseline                    |
+| `soft`            | Premium agency / Awwwards-tier ($150k brief)                |
+| `minimalist`      | Editorial workspace (Notion-like) — warm monochrome + bento |
+| `brutalist`       | Data-heavy dashboards, declassified-blueprint feel          |
+| `gpt-tasteskill`  | Long-scroll marketing, GSAP ScrollTrigger choreography      |
+| `redesign`        | Auditing + upgrading EXISTING project                       |
+| `output`          | Always — bans `// ...` / `// TODO` patterns                 |
+| `brandkit`        | Brand identity boards before screens                        |
+| `stitch`          | Generate DESIGN.md for Google Stitch / similar generators   |
+| `imagegen-mobile` | Pre-code phase — mobile app screen mockups                  |
+| `imagegen-web`    | Pre-code phase — landing page section images                |
+| `image-to-code`   | Visual brief → working frontend code                        |
 
 ---
 
@@ -225,17 +226,17 @@ Synthesised from [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill)
 
 ## Resources
 
-| URI | Format | Purpose |
-|---|---|---|
-| `godx-ui://components` | JSON | Full catalog |
-| `godx-ui://components/{name}` | Markdown | One component |
-| `godx-ui://prop-vocabulary` | JSON | Shared vocab |
-| `godx-ui://tokens` | JSON | All tokens |
-| `godx-ui://tokens/{category}` | JSON | Tokens by category |
-| `godx-ui://rules` | Markdown | All 34 rules |
-| `godx-ui://rules/{number}` | Markdown | One rule |
-| `godx-ui://patterns` | JSON | Pattern index |
-| `godx-ui://patterns/{name}` | Markdown | One pattern |
+| URI                           | Format   | Purpose            |
+| ----------------------------- | -------- | ------------------ |
+| `godx-ui://components`        | JSON     | Full catalog       |
+| `godx-ui://components/{name}` | Markdown | One component      |
+| `godx-ui://prop-vocabulary`   | JSON     | Shared vocab       |
+| `godx-ui://tokens`            | JSON     | All tokens         |
+| `godx-ui://tokens/{category}` | JSON     | Tokens by category |
+| `godx-ui://rules`             | Markdown | All 34 rules       |
+| `godx-ui://rules/{number}`    | Markdown | One rule           |
+| `godx-ui://patterns`          | JSON     | Pattern index      |
+| `godx-ui://patterns/{name}`   | Markdown | One pattern        |
 
 ---
 

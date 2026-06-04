@@ -20,16 +20,16 @@ describe("buildPageRange", () => {
 describe("Pagination", () => {
   it("changes page on click", async () => {
     const user = userEvent.setup();
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
 
-    renderWithUi(<Pagination current={1} total={100} pageSize={10} onChange={onChange} />);
+    renderWithUi(<Pagination value={1} total={100} pageSize={10} onValueChange={onValueChange} />);
 
     await user.click(screen.getByRole("button", { name: /trang 2/i }));
-    expect(onChange).toHaveBeenCalledWith(2, 10);
+    expect(onValueChange).toHaveBeenCalledWith(2, 10);
   });
 
   it("renders simple mode", () => {
-    renderWithUi(<Pagination simple current={2} total={50} pageSize={10} />);
+    renderWithUi(<Pagination simple value={2} total={50} pageSize={10} />);
     expect(screen.getByText("2 / 5")).toBeInTheDocument();
   });
 });
@@ -38,7 +38,7 @@ describe("Steps", () => {
   it("renders step titles", () => {
     renderWithUi(
       <Steps
-        current={1}
+        value={1}
         items={[{ title: "Tạo đơn" }, { title: "Thanh toán" }, { title: "Giao hàng" }]}
       />,
     );
@@ -46,14 +46,14 @@ describe("Steps", () => {
     expect(screen.getByText("Thanh toán")).toBeInTheDocument();
   });
 
-  it("calls onChange when clickable", async () => {
+  it("calls onValueChange when clickable", async () => {
     const user = userEvent.setup();
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     renderWithUi(
-      <Steps current={0} onChange={onChange} items={[{ title: "A" }, { title: "B" }]} />,
+      <Steps value={0} onValueChange={onValueChange} items={[{ title: "A" }, { title: "B" }]} />,
     );
     await user.click(screen.getByText("B"));
-    expect(onChange).toHaveBeenCalledWith(1);
+    expect(onValueChange).toHaveBeenCalledWith(1);
   });
 });
 

@@ -5,9 +5,13 @@ import { join } from "node:path";
 const root = process.cwd();
 const propsDir = join(root, "src/props/components");
 const registrySrc = readFileSync(join(root, "src/props/registry.ts"), "utf8");
-const vocabularyBlock = registrySrc.match(/export const VOCABULARY_REGISTRY = \{([\s\S]*?)\n\} as const;/)?.[1] ?? "";
-const componentBlock = registrySrc.match(/export const COMPONENT_PROP_REGISTRY = \{([\s\S]*?)\n\} as const;/)?.[1] ?? "";
-const vocabulary = new Set([...vocabularyBlock.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*Prop):/gm)].map((m) => m[1]));
+const vocabularyBlock =
+  registrySrc.match(/export const VOCABULARY_REGISTRY = \{([\s\S]*?)\n\} as const;/)?.[1] ?? "";
+const componentBlock =
+  registrySrc.match(/export const COMPONENT_PROP_REGISTRY = \{([\s\S]*?)\n\} as const;/)?.[1] ?? "";
+const vocabulary = new Set(
+  [...vocabularyBlock.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*Prop):/gm)].map((m) => m[1]),
+);
 const components = new Map();
 
 for (const match of componentBlock.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*Prop):\s*\{/gm)) {
@@ -123,7 +127,8 @@ for (const file of walk(propsDir)) {
       failures.push(`${rel}: exported ${name} has no COMPONENT_PROP_REGISTRY entry`);
       continue;
     }
-    if (entry.file !== rel) failures.push(`${name}: registry file is ${entry.file}, expected ${rel}`);
+    if (entry.file !== rel)
+      failures.push(`${name}: registry file is ${entry.file}, expected ${rel}`);
     const refs = entry.vocabulary ?? [];
     for (const ref of refs) {
       if (typeof ref === "string" && !vocabulary.has(ref)) {
@@ -138,6 +143,58 @@ for (const file of walk(propsDir)) {
   }
 }
 
+// Component-declared prop types (XProp / XProps directly declared in src/components/**) must
+// also be governed: registered in COMPONENT_PROP_REGISTRY (or carried by a VOCABULARY_REGISTRY
+// entry), or explicitly allowlisted for native/Radix structural passthroughs where per-field
+// vocabulary does not apply.
+const COMPONENT_TYPE_ALLOWLIST = new Set([
+  "InputProps", // React.InputHTMLAttributes passthrough
+  "TextareaProps", // React.TextareaHTMLAttributes passthrough
+  "SkeletonProps", // React.HTMLAttributes passthrough
+  "TabsProps", // Radix Tabs.Root props passthrough
+  "SelectProp", // data-driven union (SelectDataProp | Radix Select.Root props)
+]);
+
+function walkComponents(dir) {
+  const files = [];
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry);
+    if (statSync(full).isDirectory()) {
+      if (entry === "__tests__") continue;
+      files.push(...walkComponents(full));
+    } else if (
+      /\.(ts|tsx)$/.test(entry) &&
+      !/\.(test|stories)\./.test(entry) &&
+      entry !== "index.ts" &&
+      entry !== "index.tsx"
+    ) {
+      files.push(full);
+    }
+  }
+  return files;
+}
+
+for (const file of walkComponents(join(root, "src/components"))) {
+  const rel = file.slice(join(root, "src/").length);
+  const src = readFileSync(file, "utf8");
+  for (const m of src.matchAll(/^export\s+type\s+([A-Z][A-Za-z0-9]*Props?)\s*=/gm)) {
+    const name = m[1];
+    const base = name.endsWith("Props") ? `${name.slice(0, -1)}` : name; // XProps -> XProp
+    if (
+      components.has(name) ||
+      components.has(base) ||
+      vocabulary.has(base) ||
+      vocabulary.has(name) ||
+      COMPONENT_TYPE_ALLOWLIST.has(name)
+    ) {
+      continue;
+    }
+    failures.push(
+      `${rel}: exported ${name} is not governed — register ${base} in COMPONENT_PROP_REGISTRY or list it in the guard's COMPONENT_TYPE_ALLOWLIST`,
+    );
+  }
+}
+
 for (const [name, entry] of components) {
   for (const ref of entry.vocabulary ?? []) {
     if (typeof ref === "string" && !vocabulary.has(ref)) {
@@ -148,7 +205,8 @@ for (const [name, entry] of components) {
 
 const canonicalAliases = ["PageTitleProp", "StackGapProp", "InlineGapProp", "StatusToneProp"];
 for (const alias of canonicalAliases) {
-  if (vocabulary.has(alias)) failures.push(`${alias}: forbidden canonical alias in VOCABULARY_REGISTRY`);
+  if (vocabulary.has(alias))
+    failures.push(`${alias}: forbidden canonical alias in VOCABULARY_REGISTRY`);
 }
 
 if (failures.length) {

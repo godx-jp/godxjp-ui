@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { cn } from "../../lib/utils";
 import { Checkbox } from "./checkbox";
-import { Field } from "./choice-field";
+import { Field } from "./field";
 import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
 import type { CheckboxGroupProp } from "../../props/components/data-entry.prop";
 

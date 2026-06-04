@@ -3,7 +3,14 @@ import * as React from "react";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../feedback/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../feedback/dialog";
 import { Slider } from "./slider";
 
 interface UploadCropDialogProps {
@@ -67,6 +74,7 @@ export function UploadCropDialog({ open, onOpenChange, file, onConfirm }: Upload
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle>{t("dataEntry.upload.cropTitle")}</DialogTitle>
+          <DialogDescription>{t("dataEntry.upload.cropDescription")}</DialogDescription>
         </DialogHeader>
         <div className="ui-stack-sm">
           <div

@@ -15,9 +15,10 @@ import * as React from "react";
 import { ArrowDown, ArrowUp, ChevronsUpDown, Layers, Layers2, MoreHorizontal } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
-import { Inline } from "../layout/inline";
+import { Flex } from "../layout/flex";
 import { Button } from "../general/button";
 import { EmptyState } from "./empty-state";
+import { Checkbox } from "../data-entry/checkbox";
 import {
   Table,
   TableBody,
@@ -206,13 +207,9 @@ DataTable.SelectAll = function DataTableSelectAll() {
   const { t } = useTranslation();
   if (!selectable) return null;
   return (
-    <input
-      type="checkbox"
-      checked={allSelected}
-      ref={(el) => {
-        if (el) el.indeterminate = someSelected;
-      }}
-      onChange={toggleSelectAll}
+    <Checkbox
+      checked={allSelected ? true : someSelected ? "indeterminate" : false}
+      onCheckedChange={toggleSelectAll}
       aria-label={t("dataTable.selectAll")}
     />
   );
@@ -269,10 +266,10 @@ DataTable.DensityToggle = function DataTableDensityToggle() {
       }}
       aria-label={t("dataTable.densitySwitch", { density: nextLabel })}
     >
-      <Inline gap="xs">
+      <Flex direction="row" wrap align="center" gap="xs">
         <Icon className="size-4" aria-hidden="true" />
         {density === "compact" ? t("dataTable.densityCompact") : t("dataTable.densityComfortable")}
-      </Inline>
+      </Flex>
     </Button>
   );
 };
@@ -313,7 +310,7 @@ DataTable.Content = function DataTableContent() {
   };
 
   return (
-    <div className="ui-data-table-scroll">
+    <div className="ui-data-table-scroll" aria-busy={loading}>
       <div className="ui-data-table-surface min-w-[640px] sm:min-w-0">
         <Table>
           <TableHeader className="bg-secondary sticky top-0 z-10">
@@ -323,52 +320,79 @@ DataTable.Content = function DataTableContent() {
                   <DataTable.SelectAll />
                 </TableHead>
               )}
-              {columns.map((col) => (
-                <TableHead
-                  key={col.key}
-                  data-empty={!col.header || undefined}
-                  className={cn(
-                    col.width,
-                    col.align === "right" && "text-right",
-                    col.align === "center" && "text-center",
-                    col.hiddenOnMobile && "hidden md:table-cell",
-                    col.sortable && onSortChange && "cursor-pointer select-none",
-                  )}
-                  onClick={() => {
-                    onHeaderClick(col);
-                  }}
-                >
+              {columns.map((col) => {
+                const isSortable = !!col.sortable && !!onSortChange;
+                const isActiveSort = isSortable && sort?.key === col.key;
+                const sortIndicator = isSortable ? (
+                  isActiveSort ? (
+                    sort?.direction === "asc" ? (
+                      <ArrowUp className="size-3" aria-hidden="true" />
+                    ) : (
+                      <ArrowDown className="size-3" aria-hidden="true" />
+                    )
+                  ) : (
+                    <ChevronsUpDown className="text-muted-foreground size-3" aria-hidden="true" />
+                  )
+                ) : null;
+                const label = (
                   <span className="ui-data-table-sort-label">
                     {col.header}
-                    {col.sortable &&
-                      onSortChange &&
-                      (sort?.key === col.key ? (
-                        sort.direction === "asc" ? (
-                          <ArrowUp className="size-3" aria-hidden="true" />
-                        ) : (
-                          <ArrowDown className="size-3" aria-hidden="true" />
-                        )
-                      ) : (
-                        <ChevronsUpDown
-                          className="text-muted-foreground size-3"
-                          aria-hidden="true"
-                        />
-                      ))}
+                    {sortIndicator}
                   </span>
-                </TableHead>
-              ))}
+                );
+                return (
+                  <TableHead
+                    key={col.key}
+                    data-empty={!col.header || undefined}
+                    aria-sort={
+                      isSortable
+                        ? isActiveSort
+                          ? sort?.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                        : undefined
+                    }
+                    className={cn(
+                      col.width,
+                      col.align === "right" && "text-right",
+                      col.align === "center" && "text-center",
+                      col.hiddenOnMobile && "hidden md:table-cell",
+                      isSortable && "select-none",
+                    )}
+                  >
+                    {isSortable ? (
+                      <button
+                        type="button"
+                        className="ui-data-table-sort-button focus-visible:ring-ring rounded-sm focus-visible:ring-2"
+                        onClick={() => {
+                          onHeaderClick(col);
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ) : (
+                      label
+                    )}
+                  </TableHead>
+                );
+              })}
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={emptyColSpan} className="h-32 text-center">
+                <TableCell colSpan={emptyColSpan} className="h-32 text-center" aria-live="polite">
                   <span className="text-muted-foreground text-sm">{t("dataTable.loading")}</span>
                 </TableCell>
               </TableRow>
             ) : data.length === 0 ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={emptyColSpan} className="ui-data-table-empty">
+                <TableCell
+                  colSpan={emptyColSpan}
+                  className="ui-data-table-empty"
+                  aria-live="polite"
+                >
                   {empty ?? <EmptyState title={t("dataTable.empty")} />}
                 </TableCell>
               </TableRow>
@@ -376,29 +400,42 @@ DataTable.Content = function DataTableContent() {
               data.map((row) => {
                 const id = getRowId(row);
                 const isSelected = selected.has(id);
+                const isInteractiveTarget = (target: HTMLElement) =>
+                  !!target.closest("button, a, input, select, textarea, [role=menuitem]");
                 return (
                   <TableRow
                     key={id}
                     data-state={isSelected ? "selected" : undefined}
+                    tabIndex={onRowClick ? 0 : undefined}
                     onClick={(e) => {
                       // Don't trigger row click if user clicked on an interactive child.
                       const target = e.target as HTMLElement;
-                      if (target.closest("button, a, input, select, textarea, [role=menuitem]"))
-                        return;
+                      if (isInteractiveTarget(target)) return;
                       onRowClick?.(row);
                     }}
+                    onKeyDown={
+                      onRowClick
+                        ? (e) => {
+                            if (e.key !== "Enter" && e.key !== " ") return;
+                            // Let interactive descendants handle their own keys.
+                            if (e.target !== e.currentTarget) return;
+                            e.preventDefault();
+                            onRowClick?.(row);
+                          }
+                        : undefined
+                    }
                     className={cn(
                       rowPadding,
-                      onRowClick && "hover:bg-muted/50 cursor-pointer",
+                      onRowClick &&
+                        "hover:bg-muted/50 focus-visible:ring-ring cursor-pointer focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
                       isSelected && "bg-muted/30",
                     )}
                   >
                     {selectable && (
                       <TableCell className={cellPadding}>
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           checked={isSelected}
-                          onChange={() => {
+                          onCheckedChange={() => {
                             toggleSelect(id);
                           }}
                           aria-label={t("dataTable.selectRow", { id })}

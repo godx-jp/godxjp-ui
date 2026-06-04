@@ -103,6 +103,7 @@ export function PasswordStrength({
               data-state={checks[rule] ? "passed" : "failed"}
             >
               {checks[rule] ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}
+              <span className="sr-only">{checks[rule] ? "Passed: " : "Failed: "}</span>
               <span>{labelForRule(rule)}</span>
             </li>
           ))}

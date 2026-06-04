@@ -14,6 +14,7 @@ import type {
   ClassNameProp,
   DisabledProp,
   IdProp,
+  NameProp,
   OnValueChangeProp,
   ValueProp,
 } from "../vocabulary";
@@ -34,7 +35,7 @@ export type AppProviderProp = {
   /** Initial date display format. `"locale"` derives from `defaultLocale`. Default: `"locale"`. */
   defaultDateFormat?: AppDateFormat | "locale";
   /**
-   * IANA ids shown in `TimezonePicker`.
+   * IANA ids offered by the timezone-picker recipe (`useAppContext().timezoneOptions`).
    * Omit for the full IANA list; set to restrict (e.g. `APP_TIMEZONE_PRESET`).
    */
   timezoneOptions?: readonly AppTimezone[];
@@ -48,45 +49,24 @@ export type AppProviderProp = {
   onDateFormatChange?: (dateFormat: AppDateFormat) => void;
 };
 
-/** @see LocalePicker */
-export type LocalePickerProp = {
-  className?: ClassNameProp;
-  disabled?: DisabledProp;
-  id?: IdProp;
-  /** Controlled value; default reads/writes AppProvider. */
-  value?: ValueProp<AppLocale>;
-  onValueChange?: OnValueChangeProp<AppLocale>;
-  /** Override selectable locale list; omit to use APP_LOCALES. */
-  options?: readonly { value: string; label?: string }[];
-};
+/** Which AppProvider setting the {@link AppSettingPicker} reads/writes. */
+export type AppSettingKind = "locale" | "timezone" | "dateFormat" | "timeFormat";
 
-/** @see TimezonePicker */
-export type TimezonePickerProp = {
+/**
+ * @see AppSettingPicker — one provider-bound Select for any single AppProvider setting.
+ * Replaces the former Locale/Timezone/Date-format/Time-format pickers; pick the target
+ * via `kind`. Bound to `<AppProvider>` by default; pass value + onValueChange to control.
+ */
+export type AppSettingPickerProp = {
+  kind: AppSettingKind;
   className?: ClassNameProp;
   disabled?: DisabledProp;
   id?: IdProp;
-  value?: ValueProp<AppTimezone>;
-  onValueChange?: OnValueChangeProp<AppTimezone>;
-  /** Override AppProvider list; omit to use context or full IANA. */
-  options?: readonly AppTimezone[];
-};
-
-/** @see TimeFormatPicker */
-export type TimeFormatPickerProp = {
-  className?: ClassNameProp;
-  disabled?: DisabledProp;
-  id?: IdProp;
-  value?: ValueProp<AppTimeFormat>;
-  onValueChange?: OnValueChangeProp<AppTimeFormat>;
-};
-
-/** @see DateFormatPicker */
-export type DateFormatPickerProp = {
-  className?: ClassNameProp;
-  disabled?: DisabledProp;
-  id?: IdProp;
-  value?: ValueProp<AppDateFormat>;
-  onValueChange?: OnValueChangeProp<AppDateFormat>;
+  /** Form field name — submits the selected value with the form. */
+  name?: NameProp;
+  /** Controlled value; default reads/writes the matching AppProvider context. */
+  value?: ValueProp<string>;
+  onValueChange?: OnValueChangeProp<string>;
 };
 
 /** Value exposed by `useAppContext`. */
@@ -99,7 +79,7 @@ export type AppContextValue = {
   dateFnsLocale: Locale;
   dayPickerLocale: NonNullable<DayPickerProps["locale"]>;
   requestHeaders: AppRequestHeaders;
-  /** Configured picker list; `undefined` → full IANA in TimezonePicker. */
+  /** Configured timezone list; `undefined` → full IANA in the timezone-picker recipe. */
   timezoneOptions?: readonly AppTimezone[];
   setLocale: (locale: AppLocale) => void;
   setTimezone: (timezone: AppTimezone) => void;

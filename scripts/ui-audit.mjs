@@ -65,8 +65,7 @@ const RULES = [
   {
     id: "value-callback-on-value-change",
     severity: "error",
-    test:
-      /<(?:Checkbox\.Group|Upload|Cascader|TreeSelect|Transfer|SearchSelect|DatePicker|DateRangePicker|TimePicker|ColorPicker|LocalePicker|TimezonePicker|DateFormatPicker|TimeFormatPicker)\b[^>]*\bonChange=/,
+    test: /<(?:Checkbox\.Group|Upload|Cascader|TreeSelect|Transfer|SearchSelect|DatePicker|DateRangePicker|TimePicker|ColorPicker|LocalePicker|TimezonePicker|DateFormatPicker|TimeFormatPicker)\b[^>]*\bonChange=/,
     message:
       "Abstract value components use onValueChange, not onChange. Reserve onChange for DOM events.",
   },
@@ -75,6 +74,36 @@ const RULES = [
     severity: "error",
     test: /(bg|text|border|ring|fill|stroke|from|to|via)-\[#[0-9a-fA-F]{3,8}\]/,
     message: "No hardcoded hex colors in className; use design-system tokens (rules §4).",
+  },
+  // Arbitrary RAW-NUMERIC Tailwind values — the #1 source of "every agent does it
+  // differently". Match `<util>-[<digit/.>...]` only; `var(--token)` / `calc()` escape
+  // (they start with a letter), so token-driven values stay legal (rules §4–§5).
+  {
+    id: "no-arbitrary-spacing",
+    severity: "error",
+    test: /\b(p|px|py|pt|pb|pl|pr|pe|ps|m|mx|my|mt|mb|ml|mr|me|ms|gap|gap-x|gap-y|inset|inset-x|inset-y|top|right|bottom|left)-\[-?\.?\d/,
+    message:
+      "No arbitrary spacing (p-[13px], gap-[7px]…). Use the token scale / <Stack gap> / <Inline gap> / <PageContainer> (rules §5).",
+  },
+  {
+    id: "no-arbitrary-size",
+    severity: "error",
+    test: /\b(w|h|size|min-w|max-w|min-h|max-h|basis)-\[-?\.?\d/,
+    message:
+      "No arbitrary width/height (w-[37px], max-w-[65ch]…). Use token sizes or a sizing prop; the component sizes its own icons (rules §4).",
+  },
+  {
+    id: "no-arbitrary-typography",
+    severity: "error",
+    test: /\b(text|leading|tracking|font)-\[-?\.?\d/,
+    message:
+      "No arbitrary type (text-[20px], leading-[1.7], font-[600]…). Use the type-scale tokens (text-xs…text-3xl) (rules §4).",
+  },
+  {
+    id: "no-arbitrary-radius",
+    severity: "error",
+    test: /\brounded(?:-[a-z]+)?-\[-?\.?\d/,
+    message: "No arbitrary radius (rounded-[6px]…). Use rounded-sm/md/lg radius tokens (rules §4).",
   },
   {
     id: "no-raw-select",

@@ -1,8 +1,8 @@
 /* Layout primitive tokens: page, section, stack, inline. */
 
 :root {
-  --space-page-x: var(--phi-0);
-  --space-page-y: var(--phi-0);
+  --space-page-x: var(--space-6); /* 24px — comfortable page gutter (4px grid) */
+  --space-page-y: var(--space-6); /* 24px */
   --space-section: var(--phi-0);
   --space-stack-xs: var(--space-1);
   --space-stack-sm: var(--space-2);

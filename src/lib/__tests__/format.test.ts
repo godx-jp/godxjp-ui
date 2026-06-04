@@ -38,13 +38,16 @@ describe("format helpers", () => {
     expect(formatRelative(recent)).toMatch(/minute/i);
   });
 
-  it("formatBytes scales units", () => {
-    expect(formatBytes(512)).toBe("512 B");
-    expect(formatBytes(2048)).toBe("2.0 KB");
+  it("formatBytes scales units with a locale-correct number", () => {
+    // Pin the locale so the decimal separator is deterministic (default is the synced locale).
+    expect(formatBytes(512, "en-US")).toBe("512 B");
+    expect(formatBytes(2048, "en-US")).toBe("2.0 KB");
+    expect(formatBytes(2048, "vi")).toBe("2,0 KB"); // locale separator, not a hardcoded "."
   });
 
-  it("formatCurrency formats minor units", () => {
-    expect(formatCurrency(1995, "USD")).toMatch(/19\.95/);
+  it("formatCurrency formats minor units in the given locale", () => {
+    expect(formatCurrency(1995, "USD", "en-US")).toMatch(/\$19\.95/);
+    expect(formatCurrency(100000, "JPY", "ja-JP")).toMatch(/￥|¥/); // 0 minor units from CLDR
   });
 
   it("shortId truncates long ids", () => {

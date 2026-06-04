@@ -74,9 +74,20 @@
   --font-size-lg: 1.1875rem; /* 19px */
   --font-size-xl: 1.375rem; /* 22px */
   --font-size-2xl: 1.625rem; /* 26px */
+
+  /* Semantic heading scale (dxs-kintai: info-dense JP enterprise, weight 500,
+   * never marketing-size). Applied to base h1–h4 + component titles. */
+  --heading-h1: 1.25rem; /* 20px — page title / h1 */
+  --heading-h2: 1.125rem; /* 18px — section / h2 */
+  --heading-h3: 0.875rem; /* 14px — h3 */
+  --heading-h4: 0.8125rem; /* 13px — h4 */
+
   --font-weight-normal: 400;
   --font-weight-medium: 500;
-  --font-weight-semibold: 600;
+  /* dxs-kintai uses three weights only (400/500/700). 600 is forbidden
+   * (ambiguous between 500 and 700) — the legacy "semibold" token collapses to
+   * medium so any remaining reference renders at 500. */
+  --font-weight-semibold: 500;
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-body: 1.7;

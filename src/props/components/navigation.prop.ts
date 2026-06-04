@@ -32,7 +32,7 @@ export type FilterGroupProp = ToolbarGroupProp;
 
 /** @see Pagination — offset/page-based (distinct from DataTable cursor pagination). */
 export type PaginationProp = {
-  current?: number;
+  value?: number;
   total?: number;
   pageSize?: number;
   pageSizeOptions?: number[];
@@ -41,7 +41,7 @@ export type PaginationProp = {
   simple?: boolean;
   disabled?: DisabledProp;
   className?: ClassNameProp;
-  onChange?: (page: number, pageSize: number) => void;
+  onValueChange?: (page: number, pageSize: number) => void;
 };
 
 export type StepStatusProp = "wait" | "process" | "finish" | "error";
@@ -49,9 +49,7 @@ export type StepStatusProp = "wait" | "process" | "finish" | "error";
 /** @see StepItem */
 export type StepItemProp = {
   title: React.ReactNode;
-  subTitle?: React.ReactNode;
-  /** Ant Design `content` — alias `description` supported */
-  content?: React.ReactNode;
+  subtitle?: React.ReactNode;
   description?: React.ReactNode;
   icon?: React.ReactNode;
   status?: StepStatusProp;
@@ -61,14 +59,14 @@ export type StepItemProp = {
 /** @see Steps */
 export type StepsProp = {
   items?: StepItemProp[];
-  current?: number;
-  initial?: number;
+  value?: number;
+  defaultValue?: number;
   status?: StepStatusProp;
   orientation?: "horizontal" | "vertical";
   type?: "default" | "dot";
-  size?: "default" | "sm";
+  size?: "md" | "sm";
   titlePlacement?: "horizontal" | "vertical";
-  onChange?: (current: number) => void;
+  onValueChange?: (value: number) => void;
   className?: ClassNameProp;
 };
 
@@ -85,7 +83,7 @@ export type TabsProp = {
   items?: TabItemProp[];
   value?: string;
   defaultValue?: string;
-  onValueChange?: (key: string) => void;
+  onValueChange?: (value: string) => void;
   variant?: "default" | "line" | "card";
   className?: ClassNameProp;
   listClassName?: ClassNameProp;

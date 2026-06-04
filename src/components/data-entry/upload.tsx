@@ -191,11 +191,28 @@ export function Upload({
       accept={accept}
       multiple={multiple && !isSingleAvatar}
       disabled={disabled}
+      aria-label={t("dataEntry.upload.inputLabel")}
       onChange={(e) => {
         pickFiles(e.target.files);
         e.target.value = "";
       }}
     />
+  );
+
+  // Announce selection / upload lifecycle changes to assistive tech.
+  const uploadingCount = items.filter((it) => it.status === "uploading").length;
+  const doneCount = items.filter((it) => it.status === "done").length;
+  const errorCount = items.filter((it) => it.status === "error").length;
+  const liveRegion = (
+    <span aria-live="polite" className="sr-only" data-slot="upload-status">
+      {errorCount > 0
+        ? t("dataEntry.upload.statusFailed", { count: errorCount })
+        : uploadingCount > 0
+          ? t("dataEntry.upload.statusUploading", { count: uploadingCount })
+          : items.length > 0
+            ? t("dataEntry.upload.statusReady", { count: items.length, done: doneCount })
+            : ""}
+    </span>
   );
 
   const openPicker = () => {
@@ -206,6 +223,7 @@ export function Upload({
     return (
       <div className={cn("ui-stack-sm", className)}>
         {hiddenInput}
+        {liveRegion}
         <div
           role="button"
           tabIndex={disabled ? -1 : 0}
@@ -249,6 +267,7 @@ export function Upload({
     return (
       <div className={cn("ui-stack-sm", className)}>
         {hiddenInput}
+        {liveRegion}
         <Button type="button" variant="outline" disabled={disabled} onClick={openPicker}>
           <UploadIcon className="mr-2 size-4" aria-hidden="true" />
           {children ?? t("dataEntry.upload.buttonLabel")}
@@ -265,6 +284,7 @@ export function Upload({
     return (
       <div className={cn("flex flex-wrap gap-3", className)}>
         {hiddenInput}
+        {liveRegion}
         {items.map((item) => (
           <UploadPictureCard
             key={item.uid}
@@ -297,6 +317,7 @@ export function Upload({
     return (
       <div className={cn("ui-stack-sm max-w-xs", className)}>
         {hiddenInput}
+        {liveRegion}
         {item?.previewUrl && !item.pendingDelete ? (
           <div className="relative overflow-hidden rounded-md border">
             <img src={item.previewUrl} alt="" className="max-h-48 w-full object-cover" />
@@ -334,6 +355,7 @@ export function Upload({
   return (
     <div className={cn("ui-stack-sm items-start", className)}>
       {hiddenInput}
+      {liveRegion}
       <UploadCropDialog
         open={variant === "avatar-crop" && cropFile != null}
         onOpenChange={(open) => !open && setCropFile(null)}
@@ -434,6 +456,7 @@ function UploadDraftActions({
 }
 
 function UploadPictureCard({ item, onRemove }: { item: UploadFileItem; onRemove?: () => void }) {
+  const { t } = useTranslation();
   return (
     <div className="bg-muted relative size-24 overflow-hidden rounded-md border">
       {item.previewUrl ? (
@@ -452,8 +475,8 @@ function UploadPictureCard({ item, onRemove }: { item: UploadFileItem; onRemove?
         <button
           type="button"
           onClick={onRemove}
-          className="bg-background/90 hover:bg-destructive hover:text-destructive-foreground absolute top-1 right-1 rounded-full p-0.5 shadow"
-          aria-label="Remove"
+          className="bg-background/90 hover:bg-destructive hover:text-destructive-foreground absolute end-1 top-1 rounded-full p-0.5 shadow"
+          aria-label={t("dataEntry.upload.removeImage")}
         >
           <X className="size-3.5" aria-hidden="true" />
         </button>
@@ -469,6 +492,7 @@ function UploadFileList({
   items: UploadFileItem[];
   onRemove?: (uid: string) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <ul className="ui-stack-xs">
       {items.map((item) => (
@@ -487,7 +511,13 @@ function UploadFileList({
             </div>
           </div>
           {onRemove && (
-            <Button type="button" size="sm" variant="ghost" onClick={() => onRemove(item.uid)}>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              aria-label={t("dataEntry.upload.removeFile", { name: item.name })}
+              onClick={() => onRemove(item.uid)}
+            >
               <X className="size-4" aria-hidden="true" />
             </Button>
           )}

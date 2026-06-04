@@ -13,6 +13,7 @@ All items below are standard Radix/community primitives, so they should fit the 
 ## Requested components
 
 ### P1 — basic primitives most design systems ship
+
 - [ ] **Avatar** (`Avatar` / `AvatarImage` / `AvatarFallback`) — Radix Avatar
 - [ ] **Separator** — Radix Separator
 - [ ] **Progress** — Radix Progress
@@ -21,6 +22,7 @@ All items below are standard Radix/community primitives, so they should fit the 
 - [ ] **AspectRatio** — Radix Aspect Ratio
 
 ### P2 — common overlays & navigation
+
 - [ ] **Accordion** — Radix Accordion
 - [ ] **ContextMenu** — Radix Context Menu
 - [ ] **HoverCard** — Radix Hover Card
@@ -31,6 +33,7 @@ All items below are standard Radix/community primitives, so they should fit the 
 - [ ] **Carousel** — embla
 
 ### P3 — form inputs
+
 - [ ] **InputOTP** — OTP / 2FA code input
 - [ ] **Combobox** (single + multi / autocomplete)
 - [ ] **PasswordInput** — text input with show/hide toggle
@@ -39,14 +42,16 @@ All items below are standard Radix/community primitives, so they should fit the 
 - [ ] **TagInput**
 
 ### Hooks
+
 - [ ] **useIsMobile** / **useMediaQuery** — responsive breakpoint hook
 
 ### Optional / low priority
+
 - [ ] Composable **AlertDialog** parts. `DialogConfirm` already covers the common destructive-confirm case, but the lower-level composable variant is sometimes useful.
 
 ## Context
+
 - Migrating from `@dxs-platform/dxs-pkg-ui` (a broad shadcn kitchen-sink) → `@godxjp/ui` v6.
 - v6's higher-level/opinionated direction (DataTable, Transfer, TreeSelect, Steps, FilterBar, φ-based tokens…) is great; this request is only about filling the **primitive** layer back in so consumers don't have to re-vendor standard building blocks.
 
 Happy to send PRs for any of these if that helps — just let us know the preferred conventions.
-

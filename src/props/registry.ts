@@ -332,22 +332,7 @@ export type VocabularyPropName = keyof typeof VOCABULARY_REGISTRY;
 
 export const COMPONENT_PROP_REGISTRY = {
   AppProviderProp: { group: "app", file: "components/app.prop.ts", vocabulary: ["ChildrenProp"] },
-  LocalePickerProp: {
-    group: "app",
-    file: "components/app.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
-  },
-  TimezonePickerProp: {
-    group: "app",
-    file: "components/app.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
-  },
-  TimeFormatPickerProp: {
-    group: "app",
-    file: "components/app.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
-  },
-  DateFormatPickerProp: {
+  AppSettingPickerProp: {
     group: "app",
     file: "components/app.prop.ts",
     vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
@@ -492,26 +477,6 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: ["IdProp", "LabelProp", "DescriptionProp", "ClassNameProp", "ChildrenProp"],
-  },
-  ChoiceFieldProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["IdProp", "LabelProp", "ClassNameProp"],
-  },
-  CountryOptionProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["LabelProp", "ValueProp"],
-  },
-  CountryOptionLabelProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["ClassNameProp"],
-  },
-  CountrySelectProp: {
-    group: "data-entry",
-    file: "components/data-entry.prop.ts",
-    vocabulary: ["IdProp", "NameProp", "DefaultValueProp", "RequiredProp", "PlaceholderProp"],
   },
   SliderProp: {
     group: "data-entry",
@@ -830,17 +795,17 @@ export const COMPONENT_PROP_REGISTRY = {
   PaginationProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["DisabledProp", "ClassNameProp"],
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
   },
   StepsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["SizeProp", "OnValueChangeProp", "ClassNameProp"],
+    vocabulary: ["ValueProp", "DefaultValueProp", "SizeProp", "OnValueChangeProp", "ClassNameProp"],
   },
   StepItemProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["TitleProp", "DescriptionProp", "IconProp", "DisabledProp"],
+    vocabulary: ["TitleProp", "SubtitleProp", "DescriptionProp", "IconProp", "DisabledProp"],
   },
   StepStatusProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
   TabsProp: {
@@ -882,6 +847,89 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "form",
     file: "components/form.prop.ts",
     vocabulary: ["ZodSchemaProp"],
+  },
+
+  // Component-declared prop types (XProps in src/components/**) — registered here so the
+  // prop-vocabulary guard governs them too (their fields are mostly Radix/native passthroughs).
+  ToggleProp: {
+    group: "data-entry",
+    file: "components/ui/toggle.tsx",
+    vocabulary: ["SizeProp", "ClassNameProp"],
+  },
+  RatingProp: {
+    group: "data-entry",
+    file: "components/ui/rating.tsx",
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
+  },
+  TagInputProp: {
+    group: "data-entry",
+    file: "components/ui/tag-input.tsx",
+    vocabulary: ["ValueProp", "OnValueChangeProp", "PlaceholderProp", "IdProp", "ClassNameProp"],
+  },
+  PasswordInputProp: {
+    group: "data-entry",
+    file: "components/ui/password-input.tsx",
+    vocabulary: ["ClassNameProp"],
+  },
+  PasswordStrengthProp: {
+    group: "data-entry",
+    file: "components/data-entry/password-strength.tsx",
+    vocabulary: ["ValueProp", "ClassNameProp"],
+  },
+  ProgressProp: {
+    group: "data-display",
+    file: "components/data-display/progress.tsx",
+    vocabulary: ["ValueProp", "LabelProp", "ClassNameProp"],
+  },
+  TimelineProp: {
+    group: "data-display",
+    file: "components/data-display/timeline.tsx",
+    vocabulary: ["ClassNameProp"],
+  },
+  TreeListProp: {
+    group: "data-display",
+    file: "components/data-display/tree-list.tsx",
+    vocabulary: ["ClassNameProp"],
+  },
+  CardProp: {
+    group: "data-display",
+    file: "components/data-display/card.tsx",
+    vocabulary: ["ToneProp", "ClassNameProp", "ChildrenProp"],
+  },
+  CardCoverProp: {
+    group: "data-display",
+    file: "components/data-display/card.tsx",
+    vocabulary: ["ClassNameProp", "ChildrenProp"],
+  },
+  CardHeaderProp: {
+    group: "data-display",
+    file: "components/data-display/card.tsx",
+    vocabulary: ["TitleProp", "DescriptionProp", "ClassNameProp", "ChildrenProp"],
+  },
+  CardContentProp: {
+    group: "data-display",
+    file: "components/data-display/card.tsx",
+    vocabulary: ["ClassNameProp", "ChildrenProp"],
+  },
+  CardFooterProp: {
+    group: "data-display",
+    file: "components/data-display/card.tsx",
+    vocabulary: ["ClassNameProp", "ChildrenProp"],
+  },
+  StatCardProp: {
+    group: "data-display",
+    file: "components/data-display/card.tsx",
+    vocabulary: ["TitleProp", "ToneProp", "ClassNameProp"],
+  },
+  ResponsiveGridProp: {
+    group: "layout",
+    file: "components/layout/responsive-grid.tsx",
+    vocabulary: ["GapProp", "ClassNameProp", "ChildrenProp"],
+  },
+  SplitPaneProp: {
+    group: "layout",
+    file: "components/layout/split-pane.tsx",
+    vocabulary: ["ClassNameProp", "ChildrenProp"],
   },
 } as const;
 

@@ -45,7 +45,7 @@ const SPACING_UTILITY_ALLOWLIST = new Set([
   "dropdown-menu.tsx",
   "pagination.tsx",
   "skeleton.tsx",
-  "choice-field.tsx",
+  "field.tsx",
   "radio.tsx",
   "color-picker.tsx",
   "autocomplete.tsx",

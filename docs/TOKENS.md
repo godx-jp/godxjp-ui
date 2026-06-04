@@ -120,7 +120,7 @@ See `docs/SPACING.md` for Card slot matrix. Same pattern everywhere:
 | KPI stat tile   | `<StatCard label value delta />` |
 | Page sections   | `<Stack gap="md">`               |
 | Row of controls | `<Inline gap="sm">`              |
-| Status enum     | `<Badge status="…" />`     |
+| Status enum     | `<Badge status="…" />`           |
 | Empty list      | `<EmptyState … />`               |
 
 ## Adding a new component

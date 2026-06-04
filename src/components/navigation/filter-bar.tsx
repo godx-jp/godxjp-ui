@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
@@ -18,7 +19,11 @@ export function Toolbar({ onClear, hasActiveFilters = true, className, children 
   const { t } = useTranslation();
 
   return (
-    <div className={cn("ui-toolbar", className)}>
+    <div
+      role="toolbar"
+      aria-label={t("navigation.toolbar.ariaLabel")}
+      className={cn("ui-toolbar", className)}
+    >
       {children}
       {onClear && hasActiveFilters && (
         <Button variant="ghost" size="sm" onClick={onClear} className="ui-toolbar-clear">
@@ -31,16 +36,20 @@ export function Toolbar({ onClear, hasActiveFilters = true, className, children 
 }
 
 export function ToolbarGroup({ label, className, children }: ToolbarGroupProp) {
+  const labelId = useId();
+
   return (
-    <div className={cn("ui-stack-xs ui-toolbar-group", className)}>
-      <div className="ui-toolbar-label">{label}</div>
+    <div
+      role="group"
+      aria-labelledby={label ? labelId : undefined}
+      className={cn("ui-stack-xs ui-toolbar-group", className)}
+    >
+      {label ? (
+        <div id={labelId} className="ui-toolbar-label">
+          {label}
+        </div>
+      ) : null}
       {children}
     </div>
   );
 }
-
-/** @deprecated Use Toolbar. */
-export const FilterBar = Toolbar;
-
-/** @deprecated Use ToolbarGroup. */
-export const FilterGroup = ToolbarGroup;

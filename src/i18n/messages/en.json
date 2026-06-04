@@ -10,7 +10,7 @@
     "clearSearch": "Clear search",
     "clearFilters": "Clear filters",
     "first": "First",
-    "next": "Next →",
+    "next": "Next",
     "selectedCount": "{count} selected",
     "typeToConfirm": "Type {phrase} to confirm"
   },
@@ -30,7 +30,10 @@
       "hour": "Hour",
       "minute": "Minute",
       "typeLabel": "Type time HH:mm",
-      "openPicker": "Open time picker"
+      "openPicker": "Open time picker",
+      "meridiem": "AM/PM",
+      "am": "AM",
+      "pm": "PM"
     },
     "searchInput": {
       "placeholder": "Search…"
@@ -40,7 +43,8 @@
       "empty": "No results found"
     },
     "colorPicker": {
-      "ariaLabel": "Pick color"
+      "ariaLabel": "Pick color",
+      "hexLabel": "Hex color value"
     },
     "upload": {
       "dropzoneLabel": "Upload files",
@@ -58,19 +62,28 @@
       "undo": "Undo",
       "cropTitle": "Crop photo",
       "cropZoom": "Zoom",
-      "cropConfirm": "Use photo"
+      "cropConfirm": "Use photo",
+      "inputLabel": "Choose files",
+      "statusUploading": "Uploading {count} file(s)…",
+      "statusReady": "{count} file(s), {done} uploaded",
+      "statusFailed": "{count} upload(s) failed",
+      "removeImage": "Remove image",
+      "removeFile": "Remove {name}",
+      "cropDescription": "Drag the zoom slider, then save to crop your photo to a square."
     },
     "cascader": {
       "placeholder": "Select…",
       "searchPlaceholder": "Search…",
-      "empty": "No results"
+      "empty": "No results",
+      "clear": "Clear selection"
     },
     "treeSelect": {
       "placeholder": "Select…",
       "searchPlaceholder": "Search…",
       "empty": "No data",
       "expand": "Expand",
-      "collapse": "Collapse"
+      "collapse": "Collapse",
+      "clear": "Clear selection"
     },
     "transfer": {
       "source": "Source",
@@ -78,7 +91,9 @@
       "searchPlaceholder": "Search…",
       "empty": "No data",
       "moveRight": "Move to target",
-      "moveLeft": "Move to source"
+      "moveLeft": "Move to source",
+      "selectAllSource": "Select all in source",
+      "selectAllTarget": "Select all in target"
     },
     "searchSelect": {
       "placeholder": "Select…",
@@ -92,9 +107,63 @@
     "errorPanel": {
       "title": "Couldn't load this section"
     },
-    "genericError": "Something went wrong. Please retry."
+    "genericError": "Something went wrong. Please retry.",
+    "alert": {
+      "dismiss": "Dismiss"
+    }
+  },
+  "layout": {
+    "sidebar": {
+      "ariaLabel": "Primary"
+    },
+    "appShell": {
+      "sidebarLabel": "Sidebar",
+      "headerLabel": "Header",
+      "mainLabel": "Main content",
+      "footerLabel": "Footer"
+    },
+    "topbar": {
+      "toggleSidebar": "Toggle sidebar",
+      "search": "Search",
+      "searchPlaceholder": "Search...",
+      "notifications": "Notifications",
+      "tweaks": "Open settings"
+    }
+  },
+  "dataDisplay": {
+    "carousel": {
+      "roleDescription": "carousel",
+      "ariaLabel": "Carousel",
+      "slideLabel": "{index} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "ui": {
+    "rating": {
+      "ariaLabel": "Rating",
+      "starLabel": "{star} / {max}"
+    },
+    "tagInput": {
+      "inputLabel": "Add tags",
+      "removeTag": "Remove {tag}",
+      "tagCount": "{count} tags"
+    },
+    "passwordInput": {
+      "show": "Show password",
+      "hide": "Hide password"
+    }
   },
   "navigation": {
+    "steps": {
+      "ariaLabel": "Progress"
+    },
+    "breadcrumb": {
+      "ariaLabel": "Breadcrumb"
+    },
+    "toolbar": {
+      "ariaLabel": "Filters"
+    },
     "localePicker": {
       "ariaLabel": "Language"
     },
@@ -114,7 +183,7 @@
       "page": "Page {page}",
       "pageSize": "Page size",
       "pageSizeOption": "{size} / page",
-      "total": "Total {total} items"
+      "total": { "one": "Total {total} item", "other": "Total {total} items" }
     }
   },
   "locale": {

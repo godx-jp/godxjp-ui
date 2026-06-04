@@ -1,4 +1,6 @@
 import * as React from "react";
+import { Card, CardContent } from "@godxjp/ui/data-display";
+import { Flex } from "@godxjp/ui/layout";
 
 import { HighlightedCode } from "./highlight";
 
@@ -364,197 +366,203 @@ export function StoryDemoBlock({
     zoomMode === "fit" ? `${Math.round(autoFitScale * 100)}%` : `${zoomMode}%`;
 
   return (
-    <div className="demo-block" ref={blockRef}>
-      <header className="demo-block-toolbar">
-        <label className="demo-block-field">
-          <span className="demo-block-field-label">Dimensions</span>
-          <select
-            className="demo-block-select"
-            value={presetId}
-            onChange={(e) => applyPreset(e.currentTarget.value as DevicePresetId)}
-            aria-label="Device preset"
-          >
-            {DEVICE_PRESETS.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="demo-block-dims" aria-label="Viewport size">
-          <input
-            className="demo-block-dim-input demo-block-dim-input-wide"
-            type="text"
-            inputMode="numeric"
-            readOnly={isResponsive}
-            value={dimDraftW}
-            aria-label="Width"
-            onChange={(e) => setDimDraftW(e.currentTarget.value)}
-            onBlur={() => commitDimDraft("w")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                commitDimDraft("w");
-                e.currentTarget.blur();
-              }
-            }}
-          />
-          <span className="demo-block-dim-sep">×</span>
-          <input
-            className="demo-block-dim-input demo-block-dim-input-wide"
-            type="text"
-            inputMode="numeric"
-            readOnly={isResponsive}
-            value={dimDraftH}
-            aria-label="Height"
-            onChange={(e) => setDimDraftH(e.currentTarget.value)}
-            onBlur={() => commitDimDraft("h")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                commitDimDraft("h");
-                e.currentTarget.blur();
-              }
-            }}
-          />
-        </div>
-        <label className="demo-block-field demo-block-field-zoom">
-          <span className="demo-block-field-label">Zoom</span>
-          <input
-            className="demo-block-dim-input demo-block-zoom-input"
-            type="text"
-            inputMode="decimal"
-            value={zoomDraft}
-            aria-label="Zoom percentage or fit"
-            title="Enter 10–300 or fit"
-            onChange={(e) => setZoomDraft(e.currentTarget.value)}
-            onBlur={applyZoomDraft}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                applyZoomDraft();
-                e.currentTarget.blur();
-              }
-            }}
-          />
-          <span className="demo-block-zoom-suffix">%</span>
-          <button
-            type="button"
-            className="demo-block-zoom-preset"
-            data-active={zoomMode === 100 ? "true" : undefined}
-            onClick={() => {
-              setZoomMode(100);
-              setZoomDraft("100");
-            }}
-          >
-            100%
-          </button>
-          <button
-            type="button"
-            className="demo-block-zoom-preset"
-            data-active={zoomMode === "fit" ? "true" : undefined}
-            onClick={() => {
-              setZoomMode("fit");
-              setZoomDraft("fit");
-            }}
-          >
-            Fit
-          </button>
-        </label>
-        <span className="demo-block-meta" title="Effective scale">
-          {zoomPercentLabel}
-        </span>
-      </header>
+    <Card className="demo-block" ref={blockRef}>
+      <CardContent>
+        <Flex direction="col" gap="lg">
+          <header className="demo-block-toolbar">
+            <label className="demo-block-field">
+              <span className="demo-block-field-label">Dimensions</span>
+              <select
+                className="demo-block-select"
+                value={presetId}
+                onChange={(e) => applyPreset(e.currentTarget.value as DevicePresetId)}
+                aria-label="Device preset"
+              >
+                {DEVICE_PRESETS.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="demo-block-dims" aria-label="Viewport size">
+              <input
+                className="demo-block-dim-input demo-block-dim-input-wide"
+                type="text"
+                inputMode="numeric"
+                readOnly={isResponsive}
+                value={dimDraftW}
+                aria-label="Width"
+                onChange={(e) => setDimDraftW(e.currentTarget.value)}
+                onBlur={() => commitDimDraft("w")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    commitDimDraft("w");
+                    e.currentTarget.blur();
+                  }
+                }}
+              />
+              <span className="demo-block-dim-sep">×</span>
+              <input
+                className="demo-block-dim-input demo-block-dim-input-wide"
+                type="text"
+                inputMode="numeric"
+                readOnly={isResponsive}
+                value={dimDraftH}
+                aria-label="Height"
+                onChange={(e) => setDimDraftH(e.currentTarget.value)}
+                onBlur={() => commitDimDraft("h")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    commitDimDraft("h");
+                    e.currentTarget.blur();
+                  }
+                }}
+              />
+            </div>
+            <label className="demo-block-field demo-block-field-zoom">
+              <span className="demo-block-field-label">Zoom</span>
+              <input
+                className="demo-block-dim-input demo-block-zoom-input"
+                type="text"
+                inputMode="decimal"
+                value={zoomDraft}
+                aria-label="Zoom percentage or fit"
+                title="Enter 10–300 or fit"
+                onChange={(e) => setZoomDraft(e.currentTarget.value)}
+                onBlur={applyZoomDraft}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    applyZoomDraft();
+                    e.currentTarget.blur();
+                  }
+                }}
+              />
+              <span className="demo-block-zoom-suffix">%</span>
+              <button
+                type="button"
+                className="demo-block-zoom-preset"
+                data-active={zoomMode === 100 ? "true" : undefined}
+                onClick={() => {
+                  setZoomMode(100);
+                  setZoomDraft("100");
+                }}
+              >
+                100%
+              </button>
+              <button
+                type="button"
+                className="demo-block-zoom-preset"
+                data-active={zoomMode === "fit" ? "true" : undefined}
+                onClick={() => {
+                  setZoomMode("fit");
+                  setZoomDraft("fit");
+                }}
+              >
+                Fit
+              </button>
+            </label>
+            <span className="demo-block-meta" title="Effective scale">
+              {zoomPercentLabel}
+            </span>
+          </header>
 
-      <div
-        className="demo-block-canvas"
-        ref={canvasRef}
-        data-mode={layout === "fullscreen" ? "page" : "component"}
-        data-responsive={isResponsive ? "true" : undefined}
-      >
-        <div
-          className="demo-block-viewport"
-          style={{
-            width: `${viewportW}px`,
-            height: `${viewportH}px`,
-          }}
-        >
           <div
-            ref={frameRef}
-            className="demo-block-frame"
-            data-layout={layout}
-            data-fill={layout === "fullscreen" ? "true" : undefined}
-            data-height-mode={frameHeightAuto ? "auto" : undefined}
-            style={{
-              width: `${dimW}px`,
-              height: frameHeightAuto ? "auto" : `${dimH}px`,
-              transform: effectiveScale === 1 ? undefined : `scale(${effectiveScale})`,
-              transformOrigin: "top left",
-            }}
+            className="demo-block-canvas"
+            ref={canvasRef}
+            data-mode={layout === "fullscreen" ? "page" : "component"}
+            data-responsive={isResponsive ? "true" : undefined}
           >
-            {loading ? <div className="preview-loading">Loading…</div> : null}
-            {error ? (
-              <div className="preview-error">
-                <strong>Failed to load demo</strong>
-                <pre>{error}</pre>
-              </div>
-            ) : null}
-            {!loading && !error ? children : null}
-          </div>
-        </div>
-      </div>
-
-      {showFooter ? (
-        <footer className="demo-block-footer">
-          <button
-            type="button"
-            className="demo-block-footer-btn"
-            data-active={codeOpen ? "true" : undefined}
-            onClick={() => setCodeOpen((v) => !v)}
-            aria-expanded={codeOpen}
-          >
-            View code
-          </button>
-          <button
-            type="button"
-            className="demo-block-footer-btn"
-            onClick={() => openStoryInNewTab(storyId)}
-          >
-            Open in new tab
-          </button>
-          <button
-            type="button"
-            className="demo-block-footer-btn"
-            onClick={() =>
-              openStoryFrameInNewTab(storyId, {
-                presetId,
-                zoom: zoomMode,
-                width: dimW,
-                height: dimH,
-              })
-            }
-          >
-            Open with viewport
-          </button>
-          {codeOpen ? (
-            <button
-              type="button"
-              className="demo-block-footer-btn demo-block-footer-copy"
-              onClick={copy}
+            <div
+              className="demo-block-viewport"
+              style={{
+                width: `${viewportW}px`,
+                height: `${viewportH}px`,
+              }}
             >
-              {copied ? "Copied" : "Copy"}
-            </button>
-          ) : null}
-        </footer>
-      ) : null}
+              <div
+                ref={frameRef}
+                className="demo-block-frame"
+                data-layout={layout}
+                data-fill={layout === "fullscreen" ? "true" : undefined}
+                data-height-mode={frameHeightAuto ? "auto" : undefined}
+                style={{
+                  width: `${dimW}px`,
+                  height: frameHeightAuto ? "auto" : `${dimH}px`,
+                  transform: effectiveScale === 1 ? undefined : `scale(${effectiveScale})`,
+                  transformOrigin: "top left",
+                }}
+              >
+                {loading ? <div className="preview-loading">Loading…</div> : null}
+                {error ? (
+                  <div className="preview-error">
+                    <strong>Failed to load demo</strong>
+                    <pre>{error}</pre>
+                  </div>
+                ) : null}
+                {!loading && !error ? children : null}
+              </div>
+            </div>
+          </div>
 
-      {showFooter && codeOpen ? (
-        <div className="demo-block-code">
-          <pre className="demo-block-code-pre">
-            <HighlightedCode source={source} />
-          </pre>
-        </div>
-      ) : null}
-    </div>
+          {showFooter ? (
+            <footer className="demo-block-footer">
+              <Flex direction="row" wrap align="center" gap="sm">
+                <button
+                  type="button"
+                  className="demo-block-footer-btn"
+                  data-active={codeOpen ? "true" : undefined}
+                  onClick={() => setCodeOpen((v) => !v)}
+                  aria-expanded={codeOpen}
+                >
+                  View code
+                </button>
+                <button
+                  type="button"
+                  className="demo-block-footer-btn"
+                  onClick={() => openStoryInNewTab(storyId)}
+                >
+                  Open in new tab
+                </button>
+                <button
+                  type="button"
+                  className="demo-block-footer-btn"
+                  onClick={() =>
+                    openStoryFrameInNewTab(storyId, {
+                      presetId,
+                      zoom: zoomMode,
+                      width: dimW,
+                      height: dimH,
+                    })
+                  }
+                >
+                  Open with viewport
+                </button>
+                {codeOpen ? (
+                  <button
+                    type="button"
+                    className="demo-block-footer-btn demo-block-footer-copy"
+                    onClick={copy}
+                  >
+                    {copied ? "Copied" : "Copy"}
+                  </button>
+                ) : null}
+              </Flex>
+            </footer>
+          ) : null}
+
+          {showFooter && codeOpen ? (
+            <div className="demo-block-code">
+              <pre className="demo-block-code-pre">
+                <HighlightedCode source={source} />
+              </pre>
+            </div>
+          ) : null}
+        </Flex>
+      </CardContent>
+    </Card>
   );
 }

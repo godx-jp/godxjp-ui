@@ -75,9 +75,9 @@ describe("Cascader", () => {
     renderWithUi(<Cascader options={REGION_OPTIONS} onValueChange={onChange} />);
     await user.click(screen.getByRole("combobox"));
 
-    await user.click(screen.getByRole("button", { name: /việt nam/i }));
-    await user.click(screen.getByRole("button", { name: /tp\. hồ chí minh/i }));
-    await user.click(screen.getByRole("button", { name: /quận 1/i }));
+    await user.click(screen.getByRole("option", { name: /việt nam/i }));
+    await user.click(screen.getByRole("option", { name: /tp\. hồ chí minh/i }));
+    await user.click(screen.getByRole("option", { name: /quận 1/i }));
 
     expect(onChange).toHaveBeenCalledWith(["vn", "hcm", "q1"], expect.any(Array));
   });
@@ -90,9 +90,13 @@ describe("Cascader", () => {
     );
     await user.click(screen.getByRole("combobox"));
 
-    expect(screen.getByRole("button", { name: /việt nam/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /^日本$/i })).toBeInTheDocument();
-    expect(screen.queryByRole("option")).not.toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /việt nam/i })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /^日本$/i })).toBeInTheDocument();
+    // Cascade columns are listboxes; the flat search-results listbox is not rendered when the query is empty.
+    expect(screen.queryByPlaceholderText(/tìm kiếm/i)).toHaveValue("");
+    expect(
+      screen.queryByRole("option", { name: "日本 / 東京都 / 新宿区" }),
+    ).not.toBeInTheDocument();
   });
 
   it("filters leaf paths when searching", async () => {
@@ -102,8 +106,8 @@ describe("Cascader", () => {
     await user.click(screen.getByRole("combobox"));
     await user.type(screen.getByPlaceholderText(/tìm kiếm/i), "新宿");
 
-    expect(await screen.findByRole("button", { name: /新宿区/i })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /^việt nam$/i })).not.toBeInTheDocument();
+    expect(await screen.findByRole("option", { name: /新宿区/i })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: /^việt nam$/i })).not.toBeInTheDocument();
   });
 
   it("selects a path from search results", async () => {
@@ -114,7 +118,7 @@ describe("Cascader", () => {
     await user.click(screen.getByRole("combobox"));
     await user.type(screen.getByPlaceholderText(/tìm kiếm/i), "quận 3");
 
-    await user.click(await screen.findByRole("button", { name: /quận 3/i }));
+    await user.click(await screen.findByRole("option", { name: /quận 3/i }));
 
     expect(onChange).toHaveBeenCalledWith(["vn", "hcm", "q3"], expect.any(Array));
   });
@@ -133,13 +137,13 @@ describe("Cascader", () => {
     renderWithUi(<Cascader options={REGION_OPTIONS} showSearch />);
     await user.click(screen.getByRole("combobox"));
     await user.type(screen.getByPlaceholderText(/tìm kiếm/i), "新宿");
-    expect(await screen.findByRole("button", { name: /新宿区/i })).toBeInTheDocument();
+    expect(await screen.findByRole("option", { name: /新宿区/i })).toBeInTheDocument();
 
     await user.keyboard("{Escape}");
     await user.click(screen.getByRole("combobox"));
 
     expect(screen.getByPlaceholderText(/tìm kiếm/i)).toHaveValue("");
-    expect(screen.getByRole("button", { name: /việt nam/i })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /việt nam/i })).toBeInTheDocument();
   });
 
   it("expands cascade columns when clicking a parent node", async () => {
@@ -147,10 +151,10 @@ describe("Cascader", () => {
 
     renderWithUi(<Cascader options={REGION_OPTIONS} />);
     await user.click(screen.getByRole("combobox"));
-    await user.click(screen.getByRole("button", { name: /việt nam/i }));
+    await user.click(screen.getByRole("option", { name: /việt nam/i }));
 
-    expect(screen.getByRole("button", { name: /tp\. hồ chí minh/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /hà nội/i })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /tp\. hồ chí minh/i })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /hà nội/i })).toBeInTheDocument();
   });
 
   it("commits intermediate path when changeOnSelect is enabled", async () => {
@@ -159,7 +163,7 @@ describe("Cascader", () => {
 
     renderWithUi(<Cascader options={REGION_OPTIONS} changeOnSelect onValueChange={onChange} />);
     await user.click(screen.getByRole("combobox"));
-    await user.click(screen.getByRole("button", { name: /việt nam/i }));
+    await user.click(screen.getByRole("option", { name: /việt nam/i }));
 
     expect(onChange).toHaveBeenCalledWith(["vn"], expect.any(Array));
   });
@@ -213,7 +217,7 @@ describe("Cascader", () => {
     );
     await user.click(screen.getByRole("combobox"));
     await user.type(screen.getByPlaceholderText(/tìm kiếm/i), "quận 1");
-    await user.click(await screen.findByRole("button", { name: /quận 1/i }));
+    await user.click(await screen.findByRole("option", { name: /quận 1/i }));
 
     expect(onChange).toHaveBeenCalledWith([["vn", "hcm", "q1"]], expect.any(Array));
     expect(screen.getAllByRole("combobox")[0]).toHaveTextContent(
@@ -223,7 +227,7 @@ describe("Cascader", () => {
     const search = screen.getByPlaceholderText(/tìm kiếm/i);
     await user.clear(search);
     await user.type(search, "quận 3");
-    await user.click(await screen.findByRole("button", { name: /quận 3/i }));
+    await user.click(await screen.findByRole("option", { name: /quận 3/i }));
 
     expect(onChange).toHaveBeenLastCalledWith(
       expect.arrayContaining([
@@ -414,7 +418,7 @@ describe("Transfer", () => {
       <Transfer dataSource={TRANSFER_MOCK} targetKeys={[]} onValueChange={onChange} showSearch />,
     );
 
-    const selectAll = screen.getAllByRole("checkbox", { name: /select all source/i })[0];
+    const selectAll = screen.getAllByRole("checkbox", { name: /chọn tất cả ở nguồn/i })[0];
     await user.click(selectAll);
     await user.click(screen.getByRole("button", { name: /chuyển sang đích/i }));
 

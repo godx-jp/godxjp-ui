@@ -1,9 +1,11 @@
 # ADR: Prop Vocabulary and Token Consistency
 
 ## Status
+
 Decided. Governing standard: PRAGMATIC-SHARED, hardened for 8.0.0.
 
 ## Context
+
 The package already has `VOCABULARY_REGISTRY` and `COMPONENT_PROP_REGISTRY`, but the registry is not yet a reliable contract. It permits missing shared concepts (`DefaultValueProp`, `OnValueChangeProp`, `DefaultOpenProp`), duplicate aliases (`GapProp`/`StackGapProp`/`InlineGapProp`, `TitleProp`/`PageTitleProp`), empty component vocabulary arrays, and references to vocabulary entries that do not exist (`UseZodFormReturnProp`, `ZodSchemaProp`) (`src/props/registry.ts:24`, `src/props/registry.ts:79`, `src/props/registry.ts:164`, `src/props/registry.ts:169`, `src/props/registry.ts:233`, `src/props/registry.ts:320`, `src/props/registry.ts:622`).
 
 The token surface also mixes concerns. Domain tokens `--tracking-internal`, `--tracking-seller`, and `--tracking-yamato` are defined in light and dark foundation tokens and exported through Tailwind (`src/tokens/foundation.css:33`, `src/tokens/foundation.css:148`, `src/styles/index.css:56`). Component tokens live under `src/tokens/primitives/`, while the Tailwind v4 `@theme` surface also exposes semantic roles, chart colors, wa-iro decorative tokens, and tracking tokens together (`src/styles/index.css:22`, `src/styles/index.css:50`, `src/styles/index.css:65`).
@@ -11,6 +13,7 @@ The token surface also mixes concerns. Domain tokens `--tracking-internal`, `--t
 The decisive distinction is concept identity, not word identity. `gap`, `title`, and controlled state are shared concepts. `ButtonVariantProp`, `PageContainerVariantProp`, `UploadVariantProp`, and tab presentation are not one interchangeable enum (`src/props/vocabulary/interaction.prop.ts:7`, `src/props/vocabulary/layout.prop.ts:10`, `src/props/components/data-entry.prop.ts:294`, `src/props/components/navigation.prop.ts:83`). However, semantic status values such as `success`, `warning`, `destructive`, `info`, and `neutral` must be named as `tone`/status, not hidden inside `variant` (`src/props/vocabulary/interaction.prop.ts:30`, `src/props/components/data-display.prop.ts:45`).
 
 ## Options
+
 STRICT-CANON: one canonical vocabulary and one global concept name for every repeated word; full controlled/open vocabulary; semantic-only public tokens; primitive -> semantic -> component tiers.
 
 PRAGMATIC-SHARED: shared vocabulary for cross-cutting concepts; component-specific unions remain only when their values have different semantics; full controlled/open vocabulary; primitive -> semantic -> component token tiers with documented neutral public escape hatches.
@@ -18,6 +21,7 @@ PRAGMATIC-SHARED: shared vocabulary for cross-cutting concepts; component-specif
 STATUS-QUO+: keep most current names and token structure; fix only obvious defects such as `--tracking-*`, gap aliases, and registry truth.
 
 ## Decision
+
 Adopt PRAGMATIC-SHARED for 8.0.0.
 
 STRICT loses because one global `VariantProp` would erase real distinctions: button treatment, alert/status tone, confirm emphasis, page shell layout, upload mode, and tabs presentation are different concepts. The standard is: `variant` is a shared public prop concept meaning "visual treatment or presentation mode", but each component may define a per-component value union when the allowed values are not semantically interchangeable. Semantic color/status intent is a separate `ToneProp`.
@@ -27,15 +31,17 @@ The controlled vocabulary is adopted fully, not partially. Abstract controlled v
 Tokens use three tiers: primitive -> semantic -> component. This is the right level for Tailwind v4 + CSS variables because it separates raw scales, UI intent, and component internals without requiring a W3C JSON pipeline. Public Tailwind exports may include semantic roles, component tokens where useful, chart scales, and documented neutral decorative primitives such as `wa-*`; public domain tokens and undocumented raw ramps are not allowed.
 
 ## Rubric
-| Option | Consistency /30 | Completeness /20 | Standards /20 | Enforceability /15 | Migration /15 | Total |
-|---|---:|---:|---:|---:|---:|---:|
-| STRICT-CANON | 24: strong one-name rule, but false-merges real component enum semantics. | 18: catches nearly all registry/token gaps. | 15: aligns with token layering, but overstates W3C/Tailwind as semantic-only public surfaces. | 14: easiest to lint, but some checks would enforce wrong concepts. | 8: broad renames and enum collapse create unnecessary churn. | 79 |
-| PRAGMATIC-SHARED | 28: canonizes true shared concepts while preserving meaningful component distinctions. | 19: requires missing controlled/open vocab, registry completion, and token cleanup. | 19: matches MUI/Ant/Radix practice plus DTCG-style alias layering. | 13: enforceable with documented local-enum exceptions. | 12: breaking where correctness requires it, but avoids false-merge churn. | 91 |
-| STATUS-QUO+ | 20: fixes exact aliases but leaves overloaded `variant`, density/title drift, and ad hoc handlers. | 14: under-scopes missing vocabulary and empty registry arrays. | 16: rightly resists global enums, but token structure remains blurred. | 9: registry remains advisory without stronger rules. | 15: least churn. | 74 |
+
+| Option           |                                                                                    Consistency /30 |                                                                    Completeness /20 |                                                                                 Standards /20 |                                                 Enforceability /15 |                                                             Migration /15 | Total |
+| ---------------- | -------------------------------------------------------------------------------------------------: | ----------------------------------------------------------------------------------: | --------------------------------------------------------------------------------------------: | -----------------------------------------------------------------: | ------------------------------------------------------------------------: | ----: |
+| STRICT-CANON     |                          24: strong one-name rule, but false-merges real component enum semantics. |                                         18: catches nearly all registry/token gaps. | 15: aligns with token layering, but overstates W3C/Tailwind as semantic-only public surfaces. | 14: easiest to lint, but some checks would enforce wrong concepts. |              8: broad renames and enum collapse create unnecessary churn. |    79 |
+| PRAGMATIC-SHARED |             28: canonizes true shared concepts while preserving meaningful component distinctions. | 19: requires missing controlled/open vocab, registry completion, and token cleanup. |                            19: matches MUI/Ant/Radix practice plus DTCG-style alias layering. |             13: enforceable with documented local-enum exceptions. | 12: breaking where correctness requires it, but avoids false-merge churn. |    91 |
+| STATUS-QUO+      | 20: fixes exact aliases but leaves overloaded `variant`, density/title drift, and ad hoc handlers. |                      14: under-scopes missing vocabulary and empty registry arrays. |                        16: rightly resists global enums, but token structure remains blurred. |               9: registry remains advisory without stronger rules. |                                                          15: least churn. |    74 |
 
 Winner: PRAGMATIC-SHARED by 12 points over STRICT-CANON.
 
 ## Consequences
+
 8.0.0 is one consolidated breaking release for vocabulary and token cleanup. No compatibility aliases are required for external consumers, but internal deprecated aliases may exist briefly inside implementation files only if they are not exported or registered as canonical vocabulary.
 
 The registry becomes normative. An exported component prop type with public fields must either map each field to vocabulary or mark the field as local with a registry reason. Duplicate aliases without deprecation metadata fail CI.
@@ -43,6 +49,7 @@ The registry becomes normative. An exported component prop type with public fiel
 Token files must be reorganized by tier. CSS variables and Tailwind `@theme` exports are public API; they must be domain-neutral and backed by registered token metadata or a documented token namespace.
 
 ## RULES
+
 1. Prop vocabulary: every exported `*Prop` type in `src/props/components/` MUST have exactly one `COMPONENT_PROP_REGISTRY` entry.
 2. Prop vocabulary: every public property in an exported component prop type MUST map to one `VOCABULARY_REGISTRY` entry or to a `local: true` registry record with a non-empty `reason`.
 3. Prop vocabulary: every vocabulary name referenced by `COMPONENT_PROP_REGISTRY[*].vocabulary` MUST exist in `VOCABULARY_REGISTRY`.
@@ -67,6 +74,7 @@ Token files must be reorganized by tier. CSS variables and Tailwind `@theme` exp
 22. Design tokens: density CSS MUST select token aliases and MUST NOT introduce new raw component dimensions when a token tier can hold the value.
 
 ## CLEANUP
+
 Prop renames and merges for 8.0.0:
 
 1. `StackGapProp -> GapProp`; `InlineGapProp -> GapProp` with optional component subset via `Extract`/`Exclude`. Update `src/props/vocabulary/layout.prop.ts`, `src/props/components/layout.prop.ts`, and `src/props/registry.ts`.
@@ -103,6 +111,7 @@ Token cleanup:
 10. Move density raw dimensions from `src/styles/density.css` into component or semantic density tokens; density classes should assign aliases, not introduce new raw sizes.
 
 ## Dissent
+
 STRICT dissent: the winning standard still risks policy drift because local enum exceptions are harder to audit than one global canonical name. This is a real risk; the mitigation is a required registry reason for every component-specific enum and CI failure for undocumented local concepts.
 
 STATUS-QUO+ dissent: the decision spends breaking-change budget on renames before external consumers exist. The dissent is rejected because 7.0.0 has no external consumers, and 8.0.0 is the correct moment to remove overloaded `variant`, incomplete controlled vocabulary, and advisory registry gaps before they become public debt.

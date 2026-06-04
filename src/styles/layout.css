@@ -173,9 +173,9 @@
   }
 
   @container (min-width: 1024px) {
-  .ui-responsive-grid {
-    grid-template-columns: repeat(var(--responsive-grid-lg, 4), minmax(0, 1fr));
-  }
+    .ui-responsive-grid {
+      grid-template-columns: repeat(var(--responsive-grid-lg, 4), minmax(0, 1fr));
+    }
   }
 
   .ui-split-pane {
@@ -235,23 +235,28 @@
     display: flex;
     flex-direction: column;
     min-height: 100%;
-    padding: var(--space-page-active-y) var(--space-page-active-x);
+    padding: var(--space-page-active-y) 0;
     gap: var(--space-section-active);
+  }
+
+  /* Horizontal page insets live on the header/body/footer — NOT the container —
+   * so the header divider and footer border span the full page width
+   * (full-bleed) while their content stays aligned with the body. */
+  .ui-page-header,
+  .ui-page-body,
+  .ui-page-footer {
+    padding-left: var(--space-page-active-x);
+    padding-right: var(--space-page-active-x);
   }
 
   .ui-page-container--narrow .ui-page-body {
     max-width: 42rem;
   }
 
-  .ui-page-container--flush {
+  /* flush = full-bleed body (DataTable); header/footer keep their inset. */
+  .ui-page-container--flush .ui-page-body {
     padding-left: 0;
     padding-right: 0;
-  }
-
-  .ui-page-container--flush .ui-page-header,
-  .ui-page-container--flush .ui-page-footer {
-    padding-left: var(--space-page-active-x);
-    padding-right: var(--space-page-active-x);
   }
 
   .ui-page-container-inset,
@@ -308,8 +313,8 @@
   }
 
   .ui-page-title {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
+    font-size: var(--heading-h1);
+    font-weight: var(--font-weight-medium);
     letter-spacing: var(--letter-spacing-tight);
     line-height: var(--line-height-tight);
     overflow-wrap: anywhere;
@@ -327,10 +332,6 @@
       width: auto;
       flex-shrink: 0;
       justify-content: flex-end;
-    }
-
-    .ui-page-title {
-      font-size: var(--font-size-2xl);
     }
   }
 

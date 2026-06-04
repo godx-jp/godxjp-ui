@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/ui",
-  "version": "9.2.0",
+  "version": "10.0.0",
   "type": "module",
   "packageManager": "pnpm@10.29.1",
   "sideEffects": false,
@@ -183,10 +183,6 @@
       "types": "./dist/components/data-entry/transfer.d.ts",
       "import": "./dist/components/data-entry/transfer.js"
     },
-    "./ui/combobox": {
-      "types": "./dist/components/data-entry/combobox.d.ts",
-      "import": "./dist/components/data-entry/combobox.js"
-    },
     "./ui/command": {
       "types": "./dist/components/data-entry/command.d.ts",
       "import": "./dist/components/data-entry/command.js"
@@ -269,8 +265,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm test",
-    "verify:release": "pnpm typecheck && pnpm lint && pnpm build && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm test",
+    "check:example-imports": "node scripts/check-example-imports.mjs",
+    "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm test",
+    "verify:release": "pnpm typecheck && pnpm lint && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm test",
     "check:mcp-sync": "node scripts/check-mcp-sync.mjs",
     "check:mcp-orphans": "node scripts/check-mcp-orphans.mjs",
     "check:prop-vocabulary": "node scripts/check-prop-vocabulary.mjs",
@@ -367,6 +364,7 @@
     "typescript-eslint": "^8.60.0",
     "vite": "^8.0.10",
     "vitest": "^4.1.5",
+    "vitest-axe": "1.0.0-pre.5",
     "zod": "^4.4.3"
   },
   "bin": {

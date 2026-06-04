@@ -12,7 +12,7 @@ import {
 import { useTranslation } from "../../i18n/use-translation";
 import { humanError } from "../../lib/format";
 import { cn } from "../../lib/utils";
-import { Inline } from "../layout/inline";
+import { Flex } from "../layout/flex";
 import { Button } from "../general/button";
 import type { ToneProp } from "../../props/vocabulary";
 import type {
@@ -41,6 +41,9 @@ export type {
 
 const AlertContext = React.createContext<ToneProp>("default");
 
+/** Tones that warrant an assertive `role="alert"`; all others use the polite `role="status"`. */
+const ASSERTIVE_TONES: ReadonlySet<ToneProp> = new Set<ToneProp>(["destructive", "warning"]);
+
 const DEFAULT_ICONS: Record<ToneProp, LucideIcon> = {
   default: Info,
   destructive: AlertCircle,
@@ -56,13 +59,14 @@ const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
     { variant = "default", tone = "default", icon, onDismiss, className, children, ...props },
     ref,
   ) => {
+    const { t } = useTranslation();
     const IconComponent = icon === false ? null : (icon ?? DEFAULT_ICONS[tone]);
 
     return (
       <AlertContext.Provider value={tone}>
         <div
           ref={ref}
-          role="alert"
+          role={ASSERTIVE_TONES.has(tone) ? "alert" : "status"}
           data-slot="alert"
           data-variant={variant}
           data-tone={tone}
@@ -82,7 +86,7 @@ const AlertBase = React.forwardRef<HTMLDivElement, AlertProp>(
               }}
               data-slot="alert-dismiss"
               className="ring-offset-background focus-visible:ring-ring transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-              aria-label="Dismiss"
+              aria-label={t("feedback.alert.dismiss")}
             >
               <X className="size-4" aria-hidden="true" />
             </button>
@@ -146,10 +150,10 @@ export function AlertQueryError({ error, onRetry, className }: AlertQueryErrorPr
               void onRetry();
             }}
           >
-            <Inline gap="xs">
+            <Flex direction="row" wrap align="center" gap="xs">
               <RefreshCw className="size-4" aria-hidden="true" />
               {t("common.retry")}
-            </Inline>
+            </Flex>
           </Button>
         </AlertActions>
       )}

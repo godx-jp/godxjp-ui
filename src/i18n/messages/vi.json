@@ -10,7 +10,7 @@
     "clearSearch": "Xóa tìm kiếm",
     "clearFilters": "Xóa bộ lọc",
     "first": "Đầu",
-    "next": "Tiếp →",
+    "next": "Tiếp",
     "selectedCount": "{count} đã chọn",
     "typeToConfirm": "Nhập {phrase} để xác nhận"
   },
@@ -30,7 +30,10 @@
       "hour": "Giờ",
       "minute": "Phút",
       "typeLabel": "Nhập giờ HH:mm",
-      "openPicker": "Mở chọn giờ"
+      "openPicker": "Mở chọn giờ",
+      "meridiem": "Buổi",
+      "am": "SA",
+      "pm": "CH"
     },
     "searchInput": {
       "placeholder": "Tìm kiếm…"
@@ -40,7 +43,8 @@
       "empty": "Không tìm thấy kết quả"
     },
     "colorPicker": {
-      "ariaLabel": "Chọn màu"
+      "ariaLabel": "Chọn màu",
+      "hexLabel": "Mã màu hex"
     },
     "upload": {
       "dropzoneLabel": "Tải file lên",
@@ -58,19 +62,28 @@
       "undo": "Hoàn tác",
       "cropTitle": "Cắt ảnh",
       "cropZoom": "Thu phóng",
-      "cropConfirm": "Dùng ảnh này"
+      "cropConfirm": "Dùng ảnh này",
+      "inputLabel": "Chọn tệp",
+      "statusUploading": "Đang tải lên {count} tệp…",
+      "statusReady": "{count} tệp, đã tải lên {done}",
+      "statusFailed": "{count} tệp tải lên thất bại",
+      "removeImage": "Xóa ảnh",
+      "removeFile": "Xóa {name}",
+      "cropDescription": "Kéo thanh thu phóng rồi lưu để cắt ảnh thành hình vuông."
     },
     "cascader": {
       "placeholder": "Chọn…",
       "searchPlaceholder": "Tìm kiếm…",
-      "empty": "Không có kết quả"
+      "empty": "Không có kết quả",
+      "clear": "Xóa lựa chọn"
     },
     "treeSelect": {
       "placeholder": "Chọn…",
       "searchPlaceholder": "Tìm kiếm…",
       "empty": "Không có dữ liệu",
       "expand": "Mở rộng",
-      "collapse": "Thu gọn"
+      "collapse": "Thu gọn",
+      "clear": "Xóa lựa chọn"
     },
     "transfer": {
       "source": "Nguồn",
@@ -78,7 +91,9 @@
       "searchPlaceholder": "Tìm kiếm…",
       "empty": "Không có dữ liệu",
       "moveRight": "Chuyển sang đích",
-      "moveLeft": "Chuyển về nguồn"
+      "moveLeft": "Chuyển về nguồn",
+      "selectAllSource": "Chọn tất cả ở nguồn",
+      "selectAllTarget": "Chọn tất cả ở đích"
     },
     "searchSelect": {
       "placeholder": "Chọn…",
@@ -92,9 +107,63 @@
     "errorPanel": {
       "title": "Không tải được nội dung này"
     },
-    "genericError": "Đã xảy ra lỗi. Vui lòng thử lại."
+    "genericError": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "alert": {
+      "dismiss": "Đóng"
+    }
+  },
+  "layout": {
+    "sidebar": {
+      "ariaLabel": "Điều hướng chính"
+    },
+    "appShell": {
+      "sidebarLabel": "Thanh bên",
+      "headerLabel": "Đầu trang",
+      "mainLabel": "Nội dung chính",
+      "footerLabel": "Chân trang"
+    },
+    "topbar": {
+      "toggleSidebar": "Bật/tắt thanh bên",
+      "search": "Tìm kiếm",
+      "searchPlaceholder": "Tìm kiếm...",
+      "notifications": "Thông báo",
+      "tweaks": "Mở tùy chỉnh"
+    }
+  },
+  "dataDisplay": {
+    "carousel": {
+      "roleDescription": "băng chuyền",
+      "ariaLabel": "Băng chuyền",
+      "slideLabel": "{index} / {total}",
+      "previous": "Trước",
+      "next": "Sau"
+    }
+  },
+  "ui": {
+    "rating": {
+      "ariaLabel": "Đánh giá",
+      "starLabel": "{star} / {max}"
+    },
+    "tagInput": {
+      "inputLabel": "Thêm thẻ",
+      "removeTag": "Xóa {tag}",
+      "tagCount": "{count} thẻ"
+    },
+    "passwordInput": {
+      "show": "Hiện mật khẩu",
+      "hide": "Ẩn mật khẩu"
+    }
   },
   "navigation": {
+    "steps": {
+      "ariaLabel": "Tiến trình"
+    },
+    "breadcrumb": {
+      "ariaLabel": "Đường dẫn"
+    },
+    "toolbar": {
+      "ariaLabel": "Bộ lọc"
+    },
     "localePicker": {
       "ariaLabel": "Ngôn ngữ"
     },

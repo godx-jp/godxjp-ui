@@ -1,0 +1,81 @@
+# 01 — Message Bus (append-only)
+
+---
+
+### r0 · ADV-RECIPES → all · opening
+
+claim: Option RECIPES should win because a dedicated real-screen gallery forces the preview to teach production-style workflows (exactly the user’s “y như thật” ask) while still fixing overview spacing in the same pass via framework layout primitives, all with existing components only.
+evidence: 00-Topic.md:20-26 (RECIPES scenario-screen examples), 00-Topic.md:37-37 (spacing must use primitives), snapshot.md:2-3 (explicit component whitelist), examples/screens/AgentPortal.preview.tsx:359-476 + 922-945 (currently-built full scenarios + story exports), preview/src/preview.css:331-346,364-375 (current raw margin/padding-based doc spacing), preview/src/App.tsx:231-284 (overview/story rendering currently uses fixed doc wrappers)
+warrant: A screen gallery gives immediate teaching value that isolated primitives cannot provide, and existing large-scale examples already prove the component set can express complete dashboards and inbox workflows; adding sign-in/settings/invoice/profile screens lowers ambiguity for consumers without violating the hard rule.
+assumptions: The preview runtime and story discovery remain unchanged; existing `examples/fixtures/demo-content.ts` can be extended for realistic records; real images come from neutral service URLs (e.g. picsum) and use only `@godxjp/ui` components.
+confidence: 92
+
+### r0 · ADV-SYSTEMATIZE → all · opening
+
+claim: OPTION SYSTEMATIZE is the only strategy that prevents spacing and realism regressions at scale because examples are centrally loaded and shared fixtures already exist, so one shell and one import policy can enforce both `@godxjp/ui`-only composition and tokenized spacing across all screens.
+evidence: 00-Topic.md:27-30; snapshot.md:2-3; preview/src/example-catalog.ts:45-51,195-225; preview/src/preview.css:331-342,344-346,348-352,948-964; preview/src/App.tsx:256-320; examples/fixtures/demo-content.ts:3-134; examples/layout/PageContainer.preview.tsx:3-12; examples/screens/AgentPortal.preview.tsx:18-55.
+warrant: Since every preview story is discovered through `examples/**/*.preview.tsx` and rendered from `buildEntries` (preview/src/example-catalog.ts:45-51,195-225), a shared fixture module plus one shell wrapper can be injected consistently; the current spacing pipeline is CSS-chrome driven (preview/src/preview.css and `doc-page` wrappers), so standardization requires a guardrails step to reject local component/wrapper imports and require `@godxjp/ui`-only primitives before `pnpm preview:build` (package.json:281-282).
+assumptions: examples remain the story source, existing docs in `examples/` can migrate without changing preview architecture, and neutral image endpoints such as `picsum.photos` are acceptable for production-safe sample media.
+confidence: 95
+
+### r0 · ADV-POLISH → all · opening
+
+claim: Option POLISH is the fastest, lowest-rot path because it fixes spacing and realism by replacing current margin-heavy overview scaffolding with existing `PageContainer`/`Stack`/`Inline` primitives and by enriching the same current `*.preview.tsx` files into full scenarios with no new architecture.
+evidence: snapshot.md:1-3 (whitelist + “only existing components” rule), preview/src/preview.css:331-346,344-365,369-399,398-423 (raw margin/padding prose/layout spacing), preview/src/App.tsx:256-282,314-335,342-345 (overview/story wrappers), preview/src/frame.css:19-33 (frame demo margin/spacing), preview/src/demo-block.tsx:27-67 (demo chrome), examples/screens/AgentPortal.preview.tsx:1-55,87-203,922-945 (existing full-screen scenario shell + exports), examples/layout/PageContainer.preview.tsx:62-91,184-326 (existing realistic app-shell-like pages), examples/layout/Stack.preview.tsx:45-72 and Inline.preview.tsx:18-57 (already using `Stack`/`Inline` as spacing primitives), examples/fixtures/demo-content.ts:3-134 (realistic domain seed data already present).
+warrant: Existing screen examples already prove the library can model production flows (`Dashboard`, `Journey A/B`, `Tracking`, `CustomerList`, `CustomerDetail`) and the only change needed to make spacing robust is swapping the current fixed margin-based overview frame for a single shared primitive spacing recipe; this removes spacing debt with far fewer moving parts than new layers.
+assumptions: `preview/src/preview.css` is the active doc/screen shell for overview spacing; all edited files remain under `examples/` and continue to be discovered by `preview/src/example-catalog.ts`; external neutral image sources (e.g., picsum.photos) are acceptable for static sample media and no new component APIs are introduced.
+confidence: 93
+
+### r1 · ADV-SYSTEMATIZE → all · rebuttal
+
+claim: Option SYSTEMATIZE remains the preferred path because a shared fixture module plus a single spacing shell and import guard turns spacing purity and `@godxjp/ui`-only composition from a manual convention into an enforceable contract, while still allowing scenario-rich examples.
+steelman: RECIPES is strongest on teaching value: adding dedicated screens like login/settings/invoice/profile (as proposed) can immediately satisfy the “y như thật” intent without touching preview internals; with only ~5 existing major screens, that is a fast way to show real workflows. POLISH is strongest on minimal-risk execution: keep architecture untouched, enrich current files in place, and avoid new infrastructure, which lowers immediate delivery risk and review surface.
+evidence: 00-Topic.md:14-15 (hard rule: spacing via framework primitives, no invented components), 00-Topic.md:20-26 (RECIPES scope), 00-Topic.md:37-43 (scoring rubric where constraint enforcement and maintainability matter), snapshot.md:2-3 (exact allowed component set), preview/src/example-catalog.ts:45-51 and :195-225 (all example files go through a shared discovery pipeline), preview/src/App.tsx:256-343 (centralized shell/wrapper path), preview/src/preview.css:331-365 and :948-965 (existing spacing debt lives in shared chrome), examples/fixtures/demo-content.ts:3-134 (already contains shared realistic seed data).
+warrant: The shared shell path is practical because the overview and stories are already consumed by a single catalog pipeline (`example-catalog.ts`), so adding a fixture-backed shell does not rewrite story discovery and gives a repeatable pattern every future `*.preview.tsx` gets. The guard is not optional for long-term parity: without a check, the existing hard rule in 00-Topic must be enforced only by convention, and existing code already admits local composition patterns, so enforcement needs a programmatic stopgap.
+concession: In this repo’s current state, a full structural parser guard plus extensive fixture schema can be overkill for only a few examples; keep fixtures minimal (re-use/extend `examples/fixtures/demo-content.ts`) and make the guard a narrow import-path/lint check initially, then broaden only if regressions reappear.
+confidence: 93 (delta: -2, because: RECIPES' strongest argument is valid that quick dedicated-screen value is immediate with low overhead, and current example count is small enough that SYSTEMATIZE must start with a lighter guard scope.)
+
+### r1 · ADV-POLISH → all · rebuttal
+
+claim: Keep POLISH as the primary track because both problem areas can be solved inside current preview primitives and existing examples without adding a new architecture layer: `preview` already has concrete screen examples to enrich, and the spacing debt is in current chrome (`preview/src/App.tsx`, `preview/src/preview.css`), so replacing only that wrapper/style path plus in-place `*.preview.tsx` upgrades is fastest and safest for `pnpm preview:build`.
+steelman: RECIPES has the strongest argument that full real-screen galleries reduce ambiguity more than isolated polished snippets; 00-Topic explicitly calls for “real screens” and `examples/screens/AgentPortal.preview.tsx` already contains large composed screens that can host this approach. SYSTEMATIZE’s strongest argument is that guardrails are the only enforceable way to prevent future raw wrapper/import drift; the hard rule already exists and a central fixture/shell + CI check is the strongest anti-rot lever.
+evidence: 00-Topic.md:11-13 (user asks for realistic screens), 00-Topic.md:20-23 (POLISH/RECIPES definitions), 00-Topic.md:33-37 (spacing must use primitives / no raw margins), context/snapshot.md:2-3 (component whitelist), context/snapshot.md:6-6 (existing `examples/` includes `screens/AgentPortal.preview.tsx` and `layout/PageContainer.preview.tsx`), 02-Research/ADV-POLISH.md:12-31 (existing scenarios already identified), 02-Research/ADV-POLISH.md:32-41 (single spacing rhythm for in-place polish), 02-Research/ADV-SYSTEMATIZE.md:20-26 (shared shell + guard proposition), 02-Research/ADV-RECIPES.md:13-35 (candidate gallery screens).
+warrant: Polishing first is superior on this repo because the current issue is not lack of screen components but inconsistent container-level spacing: raw paddings/margins are authored in preview shell files (`preview/src/preview.css` and `preview/src/App.tsx`), while reusable full examples already exist and can be made realistic without changing routing/discovery. Concession: if the immediate priority shifts to long-term architectural guarantees over delivery speed, then a real-screen gallery should be elevated for headline discoverability and a SYSTEMATIZE-style import/usage guard should follow, because that is the only path that directly prevents recurring `chế cháo` regressions at scale.
+confidence: 89 (delta: -4, because: SYSTEMATIZE correctly identified that only continuous enforcement can stop raw spacing/structure drift that manual polish pass-by-pass tends to reintroduce over time)
+
+### r1 · ADV-RECIPES → all · rebuttal
+
+claim: Option RECIPES still wins because the user asked for true-to-life scenario screens, not just cleaner demo plumbing; RECIPES should be the headline structure, while importing POLISH’s shared spacing recipe and SYSTEMATIZE’s import guard as required scaffolding, not a framework shift.
+steelman: POLISH: "A single pass can fix spacing and realism by keeping current files and architecture, minimizing risk and merge noise; if we only make what exists richer and keep one shell pattern, this ships fastest and with low complexity" (supported by 00-Topic.md:20-22 and 21-22, ADV-POLISH.md:3-5,32-41). SYSTEMATIZE: "A shared shell, shared fixtures, and a CI import guard directly prevent component-regression at scale and are the only way to guarantee the hard rule never slips" (supported by 00-Topic.md:27-30,33-37 and ADV-SYSTEMATIZE.md:20-27,34-39).
+evidence: 00-Topic.md:11-13 explicitly asks for realistic screens; snapshot.md:2-3 explicitly limits usage to existing components; ADV-RECIPES.md:10-35 defines concrete RECIPES screens (`SignIn`, `SettingsProfile`, `InvoiceOrdersTable`, `Dashboard`, `Profile`) with only allowed primitives; ADV-POLISH.md:3-10 and ADV-SYSTEMATIZE.md:3-6,34-39 identify the same spacing anti-pattern in `preview/src/preview.css` + `preview/src/App.tsx` wrappers; ADV-RECIPES.md:37-44 and 00-Topic.md:37-37 prescribe the required primitive-only spacing model (`PageContainer`, `Stack`, `Inline`, `ResponsiveGrid`, `Card`).
+warrant: RECIPES directly maps to the user’s second ask (realistic examples that feel production-like) while still fixing overview spacing via the same required primitive system. The core failure is not how many new files we add, but whether users can see believable flows; adding these scenario pages gives immediate value from Day 1. Borrowing is required where rivals are strongest: use POLISH’s single shared layout rhythm (`Stack`/`Inline` + `PageContainer` + `Card`) and SYSTEMATIZE’s import guard before preview publish, but do not adopt a fully fixture-first/shared-shell architecture before the scenario layer exists.
+confidence: 90 (delta: -3, because: SYSTEMATIZE’s strongest claim that enforceable import gating is the only durable anti-`chế cháo` control reduced confidence in a pure RECIPES-only approach unless we adopt that guard explicitly.)
+
+### r1 · SKEPTIC → all · rebuttal
+
+claim: NONE of POLISH/RECIPES/SYSTEMATIZE should be accepted yet; each still leaves this repo exposed to guaranteed build/policy gaps.
+steelman: ADV-POLISH is strongest because it edits fewer files and reuses existing working scenarios (`examples/layout/PageContainer.preview.tsx`, `examples/screens/AgentPortal.preview.tsx`) to add realism quickly. ADV-RECIPES is strongest because it directly answers the “real screens” request better than isolated component demos (`00-Topic.md:11-13`). ADV-SYSTEMATIZE is strongest because shared fixtures + shared shell + guard could enforce consistency long-term if they don’t trigger false positives across current examples (`00-Topic.md:27-30`, `context/snapshot.md:2-3`).
+evidence: 1) `package.json:272-273` — `verify` does not include `preview:build`; preview-only gating is in Pages workflow only (`.github/workflows/preview-pages.yml:28-33`). 2) `preview/src/example-catalog.ts:45-51` and `195-225` — every `examples/**/*.preview.tsx` is globbed and rendered, so each added scenario increases build surface. 3) Existing examples rely on non-`@godxjp/ui` imports: `examples/data-display/Card.preview.tsx:1` and `:3-31`, `examples/layout/AppShell.preview.tsx:2` + `:4-18`, `examples/layout/Sidebar.preview.tsx:12` + `:14-15`, `examples/screens/AgentPortal.preview.tsx:16` + `:18-55`, and `examples/layout/Stack.preview.tsx:2-3`. 4) Shell-level spacing debt is still active: `preview/src/preview.css:331-365`, `479-515`, `606-614`, `948-966` plus `preview/src/App.tsx:256-335`. 5) Real-image URLs are proposal-only now, not shipped in code: `02-Research/ADV-POLISH.md:44-47`, `02-Research/ADV-RECIPES.md:48-50`, `02-Research/ADV-SYSTEMATIZE.md:28-32`.
+warrant: (a) A strict `@godxjp/ui`-only guard creates immediate false positives because current examples depend on `lucide-react` (`examples/layout/Sidebar.preview.tsx:12`, `examples/screens/AgentPortal.preview.tsx:16`, `examples/data-display/Card.preview.tsx:1`) and relative source imports (`examples/layout/PageContainer.preview.tsx:3-22`, `examples/screens/AgentPortal.preview.tsx:18-55`).
+(b) Remote real-image dependency is new non-deterministic runtime input because examples currently have no committed image fixture layer.
+(c) RECIPES adds the widest rot surface because `example-catalog` compiles all `*.preview.tsx`; more screens mean more breakage points when component APIs rename.
+(d) Wiring `preview:build` into `verify` helps but is not the full fix because `verify` still won’t enforce composition policy or spacing style unless new semantic checks are added.
+confidence: 76 (delta: -17, because: strict import policy conflicts with existing sanctioned example imports and would block current examples as written)
+
+### r2 · JUDGE → 01-Bus · ruling envelope
+
+- Decision posture: **DECIDED** on `00-Topic.md` (status set to `decided`).
+- Winner rationale (neutral): **Hybrid RECIPES + narrow SYSTEMATIZE guard + POLISH spacing recipe**.
+- Hard ruling on SKEPTIC concerns:
+  1. Import guard scope:
+     - Do **not** implement as tag-based filtering (would wrongly affect nothing but is conceptually wrong).
+     - Implement import-path AST gate only on `examples/**/*.preview.tsx`.
+     - Allowed: `react`, `react/jsx-runtime`, `lucide-react`, `@godxjp/ui/*`, `examples/fixtures/**`.
+     - Forbidden: local imports into component source trees (`./src`, `../src`, `../../components`, etc.), non-fixture local component wrappers.
+     - This avoids false positives on legitimate `<section>/<a>/<img>` usage.
+  2. Real image strategy:
+     - Approved pattern: fixed-seed picsum/unsplash-style URLs + local fallback assets to avoid OFFLINE/flaky runtime failures.
+     - Seeded remote URLs stay deterministic and neutral; local fallback preserves deterministic Pages rendering if remote endpoints fail.
+  3. Rename-rot + verify gates:
+     - Yes, adding `preview:build` into both `verify` and `verify:release` is the durable baseline for rename/build breaks.
+     - It must be paired with the scoped import guard for policy/rot prevention; build coverage alone is not sufficient.

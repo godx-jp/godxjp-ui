@@ -51,7 +51,7 @@ export type SearchInputProp = {
   placeholder?: PlaceholderProp;
   value?: ValueProp;
   onChange?: OnChangeProp;
-  onDebouncedChange?: OnSearchChangeProp;
+  onSearchChange?: OnSearchChangeProp;
   debounceMs?: number;
   className?: ClassNameProp;
 };
@@ -98,7 +98,7 @@ export type RadioProp = React.ComponentPropsWithoutRef<typeof RadioGroupPrimitiv
 
 /** @see Switch — extends Radix switch root props. */
 export type SwitchProp = React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root> & {
-  size?: "sm" | "default";
+  size?: "sm" | "md";
 };
 
 /** @see Field — inline control + label + description wrapper. */
@@ -110,40 +110,6 @@ export type FieldProp = {
   children: React.ReactNode;
 };
 
-/** @see ChoiceField — deprecated alias for Field. */
-export type ChoiceFieldProp = FieldProp;
-
-/** Country row accepted by CountrySelect / CountryOptionLabel.
- *  Accepts either a select-option (`value`) or a summary (`code`). */
-export type CountryOptionProp = {
-  name: string;
-  nativeName?: string | null;
-  flagSvgPath?: string | null;
-  value?: string;
-  code?: string;
-  label?: string;
-};
-
-/** @see CountryOptionLabel — flag + name (+ optional code) row. */
-export type CountryOptionLabelProp = {
-  country: CountryOptionProp;
-  showCode?: boolean;
-  className?: ClassNameProp;
-};
-
-/** @see CountrySelect — country picker built on Select. */
-export type CountrySelectProp = {
-  id: IdProp;
-  name: NameProp;
-  options: CountryOptionProp[];
-  defaultValue?: string | null;
-  required?: RequiredProp;
-  allowEmpty?: boolean;
-  emptyLabel?: string;
-  placeholder?: PlaceholderProp;
-  invalid?: boolean;
-};
-
 /** @see Slider — numeric range (Radix Slider). */
 export type SliderProp = React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
 
@@ -152,7 +118,8 @@ export type CalendarProp = DayPickerProps;
 
 /** @see DatePicker */
 export type DatePickerProp = {
-  value?: Date;
+  value?: ValueProp<Date>;
+  defaultValue?: DefaultValueProp<Date | undefined>;
   onValueChange?: OnValueChangeProp<Date | undefined>;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;
@@ -167,7 +134,8 @@ export type DatePickerProp = {
 
 /** @see DateRangePicker */
 export type DateRangePickerProp = {
-  value?: DateRange;
+  value?: ValueProp<DateRange>;
+  defaultValue?: DefaultValueProp<DateRange | undefined>;
   onValueChange?: OnValueChangeProp<DateRange | undefined>;
   placeholder?: PlaceholderProp;
   disabled?: DisabledProp;

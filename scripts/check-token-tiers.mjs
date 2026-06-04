@@ -22,11 +22,21 @@ const domainToken = /--(?:color-)?tracking-|--(?:internal|seller|yamato)\b/i;
 const publicRawRamp = /--(?:color-)?(?:gray|blue)-\d+\b/;
 const hexThemeColor = /^\s*--color-[\w-]+:\s*#/m;
 const componentToken = /^src\/tokens\/components\/([a-z0-9-]+)\.css$/;
-const componentNameShape = /^--[a-z0-9]+(?:-[a-z0-9]+)*-(?:space|color|background|foreground|border|radius|height|width|padding|gap|size|font|line|letter|shadow|alpha|inset|offset|translate|max)(?:-[a-z0-9]+)*:/;
+const componentNameShape =
+  /^--[a-z0-9]+(?:-[a-z0-9]+)*-(?:space|color|background|foreground|border|radius|height|width|padding|gap|size|font|line|letter|shadow|alpha|inset|offset|translate|max)(?:-[a-z0-9]+)*:/;
 const componentPrefixes = {
   badge: ["badge"],
   card: ["card", "stat-card"],
-  control: ["control", "checkbox", "choice", "switch", "slider", "color-picker", "command", "search-input"],
+  control: [
+    "control",
+    "checkbox",
+    "choice",
+    "switch",
+    "slider",
+    "color-picker",
+    "command",
+    "search-input",
+  ],
   feedback: ["dialog", "alert", "empty-state", "skeleton"],
   navigation: ["pagination", "filter", "filter-bar"],
   table: ["table"],
@@ -52,7 +62,9 @@ for (const file of cssFiles) {
     for (const match of css.matchAll(/^\s*(--[a-z0-9-]+):/gm)) {
       const token = match[1];
       if (!prefixes.some((prefix) => token.startsWith(`--${prefix}-`))) {
-        failures.push(`${rel}: component token ${token} must start with an allowed component prefix`);
+        failures.push(
+          `${rel}: component token ${token} must start with an allowed component prefix`,
+        );
       } else if (!componentNameShape.test(`${token}:`)) {
         failures.push(`${rel}: component token ${token} must use --{component}-{part}-{property}`);
       }

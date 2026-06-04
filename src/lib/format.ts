@@ -2,7 +2,7 @@
 // inline string templates so the platform speaks one language for dates,
 // sizes, money, IDs.
 import { formatDate, type FormatDateOptions, type FormatDatetimeOptions } from "./datetime";
-import { translateCurrent } from "../i18n/translate";
+import { getSyncedLocale, translateCurrent } from "../i18n/translate";
 
 export type FormatOptions = FormatDatetimeOptions & FormatDateOptions;
 
@@ -38,42 +38,44 @@ export function formatRelative(
   return formatDate(value, { ...options, kind: "relative" });
 }
 
-/** Bytes → "1.2 MB". */
-export function formatBytes(n: number | null | undefined): string {
+/**
+ * Bytes → size with conventional binary units (B/KB/MB/GB) and a locale-correct number,
+ * e.g. "2.0 KB" (en) / "2,0 KB" (vi). The numeric part is formatted via `Intl.NumberFormat`
+ * (locale decimal/grouping separators — no hardcoded "."); an optional `locale` overrides the
+ * module-synced active locale.
+ */
+export function formatBytes(
+  n: number | null | undefined,
+  locale: string = getSyncedLocale(),
+): string {
   if (n == null) return "—";
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
-  if (n < 1024 * 1024 * 1024) return `${(n / 1024 / 1024).toFixed(1)} MB`;
-  return `${(n / 1024 / 1024 / 1024).toFixed(2)} GB`;
+  const num = (digits: number, scaled: number) =>
+    new Intl.NumberFormat(locale, {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    }).format(scaled);
+  if (n < 1024) return `${num(0, n)} B`;
+  if (n < 1024 * 1024) return `${num(1, n / 1024)} KB`;
+  if (n < 1024 * 1024 * 1024) return `${num(1, n / 1024 / 1024)} MB`;
+  return `${num(2, n / 1024 / 1024 / 1024)} GB`;
 }
 
-/** ISO 4217 minor units → display string. e.g. (1995, "USD") → "$19.95". */
-export function formatCurrency(amountMinor: number | null | undefined, currency: string): string {
+/**
+ * ISO 4217 minor units → locale-formatted currency, e.g. (1995, "USD") → "$19.95" (en) /
+ * "19,95 $" (vi). The active locale (or an explicit `locale`) drives grouping/symbol placement;
+ * the currency's minor-unit scale comes from CLDR via `resolvedOptions().maximumFractionDigits`
+ * — no hand-maintained zero-decimal list.
+ */
+export function formatCurrency(
+  amountMinor: number | null | undefined,
+  currency: string,
+  locale: string = getSyncedLocale(),
+): string {
   if (amountMinor == null || !currency) return "—";
-  // Most ISO 4217 currencies use 2 decimal places; JPY/VND/KRW use 0.
-  const zeroDecimal = [
-    "JPY",
-    "VND",
-    "KRW",
-    "CLP",
-    "ISK",
-    "BIF",
-    "DJF",
-    "GNF",
-    "KMF",
-    "RWF",
-    "XAF",
-    "XOF",
-    "XPF",
-  ];
-  const minorUnitDigits = zeroDecimal.includes(currency.toUpperCase()) ? 0 : 2;
+  const formatter = new Intl.NumberFormat(locale, { style: "currency", currency });
+  const minorUnitDigits = formatter.resolvedOptions().maximumFractionDigits ?? 2;
   const major = amountMinor / Math.pow(10, minorUnitDigits);
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: minorUnitDigits,
-    maximumFractionDigits: minorUnitDigits,
-  }).format(major);
+  return formatter.format(major);
 }
 
 /** UUIDv7 / UUIDv4 → first 8 chars + ellipsis. Pair with a Tooltip showing full. */
