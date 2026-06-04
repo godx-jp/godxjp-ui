@@ -39,6 +39,21 @@ export const SHOWCASES: ShowcaseEntry[] = [
     tag: "Admin",
     load: () => import("../../docs/showcase/case1-warehouse-dashboard"),
   },
+  { id: "table-crud-list", title: "CRUD一覧 (V1)", description: "Danh sách quản trị: toolbar + hàng lọc + DataTable (sort/chọn dòng) + dòng tổng + phân trang số.", tag: "Bảng", load: () => import("../../docs/showcase/table-crud-list") },
+  { id: "table-bulk-actions", title: "一括操作 (V2)", description: "Chọn dòng → thanh thao tác hàng loạt thay toolbar; select-all liên trang, hành động phá hủy tách biệt.", tag: "Bảng", load: () => import("../../docs/showcase/table-bulk-actions") },
+  { id: "table-density", title: "密度切替 (V4)", description: "Đổi mật độ compact / default / comfortable trên cùng một bảng.", tag: "Bảng", load: () => import("../../docs/showcase/table-density") },
+  { id: "table-filter-chips", title: "フィルターチップ (V6)", description: "Thanh chip bộ lọc đang áp (gỡ từng chip, xoá hết) lái dữ liệu bảng.", tag: "Bảng", load: () => import("../../docs/showcase/table-filter-chips") },
+  { id: "table-view-tabs", title: "保存ビュー (V7)", description: "Tab ビュー lưu sẵn (pill số + chấm màu) đổi preset bộ lọc/cột của bảng.", tag: "Bảng", load: () => import("../../docs/showcase/table-view-tabs") },
+  { id: "table-expandable-rows", title: "展開行 (V9)", description: "Mở dòng để hiện panel chi tiết inline; toggle độc quyền (một dòng mở).", tag: "Bảng", load: () => import("../../docs/showcase/table-expandable-rows") },
+  { id: "table-grouped-subtotals", title: "グループ集計 (V11)", description: "Dòng gom nhóm + header (số lượng + tổng phụ), thu gọn được.", tag: "Bảng", load: () => import("../../docs/showcase/table-grouped-subtotals") },
+  { id: "table-tree-rows", title: "ツリー行 (V12)", description: "Dòng cây phân cấp: thụt lề theo cấp, twirl ở node cha.", tag: "Bảng", load: () => import("../../docs/showcase/table-tree-rows") },
+  { id: "table-sticky-columns", title: "固定列 (V13)", description: "Cố định cột đầu (識別子) + cuối (操作), cuộn ngang ma trận.", tag: "Bảng", load: () => import("../../docs/showcase/table-sticky-columns") },
+  { id: "table-pagination", title: "ページネーション (V14)", description: "Ba kiểu phân trang: số + page-size, load-more, cursor/period-jump.", tag: "Bảng", load: () => import("../../docs/showcase/table-pagination") },
+  { id: "table-states", title: "状態 (V16)", description: "Năm trạng thái bảng: loading (Skeleton) / empty / error / partial / ideal.", tag: "Bảng", load: () => import("../../docs/showcase/table-states") },
+  { id: "table-footer-totals", title: "合計行 (V17)", description: "Dòng tổng chân bảng (tabular-nums), sticky khi cuộn dọc.", tag: "Bảng", load: () => import("../../docs/showcase/table-footer-totals") },
+  { id: "table-compact-kintone", title: "高密度グリッド (V18)", description: "Lưới dày kiểu kintone: dòng 28px, viền mảnh, nhiều cột, tabular-nums.", tag: "Bảng", load: () => import("../../docs/showcase/table-compact-kintone") },
+  { id: "table-conditional-format", title: "条件付き書式 (V19)", description: "Tô màu dòng/ô theo ngưỡng (遅刻≥5 → đỏ, 早退>2h → 朱), chỉ token semantic.", tag: "Bảng", load: () => import("../../docs/showcase/table-conditional-format") },
+  { id: "table-master-detail", title: "マスター詳細 (V20)", description: "List + pane chi tiết (chọn dòng hiện chi tiết bên phải; mobile xếp dọc).", tag: "Bảng", load: () => import("../../docs/showcase/table-master-detail") },
 ];
 
 export const SHOWCASE_MAP = new Map<string, ShowcaseEntry>(SHOWCASES.map((s) => [s.id, s]));

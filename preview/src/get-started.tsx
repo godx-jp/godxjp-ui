@@ -18,7 +18,6 @@ export function GetStartedPage() {
       <PageContainer
         title="Bắt đầu"
         subtitle="godxjp-ui · showcase & component preview"
-        variant="flush"
       >
         <Flex direction="col" gap="xl">
           <Card>
@@ -36,12 +35,14 @@ export function GetStartedPage() {
           </Card>
 
           <section>
-            <Flex direction="row" align="center" justify="between" className="mb-3">
-              <h2 className="text-base font-bold">Showcase ({SHOWCASES.length})</h2>
+            <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="whitespace-nowrap text-base font-bold">
+                Showcase ({SHOWCASES.length})
+              </h2>
               <span className="text-xs text-muted-foreground">
                 Trang độc lập · mở tab mới · không nằm trong catalog
               </span>
-            </Flex>
+            </div>
             <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 2 }}>
               {SHOWCASES.map((s) => (
                 <a
