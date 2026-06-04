@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [10.0.0]
+## [11.0.0]
 
 International-standardization release: i18n (Intl/CLDR), accessibility (WAI-ARIA APG + WCAG 2.2 AA),
 RTL, and a consolidated controlled-vocabulary API. See `docs/roadmap/international-standardization.md`.
