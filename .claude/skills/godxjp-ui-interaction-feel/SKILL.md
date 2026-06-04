@@ -104,6 +104,19 @@ lý thuyết.
   không positive tabindex.
 - **Verify:** mở bằng bàn phím → thao tác → Esc → focus về đúng trigger.
 
+## 10. Affordance đã KHAI BÁO thì phải có hành vi THẬT (ARIA hứa = phải làm được)
+
+- **Kỳ vọng:** nếu một control khai báo một affordance qua ARIA/role, thao tác tương ứng phải hoạt
+  động. Một `<input role="combobox" aria-haspopup="dialog">` thì **chính cái input** phải mở popup khi
+  **click vào field** và khi **ArrowDown** (Escape đóng) — không chỉ một nút icon phụ bên cạnh.
+  Với date/time picker là input gõ được: mở popup **không được cướp focus** khỏi input
+  (`PopoverContent onOpenAutoFocus={(e) => e.preventDefault()}`) để vừa thấy lịch vừa gõ tiếp được.
+- **Cách hỏng:** input có `aria-haspopup="dialog"` + `aria-expanded` nhưng click/focus/ArrowDown vào
+  input KHÔNG mở gì — chỉ nút icon (PopoverTrigger) mở được → người dùng "focus mà không thấy lịch".
+  (DatePicker/TimePicker/DateRangePicker đều dính; đã fix: input onClick/onKeyDown mở popup.)
+- **Verify:** click thẳng vào field (không phải icon) → popup hiện; ArrowDown → hiện; vẫn gõ được trong
+  field khi popup đang mở. Kết hợp §3 (mở đúng tháng/giá trị đang giữ).
+
 ---
 
 ## Cách dùng skill này
