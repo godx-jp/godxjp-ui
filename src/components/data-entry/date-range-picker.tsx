@@ -58,7 +58,13 @@ export function DateRangePicker({
   };
 
   const commitEdge = (edge: "from" | "to", raw: string) => {
-    const parsed = raw.trim() === "" ? undefined : (parseDateInput(raw.trim()) ?? undefined);
+    const trimmed = raw.trim();
+    // Only commit a COMPLETE date (or a clear). Feeding a partial string to the lenient
+    // parser (parseISO("20") is a valid year-2000 date) would change `value`, and the
+    // text-mirror effect would then rewrite the field mid-type — mangling input. Partial
+    // input keeps the text and emits nothing; onBlur normalizes any loose-but-complete entry.
+    if (trimmed !== "" && !/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return;
+    const parsed = trimmed === "" ? undefined : (parseDateInput(trimmed) ?? undefined);
     const next = { from: value?.from, to: value?.to, [edge]: parsed } as DateRange;
     emit(next.from || next.to ? next : undefined);
   };

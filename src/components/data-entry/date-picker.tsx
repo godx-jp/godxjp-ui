@@ -63,6 +63,10 @@ export function DatePicker({
       emit(undefined);
       return;
     }
+    // Only commit a COMPLETE date. A partial string fed to the lenient parser
+    // (parseISO("20") is a valid year-2000 date) would change `value`, and the text-mirror
+    // effect then rewrites the field mid-type — mangling input. onBlur normalizes loose entry.
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return;
     const parsed = parseDateInput(trimmed);
     if (parsed) {
       emit(parsed);
