@@ -54,6 +54,7 @@ export default function Demo() {
               mode="single"
               selected={issueDate}
               onSelect={setIssueDate}
+              defaultMonth={issueDate}
               locale={ja}
               disabled={{ before: new Date(2026, 0, 1) }}
               footer={
@@ -87,6 +88,7 @@ export default function Demo() {
                   mode="range"
                   selected={range}
                   onSelect={setRange}
+                  defaultMonth={range?.from}
                   locale={ja}
                   numberOfMonths={2}
                   disabled={{ after: new Date(2027, 2, 31) }}
@@ -112,6 +114,7 @@ export default function Demo() {
               mode="single"
               selected={issueDate}
               onSelect={setIssueDate}
+              defaultMonth={issueDate}
               locale={ja}
               captionLayout="dropdown"
               startMonth={new Date(2020, 0, 1)}
@@ -135,6 +138,7 @@ export default function Demo() {
               mode="multiple"
               selected={shiftDays}
               onSelect={setShiftDays}
+              defaultMonth={shiftDays?.[0]}
               locale={ja}
               max={5}
               showOutsideDays={false}
