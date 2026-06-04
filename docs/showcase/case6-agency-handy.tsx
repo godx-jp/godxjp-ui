@@ -29,7 +29,6 @@
  */
 import * as React from "react";
 import {
-  AlertTriangle,
   Boxes,
   Check,
   Inbox,
@@ -48,10 +47,18 @@ import {
   Badge,
   type BadgeProps,
   Card,
+  CardContent,
   Descriptions,
   EmptyState,
 } from "@godxjp/ui/data-display";
-import { Checkbox, Input, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
+import {
+  Checkbox,
+  Input,
+  RadioGroupRoot,
+  RadioItem,
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@godxjp/ui/data-entry";
 import {
   AlertDialog,
   Alert,
@@ -201,35 +208,37 @@ function ItemListCard({
     <Card
       density="tight"
       className={
-        "flex items-start gap-3 rounded-[10px] transition-colors " +
+        "rounded-[10px] transition-colors " +
         (selected
           ? "border-primary bg-[color-mix(in_oklch,var(--primary)_8%,transparent)]"
           : "hover:border-primary")
       }
     >
-      {selectMode ? (
-        <Checkbox
-          checked={selected}
-          onCheckedChange={onToggle}
-          aria-label={`選択 ${item.name}`}
-          className="mt-0.5 size-[22px]"
-        />
-      ) : null}
-      <div className="min-w-0 flex-1">
-        <div className="truncate text-[14px] font-bold">{item.name}</div>
-        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-          <MonoCode>{item.rc}</MonoCode>
-          <MonoCode>JAN {item.jan}</MonoCode>
+      <CardContent solo className="flex items-start gap-3">
+        {selectMode ? (
+          <Checkbox
+            checked={selected}
+            onCheckedChange={onToggle}
+            aria-label={`選択 ${item.name}`}
+            className="mt-0.5 size-[22px]"
+          />
+        ) : null}
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[14px] font-bold">{item.name}</div>
+          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+            <MonoCode>{item.rc}</MonoCode>
+            <MonoCode>JAN {item.jan}</MonoCode>
+          </div>
+          <div className="mt-1.5 flex items-center justify-between gap-2">
+            <Badge tone={st.tone} variant="outline" className="rounded-full">
+              {st.label}
+            </Badge>
+            <span className="shrink-0 text-[12px] tabular-nums text-muted-foreground">
+              ×{item.qty} · {item.receivedAt}
+            </span>
+          </div>
         </div>
-        <div className="mt-1.5 flex items-center justify-between gap-2">
-          <Badge tone={st.tone} variant="outline" className="rounded-full">
-            {st.label}
-          </Badge>
-          <span className="shrink-0 text-[12px] tabular-nums text-muted-foreground">
-            ×{item.qty} · {item.receivedAt}
-          </span>
-        </div>
-      </div>
+      </CardContent>
     </Card>
   );
 }
@@ -252,21 +261,23 @@ function PackingListCard({
         "rounded-[10px] transition-colors " + (onTap ? "cursor-pointer hover:border-primary" : "")
       }
     >
-      <div className="flex items-center justify-between gap-2">
-        <span className="font-mono text-[14px] font-bold tabular-nums">{packing.code}</span>
-        <Badge tone={st.tone} variant="outline" className="rounded-full">
-          {st.label}
-        </Badge>
-      </div>
-      <div className="mt-1 flex items-center justify-between gap-2 text-[12px] text-muted-foreground">
-        <span className="truncate">
-          {packing.customer} · {packing.city}
-        </span>
-        <span className="shrink-0 tabular-nums">
-          ×{packing.items}
-          {packing.slot ? ` · ${packing.slot}` : ""}
-        </span>
-      </div>
+      <CardContent solo>
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-mono text-[14px] font-bold tabular-nums">{packing.code}</span>
+          <Badge tone={st.tone} variant="outline" className="rounded-full">
+            {st.label}
+          </Badge>
+        </div>
+        <div className="mt-1 flex items-center justify-between gap-2 text-[12px] text-muted-foreground">
+          <span className="truncate">
+            {packing.customer} · {packing.city}
+          </span>
+          <span className="shrink-0 tabular-nums">
+            ×{packing.items}
+            {packing.slot ? ` · ${packing.slot}` : ""}
+          </span>
+        </div>
+      </CardContent>
     </Card>
   );
 }
@@ -416,17 +427,17 @@ function PackagePickerSheet({
               }}
             />
           ))}
-          <button
-            type="button"
+          <Button
+            variant="outline"
             onClick={() => {
               onOpenChange(false);
               toast.success(`Đã tạo kiện mới với ${count} item`);
             }}
-            className="flex h-11 items-center justify-center gap-2 rounded-[10px] border-2 border-dashed border-border text-[14px] font-medium text-primary hover:border-primary"
+            className="h-11 w-full border-2 border-dashed text-primary hover:border-primary"
           >
-            <PackagePlus className="size-4" aria-hidden="true" strokeWidth={1.5} />
+            <PackagePlus aria-hidden="true" strokeWidth={1.5} />
             Tạo kiện mới với {count} item này
-          </button>
+          </Button>
         </div>
         <SheetFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -481,12 +492,14 @@ function ItemFormSheet({
           </div>
           <div className="flex flex-col gap-2">
             <span className="text-[13px] font-medium">Đích đến</span>
-            <div className="flex flex-col gap-2">
+            <RadioGroupRoot value={dest} onValueChange={setDest} className="flex flex-col gap-2">
               {DESTINATIONS.map((d) => {
                 const checked = dest === d.id;
+                const rowId = `handy-dest-${d.id}`;
                 return (
                   <label
                     key={d.id}
+                    htmlFor={rowId}
                     className={
                       "flex cursor-pointer items-center gap-3 rounded-[10px] border p-3 transition-colors " +
                       (checked
@@ -494,23 +507,7 @@ function ItemFormSheet({
                         : "hover:border-primary")
                     }
                   >
-                    <input
-                      type="radio"
-                      name="handy-dest"
-                      value={d.id}
-                      checked={checked}
-                      onChange={() => setDest(d.id)}
-                      className="sr-only"
-                    />
-                    <span
-                      className={
-                        "flex size-5 shrink-0 items-center justify-center rounded-full border-2 " +
-                        (checked ? "border-primary" : "border-border")
-                      }
-                      aria-hidden="true"
-                    >
-                      {checked ? <span className="size-2.5 rounded-full bg-primary" /> : null}
-                    </span>
+                    <RadioItem id={rowId} value={d.id} className="mt-0.5" />
                     <span className="min-w-0">
                       <span className="block text-[14px] font-medium">{d.label}</span>
                       <span className="block text-[12px] text-muted-foreground">{d.hint}</span>
@@ -518,7 +515,7 @@ function ItemFormSheet({
                   </label>
                 );
               })}
-            </div>
+            </RadioGroupRoot>
           </div>
         </div>
         <SheetFooter className="flex-row gap-2">
@@ -599,15 +596,16 @@ function InboundTab({
           <div className="flex flex-col gap-3" aria-busy="true">
             {Array.from({ length: 3 }).map((_, i) => (
               <Card key={i} density="tight" className="rounded-[10px]">
-                <Skeleton className="h-4 w-3/5" />
-                <Skeleton className="mt-2 h-3 w-2/5" />
-                <Skeleton className="mt-3 h-5 w-24 rounded-full" />
+                <CardContent solo>
+                  <Skeleton className="h-4 w-3/5" />
+                  <Skeleton className="mt-2 h-3 w-2/5" />
+                  <Skeleton className="mt-3 h-5 w-24 rounded-full" />
+                </CardContent>
               </Card>
             ))}
           </div>
         ) : state === "error" ? (
           <Alert tone="warning">
-            <AlertTriangle aria-hidden="true" strokeWidth={1.5} />
             <AlertTitle>Không tải được danh sách</AlertTitle>
             <AlertDescription className="flex flex-col items-start gap-2">
               Kiểm tra kết nối rồi thử lại.
@@ -707,18 +705,20 @@ function PackingTab({ onScan }: { onScan: () => void }) {
             accent="primary"
             className="rounded-[10px] border-primary bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-                Kiện đang làm
-              </span>
-              <Badge tone="info" variant="outline" className="rounded-full">
-                {PACKING_STATUS.active.label}
-              </Badge>
-            </div>
-            <div className="mt-1 font-mono text-[16px] font-bold tabular-nums">{active.code}</div>
-            <div className="mt-0.5 text-[12px] text-muted-foreground tabular-nums">
-              {active.customer} · {active.city} · ×{active.items} · {active.slot}
-            </div>
+            <CardContent solo>
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+                  Kiện đang làm
+                </span>
+                <Badge tone="info" variant="outline" className="rounded-full">
+                  {PACKING_STATUS.active.label}
+                </Badge>
+              </div>
+              <div className="mt-1 font-mono text-[16px] font-bold tabular-nums">{active.code}</div>
+              <div className="mt-0.5 text-[12px] text-muted-foreground tabular-nums">
+                {active.customer} · {active.city} · ×{active.items} · {active.slot}
+              </div>
+            </CardContent>
           </Card>
         ) : null}
 
@@ -780,30 +780,32 @@ function OutboundTab({
         <div className="flex flex-col gap-3">
           {OUTBOUND.map((p) => (
             <Card key={p.id} density="tight" className="rounded-[10px]">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-[14px] font-bold tabular-nums">{p.code}</span>
-                <Badge tone="success" variant="outline" className="rounded-full">
-                  Sẵn sàng niêm phong
-                </Badge>
-              </div>
-              <div className="mt-1 flex items-center justify-between gap-2 text-[12px] text-muted-foreground tabular-nums">
-                <span className="truncate">
-                  {p.customer} · {p.city}
-                </span>
-                <span className="shrink-0">
-                  ×{p.items} · {p.slot}
-                </span>
-              </div>
-              <div className="mt-3">
-                <Descriptions columns={1} className="gap-y-1">
-                  <Descriptions.Item label="Vị trí" mono>
-                    {p.slot}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Số kiện" mono>
-                    ×{p.items}
-                  </Descriptions.Item>
-                </Descriptions>
-              </div>
+              <CardContent solo>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-[14px] font-bold tabular-nums">{p.code}</span>
+                  <Badge tone="success" variant="outline" className="rounded-full">
+                    Sẵn sàng niêm phong
+                  </Badge>
+                </div>
+                <div className="mt-1 flex items-center justify-between gap-2 text-[12px] text-muted-foreground tabular-nums">
+                  <span className="truncate">
+                    {p.customer} · {p.city}
+                  </span>
+                  <span className="shrink-0">
+                    ×{p.items} · {p.slot}
+                  </span>
+                </div>
+                <div className="mt-3">
+                  <Descriptions columns={1} className="gap-y-1">
+                    <Descriptions.Item label="Vị trí" mono>
+                      {p.slot}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Số kiện" mono>
+                      ×{p.items}
+                    </Descriptions.Item>
+                  </Descriptions>
+                </div>
+              </CardContent>
             </Card>
           ))}
         </div>

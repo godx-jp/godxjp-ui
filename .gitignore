@@ -13,3 +13,4 @@ coverage/
 .design/
 .ux-audit/
 .playwright-mcp/
+.claude/scheduled_tasks.lock
