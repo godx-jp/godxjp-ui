@@ -95,6 +95,20 @@ A control that holds state is not done when it renders correctly; it is done whe
 correctly under real click/type/tab. Static screenshots hide behavioral bugs — drive the component
 in a real browser (Chrome DevTools MCP) before declaring it correct.
 
+- **Drive EVERY mode to its TERMINAL state — one happy path is not an audit.** A multi-state
+  control has one demo card per mode for a reason: exercise each. For a Cascader that means
+  selecting a **parent/intermediate** node (`changeOnSelect`), drilling to the **deepest leaf**
+  under **each** `expandTrigger` (click AND hover), and toggling a `multiple` path — not just
+  picking one leaf in the search card. Half the real bugs live in the modes you skipped
+  (parent-click closing the panel, hover collapsing at depth 3, a node-level `disabled`/`isLeaf`).
+- **Read the DevTools console — a warning is a failure.** A `<button> cannot be a descendant of
+  <button>` / hydration / `act()` warning is a real defect (here: a clear `<button>` nested inside
+  the trigger `<button>`). Never nest interactive elements; render the clear/affordance as a
+  sibling overlay (`pointer-events-none` wrapper, `pointer-events-auto` control). The audit isn't
+  done until the console is clean.
+- **Hover-expand must reach the deepest level.** A column-level `onMouseLeave` that collapses
+  deeper columns strands the pointer between columns and makes a depth-3 leaf unclickable. Drive
+  expansion from per-node `onMouseEnter`; don't collapse on leave.
 - **Multi-step selection must be re-startable from a complete state — never trapped.** Any control
   that accumulates a multi-step value (date **range**, capped multi-select, wizard, masked input):
   once the value is COMPLETE, the next interaction must let the user **start over**, not silently
@@ -113,6 +127,15 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
 
 - Semantic tokens only (`text-muted-foreground`, `bg-destructive`, `border-border`, Badge variants).
   Never raw palette. `npm run audit` (ui:audit) MUST be 0 errors / 0 warnings.
+- **Control height is a SYSTEM decision, never a primitive one.** A control's box
+  height/width comes from the `--control-height` tier (and its official steps
+  `--control-height-{xs,sm,lg}`) — which is density-aware. NEVER bake in a size:
+  no literal `height: 2rem` / `2.25rem`, and no ad-hoc `calc(var(--control-height) ± …)`
+  (that silently re-derives a tier and drifts out of sync with siblings on the same
+  row — the bug that made Pagination's size-changer taller than its page buttons).
+  Want a smaller control? That is the **app's** call via the `size` prop / `className`,
+  not something the primitive hardcodes. Guarded by `pnpm check:control-sizing`
+  (error on ad-hoc offsets, warn on literal control-box heights).
 
 ## 4. Catalog + docs
 
@@ -127,7 +150,7 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
 ```
 pnpm typecheck && pnpm lint && pnpm run audit \
   && pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans \
-  && pnpm check:token-tiers && pnpm check:example-imports \
+  && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports \
   && pnpm preview:build && pnpm test     # incl. your *.a11y.test.tsx (0 axe violations)
 ```
 
@@ -140,6 +163,8 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
 - `Intl`-less number/currency/date formatting, or a hand-maintained currency/locale/country list.
 - Physical direction classes (`ml-/mr-/pl-/pr-/left-/right-`).
 - `size="default"`, `current`/`onChange` for controlled state, missing `defaultValue`.
+- A control sized with a literal `height`/`width` or `calc(var(--control-height) ± …)`
+  instead of a `--control-height` tier token.
 - A stateful multi-step control that traps the user in a complete state (range mode left on
   `resetOnSelect:false` so the start can't be re-picked; held value hidden on open; partial text
   overwriting a controlled mirror). Verify by hand in a real browser, not by screenshot.

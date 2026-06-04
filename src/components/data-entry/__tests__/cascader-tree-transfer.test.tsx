@@ -181,9 +181,11 @@ describe("Cascader", () => {
     );
 
     const combobox = screen.getByRole("combobox");
-    const clearIcon = combobox.querySelector("svg.lucide-x");
-    expect(clearIcon).toBeTruthy();
-    await user.click(clearIcon!);
+    // The clear control is a sibling of the trigger, NOT nested inside it — a <button> may not
+    // be a descendant of the trigger <button> (invalid HTML / hydration error).
+    const clearButton = screen.getByRole("button", { name: /xóa lựa chọn/i });
+    expect(combobox.contains(clearButton)).toBe(false);
+    await user.click(clearButton);
 
     expect(onChange).toHaveBeenCalledWith([], expect.any(Array));
     expect(combobox).toHaveTextContent("Chọn…");

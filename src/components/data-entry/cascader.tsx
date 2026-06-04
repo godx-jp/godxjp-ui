@@ -83,9 +83,13 @@ export function Cascader({
     return formatPathLabels(getNodeByPath(options, singleValue));
   }, [multiple, multiValue, singleValue, options]);
 
-  const commitSingle = (path: string[]) => {
+  const setSingleValue = (path: string[]) => {
     if (!isControlledSingle) setInternalSingle(path);
     onValueChange?.(path, getNodeByPath(options, path));
+  };
+
+  const commitSingle = (path: string[]) => {
+    setSingleValue(path);
     setOpen(false);
     setActivePath([]);
     setSearch("");
@@ -112,14 +116,22 @@ export function Cascader({
 
   const handleSelectNode = (node: NormalizedTreeOption, path: string[]) => {
     const hasChildren = (node.children?.length ?? 0) > 0 && node.isLeaf !== true;
-    if (hasChildren && !changeOnSelect) {
+    if (multiple) {
+      // A parent without changeOnSelect only expands; otherwise the path itself is toggled.
+      if (hasChildren && !changeOnSelect) setActivePath(path);
+      else commitMulti(togglePath(multiValue, path));
+      return;
+    }
+    if (hasChildren) {
+      // changeOnSelect: commit the intermediate node as the value BUT keep the panel open and
+      // expand its children, so the user can refine deeper without reopening. Without it, a
+      // parent click only expands (no commit). Either way the panel must NOT close here —
+      // closing on a parent click strands the user one level up and breaks drilling.
+      if (changeOnSelect) setSingleValue(path);
       setActivePath(path);
       return;
     }
-    if (multiple) {
-      commitMulti(togglePath(multiValue, path));
-      return;
-    }
+    // Leaf → commit and close.
     commitSingle(path);
   };
 
@@ -159,11 +171,6 @@ export function Cascader({
             aria-orientation="vertical"
             aria-multiselectable={multiple ? true : undefined}
             className="min-w-[9rem] border-e last:border-e-0"
-            onMouseLeave={
-              expandTrigger === "hover"
-                ? () => setActivePath(activePath.slice(0, colIndex))
-                : undefined
-            }
           >
             {col.map((node) => {
               const path = [...activePath.slice(0, colIndex), node.value];
@@ -189,8 +196,12 @@ export function Cascader({
                       node.disabled && "pointer-events-none opacity-50",
                     )}
                     onMouseEnter={
-                      expandTrigger === "hover" && hasChildren
-                        ? () => setActivePath(path)
+                      // Hover-expand: a parent opens its children column; a leaf collapses any
+                      // deeper column but keeps its own. Never collapse on the column's mouseleave
+                      // — moving the pointer toward the next column would strand the deeper levels
+                      // and make a depth-3 leaf unreachable.
+                      expandTrigger === "hover" && !node.disabled
+                        ? () => setActivePath(hasChildren ? path : path.slice(0, -1))
                         : undefined
                     }
                     onClick={() => !node.disabled && handleSelectNode(node, path)}
@@ -222,101 +233,113 @@ export function Cascader({
     </ScrollArea>
   );
 
+  const showClear = allowClear && displayLabel && !disabled;
+
   return (
-    <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild>
-        <Button
-          id={id}
-          type="button"
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          disabled={disabled}
-          className={cn(
-            "w-full justify-between font-normal",
-            !displayLabel && "text-muted-foreground",
-            className,
-          )}
-        >
-          <span className="truncate">{displayLabel ?? resolvedPlaceholder}</span>
-          <span className="ms-2 flex shrink-0 items-center gap-1">
-            {allowClear && displayLabel && !disabled && (
-              <button
-                type="button"
-                aria-label={t("dataEntry.cascader.clear")}
-                className="flex size-4 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
-                onClick={clearValue}
-              >
-                <X className="size-4" aria-hidden="true" />
-              </button>
+    <div className={cn("relative", className)}>
+      <Popover open={open} onOpenChange={handleOpenChange}>
+        <PopoverTrigger asChild>
+          <Button
+            id={id}
+            type="button"
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            disabled={disabled}
+            className={cn(
+              "w-full justify-start font-normal",
+              // Reserve trailing room for the clear + chevron overlay rendered below.
+              showClear ? "pe-14" : "pe-9",
+              !displayLabel && "text-muted-foreground",
             )}
-            <ChevronsUpDown className="size-4 opacity-50" aria-hidden="true" />
-          </span>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-auto min-w-[var(--radix-popover-trigger-width)] p-0"
-        align="start"
-      >
-        {showSearch && (
-          <div className="border-b p-2">
-            <Command shouldFilter={false}>
-              <CommandInput
-                placeholder={t("dataEntry.cascader.searchPlaceholder")}
-                value={search}
-                onValueChange={setSearch}
-              />
-            </Command>
-          </div>
-        )}
-        {isSearching ? (
-          <ScrollArea className="max-h-[min(300px,50vh)]">
-            <div className="p-1" role="listbox" aria-multiselectable={multiple ? true : undefined}>
-              {searchResults.length === 0 ? (
-                <p className="text-muted-foreground py-6 text-center text-sm">
-                  {t("dataEntry.cascader.empty")}
-                </p>
-              ) : (
-                searchResults.map(({ path, labels }) => {
-                  const label = labels.join(" / ");
-                  const selected = multiple
-                    ? pathInValues(path, multiValue)
-                    : pathsEqual(path, singleValue);
-                  return (
-                    <button
-                      key={pathKey(path)}
-                      type="button"
-                      role="option"
-                      aria-selected={selected}
-                      className={cn(
-                        "flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none",
-                        "hover:bg-accent hover:text-accent-foreground",
-                        selected && "bg-accent/60",
-                      )}
-                      onClick={() => handleSelectNode({ value: path.at(-1)!, label }, path)}
-                    >
-                      {multiple ? (
-                        <Checkbox checked={selected} className="me-2" aria-hidden tabIndex={-1} />
-                      ) : (
-                        <Check
-                          className={cn(
-                            "me-2 size-4 shrink-0",
-                            selected ? "opacity-100" : "opacity-0",
-                          )}
-                          aria-hidden="true"
-                        />
-                      )}
-                      <span className="truncate text-start">{label}</span>
-                    </button>
-                  );
-                })
-              )}
+          >
+            <span className="truncate">{displayLabel ?? resolvedPlaceholder}</span>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-auto min-w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
+          {showSearch && (
+            <div className="border-b p-2">
+              <Command shouldFilter={false}>
+                <CommandInput
+                  placeholder={t("dataEntry.cascader.searchPlaceholder")}
+                  value={search}
+                  onValueChange={setSearch}
+                />
+              </Command>
             </div>
-          </ScrollArea>
-        ) : (
-          renderCascadeColumns()
+          )}
+          {isSearching ? (
+            <ScrollArea className="max-h-[min(300px,50vh)]">
+              <div
+                className="p-1"
+                role="listbox"
+                aria-multiselectable={multiple ? true : undefined}
+              >
+                {searchResults.length === 0 ? (
+                  <p className="text-muted-foreground py-6 text-center text-sm">
+                    {t("dataEntry.cascader.empty")}
+                  </p>
+                ) : (
+                  searchResults.map(({ path, labels }) => {
+                    const label = labels.join(" / ");
+                    const selected = multiple
+                      ? pathInValues(path, multiValue)
+                      : pathsEqual(path, singleValue);
+                    return (
+                      <button
+                        key={pathKey(path)}
+                        type="button"
+                        role="option"
+                        aria-selected={selected}
+                        className={cn(
+                          "flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none",
+                          "hover:bg-accent hover:text-accent-foreground",
+                          selected && "bg-accent/60",
+                        )}
+                        onClick={() => handleSelectNode({ value: path.at(-1)!, label }, path)}
+                      >
+                        {multiple ? (
+                          <Checkbox checked={selected} className="me-2" aria-hidden tabIndex={-1} />
+                        ) : (
+                          <Check
+                            className={cn(
+                              "me-2 size-4 shrink-0",
+                              selected ? "opacity-100" : "opacity-0",
+                            )}
+                            aria-hidden="true"
+                          />
+                        )}
+                        <span className="truncate text-start">{label}</span>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </ScrollArea>
+          ) : (
+            renderCascadeColumns()
+          )}
+        </PopoverContent>
+      </Popover>
+      {/* Clear + chevron render OUTSIDE the trigger <button> — a <button> may not nest inside a
+          <button> (invalid HTML → hydration error). The overlay ignores pointer events so a click
+          falls through to the trigger to open it; only the clear control re-enables them. */}
+      <div className="pointer-events-none absolute inset-y-0 end-3 flex items-center gap-1">
+        {showClear && (
+          <button
+            type="button"
+            aria-label={t("dataEntry.cascader.clear")}
+            className="pointer-events-auto flex size-4 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
+            onClick={clearValue}
+          >
+            <X className="size-4" aria-hidden="true" />
+          </button>
         )}
-      </PopoverContent>
-    </Popover>
+        <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+      </div>
+    </div>
   );
 }

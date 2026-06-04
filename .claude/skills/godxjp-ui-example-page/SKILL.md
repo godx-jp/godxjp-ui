@@ -121,7 +121,13 @@ container at a wide viewport**, not only by shrinking the window.)
 1. `pnpm preview` → open `http://localhost:6008/isolate/<group>-<name>`.
 2. Screenshot at 390 / 768 / 1280 (Chrome DevTools / Playwright MCP). A behaviour you can't see in a
    screenshot isn't demonstrated — go back to Rule #2.
-3. Check the console: **0 errors** (a 404 / thrown Provider error is a finding).
+3. **Drive EVERY card to its terminal state — not 1-2.** Each card exists to show a distinct mode;
+   click/type/hover through all of them (the parent-select card, the hover card to its deepest
+   leaf, the multiple card's checkboxes, the disabled card). A bug found by the user in card 4 that
+   you never opened means the audit was a spot-check, not an audit.
+4. Check the console: **0 errors AND 0 warnings** (a 404, thrown Provider error, a
+   `<button>`-in-`<button>` / hydration / `act()` warning is a finding — open the console, don't
+   assume it's clean).
 
 > Full per-page audit evidence (87 reports + screenshots + rollup) lives in `.ux-audit/` —
 > `SUMMARY.md` ranks every page and lists the recurring failures this skill encodes.
