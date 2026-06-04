@@ -32,12 +32,14 @@ import {
 
 import { TOOL_DEFINITIONS, dispatchTool } from "./tools/registry.js";
 import { RESOURCE_DEFINITIONS, readResource } from "./resources/registry.js";
+import pkg from "../package.json";
 
 async function main() {
   const server = new Server(
     {
       name: "godx-ui-mcp",
-      version: "0.1.0",
+      // Track the package version — never hardcode (see server.test.ts guard).
+      version: pkg.version,
     },
     {
       capabilities: {
