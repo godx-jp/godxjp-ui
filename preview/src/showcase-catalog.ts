@@ -54,6 +54,7 @@ export const SHOWCASES: ShowcaseEntry[] = [
   { id: "table-compact-kintone", title: "高密度グリッド (V18)", description: "Lưới dày kiểu kintone: dòng 28px, viền mảnh, nhiều cột, tabular-nums.", tag: "Bảng", load: () => import("../../docs/showcase/table-compact-kintone") },
   { id: "table-conditional-format", title: "条件付き書式 (V19)", description: "Tô màu dòng/ô theo ngưỡng (遅刻≥5 → đỏ, 早退>2h → 朱), chỉ token semantic.", tag: "Bảng", load: () => import("../../docs/showcase/table-conditional-format") },
   { id: "table-master-detail", title: "マスター詳細 (V20)", description: "List + pane chi tiết (chọn dòng hiện chi tiết bên phải; mobile xếp dọc).", tag: "Bảng", load: () => import("../../docs/showcase/table-master-detail") },
+  { id: "case4-login", title: "ログイン (Login)", description: "Màn đăng nhập: density comfortable (44px touch), Card shadow-lg, SSO, FormField, brand panel ẩn ở mobile.", tag: "Auth", load: () => import("../../docs/showcase/case4-login") },
 ];
 
 export const SHOWCASE_MAP = new Map<string, ShowcaseEntry>(SHOWCASES.map((s) => [s.id, s]));
