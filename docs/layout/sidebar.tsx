@@ -45,7 +45,7 @@ const FULL_SECTIONS: SidebarSectionProp[] = [
           { id: "coa", label: "勘定科目", icon: CreditCard },
         ],
       },
-      { id: "invoices", label: "請求書", icon: Receipt, badge: <Badge variant="info">3</Badge> },
+      { id: "invoices", label: "請求書", icon: Receipt, badge: <Badge tone="info">3</Badge> },
       { id: "bills", label: "仕入請求書", icon: FileText },
     ],
   },

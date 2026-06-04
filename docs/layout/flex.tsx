@@ -109,14 +109,14 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="row" wrap gap="xs" align="center">
-              <Badge variant="success">承認済</Badge>
-              <Badge variant="warning">保留中</Badge>
-              <Badge variant="info">確認待ち</Badge>
-              <Badge variant="destructive">却下</Badge>
+              <Badge tone="success">承認済</Badge>
+              <Badge tone="warning">保留中</Badge>
+              <Badge tone="info">確認待ち</Badge>
+              <Badge tone="destructive">却下</Badge>
               <Badge variant="secondary">下書き</Badge>
               <Badge variant="outline">アーカイブ</Badge>
               <Badge>既定</Badge>
-              <Badge variant="neutral">中立</Badge>
+              <Badge tone="neutral">中立</Badge>
             </Flex>
           </CardContent>
         </Card>

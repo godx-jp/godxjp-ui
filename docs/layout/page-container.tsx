@@ -181,7 +181,7 @@ export default function Demo() {
           { label: "取引先", to: "/partners" },
           { label: "株式会社グローバル商事" },
         ]}
-        extra={<Badge variant="success">取引中</Badge>}
+        extra={<Badge tone="success">取引中</Badge>}
       >
         <Flex direction="col" gap="md">
           <Card>

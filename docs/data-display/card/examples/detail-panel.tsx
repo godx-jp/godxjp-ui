@@ -61,7 +61,7 @@ export default function Demo() {
         title="請求書 INV-2024-0312"
         subtitle="株式会社ベトヤ · 2024-04-12"
         breadcrumb={[{ label: "請求書", to: "#" }, { label: "INV-2024-0312" }]}
-        extra={<Badge variant="warning">承認待ち</Badge>}
+        extra={<Badge tone="warning">承認待ち</Badge>}
       >
         <Flex direction="col" gap="lg">
           <ResponsiveGrid columns={{ sm: 1, md: 3 }}>

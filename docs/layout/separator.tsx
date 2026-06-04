@@ -94,17 +94,17 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               <Flex direction="row" gap="sm" align="center" justify="between">
                 <span className="text-sm font-medium">承認済み請求書</span>
-                <Badge variant="success">12件</Badge>
+                <Badge tone="success">12件</Badge>
               </Flex>
               <Separator decorative={false} />
               <Flex direction="row" gap="sm" align="center" justify="between">
                 <span className="text-sm font-medium">保留中請求書</span>
-                <Badge variant="warning">4件</Badge>
+                <Badge tone="warning">4件</Badge>
               </Flex>
               <Separator decorative={false} />
               <Flex direction="row" gap="sm" align="center" justify="between">
                 <span className="text-sm font-medium">却下済み請求書</span>
-                <Badge variant="destructive">2件</Badge>
+                <Badge tone="destructive">2件</Badge>
               </Flex>
             </Flex>
           </CardContent>

@@ -119,7 +119,7 @@ export default function Demo() {
                     <Flex direction="col" gap="xs">
                       <Flex direction="row" gap="sm" align="center" justify="between">
                         <span className="text-sm">売掛金 / 売上高</span>
-                        <Badge variant="info">借方 ¥880,000</Badge>
+                        <Badge tone="info">借方 ¥880,000</Badge>
                       </Flex>
                       <Flex direction="row" gap="sm" align="center" justify="between">
                         <span className="text-sm">仮受消費税 / 売上高</span>

@@ -163,7 +163,7 @@ export default function Demo() {
                       {["JE-0041", "JE-0040", "JE-0039"].map((id) => (
                         <Flex key={id} justify="between" align="center">
                           <span className="text-muted-foreground font-mono text-xs">{id}</span>
-                          <Badge variant="warning">保留中</Badge>
+                          <Badge tone="warning">保留中</Badge>
                         </Flex>
                       ))}
                     </Flex>

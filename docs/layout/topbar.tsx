@@ -116,7 +116,7 @@ export default function Demo() {
       unread={unread}
       onNotificationsOpen={() => setUnread(false)}
       rightSlot={
-        <Badge variant="warning" className="text-xs">
+        <Badge tone="warning" className="text-xs">
           ステージング
         </Badge>
       }
@@ -180,7 +180,7 @@ export default function Demo() {
                 <Flex align="center" gap="md">
                   <Search className="text-muted-foreground size-4" />
                   <span className="text-muted-foreground">検索を開いた回数</span>
-                  <Badge variant="info">{searchOpenCount}</Badge>
+                  <Badge tone="info">{searchOpenCount}</Badge>
                 </Flex>
               </Flex>
             </CardContent>
