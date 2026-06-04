@@ -29,6 +29,11 @@ export default function Demo() {
     from: new Date(2026, 3, 1),
     to: new Date(2026, 3, 30),
   });
+  const [shiftDays, setShiftDays] = useState<Date[] | undefined>([
+    new Date(2026, 3, 6),
+    new Date(2026, 3, 13),
+    new Date(2026, 3, 20),
+  ]);
 
   return (
     <PageContainer
@@ -40,7 +45,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>単一日付選択 (インライン常時表示)</CardTitle>
             <CardDescription>
-              mode=“single” で日付を選択。フォームに送信が必要な場合は DatePicker を使用する。ja
+              mode="single" で日付を選択。フォームに送信が必要な場合は DatePicker を使用する。ja
               ロケールで曜日・月名を日本語表示。
             </CardDescription>
           </CardHeader>
@@ -65,7 +70,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>範囲選択 — Popover 内</CardTitle>
             <CardDescription>
-              mode=“range” でポップオーバー内に配置。DateRangePicker
+              mode="range" でポップオーバー内に配置。DateRangePicker
               はこのパターンにフォーム送信を加えた上位コンポーネント。
             </CardDescription>
           </CardHeader>
@@ -95,10 +100,11 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>年月ドロップダウン (captionLayout=“dropdown”)</CardTitle>
+            <CardTitle>年月ドロップダウン (captionLayout="dropdown")</CardTitle>
             <CardDescription>
               過去の会計期間に素早くジャンプする場合に便利。startMonth / endMonth
-              でナビゲーション範囲を絞る。
+              でナビゲーション範囲を絞る。captionLayout は dropdown-months / dropdown-years
+              で月のみ・年のみのドロップダウンにも切り替え可能。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -111,6 +117,33 @@ export default function Demo() {
               startMonth={new Date(2020, 0, 1)}
               endMonth={new Date(2030, 11, 31)}
               aria-label="会計期間カレンダー"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>複数日選択 (mode="multiple")</CardTitle>
+            <CardDescription>
+              mode="multiple" で個別の複数日を選択 (Date[])。max
+              で選択上限を制限できる。ここでは出勤シフト日を最大 5 日まで選択。showOutsideDays=
+              {"{false}"} で前後月のはみ出し日を非表示にしている。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Calendar
+              mode="multiple"
+              selected={shiftDays}
+              onSelect={setShiftDays}
+              locale={ja}
+              max={5}
+              showOutsideDays={false}
+              footer={
+                shiftDays && shiftDays.length > 0
+                  ? `選択日数: ${shiftDays.length} 日`
+                  : "出勤日を選択してください"
+              }
+              aria-label="出勤シフトカレンダー"
             />
           </CardContent>
         </Card>

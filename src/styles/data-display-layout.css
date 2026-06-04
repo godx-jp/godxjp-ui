@@ -207,6 +207,17 @@
 .ui-accordion-trigger:hover {
   text-decoration: underline;
 }
+.ui-accordion-trigger:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+.ui-accordion-trigger:disabled,
+.ui-accordion-trigger[data-disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+}
 .ui-accordion-chevron {
   width: 1rem;
   height: 1rem;
@@ -291,4 +302,34 @@
 .ui-carousel-arrow {
   width: 1rem;
   height: 1rem;
+}
+
+/* Vertical orientation (opts.axis === "y") — flips the track and the arrow positions. */
+.ui-carousel[data-orientation="vertical"] .ui-carousel-content {
+  flex-direction: column;
+  margin-inline: 0;
+  margin-block: calc(var(--space-4) * -1);
+}
+
+.ui-carousel[data-orientation="vertical"] .ui-carousel-item {
+  min-width: 0;
+  min-height: 100%;
+  padding-inline: 0;
+  padding-block: var(--space-4);
+}
+
+.ui-carousel[data-orientation="vertical"] .ui-carousel-previous,
+.ui-carousel[data-orientation="vertical"] .ui-carousel-next {
+  top: auto;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+.ui-carousel[data-orientation="vertical"] .ui-carousel-previous {
+  top: var(--space-2);
+}
+
+.ui-carousel[data-orientation="vertical"] .ui-carousel-next {
+  bottom: var(--space-2);
 }

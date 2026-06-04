@@ -201,19 +201,37 @@
     background: hsl(var(--border));
     position: relative;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: hsl(var(--muted-foreground));
   }
 
+  /* Vertical orientation: the separator is a horizontal strip, so swap the
+     geometry — give it height instead of width. v4 sets aria-orientation. */
+  .ui-resizable-handle[aria-orientation="vertical"] {
+    width: auto;
+    height: var(--control-border-width);
+  }
+
+  /* v4 react-resizable-panels marks the active (dragging) and disabled state
+     via the data-separator attribute value, not data-state. */
   .ui-resizable-handle:hover,
-  .ui-resizable-handle[data-state="drag"] {
+  .ui-resizable-handle[data-separator="active"] {
     background: hsl(var(--accent));
   }
 
   .ui-resizable-handle:hover::after,
-  .ui-resizable-handle[data-state="drag"]::after {
+  .ui-resizable-handle[data-separator="active"]::after {
     content: "";
     position: absolute;
     inset: 0;
     background: hsl(var(--accent-foreground) / 0.2);
+  }
+
+  .ui-resizable-handle[data-separator="disabled"] {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 
   @media (min-width: 1080px) {

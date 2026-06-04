@@ -9,13 +9,22 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 const surfaces = [
   { cls: "bg-background text-foreground", token: "--background", role: "page" },
   { cls: "bg-card text-card-foreground", token: "--card", role: "raised surface" },
+  { cls: "bg-popover text-popover-foreground", token: "--popover", role: "overlay surface" },
   { cls: "bg-secondary text-secondary-foreground", token: "--secondary", role: "muted fill" },
   { cls: "bg-muted text-muted-foreground", token: "--muted", role: "muted" },
   { cls: "bg-accent text-accent-foreground", token: "--accent", role: "hover" },
 ];
 
+// Structural neutrals — hairlines, field borders, focus ring. Shown as fills so
+// the named token is visible (in practice they paint borders/outlines, not areas).
+const structural = [
+  { cls: "bg-border", token: "--border", role: "hairline / divider" },
+  { cls: "bg-input", token: "--input", role: "field border" },
+  { cls: "bg-ring", token: "--ring", role: "focus ring" },
+];
+
 const status = [
-  { cls: "bg-primary text-primary-foreground", token: "--primary", role: "brand · #0077c7" },
+  { cls: "bg-primary text-primary-foreground", token: "--primary", role: "brand action" },
   { cls: "bg-success text-success-foreground", token: "--success", role: "若竹 success" },
   { cls: "bg-warning text-warning-foreground", token: "--warning", role: "山吹 warning" },
   { cls: "bg-info text-info-foreground", token: "--info", role: "群青 info" },
@@ -34,9 +43,71 @@ const waIro = [
   { cls: "bg-wa-shu", token: "--wa-shu", role: "朱 vermilion" },
   { cls: "bg-wa-akane", token: "--wa-akane", role: "茜 madder" },
   { cls: "bg-wa-enji", token: "--wa-enji", role: "臙脂 cochineal" },
+  { cls: "bg-wa-sakura", token: "--wa-sakura", role: "桜 cherry (soft bg)" },
   { cls: "bg-wa-sumi", token: "--wa-sumi", role: "墨 ink" },
   { cls: "bg-wa-nezu", token: "--wa-nezu", role: "鼠 mouse grey" },
 ];
+
+// Chart accents — neutral decorative primitives for series colour, NOT business
+// semantics. Wired to --color-chart-1…6 (bg-chart-N utilities).
+const charts = [
+  { cls: "bg-chart-1", token: "--chart-1", role: "series 1" },
+  { cls: "bg-chart-2", token: "--chart-2", role: "series 2" },
+  { cls: "bg-chart-3", token: "--chart-3", role: "series 3" },
+  { cls: "bg-chart-4", token: "--chart-4", role: "series 4" },
+  { cls: "bg-chart-5", token: "--chart-5", role: "series 5" },
+  { cls: "bg-chart-6", token: "--chart-6", role: "series 6" },
+];
+
+type Swatch = { cls: string; token: string; role: string };
+
+/** One swatch tile: a token-coloured box (with foreground text when paired) + its token name + role. */
+function SwatchTile({ swatch, text }: { swatch: Swatch; text?: boolean }) {
+  return (
+    <Flex direction="col" gap="xs">
+      <div className={`border-border flex h-14 items-end rounded-md border p-2 ${swatch.cls}`}>
+        {text ? <span className="font-mono text-xs leading-none">Aa 亜</span> : null}
+      </div>
+      <div>
+        <div className="font-mono text-xs">{swatch.token}</div>
+        <div className="text-muted-foreground text-xs">{swatch.role}</div>
+      </div>
+    </Flex>
+  );
+}
+
+/**
+ * A token group rendered TWICE — light theme then a `.dark`-scoped copy — so a
+ * single static screenshot proves both renditions defined in foundation.css.
+ * Themed groups (`dark`) re-paint under the `.dark` wrapper; decorative groups
+ * (wa-iro, chart) are theme-invariant and render once.
+ */
+function SwatchGroup({ items, text, dark }: { items: Swatch[]; text?: boolean; dark?: boolean }) {
+  const grid = (
+    <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 4 }}>
+      {items.map((s) => (
+        <SwatchTile key={s.token} swatch={s} text={text} />
+      ))}
+    </ResponsiveGrid>
+  );
+  if (!dark) return grid;
+  return (
+    <Flex direction="col" gap="md">
+      <div>
+        <div className="text-muted-foreground mb-2 text-xs font-medium">Light</div>
+        {grid}
+      </div>
+      <div className="bg-background text-foreground dark rounded-md p-3">
+        <div className="text-muted-foreground mb-2 text-xs font-medium">Dark (.dark)</div>
+        <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 4 }}>
+          {items.map((s) => (
+            <SwatchTile key={s.token} swatch={s} text={text} />
+          ))}
+        </ResponsiveGrid>
+      </div>
+    </Flex>
+  );
+}
 
 export default function Demo() {
   return (
@@ -49,26 +120,25 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Semantic surfaces</CardTitle>
             <CardDescription>
-              Page / raised / muted neutrals. Use these — never invent a new grey. Each box shows
-              its own foreground text token.
+              Page / raised / overlay / muted neutrals. Use these — never invent a new grey. Each box
+              shows its own foreground text token. Every role is redefined under .dark.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 4 }}>
-              {surfaces.map((s) => (
-                <Flex key={s.token} direction="col" gap="xs">
-                  <div
-                    className={`border-border flex h-14 items-end rounded-md border p-2 ${s.cls}`}
-                  >
-                    <span className="font-mono text-xs leading-none">Aa 亜</span>
-                  </div>
-                  <div>
-                    <div className="font-mono text-xs">{s.token}</div>
-                    <div className="text-muted-foreground text-xs">{s.role}</div>
-                  </div>
-                </Flex>
-              ))}
-            </ResponsiveGrid>
+            <SwatchGroup items={surfaces} text dark />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Structural neutrals</CardTitle>
+            <CardDescription>
+              Hairlines, field borders, focus ring. In practice these paint borders and outlines, not
+              areas — shown as fills here so the named token is visible. Also themed under .dark.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SwatchGroup items={structural} dark />
           </CardContent>
         </Card>
 
@@ -77,25 +147,11 @@ export default function Demo() {
             <CardTitle>Brand & status</CardTitle>
             <CardDescription>
               Fixed semantic mapping — never substitute. primary = the single most important action;
-              status is success / warning / info / attention / danger.
+              status is success / warning / info / attention / danger. Lifted for contrast under .dark.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 4 }}>
-              {status.map((s) => (
-                <Flex key={s.token} direction="col" gap="xs">
-                  <div
-                    className={`border-border flex h-14 items-end rounded-md border p-2 ${s.cls}`}
-                  >
-                    <span className="font-mono text-xs leading-none">Aa 亜</span>
-                  </div>
-                  <div>
-                    <div className="font-mono text-xs">{s.token}</div>
-                    <div className="text-muted-foreground text-xs">{s.role}</div>
-                  </div>
-                </Flex>
-              ))}
-            </ResponsiveGrid>
+            <SwatchGroup items={status} text dark />
           </CardContent>
         </Card>
 
@@ -104,21 +160,24 @@ export default function Demo() {
             <CardTitle>和色 wa-iro — decorative only</CardTitle>
             <CardDescription>
               Traditional Japanese accents for charts / tags / tenant theming. NEVER map a wa-iro
-              hue to a semantic role beyond the five canonical ones above.
+              hue to a semantic role beyond the five canonical ones above. Fixed hex — theme-invariant.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 4 }}>
-              {waIro.map((s) => (
-                <Flex key={s.token} direction="col" gap="xs">
-                  <div className={`border-border h-14 rounded-md border ${s.cls}`} />
-                  <div>
-                    <div className="font-mono text-xs">{s.token}</div>
-                    <div className="text-muted-foreground text-xs">{s.role}</div>
-                  </div>
-                </Flex>
-              ))}
-            </ResponsiveGrid>
+            <SwatchGroup items={waIro} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Chart accents</CardTitle>
+            <CardDescription>
+              Series colours for data visualisation — neutral decorative primitives, NOT business
+              semantics. Use bg-chart-1…6 in order; theme-invariant like wa-iro.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SwatchGroup items={charts} />
           </CardContent>
         </Card>
       </Flex>

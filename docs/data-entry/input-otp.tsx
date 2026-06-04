@@ -20,17 +20,27 @@ export default function Demo() {
   const [smsCode, setSmsCode] = useState("");
   const [inviteCode, setInviteCode] = useState("");
 
+  // Auto-submit pattern — onComplete fires when every slot is filled.
+  const [completeCode, setCompleteCode] = useState("123456");
+  const [verified, setVerified] = useState("123456");
+
+  // Error path — a wrong code seeded at rest so the invalid styling is visible
+  // without typing. FormField wires aria-invalid + aria-errormessage onto the field.
+  const [wrongCode, setWrongCode] = useState("000000");
+
   return (
     <PageContainer title="InputOTP" subtitle="ワンタイムコード入力 — 2FA・SMS認証・招待コード">
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>メール認証コード（6桁）</CardTitle>
-            <CardDescription>6スロット 1グループ — ペースト・矢印キー操作に対応。</CardDescription>
+            <CardDescription>
+              6スロット 1グループ — ペースト・矢印キー操作に対応。autoFocus でコード入力画面の初期フォーカスを設定。
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <FormField id="email-otp" label="認証コード" required>
-              <InputOTP maxLength={6} value={emailCode} onChange={setEmailCode}>
+              <InputOTP autoFocus maxLength={6} value={emailCode} onChange={setEmailCode}>
                 <InputOTPGroup>
                   <InputOTPSlot index={0} />
                   <InputOTPSlot index={1} />
@@ -88,6 +98,90 @@ export default function Demo() {
                   <InputOTPSlot index={1} />
                   <InputOTPSlot index={2} />
                   <InputOTPSlot index={3} />
+                </InputOTPGroup>
+              </InputOTP>
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>自動送信（onComplete）</CardTitle>
+            <CardDescription>
+              全スロットが埋まると onComplete が発火し、ボタンを押さずに検証を実行する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              id="autosubmit-otp"
+              label="認証コード"
+              helper={verified ? `${verified} を検証済み — 自動送信されました。` : "6桁を入力すると自動で送信されます。"}
+              required
+            >
+              <InputOTP
+                maxLength={6}
+                value={completeCode}
+                onChange={setCompleteCode}
+                onComplete={(code) => setVerified(code)}
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>エラー（コードが一致しない）</CardTitle>
+            <CardDescription>
+              FormField の error で aria-invalid を付与 — スロットの枠が destructive 色に変わる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              id="error-otp"
+              label="認証コード"
+              error="コードが正しくありません。もう一度入力してください。"
+              required
+            >
+              <InputOTP maxLength={6} value={wrongCode} onChange={setWrongCode}>
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>無効（再送クールダウン中）</CardTitle>
+            <CardDescription>
+              disabled — コード再送のクールダウンや検証中は入力をロックする。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="disabled-otp" label="認証コード" helper="60秒後に再入力できます。">
+              <InputOTP disabled maxLength={6} value="42" onChange={() => {}}>
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
                 </InputOTPGroup>
               </InputOTP>
             </FormField>

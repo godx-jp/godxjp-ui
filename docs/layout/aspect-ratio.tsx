@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { Skeleton } from "@godxjp/ui/feedback";
 import { AspectRatio, Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -43,7 +44,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div style={{ maxWidth: "20rem" }}>
+            <div className="max-w-xs">
               <AspectRatio ratio={4 / 3}>
                 <div className="bg-muted border-border flex h-full w-full items-center justify-center rounded-md border">
                   <span className="text-muted-foreground text-sm">領収書スキャン 4:3</span>
@@ -64,7 +65,7 @@ export default function Demo() {
           <CardContent>
             <Flex direction="row" gap="md" align="start" wrap>
               {["株式会社 A", "合同会社 B", "有限会社 C"].map((name) => (
-                <div key={name} style={{ width: "7rem" }}>
+                <div key={name} className="w-28">
                   <AspectRatio ratio={1}>
                     <div className="bg-muted border-border flex h-full w-full items-center justify-center rounded-md border">
                       <span className="text-muted-foreground px-1 text-center text-xs">{name}</span>
@@ -92,6 +93,23 @@ export default function Demo() {
                 <span className="text-muted-foreground text-sm">月次売上推移グラフ（21:9）</span>
               </div>
             </AspectRatio>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Skeleton 併用 — ロード中のプレースホルダー</CardTitle>
+            <CardDescription>
+              フレームの幅・高さを ratio で固定し、ロード完了後に画像へ差し替えても
+              レイアウトシフトが起きない。読み込み中は Skeleton を子要素に置く。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="max-w-xs">
+              <AspectRatio ratio={16 / 9}>
+                <Skeleton className="h-full w-full rounded-md" />
+              </AspectRatio>
+            </div>
           </CardContent>
         </Card>
       </Flex>

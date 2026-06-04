@@ -23,7 +23,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Image + fallback</CardTitle>
             <CardDescription>
-              A missing image falls back to initials — never a blank circle.
+              Compose AvatarImage with AvatarFallback: a loaded photo shows the
+              image, an avatar with no image shows initials.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -48,9 +49,33 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Fallback on a broken image</CardTitle>
+            <CardDescription>
+              When the src fails to load, AvatarImage swaps in the AvatarFallback
+              automatically — never a blank circle. delayMs holds the fallback
+              back briefly so it does not flash before a slow image arrives.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="md">
+              <Avatar>
+                <AvatarImage src="/__missing-avatar.png" alt="退職済みの担当者" />
+                <AvatarFallback>YM</AvatarFallback>
+              </Avatar>
+              <Avatar>
+                <AvatarImage src="/__missing-avatar.png" alt="未設定の担当者" />
+                <AvatarFallback delayMs={600}>HS</AvatarFallback>
+              </Avatar>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Sizes</CardTitle>
             <CardDescription>
-              Set the size with a className utility (size-8 / size-10 / size-12).
+              Default is var(--control-height); override with a size-* utility
+              (size-8 / size-10 / size-12).
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -60,6 +85,9 @@ export default function Demo() {
               </Avatar>
               <Avatar className="size-10">
                 <AvatarFallback>M</AvatarFallback>
+              </Avatar>
+              <Avatar>
+                <AvatarFallback>D</AvatarFallback>
               </Avatar>
               <Avatar className="size-12">
                 <AvatarFallback>L</AvatarFallback>

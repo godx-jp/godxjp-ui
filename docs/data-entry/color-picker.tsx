@@ -14,6 +14,7 @@ export default function Demo() {
   const [brandColor, setBrandColor] = useState("#2563eb");
   const [accentColor, setAccentColor] = useState("#16a34a");
   const [categoryColor, setCategoryColor] = useState("#dc2626");
+  const [validatedColor, setValidatedColor] = useState("#9333ea");
 
   return (
     <PageContainer title="ColorPicker" subtitle="カラーピッカー — スウォッチ＋Hex入力">
@@ -59,14 +60,40 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="md" className="items-center">
+            <FormField id="category-color" label="カテゴリカラー">
+              <Flex direction="row" gap="md" className="items-center">
+                <ColorPicker
+                  id="category-color"
+                  value={categoryColor}
+                  onValueChange={setCategoryColor}
+                  showHexInput={false}
+                />
+                <span className="text-muted-foreground text-sm">選択中: {categoryColor}</span>
+              </Flex>
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Hex バリデーションと確定動作</CardTitle>
+            <CardDescription>
+              Hex 入力は blur または Enter で確定。確定時に #RGB / #RRGGBB
+              形式でなければ、直前の有効な値へ自動的に巻き戻る。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              id="validated-color"
+              label="ラベルカラー"
+              helper="例えば「zzz」と入力して Enter を押すと、入力は破棄され #9333EA に戻る。"
+            >
               <ColorPicker
-                value={categoryColor}
-                onValueChange={setCategoryColor}
-                showHexInput={false}
+                id="validated-color"
+                value={validatedColor}
+                onValueChange={setValidatedColor}
               />
-              <span className="text-muted-foreground text-sm">選択中: {categoryColor}</span>
-            </Flex>
+            </FormField>
           </CardContent>
         </Card>
 

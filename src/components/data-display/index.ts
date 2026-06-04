@@ -44,4 +44,6 @@ export {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  useCarousel,
 } from "./carousel";
+export type { CarouselApi } from "./carousel";

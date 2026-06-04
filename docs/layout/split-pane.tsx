@@ -64,7 +64,7 @@ const INVOICES: Invoice[] = [
   },
 ];
 
-const STATUS_VARIANT = {
+const STATUS_TONE = {
   承認済: "success",
   保留中: "warning",
   未承認: "destructive",
@@ -110,7 +110,7 @@ export default function Demo() {
                 <CardHeader>
                   <Flex justify="between" align="center">
                     <CardTitle className="text-base">{selected.id}</CardTitle>
-                    <Badge variant={STATUS_VARIANT[selected.status]}>{selected.status}</Badge>
+                    <Badge tone={STATUS_TONE[selected.status]}>{selected.status}</Badge>
                   </Flex>
                   <CardDescription>請求書詳細</CardDescription>
                 </CardHeader>
@@ -192,10 +192,20 @@ export default function Demo() {
               {INVOICES.map((inv) => (
                 <Card
                   key={inv.id}
-                  className={`cursor-pointer transition-colors ${
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={selectedId === inv.id}
+                  aria-label={`請求書 ${inv.id} ${inv.partner}`}
+                  className={`focus-visible:ring-ring cursor-pointer transition-colors focus-visible:ring-2 focus-visible:outline-none ${
                     selectedId === inv.id ? "ring-primary ring-2" : ""
                   }`}
                   onClick={() => setSelectedId(inv.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedId(inv.id);
+                    }
+                  }}
                 >
                   <CardContent>
                     <Flex align="center" gap="md">
@@ -203,7 +213,7 @@ export default function Demo() {
                       <Flex direction="col" gap="xs" className="min-w-0 flex-1">
                         <Flex justify="between" align="center">
                           <span className="text-muted-foreground font-mono text-xs">{inv.id}</span>
-                          <Badge variant={STATUS_VARIANT[inv.status]}>{inv.status}</Badge>
+                          <Badge tone={STATUS_TONE[inv.status]}>{inv.status}</Badge>
                         </Flex>
                         <Flex justify="between" align="center">
                           <span className="truncate text-sm font-medium">{inv.partner}</span>
@@ -247,7 +257,7 @@ export default function Demo() {
           }
         >
           <Flex direction="col" gap="md">
-            <div className="text-foreground text-sm font-semibold">月次サマリー</div>
+            <h2 className="text-foreground text-sm font-semibold">月次サマリー</h2>
             <div className="gap-md grid grid-cols-2">
               <StatCard label="請求総額" value="¥3,800,000" delta="+8%" />
               <StatCard label="承認済件数" value="3" hint="全5件中" />

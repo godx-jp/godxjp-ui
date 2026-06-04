@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
+import type { AnchorHTMLAttributes } from "react";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   Card,
@@ -8,19 +9,71 @@ import {
   CardTitle,
   StatCard,
   Badge,
+  DataTable,
+  Descriptions,
 } from "@godxjp/ui/data-display";
+import type { ColumnDef } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
 import { Plus, Download, Filter } from "lucide-react";
 
 /**
+ * Router Link stub passed to `linkComponent` — proves breadcrumb segments can render
+ * through a router primitive (react-router / next/link) instead of a plain <a>.
+ * PageContainer forwards both `href` and `to`; a real Link reads `to`.
+ */
+const RouterLink = forwardRef<
+  HTMLAnchorElement,
+  AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }
+>(function RouterLink({ to, href, children, ...props }, ref) {
+  return (
+    <a ref={ref} href={to ?? href} data-router-link="" {...props}>
+      {children}
+    </a>
+  );
+});
+
+type JournalEntry = {
+  id: string;
+  date: string;
+  desc: string;
+  amount: string;
+  status: "承認済" | "保留中";
+};
+
+const journalEntries: JournalEntry[] = [
+  { id: "JE-0041", date: "2026-05-31", desc: "売上計上", amount: "¥840,000", status: "承認済" },
+  { id: "JE-0040", date: "2026-05-30", desc: "仕入計上", amount: "¥320,000", status: "承認済" },
+  { id: "JE-0039", date: "2026-05-29", desc: "給与仕訳", amount: "¥1,200,000", status: "保留中" },
+];
+
+const journalColumns: ColumnDef<JournalEntry>[] = [
+  { key: "id", header: "伝票番号", width: "w-28", render: (r) => <span className="font-mono">{r.id}</span> },
+  { key: "date", header: "日付", width: "w-32" },
+  { key: "desc", header: "摘要" },
+  { key: "amount", header: "金額", align: "right", render: (r) => <span className="font-medium">{r.amount}</span> },
+  {
+    key: "status",
+    header: "ステータス",
+    align: "right",
+    render: (r) => (
+      <Badge tone={r.status === "承認済" ? "success" : "warning"}>{r.status}</Badge>
+    ),
+  },
+];
+
+/**
  * PageContainer — mandatory page shell.
- * Covers: title/subtitle/extra/footer/breadcrumb + variant default/narrow/flush/ghost.
+ * Covers: title/subtitle/extra/footer/breadcrumb/linkComponent + variant
+ * default/narrow/flush/ghost + density compact/default/comfortable + PageContainer.Inset.
  * Each example is standalone (no AppShell) so the variant behaviour is visible in
  * isolation. Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
   const [activeVariant, setActiveVariant] = useState<"default" | "narrow" | "flush" | "ghost">(
+    "default",
+  );
+  const [activeDensity, setActiveDensity] = useState<"compact" | "default" | "comfortable">(
     "default",
   );
 
@@ -31,12 +84,19 @@ export default function Demo() {
     { key: "ghost", label: "ghost" },
   ] as const;
 
+  const densities = [
+    { key: "compact", label: "compact" },
+    { key: "default", label: "default" },
+    { key: "comfortable", label: "comfortable" },
+  ] as const;
+
   return (
     <Flex direction="col" gap="xl">
-      {/* ── 1. Default variant — dashboard-style ── */}
+      {/* ── 1. Default variant — dashboard-style + linkComponent (router Link) ── */}
       <PageContainer
         title="売上ダッシュボード"
         subtitle="直近30日間の集計データ"
+        linkComponent={RouterLink}
         breadcrumb={[{ label: "ホーム", to: "/" }, { label: "ダッシュボード" }]}
         extra={
           <Flex gap="sm">
@@ -83,20 +143,13 @@ export default function Demo() {
             <CardDescription>登録されている法人の基本情報です。</CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="md">
-              <Flex direction="col" gap="xs">
-                <div className="text-foreground text-sm font-medium">法人名</div>
-                <div className="text-muted-foreground text-sm">株式会社サンプル</div>
-              </Flex>
-              <Flex direction="col" gap="xs">
-                <div className="text-foreground text-sm font-medium">法人番号</div>
-                <div className="text-muted-foreground text-sm">1234567890123</div>
-              </Flex>
-              <Flex direction="col" gap="xs">
-                <div className="text-foreground text-sm font-medium">決算月</div>
-                <div className="text-muted-foreground text-sm">3月</div>
-              </Flex>
-            </Flex>
+            <Descriptions columns={1}>
+              <Descriptions.Item label="法人名">株式会社サンプル</Descriptions.Item>
+              <Descriptions.Item label="法人番号" mono>
+                1234567890123
+              </Descriptions.Item>
+              <Descriptions.Item label="決算月">3月</Descriptions.Item>
+            </Descriptions>
           </CardContent>
         </Card>
       </PageContainer>
@@ -120,55 +173,15 @@ export default function Demo() {
           </Flex>
         }
       >
-        {/* In production this would be a DataTable (flush = no padding, full-bleed) */}
-        <Card>
-          <CardContent className="p-0">
-            <Flex direction="col">
-              {[
-                {
-                  id: "JE-0041",
-                  date: "2026-05-31",
-                  desc: "売上計上",
-                  amount: "¥840,000",
-                  status: "承認済",
-                },
-                {
-                  id: "JE-0040",
-                  date: "2026-05-30",
-                  desc: "仕入計上",
-                  amount: "¥320,000",
-                  status: "承認済",
-                },
-                {
-                  id: "JE-0039",
-                  date: "2026-05-29",
-                  desc: "給与仕訳",
-                  amount: "¥1,200,000",
-                  status: "保留中",
-                },
-              ].map((row, i) => (
-                <Flex
-                  key={row.id}
-                  align="center"
-                  justify="between"
-                  className={`px-4 py-3 text-sm ${i < 2 ? "border-border border-b" : ""}`}
-                >
-                  <Flex gap="md" align="center">
-                    <span className="text-muted-foreground font-mono text-xs">{row.id}</span>
-                    <span className="text-muted-foreground">{row.date}</span>
-                    <span>{row.desc}</span>
-                  </Flex>
-                  <Flex gap="md" align="center">
-                    <span className="font-medium">{row.amount}</span>
-                    <Badge variant={row.status === "承認済" ? "success" : "warning"}>
-                      {row.status}
-                    </Badge>
-                  </Flex>
-                </Flex>
-              ))}
-            </Flex>
-          </CardContent>
-        </Card>
+        {/* flush strips body padding so the DataTable runs full-bleed, edge to edge. */}
+        <DataTable data={journalEntries} columns={journalColumns} getRowId={(r) => r.id} />
+        {/* PageContainer.Inset — escape hatch that re-applies the page inset inside a
+            full-bleed body, so a footnote keeps the header's left/right alignment. */}
+        <PageContainer.Inset>
+          <p className="text-muted-foreground text-xs">
+            承認済みの仕訳のみ表示しています。保留中の仕訳は別途承認が必要です。
+          </p>
+        </PageContainer.Inset>
       </PageContainer>
 
       {/* ── 4. Ghost variant + breadcrumb depth ── */}
@@ -189,49 +202,90 @@ export default function Demo() {
               <CardTitle>基本情報</CardTitle>
             </CardHeader>
             <CardContent>
-              <Flex gap="lg">
-                <Flex direction="col" gap="xs">
-                  <span className="text-muted-foreground text-xs">代表者</span>
-                  <span className="text-sm">山田 太郎</span>
-                </Flex>
-                <Flex direction="col" gap="xs">
-                  <span className="text-muted-foreground text-xs">所在地</span>
-                  <span className="text-sm">東京都千代田区</span>
-                </Flex>
-                <Flex direction="col" gap="xs">
-                  <span className="text-muted-foreground text-xs">与信枠</span>
-                  <span className="text-sm">¥5,000,000</span>
-                </Flex>
-              </Flex>
+              <Descriptions columns={3}>
+                <Descriptions.Item label="代表者">山田 太郎</Descriptions.Item>
+                <Descriptions.Item label="所在地">東京都千代田区</Descriptions.Item>
+                <Descriptions.Item label="与信枠">¥5,000,000</Descriptions.Item>
+              </Descriptions>
             </CardContent>
           </Card>
         </Flex>
       </PageContainer>
 
-      {/* ── 5. Variant switcher — interactive ── */}
+      {/* ── 4b. density axis (compact vs comfortable) — static, side by side ── */}
+      <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+        <PageContainer
+          density="compact"
+          variant="ghost"
+          title="コンパクト密度"
+          subtitle='density="compact" — 行間・余白を詰めた一覧向け'
+        >
+          <Card>
+            <CardContent>
+              <Descriptions columns={1}>
+                <Descriptions.Item label="表示密度">コンパクト</Descriptions.Item>
+                <Descriptions.Item label="用途">大量データの一覧</Descriptions.Item>
+              </Descriptions>
+            </CardContent>
+          </Card>
+        </PageContainer>
+        <PageContainer
+          density="comfortable"
+          variant="ghost"
+          title="コンフォータブル密度"
+          subtitle='density="comfortable" — 余白を広げた閲覧向け'
+        >
+          <Card>
+            <CardContent>
+              <Descriptions columns={1}>
+                <Descriptions.Item label="表示密度">コンフォータブル</Descriptions.Item>
+                <Descriptions.Item label="用途">詳細・設定画面</Descriptions.Item>
+              </Descriptions>
+            </CardContent>
+          </Card>
+        </PageContainer>
+      </ResponsiveGrid>
+
+      {/* ── 5. Variant + density switcher — interactive (both axes are orthogonal) ── */}
       <PageContainer
         variant={activeVariant}
+        density={activeDensity}
         title="バリアント比較"
-        subtitle={`現在: variant="${activeVariant}"`}
+        subtitle={`現在: variant="${activeVariant}" / density="${activeDensity}"`}
         extra={
-          <Flex gap="sm">
-            {variants.map((v) => (
-              <Button
-                key={v.key}
-                size="sm"
-                variant={activeVariant === v.key ? "default" : "outline"}
-                onClick={() => setActiveVariant(v.key)}
-              >
-                {v.label}
-              </Button>
-            ))}
+          <Flex direction="col" gap="sm">
+            <Flex gap="sm" wrap>
+              {variants.map((v) => (
+                <Button
+                  key={v.key}
+                  size="sm"
+                  variant={activeVariant === v.key ? "default" : "outline"}
+                  onClick={() => setActiveVariant(v.key)}
+                >
+                  {v.label}
+                </Button>
+              ))}
+            </Flex>
+            <Flex gap="sm" wrap>
+              {densities.map((d) => (
+                <Button
+                  key={d.key}
+                  size="sm"
+                  variant={activeDensity === d.key ? "default" : "outline"}
+                  onClick={() => setActiveDensity(d.key)}
+                >
+                  {d.label}
+                </Button>
+              ))}
+            </Flex>
           </Flex>
         }
       >
         <Card>
           <CardContent>
             <p className="text-muted-foreground text-sm">
-              ページ本文コンテンツ。バリアントを切り替えるとヘッダー余白・幅制御が変化します。
+              ページ本文コンテンツ。variant
+              はヘッダー余白・幅制御を、density は行間・間隔スケール（ui-density-*）を切り替えます。
             </p>
           </CardContent>
         </Card>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   AppShell,
+  Breadcrumb,
   Flex,
   PageContainer,
   ResponsiveGrid,
@@ -75,12 +76,14 @@ const SECTIONS: SidebarSectionProp[] = [
 const ENTITIES = [
   { id: "acme", name: "株式会社アクメ" },
   { id: "globex", name: "グローバル商事株式会社" },
-  { id: "initech", label: "イニテック有限会社" },
+  { id: "initech", name: "イニテック有限会社" },
 ] as const;
 
 export default function Demo() {
   const [activeId, setActiveId] = useState("dashboard");
-  const [collapsed, setCollapsed] = useState(false);
+  // Seeded collapsed at rest so the icon rail + collapsed reflow (data-collapsed)
+  // is visible in a static screenshot; the topbar toggle expands the full sidebar.
+  const [collapsed, setCollapsed] = useState(true);
   const [activeEntity, setActiveEntity] = useState(ENTITIES[0].name);
   const [unread, setUnread] = useState(true);
 
@@ -90,7 +93,7 @@ export default function Demo() {
       collapsed={collapsed}
       onSelect={setActiveId}
       sections={SECTIONS}
-      product={{ name: "CoreBooks", role: activeEntity, color: "hsl(220 70% 50%)" }}
+      product={{ name: "CoreBooks", role: activeEntity }}
       footer={
         <Flex direction="col" gap="xs">
           <div className="text-foreground text-sm font-medium">山田 太郎</div>
@@ -102,7 +105,7 @@ export default function Demo() {
 
   const topbar = (
     <Topbar
-      product={{ name: "CoreBooks", color: "hsl(220 70% 50%)" }}
+      product={{ name: "CoreBooks" }}
       productMenu={
         <DropdownMenuContent align="start" className="w-56">
           <DropdownMenuLabel>エンティティ切替</DropdownMenuLabel>
@@ -123,11 +126,27 @@ export default function Demo() {
   );
 
   return (
-    <AppShell sidebar={sidebar} topbar={topbar} sidebarCollapsed={collapsed}>
+    <AppShell
+      sidebar={sidebar}
+      topbar={topbar}
+      sidebarCollapsed={collapsed}
+      // Shell-level breadcrumb slot (app-breadcrumb landmark) — distinct from
+      // PageContainer's own breadcrumb; here the shell owns the trail.
+      breadcrumb={
+        <Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "ダッシュボード" }]} />
+      }
+      // Shell-level footer slot (app-footer landmark) — distinct from the
+      // Sidebar footer (the user identity block) shown on the left rail.
+      footer={
+        <Flex justify="between" align="center" className="text-muted-foreground text-xs">
+          <span>© 2026 CoreBooks 会計システム</span>
+          <span>バージョン 7.2.0</span>
+        </Flex>
+      }
+    >
       <PageContainer
         title="売上ダッシュボード"
         subtitle={`${activeEntity} — 2026年5月`}
-        breadcrumb={[{ label: "ホーム", to: "/" }, { label: "ダッシュボード" }]}
         extra={
           <Flex gap="sm">
             <Button size="sm" variant="outline" onClick={() => setUnread(true)}>

@@ -20,16 +20,46 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Tones</CardTitle>
             <CardDescription>
-              Tone carries meaning — success / info / warning / destructive.
+              Tone carries meaning — success（既定）と warning の 2 値のみ。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <Progress value={72} tone="success" label="処理スループット" />
-              <Progress value={48} tone="info" label="目標達成率" />
               <Progress value={28} tone="warning" label="SLA 超過リスク" />
-              <Progress value={88} tone="destructive" label="ディスク使用量" />
-              <Progress value={60} label="（tone 指定なし）" />
+              <Progress value={60} label="（tone 指定なし → success）" />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Labelled / unlabelled</CardTitle>
+            <CardDescription>
+              label を渡すと bar 下にテキストを表示し aria-labelledby で関連付け。省略時は aria-label=&quot;Progress&quot;。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Progress value={45} label="アップロード進捗" />
+              <Progress value={45} />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Edge values &amp; clamping</CardTitle>
+            <CardDescription>
+              value は 0–100 にクランプ（Math.max(0, Math.min(100, value))）。範囲外でも安全に描画。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Progress value={0} label="0%（空）" />
+              <Progress value={100} tone="success" label="100%（完了）" />
+              <Progress value={130} tone="warning" label="130 → 100 にクランプ" />
+              <Progress value={-5} label="-5 → 0 にクランプ" />
             </Flex>
           </CardContent>
         </Card>

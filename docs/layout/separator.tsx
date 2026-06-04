@@ -62,21 +62,21 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="sm" align="center">
+            <Flex direction="row" gap="sm" align="stretch">
               <Button variant="outline" size="sm">
                 インポート
               </Button>
               <Button variant="outline" size="sm">
                 エクスポート
               </Button>
-              <Separator orientation="vertical" style={{ height: "1.5rem" }} />
+              <Separator orientation="vertical" />
               <Button variant="outline" size="sm">
                 一括承認
               </Button>
               <Button variant="outline" size="sm">
                 一括却下
               </Button>
-              <Separator orientation="vertical" style={{ height: "1.5rem" }} />
+              <Separator orientation="vertical" />
               <Button size="sm">新規作成</Button>
             </Flex>
           </CardContent>

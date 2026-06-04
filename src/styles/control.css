@@ -639,6 +639,17 @@
   z-index: 1;
   box-shadow: 0 0 0 2px hsl(var(--ring));
 }
+.ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot {
+  border-color: hsl(var(--destructive));
+}
+.ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot[data-active="true"] {
+  box-shadow: 0 0 0 2px hsl(var(--destructive));
+}
+.ui-otp-container:has(.ui-otp-input:disabled) .ui-otp-slot {
+  cursor: not-allowed;
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
 .ui-otp-caret-wrapper {
   position: absolute;
   inset: 0;

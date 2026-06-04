@@ -8,9 +8,13 @@ import {
   CardHeader,
   CardTitle,
   Badge,
+  Avatar,
+  AvatarFallback,
 } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import {
+  DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -25,6 +29,10 @@ import {
   PanelLeft,
   Building2,
   Folder,
+  SlidersHorizontal,
+  UserRound,
+  LogOut,
+  Settings,
 } from "lucide-react";
 
 /**
@@ -67,6 +75,7 @@ export default function Demo() {
   const [activeProject, setActiveProject] = useState<(typeof PROJECTS)[number] | null>(PROJECTS[0]);
   const [unread, setUnread] = useState(true);
   const [searchOpenCount, setSearchOpenCount] = useState(0);
+  const [tweaksOpenCount, setTweaksOpenCount] = useState(0);
 
   const topbar = (
     <Topbar
@@ -89,6 +98,7 @@ export default function Demo() {
         </DropdownMenuContent>
       }
       project={activeProject}
+      projectPlaceholder="プロジェクトを選択"
       projectMenu={
         <DropdownMenuContent align="start" className="w-56">
           <DropdownMenuLabel>プロジェクト切替</DropdownMenuLabel>
@@ -115,10 +125,39 @@ export default function Demo() {
       onSearchOpen={() => setSearchOpenCount((n) => n + 1)}
       unread={unread}
       onNotificationsOpen={() => setUnread(false)}
+      onTweaksOpen={() => setTweaksOpenCount((n) => n + 1)}
       rightSlot={
         <Badge tone="warning" className="text-xs">
           ステージング
         </Badge>
+      }
+      user={
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button type="button" className="tb-icon-btn" aria-label="アカウントメニュー">
+              <Avatar className="size-7">
+                <AvatarFallback>佐藤</AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>佐藤 花子</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <UserRound className="mr-2 size-4" />
+              プロフィール
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Settings className="mr-2 size-4" />
+              アカウント設定
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <LogOut className="mr-2 size-4" />
+              ログアウト
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       }
     />
   );
@@ -137,7 +176,7 @@ export default function Demo() {
     <AppShell sidebar={sidebar} topbar={topbar} sidebarCollapsed={collapsed}>
       <PageContainer
         title="Topbar デモ"
-        subtitle="product/project chips · switcher menu · search · notifications · collapse"
+        subtitle="product/project chips · switcher menu · search · notifications · collapse · user · tweaks"
         breadcrumb={[{ label: "ホーム", to: "/" }, { label: "Topbar デモ" }]}
       >
         <Flex direction="col" gap="lg">
@@ -160,7 +199,7 @@ export default function Demo() {
                   <Folder className="text-muted-foreground size-4" />
                   <span className="text-muted-foreground">アクティブプロジェクト</span>
                   <Badge variant={activeProject ? "secondary" : "outline"}>
-                    {activeProject ? activeProject.name : "未選択（チップ非表示）"}
+                    {activeProject ? activeProject.name : "未選択（空チップ表示）"}
                   </Badge>
                 </Flex>
                 <Flex align="center" gap="md">
@@ -182,6 +221,11 @@ export default function Demo() {
                   <span className="text-muted-foreground">検索を開いた回数</span>
                   <Badge tone="info">{searchOpenCount}</Badge>
                 </Flex>
+                <Flex align="center" gap="md">
+                  <SlidersHorizontal className="text-muted-foreground size-4" />
+                  <span className="text-muted-foreground">設定を開いた回数</span>
+                  <Badge tone="info">{tweaksOpenCount}</Badge>
+                </Flex>
               </Flex>
             </CardContent>
           </Card>
@@ -200,7 +244,7 @@ export default function Demo() {
                   },
                   {
                     prop: "project + projectMenu",
-                    desc: "project chip をプロジェクト切替メニューに変換（両方 null で非表示）",
+                    desc: "project chip をプロジェクト切替メニューに変換（project=null でも projectMenu 有りなら空チップ表示、両方 null で非表示）",
                   },
                   {
                     prop: "onToggleCollapsed + collapsed",
@@ -213,6 +257,18 @@ export default function Demo() {
                   {
                     prop: "unread + onNotificationsOpen",
                     desc: "通知ベルと未読ドット（unread=true で赤ドット表示）",
+                  },
+                  {
+                    prop: "onTweaksOpen",
+                    desc: "設定（SlidersHorizontal）ボタン — 指定時のみ右端に表示",
+                  },
+                  {
+                    prop: "user",
+                    desc: "アバター／アカウントメニュー用スロット（DropdownMenu を内包）",
+                  },
+                  {
+                    prop: "projectPlaceholder",
+                    desc: "project=null だが projectMenu 有りのとき、空チップのアクセシブルなラベル",
                   },
                   {
                     prop: "rightSlot",
@@ -244,6 +300,10 @@ export default function Demo() {
                 <Button size="sm" variant="outline" onClick={() => setCollapsed(false)}>
                   <PanelLeft />
                   サイドバーを展開
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => setActiveProject(null)}>
+                  <Folder />
+                  プロジェクトを未選択（空チップ）
                 </Button>
                 <Button
                   size="sm"

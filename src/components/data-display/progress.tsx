@@ -15,7 +15,7 @@ export function Progress({ value, label, tone = "success" }: ProgressProps) {
   return (
     <div
       className="ui-progress"
-      data-variant={tone}
+      data-tone={tone}
       role="progressbar"
       aria-valuenow={boundedValue}
       aria-valuemin={0}

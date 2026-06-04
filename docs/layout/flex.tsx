@@ -89,12 +89,116 @@ export default function Demo() {
               align="center"
               justify="center"
               gap="sm"
-              style={{ minHeight: "8rem" }}
+              className="min-h-32"
             >
               <span className="text-muted-foreground text-sm">データがありません</span>
               <Button variant="outline" size="sm">
                 インポート
               </Button>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>align — 交差軸の整列（全 5 値）</CardTitle>
+            <CardDescription>
+              direction=&quot;row&quot; の交差軸（縦方向）の揃え方。高さの異なる子要素で
+              start・center・end・baseline・stretch の違いを比較。baseline はテキストの
+              ベースライン、stretch は子要素を行の高さまで引き伸ばす。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {(["start", "center", "end", "stretch", "baseline"] as const).map(
+                (a) => (
+                  <Flex
+                    key={a}
+                    direction="row"
+                    gap="sm"
+                    align={a}
+                    className="bg-muted min-h-20 rounded-md p-2"
+                  >
+                    <span className="text-muted-foreground w-16 text-xs">{a}</span>
+                    <Badge variant="outline">短</Badge>
+                    <span className="text-sm">標準テキスト</span>
+                    <span className="text-2xl font-semibold">大</span>
+                  </Flex>
+                ),
+              )}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>justify — 主軸の配置（全 6 値）</CardTitle>
+            <CardDescription>
+              direction=&quot;row&quot; の主軸（横方向）の配置。固定幅トラックで余白の
+              分配を比較。between は端寄せ、around は各要素の周囲、evenly は要素間と端を
+              すべて均等にする。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {(
+                ["start", "center", "end", "between", "around", "evenly"] as const
+              ).map((j) => (
+                <Flex key={j} direction="row" gap="sm" align="center">
+                  <span className="text-muted-foreground w-16 text-xs">{j}</span>
+                  <Flex
+                    direction="row"
+                    gap="xs"
+                    align="center"
+                    justify={j}
+                    className="bg-muted flex-1 rounded-md p-2"
+                  >
+                    <Badge variant="outline">借方</Badge>
+                    <Badge variant="outline">貸方</Badge>
+                    <Badge variant="outline">残高</Badge>
+                  </Flex>
+                </Flex>
+              ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>wrap — 折り返しの有無を比較</CardTitle>
+            <CardDescription>
+              wrap=&#123;true&#125;（既定の false に対して）。狭いトラックで折り返しの有無を
+              並べて比較。false では子要素が一行に圧縮され、true では次行へ流れる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" gap="md" align="start" wrap>
+              <Flex direction="col" gap="xs" className="w-44">
+                <span className="text-muted-foreground text-xs">wrap=&#123;false&#125;（既定）</span>
+                <Flex
+                  direction="row"
+                  gap="xs"
+                  wrap={false}
+                  className="bg-muted rounded-md p-2"
+                >
+                  <Badge variant="outline">勘定科目</Badge>
+                  <Badge variant="outline">補助科目</Badge>
+                  <Badge variant="outline">部門</Badge>
+                </Flex>
+              </Flex>
+              <Flex direction="col" gap="xs" className="w-44">
+                <span className="text-muted-foreground text-xs">wrap=&#123;true&#125;</span>
+                <Flex
+                  direction="row"
+                  gap="xs"
+                  wrap
+                  className="bg-muted rounded-md p-2"
+                >
+                  <Badge variant="outline">勘定科目</Badge>
+                  <Badge variant="outline">補助科目</Badge>
+                  <Badge variant="outline">部門</Badge>
+                </Flex>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>

@@ -3,12 +3,21 @@ import { useMemo, useState } from "react";
 import { Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { Pencil, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@godxjp/ui/navigation";
+import type { SortStateProp, TableDensityProp } from "@godxjp/ui/props";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 
 /**
  * DataTable — the admin list primitive: sticky header, sorting, bulk selection,
- * density toggle, and a built-in empty state (never hand-roll a data.length===0
- * guard). Composed only from real @godxjp/ui components.
+ * density toggle, per-row click navigation, a loading row, and a built-in empty
+ * state (never hand-roll a data.length===0 guard). Composed only from real
+ * @godxjp/ui components.
  */
 type Invoice = {
   id: string;
@@ -47,38 +56,49 @@ const columns: ColumnDef<Invoice>[] = [
     sortable: true,
     render: (row) => <span className="tabular-nums">{yen.format(row.amount)}</span>,
   },
-  { key: "status", header: "状態", render: (row) => <Badge status={row.status} /> },
+  { key: "status", header: "状態", align: "center", render: (row) => <Badge status={row.status} /> },
   { key: "date", header: "発行日", align: "right", hiddenOnMobile: true },
   {
     key: "_actions",
     header: "",
     align: "right",
-    render: () => (
-      <Flex direction="row" wrap align="center" gap="xs" justify="end">
-        <Button variant="ghost" size="icon-sm" aria-label="編集">
-          <Pencil />
-        </Button>
-        <Button variant="ghost" size="icon-sm" aria-label="削除">
-          <Trash2 />
-        </Button>
-      </Flex>
+    render: (row) => (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon-sm" aria-label={`${row.id} の操作`}>
+            <MoreHorizontal />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem>
+            <Pencil />
+            編集
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem variant="destructive">
+            <Trash2 />
+            削除
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     ),
   },
 ];
 
 export default function Demo() {
   const [selected, setSelected] = useState<Set<string>>(new Set(["INV-0311"]));
-  const [sort, setSort] = useState<{ value: string; direction: "asc" | "desc" } | undefined>({
-    value: "amount",
+  const [sort, setSort] = useState<SortStateProp | undefined>({
+    key: "amount",
     direction: "desc",
   });
+  const [density, setDensity] = useState<TableDensityProp>("comfortable");
 
   const rows = useMemo(() => {
     if (!sort) return invoices;
     const dir = sort.direction === "asc" ? 1 : -1;
     return [...invoices].sort((a, b) => {
-      const av = a[sort.value as keyof Invoice];
-      const bv = b[sort.value as keyof Invoice];
+      const av = a[sort.key as keyof Invoice];
+      const bv = b[sort.key as keyof Invoice];
       return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
     });
   }, [sort]);
@@ -86,9 +106,11 @@ export default function Demo() {
   return (
     <PageContainer
       title="DataTable"
-      subtitle="sortable · selectable · bulk actions · row actions · built-in empty state"
+      subtitle="sortable · selectable · bulk actions · row actions · loading · clickable rows · empty state"
     >
       <Flex direction="col" gap="lg">
+        {/* Primary: sorted (amount desc), one row preselected, clickable rows,
+            controlled density (comfortable), kebab row actions, pagination footer. */}
         <DataTable
           data={rows}
           columns={columns}
@@ -96,6 +118,9 @@ export default function Demo() {
           selectable
           selected={selected}
           onSelectChange={setSelected}
+          onRowClick={() => {}}
+          density={density}
+          onDensityChange={setDensity}
           sort={sort}
           onSortChange={setSort}
         >
@@ -108,12 +133,17 @@ export default function Demo() {
             </DataTable.BulkActions>
             <DataTable.DensityToggle />
           </DataTable.Toolbar>
+          <DataTable.Content />
+          <DataTable.Pagination cursor="INV-0309" hasMore onChange={() => {}} />
         </DataTable>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">
-            Empty state (rendered automatically when data is empty)
-          </div>
+          <div className="text-sm font-medium">読み込み中（loading=true で行を置き換え）</div>
+          <DataTable data={invoices} columns={columns} getRowId={(row) => row.id} loading />
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <div className="text-sm font-medium">空の状態（data が空のとき自動表示）</div>
           <DataTable data={[]} columns={columns} getRowId={(row) => row.id} />
         </Flex>
       </Flex>

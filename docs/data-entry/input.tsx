@@ -17,13 +17,37 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>States</CardTitle>
-            <CardDescription>Placeholder, filled, and disabled.</CardDescription>
+            <CardDescription>
+              Placeholder, filled, disabled, readOnly, and invalid
+              (aria-invalid). Focus an empty field to see the focus-visible
+              ring.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <Input placeholder="プレースホルダー" />
               <Input defaultValue="入力済みの値" />
               <Input disabled defaultValue="無効 (disabled)" />
+              <Input readOnly defaultValue="読み取り専用 (readOnly)" />
+              <Input aria-invalid defaultValue="不正な値 (aria-invalid)" />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Types</CardTitle>
+            <CardDescription>
+              The native type attribute drives the input mode and built-in UI;
+              type="file" uses the file: styling baked into the component.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Input type="password" defaultValue="secret-value" />
+              <Input type="number" defaultValue={42} />
+              <Input type="date" defaultValue="2026-06-04" />
+              <Input type="file" aria-label="ファイルを選択" />
             </Flex>
           </CardContent>
         </Card>

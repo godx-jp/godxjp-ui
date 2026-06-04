@@ -1,6 +1,15 @@
 import { useState } from "react";
-import { AppShell, Flex, PageContainer, Sidebar, Topbar } from "@godxjp/ui/layout";
-import type { SidebarSectionProp } from "@godxjp/ui/layout";
+import {
+  AppShell,
+  Flex,
+  PageContainer,
+  Sidebar,
+  SidebarHeader,
+  SidebarItem,
+  SidebarSection,
+  Topbar,
+} from "@godxjp/ui/layout";
+import type { SidebarItemData, SidebarSectionProp } from "@godxjp/ui/layout";
 import {
   Card,
   CardContent,
@@ -19,14 +28,17 @@ import {
   Building2,
   ShieldCheck,
   CreditCard,
-  ChevronRight,
   Plus,
+  Boxes,
+  Star,
+  Settings,
 } from "lucide-react";
 
 /**
  * Sidebar — data-driven vertical nav rail.
- * Focus: sections, groups with children[], product chip, footer, active item,
- * collapsed icon-only mode.
+ * Focus: every public prop — sections, groups with children[], product chip,
+ * brand header, renderItem escape hatch, children composition, footer, active
+ * item, collapsed icon-only mode.
  * Composed only from real @godxjp/ui components inside an AppShell frame.
  */
 
@@ -65,9 +77,58 @@ const FULL_SECTIONS: SidebarSectionProp[] = [
   },
 ];
 
+const BRAND_SECTIONS: SidebarSectionProp[] = [
+  {
+    label: "アプリ",
+    items: [
+      { id: "home", label: "ホーム", icon: LayoutDashboard },
+      { id: "projects", label: "プロジェクト", icon: Boxes },
+      { id: "settings", label: "設定", icon: Settings },
+    ],
+  },
+];
+
+const FAVOURITE_SECTIONS: SidebarSectionProp[] = [
+  {
+    label: "ナビゲーション",
+    items: [
+      { id: "overview", label: "概要", icon: LayoutDashboard },
+      { id: "reports", label: "レポート", icon: FileText },
+      { id: "members", label: "メンバー", icon: Users },
+    ],
+  },
+];
+
+const FAVOURITE_IDS = new Set(["overview", "members"]);
+
+/** renderItem — replaces a row's content with a custom layout (icon + label + star affix). */
+function renderFavouriteRow(item: SidebarItemData) {
+  const Icon = item.icon;
+  return (
+    <>
+      <span className="sb-icon">
+        <Icon aria-hidden="true" />
+      </span>
+      <span className="sb-label">{item.label}</span>
+      {FAVOURITE_IDS.has(item.id) ? (
+        <Star className="text-attention size-4 shrink-0 fill-current" aria-label="お気に入り" />
+      ) : null}
+    </>
+  );
+}
+
+const COMPOSED_ITEMS: SidebarItemData[] = [
+  { id: "starred-1", label: "月次決算", icon: Star },
+  { id: "starred-2", label: "売掛金一覧", icon: Receipt },
+  { id: "starred-3", label: "取引先マスタ", icon: Building2 },
+];
+
 export default function Demo() {
   const [activeId, setActiveId] = useState("journal");
   const [collapsed, setCollapsed] = useState(false);
+  const [brandActiveId, setBrandActiveId] = useState("projects");
+  const [renderActiveId, setRenderActiveId] = useState("overview");
+  const [composedActiveId, setComposedActiveId] = useState("starred-1");
 
   const sidebar = (
     <Sidebar
@@ -78,7 +139,7 @@ export default function Demo() {
       product={{
         name: "CoreBooks",
         role: "株式会社アクメ",
-        color: "hsl(220 70% 50%)",
+        color: "hsl(var(--primary))",
       }}
       onProductClick={() => undefined}
       footer={
@@ -95,7 +156,7 @@ export default function Demo() {
 
   const topbar = (
     <Topbar
-      product={{ name: "CoreBooks", color: "hsl(220 70% 50%)" }}
+      product={{ name: "CoreBooks", color: "hsl(var(--primary))" }}
       collapsed={collapsed}
       onToggleCollapsed={() => setCollapsed((c) => !c)}
       onSearchOpen={() => undefined}
@@ -115,71 +176,92 @@ export default function Demo() {
         }
       >
         <Flex direction="col" gap="lg">
-          {/* Navigation map — illustrates what the sidebar is rendering */}
           <Card>
             <CardHeader>
-              <CardTitle>現在のナビゲーション構造</CardTitle>
+              <CardTitle>現在の状態</CardTitle>
               <CardDescription>
-                Sidebar の sections prop に渡しているデータ構造です。 アクティブ項目:{" "}
+                左のレールに渡している sections prop の現在のアクティブ項目:{" "}
                 <Badge variant="secondary">{activeId}</Badge>
               </CardDescription>
             </CardHeader>
+          </Card>
+
+          {/* brand prop — replaces the product chip with a fully custom header (SidebarHeader). */}
+          <Card>
+            <CardHeader>
+              <CardTitle>brand プロップ</CardTitle>
+              <CardDescription>
+                product チップの代わりに SidebarHeader で完全に自作したヘッダーを差し込みます。
+                brand と product は排他です。
+              </CardDescription>
+            </CardHeader>
             <CardContent>
-              <Flex direction="col" gap="md">
-                {FULL_SECTIONS.map((section) => (
-                  <Flex key={section.label} direction="col" gap="xs">
-                    <div className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
-                      {section.label}
-                    </div>
-                    {section.items.map((item) => (
-                      <Flex key={item.id} direction="col" gap="xs">
-                        <Flex
-                          align="center"
-                          gap="sm"
-                          className={`cursor-pointer rounded px-2 py-1 text-sm ${
-                            activeId === item.id
-                              ? "bg-primary/10 text-primary font-medium"
-                              : "text-foreground"
-                          }`}
-                          onClick={() => setActiveId(item.id)}
-                        >
-                          <item.icon className="text-muted-foreground size-4 shrink-0" />
-                          <span className="flex-1">{item.label}</span>
-                          {item.badge}
-                          {item.children && (
-                            <ChevronRight className="text-muted-foreground size-3" />
-                          )}
-                          {item.disabled && (
-                            <Badge variant="outline" className="text-xs">
-                              無効
-                            </Badge>
-                          )}
-                        </Flex>
-                        {item.children && (
-                          <Flex direction="col" gap="xs" className="pl-6">
-                            {item.children.map((child) => (
-                              <Flex
-                                key={child.id}
-                                align="center"
-                                gap="sm"
-                                className={`cursor-pointer rounded px-2 py-1 text-sm ${
-                                  activeId === child.id
-                                    ? "bg-primary/10 text-primary font-medium"
-                                    : "text-muted-foreground"
-                                }`}
-                                onClick={() => setActiveId(child.id)}
-                              >
-                                <child.icon className="size-3.5 shrink-0" />
-                                {child.label}
-                              </Flex>
-                            ))}
-                          </Flex>
-                        )}
-                      </Flex>
+              <div className="bg-card flex h-80 w-64 flex-col overflow-hidden rounded-lg border">
+                <Sidebar
+                  activeId={brandActiveId}
+                  onSelect={setBrandActiveId}
+                  sections={BRAND_SECTIONS}
+                  brand={
+                    <SidebarHeader>
+                      <span className="bg-primary text-primary-foreground grid size-7 shrink-0 place-items-center rounded-md">
+                        <Boxes className="size-4" aria-hidden="true" />
+                      </span>
+                      <span className="flex min-w-0 flex-col">
+                        <span className="text-foreground truncate text-sm font-bold">Acme Suite</span>
+                        <span className="text-muted-foreground truncate text-xs">v7.0 Enterprise</span>
+                      </span>
+                    </SidebarHeader>
+                  }
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* renderItem prop — per-item custom render escape hatch (here: a favourite-star affix). */}
+          <Card>
+            <CardHeader>
+              <CardTitle>renderItem プロップ</CardTitle>
+              <CardDescription>
+                各行のレンダリングを差し替えるエスケープハッチ。 ここではラベルの右に
+                お気に入りスターのアフィックスを描画しています。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-card flex h-72 w-64 flex-col overflow-hidden rounded-lg border">
+                <Sidebar
+                  activeId={renderActiveId}
+                  onSelect={setRenderActiveId}
+                  sections={FAVOURITE_SECTIONS}
+                  renderItem={renderFavouriteRow}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* children prop — full nav override: compose SidebarSection / SidebarItem directly. */}
+          <Card>
+            <CardHeader>
+              <CardTitle>children プロップ（ナビ全体の差し替え）</CardTitle>
+              <CardDescription>
+                sections を使わず SidebarSection / SidebarItem を直接組み立てて、 ナビゲーション全体を
+                自前で構成します。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
+                <Sidebar activeId={composedActiveId} onSelect={setComposedActiveId}>
+                  <SidebarSection label="お気に入り">
+                    {COMPOSED_ITEMS.map((item) => (
+                      <SidebarItem
+                        key={item.id}
+                        item={item}
+                        active={composedActiveId === item.id}
+                        onActivate={setComposedActiveId}
+                      />
                     ))}
-                  </Flex>
-                ))}
-              </Flex>
+                  </SidebarSection>
+                </Sidebar>
+              </div>
             </CardContent>
           </Card>
 

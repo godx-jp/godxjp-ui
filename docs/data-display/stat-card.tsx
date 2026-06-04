@@ -1,5 +1,6 @@
 import { StatCard } from "@godxjp/ui/data-display";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
+import { TrendingUp } from "lucide-react";
 
 /**
  * StatCard — KPI tile. It IS already a bordered Card, so it renders DIRECTLY in
@@ -44,6 +45,33 @@ export default function Demo() {
           <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
             <StatCard layout="inline" label="契約金額" value="¥4,800,000" />
             <StatCard layout="inline" label="消費税" value="¥480,000" hint="10%" />
+          </ResponsiveGrid>
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <div className="text-sm font-medium">
+            align=&quot;end&quot; · size=&quot;md&quot; · icon label · neutral delta
+          </div>
+          <ResponsiveGrid columns={{ sm: 2, md: 4 }}>
+            <StatCard
+              align="end"
+              label="当期利益"
+              value="¥3,120,000"
+              delta="+8%"
+              hint="右寄せ"
+            />
+            <StatCard size="md" label="年間売上" value="¥98,400,000" delta="+11%" hint="ゆとりある密度" />
+            <StatCard
+              label={
+                <>
+                  <TrendingUp aria-hidden />
+                  成長率
+                </>
+              }
+              value="14.2%"
+              delta="+2.1%"
+            />
+            <StatCard label="客単価" value="¥6,400" delta="0%" hint="横ばい" />
           </ResponsiveGrid>
         </Flex>
       </Flex>

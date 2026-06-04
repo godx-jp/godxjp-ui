@@ -21,13 +21,20 @@ export default function Demo() {
             <CardTitle>Label + Checkbox (inline)</CardTitle>
             <CardDescription>
               A compact pair where Field’s two-line layout is unnecessary — e.g. a “remember me”
-              row.
+              row. When the peer control is disabled, the Label dims (peer-disabled:opacity-70 +
+              cursor-not-allowed).
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="row" gap="sm" align="center">
-              <Checkbox id="remember-me" defaultChecked />
-              <Label htmlFor="remember-me">ログイン状態を保持する</Label>
+            <Flex direction="col" gap="sm">
+              <Flex direction="row" gap="sm" align="center">
+                <Checkbox id="remember-me" defaultChecked />
+                <Label htmlFor="remember-me">ログイン状態を保持する</Label>
+              </Flex>
+              <Flex direction="row" gap="sm" align="center">
+                <Checkbox id="remember-device" disabled />
+                <Label htmlFor="remember-device">この端末を信頼する（無効）</Label>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>

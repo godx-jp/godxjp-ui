@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ja } from "date-fns/locale";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { DateRangePicker, FormField } from "@godxjp/ui/data-entry";
@@ -17,6 +18,10 @@ export default function Demo() {
     to: new Date(2027, 2, 31),
   });
   const [reportRange, setReportRange] = useState<DateRange | undefined>(undefined);
+  const [campaign, setCampaign] = useState<DateRange | undefined>({
+    from: new Date(2026, 5, 1),
+    to: new Date(2026, 5, 30),
+  });
 
   return (
     <PageContainer
@@ -28,8 +33,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>基本 (controlled)</CardTitle>
             <CardDescription>
-              value + onValueChange で制御。name=“period” を指定すると period_from / period_to
-              として ISO yyyy-MM-dd でフォーム送信される。
+              value + onValueChange で制御。開始/終了を直接タイプ入力するか、カレンダーアイコンを開いて
+              範囲を選択できる。name=&#34;period&#34; を指定すると period_from / period_to として ISO
+              yyyy-MM-dd でフォーム送信される。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -64,6 +70,53 @@ export default function Demo() {
                 fromDate={new Date(2024, 0, 1)}
                 toDate={new Date(2026, 11, 31)}
                 placeholder="yyyy-mm-dd"
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>非制御 (defaultValue)</CardTitle>
+            <CardDescription>
+              value / onValueChange を渡さず defaultValue で初期範囲だけ与える。状態はコンポーネント内部で
+              保持され、name=&#34;fiscal_year&#34; のまま fiscal_year_from / fiscal_year_to として送信される。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="fiscal-year" label="会計年度 (初期値のみ)">
+              <DateRangePicker
+                id="fiscal-year"
+                name="fiscal_year"
+                defaultValue={{
+                  from: new Date(2026, 3, 1),
+                  to: new Date(2027, 2, 31),
+                }}
+                fromDate={new Date(2020, 0, 1)}
+                toDate={new Date(2030, 11, 31)}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>locale で日本語カレンダー</CardTitle>
+            <CardDescription>
+              locale=&#123;ja&#125; を渡すとポップオーバーのカレンダーが日本語表記 (曜日・月名) になる。
+              入力欄は常に ISO yyyy-MM-dd を保持する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="campaign-period" label="キャンペーン期間">
+              <DateRangePicker
+                id="campaign-period"
+                name="campaign_period"
+                value={campaign}
+                onValueChange={setCampaign}
+                locale={ja}
+                fromDate={new Date(2024, 0, 1)}
+                toDate={new Date(2027, 11, 31)}
               />
             </FormField>
           </CardContent>
