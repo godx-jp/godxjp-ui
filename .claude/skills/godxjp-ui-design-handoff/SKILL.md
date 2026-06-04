@@ -89,3 +89,40 @@ These are the *rules that survive* when you drop the prototype's markup — appl
 - [ ] Tokens consumed, never redeclared; DNA rules applied (density, color signaling, small headings, 14/1.7, no emoji)
 - [ ] Built per `godxjp-ui-example-page` (states/props/a11y complete); verified at :6008 390/768/1280; typecheck + audit clean
 - [ ] Showcase registered so the MCP can serve it as a pattern to consumers
+
+## Layout hygiene — responsive, no fades, no dead space (BẮT BUỘC)
+
+Ba lỗi showcase hay gặp nhất — chặn từ gốc:
+
+1. **CẤM fade/scrim trang trí ở mép.** Nội dung kết thúc bằng `border` 1px sạch, KHÔNG bao
+   giờ gradient / `mask-image` mờ dần ở đáy hay cạnh. Fade đọc ra như AI-slop và che mất dữ
+   liệu. Tín hiệu cuộn = scrollbar thật hoặc sticky header — không phải lớp veil gradient.
+
+2. **CẤM khoảng trống chết — pane co theo nội dung, cột canh đều.** Trong split / master-detail
+   / grid, pane ngắn KHÔNG được để lại khoảng trống xám cao. Dùng `items-start` để list ngắn
+   không bị kéo giãn; cho pane `h-fit` / chiều cao theo nội dung; hoặc lấp bằng `EmptyState` đàng
+   hoàng — tuyệt đối không để mảng xám rỗng. Canh chiều cao theo nội dung, không theo overflow
+   của sibling cao nhất.
+
+3. **Quy tắc đa cột responsive — mobile-first, LUÔN LUÔN.** Mọi khối nhiều cột (grid key-value,
+   master-detail, grid card) **mặc định 1 cột**, chỉ thêm cột ở `md:`/`lg:` VÀ chỉ khi mỗi cột
+   giữ được chữ thân ≥ 14px với bề rộng đủ (≥ ~280px/cột).
+   - Key-value detail: `grid-cols-1 md:grid-cols-2` — KHÔNG nhồi chữ bé vào 2 cột hẹp.
+   - Master-detail: mobile thì xếp dọc (list rồi detail) hoặc detail thành `Sheet`/`Drawer`;
+     đặt cạnh nhau chỉ từ `lg`. Test 390 / 768 / 1280 — nếu chữ phải co lại để vừa 2 cột → về 1 cột.
+
+Đây là dạng thực thi của Rule #1 (mobile-first) + 間 (thoáng nhưng không rỗng).
+
+4. **Padding trang + gutter giữa các khối có viền — CẤM dán sát.** Nội dung KHÔNG bao giờ sát
+   mép viewport hay sát viền sibling. `PageContainer`/`PageContent` cấp padding nhất quán (mặc
+   định, không để 0); các `Card`/section cách nhau bằng `Stack gap` (≥ token). **Hai bề mặt có
+   viền KHÔNG được chạm nhau** — luôn có khoảng thở (間). Header band tách khỏi content bằng gap,
+   không phải viền-dính-viền. Thấy 2 border kề sát hoặc nội dung sát mép = thiếu padding/gap → sửa
+   ngay. Mọi page bọc `PageContainer` (đừng tự đặt padding cấp page lung tung).
+
+5. **CẤM title/header tràn dòng xấu.** Heading/label ngắn (section title, KPI label, `Badge`, tên
+   cột, nút) giữ **MỘT dòng** — `whitespace-nowrap` + `shrink-0`, cho đủ chỗ. Nếu một hàng header
+   không vừa thì **xuống hàng CẢ CỤM** (`flex-col` ở mobile, `sm:flex-row`), KHÔNG để từng nhãn gãy
+   giữa chừng kiểu "Showcase\n(1)". Giá trị dài thực sự → `truncate` + title tooltip; tiêu đề 1–2 từ
+   KHÔNG bao giờ được vỡ nhiều dòng. Số/nhãn cố định dùng `tabular-nums` + nowrap. Header 2 phần
+   (tiêu đề ↔ phụ đề/meta) ở hẹp thì stack dọc, không nhồi `justify-between` để cả hai cùng gãy.
