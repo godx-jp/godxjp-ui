@@ -364,7 +364,7 @@ DataTable.Content = function DataTableContent() {
                     {isSortable ? (
                       <button
                         type="button"
-                        className="ui-data-table-sort-button font-inherit focus-visible:ring-ring inline-flex cursor-pointer items-center gap-1 bg-transparent p-0 text-inherit outline-none focus-visible:ring-2"
+                        className="ui-data-table-sort-button focus-visible:ring-ring rounded-sm focus-visible:ring-2"
                         onClick={() => {
                           onHeaderClick(col);
                         }}

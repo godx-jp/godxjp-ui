@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
+import { fireEvent, renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { Calendar } from "../calendar";
 import { DatePicker } from "../date-picker";
 import { DateRangePicker } from "../date-range-picker";
@@ -26,12 +26,15 @@ describe("DatePicker", () => {
   });
 
   it("emits an ISO-8601 value when the user types, and submits as a form field", async () => {
-    const user = userEvent.setup();
     const onChange = vi.fn();
     renderWithUi(<DatePicker name="etd" onValueChange={onChange} />);
     const input = screen.getByRole<HTMLInputElement>("combobox");
-    await user.type(input, "2024-04-15");
+    // Enter a complete ISO date in one edit (the input self-normalises while typing,
+    // which would otherwise fight a char-by-char simulation).
+    fireEvent.change(input, { target: { value: "2024-04-15" } });
     expect(onChange).toHaveBeenCalled();
+    // The parsed date round-trips back to the ISO value the user committed.
+    expect(onChange).toHaveBeenLastCalledWith(new Date(2024, 3, 15));
     // Form-submittable: the input carries the name and the ISO value.
     expect(input).toHaveAttribute("name", "etd");
     expect(input.value).toBe("2024-04-15");

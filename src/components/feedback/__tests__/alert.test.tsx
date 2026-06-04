@@ -63,7 +63,11 @@ describe("Alert", () => {
         </AlertContent>
       </Alert>,
     );
-    await user.click(screen.getByRole("button", { name: "Dismiss" }));
+    // Success is a polite tone, so the container is role="status" (not "alert").
+    expect(screen.getByRole("status")).toHaveAttribute("data-tone", "success");
+    // The dismiss control's aria-label is now i18n'd via t("feedback.alert.dismiss");
+    // the test renders in the "vi" locale, so it resolves to "Đóng".
+    await user.click(screen.getByRole("button", { name: "Đóng" }));
     expect(onDismiss).toHaveBeenCalledOnce();
   });
 
@@ -87,7 +91,9 @@ describe("Alert", () => {
         </AlertContent>
       </Alert>,
     );
-    expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "success");
+    // Success is a polite tone → role="status" (assertive role="alert" is reserved
+    // for destructive/warning).
+    expect(screen.getByRole("status")).toHaveAttribute("data-tone", "success");
   });
 
   it("renders default variant without destructive classes", () => {
@@ -98,8 +104,12 @@ describe("Alert", () => {
         </AlertContent>
       </Alert>,
     );
-    const alert = screen.getByRole("alert");
+    // Default is a polite tone: it announces via role="status", never the assertive
+    // role="alert", and carries neither the destructive tone nor variant.
+    const alert = screen.getByRole("status");
     expect(alert).toHaveAttribute("data-variant", "default");
+    expect(alert).toHaveAttribute("data-tone", "default");
+    expect(alert).not.toHaveAttribute("data-tone", "destructive");
   });
 });
 

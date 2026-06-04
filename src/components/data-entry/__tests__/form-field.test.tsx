@@ -34,16 +34,20 @@ describe("FormField", () => {
     expect(input).toHaveAttribute("aria-describedby", "x-helper");
   });
 
-  it("shows error instead of helper and sets aria-invalid", () => {
+  it("shows helper and error together and wires aria-invalid + aria-errormessage", () => {
     renderWithUi(
       <FormField id="x" label="Field" helper="Hint" error="Required">
         <Input id="x" />
       </FormField>,
     );
     const input = screen.getByRole("textbox");
+    // Helper and error now coexist: the error no longer replaces the helper.
     expect(screen.getByRole("alert")).toHaveTextContent("Required");
-    expect(screen.queryByText("Hint")).not.toBeInTheDocument();
+    expect(screen.getByText("Hint")).toBeInTheDocument();
+    // The control is marked invalid and points to the error via aria-errormessage,
+    // while the helper stays associated through aria-describedby.
     expect(input).toHaveAttribute("aria-invalid", "true");
-    expect(input).toHaveAttribute("aria-describedby", "x-error");
+    expect(input).toHaveAttribute("aria-errormessage", "x-error");
+    expect(input).toHaveAttribute("aria-describedby", "x-helper");
   });
 });

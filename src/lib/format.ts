@@ -39,26 +39,25 @@ export function formatRelative(
 }
 
 /**
- * Bytes → locale-formatted size, e.g. "1.2 MB" (en) / "1,2 MB" (vi).
- * Units + decimal/grouping separators come from CLDR via `Intl.NumberFormat`'s `unit` style;
- * an optional `locale` overrides the module-synced active locale.
+ * Bytes → size with conventional binary units (B/KB/MB/GB) and a locale-correct number,
+ * e.g. "2.0 KB" (en) / "2,0 KB" (vi). The numeric part is formatted via `Intl.NumberFormat`
+ * (locale decimal/grouping separators — no hardcoded "."); an optional `locale` overrides the
+ * module-synced active locale.
  */
 export function formatBytes(
   n: number | null | undefined,
   locale: string = getSyncedLocale(),
 ): string {
   if (n == null) return "—";
-  const unit = (u: string, max: number, scaled: number) =>
+  const num = (digits: number, scaled: number) =>
     new Intl.NumberFormat(locale, {
-      style: "unit",
-      unit: u,
-      unitDisplay: "short",
-      maximumFractionDigits: max,
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
     }).format(scaled);
-  if (n < 1024) return unit("byte", 0, n);
-  if (n < 1024 * 1024) return unit("kilobyte", 1, n / 1024);
-  if (n < 1024 * 1024 * 1024) return unit("megabyte", 1, n / 1024 / 1024);
-  return unit("gigabyte", 2, n / 1024 / 1024 / 1024);
+  if (n < 1024) return `${num(0, n)} B`;
+  if (n < 1024 * 1024) return `${num(1, n / 1024)} KB`;
+  if (n < 1024 * 1024 * 1024) return `${num(1, n / 1024 / 1024)} MB`;
+  return `${num(2, n / 1024 / 1024 / 1024)} GB`;
 }
 
 /**

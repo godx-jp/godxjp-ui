@@ -48,6 +48,19 @@
     gap: var(--space-inline-md);
   }
 
+  /* Sortable header label is a real button (keyboard + aria-sort); inherits the cell's type. */
+  .ui-data-table-sort-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-inline-xs);
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    outline: none;
+  }
+
   .ui-data-table-bulk {
     display: flex;
     align-items: center;

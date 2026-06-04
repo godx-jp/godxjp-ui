@@ -226,8 +226,9 @@ export function SearchSelect({
           <div className="border-border shrink-0 border-b p-2">
             <Input
               autoFocus
-              role="combobox"
-              aria-expanded={open}
+              // The PopoverTrigger is the (single) combobox; this search field is a textbox that
+              // filters and drives the listbox — aria-controls + aria-activedescendant are valid on
+              // a textbox and announce the active option without making it a second combobox.
               aria-controls={listId}
               aria-autocomplete="list"
               aria-activedescendant={activeOptionId}

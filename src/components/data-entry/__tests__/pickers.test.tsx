@@ -11,7 +11,7 @@ describe("Switch", () => {
     renderWithUi(<Switch aria-label="Notify" />);
     const control = screen.getByRole("switch", { name: "Notify" });
     expect(control).toHaveAttribute("data-slot", "switch");
-    expect(control).toHaveAttribute("data-size", "default");
+    expect(control).toHaveAttribute("data-size", "md");
     expect(control).toHaveAttribute("data-state", "unchecked");
     await user.click(control);
     expect(control).toHaveAttribute("data-state", "checked");
@@ -59,11 +59,10 @@ describe("TimePicker", () => {
     expect(screen.getByText("Giờ")).toBeInTheDocument();
     expect(screen.getByText("Phút")).toBeInTheDocument();
 
-    const minute45 = screen
-      .getAllByRole("button", { name: "45" })
-      .find((el) => el.closest(".h-52"));
+    // Minute column is now an APG listbox: minutes are role="option", not buttons.
+    const minute45 = screen.getByRole("option", { name: "45" });
     expect(minute45).toBeDefined();
-    await user.click(minute45!);
+    await user.click(minute45);
     expect(onChange).toHaveBeenCalledWith("09:45");
   });
 
