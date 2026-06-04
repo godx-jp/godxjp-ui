@@ -101,7 +101,9 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
 > and declaring victory is the documented failure mode (a Cascader shipped with a parent that
 > couldn't drill, a hover that died at depth 3, and a `<button>`-in-`<button>` console error — all
 > because only the search card was tested). A blank or "looks fine" = not done. The example-page
-> skill's **Audit Evidence Ledger** is the template; reproduce it.
+> skill's **Audit Evidence Ledger** is the template; reproduce it. For the *refined* expected
+> behaviours (parent checkbox aggregation/indeterminate, reset-on-complete, value-at-rest,
+> hover-intent, no nested interactive controls), consult **godxjp-ui-interaction-feel**.
 
 - **Drive EVERY mode to its TERMINAL state — one happy path is not an audit.** A multi-state
   control has one demo card per mode for a reason: exercise each. For a Cascader that means
