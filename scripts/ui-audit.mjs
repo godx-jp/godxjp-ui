@@ -88,9 +88,13 @@ const RULES = [
   {
     id: "no-arbitrary-size",
     severity: "error",
-    test: /\b(w|h|size|min-w|max-w|min-h|max-h|basis)-\[-?\.?\d/,
+    // `min-w-[…]` / `min-h-[…]` are allowed: a MINIMUM dimension is the legit responsive
+    // pattern (horizontal-scroll tables `<Table className="min-w-[720px]">`, collapse
+    // guards), not a hardcoded design size. The (?<!min-) lookbehind exempts the `min-`
+    // prefix; bare `w`/`h` still catch `max-w-[…]`, `w-[37px]`, `h-[260px]`, etc.
+    test: /\b(?<!min-)(?:w|h|size|basis)-\[-?\.?\d/,
     message:
-      "No arbitrary width/height (w-[37px], max-w-[65ch]…). Use token sizes or a sizing prop; the component sizes its own icons (rules §4).",
+      "No arbitrary width/height (w-[37px], max-w-[65ch], h-[260px]…). Use token sizes or a sizing prop. min-w-[…]/min-h-[…] are allowed (responsive scroll containers / collapse guards).",
   },
   {
     id: "no-arbitrary-typography",
