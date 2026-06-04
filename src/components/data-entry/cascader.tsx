@@ -6,7 +6,6 @@ import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { ScrollArea, ScrollBar } from "../data-display/scroll-area";
-import { Checkbox } from "./checkbox";
 import { Command, CommandInput } from "./command";
 import {
   filterTreeOptions,
@@ -32,6 +31,37 @@ function pathInValues(path: string[], values: string[][]): boolean {
 function togglePath(values: string[][], path: string[]): string[][] {
   if (pathInValues(path, values)) return values.filter((v) => !pathsEqual(v, path));
   return [...values, path];
+}
+
+/**
+ * Decorative checkbox glyph — a non-interactive <span>, NOT the real Checkbox (which is a
+ * <button>). The cascade option row is itself a <button>, and a <button> may not contain a
+ * <button> (invalid HTML / hydration error). Selection is driven by the option button; this only
+ * mirrors its checked state visually, so a styled span is the correct element.
+ */
+function CheckboxVisual({
+  checked,
+  disabled,
+  className,
+}: {
+  checked: boolean;
+  disabled?: boolean;
+  className?: string;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      data-slot="checkbox"
+      data-state={checked ? "checked" : "unchecked"}
+      className={cn(
+        "ui-checkbox inline-flex items-center justify-center",
+        disabled && "cursor-not-allowed opacity-50",
+        className,
+      )}
+    >
+      {checked ? <Check className="ui-checkbox-icon" aria-hidden="true" /> : null}
+    </span>
+  );
 }
 
 export function Cascader({
@@ -119,7 +149,9 @@ export function Cascader({
     if (multiple) {
       // A parent without changeOnSelect only expands; otherwise the path itself is toggled.
       if (hasChildren && !changeOnSelect) setActivePath(path);
-      else commitMulti(togglePath(multiValue, path));
+      // `disableCheckbox` disables selection of THIS path (the checkbox) while leaving the node
+      // navigable — honor it like TreeSelect does; never toggle a checkbox-disabled path.
+      else if (!node.disableCheckbox) commitMulti(togglePath(multiValue, path));
       return;
     }
     if (hasChildren) {
@@ -207,12 +239,10 @@ export function Cascader({
                     onClick={() => !node.disabled && handleSelectNode(node, path)}
                   >
                     {multiple && (
-                      <Checkbox
+                      <CheckboxVisual
                         checked={selected}
-                        disabled={node.disabled}
+                        disabled={node.disabled || node.disableCheckbox}
                         className="me-1"
-                        aria-hidden
-                        tabIndex={-1}
                       />
                     )}
                     {!multiple && selected && (
@@ -302,7 +332,7 @@ export function Cascader({
                         onClick={() => handleSelectNode({ value: path.at(-1)!, label }, path)}
                       >
                         {multiple ? (
-                          <Checkbox checked={selected} className="me-2" aria-hidden tabIndex={-1} />
+                          <CheckboxVisual checked={selected} className="me-2" />
                         ) : (
                           <Check
                             className={cn(
