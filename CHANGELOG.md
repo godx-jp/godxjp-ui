@@ -6,6 +6,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.0]
+
+International-standardization release: i18n (Intl/CLDR), accessibility (WAI-ARIA APG + WCAG 2.2 AA),
+RTL, and a consolidated controlled-vocabulary API. See `docs/roadmap/international-standardization.md`.
+
+### BREAKING
+
+- Removed `Combobox`; use `Select` with `showSearch` (client filter) — same capability.
+- Removed `SearchSelect` from the public API; it is now `Select`'s internal engine. Use
+  `Select` with `showSearch` / `loadOptions`. Public option/load types are exported as
+  `SelectOption` / `SelectLoadParams` / `SelectLoadResult`.
+- Removed `CountrySelect`; build a country picker from `Select` + `Intl.DisplayNames` (see the
+  `docs/data-entry/country-picker-recipe`).
+- Removed `ChoiceField`; use `Field` (it was only an alias).
+- Removed `LocalePicker`, `TimezonePicker`, `DateFormatPicker`, `TimeFormatPicker`; use the single
+  `AppSettingPicker kind="locale" | "timezone" | "dateFormat" | "timeFormat"`.
+- `Steps`: `current` → `value`, `initial` → `defaultValue`, `onChange` → `onValueChange`;
+  `StepItem.subTitle` → `subtitle`, `StepItem.content` → `description`.
+- `Pagination`: `current` → `value`, `onChange` → `onValueChange` (handler signature unchanged).
+- `size` value `"default"` → `"md"` on `Switch`, `Steps`, `Select` (trigger), `Toggle`, `Card`
+  (`Button` is unchanged — its `ButtonSizeProp` documents `"default"`).
+- `SearchInput`: prop `onDebouncedChange` → `onSearchChange`.
+- `Tabs`: `onValueChange` callback parameter renamed `key` → `value` (type-only).
+
+### Added
+
+- `AppSettingPicker` — one provider-bound `Select` for any single `AppProvider` setting (`kind`).
+- Full internationalization: locale-correct number/currency/bytes via `Intl.NumberFormat`, CLDR
+  plurals via `Intl.PluralRules`, country/language names via `Intl.DisplayNames`, `<html dir>` from
+  the active locale (RTL-ready logical CSS), 12h hour-cycle in `TimePicker`.
+- Accessibility pass across every composite (roles, keyboard, focus, labels, ≥24px targets) plus
+  `vitest-axe` coverage; `DatePicker` / `DateRangePicker` gain uncontrolled `defaultValue`;
+  `AppSettingPicker` forwards `ref` + accepts `name`.
+- A mandatory `godxjp-ui-component` discipline skill; the prop-vocabulary guard now scans
+  `src/components/**` so no public prop type escapes governance.
+
 ## [7.0.0]
 
 ### BREAKING
