@@ -7,7 +7,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 
 export default tseslint.config(
-  { ignores: ["dist/**", "examples/**", "preview/**", "node_modules/**"] },
+  { ignores: ["dist/**", "examples/**", "preview/**", "node_modules/**", ".design/**", ".ux-audit/**", "debate/**"] },
   // Source carries `-- reason` disable directives for stricter rules (no-deprecated,
   // set-state-in-effect) that this lighter config doesn't enable; keep them as
   // documentation without flagging them unused.
@@ -43,6 +43,9 @@ export default tseslint.config(
       // React 19 / automatic JSX runtime — no React import, no prop-types.
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
+      // JP/VN demo copy legitimately contains literal quotes/apostrophes in JSX text;
+      // escaping them adds noise and `"`/`'` render fine. Off for the whole repo.
+      "react/no-unescaped-entities": "off",
       // Classic, stable hook rules (not react-hooks v7's compiler/purity additions,
       // which would impose new strictness on existing code).
       "react-hooks/rules-of-hooks": "error",

@@ -120,13 +120,22 @@
   .ui-timeline {
     display: flex;
     flex-direction: column;
-    gap: var(--space-stack-md);
   }
 
   .ui-timeline-item {
     display: grid;
     grid-template-columns: 1.5rem minmax(0, 1fr);
-    gap: var(--space-stack-md);
+    column-gap: var(--space-stack-md);
+  }
+
+  /* Spacing lives INSIDE the item (not a flex gap between items) so the rail line
+     spans the full item height and the connector stays continuous dot-to-dot. */
+  .ui-timeline-body {
+    padding-bottom: var(--space-stack-md);
+  }
+
+  .ui-timeline-item:last-child .ui-timeline-body {
+    padding-bottom: 0;
   }
 
   .ui-timeline-rail {
