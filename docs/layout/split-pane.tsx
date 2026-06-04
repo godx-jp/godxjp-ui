@@ -16,6 +16,10 @@ import { FileText, Building2, Calendar, CreditCard, ArrowRight } from "lucide-re
  * SplitPane — main + fixed aside panel.
  * Shows: main list + detail panel, asideWidth sm/md, nested inside PageContainer.
  * Composed only from real @godxjp/ui components.
+ *
+ * NOTE: <Flex> defaults to direction="col"; every horizontal row sets direction="row"
+ * explicitly. Spacing comes from the Flex `gap` prop or valid 4-point utilities
+ * (gap-3, pt-2, ml-3) — never named classes like `gap-md` (no such utility exists).
  */
 
 type Invoice = {
@@ -27,41 +31,11 @@ type Invoice = {
 };
 
 const INVOICES: Invoice[] = [
-  {
-    id: "INV-0241",
-    partner: "株式会社アクメ",
-    date: "2026-05-31",
-    amount: "¥840,000",
-    status: "承認済",
-  },
-  {
-    id: "INV-0240",
-    partner: "グローバル商事",
-    date: "2026-05-29",
-    amount: "¥320,000",
-    status: "保留中",
-  },
-  {
-    id: "INV-0239",
-    partner: "イニテック有限会社",
-    date: "2026-05-28",
-    amount: "¥1,200,000",
-    status: "承認済",
-  },
-  {
-    id: "INV-0238",
-    partner: "フューチャー工業",
-    date: "2026-05-26",
-    amount: "¥460,000",
-    status: "未承認",
-  },
-  {
-    id: "INV-0237",
-    partner: "東京メディア",
-    date: "2026-05-24",
-    amount: "¥980,000",
-    status: "承認済",
-  },
+  { id: "INV-0241", partner: "株式会社アクメ", date: "2026-05-31", amount: "¥840,000", status: "承認済" },
+  { id: "INV-0240", partner: "グローバル商事", date: "2026-05-29", amount: "¥320,000", status: "保留中" },
+  { id: "INV-0239", partner: "イニテック有限会社", date: "2026-05-28", amount: "¥1,200,000", status: "承認済" },
+  { id: "INV-0238", partner: "フューチャー工業", date: "2026-05-26", amount: "¥460,000", status: "未承認" },
+  { id: "INV-0237", partner: "東京メディア", date: "2026-05-24", amount: "¥980,000", status: "承認済" },
 ];
 
 const STATUS_TONE = {
@@ -70,11 +44,15 @@ const STATUS_TONE = {
   未承認: "destructive",
 } as const;
 
+const yen = (n: number) => `¥${Math.round(n).toLocaleString()}`;
+const toNumber = (amount: string) => Number(amount.replace(/[^0-9]/g, ""));
+
 export default function Demo() {
   const [selectedId, setSelectedId] = useState<string>("INV-0241");
   const [asideWidth, setAsideWidth] = useState<"sm" | "md">("md");
 
   const selected = INVOICES.find((inv) => inv.id === selectedId) ?? INVOICES[0];
+  const base = toNumber(selected.amount);
 
   return (
     <PageContainer
@@ -82,7 +60,7 @@ export default function Demo() {
       subtitle="請求書一覧 + 詳細パネル"
       breadcrumb={[{ label: "ホーム", to: "/" }, { label: "請求書一覧" }]}
       extra={
-        <Flex gap="sm">
+        <Flex direction="row" gap="sm">
           <Button
             size="sm"
             variant={asideWidth === "sm" ? "default" : "outline"}
@@ -108,7 +86,7 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               <Card>
                 <CardHeader>
-                  <Flex justify="between" align="center">
+                  <Flex direction="row" justify="between" align="center" gap="sm">
                     <CardTitle className="text-base">{selected.id}</CardTitle>
                     <Badge tone={STATUS_TONE[selected.status]}>{selected.status}</Badge>
                   </Flex>
@@ -116,25 +94,25 @@ export default function Demo() {
                 </CardHeader>
                 <CardContent>
                   <Flex direction="col" gap="md">
-                    <Flex align="center" gap="sm" className="text-sm">
+                    <Flex direction="row" align="center" gap="sm">
                       <Building2 className="text-muted-foreground size-4 shrink-0" />
                       <Flex direction="col" gap="xs">
                         <span className="text-muted-foreground text-xs">取引先</span>
                         <span className="font-medium">{selected.partner}</span>
                       </Flex>
                     </Flex>
-                    <Flex align="center" gap="sm" className="text-sm">
+                    <Flex direction="row" align="center" gap="sm">
                       <Calendar className="text-muted-foreground size-4 shrink-0" />
                       <Flex direction="col" gap="xs">
                         <span className="text-muted-foreground text-xs">請求日</span>
-                        <span>{selected.date}</span>
+                        <span className="tabular-nums">{selected.date}</span>
                       </Flex>
                     </Flex>
-                    <Flex align="center" gap="sm" className="text-sm">
+                    <Flex direction="row" align="center" gap="sm">
                       <CreditCard className="text-muted-foreground size-4 shrink-0" />
                       <Flex direction="col" gap="xs">
                         <span className="text-muted-foreground text-xs">金額（税抜）</span>
-                        <span className="text-lg font-semibold">{selected.amount}</span>
+                        <span className="text-lg font-bold tabular-nums">{selected.amount}</span>
                       </Flex>
                     </Flex>
                   </Flex>
@@ -147,29 +125,20 @@ export default function Demo() {
                 </CardHeader>
                 <CardContent>
                   <Flex direction="col" gap="sm" className="text-sm">
-                    <Flex justify="between">
+                    <Flex direction="row" justify="between">
                       <span className="text-muted-foreground">小計</span>
-                      <span>{selected.amount}</span>
+                      <span className="tabular-nums">{selected.amount}</span>
                     </Flex>
-                    <Flex justify="between">
+                    <Flex direction="row" justify="between">
                       <span className="text-muted-foreground">消費税 (10%)</span>
-                      <span>
-                        ¥
-                        {Math.round(
-                          parseInt(selected.amount.replace(/[^0-9]/g, "")) * 0.1,
-                        ).toLocaleString()}
-                      </span>
+                      <span className="tabular-nums">{yen(base * 0.1)}</span>
                     </Flex>
-                    <div className="border-border pt-sm border-t" />
-                    <Flex justify="between" className="font-semibold">
-                      <span>合計</span>
-                      <span>
-                        ¥
-                        {Math.round(
-                          parseInt(selected.amount.replace(/[^0-9]/g, "")) * 1.1,
-                        ).toLocaleString()}
-                      </span>
-                    </Flex>
+                    <div className="border-border mt-1 border-t pt-2">
+                      <Flex direction="row" justify="between" className="font-bold">
+                        <span>合計</span>
+                        <span className="tabular-nums">{yen(base * 1.1)}</span>
+                      </Flex>
+                    </div>
                   </Flex>
                 </CardContent>
               </Card>
@@ -187,17 +156,18 @@ export default function Demo() {
           }
         >
           {/* Main: invoice list */}
-          <Flex direction="col" gap="md">
-            <Flex direction="col" gap="xs">
-              {INVOICES.map((inv) => (
+          <Flex direction="col" gap="xs">
+            {INVOICES.map((inv) => {
+              const active = selectedId === inv.id;
+              return (
                 <Card
                   key={inv.id}
                   role="button"
                   tabIndex={0}
-                  aria-pressed={selectedId === inv.id}
+                  aria-pressed={active}
                   aria-label={`請求書 ${inv.id} ${inv.partner}`}
-                  className={`focus-visible:ring-ring cursor-pointer transition-colors focus-visible:ring-2 focus-visible:outline-none ${
-                    selectedId === inv.id ? "ring-primary ring-2" : ""
+                  className={`focus-visible:ring-ring cursor-pointer transition-colors focus-visible:ring-2 focus-visible:outline-none hover:border-primary/40 ${
+                    active ? "border-primary bg-primary/5" : ""
                   }`}
                   onClick={() => setSelectedId(inv.id)}
                   onKeyDown={(e) => {
@@ -208,24 +178,24 @@ export default function Demo() {
                   }}
                 >
                   <CardContent>
-                    <Flex align="center" gap="md">
+                    <Flex direction="row" align="center" gap="md">
                       <FileText className="text-muted-foreground size-5 shrink-0" />
                       <Flex direction="col" gap="xs" className="min-w-0 flex-1">
-                        <Flex justify="between" align="center">
+                        <Flex direction="row" justify="between" align="center" gap="sm">
                           <span className="text-muted-foreground font-mono text-xs">{inv.id}</span>
                           <Badge tone={STATUS_TONE[inv.status]}>{inv.status}</Badge>
                         </Flex>
-                        <Flex justify="between" align="center">
+                        <Flex direction="row" justify="between" align="baseline" gap="sm">
                           <span className="truncate text-sm font-medium">{inv.partner}</span>
-                          <span className="ml-md shrink-0 text-sm font-semibold">{inv.amount}</span>
+                          <span className="shrink-0 text-sm font-bold tabular-nums">{inv.amount}</span>
                         </Flex>
-                        <span className="text-muted-foreground text-xs">{inv.date}</span>
+                        <span className="text-muted-foreground text-xs tabular-nums">{inv.date}</span>
                       </Flex>
                     </Flex>
                   </CardContent>
                 </Card>
-              ))}
-            </Flex>
+              );
+            })}
           </Flex>
         </SplitPane>
 
@@ -257,8 +227,8 @@ export default function Demo() {
           }
         >
           <Flex direction="col" gap="md">
-            <h2 className="text-foreground text-sm font-semibold">月次サマリー</h2>
-            <div className="gap-md grid grid-cols-2">
+            <h2 className="text-foreground text-sm font-medium">月次サマリー</h2>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <StatCard label="請求総額" value="¥3,800,000" delta="+8%" />
               <StatCard label="承認済件数" value="3" hint="全5件中" />
               <StatCard label="保留中" value="1" delta="-2" />
