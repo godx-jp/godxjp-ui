@@ -95,6 +95,14 @@ A control that holds state is not done when it renders correctly; it is done whe
 correctly under real click/type/tab. Static screenshots hide behavioral bugs — drive the component
 in a real browser (Chrome DevTools MCP) before declaring it correct.
 
+> **Forcing rule (no self-certified partial pass).** Before you claim a stateful component works,
+> you MUST, in your reply, list every interactive mode/prop by name and the evidence you drove each
+> to its terminal state, AND quote the DevTools console (errors + warnings). Driving one happy path
+> and declaring victory is the documented failure mode (a Cascader shipped with a parent that
+> couldn't drill, a hover that died at depth 3, and a `<button>`-in-`<button>` console error — all
+> because only the search card was tested). A blank or "looks fine" = not done. The example-page
+> skill's **Audit Evidence Ledger** is the template; reproduce it.
+
 - **Drive EVERY mode to its TERMINAL state — one happy path is not an audit.** A multi-state
   control has one demo card per mode for a reason: exercise each. For a Cascader that means
   selecting a **parent/intermediate** node (`changeOnSelect`), drilling to the **deepest leaf**

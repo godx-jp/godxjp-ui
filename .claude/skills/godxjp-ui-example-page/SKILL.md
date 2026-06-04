@@ -16,6 +16,43 @@ these rules close them. Treat the page as **incomplete until every gate below pa
 
 ---
 
+## 🔒 MANDATORY GATE — the Audit Evidence Ledger (fill it, or the audit is not done)
+
+**Why this exists:** the rules below already said "exercise the whole API surface" and "check the
+console" — yet a real audit still shipped after driving only 2 of 8 cards, never opening the
+console, and missing a `<button>`-in-`<button>` error, a `changeOnSelect` parent that couldn't
+drill, and a hover column that collapsed at depth 3. The rules were prose with no forcing function,
+so a **partial pass self-certified as complete**. This ledger removes that escape hatch.
+
+**The rule is absolute:** when you audit or build an example page you MUST reproduce this ledger in
+your reply **with concrete evidence filled into every row** before you say "done", before you
+commit, and before you report results. **An empty cell, a "looks fine", or a skipped row = the
+audit FAILED — not a draft, a FAIL.** Evidence means *what you actually did and saw* (the click
+path, the rendered text, the console output), never a promise.
+
+```
+AUDIT LEDGER — <group>-<name>  (paste filled-in; one line of real evidence per cell)
+[ ] Cards enumerated: N = ___   (list every card title — you must drive EVERY one, not a sample)
+[ ] Each card driven to its TERMINAL state:
+      card 1 <title>: <what you clicked/typed + final result> ……………
+      card 2 <title>: ……  (repeat for ALL N — a blank row is a FAIL)
+[ ] Every interactive prop/mode exercised by NAME (list them from the component's prop type):
+      e.g. changeOnSelect ✓<evidence>  · expandTrigger=hover ✓<reached depth-N leaf> ·
+      multiple ✓<toggled> · disabled/isLeaf node ✓ · allowClear ✓ · showSearch ✓
+[ ] DevTools console OPENED and quoted: errors=___ warnings=___  (button-in-button / hydration /
+      act() / 404 = FINDING; "I assume clean" is not allowed)
+[ ] Stateful checks (if the control holds state): held value visible on open ✓ ·
+      re-pickable from a complete state ✓ · controlled value mirrors type↔click ✓
+[ ] Screenshots at 390 / 768 / 1280 ✓
+[ ] Verify suite green: typecheck · lint · audit · test · preview:build
+```
+
+If any box cannot be ticked with evidence, that is the next bug to investigate — **stop and fix,
+do not report success.** Driving "a couple of cards" and declaring victory is the exact failure
+this gate forbids.
+
+---
+
 ## Rule #0 — Type-check against the REAL API (a render-breaking bug is not an example)
 
 The 9 worst pages didn't *render* what their copy promised. Non-negotiable:
@@ -105,6 +142,7 @@ container at a wide viewport**, not only by shrinking the window.)
 
 ## Pre-commit checklist (run before calling an example page done)
 
+- [ ] **🔒 Audit Evidence Ledger filled in with real evidence (top of this skill) — every card driven, console opened, every mode exercised. This is the blocking gate; a partial pass is a FAIL.**
 - [ ] `pnpm typecheck` clean — `tone` not `variant`, no invented union values, installed-version prop names, Provider/Router mounted
 - [ ] Every non-default **state** the component supports is rendered (Rule #1)
 - [ ] Interaction/async behaviour staged **visible at rest** (open/active/fetching) — Rule #2
