@@ -24,6 +24,7 @@ These rules are normative for @godxjp/ui 8.0.0. They mirror `debate/props-vocab-
 20. Design tokens: public raw/decorative primitive exports are allowed only under documented neutral namespaces such as `wa-*` or `chart-*`; undocumented raw ramps such as public `gray-*`/`blue-*` exports are forbidden.
 21. Design tokens: dark mode MUST override semantic tokens by role; component-token dark overrides require a documented component contrast reason.
 22. Design tokens: density CSS MUST select token aliases and MUST NOT introduce new raw component dimensions when a token tier can hold the value.
+23. Control sizing: an interactive control's box height/width MUST resolve from the `--control-height` tier (or its official steps `--control-height-{xs,sm,lg}`). Primitives MUST NOT bake in a control size via a literal length (`height: 2rem`) or an ad-hoc `calc(var(--control-height) ± <len>)` — the named tier carries the density-aware value, and per-instance size changes are the app's call via the `size` prop / `className`. Enforced by `pnpm check:control-sizing`.
 
 Examples:
 

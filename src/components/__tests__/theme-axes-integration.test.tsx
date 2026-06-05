@@ -196,13 +196,16 @@ describe("theme axes integration (render + class contracts)", () => {
   });
 
   describe("pagination + calendar avoid legacy hardcoded sizes", () => {
-    it("pagination prev button uses semantic compact icon class", () => {
+    it("pagination prev button uses the default control-height tier, not a hardcoded/sub-default size", () => {
       renderWithTheme(
         <Pagination value={2} total={100} pageSize={20} onValueChange={() => undefined} />,
       );
       const prev = screen.getByRole("button", { name: /trang trước/i });
       expect(prev.className).not.toMatch(/\bsize-8\b/);
-      expect(prev).toHaveClass("ui-button--compact-icon");
+      // Primitive must not bake in a sub-default size tier — it carries the
+      // pagination-link class whose height resolves to var(--control-height).
+      expect(prev).toHaveClass("ui-pagination-link");
+      expect(prev.className).not.toMatch(/compact-icon/);
     });
 
     it("calendar day button uses var(--control-height)", () => {

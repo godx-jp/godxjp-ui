@@ -52,7 +52,7 @@ const PaginationLink = React.forwardRef<HTMLButtonElement, PaginationLinkProps>(
       disabled={disabled || undefined}
       data-state={disabled ? "disabled" : undefined}
       className={cn(
-        "ui-pagination-link ui-button--compact-icon ui-pagination-page",
+        "ui-pagination-link ui-pagination-page",
         isActive ? "ui-pagination-link-active" : undefined,
         disabled ? "ui-pagination-link-disabled" : undefined,
         className,
@@ -68,7 +68,7 @@ PaginationLink.displayName = "PaginationLink";
 
 const PaginationEllipsis = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
   <span
-    className={cn("ui-pagination-ellipsis ui-button--compact-icon", className)}
+    className={cn("ui-pagination-ellipsis", className)}
     aria-hidden="true"
     role="presentation"
     {...props}
@@ -208,7 +208,6 @@ export function Pagination({
           <PaginationPrevious
             aria-label={t("navigation.pagination.prev")}
             onClick={() => go(safeCurrent - 1)}
-            className="ui-button--compact-icon"
             disabled={Boolean(disabled) || safeCurrent <= 1}
           >
             <ChevronLeft aria-hidden="true" />
@@ -240,7 +239,6 @@ export function Pagination({
           <PaginationNext
             aria-label={t("navigation.pagination.next")}
             onClick={() => go(safeCurrent + 1)}
-            className="ui-button--compact-icon"
             disabled={Boolean(disabled) || safeCurrent >= totalPages}
           >
             <ChevronRight aria-hidden="true" />

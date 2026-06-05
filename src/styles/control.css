@@ -177,11 +177,6 @@
     padding: 0;
   }
 
-  .ui-button--compact-icon {
-    width: var(--control-height-xs);
-    height: var(--control-height-xs);
-    padding: 0;
-  }
 
   .ui-control {
     height: var(--control-height);
@@ -616,8 +611,8 @@
 .ui-otp-slot {
   position: relative;
   display: flex;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: var(--control-height);
+  height: var(--control-height);
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
@@ -719,7 +714,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-1);
-  min-height: 2.25rem;
+  min-height: var(--control-height);
   padding: var(--space-1) var(--space-2);
   border: 1px solid hsl(var(--input));
   border-radius: var(--radius-md);

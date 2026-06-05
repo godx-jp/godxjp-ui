@@ -483,7 +483,9 @@
 
   .ui-pagination-size-trigger {
     width: var(--pagination-size-width);
-    height: calc(var(--control-height) - 0.25rem);
+    /* Default control height — primitive never picks a sub-default tier; the app
+     * overrides via className if it wants smaller. Shared with the page buttons. */
+    height: var(--control-height);
   }
 
   .ui-pagination-list {
@@ -500,6 +502,8 @@
 
   .ui-pagination-ellipsis {
     display: flex;
+    width: var(--control-height);
+    height: var(--control-height);
     align-items: center;
     justify-content: center;
     color: hsl(var(--muted-foreground));
@@ -507,8 +511,8 @@
 
   .ui-pagination-link {
     display: inline-flex;
-    width: 2rem;
-    height: 2rem;
+    width: var(--control-height);
+    height: var(--control-height);
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-sm);

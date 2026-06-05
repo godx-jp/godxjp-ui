@@ -20,7 +20,8 @@ hard contract — do not skip a gate. In short:
 4. **Semantic tokens only** (`pnpm run audit` = 0/0); add an MCP catalog entry + a real-screen docs page.
 5. **Verify ALL green** before done: `pnpm typecheck && pnpm lint && pnpm run audit &&
 pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans &&
-pnpm check:token-tiers && pnpm check:example-imports && pnpm preview:build && pnpm test`.
+pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports &&
+pnpm preview:build && pnpm test`.
 
 See `docs/STANDARDS-vocabulary-tokens.md`, `docs/PROPS-VOCABULARY.md`, and
 `docs/roadmap/international-standardization.md` for the full rules and the i18n/a11y/vocab audit.

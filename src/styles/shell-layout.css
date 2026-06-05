@@ -482,7 +482,7 @@
     display: inline-flex;
     max-width: 15rem;
     min-width: 0;
-    height: calc(var(--control-height) - 0.25rem);
+    height: var(--control-height-sm);
     align-items: center;
     gap: var(--space-1);
     padding-inline: var(--space-2);
@@ -540,7 +540,7 @@
   .tb-search {
     display: flex;
     width: min(20rem, 30vw);
-    height: calc(var(--control-height) - 0.25rem);
+    height: var(--control-height-sm);
     align-items: center;
     gap: var(--space-2);
     padding-inline: var(--space-2);
@@ -576,8 +576,8 @@
 
   .tb-icon-btn {
     display: grid;
-    width: calc(var(--control-height) - 0.25rem);
-    height: calc(var(--control-height) - 0.25rem);
+    width: var(--control-height-sm);
+    height: var(--control-height-sm);
     flex: 0 0 auto;
     place-items: center;
     border: 0;
