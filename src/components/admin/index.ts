@@ -10,7 +10,7 @@ export type { PageHeaderProp } from "../../props/components/layout.prop";
 
 export { PageContainer } from "../layout/page-container";
 export { Flex } from "../layout";
-export type { FlexProp, StackProp, InlineProp } from "../../props/components/layout.prop";
+export type { FlexProp } from "../../props/components/layout.prop";
 
 export { EmptyState } from "../data-display/empty-state";
 export { Badge } from "../data-display/badge";

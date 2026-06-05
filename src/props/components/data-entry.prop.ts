@@ -173,29 +173,6 @@ export type ColorPickerProp = {
   showHexInput?: boolean;
 };
 
-/** Autocomplete option row. */
-export type AutocompleteOptionProp = {
-  value: string;
-  label: string;
-};
-
-/**
- * @see Autocomplete — searchable combobox over a static list.
- * @deprecated Use `SearchSelect` with a static `options` array — it is a superset (grouping,
- *   sublabels, async, custom render). `Autocomplete` is kept as a thin compatibility wrapper.
- */
-export type AutocompleteProp = {
-  options: AutocompleteOptionProp[];
-  value?: ValueProp;
-  onValueChange?: OnValueChangeProp;
-  placeholder?: PlaceholderProp;
-  searchPlaceholder?: PlaceholderProp;
-  emptyMessage?: EmptyMessageProp;
-  disabled?: DisabledProp;
-  className?: ClassNameProp;
-  id?: IdProp;
-};
-
 /** A SearchSelect option row. `group` buckets it under an optgroup-style heading. */
 export type SearchSelectOptionProp = {
   value: string;

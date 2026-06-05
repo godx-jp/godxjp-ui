@@ -43,14 +43,6 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
   wrap?: boolean;
 };
 
-/** @see Stack — deprecated alias for Flex direction="col" */
-export type StackProp = Omit<FlexProp, "direction" | "wrap">;
-
-/** @see Inline */
-export type InlineProp = Omit<FlexProp, "direction" | "wrap" | "gap"> & {
-  gap?: Exclude<GapProp, "xl">;
-};
-
 export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
 
 /** @see PageInset — deprecated alias for PageContainer.Inset. */

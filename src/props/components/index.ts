@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-deprecated -- barrel re-exports legacy PageHeaderProp */
 export type {
   AppShellProp,
-  InlineProp,
   PageContainerProp,
   PageHeaderProp,
   PageInsetProp,
@@ -9,7 +8,6 @@ export type {
   SidebarProductProp,
   SidebarProp,
   SidebarSectionProp,
-  StackProp,
   TopbarProductProp,
   TopbarProjectProp,
   TopbarProp,
@@ -32,8 +30,6 @@ export type {
   DateRangePickerProp,
   TimePickerProp,
   ColorPickerProp,
-  AutocompleteProp,
-  AutocompleteOptionProp,
   UploadProp,
   UploadFileItemProp,
   UploadVariantProp,

@@ -67,7 +67,7 @@ Components emit `data-slot` / `data-*`; the look lives in `styles/*-layout.css`.
 
 | Group              | Import                    | Examples                                                                                                                                                                                                                                |
 | ------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Layout**         | `@godxjp/ui/layout`       | `Flex` (+ `Stack`/`Inline`), `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Separator`, `AspectRatio`, `Resizable`                                                                                                          |
+| **Layout**         | `@godxjp/ui/layout`       | `Flex`, `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Separator`, `AspectRatio`, `Resizable`                                                                                                          |
 | **General**        | `@godxjp/ui/general`      | `Button`                                                                                                                                                                                                                                |
 | **Data Entry**     | `@godxjp/ui/data-entry`   | `Input`, `Select`, `FormField`, `Field`, `DatePicker`, `TimePicker`, `Combobox`, `Switch`, `Toggle`, `Upload`, `Cascader`, `TreeSelect`, `ColorPicker`, `Slider`, `PasswordInput`, `PasswordStrength`, `InputOTP`, `Rating`, `TagInput` |
 | **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `Accordion`, `HoverCard`, `Carousel`, `Popover`, `Collapsible`                                                       |
@@ -81,9 +81,37 @@ Components emit `data-slot` / `data-*`; the look lives in `styles/*-layout.css`.
 | **shadcn paths**   | `@godxjp/ui/ui`           | Thin re-exports for shadcn-style imports (tree-shakeable)                                                                                                                                                                               |
 | **Admin (legacy)** | `@godxjp/ui/admin`        | Compound admin exports                                                                                                                                                                                                                  |
 
-> **Renamed in 8.0** (thin aliases kept): `Stack`/`Inline`→`Flex`, `KeyValueGrid`→`Descriptions`,
-> `ProgressMeter`→`Progress`, `CardStat`→`StatCard`, `FilterBar`→`Toolbar`, `ChoiceField`→`Field`,
-> `SkeletonCard`→`SkeletonStat`. `StatusBadge`→`Badge` (`status`/`tone`), `DialogConfirm`/`Dialog mode="confirm"`→`AlertDialog`.
+> **Renamed / removed** — use the new names; the old aliases were **removed in v11** (they are no
+> longer exported at runtime). See the [migration table](#migrating-6--11) below.
+
+---
+
+## Migrating 6 → 11
+
+The v11 line dropped the deprecated compatibility aliases entirely — they are no longer exported
+at runtime, and their leftover `*Prop` types and README references have now been removed too (issue
+#99). Replace these at the call site:
+
+| Removed / renamed (≤ v8)         | Replacement (v11)                                  |
+| -------------------------------- | -------------------------------------------------- |
+| `Stack`                          | `Flex direction="col"` (the default direction)     |
+| `Inline`                         | `Flex direction="row"`                             |
+| `Autocomplete`                   | `Select` with `showSearch` + `options`             |
+| `CountrySelect`                  | `AppSettingPicker kind="country"`                  |
+| `LocalePicker`                   | `AppSettingPicker kind="language"`                 |
+| `CountryOptionLabel`             | `Intl.DisplayNames` (ISO 3166-1 α-2) — no component |
+| `SwitchField`                    | `Field` + `Switch`                                 |
+| `CardStat`                       | `StatCard`                                          |
+| `KeyValueGrid`                   | `Descriptions`                                      |
+| `ProgressMeter`                  | `Progress`                                          |
+| `FilterBar`                      | `Toolbar`                                           |
+| `ChoiceField`                    | `Field`                                             |
+| `SkeletonCard`                   | `SkeletonStat`                                      |
+| `StatusBadge`                    | `Badge` (`status` / `tone`)                         |
+| `DialogConfirm` / `Dialog mode="confirm"` | `AlertDialog`                             |
+
+For the full feature data grid (sort / search / column visibility / paging) see
+`@godxjp/ui/data-grid` (`DataGrid`); the lean server-driven list stays `DataTable`.
 
 ---
 
@@ -109,7 +137,7 @@ import { PageContainer } from "@godxjp/ui/layout"; // every page wraps in this
 
 1. **Every page** uses `<PageContainer title subtitle extra footer>`.
 2. **Mobile-first** — verify at 320–390px in preview / browser.
-3. **Spacing via `Stack`/`Inline` `gap` + `ResponsiveGrid`** — no Tailwind `p-*` /
+3. **Spacing via `Flex` `gap` + `ResponsiveGrid`** — no Tailwind `p-*` /
    `gap-*` / `space-x|y-*` for app layout (see `docs/SPACING.md`).
 4. **Semantic tokens only** — no raw colors / hex / `dark:` overrides.
 5. **Dates** display via `formatDate` from `@godxjp/ui/datetime`.
@@ -126,12 +154,12 @@ One token `--phi-unit` drives page/section/card spacing; micro control gaps use 
 4px grid. Density (`compact` | `default` | `comfortable`) retunes `--phi-unit` with
 control + table heights together.
 
-| App API             | φ level             |
-| ------------------- | ------------------- |
-| `<Stack gap="md">`  | φ⁰ (default)        |
-| `<Stack gap="lg">`  | φ¹                  |
-| `<Stack gap="xl">`  | φ²                  |
-| Card shell / footer | base × φ / base ÷ φ |
+| App API                          | φ level             |
+| -------------------------------- | ------------------- |
+| `<Flex direction="col" gap="md">`| φ⁰ (default)        |
+| `<Flex direction="col" gap="lg">`| φ¹                  |
+| `<Flex direction="col" gap="xl">`| φ²                  |
+| Card shell / footer              | base × φ / base ÷ φ |
 
 ---
 
