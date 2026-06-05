@@ -410,12 +410,6 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["ChildrenProp", "OnOpenChangeProp", "OnValueChangeProp"],
   },
-  PageHeaderProp: {
-    group: "layout",
-    file: "components/layout.prop.ts",
-    vocabulary: ["TitleProp", "SubtitleProp", "ExtraProp", "BreadcrumbProp"],
-    deprecated: true,
-  },
   ButtonProp: {
     group: "general",
     file: "components/general.prop.ts",
@@ -685,11 +679,6 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
     ],
   },
-  MutationFeedbackProp: {
-    group: "query",
-    file: "components/query.prop.ts",
-    vocabulary: ["OnValueChangeProp"],
-  },
   ButtonRefetchProp: {
     group: "query",
     file: "components/query.prop.ts",
@@ -701,11 +690,6 @@ export const COMPONENT_PROP_REGISTRY = {
       },
       "LabelProp",
     ],
-  },
-  QueryRefetchButtonProp: {
-    group: "query",
-    file: "components/query.prop.ts",
-    vocabulary: ["LabelProp", "ClassNameProp"],
   },
   InfiniteQueryStateProp: {
     group: "query",
@@ -751,16 +735,6 @@ export const COMPONENT_PROP_REGISTRY = {
     vocabulary: ["ClassNameProp", "ChildrenProp"],
   },
   SkeletonRowsProp: { group: "feedback", file: "components/feedback.prop.ts", vocabulary: [] },
-  FilterBarProp: {
-    group: "navigation",
-    file: "components/navigation.prop.ts",
-    vocabulary: ["OnClearFiltersProp", "HasActiveFiltersProp", "ChildrenProp"],
-  },
-  FilterGroupProp: {
-    group: "navigation",
-    file: "components/navigation.prop.ts",
-    vocabulary: ["LabelProp", "ChildrenProp"],
-  },
   ToolbarProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",

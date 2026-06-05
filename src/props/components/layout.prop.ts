@@ -45,7 +45,7 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
 
 export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
 
-/** @see PageInset — deprecated alias for PageContainer.Inset. */
+/** @see PageContainer.Inset — full-bleed inset region inside the page padding. */
 export type PageInsetProp = React.HTMLAttributes<HTMLDivElement> & {
   children?: ChildrenProp;
   className?: ClassNameProp;
@@ -138,14 +138,4 @@ export type TopbarProp = {
   projectPlaceholder?: string;
   onNotificationsOpen?: () => void;
   user?: ReactNode;
-};
-
-/** @deprecated Use PageContainerProp — header-only legacy shell. */
-export type PageHeaderProp = {
-  title: TitleProp;
-  description?: SubtitleProp;
-  breadcrumb?: BreadcrumbProp;
-  linkComponent?: React.ElementType;
-  actions?: ExtraProp;
-  className?: ClassNameProp;
 };

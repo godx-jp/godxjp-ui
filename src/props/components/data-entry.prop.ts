@@ -196,9 +196,8 @@ export type SearchSelectLoadResultProp = {
 };
 
 /**
- * @see SearchSelect — searchable, optionally grouped single-select combobox (static or async).
- * @deprecated Prefer `<Select options|loadOptions showSearch …/>` — `Select` is now the single
- *   data-driven entry point and uses this engine internally. `SearchSelect` stays exported.
+ * @see Select — the data-driven entry point (`<Select options|loadOptions showSearch …/>`).
+ * This is the shape of its internal engine (`SelectDataProp` extends it); use `Select` directly.
  */
 export type SearchSelectProp = {
   value?: ValueProp;

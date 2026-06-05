@@ -1,42 +1,7 @@
 // Shared formatting helpers — every admin component uses these instead of
 // inline string templates so the platform speaks one language for dates,
 // sizes, money, IDs.
-import { formatDate, type FormatDateOptions, type FormatDatetimeOptions } from "./datetime";
 import { getSyncedLocale, translateCurrent } from "../i18n/translate";
-
-export type FormatOptions = FormatDatetimeOptions & FormatDateOptions;
-
-/** @deprecated Prefer `formatDate(value, { kind: "datetime" })` — delegates to unified formatter. */
-export function formatTime(
-  value: string | Date | null | undefined,
-  options?: FormatOptions,
-): string {
-  return formatDate(value, { ...options, kind: "time" });
-}
-
-/** @deprecated Prefer `formatDate(value, { kind: "datetime" })`. */
-export function formatDateTime(
-  value: string | Date | null | undefined,
-  options?: FormatOptions,
-): string {
-  return formatDate(value, { ...options, kind: "datetime" });
-}
-
-/** @deprecated Prefer `formatDate(value, { kind: "long" })`. */
-export function formatDateLong(
-  value: string | Date | null | undefined,
-  options?: FormatOptions,
-): string {
-  return formatDate(value, { ...options, kind: "long" });
-}
-
-/** @deprecated Prefer `formatDate(value, { kind: "relative" })`. */
-export function formatRelative(
-  value: string | Date | null | undefined,
-  options?: Pick<FormatOptions, "locale">,
-): string {
-  return formatDate(value, { ...options, kind: "relative" });
-}
 
 /**
  * Bytes → size with conventional binary units (B/KB/MB/GB) and a locale-correct number,

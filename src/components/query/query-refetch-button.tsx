@@ -6,8 +6,6 @@ import type { ButtonRefetchProp } from "../../props/components/query.prop";
 export type {
   ButtonRefetchProp,
   ButtonRefetchProp as ButtonRefetchProps,
-  QueryRefetchButtonProp,
-  QueryRefetchButtonProp as QueryRefetchButtonProps,
 } from "../../props/components/query.prop";
 
 /** Page-header Refresh — spins while `query.isFetching`, calls `query.refetch()`. */

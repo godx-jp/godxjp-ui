@@ -24,12 +24,6 @@ export type ToolbarGroupProp = {
   children: ChildrenProp;
 };
 
-/** @see FilterBar — deprecated alias for Toolbar. */
-export type FilterBarProp = ToolbarProp;
-
-/** @see FilterGroup — deprecated alias for ToolbarGroup. */
-export type FilterGroupProp = ToolbarGroupProp;
-
 /** @see Pagination — offset/page-based (distinct from DataTable cursor pagination). */
 export type PaginationProp = {
   value?: number;

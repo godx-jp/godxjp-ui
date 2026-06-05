@@ -52,9 +52,6 @@ export const APP_TIMEZONE_PRESET = [
   "Pacific/Auckland",
 ] as const;
 
-/** @deprecated Use `APP_TIMEZONE_PRESET` or `getAllIanaTimezones()`. */
-export const APP_TIMEZONE_OPTIONS = APP_TIMEZONE_PRESET;
-
 export type AppTimezonePreset = (typeof APP_TIMEZONE_PRESET)[number];
 
 /**
@@ -117,11 +114,6 @@ export function isValidIanaTimezone(value: string): boolean {
   if (set.has(value)) return true;
   const canonical = TIMEZONE_ALIASES[value];
   return canonical ? set.has(canonical) : false;
-}
-
-/** @deprecated Use `isValidIanaTimezone`. */
-export function isKnownAppTimezone(value: string): value is AppTimezonePreset {
-  return (APP_TIMEZONE_PRESET as readonly string[]).includes(value);
 }
 
 /**

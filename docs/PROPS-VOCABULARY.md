@@ -82,7 +82,7 @@ Import: `import type { TitleProp, GapProp } from "@godxjp/ui/props/vocabulary"`
 | `OnTableDensityChangeProp` | Table density handler   |
 | `OnSortChangeProp`         | Sort handler            |
 | `OnSearchChangeProp`       | Debounced search        |
-| `OnClearFiltersProp`       | FilterBar clear         |
+| `OnClearFiltersProp`       | Toolbar clear           |
 | `HasActiveFiltersProp`     | Show clear button       |
 
 ## Forbidden aliases

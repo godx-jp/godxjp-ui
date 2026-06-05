@@ -2,21 +2,21 @@ import { describe, expect, it } from "vitest";
 import { getDateFnsLocale } from "../../app/locales";
 import { syncDatetimeContext } from "../datetime";
 import {
+  formatAppDateTime,
+  formatAppRelative,
+  formatAppTime,
   formatBytes,
   formatCurrency,
-  formatDateTime,
-  formatRelative,
-  formatTime,
   humanError,
   shortId,
 } from "../format";
 
 describe("format helpers", () => {
-  it("formatDateTime returns dash for null", () => {
-    expect(formatDateTime(null)).toBe("—");
+  it("formatAppDateTime returns dash for null", () => {
+    expect(formatAppDateTime(null)).toBe("—");
   });
 
-  it("formatDateTime formats ISO string in synced timezone", () => {
+  it("formatAppDateTime formats ISO string in synced timezone", () => {
     syncDatetimeContext({
       locale: "en",
       timezone: "UTC",
@@ -24,18 +24,18 @@ describe("format helpers", () => {
       dateFormat: "iso",
       dateFnsLocale: getDateFnsLocale("en"),
     });
-    expect(formatDateTime("2026-05-01T14:30:00Z")).toMatch(/2026-05-01 14:30/);
+    expect(formatAppDateTime("2026-05-01T14:30:00Z")).toMatch(/2026-05-01 14:30/);
   });
 
-  it("formatTime respects 12h vs 24h", () => {
+  it("formatAppTime respects 12h vs 24h", () => {
     const d = "2026-05-01T14:30:00Z";
-    expect(formatTime(d, { timeFormat: "24h" })).toMatch(/\d{2}:\d{2}/);
-    expect(formatTime(d, { timeFormat: "12h" })).toMatch(/PM|AM|am|pm/);
+    expect(formatAppTime(d, { timeFormat: "24h" })).toMatch(/\d{2}:\d{2}/);
+    expect(formatAppTime(d, { timeFormat: "12h" })).toMatch(/PM|AM|am|pm/);
   });
 
-  it("formatRelative returns relative phrase", () => {
+  it("formatAppRelative returns relative phrase", () => {
     const recent = new Date(Date.now() - 60_000).toISOString();
-    expect(formatRelative(recent)).toMatch(/minute/i);
+    expect(formatAppRelative(recent)).toMatch(/minute/i);
   });
 
   it("formatBytes scales units with a locale-correct number", () => {

@@ -34,7 +34,7 @@ import {
   DataTable,
   type ColumnDef,
 } from "@godxjp/ui/data-display";
-import { Checkbox, SearchInput, Select } from "@godxjp/ui/data-entry";
+import { SearchInput, Select } from "@godxjp/ui/data-entry";
 import { AlertDialog } from "@godxjp/ui/feedback";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import type { SortStateProp } from "@godxjp/ui/props";

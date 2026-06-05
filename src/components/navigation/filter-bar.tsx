@@ -7,8 +7,6 @@ import { cn } from "../../lib/utils";
 import type { ToolbarGroupProp, ToolbarProp } from "../../props/components/navigation.prop";
 
 export type {
-  FilterBarProp,
-  FilterGroupProp,
   ToolbarGroupProp,
   ToolbarGroupProp as ToolbarGroupProps,
   ToolbarProp,

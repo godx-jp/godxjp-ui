@@ -117,7 +117,7 @@ Async data lifecycle helpers (TanStack Query). **Not visual components.**
 | Component            | Prop type                | Key props                                                                               |
 | -------------------- | ------------------------ | --------------------------------------------------------------------------------------- |
 | `DataState`          | `DataStateProp<T>`       | `query`, `skeleton`, `empty`, `isEmpty`, `showRetry`, `onRetry`, render-prop `children` |
-| `MutationFeedback`   | `MutationFeedbackProp`   | `mutation`, `onRetry`, `pending` — inline `useMutation` error                           |
+| `AlertMutationFeedback` | `AlertMutationFeedbackProp` | `mutation`, `onRetry`, `pending` — inline `useMutation` error                      |
 | `InfiniteQueryState` | `InfiniteQueryStateProp` | `flatten`, `loadMore`, `showLoadMore` — infinite scroll / timeline                      |
 | `PrefetchLink`       | `PrefetchLinkProp`       | `queryKey`, `queryFn`, `prefetchOn`, `staleTime`                                        |
 
@@ -129,9 +129,9 @@ Import: `@godxjp/ui/query` (re-exported from `@godxjp/ui/admin`).
 
 **`PrefetchLink`** — hover/focus prefetch before navigate to detail.
 
-**`MutationFeedback`** — blocking mutation errors (simulator). Small saves → toast.
+**`AlertMutationFeedback`** — blocking mutation errors (simulator). Small saves → toast.
 
-**`QueryRefetchButton`** — `PageContainer extra` refresh pattern (MediaListPage).
+**`ButtonRefetch`** — `PageContainer extra` refresh pattern (MediaListPage).
 
 **`Alert.QueryError`** — manual error when not using DataState (audit results region).
 
@@ -143,8 +143,8 @@ Auto retry: `useQuery({ retry, retryDelay })`. Manual retry: default `refetch()`
 
 | Component      | Prop type         | Key props                          |
 | -------------- | ----------------- | ---------------------------------- |
-| `FilterBar`    | `FilterBarProp`   | `onClear: OnClearFiltersProp`      |
-| `FilterGroup`  | `FilterGroupProp` | `label: LabelProp`                 |
+| `Toolbar`      | `ToolbarProp`     | `onClear: OnClearFiltersProp`      |
+| `ToolbarGroup` | `ToolbarGroupProp`| `label: LabelProp`                 |
 | `Tabs`         | Radix primitives  | —                                  |
 | `DropdownMenu` | Radix primitives  | —                                  |
 | `PageHeader`   | `PageHeaderProp`  | **deprecated** — use PageContainer |

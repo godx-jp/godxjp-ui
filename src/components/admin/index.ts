@@ -5,9 +5,6 @@ export type {
   PageContainerProp as PageContainerProps,
 } from "../../props/components/layout.prop";
 
-/* eslint-disable-next-line @typescript-eslint/no-deprecated -- backward-compat export */
-export type { PageHeaderProp } from "../../props/components/layout.prop";
-
 export { PageContainer } from "../layout/page-container";
 export { Flex } from "../layout";
 export type { FlexProp } from "../../props/components/layout.prop";
@@ -57,6 +54,3 @@ export { toast, useToast } from "../feedback/use-toast";
 export type { LegacyToastOptions } from "../feedback/use-toast";
 export { useDebouncedValue, useTimeoutFlag } from "../../lib/hooks";
 export { formatDate, formatBytes, formatCurrency, shortId, humanError } from "../../lib/format";
-/* eslint-disable @typescript-eslint/no-deprecated -- backward-compatible admin barrel re-exports legacy helpers. */
-export { formatDateTime, formatDateLong, formatRelative } from "../../lib/format";
-/* eslint-enable @typescript-eslint/no-deprecated */

@@ -1,19 +1,9 @@
 export { DataState } from "./data-state";
 export type { DataStateProp, DataStateProps } from "./data-state";
 export { AlertMutationFeedback } from "./mutation-feedback";
-export type {
-  AlertMutationFeedbackProp,
-  AlertMutationFeedbackProps,
-  MutationFeedbackProp,
-  MutationFeedbackProps,
-} from "./mutation-feedback";
+export type { AlertMutationFeedbackProp, AlertMutationFeedbackProps } from "./mutation-feedback";
 export { ButtonRefetch } from "./query-refetch-button";
-export type {
-  ButtonRefetchProp,
-  ButtonRefetchProps,
-  QueryRefetchButtonProp,
-  QueryRefetchButtonProps,
-} from "./query-refetch-button";
+export type { ButtonRefetchProp, ButtonRefetchProps } from "./query-refetch-button";
 export { InfiniteQueryState, flattenItemPages } from "./infinite-query-state";
 export type { InfiniteQueryStateProp, InfiniteQueryStateProps } from "./infinite-query-state";
 export { PrefetchLink } from "./prefetch-link";

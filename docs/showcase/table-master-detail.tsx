@@ -23,7 +23,7 @@
  * quiet JP copy, no emoji.
  */
 import * as React from "react";
-import { Check, Clock, FileText, Pencil, UserRound } from "lucide-react";
+import { Check, Clock, Pencil, UserRound } from "lucide-react";
 
 import { Button } from "@godxjp/ui/general";
 import {

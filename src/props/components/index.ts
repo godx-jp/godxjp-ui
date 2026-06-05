@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-deprecated -- barrel re-exports legacy PageHeaderProp */
 export type {
   AppShellProp,
   PageContainerProp,
-  PageHeaderProp,
   PageInsetProp,
   SidebarItemProp,
   SidebarProductProp,
@@ -59,15 +57,11 @@ export type {
 } from "./feedback.prop";
 export type {
   DataStateProp,
-  MutationFeedbackProp,
-  QueryRefetchButtonProp,
   InfiniteQueryStateProp,
   InfiniteQueryHelpers,
   PrefetchLinkProp,
 } from "./query.prop";
 export type {
-  FilterBarProp,
-  FilterGroupProp,
   PaginationProp,
   StepsProp,
   StepItemProp,

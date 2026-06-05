@@ -4,8 +4,6 @@ import type { AlertMutationFeedbackProp } from "../../props/components/query.pro
 export type {
   AlertMutationFeedbackProp,
   AlertMutationFeedbackProp as AlertMutationFeedbackProps,
-  MutationFeedbackProp,
-  MutationFeedbackProp as MutationFeedbackProps,
 } from "../../props/components/query.prop";
 
 /**
