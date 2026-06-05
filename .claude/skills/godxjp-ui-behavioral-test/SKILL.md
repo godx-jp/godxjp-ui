@@ -93,6 +93,27 @@ For keys, prefer the MCP's high-level helpers (`type_text`, `press_key`,
 (keydown → input → keyup) the way a user does, and surface the freeze bug
 naturally because a frozen input ends up empty after a multi-char type.
 
+### ⚠️ Harness FALSE POSITIVE on controlled inputs — confirm in jsdom before reporting
+
+The MCP path is not 100% faithful for a **controlled** input. `fill` (and a raw
+native-setter + `input` event) can land a string in the DOM **without React's
+`onChange` running**, so the component's STATE — and everything derived from it
+(`aria-invalid`, `aria-valuetext`, the masked/snapped value) — stays at the old
+value while only the raw DOM `value` shows your text. Reading those attributes
+then makes a perfectly-working field look broken.
+
+Real example (this session): typing an out-of-range `25:70` into a controlled
+`TimeInput` read back `aria-invalid=null` in chrome-devtools — looked like a
+missing-validation bug. A deterministic `@testing-library/user-event` test typed
+the same and got `value="25:70"` **and** `aria-invalid="true"` — the component
+was fine; the harness reading was the artifact.
+
+**Rule:** before you REPORT a bug about a controlled input's `value`/`aria-*`
+that you observed only via browser MCP, reproduce it with a `user-event` test in
+jsdom. If the jsdom test disagrees, trust jsdom — and the test you just wrote is
+the codified proof either way. (This cuts both ways: it stops phantom bugs and
+catches real ones.)
+
 ## The controlled-freeze bug class (canonical — found & fixed today)
 
 **Symptom**: you type into a controlled input in the browser and nothing appears
