@@ -101,11 +101,13 @@ describe("DateRangePicker", () => {
     expect(to).toHaveAttribute("name", "period_to");
   });
 
-  it("opens the calendar when a range field is clicked (not only the icon)", async () => {
+  it("opens the calendar when a range field is clicked, showing two months", async () => {
     const user = userEvent.setup();
     renderWithUi(<DateRangePicker onValueChange={() => undefined} />);
     await user.click(screen.getByRole("textbox", { name: /from|từ|開始/i }));
-    expect(await screen.findByRole("grid")).toBeInTheDocument();
+    // A range picker shows two month grids so a cross-month range needs no navigation.
+    const grids = await screen.findAllByRole("grid");
+    expect(grids).toHaveLength(2);
   });
 });
 

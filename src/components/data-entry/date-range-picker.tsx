@@ -157,6 +157,9 @@ export function DateRangePicker({
             mode="range"
             selected={value}
             defaultMonth={value?.from}
+            // A range picker shows two months so a cross-month range can be picked without
+            // navigating. The Calendar wrapper stacks them vertically below `sm` for mobile.
+            numberOfMonths={2}
             onSelect={(range) => {
               emit(range);
               setFromText(toIsoDate(range?.from));
