@@ -163,10 +163,6 @@
       "types": "./dist/components/data-entry/color-picker.d.ts",
       "import": "./dist/components/data-entry/color-picker.js"
     },
-    "./ui/autocomplete": {
-      "types": "./dist/components/data-entry/autocomplete.d.ts",
-      "import": "./dist/components/data-entry/autocomplete.js"
-    },
     "./ui/upload": {
       "types": "./dist/components/data-entry/upload.d.ts",
       "import": "./dist/components/data-entry/upload.js"
