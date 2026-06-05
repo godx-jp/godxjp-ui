@@ -47,6 +47,10 @@
       "types": "./dist/components/query/index.d.ts",
       "import": "./dist/components/query/index.js"
     },
+    "./data-grid": {
+      "types": "./dist/components/data-grid/index.d.ts",
+      "import": "./dist/components/data-grid/index.js"
+    },
     "./ui": {
       "types": "./dist/components/ui/index.d.ts",
       "import": "./dist/components/ui/index.js"
@@ -285,12 +289,18 @@
   "peerDependencies": {
     "@hookform/resolvers": "^5.2.0",
     "@tanstack/react-query": ">=5.0.0",
+    "@tanstack/react-table": ">=8.0.0",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0",
     "react-hook-form": "^7.76.0",
     "react-router-dom": ">=7.0.0",
     "tailwindcss": ">=4.0.0",
     "zod": "^4.4.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/react-table": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",
@@ -340,6 +350,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.2.4",
     "@tanstack/react-query": "^5.100.9",
+    "@tanstack/react-table": "^8.21.3",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

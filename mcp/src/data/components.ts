@@ -1040,6 +1040,103 @@ export default function InvoiceList({
     rules: [24, 31, 35, 37],
   },
   {
+    name: "DataGrid",
+    group: "data-display",
+    tagline:
+      "Full-feature data grid — the TanStack Table adapter on `@godxjp/ui/data-grid` (NOT the data-display barrel). Adds column sort, global search, column visibility ('set view'), per-page + numbered pagination, row selection + bulk actions, and density over the styled Table* primitives. Defaults to SERVER/manual mode: wire sorting/columnFilters/globalFilter/pagination to your AJAX query (pass rowCount). Use DataTable instead for a lean server-driven list that must NOT pull TanStack. Requires the `@tanstack/react-table` peer dependency.",
+    props: [
+      {
+        name: "columns",
+        type: "ColumnDef<T, unknown>[]",
+        required: true,
+        description:
+          "TanStack column definitions ({ accessorKey, header, cell, enableSorting, enableHiding, meta:{label} }). Set enableHiding:false to keep a column out of the ViewOptions menu; meta.label gives a human label there when header is JSX.",
+      },
+      {
+        name: "data",
+        type: "T[]",
+        required: true,
+        description: "Row data. Empty + loading=false renders a built-in EmptyState in the body.",
+      },
+      {
+        name: "getRowId",
+        type: "(row: T) => string",
+        description: "Stable row id (defaults to row[rowIdKey], rowIdKey defaults to 'id').",
+      },
+      {
+        name: "enableRowSelection",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Adds a checkbox column + header select-all; pair with DataGrid.BulkActions.",
+      },
+      {
+        name: "sorting / onSortingChange",
+        type: "SortingState / OnChangeFn<SortingState>",
+        description:
+          "Server sort: pass both and sort in your query (manualSorting defaults true). Omit both for client sort.",
+      },
+      {
+        name: "globalFilter / onGlobalFilterChange",
+        type: "string / OnChangeFn<string>",
+        description: "Global search term, surfaced by DataGrid.Search. Server or client like sorting.",
+      },
+      {
+        name: "pagination / onPaginationChange / rowCount",
+        type: "PaginationState / OnChangeFn / number",
+        description:
+          "Server pagination: pass pagination + onPaginationChange + rowCount (total). Omit for client pagination.",
+      },
+      {
+        name: "columnVisibility / onColumnVisibilityChange",
+        type: "VisibilityState / OnChangeFn<VisibilityState>",
+        description: "Column show/hide state surfaced by DataGrid.ViewOptions ('set view'). Internal if omitted.",
+      },
+      {
+        name: "manualSorting / manualFiltering / manualPagination",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Default true (server/AJAX). Set false to let TanStack sort/filter/paginate in-browser.",
+      },
+      {
+        name: "loading / density / onRowClick / empty",
+        type: "boolean / 'compact'|'comfortable' / (row:T)=>void / ReactNode",
+        description: "Loading row, controlled density, clickable rows, custom empty content.",
+      },
+    ],
+    usage: [
+      "Import from `@godxjp/ui/data-grid` — it lives on its own subpath because it pulls @tanstack/react-table; it is NOT in the runtime-neutral root or the data-display barrel.",
+      "Compose the compound parts as children: <DataGrid.Toolbar> (holds <DataGrid.BulkActions>, <DataGrid.Search>, <DataGrid.ViewOptions>, <DataGrid.DensityToggle>), then <DataGrid.Content> (auto-included if omitted) and <DataGrid.Pagination pageSizeOptions=[...]>.",
+      "Server mode (default): drive sorting/globalFilter/pagination from useQuery and pass rowCount. Client mode: set manualSorting/manualFiltering/manualPagination={false} and the grid handles it on the data array.",
+    ],
+    related: ["DataTable", "Table", "DataState", "Select", "DropdownMenu"],
+    example: `import { DataGrid, type ColumnDef } from "@godxjp/ui/data-grid";
+import { Flex } from "@godxjp/ui/layout";
+
+type Row = { id: string; name: string; amount: number };
+const columns: ColumnDef<Row, unknown>[] = [
+  { accessorKey: "name", header: "Name", meta: { label: "Name" } },
+  { accessorKey: "amount", header: "Amount", meta: { label: "Amount" } },
+];
+
+export function Grid({ rows }: { rows: Row[] }) {
+  return (
+    <DataGrid columns={columns} data={rows} getRowId={(r) => r.id} enableRowSelection manualSorting={false} manualFiltering={false} manualPagination={false}>
+      <DataGrid.Toolbar>
+        <Flex direction="row" align="center" gap="sm" className="ms-auto">
+          <DataGrid.Search />
+          <DataGrid.ViewOptions />
+          <DataGrid.DensityToggle />
+        </Flex>
+      </DataGrid.Toolbar>
+      <DataGrid.Content />
+      <DataGrid.Pagination pageSizeOptions={[10, 20, 50]} />
+    </DataGrid>
+  );
+}`,
+    storyPath: "data-display/DataGrid.stories.tsx",
+    rules: [24, 31, 35, 37],
+  },
+  {
     name: "Card",
     group: "data-display",
     tagline:

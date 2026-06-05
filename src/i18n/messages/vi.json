@@ -10,6 +10,7 @@
     "clearSearch": "Xóa tìm kiếm",
     "clearFilters": "Xóa bộ lọc",
     "first": "Đầu",
+    "previous": "Trước",
     "next": "Tiếp",
     "selectedCount": "{count} đã chọn",
     "typeToConfirm": "Nhập {phrase} để xác nhận"
@@ -224,6 +225,14 @@
     "rowActions": "Thao tác dòng",
     "empty": "Chưa có dữ liệu",
     "loading": "Đang tải…"
+  },
+  "dataGrid": {
+    "search": "Tìm kiếm",
+    "searchPlaceholder": "Tìm kiếm…",
+    "view": "Hiển thị",
+    "toggleColumns": "Ẩn/hiện cột",
+    "rowsPerPage": "Số dòng/trang",
+    "pageOf": "Trang {page}/{total}"
   },
   "status": {
     "active": "Đang hoạt động",

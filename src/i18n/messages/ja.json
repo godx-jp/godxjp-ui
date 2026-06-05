@@ -10,6 +10,7 @@
     "clearSearch": "検索をクリア",
     "clearFilters": "フィルターをクリア",
     "first": "最初",
+    "previous": "前へ",
     "next": "次へ",
     "selectedCount": "{count} 件選択",
     "typeToConfirm": "確認のため {phrase} と入力"
@@ -224,6 +225,14 @@
     "rowActions": "行の操作",
     "empty": "データがありません",
     "loading": "読み込み中…"
+  },
+  "dataGrid": {
+    "search": "検索",
+    "searchPlaceholder": "検索…",
+    "view": "表示",
+    "toggleColumns": "列の表示切替",
+    "rowsPerPage": "表示件数",
+    "pageOf": "{page} / {total} ページ"
   },
   "status": {
     "active": "有効",

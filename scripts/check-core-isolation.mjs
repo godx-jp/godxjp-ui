@@ -15,6 +15,7 @@ import { dirname, resolve } from "node:path";
 const ROOT_ENTRY = "dist/index.js";
 const FORBIDDEN = [
   "@tanstack/react-query",
+  "@tanstack/react-table",
   "react-router",
   "react-router-dom",
   "i18next",

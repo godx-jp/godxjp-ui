@@ -10,6 +10,7 @@
     "clearSearch": "Clear search",
     "clearFilters": "Clear filters",
     "first": "First",
+    "previous": "Previous",
     "next": "Next",
     "selectedCount": "{count} selected",
     "typeToConfirm": "Type {phrase} to confirm"
@@ -224,6 +225,14 @@
     "rowActions": "Row actions",
     "empty": "No data",
     "loading": "Loading…"
+  },
+  "dataGrid": {
+    "search": "Search",
+    "searchPlaceholder": "Search…",
+    "view": "View",
+    "toggleColumns": "Toggle columns",
+    "rowsPerPage": "Rows per page",
+    "pageOf": "Page {page} of {total}"
   },
   "status": {
     "active": "Active",
