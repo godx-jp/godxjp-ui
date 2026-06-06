@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.3]
+
+### Fixed
+
+- `SelectTrigger` is now full-width by default (`w-full`, matching the shadcn standard) instead of
+  `w-fit`, so a `Select` inside a form / `FormField` fills the field like `Input`/`Textarea` (it was
+  content-width, leaving ragged, misaligned forms). Inline/toolbar selects stay compact because their
+  container constrains the width.
+
 ## [12.0.2]
 
 ### Fixed
