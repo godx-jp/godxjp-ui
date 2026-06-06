@@ -63,3 +63,13 @@
     var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap)
   );
 }
+
+/* Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target
+ * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height
+ * resolves through these via var(), so inputs/buttons/selects/table rows all bump together. */
+@media (pointer: coarse) {
+  :root {
+    --control-height-compact: 2.75rem;
+    --control-height-default: 2.75rem;
+  }
+}
