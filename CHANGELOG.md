@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.1]
+
+### Fixed
+
+- `Toolbar` / `ToolbarGroup` label is now vertically centered against its control — `.ui-toolbar-label`
+  was a top-aligned block stretched to the control height, so filter labels sat above the input's
+  vertical center.
+- `CardContent flush` now zeroes vertical padding (not only `padding-bottom`) when it contains a
+  `DataTable`, so a full-bleed table sits flush to the card's top edge (removes the empty band above
+  the header row).
+
 ## [11.0.1]
 
 ### Changed

@@ -221,7 +221,7 @@
 }
 
 [data-slot="card-content"][data-flush]:has(.ui-data-table-root) {
-  padding-bottom: 0;
+  padding-block: 0;
 }
 
 [data-slot="card-content"][data-tight] {
