@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   Card,
   CardContent,
@@ -7,13 +6,12 @@ import {
   CardTitle,
   Carousel,
   CarouselContent,
-  type CarouselApi,
+  CarouselDots,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
   StatCard,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -37,25 +35,10 @@ const slides = [
   { label: "第3四半期", value: "¥26.1M" },
 ];
 
-/** External dot navigation — `setApi` hands out the Embla api, `scrollTo(i)` jumps to a slide. */
+/** Dot navigation — `CarouselDots` reads the Embla api from context; no manual `setApi` wiring. */
 function DotNavExample() {
-  const [api, setApi] = React.useState<CarouselApi | null>(null);
-  const [selected, setSelected] = React.useState(0);
-
-  React.useEffect(() => {
-    if (!api) return undefined;
-    const onSelect = () => setSelected(api.selectedScrollSnap());
-    onSelect();
-    api.on("select", onSelect);
-    api.on("reInit", onSelect);
-    return () => {
-      api.off("select", onSelect);
-      api.off("reInit", onSelect);
-    };
-  }, [api]);
-
   return (
-    <Carousel className="px-10" setApi={(next) => setApi(next)} opts={{ loop: true }}>
+    <Carousel className="px-10" opts={{ loop: true }}>
       <CarouselContent>
         {slides.map((s) => (
           <CarouselItem key={s.label}>
@@ -65,18 +48,7 @@ function DotNavExample() {
       </CarouselContent>
       <CarouselPrevious />
       <CarouselNext />
-      <Flex justify="center" gap="sm" className="pt-4">
-        {slides.map((s, i) => (
-          <Button
-            key={s.label}
-            size="icon-xs"
-            variant={i === selected ? "default" : "outline"}
-            aria-label={`${s.label} へ移動`}
-            aria-current={i === selected ? "true" : undefined}
-            onClick={() => api?.scrollTo(i)}
-          />
-        ))}
-      </Flex>
+      <CarouselDots />
     </Carousel>
   );
 }
@@ -138,8 +110,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>ドット ナビゲーション</CardTitle>
             <CardDescription>
-              setApi exposes the Embla api; dot buttons call scrollTo(i). The active dot carries
-              aria-current.
+              Drop in CarouselDots — it reads the Embla api from context and renders one dot per
+              slide. The active dot widens and carries aria-current.
             </CardDescription>
           </CardHeader>
           <CardContent>

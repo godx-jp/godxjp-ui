@@ -2,6 +2,7 @@ import { beforeAll, describe, it, vi } from "vitest";
 import {
   Carousel,
   CarouselContent,
+  CarouselDots,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
@@ -39,6 +40,7 @@ describe("Carousel a11y", () => {
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
+        <CarouselDots />
       </Carousel>,
     );
   });

@@ -137,7 +137,9 @@
       "ariaLabel": "Băng chuyền",
       "slideLabel": "{index} / {total}",
       "previous": "Trước",
-      "next": "Sau"
+      "next": "Sau",
+      "dotsLabel": "Chọn slide",
+      "goToSlide": "Đến slide {index}"
     }
   },
   "ui": {

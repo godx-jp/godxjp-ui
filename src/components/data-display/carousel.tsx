@@ -12,6 +12,10 @@ export type CarouselApi = UseEmblaReturn[1];
 type CarouselContextValue = {
   canScrollPrev: boolean;
   canScrollNext: boolean;
+  /** Index of the currently-selected snap (drives the active dot + value-at-rest). */
+  selectedIndex: number;
+  /** One entry per scroll snap — `CarouselDots` renders one dot per item. */
+  scrollSnaps: number[];
   api: CarouselApi | null;
   scrollPrev: () => void;
   scrollNext: () => void;
@@ -40,19 +44,24 @@ export const Carousel = React.forwardRef<
   const [emblaRef, api] = useEmblaCarousel(opts, plugins);
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [scrollSnaps, setScrollSnaps] = React.useState<number[]>([]);
 
   const onSelect = React.useCallback(() => {
     if (!api) return;
     setCanScrollPrev(api.canScrollPrev());
     setCanScrollNext(api.canScrollNext());
+    setSelectedIndex(api.selectedScrollSnap());
   }, [api]);
 
   React.useEffect(() => {
     if (!api) return undefined;
 
     onSelect();
+    setScrollSnaps(api.scrollSnapList());
     setApi?.(api);
     api.on("reInit", onSelect);
+    api.on("reInit", () => setScrollSnaps(api.scrollSnapList()));
     api.on("select", onSelect);
     return () => {
       api.off("reInit", onSelect);
@@ -79,12 +88,23 @@ export const Carousel = React.forwardRef<
     () => ({
       canScrollPrev,
       canScrollNext,
+      selectedIndex,
+      scrollSnaps,
       api,
       scrollPrev,
       scrollNext,
       scrollTo,
     }),
-    [canScrollPrev, canScrollNext, api, scrollPrev, scrollNext, scrollTo],
+    [
+      canScrollPrev,
+      canScrollNext,
+      selectedIndex,
+      scrollSnaps,
+      api,
+      scrollPrev,
+      scrollNext,
+      scrollTo,
+    ],
   );
 
   return (
@@ -208,3 +228,48 @@ export const CarouselNext = React.forwardRef<
   );
 });
 CarouselNext.displayName = "CarouselNext";
+
+/**
+ * Dot indicators — one round dot per scroll snap, the active one widened + filled. Reads the Embla
+ * api from context (no `setApi` plumbing needed); each dot is a real `<button>` with an i18n
+ * accessible name and `aria-current` on the active slide, calling `scrollTo(i)`. Drop it inside
+ * `<Carousel>` after the track: `<CarouselContent/> … <CarouselDots/>`.
+ */
+export const CarouselDots = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<"div">>(
+  ({ className, ...props }, ref) => {
+    const { t } = useTranslation();
+    const { scrollSnaps, selectedIndex, scrollTo } = useCarousel();
+
+    if (scrollSnaps.length <= 1) return null;
+
+    return (
+      <div
+        ref={ref}
+        data-slot="carousel-dots"
+        className={cn("ui-carousel-dots", className)}
+        role="tablist"
+        aria-label={t("dataDisplay.carousel.dotsLabel")}
+        {...props}
+      >
+        {scrollSnaps.map((_, index) => {
+          const active = index === selectedIndex;
+          return (
+            <button
+              key={index}
+              type="button"
+              role="tab"
+              data-slot="carousel-dot"
+              data-active={active ? "" : undefined}
+              className="ui-carousel-dot"
+              aria-selected={active}
+              aria-current={active ? "true" : undefined}
+              aria-label={t("dataDisplay.carousel.goToSlide", { index: index + 1 })}
+              onClick={() => scrollTo(index)}
+            />
+          );
+        })}
+      </div>
+    );
+  },
+);
+CarouselDots.displayName = "CarouselDots";

@@ -161,14 +161,45 @@ interface Packing {
 }
 
 const PACKINGS: Packing[] = [
-  { id: "p1", code: "PKG-000041", customer: "Bùi Hà", city: "Hà Nội", items: 8, status: "active", slot: "A-03-02" },
+  {
+    id: "p1",
+    code: "PKG-000041",
+    customer: "Bùi Hà",
+    city: "Hà Nội",
+    items: 8,
+    status: "active",
+    slot: "A-03-02",
+  },
   { id: "p2", code: "PKG-000040", customer: "Lê Minh", city: "TP.HCM", items: 5, status: "open" },
-  { id: "p3", code: "PKG-000038", customer: "Trần Linh", city: "Đà Nẵng", items: 12, status: "draft" },
+  {
+    id: "p3",
+    code: "PKG-000038",
+    customer: "Trần Linh",
+    city: "Đà Nẵng",
+    items: 12,
+    status: "draft",
+  },
 ];
 
 const OUTBOUND: Packing[] = [
-  { id: "o1", code: "PKG-000037", customer: "Phạm An", city: "Hà Nội", items: 9, status: "sealed", slot: "B-01-04" },
-  { id: "o2", code: "PKG-000036", customer: "Vũ Nga", city: "TP.HCM", items: 6, status: "sealed", slot: "B-02-01" },
+  {
+    id: "o1",
+    code: "PKG-000037",
+    customer: "Phạm An",
+    city: "Hà Nội",
+    items: 9,
+    status: "sealed",
+    slot: "B-01-04",
+  },
+  {
+    id: "o2",
+    code: "PKG-000036",
+    customer: "Vũ Nga",
+    city: "TP.HCM",
+    items: 6,
+    status: "sealed",
+    slot: "B-02-01",
+  },
 ];
 
 const TABS = [
@@ -187,7 +218,7 @@ const FILTERS = [
 
 function MonoCode({ children }: { children: React.ReactNode }) {
   return (
-    <span className="font-mono text-[12px] tabular-nums text-muted-foreground">{children}</span>
+    <span className="text-muted-foreground font-mono text-[12px] tabular-nums">{children}</span>
   );
 }
 
@@ -233,7 +264,7 @@ function ItemListCard({
             <Badge tone={st.tone} variant="outline" className="rounded-full">
               {st.label}
             </Badge>
-            <span className="shrink-0 text-[12px] tabular-nums text-muted-foreground">
+            <span className="text-muted-foreground shrink-0 text-[12px] tabular-nums">
               ×{item.qty} · {item.receivedAt}
             </span>
           </div>
@@ -243,13 +274,7 @@ function ItemListCard({
   );
 }
 
-function PackingListCard({
-  packing,
-  onTap,
-}: {
-  packing: Packing;
-  onTap?: () => void;
-}) {
+function PackingListCard({ packing, onTap }: { packing: Packing; onTap?: () => void }) {
   const st = PACKING_STATUS[packing.status];
   return (
     <Card
@@ -258,7 +283,7 @@ function PackingListCard({
       tabIndex={onTap ? 0 : undefined}
       onClick={onTap}
       className={
-        "rounded-[10px] transition-colors " + (onTap ? "cursor-pointer hover:border-primary" : "")
+        "rounded-[10px] transition-colors " + (onTap ? "hover:border-primary cursor-pointer" : "")
       }
     >
       <CardContent solo>
@@ -268,7 +293,7 @@ function PackingListCard({
             {st.label}
           </Badge>
         </div>
-        <div className="mt-1 flex items-center justify-between gap-2 text-[12px] text-muted-foreground">
+        <div className="text-muted-foreground mt-1 flex items-center justify-between gap-2 text-[12px]">
           <span className="truncate">
             {packing.customer} · {packing.city}
           </span>
@@ -286,11 +311,11 @@ function PackingListCard({
 function SectionHeader({ children, count }: { children: React.ReactNode; count?: number }) {
   return (
     <div className="flex items-center justify-between px-0.5">
-      <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+      <span className="text-muted-foreground text-[11px] font-medium tracking-[0.08em] uppercase">
         {children}
       </span>
       {count != null ? (
-        <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{count}</span>
+        <span className="text-muted-foreground font-mono text-[11px] tabular-nums">{count}</span>
       ) : null}
     </div>
   );
@@ -301,7 +326,7 @@ function SectionHeader({ children, count }: { children: React.ReactNode; count?:
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
     <div className="mx-auto w-[390px] max-w-full shrink-0">
-      <div className="flex h-[844px] max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-[28px] border bg-background">
+      <div className="bg-background flex h-[844px] max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-[28px] border">
         {children}
       </div>
     </div>
@@ -324,19 +349,19 @@ function TabBar({ active, onChange }: { active: string; onChange: (id: string) =
         const isActive = t.id === active;
         const Icon = t.icon;
         return (
-          <button
+          <Button
             key={t.id}
-            type="button"
+            variant="ghost"
             onClick={() => onChange(t.id)}
             aria-current={isActive ? "page" : undefined}
             className={
-              "flex h-[64px] flex-col items-center justify-center gap-1 text-[11px] font-medium " +
+              "h-[64px] flex-col gap-1 rounded-none text-[11px] font-medium " +
               (isActive ? "text-primary" : "text-muted-foreground")
             }
           >
             <Icon className="size-5" aria-hidden="true" strokeWidth={1.5} />
             <span className="whitespace-nowrap">{t.label}</span>
-          </button>
+          </Button>
         );
       })}
     </nav>
@@ -360,9 +385,13 @@ function ItemLookupSheet({
           <SheetTitle>Quét hoặc nhập mã</SheetTitle>
         </SheetHeader>
         {/* Viewfinder placeholder — a Card surface, not a hand-rolled illustration */}
-        <div className="mt-2 flex h-40 items-center justify-center rounded-[12px] border-2 border-dashed border-border bg-secondary/40">
-          <div className="flex flex-col items-center gap-2 text-muted-foreground">
-            <ScanLine className="size-7 text-[color:var(--attention,var(--warning))]" aria-hidden="true" strokeWidth={1.5} />
+        <div className="border-border bg-secondary/40 mt-2 flex h-40 items-center justify-center rounded-[12px] border-2 border-dashed">
+          <div className="text-muted-foreground flex flex-col items-center gap-2">
+            <ScanLine
+              className="size-7 text-[color:var(--attention,var(--warning))]"
+              aria-hidden="true"
+              strokeWidth={1.5}
+            />
             <span className="text-[13px]">Đưa mã vạch vào khung</span>
           </div>
         </div>
@@ -433,7 +462,7 @@ function PackagePickerSheet({
               onOpenChange(false);
               toast.success(`Đã tạo kiện mới với ${count} item`);
             }}
-            className="h-11 w-full border-2 border-dashed text-primary hover:border-primary"
+            className="text-primary hover:border-primary h-11 w-full border-2 border-dashed"
           >
             <PackagePlus aria-hidden="true" strokeWidth={1.5} />
             Tạo kiện mới với {count} item này
@@ -510,7 +539,7 @@ function ItemFormSheet({
                     <RadioItem id={rowId} value={d.id} className="mt-0.5" />
                     <span className="min-w-0">
                       <span className="block text-[14px] font-medium">{d.label}</span>
-                      <span className="block text-[12px] text-muted-foreground">{d.hint}</span>
+                      <span className="text-muted-foreground block text-[12px]">{d.hint}</span>
                     </span>
                   </label>
                 );
@@ -565,7 +594,11 @@ function InboundTab({
   const [filter, setFilter] = React.useState<string>("all");
 
   const visible = ITEMS.filter((i) =>
-    filter === "all" ? true : filter === "unsorted" ? i.status === "unsorted" : i.status === "shelf",
+    filter === "all"
+      ? true
+      : filter === "unsorted"
+        ? i.status === "unsorted"
+        : i.status === "shelf",
   );
 
   return (
@@ -584,7 +617,7 @@ function InboundTab({
             <ToggleGroupItem
               key={f.id}
               value={f.id}
-              className="h-9 shrink-0 gap-1.5 whitespace-nowrap rounded-full px-3 text-[13px]"
+              className="h-9 shrink-0 gap-1.5 rounded-full px-3 text-[13px] whitespace-nowrap"
             >
               {f.label}
               <span className="font-mono text-[12px] tabular-nums opacity-70">{f.count}</span>
@@ -703,11 +736,11 @@ function PackingTab({ onScan }: { onScan: () => void }) {
           <Card
             density="tight"
             accent="primary"
-            className="rounded-[10px] border-primary bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
+            className="border-primary rounded-[10px] bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
           >
             <CardContent solo>
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+                <span className="text-muted-foreground text-[11px] font-medium tracking-[0.08em] uppercase">
                   Kiện đang làm
                 </span>
                 <Badge tone="info" variant="outline" className="rounded-full">
@@ -715,7 +748,7 @@ function PackingTab({ onScan }: { onScan: () => void }) {
                 </Badge>
               </div>
               <div className="mt-1 font-mono text-[16px] font-bold tabular-nums">{active.code}</div>
-              <div className="mt-0.5 text-[12px] text-muted-foreground tabular-nums">
+              <div className="text-muted-foreground mt-0.5 text-[12px] tabular-nums">
                 {active.customer} · {active.city} · ×{active.items} · {active.slot}
               </div>
             </CardContent>
@@ -743,13 +776,7 @@ function PackingTab({ onScan }: { onScan: () => void }) {
   );
 }
 
-function OutboundTab({
-  onSeal,
-  onHandoff,
-}: {
-  onSeal: () => void;
-  onHandoff: () => void;
-}) {
+function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () => void }) {
   const [seg, setSeg] = React.useState<string>("seal");
   return (
     <>
@@ -761,12 +788,15 @@ function OutboundTab({
           onValueChange={(v) => {
             if (v) setSeg(v);
           }}
-          className="grid w-full grid-cols-3 gap-1 rounded-[10px] bg-secondary/60 p-1"
+          className="bg-secondary/60 grid w-full grid-cols-3 gap-1 rounded-[10px] p-1"
         >
           <ToggleGroupItem value="seal" className="h-9 rounded-[8px] text-[13px] whitespace-nowrap">
             Chờ niêm phong
           </ToggleGroupItem>
-          <ToggleGroupItem value="handoff" className="h-9 rounded-[8px] text-[13px] whitespace-nowrap">
+          <ToggleGroupItem
+            value="handoff"
+            className="h-9 rounded-[8px] text-[13px] whitespace-nowrap"
+          >
             Chờ bàn giao
           </ToggleGroupItem>
           <ToggleGroupItem value="done" className="h-9 rounded-[8px] text-[13px] whitespace-nowrap">
@@ -775,7 +805,11 @@ function OutboundTab({
         </ToggleGroup>
 
         <SectionHeader count={OUTBOUND.length}>
-          {seg === "seal" ? "Sẵn sàng niêm phong" : seg === "handoff" ? "Chờ bàn giao" : "Đã bàn giao"}
+          {seg === "seal"
+            ? "Sẵn sàng niêm phong"
+            : seg === "handoff"
+              ? "Chờ bàn giao"
+              : "Đã bàn giao"}
         </SectionHeader>
         <div className="flex flex-col gap-3">
           {OUTBOUND.map((p) => (
@@ -787,7 +821,7 @@ function OutboundTab({
                     Sẵn sàng niêm phong
                   </Badge>
                 </div>
-                <div className="mt-1 flex items-center justify-between gap-2 text-[12px] text-muted-foreground tabular-nums">
+                <div className="text-muted-foreground mt-1 flex items-center justify-between gap-2 text-[12px] tabular-nums">
                   <span className="truncate">
                     {p.customer} · {p.city}
                   </span>
@@ -843,11 +877,10 @@ export default function AgencyHandyShowcase() {
   const [sealOpen, setSealOpen] = React.useState(false);
   const [handoffOpen, setHandoffOpen] = React.useState(false);
 
-  const headerTitle =
-    tab === "inbound" ? "Nhập kho" : tab === "packing" ? "Đóng gói" : "Xuất kho";
+  const headerTitle = tab === "inbound" ? "Nhập kho" : tab === "packing" ? "Đóng gói" : "Xuất kho";
 
   return (
-    <div className="min-h-screen bg-secondary/30 py-4">
+    <div className="bg-secondary/30 min-h-screen py-4">
       <Toaster />
       <PhoneFrame>
         <StatusBar />
@@ -898,17 +931,17 @@ export default function AgencyHandyShowcase() {
         {/* Select-mode header strip — replaces the standard header context (inbound) */}
         {selectMode ? (
           <div className="flex h-10 shrink-0 items-center justify-between border-b bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))] px-3">
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="icon-sm"
               aria-label="閉じる"
               onClick={() => {
                 setSelectMode(false);
                 setSelected(new Set());
               }}
-              className="flex size-7 items-center justify-center rounded-md hover:bg-accent"
             >
               <X className="size-4" aria-hidden="true" strokeWidth={1.5} />
-            </button>
+            </Button>
             <span className="font-mono text-[13px] tabular-nums">{selected.size} đã chọn</span>
             <Button
               variant="ghost"

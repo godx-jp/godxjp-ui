@@ -137,7 +137,9 @@
       "ariaLabel": "カルーセル",
       "slideLabel": "{total} 件中 {index} 件目",
       "previous": "前へ",
-      "next": "次へ"
+      "next": "次へ",
+      "dotsLabel": "スライドを選択",
+      "goToSlide": "{index} 番目のスライドへ"
     }
   },
   "ui": {

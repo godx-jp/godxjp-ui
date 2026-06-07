@@ -6477,7 +6477,8 @@ export default function PasswordBlock() {
   {
     name: "Carousel",
     group: "data-display",
-    tagline: "Embla-backed carousel primitives including previous/next controls and context API.",
+    tagline:
+      "Embla-backed carousel primitives: previous/next controls, CarouselDots indicators, and a context API.",
     props: [
       {
         name: "opts",
@@ -6498,15 +6499,17 @@ export default function PasswordBlock() {
     useCases: ["Feature cards", "Image galleries", "Horizontal stepping lists"],
     storyPath: "data-display/Carousel.stories.tsx",
     rules: [3, 6],
-    example: `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@godxjp/ui/data-display";
+    example: `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from "@godxjp/ui/data-display";
 
-<Carousel>
+// CarouselDots reads the Embla api from context — no setApi wiring needed.
+<Carousel opts={{ loop: true }}>
   <CarouselContent>
     <CarouselItem>1</CarouselItem>
     <CarouselItem>2</CarouselItem>
   </CarouselContent>
   <CarouselPrevious />
   <CarouselNext />
+  <CarouselDots />
 </Carousel>`,
   },
   {
