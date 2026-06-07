@@ -1,18 +1,22 @@
 /* Layout primitive tokens: page, section, stack, inline. */
 
 :root {
-  --space-page-x: var(--space-6); /* 24px — comfortable page gutter (4px grid) */
+  /* Semantic spacing — ONE coherent 4px grid (Tailwind/Material/Ant standard). All steps reference
+   * the linear `--space-*` scale (NOT the golden φ scale — golden ratio is for modular SIZE scales
+   * like type/radius, not the spacing grid; mixing the two left an incoherent density rhythm). The
+   * φ tokens remain available as an optional golden-layout utility, just not the spacing baseline. */
+  --space-page-x: var(--space-6); /* 24px — page gutter */
   --space-page-y: var(--space-6); /* 24px */
-  --space-section: var(--phi-0);
-  --space-stack-xs: var(--space-1);
-  --space-stack-sm: var(--space-2);
-  --space-stack-md: var(--phi-0);
-  --space-stack-lg: var(--phi-p1);
-  --space-stack-xl: var(--phi-p2);
-  --space-inline-xs: var(--space-1);
-  --space-inline-sm: var(--space-2);
-  --space-inline-md: var(--phi-n1);
-  --space-inline-lg: var(--phi-0);
+  --space-section: var(--space-4); /* 16px */
+  --space-stack-xs: var(--space-1); /* 4px */
+  --space-stack-sm: var(--space-2); /* 8px */
+  --space-stack-md: var(--space-4); /* 16px */
+  --space-stack-lg: var(--space-6); /* 24px */
+  --space-stack-xl: var(--space-10); /* 40px */
+  --space-inline-xs: var(--space-1); /* 4px */
+  --space-inline-sm: var(--space-2); /* 8px */
+  --space-inline-md: var(--space-3); /* 12px */
+  --space-inline-lg: var(--space-4); /* 16px */
 
   --space-page-active-x: var(--space-page-x);
   --space-page-active-y: var(--space-page-y);

@@ -8,7 +8,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill);
     background: hsl(var(--muted));
     color: hsl(var(--muted-foreground));
     font-size: var(--font-size-sm);
@@ -39,7 +39,7 @@
   .ui-progress-track {
     height: 0.5rem;
     overflow: hidden;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill);
     background: hsl(var(--secondary));
   }
 
@@ -149,7 +149,7 @@
     width: 1.5rem;
     height: 1.5rem;
     place-items: center;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill);
     background: hsl(var(--success));
     color: hsl(var(--success-foreground));
   }
@@ -286,7 +286,7 @@
   width: 2rem;
   height: 2rem;
   place-items: center;
-  border-radius: 9999px;
+  border-radius: var(--radius-pill);
   background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   color: hsl(var(--foreground));
