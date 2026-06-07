@@ -18,6 +18,12 @@ export type SizeProp = "xs" | "sm" | "md" | "lg";
 /** Button size preset; icon-only sizes are a documented Button subset. */
 export type ButtonSizeProp = SizeProp | "default" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
 
+/** Form layout — label position relative to its control (Ant-style). */
+export type FormLayoutProp = "vertical" | "horizontal" | "inline";
+
+/** Responsive breakpoint name (mobile-first); used by `collapseBelow` etc. */
+export type BreakpointProp = "sm" | "md" | "lg" | "xl";
+
 /** Dialog confirm button emphasis. */
 export type ConfirmVariantProp = "default" | "destructive";
 

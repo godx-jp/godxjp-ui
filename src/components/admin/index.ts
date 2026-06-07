@@ -50,7 +50,6 @@ export {
 export { DataTable } from "../data-display/data-table";
 export type { ColumnDef, Density } from "../data-display/data-table";
 export { Toaster } from "../feedback/sonner";
-export { toast, useToast } from "../feedback/use-toast";
-export type { LegacyToastOptions } from "../feedback/use-toast";
+export { toast } from "../feedback/use-toast";
 export { useDebouncedValue, useTimeoutFlag } from "../../lib/hooks";
 export { formatDate, formatBytes, formatCurrency, shortId, humanError } from "../../lib/format";

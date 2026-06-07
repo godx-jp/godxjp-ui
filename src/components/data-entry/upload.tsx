@@ -392,7 +392,7 @@ export function Upload({
             </span>
           )}
           {!disabled && (
-            <span className="absolute inset-x-0 bottom-0 bg-black/50 py-1 text-center text-[10px] text-white">
+            <span className="text-2xs absolute inset-x-0 bottom-0 bg-black/50 py-1 text-center text-white">
               {t("dataEntry.upload.change")}
             </span>
           )}

@@ -239,7 +239,7 @@
 }
 .ui-accordion-content {
   overflow: hidden;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 .ui-accordion-content-inner {
   padding-bottom: var(--space-4);

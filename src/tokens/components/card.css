@@ -19,7 +19,7 @@
   --stat-card-label-font-size: var(--font-size-xs);
   --stat-card-label-font-weight: var(--font-weight-medium);
   --stat-card-label-letter-spacing: 0.04em;
-  --stat-card-value-font-size: 1.625rem;
+  --stat-card-value-font-size: var(--font-size-2xl);
   --stat-card-value-line-height: 1.1;
   --stat-card-value-font-weight: var(--font-weight-semibold);
   --stat-card-hint-font-size: var(--font-size-xs);

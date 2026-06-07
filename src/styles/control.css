@@ -177,7 +177,6 @@
     padding: 0;
   }
 
-
   .ui-control {
     height: var(--control-height);
     padding-left: var(--control-padding-x);
@@ -615,7 +614,7 @@
   height: var(--control-height);
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   border: 1px solid hsl(var(--border));
   border-inline-start-width: 0;
   background: hsl(var(--background));
@@ -732,7 +731,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  font-size: 0.8125rem;
+  font-size: var(--font-size-xs);
   padding: 0.0625rem var(--space-2);
   border-radius: var(--radius-sm);
   background: hsl(var(--secondary));
@@ -766,6 +765,6 @@
   border: 0;
   outline: none;
   background: transparent;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: inherit;
 }

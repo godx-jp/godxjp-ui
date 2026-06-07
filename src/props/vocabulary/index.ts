@@ -22,6 +22,7 @@ export type {
   OnChangeProp,
   OnClickProp,
   AsChildProp,
+  WidthProp,
 } from "./shared.prop";
 
 export type {
@@ -50,6 +51,8 @@ export type {
   ButtonVariantProp,
   ButtonSizeProp,
   SizeProp,
+  FormLayoutProp,
+  BreakpointProp,
   ConfirmVariantProp,
   ToneProp,
   AlertVariantProp,

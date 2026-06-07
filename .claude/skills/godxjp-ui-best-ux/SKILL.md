@@ -5,6 +5,28 @@ description: BẮT BUỘC đọc trước khi thiết kế/đánh giá trải ng
 
 # godxjp-ui-best-ux — Best UX, reconciled
 
+> 🛠️ **AUDIENCE: CORE** — the taste/UX coordinate for **@godxjp/ui + dxs-kintai surfaces** built in
+> this repo. The consumer mirror of this DNA lives in the MCP (`design-to-page/dna` + the taste
+> family); app-devs use that. CORE↔CONSUMER map: `.claude/skills/README.md`.
+
+**This skill is the canonical OWNER of:** the **Layout hygiene** + **Interaction hygiene** blocks
+(below) and the **dxs-kintai DNA** (渋み/間/簡素, fixed color-signaling, density, 14/1.7).
+[[godxjp-ui-design-handoff]] points here for all three instead of repeating them. Correctness is NOT
+this skill's job — run [[godxjp-ui-component]] first; this governs *taste* on top. Refined interaction
+behaviours are owned by [[godxjp-ui-interaction-feel]].
+
+**DO / DON'T (the dials are locked — see §1/§3):**
+
+| ✅ DO | ⛔ DON'T |
+|---|---|
+| LOW variance, LOW motion — distinctiveness = flawless consistent execution | "Make it pop": new font, gradient, colored hero, celebratory animation |
+| One font (M PLUS 2), 3 weights (400/500/700), h1 = 20px, body 14/1.7 | Inter/Roboto; weight 300/600; 28px+ headings; 16/1.5 body |
+| `var(--token)` only; chroma ≤ 0.18; `--primary` once per view | Raw hex/spacing; gradients; saturated brand; rainbow tag wall |
+| Fixed semantic color-signaling; attention 朱 over danger for non-destructive | Re-theme a wa-iro hue into a semantic role; "everything is red" |
+| Card 1px border, no shadow at rest; motion only as feedback (120–200ms) | Drop shadow at rest; scroll choreography; animate to celebrate |
+| Quiet factual i18n-keyed copy; middot `·` for JP/EN pairs | Em-dash `—`; emoji; praise/alarm; Lorem/サンプル |
+| Density chosen per-surface up front (28/32/44) | Mix densities mid-page; pick by feel |
+
 ## 0. The reconciliation thesis (read this first)
 
 There are two voices in this skill, and they only contradict on the surface.
@@ -186,6 +208,31 @@ Ba lỗi showcase hay gặp nhất — chặn từ gốc:
    container. Chỉ full-width khi component BẢN CHẤT là full-width (Input, Textarea, Table, Card,
    ProgressBar). Dấu hiệu sai: một calendar/picker chiếm hết bề ngang card mà grid chỉ nằm một góc
    + khoảng trống lớn → co về `w-fit`.
+
+7. **Label DỌC (vertical form) luôn TRÁI-căn; chỉ label NGANG (horizontal) mới phải-căn.** Một label
+   right-aligned NẰM TRÊN một control full-width là sai (đọc lạc, rời control). `text-align:end`/
+   `justify-content:flex-end` cho label chỉ được áp khi field thực sự ở chế độ horizontal (label cạnh
+   control) — scope selector bằng `[data-layout="horizontal"]`, đừng để rò sang vertical. Gap
+   label↔control đủ thở (≥ 8px / `--space-stack-sm`), không dán sát. (Bug đã gặp: selector
+   `[data-label-align=end]` quên `[data-layout=horizontal]` → label vertical bị đẩy phải ở ≥768px.)
+   **Gap "label→nội dung dọc" phải dùng MỘT token chung `--field-label-gap` (8px) xuyên SUỐT hệ** —
+   `FormField`, `Form`, `Descriptions`, và mọi stack label-trên-nội-dung phải bằng nhau. Mỗi component
+   tự đặt gap riêng = lệch (bug đã gặp: `Descriptions` ~0px còn `FormField` 8px → nhìn không đồng bộ).
+   Khi thấy 2 surface cùng kiểu "label trên content" mà gap khác nhau → quy về `--field-label-gap`.
+
+8. **Chừa chỗ cho nút close của overlay — header content KHÔNG được chui dưới nút ×.** Overlay (Sheet/
+   Dialog) có close button `position:absolute` ở góc (end-4/top-4). Mọi nội dung header sát phải
+   (`extra`, badge, action, hay title dài) PHẢI chừa padding-end đủ rộng (vd `pe-8`) để không bị nút ×
+   đè. (Bug đã gặp: `SheetHeader extra` (badge) nằm chồng lên close button.) Test bằng cách mở overlay
+   và NHÌN ảnh thật — overlap không lộ qua số đo.
+
+9. **Mọi "surface chrome" (overlay + card) dùng CHUNG một hệ token — không tách, không trùng.** Padding
+   header/body/footer của Sheet · Dialog · (Card) đều bắt nguồn từ `--space-chrome-x/-y` (16/24,
+   density-aware); header và footer là HAI BAND ĐỐI XỨNG (header `border-bottom`, footer `border-top`,
+   cùng padding) — không để header không-viền còn footer có-viền. Đừng tạo component overlay trùng:
+   **Sheet LÀ drawer** (Ant-style, `side` = top|right|bottom|left); một bottom-sheet là
+   `<Sheet side="bottom">`, KHÔNG phải một component `Drawer` riêng (đã xoá — Sheet thay thế hoàn toàn).
+   Thấy 2 surface cùng kiểu mà chrome khác nhau → quy về token/treatment chung.
 
 ## Interaction hygiene — control có state phải cho phép thao tác lại (BẮT BUỘC)
 

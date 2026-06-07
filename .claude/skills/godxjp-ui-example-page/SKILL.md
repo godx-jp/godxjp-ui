@@ -5,6 +5,25 @@ description: BẮT BUỘC khi tạo/sửa trang ví dụ catalogue trong docs/**
 
 # @godxjp/ui — Example-page completeness discipline
 
+> 🛠️ **AUDIENCE: CORE** — governs the catalogue example pages in **this repo's `docs/`**. App-devs
+> building real screens in their own app use the MCP (`design-to-page` / `compose-a-screen`), not
+> this. CORE↔CONSUMER map: `.claude/skills/README.md`.
+
+**Follow-map:** reached from [[godxjp-ui-component]] (the correctness contract — it owns
+*real-primitives / no-raw-HTML*). This skill **owns the Audit Evidence Ledger** (the forcing gate
+others reference). Pair it with [[godxjp-ui-interaction-feel]] (the refined behaviours each card must
+prove) and [[godxjp-ui-behavioral-test]] (codify what you drove). Taste of the page: [[godxjp-ui-best-ux]].
+
+**DO / DON'T:**
+
+| ✅ DO | ⛔ DON'T |
+|---|---|
+| Fill the **Audit Evidence Ledger** with real evidence — drive EVERY card, open the console | Self-certify a partial pass; "looks fine"; a blank/skipped row |
+| Type-check against the REAL API — `tone` for colour, declared union values, installed prop names | `variant="success"`, invented union values, removed props, missing Provider/Router |
+| Render every non-default **state** + every **union value**; stage interaction **visible at rest** | One happy-path instance; behaviour only provable by clicking |
+| Compose real primitives + semantic tokens; ASCII quotes; readouts show human **labels** | Hand-rolled/faked controls; raw `hsl()`/inline px; smart quotes; raw value codes |
+| Pin the demo locale so `t()`-driven chrome matches the demo language | An "all-JP" demo whose search box renders "Tìm kiếm…" |
+
 An example page in `docs/<group>/<name>.tsx` is the component's **proof of behaviour**. Its job is
 to demonstrate the component **completely** and **correctly** — not to look nice with one happy-path
 instance. A strict audit of all 87 pages (mean **5.93/10**) found the same failures over and over;
@@ -108,11 +127,12 @@ container at a wide viewport**, not only by shrinking the window.)
 
 ## Rule #5 — Real primitives + tokens only (rule 29 · tokens — 13 pages)
 
-- **No hand-rolled / faked controls** — no `span`/`div` pseudo-fields, fake `<table>`, raw
-  `<label htmlFor>`, styled-`div` headings. Import the real `Input`/`Select`/`Label`/`DataTable`/
-  heading primitive.
-- **Tokens only** — no raw `hsl()`/hex, no inline `style` width/height/maxWidth, no hardcoded px
-  label strings, no arbitrary `[1.7]` values with lint-disables.
+- **No hand-rolled / faked controls** — import the real `Input`/`Select`/`Label`/`DataTable`/heading
+  primitive. (This is the *real-primitives* contract — owned by [[godxjp-ui-component]] §1; it applies
+  verbatim to example pages.)
+- **Tokens only (example-page specifics)** — no raw `hsl()`/hex, no inline `style`
+  width/height/maxWidth, no hardcoded px label strings, no arbitrary `[1.7]` values with
+  lint-disables.
 
 ## Rule #6 — Independent cards + real context
 
@@ -159,6 +179,18 @@ container at a wide viewport**, not only by shrinking the window.)
 1. `pnpm preview` → open `http://localhost:6008/isolate/<group>-<name>`.
 2. Screenshot at 390 / 768 / 1280 (Chrome DevTools / Playwright MCP). A behaviour you can't see in a
    screenshot isn't demonstrated — go back to Rule #2.
+   - **🚨 MEASURE IS NOT SEEING — take the screenshot AND LOOK AT IT.** `getComputedStyle` /
+     `getBoundingClientRect` numbers verify ONE hypothesis; they are blind to everything you didn't
+     measure. Layout bugs (a right-aligned label, an element overlapping the close button, a wrong
+     gap) are obvious in a rendered image and invisible in a numbers dump. Real failure (this repo):
+     a Form was "verified" by measuring field `data-*`/computed columns and declared done — but a CSS
+     selector leaked `text-align:end` onto vertical labels and the header `extra` sat under the ×
+     button. Both were screaming in a screenshot; neither showed in the measurements. If you didn't
+     open the image and look, you did not verify.
+   - **Verify the COMPOSED surface, not just the isolated atom.** The bug appeared only when
+     `FormField` was composed inside `SheetBody` at the real panel width. Screenshot the real screen
+     the component lives in (the docs page / the consumer view), at the real width — not only the
+     component's own isolate.
 3. **Drive EVERY card to its terminal state — not 1-2.** Each card exists to show a distinct mode;
    click/type/hover through all of them (the parent-select card, the hover card to its deepest
    leaf, the multiple card's checkboxes, the disabled card). A bug found by the user in card 4 that
@@ -169,3 +201,28 @@ container at a wide viewport**, not only by shrinking the window.)
 
 > Full per-page audit evidence (87 reports + screenshots + rollup) lives in `.ux-audit/` —
 > `SUMMARY.md` ranks every page and lists the recurring failures this skill encodes.
+
+---
+
+## 🔁 Fix-request investigation protocol (BẮT BUỘC — log it every time the user reports a bug)
+
+When the user reports/requests a fix (especially a visual one), **do NOT jump straight to a patch.**
+Run and **record** this investigation, then encode the lesson back here so it's caught by design next
+time. (Standing user instruction: log the whole process into the skill on every fix request.)
+
+1. **Reproduce visually FIRST.** Open the exact surface the user is looking at, at the same width, and
+   **screenshot it.** Confirm you SEE the same defect they do before touching code. If a user attached
+   an image, match it.
+2. **Root-cause in the code — name the file:line and WHY.** Don't guess-patch. Trace to the actual
+   rule/selector/prop. (e.g. "right-aligned vertical labels ← `form-layout.css` `[data-label-align=end]`
+   selector missing the `[data-layout=horizontal]` qualifier → leaked to vertical at ≥768px".)
+3. **Answer the meta-question honestly:** *why did I miss it?* Skill not read? skill missing a rule?
+   measured-but-didn't-look? verified the atom but not the composed surface? Skipped a width? Write it
+   down — that answer becomes the next rule.
+4. **Fix**, then **re-screenshot and LOOK** to confirm the defect is gone AND nothing else broke.
+5. **Encode the lesson:** add the root-cause pattern to the relevant skill (a DO/DON'T, a verify step,
+   or a checklist line) so the class of bug is prevented, not just this instance. Re-run the verify
+   suite green.
+
+> The investigation is part of the deliverable, not overhead. A fix that doesn't update the skill
+> means the same class of bug returns.

@@ -2,6 +2,18 @@
 
 This is the `@godxjp/ui` design system (shadcn + Radix + Tailwind v4) and its MCP catalog.
 
+## Two skill families — pick the right one first
+
+Skills are split by audience (see **`.claude/skills/README.md`** for the full map):
+
+- **CORE** (this repo's `src/`/`docs/`/`mcp/`) → the `godxjp-ui-*` skills in `.claude/skills/`.
+  Start with **`godxjp-ui-component`** (below), then its follow-map: interaction-feel →
+  behavioral-test → example-page → best-ux → **`godxjp-ui-mcp-catalog-sync`** (keep the MCP
+  catalog + tests in sync on any public-API change).
+- **CONSUMER** (an app importing `@godxjp/ui`) → served by the `godxjp-ui` MCP, never these files:
+  `list_consumer_skills` / `route_consumer_task` / `get_consumer_skill` (`design-to-page`,
+  `compose-a-screen`, taste family) + `draft_bug_report` for filing library bugs.
+
 ## MANDATORY: read the component skill before touching UI
 
 Before creating OR changing **any** component, recipe, doc, or example, you MUST activate and

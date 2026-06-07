@@ -10,6 +10,32 @@ description: >-
 
 # Building a @godxjp/ui component — the discipline
 
+> 🛠️ **AUDIENCE: CORE** — governs building/changing **@godxjp/ui itself** (the library `src/`,
+> its docs, its MCP catalog). An app-dev building *with* the library does NOT use this skill —
+> they use the MCP (`list_consumer_skills` / `route_consumer_task`). Full CORE↔CONSUMER map:
+> `.claude/skills/README.md`.
+
+**This is the MASTER core skill — follow it FIRST, then chain in order:**
+`godxjp-ui-component` (this — correctness contract) → **godxjp-ui-interaction-feel** (state-truthful
+behaviours for any stateful control) → **godxjp-ui-behavioral-test** (drive in a real browser, then
+codify as user-event tests) → **godxjp-ui-example-page** (a complete docs page + the Audit Evidence
+Ledger) → **godxjp-ui-best-ux** (taste / dxs-kintai) → **godxjp-ui-mcp-catalog-sync** (keep the MCP
+catalog + tests in sync). Single source of truth: this skill owns *real-primitives / no-raw-HTML /
+MCP-first / no-duplication*; the others point here for that.
+
+**DO / DON'T (quick gate — full rules below):**
+
+| ✅ DO | ⛔ DON'T |
+|---|---|
+| Consult the `godxjp-ui` MCP first (`get_component`, `search_components`, `get_rule`, `get_vocab`, `get_tokens`) | Guess a prop name/shape, or re-create what a primitive already does (`Select` = searchable/async) |
+| Compose real installable primitives fully (`CardContent` for padding) | Invent/hand-roll/fake a component, or use raw `<input>/<select>/<button>/<textarea>/<table>` |
+| Route every string + `aria-label` through `t()`; format via `Intl`/CLDR | Hardcode EN/JA, hand-build number/currency/date, ship emoji flags |
+| Implement the WAI-ARIA APG pattern + add a `*.a11y.test.tsx` (0 axe) | Colour-only state, missing accessible name, positive tabindex, keyboard traps |
+| Logical CSS only (`ms-/me-/ps-/pe-`, `start-/end-`) | Physical `ml-/mr-/pl-/pr-/left-/right-` |
+| Controlled triad `value`/`defaultValue`/`onValueChange`; `size ∈ xs\|sm\|md\|lg`; `tone` for status | `size="default"`, bespoke `current`/`onChange`, missing `defaultValue` |
+| Size from the `--control-height` tier | Literal `height`/`width` or `calc(var(--control-height) ± …)` |
+| Verify stateful controls by hand in a real browser, console clean | Self-certify a half-driven happy path; ship with a console warning |
+
 This is a **hard contract**, not advice. Every new/changed component, recipe, doc, or example
 MUST pass every gate below. If you cannot satisfy a gate, STOP and fix the system (add the real
 token/primitive/key) rather than working around it. Violations have been caught and rejected
@@ -112,26 +138,16 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
   picking one leaf in the search card. Half the real bugs live in the modes you skipped
   (parent-click closing the panel, hover collapsing at depth 3, a node-level `disabled`/`isLeaf`).
 - **Read the DevTools console — a warning is a failure.** A `<button> cannot be a descendant of
-  <button>` / hydration / `act()` warning is a real defect (here: a clear `<button>` nested inside
-  the trigger `<button>`). Never nest interactive elements; render the clear/affordance as a
-  sibling overlay (`pointer-events-none` wrapper, `pointer-events-auto` control). The audit isn't
-  done until the console is clean.
-- **Hover-expand must reach the deepest level.** A column-level `onMouseLeave` that collapses
-  deeper columns strands the pointer between columns and makes a depth-3 leaf unclickable. Drive
-  expansion from per-node `onMouseEnter`; don't collapse on leave.
-- **Multi-step selection must be re-startable from a complete state — never trapped.** Any control
-  that accumulates a multi-step value (date **range**, capped multi-select, wizard, masked input):
-  once the value is COMPLETE, the next interaction must let the user **start over**, not silently
-  mutate one endpoint. For range mode the underlying lib (react-day-picker) defaults to
-  `resetOnSelect:false`, which mutates the nearest endpoint of a complete range — the start date
-  gets stuck and can never be re-picked by clicking. Wrap so range defaults to `resetOnSelect:true`
-  (Calendar already does); if you call `DayPicker` directly, set it yourself.
-- **Value held at rest must be visible when the surface opens.** Calendar/dropdown/combobox must
-  jump to the held value (`defaultMonth` / `scrollTo` / `defaultValue`), not show today/top and hide
-  an existing selection that lives elsewhere.
-- **Controlled value mirrors both ways.** Text-mirroring inputs (date/range/masked) commit only on a
-  VALID + COMPLETE string — a partial string must not overwrite what the user is typing; clicking in
-  the popup updates both the value and the text field. Test type↔click both directions.
+  <button>` / hydration / `act()` warning is a real defect. Never nest interactive elements; render
+  the clear/affordance as a sibling overlay (`pointer-events-none` wrapper, `pointer-events-auto`
+  control). The audit isn't done until the console is clean. (No-nested-interactive fix detail:
+  [[godxjp-ui-interaction-feel]] §8.)
+- **The refined state-truthful behaviours are owned by [[godxjp-ui-interaction-feel]] — don't
+  re-document them here.** Parent-checkbox aggregation/indeterminate, hover-intent that reaches the
+  deepest leaf, multi-step **reset-on-complete** (range → `resetOnSelect:true`), **value-at-rest
+  visible on open** (`defaultMonth`/`scrollTo`/`defaultValue`), controlled **type↔click mirroring**:
+  each is catalogued there as expectation · how-it-fails · how-to-verify. Read it, then drive every
+  one that applies to what you're building.
 
 ## 3. Tokens
 
@@ -180,6 +196,19 @@ Run `vendor`-style formatting (`pnpm exec prettier --write`) before committing.
   overwriting a controlled mirror). Verify by hand in a real browser, not by screenshot.
 - A new component that duplicates a `Select`/existing primitive capability.
 - Shipping without an a11y test, an MCP entry, or a registry entry.
+
+## Self-track checklist (tick every box before you call it done)
+
+- [ ] **MCP-first**: checked `get_component`/`search_components`/`get_rule`/`get_vocab`/`get_tokens`; confirmed it doesn't already exist (no duplication)
+- [ ] **Real primitives only** — no invented/hand-rolled/faked component, no raw HTML control; composed fully (`CardContent`, `DataTable`, `EmptyState`)
+- [ ] **i18n** — every string + `aria-label` via `t()`; numbers/currency/dates/lists/names/plurals via `Intl`/CLDR; no emoji flags
+- [ ] **a11y** — APG roles/aria/keyboard/focus; ≥24px targets; never colour-only; **`*.a11y.test.tsx` passes 0 axe violations**
+- [ ] **RTL** — logical CSS only; flips correctly under `dir="rtl"`
+- [ ] **Vocabulary API** — `value`/`defaultValue`/`onValueChange` (+ uncontrolled); `size ∈ xs\|sm\|md\|lg`; positive booleans; `tone` for status; `ref` forwarded; `XProp` exported + **registered in `src/props/registry.ts`**
+- [ ] **Tokens** — semantic only; control box from the `--control-height` tier (no literal height/`calc`)
+- [ ] **Stateful correctness** — drove EVERY mode to terminal state in a real browser, console clean; refined behaviours per [[godxjp-ui-interaction-feel]]; codified via [[godxjp-ui-behavioral-test]]
+- [ ] **Catalog + docs** — added `mcp/src/data/components.ts` entry + a real-screen docs page ([[godxjp-ui-example-page]]); see [[godxjp-ui-mcp-catalog-sync]]
+- [ ] **Verify suite ALL green**: `pnpm typecheck && pnpm lint && pnpm run audit && pnpm check:prop-vocabulary && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:example-imports && pnpm preview:build && pnpm test`
 
 ## References (read when unsure)
 

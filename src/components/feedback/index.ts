@@ -3,6 +3,7 @@ export {
   DialogClose,
   DialogContent,
   DialogDescription,
+  DialogBody,
   DialogFooter,
   DialogHeader,
   DialogOverlay,
@@ -26,6 +27,7 @@ export {
 export type { AlertDialogProp, AlertDialogProps } from "./dialog";
 export {
   Sheet,
+  SheetBody,
   SheetClose,
   SheetContent,
   SheetDescription,
@@ -37,7 +39,7 @@ export {
   SheetTrigger,
 } from "./sheet";
 export { Toaster } from "./sonner";
-export { toast, useToast, type LegacyToastOptions } from "./use-toast";
+export { toast } from "./use-toast";
 export { Skeleton, SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonStat } from "./skeleton";
 export type { SkeletonProps } from "./skeleton";
 export {
@@ -64,15 +66,3 @@ export type {
 } from "./alert";
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./tooltip";
-export {
-  Drawer,
-  DrawerTrigger,
-  DrawerClose,
-  DrawerPortal,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerHeader,
-  DrawerFooter,
-  DrawerTitle,
-  DrawerDescription,
-} from "./drawer";

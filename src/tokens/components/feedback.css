@@ -1,13 +1,21 @@
 /* Feedback primitive tokens: dialog, alert, empty state. */
 
 :root {
-  --dialog-space-inset: var(--space-5);
+  /* Dialog inset defaults to the shared global chrome tokens (override --space-chrome-* once for the
+   * whole system, or --dialog-space-x/-y for dialogs only). */
+  --dialog-space-x: var(--space-chrome-x);
+  --dialog-space-y: var(--space-chrome-y);
+  --dialog-space-inset: var(--dialog-space-y) var(--dialog-space-x);
   --dialog-space-gap: var(--space-stack-md);
   --dialog-close-space-offset: var(--space-4);
   --alert-space-inset: var(--space-section-active);
   --alert-space-gap: var(--space-inline-md);
   --alert-inner-space-gap: var(--space-stack-sm);
   --alert-dismiss-space-offset: var(--space-3);
+  /* Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec
+   * (a brand's success-bg/-border are often more present than the faint 5%/30% default). */
+  --alert-bg-alpha: 0.05;
+  --alert-border-alpha: 0.3;
   --empty-state-space-y: var(--space-10);
   --empty-state-space-x: var(--space-6);
   --skeleton-row-gap: var(--space-stack-sm);

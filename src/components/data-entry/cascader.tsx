@@ -3,6 +3,7 @@ import { Check, ChevronRight, ChevronsUpDown, Minus, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { controlOpenRingClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { ScrollArea, ScrollBar } from "../data-display/scroll-area";
@@ -322,6 +323,7 @@ export function Cascader({
             disabled={disabled}
             className={cn(
               "w-full justify-start font-normal",
+              controlOpenRingClass,
               // Reserve trailing room for the clear + chevron overlay rendered below.
               showClear ? "pe-14" : "pe-9",
               !displayLabel && "text-muted-foreground",

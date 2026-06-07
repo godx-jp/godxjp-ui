@@ -20,7 +20,13 @@ import { PROP_VOCABULARY, findVocab } from "../data/prop-vocabulary.js";
 import { TOKENS, tokensByCategory, type TokenCategory } from "../data/tokens.js";
 import { CARDINAL_RULES, findRule } from "../data/rules.js";
 import { PATTERNS, findPattern, searchPatterns } from "../data/patterns.js";
-import { SKILLS, findSkill, findSection, routeTask } from "../data/skills-index.js";
+import {
+  SKILLS,
+  findSkill,
+  findSection,
+  routeTask,
+  isConsumerSkill,
+} from "../data/skills-index.js";
 import { ANTI_AI_TELLS, aiTellsByCategory, type AiTell } from "../data/anti-ai-tells.js";
 import {
   REDESIGN_CHECKS,
@@ -190,25 +196,75 @@ export const TOOL_DEFINITIONS = [
   },
   {
     name: "get_tokens",
-    description: "Read design tokens, optionally filtered by category.",
+    description:
+      "Read design tokens, optionally filtered by tier category (primitive / semantic / component).",
     inputSchema: {
       type: "object",
       properties: {
         category: {
           type: "string",
-          enum: [
-            "color",
-            "spacing",
-            "typography",
-            "radius",
-            "shadow",
-            "motion",
-            "breakpoint",
-            "density",
-            "z-index",
-          ],
+          enum: ["primitive", "semantic", "component"],
         },
       },
+    },
+  },
+
+  // ── CONSUMER NAMESPACE (app-dev surface — core-only skills hidden) ─
+  {
+    name: "list_consumer_skills",
+    description:
+      "List the design skills relevant to an app-dev BUILDING WITH @godxjp/ui (audience consumer/both). Hides core library-maintenance skills. START HERE if you import @godxjp/ui and want guidance (design-to-page, compose-a-screen, taste, …). Returns id + name + whenToUse + section ids.",
+    inputSchema: { type: "object", properties: {} },
+  },
+  {
+    name: "get_consumer_skill",
+    description:
+      "Fetch ONE section of ONE consumer-facing skill. Same as get_skill_section but refuses core-only skills (steers app-devs away from library-maintenance material). Use after list_consumer_skills / route_consumer_task.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        skill: {
+          type: "string",
+          description: "Consumer skill id (e.g. 'design-to-page', 'compose-a-screen').",
+        },
+        section: { type: "string", description: "Section id within that skill." },
+      },
+      required: ["skill"],
+    },
+  },
+  {
+    name: "route_consumer_task",
+    description:
+      "Natural-language task → consumer skill+section pointer. Like route_task but only points to consumer-facing skills (never core library-maintenance). Use FIRST when you're building an app with @godxjp/ui.",
+    inputSchema: {
+      type: "object",
+      properties: { task: { type: "string", description: "Describe what you want to build." } },
+      required: ["task"],
+    },
+  },
+  {
+    name: "draft_bug_report",
+    description:
+      "When @godxjp/ui ITSELF is at fault (missing token, a primitive lacking the controlled-vocabulary prop, a real a11y/behaviour bug, a wrong catalog example) and you cannot follow a rule — DON'T fake a workaround. This drafts a detailed GitHub issue body + a copy-paste `gh issue create` command so you can report it. Prints the command only; never runs gh.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        summary: { type: "string", description: "One-line title of the bug / blocked rule." },
+        repro: { type: "string", description: "Minimal steps or code to reproduce." },
+        expected: { type: "string", description: "What SHOULD happen (per the rule/spec)." },
+        actual: { type: "string", description: "What actually happens." },
+        component: {
+          type: "string",
+          description: "Affected component name, if any (links to get_component).",
+        },
+        rule: {
+          type: "number",
+          description: "Cardinal rule number that can't be followed, if any.",
+        },
+        version: { type: "string", description: "Installed @godxjp/ui version (e.g. '12.1.0')." },
+        env: { type: "string", description: "Environment (browser/OS/framework), if relevant." },
+      },
+      required: ["summary"],
     },
   },
 
@@ -283,9 +339,18 @@ export async function dispatchTool(name: string, args: Record<string, unknown>):
     case "get_rule":
       return getRule(typeof args.number === "number" ? args.number : undefined);
     case "get_vocab":
-      return getVocab(args.name as string | undefined);
+      return getVocab(args.name == null ? undefined : String(args.name));
     case "get_tokens":
       return getTokens(args.category as TokenCategory | undefined);
+    // Consumer namespace
+    case "list_consumer_skills":
+      return listConsumerSkills();
+    case "get_consumer_skill":
+      return getConsumerSkill(String(args.skill ?? ""), String(args.section ?? ""));
+    case "route_consumer_task":
+      return routeTaskTool(String(args.task ?? ""), { consumerOnly: true });
+    case "draft_bug_report":
+      return draftBugReport(args);
     // Task routing
     case "route_task":
       return routeTaskTool(String(args.task ?? ""));
@@ -305,9 +370,10 @@ export async function dispatchTool(name: string, args: Record<string, unknown>):
 
 function listSkills(): string {
   let out = `# Available skills (${SKILLS.length})\n\n`;
+  out += `Each is tagged \`[audience]\` — \`core\` = building @godxjp/ui itself, \`consumer\` = building an app with it, \`both\`. App-devs: use \`list_consumer_skills\` to hide core material.\n\n`;
   out += `Use \`get_skill_section skill="..." section="..."\` to drill in.\n\n`;
   for (const s of SKILLS) {
-    out += `## ${s.id} — ${s.name}\n`;
+    out += `## ${s.id} — ${s.name}  \`[${s.audience}]\`\n`;
     out += `**When to use:** ${s.whenToUse}\n\n`;
     out += `**Sections:** ${s.sections.map((sec) => `\`${sec.id}\``).join(", ")}\n\n`;
   }
@@ -315,6 +381,90 @@ function listSkills(): string {
     .filter((v, i, a) => a.indexOf(v) === i)
     .slice(0, 3)
     .join("; ")}, …_`;
+  return out;
+}
+
+function listConsumerSkills(): string {
+  const list = SKILLS.filter(isConsumerSkill);
+  let out = `# Consumer skills (${list.length}) — building an app WITH @godxjp/ui\n\n`;
+  out += `Core library-maintenance skills are hidden. Drill in with \`get_consumer_skill skill="..." section="..."\`, or route a task with \`route_consumer_task\`.\n\n`;
+  for (const s of list) {
+    out += `## ${s.id} — ${s.name}  \`[${s.audience}]\`\n`;
+    out += `**When to use:** ${s.whenToUse}\n\n`;
+    out += `**Sections:** ${s.sections.map((sec) => `\`${sec.id}\``).join(", ")}\n\n`;
+  }
+  return out;
+}
+
+function getConsumerSkill(skillId: string, sectionId: string): string {
+  const skill = findSkill(skillId);
+  if (skill && !isConsumerSkill(skill)) {
+    return `Skill "${skillId}" is CORE-only (building @godxjp/ui itself) and isn't served to app-devs. Use \`list_consumer_skills\` for consumer-facing guidance${
+      skillId === "component-discipline"
+        ? ` — the standards you need when composing/extending are folded into \`compose-a-screen/state-and-a11y\` and \`design-to-page/verify\`.`
+        : `.`
+    }`;
+  }
+  // Reuse the shared renderer; it also handles not-found + section listing.
+  return getSkillSection(skillId, sectionId);
+}
+
+function draftBugReport(args: Record<string, unknown>): string {
+  const get = (k: string) => {
+    const v = args[k];
+    return typeof v === "string" ? v.trim() : "";
+  };
+  const summary = get("summary");
+  if (!summary) {
+    return (
+      "Pass at least `summary` (one-line title). For a useful report also pass `repro`, " +
+      "`expected`, `actual`, and ideally `component` / `rule` / `version` / `env`. " +
+      "A vague report a maintainer can't reproduce is not enough."
+    );
+  }
+  const repro = get("repro");
+  const expected = get("expected");
+  const actual = get("actual");
+  const component = get("component");
+  const rule = typeof args.rule === "number" ? args.rule : undefined;
+  const version = get("version");
+  const env = get("env");
+
+  const missing: string[] = [];
+  if (!repro) missing.push("repro");
+  if (!expected) missing.push("expected");
+  if (!actual) missing.push("actual");
+
+  const ph = (label: string, val: string) =>
+    val ? val : `_(TODO: ${label} — required for a reproducible report)_`;
+
+  const title = `[bug] ${summary}`;
+  let body = `## Summary\n\n${summary}\n\n`;
+  body += `## Affected\n\n`;
+  body += component
+    ? `- Component: \`${component}\` (see \`get_component name="${component}"\`)\n`
+    : `- Component: _(n/a)_\n`;
+  body += rule !== undefined ? `- Cardinal rule: #${rule} (see \`get_rule number=${rule}\`)\n` : "";
+  body += `\n## Reproduction (minimal)\n\n${ph("repro", repro)}\n\n`;
+  body += `## Expected\n\n${ph("expected", expected)}\n\n`;
+  body += `## Actual\n\n${ph("actual", actual)}\n\n`;
+  body += `## Environment\n\n`;
+  body += `- @godxjp/ui version: ${version || "_(TODO: e.g. 12.1.0)_"}\n`;
+  body += `- Env: ${env || "_(TODO: browser / OS / framework)_"}\n\n`;
+  body += `## Proposed fix\n\n_(optional — what the library should do instead)_\n`;
+
+  // Shell-safe single-quote escaping for the gh command.
+  const q = (s: string) => `'${s.replace(/'/g, `'\\''`)}'`;
+  const cmd = `gh issue create --repo godx-jp/godxjp-ui --label bug --title ${q(title)} --body ${q(body)}`;
+
+  let out = `# Draft bug report\n\n`;
+  if (missing.length) {
+    out += `> ⚠️ Incomplete — fill ${missing.map((m) => `\`${m}\``).join(", ")} before filing (a report a maintainer can't reproduce will bounce).\n\n`;
+  }
+  out += `**Title:** ${title}\n\n`;
+  out += `## Issue body (Markdown)\n\n${body}\n`;
+  out += `## File it (copy-paste — this tool does NOT run gh)\n\n\`\`\`sh\n${cmd}\n\`\`\`\n\n`;
+  out += `_Reminder: don't hand-roll a fake workaround to hide the bug — file this, then mark any minimal local workaround with \`// TODO(godxui#<n>)\`._\n`;
   return out;
 }
 
@@ -520,11 +670,11 @@ function getTokens(cat?: TokenCategory): string {
   return out;
 }
 
-function routeTaskTool(task: string): string {
+function routeTaskTool(task: string, opts?: { consumerOnly?: boolean }): string {
   if (!task.trim())
     return "Describe the task (e.g. 'design a premium agency hero', 'audit existing settings page').";
-  const results = routeTask(task);
-  let out = `# Routing "${task}"\n\n`;
+  const results = routeTask(task, opts);
+  let out = `# Routing "${task}"${opts?.consumerOnly ? " (consumer)" : ""}\n\n`;
   for (const r of results) {
     out += `- **skill:** \`${r.skill}\`, **section:** \`${r.section}\`  \n  ${r.why}\n`;
     if (r.alsoSee?.length) out += `  _Also see:_ ${r.alsoSee.map((s) => `\`${s}\``).join(", ")}\n`;

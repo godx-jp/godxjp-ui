@@ -147,7 +147,6 @@ Auto retry: `useQuery({ retry, retryDelay })`. Manual retry: default `refetch()`
 | `ToolbarGroup` | `ToolbarGroupProp`| `label: LabelProp`                 |
 | `Tabs`         | Radix primitives  | —                                  |
 | `DropdownMenu` | Radix primitives  | —                                  |
-| `PageHeader`   | `PageHeaderProp`  | **deprecated** — use PageContainer |
 
 ---
 

@@ -16,6 +16,13 @@
 @source inline(
   "{bg,text}-{primary,secondary,muted,accent,destructive,success,warning,info,attention}-foreground"
 );
+/* Extended text hierarchy + interaction-ramp utilities (library may not reference them directly). */
+@source inline("{text,bg,border}-{foreground-tertiary,foreground-disabled,link,brand}");
+@source inline("bg-{primary,secondary,destructive}-{hover,active}");
+/* Force the extended radius steps so Tailwind emits --radius-xs/-xl/-2xl to :root (consumers read
+ * `var(--radius-2xl)` directly; without a generated utility Tailwind drops the unused var). */
+@source inline("rounded-{xs,xl,2xl}");
+@source inline("text-2xs");
 @source "../**/*.{tsx,ts}";
 @import "../tokens/base.css";
 @import "./density.css";
@@ -29,6 +36,7 @@
 @import "./badge-layout.css";
 @import "./data-display-layout.css";
 @import "./data-entry-layout.css";
+@import "./form-layout.css";
 @import "./navigation-layout.css";
 
 @theme {
@@ -65,9 +73,24 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --color-chart-6: var(--chart-6);
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-xs: max(0px, calc(var(--radius) - 6px));
   --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+  /* Extended text-hierarchy roles (tertiary / disabled / link / brand) → text-* / bg-* utilities. */
+  --color-foreground-tertiary: hsl(var(--text-tertiary));
+  --color-foreground-disabled: hsl(var(--text-disabled));
+  --color-link: hsl(var(--text-link));
+  --color-brand: hsl(var(--text-brand));
+  /* Interaction ramp (hover / active) → bg-primary-hover etc. */
+  --color-primary-hover: hsl(var(--primary-hover));
+  --color-primary-active: hsl(var(--primary-active));
+  --color-secondary-hover: hsl(var(--secondary-hover));
+  --color-secondary-active: hsl(var(--secondary-active));
+  --color-destructive-hover: hsl(var(--destructive-hover));
+  --color-destructive-active: hsl(var(--destructive-active));
   /* Wire Tailwind's font-sans/mono (and preflight) to the design-system fonts. */
   --font-sans: var(--font-family-sans);
   --font-mono: var(--font-family-mono);
@@ -86,6 +109,7 @@
   --color-wa-sumi: var(--wa-sumi);
   --color-wa-nezu: var(--wa-nezu);
   /* Wire Tailwind text-* utilities to runtime typography tokens (fontSize toolbar). */
+  --text-2xs: var(--font-size-2xs);
   --text-xs: var(--font-size-xs);
   --text-sm: var(--font-size-sm);
   --text-base: var(--font-size-base);

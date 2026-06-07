@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Sheet,
+  SheetBody,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -8,7 +9,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@godxjp/ui/feedback";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import {
   FormField,
@@ -65,10 +73,10 @@ export default function Demo() {
             <CardTitle>Advanced filter (pre-opened, side=right)</CardTitle>
             <CardDescription>
               The defining footer pattern: actions are right-aligned, the primary 適用 is rightmost,
-              and the clear/reset action クリア moves far-LEFT via className=&quot;mr-auto&quot;. The
-              footer is pinned to the bottom with a full-bleed top border; the body scrolls between a
-              fixed header and footer (header inset == footer inset). Fields are real FormField +
-              Select + Input.
+              and the clear/reset action クリア moves far-LEFT via className=&quot;mr-auto&quot;.
+              The footer is pinned to the bottom with a full-bleed top border; the body scrolls
+              between a fixed header and footer (header inset == footer inset). Fields are real
+              FormField + Select + Input.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -79,12 +87,14 @@ export default function Demo() {
                   詳細検索
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
-                <SheetHeader>
-                  <SheetTitle>詳細検索</SheetTitle>
-                  <SheetDescription>条件を組み合わせて仕訳を絞り込みます。</SheetDescription>
-                </SheetHeader>
-                <Flex direction="col" gap="md" className="min-h-0 flex-1 overflow-y-auto">
+              <SheetContent side="right" width={420}>
+                <SheetHeader
+                  tone="info"
+                  title="詳細検索"
+                  subtitle="条件を組み合わせて仕訳を絞り込みます。"
+                  extra={<Badge tone="info">3 条件</Badge>}
+                />
+                <SheetBody className="flex flex-col gap-4">
                   <FormField id="filter-account" label="勘定科目">
                     <Select value={account} onValueChange={setAccount}>
                       <SelectTrigger id="filter-account">
@@ -136,6 +146,8 @@ export default function Demo() {
                         –
                       </span>
                       <Input
+                        id="filter-amount-max"
+                        aria-label="最大金額"
                         className="min-w-0 flex-1"
                         inputMode="numeric"
                         placeholder="最大"
@@ -144,7 +156,7 @@ export default function Demo() {
                       />
                     </Flex>
                   </FormField>
-                </Flex>
+                </SheetBody>
                 <SheetFooter>
                   <Button
                     variant="outline"
@@ -186,7 +198,7 @@ export default function Demo() {
                   <SheetTitle>取引先編集 — 株式会社サンプル</SheetTitle>
                   <SheetDescription>取引先の基本情報を編集します。</SheetDescription>
                 </SheetHeader>
-                <Flex direction="col" gap="md" className="min-h-0 flex-1 overflow-y-auto">
+                <SheetBody className="flex flex-col gap-4">
                   <FormField id="edit-company" label="会社名" required>
                     <Input
                       id="edit-company"
@@ -201,7 +213,7 @@ export default function Demo() {
                       onChange={(e) => setRegistration(e.target.value)}
                     />
                   </FormField>
-                </Flex>
+                </SheetBody>
                 <SheetFooter>
                   <Button variant="outline" onClick={() => setEditOpen(false)}>
                     キャンセル
@@ -218,8 +230,8 @@ export default function Demo() {
             <CardTitle>Edit with destructive action (削除 far-left)</CardTitle>
             <CardDescription>
               A destructive / clear / reset action goes far-LEFT via className=&quot;mr-auto&quot;
-              with variant=&quot;destructive&quot;, while キャンセル + 保存 stay grouped on the right.
-              This is the same mr-auto slot the filter&apos;s クリア uses.
+              with variant=&quot;destructive&quot;, while キャンセル + 保存 stay grouped on the
+              right. This is the same mr-auto slot the filter&apos;s クリア uses.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -234,7 +246,7 @@ export default function Demo() {
                   <SheetTitle>仕訳編集 — #2024-0412</SheetTitle>
                   <SheetDescription>摘要を編集します。削除は元に戻せません。</SheetDescription>
                 </SheetHeader>
-                <Flex direction="col" gap="md" className="min-h-0 flex-1 overflow-y-auto">
+                <SheetBody className="flex flex-col gap-4">
                   <FormField id="record-memo" label="摘要">
                     <Input
                       id="record-memo"
@@ -242,7 +254,7 @@ export default function Demo() {
                       onChange={(e) => setMemo(e.target.value)}
                     />
                   </FormField>
-                </Flex>
+                </SheetBody>
                 <SheetFooter>
                   <Button
                     variant="destructive"

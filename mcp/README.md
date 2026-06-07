@@ -4,16 +4,20 @@ Model Context Protocol server for [`@godxjp/ui`](https://github.com/godx-jp/godx
 Gives **Claude Code**, **Codex CLI**, **Cursor**, **Cline**, **Continue**, or any
 MCP-aware agent live access to:
 
-- 30+ component catalog (props, types, defaults, examples)
+- 80+ component catalog (props, types, defaults, examples)
 - 14 shared prop-vocabulary types (`SizeProp`, `ColorProp`, `LoadingProp`, …)
-- 48 design tokens (color / spacing / typography / radius / breakpoint / density / motion)
-- 34 cardinal rules from `CLAUDE.md`
-- 7 canonical copy-paste-ready patterns (sign-up, settings, data-table, …)
-- 12 taste / design skills (taste / soft / minimalist / brutalist / gpt-tasteskill /
-  redesign / output / brandkit / stitch / imagegen-mobile / imagegen-web / image-to-code)
-- 20+ anti-AI-tell patterns to AVOID + their fixes
+- 48 design tokens across the primitive / semantic / component tiers
+- 41 cardinal rules from `CLAUDE.md`
+- 9 canonical copy-paste-ready patterns (sign-up, settings, data-table, …)
+- 15 design skills, each tagged by **audience** — 12 taste-family (taste / soft / minimalist /
+  brutalist / gpt-tasteskill / redesign / output / brandkit / stitch / imagegen-mobile /
+  imagegen-web / image-to-code) + the consumer build guides (`design-to-page`,
+  `compose-a-screen`) + the core `component-discipline` contract
+- 23 anti-AI-tell patterns to AVOID + their fixes
 - 50+ redesign-audit checks across 9 categories
 - heuristic JSX linter (raw HTML / wrong vocab / banned default fonts / …)
+- a consumer namespace (`list_consumer_skills` / `route_consumer_task` / `get_consumer_skill`)
+  that hides core library-maintenance skills, plus `draft_bug_report` for filing library bugs
 
 **Token-efficient design:** discovery tools return small metadata; agents
 drill into ONE section at a time via `get_skill_section`. Average
@@ -55,7 +59,7 @@ npx @godxjp/ui-mcp
 }
 ```
 
-Restart Claude Code. The 14 tools appear under `mcp__godx_ui__*`.
+Restart Claude Code. The 21 tools appear under `mcp__godx_ui__*`.
 
 ### Codex CLI
 
@@ -138,13 +142,18 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ---
 
-## Tools (14)
+## Tools (21)
+
+> **Building an app with @godxjp/ui?** Start with `list_consumer_skills` / `route_consumer_task`
+> (the Consumer namespace below) — they hide library-maintenance material. The data tools
+> (`get_component`, `get_tokens`, `get_rule`, `get_vocab`, `get_pattern`, `lint_jsx`) serve both
+> audiences.
 
 ### Discovery (small responses — start here)
 
 | Tool                   | Returns                                                      | Size   |
 | ---------------------- | ------------------------------------------------------------ | ------ |
-| `list_skills`          | 12 taste/design skills + section ids                         | ~1 KB  |
+| `list_skills`          | 15 design skills (audience-tagged) + section ids             | ~1 KB  |
 | `list_primitives`      | All components, grouped + tagline. Optional `group` filter.  | ~3 KB  |
 | `list_patterns`        | 7 canonical patterns + taglines                              | ~500 B |
 | `list_anti_ai_tells`   | 20+ AI-tell patterns. Optional `category` filter.            | ~2 KB  |
@@ -157,7 +166,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 | `get_skill_section` | ONE section of ONE skill          | ~2 KB           |
 | `get_component`     | Full API for one component        | ~2 KB           |
 | `get_pattern`       | Full code snippet for one pattern | ~3 KB           |
-| `get_rule`          | One cardinal rule (or all 34)     | ~500 B / ~10 KB |
+| `get_rule`          | One cardinal rule (or all 41)     | ~500 B / ~10 KB |
 | `get_vocab`         | One vocab type (or all 14)        | ~500 B / ~3 KB  |
 | `get_tokens`        | Tokens (optionally by category)   | ~5 KB           |
 
@@ -169,6 +178,15 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 | `suggest_primitive` | Use case → recommended primitive + rationale                   | ~500 B |
 | `search_components` | Fuzzy-search by name / tagline / prop                          | ~1 KB  |
 
+### Consumer namespace (app-dev surface — core skills hidden)
+
+| Tool                   | Returns                                                                | Size   |
+| ---------------------- | ---------------------------------------------------------------------- | ------ |
+| `list_consumer_skills` | Design skills for building WITH @godxjp/ui (consumer/both only)        | ~1 KB  |
+| `route_consumer_task`  | Natural-language task → consumer skill+section (never core)            | ~300 B |
+| `get_consumer_skill`   | One section of one consumer skill; refuses core-only skills            | ~2 KB  |
+| `draft_bug_report`     | Drafts a GitHub issue body + a `gh issue create` command for a lib bug | ~1 KB  |
+
 ### Lint (one-shot critique)
 
 | Tool       | Returns                                                  | Size  |
@@ -177,26 +195,45 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ---
 
-## Skills bundled (12)
+## Consumer vs Core — who each skill is for
 
-Synthesised from [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill)
+Every skill carries an **audience** tag:
 
-- framework-native design knowledge:
+- **`consumer`** — you're building an APP that imports `@godxjp/ui`. Reach these via
+  `list_consumer_skills` / `route_consumer_task` / `get_consumer_skill`.
+- **`core`** — you're building/maintaining `@godxjp/ui` ITSELF (the library, its docs, this
+  catalog). Hidden from the consumer tools so an app-dev never trips over them. The full core
+  discipline lives in the repo's `.claude/skills/` (see that folder's `README.md`).
+- **`both`** — universal (e.g. `taste`, `output`, `redesign`).
 
-| Skill             | When to use                                                 |
-| ----------------- | ----------------------------------------------------------- |
-| `taste`           | Default — production app screen baseline                    |
-| `soft`            | Premium agency / Awwwards-tier ($150k brief)                |
-| `minimalist`      | Editorial workspace (Notion-like) — warm monochrome + bento |
-| `brutalist`       | Data-heavy dashboards, declassified-blueprint feel          |
-| `gpt-tasteskill`  | Long-scroll marketing, GSAP ScrollTrigger choreography      |
-| `redesign`        | Auditing + upgrading EXISTING project                       |
-| `output`          | Always — bans `// ...` / `// TODO` patterns                 |
-| `brandkit`        | Brand identity boards before screens                        |
-| `stitch`          | Generate DESIGN.md for Google Stitch / similar generators   |
-| `imagegen-mobile` | Pre-code phase — mobile app screen mockups                  |
-| `imagegen-web`    | Pre-code phase — landing page section images                |
-| `image-to-code`   | Visual brief → working frontend code                        |
+> Found a `@godxjp/ui` bug, or a rule you literally cannot follow because the library is wrong?
+> **Don't hand-roll a fake workaround.** Call `draft_bug_report` to generate a detailed issue body
+>
+> - a `gh issue create --repo godx-jp/godxjp-ui …` command, file it, then mark any minimal local
+>   workaround with `// TODO(godxui#<n>)`. See `design-to-page/report-bug` or `compose-a-screen/report-bug`.
+
+## Skills bundled (15)
+
+Taste family synthesised from [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill);
+consumer/core guides are framework-native.
+
+| Skill                  | Audience | When to use                                                  |
+| ---------------------- | -------- | ------------------------------------------------------------ |
+| `taste`                | both     | Default — production app screen baseline                     |
+| `soft`                 | consumer | Premium agency / Awwwards-tier ($150k brief)                 |
+| `minimalist`           | consumer | Editorial workspace (Notion-like) — warm monochrome + bento  |
+| `brutalist`            | consumer | Data-heavy dashboards, declassified-blueprint feel           |
+| `gpt-tasteskill`       | consumer | Long-scroll marketing, GSAP ScrollTrigger choreography       |
+| `redesign`             | both     | Auditing + upgrading EXISTING project                        |
+| `output`               | both     | Always — bans `// ...` / `// TODO` patterns                  |
+| `brandkit`             | consumer | Brand identity boards before screens                         |
+| `stitch`               | consumer | Generate DESIGN.md for Google Stitch / similar generators    |
+| `imagegen-mobile`      | consumer | Pre-code phase — mobile app screen mockups                   |
+| `imagegen-web`         | consumer | Pre-code phase — landing page section images                 |
+| `image-to-code`        | consumer | Visual brief → working frontend code                         |
+| `design-to-page`       | consumer | A Claude Design handoff → a real page in YOUR app            |
+| `compose-a-screen`     | consumer | A new screen from a written brief, via real primitives       |
+| `component-discipline` | core     | International-standards hard contract (building the library) |
 
 ---
 
@@ -233,7 +270,7 @@ Synthesised from [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill)
 | `godx-ui://prop-vocabulary`   | JSON     | Shared vocab       |
 | `godx-ui://tokens`            | JSON     | All tokens         |
 | `godx-ui://tokens/{category}` | JSON     | Tokens by category |
-| `godx-ui://rules`             | Markdown | All 34 rules       |
+| `godx-ui://rules`             | Markdown | All 41 rules       |
 | `godx-ui://rules/{number}`    | Markdown | One rule           |
 | `godx-ui://patterns`          | JSON     | Pattern index      |
 | `godx-ui://patterns/{name}`   | Markdown | One pattern        |

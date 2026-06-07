@@ -17,4 +17,18 @@
   --space-page-active-x: var(--space-page-x);
   --space-page-active-y: var(--space-page-y);
   --space-section-active: var(--space-section);
+
+  /* Section "chrome" padding — the SHARED inset for header / body / footer of every overlay-ish
+   * surface (Dialog · Sheet · Drawer · Card). One global knob: a service sets these once instead of
+   * per-component. Vertical is tightened (16 vs the old 24) and density-aware (see density.css);
+   * horizontal stays 24 (Ant standard). Per-component tokens (--sheet-pad-*, --dialog-space-inset…)
+   * default to these and only override when a surface genuinely needs to differ. */
+  --space-chrome-x: var(--space-6); /* 24px — horizontal inset */
+  --space-chrome-y: var(--space-4); /* 16px — vertical inset (header/footer/body) */
+  --space-chrome-gap: var(--space-stack-sm); /* gap between header ↔ body ↔ footer */
+
+  /* The ONE vertical gap between a field's LABEL and its CONTENT — same everywhere a label sits above
+   * a control or a value (FormField, Descriptions, Form, any label-above stack). Single source so the
+   * whole system stays in sync (gh feedback: Descriptions was ~0px while FormField was 8px). */
+  --field-label-gap: var(--space-2); /* 8px */
 }

@@ -38,7 +38,8 @@ Descriptions.Item = function DescriptionsItem({
 }: DescriptionsItemProps) {
   const spanClass = span === 2 ? "sm:col-span-2" : span === 3 ? "sm:col-span-2 lg:col-span-3" : "";
   return (
-    <div className={cn(spanClass, className)}>
+    // grid + the shared --field-label-gap so the label→value gap matches FormField / Form everywhere.
+    <div className={cn("grid gap-[var(--field-label-gap)]", spanClass, className)}>
       <dt className="text-muted-foreground text-xs">{label}</dt>
       <dd className={cn("text-sm break-all", mono && "font-mono")}>{children}</dd>
     </div>

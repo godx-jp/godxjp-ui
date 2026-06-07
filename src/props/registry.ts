@@ -111,6 +111,11 @@ export const VOCABULARY_REGISTRY = {
     category: "shared",
     description: "Radix asChild polymorphism",
   },
+  WidthProp: {
+    file: "vocabulary/shared.prop.ts",
+    category: "shared",
+    description: "Explicit layout length (number→px | CSS string) — NOT the SizeProp tier",
+  },
 
   // content.prop.ts
   TitleProp: {
@@ -211,6 +216,16 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
     description: "Shared size names xs | sm | md | lg",
+  },
+  FormLayoutProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Form label layout: vertical | horizontal | inline",
+  },
+  BreakpointProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Responsive breakpoint name sm | md | lg | xl (mobile-first)",
   },
   ConfirmVariantProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -425,10 +440,23 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: ["PlaceholderProp", "DisabledProp"],
   },
+  FormProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["FormLayoutProp", "WidthProp", "BreakpointProp", "DensityProp"],
+  },
   FormFieldProp: {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
-    vocabulary: ["IdProp", "LabelProp", "RequiredProp", "HelperProp", "ErrorProp"],
+    vocabulary: [
+      "IdProp",
+      "LabelProp",
+      "RequiredProp",
+      "HelperProp",
+      "ErrorProp",
+      "FormLayoutProp",
+      "WidthProp",
+    ],
   },
   SearchInputProp: {
     group: "data-entry",
@@ -509,7 +537,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "IdProp",
       "ClassNameProp",
     ],
-    note: "Deprecated — the searchable engine behind `<Select options showSearch>`; prefer Select.",
+    note: "Internal — the searchable engine behind `<Select options showSearch>` (not public API); use Select.",
   },
   SelectDataProp: {
     group: "data-entry",

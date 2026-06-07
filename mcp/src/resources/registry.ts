@@ -19,6 +19,8 @@ import { TOKENS, tokensByCategory, type TokenCategory } from "../data/tokens.js"
 import { CARDINAL_RULES, findRule } from "../data/rules.js";
 import { PATTERNS, findPattern } from "../data/patterns.js";
 
+const RULE_COUNT = CARDINAL_RULES.length;
+
 export const RESOURCE_DEFINITIONS = [
   {
     uri: "godx-ui://components",
@@ -41,8 +43,8 @@ export const RESOURCE_DEFINITIONS = [
   },
   {
     uri: "godx-ui://rules",
-    name: "Cardinal rules (34)",
-    description: "The 34 binding rules from CLAUDE.md as Markdown.",
+    name: `Cardinal rules (${RULE_COUNT})`,
+    description: `The ${RULE_COUNT} binding rules from CLAUDE.md as Markdown.`,
     mimeType: "text/markdown",
   },
   {

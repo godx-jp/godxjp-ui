@@ -21,9 +21,23 @@ export interface SkillSection {
   body: string;
 }
 
+/**
+ * Who a skill is for:
+ *   - "core"     — building/maintaining @godxjp/ui ITSELF (the library, its docs,
+ *                  its MCP catalog). Hidden from the consumer-facing tools.
+ *   - "consumer" — building an APP that imports @godxjp/ui. Surfaced by
+ *                  list_consumer_skills / route_consumer_task / get_consumer_skill.
+ *   - "both"     — applies to either audience (e.g. universal taste/output rules).
+ * Consumer tools surface audience ∈ {consumer, both}; core-only skills stay hidden
+ * from them so an app-dev is never confronted with library-maintenance material.
+ */
+export type SkillAudience = "core" | "consumer" | "both";
+
 export interface Skill {
   id: string;
   name: string;
+  /** Intended audience — drives the consumer-namespace tool filtering. */
+  audience: SkillAudience;
   /** When to reach for this skill — written so the router can match a task to it. */
   whenToUse: string;
   /** Source attribution. */
@@ -31,10 +45,16 @@ export interface Skill {
   sections: SkillSection[];
 }
 
+/** True if a skill should be visible to the consumer-facing tools. */
+export function isConsumerSkill(s: Skill): boolean {
+  return s.audience !== "core";
+}
+
 export const SKILLS: Skill[] = [
   // ── taste (foundational) ───────────────────────────────────────
   {
     id: "taste",
+    audience: "both",
     name: "Taste baseline — Senior UI/UX engineering",
     whenToUse:
       "Default for any production app screen. Metric-based rules, strict component architecture, CSS hardware acceleration, balanced design engineering.",
@@ -116,6 +136,7 @@ broken). Spinner during init is wrong (nothing to spin over).`,
   // ── soft (Awwwards / premium agency) ───────────────────────────
   {
     id: "soft",
+    audience: "consumer",
     name: "Awwwards-tier — $150k agency build",
     whenToUse:
       "Premium agency brief — marketing site, hero pages, product showcase. NOT every internal SaaS screen. Apply when the brief asks for 'Linear-tier', 'Apple-esque', 'Awwwards-style'.",
@@ -240,6 +261,7 @@ or Framer Motion's whileInView. NEVER window.addEventListener("scroll")
   // ── minimalist (editorial workspace) ───────────────────────────
   {
     id: "minimalist",
+    audience: "consumer",
     name: "Minimalist — editorial workspace",
     whenToUse:
       "Document-style apps (Notion-clone, knowledge base, blog admin). Warm monochrome + spot pastels. Bento grids. Editorial serif headings + sans body + monospace for data.",
@@ -327,6 +349,7 @@ position:fixed pointer-events-none layer.`,
   // ── brutalist ──────────────────────────────────────────────────
   {
     id: "brutalist",
+    audience: "consumer",
     name: "Brutalist — Swiss print + military terminal",
     whenToUse:
       "Data-heavy dashboards, declassified-blueprint feel, portfolios needing raw mechanical aesthetic. Rigid grids, extreme type scale contrast, utilitarian color, analog degradation effects.",
@@ -352,6 +375,7 @@ portfolios.`,
   // ── gpt-tasteskill ─────────────────────────────────────────────
   {
     id: "gpt-tasteskill",
+    audience: "consumer",
     name: "GPT taste — editorial + advanced GSAP motion",
     whenToUse:
       "Long-scroll marketing pages with cinematic scroll choreography. Pins, stacks, scrubbed timelines. AIDA structure. Wide editorial typography. Bans 6-line wraps. Gapless bento grids.",
@@ -377,6 +401,7 @@ over current), scrubbing (animation tied to scroll progress).`,
   // ── redesign ───────────────────────────────────────────────────
   {
     id: "redesign",
+    audience: "both",
     name: "Redesign — audit + upgrade existing UI",
     whenToUse:
       "Working on an existing project (not greenfield). Find generic patterns, weak points, missing states. Apply fixes in priority order — font swap first, palette cleanup second, etc.",
@@ -428,6 +453,7 @@ no skip-to-content.`,
   // ── output (full-output enforcement) ───────────────────────────
   {
     id: "output",
+    audience: "both",
     name: "Full-output enforcement",
     whenToUse:
       "Always. Bans the // ... / // TODO / 'I'll leave this as an exercise' patterns. Treat every task as production-critical.",
@@ -469,6 +495,7 @@ of writing it.`,
   // ── brandkit ───────────────────────────────────────────────────
   {
     id: "brandkit",
+    audience: "consumer",
     name: "Brandkit — identity guidelines boards",
     whenToUse:
       "Designing a brand identity board first (before screens). Logo system, color palette, typography lockup, icon system, photography direction, brand voice.",
@@ -493,6 +520,7 @@ imagery. Flexible grid layouts.`,
   // ── stitch ─────────────────────────────────────────────────────
   {
     id: "stitch",
+    audience: "consumer",
     name: "Stitch — semantic DESIGN.md for Google Stitch",
     whenToUse:
       "Pairing with Google Stitch (or similar AI UI generator). Generate DESIGN.md files that enforce premium standards — strict typography, calibrated color, asymmetric layouts, perpetual micro-motion.",
@@ -517,6 +545,7 @@ expressive.`,
   // ── imagegen-mobile ────────────────────────────────────────────
   {
     id: "imagegen-mobile",
+    audience: "consumer",
     name: "Imagegen mobile — app screen reference images",
     whenToUse:
       "Pre-code phase. Generate mobile screen mockups before implementing. Onboarding flows, auth, home dashboards, profile, settings, chat, ecommerce, fintech, health, productivity.",
@@ -546,6 +575,7 @@ screens in flows.`,
   // ── imagegen-web ───────────────────────────────────────────────
   {
     id: "imagegen-web",
+    audience: "consumer",
     name: "Imagegen web — landing page section images",
     whenToUse:
       "Pre-code phase for landing / marketing sites. Generate ONE image per section (8 sections → 8 images). Hero composition variety (NOT always left-text/right-image).",
@@ -585,6 +615,7 @@ for the brand.`,
   // ── image-to-code ──────────────────────────────────────────────
   {
     id: "image-to-code",
+    audience: "consumer",
     name: "Image-to-code — generate design first, then implement",
     whenToUse:
       "Visual-first brief in Codex. First generate the design image yourself, deeply analyze, THEN implement code matching it.",
@@ -612,6 +643,7 @@ visible on a small laptop.`,
   // ── component discipline (hard contract) ───────────────────────
   {
     id: "component-discipline",
+    audience: "core",
     name: "Component discipline — international standards (hard contract)",
     whenToUse:
       "MANDATORY before creating or changing ANY @godxjp/ui component, recipe, doc, or example. Enforces real primitives only, no duplication, i18n (Intl/CLDR/ISO/IANA/BCP-47), WAI-ARIA APG + WCAG 2.2 AA, RTL, and the controlled-vocabulary API.",
@@ -660,16 +692,32 @@ with expectNoA11yViolations. Prefer Radix/cmdk/vaul for ARIA.`,
 XProp + XProp as XProps and register in props/registry. Then: add an MCP catalog entry + a
 real-screen docs page; verify typecheck/lint/audit/check:*/preview:build/test all green.`,
       },
+      {
+        id: "report-bug",
+        title: "Found a library-level defect → file a gh issue (never paper over it)",
+        tagline:
+          "A missing token / wrong vocab / broken a11y in the system is a bug to report, not to work around.",
+        body: `If satisfying this contract is blocked by @godxjp/ui itself — a token tier that
+doesn't exist, a primitive missing the controlled-vocabulary prop, a Radix wiring with a
+real a11y bug, a catalog example that's wrong — the contract says STOP and fix the SYSTEM,
+not the call site. Don't bake a one-off around it. If you can fix the library in this repo,
+do. If you can't (or you're a consumer agent without write access), open a detailed GitHub
+issue: use the draft_bug_report MCP tool to produce the issue body + a 'gh issue create
+--repo godx-jp/godxjp-ui …' command, linking the component (get_component) and the cardinal
+rule (get_rule) involved, with a minimal repro, expected vs actual, version, and env.`,
+      },
     ],
   },
 
   // ── design-to-page (consumer: handoff → real page) ─────────────
   {
     id: "design-to-page",
+    audience: "consumer",
     name: "Design handoff → real page (consumer build guide)",
     whenToUse:
       "You (a consumer agent) received a Claude Design handoff — a bundle/mock/screenshot/HTML prototype or a written brief — and must build it as a REAL page with @godxjp/ui. Read this BEFORE writing any JSX. It teaches: read intent, map every block to a real primitive via this MCP, consume existing tokens, apply the dxs-kintai DNA, treat tables as the centerpiece, resolve gaps by extend-or-ask, and verify.",
-    source: "@godxjp/ui .design/research (chats-intent, tables, atomic-components) + dxs-kintai SKILL/colors_and_type.css",
+    source:
+      "@godxjp/ui .design/research (chats-intent, tables, atomic-components) + dxs-kintai SKILL/colors_and_type.css",
     sections: [
       {
         id: "read-intent",
@@ -689,7 +737,8 @@ label); entry-point affordances live in chrome, not floating in content.`,
       {
         id: "map-to-primitives",
         title: "Map every block to a real primitive — MCP-first, never hand-roll",
-        tagline: "For each visual block ask 'which @godxjp/ui component is this?' — list_primitives, then get_component.",
+        tagline:
+          "For each visual block ask 'which @godxjp/ui component is this?' — list_primitives, then get_component.",
         body: `NEVER hand-roll a styled <div> that looks like a Card, or use raw
 <input>/<select>/<button>/<table>. Decompose each screen into a shopping list and
 resolve each item through THIS MCP: list_primitives to discover, get_component to
@@ -719,7 +768,8 @@ never a literal px. Radii: card 6px, control 4px, inner pill 2px.`,
       {
         id: "dna",
         title: "Apply the dxs-kintai DNA",
-        tagline: "渋み / 間 / 簡素 — fixed color signaling, dense, small headings, 14/1.7, no emoji.",
+        tagline:
+          "渋み / 間 / 簡素 — fixed color signaling, dense, small headings, 14/1.7, no emoji.",
         body: `These rules survive when you drop the prototype's divs:
 • 渋み (restraint): primary chroma ≤ 0.18 — --primary is the single most-important
   action + brand surfaces ONLY, never status. No gradients, no pill cards, no
@@ -783,7 +833,8 @@ time calendar, multilingual-field, no-code builders. Never silently fill a gap.`
       {
         id: "verify",
         title: "Verify — states complete, a11y, build green",
-        tagline: "Every state shown, WCAG 2.2 AA, typecheck/lint/audit clean, eyeballed at 3 widths.",
+        tagline:
+          "Every state shown, WCAG 2.2 AA, typecheck/lint/audit clean, eyeballed at 3 widths.",
         body: `Before calling it done: every prop × union value × state is exercised
 (default/hover/focus/active/disabled/loading/empty/error) — Skeleton for INIT fetch,
 spinner/loading for active save, EmptyState for no-data, inline error near the field
@@ -795,6 +846,123 @@ format numbers/dates via Intl. Then run the build: pnpm typecheck + pnpm lint +
 pnpm audit must be green, console clean, and eyeball the page at 390 / 768 / 1280
 (atoms never wrap, containers wrap with row-gap, tabs horizontal-scroll, grids
 minmax(0,1fr), heights never break).`,
+      },
+      {
+        id: "report-bug",
+        title: "godx-ui bug / can't-follow-a-rule → file a gh issue (never fake it)",
+        tagline:
+          "If the LIBRARY is wrong, report it — don't hand-roll a workaround that hides the bug.",
+        body: `When you CANNOT satisfy a rule because @godxjp/ui itself is at fault — a
+primitive doesn't expose the controlled-vocabulary prop you need, a token is
+missing, a component has a real a11y/behaviour bug, an example in the catalog is
+wrong — the rule is: DO NOT silently hand-roll/fake a replacement to dodge it (that
+just buries a library bug inside every app). Instead:
+• DON'T: copy a primitive's internals into your app, swap in a raw <input>/<div>, or
+  redeclare a token to route around the defect.
+• DO: open a detailed GitHub issue against the library, then apply the SMALLEST
+  possible local workaround marked // TODO(godxui#<n>: <summary>) so it's grep-able
+  and removed once fixed.
+• Use the MCP tool draft_bug_report to generate the issue body + a copy-paste
+  'gh issue create --repo godx-jp/godxjp-ui …' command. Include: the component/rule
+  (link via get_component/get_rule), a minimal repro, expected vs actual, the
+  installed @godxjp/ui version, and your env. A vague "X is broken" issue is not
+  enough — the report must let a maintainer reproduce in one paste.`,
+      },
+    ],
+  },
+
+  // ── compose-a-screen (consumer: primitives → a finished screen) ──
+  {
+    id: "compose-a-screen",
+    audience: "consumer",
+    name: "Compose a screen — primitives → a finished app view (consumer)",
+    whenToUse:
+      "You (a consumer agent) are building a NEW screen/page in an app that imports @godxjp/ui — from a written brief or product requirement, not a design handoff. Read this to assemble it from real primitives via this MCP: pick the right components, lay out one-intent-per-screen, wire every state + a11y + i18n, and verify. For a Claude Design handoff bundle/mock specifically, use design-to-page instead.",
+    source:
+      "@godxjp/ui MCP (consumer surface) — taste/one-intent + component-discipline + dxs-kintai DNA",
+    sections: [
+      {
+        id: "pick-primitives",
+        title: "Pick primitives via the MCP — never hand-roll, never guess a prop",
+        tagline:
+          "Decompose the screen into a shopping list; resolve each item with list_primitives → get_component.",
+        body: `Start from the requirement, not the markup. Write a shopping list of every
+block the screen needs, then resolve each through THIS MCP before writing JSX:
+list_primitives (discover the group), get_component <Name> (confirm the exact
+prop/union/default — never guess), suggest_primitive / search_components when unsure
+which fits. Hard rules: compose ONLY real @godxjp/ui primitives — no styled <div>
+faking a Card, no raw <input>/<select>/<button>/<textarea>/<table>. No duplication:
+Select (showSearch/loadOptions) is the ONLY searchable/async select (there is no
+Combobox/Autocomplete/CountrySelect); the 4 i18n pickers are one AppSettingPicker
+kind=…. A table = Card + CardContent-flush + DataTable. If a block has no clean
+primitive, see gaps handling in design-to-page/gaps-extend-or-ask + report-bug.`,
+      },
+      {
+        id: "assemble-screen",
+        title: "Assemble it — one intent per screen, real chrome, fixed signaling",
+        tagline:
+          "One primary question per page; AppShell/PageContainer chrome; --primary once; semantic color is fixed.",
+        body: `Distil the screen to ONE primary question it answers (one-intent-per-screen):
+1–2 hero facts + ONE primary list/form + contextual actions; push tertiary content to
+a Sheet/Dialog/next page. An 8-stat-card wall is a red flag. Use real page chrome
+(AppShell/Sidebar/Topbar/PageContainer) — content never touches the viewport edge,
+two bordered surfaces never touch (間/breathing via Stack gap). Exactly ONE --primary
+action per view; status uses the FIXED semantic mapping (success/warning/info/
+attention/danger) — never recolor a wa-iro hue into a role, never use --primary for
+status. Pick density up front (compact 28 heavy-table / default 32 / comfortable 44
+login-mobile) and don't mix it mid-page. Hierarchy from type weight+size+color
+(20/18/14/13 × 400/500/700), not colored background blocks. Mobile-first: default one
+column, add columns only at md:/lg: when each keeps ≥14px body at ≥~280px width.`,
+      },
+      {
+        id: "state-and-a11y",
+        title: "Wire every state + a11y + i18n (the part that gets skipped)",
+        tagline:
+          "default/hover/focus/active/disabled/loading/empty/error all handled; APG keyboard; t() everything.",
+        body: `A screen isn't done at the happy path. Handle every state: Skeleton for INIT
+fetch (no data yet), Form loading / Spinner for active save (data present), EmptyState
+for no-data (one calm sentence, no illustration), inline error near the field via
+FormField (NOT a disappearing toast). Forms: explicit label + help + error always —
+never placeholder-as-label. A11y (WAI-ARIA APG + WCAG 2.2 AA): correct roles/landmarks,
+keyboard (arrows/Home/End/Enter/Esc, visible focus, no positive tabindex, return focus
+on close), ≥24px targets, never colour-only state (add sr-only text), icon-only buttons
+need a name. i18n: zero hardcoded strings — every label + aria-label through t();
+numbers/currency/dates via Intl with the active locale (ISO 4217/8601, IANA tz),
+plurals via Intl.PluralRules. State-truthful affordances: a parent checkbox aggregates
+its children (checked/indeterminate/empty); a held value is visible when a control
+opens; controlled inputs mirror type↔click both ways (a controlled value with no
+synchronous onValueChange FREEZES the input).`,
+      },
+      {
+        id: "verify",
+        title: "Verify — states shown, console clean, build green, 3 widths",
+        tagline:
+          "Drive every interactive control; 0 console errors/warnings; typecheck/lint green; eyeball 390/768/1280.",
+        body: `Before calling the screen done: drive EVERY interactive control to its
+terminal state in a real browser (don't infer behaviour from source) and read the
+DevTools console — a <button>-in-<button>/hydration/act()/404 warning is a FINDING,
+not noise. Confirm: every prop × union × state is exercised; held values visible on
+open; multi-step selections (date range, capped multi-select) can be restarted from a
+complete state, not trapped; controlled mirrors update both directions. Run the app's
+build: typecheck + lint clean, console clean, and eyeball at 390 / 768 / 1280 (atoms
+never wrap, containers wrap with row-gap, natural-width components stay w-fit, no
+decorative edge fades, no dead grey panes). If a failure traces to @godxjp/ui itself,
+do not fake around it — see report-bug.`,
+      },
+      {
+        id: "report-bug",
+        title: "godx-ui bug / can't-follow-a-rule → file a gh issue (never fake it)",
+        tagline:
+          "If the LIBRARY is wrong, report it — don't hand-roll a workaround that hides the bug.",
+        body: `Same contract as design-to-page/report-bug: when a rule is impossible because
+@godxjp/ui is at fault (missing token, a primitive without the controlled-vocabulary
+prop, a real a11y/behaviour bug, a wrong catalog example) — DO NOT silently fake a
+replacement. DON'T copy primitive internals, drop to raw HTML, or redeclare a token to
+dodge it. DO open a detailed GitHub issue (use the draft_bug_report MCP tool to build
+the body + the 'gh issue create --repo godx-jp/godxjp-ui …' command), then apply the
+smallest local workaround tagged // TODO(godxui#<n>: <summary>). The issue must carry a
+minimal repro, expected vs actual, the installed version, and env — enough to
+reproduce in one paste.`,
       },
     ],
   },
@@ -819,7 +987,7 @@ export interface RouteResult {
   alsoSee?: string[];
 }
 
-export function routeTask(task: string): RouteResult[] {
+export function routeTask(task: string, opts?: { consumerOnly?: boolean }): RouteResult[] {
   const q = task.toLowerCase();
   const matches: RouteResult[] = [];
 
@@ -945,14 +1113,83 @@ export function routeTask(task: string): RouteResult[] {
 
   // Design handoff → real page (consumer build)
   route(
-    ["handoff", "design bundle", "claude design", "prototype", "build the page", "implement the design", "build this screen", "mockup"],
+    [
+      "handoff",
+      "design bundle",
+      "claude design",
+      "prototype",
+      "build the page",
+      "implement the design",
+      "build this screen",
+      "mockup",
+    ],
     "design-to-page",
     "map-to-primitives",
     "Map every block to a real @godxjp/ui primitive (MCP-first), consume existing tokens, apply the dxs-kintai DNA, tables central, gaps → extend-or-ask, verify.",
     ["design-to-page/read-intent", "design-to-page/dna", "design-to-page/tables-central"],
   );
 
-  if (matches.length === 0) {
+  // Compose a brand-new screen from a written brief (no design handoff)
+  route(
+    [
+      "compose a screen",
+      "new screen",
+      "new page",
+      "create a page",
+      "create a screen",
+      "build a view",
+      "build a screen",
+      "from scratch",
+      "screen from a brief",
+    ],
+    "compose-a-screen",
+    "pick-primitives",
+    "Build a new app screen from real @godxjp/ui primitives (MCP-first): one-intent-per-screen, real chrome, every state + a11y + i18n, verify.",
+    [
+      "compose-a-screen/assemble-screen",
+      "compose-a-screen/state-and-a11y",
+      "taste/one-intent-per-screen",
+    ],
+  );
+
+  // Reporting a library bug / un-followable rule
+  route(
+    [
+      "bug in godx",
+      "godx-ui bug",
+      "report a bug",
+      "file an issue",
+      "gh issue",
+      "can't follow the rule",
+      "library is broken",
+      "primitive is broken",
+    ],
+    "compose-a-screen",
+    "report-bug",
+    "If @godxjp/ui itself is at fault, don't fake a workaround — file a detailed gh issue (use draft_bug_report).",
+    ["design-to-page/report-bug"],
+  );
+
+  // Consumer routing hides core-only skills (e.g. component-discipline) so an
+  // app-dev is never pointed at library-maintenance material.
+  const filtered = opts?.consumerOnly
+    ? matches.filter((m) => {
+        const sk = findSkill(m.skill);
+        return !sk || sk.audience !== "core";
+      })
+    : matches;
+
+  if (filtered.length === 0) {
+    if (opts?.consumerOnly) {
+      return [
+        {
+          skill: "compose-a-screen",
+          section: "pick-primitives",
+          why: `No keyword match for "${task}". Default consumer path: compose the screen from real primitives via the MCP.`,
+          alsoSee: ["design-to-page/map-to-primitives", "taste/one-intent-per-screen"],
+        },
+      ];
+    }
     return [
       {
         skill: "taste",
@@ -962,5 +1199,5 @@ export function routeTask(task: string): RouteResult[] {
     ];
   }
 
-  return matches;
+  return filtered;
 }

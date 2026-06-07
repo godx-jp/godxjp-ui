@@ -66,3 +66,10 @@ export type OnClickProp = React.MouseEventHandler<HTMLButtonElement>;
 
 /** Radix/shadcn `asChild` polymorphism — render as child element. */
 export type AsChildProp = boolean;
+
+/**
+ * An explicit layout dimension (NOT the `SizeProp` control-height tier). A `number` is treated as
+ * px; a `string` is any CSS length (`"32rem"`, `"90vw"`, `"50%"`). Used for Sheet `width`, Form
+ * `labelWidth`/`controlWidth` — values that are freeform lengths, not the xs|sm|md|lg tier.
+ */
+export type WidthProp = number | string;

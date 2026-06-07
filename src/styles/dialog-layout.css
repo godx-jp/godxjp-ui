@@ -3,6 +3,14 @@
  */
 
 @layer components {
+  /* Sheet (side-panel, Radix Dialog) chrome padding — defaults to the shared global chrome tokens.
+   * A service overrides --space-chrome-* once (whole system) or --sheet-pad-* for the Sheet only.
+   * (Lives here because Sheet is Dialog-based and dialog-layout.css is in the main bundle.) */
+  [data-slot="sheet-content"] {
+    --sheet-pad-x: var(--space-chrome-x);
+    --sheet-pad-y: var(--space-chrome-y);
+  }
+
   .ui-dialog-overlay {
     position: fixed;
     inset: 0;
@@ -23,6 +31,8 @@
     border: 1px solid hsl(var(--border));
     background-color: hsl(var(--background));
     padding: var(--dialog-space-inset);
+    /* clip so the full-bleed header/footer bands round with the dialog corners (Ant Modal). */
+    overflow: hidden;
     box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
   }
 
@@ -32,23 +42,41 @@
     }
   }
 
+  /* Ring-safe scrollable body for a tall dialog. Full-bleed inset (matches the dialog padding) so a
+   * full-width control's 3px focus ring never clips against the scroll container's computed
+   * overflow-x; padding-block keeps the ring visible at the scroll edges. Mirrors SheetBody. */
+  [data-slot="dialog-body"] {
+    min-height: 0;
+    max-height: min(60vh, 32rem);
+    overflow-y: auto;
+    margin-inline: calc(-1 * var(--dialog-space-x));
+    padding-inline: var(--dialog-space-x);
+    padding-block: var(--space-1);
+    scroll-padding-block: var(--space-1);
+  }
+
+  /* Header = full-bleed band with a bottom border + the shared chrome padding — MIRRORS the footer so
+   * the two are symmetric pinned bars (same as Sheet/Drawer). */
   [data-slot="dialog-header"] {
     display: flex;
     flex-direction: column;
     gap: var(--space-stack-xs);
-    text-align: center;
+    text-align: start;
+    margin-inline: calc(-1 * var(--dialog-space-x));
+    margin-block-start: calc(-1 * var(--dialog-space-y));
+    padding: var(--dialog-space-y) var(--dialog-space-x);
+    border-bottom: 1px solid hsl(var(--border));
   }
 
-  @media (min-width: 640px) {
-    [data-slot="dialog-header"] {
-      text-align: left;
-    }
-  }
-
+  /* Footer = full-bleed band with a top border + the same chrome padding (mirror of the header). */
   [data-slot="dialog-footer"] {
     display: flex;
     flex-direction: column-reverse;
     gap: var(--space-inline-sm);
+    margin-inline: calc(-1 * var(--dialog-space-x));
+    margin-block-end: calc(-1 * var(--dialog-space-y));
+    padding: var(--dialog-space-y) var(--dialog-space-x);
+    border-top: 1px solid hsl(var(--border));
   }
 
   @media (min-width: 640px) {

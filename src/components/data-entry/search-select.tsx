@@ -3,6 +3,7 @@ import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { controlOpenRingClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Command, CommandGroup, CommandItem, CommandList } from "./command";
@@ -206,7 +207,7 @@ export function SearchSelect({
           aria-expanded={open}
           disabled={disabled}
           data-testid={dataTestId}
-          className={cn("w-full justify-between font-normal", className)}
+          className={cn("w-full justify-between font-normal", controlOpenRingClass, className)}
         >
           <span className={cn("truncate text-start", !value && "text-muted-foreground")}>
             {currentLabel}

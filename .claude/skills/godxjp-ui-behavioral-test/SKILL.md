@@ -5,6 +5,25 @@ description: BẮT BUỘC khi kiểm chứng BẤT KỲ component UI tương tá
 
 # godxjp-ui Behavioral Test
 
+> 🛠️ **AUDIENCE: CORE** — verifying interactive components of **@godxjp/ui** and codifying the
+> findings as repo tests. App-devs verify their own screens via `compose-a-screen/verify` in the MCP.
+> CORE↔CONSUMER map: `.claude/skills/README.md`.
+
+**Follow-map:** this is the **codify** stage of the core chain. Reach it after [[godxjp-ui-component]]
+(contract) flags a stateful control and [[godxjp-ui-interaction-feel]] (which owns the *expected
+behaviours*) tells you what to drive. This skill turns each browser-confirmed behaviour into a
+permanent `@testing-library/user-event` test so `pnpm test` is the regression guard with **no MCP**.
+
+**DO / DON'T:**
+
+| ✅ DO | ⛔ DON'T |
+|---|---|
+| SIMULATE in a real browser MCP, observe what actually happens, THEN codify | Conclude "typing works / Enter submits" by reading the JSX |
+| Run the freeze probe / multi-char type on every controlled input | Trust a single keystroke; assume value sticks |
+| Reproduce a controlled-input `value`/`aria-*` bug in jsdom before reporting it | Report a browser-MCP-only reading as a bug (harness false-positive) |
+| Wire an immediate `onValueChange` on any controlled `value` + debounced wrapper | Source a controlled `value` only from a debounced result → frozen input |
+| End every confirmed behaviour as an assertion in `src/components/<group>/__tests__/` | Say "verified" with no codified test (a finding not codified didn't happen) |
+
 ## Principle — test real, never assume
 
 A control "looks correct" in source and is still **broken at runtime**. The

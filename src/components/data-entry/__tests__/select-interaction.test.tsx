@@ -2,13 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import * as React from "react";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
 
 /**
  * Behavioral interaction tests for <Select> (Radix-backed single-select).
@@ -207,12 +201,7 @@ describe("Select — data-driven (Ant-style) options API", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(
-      <Select
-        value=""
-        onValueChange={onValueChange}
-        placeholder="拠点を選択"
-        options={HUBS}
-      />,
+      <Select value="" onValueChange={onValueChange} placeholder="拠点を選択" options={HUBS} />,
     );
 
     const trigger = screen.getByRole("combobox");
@@ -222,6 +211,36 @@ describe("Select — data-driven (Ant-style) options API", () => {
     await user.click(await screen.findByRole("option", { name: "Nagoya" }));
 
     // Data-driven Select passes the resolved option as the 2nd arg.
-    expect(onValueChange).toHaveBeenCalledWith("nagoya", expect.objectContaining({ value: "nagoya" }));
+    expect(onValueChange).toHaveBeenCalledWith(
+      "nagoya",
+      expect.objectContaining({ value: "nagoya" }),
+    );
+  });
+});
+
+describe("Select — open-state ring (gh#101 regression)", () => {
+  // `:focus-visible` does NOT fire when a trigger is opened by MOUSE, so an open Select must carry a
+  // `data-[state=open]` ring (otherwise mouse-opening shows only a border change — inconsistent with
+  // a focused Input). The ring class is wired via controlTriggerClass; assert it's present and that
+  // opening sets data-state=open so the ring actually applies.
+  it("wires a data-[state=open] ring and sets data-state=open when opened", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <Select>
+        <SelectTrigger aria-label="拠点">
+          <SelectValue placeholder="選択" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="osaka">Osaka</SelectItem>
+        </SelectContent>
+      </Select>,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(trigger.className).toContain("data-[state=open]:ring-[3px]");
+    expect(trigger.className).toContain("data-[state=open]:border-ring");
+
+    expect(trigger).toHaveAttribute("data-state", "closed");
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute("data-state", "open");
   });
 });

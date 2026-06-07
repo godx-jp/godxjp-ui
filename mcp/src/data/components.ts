@@ -1078,7 +1078,8 @@ export default function InvoiceList({
       {
         name: "globalFilter / onGlobalFilterChange",
         type: "string / OnChangeFn<string>",
-        description: "Global search term, surfaced by DataGrid.Search. Server or client like sorting.",
+        description:
+          "Global search term, surfaced by DataGrid.Search. Server or client like sorting.",
       },
       {
         name: "pagination / onPaginationChange / rowCount",
@@ -1089,13 +1090,15 @@ export default function InvoiceList({
       {
         name: "columnVisibility / onColumnVisibilityChange",
         type: "VisibilityState / OnChangeFn<VisibilityState>",
-        description: "Column show/hide state surfaced by DataGrid.ViewOptions ('set view'). Internal if omitted.",
+        description:
+          "Column show/hide state surfaced by DataGrid.ViewOptions ('set view'). Internal if omitted.",
       },
       {
         name: "manualSorting / manualFiltering / manualPagination",
         type: "boolean",
         defaultValue: "true",
-        description: "Default true (server/AJAX). Set false to let TanStack sort/filter/paginate in-browser.",
+        description:
+          "Default true (server/AJAX). Set false to let TanStack sort/filter/paginate in-browser.",
       },
       {
         name: "loading / density / onRowClick / empty",
@@ -1710,10 +1713,81 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
 
   // ─── data-entry ─────────────────────────────────────────────────────────
   {
+    name: "Form",
+    group: "data-entry",
+    tagline:
+      "Ant-style layout container — renders <form> and pushes layout (vertical/horizontal), labelWidth/controlWidth, label alignment, responsive collapse, and multi-column grid down to every FormField (overridable per field).",
+    props: [
+      {
+        name: "layout",
+        type: '"vertical" | "horizontal" | "inline"',
+        defaultValue: '"vertical"',
+        description: "Label position relative to control; applied to all FormFields.",
+      },
+      {
+        name: "labelWidth",
+        type: "number | string",
+        description: "Label column width in horizontal layout (number→px). e.g. 120 or '8rem'.",
+      },
+      {
+        name: "controlWidth",
+        type: "number | string",
+        description: "Cap the control width (number→px). Omit to fill the column.",
+      },
+      {
+        name: "labelAlign",
+        type: '"start" | "end"',
+        defaultValue: '"end"',
+        description: "Horizontal alignment of the label within its column.",
+      },
+      {
+        name: "collapseBelow",
+        type: '"sm" | "md" | "lg" | "xl" | false',
+        defaultValue: '"md"',
+        description:
+          "Breakpoint below which horizontal collapses to vertical (mobile-first). false = always horizontal.",
+      },
+      {
+        name: "columns",
+        type: "number | { sm?: number; md?: number; lg?: number }",
+        description: "Lay fields out in a responsive grid (reuses ResponsiveGrid; 1 col on small).",
+      },
+      {
+        name: "density",
+        type: '"compact" | "default" | "comfortable"',
+        description: "Apply a density to controls inside the form.",
+      },
+    ],
+    usage: [
+      "DO set `layout`, `labelWidth`, `controlWidth` ONCE on `<Form>` — every `<FormField>` inside inherits them. Override a single field by passing the same prop on that `<FormField>` (Form → FormField priority).",
+      "DO rely on mobile-first collapse: `layout='horizontal'` automatically stacks to vertical below `collapseBelow` (default `md`). Pass `collapseBelow={false}` only when a field MUST stay label-beside-control even on phones.",
+      "DO use `columns` for multi-field forms (e.g. `columns={2}`) — it reuses ResponsiveGrid (1 column on small screens, more on md/lg). Span a wide field across columns with `<FormField colSpan={2}>`.",
+      "DON'T hand-roll a `<form>` + Flex stack for spacing — `<Form>` provides the vertical rhythm and the layout context FormField reads. Wire react-hook-form by spreading `onSubmit={handleSubmit(...)}` onto `<Form>`.",
+    ],
+    useCases: [
+      "A settings page form where every label sits in a fixed 120px column to the left of its control (horizontal), collapsing to stacked labels on mobile.",
+      "A two-column entity-edit form (`columns={2}`) where the address field spans both columns (`colSpan={2}`).",
+      "A compact filter form (`layout='horizontal' density='compact'`) above a DataTable.",
+    ],
+    related: [
+      "FormField — the per-field wrapper (label + control + helper/error) that reads Form's layout context; use one per control inside a Form.",
+      "ResponsiveGrid — Form `columns` reuses it; use ResponsiveGrid directly for non-form card grids.",
+    ],
+    example: `import { Form, FormField, Input } from "@godxjp/ui/data-entry";
+
+<Form layout="horizontal" labelWidth={120} columns={2} onSubmit={onSubmit}>
+  <FormField id="first" label="姓"><Input id="first" /></FormField>
+  <FormField id="last" label="名"><Input id="last" /></FormField>
+  <FormField id="address" label="住所" colSpan={2}><Input id="address" /></FormField>
+</Form>`,
+    storyPath: "data-entry/Form.stories.tsx",
+    rules: [23, 24],
+  },
+  {
     name: "FormField",
     group: "data-entry",
     tagline:
-      "Wraps a control with label, helper, and error; injects aria-describedby/aria-invalid onto the child.",
+      "Wraps a control with label, helper, and error; injects aria-describedby/aria-invalid onto the child. Reads the parent Form's layout (vertical/horizontal) — overridable per field.",
     props: [
       {
         name: "id",
@@ -1738,6 +1812,26 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         name: "error",
         type: "string",
         description: "Destructive error message (role=alert); overrides helper.",
+      },
+      {
+        name: "layout",
+        type: '"vertical" | "horizontal" | "inline"',
+        description: "Override the parent Form's layout for this field only.",
+      },
+      {
+        name: "labelWidth",
+        type: "number | string",
+        description: "Override the Form's label width for this field.",
+      },
+      {
+        name: "controlWidth",
+        type: "number | string",
+        description: "Override the Form's control width for this field.",
+      },
+      {
+        name: "colSpan",
+        type: "number",
+        description: "Span N columns when inside a `columns` Form grid.",
       },
       {
         name: "children",
@@ -2474,6 +2568,7 @@ export function InvoiceDueDateField() {
       "Use `Dialog` for form-style or wizard-style modal flows that need freeform content and a close action.",
       "DO always control open state via `open` + `onOpenChange`. Dialog has no uncontrolled shortcut — omitting `open` means the trigger alone drives state, which is fine for simple trigger-only cases, but any async submission flow must use controlled state so you can hold the dialog open while `pending=true` and close it only on success.",
       "DO include `DialogHeader` with `DialogTitle` (and optionally `DialogDescription`) inside every `DialogContent`. Radix requires an accessible title for screen readers; omitting it triggers a console warning and breaks a11y.",
+      "DO wrap tall/scrolling content in `DialogBody` (the ring-safe scroll slot, max-height ~60vh). It insets the content to match the dialog padding so a full-width control's focus ring never clips against the scroll container — mirror of SheetBody.",
     ],
     useCases: [
       "Inline form dialog — create or edit a record (invoice line, supplier, coupon) without navigating away. Place `FormField`/`Input`/`Select` inside `DialogContent`, wire the submit button to your mutation, and hold `open` while `pending` to prevent double-submit.",
@@ -2602,7 +2697,7 @@ function CreateDialog() {
     name: "Sheet",
     group: "feedback",
     tagline:
-      "Side-panel drawer (Radix Dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom)/SheetHeader/SheetTitle/SheetFooter.",
+      "Side-panel drawer (Radix Dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter.",
     props: [
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
@@ -2610,12 +2705,27 @@ function CreateDialog() {
         type: "(open: boolean) => void",
         description: "Open-state change handler.",
       },
+      {
+        name: "width",
+        type: "number | string",
+        description:
+          "On SheetContent (side left/right): desired panel width (number→px). Caps at the viewport — full-width on a small screen (min(width,100%)), NOT a hard fixed width. Default w-3/4 sm:max-w-md.",
+      },
+      {
+        name: "title / subtitle / extra / tone",
+        type: "ReactNode / ReactNode / ReactNode / ToneProp",
+        description:
+          "On SheetHeader (Ant-style): title (→ SheetTitle, accessible name), subtitle (→ SheetDescription), right-aligned extra actions, and a soft semantic `tone` background band. Children still supported.",
+      },
     ],
     usage: [
+      "DO build the panel with SheetHeader (pass `title`/`subtitle`/`extra`/`tone` OR children) > SheetBody (scrollable, ring-safe) > SheetFooter (pinned). SheetTitle is required for a11y — the `title` prop renders it for you. Never skip the title.",
+      "DO set `width` on SheetContent for a wider/narrower panel (e.g. width={480}); it caps at the viewport so small screens still get a full-width panel.",
       "DO use all named sub-parts in order: Sheet (root) > SheetTrigger (opener) > SheetContent (panel) > SheetHeader > SheetTitle (required for a11y — maps to Radix DialogPrimitive.Title, announced as the accessible name) > optional SheetDescription > body content > SheetFooter. Never skip SheetTitle inside an open SheetContent.",
       "DO control state explicitly with open + onOpenChange on Sheet root when you need to close programmatically (e.g. after form submit). Uncontrolled (no props) works for simple trigger-only cases but gives you no hook to reset form state on close.",
       "DO use SheetTrigger asChild to wrap a Button or other interactive element — this avoids a nested <button> in the DOM. Never render a raw <button> as a direct child of SheetTrigger.",
-      "DO use SheetFooter (renders at the bottom via mt-auto) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
+      "DO wrap a long/scrolling body in SheetBody (between SheetHeader and a pinned SheetFooter). It is the ring-safe scroll slot: a hand-rolled <div className='overflow-y-auto'> clips the 3px focus ring of a full-width Input/Select at the scroll edges — SheetBody insets the content so the ring never clips.",
+      "DO use SheetFooter (renders at the bottom via mt-auto, symmetric 16/24 padding, full-bleed top border) for primary/cancel action Buttons. Never float action Buttons inside the body — they will not stick to the panel bottom.",
       "DON'T set showCloseButton={false} on SheetContent unless you provide your own SheetClose element; omitting both leaves users with no keyboard-accessible close path and breaks a11y.",
       "DON'T put a Sheet inside a Dialog (nested Radix portals conflict). If you need a slide-over triggered from within a modal, close the Dialog first, then open the Sheet.",
     ],
@@ -6111,52 +6221,6 @@ export default function PasswordBlock() {
 }`,
     storyPath: "data-entry/PasswordStrength.stories.tsx",
     rules: [3, 6],
-  },
-  {
-    name: "Drawer",
-    group: "feedback",
-    tagline:
-      "Bottom-sheet (vaul) — a draggable sheet that slides up from the screen edge. DISTINCT from Sheet (the side panel); use Drawer for mobile/touch bottom sheets.",
-    props: [
-      { name: "open", type: "boolean", description: "Controlled open state." },
-      {
-        name: "onOpenChange",
-        type: "(open: boolean) => void",
-        description: "Open-state callback.",
-      },
-      {
-        name: "shouldScaleBackground",
-        type: "boolean",
-        defaultValue: "true",
-        description: "Scale the page behind the sheet (iOS-style).",
-      },
-    ],
-    usage: [
-      "DO compose Drawer > DrawerTrigger > DrawerContent (> DrawerHeader/DrawerTitle + body + DrawerFooter).",
-      "DO use Drawer for mobile/touch bottom sheets; use Sheet for a desktop side panel and Dialog for a centered modal.",
-      "DON'T confuse with Sheet — Sheet slides from a side edge, Drawer is the draggable bottom sheet.",
-    ],
-    useCases: [
-      "Mobile action sheet / menu",
-      "Filter panel on small screens",
-      "Quick-create form on touch",
-      "Detail peek that drags up",
-    ],
-    related: [
-      "Sheet (side panel, same Radix Dialog base, different placement)",
-      "Dialog (centered modal)",
-    ],
-    example: `import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from "@godxjp/ui/feedback";
-
-<Drawer>
-  <DrawerTrigger>絞り込み</DrawerTrigger>
-  <DrawerContent>
-    <DrawerHeader><DrawerTitle>絞り込み</DrawerTitle></DrawerHeader>
-    {/* filters */}
-  </DrawerContent>
-</Drawer>`,
-    storyPath: "feedback/Drawer.stories.tsx",
-    rules: [3, 6, 24],
   },
   {
     name: "InputOTP",

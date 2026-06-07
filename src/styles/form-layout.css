@@ -1,0 +1,161 @@
+/*
+ * FORM — Ant-style layout. Vertical by default (label above control, LEFT-aligned). Horizontal lays
+ * the label beside the control from the `collapseBelow` breakpoint UP (mobile-first): below it the
+ * field collapses back to vertical. `--form-label-width` / `--form-control-width` come from the Form
+ * (or a per-field override). RTL-safe: logical inline axis throughout.
+ *
+ * IMPORTANT: label alignment (justify/text-align: end) applies ONLY in horizontal/inline mode — never
+ * to a vertical field (a right-aligned label above a full-width control is wrong, gh feedback).
+ */
+
+@layer components {
+  .ui-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  /* Vertical (default + collapsed state): label stacked above the control column, LEFT-aligned.
+   * Gap = the shared --field-label-gap so FormField matches Descriptions and every label-above stack. */
+  .ui-form-field {
+    display: grid;
+    gap: var(--field-label-gap);
+  }
+
+  .ui-form-field-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .ui-form-field-control {
+    display: grid;
+    gap: var(--space-stack-xs); /* 4px between control and helper/error */
+    min-width: 0;
+    /* Cap the control width when a controlWidth is set; otherwise fill the column. */
+    max-inline-size: var(--form-control-width, none);
+  }
+
+  /* ── Horizontal — label beside control. Each block is scoped to [data-layout=horizontal|inline]
+   * so it NEVER affects a vertical field. Applies from the collapse breakpoint up (mobile-first). */
+
+  /* collapseBelow=false → always horizontal (all widths). */
+  .ui-form-field[data-collapse-below="false"]:is(
+      [data-layout="horizontal"],
+      [data-layout="inline"]
+    ) {
+    grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
+    align-items: start;
+    column-gap: var(--space-4);
+    row-gap: var(--space-stack-xs);
+  }
+  .ui-form-field[data-collapse-below="false"]:is([data-layout="horizontal"], [data-layout="inline"])
+    > .ui-form-field-label {
+    min-block-size: var(--control-height);
+  }
+  .ui-form-field[data-collapse-below="false"][data-label-align="end"]:is(
+      [data-layout="horizontal"],
+      [data-layout="inline"]
+    )
+    > .ui-form-field-label {
+    justify-content: flex-end;
+    text-align: end;
+  }
+
+  @media (min-width: 640px) {
+    .ui-form-field[data-collapse-below="sm"]:is(
+        [data-layout="horizontal"],
+        [data-layout="inline"]
+      ) {
+      grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
+      align-items: start;
+      column-gap: var(--space-4);
+      row-gap: var(--space-stack-xs);
+    }
+    .ui-form-field[data-collapse-below="sm"]:is([data-layout="horizontal"], [data-layout="inline"])
+      > .ui-form-field-label {
+      min-block-size: var(--control-height);
+    }
+    .ui-form-field[data-collapse-below="sm"][data-label-align="end"]:is(
+        [data-layout="horizontal"],
+        [data-layout="inline"]
+      )
+      > .ui-form-field-label {
+      justify-content: flex-end;
+      text-align: end;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .ui-form-field[data-collapse-below="md"]:is(
+        [data-layout="horizontal"],
+        [data-layout="inline"]
+      ) {
+      grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
+      align-items: start;
+      column-gap: var(--space-4);
+      row-gap: var(--space-stack-xs);
+    }
+    .ui-form-field[data-collapse-below="md"]:is([data-layout="horizontal"], [data-layout="inline"])
+      > .ui-form-field-label {
+      min-block-size: var(--control-height);
+    }
+    .ui-form-field[data-collapse-below="md"][data-label-align="end"]:is(
+        [data-layout="horizontal"],
+        [data-layout="inline"]
+      )
+      > .ui-form-field-label {
+      justify-content: flex-end;
+      text-align: end;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .ui-form-field[data-collapse-below="lg"]:is(
+        [data-layout="horizontal"],
+        [data-layout="inline"]
+      ) {
+      grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
+      align-items: start;
+      column-gap: var(--space-4);
+      row-gap: var(--space-stack-xs);
+    }
+    .ui-form-field[data-collapse-below="lg"]:is([data-layout="horizontal"], [data-layout="inline"])
+      > .ui-form-field-label {
+      min-block-size: var(--control-height);
+    }
+    .ui-form-field[data-collapse-below="lg"][data-label-align="end"]:is(
+        [data-layout="horizontal"],
+        [data-layout="inline"]
+      )
+      > .ui-form-field-label {
+      justify-content: flex-end;
+      text-align: end;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .ui-form-field[data-collapse-below="xl"]:is(
+        [data-layout="horizontal"],
+        [data-layout="inline"]
+      ) {
+      grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
+      align-items: start;
+      column-gap: var(--space-4);
+      row-gap: var(--space-stack-xs);
+    }
+    .ui-form-field[data-collapse-below="xl"]:is([data-layout="horizontal"], [data-layout="inline"])
+      > .ui-form-field-label {
+      min-block-size: var(--control-height);
+    }
+    .ui-form-field[data-collapse-below="xl"][data-label-align="end"]:is(
+        [data-layout="horizontal"],
+        [data-layout="inline"]
+      )
+      > .ui-form-field-label {
+      justify-content: flex-end;
+      text-align: end;
+    }
+  }
+}

@@ -3,6 +3,7 @@ import { ChevronDown, ChevronRight, ChevronsUpDown, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { controlOpenRingClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { ScrollArea } from "../data-display/scroll-area";
@@ -229,6 +230,7 @@ function TreeSelectRoot({
           disabled={disabled}
           className={cn(
             "w-full justify-between font-normal",
+            controlOpenRingClass,
             !displayKeys.length && "text-muted-foreground",
             className,
           )}

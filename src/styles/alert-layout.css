@@ -24,26 +24,26 @@
   }
 
   [data-slot="alert"][data-tone="destructive"] {
-    border-color: hsl(var(--destructive) / 0.3);
-    background-color: hsl(var(--destructive) / 0.05);
+    border-color: hsl(var(--destructive) / var(--alert-border-alpha));
+    background-color: hsl(var(--destructive) / var(--alert-bg-alpha));
     color: hsl(var(--foreground));
   }
 
   [data-slot="alert"][data-tone="warning"] {
-    border-color: hsl(var(--warning) / 0.3);
-    background-color: hsl(var(--warning) / 0.05);
+    border-color: hsl(var(--warning) / var(--alert-border-alpha));
+    background-color: hsl(var(--warning) / var(--alert-bg-alpha));
     color: hsl(var(--foreground));
   }
 
   [data-slot="alert"][data-tone="success"] {
-    border-color: hsl(var(--success) / 0.3);
-    background-color: hsl(var(--success) / 0.05);
+    border-color: hsl(var(--success) / var(--alert-border-alpha));
+    background-color: hsl(var(--success) / var(--alert-bg-alpha));
     color: hsl(var(--foreground));
   }
 
   [data-slot="alert"][data-tone="info"] {
-    border-color: hsl(var(--info) / 0.3);
-    background-color: hsl(var(--info) / 0.05);
+    border-color: hsl(var(--info) / var(--alert-border-alpha));
+    background-color: hsl(var(--info) / var(--alert-bg-alpha));
     color: hsl(var(--foreground));
   }
 

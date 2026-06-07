@@ -23,13 +23,35 @@ import type {
   RequiredProp,
   ValueProp,
   DefaultValueProp,
+  FormLayoutProp,
+  WidthProp,
+  BreakpointProp,
+  DensityProp,
 } from "../vocabulary";
+import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
 /** @see Input */
 export type InputProp = React.InputHTMLAttributes<HTMLInputElement>;
 
 /** @see Textarea */
 export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+/**
+ * @see Form — layout context for FormFields (Ant-style). `layout`/`labelWidth`/`controlWidth`/
+ * `labelAlign` are applied to every FormField and overridable per field. `collapseBelow` sets the
+ * breakpoint at which `horizontal` collapses to `vertical` (mobile-first; `false` = always
+ * horizontal). `columns` lays fields out in a responsive grid (reuses ResponsiveGrid).
+ */
+export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
+  layout?: FormLayoutProp;
+  labelWidth?: WidthProp;
+  controlWidth?: WidthProp;
+  labelAlign?: "start" | "end";
+  collapseBelow?: BreakpointProp | false;
+  columns?: ResponsiveGridColumnsProp;
+  density?: DensityProp;
+  className?: ClassNameProp;
+};
 
 /** @see FormField */
 export type FormFieldProp = {
@@ -40,6 +62,14 @@ export type FormFieldProp = {
   error?: ErrorProp;
   /** Optional control rendered inline after the label (e.g. a help button). */
   labelAddon?: React.ReactNode;
+  /** Override the Form's layout for this field only. */
+  layout?: FormLayoutProp;
+  /** Override the Form's label width for this field (horizontal layout). */
+  labelWidth?: WidthProp;
+  /** Override the Form's control width for this field. */
+  controlWidth?: WidthProp;
+  /** Span N columns when inside a `columns` Form grid. */
+  colSpan?: number;
   className?: ClassNameProp;
   children: React.ReactNode;
 };

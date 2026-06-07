@@ -4,6 +4,8 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { X } from "lucide-react";
 
 import { cn } from "../../lib/utils";
+import type { ToneProp } from "../../props/vocabulary";
+import { overlayHeaderToneClass } from "./overlay-header-tone";
 import { buttonVariants } from "../general/button";
 import { useTranslation } from "../../i18n/use-translation";
 import { Button } from "../general/button";
@@ -86,10 +88,56 @@ const DialogContent = React.forwardRef<
 });
 DialogContent.displayName = "DialogContent";
 
-const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div data-slot="dialog-header" className={className} {...props} />
-);
+interface DialogHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  extra?: React.ReactNode;
+  tone?: ToneProp;
+}
+
+const DialogHeader = ({
+  className,
+  title,
+  subtitle,
+  extra,
+  tone = "default",
+  children,
+  ...props
+}: DialogHeaderProps) => {
+  // Band layout (full-bleed, border-bottom, padding) lives in dialog-layout.css so it mirrors the
+  // footer exactly; here we only add the soft `tone` background + the title/subtitle/extra row.
+  return (
+    <div
+      data-slot="dialog-header"
+      data-tone={tone}
+      className={cn(overlayHeaderToneClass[tone], className)}
+      {...props}
+    >
+      {children ?? (
+        <div className="flex items-start justify-between gap-[var(--space-3)] pe-[var(--space-8)]">
+          <div className="flex min-w-0 flex-col gap-[var(--space-1)]">
+            {title != null && <DialogTitle>{title}</DialogTitle>}
+            {subtitle != null && <DialogDescription>{subtitle}</DialogDescription>}
+          </div>
+          {extra != null && (
+            <div className="flex shrink-0 items-center gap-[var(--space-2)] whitespace-nowrap">
+              {extra}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 DialogHeader.displayName = "DialogHeader";
+
+// Ring-safe scrollable region for a tall dialog. Layout lives in dialog-layout.css
+// [data-slot="dialog-body"]: full-bleed inset (matches the dialog padding) so a full-width
+// control's 3px focus ring never clips against the scroll container. Mirrors SheetBody.
+const DialogBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div data-slot="dialog-body" className={className} {...props} />
+);
+DialogBody.displayName = "DialogBody";
 
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   // Layout (right-aligned actions, mobile column-reverse) lives in feedback-layout.css
@@ -176,9 +224,38 @@ const AlertDialogContent = React.forwardRef<
 });
 AlertDialogContent.displayName = "AlertDialogContent";
 
-const AlertDialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div data-slot="dialog-header" className={cn(className)} {...props} />
-);
+const AlertDialogHeader = ({
+  className,
+  title,
+  subtitle,
+  extra,
+  tone = "default",
+  children,
+  ...props
+}: DialogHeaderProps) => {
+  return (
+    <div
+      data-slot="dialog-header"
+      data-tone={tone}
+      className={cn(overlayHeaderToneClass[tone], className)}
+      {...props}
+    >
+      {children ?? (
+        <div className="flex items-start justify-between gap-[var(--space-3)] pe-[var(--space-8)]">
+          <div className="flex min-w-0 flex-col gap-[var(--space-1)]">
+            {title != null && <AlertDialogTitle>{title}</AlertDialogTitle>}
+            {subtitle != null && <AlertDialogDescription>{subtitle}</AlertDialogDescription>}
+          </div>
+          {extra != null && (
+            <div className="flex shrink-0 items-center gap-[var(--space-2)] whitespace-nowrap">
+              {extra}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 AlertDialogHeader.displayName = "AlertDialogHeader";
 
 const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
@@ -341,6 +418,7 @@ export const Dialog = Object.assign(DialogRoot, {
   Overlay: DialogOverlay,
   Content: DialogContent,
   Header: DialogHeader,
+  Body: DialogBody,
   Footer: DialogFooter,
   Title: DialogTitle,
   Description: DialogDescription,
@@ -356,6 +434,7 @@ export {
   DialogOverlay,
   DialogContent,
   DialogHeader,
+  DialogBody,
   DialogFooter,
   DialogTitle,
   DialogDescription,
