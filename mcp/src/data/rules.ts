@@ -211,6 +211,11 @@ export const CARDINAL_RULES: CardinalRule[] = [
     title: "Pages are mobile-first",
     body: "Author and verify every page at 320–390px FIRST. Spacing comes only from `Stack` / `Inline` `gap` + `ResponsiveGrid columns={2|3|4}` (which collapse to a single column on narrow screens) — never raw `p-*` / `gap-*` / `space-*` utilities for page layout. Wide tables scroll horizontally on small screens (don't force-fit them); dialogs and sheets are full-height on mobile. Touch targets ≥ 44×44px.",
   },
+  {
+    number: 41,
+    title: "Drawer & dialog footer layout",
+    body: "Sheet/Dialog/AlertDialog footers are a pinned action bar (Ant Design Drawer footer): the footer sticks to the bottom, SheetFooter draws a full-bleed top border, and actions are RIGHT-aligned with the PRIMARY button rightmost (Cancel/secondary to its left). A destructive / clear / reset action goes far-LEFT — give that button `className=\"mr-auto\"`. NEVER stack footer buttons full-width or center them.",
+  },
 ];
 
 export const VOCABULARY_TOKEN_RULES: CardinalRule[] = [

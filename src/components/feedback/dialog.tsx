@@ -92,6 +92,8 @@ const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 DialogHeader.displayName = "DialogHeader";
 
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  // Layout (right-aligned actions, mobile column-reverse) lives in feedback-layout.css
+  // [data-slot="dialog-footer"]. Destructive action goes far-left via `className="mr-auto"`.
   <div data-slot="dialog-footer" className={className} {...props} />
 );
 DialogFooter.displayName = "DialogFooter";
@@ -180,6 +182,7 @@ const AlertDialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDiv
 AlertDialogHeader.displayName = "AlertDialogHeader";
 
 const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  // Layout lives in feedback-layout.css [data-slot="dialog-footer"] (right-aligned actions).
   <div data-slot="dialog-footer" className={cn(className)} {...props} />
 );
 AlertDialogFooter.displayName = "AlertDialogFooter";

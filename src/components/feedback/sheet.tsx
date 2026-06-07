@@ -96,9 +96,15 @@ export const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDi
 );
 
 export const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  // Pinned action bar (Ant Design Drawer footer): sticks to the bottom, full-bleed top border, actions
+  // RIGHT-aligned (primary rightmost). A destructive / clear / reset action goes far-LEFT — give it
+  // `className="mr-auto"`. See cardinal rule "Drawer & dialog footer layout".
   <div
     data-slot="sheet-footer"
-    className={cn("mt-auto flex flex-col gap-2", className)}
+    className={cn(
+      "mt-auto -mx-6 flex flex-wrap items-center justify-end gap-2 border-t border-border px-6 pt-4",
+      className,
+    )}
     {...props}
   />
 );

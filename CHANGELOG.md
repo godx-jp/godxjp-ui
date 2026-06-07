@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.1.0]
+
+### Changed
+
+- `SheetFooter` is now a pinned, full-bleed-bordered action bar with RIGHT-aligned actions (Ant Design
+  Drawer footer) instead of stacked full-width buttons; `DialogFooter`/`AlertDialogFooter` right-align
+  their actions too. Put a destructive / clear / reset action far-left with `className="mr-auto"`.
+  New cardinal rule #41 "Drawer & dialog footer layout".
+
 ## [12.0.3]
 
 ### Fixed
