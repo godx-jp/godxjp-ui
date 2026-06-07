@@ -768,9 +768,18 @@ function lintJsx(jsx: string): string {
   check(/<input[\s>]/, "Use `<Input>` instead of raw `<input>` (rule 29).");
   check(/<select[\s>]/, "Use `<Select>` instead of raw `<select>` (rule 29).");
   check(/<textarea[\s>]/, "Use `<Textarea>` instead of raw `<textarea>` (rule 29).");
+  check(/<(table|thead|tbody)[\s>]/, "Use `<DataTable>` instead of a hand-rolled `<table>` (rule 29).");
   check(
     /bg-(red|blue|green|yellow|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/,
     "Use semantic token utilities (`bg-primary`/`bg-destructive`) not raw color scales (rule 2).",
+  );
+  check(
+    /\b(?:ml|mr|pl|pr|left|right)-(?:\d|\[|auto|px|full|screen)|\b(?:rounded-[lr]|border-[lr]|text-(?:left|right))\b/,
+    "Physical direction class — use logical CSS (`ms-/me-`, `ps-/pe-`, `start-/end-`, `rounded-s/e`, `text-start/end`) so the UI flips correctly under RTL (rule: logical CSS).",
+  );
+  check(
+    /size=["']default["']/,
+    '`size="default"` is not in the controlled vocabulary — use `size` ∈ xs|sm|md|lg.',
   );
   check(
     /<Tag[\s\S]*?color=["']error["']/i,
