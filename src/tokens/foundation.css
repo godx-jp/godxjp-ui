@@ -93,24 +93,34 @@
     "M PLUS 2", "Be Vietnam Pro", "Hiragino Sans", "Noto Sans JP", -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
   --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-size-2xs: 0.625rem; /* 10px — micro labels (collapsed shell, image captions) */
-  --font-size-xs: 0.8125rem; /* 13px */
-  --font-size-sm: 0.875rem; /* 14px — the document BASE (set on <body>) */
-  /* NOTE: `--font-size-base` is the COMFORTABLE-READING size (15px), NOT the document base — the
-   * base is `--font-size-sm` (14px) for the dense JP portal. Services may bump --font-size-base for
-   * a roomier reading scale (see theme-globals). Used by input (mobile), card title. */
-  --font-size-base: 0.9375rem; /* 15px — comfortable-reading accent (not the body base) */
-  --font-size-lg: 1.1875rem; /* 19px */
-  --font-size-xl: 1.375rem; /* 22px */
-  --font-size-2xl: 1.625rem; /* 26px */
+  /* ── Type scale — GOLDEN-RATIO modular scale (Ant/Tailwind model). ONE base + ONE ratio; every
+   * step is base × ratioⁿ, so the whole scale stays in golden proportion. `--font-size-ratio` is
+   * φ^¼ (the golden ratio's quarter-step ≈ 1.1227) — a TRUE golden ratio yet dense enough that
+   * headings stay small (h1≈20, h2≈18; pure φ=1.618 would be marketing-size). Internal apps get the
+   * 14px DEFAULT with ZERO config; a customer overrides `--font-size-base` (and optionally
+   * `--font-size-ratio`) and the entire scale rescales in golden proportion. */
+  --font-size-base: 0.875rem; /* 14px — THE base (= <body>). The single knob; override to retheme. */
+  --font-size-ratio: 1.1227; /* φ^¼ — golden-ratio step (φ=1.618, φ^¼ keeps the dense scale small) */
+  --font-size-2xs: calc(
+    var(--font-size-base) / var(--font-size-ratio) / var(--font-size-ratio)
+  ); /* ratio⁻² ≈ 11px */
+  --font-size-xs: calc(var(--font-size-base) / var(--font-size-ratio)); /* ratio⁻¹ ≈ 12.5px */
+  --font-size-sm: var(--font-size-base); /* 14px — body (alias of base) */
+  --font-size-lg: calc(
+    var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)
+  ); /* ratio² ≈ 17.6px */
+  --font-size-xl: calc(var(--font-size-lg) * var(--font-size-ratio)); /* ratio³ ≈ 19.8px */
+  --font-size-2xl: calc(var(--font-size-xl) * var(--font-size-ratio)); /* ratio⁴ ≈ 22.3px */
 
-  /* Semantic heading scale (dxs-kintai: info-dense JP enterprise, weight 500,
-   * never marketing-size). Applied to base h1–h4 + component titles. h3/h4 REFERENCE the body
-   * sizes (single source of truth) — they intentionally equal sm/xs in this dense system. */
-  --heading-h1: 1.25rem; /* 20px — page title / h1 */
-  --heading-h2: 1.125rem; /* 18px — section / h2 */
-  --heading-h3: var(--font-size-sm); /* 14px — h3 */
-  --heading-h4: var(--font-size-xs); /* 13px — h4 */
+  /* Headings — also golden-derived. h1=ratio³, h2=ratio²; h3/h4 reuse body sizes (single source). */
+  --heading-h1: calc(
+    var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio) * var(--font-size-ratio)
+  ); /* ≈ 20px */
+  --heading-h2: calc(
+    var(--font-size-base) * var(--font-size-ratio) * var(--font-size-ratio)
+  ); /* ≈ 18px */
+  --heading-h3: var(--font-size-base); /* 14px — h3 */
+  --heading-h4: var(--font-size-xs); /* ≈ 12.5px — h4 */
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;

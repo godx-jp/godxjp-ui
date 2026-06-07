@@ -48,19 +48,21 @@ describe("themeGlobalsToCssVars", () => {
       expect(vars).toBeTypeOf("object");
     });
 
-    it("scales typography for sm and lg", () => {
-      expect(themeGlobalsToCssVars({ fontSize: "sm" })["--font-size-sm"]).toBe("0.8125rem");
-      expect(themeGlobalsToCssVars({ fontSize: "lg" })["--font-size-sm"]).toBe("0.9375rem");
+    it("scales typography by overriding ONLY the base (golden scale derives the rest)", () => {
+      expect(themeGlobalsToCssVars({ fontSize: "sm" })["--font-size-base"]).toBe("0.8125rem");
+      expect(themeGlobalsToCssVars({ fontSize: "lg" })["--font-size-base"]).toBe("1rem");
+      // a preset must NOT hand-set individual steps — they derive from the base via calc().
+      expect(themeGlobalsToCssVars({ fontSize: "sm" })).not.toHaveProperty("--font-size-lg");
     });
 
-    it("default fontSize does not override --font-size-sm", () => {
-      expect(themeGlobalsToCssVars({ fontSize: "default" })).not.toHaveProperty("--font-size-sm");
+    it("default fontSize does not override --font-size-base", () => {
+      expect(themeGlobalsToCssVars({ fontSize: "default" })).not.toHaveProperty("--font-size-base");
     });
   });
 
   it("merges fontSize + primaryColor in one object", () => {
     const vars = themeGlobalsToCssVars({ fontSize: "lg", primaryColor: "crm" });
-    expect(vars["--font-size-base"]).toBe("1.0625rem");
+    expect(vars["--font-size-base"]).toBe("1rem");
     expect(vars["--primary"]).toBe("262 83% 58%");
     expect(vars["--color-primary"]).toBe("hsl(262 83% 58%)");
   });

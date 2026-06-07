@@ -161,16 +161,16 @@ describe("theme axes integration (render + class contracts)", () => {
   });
 
   describe("Preview-equivalent theme globals on wrapper", () => {
-    it("fontSize sm sets --font-size-sm on root", () => {
+    it("fontSize sm overrides ONLY --font-size-base (golden scale derives the rest)", () => {
       const { container } = renderWithTheme(<span>x</span>, { fontSize: "sm" });
       const root = container.firstElementChild as HTMLElement;
-      expect(root.style.getPropertyValue("--font-size-sm")).toBe("0.8125rem");
+      expect(root.style.getPropertyValue("--font-size-base")).toBe("0.8125rem");
     });
 
-    it("fontSize lg sets --font-size-sm on root", () => {
+    it("fontSize lg overrides ONLY --font-size-base", () => {
       const { container } = renderWithTheme(<span>x</span>, { fontSize: "lg" });
       const root = container.firstElementChild as HTMLElement;
-      expect(root.style.getPropertyValue("--font-size-sm")).toBe("0.9375rem");
+      expect(root.style.getPropertyValue("--font-size-base")).toBe("1rem");
     });
 
     it("primaryColor logistics sets primary + accent + ring", () => {

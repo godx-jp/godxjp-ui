@@ -22,24 +22,12 @@ export const DENSITY_CLASS_NAMES = Object.values(DENSITY_CLASS);
 export const FONT_SIZE_GLOBALS = ["sm", "default", "lg"] as const;
 export type FontSizeGlobal = (typeof FONT_SIZE_GLOBALS)[number];
 
+// Base-driven: a preset sets ONLY `--font-size-base`; every other step derives from it by ratio
+// (see foundation.css), so the whole scale rescales from this single token. default = foundation 14px.
 const FONT_SIZE_VARS: Record<FontSizeGlobal, Record<string, string>> = {
-  sm: {
-    "--font-size-xs": "0.6875rem",
-    "--font-size-sm": "0.8125rem",
-    "--font-size-base": "0.9375rem",
-    "--font-size-lg": "1rem",
-    "--font-size-xl": "1.125rem",
-    "--font-size-2xl": "1.25rem",
-  },
+  sm: { "--font-size-base": "0.8125rem" }, // 13px base → scale shrinks proportionally
   default: {},
-  lg: {
-    "--font-size-xs": "0.8125rem",
-    "--font-size-sm": "0.9375rem",
-    "--font-size-base": "1.0625rem",
-    "--font-size-lg": "1.1875rem",
-    "--font-size-xl": "1.3125rem",
-    "--font-size-2xl": "1.625rem",
-  },
+  lg: { "--font-size-base": "1rem" }, // 16px base → scale grows proportionally
 };
 
 /** Brand primary presets — HSL components (no `hsl()` wrapper), like `theme.css`. */
