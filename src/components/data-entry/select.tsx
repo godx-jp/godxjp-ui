@@ -192,7 +192,8 @@ function DataSelect({
   options = [],
   loadOptions,
   showSearch,
-  value = "",
+  value,
+  defaultValue,
   onValueChange,
   renderOption,
   selectedLabel,
@@ -214,6 +215,7 @@ function DataSelect({
     return (
       <SearchSelect
         value={value}
+        defaultValue={defaultValue}
         onValueChange={onValueChange}
         options={options}
         loadOptions={loadOptions}
@@ -251,6 +253,7 @@ function DataSelect({
     <SelectPrimitive.Root
       data-slot="select"
       value={value || undefined}
+      defaultValue={defaultValue || undefined}
       onValueChange={(next) =>
         onValueChange?.(
           next,

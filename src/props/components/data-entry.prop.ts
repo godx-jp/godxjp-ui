@@ -231,6 +231,8 @@ export type SearchSelectLoadResultProp = {
  */
 export type SearchSelectProp = {
   value?: ValueProp;
+  /** Uncontrolled initial value — the trigger shows its option's label at rest (controlled-triad). */
+  defaultValue?: DefaultValueProp;
   onValueChange?: (value: string, option?: SearchSelectOptionProp) => void;
   /** Static option list (client-side filtered). Provide this OR `loadOptions`, not both. */
   options?: SearchSelectOptionProp[];

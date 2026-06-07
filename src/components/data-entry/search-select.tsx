@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { ChevronsUpDown, Loader2 } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
@@ -33,7 +33,8 @@ const DEBOUNCE_MS = 250;
  * `name`; e2e-testable by the trigger's `data-testid` + each option's `${data-testid}-option-${value}`.
  */
 export function SearchSelect({
-  value = "",
+  value: valueProp,
+  defaultValue,
   onValueChange,
   options: staticOptions,
   loadOptions,
@@ -64,6 +65,12 @@ export function SearchSelect({
   const [loading, setLoading] = React.useState(false);
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [picked, setPicked] = React.useState<SearchSelectOptionProp | null>(null);
+
+  // Controlled/uncontrolled value (controlled-triad rule): `value` wins when provided; otherwise
+  // an internal state seeded from `defaultValue` so the trigger reflects selection without wiring.
+  const [internalValue, setInternalValue] = React.useState(defaultValue ?? "");
+  const isControlled = valueProp !== undefined;
+  const value = isControlled ? valueProp : internalValue;
 
   const reqId = React.useRef(0);
 
@@ -144,19 +151,28 @@ export function SearchSelect({
   );
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.searchSelect.placeholder");
+  // Resolve the label from the current value across everything we know — the last pick, the static
+  // list, and the loaded page — so a controlled/`defaultValue` selection shows its label at rest
+  // (not the placeholder). `selectedLabel` covers an async value whose option isn't loaded yet.
+  const selectedOption = value
+    ? ([picked, ...(staticOptions ?? []), ...loaded].find((option) => option?.value === value) ??
+      null)
+    : null;
   const currentLabel = value
-    ? (picked?.label ?? selectedLabel ?? resolvedPlaceholder)
+    ? (selectedOption?.label ?? selectedLabel ?? value)
     : resolvedPlaceholder;
 
   const select = (option: SearchSelectOptionProp) => {
     if (option.disabled) return;
     setPicked(option);
+    if (!isControlled) setInternalValue(option.value);
     onValueChange?.(option.value, option);
     setOpen(false);
   };
 
   const clear = () => {
     setPicked(null);
+    if (!isControlled) setInternalValue("");
     onValueChange?.("", undefined);
     setOpen(false);
   };
@@ -262,7 +278,13 @@ export function SearchSelect({
                   data-testid={optionTestId(option.value)}
                   aria-selected={activeIndex === index}
                   disabled={option.disabled}
-                  className={activeIndex === index ? "bg-accent text-accent-foreground" : undefined}
+                  className={cn(
+                    // Selected = persistent bg-accent + medium weight (NO check icon — saves width),
+                    // matching the plain SelectItem's `data-[state=checked]` convention; active =
+                    // hover/keyboard accent. Same bg so selection stays coherent across both Selects.
+                    value === option.value && "bg-accent text-foreground font-medium",
+                    activeIndex === index && "bg-accent text-accent-foreground",
+                  )}
                   onMouseEnter={() => setActiveIndex(index)}
                   onSelect={() => select(option)}
                 >
@@ -278,9 +300,6 @@ export function SearchSelect({
                       ) : null}
                     </div>
                   )}
-                  {value === option.value ? (
-                    <Check className="text-primary size-4 shrink-0" aria-hidden="true" />
-                  ) : null}
                 </CommandItem>
               ));
 

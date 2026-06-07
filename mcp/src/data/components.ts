@@ -2001,6 +2001,12 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
           "Controlled selected value (data-driven API). Pass an empty string to represent no selection.",
       },
       {
+        name: "defaultValue",
+        type: "string",
+        description:
+          "Uncontrolled initial value (data-driven API). The trigger shows the matching option's label at rest — including in searchable (showSearch) mode — so an edit form pre-filled from server data renders the label, not the placeholder. Selected option is marked by a background tint (no check icon).",
+      },
+      {
         name: "onChange",
         type: "(value: string, option?: SearchSelectOptionProp) => void",
         description:
