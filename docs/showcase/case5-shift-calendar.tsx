@@ -47,6 +47,7 @@ import { Button } from "@godxjp/ui/general";
 import {
   Badge,
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -65,13 +66,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@godxjp/ui/feedback";
-import {
-  AppShell,
-  Flex,
-  PageContainer,
-  Sidebar,
-  type SidebarSectionProp,
-} from "@godxjp/ui/layout";
+import { AppShell, Flex, PageContainer, Sidebar, type SidebarSectionProp } from "@godxjp/ui/layout";
 
 // ── Shift-type palette ────────────────────────────────────────────────────────
 // The 7-color shift palette uses wa-iro DECORATIVE tokens (charts/tags/tenant) —
@@ -115,7 +110,7 @@ function ShiftPill({
       title={`${meta.label} ${meta.time}${staff ? ` · ${staff}` : ""}`}
     >
       <span className="font-medium">{meta.label}</span>
-      {staff ? <span className="truncate text-muted-foreground">{staff}</span> : null}
+      {staff ? <span className="text-muted-foreground truncate">{staff}</span> : null}
     </span>
   );
 }
@@ -322,7 +317,7 @@ export default function ShiftCalendarShowcase() {
       sidebar={sidebar}
       topbarLeft={<strong className="text-sm">シフト管理</strong>}
       topbarRight={
-        <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
+        <span className="text-muted-foreground text-xs whitespace-nowrap tabular-nums">
           famgia · 渋谷店
         </span>
       }
@@ -340,7 +335,7 @@ export default function ShiftCalendarShowcase() {
               </Button>
               <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="tabular-nums whitespace-nowrap">
+                  <Button variant="outline" size="sm" className="whitespace-nowrap tabular-nums">
                     <CalendarDays aria-hidden="true" />
                     2026年5月
                   </Button>
@@ -385,12 +380,14 @@ export default function ShiftCalendarShowcase() {
       >
         <Flex direction="col" gap="lg">
           {/* ── Shift-type legend (the 7-color wa-iro palette) ── */}
-          <Card className="self-start">
-            <CardHeader className="flex flex-row items-center justify-between">
+          <Card>
+            <CardHeader>
               <CardTitle>シフト区分</CardTitle>
-              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                和色（装飾用）
-              </span>
+              <CardAction>
+                <span className="text-muted-foreground text-xs whitespace-nowrap">
+                  和色（装飾用）
+                </span>
+              </CardAction>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
@@ -405,7 +402,7 @@ export default function ShiftCalendarShowcase() {
                       style={{ background: `var(${SHIFT_META[k].cssVar})` }}
                     />
                     <span className="font-medium whitespace-nowrap">{SHIFT_META[k].label}</span>
-                    <span className="text-muted-foreground tabular-nums whitespace-nowrap">
+                    <span className="text-muted-foreground whitespace-nowrap tabular-nums">
                       {SHIFT_META[k].time}
                     </span>
                   </span>
@@ -434,9 +431,7 @@ export default function ShiftCalendarShowcase() {
               {detailDate ? ` (${WEEKDAY_HEAD[detailDate.weekday]})` : ""}
             </SheetTitle>
             <SheetDescription>
-              {detailDate?.holiday
-                ? `祝日 · ${detailDate.holiday}`
-                : "この日のシフト割り当て"}
+              {detailDate?.holiday ? `祝日 · ${detailDate.holiday}` : "この日のシフト割り当て"}
             </SheetDescription>
           </SheetHeader>
           <div className="mt-4 px-4">
@@ -448,7 +443,7 @@ export default function ShiftCalendarShowcase() {
                     className="flex items-center justify-between gap-2 rounded-[6px] border px-3 py-2"
                   >
                     <ShiftPill kind={s.kind} staff={s.staff} />
-                    <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
+                    <span className="text-muted-foreground text-xs whitespace-nowrap tabular-nums">
                       {SHIFT_META[s.kind].time}
                     </span>
                   </div>
@@ -471,18 +466,20 @@ export default function ShiftCalendarShowcase() {
 // ── Month grid — composed from primitives (GAP: no event-calendar primitive) ──
 function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
   return (
-    <Card className="self-start">
-      <CardHeader className="flex flex-row items-center justify-between">
+    <Card>
+      <CardHeader>
         <CardTitle>月</CardTitle>
-        <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
-          6週間 · 31日
-        </span>
+        <CardAction>
+          <span className="text-muted-foreground text-xs whitespace-nowrap tabular-nums">
+            6週間 · 31日
+          </span>
+        </CardAction>
       </CardHeader>
       <CardContent flush>
         <div className="overflow-x-auto">
           <div className="min-w-[720px]">
             {/* Weekday head — Sun→danger, Sat→info */}
-            <div className="grid grid-cols-7 border-b bg-secondary">
+            <div className="bg-secondary grid grid-cols-7 border-b">
               {WEEKDAY_HEAD.map((w, i) => (
                 <div
                   key={w}
@@ -512,7 +509,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                     key={idx}
                     type="button"
                     onClick={() => onPick(cell)}
-                    className="flex min-h-[96px] flex-col gap-1 border-b border-r p-1.5 text-left transition-colors hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring [&:nth-child(7n)]:border-r-0"
+                    className="hover:bg-accent focus-visible:ring-ring flex min-h-[96px] flex-col gap-1 border-r border-b p-1.5 text-left transition-colors focus:outline-none focus-visible:ring-2 [&:nth-child(7n)]:border-r-0"
                     style={{
                       background: cell.today
                         ? "color-mix(in oklch, var(--primary) 5%, transparent)"
@@ -540,20 +537,22 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                         {cell.date}
                       </span>
                       {cell.holiday ? (
-                        <Badge tone="destructive" variant="outline" className="px-1 py-0 text-[10px]">
+                        <Badge
+                          tone="destructive"
+                          variant="outline"
+                          className="px-1 py-0 text-[10px]"
+                        >
                           祝
                         </Badge>
                       ) : null}
                     </div>
                     <div className="flex flex-col gap-0.5">
-                      {cell.holiday ? (
-                        <ShiftPill kind="holiday" staff={cell.holiday} />
-                      ) : null}
+                      {cell.holiday ? <ShiftPill kind="holiday" staff={cell.holiday} /> : null}
                       {shown.map((s, i) => (
                         <ShiftPill key={`${s.kind}-${i}`} kind={s.kind} staff={s.staff} />
                       ))}
                       {overflow > 0 ? (
-                        <span className="px-1 text-[10px] text-muted-foreground tabular-nums">
+                        <span className="text-muted-foreground px-1 text-[10px] tabular-nums">
                           ＋{overflow} 件
                         </span>
                       ) : null}
@@ -572,18 +571,20 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
 // ── Week time-axis with a now-line (GAP: no time-grid primitive) ──────────────
 function WeekTimeline() {
   return (
-    <Card className="self-start">
-      <CardHeader className="flex flex-row items-center justify-between">
+    <Card>
+      <CardHeader>
         <CardTitle>週</CardTitle>
-        <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
-          5月11日〜17日 · 06:00–22:00
-        </span>
+        <CardAction>
+          <span className="text-muted-foreground text-xs whitespace-nowrap tabular-nums">
+            5月11日〜17日 · 06:00–22:00
+          </span>
+        </CardAction>
       </CardHeader>
       <CardContent flush>
         <div className="overflow-x-auto">
           <div className="min-w-[760px]">
             {/* Day header row */}
-            <div className="grid grid-cols-[48px_repeat(7,1fr)] border-b bg-secondary">
+            <div className="bg-secondary grid grid-cols-[48px_repeat(7,1fr)] border-b">
               <div aria-hidden="true" />
               {WEEK_DATES.map((d) => (
                 <div
@@ -613,7 +614,7 @@ function WeekTimeline() {
                 {HOURS.map((h) => (
                   <div
                     key={h}
-                    className="absolute right-1.5 -translate-y-1/2 text-[10px] text-muted-foreground tabular-nums"
+                    className="text-muted-foreground absolute right-1.5 -translate-y-1/2 text-[10px] tabular-nums"
                     style={{ top: `${hourToPct(h)}%` }}
                   >
                     {String(h).padStart(2, "0")}:00
@@ -632,7 +633,7 @@ function WeekTimeline() {
                     <div
                       key={h}
                       aria-hidden="true"
-                      className="absolute inset-x-0 border-t border-border/60"
+                      className="border-border/60 absolute inset-x-0 border-t"
                       style={{ top: `${hourToPct(h)}%` }}
                     />
                   ))}
@@ -656,7 +657,7 @@ function WeekTimeline() {
                         title={`${meta.label} ${meta.time} · ${b.staff}`}
                       >
                         <div className="truncate font-medium">{meta.label}</div>
-                        <div className="truncate text-muted-foreground">{b.staff}</div>
+                        <div className="text-muted-foreground truncate">{b.staff}</div>
                         {spills ? (
                           <div className="text-muted-foreground tabular-nums">翌日へ ↓</div>
                         ) : null}
@@ -672,7 +673,7 @@ function WeekTimeline() {
                     >
                       <div className="h-[1.5px]" style={{ background: "var(--destructive)" }} />
                       <div
-                        className="absolute -left-1 -top-1 size-2 rounded-full"
+                        className="absolute -top-1 -left-1 size-2 rounded-full"
                         style={{ background: "var(--destructive)" }}
                       />
                     </div>
@@ -694,11 +695,13 @@ function DayLanes() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {DAY_LANES.map((lane) => (
           <Card key={lane.staff} className="self-start">
-            <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <CardHeader>
               <CardTitle className="truncate">{lane.staff}</CardTitle>
-              <Badge tone="neutral" variant="outline" className="shrink-0 whitespace-nowrap">
-                {lane.role}
-              </Badge>
+              <CardAction>
+                <Badge tone="neutral" variant="outline" className="whitespace-nowrap">
+                  {lane.role}
+                </Badge>
+              </CardAction>
             </CardHeader>
             <CardContent>
               <Timeline items={lane.items} />
@@ -706,15 +709,14 @@ function DayLanes() {
           </Card>
         ))}
         {/* Understaffed gap — a calm attention EmptyState, not a dead grey box */}
-        <Card
-          className="self-start border-dashed"
-          style={{ borderColor: "var(--attention)" }}
-        >
-          <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <Card className="self-start border-dashed" style={{ borderColor: "var(--attention)" }}>
+          <CardHeader>
             <CardTitle className="truncate whitespace-nowrap">夜帯 22:00–06:00</CardTitle>
-            <Badge tone="warning" variant="outline" className="shrink-0 whitespace-nowrap">
-              人員不足
-            </Badge>
+            <CardAction>
+              <Badge tone="warning" variant="outline" className="whitespace-nowrap">
+                人員不足
+              </Badge>
+            </CardAction>
           </CardHeader>
           <CardContent>
             <EmptyState

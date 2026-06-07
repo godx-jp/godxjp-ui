@@ -13,361 +13,370 @@
  *
  * Modifiers (set on components, never Tailwind p-* in app/story code):
  *   data-banded · data-flush · data-tight · data-solo · data-separated
+ *
+ * LAYER: wrapped in `@layer components` (like every other *-layout.css). Unlayered card CSS used to
+ * BEAT Tailwind utilities, so a consumer `className="flex flex-row …"` on CardHeader was silently
+ * ignored (flex-direction stayed `column`) — the documented CardAction pairing broke. In the
+ * components layer, utilities win, so className overrides behave like every other component.
  */
 
-[data-slot="card"] {
-  min-width: 0;
-  border-color: hsl(var(--card-border));
-  border-radius: var(--card-radius);
-  background: hsl(var(--card-background));
-  color: hsl(var(--card-foreground));
-  overflow: hidden;
-}
+@layer components {
+  [data-slot="card"] {
+    min-width: 0;
+    border-color: hsl(var(--card-border));
+    border-radius: var(--card-radius);
+    background: hsl(var(--card-background));
+    color: hsl(var(--card-foreground));
+    overflow: hidden;
+  }
 
-/* ── Surface variants — fill only; flat at rest (border, no shadow) ──── */
-[data-slot="card"][data-variant="muted"] {
-  background: hsl(var(--secondary));
-}
+  /* ── Surface variants — fill only; flat at rest (border, no shadow) ──── */
+  [data-slot="card"][data-variant="muted"] {
+    background: hsl(var(--secondary));
+  }
 
-[data-slot="card"][data-variant="outline"] {
-  background: transparent;
-}
+  [data-slot="card"][data-variant="outline"] {
+    background: transparent;
+  }
 
-[data-slot="card"][data-variant="featured"] {
-  border-color: hsl(var(--primary));
-  box-shadow: 0 0 0 1px hsl(var(--primary));
-}
+  [data-slot="card"][data-variant="featured"] {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 1px hsl(var(--primary));
+  }
 
-/* ── Density — override the shell inset/body tokens ──────────────────── */
-[data-slot="card"][data-density="tight"] {
-  --card-space-inset: var(--space-3);
-  --card-space-body-y: var(--space-3);
-}
+  /* ── Density — override the shell inset/body tokens ──────────────────── */
+  [data-slot="card"][data-density="tight"] {
+    --card-space-inset: var(--space-3);
+    --card-space-body-y: var(--space-3);
+  }
 
-[data-slot="card"][data-density="cozy"] {
-  --card-space-inset: var(--space-5);
-  --card-space-body-y: var(--space-5);
-}
+  [data-slot="card"][data-density="cozy"] {
+    --card-space-inset: var(--space-5);
+    --card-space-body-y: var(--space-5);
+  }
 
-/* ── Accent edge — 3px semantic left stripe, content kept on the shell ─ */
-[data-slot="card"][data-accent] {
-  border-left-width: 3px;
-}
+  /* ── Accent edge — 3px semantic left stripe, content kept on the shell ─ */
+  [data-slot="card"][data-accent] {
+    border-left-width: 3px;
+  }
 
-[data-slot="card"][data-accent="primary"] {
-  border-left-color: hsl(var(--primary));
-}
+  [data-slot="card"][data-accent="primary"] {
+    border-left-color: hsl(var(--primary));
+  }
 
-[data-slot="card"][data-accent="success"] {
-  border-left-color: hsl(var(--success));
-}
+  [data-slot="card"][data-accent="success"] {
+    border-left-color: hsl(var(--success));
+  }
 
-[data-slot="card"][data-accent="warning"] {
-  border-left-color: hsl(var(--warning));
-}
+  [data-slot="card"][data-accent="warning"] {
+    border-left-color: hsl(var(--warning));
+  }
 
-[data-slot="card"][data-accent="info"] {
-  border-left-color: hsl(var(--info));
-}
+  [data-slot="card"][data-accent="info"] {
+    border-left-color: hsl(var(--info));
+  }
 
-[data-slot="card"][data-accent="attention"] {
-  border-left-color: hsl(var(--attention));
-}
+  [data-slot="card"][data-accent="attention"] {
+    border-left-color: hsl(var(--attention));
+  }
 
-[data-slot="card"][data-accent="destructive"] {
-  border-left-color: hsl(var(--destructive));
-}
+  [data-slot="card"][data-accent="destructive"] {
+    border-left-color: hsl(var(--destructive));
+  }
 
-[data-slot="card"][data-accent] > [data-slot="card-header"],
-[data-slot="card"][data-accent] > [data-slot="card-content"]:not([data-flush]),
-[data-slot="card"][data-accent] > [data-slot="card-footer"]:not([data-flush]) {
-  padding-inline-start: calc(var(--card-space-inset) - 3px);
-}
+  [data-slot="card"][data-accent] > [data-slot="card-header"],
+  [data-slot="card"][data-accent] > [data-slot="card-content"]:not([data-flush]),
+  [data-slot="card"][data-accent] > [data-slot="card-footer"]:not([data-flush]) {
+    padding-inline-start: calc(var(--card-space-inset) - 3px);
+  }
 
-/* ── Header ──────────────────────────────────────────────────────────── */
-[data-slot="card-header"] {
-  display: flex;
-  flex-direction: column;
-  gap: var(--card-space-gap);
-  padding-inline: var(--card-space-inset);
-}
+  /* ── Header ──────────────────────────────────────────────────────────── */
+  [data-slot="card-header"] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-space-gap);
+    padding-inline: var(--card-space-inset);
+  }
 
-[data-slot="card-header"]:not([data-banded]) {
-  padding-top: var(--card-space-inset);
-  padding-bottom: 0;
-}
-
-.ui-card-header--banded {
-  border-bottom: 1px solid hsl(var(--card-border));
-  background-color: hsl(var(--card-header-background) / var(--card-header-background-alpha));
-}
-
-[data-slot="card-header"][data-banded] {
-  padding-inline: var(--card-space-inset);
-  padding-block: var(--card-space-header-y);
-  gap: var(--card-space-gap);
-}
-
-[data-slot="card-title"] {
-  font-size: var(--card-title-font-size);
-  font-weight: var(--card-title-font-weight);
-  letter-spacing: var(--letter-spacing-tight);
-  line-height: var(--card-title-line-height);
-}
-
-[data-slot="card-description"] {
-  color: hsl(var(--muted-foreground));
-  font-size: var(--card-description-font-size);
-  line-height: var(--card-description-line-height);
-}
-
-[data-slot="card-header"][data-banded]:has([data-slot="card-action"]) {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-inline-md);
-}
-
-[data-slot="card-header"][data-banded]:has([data-slot="card-description"]):not(
-    :has([data-slot="card-action"])
-  ) {
-  flex-direction: column;
-  align-items: stretch;
-}
-
-[data-slot="card-action"] {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: var(--space-inline-sm);
-  margin-left: auto;
-}
-
-[data-slot="card"]:has([data-slot="card-header"][data-banded]) {
-  overflow: hidden;
-}
-
-[data-slot="card"]:has([data-slot="card-header"][data-banded])
-  [data-slot="card-content"]:not([data-tight]) {
-  padding-top: var(--card-space-body-y);
-}
-
-/* Flush / tight body — symmetric plain header band */
-[data-slot="card"]:has([data-slot="card-content"][data-tight]:not(:has([data-slot="tabs-list"])))
   [data-slot="card-header"]:not([data-banded]) {
-  padding-top: var(--card-space-body-y);
-  padding-bottom: var(--card-space-body-y);
-}
+    padding-top: var(--card-space-inset);
+    padding-bottom: 0;
+  }
 
-[data-slot="card"]:has([data-slot="card-content"][data-tight] [data-slot="tabs-list"])
-  [data-slot="card-header"] {
-  padding-bottom: var(--card-space-body-y);
-}
+  .ui-card-header--banded {
+    border-bottom: 1px solid hsl(var(--card-border));
+    background-color: hsl(var(--card-header-background) / var(--card-header-background-alpha));
+  }
 
-/* Toolbar header — title + CardAction, no description */
-[data-slot="card-header"]:has([data-slot="card-action"]):not(:has([data-slot="card-description"])) {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-inline-md);
-  padding-top: var(--card-space-body-y);
-  padding-bottom: var(--card-space-body-y);
-}
+  [data-slot="card-header"][data-banded] {
+    padding-inline: var(--card-space-inset);
+    padding-block: var(--card-space-header-y);
+    gap: var(--card-space-gap);
+  }
 
-[data-slot="card"]:has(
-    [data-slot="card-header"]:has([data-slot="card-action"]):not(
-        :has([data-slot="card-description"])
-      )
-  )
-  [data-slot="card-content"]:not([data-tight]) {
-  padding-top: 0;
-}
+  [data-slot="card-title"] {
+    font-size: var(--card-title-font-size);
+    font-weight: var(--card-title-font-weight);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--card-title-line-height);
+  }
 
-/* Header-only card — terminal slot owns bottom shell */
-[data-slot="card"]:not(:has([data-slot="card-content"], [data-slot="card-footer"]))
-  [data-slot="card-header"] {
-  padding-bottom: var(--card-space-inset);
-}
+  [data-slot="card-description"] {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--card-description-font-size);
+    line-height: var(--card-description-line-height);
+  }
 
-/* Cover — header below media uses section top, not shell */
-.ui-card-cover {
-  display: block;
-  width: 100%;
-  overflow: hidden;
-}
-
-[data-slot="card"]:has([data-slot="card-cover"]) [data-slot="card-header"] {
-  padding-top: var(--card-space-body-y);
-}
-
-/* ── Content ─────────────────────────────────────────────────────────── */
-[data-slot="card-content"] {
-  padding-inline: var(--card-space-inset);
-  padding-bottom: var(--card-space-inset);
-}
-
-[data-slot="card-content"]:not([data-tight]):not([data-solo]) {
-  padding-top: var(--card-space-body-y);
-}
-
-[data-slot="card-content"][data-solo] {
-  padding-top: var(--card-space-inset);
-}
-
-[data-slot="card-content"][data-flush] {
-  padding-inline: 0;
-}
-
-[data-slot="card-content"][data-flush]:has(.ui-data-table-root) {
-  padding-block: 0;
-}
-
-[data-slot="card-content"][data-tight] {
-  padding-top: 0;
-}
-
-[data-slot="card"]:has([data-slot="card-footer"]) [data-slot="card-content"] {
-  padding-bottom: var(--card-space-body-y);
-}
-
-/* Tabs in card */
-[data-slot="card"]:has([data-slot="tabs-list"]) [data-slot="card-content"][data-tight] {
-  padding-top: 0;
-  padding-inline: 0;
-}
-
-[data-slot="card"] [data-slot="tabs-list"] {
-  padding-inline: var(--card-space-inset);
-}
-
-[data-slot="card"] [data-slot="tabs-panel"] {
-  margin-top: 0;
-  padding: var(--card-space-body-y) var(--card-space-inset);
-}
-
-/* ── Footer ──────────────────────────────────────────────────────────── */
-[data-slot="card-footer"] {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-inline-sm);
-  padding-inline: var(--card-space-inset);
-}
-
-@media (max-width: 639px) {
-  [data-slot="card-footer"][data-separated]:not([data-flush]) {
+  [data-slot="card-header"][data-banded]:has([data-slot="card-action"]) {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
+    gap: var(--space-inline-md);
   }
-}
 
-[data-slot="card-footer"]:not([data-separated]) {
-  padding-top: 0;
-  padding-bottom: var(--card-space-inset);
-}
+  [data-slot="card-header"][data-banded]:has([data-slot="card-description"]):not(
+      :has([data-slot="card-action"])
+    ) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-[data-slot="card-footer"][data-separated] {
-  border-top: 1px solid hsl(var(--card-border));
-  padding-block: var(--card-space-footer-y);
-  justify-content: flex-end;
-}
+  [data-slot="card-action"] {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-inline-sm);
+    margin-left: auto;
+  }
 
-[data-slot="card-footer"][data-separated][data-flush] {
-  padding-inline: 0;
-  justify-content: stretch;
-}
+  [data-slot="card"]:has([data-slot="card-header"][data-banded]) {
+    overflow: hidden;
+  }
 
-/* ── Nested insets (table cells, grid cells — align to shell, not slot padding) ─ */
-.ui-card-inset-x {
-  padding-inline: var(--card-space-inset);
-}
+  [data-slot="card"]:has([data-slot="card-header"][data-banded])
+    [data-slot="card-content"]:not([data-tight]) {
+    padding-top: var(--card-space-body-y);
+  }
 
-.ui-card-inset {
-  padding: var(--card-space-body-y);
-}
+  /* Flush / tight body — symmetric plain header band */
+  [data-slot="card"]:has([data-slot="card-content"][data-tight]:not(:has([data-slot="tabs-list"])))
+    [data-slot="card-header"]:not([data-banded]) {
+    padding-top: var(--card-space-body-y);
+    padding-bottom: var(--card-space-body-y);
+  }
 
-.ui-card-inset-y {
-  padding-block: var(--card-space-header-y);
-}
+  [data-slot="card"]:has([data-slot="card-content"][data-tight] [data-slot="tabs-list"])
+    [data-slot="card-header"] {
+    padding-bottom: var(--card-space-body-y);
+  }
 
-.ui-card-grid-cell {
-  padding: var(--card-space-body-y);
-}
+  /* Toolbar header — title + CardAction, no description */
+  [data-slot="card-header"]:has([data-slot="card-action"]):not(
+      :has([data-slot="card-description"])
+    ) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-inline-md);
+    padding-top: var(--card-space-body-y);
+    padding-bottom: var(--card-space-body-y);
+  }
 
-.ui-card-footer-action-y {
-  padding-block: var(--card-space-footer-y);
-}
+  [data-slot="card"]:has(
+      [data-slot="card-header"]:has([data-slot="card-action"]):not(
+          :has([data-slot="card-description"])
+        )
+    )
+    [data-slot="card-content"]:not([data-tight]) {
+    padding-top: 0;
+  }
 
-/* ── StatCard — KPI tile aligned to dashboard design ─────────────── */
-[data-slot="card"][data-stat-card] {
-  padding: var(--card-space-header-y) var(--card-space-inset);
-}
+  /* Header-only card — terminal slot owns bottom shell */
+  [data-slot="card"]:not(:has([data-slot="card-content"], [data-slot="card-footer"]))
+    [data-slot="card-header"] {
+    padding-bottom: var(--card-space-inset);
+  }
 
-[data-slot="card"][data-stat-card][data-stat-layout="inline"] {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  column-gap: var(--space-inline-md);
-}
+  /* Cover — header below media uses section top, not shell */
+  .ui-card-cover {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+  }
 
-[data-slot="stat-card-body"] {
-  min-width: 0;
-}
+  [data-slot="card"]:has([data-slot="card-cover"]) [data-slot="card-header"] {
+    padding-top: var(--card-space-body-y);
+  }
 
-[data-slot="stat-card-label"] {
-  display: flex;
-  align-items: center;
-  gap: var(--space-inline-xs);
-  color: hsl(var(--muted-foreground));
-  font-size: var(--stat-card-label-font-size);
-  font-weight: var(--stat-card-label-font-weight);
-  letter-spacing: var(--stat-card-label-letter-spacing);
-  line-height: var(--line-height-normal);
-  text-transform: uppercase;
-}
+  /* ── Content ─────────────────────────────────────────────────────────── */
+  [data-slot="card-content"] {
+    padding-inline: var(--card-space-inset);
+    padding-bottom: var(--card-space-inset);
+  }
 
-[data-slot="stat-card-label"] svg {
-  width: 0.875rem;
-  height: 0.875rem;
-  flex-shrink: 0;
-  stroke-width: 1.6;
-}
+  [data-slot="card-content"]:not([data-tight]):not([data-solo]) {
+    padding-top: var(--card-space-body-y);
+  }
 
-[data-slot="stat-card-value-row"] {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-inline-sm);
-  margin-top: var(--stat-card-gap);
-}
+  [data-slot="card-content"][data-solo] {
+    padding-top: var(--card-space-inset);
+  }
 
-[data-slot="card"][data-stat-align="end"] [data-slot="stat-card-value-row"],
-[data-slot="card"][data-stat-layout="inline"] [data-slot="stat-card-value-row"] {
-  justify-content: flex-end;
-  text-align: right;
-}
+  [data-slot="card-content"][data-flush] {
+    padding-inline: 0;
+  }
 
-[data-slot="stat-card-value"] {
-  font-size: var(--stat-card-value-font-size);
-  font-weight: var(--stat-card-value-font-weight);
-  letter-spacing: var(--letter-spacing-tight);
-  line-height: var(--stat-card-value-line-height);
-  font-variant-numeric: tabular-nums;
-}
+  [data-slot="card-content"][data-flush]:has(.ui-data-table-root) {
+    padding-block: 0;
+  }
 
-[data-slot="stat-card-delta"] {
-  color: hsl(var(--muted-foreground));
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-normal);
-  font-variant-numeric: tabular-nums;
-}
+  [data-slot="card-content"][data-tight] {
+    padding-top: 0;
+  }
 
-[data-slot="stat-card-hint"] {
-  margin-top: var(--stat-card-gap);
-  color: hsl(var(--muted-foreground));
-  font-size: var(--stat-card-hint-font-size);
-  line-height: var(--line-height-normal);
+  [data-slot="card"]:has([data-slot="card-footer"]) [data-slot="card-content"] {
+    padding-bottom: var(--card-space-body-y);
+  }
+
+  /* Tabs in card */
+  [data-slot="card"]:has([data-slot="tabs-list"]) [data-slot="card-content"][data-tight] {
+    padding-top: 0;
+    padding-inline: 0;
+  }
+
+  [data-slot="card"] [data-slot="tabs-list"] {
+    padding-inline: var(--card-space-inset);
+  }
+
+  [data-slot="card"] [data-slot="tabs-panel"] {
+    margin-top: 0;
+    padding: var(--card-space-body-y) var(--card-space-inset);
+  }
+
+  /* ── Footer ──────────────────────────────────────────────────────────── */
+  [data-slot="card-footer"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-inline-sm);
+    padding-inline: var(--card-space-inset);
+  }
+
+  @media (max-width: 639px) {
+    [data-slot="card-footer"][data-separated]:not([data-flush]) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+  }
+
+  [data-slot="card-footer"]:not([data-separated]) {
+    padding-top: 0;
+    padding-bottom: var(--card-space-inset);
+  }
+
+  [data-slot="card-footer"][data-separated] {
+    border-top: 1px solid hsl(var(--card-border));
+    padding-block: var(--card-space-footer-y);
+    justify-content: flex-end;
+  }
+
+  [data-slot="card-footer"][data-separated][data-flush] {
+    padding-inline: 0;
+    justify-content: stretch;
+  }
+
+  /* ── Nested insets (table cells, grid cells — align to shell, not slot padding) ─ */
+  .ui-card-inset-x {
+    padding-inline: var(--card-space-inset);
+  }
+
+  .ui-card-inset {
+    padding: var(--card-space-body-y);
+  }
+
+  .ui-card-inset-y {
+    padding-block: var(--card-space-header-y);
+  }
+
+  .ui-card-grid-cell {
+    padding: var(--card-space-body-y);
+  }
+
+  .ui-card-footer-action-y {
+    padding-block: var(--card-space-footer-y);
+  }
+
+  /* ── StatCard — KPI tile aligned to dashboard design ─────────────── */
+  [data-slot="card"][data-stat-card] {
+    padding: var(--card-space-header-y) var(--card-space-inset);
+  }
+
+  [data-slot="card"][data-stat-card][data-stat-layout="inline"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--space-inline-md);
+  }
+
+  [data-slot="stat-card-body"] {
+    min-width: 0;
+  }
+
+  [data-slot="stat-card-label"] {
+    display: flex;
+    align-items: center;
+    gap: var(--space-inline-xs);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--stat-card-label-font-size);
+    font-weight: var(--stat-card-label-font-weight);
+    letter-spacing: var(--stat-card-label-letter-spacing);
+    line-height: var(--line-height-normal);
+    text-transform: uppercase;
+  }
+
+  [data-slot="stat-card-label"] svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+    stroke-width: 1.6;
+  }
+
+  [data-slot="stat-card-value-row"] {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-inline-sm);
+    margin-top: var(--stat-card-gap);
+  }
+
+  [data-slot="card"][data-stat-align="end"] [data-slot="stat-card-value-row"],
+  [data-slot="card"][data-stat-layout="inline"] [data-slot="stat-card-value-row"] {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  [data-slot="stat-card-value"] {
+    font-size: var(--stat-card-value-font-size);
+    font-weight: var(--stat-card-value-font-weight);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--stat-card-value-line-height);
+    font-variant-numeric: tabular-nums;
+  }
+
+  [data-slot="stat-card-delta"] {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-normal);
+    font-variant-numeric: tabular-nums;
+  }
+
+  [data-slot="stat-card-hint"] {
+    margin-top: var(--stat-card-gap);
+    color: hsl(var(--muted-foreground));
+    font-size: var(--stat-card-hint-font-size);
+    line-height: var(--line-height-normal);
+  }
 }
