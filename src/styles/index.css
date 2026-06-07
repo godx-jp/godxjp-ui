@@ -73,12 +73,16 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --color-chart-6: var(--chart-6);
-  --radius-xs: max(0px, calc(var(--radius) - 6px));
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  /* Golden-ratio radius scale — every step derives from --radius × (--radius-ratio = φ)ⁿ, so
+   * overriding --radius alone rescales the whole scale proportionally (≈ 1.4/2.3/3.7/6/9.7/15.7px). */
+  --radius-xs: calc(
+    var(--radius) / var(--radius-ratio) / var(--radius-ratio) / var(--radius-ratio)
+  );
+  --radius-sm: calc(var(--radius) / var(--radius-ratio) / var(--radius-ratio));
+  --radius-md: calc(var(--radius) / var(--radius-ratio));
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 10px);
+  --radius-xl: calc(var(--radius) * var(--radius-ratio));
+  --radius-2xl: calc(var(--radius) * var(--radius-ratio) * var(--radius-ratio));
   /* Extended text-hierarchy roles (tertiary / disabled / link / brand) → text-* / bg-* utilities. */
   --color-foreground-tertiary: hsl(var(--text-tertiary));
   --color-foreground-disabled: hsl(var(--text-disabled));
