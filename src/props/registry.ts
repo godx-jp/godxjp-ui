@@ -225,7 +225,7 @@ export const VOCABULARY_REGISTRY = {
   TextSizeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Text size — golden-ratio type-scale steps (2xs…xl), never an arbitrary px",
+    description: "Text size — golden-ratio type-scale steps (2xs…2xl), never an arbitrary px",
   },
   TextToneProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -235,7 +235,7 @@ export const VOCABULARY_REGISTRY = {
   FontWeightProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
-    description: "Font weight regular | medium | semibold (system 2-weight, 400/500)",
+    description: "Font weight regular | medium | bold — the 3-weight canon (400/500/700, no 600)",
   },
   HeadingLevelProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -470,6 +470,7 @@ export const COMPONENT_PROP_REGISTRY = {
       "AsChildProp",
       "DisabledProp",
       "OnClickProp",
+      "PendingProp",
     ],
   },
   TextProp: {
@@ -497,6 +498,21 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/data-entry.prop.ts",
     vocabulary: ["PlaceholderProp", "DisabledProp"],
+  },
+  NumberInputProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [
+      "ValueProp",
+      "DefaultValueProp",
+      "OnValueChangeProp",
+      "SizeProp",
+      "PlaceholderProp",
+      "DisabledProp",
+      "NameProp",
+      "IdProp",
+      "ClassNameProp",
+    ],
   },
   FormProp: {
     group: "data-entry",

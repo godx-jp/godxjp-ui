@@ -1,5 +1,7 @@
 export { Input } from "./input";
 export type { InputProps } from "./input";
+export { NumberInput } from "./number-input";
+export type { NumberInputProp, NumberInputProps } from "./number-input";
 export { Label } from "./label";
 export {
   Select,

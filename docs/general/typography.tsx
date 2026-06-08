@@ -7,7 +7,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * `<span className="text-[13px] font-medium text-muted-foreground">`. Size is a step of the
  * golden-ratio type scale (never an arbitrary px); tone/weight are semantic tokens.
  */
-const sizes = ["2xs", "xs", "sm", "md", "lg", "xl"] as const;
+const sizes = ["2xs", "xs", "sm", "md", "lg", "xl", "2xl"] as const;
 const tones = ["default", "muted", "primary", "success", "warning", "destructive", "info"] as const;
 const levels = [1, 2, 3, 4] as const;
 
@@ -58,7 +58,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Tone + weight</CardTitle>
             <CardDescription>
-              tone maps to semantic foreground tokens; weight is 2-weight.
+              tone maps to semantic foreground tokens; weight is the 3-weight canon (400/500/700).
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -73,7 +73,7 @@ export default function Demo() {
               <Flex direction="row" gap="md" wrap align="center">
                 <Text weight="regular">Regular 400</Text>
                 <Text weight="medium">Medium 500</Text>
-                <Text weight="semibold">Semibold (=500)</Text>
+                <Text weight="bold">Bold 700</Text>
               </Flex>
             </Flex>
           </CardContent>

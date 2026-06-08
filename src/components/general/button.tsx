@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
+import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import type { ButtonProp } from "../../props/components/general.prop";
 
@@ -44,25 +45,57 @@ const buttonVariants = cva("ui-button", {
 export type { ButtonProp, ButtonProp as ButtonProps } from "../../props/components/general.prop";
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
-  ({ className, variant, size, shape, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      shape,
+      asChild = false,
+      loading = false,
+      loadingText,
+      disabled,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button";
+    // While loading the control is non-interactive (blocks activation + pointer events) and
+    // announces `aria-busy`. The spinner is rendered as a LEADING sibling so the label stays in
+    // place (no abrupt width jump); a `loadingText` swaps the label for an i18n-friendly message.
+    const isLoading = !asChild && loading;
+    const content = isLoading ? (
+      <>
+        <Loader2 className="animate-spin" aria-hidden="true" />
+        {loadingText ?? children}
+      </>
+    ) : (
+      children
+    );
     return (
       <Comp
         data-slot="button"
         data-variant={variant ?? "default"}
         data-size={size ?? "default"}
         data-shape={shape ?? "default"}
+        data-loading={isLoading ? "" : undefined}
+        aria-busy={isLoading || undefined}
+        disabled={isLoading || disabled}
         className={cn(
           "inline-flex shrink-0 items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none",
           "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
           "disabled:pointer-events-none disabled:opacity-50",
+          "data-[loading]:pointer-events-none",
           "aria-invalid:border-destructive aria-invalid:ring-destructive/20",
           "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
           buttonVariants({ variant, size, shape, className }),
         )}
         ref={ref}
         {...props}
-      />
+      >
+        {content}
+      </Comp>
     );
   },
 );

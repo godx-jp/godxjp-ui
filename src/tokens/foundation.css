@@ -130,10 +130,11 @@
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;
-  /* dxs-kintai uses three weights only (400/500/700). 600 is forbidden
-   * (ambiguous between 500 and 700) — the legacy "semibold" token collapses to
-   * medium so any remaining reference renders at 500. */
+  /* dxs-kintai uses three weights only: 400 body · 500 heading/label · 700 emphasis. 600 is
+   * forbidden (ambiguous between 500 and 700) — the legacy "semibold" token collapses to medium
+   * so any remaining reference renders at 500. `bold` is the 700 emphasis weight. */
   --font-weight-semibold: 500;
+  --font-weight-bold: 700;
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-body: 1.7;

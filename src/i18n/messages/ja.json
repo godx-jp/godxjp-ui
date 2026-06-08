@@ -155,6 +155,10 @@
     "passwordInput": {
       "show": "パスワードを表示",
       "hide": "パスワードを隠す"
+    },
+    "numberInput": {
+      "increment": "増やす",
+      "decrement": "減らす"
     }
   },
   "navigation": {

@@ -27,6 +27,7 @@ import type {
   WidthProp,
   BreakpointProp,
   DensityProp,
+  SizeProp,
 } from "../vocabulary";
 import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
@@ -35,6 +36,43 @@ export type InputProp = React.InputHTMLAttributes<HTMLInputElement>;
 
 /** @see Textarea */
 export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+/**
+ * @see NumberInput — localized numeric spinbutton (composes `Input` + step `Button`s).
+ * `value`/`defaultValue`/`onValueChange` carry a `number | null` (null = empty). `step` drives both
+ * the stepper buttons and ArrowUp/ArrowDown (Shift = ×10); `precision` sets the committed decimal
+ * places (inferred from `step` when omitted). Value commits clamped to `min`/`max` on blur/Enter.
+ */
+export type NumberInputProp = {
+  value?: ValueProp<number | null>;
+  defaultValue?: DefaultValueProp<number | null>;
+  onValueChange?: OnValueChangeProp<number | null>;
+  /** Lower bound — clamps the committed value and disables the decrement stepper at the floor. */
+  min?: number;
+  /** Upper bound — clamps the committed value and disables the increment stepper at the ceiling. */
+  max?: number;
+  /** Increment for the steppers + ArrowUp/ArrowDown (Shift = ×10). Default 1. */
+  step?: number;
+  /** Committed decimal places. Inferred from `step` when omitted. */
+  precision?: number;
+  disabled?: DisabledProp;
+  /** Read-only: value is shown and selectable but neither typeable nor steppable. */
+  readOnly?: boolean;
+  size?: SizeProp;
+  placeholder?: PlaceholderProp;
+  /** Leading affix inside the field (e.g. `¥`). Decorative — `aria-hidden`. */
+  prefix?: React.ReactNode;
+  /** Trailing affix inside the field (e.g. `%`). Decorative — `aria-hidden`. */
+  suffix?: React.ReactNode;
+  /** Form field name — the visible input submits its value natively. */
+  name?: NameProp;
+  id?: IdProp;
+  className?: ClassNameProp;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
+  "data-testid"?: string;
+};
 
 /**
  * @see Form — layout context for FormFields (Ant-style). `layout`/`labelWidth`/`controlWidth`/

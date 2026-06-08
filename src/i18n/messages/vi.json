@@ -155,6 +155,10 @@
     "passwordInput": {
       "show": "Hiện mật khẩu",
       "hide": "Ẩn mật khẩu"
+    },
+    "numberInput": {
+      "increment": "Tăng",
+      "decrement": "Giảm"
     }
   },
   "navigation": {

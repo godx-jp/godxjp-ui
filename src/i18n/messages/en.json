@@ -155,6 +155,10 @@
     "passwordInput": {
       "show": "Show password",
       "hide": "Hide password"
+    },
+    "numberInput": {
+      "increment": "Increase",
+      "decrement": "Decrease"
     }
   },
   "navigation": {

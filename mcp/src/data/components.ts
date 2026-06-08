@@ -812,9 +812,22 @@ function MyShell({ children }: { content: React.ReactNode }) {
       },
       { name: "disabled", type: "boolean", description: "Disable the button." },
       {
+        name: "loading",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'In-flight state — shows a leading `Loader2` spinner (replaces a leading icon if present), sets `aria-busy="true"`, and blocks activation (non-interactive, pointer-events disabled) while keeping the label visible so the width doesn\'t jump. Prefer this over a hand-rolled `<Loader2 className="animate-spin">` inside the button. Ignored when `asChild` (Slot requires a single child).',
+      },
+      {
+        name: "loadingText",
+        type: "string",
+        description:
+          "Optional label to swap in while `loading` (pass the `t()`-translated string, e.g. `loadingText={t('saving')}`). When omitted the original children stay beside the spinner.",
+      },
+      {
         name: "onClick",
         type: "React.MouseEventHandler<HTMLButtonElement>",
-        description: "Click handler.",
+        description: "Click handler. Does not fire while `loading` or `disabled`.",
       },
     ],
     usage: [
@@ -824,6 +837,7 @@ function MyShell({ children }: { content: React.ReactNode }) {
       "DON'T use raw `<button>` elements anywhere in the UI — always use this `Button`. The only exception is an `aria-hidden` native control used as an e2e/a11y hook paired with a visible godx-ui control.",
       'DO set `type="submit"` explicitly on form submit buttons (the default HTML button type inside `<form>` is already `submit`, but being explicit prevents accidental double-submissions when a `type="button"` sibling exists). For cancel/reset actions set `type="button"` to avoid accidental form submission.',
       "DON'T apply raw padding, height, or `rounded-*` overrides to `Button` via `className` — the size variants encode the full box model. If a custom size is truly needed, use `buttonVariants` from `@godxjp/ui/general` to compose a new cva class rather than fighting the existing ones.",
+      "DO use the `loading` prop for async/pending actions instead of hand-rolling `<Loader2 className=\"animate-spin\">` inside the button — `loading` renders the spinner, sets `aria-busy`, and blocks activation for you; pair with `loadingText={t('saving')}` to swap the label. For a TanStack Query refetch use `ButtonRefetch` (it owns its own loading lifecycle) rather than wiring `loading` manually.",
     ],
     useCases: [
       'Primary form submission in a Dialog or Sheet (e.g. `<Button type="submit" disabled={form.processing}>保存</Button>`) — the `disabled` prop greys it out and blocks pointer events, preventing double-submit during async operations.',
@@ -858,10 +872,10 @@ import { Trash2 } from "lucide-react";
     props: [
       {
         name: "size",
-        type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl"',
+        type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl"',
         defaultValue: '"sm"',
         description:
-          "Golden-ratio type-scale step. NEVER an arbitrary px (`text-[13px]` is banned) — pick the nearest step.",
+          "Golden-ratio type-scale step (2xs…2xl). NEVER an arbitrary px (`text-[13px]` is banned) — pick the nearest step.",
       },
       {
         name: "tone",
@@ -872,9 +886,10 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "weight",
-        type: '"regular" | "medium" | "semibold"',
+        type: '"regular" | "medium" | "bold"',
         defaultValue: '"regular"',
-        description: "Font weight (system 2-weight 400/500; semibold resolves to the 500 token).",
+        description:
+          "Font weight — the 3-weight canon: regular 400 (body), medium 500 (label), bold 700 (emphasis). 600/semibold is forbidden.",
       },
       { name: "align", type: '"start" | "center" | "end"', description: "Logical text alignment." },
       { name: "truncate", type: "boolean", description: "Single-line ellipsis." },
@@ -882,9 +897,9 @@ import { Trash2 } from "lucide-react";
       { name: "mono", type: "boolean", description: "Monospace family for codes / ids." },
       {
         name: "as",
-        type: '"span" | "p" | "div" | "label" | "strong" | "em" | "small"',
+        type: '"span" | "p" | "div" | "label" | "strong" | "em" | "small" | "code" | "kbd" | "dt" | "dd" | "caption" | "abbr"',
         defaultValue: '"span"',
-        description: "Rendered element.",
+        description: "Rendered element. `code`/`kbd` are monospace by default.",
       },
     ],
     usage: [
@@ -2036,6 +2051,125 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
 <Input id="qty" type="number" placeholder="例: 500" value={value} onValueChange={(e) => setValue(e.target.value)} />`,
     storyPath: "data-entry/Input.stories.tsx",
     rules: [],
+  },
+  {
+    name: "NumberInput",
+    group: "data-entry",
+    tagline:
+      "WAI-ARIA spinbutton for localized numeric entry — composes the real Input (role=spinbutton, inputMode=decimal) with stacked increment/decrement step Buttons. Type freely, Arrow/Shift-Arrow step, value commits clamped to min/max + rounded to precision.",
+    props: [
+      {
+        name: "value",
+        type: "number | null",
+        description: "Controlled value. `null` = empty field. Pair with `onValueChange`.",
+      },
+      {
+        name: "defaultValue",
+        type: "number | null",
+        defaultValue: "null",
+        description: "Uncontrolled initial value.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: number | null) => void",
+        description:
+          "Value change callback (vocabulary triad — NOT onChange). Receives `null` when the field is empty.",
+      },
+      {
+        name: "min",
+        type: "number",
+        description:
+          "Lower bound — clamps on commit and disables the decrement stepper at the floor.",
+      },
+      {
+        name: "max",
+        type: "number",
+        description:
+          "Upper bound — clamps on commit and disables the increment stepper at the ceiling.",
+      },
+      {
+        name: "step",
+        type: "number",
+        defaultValue: "1",
+        description: "Increment for the steppers + ArrowUp/ArrowDown (Shift = ×10).",
+      },
+      {
+        name: "precision",
+        type: "number",
+        description: "Committed decimal places. Inferred from `step` when omitted.",
+      },
+      { name: "disabled", type: "boolean", description: "Disables typing and stepping." },
+      {
+        name: "readOnly",
+        type: "boolean",
+        description: "Value is shown and selectable but not typeable or steppable.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "Control height tier (--control-height). Aligns with sibling controls on a row.",
+      },
+      { name: "placeholder", type: "string", description: "Placeholder shown when empty." },
+      {
+        name: "prefix",
+        type: "React.ReactNode",
+        description: "Leading decorative affix inside the field (e.g. `¥`). aria-hidden.",
+      },
+      {
+        name: "suffix",
+        type: "React.ReactNode",
+        description: "Trailing decorative affix inside the field (e.g. `%`). aria-hidden.",
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Form field name — submits its value natively.",
+      },
+      { name: "id", type: "string", description: "Associates with a <label htmlFor> / FormField." },
+      {
+        name: "aria-label",
+        type: "string",
+        description:
+          "Accessible name for the spinbutton when no visible FormField label is present.",
+      },
+    ],
+    usage: [
+      "DO use NumberInput (not `<Input type='number'>`) whenever numeric entry wants steppers, min/max clamping, precision rounding, or a ¥/% affix — it is the canonical numeric primitive. Plain Input has no stepper and no clamp.",
+      "DO drive it controlled with `value` + `onValueChange` carrying `number | null` (the vocabulary triad — NOT `onChange`). `null` means the field is empty; never substitute 0 for empty.",
+      "DON'T pass `value` without `onValueChange` — like every controlled @godxjp/ui input it would freeze. Omit both for uncontrolled (use `defaultValue`).",
+      "DO set `step` to your increment and let `precision` (or the decimals of `step`) round the committed value: `step={0.25} precision={2}` gives quarter-step entry rounded to 2 places on blur/Enter.",
+      "DO set `min`/`max` for bounded quantities — the value clamps on commit and the matching stepper Button auto-disables at the bound. The steppers are tabIndex=-1 so they never pollute the keyboard tab order (Arrow keys cover keyboard stepping).",
+      "DON'T wrap it in a hand-rolled label/error markup — compose it inside FormField (matching `id`) for the aria wiring, exactly like Input.",
+      "DON'T format the value yourself for display — NumberInput formats at rest via Intl.NumberFormat in the active locale while keeping the raw value typeable on focus.",
+    ],
+    useCases: [
+      "Quantity / line-item steppers in order, invoice, or cart forms (min={1}, step={1}) where ± buttons and a floor are expected.",
+      "Price / amount fields with a currency affix (prefix='¥', step={10}) — the affix is decorative and the committed value stays a plain number.",
+      "Percentage / rate inputs bounded 0–100 (suffix='%', min={0} max={100}).",
+      "Decimal measurements — weight, dimensions, exchange rates (step={0.25}, precision={2}) needing rounded commit.",
+      "Any bounded numeric setting (timeouts, retry counts, page sizes) where a slider is too coarse and a free Input lacks clamping.",
+    ],
+    related: [
+      "Input — the plain single-line field NumberInput composes; use Input directly only for free numeric text with no stepper/clamp need.",
+      "Slider — use instead when the user picks an approximate value within a range by dragging; NumberInput is for exact keyed entry.",
+      "FormField — compose NumberInput inside FormField (matching id) for label/helper/error a11y wiring.",
+      "TimeInput — the HH:mm sibling spinbutton; NumberInput is for plain numbers, TimeInput for clock times.",
+    ],
+    storyPath: "data-entry/NumberInput.stories.tsx",
+    rules: [3, 6],
+    example: `import { NumberInput } from "@godxjp/ui/data-entry";
+
+<NumberInput
+  value={qty}
+  onValueChange={setQty}
+  min={1}
+  max={99}
+  step={1}
+  prefix="¥"
+  aria-label="数量"
+/>`,
   },
   {
     name: "SearchInput",

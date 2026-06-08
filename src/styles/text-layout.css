@@ -29,16 +29,25 @@
   [data-slot="text"][data-size="xl"] {
     font-size: var(--font-size-xl);
   }
+  [data-slot="text"][data-size="2xl"] {
+    font-size: var(--font-size-2xl);
+  }
 
-  /* Weight — system 2-weight; semibold resolves to the 500 token (not 600). */
+  /* Weight — the dxs-kintai canon (400 body · 500 heading/label · 700 emphasis). No 600. */
   [data-slot="text"][data-weight="regular"] {
     font-weight: var(--font-weight-normal);
   }
   [data-slot="text"][data-weight="medium"] {
     font-weight: var(--font-weight-medium);
   }
-  [data-slot="text"][data-weight="semibold"] {
-    font-weight: var(--font-weight-semibold);
+  [data-slot="text"][data-weight="bold"] {
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* code / kbd render monospace by default (the natural expectation for `as="code"`). */
+  code[data-slot="text"],
+  kbd[data-slot="text"] {
+    font-family: var(--font-family-mono, ui-monospace, "SFMono-Regular", monospace);
   }
 
   /* Tone + Heading tone — semantic foreground tokens. */

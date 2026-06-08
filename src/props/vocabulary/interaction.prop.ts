@@ -18,7 +18,7 @@ export type ButtonVariantProp =
 export type ShapeProp = "default" | "pill" | "sharp";
 
 /** Text size — steps of the golden-ratio type scale (NEVER an arbitrary px). `sm` = base. */
-export type TextSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl";
+export type TextSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 
 /** Text colour intent — maps to semantic foreground tokens (no raw palette). */
 export type TextToneProp =
@@ -30,8 +30,9 @@ export type TextToneProp =
   | "destructive"
   | "info";
 
-/** Font weight — the system is 2-weight (400/500); `semibold` resolves to the 500 token, not 600. */
-export type FontWeightProp = "regular" | "medium" | "semibold";
+/** Font weight — the dxs-kintai canon is THREE weights only: `regular` (400 body), `medium` (500
+ *  heading/label), `bold` (700 emphasis). 600/`semibold` is forbidden. */
+export type FontWeightProp = "regular" | "medium" | "bold";
 
 /** Heading level — drives both the `--heading-h*` size token and the semantic `<h1..h4>` element. */
 export type HeadingLevelProp = 1 | 2 | 3 | 4;

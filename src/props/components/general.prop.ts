@@ -8,6 +8,7 @@ import type {
   FontWeightProp,
   HeadingLevelProp,
   OnClickProp,
+  PendingProp,
   ShapeProp,
   TextAlignProp,
   TextSizeProp,
@@ -16,8 +17,21 @@ import type {
 
 /** @see Text — typographic primitive; replaces hand-rolled `<span className="text-[13px] …">`. */
 export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
-  /** Render element (span | p | div | label | strong | em | small). Default `span`. */
-  as?: "span" | "p" | "div" | "label" | "strong" | "em" | "small";
+  /** Render element. Default `span`. Covers inline/block text + description-list + code/caption. */
+  as?:
+    | "span"
+    | "p"
+    | "div"
+    | "label"
+    | "strong"
+    | "em"
+    | "small"
+    | "code"
+    | "kbd"
+    | "dt"
+    | "dd"
+    | "caption"
+    | "abbr";
   /** Size from the type scale — never an arbitrary px. Default `sm` (base). */
   size?: TextSizeProp;
   /** Semantic colour intent. Default `default` (foreground). */
@@ -53,4 +67,11 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   asChild?: AsChildProp;
   onClick?: OnClickProp;
   disabled?: DisabledProp;
+  /**
+   * In-flight state — shows a leading spinner (replaces a leading icon if present),
+   * sets `aria-busy` and blocks activation while keeping the label to avoid layout shift.
+   */
+  loading?: PendingProp;
+  /** Optional label to swap in while `loading` (pass the `t()`-translated string). */
+  loadingText?: string;
 };

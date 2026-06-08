@@ -68,4 +68,71 @@ describe("Button", () => {
     renderWithUi(<Button>Primary</Button>);
     expect(screen.getByRole("button", { name: "Primary" })).toHaveClass("ui-button--default");
   });
+
+  describe("loading", () => {
+    it("sets aria-busy, data-loading, and disables the button while loading", () => {
+      renderWithUi(<Button loading>Save</Button>);
+      const btn = screen.getByRole("button", { name: "Save" });
+      expect(btn).toHaveAttribute("aria-busy", "true");
+      expect(btn).toHaveAttribute("data-loading", "");
+      expect(btn).toBeDisabled();
+    });
+
+    it("does not fire onClick while loading", async () => {
+      const user = userEvent.setup();
+      const onClick = vi.fn();
+      renderWithUi(
+        <Button loading onClick={onClick}>
+          Save
+        </Button>,
+      );
+      await user.click(screen.getByRole("button", { name: "Save" }));
+      expect(onClick).not.toHaveBeenCalled();
+    });
+
+    it("renders a leading spinner alongside the label (no width-jumping label removal)", () => {
+      renderWithUi(<Button loading>Save</Button>);
+      const btn = screen.getByRole("button", { name: "Save" });
+      // Label kept; spinner is a leading svg sibling.
+      expect(btn).toHaveTextContent("Save");
+      expect(btn.querySelector("svg.animate-spin")).not.toBeNull();
+    });
+
+    it("swaps the label for loadingText while loading", () => {
+      renderWithUi(
+        <Button loading loadingText="Saving…">
+          Save
+        </Button>,
+      );
+      const btn = screen.getByRole("button", { name: "Saving…" });
+      expect(btn).toHaveTextContent("Saving…");
+      expect(btn).not.toHaveTextContent("Save");
+    });
+
+    it("is not aria-busy and is interactive when not loading", async () => {
+      const user = userEvent.setup();
+      const onClick = vi.fn();
+      renderWithUi(
+        <Button onClick={onClick} loadingText="Saving…">
+          Save
+        </Button>,
+      );
+      const btn = screen.getByRole("button", { name: "Save" });
+      expect(btn).not.toHaveAttribute("aria-busy");
+      expect(btn).not.toHaveAttribute("data-loading");
+      await user.click(btn);
+      expect(onClick).toHaveBeenCalledOnce();
+    });
+
+    it("ignores loading when asChild (Slot requires a single child)", () => {
+      renderWithUi(
+        <Button asChild loading>
+          <a href="#">Link</a>
+        </Button>,
+      );
+      const link = screen.getByRole("link", { name: "Link" });
+      expect(link).not.toHaveAttribute("aria-busy");
+      expect(link.querySelector("svg.animate-spin")).toBeNull();
+    });
+  });
 });

@@ -121,6 +121,31 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Loading</CardTitle>
+            <CardDescription>
+              `loading` shows a leading spinner, sets `aria-busy`, and blocks activation while
+              keeping the label in place (no width jump). `loadingText` swaps the label for an
+              i18n-friendly in-flight message.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="md">
+              <Button loading loadingText="保存中…">
+                保存 Save
+              </Button>
+              <Button variant="outline" loading loadingText="送信中…">
+                送信 Submit
+              </Button>
+              <Button variant="destructive" loading loadingText="削除中…">
+                削除 Delete
+              </Button>
+              <Button loading>処理中…</Button>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

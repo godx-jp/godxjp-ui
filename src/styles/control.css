@@ -768,3 +768,67 @@
   font-size: var(--font-size-sm);
   color: inherit;
 }
+
+/* NumberInput — spinbutton: composed Input + leading/trailing affix + stepper Buttons.
+   `data-size` remaps the --control-height tier so the inner .ui-control field tracks it. */
+.ui-number-input {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  inline-size: 100%;
+}
+.ui-number-input[data-size="xs"] {
+  --control-height: var(--control-height-xs);
+}
+.ui-number-input[data-size="sm"] {
+  --control-height: var(--control-height-sm);
+}
+.ui-number-input[data-size="lg"] {
+  --control-height: var(--control-height-lg);
+}
+/* Reserve room on the trailing edge for the stacked steppers (logical inline-end). */
+.ui-number-input-field {
+  inline-size: 100%;
+  text-align: end;
+  padding-inline-end: calc(var(--control-height) + var(--space-2));
+}
+/* A leading/trailing decorative affix (¥, %) — overlays inside the field. */
+.ui-number-input-affix {
+  position: absolute;
+  inset-block: 0;
+  display: inline-flex;
+  align-items: center;
+  color: hsl(var(--muted-foreground));
+  font-size: var(--font-size-sm);
+  pointer-events: none;
+}
+.ui-number-input-affix:first-of-type {
+  inset-inline-start: var(--control-padding-x);
+}
+/* With a leading affix, pad the field's inline-start so digits don't sit under it. */
+.ui-number-input:has(.ui-number-input-affix:first-of-type) .ui-number-input-field {
+  padding-inline-start: calc(var(--control-padding-x) + 1.25rem);
+}
+.ui-number-input-affix:last-of-type {
+  inset-inline-end: calc(var(--control-height) + var(--space-2));
+}
+.ui-number-input-steppers {
+  position: absolute;
+  inset-inline-end: var(--space-1);
+  inset-block: 0;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.0625rem;
+  pointer-events: none;
+}
+.ui-number-input-step {
+  pointer-events: auto;
+  block-size: calc(var(--control-height) / 2 - 0.1875rem);
+  min-block-size: 0;
+  inline-size: 1.5rem;
+}
+.ui-number-input-step svg {
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+}
