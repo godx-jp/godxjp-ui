@@ -222,6 +222,31 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description: "Corner shape default | pill | sharp — shared by Button + Badge (radius tokens)",
   },
+  TextSizeProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Text size — golden-ratio type-scale steps (2xs…xl), never an arbitrary px",
+  },
+  TextToneProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Text colour intent — semantic foreground tokens",
+  },
+  FontWeightProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Font weight regular | medium | semibold (system 2-weight, 400/500)",
+  },
+  HeadingLevelProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Heading level 1-4 — sizes from --heading-h* and the semantic element",
+  },
+  TextAlignProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Inline text alignment start | center | end (logical, RTL-safe)",
+  },
   SizeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -446,6 +471,22 @@ export const COMPONENT_PROP_REGISTRY = {
       "DisabledProp",
       "OnClickProp",
     ],
+  },
+  TextProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "TextSizeProp",
+      "TextToneProp",
+      "FontWeightProp",
+      "TextAlignProp",
+      "ClassNameProp",
+    ],
+  },
+  HeadingProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: ["HeadingLevelProp", "TextToneProp", "TextAlignProp", "ClassNameProp"],
   },
   InputProp: {
     group: "data-entry",

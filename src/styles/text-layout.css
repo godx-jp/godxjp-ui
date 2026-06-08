@@ -1,0 +1,119 @@
+/*
+ * TEXT / HEADING — typographic primitives (@godxjp/ui).
+ * Token-driven ONLY: size = golden-ratio type scale, weight = the 2-weight system (400/500),
+ * tone = semantic foreground tokens. No arbitrary px, no font-semibold=600. Components emit
+ * data-slot + data-* flags; all styling lives here.
+ */
+
+@layer components {
+  .ui-text {
+    margin: 0;
+  }
+
+  /* Size — steps of the golden-ratio scale (sm = base). */
+  [data-slot="text"][data-size="2xs"] {
+    font-size: var(--font-size-2xs);
+  }
+  [data-slot="text"][data-size="xs"] {
+    font-size: var(--font-size-xs);
+  }
+  [data-slot="text"][data-size="sm"] {
+    font-size: var(--font-size-sm);
+  }
+  [data-slot="text"][data-size="md"] {
+    font-size: var(--font-size-base);
+  }
+  [data-slot="text"][data-size="lg"] {
+    font-size: var(--font-size-lg);
+  }
+  [data-slot="text"][data-size="xl"] {
+    font-size: var(--font-size-xl);
+  }
+
+  /* Weight — system 2-weight; semibold resolves to the 500 token (not 600). */
+  [data-slot="text"][data-weight="regular"] {
+    font-weight: var(--font-weight-normal);
+  }
+  [data-slot="text"][data-weight="medium"] {
+    font-weight: var(--font-weight-medium);
+  }
+  [data-slot="text"][data-weight="semibold"] {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Tone + Heading tone — semantic foreground tokens. */
+  [data-slot="text"][data-tone="default"],
+  [data-slot="heading"][data-tone="default"] {
+    color: hsl(var(--foreground));
+  }
+  [data-slot="text"][data-tone="muted"],
+  [data-slot="heading"][data-tone="muted"] {
+    color: hsl(var(--muted-foreground));
+  }
+  [data-slot="text"][data-tone="primary"],
+  [data-slot="heading"][data-tone="primary"] {
+    color: hsl(var(--primary));
+  }
+  [data-slot="text"][data-tone="success"],
+  [data-slot="heading"][data-tone="success"] {
+    color: hsl(var(--success));
+  }
+  [data-slot="text"][data-tone="warning"],
+  [data-slot="heading"][data-tone="warning"] {
+    color: hsl(var(--warning));
+  }
+  [data-slot="text"][data-tone="destructive"],
+  [data-slot="heading"][data-tone="destructive"] {
+    color: hsl(var(--destructive));
+  }
+  [data-slot="text"][data-tone="info"],
+  [data-slot="heading"][data-tone="info"] {
+    color: hsl(var(--info));
+  }
+
+  /* Alignment (logical), truncate, tabular, mono — shared by text + heading. */
+  [data-slot="text"][data-align="start"],
+  [data-slot="heading"][data-align="start"] {
+    text-align: start;
+  }
+  [data-slot="text"][data-align="center"],
+  [data-slot="heading"][data-align="center"] {
+    text-align: center;
+  }
+  [data-slot="text"][data-align="end"],
+  [data-slot="heading"][data-align="end"] {
+    text-align: end;
+  }
+  [data-slot="text"][data-truncate],
+  [data-slot="heading"][data-truncate] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  [data-slot="text"][data-tabular] {
+    font-variant-numeric: tabular-nums;
+  }
+  [data-slot="text"][data-mono] {
+    font-family: var(--font-family-mono, ui-monospace, "SFMono-Regular", monospace);
+  }
+
+  /* Heading — sized from the --heading-h* tokens, medium weight, tight rhythm. */
+  [data-slot="heading"] {
+    margin: 0;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: var(--line-height-tight);
+  }
+  [data-slot="heading"][data-level="1"] {
+    font-size: var(--heading-h1);
+  }
+  [data-slot="heading"][data-level="2"] {
+    font-size: var(--heading-h2);
+  }
+  [data-slot="heading"][data-level="3"] {
+    font-size: var(--heading-h3);
+  }
+  [data-slot="heading"][data-level="4"] {
+    font-size: var(--heading-h4);
+  }
+}

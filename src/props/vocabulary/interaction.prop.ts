@@ -17,6 +17,28 @@ export type ButtonVariantProp =
  *  Button + Badge. `pill` = fully rounded (`--radius-pill`), `sharp` = square (`--radius-sharp`). */
 export type ShapeProp = "default" | "pill" | "sharp";
 
+/** Text size — steps of the golden-ratio type scale (NEVER an arbitrary px). `sm` = base. */
+export type TextSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl";
+
+/** Text colour intent — maps to semantic foreground tokens (no raw palette). */
+export type TextToneProp =
+  | "default"
+  | "muted"
+  | "primary"
+  | "success"
+  | "warning"
+  | "destructive"
+  | "info";
+
+/** Font weight — the system is 2-weight (400/500); `semibold` resolves to the 500 token, not 600. */
+export type FontWeightProp = "regular" | "medium" | "semibold";
+
+/** Heading level — drives both the `--heading-h*` size token and the semantic `<h1..h4>` element. */
+export type HeadingLevelProp = 1 | 2 | 3 | 4;
+
+/** Inline text alignment (logical, RTL-safe). */
+export type TextAlignProp = "start" | "center" | "end";
+
 /** Badge visual style. */
 export type BadgeVariantProp = "default" | "secondary" | "outline" | "dashed";
 

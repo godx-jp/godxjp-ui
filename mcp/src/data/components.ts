@@ -850,6 +850,102 @@ import { Trash2 } from "lucide-react";
     storyPath: "general/Button.stories.tsx",
     rules: [23],
   },
+  {
+    name: "Text",
+    group: "general",
+    tagline:
+      'Typographic primitive — use INSTEAD of a hand-rolled `<span className="text-[13px] font-medium text-muted-foreground">`. Size is a type-scale step (never px); tone/weight are tokens.',
+    props: [
+      {
+        name: "size",
+        type: '"2xs" | "xs" | "sm" | "md" | "lg" | "xl"',
+        defaultValue: '"sm"',
+        description:
+          "Golden-ratio type-scale step. NEVER an arbitrary px (`text-[13px]` is banned) — pick the nearest step.",
+      },
+      {
+        name: "tone",
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        defaultValue: '"default"',
+        description:
+          "Semantic foreground colour. Replaces `text-muted-foreground` etc. on a raw span.",
+      },
+      {
+        name: "weight",
+        type: '"regular" | "medium" | "semibold"',
+        defaultValue: '"regular"',
+        description: "Font weight (system 2-weight 400/500; semibold resolves to the 500 token).",
+      },
+      { name: "align", type: '"start" | "center" | "end"', description: "Logical text alignment." },
+      { name: "truncate", type: "boolean", description: "Single-line ellipsis." },
+      { name: "tabular", type: "boolean", description: "Tabular figures for aligned numbers." },
+      { name: "mono", type: "boolean", description: "Monospace family for codes / ids." },
+      {
+        name: "as",
+        type: '"span" | "p" | "div" | "label" | "strong" | "em" | "small"',
+        defaultValue: '"span"',
+        description: "Rendered element.",
+      },
+    ],
+    usage: [
+      "DO use `<Text>` for ALL body / inline / caption text instead of a styled `<span>`/`<p>`. Pick `size` from the scale; never write `text-[13px]`/`text-[11px]` or `font-semibold` by hand.",
+      'DO use `tone` for colour (`muted`/`primary`/semantic), `tabular` for numbers, `mono` for codes — not `className="text-muted-foreground font-mono tabular-nums"`.',
+      "For a heading, use `<Heading level>` instead of a large-size `<Text>`.",
+    ],
+    useCases: [
+      'A muted caption under a value: `<Text size="xs" tone="muted">2026年5月度</Text>`.',
+      'A monospace id in a list row: `<Text size="xs" mono tone="muted">RC-204881</Text>`.',
+      'An emphasized inline figure: `<Text weight="medium" tabular>¥1,240,000</Text>`.',
+    ],
+    storyPath: "general/typography.tsx",
+    rules: [2, 23],
+    example: `import { Text } from "@godxjp/ui/general";
+
+<Text size="xs" tone="muted">補助テキスト</Text>
+<Text weight="medium" tabular>¥1,240,000</Text>
+<Text size="xs" mono tone="muted">RC-204881</Text>`,
+  },
+  {
+    name: "Heading",
+    group: "general",
+    tagline:
+      "Section heading sized from the --heading-h* tokens. `level` sets the size AND the semantic <h1..h4>.",
+    props: [
+      {
+        name: "level",
+        type: "1 | 2 | 3 | 4",
+        defaultValue: "2",
+        description: "Heading level — sizes from --heading-h{1..4} and renders the matching <h*>.",
+      },
+      {
+        name: "as",
+        type: '"h1" | "h2" | "h3" | "h4" | "div"',
+        description: "Override the rendered element (e.g. a visual h2 that is a real <h1>).",
+      },
+      {
+        name: "tone",
+        type: '"default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info"',
+        defaultValue: '"default"',
+        description: "Semantic foreground colour.",
+      },
+      { name: "align", type: '"start" | "center" | "end"', description: "Logical text alignment." },
+      { name: "truncate", type: "boolean", description: "Single-line ellipsis." },
+    ],
+    usage: [
+      'DO use `<Heading level>` for section titles instead of a raw `<h2 className="text-lg font-semibold">`. The level drives both the token size and the semantic element.',
+      "Inside a Card use `<CardTitle>`; use `<Heading>` for free-standing page/section headings not covered by a component slot.",
+    ],
+    useCases: [
+      "A section heading on a dashboard: `<Heading level={3}>今月のKPI</Heading>`.",
+      'A visually-smaller heading that must stay an <h1> for a11y: `<Heading level={1} as="h1">…</Heading>`.',
+    ],
+    storyPath: "general/typography.tsx",
+    rules: [6, 23],
+    example: `import { Heading } from "@godxjp/ui/general";
+
+<Heading level={2}>請求書一覧</Heading>
+<Heading level={3} tone="muted">補足セクション</Heading>`,
+  },
 
   // ─── data-display ───────────────────────────────────────────────────────
   {
