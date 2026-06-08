@@ -26,7 +26,7 @@ export default function Demo() {
       subtitle="Rich preview on hover/focus — entity peek, user card, positioning & delay"
     >
       <Flex direction="col" gap="lg">
-        {/* Entity peek — open at rest so the surface is visible without hovering */}
+        {/* Entity peek — hover (or focus) the link to reveal the card */}
         <Card>
           <CardHeader>
             <CardTitle>取引先プレビュー</CardTitle>
@@ -36,7 +36,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <HoverCard defaultOpen>
+            <HoverCard>
               <HoverCardTrigger asChild>
                 <Button variant="link">株式会社ベトヤ</Button>
               </HoverCardTrigger>
@@ -97,13 +97,13 @@ export default function Demo() {
             <CardTitle>配置（side · align · sideOffset）</CardTitle>
             <CardDescription>
               ポップオーバーを開く向きは side（top / right / bottom / left）、トリガーに沿った
-              位置は align、トリガーとの距離は sideOffset で制御します。各カードは defaultOpen
-              で開いた状態を表示しています。
+              位置は align、トリガーとの距離は sideOffset で制御します。各リンクをホバーすると
+              その向きで表示されます。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-              <HoverCard defaultOpen>
+              <HoverCard>
                 <HoverCardTrigger asChild>
                   <Button variant="link">side=top</Button>
                 </HoverCardTrigger>
@@ -112,7 +112,7 @@ export default function Demo() {
                 </HoverCardContent>
               </HoverCard>
 
-              <HoverCard defaultOpen>
+              <HoverCard>
                 <HoverCardTrigger asChild>
                   <Button variant="link">side=right</Button>
                 </HoverCardTrigger>
@@ -121,7 +121,7 @@ export default function Demo() {
                 </HoverCardContent>
               </HoverCard>
 
-              <HoverCard defaultOpen>
+              <HoverCard>
                 <HoverCardTrigger asChild>
                   <Button variant="link">side=bottom</Button>
                 </HoverCardTrigger>
@@ -130,7 +130,7 @@ export default function Demo() {
                 </HoverCardContent>
               </HoverCard>
 
-              <HoverCard defaultOpen>
+              <HoverCard>
                 <HoverCardTrigger asChild>
                   <Button variant="link">side=left</Button>
                 </HoverCardTrigger>
