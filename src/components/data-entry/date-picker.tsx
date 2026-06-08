@@ -75,10 +75,11 @@ export function DatePicker({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <div className={cn("relative", className)}>
-        {/* Anchor the calendar to the INPUT (not the trailing icon) so align="start" puts it under
-         * the field's leading edge — the international date-picker convention (Google/Ant/MUI). */}
-        <PopoverAnchor asChild>
+      {/* Anchor the calendar to the whole FIELD wrapper (a plain div with a reliable ref) so
+       * align="start" drops it under the field's leading edge — the international date-picker
+       * convention (Google/Ant/MUI), not flush to the trailing icon. */}
+      <PopoverAnchor asChild>
+        <div className={cn("relative", className)}>
           <Input
             id={id}
             name={name}
@@ -117,44 +118,44 @@ export function DatePicker({
               setText(parsed ? toIsoDate(parsed) : toIsoDate(value));
             }}
           />
-        </PopoverAnchor>
-        <PopoverTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            disabled={disabled}
-            tabIndex={-1}
-            aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
-            className="text-muted-foreground absolute inset-y-0 end-0 h-full px-2 hover:bg-transparent"
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={disabled}
+              tabIndex={-1}
+              aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
+              className="text-muted-foreground absolute inset-y-0 end-0 h-full px-2 hover:bg-transparent"
+            >
+              <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-auto p-0"
+            align="start"
+            onOpenAutoFocus={(event) => event.preventDefault()}
           >
-            <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-auto p-0"
-          align="start"
-          onOpenAutoFocus={(event) => event.preventDefault()}
-        >
-          <Calendar
-            mode="single"
-            selected={value}
-            defaultMonth={value}
-            onSelect={(date) => {
-              emit(date);
-              setText(toIsoDate(date));
-              setOpen(false);
-            }}
-            locale={dayPickerLocale}
-            disabled={[
-              ...(fromDate ? [{ before: fromDate }] : []),
-              ...(toDate ? [{ after: toDate }] : []),
-            ]}
-            startMonth={fromDate}
-            endMonth={toDate}
-          />
-        </PopoverContent>
-      </div>
+            <Calendar
+              mode="single"
+              selected={value}
+              defaultMonth={value}
+              onSelect={(date) => {
+                emit(date);
+                setText(toIsoDate(date));
+                setOpen(false);
+              }}
+              locale={dayPickerLocale}
+              disabled={[
+                ...(fromDate ? [{ before: fromDate }] : []),
+                ...(toDate ? [{ after: toDate }] : []),
+              ]}
+              startMonth={fromDate}
+              endMonth={toDate}
+            />
+          </PopoverContent>
+        </div>
+      </PopoverAnchor>
     </Popover>
   );
 }
