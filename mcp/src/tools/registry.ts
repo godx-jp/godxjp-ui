@@ -768,7 +768,10 @@ function lintJsx(jsx: string): string {
   check(/<input[\s>]/, "Use `<Input>` instead of raw `<input>` (rule 29).");
   check(/<select[\s>]/, "Use `<Select>` instead of raw `<select>` (rule 29).");
   check(/<textarea[\s>]/, "Use `<Textarea>` instead of raw `<textarea>` (rule 29).");
-  check(/<(table|thead|tbody)[\s>]/, "Use `<DataTable>` instead of a hand-rolled `<table>` (rule 29).");
+  check(
+    /<(table|thead|tbody)[\s>]/,
+    "Use `<DataTable>` instead of a hand-rolled `<table>` (rule 29).",
+  );
   check(
     /bg-(red|blue|green|yellow|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/,
     "Use semantic token utilities (`bg-primary`/`bg-destructive`) not raw color scales (rule 2).",
@@ -780,6 +783,10 @@ function lintJsx(jsx: string): string {
   check(
     /size=["']default["']/,
     '`size="default"` is not in the controlled vocabulary — use `size` ∈ xs|sm|md|lg.',
+  );
+  check(
+    /\btext-\[[0-9.]+px\]/,
+    "Arbitrary text size `text-[Npx]` bypasses the golden type scale — use `<Text size>` / `<Heading level>` (rule 42).",
   );
   check(
     /<Tag[\s\S]*?color=["']error["']/i,

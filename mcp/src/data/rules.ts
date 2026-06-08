@@ -214,7 +214,12 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 41,
     title: "Drawer & dialog footer layout",
-    body: "Sheet/Dialog/AlertDialog footers are a pinned action bar (Ant Design Drawer footer): the footer sticks to the bottom, SheetFooter draws a full-bleed top border, and actions are RIGHT-aligned with the PRIMARY button rightmost (Cancel/secondary to its left). A destructive / clear / reset action goes far-LEFT — give that button `className=\"mr-auto\"`. NEVER stack footer buttons full-width or center them.",
+    body: 'Sheet/Dialog/AlertDialog footers are a pinned action bar (Ant Design Drawer footer): the footer sticks to the bottom, SheetFooter draws a full-bleed top border, and actions are RIGHT-aligned with the PRIMARY button rightmost (Cancel/secondary to its left). A destructive / clear / reset action goes far-LEFT — give that button `className="mr-auto"`. NEVER stack footer buttons full-width or center them.',
+  },
+  {
+    number: 42,
+    title: "Props & Tokens Before Customization",
+    body: "Before reaching for a Tailwind class, inline `style`, or extra CSS, you MUST first check whether the component already supports the need via a PROP, a design TOKEN, or a layout/typography PRIMITIVE. godx-ui is meant to be enough on its own (Ant-Design-style): `className` is for genuine one-offs only — never to redo what an API already does. Specifically: (1) NEVER hand-roll typography — no `text-[13px]`/`text-[11px]` arbitrary px (bypasses the golden type scale), no `font-medium`/`font-semibold`/`text-muted-foreground` on a raw `<span>`; use `<Text size tone weight tabular mono>` / `<Heading level>`. (2) NEVER hand-roll a trivial flex/grid wrapper; use `<Flex>` / `<ResponsiveGrid>` / `<PageContainer>`. (3) NEVER set a control's radius/height/colour with a utility when a `shape`/`size`/`tone`/token exists. If a real need has NO prop/token/primitive, that is a library GAP — file it (draft_bug_report), don't paper over it with ad-hoc Tailwind.",
   },
 ];
 

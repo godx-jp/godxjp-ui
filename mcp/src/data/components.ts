@@ -3606,7 +3606,7 @@ export function InvoicePeriodFilter() {
         description: "Initial value for uncontrolled mode. Same shape as value.",
       },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "(value: string[] | string[][], selectedOptions?: TreeOptionProp[] | TreeOptionProp[][]) => void",
         description:
           "Fires when selection changes. First arg is the selected path(s); second is the matching node objects. On clear, called with [].",
@@ -3801,7 +3801,7 @@ function MultiRegionPicker() {
         description: "Initial value for uncontrolled usage. Ignored once `value` is provided.",
       },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "(value: string | string[] | undefined) => void",
         description:
           "Called on selection change. Returns `string` in single mode, `string[]` in multi/checkable mode, or `undefined` when cleared.",

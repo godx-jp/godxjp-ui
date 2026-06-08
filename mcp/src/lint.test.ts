@@ -18,6 +18,7 @@ describe("lint_jsx — each heuristic fires", () => {
     ["raw table", "<table><tbody /></table>", /<DataTable>/],
     ["physical direction class", '<div className="ml-4 text-right" />', /logical CSS/i],
     ["generic size=default", '<Avatar size="default" />', /xs\|sm\|md\|lg/],
+    ["arbitrary text px", '<span className="text-[13px]" />', /type scale/i],
     ["raw color scale bg", '<div className="bg-red-500" />', /semantic token/i],
     ["Tag color=error", '<Tag color="error">x</Tag>', /destructive/],
     ["Badge variant=error", '<Badge variant="error">x</Badge>', /destructive/],
