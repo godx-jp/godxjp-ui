@@ -1215,6 +1215,13 @@ export default function InvoiceList({
       "Compose the compound parts as children: <DataGrid.Toolbar> (holds <DataGrid.BulkActions>, <DataGrid.Search>, <DataGrid.ViewOptions>, <DataGrid.DensityToggle>), then <DataGrid.Content> (auto-included if omitted) and <DataGrid.Pagination pageSizeOptions=[...]>.",
       "Server mode (default): drive sorting/globalFilter/pagination from useQuery and pass rowCount. Client mode: set manualSorting/manualFiltering/manualPagination={false} and the grid handles it on the data array.",
     ],
+    useCases: [
+      "Server-paginated 仕訳 (journal entry) or 請求 (invoice) admin list backed by an AJAX/useQuery endpoint: drive sorting + globalFilter + pagination from the query and pass rowCount — the grid never loads the whole table into the browser. (Prefer DataTable here if the screen must NOT pull @tanstack/react-table.)",
+      "Member / employee directory with a user-toggled 'set view' column picker (DataGrid.ViewOptions) — let admins hide columns like 入社日 or 部署 they don't need, persisting the columnVisibility state per user.",
+      "Bulk-operation worklist (e.g. approve/export selected 経費精算 rows): enableRowSelection + DataGrid.BulkActions to show a 'N件選択中' action bar with 一括承認 / CSV出力 buttons only when rows are checked.",
+      "Dense reconciliation or ledger table where operators flip between compact and comfortable row height via DataGrid.DensityToggle to fit more rows on screen during data-entry-heavy sessions.",
+      "Client-side grid for a fully-loaded small dataset (e.g. a fixed master list of 勘定科目): set manualSorting/manualFiltering/manualPagination={false} so TanStack sorts, searches, and paginates in-browser without any server round-trip.",
+    ],
     related: ["DataTable", "Table", "DataState", "Select", "DropdownMenu"],
     example: `import { DataGrid, type ColumnDef } from "@godxjp/ui/data-grid";
 import { Flex } from "@godxjp/ui/layout";
@@ -6476,18 +6483,37 @@ export default function PasswordBlock() {
     tagline:
       "Context menu primitives with keyboard support and compound parts for command-style action surfaces.",
     props: [
-      { name: "open", type: "boolean", description: "Controlled open state." },
       {
         name: "onOpenChange",
         type: "(open: boolean) => void",
         description: "Open-state callback.",
       },
-      { name: "value", type: "string", description: "Selected value (for controlled patterns)." },
+      {
+        name: "modal",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Modal mode — locks scroll + outside interaction while open. Set false to keep the rest of the page interactive.",
+      },
+      {
+        name: "dir",
+        type: '"ltr" | "rtl"',
+        description:
+          "Reading direction for arrow-key navigation (inherits from the document if omitted).",
+      },
+    ],
+    usage: [
+      "DO trigger this on `onContextMenu` (right-click / long-press), NOT on left-click — for a button that opens a list of actions on left-click use `DropdownMenu` instead. The two are not interchangeable.",
+      "DO wrap exactly the right-clickable surface in `<ContextMenuTrigger>` (a table row, a card, a file tile) — the menu anchors to the pointer position, so the trigger should be the whole interactive region the menu acts on.",
+      "DON'T put primary, always-visible actions only behind a context menu — right-click is a discoverability dead-end on touch and for new users. Mirror critical actions in a visible `Button`/`DropdownMenu` and use ContextMenu as an accelerator.",
+      'DO mark irreversible items with `variant="destructive"` (削除 / 取り消し) and group them under a `<ContextMenuSeparator>`; use `<ContextMenuShortcut>` to show the keyboard accelerator, `<ContextMenuSub>`/`<ContextMenuSubTrigger>` for nested submenus, and `<ContextMenuCheckboxItem>`/`<ContextMenuRadioItem>` for stateful toggles.',
+      "DON'T hand-roll a positioned `<div>` + `onContextMenu={e => e.preventDefault()}` — the primitive already gives you keyboard navigation, focus trapping, typeahead, and WAI-ARIA menu semantics for free.",
     ],
     useCases: [
-      "Right-click action menu",
-      "Contextual menus for rows and cards",
-      "Nested action rows with shortcuts",
+      "Right-click actions on a DataTable/DataGrid row (詳細 / 複製 / 削除) as a power-user accelerator alongside the visible row action button.",
+      "Contextual menu on a file or document tile in an upload/asset manager (ダウンロード / 名前変更 / 削除).",
+      "Nested action menu with submenus and shortcuts (e.g. 'エクスポート ▸ CSV / PDF') on a report card.",
+      "Stateful toggles on a board/kanban card via ContextMenuCheckboxItem (e.g. ピン留め, 完了としてマーク).",
     ],
     storyPath: "navigation/ContextMenu.stories.tsx",
     rules: [3, 6],
@@ -6512,20 +6538,33 @@ export default function PasswordBlock() {
     tagline: "Application menubar primitives (menus, sub-menus, and check/radio items).",
     props: [
       {
+        name: "value",
+        type: "string",
+        description: "Controlled value of the currently-open menu (pair with onValueChange).",
+      },
+      {
         name: "defaultValue",
         type: "string",
-        description: "Uncontrolled initial selected value.",
+        description: "Uncontrolled initial open menu.",
       },
       {
         name: "onValueChange",
         type: "(value: string) => void",
-        description: "Selection callback.",
+        description: "Fires with the id of the menu that opened (or '' when all close).",
       },
     ],
+    usage: [
+      "DO reserve Menubar for a persistent, desktop-app-style command bar (ファイル / 編集 / 表示 …) where multiple top-level menus sit side by side — moving the pointer across triggers opens the adjacent menu without an extra click.",
+      "DON'T use Menubar for primary site/page navigation (links between pages) — that is `NavigationMenu`. Menubar items run *commands*; NavigationMenu items *navigate*.",
+      "DON'T use Menubar when there is only one menu button — a single trigger that drops a list of actions is a `DropdownMenu`. Menubar earns its weight only with several coordinated menus.",
+      "DO compose the full structure: `<Menubar>` › `<MenubarMenu>` › `<MenubarTrigger>` + `<MenubarContent>` with `<MenubarItem>`; use `<MenubarSeparator>` to group, `<MenubarShortcut>` for accelerators, `<MenubarSub>` for nested menus, and `<MenubarCheckboxItem>`/`<MenubarRadioItem>` for view toggles.",
+      'DO mark destructive commands with `variant="destructive"` and give every item an `onSelect` handler — items are commands, so they should *do* something, not just close.',
+    ],
     useCases: [
-      "Top-bar application command menus",
-      "Workspace menus with nested items",
-      "Desktop-like navigation shells",
+      "Top-bar command menu for a back-office editor (ファイル / 編集 / 表示 / ヘルプ) with shortcuts and submenus.",
+      "Workspace tool menus in an admin console where each menu groups a category of actions (データ / レポート / 設定).",
+      "Desktop-like application shell (e.g. an internal POS or accounting workstation) that mirrors native menubar conventions.",
+      "View-state toggles via MenubarCheckboxItem/MenubarRadioItem (e.g. 表示 › グリッド線を表示, 通貨表示 ▸ ¥ / $).",
     ],
     storyPath: "navigation/Menubar.stories.tsx",
     rules: [3, 6],
@@ -6553,17 +6592,40 @@ export default function PasswordBlock() {
         description: "Main-axis arrangement for the nav menu.",
       },
       {
+        name: "value",
+        type: "string",
+        description: "Controlled value of the currently-open item (pair with onValueChange).",
+      },
+      {
         name: "defaultValue",
         type: "string",
-        description: "Uncontrolled initial selected value.",
+        description: "Uncontrolled initial open item.",
       },
       {
         name: "onValueChange",
         type: "(value: string) => void",
-        description: "Selection callback.",
+        description: "Fires with the id of the item whose dropdown opened (or '' when all close).",
+      },
+      {
+        name: "delayDuration",
+        type: "number",
+        defaultValue: "200",
+        description: "Hover delay (ms) before a trigger's content opens.",
       },
     ],
-    useCases: ["Primary app navigation", "Sectioned marketing navigation", "Nested link groups"],
+    usage: [
+      "DO use NavigationMenu for primary *navigation* between pages/sections — items wrap `<NavigationMenuLink>` (an `<a>`), not command buttons. For command bars (ファイル/編集 …) use `Menubar`; for a single action drop-down use `DropdownMenu`.",
+      "DO render real links inside `<NavigationMenuLink asChild>` so SPA routers work: `<NavigationMenuLink asChild><Link href={route('reports.index')}>レポート</Link></NavigationMenuLink>` — never nest a raw `<a>` directly with its own onClick navigation.",
+      "DO use `<NavigationMenuTrigger>` + `<NavigationMenuContent>` only when an item needs a rich dropdown panel (link groups, featured cards). Top-level items that go straight to a page should be a bare `<NavigationMenuLink>` with NO trigger.",
+      "DON'T use it as the app's left sidebar — for a persistent vertical app sidebar use `Sidebar`/`AppShell`. Set `orientation=\"vertical\"` only for an in-content vertical link menu, not the global shell.",
+      "DON'T hand-roll the hover/focus dropdown timing — the primitive manages open-on-hover with `delayDuration`, keyboard navigation, and the animated viewport for you.",
+    ],
+    useCases: [
+      "Primary top navigation for an admin/portal app with dropdown panels grouping related pages (e.g. レポート ▾ → 売上 / 経費 / 入金).",
+      "Sectioned marketing or docs navigation with featured link cards inside NavigationMenuContent.",
+      "Nested link groups where one trigger reveals a multi-column panel of related destinations.",
+      "Vertical in-content navigation (orientation='vertical') for a settings or documentation area — distinct from the global Sidebar shell.",
+    ],
     storyPath: "navigation/NavigationMenu.stories.tsx",
     rules: [3, 6],
     example: `import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger } from "@godxjp/ui/navigation";
@@ -6581,12 +6643,57 @@ export default function PasswordBlock() {
     group: "layout",
     tagline: "Resizable panel group/child/handle primitives from react-resizable-panels.",
     props: [
-      { name: "id", type: "string", description: "Panel identifier for persistence." },
-      { name: "defaultSize", type: "number", description: "Initial panel size (percent/units)." },
-      { name: "minSize", type: "number", description: "Minimum size constraint." },
-      { name: "maxSize", type: "number", description: "Maximum size constraint." },
+      {
+        name: "orientation",
+        type: '"horizontal" | "vertical"',
+        defaultValue: '"horizontal"',
+        description:
+          "ResizablePanelGroup prop — axis the panels are laid out / resized along (horizontal = side-by-side).",
+      },
+      {
+        name: "id",
+        type: "string",
+        description:
+          "ResizablePanel identifier — required for collapse/expand control and for layout persistence.",
+      },
+      {
+        name: "defaultSize",
+        type: "number",
+        description: "ResizablePanel initial size as a percentage (0–100) of the group.",
+      },
+      {
+        name: "minSize",
+        type: "number",
+        description: "ResizablePanel minimum size (%) — drag can't shrink below this.",
+      },
+      { name: "maxSize", type: "number", description: "ResizablePanel maximum size (%)." },
+      {
+        name: "collapsible",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "ResizablePanel — allow the panel to collapse to collapsedSize when dragged below minSize. Pair with onResize to react to collapse.",
+      },
+      {
+        name: "onResize",
+        type: "(size: PanelSize, id, prevSize) => void",
+        description:
+          "ResizablePanel — fires while/after the panel is resized (e.g. to persist layout).",
+      },
     ],
-    useCases: ["Split-pane layouts", "Resizable sidebars", "Code editors with adjustable zones"],
+    usage: [
+      'DO put the layout on `<ResizablePanelGroup orientation="horizontal|vertical">`, the resizable regions in `<ResizablePanel>`, and a `<ResizableHandle>` BETWEEN every adjacent pair — a group of N panels needs N-1 handles or there is nothing to drag.',
+      "DO size panels with `defaultSize`/`minSize`/`maxSize` as PERCENTAGES (the group totals 100), not pixels — don't fight this with a fixed `w-[280px]` className on the panel.",
+      "DON'T reach for ResizablePanel when the split is fixed and never user-adjustable — use a plain `Flex`/`ResponsiveGrid`, or `SplitPane` for a simple two-pane layout. Resizable is for *user-draggable* boundaries only.",
+      "DO give each panel a stable `id` and use `collapsible` + `collapsedSize` for a side panel the user can fully tuck away (e.g. a filters rail), reacting via `onResize`.",
+      "DON'T hand-roll a draggable divider with mouse-move listeners — the primitive handles pointer + keyboard resizing, ARIA separator semantics, and min/max clamping. Always render `<ResizableHandle>`, never a bare styled `<div>`.",
+    ],
+    useCases: [
+      "Master–detail admin layout: a draggable list pane on the left and a detail/preview pane on the right (e.g. 仕訳一覧 | 仕訳詳細).",
+      "Collapsible filters or navigation rail beside a data table that operators can widen for long labels or tuck away to maximize the table.",
+      "Stacked vertical split (orientation='vertical') such as a results table over a live JSON/log preview in a data-import tool.",
+      "Three-pane workbench (nav | content | inspector) where each boundary is independently draggable and layout is persisted via id + onResize.",
+    ],
     storyPath: "layout/ResizablePanel.stories.tsx",
     rules: [3, 6],
     example: `import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@godxjp/ui/layout";
@@ -6616,10 +6723,24 @@ export default function PasswordBlock() {
       {
         name: "setApi",
         type: "(api: CarouselApi) => void",
-        description: "Receive carousel API for custom logic.",
+        description:
+          "Receive the Embla api for custom logic (autoplay, external prev/next). NOT needed for dots — CarouselDots reads the api from context itself.",
       },
     ],
-    useCases: ["Feature cards", "Image galleries", "Horizontal stepping lists"],
+    usage: [
+      "DO compose the full set: `<Carousel>` › `<CarouselContent>` › many `<CarouselItem>`, with `<CarouselPrevious>`/`<CarouselNext>` for arrows and `<CarouselDots>` for the indicator row. Don't render items outside `<CarouselContent>` — the track is the scroll container.",
+      "DO use `<CarouselDots>` for the active-slide indicator instead of wiring `setApi` by hand — it reads `selectedIndex`/`scrollSnaps` from the Carousel context, renders one `aria-current` dot per snap, and auto-hides when there is ≤1 slide.",
+      "DON'T use a Carousel where ALL items must be seen/compared at once or be keyboard-reachable in reading order (e.g. a list of selectable options, a data table, primary navigation) — hiding content behind a swipe is an anti-pattern there; use a Grid/`ResponsiveGrid`, `ScrollArea`, or `Tabs`.",
+      "DON'T autoplay without a pause-on-hover/focus control and reduced-motion respect — pass the Embla autoplay plugin via `plugins` only for non-essential decorative content, never for content the user must read.",
+      "DO set `opts={{ loop: true }}` for galleries that wrap, and rely on the built-in disabling: `CarouselPrevious`/`CarouselNext` auto-disable at the ends (via `canScrollPrev`/`canScrollNext`) — don't hide them, let them grey out.",
+      "DO give each `<CarouselItem>` real, meaningful content; the component already injects an 'N of M' slide label for screen readers, so don't add a redundant one (a consumer `aria-label` on the item overrides the default).",
+    ],
+    useCases: [
+      "Feature / onboarding highlight cards on a dashboard or landing surface, with CarouselDots showing position.",
+      "Image or document thumbnail gallery (e.g. uploaded receipts / 物件写真) with looping and prev/next arrows.",
+      "Horizontal stepping list of compact KPI or announcement cards that overflow the viewport width.",
+      "Product/plan comparison cards on a marketing page where swiping between a few options is acceptable (not the primary action).",
+    ],
     storyPath: "data-display/Carousel.stories.tsx",
     rules: [3, 6],
     example: `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from "@godxjp/ui/data-display";
@@ -6651,10 +6772,29 @@ export default function PasswordBlock() {
         type: "(value: string) => void",
         description: "Validated value callback.",
       },
-      { name: "step", type: "number", defaultValue: "1", description: "Minute step." },
+      {
+        name: "step",
+        type: "number",
+        defaultValue: "1",
+        description:
+          "Minute step (clamped 1–59). Snaps the committed minute to the nearest lower multiple and sets the ArrowUp/ArrowDown increment.",
+      },
       { name: "name", type: "string", description: "Form field name." },
     ],
-    useCases: ["Time filters", "Schedule pickers (calendar-free)", "HH:mm-only forms"],
+    usage: [
+      "DO treat the value as a plain `HH:mm` string (24-hour, zero-padded) — TimeInput is calendar-free. For a date, or a date+time, use `DatePicker`/`Calendar`; for a richer dropdown time selector use `TimePicker`.",
+      "DO drive it controlled with `value` + `onValueChange` (it follows the vocabulary — NOT `onChange`/`defaultValue` pairing for control). `onValueChange` fires only with a VALID, step-snapped `HH:mm`, so your state never holds a half-typed value.",
+      "DON'T pass `value` without `onValueChange` — like every controlled @godxjp/ui input that freezes the field. Omit both for uncontrolled (use `defaultValue`).",
+      "DO set `step` to your scheduling granularity (e.g. `15` or `30`) — the user can still type freely, but blur/Enter snaps the minute down to the nearest multiple, and ArrowUp/ArrowDown step by that amount (wrapping across midnight).",
+      "DO let the built-in masking + validation work: digits auto-format to `HH:mm`, invalid input sets `aria-invalid` and is reverted on blur. Don't add your own regex/onChange masking on top.",
+      "DON'T use it for a duration/elapsed time that can exceed 23:59 — it's a clock time-of-day input (00:00–23:59). Use a numeric Input for durations.",
+    ],
+    useCases: [
+      "勤怠 (attendance) start/end time fields — 出勤 / 退勤 HH:mm entry with step={1} or a rounding step for shift schedules.",
+      "Business-hours / reservation slot editor where times snap to a 15- or 30-minute grid (step={15}).",
+      "A from–to time range filter on a report or log screen (two TimeInputs) with no date component.",
+      "Any calendar-free HH:mm-only form field (e.g. a recurring daily batch time, a 締め時刻).",
+    ],
     storyPath: "data-entry/TimeInput.stories.tsx",
     rules: [3, 6],
     example: `import { TimeInput } from "@godxjp/ui/data-entry";
