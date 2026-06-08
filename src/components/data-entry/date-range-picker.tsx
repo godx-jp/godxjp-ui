@@ -6,7 +6,7 @@ import { parseDateInput, toIsoDate } from "../../lib/datetime";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Input } from "./input";
-import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
 import type { DateRangePickerProp } from "../../props/components/data-entry.prop";
 
@@ -70,111 +70,115 @@ export function DateRangePicker({
   };
 
   return (
-    <div className={cn("flex items-center gap-1", className)}>
-      <Input
-        id={id}
-        name={name ? `${name}_from` : undefined}
-        value={fromText}
-        disabled={disabled}
-        placeholder={resolvedPlaceholder}
-        inputMode="numeric"
-        autoComplete="off"
-        aria-label={t("dataEntry.dateRangePicker.from") ?? "From"}
-        className="tabular-nums"
-        // Clicking a field (or ArrowDown) opens the calendar; focus stays on the field for typing.
-        onClick={() => {
-          if (!disabled) setOpen(true);
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowDown") {
-            event.preventDefault();
-            setOpen(true);
-          } else if (event.key === "Escape" && open) {
-            setOpen(false);
-          }
-        }}
-        onChange={(event) => {
-          setFromText(event.target.value);
-          commitEdge("from", event.target.value);
-        }}
-        onBlur={(event) => {
-          const parsed = parseDateInput(event.target.value.trim());
-          setFromText(parsed ? toIsoDate(parsed) : toIsoDate(value?.from));
-        }}
-      />
-      <span className="text-muted-foreground shrink-0" aria-hidden="true">
-        –
-      </span>
-      <Input
-        name={name ? `${name}_to` : undefined}
-        value={toText}
-        disabled={disabled}
-        placeholder={resolvedPlaceholder}
-        inputMode="numeric"
-        autoComplete="off"
-        aria-label={t("dataEntry.dateRangePicker.to") ?? "To"}
-        className="tabular-nums"
-        onClick={() => {
-          if (!disabled) setOpen(true);
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowDown") {
-            event.preventDefault();
-            setOpen(true);
-          } else if (event.key === "Escape" && open) {
-            setOpen(false);
-          }
-        }}
-        onChange={(event) => {
-          setToText(event.target.value);
-          commitEdge("to", event.target.value);
-        }}
-        onBlur={(event) => {
-          const parsed = parseDateInput(event.target.value.trim());
-          setToText(parsed ? toIsoDate(parsed) : toIsoDate(value?.to));
-        }}
-      />
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
+    <Popover open={open} onOpenChange={setOpen}>
+      {/* Anchor the calendar to the field ROW so align="start" puts it under the leading (from)
+       * input — the international date-picker convention, not flush to the trailing icon. */}
+      <PopoverAnchor asChild>
+        <div className={cn("flex items-center gap-1", className)}>
+          <Input
+            id={id}
+            name={name ? `${name}_from` : undefined}
+            value={fromText}
             disabled={disabled}
-            tabIndex={-1}
-            aria-label={t("dataEntry.dateRangePicker.openCalendar") ?? "Open calendar"}
-            className="text-muted-foreground shrink-0 hover:bg-transparent"
-          >
-            <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-auto p-0"
-          align="end"
-          onOpenAutoFocus={(event) => event.preventDefault()}
-        >
-          <Calendar
-            mode="range"
-            selected={value}
-            defaultMonth={value?.from}
-            // A range picker shows two months so a cross-month range can be picked without
-            // navigating. The Calendar wrapper stacks them vertically below `sm` for mobile.
-            numberOfMonths={2}
-            onSelect={(range) => {
-              emit(range);
-              setFromText(toIsoDate(range?.from));
-              setToText(toIsoDate(range?.to));
+            placeholder={resolvedPlaceholder}
+            inputMode="numeric"
+            autoComplete="off"
+            aria-label={t("dataEntry.dateRangePicker.from") ?? "From"}
+            className="tabular-nums"
+            // Clicking a field (or ArrowDown) opens the calendar; focus stays on the field for typing.
+            onClick={() => {
+              if (!disabled) setOpen(true);
             }}
-            locale={dayPickerLocale}
-            disabled={[
-              ...(fromDate ? [{ before: fromDate }] : []),
-              ...(toDate ? [{ after: toDate }] : []),
-            ]}
-            startMonth={fromDate}
-            endMonth={toDate}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                setOpen(true);
+              } else if (event.key === "Escape" && open) {
+                setOpen(false);
+              }
+            }}
+            onChange={(event) => {
+              setFromText(event.target.value);
+              commitEdge("from", event.target.value);
+            }}
+            onBlur={(event) => {
+              const parsed = parseDateInput(event.target.value.trim());
+              setFromText(parsed ? toIsoDate(parsed) : toIsoDate(value?.from));
+            }}
           />
-        </PopoverContent>
-      </Popover>
-    </div>
+          <span className="text-muted-foreground shrink-0" aria-hidden="true">
+            –
+          </span>
+          <Input
+            name={name ? `${name}_to` : undefined}
+            value={toText}
+            disabled={disabled}
+            placeholder={resolvedPlaceholder}
+            inputMode="numeric"
+            autoComplete="off"
+            aria-label={t("dataEntry.dateRangePicker.to") ?? "To"}
+            className="tabular-nums"
+            onClick={() => {
+              if (!disabled) setOpen(true);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                setOpen(true);
+              } else if (event.key === "Escape" && open) {
+                setOpen(false);
+              }
+            }}
+            onChange={(event) => {
+              setToText(event.target.value);
+              commitEdge("to", event.target.value);
+            }}
+            onBlur={(event) => {
+              const parsed = parseDateInput(event.target.value.trim());
+              setToText(parsed ? toIsoDate(parsed) : toIsoDate(value?.to));
+            }}
+          />
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={disabled}
+              tabIndex={-1}
+              aria-label={t("dataEntry.dateRangePicker.openCalendar") ?? "Open calendar"}
+              className="text-muted-foreground shrink-0 hover:bg-transparent"
+            >
+              <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-auto p-0"
+            align="start"
+            onOpenAutoFocus={(event) => event.preventDefault()}
+          >
+            <Calendar
+              mode="range"
+              selected={value}
+              defaultMonth={value?.from}
+              // A range picker shows two months so a cross-month range can be picked without
+              // navigating. The Calendar wrapper stacks them vertically below `sm` for mobile.
+              numberOfMonths={2}
+              onSelect={(range) => {
+                emit(range);
+                setFromText(toIsoDate(range?.from));
+                setToText(toIsoDate(range?.to));
+              }}
+              locale={dayPickerLocale}
+              disabled={[
+                ...(fromDate ? [{ before: fromDate }] : []),
+                ...(toDate ? [{ after: toDate }] : []),
+              ]}
+              startMonth={fromDate}
+              endMonth={toDate}
+            />
+          </PopoverContent>
+        </div>
+      </PopoverAnchor>
+    </Popover>
   );
 }

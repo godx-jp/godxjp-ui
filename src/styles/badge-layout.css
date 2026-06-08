@@ -6,6 +6,10 @@
   [data-slot="badge"] {
     display: inline-flex;
     align-items: center;
+    /* Center on the text x-height when the badge sits INLINE with running text (an inline-flex box
+     * defaults to baseline → it rides high / "valign top" next to a label). Ignored in flex/grid
+     * containers, so table cells and Flex rows are unaffected. */
+    vertical-align: middle;
     gap: var(--badge-space-gap);
     padding: var(--badge-space-y) var(--badge-space-x);
     border-radius: var(--radius-md);

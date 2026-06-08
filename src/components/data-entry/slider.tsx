@@ -7,12 +7,28 @@ export type { SliderProp, SliderProp as SliderProps } from "../../props/componen
 
 /** Numeric range slider (Radix Slider). */
 export const Slider = React.forwardRef<React.ComponentRef<typeof SliderPrimitive.Root>, SliderProp>(
-  ({ className, defaultValue, value, min = 0, max = 100, ...props }, ref) => {
+  (
+    {
+      className,
+      defaultValue,
+      value,
+      min = 0,
+      max = 100,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledby,
+      ...props
+    },
+    ref,
+  ) => {
     const values = React.useMemo(
       () =>
         Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max],
       [defaultValue, max, min, value],
     );
+    // The focusable element is each Thumb (role="slider") — the accessible name MUST live there, not
+    // on the Root. For a multi-thumb range, suffix the index so each thumb is distinguishable.
+    const thumbLabel = (index: number) =>
+      ariaLabel != null && values.length > 1 ? `${ariaLabel} ${index + 1}` : ariaLabel;
 
     return (
       <SliderPrimitive.Root
@@ -29,7 +45,13 @@ export const Slider = React.forwardRef<React.ComponentRef<typeof SliderPrimitive
           <SliderPrimitive.Range data-slot="slider-range" className="ui-slider-range" />
         </SliderPrimitive.Track>
         {values.map((_, index) => (
-          <SliderPrimitive.Thumb key={index} data-slot="slider-thumb" className="ui-slider-thumb" />
+          <SliderPrimitive.Thumb
+            key={index}
+            data-slot="slider-thumb"
+            className="ui-slider-thumb"
+            aria-label={thumbLabel(index)}
+            aria-labelledby={ariaLabelledby}
+          />
         ))}
       </SliderPrimitive.Root>
     );

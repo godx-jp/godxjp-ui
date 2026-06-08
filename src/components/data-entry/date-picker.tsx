@@ -5,7 +5,7 @@ import { parseDateInput, toIsoDate } from "../../lib/datetime/parse";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Input } from "./input";
-import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
 import type { DatePickerProp } from "../../props/components/data-entry.prop";
 
@@ -74,46 +74,50 @@ export function DatePicker({
   };
 
   return (
-    <div className={cn("relative", className)}>
-      <Input
-        id={id}
-        name={name}
-        value={text}
-        disabled={disabled}
-        placeholder={resolvedPlaceholder}
-        inputMode="numeric"
-        autoComplete="off"
-        // Combobox semantics: the input owns the value, the calendar is a secondary popup.
-        role="combobox"
-        aria-expanded={open}
-        aria-haspopup="dialog"
-        className="pe-10"
-        // Combobox semantics made real: clicking the field (or ArrowDown) opens the calendar —
-        // the input declares aria-haspopup="dialog", so it must actually control the popup, not
-        // only the icon button. Focus stays on the input (PopoverContent.onOpenAutoFocus is
-        // prevented) so the field is still typeable while the calendar is visible.
-        onClick={() => {
-          if (!disabled) setOpen(true);
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowDown") {
-            event.preventDefault();
-            setOpen(true);
-          } else if (event.key === "Escape" && open) {
-            setOpen(false);
-          }
-        }}
-        onChange={(event) => {
-          setText(event.target.value);
-          commit(event.target.value);
-        }}
-        onBlur={(event) => {
-          // Normalise a valid entry back to canonical ISO; revert an unparseable one.
-          const parsed = parseDateInput(event.target.value.trim());
-          setText(parsed ? toIsoDate(parsed) : toIsoDate(value));
-        }}
-      />
-      <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
+      <div className={cn("relative", className)}>
+        {/* Anchor the calendar to the INPUT (not the trailing icon) so align="start" puts it under
+         * the field's leading edge — the international date-picker convention (Google/Ant/MUI). */}
+        <PopoverAnchor asChild>
+          <Input
+            id={id}
+            name={name}
+            value={text}
+            disabled={disabled}
+            placeholder={resolvedPlaceholder}
+            inputMode="numeric"
+            autoComplete="off"
+            // Combobox semantics: the input owns the value, the calendar is a secondary popup.
+            role="combobox"
+            aria-expanded={open}
+            aria-haspopup="dialog"
+            className="pe-10"
+            // Combobox semantics made real: clicking the field (or ArrowDown) opens the calendar —
+            // the input declares aria-haspopup="dialog", so it must actually control the popup, not
+            // only the icon button. Focus stays on the input (PopoverContent.onOpenAutoFocus is
+            // prevented) so the field is still typeable while the calendar is visible.
+            onClick={() => {
+              if (!disabled) setOpen(true);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                setOpen(true);
+              } else if (event.key === "Escape" && open) {
+                setOpen(false);
+              }
+            }}
+            onChange={(event) => {
+              setText(event.target.value);
+              commit(event.target.value);
+            }}
+            onBlur={(event) => {
+              // Normalise a valid entry back to canonical ISO; revert an unparseable one.
+              const parsed = parseDateInput(event.target.value.trim());
+              setText(parsed ? toIsoDate(parsed) : toIsoDate(value));
+            }}
+          />
+        </PopoverAnchor>
         <PopoverTrigger asChild>
           <Button
             type="button"
@@ -129,7 +133,7 @@ export function DatePicker({
         </PopoverTrigger>
         <PopoverContent
           className="w-auto p-0"
-          align="end"
+          align="start"
           onOpenAutoFocus={(event) => event.preventDefault()}
         >
           <Calendar
@@ -150,7 +154,7 @@ export function DatePicker({
             endMonth={toDate}
           />
         </PopoverContent>
-      </Popover>
-    </div>
+      </div>
+    </Popover>
   );
 }
