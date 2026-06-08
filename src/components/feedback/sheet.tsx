@@ -140,10 +140,11 @@ export const SheetHeader = ({
     <div
       data-slot="sheet-header"
       data-tone={tone}
-      // Full-bleed band that MIRRORS the footer (border-b + same 16/24 padding) so header and footer
-      // are symmetric pinned bars. `-mx/-mt` cancel the content inset; `tone` adds a soft bg band.
+      // Full-bleed band that MIRRORS the footer (+ same 16/24 padding). `-mx/-mt` cancel the content
+      // inset; `tone` adds a soft bg band. The divider border is added by CSS ONLY when a SheetBody is
+      // present (dialog-layout.css) — so a body-less sheet never shows a doubled header/footer line.
       className={cn(
-        "border-border -mx-[var(--sheet-pad-x)] -mt-[var(--sheet-pad-y)] flex flex-col gap-1.5 border-b px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)]",
+        "-mx-[var(--sheet-pad-x)] -mt-[var(--sheet-pad-y)] flex flex-col gap-1.5 px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)]",
         overlayHeaderToneClass[tone],
         className,
       )}
@@ -190,7 +191,7 @@ export const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDi
   <div
     data-slot="sheet-footer"
     className={cn(
-      "border-border -mx-[var(--sheet-pad-x)] mt-auto -mb-[var(--sheet-pad-y)] flex flex-wrap items-center justify-end gap-2 border-t px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)]",
+      "-mx-[var(--sheet-pad-x)] mt-auto -mb-[var(--sheet-pad-y)] flex flex-wrap items-center justify-end gap-2 px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)]",
       className,
     )}
     {...props}

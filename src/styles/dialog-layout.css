@@ -11,6 +11,16 @@
     --sheet-pad-y: var(--space-chrome-y);
   }
 
+  /* Sheet header/footer dividers appear ONLY when a SheetBody is present (mirrors the dialog rule) —
+   * a body-less sheet never shows a doubled header-bottom + footer-top line. */
+  [data-slot="sheet-content"]:has([data-slot="sheet-body"]) [data-slot="sheet-header"] {
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  [data-slot="sheet-content"]:has([data-slot="sheet-body"]) [data-slot="sheet-footer"] {
+    border-top: 1px solid hsl(var(--border));
+  }
+
   .ui-dialog-overlay {
     position: fixed;
     inset: 0;

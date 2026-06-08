@@ -61,6 +61,7 @@ import {
 import { Calendar, ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 import {
   Sheet,
+  SheetBody,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -434,7 +435,7 @@ export default function ShiftCalendarShowcase() {
               {detailDate?.holiday ? `祝日 · ${detailDate.holiday}` : "この日のシフト割り当て"}
             </SheetDescription>
           </SheetHeader>
-          <div className="mt-4 px-4">
+          <SheetBody>
             {detailDate && detailDate.shifts.length > 0 ? (
               <Flex direction="col" gap="sm">
                 {detailDate.shifts.map((s, i) => (
@@ -456,7 +457,7 @@ export default function ShiftCalendarShowcase() {
                 description="この日に割り当てられたシフトはありません。"
               />
             )}
-          </div>
+          </SheetBody>
         </SheetContent>
       </Sheet>
     </AppShell>

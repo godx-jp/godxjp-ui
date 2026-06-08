@@ -65,6 +65,7 @@ import {
   AlertTitle,
   AlertDescription,
   Sheet,
+  SheetBody,
   SheetContent,
   SheetFooter,
   SheetHeader,
@@ -384,41 +385,43 @@ function ItemLookupSheet({
         <SheetHeader>
           <SheetTitle>Quét hoặc nhập mã</SheetTitle>
         </SheetHeader>
-        {/* Viewfinder placeholder — a Card surface, not a hand-rolled illustration */}
-        <div className="border-border bg-secondary/40 mt-2 flex h-40 items-center justify-center rounded-[12px] border-2 border-dashed">
-          <div className="text-muted-foreground flex flex-col items-center gap-2">
-            <ScanLine
-              className="size-7 text-[color:var(--attention,var(--warning))]"
-              aria-hidden="true"
-              strokeWidth={1.5}
-            />
-            <span className="text-[13px]">Đưa mã vạch vào khung</span>
+        <SheetBody className="flex flex-col gap-4">
+          {/* Viewfinder placeholder — a Card surface, not a hand-rolled illustration */}
+          <div className="border-border bg-secondary/40 flex h-40 items-center justify-center rounded-[12px] border-2 border-dashed">
+            <div className="text-muted-foreground flex flex-col items-center gap-2">
+              <ScanLine
+                className="size-7 text-[color:var(--attention,var(--warning))]"
+                aria-hidden="true"
+                strokeWidth={1.5}
+              />
+              <span className="text-[13px]">Đưa mã vạch vào khung</span>
+            </div>
           </div>
-        </div>
-        <div className="mt-4 flex flex-col gap-2">
-          <span className="text-[13px] font-medium">Hoặc nhập mã thủ công</span>
-          <div className="flex gap-2">
-            <Input
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="RC- / PKG- / JAN"
-              className="font-mono"
-              inputMode="text"
-              autoComplete="off"
-            />
-            <Button
-              onClick={() => {
-                onOpenChange(false);
-                setCode("");
-                toast.success("Đã tìm thấy RC-204881 · Sữa rửa mặt Hada Labo");
-              }}
-              disabled={code.trim() === ""}
-            >
-              <Search aria-hidden="true" />
-              Tìm
-            </Button>
+          <div className="flex flex-col gap-2">
+            <span className="text-[13px] font-medium">Hoặc nhập mã thủ công</span>
+            <div className="flex gap-2">
+              <Input
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="RC- / PKG- / JAN"
+                className="font-mono"
+                inputMode="text"
+                autoComplete="off"
+              />
+              <Button
+                onClick={() => {
+                  onOpenChange(false);
+                  setCode("");
+                  toast.success("Đã tìm thấy RC-204881 · Sữa rửa mặt Hada Labo");
+                }}
+                disabled={code.trim() === ""}
+              >
+                <Search aria-hidden="true" />
+                Tìm
+              </Button>
+            </div>
           </div>
-        </div>
+        </SheetBody>
         <SheetFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Đóng
@@ -444,7 +447,7 @@ function PackagePickerSheet({
         <SheetHeader>
           <SheetTitle>Gán vào kiện</SheetTitle>
         </SheetHeader>
-        <div className="mt-3 flex flex-col gap-2">
+        <SheetBody className="flex flex-col gap-2">
           <SectionHeader count={PACKINGS.length}>Kiện đang mở</SectionHeader>
           {PACKINGS.map((p) => (
             <PackingListCard
@@ -467,7 +470,7 @@ function PackagePickerSheet({
             <PackagePlus aria-hidden="true" strokeWidth={1.5} />
             Tạo kiện mới với {count} item này
           </Button>
-        </div>
+        </SheetBody>
         <SheetFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Huỷ
@@ -496,11 +499,11 @@ function ItemFormSheet({
   const [qty, setQty] = React.useState("1");
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto rounded-t-[16px]">
+      <SheetContent side="bottom" className="max-h-[80vh] rounded-t-[16px]">
         <SheetHeader>
           <SheetTitle>Thêm hàng mới</SheetTitle>
         </SheetHeader>
-        <div className="mt-3 flex flex-col gap-4">
+        <SheetBody className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <span className="text-[13px] font-medium">Mã vạch</span>
             <Input defaultValue="JAN 4987241135219" readOnly className="font-mono" />
@@ -546,7 +549,7 @@ function ItemFormSheet({
               })}
             </RadioGroupRoot>
           </div>
-        </div>
+        </SheetBody>
         <SheetFooter className="flex-row gap-2">
           <Button variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
             Huỷ
