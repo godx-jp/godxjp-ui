@@ -154,8 +154,11 @@
     overflow: hidden;
   }
 
+  /* A banded header gives a normal body a top gap — but NOT a flush body: a full-bleed table (or any
+   * edge-to-edge content) must butt FLUSH against the card header's bottom border, with no empty
+   * bordered gap between the two bands (the dialog/sheet no-gap principle). */
   [data-slot="card"]:has([data-slot="card-header"][data-banded])
-    [data-slot="card-content"]:not([data-tight]) {
+    [data-slot="card-content"]:not([data-tight]):not([data-flush]) {
     padding-top: var(--card-space-body-y);
   }
 
@@ -228,7 +231,7 @@
     padding-inline: 0;
   }
 
-  [data-slot="card-content"][data-flush]:has(.ui-data-table-root) {
+  [data-slot="card-content"][data-flush]:not([data-tight]):not([data-solo]):has(table) {
     padding-block: 0;
   }
 
