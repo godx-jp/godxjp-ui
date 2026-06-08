@@ -15,7 +15,7 @@
 import * as React from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
   Card,
@@ -63,27 +63,99 @@ const GROUPS: Group[] = [
     id: "sales",
     label: "営業部",
     members: [
-      { id: "E-1042", name: "佐藤 健一", days: 21, work: 176.5, overtime: 12.0, late: 0, status: "present" },
-      { id: "E-1051", name: "鈴木 美咲", days: 20, work: 168.0, overtime: 4.5, late: 2, status: "late" },
-      { id: "E-1063", name: "高橋 涼", days: 21, work: 171.0, overtime: 8.0, late: 0, status: "present" },
-      { id: "E-1077", name: "田中 由美", days: 19, work: 152.5, overtime: 0.0, late: 0, status: "leave-early" },
+      {
+        id: "E-1042",
+        name: "佐藤 健一",
+        days: 21,
+        work: 176.5,
+        overtime: 12.0,
+        late: 0,
+        status: "present",
+      },
+      {
+        id: "E-1051",
+        name: "鈴木 美咲",
+        days: 20,
+        work: 168.0,
+        overtime: 4.5,
+        late: 2,
+        status: "late",
+      },
+      {
+        id: "E-1063",
+        name: "高橋 涼",
+        days: 21,
+        work: 171.0,
+        overtime: 8.0,
+        late: 0,
+        status: "present",
+      },
+      {
+        id: "E-1077",
+        name: "田中 由美",
+        days: 19,
+        work: 152.5,
+        overtime: 0.0,
+        late: 0,
+        status: "leave-early",
+      },
     ],
   },
   {
     id: "dev",
     label: "開発部",
     members: [
-      { id: "E-2008", name: "伊藤 大輔", days: 21, work: 180.0, overtime: 22.5, late: 0, status: "present" },
-      { id: "E-2015", name: "渡辺 翔太", days: 21, work: 178.5, overtime: 18.0, late: 1, status: "late" },
-      { id: "E-2031", name: "山本 彩", days: 20, work: 165.0, overtime: 9.5, late: 0, status: "present" },
+      {
+        id: "E-2008",
+        name: "伊藤 大輔",
+        days: 21,
+        work: 180.0,
+        overtime: 22.5,
+        late: 0,
+        status: "present",
+      },
+      {
+        id: "E-2015",
+        name: "渡辺 翔太",
+        days: 21,
+        work: 178.5,
+        overtime: 18.0,
+        late: 1,
+        status: "late",
+      },
+      {
+        id: "E-2031",
+        name: "山本 彩",
+        days: 20,
+        work: 165.0,
+        overtime: 9.5,
+        late: 0,
+        status: "present",
+      },
     ],
   },
   {
     id: "support",
     label: "カスタマーサポート部",
     members: [
-      { id: "E-3004", name: "中村 拓也", days: 22, work: 176.0, overtime: 6.0, late: 0, status: "present" },
-      { id: "E-3019", name: "小林 結衣", days: 20, work: 160.0, overtime: 2.0, late: 3, status: "late" },
+      {
+        id: "E-3004",
+        name: "中村 拓也",
+        days: 22,
+        work: 176.0,
+        overtime: 6.0,
+        late: 0,
+        status: "present",
+      },
+      {
+        id: "E-3019",
+        name: "小林 結衣",
+        days: 20,
+        work: 160.0,
+        overtime: 2.0,
+        late: 3,
+        status: "late",
+      },
     ],
   },
 ];
@@ -162,7 +234,7 @@ function GroupHeaderRow({
           aria-controls={`grp-${group.id}`}
           className="h-7 gap-2 font-medium"
         >
-          <Chevron className="size-4 text-muted-foreground" aria-hidden="true" />
+          <Chevron className="text-muted-foreground size-4" aria-hidden="true" />
           {group.label}
           <Badge variant="outline" tone="neutral" className="ml-1">
             {group.members.length}名
@@ -178,7 +250,9 @@ function GroupHeaderRow({
             {s.late}回
           </Badge>
         ) : (
-          <span className="text-muted-foreground font-medium">0回</span>
+          <Text tone="muted" weight="medium">
+            0回
+          </Text>
         )}
       </TableCell>
       <TableCell className="py-2" />
@@ -191,13 +265,13 @@ function GroupHeaderRow({
 function MemberRow({ m }: { m: Employee }) {
   return (
     <TableRow>
-      <TableCell className="pl-10 font-mono text-xs text-muted-foreground">{m.id}</TableCell>
+      <TableCell className="text-muted-foreground pl-10 font-mono text-xs">{m.id}</TableCell>
       <TableCell>{m.name}</TableCell>
       <TableCell className="text-right tabular-nums">{m.days}日</TableCell>
       <TableCell className="text-right tabular-nums">{fmtH(m.work)}</TableCell>
       <TableCell className="text-right tabular-nums">{fmtH(m.overtime)}</TableCell>
       <TableCell className="text-right tabular-nums">
-        {m.late > 0 ? m.late : <span className="text-muted-foreground">—</span>}
+        {m.late > 0 ? m.late : <Text tone="muted">—</Text>}
         {m.late > 0 ? "回" : ""}
       </TableCell>
       <TableCell className="text-center">
@@ -250,8 +324,7 @@ function GroupedTable({
             return (
               <React.Fragment key={g.id}>
                 <GroupHeaderRow group={g} open={open} onToggle={() => toggle(g.id)} />
-                {open &&
-                  g.members.map((m) => <MemberRow key={m.id} m={m} />)}
+                {open && g.members.map((m) => <MemberRow key={m.id} m={m} />)}
               </React.Fragment>
             );
           })}
@@ -261,8 +334,12 @@ function GroupedTable({
               総計 · 全{groups.reduce((n, g) => n + g.members.length, 0)}名
             </TableCell>
             <TableCell className="py-2 text-right font-bold tabular-nums">{total.days}日</TableCell>
-            <TableCell className="py-2 text-right font-bold tabular-nums">{fmtH(total.work)}</TableCell>
-            <TableCell className="py-2 text-right font-bold tabular-nums">{fmtH(total.overtime)}</TableCell>
+            <TableCell className="py-2 text-right font-bold tabular-nums">
+              {fmtH(total.work)}
+            </TableCell>
+            <TableCell className="py-2 text-right font-bold tabular-nums">
+              {fmtH(total.overtime)}
+            </TableCell>
             <TableCell className="py-2 text-right font-bold tabular-nums">{total.late}回</TableCell>
             <TableCell className="py-2" />
           </TableRow>
@@ -284,7 +361,9 @@ export default function Demo() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>2026年5月度 勤怠集計</CardTitle>
-            <span className="text-xs text-muted-foreground tabular-nums">締め: 2026-05-31</span>
+            <Text size="xs" tone="muted" tabular>
+              締め: 2026-05-31
+            </Text>
           </CardHeader>
           <CardContent flush>
             <GroupedTable groups={GROUPS} />
@@ -295,9 +374,9 @@ export default function Demo() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>折りたたみ状態</CardTitle>
-            <span className="text-xs text-muted-foreground">
+            <Text size="xs" tone="muted">
               閉じたグループは小計のみ表示（クリックで展開）
-            </span>
+            </Text>
           </CardHeader>
           <CardContent flush>
             <GroupedTable groups={GROUPS} defaultClosed={["support"]} />

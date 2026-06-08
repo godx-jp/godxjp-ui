@@ -23,14 +23,8 @@
 import * as React from "react";
 import { Download, RefreshCw, Check, X } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
-import {
-  Badge,
-  Card,
-  CardContent,
-  DataTable,
-  type ColumnDef,
-} from "@godxjp/ui/data-display";
+import { Button, Text } from "@godxjp/ui/general";
+import { Badge, Card, CardContent, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
 import { Tabs, TabsList, TabsTrigger } from "@godxjp/ui/navigation";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import type { SortStateProp } from "@godxjp/ui/props";
@@ -232,8 +226,12 @@ const employeeCol: ColumnDef<Attendance> = {
   sortable: true,
   render: (row) => (
     <Flex direction="col" gap="none">
-      <span className="text-[13px] font-medium">{row.employee}</span>
-      <span className="text-muted-foreground text-[11px]">{row.dept}</span>
+      <Text size="sm" weight="medium">
+        {row.employee}
+      </Text>
+      <Text size="2xs" tone="muted">
+        {row.dept}
+      </Text>
     </Flex>
   ),
 };
@@ -243,7 +241,7 @@ const dateCol: ColumnDef<Attendance> = {
   header: "日付",
   width: "w-28",
   sortable: true,
-  render: (row) => <span className="tabular-nums">{row.date}</span>,
+  render: (row) => <Text tabular>{row.date}</Text>,
 };
 
 const idCol: ColumnDef<Attendance> = {
@@ -251,7 +249,11 @@ const idCol: ColumnDef<Attendance> = {
   header: "勤怠ID",
   width: "w-28",
   hiddenOnMobile: true,
-  render: (row) => <span className="font-mono text-xs tabular-nums">{row.id}</span>,
+  render: (row) => (
+    <Text size="xs" mono tabular>
+      {row.id}
+    </Text>
+  ),
 };
 
 const clockCols: ColumnDef<Attendance>[] = [
@@ -259,20 +261,20 @@ const clockCols: ColumnDef<Attendance>[] = [
     key: "clockIn",
     header: "出勤",
     align: "right",
-    render: (row) => <span className="tabular-nums">{row.clockIn}</span>,
+    render: (row) => <Text tabular>{row.clockIn}</Text>,
   },
   {
     key: "clockOut",
     header: "退勤",
     align: "right",
-    render: (row) => <span className="tabular-nums">{row.clockOut}</span>,
+    render: (row) => <Text tabular>{row.clockOut}</Text>,
   },
   {
     key: "workMin",
     header: "実働",
     align: "right",
     hiddenOnMobile: true,
-    render: (row) => <span className="tabular-nums">{hm(row.workMin)}</span>,
+    render: (row) => <Text tabular>{hm(row.workMin)}</Text>,
   },
 ];
 
@@ -282,17 +284,12 @@ const varianceCol: ColumnDef<Attendance> = {
   align: "right",
   sortable: true,
   render: (row) => (
-    <span
-      className={
-        row.varianceMin > 0
-          ? "text-destructive tabular-nums"
-          : row.varianceMin < 0
-            ? "text-info tabular-nums"
-            : "text-muted-foreground tabular-nums"
-      }
+    <Text
+      tone={row.varianceMin > 0 ? "destructive" : row.varianceMin < 0 ? "info" : "muted"}
+      tabular
     >
       {row.varianceMin > 0 ? `+${row.varianceMin}` : row.varianceMin || "—"}
-    </span>
+    </Text>
   ),
 };
 
@@ -303,7 +300,7 @@ const applicantCols: ColumnDef<Attendance>[] = [
     header: "申請時刻",
     align: "right",
     hiddenOnMobile: true,
-    render: (row) => <span className="tabular-nums">{row.appliedAt}</span>,
+    render: (row) => <Text tabular>{row.appliedAt}</Text>,
   },
 ];
 
@@ -373,10 +370,7 @@ const DOT_CLASS: Record<SavedView["dot"], string> = {
 function ViewTrigger({ view, count }: { view: SavedView; count: number }) {
   return (
     <span className="flex items-center gap-2">
-      <span
-        aria-hidden="true"
-        className={`size-2 rounded-full ${DOT_CLASS[view.dot]}`}
-      />
+      <span aria-hidden="true" className={`size-2 rounded-full ${DOT_CLASS[view.dot]}`} />
       <span>{view.label}</span>
       <span className="bg-muted text-muted-foreground inline-flex min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-medium tabular-nums">
         {count}
@@ -461,11 +455,7 @@ export default function Demo() {
               onRowClick={() => {}}
               sort={sort}
               onSortChange={setSort}
-              empty={
-                <span className="text-muted-foreground text-sm">
-                  このビューに該当する勤怠はありません
-                </span>
-              }
+              empty={<Text tone="muted">このビューに該当する勤怠はありません</Text>}
             >
               <DataTable.Toolbar>
                 <DataTable.BulkActions>

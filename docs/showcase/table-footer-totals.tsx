@@ -38,6 +38,7 @@ import {
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 // ── Data ────────────────────────────────────────────────────────────────────
@@ -55,16 +56,106 @@ type Row = {
 };
 
 const ROWS: Row[] = [
-  { id: "E-1042", name: "佐藤 美咲", dept: "営業一課", workDays: 20, overtime: 12.5, late: 0, paidLeave: 1, pay: 318500 },
-  { id: "E-1043", name: "鈴木 健太", dept: "営業一課", workDays: 21, overtime: 28.0, late: 2, paidLeave: 0, pay: 352000 },
-  { id: "E-1051", name: "高橋 直樹", dept: "営業二課", workDays: 19, overtime: 6.0, late: 0, paidLeave: 2, pay: 301200 },
-  { id: "E-1058", name: "田中 彩花", dept: "営業二課", workDays: 20, overtime: 15.5, late: 1, paidLeave: 1, pay: 309800 },
-  { id: "E-1064", name: "伊藤 拓海", dept: "開発部", workDays: 21, overtime: 31.5, late: 0, paidLeave: 0, pay: 388400 },
-  { id: "E-1067", name: "渡辺 さくら", dept: "開発部", workDays: 18, overtime: 8.0, late: 3, paidLeave: 3, pay: 295600 },
-  { id: "E-1071", name: "山本 涼介", dept: "開発部", workDays: 20, overtime: 22.0, late: 0, paidLeave: 1, pay: 364100 },
-  { id: "E-1078", name: "中村 結衣", dept: "管理部", workDays: 21, overtime: 4.5, late: 0, paidLeave: 0, pay: 286000 },
-  { id: "E-1082", name: "小林 大輔", dept: "管理部", workDays: 19, overtime: 18.0, late: 1, paidLeave: 2, pay: 333700 },
-  { id: "E-1090", name: "加藤 七海", dept: "管理部", workDays: 20, overtime: 9.5, late: 0, paidLeave: 1, pay: 298400 },
+  {
+    id: "E-1042",
+    name: "佐藤 美咲",
+    dept: "営業一課",
+    workDays: 20,
+    overtime: 12.5,
+    late: 0,
+    paidLeave: 1,
+    pay: 318500,
+  },
+  {
+    id: "E-1043",
+    name: "鈴木 健太",
+    dept: "営業一課",
+    workDays: 21,
+    overtime: 28.0,
+    late: 2,
+    paidLeave: 0,
+    pay: 352000,
+  },
+  {
+    id: "E-1051",
+    name: "高橋 直樹",
+    dept: "営業二課",
+    workDays: 19,
+    overtime: 6.0,
+    late: 0,
+    paidLeave: 2,
+    pay: 301200,
+  },
+  {
+    id: "E-1058",
+    name: "田中 彩花",
+    dept: "営業二課",
+    workDays: 20,
+    overtime: 15.5,
+    late: 1,
+    paidLeave: 1,
+    pay: 309800,
+  },
+  {
+    id: "E-1064",
+    name: "伊藤 拓海",
+    dept: "開発部",
+    workDays: 21,
+    overtime: 31.5,
+    late: 0,
+    paidLeave: 0,
+    pay: 388400,
+  },
+  {
+    id: "E-1067",
+    name: "渡辺 さくら",
+    dept: "開発部",
+    workDays: 18,
+    overtime: 8.0,
+    late: 3,
+    paidLeave: 3,
+    pay: 295600,
+  },
+  {
+    id: "E-1071",
+    name: "山本 涼介",
+    dept: "開発部",
+    workDays: 20,
+    overtime: 22.0,
+    late: 0,
+    paidLeave: 1,
+    pay: 364100,
+  },
+  {
+    id: "E-1078",
+    name: "中村 結衣",
+    dept: "管理部",
+    workDays: 21,
+    overtime: 4.5,
+    late: 0,
+    paidLeave: 0,
+    pay: 286000,
+  },
+  {
+    id: "E-1082",
+    name: "小林 大輔",
+    dept: "管理部",
+    workDays: 19,
+    overtime: 18.0,
+    late: 1,
+    paidLeave: 2,
+    pay: 333700,
+  },
+  {
+    id: "E-1090",
+    name: "加藤 七海",
+    dept: "管理部",
+    workDays: 20,
+    overtime: 9.5,
+    late: 0,
+    paidLeave: 1,
+    pay: 298400,
+  },
 ];
 
 // ── Aggregation (the totals row) ──────────────────────────────────────────────
@@ -110,7 +201,9 @@ export default function Demo() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>従業員別 月次集計</CardTitle>
-          <span className="text-muted-foreground text-xs tabular-nums">対象 {ROWS.length} 名</span>
+          <Text size="xs" tone="muted" tabular>
+            対象 {ROWS.length} 名
+          </Text>
         </CardHeader>
         {/* flush so the table meets the card edge; vertical scroll inside the
             card with header pinned top and totals pinned bottom. */}
@@ -138,7 +231,9 @@ export default function Demo() {
                     <TableCell className="text-muted-foreground hidden md:table-cell">
                       {r.dept}
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">{count.format(r.workDays)}</TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {count.format(r.workDays)}
+                    </TableCell>
                     <TableCell className="text-right tabular-nums">
                       <Badge tone={overtimeTone(r.overtime)} variant="outline">
                         {hours.format(r.overtime)}h
@@ -150,10 +245,12 @@ export default function Demo() {
                           {count.format(r.late)}
                         </Badge>
                       ) : (
-                        <span className="text-muted-foreground">0</span>
+                        <Text tone="muted">0</Text>
                       )}
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">{count.format(r.paidLeave)}</TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {count.format(r.paidLeave)}
+                    </TableCell>
                     <TableCell className="text-right tabular-nums">{yen.format(r.pay)}</TableCell>
                   </TableRow>
                 ))}
@@ -189,13 +286,25 @@ export default function Demo() {
         </CardContent>
       </Card>
 
-      <Flex direction="row" gap="xs" className="text-muted-foreground mt-3 text-xs">
-        <span>残業 凡例:</span>
-        <Badge tone="success" variant="outline">~15h</Badge>
-        <Badge tone="info" variant="outline">15h~</Badge>
-        <Badge tone="warning" variant="outline">25h~</Badge>
-        <span className="ml-2">遅刻:</span>
-        <Badge tone="destructive" variant="outline">回数</Badge>
+      <Flex direction="row" align="center" gap="xs" className="mt-3">
+        <Text size="xs" tone="muted">
+          残業 凡例:
+        </Text>
+        <Badge tone="success" variant="outline">
+          ~15h
+        </Badge>
+        <Badge tone="info" variant="outline">
+          15h~
+        </Badge>
+        <Badge tone="warning" variant="outline">
+          25h~
+        </Badge>
+        <Text size="xs" tone="muted" className="ml-2">
+          遅刻:
+        </Text>
+        <Badge tone="destructive" variant="outline">
+          回数
+        </Badge>
       </Flex>
     </PageContainer>
   );

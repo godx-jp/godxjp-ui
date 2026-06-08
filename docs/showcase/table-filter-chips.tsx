@@ -26,7 +26,7 @@
 import * as React from "react";
 import { X, Filter } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
 import { SearchInput, Select } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -62,18 +62,126 @@ const STATUS_META: Record<
 const DEPTS = ["営業部", "開発部", "管理部", "物流部"] as const;
 
 const ROWS: Record_[] = [
-  { id: "K-1043", name: "田中 健太", dept: "営業部", date: "06/03", clockIn: "08:58", clockOut: "18:12", status: "present", overtime: 12 },
-  { id: "K-1044", name: "佐藤 美咲", dept: "開発部", date: "06/03", clockIn: "09:24", clockOut: "18:40", status: "late", overtime: 40 },
-  { id: "K-1045", name: "鈴木 大輔", dept: "物流部", date: "06/03", clockIn: "07:55", clockOut: "16:30", status: "early", overtime: 0 },
-  { id: "K-1046", name: "高橋 由美", dept: "管理部", date: "06/03", clockIn: "—", clockOut: "—", status: "absent", overtime: 0 },
-  { id: "K-1047", name: "伊藤 翔", dept: "営業部", date: "06/03", clockIn: "08:50", clockOut: "19:05", status: "present", overtime: 65 },
-  { id: "K-1048", name: "渡辺 彩", dept: "開発部", date: "06/03", clockIn: "—", clockOut: "—", status: "requested", overtime: 0 },
-  { id: "K-1049", name: "山本 拓也", dept: "物流部", date: "06/03", clockIn: "09:12", clockOut: "18:20", status: "late", overtime: 20 },
-  { id: "K-1050", name: "中村 真央", dept: "管理部", date: "06/03", clockIn: "08:45", clockOut: "17:50", status: "present", overtime: 0 },
-  { id: "K-1051", name: "小林 直樹", dept: "営業部", date: "06/03", clockIn: "08:59", clockOut: "20:10", status: "present", overtime: 130 },
-  { id: "K-1052", name: "加藤 千夏", dept: "開発部", date: "06/03", clockIn: "—", clockOut: "—", status: "requested", overtime: 0 },
-  { id: "K-1053", name: "吉田 蓮", dept: "物流部", date: "06/03", clockIn: "—", clockOut: "—", status: "absent", overtime: 0 },
-  { id: "K-1054", name: "山田 さくら", dept: "管理部", date: "06/03", clockIn: "09:31", clockOut: "18:00", status: "late", overtime: 0 },
+  {
+    id: "K-1043",
+    name: "田中 健太",
+    dept: "営業部",
+    date: "06/03",
+    clockIn: "08:58",
+    clockOut: "18:12",
+    status: "present",
+    overtime: 12,
+  },
+  {
+    id: "K-1044",
+    name: "佐藤 美咲",
+    dept: "開発部",
+    date: "06/03",
+    clockIn: "09:24",
+    clockOut: "18:40",
+    status: "late",
+    overtime: 40,
+  },
+  {
+    id: "K-1045",
+    name: "鈴木 大輔",
+    dept: "物流部",
+    date: "06/03",
+    clockIn: "07:55",
+    clockOut: "16:30",
+    status: "early",
+    overtime: 0,
+  },
+  {
+    id: "K-1046",
+    name: "高橋 由美",
+    dept: "管理部",
+    date: "06/03",
+    clockIn: "—",
+    clockOut: "—",
+    status: "absent",
+    overtime: 0,
+  },
+  {
+    id: "K-1047",
+    name: "伊藤 翔",
+    dept: "営業部",
+    date: "06/03",
+    clockIn: "08:50",
+    clockOut: "19:05",
+    status: "present",
+    overtime: 65,
+  },
+  {
+    id: "K-1048",
+    name: "渡辺 彩",
+    dept: "開発部",
+    date: "06/03",
+    clockIn: "—",
+    clockOut: "—",
+    status: "requested",
+    overtime: 0,
+  },
+  {
+    id: "K-1049",
+    name: "山本 拓也",
+    dept: "物流部",
+    date: "06/03",
+    clockIn: "09:12",
+    clockOut: "18:20",
+    status: "late",
+    overtime: 20,
+  },
+  {
+    id: "K-1050",
+    name: "中村 真央",
+    dept: "管理部",
+    date: "06/03",
+    clockIn: "08:45",
+    clockOut: "17:50",
+    status: "present",
+    overtime: 0,
+  },
+  {
+    id: "K-1051",
+    name: "小林 直樹",
+    dept: "営業部",
+    date: "06/03",
+    clockIn: "08:59",
+    clockOut: "20:10",
+    status: "present",
+    overtime: 130,
+  },
+  {
+    id: "K-1052",
+    name: "加藤 千夏",
+    dept: "開発部",
+    date: "06/03",
+    clockIn: "—",
+    clockOut: "—",
+    status: "requested",
+    overtime: 0,
+  },
+  {
+    id: "K-1053",
+    name: "吉田 蓮",
+    dept: "物流部",
+    date: "06/03",
+    clockIn: "—",
+    clockOut: "—",
+    status: "absent",
+    overtime: 0,
+  },
+  {
+    id: "K-1054",
+    name: "山田 さくら",
+    dept: "管理部",
+    date: "06/03",
+    clockIn: "09:31",
+    clockOut: "18:00",
+    status: "late",
+    overtime: 0,
+  },
 ];
 
 const STATUS_OPTIONS = (Object.keys(STATUS_META) as AttendanceStatus[]).map((k) => ({
@@ -92,30 +200,37 @@ const minutes = (m: number) => `${m}分`;
 // ── Columns ─────────────────────────────────────────────────────────────────
 
 const columns: ColumnDef<Record_>[] = [
-  { key: "id", header: "ID", width: "w-24", render: (r) => <span className="font-mono text-xs">{r.id}</span> },
+  {
+    key: "id",
+    header: "ID",
+    width: "w-24",
+    render: (r) => (
+      <Text size="xs" mono>
+        {r.id}
+      </Text>
+    ),
+  },
   { key: "name", header: "従業員", sortable: true },
   { key: "dept", header: "部署", hiddenOnMobile: true },
   {
     key: "clockIn",
     header: "出勤",
     align: "right",
-    render: (r) => <span className="tabular-nums">{r.clockIn}</span>,
+    render: (r) => <Text tabular>{r.clockIn}</Text>,
   },
   {
     key: "clockOut",
     header: "退勤",
     align: "right",
     hiddenOnMobile: true,
-    render: (r) => <span className="tabular-nums">{r.clockOut}</span>,
+    render: (r) => <Text tabular>{r.clockOut}</Text>,
   },
   {
     key: "overtime",
     header: "残業",
     align: "right",
     sortable: true,
-    render: (r) => (
-      <span className="tabular-nums">{r.overtime > 0 ? minutes(r.overtime) : "—"}</span>
-    ),
+    render: (r) => <Text tabular>{r.overtime > 0 ? minutes(r.overtime) : "—"}</Text>,
   },
   {
     key: "status",
@@ -243,15 +358,17 @@ export default function Demo() {
           wrap
           align="center"
           gap="xs"
-          className="min-h-9 rounded-md border border-border bg-secondary/30 px-2.5 py-1.5"
+          className="border-border bg-secondary/30 min-h-9 rounded-md border px-2.5 py-1.5"
         >
           <Flex direction="row" align="center" gap="xs" className="text-muted-foreground pr-1">
             <Filter className="size-3.5" aria-hidden="true" />
-            <span className="text-xs">適用中</span>
+            <Text size="xs">適用中</Text>
           </Flex>
 
           {!hasFilters && (
-            <span className="text-muted-foreground text-xs">条件なし — 全 {ROWS.length} 件</span>
+            <Text size="xs" tone="muted">
+              条件なし — 全 {ROWS.length} 件
+            </Text>
           )}
 
           {query.trim() && (
@@ -289,7 +406,12 @@ export default function Demo() {
           )}
 
           {hasFilters && (
-            <Button variant="ghost" size="sm" className="ml-auto h-6 px-2 text-xs" onClick={clearAll}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-auto h-6 px-2 text-xs"
+              onClick={clearAll}
+            >
               すべて解除
             </Button>
           )}
@@ -308,10 +430,10 @@ export default function Demo() {
           density="compact"
           empty={
             <Flex direction="col" align="center" gap="xs" className="py-8">
-              <span className="text-sm font-medium">該当する勤怠記録がありません</span>
-              <span className="text-muted-foreground text-xs">
+              <Text weight="medium">該当する勤怠記録がありません</Text>
+              <Text size="xs" tone="muted">
                 フィルター条件を解除すると全件を表示します
-              </span>
+              </Text>
               <Button variant="outline" size="sm" className="mt-1" onClick={clearAll}>
                 フィルターを解除
               </Button>
@@ -319,9 +441,9 @@ export default function Demo() {
           }
         >
           <DataTable.Toolbar>
-            <span className="text-muted-foreground text-xs tabular-nums">
+            <Text size="xs" tone="muted" tabular>
               {rows.length} / {ROWS.length} 件
-            </span>
+            </Text>
             <DataTable.BulkActions>
               <Button size="sm" variant="outline">
                 CSV出力

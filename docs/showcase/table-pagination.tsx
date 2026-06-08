@@ -32,7 +32,7 @@ import {
   DataTable,
   type ColumnDef,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Pagination } from "@godxjp/ui/navigation";
 import {
@@ -109,20 +109,20 @@ const columns: ColumnDef<Attendance>[] = [
     key: "clockIn",
     header: "出勤",
     align: "right",
-    render: (row) => <span className="tabular-nums">{row.clockIn}</span>,
+    render: (row) => <Text tabular>{row.clockIn}</Text>,
   },
   {
     key: "clockOut",
     header: "退勤",
     align: "right",
-    render: (row) => <span className="tabular-nums">{row.clockOut}</span>,
+    render: (row) => <Text tabular>{row.clockOut}</Text>,
   },
   {
     key: "overtime",
     header: "残業",
     align: "right",
     hiddenOnMobile: true,
-    render: (row) => <span className="tabular-nums">{minutesFmt(row.overtime)}</span>,
+    render: (row) => <Text tabular>{minutesFmt(row.overtime)}</Text>,
   },
   {
     key: "status",
@@ -147,7 +147,9 @@ function NumberedPaginationCard() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>番号付き + 件数選択</CardTitle>
-        <span className="text-muted-foreground text-xs tabular-nums">全 {NUMBERED_DATA.length} 件</span>
+        <Text size="xs" tone="muted" tabular>
+          全 {NUMBERED_DATA.length} 件
+        </Text>
       </CardHeader>
       <CardContent flush>
         <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact" />
@@ -198,9 +200,9 @@ function LoadMoreCard() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>もっと読む</CardTitle>
-        <span className="text-muted-foreground text-xs tabular-nums">
+        <Text size="xs" tone="muted" tabular>
           {rows.length} / {LOADMORE_DATA.length} 件表示
-        </span>
+        </Text>
       </CardHeader>
       <CardContent flush>
         <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact" />
@@ -226,7 +228,9 @@ function LoadMoreCard() {
                 : `さらに ${Math.min(LOADMORE_STEP, remaining)} 件を読み込む`}
           </Button>
           {!done && (
-            <span className="text-muted-foreground text-xs tabular-nums">残り {remaining} 件</span>
+            <Text size="xs" tone="muted" tabular>
+              残り {remaining} 件
+            </Text>
           )}
         </Flex>
       </CardContent>
@@ -290,9 +294,9 @@ function CursorPeriodCard() {
       </CardContent>
       <CardContent className="border-t">
         <Flex direction="row" align="center" justify="between" wrap gap="sm">
-          <span className="text-muted-foreground text-xs tabular-nums">
+          <Text size="xs" tone="muted" tabular>
             {PERIODS.find((p) => p.value === period)?.label} · {all.length} 件
-          </span>
+          </Text>
           <DataTable.Pagination
             cursor={lastVisibleId}
             hasMore={hasMore}

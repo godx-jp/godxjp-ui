@@ -43,7 +43,7 @@ import {
   CalendarCheck,
 } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
   Card,
@@ -316,11 +316,11 @@ export default function ShiftCalendarShowcase() {
   return (
     <AppShell
       sidebar={sidebar}
-      topbarLeft={<strong className="text-sm">シフト管理</strong>}
+      topbarLeft={<Text as="strong">シフト管理</Text>}
       topbarRight={
-        <span className="text-muted-foreground text-xs whitespace-nowrap tabular-nums">
+        <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
           famgia · 渋谷店
-        </span>
+        </Text>
       }
     >
       <PageContainer
@@ -385,13 +385,13 @@ export default function ShiftCalendarShowcase() {
             <CardHeader>
               <CardTitle>シフト区分</CardTitle>
               <CardAction>
-                <span className="text-muted-foreground text-xs whitespace-nowrap">
+                <Text size="xs" tone="muted" className="whitespace-nowrap">
                   和色（装飾用）
-                </span>
+                </Text>
               </CardAction>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-2">
+              <Flex direction="row" gap="sm" wrap>
                 {(Object.keys(SHIFT_META) as ShiftKind[]).map((k) => (
                   <span
                     key={k}
@@ -402,13 +402,15 @@ export default function ShiftCalendarShowcase() {
                       className="size-3 shrink-0 rounded-[2px]"
                       style={{ background: `var(${SHIFT_META[k].cssVar})` }}
                     />
-                    <span className="font-medium whitespace-nowrap">{SHIFT_META[k].label}</span>
-                    <span className="text-muted-foreground whitespace-nowrap tabular-nums">
+                    <Text size="xs" weight="medium" className="whitespace-nowrap">
+                      {SHIFT_META[k].label}
+                    </Text>
+                    <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
                       {SHIFT_META[k].time}
-                    </span>
+                    </Text>
                   </span>
                 ))}
-              </div>
+              </Flex>
             </CardContent>
           </Card>
 
@@ -444,9 +446,9 @@ export default function ShiftCalendarShowcase() {
                     className="flex items-center justify-between gap-2 rounded-[6px] border px-3 py-2"
                   >
                     <ShiftPill kind={s.kind} staff={s.staff} />
-                    <span className="text-muted-foreground text-xs whitespace-nowrap tabular-nums">
+                    <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
                       {SHIFT_META[s.kind].time}
-                    </span>
+                    </Text>
                   </div>
                 ))}
               </Flex>
@@ -471,9 +473,9 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
       <CardHeader>
         <CardTitle>月</CardTitle>
         <CardAction>
-          <span className="text-muted-foreground text-xs whitespace-nowrap tabular-nums">
+          <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
             6週間 · 31日
-          </span>
+          </Text>
         </CardAction>
       </CardHeader>
       <CardContent flush>
@@ -576,9 +578,9 @@ function WeekTimeline() {
       <CardHeader>
         <CardTitle>週</CardTitle>
         <CardAction>
-          <span className="text-muted-foreground text-xs whitespace-nowrap tabular-nums">
+          <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
             5月11日〜17日 · 06:00–22:00
-          </span>
+          </Text>
         </CardAction>
       </CardHeader>
       <CardContent flush>

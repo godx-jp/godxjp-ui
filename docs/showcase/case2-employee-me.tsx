@@ -35,12 +35,8 @@ import {
   Square,
 } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@godxjp/ui/feedback";
+import { Button, Text } from "@godxjp/ui/general";
+import { Alert, AlertDescription, AlertTitle } from "@godxjp/ui/feedback";
 import {
   Badge,
   type BadgeProps,
@@ -95,9 +91,17 @@ const PUNCH_STATUS: Record<
   { label: string; tone: Extract<BadgeTone, "success" | "warning" | "neutral">; meta: string }
 > = {
   off: { label: "未出勤 · Chưa chấm công", tone: "neutral", meta: "本日の打刻はまだありません" },
-  working: { label: "勤務中 · Đang làm", tone: "success", meta: "出勤 09:30 · 渋谷店 · 経過 4時間12分" },
+  working: {
+    label: "勤務中 · Đang làm",
+    tone: "success",
+    meta: "出勤 09:30 · 渋谷店 · 経過 4時間12分",
+  },
   break: { label: "休憩中 · Nghỉ giải lao", tone: "warning", meta: "休憩開始 13:48 · 経過 12分" },
-  closed: { label: "退勤済 · Đã tan ca", tone: "neutral", meta: "09:30 → 18:12 · 休憩 24分 · 残業 0時間" },
+  closed: {
+    label: "退勤済 · Đã tan ca",
+    tone: "neutral",
+    meta: "09:30 → 18:12 · 休憩 24分 · 残業 0時間",
+  },
 };
 
 /** A punch button descriptor. `comfortable` density floors these at the 44px touch target. */
@@ -112,11 +116,23 @@ type PunchAction = {
 const PUNCH_ACTIONS: Record<PunchState, PunchAction[]> = {
   off: [{ key: "in", label: "出勤 · Check In", icon: LogIn, variant: "default", next: "working" }],
   working: [
-    { key: "break-start", label: "休憩開始 · Nghỉ", icon: Coffee, variant: "outline", next: "break" },
+    {
+      key: "break-start",
+      label: "休憩開始 · Nghỉ",
+      icon: Coffee,
+      variant: "outline",
+      next: "break",
+    },
     { key: "out", label: "退勤 · Check Out", icon: Square, variant: "destructive", next: "closed" },
   ],
   break: [
-    { key: "break-end", label: "休憩終了 · Kết thúc nghỉ", icon: RotateCcw, variant: "default", next: "working" },
+    {
+      key: "break-end",
+      label: "休憩終了 · Kết thúc nghỉ",
+      icon: RotateCcw,
+      variant: "default",
+      next: "working",
+    },
   ],
   closed: [],
 };
@@ -143,8 +159,11 @@ function PunchCard() {
         <Flex direction="col" gap="md">
           {/* Big tabular clock — the signature employee block. */}
           <div>
+            {/* 38px display numeral — above the Text scale (max lg); kept raw as a one-off hero figure. */}
             <div className="text-[38px] leading-none font-medium tabular-nums">{clock}</div>
-            <div className="mt-1 text-[13px] text-muted-foreground">{status.meta}</div>
+            <Text as="div" size="sm" tone="muted" className="mt-1">
+              {status.meta}
+            </Text>
           </div>
 
           {/* Checkout-locked notice (attention, not destructive — it's a fixable hold). */}
@@ -190,14 +209,18 @@ function PunchCard() {
           )}
 
           {/* Geofence caption — the documented punch footer line. */}
-          <Flex direction="row" align="center" gap="xs" className="text-[11px] text-muted-foreground">
-            <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
-            <span className="tabular-nums">位置情報: 渋谷店 (35.659, 139.700) · 134m</span>
+          <Flex direction="row" align="center" gap="xs">
+            <MapPin className="text-muted-foreground size-3.5 shrink-0" aria-hidden="true" />
+            <Text size="2xs" tone="muted" tabular>
+              位置情報: 渋谷店 (35.659, 139.700) · 134m
+            </Text>
           </Flex>
 
           {/* Demo state stepper — lets a reader walk every FSM state at rest. */}
           <Flex direction="row" wrap gap="xs" className="border-t pt-3">
-            <span className="mr-1 self-center text-[11px] text-muted-foreground">状態:</span>
+            <Text size="2xs" tone="muted" className="mr-1 self-center">
+              状態:
+            </Text>
             {(["off", "working", "break", "closed"] as PunchState[]).map((s) => (
               <Button
                 key={s}
@@ -237,13 +260,15 @@ const KPIS: Array<{
 
 type DayStatus = "present" | "late" | "leave" | "holiday";
 
-const STATUS_DEF: Record<DayStatus, { label: string; tone: BadgeTone; variant: BadgeProps["variant"] }> =
-  {
-    present: { label: "通常 · Bình thường", tone: "success", variant: "outline" },
-    late: { label: "遅刻 · Đến trễ", tone: "warning", variant: "outline" },
-    leave: { label: "有給 · Nghỉ phép", tone: "info", variant: "outline" },
-    holiday: { label: "休日 · Nghỉ", tone: "neutral", variant: "outline" },
-  };
+const STATUS_DEF: Record<
+  DayStatus,
+  { label: string; tone: BadgeTone; variant: BadgeProps["variant"] }
+> = {
+  present: { label: "通常 · Bình thường", tone: "success", variant: "outline" },
+  late: { label: "遅刻 · Đến trễ", tone: "warning", variant: "outline" },
+  leave: { label: "有給 · Nghỉ phép", tone: "info", variant: "outline" },
+  holiday: { label: "休日 · Nghỉ", tone: "neutral", variant: "outline" },
+};
 
 const DAYS: Array<{
   date: string;
@@ -286,23 +311,19 @@ export default function EmployeeMeShowcase() {
   return (
     <AppShell
       sidebar={sidebar}
-      topbarLeft={<strong className="text-sm">マイページ</strong>}
+      topbarLeft={<Text as="strong">マイページ</Text>}
       topbarRight={
         <Flex direction="row" align="center" gap="sm">
           <Badge tone="success" variant="outline" className="whitespace-nowrap">
             勤務中 · 4時間12分
           </Badge>
-          <span className="hidden text-xs text-muted-foreground tabular-nums sm:inline">
+          <Text size="xs" tone="muted" tabular className="hidden sm:inline">
             2026年5月8日 · 木曜日
-          </span>
+          </Text>
         </Flex>
       }
     >
-      <PageContainer
-        title="ダッシュボード"
-        subtitle="田中 美咲 · 渋谷店 · 5月度"
-        density="default"
-      >
+      <PageContainer title="ダッシュボード" subtitle="田中 美咲 · 渋谷店 · 5月度" density="default">
         <Flex direction="col" gap="lg">
           {/* Punch (left) + month KPI 2×2 (right) — stack <lg, side-by-side ≥lg */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
@@ -331,9 +352,9 @@ export default function EmployeeMeShowcase() {
             <Card className="self-start lg:col-span-2">
               <CardHeader className="flex flex-row items-center justify-between gap-3">
                 <CardTitle className="whitespace-nowrap">最近7日 · 7 ngày gần nhất</CardTitle>
-                <span className="whitespace-nowrap text-xs text-muted-foreground">
+                <Text size="xs" tone="muted" className="whitespace-nowrap">
                   勤務 47.4h · 残業 1.5h
-                </span>
+                </Text>
               </CardHeader>
               <CardContent flush>
                 <Table>
@@ -352,12 +373,18 @@ export default function EmployeeMeShowcase() {
                         <TableRow key={d.date}>
                           <TableCell className="whitespace-nowrap tabular-nums">
                             {d.date}
-                            <span className="ml-1.5 text-muted-foreground">({d.weekday})</span>
+                            <Text tone="muted" className="ml-1.5">
+                              ({d.weekday})
+                            </Text>
                           </TableCell>
                           <TableCell className="text-right tabular-nums">{d.work}</TableCell>
                           <TableCell className="text-right tabular-nums">{d.ot}</TableCell>
                           <TableCell>
-                            <Badge tone={def.tone} variant={def.variant} className="whitespace-nowrap">
+                            <Badge
+                              tone={def.tone}
+                              variant={def.variant}
+                              className="whitespace-nowrap"
+                            >
                               {def.label}
                             </Badge>
                           </TableCell>
@@ -374,13 +401,13 @@ export default function EmployeeMeShowcase() {
                 <CardTitle className="whitespace-nowrap">本日のサマリー · Hôm nay</CardTitle>
               </CardHeader>
               <CardContent flush>
-                <dl className="divide-y divide-border">
+                <dl className="divide-border divide-y">
                   {SUMMARY.map((s) => (
                     <div
                       key={s.label}
                       className="flex items-center justify-between gap-3 px-4 py-2.5"
                     >
-                      <dt className="whitespace-nowrap text-[13px] text-muted-foreground">
+                      <dt className="text-muted-foreground text-[13px] whitespace-nowrap">
                         {s.label}
                       </dt>
                       <dd className="text-right text-[13px] font-medium tabular-nums">{s.value}</dd>

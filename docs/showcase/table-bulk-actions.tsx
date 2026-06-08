@@ -25,7 +25,7 @@
 import * as React from "react";
 import { CheckCheck, Download, Trash2, X } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
   type BadgeProps,
@@ -68,14 +68,78 @@ type AttendanceRequest = {
 const DEPARTMENTS = ["営業部", "開発部", "総務部", "カスタマーサポート"] as const;
 
 const REQUESTS: AttendanceRequest[] = [
-  { id: "REQ-2041", employee: "佐藤 美咲", dept: "営業部", type: "残業申請", date: "2026-06-03", hours: 2.5, status: "pending" },
-  { id: "REQ-2040", employee: "鈴木 健一", dept: "開発部", type: "有給休暇", date: "2026-06-03", hours: 8.0, status: "approved" },
-  { id: "REQ-2039", employee: "高橋 さくら", dept: "総務部", type: "遅刻届", date: "2026-06-02", hours: 1.0, status: "review" },
-  { id: "REQ-2038", employee: "田中 大輔", dept: "カスタマーサポート", type: "シフト変更", date: "2026-06-02", hours: 0, status: "shift" },
-  { id: "REQ-2037", employee: "伊藤 陽菜", dept: "営業部", type: "早退届", date: "2026-06-01", hours: 3.0, status: "pending" },
-  { id: "REQ-2036", employee: "渡辺 翔太", dept: "開発部", type: "残業申請", date: "2026-06-01", hours: 4.0, status: "pending" },
-  { id: "REQ-2035", employee: "山本 結衣", dept: "総務部", type: "有給休暇", date: "2026-05-30", hours: 8.0, status: "approved" },
-  { id: "REQ-2034", employee: "中村 拓海", dept: "カスタマーサポート", type: "遅刻届", date: "2026-05-30", hours: 0.5, status: "review" },
+  {
+    id: "REQ-2041",
+    employee: "佐藤 美咲",
+    dept: "営業部",
+    type: "残業申請",
+    date: "2026-06-03",
+    hours: 2.5,
+    status: "pending",
+  },
+  {
+    id: "REQ-2040",
+    employee: "鈴木 健一",
+    dept: "開発部",
+    type: "有給休暇",
+    date: "2026-06-03",
+    hours: 8.0,
+    status: "approved",
+  },
+  {
+    id: "REQ-2039",
+    employee: "高橋 さくら",
+    dept: "総務部",
+    type: "遅刻届",
+    date: "2026-06-02",
+    hours: 1.0,
+    status: "review",
+  },
+  {
+    id: "REQ-2038",
+    employee: "田中 大輔",
+    dept: "カスタマーサポート",
+    type: "シフト変更",
+    date: "2026-06-02",
+    hours: 0,
+    status: "shift",
+  },
+  {
+    id: "REQ-2037",
+    employee: "伊藤 陽菜",
+    dept: "営業部",
+    type: "早退届",
+    date: "2026-06-01",
+    hours: 3.0,
+    status: "pending",
+  },
+  {
+    id: "REQ-2036",
+    employee: "渡辺 翔太",
+    dept: "開発部",
+    type: "残業申請",
+    date: "2026-06-01",
+    hours: 4.0,
+    status: "pending",
+  },
+  {
+    id: "REQ-2035",
+    employee: "山本 結衣",
+    dept: "総務部",
+    type: "有給休暇",
+    date: "2026-05-30",
+    hours: 8.0,
+    status: "approved",
+  },
+  {
+    id: "REQ-2034",
+    employee: "中村 拓海",
+    dept: "カスタマーサポート",
+    type: "遅刻届",
+    date: "2026-05-30",
+    hours: 0.5,
+    status: "review",
+  },
 ];
 
 const TOTAL_ACROSS_PAGES = 124; // server-reported total matching the active filter
@@ -96,9 +160,7 @@ const columns: ColumnDef<AttendanceRequest>[] = [
     header: "時間",
     align: "right",
     sortable: true,
-    render: (row) => (
-      <span className="tabular-nums">{row.hours === 0 ? "—" : `${hours.format(row.hours)} h`}</span>
-    ),
+    render: (row) => <Text tabular>{row.hours === 0 ? "—" : `${hours.format(row.hours)} h`}</Text>,
   },
   {
     key: "status",
@@ -147,16 +209,20 @@ function BulkActionBar({
     >
       {/* left: count + cross-page select-all escalation + safe batch actions */}
       <Flex direction="row" align="center" gap="sm" className="min-w-0 flex-1">
-        <span className="text-primary text-sm font-medium tabular-nums whitespace-nowrap">
+        <Text tone="primary" weight="medium" tabular className="whitespace-nowrap">
           {effective}件を選択中
-        </span>
+        </Text>
 
         {/* cross-page select-all: only offered once the whole page is selected */}
         {pageAllSelected &&
           (spanAll ? (
-            <span className="text-muted-foreground text-xs">
-              フィルタ条件の全 <span className="tabular-nums">{total}</span> 件を選択しました
-            </span>
+            <Text size="xs" tone="muted">
+              フィルタ条件の全{" "}
+              <Text as="span" tabular>
+                {total}
+              </Text>{" "}
+              件を選択しました
+            </Text>
           ) : (
             <Button variant="link" size="sm" onClick={onSelectSpanAll}>
               全 <span className="tabular-nums">{total}</span> 件を選択
@@ -237,9 +303,7 @@ function BulkSwapTable({
   initialSelected?: string[];
   defaultDensity?: "compact" | "comfortable";
 }) {
-  const [selected, setSelected] = React.useState<Set<string>>(
-    () => new Set(initialSelected ?? []),
-  );
+  const [selected, setSelected] = React.useState<Set<string>>(() => new Set(initialSelected ?? []));
   const [spanAll, setSpanAll] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [dept, setDept] = React.useState("all");
@@ -355,10 +419,10 @@ export default function Demo() {
         {/* 1 · At rest, NO selection — the normal toolbar (search / 部署 / density). */}
         <Flex direction="col" gap="sm">
           <Flex direction="row" align="center" gap="sm">
-            <span className="text-sm font-medium">未選択 — 通常ツールバー</span>
-            <span className="text-muted-foreground text-xs">
+            <Text weight="medium">未選択 — 通常ツールバー</Text>
+            <Text size="xs" tone="muted">
               検索・部署フィルタ・密度切替が表示される
-            </span>
+            </Text>
           </Flex>
           <BulkSwapTable />
         </Flex>
@@ -367,25 +431,22 @@ export default function Demo() {
             cross-page "全 124 件を選択" offered, 一括削除 isolated on the right. */}
         <Flex direction="col" gap="sm">
           <Flex direction="row" align="center" gap="sm">
-            <span className="text-sm font-medium">選択中 — 一括操作バー</span>
-            <span className="text-muted-foreground text-xs">
+            <Text weight="medium">選択中 — 一括操作バー</Text>
+            <Text size="xs" tone="muted">
               primary-tint 背景・クロスページ選択・破壊的操作を右端に隔離
-            </span>
+            </Text>
           </Flex>
-          <BulkSwapTable
-            initialSelected={REQUESTS.map((r) => r.id)}
-            defaultDensity="comfortable"
-          />
+          <BulkSwapTable initialSelected={REQUESTS.map((r) => r.id)} defaultDensity="comfortable" />
         </Flex>
 
         {/* 3 · Partial selection — a few rows checked, bulk bar shows the page
             count without the cross-page escalation (page not fully selected). */}
         <Flex direction="col" gap="sm">
           <Flex direction="row" align="center" gap="sm">
-            <span className="text-sm font-medium">一部選択 — クロスページ選択なし</span>
-            <span className="text-muted-foreground text-xs">
+            <Text weight="medium">一部選択 — クロスページ選択なし</Text>
+            <Text size="xs" tone="muted">
               ページ全選択でないため「全件選択」は出ない
-            </span>
+            </Text>
           </Flex>
           <BulkSwapTable initialSelected={["REQ-2041", "REQ-2037"]} />
         </Flex>

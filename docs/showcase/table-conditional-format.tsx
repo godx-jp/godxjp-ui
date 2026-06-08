@@ -32,6 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { cn } from "@godxjp/ui/lib/utils";
 
@@ -48,14 +49,86 @@ type Attendance = {
 };
 
 const ROWS: Attendance[] = [
-  { id: "E-1042", name: "田中 美咲", dept: "製造1課", workdays: 20, late: 1, earlyLeaveHours: 0, overtime: 12.5, status: "approved" },
-  { id: "E-1043", name: "佐藤 健", dept: "製造1課", workdays: 19, late: 6, earlyLeaveHours: 1.5, overtime: 8, status: "review" },
-  { id: "E-1044", name: "鈴木 陽子", dept: "製造2課", workdays: 20, late: 0, earlyLeaveHours: 2.5, overtime: 31, status: "pending" },
-  { id: "E-1045", name: "高橋 大輔", dept: "製造2課", workdays: 18, late: 3, earlyLeaveHours: 0, overtime: 46.5, status: "review" },
-  { id: "E-1046", name: "伊藤 さくら", dept: "検査課", workdays: 20, late: 0, earlyLeaveHours: 0, overtime: 4, status: "approved" },
-  { id: "E-1047", name: "渡辺 翔", dept: "検査課", workdays: 17, late: 8, earlyLeaveHours: 3.0, overtime: 22, status: "review" },
-  { id: "E-1048", name: "山本 直樹", dept: "出荷課", workdays: 20, late: 2, earlyLeaveHours: 0.5, overtime: 15, status: "approved" },
-  { id: "E-1049", name: "中村 あおい", dept: "出荷課", workdays: 19, late: 5, earlyLeaveHours: 2.25, overtime: 48, status: "review" },
+  {
+    id: "E-1042",
+    name: "田中 美咲",
+    dept: "製造1課",
+    workdays: 20,
+    late: 1,
+    earlyLeaveHours: 0,
+    overtime: 12.5,
+    status: "approved",
+  },
+  {
+    id: "E-1043",
+    name: "佐藤 健",
+    dept: "製造1課",
+    workdays: 19,
+    late: 6,
+    earlyLeaveHours: 1.5,
+    overtime: 8,
+    status: "review",
+  },
+  {
+    id: "E-1044",
+    name: "鈴木 陽子",
+    dept: "製造2課",
+    workdays: 20,
+    late: 0,
+    earlyLeaveHours: 2.5,
+    overtime: 31,
+    status: "pending",
+  },
+  {
+    id: "E-1045",
+    name: "高橋 大輔",
+    dept: "製造2課",
+    workdays: 18,
+    late: 3,
+    earlyLeaveHours: 0,
+    overtime: 46.5,
+    status: "review",
+  },
+  {
+    id: "E-1046",
+    name: "伊藤 さくら",
+    dept: "検査課",
+    workdays: 20,
+    late: 0,
+    earlyLeaveHours: 0,
+    overtime: 4,
+    status: "approved",
+  },
+  {
+    id: "E-1047",
+    name: "渡辺 翔",
+    dept: "検査課",
+    workdays: 17,
+    late: 8,
+    earlyLeaveHours: 3.0,
+    overtime: 22,
+    status: "review",
+  },
+  {
+    id: "E-1048",
+    name: "山本 直樹",
+    dept: "出荷課",
+    workdays: 20,
+    late: 2,
+    earlyLeaveHours: 0.5,
+    overtime: 15,
+    status: "approved",
+  },
+  {
+    id: "E-1049",
+    name: "中村 あおい",
+    dept: "出荷課",
+    workdays: 19,
+    late: 5,
+    earlyLeaveHours: 2.25,
+    overtime: 48,
+    status: "review",
+  },
 ];
 
 // ── 閾値（しきい値） ───────────────────────────────────────────────────────
@@ -72,9 +145,18 @@ const hours = (h: number) => `${num.format(h)}h`;
 
 // ── 凡例（しきい値の色対応を明示） ─────────────────────────────────────────
 const LEGEND: Array<{ swatch: string; label: string }> = [
-  { swatch: "bg-destructive/15 border-destructive/40", label: `遅刻 ${LATE_DANGER}回以上 → 行を強調（茜）` },
-  { swatch: "bg-attention/15 border-attention/40", label: `早退 ${EARLY_ATTENTION}.0h 超 → セル強調（朱）` },
-  { swatch: "bg-warning/15 border-warning/40", label: `残業 ${OVERTIME_WARNING}h 以上 → セル注意（山吹）` },
+  {
+    swatch: "bg-destructive/15 border-destructive/40",
+    label: `遅刻 ${LATE_DANGER}回以上 → 行を強調（茜）`,
+  },
+  {
+    swatch: "bg-attention/15 border-attention/40",
+    label: `早退 ${EARLY_ATTENTION}.0h 超 → セル強調（朱）`,
+  },
+  {
+    swatch: "bg-warning/15 border-warning/40",
+    label: `残業 ${OVERTIME_WARNING}h 以上 → セル注意（山吹）`,
+  },
 ];
 
 function Legend() {
@@ -82,8 +164,13 @@ function Legend() {
     <Flex direction="row" wrap gap="md" align="center">
       {LEGEND.map((l) => (
         <Flex key={l.label} direction="row" align="center" gap="xs">
-          <span aria-hidden="true" className={cn("inline-block size-3 rounded-sm border", l.swatch)} />
-          <span className="text-muted-foreground text-xs">{l.label}</span>
+          <span
+            aria-hidden="true"
+            className={cn("inline-block size-3 rounded-sm border", l.swatch)}
+          />
+          <Text size="xs" tone="muted">
+            {l.label}
+          </Text>
         </Flex>
       ))}
     </Flex>
@@ -102,14 +189,13 @@ export default function Demo() {
       align: "right",
       sortable: true,
       render: (r) => (
-        <span
-          className={cn(
-            "tabular-nums",
-            r.late >= LATE_DANGER && "text-destructive font-medium",
-          )}
+        <Text
+          tabular
+          tone={r.late >= LATE_DANGER ? "destructive" : "default"}
+          weight={r.late >= LATE_DANGER ? "medium" : "regular"}
         >
           {r.late}回
-        </span>
+        </Text>
       ),
     },
     {
@@ -123,7 +209,7 @@ export default function Demo() {
             {hours(r.earlyLeaveHours)}
           </span>
         ) : (
-          <span className="tabular-nums">{hours(r.earlyLeaveHours)}</span>
+          <Text tabular>{hours(r.earlyLeaveHours)}</Text>
         ),
     },
     {
@@ -137,7 +223,7 @@ export default function Demo() {
             {hours(r.overtime)}
           </span>
         ) : (
-          <span className="tabular-nums">{hours(r.overtime)}</span>
+          <Text tabular>{hours(r.overtime)}</Text>
         ),
     },
     {
@@ -160,9 +246,9 @@ export default function Demo() {
           <CardHeader className="gap-2">
             <Flex direction="row" wrap align="center" justify="between" gap="sm">
               <CardTitle>勤怠サマリ — 製造部（当月締め）</CardTitle>
-              <span className="text-muted-foreground text-xs tabular-nums">
+              <Text size="xs" tone="muted" tabular>
                 対象 {ROWS.length}名 · 2026-05
-              </span>
+              </Text>
             </Flex>
             <Legend />
           </CardHeader>
@@ -188,11 +274,11 @@ export default function Demo() {
                       key={r.id}
                       // 行レベル条件付き書式: 遅刻≥5回 → danger(茜) で淡くティント。
                       // semantic token のみ（bg-destructive/…）。hover でも判別できるよう強めに上書き。
-                      className={cn(
-                        lateRow && "bg-destructive/[0.07] hover:bg-destructive/10",
-                      )}
+                      className={cn(lateRow && "bg-destructive/[0.07] hover:bg-destructive/10")}
                       // しきい値超過行はスクリーンリーダーにも明示。
-                      aria-label={lateRow ? `${r.name} — 遅刻が基準値（${LATE_DANGER}回）以上` : undefined}
+                      aria-label={
+                        lateRow ? `${r.name} — 遅刻が基準値（${LATE_DANGER}回）以上` : undefined
+                      }
                     >
                       <TableCell className="font-mono text-xs">{r.id}</TableCell>
                       <TableCell className="font-medium">
@@ -211,14 +297,13 @@ export default function Demo() {
                       <TableCell className="text-right tabular-nums">{r.workdays}日</TableCell>
                       {/* 遅刻セル: しきい値以上は茜文字で前景強調 */}
                       <TableCell className="text-right">
-                        <span
-                          className={cn(
-                            "tabular-nums",
-                            lateRow && "text-destructive font-medium",
-                          )}
+                        <Text
+                          tabular
+                          tone={lateRow ? "destructive" : "default"}
+                          weight={lateRow ? "medium" : "regular"}
                         >
                           {r.late}回
-                        </span>
+                        </Text>
                       </TableCell>
                       {/* 早退セル: > 2.0h は attention(朱) で背景＋前景強調 */}
                       <TableCell className="text-right">
@@ -227,9 +312,9 @@ export default function Demo() {
                             {hours(r.earlyLeaveHours)}
                           </span>
                         ) : (
-                          <span className="text-muted-foreground tabular-nums">
+                          <Text tone="muted" tabular>
                             {hours(r.earlyLeaveHours)}
-                          </span>
+                          </Text>
                         )}
                       </TableCell>
                       {/* 残業セル: ≥ 45h は warning(山吹) で注意 */}
@@ -239,7 +324,7 @@ export default function Demo() {
                             {hours(r.overtime)}
                           </span>
                         ) : (
-                          <span className="tabular-nums">{hours(r.overtime)}</span>
+                          <Text tabular>{hours(r.overtime)}</Text>
                         )}
                       </TableCell>
                       <TableCell className="text-center">
@@ -257,10 +342,10 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>DataTable 版 — セル単位の条件付き書式</CardTitle>
-            <span className="text-muted-foreground text-xs">
-              ColumnDef.render 内でしきい値判定 → token クラスを付与。行全体のティントは
-              ColumnDef では表現できないため上段の実 Table 合成を参照（gapNotes 参照）。
-            </span>
+            <Text size="xs" tone="muted">
+              ColumnDef.render 内でしきい値判定 → token クラスを付与。行全体のティントは ColumnDef
+              では表現できないため上段の実 Table 合成を参照（gapNotes 参照）。
+            </Text>
           </CardHeader>
           <CardContent flush>
             <DataTable data={ROWS} columns={columns} getRowId={(r) => r.id}>

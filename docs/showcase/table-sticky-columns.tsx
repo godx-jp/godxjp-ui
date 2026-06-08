@@ -19,7 +19,7 @@
 import * as React from "react";
 import { Check } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
   type BadgeProps,
@@ -79,7 +79,15 @@ const EMPLOYEES: Employee[] = [
     id: "E-1042",
     name: "佐藤 美咲",
     dept: "受付",
-    marks: { mon: "present", tue: "present", wed: "late", thu: "present", fri: "present", sat: "off", sun: "off" },
+    marks: {
+      mon: "present",
+      tue: "present",
+      wed: "late",
+      thu: "present",
+      fri: "present",
+      sat: "off",
+      sun: "off",
+    },
     total: 38.5,
     lateCount: 1,
   },
@@ -87,7 +95,15 @@ const EMPLOYEES: Employee[] = [
     id: "E-1043",
     name: "鈴木 健一",
     dept: "倉庫",
-    marks: { mon: "present", tue: "late", wed: "late", thu: "present", fri: "absent", sat: "present", sun: "off" },
+    marks: {
+      mon: "present",
+      tue: "late",
+      wed: "late",
+      thu: "present",
+      fri: "absent",
+      sat: "present",
+      sun: "off",
+    },
     total: 40.0,
     lateCount: 2,
   },
@@ -95,7 +111,15 @@ const EMPLOYEES: Employee[] = [
     id: "E-1044",
     name: "高橋 結衣",
     dept: "受付",
-    marks: { mon: "paid", tue: "paid", wed: "present", thu: "present", fri: "present", sat: "off", sun: "off" },
+    marks: {
+      mon: "paid",
+      tue: "paid",
+      wed: "present",
+      thu: "present",
+      fri: "present",
+      sat: "off",
+      sun: "off",
+    },
     total: 24.0,
     lateCount: 0,
   },
@@ -103,7 +127,15 @@ const EMPLOYEES: Employee[] = [
     id: "E-1045",
     name: "田中 大輔",
     dept: "配送",
-    marks: { mon: "present", tue: "present", wed: "present", thu: "present", fri: "present", sat: "present", sun: "off" },
+    marks: {
+      mon: "present",
+      tue: "present",
+      wed: "present",
+      thu: "present",
+      fri: "present",
+      sat: "present",
+      sun: "off",
+    },
     total: 46.0,
     lateCount: 0,
   },
@@ -111,7 +143,15 @@ const EMPLOYEES: Employee[] = [
     id: "E-1046",
     name: "渡辺 さくら",
     dept: "配送",
-    marks: { mon: "absent", tue: "present", wed: "present", thu: "late", fri: "present", sat: "off", sun: "off" },
+    marks: {
+      mon: "absent",
+      tue: "present",
+      wed: "present",
+      thu: "late",
+      fri: "present",
+      sat: "off",
+      sun: "off",
+    },
     total: 31.5,
     lateCount: 1,
   },
@@ -119,7 +159,15 @@ const EMPLOYEES: Employee[] = [
     id: "E-1047",
     name: "伊藤 翔太",
     dept: "倉庫",
-    marks: { mon: "present", tue: "present", wed: "present", thu: "paid", fri: "paid", sat: "off", sun: "off" },
+    marks: {
+      mon: "present",
+      tue: "present",
+      wed: "present",
+      thu: "paid",
+      fri: "paid",
+      sat: "off",
+      sun: "off",
+    },
     total: 23.0,
     lateCount: 0,
   },
@@ -140,7 +188,11 @@ const PIN_RIGHT = "sticky right-0 z-20 bg-inherit border-l border-border";
 function MarkCell({ mark }: { mark: Mark }) {
   const def = MARK[mark];
   if (mark === "off") {
-    return <span className="text-muted-foreground tabular-nums">—</span>;
+    return (
+      <Text tone="muted" tabular>
+        —
+      </Text>
+    );
   }
   return (
     <Badge tone={def.tone === "muted" ? "muted" : def.tone} variant="outline">
@@ -171,9 +223,9 @@ export default function Demo() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>2026年6月 第1週</CardTitle>
-            <span className="text-muted-foreground text-xs tabular-nums">
+            <Text size="xs" tone="muted" tabular>
               従業員 {EMPLOYEES.length} 名 · 横スクロールで全日表示
-            </span>
+            </Text>
           </CardHeader>
           <CardContent flush>
             {/* The scroll container. `overflow-x-auto` clips; the table holds a
@@ -187,10 +239,10 @@ export default function Demo() {
                     {DAYS.map((d) => (
                       <TableHead key={d.key} className="text-center">
                         <span className="flex flex-col leading-tight">
-                          <span className="font-medium">{d.label}</span>
-                          <span className="text-muted-foreground text-[11px] tabular-nums">
+                          <Text weight="medium">{d.label}</Text>
+                          <Text size="2xs" tone="muted" tabular>
                             {d.date}
-                          </span>
+                          </Text>
                         </span>
                       </TableHead>
                     ))}
@@ -211,11 +263,13 @@ export default function Demo() {
                         {/* Pinned-left: 識別子 (従業員 + 部署 + ID) */}
                         <TableCell className={`${PIN_LEFT} w-56 min-w-56 align-middle`}>
                           <div className="flex flex-col leading-tight">
-                            <span className="font-medium">{emp.name}</span>
-                            <span className="text-muted-foreground text-[11px]">
+                            <Text weight="medium">{emp.name}</Text>
+                            <Text size="2xs" tone="muted">
                               {emp.dept} ·{" "}
-                              <span className="font-mono tabular-nums">{emp.id}</span>
-                            </span>
+                              <Text size="2xs" tone="muted" mono tabular>
+                                {emp.id}
+                              </Text>
+                            </Text>
                           </div>
                         </TableCell>
 
@@ -229,7 +283,9 @@ export default function Demo() {
                         {/* 実働合計 — numeric, tabular */}
                         <TableCell className="text-right align-middle tabular-nums">
                           {emp.total.toFixed(1)}
-                          <span className="text-muted-foreground text-[11px]">h</span>
+                          <Text size="2xs" tone="muted">
+                            h
+                          </Text>
                         </TableCell>
 
                         {/* Pinned-right: 操作 */}
@@ -269,24 +325,44 @@ export default function Demo() {
           <CardContent>
             <Flex direction="row" wrap gap="md">
               <Flex direction="row" align="center" gap="xs">
-                <Badge tone="success" variant="outline">出勤</Badge>
-                <span className="text-muted-foreground text-xs">通常勤務</span>
+                <Badge tone="success" variant="outline">
+                  出勤
+                </Badge>
+                <Text size="xs" tone="muted">
+                  通常勤務
+                </Text>
               </Flex>
               <Flex direction="row" align="center" gap="xs">
-                <Badge tone="warning" variant="outline">遅刻</Badge>
-                <span className="text-muted-foreground text-xs">非破壊的な注意</span>
+                <Badge tone="warning" variant="outline">
+                  遅刻
+                </Badge>
+                <Text size="xs" tone="muted">
+                  非破壊的な注意
+                </Text>
               </Flex>
               <Flex direction="row" align="center" gap="xs">
-                <Badge tone="destructive" variant="outline">欠勤</Badge>
-                <span className="text-muted-foreground text-xs">未承認の不在</span>
+                <Badge tone="destructive" variant="outline">
+                  欠勤
+                </Badge>
+                <Text size="xs" tone="muted">
+                  未承認の不在
+                </Text>
               </Flex>
               <Flex direction="row" align="center" gap="xs">
-                <Badge tone="info" variant="outline">有休</Badge>
-                <span className="text-muted-foreground text-xs">有給休暇</span>
+                <Badge tone="info" variant="outline">
+                  有休
+                </Badge>
+                <Text size="xs" tone="muted">
+                  有給休暇
+                </Text>
               </Flex>
               <Flex direction="row" align="center" gap="xs">
-                <span className="text-muted-foreground tabular-nums">—</span>
-                <span className="text-muted-foreground text-xs">公休 / 非番</span>
+                <Text tone="muted" tabular>
+                  —
+                </Text>
+                <Text size="xs" tone="muted">
+                  公休 / 非番
+                </Text>
               </Flex>
             </Flex>
           </CardContent>

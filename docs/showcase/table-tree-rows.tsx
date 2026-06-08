@@ -25,13 +25,8 @@ import * as React from "react";
 import { ChevronRight } from "lucide-react";
 
 import { Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Button, Text } from "@godxjp/ui/general";
+import { Card, CardContent, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 // ── Org tree (部署 → チーム → 従業員) ───────────────────────────────────────────
@@ -290,15 +285,9 @@ function TreeCell({
         />
       )}
       <span className="flex min-w-0 items-center gap-2">
-        <span
-          className={
-            row.kind === "従業員"
-              ? "truncate"
-              : "truncate font-medium"
-          }
-        >
+        <Text weight={row.kind === "従業員" ? "regular" : "medium"} truncate>
           {row.name}
-        </span>
+        </Text>
         <Badge variant="outline" tone="neutral" className="shrink-0">
           {row.kind}
         </Badge>
@@ -316,7 +305,7 @@ function metricColumns(): ColumnDef<Row>[] {
       header: "出勤率",
       align: "right",
       width: "w-24",
-      render: (row) => <span className="tabular-nums">{pct.format(row.attendance / 100)}</span>,
+      render: (row) => <Text tabular>{pct.format(row.attendance / 100)}</Text>,
     },
     {
       key: "late",
@@ -326,9 +315,13 @@ function metricColumns(): ColumnDef<Row>[] {
       hiddenOnMobile: true,
       render: (row) =>
         row.late > 0 ? (
-          <span className="tabular-nums text-warning">{row.late}回</span>
+          <Text tone="warning" tabular>
+            {row.late}回
+          </Text>
         ) : (
-          <span className="tabular-nums text-muted-foreground">0回</span>
+          <Text tone="muted" tabular>
+            0回
+          </Text>
         ),
     },
     {
@@ -337,7 +330,7 @@ function metricColumns(): ColumnDef<Row>[] {
       align: "right",
       width: "w-24",
       hiddenOnMobile: true,
-      render: (row) => <span className="tabular-nums">{hours.format(row.overtime)}h</span>,
+      render: (row) => <Text tabular>{hours.format(row.overtime)}h</Text>,
     },
     {
       key: "approval",
@@ -360,9 +353,7 @@ function metricColumns(): ColumnDef<Row>[] {
 
 function InteractiveTree() {
   // One branch pre-expanded at rest (Rule #2 — tree behaviour visible without clicks).
-  const [open, setOpen] = React.useState<Set<string>>(
-    () => new Set(["dpt-sales", "tm-sales-1"]),
-  );
+  const [open, setOpen] = React.useState<Set<string>>(() => new Set(["dpt-sales", "tm-sales-1"]));
 
   const toggle = React.useCallback((id: string) => {
     setOpen((prev) => {
@@ -380,9 +371,7 @@ function InteractiveTree() {
       {
         key: "name",
         header: "組織 / 従業員",
-        render: (row) => (
-          <TreeCell row={row} expanded={open.has(row.id)} onToggle={toggle} />
-        ),
+        render: (row) => <TreeCell row={row} expanded={open.has(row.id)} onToggle={toggle} />,
       },
       ...metricColumns(),
     ],
@@ -392,9 +381,9 @@ function InteractiveTree() {
   return (
     <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact">
       <DataTable.Toolbar>
-        <span className="text-xs text-muted-foreground">
+        <Text size="xs" tone="muted">
           {rows.length} 行表示 · 部署 {TREE.length} 件
-        </span>
+        </Text>
         <DataTable.DensityToggle />
       </DataTable.Toolbar>
       <DataTable.Content />
@@ -421,9 +410,7 @@ function ExpandedTree() {
     [],
   );
 
-  return (
-    <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact" />
-  );
+  return <DataTable data={rows} columns={columns} getRowId={(row) => row.id} density="compact" />;
 }
 
 export default function Demo() {

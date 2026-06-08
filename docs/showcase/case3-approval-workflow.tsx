@@ -28,7 +28,7 @@
 import * as React from "react";
 import { Check, ClipboardCheck, Clock, Download, Tag, Users, X } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
   type BadgeProps,
@@ -224,8 +224,16 @@ export default function Demo() {
   const rejectTarget = ROWS.find((r) => r.id === rejectTargetId) ?? null;
 
   const columns: ColumnDef<AbsenceRow>[] = [
-    { key: "date", header: "日付", width: "w-28", render: (r) => <span className="tabular-nums">{r.date}</span> },
-    { key: "employee", header: "従業員", render: (r) => <span className="font-mono text-xs">{r.employee}</span> },
+    { key: "date", header: "日付", width: "w-28", render: (r) => <Text tabular>{r.date}</Text> },
+    {
+      key: "employee",
+      header: "従業員",
+      render: (r) => (
+        <Text mono size="xs">
+          {r.employee}
+        </Text>
+      ),
+    },
     {
       key: "type",
       header: "区分",
@@ -239,7 +247,7 @@ export default function Demo() {
       key: "hours",
       header: "時間",
       align: "right",
-      render: (r) => <span className="tabular-nums">{yenlessHours(r.hours)}</span>,
+      render: (r) => <Text tabular>{yenlessHours(r.hours)}</Text>,
     },
     {
       key: "status",
@@ -255,9 +263,9 @@ export default function Demo() {
       header: "理由",
       hiddenOnMobile: true,
       render: (r) => (
-        <span className="text-muted-foreground block max-w-[260px] truncate" title={r.reason}>
+        <Text as="span" tone="muted" truncate className="block max-w-[260px]" title={r.reason}>
           {r.reason}
-        </span>
+        </Text>
       ),
     },
     {
@@ -287,7 +295,9 @@ export default function Demo() {
           </Flex>
         ) : (
           // Terminal rows lock actions — the key approval-UX rule.
-          <span className="text-muted-foreground text-xs">変更不可</span>
+          <Text size="xs" tone="muted">
+            変更不可
+          </Text>
         ),
     },
   ];
@@ -305,7 +315,10 @@ export default function Demo() {
     <AppShell
       sidebar={sidebar}
       topbar={
-        <Topbar product={{ name: "dxs · kintai", color: "hsl(var(--primary))" }} onSearchOpen={() => {}} />
+        <Topbar
+          product={{ name: "dxs · kintai", color: "hsl(var(--primary))" }}
+          onSearchOpen={() => {}}
+        />
       }
     >
       <PageContainer
@@ -367,22 +380,21 @@ export default function Demo() {
 
           {/* ── Inline reject prompt (conditional, reason required) ────────── */}
           {rejectTarget && (
-            <Card className="self-start border-destructive/40">
+            <Card className="border-destructive/40 self-start">
               <CardHeader>
                 <CardTitle>申請を却下 · {rejectTarget.id}</CardTitle>
               </CardHeader>
               <CardContent>
                 <Flex direction="col" gap="md">
-                  <p className="text-muted-foreground text-[13px]">
-                    {rejectTarget.employee} の「{TYPE_LABEL[rejectTarget.type]}」を却下します。理由を入力してください。
-                  </p>
+                  <Text as="p" size="sm" tone="muted">
+                    {rejectTarget.employee} の「{TYPE_LABEL[rejectTarget.type]}
+                    」を却下します。理由を入力してください。
+                  </Text>
                   <FormField
                     id="reject-reason"
                     label="却下理由"
                     required
-                    error={
-                      rejectReason.trim() === "" ? "却下には理由が必要です。" : undefined
-                    }
+                    error={rejectReason.trim() === "" ? "却下には理由が必要です。" : undefined}
                   >
                     <Input
                       value={rejectReason}
@@ -495,7 +507,9 @@ export default function Demo() {
 
           {/* ── Error variant (staged visible at rest) ────────────────────── */}
           <Alert tone="destructive">
-            <AlertDescription>申請の読み込みに失敗しました。時間をおいて再度お試しください。</AlertDescription>
+            <AlertDescription>
+              申請の読み込みに失敗しました。時間をおいて再度お試しください。
+            </AlertDescription>
           </Alert>
         </Flex>
       </PageContainer>

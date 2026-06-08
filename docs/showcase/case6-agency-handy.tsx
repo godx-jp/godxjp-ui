@@ -42,7 +42,8 @@ import {
   X,
 } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
+import { Flex } from "@godxjp/ui/layout";
 import {
   Badge,
   type BadgeProps,
@@ -219,7 +220,9 @@ const FILTERS = [
 
 function MonoCode({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-muted-foreground font-mono text-[12px] tabular-nums">{children}</span>
+    <Text size="xs" mono tone="muted" tabular>
+      {children}
+    </Text>
   );
 }
 
@@ -265,9 +268,9 @@ function ItemListCard({
             <Badge tone={st.tone} variant="outline" className="rounded-full">
               {st.label}
             </Badge>
-            <span className="text-muted-foreground shrink-0 text-[12px] tabular-nums">
+            <Text size="xs" tone="muted" tabular className="shrink-0">
               ×{item.qty} · {item.receivedAt}
-            </span>
+            </Text>
           </div>
         </div>
       </CardContent>
@@ -294,14 +297,14 @@ function PackingListCard({ packing, onTap }: { packing: Packing; onTap?: () => v
             {st.label}
           </Badge>
         </div>
-        <div className="text-muted-foreground mt-1 flex items-center justify-between gap-2 text-[12px]">
-          <span className="truncate">
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <Text size="xs" tone="muted" truncate>
             {packing.customer} · {packing.city}
-          </span>
-          <span className="shrink-0 tabular-nums">
+          </Text>
+          <Text size="xs" tone="muted" tabular className="shrink-0">
             ×{packing.items}
             {packing.slot ? ` · ${packing.slot}` : ""}
-          </span>
+          </Text>
         </div>
       </CardContent>
     </Card>
@@ -312,11 +315,13 @@ function PackingListCard({ packing, onTap }: { packing: Packing; onTap?: () => v
 function SectionHeader({ children, count }: { children: React.ReactNode; count?: number }) {
   return (
     <div className="flex items-center justify-between px-0.5">
-      <span className="text-muted-foreground text-[11px] font-medium tracking-[0.08em] uppercase">
+      <Text size="2xs" weight="medium" tone="muted" className="tracking-[0.08em] uppercase">
         {children}
-      </span>
+      </Text>
       {count != null ? (
-        <span className="text-muted-foreground font-mono text-[11px] tabular-nums">{count}</span>
+        <Text size="2xs" mono tone="muted" tabular>
+          {count}
+        </Text>
       ) : null}
     </div>
   );
@@ -336,9 +341,13 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
 
 function StatusBar() {
   return (
-    <div className="flex h-9 shrink-0 items-center justify-between px-5 text-[13px] font-medium tabular-nums">
-      <span>9:41</span>
-      <span className="text-muted-foreground">Tiximax Handy</span>
+    <div className="flex h-9 shrink-0 items-center justify-between px-5">
+      <Text size="sm" weight="medium" tabular>
+        9:41
+      </Text>
+      <Text size="sm" weight="medium" tabular tone="muted">
+        Tiximax Handy
+      </Text>
     </div>
   );
 }
@@ -394,11 +403,13 @@ function ItemLookupSheet({
                 aria-hidden="true"
                 strokeWidth={1.5}
               />
-              <span className="text-[13px]">Đưa mã vạch vào khung</span>
+              <Text size="sm">Đưa mã vạch vào khung</Text>
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-[13px] font-medium">Hoặc nhập mã thủ công</span>
+          <Flex direction="col" gap="sm">
+            <Text size="sm" weight="medium">
+              Hoặc nhập mã thủ công
+            </Text>
             <div className="flex gap-2">
               <Input
                 value={code}
@@ -420,7 +431,7 @@ function ItemLookupSheet({
                 Tìm
               </Button>
             </div>
-          </div>
+          </Flex>
         </SheetBody>
         <SheetFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -505,15 +516,21 @@ function ItemFormSheet({
         </SheetHeader>
         <SheetBody className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
-            <span className="text-[13px] font-medium">Mã vạch</span>
+            <Text size="sm" weight="medium">
+              Mã vạch
+            </Text>
             <Input defaultValue="JAN 4987241135219" readOnly className="font-mono" />
           </div>
           <div className="flex flex-col gap-1.5">
-            <span className="text-[13px] font-medium">Tên hàng (tùy chọn)</span>
+            <Text size="sm" weight="medium">
+              Tên hàng (tùy chọn)
+            </Text>
             <Input placeholder="Nhập tên hàng" autoComplete="off" />
           </div>
           <div className="flex flex-col gap-1.5">
-            <span className="text-[13px] font-medium">Số lượng</span>
+            <Text size="sm" weight="medium">
+              Số lượng
+            </Text>
             <Input
               type="number"
               value={qty}
@@ -522,8 +539,10 @@ function ItemFormSheet({
               className="w-24 tabular-nums"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-[13px] font-medium">Đích đến</span>
+          <Flex direction="col" gap="sm">
+            <Text size="sm" weight="medium">
+              Đích đến
+            </Text>
             <RadioGroupRoot value={dest} onValueChange={setDest} className="flex flex-col gap-2">
               {DESTINATIONS.map((d) => {
                 const checked = dest === d.id;
@@ -542,13 +561,15 @@ function ItemFormSheet({
                     <RadioItem id={rowId} value={d.id} className="mt-0.5" />
                     <span className="min-w-0">
                       <span className="block text-[14px] font-medium">{d.label}</span>
-                      <span className="text-muted-foreground block text-[12px]">{d.hint}</span>
+                      <Text as="span" size="xs" tone="muted" className="block">
+                        {d.hint}
+                      </Text>
                     </span>
                   </label>
                 );
               })}
             </RadioGroupRoot>
-          </div>
+          </Flex>
         </SheetBody>
         <SheetFooter className="flex-row gap-2">
           <Button variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
@@ -623,13 +644,15 @@ function InboundTab({
               className="h-9 shrink-0 gap-1.5 rounded-full px-3 text-[13px] whitespace-nowrap"
             >
               {f.label}
-              <span className="font-mono text-[12px] tabular-nums opacity-70">{f.count}</span>
+              <Text size="xs" mono tabular className="opacity-70">
+                {f.count}
+              </Text>
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
 
         {state === "loading" ? (
-          <div className="flex flex-col gap-3" aria-busy="true">
+          <Flex direction="col" gap="md" aria-busy="true">
             {Array.from({ length: 3 }).map((_, i) => (
               <Card key={i} density="tight" className="rounded-[10px]">
                 <CardContent solo>
@@ -639,7 +662,7 @@ function InboundTab({
                 </CardContent>
               </Card>
             ))}
-          </div>
+          </Flex>
         ) : state === "error" ? (
           <Alert tone="warning">
             <AlertTitle>Không tải được danh sách</AlertTitle>
@@ -664,7 +687,7 @@ function InboundTab({
             }
           />
         ) : (
-          <div className="flex flex-col gap-3">
+          <Flex direction="col" gap="md">
             {visible.map((item) => (
               <ItemListCard
                 key={item.id}
@@ -681,17 +704,17 @@ function InboundTab({
                 }
               />
             ))}
-          </div>
+          </Flex>
         )}
       </div>
 
       {/* Sticky action bar (scan-first) OR select-mode contextual bar */}
       {selectMode ? (
         <div className="shrink-0 border-t bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))] p-3">
-          <div className="mb-2 flex items-center justify-between text-[13px]">
-            <span className="tabular-nums">
+          <div className="mb-2 flex items-center justify-between">
+            <Text size="sm" tabular>
               <span className="font-bold">{selected.size}</span> item đã chọn
-            </span>
+            </Text>
             <Button
               variant="ghost"
               size="sm"
@@ -743,27 +766,32 @@ function PackingTab({ onScan }: { onScan: () => void }) {
           >
             <CardContent solo>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-[11px] font-medium tracking-[0.08em] uppercase">
+                <Text
+                  size="2xs"
+                  weight="medium"
+                  tone="muted"
+                  className="tracking-[0.08em] uppercase"
+                >
                   Kiện đang làm
-                </span>
+                </Text>
                 <Badge tone="info" variant="outline" className="rounded-full">
                   {PACKING_STATUS.active.label}
                 </Badge>
               </div>
               <div className="mt-1 font-mono text-[16px] font-bold tabular-nums">{active.code}</div>
-              <div className="text-muted-foreground mt-0.5 text-[12px] tabular-nums">
+              <Text size="xs" tone="muted" tabular as="div" className="mt-0.5">
                 {active.customer} · {active.city} · ×{active.items} · {active.slot}
-              </div>
+              </Text>
             </CardContent>
           </Card>
         ) : null}
 
         <SectionHeader count={others.length}>Kiện đang mở</SectionHeader>
-        <div className="flex flex-col gap-3">
+        <Flex direction="col" gap="md">
           {others.map((p) => (
             <PackingListCard key={p.id} packing={p} onTap={() => undefined} />
           ))}
-        </div>
+        </Flex>
       </div>
       <div className="flex shrink-0 flex-col gap-2 border-t p-3">
         <Button onClick={onScan}>
@@ -814,7 +842,7 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
               ? "Chờ bàn giao"
               : "Đã bàn giao"}
         </SectionHeader>
-        <div className="flex flex-col gap-3">
+        <Flex direction="col" gap="md">
           {OUTBOUND.map((p) => (
             <Card key={p.id} density="tight" className="rounded-[10px]">
               <CardContent solo>
@@ -824,13 +852,13 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
                     Sẵn sàng niêm phong
                   </Badge>
                 </div>
-                <div className="text-muted-foreground mt-1 flex items-center justify-between gap-2 text-[12px] tabular-nums">
-                  <span className="truncate">
+                <div className="mt-1 flex items-center justify-between gap-2">
+                  <Text size="xs" tone="muted" tabular truncate>
                     {p.customer} · {p.city}
-                  </span>
-                  <span className="shrink-0">
+                  </Text>
+                  <Text size="xs" tone="muted" tabular className="shrink-0">
                     ×{p.items} · {p.slot}
-                  </span>
+                  </Text>
                 </div>
                 <div className="mt-3">
                   <Descriptions columns={1} className="gap-y-1">
@@ -845,7 +873,7 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
               </CardContent>
             </Card>
           ))}
-        </div>
+        </Flex>
       </div>
       <div className="flex shrink-0 gap-2 border-t p-3">
         {seg === "handoff" ? (
@@ -890,7 +918,9 @@ export default function AgencyHandyShowcase() {
 
         {/* App header (52px) — title + iOS text-action select-mode entry (inbound only) */}
         <header className="flex h-[52px] shrink-0 items-center justify-between border-b px-4">
-          <h1 className="text-[17px] font-bold whitespace-nowrap">{headerTitle}</h1>
+          <Heading level={3} as="h1" className="whitespace-nowrap">
+            {headerTitle}
+          </Heading>
           <div className="flex items-center gap-1">
             {tab === "inbound" && !selectMode ? (
               <Button
@@ -945,7 +975,9 @@ export default function AgencyHandyShowcase() {
             >
               <X className="size-4" aria-hidden="true" strokeWidth={1.5} />
             </Button>
-            <span className="font-mono text-[13px] tabular-nums">{selected.size} đã chọn</span>
+            <Text size="sm" mono tabular>
+              {selected.size} đã chọn
+            </Text>
             <Button
               variant="ghost"
               size="sm"

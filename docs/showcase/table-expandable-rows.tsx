@@ -36,7 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 type BadgeTone = NonNullable<BadgeProps["tone"]>;
@@ -45,7 +45,10 @@ type BadgeTone = NonNullable<BadgeProps["tone"]>;
 
 type ShiftStatus = "出勤" | "遅刻" | "早退" | "欠勤";
 
-const STATUS_TONE: Record<ShiftStatus, Extract<BadgeTone, "success" | "warning" | "destructive">> = {
+const STATUS_TONE: Record<
+  ShiftStatus,
+  Extract<BadgeTone, "success" | "warning" | "destructive">
+> = {
   出勤: "success",
   遅刻: "warning",
   早退: "warning",
@@ -88,9 +91,34 @@ const EMPLOYEES: Employee[] = [
     overtime: "12:30",
     status: "出勤",
     days: [
-      { date: "06/02", weekday: "月", status: "出勤", clockIn: "08:58", clockOut: "18:05", break: "1:00", work: "8:07" },
-      { date: "06/03", weekday: "火", status: "出勤", clockIn: "08:55", clockOut: "19:40", break: "1:00", work: "9:45", note: "残業 1:40（出荷対応）" },
-      { date: "06/04", weekday: "水", status: "出勤", clockIn: "08:52", clockOut: "18:02", break: "1:00", work: "8:10" },
+      {
+        date: "06/02",
+        weekday: "月",
+        status: "出勤",
+        clockIn: "08:58",
+        clockOut: "18:05",
+        break: "1:00",
+        work: "8:07",
+      },
+      {
+        date: "06/03",
+        weekday: "火",
+        status: "出勤",
+        clockIn: "08:55",
+        clockOut: "19:40",
+        break: "1:00",
+        work: "9:45",
+        note: "残業 1:40（出荷対応）",
+      },
+      {
+        date: "06/04",
+        weekday: "水",
+        status: "出勤",
+        clockIn: "08:52",
+        clockOut: "18:02",
+        break: "1:00",
+        work: "8:10",
+      },
     ],
   },
   {
@@ -104,9 +132,35 @@ const EMPLOYEES: Employee[] = [
     overtime: "03:10",
     status: "遅刻",
     days: [
-      { date: "06/02", weekday: "月", status: "出勤", clockIn: "09:00", clockOut: "18:00", break: "1:00", work: "8:00" },
-      { date: "06/03", weekday: "火", status: "遅刻", clockIn: "09:24", clockOut: "18:00", break: "1:00", work: "7:36", note: "電車遅延（承認待ち）" },
-      { date: "06/04", weekday: "水", status: "遅刻", clockIn: "09:18", clockOut: "18:05", break: "1:00", work: "7:47", note: "申請理由 未入力" },
+      {
+        date: "06/02",
+        weekday: "月",
+        status: "出勤",
+        clockIn: "09:00",
+        clockOut: "18:00",
+        break: "1:00",
+        work: "8:00",
+      },
+      {
+        date: "06/03",
+        weekday: "火",
+        status: "遅刻",
+        clockIn: "09:24",
+        clockOut: "18:00",
+        break: "1:00",
+        work: "7:36",
+        note: "電車遅延（承認待ち）",
+      },
+      {
+        date: "06/04",
+        weekday: "水",
+        status: "遅刻",
+        clockIn: "09:18",
+        clockOut: "18:05",
+        break: "1:00",
+        work: "7:47",
+        note: "申請理由 未入力",
+      },
     ],
   },
   {
@@ -120,9 +174,34 @@ const EMPLOYEES: Employee[] = [
     overtime: "06:45",
     status: "早退",
     days: [
-      { date: "06/02", weekday: "月", status: "出勤", clockIn: "08:50", clockOut: "18:10", break: "1:00", work: "8:20" },
-      { date: "06/03", weekday: "火", status: "早退", clockIn: "08:55", clockOut: "15:30", break: "0:45", work: "5:50", note: "通院（承認済）" },
-      { date: "06/04", weekday: "水", status: "出勤", clockIn: "08:48", clockOut: "18:02", break: "1:00", work: "8:14" },
+      {
+        date: "06/02",
+        weekday: "月",
+        status: "出勤",
+        clockIn: "08:50",
+        clockOut: "18:10",
+        break: "1:00",
+        work: "8:20",
+      },
+      {
+        date: "06/03",
+        weekday: "火",
+        status: "早退",
+        clockIn: "08:55",
+        clockOut: "15:30",
+        break: "0:45",
+        work: "5:50",
+        note: "通院（承認済）",
+      },
+      {
+        date: "06/04",
+        weekday: "水",
+        status: "出勤",
+        clockIn: "08:48",
+        clockOut: "18:02",
+        break: "1:00",
+        work: "8:14",
+      },
     ],
   },
   {
@@ -136,9 +215,34 @@ const EMPLOYEES: Employee[] = [
     overtime: "00:00",
     status: "欠勤",
     days: [
-      { date: "06/02", weekday: "月", status: "出勤", clockIn: "08:59", clockOut: "17:45", break: "1:00", work: "7:46" },
-      { date: "06/03", weekday: "火", status: "欠勤", clockIn: "—", clockOut: "—", break: "—", work: "0:00", note: "有給休暇（承認済）" },
-      { date: "06/04", weekday: "水", status: "出勤", clockIn: "08:57", clockOut: "17:50", break: "1:00", work: "7:53" },
+      {
+        date: "06/02",
+        weekday: "月",
+        status: "出勤",
+        clockIn: "08:59",
+        clockOut: "17:45",
+        break: "1:00",
+        work: "7:46",
+      },
+      {
+        date: "06/03",
+        weekday: "火",
+        status: "欠勤",
+        clockIn: "—",
+        clockOut: "—",
+        break: "—",
+        work: "0:00",
+        note: "有給休暇（承認済）",
+      },
+      {
+        date: "06/04",
+        weekday: "水",
+        status: "出勤",
+        clockIn: "08:57",
+        clockOut: "17:50",
+        break: "1:00",
+        work: "7:53",
+      },
     ],
   },
 ];
@@ -160,16 +264,16 @@ function StatusBadge({ status }: { status: ShiftStatus }) {
 
 function DetailPanel({ employee }: { employee: Employee }) {
   return (
-    <div className="border-l-[3px] border-l-primary bg-muted/30 px-4 py-3">
+    <div className="border-l-primary bg-muted/30 border-l-[3px] px-4 py-3">
       <Flex direction="col" gap="md">
         <Flex direction="row" wrap align="center" gap="md">
-          <span className="text-[13px] font-medium">
+          <Text size="sm" weight="medium">
             {employee.name} · {employee.dept}
-          </span>
-          <span className="text-muted-foreground inline-flex items-center gap-1 text-xs">
+          </Text>
+          <Text size="xs" tone="muted" className="inline-flex items-center gap-1">
             <MapPin className="size-3.5" aria-hidden="true" />
             {employee.site}
-          </span>
+          </Text>
         </Flex>
 
         {/* KPI mini-row inside the panel — real StatCard primitives */}
@@ -182,17 +286,21 @@ function DetailPanel({ employee }: { employee: Employee }) {
             inverse
             delta={employee.lateCount === 0 ? "問題なし" : "要確認"}
           />
-          <StatCard label="残業 累計" value={<span className="tabular-nums">{employee.overtime}</span>} layout="inline" />
+          <StatCard
+            label="残業 累計"
+            value={<Text tabular>{employee.overtime}</Text>}
+            layout="inline"
+          />
         </Flex>
 
         {/* Per-day breakdown — quiet nested list, real Card chrome */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-[13px]">今週の打刻</CardTitle>
-            <span className="text-muted-foreground inline-flex items-center gap-1 text-xs">
+            <Text size="xs" tone="muted" className="inline-flex items-center gap-1">
               <Clock className="size-3.5" aria-hidden="true" />
               直近 3 日
-            </span>
+            </Text>
           </CardHeader>
           <CardContent flush>
             <Table>
@@ -210,7 +318,7 @@ function DetailPanel({ employee }: { employee: Employee }) {
               <TableBody>
                 {employee.days.map((d) => (
                   <TableRow key={d.date}>
-                    <TableCell className={`${CELL} whitespace-nowrap text-xs tabular-nums`}>
+                    <TableCell className={`${CELL} text-xs whitespace-nowrap tabular-nums`}>
                       {d.date}（{d.weekday}）
                     </TableCell>
                     <TableCell className={CELL}>
@@ -218,12 +326,18 @@ function DetailPanel({ employee }: { employee: Employee }) {
                     </TableCell>
                     <TableCell className={`${CELL} tabular-nums`}>{d.clockIn}</TableCell>
                     <TableCell className={`${CELL} tabular-nums`}>{d.clockOut}</TableCell>
-                    <TableCell className={`${CELL} text-muted-foreground inline-flex items-center gap-1 tabular-nums`}>
+                    <TableCell
+                      className={`${CELL} text-muted-foreground inline-flex items-center gap-1 tabular-nums`}
+                    >
                       <Coffee className="size-3.5" aria-hidden="true" />
                       {d.break}
                     </TableCell>
-                    <TableCell className={`${CELL} text-right font-medium tabular-nums`}>{d.work}</TableCell>
-                    <TableCell className={`${CELL} text-muted-foreground text-xs`}>{d.note ?? "—"}</TableCell>
+                    <TableCell className={`${CELL} text-right font-medium tabular-nums`}>
+                      {d.work}
+                    </TableCell>
+                    <TableCell className={`${CELL} text-muted-foreground text-xs`}>
+                      {d.note ?? "—"}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -295,10 +409,12 @@ function ExpandableList() {
                   />
                 </TableCell>
                 <TableCell className={CELL}>
-                  <div className="font-medium">{emp.name}</div>
-                  <div className="text-muted-foreground text-xs tabular-nums">
+                  <Text as="div" weight="medium">
+                    {emp.name}
+                  </Text>
+                  <Text as="div" size="xs" tone="muted" tabular>
                     {emp.id} · No.{emp.code}
-                  </div>
+                  </Text>
                 </TableCell>
                 <TableCell className={`${CELL} text-muted-foreground`}>{emp.dept}</TableCell>
                 <TableCell className={`${CELL} text-center`}>
@@ -333,19 +449,20 @@ export default function Demo() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>従業員の勤怠（今週）</CardTitle>
-            <span className="text-muted-foreground text-xs tabular-nums">
+            <Text size="xs" tone="muted" tabular>
               4 名 · 06/04 時点
-            </span>
+            </Text>
           </CardHeader>
           <CardContent flush>
             <ExpandableList />
           </CardContent>
         </Card>
 
-        <p className="text-muted-foreground text-xs leading-[1.7]">
-          行を選択すると直下に詳細パネル（左罫線 3px primary）が開きます。別の行を開くと前の行は自動的に閉じます。
-          キーボードでは行に Tab で移動し、Enter / Space で開閉できます。
-        </p>
+        <Text as="p" size="xs" tone="muted" className="leading-[1.7]">
+          行を選択すると直下に詳細パネル（左罫線 3px
+          primary）が開きます。別の行を開くと前の行は自動的に閉じます。 キーボードでは行に Tab
+          で移動し、Enter / Space で開閉できます。
+        </Text>
       </Flex>
     </PageContainer>
   );

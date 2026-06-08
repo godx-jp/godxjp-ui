@@ -25,7 +25,7 @@
 import * as React from "react";
 import { Check, Clock, Pencil, UserRound } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   Avatar,
   AvatarFallback,
@@ -240,10 +240,12 @@ const columns: ColumnDef<Employee>[] = [
     header: "従業員",
     render: (row) => (
       <div className="min-w-0">
-        <div className="truncate text-[13px] font-medium">{row.name}</div>
-        <div className="text-muted-foreground truncate text-[11px]">
+        <Text as="div" size="sm" weight="medium" truncate>
+          {row.name}
+        </Text>
+        <Text as="div" size="2xs" tone="muted" truncate>
           {row.dept} · {row.role}
-        </div>
+        </Text>
       </div>
     ),
   },
@@ -264,7 +266,7 @@ const columns: ColumnDef<Employee>[] = [
     align: "right",
     width: "w-20",
     hiddenOnMobile: true,
-    render: (row) => <span className="tabular-nums">{row.clockIn}</span>,
+    render: (row) => <Text tabular>{row.clockIn}</Text>,
   },
 ];
 
@@ -286,9 +288,9 @@ function EmployeeDetail({ employee }: { employee: Employee }) {
                 {STATUS_LABEL[employee.status]}
               </Badge>
             </Flex>
-            <div className="text-muted-foreground text-xs">
+            <Text as="div" size="xs" tone="muted">
               {employee.kana} · {employee.id}
-            </div>
+            </Text>
           </div>
         </Flex>
         <Flex direction="row" gap="sm">
@@ -317,16 +319,16 @@ function EmployeeDetail({ employee }: { employee: Employee }) {
           {employee.shift}
         </Descriptions.Item>
         <Descriptions.Item label="出勤">
-          <span className="tabular-nums">{employee.clockIn}</span>
+          <Text tabular>{employee.clockIn}</Text>
         </Descriptions.Item>
         <Descriptions.Item label="退勤">
-          <span className="tabular-nums">{employee.clockOut}</span>
+          <Text tabular>{employee.clockOut}</Text>
         </Descriptions.Item>
         <Descriptions.Item label="実労働">
-          <span className="tabular-nums">{fmtWorked(employee.workedMin)}</span>
+          <Text tabular>{fmtWorked(employee.workedMin)}</Text>
         </Descriptions.Item>
         <Descriptions.Item label="入社日">
-          <span className="tabular-nums">{employee.joined}</span>
+          <Text tabular>{employee.joined}</Text>
         </Descriptions.Item>
         <Descriptions.Item label="メール" span={2} mono>
           {employee.email}
@@ -339,7 +341,7 @@ function EmployeeDetail({ employee }: { employee: Employee }) {
       <Flex direction="col" gap="sm">
         <Flex direction="row" align="center" gap="sm">
           <Clock className="text-muted-foreground size-4" aria-hidden="true" />
-          <span className="text-sm font-medium">本日の打刻</span>
+          <Text weight="medium">本日の打刻</Text>
         </Flex>
         <Timeline items={employee.punches} />
       </Flex>
@@ -367,9 +369,9 @@ export default function Demo() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>本日の出勤状況</CardTitle>
-            <span className="text-muted-foreground text-xs tabular-nums">
+            <Text size="xs" tone="muted" tabular>
               2026-06-04 · {EMPLOYEES.length}名
-            </span>
+            </Text>
           </CardHeader>
           <CardContent flush>
             <ResizablePanelGroup direction="horizontal" className="min-h-[460px]">
@@ -395,12 +397,7 @@ export default function Demo() {
                   {selected ? (
                     <EmployeeDetail employee={selected} />
                   ) : (
-                    <Flex
-                      direction="col"
-                      align="center"
-                      justify="center"
-                      className="h-full"
-                    >
+                    <Flex direction="col" align="center" justify="center" className="h-full">
                       <EmptyState
                         icon={UserRound}
                         title="従業員を選択してください"
@@ -420,12 +417,7 @@ export default function Demo() {
             <CardTitle>未選択の状態</CardTitle>
           </CardHeader>
           <CardContent>
-            <Flex
-              direction="col"
-              gap="lg"
-              align="start"
-              className="lg:flex-row lg:items-start"
-            >
+            <Flex direction="col" gap="lg" align="start" className="lg:flex-row lg:items-start">
               <div className="w-full lg:w-56 lg:shrink-0">
                 <DataTable
                   data={EMPLOYEES.slice(0, 3)}
@@ -452,9 +444,9 @@ export default function Demo() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>狭幅レイアウト（縦積み）</CardTitle>
-            <span className="text-muted-foreground text-xs">
+            <Text size="xs" tone="muted">
               サイドペインが取れない幅では一覧の下に詳細を重ねます
-            </span>
+            </Text>
           </CardHeader>
           <CardContent flush>
             <DataTable

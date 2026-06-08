@@ -26,7 +26,7 @@
 import * as React from "react";
 import { Languages, Monitor, Moon, Sun } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
 import {
   FormField,
   Input,
@@ -39,13 +39,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@godxjp/ui/data-entry";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@godxjp/ui/data-display";
 import { Separator } from "@godxjp/ui/layout";
 
 // ── The single allowed multi-color brand mark (Google "G") ─────────────────────
@@ -81,7 +75,7 @@ function BrandLockup({ size = "md" }: { size?: "md" | "lg" }) {
   return (
     <div className="flex items-center gap-2.5">
       <div
-        className={`grid shrink-0 place-items-center rounded-lg bg-primary font-bold text-primary-foreground ${mark}`}
+        className={`bg-primary text-primary-foreground grid shrink-0 place-items-center rounded-lg font-bold ${mark}`}
         aria-hidden="true"
       >
         勤
@@ -90,7 +84,9 @@ function BrandLockup({ size = "md" }: { size?: "md" | "lg" }) {
         <div className="text-[15px] font-bold tracking-tight">
           dxs <span className="text-primary">·</span> kintai
         </div>
-        <div className="text-[11px] text-muted-foreground">勤怠管理プラットフォーム</div>
+        <Text as="div" size="2xs" tone="muted">
+          勤怠管理プラットフォーム
+        </Text>
       </div>
     </div>
   );
@@ -110,7 +106,7 @@ export default function LoginShowcase() {
   const [theme, setTheme] = React.useState("light");
 
   return (
-    <div className="ui-density-comfortable min-h-screen bg-muted/40 text-foreground">
+    <div className="ui-density-comfortable bg-muted/40 text-foreground min-h-screen">
       {/* Locale + theme toggle, pinned top-right. Stacks under brand on narrow. */}
       <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <div className="lg:hidden">
@@ -156,28 +152,28 @@ export default function LoginShowcase() {
         <div className="mx-auto grid w-full grid-cols-1 items-stretch gap-8 lg:grid-cols-2">
           {/* Split brand panel — hidden on mobile (mobile-first), shown from lg. */}
           <aside className="hidden lg:flex">
-            <Card className="flex w-full flex-col justify-between gap-8 bg-primary/5 p-8">
+            <Card className="bg-primary/5 flex w-full flex-col justify-between gap-8 p-8">
               <BrandLockup size="lg" />
               <div className="space-y-3">
-                <h1 className="text-xl font-bold leading-snug">
+                <Heading level={2} className="leading-snug">
                   打刻から承認まで、ひとつの勤怠基盤で。
-                </h1>
-                <p className="text-sm leading-[1.7] text-muted-foreground">
+                </Heading>
+                <Text as="p" tone="muted" className="leading-[1.7]">
                   出勤・休憩・残業の打刻、シフト調整、欠勤・遅刻の承認を一元化します。
                   多拠点・多テナントに対応し、現場と管理をつなぎます。
-                </p>
+                </Text>
               </div>
-              <dl className="grid grid-cols-3 gap-4 border-t border-border pt-6">
+              <dl className="border-border grid grid-cols-3 gap-4 border-t pt-6">
                 <div>
-                  <dt className="text-[11px] text-muted-foreground">導入企業</dt>
+                  <dt className="text-muted-foreground text-[11px]">導入企業</dt>
                   <dd className="text-lg font-bold tabular-nums">1,240</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] text-muted-foreground">稼働拠点</dt>
+                  <dt className="text-muted-foreground text-[11px]">稼働拠点</dt>
                   <dd className="text-lg font-bold tabular-nums">8,600</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] text-muted-foreground">月間打刻</dt>
+                  <dt className="text-muted-foreground text-[11px]">月間打刻</dt>
                   <dd className="text-lg font-bold tabular-nums">21M</dd>
                 </div>
               </dl>
@@ -191,7 +187,7 @@ export default function LoginShowcase() {
                 <BrandLockup />
               </div>
               <CardTitle className="text-lg font-semibold">ログイン</CardTitle>
-              <CardDescription className="text-xs text-muted-foreground">
+              <CardDescription className="text-muted-foreground text-xs">
                 勤怠管理プラットフォームへようこそ
               </CardDescription>
             </CardHeader>
@@ -211,7 +207,9 @@ export default function LoginShowcase() {
               {/* Divider "または" — Separator pair + centered label. */}
               <div className="flex items-center gap-3">
                 <Separator className="flex-1" />
-                <span className="text-xs text-muted-foreground">または</span>
+                <Text size="xs" tone="muted">
+                  または
+                </Text>
                 <Separator className="flex-1" />
               </div>
 
@@ -263,7 +261,7 @@ export default function LoginShowcase() {
                 </Button>
               </form>
 
-              <p className="text-center text-[11px] leading-[1.7] text-muted-foreground">
+              <Text as="p" size="2xs" tone="muted" align="center" className="leading-[1.7]">
                 ログインすると{" "}
                 <Button variant="link" size="sm" className="h-auto p-0 text-[11px]">
                   利用規約
@@ -273,7 +271,7 @@ export default function LoginShowcase() {
                   プライバシーポリシー
                 </Button>{" "}
                 に同意したものとみなされます。
-              </p>
+              </Text>
             </CardContent>
           </Card>
         </div>

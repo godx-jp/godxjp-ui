@@ -33,7 +33,7 @@ import {
   DataTable,
   type ColumnDef,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import type { TableDensityProp } from "@godxjp/ui/props";
@@ -176,10 +176,19 @@ const ROWS: Attendance[] = [
   },
 ];
 
-const num = (v: string) => <span className="tabular-nums">{v}</span>;
+const num = (v: string) => <Text tabular>{v}</Text>;
 
 const columns: ColumnDef<Attendance>[] = [
-  { key: "id", header: "社員番号", width: "w-24", render: (r) => <span className="font-mono text-xs">{r.id}</span> },
+  {
+    key: "id",
+    header: "社員番号",
+    width: "w-24",
+    render: (r) => (
+      <Text size="xs" mono>
+        {r.id}
+      </Text>
+    ),
+  },
   { key: "employee", header: "従業員", sortable: true },
   { key: "dept", header: "部署", hiddenOnMobile: true },
   { key: "shift", header: "シフト", hiddenOnMobile: true },
@@ -230,7 +239,9 @@ export default function Demo() {
               <span className="text-muted-foreground inline-flex items-center gap-1.5 text-xs">
                 <Clock className="size-3.5" aria-hidden="true" />
                 行高
-                <strong className="text-foreground tabular-nums">{meta.px}px</strong>
+                <Text as="strong" weight="medium" tabular>
+                  {meta.px}px
+                </Text>
                 <span aria-hidden="true">·</span>
                 {meta.note}
               </span>
@@ -245,12 +256,16 @@ export default function Demo() {
                 aria-label="行密度を切り替え"
               >
                 {DENSITY_ORDER.map((key) => (
-                  <ToggleGroupItem key={key} value={key} aria-label={`${DENSITY_META[key].label} ${DENSITY_META[key].px}px`}>
+                  <ToggleGroupItem
+                    key={key}
+                    value={key}
+                    aria-label={`${DENSITY_META[key].label} ${DENSITY_META[key].px}px`}
+                  >
                     <Flex direction="row" align="center" gap="xs">
                       <span>{DENSITY_META[key].label}</span>
-                      <span className="text-muted-foreground tabular-nums text-[11px]">
+                      <Text size="2xs" tone="muted" tabular>
                         {DENSITY_META[key].px}
-                      </span>
+                      </Text>
                     </Flex>
                   </ToggleGroupItem>
                 ))}
@@ -281,9 +296,9 @@ export default function Demo() {
                     打刻修正
                   </Button>
                 </DataTable.BulkActions>
-                <span className="text-muted-foreground text-xs tabular-nums">
+                <Text size="xs" tone="muted" tabular>
                   {ROWS.length} 名 · 2026-06-04
-                </span>
+                </Text>
               </DataTable.Toolbar>
               <DataTable.Content />
             </DataTable>
@@ -293,7 +308,7 @@ export default function Demo() {
         {/* Side-by-side reference — all three densities at rest, same table shape.
             Proves the retune statically without toggling (Rule #2). */}
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">3 密度の比較（静止状態）</div>
+          <Text weight="medium">3 密度の比較（静止状態）</Text>
           <Flex direction="col" gap="lg">
             {DENSITY_ORDER.map((key) => {
               const m = DENSITY_META[key];
@@ -301,9 +316,9 @@ export default function Demo() {
                 <Card key={key}>
                   <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>{m.label}</CardTitle>
-                    <span className="text-muted-foreground text-xs tabular-nums">
+                    <Text size="xs" tone="muted" tabular>
                       行高 {m.px}px · {m.note}
-                    </span>
+                    </Text>
                   </CardHeader>
                   <CardContent flush>
                     <DataTable

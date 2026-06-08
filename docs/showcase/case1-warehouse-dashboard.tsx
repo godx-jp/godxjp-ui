@@ -35,7 +35,7 @@ import {
   Tags,
 } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
   type BadgeProps,
@@ -131,14 +131,19 @@ const CAPACITY: Array<{ zone: string; used: number; cap: number }> = [
   { zone: "Zone D", used: 6, cap: 40 },
 ];
 
-const SHIPMENTS: Array<{ id: string; route: string; status: string; tone: BadgeTone; pkg: number }> =
-  [
-    { id: "SHP-085", route: "Saitama → Hà Nội", status: "Đang giao", tone: "info", pkg: 12 },
-    { id: "SHP-084", route: "Saitama → TP.HCM", status: "Đã đến", tone: "success", pkg: 9 },
-    { id: "SHP-083", route: "Saitama → Đà Nẵng", status: "Đang giao", tone: "info", pkg: 7 },
-    { id: "SHP-082", route: "Saitama → Hà Nội", status: "Chờ xuất", tone: "warning", pkg: 5 },
-    { id: "SHP-081", route: "Saitama → TP.HCM", status: "Đã đến", tone: "success", pkg: 14 },
-  ];
+const SHIPMENTS: Array<{
+  id: string;
+  route: string;
+  status: string;
+  tone: BadgeTone;
+  pkg: number;
+}> = [
+  { id: "SHP-085", route: "Saitama → Hà Nội", status: "Đang giao", tone: "info", pkg: 12 },
+  { id: "SHP-084", route: "Saitama → TP.HCM", status: "Đã đến", tone: "success", pkg: 9 },
+  { id: "SHP-083", route: "Saitama → Đà Nẵng", status: "Đang giao", tone: "info", pkg: 7 },
+  { id: "SHP-082", route: "Saitama → Hà Nội", status: "Chờ xuất", tone: "warning", pkg: 5 },
+  { id: "SHP-081", route: "Saitama → TP.HCM", status: "Đã đến", tone: "success", pkg: 14 },
+];
 
 // ── Sidebar ───────────────────────────────────────────────────────────────────
 
@@ -182,11 +187,11 @@ export default function WarehouseDashboardShowcase() {
   return (
     <AppShell
       sidebar={sidebar}
-      topbarLeft={<strong className="text-sm">Tổng quan kho</strong>}
+      topbarLeft={<Text as="strong">Tổng quan kho</Text>}
       topbarRight={
-        <span className="text-xs text-muted-foreground tabular-nums">
+        <Text size="xs" tone="muted" tabular>
           cập nhật 14:32 · 26/05/2026
-        </span>
+        </Text>
       }
     >
       <PageContainer
@@ -225,17 +230,23 @@ export default function WarehouseDashboardShowcase() {
             <Card className="self-start">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Cần xử lý</CardTitle>
-                <span className="text-xs text-muted-foreground">{QUEUE.length} hàng đợi</span>
+                <Text size="xs" tone="muted">
+                  {QUEUE.length} hàng đợi
+                </Text>
               </CardHeader>
               <CardContent flush>
-                <ul className="divide-y divide-border">
+                <ul className="divide-border divide-y">
                   {QUEUE.map((q) => {
                     return (
                       <li key={q.title} className="flex items-center gap-3 px-4 py-3">
                         <Badge tone={q.tone} variant="outline" icon={q.icon} aria-label={q.title} />
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-[13px] font-medium">{q.title}</div>
-                          <div className="truncate text-[11px] text-muted-foreground">{q.meta}</div>
+                          <Text as="div" size="sm" weight="medium" truncate>
+                            {q.title}
+                          </Text>
+                          <Text as="div" size="2xs" tone="muted" truncate>
+                            {q.meta}
+                          </Text>
                         </div>
                         <Button variant="outline" size="sm">
                           {q.action}
@@ -250,7 +261,9 @@ export default function WarehouseDashboardShowcase() {
             <Card className="self-start">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Hoạt động gần đây</CardTitle>
-                <span className="text-xs text-muted-foreground">24h qua</span>
+                <Text size="xs" tone="muted">
+                  24h qua
+                </Text>
               </CardHeader>
               <CardContent>
                 <Timeline items={ACTIVITY} />
@@ -304,7 +317,11 @@ export default function WarehouseDashboardShowcase() {
                   <TableBody>
                     {SHIPMENTS.map((s) => (
                       <TableRow key={s.id}>
-                        <TableCell className="font-mono text-xs">{s.id}</TableCell>
+                        <TableCell>
+                          <Text mono size="xs">
+                            {s.id}
+                          </Text>
+                        </TableCell>
                         <TableCell>{s.route}</TableCell>
                         <TableCell>
                           <Badge tone={s.tone} variant="outline">

@@ -24,7 +24,7 @@
 import * as React from "react";
 import { Download, Plus, Check, X } from "lucide-react";
 
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
   Card,
@@ -80,14 +80,110 @@ type Attendance = {
 const DEPTS = ["全部署", "営業部", "開発部", "管理部", "物流部"] as const;
 
 const ROWS: Attendance[] = [
-  { id: "ATT-2041", code: "E-0162", name: "佐藤 健", dept: "開発部", date: "06/03", clockIn: "09:01", clockOut: "19:48", worked: 587, overtime: 108, status: "active", approved: false },
-  { id: "ATT-2040", code: "E-0148", name: "鈴木 美咲", dept: "営業部", date: "06/03", clockIn: "09:32", clockOut: "18:05", worked: 453, overtime: 0, status: "pending", approved: false },
-  { id: "ATT-2039", code: "E-0203", name: "高橋 大輔", dept: "物流部", date: "06/03", clockIn: "08:55", clockOut: "18:00", worked: 485, overtime: 25, status: "active", approved: true },
-  { id: "ATT-2038", code: "E-0119", name: "田中 由紀", dept: "管理部", date: "06/03", clockIn: "—", clockOut: "—", worked: 0, overtime: 0, status: "failed", approved: false },
-  { id: "ATT-2037", code: "E-0177", name: "伊藤 翔太", dept: "開発部", date: "06/03", clockIn: "10:02", clockOut: "—", worked: 0, overtime: 0, status: "scheduled", approved: false },
-  { id: "ATT-2036", code: "E-0091", name: "渡辺 彩", dept: "営業部", date: "06/03", clockIn: "08:58", clockOut: "17:30", worked: 452, overtime: 0, status: "active", approved: true },
-  { id: "ATT-2035", code: "E-0210", name: "山本 拓海", dept: "物流部", date: "06/03", clockIn: "—", clockOut: "—", worked: 0, overtime: 0, status: "draft", approved: false },
-  { id: "ATT-2034", code: "E-0134", name: "中村 真央", dept: "開発部", date: "06/03", clockIn: "09:00", clockOut: "20:15", worked: 615, overtime: 135, status: "active", approved: false },
+  {
+    id: "ATT-2041",
+    code: "E-0162",
+    name: "佐藤 健",
+    dept: "開発部",
+    date: "06/03",
+    clockIn: "09:01",
+    clockOut: "19:48",
+    worked: 587,
+    overtime: 108,
+    status: "active",
+    approved: false,
+  },
+  {
+    id: "ATT-2040",
+    code: "E-0148",
+    name: "鈴木 美咲",
+    dept: "営業部",
+    date: "06/03",
+    clockIn: "09:32",
+    clockOut: "18:05",
+    worked: 453,
+    overtime: 0,
+    status: "pending",
+    approved: false,
+  },
+  {
+    id: "ATT-2039",
+    code: "E-0203",
+    name: "高橋 大輔",
+    dept: "物流部",
+    date: "06/03",
+    clockIn: "08:55",
+    clockOut: "18:00",
+    worked: 485,
+    overtime: 25,
+    status: "active",
+    approved: true,
+  },
+  {
+    id: "ATT-2038",
+    code: "E-0119",
+    name: "田中 由紀",
+    dept: "管理部",
+    date: "06/03",
+    clockIn: "—",
+    clockOut: "—",
+    worked: 0,
+    overtime: 0,
+    status: "failed",
+    approved: false,
+  },
+  {
+    id: "ATT-2037",
+    code: "E-0177",
+    name: "伊藤 翔太",
+    dept: "開発部",
+    date: "06/03",
+    clockIn: "10:02",
+    clockOut: "—",
+    worked: 0,
+    overtime: 0,
+    status: "scheduled",
+    approved: false,
+  },
+  {
+    id: "ATT-2036",
+    code: "E-0091",
+    name: "渡辺 彩",
+    dept: "営業部",
+    date: "06/03",
+    clockIn: "08:58",
+    clockOut: "17:30",
+    worked: 452,
+    overtime: 0,
+    status: "active",
+    approved: true,
+  },
+  {
+    id: "ATT-2035",
+    code: "E-0210",
+    name: "山本 拓海",
+    dept: "物流部",
+    date: "06/03",
+    clockIn: "—",
+    clockOut: "—",
+    worked: 0,
+    overtime: 0,
+    status: "draft",
+    approved: false,
+  },
+  {
+    id: "ATT-2034",
+    code: "E-0134",
+    name: "中村 真央",
+    dept: "開発部",
+    date: "06/03",
+    clockIn: "09:00",
+    clockOut: "20:15",
+    worked: 615,
+    overtime: 135,
+    status: "active",
+    approved: false,
+  },
 ];
 
 // ── Formatting helpers ──────────────────────────────────────────────────────────
@@ -118,14 +214,61 @@ const PERIOD_OPTIONS = [
 // ── Columns ──────────────────────────────────────────────────────────────────────
 
 const columns: ColumnDef<Attendance>[] = [
-  { key: "code", header: "社員番号", width: "w-28", render: (r) => <span className="font-mono text-xs tabular-nums">{r.code}</span> },
+  {
+    key: "code",
+    header: "社員番号",
+    width: "w-28",
+    render: (r) => (
+      <Text size="xs" mono tabular>
+        {r.code}
+      </Text>
+    ),
+  },
   { key: "name", header: "従業員", sortable: true },
   { key: "dept", header: "部署", hiddenOnMobile: true },
-  { key: "date", header: "日付", align: "center", width: "w-16", hiddenOnMobile: true, render: (r) => <span className="tabular-nums">{r.date}</span> },
-  { key: "clockIn", header: "出勤", align: "center", width: "w-16", render: (r) => <span className="tabular-nums">{r.clockIn}</span> },
-  { key: "clockOut", header: "退勤", align: "center", width: "w-16", render: (r) => <span className="tabular-nums">{r.clockOut}</span> },
-  { key: "worked", header: "勤務", align: "right", width: "w-16", sortable: true, render: (r) => <span className="tabular-nums">{fmtDuration(r.worked)}</span> },
-  { key: "overtime", header: "残業", align: "right", width: "w-16", sortable: true, hiddenOnMobile: true, render: (r) => <span className="tabular-nums text-muted-foreground">{fmtDuration(r.overtime)}</span> },
+  {
+    key: "date",
+    header: "日付",
+    align: "center",
+    width: "w-16",
+    hiddenOnMobile: true,
+    render: (r) => <Text tabular>{r.date}</Text>,
+  },
+  {
+    key: "clockIn",
+    header: "出勤",
+    align: "center",
+    width: "w-16",
+    render: (r) => <Text tabular>{r.clockIn}</Text>,
+  },
+  {
+    key: "clockOut",
+    header: "退勤",
+    align: "center",
+    width: "w-16",
+    render: (r) => <Text tabular>{r.clockOut}</Text>,
+  },
+  {
+    key: "worked",
+    header: "勤務",
+    align: "right",
+    width: "w-16",
+    sortable: true,
+    render: (r) => <Text tabular>{fmtDuration(r.worked)}</Text>,
+  },
+  {
+    key: "overtime",
+    header: "残業",
+    align: "right",
+    width: "w-16",
+    sortable: true,
+    hiddenOnMobile: true,
+    render: (r) => (
+      <Text tone="muted" tabular>
+        {fmtDuration(r.overtime)}
+      </Text>
+    ),
+  },
   {
     key: "status",
     header: "状態",
@@ -196,13 +339,17 @@ export default function Demo() {
   const [period, setPeriod] = React.useState<string>("today");
 
   // Seed sort, selection, density and page so every behaviour is visible at rest.
-  const [sort, setSort] = React.useState<SortStateProp | undefined>({ key: "worked", direction: "desc" });
+  const [sort, setSort] = React.useState<SortStateProp | undefined>({
+    key: "worked",
+    direction: "desc",
+  });
   const [selected, setSelected] = React.useState<Set<string>>(new Set(["ATT-2041", "ATT-2034"]));
   const [density, setDensity] = React.useState<TableDensityProp>("compact");
   const [page, setPage] = React.useState(2);
   const [pageSize, setPageSize] = React.useState(PAGE_SIZE);
 
-  const hasActiveFilters = query !== "" || dept !== "全部署" || status !== "all" || period !== "today";
+  const hasActiveFilters =
+    query !== "" || dept !== "全部署" || status !== "all" || period !== "today";
 
   const clearFilters = () => {
     setQuery("");
@@ -238,7 +385,9 @@ export default function Demo() {
     () => ({
       present: rows.filter((r) => r.status === "active").length,
       late: rows.filter((r) => r.status === "pending").length,
-      pendingApproval: rows.filter((r) => !r.approved && r.status !== "draft" && r.status !== "failed").length,
+      pendingApproval: rows.filter(
+        (r) => !r.approved && r.status !== "draft" && r.status !== "failed",
+      ).length,
     }),
     [rows],
   );
@@ -307,9 +456,9 @@ export default function Demo() {
                   条件をクリア
                 </Button>
               )}
-              <span className="text-muted-foreground ml-auto text-xs tabular-nums">
+              <Text size="xs" tone="muted" tabular className="ml-auto">
                 {rows.length} 件表示
-              </span>
+              </Text>
             </Flex>
           </CardContent>
         </Card>
@@ -328,7 +477,7 @@ export default function Demo() {
               onDensityChange={setDensity}
               sort={sort}
               onSortChange={setSort}
-              empty={<span className="text-muted-foreground text-sm">条件に一致する勤怠はありません。</span>}
+              empty={<Text tone="muted">条件に一致する勤怠はありません。</Text>}
             >
               <DataTable.Toolbar>
                 <DataTable.BulkActions>
@@ -349,18 +498,30 @@ export default function Demo() {
           {/* Footer totals — composed from CardFooter + Badge, not a hand-rolled bar. */}
           <CardFooter className="flex-wrap justify-between gap-3">
             <Flex direction="row" gap="md" align="center" wrap>
-              <span className="text-muted-foreground text-xs">
+              <Text size="xs" tone="muted">
                 選択中{" "}
-                <strong className="text-foreground tabular-nums">{selected.size}</strong> 件
-              </span>
+                <Text as="strong" weight="medium" tabular>
+                  {selected.size}
+                </Text>{" "}
+                件
+              </Text>
               <Badge tone="success" variant="outline">
-                出勤 <span className="ml-1 tabular-nums">{tally.present}</span>
+                出勤{" "}
+                <Text as="span" tabular className="ml-1">
+                  {tally.present}
+                </Text>
               </Badge>
               <Badge tone="warning" variant="outline">
-                遅刻 <span className="ml-1 tabular-nums">{tally.late}</span>
+                遅刻{" "}
+                <Text as="span" tabular className="ml-1">
+                  {tally.late}
+                </Text>
               </Badge>
               <Badge tone="muted" variant="outline">
-                承認待ち <span className="ml-1 tabular-nums">{tally.pendingApproval}</span>
+                承認待ち{" "}
+                <Text as="span" tabular className="ml-1">
+                  {tally.pendingApproval}
+                </Text>
               </Badge>
             </Flex>
             <Pagination
