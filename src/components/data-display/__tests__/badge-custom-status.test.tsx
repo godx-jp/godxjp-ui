@@ -19,4 +19,14 @@ describe("Badge — status without children", () => {
     expect(text.length).toBeGreaterThan(0);
     expect(text).not.toBe("active"); // localized, not the raw key
   });
+
+  it("renders an empty badge when given neither children nor status", () => {
+    // no children, no status → resolvedChildren takes the `status ? … : undefined`
+    // FALSE branch; the badge still renders as an empty container without crashing.
+    const { container } = renderWithUi(<Badge />);
+    const badge = container.querySelector('[data-slot="badge"]');
+    expect(badge).not.toBeNull();
+    expect(badge?.textContent).toBe("");
+    expect(badge?.querySelector('[data-slot="badge-icon"]')).toBeNull();
+  });
 });
