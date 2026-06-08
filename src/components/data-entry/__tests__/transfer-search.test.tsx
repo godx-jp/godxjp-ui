@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { renderWithUi, screen, userEvent } from "@/test/render";
+import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 
 import { Transfer } from "../transfer";
 
@@ -16,15 +16,19 @@ describe("Transfer — panel search", () => {
     // the left (source) panel's search box is the first searchable field
     const search = screen.queryAllByRole("searchbox")[0] ?? screen.queryAllByRole("textbox")[0];
 
-    // title match
+    // title match — the SearchInput debounces via a timer, so wait for the filter to apply
     await user.type(search, "京都");
-    expect(screen.getByText("京都製作所")).toBeInTheDocument();
-    expect(screen.queryByText("東京商事")).toBeNull();
+    await waitFor(() => {
+      expect(screen.getByText("京都製作所")).toBeInTheDocument();
+      expect(screen.queryByText("東京商事")).toBeNull();
+    });
 
     // description match (case-insensitive)
     await user.clear(search);
     await user.type(search, "osaka");
-    expect(screen.getByText("大阪物産")).toBeInTheDocument();
-    expect(screen.queryByText("京都製作所")).toBeNull();
+    await waitFor(() => {
+      expect(screen.getByText("大阪物産")).toBeInTheDocument();
+      expect(screen.queryByText("京都製作所")).toBeNull();
+    });
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { renderWithUi, screen, userEvent } from "@/test/render";
+import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 
 import { Transfer } from "../transfer";
 
@@ -16,8 +16,10 @@ describe("Transfer — search without descriptions", () => {
     const user = userEvent.setup();
     renderWithUi(<Transfer dataSource={DATA} targetKeys={[]} showSearch onValueChange={vi.fn()} />);
     await user.type(search(), "大阪");
-    expect(screen.getByText("大阪物産")).toBeInTheDocument();
-    expect(screen.queryByText("東京商事")).toBeNull();
+    await waitFor(() => {
+      expect(screen.getByText("大阪物産")).toBeInTheDocument();
+      expect(screen.queryByText("東京商事")).toBeNull();
+    });
   });
 
   it("disabled transfer dims the search field", () => {
