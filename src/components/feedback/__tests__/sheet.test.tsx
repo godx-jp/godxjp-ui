@@ -165,6 +165,23 @@ describe("Sheet", () => {
     expect(content.className).toContain("w-[min(var(--sheet-width),100%)]");
   });
 
+  it("SheetContent width accepts a CSS-length string verbatim (toCssLength string branch)", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button type="button">Open</Button>
+        </SheetTrigger>
+        <SheetContent width="32rem">
+          <SheetHeader title="P" />
+        </SheetContent>
+      </Sheet>,
+    );
+    await user.click(screen.getByRole("button", { name: "Open" }));
+    // string width is used as-is (no `px` suffix) — the non-number branch of toCssLength
+    expect(screen.getByRole("dialog").style.getPropertyValue("--sheet-width")).toBe("32rem");
+  });
+
   // Regression for gh#101 (#3): footer owns symmetric vertical padding (py-4) and cancels the
   // content's p-6 bottom (-mb-6) instead of inheriting an asymmetric 16-top / 24-bottom rhythm.
   it("SheetFooter owns symmetric tokenized vertical padding", async () => {
