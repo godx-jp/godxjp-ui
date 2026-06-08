@@ -4,9 +4,9 @@ import { render } from "@testing-library/react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "../resizable";
 import { expectNoA11yViolations } from "@/test/a11y";
 
-function Demo(props: { direction?: "horizontal" | "vertical" }) {
+function Demo(props: { orientation?: "horizontal" | "vertical" }) {
   return (
-    <ResizablePanelGroup direction={props.direction ?? "horizontal"}>
+    <ResizablePanelGroup orientation={props.orientation ?? "horizontal"}>
       <ResizablePanel defaultSize={50}>左</ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={50}>右</ResizablePanel>
@@ -31,8 +31,8 @@ describe("Resizable", () => {
     expect(handle).toHaveAttribute("tabindex", "0");
   });
 
-  it("renders in a vertical direction without crashing", () => {
-    const { container, getByText } = render(<Demo direction="vertical" />);
+  it("renders in a vertical orientation without crashing", () => {
+    const { container, getByText } = render(<Demo orientation="vertical" />);
     expect(container.querySelector('[data-slot="resizable-panel-group"]')).toBeInTheDocument();
     expect(getByText("左")).toBeInTheDocument();
     expect(getByText("右")).toBeInTheDocument();

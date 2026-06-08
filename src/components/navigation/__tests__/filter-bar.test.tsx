@@ -17,19 +17,19 @@ describe("Toolbar", () => {
   it("shows the clear button when onClear + active filters, and fires it", async () => {
     const user = userEvent.setup();
     const onClear = vi.fn();
-    renderWithUi(<Toolbar onClear={onClear} hasActiveFilters />);
+    renderWithUi(<Toolbar onClear={onClear} hasActiveFilters><span /></Toolbar>);
     const clear = screen.getByRole("button");
     await user.click(clear);
     expect(onClear).toHaveBeenCalled();
   });
 
   it("hides the clear button when there are no active filters", () => {
-    renderWithUi(<Toolbar onClear={vi.fn()} hasActiveFilters={false} />);
+    renderWithUi(<Toolbar onClear={vi.fn()} hasActiveFilters={false}><span /></Toolbar>);
     expect(screen.queryByRole("button")).toBeNull();
   });
 
   it("hides the clear button when no onClear is given", () => {
-    renderWithUi(<Toolbar hasActiveFilters />);
+    renderWithUi(<Toolbar hasActiveFilters><span /></Toolbar>);
     expect(screen.queryByRole("button")).toBeNull();
   });
 });
@@ -48,7 +48,7 @@ describe("ToolbarGroup", () => {
 
   it("omits the label wiring when no label is given", () => {
     renderWithUi(
-      <ToolbarGroup>
+      <ToolbarGroup label={undefined}>
         <span>only filters</span>
       </ToolbarGroup>,
     );

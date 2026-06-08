@@ -64,7 +64,7 @@ describe("DataGrid (client mode)", () => {
 
   it("client-side search filters the visible rows", async () => {
     const user = userEvent.setup();
-    render(<Grid enableSearch />);
+    render(<Grid />);
     const search = screen.queryByRole("textbox") ?? screen.queryByRole("searchbox");
     if (!search) return; // search UI optional depending on flags
     await user.type(search, "京都");

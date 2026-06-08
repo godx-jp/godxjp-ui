@@ -35,7 +35,7 @@ describe("syncDatetimeContext", () => {
       locale: "ja",
       timezone: "Asia/Tokyo",
       timeFormat: "24h",
-      dateFormat: "ymd",
+      dateFormat: "mdy",
       dateFnsLocale: ja,
     });
     expect(getDatetimeContext().dateFnsLocale).toBe(ja);

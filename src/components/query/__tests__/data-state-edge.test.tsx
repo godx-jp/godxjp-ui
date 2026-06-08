@@ -23,7 +23,7 @@ describe("DataState — edge data", () => {
 
   it("treats a falsy non-null value (0) as empty via defaultIsEmpty", () => {
     renderWithUi(
-      <DataState query={q({ data: 0 })} empty={<div>EMPTY</div>}>
+      <DataState query={q({ data: 0 })} skeleton={<div>SKELETON</div>} empty={<div>EMPTY</div>}>
         {() => <div>CONTENT</div>}
       </DataState>,
     );

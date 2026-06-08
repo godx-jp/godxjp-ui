@@ -9,7 +9,7 @@ const loaded = <T,>(data: T): UseQueryResult<T> =>
 
 function render(data: unknown) {
   renderWithUi(
-    <DataState query={loaded(data)} empty={<div>EMPTY</div>}>
+    <DataState query={loaded(data)} skeleton={<div>SKELETON</div>} empty={<div>EMPTY</div>}>
       {() => <div>CONTENT</div>}
     </DataState>,
   );

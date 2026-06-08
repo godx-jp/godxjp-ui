@@ -135,14 +135,16 @@ export const CarouselContent = React.forwardRef<
   const { t } = useTranslation();
 
   // Decorate each slide with "N of M" so screen readers announce position. The total is the count
-  // of element children, and each slide's index drives its label — consumer-supplied aria-labels on
-  // an item still win because the injected label is only a default (overridden by the item's props).
-  const items = React.Children.toArray(children).filter(React.isValidElement);
-  const total = items.length;
+  // of element children, and each slide's running index drives its label — consumer-supplied
+  // aria-labels on an item still win because the injected label is only a default.
+  // NB: use a running counter, NOT `toArray().indexOf(child)` — toArray re-keys/clones the
+  // children so the cloned entries never identity-match the originals from Children.map (the
+  // indexOf would always return -1 and silently skip the injection).
+  const total = React.Children.toArray(children).filter(React.isValidElement).length;
+  let slideIndex = 0;
   const decorated = React.Children.map(children, (child) => {
     if (!React.isValidElement(child)) return child;
-    const index = items.indexOf(child);
-    if (index === -1) return child;
+    const index = slideIndex++;
     const childProps = child.props as CarouselItemProps;
     // Don't clobber a consumer-provided label.
     if (childProps["aria-label"] != null) return child;

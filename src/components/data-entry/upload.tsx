@@ -60,13 +60,21 @@ function useUploadList(
   const [internal, setInternal] = React.useState<UploadFileItem[]>(defaultValue ?? []);
   const items = controlled ?? internal;
 
+  // The latest list, tracked in a ref so a functional update always reads current state — even when
+  // several setItems calls chain synchronously within one tick (e.g. pickFiles adds an item and then
+  // runUpload immediately flips it to "uploading"). Reading `items` from the callback closure would
+  // operate on the pre-update array and drop the just-added item.
+  const itemsRef = React.useRef(items);
+  itemsRef.current = items;
+
   const setItems = React.useCallback(
     (next: UploadFileItem[] | ((prev: UploadFileItem[]) => UploadFileItem[])) => {
-      const resolved = typeof next === "function" ? next(items) : next;
+      const resolved = typeof next === "function" ? next(itemsRef.current) : next;
+      itemsRef.current = resolved; // advance synchronously so chained calls see this update
       if (controlled === undefined) setInternal(resolved);
       onValueChange?.(resolved);
     },
-    [controlled, items, onValueChange],
+    [controlled, onValueChange],
   );
 
   return [items, setItems] as const;

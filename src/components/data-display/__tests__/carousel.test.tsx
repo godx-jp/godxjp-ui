@@ -65,7 +65,7 @@ describe("Carousel root", () => {
 });
 
 describe("CarouselContent — slide labelling", () => {
-  it("renders every slide and preserves a consumer-provided aria-label", () => {
+  it("injects an N-of-M slide label and preserves a consumer-provided aria-label", () => {
     renderWithUi(
       <CarouselContent>
         <CarouselItem>first</CarouselItem>
@@ -74,6 +74,11 @@ describe("CarouselContent — slide labelling", () => {
     );
     const items = screen.getAllByRole("group");
     expect(items).toHaveLength(2);
+    // first slide gets an auto label referencing its 1-based position + the total
+    const autoLabel = items[0].getAttribute("aria-label")!;
+    expect(autoLabel).toBeTruthy();
+    expect(autoLabel).toMatch(/1/);
+    expect(autoLabel).toMatch(/2/); // total
     expect(items[1]).toHaveAttribute("aria-label", "custom slide"); // consumer wins
   });
 
