@@ -28,9 +28,33 @@ export default function Demo() {
               <Button>確定 Confirm</Button>
               <Button variant="secondary">下書き Draft</Button>
               <Button variant="outline">取消 Cancel</Button>
+              <Button variant="dashed">追加 Add row</Button>
               <Button variant="ghost">詳細 Details</Button>
               <Button variant="link">もっと見る More</Button>
               <Button variant="destructive">削除 Delete</Button>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Shape</CardTitle>
+            <CardDescription>
+              `shape` sets corner radius from the tokens — default (control radius) / pill (fully
+              rounded) / sharp (square). Works with any variant or size.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="md">
+              <Button shape="default">Default</Button>
+              <Button shape="pill">Pill</Button>
+              <Button shape="sharp">Sharp</Button>
+              <Button shape="pill" variant="outline">
+                Pill outline
+              </Button>
+              <Button shape="sharp" variant="secondary">
+                Sharp secondary
+              </Button>
             </Flex>
           </CardContent>
         </Card>

@@ -786,15 +786,23 @@ function MyShell({ children }: { content: React.ReactNode }) {
     props: [
       {
         name: "variant",
-        type: '"default" | "destructive" | "outline" | "secondary" | "ghost" | "link"',
+        type: '"default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link"',
         defaultValue: '"default"',
-        description: "Visual style.",
+        description:
+          "Visual style. `dashed` = outline with a dashed border (Ant-style add-row / placeholder action).",
       },
       {
         name: "size",
         type: '"default" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg"',
         defaultValue: '"default"',
         description: "Size preset (height, padding, icon dims).",
+      },
+      {
+        name: "shape",
+        type: '"default" | "pill" | "sharp"',
+        defaultValue: '"default"',
+        description:
+          "Corner radius from the tokens — `default` (control radius), `pill` (fully rounded, --radius-pill), `sharp` (square, --radius-sharp). Use the prop instead of a `rounded-*` className.",
       },
       {
         name: "asChild",
@@ -1325,16 +1333,29 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     props: [
       {
         name: "variant",
-        type: '"default" | "secondary" | "outline" | "success" | "warning" | "destructive" | "info" | "neutral"',
+        type: '"default" | "secondary" | "outline" | "dashed"',
         defaultValue: '"default"',
         description:
-          "Visual variant. Overrides the auto-mapped status tone when status is provided.",
+          "STRUCTURAL emphasis only (fill/border style) — NOT colour. Use `tone` for semantic colour. `dashed` = dashed border.",
+      },
+      {
+        name: "tone",
+        type: '"default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"',
+        description:
+          "SEMANTIC colour intent (ToneProp). This is the colour knob — success/warning/destructive/info/etc. Keep variant for structure, tone for meaning.",
+      },
+      {
+        name: "shape",
+        type: '"default" | "pill" | "sharp"',
+        defaultValue: '"default"',
+        description:
+          "Corner radius from the tokens — `default` (badge radius), `pill` (fully rounded), `sharp` (square). Use the prop instead of a `rounded-*` className.",
       },
       {
         name: "status",
         type: "string",
         description:
-          "Lifecycle key. Known keys auto-map to variant + icon + i18n label; unknown keys fall back to neutral.",
+          "Lifecycle key. Known keys auto-map to tone + icon + i18n label; unknown keys fall back to neutral.",
       },
       {
         name: "icon",

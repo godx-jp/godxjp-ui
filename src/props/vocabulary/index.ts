@@ -50,6 +50,8 @@ export type {
 export type {
   ButtonVariantProp,
   ButtonSizeProp,
+  BadgeVariantProp,
+  ShapeProp,
   SizeProp,
   FormLayoutProp,
   BreakpointProp,

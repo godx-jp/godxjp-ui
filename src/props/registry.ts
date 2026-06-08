@@ -212,6 +212,16 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description: "Button size preset; includes documented icon-only subset",
   },
+  BadgeVariantProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Badge visual variant (default | secondary | outline | dashed)",
+  },
+  ShapeProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Corner shape default | pill | sharp — shared by Button + Badge (radius tokens)",
+  },
   SizeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -428,7 +438,14 @@ export const COMPONENT_PROP_REGISTRY = {
   ButtonProp: {
     group: "general",
     file: "components/general.prop.ts",
-    vocabulary: ["ButtonVariantProp", "SizeProp", "AsChildProp", "DisabledProp", "OnClickProp"],
+    vocabulary: [
+      "ButtonVariantProp",
+      "SizeProp",
+      "ShapeProp",
+      "AsChildProp",
+      "DisabledProp",
+      "OnClickProp",
+    ],
   },
   InputProp: {
     group: "data-entry",
@@ -655,7 +672,7 @@ export const COMPONENT_PROP_REGISTRY = {
   BadgeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["ToneProp", "ChildrenProp", "ClassNameProp"],
+    vocabulary: ["BadgeVariantProp", "ShapeProp", "ToneProp", "ChildrenProp", "ClassNameProp"],
   },
   DataTableProp: {
     group: "data-display",

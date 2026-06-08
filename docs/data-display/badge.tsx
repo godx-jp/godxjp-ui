@@ -19,6 +19,13 @@ const variants = [
   { variant: "default" as const, label: "既定 Default" },
   { variant: "secondary" as const, label: "区分 Category" },
   { variant: "outline" as const, label: "補助 Subtle" },
+  { variant: "dashed" as const, label: "点線 Dashed" },
+];
+
+const shapes = [
+  { shape: "default" as const, label: "既定 Default" },
+  { shape: "pill" as const, label: "丸み Pill" },
+  { shape: "sharp" as const, label: "角 Sharp" },
 ];
 
 const tones = [
@@ -45,7 +52,8 @@ export default function Demo() {
             <CardTitle>Structural variants</CardTitle>
             <CardDescription>
               variant is structural emphasis only — default (filled), secondary (muted fill),
-              outline (bordered). It carries no semantic meaning; use tone for that.
+              outline (bordered), dashed (dashed border). It carries no semantic meaning; use tone
+              for that.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -53,6 +61,25 @@ export default function Demo() {
               {variants.map((v) => (
                 <Badge key={v.variant} variant={v.variant}>
                   {v.label}
+                </Badge>
+              ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Shape</CardTitle>
+            <CardDescription>
+              shape sets corner radius from the tokens — default (badge radius) / pill (fully
+              rounded) / sharp (square). Independent of variant and tone.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="sm">
+              {shapes.map((s) => (
+                <Badge key={s.shape} shape={s.shape} tone="info">
+                  {s.label}
                 </Badge>
               ))}
             </Flex>

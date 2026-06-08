@@ -22,9 +22,9 @@ import {
   toneSuccessClass,
   toneWarningClass,
 } from "../../lib/control-styles";
-import type { ToneProp } from "../../props/vocabulary";
+import type { ShapeProp, ToneProp } from "../../props/vocabulary";
 
-export type BadgeVariant = "default" | "secondary" | "outline";
+export type BadgeVariant = "default" | "secondary" | "outline" | "dashed";
 export type BadgeTone = ToneProp;
 
 interface StatusDef {
@@ -64,17 +64,26 @@ const badgeVariants = cva(
         default: "border-transparent bg-primary text-primary-foreground",
         secondary: "border-transparent bg-secondary text-secondary-foreground",
         outline: "text-foreground",
+        dashed: "border-dashed text-foreground",
+      },
+      // Corner shape — default inherits the badge radius token; pill/sharp override via the tokens.
+      shape: {
+        default: "",
+        pill: "rounded-[var(--radius-pill)]",
+        sharp: "rounded-[var(--radius-sharp)]",
       },
     },
-    defaultVariants: { variant: "default" },
+    defaultVariants: { variant: "default", shape: "default" },
   },
 );
 
 export interface BadgeProps
   extends
     Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
-    Omit<VariantProps<typeof badgeVariants>, "variant"> {
+    Omit<VariantProps<typeof badgeVariants>, "variant" | "shape"> {
   variant?: BadgeVariant | null;
+  /** Corner shape — `default` (badge radius) · `pill` (fully rounded) · `sharp` (square). */
+  shape?: ShapeProp | null;
   tone?: BadgeTone | null;
   icon?: React.ComponentType<{ className?: string }> | null;
   status?: string;
@@ -91,7 +100,16 @@ const badgeToneClass: Record<BadgeTone, string | undefined> = {
   neutral: cn("border-transparent", toneNeutralClass),
 };
 
-export function Badge({ className, variant, tone, icon, status, children, ...props }: BadgeProps) {
+export function Badge({
+  className,
+  variant,
+  shape,
+  tone,
+  icon,
+  status,
+  children,
+  ...props
+}: BadgeProps) {
   const { t } = useTranslation();
   const statusDef = status
     ? (STATUS_MAP[status] ?? { tone: "neutral" as const, icon: Circle })
@@ -105,8 +123,9 @@ export function Badge({ className, variant, tone, icon, status, children, ...pro
     <div
       data-slot="badge"
       data-tone={resolvedTone}
+      data-shape={shape ?? "default"}
       className={cn(
-        badgeVariants({ variant: variant ?? "default" }),
+        badgeVariants({ variant: variant ?? "default", shape: shape ?? "default" }),
         badgeToneClass[resolvedTone],
         className,
       )}

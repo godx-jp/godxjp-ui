@@ -8,9 +8,17 @@ export type ButtonVariantProp =
   | "default"
   | "destructive"
   | "outline"
+  | "dashed"
   | "secondary"
   | "ghost"
   | "link";
+
+/** Corner shape — maps to the radius tokens (default = control/component radius). Shared by
+ *  Button + Badge. `pill` = fully rounded (`--radius-pill`), `sharp` = square (`--radius-sharp`). */
+export type ShapeProp = "default" | "pill" | "sharp";
+
+/** Badge visual style. */
+export type BadgeVariantProp = "default" | "secondary" | "outline" | "dashed";
 
 /** Button size preset. */
 export type SizeProp = "xs" | "sm" | "md" | "lg";
