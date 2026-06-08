@@ -55,28 +55,20 @@
     scroll-padding-block: var(--space-1);
   }
 
-  /* Header = full-bleed band with a bottom border + the shared chrome padding — MIRRORS the footer so
-   * the two are symmetric pinned bars (same as Sheet/Drawer). */
+  /* Header & footer are PLAIN stacked sections by default — the dialog padding gives the inset and the
+   * content `gap` gives the header↔footer spacing. No border band here, so a simple confirm dialog
+   * (header + footer, NO body) never shows an internal divider or a doubled line + padding. */
   [data-slot="dialog-header"] {
     display: flex;
     flex-direction: column;
     gap: var(--space-stack-xs);
     text-align: start;
-    margin-inline: calc(-1 * var(--dialog-space-x));
-    margin-block-start: calc(-1 * var(--dialog-space-y));
-    padding: var(--dialog-space-y) var(--dialog-space-x);
-    border-bottom: 1px solid hsl(var(--border));
   }
 
-  /* Footer = full-bleed band with a top border + the same chrome padding (mirror of the header). */
   [data-slot="dialog-footer"] {
     display: flex;
     flex-direction: column-reverse;
     gap: var(--space-inline-sm);
-    margin-inline: calc(-1 * var(--dialog-space-x));
-    margin-block-end: calc(-1 * var(--dialog-space-y));
-    padding: var(--dialog-space-y) var(--dialog-space-x);
-    border-top: 1px solid hsl(var(--border));
   }
 
   @media (min-width: 640px) {
@@ -84,6 +76,23 @@
       flex-direction: row;
       justify-content: flex-end;
     }
+  }
+
+  /* Scrollable-body layout (Ant Modal): ONLY when a body is present do header & footer become
+   * full-bleed pinned bands with a divider, so the body scrolls between two fixed bars. Without a
+   * body the dividers (and their band padding) collapse — fixes the double-border + oversized gap. */
+  [data-slot="dialog-content"]:has([data-slot="dialog-body"]) [data-slot="dialog-header"] {
+    margin-inline: calc(-1 * var(--dialog-space-x));
+    margin-block-start: calc(-1 * var(--dialog-space-y));
+    padding: var(--dialog-space-y) var(--dialog-space-x);
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  [data-slot="dialog-content"]:has([data-slot="dialog-body"]) [data-slot="dialog-footer"] {
+    margin-inline: calc(-1 * var(--dialog-space-x));
+    margin-block-end: calc(-1 * var(--dialog-space-y));
+    padding: var(--dialog-space-y) var(--dialog-space-x);
+    border-top: 1px solid hsl(var(--border));
   }
 
   [data-slot="dialog-close"] {
