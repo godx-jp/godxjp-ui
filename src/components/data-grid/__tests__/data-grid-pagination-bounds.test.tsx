@@ -43,4 +43,18 @@ describe("DataGrid.Pagination — bounds", () => {
     expect(within(pager).getAllByRole("button")[0]).toBeEnabled(); // prev now enabled
     expect(screen.getByText("取引先11")).toBeInTheDocument();
   });
+
+  it("the prev button pages back to the first page", async () => {
+    const user = userEvent.setup();
+    const { container } = Grid(make(12)); // 2 pages
+    const pager = container.querySelector(".ui-data-table-pagination") as HTMLElement;
+    const next = () => within(pager).getAllByRole("button")[1];
+    const prev = () => within(pager).getAllByRole("button")[0];
+    await user.click(next()); // → page 2
+    expect(screen.getByText("取引先11")).toBeInTheDocument();
+    await user.click(prev()); // → back to page 1 (covers table.previousPage())
+    expect(screen.getByText("取引先1")).toBeInTheDocument();
+    expect(prev()).toBeDisabled();
+    expect(next()).toBeEnabled();
+  });
 });
