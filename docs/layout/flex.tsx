@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -35,17 +35,17 @@ export default function Demo() {
             <Flex direction="col" gap="sm">
               <Card>
                 <CardContent>
-                  <span className="text-muted-foreground text-sm">行 1 — 仕訳入力</span>
+                  <Text tone="muted">行 1 — 仕訳入力</Text>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent>
-                  <span className="text-muted-foreground text-sm">行 2 — 補助元帳</span>
+                  <Text tone="muted">行 2 — 補助元帳</Text>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent>
-                  <span className="text-muted-foreground text-sm">行 3 — 試算表</span>
+                  <Text tone="muted">行 3 — 試算表</Text>
                 </CardContent>
               </Card>
             </Flex>
@@ -63,7 +63,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="row" gap="sm" align="center" justify="between">
-              <span className="text-sm font-medium">請求書一覧</span>
+              <Text weight="medium">請求書一覧</Text>
               <Flex direction="row" gap="xs" align="center">
                 <Button variant="outline" size="sm">
                   エクスポート
@@ -84,14 +84,8 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex
-              direction="col"
-              align="center"
-              justify="center"
-              gap="sm"
-              className="min-h-32"
-            >
-              <span className="text-muted-foreground text-sm">データがありません</span>
+            <Flex direction="col" align="center" justify="center" gap="sm" className="min-h-32">
+              <Text tone="muted">データがありません</Text>
               <Button variant="outline" size="sm">
                 インポート
               </Button>
@@ -110,22 +104,24 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              {(["start", "center", "end", "stretch", "baseline"] as const).map(
-                (a) => (
-                  <Flex
-                    key={a}
-                    direction="row"
-                    gap="sm"
-                    align={a}
-                    className="bg-muted min-h-20 rounded-md p-2"
-                  >
-                    <span className="text-muted-foreground w-16 text-xs">{a}</span>
-                    <Badge variant="outline">短</Badge>
-                    <span className="text-sm">標準テキスト</span>
-                    <span className="text-2xl font-semibold">大</span>
-                  </Flex>
-                ),
-              )}
+              {(["start", "center", "end", "stretch", "baseline"] as const).map((a) => (
+                <Flex
+                  key={a}
+                  direction="row"
+                  gap="sm"
+                  align={a}
+                  className="bg-muted min-h-20 rounded-md p-2"
+                >
+                  <Text size="xs" tone="muted" className="w-16">
+                    {a}
+                  </Text>
+                  <Badge variant="outline">短</Badge>
+                  <Text>標準テキスト</Text>
+                  <Text size="2xl" weight="bold">
+                    大
+                  </Text>
+                </Flex>
+              ))}
             </Flex>
           </CardContent>
         </Card>
@@ -141,11 +137,11 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              {(
-                ["start", "center", "end", "between", "around", "evenly"] as const
-              ).map((j) => (
+              {(["start", "center", "end", "between", "around", "evenly"] as const).map((j) => (
                 <Flex key={j} direction="row" gap="sm" align="center">
-                  <span className="text-muted-foreground w-16 text-xs">{j}</span>
+                  <Text size="xs" tone="muted" className="w-16">
+                    {j}
+                  </Text>
                   <Flex
                     direction="row"
                     gap="xs"
@@ -174,26 +170,20 @@ export default function Demo() {
           <CardContent>
             <Flex direction="row" gap="md" align="start" wrap>
               <Flex direction="col" gap="xs" className="w-44">
-                <span className="text-muted-foreground text-xs">wrap=&#123;false&#125;（既定）</span>
-                <Flex
-                  direction="row"
-                  gap="xs"
-                  wrap={false}
-                  className="bg-muted rounded-md p-2"
-                >
+                <Text size="xs" tone="muted">
+                  wrap=&#123;false&#125;（既定）
+                </Text>
+                <Flex direction="row" gap="xs" wrap={false} className="bg-muted rounded-md p-2">
                   <Badge variant="outline">勘定科目</Badge>
                   <Badge variant="outline">補助科目</Badge>
                   <Badge variant="outline">部門</Badge>
                 </Flex>
               </Flex>
               <Flex direction="col" gap="xs" className="w-44">
-                <span className="text-muted-foreground text-xs">wrap=&#123;true&#125;</span>
-                <Flex
-                  direction="row"
-                  gap="xs"
-                  wrap
-                  className="bg-muted rounded-md p-2"
-                >
+                <Text size="xs" tone="muted">
+                  wrap=&#123;true&#125;
+                </Text>
+                <Flex direction="row" gap="xs" wrap className="bg-muted rounded-md p-2">
                   <Badge variant="outline">勘定科目</Badge>
                   <Badge variant="outline">補助科目</Badge>
                   <Badge variant="outline">部門</Badge>
@@ -236,7 +226,9 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               {(["xs", "sm", "md", "lg", "xl"] as const).map((g) => (
                 <Flex key={g} direction="row" gap={g} align="center">
-                  <span className="text-muted-foreground w-6 text-xs">{g}</span>
+                  <Text size="xs" tone="muted" className="w-6">
+                    {g}
+                  </Text>
                   <Badge variant="outline">勘定科目</Badge>
                   <Badge variant="outline">補助科目</Badge>
                   <Badge variant="outline">部門</Badge>

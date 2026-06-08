@@ -11,7 +11,7 @@ import {
   Avatar,
   AvatarFallback,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -192,38 +192,38 @@ export default function Demo() {
               <Flex direction="col" gap="sm" className="text-sm">
                 <Flex align="center" gap="md">
                   <Building2 className="text-muted-foreground size-4" />
-                  <span className="text-muted-foreground">アクティブエンティティ</span>
+                  <Text tone="muted">アクティブエンティティ</Text>
                   <Badge variant="secondary">{activeEntity.name}</Badge>
                 </Flex>
                 <Flex align="center" gap="md">
                   <Folder className="text-muted-foreground size-4" />
-                  <span className="text-muted-foreground">アクティブプロジェクト</span>
+                  <Text tone="muted">アクティブプロジェクト</Text>
                   <Badge variant={activeProject ? "secondary" : "outline"}>
                     {activeProject ? activeProject.name : "未選択（空チップ表示）"}
                   </Badge>
                 </Flex>
                 <Flex align="center" gap="md">
                   <PanelLeft className="text-muted-foreground size-4" />
-                  <span className="text-muted-foreground">サイドバー</span>
+                  <Text tone="muted">サイドバー</Text>
                   <Badge variant={collapsed ? "warning" : "success"}>
                     {collapsed ? "折りたたみ" : "展開中"}
                   </Badge>
                 </Flex>
                 <Flex align="center" gap="md">
                   <Bell className="text-muted-foreground size-4" />
-                  <span className="text-muted-foreground">通知バッジ</span>
+                  <Text tone="muted">通知バッジ</Text>
                   <Badge variant={unread ? "destructive" : "outline"}>
                     {unread ? "未読あり" : "なし"}
                   </Badge>
                 </Flex>
                 <Flex align="center" gap="md">
                   <Search className="text-muted-foreground size-4" />
-                  <span className="text-muted-foreground">検索を開いた回数</span>
+                  <Text tone="muted">検索を開いた回数</Text>
                   <Badge tone="info">{searchOpenCount}</Badge>
                 </Flex>
                 <Flex align="center" gap="md">
                   <SlidersHorizontal className="text-muted-foreground size-4" />
-                  <span className="text-muted-foreground">設定を開いた回数</span>
+                  <Text tone="muted">設定を開いた回数</Text>
                   <Badge tone="info">{tweaksOpenCount}</Badge>
                 </Flex>
               </Flex>
@@ -279,7 +279,7 @@ export default function Demo() {
                     <code className="bg-muted shrink-0 rounded px-1.5 py-0.5 font-mono text-xs">
                       {prop}
                     </code>
-                    <span className="text-muted-foreground">{desc}</span>
+                    <Text tone="muted">{desc}</Text>
                   </Flex>
                 ))}
               </Flex>

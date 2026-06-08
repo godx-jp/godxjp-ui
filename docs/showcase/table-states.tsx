@@ -25,7 +25,7 @@
 import * as React from "react";
 import { Clock, Inbox, Plus, RefreshCw, SearchX } from "lucide-react";
 
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
 import {
   Badge,
   Card,
@@ -174,7 +174,9 @@ function StateSection({
         <Text size="xs" tone="muted" tabular>
           {step}
         </Text>
-        <h2 className="text-sm font-bold">{title}</h2>
+        <Heading level={3} as="h2">
+          {title}
+        </Heading>
         <Text size="xs" tone="muted">
           {note}
         </Text>

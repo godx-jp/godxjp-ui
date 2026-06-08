@@ -1,5 +1,6 @@
 import { AppProvider } from "@godxjp/ui/app";
 import { formatDate } from "@godxjp/ui/datetime";
+import { Text } from "@godxjp/ui/general";
 import {
   Card,
   CardContent,
@@ -48,14 +49,14 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">
+              <Text as="p" tone="muted">
                 このデモは{" "}
                 <code className="bg-muted rounded px-1 py-0.5 font-mono text-xs">
                   defaultLocale=&quot;ja&quot; defaultTimezone=&quot;Asia/Tokyo&quot;
                   defaultDateFormat=&quot;iso&quot; defaultTimeFormat=&quot;24h&quot;
                 </code>{" "}
                 の AppProvider でラップされている。
-              </p>
+              </Text>
             </CardContent>
           </Card>
 

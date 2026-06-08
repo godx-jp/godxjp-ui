@@ -1,4 +1,13 @@
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  DataTable,
+  type ColumnDef,
+} from "@godxjp/ui/data-display";
 import {
   Checkbox,
   Field,
@@ -10,7 +19,7 @@ import {
   SelectValue,
   Switch,
 } from "@godxjp/ui/data-entry";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -38,7 +47,7 @@ const columns: ColumnDef<Line>[] = [
     key: "qty",
     header: "数量",
     align: "right",
-    render: (row) => <span className="tabular-nums">{row.qty}</span>,
+    render: (row) => <Text tabular>{row.qty}</Text>,
   },
 ];
 
@@ -109,8 +118,8 @@ export default function Demo() {
             <CardDescription>
               Set density once per page via {"<PageContainer density>"} — never the .ui-density-*
               classes directly. Flip the one prop and Input, Select, Checkbox, Switch and Button all
-              re-tune their height, padding and the φ rhythm together. 44px (comfortable) is the WCAG
-              / Digital Agency touch floor.
+              re-tune their height, padding and the φ rhythm together. 44px (comfortable) is the
+              WCAG / Digital Agency touch floor.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -118,10 +127,14 @@ export default function Demo() {
               {density.map((d) => (
                 <Flex key={d.cls} direction="col" gap="sm" className="min-w-72 flex-1">
                   <Flex direction="row" align="center" justify="between" gap="sm">
-                    <span className="font-mono text-xs">density=&quot;{d.label}&quot;</span>
+                    <Text size="xs" mono>
+                      density=&quot;{d.label}&quot;
+                    </Text>
                     {d.label === "default" && <Badge variant="secondary">default</Badge>}
                   </Flex>
-                  <span className="text-muted-foreground text-xs">{d.role}</span>
+                  <Text size="xs" tone="muted">
+                    {d.role}
+                  </Text>
                   <div className={d.cls}>
                     <DensitySample idPrefix={d.label} />
                   </div>
@@ -136,14 +149,16 @@ export default function Demo() {
             <CardTitle>Table row density (DataTable density)</CardTitle>
             <CardDescription>
               The DataTable owns its own density axis — density=&quot;compact&quot; vs
-              density=&quot;comfortable&quot; swaps --table-row-height and --table-cell-padding-y. The
-              density toggle in the table toolbar drives the same prop at runtime.
+              density=&quot;comfortable&quot; swaps --table-row-height and --table-cell-padding-y.
+              The density toggle in the table toolbar drives the same prop at runtime.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="row" gap="lg" align="start" wrap>
               <Flex direction="col" gap="sm" className="min-w-72 flex-1">
-                <span className="font-mono text-xs">density=&quot;compact&quot;</span>
+                <Text size="xs" mono>
+                  density=&quot;compact&quot;
+                </Text>
                 <Card>
                   <CardContent flush>
                     <DataTable
@@ -156,7 +171,9 @@ export default function Demo() {
                 </Card>
               </Flex>
               <Flex direction="col" gap="sm" className="min-w-72 flex-1">
-                <span className="font-mono text-xs">density=&quot;comfortable&quot;</span>
+                <Text size="xs" mono>
+                  density=&quot;comfortable&quot;
+                </Text>
                 <Card>
                   <CardContent flush>
                     <DataTable

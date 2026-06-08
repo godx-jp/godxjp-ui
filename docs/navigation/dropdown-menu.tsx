@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   DropdownMenu,
@@ -48,7 +48,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="row" align="center" gap="md">
-              <span className="text-sm">JE-0042 — 売上計上 ¥480,000</span>
+              <Text>JE-0042 — 売上計上 ¥480,000</Text>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon-sm" aria-label="行アクション">
@@ -189,10 +189,12 @@ export default function Demo() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuLabel>
-                  <div className="text-sm font-medium">田中 太郎</div>
-                  <div className="text-muted-foreground text-xs font-normal">
+                  <Text as="div" weight="medium">
+                    田中 太郎
+                  </Text>
+                  <Text as="div" size="xs" tone="muted">
                     tanaka@example.co.jp
-                  </div>
+                  </Text>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>プロフィール</DropdownMenuItem>

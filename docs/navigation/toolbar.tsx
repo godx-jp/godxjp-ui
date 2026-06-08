@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import {
   SearchInput,
   Select,
@@ -89,9 +90,9 @@ export default function Demo() {
               </Toolbar>
 
               {/* Simulated table body */}
-              <div className="text-muted-foreground rounded-md border p-4 text-center text-sm">
+              <Text as="div" tone="muted" className="rounded-md border p-4 text-center">
                 DataTable がここに入ります — Toolbar は Card の外側 (上) に置く
-              </div>
+              </Text>
             </Flex>
           </CardContent>
         </Card>

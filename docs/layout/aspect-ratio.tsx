@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Skeleton } from "@godxjp/ui/feedback";
 import { AspectRatio, Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -27,9 +28,7 @@ export default function Demo() {
           <CardContent>
             <AspectRatio ratio={16 / 9}>
               <div className="bg-muted flex h-full w-full items-center justify-center rounded-md">
-                <span className="text-muted-foreground text-sm">
-                  16:9 動画プレビュー（サンプル）
-                </span>
+                <Text tone="muted">16:9 動画プレビュー（サンプル）</Text>
               </div>
             </AspectRatio>
           </CardContent>
@@ -47,7 +46,7 @@ export default function Demo() {
             <div className="max-w-xs">
               <AspectRatio ratio={4 / 3}>
                 <div className="bg-muted border-border flex h-full w-full items-center justify-center rounded-md border">
-                  <span className="text-muted-foreground text-sm">領収書スキャン 4:3</span>
+                  <Text tone="muted">領収書スキャン 4:3</Text>
                 </div>
               </AspectRatio>
             </div>
@@ -68,7 +67,9 @@ export default function Demo() {
                 <div key={name} className="w-28">
                   <AspectRatio ratio={1}>
                     <div className="bg-muted border-border flex h-full w-full items-center justify-center rounded-md border">
-                      <span className="text-muted-foreground px-1 text-center text-xs">{name}</span>
+                      <Text size="xs" tone="muted" className="px-1 text-center">
+                        {name}
+                      </Text>
                     </div>
                   </AspectRatio>
                 </div>
@@ -90,7 +91,7 @@ export default function Demo() {
           <CardContent>
             <AspectRatio ratio={21 / 9}>
               <div className="bg-muted border-border flex h-full w-full items-center justify-center rounded-md border">
-                <span className="text-muted-foreground text-sm">月次売上推移グラフ（21:9）</span>
+                <Text tone="muted">月次売上推移グラフ（21:9）</Text>
               </div>
             </AspectRatio>
           </CardContent>

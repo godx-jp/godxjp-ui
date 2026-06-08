@@ -259,7 +259,9 @@ function ItemListCard({
           />
         ) : null}
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[14px] font-bold">{item.name}</div>
+          <Text as="div" size="sm" weight="bold" truncate>
+            {item.name}
+          </Text>
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
             <MonoCode>{item.rc}</MonoCode>
             <MonoCode>JAN {item.jan}</MonoCode>
@@ -292,7 +294,9 @@ function PackingListCard({ packing, onTap }: { packing: Packing; onTap?: () => v
     >
       <CardContent solo>
         <div className="flex items-center justify-between gap-2">
-          <span className="font-mono text-[14px] font-bold tabular-nums">{packing.code}</span>
+          <Text as="code" size="sm" weight="bold" tabular>
+            {packing.code}
+          </Text>
           <Badge tone={st.tone} variant="outline" className="rounded-full">
             {st.label}
           </Badge>
@@ -397,13 +401,15 @@ function ItemLookupSheet({
         <SheetBody className="flex flex-col gap-4">
           {/* Viewfinder placeholder — a Card surface, not a hand-rolled illustration */}
           <div className="border-border bg-secondary/40 flex h-40 items-center justify-center rounded-[12px] border-2 border-dashed">
-            <div className="text-muted-foreground flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-2">
               <ScanLine
                 className="size-7 text-[color:var(--attention,var(--warning))]"
                 aria-hidden="true"
                 strokeWidth={1.5}
               />
-              <Text size="sm">Đưa mã vạch vào khung</Text>
+              <Text size="sm" tone="muted">
+                Đưa mã vạch vào khung
+              </Text>
             </div>
           </div>
           <Flex direction="col" gap="sm">
@@ -560,7 +566,9 @@ function ItemFormSheet({
                   >
                     <RadioItem id={rowId} value={d.id} className="mt-0.5" />
                     <span className="min-w-0">
-                      <span className="block text-[14px] font-medium">{d.label}</span>
+                      <Text as="span" size="sm" weight="medium" className="block">
+                        {d.label}
+                      </Text>
                       <Text as="span" size="xs" tone="muted" className="block">
                         {d.hint}
                       </Text>
@@ -713,7 +721,10 @@ function InboundTab({
         <div className="shrink-0 border-t bg-[color-mix(in_oklch,var(--primary)_5%,var(--background))] p-3">
           <div className="mb-2 flex items-center justify-between">
             <Text size="sm" tabular>
-              <span className="font-bold">{selected.size}</span> item đã chọn
+              <Text as="span" weight="bold">
+                {selected.size}
+              </Text>{" "}
+              item đã chọn
             </Text>
             <Button
               variant="ghost"
@@ -778,7 +789,9 @@ function PackingTab({ onScan }: { onScan: () => void }) {
                   {PACKING_STATUS.active.label}
                 </Badge>
               </div>
-              <div className="mt-1 font-mono text-[16px] font-bold tabular-nums">{active.code}</div>
+              <Text as="div" size="lg" weight="bold" mono tabular className="mt-1">
+                {active.code}
+              </Text>
               <Text size="xs" tone="muted" tabular as="div" className="mt-0.5">
                 {active.customer} · {active.city} · ×{active.items} · {active.slot}
               </Text>
@@ -847,7 +860,9 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
             <Card key={p.id} density="tight" className="rounded-[10px]">
               <CardContent solo>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-mono text-[14px] font-bold tabular-nums">{p.code}</span>
+                  <Text as="code" size="sm" weight="bold" tabular>
+                    {p.code}
+                  </Text>
                   <Badge tone="success" variant="outline" className="rounded-full">
                     Sẵn sàng niêm phong
                   </Badge>

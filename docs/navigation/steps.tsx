@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Steps } from "@godxjp/ui/navigation";
 
@@ -122,12 +122,12 @@ export default function Demo() {
                 onValueChange={setWizardCurrent}
               />
               <Flex direction="col" gap="md" className="flex-1">
-                <p className="text-sm font-medium">
+                <Text as="p" weight="medium">
                   ステップ {wizardCurrent + 1}: {onboardingSteps[wizardCurrent].title}
-                </p>
-                <p className="text-muted-foreground text-sm">
+                </Text>
+                <Text as="p" tone="muted">
                   このステップのフォームコンテンツがここに表示されます。
-                </p>
+                </Text>
                 <Flex direction="row" gap="sm">
                   <Button
                     size="sm"

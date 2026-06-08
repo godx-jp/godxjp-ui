@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Copy, Info, Trash2 } from "lucide-react";
 
@@ -62,7 +62,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="row" gap="sm" align="center">
-              <span className="text-sm font-medium">AR 残高</span>
+              <Text weight="medium">AR 残高</Text>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span tabIndex={0} className="text-muted-foreground cursor-help">

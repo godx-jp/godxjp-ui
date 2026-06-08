@@ -11,7 +11,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
@@ -46,10 +46,10 @@ export default function Demo() {
                     <AvatarFallback>VB</AvatarFallback>
                   </Avatar>
                   <Flex direction="col" gap="xs">
-                    <span className="text-sm font-medium">株式会社ベトヤ</span>
-                    <span className="text-muted-foreground text-xs">
+                    <Text weight="medium">株式会社ベトヤ</Text>
+                    <Text size="xs" tone="muted">
                       取引先 · BTY-0012 · 売掛 ¥482,000
-                    </span>
+                    </Text>
                   </Flex>
                 </Flex>
               </HoverCardContent>
@@ -77,13 +77,13 @@ export default function Demo() {
                     <AvatarFallback>田</AvatarFallback>
                   </Avatar>
                   <Flex direction="col" gap="xs">
-                    <span className="text-sm font-medium">田中 美咲</span>
-                    <span className="text-muted-foreground text-xs">
+                    <Text weight="medium">田中 美咲</Text>
+                    <Text size="xs" tone="muted">
                       営業部 · 主任
-                    </span>
-                    <span className="text-muted-foreground text-xs">
+                    </Text>
+                    <Text size="xs" tone="muted">
                       misaki.tanaka@example.co.jp
-                    </span>
+                    </Text>
                   </Flex>
                 </Flex>
               </HoverCardContent>
@@ -108,7 +108,7 @@ export default function Demo() {
                   <Button variant="link">side=top</Button>
                 </HoverCardTrigger>
                 <HoverCardContent side="top">
-                  <span className="text-sm">上に表示（align=center）</span>
+                  <Text>上に表示（align=center）</Text>
                 </HoverCardContent>
               </HoverCard>
 
@@ -117,7 +117,7 @@ export default function Demo() {
                   <Button variant="link">side=right</Button>
                 </HoverCardTrigger>
                 <HoverCardContent side="right" align="start">
-                  <span className="text-sm">右に表示（align=start）</span>
+                  <Text>右に表示（align=start）</Text>
                 </HoverCardContent>
               </HoverCard>
 
@@ -126,7 +126,7 @@ export default function Demo() {
                   <Button variant="link">side=bottom</Button>
                 </HoverCardTrigger>
                 <HoverCardContent side="bottom" align="end">
-                  <span className="text-sm">下に表示（align=end）</span>
+                  <Text>下に表示（align=end）</Text>
                 </HoverCardContent>
               </HoverCard>
 
@@ -135,7 +135,7 @@ export default function Demo() {
                   <Button variant="link">side=left</Button>
                 </HoverCardTrigger>
                 <HoverCardContent side="left" sideOffset={12}>
-                  <span className="text-sm">左に表示（sideOffset=12）</span>
+                  <Text>左に表示（sideOffset=12）</Text>
                 </HoverCardContent>
               </HoverCard>
             </ResponsiveGrid>
@@ -159,9 +159,7 @@ export default function Demo() {
                   <Button variant="link">ゆっくり開く（openDelay=700）</Button>
                 </HoverCardTrigger>
                 <HoverCardContent>
-                  <span className="text-sm">
-                    待ってから表示。意図しないホバーで開きません。
-                  </span>
+                  <Text>待ってから表示。意図しないホバーで開きません。</Text>
                 </HoverCardContent>
               </HoverCard>
 
@@ -170,9 +168,7 @@ export default function Demo() {
                   <Button variant="link">すぐ開き、遅く閉じる（closeDelay=600）</Button>
                 </HoverCardTrigger>
                 <HoverCardContent>
-                  <span className="text-sm">
-                    即座に表示し、離れても少し残るのでカード内に移動できます。
-                  </span>
+                  <Text>即座に表示し、離れても少し残るのでカード内に移動できます。</Text>
                 </HoverCardContent>
               </HoverCard>
             </Flex>

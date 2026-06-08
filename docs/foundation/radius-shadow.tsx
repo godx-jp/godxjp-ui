@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
@@ -55,14 +56,18 @@ export default function Demo() {
                   />
                   <div>
                     <Flex align="center" gap="xs">
-                      <span className="font-mono text-xs">{r.token}</span>
+                      <Text size="xs" mono>
+                        {r.token}
+                      </Text>
                       {r.source === "tw" ? (
                         <Badge variant="outline" className="text-xs">
                           Tailwind default
                         </Badge>
                       ) : null}
                     </Flex>
-                    <div className="text-muted-foreground text-xs">{r.px}</div>
+                    <Text as="div" size="xs" tone="muted">
+                      {r.px}
+                    </Text>
                   </div>
                 </Flex>
               ))}
@@ -88,8 +93,12 @@ export default function Demo() {
                       style={{ boxShadow: `var(${s.token})` }}
                     />
                     <div>
-                      <div className="font-mono text-xs">{s.token}</div>
-                      <div className="text-muted-foreground text-xs">{s.role}</div>
+                      <Text as="div" size="xs" mono>
+                        {s.token}
+                      </Text>
+                      <Text as="div" size="xs" tone="muted">
+                        {s.role}
+                      </Text>
                     </div>
                   </Flex>
                 ))}
@@ -102,21 +111,33 @@ export default function Demo() {
                 <Flex direction="col" gap="xs">
                   <Card>
                     <CardContent>
-                      <div className="text-sm font-medium">At rest（カード）</div>
-                      <div className="text-muted-foreground text-xs">border-border, no shadow</div>
+                      <Text as="div" weight="medium">
+                        At rest（カード）
+                      </Text>
+                      <Text as="div" size="xs" tone="muted">
+                        border-border, no shadow
+                      </Text>
                     </CardContent>
                   </Card>
-                  <div className="text-muted-foreground text-xs">resting surface — flat</div>
+                  <Text as="div" size="xs" tone="muted">
+                    resting surface — flat
+                  </Text>
                 </Flex>
                 <Flex direction="col" gap="xs">
                   <div
                     className="bg-popover text-popover-foreground border-border rounded-md border p-4"
                     style={{ boxShadow: "var(--shadow-lg)" }}
                   >
-                    <div className="text-sm font-medium">Floating（ポップオーバー）</div>
-                    <div className="text-muted-foreground text-xs">--shadow-lg lifts it off the page</div>
+                    <Text as="div" weight="medium">
+                      Floating（ポップオーバー）
+                    </Text>
+                    <Text as="div" size="xs" tone="muted">
+                      --shadow-lg lifts it off the page
+                    </Text>
                   </div>
-                  <div className="text-muted-foreground text-xs">floating surface — elevated</div>
+                  <Text as="div" size="xs" tone="muted">
+                    floating surface — elevated
+                  </Text>
                 </Flex>
               </ResponsiveGrid>
             </Flex>

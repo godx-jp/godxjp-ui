@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@godxjp/ui/navigation";
 
@@ -17,8 +17,8 @@ const journalItems = [
     label: "未承認",
     content: (
       <Flex direction="col" gap="sm">
-        <p className="text-sm">JE-0042 — 売上計上 株式会社山田商事 ¥480,000</p>
-        <p className="text-sm">JE-0043 — 仕入計上 有限会社田中工業 ¥120,000</p>
+        <Text as="p">JE-0042 — 売上計上 株式会社山田商事 ¥480,000</Text>
+        <Text as="p">JE-0043 — 仕入計上 有限会社田中工業 ¥120,000</Text>
       </Flex>
     ),
   },
@@ -27,15 +27,19 @@ const journalItems = [
     label: "承認済",
     content: (
       <Flex direction="col" gap="sm">
-        <p className="text-sm">JE-0040 — 給与支払 2024年5月分 ¥2,800,000</p>
-        <p className="text-sm">JE-0041 — 経費精算 交通費 ¥38,500</p>
+        <Text as="p">JE-0040 — 給与支払 2024年5月分 ¥2,800,000</Text>
+        <Text as="p">JE-0041 — 経費精算 交通費 ¥38,500</Text>
       </Flex>
     ),
   },
   {
     value: "voided",
     label: "取消済",
-    content: <p className="text-muted-foreground text-sm">取消済の仕訳はありません。</p>,
+    content: (
+      <Text as="p" tone="muted">
+        取消済の仕訳はありません。
+      </Text>
+    ),
     disabled: false,
   },
 ];
@@ -99,17 +103,17 @@ export default function Demo() {
                 {
                   value: "pending",
                   label: "未承認 (2)",
-                  content: <p className="text-sm">未承認の仕訳が 2 件あります。</p>,
+                  content: <Text as="p">未承認の仕訳が 2 件あります。</Text>,
                 },
                 {
                   value: "posted",
                   label: "承認済",
-                  content: <p className="text-sm">当期承認済: 48 件</p>,
+                  content: <Text as="p">当期承認済: 48 件</Text>,
                 },
                 {
                   value: "voided",
                   label: "取消済",
-                  content: <p className="text-sm">取消済: 3 件</p>,
+                  content: <Text as="p">取消済: 3 件</Text>,
                 },
               ]}
             />
@@ -134,13 +138,13 @@ export default function Demo() {
               </TabsList>
               <Flex direction="col" gap="md" className="flex-1">
                 <TabsContent value="overview">
-                  <p className="text-sm">取引先: 株式会社山田商事 — 売掛金残高 ¥480,000</p>
+                  <Text as="p">取引先: 株式会社山田商事 — 売掛金残高 ¥480,000</Text>
                 </TabsContent>
                 <TabsContent value="ledger">
-                  <p className="text-sm">元帳エントリ: 売掛金 Dr / 売上 Cr ¥480,000</p>
+                  <Text as="p">元帳エントリ: 売掛金 Dr / 売上 Cr ¥480,000</Text>
                 </TabsContent>
                 <TabsContent value="attachments">
-                  <p className="text-sm">添付ファイル: invoice_0042.pdf</p>
+                  <Text as="p">添付ファイル: invoice_0042.pdf</Text>
                 </TabsContent>
               </Flex>
             </Tabs>

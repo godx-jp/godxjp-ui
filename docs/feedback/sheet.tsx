@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   FormField,
   Input,
@@ -142,9 +142,9 @@ export default function Demo() {
                         value={minAmount}
                         onChange={(e) => setMinAmount(e.target.value)}
                       />
-                      <span className="text-muted-foreground" aria-hidden="true">
+                      <Text tone="muted" aria-hidden="true">
                         –
-                      </span>
+                      </Text>
                       <Input
                         id="filter-amount-max"
                         aria-label="最大金額"

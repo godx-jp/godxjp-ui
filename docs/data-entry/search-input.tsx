@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { SearchInput } from "@godxjp/ui/data-entry";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -38,7 +39,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>仕訳一覧フィルター（制御モード）</CardTitle>
             <CardDescription>
-              value + onValueChange で即時制御（入力に追従）。onSearch は 250 ms デバウンス後に発火。
+              value + onValueChange で即時制御（入力に追従）。onSearch は 250 ms
+              デバウンス後に発火。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -51,12 +53,17 @@ export default function Demo() {
               />
               <Flex direction="col" gap="sm">
                 {filtered.length === 0 ? (
-                  <p className="text-muted-foreground text-sm">該当なし</p>
+                  <Text as="p" tone="muted">
+                    該当なし
+                  </Text>
                 ) : (
                   filtered.map((j) => (
-                    <p key={j.id} className="text-sm">
-                      <span className="text-muted-foreground font-mono">{j.id}</span> {j.desc}
-                    </p>
+                    <Text as="p" key={j.id}>
+                      <Text tone="muted" mono>
+                        {j.id}
+                      </Text>{" "}
+                      {j.desc}
+                    </Text>
                   ))
                 )}
               </Flex>
@@ -80,9 +87,12 @@ export default function Demo() {
                 debounce={300}
               />
               {partnerQuery && (
-                <p className="text-muted-foreground text-sm">
-                  検索中: <strong>{partnerQuery}</strong>
-                </p>
+                <Text as="p" tone="muted">
+                  検索中:{" "}
+                  <Text as="strong" weight="medium">
+                    {partnerQuery}
+                  </Text>
+                </Text>
               )}
             </Flex>
           </CardContent>

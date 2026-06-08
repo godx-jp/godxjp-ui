@@ -372,9 +372,16 @@ function ViewTrigger({ view, count }: { view: SavedView; count: number }) {
     <span className="flex items-center gap-2">
       <span aria-hidden="true" className={`size-2 rounded-full ${DOT_CLASS[view.dot]}`} />
       <span>{view.label}</span>
-      <span className="bg-muted text-muted-foreground inline-flex min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-medium tabular-nums">
+      <Text
+        as="span"
+        size="2xs"
+        weight="medium"
+        tone="muted"
+        tabular
+        className="bg-muted inline-flex min-w-5 items-center justify-center rounded-full px-1.5"
+      >
         {count}
-      </span>
+      </Text>
     </span>
   );
 }

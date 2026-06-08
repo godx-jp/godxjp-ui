@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
 
 /**
@@ -34,20 +34,18 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="md">
               <Flex direction="col" gap="xs">
-                <span className="text-sm font-medium">基本情報</span>
-                <span className="text-muted-foreground text-sm">
-                  取引先名・登録番号・請求先住所
-                </span>
+                <Text weight="medium">基本情報</Text>
+                <Text tone="muted">取引先名・登録番号・請求先住所</Text>
               </Flex>
               <Separator />
               <Flex direction="col" gap="xs">
-                <span className="text-sm font-medium">支払条件</span>
-                <span className="text-muted-foreground text-sm">支払サイト・通貨・消費税区分</span>
+                <Text weight="medium">支払条件</Text>
+                <Text tone="muted">支払サイト・通貨・消費税区分</Text>
               </Flex>
               <Separator />
               <Flex direction="col" gap="xs">
-                <span className="text-sm font-medium">銀行口座</span>
-                <span className="text-muted-foreground text-sm">振込先金融機関・口座番号</span>
+                <Text weight="medium">銀行口座</Text>
+                <Text tone="muted">振込先金融機関・口座番号</Text>
               </Flex>
             </Flex>
           </CardContent>
@@ -93,17 +91,17 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="md">
               <Flex direction="row" gap="sm" align="center" justify="between">
-                <span className="text-sm font-medium">承認済み請求書</span>
+                <Text weight="medium">承認済み請求書</Text>
                 <Badge tone="success">12件</Badge>
               </Flex>
               <Separator decorative={false} />
               <Flex direction="row" gap="sm" align="center" justify="between">
-                <span className="text-sm font-medium">保留中請求書</span>
+                <Text weight="medium">保留中請求書</Text>
                 <Badge tone="warning">4件</Badge>
               </Flex>
               <Separator decorative={false} />
               <Flex direction="row" gap="sm" align="center" justify="between">
-                <span className="text-sm font-medium">却下済み請求書</span>
+                <Text weight="medium">却下済み請求書</Text>
                 <Badge tone="destructive">2件</Badge>
               </Flex>
             </Flex>

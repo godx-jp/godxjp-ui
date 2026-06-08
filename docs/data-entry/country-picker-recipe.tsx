@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Select } from "@godxjp/ui/data-entry";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import type { SelectLoadParams, SelectLoadResult, SelectOption } from "@godxjp/ui/data-entry";
 
@@ -63,10 +64,10 @@ async function loadCountries({ query }: SelectLoadParams): Promise<SelectLoadRes
 function renderCountry(option: SelectOption) {
   return (
     <span className="flex items-center gap-2">
-      <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 font-mono text-xs">
+      <Text size="xs" tone="muted" mono className="bg-muted rounded px-1.5 py-0.5">
         {option.value}
-      </span>
-      <span className="truncate text-sm">{option.label}</span>
+      </Text>
+      <Text truncate>{option.label}</Text>
     </span>
   );
 }
@@ -86,9 +87,10 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>請求先の国（必須・日本デフォルト・クリア不可）</CardTitle>
             <CardDescription>
-              value は ISO 3166-1 alpha-2 コード、ラベルは Intl.DisplayNames（CLDR）で生成する（国名を
-              ハードコードしない・絵文字フラグも使わない）。 showSearch で絞り込み、name でフォーム送信。
-              必須項目なので clearable=false でクリア行を出さない。
+              value は ISO 3166-1 alpha-2 コード、ラベルは
+              Intl.DisplayNames（CLDR）で生成する（国名を
+              ハードコードしない・絵文字フラグも使わない）。 showSearch で絞り込み、name
+              でフォーム送信。 必須項目なので clearable=false でクリア行を出さない。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -138,9 +140,9 @@ export default function Demo() {
             <CardTitle>居住国（loadOptions・遠隔リスト・SVG フラグ枠）</CardTitle>
             <CardDescription>
               全世界の長いリストは options を同梱せず loadOptions でサーバー検索＋ページングする。
-              読み込み中は loadingMessage、0 件は emptyMessage を出す。selectedLabel は値の option が
-              まだ読み込まれていないときの表示名。renderOption で ISO コードチップ＋国名を描画（絵文字
-              フラグは使わず、実運用では SVG フラグを差し込む）。
+              読み込み中は loadingMessage、0 件は emptyMessage を出す。selectedLabel は値の option
+              が まだ読み込まれていないときの表示名。renderOption で ISO
+              コードチップ＋国名を描画（絵文字 フラグは使わず、実運用では SVG フラグを差し込む）。
             </CardDescription>
           </CardHeader>
           <CardContent>

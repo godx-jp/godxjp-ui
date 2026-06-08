@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
@@ -66,11 +67,19 @@ function SwatchTile({ swatch, text }: { swatch: Swatch; text?: boolean }) {
   return (
     <Flex direction="col" gap="xs">
       <div className={`border-border flex h-14 items-end rounded-md border p-2 ${swatch.cls}`}>
-        {text ? <span className="font-mono text-xs leading-none">Aa 亜</span> : null}
+        {text ? (
+          <Text size="xs" mono className="leading-none">
+            Aa 亜
+          </Text>
+        ) : null}
       </div>
       <div>
-        <div className="font-mono text-xs">{swatch.token}</div>
-        <div className="text-muted-foreground text-xs">{swatch.role}</div>
+        <Text as="div" size="xs" mono>
+          {swatch.token}
+        </Text>
+        <Text as="div" size="xs" tone="muted">
+          {swatch.role}
+        </Text>
       </div>
     </Flex>
   );
@@ -94,11 +103,15 @@ function SwatchGroup({ items, text, dark }: { items: Swatch[]; text?: boolean; d
   return (
     <Flex direction="col" gap="md">
       <div>
-        <div className="text-muted-foreground mb-2 text-xs font-medium">Light</div>
+        <Text as="div" size="xs" tone="muted" weight="medium" className="mb-2">
+          Light
+        </Text>
         {grid}
       </div>
       <div className="bg-background text-foreground dark rounded-md p-3">
-        <div className="text-muted-foreground mb-2 text-xs font-medium">Dark (.dark)</div>
+        <Text as="div" size="xs" tone="muted" weight="medium" className="mb-2">
+          Dark (.dark)
+        </Text>
         <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 4 }}>
           {items.map((s) => (
             <SwatchTile key={s.token} swatch={s} text={text} />
@@ -120,8 +133,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Semantic surfaces</CardTitle>
             <CardDescription>
-              Page / raised / overlay / muted neutrals. Use these — never invent a new grey. Each box
-              shows its own foreground text token. Every role is redefined under .dark.
+              Page / raised / overlay / muted neutrals. Use these — never invent a new grey. Each
+              box shows its own foreground text token. Every role is redefined under .dark.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -133,8 +146,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Structural neutrals</CardTitle>
             <CardDescription>
-              Hairlines, field borders, focus ring. In practice these paint borders and outlines, not
-              areas — shown as fills here so the named token is visible. Also themed under .dark.
+              Hairlines, field borders, focus ring. In practice these paint borders and outlines,
+              not areas — shown as fills here so the named token is visible. Also themed under
+              .dark.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -147,7 +161,8 @@ export default function Demo() {
             <CardTitle>Brand & status</CardTitle>
             <CardDescription>
               Fixed semantic mapping — never substitute. primary = the single most important action;
-              status is success / warning / info / attention / danger. Lifted for contrast under .dark.
+              status is success / warning / info / attention / danger. Lifted for contrast under
+              .dark.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -160,7 +175,8 @@ export default function Demo() {
             <CardTitle>和色 wa-iro — decorative only</CardTitle>
             <CardDescription>
               Traditional Japanese accents for charts / tags / tenant theming. NEVER map a wa-iro
-              hue to a semantic role beyond the five canonical ones above. Fixed hex — theme-invariant.
+              hue to a semantic role beyond the five canonical ones above. Fixed hex —
+              theme-invariant.
             </CardDescription>
           </CardHeader>
           <CardContent>

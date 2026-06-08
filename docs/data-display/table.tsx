@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -29,15 +30,17 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>仕訳明細</CardTitle>
             <CardDescription>
-              A fixed double-entry breakdown. The second row is rendered with the
-              built-in selected state (TableRow data-state=&quot;selected&quot;), and a
-              caption + total footer row exercise caption-bottom and a summary row.
+              A fixed double-entry breakdown. The second row is rendered with the built-in selected
+              state (TableRow data-state=&quot;selected&quot;), and a caption + total footer row
+              exercise caption-bottom and a summary row.
             </CardDescription>
           </CardHeader>
           <CardContent flush>
             <Table>
-              <caption className="px-4 py-2 text-start text-xs text-muted-foreground">
-                2026年5月 売上計上（税込）
+              <caption className="px-4 py-2 text-start">
+                <Text size="xs" tone="muted">
+                  2026年5月 売上計上（税込）
+                </Text>
               </caption>
               <TableHeader>
                 <TableRow>
@@ -77,9 +80,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>月次推移</CardTitle>
             <CardDescription>
-              A wide table — more columns than the viewport can hold, so the
-              built-in scroll wrapper (.relative w-full overflow-auto) scrolls
-              horizontally.
+              A wide table — more columns than the viewport can hold, so the built-in scroll wrapper
+              (.relative w-full overflow-auto) scrolls horizontally.
             </CardDescription>
           </CardHeader>
           <CardContent flush>

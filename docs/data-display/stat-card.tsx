@@ -1,4 +1,5 @@
 import { StatCard } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 import { TrendingUp } from "lucide-react";
 
@@ -16,7 +17,9 @@ export default function Demo() {
     >
       <Flex direction="col" gap="lg">
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">KPI row (stacked)</div>
+          <Text as="div" weight="medium">
+            KPI row (stacked)
+          </Text>
           <ResponsiveGrid columns={{ sm: 2, md: 4 }}>
             <StatCard label="月次売上" value="¥8,200,000" delta="+12%" hint="先月比" />
             <StatCard label="請求件数" value="312" delta="+4%" />
@@ -26,7 +29,9 @@ export default function Demo() {
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">Delta tone — sign-aware (inverse flips it)</div>
+          <Text as="div" weight="medium">
+            Delta tone — sign-aware (inverse flips it)
+          </Text>
           <ResponsiveGrid columns={{ sm: 2, md: 3 }}>
             <StatCard label="新規取引先" value="24" delta="+6" />
             <StatCard label="遅延請求書" value="7" delta="-3" />
@@ -41,7 +46,9 @@ export default function Demo() {
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">Inline layout (narrow panels)</div>
+          <Text as="div" weight="medium">
+            Inline layout (narrow panels)
+          </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
             <StatCard layout="inline" label="契約金額" value="¥4,800,000" />
             <StatCard layout="inline" label="消費税" value="¥480,000" hint="10%" />
@@ -49,18 +56,18 @@ export default function Demo() {
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">
+          <Text as="div" weight="medium">
             align=&quot;end&quot; · size=&quot;md&quot; · icon label · neutral delta
-          </div>
+          </Text>
           <ResponsiveGrid columns={{ sm: 2, md: 4 }}>
+            <StatCard align="end" label="当期利益" value="¥3,120,000" delta="+8%" hint="右寄せ" />
             <StatCard
-              align="end"
-              label="当期利益"
-              value="¥3,120,000"
-              delta="+8%"
-              hint="右寄せ"
+              size="md"
+              label="年間売上"
+              value="¥98,400,000"
+              delta="+11%"
+              hint="ゆとりある密度"
             />
-            <StatCard size="md" label="年間売上" value="¥98,400,000" delta="+11%" hint="ゆとりある密度" />
             <StatCard
               label={
                 <>

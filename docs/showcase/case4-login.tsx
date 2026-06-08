@@ -75,15 +75,21 @@ function BrandLockup({ size = "md" }: { size?: "md" | "lg" }) {
   return (
     <div className="flex items-center gap-2.5">
       <div
-        className={`bg-primary text-primary-foreground grid shrink-0 place-items-center rounded-lg font-bold ${mark}`}
+        className={`bg-primary text-primary-foreground grid shrink-0 place-items-center rounded-lg ${mark}`}
         aria-hidden="true"
       >
-        勤
+        <Text as="span" weight="bold" className="leading-none text-[inherit]">
+          勤
+        </Text>
       </div>
       <div className="leading-tight">
-        <div className="text-[15px] font-bold tracking-tight">
-          dxs <span className="text-primary">·</span> kintai
-        </div>
+        <Text as="div" size="lg" weight="bold" className="tracking-tight">
+          dxs{" "}
+          <Text as="span" tone="primary">
+            ·
+          </Text>{" "}
+          kintai
+        </Text>
         <Text as="div" size="2xs" tone="muted">
           勤怠管理プラットフォーム
         </Text>
@@ -165,16 +171,28 @@ export default function LoginShowcase() {
               </div>
               <dl className="border-border grid grid-cols-3 gap-4 border-t pt-6">
                 <div>
-                  <dt className="text-muted-foreground text-[11px]">導入企業</dt>
-                  <dd className="text-lg font-bold tabular-nums">1,240</dd>
+                  <Text as="dt" size="2xs" tone="muted">
+                    導入企業
+                  </Text>
+                  <Text as="dd" size="lg" weight="bold" tabular>
+                    1,240
+                  </Text>
                 </div>
                 <div>
-                  <dt className="text-muted-foreground text-[11px]">稼働拠点</dt>
-                  <dd className="text-lg font-bold tabular-nums">8,600</dd>
+                  <Text as="dt" size="2xs" tone="muted">
+                    稼働拠点
+                  </Text>
+                  <Text as="dd" size="lg" weight="bold" tabular>
+                    8,600
+                  </Text>
                 </div>
                 <div>
-                  <dt className="text-muted-foreground text-[11px]">月間打刻</dt>
-                  <dd className="text-lg font-bold tabular-nums">21M</dd>
+                  <Text as="dt" size="2xs" tone="muted">
+                    月間打刻
+                  </Text>
+                  <Text as="dd" size="lg" weight="bold" tabular>
+                    21M
+                  </Text>
                 </div>
               </dl>
             </Card>

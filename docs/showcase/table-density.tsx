@@ -236,7 +236,7 @@ export default function Demo() {
           <CardHeader className="flex flex-row items-center justify-between gap-4">
             <CardTitle>行密度</CardTitle>
             <Flex direction="row" align="center" gap="md">
-              <span className="text-muted-foreground inline-flex items-center gap-1.5 text-xs">
+              <Text as="span" size="xs" tone="muted" className="inline-flex items-center gap-1.5">
                 <Clock className="size-3.5" aria-hidden="true" />
                 行高
                 <Text as="strong" weight="medium" tabular>
@@ -244,7 +244,7 @@ export default function Demo() {
                 </Text>
                 <span aria-hidden="true">·</span>
                 {meta.note}
-              </span>
+              </Text>
               <ToggleGroup
                 type="single"
                 value={density}

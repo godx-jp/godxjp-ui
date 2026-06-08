@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { AspectRatio, Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 import { MoreHorizontal } from "lucide-react";
 
@@ -32,7 +32,9 @@ export default function Demo() {
     <PageContainer title="Card" subtitle="variant · accent · header / content / footer composition">
       <Flex direction="col" gap="lg">
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">Variants</div>
+          <Text as="div" weight="medium">
+            Variants
+          </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
             <Card variant="default">
               <CardHeader>
@@ -62,7 +64,9 @@ export default function Demo() {
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">Accent stripe (3px left edge)</div>
+          <Text as="div" weight="medium">
+            Accent stripe (3px left edge)
+          </Text>
           <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 6 }}>
             {accents.map((a) => (
               <Card key={a} accent={a}>
@@ -73,7 +77,9 @@ export default function Demo() {
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">Composition — banded header + separated footer</div>
+          <Text as="div" weight="medium">
+            Composition — banded header + separated footer
+          </Text>
           <Card accent="primary">
             <CardHeader banded>
               <CardTitle>請求書 INV-2024-0312</CardTitle>
@@ -101,7 +107,9 @@ export default function Demo() {
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">Size — md (default) vs compact</div>
+          <Text as="div" weight="medium">
+            Size — md (default) vs compact
+          </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
             <Card size="md">
               <CardHeader>
@@ -119,7 +127,9 @@ export default function Demo() {
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">Density — tight 12px · base 16px · cozy 20px</div>
+          <Text as="div" weight="medium">
+            Density — tight 12px · base 16px · cozy 20px
+          </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 3 }}>
             <Card density="tight">
               <CardHeader>
@@ -143,9 +153,9 @@ export default function Demo() {
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">
+          <Text as="div" weight="medium">
             CardContent — flush (edge-to-edge table) · solo (no header)
-          </div>
+          </Text>
           <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>
             <Card>
               <CardHeader banded>
@@ -189,7 +199,9 @@ export default function Demo() {
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">CardCover — full-bleed media, header below</div>
+          <Text as="div" weight="medium">
+            CardCover — full-bleed media, header below
+          </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
             <Card>
               <CardCover>

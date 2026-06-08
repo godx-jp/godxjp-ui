@@ -7,6 +7,7 @@ import {
   CardTitle,
   Descriptions,
 } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -24,7 +25,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>請求書の詳細</CardTitle>
             <CardDescription>
-              既定は columns=2。値は任意のノード（テキスト・Badge・金額）。狭い画面では1列に折り返します。
+              既定は
+              columns=2。値は任意のノード（テキスト・Badge・金額）。狭い画面では1列に折り返します。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -38,13 +40,15 @@ export default function Demo() {
               </Descriptions.Item>
               <Descriptions.Item label="発行日">2024-04-12</Descriptions.Item>
               <Descriptions.Item label="小計">
-                <span className="tabular-nums">¥438,182</span>
+                <Text tabular>¥438,182</Text>
               </Descriptions.Item>
               <Descriptions.Item label="消費税 (10%)">
-                <span className="tabular-nums">¥43,818</span>
+                <Text tabular>¥43,818</Text>
               </Descriptions.Item>
               <Descriptions.Item label="合計">
-                <span className="font-medium tabular-nums">¥482,000</span>
+                <Text weight="medium" tabular>
+                  ¥482,000
+                </Text>
               </Descriptions.Item>
               <Descriptions.Item label="PDF リンク" mono span={2}>
                 https://invoices.vetoya.example.co.jp/2024/04/INV-2024-0312-rev2.pdf
@@ -65,7 +69,9 @@ export default function Demo() {
               <Descriptions.Item label="法人番号" mono>
                 1180001052731
               </Descriptions.Item>
-              <Descriptions.Item label="住所">東京都渋谷区神宮前5-52-2 青山オーバルビル7F</Descriptions.Item>
+              <Descriptions.Item label="住所">
+                東京都渋谷区神宮前5-52-2 青山オーバルビル7F
+              </Descriptions.Item>
               <Descriptions.Item label="担当者">山田 太郎（経理部）</Descriptions.Item>
             </Descriptions>
           </CardContent>

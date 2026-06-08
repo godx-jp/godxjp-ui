@@ -6,6 +6,7 @@ import {
   CardTitle,
   StatCard,
 } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layout";
 
 /**
@@ -24,14 +25,12 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>
-              コンテナクエリで折り返し（ビューポートではなくコンテナ幅）
-            </CardTitle>
+            <CardTitle>コンテナクエリで折り返し（ビューポートではなくコンテナ幅）</CardTitle>
             <CardDescription>
               同じ columns=&#123;4&#125; でも、コンテナ幅で列数が変わる。左の広い領域は 4
               列、右の狭いサイドバー（約 20rem）は 1 列に折り返す。ビューポート幅は同一なので、
-              折り返しの基準がコンテナ幅であることが分かる。 折り返しの閾値はコンテナ幅
-              640 / 768 / 1024px。 列間の gap は var(--space-stack-md) に固定で、prop では変更できない。
+              折り返しの基準がコンテナ幅であることが分かる。 折り返しの閾値はコンテナ幅 640 / 768 /
+              1024px。 列間の gap は var(--space-stack-md) に固定で、prop では変更できない。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -39,9 +38,7 @@ export default function Demo() {
               asideWidth="sm"
               aside={
                 <Flex direction="col" gap="sm">
-                  <span className="text-muted-foreground text-sm">
-                    狭いコンテナ（約 20rem）→ sm=1 列
-                  </span>
+                  <Text tone="muted">狭いコンテナ（約 20rem）→ sm=1 列</Text>
                   <div className="@container">
                     <ResponsiveGrid columns={4}>
                       <StatCard label="今日の入金" value="¥420,000" />
@@ -52,9 +49,7 @@ export default function Demo() {
               }
             >
               <Flex direction="col" gap="sm">
-                <span className="text-muted-foreground text-sm">
-                  広いコンテナ → lg=4 列
-                </span>
+                <Text tone="muted">広いコンテナ → lg=4 列</Text>
                 <div className="@container">
                   <ResponsiveGrid columns={4}>
                     <StatCard label="月次売上" value="¥12,400,000" delta="+8%" hint="先月比" />
@@ -103,8 +98,8 @@ export default function Demo() {
                 </CardHeader>
                 <CardContent>
                   <Flex direction="col" gap="xs">
-                    <span className="text-sm">売上: ¥8,200,000</span>
-                    <span className="text-muted-foreground text-sm">取引先: 124社</span>
+                    <Text>売上: ¥8,200,000</Text>
+                    <Text tone="muted">取引先: 124社</Text>
                   </Flex>
                 </CardContent>
               </Card>
@@ -115,8 +110,8 @@ export default function Demo() {
                 </CardHeader>
                 <CardContent>
                   <Flex direction="col" gap="xs">
-                    <span className="text-sm">売上: ¥3,100,000</span>
-                    <span className="text-muted-foreground text-sm">取引先: 57社</span>
+                    <Text>売上: ¥3,100,000</Text>
+                    <Text tone="muted">取引先: 57社</Text>
                   </Flex>
                 </CardContent>
               </Card>
@@ -127,8 +122,8 @@ export default function Demo() {
                 </CardHeader>
                 <CardContent>
                   <Flex direction="col" gap="xs">
-                    <span className="text-sm">売上: ¥1,060,000</span>
-                    <span className="text-muted-foreground text-sm">取引先: 31社</span>
+                    <Text>売上: ¥1,060,000</Text>
+                    <Text tone="muted">取引先: 31社</Text>
                   </Flex>
                 </CardContent>
               </Card>
@@ -139,13 +134,15 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>
-              columns=&#123;&#123; sm: 1, md: 2, lg: 4 &#125;&#125; — ブレークポイントオブジェクト（3 段制御）
+              columns=&#123;&#123; sm: 1, md: 2, lg: 4 &#125;&#125; —
+              ブレークポイントオブジェクト（3 段制御）
             </CardTitle>
             <CardDescription>
-              ブレークポイント指定オブジェクト: sm / md / lg キーでコンテナ幅ごとの列数を個別に制御。
-              未指定キーは下位にフォールバック（lg→md→sm、md→sm、sm 既定 1）。
-              数値指定（sm=min(n,2) / md=min(n,3) / lg=n の自動変換）では作れない
-              「sm=1 / md=2 / lg=4」のような任意の組み合わせを表現できる。
+              ブレークポイント指定オブジェクト: sm / md / lg
+              キーでコンテナ幅ごとの列数を個別に制御。
+              未指定キーは下位にフォールバック（lg→md→sm、md→sm、sm 既定 1）。 数値指定（sm=min(n,2)
+              / md=min(n,3) / lg=n の自動変換）では作れない 「sm=1 / md=2 /
+              lg=4」のような任意の組み合わせを表現できる。
             </CardDescription>
           </CardHeader>
           <CardContent>

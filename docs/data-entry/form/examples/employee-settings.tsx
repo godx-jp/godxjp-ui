@@ -22,7 +22,7 @@ import {
   type SidebarSection,
   Topbar,
 } from "@godxjp/ui/layout";
-import { Loader2, Settings, ShieldCheck, User, Users } from "lucide-react";
+import { Settings, ShieldCheck, User, Users } from "lucide-react";
 
 const sections: SidebarSection[] = [
   {
@@ -90,15 +90,8 @@ export default function Demo() {
             <Button variant="outline" type="button" disabled={pending}>
               キャンセル
             </Button>
-            <Button type="submit" form="settings-form" disabled={pending}>
-              {pending ? (
-                <>
-                  <Loader2 className="animate-spin" aria-hidden="true" />
-                  保存中…
-                </>
-              ) : (
-                "保存"
-              )}
+            <Button type="submit" form="settings-form" loading={pending} loadingText="保存中…">
+              保存
             </Button>
           </Flex>
         }

@@ -205,8 +205,10 @@ export default function Demo() {
       sortable: true,
       render: (r) =>
         isEarlyCell(r) ? (
-          <span className="bg-attention/10 text-attention inline-flex rounded-sm px-1.5 py-0.5 font-medium tabular-nums">
-            {hours(r.earlyLeaveHours)}
+          <span className="bg-attention/10 text-attention inline-flex rounded-sm px-1.5 py-0.5">
+            <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
+              {hours(r.earlyLeaveHours)}
+            </Text>
           </span>
         ) : (
           <Text tabular>{hours(r.earlyLeaveHours)}</Text>
@@ -219,8 +221,10 @@ export default function Demo() {
       sortable: true,
       render: (r) =>
         isOvertimeCell(r) ? (
-          <span className="bg-warning/10 text-warning-foreground inline-flex rounded-sm px-1.5 py-0.5 font-medium tabular-nums">
-            {hours(r.overtime)}
+          <span className="bg-warning/10 text-warning-foreground inline-flex rounded-sm px-1.5 py-0.5">
+            <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
+              {hours(r.overtime)}
+            </Text>
           </span>
         ) : (
           <Text tabular>{hours(r.overtime)}</Text>
@@ -308,8 +312,10 @@ export default function Demo() {
                       {/* 早退セル: > 2.0h は attention(朱) で背景＋前景強調 */}
                       <TableCell className="text-right">
                         {isEarlyCell(r) ? (
-                          <span className="bg-attention/10 text-attention inline-flex rounded-sm px-1.5 py-0.5 font-medium tabular-nums">
-                            {hours(r.earlyLeaveHours)}
+                          <span className="bg-attention/10 text-attention inline-flex rounded-sm px-1.5 py-0.5">
+                            <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
+                              {hours(r.earlyLeaveHours)}
+                            </Text>
                           </span>
                         ) : (
                           <Text tone="muted" tabular>
@@ -320,8 +326,10 @@ export default function Demo() {
                       {/* 残業セル: ≥ 45h は warning(山吹) で注意 */}
                       <TableCell className="text-right">
                         {isOvertimeCell(r) ? (
-                          <span className="bg-warning/10 text-warning-foreground inline-flex rounded-sm px-1.5 py-0.5 font-medium tabular-nums">
-                            {hours(r.overtime)}
+                          <span className="bg-warning/10 text-warning-foreground inline-flex rounded-sm px-1.5 py-0.5">
+                            <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
+                              {hours(r.overtime)}
+                            </Text>
                           </span>
                         ) : (
                           <Text tabular>{hours(r.overtime)}</Text>

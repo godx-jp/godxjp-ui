@@ -42,7 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@godxjp/ui/data-entry";
-import { ChevronDown, Loader2 } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 // ── Domain: a 勤怠 (attendance) record ────────────────────────────────────────
 
@@ -213,19 +213,14 @@ function LoadMoreCard() {
             variant="outline"
             size="sm"
             onClick={loadMore}
-            disabled={done || loading}
-            aria-busy={loading}
+            disabled={done}
+            loading={loading}
+            loadingText="読み込み中…"
           >
-            {loading ? (
-              <Loader2 className="animate-spin" aria-hidden="true" />
-            ) : (
-              !done && <ChevronDown aria-hidden="true" />
-            )}
-            {loading
-              ? "読み込み中…"
-              : done
-                ? "すべて表示しました"
-                : `さらに ${Math.min(LOADMORE_STEP, remaining)} 件を読み込む`}
+            {!done && <ChevronDown aria-hidden="true" />}
+            {done
+              ? "すべて表示しました"
+              : `さらに ${Math.min(LOADMORE_STEP, remaining)} 件を読み込む`}
           </Button>
           {!done && (
             <Text size="xs" tone="muted" tabular>

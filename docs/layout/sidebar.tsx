@@ -18,7 +18,7 @@ import {
   CardTitle,
   Badge,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   LayoutDashboard,
   FileText,
@@ -144,10 +144,14 @@ export default function Demo() {
       onProductClick={() => undefined}
       footer={
         <Flex direction="col" gap="xs">
-          <div className="text-foreground text-sm font-medium">山田 太郎</div>
+          <Text as="div" weight="medium">
+            山田 太郎
+          </Text>
           <Flex align="center" gap="xs">
             <span className="bg-success size-1.5 rounded-full" />
-            <span className="text-muted-foreground text-xs">オンライン</span>
+            <Text size="xs" tone="muted">
+              オンライン
+            </Text>
           </Flex>
         </Flex>
       }
@@ -207,8 +211,12 @@ export default function Demo() {
                         <Boxes className="size-4" aria-hidden="true" />
                       </span>
                       <span className="flex min-w-0 flex-col">
-                        <span className="text-foreground truncate text-sm font-bold">Acme Suite</span>
-                        <span className="text-muted-foreground truncate text-xs">v7.0 Enterprise</span>
+                        <Text weight="bold" truncate>
+                          Acme Suite
+                        </Text>
+                        <Text size="xs" tone="muted" truncate>
+                          v7.0 Enterprise
+                        </Text>
                       </span>
                     </SidebarHeader>
                   }
@@ -243,8 +251,8 @@ export default function Demo() {
             <CardHeader>
               <CardTitle>children プロップ（ナビ全体の差し替え）</CardTitle>
               <CardDescription>
-                sections を使わず SidebarSection / SidebarItem を直接組み立てて、 ナビゲーション全体を
-                自前で構成します。
+                sections を使わず SidebarSection / SidebarItem を直接組み立てて、
+                ナビゲーション全体を 自前で構成します。
               </CardDescription>
             </CardHeader>
             <CardContent>

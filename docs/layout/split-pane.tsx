@@ -9,7 +9,7 @@ import {
   Badge,
   StatCard,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { FileText, Building2, Calendar, CreditCard, ArrowRight } from "lucide-react";
 
 /**
@@ -31,11 +31,41 @@ type Invoice = {
 };
 
 const INVOICES: Invoice[] = [
-  { id: "INV-0241", partner: "株式会社アクメ", date: "2026-05-31", amount: "¥840,000", status: "承認済" },
-  { id: "INV-0240", partner: "グローバル商事", date: "2026-05-29", amount: "¥320,000", status: "保留中" },
-  { id: "INV-0239", partner: "イニテック有限会社", date: "2026-05-28", amount: "¥1,200,000", status: "承認済" },
-  { id: "INV-0238", partner: "フューチャー工業", date: "2026-05-26", amount: "¥460,000", status: "未承認" },
-  { id: "INV-0237", partner: "東京メディア", date: "2026-05-24", amount: "¥980,000", status: "承認済" },
+  {
+    id: "INV-0241",
+    partner: "株式会社アクメ",
+    date: "2026-05-31",
+    amount: "¥840,000",
+    status: "承認済",
+  },
+  {
+    id: "INV-0240",
+    partner: "グローバル商事",
+    date: "2026-05-29",
+    amount: "¥320,000",
+    status: "保留中",
+  },
+  {
+    id: "INV-0239",
+    partner: "イニテック有限会社",
+    date: "2026-05-28",
+    amount: "¥1,200,000",
+    status: "承認済",
+  },
+  {
+    id: "INV-0238",
+    partner: "フューチャー工業",
+    date: "2026-05-26",
+    amount: "¥460,000",
+    status: "未承認",
+  },
+  {
+    id: "INV-0237",
+    partner: "東京メディア",
+    date: "2026-05-24",
+    amount: "¥980,000",
+    status: "承認済",
+  },
 ];
 
 const STATUS_TONE = {
@@ -97,22 +127,30 @@ export default function Demo() {
                     <Flex direction="row" align="center" gap="sm">
                       <Building2 className="text-muted-foreground size-4 shrink-0" />
                       <Flex direction="col" gap="xs">
-                        <span className="text-muted-foreground text-xs">取引先</span>
-                        <span className="font-medium">{selected.partner}</span>
+                        <Text size="xs" tone="muted">
+                          取引先
+                        </Text>
+                        <Text weight="medium">{selected.partner}</Text>
                       </Flex>
                     </Flex>
                     <Flex direction="row" align="center" gap="sm">
                       <Calendar className="text-muted-foreground size-4 shrink-0" />
                       <Flex direction="col" gap="xs">
-                        <span className="text-muted-foreground text-xs">請求日</span>
-                        <span className="tabular-nums">{selected.date}</span>
+                        <Text size="xs" tone="muted">
+                          請求日
+                        </Text>
+                        <Text tabular>{selected.date}</Text>
                       </Flex>
                     </Flex>
                     <Flex direction="row" align="center" gap="sm">
                       <CreditCard className="text-muted-foreground size-4 shrink-0" />
                       <Flex direction="col" gap="xs">
-                        <span className="text-muted-foreground text-xs">金額（税抜）</span>
-                        <span className="text-lg font-bold tabular-nums">{selected.amount}</span>
+                        <Text size="xs" tone="muted">
+                          金額（税抜）
+                        </Text>
+                        <Text size="lg" weight="bold" tabular>
+                          {selected.amount}
+                        </Text>
                       </Flex>
                     </Flex>
                   </Flex>
@@ -124,19 +162,21 @@ export default function Demo() {
                   <CardTitle className="text-sm">明細概要</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Flex direction="col" gap="sm" className="text-sm">
+                  <Flex direction="col" gap="sm">
                     <Flex direction="row" justify="between">
-                      <span className="text-muted-foreground">小計</span>
-                      <span className="tabular-nums">{selected.amount}</span>
+                      <Text tone="muted">小計</Text>
+                      <Text tabular>{selected.amount}</Text>
                     </Flex>
                     <Flex direction="row" justify="between">
-                      <span className="text-muted-foreground">消費税 (10%)</span>
-                      <span className="tabular-nums">{yen(base * 0.1)}</span>
+                      <Text tone="muted">消費税 (10%)</Text>
+                      <Text tabular>{yen(base * 0.1)}</Text>
                     </Flex>
                     <div className="border-border mt-1 border-t pt-2">
-                      <Flex direction="row" justify="between" className="font-bold">
-                        <span>合計</span>
-                        <span className="tabular-nums">{yen(base * 1.1)}</span>
+                      <Flex direction="row" justify="between">
+                        <Text weight="bold">合計</Text>
+                        <Text weight="bold" tabular>
+                          {yen(base * 1.1)}
+                        </Text>
                       </Flex>
                     </div>
                   </Flex>
@@ -166,7 +206,7 @@ export default function Demo() {
                   tabIndex={0}
                   aria-pressed={active}
                   aria-label={`請求書 ${inv.id} ${inv.partner}`}
-                  className={`focus-visible:ring-ring cursor-pointer transition-colors focus-visible:ring-2 focus-visible:outline-none hover:border-primary/40 ${
+                  className={`focus-visible:ring-ring hover:border-primary/40 cursor-pointer transition-colors focus-visible:ring-2 focus-visible:outline-none ${
                     active ? "border-primary bg-primary/5" : ""
                   }`}
                   onClick={() => setSelectedId(inv.id)}
@@ -182,14 +222,22 @@ export default function Demo() {
                       <FileText className="text-muted-foreground size-5 shrink-0" />
                       <Flex direction="col" gap="xs" className="min-w-0 flex-1">
                         <Flex direction="row" justify="between" align="center" gap="sm">
-                          <span className="text-muted-foreground font-mono text-xs">{inv.id}</span>
+                          <Text size="xs" tone="muted" mono>
+                            {inv.id}
+                          </Text>
                           <Badge tone={STATUS_TONE[inv.status]}>{inv.status}</Badge>
                         </Flex>
                         <Flex direction="row" justify="between" align="baseline" gap="sm">
-                          <span className="truncate text-sm font-medium">{inv.partner}</span>
-                          <span className="shrink-0 text-sm font-bold tabular-nums">{inv.amount}</span>
+                          <Text weight="medium" truncate>
+                            {inv.partner}
+                          </Text>
+                          <Text weight="bold" tabular className="shrink-0">
+                            {inv.amount}
+                          </Text>
                         </Flex>
-                        <span className="text-muted-foreground text-xs tabular-nums">{inv.date}</span>
+                        <Text size="xs" tone="muted" tabular>
+                          {inv.date}
+                        </Text>
                       </Flex>
                     </Flex>
                   </CardContent>
@@ -208,26 +256,30 @@ export default function Demo() {
                 <CardTitle className="text-sm">利用ガイド</CardTitle>
               </CardHeader>
               <CardContent>
-                <Flex direction="col" gap="sm" className="text-muted-foreground text-sm">
-                  <p>
-                    <strong className="text-foreground">asideWidth=&quot;sm&quot;</strong> (20rem) —
-                    フィルター、統計サマリー、クイック操作などのコンパクトパネル向け。
-                  </p>
-                  <p>
-                    <strong className="text-foreground">asideWidth=&quot;md&quot;</strong> (22rem) —
-                    詳細フォーム、タイムライン、長いメタデータリスト向け。
-                  </p>
-                  <p>
+                <Flex direction="col" gap="sm">
+                  <Text as="p" tone="muted">
+                    <Text as="strong" weight="bold">
+                      asideWidth=&quot;sm&quot;
+                    </Text>{" "}
+                    (20rem) — フィルター、統計サマリー、クイック操作などのコンパクトパネル向け。
+                  </Text>
+                  <Text as="p" tone="muted">
+                    <Text as="strong" weight="bold">
+                      asideWidth=&quot;md&quot;
+                    </Text>{" "}
+                    (22rem) — 詳細フォーム、タイムライン、長いメタデータリスト向け。
+                  </Text>
+                  <Text as="p" tone="muted">
                     1080px 未満のビューポートでは縦積みにフォールバックします。
                     常にサイドバイサイドが必要な場合は CSS Grid を使用してください。
-                  </p>
+                  </Text>
                 </Flex>
               </CardContent>
             </Card>
           }
         >
           <Flex direction="col" gap="md">
-            <h2 className="text-foreground text-sm font-medium">月次サマリー</h2>
+            <Text weight="medium">月次サマリー</Text>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <StatCard label="請求総額" value="¥3,800,000" delta="+8%" />
               <StatCard label="承認済件数" value="3" hint="全5件中" />

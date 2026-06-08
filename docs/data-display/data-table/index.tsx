@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   DropdownMenu,
@@ -54,9 +54,14 @@ const columns: ColumnDef<Invoice>[] = [
     header: "金額",
     align: "right",
     sortable: true,
-    render: (row) => <span className="tabular-nums">{yen.format(row.amount)}</span>,
+    render: (row) => <Text tabular>{yen.format(row.amount)}</Text>,
   },
-  { key: "status", header: "状態", align: "center", render: (row) => <Badge status={row.status} /> },
+  {
+    key: "status",
+    header: "状態",
+    align: "center",
+    render: (row) => <Badge status={row.status} />,
+  },
   { key: "date", header: "発行日", align: "right", hiddenOnMobile: true },
   {
     key: "_actions",
@@ -138,12 +143,16 @@ export default function Demo() {
         </DataTable>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">読み込み中（loading=true で行を置き換え）</div>
+          <Text as="div" weight="medium">
+            読み込み中（loading=true で行を置き換え）
+          </Text>
           <DataTable data={invoices} columns={columns} getRowId={(row) => row.id} loading />
         </Flex>
 
         <Flex direction="col" gap="sm">
-          <div className="text-sm font-medium">空の状態（data が空のとき自動表示）</div>
+          <Text as="div" weight="medium">
+            空の状態（data が空のとき自動表示）
+          </Text>
           <DataTable data={[]} columns={columns} getRowId={(row) => row.id} />
         </Flex>
       </Flex>

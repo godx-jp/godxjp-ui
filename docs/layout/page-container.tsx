@@ -13,7 +13,7 @@ import {
   Descriptions,
 } from "@godxjp/ui/data-display";
 import type { ColumnDef } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
 import { Plus, Download, Filter } from "lucide-react";
 
@@ -48,17 +48,20 @@ const journalEntries: JournalEntry[] = [
 ];
 
 const journalColumns: ColumnDef<JournalEntry>[] = [
-  { key: "id", header: "伝票番号", width: "w-28", render: (r) => <span className="font-mono">{r.id}</span> },
+  { key: "id", header: "伝票番号", width: "w-28", render: (r) => <Text mono>{r.id}</Text> },
   { key: "date", header: "日付", width: "w-32" },
   { key: "desc", header: "摘要" },
-  { key: "amount", header: "金額", align: "right", render: (r) => <span className="font-medium">{r.amount}</span> },
+  {
+    key: "amount",
+    header: "金額",
+    align: "right",
+    render: (r) => <Text weight="medium">{r.amount}</Text>,
+  },
   {
     key: "status",
     header: "ステータス",
     align: "right",
-    render: (r) => (
-      <Badge tone={r.status === "承認済" ? "success" : "warning"}>{r.status}</Badge>
-    ),
+    render: (r) => <Badge tone={r.status === "承認済" ? "success" : "warning"}>{r.status}</Badge>,
   },
 ];
 
@@ -178,9 +181,9 @@ export default function Demo() {
         {/* PageContainer.Inset — escape hatch that re-applies the page inset inside a
             full-bleed body, so a footnote keeps the header's left/right alignment. */}
         <PageContainer.Inset>
-          <p className="text-muted-foreground text-xs">
+          <Text as="p" size="xs" tone="muted">
             承認済みの仕訳のみ表示しています。保留中の仕訳は別途承認が必要です。
-          </p>
+          </Text>
         </PageContainer.Inset>
       </PageContainer>
 
@@ -283,10 +286,10 @@ export default function Demo() {
       >
         <Card>
           <CardContent>
-            <p className="text-muted-foreground text-sm">
-              ページ本文コンテンツ。variant
-              はヘッダー余白・幅制御を、density は行間・間隔スケール（ui-density-*）を切り替えます。
-            </p>
+            <Text as="p" tone="muted">
+              ページ本文コンテンツ。variant はヘッダー余白・幅制御を、density
+              は行間・間隔スケール（ui-density-*）を切り替えます。
+            </Text>
           </CardContent>
         </Card>
       </PageContainer>

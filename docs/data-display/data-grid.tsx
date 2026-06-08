@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Card, CardContent, Badge } from "@godxjp/ui/data-display";
 import { DataGrid, type ColumnDef } from "@godxjp/ui/data-grid";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Download, CheckCircle2 } from "lucide-react";
 
@@ -72,7 +72,9 @@ const columns: ColumnDef<Invoice, unknown>[] = [
     header: () => <div className="text-right">金額</div>,
     meta: { label: "金額" },
     cell: ({ getValue }) => (
-      <div className="text-right font-medium tabular-nums">{yen(getValue<number>())}</div>
+      <Text as="div" weight="medium" tabular className="text-right">
+        {yen(getValue<number>())}
+      </Text>
     ),
   },
   {
@@ -89,7 +91,11 @@ const columns: ColumnDef<Invoice, unknown>[] = [
     accessorKey: "date",
     header: () => <div className="text-right">発行日</div>,
     meta: { label: "発行日" },
-    cell: ({ getValue }) => <div className="text-right tabular-nums">{getValue<string>()}</div>,
+    cell: ({ getValue }) => (
+      <Text as="div" tabular className="text-right">
+        {getValue<string>()}
+      </Text>
+    ),
   },
 ];
 
@@ -117,7 +123,9 @@ export default function Demo() {
               <DataGrid.BulkActions>
                 {(count) => (
                   <Flex direction="row" align="center" gap="sm">
-                    <span className="text-sm font-medium tabular-nums">{count} 件選択</span>
+                    <Text weight="medium" tabular>
+                      {count} 件選択
+                    </Text>
                     <Button variant="outline" size="sm">
                       <Download className="size-4" aria-hidden="true" />
                       エクスポート
@@ -141,7 +149,9 @@ export default function Demo() {
           </DataGrid>
 
           {lastClicked ? (
-            <p className="text-muted-foreground mt-3 text-sm">行クリック: {lastClicked}</p>
+            <Text as="p" tone="muted" className="mt-3">
+              行クリック: {lastClicked}
+            </Text>
           ) : null}
         </CardContent>
       </Card>

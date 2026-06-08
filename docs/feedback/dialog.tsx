@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -49,16 +49,22 @@ export default function Demo() {
                 </DialogHeader>
                 <Flex direction="col" gap="md">
                   <Flex direction="row" gap="sm" align="center">
-                    <span className="text-muted-foreground w-20 shrink-0 text-sm">借方科目</span>
-                    <span className="text-sm">売掛金</span>
+                    <Text tone="muted" className="w-20 shrink-0">
+                      借方科目
+                    </Text>
+                    <Text>売掛金</Text>
                   </Flex>
                   <Flex direction="row" gap="sm" align="center">
-                    <span className="text-muted-foreground w-20 shrink-0 text-sm">貸方科目</span>
-                    <span className="text-sm">売上高</span>
+                    <Text tone="muted" className="w-20 shrink-0">
+                      貸方科目
+                    </Text>
+                    <Text>売上高</Text>
                   </Flex>
                   <Flex direction="row" gap="sm" align="center">
-                    <span className="text-muted-foreground w-20 shrink-0 text-sm">金額</span>
-                    <span className="text-sm">¥ 120,000</span>
+                    <Text tone="muted" className="w-20 shrink-0">
+                      金額
+                    </Text>
+                    <Text>¥ 120,000</Text>
                   </Flex>
                 </Flex>
                 <DialogFooter>
@@ -94,16 +100,16 @@ export default function Demo() {
                 </DialogHeader>
                 <Flex direction="col" gap="sm">
                   <Flex direction="row" justify="between">
-                    <span className="text-muted-foreground text-sm">借方</span>
-                    <span className="text-sm">売掛金 ¥ 240,000</span>
+                    <Text tone="muted">借方</Text>
+                    <Text>売掛金 ¥ 240,000</Text>
                   </Flex>
                   <Flex direction="row" justify="between">
-                    <span className="text-muted-foreground text-sm">貸方</span>
-                    <span className="text-sm">売上高 ¥ 240,000</span>
+                    <Text tone="muted">貸方</Text>
+                    <Text>売上高 ¥ 240,000</Text>
                   </Flex>
                   <Flex direction="row" justify="between">
-                    <span className="text-muted-foreground text-sm">摘要</span>
-                    <span className="text-sm">3月売上計上</span>
+                    <Text tone="muted">摘要</Text>
+                    <Text>3月売上計上</Text>
                   </Flex>
                 </Flex>
               </DialogContent>

@@ -9,6 +9,7 @@ import {
   NavigationMenuViewport,
 } from "@godxjp/ui/navigation";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { Text } from "@godxjp/ui/general";
 
 /**
  * NavigationMenu — 水平ナビゲーションメニュー。Trigger でドロップダウン展開、
@@ -43,10 +44,12 @@ export default function Demo() {
                           href="#"
                           className="hover:bg-accent block rounded-md p-3"
                         >
-                          <div className="text-sm font-medium">仕訳入力</div>
-                          <p className="text-muted-foreground mt-1 text-xs">
+                          <Text as="div" weight="medium">
+                            仕訳入力
+                          </Text>
+                          <Text as="p" size="xs" tone="muted" className="mt-1">
                             借方・貸方を直接入力して仕訳を作成します。
-                          </p>
+                          </Text>
                         </NavigationMenuLink>
                       </li>
                       <li>
@@ -54,10 +57,12 @@ export default function Demo() {
                           href="#"
                           className="hover:bg-accent block rounded-md p-3"
                         >
-                          <div className="text-sm font-medium">仕訳帳</div>
-                          <p className="text-muted-foreground mt-1 text-xs">
+                          <Text as="div" weight="medium">
+                            仕訳帳
+                          </Text>
+                          <Text as="p" size="xs" tone="muted" className="mt-1">
                             全仕訳の一覧・検索・フィルタリング。
-                          </p>
+                          </Text>
                         </NavigationMenuLink>
                       </li>
                       <li>
@@ -65,10 +70,12 @@ export default function Demo() {
                           href="#"
                           className="hover:bg-accent block rounded-md p-3"
                         >
-                          <div className="text-sm font-medium">総勘定元帳</div>
-                          <p className="text-muted-foreground mt-1 text-xs">
+                          <Text as="div" weight="medium">
+                            総勘定元帳
+                          </Text>
+                          <Text as="p" size="xs" tone="muted" className="mt-1">
                             勘定科目ごとの残高・取引履歴。
-                          </p>
+                          </Text>
                         </NavigationMenuLink>
                       </li>
                       <li>
@@ -76,10 +83,12 @@ export default function Demo() {
                           href="#"
                           className="hover:bg-accent block rounded-md p-3"
                         >
-                          <div className="text-sm font-medium">試算表</div>
-                          <p className="text-muted-foreground mt-1 text-xs">
+                          <Text as="div" weight="medium">
+                            試算表
+                          </Text>
+                          <Text as="p" size="xs" tone="muted" className="mt-1">
                             期間指定で借方・貸方の合計を確認。
-                          </p>
+                          </Text>
                         </NavigationMenuLink>
                       </li>
                     </ul>
@@ -96,10 +105,12 @@ export default function Demo() {
                           href="#"
                           className="hover:bg-accent block rounded-md p-3"
                         >
-                          <div className="text-sm font-medium">貸借対照表</div>
-                          <p className="text-muted-foreground mt-1 text-xs">
+                          <Text as="div" weight="medium">
+                            貸借対照表
+                          </Text>
+                          <Text as="p" size="xs" tone="muted" className="mt-1">
                             特定日時点の資産・負債・純資産。
-                          </p>
+                          </Text>
                         </NavigationMenuLink>
                       </li>
                       <li>
@@ -107,10 +118,12 @@ export default function Demo() {
                           href="#"
                           className="hover:bg-accent block rounded-md p-3"
                         >
-                          <div className="text-sm font-medium">損益計算書</div>
-                          <p className="text-muted-foreground mt-1 text-xs">
+                          <Text as="div" weight="medium">
+                            損益計算書
+                          </Text>
+                          <Text as="p" size="xs" tone="muted" className="mt-1">
                             期間中の収益・費用・利益の要約。
-                          </p>
+                          </Text>
                         </NavigationMenuLink>
                       </li>
                       <li>
@@ -118,10 +131,12 @@ export default function Demo() {
                           href="#"
                           className="hover:bg-accent block rounded-md p-3"
                         >
-                          <div className="text-sm font-medium">キャッシュフロー計算書</div>
-                          <p className="text-muted-foreground mt-1 text-xs">
+                          <Text as="div" weight="medium">
+                            キャッシュフロー計算書
+                          </Text>
+                          <Text as="p" size="xs" tone="muted" className="mt-1">
                             営業・投資・財務活動別の資金移動。
-                          </p>
+                          </Text>
                         </NavigationMenuLink>
                       </li>
                     </ul>

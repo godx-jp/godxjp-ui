@@ -25,7 +25,7 @@
 import * as React from "react";
 import { Check, Clock, Pencil, UserRound } from "lucide-react";
 
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
 import {
   Avatar,
   AvatarFallback,
@@ -283,7 +283,7 @@ function EmployeeDetail({ employee }: { employee: Employee }) {
           </Avatar>
           <div className="min-w-0">
             <Flex direction="row" align="center" gap="sm" wrap>
-              <h2 className="text-base font-bold">{employee.name}</h2>
+              <Heading level={3}>{employee.name}</Heading>
               <Badge tone={STATUS_TONE[employee.status]} variant="outline">
                 {STATUS_LABEL[employee.status]}
               </Badge>

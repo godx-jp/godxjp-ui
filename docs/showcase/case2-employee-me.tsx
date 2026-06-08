@@ -159,8 +159,10 @@ function PunchCard() {
         <Flex direction="col" gap="md">
           {/* Big tabular clock — the signature employee block. */}
           <div>
-            {/* 38px display numeral — above the Text scale (max lg); kept raw as a one-off hero figure. */}
-            <div className="text-[38px] leading-none font-medium tabular-nums">{clock}</div>
+            {/* Hero numeral at the system's max step (2xl) — the golden scale tops here by design. */}
+            <Text as="div" size="2xl" weight="bold" tabular className="leading-none">
+              {clock}
+            </Text>
             <Text as="div" size="sm" tone="muted" className="mt-1">
               {status.meta}
             </Text>
@@ -407,10 +409,12 @@ export default function EmployeeMeShowcase() {
                       key={s.label}
                       className="flex items-center justify-between gap-3 px-4 py-2.5"
                     >
-                      <dt className="text-muted-foreground text-[13px] whitespace-nowrap">
+                      <Text as="dt" size="sm" tone="muted" className="whitespace-nowrap">
                         {s.label}
-                      </dt>
-                      <dd className="text-right text-[13px] font-medium tabular-nums">{s.value}</dd>
+                      </Text>
+                      <Text as="dd" size="sm" weight="medium" align="end" tabular>
+                        {s.value}
+                      </Text>
                     </div>
                   ))}
                 </dl>

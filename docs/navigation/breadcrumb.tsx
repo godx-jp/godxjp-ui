@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Breadcrumb } from "@godxjp/ui/layout";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -82,11 +83,15 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="sm">
-              <p className="text-muted-foreground text-sm">PageContainer に渡す場合 (raw 配列):</p>
+              <Text as="p" tone="muted">
+                PageContainer に渡す場合 (raw 配列):
+              </Text>
               <pre className="bg-muted rounded p-3 text-xs">
                 {`<PageContainer\n  title="仕訳詳細"\n  breadcrumb={[\n    { label: "ホーム", to: "/" },\n    { label: "会計", to: "/accounting" },\n    { label: "JE-0042" },\n  ]}\n>`}
               </pre>
-              <p className="text-muted-foreground text-sm">AppShell に渡す場合 (ReactNode):</p>
+              <Text as="p" tone="muted">
+                AppShell に渡す場合 (ReactNode):
+              </Text>
               <pre className="bg-muted rounded p-3 text-xs">
                 {`<AppShell\n  breadcrumb={\n    <Breadcrumb items={[\n      { label: "ホーム", to: "/" },\n      { label: "会計", to: "/accounting" },\n    ]} />\n  }\n>`}
               </pre>

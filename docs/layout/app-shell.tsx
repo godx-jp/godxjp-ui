@@ -19,7 +19,7 @@ import {
   StatCard,
   Badge,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
@@ -96,8 +96,12 @@ export default function Demo() {
       product={{ name: "CoreBooks", role: activeEntity }}
       footer={
         <Flex direction="col" gap="xs">
-          <div className="text-foreground text-sm font-medium">山田 太郎</div>
-          <div className="text-muted-foreground text-xs">システム管理者</div>
+          <Text as="div" weight="medium">
+            山田 太郎
+          </Text>
+          <Text as="div" size="xs" tone="muted">
+            システム管理者
+          </Text>
         </Flex>
       }
     />
@@ -138,9 +142,13 @@ export default function Demo() {
       // Shell-level footer slot (app-footer landmark) — distinct from the
       // Sidebar footer (the user identity block) shown on the left rail.
       footer={
-        <Flex justify="between" align="center" className="text-muted-foreground text-xs">
-          <span>© 2026 CoreBooks 会計システム</span>
-          <span>バージョン 7.2.0</span>
+        <Flex justify="between" align="center">
+          <Text size="xs" tone="muted">
+            © 2026 CoreBooks 会計システム
+          </Text>
+          <Text size="xs" tone="muted">
+            バージョン 7.2.0
+          </Text>
         </Flex>
       }
     >
@@ -181,7 +189,9 @@ export default function Demo() {
                     <Flex direction="col" gap="sm">
                       {["JE-0041", "JE-0040", "JE-0039"].map((id) => (
                         <Flex key={id} justify="between" align="center">
-                          <span className="text-muted-foreground font-mono text-xs">{id}</span>
+                          <Text size="xs" tone="muted" mono>
+                            {id}
+                          </Text>
                           <Badge tone="warning">保留中</Badge>
                         </Flex>
                       ))}
@@ -206,9 +216,9 @@ export default function Demo() {
                     { month: "4月", amount: "¥7,900,000" },
                     { month: "5月", amount: "¥8,200,000" },
                   ].map((row) => (
-                    <Flex key={row.month} justify="between" className="text-sm">
-                      <span className="text-muted-foreground">{row.month}</span>
-                      <span className="font-medium">{row.amount}</span>
+                    <Flex key={row.month} justify="between">
+                      <Text tone="muted">{row.month}</Text>
+                      <Text weight="medium">{row.amount}</Text>
                     </Flex>
                   ))}
                 </Flex>

@@ -19,7 +19,7 @@
 import * as React from "react";
 
 import { Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import {
   DropdownMenu,
@@ -72,18 +72,174 @@ const APPROVAL_META: Record<
 };
 
 const ROWS: Attendance[] = [
-  { id: "E-1024", name: "佐藤 健太", dept: "製造一課", shift: "日勤", clockIn: "08:58", clockOut: "18:12", work: 495, overtime: 72, late: 0, early: 0, status: "present", approved: "approved" },
-  { id: "E-1031", name: "鈴木 美咲", dept: "製造一課", shift: "日勤", clockIn: "09:14", clockOut: "18:03", work: 469, overtime: 63, late: 14, early: 0, status: "late", approved: "pending" },
-  { id: "E-1042", name: "高橋 大輔", dept: "製造二課", shift: "夜勤", clockIn: "21:02", clockOut: "06:01", work: 480, overtime: 60, late: 2, early: 0, status: "present", approved: "approved" },
-  { id: "E-1055", name: "田中 彩花", dept: "品質保証", shift: "日勤", clockIn: "08:55", clockOut: "16:40", work: 405, overtime: 0, late: 0, early: 80, status: "early", approved: "pending" },
-  { id: "E-1063", name: "伊藤 翔", dept: "物流", shift: "早番", clockIn: "06:00", clockOut: "15:02", work: 482, overtime: 62, late: 0, early: 0, status: "present", approved: "approved" },
-  { id: "E-1078", name: "渡辺 真奈", dept: "品質保証", shift: "日勤", clockIn: "—", clockOut: "—", work: 0, overtime: 0, late: 0, early: 0, status: "leave", approved: "approved" },
-  { id: "E-1089", name: "山本 拓也", dept: "製造二課", shift: "夜勤", clockIn: "—", clockOut: "—", work: 0, overtime: 0, late: 0, early: 0, status: "absent", approved: "rejected" },
-  { id: "E-1094", name: "中村 由香", dept: "製造一課", shift: "日勤", clockIn: "09:32", clockOut: "18:20", work: 488, overtime: 80, late: 32, early: 0, status: "late", approved: "pending" },
-  { id: "E-1102", name: "小林 直樹", dept: "物流", shift: "遅番", clockIn: "13:01", clockOut: "22:04", work: 483, overtime: 63, late: 1, early: 0, status: "present", approved: "approved" },
-  { id: "E-1118", name: "加藤 千尋", dept: "品質保証", shift: "日勤", clockIn: "08:57", clockOut: "17:35", work: 458, overtime: 35, late: 0, early: 0, status: "present", approved: "approved" },
-  { id: "E-1127", name: "吉田 颯太", dept: "製造二課", shift: "日勤", clockIn: "09:06", clockOut: "18:01", work: 475, overtime: 61, late: 6, early: 0, status: "late", approved: "pending" },
-  { id: "E-1133", name: "山田 結衣", dept: "製造一課", shift: "早番", clockIn: "06:01", clockOut: "14:30", work: 449, overtime: 0, late: 1, early: 30, status: "early", approved: "pending" },
+  {
+    id: "E-1024",
+    name: "佐藤 健太",
+    dept: "製造一課",
+    shift: "日勤",
+    clockIn: "08:58",
+    clockOut: "18:12",
+    work: 495,
+    overtime: 72,
+    late: 0,
+    early: 0,
+    status: "present",
+    approved: "approved",
+  },
+  {
+    id: "E-1031",
+    name: "鈴木 美咲",
+    dept: "製造一課",
+    shift: "日勤",
+    clockIn: "09:14",
+    clockOut: "18:03",
+    work: 469,
+    overtime: 63,
+    late: 14,
+    early: 0,
+    status: "late",
+    approved: "pending",
+  },
+  {
+    id: "E-1042",
+    name: "高橋 大輔",
+    dept: "製造二課",
+    shift: "夜勤",
+    clockIn: "21:02",
+    clockOut: "06:01",
+    work: 480,
+    overtime: 60,
+    late: 2,
+    early: 0,
+    status: "present",
+    approved: "approved",
+  },
+  {
+    id: "E-1055",
+    name: "田中 彩花",
+    dept: "品質保証",
+    shift: "日勤",
+    clockIn: "08:55",
+    clockOut: "16:40",
+    work: 405,
+    overtime: 0,
+    late: 0,
+    early: 80,
+    status: "early",
+    approved: "pending",
+  },
+  {
+    id: "E-1063",
+    name: "伊藤 翔",
+    dept: "物流",
+    shift: "早番",
+    clockIn: "06:00",
+    clockOut: "15:02",
+    work: 482,
+    overtime: 62,
+    late: 0,
+    early: 0,
+    status: "present",
+    approved: "approved",
+  },
+  {
+    id: "E-1078",
+    name: "渡辺 真奈",
+    dept: "品質保証",
+    shift: "日勤",
+    clockIn: "—",
+    clockOut: "—",
+    work: 0,
+    overtime: 0,
+    late: 0,
+    early: 0,
+    status: "leave",
+    approved: "approved",
+  },
+  {
+    id: "E-1089",
+    name: "山本 拓也",
+    dept: "製造二課",
+    shift: "夜勤",
+    clockIn: "—",
+    clockOut: "—",
+    work: 0,
+    overtime: 0,
+    late: 0,
+    early: 0,
+    status: "absent",
+    approved: "rejected",
+  },
+  {
+    id: "E-1094",
+    name: "中村 由香",
+    dept: "製造一課",
+    shift: "日勤",
+    clockIn: "09:32",
+    clockOut: "18:20",
+    work: 488,
+    overtime: 80,
+    late: 32,
+    early: 0,
+    status: "late",
+    approved: "pending",
+  },
+  {
+    id: "E-1102",
+    name: "小林 直樹",
+    dept: "物流",
+    shift: "遅番",
+    clockIn: "13:01",
+    clockOut: "22:04",
+    work: 483,
+    overtime: 63,
+    late: 1,
+    early: 0,
+    status: "present",
+    approved: "approved",
+  },
+  {
+    id: "E-1118",
+    name: "加藤 千尋",
+    dept: "品質保証",
+    shift: "日勤",
+    clockIn: "08:57",
+    clockOut: "17:35",
+    work: 458,
+    overtime: 35,
+    late: 0,
+    early: 0,
+    status: "present",
+    approved: "approved",
+  },
+  {
+    id: "E-1127",
+    name: "吉田 颯太",
+    dept: "製造二課",
+    shift: "日勤",
+    clockIn: "09:06",
+    clockOut: "18:01",
+    work: 475,
+    overtime: 61,
+    late: 6,
+    early: 0,
+    status: "late",
+    approved: "pending",
+  },
+  {
+    id: "E-1133",
+    name: "山田 結衣",
+    dept: "製造一課",
+    shift: "早番",
+    clockIn: "06:01",
+    clockOut: "14:30",
+    work: 449,
+    overtime: 0,
+    late: 1,
+    early: 30,
+    status: "early",
+    approved: "pending",
+  },
 ];
 
 // 分 → H:MM 表記 (実働・残業列。tabular-nums で桁を揃える)
@@ -97,21 +253,72 @@ function toHm(mins: number): string {
 // 数値セルの共通レンダラ。0 は控えめに、値ありは右寄せ tabular-nums。
 function num(value: string, muted = false) {
   return (
-    <span className={muted ? "tabular-nums text-muted-foreground" : "tabular-nums"}>{value}</span>
+    <Text tabular tone={muted ? "muted" : "default"}>
+      {value}
+    </Text>
   );
 }
 
 const columns: ColumnDef<Attendance>[] = [
-  { key: "id", header: "社員番号", width: "w-24", render: (r) => <span className="font-mono text-xs tabular-nums">{r.id}</span> },
+  {
+    key: "id",
+    header: "社員番号",
+    width: "w-24",
+    render: (r) => (
+      <Text as="code" size="xs" tabular>
+        {r.id}
+      </Text>
+    ),
+  },
   { key: "name", header: "氏名", width: "w-28", sortable: true },
   { key: "dept", header: "部署", width: "w-24", hiddenOnMobile: true },
   { key: "shift", header: "シフト", width: "w-20", align: "center", hiddenOnMobile: true },
-  { key: "clockIn", header: "出勤", width: "w-16", align: "right", render: (r) => num(r.clockIn, r.clockIn === "—") },
-  { key: "clockOut", header: "退勤", width: "w-16", align: "right", render: (r) => num(r.clockOut, r.clockOut === "—") },
-  { key: "work", header: "実働", width: "w-16", align: "right", sortable: true, render: (r) => num(toHm(r.work), r.work === 0) },
-  { key: "overtime", header: "残業", width: "w-16", align: "right", sortable: true, render: (r) => num(toHm(r.overtime), r.overtime === 0) },
-  { key: "late", header: "遅刻", width: "w-14", align: "right", hiddenOnMobile: true, render: (r) => num(r.late ? `${r.late}分` : "0", r.late === 0) },
-  { key: "early", header: "早退", width: "w-14", align: "right", hiddenOnMobile: true, render: (r) => num(r.early ? `${r.early}分` : "0", r.early === 0) },
+  {
+    key: "clockIn",
+    header: "出勤",
+    width: "w-16",
+    align: "right",
+    render: (r) => num(r.clockIn, r.clockIn === "—"),
+  },
+  {
+    key: "clockOut",
+    header: "退勤",
+    width: "w-16",
+    align: "right",
+    render: (r) => num(r.clockOut, r.clockOut === "—"),
+  },
+  {
+    key: "work",
+    header: "実働",
+    width: "w-16",
+    align: "right",
+    sortable: true,
+    render: (r) => num(toHm(r.work), r.work === 0),
+  },
+  {
+    key: "overtime",
+    header: "残業",
+    width: "w-16",
+    align: "right",
+    sortable: true,
+    render: (r) => num(toHm(r.overtime), r.overtime === 0),
+  },
+  {
+    key: "late",
+    header: "遅刻",
+    width: "w-14",
+    align: "right",
+    hiddenOnMobile: true,
+    render: (r) => num(r.late ? `${r.late}分` : "0", r.late === 0),
+  },
+  {
+    key: "early",
+    header: "早退",
+    width: "w-14",
+    align: "right",
+    hiddenOnMobile: true,
+    render: (r) => num(r.early ? `${r.early}分` : "0", r.early === 0),
+  },
   {
     key: "status",
     header: "勤怠区分",
@@ -216,7 +423,9 @@ export default function Demo() {
               </Button>
               <Button size="sm">一括承認</Button>
             </DataTable.BulkActions>
-            <span className="text-muted-foreground text-xs tabular-nums">全 {ROWS.length} 名</span>
+            <Text size="xs" tone="muted" tabular>
+              全 {ROWS.length} 名
+            </Text>
             <DataTable.DensityToggle />
           </DataTable.Toolbar>
           <DataTable.Content />

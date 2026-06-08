@@ -1,5 +1,6 @@
 import { AppProvider } from "@godxjp/ui/app";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
@@ -36,19 +37,19 @@ export default function Demo() {
             <CardContent>
               <Flex direction="row" gap="md" wrap>
                 <Flex direction="col" gap="sm" className="min-w-40 flex-1">
-                  <span className="text-sm font-medium">表示言語</span>
+                  <Text weight="medium">表示言語</Text>
                   <AppSettingPicker kind="locale" id="setting-locale" />
                 </Flex>
                 <Flex direction="col" gap="sm" className="min-w-56 flex-1">
-                  <span className="text-sm font-medium">タイムゾーン</span>
+                  <Text weight="medium">タイムゾーン</Text>
                   <AppSettingPicker kind="timezone" id="setting-timezone" />
                 </Flex>
                 <Flex direction="col" gap="sm" className="min-w-44 flex-1">
-                  <span className="text-sm font-medium">日付フォーマット</span>
+                  <Text weight="medium">日付フォーマット</Text>
                   <AppSettingPicker kind="dateFormat" id="setting-date-format" />
                 </Flex>
                 <Flex direction="col" gap="sm" className="min-w-44 flex-1">
-                  <span className="text-sm font-medium">時刻フォーマット</span>
+                  <Text weight="medium">時刻フォーマット</Text>
                   <AppSettingPicker kind="timeFormat" id="setting-time-format" />
                 </Flex>
               </Flex>
@@ -62,7 +63,7 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Flex direction="col" gap="sm" className="max-w-56">
-                <span className="text-sm font-medium">タイムゾーン (disabled)</span>
+                <Text weight="medium">タイムゾーン (disabled)</Text>
                 <AppSettingPicker kind="timezone" id="setting-timezone-disabled" disabled />
               </Flex>
             </CardContent>

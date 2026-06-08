@@ -8,7 +8,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
@@ -30,14 +30,12 @@ export default function Demo() {
           <Card className="flex-1">
             <CardHeader>
               <CardTitle>補助科目（既定で開く）</CardTitle>
-              <CardDescription>
-                defaultOpen: 初期表示で展開された状態。
-              </CardDescription>
+              <CardDescription>defaultOpen: 初期表示で展開された状態。</CardDescription>
             </CardHeader>
             <CardContent>
               <Collapsible defaultOpen>
                 <Flex direction="row" align="center" justify="between" gap="md">
-                  <span className="text-sm font-medium">普通預金 — 補助科目 (3)</span>
+                  <Text weight="medium">普通預金 — 補助科目 (3)</Text>
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
@@ -63,14 +61,12 @@ export default function Demo() {
           <Card className="flex-1">
             <CardHeader>
               <CardTitle>補助科目（既定で閉じる）</CardTitle>
-              <CardDescription>
-                初期表示は折りたたみ。トリガーで展開します。
-              </CardDescription>
+              <CardDescription>初期表示は折りたたみ。トリガーで展開します。</CardDescription>
             </CardHeader>
             <CardContent>
               <Collapsible>
                 <Flex direction="row" align="center" justify="between" gap="md">
-                  <span className="text-sm font-medium">当座預金 — 補助科目 (2)</span>
+                  <Text weight="medium">当座預金 — 補助科目 (2)</Text>
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
@@ -97,22 +93,16 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>制御コンポーネント</CardTitle>
-            <CardDescription>
-              open と onOpenChange でページ側が開閉を管理します。
-            </CardDescription>
+            <CardDescription>open と onOpenChange でページ側が開閉を管理します。</CardDescription>
           </CardHeader>
           <CardContent>
             <Collapsible open={open} onOpenChange={setOpen}>
               <Flex direction="row" align="center" justify="between" gap="md">
-                <span className="text-sm font-medium">
+                <Text weight="medium">
                   外貨預金 — 補助科目 (2) · {open ? "展開中" : "折りたたみ中"}
-                </span>
+                </Text>
                 <Flex direction="row" align="center" gap="xs">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setOpen((value) => !value)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => setOpen((value) => !value)}>
                     {open ? "閉じる" : "開く"}
                   </Button>
                   <CollapsibleTrigger asChild>
@@ -141,16 +131,12 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>無効状態</CardTitle>
-            <CardDescription>
-              disabled: トリガーが操作不可（ロック）になります。
-            </CardDescription>
+            <CardDescription>disabled: トリガーが操作不可（ロック）になります。</CardDescription>
           </CardHeader>
           <CardContent>
             <Collapsible disabled defaultOpen>
               <Flex direction="row" align="center" justify="between" gap="md">
-                <span className="text-sm font-medium">
-                  定期預金 — 補助科目 (1) · 締め処理中
-                </span>
+                <Text weight="medium">定期預金 — 補助科目 (1) · 締め処理中</Text>
                 <CollapsibleTrigger asChild>
                   <Button
                     variant="ghost"

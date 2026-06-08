@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { ColorPicker, FormField } from "@godxjp/ui/data-entry";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -68,7 +69,7 @@ export default function Demo() {
                   onValueChange={setCategoryColor}
                   showHexInput={false}
                 />
-                <span className="text-muted-foreground text-sm">選択中: {categoryColor}</span>
+                <Text tone="muted">選択中: {categoryColor}</Text>
               </Flex>
             </FormField>
           </CardContent>

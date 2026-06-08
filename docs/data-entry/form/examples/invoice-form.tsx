@@ -27,7 +27,7 @@ import {
   type SidebarSection,
   Topbar,
 } from "@godxjp/ui/layout";
-import { BookOpen, FileText, LayoutDashboard, Loader2, ReceiptText, Users } from "lucide-react";
+import { BookOpen, FileText, LayoutDashboard, ReceiptText, Users } from "lucide-react";
 
 const sections: SidebarSection[] = [
   {
@@ -170,15 +170,8 @@ export default function Demo() {
             <Button variant="outline" type="button" onClick={handleReset} disabled={pending}>
               キャンセル
             </Button>
-            <Button type="submit" form="invoice-form" disabled={pending}>
-              {pending ? (
-                <>
-                  <Loader2 className="animate-spin" aria-hidden="true" />
-                  送信中…
-                </>
-              ) : (
-                "作成"
-              )}
+            <Button type="submit" form="invoice-form" loading={pending} loadingText="送信中…">
+              作成
             </Button>
           </Flex>
         }

@@ -102,7 +102,7 @@ function ShiftPill({
   return (
     <span
       data-shift={kind}
-      className={`flex items-center gap-1 truncate rounded-[3px] border-l-2 px-1.5 py-0.5 text-[11px] leading-tight ${className ?? ""}`}
+      className={`flex items-center gap-1 truncate rounded-[3px] border-l-2 px-1.5 py-0.5 leading-tight ${className ?? ""}`}
       style={{
         borderLeftColor: `var(${meta.cssVar})`,
         background: `color-mix(in oklch, var(${meta.cssVar}) 12%, transparent)`,
@@ -110,8 +110,14 @@ function ShiftPill({
       }}
       title={`${meta.label} ${meta.time}${staff ? ` · ${staff}` : ""}`}
     >
-      <span className="font-medium">{meta.label}</span>
-      {staff ? <span className="text-muted-foreground truncate">{staff}</span> : null}
+      <Text as="span" size="2xs" weight="medium" style={{ color: "inherit" }}>
+        {meta.label}
+      </Text>
+      {staff ? (
+        <Text as="span" size="2xs" tone="muted" truncate>
+          {staff}
+        </Text>
+      ) : null}
     </span>
   );
 }
@@ -484,9 +490,13 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
             {/* Weekday head — Sun→danger, Sat→info */}
             <div className="bg-secondary grid grid-cols-7 border-b">
               {WEEKDAY_HEAD.map((w, i) => (
-                <div
+                <Text
+                  as="div"
                   key={w}
-                  className="px-2 py-1.5 text-center text-[11px] font-medium"
+                  size="2xs"
+                  weight="medium"
+                  align="center"
+                  className="px-2 py-1.5"
                   style={{
                     color:
                       i === 0
@@ -497,7 +507,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                   }}
                 >
                   {w}
-                </div>
+                </Text>
               ))}
             </div>
             {/* 42 cells */}
@@ -525,8 +535,11 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                     }}
                   >
                     <div className="flex items-center justify-between">
-                      <span
-                        className="text-[13px] font-medium tabular-nums"
+                      <Text
+                        as="span"
+                        size="sm"
+                        weight="medium"
+                        tabular
                         style={{
                           color: cell.holiday
                             ? "var(--destructive)"
@@ -538,7 +551,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                         }}
                       >
                         {cell.date}
-                      </span>
+                      </Text>
                       {cell.holiday ? (
                         <Badge
                           tone="destructive"
@@ -555,9 +568,9 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                         <ShiftPill key={`${s.kind}-${i}`} kind={s.kind} staff={s.staff} />
                       ))}
                       {overflow > 0 ? (
-                        <span className="text-muted-foreground px-1 text-[10px] tabular-nums">
+                        <Text as="span" size="2xs" tone="muted" tabular className="px-1">
                           ＋{overflow} 件
-                        </span>
+                        </Text>
                       ) : null}
                     </div>
                   </button>
@@ -590,9 +603,14 @@ function WeekTimeline() {
             <div className="bg-secondary grid grid-cols-[48px_repeat(7,1fr)] border-b">
               <div aria-hidden="true" />
               {WEEK_DATES.map((d) => (
-                <div
+                <Text
+                  as="div"
                   key={d.date}
-                  className="px-2 py-1.5 text-center text-[11px] font-medium tabular-nums"
+                  size="2xs"
+                  weight="medium"
+                  tabular
+                  align="center"
+                  className="px-2 py-1.5"
                   style={{
                     color:
                       d.weekday === 0
@@ -607,7 +625,7 @@ function WeekTimeline() {
                   }}
                 >
                   {WEEKDAY_HEAD[d.weekday]} {d.date}
-                </div>
+                </Text>
               ))}
             </div>
             {/* Time grid body */}
@@ -615,13 +633,17 @@ function WeekTimeline() {
               {/* Hour axis labels */}
               <div className="relative" style={{ height: `${(AXIS_END - AXIS_START) * 22}px` }}>
                 {HOURS.map((h) => (
-                  <div
+                  <Text
+                    as="div"
                     key={h}
-                    className="text-muted-foreground absolute right-1.5 -translate-y-1/2 text-[10px] tabular-nums"
+                    size="2xs"
+                    tone="muted"
+                    tabular
+                    className="absolute right-1.5 -translate-y-1/2"
                     style={{ top: `${hourToPct(h)}%` }}
                   >
                     {String(h).padStart(2, "0")}:00
-                  </div>
+                  </Text>
                 ))}
               </div>
               {/* 7 day columns */}
@@ -649,7 +671,7 @@ function WeekTimeline() {
                     return (
                       <div
                         key={`${b.kind}-${i}`}
-                        className="absolute inset-x-0.5 overflow-hidden rounded-[3px] border-l-2 px-1 py-0.5 text-[10px] leading-tight"
+                        className="absolute inset-x-0.5 overflow-hidden rounded-[3px] border-l-2 px-1 py-0.5 leading-tight"
                         style={{
                           top: `${top}%`,
                           height: `${Math.max(bottom - top, 4)}%`,
@@ -659,10 +681,22 @@ function WeekTimeline() {
                         }}
                         title={`${meta.label} ${meta.time} · ${b.staff}`}
                       >
-                        <div className="truncate font-medium">{meta.label}</div>
-                        <div className="text-muted-foreground truncate">{b.staff}</div>
+                        <Text
+                          as="div"
+                          size="2xs"
+                          weight="medium"
+                          truncate
+                          style={{ color: "inherit" }}
+                        >
+                          {meta.label}
+                        </Text>
+                        <Text as="div" size="2xs" tone="muted" truncate>
+                          {b.staff}
+                        </Text>
                         {spills ? (
-                          <div className="text-muted-foreground tabular-nums">翌日へ ↓</div>
+                          <Text as="div" size="2xs" tone="muted" tabular>
+                            翌日へ ↓
+                          </Text>
                         ) : null}
                       </div>
                     );

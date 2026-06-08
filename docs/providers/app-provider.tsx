@@ -1,6 +1,7 @@
 import { AppProvider } from "@godxjp/ui/app";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Label } from "@godxjp/ui/data-entry";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
@@ -35,10 +36,10 @@ export default function Demo() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">
+              <Text as="p" tone="muted">
                 このデモ全体が AppProvider でラップされており、以下の各 AppSettingPicker は value /
                 onValueChange なしでコンテキストを読み書きする。
-              </p>
+              </Text>
             </CardContent>
           </Card>
 
