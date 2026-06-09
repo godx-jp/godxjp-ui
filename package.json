@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/ui",
-  "version": "13.3.2",
+  "version": "13.4.0",
   "type": "module",
   "packageManager": "pnpm@10.29.1",
   "sideEffects": false,
