@@ -49,6 +49,16 @@
     grid-area: main;
     min-width: 0;
     overflow: auto;
+    /* Sole scroll/clip boundary for the page area. `overflow:auto` alone does NOT reliably
+     * establish a paint-containment boundary in Chrome: tall nested scrollers (a two-pane
+     * `grid` of long lists, a nested `overflow-y:auto` region) — or any absolutely-positioned
+     * descendant (Radix form-fallback bubbles, `.sr-only` nodes) — can leak their clipped
+     * extent into the DOCUMENT scroll, so the window scrolls past the content into a
+     * full-viewport void below the fold even though `.app-root` is exactly 100vh.
+     * `contain:paint` makes `.app-main` the real clip boundary + containing block, so its
+     * content can never extend the document scroll height (gh#104 — same shell-containment
+     * family as the gh#103 body-stretch void). */
+    contain: paint;
   }
 
   .app-footer {

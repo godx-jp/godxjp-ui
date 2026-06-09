@@ -128,6 +128,23 @@
     border-color: hsl(var(--border));
   }
 
+  /* Visually-hidden, absolutely-positioned helpers must never affect layout or scroll height.
+   *
+   * Radix renders a hidden native form-fallback (BubbleSelect/BubbleInput) for Select, Checkbox,
+   * Switch and RadioGroup; it is `position:absolute` with NO top/left, so when the control has no
+   * positioned ancestor its static box resolves far down the page and inflates
+   * `document.scrollHeight` → phantom empty scroll space (gh#105). The same is true of the
+   * `.sr-only` clamp (Tailwind / our own status + file-input nodes). These fallbacks are always
+   * `aria-hidden` + `tabindex=-1`. Pinning every such node to the top-left of its containing block
+   * makes it impossible for it to extend the scroll height, regardless of consumer markup — no DOM
+   * wrapper or per-component positioning required. Inside the AppShell the `.app-main { contain:
+   * paint }` boundary (gh#104) already contains these; this rule protects every other call site too. */
+  :where(select, input)[aria-hidden="true"][tabindex="-1"],
+  .sr-only {
+    top: 0;
+    left: 0;
+  }
+
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
