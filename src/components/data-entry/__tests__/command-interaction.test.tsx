@@ -53,11 +53,7 @@ function Palette({
           <CommandItem value="banana" onSelect={onSelect}>
             バナナ
           </CommandItem>
-          <CommandItem
-            value="cherry"
-            disabled={withDisabled}
-            onSelect={onSelect}
-          >
+          <CommandItem value="cherry" disabled={withDisabled} onSelect={onSelect}>
             さくらんぼ
           </CommandItem>
         </CommandGroup>
@@ -116,18 +112,12 @@ describe("Command — interaction behavior", () => {
 
     await user.keyboard("{ArrowDown}");
     await waitFor(() => {
-      expect(screen.getAllByRole("option")[1]).toHaveAttribute(
-        "aria-selected",
-        "true",
-      );
+      expect(screen.getAllByRole("option")[1]).toHaveAttribute("aria-selected", "true");
     });
 
     await user.keyboard("{ArrowUp}");
     await waitFor(() => {
-      expect(screen.getAllByRole("option")[0]).toHaveAttribute(
-        "aria-selected",
-        "true",
-      );
+      expect(screen.getAllByRole("option")[0]).toHaveAttribute("aria-selected", "true");
     });
   });
 

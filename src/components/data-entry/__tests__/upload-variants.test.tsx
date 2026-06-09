@@ -79,13 +79,22 @@ describe("Upload — async runUpload lifecycle", () => {
     const onUpload = vi.fn().mockResolvedValue({ mediaId: "media-1234abcd" });
     const onValueChange = vi.fn();
     const { container } = renderWithUi(
-      <Upload variant="button" accept="image/*" onUpload={onUpload} onValueChange={onValueChange} />,
+      <Upload
+        variant="button"
+        accept="image/*"
+        onUpload={onUpload}
+        onValueChange={onValueChange}
+      />,
     );
     await user.upload(fileInput(container), img("photo.png"));
     await waitFor(() => {
       const last = onValueChange.mock.calls.at(-1)![0];
       expect(last).toHaveLength(1); // the picked item is NOT dropped by the upload lifecycle
-      expect(last[0]).toMatchObject({ name: "photo.png", status: "done", mediaId: "media-1234abcd" });
+      expect(last[0]).toMatchObject({
+        name: "photo.png",
+        status: "done",
+        mediaId: "media-1234abcd",
+      });
     });
   });
 
@@ -94,7 +103,12 @@ describe("Upload — async runUpload lifecycle", () => {
     const onUpload = vi.fn().mockRejectedValue(new Error("upload boom"));
     const onValueChange = vi.fn();
     const { container } = renderWithUi(
-      <Upload variant="button" accept="image/*" onUpload={onUpload} onValueChange={onValueChange} />,
+      <Upload
+        variant="button"
+        accept="image/*"
+        onUpload={onUpload}
+        onValueChange={onValueChange}
+      />,
     );
     await user.upload(fileInput(container), img());
     await waitFor(() => {

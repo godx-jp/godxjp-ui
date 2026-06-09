@@ -135,7 +135,9 @@ describe("Switch — toggle interaction", () => {
   it("name: renders a hidden input mirroring the checked state as 1/0", async () => {
     const user = userEvent.setup();
     const { container } = renderWithUi(<Switch aria-label="notif" name="notifications" />);
-    const hidden = container.querySelector<HTMLInputElement>('input[type="hidden"][name="notifications"]');
+    const hidden = container.querySelector<HTMLInputElement>(
+      'input[type="hidden"][name="notifications"]',
+    );
     expect(hidden).not.toBeNull();
     expect(hidden).toHaveValue("0");
 
