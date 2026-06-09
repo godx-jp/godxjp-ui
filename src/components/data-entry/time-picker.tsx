@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Clock } from "lucide-react";
+import { Clock, X } from "lucide-react";
 
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { isValidHhmm, normalizeHhmm } from "../../lib/datetime";
@@ -257,6 +257,7 @@ export function TimePicker({
   id,
   name,
   minuteStep = 5,
+  allowClear = true,
 }: TimePickerProp) {
   const { t } = useTranslation();
   const { timeFormat } = usePickerLocales();
@@ -278,6 +279,13 @@ export function TimePicker({
     onValueChange?.(next);
   };
 
+  const showClear = allowClear && Boolean(value) && !disabled;
+
+  const clear = () => {
+    setValue("");
+    setText("");
+  };
+
   return (
     <div className={cn("relative", className)}>
       <Input
@@ -291,7 +299,7 @@ export function TimePicker({
         role="combobox"
         aria-expanded={open}
         aria-haspopup="dialog"
-        className="pe-10 tabular-nums"
+        className={cn("tabular-nums", showClear ? "pe-16" : "pe-10")}
         // Combobox semantics made real: clicking the field (or ArrowDown) opens the time panel —
         // the input declares aria-haspopup="dialog" so it must control the popup, not only the
         // icon. Focus stays on the input (PopoverContent.onOpenAutoFocus prevented) so it's typeable.
@@ -316,6 +324,20 @@ export function TimePicker({
           setText(normalized ?? (isValidHhmm(value) ? value : ""));
         }}
       />
+      {showClear ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          disabled={disabled}
+          tabIndex={-1}
+          aria-label={t("common.clear") ?? "Clear"}
+          className="text-muted-foreground absolute inset-y-0 end-8 h-full px-2 hover:bg-transparent"
+          onClick={clear}
+        >
+          <X className="size-4 shrink-0" aria-hidden="true" />
+        </Button>
+      ) : null}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button

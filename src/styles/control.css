@@ -165,6 +165,17 @@
     height: var(--control-icon-size-sm);
   }
 
+  /* A Badge nested in a Button is a compact count/indicator chip, not a free-standing status
+   * chip. A full-height badge grows to the button's inner edges, so its border and (tighter)
+   * corner radius collide with the button's rounded border — it looks like the badge "cuts"
+   * the button outline. Drop its own vertical padding and pin the line box + radius so it
+   * always sits cleanly inside the button at every control height. */
+  .ui-button [data-slot="badge"] {
+    padding-block: 0;
+    line-height: var(--line-height-tight);
+    border-radius: var(--radius-sm);
+  }
+
   .ui-button--lg {
     height: var(--control-height-lg);
     padding-inline: var(--space-8);
@@ -712,7 +723,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-2);
   min-height: var(--control-height);
   padding: var(--space-1) var(--space-2);
   border: 1px solid hsl(var(--input));
@@ -726,6 +737,18 @@
 .ui-tag-input-disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+/* The chip list is its own flex row: a real `gap` separates peer chips on the
+   8px step (distinct concepts, not a tight group) instead of relying on
+   collapsed inline whitespace, and flex drops the inter-element whitespace. */
+.ui-tag-input-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .ui-tag-input-chip {
   display: inline-flex;

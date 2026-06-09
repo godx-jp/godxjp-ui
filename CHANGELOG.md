@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Button` gains a `count` prop — a trailing borderless counter pill for filter tabs / segmented
+  toggles (e.g. "Chờ bay 18"). Formatted with `Intl.NumberFormat` in the active locale and styled per
+  variant (translucent foreground on filled, muted fill on light), so you never nest a bordered
+  `Badge` inside a bordered `Button` (which double-borders). Renders `0`; ignored under `asChild`.
+- Inline clear (✕) for value-holding pickers: `DatePicker`, `DateRangePicker` and `TimePicker` gain
+  an `allowClear` prop (default `true`) rendering an inline ✕ on the trigger that resets the value —
+  consistent with the existing `Cascader` / `TreeSelect` affordance.
+- `Input` and `Textarea` gain an opt-in `allowClear` prop (+ `onClear`) — an inline ✕ that clears the
+  field while it holds text, working for both controlled and uncontrolled usage. Off by default, so
+  existing inputs are unchanged.
+- `SearchSelect` now exposes its clear control as an inline ✕ on the trigger (replacing the in-dropdown
+  "clear" row), so a selection can be cleared without opening the list.
+
+### Changed
+
+- `TagInput` chips now sit on an 8px (`--space-2`) flex rhythm instead of relying on collapsed inline
+  whitespace, fixing chips that rendered too close together.
+
 ## [12.1.0]
 
 ### Changed

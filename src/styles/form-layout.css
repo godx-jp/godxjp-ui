@@ -31,10 +31,20 @@
 
   .ui-form-field-control {
     display: grid;
+    /* Single column capped to the field width. Without an explicit track the
+     * implicit column sizes to content (max-content), so a wide control (e.g. a
+     * Select with a long value) overflows its grid cell and overlaps siblings. */
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-stack-xs); /* 4px between control and helper/error */
     min-width: 0;
     /* Cap the control width when a controlWidth is set; otherwise fill the column. */
     max-inline-size: var(--form-control-width, none);
+  }
+
+  /* Let controls (and helper/error) shrink within the cell instead of forcing
+   * the column to their intrinsic width. */
+  .ui-form-field-control > * {
+    min-width: 0;
   }
 
   /* ── Horizontal — label beside control. Each block is scoped to [data-layout=horizontal|inline]

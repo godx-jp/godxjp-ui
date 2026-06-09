@@ -55,7 +55,8 @@ describe("TimePicker", () => {
       <TimePicker defaultValue="09:00" onValueChange={onChange} minuteStep={15} id="t" />,
     );
 
-    await user.click(screen.getByRole("button"));
+    // Open via the input (combobox) — unambiguous now that an inline clear ✕ also exists.
+    await user.click(screen.getByRole("combobox"));
     expect(screen.getByText("Giờ")).toBeInTheDocument();
     expect(screen.getByText("Phút")).toBeInTheDocument();
 
@@ -70,7 +71,7 @@ describe("TimePicker", () => {
     const user = userEvent.setup();
     renderWithUi(<TimePicker defaultValue="09:00" minuteStep={15} id="t" />);
 
-    await user.click(screen.getByRole("button"));
+    await user.click(screen.getByRole("combobox"));
     expect(screen.getByText("Giờ")).toBeInTheDocument();
     expect(screen.getByText("Phút")).toBeInTheDocument();
     expect(screen.getByLabelText("Nhập giờ HH:mm")).toBeInTheDocument();

@@ -27,16 +27,20 @@ describe("SearchSelect — static options / uncontrolled / clear / empty", () =>
     expect(trigger()).toHaveTextContent("売上");
   });
 
-  it("clearable: the clear row resets the value", async () => {
+  it("clearable: the inline clear button resets the value", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     renderWithUi(
-      <SearchSelect options={OPTIONS} defaultValue="1" clearable onValueChange={onValueChange} />,
+      <SearchSelect
+        options={OPTIONS}
+        defaultValue="1"
+        clearable
+        clearLabel="クリア"
+        onValueChange={onValueChange}
+      />,
     );
-    await user.click(trigger());
-    // when a value is set + clearable, the FIRST listbox row is the clear entry (value "")
-    const options = screen.getAllByRole("option");
-    await user.click(options[0]);
+    // when a value is set + clearable, an inline ✕ clear control sits on the trigger (no need to open)
+    await user.click(screen.getByRole("button", { name: "クリア" }));
     expect(onValueChange).toHaveBeenCalledWith("", undefined);
   });
 

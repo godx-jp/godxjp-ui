@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronsUpDown, Loader2 } from "lucide-react";
+import { ChevronsUpDown, Loader2, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
@@ -205,126 +205,143 @@ export function SearchSelect({
 
   const activeOption = flatOrdered[activeIndex];
   const activeOptionId = activeOption ? optionDomId(activeOption.value) : undefined;
+  const showClear = clearable && Boolean(value) && !disabled;
 
   return (
-    <Popover
-      open={open}
-      onOpenChange={(next) => {
-        setOpen(next);
-        if (!next) setQuery("");
-      }}
-    >
-      <PopoverTrigger asChild>
-        <Button
-          id={id}
-          type="button"
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          disabled={disabled}
-          data-testid={dataTestId}
-          className={cn("w-full justify-between font-normal", controlOpenRingClass, className)}
-        >
-          <span className={cn("truncate text-start", !value && "text-muted-foreground")}>
-            {currentLabel}
-          </span>
-          <ChevronsUpDown className="ms-2 size-4 shrink-0 opacity-50" aria-hidden="true" />
-        </Button>
-      </PopoverTrigger>
-      {/* Hidden field so the selection submits with a native form. */}
-      {name ? <input type="hidden" name={name} value={value} /> : null}
-      <PopoverContent
-        align="start"
-        sideOffset={4}
-        collisionPadding={12}
-        className="flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-max max-w-[min(32rem,calc(100vw-1.5rem))] min-w-[var(--radix-popover-trigger-width)] flex-col p-0"
+    <div className={cn("relative", className)}>
+      <Popover
+        open={open}
+        onOpenChange={(next) => {
+          setOpen(next);
+          if (!next) setQuery("");
+        }}
       >
-        <Command shouldFilter={false} className="flex min-h-0 flex-col">
-          <div className="border-border shrink-0 border-b p-2">
-            <Input
-              autoFocus
-              // The PopoverTrigger is the (single) combobox; this search field is a textbox that
-              // filters and drives the listbox — aria-controls + aria-activedescendant are valid on
-              // a textbox and announce the active option without making it a second combobox.
-              aria-controls={listId}
-              aria-autocomplete="list"
-              aria-activedescendant={activeOptionId}
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              onKeyDown={onKeyDown}
-              placeholder={searchPlaceholder ?? t("dataEntry.searchSelect.search")}
-            />
-          </div>
-          <CommandList
-            id={listId}
-            role="listbox"
-            className="min-h-0 flex-1 overflow-y-auto p-1"
-            onScroll={onScroll}
+        <PopoverTrigger asChild>
+          <Button
+            id={id}
+            type="button"
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            disabled={disabled}
+            data-testid={dataTestId}
+            className={cn(
+              "w-full justify-start font-normal",
+              controlOpenRingClass,
+              // Reserve trailing room for the clear + chevron overlay rendered below.
+              showClear ? "pe-14" : "pe-9",
+            )}
           >
-            {clearable && value ? (
-              <CommandItem value="" data-testid={optionTestId("none")} onSelect={clear}>
-                <span className="text-muted-foreground text-sm">
-                  {clearLabel ?? t("dataEntry.searchSelect.clear")}
-                </span>
-              </CommandItem>
-            ) : null}
-            {grouped.map((group) => {
-              const rows = group.items.map(({ option, index }) => (
-                <CommandItem
-                  key={option.value}
-                  id={optionDomId(option.value)}
-                  role="option"
-                  value={option.value}
-                  data-testid={optionTestId(option.value)}
-                  aria-selected={activeIndex === index}
-                  disabled={option.disabled}
-                  className={cn(
-                    // Selected = persistent bg-accent + medium weight (NO check icon — saves width),
-                    // matching the plain SelectItem's `data-[state=checked]` convention; active =
-                    // hover/keyboard accent. Same bg so selection stays coherent across both Selects.
-                    value === option.value && "bg-accent text-foreground font-medium",
-                    activeIndex === index && "bg-accent text-accent-foreground",
-                  )}
-                  onMouseEnter={() => setActiveIndex(index)}
-                  onSelect={() => select(option)}
-                >
-                  {renderOption ? (
-                    <div className="min-w-0 flex-1">{renderOption(option)}</div>
-                  ) : (
-                    <div className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate text-sm">{option.label}</span>
-                      {option.sublabel ? (
-                        <span className="text-muted-foreground truncate text-xs">
-                          {option.sublabel}
-                        </span>
-                      ) : null}
-                    </div>
-                  )}
-                </CommandItem>
-              ));
+            <span className={cn("truncate text-start", !value && "text-muted-foreground")}>
+              {currentLabel}
+            </span>
+          </Button>
+        </PopoverTrigger>
+        {/* Hidden field so the selection submits with a native form. */}
+        {name ? <input type="hidden" name={name} value={value} /> : null}
+        <PopoverContent
+          align="start"
+          sideOffset={4}
+          collisionPadding={12}
+          className="flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-max max-w-[min(32rem,calc(100vw-1.5rem))] min-w-[var(--radix-popover-trigger-width)] flex-col p-0"
+        >
+          <Command shouldFilter={false} className="flex min-h-0 flex-col">
+            <div className="border-border shrink-0 border-b p-2">
+              <Input
+                autoFocus
+                // The PopoverTrigger is the (single) combobox; this search field is a textbox that
+                // filters and drives the listbox — aria-controls + aria-activedescendant are valid on
+                // a textbox and announce the active option without making it a second combobox.
+                aria-controls={listId}
+                aria-autocomplete="list"
+                aria-activedescendant={activeOptionId}
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={onKeyDown}
+                placeholder={searchPlaceholder ?? t("dataEntry.searchSelect.search")}
+              />
+            </div>
+            <CommandList
+              id={listId}
+              role="listbox"
+              className="min-h-0 flex-1 overflow-y-auto p-1"
+              onScroll={onScroll}
+            >
+              {grouped.map((group) => {
+                const rows = group.items.map(({ option, index }) => (
+                  <CommandItem
+                    key={option.value}
+                    id={optionDomId(option.value)}
+                    role="option"
+                    value={option.value}
+                    data-testid={optionTestId(option.value)}
+                    aria-selected={activeIndex === index}
+                    disabled={option.disabled}
+                    className={cn(
+                      // Selected = persistent bg-accent + medium weight (NO check icon — saves width),
+                      // matching the plain SelectItem's `data-[state=checked]` convention; active =
+                      // hover/keyboard accent. Same bg so selection stays coherent across both Selects.
+                      value === option.value && "bg-accent text-foreground font-medium",
+                      activeIndex === index && "bg-accent text-accent-foreground",
+                    )}
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onSelect={() => select(option)}
+                  >
+                    {renderOption ? (
+                      <div className="min-w-0 flex-1">{renderOption(option)}</div>
+                    ) : (
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <span className="truncate text-sm">{option.label}</span>
+                        {option.sublabel ? (
+                          <span className="text-muted-foreground truncate text-xs">
+                            {option.sublabel}
+                          </span>
+                        ) : null}
+                      </div>
+                    )}
+                  </CommandItem>
+                ));
 
-              return group.heading ? (
-                <CommandGroup key={group.heading} heading={group.heading}>
-                  {rows}
-                </CommandGroup>
-              ) : (
-                <React.Fragment key="__ungrouped">{rows}</React.Fragment>
-              );
-            })}
-            {loading ? (
-              <div className="text-muted-foreground flex items-center gap-2 px-2 py-3 text-sm">
-                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                {loadingMessage ?? t("dataEntry.searchSelect.loading")}
-              </div>
-            ) : null}
-            {!loading && loaded.length === 0 ? (
-              <div className="text-muted-foreground px-2 py-6 text-center text-sm">
-                {emptyMessage ?? t("dataEntry.searchSelect.empty")}
-              </div>
-            ) : null}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+                return group.heading ? (
+                  <CommandGroup key={group.heading} heading={group.heading}>
+                    {rows}
+                  </CommandGroup>
+                ) : (
+                  <React.Fragment key="__ungrouped">{rows}</React.Fragment>
+                );
+              })}
+              {loading ? (
+                <div className="text-muted-foreground flex items-center gap-2 px-2 py-3 text-sm">
+                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  {loadingMessage ?? t("dataEntry.searchSelect.loading")}
+                </div>
+              ) : null}
+              {!loading && loaded.length === 0 ? (
+                <div className="text-muted-foreground px-2 py-6 text-center text-sm">
+                  {emptyMessage ?? t("dataEntry.searchSelect.empty")}
+                </div>
+              ) : null}
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {/* Clear + chevron render OUTSIDE the trigger <button> — a <button> may not nest inside a
+          <button> (invalid HTML → hydration error). The overlay ignores pointer events so a click
+          falls through to the trigger to open it; only the clear control re-enables them. */}
+      <div className="pointer-events-none absolute inset-y-0 end-3 flex items-center gap-1">
+        {showClear ? (
+          <button
+            type="button"
+            aria-label={clearLabel ?? t("dataEntry.searchSelect.clear")}
+            data-testid={optionTestId("clear")}
+            className="pointer-events-auto flex size-4 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
+            onClick={clear}
+          >
+            <X className="size-4" aria-hidden="true" />
+          </button>
+        ) : null}
+        <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+      </div>
+    </div>
   );
 }

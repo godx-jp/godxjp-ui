@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
+import { expectNoA11yViolations } from "@/test/a11y";
 import { Button } from "../button";
 
 describe("Button", () => {
@@ -133,6 +134,58 @@ describe("Button", () => {
       const link = screen.getByRole("link", { name: "Link" });
       expect(link).not.toHaveAttribute("aria-busy");
       expect(link.querySelector("svg.animate-spin")).toBeNull();
+    });
+  });
+
+  describe("count", () => {
+    it("renders a trailing borderless counter after the label", () => {
+      renderWithUi(<Button count={18}>Chờ bay</Button>);
+      const btn = screen.getByRole("button", { name: /Chờ bay/ });
+      const counter = btn.querySelector('[data-slot="button-count"]');
+      expect(counter).not.toBeNull();
+      expect(counter).toHaveTextContent("18");
+      // The counter carries no border of its own (must not double-border an outline button).
+      expect(counter?.className).not.toMatch(/\bborder\b/);
+    });
+
+    it("renders a zero count", () => {
+      renderWithUi(
+        <Button variant="outline" count={0}>
+          Đã đến
+        </Button>,
+      );
+      expect(
+        screen
+          .getByRole("button", { name: /Đã đến/ })
+          .querySelector('[data-slot="button-count"]'),
+      ).toHaveTextContent("0");
+    });
+
+    it("does not render a counter when count is omitted", () => {
+      renderWithUi(<Button>No count</Button>);
+      expect(
+        screen
+          .getByRole("button", { name: "No count" })
+          .querySelector('[data-slot="button-count"]'),
+      ).toBeNull();
+    });
+
+    it("ignores count when asChild (Slot requires a single child)", () => {
+      renderWithUi(
+        <Button asChild count={5}>
+          <a href="#">Link</a>
+        </Button>,
+      );
+      const link = screen.getByRole("link", { name: "Link" });
+      expect(link.querySelector('[data-slot="button-count"]')).toBeNull();
+    });
+
+    it("has no a11y violations with a count", async () => {
+      await expectNoA11yViolations(
+        <Button variant="outline" count={3}>
+          Items
+        </Button>,
+      );
     });
   });
 });

@@ -3,7 +3,21 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { useTranslation } from "../../i18n/use-translation";
 import type { ButtonProp } from "../../props/components/general.prop";
+
+// Borderless counter pill for `count` (filter tabs / segmented toggles). Keyed by variant so it
+// reads on the button's own surface — translucent foreground on filled variants, muted fill on
+// light variants. Never a bordered Badge nested in a bordered Button (that double-borders).
+const buttonCountClass: Record<string, string> = {
+  default: "bg-primary-foreground/15",
+  destructive: "bg-destructive-foreground/15",
+  secondary: "bg-secondary-foreground/15",
+  outline: "bg-foreground/8 text-muted-foreground",
+  dashed: "bg-foreground/8 text-muted-foreground",
+  ghost: "bg-foreground/8 text-muted-foreground",
+  link: "bg-foreground/8 text-muted-foreground",
+};
 
 const buttonVariants = cva("ui-button", {
   variants: {
@@ -54,12 +68,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
       asChild = false,
       loading = false,
       loadingText,
+      count,
       disabled,
       children,
       ...props
     },
     ref,
   ) => {
+    const { locale } = useTranslation();
     const Comp = asChild ? Slot : "button";
     // While loading the control is non-interactive (blocks activation + pointer events) and
     // announces `aria-busy`. The spinner is rendered as a LEADING sibling so the label stays in
@@ -73,6 +89,20 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
     ) : (
       children
     );
+    // The count is a trailing borderless counter. Ignored under `asChild` (Slot needs a single
+    // child) and rendered for `0` too. Localized via Intl.NumberFormat (grouping per locale).
+    const showCount = !asChild && count != null;
+    const countNode = showCount ? (
+      <span
+        data-slot="button-count"
+        className={cn(
+          "inline-flex min-w-4 items-center justify-center rounded-[var(--radius-pill)] px-1 text-xs leading-none tabular-nums",
+          buttonCountClass[variant ?? "default"],
+        )}
+      >
+        {new Intl.NumberFormat(locale).format(count)}
+      </span>
+    ) : null;
     return (
       <Comp
         data-slot="button"
@@ -94,7 +124,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         ref={ref}
         {...props}
       >
-        {content}
+        {asChild ? (
+          children
+        ) : (
+          <>
+            {content}
+            {countNode}
+          </>
+        )}
       </Comp>
     );
   },

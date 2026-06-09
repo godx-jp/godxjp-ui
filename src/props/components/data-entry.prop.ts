@@ -32,10 +32,20 @@ import type {
 import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
 /** @see Input */
-export type InputProp = React.InputHTMLAttributes<HTMLInputElement>;
+export type InputProp = React.InputHTMLAttributes<HTMLInputElement> & {
+  /** Show an inline ✕ that clears the field while it holds text (default false). */
+  allowClear?: boolean;
+  /** Called after the field is cleared via the inline ✕. */
+  onClear?: () => void;
+};
 
 /** @see Textarea */
-export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  /** Show an inline ✕ (top-end) that clears the field while it holds text (default false). */
+  allowClear?: boolean;
+  /** Called after the field is cleared via the inline ✕. */
+  onClear?: () => void;
+};
 
 /**
  * @see NumberInput — localized numeric spinbutton (composes `Input` + step `Button`s).
@@ -198,6 +208,8 @@ export type DatePickerProp = {
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;
+  /** Show an inline ✕ to clear the value when one is set (default true). */
+  allowClear?: boolean;
 };
 
 /** @see DateRangePicker */
@@ -214,6 +226,8 @@ export type DateRangePickerProp = {
   locale?: DayPickerProps["locale"];
   fromDate?: Date;
   toDate?: Date;
+  /** Show an inline ✕ to clear the range when one is set (default true). */
+  allowClear?: boolean;
 };
 
 /** @see TimePicker — popover HH:mm picker (canonical 24h storage). */
@@ -229,6 +243,8 @@ export type TimePickerProp = {
   name?: NameProp;
   /** Minute column step — default 5 (logistics cut-offs). */
   minuteStep?: number;
+  /** Show an inline ✕ to clear the value when one is set (default true). */
+  allowClear?: boolean;
 };
 
 /** @see ColorPicker */

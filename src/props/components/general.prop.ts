@@ -74,4 +74,12 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: PendingProp;
   /** Optional label to swap in while `loading` (pass the `t()`-translated string). */
   loadingText?: string;
+  /**
+   * Optional numeric count rendered as a borderless counter pill after the label
+   * (filter tabs / segmented toggles, e.g. "Chờ bay 18"). Formatted with
+   * `Intl.NumberFormat` in the active locale and styled to read on the button's
+   * own variant — never nest a `Badge` inside a Button for this. `0` renders.
+   * Ignored when `asChild` (Radix Slot requires a single child).
+   */
+  count?: number;
 };

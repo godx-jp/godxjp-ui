@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, X } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime/parse";
 import { cn } from "../../lib/utils";
@@ -34,6 +34,7 @@ export function DatePicker({
   locale: localeProp,
   fromDate,
   toDate,
+  allowClear = true,
 }: DatePickerProp) {
   const { t } = useTranslation();
   const { dayPickerLocale } = usePickerLocales(localeProp);
@@ -56,6 +57,12 @@ export function DatePicker({
   }, [value]);
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.datePicker.placeholder") ?? ISO_HINT;
+  const showClear = allowClear && Boolean(value) && !disabled;
+
+  const clear = () => {
+    emit(undefined);
+    setText("");
+  };
 
   const commit = (raw: string) => {
     const trimmed = raw.trim();
@@ -92,7 +99,7 @@ export function DatePicker({
             role="combobox"
             aria-expanded={open}
             aria-haspopup="dialog"
-            className="pe-10"
+            className={cn("pe-10", showClear && "pe-16")}
             // Combobox semantics made real: clicking the field (or ArrowDown) opens the calendar —
             // the input declares aria-haspopup="dialog", so it must actually control the popup, not
             // only the icon button. Focus stays on the input (PopoverContent.onOpenAutoFocus is
@@ -118,6 +125,20 @@ export function DatePicker({
               setText(parsed ? toIsoDate(parsed) : toIsoDate(value));
             }}
           />
+          {showClear ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={disabled}
+              tabIndex={-1}
+              aria-label={t("common.clear") ?? "Clear"}
+              className="text-muted-foreground absolute inset-y-0 end-8 h-full px-2 hover:bg-transparent"
+              onClick={clear}
+            >
+              <X className="size-4 shrink-0" aria-hidden="true" />
+            </Button>
+          ) : null}
           <PopoverTrigger asChild>
             <Button
               type="button"

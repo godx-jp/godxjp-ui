@@ -44,7 +44,8 @@ describe("DatePicker", () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     renderWithUi(<DatePicker value={new Date(2026, 4, 1)} onValueChange={onChange} />);
-    await user.click(screen.getByRole("button"));
+    // Open via the input (combobox) — unambiguous now that an inline clear ✕ also exists.
+    await user.click(screen.getByRole("combobox"));
     const dayButtons = screen.getAllByRole("gridcell").filter((cell) => cell.textContent === "15");
     const dayButton = dayButtons[0]?.querySelector("button");
     expect(dayButton).toBeTruthy();

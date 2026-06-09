@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, X } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime";
@@ -34,6 +34,7 @@ export function DateRangePicker({
   locale: localeProp,
   fromDate,
   toDate,
+  allowClear = true,
 }: DateRangePickerProp) {
   const { t } = useTranslation();
   const { dayPickerLocale } = usePickerLocales(localeProp);
@@ -55,6 +56,14 @@ export function DateRangePicker({
   const emit = (next: DateRange | undefined) => {
     if (!isControlled) setInternalValue(next);
     onValueChange?.(next);
+  };
+
+  const showClear = allowClear && Boolean(value?.from || value?.to) && !disabled;
+
+  const clear = () => {
+    emit(undefined);
+    setFromText("");
+    setToText("");
   };
 
   const commitEdge = (edge: "from" | "to", raw: string) => {
@@ -138,6 +147,20 @@ export function DateRangePicker({
               setToText(parsed ? toIsoDate(parsed) : toIsoDate(value?.to));
             }}
           />
+          {showClear ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={disabled}
+              tabIndex={-1}
+              aria-label={t("common.clear") ?? "Clear"}
+              className="text-muted-foreground shrink-0 hover:bg-transparent"
+              onClick={clear}
+            >
+              <X className="size-4 shrink-0" aria-hidden="true" />
+            </Button>
+          ) : null}
           <PopoverTrigger asChild>
             <Button
               type="button"
