@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
 import { SearchSelect } from "../search-select";
+import { Select } from "../select";
 
 const OPTIONS = [
   { value: "1", label: "Tanaka", icon: <span data-testid="ic-1">★</span> },
@@ -41,5 +42,19 @@ describe("SearchSelect — option icon", () => {
     );
     expect(trigger()).toHaveTextContent("読込中の科目");
     expect(screen.getByTestId("sel-ic")).toBeInTheDocument();
+  });
+
+  it("data-driven Select forwards selectedIcon to the trigger (async preset)", () => {
+    // Regression: the Select wrapper must forward selectedIcon to its SearchSelect engine.
+    renderWithUi(
+      <Select
+        loadOptions={async () => ({ options: OPTIONS, hasMore: false })}
+        value="1"
+        selectedLabel="Tanaka"
+        selectedIcon={<span data-testid="sel-ic2">★</span>}
+      />,
+    );
+    expect(trigger()).toHaveTextContent("Tanaka");
+    expect(screen.getByTestId("sel-ic2")).toBeInTheDocument();
   });
 });

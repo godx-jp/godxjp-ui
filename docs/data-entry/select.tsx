@@ -3,6 +3,7 @@ import { useState } from "react";
 import {
   Avatar,
   AvatarFallback,
+  Badge,
   Card,
   CardContent,
   CardDescription,
@@ -30,20 +31,31 @@ export default function Demo() {
   const [priority, setPriority] = useState("medium");
   const [assignee, setAssignee] = useState("tanaka");
   const [reviewer, setReviewer] = useState("tanaka");
+  const [reviewerAsync, setReviewerAsync] = useState("tanaka");
+  const [reviewerCustom, setReviewerCustom] = useState("tanaka");
 
   const people = [
     { value: "tanaka", label: "田中 太郎", sublabel: "tanaka@example.com" },
     { value: "suzuki", label: "鈴木 花子", sublabel: "suzuki@example.com" },
     { value: "sato", label: "佐藤 次郎", sublabel: "sato@example.com" },
   ];
-  const peopleWithIcon = people.map((person) => ({
-    ...person,
-    icon: (
-      <Avatar className="size-5">
-        <AvatarFallback className="text-[10px]">{person.label.slice(0, 1)}</AvatarFallback>
-      </Avatar>
-    ),
-  }));
+  const avatarFor = (label: string) => (
+    <Avatar className="size-5">
+      <AvatarFallback className="text-[10px]">{label.slice(0, 1)}</AvatarFallback>
+    </Avatar>
+  );
+  const peopleWithIcon = people.map((person) => ({ ...person, icon: avatarFor(person.label) }));
+
+  // A real picker fetches + paginates server-side; we simulate latency so the loading state and the
+  // selectedLabel / selectedIcon at-rest behaviour (option not loaded yet) are real.
+  const loadPeople = async ({ query }: { query: string; page: number }) => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    const needle = query.trim().toLowerCase();
+    const list = needle
+      ? peopleWithIcon.filter((person) => person.label.toLowerCase().includes(needle))
+      : peopleWithIcon;
+    return { options: list, hasMore: false };
+  };
 
   return (
     <PageContainer
@@ -148,6 +160,70 @@ export default function Demo() {
                 searchPlaceholder="担当者を検索..."
                 placeholder="担当者を選択"
                 options={peopleWithIcon}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Async (loadOptions) + selectedIcon</CardTitle>
+            <CardDescription>
+              With `loadOptions` and a preset value, `selectedLabel` + `selectedIcon` show the picked
+              person's name AND avatar on the trigger at rest — before the async list has loaded.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="reviewer-async" label="レビュー担当 (async)">
+              <Select
+                id="reviewer-async"
+                name="reviewer_async"
+                value={reviewerAsync}
+                onValueChange={setReviewerAsync}
+                loadOptions={loadPeople}
+                selectedLabel="田中 太郎"
+                selectedIcon={avatarFor("田中 太郎")}
+                searchPlaceholder="担当者を検索..."
+                placeholder="担当者を選択"
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Custom rows (renderOption)</CardTitle>
+            <CardDescription>
+              `renderOption` (like Ant&apos;s optionRender) draws a fully custom row — avatar + name +
+              email + a status badge. Use a flex ROW (`div className=&quot;flex items-center&quot;`),
+              not a bare `Flex` which defaults to a column.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="reviewer-custom" label="レビュー担当 (custom)">
+              <Select
+                id="reviewer-custom"
+                name="reviewer_custom"
+                value={reviewerCustom}
+                onValueChange={setReviewerCustom}
+                showSearch
+                searchPlaceholder="担当者を検索..."
+                placeholder="担当者を選択"
+                options={people}
+                renderOption={(option) => (
+                  <div className="flex w-full items-center gap-2">
+                    {avatarFor(option.label)}
+                    <div className="flex min-w-0 flex-col">
+                      <span className="truncate text-sm font-medium">{option.label}</span>
+                      <span className="text-muted-foreground truncate text-xs">
+                        {option.sublabel}
+                      </span>
+                    </div>
+                    <Badge tone="success" className="ms-auto">
+                      VIP
+                    </Badge>
+                  </div>
+                )}
               />
             </FormField>
           </CardContent>
