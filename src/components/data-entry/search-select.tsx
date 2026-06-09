@@ -232,8 +232,18 @@ export function SearchSelect({
               showClear ? "pe-14" : "pe-9",
             )}
           >
-            <span className={cn("truncate text-start", !value && "text-muted-foreground")}>
-              {currentLabel}
+            <span
+              className={cn(
+                "flex min-w-0 items-center gap-2 text-start",
+                !value && "text-muted-foreground",
+              )}
+            >
+              {selectedOption?.icon ? (
+                <span className="flex shrink-0 items-center" aria-hidden="true">
+                  {selectedOption.icon}
+                </span>
+              ) : null}
+              <span className="truncate">{currentLabel}</span>
             </span>
           </Button>
         </PopoverTrigger>
@@ -290,13 +300,20 @@ export function SearchSelect({
                     {renderOption ? (
                       <div className="min-w-0 flex-1">{renderOption(option)}</div>
                     ) : (
-                      <div className="flex min-w-0 flex-1 flex-col">
-                        <span className="truncate text-sm">{option.label}</span>
-                        {option.sublabel ? (
-                          <span className="text-muted-foreground truncate text-xs">
-                            {option.sublabel}
+                      <div className="flex min-w-0 flex-1 items-center gap-2">
+                        {option.icon ? (
+                          <span className="flex shrink-0 items-center" aria-hidden="true">
+                            {option.icon}
                           </span>
                         ) : null}
+                        <div className="flex min-w-0 flex-col">
+                          <span className="truncate text-sm">{option.label}</span>
+                          {option.sublabel ? (
+                            <span className="text-muted-foreground truncate text-xs">
+                              {option.sublabel}
+                            </span>
+                          ) : null}
+                        </div>
                       </div>
                     )}
                   </CommandItem>

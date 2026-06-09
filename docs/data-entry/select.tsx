@@ -1,6 +1,14 @@
 import { useState } from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Avatar,
+  AvatarFallback,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import {
   FormField,
   Select,
@@ -20,6 +28,22 @@ export default function Demo() {
   const [status, setStatus] = useState("paid");
   const [currency, setCurrency] = useState("JPY");
   const [priority, setPriority] = useState("medium");
+  const [assignee, setAssignee] = useState("tanaka");
+  const [reviewer, setReviewer] = useState("tanaka");
+
+  const people = [
+    { value: "tanaka", label: "田中 太郎", sublabel: "tanaka@example.com" },
+    { value: "suzuki", label: "鈴木 花子", sublabel: "suzuki@example.com" },
+    { value: "sato", label: "佐藤 次郎", sublabel: "sato@example.com" },
+  ];
+  const peopleWithIcon = people.map((person) => ({
+    ...person,
+    icon: (
+      <Avatar className="size-5">
+        <AvatarFallback className="text-[10px]">{person.label.slice(0, 1)}</AvatarFallback>
+      </Avatar>
+    ),
+  }));
 
   return (
     <PageContainer
@@ -76,6 +100,54 @@ export default function Demo() {
                   { value: "EUR", label: "ユーロ", group: "ヨーロッパ" },
                   { value: "GBP", label: "英ポンド", group: "ヨーロッパ" },
                 ]}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Searchable + clearable</CardTitle>
+            <CardDescription>
+              With a value set and clearable (default), an inline ✕ on the trigger resets the
+              selection — no need to open the list.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="assignee" label="担当者">
+              <Select
+                id="assignee"
+                name="assignee"
+                value={assignee}
+                onValueChange={setAssignee}
+                showSearch
+                searchPlaceholder="担当者を検索..."
+                placeholder="担当者を選択"
+                options={people}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Option icon — shown on the trigger too</CardTitle>
+            <CardDescription>
+              Give each option an `icon` (avatar / flag / lucide icon). It renders before the label
+              in the list AND on the trigger once selected — no `renderOption` needed.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="reviewer" label="レビュー担当">
+              <Select
+                id="reviewer"
+                name="reviewer"
+                value={reviewer}
+                onValueChange={setReviewer}
+                showSearch
+                searchPlaceholder="担当者を検索..."
+                placeholder="担当者を選択"
+                options={peopleWithIcon}
               />
             </FormField>
           </CardContent>

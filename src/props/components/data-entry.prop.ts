@@ -262,6 +262,11 @@ export type SearchSelectOptionProp = {
   value: string;
   label: string;
   sublabel?: string;
+  /**
+   * Leading node (icon / avatar / flag) shown before the label in BOTH the option row and the
+   * trigger once selected. Keep it small (≈1em / a 16–20px avatar) so the trigger stays one line.
+   */
+  icon?: React.ReactNode;
   /** Optgroup-style heading this option belongs to (rendered once, in first-seen order). */
   group?: string;
   disabled?: boolean;

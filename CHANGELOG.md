@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `SearchSelect` / data-driven `Select` options gain an `icon` field (avatar / flag / lucide node).
+  It renders before the label in the option rows AND on the trigger once selected — so a picked
+  account/person/country shows its icon at rest, not just plain label text. No `renderOption` needed
+  for the common icon-with-label case.
+
+## [13.6.0]
+
+### Added
+
 - `Button` gains a `count` prop — a trailing borderless counter pill for filter tabs / segmented
   toggles (e.g. "Chờ bay 18"). Formatted with `Intl.NumberFormat` in the active locale and styled per
   variant (translucent foreground on filled, muted fill on light), so you never nest a bordered
