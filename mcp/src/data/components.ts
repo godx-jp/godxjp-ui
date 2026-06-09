@@ -105,6 +105,13 @@ export const COMPONENTS: ComponentEntry[] = [
         defaultValue: "false",
         description: 'Pin footer to viewport bottom on scroll — pairs with variant="narrow".',
       },
+      {
+        name: "fill",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Grow the body to fill the remaining shell height. Default false = top-packed, content-height (short pages leave no stretched void). Enable for a full-height DataTable, SplitPane, or a chat surface.",
+      },
     ],
     usage: [
       "DO: Always wrap every page's content in PageContainer — it is the mandatory page shell. Pass `title` (required, rendered as `<h1>`) for every page; omitting it leaves the page without an accessible heading.",
@@ -113,6 +120,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "DO: Pass `breadcrumb` as an ordered array of `{ label, to? }` objects from root to current page. The last item is automatically rendered without a link and receives `aria-current='page'`; earlier items with `to` become router `<Link>` elements. Never hand-roll a breadcrumb nav inside a PageContainer.",
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
       "DON'T: Confuse PageContainer's prop names with the old PageHeader's prop names — PageContainer uses `subtitle` (not `description`) and `extra` (not `actions`). If you see those legacy names in old code, migrate them to PageContainer.",
+      "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`. DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
     ],
     useCases: [
       "A master list page (e.g. invoices, journal entries, customers) where the header holds the page title, a 'New Invoice' button in `extra`, a breadcrumb trail, and a full-bleed DataTable as the body — use `variant='flush'` + `<PageContainer.Inset>` for the Toolbar above the table.",
@@ -121,10 +129,11 @@ export const COMPONENTS: ComponentEntry[] = [
       "A dashboard page with KPI cards and chart sections — use `variant='default'` with `children={<Flex direction='col' gap='lg'>…</Flex>}` to vertically stack multiple Card/StatCard sections beneath the page title.",
       "Any deep-nav page in a multi-level admin (e.g. Accounting > Ledger > Journal Entry #42) where a 3-segment breadcrumb trail provides back-navigation without browser history dependence.",
       "A high-density data reconciliation page where an analyst needs to see maximum rows — use `density='compact'` to tighten all spacing across the DataTable, Toolbar, and controls in a single prop.",
+      "A chat / messaging detail page where the message list should scroll inside the page and the composer stays pinned at the bottom — use `fill` so the body occupies the full shell height, with `footer={<Composer/>}` + `stickyFooter`. Without `fill` the page would top-pack and the composer would float mid-screen on a tall viewport.",
     ],
     related: [
       "PageContainer.Inset — use INSIDE a `variant='flush'` PageContainer to re-introduce horizontal padding for strips like Toolbar or intro text that should align with the page header, while the surrounding DataTable stays full-bleed. Not a standalone page shell.",
-      "PageContainer — always use PageContainer for new pages; it supports `children`, `footer`, `variant`, `density`, and `stickyFooter`. Legacy code using the old prop names (`description` → `subtitle`, `actions` → `extra`) should be migrated to PageContainer.",
+      "PageContainer — always use PageContainer for new pages; it supports `children`, `footer`, `variant`, `density`, `stickyFooter`, and `fill`. Legacy code using the old prop names (`description` → `subtitle`, `actions` → `extra`) should be migrated to PageContainer.",
       "AppShell — the outer shell that owns the sidebar/topbar layout grid; PageContainer lives inside AppShell's `children` slot. Do not put AppShell inside PageContainer — the nesting order is AppShell → PageContainer.",
       "SplitPane — use instead of PageContainer when the page body needs a fixed-width aside panel alongside main content (e.g. a detail drawer next to a list). PageContainer has no aside slot; SplitPane fills that gap and can itself be placed inside PageContainer's children.",
     ],

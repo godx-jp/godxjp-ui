@@ -906,7 +906,12 @@ primitive, see gaps handling in design-to-page/gaps-extend-or-ask + report-bug.`
 1–2 hero facts + ONE primary list/form + contextual actions; push tertiary content to
 a Sheet/Dialog/next page. An 8-stat-card wall is a red flag. Use real page chrome
 (AppShell/Sidebar/Topbar/PageContainer) — content never touches the viewport edge,
-two bordered surfaces never touch (間/breathing via Stack gap). Exactly ONE --primary
+two bordered surfaces never touch (間/breathing via Stack gap). PageContainer is
+top-packed by default: a short page on a tall viewport leaves NO stretched void
+(the page background just spans the shell) — never add min-h-screen / flex-1 / a
+spacer div to fight it. Reach for PageContainer fill ONLY when the body must own
+the full height: a full-height DataTable, a SplitPane, or a chat surface whose
+composer is pinned to the bottom via footer + stickyFooter. Exactly ONE --primary
 action per view; status uses the FIXED semantic mapping (success/warning/info/
 attention/danger) — never recolor a wa-iro hue into a role, never use --primary for
 status. Pick density up front (compact 28 heavy-table / default 32 / comfortable 44

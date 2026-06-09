@@ -359,10 +359,21 @@
     margin-top: var(--space-1);
   }
 
+  /* Default: content-height + top-packed. The container's min-height:100% keeps
+   * the page background spanning the viewport-tall shell, but the body itself is
+   * NOT stretched — so short pages no longer leave a jarring void below their
+   * content (gh#103). Opt into a viewport-filling body with `fill`. */
   .ui-page-body {
-    flex: 1;
     min-width: 0;
     container-type: inline-size;
+  }
+
+  /* fill = body grows to fill the remaining shell height (full-height DataTable,
+   * split-pane, or a chat surface whose message list scrolls and whose composer
+   * is pinned to the bottom via `footer` + `stickyFooter`). */
+  .ui-page-container--fill .ui-page-body {
+    flex: 1;
+    min-height: 0;
   }
 
   .ui-page-footer {

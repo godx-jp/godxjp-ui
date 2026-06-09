@@ -293,6 +293,51 @@ export default function Demo() {
           </CardContent>
         </Card>
       </PageContainer>
+
+      {/* ── 6. fill — body height behaviour on a tall shell (gh#103) ──
+          Each PageContainer sits in a fixed-height framed box that stands in for the
+          viewport-tall app shell, so the two behaviours are visible side by side. */}
+      <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+        {/* Default: top-packed. Short content does NOT stretch — the space below is
+            just neutral page background, never a jarring void. */}
+        <div className="h-80 overflow-auto rounded-md border">
+          <PageContainer title="既定（top-pack）" subtitle="fill なし — 余白は中立な背景">
+            <Card>
+              <CardContent>
+                <Text as="p" tone="muted">
+                  短いコンテンツでも下に空白の「穴」は出ません。
+                </Text>
+              </CardContent>
+            </Card>
+          </PageContainer>
+        </div>
+
+        {/* fill: body grows to fill the shell; the composer footer pins to the bottom. */}
+        <div className="h-80 overflow-auto rounded-md border">
+          <PageContainer
+            fill
+            title="fill — 全高ボディ"
+            subtitle="メッセージ一覧が伸び、コンポーザーは下部固定"
+            footer={
+              <Flex gap="sm" align="center">
+                <Button size="sm" variant="outline">
+                  添付
+                </Button>
+                <Button size="sm">送信</Button>
+              </Flex>
+            }
+            stickyFooter
+          >
+            <Card>
+              <CardContent>
+                <Text as="p" tone="muted">
+                  ボディがシェルの残り高さを占有し、フッター（コンポーザー）が下部に固定されます。
+                </Text>
+              </CardContent>
+            </Card>
+          </PageContainer>
+        </div>
+      </ResponsiveGrid>
     </Flex>
   );
 }

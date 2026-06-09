@@ -26,6 +26,13 @@ export type PageContainerProp = {
   variant?: PageContainerVariantProp;
   /** Pin footer to viewport bottom on scroll — pairs well with `variant="narrow"`. */
   stickyFooter?: boolean;
+  /**
+   * Grow the body to fill the remaining shell height. Default `false` (top-packed,
+   * content-height — short pages leave no stretched void, gh#103). Enable for a
+   * full-height DataTable, SplitPane, or a chat surface whose composer is pinned
+   * to the bottom via `footer` + `stickyFooter`.
+   */
+  fill?: boolean;
   children?: ChildrenProp;
   className?: ClassNameProp;
 };

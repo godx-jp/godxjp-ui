@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { renderWithUi, screen } from "@/test/render";
+import { expectNoA11yViolations } from "@/test/a11y";
 import { PageContainer } from "../page-container";
 import { Button } from "../../general/button";
 
@@ -58,6 +59,26 @@ describe("PageContainer", () => {
     expect(container.firstChild).toHaveClass("ui-page-container--sticky-footer");
   });
 
+  it("does not stretch the body by default (top-packed, no fill — gh#103)", () => {
+    // Default page must NOT carry the fill modifier; the body stays content-height
+    // so short pages leave no stretched void below the content.
+    const { container } = renderWithUi(
+      <PageContainer title="Detail">
+        <p>Short content</p>
+      </PageContainer>,
+    );
+    expect(container.firstChild).not.toHaveClass("ui-page-container--fill");
+  });
+
+  it("applies fill modifier when fill is enabled", () => {
+    const { container } = renderWithUi(
+      <PageContainer title="Inbox" fill>
+        <p>Full-height content</p>
+      </PageContainer>,
+    );
+    expect(container.firstChild).toHaveClass("ui-page-container--fill");
+  });
+
   it("renders children in page body", () => {
     renderWithUi(
       <PageContainer title="Page">
@@ -65,5 +86,18 @@ describe("PageContainer", () => {
       </PageContainer>,
     );
     expect(screen.getByText("Body content")).toBeInTheDocument();
+  });
+
+  it("has no a11y violations with header, body, and footer", async () => {
+    await expectNoA11yViolations(
+      <PageContainer
+        title="Detail"
+        subtitle="A short page"
+        extra={<Button>Create</Button>}
+        footer={<Button>Save</Button>}
+      >
+        <p>Body content</p>
+      </PageContainer>,
+    );
   });
 });

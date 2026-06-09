@@ -32,6 +32,7 @@ function PageContainerRoot({
   density = "default",
   variant = "default",
   stickyFooter = false,
+  fill = false,
   children,
   className,
 }: PageContainerProp) {
@@ -42,6 +43,7 @@ function PageContainerRoot({
         densityClass[density],
         pageContainerVariantClass[variant],
         stickyFooter && "ui-page-container--sticky-footer",
+        fill && "ui-page-container--fill",
         className,
       )}
     >
