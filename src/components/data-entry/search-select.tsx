@@ -40,6 +40,7 @@ export function SearchSelect({
   loadOptions,
   renderOption,
   selectedLabel,
+  selectedIcon,
   placeholder,
   searchPlaceholder,
   emptyMessage,
@@ -161,6 +162,9 @@ export function SearchSelect({
   const currentLabel = value
     ? (selectedOption?.label ?? selectedLabel ?? value)
     : resolvedPlaceholder;
+  // Icon for the trigger: the loaded option's icon, else `selectedIcon` for an async value whose
+  // option page hasn't arrived yet (the trigger counterpart of `selectedLabel`).
+  const currentIcon = value ? (selectedOption?.icon ?? selectedIcon) : null;
 
   const select = (option: SearchSelectOptionProp) => {
     if (option.disabled) return;
@@ -238,9 +242,9 @@ export function SearchSelect({
                 !value && "text-muted-foreground",
               )}
             >
-              {selectedOption?.icon ? (
+              {currentIcon ? (
                 <span className="flex shrink-0 items-center" aria-hidden="true">
-                  {selectedOption.icon}
+                  {currentIcon}
                 </span>
               ) : null}
               <span className="truncate">{currentLabel}</span>

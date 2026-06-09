@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   It renders before the label in the option rows AND on the trigger once selected — so a picked
   account/person/country shows its icon at rest, not just plain label text. No `renderOption` needed
   for the common icon-with-label case.
+- `SearchSelect` / `Select` also gain a `selectedIcon` prop — the trigger counterpart of
+  `selectedLabel`: it shows a leading icon for an async preset value whose option page hasn't loaded
+  yet (e.g. an edit form pre-filled from the server), so the avatar/flag shows at rest.
 
 ## [13.6.0]
 

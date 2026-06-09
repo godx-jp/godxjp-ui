@@ -302,6 +302,11 @@ export type SearchSelectProp = {
   renderOption?: (option: SearchSelectOptionProp) => React.ReactNode;
   /** Label for the current value when its option isn't in the loaded page (avoids a flash of id). */
   selectedLabel?: string;
+  /**
+   * Leading icon for the current value when its option isn't loaded yet (async + preset value) —
+   * the trigger counterpart of `selectedLabel`, so an edit form shows the picked icon at rest.
+   */
+  selectedIcon?: React.ReactNode;
   placeholder?: PlaceholderProp;
   searchPlaceholder?: PlaceholderProp;
   emptyMessage?: EmptyMessageProp;

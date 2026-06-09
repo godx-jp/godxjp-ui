@@ -30,4 +30,16 @@ describe("SearchSelect — option icon", () => {
     // trigger now reflects the newly-selected option's icon + label
     expect(trigger()).toHaveTextContent("Suzuki");
   });
+
+  it("uses selectedIcon on the trigger when the value's option is not loaded (async preset)", () => {
+    renderWithUi(
+      <SearchSelect
+        value="999"
+        selectedLabel="読込中の科目"
+        selectedIcon={<span data-testid="sel-ic">◎</span>}
+      />,
+    );
+    expect(trigger()).toHaveTextContent("読込中の科目");
+    expect(screen.getByTestId("sel-ic")).toBeInTheDocument();
+  });
 });
