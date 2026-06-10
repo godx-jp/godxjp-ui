@@ -14,7 +14,7 @@
     padding: var(--badge-space-y) var(--badge-space-x);
     border-radius: var(--radius-md);
     border-width: 1px;
-    font-size: var(--font-size-xs);
+    font-size: var(--badge-font-size);
     font-weight: var(--font-weight-medium);
     /* A status chip must read as one unit — never wrap its label across lines,
      * especially inside narrow table cells. */

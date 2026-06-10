@@ -4,4 +4,7 @@
   --badge-space-gap: var(--space-inline-xs);
   --badge-space-x: var(--space-2);
   --badge-space-y: var(--space-1);
+  /* Small-by-design (badge/pill/counter). A knob (rule #45) so a service can
+   * re-tune badge text without touching the global --font-size-xs step. */
+  --badge-font-size: var(--font-size-xs);
 }

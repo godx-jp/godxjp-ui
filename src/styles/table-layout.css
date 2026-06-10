@@ -65,7 +65,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-inline-sm);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .ui-data-table-bulk-actions {

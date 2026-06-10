@@ -349,6 +349,11 @@ export const VOCABULARY_TOKEN_RULES: CardinalRule[] = [
     title: "Density Aliases",
     body: "Design tokens: density CSS MUST select token aliases and MUST NOT introduce new raw component dimensions when a token tier can hold the value.",
   },
+  {
+    number: 46,
+    title: "Typography is tokens, default is base",
+    body: "A UI framework gives consumers knobs: every font-size in `src/styles/*.css` MUST reference a token — the global modular scale `var(--font-size-{2xs|xs|sm|base|lg|xl|2xl})` or a per-component `var(--{component}-…-font-size)` knob (rule #45) — never a hard-coded literal (`font-size: 12px` can't be re-themed). The DEFAULT body size is `--font-size-base`; components render body/UI text at `base`, not at the `sm` alias. Smaller-by-design text (badge, section label, caption) is a component token defaulting to a small step (`--badge-font-size: var(--font-size-xs)`), so a service re-tunes that part without moving the global scale. The `sm`/`xs` tokens stay for the explicit `<Text size>` API. Enforced by `check:typography`."
+  },
 ];
 
 export function findRule(num: number): CardinalRule | undefined {

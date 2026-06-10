@@ -11,7 +11,7 @@
     border-radius: var(--radius-pill);
     background: hsl(var(--muted));
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     font-weight: var(--font-weight-medium);
   }
 
@@ -191,7 +191,7 @@
 
   .ui-timeline-note {
     margin-top: var(--space-1);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 }
 
@@ -239,7 +239,7 @@
 }
 .ui-accordion-content {
   overflow: hidden;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
 }
 .ui-accordion-content-inner {
   padding-bottom: var(--space-4);
