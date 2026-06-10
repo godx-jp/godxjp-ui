@@ -37,3 +37,40 @@ pnpm preview:build && pnpm test`.
 
 See `docs/STANDARDS-vocabulary-tokens.md`, `docs/PROPS-VOCABULARY.md`, and
 `docs/roadmap/international-standardization.md` for the full rules and the i18n/a11y/vocab audit.
+
+## Design-knob discipline (cardinal rules #44/#45)
+
+Hard-won from real service consumption — check these BEFORE writing any value into
+`src/styles/*.css`:
+
+- **Chrome is a token, default quiet (#44).** Dividers / separator borders / chrome-only padding
+  never get hard-coded; they read a token whose default is the quietest state (`none`, balanced
+  rhythm). Services opt IN via theme (`--page-header-divider: 1px solid hsl(var(--border))`).
+- **Every service-tunable constant gets a knob (#45).** Ask: *"would a service theme.css want to
+  change this to match its design grid?"* (label widths, label↔control gaps, header insets…).
+  If yes, it MUST be a documented component token — theme sets it once globally, props override
+  per instance. If the only route is forking CSS, that's a library gap: fix the library, never
+  patch the consumer app.
+
+### Add-a-token checklist (ALL steps, in order)
+
+1. Declare it in the right tier file — `src/tokens/{foundation.css | semantic/* | components/*}`
+   (new `components/<name>.css` files need an `@import` in `src/tokens/base.css`; names must pass
+   `check-token-tiers` — `--{component}-{part}-{property}`).
+2. Reference it from `src/styles/*.css` via `var(...)` — keep the old value as the default so the
+   change is opt-in unless the default itself is the fix.
+3. Document it: `mcp/src/data/tokens.ts` entry (+ the component's `howToUse` in
+   `mcp/src/data/components.ts` when behaviour changes) → rebuild `mcp/` (`cd mcp && pnpm build`).
+4. CHANGELOG entry under `[Unreleased]` (Added for new tokens, Changed for default changes).
+5. Guards + build: `node scripts/check-token-tiers.mjs`, the mcp sync checks, then `pnpm build`.
+
+## Local-link development (file:-linked consumer apps)
+
+Consumer apps may link this repo directly (`"@godxjp/ui": "file:.../godxjp-ui"`) to develop the
+framework against real screens. Consumers import **`dist/`**, never `src/` — so:
+
+- **Keep `pnpm dev` running** (tsup watch + CSS-tree re-copy). A `src/` edit without a dist
+  rebuild ships a stale package; a missing export white-screens the consumer
+  (`does not provide an export named …`).
+- After a one-off edit without the watcher, run `pnpm build` (TS + CSS) — `tsup` alone skips the
+  CSS trees; `node scripts/copy-styles.mjs` covers a CSS-only change.
