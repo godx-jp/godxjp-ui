@@ -210,7 +210,15 @@ function DataSelect({
   id,
   className,
   "data-testid": dataTestId,
+  ...rest
 }: SelectDataProp) {
+  // FormField injects a11y wiring (aria-labelledby/-describedby/-errormessage/
+  // -invalid) via cloneElement — forward it to the trigger or the control loses
+  // its accessible name. Only aria-* passes through; anything else in rest
+  // (e.g. a misused prop) must not leak onto the DOM button.
+  const ariaProps = Object.fromEntries(
+    Object.entries(rest as Record<string, unknown>).filter(([key]) => key.startsWith("aria-")),
+  );
   const searchable = showSearch ?? Boolean(loadOptions);
 
   if (searchable) {
@@ -267,7 +275,7 @@ function DataSelect({
       disabled={disabled}
       name={name}
     >
-      <SelectTrigger id={id} data-testid={dataTestId} className={className}>
+      <SelectTrigger id={id} data-testid={dataTestId} className={className} {...ariaProps}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

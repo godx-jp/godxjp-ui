@@ -127,6 +127,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
       "DON'T: Confuse PageContainer's prop names with the old PageHeader's prop names — PageContainer uses `subtitle` (not `description`) and `extra` (not `actions`). If you see those legacy names in old code, migrate them to PageContainer.",
       "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`. DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
+      "DO: Know the header draws NO bottom divider by default — it is governed by the semantic token `--page-header-divider` (default `none`). A service theme opts in once, globally, with `--page-header-divider: 1px solid hsl(var(--border));` in its theme CSS. Never re-create the divider with a `border-b` utility on the header or a `<Separator>` under the title; `variant='ghost'` stays divider-less regardless of the token.",
     ],
     useCases: [
       "A master list page (e.g. invoices, journal entries, customers) where the header holds the page title, a 'New Invoice' button in `extra`, a breadcrumb trail, and a full-bleed DataTable as the body — use `variant='flush'` + `<PageContainer.Inset>` for the Toolbar above the table.",
@@ -2831,6 +2832,191 @@ export function PrioritySelect({ value, onValueChange }) {
 ]} />`,
     storyPath: "data-entry/RadioGroup.stories.tsx",
     rules: [23],
+  },
+  {
+    name: "MonthPicker",
+    group: "data-entry",
+    tagline:
+      "Year/month (yyyy/MM) input with an Ant-Design-style month-grid popover — a year chevron header over a 3x4 grid of the twelve months. The input stays typeable; the grid is the visual affordance.",
+    props: [
+      {
+        name: "value",
+        type: "Date | undefined",
+        description: "Controlled value — first day of the selected month. Pass undefined to clear.",
+      },
+      {
+        name: "defaultValue",
+        type: "Date | undefined",
+        description: "Uncontrolled initial value.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: Date | undefined) => void",
+        description: "Fires on a grid pick, on a complete typed yyyy/MM, and on clear.",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        defaultValue: '"yyyy/mm"',
+        description: "Placeholder shown while empty.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Disables the input, the clear button and the grid trigger.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Extra classes on the control shell (width/margin overrides).",
+      },
+      {
+        name: "id",
+        type: "string",
+        description:
+          "Wired to the inner input; auto-generated when omitted so the field always has an id.",
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Form field name — submits the display text (yyyy/MM).",
+      },
+      {
+        name: "fromYear",
+        type: "number",
+        description: "Inclusive lower bound for the year navigation.",
+      },
+      {
+        name: "toYear",
+        type: "number",
+        description: "Inclusive upper bound for the year navigation.",
+      },
+      {
+        name: "allowClear",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Inline clear button while a value is set.",
+      },
+    ],
+    usage: [
+      "DO use MonthPicker for every yyyy/MM (year-month) field — never a bare Input with a YYYY/MM helper text.",
+      "DO wrap it in FormField like every other labelled control; FormField injects id/aria wiring.",
+      "DO NOT compose two MonthPickers to fake a from~to range — that is MonthRangePicker (one control shell, like DateRangePicker).",
+    ],
+    related: [
+      "DatePicker — full date (yyyy-MM-dd); MonthPicker when the day is meaningless (締め年月, 集計年月, 商談発生年月).",
+      "MonthRangePicker — use for a yyyy/MM from~to pair; one input-styled control, never two MonthPickers side-by-side.",
+    ],
+    example: `import { useState } from "react";
+import { MonthPicker, FormField } from "@godxjp/ui/data-entry";
+
+export function OrderMonthField() {
+  const [ym, setYm] = useState<Date | undefined>(undefined);
+
+  return (
+    <FormField label="受注日年月">
+      <MonthPicker name="search_order_date_ym" value={ym} onValueChange={setYm} />
+    </FormField>
+  );
+}`,
+    storyPath: "data-entry/MonthPicker.stories.tsx",
+    rules: [3, 6, 13, 31, 43],
+  },
+  {
+    name: "MonthRangePicker",
+    group: "data-entry",
+    tagline:
+      "Year/month (yyyy/MM) RANGE rendered as ONE input-styled control `[ from → to  ✕ 📅 ]` (Ant RangePicker convention, same shell as DateRangePicker) with an Ant-style month-grid popover. Both inputs stay typeable; picks are two-step with from ≤ to always enforced.",
+    props: [
+      {
+        name: "value",
+        type: "DateRange | undefined",
+        description:
+          "Controlled range — both edges normalized to the first day of their month. Pass undefined to clear.",
+      },
+      {
+        name: "defaultValue",
+        type: "DateRange | undefined",
+        description: "Uncontrolled initial range.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: DateRange | undefined) => void",
+        description:
+          "Fires on each grid step ({from, to: undefined} then the complete pair), on a complete typed yyyy/MM at either edge, and on clear. Never emits an inverted range — a backwards pick/typing is swapped so from ≤ to.",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        defaultValue: '"yyyy/mm"',
+        description: "Placeholder shown in both inputs while empty.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Disables both inputs, the clear button and the grid trigger.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Extra classes on the control shell (width/margin overrides).",
+      },
+      {
+        name: "id",
+        type: "string",
+        description:
+          "Wired to the from input; the to input gets `${id}-to`. Auto-generated when omitted.",
+      },
+      {
+        name: "name",
+        type: "string",
+        description:
+          "Form field name — emits the range as `${name}_from` / `${name}_to` yyyy/MM fields.",
+      },
+      {
+        name: "fromYear",
+        type: "number",
+        description: "Inclusive lower bound for the year navigation.",
+      },
+      {
+        name: "toYear",
+        type: "number",
+        description: "Inclusive upper bound for the year navigation.",
+      },
+      {
+        name: "allowClear",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Inline clear button (clears the WHOLE range) while a value is set.",
+      },
+    ],
+    usage: [
+      "DO use MonthRangePicker for every yyyy/MM from~to pair — never two MonthPickers (or bare Inputs) separated by ~; a range is ONE control, exactly like DateRangePicker.",
+      "DO rely on its built-in range validation: a backwards grid pick or typed pair is swap-normalized so the emitted range always satisfies from ≤ to — do not re-validate order in the app.",
+      "DO wrap it in FormField like every other labelled control; FormField injects id/aria wiring.",
+      "Grid picks are two-step (from, then to) and reset-on-complete: picking while a complete range is held STARTS a new range, so the start month is never stuck.",
+    ],
+    related: [
+      "MonthPicker — single yyyy/MM value; MonthRangePicker when the field is a from~to pair (商談発生年月の範囲検索, 集計期間).",
+      "DateRangePicker — full-date (yyyy-MM-dd) range with the same one-control shell; MonthRangePicker when the day is meaningless.",
+    ],
+    example: `import { useState } from "react";
+import type { DateRange } from "react-day-picker";
+import { MonthRangePicker, FormField } from "@godxjp/ui/data-entry";
+
+export function NegotiationYmField() {
+  const [range, setRange] = useState<DateRange | undefined>(undefined);
+
+  return (
+    <FormField label="商談発生年月">
+      <MonthRangePicker name="search_negotiation_ym" value={range} onValueChange={setRange} />
+    </FormField>
+  );
+}`,
+    storyPath: "data-entry/MonthRangePicker.stories.tsx",
+    rules: [3, 6, 13, 31, 43],
   },
   {
     name: "DatePicker",

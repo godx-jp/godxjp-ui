@@ -35,8 +35,14 @@ export function FormField({
   const labelAlign = form?.labelAlign ?? "end";
   const collapseBelow = form?.collapseBelow ?? "md";
 
-  const helperId = helper ? `${id}-helper` : undefined;
-  const errorId = error ? `${id}-error` : undefined;
+  // `id` is optional: when omitted the field auto-generates one and injects it
+  // into the child, so every control under FormField always carries an id
+  // (Chrome's "form field element should have an id or name" stays silent).
+  const autoId = React.useId();
+  const resolvedId = id ?? autoId;
+  const labelId = `${resolvedId}-label`;
+  const helperId = helper ? `${resolvedId}-helper` : undefined;
+  const errorId = error ? `${resolvedId}-error` : undefined;
 
   if (
     typeof process !== "undefined" &&
@@ -50,8 +56,16 @@ export function FormField({
     );
   }
 
+  const childProps = React.isValidElement(children)
+    ? (children.props as Record<string, unknown>)
+    : undefined;
   const childWithA11y = React.isValidElement(children)
     ? React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
+        // The label is associated via aria-labelledby (not <label for>): composite
+        // controls (Radio.Group, checkbox lists, range pairs) have no labelable root,
+        // and a dangling `for` triggers Chrome's "Incorrect use of <label>" issue.
+        id: (childProps?.id as string | undefined) ?? resolvedId,
+        "aria-labelledby": (childProps?.["aria-labelledby"] as string | undefined) ?? labelId,
         // Helper and error can coexist: helper stays on aria-describedby, the error on
         // aria-errormessage (surfaced when aria-invalid is true).
         "aria-describedby": helperId,
@@ -78,13 +92,23 @@ export function FormField({
       className={cn("ui-form-field", className)}
     >
       <div data-slot="form-field-label" className="ui-form-field-label">
-        <Label htmlFor={id} className="ui-inline-xs">
-          <span>{label}</span>
-          {required && (
-            <span aria-hidden="true" className="text-destructive">
-              *
-            </span>
-          )}
+        {/* asChild renders a <span>: the control is named via aria-labelledby, and a
+            real <label> whose `for` can dangle (composite children) is a Chrome a11y
+            issue. Click-to-focus is preserved by hand. */}
+        <Label asChild id={labelId} className="ui-inline-xs">
+          <span
+            onClick={() => {
+              const el = document.getElementById(resolvedId);
+              if (el && el instanceof HTMLElement) el.focus();
+            }}
+          >
+            <span>{label}</span>
+            {required && (
+              <span aria-hidden="true" className="text-destructive">
+                *
+              </span>
+            )}
+          </span>
         </Label>
         {labelAddon}
       </div>

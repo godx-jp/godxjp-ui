@@ -40,6 +40,18 @@ export const TOKENS: TokenEntry[] = [
   },
   { name: "--info", category: "semantic", tier: "semantic", role: "Information status role." },
   { name: "--attention", category: "semantic", tier: "semantic", role: "Attention status role." },
+  {
+    name: "--page-header-divider",
+    category: "semantic",
+    tier: "semantic",
+    role: "PageContainer header bottom divider. Default none; a service theme opts in with `1px solid hsl(var(--border))`.",
+  },
+  {
+    name: "--page-header-pad-bottom",
+    category: "semantic",
+    tier: "semantic",
+    role: "PageContainer header bottom inset. Defaults to page top padding minus the section gap so the title band is vertically balanced.",
+  },
   { name: "--badge-space-*", category: "component", tier: "component", role: "Badge spacing." },
   {
     name: "--card-*",
@@ -54,6 +66,18 @@ export const TOKENS: TokenEntry[] = [
     role: "Shared form control heights, padding, icons, and focus chrome.",
   },
   { name: "--table-*", category: "component", tier: "component", role: "Table row/cell sizing." },
+  {
+    name: "--form-label-width",
+    category: "component",
+    tier: "component",
+    role: "Label column width in horizontal Form layout. Default max-content; a service theme sets it once (e.g. 110px) — the labelWidth prop overrides per form/field.",
+  },
+  {
+    name: "--form-label-gap",
+    category: "component",
+    tier: "component",
+    role: "Label↔control column gap in horizontal Form layout. Default 16px (--space-4).",
+  },
   {
     name: "--dialog-* / --alert-* / --skeleton-*",
     category: "component",

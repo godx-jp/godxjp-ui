@@ -103,6 +103,12 @@
       "clear": "Clear selection",
       "loading": "Loading…",
       "empty": "No results"
+    },
+    "monthPicker": {
+      "openGrid": "Open month grid",
+      "previousYear": "Previous year",
+      "nextYear": "Next year",
+      "placeholder": "yyyy/mm"
     }
   },
   "feedback": {
@@ -191,7 +197,10 @@
       "page": "Page {page}",
       "pageSize": "Page size",
       "pageSizeOption": "{size} / page",
-      "total": { "one": "Total {total} item", "other": "Total {total} items" }
+      "total": {
+        "one": "Total {total} item",
+        "other": "Total {total} items"
+      }
     }
   },
   "locale": {

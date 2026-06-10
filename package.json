@@ -281,6 +281,7 @@
     "docs:sync-primitives": "node preview/scripts/sync-primitive-docs.mjs && prettier --write \"docs/primitives/**/*.tsx\"",
     "audit": "node scripts/ui-audit.mjs",
     "build": "tsup && node scripts/copy-styles.mjs",
+    "dev": "node scripts/dev.mjs",
     "prepublishOnly": "pnpm run build"
   },
   "peerDependencies": {

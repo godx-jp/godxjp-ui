@@ -221,6 +221,11 @@ export const CARDINAL_RULES: CardinalRule[] = [
     title: "Props & Tokens Before Customization",
     body: "Before reaching for a Tailwind class, inline `style`, or extra CSS, you MUST first check whether the component already supports the need via a PROP, a design TOKEN, or a layout/typography PRIMITIVE. godx-ui is meant to be enough on its own (Ant-Design-style): `className` is for genuine one-offs only — never to redo what an API already does. Specifically: (1) NEVER hand-roll typography — no `text-[13px]`/`text-[11px]` arbitrary px (bypasses the golden type scale), no `font-medium`/`font-semibold`/`text-muted-foreground` on a raw `<span>`; use `<Text size tone weight tabular mono>` / `<Heading level>`. (2) NEVER hand-roll a trivial flex/grid wrapper; use `<Flex>` / `<ResponsiveGrid>` / `<PageContainer>`. (3) NEVER set a control's radius/height/colour with a utility when a `shape`/`size`/`tone`/token exists. If a real need has NO prop/token/primitive, that is a library GAP — file it (draft_bug_report), don't paper over it with ad-hoc Tailwind.",
   },
+  {
+    number: 43,
+    title: "Every form control goes through FormField",
+    body: "Consumers MUST wrap every labelled form control (Input, Select, DatePicker, DateRangePicker, NumberInput, Radio.Group, Checkbox groups, range pairs, ...) in FormField — it owns the label (aria-labelledby, never a dangling <label for>), auto-generates/injects the control id, and wires aria-describedby/aria-errormessage/aria-invalid. Bare controls are the rare exception (e.g. a toolbar quick-filter with its own aria-label) and must carry id/name + aria-label themselves. Never hand-roll a label+control stack with Text/Label.",
+  },
 ];
 
 export const VOCABULARY_TOKEN_RULES: CardinalRule[] = [

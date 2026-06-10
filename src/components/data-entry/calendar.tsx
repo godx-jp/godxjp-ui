@@ -28,7 +28,10 @@ export function Calendar({
       // The calendar has an intrinsic width (7 fixed-size day columns); never stretch it to
       // fill a wide container — w-fit shrink-wraps the grid so the nav sits beside it, not at
       // the container edges. Consumers can still widen via `className` if they truly need to.
-      className={cn("w-fit p-3", className)}
+      // `relative` is load-bearing: the absolute nav must anchor to THIS root. Without it the
+      // containing block becomes the nearest transformed ancestor (Radix PopoverContent), which
+      // throws the chevrons to the popover corners.
+      className={cn("relative w-fit p-3", className)}
       classNames={{
         months: cn("flex flex-col gap-4 sm:flex-row", classNames?.months),
         month: cn("relative flex flex-col gap-4", classNames?.month),
@@ -37,7 +40,13 @@ export function Calendar({
           classNames?.month_caption,
         ),
         caption_label: cn("text-sm font-medium", classNames?.caption_label),
-        nav: cn("absolute inset-x-0 top-3 flex items-center justify-between px-1", classNames?.nav),
+        // z-10 is load-bearing: `month` below is position:relative and later in the DOM, so
+        // without a z-index it paints OVER these buttons — they render but never receive the
+        // click (the month caption swallows it) and the calendar looks frozen.
+        nav: cn(
+          "absolute inset-x-0 top-3 z-10 flex items-center justify-between px-1",
+          classNames?.nav,
+        ),
         button_previous: cn(
           buttonVariants({ variant: "outline" }),
           controlIconSmClass,

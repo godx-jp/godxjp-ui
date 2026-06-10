@@ -57,7 +57,7 @@
     ) {
     grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
     align-items: start;
-    column-gap: var(--space-4);
+    column-gap: var(--form-label-gap);
     row-gap: var(--space-stack-xs);
   }
   .ui-form-field[data-collapse-below="false"]:is([data-layout="horizontal"], [data-layout="inline"])
@@ -80,7 +80,7 @@
       ) {
       grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
       align-items: start;
-      column-gap: var(--space-4);
+      column-gap: var(--form-label-gap);
       row-gap: var(--space-stack-xs);
     }
     .ui-form-field[data-collapse-below="sm"]:is([data-layout="horizontal"], [data-layout="inline"])
@@ -104,7 +104,7 @@
       ) {
       grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
       align-items: start;
-      column-gap: var(--space-4);
+      column-gap: var(--form-label-gap);
       row-gap: var(--space-stack-xs);
     }
     .ui-form-field[data-collapse-below="md"]:is([data-layout="horizontal"], [data-layout="inline"])
@@ -128,7 +128,7 @@
       ) {
       grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
       align-items: start;
-      column-gap: var(--space-4);
+      column-gap: var(--form-label-gap);
       row-gap: var(--space-stack-xs);
     }
     .ui-form-field[data-collapse-below="lg"]:is([data-layout="horizontal"], [data-layout="inline"])
@@ -152,7 +152,7 @@
       ) {
       grid-template-columns: var(--form-label-width, max-content) minmax(0, 1fr);
       align-items: start;
-      column-gap: var(--space-4);
+      column-gap: var(--form-label-gap);
       row-gap: var(--space-stack-xs);
     }
     .ui-form-field[data-collapse-below="xl"]:is([data-layout="horizontal"], [data-layout="inline"])

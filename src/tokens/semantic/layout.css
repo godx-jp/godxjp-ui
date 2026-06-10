@@ -22,6 +22,17 @@
   --space-page-active-y: var(--space-page-y);
   --space-section-active: var(--space-section);
 
+  /* Full-bleed rule under the PageContainer header. OFF by default — the title/body
+   * gap already separates them; a divider is a service-theme opt-in:
+   * `--page-header-divider: 1px solid hsl(var(--border));` */
+  --page-header-divider: none;
+
+  /* Bottom inset of the page header, sized so title→body distance (this pad + the
+   * --space-section-active container gap) EQUALS the page's top padding — the title
+   * band reads vertically balanced (24 above / 24 below by default), instead of the
+   * old fixed 16px pad that left 24 above vs 32 below. */
+  --page-header-pad-bottom: calc(var(--space-page-active-y) - var(--space-section-active));
+
   /* Section "chrome" padding — the SHARED inset for header / body / footer of every overlay-ish
    * surface (Dialog · Sheet · Drawer · Card). One global knob: a service sets these once instead of
    * per-component. Vertical is tightened (16 vs the old 24) and density-aware (see density.css);

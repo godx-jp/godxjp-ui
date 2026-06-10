@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `PageContainer` header no longer draws a bottom divider by default. The rule was hard-coded
+  (`border-bottom: 1px solid`) with no off switch short of `variant="ghost"`. It is now driven
+  by the new semantic token `--page-header-divider` (default `none`); a service theme opts back
+  in with `--page-header-divider: 1px solid hsl(var(--border));`. `variant="ghost"` still forces
+  it off regardless of the token.
+- `PageContainer` header vertical rhythm is now balanced: the header's bottom pad is the new
+  semantic token `--page-header-pad-bottom`, defaulting to
+  `calc(--space-page-active-y − --space-section-active)` so the title→body distance equals the
+  page's top padding (24/24 instead of the old 24 above / 32 below when there is no subtitle).
+- Horizontal `Form` label geometry is theme-tunable: new component tokens `--form-label-width`
+  (default `max-content`; previously only reachable via the `labelWidth` prop) and
+  `--form-label-gap` (default 16px; previously hard-coded `--space-4`). A service theme sets them
+  once to match its design grid; the `labelWidth` prop still wins per form/field.
+
 ### Added
 
 - `SearchSelect` / data-driven `Select` options gain an `icon` field (avatar / flag / lucide node).

@@ -103,7 +103,8 @@ export type FormProp = React.FormHTMLAttributes<HTMLFormElement> & {
 
 /** @see FormField */
 export type FormFieldProp = {
-  id: IdProp;
+  /** Optional — auto-generated and injected into the child control when omitted. */
+  id?: IdProp;
   label: LabelProp;
   required?: RequiredProp;
   helper?: HelperProp;
@@ -209,6 +210,45 @@ export type DatePickerProp = {
   fromDate?: Date;
   toDate?: Date;
   /** Show an inline ✕ to clear the value when one is set (default true). */
+  allowClear?: boolean;
+};
+
+/** @see MonthPicker */
+export type MonthPickerProp = {
+  value?: ValueProp<Date>;
+  defaultValue?: DefaultValueProp<Date | undefined>;
+  onValueChange?: OnValueChangeProp<Date | undefined>;
+  placeholder?: PlaceholderProp;
+  disabled?: DisabledProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+  /** Form field name — submits the display text (`yyyy/MM`). */
+  name?: NameProp;
+  /** Clamp the year navigation (inclusive). */
+  fromYear?: number;
+  toYear?: number;
+  /** Show an inline ✕ to clear the value when one is set (default true). */
+  allowClear?: boolean;
+};
+
+/**
+ * @see MonthRangePicker — both edges are normalized to the FIRST day of their month
+ * (the `DateRange` shape is shared with DateRangePicker so ranges interop).
+ */
+export type MonthRangePickerProp = {
+  value?: ValueProp<DateRange>;
+  defaultValue?: DefaultValueProp<DateRange | undefined>;
+  onValueChange?: OnValueChangeProp<DateRange | undefined>;
+  placeholder?: PlaceholderProp;
+  disabled?: DisabledProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+  /** Form field name — emits the range as `${name}_from` / `${name}_to` `yyyy/MM` fields. */
+  name?: NameProp;
+  /** Clamp the year navigation (inclusive). */
+  fromYear?: number;
+  toYear?: number;
+  /** Show an inline ✕ to clear the range when one is set (default true). */
   allowClear?: boolean;
 };
 

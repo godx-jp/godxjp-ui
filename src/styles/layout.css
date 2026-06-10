@@ -312,8 +312,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-stack-sm);
-    padding-bottom: var(--space-stack-md);
-    border-bottom: 1px solid hsl(var(--border));
+    padding-bottom: var(--page-header-pad-bottom);
+    border-bottom: var(--page-header-divider);
   }
 
   .ui-page-header-row {

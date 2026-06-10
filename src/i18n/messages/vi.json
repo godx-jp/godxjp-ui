@@ -103,6 +103,12 @@
       "clear": "Xóa lựa chọn",
       "loading": "Đang tải…",
       "empty": "Không có kết quả"
+    },
+    "monthPicker": {
+      "openGrid": "Mở chọn tháng",
+      "previousYear": "Năm trước",
+      "nextYear": "Năm sau",
+      "placeholder": "yyyy/mm"
     }
   },
   "feedback": {

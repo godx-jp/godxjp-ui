@@ -1,0 +1,11 @@
+/* Form layout tokens: horizontal-layout label column geometry. */
+
+:root {
+  /* Width of the label column in horizontal/inline layout. A service theme sets
+   * this once (e.g. 110px) to align every form to its design grid; the Form/
+   * FormField `labelWidth` prop overrides per form/field. */
+  --form-label-width: max-content;
+
+  /* Column gap between the label and its control in horizontal/inline layout. */
+  --form-label-gap: var(--space-4); /* 16px */
+}

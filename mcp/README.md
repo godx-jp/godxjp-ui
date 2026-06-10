@@ -7,7 +7,7 @@ MCP-aware agent live access to:
 - 80+ component catalog (props, types, defaults, examples)
 - 14 shared prop-vocabulary types (`SizeProp`, `ColorProp`, `LoadingProp`, …)
 - 48 design tokens across the primitive / semantic / component tiers
-- 42 cardinal rules from `CLAUDE.md`
+- 43 cardinal rules from `CLAUDE.md`
 - 9 canonical copy-paste-ready patterns (sign-up, settings, data-table, …)
 - 15 design skills, each tagged by **audience** — 12 taste-family (taste / soft / minimalist /
   brutalist / gpt-tasteskill / redesign / output / brandkit / stitch / imagegen-mobile /
@@ -166,7 +166,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 | `get_skill_section` | ONE section of ONE skill          | ~2 KB           |
 | `get_component`     | Full API for one component        | ~2 KB           |
 | `get_pattern`       | Full code snippet for one pattern | ~3 KB           |
-| `get_rule`          | One cardinal rule (or all 41)     | ~500 B / ~10 KB |
+| `get_rule`          | One cardinal rule (or all 43)     | ~500 B / ~10 KB |
 | `get_vocab`         | One vocab type (or all 14)        | ~500 B / ~3 KB  |
 | `get_tokens`        | Tokens (optionally by category)   | ~5 KB           |
 
@@ -270,7 +270,7 @@ consumer/core guides are framework-native.
 | `godx-ui://prop-vocabulary`   | JSON     | Shared vocab       |
 | `godx-ui://tokens`            | JSON     | All tokens         |
 | `godx-ui://tokens/{category}` | JSON     | Tokens by category |
-| `godx-ui://rules`             | Markdown | All 42 rules       |
+| `godx-ui://rules`             | Markdown | All 43 rules       |
 | `godx-ui://rules/{number}`    | Markdown | One rule           |
 | `godx-ui://patterns`          | JSON     | Pattern index      |
 | `godx-ui://patterns/{name}`   | Markdown | One pattern        |

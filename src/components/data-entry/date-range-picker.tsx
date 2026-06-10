@@ -1,11 +1,9 @@
 import * as React from "react";
-import { CalendarIcon, X } from "lucide-react";
+import { ArrowRight, CalendarIcon, X } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime";
 import { cn } from "../../lib/utils";
-import { Button } from "../general/button";
-import { Input } from "./input";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
 import type { DateRangePickerProp } from "../../props/components/data-entry.prop";
@@ -18,9 +16,11 @@ export type {
 const ISO_HINT = "yyyy-mm-dd";
 
 /**
- * DateRangePicker — WAI-ARIA date-range combobox. Two real, typeable ISO `yyyy-MM-dd` inputs
- * hold the start/end values (form-submittable via `${name}_from` / `${name}_to`, screen-reader
- * friendly, e2e-testable by filling either input). The range calendar is the visual affordance.
+ * DateRangePicker — WAI-ARIA date-range combobox rendered as ONE input-styled control
+ * (Ant Design RangePicker convention): `[ from → to  ✕ 📅 ]`. The two inner fields stay
+ * real, typeable ISO `yyyy-MM-dd` inputs (form-submittable via `${name}_from` /
+ * `${name}_to`, screen-reader friendly, e2e-testable by filling either input); the
+ * range calendar is the visual affordance.
  */
 export function DateRangePicker({
   value: valueProp,
@@ -39,6 +39,10 @@ export function DateRangePicker({
   const { t } = useTranslation();
   const { dayPickerLocale } = usePickerLocales(localeProp);
   const [open, setOpen] = React.useState(false);
+  // Both inner inputs always carry ids (Chrome flags form fields without id/name).
+  const autoId = React.useId();
+  const fromId = id ?? autoId;
+  const toId = `${fromId}-to`;
   // Controlled-ness fixed at mount; uncontrolled state seeds from `defaultValue`.
   const isControlled = React.useRef(valueProp !== undefined).current;
   const [internalValue, setInternalValue] = React.useState<DateRange | undefined>(defaultValue);
@@ -78,14 +82,43 @@ export function DateRangePicker({
     emit(next.from || next.to ? next : undefined);
   };
 
+  const sharedKeyHandlers = {
+    onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setOpen(true);
+      } else if (event.key === "Escape" && open) {
+        setOpen(false);
+      }
+    },
+  };
+
+  // Bare inputs: the BORDER lives on the shared container (one control, antd
+  // RangePicker style) — an Input here would draw a second border inside it.
+  const innerInputClass =
+    "min-w-0 flex-1 bg-transparent tabular-nums outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed";
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      {/* Anchor the calendar to the field ROW so align="start" puts it under the leading (from)
-       * input — the international date-picker convention, not flush to the trailing icon. */}
+      {/* Anchor the calendar to the whole control so align="start" puts it under the
+       * leading (from) edge — the international date-picker convention. */}
       <PopoverAnchor asChild>
-        <div className={cn("flex items-center gap-1", className)}>
-          <Input
-            id={id}
+        <div
+          className={cn(
+            // One input-styled shell for the whole range — mirrors Input's control
+            // tokens (border/radius/ring) so it reads as a single form field.
+            "ui-control border-input bg-background flex w-full min-w-0 items-center gap-2 rounded-md border px-3 shadow-xs transition-[color,box-shadow] outline-none",
+            "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
+            open && "border-ring ring-ring/50 ring-[3px]",
+            disabled && "pointer-events-none cursor-not-allowed opacity-50",
+            className,
+          )}
+          onClick={() => {
+            if (!disabled) setOpen(true);
+          }}
+        >
+          <input
+            id={fromId}
             name={name ? `${name}_from` : undefined}
             value={fromText}
             disabled={disabled}
@@ -93,19 +126,8 @@ export function DateRangePicker({
             inputMode="numeric"
             autoComplete="off"
             aria-label={t("dataEntry.dateRangePicker.from") ?? "From"}
-            className="tabular-nums"
-            // Clicking a field (or ArrowDown) opens the calendar; focus stays on the field for typing.
-            onClick={() => {
-              if (!disabled) setOpen(true);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "ArrowDown") {
-                event.preventDefault();
-                setOpen(true);
-              } else if (event.key === "Escape" && open) {
-                setOpen(false);
-              }
-            }}
+            className={innerInputClass}
+            {...sharedKeyHandlers}
             onChange={(event) => {
               setFromText(event.target.value);
               commitEdge("from", event.target.value);
@@ -115,10 +137,9 @@ export function DateRangePicker({
               setFromText(parsed ? toIsoDate(parsed) : toIsoDate(value?.from));
             }}
           />
-          <span className="text-muted-foreground shrink-0" aria-hidden="true">
-            –
-          </span>
-          <Input
+          <ArrowRight className="text-muted-foreground size-3.5 shrink-0" aria-hidden="true" />
+          <input
+            id={toId}
             name={name ? `${name}_to` : undefined}
             value={toText}
             disabled={disabled}
@@ -126,18 +147,8 @@ export function DateRangePicker({
             inputMode="numeric"
             autoComplete="off"
             aria-label={t("dataEntry.dateRangePicker.to") ?? "To"}
-            className="tabular-nums"
-            onClick={() => {
-              if (!disabled) setOpen(true);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "ArrowDown") {
-                event.preventDefault();
-                setOpen(true);
-              } else if (event.key === "Escape" && open) {
-                setOpen(false);
-              }
-            }}
+            className={innerInputClass}
+            {...sharedKeyHandlers}
             onChange={(event) => {
               setToText(event.target.value);
               commitEdge("to", event.target.value);
@@ -148,31 +159,29 @@ export function DateRangePicker({
             }}
           />
           {showClear ? (
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="icon"
-              disabled={disabled}
               tabIndex={-1}
               aria-label={t("common.clear") ?? "Clear"}
-              className="text-muted-foreground shrink-0 hover:bg-transparent"
-              onClick={clear}
+              className="text-muted-foreground hover:text-foreground shrink-0"
+              onClick={(event) => {
+                event.stopPropagation();
+                clear();
+              }}
             >
               <X className="size-4 shrink-0" aria-hidden="true" />
-            </Button>
+            </button>
           ) : null}
           <PopoverTrigger asChild>
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="icon"
               disabled={disabled}
               tabIndex={-1}
               aria-label={t("dataEntry.dateRangePicker.openCalendar") ?? "Open calendar"}
-              className="text-muted-foreground shrink-0 hover:bg-transparent"
+              className="text-muted-foreground hover:text-foreground shrink-0"
             >
               <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
-            </Button>
+            </button>
           </PopoverTrigger>
           <PopoverContent
             className="w-auto p-0"
