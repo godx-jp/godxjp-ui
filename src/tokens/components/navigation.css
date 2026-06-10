@@ -10,4 +10,6 @@
   --filter-label-font-size: var(--font-size-xs);
   --filter-picker-width-sm: 11rem;
   --filter-picker-width-md: 14rem;
+  --breadcrumb-font-size: var(--font-size-xs);
+  --menubar-shortcut-font-size: var(--font-size-xs);
 }

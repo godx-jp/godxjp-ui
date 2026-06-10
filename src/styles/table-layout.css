@@ -9,7 +9,7 @@
     text-align: start;
     vertical-align: middle;
     background: hsl(var(--secondary));
-    font-size: var(--font-size-xs);
+    font-size: var(--table-head-font-size);
     font-weight: var(--font-weight-medium);
     color: hsl(var(--muted-foreground));
     white-space: nowrap;

@@ -55,7 +55,7 @@
 
   .ui-progress-label {
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--progress-label-font-size);
   }
 
   .ui-tree-list {
@@ -106,13 +106,13 @@
 
   .ui-tree-item-title {
     font-family: var(--font-family-mono);
-    font-size: var(--font-size-xs);
+    font-size: var(--tree-item-title-font-size);
   }
 
   .ui-tree-item-description {
     overflow: hidden;
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--tree-item-description-font-size);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -186,7 +186,7 @@
   .ui-timeline-location,
   .ui-timeline-note {
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--timeline-note-font-size);
   }
 
   .ui-timeline-note {

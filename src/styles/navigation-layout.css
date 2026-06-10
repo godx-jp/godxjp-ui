@@ -103,7 +103,7 @@
     margin-inline-start: auto;
     text-align: end;
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--menubar-shortcut-font-size);
   }
 
   .ui-context-menu-item-indicator,

@@ -135,7 +135,7 @@
 
   .ui-password-strength-score {
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--password-strength-score-font-size);
   }
 
   .ui-password-strength-checklist {
@@ -145,7 +145,7 @@
     padding-inline: 0;
     list-style: none;
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--password-strength-checklist-font-size);
   }
 
   .ui-password-strength-checklist-item {

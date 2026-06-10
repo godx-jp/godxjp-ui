@@ -1,0 +1,17 @@
+/* Shell (sidebar / topbar / kbd) component tokens — small-by-design text
+ * knobs (rule #45/#46). A service re-tunes chrome text without moving the
+ * global scale. */
+
+:root {
+  --sidebar-section-label-font-size: var(--font-size-2xs);
+  --sidebar-product-tenant-font-size: var(--font-size-2xs);
+  --sidebar-badge-font-size: var(--font-size-2xs);
+  --sidebar-user-role-font-size: var(--font-size-2xs);
+  --sidebar-nav-sub-font-size: var(--font-size-xs);
+  --sidebar-flyout-title-font-size: var(--font-size-xs);
+  --topbar-chip-icon-font-size: var(--font-size-2xs);
+  --kbd-font-size: var(--font-size-2xs);
+  --sidebar-logo-mark-font-size: var(--font-size-xs);
+  --sidebar-avatar-font-size: var(--font-size-2xs);
+  --sidebar-user-name-font-size: var(--font-size-xs);
+}
