@@ -92,7 +92,8 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
     expect(control).toContain(".ui-control {");
     expect(control).toContain("height: var(--control-height)");
     expect(control).toContain(".ui-control-multiline {");
-    expect(control).toContain("font-size: var(--font-size-sm)");
+    // Typography defaults to base — small-by-design is an explicit token now.
+    expect(control).toContain("font-size: var(--font-size-base)");
   });
 
   it("sets --table-cell-padding-y per density class", () => {
