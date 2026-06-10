@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (default `max-content`; previously only reachable via the `labelWidth` prop) and
   `--form-label-gap` (default 16px; previously hard-coded `--space-4`). A service theme sets them
   once to match its design grid; the `labelWidth` prop still wins per form/field.
+- Two new cardinal rules distilled from real service consumption: **#44 Chrome is a token,
+  default quiet** (no hard-coded dividers/chrome in `src/styles/*.css`; quietest default, theme
+  opt-in) and **#45 Every service-tunable constant gets a knob** (design-grid geometry like label
+  widths/gaps must be a documented component token, not prop-only or hard-coded). `CLAUDE.md`
+  gains the matching add-a-token checklist and the local-link (`file:`) dev workflow.
 
 ### Added
 

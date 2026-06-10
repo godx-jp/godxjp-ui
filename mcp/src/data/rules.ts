@@ -226,6 +226,16 @@ export const CARDINAL_RULES: CardinalRule[] = [
     title: "Every form control goes through FormField",
     body: "Consumers MUST wrap every labelled form control (Input, Select, DatePicker, DateRangePicker, NumberInput, Radio.Group, Checkbox groups, range pairs, ...) in FormField — it owns the label (aria-labelledby, never a dangling <label for>), auto-generates/injects the control id, and wires aria-describedby/aria-errormessage/aria-invalid. Bare controls are the rare exception (e.g. a toolbar quick-filter with its own aria-label) and must carry id/name + aria-label themselves. Never hand-roll a label+control stack with Text/Label.",
   },
+  {
+    number: 44,
+    title: "Chrome is a token, default quiet",
+    body: "Any decorative chrome a component draws — dividers, separator borders, and the padding that exists only to space that chrome — MUST read a token; never hard-code it in `src/styles/*.css` (a hard-coded `border-bottom: 1px solid hsl(var(--border))` leaves consumers no off-switch short of a variant fork). The DEFAULT is the quietest state (`none` / balanced rhythm); a service theme opts IN, e.g. `--page-header-divider: 1px solid hsl(var(--border))`. Born from real consumption: PageContainer's header divider was undisableable until tokenised.",
+  },
+  {
+    number: 45,
+    title: "Every service-tunable constant gets a knob",
+    body: "When component CSS encodes a geometry choice that a service plausibly re-tunes to match its design handoff — form label column width, label↔control gap, header insets — it MUST be a documented component token (current value as the default). The theme sets it ONCE globally; props (`labelWidth`) override per instance; Form→FormField priority stays intact. The test: \"would a service theme.css want to change this to match its design grid?\" If yes and the only route is forking CSS, that is a library gap — fix the library, don't patch the app. Born from real consumption: `--form-label-width` / `--form-label-gap` (design spec said 110px/8px; the values were prop-only and hard-coded `--space-4`).",
+  },
 ];
 
 export const VOCABULARY_TOKEN_RULES: CardinalRule[] = [
