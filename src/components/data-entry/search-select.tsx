@@ -288,7 +288,10 @@ export function SearchSelect({
             <CommandList
               id={listId}
               role="listbox"
-              className="min-h-0 flex-1 overflow-y-auto p-1"
+              // The global --command-list-max-height cap (300px) is for bare Command
+              // palettes; HERE the popover itself bounds the height (available-height
+              // flex column), so the list stretches to fill it instead of stopping short.
+              className="max-h-none min-h-0 flex-1 overflow-y-auto p-1"
               onScroll={onScroll}
             >
               {grouped.map((group) => {
