@@ -112,6 +112,12 @@ export const COMPONENTS: ComponentEntry[] = [
         description:
           "Grow the body to fill the remaining shell height. Default false = top-packed, content-height (short pages leave no stretched void). Enable for a full-height DataTable, SplitPane, or a chat surface.",
       },
+      {
+        name: "linkComponent",
+        type: "React.ElementType",
+        description:
+          "Link component used for breadcrumb / header links (e.g. an Inertia or React Router `Link`). Defaults to a native `<a>`.",
+      },
     ],
     usage: [
       "DO: Always wrap every page's content in PageContainer — it is the mandatory page shell. Pass `title` (required, rendered as `<h1>`) for every page; omitting it leaves the page without an accessible heading.",
@@ -326,6 +332,11 @@ import { StatCard } from "@godxjp/ui/data-display";
         name: "footer",
         type: "ReactNode",
         description: "App-level footer outside the main content area.",
+      },
+      {
+        name: "breadcrumb",
+        type: "BreadcrumbProp",
+        description: "Breadcrumb trail rendered in the topbar header for back-navigation.",
       },
     ],
     usage: [
@@ -842,7 +853,7 @@ function MyShell({ children }: { content: React.ReactNode }) {
         name: "count",
         type: "number",
         description:
-          "Trailing borderless counter pill after the label (filter tabs / segmented toggles, e.g. \"Chờ bay 18\"). Localized via `Intl.NumberFormat`; styled per variant — never nest a `Badge` in a Button for this. Ignored when `asChild`.",
+          'Trailing borderless counter pill after the label (filter tabs / segmented toggles, e.g. "Chờ bay 18"). Localized via `Intl.NumberFormat`; styled per variant — never nest a `Badge` in a Button for this. Ignored when `asChild`.',
       },
       {
         name: "overflowCount",
@@ -929,6 +940,12 @@ import { Trash2 } from "lucide-react";
         type: '"span" | "p" | "div" | "label" | "strong" | "em" | "small" | "code" | "kbd" | "dt" | "dd" | "caption" | "abbr"',
         defaultValue: '"span"',
         description: "Rendered element. `code`/`kbd` are monospace by default.",
+      },
+      {
+        name: "htmlFor",
+        type: "string",
+        description:
+          "When set, Text renders as a `<label>` bound to this control id (polymorphic label use).",
       },
     ],
     usage: [
@@ -1559,6 +1576,12 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         type: "ReactNode",
         required: true,
         description: "Descriptions.Item elements.",
+      },
+      {
+        name: "items",
+        type: "DescriptionsItemProp[]",
+        description:
+          "Data-driven rows `{ label, value, span? }` (label/value are ReactNode) — the alternative to composing `Descriptions.Item` children.",
       },
     ],
     usage: [
@@ -2239,6 +2262,35 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         defaultValue: "250",
         description: "Debounce delay (ms).",
       },
+      {
+        name: "id",
+        type: "string",
+        description: "Input id; pair with `label` or an external `<label htmlFor>`.",
+      },
+      {
+        name: "label",
+        type: "React.ReactNode",
+        description:
+          "Optional visible label rendered above the search box (falls back to an sr-only label).",
+      },
+      {
+        name: "onChange",
+        type: "(value: string) => void",
+        description:
+          "Fires on EVERY keystroke (immediate) — required to keep a controlled `value` responsive.",
+      },
+      {
+        name: "onSearchChange",
+        type: "(value: string) => void",
+        description:
+          "Fires the DEBOUNCED search term after `debounceMs` — wire your query/filter here, not onChange.",
+      },
+      {
+        name: "debounceMs",
+        type: "number",
+        defaultValue: "250",
+        description: "Debounce delay (ms) before `onSearchChange` / `onSearch` fires.",
+      },
     ],
     usage: [
       "DO: listen to `onSearch`, not `onChange`. The component debounces internally (default 250 ms) and fires `onSearch(q)` after the delay — never wire your filter logic to `onChange` on SearchInput because it does not expose one.",
@@ -2733,6 +2785,21 @@ export function PrioritySelect({ value, onValueChange }) {
         defaultValue: '"vertical"',
         description: "Layout direction.",
       },
+      {
+        name: "defaultValue",
+        type: "string",
+        description: "Uncontrolled initial selected value.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Disable the whole group.",
+      },
+      {
+        name: "name",
+        type: "string",
+        description: "Form field name for native submission.",
+      },
     ],
     usage: [
       "DO use the `options` prop for the data-driven path: pass `{ label, value, disabled?, description? }[]` and RadioGroup renders every option as a correctly labelled Field automatically — never hand-roll Radio.Item + Label pairs in a loop yourself.",
@@ -2837,6 +2904,16 @@ export function PrioritySelect({ value, onValueChange }) {
         defaultValue: "true",
         description:
           "Inline ✕ on the trigger that resets the value when one is set (Ant-style). Pass `false` to hide it (e.g. a required field).",
+      },
+      {
+        name: "defaultValue",
+        type: "Date",
+        description: "Uncontrolled initial date.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: Date | undefined) => void",
+        description: "Fires with the selected date (undefined when cleared).",
       },
     ],
     usage: [
@@ -3113,6 +3190,11 @@ import { Button } from "@godxjp/ui/general";
         type: "LucideIcon | false",
         description: "Override or hide (false) the icon.",
       },
+      {
+        name: "tone",
+        type: '"success" | "warning" | "destructive" | "info" | "neutral"',
+        description: "Semantic tone driving the colour + leading icon.",
+      },
     ],
     usage: [
       'DO compose with sub-parts in order: wrap text content in `<Alert.Content>` (or bare `<AlertContent>`), then `<Alert.Title>` + `<Alert.Description>` inside it, then `<Alert.Actions>` for any retry/CTA buttons. Example: `<Alert tone="destructive"><Alert.Content><Alert.Title>Error</Alert.Title><Alert.Description>{msg}</Alert.Description></Alert.Content><Alert.Actions><Button …/></Alert.Actions></Alert>`.',
@@ -3309,6 +3391,16 @@ toast.error("保存に失敗しました");`,
         type: "(page: number, pageSize: number) => void",
         description: "Page / page-size change handler.",
       },
+      {
+        name: "pageSizeOptions",
+        type: "number[]",
+        description: "Selectable page sizes shown in the size changer.",
+      },
+      {
+        name: "showSizeChanger",
+        type: "boolean",
+        description: "Show the page-size selector beside the pager.",
+      },
     ],
     usage: [
       "DO always control Pagination externally: store `value` (page) and `pageSize` in React state (or URL params), and update both in the `onValueChange(page, pageSize)` callback. Pagination is fully controlled — it has no internal state and will not move unless `value` changes.",
@@ -3413,6 +3505,31 @@ import { Button } from "@godxjp/ui/general";
         type: '"horizontal" | "vertical"',
         defaultValue: '"horizontal"',
         description: "Layout direction.",
+      },
+      {
+        name: "status",
+        type: '"wait" | "process" | "finish" | "error"',
+        description: "Status of the CURRENT step (drives the active step colour).",
+      },
+      {
+        name: "type",
+        type: '"default" | "dot"',
+        description: "Render full steps or compact dots.",
+      },
+      {
+        name: "size",
+        type: '"md" | "sm"',
+        description: "Step size.",
+      },
+      {
+        name: "titlePlacement",
+        type: '"horizontal" | "vertical"',
+        description: "Lay step titles beside or below the step icons.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: number) => void",
+        description: "Fires with the clicked step index (0-based).",
       },
     ],
     usage: [
@@ -3622,6 +3739,11 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
         description:
           "Inline ✕ on the trigger that resets the value when one is set (Ant-style). Pass `false` to hide it (e.g. a required field).",
       },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Fires with the canonical 24h `HH:mm` string (empty when cleared).",
+      },
     ],
     usage: [
       "DO give it a `name` prop whenever it lives inside a `<form>` — the visible input carries the name and emits `HH:mm` on native submission. You do NOT need a hidden element.",
@@ -3758,6 +3880,16 @@ export function CutoffTimeForm() {
         defaultValue: "true",
         description:
           "Inline ✕ on the trigger that resets the range when one is set (Ant-style). Pass `false` to hide it.",
+      },
+      {
+        name: "defaultValue",
+        type: "DateRange",
+        description: "Uncontrolled initial range.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: DateRange | undefined) => void",
+        description: "Fires with the selected range (undefined when cleared).",
       },
     ],
     usage: [
@@ -4274,6 +4406,11 @@ export function DepartmentFilter() {
         description:
           "Called whenever the checked selection in either panel changes. Provides updated arrays for source and target selections. Required when `selectedKeys` is controlled.",
       },
+      {
+        name: "onValueChange",
+        type: '(targetKeys: string[], direction: "left" | "right", moveKeys: string[]) => void',
+        description: "Fires when items move between panels; you own `targetKeys` state.",
+      },
     ],
     usage: [
       "DO own `targetKeys` in state and update it inside `onChange`: `const [targetKeys, setTargetKeys] = useState<string[]>([]); onValueChange={(next) => setTargetKeys(next)}`.",
@@ -4408,6 +4545,11 @@ export function AccountMapping() {
         type: "React.ReactNode",
         description:
           "Custom button label for variant='button'. Falls back to the i18n 'Upload file' string.",
+      },
+      {
+        name: "onValueChange",
+        type: "(items: UploadFileItemProp[]) => void",
+        description: "Fires with the current file list.",
       },
     ],
     usage: [
@@ -4629,6 +4771,11 @@ export function AvatarField() {
         defaultValue: "undefined",
         description:
           "DOM id applied to the hidden native <input type='color'>. Pass the FormField id here so the label's htmlFor targets this control correctly.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Fires with the committed hex string.",
       },
     ],
     usage: [
@@ -5392,6 +5539,11 @@ function AccountQuickPick({ onSelect }: { onSelect: (id: string) => void }) {
         type: "React.ReactNode",
         description:
           "Manual children mode: used when `options` is omitted or empty. Render Checkbox items directly as children. You are responsible for composing each Checkbox with a Field for correct label/description layout.",
+      },
+      {
+        name: "onValueChange",
+        type: "(value: string[]) => void",
+        description: "Fires with the checked values array.",
       },
     ],
     usage: [
