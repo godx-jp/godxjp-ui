@@ -1,6 +1,6 @@
 {
   "name": "@godxjp/ui-mcp",
-  "version": "0.21.2",
+  "version": "0.21.3",
   "description": "Model Context Protocol server for @godxjp/ui — gives Claude Code / Codex CLI / Cursor / any MCP-aware agent live access to the component catalog, prop vocabulary, design tokens, 34 cardinal rules, copy-paste-ready patterns, 12 design / taste skills synthesised from Leonxlnx/taste-skill, 20+ anti-AI-tell patterns, and a 50-check redesign audit — token-efficient (list → drill-down).",
   "type": "module",
   "main": "./dist/index.js",
