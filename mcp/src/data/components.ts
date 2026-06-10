@@ -589,6 +589,13 @@ export default function Shell() {
           "Called when the search bar button (⌘K) is clicked. Wire this to your command-palette or search dialog.",
       },
       {
+        name: "searchPlaceholder",
+        type: "string",
+        defaultValue: 'i18n "layout.topbar.searchPlaceholder" ("検索…")',
+        description:
+          "Search-bar placeholder text — set a domain-specific hint (e.g. 案件・受注・顧客を検索…) instead of the generic default.",
+      },
+      {
         name: "onTweaksOpen",
         type: "() => void",
         defaultValue: "undefined",
@@ -1430,7 +1437,7 @@ export function Grid({ rows }: { rows: Row[] }) {
     name: "StatCard",
     group: "data-display",
     tagline:
-      "KPI tile. ⚠️ StatCard IS ALREADY a bordered Card — render it DIRECTLY in ResponsiveGrid. NEVER wrap it in <Card>/<CardContent> (that double-borders it → looks too thick). NO accent prop (accent is a Card prop).",
+      "KPI tile. ⚠️ StatCard IS ALREADY a bordered Card — render it DIRECTLY in ResponsiveGrid. NEVER wrap it in <Card>/<CardContent> (that double-borders it → looks too thick). Use `accent` for a semantic leading-edge rail on a KPI needing attention.",
     props: [
       { name: "label", type: "ReactNode", required: true, description: "Metric name." },
       {
@@ -1452,12 +1459,25 @@ export function Grid({ rows }: { rows: Row[] }) {
         description: "stacked = label over value; inline = label left / value right.",
       },
       { name: "align", type: '"start" | "end"', description: "Align the metric group." },
+      {
+        name: "inverse",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Flip delta tone semantics for metrics where lower is better (cost, error rate): '-' renders green, '+' renders red.",
+      },
+      {
+        name: "accent",
+        type: '"primary" | "success" | "warning" | "info" | "attention" | "destructive"',
+        description:
+          "Semantic 3px leading-edge rail (forwarded to the underlying Card) — flags a KPI that needs attention (e.g. attention = backlog with a deadline, destructive = overdue).",
+      },
     ],
     usage: [
       "DO place StatCard directly as a child of ResponsiveGrid — it renders its own bordered Card shell internally, so no wrapping <Card> or <CardContent> is needed or allowed. Wrapping creates a double border.",
       "DO pass `delta` as a sign-prefixed string (e.g. '+12%' or '-3%') to get automatic color tone: '+' renders text-success, '-' renders text-destructive. For metrics where a negative delta is good (e.g. cost reduction, error rate), pass `inverse` so the tone is flipped correctly.",
       "DO use `hint` for secondary context (e.g. '先月比 +3%', 'last 30 days'). In the default `stacked` layout hint renders below the value; in `inline` layout it renders beside the label.",
-      "DO NOT add an `accent` prop — accent is a Card prop and StatCard does not expose it. Passing accent has no effect and creates a false expectation.",
+      "DO use `accent` (not a className border) for the semantic leading-edge rail — `attention` for a non-destructive backlog needing action, `destructive` only for overdue/exceeded states. Most tiles in a grid stay rail-less; an all-accented grid says nothing.",
       "DO NOT hand-roll a KPI tile using a plain <Card><CardContent>. StatCard is the correct primitive and token-aligns the label/value/hint/delta slots automatically.",
       "WHILE data is loading, replace each StatCard with a <SkeletonStat /> at the same grid position — never render an empty value string or a spinner inside StatCard itself.",
     ],

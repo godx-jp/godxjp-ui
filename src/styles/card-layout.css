@@ -57,31 +57,31 @@
 
   /* ── Accent edge — 3px semantic left stripe, content kept on the shell ─ */
   [data-slot="card"][data-accent] {
-    border-left-width: 3px;
+    border-inline-start-width: 3px;
   }
 
   [data-slot="card"][data-accent="primary"] {
-    border-left-color: hsl(var(--primary));
+    border-inline-start-color: hsl(var(--primary));
   }
 
   [data-slot="card"][data-accent="success"] {
-    border-left-color: hsl(var(--success));
+    border-inline-start-color: hsl(var(--success));
   }
 
   [data-slot="card"][data-accent="warning"] {
-    border-left-color: hsl(var(--warning));
+    border-inline-start-color: hsl(var(--warning));
   }
 
   [data-slot="card"][data-accent="info"] {
-    border-left-color: hsl(var(--info));
+    border-inline-start-color: hsl(var(--info));
   }
 
   [data-slot="card"][data-accent="attention"] {
-    border-left-color: hsl(var(--attention));
+    border-inline-start-color: hsl(var(--attention));
   }
 
   [data-slot="card"][data-accent="destructive"] {
-    border-left-color: hsl(var(--destructive));
+    border-inline-start-color: hsl(var(--destructive));
   }
 
   [data-slot="card"][data-accent] > [data-slot="card-header"],
@@ -147,7 +147,7 @@
     flex-shrink: 0;
     align-items: center;
     gap: var(--space-inline-sm);
-    margin-left: auto;
+    margin-inline-start: auto;
   }
 
   [data-slot="card"]:has([data-slot="card-header"][data-banded]) {
@@ -357,7 +357,7 @@
   [data-slot="card"][data-stat-align="end"] [data-slot="stat-card-value-row"],
   [data-slot="card"][data-stat-layout="inline"] [data-slot="stat-card-value-row"] {
     justify-content: flex-end;
-    text-align: right;
+    text-align: end;
   }
 
   [data-slot="stat-card-value"] {

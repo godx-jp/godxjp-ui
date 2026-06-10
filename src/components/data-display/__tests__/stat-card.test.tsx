@@ -53,3 +53,15 @@ describe("StatCard — layout / align / hint", () => {
     expect(body.querySelector('[data-slot="stat-card-hint"]')).not.toBeNull();
   });
 });
+
+describe("StatCard — accent rail", () => {
+  it("forwards accent to the underlying Card as the semantic rail", () => {
+    const { container } = render(<StatCard label="修理未完了" value="227" accent="destructive" />);
+    expect(root(container)).toHaveAttribute("data-accent", "destructive");
+  });
+
+  it("renders no rail attribute when accent is omitted", () => {
+    const { container } = render(<StatCard label="x" value="1" />);
+    expect(root(container)).not.toHaveAttribute("data-accent");
+  });
+});

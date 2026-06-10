@@ -28,7 +28,7 @@
     min-width: 0;
     flex-direction: column;
     overflow: hidden;
-    border-right: 1px solid hsl(var(--border));
+    border-inline-end: 1px solid hsl(var(--border));
     background: hsl(var(--card));
     color: hsl(var(--foreground));
   }
@@ -137,7 +137,7 @@
     background: transparent;
     color: inherit;
     font-family: inherit;
-    text-align: left;
+    text-align: start;
   }
 
   .sb-product {
@@ -241,7 +241,7 @@
     cursor: pointer;
     font-family: inherit;
     font-size: var(--font-size-sm);
-    text-align: left;
+    text-align: start;
   }
 
   .sb-nav-item:hover,
@@ -297,7 +297,7 @@
 
   /* Collapsible group trigger chevron (rotates when open). */
   .sb-nav-group-trigger .sb-chevron {
-    margin-left: auto;
+    margin-inline-start: auto;
     flex: 0 0 auto;
     opacity: 0.6;
     transition: transform 150ms ease;
@@ -314,8 +314,8 @@
     flex-direction: column;
     gap: 2px;
     margin: 2px 0 var(--space-1) calc(var(--space-2) + 0.6875rem);
-    padding-left: var(--space-3);
-    border-left: 1px solid hsl(var(--border));
+    padding-inline-start: var(--space-3);
+    border-inline-start: 1px solid hsl(var(--border));
   }
 
   .sb-nav-item--sub {
@@ -383,7 +383,7 @@
     color: inherit;
     cursor: pointer;
     font-family: inherit;
-    text-align: left;
+    text-align: start;
   }
 
   .sb-user:hover,
@@ -416,7 +416,7 @@
 
   .sb-user-live {
     position: absolute;
-    right: -1px;
+    inset-inline-end: -1px;
     bottom: -1px;
     width: 0.5625rem;
     height: 0.5625rem;
@@ -572,7 +572,7 @@
   .kbd {
     display: inline-flex;
     align-items: center;
-    margin-left: auto;
+    margin-inline-start: auto;
     padding: 1px 5px;
     border: 1px solid hsl(var(--border));
     border-bottom-width: 2px;
@@ -617,7 +617,7 @@
   .tb-bell-dot {
     position: absolute;
     top: 0.35rem;
-    right: 0.35rem;
+    inset-inline-end: 0.35rem;
     width: 0.375rem;
     height: 0.375rem;
     border-radius: var(--radius-pill);

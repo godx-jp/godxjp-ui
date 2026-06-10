@@ -30,3 +30,12 @@ describe("Topbar", () => {
     expect(screen.getByRole("button", { name: "Select a project" })).toBeInTheDocument();
   });
 });
+
+describe("Topbar — searchPlaceholder", () => {
+  it("renders the custom search placeholder instead of the i18n default", () => {
+    render(
+      <Topbar product={{ name: "EXSELI" }} searchPlaceholder="案件・受注・顧客を検索…" />,
+    );
+    expect(screen.getByText("案件・受注・顧客を検索…")).toBeInTheDocument();
+  });
+});

@@ -190,8 +190,8 @@
 
   .ui-control {
     height: var(--control-height);
-    padding-left: var(--control-padding-x);
-    padding-right: var(--control-padding-x);
+    padding-inline-start: var(--control-padding-x);
+    padding-inline-end: var(--control-padding-x);
     font-size: var(--font-size-sm);
   }
 
@@ -453,7 +453,7 @@
   }
 
   .ui-command-search-icon {
-    margin-right: var(--control-gap);
+    margin-inline-end: var(--control-gap);
     opacity: 0.5;
   }
 
@@ -545,7 +545,7 @@
 
   .ui-search-input-icon {
     position: absolute;
-    left: var(--search-input-edge-inset);
+    inset-inline-start: var(--search-input-edge-inset);
     top: 50%;
     pointer-events: none;
     transform: translateY(-50%);
@@ -553,13 +553,13 @@
   }
 
   .ui-search-input-control {
-    padding-left: var(--search-input-start-padding);
-    padding-right: var(--search-input-end-padding);
+    padding-inline-start: var(--search-input-start-padding);
+    padding-inline-end: var(--search-input-end-padding);
   }
 
   .ui-search-input-clear {
     position: absolute;
-    right: var(--search-input-edge-inset);
+    inset-inline-end: var(--search-input-edge-inset);
     top: 50%;
     transform: translateY(-50%);
     color: hsl(var(--muted-foreground));
@@ -582,7 +582,7 @@
   display: block;
 }
 .ui-password-input-field {
-  padding-right: 2.5rem;
+  padding-inline-end: 2.5rem;
 }
 .ui-password-input-toggle {
   position: absolute;

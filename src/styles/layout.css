@@ -263,8 +263,8 @@
   .ui-page-header,
   .ui-page-body,
   .ui-page-footer {
-    padding-left: var(--space-page-active-x);
-    padding-right: var(--space-page-active-x);
+    padding-inline-start: var(--space-page-active-x);
+    padding-inline-end: var(--space-page-active-x);
   }
 
   .ui-page-container--narrow .ui-page-body {
@@ -273,14 +273,14 @@
 
   /* flush = full-bleed body (DataTable); header/footer keep their inset. */
   .ui-page-container--flush .ui-page-body {
-    padding-left: 0;
-    padding-right: 0;
+    padding-inline-start: 0;
+    padding-inline-end: 0;
   }
 
   .ui-page-container-inset,
   .ui-page-inset {
-    padding-left: var(--space-page-active-x);
-    padding-right: var(--space-page-active-x);
+    padding-inline-start: var(--space-page-active-x);
+    padding-inline-end: var(--space-page-active-x);
   }
 
   .ui-page-container--ghost .ui-page-header {
@@ -481,7 +481,7 @@
   }
 
   .ui-pagination-total {
-    margin-right: auto;
+    margin-inline-end: auto;
     color: hsl(var(--muted-foreground));
     font-size: var(--pagination-total-font-size);
   }
@@ -591,7 +591,7 @@
     .ui-toolbar-clear,
     .ui-filter-clear {
       width: auto;
-      margin-left: auto;
+      margin-inline-start: auto;
     }
   }
 

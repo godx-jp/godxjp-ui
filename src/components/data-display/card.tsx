@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 type CardSize = "md" | "compact";
-/** Semantic 3px left-edge accent stripe. */
+/** Semantic 3px leading-edge accent stripe (border-inline-start). */
 type CardAccent = "primary" | "success" | "warning" | "info" | "attention" | "destructive";
 /** Surface fill — plain card, muted band, borderless outline, or emphasized featured ring. */
 type CardVariant = "default" | "muted" | "outline" | "featured";
@@ -149,6 +149,8 @@ export type StatCardProps = React.HTMLAttributes<HTMLDivElement> &
     align?: "start" | "end";
     /** Flip delta semantics for metrics where lower is better. */
     inverse?: boolean;
+    /** Semantic leading-edge rail (Card accent) — flags a KPI needing attention. */
+    accent?: CardAccent;
   };
 
 function getDeltaTone(
@@ -175,6 +177,7 @@ export function StatCard({
   layout = "stacked",
   align = "start",
   inverse = false,
+  accent,
   className,
   size = "compact",
   ...props
@@ -184,6 +187,7 @@ export function StatCard({
   return (
     <Card
       size={size ?? "compact"}
+      accent={accent}
       className={cn("ui-stat-card", className)}
       data-stat-card=""
       data-stat-layout={layout}

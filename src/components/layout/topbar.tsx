@@ -32,6 +32,7 @@ export function Topbar({
   onToggleCollapsed,
   rightSlot,
   unread = false,
+  searchPlaceholder,
   onNotificationsOpen,
   user,
 }: TopbarProp) {
@@ -117,7 +118,7 @@ export function Topbar({
         onClick={onSearchOpen}
       >
         <Search aria-hidden="true" />
-        <span>{t("layout.topbar.searchPlaceholder")}</span>
+        <span>{searchPlaceholder ?? t("layout.topbar.searchPlaceholder")}</span>
         <kbd className="kbd">⌘K</kbd>
       </button>
 

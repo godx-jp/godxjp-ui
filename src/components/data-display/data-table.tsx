@@ -5,7 +5,7 @@
 // instead of raw <Table> markup.
 //
 // Compound API (drop these as children of <DataTable>):
-//   <DataTable.Toolbar>     — left-aligned status / right-aligned controls
+//   <DataTable.Toolbar>     — leading status / trailing controls
 //   <DataTable.SelectAll>   — header checkbox bound to selection state
 //   <DataTable.BulkActions> — only rendered when count > 0; sits in the toolbar
 //   <DataTable.DensityToggle> — compact ↔ comfortable
@@ -355,7 +355,7 @@ DataTable.Content = function DataTableContent() {
                     }
                     className={cn(
                       col.width,
-                      col.align === "right" && "text-right",
+                      col.align === "right" && "text-end",
                       col.align === "center" && "text-center",
                       col.hiddenOnMobile && "hidden md:table-cell",
                       isSortable && "select-none",
@@ -451,7 +451,7 @@ DataTable.Content = function DataTableContent() {
                         className={cn(
                           cellPadding,
                           col.width,
-                          col.align === "right" && "text-right",
+                          col.align === "right" && "text-end",
                           col.align === "center" && "text-center",
                           col.hiddenOnMobile && "hidden md:table-cell",
                         )}

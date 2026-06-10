@@ -80,11 +80,11 @@
   }
 
   .ui-tree-item[data-depth="1"] {
-    margin-left: 1.375rem;
+    margin-inline-start: 1.375rem;
   }
 
   .ui-tree-item[data-depth="2"] {
-    margin-left: 2.75rem;
+    margin-inline-start: 2.75rem;
   }
 
   .ui-tree-item > svg {
@@ -210,7 +210,7 @@
   gap: var(--space-2);
   padding-block: var(--space-4);
   font-weight: 500;
-  text-align: left;
+  text-align: start;
   transition: color 0.15s ease;
 }
 .ui-accordion-trigger:hover {
@@ -295,11 +295,11 @@
 }
 
 .ui-carousel-previous {
-  left: var(--space-2);
+  inset-inline-start: var(--space-2);
 }
 
 .ui-carousel-next {
-  right: var(--space-2);
+  inset-inline-end: var(--space-2);
 }
 
 .ui-carousel-previous:hover,
@@ -375,8 +375,8 @@
 .ui-carousel[data-orientation="vertical"] .ui-carousel-previous,
 .ui-carousel[data-orientation="vertical"] .ui-carousel-next {
   top: auto;
-  left: 50%;
-  right: auto;
+  inset-inline-start: 50%;
+  inset-inline-end: auto;
   transform: translateX(-50%);
 }
 
