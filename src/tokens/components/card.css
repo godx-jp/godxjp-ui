@@ -15,6 +15,10 @@
   --card-border: var(--border);
   --card-header-background: var(--muted);
   --card-header-background-alpha: 0.55;
+  /* Banded-header divider — tokenised (rule #44) so a service theme can make it
+   * dashed / heavier / none without forking CSS. Pair with
+   * --card-header-background-alpha: 0 for a quiet borderless-band header. */
+  --card-header-divider: 1px solid hsl(var(--card-border));
   --card-radius: var(--radius);
   --stat-card-label-font-size: var(--font-size-xs);
   --stat-card-label-font-weight: var(--font-weight-medium);
