@@ -12,3 +12,6 @@
 @import "./components/feedback.css";
 @import "./components/badge.css";
 @import "./components/navigation.css";
+@import "./components/data-display.css";
+@import "./components/data-entry.css";
+@import "./components/shell.css";

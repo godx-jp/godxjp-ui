@@ -72,4 +72,11 @@
     --control-height-compact: 2.75rem;
     --control-height-default: 2.75rem;
   }
+  --choice-description-font-size: var(--font-size-xs);
+  --color-picker-hex-font-size: var(--font-size-xs);
+  --command-group-heading-font-size: var(--font-size-xs);
+  --search-input-label-font-size: var(--font-size-xs);
+  --tag-input-chip-font-size: var(--font-size-xs);
+  --toggle-sm-font-size: var(--font-size-xs);
+  --button-sm-font-size: var(--font-size-xs);
 }

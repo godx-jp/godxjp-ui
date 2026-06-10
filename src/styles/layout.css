@@ -402,7 +402,7 @@
   }
 
   .ui-breadcrumb {
-    font-size: var(--font-size-xs);
+    font-size: var(--breadcrumb-font-size);
     color: hsl(var(--muted-foreground));
   }
 

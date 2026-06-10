@@ -29,4 +29,5 @@
   --stat-card-hint-font-size: var(--font-size-xs);
   --stat-card-gap: var(--space-stack-xs);
   --stat-card-icon-size: 2.25rem;
+  --stat-card-delta-font-size: var(--font-size-xs);
 }

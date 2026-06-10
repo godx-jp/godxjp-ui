@@ -370,7 +370,7 @@
 
   [data-slot="stat-card-delta"] {
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--stat-card-delta-font-size);
     font-weight: var(--font-weight-medium);
     line-height: var(--line-height-normal);
     font-variant-numeric: tabular-nums;

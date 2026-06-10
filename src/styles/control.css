@@ -36,7 +36,7 @@
   .ui-toggle-sm {
     min-height: var(--control-height-sm);
     padding-inline: var(--space-2);
-    font-size: var(--font-size-xs);
+    font-size: var(--toggle-sm-font-size);
   }
 
   .ui-toggle-lg {
@@ -157,7 +157,7 @@
   .ui-button--sm {
     height: var(--control-height-sm);
     padding-inline: var(--space-3);
-    font-size: var(--font-size-xs);
+    font-size: var(--button-sm-font-size);
   }
 
   .ui-button--sm svg {
@@ -247,7 +247,7 @@
 
   .ui-choice-description {
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--choice-description-font-size);
   }
 
   .ui-checkbox,
@@ -419,7 +419,7 @@
   .ui-color-picker-hex {
     max-width: var(--color-picker-input-width);
     font-family: var(--font-family-mono);
-    font-size: var(--font-size-xs);
+    font-size: var(--color-picker-hex-font-size);
     text-transform: uppercase;
   }
 
@@ -500,7 +500,7 @@
   .ui-command-group [cmdk-group-heading] {
     padding: var(--space-2);
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--command-group-heading-font-size);
     font-weight: var(--font-weight-medium);
   }
 
@@ -534,7 +534,7 @@
     display: block;
     margin-bottom: var(--space-1);
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--search-input-label-font-size);
   }
 
   .ui-search-input-field {
@@ -754,7 +754,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  font-size: var(--font-size-xs);
+  font-size: var(--tag-input-chip-font-size);
   padding: 0.0625rem var(--space-2);
   border-radius: var(--radius-sm);
   background: hsl(var(--secondary));

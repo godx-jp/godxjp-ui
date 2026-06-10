@@ -36,10 +36,16 @@ const componentPrefixes = {
     "color-picker",
     "command",
     "search-input",
+    "toggle",
+    "button",
+    "tag-input",
   ],
   feedback: ["dialog", "alert", "empty-state", "skeleton"],
-  navigation: ["pagination", "filter", "filter-bar"],
+  navigation: ["pagination", "filter", "filter-bar", "breadcrumb", "menubar"],
   table: ["table"],
+  "data-display": ["progress", "tree", "timeline"],
+  "data-entry": ["password-strength"],
+  shell: ["sidebar", "topbar", "kbd"],
 };
 
 for (const file of cssFiles) {

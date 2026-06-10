@@ -1,0 +1,6 @@
+/* Data-entry component tokens — small-by-design text knobs (rule #45/#46). */
+
+:root {
+  --password-strength-score-font-size: var(--font-size-xs);
+  --password-strength-checklist-font-size: var(--font-size-xs);
+}

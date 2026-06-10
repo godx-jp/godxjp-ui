@@ -156,7 +156,7 @@
     place-items: center;
     border-radius: var(--radius);
     color: white;
-    font-size: var(--font-size-xs);
+    font-size: var(--sidebar-logo-mark-font-size);
     font-weight: 700;
   }
 
@@ -183,7 +183,7 @@
 
   .sb-product-tenant {
     overflow: hidden;
-    font-size: var(--font-size-2xs);
+    font-size: var(--sidebar-product-tenant-font-size);
     font-weight: 700;
     letter-spacing: 0.08em;
     line-height: 1.2;
@@ -213,7 +213,7 @@
   .sb-section-label {
     padding: 0 var(--space-2) var(--space-1);
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-2xs);
+    font-size: var(--sidebar-section-label-font-size);
     font-weight: 700;
     letter-spacing: 0.08em;
     line-height: 1.2;
@@ -283,7 +283,7 @@
     border-radius: var(--radius-pill);
     background: hsl(var(--secondary));
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-2xs);
+    font-size: var(--sidebar-badge-font-size);
     font-weight: var(--font-weight-medium);
     line-height: 1.2;
     padding-inline: 0.375rem;
@@ -320,7 +320,7 @@
 
   .sb-nav-item--sub {
     height: 1.75rem;
-    font-size: var(--font-size-xs);
+    font-size: var(--sidebar-nav-sub-font-size);
     color: hsl(var(--muted-foreground));
   }
 
@@ -364,7 +364,7 @@
   .sb-flyout-title {
     padding: var(--space-1) var(--space-2);
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-xs);
+    font-size: var(--sidebar-flyout-title-font-size);
     font-weight: var(--font-weight-medium);
     white-space: nowrap;
   }
@@ -410,7 +410,7 @@
     border-radius: var(--radius-pill);
     background: hsl(var(--secondary));
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-2xs);
+    font-size: var(--sidebar-avatar-font-size);
     font-weight: 500;
   }
 
@@ -433,7 +433,7 @@
 
   .sb-user-name {
     overflow: hidden;
-    font-size: var(--font-size-xs);
+    font-size: var(--sidebar-user-name-font-size);
     font-weight: 500;
     line-height: 1.3;
     text-overflow: ellipsis;
@@ -443,7 +443,7 @@
   .sb-user-role {
     overflow: hidden;
     color: hsl(var(--muted-foreground));
-    font-size: var(--font-size-2xs);
+    font-size: var(--sidebar-user-role-font-size);
     line-height: 1.3;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -525,7 +525,7 @@
     place-items: center;
     border-radius: calc(var(--radius) - 2px);
     color: white;
-    font-size: var(--font-size-2xs);
+    font-size: var(--topbar-chip-icon-font-size);
     font-weight: 700;
   }
 
@@ -580,7 +580,7 @@
     background: hsl(var(--secondary));
     color: hsl(var(--muted-foreground));
     font-family: var(--font-family-mono);
-    font-size: var(--font-size-2xs);
+    font-size: var(--kbd-font-size);
     line-height: 1.2;
   }
 
