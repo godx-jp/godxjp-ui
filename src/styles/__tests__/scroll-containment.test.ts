@@ -23,6 +23,7 @@ describe("scroll-containment CSS contract", () => {
     const rule = clamp.slice(0, clamp.indexOf("}") + 1);
     expect(rule).toMatch(/\.sr-only/);
     expect(rule).toMatch(/top:\s*0/);
-    expect(rule).toMatch(/left:\s*0/);
+    // logical property — clamps the inline-start edge in both LTR and RTL
+    expect(rule).toMatch(/inset-inline-start:\s*0/);
   });
 });

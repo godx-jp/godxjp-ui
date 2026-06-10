@@ -12,11 +12,11 @@ const columns = [
 ];
 
 describe("DataTable — column alignment", () => {
-  it("applies text-right / text-center per column align", () => {
+  it("applies text-end / text-center per column align (logical)", () => {
     renderWithUi(<DataTable data={rows} columns={columns} getRowId={(r) => r.id} />);
-    expect(screen.getByText("1000").closest("td")).toHaveClass("text-right");
+    expect(screen.getByText("1000").closest("td")).toHaveClass("text-end");
     expect(screen.getByText("active").closest("td")).toHaveClass("text-center");
-    expect(screen.getByText("Mai").closest("td")).not.toHaveClass("text-right", "text-center");
+    expect(screen.getByText("Mai").closest("td")).not.toHaveClass("text-end", "text-center");
   });
 });
 
