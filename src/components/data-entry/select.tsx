@@ -261,11 +261,16 @@ function DataSelect({
     </SelectItem>
   );
 
+  // Controlled-ness is fixed by whether `value` was passed — NOT by its emptiness.
+  // Collapsing "" → undefined flipped a controlled Select to uncontrolled on the
+  // empty state and back on first pick (React's controlled↔uncontrolled warning).
+  // An unmatched value (incl. "") simply shows the placeholder in Radix.
+  const isControlled = value !== undefined;
   return (
     <SelectPrimitive.Root
       data-slot="select"
-      value={value || undefined}
-      defaultValue={defaultValue || undefined}
+      value={isControlled ? value : undefined}
+      defaultValue={isControlled ? undefined : defaultValue || undefined}
       onValueChange={(next) =>
         onValueChange?.(
           next,

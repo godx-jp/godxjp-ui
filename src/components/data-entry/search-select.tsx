@@ -259,7 +259,7 @@ export function SearchSelect({
           </Button>
         </PopoverTrigger>
         {/* Hidden field so the selection submits with a native form. */}
-        {name ? <input type="hidden" name={name} value={value} /> : null}
+        {name ? <input type="hidden" name={name} value={value} readOnly /> : null}
         <PopoverContent
           align="start"
           sideOffset={4}
