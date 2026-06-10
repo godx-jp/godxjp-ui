@@ -27,6 +27,7 @@ Chain them in this order; each links to the next.
 | **godxjp-ui-best-ux** | **Layout hygiene · Interaction hygiene · dxs-kintai DNA** (渋み/間/簡素) | Judging taste/UX on any repo surface |
 | **godxjp-ui-design-handoff** | implementing a Claude Design bundle as a **showcase in `docs/`** | Turning a `claude.ai/design` export into repo showcases |
 | **godxjp-ui-mcp-catalog-sync** | keeping the **MCP catalog + tests** in sync with the public API | Any change to a component/vocab/token/rule/pattern |
+| **godxjp-ui-performance** | the **measure-first perf playbook** (longtask/Profiler/bundle probes) + lib per-import budget + proven consumer patterns | Anything feels slow, a `[Violation]` appears, or bundle size is questioned — lib OR app |
 
 **Dedup rule (single owner):** a topic lives in exactly one skill; others point to it with `[[name]]`.
 - *Real-primitives / no-raw-HTML* → **component**
