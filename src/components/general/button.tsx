@@ -69,6 +69,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
       loading = false,
       loadingText,
       count,
+      overflowCount = 99,
+      showZero = true,
       disabled,
       children,
       ...props
@@ -89,9 +91,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
     ) : (
       children
     );
-    // The count is a trailing borderless counter. Ignored under `asChild` (Slot needs a single
-    // child) and rendered for `0` too. Localized via Intl.NumberFormat (grouping per locale).
-    const showCount = !asChild && count != null;
+    // The count is a trailing borderless counter (Ant Badge parity). Ignored under `asChild`
+    // (Slot needs a single child). `showZero` controls the 0 case; values over `overflowCount`
+    // render as `{overflowCount}+`. Localized via Intl.NumberFormat (grouping per locale).
+    const showCount = !asChild && count != null && (count !== 0 || showZero);
+    const countLabel =
+      showCount && count != null && count > overflowCount
+        ? `${new Intl.NumberFormat(locale).format(overflowCount)}+`
+        : count != null
+          ? new Intl.NumberFormat(locale).format(count)
+          : "";
     const countNode = showCount ? (
       <span
         data-slot="button-count"
@@ -100,7 +109,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
           buttonCountClass[variant ?? "default"],
         )}
       >
-        {new Intl.NumberFormat(locale).format(count)}
+        {countLabel}
       </span>
     ) : null;
     return (

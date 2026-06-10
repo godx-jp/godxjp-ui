@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SearchSelect` / `Select` also gain a `selectedIcon` prop — the trigger counterpart of
   `selectedLabel`: it shows a leading icon for an async preset value whose option page hasn't loaded
   yet (e.g. an edit form pre-filled from the server), so the avatar/flag shows at rest.
+- `Button` `count` gains Ant-Badge-parity `overflowCount` (default 99 → renders `99+`) and `showZero`
+  (default `true`; pass `false` to hide the pill when the count is 0).
 
 ## [13.6.0]
 

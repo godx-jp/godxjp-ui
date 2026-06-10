@@ -155,10 +155,37 @@ describe("Button", () => {
         </Button>,
       );
       expect(
-        screen
-          .getByRole("button", { name: /Đã đến/ })
-          .querySelector('[data-slot="button-count"]'),
+        screen.getByRole("button", { name: /Đã đến/ }).querySelector('[data-slot="button-count"]'),
       ).toHaveTextContent("0");
+    });
+
+    it("caps at overflowCount and shows N+ (Ant Badge parity)", () => {
+      renderWithUi(<Button count={128}>Inbox</Button>);
+      expect(
+        screen.getByRole("button", { name: /Inbox/ }).querySelector('[data-slot="button-count"]'),
+      ).toHaveTextContent("99+");
+    });
+
+    it("respects a custom overflowCount", () => {
+      renderWithUi(
+        <Button count={15} overflowCount={9}>
+          Inbox
+        </Button>,
+      );
+      expect(
+        screen.getByRole("button", { name: /Inbox/ }).querySelector('[data-slot="button-count"]'),
+      ).toHaveTextContent("9+");
+    });
+
+    it("hides the pill at zero when showZero is false", () => {
+      renderWithUi(
+        <Button count={0} showZero={false}>
+          Done
+        </Button>,
+      );
+      expect(
+        screen.getByRole("button", { name: /Done/ }).querySelector('[data-slot="button-count"]'),
+      ).toBeNull();
     });
 
     it("does not render a counter when count is omitted", () => {

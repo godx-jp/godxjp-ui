@@ -78,8 +78,18 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
    * Optional numeric count rendered as a borderless counter pill after the label
    * (filter tabs / segmented toggles, e.g. "Chờ bay 18"). Formatted with
    * `Intl.NumberFormat` in the active locale and styled to read on the button's
-   * own variant — never nest a `Badge` inside a Button for this. `0` renders.
+   * own variant — never nest a `Badge` inside a Button for this.
    * Ignored when `asChild` (Radix Slot requires a single child).
    */
   count?: number;
+  /**
+   * Cap for `count` (Ant Badge parity). When `count` exceeds it the pill shows
+   * `{overflowCount}+` (e.g. `99+`). Defaults to 99.
+   */
+  overflowCount?: number;
+  /**
+   * Whether to render the pill when `count` is 0 (Ant Badge parity). Defaults to
+   * `true` (a `0` pill shows); pass `false` to hide the pill at zero.
+   */
+  showZero?: boolean;
 };
