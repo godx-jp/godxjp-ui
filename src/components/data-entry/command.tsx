@@ -7,9 +7,32 @@ import { controlIconLeadingClass } from "../../lib/control-styles";
 export const Command = React.forwardRef<
   React.ComponentRef<typeof CommandPrimitive>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive>
->(({ className, ...props }, ref) => (
-  <CommandPrimitive ref={ref} className={cn("ui-command", className)} {...props} />
-));
+>(({ className, ...props }, ref) => {
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
+  const setRefs = (node: HTMLDivElement | null) => {
+    rootRef.current = node;
+    if (typeof ref === "function") ref(node);
+    else if (ref) ref.current = node;
+  };
+
+  // cmdk unconditionally renders a hidden `<label cmdk-label for={inputId}>`
+  // wired to its own CommandInput. When the consumer renders a CUSTOM search
+  // input instead (SearchSelect does), that `for` dangles — Chrome flags it as
+  // "Incorrect use of <label for=FORM_ELEMENT>". Adopt the expected id onto
+  // the real input when there is one, otherwise drop the `for` entirely.
+  React.useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const label = root.querySelector<HTMLLabelElement>(":scope > label[cmdk-label]");
+    if (!label || root.querySelector("[cmdk-input]")) return;
+    const expectedId = label.getAttribute("for");
+    const input = root.querySelector<HTMLInputElement>('input:not([type="hidden"])');
+    if (input && expectedId && !input.id) input.id = expectedId;
+    else if (!input || input.id !== expectedId) label.removeAttribute("for");
+  });
+
+  return <CommandPrimitive ref={setRefs} className={cn("ui-command", className)} {...props} />;
+});
 Command.displayName = CommandPrimitive.displayName;
 
 export const CommandInput = React.forwardRef<

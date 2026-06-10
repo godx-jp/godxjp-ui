@@ -264,7 +264,10 @@ export function SearchSelect({
           align="start"
           sideOffset={4}
           collisionPadding={12}
-          className="flex max-h-[min(24rem,var(--radix-popover-content-available-height))] w-max max-w-[min(32rem,calc(100vw-1.5rem))] min-w-[var(--radix-popover-trigger-width)] flex-col p-0"
+          // Full-height list: stretch to the viewport-constrained available height
+          // (collisionPadding keeps the breathing room) instead of a 24rem cap that
+          // cut the list mid-row.
+          className="flex max-h-[var(--radix-popover-content-available-height)] w-max max-w-[min(32rem,calc(100vw-1.5rem))] min-w-[var(--radix-popover-trigger-width)] flex-col p-0"
         >
           <Command shouldFilter={false} className="flex min-h-0 flex-col">
             <div className="border-border shrink-0 border-b p-2">
