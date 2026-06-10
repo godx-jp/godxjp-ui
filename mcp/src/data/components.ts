@@ -838,6 +838,26 @@ function MyShell({ children }: { content: React.ReactNode }) {
         type: "React.MouseEventHandler<HTMLButtonElement>",
         description: "Click handler. Does not fire while `loading` or `disabled`.",
       },
+      {
+        name: "count",
+        type: "number",
+        description:
+          "Trailing borderless counter pill after the label (filter tabs / segmented toggles, e.g. \"Chờ bay 18\"). Localized via `Intl.NumberFormat`; styled per variant — never nest a `Badge` in a Button for this. Ignored when `asChild`.",
+      },
+      {
+        name: "overflowCount",
+        type: "number",
+        defaultValue: "99",
+        description:
+          "Cap for `count` (Ant Badge parity) — when `count` exceeds it the pill renders `{overflowCount}+` (e.g. `99+`).",
+      },
+      {
+        name: "showZero",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Whether the pill renders when `count` is 0 (Ant Badge parity). Pass `false` to hide the pill at zero.",
+      },
     ],
     usage: [
       "DO pick the right variant for intent: `default` (primary CTA, one per section), `destructive` (irreversible actions like delete/revoke), `outline` (secondary actions alongside a primary), `secondary` (less prominent actions), `ghost` (toolbar icon-only actions), `link` (inline text-style navigation without an underline by default).",
@@ -2033,6 +2053,18 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         type: "React.ChangeEventHandler<HTMLInputElement>",
         description: "Native change handler.",
       },
+      {
+        name: "allowClear",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Opt-in inline ✕ that clears the field while it holds text (works controlled + uncontrolled). Off by default, so existing inputs are unchanged.",
+      },
+      {
+        name: "onClear",
+        type: "() => void",
+        description: "Called after the field is cleared via the inline ✕ (requires `allowClear`).",
+      },
     ],
     usage: [
       "DO always wrap Input in FormField when the field needs a label, helper text, or validation error — FormField injects aria-describedby and aria-invalid onto Input automatically; never wire these attributes by hand.",
@@ -2245,7 +2277,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         name: "options",
         type: "SearchSelectOptionProp[]",
         description:
-          "Static option list. Passing this (or loadOptions) switches Select from the compound API to the data-driven API. Each option has { value, label, sublabel?, group?, disabled? }. group buckets the option under an optgroup-style heading.",
+          "Static option list. Passing this (or loadOptions) switches Select from the compound API to the data-driven API. Each option has { value, label, sublabel?, icon?, group?, disabled? }. `icon` (avatar / flag / lucide node) renders before the label in the rows AND on the trigger once selected. group buckets the option under an optgroup-style heading.",
       },
       {
         name: "loadOptions",
@@ -2283,13 +2315,25 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         name: "renderOption",
         type: "(option: SearchSelectOptionProp) => React.ReactNode",
         description:
-          "Custom per-option renderer (Ant-Design style). Defaults to label + optional sublabel.",
+          "Custom per-option renderer for the dropdown ROWS (Ant-Design style). Defaults to label + optional sublabel. Does not change the trigger — use `labelRender` for that.",
+      },
+      {
+        name: "labelRender",
+        type: "(selected: { value: string; label: React.ReactNode; option?: SearchSelectOptionProp }) => React.ReactNode",
+        description:
+          "Custom renderer for the SELECTED value shown on the TRIGGER (Ant Design `labelRender`) — avatar + name + role badge, etc. `option` is undefined for an async preset whose page hasn't loaded. Only used while a value is selected; the placeholder still shows when empty.",
       },
       {
         name: "selectedLabel",
         type: "string",
         description:
           "Display label for the current value when its option is not in the loaded page (async). Prevents a flash of the raw id.",
+      },
+      {
+        name: "selectedIcon",
+        type: "React.ReactNode",
+        description:
+          "Leading icon shown on the trigger for the current value when its option isn't loaded yet (async preset) — the trigger counterpart of `selectedLabel`, so an edit form pre-filled from the server shows the avatar/flag at rest.",
       },
       {
         name: "placeholder",
@@ -2543,6 +2587,18 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "React.ChangeEventHandler<HTMLTextAreaElement>",
         description: "Change handler.",
       },
+      {
+        name: "allowClear",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Opt-in inline ✕ at the top-end that clears the field while it holds text (controlled + uncontrolled). Off by default.",
+      },
+      {
+        name: "onClear",
+        type: "() => void",
+        description: "Called after the field is cleared via the inline ✕ (requires `allowClear`).",
+      },
     ],
     usage: [
       "DO always wrap Textarea in FormField when it appears in a form — FormField clones aria-describedby, aria-required, and aria-invalid onto the child, giving error/helper announcements and screen-reader labelling for free. Pass matching id props to both.",
@@ -2774,6 +2830,13 @@ export function PrioritySelect({ value, onValueChange }) {
         type: "Date",
         description:
           "Latest selectable date in the calendar. Days after this date are disabled in the grid, and the calendar navigation ends at this month.",
+      },
+      {
+        name: "allowClear",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Inline ✕ on the trigger that resets the value when one is set (Ant-style). Pass `false` to hide it (e.g. a required field).",
       },
     ],
     usage: [
@@ -3552,6 +3615,13 @@ formatDate(order.createdAt, { kind: "relative" });  // "3日前"`,
         description:
           "Extra Tailwind classes applied to the outer wrapper `<div>`. Use for width overrides (e.g. `w-32`).",
       },
+      {
+        name: "allowClear",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Inline ✕ on the trigger that resets the value when one is set (Ant-style). Pass `false` to hide it (e.g. a required field).",
+      },
     ],
     usage: [
       "DO give it a `name` prop whenever it lives inside a `<form>` — the visible input carries the name and emits `HH:mm` on native submission. You do NOT need a hidden element.",
@@ -3681,6 +3751,13 @@ export function CutoffTimeForm() {
         type: "string",
         description:
           "Extra CSS classes applied to the root flex container (flex items-center gap-1). Use to constrain width or adjust layout; avoid overriding token colors.",
+      },
+      {
+        name: "allowClear",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Inline ✕ on the trigger that resets the range when one is set (Ant-style). Pass `false` to hide it.",
       },
     ],
     usage: [
