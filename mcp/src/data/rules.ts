@@ -236,6 +236,11 @@ export const CARDINAL_RULES: CardinalRule[] = [
     title: "Every service-tunable constant gets a knob",
     body: "When component CSS encodes a geometry choice that a service plausibly re-tunes to match its design handoff — form label column width, label↔control gap, header insets — it MUST be a documented component token (current value as the default). The theme sets it ONCE globally; props (`labelWidth`) override per instance; Form→FormField priority stays intact. The test: \"would a service theme.css want to change this to match its design grid?\" If yes and the only route is forking CSS, that is a library gap — fix the library, don't patch the app. Born from real consumption: `--form-label-width` / `--form-label-gap` (design spec said 110px/8px; the values were prop-only and hard-coded `--space-4`).",
   },
+  {
+    number: 46,
+    title: "Typography is tokens, default is base",
+    body: "A UI framework gives consumers knobs: every font-size in `src/styles/*.css` MUST reference a token — the global modular scale `var(--font-size-{2xs|xs|sm|base|lg|xl|2xl})` or a per-component `var(--{component}-…-font-size)` knob (rule #45) — never a hard-coded literal (`font-size: 12px` can't be re-themed). The DEFAULT body size is `--font-size-base`; components render body/UI text at `base`, not at the `sm` alias. Smaller-by-design text (badge, section label, caption) is a component token defaulting to a small step (`--badge-font-size: var(--font-size-xs)`), so a service re-tunes that part without moving the global scale. The `sm`/`xs` tokens stay for the explicit `<Text size>` API. Every component token is surfaced in the MCP `get_component` output (check:mcp-token-sync). Enforced by `check:typography`.",
+  },
 ];
 
 export const VOCABULARY_TOKEN_RULES: CardinalRule[] = [
@@ -348,11 +353,6 @@ export const VOCABULARY_TOKEN_RULES: CardinalRule[] = [
     number: 22,
     title: "Density Aliases",
     body: "Design tokens: density CSS MUST select token aliases and MUST NOT introduce new raw component dimensions when a token tier can hold the value.",
-  },
-  {
-    number: 46,
-    title: "Typography is tokens, default is base",
-    body: "A UI framework gives consumers knobs: every font-size in `src/styles/*.css` MUST reference a token — the global modular scale `var(--font-size-{2xs|xs|sm|base|lg|xl|2xl})` or a per-component `var(--{component}-…-font-size)` knob (rule #45) — never a hard-coded literal (`font-size: 12px` can't be re-themed). The DEFAULT body size is `--font-size-base`; components render body/UI text at `base`, not at the `sm` alias. Smaller-by-design text (badge, section label, caption) is a component token defaulting to a small step (`--badge-font-size: var(--font-size-xs)`), so a service re-tunes that part without moving the global scale. The `sm`/`xs` tokens stay for the explicit `<Text size>` API. Enforced by `check:typography`."
   },
 ];
 

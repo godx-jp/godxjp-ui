@@ -18,6 +18,7 @@ import {
 } from "../data/components.js";
 import { PROP_VOCABULARY, findVocab } from "../data/prop-vocabulary.js";
 import { TOKENS, tokensByCategory, type TokenCategory } from "../data/tokens.js";
+import { COMPONENT_TOKENS } from "../data/component-tokens.generated.js";
 import { CARDINAL_RULES, findRule } from "../data/rules.js";
 import { PATTERNS, findPattern, searchPatterns } from "../data/patterns.js";
 import {
@@ -574,6 +575,69 @@ function getSkillSection(skillId: string, sectionId: string): string {
   return `# ${skill.name} → ${section.title}\n\n${section.tagline}\n\n${section.body}\n\n_Source: ${skill.source}_`;
 }
 
+/**
+ * Token-name prefixes a component exposes as theme knobs. Defaults to the
+ * kebab-cased component name; overrides cover the irregular cases (shared
+ * `--control-*` sizing, DataTable→table, the shell parts, etc.).
+ */
+const TOKEN_PREFIXES: Record<string, string[]> = {
+  Badge: ["badge"],
+  Button: ["button"],
+  Toggle: ["toggle"],
+  TagInput: ["tag-input"],
+  Card: ["card"],
+  StatCard: ["stat-card"],
+  Table: ["table"],
+  DataTable: ["table"],
+  Dialog: ["dialog"],
+  AlertDialog: ["dialog"],
+  Sheet: ["dialog"],
+  Drawer: ["dialog"],
+  Alert: ["alert"],
+  EmptyState: ["empty-state"],
+  Skeleton: ["skeleton"],
+  Pagination: ["pagination"],
+  Toolbar: ["filter"],
+  Breadcrumb: ["breadcrumb"],
+  Menubar: ["menubar"],
+  Progress: ["progress"],
+  TreeSelect: ["tree"],
+  Timeline: ["timeline"],
+  PasswordStrength: ["password-strength"],
+  PasswordInput: ["password-strength"],
+  Checkbox: ["checkbox"],
+  Switch: ["switch"],
+  Slider: ["slider"],
+  ColorPicker: ["color-picker"],
+  Command: ["command"],
+  Radio: ["choice"],
+  RadioGroup: ["choice"],
+  Field: ["choice"],
+  AppShell: ["sidebar", "topbar"],
+  Sidebar: ["sidebar"],
+  Topbar: ["topbar"],
+  Form: ["form"],
+  FormField: ["form"],
+  // Shared control sizing/typography — every plain control reads these.
+  Input: ["control"],
+  Textarea: ["control"],
+  NumberInput: ["control"],
+  Select: ["control", "search-input"],
+  Cascader: ["control"],
+  DatePicker: ["control"],
+  TimePicker: ["control"],
+  InputOTP: ["control"],
+};
+
+function componentTokensFor(name: string) {
+  const prefixes = TOKEN_PREFIXES[name] ?? [
+    name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase(),
+  ];
+  return COMPONENT_TOKENS.filter((t) =>
+    prefixes.some((p) => t.name.startsWith(`--${p}-`)),
+  );
+}
+
 function getComponent(name: string): string {
   const c = findComponent(name);
   if (!c) return `Component "${name}" not found. Use \`list_primitives\` to discover.`;
@@ -587,6 +651,12 @@ function getComponent(name: string): string {
   out += `| Name | Type | Required | Default | Description |\n|---|---|---|---|---|\n`;
   for (const p of c.props) {
     out += `| \`${p.name}\` | \`${p.type}\` | ${p.required ? "✓" : ""} | ${p.defaultValue ? `\`${p.defaultValue}\`` : ""} | ${p.description} |\n`;
+  }
+  const tokens = componentTokensFor(c.name);
+  if (tokens.length) {
+    out += `\n## Design tokens (theme knobs)\n\nOverride these in a service \`theme.css\` to re-tune ONLY this component (never hard-code or fork CSS — rules #44/#45/#46):\n\n`;
+    out += `| Token | Default | What it controls |\n|---|---|---|\n`;
+    for (const t of tokens) out += `| \`${t.name}\` | \`${t.value}\` | ${t.description} |\n`;
   }
   if (c.usage && c.usage.length) {
     out += `\n## How to use it\n\n`;
