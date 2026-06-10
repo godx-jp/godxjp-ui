@@ -104,7 +104,7 @@
   }
 
   .ui-card-header--banded {
-    border-bottom: 1px solid hsl(var(--card-border));
+    border-bottom: var(--card-header-divider);
     background-color: hsl(var(--card-header-background) / var(--card-header-background-alpha));
   }
 
