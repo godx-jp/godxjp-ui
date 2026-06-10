@@ -13,6 +13,10 @@ export type {
 
 const toCssLength = (v: WidthProp): string => (typeof v === "number" ? `${v}px` : v);
 
+/** Label-click focus target — a real control, never a wrapper div. */
+const FOCUSABLE_SELECTOR =
+  'input:not([type="hidden"]), select, textarea, button, [tabindex]:not([tabindex="-1"])';
+
 export function FormField({
   id,
   label,
@@ -99,7 +103,13 @@ export function FormField({
           <span
             onClick={() => {
               const el = document.getElementById(resolvedId);
-              if (el && el instanceof HTMLElement) el.focus();
+              if (!(el instanceof HTMLElement)) return;
+              // Composite children put the field id on a plain wrapper —
+              // focus the first real control inside it instead.
+              const focusable = el.matches(FOCUSABLE_SELECTOR)
+                ? el
+                : el.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+              (focusable ?? el).focus();
             }}
           >
             <span>{label}</span>
