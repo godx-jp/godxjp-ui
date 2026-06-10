@@ -45,10 +45,13 @@ const sheetVariants = cva(
   "fixed z-50 flex flex-col gap-[var(--space-chrome-gap)] bg-background px-[var(--sheet-pad-x)] py-[var(--sheet-pad-y)] shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
   {
     variants: {
+      // `side` is a deliberately PHYSICAL API (left/right/top/bottom) — a sheet
+      // opens from the edge the consumer names, not a locale-flipped one, matching
+      // the Radix/shadcn Sheet convention. The physical classes below are intended.
       side: {
-        right:
+        /* rtl-ignore: named physical side */ right:
           "inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-md",
-        left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-md",
+        /* rtl-ignore: named physical side */ left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-md",
         top: "inset-x-0 top-0 h-auto border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
         bottom:
           "inset-x-0 bottom-0 h-auto border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
@@ -121,7 +124,7 @@ export interface SheetHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   title?: React.ReactNode;
   /** Secondary line under the title (rendered as SheetDescription). */
   subtitle?: React.ReactNode;
-  /** Trailing actions/content, right-aligned (e.g. a status Badge or a Button). */
+  /** Trailing actions/content, end-aligned (e.g. a status Badge or a Button). */
   extra?: React.ReactNode;
   /** Soft semantic background band for the header. `default` = no band. */
   tone?: ToneProp;
@@ -185,7 +188,7 @@ export const SheetBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivE
 export const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   // Pinned action bar (Ant Design Drawer footer): sticks to the bottom, full-bleed top border, actions
   // RIGHT-aligned (primary rightmost). A destructive / clear / reset action goes far-LEFT — give it
-  // `className="mr-auto"`. See cardinal rule "Drawer & dialog footer layout".
+  // `className="me-auto"`. See cardinal rule "Drawer & dialog footer layout".
   // Owns its full vertical padding (symmetric 16/16) via `py-4`; `-mb-6` cancels SheetContent's
   // `p-6` bottom so the footer doesn't inherit an asymmetric 16-top / 24-bottom rhythm.
   <div

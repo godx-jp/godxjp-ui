@@ -30,7 +30,7 @@
 
   [data-slot="dialog-content"] {
     position: fixed;
-    left: 50%;
+    inset-inline-start: 50%;
     top: 50%;
     z-index: 50;
     display: grid;

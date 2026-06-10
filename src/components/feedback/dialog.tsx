@@ -141,7 +141,7 @@ DialogBody.displayName = "DialogBody";
 
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   // Layout (right-aligned actions, mobile column-reverse) lives in feedback-layout.css
-  // [data-slot="dialog-footer"]. Destructive action goes far-left via `className="mr-auto"`.
+  // [data-slot="dialog-footer"]. Destructive action goes to the start via `className="me-auto"`.
   <div data-slot="dialog-footer" className={className} {...props} />
 );
 DialogFooter.displayName = "DialogFooter";

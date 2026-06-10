@@ -120,7 +120,7 @@ export function Steps({
             <div
               className={cn(
                 "min-w-0",
-                isVertical ? "pt-1 text-left" : "mt-2 px-2",
+                isVertical ? "pt-1 text-start" : "mt-2 px-2",
                 titlePlacement === "vertical" && !isVertical && "mt-1",
               )}
             >

@@ -143,6 +143,8 @@ export type TopbarProp = {
   unread?: boolean;
   /** Accessible placeholder when project is intentionally unset but a project chip is rendered. */
   projectPlaceholder?: string;
+  /** Search-bar placeholder text — defaults to the i18n `layout.topbar.searchPlaceholder`. */
+  searchPlaceholder?: string;
   onNotificationsOpen?: () => void;
   user?: ReactNode;
 };

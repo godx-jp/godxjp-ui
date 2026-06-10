@@ -277,7 +277,7 @@ export function Upload({
         {hiddenInput}
         {liveRegion}
         <Button type="button" variant="outline" disabled={disabled} onClick={openPicker}>
-          <UploadIcon className="mr-2 size-4" aria-hidden="true" />
+          <UploadIcon className="me-2 size-4" aria-hidden="true" />
           {children ?? t("dataEntry.upload.buttonLabel")}
         </Button>
         {items.length > 0 && (
@@ -335,7 +335,7 @@ export function Upload({
               </div>
             )}
             {item.pendingReplace && (
-              <div className="bg-warning text-warning-foreground absolute top-2 left-2 rounded px-2 py-0.5 text-xs">
+              <div className="bg-warning text-warning-foreground absolute start-2 top-2 rounded px-2 py-0.5 text-xs">
                 {t("dataEntry.upload.pendingReplace")}
               </div>
             )}
@@ -410,7 +410,7 @@ export function Upload({
             type="button"
             disabled={disabled}
             onClick={() => draft.markRemove()}
-            className="bg-background hover:bg-destructive hover:text-destructive-foreground absolute -top-1 -right-1 rounded-full border p-1 shadow-sm"
+            className="bg-background hover:bg-destructive hover:text-destructive-foreground absolute -end-1 -top-1 rounded-full border p-1 shadow-sm"
             aria-label={t("dataEntry.upload.removeAvatar")}
           >
             <Trash2 className="size-3.5" aria-hidden="true" />
@@ -439,7 +439,7 @@ function UploadDraftActions({
       <div className="border-destructive/40 bg-destructive/5 flex flex-wrap items-center gap-2 rounded-md border border-dashed px-3 py-2 text-sm">
         <span className="text-destructive">{t("dataEntry.upload.markedForDelete")}</span>
         <Button type="button" size="sm" variant="outline" disabled={disabled} onClick={undoRemove}>
-          <RotateCcw className="mr-1 size-3.5" aria-hidden="true" />
+          <RotateCcw className="me-1 size-3.5" aria-hidden="true" />
           {t("dataEntry.upload.undo")}
         </Button>
       </div>

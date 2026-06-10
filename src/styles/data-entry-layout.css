@@ -63,9 +63,9 @@
     width: 0.9rem;
     height: 0.9rem;
     border-bottom: 1px solid currentColor;
-    border-right: 1px solid currentColor;
+    border-inline-end: 1px solid currentColor;
     transform: rotate(45deg);
-    margin-left: auto;
+    margin-inline-start: auto;
     opacity: 0.7;
   }
 
