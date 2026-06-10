@@ -156,3 +156,32 @@ describe("Command — interaction behavior", () => {
     expect(onSelect).not.toHaveBeenCalled();
   });
 });
+
+describe("Command — hidden cmdk label hygiene (custom search input)", () => {
+  it("adopts cmdk's expected input id onto a custom input so the hidden label's `for` resolves", () => {
+    const { container } = renderWithUi(
+      <Command shouldFilter={false}>
+        <input placeholder="filter" />
+        <CommandList>
+          <CommandItem value="a">A</CommandItem>
+        </CommandList>
+      </Command>,
+    );
+    const label = container.querySelector("label[cmdk-label]")!;
+    const forId = label.getAttribute("for");
+    expect(forId).toBeTruthy();
+    expect(container.querySelector(`input#${CSS.escape(forId!)}`)).not.toBeNull();
+  });
+
+  it("drops the dangling `for` when the command has no input at all", () => {
+    const { container } = renderWithUi(
+      <Command shouldFilter={false}>
+        <CommandList>
+          <CommandItem value="a">A</CommandItem>
+        </CommandList>
+      </Command>,
+    );
+    const label = container.querySelector("label[cmdk-label]")!;
+    expect(label.hasAttribute("for")).toBe(false);
+  });
+});
