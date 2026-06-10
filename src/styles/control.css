@@ -10,7 +10,7 @@
     gap: var(--space-inline-xs);
     border-radius: var(--radius-md);
     color: hsl(var(--foreground));
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     font-weight: var(--font-weight-medium);
     transition:
       background-color 150ms ease,
@@ -151,7 +151,7 @@
   .ui-button--default-size {
     height: var(--control-height);
     padding-inline: var(--control-padding-x);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .ui-button--sm {
@@ -179,7 +179,7 @@
   .ui-button--lg {
     height: var(--control-height-lg);
     padding-inline: var(--space-8);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .ui-button--icon {
@@ -192,13 +192,13 @@
     height: var(--control-height);
     padding-inline-start: var(--control-padding-x);
     padding-inline-end: var(--control-padding-x);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .ui-control-multiline {
     min-height: calc(var(--control-height) * 2.75);
     padding: var(--space-2) var(--control-padding-x);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .ui-table-row {
@@ -241,7 +241,7 @@
 
   .ui-choice-label {
     cursor: pointer;
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     font-weight: var(--font-weight-normal);
   }
 
@@ -467,7 +467,7 @@
     box-shadow: none;
     outline: none;
     color: hsl(var(--foreground));
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .ui-command-input::placeholder {
@@ -488,7 +488,7 @@
   .ui-command-empty {
     padding-block: var(--space-6);
     text-align: center;
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .ui-command-group {
@@ -512,7 +512,7 @@
     align-items: center;
     border-radius: calc(var(--control-radius) - 2px);
     padding: var(--command-item-padding-y) var(--command-item-padding-x);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     outline: none;
   }
 
@@ -625,7 +625,7 @@
   height: var(--control-height);
   align-items: center;
   justify-content: center;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   border: 1px solid hsl(var(--border));
   border-inline-start-width: 0;
   background: hsl(var(--background));
@@ -788,7 +788,7 @@
   border: 0;
   outline: none;
   background: transparent;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   color: inherit;
 }
 
@@ -822,7 +822,7 @@
   display: inline-flex;
   align-items: center;
   color: hsl(var(--muted-foreground));
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   pointer-events: none;
 }
 .ui-number-input-affix:first-of-type {
