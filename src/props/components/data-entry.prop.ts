@@ -300,6 +300,17 @@ export type SearchSelectProp = {
   loadOptions?: (params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>;
   /** Custom per-option renderer (Ant-Design style). Defaults to label + optional sublabel. */
   renderOption?: (option: SearchSelectOptionProp) => React.ReactNode;
+  /**
+   * Custom renderer for the SELECTED value shown on the trigger (Ant Design `labelRender`).
+   * Receives the value, the resolved label, and the full option when it is loaded (undefined for
+   * an async preset whose page hasn't arrived). Only used while a value is selected; the
+   * placeholder still shows when empty. Overrides the default icon + label trigger content.
+   */
+  labelRender?: (selected: {
+    value: string;
+    label: React.ReactNode;
+    option?: SearchSelectOptionProp;
+  }) => React.ReactNode;
   /** Label for the current value when its option isn't in the loaded page (avoids a flash of id). */
   selectedLabel?: string;
   /**

@@ -39,6 +39,7 @@ export function SearchSelect({
   options: staticOptions,
   loadOptions,
   renderOption,
+  labelRender,
   selectedLabel,
   selectedIcon,
   placeholder,
@@ -242,12 +243,18 @@ export function SearchSelect({
                 !value && "text-muted-foreground",
               )}
             >
-              {currentIcon ? (
-                <span className="flex shrink-0 items-center" aria-hidden="true">
-                  {currentIcon}
-                </span>
-              ) : null}
-              <span className="truncate">{currentLabel}</span>
+              {value && labelRender ? (
+                labelRender({ value, label: currentLabel, option: selectedOption ?? undefined })
+              ) : (
+                <>
+                  {currentIcon ? (
+                    <span className="flex shrink-0 items-center" aria-hidden="true">
+                      {currentIcon}
+                    </span>
+                  ) : null}
+                  <span className="truncate">{currentLabel}</span>
+                </>
+              )}
             </span>
           </Button>
         </PopoverTrigger>

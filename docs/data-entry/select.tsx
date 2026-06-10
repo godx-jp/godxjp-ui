@@ -33,6 +33,7 @@ export default function Demo() {
   const [reviewer, setReviewer] = useState("tanaka");
   const [reviewerAsync, setReviewerAsync] = useState("tanaka");
   const [reviewerCustom, setReviewerCustom] = useState("tanaka");
+  const [reviewerLabel, setReviewerLabel] = useState("tanaka");
 
   const people = [
     { value: "tanaka", label: "田中 太郎", sublabel: "tanaka@example.com" },
@@ -223,6 +224,39 @@ export default function Demo() {
                       VIP
                     </Badge>
                   </div>
+                )}
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>labelRender — custom selected display</CardTitle>
+            <CardDescription>
+              `labelRender` (Ant Design) customizes the SELECTED value shown on the trigger — here an
+              avatar + name + a role badge. The placeholder still shows when nothing is selected.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="reviewer-label" label="レビュー担当 (labelRender)">
+              <Select
+                id="reviewer-label"
+                name="reviewer_label"
+                value={reviewerLabel}
+                onValueChange={setReviewerLabel}
+                showSearch
+                searchPlaceholder="担当者を検索..."
+                placeholder="担当者を選択"
+                options={people}
+                labelRender={({ label }) => (
+                  <span className="flex items-center gap-2">
+                    {avatarFor(String(label))}
+                    <span className="truncate">{label}</span>
+                    <Badge tone="info" icon={null} className="ms-1">
+                      担当
+                    </Badge>
+                  </span>
                 )}
               />
             </FormField>

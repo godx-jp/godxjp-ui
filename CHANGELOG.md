@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   yet (e.g. an edit form pre-filled from the server), so the avatar/flag shows at rest.
 - `Button` `count` gains Ant-Badge-parity `overflowCount` (default 99 → renders `99+`) and `showZero`
   (default `true`; pass `false` to hide the pill when the count is 0).
+- `SearchSelect` / `Select` gain a `labelRender` prop (Ant Design) — fully customize the SELECTED
+  value shown on the trigger (avatar + name + role badge, etc.); the placeholder still shows when
+  empty. Receives `{ value, label, option }` (option is undefined for an unloaded async preset).
 
 ## [13.6.0]
 

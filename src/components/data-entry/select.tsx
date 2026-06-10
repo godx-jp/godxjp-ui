@@ -196,6 +196,7 @@ function DataSelect({
   defaultValue,
   onValueChange,
   renderOption,
+  labelRender,
   selectedLabel,
   selectedIcon,
   placeholder,
@@ -221,6 +222,7 @@ function DataSelect({
         options={options}
         loadOptions={loadOptions}
         renderOption={renderOption}
+        labelRender={labelRender}
         selectedLabel={selectedLabel}
         selectedIcon={selectedIcon}
         placeholder={placeholder}

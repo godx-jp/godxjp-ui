@@ -44,6 +44,33 @@ describe("SearchSelect — option icon", () => {
     expect(screen.getByTestId("sel-ic")).toBeInTheDocument();
   });
 
+  it("labelRender customizes the selected trigger content", () => {
+    renderWithUi(
+      <SearchSelect
+        options={OPTIONS}
+        defaultValue="1"
+        labelRender={({ label, value }) => (
+          <span data-testid="custom-label">
+            {label} (#{value})
+          </span>
+        )}
+      />,
+    );
+    expect(screen.getByTestId("custom-label")).toHaveTextContent("Tanaka (#1)");
+  });
+
+  it("data-driven Select forwards labelRender to the trigger", () => {
+    renderWithUi(
+      <Select
+        options={OPTIONS}
+        showSearch
+        value="2"
+        labelRender={({ option }) => <span data-testid="cl2">{option?.label} ✓</span>}
+      />,
+    );
+    expect(screen.getByTestId("cl2")).toHaveTextContent("Suzuki ✓");
+  });
+
   it("data-driven Select forwards selectedIcon to the trigger (async preset)", () => {
     // Regression: the Select wrapper must forward selectedIcon to its SearchSelect engine.
     renderWithUi(
