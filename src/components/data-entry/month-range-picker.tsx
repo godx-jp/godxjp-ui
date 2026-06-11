@@ -2,6 +2,7 @@ import * as React from "react";
 import { ArrowRight, CalendarIcon, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
+import { useControlledLatch } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -55,8 +56,9 @@ export function MonthRangePicker({
   const autoId = React.useId();
   const fromId = id ?? autoId;
   const toId = `${fromId}-to`;
-  // Controlled-ness fixed at mount; uncontrolled state seeds from `defaultValue`.
-  const isControlled = React.useRef(valueProp !== undefined).current;
+  // Controlled once a defined `value` has EVER been passed (an empty form may
+  // restore a saved value later); uncontrolled state seeds from `defaultValue`.
+  const isControlled = useControlledLatch(valueProp !== undefined);
   const [internalValue, setInternalValue] = React.useState<DateRange | undefined>(defaultValue);
   const value = isControlled ? valueProp : internalValue;
   const [fromText, setFromText] = React.useState(() => toYmText(value?.from));

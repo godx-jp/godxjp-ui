@@ -2,6 +2,7 @@ import * as React from "react";
 import { CalendarIcon, X } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime/parse";
+import { useControlledLatch } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Input } from "./input";
@@ -39,9 +40,11 @@ export function DatePicker({
   const { t } = useTranslation();
   const { dayPickerLocale } = usePickerLocales(localeProp);
   const [open, setOpen] = React.useState(false);
-  // Controlled-ness is fixed at mount so a controlled `value={undefined}` (no selection) isn't
-  // mistaken for uncontrolled. Uncontrolled state seeds from `defaultValue`.
-  const isControlled = React.useRef(valueProp !== undefined).current;
+  // Controlled once a defined `value` has EVER been passed — a controlled
+  // `value={undefined}` (no selection) isn't mistaken for uncontrolled, and an
+  // empty-mounted form can still restore a saved value later. Uncontrolled
+  // state seeds from `defaultValue`.
+  const isControlled = useControlledLatch(valueProp !== undefined);
   const [internalValue, setInternalValue] = React.useState<Date | undefined>(defaultValue);
   const value = isControlled ? valueProp : internalValue;
   const emit = (next: Date | undefined) => {

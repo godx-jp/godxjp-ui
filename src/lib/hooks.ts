@@ -53,6 +53,27 @@ export function useTimeoutFlag(signal: unknown, ms = 2_000): boolean {
   return Boolean(signal) && active;
 }
 
+/**
+ * Controlled-ness latch for `value`/`defaultValue`/`onValueChange` controls
+ * whose empty state is `undefined` (pickers carrying `Date`/`DateRange`).
+ *
+ * A control counts as controlled once a DEFINED `value` has EVER been passed:
+ * - mounted with a defined `value` → controlled, and a later `value={undefined}`
+ *   stays controlled-EMPTY (not mistaken for uncontrolled);
+ * - mounted with `value={undefined}` (an empty form that later restores a
+ *   saved value) → uncontrolled until the first defined value arrives, then
+ *   PROMOTES to controlled for good.
+ *
+ * Fixing controlled-ness at mount (the previous behaviour) silently ignored
+ * every later controlled value in the second case.
+ */
+export function useControlledLatch(valueIsDefined: boolean): boolean {
+  const [latched, setLatched] = useState(valueIsDefined);
+  // Guarded render-time set — React's documented "derived state" form.
+  if (valueIsDefined && !latched) setLatched(true);
+  return valueIsDefined || latched;
+}
+
 export function useMediaQuery(query: string): boolean {
   const isBrowser = typeof window !== "undefined";
 
