@@ -157,4 +157,42 @@
       inset-inline-end: 0;
     }
   }
+
+  /* ── Pinned (sticky) inline-end column ────────────────────────────────
+   * The standard home for a row-actions column: it stays put while the rest
+   * of the table scrolls horizontally. The cell carries an opaque, state-aware
+   * background so scrolling cells don't bleed through, plus a token shadow that
+   * separates it from the body. When present, the scroll fade is hidden (the
+   * pin's own shadow is the affordance). RTL-correct via logical properties. */
+  .ui-data-table-has-pin-end::after {
+    display: none;
+  }
+
+  .ui-data-table-pin-end {
+    position: sticky;
+    inset-inline-end: 0;
+    z-index: 2;
+    background-color: hsl(var(--background));
+    box-shadow: var(--table-pin-shadow);
+  }
+
+  th.ui-data-table-pin-end {
+    background-color: hsl(var(--secondary));
+  }
+
+  /* box-shadow has no logical offset — flip its inline direction by hand in RTL,
+   * where the pinned column sits on the visual left and the shadow points right. */
+  [dir="rtl"] .ui-data-table-pin-end {
+    box-shadow: 6px 0 6px -5px hsl(var(--foreground) / 0.12);
+  }
+
+  /* Mirror the row's hover / selected tint — a translucent muted wash layered
+   * over the opaque base, so the pinned cell matches the rest of its row. */
+  .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end {
+    background-image: linear-gradient(hsl(var(--muted) / 0.5), hsl(var(--muted) / 0.5));
+  }
+
+  .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-end {
+    background-image: linear-gradient(hsl(var(--muted) / 0.3), hsl(var(--muted) / 0.3));
+  }
 }

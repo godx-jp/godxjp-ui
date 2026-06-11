@@ -712,5 +712,10 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-head-font-size",
     "value": "var(--font-size-xs)",
     "description": "Table component tokens: row height, cell padding."
+  },
+  {
+    "name": "--table-pin-shadow",
+    "value": "-6px 0 6px -5px hsl(var(--foreground) / 0.12)",
+    "description": "Inline-end shadow that lifts a pinned (sticky) action column off the body it scrolls over."
   }
 ];

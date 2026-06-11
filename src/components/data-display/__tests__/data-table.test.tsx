@@ -123,11 +123,12 @@ describe("DataTable", () => {
     expect(screen.queryByText("Chưa có dữ liệu")).not.toBeInTheDocument();
   });
 
-  it("shows a loading row instead of data/empty when loading", () => {
-    renderWithUi(
+  it("shows shaped skeleton rows instead of data/empty when loading", () => {
+    const { container } = renderWithUi(
       <DataTable data={[] as Row[]} columns={[...columns]} getRowId={(row) => row.id} loading />,
     );
-    expect(screen.getByText("Đang tải…")).toBeInTheDocument();
+    // Skeleton bars stand in for the rows; the empty state is suppressed.
+    expect(container.querySelectorAll(".ui-skeleton-block").length).toBeGreaterThan(0);
     expect(screen.queryByText("Chưa có dữ liệu")).not.toBeInTheDocument();
   });
 

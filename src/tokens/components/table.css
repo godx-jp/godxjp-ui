@@ -8,4 +8,6 @@
   --table-cell-padding-y: var(--space-2);
   --table-cell-space-x: var(--control-padding-x);
   --table-head-font-size: var(--font-size-xs);
+  /* Inline-end shadow that lifts a pinned (sticky) action column off the body it scrolls over. */
+  --table-pin-shadow: -6px 0 6px -5px hsl(var(--foreground) / 0.12);
 }
