@@ -9,8 +9,8 @@
  *
  * Run AFTER `pnpm build`. Usage: node scripts/check-core-isolation.mjs [--json]
  */
-import { readFileSync, existsSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { readFileSync, existsSync, statSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 
 const ROOT_ENTRY = "dist/index.js";
 const FORBIDDEN = [
@@ -33,9 +33,18 @@ const seen = new Set();
 const bareSpecifiers = new Set();
 const importRe = /(?:import|export)\s+(?:[^"']*?\s+from\s+)?["']([^"']+)["']/g;
 
+/** Bundler-style resolution — the preserved-module dist keeps source
+ *  specifiers verbatim (extensionless files AND directory imports). */
+function resolveModule(abs) {
+  for (const candidate of [abs, `${abs}.js`, join(abs, "index.js")]) {
+    if (existsSync(candidate) && statSync(candidate).isFile()) return candidate;
+  }
+  return null;
+}
+
 function walk(file) {
-  const abs = resolve(file);
-  if (seen.has(abs) || !existsSync(abs)) return;
+  const abs = resolveModule(resolve(file));
+  if (!abs || seen.has(abs)) return;
   seen.add(abs);
   const src = readFileSync(abs, "utf8");
   for (const m of src.matchAll(importRe)) {
