@@ -24,4 +24,16 @@ for (const dir of CSS_DIRS) {
   });
 }
 
-console.log("copied CSS trees -> dist/{styles,tokens,theme}");
+// Preserved-module output keeps `import ja from "./messages/ja.json"` as-is,
+// so the JSON files must ship next to the emitted i18n modules.
+const messagesFrom = join(root, "src", "i18n", "messages");
+const messagesTo = join(root, "dist", "i18n", "messages");
+if (existsSync(messagesFrom)) {
+  mkdirSync(messagesTo, { recursive: true });
+  cpSync(messagesFrom, messagesTo, {
+    recursive: true,
+    filter: (src) => src === messagesFrom || src.endsWith(".json"),
+  });
+}
+
+console.log("copied CSS trees + i18n messages -> dist");
