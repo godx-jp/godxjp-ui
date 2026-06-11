@@ -308,6 +308,31 @@
     background-color: hsl(var(--background));
   }
 
+  /* footerReveal="onScroll": the sticky footer stays mounted (reserving its
+   * flow space, so toggling never reflows the body → no scroll jitter) but is
+   * slid below the fold until the header leaves the viewport, then slides up.
+   * data-revealed is toggled by an IntersectionObserver on the header. */
+  .ui-page-container--reveal-footer .ui-page-footer {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 200ms ease-out,
+      opacity 200ms ease-out;
+  }
+
+  .ui-page-container--reveal-footer[data-revealed="true"] .ui-page-footer {
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ui-page-container--reveal-footer .ui-page-footer {
+      transition: none;
+    }
+  }
+
   .ui-page-header {
     display: flex;
     flex-direction: column;
