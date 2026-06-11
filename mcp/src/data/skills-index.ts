@@ -133,6 +133,73 @@ broken). Spinner during init is wrong (nothing to spin over).`,
     ],
   },
 
+  // ── crud-list (search/list pages) ─────────────────────────────
+  {
+    id: "crud-list",
+    audience: "consumer",
+    name: "CRUD list / search page — DataTable + search recipe",
+    whenToUse:
+      "Building any list/index/search screen over a paginated API: an admin table with a search panel, pagination, and row actions. The invariant contract for 'processing' feedback, disabled controls, sticky actions, and the search form.",
+    source: "@godxjp/ui DataTable + TanStack Query keepPreviousData contract",
+    sections: [
+      {
+        id: "fetch-contract",
+        title: "Fetch contract — keepPreviousData → isPlaceholderData",
+        tagline: "Pagination/search keeps the old page on screen; isPlaceholderData IS the processing flag.",
+        body: `Use React Query with placeholderData: keepPreviousData and the
+search params IN the queryKey (["orders", params]). On a new page/search
+the previous rows stay mounted, so isLoading is FALSE — do NOT key
+loading UI off isLoading. The processing signal is isPlaceholderData
+(params changed, new data in flight). First-ever load (no prior data) is
+isLoading. So: loading = isLoading || isPlaceholderData. Idle the query
+(enabled: params !== null) until the user searches.`,
+      },
+      {
+        id: "loading-skeleton",
+        title: "Skeleton via DataTable loading — never hand-roll",
+        tagline: "Pass loading to <DataTable>; it renders a shaped skeleton INSIDE its own grid.",
+        body: `<DataTable data={rows} columns={columns} loading={loading} />.
+DataTable swaps its body for shaped skeleton rows that reuse its own
+grid — one border, aligned columns. NEVER render a separate
+<SkeletonTable> inside a <Card> next to/around the table: the skeleton's
+frame + the Card's border = an ugly DOUBLE BORDER. Keep summary lines as
+Skeleton bars while loading too, so stale counts don't flash.`,
+      },
+      {
+        id: "disable-controls",
+        title: "Disable search + pager while fetching",
+        tagline: "A request is in flight → block re-submits. loading on Button, disabled on Pagination.",
+        body: `The 照会/Search button: <Button loading={isFetching}> (loading
+implies disabled). The pager: <Pagination disabled={loading} /> — it
+blocks prev/next/page clicks AND onValueChange while a fetch is running,
+so the user can't queue a second request mid-flight. Drive both off the
+SAME processing flag as the skeleton so the screen is coherent.`,
+      },
+      {
+        id: "sticky-actions",
+        title: "Row-actions column is pinned to the end",
+        tagline: "Action buttons must stay visible on horizontal scroll — column pin: 'end'.",
+        body: `Give the actions column { key: "actions", header: "操作",
+pin: "end", align: "right" }. DataTable makes it position:sticky at the
+inline-end edge with an opaque, hover/selection-aware background and a
+separating shadow (—table-pin-shadow), and suppresses the scroll fade so
+it isn't dimmed. Pin at most ONE column per table. RTL-correct out of the
+box (logical inset-inline-end).`,
+      },
+      {
+        id: "search-form",
+        title: "Search panel is Form + FormField + real pickers",
+        tagline: "No ad-hoc labels/inputs; date ranges use the range pickers; no hard-coded text sizes.",
+        body: `Build the search conditions with <Form>/<FormField> (label +
+a11y wiring), real DatePicker/DateRangePicker/MonthPicker/NumberInput/
+Select for each field — never bare <input> or hand-rolled labels. Group
+advanced conditions behind a 詳細条件 toggle. Submit copies the live
+condition state into the query params (a new object → new queryKey →
+fetch). Clear resets to the idle (null) state.`,
+      },
+    ],
+  },
+
   // ── soft (Awwwards / premium agency) ───────────────────────────
   {
     id: "soft",

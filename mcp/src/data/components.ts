@@ -1035,7 +1035,7 @@ import { Trash2 } from "lucide-react";
         type: "ColumnDef<T>[]",
         required: true,
         description:
-          "Column definitions. Each column: { value: string; header: ReactNode; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean }. If render is omitted, the raw value at row[key] is rendered as a string.",
+          "Column definitions. Each column: { key: string; header: ReactNode; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; pin?: 'end' }. If render is omitted, the raw value at row[key] is rendered as a string. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column.",
       },
       {
         name: "getRowId",
@@ -1098,7 +1098,7 @@ import { Trash2 } from "lucide-react";
         type: "boolean",
         defaultValue: "false",
         description:
-          "When true, renders a full-width loading row instead of data rows or the empty state. Use during initial fetch or pagination transitions.",
+          "When true, swaps the body for SHAPED skeleton rows rendered inside the table's own grid (one border, aligned columns) — never a separate <SkeletonTable> in a Card (that double-borders). With React Query keepPreviousData, drive this off isPlaceholderData (pagination/search) || isLoading (first load), NOT isLoading alone. Suppresses the empty state while true.",
       },
       {
         name: "empty",

@@ -21,6 +21,13 @@ export type ColumnDefProp<T> = {
   width?: string;
   align?: ColumnAlignProp;
   hiddenOnMobile?: boolean;
+  /**
+   * Pin the column to the inline-end edge so it stays visible while the rest of
+   * the table scrolls horizontally — the standard home for a row-actions column.
+   * The pinned cell keeps an opaque, hover/selection-aware background and casts a
+   * separating shadow. Pin at most one column per table.
+   */
+  pin?: "end";
 };
 
 /** Set of selected row IDs. */

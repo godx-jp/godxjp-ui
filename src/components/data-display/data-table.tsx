@@ -297,6 +297,9 @@ DataTable.Content = function DataTableContent() {
 
   const rowPadding = tableRowHeightClass;
   const cellPadding = tableCellPaddingClass;
+  // A pinned inline-end column casts its own separating shadow, so the scroll
+  // fade (which would otherwise dim the pinned column) is suppressed.
+  const hasPinEnd = columns.some((col) => col.pin === "end");
 
   const onHeaderClick = (col: ColumnDef<unknown>) => {
     if (!col.sortable || !onSortChange) return;
@@ -310,7 +313,10 @@ DataTable.Content = function DataTableContent() {
   };
 
   return (
-    <div className="ui-data-table-scroll" aria-busy={loading}>
+    <div
+      className={cn("ui-data-table-scroll", hasPinEnd && "ui-data-table-has-pin-end")}
+      aria-busy={loading}
+    >
       <div className="ui-data-table-surface min-w-[640px] sm:min-w-0">
         <Table>
           <TableHeader className="bg-secondary sticky top-0 z-10">
@@ -359,6 +365,7 @@ DataTable.Content = function DataTableContent() {
                       col.align === "center" && "text-center",
                       col.hiddenOnMobile && "hidden md:table-cell",
                       isSortable && "select-none",
+                      col.pin === "end" && "ui-data-table-pin-end",
                     )}
                   >
                     {isSortable ? (
@@ -381,11 +388,41 @@ DataTable.Content = function DataTableContent() {
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={emptyColSpan} className="h-32 text-center" aria-live="polite">
-                  <span className="text-muted-foreground text-sm">{t("dataTable.loading")}</span>
-                </TableCell>
-              </TableRow>
+              // Shaped skeleton rows rendered INSIDE the real table grid so they
+              // share its borders + column widths — no second framed container
+              // (which double-borders when the table sits in a Card). Count is
+              // bounded to the previous page so the height barely shifts.
+              Array.from({ length: Math.min(Math.max(data.length, 6), 10) }).map((_, i) => (
+                <TableRow key={`skeleton-${i}`} className={cn(rowPadding, "hover:bg-transparent")}>
+                  {selectable && (
+                    <TableCell className={cellPadding}>
+                      <div className="ui-skeleton-block size-4 rounded-sm" />
+                    </TableCell>
+                  )}
+                  {columns.map((col, j) => (
+                    <TableCell
+                      key={col.key}
+                      className={cn(
+                        cellPadding,
+                        col.width,
+                        col.align === "right" && "text-end",
+                        col.align === "center" && "text-center",
+                        col.hiddenOnMobile && "hidden md:table-cell",
+                        col.pin === "end" && "ui-data-table-pin-end",
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "ui-skeleton-block h-4",
+                          j === 0 ? "w-1/2" : "w-3/4",
+                          col.align === "right" && "ms-auto",
+                          col.align === "center" && "mx-auto",
+                        )}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
             ) : data.length === 0 ? (
               <TableRow className="hover:bg-transparent">
                 <TableCell
@@ -454,6 +491,7 @@ DataTable.Content = function DataTableContent() {
                           col.align === "right" && "text-end",
                           col.align === "center" && "text-center",
                           col.hiddenOnMobile && "hidden md:table-cell",
+                          col.pin === "end" && "ui-data-table-pin-end",
                         )}
                       >
                         {col.render
