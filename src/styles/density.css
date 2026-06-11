@@ -1,54 +1,61 @@
 /*
  * DENSITY — one knob retunes φ-unit, controls, tables. Two entry points, same vars:
- *   • `<PageContainer density>` → `.ui-density-*` class (scoped, overrides global).
+ *   • `<PageContainer density>` → `.ui-density-*` class (scoped to a descendant,
+ *     wins for its subtree by proximity).
  *   • the density AXIS → `:root[data-density="*"]` on <html> (AppProvider density prop),
  *     so density cascades app-wide incl. portalled overlays. PageContainer inherits it
  *     when its `density` prop is unset (emits no class).
- * Apps use the prop / axis, never these classes directly.
+ *
+ * INTENTIONALLY UNLAYERED — do NOT wrap in `@layer components`. The active
+ * tokens (--control-height, --table-row-height, --phi-unit…) get their defaults
+ * from UNLAYERED `:root` rules in tokens/components/*.css. A layered block always
+ * loses to an unlayered one regardless of specificity, so a layered
+ * `:root[data-density]` would silently never override those defaults (the axis
+ * would be a no-op on <html>). Unlayered, `:root[data-density="x"]` (0,2,0) beats
+ * the `:root` default (0,1,0) by specificity. Apps use the prop / axis, never
+ * these classes directly.
  */
 
-@layer components {
-  .ui-density-compact,
-  :root[data-density="compact"] {
-    --control-height: var(--control-height-compact);
-    --control-padding-x: var(--control-padding-x-compact);
-    --table-row-height: var(--table-row-height-compact);
-    --phi-unit: var(--space-3);
-    --checkbox-size: var(--checkbox-size-compact);
-    --switch-width: var(--switch-width-compact);
-    --switch-height: var(--switch-height-compact);
-    --switch-thumb-size: var(--switch-thumb-size-compact);
-    --switch-thumb-translate: var(--switch-thumb-translate-compact);
-    --table-cell-padding-y: var(--space-1);
-    /* Tighter overlay/card chrome at compact density (12px vertical). */
-    --space-chrome-y: var(--space-3);
-  }
+.ui-density-compact,
+:root[data-density="compact"] {
+  --control-height: var(--control-height-compact);
+  --control-padding-x: var(--control-padding-x-compact);
+  --table-row-height: var(--table-row-height-compact);
+  --phi-unit: var(--space-3);
+  --checkbox-size: var(--checkbox-size-compact);
+  --switch-width: var(--switch-width-compact);
+  --switch-height: var(--switch-height-compact);
+  --switch-thumb-size: var(--switch-thumb-size-compact);
+  --switch-thumb-translate: var(--switch-thumb-translate-compact);
+  --table-cell-padding-y: var(--space-1);
+  /* Tighter overlay/card chrome at compact density (12px vertical). */
+  --space-chrome-y: var(--space-3);
+}
 
-  .ui-density-default,
-  :root[data-density="default"] {
-    --control-height: var(--control-height-default);
-    --control-padding-x: var(--control-padding-x-default);
-    --table-row-height: var(--table-row-height-default);
-    --table-cell-padding-y: var(--space-2);
-  }
+.ui-density-default,
+:root[data-density="default"] {
+  --control-height: var(--control-height-default);
+  --control-padding-x: var(--control-padding-x-default);
+  --table-row-height: var(--table-row-height-default);
+  --table-cell-padding-y: var(--space-2);
+}
 
-  .ui-density-comfortable,
-  :root[data-density="comfortable"] {
-    --control-height: var(--control-height-comfortable);
-    /* Comfortable steps 44 → 36 → 32 (design spacing-density), steeper than the
-     * default 4px step so sm/xs aren't left 4px too tall. */
-    --control-height-sm: calc(var(--control-height) - 0.5rem);
-    --control-height-xs: calc(var(--control-height) - 0.75rem);
-    --control-padding-x: var(--control-padding-x-comfortable);
-    --table-row-height: var(--table-row-height-comfortable);
-    --phi-unit: var(--space-6);
-    --checkbox-size: var(--checkbox-size-comfortable);
-    --switch-width: var(--switch-width-comfortable);
-    --switch-height: var(--switch-height-comfortable);
-    --switch-thumb-size: var(--switch-thumb-size-comfortable);
-    --switch-thumb-translate: var(--switch-thumb-translate-comfortable);
-    --table-cell-padding-y: var(--space-2);
-    /* Roomier overlay/card chrome at comfortable density (24px vertical). */
-    --space-chrome-y: var(--space-6);
-  }
+.ui-density-comfortable,
+:root[data-density="comfortable"] {
+  --control-height: var(--control-height-comfortable);
+  /* Comfortable steps 44 → 36 → 32 (design spacing-density), steeper than the
+   * default 4px step so sm/xs aren't left 4px too tall. */
+  --control-height-sm: calc(var(--control-height) - 0.5rem);
+  --control-height-xs: calc(var(--control-height) - 0.75rem);
+  --control-padding-x: var(--control-padding-x-comfortable);
+  --table-row-height: var(--table-row-height-comfortable);
+  --phi-unit: var(--space-6);
+  --checkbox-size: var(--checkbox-size-comfortable);
+  --switch-width: var(--switch-width-comfortable);
+  --switch-height: var(--switch-height-comfortable);
+  --switch-thumb-size: var(--switch-thumb-size-comfortable);
+  --switch-thumb-translate: var(--switch-thumb-translate-comfortable);
+  --table-cell-padding-y: var(--space-2);
+  /* Roomier overlay/card chrome at comfortable density (24px vertical). */
+  --space-chrome-y: var(--space-6);
 }
