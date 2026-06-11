@@ -1092,6 +1092,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display/card.tsx",
     vocabulary: ["ClassNameProp", "ChildrenProp"],
   },
+  CardBarProp: {
+    group: "data-display",
+    file: "components/data-display/card.tsx",
+    vocabulary: ["ClassNameProp", "ChildrenProp"],
+  },
   StatCardProp: {
     group: "data-display",
     file: "components/data-display/card.tsx",
