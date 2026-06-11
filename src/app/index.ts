@@ -6,6 +6,7 @@ export * from "./date-formats";
 export * from "./time-format-labels";
 export * from "./date-format-labels";
 export * from "./storage";
+export * from "./theme-axes";
 export * from "./request-headers";
 export {
   AppProvider,

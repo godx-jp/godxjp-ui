@@ -3824,8 +3824,37 @@ import { Button } from "@godxjp/ui/general";
         defaultValue: '"locale"',
         description: "Initial clock format.",
       },
+      {
+        name: "theme",
+        type: '"light" | "dark"',
+        defaultValue: '"light"',
+        description:
+          "Theme axis → <html data-theme>. Equal alias of the legacy .dark class. Persisted; change via setTheme / <AppSettingPicker kind=\"theme\">.",
+      },
+      {
+        name: "brand",
+        type: '"brand" | "crm" | "logistics" | "partner" | "slate" | null',
+        defaultValue: "null",
+        description:
+          "Brand-palette axis → <html data-brand> (sets --primary/--ring/--accent). OPT-IN: null keeps the --primary your own theme.css defines.",
+      },
+      {
+        name: "density",
+        type: '"compact" | "default" | "comfortable"',
+        defaultValue: '"default"',
+        description:
+          "Density axis → <html data-density> (control/table/spacing). App-wide incl. portalled overlays; PageContainer density= overrides locally.",
+      },
+      {
+        name: "fontSize",
+        type: '"sm" | "default" | "lg"',
+        defaultValue: '"default"',
+        description:
+          "Base type-size axis → <html data-font-size>. A preset sets --font-size-base and the whole golden scale rescales.",
+      },
     ],
     usage: [
+      "DO drive the four theme axes (theme / brand / density / fontSize) from AppProvider props ONLY — they are written to <html data-*> and read by every component via tokens. Never hand-set --font-size-base or .ui-density-* in app CSS; that bypasses persistence + the runtime switchers. For runtime switching mount `<AppSettingPicker kind=\"density\" | \"fontSize\" | \"theme\" | \"brand\" >` or call setDensity/setFontSize/setTheme/setBrand from useAppContext().",
       "DO mount AppProvider ONCE at the application root (e.g. in app.tsx or the Inertia layout), wrapping ALL children — every godx-ui picker (LocalePicker, TimezonePicker, DateFormatPicker, TimeFormatPicker), every formatDate call, and the Toaster all rely on the single context it provides. Nesting two AppProviders creates split contexts; inner pickers silently read the wrong one.",
       "DO NOT omit AppProvider and then try to use LocalePicker, TimezonePicker, or formatDate standalone — useAppContext() throws 'useAppContext must be used within <AppProvider>' at runtime. The only exception is using those pickers in fully controlled mode (value + onChange) which reads useOptionalAppContext() and returns null safely.",
       "DO use the `persist={false}` prop on AppProvider when writing isolated tests or standalone settings forms where localStorage should not be read or written. With the default `persist={true}` the provider reads from localStorage key `godxjp.app` on mount (after first render), so initial state may differ between SSR and client.",
@@ -7410,13 +7439,13 @@ export default function PasswordBlock() {
     name: "AppSettingPicker",
     group: "navigation",
     tagline:
-      "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat) — replaces the former Locale/Timezone/Date-format/Time-format pickers. Throws if used without AppProvider AND without controlled value+onValueChange.",
+      "One provider-bound Select for a single AppProvider setting, chosen by `kind` (locale | timezone | dateFormat | timeFormat | theme | brand | density | fontSize) — covers locale/format AND the four theme axes. Throws if used without AppProvider AND without controlled value+onValueChange.",
     props: [
       {
         name: "kind",
-        type: '"locale" | "timezone" | "dateFormat" | "timeFormat"',
+        type: '"locale" | "timezone" | "dateFormat" | "timeFormat" | "theme" | "brand" | "density" | "fontSize"',
         description:
-          "Which AppProvider setting this picker reads and writes. Determines the option list, icon, trigger width, and the context value/setter used.",
+          "Which AppProvider setting this picker reads and writes. Determines the option list, icon, trigger width, and the context value/setter used. The theme-axis kinds (theme/brand/density/fontSize) write <html data-*>; brand's first option opts out (null → app token).",
       },
       {
         name: "value",

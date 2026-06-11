@@ -201,6 +201,32 @@
         "one": "Total {total} item",
         "other": "Total {total} items"
       }
+    },
+    "themePicker": {
+      "ariaLabel": "Theme",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "densityPicker": {
+      "ariaLabel": "Density",
+      "compact": "Compact",
+      "default": "Default",
+      "comfortable": "Comfortable"
+    },
+    "fontSizePicker": {
+      "ariaLabel": "Font size",
+      "sm": "Small",
+      "default": "Default",
+      "lg": "Large"
+    },
+    "brandPicker": {
+      "ariaLabel": "Brand",
+      "none": "App default",
+      "brand": "GodX Navy",
+      "crm": "CRM Violet",
+      "logistics": "Logistics Teal",
+      "partner": "Partner Orange",
+      "slate": "HQ Slate"
     }
   },
   "locale": {

@@ -198,6 +198,32 @@
       "pageSize": "Số dòng mỗi trang",
       "pageSizeOption": "{size} / trang",
       "total": "Tổng {total} mục"
+    },
+    "themePicker": {
+      "ariaLabel": "Giao diện",
+      "light": "Sáng",
+      "dark": "Tối"
+    },
+    "densityPicker": {
+      "ariaLabel": "Mật độ",
+      "compact": "Gọn",
+      "default": "Mặc định",
+      "comfortable": "Thoáng"
+    },
+    "fontSizePicker": {
+      "ariaLabel": "Cỡ chữ",
+      "sm": "Nhỏ",
+      "default": "Mặc định",
+      "lg": "Lớn"
+    },
+    "brandPicker": {
+      "ariaLabel": "Thương hiệu",
+      "none": "Mặc định app",
+      "brand": "GodX Navy",
+      "crm": "CRM Violet",
+      "logistics": "Logistics Teal",
+      "partner": "Partner Orange",
+      "slate": "HQ Slate"
     }
   },
   "locale": {

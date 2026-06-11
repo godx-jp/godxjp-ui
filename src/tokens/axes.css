@@ -1,0 +1,59 @@
+/* THEME AXES — global consumer API. AppProvider's theme/brand/density/fontSize
+ * props write `data-*` attributes onto <html>; the selectors here bind each axis
+ * to tokens (Rule #21 "every component honours every theme axis"). Density lives
+ * in density.css (shared with the .ui-density-* classes); the dark theme aliases
+ * in foundation.css. Every axis is a NO-OP at its default value, so apps that set
+ * nothing — or override tokens in their own theme.css — are unaffected.
+ *
+ * `:root[data-…]` (specificity 0,2,0) intentionally outranks an app theme.css
+ * `:root` (0,1,0): when an axis IS set it wins; when it is NOT set the app token
+ * override wins. brand is therefore fully opt-in (no default rule). */
+
+/* ── font-size axis — base-driven: a preset sets ONLY --font-size-base and the
+ *    whole golden modular scale (foundation.css) rescales from it. The `default`
+ *    value emits no rule → foundation 14px stands. */
+:root[data-font-size="sm"] {
+  --font-size-base: 0.8125rem; /* 13px */
+}
+:root[data-font-size="lg"] {
+  --font-size-base: 1rem; /* 16px */
+}
+
+/* ── brand axis — primary-palette presets (canonical values; src/test/theme-globals.ts
+ *    mirrors these for the Storybook toolbar). OPT-IN: no `default` rule, so an app
+ *    that pins --primary in its own theme.css keeps it unless it sets data-brand. */
+:root[data-brand="brand"] {
+  --primary: 211 73% 15%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 24 99% 46%;
+  --accent: 24 99% 95%;
+  --accent-foreground: 24 99% 28%;
+}
+:root[data-brand="crm"] {
+  --primary: 262 83% 58%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 262 83% 58%;
+  --accent: 262 83% 96%;
+  --accent-foreground: 262 83% 28%;
+}
+:root[data-brand="logistics"] {
+  --primary: 173 80% 36%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 173 80% 36%;
+  --accent: 173 80% 94%;
+  --accent-foreground: 173 80% 22%;
+}
+:root[data-brand="partner"] {
+  --primary: 24 95% 53%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 24 95% 53%;
+  --accent: 24 95% 95%;
+  --accent-foreground: 24 95% 28%;
+}
+:root[data-brand="slate"] {
+  --primary: 215 25% 27%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 215 25% 27%;
+  --accent: 215 25% 94%;
+  --accent-foreground: 215 25% 20%;
+}

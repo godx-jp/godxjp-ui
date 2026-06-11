@@ -10,6 +10,12 @@ import type {
   AppDateFormat,
 } from "../../app/types";
 import type {
+  AppBrand,
+  AppDensity,
+  AppFontSize,
+  AppTheme,
+} from "../../app/theme-axes";
+import type {
   ChildrenProp,
   ClassNameProp,
   DisabledProp,
@@ -43,14 +49,40 @@ export type AppProviderProp = {
   storageKey?: string;
   /** Persist user choices. Default: true. */
   persist?: boolean;
+  /**
+   * Initial light/dark theme — written to `<html data-theme>`. Default: `"light"`.
+   * (The legacy `.dark` class still works as an equal alias.)
+   */
+  theme?: AppTheme;
+  /**
+   * Initial brand palette preset — written to `<html data-brand>`. OPT-IN: omit
+   * (or `null`) to keep the brand `--primary` your own `theme.css` defines.
+   */
+  brand?: AppBrand | null;
+  /** Initial density — written to `<html data-density>`. Default: `"default"`. */
+  density?: AppDensity;
+  /** Initial base type size — written to `<html data-font-size>`. Default: `"default"`. */
+  fontSize?: AppFontSize;
   onLocaleChange?: (locale: AppLocale) => void;
   onTimezoneChange?: (timezone: AppTimezone) => void;
   onTimeFormatChange?: (timeFormat: AppTimeFormat) => void;
   onDateFormatChange?: (dateFormat: AppDateFormat) => void;
+  onThemeChange?: (theme: AppTheme) => void;
+  onBrandChange?: (brand: AppBrand | null) => void;
+  onDensityChange?: (density: AppDensity) => void;
+  onFontSizeChange?: (fontSize: AppFontSize) => void;
 };
 
 /** Which AppProvider setting the {@link AppSettingPicker} reads/writes. */
-export type AppSettingKind = "locale" | "timezone" | "dateFormat" | "timeFormat";
+export type AppSettingKind =
+  | "locale"
+  | "timezone"
+  | "dateFormat"
+  | "timeFormat"
+  | "theme"
+  | "brand"
+  | "density"
+  | "fontSize";
 
 /**
  * @see AppSettingPicker — one provider-bound Select for any single AppProvider setting.
@@ -81,8 +113,17 @@ export type AppContextValue = {
   requestHeaders: AppRequestHeaders;
   /** Configured timezone list; `undefined` → full IANA in the timezone-picker recipe. */
   timezoneOptions?: readonly AppTimezone[];
+  /** Current theme axes (mirror `<html data-*>`). */
+  theme: AppTheme;
+  brand: AppBrand | null;
+  density: AppDensity;
+  fontSize: AppFontSize;
   setLocale: (locale: AppLocale) => void;
   setTimezone: (timezone: AppTimezone) => void;
   setTimeFormat: (timeFormat: AppTimeFormat) => void;
   setDateFormat: (dateFormat: AppDateFormat) => void;
+  setTheme: (theme: AppTheme) => void;
+  setBrand: (brand: AppBrand | null) => void;
+  setDensity: (density: AppDensity) => void;
+  setFontSize: (fontSize: AppFontSize) => void;
 };

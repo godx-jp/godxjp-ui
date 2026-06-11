@@ -96,8 +96,12 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
     expect(control).toContain("font-size: var(--font-size-base)");
   });
 
-  it("sets --table-cell-padding-y per density class", () => {
-    expect(density).toContain(".ui-density-compact {");
+  it("sets --table-cell-padding-y per density, shared by class + data-density axis", () => {
+    // Each density block is keyed by BOTH the PageContainer class and the global
+    // :root[data-density] axis (AppProvider) — same vars, two entry points.
+    expect(density).toContain(".ui-density-compact,");
+    expect(density).toContain(':root[data-density="compact"] {');
+    expect(density).toContain(':root[data-density="comfortable"] {');
     expect(density).toMatch(/ui-density-compact[\s\S]*--table-cell-padding-y/);
     expect(density).toMatch(/ui-density-comfortable[\s\S]*--table-cell-padding-y/);
   });

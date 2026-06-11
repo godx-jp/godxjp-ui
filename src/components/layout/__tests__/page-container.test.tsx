@@ -49,6 +49,14 @@ describe("PageContainer", () => {
     expect(container.firstChild).toHaveClass("ui-density-compact");
   });
 
+  it("emits no density class by default — inherits the global density axis", () => {
+    // Unset density must NOT pin ui-density-default; otherwise it would override a
+    // :root[data-density] axis set app-wide via AppProvider.
+    const { container } = renderWithUi(<PageContainer title="Inherit" />);
+    const root = container.firstChild as HTMLElement;
+    expect(root.className).not.toMatch(/ui-density-/);
+  });
+
   it("applies variant modifier class", () => {
     const { container } = renderWithUi(<PageContainer title="List" variant="flush" />);
     expect(container.firstChild).toHaveClass("ui-page-container--flush");
