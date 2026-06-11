@@ -79,6 +79,27 @@ describe("PageContainer", () => {
     expect(container.firstChild).toHaveClass("ui-page-container--fill");
   });
 
+  it("applies reveal-footer modifier only for footerReveal=onScroll with a sticky footer", () => {
+    const { container } = renderWithUi(
+      <PageContainer title="Form" stickyFooter footerReveal="onScroll" footer={<Button>Save</Button>}>
+        <p>Body</p>
+      </PageContainer>,
+    );
+    // mounted (footer present) but not revealed at the top — no data-revealed yet
+    expect(container.firstChild).toHaveClass("ui-page-container--reveal-footer");
+    expect(container.firstChild).not.toHaveAttribute("data-revealed");
+    expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
+  });
+
+  it("does not add the reveal modifier for the default footerReveal=always", () => {
+    const { container } = renderWithUi(
+      <PageContainer title="Form" stickyFooter footer={<Button>Save</Button>}>
+        <p>Body</p>
+      </PageContainer>,
+    );
+    expect(container.firstChild).not.toHaveClass("ui-page-container--reveal-footer");
+  });
+
   it("renders children in page body", () => {
     renderWithUi(
       <PageContainer title="Page">

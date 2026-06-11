@@ -106,6 +106,13 @@ export const COMPONENTS: ComponentEntry[] = [
         description: 'Pin footer to viewport bottom on scroll — pairs with variant="narrow".',
       },
       {
+        name: "footerReveal",
+        type: '"always" | "onScroll"',
+        defaultValue: '"always"',
+        description:
+          'When the footer is sticky, control WHEN it shows. "always" keeps it pinned the whole time; "onScroll" hides it until the header scrolls out of view then slides it up — the standard edit/create save bar. Stays mounted (no reflow → no jitter).',
+      },
+      {
         name: "fill",
         type: "boolean",
         defaultValue: "false",
@@ -131,7 +138,7 @@ export const COMPONENTS: ComponentEntry[] = [
     ],
     useCases: [
       "A master list page (e.g. invoices, journal entries, customers) where the header holds the page title, a 'New Invoice' button in `extra`, a breadcrumb trail, and a full-bleed DataTable as the body — use `variant='flush'` + `<PageContainer.Inset>` for the Toolbar above the table.",
-      "A detail / edit form page where the footer holds Save and Cancel buttons — use `footer={<Flex direction='row'><Button>保存</Button><Button variant='outline'>キャンセル</Button></Flex>}` with `stickyFooter` so the actions remain reachable as the form scrolls.",
+      "A detail / edit form page where the footer holds Save and Cancel buttons — use `footer={<Flex direction='row' justify='between' className='w-full'><Button variant='outline'>削除</Button><Button>保存</Button></Flex>}` with `stickyFooter` + `footerReveal='onScroll'` so the save bar slides up only once the header (and its actions) scroll out of view — the canonical edit/create pattern.",
       "A settings or narrow-form page (e.g. account profile, entity configuration) where `variant='narrow'` constrains content to a readable column width and `stickyFooter` pins the submit bar.",
       "A dashboard page with KPI cards and chart sections — use `variant='default'` with `children={<Flex direction='col' gap='lg'>…</Flex>}` to vertically stack multiple Card/StatCard sections beneath the page title.",
       "Any deep-nav page in a multi-level admin (e.g. Accounting > Ledger > Journal Entry #42) where a 3-segment breadcrumb trail provides back-navigation without browser history dependence.",

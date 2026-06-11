@@ -27,6 +27,16 @@ export type PageContainerProp = {
   /** Pin footer to viewport bottom on scroll — pairs well with `variant="narrow"`. */
   stickyFooter?: boolean;
   /**
+   * When the footer is sticky, control WHEN it shows. `"always"` (default)
+   * keeps it pinned the whole time. `"onScroll"` hides it until the header
+   * (title + `extra` actions) scrolls out of view, then slides it up — the
+   * standard edit/create "save bar" so the primary actions stay reachable as
+   * the form scrolls, without cluttering the top. The footer stays mounted
+   * (no layout reflow → no jitter); observed against the nearest scroll
+   * container.
+   */
+  footerReveal?: "always" | "onScroll";
+  /**
    * Grow the body to fill the remaining shell height. Default `false` (top-packed,
    * content-height — short pages leave no stretched void, gh#103). Enable for a
    * full-height DataTable, SplitPane, or a chat surface whose composer is pinned
