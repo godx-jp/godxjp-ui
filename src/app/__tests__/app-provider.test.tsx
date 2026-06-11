@@ -104,11 +104,17 @@ describe("AppProvider", () => {
       result.current.setDateFormat("mdy");
     });
 
+    // Theme axes ride in the same persisted object (defaults: light / default / default;
+    // brand opt-out → undefined). readStoredPreferences drops undefined brand.
     expect(readStoredPreferences(STORAGE_KEY)).toEqual({
       locale: "en",
       timezone: "UTC",
       timeFormat: "12h",
       dateFormat: "mdy",
+      theme: "light",
+      density: "default",
+      fontSize: "default",
+      brand: undefined,
     });
   });
 

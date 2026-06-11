@@ -15,6 +15,13 @@ import {
   syncDatetimeContext,
 } from "../lib/datetime";
 import { DEFAULT_STORAGE_KEY, readStoredPreferences, writeStoredPreferences } from "./storage";
+import {
+  applyThemeAxes,
+  type AppBrand,
+  type AppDensity,
+  type AppFontSize,
+  type AppTheme,
+} from "./theme-axes";
 import { resolveDefaultTimeFormat } from "./time-format-labels";
 import { resolveDefaultTimezone } from "./timezones";
 import {
@@ -87,10 +94,18 @@ export function AppProvider({
   timezoneOptions,
   storageKey = DEFAULT_STORAGE_KEY,
   persist = true,
+  theme: initialTheme = "light",
+  brand: initialBrand = null,
+  density: initialDensity = "default",
+  fontSize: initialFontSize = "default",
   onLocaleChange,
   onTimezoneChange,
   onTimeFormatChange,
   onDateFormatChange,
+  onThemeChange,
+  onBrandChange,
+  onDensityChange,
+  onFontSizeChange,
 }: AppProviderProp) {
   const initialLocale = defaultLocale;
 
@@ -104,9 +119,22 @@ export function AppProvider({
   const [dateFormat, setDateFormatState] = React.useState<AppDateFormat>(() =>
     resolveInitialDateFormat(undefined, defaultDateFormat, initialLocale),
   );
+  const [theme, setThemeState] = React.useState<AppTheme>(initialTheme);
+  const [brand, setBrandState] = React.useState<AppBrand | null>(initialBrand);
+  const [density, setDensityState] = React.useState<AppDensity>(initialDensity);
+  const [fontSize, setFontSizeState] = React.useState<AppFontSize>(initialFontSize);
 
   const hasMountedRef = React.useRef(false);
-  const prefsRef = React.useRef({ locale, timezone, timeFormat, dateFormat });
+  const prefsRef = React.useRef({
+    locale,
+    timezone,
+    timeFormat,
+    dateFormat,
+    theme,
+    brand,
+    density,
+    fontSize,
+  });
 
   React.useEffect(() => {
     const stored = persist ? readStoredPreferences(storageKey) : {};
@@ -122,30 +150,52 @@ export function AppProvider({
       defaultDateFormat,
       nextLocale,
     );
+    const nextTheme = stored.theme ?? initialTheme;
+    const nextBrand = stored.brand ?? initialBrand;
+    const nextDensity = stored.density ?? initialDensity;
+    const nextFontSize = stored.fontSize ?? initialFontSize;
 
     prefsRef.current = {
       locale: nextLocale,
       timezone: nextTimezone,
       timeFormat: nextTimeFormat,
       dateFormat: nextDateFormat,
+      theme: nextTheme,
+      brand: nextBrand,
+      density: nextDensity,
+      fontSize: nextFontSize,
     };
     setLocaleState(nextLocale);
     setTimezoneState(nextTimezone);
     setTimeFormatState(nextTimeFormat);
     setDateFormatState(nextDateFormat);
+    setThemeState(nextTheme);
+    setBrandState(nextBrand);
+    setDensityState(nextDensity);
+    setFontSizeState(nextFontSize);
   }, [
     defaultDateFormat,
     defaultLocale,
     defaultTimeFormat,
     defaultTimezone,
+    initialTheme,
+    initialBrand,
+    initialDensity,
+    initialFontSize,
     persist,
     storageKey,
     systemTimezone,
   ]);
 
   React.useEffect(() => {
-    prefsRef.current = { locale, timezone, timeFormat, dateFormat };
-  }, [locale, timezone, timeFormat, dateFormat]);
+    prefsRef.current = { locale, timezone, timeFormat, dateFormat, theme, brand, density, fontSize };
+  }, [locale, timezone, timeFormat, dateFormat, theme, brand, density, fontSize]);
+
+  // Reflect the axes on <html data-*> — CSS in tokens/axes.css + density.css binds them.
+  React.useEffect(() => {
+    if (typeof document === "undefined") return;
+    applyThemeAxes(document.documentElement, { theme, brand, density, fontSize });
+  }, [theme, brand, density, fontSize]);
 
   const setLocale = React.useCallback(
     (next: AppLocale) => {
@@ -185,6 +235,46 @@ export function AppProvider({
       if (persist) writeStoredPreferences(storageKey, prefsRef.current);
     },
     [onDateFormatChange, persist, storageKey],
+  );
+
+  const setTheme = React.useCallback(
+    (next: AppTheme) => {
+      prefsRef.current = { ...prefsRef.current, theme: next };
+      setThemeState(next);
+      onThemeChange?.(next);
+      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+    },
+    [onThemeChange, persist, storageKey],
+  );
+
+  const setBrand = React.useCallback(
+    (next: AppBrand | null) => {
+      prefsRef.current = { ...prefsRef.current, brand: next };
+      setBrandState(next);
+      onBrandChange?.(next);
+      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+    },
+    [onBrandChange, persist, storageKey],
+  );
+
+  const setDensity = React.useCallback(
+    (next: AppDensity) => {
+      prefsRef.current = { ...prefsRef.current, density: next };
+      setDensityState(next);
+      onDensityChange?.(next);
+      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+    },
+    [onDensityChange, persist, storageKey],
+  );
+
+  const setFontSize = React.useCallback(
+    (next: AppFontSize) => {
+      prefsRef.current = { ...prefsRef.current, fontSize: next };
+      setFontSizeState(next);
+      onFontSizeChange?.(next);
+      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+    },
+    [onFontSizeChange, persist, storageKey],
   );
 
   const requestHeaders = React.useMemo(
@@ -234,10 +324,18 @@ export function AppProvider({
       dayPickerLocale: getDayPickerLocale(locale),
       requestHeaders,
       timezoneOptions,
+      theme,
+      brand,
+      density,
+      fontSize,
       setLocale,
       setTimezone,
       setTimeFormat,
       setDateFormat,
+      setTheme,
+      setBrand,
+      setDensity,
+      setFontSize,
     }),
     [
       locale,
@@ -248,10 +346,18 @@ export function AppProvider({
       dateFnsLocale,
       requestHeaders,
       timezoneOptions,
+      theme,
+      brand,
+      density,
+      fontSize,
       setLocale,
       setTimezone,
       setTimeFormat,
       setDateFormat,
+      setTheme,
+      setBrand,
+      setDensity,
+      setFontSize,
     ],
   );
 

@@ -1,6 +1,16 @@
 import { isAppLocale } from "./locales";
 import { isAppDateFormat } from "./date-formats";
 import { isAppTimeFormat } from "./time-formats";
+import {
+  isAppBrand,
+  isAppDensity,
+  isAppFontSize,
+  isAppTheme,
+  type AppBrand,
+  type AppDensity,
+  type AppFontSize,
+  type AppTheme,
+} from "./theme-axes";
 import type { AppLocale, AppTimezone, AppTimeFormat, AppDateFormat } from "./types";
 
 const DEFAULT_STORAGE_KEY = "godxjp.app";
@@ -10,6 +20,11 @@ export type StoredAppPreferences = {
   timezone?: AppTimezone;
   timeFormat?: AppTimeFormat;
   dateFormat?: AppDateFormat;
+  theme?: AppTheme;
+  /** `null` = explicit opt-out (keep app token); on read, null/invalid → undefined. */
+  brand?: AppBrand | null;
+  density?: AppDensity;
+  fontSize?: AppFontSize;
 };
 
 export function readStoredPreferences(storageKey: string): StoredAppPreferences {
@@ -23,6 +38,10 @@ export function readStoredPreferences(storageKey: string): StoredAppPreferences 
       timezone: typeof parsed.timezone === "string" ? parsed.timezone : undefined,
       timeFormat: isAppTimeFormat(parsed.timeFormat) ? parsed.timeFormat : undefined,
       dateFormat: isAppDateFormat(parsed.dateFormat) ? parsed.dateFormat : undefined,
+      theme: isAppTheme(parsed.theme) ? parsed.theme : undefined,
+      brand: isAppBrand(parsed.brand) ? parsed.brand : undefined,
+      density: isAppDensity(parsed.density) ? parsed.density : undefined,
+      fontSize: isAppFontSize(parsed.fontSize) ? parsed.fontSize : undefined,
     };
   } catch {
     return {};

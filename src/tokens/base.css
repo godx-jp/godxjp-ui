@@ -5,6 +5,7 @@
 
 @import "./foundation.css";
 @import "./semantic/layout.css";
+@import "./axes.css";
 @import "./components/control.css";
 @import "./components/form.css";
 @import "./components/card.css";

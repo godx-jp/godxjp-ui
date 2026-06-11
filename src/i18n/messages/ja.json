@@ -198,6 +198,32 @@
       "pageSize": "ページサイズ",
       "pageSizeOption": "{size} / ページ",
       "total": "全 {total} 件"
+    },
+    "themePicker": {
+      "ariaLabel": "テーマ",
+      "light": "ライト",
+      "dark": "ダーク"
+    },
+    "densityPicker": {
+      "ariaLabel": "密度",
+      "compact": "コンパクト",
+      "default": "標準",
+      "comfortable": "広め"
+    },
+    "fontSizePicker": {
+      "ariaLabel": "文字サイズ",
+      "sm": "小",
+      "default": "標準",
+      "lg": "大"
+    },
+    "brandPicker": {
+      "ariaLabel": "ブランド",
+      "none": "アプリ既定",
+      "brand": "GodX Navy",
+      "crm": "CRM Violet",
+      "logistics": "Logistics Teal",
+      "partner": "Partner Orange",
+      "slate": "HQ Slate"
     }
   },
   "locale": {

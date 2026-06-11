@@ -66,7 +66,7 @@ function PageContainerRoot({
   footer,
   breadcrumb,
   linkComponent: LinkComponent = "a",
-  density = "default",
+  density,
   variant = "default",
   stickyFooter = false,
   footerReveal = "always",
@@ -82,7 +82,9 @@ function PageContainerRoot({
       data-revealed={revealed ? "true" : undefined}
       className={cn(
         "ui-page-container",
-        densityClass[density],
+        // Unset → no class, so the page inherits the global density axis
+        // (:root[data-density]); an explicit prop emits a class that overrides it.
+        density && densityClass[density],
         pageContainerVariantClass[variant],
         stickyFooter && "ui-page-container--sticky-footer",
         reveal && "ui-page-container--reveal-footer",

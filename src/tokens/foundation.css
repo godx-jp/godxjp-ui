@@ -162,8 +162,11 @@
   --phi-p2: calc(var(--phi-p1) * var(--ratio-phi));
 }
 
-.dark {
-  /* Warm-tinted dark spine — keeps the hue-60 character at low lightness. */
+.dark,
+:root[data-theme="dark"] {
+  /* Warm-tinted dark spine — keeps the hue-60 character at low lightness.
+   * `data-theme="dark"` is the theme axis (AppProvider theme prop → <html>); the
+   * legacy `.dark` class stays an equal alias so existing toggles keep working. */
   --background: 48 9% 9%;
   --foreground: 60 20% 96%;
   --card: 48 8% 12%;
