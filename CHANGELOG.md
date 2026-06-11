@@ -42,6 +42,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   value shown on the trigger (avatar + name + role badge, etc.); the placeholder still shows when
   empty. Receives `{ value, label, option }` (option is undefined for an unloaded async preset).
 
+### Fixed
+
+- `Toaster` (sonner) rendered fully transparent: it forwarded the color tokens unwrapped
+  (`--normal-bg: var(--popover)`), but the framework tokens are raw HSL triplets consumed as
+  `hsl(var(--token))` — sonner used the bare triplet as a CSS color, which is invalid, so the
+  toast had no background/text/border. The bridge vars now wrap with `hsl()`.
+
 ## [13.6.0]
 
 ### Added
