@@ -34,9 +34,12 @@ import {
   tableCellPaddingClass,
   tableRowHeightClass,
 } from "../../lib/control-styles";
-import type { ColumnDefProp, TableDensityProp, SortStateProp } from "../../props/vocabulary";
+import type { ColumnDefProp, DensityProp, SortStateProp } from "../../props/vocabulary";
 
-export type Density = TableDensityProp;
+// DataTable supports all three density tiers (compact 28 / default 36 /
+// comfortable 48) so a 表示密度 control can drive the full set, not just a
+// 2-way toggle.
+export type Density = DensityProp;
 export type ColumnDef<T> = ColumnDefProp<T>;
 
 interface DataTableContextValue<T = unknown> {
@@ -57,6 +60,9 @@ interface DataTableContextValue<T = unknown> {
   loading: boolean;
   empty?: React.ReactNode;
   emptyColSpan: number;
+  striped: boolean;
+  hoverable: boolean;
+  stickyHeader: boolean;
 }
 
 const DataTableContext = React.createContext<DataTableContextValue | null>(null);
@@ -88,6 +94,12 @@ interface DataTableProps<T> {
   loading?: boolean;
   /** Custom empty content when `data` is empty; defaults to a built-in EmptyState. */
   empty?: React.ReactNode;
+  /** Zebra-stripe the body rows (even rows get a subtle fill). */
+  striped?: boolean;
+  /** Highlight a row on hover even when it is not clickable (no `onRowClick`). */
+  hoverable?: boolean;
+  /** Pin the header to the top while the body scrolls. Default true. */
+  stickyHeader?: boolean;
   className?: string;
   children?: React.ReactNode;
 }
@@ -113,6 +125,9 @@ export function DataTable<T>({
   onSortChange,
   loading = false,
   empty,
+  striped = false,
+  hoverable = false,
+  stickyHeader = true,
   className,
   children,
 }: DataTableProps<T>) {
@@ -162,6 +177,9 @@ export function DataTable<T>({
     loading,
     empty,
     emptyColSpan,
+    striped,
+    hoverable,
+    stickyHeader,
   };
 
   // Determine if children include a Content slot — if not, render default.
@@ -173,13 +191,7 @@ export function DataTable<T>({
 
   return (
     <DataTableContext.Provider value={ctx as DataTableContextValue}>
-      <div
-        className={cn(
-          "ui-data-table-root",
-          densityClass[density === "compact" ? "compact" : "comfortable"],
-          className,
-        )}
-      >
+      <div className={cn("ui-data-table-root", densityClass[density], className)}>
         {children}
         {!hasContent && <DataTable.Content />}
       </div>
@@ -292,6 +304,9 @@ DataTable.Content = function DataTableContent() {
     loading,
     empty,
     emptyColSpan,
+    striped,
+    hoverable,
+    stickyHeader,
   } = useDataTableContext();
   const { t } = useTranslation();
 
@@ -317,9 +332,13 @@ DataTable.Content = function DataTableContent() {
       className={cn("ui-data-table-scroll", hasPinEnd && "ui-data-table-has-pin-end")}
       aria-busy={loading}
     >
-      <div className="ui-data-table-surface min-w-[640px] sm:min-w-0">
+      <div
+        className="ui-data-table-surface min-w-[640px] sm:min-w-0"
+        data-striped={striped ? "" : undefined}
+        data-hoverable={hoverable ? "" : undefined}
+      >
         <Table>
-          <TableHeader className="bg-secondary sticky top-0 z-10">
+          <TableHeader className={cn("bg-secondary", stickyHeader && "sticky top-0 z-10")}>
             <TableRow>
               {selectable && (
                 <TableHead className="w-10">
@@ -463,8 +482,11 @@ DataTable.Content = function DataTableContent() {
                     }
                     className={cn(
                       rowPadding,
+                      // Hover highlight when rows are clickable OR explicitly hoverable…
+                      (onRowClick || hoverable) && "hover:bg-muted/50",
+                      // …but the affordance (cursor + focus ring) only when clickable.
                       onRowClick &&
-                        "hover:bg-muted/50 focus-visible:ring-ring cursor-pointer focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
+                        "focus-visible:ring-ring cursor-pointer focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
                       isSelected && "bg-muted/30",
                     )}
                   >
