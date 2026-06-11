@@ -39,6 +39,14 @@
     min-width: 0;
     /* Cap the control width when a controlWidth is set; otherwise fill the column. */
     max-inline-size: var(--form-control-width, none);
+    /* Reserve the control-row height and centre the content so a SHORT control
+     * (switch, slider, rating, a bare checkbox/radio — anything thinner than an
+     * input) lines up with the label in a horizontal field instead of sitting
+     * high. `align-content: center` centres the content row without stretching
+     * the control; full-width inputs still fill via the 1fr column, and taller
+     * controls (textarea) simply grow past the floor. */
+    min-height: var(--control-height);
+    align-content: center;
   }
 
   /* Let controls (and helper/error) shrink within the cell instead of forcing
