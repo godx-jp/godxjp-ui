@@ -399,6 +399,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
   },
   {
+    "name": "--choice-description-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+  },
+  {
+    "name": "--color-picker-hex-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+  },
+  {
+    "name": "--command-group-heading-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+  },
+  {
+    "name": "--search-input-label-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+  },
+  {
+    "name": "--tag-input-chip-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+  },
+  {
+    "name": "--toggle-sm-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+  },
+  {
+    "name": "--button-sm-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+  },
+  {
     "name": "--control-height-compact",
     "value": "2.75rem",
     "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
@@ -406,41 +441,6 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--control-height-default",
     "value": "2.75rem",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
-  },
-  {
-    "name": "--choice-description-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
-  },
-  {
-    "name": "--color-picker-hex-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
-  },
-  {
-    "name": "--command-group-heading-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
-  },
-  {
-    "name": "--search-input-label-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
-  },
-  {
-    "name": "--tag-input-chip-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
-  },
-  {
-    "name": "--toggle-sm-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
-  },
-  {
-    "name": "--button-sm-font-size",
-    "value": "var(--font-size-xs)",
     "description": "Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target * regardless of density; desktop (fine pointer) keeps the compact heights above. --control-height * resolves through these via var(), so inputs/buttons/selects/table rows all bump together."
   },
   {

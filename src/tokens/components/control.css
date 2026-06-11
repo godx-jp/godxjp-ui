@@ -62,6 +62,14 @@
   --search-input-end-padding: calc(
     var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap)
   );
+
+  --choice-description-font-size: var(--font-size-xs);
+  --color-picker-hex-font-size: var(--font-size-xs);
+  --command-group-heading-font-size: var(--font-size-xs);
+  --search-input-label-font-size: var(--font-size-xs);
+  --tag-input-chip-font-size: var(--font-size-xs);
+  --toggle-sm-font-size: var(--font-size-xs);
+  --button-sm-font-size: var(--font-size-xs);
 }
 
 /* Rule #24 — on touch devices (coarse pointer) interactive controls keep a ≥44px tap target
@@ -72,11 +80,4 @@
     --control-height-compact: 2.75rem;
     --control-height-default: 2.75rem;
   }
-  --choice-description-font-size: var(--font-size-xs);
-  --color-picker-hex-font-size: var(--font-size-xs);
-  --command-group-heading-font-size: var(--font-size-xs);
-  --search-input-label-font-size: var(--font-size-xs);
-  --tag-input-chip-font-size: var(--font-size-xs);
-  --toggle-sm-font-size: var(--font-size-xs);
-  --button-sm-font-size: var(--font-size-xs);
 }
