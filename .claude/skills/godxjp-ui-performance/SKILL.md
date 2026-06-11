@@ -65,24 +65,31 @@ npx esbuild /tmp/probe.mjs --bundle --minify --format=esm \
 5. **Thresholds**: handler work >50ms = violation; virtualize lists only >100 rows (DataTable at
    50/page is fine); don't memo cheap leaves (over-memoization is real overhead).
 
-## 3. Library facts & budget (measured 2026-06, dist of 13.9.x)
+## 3. Library facts & budget (measured 2026-06)
 
-Per-import minified cost (probe of §1, react externalized):
+Per-import minified cost (probe of §1, react externalized). 13.9.x shipped a bundled+split dist
+whose shared chunks gave every import a ~100KB floor (date-fns + tailwind-merge + a mixed chunk
+landed even in `Button`); **13.10.0 moved to preserved module structure** (dist mirrors src, one
+file per module — `tsup bundle:false` + `tsc -p tsconfig.build.json` for d.ts + copy-styles also
+ships the i18n JSONs) so consumers' bundlers see the real graph:
 
-| Import | min KB | | Import | min KB |
-|---|---|---|---|---|
-| StatCard | 81 | | DataTable | 172 |
-| Input | 102 | | DateRangePicker | 209 |
-| Button | 107 | | Select | 215 |
-| **full index** | **366** | | | |
+| Import | 13.9.x | 13.10.0 | | Import | 13.9.x | 13.10.0 |
+|---|---|---|---|---|---|---|
+| StatCard | 81 | **30** | | DataTable | 172 | **79** |
+| Input | 102 | **52** | | DateRangePicker | 209 | 207¹ |
+| Button | 107 | **56** | | Select | 215 | **165** |
+| full index | 366 | 362 | | | | |
 
-**Known issue — the ~100KB floor:** tsup `splitting` merges unrelated graphs into shared chunks,
-so even `Button` drags **date-fns ≈36KB + tailwind-merge ≈26KB + a 22KB mixed chunk** of output.
-`sideEffects: false` can't prune inside a pre-merged chunk. Fix path when a consumer actually
-needs lean per-component imports: build with **preserved module structure** (per-file output,
-no cross-entry chunks) — a build-pipeline change that needs its own verify + release; don't
-hand-patch chunks. Until then the practical guidance for apps is route-level splitting (§2.3),
-which already amortizes the floor across one shared vendor chunk.
+¹ legitimately needs react-day-picker + date-fns. The remaining ~50KB floor is intrinsic:
+tailwind-merge ≈26KB (`cn`) + bundled 3-locale i18n ≈21KB; going lower means lazy locale
+loading — an API/behaviour change, only do it against a measured need.
+
+**Layout guardrails (don't regress these):** the dist is bundler-oriented ESM — extensionless
+relative + directory imports and raw `.json` imports — so any script that walks dist must resolve
+like a bundler (`<spec>` → `<spec>.js` → `<spec>/index.js`; see check-core-isolation.mjs). Probe
+commands in §1 need `--loader:.json=json`. Compat was proven by npm-pack tarball install into
+exseli (full tests + browser smoke); note the file:-link **vitest** setup hits a dual-React
+artifact in the lib's pnpm tree — test against a tarball, not the symlink.
 
 **CSS**: the compiled sheet is ~573KB raw / ~210KB gzip and ships whole; per-group CSS would be
 a lib-level project (tracked, not started).
