@@ -38,9 +38,13 @@ function Toaster({ ...props }: ToasterProps) {
       }}
       style={
         {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
+          // Color tokens are raw HSL triplets (consumed as hsl(var(--token)));
+          // sonner uses these vars verbatim as CSS colors, so wrap with hsl()
+          // here — unwrapped they are invalid values and the toast renders
+          // transparent.
+          "--normal-bg": "hsl(var(--popover))",
+          "--normal-text": "hsl(var(--popover-foreground))",
+          "--normal-border": "hsl(var(--border))",
           "--border-radius": "var(--radius)",
         } as React.CSSProperties
       }
