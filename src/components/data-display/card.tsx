@@ -136,6 +136,35 @@ export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
 );
 CardFooter.displayName = "CardFooter";
 
+export type CardBarProps = React.HTMLAttributes<HTMLDivElement> & {
+  /** Right-aligned actions slot (settings/save), Ant `tabBarExtraContent`-style. */
+  extra?: React.ReactNode;
+};
+
+/**
+ * CardBar — a horizontal bar (view tabs, toolbar, filter chips) that can sit at
+ * ANY position inside a Card. It draws its own separators FROM its position: a
+ * top bar gets a bottom border, a bottom bar gets a top border, a middle bar
+ * gets both, and a sole child gets none (the card border is enough). The main
+ * area scrolls horizontally; the `extra` slot is pinned to the inline-end edge
+ * for actions (column settings, save view, …).
+ */
+export const CardBar = React.forwardRef<HTMLDivElement, CardBarProps>(
+  ({ className, children, extra, ...props }, ref) => (
+    <div ref={ref} data-slot="card-bar" className={cn("ui-card-bar", className)} {...props}>
+      <div data-slot="card-bar-main" className="ui-card-bar-main">
+        {children}
+      </div>
+      {extra != null ? (
+        <div data-slot="card-bar-extra" className="ui-card-bar-extra">
+          {extra}
+        </div>
+      ) : null}
+    </div>
+  ),
+);
+CardBar.displayName = "CardBar";
+
 export type StatCardProps = React.HTMLAttributes<HTMLDivElement> &
   VariantProps<typeof cardVariants> & {
     label: React.ReactNode;

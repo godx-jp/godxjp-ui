@@ -1323,7 +1323,7 @@ export function Grid({ rows }: { rows: Row[] }) {
     name: "Card",
     group: "data-display",
     tagline:
-      'Surface container with optional accent stripe, variant fill, size, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className="p-4"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter.',
+      'Surface container with optional accent stripe, variant fill, size, and density. ⚠️ The bare <Card> has NO inner padding — body content MUST be wrapped in <CardContent> (titles in <CardHeader>), or it sits FLUSH against the card edges. Never hand-roll padding with className="p-4"; use <CardContent>. Compose with CardHeader/CardTitle/CardContent/CardFooter. For a tab/toolbar/filter strip (view tabs, list controls) use <CardBar extra={…}> — a positionable bar that auto-draws its separator from its position (top→bottom border, bottom→top border, middle→both) and pins `extra` content to the inline-end edge; place it as first/last child of the Card. Never hand-roll a bordered div for this.',
     props: [
       {
         name: "accent",

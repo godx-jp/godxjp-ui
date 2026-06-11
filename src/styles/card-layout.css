@@ -103,6 +103,43 @@
     padding-bottom: 0;
   }
 
+  /* ── CardBar — positionable tab/toolbar strip (CardBar in card.tsx) ───────
+   * Separators come from POSITION: a top bar gets a bottom border, a bottom
+   * bar a top border, a middle bar both, a sole child none. `border-block` is
+   * the block (top/bottom) axis — RTL-neutral. The card's own overflow:hidden
+   * clips the bar to the rounded corners, so it needs no radius of its own. */
+  [data-slot="card-bar"] {
+    display: flex;
+    align-items: center;
+    gap: var(--space-inline-md);
+    padding: var(--card-space-header-y) var(--card-space-inset);
+    border-block: 1px solid hsl(var(--card-border));
+  }
+
+  [data-slot="card-bar"]:first-child {
+    border-block-start-width: 0;
+  }
+
+  [data-slot="card-bar"]:last-child {
+    border-block-end-width: 0;
+  }
+
+  [data-slot="card-bar-main"] {
+    display: flex;
+    align-items: center;
+    gap: var(--space-inline-sm);
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow-x: auto;
+  }
+
+  [data-slot="card-bar-extra"] {
+    display: flex;
+    align-items: center;
+    gap: var(--space-inline-xs);
+    flex-shrink: 0;
+  }
+
   .ui-card-header--banded {
     border-bottom: var(--card-header-border-bottom);
     background-color: hsl(var(--card-header-background) / var(--card-header-background-alpha));
