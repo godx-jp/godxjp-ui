@@ -3,6 +3,7 @@ import { ArrowRight, CalendarIcon, X } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime";
+import { useControlledLatch } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
@@ -43,8 +44,9 @@ export function DateRangePicker({
   const autoId = React.useId();
   const fromId = id ?? autoId;
   const toId = `${fromId}-to`;
-  // Controlled-ness fixed at mount; uncontrolled state seeds from `defaultValue`.
-  const isControlled = React.useRef(valueProp !== undefined).current;
+  // Controlled once a defined `value` has EVER been passed (an empty form may
+  // restore a saved value later); uncontrolled state seeds from `defaultValue`.
+  const isControlled = useControlledLatch(valueProp !== undefined);
   const [internalValue, setInternalValue] = React.useState<DateRange | undefined>(defaultValue);
   const value = isControlled ? valueProp : internalValue;
   const [fromText, setFromText] = React.useState(() => toIsoDate(value?.from));

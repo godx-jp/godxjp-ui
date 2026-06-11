@@ -1,6 +1,7 @@
 import * as React from "react";
 import { CalendarIcon, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
+import { useControlledLatch } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -49,7 +50,9 @@ export function MonthPicker({
   const autoId = React.useId();
   const inputId = id ?? autoId;
 
-  const isControlled = React.useRef(valueProp !== undefined).current;
+  // Controlled once a defined `value` has EVER been passed (an empty form may
+  // restore a saved value later); uncontrolled state seeds from `defaultValue`.
+  const isControlled = useControlledLatch(valueProp !== undefined);
   const [internalValue, setInternalValue] = React.useState<Date | undefined>(defaultValue);
   const value = isControlled ? valueProp : internalValue;
   const [text, setText] = React.useState(() => toYmText(value));
