@@ -1,54 +1,36 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
-
 import { defineConfig } from "tsup";
 
-import pkg from "./package.json";
-
-type ExportTarget = string | { types?: string; import?: string };
-
 /**
- * Entry points are derived from the public `exports` map so the build stays in
- * sync with what consumers can import. Each non-CSS export points at a built
- * `dist/*.js`; we reverse that to the matching `src/*.{ts,tsx}` source entry.
- * `.css` targets are copied verbatim by scripts/copy-styles.mjs.
+ * PRESERVED MODULE STRUCTURE (no bundling, no shared chunks).
  *
- * @returns {string[]} unique source entry paths relative to the package root
+ * The previous bundled+split build merged unrelated module graphs into
+ * shared chunks, so importing even `Button` dragged a ~100KB minified
+ * floor (date-fns + tailwind-merge + a mixed chunk) into every consumer
+ * — `sideEffects: false` cannot prune inside a pre-merged chunk. Emitting
+ * one file per source module gives consumers' bundlers the REAL import
+ * graph, so per-component imports tree-shake perfectly and the public
+ * `exports` map keeps working unchanged (dist mirrors src).
+ *
+ * Declarations are emitted separately by `tsc -p tsconfig.build.json`
+ * (structure-preserving and much faster than per-entry dts bundling);
+ * CSS trees and the i18n message JSONs are copied by
+ * scripts/copy-styles.mjs. Output is bundler-oriented ESM (extensionless
+ * relative imports + JSON imports), matching the vite-based consumers.
  */
-function entriesFromExports(): string[] {
-  const exports = pkg.exports as Record<string, ExportTarget>;
-  const seen = new Set<string>();
-
-  for (const target of Object.values(exports)) {
-    const dist = typeof target === "string" ? target : target.import;
-    if (!dist || !dist.endsWith(".js")) {
-      continue;
-    }
-    const base = dist
-      .replace(/^\.\//, "")
-      .replace(/^dist\//, "src/")
-      .replace(/\.js$/, "");
-    for (const ext of [".tsx", ".ts"]) {
-      if (existsSync(join(import.meta.dirname, base + ext))) {
-        seen.add(base + ext);
-        break;
-      }
-    }
-  }
-
-  return [...seen];
-}
-
 export default defineConfig({
-  entry: entriesFromExports(),
+  entry: [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "!src/**/__tests__/**",
+    "!src/**/__fixtures__/**",
+    "!src/**/*.test.*",
+    "!src/test/**",
+  ],
   outDir: "dist",
   format: ["esm"],
   target: "es2022",
-  dts: true,
-  splitting: true,
-  treeshake: true,
+  bundle: false,
+  dts: false,
   sourcemap: false,
   clean: true,
-  // deps + peerDeps are externalized automatically by tsup; bundle nothing else.
-  external: [/^node:/],
 });
