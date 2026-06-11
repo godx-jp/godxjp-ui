@@ -217,7 +217,11 @@
   .ui-choice-group[data-orientation="horizontal"] {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    /* Occupy the control height and centre the row so a horizontal radio/checkbox
+     * group lines up with sibling inputs in a horizontal FormField (its options
+     * are only ~icon-height tall, which otherwise sat above the field label). */
+    align-items: center;
+    min-height: var(--control-height);
     column-gap: var(--choice-group-gap-x);
     row-gap: var(--choice-group-gap-y);
   }
