@@ -94,6 +94,12 @@
     border-radius: var(--radius-md);
   }
 
+  /* Zebra striping (opt-in via the `striped` prop). Selected rows keep their
+   * own emphasis, so they are excluded from the stripe. */
+  .ui-data-table-surface[data-striped] tbody tr:nth-child(even):not([data-state="selected"]) {
+    background-color: hsl(var(--muted) / 0.4);
+  }
+
   /* Empty-state cell hosts the built-in EmptyState (which brings its own padding). */
   .ui-data-table-empty {
     padding: 0;

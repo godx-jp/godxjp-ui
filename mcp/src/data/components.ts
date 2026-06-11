@@ -1070,16 +1070,36 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "density",
-        type: "'compact' | 'comfortable'",
+        type: "'compact' | 'default' | 'comfortable'",
         defaultValue: "'compact'",
         description:
-          "Controlled row density. Omit to let DataTable manage density internally (user can toggle via DataTable.DensityToggle).",
+          "Controlled row density across all three tiers (compact 28 / default 36 / comfortable 48) — drive it from a 表示密度 radio. Omit to let DataTable manage it internally (DataTable.DensityToggle flips compact↔comfortable).",
       },
       {
         name: "onDensityChange",
-        type: "(density: 'compact' | 'comfortable') => void",
+        type: "(density: 'compact' | 'default' | 'comfortable') => void",
         description:
           "Called when the user toggles density. Only needed when density is controlled.",
+      },
+      {
+        name: "striped",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Zebra-stripe the body rows (even rows get a subtle muted fill).",
+      },
+      {
+        name: "hoverable",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Highlight a row on hover even when it is not clickable. onRowClick already implies hover; use this for read-only tables that still want the hover affordance.",
+      },
+      {
+        name: "stickyHeader",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Pin the header to the top while the body scrolls (ヘッダ追従). Set false to let it scroll away with the rows.",
       },
       {
         name: "sort",
