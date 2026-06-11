@@ -3,6 +3,7 @@ export type { BadgeProps } from "./badge";
 export { Avatar, AvatarImage, AvatarFallback } from "./avatar";
 export {
   Card,
+  CardBar,
   CardContent,
   CardCover,
   CardDescription,
@@ -12,7 +13,7 @@ export {
   CardAction,
   StatCard,
 } from "./card";
-export type { StatCardProps } from "./card";
+export type { StatCardProps, CardBarProps } from "./card";
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 export { Descriptions } from "./descriptions";
 export { DataTable } from "./data-table";
