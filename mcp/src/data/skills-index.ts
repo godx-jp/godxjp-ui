@@ -971,6 +971,86 @@ reproduce in one paste.`,
       },
     ],
   },
+
+  // ── app-performance (consumer) ─────────────────────────────────
+  {
+    id: "app-performance",
+    audience: "consumer",
+    name: "App performance — measure-first React perf with @godxjp/ui",
+    whenToUse:
+      "A screen built on @godxjp/ui feels slow, Chrome logs [Violation] handler warnings, typing lags in a filter pane, a panel toggle blocks, or the bundle is questioned. Distilled from a real audit (orders screen: keystroke 165ms → 5ms, panel open 270ms → 18ms, app bundle −27%). Measure FIRST — the library's per-control cost is small (~3ms/field dev); page architecture is almost always the culprit.",
+    source: "@godxjp/ui MCP (consumer surface) — 2026-06 exseli audit, verified numbers",
+    sections: [
+      {
+        id: "measure-first",
+        title: "Measure before touching anything",
+        tagline: "Long tasks + a temporary React Profiler tell you WHO is slow — never guess.",
+        body: `Three probes, run in the page (devtools console / playwright evaluate):
+1) Long tasks — anything >50ms in a handler triggers Chrome's [Violation]:
+   const t=[]; new PerformanceObserver(l=>l.getEntries().forEach(e=>t.push(Math.round(e.duration))))
+     .observe({type:"longtask",buffered:true});
+2) Attribution — wrap suspect sections temporarily:
+   <Profiler id="sec" onRender={(id,phase,d)=>(window.__perf??=[]).push([id,phase,Math.round(d)])}>
+   Compare each section's actualDuration against the total long task. In the reference audit
+   25 @godxjp/ui composite fields mounted in 79ms — the other ~150ms was the PAGE re-rendering
+   everything else. Indict with numbers, then fix only what they indict.
+3) Dev-mode caveat: development React is 3–5× slower; a one-off 60ms task at popup-open is
+   normal. Re-measure AFTER the fix with the same probes and paste before/after numbers.`,
+      },
+      {
+        id: "filter-pane-memo",
+        title: "Filter panes: per-field memo + stable setters",
+        tagline: "Page-root state with no memo boundaries = the whole pane re-renders per keystroke.",
+        body: `The classic failure: all search state lives at the page root, every field reads it
+inline → one keystroke re-renders ~30 fields + the results table (165ms/key measured).
+The proven fix shape:
+- module-level memo field units: const FText = memo(function FText({ id, label, k, value, onSet }) {
+    return <FormField id={id} label={label}><Input id={id} value={value}
+      onChange={(e) => onSet(k, e.target.value)} /></FormField>; });
+- ONE stable setter per state map: const setField = useCallback((key, value) =>
+    setCond(c => ({ ...c, [key]: value })), []);
+- the results table in its OWN memo component; pagination pages WITHIN the submitted query
+  (setSubmitted(prev => ({ ...prev, page }))) so its handler stays identity-stable.
+After: a keystroke re-renders exactly one field (5ms). Don't memo cheap leaves that re-render
+rarely — over-memoization is real overhead. react-compiler lint traps: no ref writes during
+render, no sync setState in effect bodies; the sanctioned latch is the guarded render-time set
+(if (cond && !state) setState(true)).`,
+      },
+      {
+        id: "heavy-panels",
+        title: "Heavy hidden panels: defer, keep mounted, pre-mount at idle",
+        tagline: "Never mount a 25-field subtree synchronously inside a click handler.",
+        body: `A 詳細条件-style toggle that conditionally renders a large subtree blocks the click
+(~230ms measured). Three-layer fix, in order:
+1) urgent state drives only the button chrome (chevron/aria-expanded);
+2) const deferredOpen = useDeferredValue(open) gates the FIRST mount into a deferred lane;
+3) keep it mounted afterwards and toggle visibility: <div className={open ? "contents" : "hidden"}>
+   ("contents" keeps children in the parent flex/grid rhythm; field state lives in the page so
+   hiding loses nothing);
+4) optionally pre-mount during idle after first paint so even the FIRST open is instant:
+   useEffect(() => { const idle = window.requestIdleCallback ?? (cb => setTimeout(cb, 300));
+     const h = idle(() => setMounted(true)); return () => (window.cancelIdleCallback ?? clearTimeout)(h); }, []);
+Measured after: open 270ms → 18ms, zero post-load long tasks.`,
+      },
+      {
+        id: "bundle-budget",
+        title: "Code splitting + what an import costs",
+        tagline: "lazy() every page; know the per-import budget before blaming the library.",
+        body: `Route-level splitting is the default app shape: const Page = lazy(() => import("@/pages/Page"))
+behind ONE <Suspense fallback={<PageContainer title={<Skeleton …/>}><Skeleton …/></PageContainer>}>.
+Reference app: initial 929KB → 675KB; the orders screen (day-picker + table stack, 122KB) and
+login (react-hook-form + zod, 93KB) load only when visited.
+Per-import minified budget of @godxjp/ui ≥13.10.0 (preserved-module dist — imports tree-shake
+for real): StatCard 30KB · Input 52 · Button 56 · DataTable 79 · Select 165 · DateRangePicker 207
+(genuinely needs react-day-picker + date-fns). A shared ~50KB floor is intrinsic (tailwind-merge
++ bundled 3-locale i18n) and amortizes across one vendor chunk. Virtualize lists only >100 rows —
+DataTable at 50/page does not need it. The dist is bundler-oriented ESM (extensionless + JSON
+imports): fine for vite/webpack consumers; when testing against a local checkout run tests on an
+npm-pack TARBALL install, not a file: symlink (the symlink's nested node_modules creates a
+dual-React artifact under vitest).`,
+      },
+    ],
+  },
 ];
 
 export function findSkill(id: string): Skill | undefined {
@@ -1173,6 +1253,31 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     "report-bug",
     "If @godxjp/ui itself is at fault, don't fake a workaround — file a detailed gh issue (use draft_bug_report).",
     ["design-to-page/report-bug"],
+  );
+
+  // Performance — slow screens, violations, lag, bundle size
+  route(
+    [
+      "slow",
+      "performance",
+      "perf",
+      "violation",
+      "long task",
+      "lag",
+      "janky",
+      "re-render",
+      "rerender",
+      "bundle size",
+      "code splitting",
+      "tree-shak",
+      "chậm",
+      "lỗi hiệu năng",
+      "重い",
+    ],
+    "app-performance",
+    "measure-first",
+    "Measure FIRST (longtask + temporary Profiler), then apply the matching proven fix — page architecture, not the library, is almost always the culprit.",
+    ["app-performance/filter-pane-memo", "app-performance/heavy-panels", "app-performance/bundle-budget"],
   );
 
   // Consumer routing hides core-only skills (e.g. component-discipline) so an
