@@ -98,6 +98,7 @@ export function AppProvider({
   brand: initialBrand = null,
   density: initialDensity = "default",
   fontSize: initialFontSize = "default",
+  scaling: initialScaling = null,
   onLocaleChange,
   onTimezoneChange,
   onTimeFormatChange,
@@ -106,6 +107,7 @@ export function AppProvider({
   onBrandChange,
   onDensityChange,
   onFontSizeChange,
+  onScalingChange,
 }: AppProviderProp) {
   const initialLocale = defaultLocale;
 
@@ -123,6 +125,7 @@ export function AppProvider({
   const [brand, setBrandState] = React.useState<AppBrand | null>(initialBrand);
   const [density, setDensityState] = React.useState<AppDensity>(initialDensity);
   const [fontSize, setFontSizeState] = React.useState<AppFontSize>(initialFontSize);
+  const [scaling, setScalingState] = React.useState<number | null>(initialScaling);
 
   const hasMountedRef = React.useRef(false);
   const prefsRef = React.useRef({
@@ -134,6 +137,7 @@ export function AppProvider({
     brand,
     density,
     fontSize,
+    scaling,
   });
 
   React.useEffect(() => {
@@ -154,6 +158,7 @@ export function AppProvider({
     const nextBrand = stored.brand ?? initialBrand;
     const nextDensity = stored.density ?? initialDensity;
     const nextFontSize = stored.fontSize ?? initialFontSize;
+    const nextScaling = stored.scaling ?? initialScaling;
 
     prefsRef.current = {
       locale: nextLocale,
@@ -164,6 +169,7 @@ export function AppProvider({
       brand: nextBrand,
       density: nextDensity,
       fontSize: nextFontSize,
+      scaling: nextScaling,
     };
     setLocaleState(nextLocale);
     setTimezoneState(nextTimezone);
@@ -173,6 +179,7 @@ export function AppProvider({
     setBrandState(nextBrand);
     setDensityState(nextDensity);
     setFontSizeState(nextFontSize);
+    setScalingState(nextScaling);
   }, [
     defaultDateFormat,
     defaultLocale,
@@ -182,20 +189,32 @@ export function AppProvider({
     initialBrand,
     initialDensity,
     initialFontSize,
+    initialScaling,
     persist,
     storageKey,
     systemTimezone,
   ]);
 
   React.useEffect(() => {
-    prefsRef.current = { locale, timezone, timeFormat, dateFormat, theme, brand, density, fontSize };
-  }, [locale, timezone, timeFormat, dateFormat, theme, brand, density, fontSize]);
+    prefsRef.current = {
+      locale,
+      timezone,
+      timeFormat,
+      dateFormat,
+      theme,
+      brand,
+      density,
+      fontSize,
+      scaling,
+    };
+  }, [locale, timezone, timeFormat, dateFormat, theme, brand, density, fontSize, scaling]);
 
-  // Reflect the axes on <html data-*> — CSS in tokens/axes.css + density.css binds them.
+  // Reflect the axes on <html data-*> + inline --scaling — CSS in tokens/axes.css,
+  // density.css and foundation.css bind them.
   React.useEffect(() => {
     if (typeof document === "undefined") return;
-    applyThemeAxes(document.documentElement, { theme, brand, density, fontSize });
-  }, [theme, brand, density, fontSize]);
+    applyThemeAxes(document.documentElement, { theme, brand, density, fontSize, scaling });
+  }, [theme, brand, density, fontSize, scaling]);
 
   const setLocale = React.useCallback(
     (next: AppLocale) => {
@@ -277,6 +296,16 @@ export function AppProvider({
     [onFontSizeChange, persist, storageKey],
   );
 
+  const setScaling = React.useCallback(
+    (next: number | null) => {
+      prefsRef.current = { ...prefsRef.current, scaling: next };
+      setScalingState(next);
+      onScalingChange?.(next);
+      if (persist) writeStoredPreferences(storageKey, prefsRef.current);
+    },
+    [onScalingChange, persist, storageKey],
+  );
+
   const requestHeaders = React.useMemo(
     () => buildRequestHeaders(locale, timezone, timeFormat, dateFormat),
     [locale, timezone, timeFormat, dateFormat],
@@ -328,6 +357,7 @@ export function AppProvider({
       brand,
       density,
       fontSize,
+      scaling,
       setLocale,
       setTimezone,
       setTimeFormat,
@@ -336,6 +366,7 @@ export function AppProvider({
       setBrand,
       setDensity,
       setFontSize,
+      setScaling,
     }),
     [
       locale,
@@ -350,6 +381,7 @@ export function AppProvider({
       brand,
       density,
       fontSize,
+      scaling,
       setLocale,
       setTimezone,
       setTimeFormat,
@@ -358,6 +390,7 @@ export function AppProvider({
       setBrand,
       setDensity,
       setFontSize,
+      setScaling,
     ],
   );
 

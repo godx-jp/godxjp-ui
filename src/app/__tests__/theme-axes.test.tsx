@@ -9,6 +9,7 @@ function html() {
 
 afterEach(() => {
   for (const k of ["theme", "brand", "density", "fontSize"]) delete html().dataset[k];
+  html().style.removeProperty("--scaling");
 });
 
 describe("applyThemeAxes", () => {
@@ -31,6 +32,13 @@ describe("applyThemeAxes", () => {
     applyThemeAxes(html(), { density: "comfortable" });
     expect(html().dataset.theme).toBe("dark");
     expect(html().dataset.density).toBe("comfortable");
+  });
+
+  it("sets inline --scaling for a number and removes it for null (defer to density)", () => {
+    applyThemeAxes(html(), { scaling: 0.95 });
+    expect(html().style.getPropertyValue("--scaling")).toBe("0.95");
+    applyThemeAxes(html(), { scaling: null });
+    expect(html().style.getPropertyValue("--scaling")).toBe("");
   });
 });
 

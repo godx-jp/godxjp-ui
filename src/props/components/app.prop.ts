@@ -63,6 +63,13 @@ export type AppProviderProp = {
   density?: AppDensity;
   /** Initial base type size — written to `<html data-font-size>`. Default: `"default"`. */
   fontSize?: AppFontSize;
+  /**
+   * Continuous global size multiplier — sets inline `--scaling` on `<html>`. Every
+   * size token (spacing, control/table/checkbox/switch heights, radius) rescales in
+   * proportion (Radix-style). `null` (default) defers to the `density` preset; a
+   * number (e.g. `0.95`) overrides it. Type is a separate axis — not scaled.
+   */
+  scaling?: number | null;
   onLocaleChange?: (locale: AppLocale) => void;
   onTimezoneChange?: (timezone: AppTimezone) => void;
   onTimeFormatChange?: (timeFormat: AppTimeFormat) => void;
@@ -71,6 +78,7 @@ export type AppProviderProp = {
   onBrandChange?: (brand: AppBrand | null) => void;
   onDensityChange?: (density: AppDensity) => void;
   onFontSizeChange?: (fontSize: AppFontSize) => void;
+  onScalingChange?: (scaling: number | null) => void;
 };
 
 /** Which AppProvider setting the {@link AppSettingPicker} reads/writes. */
@@ -113,11 +121,12 @@ export type AppContextValue = {
   requestHeaders: AppRequestHeaders;
   /** Configured timezone list; `undefined` → full IANA in the timezone-picker recipe. */
   timezoneOptions?: readonly AppTimezone[];
-  /** Current theme axes (mirror `<html data-*>`). */
+  /** Current theme axes (mirror `<html data-*>` / inline `--scaling`). */
   theme: AppTheme;
   brand: AppBrand | null;
   density: AppDensity;
   fontSize: AppFontSize;
+  scaling: number | null;
   setLocale: (locale: AppLocale) => void;
   setTimezone: (timezone: AppTimezone) => void;
   setTimeFormat: (timeFormat: AppTimeFormat) => void;
@@ -126,4 +135,5 @@ export type AppContextValue = {
   setBrand: (brand: AppBrand | null) => void;
   setDensity: (density: AppDensity) => void;
   setFontSize: (fontSize: AppFontSize) => void;
+  setScaling: (scaling: number | null) => void;
 };
