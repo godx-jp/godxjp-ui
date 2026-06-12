@@ -25,6 +25,8 @@ export type StoredAppPreferences = {
   brand?: AppBrand | null;
   density?: AppDensity;
   fontSize?: AppFontSize;
+  /** Continuous global size multiplier; `null` defers to the density preset. */
+  scaling?: number | null;
 };
 
 export function readStoredPreferences(storageKey: string): StoredAppPreferences {
@@ -42,6 +44,10 @@ export function readStoredPreferences(storageKey: string): StoredAppPreferences 
       brand: isAppBrand(parsed.brand) ? parsed.brand : undefined,
       density: isAppDensity(parsed.density) ? parsed.density : undefined,
       fontSize: isAppFontSize(parsed.fontSize) ? parsed.fontSize : undefined,
+      scaling:
+        typeof parsed.scaling === "number" && Number.isFinite(parsed.scaling)
+          ? parsed.scaling
+          : undefined,
     };
   } catch {
     return {};

@@ -3843,14 +3843,21 @@ import { Button } from "@godxjp/ui/general";
         type: '"compact" | "default" | "comfortable"',
         defaultValue: '"default"',
         description:
-          "Density axis → <html data-density> (control/table/spacing). App-wide incl. portalled overlays; PageContainer density= overrides locally.",
+          "Density axis → <html data-density>. A named preset of the global --scaling factor (compact .92 / default 1 / comfortable 1.08): every size token rescales in proportion app-wide. PageContainer density= overrides locally.",
+      },
+      {
+        name: "scaling",
+        type: "number | null",
+        defaultValue: "null",
+        description:
+          "Continuous global size multiplier → inline --scaling on <html> (Radix model). Scales spacing, control/table/checkbox/switch heights, radius in proportion. null defers to the density preset; a number (e.g. 0.95) overrides it. Type is NOT scaled (separate fontSize axis).",
       },
       {
         name: "fontSize",
         type: '"sm" | "default" | "lg"',
         defaultValue: '"default"',
         description:
-          "Base type-size axis → <html data-font-size>. A preset sets --font-size-base and the whole golden scale rescales.",
+          "Base type-size axis → <html data-font-size>. A preset sets --font-size-base and the whole golden scale rescales. Orthogonal to --scaling.",
       },
     ],
     usage: [

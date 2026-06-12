@@ -4,7 +4,7 @@
   --table-row-height-compact: 1.75rem;
   --table-row-height-default: 2rem;
   --table-row-height-comfortable: 2.75rem;
-  --table-row-height: var(--table-row-height-default);
+  --table-row-height: calc(var(--table-row-height-default) * var(--scaling));
   --table-cell-padding-y: var(--space-2);
   --table-cell-space-x: var(--control-padding-x);
   --table-head-font-size: var(--font-size-xs);

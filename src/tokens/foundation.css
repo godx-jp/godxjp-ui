@@ -75,7 +75,7 @@
   --disabled-opacity: 0.5;
 
   /* Shape and elevation */
-  --radius: 0.375rem; /* 6px — radius base; override to retheme every step */
+  --radius: calc(0.375rem * var(--scaling)); /* 6px base × scaling; override to retheme every step */
   --radius-ratio: 1.618; /* φ — radii scale by the golden ratio (steps derive in @theme) */
   --radius-pill: 9999px; /* fully-round: switch / radio / slider / pill badges (NOT --radius-derived) */
   --radius-sharp: 0; /* squared corners: table cells, flush inputs */
@@ -140,17 +140,29 @@
   --line-height-body: 1.7;
   --letter-spacing-tight: 0;
 
-  /* Raw spacing scale */
+  /* ── SCALING — the one global density knob (Radix Themes model). A single
+   * dimensionless multiplier on every SIZE token (spacing grid, control / table /
+   * checkbox / switch heights, radius), so the whole UI rescales in proportion
+   * from one place. `1` = the design baseline. The `density` axis sets named
+   * presets (compact .92 · default 1 · comfortable 1.08); AppProvider's `scaling`
+   * prop sets any value continuously. Type has its OWN base+ratio (--font-size-base)
+   * and is NOT scaled here — fontSize stays an orthogonal axis. Touch targets
+   * (--touch-target-min) are also exempt (a11y minimum). */
+  --scaling: 1;
+
+  /* Raw spacing scale — the 4px grid, scaled. Everything that derives from
+   * --space-* (padding, gaps, --phi-unit, semantic spacing, chrome) inherits the
+   * scaling automatically; this is the single highest-leverage scaling point. */
   --space-0: 0;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
+  --space-1: calc(0.25rem * var(--scaling));
+  --space-2: calc(0.5rem * var(--scaling));
+  --space-3: calc(0.75rem * var(--scaling));
+  --space-4: calc(1rem * var(--scaling));
+  --space-5: calc(1.25rem * var(--scaling));
+  --space-6: calc(1.5rem * var(--scaling));
+  --space-8: calc(2rem * var(--scaling));
+  --space-10: calc(2.5rem * var(--scaling));
+  --space-12: calc(3rem * var(--scaling));
 
   /* Golden ratio scale */
   --ratio-phi: 1.6180339887;

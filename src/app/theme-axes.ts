@@ -29,12 +29,15 @@ export const APP_DENSITIES = [
 ] as const satisfies readonly AppDensity[];
 export const APP_FONT_SIZES = ["sm", "default", "lg"] as const satisfies readonly AppFontSize[];
 
-/** The four axes as held by AppProvider. `brand: null` opts out (app token wins). */
+/** The axes as held by AppProvider. `brand: null` opts out (app token wins).
+ * `scaling: null` defers to the density preset; a number is the continuous global
+ * size multiplier (the `--scaling` factor / Radix model) and overrides the preset. */
 export type AppThemeAxes = {
   theme: AppTheme;
   brand: AppBrand | null;
   density: AppDensity;
   fontSize: AppFontSize;
+  scaling: number | null;
 };
 
 export const isAppTheme = (v: unknown): v is AppTheme => APP_THEMES.includes(v as AppTheme);
@@ -56,5 +59,11 @@ export function applyThemeAxes(el: HTMLElement, axes: Partial<AppThemeAxes>): vo
   if (axes.brand !== undefined) {
     if (axes.brand === null) delete el.dataset.brand;
     else el.dataset.brand = axes.brand;
+  }
+  // `--scaling` is continuous → an inline style (not a data-attr). null defers to
+  // the density preset's `--scaling`; a number overrides it (inline > stylesheet).
+  if (axes.scaling !== undefined) {
+    if (axes.scaling === null) el.style.removeProperty("--scaling");
+    else el.style.setProperty("--scaling", String(axes.scaling));
   }
 }
