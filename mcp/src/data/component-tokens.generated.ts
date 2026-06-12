@@ -190,248 +190,248 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-height",
-    "value": "var(--control-height-default)",
+    "value": "calc(var(--control-height-default) * var(--scaling))",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
   },
   {
     "name": "--control-height-sm",
-    "value": "calc(var(--control-height) - 0.25rem)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(var(--control-height) - calc(0.25rem * var(--scaling)))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-height-lg",
-    "value": "calc(var(--control-height) + 0.25rem)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(var(--control-height) + calc(0.25rem * var(--scaling)))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-height-xs",
-    "value": "calc(var(--control-height) - 0.5rem)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(var(--control-height) - calc(0.5rem * var(--scaling)))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-padding-x",
     "value": "var(--control-padding-x-default)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-gap",
     "value": "var(--space-inline-sm)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-gap-sm",
     "value": "var(--space-inline-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-radius",
     "value": "var(--radius)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-icon-size",
-    "value": "1rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(1rem * var(--scaling))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-icon-size-sm",
-    "value": "0.875rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(0.875rem * var(--scaling))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-focus-ring-width",
     "value": "2px",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--checkbox-size",
-    "value": "1rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(1rem * var(--scaling))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--checkbox-size-compact",
     "value": "0.875rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--checkbox-size-comfortable",
     "value": "1.125rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--choice-gap",
     "value": "var(--space-inline-sm)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--choice-group-gap-x",
     "value": "var(--space-6)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--choice-group-gap-y",
     "value": "var(--space-3)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--choice-description-gap",
     "value": "0.125rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--choice-control-offset",
     "value": "0.125rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-width",
-    "value": "2.25rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(2.25rem * var(--scaling))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-width-compact",
     "value": "2rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-width-comfortable",
     "value": "2.5rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-height",
-    "value": "1.25rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(1.25rem * var(--scaling))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-height-compact",
     "value": "1.125rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-height-comfortable",
     "value": "1.375rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-thumb-size",
-    "value": "1rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(1rem * var(--scaling))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-thumb-size-compact",
     "value": "0.875rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-thumb-size-comfortable",
     "value": "1.125rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-thumb-translate",
-    "value": "1rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "value": "calc(1rem * var(--scaling))",
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-thumb-translate-compact",
     "value": "0.875rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--switch-thumb-translate-comfortable",
     "value": "1.125rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--slider-track-height",
     "value": "0.375rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--slider-thumb-size",
     "value": "1rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--color-picker-input-width",
     "value": "6.5rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--command-list-max-height",
     "value": "min(300px, 50vh)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--command-input-padding-x",
     "value": "var(--space-3)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--command-group-padding",
     "value": "var(--space-1)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--command-item-padding-y",
     "value": "var(--space-2)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--command-item-padding-x",
     "value": "var(--space-2)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--search-input-edge-inset",
     "value": "var(--space-3)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--search-input-start-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--search-input-end-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--choice-description-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--color-picker-hex-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--command-group-heading-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--search-input-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--tag-input-chip-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--toggle-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--button-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. * Default/compact use a 4px/8px step; density overrides comfortable * (which steps 44→36→32 per the design's spacing-density spec)."
+    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
     "name": "--control-height-compact",
@@ -695,7 +695,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-row-height",
-    "value": "var(--table-row-height-default)",
+    "value": "calc(var(--table-row-height-default) * var(--scaling))",
     "description": "Table component tokens: row height, cell padding."
   },
   {
