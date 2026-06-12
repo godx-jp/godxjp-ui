@@ -113,6 +113,31 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
     expect(foundation).toMatch(/--radius:\s*calc\(0\.375rem \* var\(--scaling\)\)/);
   });
 
+  it("ui-scale-fixed pins a subtree to baseline (chrome exempt from density)", () => {
+    const foundation = readSrc("tokens/foundation.css");
+    const start = foundation.indexOf(".ui-scale-fixed {");
+    const block = foundation.slice(start, foundation.indexOf("}", start) + 1);
+    expect(start).toBeGreaterThan(-1);
+    expect(block).toContain("--scaling: 1;");
+    // Re-declares the raw grid + active size tokens so nothing inherits the baked
+    // :root scaling — a plain --scaling:1 would not be enough (tokens already
+    // substituted at :root). Drift guard for the topbar / search-palette exemption.
+    for (const token of [
+      "--space-1:",
+      "--space-4:",
+      "--space-12:",
+      "--radius:",
+      "--control-height:",
+      "--table-row-height:",
+      "--checkbox-size:",
+      "--space-stack-md:",
+      "--space-section:",
+      "--space-inline-sm:",
+    ]) {
+      expect(block, `ui-scale-fixed must re-declare ${token}`).toContain(token);
+    }
+  });
+
   it("wires Tailwind text-* to typography tokens", () => {
     expect(index).toContain("--text-sm: var(--font-size-sm)");
     expect(index).toContain("--text-xs: var(--font-size-xs)");

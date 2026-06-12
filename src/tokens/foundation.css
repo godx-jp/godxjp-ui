@@ -180,6 +180,62 @@
   --phi-p2: calc(var(--phi-p1) * var(--ratio-phi));
 }
 
+/* SCALE-FIXED — pin a subtree to the baseline size (--scaling 1) so persistent
+ * chrome (the AppShell topbar, the global search palette, …) does NOT resize with
+ * the density axis. Setting only --scaling:1 is insufficient: the size tokens were
+ * already substituted at :root and inherit baked, so each --scaling-derived token
+ * (and every semantic token that aliases the spacing grid) is RE-DECLARED here to
+ * re-resolve at baseline. Apply via `className="… ui-scale-fixed"`. Must list every
+ * scaled token — the scale-fixed coverage test guards against drift. */
+.ui-scale-fixed {
+  --scaling: 1;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --radius: 0.375rem;
+  --control-height: var(--control-height-default);
+  /* baseline tier values (2rem ∓ step) as literals — keeps the control-sizing
+   * guard happy and avoids re-deriving from the (baked) active --control-height. */
+  --control-height-sm: 1.75rem;
+  --control-height-lg: 2.25rem;
+  --control-height-xs: 1.5rem;
+  --control-icon-size: 1rem;
+  --control-icon-size-sm: 0.875rem;
+  --control-padding-x: var(--space-3);
+  --control-gap: var(--space-2);
+  --control-gap-sm: var(--space-1);
+  --checkbox-size: 1rem;
+  --switch-width: 2.25rem;
+  --switch-height: 1.25rem;
+  --switch-thumb-size: 1rem;
+  --switch-thumb-translate: 1rem;
+  --table-row-height: var(--table-row-height-default);
+  --table-cell-padding-y: var(--space-2);
+  --phi-unit: var(--space-4);
+  --space-page-x: var(--space-6);
+  --space-page-y: var(--space-6);
+  --space-section: var(--space-4);
+  --space-stack-xs: var(--space-1);
+  --space-stack-sm: var(--space-2);
+  --space-stack-md: var(--space-4);
+  --space-stack-lg: var(--space-6);
+  --space-stack-xl: var(--space-10);
+  --space-inline-xs: var(--space-1);
+  --space-inline-sm: var(--space-2);
+  --space-inline-md: var(--space-3);
+  --space-inline-lg: var(--space-4);
+  --space-chrome-x: var(--space-6);
+  --space-chrome-y: var(--space-4);
+  --space-chrome-gap: var(--space-2);
+  --field-label-gap: var(--space-2);
+}
+
 .dark,
 :root[data-theme="dark"] {
   /* Warm-tinted dark spine — keeps the hue-60 character at low lightness.
