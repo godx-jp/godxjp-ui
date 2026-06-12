@@ -35,6 +35,9 @@
 
   .app-topbar {
     grid-area: topbar;
+    /* Persistent navigation chrome stays a FIXED size regardless of density — the
+     * AppShell adds `.ui-scale-fixed` to this <header> (resets the whole size-token
+     * set to baseline; --scaling:1 alone is not enough — see foundation.css). */
     display: flex;
     min-width: 0;
     align-items: center;

@@ -35,7 +35,7 @@ export function AppShell({
       <aside className="app-sidebar" aria-label={t("layout.appShell.sidebarLabel")}>
         {sidebar}
       </aside>
-      <header className="app-topbar" aria-label={t("layout.appShell.headerLabel")}>
+      <header className="app-topbar ui-scale-fixed" aria-label={t("layout.appShell.headerLabel")}>
         {resolvedTopbar}
       </header>
       <main className="app-main" aria-label={t("layout.appShell.mainLabel")}>
