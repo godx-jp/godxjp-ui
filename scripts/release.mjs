@@ -2,13 +2,15 @@
 /**
  * Coordinated release for the monorepo — publish @godxjp/ui and/or @godxjp/ui-mcp with one
  * command so the library and its MCP tooling stay in lockstep (no more "publish twice by hand").
- * They keep independent version lines (the lib is 6.x, the MCP 0.x); this only coordinates the act.
+ * The MCP is PINNED to the lib's version (one shared 13.x line) so a catalog version always
+ * tells you exactly which library build it describes.
  *
  * Usage:
- *   node scripts/release.mjs --ui minor --mcp patch
- *   node scripts/release.mjs --ui patch                 # ui only (mcp skipped)
- *   node scripts/release.mjs --mcp minor                # mcp only
- *   bumps: patch | minor | major | skip
+ *   node scripts/release.mjs --ui patch --mcp sync   # both — mcp adopts the new ui version
+ *   node scripts/release.mjs --ui minor              # ui only (mcp skipped)
+ *   node scripts/release.mjs --mcp sync              # mcp only, at the CURRENT ui version
+ *                                                    # (fails on npm if that version exists)
+ *   --ui: patch | minor | major | skip      --mcp: sync | skip
  */
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -20,11 +22,16 @@ const flag = (name, def) => {
 };
 const uiBump = flag("--ui", "skip");
 const mcpBump = flag("--mcp", "skip");
-const VALID = new Set(["patch", "minor", "major", "skip"]);
+const VALID_UI = new Set(["patch", "minor", "major", "skip"]);
+const VALID_MCP = new Set(["sync", "skip"]);
 
-if (!VALID.has(uiBump) || !VALID.has(mcpBump) || (uiBump === "skip" && mcpBump === "skip")) {
+if (
+  !VALID_UI.has(uiBump) ||
+  !VALID_MCP.has(mcpBump) ||
+  (uiBump === "skip" && mcpBump === "skip")
+) {
   console.error(
-    "Usage: node scripts/release.mjs --ui <patch|minor|major|skip> --mcp <patch|minor|major|skip>",
+    "Usage: node scripts/release.mjs --ui <patch|minor|major|skip> --mcp <sync|skip>",
   );
   process.exit(1);
 }
@@ -48,9 +55,10 @@ if (uiBump !== "skip") {
   console.log(`✓ published @godxjp/ui@${versionOf()}`);
 }
 
-if (mcpBump !== "skip") {
+if (mcpBump === "sync") {
   run("pnpm build", "mcp");
-  run(`npm version ${mcpBump} --no-git-tag-version`, "mcp");
+  // Pin the MCP to the lib's (possibly just-bumped) version — one shared line.
+  run(`npm version ${versionOf()} --no-git-tag-version --allow-same-version`, "mcp");
   run("npm publish --access public", "mcp");
   console.log(`✓ published @godxjp/ui-mcp@${versionOf("mcp")}`);
 }
