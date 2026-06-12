@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **npm package: component utility classes were never emitted in consumers.** `styles/index.css`
+  declared `@source "../**/*.{tsx,ts}"`, but the published package ships compiled JS only — the
+  glob matched nothing, so Tailwind dropped every utility referenced solely inside library
+  components (unstyled/transparent popovers and selects; an opened `Select` froze the whole page
+  because the Radix scroll-lock's `pointer-events-auto` escape hatch was missing). The glob now
+  also scans `.js`, which resolves to the package's own `dist` when installed from npm. Consumers
+  no longer need the `@source ".../node_modules/@godxjp/ui/dist"` workaround.
+
 ### Changed
 
 - `PageContainer` header no longer draws a bottom divider by default. The rule was hard-coded

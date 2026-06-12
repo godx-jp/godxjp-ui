@@ -23,7 +23,12 @@
  * `var(--radius-2xl)` directly; without a generated utility Tailwind drops the unused var). */
 @source inline("rounded-{xs,xl,2xl}");
 @source inline("text-2xs");
-@source "../**/*.{tsx,ts}";
+/* `.js` matters: the published package ships only compiled JS under dist (no
+ * .tsx sources), and this file is copied verbatim into dist/styles — without
+ * it Tailwind finds no component classes in consumers (unstyled popovers and
+ * selects, and Radix scroll-lock freezes the page because pointer-events-auto
+ * is never emitted). In-repo the glob scans src; published, it scans dist. */
+@source "../**/*.{tsx,ts,js}";
 @import "../tokens/base.css";
 @import "./density.css";
 @import "./shell-layout.css";
