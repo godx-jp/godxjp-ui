@@ -3430,7 +3430,7 @@ import { Button } from "@godxjp/ui/general";
       },
     ],
     usage: [
-      'DO compose with sub-parts in order: wrap text content in `<Alert.Content>` (or bare `<AlertContent>`), then `<Alert.Title>` + `<Alert.Description>` inside it, then `<Alert.Actions>` for any retry/CTA buttons. Example: `<Alert tone="destructive"><Alert.Content><Alert.Title>Error</Alert.Title><Alert.Description>{msg}</Alert.Description></Alert.Content><Alert.Actions><Button …/></Alert.Actions></Alert>`.',
+      'DO compose text as `<Alert.Title>` + `<Alert.Description>` — they stack vertically inside the body (the Example below is canonical). When you add `<Alert.Actions>`, the body becomes a two-column grid (text | actions) at ≥sm; group multi-part text in `<Alert.Content>` so it occupies the text column as one block: `<Alert tone="destructive"><Alert.Content><Alert.Title>Error</Alert.Title><Alert.Description>{msg}</Alert.Description></Alert.Content><Alert.Actions><Button …/></Alert.Actions></Alert>`.',
       "DO use `Alert.QueryError` (alias `AlertQueryError`) for TanStack Query / API failure surfaces — it already renders humanError(error), an i18n title, and an optional Retry button. Never hand-roll that pattern.",
       'DON\'T pass raw action elements directly as top-level children of `<Alert>` without wrapping them in `<Alert.Actions>` — the layout slot only activates correctly via the `data-slot="alert-actions"` wrapper.',
       'DON\'T hand-roll a dismiss ✕ button — pass `onDismiss` to `<Alert>` and the component renders its own accessible dismiss button with `aria-label="Dismiss"`. The `onDismiss` handler may return a Promise.',

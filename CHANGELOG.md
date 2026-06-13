@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Alert: bare `AlertTitle` + `AlertDescription` split into side-by-side columns at ≥sm.**
+  `alert-body` unconditionally switched to `flex-direction: row; justify-content: space-between`
+  at the sm breakpoint — a layout meant only for pushing `AlertActions` to the end — so the
+  canonical catalog example, `AlertQueryError`, and the docs page all rendered the title in a
+  narrow left column with the description floating right. The row (now a `text | actions` grid)
+  only activates via `:has(> [data-slot="alert-actions"])`; without actions the body always
+  stacks. Catalog usage notes updated to match. (#106)
 - **npm package: component utility classes were never emitted in consumers.** `styles/index.css`
   declared `@source "../**/*.{tsx,ts}"`, but the published package ships compiled JS only — the
   glob matched nothing, so Tailwind dropped every utility referenced solely inside library
