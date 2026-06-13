@@ -1752,18 +1752,26 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
   {
     name: "Timeline",
     group: "data-display",
-    tagline: "Vertical event list with an icon rail. Current item gets a highlighted glyph.",
+    tagline:
+      "Vertical event list with an icon rail. Current item gets a highlighted glyph. `variant` switches the rail to numbered (ordinal) or status-driven glyphs, and each item carries a 3-state `status` (done/current/pending) plus an optional per-item `icon`.",
     props: [
       {
         name: "items",
         type: "TimelineItem[]",
         required: true,
-        description: "Array of { title, location?, time?, note?, current? }.",
+        description:
+          "Array of `{ title, location?, time?, note?, current?, status?, icon? }`. `status` is the explicit 3-state ('done' | 'current' | 'pending'); `current: true` is shorthand for `status: 'current'`. `icon` (a LucideIcon) overrides the auto-glyph for that item.",
+      },
+      {
+        name: "variant",
+        type: '"icon" | "ordinal" | "status"',
+        description:
+          "Rail glyph strategy (default 'icon'). 'icon' = legacy look (Plane for current, CheckCircle2 otherwise). 'ordinal' = every glyph is its 1-based step number; status sets colour only. 'status' = glyph by status (done → check, current → filled dot, pending → step number).",
       },
     ],
     usage: [
-      "DO pass an array of `TimelineItem` objects to `items` — this is the ONLY prop; there are no sub-components to compose. Each item is `{ title, location?, time?, note?, current? }`. All fields except `title` are optional.",
-      "DO mark exactly one item with `current: true` to highlight the in-progress event. The component renders a `Plane` icon for the current item and a `CheckCircle2` icon for all past items — do NOT try to pass a custom icon; the icon is determined entirely by the `current` flag.",
+      "DO pass an array of `TimelineItem` objects to `items`. Each item is `{ title, location?, time?, note?, current?, status?, icon? }`. All fields except `title` are optional. The only other prop is `variant`.",
+      "DO mark the in-progress event with `current: true` (or `status: 'current'`). In the default `variant='icon'`, the current item renders a `Plane` icon and every other item a `CheckCircle2`. Use `variant='ordinal'` for a numbered route stepper (1,2,3…) or `variant='status'` for a done→check / current→dot / pending→number tracker. Pass `status: 'done' | 'current' | 'pending'` per item to drive colour and (in the status variant) the glyph; pass `icon` (a LucideIcon) to override the glyph for a single item.",
       "DO pass `ReactNode` to `title`, `location`, `time`, and `note` — you can embed formatted text, `<Badge>`, `<Badge>`, or `<span>` inside those fields. Use `formatDate` to pre-format timestamps before passing them as `time`.",
       "DO NOT hand-roll a vertical event list with divs, icons, and connector lines — that is exactly what Timeline ships. Do not apply extra padding or wrapping outside the component; it manages its own rail and spacing internally.",
       "DO NOT use Timeline for user-facing wizard progress (steps the user must complete in order) — use `Steps` for that. Timeline is read-only historical/status display; it has no interactive state, no `onClick`, and no concept of 'go to step'.",
@@ -1785,10 +1793,24 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     ],
     example: `import { Timeline } from "@godxjp/ui/data-display";
 
+// Default icon variant
 <Timeline items={[
   { title: "注文受付", time: "2024-06-01 10:00" },
   { title: "発送準備中", time: "2024-06-01 14:00" },
   { title: "配送中", current: true },
+]} />
+
+// Numbered route stepper (Pattern A)
+<Timeline variant="ordinal" items={[
+  { title: "集荷", location: "東京 → 名古屋", status: "pending" },
+  { title: "幹線輸送", location: "名古屋 → 大阪", status: "pending" },
+]} />
+
+// Status tracker (Pattern B): done → check, current → dot, pending → number
+<Timeline variant="status" items={[
+  { title: "請求書を発行", status: "done" },
+  { title: "承認待ち", status: "current" },
+  { title: "消費税を計上", status: "pending" },
 ]} />`,
     storyPath: "data-display/Timeline.stories.tsx",
     rules: [],
@@ -3829,7 +3851,7 @@ import { Button } from "@godxjp/ui/general";
         type: '"light" | "dark"',
         defaultValue: '"light"',
         description:
-          "Theme axis → <html data-theme>. Equal alias of the legacy .dark class. Persisted; change via setTheme / <AppSettingPicker kind=\"theme\">.",
+          'Theme axis → <html data-theme>. Equal alias of the legacy .dark class. Persisted; change via setTheme / <AppSettingPicker kind="theme">.',
       },
       {
         name: "brand",
@@ -3861,7 +3883,7 @@ import { Button } from "@godxjp/ui/general";
       },
     ],
     usage: [
-      "DO drive the four theme axes (theme / brand / density / fontSize) from AppProvider props ONLY — they are written to <html data-*> and read by every component via tokens. Never hand-set --font-size-base or .ui-density-* in app CSS; that bypasses persistence + the runtime switchers. For runtime switching mount `<AppSettingPicker kind=\"density\" | \"fontSize\" | \"theme\" | \"brand\" >` or call setDensity/setFontSize/setTheme/setBrand from useAppContext().",
+      'DO drive the four theme axes (theme / brand / density / fontSize) from AppProvider props ONLY — they are written to <html data-*> and read by every component via tokens. Never hand-set --font-size-base or .ui-density-* in app CSS; that bypasses persistence + the runtime switchers. For runtime switching mount `<AppSettingPicker kind="density" | "fontSize" | "theme" | "brand" >` or call setDensity/setFontSize/setTheme/setBrand from useAppContext().',
       "DO mount AppProvider ONCE at the application root (e.g. in app.tsx or the Inertia layout), wrapping ALL children — every godx-ui picker (LocalePicker, TimezonePicker, DateFormatPicker, TimeFormatPicker), every formatDate call, and the Toaster all rely on the single context it provides. Nesting two AppProviders creates split contexts; inner pickers silently read the wrong one.",
       "DO NOT omit AppProvider and then try to use LocalePicker, TimezonePicker, or formatDate standalone — useAppContext() throws 'useAppContext must be used within <AppProvider>' at runtime. The only exception is using those pickers in fully controlled mode (value + onChange) which reads useOptionalAppContext() and returns null safely.",
       "DO use the `persist={false}` prop on AppProvider when writing isolated tests or standalone settings forms where localStorage should not be read or written. With the default `persist={true}` the provider reads from localStorage key `godxjp.app` on mount (after first render), so initial state may differ between SSR and client.",

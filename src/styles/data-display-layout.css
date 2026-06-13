@@ -149,14 +149,34 @@
     width: 1.5rem;
     height: 1.5rem;
     place-items: center;
+    border: 1px solid transparent;
     border-radius: var(--radius-pill);
+    background: hsl(var(--success));
+    color: hsl(var(--success-foreground));
+    font-size: var(--timeline-note-font-size);
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+  }
+
+  /* done → success fill. */
+  .ui-timeline-dot[data-status="done"] {
     background: hsl(var(--success));
     color: hsl(var(--success-foreground));
   }
 
+  /* current → primary fill + ring (also the legacy data-current shorthand). */
+  .ui-timeline-dot[data-status="current"],
   .ui-timeline-dot[data-current="true"] {
     background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.18);
+  }
+
+  /* pending → muted outline on the surface (no fill). */
+  .ui-timeline-dot[data-status="pending"] {
+    border-color: hsl(var(--border));
+    background: hsl(var(--background));
+    color: hsl(var(--muted-foreground));
   }
 
   .ui-timeline-dot svg {
@@ -164,11 +184,25 @@
     height: 0.75rem;
   }
 
+  /* current pip glyph for variant="status" (filled inner dot). */
+  .ui-timeline-pip {
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--radius-pill);
+    background: currentColor;
+  }
+
   .ui-timeline-line {
     width: 1px;
     min-height: 2.25rem;
     flex: 1;
     background: hsl(var(--border));
+  }
+
+  /* The segment below a done/current step reads as travelled (completed). */
+  .ui-timeline-line[data-completed="true"] {
+    background: hsl(var(--primary));
   }
 
   .ui-timeline-head {
@@ -180,6 +214,11 @@
 
   .ui-timeline-title {
     font-weight: var(--font-weight-medium);
+  }
+
+  .ui-timeline-title[data-current="true"] {
+    color: hsl(var(--primary));
+    font-weight: var(--font-weight-semibold);
   }
 
   .ui-timeline-time,
