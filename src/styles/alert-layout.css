@@ -80,6 +80,11 @@
     color: hsl(var(--info));
   }
 
+  /* Body stacks text vertically (title over description). The ≥sm two-column
+   * layout exists ONLY to push an actions slot to the end — gate it on
+   * :has(alert-actions), otherwise bare AlertTitle + AlertDescription (the
+   * catalog example, AlertQueryError, the docs page) split into meaningless
+   * side-by-side columns (godxjp-ui#106). */
   [data-slot="alert-body"] {
     display: flex;
     flex: 1;
@@ -89,10 +94,23 @@
   }
 
   @media (min-width: 640px) {
-    [data-slot="alert-body"] {
-      flex-direction: row;
-      align-items: flex-start;
-      justify-content: space-between;
+    [data-slot="alert-body"]:has(> [data-slot="alert-actions"]) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: var(--alert-space-gap);
+      row-gap: var(--alert-inner-space-gap);
+      align-items: start;
+    }
+
+    [data-slot="alert-body"]:has(> [data-slot="alert-actions"])
+      > :not([data-slot="alert-actions"]) {
+      grid-column: 1;
+    }
+
+    [data-slot="alert-body"]:has(> [data-slot="alert-actions"])
+      > [data-slot="alert-actions"] {
+      grid-column: 2;
+      grid-row: 1;
     }
   }
 
