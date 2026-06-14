@@ -20,12 +20,28 @@
   .ui-form-field {
     display: grid;
     gap: var(--field-label-gap);
+    /* Fill the container's inline (horizontal) axis in ANY parent — a Form's
+     * flex column (.ui-form), a ResponsiveGrid cell, or a bare flex column /
+     * block — instead of collapsing to the content's max-content width. This
+     * mirrors Ant Design's Form.Item, which sets the item/control to width:100%
+     * in vertical layout rather than relying on the parent to stretch it. Without
+     * this, a flex-column parent maps `align-self:start` onto the inline axis and
+     * the field shrinks to its widest content (a helper-less input collapses to
+     * its default ~20ch). Inline layout opts out below (Ant: compact, content-width). */
+    inline-size: 100%;
     /* Never stretch to a taller grid-row sibling (e.g. a field carrying a
      * helper/error). Stretching would let .ui-form-field-control's
      * align-content:center vertically centre the control, so a field WITHOUT a
      * helper sits lower than one WITH a helper in the same ResponsiveGrid row.
-     * Hugging content keeps every control top-aligned across the row. */
+     * Hugging content keeps every control top-aligned across the row. This is the
+     * BLOCK (vertical) axis only — width is pinned by inline-size:100% above. */
     align-self: start;
+  }
+
+  /* Inline layout is intentionally compact (Ant: layout="inline"): the field
+   * hugs its content so a row of inline fields can sit side by side. */
+  .ui-form-field[data-layout="inline"] {
+    inline-size: auto;
   }
 
   .ui-form-field-label {
