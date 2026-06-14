@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **FormField collapsed to its content width inside a flex column (short inputs).**
+  `.ui-form-field` carried `align-self: start` (to keep fields top-aligned across a
+  `ResponsiveGrid` row) but no explicit inline size. In a grid parent that only affects the
+  block axis, so width filled via the column. But the `<Form>` container itself is a flex
+  column (`.ui-form`), and any `<Flex direction="col">` is too — there `align-self` governs the
+  **inline** axis, so a field shrank to its widest content (a helper-less `Input` collapsed to
+  its ~20ch default, e.g. login forms rendering "ngắn tũn" half-width inputs). Fixed by giving
+  `.ui-form-field` `inline-size: 100%`, mirroring Ant Design's Form.Item (vertical → width:100%):
+  a field now fills its container in **any** parent — `<Form>`, a `ResponsiveGrid` cell, a bare
+  flex column, or a plain block — while `layout="inline"` stays content-width (compact,
+  side-by-side). `align-self: start` is retained for block-axis row top-alignment.
+
 - **Alert: bare `AlertTitle` + `AlertDescription` split into side-by-side columns at ≥sm.**
   `alert-body` unconditionally switched to `flex-direction: row; justify-content: space-between`
   at the sm breakpoint — a layout meant only for pushing `AlertActions` to the end — so the
