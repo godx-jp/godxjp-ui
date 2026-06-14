@@ -51,6 +51,20 @@ describe("DataTable display props", () => {
     expect(container.querySelector(".ui-density-default")).toBeInTheDocument();
   });
 
+  it("tints individual rows via `rowClassName` and skips rows that return undefined", () => {
+    const { container } = renderWithUi(
+      <DataTable
+        data={rows}
+        columns={columns}
+        getRowId={(r) => r.id}
+        rowClassName={(r) => (r.id === "1" ? "bg-destructive/10" : undefined)}
+      />,
+    );
+    const bodyRows = container.querySelectorAll("tbody tr");
+    expect(bodyRows[0].className).toContain("bg-destructive/10");
+    expect(bodyRows[1].className).not.toContain("bg-destructive/10");
+  });
+
   it("is unstyled (no stripe/hover attrs) by default", () => {
     const { container } = renderWithUi(
       <DataTable data={rows} columns={columns} getRowId={(r) => r.id} />,

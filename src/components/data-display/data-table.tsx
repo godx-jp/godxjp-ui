@@ -63,6 +63,7 @@ interface DataTableContextValue<T = unknown> {
   striped: boolean;
   hoverable: boolean;
   stickyHeader: boolean;
+  rowClassName?: (row: T) => string | undefined;
 }
 
 const DataTableContext = React.createContext<DataTableContextValue | null>(null);
@@ -100,6 +101,12 @@ interface DataTableProps<T> {
   hoverable?: boolean;
   /** Pin the header to the top while the body scrolls. Default true. */
   stickyHeader?: boolean;
+  /**
+   * Per-row className for state-based row tinting (e.g. flag an invalid or
+   * empty record). Returned classes are appended last, so they win over the
+   * built-in hover/selected fills. Return `undefined` to leave a row unstyled.
+   */
+  rowClassName?: (row: T) => string | undefined;
   className?: string;
   children?: React.ReactNode;
 }
@@ -128,6 +135,7 @@ export function DataTable<T>({
   striped = false,
   hoverable = false,
   stickyHeader = true,
+  rowClassName,
   className,
   children,
 }: DataTableProps<T>) {
@@ -180,6 +188,7 @@ export function DataTable<T>({
     striped,
     hoverable,
     stickyHeader,
+    rowClassName,
   };
 
   // Determine if children include a Content slot — if not, render default.
@@ -307,6 +316,7 @@ DataTable.Content = function DataTableContent() {
     striped,
     hoverable,
     stickyHeader,
+    rowClassName,
   } = useDataTableContext();
   const { t } = useTranslation();
 
@@ -488,6 +498,7 @@ DataTable.Content = function DataTableContent() {
                       onRowClick &&
                         "focus-visible:ring-ring cursor-pointer focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
                       isSelected && "bg-muted/30",
+                      rowClassName?.(row),
                     )}
                   >
                     {selectable && (
