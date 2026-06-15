@@ -109,54 +109,59 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
   },
   {
+    "name": "--card-accent-rail-width",
+    "value": "6px",
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+  },
+  {
     "name": "--stat-card-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--stat-card-label-font-weight",
     "value": "var(--font-weight-medium)",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--stat-card-label-letter-spacing",
     "value": "0.04em",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--stat-card-value-font-size",
     "value": "var(--font-size-2xl)",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--stat-card-value-line-height",
     "value": "1.1",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--stat-card-value-font-weight",
     "value": "var(--font-weight-semibold)",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--stat-card-hint-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--stat-card-gap",
     "value": "var(--space-stack-xs)",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--stat-card-icon-size",
     "value": "2.25rem",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--stat-card-delta-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
     "name": "--control-height-compact",
