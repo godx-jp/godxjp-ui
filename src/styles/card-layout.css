@@ -55,9 +55,9 @@
     --card-space-body-y: var(--space-5);
   }
 
-  /* ── Accent edge — 3px semantic left stripe, content kept on the shell ─ */
+  /* ── Accent edge — semantic left stripe (token width), content on shell ─ */
   [data-slot="card"][data-accent] {
-    border-inline-start-width: 3px;
+    border-inline-start-width: var(--card-accent-rail-width);
   }
 
   [data-slot="card"][data-accent="primary"] {
@@ -87,7 +87,9 @@
   [data-slot="card"][data-accent] > [data-slot="card-header"],
   [data-slot="card"][data-accent] > [data-slot="card-content"]:not([data-flush]),
   [data-slot="card"][data-accent] > [data-slot="card-footer"]:not([data-flush]) {
-    padding-inline-start: calc(var(--card-space-inset) - 3px);
+    padding-inline-start: calc(
+      var(--card-space-inset) - var(--card-accent-rail-width)
+    );
   }
 
   /* ── Header ──────────────────────────────────────────────────────────── */

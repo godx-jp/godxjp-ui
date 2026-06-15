@@ -20,6 +20,11 @@
    * --card-header-background-alpha: 0 for a quiet borderless-band header. */
   --card-header-border-bottom: 1px solid hsl(var(--card-border));
   --card-radius: var(--radius);
+  /* Accent edge — width of the semantic leading-edge stripe (data-accent).
+   * Tokenised (rule #44) so a service theme can re-tune it without forking CSS.
+   * The slot padding compensation in card-layout.css subtracts the same token,
+   * so content stays aligned on the shell whatever the rail width. */
+  --card-accent-rail-width: 6px;
   --stat-card-label-font-size: var(--font-size-xs);
   --stat-card-label-font-weight: var(--font-weight-medium);
   --stat-card-label-letter-spacing: 0.04em;

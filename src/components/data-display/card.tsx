@@ -4,7 +4,8 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 type CardSize = "md" | "compact";
-/** Semantic 3px leading-edge accent stripe (border-inline-start). */
+/** Semantic leading-edge accent stripe (border-inline-start; width via the
+ *  --card-accent-rail-width token, default 6px). */
 type CardAccent = "primary" | "success" | "warning" | "info" | "attention" | "destructive";
 /** Surface fill — plain card, muted band, borderless outline, or emphasized featured ring. */
 type CardVariant = "default" | "muted" | "outline" | "featured";
