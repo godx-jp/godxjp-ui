@@ -1,0 +1,37 @@
+/* Chart layout — the accessible figure chrome for `@godxjp/ui/charts`.
+ * Colours come from the foundation `--chart-1..6` + semantic tokens; recharts
+ * draws the SVG itself. Logical properties only (RTL-safe). */
+
+.ui-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+  margin: 0;
+  inline-size: 100%;
+}
+
+.ui-chart-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: hsl(var(--foreground));
+}
+
+.ui-chart-canvas {
+  inline-size: 100%;
+}
+
+/* recharts legend/axis text inherits the design typography + muted tone. */
+.ui-chart .recharts-text,
+.ui-chart .recharts-legend-item-text {
+  font-size: var(--font-size-xs);
+  fill: hsl(var(--muted-foreground));
+  color: hsl(var(--muted-foreground));
+}
+
+.ui-chart .recharts-default-tooltip {
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border)) !important;
+  background: hsl(var(--popover)) !important;
+  color: hsl(var(--popover-foreground));
+  font-size: var(--font-size-xs);
+}

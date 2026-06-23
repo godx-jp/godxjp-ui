@@ -47,6 +47,14 @@ export type {
   DataTableProp,
 } from "./data-display.prop";
 export type {
+  ChartDatum,
+  ChartSeriesProp,
+  LineChartProp,
+  BarChartProp,
+  AreaChartProp,
+  PieChartProp,
+} from "./charts.prop";
+export type {
   AlertQueryErrorProp,
   AlertProp,
   AlertTitleProp,

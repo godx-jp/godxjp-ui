@@ -7595,6 +7595,426 @@ export function NotifyRow() {
     storyPath: "data-entry/Field.stories.tsx",
     rules: [23],
   },
+  // ─── charts (tree-shaken `@godxjp/ui/charts`; needs the `recharts` optional peer) ───
+  {
+    name: "LineChart",
+    group: "data-display",
+    importPath: "@godxjp/ui/charts",
+    tagline:
+      "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in.",
+    props: [
+      {
+        name: "data",
+        type: "ChartDatum[]",
+        required: true,
+        description: "Row data: one category per row with a numeric value per series.",
+      },
+      {
+        name: "series",
+        type: "ChartSeriesProp[]",
+        required: true,
+        description:
+          "Plotted series: { dataKey, label?, color? }. Colour defaults to the --chart-1..6 palette.",
+      },
+      {
+        name: "categoryKey",
+        type: "string",
+        required: true,
+        description: "Key into each datum holding the x-axis category label.",
+      },
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Accessible name + visible caption (role=img needs a name).",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Extra context appended to the screen-reader description.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Canvas height preset. Ignored when `height` is set.",
+      },
+      {
+        name: "height",
+        type: "number",
+        description: "Explicit canvas height in px (overrides `size`).",
+      },
+      {
+        name: "showLegend",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Show the series legend.",
+      },
+      {
+        name: "showGrid",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Show the cartesian background grid.",
+      },
+      {
+        name: "numberFormat",
+        type: "Intl.NumberFormatOptions",
+        description: "Locale-aware formatting for axis ticks + tooltip values.",
+      },
+      {
+        name: "curved",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Render smooth (monotone) lines instead of straight segments.",
+      },
+      {
+        name: "emptyMessage",
+        type: "string",
+        description: "Message shown when `data` is empty (defaults to a localized 'no data').",
+      },
+    ],
+    usage: [
+      'DO import from the tree-shaken charts entry: `import { LineChart } from "@godxjp/ui/charts";`. Importing any other subpath never pulls in recharts.',
+      "DO install the `recharts` optional peer dependency in the consuming app — charts are the only part of @godxjp/ui that needs it, so apps without charts never pay for it.",
+      "DO pass an i18n'd `label` — it is both the visible caption and the accessible name; the component also emits a screen-reader list of the plotted values (WCAG 1.1.1).",
+      "DO pre-translate each series' `label`; pass `numberFormat` (e.g. { style: 'currency', currency: 'JPY' }) and the axis/tooltip numbers localize automatically via Intl.",
+      "DON'T hand-roll an SVG/canvas chart or drop raw recharts into a page — LineChart owns the colour tokens, locale formatting, empty state, and accessibility wiring.",
+    ],
+    useCases: [
+      "Revenue / KPI trend over months in a dashboard.",
+      "Multi-series comparison (e.g. plan vs actual) across a time axis.",
+      "Any continuous metric where the shape of the trend is the message.",
+    ],
+    related: [
+      "AreaChart — use when the filled magnitude under the line matters (cumulative/stacked volume).",
+      "BarChart — use for discrete category comparison rather than a continuous trend.",
+      "DataTable — use when exact per-row figures matter more than the trend shape.",
+    ],
+    example: `import { LineChart } from "@godxjp/ui/charts";
+
+<LineChart
+  label={t("dashboard.revenueTrend")}
+  data={data}
+  categoryKey="month"
+  series={[
+    { dataKey: "plan", label: t("metric.plan") },
+    { dataKey: "actual", label: t("metric.actual") },
+  ]}
+  numberFormat={{ style: "currency", currency: "JPY" }}
+/>`,
+    storyPath: "charts/LineChart.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "BarChart",
+    group: "data-display",
+    importPath: "@godxjp/ui/charts",
+    tagline:
+      "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative.",
+    props: [
+      {
+        name: "data",
+        type: "ChartDatum[]",
+        required: true,
+        description: "Row data: one category per row with a numeric value per series.",
+      },
+      {
+        name: "series",
+        type: "ChartSeriesProp[]",
+        required: true,
+        description: "Plotted series: { dataKey, label?, color? }.",
+      },
+      {
+        name: "categoryKey",
+        type: "string",
+        required: true,
+        description: "Key into each datum holding the category label.",
+      },
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Accessible name + visible caption.",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Extra context appended to the screen-reader description.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Canvas height preset. Ignored when `height` is set.",
+      },
+      {
+        name: "height",
+        type: "number",
+        description: "Explicit canvas height in px (overrides `size`).",
+      },
+      {
+        name: "showLegend",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Show the series legend.",
+      },
+      {
+        name: "showGrid",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Show the cartesian background grid.",
+      },
+      {
+        name: "numberFormat",
+        type: "Intl.NumberFormatOptions",
+        description: "Locale-aware formatting for ticks + tooltip values.",
+      },
+      {
+        name: "stacked",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Stack series into one bar instead of grouping side by side.",
+      },
+      {
+        name: "horizontal",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Lay bars out horizontally (category on the y-axis).",
+      },
+      { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
+    ],
+    usage: [
+      'DO import from the charts entry: `import { BarChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
+      "DO use `horizontal` when category labels are long (they read better on the y-axis).",
+      "DO use `stacked` for part-to-whole-per-category; keep grouped (default) for direct side-by-side comparison.",
+      "DON'T use BarChart for a single part-to-whole total — that is PieChart. DON'T fake bars with styled divs.",
+    ],
+    useCases: [
+      "Sales by region / category comparison.",
+      "Stacked composition per period (e.g. expense breakdown by month).",
+      "Ranking with long labels (horizontal).",
+    ],
+    related: [
+      "LineChart — continuous trend rather than discrete comparison.",
+      "PieChart — single part-to-whole composition.",
+      "DataTable — exact tabular figures.",
+    ],
+    example: `import { BarChart } from "@godxjp/ui/charts";
+
+<BarChart
+  label={t("report.salesByRegion")}
+  data={data}
+  categoryKey="region"
+  series={[{ dataKey: "sales", label: t("metric.sales") }]}
+  numberFormat={{ notation: "compact" }}
+/>`,
+    storyPath: "charts/BarChart.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "AreaChart",
+    group: "data-display",
+    importPath: "@godxjp/ui/charts",
+    tagline:
+      "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative.",
+    props: [
+      {
+        name: "data",
+        type: "ChartDatum[]",
+        required: true,
+        description: "Row data: one category per row with a numeric value per series.",
+      },
+      {
+        name: "series",
+        type: "ChartSeriesProp[]",
+        required: true,
+        description: "Plotted series: { dataKey, label?, color? }.",
+      },
+      {
+        name: "categoryKey",
+        type: "string",
+        required: true,
+        description: "Key into each datum holding the x-axis category label.",
+      },
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Accessible name + visible caption.",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Extra context appended to the screen-reader description.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Canvas height preset. Ignored when `height` is set.",
+      },
+      {
+        name: "height",
+        type: "number",
+        description: "Explicit canvas height in px (overrides `size`).",
+      },
+      {
+        name: "showLegend",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Show the series legend.",
+      },
+      {
+        name: "showGrid",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Show the cartesian background grid.",
+      },
+      {
+        name: "numberFormat",
+        type: "Intl.NumberFormatOptions",
+        description: "Locale-aware formatting for ticks + tooltip values.",
+      },
+      {
+        name: "stacked",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Stack series areas instead of overlaying them.",
+      },
+      {
+        name: "curved",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Render smooth (monotone) areas instead of straight segments.",
+      },
+      { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
+    ],
+    usage: [
+      'DO import from the charts entry: `import { AreaChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
+      "DO use `stacked` to show how parts accumulate into a total over time.",
+      "DON'T overlay more than 2-3 unstacked areas — fill opacity makes dense overlays unreadable; switch to LineChart.",
+    ],
+    useCases: [
+      "Cumulative volume over time (e.g. total transactions per day).",
+      "Stacked composition trend (traffic sources, revenue streams).",
+    ],
+    related: [
+      "LineChart — when only the trend line matters, not the filled magnitude.",
+      "BarChart — discrete category comparison.",
+    ],
+    example: `import { AreaChart } from "@godxjp/ui/charts";
+
+<AreaChart
+  label={t("dashboard.trafficByChannel")}
+  data={data}
+  categoryKey="day"
+  series={[
+    { dataKey: "organic", label: t("channel.organic") },
+    { dataKey: "paid", label: t("channel.paid") },
+  ]}
+  stacked
+/>`,
+    storyPath: "charts/AreaChart.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "PieChart",
+    group: "data-display",
+    importPath: "@godxjp/ui/charts",
+    tagline:
+      "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice.",
+    props: [
+      {
+        name: "data",
+        type: "ChartDatum[]",
+        required: true,
+        description: "Row data: one slice per row.",
+      },
+      {
+        name: "dataKey",
+        type: "string",
+        required: true,
+        description: "Key into each datum holding the slice's numeric value.",
+      },
+      {
+        name: "nameKey",
+        type: "string",
+        required: true,
+        description: "Key into each datum holding the slice's category label.",
+      },
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Accessible name + visible caption.",
+      },
+      {
+        name: "colors",
+        type: "string[]",
+        description: "Per-slice colours by index (defaults to the --chart-1..6 palette).",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Extra context appended to the screen-reader description.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Canvas height preset. Ignored when `height` is set.",
+      },
+      {
+        name: "height",
+        type: "number",
+        description: "Explicit canvas height in px (overrides `size`).",
+      },
+      {
+        name: "showLegend",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Show the slice legend.",
+      },
+      {
+        name: "numberFormat",
+        type: "Intl.NumberFormatOptions",
+        description: "Locale-aware formatting for tooltip values.",
+      },
+      {
+        name: "donut",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Render a donut (hollow centre) instead of a full pie.",
+      },
+      { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
+    ],
+    usage: [
+      'DO import from the charts entry: `import { PieChart } from "@godxjp/ui/charts";` (recharts optional peer required).',
+      "DO keep slices few (≈2–6) — pies are unreadable past a handful; use BarChart for many categories.",
+      "DO pass `numberFormat` (e.g. percent or currency) so tooltip values localize.",
+      "DON'T use a pie for trends over time (LineChart/AreaChart) or precise comparison (BarChart).",
+    ],
+    useCases: [
+      "Budget / expense split across a few categories.",
+      "Market or status share (e.g. paid vs overdue vs draft).",
+    ],
+    related: [
+      "BarChart — when there are many categories or precise comparison matters.",
+      "Progress — single ratio against a target rather than a multi-slice split.",
+    ],
+    example: `import { PieChart } from "@godxjp/ui/charts";
+
+<PieChart
+  label={t("dashboard.expenseSplit")}
+  data={data}
+  dataKey="amount"
+  nameKey="category"
+  numberFormat={{ style: "currency", currency: "JPY" }}
+  donut
+/>`,
+    storyPath: "charts/PieChart.stories.tsx",
+    rules: [],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {

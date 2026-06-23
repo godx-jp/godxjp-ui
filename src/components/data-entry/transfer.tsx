@@ -95,7 +95,7 @@ function TransferPanel({
         </div>
       )}
       <ScrollArea className="flex-1">
-        <ul className="p-1" role="group" aria-labelledby={titleId}>
+        <ul className="p-1" aria-labelledby={titleId}>
           {filtered.length === 0 ? (
             <li className="text-muted-foreground py-8 text-center text-sm">{emptyText}</li>
           ) : (

@@ -28,6 +28,7 @@ const MCP_DATA = join(ROOT, "mcp/src/data/components.ts");
 const ALLOWLIST = new Set([
   // Add a name here only with a one-line justification if it is intentionally uncatalogued.
   "SearchSelect", // internal search engine of <Select> (showSearch/loadOptions); not a public component.
+  "ChartFrame", // internal a11y/i18n chrome shared by the chart wrappers; not rendered directly.
 ]);
 
 // The internal styling-primitive layer is never catalogued directly (the public
