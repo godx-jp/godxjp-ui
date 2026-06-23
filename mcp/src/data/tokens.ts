@@ -20,7 +20,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--chart-1..6",
     category: "primitive",
     tier: "primitive",
-    role: "Neutral decorative chart primitives; @theme chart colors reference these tokens.",
+    role: "Neutral decorative chart series palette. The @godxjp/ui/charts components (LineChart/BarChart/AreaChart/PieChart) read these by series index automatically — a service rethemes every chart at once by overriding --chart-1..6; per-series/per-slice overrides go through the component's series.color / colors props.",
   },
   { name: "--space-0..12", category: "primitive", tier: "primitive", role: "Raw spacing scale." },
   {

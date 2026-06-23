@@ -1165,6 +1165,7 @@ import { Trash2 } from "lucide-react";
       "Table — raw primitive (TableHeader/TableBody/TableRow/TableCell). Use DataTable instead; only reach for Table directly when you need a non-standard layout that DataTable cannot express.",
       "SkeletonTable — standalone skeleton placeholder rendered before any DataTable mounts (e.g. in a Suspense fallback or deferred-prop skeleton slot). DataTable.loading covers in-table loading; SkeletonTable covers pre-mount skeletons.",
       "EmptyState — standalone empty state for non-table lists. DataTable already embeds EmptyState in its body; only use bare EmptyState for card content, non-tabular lists, or zero-state pages outside a DataTable.",
+      "LineChart / BarChart / AreaChart / PieChart (@godxjp/ui/charts) — when the SHAPE or trend of aggregated data matters more than exact per-row figures, visualize it with a chart instead of (or alongside) the table; keep DataTable when users need to read, sort, or act on individual rows.",
       "DataState / InfiniteQueryState — TanStack Query lifecycle widgets from @godxjp/ui/query. Prefer these over DataTable when your list is driven by useQuery/useInfiniteQuery and you want automatic skeleton/empty/error handling at the query level rather than at the table level.",
     ],
     example: `import { useState } from "react";
@@ -1521,6 +1522,7 @@ export function Grid({ rows }: { rows: Row[] }) {
       "SkeletonStat — exact loading placeholder shaped like a StatCard tile; swap in while KPI data is fetching, then replace with the real StatCard.",
       "Descriptions — use instead when displaying multiple label/value metadata pairs on a detail page (not headline KPIs); Descriptions is not card-bordered and does not show delta/hint slots.",
       "Card + CardContent — use when you need a general-purpose content container with a header, footer, or arbitrary body; do NOT wrap StatCard inside these.",
+      "LineChart / BarChart / PieChart (@godxjp/ui/charts) — when the trend or composition BEHIND a KPI matters, pair the StatCard headline number with a chart in the same dashboard grid: StatCard states the figure, the chart shows its shape over time or its breakdown.",
     ],
     example: `import { StatCard } from "@godxjp/ui/data-display";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
@@ -1742,6 +1744,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "Steps — use Steps for a discrete, named sequence of phases (onboarding wizard, checkout flow) where each step has a label and a clear current/done/pending state; use Progress for a continuous 0–100 fill.",
       'Badge / Badge — use Badge or Badge to communicate a categorical status label (e.g. "Paid", "Overdue") without a fill metaphor; use Progress when the numeric proportion itself is the information.',
       "StatCard — use StatCard to headline a single KPI metric with a title; compose Progress inside or alongside StatCard when a visual fill adds meaning to the number.",
+      "BarChart / PieChart / LineChart (@godxjp/ui/charts) — Progress shows ONE ratio against a target; the moment you have several series, categories, or a part-to-whole split (or a value changing over time), move up to a chart instead of stacking many Progress bars.",
     ],
     example: `import { Progress } from "@godxjp/ui/data-display";
 
@@ -7601,7 +7604,7 @@ export function NotifyRow() {
     group: "data-display",
     importPath: "@godxjp/ui/charts",
     tagline:
-      "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in.",
+      "Trends over an ordered category axis — one or more series, locale-formatted ticks/tooltips, screen-reader text alternative built in. Data-visualization graph / plot.",
     props: [
       {
         name: "data",
@@ -7710,7 +7713,7 @@ export function NotifyRow() {
     group: "data-display",
     importPath: "@godxjp/ui/charts",
     tagline:
-      "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative.",
+      "Compare a value across categories — grouped or `stacked`, vertical or `horizontal`, with localized ticks/tooltips and a built-in text alternative. Data-visualization graph / plot / diagram.",
     props: [
       {
         name: "data",
@@ -7816,7 +7819,7 @@ export function NotifyRow() {
     group: "data-display",
     importPath: "@godxjp/ui/charts",
     tagline:
-      "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative.",
+      "Magnitude over an ordered category axis — overlay or `stacked` areas, optional `curved` smoothing, localized formatting + text alternative. Data-visualization graph / plot.",
     props: [
       {
         name: "data",
@@ -7922,7 +7925,7 @@ export function NotifyRow() {
     group: "data-display",
     importPath: "@godxjp/ui/charts",
     tagline:
-      "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice.",
+      "Part-to-whole composition across a small set of slices — `donut` option, localized tooltips, and a screen-reader breakdown of every slice. Data-visualization graph / diagram.",
     props: [
       {
         name: "data",
