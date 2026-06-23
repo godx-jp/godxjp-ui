@@ -51,6 +51,10 @@
       "types": "./dist/components/data-grid/index.d.ts",
       "import": "./dist/components/data-grid/index.js"
     },
+    "./charts": {
+      "types": "./dist/components/charts/index.d.ts",
+      "import": "./dist/components/charts/index.js"
+    },
     "./ui": {
       "types": "./dist/components/ui/index.d.ts",
       "import": "./dist/components/ui/index.js"
@@ -293,10 +297,14 @@
     "react-hook-form": "^7.76.0",
     "react-router-dom": ">=7.0.0",
     "tailwindcss": ">=4.0.0",
-    "zod": "^4.4.0"
+    "zod": "^4.4.0",
+    "recharts": "^2.13.0 || ^3.0.0"
   },
   "peerDependenciesMeta": {
     "@tanstack/react-table": {
+      "optional": true
+    },
+    "recharts": {
       "optional": true
     }
   },
@@ -368,6 +376,7 @@
     "react-dom": "^19.2.6",
     "react-hook-form": "^7.76.0",
     "react-router-dom": "^7.15.0",
+    "recharts": "^3.8.1",
     "tailwindcss": "^4.2.4",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",

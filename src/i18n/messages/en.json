@@ -275,5 +275,10 @@
   },
   "query": {
     "loadMore": "Load more"
+  },
+  "chart": {
+    "empty": "No data to display",
+    "summaryCartesian": "Chart with {series} series across {points} data points",
+    "summaryPie": "Pie chart with {slices} slices"
   }
 }
