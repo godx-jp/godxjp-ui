@@ -1,0 +1,51 @@
+name: Publish to npm
+
+# Manual, credential-safe release. Reuses scripts/release.mjs (the single source of
+# truth) so @godxjp/ui and its pinned @godxjp/ui-mcp publish in lockstep.
+#
+# One-time setup: add a repo secret NPM_TOKEN (an npm "Automation" access token with
+# publish rights to the @godxjp scope). Then run this workflow from the Actions tab.
+on:
+  workflow_dispatch:
+    inputs:
+      ui:
+        description: "@godxjp/ui version bump"
+        type: choice
+        default: minor
+        options: [patch, minor, major, skip]
+      mcp:
+        description: "@godxjp/ui-mcp (sync = adopt the ui version)"
+        type: choice
+        default: sync
+        options: [sync, skip]
+
+permissions:
+  contents: write # push the chore(release) commit back to main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org # writes ~/.npmrc using NODE_AUTH_TOKEN
+      - run: pnpm install --frozen-lockfile
+
+      - name: Configure git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Release (verify → version → publish → commit)
+        run: node scripts/release.mjs --ui "${{ inputs.ui }}" --mcp "${{ inputs.mcp }}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Push release commit
+        run: git push origin HEAD:main
