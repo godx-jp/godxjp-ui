@@ -131,6 +131,22 @@ be a centered question, step 2 a side-by-side comparison, step 3
 a multi-field form, step 4 a single yes/no card. Same palette +
 type system for coherence; different composition for engagement.`,
   },
+  {
+    category: "layout",
+    name: "Stacked notification banner (misplaced alert controls)",
+    body: `A notification / "enable X" bar where the pieces are stacked
+VERTICALLY and mis-placed: the icon floats centered ABOVE the text
+(often a SECOND redundant icon on the far left too), the primary
+action is a FULL-WIDTH colored bar UNDER the text, and the dismiss ×
+sits centered at the BOTTOM on its own line. It's a hand-rolled
+banner that ignores the framework's Alert anatomy.`,
+    fix: `Use <Alert> and respect its fixed anatomy — ONE leading tone icon
+at the inline-start (top-aligned, auto by \`tone\`, never two), the
+text body, an <Alert.Actions> with a NORMAL-WIDTH Button in the
+trailing-right column, and \`onDismiss\` to render the × in the
+TOP-RIGHT corner. It is ONE horizontal row, never a vertical stack;
+never hand-roll the ✕ or a full-bleed action bar.`,
+  },
 
   // ── copy ───────────────────────────────────────────────────────
   {
