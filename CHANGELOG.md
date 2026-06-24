@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Runtime VISUAL audit (`scripts/visual-audit.mjs`) — Playwright + axe-core over the running app.**
+  The counterpart to the static source audit: drives a real browser and catches what regex can't —
+  axe-core WCAG/ARIA violations (incl. colour contrast), target size < 24×24 (WCAG 2.5.8), the OKLCH
+  chroma of a rendered accent (dxs-kintai 渋み ≤ 0.18), emoji that reached the DOM (Unicode UTS #51),
+  and a mis-laid-out notification banner (Alert anatomy). Warnings by default; `--strict` for a CI
+  gate. `playwright` + `@axe-core/playwright` are OPTIONAL peer deps (the static audit and the library
+  stay browser-free). Decision logic is a pure, unit-tested module (`scripts/visual-audit-rules.mjs`).
+  Surfaced by the new MCP **`list_visual_checks`** tool (kept separate from the static
+  `list_audit_rules` so neither tool — nor the dependency footprint — gets heavy).
 - **Local UI-audit now enforces international a11y/i18n/RTL standards (warnings, non-blocking).**
   `scripts/ui-audit.mjs` gained 10 standards-cited rules so a consumer agent can self-correct
   BEFORE a visual review: `no-emoji-in-ui` / `no-emoji-flag` (Unicode UTS #51, ISO 3166-1,

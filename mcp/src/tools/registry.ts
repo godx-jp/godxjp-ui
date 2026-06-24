@@ -36,12 +36,12 @@ import {
   checksByCategory,
   type AuditCheck,
 } from "../data/redesign-audit.js";
+import { AUDIT_COMMAND, auditRulesByCategory, type AuditRule } from "../data/audit-rules.js";
 import {
-  AUDIT_RULES,
-  AUDIT_COMMAND,
-  auditRulesByCategory,
-  type AuditRule,
-} from "../data/audit-rules.js";
+  VISUAL_AUDIT_COMMAND,
+  visualRulesByCategory,
+  type VisualRule,
+} from "../data/visual-rules.js";
 
 export const TOOL_DEFINITIONS = [
   // ── DISCOVERY (small responses) ────────────────────────────────
@@ -131,6 +131,18 @@ export const TOOL_DEFINITIONS = [
           type: "string",
           enum: ["tokens", "composition", "api", "a11y", "i18n", "rtl", "copy"],
         },
+      },
+    },
+  },
+
+  {
+    name: "list_visual_checks",
+    description:
+      "List the RUNTIME visual-audit checks (scripts/visual-audit.mjs — Playwright + axe-core) to run against the RUNNING app BEFORE a visual review. Catches what source/static checks can't: colour contrast + ARIA (axe), target size (WCAG 2.5.8), OKLCH chroma of rendered accents (渋み), emoji that reached the DOM, and a mis-laid-out notification banner. Separate from list_audit_rules (static, zero-dep) because it needs a browser. ~2KB.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        category: { type: "string", enum: ["a11y", "color", "i18n", "layout"] },
       },
     },
   },
@@ -349,6 +361,8 @@ export async function dispatchTool(name: string, args: Record<string, unknown>):
       return listRedesignChecks(args.category as AuditCheck["category"] | undefined);
     case "list_audit_rules":
       return listAuditRules(args.category as AuditRule["category"] | undefined);
+    case "list_visual_checks":
+      return listVisualChecks(args.category as VisualRule["category"] | undefined);
     case "get_anti_ai_tell":
       return getAntiAiTell(String(args.name ?? ""));
     case "get_redesign_check":
@@ -512,6 +526,18 @@ function listPatterns(): string {
   let out = `# Canonical patterns (${PATTERNS.length})\n\n`;
   for (const p of PATTERNS) {
     out += `- **${p.name}** — ${p.tagline}  \n  _tags: ${p.tags.join(", ")}_\n`;
+  }
+  return out;
+}
+
+function listVisualChecks(cat?: VisualRule["category"]): string {
+  const list = visualRulesByCategory(cat);
+  let out = `# Runtime visual-audit checks${cat ? ` — ${cat}` : ""} (${list.length})\n\n`;
+  out += `_Run against the RUNNING app BEFORE a visual review (warnings, non-blocking). Needs a browser._\n`;
+  out += `\`\`\`\n${VISUAL_AUDIT_COMMAND}\n\`\`\`\n\n`;
+  out += `_Static \`list_audit_rules\` first (cheap, every save) → THIS (before review) → human eyes for taste._\n\n`;
+  for (const r of list) {
+    out += `- **${r.id}** (${r.severity}, ${r.category}) — _${r.standard}_\n  ${r.fix}\n`;
   }
   return out;
 }
