@@ -156,6 +156,13 @@ export const AUDIT_RULES: AuditRule[] = [
     fix: "<Card> body must be in <CardContent> (no padding otherwise); flush only for a full-bleed table.",
   },
   {
+    id: "bare-control-needs-formfield",
+    severity: "warn",
+    category: "composition",
+    standard: "WCAG 2.2 SC 1.3.1 · 3.3.2 · @godxjp/ui FormField (cardinal rule 227)",
+    fix: "Wrap a labelled control in <FormField label=…> — it owns label↔control id wiring, aria/error, AND the field rhythm; never pair a bare <Label> with an <Input>.",
+  },
+  {
     id: "manual-field-error",
     severity: "warn",
     category: "composition",
