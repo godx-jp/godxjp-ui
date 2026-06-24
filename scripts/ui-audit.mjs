@@ -17,7 +17,7 @@
  *   node packages/godx-ui/scripts/ui-audit.mjs src/ui lib/     # custom scan dirs
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { isAbsolute, join, relative } from "node:path";
 
 const CWD = process.cwd();
 const args = process.argv.slice(2);
@@ -368,6 +368,15 @@ function isSuppressed(ruleId, sameLine, prevLine) {
 }
 
 function walk(dir, acc = []) {
+  // Accept a FILE path directly (the per-file editor hook passes one), not just a directory.
+  try {
+    if (statSync(dir).isFile()) {
+      if (dir.endsWith(".tsx") || dir.endsWith(".ts")) acc.push(dir);
+      return acc;
+    }
+  } catch {
+    return acc;
+  }
   let entries;
   try {
     entries = readdirSync(dir);
@@ -402,7 +411,7 @@ const BARE_FIELD =
 
 const findings = [];
 for (const dir of SCAN_DIRS) {
-  for (const file of walk(join(CWD, dir))) {
+  for (const file of walk(isAbsolute(dir) ? dir : join(CWD, dir))) {
     const rel = relative(CWD, file);
     const content = readFileSync(file, "utf8");
     const origLines = content.split("\n");

@@ -10,7 +10,12 @@
     "scripts/ui-audit.mjs",
     "README.md",
     "scripts/visual-audit.mjs",
-    "scripts/visual-audit-rules.mjs"
+    "scripts/visual-audit-rules.mjs",
+    "scripts/audit-hook.mjs",
+    "scripts/init-agent-kit.mjs",
+    "scripts/postinstall.mjs",
+    "scripts/_agent-setup.mjs",
+    "scripts/cli.mjs"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -294,7 +299,9 @@
     "dev": "node scripts/dev.mjs",
     "prepublishOnly": "pnpm run build",
     "check:audit-sync": "node scripts/check-audit-sync.mjs",
-    "visual-audit": "node scripts/visual-audit.mjs"
+    "visual-audit": "node scripts/visual-audit.mjs",
+    "postinstall": "node scripts/postinstall.mjs",
+    "init-agent": "node scripts/init-agent-kit.mjs"
   },
   "peerDependencies": {
     "@hookform/resolvers": "^5.2.0",
@@ -410,7 +417,7 @@
     "zod": "^4.4.3"
   },
   "bin": {
-    "godxjp-ui-audit": "scripts/ui-audit.mjs"
+    "godxjp-ui": "scripts/cli.mjs"
   },
   "module": "./dist/index.js"
 }
