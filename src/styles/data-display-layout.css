@@ -426,3 +426,41 @@
 .ui-carousel[data-orientation="vertical"] .ui-carousel-next {
   bottom: var(--space-2);
 }
+
+@layer components {
+  /* ListRow — single-line entity row (leading · title/description · trailing) for short lists
+   * inside a flush CardContent. Rows separate with a quiet divider; the last row leaves the
+   * Card border to close the list. Logical properties throughout (RTL-safe). */
+  [data-slot="list-row"] {
+    display: flex;
+    align-items: center;
+    gap: var(--list-row-gap);
+    padding: var(--list-row-padding-y) var(--list-row-padding-x);
+  }
+  [data-slot="list-row"][data-align="start"] {
+    align-items: flex-start;
+  }
+  [data-slot="list-row"]:not(:last-child) {
+    border-block-end: var(--list-row-border);
+  }
+  [data-slot="list-row-leading"] {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    color: hsl(var(--muted-foreground));
+  }
+  [data-slot="list-row-body"] {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+  [data-slot="list-row-trailing"] {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-2);
+    margin-inline-start: auto;
+  }
+}

@@ -840,6 +840,13 @@ function MyShell({ children }: { content: React.ReactNode }) {
           "Corner radius from the tokens — `default` (control radius), `pill` (fully rounded, --radius-pill), `sharp` (square, --radius-sharp). Use the prop instead of a `rounded-*` className.",
       },
       {
+        name: "fullWidth",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Span the full container width (`width:100%`) instead of sizing to content. Use the prop instead of `className="w-full"` for stacked / auth-form / dialog-footer actions (rule #42).',
+      },
+      {
         name: "asChild",
         type: "boolean",
         defaultValue: "false",
@@ -1021,6 +1028,67 @@ import { Trash2 } from "lucide-react";
 
 <Heading level={2}>請求書一覧</Heading>
 <Heading level={3} tone="muted">補足セクション</Heading>`,
+  },
+  {
+    name: "Logo",
+    group: "general",
+    tagline:
+      'Product brand-mark — the lettermark (or custom SVG) in a tokenized box. Use instead of a hand-rolled `<span className="flex size-8 rounded-md bg-primary font-bold">g</span>` (typography-on-span, literal size/radius).',
+    props: [
+      {
+        name: "glyph",
+        type: "ReactNode",
+        defaultValue: '"G"',
+        description: "The mark — a short lettermark string or a custom SVG/image node.",
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          'Accessible product name. When set the mark exposes `role="img"` + `aria-label` (use when the Logo IS the accessible name, e.g. a home link). Omitted → the mark is `aria-hidden` (decorative; an adjacent wordmark names it).',
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "Square box size (24 / 28 / 32 / 40). Size comes from the prop, never a literal.",
+      },
+      {
+        name: "shape",
+        type: '"default" | "pill" | "sharp"',
+        defaultValue: '"default"',
+        description:
+          "Corner shape — `default` (--logo-radius, a service knob), `pill` (fully rounded), `sharp` (square).",
+      },
+    ],
+    usage: [
+      "DO use Logo for the product glyph in a topbar, sidebar header, or auth shell instead of hand-rolling a styled `<span>`/`<div>` with a literal size + radius + bg (cardinal rules #42/#46).",
+      "DO pass `label` when the mark is the only branding AND acts as the accessible name (e.g. wrapped in a home link); omit it when a wordmark sits beside it (then the mark is decorative `aria-hidden`).",
+      "DO retheme via tokens — brand fill follows `--primary`; a service squares/rounds the corner globally via `--logo-radius`. DON'T override size/radius with a raw className.",
+      "DON'T put body copy in Logo — it is a brand mark (bold lettermark / SVG), not a Text/Heading substitute.",
+    ],
+    useCases: [
+      'Topbar / sidebar header brand mark next to a wordmark: `<Logo /> <Text weight="bold">GoDX</Text>`.',
+      'Auth shell (sign-in card) centered product mark with an accessible name: `<Logo size="lg" label="GoDX" />`.',
+      'A home link in an app shell where the logo IS the link label: `<a href="/"><Logo label="GoDX ホーム" /></a>`.',
+    ],
+    related: [
+      "Avatar — for a USER/person image or initials; Logo is for the PRODUCT/brand mark.",
+      "Text / Heading — for the wordmark or any real copy beside the mark; Logo never holds prose.",
+    ],
+    example: `import { Logo, Text } from "@godxjp/ui/general";
+
+// Topbar lettermark + wordmark
+<span className="inline-flex items-center gap-2">
+  <Logo />
+  <Text weight="bold">GoDX</Text>
+</span>
+
+// Auth shell, the mark is the accessible name
+<Logo size="lg" label="GoDX" />`,
+    storyPath: "general/Logo.stories.tsx",
+    rules: [42, 46],
   },
 
   // ─── data-display ───────────────────────────────────────────────────────
@@ -1608,6 +1676,90 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
 <Badge status="プレミアム" tone="success" icon={null}>プレミアム</Badge>`,
     storyPath: "data-display/Badge.stories.tsx",
     rules: [35],
+  },
+  {
+    name: "ListRow",
+    group: "data-display",
+    tagline:
+      "Single-line entity row (leading · title/description · trailing action) for SHORT lists inside a Card — sessions, API tokens, linked accounts, passkeys, MFA factors, invitations.",
+    props: [
+      {
+        name: "title",
+        type: "ReactNode",
+        required: true,
+        description: "Primary line — rendered in medium weight; truncates to one line.",
+      },
+      {
+        name: "description",
+        type: "ReactNode",
+        description: "Secondary line under the title (muted, xs); truncates to one line.",
+      },
+      {
+        name: "leading",
+        type: "ReactNode",
+        description:
+          "Leading slot — a decorative icon or an Avatar. Mark a purely decorative icon `aria-hidden`.",
+      },
+      {
+        name: "trailing",
+        type: "ReactNode",
+        description:
+          "Trailing slot — the row action(s): a Button / DropdownMenu trigger, a Badge, or a Switch.",
+      },
+      {
+        name: "align",
+        type: '"center" | "start"',
+        defaultValue: '"center"',
+        description: "Cross-axis alignment of the columns; `start` for multi-line content.",
+      },
+      {
+        name: "as",
+        type: '"div" | "li"',
+        defaultValue: '"div"',
+        description: "Render element — `li` when the parent is a semantic `<ul>`/`<ol>`.",
+      },
+    ],
+    usage: [
+      "DO use ListRow for a SHORT (≈2–8 item) list of entities inside a Card where each row is one line with an action — account sessions, API keys, linked identities, passkeys. Stack rows in a `<Card><CardContent flush>` so the rows draw their own quiet dividers edge-to-edge.",
+      "DON'T reach for DataTable here — it carries sorting/selection/pagination chrome that a 3-item list doesn't need. DON'T nest a Card per row either (card-in-card). ListRow is the in-between surface.",
+      'DON\'T hand-roll `<div className="flex items-center justify-between border-b py-3">` — that is exactly the repeated pattern ListRow replaces (border/radius/padding are tokenized via `--list-row-*`).',
+      'DO put the row\'s action in `trailing` (a `ghost`/`outline` Button, a DropdownMenu trigger, a Switch, or a status Badge). DO pass `as="li"` when the rows live inside a semantic `<ul>`.',
+    ],
+    useCases: [
+      "Account security page — a list of active sessions (device + last-seen as title/description, a destructive 'Revoke' Button in trailing).",
+      "Developer settings — API tokens or passkeys, each row showing the name + created date and a DropdownMenu of actions.",
+      "Linked accounts / SSO — an IdP icon in leading, the provider name + connected email, and a Switch or 'Disconnect' Button trailing.",
+    ],
+    related: [
+      "DataTable — use instead when the list is long or needs sorting/selection/pagination; ListRow is for short, chrome-light lists.",
+      "Card — ListRow is designed to live inside `<CardContent flush>`; the Card supplies the outer surface and the closing border.",
+      "Descriptions — for a key/value metadata grid on a detail page (no per-row action); ListRow is for actionable entity rows.",
+    ],
+    example: `import { Card, CardContent, CardHeader, CardTitle, ListRow, Badge } from "@godxjp/ui/data-display";
+import { Button } from "@godxjp/ui/general";
+import { Smartphone } from "lucide-react";
+
+<Card>
+  <CardHeader>
+    <CardTitle>アクティブなセッション</CardTitle>
+  </CardHeader>
+  <CardContent flush>
+    <ListRow
+      leading={<Smartphone aria-hidden="true" className="size-4" />}
+      title="iPhone 15 · Tokyo"
+      description="最終アクセス 2分前"
+      trailing={<Badge status="active" />}
+    />
+    <ListRow
+      leading={<Smartphone aria-hidden="true" className="size-4" />}
+      title="MacBook Pro · Osaka"
+      description="最終アクセス 3日前"
+      trailing={<Button size="xs" variant="outline">ログアウト</Button>}
+    />
+  </CardContent>
+</Card>`,
+    storyPath: "data-display/ListRow.stories.tsx",
+    rules: [42, 44],
   },
   {
     name: "Descriptions",

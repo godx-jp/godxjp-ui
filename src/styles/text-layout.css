@@ -98,6 +98,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    /* min-width:0 lets a truncating Text shrink inside a flex row WITHOUT the consumer
+     * having to add `min-w-0` — the documented flex-truncate idiom (issue #114). */
+    min-width: 0;
   }
   [data-slot="text"][data-tabular] {
     font-variant-numeric: tabular-nums;

@@ -8,6 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Logo` — product brand-mark primitive** (#116). Renders the lettermark (or a custom SVG via
+  `glyph`) in a tokenized box: brand fill from `--primary`, corner from the `--logo-radius` knob,
+  box from the `size` prop (xs/sm/md/lg). Replaces the hand-rolled
+  `<span className="flex size-8 rounded-md bg-primary font-bold">g</span>` repeated across the auth
+  shell and all three topbars (typography-on-span + literal size/radius — cardinal rules #42/#46).
+  `label` makes it an accessible `role="img"`; without it the mark is `aria-hidden` (decorative).
+- **`ListRow` — single-line entity-row surface for short lists inside a Card** (#113). Leading
+  (icon/Avatar) · title/description · trailing action, with tokenized border/radius/padding
+  (`--list-row-*`) and a quiet auto divider between stacked rows (last row leaves the Card border).
+  Replaces the `flex items-center justify-between border-b py-3` hand-roll repeated across account
+  pages (sessions / API tokens / linked accounts / passkeys / MFA / invitations) — DataTable is too
+  heavy for a 2–8 item list and a Card-per-row would be card-in-card. Use in `<CardContent flush>`.
+- **Motion token tier** (#112) — `--duration-{fast,base,slow}` (150/250/500ms),
+  `--ease-{standard,emphasized,decelerate,accelerate}`, and `--reveal-distance` (10px) in the
+  foundation tier, so enter/transition animations read a token instead of a hard-coded `0.5s` /
+  `cubic-bezier(0.32,0.72,0,1)` / `translateY(10px)` (cardinal rule #2 — tokens, not literals).
+  A service retunes motion globally by overriding these; consumers honour `prefers-reduced-motion`
+  at the call site.
+- **`Button` `fullWidth` prop** (#111) — spans the container (`width:100%`) instead of sizing to
+  content, so stacked auth / dialog-footer actions use the prop form instead of `className="w-full"`
+  (cardinal rule #42: props before utilities). Sets `data-full-width` for styling hooks.
 - **Agent forcing-kit — the godxjp-ui workflow is now enforced by the harness, not the agent's goodwill.**
   Installing `@godxjp/ui` auto-registers the `godx-ui` MCP in the consumer's `.mcp.json`
   (`scripts/postinstall.mjs`, non-destructive, skipped in CI / the library's own repo). `npx
@@ -50,6 +71,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Text`/`Heading` `truncate` now ellipsises inside a flex row without the consumer adding
+  `min-w-0`** (#114) — the truncate rule was missing `min-width: 0`, so a `<Text truncate>` flex
+  child still pushed past its track. The documented flex-truncate idiom now works from the prop alone.
 - **FormField collapsed to its content width inside a flex column (short inputs).**
   `.ui-form-field` carried `align-self: start` (to keep fields top-aligned across a
   `ResponsiveGrid` row) but no explicit inline size. In a grid parent that only affects the

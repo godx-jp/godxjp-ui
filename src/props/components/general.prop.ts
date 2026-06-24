@@ -64,6 +64,11 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: ButtonSizeProp;
   /** Corner shape — `default` (control radius) · `pill` (fully rounded) · `sharp` (square). */
   shape?: ShapeProp;
+  /**
+   * Span the full width of the container (`width:100%`) instead of sizing to content —
+   * the prop form of `className="w-full"` for stacked/auth/dialog-footer actions (rule #42).
+   */
+  fullWidth?: boolean;
   asChild?: AsChildProp;
   onClick?: OnClickProp;
   disabled?: DisabledProp;

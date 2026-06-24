@@ -1,0 +1,9 @@
+/* ListRow component tokens — a single-line entity row for short lists inside a Card
+ * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent;
+ * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border). */
+:root {
+  --list-row-padding-y: var(--space-3);
+  --list-row-padding-x: var(--space-4);
+  --list-row-gap: var(--space-3);
+  --list-row-border: 1px solid hsl(var(--border));
+}

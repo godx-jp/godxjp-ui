@@ -60,6 +60,17 @@ describe("Button", () => {
     expect(btn).toHaveClass("aria-invalid:border-destructive");
   });
 
+  it("fullWidth adds w-full + data-full-width; absent by default", () => {
+    const { rerender } = renderWithUi(<Button fullWidth>Wide</Button>);
+    const wide = screen.getByRole("button", { name: "Wide" });
+    expect(wide).toHaveAttribute("data-full-width", "");
+    expect(wide).toHaveClass("w-full");
+    rerender(<Button>Auto</Button>);
+    const auto = screen.getByRole("button", { name: "Auto" });
+    expect(auto).not.toHaveAttribute("data-full-width");
+    expect(auto).not.toHaveClass("w-full");
+  });
+
   it("default size applies ui-button size token binding", () => {
     renderWithUi(<Button>Density</Button>);
     expect(screen.getByRole("button", { name: "Density" })).toHaveClass("ui-button--default-size");
