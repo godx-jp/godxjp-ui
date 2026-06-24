@@ -1,6 +1,11 @@
-/* Logo (brand mark) component tokens. The corner radius is a knob (#45) so a service can
- * match its own grid (squarer / fully-rounded) without forking the mark; size comes from the
- * `size` prop, brand fill from --primary. Default = the control radius. */
+/* Logo (brand mark) component tokens. Box size and corner radius are knobs (#45) so a service can
+ * match its own grid without forking the mark; brand fill follows --primary. The `size` prop picks
+ * the step; a service retunes the steps globally here. (Not a --control-height tier — the mark is
+ * decorative, not a density-aware interactive control.) */
 :root {
+  --logo-size: 2rem; /* md */
+  --logo-size-xs: 1.5rem;
+  --logo-size-sm: 1.75rem;
+  --logo-size-lg: 2.5rem;
   --logo-radius: var(--radius);
 }
