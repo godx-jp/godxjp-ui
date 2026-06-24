@@ -31,7 +31,23 @@ const SCAN_DIRS = dirArgs.length
 const PALETTE =
   "red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|gray|grey|slate|zinc|neutral|stone";
 
-/** @type {{id:string, severity:'error'|'warn', test:RegExp, message:string}[]} */
+/**
+ * Emoji in product text — Unicode "Extended_Pictographic" set (UTS #51). Catches
+ * ✅🎉🔥🚀 etc. but NOT typographic punctuation (· — × ✓), which have their own rules.
+ */
+const EMOJI = /\p{Extended_Pictographic}/u;
+/** Regional-indicator pairs = emoji flags (🇯🇵) — broken on Win/Linux; use Intl.DisplayNames. */
+const EMOJI_FLAG = /\p{Regional_Indicator}/u;
+
+/**
+ * @type {{id:string, severity:'error'|'warn', test:RegExp, message:string, standard?:string}[]}
+ *
+ * `standard` cites the international spec a rule enforces, so a finding is auditable
+ * against a real norm rather than house taste alone:
+ *   WCAG 2.2 (W3C Rec) · WAI-ARIA 1.2 + APG (W3C) · ECMA-402 Intl (TC39) ·
+ *   Unicode UTS #51 emoji · BCP-47 · ISO 4217 / 3166 / 8601 · IANA tz ·
+ *   CSS Logical Properties L1 (W3C) · HTML Living Standard (WHATWG).
+ */
 const RULES = [
   {
     id: "no-space-xy",
@@ -177,7 +193,117 @@ const RULES = [
     message:
       "Prefer semantic tokens (text-primary-foreground, bg-background…) over raw white/black (rules §4).",
   },
+
+  // ─── International-standard a11y / i18n / RTL rules (WARN — guide the agent, never block) ───
+  {
+    id: "no-emoji-in-ui",
+    severity: "warn",
+    test: EMOJI,
+    standard: "Unicode UTS #51 (emoji) · WCAG 2.2 SC 1.1.1",
+    message:
+      "No emoji in product UI (✅🎉🔥…). State the fact quietly in i18n-keyed copy; use a Lucide icon for affordance and a Badge `tone` for status. Emoji break on Win/Linux and pollute the accessible name.",
+  },
+  {
+    id: "no-emoji-flag",
+    severity: "warn",
+    test: EMOJI_FLAG,
+    standard: "ISO 3166-1 · ECMA-402 Intl.DisplayNames · Unicode UTS #51",
+    message:
+      "No emoji flags (🇯🇵) — they render inconsistently across OSes. Derive country names from Intl.DisplayNames(locale, { type: 'region' }) keyed by ISO 3166-1 alpha-2.",
+  },
+  {
+    id: "no-physical-direction",
+    severity: "warn",
+    // Physical-edge utilities break RTL. Logical equivalents: ms-/me-/ps-/pe-, start-/end-,
+    // text-start/end, border-s/e, rounded-s/e. `-mx-`/`-px-` (both edges) are RTL-safe → not matched.
+    test: /\b-?(ml|mr|pl|pr|left|right)-(?:\d|\[|auto|px|full)|\b(?:rounded-[tb]?[lr]|border-[lr]|text-(?:left|right))\b/,
+    standard: "W3C CSS Logical Properties & Values L1 · WCAG 2.2 (1.3.2 / reflow)",
+    message:
+      "Use LOGICAL direction utilities for RTL safety: ms-/me-/ps-/pe-, start-/end-, text-start/end, border-s/e, rounded-s/e — not physical ml-/mr-/pl-/pr-/left-/right-/text-left|right.",
+  },
+  {
+    id: "icon-button-needs-name",
+    severity: "warn",
+    // An icon-only Button (size="icon") with no author-supplied accessible name. A combobox/icon
+    // button's name is computed from author (aria-label / aria-labelledby / title), not glyph content.
+    test: /<Button\b(?=[^>]*\bsize=["']icon["'])(?![^>]*\b(?:aria-label|aria-labelledby|title)=)[^>]*>/,
+    standard: "WCAG 2.2 SC 4.1.2 · 1.1.1 · WAI-ARIA 1.2",
+    message:
+      "Icon-only <Button size=\"icon\"> needs an accessible name — add aria-label={t('…')}. The icon is decorative (aria-hidden); the name comes from the author, not the glyph.",
+  },
+  {
+    id: "img-needs-alt",
+    severity: "warn",
+    test: /<img\b(?![^>]*\balt=)[^>]*>/,
+    standard: "WCAG 2.2 SC 1.1.1 · HTML Living Standard (WHATWG)",
+    message:
+      'Every <img> needs an alt attribute (alt="" for purely decorative images). Prefer the <Avatar>/<AspectRatio> primitives for product imagery.',
+  },
+  {
+    id: "no-positive-tabindex",
+    severity: "warn",
+    test: /tab[Ii]ndex=(?:["']?[1-9]|\{[1-9])/,
+    standard: "WCAG 2.2 SC 2.4.3 · WAI-ARIA APG",
+    message:
+      "No positive tabIndex — it breaks the natural focus order. Use tabIndex={0} (focusable) or {-1} (programmatic) only; manage roving focus via the primitive.",
+  },
+  {
+    id: "hardcoded-currency",
+    severity: "warn",
+    // A currency glyph glued to an interpolation in JSX text: `>¥{amount}` / `>{x}円`.
+    test: /(?:>[\s]*[¥$€£₫]\s*\{)|(?:\}\s*円)/,
+    standard: "ISO 4217 · ECMA-402 Intl.NumberFormat",
+    message:
+      "Don't hand-format currency (¥{amount}). Use Intl.NumberFormat(locale, { style: 'currency', currency }) — ISO 4217 code drives the symbol and minor units per locale.",
+  },
+  {
+    id: "raw-intl-date",
+    severity: "warn",
+    test: /\.toLocale(?:Date|Time)?String\(\s*\)|new Date\([^)]*\)\.(?:getMonth|getDate|getFullYear)\(\)\s*\+/,
+    standard: "ISO 8601 · IANA tz database · ECMA-402 Intl.DateTimeFormat",
+    message:
+      "Don't hand-build or locale-default dates. Use formatDate from @godxjp/ui/datetime (Intl.DateTimeFormat + IANA timezone + ISO-8601), which respects the AppProvider locale/timezone.",
+  },
+  {
+    id: "hand-rolled-close-glyph",
+    severity: "warn",
+    // A literal close glyph as JSX text — almost always a hand-rolled dismiss that should be a slot.
+    test: />\s*[✕✖×╳]\s*</,
+    standard: "WAI-ARIA 1.2 (dialog) · WCAG 2.2 SC 4.1.2 · @godxjp/ui Alert/Dialog anatomy",
+    message:
+      "Don't hand-roll a ✕ close. Pass onDismiss to <Alert> (renders the × top-right with an aria-label), or use <Dialog>/<Sheet> which ship their own labelled close. A bare glyph has no accessible name.",
+  },
+  {
+    id: "no-em-dash-in-copy",
+    severity: "warn",
+    // Em-dash (U+2014) in JSX text — dxs-kintai uses the middot `·` for JP/EN pairs and calm copy.
+    test: /[A-Za-z0-9぀-ヿ一-鿿]\s*—\s*[A-Za-z0-9぀-ヿ一-鿿]/,
+    standard: "@godxjp/ui dxs-kintai typography (best-ux) · Unicode punctuation",
+    message:
+      "No em-dash (—) in product copy. Use a middot `·` for JP/EN label pairs, or restructure into two calm sentences. Keep copy factual and quiet.",
+  },
 ];
+
+/**
+ * `--rules` — print the full rule catalog (id · severity · standard · message) as JSON and exit.
+ * The single source of truth other tooling (the MCP `list_audit_rules`, the sync guard) reads,
+ * so the executable rules and the agent-facing docs never drift.
+ */
+if (args.includes("--rules")) {
+  process.stdout.write(
+    JSON.stringify(
+      RULES.map((r) => ({
+        id: r.id,
+        severity: r.severity,
+        standard: r.standard ?? null,
+        message: r.message,
+      })),
+      null,
+      2,
+    ) + "\n",
+  );
+  process.exit(0);
+}
 
 /**
  * Blank out `//` line comments and block comments (incl. JSDoc) — replacing them with spaces and
@@ -282,6 +408,7 @@ for (const dir of SCAN_DIRS) {
             line: i + 1,
             rule: rule.id,
             severity: rule.severity,
+            standard: rule.standard,
             message: rule.message,
             snippet: (origLines[i] ?? line).trim().slice(0, 120),
           });
@@ -329,6 +456,7 @@ if (asJson) {
     const tag = f.severity === "error" ? `${C.red}error${C.reset}` : `${C.yellow}warn ${C.reset}`;
     console.log(`${tag} ${C.bold}${f.file}:${f.line}${C.reset}  ${C.dim}[${f.rule}]${C.reset}`);
     console.log(`      ${f.message}`);
+    if (f.standard) console.log(`      ${C.dim}standard: ${f.standard}${C.reset}`);
     console.log(`      ${C.dim}${f.snippet}${C.reset}`);
   }
   console.log(
