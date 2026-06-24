@@ -12,10 +12,10 @@ const logoVariants = cva(
   {
     variants: {
       size: {
-        xs: "size-6 text-xs",
-        sm: "size-7 text-sm",
-        md: "size-8 text-base",
-        lg: "size-10 text-lg",
+        xs: "size-[var(--logo-size-xs)] text-xs",
+        sm: "size-[var(--logo-size-sm)] text-sm",
+        md: "size-[var(--logo-size)] text-base",
+        lg: "size-[var(--logo-size-lg)] text-lg",
       },
       shape: {
         default: "rounded-[var(--logo-radius)]",
@@ -44,7 +44,7 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
 
 /**
  * Logo — the product brand-mark primitive. Use it INSTEAD of a hand-rolled
- * `<span className="flex size-8 rounded-md bg-primary font-bold …">g</span>` (typography-on-span,
+ * `<span className="flex size-[2rem] rounded-md bg-primary font-bold …">g</span>` (typography-on-span,
  * literal size/radius — cardinal rules #42/#46). Renders the lettermark (or a custom SVG) in a
  * tokenized box that a service rethemes via `--primary` (fill) and `--logo-radius` (corner).
  */
