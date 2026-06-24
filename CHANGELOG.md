@@ -8,7 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Runtime VISUAL audit (`scripts/visual-audit.mjs`) — Playwright + axe-core over the running app.**
+- **Agent forcing-kit — the godxjp-ui workflow is now enforced by the harness, not the agent's goodwill.**
+  Installing `@godxjp/ui` auto-registers the `godx-ui` MCP in the consumer's `.mcp.json`
+  (`scripts/postinstall.mjs`, non-destructive, skipped in CI / the library's own repo). `npx
+@godxjp/ui init-agent` scaffolds the full kit: a Claude Code **PostToolUse hook**
+  (`scripts/audit-hook.mjs`) that runs the static audit on every `.tsx` Write/Edit and feeds the
+  findings straight back to the agent (it cannot skip the audit), a **SessionStart** hook that
+  injects the workflow mandate (`.claude/godxjp-ui-workflow.md`), and the optional pre-commit/CI
+  snippets. New \`bin\` (\`godxjp-ui\`) exposes \`init-agent\` / \`audit\` / \`visual-audit\`. The static
+  audit now accepts file paths (incl. absolute) so the per-edit hook can target one file.
+- **New audit rule \`bare-control-needs-formfield\`** (warn) — catches a bare \`<Label>\`/\`<label>\`
+  paired with a text control that skipped \`<FormField>\` (the cramped-login-form failure mode that
+  previously passed the audit when it used capitalized \`<Input>\` instead of raw \`<input>\`). Cites
+  WCAG 1.3.1 / 3.3.2 + cardinal rule 227.
+- **Runtime VISUAL audit (\`scripts/visual-audit.mjs\`) — Playwright + axe-core over the running app.**
   The counterpart to the static source audit: drives a real browser and catches what regex can't —
   axe-core WCAG/ARIA violations (incl. colour contrast), target size < 24×24 (WCAG 2.5.8), the OKLCH
   chroma of a rendered accent (dxs-kintai 渋み ≤ 0.18), emoji that reached the DOM (Unicode UTS #51),
