@@ -40,6 +40,27 @@ or change a component, page, or form — no exceptions.
    \`node node_modules/@godxjp/ui/scripts/visual-audit.mjs <url>\` (axe + contrast + layout).
 `;
 
+/** Delimited block appended to the consumer's CLAUDE.md — loaded into the agent's context
+ * every turn (the most reliable "ensure it reads the rules"). Markers keep it idempotent. */
+export const CLAUDE_MD_BLOCK = `<!-- godxjp-ui:start (managed by @godxjp/ui — edit .claude/godxjp-ui-workflow.md instead) -->
+## @godxjp/ui — mandatory UI workflow (do NOT skip)
+
+This app uses @godxjp/ui. EVERY time you build or change UI:
+
+1. **MCP-first.** Consult the \`godx-ui\` MCP — \`get_component\`, \`search_components\`,
+   \`list_audit_rules\`, \`list_visual_checks\`. Never guess a prop; never hand-roll what a
+   primitive already does.
+2. **Real primitives only.** No raw \`<input>/<select>/<button>/<textarea>/<table>\`. A labelled
+   control ALWAYS goes in \`<FormField label=…>\` — never a bare \`<Label>\`+\`<Input>\`. Semantic
+   tokens, not raw palette/hex/arbitrary values. No emoji in product UI. Logical CSS for RTL.
+3. **Scan after writing.** \`node node_modules/@godxjp/ui/scripts/ui-audit.mjs <files>\` and fix
+   every finding (a PostToolUse hook runs this automatically and feeds findings back). Before a
+   visual review: \`node node_modules/@godxjp/ui/scripts/visual-audit.mjs <url>\` (axe + layout).
+
+Full guide: \`.claude/godxjp-ui-workflow.md\`.
+<!-- godxjp-ui:end -->
+`;
+
 function readJson(path) {
   try {
     return JSON.parse(readFileSync(path, "utf8"));
@@ -97,6 +118,20 @@ export function writeWorkflowMd(root) {
   if (existsSync(path)) return false;
   writeFileSync(path, WORKFLOW_MD);
   return true;
+}
+
+/** Append the godxjp-ui mandate to the consumer's CLAUDE.md (created if absent). Idempotent
+ * via the markers. Returns 'created' | 'appended' | 'present'. */
+export function ensureClaudeMd(root) {
+  const path = join(root, "CLAUDE.md");
+  const existing = existsSync(path) ? readFileSync(path, "utf8") : null;
+  if (existing?.includes("godxjp-ui:start")) return "present";
+  if (existing == null) {
+    writeFileSync(path, CLAUDE_MD_BLOCK);
+    return "created";
+  }
+  writeFileSync(path, existing.replace(/\s*$/, "") + "\n\n" + CLAUDE_MD_BLOCK);
+  return "appended";
 }
 
 /** True when setup should be SKIPPED (CI, opted out, or installing the library itself). */
