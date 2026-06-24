@@ -71,6 +71,21 @@ categories. Reads as chaos; eye can't anchor.`,
 non-neutral colors (success / warning / destructive) for tags
 that genuinely carry that meaning.`,
   },
+  {
+    category: "visual",
+    name: "Oversaturated brand accent",
+    body: `Full-bleed, fully-saturated brand color on buttons, banners and
+notification bars (the classic loud Slack/Linear/Notion blue) — the
+accent SCREAMS instead of signalling. A bright primary CTA bar across
+the whole width, vivid send buttons, neon success. It reads as a
+verbatim copy of a SaaS chrome, not a restrained product surface.`,
+    fix: `渋み (restraint): keep --primary chroma ≤ 0.18 — desaturate so the
+accent BLENDS with the warm-neutral spine and is used sparingly for
+the ONE primary action. Don't paint a full-width bar in raw blue;
+prefer a quiet Alert (icon + text + a normal-width action). Never
+hard-code a vivid hex — read \`bg-primary\`/\`text-primary\` tokens, and
+let a service retheme via --primary only.`,
+  },
 
   // ── layout ─────────────────────────────────────────────────────
   {
@@ -118,6 +133,21 @@ type system for coherence; different composition for engagement.`,
   },
 
   // ── copy ───────────────────────────────────────────────────────
+  {
+    category: "copy",
+    name: "Emoji in product UI",
+    body: `Emoji sprinkled through the product surface — ✅ / 🎉 / 🔥 in chat
+messages, status lines, toasts, buttons, empty states or success
+banners ("All tests green 🎉", "done ✅"). It reads as casual
+consumer-app slop, breaks on Windows/Linux, and pollutes the
+accessible name. Celebrating with confetti/🎉 is the same tell.`,
+    fix: `No emoji anywhere in product UI. State the fact quietly in
+i18n-keyed copy ("承認しました" / "All checks passed"). Use a Lucide
+icon (1.5px) for an affordance and a semantic Badge \`tone\`
+(success/warning/destructive) for status — color + label carry the
+meaning, not a glyph. Country names come from \`Intl.DisplayNames\`,
+never emoji flags.`,
+  },
   {
     category: "copy",
     name: "Filler corporate phrases",
