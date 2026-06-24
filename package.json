@@ -270,8 +270,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",
-    "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm test",
-    "verify:release": "pnpm typecheck && pnpm lint && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:mcp-prop-sync && pnpm test",
+    "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm test",
+    "verify:release": "pnpm typecheck && pnpm lint && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm check:mcp-prop-sync && pnpm test",
     "check:mcp-sync": "node scripts/check-mcp-sync.mjs",
     "check:mcp-orphans": "node scripts/check-mcp-orphans.mjs",
     "check:mcp-prop-sync": "node scripts/check-mcp-prop-sync.mjs",
@@ -290,7 +290,8 @@
     "audit": "node scripts/ui-audit.mjs",
     "build": "tsup && tsc -p tsconfig.build.json && node scripts/copy-styles.mjs",
     "dev": "node scripts/dev.mjs",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "check:audit-sync": "node scripts/check-audit-sync.mjs"
   },
   "peerDependencies": {
     "@hookform/resolvers": "^5.2.0",

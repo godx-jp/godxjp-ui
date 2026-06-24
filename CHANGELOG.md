@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Local UI-audit now enforces international a11y/i18n/RTL standards (warnings, non-blocking).**
+  `scripts/ui-audit.mjs` gained 10 standards-cited rules so a consumer agent can self-correct
+  BEFORE a visual review: `no-emoji-in-ui` / `no-emoji-flag` (Unicode UTS #51, ISO 3166-1,
+  `Intl.DisplayNames`), `no-physical-direction` (W3C CSS Logical Properties — use `ms-/me-/ps-/pe-`,
+  `start-/end-`, `text-start/end`), `icon-button-needs-name` / `img-needs-alt` / `no-positive-tabindex`
+  / `hand-rolled-close-glyph` (WCAG 2.2 + WAI-ARIA APG), `hardcoded-currency` (ISO 4217,
+  `Intl.NumberFormat`), `raw-intl-date` (ISO 8601 + IANA tz, `Intl.DateTimeFormat`), and
+  `no-em-dash-in-copy` (dxs-kintai typography). Each finding prints the `standard:` it enforces;
+  a new `--rules` flag prints the rule catalog as JSON (the single source of truth).
+- **MCP `list_audit_rules` tool** surfaces the audit catalog (id · severity · category · standard ·
+  fix + the run command) so an agent knows what the local audit checks and that it should run it
+  before any visual pass. Backed by `mcp/src/data/audit-rules.ts`, kept in sync with the CLI by the
+  new `scripts/check-audit-sync.mjs` guard (`pnpm check:audit-sync`, wired into `verify`).
+- **Anti-AI-tells**: added `Emoji in product UI`, `Oversaturated brand accent`, and
+  `Stacked notification banner (misplaced alert controls)`; the `Alert` catalog entry now states its
+  fixed anatomy (single leading tone icon · `Alert.Actions` trailing-right · `onDismiss` × top-right
+  · one horizontal row, never a vertical stack).
+
 ### Fixed
 
 - **FormField collapsed to its content width inside a flex column (short inputs).**

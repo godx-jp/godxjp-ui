@@ -36,6 +36,12 @@ import {
   checksByCategory,
   type AuditCheck,
 } from "../data/redesign-audit.js";
+import {
+  AUDIT_RULES,
+  AUDIT_COMMAND,
+  auditRulesByCategory,
+  type AuditRule,
+} from "../data/audit-rules.js";
 
 export const TOOL_DEFINITIONS = [
   // ── DISCOVERY (small responses) ────────────────────────────────
@@ -109,6 +115,21 @@ export const TOOL_DEFINITIONS = [
             "code-quality",
             "omissions",
           ],
+        },
+      },
+    },
+  },
+
+  {
+    name: "list_audit_rules",
+    description:
+      "List the LOCAL ui-audit rules (scripts/ui-audit.mjs) an agent should run BEFORE any visual review. Each rule cites the international standard it enforces (WCAG 2.2 / WAI-ARIA / ECMA-402 Intl / ISO 4217·3166·8601 / IANA / CSS Logical Properties / HTML LS) + a concrete fix. Optionally filter by category. Includes the run command. ~3KB.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        category: {
+          type: "string",
+          enum: ["tokens", "composition", "api", "a11y", "i18n", "rtl", "copy"],
         },
       },
     },
@@ -326,6 +347,8 @@ export async function dispatchTool(name: string, args: Record<string, unknown>):
       return listAntiAiTells(args.category as AiTell["category"] | undefined);
     case "list_redesign_checks":
       return listRedesignChecks(args.category as AuditCheck["category"] | undefined);
+    case "list_audit_rules":
+      return listAuditRules(args.category as AuditRule["category"] | undefined);
     case "get_anti_ai_tell":
       return getAntiAiTell(String(args.name ?? ""));
     case "get_redesign_check":
@@ -493,6 +516,25 @@ function listPatterns(): string {
   return out;
 }
 
+function listAuditRules(cat?: AuditRule["category"]): string {
+  const list = auditRulesByCategory(cat);
+  let out = `# Local UI-audit rules${cat ? ` — ${cat}` : ""} (${list.length})\n\n`;
+  out += `_Run BEFORE any visual review (warnings are agent guidance, non-blocking):_\n`;
+  out += `\`\`\`\n${AUDIT_COMMAND}\n\`\`\`\n\n`;
+  const grouped = list.reduce<Record<string, AuditRule[]>>((acc, r) => {
+    (acc[r.category] ??= []).push(r);
+    return acc;
+  }, {});
+  for (const [c, items] of Object.entries(grouped)) {
+    out += `## ${c}\n`;
+    for (const r of items) {
+      out += `- **${r.id}** (${r.severity})${r.standard ? ` — _${r.standard}_` : ""}\n  ${r.fix}\n`;
+    }
+    out += "\n";
+  }
+  return out;
+}
+
 function listAntiAiTells(cat?: AiTell["category"]): string {
   const list = cat ? aiTellsByCategory(cat) : ANTI_AI_TELLS;
   // Compact list — names only. Use `get_anti_ai_tell` for full body + fix.
@@ -633,9 +675,7 @@ function componentTokensFor(name: string) {
   const prefixes = TOKEN_PREFIXES[name] ?? [
     name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase(),
   ];
-  return COMPONENT_TOKENS.filter((t) =>
-    prefixes.some((p) => t.name.startsWith(`--${p}-`)),
-  );
+  return COMPONENT_TOKENS.filter((t) => prefixes.some((p) => t.name.startsWith(`--${p}-`)));
 }
 
 function getComponent(name: string): string {
