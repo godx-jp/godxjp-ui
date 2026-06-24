@@ -392,6 +392,14 @@ function walk(dir, acc = []) {
 const CARD_FLUSH =
   /<Card(?![^>]*\bp-0\b)(?:\s[^>]*)?>\s*<(?!CardContent|CardHeader|CardCover|CardFooter|\/Card)/g;
 
+// Structural: a bare <label>/<Label> paired with a TEXT control (its sibling) instead of a
+// <FormField>. FormField OWNS the label↔control association (htmlFor/id), aria-describedby/
+// error wiring, AND the field rhythm (label gap + field spacing) — a hand-rolled Label+Input
+// loses all of it (the cramped login-form failure mode). Checkbox/Radio/Switch use Field/Label
+// legitimately, so they are NOT matched. Whole-file pass (the pair spans lines).
+const BARE_FIELD =
+  /<(?:label|Label)\b[^>]*>[\s\S]{0,240}?<\/(?:label|Label)>\s*<(?:Input|Select|Textarea|NumberInput|SearchInput|SearchSelect|DatePicker|DateRangePicker|TimePicker|MonthPicker|MonthRangePicker|Cascader|TreeSelect|input)\b/g;
+
 const findings = [];
 for (const dir of SCAN_DIRS) {
   for (const file of walk(join(CWD, dir))) {
@@ -426,6 +434,23 @@ for (const dir of SCAN_DIRS) {
         severity: "error",
         message:
           "<Card> body content must be wrapped in <CardContent> (it has NO padding otherwise) — use <CardContent flush> only for a full-bleed table.",
+        snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
+      });
+    }
+    for (const match of scanContent.matchAll(BARE_FIELD)) {
+      const lineNo = scanContent.slice(0, match.index).split("\n").length;
+      if (
+        isSuppressed("bare-control-needs-formfield", origLines[lineNo - 1], origLines[lineNo - 2])
+      )
+        continue;
+      findings.push({
+        file: rel,
+        line: lineNo,
+        rule: "bare-control-needs-formfield",
+        severity: "warn",
+        standard: "WCAG 2.2 SC 1.3.1 · 3.3.2 · @godxjp/ui FormField (cardinal rule 227)",
+        message:
+          "A bare <Label>/<label> paired with a control — wrap the field in <FormField label=…>. FormField owns the label↔control id wiring, aria-describedby/error, AND the field rhythm (label gap + field spacing); a hand-rolled Label+Input loses all of it (the cramped/mis-spaced form).",
         snippet: match[0].replace(/\s+/g, " ").slice(0, 120),
       });
     }
