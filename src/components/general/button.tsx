@@ -65,6 +65,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
       variant,
       size,
       shape,
+      fullWidth = false,
       asChild = false,
       loading = false,
       loadingText,
@@ -118,11 +119,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         data-variant={variant ?? "default"}
         data-size={size ?? "default"}
         data-shape={shape ?? "default"}
+        data-full-width={fullWidth ? "" : undefined}
         data-loading={isLoading ? "" : undefined}
         aria-busy={isLoading || undefined}
         disabled={isLoading || disabled}
         className={cn(
           "inline-flex shrink-0 items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none",
+          fullWidth && "w-full",
           "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
           "disabled:pointer-events-none disabled:opacity-50",
           "data-[loading]:pointer-events-none",

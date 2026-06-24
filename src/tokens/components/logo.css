@@ -1,0 +1,6 @@
+/* Logo (brand mark) component tokens. The corner radius is a knob (#45) so a service can
+ * match its own grid (squarer / fully-rounded) without forking the mark; size comes from the
+ * `size` prop, brand fill from --primary. Default = the control radius. */
+:root {
+  --logo-radius: var(--radius);
+}

@@ -124,6 +124,24 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Full width</CardTitle>
+            <CardDescription>
+              `fullWidth` spans the container (`width:100%`) — the prop form of `className="w-full"`
+              for stacked auth / dialog-footer actions. Use the prop, not a raw utility (rule #42).
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="sm" className="max-w-xs">
+              <Button fullWidth>ログイン Sign in</Button>
+              <Button fullWidth variant="outline">
+                アカウント作成 Create account
+              </Button>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Loading</CardTitle>
             <CardDescription>
               `loading` shows a leading spinner, sets `aria-busy`, and blocks activation while
