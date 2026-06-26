@@ -151,6 +151,13 @@
     background: hsl(var(--accent));
   }
 
+  /* Non-interactive brand header — no click target, so no pointer/hover affordance and no caret. */
+  .sb-product-static,
+  .sb-product-static:hover {
+    cursor: default;
+    background: transparent;
+  }
+
   .sb-logo-mark {
     display: grid;
     width: 1.75rem;
@@ -518,6 +525,14 @@
     border-color: hsl(var(--border));
     border-style: dashed;
     color: hsl(var(--muted-foreground));
+  }
+
+  /* Non-interactive brand chip — no menu/handler, so no pointer/hover affordance and no caret. */
+  .tb-chip-static,
+  .tb-chip-static:hover {
+    border-color: transparent;
+    background: transparent;
+    cursor: default;
   }
 
   .tb-chip-icon {

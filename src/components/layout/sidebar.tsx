@@ -278,30 +278,47 @@ export function Sidebar({
       {brand !== undefined ? (
         <SidebarHeader>{brand}</SidebarHeader>
       ) : product ? (
-        <button
-          type="button"
-          className="sb-product"
-          onClick={onProductClick}
-          aria-label={product.name}
-        >
-          <span
-            className="sb-logo-mark"
-            style={{ background: product.color ?? "hsl(var(--attention))" }}
-          >
-            {product.name[0]?.toUpperCase() ?? "?"}
-          </span>
-          {!collapsed ? (
+        (() => {
+          // The header is a SWITCHER only when `onProductClick` is wired. Without it, it's a plain
+          // brand header — render a non-interactive element with NO caret, so there's no dropdown
+          // chevron promising a menu that doesn't exist (the "dead dropdown" bug).
+          const interactive = onProductClick != null;
+          const mark = (
+            <span
+              className="sb-logo-mark"
+              style={{ background: product.color ?? "hsl(var(--attention))" }}
+            >
+              {product.name[0]?.toUpperCase() ?? "?"}
+            </span>
+          );
+          const meta = !collapsed ? (
             <span className="sb-product-meta">
               <span className="sb-product-name">{product.name}</span>
               {product.role ? <span className="sb-product-tenant">{product.role}</span> : null}
             </span>
-          ) : null}
-          {!collapsed ? (
-            <span className="sb-product-caret">
-              <ChevronDown aria-hidden="true" />
-            </span>
-          ) : null}
-        </button>
+          ) : null;
+          return interactive ? (
+            <button
+              type="button"
+              className="sb-product"
+              onClick={onProductClick}
+              aria-label={product.name}
+            >
+              {mark}
+              {meta}
+              {!collapsed ? (
+                <span className="sb-product-caret">
+                  <ChevronDown aria-hidden="true" />
+                </span>
+              ) : null}
+            </button>
+          ) : (
+            <div className="sb-product sb-product-static">
+              {mark}
+              {meta}
+            </div>
+          );
+        })()
       ) : null}
 
       <nav className="sb-nav-scroll" aria-label={t("layout.sidebar.ariaLabel")}>
