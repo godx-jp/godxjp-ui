@@ -37,30 +37,40 @@ export function Topbar({
   user,
 }: TopbarProp) {
   const { t } = useTranslation();
-  const productChip = (
+  // A chip is a SWITCHER only when there's actually something to open — a menu or a click handler.
+  // Otherwise it's a plain brand label: no caret, no button, no dropdown affordance with nothing
+  // to choose (the "dead dropdown" bug). The caret is the promise of a menu; don't show it empty.
+  const productInteractive = productMenu != null || onProductOpen != null;
+  const productIcon = (
+    <span className="tb-chip-icon" style={{ background: product.color ?? "hsl(var(--attention))" }}>
+      {product.name[0]?.toUpperCase() ?? "?"}
+    </span>
+  );
+  const productChip = productInteractive ? (
     <button
       type="button"
       className="tb-chip"
       aria-label={product.name}
       onClick={productMenu ? undefined : onProductOpen}
     >
-      <span
-        className="tb-chip-icon"
-        style={{ background: product.color ?? "hsl(var(--attention))" }}
-      >
-        {product.name[0]?.toUpperCase() ?? "?"}
-      </span>
+      {productIcon}
       <span className="tb-chip-label">{product.name}</span>
       <span className="tb-chip-caret">
         <ChevronDown aria-hidden="true" />
       </span>
     </button>
+  ) : (
+    <span className="tb-chip tb-chip-static">
+      {productIcon}
+      <span className="tb-chip-label">{product.name}</span>
+    </span>
   );
 
   // The project chip is optional chrome — only render it when there is a project or a project
   // menu to show, so consumers that don't use it don't get a dead "Pick project" placeholder.
   const showProject = project != null || projectMenu != null;
-  const projectChip = (
+  const projectInteractive = projectMenu != null || onProjectOpen != null;
+  const projectChip = projectInteractive ? (
     <button
       type="button"
       className={`tb-chip ${project ? "" : "tb-chip-empty"}`}
@@ -72,6 +82,10 @@ export function Topbar({
         <ChevronDown aria-hidden="true" />
       </span>
     </button>
+  ) : (
+    <span className="tb-chip tb-chip-static" aria-label={project ? project.name : undefined}>
+      <span className="tb-chip-label">{project ? project.name : (projectPlaceholder ?? "—")}</span>
+    </span>
   );
 
   return (
