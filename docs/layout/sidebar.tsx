@@ -18,7 +18,7 @@ import {
   CardTitle,
   Badge,
 } from "@godxjp/ui/data-display";
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Logo, Text } from "@godxjp/ui/general";
 import {
   LayoutDashboard,
   FileText,
@@ -32,6 +32,9 @@ import {
   Boxes,
   Star,
   Settings,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Search,
 } from "lucide-react";
 
 /**
@@ -160,10 +163,30 @@ export default function Demo() {
 
   const topbar = (
     <Topbar
-      product={{ name: "CoreBooks", color: "hsl(var(--primary))" }}
-      collapsed={collapsed}
-      onToggleCollapsed={() => setCollapsed((c) => !c)}
-      onSearchOpen={() => undefined}
+      start={
+        <>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={collapsed ? "サイドバーを展開" : "サイドバーを折りたたむ"}
+            aria-pressed={collapsed}
+            onClick={() => setCollapsed((c) => !c)}
+          >
+            {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
+          </Button>
+          <Logo label="CoreBooks" glyph="C" />
+        </>
+      }
+      center={
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-muted-foreground w-full max-w-sm justify-start"
+        >
+          <Search />
+          検索…
+        </Button>
+      }
     />
   );
 

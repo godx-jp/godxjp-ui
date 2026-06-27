@@ -19,12 +19,14 @@ import {
   StatCard,
   Badge,
 } from "@godxjp/ui/data-display";
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Logo, Text } from "@godxjp/ui/general";
 import {
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@godxjp/ui/navigation";
 import {
   LayoutDashboard,
@@ -36,6 +38,10 @@ import {
   ShieldCheck,
   Bell,
   Plus,
+  ChevronDown,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Search,
 } from "lucide-react";
 
 /**
@@ -109,23 +115,62 @@ export default function Demo() {
 
   const topbar = (
     <Topbar
-      product={{ name: "CoreBooks" }}
-      productMenu={
-        <DropdownMenuContent align="start" className="w-56">
-          <DropdownMenuLabel>エンティティ切替</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {ENTITIES.map((e) => (
-            <DropdownMenuItem key={e.id} onSelect={() => setActiveEntity(e.name)}>
-              {e.name}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
+      start={
+        <>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={collapsed ? "サイドバーを展開" : "サイドバーを折りたたむ"}
+            aria-pressed={collapsed}
+            onClick={() => setCollapsed((c) => !c)}
+          >
+            {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
+          </Button>
+          <Logo label="CoreBooks" glyph="C" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                {activeEntity}
+                <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56">
+              <DropdownMenuLabel>エンティティ切替</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {ENTITIES.map((e) => (
+                <DropdownMenuItem key={e.id} onSelect={() => setActiveEntity(e.name)}>
+                  <Building2 className="mr-2 size-4" />
+                  {e.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
       }
-      collapsed={collapsed}
-      onToggleCollapsed={() => setCollapsed((c) => !c)}
-      onSearchOpen={() => undefined}
-      unread={unread}
-      onNotificationsOpen={() => setUnread(false)}
+      center={
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-muted-foreground w-full max-w-sm justify-start"
+        >
+          <Search />
+          検索…
+        </Button>
+      }
+      end={
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="通知"
+          className="relative"
+          onClick={() => setUnread(false)}
+        >
+          <Bell />
+          {unread ? (
+            <span className="bg-destructive absolute end-1.5 top-1.5 size-1.5 rounded-full" />
+          ) : null}
+        </Button>
+      }
     />
   );
 

@@ -545,178 +545,95 @@ export default function Shell() {
     name: "Topbar",
     group: "layout",
     tagline:
-      "App-shell top bar with product/project chip switchers, search, notifications, and sidebar toggle — pass DropdownMenuContent to productMenu/projectMenu to turn any chip into a real dropdown switcher; the project chip is hidden entirely when neither project nor projectSidebar is set.",
+      "A PURE SLOT bar for the app shell — positions three clusters (start / center / end) and owns ONLY the bar layout. It bakes NO chrome: no product switcher, no search box, no notification bell, no language picker. The CONSUMER composes those from real primitives and drops them into a slot; whether a control is icon-only / labelled / bordered is that control's own config, never the shell's.",
     props: [
       {
-        name: "product",
-        type: "TopbarProductProp",
-        required: true,
-        description:
-          "The active product identity shown in the left chip. Shape: `{ name: string; color?: string }`. `color` sets the chip icon background (defaults to `hsl(var(--attention))`); the first letter of `name` is used as the icon glyph.",
-      },
-      {
-        name: "project",
-        type: "TopbarProjectProp | null",
-        defaultValue: "undefined",
-        description:
-          "Optional active project shown after the product chip as `/ ProjectName`. Shape: `{ name: string }`. When both `project` and `projectMenu` are omitted the project chip is not rendered at all.",
-      },
-      {
-        name: "productMenu",
+        name: "start",
         type: "ReactNode",
         defaultValue: "undefined",
         description:
-          "A `DropdownMenuContent` node. When provided, wraps the product chip in a `DropdownMenu` and renders this content as the dropdown body — turning the chip into an interactive switcher (e.g. an active-entity picker). When omitted, clicking the chip fires `onProductOpen` instead.",
+          "Inline-start cluster — typically the sidebar toggle (a `Button` with a `PanelLeftClose` icon), the brand `Logo`, and primary nav.",
       },
       {
-        name: "projectMenu",
+        name: "center",
         type: "ReactNode",
         defaultValue: "undefined",
         description:
-          "A `DropdownMenuContent` node. When provided, wraps the project chip in a `DropdownMenu`. Also causes the project chip to be rendered even when `project` is null — useful for a 'Pick project' state with a real dropdown. When omitted, clicking the chip fires `onProjectOpen`.",
+          "Center cluster (grows + centers) — optional. e.g. a search trigger (`Button` + `Search` icon opening your command palette) or a page/entity switcher (`DropdownMenu`).",
       },
       {
-        name: "onProductOpen",
-        type: "() => void",
+        name: "end",
+        type: "ReactNode",
         defaultValue: "undefined",
         description:
-          "Called when the product chip is clicked and `productMenu` is NOT set. Use for custom modals / sheet-based switchers.",
+          'Inline-end cluster — settings pickers (`AppSettingPicker kind="locale"|"theme"`), a notifications `Button`, the user-menu `DropdownMenu`.',
       },
       {
-        name: "onProjectOpen",
-        type: "() => void",
-        defaultValue: "undefined",
-        description: "Called when the project chip is clicked and `projectMenu` is NOT set.",
-      },
-      {
-        name: "onSearchOpen",
-        type: "() => void",
+        name: "children",
+        type: "ReactNode",
         defaultValue: "undefined",
         description:
-          "Called when the search bar button (⌘K) is clicked. Wire this to your command-palette or search dialog.",
+          "Escape hatch — render fully custom bar content instead of the three slots. When set, `start`/`center`/`end` are ignored.",
       },
       {
-        name: "searchPlaceholder",
+        name: "className",
         type: "string",
-        defaultValue: 'i18n "layout.topbar.searchPlaceholder" ("検索…")',
-        description:
-          "Search-bar placeholder text — set a domain-specific hint (e.g. 案件・受注・顧客を検索…) instead of the generic default.",
-      },
-      {
-        name: "onTweaksOpen",
-        type: "() => void",
-        defaultValue: "undefined",
-        description:
-          "Called when the tweaks/settings icon button is clicked. The button is not rendered when this prop is omitted.",
-      },
-      {
-        name: "collapsed",
-        type: "boolean",
-        defaultValue: "false",
-        description:
-          "Whether the sidebar is currently collapsed. Controls which icon (`PanelLeftOpen` vs `PanelLeftClose`) is shown on the toggle button and sets its `aria-pressed` state.",
-      },
-      {
-        name: "onToggleCollapsed",
-        type: "() => void",
-        defaultValue: "undefined",
-        description:
-          "Called when the sidebar-toggle icon button is clicked. The button is not rendered when this prop is omitted.",
-      },
-      {
-        name: "rightSlot",
-        type: "ReactNode",
-        defaultValue: "undefined",
-        description:
-          "Arbitrary content injected between the search bar and the notifications bell. Use for custom action buttons, locale switchers, or env badges.",
-      },
-      {
-        name: "unread",
-        type: "boolean",
-        defaultValue: "false",
-        description:
-          "When `true`, renders a red dot badge on the notifications bell to indicate unread notifications.",
-      },
-      {
-        name: "onNotificationsOpen",
-        type: "() => void",
-        defaultValue: "undefined",
-        description:
-          "Called when the notifications bell button is clicked. The bell button is not rendered when this prop is omitted.",
-      },
-      {
-        name: "user",
-        type: "ReactNode",
-        defaultValue: "undefined",
-        description:
-          "User avatar / profile menu node rendered at the far right of the topbar, after the notifications bell and before the tweaks button.",
+        description: "Merged onto the bar element; arbitrary props (aria-*, etc.) are forwarded.",
       },
     ],
     usage: [
-      "DO pass a `DropdownMenuContent` to `productMenu` or `projectMenu` to make a chip a real inline dropdown switcher (e.g. an entity/tenant picker). DO NOT combine both `productMenu` and `onProductOpen` — when `productMenu` is present, `onProductOpen` is ignored.",
-      "DO omit both `project` and `projectMenu` when the app has no project concept — the project chip is hidden entirely. If you want a 'Pick project' placeholder with a real dropdown, pass only `projectMenu` (leave `project` null/undefined) so the chip renders in its empty state with the dropdown attached.",
-      "DO render `Topbar` inside `AppShell`'s `topbar` prop — Topbar renders as a fragment of buttons/slots and relies on `AppShell`'s `app-topbar` CSS grid for layout. NEVER render it standalone outside of an `AppShell` or equivalent `<header>` container.",
-      "DO wire `onSearchOpen` to your command-palette/dialog — the search bar button always renders (it is not conditional on this prop), so omitting the handler leaves users with a non-functional control.",
-      "DO use `rightSlot` for extra topbar actions (e.g. locale switcher, environment badge, custom toolbar buttons) rather than adding children or extending the component.",
-      "DON'T hand-roll a topbar from scratch — Topbar ships the sidebar toggle, product/project switcher, search, notifications bell, user slot, and tweaks button with correct `aria-label`/`aria-pressed` attributes already.",
+      "DO compose the bar yourself: brand `Logo` + sidebar toggle in `start`, a search trigger in `center`, settings pickers + notifications + user menu in `end`. The shell only positions; it never decides WHICH controls exist.",
+      'DO build the sidebar toggle as a `Button variant="ghost" size="icon-sm"` with a `PanelLeftClose`/`PanelLeftOpen` icon and your own `t()` aria-label, wired to AppShell\'s `sidebarCollapsed`. There is no baked toggle.',
+      "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
+      "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
+      "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
     ],
     useCases: [
-      "Admin / SaaS shell where the header shows the active legal entity (product chip) and users switch between entities via a `DropdownMenuContent` passed to `productMenu`.",
-      "Multi-project app where the project chip shows the current project and `projectMenu` provides a `DropdownMenuContent` to switch projects inline without opening a modal.",
-      "App-shell with a collapsible sidebar: pass `collapsed` + `onToggleCollapsed` to let users toggle the sidebar from the topbar without building a custom toggle button.",
-      "Notification-aware shell: pass `onNotificationsOpen` + `unread={hasUnread}` to render a bell icon with a red-dot badge that opens a notifications panel.",
-      "Apps needing a locale switcher or environment badge in the header: put it in `rightSlot` to slot it between the search bar and the notifications bell without modifying the component.",
-      "Read-only / minimal shell where sidebar toggling, tweaks, and notifications are not needed — simply omit `onToggleCollapsed`, `onTweaksOpen`, and `onNotificationsOpen`; their buttons are not rendered.",
+      "Admin shell: `start` = sidebar toggle + Logo + an entity switcher (`DropdownMenu` around a `Button`); `center` = a `Button` search trigger; `end` = `AppSettingPicker` (locale) + a notifications `Button` + a user `DropdownMenu`.",
+      "Minimal shell (no search, no notifications): pass only `start` (Logo) and `end` (user menu). Nothing else renders — no empty chrome.",
+      "Marketing / docs header: pass `children` with a fully custom flex layout when the three-cluster model doesn't fit.",
     ],
     related: [
-      "AppShell — the parent shell component that places Topbar inside its `app-topbar` header region via the `topbar` prop. Always use Topbar inside AppShell, not standalone.",
-      "Sidebar — the companion left-rail nav; pair with Topbar's `collapsed`/`onToggleCollapsed` to keep sidebar and topbar toggle state in sync.",
-      "DropdownMenu / DropdownMenuContent — pass a `DropdownMenuContent` as `productMenu` or `projectMenu` to turn a chip into an inline switcher. Topbar handles the `DropdownMenuTrigger` wrapping internally; only the Content node is needed.",
-      "AppShell — a higher-level opinionated shell that already composes AppShell + Topbar with hardcoded product/project chips; use it for prototypes but use AppShell + Topbar directly for production apps that need real switcher props.",
+      "AppShell — place Topbar in its `topbar` slot. AppShell also exposes its own `logo`/`topbarLeft`/`topbarRight` slots if you don't want a separate Topbar at all.",
+      "Logo — the brand mark for the `start` slot.",
+      "AppSettingPicker — locale/theme/timezone/currency picker; the consumer drops it into `end`. Its appearance (icon-only, labelled, bordered) is configured on IT, not on Topbar.",
+      "DropdownMenu — wrap a `Button` to build an entity switcher or user menu yourself, then place it in a slot.",
     ],
-    example: `import { Topbar } from "@godxjp/ui/layout";
-import { AppShell } from "@godxjp/ui/layout";
-import {
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@godxjp/ui/navigation";
+    example: `import { Topbar, AppShell } from "@godxjp/ui/layout";
+import { Logo, Button } from "@godxjp/ui/general";
+import { AppSettingPicker } from "@godxjp/ui/navigation";
+import { PanelLeftClose, Search } from "lucide-react";
 
-// Entity-switcher example: product chip opens an entity dropdown,
-// project chip is hidden (no project concept in this app).
-function MyShell({ children }: { content: React.ReactNode }) {
-  const [collapsed, setCollapsed] = React.useState(false);
-  const [unread, setUnread] = React.useState(true);
-
-  return (
-    <AppShell
-      sidebar={<MySidebar />}
-      sidebarCollapsed={collapsed}
-      topbar={
-        <Topbar
-          product={{ name: "CoreBooks", color: "hsl(220 70% 50%)" }}
-          productMenu={
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem onSelect={() => switchEntity("acme")}>
-                Acme Corp
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => switchEntity("globex")}>
-                Globex Ltd
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          }
-          collapsed={collapsed}
-          onToggleCollapsed={() => setCollapsed((c) => !c)}
-          onSearchOpen={() => openCommandPalette()}
-          unread={unread}
-          onNotificationsOpen={() => openNotificationsPanel()}
-          user={<UserAvatar />}
-        />
+// The shell gives you slots; YOU decide what goes in them.
+<AppShell
+  sidebar={<MySidebar />}
+  topbar={
+    <Topbar
+      start={
+        <>
+          <Button variant="ghost" size="icon-sm" aria-label={t("toggleSidebar")} onClick={toggle}>
+            <PanelLeftClose />
+          </Button>
+          <Logo label="CoreBooks" />
+        </>
       }
-    >
-      {children}
-    </AppShell>
-  );
-}`,
+      center={
+        <Button variant="outline" size="sm" onClick={openSearch}>
+          <Search />
+          {t("search")}
+        </Button>
+      }
+      end={
+        <>
+          <AppSettingPicker kind="locale" />
+          <UserMenu />
+        </>
+      }
+    />
+  }
+>
+  {children}
+</AppShell>`,
     storyPath: "layout/Topbar.stories.tsx",
     rules: [2, 3, 5, 6],
   },

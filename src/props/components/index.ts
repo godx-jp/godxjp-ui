@@ -6,8 +6,6 @@ export type {
   SidebarProductProp,
   SidebarProp,
   SidebarSectionProp,
-  TopbarProductProp,
-  TopbarProjectProp,
   TopbarProp,
 } from "./layout.prop";
 export type { ButtonProp } from "./general.prop";

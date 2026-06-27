@@ -122,39 +122,20 @@ export type SidebarProp = {
   footer?: ReactNode;
 };
 
-/** @see Topbar */
-export type TopbarProductProp = {
-  name: string;
-  color?: string;
-};
-
-/** @see Topbar */
-export type TopbarProjectProp = {
-  name: string;
-};
-
-/** @see Topbar */
-export type TopbarProp = {
-  product: TopbarProductProp;
-  project?: TopbarProjectProp | null;
-  /** Dropdown content for the product chip — renders a `DropdownMenuContent`. Turns the chip
-   *  into a switcher (e.g. an active-entity picker) instead of firing `onProductOpen`. */
-  productMenu?: ReactNode;
-  /** Dropdown content for the project chip. When neither `project` nor `projectMenu` is set the
-   *  project chip is hidden (no dead "Pick project" placeholder). */
-  projectMenu?: ReactNode;
-  onProductOpen?: () => void;
-  onProjectOpen?: () => void;
-  onSearchOpen?: () => void;
-  onTweaksOpen?: () => void;
-  collapsed?: boolean;
-  onToggleCollapsed?: () => void;
-  rightSlot?: ReactNode;
-  unread?: boolean;
-  /** Accessible placeholder when project is intentionally unset but a project chip is rendered. */
-  projectPlaceholder?: string;
-  /** Search-bar placeholder text — defaults to the i18n `layout.topbar.searchPlaceholder`. */
-  searchPlaceholder?: string;
-  onNotificationsOpen?: () => void;
-  user?: ReactNode;
+/**
+ * @see Topbar — a PURE SLOT bar (no baked chrome). The library only positions three clusters; the
+ * CONSUMER decides what goes in each (brand `Logo`, sidebar toggle, nav, a search trigger, settings
+ * pickers like `AppSettingPicker`, a notification button, a user menu). The shell never forces a
+ * product switcher, a search box, or a language picker — those are the consumer's components,
+ * configured via THEIR own props and dropped into a slot.
+ */
+export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
+  /** Inline-start cluster — typically the sidebar toggle + brand `Logo` + primary nav. */
+  start?: ReactNode;
+  /** Center cluster — optional (e.g. a search trigger or a page/entity switcher). */
+  center?: ReactNode;
+  /** Inline-end cluster — settings pickers, notifications, the user menu. */
+  end?: ReactNode;
+  /** Escape hatch — render fully custom bar content instead of the three slots. */
+  children?: ReactNode;
 };

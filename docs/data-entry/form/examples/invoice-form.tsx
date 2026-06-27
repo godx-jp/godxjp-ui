@@ -17,7 +17,7 @@ import {
 import type { DateRange } from "react-day-picker";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Alert, AlertDescription, AlertTitle } from "@godxjp/ui/feedback";
-import { Button } from "@godxjp/ui/general";
+import { Button, Logo } from "@godxjp/ui/general";
 import {
   AppShell,
   Flex,
@@ -155,12 +155,7 @@ export default function Demo() {
           product={{ name: "CoreBooks", role: "管理コンソール", color: "hsl(var(--primary))" }}
         />
       }
-      topbar={
-        <Topbar
-          product={{ name: "CoreBooks", color: "hsl(var(--primary))" }}
-          onSearchOpen={() => {}}
-        />
-      }
+      topbar={<Topbar start={<Logo label="CoreBooks" glyph="C" />} />}
     >
       <PageContainer
         title="請求書を作成"

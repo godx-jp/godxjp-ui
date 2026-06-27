@@ -445,20 +445,10 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["IdProp", "OnValueChangeProp", "ChildrenProp"],
   },
-  TopbarProductProp: {
-    group: "layout",
-    file: "components/layout.prop.ts",
-    vocabulary: ["LabelProp"],
-  },
-  TopbarProjectProp: {
-    group: "layout",
-    file: "components/layout.prop.ts",
-    vocabulary: ["LabelProp"],
-  },
   TopbarProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["ChildrenProp", "OnOpenChangeProp", "OnValueChangeProp"],
+    vocabulary: ["ChildrenProp"],
   },
   ButtonProp: {
     group: "general",
