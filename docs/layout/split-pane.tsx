@@ -200,8 +200,9 @@ export default function Demo() {
             </Flex>
           }
         >
-          {/* Main: invoice list */}
-          <Flex direction="col" gap="xs">
+          {/* Main: invoice list — gap="sm" so the bordered cards breathe (xs let the
+              borders nearly collide against the airy gap="md" detail aside). */}
+          <Flex direction="col" gap="sm">
             {INVOICES.map((inv) => {
               const active = selectedId === inv.id;
               return (

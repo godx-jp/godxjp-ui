@@ -84,8 +84,14 @@
     justify-content: space-evenly;
   }
 
-  .ui-flex-gap-xs,
+  .ui-flex-gap-xs {
+    gap: var(--space-stack-xs);
+  }
+  /* Match the other `.ui-stack-*` sizes: a stack is a vertical column, not a row.
+   * Without this, `gap="xs"` stacks (e.g. ToolbarGroup label + control) laid out
+   * as a row and squeezed CJK labels into a vertical wrap. */
   .ui-stack-xs {
+    flex-direction: column;
     gap: var(--space-stack-xs);
   }
   .ui-flex-gap-sm {
@@ -591,8 +597,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .ui-toolbar,
-  .ui-filter-bar {
+  .ui-toolbar {
     display: flex;
     flex-direction: column;
     gap: var(--filter-bar-gap);
@@ -600,41 +605,35 @@
   }
 
   @media (min-width: 640px) {
-    .ui-toolbar,
-    .ui-filter-bar {
+    .ui-toolbar {
       flex-flow: row wrap;
       align-items: flex-end;
     }
   }
 
-  .ui-toolbar-clear,
-  .ui-filter-clear {
+  .ui-toolbar-clear {
     width: 100%;
   }
 
   @media (min-width: 640px) {
-    .ui-toolbar-clear,
-    .ui-filter-clear {
+    .ui-toolbar-clear {
       width: auto;
       margin-inline-start: auto;
     }
   }
 
-  .ui-toolbar-group,
-  .ui-filter-group {
+  .ui-toolbar-group {
     min-width: 0;
     width: 100%;
   }
 
   @media (min-width: 640px) {
-    .ui-toolbar-group,
-    .ui-filter-group {
+    .ui-toolbar-group {
       width: auto;
     }
   }
 
-  .ui-toolbar-label,
-  .ui-filter-label {
+  .ui-toolbar-label {
     display: flex;
     align-items: center;
     color: hsl(var(--muted-foreground));
