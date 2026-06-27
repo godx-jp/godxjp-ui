@@ -6,7 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [16.1.0] - 2026-06-27
+## [16.1.1] - 2026-06-27
+
+### Fixed
+
+- **Card accent stripe was a 1px hairline instead of the 6px token.** The Card applied a Tailwind
+  `border` utility (utilities layer) whose `border-left-width:1px` beat the components-layer
+  `[data-accent]` rail-width rule, so only the accent COLOUR showed (a thin blue line). The base
+  border width now lives in the components-layer CSS, so the `--card-accent-rail-width` (6px)
+  override wins — while a consumer `className="border-2"` still overrides it as before.
+- **In-panel search boxes double-bordered.** `Cascader`/`TreeSelect` wrapped `CommandInput` (which
+  already draws one bottom separator + inline padding) in an extra `border-b p-2` box, and
+  `SearchSelect` used a fully-bordered `Input` inside the dropdown. All three now render the search
+  field FLUSH — one bottom separator, no nested box, tighter padding.
 
 ### Added
 

@@ -23,6 +23,10 @@
 @layer components {
   [data-slot="card"] {
     min-width: 0;
+    /* Base hairline border — width lives here (not a Tailwind `border` utility) so the
+     * `[data-accent]` rail-width override below can win within the same cascade layer. */
+    border-width: 1px;
+    border-style: solid;
     border-color: hsl(var(--card-border));
     border-radius: var(--card-radius);
     background: hsl(var(--card-background));
