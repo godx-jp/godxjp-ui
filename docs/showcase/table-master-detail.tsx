@@ -376,7 +376,7 @@ export default function Demo() {
           <CardContent flush>
             <ResizablePanelGroup orientation="horizontal" className="min-h-[460px]">
               {/* Master list */}
-              <ResizablePanel defaultSize={42} minSize={28}>
+              <ResizablePanel defaultSize="42%" minSize="28%">
                 <DataTable
                   data={EMPLOYEES}
                   columns={columns}
@@ -392,7 +392,7 @@ export default function Demo() {
               <ResizableHandle />
 
               {/* Detail pane */}
-              <ResizablePanel defaultSize={58} minSize={34}>
+              <ResizablePanel defaultSize="58%" minSize="34%">
                 <div className="h-full overflow-auto p-5">
                   {selected ? (
                     <EmployeeDetail employee={selected} />

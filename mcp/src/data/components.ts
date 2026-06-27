@@ -7256,15 +7256,21 @@ export default function PasswordBlock() {
       },
       {
         name: "defaultSize",
-        type: "number",
-        description: "ResizablePanel initial size as a percentage (0–100) of the group.",
+        type: "string | number",
+        description:
+          'ResizablePanel initial size. react-resizable-panels v4: a STRING is a unit ("35%", "20rem", "240px"); a bare NUMBER is PIXELS. For a percentage of the group pass a string like "35%" — `defaultSize={35}` means 35px (a sliver), not 35%.',
       },
       {
         name: "minSize",
-        type: "number",
-        description: "ResizablePanel minimum size (%) — drag can't shrink below this.",
+        type: "string | number",
+        description:
+          'ResizablePanel minimum size — drag can\'t shrink below this. Same unit rule: "20%" for percent, bare number = px.',
       },
-      { name: "maxSize", type: "number", description: "ResizablePanel maximum size (%)." },
+      {
+        name: "maxSize",
+        type: "string | number",
+        description: 'ResizablePanel maximum size. "60%" for percent, bare number = px.',
+      },
       {
         name: "collapsible",
         type: "boolean",
@@ -7281,7 +7287,7 @@ export default function PasswordBlock() {
     ],
     usage: [
       'DO put the layout on `<ResizablePanelGroup orientation="horizontal|vertical">`, the resizable regions in `<ResizablePanel>`, and a `<ResizableHandle>` BETWEEN every adjacent pair — a group of N panels needs N-1 handles or there is nothing to drag.',
-      "DO size panels with `defaultSize`/`minSize`/`maxSize` as PERCENTAGES (the group totals 100), not pixels — don't fight this with a fixed `w-[280px]` className on the panel.",
+      "DO express `defaultSize`/`minSize`/`maxSize` as PERCENTAGE STRINGS like `defaultSize=\"35%\"` (react-resizable-panels v4: a bare number is PIXELS, so `defaultSize={35}` renders a 35px sliver, NOT 35% — pass the string). Don't fight sizing with a fixed `w-[280px]` className on the panel.",
       "DON'T reach for ResizablePanel when the split is fixed and never user-adjustable — use a plain `Flex`/`ResponsiveGrid`, or `SplitPane` for a simple two-pane layout. Resizable is for *user-draggable* boundaries only.",
       "DO give each panel a stable `id` and use `collapsible` + `collapsedSize` for a side panel the user can fully tuck away (e.g. a filters rail), reacting via `onResize`.",
       "DON'T hand-roll a draggable divider with mouse-move listeners — the primitive handles pointer + keyboard resizing, ARIA separator semantics, and min/max clamping. Always render `<ResizableHandle>`, never a bare styled `<div>`.",
@@ -7296,10 +7302,10 @@ export default function PasswordBlock() {
     rules: [3, 6],
     example: `import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@godxjp/ui/layout";
 
-<ResizablePanelGroup>
-  <ResizablePanel>Panel A</ResizablePanel>
+<ResizablePanelGroup orientation="horizontal">
+  <ResizablePanel id="list" defaultSize="35%" minSize="20%">Panel A</ResizablePanel>
   <ResizableHandle />
-  <ResizablePanel>Panel B</ResizablePanel>
+  <ResizablePanel id="detail" defaultSize="65%" minSize="40%">Panel B</ResizablePanel>
 </ResizablePanelGroup>`,
   },
   {
