@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>godxjp-ui</title>
+    <script>
+      // GitHub Pages has no server-side rewrite, so a hard request to a standalone preview
+      // route (`/<base>/showcase|isolate|frame/<id>`) 404s here. Serve the matching entry
+      // HTML in place — keeping the URL so each entry's own pathname parser reads its <id>.
+      (function () {
+        var path = location.pathname;
+        var m = path.match(/\/(showcase|isolate|frame)\//);
+        if (!m) {
+          // Unknown path → the main catalogue app at the base root.
+          location.replace(path.slice(0, path.indexOf("/", 1) + 1) || "/");
+          return;
+        }
+        var base = path.slice(0, m.index + 1); // "/" or "/<repo>/"
+        var entry = base + m[1] + ".html"; // e.g. "/<repo>/showcase.html"
+        fetch(entry)
+          .then(function (r) {
+            return r.text();
+          })
+          .then(function (html) {
+            // Rewrite the document with the entry; its module scripts run and render the <id>
+            // from the unchanged location.pathname.
+            document.open();
+            document.write(html);
+            document.close();
+          })
+          .catch(function () {
+            document.body.textContent = "Failed to load preview.";
+          });
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

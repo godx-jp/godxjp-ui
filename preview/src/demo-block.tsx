@@ -101,9 +101,13 @@ function initialDims(
   };
 }
 
+// `import.meta.env.BASE_URL` is "/" in dev and "/<repo>/" on a GitHub Pages project page —
+// include it so the standalone tabs resolve under the deployed base, not the bare origin.
+const PREVIEW_BASE = import.meta.env.BASE_URL;
+
 export function openStoryInNewTab(storyId: string) {
   window.open(
-    `${window.location.origin}/isolate/${encodeURIComponent(storyId)}`,
+    `${window.location.origin}${PREVIEW_BASE}isolate/${encodeURIComponent(storyId)}`,
     "_blank",
     "noopener,noreferrer",
   );
@@ -123,7 +127,7 @@ export function openStoryFrameInNewTab(storyId: string, view?: DemoBlockInitialV
   if (view?.width != null) params.set("w", String(view.width));
   if (view?.height != null) params.set("h", String(view.height));
   const qs = params.toString();
-  const url = `${window.location.origin}/frame/${encodeURIComponent(storyId)}${qs ? `?${qs}` : ""}`;
+  const url = `${window.location.origin}${PREVIEW_BASE}frame/${encodeURIComponent(storyId)}${qs ? `?${qs}` : ""}`;
   window.open(url, "_blank", "noopener,noreferrer");
 }
 
