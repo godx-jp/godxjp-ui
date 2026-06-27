@@ -12,7 +12,7 @@ import {
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * formatDate — MANDATORY date/time display function from @godxjp/ui/datetime.
+ * formatDate · MANDATORY date/time display function from @godxjp/ui/datetime.
  * Reads locale, timezone, dateFormat, and timeFormat from AppProvider context.
  * NEVER call date-fns or Intl.DateTimeFormat directly; use formatDate instead.
  * Composed only from real @godxjp/ui components. All inputs are fixed ISO strings.
@@ -35,7 +35,7 @@ export default function Demo() {
     >
       <PageContainer
         title="formatDate"
-        subtitle="日付・時刻・相対表示の統一フォーマット関数 — AppProvider コンテキストを自動参照"
+        subtitle="日付・時刻・相対表示の統一フォーマット関数 · AppProvider コンテキストを自動参照"
       >
         <Flex direction="col" gap="lg">
           {/* Overview */}
@@ -63,7 +63,7 @@ export default function Demo() {
           {/* kind: "date" */}
           <Card>
             <CardHeader>
-              <CardTitle>kind: &quot;date&quot; — 日付のみ</CardTitle>
+              <CardTitle>kind: &quot;date&quot; · 日付のみ</CardTitle>
               <CardDescription>
                 ISO yyyy-MM-dd を渡すと auto で &quot;date&quot; と判定されるが、 kind:
                 &quot;date&quot; を明示すると ISO datetime 文字列でも日付部分だけを表示できる。
@@ -85,7 +85,7 @@ export default function Demo() {
           {/* kind: "time" */}
           <Card>
             <CardHeader>
-              <CardTitle>kind: &quot;time&quot; — 時刻のみ</CardTitle>
+              <CardTitle>kind: &quot;time&quot; · 時刻のみ</CardTitle>
               <CardDescription>
                 HH:mm 文字列は auto-detection で &quot;time&quot; と判定される。 AppProvider の
                 timeFormat (24h / 12h) に従い出力が切り替わる。
@@ -107,7 +107,7 @@ export default function Demo() {
           {/* kind: "datetime" */}
           <Card>
             <CardHeader>
-              <CardTitle>kind: &quot;datetime&quot; — 日時</CardTitle>
+              <CardTitle>kind: &quot;datetime&quot; · 日時</CardTitle>
               <CardDescription>
                 ISO datetime 文字列を渡すと auto-detection で &quot;datetime&quot; と判定される。
                 取引タイムスタンプや更新日時の表示に使用する。
@@ -129,7 +129,7 @@ export default function Demo() {
           {/* kind: "long" */}
           <Card>
             <CardHeader>
-              <CardTitle>kind: &quot;long&quot; — 長形式 (PPP)</CardTitle>
+              <CardTitle>kind: &quot;long&quot; · 長形式 (PPP)</CardTitle>
               <CardDescription>
                 モーダルや詳細パネルで年月日を読みやすく表示するときに使う。
                 ロケールに合わせた月名や曜日を含む完全形式で出力される。
@@ -151,7 +151,7 @@ export default function Demo() {
           {/* kind: "relative" */}
           <Card>
             <CardHeader>
-              <CardTitle>kind: &quot;relative&quot; — 相対表示</CardTitle>
+              <CardTitle>kind: &quot;relative&quot; · 相対表示</CardTitle>
               <CardDescription>
                 アクティビティフィードや監査ログで &quot;3日前&quot; のような相対表現を出力する。
                 ロケールに応じた文字列 (ja: &quot;3日前&quot; / en: &quot;3 days ago&quot;) になる。
@@ -173,7 +173,7 @@ export default function Demo() {
           {/* null / undefined handling */}
           <Card>
             <CardHeader>
-              <CardTitle>null / undefined — em-dash フォールバック</CardTitle>
+              <CardTitle>null / undefined · em-dash フォールバック</CardTitle>
               <CardDescription>
                 null / undefined / 空文字を渡すと em-dash (&mdash;) を返す。
                 呼び出し前に三項演算子でガードする必要はない。

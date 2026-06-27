@@ -23,7 +23,7 @@ import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Density — design-token foundation. One knob (`<PageContainer density>`) swaps a
+ * Density · design-token foundation. One knob (`<PageContainer density>`) swaps a
  * single CSS class (`.ui-density-compact|default|comfortable`) that retunes
  * --control-height, --control-padding-x, --checkbox-size, --switch-* and the φ
  * unit. The first card renders the SAME real controls inside each density-scoped
@@ -109,14 +109,14 @@ export default function Demo() {
   return (
     <PageContainer
       title="Density"
-      subtitle="One knob — <PageContainer density> — retunes controls, tables, checkbox/switch, φ unit"
+      subtitle="One knob · <PageContainer density> · retunes controls, tables, checkbox/switch, φ unit"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Same UI, three densities</CardTitle>
             <CardDescription>
-              Set density once per page via {"<PageContainer density>"} — never the .ui-density-*
+              Set density once per page via {"<PageContainer density>"} · never the .ui-density-*
               classes directly. Flip the one prop and Input, Select, Checkbox, Switch and Button all
               re-tune their height, padding and the φ rhythm together. 44px (comfortable) is the
               WCAG / Digital Agency touch floor.
@@ -148,7 +148,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Table row density (DataTable density)</CardTitle>
             <CardDescription>
-              The DataTable owns its own density axis — density=&quot;compact&quot; vs
+              The DataTable owns its own density axis: density=&quot;compact&quot; vs
               density=&quot;comfortable&quot; swaps --table-row-height and --table-cell-padding-y.
               The density toggle in the table toolbar drives the same prop at runtime.
             </CardDescription>
@@ -194,7 +194,7 @@ export default function Demo() {
             <CardTitle>Page-level knob (PageContainer density)</CardTitle>
             <CardDescription>
               In a real screen you pass density to the page shell once; this nested PageContainer is
-              the comfortable knob applied to a whole form — note the taller controls and looser φ
+              the comfortable knob applied to a whole form. Note the taller controls and looser φ
               rhythm versus the compact column above.
             </CardDescription>
           </CardHeader>
@@ -202,7 +202,7 @@ export default function Demo() {
             <PageContainer
               density="comfortable"
               title="請求書を作成"
-              subtitle="comfortable density — login / mobile surfaces"
+              subtitle="comfortable density · login / mobile surfaces"
             >
               <Flex direction="col" gap="md">
                 <Input defaultValue="2024-04-12" aria-label="発行日" />

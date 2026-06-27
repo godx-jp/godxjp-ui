@@ -215,11 +215,11 @@ export default function Demo() {
                   <TableHead className="w-24">社員番号</TableHead>
                   <TableHead>氏名</TableHead>
                   <TableHead className="hidden md:table-cell">部署</TableHead>
-                  <TableHead className="text-right">勤務日数</TableHead>
-                  <TableHead className="text-right">残業時間</TableHead>
-                  <TableHead className="text-right">遅刻</TableHead>
-                  <TableHead className="text-right">有給</TableHead>
-                  <TableHead className="text-right">総支給額</TableHead>
+                  <TableHead className="text-end">勤務日数</TableHead>
+                  <TableHead className="text-end">残業時間</TableHead>
+                  <TableHead className="text-end">遅刻</TableHead>
+                  <TableHead className="text-end">有給</TableHead>
+                  <TableHead className="text-end">総支給額</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -231,15 +231,15 @@ export default function Demo() {
                     <TableCell className="text-muted-foreground hidden md:table-cell">
                       {r.dept}
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">
+                    <TableCell className="text-end tabular-nums">
                       {count.format(r.workDays)}
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">
+                    <TableCell className="text-end tabular-nums">
                       <Badge tone={overtimeTone(r.overtime)} variant="outline">
                         {hours.format(r.overtime)}h
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">
+                    <TableCell className="text-end tabular-nums">
                       {r.late > 0 ? (
                         <Badge tone="destructive" variant="outline">
                           {count.format(r.late)}
@@ -248,10 +248,10 @@ export default function Demo() {
                         <Text tone="muted">0</Text>
                       )}
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">
+                    <TableCell className="text-end tabular-nums">
                       {count.format(r.paidLeave)}
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">{yen.format(r.pay)}</TableCell>
+                    <TableCell className="text-end tabular-nums">{yen.format(r.pay)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -264,19 +264,19 @@ export default function Demo() {
                   <TableCell className="font-semibold">合計</TableCell>
                   <TableCell />
                   <TableCell className="hidden md:table-cell" />
-                  <TableCell className="text-right font-semibold tabular-nums">
+                  <TableCell className="text-end font-semibold tabular-nums">
                     {count.format(totals.workDays)}
                   </TableCell>
-                  <TableCell className="text-right font-semibold tabular-nums">
+                  <TableCell className="text-end font-semibold tabular-nums">
                     {hours.format(totals.overtime)}h
                   </TableCell>
-                  <TableCell className="text-right font-semibold tabular-nums">
+                  <TableCell className="text-end font-semibold tabular-nums">
                     {count.format(totals.late)}
                   </TableCell>
-                  <TableCell className="text-right font-semibold tabular-nums">
+                  <TableCell className="text-end font-semibold tabular-nums">
                     {count.format(totals.paidLeave)}
                   </TableCell>
-                  <TableCell className="text-right font-semibold tabular-nums">
+                  <TableCell className="text-end font-semibold tabular-nums">
                     {yen.format(totals.pay)}
                   </TableCell>
                 </TableRow>
@@ -299,7 +299,7 @@ export default function Demo() {
         <Badge tone="warning" variant="outline">
           25h~
         </Badge>
-        <Text size="xs" tone="muted" className="ml-2">
+        <Text size="xs" tone="muted" className="ms-2">
           遅刻:
         </Text>
         <Badge tone="destructive" variant="outline">

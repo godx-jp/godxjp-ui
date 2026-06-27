@@ -456,7 +456,7 @@ export default function Demo() {
                   条件をクリア
                 </Button>
               )}
-              <Text size="xs" tone="muted" tabular className="ml-auto">
+              <Text size="xs" tone="muted" tabular className="ms-auto">
                 {rows.length} 件表示
               </Text>
             </Flex>
@@ -507,19 +507,19 @@ export default function Demo() {
               </Text>
               <Badge tone="success" variant="outline">
                 出勤{" "}
-                <Text as="span" tabular className="ml-1">
+                <Text as="span" tabular className="ms-1">
                   {tally.present}
                 </Text>
               </Badge>
               <Badge tone="warning" variant="outline">
                 遅刻{" "}
-                <Text as="span" tabular className="ml-1">
+                <Text as="span" tabular className="ms-1">
                   {tally.late}
                 </Text>
               </Badge>
               <Badge tone="muted" variant="outline">
                 承認待ち{" "}
-                <Text as="span" tabular className="ml-1">
+                <Text as="span" tabular className="ms-1">
                   {tally.pendingApproval}
                 </Text>
               </Badge>

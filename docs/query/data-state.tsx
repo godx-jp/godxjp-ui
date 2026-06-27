@@ -16,7 +16,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { DataState } from "@godxjp/ui/query";
 
 /**
- * DataState — drives skeleton / error / empty / success for ONE useQuery block.
+ * DataState · drives skeleton / error / empty / success for ONE useQuery block.
  * It IS the conditional; never branch on isPending/isError yourself. Composed
  * only from real @godxjp/ui components + @tanstack/react-query.
  */
@@ -65,7 +65,7 @@ function ErrorBlock() {
   const query = useQuery<Invoice[]>({
     queryKey: ["ds-error"],
     queryFn: async () => {
-      throw new Error("サーバーエラー (503) — 取得に失敗しました");
+      throw new Error("サーバーエラー (503) · 取得に失敗しました");
     },
   });
   return (
@@ -80,7 +80,7 @@ export default function Demo() {
     <QueryClientProvider client={queryClient}>
       <PageContainer
         title="DataState"
-        subtitle="useQuery lifecycle — skeleton / error / empty / success in one widget"
+        subtitle="useQuery lifecycle · skeleton / error / empty / success in one widget"
       >
         <Flex direction="col" gap="lg">
           <Card>

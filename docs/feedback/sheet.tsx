@@ -31,21 +31,21 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { SlidersHorizontal } from "lucide-react";
 
 /**
- * Sheet — side-panel drawer (Radix Dialog). Slides in from an edge. Compose
+ * Sheet · side-panel drawer (Radix Dialog). Slides in from an edge. Compose
  * Sheet > SheetTrigger (asChild) > SheetContent(side) > SheetHeader >
  * SheetTitle (a11y required) > scrollable body > SheetFooter.
  *
  * SheetFooter is an Ant-Design-style PINNED action bar: it sticks to the bottom
  * via mt-auto, draws a full-bleed top border, and right-aligns its actions with
  * the PRIMARY button rightmost. A destructive / clear / reset action goes
- * far-LEFT — give THAT button className="mr-auto". Never stack footer buttons
+ * far-LEFT · give THAT button className="me-auto". Never stack footer buttons
  * full-width or center them. See cardinal rule #41 "Drawer & dialog footer layout".
  *
- * Fields are real FormField + Input + Select primitives — never faked with
+ * Fields are real FormField + Input + Select primitives · never faked with
  * styled <span>/<div>. Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
-  // Card 1 — pre-opened so the pinned footer + clear-left/apply-right layout is visible at rest.
+  // Card 1 · pre-opened so the pinned footer + clear-left/apply-right layout is visible at rest.
   const [filterOpen, setFilterOpen] = useState(true);
   const [account, setAccount] = useState("all");
   const [status, setStatus] = useState("all");
@@ -53,27 +53,27 @@ export default function Demo() {
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
 
-  // Card 2 — quick-edit form: Cancel + Save, both right-aligned (primary rightmost).
+  // Card 2 · quick-edit form: Cancel + Save, both right-aligned (primary rightmost).
   const [editOpen, setEditOpen] = useState(false);
   const [companyName, setCompanyName] = useState("株式会社サンプル");
   const [registration, setRegistration] = useState("T1234567890123");
 
-  // Card 3 — edit with a destructive action: 削除 far-left (mr-auto), Cancel + Save right.
+  // Card 3 · edit with a destructive action: 削除 far-left (mr-auto), Cancel + Save right.
   const [recordOpen, setRecordOpen] = useState(false);
   const [memo, setMemo] = useState("4月度 経費精算");
 
   return (
     <PageContainer
       title="Sheet"
-      subtitle="side-panel drawer — filters, quick-edit, detail peek (NOT a Dialog replacement)"
+      subtitle="side-panel drawer · filters, quick-edit, detail peek (NOT a Dialog replacement)"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Advanced filter (pre-opened, side=right)</CardTitle>
             <CardDescription>
-              The defining footer pattern: actions are right-aligned, the primary 適用 is rightmost,
-              and the clear/reset action クリア moves far-LEFT via className=&quot;mr-auto&quot;.
+              The defining footer pattern: actions are end-aligned, the primary 適用 is last,
+              and the clear/reset action クリア moves to the leading edge via className=&quot;me-auto&quot;.
               The footer is pinned to the bottom with a full-bleed top border; the body scrolls
               between a fixed header and footer (header inset == footer inset). Fields are real
               FormField + Select + Input.
@@ -160,7 +160,7 @@ export default function Demo() {
                 <SheetFooter>
                   <Button
                     variant="outline"
-                    className="mr-auto"
+                    className="me-auto"
                     onClick={() => {
                       setAccount("all");
                       setStatus("all");
@@ -195,7 +195,7 @@ export default function Demo() {
               </SheetTrigger>
               <SheetContent side="right">
                 <SheetHeader>
-                  <SheetTitle>取引先編集 — 株式会社サンプル</SheetTitle>
+                  <SheetTitle>取引先編集 · 株式会社サンプル</SheetTitle>
                   <SheetDescription>取引先の基本情報を編集します。</SheetDescription>
                 </SheetHeader>
                 <SheetBody className="flex flex-col gap-4">
@@ -229,9 +229,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Edit with destructive action (削除 far-left)</CardTitle>
             <CardDescription>
-              A destructive / clear / reset action goes far-LEFT via className=&quot;mr-auto&quot;
-              with variant=&quot;destructive&quot;, while キャンセル + 保存 stay grouped on the
-              right. This is the same mr-auto slot the filter&apos;s クリア uses.
+              A destructive / clear / reset action goes to the leading edge via className=&quot;me-auto&quot;
+              with variant=&quot;destructive&quot;, while キャンセル + 保存 stay grouped at the
+              end. This is the same me-auto slot the filter&apos;s クリア uses.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -243,7 +243,7 @@ export default function Demo() {
               </SheetTrigger>
               <SheetContent side="right">
                 <SheetHeader>
-                  <SheetTitle>仕訳編集 — #2024-0412</SheetTitle>
+                  <SheetTitle>仕訳編集 · #2024-0412</SheetTitle>
                   <SheetDescription>摘要を編集します。削除は元に戻せません。</SheetDescription>
                 </SheetHeader>
                 <SheetBody className="flex flex-col gap-4">
@@ -258,7 +258,7 @@ export default function Demo() {
                 <SheetFooter>
                   <Button
                     variant="destructive"
-                    className="mr-auto"
+                    className="me-auto"
                     onClick={() => setRecordOpen(false)}
                   >
                     削除

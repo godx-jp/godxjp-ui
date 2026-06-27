@@ -243,7 +243,7 @@ function ItemListCard({
     <Card
       density="tight"
       className={
-        "rounded-[10px] transition-colors " +
+        "rounded-xl transition-colors " +
         (selected
           ? "border-primary bg-[color-mix(in_oklch,var(--primary)_8%,transparent)]"
           : "hover:border-primary")
@@ -255,7 +255,7 @@ function ItemListCard({
             checked={selected}
             onCheckedChange={onToggle}
             aria-label={`選択 ${item.name}`}
-            className="mt-0.5 size-[22px]"
+            className="mt-0.5 size-5"
           />
         ) : null}
         <div className="min-w-0 flex-1">
@@ -289,7 +289,7 @@ function PackingListCard({ packing, onTap }: { packing: Packing; onTap?: () => v
       tabIndex={onTap ? 0 : undefined}
       onClick={onTap}
       className={
-        "rounded-[10px] transition-colors " + (onTap ? "hover:border-primary cursor-pointer" : "")
+        "rounded-xl transition-colors " + (onTap ? "hover:border-primary cursor-pointer" : "")
       }
     >
       <CardContent solo>
@@ -319,7 +319,7 @@ function PackingListCard({ packing, onTap }: { packing: Packing; onTap?: () => v
 function SectionHeader({ children, count }: { children: React.ReactNode; count?: number }) {
   return (
     <div className="flex items-center justify-between px-0.5">
-      <Text size="2xs" weight="medium" tone="muted" className="tracking-[0.08em] uppercase">
+      <Text size="2xs" weight="medium" tone="muted" className="tracking-wider uppercase">
         {children}
       </Text>
       {count != null ? (
@@ -335,8 +335,8 @@ function SectionHeader({ children, count }: { children: React.ReactNode; count?:
 
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto w-[390px] max-w-full shrink-0">
-      <div className="bg-background flex h-[844px] max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-[28px] border">
+    <div className="mx-auto w-96 max-w-full shrink-0">
+      <div className="bg-background flex min-h-[844px] max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-2xl border">
         {children}
       </div>
     </div>
@@ -369,7 +369,7 @@ function TabBar({ active, onChange }: { active: string; onChange: (id: string) =
             onClick={() => onChange(t.id)}
             aria-current={isActive ? "page" : undefined}
             className={
-              "h-[64px] flex-col gap-1 rounded-none text-[11px] font-medium " +
+              "h-16 flex-col gap-1 rounded-none text-[var(--font-size-2xs)] font-medium " +
               (isActive ? "text-primary" : "text-muted-foreground")
             }
           >
@@ -394,13 +394,13 @@ function ItemLookupSheet({
   const [code, setCode] = React.useState("");
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="rounded-t-[16px]">
+      <SheetContent side="bottom" className="rounded-t-2xl">
         <SheetHeader>
           <SheetTitle>Quét hoặc nhập mã</SheetTitle>
         </SheetHeader>
         <SheetBody className="flex flex-col gap-4">
           {/* Viewfinder placeholder — a Card surface, not a hand-rolled illustration */}
-          <div className="border-border bg-secondary/40 flex h-40 items-center justify-center rounded-[12px] border-2 border-dashed">
+          <div className="border-border bg-secondary/40 flex h-40 items-center justify-center rounded-xl border-2 border-dashed">
             <div className="flex flex-col items-center gap-2">
               <ScanLine
                 className="size-7 text-[color:var(--attention,var(--warning))]"
@@ -460,7 +460,7 @@ function PackagePickerSheet({
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="rounded-t-[16px]">
+      <SheetContent side="bottom" className="rounded-t-2xl">
         <SheetHeader>
           <SheetTitle>Gán vào kiện</SheetTitle>
         </SheetHeader>
@@ -516,7 +516,7 @@ function ItemFormSheet({
   const [qty, setQty] = React.useState("1");
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="max-h-[80vh] rounded-t-[16px]">
+      <SheetContent side="bottom" className="max-h-[calc(80vh)] rounded-t-2xl">
         <SheetHeader>
           <SheetTitle>Thêm hàng mới</SheetTitle>
         </SheetHeader>
@@ -558,7 +558,7 @@ function ItemFormSheet({
                     key={d.id}
                     htmlFor={rowId}
                     className={
-                      "flex cursor-pointer items-center gap-3 rounded-[10px] border p-3 transition-colors " +
+                      "flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors " +
                       (checked
                         ? "border-primary bg-[color-mix(in_oklch,var(--primary)_8%,transparent)]"
                         : "hover:border-primary")
@@ -649,7 +649,7 @@ function InboundTab({
             <ToggleGroupItem
               key={f.id}
               value={f.id}
-              className="h-9 shrink-0 gap-1.5 rounded-full px-3 text-[13px] whitespace-nowrap"
+              className="h-9 shrink-0 gap-1.5 rounded-full px-3 text-[var(--font-size-xs)] whitespace-nowrap"
             >
               {f.label}
               <Text size="xs" mono tabular className="opacity-70">
@@ -662,7 +662,7 @@ function InboundTab({
         {state === "loading" ? (
           <Flex direction="col" gap="md" aria-busy="true">
             {Array.from({ length: 3 }).map((_, i) => (
-              <Card key={i} density="tight" className="rounded-[10px]">
+              <Card key={i} density="tight" className="rounded-xl">
                 <CardContent solo>
                   <Skeleton className="h-4 w-3/5" />
                   <Skeleton className="mt-2 h-3 w-2/5" />
@@ -773,7 +773,7 @@ function PackingTab({ onScan }: { onScan: () => void }) {
           <Card
             density="tight"
             accent="primary"
-            className="border-primary rounded-[10px] bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
+            className="border-primary rounded-xl bg-[color-mix(in_oklch,var(--primary)_6%,transparent)]"
           >
             <CardContent solo>
               <div className="flex items-center justify-between">
@@ -781,7 +781,7 @@ function PackingTab({ onScan }: { onScan: () => void }) {
                   size="2xs"
                   weight="medium"
                   tone="muted"
-                  className="tracking-[0.08em] uppercase"
+                  className="tracking-wider uppercase"
                 >
                   Kiện đang làm
                 </Text>
@@ -832,18 +832,18 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
           onValueChange={(v) => {
             if (v) setSeg(v);
           }}
-          className="bg-secondary/60 grid w-full grid-cols-3 gap-1 rounded-[10px] p-1"
+          className="bg-secondary/60 grid w-full grid-cols-3 gap-1 rounded-xl p-1"
         >
-          <ToggleGroupItem value="seal" className="h-9 rounded-[8px] text-[13px] whitespace-nowrap">
+          <ToggleGroupItem value="seal" className="h-9 rounded-xl text-[var(--font-size-xs)] whitespace-nowrap">
             Chờ niêm phong
           </ToggleGroupItem>
           <ToggleGroupItem
             value="handoff"
-            className="h-9 rounded-[8px] text-[13px] whitespace-nowrap"
+            className="h-9 rounded-xl text-[var(--font-size-xs)] whitespace-nowrap"
           >
             Chờ bàn giao
           </ToggleGroupItem>
-          <ToggleGroupItem value="done" className="h-9 rounded-[8px] text-[13px] whitespace-nowrap">
+          <ToggleGroupItem value="done" className="h-9 rounded-xl text-[var(--font-size-xs)] whitespace-nowrap">
             Đã bàn giao
           </ToggleGroupItem>
         </ToggleGroup>
@@ -857,7 +857,7 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
         </SectionHeader>
         <Flex direction="col" gap="md">
           {OUTBOUND.map((p) => (
-            <Card key={p.id} density="tight" className="rounded-[10px]">
+            <Card key={p.id} density="tight" className="rounded-xl">
               <CardContent solo>
                 <div className="flex items-center justify-between gap-2">
                   <Text as="code" size="sm" weight="bold" tabular>
@@ -932,7 +932,7 @@ export default function AgencyHandyShowcase() {
         <StatusBar />
 
         {/* App header (52px) — title + iOS text-action select-mode entry (inbound only) */}
-        <header className="flex h-[52px] shrink-0 items-center justify-between border-b px-4">
+        <header className="flex h-14 shrink-0 items-center justify-between border-b px-4">
           <Heading level={3} as="h1" className="whitespace-nowrap">
             {headerTitle}
           </Heading>
@@ -965,7 +965,7 @@ export default function AgencyHandyShowcase() {
                   <ToggleGroupItem
                     key={s}
                     value={s}
-                    className="size-7 rounded-md p-0 text-[10px] uppercase"
+                    className="size-7 rounded-md p-0 text-[var(--font-size-2xs)] uppercase"
                     title={s}
                   >
                     {s[0]}

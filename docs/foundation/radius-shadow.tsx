@@ -10,12 +10,12 @@ import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
- * Radius & Shadow — design-token foundation. base radius 6px; shadows stay flat
- * (cards have NO shadow at rest — elevation only climbs at popover / dialog).
+ * Radius & Shadow · design-token foundation. base radius 6px; shadows stay flat
+ * (cards have NO shadow at rest · elevation only climbs at popover / dialog).
  * Boxes render the real token var; composed only from real @godxjp/ui components.
  */
 // DS authors the base --radius (6px) and derives sm/md/lg in @theme. --radius-xl
-// and --radius-full are NOT overridden — they fall through to Tailwind defaults.
+// and --radius-full are NOT overridden · they fall through to Tailwind defaults.
 const radii = [
   { token: "--radius-sm", px: "2px", source: "ds" as const },
   { token: "--radius-md", px: "4px", source: "ds" as const },
@@ -35,7 +35,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Radius & Shadow"
-      subtitle="6px base radius · flat by default — elevation climbs only at popover / dialog"
+      subtitle="6px base radius · flat by default · elevation climbs only at popover / dialog"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -43,7 +43,7 @@ export default function Demo() {
             <CardTitle>Corner radius</CardTitle>
             <CardDescription>
               The system authors the base 6px radius and derives sm/md/lg from it. xl and full are
-              not overridden — they fall through to Tailwind defaults.
+              not overridden; they fall through to Tailwind defaults.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -80,7 +80,7 @@ export default function Demo() {
             <CardTitle>Elevation</CardTitle>
             <CardDescription>
               Cards carry a 1px border and NO shadow at rest. Shadow appears only on floating
-              surfaces — popover and dialog.
+              surfaces: popover and dialog.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -120,7 +120,7 @@ export default function Demo() {
                     </CardContent>
                   </Card>
                   <Text as="div" size="xs" tone="muted">
-                    resting surface — flat
+                    resting surface · flat
                   </Text>
                 </Flex>
                 <Flex direction="col" gap="xs">
@@ -136,7 +136,7 @@ export default function Demo() {
                     </Text>
                   </div>
                   <Text as="div" size="xs" tone="muted">
-                    floating surface — elevated
+                    floating surface · elevated
                   </Text>
                 </Flex>
               </ResponsiveGrid>

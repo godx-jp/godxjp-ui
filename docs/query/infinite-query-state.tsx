@@ -15,7 +15,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { InfiniteQueryState, flattenItemPages } from "@godxjp/ui/query";
 
 /**
- * InfiniteQueryState — useInfiniteQuery widget: flattens pages, renders the
+ * InfiniteQueryState · useInfiniteQuery widget: flattens pages, renders the
  * skeleton/empty/error states, and a built-in load-more footer. Use
  * flattenItemPages for `{ items }` pages. Composed from real @godxjp/ui +
  * @tanstack/react-query.
@@ -74,7 +74,7 @@ export default function Demo() {
     <QueryClientProvider client={queryClient}>
       <PageContainer
         title="InfiniteQueryState"
-        subtitle="useInfiniteQuery — flatten pages + load-more footer"
+        subtitle="useInfiniteQuery · flatten pages + load-more footer"
       >
         <Flex direction="col" gap="lg">
           <Card>

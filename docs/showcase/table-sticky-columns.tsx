@@ -182,8 +182,8 @@ const EMPLOYEES: Employee[] = [
  * `bg-inherit` lets each row's tint (selected/hover) bleed into the pinned cell.
  * Header cells inherit `bg-secondary`; body cells inherit the row background.
  */
-const PIN_LEFT = "sticky left-0 z-20 bg-inherit border-r border-border";
-const PIN_RIGHT = "sticky right-0 z-20 bg-inherit border-l border-border";
+const PIN_LEFT = "sticky start-0 z-20 bg-inherit border-e border-border";
+const PIN_RIGHT = "sticky end-0 z-20 bg-inherit border-s border-border";
 
 function MarkCell({ mark }: { mark: Mark }) {
   const def = MARK[mark];
@@ -215,7 +215,7 @@ export default function Demo() {
 
   return (
     <PageContainer
-      title="固定列 — 週次勤怠マトリクス"
+      title="固定列 · 週次勤怠マトリクス"
       subtitle="先頭列（従業員）と末尾列（操作）を固定し、中央の日付グリッドのみ横スクロール。固定端には inset シャドウ。"
       density="compact"
     >
@@ -246,9 +246,9 @@ export default function Demo() {
                         </span>
                       </TableHead>
                     ))}
-                    <TableHead className="text-right tabular-nums">実働</TableHead>
+                    <TableHead className="text-end tabular-nums">実働</TableHead>
                     {/* Pinned-right action header */}
-                    <TableHead className={`${PIN_RIGHT} w-28 min-w-28 text-right`}>操作</TableHead>
+                    <TableHead className={`${PIN_RIGHT} w-28 min-w-28 text-end`}>操作</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -281,7 +281,7 @@ export default function Demo() {
                         ))}
 
                         {/* 実働合計 — numeric, tabular */}
-                        <TableCell className="text-right align-middle tabular-nums">
+                        <TableCell className="text-end align-middle tabular-nums">
                           {emp.total.toFixed(1)}
                           <Text size="2xs" tone="muted">
                             h
@@ -289,7 +289,7 @@ export default function Demo() {
                         </TableCell>
 
                         {/* Pinned-right: 操作 */}
-                        <TableCell className={`${PIN_RIGHT} w-28 min-w-28 text-right align-middle`}>
+                        <TableCell className={`${PIN_RIGHT} w-28 min-w-28 text-end align-middle`}>
                           <Button
                             size="sm"
                             variant={isApproved ? "outline" : "default"}

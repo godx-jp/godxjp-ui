@@ -225,7 +225,7 @@ function GroupHeaderRow({
   const Chevron = open ? ChevronDown : ChevronRight;
   return (
     <TableRow className="bg-secondary hover:bg-secondary border-b">
-      <TableCell className="py-2 pr-0 pl-2" colSpan={2}>
+      <TableCell className="py-2 pe-0 ps-2" colSpan={2}>
         <Button
           variant="ghost"
           size="sm"
@@ -236,15 +236,15 @@ function GroupHeaderRow({
         >
           <Chevron className="text-muted-foreground size-4" aria-hidden="true" />
           {group.label}
-          <Badge variant="outline" tone="neutral" className="ml-1">
+          <Badge variant="outline" tone="neutral" className="ms-1">
             {group.members.length}名
           </Badge>
         </Button>
       </TableCell>
-      <TableCell className="py-2 text-right font-medium tabular-nums">{s.days}日</TableCell>
-      <TableCell className="py-2 text-right font-medium tabular-nums">{fmtH(s.work)}</TableCell>
-      <TableCell className="py-2 text-right font-medium tabular-nums">{fmtH(s.overtime)}</TableCell>
-      <TableCell className="py-2 text-right tabular-nums">
+      <TableCell className="py-2 text-end font-medium tabular-nums">{s.days}日</TableCell>
+      <TableCell className="py-2 text-end font-medium tabular-nums">{fmtH(s.work)}</TableCell>
+      <TableCell className="py-2 text-end font-medium tabular-nums">{fmtH(s.overtime)}</TableCell>
+      <TableCell className="py-2 text-end tabular-nums">
         {s.late > 0 ? (
           <Badge variant="outline" tone="warning">
             {s.late}回
@@ -265,12 +265,12 @@ function GroupHeaderRow({
 function MemberRow({ m }: { m: Employee }) {
   return (
     <TableRow>
-      <TableCell className="text-muted-foreground pl-10 font-mono text-xs">{m.id}</TableCell>
+      <TableCell className="text-muted-foreground ps-10 font-mono text-xs">{m.id}</TableCell>
       <TableCell>{m.name}</TableCell>
-      <TableCell className="text-right tabular-nums">{m.days}日</TableCell>
-      <TableCell className="text-right tabular-nums">{fmtH(m.work)}</TableCell>
-      <TableCell className="text-right tabular-nums">{fmtH(m.overtime)}</TableCell>
-      <TableCell className="text-right tabular-nums">
+      <TableCell className="text-end tabular-nums">{m.days}日</TableCell>
+      <TableCell className="text-end tabular-nums">{fmtH(m.work)}</TableCell>
+      <TableCell className="text-end tabular-nums">{fmtH(m.overtime)}</TableCell>
+      <TableCell className="text-end tabular-nums">
         {m.late > 0 ? m.late : <Text tone="muted">—</Text>}
         {m.late > 0 ? "回" : ""}
       </TableCell>
@@ -311,10 +311,10 @@ function GroupedTable({
           <TableRow>
             <TableHead className="w-40">従業員番号</TableHead>
             <TableHead>氏名 / 部署</TableHead>
-            <TableHead className="w-20 text-right">勤務日数</TableHead>
-            <TableHead className="w-24 text-right">総労働</TableHead>
-            <TableHead className="w-24 text-right">残業</TableHead>
-            <TableHead className="w-20 text-right">遅刻</TableHead>
+            <TableHead className="w-20 text-end">勤務日数</TableHead>
+            <TableHead className="w-24 text-end">総労働</TableHead>
+            <TableHead className="w-24 text-end">残業</TableHead>
+            <TableHead className="w-20 text-end">遅刻</TableHead>
             <TableHead className="w-28 text-center">状態</TableHead>
           </TableRow>
         </TableHeader>
@@ -333,14 +333,14 @@ function GroupedTable({
             <TableCell className="py-2 font-medium" colSpan={2}>
               総計 · 全{groups.reduce((n, g) => n + g.members.length, 0)}名
             </TableCell>
-            <TableCell className="py-2 text-right font-bold tabular-nums">{total.days}日</TableCell>
-            <TableCell className="py-2 text-right font-bold tabular-nums">
+            <TableCell className="py-2 text-end font-bold tabular-nums">{total.days}日</TableCell>
+            <TableCell className="py-2 text-end font-bold tabular-nums">
               {fmtH(total.work)}
             </TableCell>
-            <TableCell className="py-2 text-right font-bold tabular-nums">
+            <TableCell className="py-2 text-end font-bold tabular-nums">
               {fmtH(total.overtime)}
             </TableCell>
-            <TableCell className="py-2 text-right font-bold tabular-nums">{total.late}回</TableCell>
+            <TableCell className="py-2 text-end font-bold tabular-nums">{total.late}回</TableCell>
             <TableCell className="py-2" />
           </TableRow>
         </TableBody>
@@ -353,7 +353,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="グループ集計"
-      subtitle="部署別の勤怠サマリ — グループヘッダー（部署名 + 人数 + 右寄せ小計）+ 折りたたみ + 総計"
+      subtitle="部署別の勤怠サマリ · グループヘッダー（部署名 + 人数 + 右寄せ小計）+ 折りたたみ + 総計"
       density="compact"
     >
       <Flex direction="col" gap="lg">

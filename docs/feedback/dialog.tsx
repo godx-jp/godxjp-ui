@@ -13,7 +13,7 @@ import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Dialog — compound controlled modal for form-style flows. Always control via
+ * Dialog · compound controlled modal for form-style flows. Always control via
  * open + onOpenChange. Include DialogHeader > DialogTitle (required for a11y).
  * Use DialogFooter for primary/cancel actions.
  */
@@ -24,7 +24,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Dialog"
-      subtitle="compound modal — form flows, detail pop-ups, multi-step wizards"
+      subtitle="compound modal · form flows, detail pop-ups, multi-step wizards"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -82,7 +82,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Read-only detail pop-up</CardTitle>
             <CardDescription>
-              No footer action buttons needed — just a close trigger. Suitable for audit trail,
+              No footer action buttons needed, just a close trigger. Suitable for audit trail,
               attachment preview, or approval history.
             </CardDescription>
           </CardHeader>
@@ -96,7 +96,7 @@ export default function Demo() {
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle>取引 #JE-2024-0042</DialogTitle>
-                  <DialogDescription>2024年3月31日 — 月次決算仕訳</DialogDescription>
+                  <DialogDescription>2024年3月31日 · 月次決算仕訳</DialogDescription>
                 </DialogHeader>
                 <Flex direction="col" gap="sm">
                   <Flex direction="row" justify="between">

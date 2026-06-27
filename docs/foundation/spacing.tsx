@@ -5,7 +5,7 @@ import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Spacing — design-token foundation. Two raw scales (a 4px grid + a golden-ratio
+ * Spacing · design-token foundation. Two raw scales (a 4px grid + a golden-ratio
  * φ scale) feed the semantic layout tokens that Flex / PageContainer consume.
  * Each bar's width is the real token var() and every px label is resolved from
  * that same var() at runtime, so nothing can drift from the source. Composed
@@ -96,8 +96,8 @@ function TokenBar({
         {token}
       </Text>
       <div className={className} style={{ width: `var(${token})` }} />
-      <Text size="xs" tone="muted" mono className="w-14 shrink-0 text-right">
-        {px ?? "—"}
+      <Text size="xs" tone="muted" mono className="w-14 shrink-0 text-end">
+        {px ?? "·"}
       </Text>
       {role ? (
         <Text size="xs" tone="muted">
@@ -114,7 +114,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Spacing"
-      subtitle="4px raw grid + golden-ratio (φ) scale → semantic layout gaps — never raw gap-* / margins"
+      subtitle="4px raw grid + golden-ratio (φ) scale → semantic layout gaps · never raw gap-* / margins"
     >
       {/* Off-screen probe host: bars are measured here, then removed. */}
       <div
@@ -126,7 +126,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Raw scale — 4px grid</CardTitle>
+            <CardTitle>Raw scale · 4px grid</CardTitle>
             <CardDescription>
               The base step is 4px; every value is a 4-multiple. Bar width is the live token var(),
               the px label is resolved from it at runtime.
@@ -148,7 +148,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Golden-ratio scale — φ ≈ 1.618</CardTitle>
+            <CardTitle>Golden-ratio scale · φ ≈ 1.618</CardTitle>
             <CardDescription>
               Off-grid by design: each step is the previous multiplied or divided by φ around{" "}
               <Text mono>--phi-unit</Text> (= --space-4). These back the larger stack / inline gaps,
@@ -174,7 +174,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Semantic layout tokens</CardTitle>
             <CardDescription>
-              What Flex gap and PageContainer padding resolve to — set the rhythm once, never
+              What Flex gap and PageContainer padding resolve to: set the rhythm once, never
               hand-tune margins per element. Tokens marked (= --phi-*) inherit the golden-ratio
               scale above, so their px value is off the 4px grid.
             </CardDescription>
@@ -200,7 +200,7 @@ export default function Demo() {
             <CardDescription>
               PageContainer density remaps <Text mono>--phi-unit</Text> (compact → --space-3,
               comfortable → --space-6). Because every φ-derived token (stack-md/lg/xl, inline-md/lg,
-              section) is built from --phi-unit, the whole semantic rhythm scales with one knob —
+              section) is built from --phi-unit, the whole semantic rhythm scales with one knob ·
               the px values above shift accordingly.
             </CardDescription>
           </CardHeader>

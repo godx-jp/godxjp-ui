@@ -27,7 +27,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { PrefetchLink } from "@godxjp/ui/query";
 
 /**
- * PrefetchLink — a React Router Link that fires queryClient.prefetchQuery on
+ * PrefetchLink · a React Router Link that fires queryClient.prefetchQuery on
  * hover/focus so the detail page renders instantly on click. Requires a
  * QueryClientProvider (and a Router) in context. The queryKey/queryFn must match
  * the destination page's useQuery. The `prefetchOn` prop selects the trigger:
@@ -53,7 +53,7 @@ async function fetchInvoice(id: string): Promise<Invoice> {
 
 const invoiceQueryKey = (id: string) => ["invoice", id] as const;
 
-/** List rows — hover/focus a 請求書番号 to prime ["invoice", id]. */
+/** List rows · hover/focus a 請求書番号 to prime ["invoice", id]. */
 function InvoiceList() {
   return (
     <Table>
@@ -136,7 +136,7 @@ function TriggerMatrix() {
 }
 
 /**
- * Observable proof — reads the QueryClient cache directly and lists every
+ * Observable proof · reads the QueryClient cache directly and lists every
  * ["invoice", id] entry the links above have primed. Updates as you hover/focus.
  */
 function CacheObserver() {
@@ -169,7 +169,7 @@ function CacheObserver() {
 }
 
 /**
- * Destination block — the SAME queryKey/queryFn contract as the list link.
+ * Destination block · the SAME queryKey/queryFn contract as the list link.
  * Because the link already primed ["invoice", "INV-0312"], this useQuery resolves
  * from cache (no skeleton) instead of paying the 1.2s fetch.
  */
@@ -220,7 +220,7 @@ export default function Demo() {
 
             <Card>
               <CardHeader>
-                <CardTitle>prefetchOn — トリガーの種類</CardTitle>
+                <CardTitle>prefetchOn · トリガーの種類</CardTitle>
                 <CardDescription>
                   既定は both。hover / focus / none で先読みのきっかけを切り替えます。
                 </CardDescription>

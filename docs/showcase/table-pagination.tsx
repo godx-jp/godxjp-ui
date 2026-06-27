@@ -307,7 +307,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="ページネーション"
-      subtitle="番号付き + 件数選択 · もっと読む · カーソル / 期間ジャンプ — 用途に応じて使い分ける 3 つの方式"
+      subtitle="番号付き + 件数選択 · もっと読む · カーソル / 期間ジャンプ。用途に応じて使い分ける 3 つの方式"
       density="compact"
     >
       <Flex direction="col" gap="lg">

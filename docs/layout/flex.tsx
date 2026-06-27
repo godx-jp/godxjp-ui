@@ -10,9 +10,9 @@ import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Flex — canonical flex primitive (replaced Stack/Inline as named shortcuts).
+ * Flex · canonical flex primitive (replaced Stack/Inline as named shortcuts).
  * Use direction="col" for vertical stacks (formerly Stack), direction="row" for
- * horizontal groups (formerly Inline). Keep spacing in gap prop — same token
+ * horizontal groups (formerly Inline). Keep spacing in gap prop · same token
  * scale as Stack/Inline. align + justify expose cross-axis and main-axis control.
  * wrap allows chip clusters and action rows to reflow. Composed only from real
  * @godxjp/ui components.
@@ -21,12 +21,12 @@ export default function Demo() {
   return (
     <PageContainer
       title="Flex"
-      subtitle="方向・整列・間隔・折り返し — Stack/Inline を置き換えた汎用フレックスプリミティブ"
+      subtitle="方向・整列・間隔・折り返し · Stack/Inline を置き換えた汎用フレックスプリミティブ"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>direction=&quot;col&quot; — 縦スタック</CardTitle>
+            <CardTitle>direction=&quot;col&quot; · 縦スタック</CardTitle>
             <CardDescription>
               既定値は col。gap トークンで間隔を均一に制御。className で raw gap-* を使わない。
             </CardDescription>
@@ -35,17 +35,17 @@ export default function Demo() {
             <Flex direction="col" gap="sm">
               <Card>
                 <CardContent>
-                  <Text tone="muted">行 1 — 仕訳入力</Text>
+                  <Text tone="muted">行 1 · 仕訳入力</Text>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent>
-                  <Text tone="muted">行 2 — 補助元帳</Text>
+                  <Text tone="muted">行 2 · 補助元帳</Text>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent>
-                  <Text tone="muted">行 3 — 試算表</Text>
+                  <Text tone="muted">行 3 · 試算表</Text>
                 </CardContent>
               </Card>
             </Flex>
@@ -55,7 +55,7 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>
-              direction=&quot;row&quot; + justify=&quot;between&quot; — ツールバー
+              direction=&quot;row&quot; + justify=&quot;between&quot; · ツールバー
             </CardTitle>
             <CardDescription>
               カードヘッダー内でタイトルとアクションを左右に配置する典型パターン。
@@ -77,7 +77,7 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>
-              align=&quot;center&quot; + justify=&quot;center&quot; — センタリング
+              align=&quot;center&quot; + justify=&quot;center&quot; · センタリング
             </CardTitle>
             <CardDescription>
               空状態やローディングブロックを両軸で中央揃えにする用途。
@@ -95,7 +95,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>align — 交差軸の整列（全 5 値）</CardTitle>
+            <CardTitle>align · 交差軸の整列（全 5 値）</CardTitle>
             <CardDescription>
               direction=&quot;row&quot; の交差軸（縦方向）の揃え方。高さの異なる子要素で
               start・center・end・baseline・stretch の違いを比較。baseline はテキストの
@@ -128,7 +128,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>justify — 主軸の配置（全 6 値）</CardTitle>
+            <CardTitle>justify · 主軸の配置（全 6 値）</CardTitle>
             <CardDescription>
               direction=&quot;row&quot; の主軸（横方向）の配置。固定幅トラックで余白の
               分配を比較。between は端寄せ、around は各要素の周囲、evenly は要素間と端を
@@ -161,7 +161,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>wrap — 折り返しの有無を比較</CardTitle>
+            <CardTitle>wrap · 折り返しの有無を比較</CardTitle>
             <CardDescription>
               wrap=&#123;true&#125;（既定の false に対して）。狭いトラックで折り返しの有無を
               並べて比較。false では子要素が一行に圧縮され、true では次行へ流れる。
@@ -195,7 +195,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>wrap — バッジ・チップクラスター</CardTitle>
+            <CardTitle>wrap · バッジ・チップクラスター</CardTitle>
             <CardDescription>
               direction=&quot;row&quot; + wrap=&#123;true&#125; でタグ・ステータスバッジが折り返す。
               gap トークンで均一スペーシング。
@@ -219,7 +219,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>gap トークンスケール</CardTitle>
             <CardDescription>
-              xs · sm · md（既定）· lg · xl — raw gap-* / space-* ユーティリティは使わない。
+              xs · sm · md（既定）· lg · xl。raw gap-* / space-* ユーティリティは使わない。
             </CardDescription>
           </CardHeader>
           <CardContent>

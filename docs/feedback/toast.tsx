@@ -5,17 +5,17 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { toast } from "sonner";
 
 /**
- * Toast (Toaster + sonner) — transient ephemeral feedback. Mount ONE <Toaster>
- * at app root. Fire via `import { toast } from "sonner"` — NOT from
+ * Toast (Toaster + sonner) · transient ephemeral feedback. Mount ONE <Toaster>
+ * at app root. Fire via `import { toast } from "sonner"` · NOT from
  * @godxjp/ui. Never import a toast helper from @godxjp/ui/feedback.
  */
 export default function Demo() {
   return (
     <PageContainer
       title="Toast"
-      subtitle="Toaster (mount once at root) + toast() from sonner — fire-and-forget ephemeral feedback"
+      subtitle="Toaster (mount once at root) + toast() from sonner · fire-and-forget ephemeral feedback"
     >
-      {/* Mount Toaster once — in a real app this lives in the root layout */}
+      {/* Mount Toaster once · in a real app this lives in the root layout */}
       <Toaster richColors />
 
       <Flex direction="col" gap="lg">
@@ -24,7 +24,7 @@ export default function Demo() {
             <CardTitle>Toast variants</CardTitle>
             <CardDescription>
               Import toast from sonner (not @godxjp/ui). success / error / warning / info for the
-              four semantic variants. Toasts auto-dismiss — use Alert for persistent messages.
+              four semantic variants. Toasts auto-dismiss · use Alert for persistent messages.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -39,7 +39,7 @@ export default function Demo() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => toast.error("保存に失敗しました — 再度お試しください")}
+                onClick={() => toast.error("保存に失敗しました · 再度お試しください")}
               >
                 error
               </Button>
@@ -91,7 +91,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Promise toast (loading → success/error)</CardTitle>
             <CardDescription>
-              toast.promise() tracks an async operation automatically — shows a loading state then
+              toast.promise() tracks an async operation automatically · shows a loading state then
               resolves to success or error. Ideal for background exports or bulk imports.
             </CardDescription>
           </CardHeader>

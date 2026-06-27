@@ -102,7 +102,7 @@ function ShiftPill({
   return (
     <span
       data-shift={kind}
-      className={`flex items-center gap-1 truncate rounded-[3px] border-l-2 px-1.5 py-0.5 leading-tight ${className ?? ""}`}
+      className={`flex items-center gap-1 truncate rounded-sm border-s-2 px-1.5 py-0.5 leading-tight ${className ?? ""}`}
       style={{
         borderLeftColor: `var(${meta.cssVar})`,
         background: `color-mix(in oklch, var(${meta.cssVar}) 12%, transparent)`,
@@ -401,11 +401,11 @@ export default function ShiftCalendarShowcase() {
                 {(Object.keys(SHIFT_META) as ShiftKind[]).map((k) => (
                   <span
                     key={k}
-                    className="inline-flex items-center gap-2 rounded-[3px] border px-2 py-1 text-xs"
+                    className="inline-flex items-center gap-2 rounded-sm border px-2 py-1 text-xs"
                   >
                     <span
                       aria-hidden="true"
-                      className="size-3 shrink-0 rounded-[2px]"
+                      className="size-3 shrink-0 rounded-sm"
                       style={{ background: `var(${SHIFT_META[k].cssVar})` }}
                     />
                     <Text size="xs" weight="medium" className="whitespace-nowrap">
@@ -449,7 +449,7 @@ export default function ShiftCalendarShowcase() {
                 {detailDate.shifts.map((s, i) => (
                   <div
                     key={`${s.kind}-${i}`}
-                    className="flex items-center justify-between gap-2 rounded-[6px] border px-3 py-2"
+                    className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2"
                   >
                     <ShiftPill kind={s.kind} staff={s.staff} />
                     <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
@@ -522,7 +522,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                     key={idx}
                     type="button"
                     onClick={() => onPick(cell)}
-                    className="hover:bg-accent focus-visible:ring-ring flex min-h-[96px] flex-col gap-1 border-r border-b p-1.5 text-left transition-colors focus:outline-none focus-visible:ring-2 [&:nth-child(7n)]:border-r-0"
+                    className="hover:bg-accent focus-visible:ring-ring flex min-h-[96px] flex-col gap-1 border-e border-b p-1.5 text-start transition-colors focus:outline-none focus-visible:ring-2 [&:nth-child(7n)]:border-e-0"
                     style={{
                       background: cell.today
                         ? "color-mix(in oklch, var(--primary) 5%, transparent)"
@@ -556,7 +556,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
                         <Badge
                           tone="destructive"
                           variant="outline"
-                          className="px-1 py-0 text-[10px]"
+                          className="px-1 py-0 text-[var(--font-size-2xs)]"
                         >
                           祝
                         </Badge>
@@ -639,7 +639,7 @@ function WeekTimeline() {
                     size="2xs"
                     tone="muted"
                     tabular
-                    className="absolute right-1.5 -translate-y-1/2"
+                    className="absolute end-1.5 -translate-y-1/2"
                     style={{ top: `${hourToPct(h)}%` }}
                   >
                     {String(h).padStart(2, "0")}:00
@@ -650,7 +650,7 @@ function WeekTimeline() {
               {WEEK_DATES.map((d, col) => (
                 <div
                   key={d.date}
-                  className="relative border-l"
+                  className="relative border-s"
                   style={{ height: `${(AXIS_END - AXIS_START) * 22}px` }}
                 >
                   {/* hour gridlines */}
@@ -671,7 +671,7 @@ function WeekTimeline() {
                     return (
                       <div
                         key={`${b.kind}-${i}`}
-                        className="absolute inset-x-0.5 overflow-hidden rounded-[3px] border-l-2 px-1 py-0.5 leading-tight"
+                        className="absolute inset-x-0.5 overflow-hidden rounded-sm border-s-2 px-1 py-0.5 leading-tight"
                         style={{
                           top: `${top}%`,
                           height: `${Math.max(bottom - top, 4)}%`,
@@ -708,9 +708,9 @@ function WeekTimeline() {
                       className="pointer-events-none absolute inset-x-0 z-10"
                       style={{ top: `${hourToPct(NOW_HOUR)}%` }}
                     >
-                      <div className="h-[1.5px]" style={{ background: "var(--destructive)" }} />
+                      <div className="h-px" style={{ background: "var(--destructive)" }} />
                       <div
-                        className="absolute -top-1 -left-1 size-2 rounded-full"
+                        className="absolute -top-1 -start-1 size-2 rounded-full"
                         style={{ background: "var(--destructive)" }}
                       />
                     </div>

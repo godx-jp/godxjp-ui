@@ -220,7 +220,7 @@ function PunchCard() {
 
           {/* Demo state stepper — lets a reader walk every FSM state at rest. */}
           <Flex direction="row" wrap gap="xs" className="border-t pt-3">
-            <Text size="2xs" tone="muted" className="mr-1 self-center">
+            <Text size="2xs" tone="muted" className="me-1 self-center">
               状態:
             </Text>
             {(["off", "working", "break", "closed"] as PunchState[]).map((s) => (
@@ -363,8 +363,8 @@ export default function EmployeeMeShowcase() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="whitespace-nowrap">日付</TableHead>
-                      <TableHead className="text-right whitespace-nowrap">勤務</TableHead>
-                      <TableHead className="text-right whitespace-nowrap">残業</TableHead>
+                      <TableHead className="text-end whitespace-nowrap">勤務</TableHead>
+                      <TableHead className="text-end whitespace-nowrap">残業</TableHead>
                       <TableHead className="whitespace-nowrap">状態</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -375,12 +375,12 @@ export default function EmployeeMeShowcase() {
                         <TableRow key={d.date}>
                           <TableCell className="whitespace-nowrap tabular-nums">
                             {d.date}
-                            <Text tone="muted" className="ml-1.5">
+                            <Text tone="muted" className="ms-1.5">
                               ({d.weekday})
                             </Text>
                           </TableCell>
-                          <TableCell className="text-right tabular-nums">{d.work}</TableCell>
-                          <TableCell className="text-right tabular-nums">{d.ot}</TableCell>
+                          <TableCell className="text-end tabular-nums">{d.work}</TableCell>
+                          <TableCell className="text-end tabular-nums">{d.ot}</TableCell>
                           <TableCell>
                             <Badge
                               tone={def.tone}

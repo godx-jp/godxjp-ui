@@ -263,7 +263,7 @@ export default function Demo() {
       header: "理由",
       hiddenOnMobile: true,
       render: (r) => (
-        <Text as="span" tone="muted" truncate className="block max-w-[260px]" title={r.reason}>
+        <Text as="span" tone="muted" truncate className="block max-w-64" title={r.reason}>
           {r.reason}
         </Text>
       ),

@@ -36,10 +36,10 @@ import {
 } from "lucide-react";
 
 /**
- * Topbar — a PURE SLOT bar. The shell only positions `start` / `center` / `end`; the CONSUMER
- * composes every control. This demo builds the chrome the OLD baked Topbar used to force —
+ * Topbar · a PURE SLOT bar. The shell only positions `start` / `center` / `end`; the CONSUMER
+ * composes every control. This demo builds the chrome the OLD baked Topbar used to force ·
  * sidebar toggle, brand Logo, an entity switcher, a search trigger, a notifications button, a
- * user menu — entirely from real primitives, so you can see there is no hidden template (and no
+ * user menu · entirely from real primitives, so you can see there is no hidden template (and no
  * dead dropdown: a control exists ONLY because it's placed here).
  */
 const SECTIONS: SidebarSectionProp[] = [
@@ -66,7 +66,7 @@ export default function Demo() {
   const [unread, setUnread] = useState(true);
   const [searchOpenCount, setSearchOpenCount] = useState(0);
 
-  // start cluster — sidebar toggle + brand Logo + an entity switcher the consumer owns.
+  // start cluster · sidebar toggle + brand Logo + an entity switcher the consumer owns.
   const start = (
     <>
       <Button
@@ -91,10 +91,10 @@ export default function Demo() {
           <DropdownMenuSeparator />
           {ENTITIES.map((e) => (
             <DropdownMenuItem key={e.id} onSelect={() => setActiveEntity(e)}>
-              <Building2 className="mr-2 size-4" />
+              <Building2 className="me-2 size-4" />
               {e.name}
               {activeEntity.id === e.id ? (
-                <Badge variant="secondary" className="ml-auto text-xs">
+                <Badge variant="secondary" className="ms-auto text-xs">
                   現在
                 </Badge>
               ) : null}
@@ -105,7 +105,7 @@ export default function Demo() {
     </>
   );
 
-  // center — a search trigger (opens YOUR command palette). No baked search box.
+  // center · a search trigger (opens YOUR command palette). No baked search box.
   const center = (
     <Button
       variant="outline"
@@ -118,7 +118,7 @@ export default function Demo() {
     </Button>
   );
 
-  // end — notifications + user menu, both consumer-composed.
+  // end · notifications + user menu, both consumer-composed.
   const end = (
     <>
       <Badge tone="warning" className="text-xs">
@@ -148,16 +148,16 @@ export default function Demo() {
           <DropdownMenuLabel>佐藤 花子</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <UserRound className="mr-2 size-4" />
+            <UserRound className="me-2 size-4" />
             プロフィール
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Settings className="mr-2 size-4" />
+            <Settings className="me-2 size-4" />
             アカウント設定
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <LogOut className="mr-2 size-4" />
+            <LogOut className="me-2 size-4" />
             ログアウト
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -184,7 +184,7 @@ export default function Demo() {
     >
       <PageContainer
         title="Topbar デモ"
-        subtitle="slot bar — start / center / end をすべて consumer が組み立てる（焼き込みなし）"
+        subtitle="slot bar · start / center / end をすべて consumer が組み立てる（焼き込みなし）"
         breadcrumb={[{ label: "ホーム", to: "/" }, { label: "Topbar デモ" }]}
       >
         <Flex direction="col" gap="lg">

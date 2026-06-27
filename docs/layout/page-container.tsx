@@ -18,7 +18,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
 import { Plus, Download, Filter } from "lucide-react";
 
 /**
- * Router Link stub passed to `linkComponent` — proves breadcrumb segments can render
+ * Router Link stub passed to `linkComponent` · proves breadcrumb segments can render
  * through a router primitive (react-router / next/link) instead of a plain <a>.
  * PageContainer forwards both `href` and `to`; a real Link reads `to`.
  */
@@ -66,7 +66,7 @@ const journalColumns: ColumnDef<JournalEntry>[] = [
 ];
 
 /**
- * PageContainer — mandatory page shell.
+ * PageContainer · mandatory page shell.
  * Covers: title/subtitle/extra/footer/breadcrumb/linkComponent + variant
  * default/narrow/flush/ghost + density compact/default/comfortable + PageContainer.Inset.
  * Each example is standalone (no AppShell) so the variant behaviour is visible in
@@ -95,7 +95,7 @@ export default function Demo() {
 
   return (
     <Flex direction="col" gap="xl">
-      {/* ── 1. Default variant — dashboard-style + linkComponent (router Link) ── */}
+      {/* ── 1. Default variant · dashboard-style + linkComponent (router Link) ── */}
       <PageContainer
         title="売上ダッシュボード"
         subtitle="直近30日間の集計データ"
@@ -122,7 +122,7 @@ export default function Demo() {
         </ResponsiveGrid>
       </PageContainer>
 
-      {/* ── 2. Narrow variant — settings form ── */}
+      {/* ── 2. Narrow variant · settings form ── */}
       <PageContainer
         variant="narrow"
         title="エンティティ設定"
@@ -157,7 +157,7 @@ export default function Demo() {
         </Card>
       </PageContainer>
 
-      {/* ── 3. Flush variant — full-bleed list ── */}
+      {/* ── 3. Flush variant · full-bleed list ── */}
       <PageContainer
         variant="flush"
         title="仕訳一覧"
@@ -178,7 +178,7 @@ export default function Demo() {
       >
         {/* flush strips body padding so the DataTable runs full-bleed, edge to edge. */}
         <DataTable data={journalEntries} columns={journalColumns} getRowId={(r) => r.id} />
-        {/* PageContainer.Inset — escape hatch that re-applies the page inset inside a
+        {/* PageContainer.Inset · escape hatch that re-applies the page inset inside a
             full-bleed body, so a footnote keeps the header's left/right alignment. */}
         <PageContainer.Inset>
           <Text as="p" size="xs" tone="muted">
@@ -215,13 +215,13 @@ export default function Demo() {
         </Flex>
       </PageContainer>
 
-      {/* ── 4b. density axis (compact vs comfortable) — static, side by side ── */}
+      {/* ── 4b. density axis (compact vs comfortable) · static, side by side ── */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
         <PageContainer
           density="compact"
           variant="ghost"
           title="コンパクト密度"
-          subtitle='density="compact" — 行間・余白を詰めた一覧向け'
+          subtitle='density="compact" · 行間・余白を詰めた一覧向け'
         >
           <Card>
             <CardContent>
@@ -236,7 +236,7 @@ export default function Demo() {
           density="comfortable"
           variant="ghost"
           title="コンフォータブル密度"
-          subtitle='density="comfortable" — 余白を広げた閲覧向け'
+          subtitle='density="comfortable" · 余白を広げた閲覧向け'
         >
           <Card>
             <CardContent>
@@ -249,7 +249,7 @@ export default function Demo() {
         </PageContainer>
       </ResponsiveGrid>
 
-      {/* ── 5. Variant + density switcher — interactive (both axes are orthogonal) ── */}
+      {/* ── 5. Variant + density switcher · interactive (both axes are orthogonal) ── */}
       <PageContainer
         variant={activeVariant}
         density={activeDensity}
@@ -294,14 +294,14 @@ export default function Demo() {
         </Card>
       </PageContainer>
 
-      {/* ── 6. fill — body height behaviour on a tall shell (gh#103) ──
+      {/* ── 6. fill · body height behaviour on a tall shell (gh#103) ──
           Each PageContainer sits in a fixed-height framed box that stands in for the
           viewport-tall app shell, so the two behaviours are visible side by side. */}
       <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
-        {/* Default: top-packed. Short content does NOT stretch — the space below is
+        {/* Default: top-packed. Short content does NOT stretch · the space below is
             just neutral page background, never a jarring void. */}
         <div className="h-80 overflow-auto rounded-md border">
-          <PageContainer title="既定（top-pack）" subtitle="fill なし — 余白は中立な背景">
+          <PageContainer title="既定（top-pack）" subtitle="fill なし · 余白は中立な背景">
             <Card>
               <CardContent>
                 <Text as="p" tone="muted">
@@ -316,7 +316,7 @@ export default function Demo() {
         <div className="h-80 overflow-auto rounded-md border">
           <PageContainer
             fill
-            title="fill — 全高ボディ"
+            title="fill · 全高ボディ"
             subtitle="メッセージ一覧が伸び、コンポーザーは下部固定"
             footer={
               <Flex gap="sm" align="center">

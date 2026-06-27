@@ -26,7 +26,7 @@
 import * as React from "react";
 import { Languages, Monitor, Moon, Sun } from "lucide-react";
 
-import { Button, Heading, Text } from "@godxjp/ui/general";
+import { Button, Heading, Logo, Text } from "@godxjp/ui/general";
 import {
   FormField,
   Input,
@@ -48,7 +48,7 @@ import { Separator } from "@godxjp/ui/layout";
 // 4-color path is inlined — the only place a non-token fill appears.
 function GoogleMark() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="size-[18px]">
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5">
       <path
         fill="#4285F4"
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.57c2.08-1.92 3.27-4.74 3.27-8.09Z"
@@ -71,17 +71,9 @@ function GoogleMark() {
 
 // ── Brand lockup ("勤" mark + dxs · kintai wordmark) ───────────────────────────
 function BrandLockup({ size = "md" }: { size?: "md" | "lg" }) {
-  const mark = size === "lg" ? "size-11 text-lg" : "size-9 text-sm";
   return (
     <div className="flex items-center gap-2.5">
-      <div
-        className={`bg-primary text-primary-foreground grid shrink-0 place-items-center rounded-lg ${mark}`}
-        aria-hidden="true"
-      >
-        <Text as="span" weight="bold" className="leading-none text-[inherit]">
-          勤
-        </Text>
-      </div>
+      <Logo glyph="勤" size={size} aria-hidden="true" />
       <div className="leading-tight">
         <Text as="div" size="lg" weight="bold" className="tracking-tight">
           dxs{" "}
@@ -118,9 +110,9 @@ export default function LoginShowcase() {
         <div className="lg:hidden">
           <BrandLockup />
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ms-auto flex items-center gap-2">
           <Select value={locale} onValueChange={setLocale}>
-            <SelectTrigger size="sm" className="w-[132px]" aria-label="言語を選択">
+            <SelectTrigger size="sm" className="w-32" aria-label="言語を選択">
               <Languages aria-hidden="true" className="text-muted-foreground" />
               <SelectValue />
             </SelectTrigger>
@@ -158,13 +150,14 @@ export default function LoginShowcase() {
         <div className="mx-auto grid w-full grid-cols-1 items-stretch gap-8 lg:grid-cols-2">
           {/* Split brand panel — hidden on mobile (mobile-first), shown from lg. */}
           <aside className="hidden lg:flex">
-            <Card className="bg-primary/5 flex w-full flex-col justify-between gap-8 p-8">
+            <Card className="bg-primary/5 w-full">
+              <CardContent solo className="flex h-full flex-col justify-between gap-8">
               <BrandLockup size="lg" />
-              <div className="space-y-3">
+              <div className="flex flex-col gap-3">
                 <Heading level={2} className="leading-snug">
                   打刻から承認まで、ひとつの勤怠基盤で。
                 </Heading>
-                <Text as="p" tone="muted" className="leading-[1.7]">
+                <Text as="p" tone="muted" className="leading-relaxed">
                   出勤・休憩・残業の打刻、シフト調整、欠勤・遅刻の承認を一元化します。
                   多拠点・多テナントに対応し、現場と管理をつなぎます。
                 </Text>
@@ -195,12 +188,13 @@ export default function LoginShowcase() {
                   </Text>
                 </div>
               </dl>
+              </CardContent>
             </Card>
           </aside>
 
           {/* Auth card — the one surface allowed a resting shadow (shadow-lg). */}
-          <Card className="mx-auto w-full max-w-[400px] self-center p-2 shadow-lg lg:mx-0">
-            <CardHeader className="space-y-1.5 pb-2 text-center lg:text-left">
+          <Card className="mx-auto w-full max-w-sm self-center shadow-lg lg:mx-0">
+            <CardHeader className="flex flex-col gap-1.5 pb-2 text-center lg:text-start">
               <div className="flex justify-center lg:hidden">
                 <BrandLockup />
               </div>
@@ -210,9 +204,9 @@ export default function LoginShowcase() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent solo className="space-y-5">
+            <CardContent solo className="flex flex-col gap-5">
               {/* SSO buttons — outline, full-width, 44px (comfortable). */}
-              <div className="space-y-2.5">
+              <div className="flex flex-col gap-2.5">
                 <Button variant="outline" className="w-full justify-center">
                   <GoogleMark />
                   Google で続ける
@@ -233,7 +227,7 @@ export default function LoginShowcase() {
 
               {/* Email — uncontrolled, seeded so the filled state shows at rest. */}
               <form
-                className="space-y-4"
+                className="flex flex-col gap-4"
                 onSubmit={(e) => {
                   e.preventDefault();
                 }}
@@ -259,7 +253,7 @@ export default function LoginShowcase() {
                       type="button"
                       variant="link"
                       size="sm"
-                      className="ml-auto h-auto p-0 text-xs"
+                      className="ms-auto h-auto p-0 text-xs"
                     >
                       お忘れの場合
                     </Button>
@@ -279,13 +273,13 @@ export default function LoginShowcase() {
                 </Button>
               </form>
 
-              <Text as="p" size="2xs" tone="muted" align="center" className="leading-[1.7]">
+              <Text as="p" size="2xs" tone="muted" align="center" className="leading-relaxed">
                 ログインすると{" "}
-                <Button variant="link" size="sm" className="h-auto p-0 text-[11px]">
+                <Button variant="link" size="sm" className="h-auto p-0 text-[var(--font-size-2xs)]">
                   利用規約
                 </Button>{" "}
                 ·{" "}
-                <Button variant="link" size="sm" className="h-auto p-0 text-[11px]">
+                <Button variant="link" size="sm" className="h-auto p-0 text-[var(--font-size-2xs)]">
                   プライバシーポリシー
                 </Button>{" "}
                 に同意したものとみなされます。
