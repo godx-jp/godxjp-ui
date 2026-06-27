@@ -34,7 +34,7 @@ describe("MonthPicker", () => {
   it("opens the grid and picks a month in the navigated year", () => {
     const onValueChange = vi.fn();
     render(<MonthPicker value={new Date(2026, 0, 1)} onValueChange={onValueChange} />);
-    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    fireEvent.click(screen.getAllByRole("textbox")[0]);
     fireEvent.click(screen.getByLabelText("Năm trước"));
     expect(screen.getByText("2025")).toBeInTheDocument();
     // 12 month cells inside the grid
@@ -72,7 +72,7 @@ describe("MonthPicker", () => {
   it("navigates to the next year via the chevron", () => {
     const onValueChange = vi.fn();
     render(<MonthPicker value={new Date(2026, 0, 1)} onValueChange={onValueChange} />);
-    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    fireEvent.click(screen.getAllByRole("textbox")[0]);
     fireEvent.click(screen.getByLabelText("Năm sau"));
     expect(screen.getByText("2027")).toBeInTheDocument();
     const cells = screen.getByRole("grid").querySelectorAll("button");
@@ -95,7 +95,7 @@ describe("MonthPicker", () => {
     render(
       <MonthPicker value={new Date(2026, 0, 1)} onValueChange={() => {}} fromYear={2026} toYear={2026} />,
     );
-    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    fireEvent.click(screen.getAllByRole("textbox")[0]);
     expect(screen.getByLabelText("Năm trước")).toBeDisabled();
     expect(screen.getByLabelText("Năm sau")).toBeDisabled();
   });

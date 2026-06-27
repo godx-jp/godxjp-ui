@@ -324,8 +324,8 @@ export function Cascader({
             className={cn(
               "w-full justify-start font-normal",
               controlOpenRingClass,
-              // Reserve trailing room for the clear + chevron overlay rendered below.
-              showClear ? "pe-14" : "pe-9",
+              // Reserve trailing room for the single clear-or-chevron overlay rendered below.
+              "pe-9",
               !displayLabel && "text-muted-foreground",
             )}
           >
@@ -403,8 +403,10 @@ export function Cascader({
       {/* Clear + chevron render OUTSIDE the trigger <button> — a <button> may not nest inside a
           <button> (invalid HTML → hydration error). The overlay ignores pointer events so a click
           falls through to the trigger to open it; only the clear control re-enables them. */}
-      <div className="pointer-events-none absolute inset-y-0 end-3 flex items-center gap-1">
-        {showClear && (
+      {/* ONE trailing icon: the clear (×) replaces the chevron while a value is selected; a
+          click on the field still opens the panel (the chevron is only an affordance). */}
+      <div className="pointer-events-none absolute inset-y-0 end-3 flex items-center">
+        {showClear ? (
           <button
             type="button"
             aria-label={t("dataEntry.cascader.clear")}
@@ -413,8 +415,9 @@ export function Cascader({
           >
             <X className="size-4" aria-hidden="true" />
           </button>
+        ) : (
+          <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
         )}
-        <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
       </div>
     </div>
   );

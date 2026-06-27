@@ -238,8 +238,10 @@ function TreeSelectRoot({
           <span className="truncate">
             {displayKeys.length ? displayLabel : resolvedPlaceholder}
           </span>
-          <span className="ms-2 flex shrink-0 items-center gap-1">
-            {allowClear && displayKeys.length > 0 && !disabled && (
+          {/* ONE trailing icon: the clear (×) replaces the chevron while a value is selected;
+              a click on the field still opens the tree panel. */}
+          <span className="ms-2 flex shrink-0 items-center">
+            {allowClear && displayKeys.length > 0 && !disabled ? (
               <button
                 type="button"
                 aria-label={t("dataEntry.treeSelect.clear")}
@@ -248,8 +250,9 @@ function TreeSelectRoot({
               >
                 <X className="size-4" aria-hidden="true" />
               </button>
+            ) : (
+              <ChevronsUpDown className="size-4 opacity-50" aria-hidden="true" />
             )}
-            <ChevronsUpDown className="size-4 opacity-50" aria-hidden="true" />
           </span>
         </Button>
       </PopoverTrigger>

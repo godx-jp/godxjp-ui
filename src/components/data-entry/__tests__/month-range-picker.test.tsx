@@ -80,7 +80,7 @@ describe("MonthRangePicker", () => {
   it("two-step grid pick: from then to, closing the popover on completion", () => {
     const onValueChange = vi.fn();
     render(<MonthRangePicker onValueChange={onValueChange} />);
-    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    fireEvent.click(screen.getAllByRole("textbox")[0]);
     const cells = screen.getByRole("grid").querySelectorAll("button");
     const year = new Date().getFullYear();
     fireEvent.click(cells[2]); // March — starts the range
@@ -103,7 +103,7 @@ describe("MonthRangePicker", () => {
         onValueChange={onValueChange}
       />,
     );
-    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    fireEvent.click(screen.getAllByRole("textbox")[0]);
     const cells = screen.getByRole("grid").querySelectorAll("button");
     fireEvent.click(cells[1]); // February < September → swapped
     expect(onValueChange).toHaveBeenLastCalledWith({
@@ -120,7 +120,7 @@ describe("MonthRangePicker", () => {
         onValueChange={onValueChange}
       />,
     );
-    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    fireEvent.click(screen.getAllByRole("textbox")[0]);
     const cells = screen.getByRole("grid").querySelectorAll("button");
     fireEvent.click(cells[10]); // November — must START a new range, not extend
     expect(onValueChange).toHaveBeenLastCalledWith({
@@ -136,7 +136,7 @@ describe("MonthRangePicker", () => {
         onValueChange={() => {}}
       />,
     );
-    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    fireEvent.click(screen.getAllByRole("textbox")[0]);
     expect(screen.getByText("2023")).toBeInTheDocument();
   });
 
@@ -149,7 +149,7 @@ describe("MonthRangePicker", () => {
         toYear={2026}
       />,
     );
-    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    fireEvent.click(screen.getAllByRole("textbox")[0]);
     expect(screen.getByLabelText("Năm trước")).toBeDisabled();
     expect(screen.getByLabelText("Năm sau")).toBeDisabled();
   });

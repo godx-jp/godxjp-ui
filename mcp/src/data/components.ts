@@ -2092,6 +2092,12 @@ import { Smartphone } from "lucide-react";
         type: "() => void",
         description: "Called after the field is cleared via the inline ✕ (requires `allowClear`).",
       },
+      {
+        name: "trailingIcon",
+        type: "React.ReactNode",
+        description:
+          "A trailing affordance pinned inside the field (e.g. a calendar / clock popover trigger). ONE trailing icon shows at a time: when `allowClear` and the field holds a value the clear ✕ REPLACES this icon; otherwise this icon shows. Never both — this is how DatePicker/TimePicker render their open trigger.",
+      },
     ],
     usage: [
       "DO always wrap Input in FormField when the field needs a label, helper text, or validation error — FormField injects aria-describedby and aria-invalid onto Input automatically; never wire these attributes by hand.",
