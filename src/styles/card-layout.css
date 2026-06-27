@@ -153,7 +153,8 @@
 
   [data-slot="card-header"][data-banded] {
     padding-inline: var(--card-space-inset);
-    padding-block: var(--card-space-header-y);
+    /* Divided band → symmetric vertical padding (border-aware). */
+    padding-block: var(--card-space-divided-y);
     gap: var(--card-space-gap);
   }
 
@@ -252,7 +253,10 @@
     overflow: hidden;
   }
 
-  [data-slot="card"]:has([data-slot="card-cover"]) [data-slot="card-header"] {
+  /* A header BELOW a cover gets a top gap to clear the media — but a BANDED header is a
+   * self-contained divider band that must stay symmetric (border-aware), so it keeps its
+   * own `--card-space-divided-y` block padding instead of this one-sided top gap. */
+  [data-slot="card"]:has([data-slot="card-cover"]) [data-slot="card-header"]:not([data-banded]) {
     padding-top: var(--card-space-body-y);
   }
 
@@ -325,7 +329,8 @@
 
   [data-slot="card-footer"][data-separated] {
     border-top: 1px solid hsl(var(--card-border));
-    padding-block: var(--card-space-footer-y);
+    /* Divided band → symmetric vertical padding (border-aware), in sync with a banded header. */
+    padding-block: var(--card-space-divided-y);
     justify-content: flex-end;
   }
 

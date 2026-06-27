@@ -49,54 +49,59 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Card component tokens: card chrome derives from semantic layout tokens."
   },
   {
+    "name": "--card-space-divided-y",
+    "value": "var(--card-space-header-y)",
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+  },
+  {
     "name": "--card-space-gap",
     "value": "var(--space-stack-xs)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-title-font-size",
     "value": "var(--font-size-base)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-title-line-height",
     "value": "var(--line-height-tight)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-title-font-weight",
     "value": "var(--font-weight-semibold)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-description-font-size",
     "value": "var(--font-size-sm)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-description-line-height",
     "value": "var(--line-height-normal)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-background",
     "value": "var(--card)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-border",
     "value": "var(--border)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-header-background",
     "value": "var(--muted)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-header-background-alpha",
     "value": "0.55",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-header-border-bottom",

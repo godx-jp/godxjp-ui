@@ -6,7 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [16.1.1] - 2026-06-27
+## [16.2.0] - 2026-06-27
+
+### Added
+
+- **`--card-space-divided-y` token** — one border-aware knob for the vertical padding of a Card
+  section that carries a divider border (a `banded` header, a `separated` footer). A divided band
+  reads as its own region, so it pads SYMMETRICALLY top+bottom — distinct from a plain header that
+  flows into the body (top inset, no bottom). The banded header and separated footer now share this
+  token, so a theme tunes the band rhythm in one place instead of forking per-slot CSS.
+
+### Fixed
+
+- **A `banded` header below a `CardCover` lost its symmetric padding.** The cover rule forced
+  `padding-top: --card-space-body-y` on any header under the media, which combined with the banded
+  band's `--card-space-divided-y` bottom to give an uneven 16/8 band. The cover top-gap now applies
+  only to NON-banded headers, so a banded header stays a symmetric divider band wherever it sits.
 
 ### Fixed
 
