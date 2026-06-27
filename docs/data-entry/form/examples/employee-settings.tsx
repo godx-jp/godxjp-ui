@@ -9,7 +9,7 @@ import {
   RadioGroup,
   Select,
   Switch,
-  TimeInput,
+  TimePicker,
 } from "@godxjp/ui/data-entry";
 import {
   Card,
@@ -194,7 +194,7 @@ export default function Demo() {
                 <Flex direction="col" gap="md">
                   <Flex direction="row" gap="md" wrap>
                     <FormField id="es-core-start" label="コアタイム開始" layout="vertical">
-                      <TimeInput
+                      <TimePicker
                         id="es-core-start"
                         name="core_start"
                         value={coreStart}
@@ -202,11 +202,11 @@ export default function Demo() {
                           setCoreStart(v);
                           dirty();
                         }}
-                        step={15}
+                        minuteStep={15}
                       />
                     </FormField>
                     <FormField id="es-core-end" label="コアタイム終了" layout="vertical">
-                      <TimeInput
+                      <TimePicker
                         id="es-core-end"
                         name="core_end"
                         value={coreEnd}
@@ -214,7 +214,7 @@ export default function Demo() {
                           setCoreEnd(v);
                           dirty();
                         }}
-                        step={15}
+                        minuteStep={15}
                       />
                     </FormField>
                   </Flex>

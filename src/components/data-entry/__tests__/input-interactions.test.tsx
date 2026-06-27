@@ -5,7 +5,6 @@ import { renderWithUi, screen, userEvent } from "@/test/render";
 import { SearchInput } from "../search-input";
 import { Input } from "../input";
 import { Textarea } from "../textarea";
-import { TimeInput } from "../time-input";
 
 /**
  * Behavioral interaction tests — typing must actually STICK.
@@ -87,61 +86,5 @@ describe("input typing behavior (freeze regressions)", () => {
     const ta = screen.getByLabelText("memo");
     await user.type(ta, "line1{Enter}line2");
     expect(ta).toHaveValue("line1\nline2");
-  });
-
-  it("TimeInput masks digits into HH:mm", async () => {
-    const user = userEvent.setup();
-    function Controlled() {
-      const [v, setV] = React.useState("");
-      return <TimeInput value={v} onValueChange={setV} aria-label="time" />;
-    }
-    renderWithUi(<Controlled />);
-    const field = screen.getByRole("spinbutton");
-    await user.type(field, "1030");
-    expect(field).toHaveValue("10:30");
-  });
-});
-
-// Regression (godxjp-ui-behavioral-test): behaviours confirmed by driving the real component —
-// the chrome-MCP harness gives false readings on controlled inputs (synthetic events don't drive
-// React's onChange), so the source of truth is user-event in jsdom.
-describe("TimeInput behaviour", () => {
-  it("flags aria-invalid while an out-of-range time is displayed", async () => {
-    const user = userEvent.setup();
-    renderWithUi(<TimeInput defaultValue="09:00" aria-label="t" />);
-    const field = screen.getByRole("spinbutton");
-    await user.clear(field);
-    await user.type(field, "2570");
-    expect(field).toHaveValue("25:70");
-    expect(field).toHaveAttribute("aria-invalid", "true");
-  });
-
-  it("quantizes a typed minute to the step grid", async () => {
-    const user = userEvent.setup();
-    const onChange = vi.fn();
-    renderWithUi(<TimeInput step={15} onValueChange={onChange} aria-label="t" />);
-    const field = screen.getByRole("spinbutton");
-    await user.type(field, "0837");
-    expect(field).toHaveValue("08:30");
-    expect(onChange).toHaveBeenLastCalledWith("08:30");
-  });
-
-  it("steps with ArrowUp/ArrowDown and wraps across the 24h day", async () => {
-    const user = userEvent.setup();
-    renderWithUi(<TimeInput defaultValue="23:59" aria-label="t" />);
-    const field = screen.getByRole("spinbutton");
-    field.focus();
-    await user.keyboard("{ArrowUp}");
-    expect(field).toHaveValue("00:00"); // 23:59 + 1m wraps to 00:00
-    await user.keyboard("{ArrowDown}");
-    expect(field).toHaveValue("23:59");
-  });
-
-  it("disabled blocks typing", async () => {
-    const user = userEvent.setup();
-    renderWithUi(<TimeInput value="12:00" disabled aria-label="t" />);
-    const field = screen.getByRole("spinbutton");
-    await user.type(field, "0930");
-    expect(field).toHaveValue("12:00");
   });
 });

@@ -2223,7 +2223,7 @@ import { Smartphone } from "lucide-react";
       "Input — the plain single-line field NumberInput composes; use Input directly only for free numeric text with no stepper/clamp need.",
       "Slider — use instead when the user picks an approximate value within a range by dragging; NumberInput is for exact keyed entry.",
       "FormField — compose NumberInput inside FormField (matching id) for label/helper/error a11y wiring.",
-      "TimeInput — the HH:mm sibling spinbutton; NumberInput is for plain numbers, TimeInput for clock times.",
+      "TimePicker — the HH:mm time sibling; NumberInput is for plain numbers, TimePicker for clock times.",
     ],
     storyPath: "data-entry/NumberInput.stories.tsx",
     rules: [3, 6],
@@ -7359,51 +7359,6 @@ export default function PasswordBlock() {
   <CarouselNext />
   <CarouselDots />
 </Carousel>`,
-  },
-  {
-    name: "TimeInput",
-    group: "data-entry",
-    tagline: "Masking HH:mm input with validation and optional minute step quantization.",
-    props: [
-      { name: "value", type: "string", description: "Controlled HH:mm value." },
-      {
-        name: "defaultValue",
-        type: "string",
-        description: "Uncontrolled initial HH:mm value.",
-      },
-      {
-        name: "onValueChange",
-        type: "(value: string) => void",
-        description: "Validated value callback.",
-      },
-      {
-        name: "step",
-        type: "number",
-        defaultValue: "1",
-        description:
-          "Minute step (clamped 1–59). Snaps the committed minute to the nearest lower multiple and sets the ArrowUp/ArrowDown increment.",
-      },
-      { name: "name", type: "string", description: "Form field name." },
-    ],
-    usage: [
-      "DO treat the value as a plain `HH:mm` string (24-hour, zero-padded) — TimeInput is calendar-free. For a date, or a date+time, use `DatePicker`/`Calendar`; for a richer dropdown time selector use `TimePicker`.",
-      "DO drive it controlled with `value` + `onValueChange` (it follows the vocabulary — NOT `onChange`/`defaultValue` pairing for control). `onValueChange` fires only with a VALID, step-snapped `HH:mm`, so your state never holds a half-typed value.",
-      "DON'T pass `value` without `onValueChange` — like every controlled @godxjp/ui input that freezes the field. Omit both for uncontrolled (use `defaultValue`).",
-      "DO set `step` to your scheduling granularity (e.g. `15` or `30`) — the user can still type freely, but blur/Enter snaps the minute down to the nearest multiple, and ArrowUp/ArrowDown step by that amount (wrapping across midnight).",
-      "DO let the built-in masking + validation work: digits auto-format to `HH:mm`, invalid input sets `aria-invalid` and is reverted on blur. Don't add your own regex/onChange masking on top.",
-      "DON'T use it for a duration/elapsed time that can exceed 23:59 — it's a clock time-of-day input (00:00–23:59). Use a numeric Input for durations.",
-    ],
-    useCases: [
-      "勤怠 (attendance) start/end time fields — 出勤 / 退勤 HH:mm entry with step={1} or a rounding step for shift schedules.",
-      "Business-hours / reservation slot editor where times snap to a 15- or 30-minute grid (step={15}).",
-      "A from–to time range filter on a report or log screen (two TimeInputs) with no date component.",
-      "Any calendar-free HH:mm-only form field (e.g. a recurring daily batch time, a 締め時刻).",
-    ],
-    storyPath: "data-entry/TimeInput.stories.tsx",
-    rules: [3, 6],
-    example: `import { TimeInput } from "@godxjp/ui/data-entry";
-
-<TimeInput value="09:00" step={15} onValueChange={(time) => console.log(time)} />`,
   },
   {
     name: "AppSettingPicker",

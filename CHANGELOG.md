@@ -6,6 +6,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.0.0] - 2026-06-27
+
+### Removed
+
+- **BREAKING — removed `TimeInput`** (and the `TimeInputProps` type + the `@godxjp/ui/data-entry`
+  export). It duplicated `TimePicker`, which already wraps the same typeable canonical `HH:mm`
+  `<input>` and adds the scroll-column popover. Migrate
+  `<TimeInput value … onValueChange … step={15} />` →
+  `<TimePicker value … onValueChange … minuteStep={15} />` (the `step` prop becomes `minuteStep`).
+
+### Fixed
+
+- **`TimePicker` showed two trailing icons at once.** When a value was set it rendered BOTH a clear
+  (×) and the clock trigger side by side (`pe-16`). Now a single trailing slot: the clear replaces
+  the clock when there is a value (the field itself / ArrowDown still opens the panel), and the
+  clock returns when empty (`pe-10`). The popover anchors to the field via `PopoverAnchor`.
+- **Menu separators rendered as tall gray blocks.** `.ui-context-menu-content > div` (specificity
+  0,1,1) was bundled into the item-sizing rule, so it overrode the `.ui-context-menu-separator`
+  (0,1,0) `height:1px` — the separator filled its 2rem item box with the border colour. The same
+  catch-all also squashed `ContextMenuRadioGroup`. Removed the `> div` selector (every menu part
+  already carries its own class). DropdownMenu/Select use the `h-px` utility and were unaffected.
+- **`SkeletonTable` double-bordered inside a flush `CardContent`.** It kept its own border + radius
+  while its real-data counterpart `DataTable` (`.ui-data-table-surface`) is stripped to borderless
+  in `[data-flush]`. Added the matching flush rule for `.ui-skeleton-table` so the loading
+  placeholder and the table it swaps for sit identically (the Card supplies the single border).
+
 ## [15.0.1] - 2026-06-27
 
 ### Fixed

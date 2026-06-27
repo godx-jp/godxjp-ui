@@ -21,7 +21,6 @@ export { Separator } from "./separator";
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../feedback/tooltip";
 export * from "./dropdown-menu";
 export * from "./input";
-export * from "./time-input";
 export * from "./label";
 export * from "./pagination";
 export * from "./password-strength";
