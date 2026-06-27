@@ -328,7 +328,7 @@ import { StatCard } from "@godxjp/ui/data-display";
       {
         name: "logo",
         type: "ReactNode",
-        description: "Logo at the far-left of the auto-built topbar rail.",
+        description: "Brand mark at the far-left of the auto-built topbar rail (e.g. an Avatar).",
       },
       {
         name: "sidebarCollapsed",
@@ -552,7 +552,7 @@ export default function Shell() {
         type: "ReactNode",
         defaultValue: "undefined",
         description:
-          "Inline-start cluster — typically the sidebar toggle (a `Button` with a `PanelLeftClose` icon), the brand `Logo`, and primary nav.",
+          "Inline-start cluster — typically the sidebar toggle (a `Button` with a `PanelLeftClose` icon), the brand mark (an `Avatar`), and primary nav.",
       },
       {
         name: "center",
@@ -582,25 +582,26 @@ export default function Shell() {
       },
     ],
     usage: [
-      "DO compose the bar yourself: brand `Logo` + sidebar toggle in `start`, a search trigger in `center`, settings pickers + notifications + user menu in `end`. The shell only positions; it never decides WHICH controls exist.",
+      "DO compose the bar yourself: a brand mark (an `Avatar`) + sidebar toggle in `start`, a search trigger in `center`, settings pickers + notifications + user menu in `end`. The shell only positions; it never decides WHICH controls exist.",
       'DO build the sidebar toggle as a `Button variant="ghost" size="icon-sm"` with a `PanelLeftClose`/`PanelLeftOpen` icon and your own `t()` aria-label, wired to AppShell\'s `sidebarCollapsed`. There is no baked toggle.',
       "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
       "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
       "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
     ],
     useCases: [
-      "Admin shell: `start` = sidebar toggle + Logo + an entity switcher (`DropdownMenu` around a `Button`); `center` = a `Button` search trigger; `end` = `AppSettingPicker` (locale) + a notifications `Button` + a user `DropdownMenu`.",
-      "Minimal shell (no search, no notifications): pass only `start` (Logo) and `end` (user menu). Nothing else renders — no empty chrome.",
+      "Admin shell: `start` = sidebar toggle + brand mark (`Avatar`) + an entity switcher (`DropdownMenu` around a `Button`); `center` = a `Button` search trigger; `end` = `AppSettingPicker` (locale) + a notifications `Button` + a user `DropdownMenu`.",
+      "Minimal shell (no search, no notifications): pass only `start` (brand mark) and `end` (user menu). Nothing else renders — no empty chrome.",
       "Marketing / docs header: pass `children` with a fully custom flex layout when the three-cluster model doesn't fit.",
     ],
     related: [
       "AppShell — place Topbar in its `topbar` slot. AppShell also exposes its own `logo`/`topbarLeft`/`topbarRight` slots if you don't want a separate Topbar at all.",
-      "Logo — the brand mark for the `start` slot.",
+      "Avatar — the brand mark for the `start` slot (use `className=\"rounded-md\"` for a square-ish product glyph).",
       "AppSettingPicker — locale/theme/timezone/currency picker; the consumer drops it into `end`. Its appearance (icon-only, labelled, bordered) is configured on IT, not on Topbar.",
       "DropdownMenu — wrap a `Button` to build an entity switcher or user menu yourself, then place it in a slot.",
     ],
     example: `import { Topbar, AppShell } from "@godxjp/ui/layout";
-import { Logo, Button } from "@godxjp/ui/general";
+import { Button } from "@godxjp/ui/general";
+import { Avatar, AvatarFallback } from "@godxjp/ui/data-display";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 import { PanelLeftClose, Search } from "lucide-react";
 
@@ -614,7 +615,9 @@ import { PanelLeftClose, Search } from "lucide-react";
           <Button variant="ghost" size="icon-sm" aria-label={t("toggleSidebar")} onClick={toggle}>
             <PanelLeftClose />
           </Button>
-          <Logo label="CoreBooks" />
+          <Avatar className="rounded-md">
+            <AvatarFallback className="bg-primary text-primary-foreground font-bold">C</AvatarFallback>
+          </Avatar>
         </>
       }
       center={
@@ -946,68 +949,6 @@ import { Trash2 } from "lucide-react";
 <Heading level={2}>請求書一覧</Heading>
 <Heading level={3} tone="muted">補足セクション</Heading>`,
   },
-  {
-    name: "Logo",
-    group: "general",
-    tagline:
-      'Product brand-mark — the lettermark (or custom SVG) in a tokenized box. Use instead of a hand-rolled `<span className="flex size-8 rounded-md bg-primary font-bold">g</span>` (typography-on-span, literal size/radius).',
-    props: [
-      {
-        name: "glyph",
-        type: "ReactNode",
-        defaultValue: '"G"',
-        description: "The mark — a short lettermark string or a custom SVG/image node.",
-      },
-      {
-        name: "label",
-        type: "string",
-        description:
-          'Accessible product name. When set the mark exposes `role="img"` + `aria-label` (use when the Logo IS the accessible name, e.g. a home link). Omitted → the mark is `aria-hidden` (decorative; an adjacent wordmark names it).',
-      },
-      {
-        name: "size",
-        type: '"xs" | "sm" | "md" | "lg"',
-        defaultValue: '"md"',
-        description:
-          "Square box size (24 / 28 / 32 / 40). Size comes from the prop, never a literal.",
-      },
-      {
-        name: "shape",
-        type: '"default" | "pill" | "sharp"',
-        defaultValue: '"default"',
-        description:
-          "Corner shape — `default` (--logo-radius, a service knob), `pill` (fully rounded), `sharp` (square).",
-      },
-    ],
-    usage: [
-      "DO use Logo for the product glyph in a topbar, sidebar header, or auth shell instead of hand-rolling a styled `<span>`/`<div>` with a literal size + radius + bg (cardinal rules #42/#46).",
-      "DO pass `label` when the mark is the only branding AND acts as the accessible name (e.g. wrapped in a home link); omit it when a wordmark sits beside it (then the mark is decorative `aria-hidden`).",
-      "DO retheme via tokens — brand fill follows `--primary`; a service squares/rounds the corner globally via `--logo-radius`. DON'T override size/radius with a raw className.",
-      "DON'T put body copy in Logo — it is a brand mark (bold lettermark / SVG), not a Text/Heading substitute.",
-    ],
-    useCases: [
-      'Topbar / sidebar header brand mark next to a wordmark: `<Logo /> <Text weight="bold">GoDX</Text>`.',
-      'Auth shell (sign-in card) centered product mark with an accessible name: `<Logo size="lg" label="GoDX" />`.',
-      'A home link in an app shell where the logo IS the link label: `<a href="/"><Logo label="GoDX ホーム" /></a>`.',
-    ],
-    related: [
-      "Avatar — for a USER/person image or initials; Logo is for the PRODUCT/brand mark.",
-      "Text / Heading — for the wordmark or any real copy beside the mark; Logo never holds prose.",
-    ],
-    example: `import { Logo, Text } from "@godxjp/ui/general";
-
-// Topbar lettermark + wordmark
-<span className="inline-flex items-center gap-2">
-  <Logo />
-  <Text weight="bold">GoDX</Text>
-</span>
-
-// Auth shell, the mark is the accessible name
-<Logo size="lg" label="GoDX" />`,
-    storyPath: "general/Logo.stories.tsx",
-    rules: [42, 46],
-  },
-
   // ─── data-display ───────────────────────────────────────────────────────
   {
     name: "DataTable",
