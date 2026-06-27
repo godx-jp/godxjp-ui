@@ -110,7 +110,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>ドット ナビゲーション</CardTitle>
             <CardDescription>
-              Drop in CarouselDots — it reads the Embla api from context and renders one dot per
+              Drop in CarouselDots and it reads the Embla api from context, rendering one dot per
               slide. The active dot widens and carries aria-current.
             </CardDescription>
           </CardHeader>
