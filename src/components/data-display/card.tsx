@@ -12,7 +12,10 @@ type CardVariant = "default" | "muted" | "outline" | "featured";
 /** Padding density — base 16px · tight 12px · cozy 20px. */
 type CardDensity = "tight" | "cozy";
 
-const cardVariants = cva("group/card border", {
+// Border WIDTH lives in the components layer (.ui card CSS), not a Tailwind `border` utility:
+// the utility would beat the components-layer accent rail rule, pinning the accent stripe to 1px.
+// A consumer `className="border-2"` still wins (utilities > components), as before.
+const cardVariants = cva("group/card", {
   variants: {
     size: {
       md: "",

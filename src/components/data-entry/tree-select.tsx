@@ -257,16 +257,16 @@ function TreeSelectRoot({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        {/* CommandInput already draws ONE bottom separator + its own inline padding — don't
+            wrap it in another bordered/padded box (that double-borders the search row). */}
         {showSearch && (
-          <div className="border-b p-2">
-            <Command shouldFilter={false}>
-              <CommandInput
-                placeholder={t("dataEntry.treeSelect.searchPlaceholder")}
-                value={search}
-                onValueChange={setSearch}
-              />
-            </Command>
-          </div>
+          <Command shouldFilter={false}>
+            <CommandInput
+              placeholder={t("dataEntry.treeSelect.searchPlaceholder")}
+              value={search}
+              onValueChange={setSearch}
+            />
+          </Command>
         )}
         <ScrollArea className="max-h-[min(300px,50vh)]">
           <div

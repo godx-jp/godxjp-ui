@@ -270,7 +270,9 @@ export function SearchSelect({
           className="flex max-h-[var(--radix-popover-content-available-height)] w-max max-w-[min(32rem,calc(100vw-1.5rem))] min-w-[var(--radix-popover-trigger-width)] flex-col p-0"
         >
           <Command shouldFilter={false} className="flex min-h-0 flex-col">
-            <div className="border-border shrink-0 border-b p-2">
+            {/* The search field is FLUSH inside the panel — borderless with a single bottom
+                separator (the panel frames it). A boxed/padded input here double-borders. */}
+            <div className="border-border shrink-0 border-b">
               <Input
                 autoFocus
                 // The PopoverTrigger is the (single) combobox; this search field is a textbox that
@@ -283,6 +285,7 @@ export function SearchSelect({
                 onChange={(event) => setQuery(event.target.value)}
                 onKeyDown={onKeyDown}
                 placeholder={searchPlaceholder ?? t("dataEntry.searchSelect.search")}
+                className="rounded-none border-0 shadow-none focus-visible:ring-0"
               />
             </div>
             <CommandList
