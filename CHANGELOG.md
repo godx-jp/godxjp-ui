@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   a notification bell, a sidebar toggle, a tweaks button) — which is the consumer's job, and the
   source of the "dead dropdown with nothing to choose" and every app's header looking different.
   `Topbar` now exposes only `start` / `center` / `end` (+ `children` escape hatch) and owns ONLY the
-  bar layout. Compose the brand (`Logo`), sidebar toggle, search trigger, settings pickers
+  bar layout. Compose the brand (`Avatar`), sidebar toggle, search trigger, settings pickers
   (`AppSettingPicker`), notifications and user menu yourself and drop them into a slot — a control
   exists ONLY because you placed it. Removed props: `product`, `project`, `productMenu`, `projectMenu`,
   `projectPlaceholder`, `onProductOpen`, `onProjectOpen`, `onSearchOpen`, `onTweaksOpen`, `collapsed`,
@@ -58,12 +58,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   column always visible. New optional props `globalFilter`/`onGlobalFilterChange`,
   `pagination`/`onPaginationChange`/`rowCount`, `columnVisibility`/`onColumnVisibilityChange`, and
   `manualSorting`/`manualFiltering`/`manualPagination` for server-driven grids.
-- **`Logo` — product brand-mark primitive** (#116). Renders the lettermark (or a custom SVG via
-  `glyph`) in a tokenized box: brand fill from `--primary`, corner from the `--logo-radius` knob,
-  box from the `size` prop (xs/sm/md/lg). Replaces the hand-rolled
-  `<span className="flex size-8 rounded-md bg-primary font-bold">g</span>` repeated across the auth
-  shell and all three topbars (typography-on-span + literal size/radius — cardinal rules #42/#46).
-  `label` makes it an accessible `role="img"`; without it the mark is `aria-hidden` (decorative).
 - **`ListRow` — single-line entity-row surface for short lists inside a Card** (#113). Leading
   (icon/Avatar) · title/description · trailing action, with tokenized border/radius/padding
   (`--list-row-*`) and a quiet auto divider between stacked rows (last row leaves the Card border).
