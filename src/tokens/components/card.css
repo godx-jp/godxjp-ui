@@ -5,6 +5,12 @@
   --card-space-header-y: var(--space-stack-sm);
   --card-space-body-y: var(--space-section-active);
   --card-space-footer-y: var(--space-stack-sm);
+  /* DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a
+   * divider border (banded header, separated footer) reads as its own band, so it gets
+   * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body
+   * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in
+   * sync; a service theme tunes the band density here instead of forking per-slot CSS. */
+  --card-space-divided-y: var(--card-space-header-y);
   --card-space-gap: var(--space-stack-xs);
   --card-title-font-size: var(--font-size-base);
   --card-title-line-height: var(--line-height-tight);

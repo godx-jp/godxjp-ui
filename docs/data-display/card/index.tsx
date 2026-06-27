@@ -217,13 +217,8 @@ export default function Demo() {
                 <CardTitle>渋谷オフィス</CardTitle>
                 <CardDescription>東京都渋谷区 · 内見受付中</CardDescription>
               </CardHeader>
-              {/* Flush footer (border spans edge-to-edge) with a ghost link whose LABEL aligns to
-                  the card inset — so "詳細を見る" lines up under the header title, not the button's
-                  own padding. */}
-              <CardFooter flush separated>
-                <Button variant="ghost" className="ps-[var(--card-space-inset)]">
-                  詳細を見る
-                </Button>
+              <CardFooter separated>
+                <Button variant="ghost">詳細を見る</Button>
               </CardFooter>
             </Card>
           </ResponsiveGrid>
