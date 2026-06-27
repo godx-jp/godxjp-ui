@@ -742,6 +742,14 @@ textarea.input { padding: var(--spacing-2) var(--spacing-3); height: auto; line-
   background: var(--primary);
   color: var(--primary-foreground);
 }
+/* Disabled wins over selected/today/range — a disabled day must read as a
+   muted cell, never the selected `--primary` blue. Placed after the rules above
+   so it overrides their background at equal specificity. */
+.calendar .rdp-day_disabled {
+  background: transparent;
+  color: var(--muted-foreground);
+  opacity: 0.5;
+}
 .calendar .rdp-day_outside { color: var(--muted-foreground); opacity: 0.6; }
 
 /* ── Time input (HH:mm) ───────────────────────────────────────────── */
