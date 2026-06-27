@@ -7,9 +7,9 @@ import { expectNoA11yViolations } from "@/test/a11y";
 function Demo(props: { orientation?: "horizontal" | "vertical" }) {
   return (
     <ResizablePanelGroup orientation={props.orientation ?? "horizontal"}>
-      <ResizablePanel defaultSize={50}>左</ResizablePanel>
+      <ResizablePanel defaultSize="50%">左</ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel defaultSize={50}>右</ResizablePanel>
+      <ResizablePanel defaultSize="50%">右</ResizablePanel>
     </ResizablePanelGroup>
   );
 }

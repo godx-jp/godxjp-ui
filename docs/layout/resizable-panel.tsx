@@ -65,7 +65,7 @@ function HorizontalCard() {
       <CardContent>
         <div style={{ height: "16rem", ...frameStyle }}>
           <ResizablePanelGroup orientation="horizontal">
-            <ResizablePanel id="list-panel" defaultSize={35} minSize={20} maxSize={60}>
+            <ResizablePanel id="list-panel" defaultSize="35%" minSize="20%" maxSize="60%">
               <Flex
                 direction="col"
                 gap="sm"
@@ -92,7 +92,7 @@ function HorizontalCard() {
               </Flex>
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel id="detail-panel" defaultSize={65} minSize={40}>
+            <ResizablePanel id="detail-panel" defaultSize="65%" minSize="40%">
               <Flex direction="col" gap="sm" style={{ padding: "1rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   詳細
@@ -132,7 +132,7 @@ function VerticalCard() {
       <CardContent>
         <div style={{ height: "18rem", ...frameStyle }}>
           <ResizablePanelGroup orientation="vertical">
-            <ResizablePanel id="editor-panel" defaultSize={50} minSize={25}>
+            <ResizablePanel id="editor-panel" defaultSize="50%" minSize="25%">
               <Flex direction="col" gap="sm" style={{ padding: "1rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   仕訳エディタ
@@ -152,7 +152,7 @@ function VerticalCard() {
             <ResizableHandle>
               <GripHorizontal aria-hidden="true" size={16} />
             </ResizableHandle>
-            <ResizablePanel id="preview-panel" defaultSize={50} minSize={25}>
+            <ResizablePanel id="preview-panel" defaultSize="50%" minSize="25%">
               <Flex direction="col" gap="sm" style={{ padding: "1rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   プレビュー
@@ -232,10 +232,10 @@ function CollapsibleCard() {
                 panelRef={panelRef}
                 id="collapsible-sidebar"
                 collapsible
-                collapsedSize={0}
-                defaultSize={0}
-                minSize={15}
-                maxSize={30}
+                collapsedSize="0%"
+                defaultSize="0%"
+                minSize="15%"
+                maxSize="30%"
                 onResize={(size) => setCollapsed(size.asPercentage === 0)}
               >
                 <Flex direction="col" gap="xs" style={{ padding: "0.75rem", height: "100%" }}>
@@ -252,7 +252,7 @@ function CollapsibleCard() {
               <ResizableHandle>
                 <GripVertical aria-hidden="true" size={16} />
               </ResizableHandle>
-              <ResizablePanel id="collapsible-main" defaultSize={100} minSize={40}>
+              <ResizablePanel id="collapsible-main" defaultSize="100%" minSize="40%">
                 <Flex direction="col" gap="xs" style={{ padding: "0.75rem", height: "100%" }}>
                   <Text size="xs" weight="medium" tone="muted">
                     メインコンテンツ
@@ -302,7 +302,7 @@ function PersistenceCard() {
             defaultLayout={layout}
             onLayoutChanged={setLayout}
           >
-            <ResizablePanel id="persisted-nav" defaultSize={30} minSize={20} maxSize={50}>
+            <ResizablePanel id="persisted-nav" defaultSize="30%" minSize="20%" maxSize="50%">
               <Flex direction="col" gap="xs" style={{ padding: "0.75rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   勘定科目
@@ -311,7 +311,7 @@ function PersistenceCard() {
               </Flex>
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel id="persisted-content" defaultSize={70} minSize={30}>
+            <ResizablePanel id="persisted-content" defaultSize="70%" minSize="30%">
               <Flex direction="col" gap="xs" style={{ padding: "0.75rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   仕訳一覧
@@ -345,7 +345,7 @@ function DisabledCard() {
       <CardContent>
         <div style={{ height: "12rem", ...frameStyle }}>
           <ResizablePanelGroup orientation="horizontal" disabled>
-            <ResizablePanel id="disabled-left" defaultSize={40} minSize={20}>
+            <ResizablePanel id="disabled-left" defaultSize="40%" minSize="20%">
               <Flex direction="col" gap="xs" style={{ padding: "0.75rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   確定済みレイアウト
@@ -354,7 +354,7 @@ function DisabledCard() {
               </Flex>
             </ResizablePanel>
             <ResizableHandle disabled disableDoubleClick />
-            <ResizablePanel id="disabled-right" defaultSize={60} minSize={20}>
+            <ResizablePanel id="disabled-right" defaultSize="60%" minSize="20%">
               <Flex direction="col" gap="xs" style={{ padding: "0.75rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   プレビュー
@@ -383,7 +383,7 @@ function ThreePaneCard() {
       <CardContent>
         <div style={{ height: "14rem", ...frameStyle }}>
           <ResizablePanelGroup orientation="horizontal">
-            <ResizablePanel id="sidebar-3pane" defaultSize={20} minSize={15} maxSize={30}>
+            <ResizablePanel id="sidebar-3pane" defaultSize="20%" minSize="15%" maxSize="30%">
               <Flex direction="col" gap="xs" style={{ padding: "0.75rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   ナビゲーション
@@ -396,7 +396,7 @@ function ThreePaneCard() {
               </Flex>
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel id="main-3pane" defaultSize={55} minSize={30}>
+            <ResizablePanel id="main-3pane" defaultSize="55%" minSize="30%">
               <Flex direction="col" gap="xs" style={{ padding: "0.75rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   メインコンテンツ
@@ -405,7 +405,7 @@ function ThreePaneCard() {
               </Flex>
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel id="inspector-3pane" defaultSize={25} minSize={15} maxSize={40}>
+            <ResizablePanel id="inspector-3pane" defaultSize="25%" minSize="15%" maxSize="40%">
               <Flex direction="col" gap="xs" style={{ padding: "0.75rem", height: "100%" }}>
                 <Text size="xs" weight="medium" tone="muted">
                   インスペクタ
