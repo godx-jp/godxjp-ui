@@ -16,13 +16,16 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
  */
 // DS authors the base --radius (6px) and derives sm/md/lg in @theme. --radius-xl
 // and --radius-full are NOT overridden · they fall through to Tailwind defaults.
+// `value` is the CSS the swatch renders. ds tokens resolve their var; xl/full are NOT authored as
+// vars (they fall through to Tailwind `rounded-xl` / `rounded-full`), so we render their literal
+// value — otherwise `var(--radius-full)` is undefined and the swatch collapses to a square.
 const radii = [
-  { token: "--radius-sm", px: "2px", source: "ds" as const },
-  { token: "--radius-md", px: "4px", source: "ds" as const },
-  { token: "--radius", px: "6px (base)", source: "ds" as const },
-  { token: "--radius-lg", px: "6px", source: "ds" as const },
-  { token: "--radius-xl", px: "12px", source: "tw" as const },
-  { token: "--radius-full", px: "pill", source: "tw" as const },
+  { token: "--radius-sm", px: "2px", value: "var(--radius-sm)", source: "ds" as const },
+  { token: "--radius-md", px: "4px", value: "var(--radius-md)", source: "ds" as const },
+  { token: "--radius", px: "6px (base)", value: "var(--radius)", source: "ds" as const },
+  { token: "--radius-lg", px: "6px", value: "var(--radius-lg)", source: "ds" as const },
+  { token: "--radius-xl", px: "12px", value: "0.75rem", source: "tw" as const },
+  { token: "--radius-full", px: "pill", value: "9999px", source: "tw" as const },
 ];
 
 const shadows = [
@@ -52,7 +55,7 @@ export default function Demo() {
                 <Flex key={r.token} direction="col" gap="xs">
                   <div
                     className="bg-secondary border-border h-16 border"
-                    style={{ borderRadius: `var(${r.token})` }}
+                    style={{ borderRadius: r.value }}
                   />
                   <div>
                     <Flex align="center" gap="xs">
