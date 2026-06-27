@@ -78,7 +78,7 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            Composition — banded header + separated footer
+            Composition · banded header + separated footer
           </Text>
           <Card accent="primary">
             <CardHeader banded>
@@ -108,7 +108,7 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            Size — md (default) vs compact
+            Size · md (default) vs compact
           </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
             <Card size="md">
@@ -128,7 +128,7 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            Density — tight 12px · base 16px · cozy 20px
+            Density · tight 12px · base 16px · cozy 20px
           </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 3 }}>
             <Card density="tight">
@@ -154,7 +154,7 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            CardContent — flush (edge-to-edge table) · solo (no header)
+            CardContent · flush (edge-to-edge table) · solo (no header)
           </Text>
           <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>
             <Card>
@@ -166,25 +166,25 @@ export default function Demo() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>勘定科目</TableHead>
-                      <TableHead className="text-right">借方</TableHead>
-                      <TableHead className="text-right">貸方</TableHead>
+                      <TableHead className="text-end">借方</TableHead>
+                      <TableHead className="text-end">貸方</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow>
                       <TableCell>売掛金</TableCell>
-                      <TableCell className="text-right tabular-nums">¥482,000</TableCell>
-                      <TableCell className="text-right">—</TableCell>
+                      <TableCell className="text-end tabular-nums">¥482,000</TableCell>
+                      <TableCell className="text-end">—</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>売上高</TableCell>
-                      <TableCell className="text-right">—</TableCell>
-                      <TableCell className="text-right tabular-nums">¥438,182</TableCell>
+                      <TableCell className="text-end">—</TableCell>
+                      <TableCell className="text-end tabular-nums">¥438,182</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>仮受消費税</TableCell>
-                      <TableCell className="text-right">—</TableCell>
-                      <TableCell className="text-right tabular-nums">¥43,818</TableCell>
+                      <TableCell className="text-end">—</TableCell>
+                      <TableCell className="text-end tabular-nums">¥43,818</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -200,7 +200,7 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            CardCover — full-bleed media, header below
+            CardCover · full-bleed media, header below
           </Text>
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
             <Card>

@@ -13,7 +13,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="StatCard"
-      subtitle="KPI tiles — label · value · delta · hint, in a ResponsiveGrid"
+      subtitle="KPI tiles · label · value · delta · hint, in a ResponsiveGrid"
     >
       <Flex direction="col" gap="lg">
         <Flex direction="col" gap="sm">
@@ -30,7 +30,7 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            Delta tone — sign-aware (inverse flips it)
+            Delta tone · sign-aware (inverse flips it)
           </Text>
           <ResponsiveGrid columns={{ sm: 2, md: 3 }}>
             <StatCard label="新規取引先" value="24" delta="+6" />

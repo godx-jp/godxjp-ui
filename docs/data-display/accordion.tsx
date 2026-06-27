@@ -20,7 +20,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Accordion"
-      subtitle="Collapsible stacked sections — FAQ, grouped settings"
+      subtitle="Collapsible stacked sections · FAQ, grouped settings"
     >
       <Flex direction="col" gap="lg">
         <Card>

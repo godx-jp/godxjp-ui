@@ -13,14 +13,14 @@ export default function Demo() {
   return (
     <PageContainer
       title="Label"
-      subtitle="Bare Radix Label — always htmlFor; prefer FormField when helper / error / required is needed"
+      subtitle="Bare Radix Label · always htmlFor; prefer FormField when helper / error / required is needed"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Label + Checkbox (inline)</CardTitle>
             <CardDescription>
-              A compact pair where Field’s two-line layout is unnecessary — e.g. a “remember me”
+              A compact pair where Field’s two-line layout is unnecessary, e.g. a “remember me”
               row. When the peer control is disabled, the Label dims (peer-disabled:opacity-70 +
               cursor-not-allowed).
             </CardDescription>
@@ -69,16 +69,15 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="sm">
-              <Label htmlFor="memo">備考</Label>
+            <FormField id="memo" label="備考">
               <Textarea id="memo" placeholder="仕訳に関するメモを入力..." rows={3} />
-            </Flex>
+            </FormField>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>FormField vs bare Label — prefer FormField</CardTitle>
+            <CardTitle>FormField vs bare Label · prefer FormField</CardTitle>
             <CardDescription>
               FormField renders Label internally, wires aria-describedby / aria-invalid, and adds
               the helper / error / required slots. Use it for real form fields.

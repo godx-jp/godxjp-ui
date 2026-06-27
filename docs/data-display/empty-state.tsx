@@ -12,7 +12,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="EmptyState"
-      subtitle="Centred zero-state — icon · title · description · optional CTA"
+      subtitle="Centred zero-state · icon · title · description · optional CTA"
     >
       <Flex direction="col" gap="lg">
         <Card>

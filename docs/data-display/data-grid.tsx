@@ -62,17 +62,22 @@ const ROWS: Invoice[] = [
   { id: "INV-0301", partner: "仙台流通", amount: 28600, status: "pending", date: "2024-04-01" },
 ];
 
-const yen = (n: number) => `¥${n.toLocaleString()}`;
+const currencyFormatter = new Intl.NumberFormat("ja-JP", {
+  style: "currency",
+  currency: "JPY",
+  maximumFractionDigits: 0,
+});
+const yen = (n: number) => currencyFormatter.format(n);
 
 const columns: ColumnDef<Invoice, unknown>[] = [
   { accessorKey: "id", header: "請求書番号", enableHiding: false },
   { accessorKey: "partner", header: "取引先", meta: { label: "取引先" } },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">金額</div>,
+    header: () => <div className="text-end">金額</div>,
     meta: { label: "金額" },
     cell: ({ getValue }) => (
-      <Text as="div" weight="medium" tabular className="text-right">
+      <Text as="div" weight="medium" tabular className="text-end">
         {yen(getValue<number>())}
       </Text>
     ),
@@ -89,10 +94,10 @@ const columns: ColumnDef<Invoice, unknown>[] = [
   },
   {
     accessorKey: "date",
-    header: () => <div className="text-right">発行日</div>,
+    header: () => <div className="text-end">発行日</div>,
     meta: { label: "発行日" },
     cell: ({ getValue }) => (
-      <Text as="div" tabular className="text-right">
+      <Text as="div" tabular className="text-end">
         {getValue<string>()}
       </Text>
     ),
@@ -105,7 +110,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="DataGrid"
-      subtitle="TanStack Table アダプタ — 並べ替え・検索・列の表示切替・ページング・選択（@godxjp/ui/data-grid）"
+      subtitle="TanStack Table アダプタ · 並べ替え・検索・列の表示切替・ページング・選択（@godxjp/ui/data-grid）"
     >
       <Card>
         <CardContent>

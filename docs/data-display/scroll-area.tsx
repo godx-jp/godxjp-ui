@@ -38,7 +38,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="ScrollArea"
-      subtitle="Custom scrollbar container — needs an explicit height"
+      subtitle="Custom scrollbar container · needs an explicit height"
     >
       <Flex direction="col" gap="lg">
         <Card>

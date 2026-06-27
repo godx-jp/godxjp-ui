@@ -29,13 +29,13 @@ export default function Demo() {
   const [wrongCode, setWrongCode] = useState("000000");
 
   return (
-    <PageContainer title="InputOTP" subtitle="ワンタイムコード入力 — 2FA・SMS認証・招待コード">
+    <PageContainer title="InputOTP" subtitle="ワンタイムコード入力 · 2FA・SMS認証・招待コード">
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>メール認証コード（6桁）</CardTitle>
             <CardDescription>
-              6スロット 1グループ — ペースト・矢印キー操作に対応。autoFocus でコード入力画面の初期フォーカスを設定。
+              6スロット 1グループ · ペースト・矢印キー操作に対応。autoFocus でコード入力画面の初期フォーカスを設定。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -83,7 +83,7 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>招待コード（4桁PIN）</CardTitle>
-            <CardDescription>4スロット — 数字のみ許可する pattern を指定。</CardDescription>
+            <CardDescription>4スロット · 数字のみ許可する pattern を指定。</CardDescription>
           </CardHeader>
           <CardContent>
             <FormField id="invite-pin" label="招待PIN" helper="メールに記載された4桁の数字">
@@ -115,7 +115,7 @@ export default function Demo() {
             <FormField
               id="autosubmit-otp"
               label="認証コード"
-              helper={verified ? `${verified} を検証済み — 自動送信されました。` : "6桁を入力すると自動で送信されます。"}
+              helper={verified ? `${verified} を検証済み · 自動送信されました。` : "6桁を入力すると自動で送信されます。"}
               required
             >
               <InputOTP
@@ -141,7 +141,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>エラー（コードが一致しない）</CardTitle>
             <CardDescription>
-              FormField の error で aria-invalid を付与 — スロットの枠が destructive 色に変わる。
+              FormField の error で aria-invalid を付与 · スロットの枠が destructive 色に変わる。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -169,7 +169,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>無効（再送クールダウン中）</CardTitle>
             <CardDescription>
-              disabled — コード再送のクールダウンや検証中は入力をロックする。
+              disabled · コード再送のクールダウンや検証中は入力をロックする。
             </CardDescription>
           </CardHeader>
           <CardContent>

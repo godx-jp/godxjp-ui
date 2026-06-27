@@ -21,7 +21,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="ListRow"
-      subtitle="leading · title/description · trailing action — short entity lists inside a Card"
+      subtitle="leading · title/description · trailing action · short entity lists inside a Card"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -29,7 +29,7 @@ export default function Demo() {
             <CardTitle>アクティブなセッション Active sessions</CardTitle>
             <CardDescription>
               Rows live in a flush CardContent and draw their own dividers. Trailing holds the row
-              action — a status Badge or a destructive Button.
+              action: a status Badge or a destructive Button.
             </CardDescription>
           </CardHeader>
           <CardContent flush>

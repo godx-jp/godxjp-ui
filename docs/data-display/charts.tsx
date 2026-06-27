@@ -40,12 +40,12 @@ export default function Demo() {
   return (
     <PageContainer
       title="Charts"
-      subtitle="recharts をラップしたツリーシェイク可能なグラフ群 — トークン配色・ロケール数値・代替テキストを内蔵"
+      subtitle="recharts をラップしたツリーシェイク可能なグラフ群 · トークン配色・ロケール数値・代替テキストを内蔵"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>LineChart — 月次トレンド</CardTitle>
+            <CardTitle>LineChart · 月次トレンド</CardTitle>
             <CardDescription>
               複数系列の推移。numberFormat で通貨をロケールに合わせて表示します。
             </CardDescription>
@@ -68,7 +68,7 @@ export default function Demo() {
         <ResponsiveGrid columns={2}>
           <Card>
             <CardHeader>
-              <CardTitle>BarChart — 地域/期間比較</CardTitle>
+              <CardTitle>BarChart · 地域/期間比較</CardTitle>
               <CardDescription>compact 表記。stacked で構成比に切替可能。</CardDescription>
             </CardHeader>
             <CardContent>
@@ -89,7 +89,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>AreaChart — 累積構成</CardTitle>
+              <CardTitle>AreaChart · 累積構成</CardTitle>
               <CardDescription>stacked で合計の積み上がりを表現。</CardDescription>
             </CardHeader>
             <CardContent>
@@ -111,7 +111,7 @@ export default function Demo() {
         <ResponsiveGrid columns={2}>
           <Card>
             <CardHeader>
-              <CardTitle>PieChart — 構成比</CardTitle>
+              <CardTitle>PieChart · 構成比</CardTitle>
               <CardDescription>少数スライス向け。donut にも切替可能。</CardDescription>
             </CardHeader>
             <CardContent>

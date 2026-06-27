@@ -16,11 +16,11 @@ export default function Demo() {
   const [partnerQuery, setPartnerQuery] = useState("");
 
   const journals = [
-    { id: "JE-0001", desc: "売上計上 — 株式会社山田商事" },
-    { id: "JE-0002", desc: "仕入計上 — 有限会社田中工業" },
-    { id: "JE-0003", desc: "経費精算 — 交通費" },
-    { id: "JE-0004", desc: "売上計上 — ABC株式会社" },
-    { id: "JE-0005", desc: "給与支払 — 2024年3月分" },
+    { id: "JE-0001", desc: "売上計上 · 株式会社山田商事" },
+    { id: "JE-0002", desc: "仕入計上 · 有限会社田中工業" },
+    { id: "JE-0003", desc: "経費精算 · 交通費" },
+    { id: "JE-0004", desc: "売上計上 · ABC株式会社" },
+    { id: "JE-0005", desc: "給与支払 · 2024年3月分" },
   ];
 
   const filtered = journals.filter(
@@ -32,7 +32,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="SearchInput"
-      subtitle="デバウンス付き検索ボックス — onSearch でフィルタリングを駆動する"
+      subtitle="デバウンス付き検索ボックス · onSearch でフィルタリングを駆動する"
     >
       <Flex direction="col" gap="lg">
         <Card>

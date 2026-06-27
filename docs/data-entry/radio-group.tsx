@@ -11,7 +11,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="RadioGroup"
-      subtitle="Mutually-exclusive choices, all visible — options array"
+      subtitle="Mutually-exclusive choices, all visible · options array"
     >
       <Flex direction="col" gap="lg">
         <Card>

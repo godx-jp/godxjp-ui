@@ -34,7 +34,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="DropdownMenu"
-      subtitle="Radix dropdown — Trigger asChild + Content + Item/Separator/Sub"
+      subtitle="Radix dropdown · Trigger asChild + Content + Item/Separator/Sub"
     >
       <Flex direction="col" gap="lg">
         {/* Row action menu — the most common use */}
@@ -48,7 +48,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="row" align="center" gap="md">
-              <Text>JE-0042 — 売上計上 ¥480,000</Text>
+              <Text>JE-0042 · 売上計上 ¥480,000</Text>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon-sm" aria-label="行アクション">
@@ -69,10 +69,10 @@ export default function Demo() {
         {/* Status quick-change with RadioGroup */}
         <Card>
           <CardHeader>
-            <CardTitle>RadioGroup — ステータス即時変更</CardTitle>
+            <CardTitle>RadioGroup · ステータス即時変更</CardTitle>
             <CardDescription>
               DropdownMenuRadioGroup + DropdownMenuRadioItem でステータスを切り替える。 Select
-              の代替 — フォーム外でのインライン状態遷移に使う。
+              の代替。フォーム外でのインライン状態遷移に使う。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -106,7 +106,7 @@ export default function Demo() {
         {/* Column visibility toggle */}
         <Card>
           <CardHeader>
-            <CardTitle>CheckboxItem — 列の表示 / 非表示</CardTitle>
+            <CardTitle>CheckboxItem · 列の表示 / 非表示</CardTitle>
             <CardDescription>
               DropdownMenuCheckboxItem で DataTable の列表示を切り替える。 checked + onCheckedChange
               で各列の状態を管理する。
@@ -139,7 +139,7 @@ export default function Demo() {
         {/* Nested sub-menu for export */}
         <Card>
           <CardHeader>
-            <CardTitle>Sub-menu — エクスポート形式の選択</CardTitle>
+            <CardTitle>Sub-menu · エクスポート形式の選択</CardTitle>
             <CardDescription>
               DropdownMenuSub + DropdownMenuSubTrigger + DropdownMenuSubContent でネスト。
               ChevronRight は DropdownMenuSubTrigger が自動で表示する。
@@ -175,7 +175,7 @@ export default function Demo() {
         {/* Avatar chip / account menu */}
         <Card>
           <CardHeader>
-            <CardTitle>アカウントメニュー — トップバーのアバターチップ</CardTitle>
+            <CardTitle>アカウントメニュー · トップバーのアバターチップ</CardTitle>
             <CardDescription>
               DropdownMenuLabel でユーザー情報を表示し、アクションを下に並べる標準パターン。
             </CardDescription>

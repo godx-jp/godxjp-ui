@@ -18,7 +18,7 @@ export default function Demo() {
   const [validatedColor, setValidatedColor] = useState("#9333ea");
 
   return (
-    <PageContainer title="ColorPicker" subtitle="カラーピッカー — スウォッチ＋Hex入力">
+    <PageContainer title="ColorPicker" subtitle="カラーピッカー · スウォッチ＋Hex入力">
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
@@ -102,7 +102,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>無効状態</CardTitle>
             <CardDescription>
-              disabled — スウォッチと Hex 入力の両方が無効化される。
+              disabled · スウォッチと Hex 入力の両方が無効化される。
             </CardDescription>
           </CardHeader>
           <CardContent>

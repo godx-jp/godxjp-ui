@@ -32,7 +32,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Single — labelled with Field</CardTitle>
+            <CardTitle>Single · labelled with Field</CardTitle>
             <CardDescription>
               Field pairs the control with a label + optional description. The last row is disabled.
             </CardDescription>
@@ -54,7 +54,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Indeterminate — select all</CardTitle>
+            <CardTitle>Indeterminate · select all</CardTitle>
             <CardDescription>
               The parent uses checked=&quot;indeterminate&quot; when only some children are selected
               (children composed from explicit Field + Checkbox).
@@ -101,7 +101,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Error — invalid in a FormField</CardTitle>
+            <CardTitle>Error · invalid in a FormField</CardTitle>
             <CardDescription>
               FormField wires aria-invalid + the error message onto the control (role=alert).
             </CardDescription>
@@ -117,7 +117,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>CheckboxGroup (options)</CardTitle>
             <CardDescription>
-              Multi-select from a data-driven options array — per-option description and disabled.
+              Multi-select from a data-driven options array, with per-option description and disabled.
             </CardDescription>
           </CardHeader>
           <CardContent>

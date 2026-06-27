@@ -13,13 +13,13 @@ export default function Demo() {
   return (
     <PageContainer
       title="Breadcrumb"
-      subtitle="Spatial location trail — import from @godxjp/ui/layout, items array only"
+      subtitle="Spatial location trail · import from @godxjp/ui/layout, items array only"
     >
       <Flex direction="col" gap="lg">
         {/* 2-level trail */}
         <Card>
           <CardHeader>
-            <CardTitle>2 階層 — モジュールルート + 現在ページ</CardTitle>
+            <CardTitle>2 階層 · モジュールルート + 現在ページ</CardTitle>
             <CardDescription>
               最後のセグメントに to を渡さない → aria-current=&quot;page&quot; として span
               でレンダリング。
@@ -33,7 +33,7 @@ export default function Demo() {
         {/* 3-level — accounting detail */}
         <Card>
           <CardHeader>
-            <CardTitle>3 階層 — 会計 / 請求書一覧 / 請求書詳細</CardTitle>
+            <CardTitle>3 階層 · 会計 / 請求書一覧 / 請求書詳細</CardTitle>
             <CardDescription>
               Master-detail drill-down。詳細ページが現在ページ (to なし)。
               親セグメントはクリックで一覧へ戻れる。
@@ -54,7 +54,7 @@ export default function Demo() {
         {/* 4-level — payroll nested */}
         <Card>
           <CardHeader>
-            <CardTitle>4 階層 — 給与 / 部門 / 従業員 / 給与明細</CardTitle>
+            <CardTitle>4 階層 · 給与 / 部門 / 従業員 / 給与明細</CardTitle>
             <CardDescription>
               深いネストでも items 配列を渡すだけ。区切り記号と aria は自動で付与される。
             </CardDescription>
@@ -102,7 +102,7 @@ export default function Demo() {
         {/* Audit log example */}
         <Card>
           <CardHeader>
-            <CardTitle>監査ログページ — 現在エンティティが末尾</CardTitle>
+            <CardTitle>監査ログページ · 現在エンティティが末尾</CardTitle>
             <CardDescription>
               審査ログや文書履歴でもパターンは同じ。現在エンティティ (to なし) が末尾。
             </CardDescription>

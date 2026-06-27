@@ -33,7 +33,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="ContextMenu"
-      subtitle="右クリックで開くコンテキストメニュー — 行・カード・エリアへのアクション"
+      subtitle="右クリックで開くコンテキストメニュー · 行・カード・エリアへのアクション"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -87,7 +87,7 @@ export default function Demo() {
           <CardContent>
             <ContextMenu>
               <ContextMenuTrigger className="border-border flex h-36 w-full cursor-context-menu items-center justify-center rounded-md border border-dashed">
-                <Text tone="muted">右クリック — 表示設定</Text>
+                <Text tone="muted">右クリック · 表示設定</Text>
               </ContextMenuTrigger>
               <ContextMenuContent>
                 <ContextMenuLabel>表示オプション</ContextMenuLabel>

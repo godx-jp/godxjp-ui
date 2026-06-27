@@ -19,7 +19,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="TimePicker"
-      subtitle="時刻入力 — 24h HH:mm コンボボックス、スクロール選択付き"
+      subtitle="時刻入力 · 24h HH:mm コンボボックス、スクロール選択付き"
     >
       <Flex direction="col" gap="lg">
         <Card>

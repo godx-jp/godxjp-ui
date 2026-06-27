@@ -63,7 +63,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Command"
-      subtitle="コマンドパレット / キーボードナビゲーション — cmdk ベース"
+      subtitle="コマンドパレット / キーボードナビゲーション · cmdk ベース"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -81,49 +81,49 @@ export default function Demo() {
                 <CommandEmpty>該当する科目がありません。</CommandEmpty>
                 <CommandGroup heading="資産">
                   <CommandItem value="1010" onSelect={setAccount}>
-                    1010 — 現金
+                    1010 · 現金
                   </CommandItem>
                   <CommandItem value="1020" onSelect={setAccount}>
-                    1020 — 普通預金
+                    1020 · 普通預金
                   </CommandItem>
                   <CommandItem value="1030" onSelect={setAccount}>
-                    1030 — 売掛金
+                    1030 · 売掛金
                   </CommandItem>
                   <CommandItem value="1040" onSelect={setAccount}>
-                    1040 — 前払費用
+                    1040 · 前払費用
                   </CommandItem>
                 </CommandGroup>
                 <CommandGroup heading="負債">
                   <CommandItem value="2010" onSelect={setAccount}>
-                    2010 — 買掛金
+                    2010 · 買掛金
                   </CommandItem>
                   <CommandItem value="2020" onSelect={setAccount}>
-                    2020 — 未払費用
+                    2020 · 未払費用
                   </CommandItem>
                   <CommandItem value="2030" onSelect={setAccount} disabled>
-                    2030 — 廃止済科目（選択不可）
+                    2030 · 廃止済科目（選択不可）
                   </CommandItem>
                 </CommandGroup>
                 <CommandGroup heading="収益">
                   <CommandItem value="4010" onSelect={setAccount}>
-                    4010 — 売上高
+                    4010 · 売上高
                   </CommandItem>
                   <CommandItem value="4020" onSelect={setAccount}>
-                    4020 — 受取利息
+                    4020 · 受取利息
                   </CommandItem>
                 </CommandGroup>
                 <CommandGroup heading="費用">
                   <CommandItem value="5010" onSelect={setAccount}>
-                    5010 — 売上原価
+                    5010 · 売上原価
                   </CommandItem>
                   <CommandItem value="5020" onSelect={setAccount}>
-                    5020 — 給料手当
+                    5020 · 給料手当
                   </CommandItem>
                   <CommandItem value="5030" onSelect={setAccount}>
-                    5030 — 旅費交通費
+                    5030 · 旅費交通費
                   </CommandItem>
                   <CommandItem value="5040" onSelect={setAccount}>
-                    5040 — 通信費
+                    5040 · 通信費
                   </CommandItem>
                 </CommandGroup>
               </CommandList>

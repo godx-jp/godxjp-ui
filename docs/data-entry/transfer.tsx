@@ -51,7 +51,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Transfer"
-      subtitle="デュアルリストシャトル — targetKeys を管理し onValueChange で更新する"
+      subtitle="デュアルリストシャトル · targetKeys を管理し onValueChange で更新する"
     >
       <Flex direction="col" gap="lg">
         <Card>

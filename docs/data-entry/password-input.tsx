@@ -14,7 +14,7 @@ export default function Demo() {
   const [next, setNext] = useState("");
 
   return (
-    <PageContainer title="PasswordInput" subtitle="パスワード入力 — 表示/非表示トグル付き">
+    <PageContainer title="PasswordInput" subtitle="パスワード入力 · 表示/非表示トグル付き">
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>

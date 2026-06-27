@@ -15,7 +15,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Typography"
-      subtitle="Text + Heading — token-driven type, never an arbitrary px className"
+      subtitle="Text + Heading · token-driven type, never an arbitrary px className"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -94,7 +94,7 @@ export default function Demo() {
               <Text size="xs" mono tone="muted">
                 RC-204881 · JAN 4987241135219
               </Text>
-              <Text truncate className="max-w-[16rem]">
+              <Text truncate className="max-w-64">
                 とても長い説明テキストが一行に収まらない場合は省略記号で切り詰められます。
               </Text>
               <Flex direction="row" gap="sm" align="center">

@@ -49,7 +49,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Read-only display</CardTitle>
             <CardDescription>
-              readOnly=true turns it into a display widget — no interaction. Use for showing average
+              readOnly=true turns it into a display widget with no interaction. Use for showing average
               scores.
             </CardDescription>
           </CardHeader>
