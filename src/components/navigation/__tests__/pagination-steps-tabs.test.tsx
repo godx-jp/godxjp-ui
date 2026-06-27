@@ -15,6 +15,41 @@ describe("buildPageRange", () => {
     expect(buildPageRange(5, 20)[0]).toBe(1);
     expect(buildPageRange(5, 20).at(-1)).toBe(20);
   });
+
+  it("returns an empty list when there are no pages", () => {
+    expect(buildPageRange(1, 0)).toEqual([]);
+  });
+
+  it("returns the single page when total is 1", () => {
+    expect(buildPageRange(1, 1)).toEqual([1]);
+  });
+
+  it("near the start: right ellipsis only, no left ellipsis", () => {
+    // current=1 → left=1, right=2; left>2 is false so 2..left is filled (none),
+    // right<totalPages-1 is true so a trailing ellipsis appears before the last page.
+    const range = buildPageRange(1, 20);
+    expect(range[0]).toBe(1);
+    expect(range).toEqual([1, 2, "ellipsis", 20]);
+  });
+
+  it("near the end: left ellipsis only, last pages spelled out", () => {
+    // current=20 → showRightEllipsis false so pages right+1..totalPages-1 are spelled out
+    // (exercises the trailing fill loop) and the leading ellipsis collapses the early pages.
+    const range = buildPageRange(20, 20);
+    expect(range[0]).toBe(1);
+    expect(range).toContain("ellipsis");
+    expect(range.indexOf("ellipsis")).toBe(1);
+    expect(range).toEqual([1, "ellipsis", 19, 20]);
+  });
+
+  it("in the middle: ellipsis on both sides", () => {
+    const range = buildPageRange(10, 20);
+    expect(range).toEqual([1, "ellipsis", 9, 10, 11, "ellipsis", 20]);
+  });
+
+  it("widens the window with a larger siblingCount", () => {
+    expect(buildPageRange(10, 20, 2)).toEqual([1, "ellipsis", 8, 9, 10, 11, 12, "ellipsis", 20]);
+  });
 });
 
 describe("Pagination", () => {
