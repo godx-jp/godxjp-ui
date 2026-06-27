@@ -35,7 +35,7 @@ export default function Demo() {
             <CardContent>
               <Collapsible defaultOpen>
                 <Flex direction="row" align="center" justify="between" gap="md">
-                  <Text weight="medium">普通預金 — 補助科目 (3)</Text>
+                  <Text weight="medium">普通預金 · 補助科目 (3)</Text>
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
@@ -66,7 +66,7 @@ export default function Demo() {
             <CardContent>
               <Collapsible>
                 <Flex direction="row" align="center" justify="between" gap="md">
-                  <Text weight="medium">当座預金 — 補助科目 (2)</Text>
+                  <Text weight="medium">当座預金 · 補助科目 (2)</Text>
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="ghost"
@@ -99,7 +99,7 @@ export default function Demo() {
             <Collapsible open={open} onOpenChange={setOpen}>
               <Flex direction="row" align="center" justify="between" gap="md">
                 <Text weight="medium">
-                  外貨預金 — 補助科目 (2) · {open ? "展開中" : "折りたたみ中"}
+                  外貨預金 · 補助科目 (2) · {open ? "展開中" : "折りたたみ中"}
                 </Text>
                 <Flex direction="row" align="center" gap="xs">
                   <Button variant="outline" size="sm" onClick={() => setOpen((value) => !value)}>
@@ -119,8 +119,8 @@ export default function Demo() {
               </Flex>
               <CollapsibleContent>
                 <Flex direction="col" gap="xs">
-                  <div className="text-sm">USD 普通預金 — シティバンク</div>
-                  <div className="text-sm">EUR 普通預金 — 三菱UFJ銀行</div>
+                  <div className="text-sm">USD 普通預金 · シティバンク</div>
+                  <div className="text-sm">EUR 普通預金 · 三菱UFJ銀行</div>
                 </Flex>
               </CollapsibleContent>
             </Collapsible>
@@ -136,7 +136,7 @@ export default function Demo() {
           <CardContent>
             <Collapsible disabled defaultOpen>
               <Flex direction="row" align="center" justify="between" gap="md">
-                <Text weight="medium">定期預金 — 補助科目 (1) · 締め処理中</Text>
+                <Text weight="medium">定期預金 · 補助科目 (1) · 締め処理中</Text>
                 <CollapsibleTrigger asChild>
                   <Button
                     variant="ghost"

@@ -27,14 +27,14 @@ export default function Demo() {
   return (
     <PageContainer
       title="Upload"
-      subtitle="ファイルアップロード — 6バリアント（dropzone / button / picture-card / picture / avatar / avatar-crop）"
+      subtitle="ファイルアップロード · 6バリアント（dropzone / button / picture-card / picture / avatar / avatar-crop）"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Dropzone</CardTitle>
             <CardDescription>
-              ドラッグ＆ドロップエリア — PDF・Excel などの書類添付に使用。
+              ドラッグ＆ドロップエリア · PDF・Excel などの書類添付に使用。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -54,7 +54,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Button</CardTitle>
             <CardDescription>
-              コンパクトなボタン形式 — CSVインポートなどの管理画面向け。
+              コンパクトなボタン形式 · CSVインポートなどの管理画面向け。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -74,7 +74,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Picture Card</CardTitle>
             <CardDescription>
-              96×96 サムネイルグリッド — 商品ギャラリーや画像一覧に使用。
+              96×96 サムネイルグリッド · 商品ギャラリーや画像一覧に使用。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -93,7 +93,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Picture</CardTitle>
             <CardDescription>
-              単一画像プレビュー — コンテンツのカバー画像選択に使用。
+              単一画像プレビュー · コンテンツのカバー画像選択に使用。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -111,7 +111,7 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Avatar</CardTitle>
-            <CardDescription>円形の単一画像ピッカー — ユーザーアイコン変更に使用。</CardDescription>
+            <CardDescription>円形の単一画像ピッカー · ユーザーアイコン変更に使用。</CardDescription>
           </CardHeader>
           <CardContent>
             <Upload

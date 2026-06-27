@@ -126,7 +126,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="TreeSelect"
-      subtitle="階層ツリーピッカー — 単一は string、複数は string[] を返す"
+      subtitle="階層ツリーピッカー · 単一は string、複数は string[] を返す"
     >
       <Flex direction="col" gap="lg">
         <Card>

@@ -10,6 +10,9 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * Use onValueCommit (not onValueChange) for expensive side-effects.
  * Composed only from real @godxjp/ui components.
  */
+const yen = (n: number) =>
+  new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" }).format(n);
+
 export default function Demo() {
   const [taxRate, setTaxRate] = useState<number[]>([10]);
   const [amountRange, setAmountRange] = useState<number[]>([50000, 300000]);
@@ -18,12 +21,12 @@ export default function Demo() {
   return (
     <PageContainer
       title="Slider"
-      subtitle="Numeric range slider — value/defaultValue must be number[] (single-thumb: [n], range: [min, max])"
+      subtitle="Numeric range slider · value/defaultValue must be number[] (single-thumb: [n], range: [min, max])"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>単一スライダー — 税率設定</CardTitle>
+            <CardTitle>単一スライダー · 税率設定</CardTitle>
             <CardDescription>
               Single-thumb controlled slider. value={`[n]`} — plain number breaks rendering.
               onValueChange fires on every drag; onValueCommit fires on release.
@@ -52,7 +55,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>レンジスライダー — 請求金額フィルタ</CardTitle>
+            <CardTitle>レンジスライダー · 請求金額フィルタ</CardTitle>
             <CardDescription>
               Dual-thumb range slider: value={`[min, max]`}. Use minStepsBetweenThumbs to prevent
               thumbs overlapping.
@@ -61,7 +64,7 @@ export default function Demo() {
           <CardContent>
             <FormField
               id="amount-range"
-              label={`請求金額: ¥${amountRange[0].toLocaleString()} 〜 ¥${amountRange[1].toLocaleString()}`}
+              label={`請求金額: ${yen(amountRange[0])} 〜 ${yen(amountRange[1])}`}
             >
               <Slider
                 value={amountRange}

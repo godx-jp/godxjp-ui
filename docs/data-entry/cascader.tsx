@@ -176,7 +176,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Cascader"
-      subtitle="階層パスピッカー — value は string[] (単一) / string[][] (複数)"
+      subtitle="階層パスピッカー · value は string[] (単一) / string[][] (複数)"
     >
       <Flex direction="col" gap="lg">
         <Card>

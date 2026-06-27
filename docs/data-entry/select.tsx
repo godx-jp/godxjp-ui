@@ -42,7 +42,7 @@ export default function Demo() {
   ];
   const avatarFor = (label: string) => (
     <Avatar className="size-5">
-      <AvatarFallback className="text-[10px]">{label.slice(0, 1)}</AvatarFallback>
+      <AvatarFallback>{label.slice(0, 1)}</AvatarFallback>
     </Avatar>
   );
   const peopleWithIcon = people.map((person) => ({ ...person, icon: avatarFor(person.label) }));
@@ -61,7 +61,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Select"
-      subtitle="Single-select — data-driven options, searchable, or compound"
+      subtitle="Single-select · data-driven options, searchable, or compound"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -123,7 +123,7 @@ export default function Demo() {
             <CardTitle>Searchable + clearable</CardTitle>
             <CardDescription>
               With a value set and clearable (default), an inline ✕ on the trigger resets the
-              selection — no need to open the list.
+              selection without opening the list.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -144,10 +144,10 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Option icon — shown on the trigger too</CardTitle>
+            <CardTitle>Option icon · shown on the trigger too</CardTitle>
             <CardDescription>
               Give each option an `icon` (avatar / flag / lucide icon). It renders before the label
-              in the list AND on the trigger once selected — no `renderOption` needed.
+              in the list AND on the trigger once selected, with no `renderOption` needed.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -171,7 +171,7 @@ export default function Demo() {
             <CardTitle>Async (loadOptions) + selectedIcon</CardTitle>
             <CardDescription>
               With `loadOptions` and a preset value, `selectedLabel` + `selectedIcon` show the picked
-              person's name AND avatar on the trigger at rest — before the async list has loaded.
+              person's name AND avatar on the trigger at rest, before the async list has loaded.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -195,7 +195,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Custom rows (renderOption)</CardTitle>
             <CardDescription>
-              `renderOption` (like Ant&apos;s optionRender) draws a fully custom row — avatar + name +
+              `renderOption` (like Ant&apos;s optionRender) draws a fully custom row: avatar + name +
               email + a status badge. Use a flex ROW (`div className=&quot;flex items-center&quot;`),
               not a bare `Flex` which defaults to a column.
             </CardDescription>
@@ -232,9 +232,9 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>labelRender — custom selected display</CardTitle>
+            <CardTitle>labelRender · custom selected display</CardTitle>
             <CardDescription>
-              `labelRender` (Ant Design) customizes the SELECTED value shown on the trigger — here an
+              `labelRender` (Ant Design) customizes the SELECTED value shown on the trigger: here an
               avatar + name + a role badge. The placeholder still shows when nothing is selected.
             </CardDescription>
           </CardHeader>

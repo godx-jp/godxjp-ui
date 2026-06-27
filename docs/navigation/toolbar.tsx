@@ -38,7 +38,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Toolbar / ToolbarGroup"
-      subtitle="List-page filter strip — place ABOVE the table card, not inside CardContent"
+      subtitle="List-page filter strip · place ABOVE the table card, not inside CardContent"
     >
       <Flex direction="col" gap="lg">
         {/* Full filter bar above a representative table placeholder */}
@@ -46,7 +46,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>仕訳一覧フィルター</CardTitle>
             <CardDescription>
-              Toolbar + ToolbarGroup — SearchInput is placed directly (no ToolbarGroup); every other
+              Toolbar + ToolbarGroup · SearchInput is placed directly (no ToolbarGroup); every other
               control gets a ToolbarGroup with a label. hasActiveFilters drives the clear-all
               button.
             </CardDescription>
@@ -91,7 +91,7 @@ export default function Demo() {
 
               {/* Simulated table body */}
               <Text as="div" tone="muted" className="rounded-md border p-4 text-center">
-                DataTable がここに入ります — Toolbar は Card の外側 (上) に置く
+                DataTable がここに入ります · Toolbar は Card の外側 (上) に置く
               </Text>
             </Flex>
           </CardContent>
@@ -116,7 +116,7 @@ export default function Demo() {
         {/* Department filter example */}
         <Card>
           <CardHeader>
-            <CardTitle>複数 ToolbarGroup — 部門・科目フィルター</CardTitle>
+            <CardTitle>複数 ToolbarGroup · 部門・科目フィルター</CardTitle>
             <CardDescription>
               勤怠・経費レポート向け。各フィルターを ToolbarGroup でラベルを付けて並べる。
             </CardDescription>

@@ -114,11 +114,11 @@ export default function Demo() {
   return (
     <PageContainer
       title="Form"
-      subtitle="全フィールド型 × 全レイアウト × 全状態 — 実画面のフォーム例 (real primitives only)"
+      subtitle="全フィールド型 × 全レイアウト × 全状態 · 実画面のフォーム例 (real primitives only)"
     >
       <Flex direction="col" gap="lg">
         {/* ════════════════════ 1. EVERY FIELD TYPE ════════════════════ */}
-        <Heading level={3}>1. 全フィールド型 — すべての入力コントロール</Heading>
+        <Heading level={3}>1. 全フィールド型 · すべての入力コントロール</Heading>
         <Text tone="muted" size="sm">
           ライブラリが提供するデータ入力コンポーネントを 1 つずつ FormField
           でラップ。ラベル・ヘルパー・必須マークを付与し、aria-* は自動配線される。
@@ -126,7 +126,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>テキスト系 — Input / SearchInput / PasswordInput / Textarea</CardTitle>
+            <CardTitle>テキスト系 · Input / SearchInput / PasswordInput / Textarea</CardTitle>
             <CardDescription>
               文字列・検索・パスワード・複数行。type=email / inputMode=numeric も Input で表現する。
             </CardDescription>
@@ -170,7 +170,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>選択系 — Select / TreeSelect / Cascader</CardTitle>
+            <CardTitle>選択系 · Select / TreeSelect / Cascader</CardTitle>
             <CardDescription>
               単一選択・階層ツリー選択・カスケード選択。いずれも options/treeData
               でデータ駆動し、value/onValueChange で制御する。
@@ -217,7 +217,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>真偽・選択肢系 — Checkbox / CheckboxGroup / RadioGroup / Switch</CardTitle>
+            <CardTitle>真偽・選択肢系 · Checkbox / CheckboxGroup / RadioGroup / Switch</CardTitle>
             <CardDescription>
               単一チェック・複数チェック・排他選択・トグル。Checkbox/Switch は Field
               でラベルと横並びにする。
@@ -268,7 +268,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>数値・範囲系 — Slider / Rating</CardTitle>
+            <CardTitle>数値・範囲系 · Slider / Rating</CardTitle>
             <CardDescription>
               連続値スライダーと星評価。value は配列／数値で制御する。
             </CardDescription>
@@ -296,7 +296,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>日時系 — DatePicker / DateRangePicker / TimeInput</CardTitle>
+            <CardTitle>日時系 · DatePicker / DateRangePicker / TimeInput</CardTitle>
             <CardDescription>
               単一日付・期間・時刻。ISO-8601 / IANA タイムゾーンに準拠し locale
               連動でフォーマットする。
@@ -335,7 +335,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>その他 — TagInput / ToggleGroup / InputOTP / Upload</CardTitle>
+            <CardTitle>その他 · TagInput / ToggleGroup / InputOTP / Upload</CardTitle>
             <CardDescription>
               タグ入力・セグメント切替・ワンタイムコード・ファイル添付。すべて FormField
               でラベル付けする。
@@ -391,7 +391,7 @@ export default function Demo() {
         </Card>
 
         {/* ════════════════════ 2. EVERY LAYOUT ════════════════════ */}
-        <Heading level={3}>2. レイアウト — vertical / horizontal / inline / columns</Heading>
+        <Heading level={3}>2. レイアウト · vertical / horizontal / inline / columns</Heading>
 
         <Card>
           <CardHeader>
@@ -444,7 +444,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Inline — フィルターバー（layout=inline · Flex で横並び）</CardTitle>
+            <CardTitle>Inline · フィルターバー（layout=inline · Flex で横並び）</CardTitle>
             <CardDescription>
               一覧画面上部の絞り込みバー。layout=inline でラベルをコントロールの左に詰め、Flex
               direction=row でフィールドを横一列に並べ、末尾に適用ボタンを置く。
@@ -477,7 +477,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Columns（columns=2 · 姓+名ペア · 住所は2列span）</CardTitle>
             <CardDescription>
-              複数列グリッド（ResponsiveGrid — 小画面では1列）。広いフィールドは colSpan
+              複数列グリッド（ResponsiveGrid · 小画面では1列）。広いフィールドは colSpan
               で列をまたぐ。
             </CardDescription>
           </CardHeader>
@@ -498,7 +498,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Horizontal — 常時（collapseBelow=false）</CardTitle>
+            <CardTitle>Horizontal · 常時（collapseBelow=false）</CardTitle>
             <CardDescription>
               スマホでもラベル横並びを維持（多用しない）。labelAlign=start で左揃えに。
             </CardDescription>
@@ -513,7 +513,7 @@ export default function Demo() {
         </Card>
 
         {/* ════════════════════ 3. EVERY STATE ════════════════════ */}
-        <Heading level={3}>3. 状態 — pristine / filled / error / disabled / read-only</Heading>
+        <Heading level={3}>3. 状態 · pristine / filled / error / disabled / read-only</Heading>
 
         <Card>
           <CardHeader>

@@ -12,7 +12,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="FormField"
-      subtitle="Label · helper · required · error — a11y wired for the control"
+      subtitle="Label · helper · required · error · a11y wired for the control"
     >
       <Flex direction="col" gap="lg">
         <Card>

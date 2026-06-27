@@ -44,14 +44,14 @@ export default function Demo() {
   return (
     <PageContainer
       title="Badge"
-      subtitle="Structural variants, semantic tones, and auto-mapped lifecycle status — labels never wrap"
+      subtitle="Structural variants, semantic tones, and auto-mapped lifecycle status · labels never wrap"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Structural variants</CardTitle>
             <CardDescription>
-              variant is structural emphasis only — default (filled), secondary (muted fill),
+              variant is structural emphasis only: default (filled), secondary (muted fill),
               outline (bordered), dashed (dashed border). It carries no semantic meaning; use tone
               for that.
             </CardDescription>
@@ -71,7 +71,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Shape</CardTitle>
             <CardDescription>
-              shape sets corner radius from the tokens — default (badge radius) / pill (fully
+              shape sets corner radius from the tokens: default (badge radius) / pill (fully
               rounded) / sharp (square). Independent of variant and tone.
             </CardDescription>
           </CardHeader>
@@ -90,7 +90,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Semantic tones</CardTitle>
             <CardDescription>
-              tone conveys intent — pick by meaning, never aesthetics. success = approved/paid ·
+              tone conveys intent, pick by meaning, never aesthetics. success = approved/paid ·
               warning = pending · destructive = rejected · info · muted · neutral = category.
             </CardDescription>
           </CardHeader>

@@ -17,7 +17,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Toggle"
-      subtitle="Single pressed/unpressed button — toolbar actions, pinned filters"
+      subtitle="Single pressed/unpressed button · toolbar actions, pinned filters"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -72,7 +72,7 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle>Sizes</CardTitle>
-            <CardDescription>sm / md / lg — match surrounding density.</CardDescription>
+            <CardDescription>sm / md / lg · match surrounding density.</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="row" gap="md" align="center">

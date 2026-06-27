@@ -12,7 +12,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Logo"
-      subtitle="the product brand-mark — tokenized box, never a styled span"
+      subtitle="the product brand-mark · tokenized box, never a styled span"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -36,7 +36,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Shape</CardTitle>
             <CardDescription>
-              `shape` sets the corner — default reads the `--logo-radius` token (a service knob),
+              `shape` sets the corner: default reads the `--logo-radius` token (a service knob),
               pill is fully rounded, sharp is square.
             </CardDescription>
           </CardHeader>
@@ -54,7 +54,7 @@ export default function Demo() {
             <CardTitle>Lettermark + wordmark, and custom glyph</CardTitle>
             <CardDescription>
               Beside a wordmark the mark is decorative; pass `label` when the Logo itself is the
-              accessible name. `glyph` overrides the letter — pass a custom SVG for a real logo.
+              accessible name. `glyph` overrides the letter: pass a custom SVG for a real logo.
             </CardDescription>
           </CardHeader>
           <CardContent>

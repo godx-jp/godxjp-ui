@@ -18,7 +18,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="TagInput"
-      subtitle="Free-form chips input — value is string[]; Enter/comma to add, Backspace to remove"
+      subtitle="Free-form chips input · value is string[]; Enter/comma to add, Backspace to remove"
     >
       <Flex direction="col" gap="lg">
         <Card>

@@ -32,13 +32,13 @@ export default function Demo() {
   return (
     <PageContainer
       title="Steps"
-      subtitle="Horizontal + vertical, default + dot — drive current from state"
+      subtitle="Horizontal + vertical, default + dot · drive current from state"
     >
       <Flex direction="col" gap="lg">
         {/* Horizontal — default style with descriptions */}
         <Card>
           <CardHeader>
-            <CardTitle>水平 — default スタイル (経費承認フロー)</CardTitle>
+            <CardTitle>水平 · default スタイル (経費承認フロー)</CardTitle>
             <CardDescription>
               items に title + description を渡す。current は 0-based index。 前のステップは
               finish、現在は process、後のステップは wait。
@@ -52,7 +52,7 @@ export default function Demo() {
         {/* Interactive — advance/retreat */}
         <Card>
           <CardHeader>
-            <CardTitle>インタラクティブ — ステップを進む / 戻る</CardTitle>
+            <CardTitle>インタラクティブ · ステップを進む / 戻る</CardTitle>
             <CardDescription>
               onValueChange を渡すと各ステップがクリッカブルになる。ボタンで value
               を制御することもできる。
@@ -108,7 +108,7 @@ export default function Demo() {
         {/* Vertical — default style */}
         <Card>
           <CardHeader>
-            <CardTitle>垂直 — default スタイル (法人オンボーディング)</CardTitle>
+            <CardTitle>垂直 · default スタイル (法人オンボーディング)</CardTitle>
             <CardDescription>
               orientation=&quot;vertical&quot; でサイドバーやサイドパネルに収まる縦型レイアウト。
             </CardDescription>
@@ -153,7 +153,7 @@ export default function Demo() {
         {/* Dot style — compact */}
         <Card>
           <CardHeader>
-            <CardTitle>Dot スタイル — コンパクト (type=&quot;dot&quot;)</CardTitle>
+            <CardTitle>Dot スタイル · コンパクト (type=&quot;dot&quot;)</CardTitle>
             <CardDescription>
               type=&quot;dot&quot; + size=&quot;sm&quot; で最小フットプリントのプログレスガイド。
               サイドバーのオンボーディングチェックリストに最適。

@@ -21,7 +21,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="NavigationMenu"
-      subtitle="水平ナビゲーション — トリガー展開コンテンツ・リンク・ビューポートをサポート"
+      subtitle="水平ナビゲーション · トリガー展開コンテンツ・リンク・ビューポートをサポート"
     >
       <Flex direction="col" gap="lg">
         <Card>

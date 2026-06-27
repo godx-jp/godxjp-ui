@@ -18,7 +18,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="TimeInput"
-      subtitle="HH:mm マスク入力 — ポップオーバーなしの軽量時刻フィールド"
+      subtitle="HH:mm マスク入力 · ポップオーバーなしの軽量時刻フィールド"
     >
       <Flex direction="col" gap="lg">
         <Card>

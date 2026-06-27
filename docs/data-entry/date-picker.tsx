@@ -21,7 +21,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="DatePicker"
-      subtitle="日付入力 — ISO-8601 タイプ入力 + カレンダーポップオーバー"
+      subtitle="日付入力 · ISO-8601 タイプ入力 + カレンダーポップオーバー"
     >
       <Flex direction="col" gap="lg">
         <Card>

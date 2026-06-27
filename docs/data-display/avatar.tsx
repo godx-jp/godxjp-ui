@@ -52,7 +52,7 @@ export default function Demo() {
             <CardTitle>Fallback on a broken image</CardTitle>
             <CardDescription>
               When the src fails to load, AvatarImage swaps in the AvatarFallback
-              automatically — never a blank circle. delayMs holds the fallback
+              automatically, never a blank circle. delayMs holds the fallback
               back briefly so it does not flash before a slow image arrives.
             </CardDescription>
           </CardHeader>

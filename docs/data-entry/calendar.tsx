@@ -38,7 +38,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Calendar"
-      subtitle="カレンダーグリッド — 常時表示またはポップオーバー内で使用"
+      subtitle="カレンダーグリッド · 常時表示またはポップオーバー内で使用"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -69,7 +69,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>範囲選択 — Popover 内</CardTitle>
+            <CardTitle>範囲選択 · Popover 内</CardTitle>
             <CardDescription>
               mode="range" でポップオーバー内に配置。DateRangePicker
               はこのパターンにフォーム送信を加えた上位コンポーネント。

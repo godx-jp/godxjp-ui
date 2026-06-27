@@ -33,7 +33,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Menubar"
-      subtitle="アプリケーションメニューバー — デスクトップ風のコマンドメニュー"
+      subtitle="アプリケーションメニューバー · デスクトップ風のコマンドメニュー"
     >
       <Flex direction="col" gap="lg">
         <Card>

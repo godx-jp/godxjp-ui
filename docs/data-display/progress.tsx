@@ -14,13 +14,13 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="Progress" subtitle="0–100 bar — optional label + semantic tone">
+    <PageContainer title="Progress" subtitle="0–100 bar · optional label + semantic tone">
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Tones</CardTitle>
             <CardDescription>
-              Tone carries meaning — success（既定）と warning の 2 値のみ。
+              Tone carries meaning。success（既定）と warning の 2 値のみ。
             </CardDescription>
           </CardHeader>
           <CardContent>

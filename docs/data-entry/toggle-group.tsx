@@ -17,14 +17,14 @@ export default function Demo() {
   return (
     <PageContainer
       title="ToggleGroup"
-      subtitle="Single or multi-select toggle set — toolbar modes, output formats"
+      subtitle="Single or multi-select toggle set · toolbar modes, output formats"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Single selection (type=“single”)</CardTitle>
             <CardDescription>
-              Mutually exclusive — switching fiscal period. value is string, onValueChange receives
+              Mutually exclusive · switching fiscal period. value is string, onValueChange receives
               string.
             </CardDescription>
           </CardHeader>
@@ -50,7 +50,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Multiple selection (type=“multiple”)</CardTitle>
             <CardDescription>
-              Independent toggles — output format selection. value is string[], onValueChange
+              Independent toggles · output format selection. value is string[], onValueChange
               receives string[].
             </CardDescription>
           </CardHeader>

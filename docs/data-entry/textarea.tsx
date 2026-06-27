@@ -10,7 +10,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Textarea"
-      subtitle="Multi-line text — pair with FormField for label / helper"
+      subtitle="Multi-line text · pair with FormField for label / helper"
     >
       <Flex direction="col" gap="lg">
         <Card>

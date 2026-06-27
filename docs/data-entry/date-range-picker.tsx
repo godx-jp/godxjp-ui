@@ -26,7 +26,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="DateRangePicker"
-      subtitle="期間入力 — 開始/終了 ISO 入力 + 範囲カレンダーポップオーバー"
+      subtitle="期間入力 · 開始/終了 ISO 入力 + 範囲カレンダーポップオーバー"
     >
       <Flex direction="col" gap="lg">
         <Card>

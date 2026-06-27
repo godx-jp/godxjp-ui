@@ -9,7 +9,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  */
 export default function Demo() {
   return (
-    <PageContainer title="Switch" subtitle="Boolean toggle — wrap in Field for a labelled row">
+    <PageContainer title="Switch" subtitle="Boolean toggle · wrap in Field for a labelled row">
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>

@@ -23,7 +23,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="HoverCard"
-      subtitle="Rich preview on hover/focus — entity peek, user card, positioning & delay"
+      subtitle="Rich preview on hover/focus · entity peek, user card, positioning & delay"
     >
       <Flex direction="col" gap="lg">
         {/* Entity peek — hover (or focus) the link to reveal the card */}

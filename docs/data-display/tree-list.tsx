@@ -55,7 +55,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="TreeList"
-      subtitle="Hierarchical list — depth lives in the data, not the DOM"
+      subtitle="Hierarchical list · depth lives in the data, not the DOM"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -76,7 +76,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>組織ツリー（親を選択中）</CardTitle>
             <CardDescription>
-              active is data-driven and works at any depth — here the depth-0
+              active is data-driven and works at any depth. Here the depth-0
               parent is the current row.
             </CardDescription>
           </CardHeader>
@@ -89,7 +89,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>空の状態</CardTitle>
             <CardDescription>
-              An empty items={"{[]}"} array renders an empty list — pair it with
+              An empty items={"{[]}"} array renders an empty list. Pair it with
               an EmptyState placeholder.
             </CardDescription>
           </CardHeader>

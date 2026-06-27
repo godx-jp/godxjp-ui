@@ -18,7 +18,7 @@ export default function Demo() {
   const [discount, setDiscount] = useState<number | null>(10);
 
   return (
-    <PageContainer title="NumberInput" subtitle="数値入力 — スピンボタン (Input + ステッパー)">
+    <PageContainer title="NumberInput" subtitle="数値入力 · スピンボタン (Input + ステッパー)">
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
@@ -46,7 +46,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>min / max — 範囲クランプ</CardTitle>
+            <CardTitle>min / max · 範囲クランプ</CardTitle>
             <CardDescription>
               min=1, max=5。境界でステッパーが無効化され、コミット時に範囲内へクランプされる。
             </CardDescription>
@@ -68,7 +68,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>step — 刻み幅</CardTitle>
+            <CardTitle>step · 刻み幅</CardTitle>
             <CardDescription>
               step=100 で 100 単位の増減。Shift + Arrow で ×10 (1000 刻み)。
             </CardDescription>
@@ -89,7 +89,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>precision — 小数桁</CardTitle>
+            <CardTitle>precision · 小数桁</CardTitle>
             <CardDescription>
               precision=2, step=0.25。コミット時に小数 2 桁へ丸め、Intl.NumberFormat で整形。
             </CardDescription>
@@ -200,7 +200,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>size — xs / sm / md / lg</CardTitle>
+            <CardTitle>size · xs / sm / md / lg</CardTitle>
             <CardDescription>
               制御高さティア (--control-height) に連動。行内の他コントロールと整列。
             </CardDescription>

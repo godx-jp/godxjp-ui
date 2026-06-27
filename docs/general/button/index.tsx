@@ -12,7 +12,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Button"
-      subtitle="variant × size × state — the only action control (never a raw button element)"
+      subtitle="variant × size × state · the only action control (never a raw button element)"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -40,7 +40,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Shape</CardTitle>
             <CardDescription>
-              `shape` sets corner radius from the tokens — default (control radius) / pill (fully
+              `shape` sets corner radius from the tokens: default (control radius) / pill (fully
               rounded) / sharp (square). Works with any variant or size.
             </CardDescription>
           </CardHeader>
@@ -63,7 +63,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Sizes</CardTitle>
             <CardDescription>
-              Height comes from the preset — xs 24 / sm 28 / default 32 / lg 36. Icon-only buttons
+              Height comes from the preset: xs 24 / sm 28 / default 32 / lg 36. Icon-only buttons
               use the square icon-* sizes.
             </CardDescription>
           </CardHeader>

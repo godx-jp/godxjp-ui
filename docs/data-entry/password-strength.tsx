@@ -20,7 +20,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="PasswordStrength"
-      subtitle="パスワード強度メーター — スコアバー＋ルールチェックリスト"
+      subtitle="パスワード強度メーター · スコアバー＋ルールチェックリスト"
     >
       <Flex direction="col" gap="lg">
         <Card>

@@ -80,7 +80,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Country picker (recipe)"
-      subtitle="国選択は Select のレシピ — 専用コンポーネントは無い（値は ISO コード、名称は CLDR）"
+      subtitle="国選択は Select のレシピ · 専用コンポーネントは無い（値は ISO コード、名称は CLDR）"
     >
       <Flex direction="col" gap="lg">
         <Card>

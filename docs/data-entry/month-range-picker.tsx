@@ -21,7 +21,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="MonthRangePicker"
-      subtitle="年月範囲入力 — 開始/終了 yyyy/MM 入力 + 月グリッドポップオーバー"
+      subtitle="年月範囲入力 · 開始/終了 yyyy/MM 入力 + 月グリッドポップオーバー"
     >
       <Flex direction="col" gap="lg">
         <Card>

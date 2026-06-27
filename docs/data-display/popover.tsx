@@ -29,7 +29,7 @@ export default function Demo() {
   const [filterOpen, setFilterOpen] = useState(true);
 
   return (
-    <PageContainer title="Popover" subtitle="Floating panel anchored to a trigger — click to open">
+    <PageContainer title="Popover" subtitle="Floating panel anchored to a trigger · click to open">
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
@@ -107,7 +107,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Placement — side</CardTitle>
+            <CardTitle>Placement · side</CardTitle>
             <CardDescription>
               PopoverContent accepts side: top / right / bottom (default) / left, with sideOffset.
             </CardDescription>
@@ -152,7 +152,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Alignment — align</CardTitle>
+            <CardTitle>Alignment · align</CardTitle>
             <CardDescription>
               align: start / center (default) / end positions the panel along the trigger edge.
             </CardDescription>

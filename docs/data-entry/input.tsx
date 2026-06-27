@@ -11,7 +11,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Input"
-      subtitle="Text field — pair with FormField for label / helper / error"
+      subtitle="Text field · pair with FormField for label / helper / error"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -54,7 +54,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>In FormField — label / helper / required / error</CardTitle>
+            <CardTitle>In FormField · label / helper / required / error</CardTitle>
             <CardDescription>
               FormField wires the label and aria-describedby for you.
             </CardDescription>
