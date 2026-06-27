@@ -29,3 +29,65 @@
 :root[data-density="comfortable"] {
   --scaling: 1.08;
 }
+
+/*
+ * A DESCENDANT density scope (`.ui-density-*` from `<PageContainer density>`) must
+ * RE-DERIVE every --scaling-tied token, not just flip --scaling. CSS substitutes
+ * `var(--scaling)` at the element that DECLARES a token, so the size tokens declared
+ * at `:root` (foundation/control/table) are baked with the ROOT --scaling and inherit
+ * as fixed values — a subtree that only sets a new --scaling can't retune them. (Same
+ * reason `.ui-scale-fixed` re-declares the whole list.) Mirror that list here, scaled
+ * by the LOCAL --scaling, so controls/spacing in the subtree actually resize. The
+ * `:root[data-density]` selectors above need ONLY --scaling: they re-declare on the
+ * same element as the :root token formulas, so those re-resolve there.
+ *
+ * density.css is a registered tier-definition file (check-control-sizing), so the
+ * `calc(var(--control-height) ± …)` tier offsets are permitted here.
+ */
+.ui-density-compact,
+.ui-density-default,
+.ui-density-comfortable {
+  --space-1: calc(0.25rem * var(--scaling));
+  --space-2: calc(0.5rem * var(--scaling));
+  --space-3: calc(0.75rem * var(--scaling));
+  --space-4: calc(1rem * var(--scaling));
+  --space-5: calc(1.25rem * var(--scaling));
+  --space-6: calc(1.5rem * var(--scaling));
+  --space-8: calc(2rem * var(--scaling));
+  --space-10: calc(2.5rem * var(--scaling));
+  --space-12: calc(3rem * var(--scaling));
+  --radius: calc(0.375rem * var(--scaling));
+  --control-height: calc(var(--control-height-default) * var(--scaling));
+  --control-height-sm: calc(var(--control-height) - calc(0.25rem * var(--scaling)));
+  --control-height-lg: calc(var(--control-height) + calc(0.25rem * var(--scaling)));
+  --control-height-xs: calc(var(--control-height) - calc(0.5rem * var(--scaling)));
+  --control-icon-size: calc(1rem * var(--scaling));
+  --control-icon-size-sm: calc(0.875rem * var(--scaling));
+  --control-padding-x: var(--space-3);
+  --control-gap: var(--space-2);
+  --control-gap-sm: var(--space-1);
+  --checkbox-size: calc(1rem * var(--scaling));
+  --switch-width: calc(2.25rem * var(--scaling));
+  --switch-height: calc(1.25rem * var(--scaling));
+  --switch-thumb-size: calc(1rem * var(--scaling));
+  --switch-thumb-translate: calc(1rem * var(--scaling));
+  --table-row-height: calc(var(--table-row-height-default) * var(--scaling));
+  --table-cell-padding-y: var(--space-2);
+  --phi-unit: var(--space-4);
+  --space-page-x: var(--space-6);
+  --space-page-y: var(--space-6);
+  --space-section: var(--space-4);
+  --space-stack-xs: var(--space-1);
+  --space-stack-sm: var(--space-2);
+  --space-stack-md: var(--space-4);
+  --space-stack-lg: var(--space-6);
+  --space-stack-xl: var(--space-10);
+  --space-inline-xs: var(--space-1);
+  --space-inline-sm: var(--space-2);
+  --space-inline-md: var(--space-3);
+  --space-inline-lg: var(--space-4);
+  --space-chrome-x: var(--space-6);
+  --space-chrome-y: var(--space-4);
+  --space-chrome-gap: var(--space-2);
+  --field-label-gap: var(--space-2);
+}
