@@ -62,7 +62,7 @@ const ENTITIES = [
 export default function Demo() {
   const [activeId, setActiveId] = useState("dashboard");
   const [collapsed, setCollapsed] = useState(false);
-  const [activeEntity, setActiveEntity] = useState(ENTITIES[0]);
+  const [activeEntity, setActiveEntity] = useState<(typeof ENTITIES)[number]>(ENTITIES[0]);
   const [unread, setUnread] = useState(true);
   const [searchOpenCount, setSearchOpenCount] = useState(0);
 

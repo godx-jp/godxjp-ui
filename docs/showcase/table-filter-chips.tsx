@@ -322,6 +322,7 @@ export default function Demo() {
           <SearchInput
             value={query}
             onValueChange={setQuery}
+            onSearch={setQuery}
             placeholder="従業員・IDで検索"
             aria-label="従業員・IDで検索"
             className="w-full sm:w-56"
@@ -329,7 +330,7 @@ export default function Demo() {
           <Select
             options={STATUS_OPTIONS}
             value={status}
-            onValueChange={(v) => {
+            onValueChange={(v: string) => {
               setStatus((v as AttendanceStatus) || undefined);
             }}
             placeholder="状態"
@@ -337,7 +338,7 @@ export default function Demo() {
           <Select
             options={DEPT_OPTIONS}
             value={dept}
-            onValueChange={(v) => {
+            onValueChange={(v: string) => {
               setDept(v || undefined);
             }}
             placeholder="部署"
@@ -345,7 +346,7 @@ export default function Demo() {
           <Select
             options={OT_OPTIONS}
             value={ot}
-            onValueChange={(v) => {
+            onValueChange={(v: string) => {
               setOt(v || "any");
             }}
             placeholder="残業"

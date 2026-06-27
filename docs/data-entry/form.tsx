@@ -288,7 +288,12 @@ export default function Demo() {
                 />
               </FormField>
               <FormField id="f-score" label="取引先評価">
-                <Rating id="f-score" name="vendor_score" value={score} onValueChange={setScore} />
+                <Rating
+                  name="vendor_score"
+                  aria-label="取引先評価"
+                  value={score}
+                  onValueChange={setScore}
+                />
               </FormField>
             </Flex>
           </CardContent>

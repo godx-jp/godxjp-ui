@@ -28,7 +28,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@godxjp/ui/navigation";
-import type { SortStateProp, TableDensityProp } from "@godxjp/ui/props";
+import type { DensityProp, SortStateProp } from "@godxjp/ui/props";
 import { Check, MoreHorizontal, Pencil } from "lucide-react";
 
 // ── 勤怠データ (日次・kintone のレコード相当) ────────────────────────────────────
@@ -385,7 +385,7 @@ export default function Demo() {
     direction: "desc",
   });
   // 高密度を明示 (controlled compact = 28px 行)
-  const [density, setDensity] = React.useState<TableDensityProp>("compact");
+  const [density, setDensity] = React.useState<DensityProp>("compact");
 
   const rows = React.useMemo(() => {
     if (!sort) return ROWS;

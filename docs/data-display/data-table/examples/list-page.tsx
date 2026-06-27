@@ -15,7 +15,7 @@ import {
   Flex,
   PageContainer,
   Sidebar,
-  type SidebarSection,
+  type SidebarSectionProp,
   Topbar,
 } from "@godxjp/ui/layout";
 import {
@@ -35,7 +35,7 @@ import {
  * action are the header; bulk actions appear only when rows are selected. A
  * complete, real admin list mirroring the dxs-kintai PageContent → Card → Table shape.
  */
-const sections: SidebarSection[] = [
+const sections: SidebarSectionProp[] = [
   {
     label: "会計",
     items: [

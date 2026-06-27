@@ -44,6 +44,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Alert, AlertDescription, SkeletonTable } from "@godxjp/ui/feedback";
 import { DatePicker, FormField, Input, Select } from "@godxjp/ui/data-entry";
+import { toIsoDate } from "@godxjp/ui/datetime";
 import {
   AppShell,
   Flex,
@@ -197,8 +198,8 @@ export default function Demo() {
   // Each section below owns its own state + data (no shared setters across cards).
   const [type, setType] = React.useState("all");
   const [status, setStatus] = React.useState("draft");
-  const [from, setFrom] = React.useState<string | undefined>();
-  const [to, setTo] = React.useState<string | undefined>();
+  const [from, setFrom] = React.useState<Date | undefined>();
+  const [to, setTo] = React.useState<Date | undefined>();
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [rejectTargetId, setRejectTargetId] = React.useState<string | null>(null);
   const [rejectReason, setRejectReason] = React.useState("");
@@ -217,8 +218,8 @@ export default function Demo() {
         (r) =>
           (type === "all" || r.type === type) &&
           (status === "all" || r.status === status) &&
-          (!from || r.date >= from) &&
-          (!to || r.date <= to),
+          (!from || r.date >= toIsoDate(from)) &&
+          (!to || r.date <= toIsoDate(to)),
       ),
     [type, status, from, to],
   );

@@ -32,12 +32,12 @@ import {
   PageContainer,
   ResponsiveGrid,
   Sidebar,
-  type SidebarSection,
+  type SidebarSectionProp,
   Topbar,
 } from "@godxjp/ui/layout";
 import { BookOpen, FileText, LayoutDashboard, ReceiptText, Users } from "lucide-react";
 
-const sections: SidebarSection[] = [
+const sections: SidebarSectionProp[] = [
   {
     label: "会計",
     items: [
@@ -265,7 +265,7 @@ export default function Demo() {
                       id="iv-account"
                       name="account"
                       value={v.account}
-                      onValueChange={(val) => update("account", val)}
+                      onValueChange={(val: string) => update("account", val)}
                       placeholder="選択してください"
                       disabled={pending}
                       options={[

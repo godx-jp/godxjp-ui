@@ -13,7 +13,7 @@ import {
   Flex,
   PageContainer,
   Sidebar,
-  type SidebarSection,
+  type SidebarSectionProp,
   Topbar,
 } from "@godxjp/ui/layout";
 import {
@@ -35,7 +35,7 @@ import {
  * (CardContent flush) inside a padded PageContainer so it stays on the same
  * gutters as the header.
  */
-const sections: SidebarSection[] = [
+const sections: SidebarSectionProp[] = [
   {
     label: "会計",
     items: [

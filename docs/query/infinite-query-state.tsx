@@ -48,7 +48,7 @@ function Block() {
   });
 
   return (
-    <InfiniteQueryState
+    <InfiniteQueryState<{ items: Activity[]; nextCursor: number | null }, Activity[]>
       query={query}
       skeleton={<SkeletonTable />}
       flatten={flattenItemPages}

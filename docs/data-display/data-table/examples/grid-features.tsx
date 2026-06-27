@@ -25,7 +25,7 @@ const STATUS_TONE = {
   active: "success",
   pending: "warning",
   failed: "destructive",
-  draft: "secondary",
+  draft: "neutral",
 } as const;
 
 const STATUS_LABEL = {

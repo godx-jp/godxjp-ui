@@ -43,7 +43,7 @@ import {
   DropdownMenuTrigger,
   Pagination,
 } from "@godxjp/ui/navigation";
-import type { SortStateProp, TableDensityProp } from "@godxjp/ui/props";
+import type { DensityProp, SortStateProp } from "@godxjp/ui/props";
 import { MoreHorizontal, Pencil, CheckCircle2, Trash2 } from "lucide-react";
 
 // ── Domain ────────────────────────────────────────────────────────────────────
@@ -344,7 +344,7 @@ export default function Demo() {
     direction: "desc",
   });
   const [selected, setSelected] = React.useState<Set<string>>(new Set(["ATT-2041", "ATT-2034"]));
-  const [density, setDensity] = React.useState<TableDensityProp>("compact");
+  const [density, setDensity] = React.useState<DensityProp>("compact");
   const [page, setPage] = React.useState(2);
   const [pageSize, setPageSize] = React.useState(PAGE_SIZE);
 
@@ -426,7 +426,7 @@ export default function Demo() {
               <Select
                 options={DEPT_OPTIONS}
                 value={dept}
-                onValueChange={(v) => {
+                onValueChange={(v: string) => {
                   setDept(v);
                   setPage(1);
                 }}
@@ -436,7 +436,7 @@ export default function Demo() {
               <Select
                 options={STATUS_OPTIONS}
                 value={status}
-                onValueChange={(v) => {
+                onValueChange={(v: string) => {
                   setStatus(v);
                   setPage(1);
                 }}

@@ -8,7 +8,7 @@ import {
   Flex,
   PageContainer,
   Sidebar,
-  type SidebarSection,
+  type SidebarSectionProp,
   Topbar,
 } from "@godxjp/ui/layout";
 import { BookOpen, FileText, LayoutDashboard, ReceiptText, Users } from "lucide-react";
@@ -19,7 +19,7 @@ import { BookOpen, FileText, LayoutDashboard, ReceiptText, Users } from "lucide-
  * footer holds the primary submit + outline cancel. The canonical data-entry
  * page, composed only from real @godxjp/ui components.
  */
-const sections: SidebarSection[] = [
+const sections: SidebarSectionProp[] = [
   {
     label: "会計",
     items: [

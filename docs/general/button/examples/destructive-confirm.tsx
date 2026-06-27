@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Descriptions, Avatar, AvatarFallback } from "@godxjp/ui/data-display";
 import { AlertDialog } from "@godxjp/ui/feedback";
 import { Button } from "@godxjp/ui/general";
-import { AppShell, PageContainer, Sidebar, type SidebarSection, Topbar } from "@godxjp/ui/layout";
+import { AppShell, PageContainer, Sidebar, type SidebarSectionProp, Topbar } from "@godxjp/ui/layout";
 import { BookOpen, FileText, LayoutDashboard, ReceiptText, Trash2, Users } from "lucide-react";
 
 /**
@@ -11,7 +11,7 @@ import { BookOpen, FileText, LayoutDashboard, ReceiptText, Trash2, Users } from 
  * (the canonical confirm primitive, role="alertdialog", variant="destructive"),
  * never a hand-rolled Card + buttons. Cancel dismisses; confirm runs onConfirm.
  */
-const sections: SidebarSection[] = [
+const sections: SidebarSectionProp[] = [
   {
     label: "会計",
     items: [

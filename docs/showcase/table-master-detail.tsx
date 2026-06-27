@@ -374,7 +374,7 @@ export default function Demo() {
             </Text>
           </CardHeader>
           <CardContent flush>
-            <ResizablePanelGroup direction="horizontal" className="min-h-[460px]">
+            <ResizablePanelGroup orientation="horizontal" className="min-h-[460px]">
               {/* Master list */}
               <ResizablePanel defaultSize={42} minSize={28}>
                 <DataTable
