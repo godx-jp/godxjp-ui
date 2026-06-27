@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **BREAKING — removed `Logo`.** It overlapped `Avatar` (both render a glyph in a box); use `Avatar` for entity/brand marks.
+
 ### Changed
 
 - **BREAKING — `Topbar` is now a PURE SLOT bar; the baked chrome is gone.** The library was

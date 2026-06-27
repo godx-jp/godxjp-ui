@@ -124,13 +124,13 @@ export type SidebarProp = {
 
 /**
  * @see Topbar — a PURE SLOT bar (no baked chrome). The library only positions three clusters; the
- * CONSUMER decides what goes in each (brand `Logo`, sidebar toggle, nav, a search trigger, settings
+ * CONSUMER decides what goes in each (a brand mark `Avatar`, sidebar toggle, nav, a search trigger, settings
  * pickers like `AppSettingPicker`, a notification button, a user menu). The shell never forces a
  * product switcher, a search box, or a language picker — those are the consumer's components,
  * configured via THEIR own props and dropped into a slot.
  */
 export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> & {
-  /** Inline-start cluster — typically the sidebar toggle + brand `Logo` + primary nav. */
+  /** Inline-start cluster — typically the sidebar toggle + a brand mark (`Avatar`) + primary nav. */
   start?: ReactNode;
   /** Center cluster — optional (e.g. a search trigger or a page/entity switcher). */
   center?: ReactNode;

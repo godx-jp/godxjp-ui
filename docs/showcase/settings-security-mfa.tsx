@@ -13,7 +13,7 @@
  *   every action a full-width stacked bar         right-aligned, auto-width actions; ONE primary
  *     (rule 217 explicitly forbids this)             per card, secondary = outline      (rule 217)
  *   📱 / ✉️ emoji as "icons"                       lucide icons (no emoji in product UI) (anti-tell)
- *   brand glyph = a styled <span> (size/radius    Logo primitive — tokenized mark         (#116)
+ *   brand glyph = a styled <span> (size/radius    Avatar primitive — real brand mark      (#116)
  *     baked as literals)
  *
  * Built ENTIRELY from real @godxjp/ui primitives. dxs-kintai DNA: small headings, 14/1.7 body,
@@ -21,8 +21,10 @@
  */
 import { KeyRound, Mail, ShieldCheck, Smartphone } from "lucide-react";
 
-import { Button, Heading, Logo, Text } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
+  Avatar,
+  AvatarFallback,
   Badge,
   Card,
   CardContent,
@@ -52,9 +54,13 @@ export default function SecurityMfaShowcase() {
   return (
     <PageContainer title="Bảo mật" subtitle="Quản lý mật khẩu, xác thực 2 lớp và passkey.">
       <Flex direction="col" gap="lg" className="max-w-3xl">
-        {/* Account identity — the brand mark is the Logo primitive, not a styled span. */}
+        {/* Account identity — the brand mark is an Avatar primitive, not a styled span. */}
         <Flex direction="row" align="center" gap="sm">
-          <Logo label="Tài khoản godx" glyph="T" />
+          <Avatar className="rounded-md">
+            <AvatarFallback className="bg-primary text-primary-foreground font-bold">
+              T
+            </AvatarFallback>
+          </Avatar>
           <Flex direction="col" gap="none">
             <Text weight="medium">Tài khoản godx</Text>
             <Text size="xs" tone="muted">

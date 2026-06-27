@@ -8,8 +8,10 @@ import {
   CardTitle,
   Descriptions,
   StatCard,
+  Avatar,
+  AvatarFallback,
 } from "@godxjp/ui/data-display";
-import { Button, Logo } from "@godxjp/ui/general";
+import { Button } from "@godxjp/ui/general";
 import {
   AppShell,
   Flex,
@@ -50,7 +52,17 @@ export default function Demo() {
           product={{ name: "CoreBooks", role: "管理コンソール", color: "hsl(var(--primary))" }}
         />
       }
-      topbar={<Topbar start={<Logo label="CoreBooks" glyph="C" />} />}
+      topbar={
+        <Topbar
+          start={
+            <Avatar className="rounded-md">
+              <AvatarFallback className="bg-primary text-primary-foreground font-bold">
+                C
+              </AvatarFallback>
+            </Avatar>
+          }
+        />
+      }
     >
       <PageContainer
         title="請求書 INV-2024-0312"

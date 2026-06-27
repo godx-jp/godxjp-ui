@@ -205,19 +205,6 @@ describe("component catalog — examples are plausible TSX", () => {
 });
 
 describe("newly-added components are catalogued with the expected API", () => {
-  it("Logo exists with glyph/label/size/shape props in the general group", () => {
-    const logo = findComponent("Logo");
-    expect(logo, "Logo entry").toBeDefined();
-    expect(logo?.group).toBe("general");
-    const props = new Set(logo?.props.map((p) => p.name));
-    for (const p of ["glyph", "label", "size", "shape"]) {
-      expect(props.has(p), `Logo.${p}`).toBe(true);
-    }
-    // size is the controlled-vocabulary union.
-    const size = logo?.props.find((p) => p.name === "size");
-    expect(size?.type).toMatch(/xs.*sm.*md.*lg/);
-  });
-
   it("ListRow exists with title/description/leading/trailing/align/as props", () => {
     const row = findComponent("ListRow");
     expect(row, "ListRow entry").toBeDefined();

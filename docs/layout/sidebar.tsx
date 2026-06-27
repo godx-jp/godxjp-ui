@@ -17,8 +17,10 @@ import {
   CardHeader,
   CardTitle,
   Badge,
+  Avatar,
+  AvatarFallback,
 } from "@godxjp/ui/data-display";
-import { Button, Logo, Text } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   LayoutDashboard,
   FileText,
@@ -174,7 +176,11 @@ export default function Demo() {
           >
             {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
           </Button>
-          <Logo label="CoreBooks" glyph="C" />
+          <Avatar className="rounded-md">
+            <AvatarFallback className="bg-primary text-primary-foreground font-bold">
+              C
+            </AvatarFallback>
+          </Avatar>
         </>
       }
       center={

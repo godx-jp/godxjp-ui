@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
-import { Button, Logo, Text } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,7 +38,7 @@ import {
 /**
  * Topbar · a PURE SLOT bar. The shell only positions `start` / `center` / `end`; the CONSUMER
  * composes every control. This demo builds the chrome the OLD baked Topbar used to force ·
- * sidebar toggle, brand Logo, an entity switcher, a search trigger, a notifications button, a
+ * sidebar toggle, brand mark (Avatar), an entity switcher, a search trigger, a notifications button, a
  * user menu · entirely from real primitives, so you can see there is no hidden template (and no
  * dead dropdown: a control exists ONLY because it's placed here).
  */
@@ -66,7 +66,7 @@ export default function Demo() {
   const [unread, setUnread] = useState(true);
   const [searchOpenCount, setSearchOpenCount] = useState(0);
 
-  // start cluster · sidebar toggle + brand Logo + an entity switcher the consumer owns.
+  // start cluster · sidebar toggle + brand mark (Avatar) + an entity switcher the consumer owns.
   const start = (
     <>
       <Button
@@ -78,7 +78,9 @@ export default function Demo() {
       >
         {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
       </Button>
-      <Logo label="CoreBooks" glyph="C" />
+      <Avatar className="rounded-md">
+        <AvatarFallback className="bg-primary text-primary-foreground font-bold">C</AvatarFallback>
+      </Avatar>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm">
@@ -235,7 +237,7 @@ export default function Demo() {
                 {[
                   {
                     prop: "start",
-                    desc: "サイドバートグル + Logo + エンティティ切替（DropdownMenu）",
+                    desc: "サイドバートグル + ブランドマーク（Avatar）+ エンティティ切替（DropdownMenu）",
                   },
                   { prop: "center", desc: "検索トリガー（Button）。コマンドパレットを開く" },
                   { prop: "end", desc: "通知ボタン + ユーザーメニュー（DropdownMenu）" },

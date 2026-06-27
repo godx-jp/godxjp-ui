@@ -26,7 +26,7 @@
 import * as React from "react";
 import { Languages, Monitor, Moon, Sun } from "lucide-react";
 
-import { Button, Heading, Logo, Text } from "@godxjp/ui/general";
+import { Button, Heading, Text } from "@godxjp/ui/general";
 import {
   FormField,
   Input,
@@ -39,7 +39,15 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@godxjp/ui/data-entry";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@godxjp/ui/data-display";
+import {
+  Avatar,
+  AvatarFallback,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@godxjp/ui/data-display";
 import { Separator } from "@godxjp/ui/layout";
 
 // ── The single allowed multi-color brand mark (Google "G") ─────────────────────
@@ -73,7 +81,9 @@ function GoogleMark() {
 function BrandLockup({ size = "md" }: { size?: "md" | "lg" }) {
   return (
     <div className="flex items-center gap-2.5">
-      <Logo glyph="勤" size={size} aria-hidden="true" />
+      <Avatar aria-hidden="true" className={`rounded-md ${size === "lg" ? "size-11 text-lg" : ""}`}>
+        <AvatarFallback className="bg-primary text-primary-foreground font-bold">勤</AvatarFallback>
+      </Avatar>
       <div className="leading-tight">
         <Text as="div" size="lg" weight="bold" className="tracking-tight">
           dxs{" "}
@@ -152,42 +162,42 @@ export default function LoginShowcase() {
           <aside className="hidden lg:flex">
             <Card className="bg-primary/5 w-full">
               <CardContent solo className="flex h-full flex-col justify-between gap-8">
-              <BrandLockup size="lg" />
-              <div className="flex flex-col gap-3">
-                <Heading level={2} className="leading-snug">
-                  打刻から承認まで、ひとつの勤怠基盤で。
-                </Heading>
-                <Text as="p" tone="muted" className="leading-relaxed">
-                  出勤・休憩・残業の打刻、シフト調整、欠勤・遅刻の承認を一元化します。
-                  多拠点・多テナントに対応し、現場と管理をつなぎます。
-                </Text>
-              </div>
-              <dl className="border-border grid grid-cols-3 gap-4 border-t pt-6">
-                <div>
-                  <Text as="dt" size="2xs" tone="muted">
-                    導入企業
-                  </Text>
-                  <Text as="dd" size="lg" weight="bold" tabular>
-                    1,240
+                <BrandLockup size="lg" />
+                <div className="flex flex-col gap-3">
+                  <Heading level={2} className="leading-snug">
+                    打刻から承認まで、ひとつの勤怠基盤で。
+                  </Heading>
+                  <Text as="p" tone="muted" className="leading-relaxed">
+                    出勤・休憩・残業の打刻、シフト調整、欠勤・遅刻の承認を一元化します。
+                    多拠点・多テナントに対応し、現場と管理をつなぎます。
                   </Text>
                 </div>
-                <div>
-                  <Text as="dt" size="2xs" tone="muted">
-                    稼働拠点
-                  </Text>
-                  <Text as="dd" size="lg" weight="bold" tabular>
-                    8,600
-                  </Text>
-                </div>
-                <div>
-                  <Text as="dt" size="2xs" tone="muted">
-                    月間打刻
-                  </Text>
-                  <Text as="dd" size="lg" weight="bold" tabular>
-                    21M
-                  </Text>
-                </div>
-              </dl>
+                <dl className="border-border grid grid-cols-3 gap-4 border-t pt-6">
+                  <div>
+                    <Text as="dt" size="2xs" tone="muted">
+                      導入企業
+                    </Text>
+                    <Text as="dd" size="lg" weight="bold" tabular>
+                      1,240
+                    </Text>
+                  </div>
+                  <div>
+                    <Text as="dt" size="2xs" tone="muted">
+                      稼働拠点
+                    </Text>
+                    <Text as="dd" size="lg" weight="bold" tabular>
+                      8,600
+                    </Text>
+                  </div>
+                  <div>
+                    <Text as="dt" size="2xs" tone="muted">
+                      月間打刻
+                    </Text>
+                    <Text as="dd" size="lg" weight="bold" tabular>
+                      21M
+                    </Text>
+                  </div>
+                </dl>
               </CardContent>
             </Card>
           </aside>

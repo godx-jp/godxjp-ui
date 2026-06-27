@@ -28,7 +28,7 @@
 import * as React from "react";
 import { Check, ClipboardCheck, Clock, Download, Tag, Users, X } from "lucide-react";
 
-import { Button, Logo, Text } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   Badge,
   type BadgeProps,
@@ -39,6 +39,8 @@ import {
   DataTable,
   type ColumnDef,
   EmptyState,
+  Avatar,
+  AvatarFallback,
 } from "@godxjp/ui/data-display";
 import { Alert, AlertDescription, SkeletonTable } from "@godxjp/ui/feedback";
 import { DatePicker, FormField, Input, Select } from "@godxjp/ui/data-entry";
@@ -312,7 +314,20 @@ export default function Demo() {
   );
 
   return (
-    <AppShell sidebar={sidebar} topbar={<Topbar start={<Logo label="dxs · kintai" glyph="d" />} />}>
+    <AppShell
+      sidebar={sidebar}
+      topbar={
+        <Topbar
+          start={
+            <Avatar className="rounded-md">
+              <AvatarFallback className="bg-primary text-primary-foreground font-bold">
+                d
+              </AvatarFallback>
+            </Avatar>
+          }
+        />
+      }
+    >
       <PageContainer
         title="欠勤・遅刻 · Vắng mặt"
         subtitle="12 件未承認 · 申請の承認 / 却下 / 再分類"

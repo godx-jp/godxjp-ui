@@ -2,7 +2,8 @@ import { describe, it } from "vitest";
 import { Search } from "lucide-react";
 
 import { Topbar } from "../topbar";
-import { Button, Logo } from "../../general";
+import { Button } from "../../general";
+import { Avatar, AvatarFallback } from "../../data-display";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 // Topbar is a pure slot bar — a11y lives in whatever the consumer composes into the slots.
@@ -12,7 +13,13 @@ describe("Topbar a11y", () => {
     await expectNoA11yViolations(
       <header>
         <Topbar
-          start={<Logo label="CoreBooks" />}
+          start={
+            <Avatar className="rounded-md">
+              <AvatarFallback className="bg-primary text-primary-foreground font-bold">
+                C
+              </AvatarFallback>
+            </Avatar>
+          }
           center={
             <Button variant="outline" size="sm">
               <Search aria-hidden="true" />
