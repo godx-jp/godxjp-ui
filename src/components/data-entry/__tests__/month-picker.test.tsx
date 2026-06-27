@@ -51,4 +51,69 @@ describe("MonthPicker", () => {
     fireEvent.click(screen.getByLabelText("Xóa"));
     expect(onValueChange).toHaveBeenCalledWith(undefined);
   });
+
+  it("ArrowDown on the input opens the month grid", () => {
+    render(<MonthPicker value={new Date(2026, 0, 1)} onValueChange={() => {}} />);
+    const input = screen.getByDisplayValue("2026/01");
+    expect(screen.queryByRole("grid")).toBeNull();
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    expect(screen.getByRole("grid")).toBeInTheDocument();
+  });
+
+  it("Escape closes the open grid", () => {
+    render(<MonthPicker value={new Date(2026, 0, 1)} onValueChange={() => {}} />);
+    const input = screen.getByDisplayValue("2026/01");
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    expect(screen.getByRole("grid")).toBeInTheDocument();
+    fireEvent.keyDown(input, { key: "Escape" });
+    expect(screen.queryByRole("grid")).toBeNull();
+  });
+
+  it("navigates to the next year via the chevron", () => {
+    const onValueChange = vi.fn();
+    render(<MonthPicker value={new Date(2026, 0, 1)} onValueChange={onValueChange} />);
+    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    fireEvent.click(screen.getByLabelText("Năm sau"));
+    expect(screen.getByText("2027")).toBeInTheDocument();
+    const cells = screen.getByRole("grid").querySelectorAll("button");
+    fireEvent.click(cells[5]); // June
+    expect(onValueChange).toHaveBeenCalledWith(new Date(2027, 5, 1));
+  });
+
+  it("resets an invalid typed value back to the controlled value on blur", () => {
+    // value stays pinned (controlled, onValueChange ignored), so blur snaps the
+    // field text back to the controlled value's yyyy/MM.
+    render(<MonthPicker value={new Date(2026, 5, 1)} onValueChange={() => {}} />);
+    const input = screen.getByDisplayValue("2026/06");
+    fireEvent.change(input, { target: { value: "garbage" } }); // invalid → text retained, no emit
+    expect(input).toHaveValue("garbage");
+    fireEvent.blur(input);
+    expect(input).toHaveValue("2026/06");
+  });
+
+  it("respects fromYear/toYear by disabling the year chevrons at the bounds", () => {
+    render(
+      <MonthPicker value={new Date(2026, 0, 1)} onValueChange={() => {}} fromYear={2026} toYear={2026} />,
+    );
+    fireEvent.click(screen.getByLabelText("Mở chọn tháng"));
+    expect(screen.getByLabelText("Năm trước")).toBeDisabled();
+    expect(screen.getByLabelText("Năm sau")).toBeDisabled();
+  });
+
+  it("hides the clear affordance when allowClear is false", () => {
+    render(<MonthPicker value={new Date(2026, 5, 1)} onValueChange={() => {}} allowClear={false} />);
+    expect(screen.queryByLabelText("Xóa")).toBeNull();
+  });
+
+  it("does not open on click or show clear when disabled", () => {
+    render(<MonthPicker value={new Date(2026, 5, 1)} onValueChange={() => {}} disabled />);
+    expect(screen.queryByLabelText("Xóa")).toBeNull();
+    fireEvent.click(screen.getByDisplayValue("2026/06"));
+    expect(screen.queryByRole("grid")).toBeNull();
+  });
+
+  it("seeds uncontrolled state from defaultValue", () => {
+    render(<MonthPicker defaultValue={new Date(2024, 2, 1)} />);
+    expect(screen.getByDisplayValue("2024/03")).toBeInTheDocument();
+  });
 });

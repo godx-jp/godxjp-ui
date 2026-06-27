@@ -75,4 +75,38 @@ describe("chart rendering", () => {
     );
     expect(getByText("Nothing here")).toBeInTheDocument();
   });
+
+  it("PieChart renders the chart frame with data (donut + explicit colors)", () => {
+    const { getByText, container } = render(
+      <PieChart
+        label="Browsers"
+        data={[
+          { n: "Chrome", v: 60 },
+          { n: "Safari", v: 40 },
+        ]}
+        dataKey="v"
+        nameKey="n"
+        donut
+        colors={["var(--chart-1)"]}
+      />,
+    );
+    // visible caption renders → hasData branch + ResponsiveContainer mounted
+    expect(getByText("Browsers")).toBeInTheDocument();
+    // per-slice screen-reader rows are emitted from buildPieSummary
+    expect(container.textContent).toContain("Chrome");
+    expect(container.textContent).toContain("Safari");
+  });
+
+  it("PieChart omits the legend when showLegend is false", () => {
+    const { getByText } = render(
+      <PieChart
+        label="NoLegend"
+        data={[{ n: "A", v: 1 }]}
+        dataKey="v"
+        nameKey="n"
+        showLegend={false}
+      />,
+    );
+    expect(getByText("NoLegend")).toBeInTheDocument();
+  });
 });

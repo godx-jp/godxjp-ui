@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { act } from "@testing-library/react";
 import { renderWithUi, screen } from "@/test/render";
 import { expectNoA11yViolations } from "@/test/a11y";
 import { PageContainer } from "../page-container";
@@ -115,6 +116,139 @@ describe("PageContainer", () => {
       </PageContainer>,
     );
     expect(screen.getByText("Body content")).toBeInTheDocument();
+  });
+
+  it("reveals the sticky footer once the header scrolls out of the viewport (IntersectionObserver)", () => {
+    // Drive the useFooterReveal IntersectionObserver: capture the callback and the
+    // observed header, then simulate it leaving the scroll viewport.
+    let ioCallback: IntersectionObserverCallback | null = null;
+    let observedEl: Element | null = null;
+    const disconnect = vi.fn();
+    class MockIO {
+      constructor(cb: IntersectionObserverCallback) {
+        ioCallback = cb;
+      }
+      observe(el: Element) {
+        observedEl = el;
+      }
+      disconnect = disconnect;
+      unobserve() {}
+      takeRecords() {
+        return [];
+      }
+      root = null;
+      rootMargin = "";
+      thresholds = [];
+    }
+    vi.stubGlobal("IntersectionObserver", MockIO as unknown as typeof IntersectionObserver);
+
+    const { container, unmount } = renderWithUi(
+      <PageContainer title="Form" stickyFooter footerReveal="onScroll" footer={<Button>Save</Button>}>
+        <p>Body</p>
+      </PageContainer>,
+    );
+
+    expect(ioCallback).toBeInstanceOf(Function);
+    expect(observedEl).toBe(container.querySelector("header"));
+    // header not intersecting → footer revealed
+    act(() => {
+      ioCallback!(
+        [{ isIntersecting: false } as IntersectionObserverEntry],
+        {} as IntersectionObserver,
+      );
+    });
+    expect(container.firstChild).toHaveAttribute("data-revealed", "true");
+
+    // header back in view → revealed clears
+    act(() => {
+      ioCallback!(
+        [{ isIntersecting: true } as IntersectionObserverEntry],
+        {} as IntersectionObserver,
+      );
+    });
+    expect(container.firstChild).not.toHaveAttribute("data-revealed");
+
+    unmount();
+    expect(disconnect).toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it("walks up to the nearest scrollable ancestor as the observer root", () => {
+    // Give the header an ancestor with overflowY:auto so scrollParent returns it
+    // (exercises the scrollParent while-loop and the overflow branch).
+    let root: Element | Document | null | undefined;
+    class MockIO {
+      constructor(_cb: IntersectionObserverCallback, opts?: IntersectionObserverInit) {
+        root = opts?.root;
+      }
+      observe() {}
+      disconnect() {}
+      unobserve() {}
+      takeRecords() {
+        return [];
+      }
+      rootMargin = "";
+      thresholds = [];
+    }
+    vi.stubGlobal("IntersectionObserver", MockIO as unknown as typeof IntersectionObserver);
+
+    const scroller = document.createElement("div");
+    scroller.style.overflowY = "auto";
+    document.body.appendChild(scroller);
+    renderWithUi(
+      <PageContainer title="Form" stickyFooter footerReveal="onScroll" footer={<Button>Save</Button>}>
+        <p>Body</p>
+      </PageContainer>,
+      { container: scroller },
+    );
+    expect(root).toBe(scroller);
+
+    scroller.remove();
+    vi.unstubAllGlobals();
+  });
+
+  it("does not set up an observer when the footer is absent even with onScroll", () => {
+    const ctor = vi.fn();
+    class MockIO {
+      constructor(cb: IntersectionObserverCallback) {
+        ctor(cb);
+      }
+      observe() {}
+      disconnect() {}
+      unobserve() {}
+      takeRecords() {
+        return [];
+      }
+      root = null;
+      rootMargin = "";
+      thresholds = [];
+    }
+    vi.stubGlobal("IntersectionObserver", MockIO as unknown as typeof IntersectionObserver);
+    renderWithUi(<PageContainer title="No footer" stickyFooter footerReveal="onScroll" />);
+    expect(ctor).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it("renders the inset slot", () => {
+    renderWithUi(
+      <PageContainer.Inset className="extra">
+        <p>Inset body</p>
+      </PageContainer.Inset>,
+    );
+    const inset = screen.getByText("Inset body").parentElement;
+    expect(inset).toHaveClass("ui-page-container-inset", "extra");
+  });
+
+  it("renders a breadcrumb item without a link as plain text", () => {
+    renderWithUi(
+      <PageContainer
+        title="Detail"
+        breadcrumb={[{ label: "Root" }, { label: "Leaf" }]}
+      />,
+    );
+    // first item has no `to` → rendered as span, not a link
+    expect(screen.queryByRole("link", { name: "Root" })).toBeNull();
+    expect(screen.getByText("Root")).toBeInTheDocument();
   });
 
   it("has no a11y violations with header, body, and footer", async () => {
