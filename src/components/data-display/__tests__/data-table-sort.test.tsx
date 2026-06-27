@@ -81,11 +81,17 @@ describe("DataTable sorting", () => {
     expect(onSortChange).not.toHaveBeenCalled();
   });
 
-  it("is a no-op when sortable but no onSortChange handler is supplied", async () => {
+  it("sorts client-side when sortable but no onSortChange handler is supplied", async () => {
     const user = userEvent.setup();
+    // Without a controlled sort surface the unified (TanStack-powered) DataTable
+    // owns the sort cycle in-browser, so the sortable header is an interactive
+    // button that reorders the rows rather than a no-op.
     render(<DataTable data={data} columns={columns} />);
-    // without onSortChange the header renders plain text (no sort button) — clicking is harmless
-    await user.click(screen.getByRole("columnheader", { name: "名前" }));
+    const names = () =>
+      Array.from(document.querySelectorAll("tbody tr td:first-child")).map((c) => c.textContent);
+    const before = names();
+    await user.click(screen.getByRole("button", { name: "名前" }));
+    expect(names()).not.toEqual(before); // a real client-side ordering happened
     expect(screen.getByText("田中")).toBeInTheDocument();
   });
 });

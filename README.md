@@ -67,7 +67,7 @@ Components emit `data-slot` / `data-*`; the look lives in `styles/*-layout.css`.
 
 | Group              | Import                    | Examples                                                                                                                                                                                                                                |
 | ------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Layout**         | `@godxjp/ui/layout`       | `Flex`, `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Separator`, `AspectRatio`, `Resizable`                                                                                                          |
+| **Layout**         | `@godxjp/ui/layout`       | `Flex`, `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Separator`, `AspectRatio`, `Resizable`                                                                                                                               |
 | **General**        | `@godxjp/ui/general`      | `Button`                                                                                                                                                                                                                                |
 | **Data Entry**     | `@godxjp/ui/data-entry`   | `Input`, `Select`, `FormField`, `Field`, `DatePicker`, `TimePicker`, `Combobox`, `Switch`, `Toggle`, `Upload`, `Cascader`, `TreeSelect`, `ColorPicker`, `Slider`, `PasswordInput`, `PasswordStrength`, `InputOTP`, `Rating`, `TagInput` |
 | **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `Accordion`, `HoverCard`, `Carousel`, `Popover`, `Collapsible`                                                       |
@@ -92,26 +92,29 @@ The v11 line dropped the deprecated compatibility aliases entirely — they are 
 at runtime, and their leftover `*Prop` types and README references have now been removed too (issue
 #99). Replace these at the call site:
 
-| Removed / renamed (≤ v8)         | Replacement (v11)                                  |
-| -------------------------------- | -------------------------------------------------- |
-| `Stack`                          | `Flex direction="col"` (the default direction)     |
-| `Inline`                         | `Flex direction="row"`                             |
-| `Autocomplete`                   | `Select` with `showSearch` + `options`             |
-| `CountrySelect`                  | `AppSettingPicker kind="country"`                  |
-| `LocalePicker`                   | `AppSettingPicker kind="language"`                 |
-| `CountryOptionLabel`             | `Intl.DisplayNames` (ISO 3166-1 α-2) — no component |
-| `SwitchField`                    | `Field` + `Switch`                                 |
-| `CardStat`                       | `StatCard`                                          |
-| `KeyValueGrid`                   | `Descriptions`                                      |
-| `ProgressMeter`                  | `Progress`                                          |
-| `FilterBar`                      | `Toolbar`                                           |
-| `ChoiceField`                    | `Field`                                             |
-| `SkeletonCard`                   | `SkeletonStat`                                      |
-| `StatusBadge`                    | `Badge` (`status` / `tone`)                         |
-| `DialogConfirm` / `Dialog mode="confirm"` | `AlertDialog`                             |
+| Removed / renamed (≤ v8)                  | Replacement (v11)                                   |
+| ----------------------------------------- | --------------------------------------------------- |
+| `Stack`                                   | `Flex direction="col"` (the default direction)      |
+| `Inline`                                  | `Flex direction="row"`                              |
+| `Autocomplete`                            | `Select` with `showSearch` + `options`              |
+| `CountrySelect`                           | `AppSettingPicker kind="country"`                   |
+| `LocalePicker`                            | `AppSettingPicker kind="language"`                  |
+| `CountryOptionLabel`                      | `Intl.DisplayNames` (ISO 3166-1 α-2) — no component |
+| `SwitchField`                             | `Field` + `Switch`                                  |
+| `CardStat`                                | `StatCard`                                          |
+| `KeyValueGrid`                            | `Descriptions`                                      |
+| `ProgressMeter`                           | `Progress`                                          |
+| `FilterBar`                               | `Toolbar`                                           |
+| `ChoiceField`                             | `Field`                                             |
+| `SkeletonCard`                            | `SkeletonStat`                                      |
+| `StatusBadge`                             | `Badge` (`status` / `tone`)                         |
+| `DialogConfirm` / `Dialog mode="confirm"` | `AlertDialog`                                       |
 
-For the full feature data grid (sort / search / column visibility / paging) see
-`@godxjp/ui/data-grid` (`DataGrid`); the lean server-driven list stays `DataTable`.
+The full data-grid feature set (sort / search / column visibility / paging) is now
+built into the one `DataTable` (`@godxjp/ui/data-display`) — TanStack-powered, with
+the lean `data` + `columns` API for the common case and the compound parts
+(`DataTable.Search` / `.ViewOptions` / `.Pagination` …) for the rich chrome. The
+separate `@godxjp/ui/data-grid` (`DataGrid`) subpath has been merged in and removed.
 
 ---
 
@@ -154,12 +157,12 @@ One token `--phi-unit` drives page/section/card spacing; micro control gaps use 
 4px grid. Density (`compact` | `default` | `comfortable`) retunes `--phi-unit` with
 control + table heights together.
 
-| App API                          | φ level             |
-| -------------------------------- | ------------------- |
-| `<Flex direction="col" gap="md">`| φ⁰ (default)        |
-| `<Flex direction="col" gap="lg">`| φ¹                  |
-| `<Flex direction="col" gap="xl">`| φ²                  |
-| Card shell / footer              | base × φ / base ÷ φ |
+| App API                           | φ level             |
+| --------------------------------- | ------------------- |
+| `<Flex direction="col" gap="md">` | φ⁰ (default)        |
+| `<Flex direction="col" gap="lg">` | φ¹                  |
+| `<Flex direction="col" gap="xl">` | φ²                  |
+| Card shell / footer               | base × φ / base ÷ φ |
 
 ---
 
