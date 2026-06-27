@@ -80,10 +80,11 @@ describe("UI-standardization guard", () => {
     // src/components is NOT clean yet (legacy findings, e.g. em-dashes in test/example
     // strings). Baseline captured 2026-06-27: 43 error(s) + 217 warning(s) = 260 findings.
     // We pin the TOTAL so the test passes today but catches any NEW violation. Lower these
-    // numbers as the source is cleaned up; never raise them.
-    const BASELINE_ERRORS = 43;
-    const BASELINE_WARNINGS = 217;
-    const BASELINE_TOTAL = BASELINE_ERRORS + BASELINE_WARNINGS; // 260
+    // numbers as the source is cleaned up; never raise them. (ui-audit now skips __tests__/
+    // *.test files, so this tracks only the SHIPPED src/components surface, not test fixtures.)
+    const BASELINE_ERRORS = 7;
+    const BASELINE_WARNINGS = 14;
+    const BASELINE_TOTAL = BASELINE_ERRORS + BASELINE_WARNINGS; // 21
 
     const { errors, warnings, stdout } = runAudit(["src/components"]);
     const total = errors + warnings;
