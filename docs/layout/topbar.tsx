@@ -2,46 +2,46 @@ import { useState } from "react";
 import { AppShell, Flex, PageContainer, Sidebar, Topbar } from "@godxjp/ui/layout";
 import type { SidebarSectionProp } from "@godxjp/ui/layout";
 import {
+  Avatar,
+  AvatarFallback,
+  Badge,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  Badge,
-  Avatar,
-  AvatarFallback,
 } from "@godxjp/ui/data-display";
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Logo, Text } from "@godxjp/ui/general";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@godxjp/ui/navigation";
 import {
-  LayoutDashboard,
-  FileText,
-  Users,
   Bell,
-  Search,
-  PanelLeft,
   Building2,
-  Folder,
-  SlidersHorizontal,
-  UserRound,
+  ChevronDown,
+  FileText,
+  LayoutDashboard,
   LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Search,
   Settings,
+  UserRound,
+  Users,
 } from "lucide-react";
 
 /**
- * Topbar — app-shell top bar.
- * Focus: product chip, project chip, productMenu entity switcher, onSearchOpen,
- * onToggleCollapsed, unread notifications badge, rightSlot, user slot.
- * Composed only from real @godxjp/ui components inside an AppShell frame.
+ * Topbar — a PURE SLOT bar. The shell only positions `start` / `center` / `end`; the CONSUMER
+ * composes every control. This demo builds the chrome the OLD baked Topbar used to force —
+ * sidebar toggle, brand Logo, an entity switcher, a search trigger, a notifications button, a
+ * user menu — entirely from real primitives, so you can see there is no hidden template (and no
+ * dead dropdown: a control exists ONLY because it's placed here).
  */
-
 const SECTIONS: SidebarSectionProp[] = [
   {
     label: "会計",
@@ -50,10 +50,7 @@ const SECTIONS: SidebarSectionProp[] = [
       { id: "journal", label: "仕訳", icon: FileText },
     ],
   },
-  {
-    label: "管理",
-    items: [{ id: "users", label: "ユーザー", icon: Users }],
-  },
+  { label: "管理", items: [{ id: "users", label: "ユーザー", icon: Users }] },
 ];
 
 const ENTITIES = [
@@ -62,25 +59,33 @@ const ENTITIES = [
   { id: "initech", name: "イニテック有限会社" },
 ] as const;
 
-const PROJECTS = [
-  { id: "fy2026", name: "FY2026 決算" },
-  { id: "audit", name: "外部監査対応" },
-  { id: "recon", name: "月次照合" },
-] as const;
-
 export default function Demo() {
   const [activeId, setActiveId] = useState("dashboard");
   const [collapsed, setCollapsed] = useState(false);
   const [activeEntity, setActiveEntity] = useState(ENTITIES[0]);
-  const [activeProject, setActiveProject] = useState<(typeof PROJECTS)[number] | null>(PROJECTS[0]);
   const [unread, setUnread] = useState(true);
   const [searchOpenCount, setSearchOpenCount] = useState(0);
-  const [tweaksOpenCount, setTweaksOpenCount] = useState(0);
 
-  const topbar = (
-    <Topbar
-      product={{ name: "CoreBooks", color: "hsl(220 70% 50%)" }}
-      productMenu={
+  // start cluster — sidebar toggle + brand Logo + an entity switcher the consumer owns.
+  const start = (
+    <>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label={collapsed ? "サイドバーを展開" : "サイドバーを折りたたむ"}
+        aria-pressed={collapsed}
+        onClick={() => setCollapsed((c) => !c)}
+      >
+        {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
+      </Button>
+      <Logo label="CoreBooks" glyph="C" />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm">
+            {activeEntity.name}
+            <ChevronDown />
+          </Button>
+        </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-64">
           <DropdownMenuLabel>エンティティ切替</DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -88,78 +93,76 @@ export default function Demo() {
             <DropdownMenuItem key={e.id} onSelect={() => setActiveEntity(e)}>
               <Building2 className="mr-2 size-4" />
               {e.name}
-              {activeEntity.id === e.id && (
+              {activeEntity.id === e.id ? (
                 <Badge variant="secondary" className="ml-auto text-xs">
                   現在
                 </Badge>
-              )}
+              ) : null}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
-      }
-      project={activeProject}
-      projectPlaceholder="プロジェクトを選択"
-      projectMenu={
-        <DropdownMenuContent align="start" className="w-56">
-          <DropdownMenuLabel>プロジェクト切替</DropdownMenuLabel>
+      </DropdownMenu>
+    </>
+  );
+
+  // center — a search trigger (opens YOUR command palette). No baked search box.
+  const center = (
+    <Button
+      variant="outline"
+      size="sm"
+      className="text-muted-foreground w-full max-w-sm justify-start"
+      onClick={() => setSearchOpenCount((n) => n + 1)}
+    >
+      <Search />
+      検索…
+    </Button>
+  );
+
+  // end — notifications + user menu, both consumer-composed.
+  const end = (
+    <>
+      <Badge tone="warning" className="text-xs">
+        ステージング
+      </Badge>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label="通知"
+        className="relative"
+        onClick={() => setUnread(false)}
+      >
+        <Bell />
+        {unread ? (
+          <span className="bg-destructive absolute end-1.5 top-1.5 size-1.5 rounded-full" />
+        ) : null}
+      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon-sm" aria-label="アカウントメニュー">
+            <Avatar className="size-7">
+              <AvatarFallback>佐藤</AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuLabel>佐藤 花子</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {PROJECTS.map((p) => (
-            <DropdownMenuItem key={p.id} onSelect={() => setActiveProject(p)}>
-              <Folder className="mr-2 size-4" />
-              {p.name}
-              {activeProject?.id === p.id && (
-                <Badge variant="secondary" className="ml-auto text-xs">
-                  選択中
-                </Badge>
-              )}
-            </DropdownMenuItem>
-          ))}
+          <DropdownMenuItem>
+            <UserRound className="mr-2 size-4" />
+            プロフィール
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Settings className="mr-2 size-4" />
+            アカウント設定
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={() => setActiveProject(null)}>
-            プロジェクト選択解除
+          <DropdownMenuItem>
+            <LogOut className="mr-2 size-4" />
+            ログアウト
           </DropdownMenuItem>
         </DropdownMenuContent>
-      }
-      collapsed={collapsed}
-      onToggleCollapsed={() => setCollapsed((c) => !c)}
-      onSearchOpen={() => setSearchOpenCount((n) => n + 1)}
-      unread={unread}
-      onNotificationsOpen={() => setUnread(false)}
-      onTweaksOpen={() => setTweaksOpenCount((n) => n + 1)}
-      rightSlot={
-        <Badge tone="warning" className="text-xs">
-          ステージング
-        </Badge>
-      }
-      user={
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button type="button" className="tb-icon-btn" aria-label="アカウントメニュー">
-              <Avatar className="size-7">
-                <AvatarFallback>佐藤</AvatarFallback>
-              </Avatar>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>佐藤 花子</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <UserRound className="mr-2 size-4" />
-              プロフィール
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings className="mr-2 size-4" />
-              アカウント設定
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut className="mr-2 size-4" />
-              ログアウト
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      }
-    />
+      </DropdownMenu>
+    </>
   );
 
   const sidebar = (
@@ -169,23 +172,28 @@ export default function Demo() {
       onSelect={setActiveId}
       sections={SECTIONS}
       product={{ name: "CoreBooks", role: activeEntity.name, color: "hsl(220 70% 50%)" }}
+      onProductClick={() => undefined}
     />
   );
 
   return (
-    <AppShell sidebar={sidebar} topbar={topbar} sidebarCollapsed={collapsed}>
+    <AppShell
+      sidebar={sidebar}
+      topbar={<Topbar start={start} center={center} end={end} />}
+      sidebarCollapsed={collapsed}
+    >
       <PageContainer
         title="Topbar デモ"
-        subtitle="product/project chips · switcher menu · search · notifications · collapse · user · tweaks"
+        subtitle="slot bar — start / center / end をすべて consumer が組み立てる（焼き込みなし）"
         breadcrumb={[{ label: "ホーム", to: "/" }, { label: "Topbar デモ" }]}
       >
         <Flex direction="col" gap="lg">
-          {/* Live state display */}
           <Card>
             <CardHeader>
-              <CardTitle>現在の Topbar 状態</CardTitle>
+              <CardTitle>現在の状態</CardTitle>
               <CardDescription>
-                Topbar の各コントロールを操作するとこの表示が更新されます。
+                各コントロールは props ではなく slot
+                に置いた実コンポーネント。操作すると更新されます。
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -196,84 +204,42 @@ export default function Demo() {
                   <Badge variant="secondary">{activeEntity.name}</Badge>
                 </Flex>
                 <Flex align="center" gap="md">
-                  <Folder className="text-muted-foreground size-4" />
-                  <Text tone="muted">アクティブプロジェクト</Text>
-                  <Badge variant={activeProject ? "secondary" : "outline"}>
-                    {activeProject ? activeProject.name : "未選択（空チップ表示）"}
-                  </Badge>
-                </Flex>
-                <Flex align="center" gap="md">
-                  <PanelLeft className="text-muted-foreground size-4" />
-                  <Text tone="muted">サイドバー</Text>
-                  <Badge variant={collapsed ? "warning" : "success"}>
-                    {collapsed ? "折りたたみ" : "展開中"}
-                  </Badge>
-                </Flex>
-                <Flex align="center" gap="md">
                   <Bell className="text-muted-foreground size-4" />
                   <Text tone="muted">通知バッジ</Text>
-                  <Badge variant={unread ? "destructive" : "outline"}>
+                  <Badge tone={unread ? "destructive" : "neutral"} icon={null}>
                     {unread ? "未読あり" : "なし"}
                   </Badge>
                 </Flex>
                 <Flex align="center" gap="md">
                   <Search className="text-muted-foreground size-4" />
                   <Text tone="muted">検索を開いた回数</Text>
-                  <Badge tone="info">{searchOpenCount}</Badge>
-                </Flex>
-                <Flex align="center" gap="md">
-                  <SlidersHorizontal className="text-muted-foreground size-4" />
-                  <Text tone="muted">設定を開いた回数</Text>
-                  <Badge tone="info">{tweaksOpenCount}</Badge>
+                  <Badge tone="info" icon={null}>
+                    {searchOpenCount}
+                  </Badge>
                 </Flex>
               </Flex>
             </CardContent>
           </Card>
 
-          {/* Feature notes */}
           <Card>
             <CardHeader>
-              <CardTitle>Topbar の主要 props</CardTitle>
+              <CardTitle>Topbar は3つの slot だけ</CardTitle>
+              <CardDescription>
+                start / center / end。中身（ブランド・ナビ・検索・言語切替・ユーザーメニュー）は
+                すべて consumer が決める。アイコンのみ／ラベル付き／枠線あり等は各コンポーネントの
+                props であって、シェルが強制するものではない。
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Flex direction="col" gap="sm" className="text-sm">
                 {[
                   {
-                    prop: "product + productMenu",
-                    desc: "product chip をエンティティ切替ドロップダウンに変換",
+                    prop: "start",
+                    desc: "サイドバートグル + Logo + エンティティ切替（DropdownMenu）",
                   },
-                  {
-                    prop: "project + projectMenu",
-                    desc: "project chip をプロジェクト切替メニューに変換（project=null でも projectMenu 有りなら空チップ表示、両方 null で非表示）",
-                  },
-                  {
-                    prop: "onToggleCollapsed + collapsed",
-                    desc: "サイドバー折りたたみトグル（Sidebar.collapsed と同期必須）",
-                  },
-                  {
-                    prop: "onSearchOpen",
-                    desc: "検索バーボタン（⌘K）クリック時のコールバック",
-                  },
-                  {
-                    prop: "unread + onNotificationsOpen",
-                    desc: "通知ベルと未読ドット（unread=true で赤ドット表示）",
-                  },
-                  {
-                    prop: "onTweaksOpen",
-                    desc: "設定（SlidersHorizontal）ボタン — 指定時のみ右端に表示",
-                  },
-                  {
-                    prop: "user",
-                    desc: "アバター／アカウントメニュー用スロット（DropdownMenu を内包）",
-                  },
-                  {
-                    prop: "projectPlaceholder",
-                    desc: "project=null だが projectMenu 有りのとき、空チップのアクセシブルなラベル",
-                  },
-                  {
-                    prop: "rightSlot",
-                    desc: "検索バーと通知ベルの間に任意コンテンツを挿入",
-                  },
+                  { prop: "center", desc: "検索トリガー（Button）。コマンドパレットを開く" },
+                  { prop: "end", desc: "通知ボタン + ユーザーメニュー（DropdownMenu）" },
+                  { prop: "children", desc: "3 slot を使わず完全カスタムにする場合の逃げ道" },
                 ].map(({ prop, desc }) => (
                   <Flex key={prop} align="start" gap="sm">
                     <code className="bg-muted shrink-0 rounded px-1.5 py-0.5 font-mono text-xs">
@@ -286,7 +252,6 @@ export default function Demo() {
             </CardContent>
           </Card>
 
-          {/* Reset controls */}
           <Card>
             <CardHeader>
               <CardTitle>状態リセット</CardTitle>
@@ -298,21 +263,10 @@ export default function Demo() {
                   通知をリセット
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => setCollapsed(false)}>
-                  <PanelLeft />
+                  <PanelLeftOpen />
                   サイドバーを展開
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => setActiveProject(null)}>
-                  <Folder />
-                  プロジェクトを未選択（空チップ）
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    setActiveEntity(ENTITIES[0]);
-                    setActiveProject(PROJECTS[0]);
-                  }}
-                >
+                <Button size="sm" variant="outline" onClick={() => setActiveEntity(ENTITIES[0])}>
                   初期値に戻す
                 </Button>
               </Flex>

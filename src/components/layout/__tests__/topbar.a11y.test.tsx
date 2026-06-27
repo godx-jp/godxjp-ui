@@ -1,33 +1,28 @@
 import { describe, it } from "vitest";
+import { Search } from "lucide-react";
+
 import { Topbar } from "../topbar";
-import {
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-} from "../../navigation/dropdown-menu";
+import { Button, Logo } from "../../general";
 import { expectNoA11yViolations } from "@/test/a11y";
 
-// Topbar emits a row of icon/text chrome buttons that must all carry accessible
-// names (toggle, search, notifications, tweaks, product/project chips).
+// Topbar is a pure slot bar — a11y lives in whatever the consumer composes into the slots.
+// This verifies a realistic composition (brand + search trigger + user menu trigger) is clean.
 describe("Topbar a11y", () => {
-  it("has no axe violations with a fully-composed app topbar", async () => {
+  it("has no axe violations with a consumer-composed bar", async () => {
     await expectNoA11yViolations(
       <header>
         <Topbar
-          product={{ name: "CoreBooks", color: "hsl(var(--attention))" }}
-          project={{ name: "FY2026" }}
-          collapsed={false}
-          onToggleCollapsed={() => {}}
-          onSearchOpen={() => {}}
-          onNotificationsOpen={() => {}}
-          onTweaksOpen={() => {}}
-          unread
-          productMenu={
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Sản phẩm</DropdownMenuLabel>
-              <DropdownMenuItem>CoreBooks</DropdownMenuItem>
-              <DropdownMenuItem>CorePay</DropdownMenuItem>
-            </DropdownMenuContent>
+          start={<Logo label="CoreBooks" />}
+          center={
+            <Button variant="outline" size="sm">
+              <Search aria-hidden="true" />
+              検索
+            </Button>
+          }
+          end={
+            <Button variant="ghost" size="sm">
+              田中 太郎
+            </Button>
           }
         />
       </header>,

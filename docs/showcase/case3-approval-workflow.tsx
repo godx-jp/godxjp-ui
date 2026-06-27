@@ -28,7 +28,7 @@
 import * as React from "react";
 import { Check, ClipboardCheck, Clock, Download, Tag, Users, X } from "lucide-react";
 
-import { Button, Text } from "@godxjp/ui/general";
+import { Button, Logo, Text } from "@godxjp/ui/general";
 import {
   Badge,
   type BadgeProps,
@@ -312,15 +312,7 @@ export default function Demo() {
   );
 
   return (
-    <AppShell
-      sidebar={sidebar}
-      topbar={
-        <Topbar
-          product={{ name: "dxs · kintai", color: "hsl(var(--primary))" }}
-          onSearchOpen={() => {}}
-        />
-      }
-    >
+    <AppShell sidebar={sidebar} topbar={<Topbar start={<Logo label="dxs · kintai" glyph="d" />} />}>
       <PageContainer
         title="欠勤・遅刻 · Vắng mặt"
         subtitle="12 件未承認 · 申請の承認 / 却下 / 再分類"

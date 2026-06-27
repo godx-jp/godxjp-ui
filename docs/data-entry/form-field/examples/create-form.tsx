@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Field, FormField, Input, Select, Switch, Textarea } from "@godxjp/ui/data-entry";
-import { Button } from "@godxjp/ui/general";
+import { Button, Logo } from "@godxjp/ui/general";
 import {
   AppShell,
   Flex,
@@ -44,12 +44,7 @@ export default function Demo() {
           product={{ name: "CoreBooks", role: "管理コンソール", color: "hsl(var(--primary))" }}
         />
       }
-      topbar={
-        <Topbar
-          product={{ name: "CoreBooks", color: "hsl(var(--primary))" }}
-          onSearchOpen={() => {}}
-        />
-      }
+      topbar={<Topbar start={<Logo label="CoreBooks" glyph="C" />} />}
     >
       <PageContainer
         title="取引先を作成"

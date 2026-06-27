@@ -31,10 +31,29 @@ describe("Sidebar — brand / product / footer chrome", () => {
   });
 
   it("collapsed product hides the name/role meta but keeps the initial", () => {
-    renderWithUi(<Sidebar sections={sections} activeId="x" collapsed product={{ name: "Acme" }} />);
-    // the meta text is hidden when collapsed (the aria-label still names the button)
+    // An interactive product switcher (onProductClick wired) stays a button; collapsed only hides
+    // the meta text, the aria-label still names it. Without onProductClick it's a plain label (no
+    // button, no caret) — the dead-dropdown fix.
+    renderWithUi(
+      <Sidebar
+        sections={sections}
+        activeId="x"
+        collapsed
+        product={{ name: "Acme" }}
+        onProductClick={() => {}}
+      />,
+    );
     expect(screen.queryByText("Acme")).toBeNull();
     expect(screen.getByRole("button", { name: "Acme" })).toBeInTheDocument();
+  });
+
+  it("a product WITHOUT onProductClick is a plain label — no button, no caret", () => {
+    const { container } = renderWithUi(
+      <Sidebar sections={sections} activeId="x" product={{ name: "Acme" }} />,
+    );
+    expect(screen.queryByRole("button", { name: "Acme" })).toBeNull();
+    expect(container.querySelector(".sb-product-static")).not.toBeNull();
+    expect(container.querySelector(".sb-product-caret")).toBeNull();
   });
 
   it("renders a footer slot", () => {

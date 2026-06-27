@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING — `Topbar` is now a PURE SLOT bar; the baked chrome is gone.** The library was
+  dictating header CONTENT (a product-switcher chip with an always-on dropdown caret, a search box,
+  a notification bell, a sidebar toggle, a tweaks button) — which is the consumer's job, and the
+  source of the "dead dropdown with nothing to choose" and every app's header looking different.
+  `Topbar` now exposes only `start` / `center` / `end` (+ `children` escape hatch) and owns ONLY the
+  bar layout. Compose the brand (`Logo`), sidebar toggle, search trigger, settings pickers
+  (`AppSettingPicker`), notifications and user menu yourself and drop them into a slot — a control
+  exists ONLY because you placed it. Removed props: `product`, `project`, `productMenu`, `projectMenu`,
+  `projectPlaceholder`, `onProductOpen`, `onProjectOpen`, `onSearchOpen`, `onTweaksOpen`, `collapsed`,
+  `onToggleCollapsed`, `rightSlot`, `unread`, `searchPlaceholder`, `onNotificationsOpen`, `user`; and
+  the `TopbarProduct`/`TopbarProject` types. `AppShell` (already slot-based) is unchanged; `Sidebar`'s
+  brand header now renders its dropdown caret ONLY when `onProductClick` is wired (use the `brand`
+  slot for a fully custom header).
+
 ### Added
 
 - **`Logo` — product brand-mark primitive** (#116). Renders the lettermark (or a custom SVG via

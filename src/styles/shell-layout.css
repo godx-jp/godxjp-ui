@@ -498,6 +498,30 @@
     gap: 2px;
   }
 
+  /* Topbar — a pure slot bar. start (inline-start) · center (grows, centered) · end (inline-end).
+   * The library owns ONLY this positioning; every control inside is the consumer's to compose. */
+  .ui-topbar {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .ui-topbar-start,
+  .ui-topbar-center,
+  .ui-topbar-end {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .ui-topbar-center {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+  .ui-topbar-end {
+    margin-inline-start: auto;
+  }
+
   .tb-chip {
     display: inline-flex;
     max-width: 15rem;

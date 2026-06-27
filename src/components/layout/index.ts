@@ -27,7 +27,7 @@ export type {
   SidebarSectionProp,
 } from "../../props/components/layout.prop";
 export { Topbar } from "./topbar";
-export type { TopbarProduct, TopbarProject, TopbarProps } from "./topbar";
+export type { TopbarProp, TopbarProps } from "./topbar";
 export { ResponsiveGrid } from "./responsive-grid";
 export type { ResponsiveGridProps } from "./responsive-grid";
 export { SplitPane } from "./split-pane";
