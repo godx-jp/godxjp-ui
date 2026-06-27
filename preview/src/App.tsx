@@ -497,6 +497,7 @@ export function App() {
                     tx
                   </span>
                   <span className="preview-brand-name">godxjp-ui</span>
+                  <span className="preview-brand-version">v{__APP_VERSION__}</span>
                   <span className="preview-brand-badge">preview</span>
                 </div>
                 <button
