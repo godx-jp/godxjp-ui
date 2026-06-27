@@ -595,7 +595,7 @@ export default function Shell() {
     ],
     related: [
       "AppShell — place Topbar in its `topbar` slot. AppShell also exposes its own `logo`/`topbarLeft`/`topbarRight` slots if you don't want a separate Topbar at all.",
-      "Avatar — the brand mark for the `start` slot (use `className=\"rounded-md\"` for a square-ish product glyph).",
+      'Avatar — the brand mark for the `start` slot (use `className="rounded-md"` for a square-ish product glyph).',
       "AppSettingPicker — locale/theme/timezone/currency picker; the consumer drops it into `end`. Its appearance (icon-only, labelled, bordered) is configured on IT, not on Topbar.",
       "DropdownMenu — wrap a `Button` to build an entity switcher or user menu yourself, then place it in a slot.",
     ],
@@ -954,7 +954,7 @@ import { Trash2 } from "lucide-react";
     name: "DataTable",
     group: "data-display",
     tagline:
-      "Compound admin list component with sticky header, sorting, bulk selection, cursor pagination, and built-in empty/loading states — never hand-roll a data.length===0 guard around it.",
+      "The one TanStack-powered compound admin list — sticky header, sorting, global search, column visibility ('set view'), bulk selection, BOTH cursor and numbered pagination, density, and built-in empty/loading states. Keep the SIMPLE `data` + lean `columns` (ColumnDef) API for the common case; opt into the full grid chrome via the compound parts. Internally driven by @tanstack/react-table (a real dependency). Lives on @godxjp/ui/data-display only (it is NOT on the runtime-neutral root/admin barrel because it pulls TanStack). This is the single table component — the former DataGrid has been merged in and removed. Never hand-roll a data.length===0 guard around it.",
     props: [
       {
         name: "data",
@@ -968,7 +968,7 @@ import { Trash2 } from "lucide-react";
         type: "ColumnDef<T>[]",
         required: true,
         description:
-          "Column definitions. Each column: { key: string; header: ReactNode; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; pin?: 'end' }. If render is omitted, the raw value at row[key] is rendered as a string. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column.",
+          "Lean column definitions (adapted to TanStack internally). Each column: { key: string; header: ReactNode; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end' }. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column.",
       },
       {
         name: "getRowId",
@@ -1036,15 +1036,40 @@ import { Trash2 } from "lucide-react";
       },
       {
         name: "sort",
-        type: "{ value: string; direction: 'asc' | 'desc' }",
+        type: "{ key: string; direction: 'asc' | 'desc' }",
         description:
-          "Active sort state. When provided alongside onSortChange, sortable columns show directional arrow icons and are clickable. Clicking the active column twice clears sort (calls onSortChange(undefined)).",
+          "Active sort state (controlled/server surface). When provided alongside onSortChange, sortable columns show directional arrow icons and clicking the active column twice clears sort (calls onSortChange(undefined)). Omit both sort and onSortChange to sort client-side via TanStack.",
       },
       {
         name: "onSortChange",
-        type: "(sort: { value: string; direction: 'asc' | 'desc' } | undefined) => void",
+        type: "(sort: { key: string; direction: 'asc' | 'desc' } | undefined) => void",
         description:
-          "Called when a sortable column header is clicked. Receives undefined when sort is cleared (third click on same column).",
+          "Called when a sortable column header is clicked. Receives undefined when sort is cleared (third click on same column). Providing sort or onSortChange opts into the controlled (server) sort surface; omit both and the table sorts client-side via TanStack.",
+      },
+      {
+        name: "globalFilter / onGlobalFilterChange",
+        type: "string / (next: string) => void",
+        description:
+          "Global search term surfaced by DataTable.Search. Omit both for client-side filtering; pass them to drive a server query (with manualFiltering).",
+      },
+      {
+        name: "pagination / onPaginationChange / rowCount",
+        type: "{ pageIndex: number; pageSize: number } / OnChangeFn / number",
+        description:
+          "Numbered-pagination state surfaced by DataTable.Pagination (page-size form). For server pagination pass all three (rowCount = total) with manualPagination; omit for client pagination.",
+      },
+      {
+        name: "columnVisibility / onColumnVisibilityChange",
+        type: "VisibilityState / OnChangeFn<VisibilityState>",
+        description:
+          "Column show/hide state surfaced by DataTable.ViewOptions ('set view'). Internal if omitted.",
+      },
+      {
+        name: "manualSorting / manualFiltering / manualPagination",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Default false so the simple data+columns case sorts/filters/paginates in-browser. Set the relevant flag true and drive the matching state from your query for server-side behaviour.",
       },
       {
         name: "loading",
@@ -1068,14 +1093,15 @@ import { Trash2 } from "lucide-react";
         name: "children",
         type: "ReactNode",
         description:
-          "Compound sub-parts: DataTable.Toolbar, DataTable.BulkActions, DataTable.DensityToggle, DataTable.Pagination, DataTable.Content. If no DataTable.Content is present in children, one is auto-rendered.",
+          "Compound sub-parts: DataTable.Toolbar, DataTable.Search (global filter), DataTable.ViewOptions (column show/hide), DataTable.SelectAll, DataTable.BulkActions (ReactNode children OR a (count)=>node render-prop), DataTable.DensityToggle, DataTable.Pagination (cursor first/next when given cursor+hasMore+onChange, else numbered page-size form), DataTable.RowActions (kebab trigger), DataTable.Content. If no DataTable.Content is present in children, one is auto-rendered.",
       },
     ],
     usage: [
       "DO pass loading={isFetching} during data fetches — it renders a loading row in the table body and suppresses the empty state. Never show a spinner outside DataTable while the table is visible.",
       "DO NOT add a data.length===0 conditional around DataTable. When data is empty and loading is false, the built-in EmptyState renders automatically. Pass empty={<EmptyState title='...'/>} only when you need a custom message.",
       "DO provide getRowId when selectable is true or when rows do not have a string/number 'id' field — the default falls back to row.id and silently returns '' for missing IDs, which breaks selection.",
-      "DO use DataTable.Toolbar as the immediate child that wraps search/filter controls on the left and DataTable.DensityToggle/action buttons on the right. DataTable.BulkActions inside the toolbar auto-hides when selection count is 0.",
+      "DO use DataTable.Toolbar as the immediate child that wraps search/filter controls on the left and DataTable.DensityToggle/action buttons on the right. DataTable.BulkActions inside the toolbar auto-hides when selection count is 0; it accepts either plain ReactNode children (built-in 'N selected' status bar) or a (count)=>node render-prop (you own the whole bar).",
+      "DO reach for the grid chrome (DataTable.Search, DataTable.ViewOptions, DataTable.Pagination pageSizeOptions) when you need global search, a column 'set view' picker, or numbered pagination — these are the merged former-DataGrid features, now on the one DataTable. Drive them client-side by default; pass the matching state + manual* flag for a server query.",
       "DO use ColumnDef.render for custom cell content (Badge, Link, RowActions). For plain string/number fields render can be omitted — DataTable falls back to String(row[key]).",
       "DO NOT nest DataTable.Content in a conditional — it is already guarded internally. If you need to override the table body slot, drop exactly one <DataTable.Content /> in children; DataTable auto-detects it by displayName and skips the default.",
     ],
@@ -1083,7 +1109,8 @@ import { Trash2 } from "lucide-react";
       "Admin list pages (invoices, customers, orders, accounts) where rows are clickable for detail navigation via onRowClick.",
       "Bulk-action workflows (e.g. mark invoices paid, export selected rows) — use selectable + DataTable.BulkActions to show contextual action buttons only when something is selected.",
       "Server-side sorted tables: pass sort + onSortChange and update the data prop after the API call; DataTable renders asc/desc/neutral icons on the header automatically.",
-      "Cursor-paginated lists: add DataTable.Pagination with cursor + hasMore + onChange inside children to get First/Next navigation without offset arithmetic.",
+      "Cursor-paginated lists: add DataTable.Pagination with cursor + hasMore + onChange inside children to get First/Next navigation without offset arithmetic. For page-size + numbered prev/next instead, use DataTable.Pagination with pageSizeOptions (no cursor/onChange) driven by the internal TanStack pagination.",
+      "Full grid screens (global search + column 'set view' + numbered pagination): compose DataTable.Search, DataTable.ViewOptions, DataTable.DensityToggle in the toolbar and DataTable.Pagination pageSizeOptions={[…]} — client-side by default, or server-side by passing globalFilter/pagination/sort state with the matching manual* flag.",
       "Responsive admin tables where lower-priority columns (e.g. internal IDs, dates) should collapse below mobile breakpoints — set hiddenOnMobile: true on those ColumnDef entries.",
       "Loading skeletons during initial page load or filter change: set loading={true} alongside an empty data={[]} to show the loading row without flashing an empty state.",
     ],
@@ -1106,10 +1133,10 @@ type Invoice = {
 };
 
 const columns: ColumnDef<Invoice>[] = [
-  { value: "id", header: "Invoice #", width: "w-32" },
-  { value: "customer", header: "Customer" },
+  { key: "id", header: "Invoice #", width: "w-32" },
+  { key: "customer", header: "Customer" },
   {
-    value: "status",
+    key: "status",
     header: "Status",
     render: (row) => (
       <Badge
@@ -1121,7 +1148,7 @@ const columns: ColumnDef<Invoice>[] = [
       </Badge>
     ),
   },
-  { value: "amount", header: "Amount", align: "right", sortable: true },
+  { key: "amount", header: "Amount", align: "right", sortable: true },
 ];
 
 export default function InvoiceList({
@@ -1132,7 +1159,7 @@ export default function InvoiceList({
   loading: boolean;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [sort, setSort] = useState<{ value: string; direction: "asc" | "desc" } | undefined>();
+  const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" } | undefined>();
 
   return (
     <DataTable
@@ -1164,113 +1191,6 @@ export default function InvoiceList({
   );
 }`,
     storyPath: "data-display/DataTable.stories.tsx",
-    rules: [24, 31, 35, 37],
-  },
-  {
-    name: "DataGrid",
-    group: "data-display",
-    tagline:
-      "Full-feature data grid — the TanStack Table adapter on `@godxjp/ui/data-grid` (NOT the data-display barrel). Adds column sort, global search, column visibility ('set view'), per-page + numbered pagination, row selection + bulk actions, and density over the styled Table* primitives. Defaults to SERVER/manual mode: wire sorting/columnFilters/globalFilter/pagination to your AJAX query (pass rowCount). Use DataTable instead for a lean server-driven list that must NOT pull TanStack. Requires the `@tanstack/react-table` peer dependency.",
-    props: [
-      {
-        name: "columns",
-        type: "ColumnDef<T, unknown>[]",
-        required: true,
-        description:
-          "TanStack column definitions ({ accessorKey, header, cell, enableSorting, enableHiding, meta:{label} }). Set enableHiding:false to keep a column out of the ViewOptions menu; meta.label gives a human label there when header is JSX.",
-      },
-      {
-        name: "data",
-        type: "T[]",
-        required: true,
-        description: "Row data. Empty + loading=false renders a built-in EmptyState in the body.",
-      },
-      {
-        name: "getRowId",
-        type: "(row: T) => string",
-        description: "Stable row id (defaults to row[rowIdKey], rowIdKey defaults to 'id').",
-      },
-      {
-        name: "enableRowSelection",
-        type: "boolean",
-        defaultValue: "false",
-        description: "Adds a checkbox column + header select-all; pair with DataGrid.BulkActions.",
-      },
-      {
-        name: "sorting / onSortingChange",
-        type: "SortingState / OnChangeFn<SortingState>",
-        description:
-          "Server sort: pass both and sort in your query (manualSorting defaults true). Omit both for client sort.",
-      },
-      {
-        name: "globalFilter / onGlobalFilterChange",
-        type: "string / OnChangeFn<string>",
-        description:
-          "Global search term, surfaced by DataGrid.Search. Server or client like sorting.",
-      },
-      {
-        name: "pagination / onPaginationChange / rowCount",
-        type: "PaginationState / OnChangeFn / number",
-        description:
-          "Server pagination: pass pagination + onPaginationChange + rowCount (total). Omit for client pagination.",
-      },
-      {
-        name: "columnVisibility / onColumnVisibilityChange",
-        type: "VisibilityState / OnChangeFn<VisibilityState>",
-        description:
-          "Column show/hide state surfaced by DataGrid.ViewOptions ('set view'). Internal if omitted.",
-      },
-      {
-        name: "manualSorting / manualFiltering / manualPagination",
-        type: "boolean",
-        defaultValue: "true",
-        description:
-          "Default true (server/AJAX). Set false to let TanStack sort/filter/paginate in-browser.",
-      },
-      {
-        name: "loading / density / onRowClick / empty",
-        type: "boolean / 'compact'|'comfortable' / (row:T)=>void / ReactNode",
-        description: "Loading row, controlled density, clickable rows, custom empty content.",
-      },
-    ],
-    usage: [
-      "Import from `@godxjp/ui/data-grid` — it lives on its own subpath because it pulls @tanstack/react-table; it is NOT in the runtime-neutral root or the data-display barrel.",
-      "Compose the compound parts as children: <DataGrid.Toolbar> (holds <DataGrid.BulkActions>, <DataGrid.Search>, <DataGrid.ViewOptions>, <DataGrid.DensityToggle>), then <DataGrid.Content> (auto-included if omitted) and <DataGrid.Pagination pageSizeOptions=[...]>.",
-      "Server mode (default): drive sorting/globalFilter/pagination from useQuery and pass rowCount. Client mode: set manualSorting/manualFiltering/manualPagination={false} and the grid handles it on the data array.",
-    ],
-    useCases: [
-      "Server-paginated 仕訳 (journal entry) or 請求 (invoice) admin list backed by an AJAX/useQuery endpoint: drive sorting + globalFilter + pagination from the query and pass rowCount — the grid never loads the whole table into the browser. (Prefer DataTable here if the screen must NOT pull @tanstack/react-table.)",
-      "Member / employee directory with a user-toggled 'set view' column picker (DataGrid.ViewOptions) — let admins hide columns like 入社日 or 部署 they don't need, persisting the columnVisibility state per user.",
-      "Bulk-operation worklist (e.g. approve/export selected 経費精算 rows): enableRowSelection + DataGrid.BulkActions to show a 'N件選択中' action bar with 一括承認 / CSV出力 buttons only when rows are checked.",
-      "Dense reconciliation or ledger table where operators flip between compact and comfortable row height via DataGrid.DensityToggle to fit more rows on screen during data-entry-heavy sessions.",
-      "Client-side grid for a fully-loaded small dataset (e.g. a fixed master list of 勘定科目): set manualSorting/manualFiltering/manualPagination={false} so TanStack sorts, searches, and paginates in-browser without any server round-trip.",
-    ],
-    related: ["DataTable", "Table", "DataState", "Select", "DropdownMenu"],
-    example: `import { DataGrid, type ColumnDef } from "@godxjp/ui/data-grid";
-import { Flex } from "@godxjp/ui/layout";
-
-type Row = { id: string; name: string; amount: number };
-const columns: ColumnDef<Row, unknown>[] = [
-  { accessorKey: "name", header: "Name", meta: { label: "Name" } },
-  { accessorKey: "amount", header: "Amount", meta: { label: "Amount" } },
-];
-
-export function Grid({ rows }: { rows: Row[] }) {
-  return (
-    <DataGrid columns={columns} data={rows} getRowId={(r) => r.id} enableRowSelection manualSorting={false} manualFiltering={false} manualPagination={false}>
-      <DataGrid.Toolbar>
-        <Flex direction="row" align="center" gap="sm" className="ms-auto">
-          <DataGrid.Search />
-          <DataGrid.ViewOptions />
-          <DataGrid.DensityToggle />
-        </Flex>
-      </DataGrid.Toolbar>
-      <DataGrid.Content />
-      <DataGrid.Pagination pageSizeOptions={[10, 20, 50]} />
-    </DataGrid>
-  );
-}`,
-    storyPath: "data-display/DataGrid.stories.tsx",
     rules: [24, 31, 35, 37],
   },
   {
@@ -7188,7 +7108,7 @@ export default function PasswordBlock() {
       "DON'T hand-roll a positioned `<div>` + `onContextMenu={e => e.preventDefault()}` — the primitive already gives you keyboard navigation, focus trapping, typeahead, and WAI-ARIA menu semantics for free.",
     ],
     useCases: [
-      "Right-click actions on a DataTable/DataGrid row (詳細 / 複製 / 削除) as a power-user accelerator alongside the visible row action button.",
+      "Right-click actions on a DataTable row (詳細 / 複製 / 削除) as a power-user accelerator alongside the visible row action button.",
       "Contextual menu on a file or document tile in an upload/asset manager (ダウンロード / 名前変更 / 削除).",
       "Nested action menu with submenus and shortcuts (e.g. 'エクスポート ▸ CSV / PDF') on a report card.",
       "Stateful toggles on a board/kanban card via ContextMenuCheckboxItem (e.g. ピン留め, 完了としてマーク).",

@@ -18,7 +18,7 @@ export {
 export type { StatCardProps, CardBarProps } from "./card";
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 export { Descriptions } from "./descriptions";
-export { DataTable } from "./data-table";
+export { DataTable, flexRender } from "./data-table";
 export type { ColumnDef, Density as TableDensity } from "./data-table";
 export type { SortStateProp } from "../../props/vocabulary";
 export { EmptyState } from "./empty-state";

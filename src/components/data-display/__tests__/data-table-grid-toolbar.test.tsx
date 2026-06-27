@@ -2,8 +2,7 @@ import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { DataGrid } from "../data-grid";
-import type { ColumnDef } from "../data-grid";
+import { DataTable, type ColumnDef } from "../data-table";
 
 type Row = { id: string; partner: string };
 const ROWS: Row[] = [
@@ -11,33 +10,26 @@ const ROWS: Row[] = [
   { id: "INV-2", partner: "大阪物産" },
   { id: "INV-3", partner: "京都製作所" },
 ];
-const columns: ColumnDef<Row, unknown>[] = [
-  { accessorKey: "id", header: "番号", enableHiding: false },
-  { accessorKey: "partner", header: "取引先", meta: { label: "取引先" } },
+const columns: ColumnDef<Row>[] = [
+  { key: "id", header: "番号", enableHiding: false },
+  { key: "partner", header: "取引先" },
 ];
 
-function Grid(props: Partial<React.ComponentProps<typeof DataGrid<Row>>>) {
+function Grid(props: Partial<React.ComponentProps<typeof DataTable<Row>>>) {
   return (
-    <DataGrid
-      columns={columns}
-      data={ROWS}
-      getRowId={(r) => r.id}
-      manualFiltering={false}
-      manualPagination={false}
-      {...props}
-    >
+    <DataTable columns={columns} data={ROWS} getRowId={(r) => r.id} {...props}>
       {props.children}
-    </DataGrid>
+    </DataTable>
   );
 }
 
-describe("DataGrid.Search", () => {
+describe("DataTable.Search (global filter)", () => {
   it("filters the visible rows through the global filter", async () => {
     const user = userEvent.setup();
     render(
       <Grid>
-        <DataGrid.Search placeholder="検索" />
-        <DataGrid.Content />
+        <DataTable.Search placeholder="検索" />
+        <DataTable.Content />
       </Grid>,
     );
     expect(screen.getByText("東京商事")).toBeInTheDocument();
@@ -47,35 +39,57 @@ describe("DataGrid.Search", () => {
   });
 });
 
-describe("DataGrid.ViewOptions", () => {
+describe("DataTable.ViewOptions", () => {
   it("toggles a hideable column off via the dropdown", async () => {
     const user = userEvent.setup();
     const { container } = render(
       <Grid>
-        <DataGrid.Toolbar>
-          <DataGrid.ViewOptions />
-        </DataGrid.Toolbar>
-        <DataGrid.Content />
+        <DataTable.Toolbar>
+          <DataTable.ViewOptions />
+        </DataTable.Toolbar>
+        <DataTable.Content />
       </Grid>,
     );
     expect(screen.getByText("東京商事")).toBeInTheDocument();
     const toolbar = container.querySelector(".ui-data-table-toolbar") as HTMLElement;
     await user.click(within(toolbar).getByRole("button")); // the view-options trigger
-    // the menu lists hideable columns by their meta.label ("取引先"); 番号 is enableHiding:false
+    // the menu lists hideable columns by their string header ("取引先"); 番号 is enableHiding:false
     const toggle = await screen.findByRole("menuitemcheckbox", { name: "取引先" });
     await user.click(toggle);
     expect(screen.queryByText("東京商事")).toBeNull(); // partner column hidden
     expect(screen.getByText("INV-1")).toBeInTheDocument(); // id still visible
   });
+
+  it("labels a hideable column by its id when the header is not a string", async () => {
+    const user = userEvent.setup();
+    const jsxCols: ColumnDef<Row>[] = [
+      { key: "id", header: "番号", enableHiding: false },
+      { key: "partner_col", header: <span>取引先</span>, render: (r) => r.partner },
+    ];
+    const { container } = render(
+      <DataTable columns={jsxCols} data={ROWS} getRowId={(r) => r.id}>
+        <DataTable.Toolbar>
+          <DataTable.ViewOptions />
+        </DataTable.Toolbar>
+        <DataTable.Content />
+      </DataTable>,
+    );
+    const toolbar = container.querySelector(".ui-data-table-toolbar") as HTMLElement;
+    await user.click(within(toolbar).getByRole("button"));
+    // header is JSX → columnLabel falls back to the column key
+    expect(
+      await screen.findByRole("menuitemcheckbox", { name: "partner_col" }),
+    ).toBeInTheDocument();
+  });
 });
 
-describe("DataGrid.BulkActions", () => {
+describe("DataTable.BulkActions (render-prop form)", () => {
   it("renders nothing until a row is selected, then exposes the count", async () => {
     const user = userEvent.setup();
     render(
-      <Grid enableRowSelection>
-        <DataGrid.Content />
-        <DataGrid.BulkActions>{(count) => <span>選択 {count} 件</span>}</DataGrid.BulkActions>
+      <Grid selectable>
+        <DataTable.Content />
+        <DataTable.BulkActions>{(count) => <span>選択 {count} 件</span>}</DataTable.BulkActions>
       </Grid>,
     );
     expect(screen.queryByText(/選択/)).toBeNull();
@@ -86,15 +100,15 @@ describe("DataGrid.BulkActions", () => {
   });
 });
 
-describe("DataGrid.DensityToggle", () => {
+describe("DataTable.DensityToggle", () => {
   it("swaps the root density class on click", async () => {
     const user = userEvent.setup();
     const { container } = render(
       <Grid>
-        <DataGrid.Toolbar>
-          <DataGrid.DensityToggle />
-        </DataGrid.Toolbar>
-        <DataGrid.Content />
+        <DataTable.Toolbar>
+          <DataTable.DensityToggle />
+        </DataTable.Toolbar>
+        <DataTable.Content />
       </Grid>,
     );
     const root = container.querySelector(".ui-data-table-root")!;

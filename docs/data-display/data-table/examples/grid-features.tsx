@@ -1,17 +1,17 @@
 import { useState } from "react";
 
-import { Card, CardContent, Badge } from "@godxjp/ui/data-display";
-import { DataGrid, type ColumnDef } from "@godxjp/ui/data-grid";
+import { Card, CardContent, Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Download, CheckCircle2 } from "lucide-react";
 
 /**
- * DataGrid — TanStack Table adapter (`@godxjp/ui/data-grid`). Full data-grid feature set:
- * column sort, global search, column visibility ("set view"), per-page + numbered pagination,
- * row selection + bulk actions, density. Defaults to SERVER mode (manual sort/filter/paginate);
- * this demo runs CLIENT mode so it sorts/filters/paginates in-browser on the sample rows.
- * Composed only from real @godxjp/ui components.
+ * DataTable — full TanStack feature set (the former DataGrid). One unified
+ * DataTable now drives column sort, global search, column visibility ("set
+ * view"), per-page + numbered pagination, row selection + bulk actions, and
+ * density — all on the lean `data` + `columns` API. This demo runs CLIENT mode
+ * (manual* flags default to false) so it sorts/filters/paginates in-browser on
+ * the sample rows. Composed only from real @godxjp/ui components.
  */
 type Invoice = {
   id: string;
@@ -69,36 +69,32 @@ const currencyFormatter = new Intl.NumberFormat("ja-JP", {
 });
 const yen = (n: number) => currencyFormatter.format(n);
 
-const columns: ColumnDef<Invoice, unknown>[] = [
-  { accessorKey: "id", header: "請求書番号", enableHiding: false },
-  { accessorKey: "partner", header: "取引先", meta: { label: "取引先" } },
+const columns: ColumnDef<Invoice>[] = [
+  { key: "id", header: "請求書番号", enableHiding: false },
+  { key: "partner", header: "取引先", sortable: true },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-end">金額</div>,
-    meta: { label: "金額" },
-    cell: ({ getValue }) => (
+    key: "amount",
+    header: "金額",
+    align: "right",
+    sortable: true,
+    render: (row) => (
       <Text as="div" weight="medium" tabular className="text-end">
-        {yen(getValue<number>())}
+        {yen(row.amount)}
       </Text>
     ),
   },
   {
-    accessorKey: "status",
+    key: "status",
     header: "状態",
-    enableSorting: false,
-    meta: { label: "状態" },
-    cell: ({ getValue }) => {
-      const s = getValue<Invoice["status"]>();
-      return <Badge tone={STATUS_TONE[s]}>{STATUS_LABEL[s]}</Badge>;
-    },
+    render: (row) => <Badge tone={STATUS_TONE[row.status]}>{STATUS_LABEL[row.status]}</Badge>,
   },
   {
-    accessorKey: "date",
-    header: () => <div className="text-end">発行日</div>,
-    meta: { label: "発行日" },
-    cell: ({ getValue }) => (
+    key: "date",
+    header: "発行日",
+    align: "right",
+    render: (row) => (
       <Text as="div" tabular className="text-end">
-        {getValue<string>()}
+        {row.date}
       </Text>
     ),
   },
@@ -109,23 +105,20 @@ export default function Demo() {
 
   return (
     <PageContainer
-      title="DataGrid"
-      subtitle="TanStack Table アダプタ · 並べ替え・検索・列の表示切替・ページング・選択（@godxjp/ui/data-grid）"
+      title="DataTable · グリッド機能"
+      subtitle="TanStack Table 駆動 · 並べ替え・検索・列の表示切替・ページング・選択（@godxjp/ui/data-display）"
     >
       <Card>
-        <CardContent>
-          <DataGrid
+        <CardContent flush>
+          <DataTable
             columns={columns}
             data={ROWS}
             getRowId={(r) => r.id}
-            enableRowSelection
-            manualSorting={false}
-            manualFiltering={false}
-            manualPagination={false}
+            selectable
             onRowClick={(r) => setLastClicked(r.id)}
           >
-            <DataGrid.Toolbar>
-              <DataGrid.BulkActions>
+            <DataTable.Toolbar>
+              <DataTable.BulkActions>
                 {(count) => (
                   <Flex direction="row" align="center" gap="sm">
                     <Text weight="medium" tabular>
@@ -141,25 +134,25 @@ export default function Demo() {
                     </Button>
                   </Flex>
                 )}
-              </DataGrid.BulkActions>
+              </DataTable.BulkActions>
               <Flex direction="row" align="center" gap="sm" wrap className="ms-auto">
-                <DataGrid.Search />
-                <DataGrid.ViewOptions />
-                <DataGrid.DensityToggle />
+                <DataTable.Search />
+                <DataTable.ViewOptions />
+                <DataTable.DensityToggle />
               </Flex>
-            </DataGrid.Toolbar>
+            </DataTable.Toolbar>
 
-            <DataGrid.Content />
-            <DataGrid.Pagination pageSizeOptions={[5, 10, 20]} />
-          </DataGrid>
-
-          {lastClicked ? (
-            <Text as="p" tone="muted" className="mt-3">
-              行クリック: {lastClicked}
-            </Text>
-          ) : null}
+            <DataTable.Content />
+            <DataTable.Pagination pageSizeOptions={[5, 10, 20]} />
+          </DataTable>
         </CardContent>
       </Card>
+
+      {lastClicked ? (
+        <Text as="p" tone="muted" className="mt-3">
+          行クリック: {lastClicked}
+        </Text>
+      ) : null}
     </PageContainer>
   );
 }

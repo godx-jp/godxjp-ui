@@ -8,10 +8,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **BREAKING — removed `DataGrid` and the `@godxjp/ui/data-grid` subpath.** Its full TanStack
+  feature set has been merged into the one `DataTable` (see Changed). Migrate
+  `import { DataGrid } from "@godxjp/ui/data-grid"` → `import { DataTable } from "@godxjp/ui/data-display"`
+  and rewrite the compound parts (`DataGrid.Toolbar/.Search/.ViewOptions/.DensityToggle/.BulkActions/.Content/.Pagination`)
+  to `DataTable.*`. Columns move from TanStack `ColumnDef` (`accessorKey`/`cell`/`meta.label`) to the
+  lean `ColumnDef` (`key`/`header`/`render`/`sortable`/`enableHiding`).
+- **BREAKING — removed `DataTable` (+ `ColumnDef`/`Density`) from the `@godxjp/ui/admin` barrel.**
+  `DataTable` is now TanStack-powered, so re-exporting it from the runtime-neutral root/admin barrel
+  would leak `@tanstack/react-table` into the core (check-core-isolation). Import it from
+  `@godxjp/ui/data-display` instead.
 - **BREAKING — removed `Logo`.** It overlapped `Avatar` (both render a glyph in a box); use `Avatar` for entity/brand marks.
 
 ### Changed
 
+- **BREAKING — `DataTable` is now the one TanStack-powered table** (the former `DataGrid` merged in).
+  It keeps the lean `data` + `columns` (lean `ColumnDef`) API for the common case — the existing
+  `<DataTable data columns … />` usages are unchanged — and adds the full grid chrome as compound
+  parts: `DataTable.Search` (global filter), `DataTable.ViewOptions` (column show/hide), and a
+  numbered page-size form of `DataTable.Pagination` (`pageSizeOptions`, distinct from the existing
+  cursor `cursor`/`hasMore`/`onChange` form), alongside the existing
+  `Toolbar/SelectAll/BulkActions/DensityToggle/Content`. Sorting/filtering/visibility/pagination/
+  selection are now driven by `@tanstack/react-table` internally — client-side by default, or
+  server-side via the `sort`/`globalFilter`/`pagination`/`columnVisibility` state + `manual*` flags.
+  `DataTable.BulkActions` now also accepts a `(count) => node` render-prop (the former `DataGrid`
+  form) in addition to ReactNode children. Two minor behaviour changes: a `sortable` column with NO
+  controlled `sort`/`onSortChange` now sorts CLIENT-SIDE (was a no-op); the default `density` step is
+  unchanged (compact) for the lean path. `@tanstack/react-table` moved from an optional peer to a
+  direct dependency.
 - **BREAKING — `Topbar` is now a PURE SLOT bar; the baked chrome is gone.** The library was
   dictating header CONTENT (a product-switcher chip with an always-on dropdown caret, a search box,
   a notification bell, a sidebar toggle, a tweaks button) — which is the consumer's job, and the
@@ -28,6 +52,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`DataTable.Search` / `DataTable.ViewOptions` and numbered `DataTable.Pagination`** — the merged
+  former-`DataGrid` chrome, now on the one `DataTable`. New optional column field `enableHiding`
+  (default true) lists a column in the `ViewOptions` "set view" menu; set false to keep a key/actions
+  column always visible. New optional props `globalFilter`/`onGlobalFilterChange`,
+  `pagination`/`onPaginationChange`/`rowCount`, `columnVisibility`/`onColumnVisibilityChange`, and
+  `manualSorting`/`manualFiltering`/`manualPagination` for server-driven grids.
 - **`Logo` — product brand-mark primitive** (#116). Renders the lettermark (or a custom SVG via
   `glyph`) in a tokenized box: brand fill from `--primary`, corner from the `--logo-radius` knob,
   box from the `size` prop (xs/sm/md/lg). Replaces the hand-rolled

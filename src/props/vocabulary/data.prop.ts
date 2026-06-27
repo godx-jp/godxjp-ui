@@ -22,6 +22,12 @@ export type ColumnDefProp<T> = {
   align?: ColumnAlignProp;
   hiddenOnMobile?: boolean;
   /**
+   * List this column in DataTable.ViewOptions (the column show/hide "set view"
+   * menu). Defaults to true; set false to keep a column always visible (e.g. a
+   * primary key or a pinned actions column).
+   */
+  enableHiding?: boolean;
+  /**
    * Pin the column to the inline-end edge so it stays visible while the rest of
    * the table scrolls horizontally — the standard home for a row-actions column.
    * The pinned cell keeps an opaque, hover/selection-aware background and casts a

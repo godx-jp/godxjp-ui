@@ -47,8 +47,10 @@ export {
   DialogDescription,
   AlertDialog,
 } from "../feedback/dialog";
-export { DataTable } from "../data-display/data-table";
-export type { ColumnDef, Density } from "../data-display/data-table";
+// DataTable is now TanStack-powered, so it lives ONLY on the @godxjp/ui/data-display
+// subpath — re-exporting it here would pull @tanstack/react-table into the
+// runtime-neutral root barrel (check-core-isolation). Import from
+// "@godxjp/ui/data-display" instead.
 export { Toaster } from "../feedback/sonner";
 export { toast } from "../feedback/use-toast";
 export { useDebouncedValue, useTimeoutFlag } from "../../lib/hooks";
