@@ -82,6 +82,8 @@ export default defineConfig({
   root: previewRoot,
   // "/" for local dev; the Pages CI sets PREVIEW_BASE=/godxjp-ui/ for project-page asset paths.
   base: process.env.PREVIEW_BASE ?? "/",
+  // Surface the published package version to the preview UI (shown next to the brand mark).
+  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   plugins: [react(), tailwindcss(), standaloneRoutePlugin()],
   server: {
     port: 6008,

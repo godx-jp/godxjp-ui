@@ -1,3 +1,4 @@
+import "./preload-recovery";
 import "./preview-tailwind.css";
 import "./preview.css";
 
