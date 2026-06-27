@@ -6,6 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [15.0.1] - 2026-06-27
+
+### Fixed
+
+- **`.ui-stack-xs` was a row, not a column.** Unlike `.ui-stack-sm/md/lg`, the xs size only set
+  `display:flex` + `gap` and never `flex-direction:column`, so every `gap="xs"` stack (`Stack`,
+  `ToolbarGroup`) laid out horizontally. CJK `ToolbarGroup` labels (ステータス, 会計期間…) got
+  squeezed and wrapped vertically. Added the missing `flex-direction:column`. (`Flex` was
+  unaffected — it uses `.ui-flex-gap-*`, gap-only.)
+- **ResizablePanel docs/examples passed numeric sizes that render as PIXELS.** In
+  react-resizable-panels v4 a bare `number` is pixels and a `string` is the unit, so
+  `defaultSize={35}` produced a 35px sliver instead of 35%. Switched the example pages
+  (`docs/layout/resizable-panel`, `docs/showcase/table-master-detail`) to percentage strings
+  (`defaultSize="35%"`) and corrected the MCP catalog prop types/usage (`string | number`,
+  number = px) so consumers are told the v4 rule.
+- **Pagination page-size `Select` rendered full-width.** `SelectTrigger`'s baked `w-full`
+  (utilities layer) beat the `.ui-pagination-size-trigger` width (components layer); the trigger
+  now also carries `w-[var(--pagination-size-width)]` so tailwind-merge drops `w-full`.
+- **Dead CSS removed:** the orphaned `.ui-filter-bar/.ui-filter-group/.ui-filter-label/
+  .ui-filter-clear` aliases left over from the FilterBar→Toolbar rename (no references remained).
+
+## [15.0.0]
+
 ### Removed
 
 - **BREAKING — removed `DataGrid` and the `@godxjp/ui/data-grid` subpath.** Its full TanStack
@@ -115,22 +138,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **`.ui-stack-xs` was a row, not a column.** Unlike `.ui-stack-sm/md/lg`, the xs size only set
-  `display:flex` + `gap` and never `flex-direction:column`, so every `gap="xs"` stack (`Stack`,
-  `ToolbarGroup`) laid out horizontally. CJK `ToolbarGroup` labels (ステータス, 会計期間…) got
-  squeezed and wrapped vertically. Added the missing `flex-direction:column`. (`Flex` was
-  unaffected — it uses `.ui-flex-gap-*`, gap-only.)
-- **ResizablePanel docs/examples passed numeric sizes that render as PIXELS.** In
-  react-resizable-panels v4 a bare `number` is pixels and a `string` is the unit, so
-  `defaultSize={35}` produced a 35px sliver instead of 35%. Switched the example pages
-  (`docs/layout/resizable-panel`, `docs/showcase/table-master-detail`) to percentage strings
-  (`defaultSize="35%"`) and corrected the MCP catalog prop types/usage (`string | number`,
-  number = px) so consumers are told the v4 rule.
-- **Pagination page-size `Select` rendered full-width.** `SelectTrigger`'s baked `w-full`
-  (utilities layer) beat the `.ui-pagination-size-trigger` width (components layer); the trigger
-  now also carries `w-[var(--pagination-size-width)]` so tailwind-merge drops `w-full`.
-- **Dead CSS removed:** the orphaned `.ui-filter-bar/.ui-filter-group/.ui-filter-label/
-  .ui-filter-clear` aliases left over from the FilterBar→Toolbar rename (no references remained).
 - **`Text`/`Heading` `truncate` now ellipsises inside a flex row without the consumer adding
   `min-w-0`** (#114) — the truncate rule was missing `min-width: 0`, so a `<Text truncate>` flex
   child still pushed past its track. The documented flex-truncate idiom now works from the prop alone.
