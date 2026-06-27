@@ -574,6 +574,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Column gap between the label and its control in horizontal/inline layout."
   },
   {
+    "name": "--list-row-padding-y",
+    "value": "var(--space-3)",
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent; * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+  },
+  {
+    "name": "--list-row-padding-x",
+    "value": "var(--space-4)",
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent; * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+  },
+  {
+    "name": "--list-row-gap",
+    "value": "var(--space-3)",
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent; * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+  },
+  {
+    "name": "--list-row-border",
+    "value": "1px solid hsl(var(--border))",
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent; * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+  },
+  {
+    "name": "--logo-size",
+    "value": "2rem",
+    "description": "Logo (brand mark) component tokens. Box size and corner radius are knobs (#45) so a service can * match its own grid without forking the mark; brand fill follows --primary. The `size` prop picks * the step; a service retunes the steps globally here. (Not a --control-height tier — the mark is * decorative, not a density-aware interactive control.)"
+  },
+  {
+    "name": "--logo-size-xs",
+    "value": "1.5rem",
+    "description": "md"
+  },
+  {
+    "name": "--logo-size-sm",
+    "value": "1.75rem",
+    "description": "md"
+  },
+  {
+    "name": "--logo-size-lg",
+    "value": "2.5rem",
+    "description": "md"
+  },
+  {
+    "name": "--logo-radius",
+    "value": "var(--radius)",
+    "description": "md"
+  },
+  {
     "name": "--pagination-gap",
     "value": "var(--space-inline-sm)",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
