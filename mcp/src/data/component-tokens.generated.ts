@@ -31,77 +31,77 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-space-inset",
     "value": "var(--space-section-active)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "Horizontal inset of every slot (header / content / footer) + the resting top/bottom * shell padding. This is the column the title, body and footer all align to."
   },
   {
     "name": "--card-space-header-y",
     "value": "var(--space-stack-sm)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "Vertical padding of a BANDED header band (top = bottom). Drives --card-space-divided-y."
   },
   {
     "name": "--card-space-body-y",
     "value": "var(--space-section-active)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "Gap between the header and the body, and the body's own top padding — the breathing * room under a title before content begins."
   },
   {
     "name": "--card-space-footer-y",
     "value": "var(--space-stack-sm)",
-    "description": "Card component tokens: card chrome derives from semantic layout tokens."
+    "description": "Vertical padding of a SEPARATED footer band (top = bottom). Drives --card-space-divided-y."
   },
   {
     "name": "--card-space-divided-y",
     "value": "var(--card-space-header-y)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a divider * border (banded header, separated footer) reads as its own band, so it pads SYMMETRICALLY * top+bottom — distinct from a plain header that flows into the body (top inset, no bottom). * One themeable knob keeps the header- and footer-band rhythm in sync; a service theme tunes * the band density here instead of forking per-slot CSS."
   },
   {
     "name": "--card-space-gap",
     "value": "var(--space-stack-xs)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-title-font-size",
     "value": "var(--font-size-base)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-title-line-height",
     "value": "var(--line-height-tight)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-title-font-weight",
     "value": "var(--font-weight-semibold)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-description-font-size",
     "value": "var(--font-size-sm)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-description-line-height",
     "value": "var(--line-height-normal)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-background",
     "value": "var(--card)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-border",
     "value": "var(--border)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-header-background",
     "value": "var(--muted)",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-header-background-alpha",
     "value": "0.55",
-    "description": "DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a * divider border (banded header, separated footer) reads as its own band, so it gets * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in * sync; a service theme tunes the band density here instead of forking per-slot CSS."
+    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
   },
   {
     "name": "--card-header-border-bottom",

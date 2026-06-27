@@ -1,16 +1,23 @@
 /* Card component tokens: card chrome derives from semantic layout tokens. */
 
 :root {
+  /* Horizontal inset of every slot (header / content / footer) + the resting top/bottom
+   * shell padding. This is the column the title, body and footer all align to. */
   --card-space-inset: var(--space-section-active);
+  /* Vertical padding of a BANDED header band (top = bottom). Drives --card-space-divided-y. */
   --card-space-header-y: var(--space-stack-sm);
+  /* Gap between the header and the body, and the body's own top padding — the breathing
+   * room under a title before content begins. */
   --card-space-body-y: var(--space-section-active);
+  /* Vertical padding of a SEPARATED footer band (top = bottom). Drives --card-space-divided-y. */
   --card-space-footer-y: var(--space-stack-sm);
-  /* DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a
-   * divider border (banded header, separated footer) reads as its own band, so it gets
-   * SYMMETRIC top+bottom padding — distinct from a plain header that flows into the body
-   * (top inset, no bottom). One themeable knob keeps the header- and footer-band rhythm in
-   * sync; a service theme tunes the band density here instead of forking per-slot CSS. */
+  /* DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a divider
+   * border (banded header, separated footer) reads as its own band, so it pads SYMMETRICALLY
+   * top+bottom — distinct from a plain header that flows into the body (top inset, no bottom).
+   * One themeable knob keeps the header- and footer-band rhythm in sync; a service theme tunes
+   * the band density here instead of forking per-slot CSS. */
   --card-space-divided-y: var(--card-space-header-y);
+  /* Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header). */
   --card-space-gap: var(--space-stack-xs);
   --card-title-font-size: var(--font-size-base);
   --card-title-line-height: var(--line-height-tight);

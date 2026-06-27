@@ -6,7 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [16.2.1] - 2026-06-27
+## [16.2.2] - 2026-06-27
+
+### Added
+
+- **`<Table>` now sets `data-slot="table"`** on its root (its `<th>`/`<td>` already had
+  `table-head`/`table-cell` slots — the root was the lone slotless element). The card
+  header-above-flush-table rule now targets `[data-slot="table"]` instead of the raw `table`
+  element, matching the data-slot convention used everywhere else.
+- **Detailed Card spacing-token docs** — each `--card-space-*` token now carries an individual,
+  themeable description (surfaced via the MCP `get_tokens`), plus a "Border-aware vertical padding"
+  section in `docs/TOKENS.md` and token guidance in the Card MCP entry explaining the
+  divided-band (`--card-space-divided-y`) vs plain-flow padding model and `--card-accent-rail-width`.
 
 ### Fixed
 

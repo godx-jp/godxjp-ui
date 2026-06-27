@@ -285,7 +285,7 @@
   /* A non-banded header before a FLUSH full-bleed table supplies its OWN bottom gap: the table's
    * content padding is zeroed above, so without this the title/subtitle butt against the header
    * row. Match the header's top inset so the header block reads balanced top↕bottom. */
-  [data-slot="card"]:has([data-slot="card-content"][data-flush] table)
+  [data-slot="card"]:has([data-slot="card-content"][data-flush] [data-slot="table"])
     [data-slot="card-header"]:not([data-banded]) {
     padding-bottom: var(--card-space-body-y);
   }
