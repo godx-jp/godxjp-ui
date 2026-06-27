@@ -6,7 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [16.0.0] - 2026-06-27
+## [16.1.0] - 2026-06-27
+
+### Added
+
+- **`Input` gains a `trailingIcon` prop** that encapsulates the "one trailing icon at a time"
+  rule: pass a trailing affordance (e.g. a calendar/clock popover trigger) and, when `allowClear`
+  is on and the field holds a value, the clear ✕ REPLACES that icon — never both. This is now the
+  shared mechanism `DatePicker`/`TimePicker` use for their open trigger.
+
+### Changed
+
+- **Every clearable picker/combobox now shows ONE trailing icon, not two.** Previously a filled
+  `DatePicker`/`TimePicker`/`DateRangePicker`/`MonthPicker`/`MonthRangePicker`/`Cascader`/
+  `SearchSelect` rendered the clear ✕ AND the calendar/clock/chevron side by side. Now the clear ✕
+  replaces the trigger icon while a value is set; the field itself (click / ArrowDown) still opens
+  the panel, and the trigger icon returns when the field is empty. `DatePicker`/`TimePicker` were
+  refactored onto the new `Input.trailingIcon`; the others apply the same rule inline.
 
 ### Removed
 

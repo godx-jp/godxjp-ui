@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Clock, X } from "lucide-react";
+import { Clock } from "lucide-react";
 
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { isValidHhmm, normalizeHhmm } from "../../lib/datetime";
 import { cn } from "../../lib/utils";
-import { Button } from "../general/button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Input } from "./input";
 import type { TimePickerProp } from "../../props/components/data-entry.prop";
@@ -279,8 +278,6 @@ export function TimePicker({
     onValueChange?.(next);
   };
 
-  const showClear = allowClear && Boolean(value) && !disabled;
-
   const clear = () => {
     setValue("");
     setText("");
@@ -290,6 +287,8 @@ export function TimePicker({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverAnchor asChild>
         <div className={cn("relative", className)}>
+          {/* ONE trailing icon at a time — Input swaps the clear (×) in for this clock trigger
+              while a value is set; the field itself (onClick / ArrowDown) still opens the panel. */}
           <Input
             id={id}
             name={name}
@@ -301,10 +300,22 @@ export function TimePicker({
             role="combobox"
             aria-expanded={open}
             aria-haspopup="dialog"
-            className={cn("tabular-nums", "pe-10")}
-            // Combobox semantics made real: clicking the field (or ArrowDown) opens the time panel —
-            // the input declares aria-haspopup="dialog" so it must control the popup, not only the
-            // icon. Focus stays on the input (PopoverContent.onOpenAutoFocus prevented) so it's typeable.
+            className="tabular-nums"
+            allowClear={allowClear}
+            onClear={clear}
+            trailingIcon={
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  disabled={disabled}
+                  tabIndex={-1}
+                  aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
+                  className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100"
+                >
+                  <Clock className="size-4" aria-hidden="true" />
+                </button>
+              </PopoverTrigger>
+            }
             onClick={() => {
               if (!disabled) setOpen(true);
             }}
@@ -326,37 +337,6 @@ export function TimePicker({
               setText(normalized ?? (isValidHhmm(value) ? value : ""));
             }}
           />
-          {/* ONE trailing icon, never two: a value shows the clear (×) that replaces the
-              clock; empty shows the clock that opens the panel. The field itself (onClick /
-              ArrowDown) still opens the panel when the clear icon is showing. */}
-          {showClear ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              disabled={disabled}
-              tabIndex={-1}
-              aria-label={t("common.clear") ?? "Clear"}
-              className="text-muted-foreground absolute inset-y-0 end-0 h-full px-2 hover:bg-transparent"
-              onClick={clear}
-            >
-              <X className="size-4 shrink-0" aria-hidden="true" />
-            </Button>
-          ) : (
-            <PopoverTrigger asChild>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                disabled={disabled}
-                tabIndex={-1}
-                aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
-                className="text-muted-foreground absolute inset-y-0 end-0 h-full px-2 hover:bg-transparent"
-              >
-                <Clock className="size-4 shrink-0" aria-hidden="true" />
-              </Button>
-            </PopoverTrigger>
-          )}
         </div>
       </PopoverAnchor>
       <PopoverContent

@@ -1,10 +1,9 @@
 import * as React from "react";
-import { CalendarIcon, X } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime/parse";
 import { useControlledLatch } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
-import { Button } from "../general/button";
 import { Input } from "./input";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
@@ -60,7 +59,6 @@ export function DatePicker({
   }, [value]);
 
   const resolvedPlaceholder = placeholder ?? t("dataEntry.datePicker.placeholder") ?? ISO_HINT;
-  const showClear = allowClear && Boolean(value) && !disabled;
 
   const clear = () => {
     emit(undefined);
@@ -90,6 +88,8 @@ export function DatePicker({
        * convention (Google/Ant/MUI), not flush to the trailing icon. */}
       <PopoverAnchor asChild>
         <div className={cn("relative", className)}>
+          {/* The field owns the value; the calendar is a secondary popup. ONE trailing icon at a
+              time — Input swaps the clear (×) in for this calendar trigger while a value is set. */}
           <Input
             id={id}
             name={name}
@@ -98,15 +98,27 @@ export function DatePicker({
             placeholder={resolvedPlaceholder}
             inputMode="numeric"
             autoComplete="off"
-            // Combobox semantics: the input owns the value, the calendar is a secondary popup.
             role="combobox"
             aria-expanded={open}
             aria-haspopup="dialog"
-            className={cn("pe-10", showClear && "pe-16")}
+            allowClear={allowClear}
+            onClear={clear}
+            trailingIcon={
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  disabled={disabled}
+                  tabIndex={-1}
+                  aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
+                  className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100"
+                >
+                  <CalendarIcon className="size-4" aria-hidden="true" />
+                </button>
+              </PopoverTrigger>
+            }
             // Combobox semantics made real: clicking the field (or ArrowDown) opens the calendar —
-            // the input declares aria-haspopup="dialog", so it must actually control the popup, not
-            // only the icon button. Focus stays on the input (PopoverContent.onOpenAutoFocus is
-            // prevented) so the field is still typeable while the calendar is visible.
+            // the input declares aria-haspopup="dialog", so it controls the popup, not only the
+            // icon. Focus stays on the input (PopoverContent.onOpenAutoFocus prevented) so it's typeable.
             onClick={() => {
               if (!disabled) setOpen(true);
             }}
@@ -128,33 +140,6 @@ export function DatePicker({
               setText(parsed ? toIsoDate(parsed) : toIsoDate(value));
             }}
           />
-          {showClear ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              disabled={disabled}
-              tabIndex={-1}
-              aria-label={t("common.clear") ?? "Clear"}
-              className="text-muted-foreground absolute inset-y-0 end-8 h-full px-2 hover:bg-transparent"
-              onClick={clear}
-            >
-              <X className="size-4 shrink-0" aria-hidden="true" />
-            </Button>
-          ) : null}
-          <PopoverTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              disabled={disabled}
-              tabIndex={-1}
-              aria-label={t("dataEntry.datePicker.openCalendar") ?? "Open calendar"}
-              className="text-muted-foreground absolute inset-y-0 end-0 h-full px-2 hover:bg-transparent"
-            >
-              <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
-            </Button>
-          </PopoverTrigger>
           <PopoverContent
             className="w-auto p-0"
             align="start"

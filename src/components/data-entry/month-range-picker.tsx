@@ -192,6 +192,8 @@ export function MonthRangePicker({
             }}
             onBlur={() => setToText(toYmText(value?.to))}
           />
+          {/* ONE trailing icon: the clear (×) replaces the calendar while a range is set;
+              the field itself still opens the grid (onClick). */}
           {showClear ? (
             <button
               type="button"
@@ -205,18 +207,19 @@ export function MonthRangePicker({
             >
               <X className="size-4 shrink-0" aria-hidden="true" />
             </button>
-          ) : null}
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              disabled={disabled}
-              tabIndex={-1}
-              aria-label={t("dataEntry.monthPicker.openGrid") ?? "Open month grid"}
-              className="text-muted-foreground hover:text-foreground shrink-0"
-            >
-              <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
-            </button>
-          </PopoverTrigger>
+          ) : (
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                disabled={disabled}
+                tabIndex={-1}
+                aria-label={t("dataEntry.monthPicker.openGrid") ?? "Open month grid"}
+                className="text-muted-foreground hover:text-foreground shrink-0"
+              >
+                <CalendarIcon className="size-4 shrink-0" aria-hidden="true" />
+              </button>
+            </PopoverTrigger>
+          )}
           <PopoverContent
             className="w-auto p-3"
             align="start"

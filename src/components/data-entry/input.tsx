@@ -8,6 +8,12 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   allowClear?: boolean;
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
+  /**
+   * A trailing affordance pinned inside the field — e.g. a calendar / clock popover
+   * trigger button. ONE trailing icon shows at a time: when `allowClear` and the field
+   * holds a value the clear ✕ REPLACES this icon; otherwise this icon shows. Never both.
+   */
+  trailingIcon?: React.ReactNode;
 };
 
 const inputBaseClass = [
@@ -22,7 +28,17 @@ const inputBaseClass = [
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    { className, type, allowClear = false, onClear, value, defaultValue, onChange, ...props },
+    {
+      className,
+      type,
+      allowClear = false,
+      onClear,
+      trailingIcon,
+      value,
+      defaultValue,
+      onChange,
+      ...props
+    },
     ref,
   ) => {
     const { t } = useTranslation();
@@ -68,7 +84,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onClear?.();
     };
 
-    if (!allowClear) {
+    // Fast path: no trailing affordance at all → a bare <input>, unchanged.
+    if (!allowClear && trailingIcon == null) {
       return (
         <input
           type={type}
@@ -83,7 +100,22 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       );
     }
 
-    const showClear = hasText && !props.disabled && !props.readOnly;
+    const showClear = allowClear && hasText && !props.disabled && !props.readOnly;
+    // ONE trailing icon, never two: the clear ✕ REPLACES the configured trailingIcon while
+    // the field holds a clearable value; otherwise the trailingIcon shows.
+    const trailing = showClear ? (
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label={t("common.clear") ?? "Clear"}
+        onClick={clear}
+        className="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100"
+      >
+        <X className="size-4" aria-hidden="true" />
+      </button>
+    ) : (
+      trailingIcon
+    );
 
     return (
       <span data-slot="input-affix-wrapper" className="relative inline-flex w-full items-center">
@@ -94,19 +126,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           value={value}
           defaultValue={defaultValue}
           onChange={handleChange}
-          className={cn(inputBaseClass, showClear && "pe-9", className)}
+          className={cn(inputBaseClass, (showClear || trailingIcon != null) && "pe-9", className)}
           {...props}
         />
-        {showClear ? (
-          <button
-            type="button"
-            tabIndex={-1}
-            aria-label={t("common.clear") ?? "Clear"}
-            onClick={clear}
-            className="text-muted-foreground hover:text-foreground absolute end-2 inline-flex size-5 items-center justify-center rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:opacity-100"
-          >
-            <X className="size-4" aria-hidden="true" />
-          </button>
+        {trailing != null ? (
+          <span className="absolute inset-y-0 end-2 inline-flex items-center">{trailing}</span>
         ) : null}
       </span>
     );

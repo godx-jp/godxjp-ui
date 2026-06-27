@@ -233,8 +233,8 @@ export function SearchSelect({
             className={cn(
               "w-full justify-start font-normal",
               controlOpenRingClass,
-              // Reserve trailing room for the clear + chevron overlay rendered below.
-              showClear ? "pe-14" : "pe-9",
+              // Reserve trailing room for the single clear-or-chevron overlay rendered below.
+              "pe-9",
             )}
           >
             <span
@@ -359,10 +359,11 @@ export function SearchSelect({
           </Command>
         </PopoverContent>
       </Popover>
-      {/* Clear + chevron render OUTSIDE the trigger <button> — a <button> may not nest inside a
+      {/* Clear / chevron render OUTSIDE the trigger <button> — a <button> may not nest inside a
           <button> (invalid HTML → hydration error). The overlay ignores pointer events so a click
-          falls through to the trigger to open it; only the clear control re-enables them. */}
-      <div className="pointer-events-none absolute inset-y-0 end-3 flex items-center gap-1">
+          falls through to the trigger to open it; only the clear control re-enables them.
+          ONE trailing icon: the clear (×) replaces the chevron while a value is selected. */}
+      <div className="pointer-events-none absolute inset-y-0 end-3 flex items-center">
         {showClear ? (
           <button
             type="button"
@@ -373,8 +374,9 @@ export function SearchSelect({
           >
             <X className="size-4" aria-hidden="true" />
           </button>
-        ) : null}
-        <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+        ) : (
+          <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />
+        )}
       </div>
     </div>
   );

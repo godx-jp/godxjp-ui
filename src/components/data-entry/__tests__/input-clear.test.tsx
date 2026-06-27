@@ -54,3 +54,31 @@ describe("Input — allowClear", () => {
     expect(screen.queryByRole("button", { name: "Xóa" })).toBeNull();
   });
 });
+
+describe("Input — trailingIcon (one trailing icon at a time)", () => {
+  const Trigger = () => (
+    <button type="button" aria-label="open">
+      icon
+    </button>
+  );
+
+  it("shows the trailingIcon when there is no clearable value, and the clear ✕ REPLACES it once a value is present", () => {
+    const { rerender } = renderWithUi(
+      <Input aria-label="a" allowClear trailingIcon={<Trigger />} value="" />,
+    );
+    // Empty + clearable → only the trailingIcon, no clear.
+    expect(screen.getByRole("button", { name: "open" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Xóa" })).toBeNull();
+
+    // Value present → the clear ✕ replaces the trailingIcon (never both).
+    rerender(<Input aria-label="a" allowClear trailingIcon={<Trigger />} value="x" />);
+    expect(screen.getByRole("button", { name: "Xóa" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "open" })).toBeNull();
+  });
+
+  it("keeps the trailingIcon (not a clear) when allowClear is off even with a value", () => {
+    renderWithUi(<Input aria-label="a" trailingIcon={<Trigger />} value="x" />);
+    expect(screen.getByRole("button", { name: "open" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Xóa" })).toBeNull();
+  });
+});
