@@ -12,7 +12,7 @@ import { STORY_MAP } from "./preview-catalog";
 import { queryClient, StoryErrorBoundary, useLazyStory } from "./preview-runtime";
 
 function parseStoryId(): string {
-  const match = window.location.pathname.match(/^\/isolate\/(.+?)\/?$/);
+  const match = window.location.pathname.match(/\/isolate\/(.+?)\/?$/);
   if (!match?.[1]) return "";
   try {
     return decodeURIComponent(match[1]);

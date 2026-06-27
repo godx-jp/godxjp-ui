@@ -65,7 +65,9 @@ export const SHOWCASES: ShowcaseEntry[] = [
 export const SHOWCASE_MAP = new Map<string, ShowcaseEntry>(SHOWCASES.map((s) => [s.id, s]));
 
 export function parseShowcaseId(pathname: string): string {
-  const match = pathname.match(/^\/showcase\/(.+?)\/?$/);
+  // Not anchored to the path root: on a GitHub Pages project page the URL is
+  // `/<repo>/showcase/<id>`, so match the `/showcase/<id>` segment under any base.
+  const match = pathname.match(/\/showcase\/(.+?)\/?$/);
   if (!match?.[1]) return "";
   try {
     return decodeURIComponent(match[1]);
