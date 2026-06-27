@@ -213,10 +213,12 @@ export default function Demo() {
             <CardHeader>
               <CardTitle>現在の状態</CardTitle>
               <CardDescription>
-                左のレールに渡している sections prop の現在のアクティブ項目:{" "}
-                <Badge variant="secondary">{activeId}</Badge>
+                左のレールに渡している sections prop の現在のアクティブ項目
               </CardDescription>
             </CardHeader>
+            <CardContent>
+              <Badge variant="secondary">{activeId}</Badge>
+            </CardContent>
           </Card>
 
           {/* brand prop · replaces the product chip with a fully custom header (SidebarHeader). */}

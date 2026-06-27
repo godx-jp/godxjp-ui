@@ -1,11 +1,5 @@
 import * as React from "react";
-import { MemoryRouter } from "react-router-dom";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   Badge,
@@ -152,7 +146,10 @@ function CacheObserver() {
 
   if (cached.length === 0) {
     return (
-      <EmptyState title="まだ先読みされていません" description="上のリンクにホバーまたはフォーカスしてください。" />
+      <EmptyState
+        title="まだ先読みされていません"
+        description="上のリンクにホバーまたはフォーカスしてください。"
+      />
     );
   }
 
@@ -200,62 +197,62 @@ function DestinationDetail() {
 export default function Demo() {
   return (
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
-        <PageContainer
-          title="PrefetchLink"
-          subtitle="Router Link that prefetches the destination query on hover/focus"
-        >
-          <Flex direction="col" gap="lg">
-            <Card>
-              <CardHeader>
-                <CardTitle>請求書 一覧</CardTitle>
-                <CardDescription>
-                  請求書番号にホバーまたはフォーカスすると、その明細クエリが先読みされ次の画面が即時表示されます。
-                </CardDescription>
-              </CardHeader>
-              <CardContent flush>
-                <InvoiceList />
-              </CardContent>
-            </Card>
+      {/* The preview/isolate harness already provides a Router; PrefetchLink reads it from context. */}
+      <PageContainer
+        title="PrefetchLink"
+        subtitle="Router Link that prefetches the destination query on hover/focus"
+      >
+        <Flex direction="col" gap="lg">
+          <Card>
+            <CardHeader>
+              <CardTitle>請求書 一覧</CardTitle>
+              <CardDescription>
+                請求書番号にホバーまたはフォーカスすると、その明細クエリが先読みされ次の画面が即時表示されます。
+              </CardDescription>
+            </CardHeader>
+            <CardContent flush>
+              <InvoiceList />
+            </CardContent>
+          </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>prefetchOn · トリガーの種類</CardTitle>
-                <CardDescription>
-                  既定は both。hover / focus / none で先読みのきっかけを切り替えます。
-                </CardDescription>
-              </CardHeader>
-              <CardContent flush>
-                <TriggerMatrix />
-              </CardContent>
-            </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>prefetchOn · トリガーの種類</CardTitle>
+              <CardDescription>
+                既定は both。hover / focus / none で先読みのきっかけを切り替えます。
+              </CardDescription>
+            </CardHeader>
+            <CardContent flush>
+              <TriggerMatrix />
+            </CardContent>
+          </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>先読みキャッシュ（観測）</CardTitle>
-                <CardDescription>
-                  QueryClient のキャッシュから ["invoice", id] を直接読み出して表示します。
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <CacheObserver />
-              </CardContent>
-            </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>先読みキャッシュ（観測）</CardTitle>
+              <CardDescription>
+                QueryClient のキャッシュから ["invoice", id] を直接読み出して表示します。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <CacheObserver />
+            </CardContent>
+          </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>遷移先の明細（契約）</CardTitle>
-                <CardDescription>
-                  リンクと同じ queryKey/queryFn を使う useQuery。先読み済みならキャッシュから即時解決します。
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <DestinationDetail />
-              </CardContent>
-            </Card>
-          </Flex>
-        </PageContainer>
-      </MemoryRouter>
+          <Card>
+            <CardHeader>
+              <CardTitle>遷移先の明細（契約）</CardTitle>
+              <CardDescription>
+                リンクと同じ queryKey/queryFn を使う
+                useQuery。先読み済みならキャッシュから即時解決します。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <DestinationDetail />
+            </CardContent>
+          </Card>
+        </Flex>
+      </PageContainer>
     </QueryClientProvider>
   );
 }

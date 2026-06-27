@@ -14,7 +14,8 @@ interface SearchInputProps {
   debounce?: number;
   /** Fires on EVERY keystroke (immediate) — required to keep a controlled `value` responsive. */
   onValueChange?: (q: string) => void;
-  onSearch: (q: string) => void;
+  /** Fires with the DEBOUNCED term. Optional — omit it when you drive filtering off `onValueChange`. */
+  onSearch?: (q: string) => void;
   label?: React.ReactNode;
   ariaLabel?: string;
   className?: string;
@@ -52,7 +53,7 @@ export function SearchInput({
     onSearchRef.current = onSearch;
   });
   React.useEffect(() => {
-    onSearchRef.current(debounced);
+    onSearchRef.current?.(debounced);
   }, [debounced]);
 
   const setValue = (v: string) => {
