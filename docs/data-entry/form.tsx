@@ -22,7 +22,7 @@ import {
   Switch,
   TagInput,
   Textarea,
-  TimeInput,
+  TimePicker,
   ToggleGroup,
   ToggleGroupItem,
   TreeSelect,
@@ -301,7 +301,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>日時系 · DatePicker / DateRangePicker / TimeInput</CardTitle>
+            <CardTitle>日時系 · DatePicker / DateRangePicker / TimePicker</CardTitle>
             <CardDescription>
               単一日付・期間・時刻。ISO-8601 / IANA タイムゾーンに準拠し locale
               連動でフォーマットする。
@@ -318,12 +318,12 @@ export default function Demo() {
                 />
               </FormField>
               <FormField id="f-time" label="締め時刻">
-                <TimeInput
+                <TimePicker
                   id="f-time"
                   name="close_time"
                   value={closeTime}
                   onValueChange={setCloseTime}
-                  step={15}
+                  minuteStep={15}
                 />
               </FormField>
               <FormField id="f-period" label="会計期間" colSpan={2}>

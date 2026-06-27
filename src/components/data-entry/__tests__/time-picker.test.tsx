@@ -123,4 +123,25 @@ describe("TimePicker — disabled + 12h + a11y", () => {
   it("has no a11y violations", async () => {
     await expectNoA11yViolations(<TimePicker defaultValue="09:00" />);
   });
+
+  it("shows exactly ONE trailing icon: the clear (×) replaces the clock when a value is set", async () => {
+    const user = userEvent.setup();
+    function Controlled() {
+      const [v, setV] = React.useState("");
+      return <TimePicker value={v} onValueChange={setV} />;
+    }
+    // English locale → deterministic "Open time picker" / "Clear" labels.
+    render12h(<Controlled />);
+    // Empty: only the open-picker (clock) trigger, no clear — one trailing icon.
+    expect(screen.getByRole("button", { name: /open time picker/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^clear$/i })).toBeNull();
+    // Type a value: the clock is REPLACED by the clear — still exactly one icon button.
+    await user.type(combobox(), "13:30");
+    expect(screen.getByRole("button", { name: /^clear$/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /open time picker/i })).toBeNull();
+    // Clearing restores the clock (and empties the field).
+    await user.click(screen.getByRole("button", { name: /^clear$/i }));
+    expect(combobox()).toHaveValue("");
+    expect(screen.getByRole("button", { name: /open time picker/i })).toBeInTheDocument();
+  });
 });

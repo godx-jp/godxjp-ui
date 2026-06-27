@@ -5,7 +5,7 @@ import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { isValidHhmm, normalizeHhmm } from "../../lib/datetime";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
-import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Input } from "./input";
 import type { TimePickerProp } from "../../props/components/data-entry.prop";
 
@@ -287,90 +287,96 @@ export function TimePicker({
   };
 
   return (
-    <div className={cn("relative", className)}>
-      <Input
-        id={id}
-        name={name}
-        value={text}
-        disabled={disabled}
-        placeholder={resolvedPlaceholder}
-        inputMode="numeric"
-        autoComplete="off"
-        role="combobox"
-        aria-expanded={open}
-        aria-haspopup="dialog"
-        className={cn("tabular-nums", showClear ? "pe-16" : "pe-10")}
-        // Combobox semantics made real: clicking the field (or ArrowDown) opens the time panel —
-        // the input declares aria-haspopup="dialog" so it must control the popup, not only the
-        // icon. Focus stays on the input (PopoverContent.onOpenAutoFocus prevented) so it's typeable.
-        onClick={() => {
-          if (!disabled) setOpen(true);
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowDown") {
-            event.preventDefault();
-            setOpen(true);
-          } else if (event.key === "Escape" && open) {
-            setOpen(false);
-          }
-        }}
-        onChange={(event) => {
-          setText(event.target.value);
-          const normalized = normalizeHhmm(event.target.value);
-          if (normalized) setValue(normalized);
-        }}
-        onBlur={(event) => {
-          const normalized = normalizeHhmm(event.target.value);
-          setText(normalized ?? (isValidHhmm(value) ? value : ""));
-        }}
-      />
-      {showClear ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          disabled={disabled}
-          tabIndex={-1}
-          aria-label={t("common.clear") ?? "Clear"}
-          className="text-muted-foreground absolute inset-y-0 end-8 h-full px-2 hover:bg-transparent"
-          onClick={clear}
-        >
-          <X className="size-4 shrink-0" aria-hidden="true" />
-        </Button>
-      ) : null}
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverAnchor asChild>
+        <div className={cn("relative", className)}>
+          <Input
+            id={id}
+            name={name}
+            value={text}
             disabled={disabled}
-            tabIndex={-1}
-            aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
-            className="text-muted-foreground absolute inset-y-0 end-0 h-full px-2 hover:bg-transparent"
-          >
-            <Clock className="size-4 shrink-0" aria-hidden="true" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-auto p-0"
-          align="end"
-          onOpenAutoFocus={(event) => event.preventDefault()}
-        >
-          <TimePickerPanel
-            value={value || "09:00"}
-            minuteStep={minuteStep}
-            use12h={use12h}
-            onChange={(next) => {
-              setValue(next);
-              setText(next);
+            placeholder={resolvedPlaceholder}
+            inputMode="numeric"
+            autoComplete="off"
+            role="combobox"
+            aria-expanded={open}
+            aria-haspopup="dialog"
+            className={cn("tabular-nums", "pe-10")}
+            // Combobox semantics made real: clicking the field (or ArrowDown) opens the time panel —
+            // the input declares aria-haspopup="dialog" so it must control the popup, not only the
+            // icon. Focus stays on the input (PopoverContent.onOpenAutoFocus prevented) so it's typeable.
+            onClick={() => {
+              if (!disabled) setOpen(true);
             }}
-            onDone={() => {
-              setOpen(false);
+            onKeyDown={(event) => {
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                setOpen(true);
+              } else if (event.key === "Escape" && open) {
+                setOpen(false);
+              }
+            }}
+            onChange={(event) => {
+              setText(event.target.value);
+              const normalized = normalizeHhmm(event.target.value);
+              if (normalized) setValue(normalized);
+            }}
+            onBlur={(event) => {
+              const normalized = normalizeHhmm(event.target.value);
+              setText(normalized ?? (isValidHhmm(value) ? value : ""));
             }}
           />
-        </PopoverContent>
-      </Popover>
-    </div>
+          {/* ONE trailing icon, never two: a value shows the clear (×) that replaces the
+              clock; empty shows the clock that opens the panel. The field itself (onClick /
+              ArrowDown) still opens the panel when the clear icon is showing. */}
+          {showClear ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={disabled}
+              tabIndex={-1}
+              aria-label={t("common.clear") ?? "Clear"}
+              className="text-muted-foreground absolute inset-y-0 end-0 h-full px-2 hover:bg-transparent"
+              onClick={clear}
+            >
+              <X className="size-4 shrink-0" aria-hidden="true" />
+            </Button>
+          ) : (
+            <PopoverTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                disabled={disabled}
+                tabIndex={-1}
+                aria-label={t("dataEntry.timePicker.openPicker") ?? "Open time picker"}
+                className="text-muted-foreground absolute inset-y-0 end-0 h-full px-2 hover:bg-transparent"
+              >
+                <Clock className="size-4 shrink-0" aria-hidden="true" />
+              </Button>
+            </PopoverTrigger>
+          )}
+        </div>
+      </PopoverAnchor>
+      <PopoverContent
+        className="w-auto p-0"
+        align="end"
+        onOpenAutoFocus={(event) => event.preventDefault()}
+      >
+        <TimePickerPanel
+          value={value || "09:00"}
+          minuteStep={minuteStep}
+          use12h={use12h}
+          onChange={(next) => {
+            setValue(next);
+            setText(next);
+          }}
+          onDone={() => {
+            setOpen(false);
+          }}
+        />
+      </PopoverContent>
+    </Popover>
   );
 }

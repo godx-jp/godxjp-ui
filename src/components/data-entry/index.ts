@@ -62,8 +62,6 @@ export { Cascader } from "./cascader";
 export type { CascaderProps, TreeOption, TreeFieldNames } from "./cascader";
 export { TreeSelect, SHOW_CHILD, SHOW_PARENT, SHOW_ALL } from "./tree-select";
 export type { TreeSelectProps } from "./tree-select";
-export { TimeInput } from "./time-input";
-export type { TimeInputProps } from "./time-input";
 export { Transfer } from "./transfer";
 export type { TransferProps, TransferItemProp } from "./transfer";
 export {

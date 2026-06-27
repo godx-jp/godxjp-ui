@@ -193,6 +193,14 @@
     border-radius: var(--skeleton-radius);
   }
 
+  /* Drop the self-frame inside a flush CardContent so the Card supplies the single
+   * border — mirrors `.ui-data-table-surface` so the skeleton placeholder and the
+   * real DataTable it swaps for sit identically (no nested double border). */
+  [data-slot="card-content"][data-flush] .ui-skeleton-table {
+    border-width: 0;
+    border-radius: 0;
+  }
+
   .ui-skeleton-table-head {
     display: flex;
     align-items: center;
