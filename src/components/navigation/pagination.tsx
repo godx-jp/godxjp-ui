@@ -188,7 +188,7 @@ export function Pagination({
           disabled={disabled}
         >
           <SelectTrigger
-            className="ui-pagination-size-trigger"
+            className="ui-pagination-size-trigger w-[var(--pagination-size-width)]"
             aria-label={t("navigation.pagination.pageSize")}
           >
             <SelectValue />
