@@ -6,9 +6,9 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
- * AppProvider — root locale/timezone/date-time context.
+ * AppProvider · root locale/timezone/date-time context.
  * Mount ONCE at app root; every AppSettingPicker + formatDate reads from it automatically.
- * AppSettingPicker rendered here has NO value/onValueChange — it reads/writes AppProvider
+ * AppSettingPicker rendered here has NO value/onValueChange · it reads/writes AppProvider
  * context for the setting named by `kind`. Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
@@ -45,7 +45,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>kind=locale — 言語選択</CardTitle>
+              <CardTitle>kind=locale · 言語選択</CardTitle>
               <CardDescription>
                 AppProvider の locale を自動で読み書きする。選択すると他の AppSettingPicker
                 のラベル言語も切り替わる。
@@ -61,7 +61,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>kind=timezone — タイムゾーン選択</CardTitle>
+              <CardTitle>kind=timezone · タイムゾーン選択</CardTitle>
               <CardDescription>
                 AppProvider の timezoneOptions を省略するとフル IANA リスト（約 600
                 件）を表示。timezoneOptions を渡すと絞り込める。
@@ -77,7 +77,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>kind=dateFormat — 日付フォーマット選択</CardTitle>
+              <CardTitle>kind=dateFormat · 日付フォーマット選択</CardTitle>
               <CardDescription>
                 iso（yyyy-MM-dd）/ dmy（dd/MM/yyyy）/ mdy（MM/dd/yyyy）の 3 種から選択。dateFormat
                 コンテキストを読み書きし、以後の formatDate 呼び出しに即時反映される。
@@ -93,7 +93,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>kind=timeFormat — 時刻フォーマット選択</CardTitle>
+              <CardTitle>kind=timeFormat · 時刻フォーマット選択</CardTitle>
               <CardDescription>
                 24h / 12h を選択。timeFormat コンテキストを読み書きする。ja デフォルトは
                 24h。formatDate の time / datetime 出力に反映される。
@@ -109,7 +109,7 @@ export default function Demo() {
 
           <Card accent="primary">
             <CardHeader>
-              <CardTitle>設定パネル — 4 つの設定をまとめて配置</CardTitle>
+              <CardTitle>設定パネル · 4 つの設定をまとめて配置</CardTitle>
               <CardDescription>
                 ユーザー設定ページの典型パターン。AppProvider の中に kind 違いの AppSettingPicker
                 を並べると、それぞれがコンテキストを共有して連動する。

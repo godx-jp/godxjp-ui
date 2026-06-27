@@ -5,15 +5,15 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Copy, Info, Trash2 } from "lucide-react";
 
 /**
- * Tooltip — self-providing (no app-level TooltipProvider needed). Compose
+ * Tooltip · self-providing (no app-level TooltipProvider needed). Compose
  * Tooltip > TooltipTrigger (asChild on interactive elements) > TooltipContent.
- * Read-only hints only — use Popover for interactive floating content.
+ * Read-only hints only · use Popover for interactive floating content.
  */
 export default function Demo() {
   return (
     <PageContainer
       title="Tooltip"
-      subtitle="hover/focus read-only hint — icon labels, truncated values, keyboard shortcuts"
+      subtitle="hover/focus read-only hint · icon labels, truncated values, keyboard shortcuts"
     >
       <Flex direction="col" gap="lg">
         <Card>

@@ -241,7 +241,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="条件付き書式"
-      subtitle="しきい値による行・セルの自動強調 — 遅刻≥5回で行（茜）・早退>2.0hでセル（朱）・残業≥45hでセル（山吹）"
+      subtitle="しきい値による行・セルの自動強調 · 遅刻≥5回で行（茜）・早退>2.0hでセル（朱）・残業≥45hでセル（山吹）"
       density="compact"
     >
       <Flex direction="col" gap="lg">
@@ -249,7 +249,7 @@ export default function Demo() {
         <Card>
           <CardHeader className="gap-2">
             <Flex direction="row" wrap align="center" justify="between" gap="sm">
-              <CardTitle>勤怠サマリ — 製造部（当月締め）</CardTitle>
+              <CardTitle>勤怠サマリ · 製造部（当月締め）</CardTitle>
               <Text size="xs" tone="muted" tabular>
                 対象 {ROWS.length}名 · 2026-05
               </Text>
@@ -263,10 +263,10 @@ export default function Demo() {
                   <TableHead className="w-24">社員番号</TableHead>
                   <TableHead>氏名</TableHead>
                   <TableHead className="hidden md:table-cell">部署</TableHead>
-                  <TableHead className="text-right">出勤</TableHead>
-                  <TableHead className="text-right">遅刻</TableHead>
-                  <TableHead className="text-right">早退</TableHead>
-                  <TableHead className="text-right">残業</TableHead>
+                  <TableHead className="text-end">出勤</TableHead>
+                  <TableHead className="text-end">遅刻</TableHead>
+                  <TableHead className="text-end">早退</TableHead>
+                  <TableHead className="text-end">残業</TableHead>
                   <TableHead className="text-center">承認</TableHead>
                 </TableRow>
               </TableHeader>
@@ -281,7 +281,7 @@ export default function Demo() {
                       className={cn(lateRow && "bg-destructive/[0.07] hover:bg-destructive/10")}
                       // しきい値超過行はスクリーンリーダーにも明示。
                       aria-label={
-                        lateRow ? `${r.name} — 遅刻が基準値（${LATE_DANGER}回）以上` : undefined
+                        lateRow ? `${r.name} · 遅刻が基準値（${LATE_DANGER}回）以上` : undefined
                       }
                     >
                       <TableCell className="font-mono text-xs">{r.id}</TableCell>
@@ -298,9 +298,9 @@ export default function Demo() {
                       <TableCell className="text-muted-foreground hidden md:table-cell">
                         {r.dept}
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">{r.workdays}日</TableCell>
+                      <TableCell className="text-end tabular-nums">{r.workdays}日</TableCell>
                       {/* 遅刻セル: しきい値以上は茜文字で前景強調 */}
-                      <TableCell className="text-right">
+                      <TableCell className="text-end">
                         <Text
                           tabular
                           tone={lateRow ? "destructive" : "default"}
@@ -310,7 +310,7 @@ export default function Demo() {
                         </Text>
                       </TableCell>
                       {/* 早退セル: > 2.0h は attention(朱) で背景＋前景強調 */}
-                      <TableCell className="text-right">
+                      <TableCell className="text-end">
                         {isEarlyCell(r) ? (
                           <span className="bg-attention/10 text-attention inline-flex rounded-sm px-1.5 py-0.5">
                             <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
@@ -324,7 +324,7 @@ export default function Demo() {
                         )}
                       </TableCell>
                       {/* 残業セル: ≥ 45h は warning(山吹) で注意 */}
-                      <TableCell className="text-right">
+                      <TableCell className="text-end">
                         {isOvertimeCell(r) ? (
                           <span className="bg-warning/10 text-warning-foreground inline-flex rounded-sm px-1.5 py-0.5">
                             <Text as="span" weight="medium" tabular style={{ color: "inherit" }}>
@@ -349,7 +349,7 @@ export default function Demo() {
         {/* ── DataTable 版（セル単位の条件付き書式は ColumnDef.render で表現） ── */}
         <Card>
           <CardHeader>
-            <CardTitle>DataTable 版 — セル単位の条件付き書式</CardTitle>
+            <CardTitle>DataTable 版 · セル単位の条件付き書式</CardTitle>
             <Text size="xs" tone="muted">
               ColumnDef.render 内でしきい値判定 → token クラスを付与。行全体のティントは ColumnDef
               では表現できないため上段の実 Table 合成を参照（gapNotes 参照）。

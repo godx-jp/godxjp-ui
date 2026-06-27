@@ -45,7 +45,7 @@ import {
 } from "lucide-react";
 
 /**
- * AppShell — canonical admin frame.
+ * AppShell · canonical admin frame.
  * Real composition: AppShell + Sidebar + Topbar + PageContainer body.
  * Japanese accounting shell (CoreBooks) with entity switcher, collapse toggle,
  * notifications badge, and a dashboard page body.
@@ -139,7 +139,7 @@ export default function Demo() {
               <DropdownMenuSeparator />
               {ENTITIES.map((e) => (
                 <DropdownMenuItem key={e.id} onSelect={() => setActiveEntity(e.name)}>
-                  <Building2 className="mr-2 size-4" />
+                  <Building2 className="me-2 size-4" />
                   {e.name}
                 </DropdownMenuItem>
               ))}
@@ -179,17 +179,17 @@ export default function Demo() {
       sidebar={sidebar}
       topbar={topbar}
       sidebarCollapsed={collapsed}
-      // Shell-level breadcrumb slot (app-breadcrumb landmark) — distinct from
+      // Shell-level breadcrumb slot (app-breadcrumb landmark) · distinct from
       // PageContainer's own breadcrumb; here the shell owns the trail.
       breadcrumb={
         <Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "ダッシュボード" }]} />
       }
-      // Shell-level footer slot (app-footer landmark) — distinct from the
+      // Shell-level footer slot (app-footer landmark) · distinct from the
       // Sidebar footer (the user identity block) shown on the left rail.
       footer={
         <Flex justify="between" align="center">
           <Text size="xs" tone="muted">
-            © 2026 CoreBooks 会計システム
+            2026 CoreBooks 会計システム
           </Text>
           <Text size="xs" tone="muted">
             バージョン 7.2.0
@@ -199,7 +199,7 @@ export default function Demo() {
     >
       <PageContainer
         title="売上ダッシュボード"
-        subtitle={`${activeEntity} — 2026年5月`}
+        subtitle={`${activeEntity} · 2026年5月`}
         extra={
           <Flex gap="sm">
             <Button size="sm" variant="outline" onClick={() => setUnread(true)}>

@@ -15,7 +15,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { ButtonRefetch } from "@godxjp/ui/query";
 
 /**
- * ButtonRefetch — a Refresh button wired directly to a useQuery result: it spins
+ * ButtonRefetch · a Refresh button wired directly to a useQuery result: it spins
  * and auto-disables while query.isFetching and calls query.refetch() on click.
  * Never pass onClick/disabled yourself. Composed from real @godxjp/ui +
  * @tanstack/react-query.
@@ -61,7 +61,7 @@ export default function Demo() {
     <QueryClientProvider client={queryClient}>
       <PageContainer
         title="ButtonRefetch"
-        subtitle="Refresh button bound to a useQuery — spins while fetching"
+        subtitle="Refresh button bound to a useQuery · spins while fetching"
       >
         <Flex direction="col" gap="lg">
           <Block />

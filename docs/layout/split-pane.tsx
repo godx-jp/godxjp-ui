@@ -13,13 +13,13 @@ import { Button, Text } from "@godxjp/ui/general";
 import { FileText, Building2, Calendar, CreditCard, ArrowRight } from "lucide-react";
 
 /**
- * SplitPane — main + fixed aside panel.
+ * SplitPane · main + fixed aside panel.
  * Shows: main list + detail panel, asideWidth sm/md, nested inside PageContainer.
  * Composed only from real @godxjp/ui components.
  *
  * NOTE: <Flex> defaults to direction="col"; every horizontal row sets direction="row"
  * explicitly. Spacing comes from the Flex `gap` prop or valid 4-point utilities
- * (gap-3, pt-2, ml-3) — never named classes like `gap-md` (no such utility exists).
+ * (gap-3, pt-2, ml-3) · never named classes like `gap-md` (no such utility exists).
  */
 
 type Invoice = {
@@ -74,7 +74,12 @@ const STATUS_TONE = {
   未承認: "destructive",
 } as const;
 
-const yen = (n: number) => `¥${Math.round(n).toLocaleString()}`;
+const yenFormat = new Intl.NumberFormat("ja-JP", {
+  style: "currency",
+  currency: "JPY",
+  maximumFractionDigits: 0,
+});
+const yen = (n: number) => yenFormat.format(Math.round(n));
 const toNumber = (amount: string) => Number(amount.replace(/[^0-9]/g, ""));
 
 export default function Demo() {
@@ -261,13 +266,13 @@ export default function Demo() {
                     <Text as="strong" weight="bold">
                       asideWidth=&quot;sm&quot;
                     </Text>{" "}
-                    (20rem) — フィルター、統計サマリー、クイック操作などのコンパクトパネル向け。
+                    (20rem) · フィルター、統計サマリー、クイック操作などのコンパクトパネル向け。
                   </Text>
                   <Text as="p" tone="muted">
                     <Text as="strong" weight="bold">
                       asideWidth=&quot;md&quot;
                     </Text>{" "}
-                    (22rem) — 詳細フォーム、タイムライン、長いメタデータリスト向け。
+                    (22rem) · 詳細フォーム、タイムライン、長いメタデータリスト向け。
                   </Text>
                   <Text as="p" tone="muted">
                     1080px 未満のビューポートでは縦積みにフォールバックします。

@@ -9,7 +9,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AlertMutationFeedback } from "@godxjp/ui/query";
 
 /**
- * AlertMutationFeedback — inline mutation error below a form's submit. Renders
+ * AlertMutationFeedback · inline mutation error below a form's submit. Renders
  * NOTHING while idle/successful; surfaces the error + a retry when useMutation
  * fails. Composed from real @godxjp/ui + @tanstack/react-query. (This demo fires
  * the mutation once on mount so the error state is visible.)
@@ -19,7 +19,7 @@ const queryClient = new QueryClient();
 function Block() {
   const mutation = useMutation({
     mutationFn: async () => {
-      throw new Error("保存に失敗しました (422) — 取引先コードが重複しています");
+      throw new Error("保存に失敗しました (422) · 取引先コードが重複しています");
     },
   });
 

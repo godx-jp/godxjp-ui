@@ -412,14 +412,14 @@ export default function Demo() {
   return (
     <PageContainer
       title="一括操作"
-      subtitle="行を選択するとツールバーが一括操作バーに切り替わります — クロスページ選択・破壊的操作の分離"
+      subtitle="行を選択するとツールバーが一括操作バーに切り替わります · クロスページ選択・破壊的操作の分離"
       density="compact"
     >
       <Flex direction="col" gap="lg">
         {/* 1 · At rest, NO selection — the normal toolbar (search / 部署 / density). */}
         <Flex direction="col" gap="sm">
           <Flex direction="row" align="center" gap="sm">
-            <Text weight="medium">未選択 — 通常ツールバー</Text>
+            <Text weight="medium">未選択 · 通常ツールバー</Text>
             <Text size="xs" tone="muted">
               検索・部署フィルタ・密度切替が表示される
             </Text>
@@ -431,7 +431,7 @@ export default function Demo() {
             cross-page "全 124 件を選択" offered, 一括削除 isolated on the right. */}
         <Flex direction="col" gap="sm">
           <Flex direction="row" align="center" gap="sm">
-            <Text weight="medium">選択中 — 一括操作バー</Text>
+            <Text weight="medium">選択中 · 一括操作バー</Text>
             <Text size="xs" tone="muted">
               primary-tint 背景・クロスページ選択・破壊的操作を右端に隔離
             </Text>
@@ -443,7 +443,7 @@ export default function Demo() {
             count without the cross-page escalation (page not fully selected). */}
         <Flex direction="col" gap="sm">
           <Flex direction="row" align="center" gap="sm">
-            <Text weight="medium">一部選択 — クロスページ選択なし</Text>
+            <Text weight="medium">一部選択 · クロスページ選択なし</Text>
             <Text size="xs" tone="muted">
               ページ全選択でないため「全件選択」は出ない
             </Text>

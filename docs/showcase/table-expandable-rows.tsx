@@ -264,7 +264,7 @@ function StatusBadge({ status }: { status: ShiftStatus }) {
 
 function DetailPanel({ employee }: { employee: Employee }) {
   return (
-    <div className="border-l-primary bg-muted/30 border-l-[3px] px-4 py-3">
+    <div className="border-s-primary bg-muted/30 border-s-[3px] px-4 py-3">
       <Flex direction="col" gap="md">
         <Flex direction="row" wrap align="center" gap="md">
           <Text size="sm" weight="medium">
@@ -296,7 +296,7 @@ function DetailPanel({ employee }: { employee: Employee }) {
         {/* Per-day breakdown — quiet nested list, real Card chrome */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-[13px]">今週の打刻</CardTitle>
+            <CardTitle className="text-[var(--font-size-xs)]">今週の打刻</CardTitle>
             <Text size="xs" tone="muted" className="inline-flex items-center gap-1">
               <Clock className="size-3.5" aria-hidden="true" />
               直近 3 日
@@ -311,7 +311,7 @@ function DetailPanel({ employee }: { employee: Employee }) {
                   <TableHead className={HEAD}>出勤</TableHead>
                   <TableHead className={HEAD}>退勤</TableHead>
                   <TableHead className={HEAD}>休憩</TableHead>
-                  <TableHead className={`${HEAD} text-right`}>実働</TableHead>
+                  <TableHead className={`${HEAD} text-end`}>実働</TableHead>
                   <TableHead className={HEAD}>備考</TableHead>
                 </TableRow>
               </TableHeader>
@@ -332,7 +332,7 @@ function DetailPanel({ employee }: { employee: Employee }) {
                       <Coffee className="size-3.5" aria-hidden="true" />
                       {d.break}
                     </TableCell>
-                    <TableCell className={`${CELL} text-right font-medium tabular-nums`}>
+                    <TableCell className={`${CELL} text-end font-medium tabular-nums`}>
                       {d.work}
                     </TableCell>
                     <TableCell className={`${CELL} text-muted-foreground text-xs`}>
@@ -376,8 +376,8 @@ function ExpandableList() {
           <TableHead className={HEAD}>従業員</TableHead>
           <TableHead className={HEAD}>部署</TableHead>
           <TableHead className={`${HEAD} text-center`}>直近の状態</TableHead>
-          <TableHead className={`${HEAD} text-right`}>出勤日数</TableHead>
-          <TableHead className={`${HEAD} text-right`}>残業 累計</TableHead>
+          <TableHead className={`${HEAD} text-end`}>出勤日数</TableHead>
+          <TableHead className={`${HEAD} text-end`}>残業 累計</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -420,8 +420,8 @@ function ExpandableList() {
                 <TableCell className={`${CELL} text-center`}>
                   <StatusBadge status={emp.status} />
                 </TableCell>
-                <TableCell className={`${CELL} text-right tabular-nums`}>{emp.workDays}</TableCell>
-                <TableCell className={`${CELL} text-right tabular-nums`}>{emp.overtime}</TableCell>
+                <TableCell className={`${CELL} text-end tabular-nums`}>{emp.workDays}</TableCell>
+                <TableCell className={`${CELL} text-end tabular-nums`}>{emp.overtime}</TableCell>
               </TableRow>
               {isOpen && (
                 <TableRow className="hover:bg-transparent">
@@ -458,7 +458,7 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        <Text as="p" size="xs" tone="muted" className="leading-[1.7]">
+        <Text as="p" size="xs" tone="muted">
           行を選択すると直下に詳細パネル（左罫線 3px
           primary）が開きます。別の行を開くと前の行は自動的に閉じます。 キーボードでは行に Tab
           で移動し、Enter / Space で開閉できます。

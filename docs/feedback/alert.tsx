@@ -4,7 +4,7 @@ import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Alert — inline persistent banner for page-scoped feedback (errors, warnings,
+ * Alert · inline persistent banner for page-scoped feedback (errors, warnings,
  * success, info). NOT for transient toasts. Compose AlertTitle +
  * AlertDescription inside; add AlertActions for CTA buttons. Pass onDismiss to
  * show the built-in × button.
@@ -13,14 +13,14 @@ export default function Demo() {
   return (
     <PageContainer
       title="Alert"
-      subtitle="variant × dismiss × actions — persistent inline banner (never use for transient feedback)"
+      subtitle="variant × dismiss × actions · persistent inline banner (never use for transient feedback)"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Variants / tones</CardTitle>
             <CardDescription>
-              default (info), warning, destructive, success — each sets icon and colour scheme.
+              default (info), warning, destructive, success · each sets icon and colour scheme.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -72,7 +72,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Dismissible banner</CardTitle>
             <CardDescription>
-              Pass onDismiss — the component renders an accessible × button automatically. Never
+              Pass onDismiss: the component renders an accessible × button automatically. Never
               hand-roll your own dismiss button.
             </CardDescription>
           </CardHeader>

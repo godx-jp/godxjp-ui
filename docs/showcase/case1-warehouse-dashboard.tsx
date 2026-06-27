@@ -311,7 +311,7 @@ export default function WarehouseDashboardShowcase() {
                       <TableHead>Mã</TableHead>
                       <TableHead>Tuyến</TableHead>
                       <TableHead>Trạng thái</TableHead>
-                      <TableHead className="text-right">Kiện</TableHead>
+                      <TableHead className="text-end">Kiện</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -328,7 +328,7 @@ export default function WarehouseDashboardShowcase() {
                             {s.status}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right tabular-nums">{s.pkg}</TableCell>
+                        <TableCell className="text-end tabular-nums">{s.pkg}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

@@ -5,7 +5,7 @@ import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * AlertDialog — canonical destructive-confirm modal. NOT a free-form Dialog.
+ * AlertDialog · canonical destructive-confirm modal. NOT a free-form Dialog.
  * Flat prop API: title (required), description, confirmLabel, cancelLabel,
  * variant="destructive", confirmPhrase for high-friction ops, onConfirm async,
  * pending while work is running.
@@ -18,14 +18,14 @@ export default function Demo() {
   return (
     <PageContainer
       title="AlertDialog"
-      subtitle="destructive confirm modal — delete, void, archive, irreversible actions"
+      subtitle="destructive confirm modal · delete, void, archive, irreversible actions"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
             <CardTitle>Destructive delete (pre-opened)</CardTitle>
             <CardDescription>
-              Flat prop API — title (required) + description + confirmLabel + variant. onConfirm may
+              Flat prop API: title (required) + description + confirmLabel + variant. onConfirm may
               be async; the dialog stays open until it resolves. Never use Dialog for destructive
               confirms.
             </CardDescription>
@@ -56,7 +56,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Void / cancel action</CardTitle>
             <CardDescription>
-              Same pattern for voiding an invoice or cancelling a batch job — destructive variant
+              Same pattern for voiding an invoice or cancelling a batch job: destructive variant
               with a clear confirmLabel.
             </CardDescription>
           </CardHeader>

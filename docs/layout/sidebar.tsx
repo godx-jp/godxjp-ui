@@ -38,8 +38,8 @@ import {
 } from "lucide-react";
 
 /**
- * Sidebar — data-driven vertical nav rail.
- * Focus: every public prop — sections, groups with children[], product chip,
+ * Sidebar · data-driven vertical nav rail.
+ * Focus: every public prop · sections, groups with children[], product chip,
  * brand header, renderItem escape hatch, children composition, footer, active
  * item, collapsed icon-only mode.
  * Composed only from real @godxjp/ui components inside an AppShell frame.
@@ -104,7 +104,7 @@ const FAVOURITE_SECTIONS: SidebarSectionProp[] = [
 
 const FAVOURITE_IDS = new Set(["overview", "members"]);
 
-/** renderItem — replaces a row's content with a custom layout (icon + label + star affix). */
+/** renderItem · replaces a row's content with a custom layout (icon + label + star affix). */
 function renderFavouriteRow(item: SidebarItemData) {
   const Icon = item.icon;
   return (
@@ -213,7 +213,7 @@ export default function Demo() {
             </CardHeader>
           </Card>
 
-          {/* brand prop — replaces the product chip with a fully custom header (SidebarHeader). */}
+          {/* brand prop · replaces the product chip with a fully custom header (SidebarHeader). */}
           <Card>
             <CardHeader>
               <CardTitle>brand プロップ</CardTitle>
@@ -248,7 +248,7 @@ export default function Demo() {
             </CardContent>
           </Card>
 
-          {/* renderItem prop — per-item custom render escape hatch (here: a favourite-star affix). */}
+          {/* renderItem prop · per-item custom render escape hatch (here: a favourite-star affix). */}
           <Card>
             <CardHeader>
               <CardTitle>renderItem プロップ</CardTitle>
@@ -269,7 +269,7 @@ export default function Demo() {
             </CardContent>
           </Card>
 
-          {/* children prop — full nav override: compose SidebarSection / SidebarItem directly. */}
+          {/* children prop · full nav override: compose SidebarSection / SidebarItem directly. */}
           <Card>
             <CardHeader>
               <CardTitle>children プロップ（ナビ全体の差し替え）</CardTitle>
@@ -304,7 +304,7 @@ export default function Demo() {
             <CardContent>
               <Flex direction="col" gap="sm" className="text-sm">
                 {[
-                  "product chip — name / role（エンティティ名）/ color",
+                  "product chip · name / role（エンティティ名）/ color",
                   "collapsed=true でアイコンのみのレール表示に切替",
                   "children[] を持つ item は自動で折りたたみグループになる",
                   "activeId が子孫にマッチすると親グループが自動展開",

@@ -10,17 +10,17 @@ import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, Separator } from "@godxjp/ui/layout";
 
 /**
- * Separator — Radix UI Separator wrapper for tokenized dividers. Default is
+ * Separator · Radix UI Separator wrapper for tokenized dividers. Default is
  * horizontal (section breaks). Set orientation="vertical" only when the parent
  * gives it a stable height (e.g. a row Flex with align="stretch"). decorative
- * defaults to true — set false only when the divider carries semantic meaning for
+ * defaults to true · set false only when the divider carries semantic meaning for
  * a11y. Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
   return (
     <PageContainer
       title="Separator"
-      subtitle="水平・垂直区切り線 — セクション分割・ツールバーグループ"
+      subtitle="水平・垂直区切り線 · セクション分割・ツールバーグループ"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -53,7 +53,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>垂直区切り — ツールバーグループ</CardTitle>
+            <CardTitle>垂直区切り · ツールバーグループ</CardTitle>
             <CardDescription>
               orientation=&quot;vertical&quot; は親が安定した高さを与えているときのみ使用。
               align=&quot;stretch&quot; の Flex 行で自然な高さを継承する。
@@ -82,7 +82,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>decorative=&#123;false&#125; — セマンティック区切り</CardTitle>
+            <CardTitle>decorative=&#123;false&#125; · セマンティック区切り</CardTitle>
             <CardDescription>
               decorative=&#123;false&#125; にすると role=&quot;separator&quot; が付与され
               スクリーンリーダーが読み上げる。意味のある区切りにのみ使う。

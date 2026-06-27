@@ -256,7 +256,7 @@ function FilterChip({
   onRemove: () => void;
 }) {
   return (
-    <Badge tone={tone ?? "neutral"} variant="outline" className="gap-1 pr-1">
+    <Badge tone={tone ?? "neutral"} variant="outline" className="gap-1 pe-1">
       {label}
       <Button
         variant="ghost"
@@ -313,7 +313,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="勤怠一覧"
-      subtitle="フィルターチップ — 適用中の条件をチップで表示、個別/一括で解除"
+      subtitle="フィルターチップ · 適用中の条件をチップで表示、個別/一括で解除"
       density="compact"
     >
       <Flex direction="col" gap="md">
@@ -360,14 +360,14 @@ export default function Demo() {
           gap="xs"
           className="border-border bg-secondary/30 min-h-9 rounded-md border px-2.5 py-1.5"
         >
-          <Flex direction="row" align="center" gap="xs" className="text-muted-foreground pr-1">
+          <Flex direction="row" align="center" gap="xs" className="text-muted-foreground pe-1">
             <Filter className="size-3.5" aria-hidden="true" />
             <Text size="xs">適用中</Text>
           </Flex>
 
           {!hasFilters && (
             <Text size="xs" tone="muted">
-              条件なし — 全 {ROWS.length} 件
+              条件なし · 全 {ROWS.length} 件
             </Text>
           )}
 
@@ -409,7 +409,7 @@ export default function Demo() {
             <Button
               variant="ghost"
               size="sm"
-              className="ml-auto h-6 px-2 text-xs"
+              className="ms-auto h-6 px-2 text-xs"
               onClick={clearAll}
             >
               すべて解除

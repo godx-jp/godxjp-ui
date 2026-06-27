@@ -131,7 +131,7 @@ const EMPLOYEES: Employee[] = [
     manager: "高橋 由美",
     joined: "2021-10-01",
     punches: [
-      { title: "出勤打刻", time: "09:24", note: "遅刻 24分 — 電車遅延届あり" },
+      { title: "出勤打刻", time: "09:24", note: "遅刻 24分 · 電車遅延届あり" },
       { title: "休憩開始", time: "12:10" },
       { title: "休憩終了", time: "12:55", current: true },
     ],

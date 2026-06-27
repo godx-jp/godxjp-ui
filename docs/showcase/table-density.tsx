@@ -227,7 +227,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="密度切替 (V4)"
-      subtitle="同一 DataTable を compact 28 / default 32 / comfortable 44 で再調整 — 行は --table-row-height で再バインド"
+      subtitle="同一 DataTable を compact 28 / default 32 / comfortable 44 で再調整。行は --table-row-height で再バインド"
       density="compact"
     >
       <Flex direction="col" gap="lg">
