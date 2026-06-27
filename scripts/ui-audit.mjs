@@ -387,8 +387,13 @@ function walk(dir, acc = []) {
     const full = join(dir, name);
     const st = statSync(full);
     if (st.isDirectory()) {
+      // Test/story dirs are not product UI — never hold them to the UI-standardization rules.
+      if (name === "__tests__" || name === "node_modules") continue;
       walk(full, acc);
-    } else if (name.endsWith(".tsx") || name.endsWith(".ts")) {
+    } else if (
+      (name.endsWith(".tsx") || name.endsWith(".ts")) &&
+      !/\.(test|spec|stories)\.tsx?$/.test(name)
+    ) {
       acc.push(full);
     }
   }
