@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@godxjp/ui/navigation";
-import type { SortStateProp, TableDensityProp } from "@godxjp/ui/props";
+import type { DensityProp, SortStateProp } from "@godxjp/ui/props";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 
 /**
@@ -96,7 +96,7 @@ export default function Demo() {
     key: "amount",
     direction: "desc",
   });
-  const [density, setDensity] = useState<TableDensityProp>("comfortable");
+  const [density, setDensity] = useState<DensityProp>("comfortable");
 
   const rows = useMemo(() => {
     if (!sort) return invoices;

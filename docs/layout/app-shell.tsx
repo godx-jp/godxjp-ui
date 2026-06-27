@@ -92,7 +92,9 @@ export default function Demo() {
   // Seeded collapsed at rest so the icon rail + collapsed reflow (data-collapsed)
   // is visible in a static screenshot; the topbar toggle expands the full sidebar.
   const [collapsed, setCollapsed] = useState(true);
-  const [activeEntity, setActiveEntity] = useState(ENTITIES[0].name);
+  const [activeEntity, setActiveEntity] = useState<(typeof ENTITIES)[number]["name"]>(
+    ENTITIES[0].name,
+  );
   const [unread, setUnread] = useState(true);
 
   const sidebar = (

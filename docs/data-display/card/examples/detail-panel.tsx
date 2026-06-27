@@ -18,7 +18,7 @@ import {
   PageContainer,
   ResponsiveGrid,
   Sidebar,
-  type SidebarSection,
+  type SidebarSectionProp,
   Topbar,
 } from "@godxjp/ui/layout";
 import { BookOpen, FileText, LayoutDashboard, ReceiptText, Users } from "lucide-react";
@@ -28,7 +28,7 @@ import { BookOpen, FileText, LayoutDashboard, ReceiptText, Users } from "lucide-
  * Descriptions body + separated footer action bar, beside a StatCard summary row.
  * No hand-rolled panels; every surface is a real @godxjp/ui component.
  */
-const sections: SidebarSection[] = [
+const sections: SidebarSectionProp[] = [
   {
     label: "会計",
     items: [

@@ -154,14 +154,17 @@ function CacheObserver() {
   }
 
   return (
-    <Descriptions
-      columns={1}
-      items={cached.map((q) => ({
-        label: <Badge variant="outline">{JSON.stringify(q.queryKey)}</Badge>,
-        value: q.state.status === "success" ? "キャッシュ済み (cached)" : "先読み中… (fetching)",
-        mono: true,
-      }))}
-    />
+    <Descriptions columns={1}>
+      {cached.map((q) => (
+        <Descriptions.Item
+          key={JSON.stringify(q.queryKey)}
+          label={<Badge variant="outline">{JSON.stringify(q.queryKey)}</Badge>}
+          mono
+        >
+          {q.state.status === "success" ? "キャッシュ済み (cached)" : "先読み中… (fetching)"}
+        </Descriptions.Item>
+      ))}
+    </Descriptions>
   );
 }
 
@@ -183,14 +186,15 @@ function DestinationDetail() {
 
   const inv = query.data!;
   return (
-    <Descriptions
-      columns={1}
-      items={[
-        { label: "請求書番号", value: inv.id, mono: true },
-        { label: "取引先", value: inv.partner },
-        { label: "状態", value: <Badge status={inv.status} /> },
-      ]}
-    />
+    <Descriptions columns={1}>
+      <Descriptions.Item label="請求書番号" mono>
+        {inv.id}
+      </Descriptions.Item>
+      <Descriptions.Item label="取引先">{inv.partner}</Descriptions.Item>
+      <Descriptions.Item label="状態">
+        <Badge status={inv.status} />
+      </Descriptions.Item>
+    </Descriptions>
   );
 }
 

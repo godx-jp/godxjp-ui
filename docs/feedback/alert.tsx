@@ -25,21 +25,21 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Alert variant="default">
+              <Alert tone="default">
                 <AlertTitle>勘定科目マスタを更新しました</AlertTitle>
                 <AlertDescription>変更内容は次回の仕訳入力から反映されます。</AlertDescription>
               </Alert>
-              <Alert variant="warning">
+              <Alert tone="warning">
                 <AlertTitle>3 件の打刻漏れがあります</AlertTitle>
                 <AlertDescription>本日中に確認してください。</AlertDescription>
               </Alert>
-              <Alert variant="destructive">
+              <Alert tone="destructive">
                 <AlertTitle>請求書の保存に失敗しました</AlertTitle>
                 <AlertDescription>
                   サーバーエラーが発生しました。内容を確認のうえ再度お試しください。
                 </AlertDescription>
               </Alert>
-              <Alert variant="success">
+              <Alert tone="success">
                 <AlertTitle>インポートが完了しました</AlertTitle>
                 <AlertDescription>1,240 件の仕訳を取り込みました。</AlertDescription>
               </Alert>
@@ -56,7 +56,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Alert variant="warning">
+            <Alert tone="warning">
               <AlertTitle>MF 連携トークンの有効期限が近づいています</AlertTitle>
               <AlertDescription>
                 7 日以内にトークンが失効します。今すぐ再連携してください。
@@ -78,7 +78,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Alert
-              variant="destructive"
+              tone="destructive"
               onDismiss={() => {
                 /* set session flag */
               }}

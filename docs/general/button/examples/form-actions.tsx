@@ -6,7 +6,7 @@ import {
   Flex,
   PageContainer,
   Sidebar,
-  type SidebarSection,
+  type SidebarSectionProp,
   Topbar,
 } from "@godxjp/ui/layout";
 import { BookOpen, FileText, LayoutDashboard, ReceiptText, Users } from "lucide-react";
@@ -16,7 +16,7 @@ import { BookOpen, FileText, LayoutDashboard, ReceiptText, Users } from "lucide-
  * `footer` slot (stickyFooter pins it as the form scrolls). No hand-rolled
  * footer bar; the page shell owns it.
  */
-const sections: SidebarSection[] = [
+const sections: SidebarSectionProp[] = [
   {
     label: "会計",
     items: [

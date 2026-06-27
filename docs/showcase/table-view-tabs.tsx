@@ -225,7 +225,7 @@ const employeeCol: ColumnDef<Attendance> = {
   header: "従業員",
   sortable: true,
   render: (row) => (
-    <Flex direction="col" gap="none">
+    <Flex direction="col" gap="xs">
       <Text size="sm" weight="medium">
         {row.employee}
       </Text>

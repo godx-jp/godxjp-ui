@@ -265,6 +265,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck:docs": "tsc --noEmit -p tsconfig.docs.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --check .",
@@ -274,7 +275,7 @@
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",
     "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm test",
-    "verify:release": "pnpm typecheck && pnpm lint && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm check:mcp-prop-sync && pnpm test",
+    "verify:release": "pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm check:mcp-prop-sync && pnpm test",
     "check:mcp-sync": "node scripts/check-mcp-sync.mjs",
     "check:mcp-orphans": "node scripts/check-mcp-orphans.mjs",
     "check:mcp-prop-sync": "node scripts/check-mcp-prop-sync.mjs",

@@ -27,12 +27,12 @@ import {
   Flex,
   PageContainer,
   Sidebar,
-  type SidebarSection,
+  type SidebarSectionProp,
   Topbar,
 } from "@godxjp/ui/layout";
 import { Settings, ShieldCheck, User, Users } from "lucide-react";
 
-const sections: SidebarSection[] = [
+const sections: SidebarSectionProp[] = [
   {
     label: "設定",
     items: [
@@ -154,7 +154,7 @@ export default function Demo() {
                       id="es-dept"
                       name="department"
                       value={department}
-                      onValueChange={(v) => {
+                      onValueChange={(v: string) => {
                         setDepartment(v);
                         dirty();
                       }}

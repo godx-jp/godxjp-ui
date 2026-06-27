@@ -267,7 +267,7 @@ function CursorPeriodCard() {
         <CardTitle>カーソル / 期間ジャンプ</CardTitle>
         <Select
           value={period}
-          onValueChange={(v) => {
+          onValueChange={(v: string) => {
             setPeriod(v);
             setCursor(undefined); // jumping period resets the cursor to the first page
           }}

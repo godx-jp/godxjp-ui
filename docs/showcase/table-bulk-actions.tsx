@@ -37,7 +37,7 @@ import {
 import { SearchInput, Select } from "@godxjp/ui/data-entry";
 import { AlertDialog } from "@godxjp/ui/feedback";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import type { SortStateProp } from "@godxjp/ui/props";
+import type { DensityProp, SortStateProp } from "@godxjp/ui/props";
 
 // ── Domain model: 勤怠申請 (attendance / leave requests awaiting approval) ──────
 
@@ -276,6 +276,7 @@ function ListToolbar({
         <SearchInput
           value={query}
           onValueChange={onQuery}
+          onSearch={onQuery}
           placeholder="従業員・申請番号で検索"
           className="w-56"
         />
@@ -311,7 +312,7 @@ function BulkSwapTable({
     key: "date",
     direction: "desc",
   });
-  const [density, setDensity] = React.useState<"compact" | "comfortable">(defaultDensity);
+  const [density, setDensity] = React.useState<DensityProp>(defaultDensity);
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const [pending, setPending] = React.useState(false);
 

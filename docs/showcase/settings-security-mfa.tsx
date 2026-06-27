@@ -61,7 +61,7 @@ export default function SecurityMfaShowcase() {
               T
             </AvatarFallback>
           </Avatar>
-          <Flex direction="col" gap="none">
+          <Flex direction="col" gap="xs">
             <Text weight="medium">Tài khoản godx</Text>
             <Text size="xs" tone="muted">
               tu-phuc-vu@famgia.com
