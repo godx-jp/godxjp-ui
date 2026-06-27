@@ -6,7 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [16.2.0] - 2026-06-27
+## [16.2.1] - 2026-06-27
+
+### Fixed
+
+- **A header above a flush full-bleed table had no bottom gap.** A non-banded `CardHeader` zeroes
+  its own bottom padding and leans on the body's top padding for the gap — but a `CardContent flush`
+  with a `<table>` zeroes that too, so the title/subtitle butted directly against the table header
+  row (a big inset above the title, ~0 below the subtitle). The header now supplies its own bottom
+  gap (`--card-space-body-y`) in that case, matching the top inset for a balanced header block.
 
 ### Added
 
