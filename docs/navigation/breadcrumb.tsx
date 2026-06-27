@@ -4,39 +4,25 @@ import { Breadcrumb } from "@godxjp/ui/layout";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
- * Breadcrumb — standalone ordered trail of page segments.
- * Import from @godxjp/ui/layout (not navigation).
- * Pass a single items array: { label, to? } — omit to on the last segment.
- * Composed only from real @godxjp/ui components.
+ * Breadcrumb — a STANDALONE "where am I" trail. Place `<Breadcrumb items={[…]} />` anywhere
+ * (no shell required); it is NOT tied to AppShell or PageContainer. Pass one `items` array of
+ * `{ label, to? }`; the segment with no `to` is the current page. Import from @godxjp/ui/layout.
  */
 export default function Demo() {
   return (
     <PageContainer
       title="Breadcrumb"
-      subtitle="Spatial location trail · import from @godxjp/ui/layout, items array only"
+      subtitle="Standalone location trail · pass one items array, the last (no `to`) is the current page"
     >
       <Flex direction="col" gap="lg">
-        {/* 2-level trail */}
+        {/* 1 · IN FOCUS — the bare component + what every part does. */}
         <Card>
           <CardHeader>
-            <CardTitle>2 階層 · モジュールルート + 現在ページ</CardTitle>
+            <CardTitle>基本 · これがコンポーネントそのもの</CardTitle>
             <CardDescription>
-              最後のセグメントに to を渡さない → aria-current=&quot;page&quot; として span
-              でレンダリング。
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]} />
-          </CardContent>
-        </Card>
-
-        {/* 3-level — accounting detail */}
-        <Card>
-          <CardHeader>
-            <CardTitle>3 階層 · 会計 / 請求書一覧 / 請求書詳細</CardTitle>
-            <CardDescription>
-              Master-detail drill-down。詳細ページが現在ページ (to なし)。
-              親セグメントはクリックで一覧へ戻れる。
+              `&lt;Breadcrumb items={"{[…]}"} /&gt;` を置くだけ。シェル不要。リンクのセグメント
+              (to あり) はクリックで戻れ、末尾 (to なし) は現在地として aria-current=&quot;page&quot;
+              の span に、区切り記号と nav/aria は自動付与。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -44,77 +30,66 @@ export default function Demo() {
               items={[
                 { label: "ホーム", to: "/" },
                 { label: "会計", to: "/accounting" },
-                { label: "請求書一覧", to: "/accounting/invoices" },
-                { label: "INV-0042" },
+                { label: "請求書 INV-0042" },
               ]}
             />
           </CardContent>
         </Card>
 
-        {/* 4-level — payroll nested */}
+        {/* 2 · ONE KNOB — depth is just the array length. Stacked so the scaling is obvious. */}
         <Card>
           <CardHeader>
-            <CardTitle>4 階層 · 給与 / 部門 / 従業員 / 給与明細</CardTitle>
+            <CardTitle>深さ · items を増やすだけ</CardTitle>
             <CardDescription>
-              深いネストでも items 配列を渡すだけ。区切り記号と aria は自動で付与される。
+              2 から 4 階層まで、変えるのは配列の長さだけ。区切りと折り返しは自動。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Breadcrumb
-              items={[
-                { label: "ホーム", to: "/" },
-                { label: "給与管理", to: "/payroll" },
-                { label: "経理部", to: "/payroll/departments/accounting" },
-                { label: "田中 太郎", to: "/payroll/departments/accounting/tanaka" },
-                { label: "2024年5月分給与明細" },
-              ]}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Standalone — used in PageContainer breadcrumb prop */}
-        <Card>
-          <CardHeader>
-            <CardTitle>PageContainer の breadcrumb prop へ渡す</CardTitle>
-            <CardDescription>
-              PageContainer は breadcrumb に BreadcrumbItemProp[] を直接受け取る。 AppShell
-              に渡す場合は &lt;Breadcrumb items=&#123;…&#125; /&gt; として ReactNode で渡す。
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Flex direction="col" gap="sm">
-              <Text as="p" tone="muted">
-                PageContainer に渡す場合 (raw 配列):
-              </Text>
-              <pre className="bg-muted rounded p-3 text-xs">
-                {`<PageContainer\n  title="仕訳詳細"\n  breadcrumb={[\n    { label: "ホーム", to: "/" },\n    { label: "会計", to: "/accounting" },\n    { label: "JE-0042" },\n  ]}\n>`}
-              </pre>
-              <Text as="p" tone="muted">
-                AppShell に渡す場合 (ReactNode):
-              </Text>
-              <pre className="bg-muted rounded p-3 text-xs">
-                {`<AppShell\n  breadcrumb={\n    <Breadcrumb items={[\n      { label: "ホーム", to: "/" },\n      { label: "会計", to: "/accounting" },\n    ]} />\n  }\n>`}
-              </pre>
+            <Flex direction="col" gap="md">
+              <Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]} />
+              <Breadcrumb
+                items={[
+                  { label: "ホーム", to: "/" },
+                  { label: "給与管理", to: "/payroll" },
+                  { label: "2024年5月分給与明細" },
+                ]}
+              />
+              <Breadcrumb
+                items={[
+                  { label: "ホーム", to: "/" },
+                  { label: "給与管理", to: "/payroll" },
+                  { label: "経理部", to: "/payroll/departments/accounting" },
+                  { label: "田中 太郎" },
+                ]}
+              />
             </Flex>
           </CardContent>
         </Card>
 
-        {/* Audit log example */}
+        {/* 3 · PLACEMENT — standalone, or the optional shell convenience. Reference, last. */}
         <Card>
           <CardHeader>
-            <CardTitle>監査ログページ · 現在エンティティが末尾</CardTitle>
+            <CardTitle>配置 · 単体 または シェルの任意プロップ</CardTitle>
             <CardDescription>
-              審査ログや文書履歴でもパターンは同じ。現在エンティティ (to なし) が末尾。
+              単体でどこにでも置ける。任意で `PageContainer`/`AppShell` の `breadcrumb`
+              プロップに渡すと、ヘッダーの定位置に出る (シェルが強制するものではない)。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Breadcrumb
-              items={[
-                { label: "ホーム", to: "/" },
-                { label: "監査ログ", to: "/audit" },
-                { label: "請求書 INV-0042 の変更履歴" },
-              ]}
-            />
+            <Flex direction="col" gap="sm">
+              <Text as="p" size="xs" tone="muted">
+                単体 (どこでも):
+              </Text>
+              <pre className="bg-muted overflow-x-auto rounded p-3 text-xs">
+                {`<Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "現在ページ" }]} />`}
+              </pre>
+              <Text as="p" size="xs" tone="muted">
+                PageContainer / AppShell の breadcrumb プロップに (任意):
+              </Text>
+              <pre className="bg-muted overflow-x-auto rounded p-3 text-xs">
+                {`<PageContainer title="仕訳詳細" breadcrumb={[{ label: "ホーム", to: "/" }, { label: "JE-0042" }]}>`}
+              </pre>
+            </Flex>
           </CardContent>
         </Card>
       </Flex>
