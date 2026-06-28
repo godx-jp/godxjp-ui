@@ -6,6 +6,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Scoped / multi-tenant theming now works for colours and radius.** The `@theme` block in
+  `styles/index.css` is now `@theme inline`, so Tailwind inlines each expression (e.g.
+  `hsl(var(--primary))`) directly into every colour/radius utility instead of freezing it as
+  `var(--color-primary)` computed once at `:root`. A scoped `[data-tenant]{ --primary: … }` override
+  now re-resolves at the element, so `bg-primary` and friends retint inside the subtree. Single-brand
+  `:root` theming is unchanged, and the `--color-*` / `--radius-*` vars are still emitted for any
+  code reading them directly. (See `docs/CUSTOMER-THEMING.md` for the scoped caveats.)
+- **Every focus ring is now token-driven.** All `:focus-visible` / `:focus-within` rings across
+  controls, the shell, data-entry and data-display read `--focus-ring-color` (and
+  `--focus-ring-width`) directly, so one override retints/resizes them all — even scoped under
+  `[data-tenant]`. Default appearance is unchanged.
+- **The modal scrim is now a single token.** Dialog, AlertDialog, Sheet and Drawer backdrops read
+  the shared `--overlay-background` (was a baked `rgb(0 0 0 / .5)` / `bg-black/50`).
+
+### Added
+
+- **Global brand-depth tokens — all opt-in, all quiet by default** (cardinal rules #44/#45), so a
+  service configures them from the token layer with no component change:
+  - `--shadow-glow` — a coloured glow halo layered on the primary CTA's resting shadow (default
+    invisible).
+  - `--focus-ring-color` / `--focus-ring-width` — the hue and thickness of every keyboard-focus
+    ring.
+  - `--gradient-hero` / `--gradient-glow` / `--gradient-brand` — opt-in decorative fills (default
+    `none`); `--gradient-hero` paints the `PageContainer` header, `--gradient-glow` the `AppShell`
+    content area.
+  - `--card-shadow` — resting elevation for every `Card` (default `none`; set to e.g.
+    `var(--shadow-sm)` to lift all cards).
+  - `--overlay-background` — the shared scrim colour for all overlays.
+
 ## [16.4.0] - 2026-06-28
 
 ### Changed
