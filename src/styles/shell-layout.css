@@ -261,13 +261,17 @@
     text-align: start;
   }
 
-  .sb-nav-item:hover,
-  .sb-nav-item[data-active="true"] {
+  .sb-nav-item:hover {
     background: hsl(var(--accent));
     color: hsl(var(--foreground));
   }
 
+  /* Active item reads its own bg/fg tokens (defaults = the hover look) so a service can give the
+   * selected nav row a brand treatment — e.g. a gold tint + gold text on a navy sidebar — without
+   * forking CSS. Defaults are byte-identical to the hover state. */
   .sb-nav-item[data-active="true"] {
+    background: var(--sidebar-item-active-background);
+    color: var(--sidebar-item-active-foreground);
     font-weight: var(--font-weight-medium);
   }
 

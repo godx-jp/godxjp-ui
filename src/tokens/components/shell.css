@@ -25,4 +25,9 @@
    * can re-tune the active sub-item accent without forking CSS. */
   --sidebar-item-active-color: hsl(var(--primary));
   --sidebar-item-active-tint: hsl(var(--primary));
+  /* Main nav-item active row — defaults are byte-identical to the hover state (accent bg,
+   * foreground text). A service overrides these to brand the selected row (e.g. a gold tint +
+   * gold text on a navy sidebar). */
+  --sidebar-item-active-background: hsl(var(--accent));
+  --sidebar-item-active-foreground: hsl(var(--foreground));
 }

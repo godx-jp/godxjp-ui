@@ -849,6 +849,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Sidebar active-item tint/marker — tokenised from the literal hsl(var(--primary)) * usages; defaults are byte-identical to the prior hard-coded values. A service * can re-tune the active sub-item accent without forking CSS."
   },
   {
+    "name": "--sidebar-item-active-background",
+    "value": "hsl(var(--accent))",
+    "description": "Main nav-item active row — defaults are byte-identical to the hover state (accent bg, * foreground text). A service overrides these to brand the selected row (e.g. a gold tint + * gold text on a navy sidebar)."
+  },
+  {
+    "name": "--sidebar-item-active-foreground",
+    "value": "hsl(var(--foreground))",
+    "description": "Main nav-item active row — defaults are byte-identical to the hover state (accent bg, * foreground text). A service overrides these to brand the selected row (e.g. a gold tint + * gold text on a navy sidebar)."
+  },
+  {
     "name": "--table-row-height-compact",
     "value": "1.75rem",
     "description": "Table component tokens: row height, cell padding."

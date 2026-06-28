@@ -122,6 +122,20 @@ const THEME = `
   --font-family-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, system-ui, sans-serif;
 }
+
+/* Dark NAVY sidebar chrome - the TIXIMAX signature (gold-on-navy). Done by SCOPING the colour
+ * ROLES to the .app-sidebar region: the Sidebar's own CSS reads --card / --foreground /
+ * --muted-foreground / --accent / --border, so re-pointing them here turns the whole nav dark with
+ * NO component change. The active row uses the new --sidebar-item-active-* knobs for a gold tint. */
+[data-tenant="tiximax"] .app-sidebar {
+  --card: 217 61% 12%;              /* navy #0C1A31 surface */
+  --foreground: 0 0% 100%;          /* white logo + active text base */
+  --muted-foreground: 217 40% 74%;  /* navy-200 inactive nav text */
+  --accent: 217 45% 18%;            /* hover row */
+  --border: 217 38% 22%;            /* subtle navy dividers */
+  --sidebar-item-active-background: hsl(41 73% 53% / 0.16);  /* gold tint on the selected row */
+  --sidebar-item-active-foreground: hsl(41 73% 53%);          /* gold active label */
+}
 `;
 
 // ── Mock data ─────────────────────────────────────────────────────────────────────────────
