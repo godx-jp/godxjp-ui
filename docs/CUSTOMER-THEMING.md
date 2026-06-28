@@ -14,9 +14,10 @@ The design system ships a complete, **zero-config default theme**. Two audiences
 import "@godxjp/ui/styles";
 ```
 
-That single import ships everything: colors, the M PLUS 2 font (self-bundled, subsetted
-latin/vi/jp), the golden-ratio type scale, spacing grid, radius scale, shadow ramp, and all
-component CSS. Nothing else to configure. Pick density per surface with
+That single import ships everything: colors, the bundled fonts (Noto Sans JP by default,
+Montserrat for the Vietnamese locale — self-bundled & subsetted), the golden-ratio type scale,
+spacing grid, radius scale, shadow ramp, and all component CSS. Nothing else to configure. Pick
+density per surface with
 `<PageContainer density="compact | default | comfortable">`.
 
 ---

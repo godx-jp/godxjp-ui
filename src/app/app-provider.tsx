@@ -329,11 +329,13 @@ export function AppProvider({
     syncAppRequestHeaders(requestHeaders);
   }, [requestHeaders]);
 
-  // Reflect the locale's writing direction on <html dir> so logical CSS properties (ms/me/ps/pe,
-  // start/end) flip correctly under RTL locales (Unicode bidi). Current AppLocales are all LTR.
+  // Reflect the locale on <html>: `dir` flips logical CSS (ms/me/ps/pe, start/end) under RTL,
+  // and `lang` drives `:lang()` rules — including the Vietnamese → Montserrat font swap in
+  // styles/index.css (every non-`vi` locale keeps the default Noto Sans JP).
   React.useEffect(() => {
     if (typeof document !== "undefined") {
       document.documentElement.dir = localeDirection(locale);
+      document.documentElement.lang = locale;
     }
   }, [locale]);
 

@@ -11,7 +11,9 @@ import pkg from "../package.json";
 const require = createRequire(import.meta.url);
 const previewRoot = path.dirname(fileURLToPath(import.meta.url));
 const uiRoot = path.resolve(previewRoot, "..");
-const fontDir = path.dirname(require.resolve("@fontsource/m-plus-2/package.json"));
+const fontDirs = ["@fontsource/noto-sans-jp", "@fontsource/montserrat"].map((p) =>
+  path.dirname(require.resolve(`${p}/package.json`)),
+);
 
 /**
  * Mirror package.json exports so doc demos import like app consumers — but resolve to
@@ -89,7 +91,7 @@ export default defineConfig({
     port: 6008,
     strictPort: true,
     fs: {
-      allow: [previewRoot, uiRoot, fontDir],
+      allow: [previewRoot, uiRoot, ...fontDirs],
     },
   },
   build: {

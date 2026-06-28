@@ -1,10 +1,28 @@
 @import "sonner/dist/styles.css";
 @import "react-day-picker/style.css";
-/* Default sans font — self-contained so consumers need no font config (subsetted: latin/vi/jp). */
-@import "@fontsource/m-plus-2/400.css";
-@import "@fontsource/m-plus-2/500.css";
-@import "@fontsource/m-plus-2/700.css";
+/* Bundled sans fonts — self-contained so consumers need no font config. The browser only
+ * downloads the subset files matching the rendered text:
+ *  · Noto Sans JP — the DEFAULT face (Japanese + Latin), used for all locales except `vi`.
+ *  · Montserrat   — swapped in for the Vietnamese locale (`<html lang="vi">`), incl. its
+ *                   `vietnamese` subset for full diacritics. See --font-family-sans + :lang(vi). */
+@import "@fontsource/noto-sans-jp/400.css";
+@import "@fontsource/noto-sans-jp/500.css";
+@import "@fontsource/noto-sans-jp/700.css";
+@import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/500.css";
+@import "@fontsource/montserrat/700.css";
 @import "tailwindcss";
+
+/* Vietnamese locale → Montserrat (set by AppProvider via <html lang="vi">). Overrides the
+ * --font-family-sans token so every body/heading rule that reads it switches automatically. */
+:root:lang(vi),
+[lang="vi"] {
+  /* Montserrat for Latin/Vietnamese; Noto Sans JP kept as the tail so any 日本語 in a vi-locale
+   * screen still has the bundled JP face (Montserrat has no CJK glyphs). */
+  --font-family-sans:
+    "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    system-ui, "Noto Sans JP", sans-serif;
+}
 
 /* Guarantee the full set of semantic color utilities ships in the compiled CSS
  * even when the library itself only references a few — consumers (and the token
