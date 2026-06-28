@@ -1,7 +1,7 @@
 import { StatCard } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
-import { TrendingUp } from "lucide-react";
+import { CheckCircle2, Package, Ship, TrendingUp, Wallet } from "lucide-react";
 
 /**
  * StatCard — KPI tile. It IS already a bordered Card, so it renders DIRECTLY in
@@ -25,6 +25,18 @@ export default function Demo() {
             <StatCard label="請求件数" value="312" delta="+4%" />
             <StatCard label="売掛金残高" value="¥1,284,500" hint="未回収 18件" />
             <StatCard label="回収率" value="96.8%" delta="+1.2%" />
+          </ResponsiveGrid>
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            icon medallion (decorative · tinted via --stat-card-icon-* tokens)
+          </Text>
+          <ResponsiveGrid columns={{ sm: 2, md: 4 }}>
+            <StatCard icon={Package} label="処理中の注文" value="4" delta="+2" />
+            <StatCard icon={Ship} label="輸送中" value="2" hint="日本 → ベトナム" />
+            <StatCard icon={CheckCircle2} label="今月の配達" value="11" delta="+18%" />
+            <StatCard icon={Wallet} label="ウォレット残高" value="¥185,000" />
           </ResponsiveGrid>
         </Flex>
 

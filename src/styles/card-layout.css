@@ -391,6 +391,31 @@
     min-width: 0;
   }
 
+  /* Optional leading icon medallion — tinted box above the metric. Tone via tokens (default a
+   * soft brand-primary tint), so a service rethemes it with --primary or the icon tokens. */
+  [data-slot="stat-card-icon"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--stat-card-icon-size);
+    height: var(--stat-card-icon-size);
+    margin-bottom: var(--stat-card-gap);
+    border-radius: var(--stat-card-icon-radius);
+    background: var(--stat-card-icon-background);
+    color: var(--stat-card-icon-foreground);
+  }
+
+  [data-slot="stat-card-icon"] svg {
+    width: var(--stat-card-icon-glyph-size);
+    height: var(--stat-card-icon-glyph-size);
+  }
+
+  /* Inline layout: medallion floats to the trailing edge so label/value keep the start column. */
+  [data-slot="card"][data-stat-layout="inline"] [data-slot="stat-card-icon"] {
+    margin-bottom: 0;
+    order: 1;
+  }
+
   [data-slot="stat-card-label"] {
     display: flex;
     align-items: center;

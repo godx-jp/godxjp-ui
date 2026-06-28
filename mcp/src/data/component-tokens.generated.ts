@@ -179,9 +179,29 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
   },
   {
+    "name": "--stat-card-icon-glyph-size",
+    "value": "1.25rem",
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+  },
+  {
+    "name": "--stat-card-icon-radius",
+    "value": "var(--radius-md)",
+    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+  },
+  {
+    "name": "--stat-card-icon-background",
+    "value": "hsl(var(--primary) / 0.1)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45)."
+  },
+  {
+    "name": "--stat-card-icon-foreground",
+    "value": "hsl(var(--primary))",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45)."
+  },
+  {
     "name": "--stat-card-delta-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45)."
   },
   {
     "name": "--control-height-compact",

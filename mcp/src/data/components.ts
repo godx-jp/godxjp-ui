@@ -1323,6 +1323,12 @@ export default function InvoiceList({
       },
       { name: "hint", type: "ReactNode", description: "Secondary context below the value." },
       {
+        name: "icon",
+        type: "LucideIcon",
+        description:
+          "Optional leading icon rendered as a tinted medallion above the metric. Decorative (aria-hidden) — the label carries the meaning. Tint via the --stat-card-icon-{background,foreground} tokens (default a soft brand-primary wash).",
+      },
+      {
         name: "delta",
         type: "ReactNode",
         description: "Compact trend text beside the value. Sign-aware tone (+ green / - red).",

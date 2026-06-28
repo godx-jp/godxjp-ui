@@ -61,5 +61,11 @@
   --stat-card-hint-font-size: var(--font-size-xs);
   --stat-card-gap: var(--space-stack-xs);
   --stat-card-icon-size: 2.25rem;
+  --stat-card-icon-glyph-size: 1.25rem;
+  --stat-card-icon-radius: var(--radius-md);
+  /* Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding
+   * --primary or these tokens directly (rule #44/#45). */
+  --stat-card-icon-background: hsl(var(--primary) / 0.1);
+  --stat-card-icon-foreground: hsl(var(--primary));
   --stat-card-delta-font-size: var(--font-size-xs);
 }

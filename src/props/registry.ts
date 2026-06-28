@@ -1095,7 +1095,7 @@ export const COMPONENT_PROP_REGISTRY = {
   StatCardProp: {
     group: "data-display",
     file: "components/data-display/card.tsx",
-    vocabulary: ["TitleProp", "ToneProp", "ClassNameProp"],
+    vocabulary: ["TitleProp", "ToneProp", "IconProp", "ClassNameProp"],
   },
   ResponsiveGridProp: {
     group: "layout",

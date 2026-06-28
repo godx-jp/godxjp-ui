@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import type { LucideIcon } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 
@@ -174,6 +175,9 @@ export type StatCardProps = React.HTMLAttributes<HTMLDivElement> &
     label: React.ReactNode;
     value: React.ReactNode;
     hint?: React.ReactNode;
+    /** Optional leading icon, rendered as a tinted medallion above the metric. Decorative
+     *  (aria-hidden) — the label carries the meaning. Tint via --stat-card-icon-* tokens. */
+    icon?: LucideIcon;
     /** Optional compact trend text beside the value. Avoid badge-like deltas. */
     delta?: React.ReactNode;
     /** KPI layout: stacked = design default, inline = label left / value right. */
@@ -206,6 +210,7 @@ export function StatCard({
   label,
   value,
   hint,
+  icon: Icon,
   delta,
   layout = "stacked",
   align = "start",
@@ -227,6 +232,11 @@ export function StatCard({
       data-stat-align={align}
       {...props}
     >
+      {Icon ? (
+        <span data-slot="stat-card-icon" aria-hidden="true">
+          <Icon />
+        </span>
+      ) : null}
       <div data-slot="stat-card-body">
         <div data-slot="stat-card-label">{label}</div>
         {hint && layout === "inline" ? <div data-slot="stat-card-hint">{hint}</div> : null}
