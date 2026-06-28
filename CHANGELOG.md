@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.5.0] - 2026-06-28
+
 ### Changed
 
 - **Scoped / multi-tenant theming now works for colours and radius.** The `@theme` block in
