@@ -100,15 +100,16 @@
    * — the CTA then carries a brand glow with no component change. */
   --shadow-glow: 0 0 0 0 transparent;
 
-  /* FOCUS RING — the single global knob for the keyboard-focus affordance (WCAG 2.4.7 / 2.4.11).
+  /* FOCUS RING — the two global knobs for the keyboard-focus affordance (WCAG 2.4.7 / 2.4.11).
    * `--focus-ring-color` is the themeable hue (HSL components, defaults to --ring) and
-   * `--focus-ring-width` the standard thickness; override either ONCE to retint or resize EVERY
-   * focus ring in the system. `--shadow-focus` is the composite a control's :focus-visible reads.
-   * Translucent focus-WITHIN halos keep their own spread/alpha but still read --focus-ring-color,
-   * so a service's retint reaches them too. */
+   * `--focus-ring-width` the standard thickness; override either ONCE — even scoped under a
+   * `[data-tenant]` — to retint or resize EVERY focus ring. Both are leaf tokens (a colour and a
+   * length, no nested var) so they re-resolve at the element that paints the ring; every
+   * :focus-visible rule reads them DIRECTLY as `0 0 0 var(--focus-ring-width)
+   * hsl(var(--focus-ring-color))`, never via an intermediate composite (a `:root`-declared
+   * composite that wraps these would freeze at :root and ignore a scoped override). */
   --focus-ring-color: var(--ring);
   --focus-ring-width: 2px;
-  --shadow-focus: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
 
   /* GRADIENTS — opt-in decorative fills exposed at the token layer so a service can paint a hero
    * banner, a brand wash, or a radial brand glow purely by configuring tokens (cardinal rule #45).

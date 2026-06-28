@@ -85,7 +85,7 @@
 
   .ui-button:focus-visible {
     outline: none;
-    box-shadow: var(--shadow-focus);
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
   }
 
   .ui-button:disabled {
@@ -279,7 +279,7 @@
   .ui-slider-thumb:focus-visible,
   .ui-switch:focus-visible {
     outline: none;
-    box-shadow: var(--shadow-focus);
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
   }
 
   .ui-checkbox:disabled,
@@ -648,7 +648,7 @@
 }
 .ui-otp-slot[data-active="true"] {
   z-index: 1;
-  box-shadow: var(--shadow-focus);
+  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
 }
 .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot {
   border-color: hsl(var(--destructive));
@@ -737,7 +737,7 @@
   background: hsl(var(--background));
 }
 .ui-tag-input:focus-within {
-  box-shadow: var(--shadow-focus);
+  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
   border-color: hsl(var(--focus-ring-color));
 }
 .ui-tag-input-disabled {
