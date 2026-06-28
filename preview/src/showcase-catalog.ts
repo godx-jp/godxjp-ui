@@ -32,6 +32,14 @@ export type ShowcaseEntry = {
 
 export const SHOWCASES: ShowcaseEntry[] = [
   {
+    id: "tiximax-portal",
+    title: "TIXIMAX — Cổng khách hàng (token re-theme)",
+    description:
+      "Chứng minh re-theme CHỈ bằng token: cùng bộ component @godxjp/ui nhưng khoác bộ token TIXIMAX (gold/navy/đỏ · Source Sans 3 · bo 14px · shadow ám navy). Không sửa/thêm component.",
+    tag: "Theme",
+    load: () => import("../../docs/showcase/tiximax-portal"),
+  },
+  {
     id: "case1-warehouse-dashboard",
     title: "Tổng quan kho (Warehouse Dashboard)",
     description:
