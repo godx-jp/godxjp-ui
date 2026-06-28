@@ -52,6 +52,10 @@ export type ButtonSizeProp = SizeProp | "default" | "icon" | "icon-xs" | "icon-s
 /** Form layout — label position relative to its control (Ant-style). */
 export type FormLayoutProp = "vertical" | "horizontal" | "inline";
 
+/** Descriptions layout — label over value (`vertical`) or beside it (`horizontal`); the
+ *  `FormLayoutProp` subset that a metadata grid supports (no `inline`). */
+export type DescriptionsLayoutProp = Extract<FormLayoutProp, "vertical" | "horizontal">;
+
 /** Responsive breakpoint name (mobile-first); used by `collapseBelow` etc. */
 export type BreakpointProp = "sm" | "md" | "lg" | "xl";
 

@@ -257,6 +257,11 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description: "Form label layout: vertical | horizontal | inline",
   },
+  DescriptionsLayoutProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description: "Descriptions label layout: vertical (over) | horizontal (beside)",
+  },
   BreakpointProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",

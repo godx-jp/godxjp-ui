@@ -1,0 +1,9 @@
+/* Descriptions component tokens. */
+
+:root {
+  /* Width of the label column when <Descriptions layout="horizontal">. Labels align to this
+   * shared column so the values line up (the horizontal-detail look, mirroring <Form layout>).
+   * A rem value gives a fixed aligned column; set `max-content` to size each label to its text.
+   * (rule #44/#45 — a service theme tunes it here instead of forking CSS.) */
+  --descriptions-label-width: 8rem;
+}
