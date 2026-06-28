@@ -33,7 +33,9 @@ export const SheetOverlay = React.forwardRef<
     ref={ref}
     data-slot="sheet-overlay"
     className={cn(
-      "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
+      // Scrim colour comes from the shared --overlay-background token (see dialog-layout.css),
+      // so a service tints every overlay's backdrop from one knob instead of a baked bg-black/50.
+      "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 fixed inset-0 z-50",
       className,
     )}
     {...props}

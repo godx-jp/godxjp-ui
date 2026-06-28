@@ -22,6 +22,11 @@
   --space-page-active-y: var(--space-page-y);
   --space-section-active: var(--space-section);
 
+  /* Modal scrim — the single backdrop colour shared by EVERY overlay (Dialog, AlertDialog, Sheet,
+   * Drawer). Themeable (rule #44) so a service tints the wash to its brand once, e.g. a navy
+   * `--overlay-background: rgb(12 26 49 / .55)`, instead of forking each overlay. */
+  --overlay-background: rgb(0 0 0 / 0.5);
+
   /* Full-bleed rule under the PageContainer header. OFF by default — the title/body
    * gap already separates them; a divider is a service-theme opt-in:
    * `--page-header-divider: 1px solid hsl(var(--border));` */
