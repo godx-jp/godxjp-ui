@@ -64,15 +64,19 @@ import {
 
 type BadgeTone = NonNullable<BadgeProps["tone"]>;
 
-// ── The ENTIRE TIXIMAX customisation: a scoped token block. No component touched. ──────────
-// NOTE: tokens go on :root, not a scoped [data-tenant] selector. Tailwind v4 declares the color
-// utilities' --color-* in @theme {} (computed at :root), so a *scoped* --primary override would NOT
-// reach bg-primary etc. (the brand colour would stay the default blue). A single-brand :root theme —
-// exactly the CUSTOMER-THEMING "Customer apps" path — re-resolves them. This page is its own document,
-// so :root is page-scoped. (Multi-tenant scoping needs @theme inline — flagged to the maintainer.)
+// ── The ENTIRE TIXIMAX customisation: a SCOPED token block. No component touched. ───────────
+// The whole brand lives under `[data-tenant="tiximax"]` — true multi-tenant theming. This works
+// because the library declares its colour/radius utilities with `@theme inline`, so `bg-primary`
+// etc. inline `hsl(var(--primary))` and re-resolve a scoped --primary at the element (a plain
+// @theme froze them at :root). Colours, the focus ring (--focus-ring-color/-width), the brand glow
+// (--shadow-glow), gradients (--gradient-hero/-glow), the card lift (--card-shadow) and the modal
+// scrim (--overlay-background) are ALL configured here as tokens — nothing else.
+// Scoped note: radius derives through intermediate tokens (--card-radius/--control-radius/
+// --radius-*) that compute at their declaring element, so a scoped re-theme re-declares them here
+// (a :root single-brand theme needs only --radius). See docs/CUSTOMER-THEMING.md.
 const THEME = `
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;0,900&display=swap');
-:root {
+[data-tenant="tiximax"] {
   /* Brand / action */
   --primary: 41 73% 53%;             /* gold #DFA930 */
   --primary-foreground: 217 61% 12%; /* navy text on gold */
@@ -97,11 +101,23 @@ const THEME = `
   --warning: 41 73% 53%;  --warning-foreground: 217 61% 12%;  /* = brand gold */
   --destructive: 12 83% 44%; --destructive-foreground: 0 0% 100%;
   --info: 217 69% 47%; --info-foreground: 0 0% 100%;
-  /* Shape, shadow, type - single knobs that propagate */
+  /* Shape - base radius + exact TIXIMAX steps; re-declare the intermediates so the scope re-resolves */
   --radius: 0.875rem;                /* 14px card */
   --radius-xs: 4px; --radius-sm: 6px; --radius-md: 10px;
   --radius-lg: 14px; --radius-xl: 20px; --radius-2xl: 28px;
-  --shadow-color: 12 26 49;          /* navy-tinted elevation */
+  --card-radius: var(--radius); --control-radius: var(--radius);
+  /* Elevation - navy-tinted ramp + a soft navy card lift + a gold CTA glow */
+  --shadow-color: 12 26 49;
+  --card-shadow: 0 1px 2px rgb(12 26 49 / 0.06), 0 10px 28px -14px rgb(12 26 49 / 0.22);
+  --shadow-glow: 0 6px 18px hsl(41 73% 53% / 0.34);
+  /* Focus ring → brand gold (also covered by --ring, set explicitly for clarity) */
+  --focus-ring-color: 41 73% 53%;
+  /* Gradients - a faint gold hero wash (keeps navy text readable) + an ambient corner glow */
+  --gradient-hero: linear-gradient(180deg, hsl(42 81% 96%), transparent);
+  --gradient-glow: radial-gradient(50% 60% at 92% -8%, hsl(41 73% 53% / 0.10), transparent 70%);
+  /* Modal scrim → navy */
+  --overlay-background: rgb(12 26 49 / 0.55);
+  /* Type */
   --font-size-base: 1rem;            /* 16px TIXIMAX body */
   --font-family-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, system-ui, sans-serif;
