@@ -11,7 +11,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Typography"
-      subtitle="M PLUS 2 · 14 / 1.7 body · headings 20/18/14/13 @ 500 · three weights only"
+      subtitle="Noto Sans JP (vi → Montserrat) · 14 / 1.7 body · headings 20/18/14/13 @ 500 · three weights only"
     >
       <Flex direction="col" gap="lg">
         <Card>
@@ -77,7 +77,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Size scale</CardTitle>
             <CardDescription>
-              Six steps, M PLUS 2 one notch larger than the JP-dense base. text-sm (14px) is body;
+              Six steps on the JP-dense base. text-sm (14px) is body;
               text-base+ are for stats / large numerals, not running copy.
             </CardDescription>
           </CardHeader>
@@ -97,8 +97,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Font family</CardTitle>
             <CardDescription>
-              font-sans · M PLUS 2 (JIS L1+L2 kanji, kana, Latin, Vietnamese subset). font-mono · the
-              UI-monospace stack for code, IDs and aligned digits.
+              font-sans · Noto Sans JP by default (Japanese + Latin); the Vietnamese locale
+              (&lt;html lang=&quot;vi&quot;&gt;) swaps to Montserrat (incl. its Vietnamese subset).
+              font-mono · the UI-monospace stack for code, IDs and aligned digits.
             </CardDescription>
           </CardHeader>
           <CardContent>

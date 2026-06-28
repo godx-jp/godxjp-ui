@@ -6,7 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [16.3.0] - 2026-06-28
+## [16.4.0] - 2026-06-28
+
+### Changed
+
+- **Default sans font is now Noto Sans JP; the Vietnamese locale uses Montserrat.** The bundled
+  `@fontsource/m-plus-2` is replaced by `@fontsource/noto-sans-jp` (default, JA + Latin) and
+  `@fontsource/montserrat` (incl. its `vietnamese` subset). `--font-family-sans` leads with Noto
+  Sans JP; a `:root:lang(vi)` rule in `styles/index.css` swaps it to Montserrat. AppProvider now
+  reflects the locale on `<html lang>` (previously only `dir`), which drives the swap — so a
+  `vi` app renders Montserrat (with Noto Sans JP retained as the JP fallback), every other locale
+  renders Noto Sans JP. The browser only downloads the subset files the rendered text needs.
 
 ### Added
 

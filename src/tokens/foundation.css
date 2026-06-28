@@ -95,15 +95,13 @@
 
   /* Sans stack — script-aware per the international convention for mixed
    * Latin/CJK UI: native Latin system fonts FIRST (clean, familiar English &
-   * Vietnamese on every OS), then the bundled "M PLUS 2" + Hiragino / Noto Sans JP
-   * as the CJK fallback. Browsers resolve fonts per-glyph, so Latin renders in the
-   * system sans while 日本語 falls through to M PLUS 2 (still shipped, so JP is
-   * consistent across machines). Listing M PLUS 2 first — its Latin glyphs are
-   * tuned to harmonise with kana, not for standalone English — made English read
-   * oddly; Latin-first fixes that without losing the bundled JP face. */
+   * DEFAULT face is the bundled "Noto Sans JP" (Japanese + clean Latin), with system sans as
+   * the network/loading fallback. The Vietnamese locale swaps this token to Montserrat via
+   * `:root:lang(vi)` in styles/index.css (set by AppProvider's <html lang>). Browsers resolve
+   * fonts per-glyph, so 日本語 and Latin both render in Noto Sans JP when it's loaded. */
   --font-family-sans:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    system-ui, "M PLUS 2", "Hiragino Sans", "Noto Sans JP", "Be Vietnam Pro", sans-serif;
+    "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    system-ui, "Hiragino Sans", sans-serif;
   --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* ── Type scale — GOLDEN-RATIO modular scale (Ant/Tailwind model). ONE base + ONE ratio; every
    * step is base × ratioⁿ, so the whole scale stays in golden proportion. `--font-size-ratio` is
