@@ -64,7 +64,14 @@
 @import "./navigation-layout.css";
 @import "./chart-layout.css";
 
-@theme {
+/* `inline` (NOT a bare @theme): Tailwind inlines each expression — e.g. `hsl(var(--primary))` —
+ * directly into every utility (`bg-primary` becomes `background-color: hsl(var(--primary))`) instead
+ * of emitting `var(--color-primary)` computed once at :root. This is THE enabler for scoped /
+ * multi-tenant theming: a `[data-tenant]{ --primary: … }` override now re-resolves at the element,
+ * so colors and radius propagate into a subtree (a plain @theme froze them at :root, so scoped
+ * overrides never reached the color utilities). Components read raw tokens like `hsl(var(--primary))`
+ * directly in their own CSS, so they re-theme the same way. */
+@theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
