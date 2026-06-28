@@ -114,6 +114,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
   },
   {
+    "name": "--card-shadow",
+    "value": "none",
+    "description": "Resting elevation — quiet by default (rule #44): cards are flat (1px border, no shadow) in the * dxs-kintai baseline. A service that wants lifted cards sets this to an elevation token once, * e.g. --card-shadow: var(--shadow-sm), and every Card picks up the shadow with no markup change."
+  },
+  {
     "name": "--card-accent-rail-width",
     "value": "6px",
     "description": "Accent edge — width of the semantic leading-edge stripe (data-accent). * Tokenised (rule #44) so a service theme can re-tune it without forking CSS. * The slot padding compensation in card-layout.css subtracts the same token, * so content stays aligned on the shell whatever the rail width."
@@ -250,7 +255,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--control-focus-ring-width",
-    "value": "2px",
+    "value": "var(--focus-ring-width)",
     "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
