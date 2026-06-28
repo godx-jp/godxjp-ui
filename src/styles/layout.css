@@ -345,6 +345,9 @@
     gap: var(--space-stack-sm);
     padding-bottom: var(--page-header-pad-bottom);
     border-bottom: var(--page-header-divider);
+    /* Hero banner hook — invisible by default (--gradient-hero: none); a service paints a hero
+     * gradient across the page header (full-bleed) by configuring the token alone. */
+    background-image: var(--gradient-hero);
   }
 
   .ui-page-header-row {

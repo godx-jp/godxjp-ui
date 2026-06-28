@@ -56,7 +56,7 @@
 
   .ui-toggle:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.35);
+    box-shadow: 0 0 0 3px hsl(var(--focus-ring-color) / 0.35);
   }
 
   .ui-toggle:disabled,
@@ -85,7 +85,7 @@
 
   .ui-button:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 var(--control-focus-ring-width) hsl(var(--ring));
+    box-shadow: var(--shadow-focus);
   }
 
   .ui-button:disabled {
@@ -102,7 +102,9 @@
   .ui-button--default {
     background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
-    box-shadow: var(--shadow-sm);
+    /* Brand glow layers on top of the resting shadow; --shadow-glow is invisible by default
+     * (quiet) so a service opts the CTA halo in by setting the token alone. */
+    box-shadow: var(--shadow-sm), var(--shadow-glow);
   }
 
   .ui-button--default:hover {
@@ -277,7 +279,7 @@
   .ui-slider-thumb:focus-visible,
   .ui-switch:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 var(--control-focus-ring-width) hsl(var(--ring));
+    box-shadow: var(--shadow-focus);
   }
 
   .ui-checkbox:disabled,
@@ -646,13 +648,13 @@
 }
 .ui-otp-slot[data-active="true"] {
   z-index: 1;
-  box-shadow: 0 0 0 2px hsl(var(--ring));
+  box-shadow: var(--shadow-focus);
 }
 .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot {
   border-color: hsl(var(--destructive));
 }
 .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot[data-active="true"] {
-  box-shadow: 0 0 0 2px hsl(var(--destructive));
+  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
 }
 .ui-otp-container:has(.ui-otp-input:disabled) .ui-otp-slot {
   cursor: not-allowed;
@@ -717,7 +719,7 @@
   fill: currentColor;
 }
 .ui-rating-star:focus-visible {
-  outline: 2px solid hsl(var(--ring));
+  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color));
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -735,8 +737,8 @@
   background: hsl(var(--background));
 }
 .ui-tag-input:focus-within {
-  box-shadow: 0 0 0 2px hsl(var(--ring));
-  border-color: hsl(var(--ring));
+  box-shadow: var(--shadow-focus);
+  border-color: hsl(var(--focus-ring-color));
 }
 .ui-tag-input-disabled {
   opacity: 0.6;

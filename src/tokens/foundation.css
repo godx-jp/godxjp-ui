@@ -93,6 +93,34 @@
     0 20px 25px -5px rgb(var(--shadow-color) / 0.1), 0 8px 10px -6px rgb(var(--shadow-color) / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(var(--shadow-color) / 0.25);
 
+  /* Brand GLOW — an opt-in coloured halo for the primary CTA (and any surface that opts in).
+   * Quiet by default (cardinal rule #44): a zero-size transparent shadow, which is invalid as a
+   * bare `none` inside a comma shadow list but valid as `0 0 0 0 transparent`. A service turns it
+   * on by overriding the whole value once, e.g. `--shadow-glow: 0 8px 20px hsl(var(--primary) / .32)`
+   * — the CTA then carries a brand glow with no component change. */
+  --shadow-glow: 0 0 0 0 transparent;
+
+  /* FOCUS RING — the single global knob for the keyboard-focus affordance (WCAG 2.4.7 / 2.4.11).
+   * `--focus-ring-color` is the themeable hue (HSL components, defaults to --ring) and
+   * `--focus-ring-width` the standard thickness; override either ONCE to retint or resize EVERY
+   * focus ring in the system. `--shadow-focus` is the composite a control's :focus-visible reads.
+   * Translucent focus-WITHIN halos keep their own spread/alpha but still read --focus-ring-color,
+   * so a service's retint reaches them too. */
+  --focus-ring-color: var(--ring);
+  --focus-ring-width: 2px;
+  --shadow-focus: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
+
+  /* GRADIENTS — opt-in decorative fills exposed at the token layer so a service can paint a hero
+   * banner, a brand wash, or a radial brand glow purely by configuring tokens (cardinal rule #45).
+   * All default to a transparent no-op so nothing renders until a theme opts in; a surface that
+   * supports a gradient reads one of these as its background-image. Examples a service might set:
+   *   --gradient-brand: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+   *   --gradient-hero:  linear-gradient(180deg, hsl(var(--secondary)), hsl(var(--background)));
+   *   --gradient-glow:  radial-gradient(60% 80% at 50% 0%, hsl(var(--primary) / .25), transparent); */
+  --gradient-brand: none;
+  --gradient-hero: none;
+  --gradient-glow: none;
+
   /* Sans stack — script-aware per the international convention for mixed
    * Latin/CJK UI: native Latin system fonts FIRST (clean, familiar English &
    * DEFAULT face is the bundled "Noto Sans JP" (Japanese + clean Latin), with system sans as

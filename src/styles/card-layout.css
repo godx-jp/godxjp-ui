@@ -31,6 +31,8 @@
     border-radius: var(--card-radius);
     background: hsl(var(--card-background));
     color: hsl(var(--card-foreground));
+    /* Resting elevation reads a token (default none) so a service theme can lift every card. */
+    box-shadow: var(--card-shadow);
     overflow: hidden;
   }
 

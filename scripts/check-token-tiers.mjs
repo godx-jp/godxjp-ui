@@ -55,7 +55,7 @@ for (const file of cssFiles) {
   if (publicRawRamp.test(css)) failures.push(`${rel}: public raw gray/blue ramp token`);
 
   if (rel === "src/styles/index.css") {
-    const themeBlock = css.match(/@theme\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+    const themeBlock = css.match(/@theme(?:\s+inline)?\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
     if (hexThemeColor.test(themeBlock)) {
       failures.push(`${rel}: @theme color exports must reference tokens, not literal hex`);
     }

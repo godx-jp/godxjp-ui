@@ -83,8 +83,8 @@
   }
 
   .ui-time-input:focus-visible {
-    border-color: hsl(var(--ring));
-    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.3);
+    border-color: hsl(var(--focus-ring-color));
+    box-shadow: 0 0 0 3px hsl(var(--focus-ring-color) / 0.3);
   }
 
   .ui-time-input[aria-invalid="true"] {
