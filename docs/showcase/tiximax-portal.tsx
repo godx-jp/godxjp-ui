@@ -21,15 +21,19 @@
  */
 import * as React from "react";
 import {
+  Bell,
   Boxes,
+  CheckCircle2,
   CreditCard,
   FileText,
   Headphones,
   LayoutDashboard,
   type LucideIcon,
+  Package,
   Plane,
   Plus,
   Search,
+  Ship,
   Warehouse,
   Wallet,
   AlertTriangle,
@@ -38,6 +42,8 @@ import {
 
 import { Button, Text } from "@godxjp/ui/general";
 import {
+  Avatar,
+  AvatarFallback,
   Badge,
   type BadgeProps,
   Card,
@@ -53,6 +59,7 @@ import {
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
+import { SearchInput } from "@godxjp/ui/data-entry";
 import {
   AppShell,
   Flex,
@@ -139,37 +146,48 @@ const THEME = `
 `;
 
 // ── Mock data ─────────────────────────────────────────────────────────────────────────────
-const KPIS: Array<{ label: string; value: string; delta: string; inverse?: boolean }> = [
-  { label: "Đơn đang xử lý", value: "12", delta: "+3 hôm nay" },
-  { label: "Đang vận chuyển", value: "8", delta: "Nhật → Việt Nam" },
-  { label: "Đã giao tháng này", value: "47", delta: "+9 vs tháng trước" },
-  { label: "Công nợ", value: "¥18,400", delta: "1 hoá đơn quá hạn", inverse: true },
+const KPIS: Array<{
+  label: string;
+  value: string;
+  delta: string;
+  inverse?: boolean;
+  icon: LucideIcon;
+}> = [
+  { label: "Đơn đang xử lý", value: "12", delta: "+3 hôm nay", icon: Package },
+  { label: "Đang vận chuyển", value: "8", delta: "Nhật → Việt Nam", icon: Ship },
+  { label: "Đã giao tháng này", value: "47", delta: "+9 vs tháng trước", icon: CheckCircle2 },
+  { label: "Công nợ", value: "¥18,400", delta: "1 hoá đơn quá hạn", inverse: true, icon: Wallet },
 ];
 
-const QUEUE: Array<{ icon: LucideIcon; tone: BadgeTone; title: string; meta: string; action: string }> =
-  [
-    {
-      icon: ReceiptText,
-      tone: "warning",
-      title: "Báo giá BG-2041 chờ bạn duyệt",
-      meta: "ZOZOTOWN · 3 sản phẩm · 24.800¥ · hết hạn sau 6 giờ",
-      action: "Xem báo giá",
-    },
-    {
-      icon: AlertTriangle,
-      tone: "destructive",
-      title: "Hoá đơn INV-2080 quá hạn 4 ngày",
-      meta: "9.800¥ · vui lòng thanh toán để tiếp tục gom đơn",
-      action: "Thanh toán",
-    },
-    {
-      icon: Plane,
-      tone: "info",
-      title: "Kiện PKG-000038 sẵn sàng xuất kho",
-      meta: "8 sản phẩm · 2,8kg · Saitama → Hà Nội",
-      action: "Theo dõi",
-    },
-  ];
+const QUEUE: Array<{
+  icon: LucideIcon;
+  tone: BadgeTone;
+  title: string;
+  meta: string;
+  action: string;
+}> = [
+  {
+    icon: ReceiptText,
+    tone: "warning",
+    title: "Báo giá BG-2041 chờ bạn duyệt",
+    meta: "ZOZOTOWN · 3 sản phẩm · 24.800¥ · hết hạn sau 6 giờ",
+    action: "Xem báo giá",
+  },
+  {
+    icon: AlertTriangle,
+    tone: "destructive",
+    title: "Hoá đơn INV-2080 quá hạn 4 ngày",
+    meta: "9.800¥ · vui lòng thanh toán để tiếp tục gom đơn",
+    action: "Thanh toán",
+  },
+  {
+    icon: Plane,
+    tone: "info",
+    title: "Kiện PKG-000038 sẵn sàng xuất kho",
+    meta: "8 sản phẩm · 2,8kg · Saitama → Hà Nội",
+    action: "Theo dõi",
+  },
+];
 
 const JOURNEY: Array<{ stage: string; pct: number; tone: "success" | "warning" }> = [
   { stage: "Mua hộ tại Nhật", pct: 100, tone: "success" },
@@ -186,11 +204,46 @@ const ORDERS: Array<{
   tone: BadgeTone;
   total: string;
 }> = [
-  { id: "TXM-100241", product: "Áo khoác UNIQLO ×2", source: "Nhật", status: "Đang giao", tone: "info", total: "¥12,800" },
-  { id: "TXM-100240", product: "Mỹ phẩm Shiseido", source: "Nhật", status: "Tại kho VN", tone: "success", total: "¥8,400" },
-  { id: "TXM-100239", product: "Giày Nike Air", source: "Hàn", status: "Chờ thanh toán", tone: "warning", total: "₩96,000" },
-  { id: "TXM-100238", product: "Đồng hồ Casio", source: "Nhật", status: "Mua hộ", tone: "muted", total: "¥6,200" },
-  { id: "TXM-100237", product: "Sữa Meiji ×6", source: "Nhật", status: "Đã giao", tone: "success", total: "¥9,900" },
+  {
+    id: "TXM-100241",
+    product: "Áo khoác UNIQLO ×2",
+    source: "Nhật",
+    status: "Đang giao",
+    tone: "info",
+    total: "¥12,800",
+  },
+  {
+    id: "TXM-100240",
+    product: "Mỹ phẩm Shiseido",
+    source: "Nhật",
+    status: "Tại kho VN",
+    tone: "success",
+    total: "¥8,400",
+  },
+  {
+    id: "TXM-100239",
+    product: "Giày Nike Air",
+    source: "Hàn",
+    status: "Chờ thanh toán",
+    tone: "warning",
+    total: "₩96,000",
+  },
+  {
+    id: "TXM-100238",
+    product: "Đồng hồ Casio",
+    source: "Nhật",
+    status: "Mua hộ",
+    tone: "muted",
+    total: "¥6,200",
+  },
+  {
+    id: "TXM-100237",
+    product: "Sữa Meiji ×6",
+    source: "Nhật",
+    status: "Đã giao",
+    tone: "success",
+    total: "¥9,900",
+  },
 ];
 
 const NAV_SECTIONS: SidebarSectionProp[] = [
@@ -233,9 +286,23 @@ export default function TiximaxPortalShowcase() {
         sidebar={sidebar}
         topbarLeft={<Text as="strong">Cổng khách hàng</Text>}
         topbarRight={
-          <Text size="xs" tone="muted" tabular>
-            Nguyễn An · ID 88241
-          </Text>
+          <Flex direction="row" gap="sm" align="center">
+            <SearchInput
+              defaultValue=""
+              placeholder="Tìm mã đơn, sản phẩm…"
+              aria-label="Tìm kiếm"
+              className="w-64"
+            />
+            <Button variant="outline" size="icon" aria-label="Thông báo">
+              <Bell aria-hidden="true" />
+            </Button>
+            <Avatar>
+              <AvatarFallback>NA</AvatarFallback>
+            </Avatar>
+            <Text size="xs" tone="muted" tabular>
+              Nguyễn An · VIP
+            </Text>
+          </Flex>
         }
       >
         <PageContainer
@@ -258,7 +325,14 @@ export default function TiximaxPortalShowcase() {
             {/* KPI row */}
             <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
               {KPIS.map((k) => (
-                <StatCard key={k.label} label={k.label} value={k.value} delta={k.delta} inverse={k.inverse} />
+                <StatCard
+                  key={k.label}
+                  icon={k.icon}
+                  label={k.label}
+                  value={k.value}
+                  delta={k.delta}
+                  inverse={k.inverse}
+                />
               ))}
             </ResponsiveGrid>
 
@@ -303,7 +377,12 @@ export default function TiximaxPortalShowcase() {
                 <CardContent>
                   <Flex direction="col" gap="md">
                     {JOURNEY.map((j) => (
-                      <Progress key={j.stage} value={j.pct} label={`${j.stage} · ${j.pct}%`} tone={j.tone} />
+                      <Progress
+                        key={j.stage}
+                        value={j.pct}
+                        label={`${j.stage} · ${j.pct}%`}
+                        tone={j.tone}
+                      />
                     ))}
                   </Flex>
                 </CardContent>
