@@ -47,7 +47,9 @@ export function GetStartedPage() {
               {SHOWCASES.map((s) => (
                 <a
                   key={s.id}
-                  href={`/showcase/${s.id}`}
+                  // Include the deployed base (`/` in dev, `/<repo>/` on GitHub Pages) — a bare
+                  // `/showcase/<id>` would resolve to the ORIGIN root and 404 off the project site.
+                  href={`${import.meta.env.BASE_URL}showcase/${s.id}`}
                   target="_blank"
                   rel="noreferrer"
                   className="block no-underline"
