@@ -8,7 +8,7 @@
     background: hsl(var(--popover));
     color: hsl(var(--popover-foreground));
     padding: var(--space-1);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
   }
 
   .ui-context-menu-item,
@@ -55,8 +55,8 @@
   .ui-menubar-sub-trigger:hover,
   .ui-navigation-menu-link:hover,
   .ui-navigation-menu-item:hover {
-    background: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
+    background: var(--menubar-item-hover-background);
+    color: var(--menubar-item-hover-foreground);
   }
 
   .ui-context-menu-item[data-state="open"],
@@ -68,8 +68,8 @@
   .ui-menubar-sub-trigger[data-state="open"],
   .ui-navigation-menu-link[data-highlighted],
   .ui-navigation-menu-item[data-focus-visible] {
-    background: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
+    background: var(--menubar-item-hover-background);
+    color: var(--menubar-item-hover-foreground);
   }
 
   .ui-context-menu-item[data-variant="destructive"],
@@ -146,7 +146,7 @@
     background: hsl(var(--popover));
     color: hsl(var(--popover-foreground));
     padding: var(--space-1);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
   }
 
   .ui-context-menu-sub-trigger-icon,
@@ -179,13 +179,13 @@
     background: hsl(var(--popover));
     color: hsl(var(--popover-foreground));
     padding: var(--space-1);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
   }
 
   .ui-menubar-trigger[data-state="open"],
   .ui-menubar-sub-trigger[data-state="open"] {
-    background: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
+    background: var(--menubar-item-hover-background);
+    color: var(--menubar-item-hover-foreground);
   }
 
   .ui-navigation-menu {
@@ -233,7 +233,7 @@
     background: hsl(var(--popover));
     color: hsl(var(--popover-foreground));
     padding: var(--space-1);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
   }
 
   .ui-navigation-menu-link {

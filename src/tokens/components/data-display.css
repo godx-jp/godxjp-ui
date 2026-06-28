@@ -5,4 +5,26 @@
   --tree-item-title-font-size: var(--font-size-xs);
   --tree-item-description-font-size: var(--font-size-xs);
   --timeline-note-font-size: var(--font-size-xs);
+
+  /* Avatar surface — reads the muted role by default. A service can re-tint the
+     placeholder fill once (e.g. --avatar-background: hsl(var(--accent))). */
+  --avatar-background: hsl(var(--muted));
+  /* Optional role wash over the avatar (default transparent = invisible, rule #44).
+     Painted as an overlay so a service sets --avatar-tint: hsl(var(--primary) / 0.08). */
+  --avatar-tint: transparent;
+
+  /* Progress track + fill — quiet defaults equal the current literals (rule #44).
+     Track reads secondary, fill reads success; a service re-tones once. */
+  --progress-track-background: hsl(var(--secondary));
+  --progress-fill-background: hsl(var(--success));
+
+  /* Timeline accents — dot/line roles, defaults unchanged (rule #44). */
+  --timeline-dot-done-background: hsl(var(--success));
+  --timeline-dot-current-background: hsl(var(--primary));
+  --timeline-line-completed-background: hsl(var(--primary));
+
+  /* Tree active item — border + soft bg tint over the primary role.
+     Defaults equal the current literals (rule #44). */
+  --tree-item-active-border: hsl(var(--primary) / 0.3);
+  --tree-item-active-background: hsl(var(--primary) / 0.05);
 }

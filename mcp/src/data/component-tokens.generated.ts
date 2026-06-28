@@ -96,12 +96,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-header-background",
     "value": "var(--muted)",
-    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
+    "description": "Banded-header fill — already role-tintable (rule #45): a service points this at any role, * e.g. --card-header-background: var(--primary), and tunes --card-header-background-alpha for * the wash strength. No separate tint token needed."
   },
   {
     "name": "--card-header-background-alpha",
     "value": "0.55",
-    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
+    "description": "Banded-header fill — already role-tintable (rule #45): a service points this at any role, * e.g. --card-header-background: var(--primary), and tunes --card-header-background-alpha for * the wash strength. No separate tint token needed."
   },
   {
     "name": "--card-header-border-bottom",
@@ -115,8 +115,18 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-shadow",
-    "value": "none",
+    "value": "0 0 0 0 transparent",
     "description": "Resting elevation — quiet by default (rule #44): cards are flat (1px border, no shadow) in the * dxs-kintai baseline. A service that wants lifted cards sets this to an elevation token once, * e.g. --card-shadow: var(--shadow-sm), and every Card picks up the shadow with no markup change."
+  },
+  {
+    "name": "--card-glow",
+    "value": "0 0 0 0 transparent",
+    "description": "Brand glow layer — invisible no-op at rest (rule #44). Paired AFTER --card-shadow in the * surface box-shadow so a service can wash every card with the global glow, e.g. * --card-glow: var(--shadow-glow), with no markup change."
+  },
+  {
+    "name": "--card-tint",
+    "value": "transparent",
+    "description": "Fill tint — subtle role wash over the card background (default transparent = invisible). * Painted as an overlay so a service sets --card-tint: hsl(var(--primary) / 0.04) once."
   },
   {
     "name": "--card-accent-rail-width",
@@ -369,84 +379,109 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
   },
   {
+    "name": "--checkbox-checked-background",
+    "value": "hsl(var(--primary))",
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+  },
+  {
+    "name": "--switch-checked-background",
+    "value": "hsl(var(--primary))",
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+  },
+  {
+    "name": "--toggle-on-background",
+    "value": "hsl(var(--primary))",
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+  },
+  {
+    "name": "--slider-track-background",
+    "value": "hsl(var(--primary) / 0.2)",
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+  },
+  {
+    "name": "--slider-range-background",
+    "value": "hsl(var(--primary))",
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+  },
+  {
     "name": "--color-picker-input-width",
     "value": "6.5rem",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--command-list-max-height",
     "value": "min(300px, 50vh)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--command-input-padding-x",
     "value": "var(--space-3)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--command-group-padding",
     "value": "var(--space-1)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--command-item-padding-y",
     "value": "var(--space-2)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--command-item-padding-x",
     "value": "var(--space-2)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--search-input-edge-inset",
     "value": "var(--space-3)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--search-input-start-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--search-input-end-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--choice-description-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--color-picker-hex-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--command-group-heading-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--search-input-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--tag-input-chip-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--toggle-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--button-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Adjacent control sizes, derived from the active --control-height. The ±step * is scaled too so the whole control ladder stays proportional under --scaling."
+    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
   },
   {
     "name": "--control-height-compact",
@@ -477,6 +512,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--timeline-note-font-size",
     "value": "var(--font-size-xs)",
     "description": "Data-display component tokens — small-by-design text knobs (rule #45/#46)."
+  },
+  {
+    "name": "--avatar-background",
+    "value": "hsl(var(--muted))",
+    "description": "Avatar surface — reads the muted role by default. A service can re-tint the placeholder fill once (e.g. --avatar-background: hsl(var(--accent)))."
+  },
+  {
+    "name": "--avatar-tint",
+    "value": "transparent",
+    "description": "Optional role wash over the avatar (default transparent = invisible, rule #44). Painted as an overlay so a service sets --avatar-tint: hsl(var(--primary) / 0.08)."
+  },
+  {
+    "name": "--progress-track-background",
+    "value": "hsl(var(--secondary))",
+    "description": "Progress track + fill — quiet defaults equal the current literals (rule #44). Track reads secondary, fill reads success; a service re-tones once."
+  },
+  {
+    "name": "--progress-fill-background",
+    "value": "hsl(var(--success))",
+    "description": "Progress track + fill — quiet defaults equal the current literals (rule #44). Track reads secondary, fill reads success; a service re-tones once."
+  },
+  {
+    "name": "--timeline-dot-done-background",
+    "value": "hsl(var(--success))",
+    "description": "Timeline accents — dot/line roles, defaults unchanged (rule #44)."
+  },
+  {
+    "name": "--timeline-dot-current-background",
+    "value": "hsl(var(--primary))",
+    "description": "Timeline accents — dot/line roles, defaults unchanged (rule #44)."
+  },
+  {
+    "name": "--timeline-line-completed-background",
+    "value": "hsl(var(--primary))",
+    "description": "Timeline accents — dot/line roles, defaults unchanged (rule #44)."
+  },
+  {
+    "name": "--tree-item-active-border",
+    "value": "hsl(var(--primary) / 0.3)",
+    "description": "Tree active item — border + soft bg tint over the primary role. Defaults equal the current literals (rule #44)."
+  },
+  {
+    "name": "--tree-item-active-background",
+    "value": "hsl(var(--primary) / 0.05)",
+    "description": "Tree active item — border + soft bg tint over the primary role. Defaults equal the current literals (rule #44)."
   },
   {
     "name": "--password-strength-score-font-size",
@@ -549,34 +629,54 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
   },
   {
+    "name": "--dialog-content-glow",
+    "value": "0 0 0 0 transparent",
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
     "name": "--empty-state-space-y",
     "value": "var(--space-10)",
-    "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
   },
   {
     "name": "--empty-state-space-x",
     "value": "var(--space-6)",
-    "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
+    "name": "--empty-state-icon-foreground",
+    "value": "hsl(var(--muted-foreground))",
+    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
+  },
+  {
+    "name": "--empty-state-icon-tint",
+    "value": "hsl(var(--muted))",
+    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
   },
   {
     "name": "--skeleton-row-gap",
     "value": "var(--space-stack-sm)",
-    "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
+    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
   },
   {
     "name": "--skeleton-cell-gap",
     "value": "var(--space-inline-lg)",
-    "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
+    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
   },
   {
     "name": "--skeleton-card-inset",
     "value": "var(--space-section-active)",
-    "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
+    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
   },
   {
     "name": "--skeleton-radius",
     "value": "var(--radius)",
-    "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
+    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
+  },
+  {
+    "name": "--skeleton-background",
+    "value": "hsl(var(--muted))",
+    "description": "Skeleton placeholder fill — defaults to the current literal hsl(var(--muted)); themeable so a * service can tint the shimmer to its surface (rule #44) without forking the keyframes."
   },
   {
     "name": "--form-label-width",
@@ -664,6 +764,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--menubar-item-hover-background",
+    "value": "hsl(var(--accent))",
+    "description": "Menu item hover/highlight tint — reads the accent role; default unchanged."
+  },
+  {
+    "name": "--menubar-item-hover-foreground",
+    "value": "hsl(var(--accent-foreground))",
+    "description": "Menu item hover/highlight tint — reads the accent role; default unchanged."
+  },
+  {
     "name": "--sidebar-section-label-font-size",
     "value": "var(--font-size-2xs)",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
@@ -719,6 +829,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
+    "name": "--sidebar-gradient",
+    "value": "none",
+    "description": "Brand-chrome gradient hooks — opt-in, invisible by default. A service paints * the sidebar/topbar surface by setting these to a gradient (no-op = none)."
+  },
+  {
+    "name": "--topbar-gradient",
+    "value": "none",
+    "description": "Brand-chrome gradient hooks — opt-in, invisible by default. A service paints * the sidebar/topbar surface by setting these to a gradient (no-op = none)."
+  },
+  {
+    "name": "--sidebar-item-active-color",
+    "value": "hsl(var(--primary))",
+    "description": "Sidebar active-item tint/marker — tokenised from the literal hsl(var(--primary)) * usages; defaults are byte-identical to the prior hard-coded values. A service * can re-tune the active sub-item accent without forking CSS."
+  },
+  {
+    "name": "--sidebar-item-active-tint",
+    "value": "hsl(var(--primary))",
+    "description": "Sidebar active-item tint/marker — tokenised from the literal hsl(var(--primary)) * usages; defaults are byte-identical to the prior hard-coded values. A service * can re-tune the active sub-item accent without forking CSS."
+  },
+  {
     "name": "--table-row-height-compact",
     "value": "1.75rem",
     "description": "Table component tokens: row height, cell padding."
@@ -757,5 +887,20 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-pin-shadow",
     "value": "-6px 0 6px -5px hsl(var(--foreground) / 0.12)",
     "description": "Inline-end shadow that lifts a pinned (sticky) action column off the body it scrolls over."
+  },
+  {
+    "name": "--table-row-striped-background",
+    "value": "hsl(var(--muted) / 0.4)",
+    "description": "Row-state tint washes — translucent muted over the opaque base. Defaults equal * the prior literals; a service retints by reading another role (e.g. --primary)."
+  },
+  {
+    "name": "--table-row-hover-background",
+    "value": "hsl(var(--muted) / 0.5)",
+    "description": "Row-state tint washes — translucent muted over the opaque base. Defaults equal * the prior literals; a service retints by reading another role (e.g. --primary)."
+  },
+  {
+    "name": "--table-row-selected-background",
+    "value": "hsl(var(--muted) / 0.3)",
+    "description": "Row-state tint washes — translucent muted over the opaque base. Defaults equal * the prior literals; a service retints by reading another role (e.g. --primary)."
   }
 ];

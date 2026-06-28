@@ -6,6 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Component colour-extensibility slots — every component is now token-themeable, no new colour
+  codes.** A repo-wide audit found surfaces whose colour was baked or only role-default; each now
+  reads a token so a service retints/glows/tints/gradients it from the token layer alone (opt-in,
+  quiet by default, reads existing semantic roles). All defaults are byte-identical — verified in a
+  browser. Highlights:
+  - **Opt-in depth slots** (default invisible): `--card-glow` + `--card-tint`, `--dialog-content-glow`
+    (raised dialog/sheet panel), `--avatar-tint`, brand glow layered on floating menus
+    (context-menu / menubar / navigation-menu content), and `--sidebar-gradient` / `--topbar-gradient`
+    brand-chrome washes.
+  - **Tokenised role-colours** (default = the previous value, so appearance is unchanged): the
+    checked/on fills (`--checkbox-checked-background`, `--switch-checked-background`,
+    `--toggle-on-background`, `--slider-track-background`, `--slider-range-background`); table row
+    states (`--table-row-striped/hover/selected-background`); `--progress-track-background` /
+    `--progress-fill-background`; timeline accents (`--timeline-dot-done/current-background`,
+    `--timeline-line-completed-background`); `--tree-item-active-border/-background`;
+    `--avatar-background`; `--skeleton-background`; `--empty-state-icon-foreground/-tint`;
+    `--menubar-item-hover-background/-foreground`; `--sidebar-item-active-color/-tint`.
+  - The token-tier guard now accepts `glow` / `tint` / `gradient` as component-token property
+    suffixes. See `docs/roadmap/color-extensibility.md` for the full map (implemented slots +
+    the prop-tier roadmap for states still set via a fixed `tone`/`variant` vocabulary).
+
 ## [16.5.0] - 2026-06-28
 
 ### Changed

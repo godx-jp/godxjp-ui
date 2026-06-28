@@ -47,7 +47,7 @@
     padding: var(--dialog-space-inset);
     /* clip so the full-bleed header/footer bands round with the dialog corners (Ant Modal). */
     overflow: hidden;
-    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1)), var(--dialog-content-glow);
   }
 
   @media (min-width: 640px) {

@@ -14,4 +14,15 @@
   --sidebar-logo-mark-font-size: var(--font-size-xs);
   --sidebar-avatar-font-size: var(--font-size-2xs);
   --sidebar-user-name-font-size: var(--font-size-xs);
+
+  /* Brand-chrome gradient hooks — opt-in, invisible by default. A service paints
+   * the sidebar/topbar surface by setting these to a gradient (no-op = none). */
+  --sidebar-gradient: none;
+  --topbar-gradient: none;
+
+  /* Sidebar active-item tint/marker — tokenised from the literal hsl(var(--primary))
+   * usages; defaults are byte-identical to the prior hard-coded values. A service
+   * can re-tune the active sub-item accent without forking CSS. */
+  --sidebar-item-active-color: hsl(var(--primary));
+  --sidebar-item-active-tint: hsl(var(--primary));
 }

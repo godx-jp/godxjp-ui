@@ -12,4 +12,8 @@
   --filter-picker-width-md: 14rem;
   --breadcrumb-font-size: var(--font-size-xs);
   --menubar-shortcut-font-size: var(--font-size-xs);
+
+  /* Menu item hover/highlight tint — reads the accent role; default unchanged. */
+  --menubar-item-hover-background: hsl(var(--accent));
+  --menubar-item-hover-foreground: hsl(var(--accent-foreground));
 }

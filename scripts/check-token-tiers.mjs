@@ -23,7 +23,7 @@ const publicRawRamp = /--(?:color-)?(?:gray|blue)-\d+\b/;
 const hexThemeColor = /^\s*--color-[\w-]+:\s*#/m;
 const componentToken = /^src\/tokens\/components\/([a-z0-9-]+)\.css$/;
 const componentNameShape =
-  /^--[a-z0-9]+(?:-[a-z0-9]+)*-(?:space|color|background|foreground|border|radius|height|width|padding|gap|size|font|line|letter|shadow|alpha|inset|offset|translate|max)(?:-[a-z0-9]+)*:/;
+  /^--[a-z0-9]+(?:-[a-z0-9]+)*-(?:space|color|background|foreground|border|radius|height|width|padding|gap|size|font|line|letter|shadow|glow|tint|gradient|alpha|inset|offset|translate|max)(?:-[a-z0-9]+)*:/;
 const componentPrefixes = {
   badge: ["badge"],
   card: ["card", "stat-card"],
@@ -39,13 +39,35 @@ const componentPrefixes = {
     "toggle",
     "button",
     "tag-input",
+    "calendar",
+    "input",
+    "textarea",
+    "select",
+    "rating",
+    "otp",
+    "number-input",
+    "transfer",
+    "cascader",
   ],
-  feedback: ["dialog", "alert", "empty-state", "skeleton"],
-  navigation: ["pagination", "filter", "filter-bar", "breadcrumb", "menubar"],
+  feedback: ["dialog", "alert", "empty-state", "skeleton", "sheet", "tooltip"],
+  navigation: [
+    "pagination",
+    "filter",
+    "filter-bar",
+    "breadcrumb",
+    "menubar",
+    "tabs",
+    "steps",
+    "dropdown",
+    "context-menu",
+    "navigation-menu",
+    "popover",
+    "hover-card",
+  ],
   table: ["table"],
-  "data-display": ["progress", "tree", "timeline"],
+  "data-display": ["progress", "tree", "timeline", "avatar", "accordion", "carousel", "list-row", "descriptions"],
   "data-entry": ["password-strength"],
-  shell: ["sidebar", "topbar", "kbd"],
+  shell: ["sidebar", "topbar", "kbd", "app-shell", "page", "page-header"],
 };
 
 for (const file of cssFiles) {

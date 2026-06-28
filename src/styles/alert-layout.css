@@ -168,7 +168,7 @@
 
   .ui-skeleton-block {
     border-radius: var(--skeleton-radius);
-    background: hsl(var(--muted));
+    background: var(--skeleton-background);
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 

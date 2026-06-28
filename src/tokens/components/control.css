@@ -47,6 +47,14 @@
   --slider-track-height: 0.375rem;
   --slider-thumb-size: 1rem;
 
+  /* Checked/on/active fills — themeable role expression, defaults equal the current literal
+   * (quiet: no visual change). A service retints the "selected" state by overriding these. */
+  --checkbox-checked-background: hsl(var(--primary));
+  --switch-checked-background: hsl(var(--primary));
+  --toggle-on-background: hsl(var(--primary));
+  --slider-track-background: hsl(var(--primary) / 0.2);
+  --slider-range-background: hsl(var(--primary));
+
   --color-picker-input-width: 6.5rem;
 
   --command-list-max-height: min(300px, 50vh);

@@ -9,7 +9,10 @@
     justify-content: center;
     overflow: hidden;
     border-radius: var(--radius-pill);
-    background: hsl(var(--muted));
+    /* Tint washes over the role background (default transparent = no-op, rule #44). */
+    background:
+      linear-gradient(var(--avatar-tint), var(--avatar-tint)),
+      var(--avatar-background);
     color: hsl(var(--muted-foreground));
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-medium);
@@ -27,7 +30,7 @@
     height: 100%;
     align-items: center;
     justify-content: center;
-    background: hsl(var(--muted));
+    background: var(--avatar-background);
   }
 
   .ui-progress {
@@ -40,13 +43,13 @@
     height: 0.5rem;
     overflow: hidden;
     border-radius: var(--radius-pill);
-    background: hsl(var(--secondary));
+    background: var(--progress-track-background);
   }
 
   .ui-progress-bar {
     height: 100%;
     border-radius: inherit;
-    background: hsl(var(--success));
+    background: var(--progress-fill-background);
   }
 
   .ui-progress[data-tone="warning"] .ui-progress-bar {
@@ -75,8 +78,8 @@
   }
 
   .ui-tree-item[data-active="true"] {
-    border-color: hsl(var(--primary) / 0.3);
-    background: hsl(var(--primary) / 0.05);
+    border-color: var(--tree-item-active-border);
+    background: var(--tree-item-active-background);
   }
 
   .ui-tree-item[data-depth="1"] {
@@ -151,7 +154,7 @@
     place-items: center;
     border: 1px solid transparent;
     border-radius: var(--radius-pill);
-    background: hsl(var(--success));
+    background: var(--timeline-dot-done-background);
     color: hsl(var(--success-foreground));
     font-size: var(--timeline-note-font-size);
     font-weight: var(--font-weight-medium);
@@ -160,14 +163,14 @@
 
   /* done → success fill. */
   .ui-timeline-dot[data-status="done"] {
-    background: hsl(var(--success));
+    background: var(--timeline-dot-done-background);
     color: hsl(var(--success-foreground));
   }
 
   /* current → primary fill + ring (also the legacy data-current shorthand). */
   .ui-timeline-dot[data-status="current"],
   .ui-timeline-dot[data-current="true"] {
-    background: hsl(var(--primary));
+    background: var(--timeline-dot-current-background);
     color: hsl(var(--primary-foreground));
     box-shadow: 0 0 0 3px hsl(var(--primary) / 0.18);
   }
@@ -202,7 +205,7 @@
 
   /* The segment below a done/current step reads as travelled (completed). */
   .ui-timeline-line[data-completed="true"] {
-    background: hsl(var(--primary));
+    background: var(--timeline-line-completed-background);
   }
 
   .ui-timeline-head {

@@ -29,10 +29,15 @@
     border-style: solid;
     border-color: hsl(var(--card-border));
     border-radius: var(--card-radius);
-    background: hsl(var(--card-background));
+    /* Fill = base card colour with an opt-in role tint washed over it (--card-tint default
+     * transparent → byte-identical at rest). Tint layer sits ABOVE the base colour. */
+    background:
+      linear-gradient(var(--card-tint), var(--card-tint)),
+      hsl(var(--card-background));
     color: hsl(var(--card-foreground));
-    /* Resting elevation reads a token (default none) so a service theme can lift every card. */
-    box-shadow: var(--card-shadow);
+    /* Resting elevation + opt-in brand glow — both quiet no-ops by default so a service theme can
+     * lift (--card-shadow) and/or glow (--card-glow) every card with no markup change. */
+    box-shadow: var(--card-shadow), var(--card-glow);
     overflow: hidden;
   }
 

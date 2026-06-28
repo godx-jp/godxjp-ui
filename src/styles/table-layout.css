@@ -97,7 +97,7 @@
   /* Zebra striping (opt-in via the `striped` prop). Selected rows keep their
    * own emphasis, so they are excluded from the stripe. */
   .ui-data-table-surface[data-striped] tbody tr:nth-child(even):not([data-state="selected"]) {
-    background-color: hsl(var(--muted) / 0.4);
+    background-color: var(--table-row-striped-background);
   }
 
   /* Empty-state cell hosts the built-in EmptyState (which brings its own padding). */
@@ -195,10 +195,10 @@
   /* Mirror the row's hover / selected tint — a translucent muted wash layered
    * over the opaque base, so the pinned cell matches the rest of its row. */
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end {
-    background-image: linear-gradient(hsl(var(--muted) / 0.5), hsl(var(--muted) / 0.5));
+    background-image: linear-gradient(var(--table-row-hover-background), var(--table-row-hover-background));
   }
 
   .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-end {
-    background-image: linear-gradient(hsl(var(--muted) / 0.3), hsl(var(--muted) / 0.3));
+    background-image: linear-gradient(var(--table-row-selected-background), var(--table-row-selected-background));
   }
 }
