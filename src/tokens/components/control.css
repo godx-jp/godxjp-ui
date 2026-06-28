@@ -20,7 +20,7 @@
   --control-radius: var(--radius);
   --control-icon-size: calc(1rem * var(--scaling));
   --control-icon-size-sm: calc(0.875rem * var(--scaling));
-  --control-focus-ring-width: 2px;
+  --control-focus-ring-width: var(--focus-ring-width);
 
   --checkbox-size: calc(1rem * var(--scaling));
   --checkbox-size-compact: 0.875rem;

@@ -256,7 +256,7 @@
   text-decoration: underline;
 }
 .ui-accordion-trigger:focus-visible {
-  outline: 2px solid hsl(var(--ring));
+  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color));
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -383,7 +383,7 @@
 }
 
 .ui-carousel-dot:focus-visible {
-  outline: 2px solid hsl(var(--ring));
+  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color));
   outline-offset: 2px;
 }
 

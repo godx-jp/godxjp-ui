@@ -33,6 +33,10 @@
    * --card-header-background-alpha: 0 for a quiet borderless-band header. */
   --card-header-border-bottom: 1px solid hsl(var(--card-border));
   --card-radius: var(--radius);
+  /* Resting elevation — quiet by default (rule #44): cards are flat (1px border, no shadow) in the
+   * dxs-kintai baseline. A service that wants lifted cards sets this to an elevation token once,
+   * e.g. --card-shadow: var(--shadow-sm), and every Card picks up the shadow with no markup change. */
+  --card-shadow: none;
   /* Accent edge — width of the semantic leading-edge stripe (data-accent).
    * Tokenised (rule #44) so a service theme can re-tune it without forking CSS.
    * The slot padding compensation in card-layout.css subtracts the same token,
