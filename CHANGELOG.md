@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.3.0] - 2026-06-28
+
+### Added
+
+- **`Descriptions` gains a `layout` prop** (`"vertical" | "horizontal"`, default `vertical` — no
+  change to existing usages). `horizontal` places the label BESIDE the value in a token-aligned
+  label column (the detail-row look, mirroring `<Form layout>`), tunable via the new
+  `--descriptions-label-width` token. `dt`/`dd` semantics are preserved in both layouts.
+
 ## [16.2.2] - 2026-06-27
 
 ### Added

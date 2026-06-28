@@ -484,6 +484,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."
   },
   {
+    "name": "--descriptions-label-width",
+    "value": "8rem",
+    "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this * shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). * A rem value gives a fixed aligned column; set `max-content` to size each label to its text. * (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
+  },
+  {
     "name": "--dialog-space-x",
     "value": "var(--space-chrome-x)",
     "description": "Dialog inset defaults to the shared global chrome tokens (override --space-chrome-* once for the * whole system, or --dialog-space-x/-y for dialogs only)."

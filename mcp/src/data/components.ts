@@ -1553,6 +1553,13 @@ import { Smartphone } from "lucide-react";
         description: "Column count; collapses to 1 on mobile.",
       },
       {
+        name: "layout",
+        type: '"vertical" | "horizontal"',
+        defaultValue: '"vertical"',
+        description:
+          "Label placement within each item — `vertical` stacks the label over the value (default); `horizontal` puts the label BESIDE the value in a token-aligned column (mirrors `<Form layout>`). Tune the horizontal label-column width via `--descriptions-label-width`.",
+      },
+      {
         name: "children",
         type: "ReactNode",
         required: true,

@@ -60,6 +60,30 @@ describe("Descriptions.Item", () => {
     expect(screen.getByText("ord_123").className).toContain("font-mono");
   });
 
+  it("defaults to a VERTICAL item (label stacked over value)", () => {
+    render(
+      <Descriptions>
+        <Descriptions.Item label="lbl">val</Descriptions.Item>
+      </Descriptions>,
+    );
+    const item = screen.getByText("lbl").closest("div")!;
+    expect(item.className).toContain("gap-[var(--field-label-gap)]");
+    expect(item.className).not.toContain("descriptions-label-width");
+  });
+
+  it("renders a HORIZONTAL item (label beside value in the token-aligned column)", () => {
+    render(
+      <Descriptions layout="horizontal">
+        <Descriptions.Item label="lbl">val</Descriptions.Item>
+      </Descriptions>,
+    );
+    const item = screen.getByText("lbl").closest("div")!;
+    expect(item.className).toContain("grid-cols-[var(--descriptions-label-width)_minmax(0,1fr)]");
+    // dt/dd semantics preserved regardless of layout.
+    expect(screen.getByText("lbl").tagName).toBe("DT");
+    expect(screen.getByText("val").tagName).toBe("DD");
+  });
+
   it("spans two columns when span=2 and three when span=3", () => {
     render(
       <Descriptions columns={3}>

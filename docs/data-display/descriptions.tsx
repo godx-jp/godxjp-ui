@@ -57,6 +57,34 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/* layout="horizontal" — label BESIDE value (token-aligned label column), like <Form layout>.
+            Default layout is "vertical" (label over value, the cards above). */}
+        <Card>
+          <CardHeader>
+            <CardTitle>横並び (layout=&quot;horizontal&quot;)</CardTitle>
+            <CardDescription>
+              ラベルを値の左に揃える。`--descriptions-label-width` でラベル列幅を調整。既定は
+              layout=&quot;vertical&quot;（ラベルを上に積む、上のカード）。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Descriptions columns={1} layout="horizontal">
+              <Descriptions.Item label="請求書番号" mono>
+                INV-2024-0312
+              </Descriptions.Item>
+              <Descriptions.Item label="取引先">株式会社ベトヤ</Descriptions.Item>
+              <Descriptions.Item label="状態">
+                <Badge status="active" />
+              </Descriptions.Item>
+              <Descriptions.Item label="合計">
+                <Text weight="medium" tabular>
+                  ¥482,000
+                </Text>
+              </Descriptions.Item>
+            </Descriptions>
+          </CardContent>
+        </Card>
+
         {/* columns=1 — stacked detail panel: every item on its own row. */}
         <Card>
           <CardHeader>
