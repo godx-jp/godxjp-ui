@@ -12,7 +12,7 @@
     /* Tint washes over the role background (default transparent = no-op, rule #44). */
     background:
       linear-gradient(var(--avatar-tint), var(--avatar-tint)),
-      var(--avatar-background);
+      var(--avatar-background, hsl(var(--muted)));
     color: hsl(var(--muted-foreground));
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-medium);
@@ -30,7 +30,7 @@
     height: 100%;
     align-items: center;
     justify-content: center;
-    background: var(--avatar-background);
+    background: var(--avatar-background, hsl(var(--muted)));
   }
 
   .ui-progress {
@@ -43,13 +43,13 @@
     height: 0.5rem;
     overflow: hidden;
     border-radius: var(--radius-pill);
-    background: var(--progress-track-background);
+    background: var(--progress-track-background, hsl(var(--secondary)));
   }
 
   .ui-progress-bar {
     height: 100%;
     border-radius: inherit;
-    background: var(--progress-fill-background);
+    background: var(--progress-fill-background, hsl(var(--success)));
   }
 
   .ui-progress[data-tone="warning"] .ui-progress-bar {
@@ -78,8 +78,8 @@
   }
 
   .ui-tree-item[data-active="true"] {
-    border-color: var(--tree-item-active-border);
-    background: var(--tree-item-active-background);
+    border-color: var(--tree-item-active-border, hsl(var(--primary) / 0.3));
+    background: var(--tree-item-active-background, hsl(var(--primary) / 0.05));
   }
 
   .ui-tree-item[data-depth="1"] {
@@ -154,7 +154,7 @@
     place-items: center;
     border: 1px solid transparent;
     border-radius: var(--radius-pill);
-    background: var(--timeline-dot-done-background);
+    background: var(--timeline-dot-done-background, hsl(var(--success)));
     color: hsl(var(--success-foreground));
     font-size: var(--timeline-note-font-size);
     font-weight: var(--font-weight-medium);
@@ -163,14 +163,14 @@
 
   /* done → success fill. */
   .ui-timeline-dot[data-status="done"] {
-    background: var(--timeline-dot-done-background);
+    background: var(--timeline-dot-done-background, hsl(var(--success)));
     color: hsl(var(--success-foreground));
   }
 
   /* current → primary fill + ring (also the legacy data-current shorthand). */
   .ui-timeline-dot[data-status="current"],
   .ui-timeline-dot[data-current="true"] {
-    background: var(--timeline-dot-current-background);
+    background: var(--timeline-dot-current-background, hsl(var(--primary)));
     color: hsl(var(--primary-foreground));
     box-shadow: 0 0 0 3px hsl(var(--primary) / 0.18);
   }
@@ -205,7 +205,7 @@
 
   /* The segment below a done/current step reads as travelled (completed). */
   .ui-timeline-line[data-completed="true"] {
-    background: var(--timeline-line-completed-background);
+    background: var(--timeline-line-completed-background, hsl(var(--primary)));
   }
 
   .ui-timeline-head {
@@ -259,7 +259,7 @@
   text-decoration: underline;
 }
 .ui-accordion-trigger:focus-visible {
-  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color));
+  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color, var(--ring)));
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -386,7 +386,7 @@
 }
 
 .ui-carousel-dot:focus-visible {
-  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color));
+  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color, var(--ring)));
   outline-offset: 2px;
 }
 
@@ -444,7 +444,7 @@
     align-items: flex-start;
   }
   [data-slot="list-row"]:not(:last-child) {
-    border-block-end: var(--list-row-border);
+    border-block-end: var(--list-row-border, 1px solid hsl(var(--border)));
   }
   [data-slot="list-row-leading"] {
     display: inline-flex;

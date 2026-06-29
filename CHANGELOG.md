@@ -6,6 +6,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.6.0] - 2026-06-29
+
+### Fixed
+
+- **Scoped role overrides now reach EVERY component token (the `:root` freeze bug).** A component
+  token that pre-resolved a role at `:root` — e.g. `--card-background: var(--card)`,
+  `--table-header-background: hsl(var(--muted))`, `--checkbox-checked-background: hsl(var(--primary))`,
+  `--avatar-background`, `--sidebar-item-active-*`, the timeline/tree/progress/slider/switch fills,
+  the stat-card medallion, `--focus-ring-color: var(--ring)` … — **froze at the `:root` value**: CSS
+  substitutes the `var()` at the declaring element, so a scoped `[data-tenant]`/`.dark` override of
+  the *role* (`--card`, `--muted`, `--primary`, `--ring`) never reached the component token. This
+  silently broke token-only re-theming for every component; it only became *visible* under a DARK
+  scoped theme (a frozen light card under white text → invisible), which is why earlier light
+  re-themes never caught it. Each such token is now a **quiet opt-in knob** declared `initial`, with
+  the role default moved to the call site as `var(--knob, <role>)` — so the default re-resolves live
+  under any scope while an explicit theme override of the knob still wins. ~33 tokens across card /
+  table / control / data-display / feedback / list-row / navigation / shell / foundation. All
+  default-theme output is byte-identical (verified); scoped dark/brand themes now recolour correctly.
+  The new `check:contrast` route `/showcase/futurelastic-web` (a fully DARK token-only brand) is the
+  regression guard.
+
+### Added
+
+- **FUTURELASTIC dark-website showcase** (`/showcase/futurelastic-web`) — a token-only rebuild of a
+  second Claude Design handoff, deliberately the opposite of the admin/light work: dark-mode default,
+  gold-on-Urushi (Kiniro), Sora display 80px + Be Vietnam Pro body, hero/CTA gold glow, 6-col bento,
+  stats band, footer. Built from real primitives + a `[data-tenant="futurelastic"]` token block only —
+  **zero new framework components** (every marketing section fails the Framework-Component Test → it is
+  composition). Exists to prove the token model reproduces a wholly different DARK brand from
+  configuration alone, and it surfaced the `:root` freeze bug above.
+
 ## [16.5.0] - 2026-06-29
 
 ### Fixed

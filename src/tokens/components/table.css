@@ -8,16 +8,19 @@
   --table-cell-padding-y: var(--space-2);
   --table-cell-space-x: var(--control-padding-x);
   --table-head-font-size: var(--font-size-xs);
-  /* Header band — its OWN bg + fg tokens (decoupled from --secondary, which == --muted by default so
-   * this is byte-identical). A brand whose --secondary is dark (navy buttons) no longer bleeds a
-   * dark band under the dark header text; it sets both header tokens together to keep contrast. */
-  --table-header-background: hsl(var(--muted));
-  --table-header-foreground: hsl(var(--muted-foreground));
+  /* Header band — its OWN bg + fg knobs (decoupled from --secondary). Declared `initial` so the
+   * default re-resolves to the LIVE --muted / --muted-foreground roles at the call site: a :root
+   * binding to a role var freezes at the :root value and a scoped [data-tenant] role override never
+   * reaches it. A brand sets both header tokens together to keep band/text contrast.
+   * Defaults = hsl(var(--muted)) band · hsl(var(--muted-foreground)) text. */
+  --table-header-background: initial;
+  --table-header-foreground: initial;
   /* Inline-end shadow that lifts a pinned (sticky) action column off the body it scrolls over. */
   --table-pin-shadow: -6px 0 6px -5px hsl(var(--foreground) / 0.12);
-  /* Row-state tint washes — translucent muted over the opaque base. Defaults equal
-   * the prior literals; a service retints by reading another role (e.g. --primary). */
-  --table-row-striped-background: hsl(var(--muted) / 0.4);
-  --table-row-hover-background: hsl(var(--muted) / 0.5);
-  --table-row-selected-background: hsl(var(--muted) / 0.3);
+  /* Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted
+   * default re-resolves under a scoped theme; a service retints by reading another role (e.g.
+   * --primary). Defaults = hsl(var(--muted) / 0.4 striped · 0.5 hover · 0.3 selected). */
+  --table-row-striped-background: initial;
+  --table-row-hover-background: initial;
+  --table-row-selected-background: initial;
 }

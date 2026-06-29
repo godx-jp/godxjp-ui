@@ -497,7 +497,10 @@
     width: 3rem;
     height: 3rem;
     border-radius: var(--radius-pill);
-    background-color: hsl(var(--muted));
+    /* Medallion fill + glyph colour read their knobs, defaulting to the LIVE --muted /
+     * --muted-foreground roles at the call site (re-resolves under a scoped theme). */
+    background-color: var(--empty-state-icon-tint, hsl(var(--muted)));
+    color: var(--empty-state-icon-foreground, hsl(var(--muted-foreground)));
   }
 }
 

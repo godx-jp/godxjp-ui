@@ -72,6 +72,40 @@ Runtime scale: app `theme.css` overrides → `--font-size-sm` on root.
 
 Each component owns a token file under `src/tokens/components/`. The file may only derive from foundation, semantic, or other component tokens; component CSS may only consume those component tokens.
 
+#### Role-mirror knobs MUST be `initial` + a call-site fallback (the `:root` freeze rule)
+
+When a component-token default is just a **role token** (`--card-background` defaults to `--card`,
+`--table-header-background` to `--muted`, `--checkbox-checked-background` to `--primary`,
+`--focus-ring-color` to `--ring` …), you may **not** write the binding at `:root`:
+
+```css
+/* ✗ WRONG — freezes at the :root role value */
+:root { --card-background: var(--card); }
+.ui-card { background: hsl(var(--card-background)); }
+```
+
+CSS substitutes a `var()` at the element that **declares** it, so `--card-background` computes to
+`:root`'s `--card` and inherits that frozen value down. A consumer who scopes the *role*
+(`[data-tenant] { --card: <dark> }` or `.dark`) overrides `--card` but **never reaches**
+`--card-background` — the component keeps the light `:root` value. Under a dark theme this is glaring
+(a frozen light card under white text → invisible text); under a light theme it hides silently.
+
+Instead, declare the knob `initial` (a real, catalogued, guaranteed-invalid declaration — no role to
+freeze) and move the role default to the **call site** as a fallback, so it re-resolves live at the
+painting element under any scope, while an explicit theme override of the knob still wins:
+
+```css
+/* ✓ RIGHT — default re-resolves under scope; knob still overridable */
+:root { --card-background: initial; } /* documented default = hsl(var(--card)) */
+.ui-card { background: hsl(var(--card-background, var(--card))); }
+```
+
+The same rule applies to `@theme inline` (utilities re-resolve scoped roles) and to any
+`:root`-declared **composite** that wraps a role (e.g. a focus-ring box-shadow): read the role
+**directly** at the call site, never through a frozen `:root` intermediate. Pure non-colour knobs
+(spacing, radius, font-size) don't need this — they aren't scope-retinted — but any colour/fill/
+border/shadow knob whose default is a role token does.
+
 Card primitive tokens:
 
 | Token                      | Purpose                                                            |

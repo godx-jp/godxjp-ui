@@ -55,8 +55,8 @@
   .ui-menubar-sub-trigger:hover,
   .ui-navigation-menu-link:hover,
   .ui-navigation-menu-item:hover {
-    background: var(--menubar-item-hover-background);
-    color: var(--menubar-item-hover-foreground);
+    background: var(--menubar-item-hover-background, hsl(var(--accent)));
+    color: var(--menubar-item-hover-foreground, hsl(var(--accent-foreground)));
   }
 
   .ui-context-menu-item[data-state="open"],
@@ -68,8 +68,8 @@
   .ui-menubar-sub-trigger[data-state="open"],
   .ui-navigation-menu-link[data-highlighted],
   .ui-navigation-menu-item[data-focus-visible] {
-    background: var(--menubar-item-hover-background);
-    color: var(--menubar-item-hover-foreground);
+    background: var(--menubar-item-hover-background, hsl(var(--accent)));
+    color: var(--menubar-item-hover-foreground, hsl(var(--accent-foreground)));
   }
 
   .ui-context-menu-item[data-variant="destructive"],
@@ -184,8 +184,8 @@
 
   .ui-menubar-trigger[data-state="open"],
   .ui-menubar-sub-trigger[data-state="open"] {
-    background: var(--menubar-item-hover-background);
-    color: var(--menubar-item-hover-foreground);
+    background: var(--menubar-item-hover-background, hsl(var(--accent)));
+    color: var(--menubar-item-hover-foreground, hsl(var(--accent-foreground)));
   }
 
   .ui-navigation-menu {

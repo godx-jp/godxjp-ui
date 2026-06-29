@@ -8,10 +8,10 @@
     padding: var(--table-cell-padding-y) var(--table-cell-space-x);
     text-align: start;
     vertical-align: middle;
-    background: var(--table-header-background);
+    background: var(--table-header-background, hsl(var(--muted)));
     font-size: var(--table-head-font-size);
     font-weight: var(--font-weight-medium);
-    color: var(--table-header-foreground);
+    color: var(--table-header-foreground, hsl(var(--muted-foreground)));
     white-space: nowrap;
   }
 
@@ -97,7 +97,7 @@
   /* Zebra striping (opt-in via the `striped` prop). Selected rows keep their
    * own emphasis, so they are excluded from the stripe. */
   .ui-data-table-surface[data-striped] tbody tr:nth-child(even):not([data-state="selected"]) {
-    background-color: var(--table-row-striped-background);
+    background-color: var(--table-row-striped-background, hsl(var(--muted) / 0.4));
   }
 
   /* Empty-state cell hosts the built-in EmptyState (which brings its own padding). */
@@ -110,7 +110,7 @@
   }
 
   [data-slot="card-content"][data-flush] .ui-data-table-toolbar {
-    border-bottom: 1px solid hsl(var(--card-border));
+    border-bottom: 1px solid hsl(var(--card-border, var(--border)));
     padding: var(--card-space-header-y) var(--card-space-inset);
   }
 
@@ -195,10 +195,16 @@
   /* Mirror the row's hover / selected tint — a translucent muted wash layered
    * over the opaque base, so the pinned cell matches the rest of its row. */
   .ui-data-table-surface tbody tr:hover > .ui-data-table-pin-end {
-    background-image: linear-gradient(var(--table-row-hover-background), var(--table-row-hover-background));
+    background-image: linear-gradient(
+      var(--table-row-hover-background, hsl(var(--muted) / 0.5)),
+      var(--table-row-hover-background, hsl(var(--muted) / 0.5))
+    );
   }
 
   .ui-data-table-surface tbody tr[data-state="selected"] > .ui-data-table-pin-end {
-    background-image: linear-gradient(var(--table-row-selected-background), var(--table-row-selected-background));
+    background-image: linear-gradient(
+      var(--table-row-selected-background, hsl(var(--muted) / 0.3)),
+      var(--table-row-selected-background, hsl(var(--muted) / 0.3))
+    );
   }
 }

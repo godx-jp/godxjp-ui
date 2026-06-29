@@ -13,7 +13,9 @@
   --breadcrumb-font-size: var(--font-size-xs);
   --menubar-shortcut-font-size: var(--font-size-xs);
 
-  /* Menu item hover/highlight tint — reads the accent role; default unchanged. */
-  --menubar-item-hover-background: hsl(var(--accent));
-  --menubar-item-hover-foreground: hsl(var(--accent-foreground));
+  /* Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site
+   * under a scoped theme (a :root binding to a role var freezes at :root).
+   * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text. */
+  --menubar-item-hover-background: initial;
+  --menubar-item-hover-foreground: initial;
 }

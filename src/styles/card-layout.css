@@ -27,13 +27,15 @@
      * `[data-accent]` rail-width override below can win within the same cascade layer. */
     border-width: 1px;
     border-style: solid;
-    border-color: hsl(var(--card-border));
+    border-color: hsl(var(--card-border, var(--border)));
     border-radius: var(--card-radius);
     /* Fill = base card colour with an opt-in role tint washed over it (--card-tint default
-     * transparent → byte-identical at rest). Tint layer sits ABOVE the base colour. */
+     * transparent → byte-identical at rest). Tint layer sits ABOVE the base colour.
+     * --card-background defaults to the LIVE --card role at the call site (re-resolves under a
+     * scoped theme); a service overrides --card-background to win. */
     background:
       linear-gradient(var(--card-tint), var(--card-tint)),
-      hsl(var(--card-background));
+      hsl(var(--card-background, var(--card)));
     color: hsl(var(--card-foreground));
     /* Resting elevation + opt-in brand glow — both quiet no-ops by default so a service theme can
      * lift (--card-shadow) and/or glow (--card-glow) every card with no markup change. */
@@ -126,7 +128,7 @@
     align-items: center;
     gap: var(--space-inline-md);
     padding: var(--card-space-header-y) var(--card-space-inset);
-    border-block: 1px solid hsl(var(--card-border));
+    border-block: 1px solid hsl(var(--card-border, var(--border)));
   }
 
   [data-slot="card-bar"]:first-child {
@@ -154,8 +156,10 @@
   }
 
   .ui-card-header--banded {
-    border-bottom: var(--card-header-border-bottom);
-    background-color: hsl(var(--card-header-background) / var(--card-header-background-alpha));
+    border-bottom: var(--card-header-border-bottom, 1px solid hsl(var(--card-border, var(--border))));
+    background-color: hsl(
+      var(--card-header-background, var(--muted)) / var(--card-header-background-alpha)
+    );
   }
 
   [data-slot="card-header"][data-banded] {
@@ -343,7 +347,7 @@
   }
 
   [data-slot="card-footer"][data-separated] {
-    border-top: 1px solid hsl(var(--card-border));
+    border-top: 1px solid hsl(var(--card-border, var(--border)));
     /* Divided band → symmetric vertical padding (border-aware), in sync with a banded header. */
     padding-block: var(--card-space-divided-y);
     justify-content: flex-end;
@@ -401,8 +405,8 @@
     height: var(--stat-card-icon-size);
     margin-bottom: var(--stat-card-gap);
     border-radius: var(--stat-card-icon-radius);
-    background: var(--stat-card-icon-background);
-    color: var(--stat-card-icon-foreground);
+    background: var(--stat-card-icon-background, hsl(var(--primary) / 0.1));
+    color: var(--stat-card-icon-foreground, hsl(var(--primary)));
   }
 
   [data-slot="stat-card-icon"] svg {

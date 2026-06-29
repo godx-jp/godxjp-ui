@@ -24,17 +24,23 @@
   --card-title-font-weight: var(--font-weight-semibold);
   --card-description-font-size: var(--font-size-sm);
   --card-description-line-height: var(--line-height-normal);
-  --card-background: var(--card);
-  --card-border: var(--border);
-  /* Banded-header fill — already role-tintable (rule #45): a service points this at any role,
+  /* Card fill + edge — opt-in knobs that DEFAULT to the live --card / --border roles. Declared
+   * `initial` (not `var(--card)`) so the default re-resolves at the call site under a scoped theme:
+   * a :root binding to a role var freezes at the :root value and a scoped `[data-tenant]` override of
+   * the role never reaches it (see docs/STANDARDS-vocabulary-tokens.md · "role-mirror knobs"). A
+   * service still overrides the knob directly (--card-background: …) to win over the role default. */
+  --card-background: initial; /* default = hsl(var(--card)) */
+  --card-border: initial; /* default = hsl(var(--border)) */
+  /* Banded-header fill — role-tintable (rule #45): a service points this at any role,
    * e.g. --card-header-background: var(--primary), and tunes --card-header-background-alpha for
-   * the wash strength. No separate tint token needed. */
-  --card-header-background: var(--muted);
+   * the wash strength. Default = the live --muted role (resolved at the call site). */
+  --card-header-background: initial; /* default = hsl(var(--muted)) */
   --card-header-background-alpha: 0.55;
   /* Banded-header divider — tokenised (rule #44) so a service theme can make it
    * dashed / heavier / none without forking CSS. Pair with
-   * --card-header-background-alpha: 0 for a quiet borderless-band header. */
-  --card-header-border-bottom: 1px solid hsl(var(--card-border));
+   * --card-header-background-alpha: 0 for a quiet borderless-band header.
+   * Default = 1px solid hsl(var(--card-border)) (resolved at the call site). */
+  --card-header-border-bottom: initial;
   --card-radius: var(--radius);
   /* Resting elevation — quiet by default (rule #44): cards are flat (1px border, no shadow) in the
    * dxs-kintai baseline. A service that wants lifted cards sets this to an elevation token once,
@@ -64,8 +70,10 @@
   --stat-card-icon-glyph-size: 1.25rem;
   --stat-card-icon-radius: var(--radius-md);
   /* Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding
-   * --primary or these tokens directly (rule #44/#45). */
-  --stat-card-icon-background: hsl(var(--primary) / 0.1);
-  --stat-card-icon-foreground: hsl(var(--primary));
+   * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default
+   * re-resolves at the call site under a scoped theme (no :root freeze).
+   * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph. */
+  --stat-card-icon-background: initial;
+  --stat-card-icon-foreground: initial;
   --stat-card-delta-font-size: var(--font-size-xs);
 }

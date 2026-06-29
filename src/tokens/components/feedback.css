@@ -22,15 +22,18 @@
   --dialog-content-glow: 0 0 0 0 transparent;
   --empty-state-space-y: var(--space-10);
   --empty-state-space-x: var(--space-6);
-  /* EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can
-   * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking. */
-  --empty-state-icon-foreground: hsl(var(--muted-foreground));
-  --empty-state-icon-tint: hsl(var(--muted));
+  /* EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site
+   * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground)
+   * or washes the medallion fill (--empty-state-icon-tint) without forking.
+   * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill. */
+  --empty-state-icon-foreground: initial;
+  --empty-state-icon-tint: initial;
   --skeleton-row-gap: var(--space-stack-sm);
   --skeleton-cell-gap: var(--space-inline-lg);
   --skeleton-card-inset: var(--space-section-active);
   --skeleton-radius: var(--radius);
-  /* Skeleton placeholder fill — defaults to the current literal hsl(var(--muted)); themeable so a
-   * service can tint the shimmer to its surface (rule #44) without forking the keyframes. */
-  --skeleton-background: hsl(var(--muted));
+  /* Skeleton placeholder fill — `initial` so the --muted default re-resolves at the call site under
+   * a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to
+   * its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted)). */
+  --skeleton-background: initial;
 }

@@ -48,6 +48,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
     load: () => import("../../docs/showcase/tiximax-website"),
   },
   {
+    id: "futurelastic-web",
+    title: "FUTURELASTIC — Dark website (Kiniro token rebuild)",
+    description:
+      "Dựng lại website holding FUTURELASTIC (dark mode · gold Kiniro · Sora display 80px · hero glow · bento ventures · stats · CTA · footer) CHỈ bằng token + real primitives. Chứng minh token model tái hiện được 1 brand TỐI hoàn toàn khác — 0 component framework mới (section là composition).",
+    tag: "Theme",
+    load: () => import("../../docs/showcase/futurelastic-web"),
+  },
+  {
     id: "case1-warehouse-dashboard",
     title: "Tổng quan kho (Warehouse Dashboard)",
     description:

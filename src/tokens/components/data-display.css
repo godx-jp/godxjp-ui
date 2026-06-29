@@ -6,25 +6,29 @@
   --tree-item-description-font-size: var(--font-size-xs);
   --timeline-note-font-size: var(--font-size-xs);
 
-  /* Avatar surface — reads the muted role by default. A service can re-tint the
-     placeholder fill once (e.g. --avatar-background: hsl(var(--accent))). */
-  --avatar-background: hsl(var(--muted));
+  /* Avatar surface — `initial` so the --muted default re-resolves at the call site under a scoped
+     theme (a :root binding to a role var freezes at :root; a scoped role override never reaches it).
+     A service re-tints the placeholder fill once (e.g. --avatar-background: hsl(var(--accent))).
+     Default = hsl(var(--muted)). */
+  --avatar-background: initial;
   /* Optional role wash over the avatar (default transparent = invisible, rule #44).
      Painted as an overlay so a service sets --avatar-tint: hsl(var(--primary) / 0.08). */
   --avatar-tint: transparent;
 
-  /* Progress track + fill — quiet defaults equal the current literals (rule #44).
-     Track reads secondary, fill reads success; a service re-tones once. */
-  --progress-track-background: hsl(var(--secondary));
-  --progress-fill-background: hsl(var(--success));
+  /* Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme.
+     Track reads --secondary, fill reads --success; a service re-tones once.
+     Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill. */
+  --progress-track-background: initial;
+  --progress-fill-background: initial;
 
-  /* Timeline accents — dot/line roles, defaults unchanged (rule #44). */
-  --timeline-dot-done-background: hsl(var(--success));
-  --timeline-dot-current-background: hsl(var(--primary));
-  --timeline-line-completed-background: hsl(var(--primary));
+  /* Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme.
+     Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line. */
+  --timeline-dot-done-background: initial;
+  --timeline-dot-current-background: initial;
+  --timeline-line-completed-background: initial;
 
-  /* Tree active item — border + soft bg tint over the primary role.
-     Defaults equal the current literals (rule #44). */
-  --tree-item-active-border: hsl(var(--primary) / 0.3);
-  --tree-item-active-background: hsl(var(--primary) / 0.05);
+  /* Tree active item — border + soft bg tint over the --primary role. `initial` so the default
+     re-resolves under a scoped theme. Defaults = hsl(var(--primary) / 0.3) border · 0.05 fill. */
+  --tree-item-active-border: initial;
+  --tree-item-active-background: initial;
 }

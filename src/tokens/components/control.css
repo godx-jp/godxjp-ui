@@ -47,13 +47,15 @@
   --slider-track-height: 0.375rem;
   --slider-thumb-size: 1rem;
 
-  /* Checked/on/active fills — themeable role expression, defaults equal the current literal
-   * (quiet: no visual change). A service retints the "selected" state by overriding these. */
-  --checkbox-checked-background: hsl(var(--primary));
-  --switch-checked-background: hsl(var(--primary));
-  --toggle-on-background: hsl(var(--primary));
-  --slider-track-background: hsl(var(--primary) / 0.2);
-  --slider-range-background: hsl(var(--primary));
+  /* Checked/on/active fills — `initial` so the --primary default re-resolves at the call site
+   * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped
+   * [data-tenant] override of --primary never reaches it). A service retints the "selected" state
+   * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α. */
+  --checkbox-checked-background: initial;
+  --switch-checked-background: initial;
+  --toggle-on-background: initial;
+  --slider-track-background: initial;
+  --slider-range-background: initial;
 
   --color-picker-input-width: 6.5rem;
 

@@ -85,33 +85,33 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-background",
-    "value": "var(--card)",
-    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
+    "value": "initial",
+    "description": "Card fill + edge — opt-in knobs that DEFAULT to the live --card / --border roles. Declared * `initial` (not `var(--card)`) so the default re-resolves at the call site under a scoped theme: * a :root binding to a role var freezes at the :root value and a scoped `[data-tenant]` override of * the role never reaches it (see docs/STANDARDS-vocabulary-tokens.md · \"role-mirror knobs\"). A * service still overrides the knob directly (--card-background: …) to win over the role default."
   },
   {
     "name": "--card-border",
-    "value": "var(--border)",
-    "description": "Vertical gap between stacked items WITHIN a slot (e.g. title ↕ description in the header)."
+    "value": "initial",
+    "description": "default = hsl(var(--card))"
   },
   {
     "name": "--card-header-background",
-    "value": "var(--muted)",
-    "description": "Banded-header fill — already role-tintable (rule #45): a service points this at any role, * e.g. --card-header-background: var(--primary), and tunes --card-header-background-alpha for * the wash strength. No separate tint token needed."
+    "value": "initial",
+    "description": "Banded-header fill — role-tintable (rule #45): a service points this at any role, * e.g. --card-header-background: var(--primary), and tunes --card-header-background-alpha for * the wash strength. Default = the live --muted role (resolved at the call site)."
   },
   {
     "name": "--card-header-background-alpha",
     "value": "0.55",
-    "description": "Banded-header fill — already role-tintable (rule #45): a service points this at any role, * e.g. --card-header-background: var(--primary), and tunes --card-header-background-alpha for * the wash strength. No separate tint token needed."
+    "description": "default = hsl(var(--muted))"
   },
   {
     "name": "--card-header-border-bottom",
-    "value": "1px solid hsl(var(--card-border))",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "value": "initial",
+    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header. * Default = 1px solid hsl(var(--card-border)) (resolved at the call site)."
   },
   {
     "name": "--card-radius",
     "value": "var(--radius)",
-    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header."
+    "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header. * Default = 1px solid hsl(var(--card-border)) (resolved at the call site)."
   },
   {
     "name": "--card-shadow",
@@ -190,18 +190,18 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--stat-card-icon-background",
-    "value": "hsl(var(--primary) / 0.1)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45)."
+    "value": "initial",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
   },
   {
     "name": "--stat-card-icon-foreground",
-    "value": "hsl(var(--primary))",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45)."
+    "value": "initial",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
   },
   {
     "name": "--stat-card-delta-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45)."
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
   },
   {
     "name": "--control-height-compact",
@@ -400,108 +400,108 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--checkbox-checked-background",
-    "value": "hsl(var(--primary))",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "value": "initial",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--switch-checked-background",
-    "value": "hsl(var(--primary))",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "value": "initial",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--toggle-on-background",
-    "value": "hsl(var(--primary))",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "value": "initial",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--slider-track-background",
-    "value": "hsl(var(--primary) / 0.2)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "value": "initial",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--slider-range-background",
-    "value": "hsl(var(--primary))",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "value": "initial",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--color-picker-input-width",
     "value": "6.5rem",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--command-list-max-height",
     "value": "min(300px, 50vh)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--command-input-padding-x",
     "value": "var(--space-3)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--command-group-padding",
     "value": "var(--space-1)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--command-item-padding-y",
     "value": "var(--space-2)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--command-item-padding-x",
     "value": "var(--space-2)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--search-input-edge-inset",
     "value": "var(--space-3)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--search-input-start-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--search-input-end-padding",
     "value": "calc( var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap) )",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--choice-description-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--color-picker-hex-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--command-group-heading-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--search-input-label-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--tag-input-chip-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--toggle-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--button-sm-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Checked/on/active fills — themeable role expression, defaults equal the current literal * (quiet: no visual change). A service retints the \"selected\" state by overriding these."
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
     "name": "--control-height-compact",
@@ -535,8 +535,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--avatar-background",
-    "value": "hsl(var(--muted))",
-    "description": "Avatar surface — reads the muted role by default. A service can re-tint the placeholder fill once (e.g. --avatar-background: hsl(var(--accent)))."
+    "value": "initial",
+    "description": "Avatar surface — `initial` so the --muted default re-resolves at the call site under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override never reaches it). A service re-tints the placeholder fill once (e.g. --avatar-background: hsl(var(--accent))). Default = hsl(var(--muted))."
   },
   {
     "name": "--avatar-tint",
@@ -545,38 +545,38 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--progress-track-background",
-    "value": "hsl(var(--secondary))",
-    "description": "Progress track + fill — quiet defaults equal the current literals (rule #44). Track reads secondary, fill reads success; a service re-tones once."
+    "value": "initial",
+    "description": "Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme. Track reads --secondary, fill reads --success; a service re-tones once. Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill."
   },
   {
     "name": "--progress-fill-background",
-    "value": "hsl(var(--success))",
-    "description": "Progress track + fill — quiet defaults equal the current literals (rule #44). Track reads secondary, fill reads success; a service re-tones once."
+    "value": "initial",
+    "description": "Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme. Track reads --secondary, fill reads --success; a service re-tones once. Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill."
   },
   {
     "name": "--timeline-dot-done-background",
-    "value": "hsl(var(--success))",
-    "description": "Timeline accents — dot/line roles, defaults unchanged (rule #44)."
+    "value": "initial",
+    "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line."
   },
   {
     "name": "--timeline-dot-current-background",
-    "value": "hsl(var(--primary))",
-    "description": "Timeline accents — dot/line roles, defaults unchanged (rule #44)."
+    "value": "initial",
+    "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line."
   },
   {
     "name": "--timeline-line-completed-background",
-    "value": "hsl(var(--primary))",
-    "description": "Timeline accents — dot/line roles, defaults unchanged (rule #44)."
+    "value": "initial",
+    "description": "Timeline accents — `initial` so the dot/line role defaults re-resolve under a scoped theme. Defaults = hsl(var(--success)) done · hsl(var(--primary)) current/line."
   },
   {
     "name": "--tree-item-active-border",
-    "value": "hsl(var(--primary) / 0.3)",
-    "description": "Tree active item — border + soft bg tint over the primary role. Defaults equal the current literals (rule #44)."
+    "value": "initial",
+    "description": "Tree active item — border + soft bg tint over the --primary role. `initial` so the default re-resolves under a scoped theme. Defaults = hsl(var(--primary) / 0.3) border · 0.05 fill."
   },
   {
     "name": "--tree-item-active-background",
-    "value": "hsl(var(--primary) / 0.05)",
-    "description": "Tree active item — border + soft bg tint over the primary role. Defaults equal the current literals (rule #44)."
+    "value": "initial",
+    "description": "Tree active item — border + soft bg tint over the --primary role. `initial` so the default re-resolves under a scoped theme. Defaults = hsl(var(--primary) / 0.3) border · 0.05 fill."
   },
   {
     "name": "--password-strength-score-font-size",
@@ -665,38 +665,38 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--empty-state-icon-foreground",
-    "value": "hsl(var(--muted-foreground))",
-    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
+    "value": "initial",
+    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
   },
   {
     "name": "--empty-state-icon-tint",
-    "value": "hsl(var(--muted))",
-    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
+    "value": "initial",
+    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
   },
   {
     "name": "--skeleton-row-gap",
     "value": "var(--space-stack-sm)",
-    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
+    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
   },
   {
     "name": "--skeleton-cell-gap",
     "value": "var(--space-inline-lg)",
-    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
+    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
   },
   {
     "name": "--skeleton-card-inset",
     "value": "var(--space-section-active)",
-    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
+    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
   },
   {
     "name": "--skeleton-radius",
     "value": "var(--radius)",
-    "description": "EmptyState icon medallion colour — defaults to the current literal (rule #44), so a service can * recolour the glyph (--icon-foreground) or wash the medallion fill (--icon-tint) without forking."
+    "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
   },
   {
     "name": "--skeleton-background",
-    "value": "hsl(var(--muted))",
-    "description": "Skeleton placeholder fill — defaults to the current literal hsl(var(--muted)); themeable so a * service can tint the shimmer to its surface (rule #44) without forking the keyframes."
+    "value": "initial",
+    "description": "Skeleton placeholder fill — `initial` so the --muted default re-resolves at the call site under * a scoped theme (a :root binding to a role var freezes at :root). A service tints the shimmer to * its surface (rule #44) without forking the keyframes. Default = hsl(var(--muted))."
   },
   {
     "name": "--form-label-width",
@@ -725,8 +725,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--list-row-border",
-    "value": "1px solid hsl(var(--border))",
-    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent; * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+    "value": "initial",
+    "description": "Row divider — `initial` so the --border default re-resolves at the call site under a scoped * theme (a :root binding to a role var freezes at :root). Default = 1px solid hsl(var(--border))."
   },
   {
     "name": "--pagination-gap",
@@ -785,13 +785,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--menubar-item-hover-background",
-    "value": "hsl(var(--accent))",
-    "description": "Menu item hover/highlight tint — reads the accent role; default unchanged."
+    "value": "initial",
+    "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."
   },
   {
     "name": "--menubar-item-hover-foreground",
-    "value": "hsl(var(--accent-foreground))",
-    "description": "Menu item hover/highlight tint — reads the accent role; default unchanged."
+    "value": "initial",
+    "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."
   },
   {
     "name": "--sidebar-section-label-font-size",
@@ -860,23 +860,23 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--sidebar-item-active-color",
-    "value": "hsl(var(--primary))",
-    "description": "Sidebar active-item tint/marker — tokenised from the literal hsl(var(--primary)) * usages; defaults are byte-identical to the prior hard-coded values. A service * can re-tune the active sub-item accent without forking CSS."
+    "value": "initial",
+    "description": "Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override * never reaches it). A service re-tunes the active sub-item accent without forking CSS. * Defaults = hsl(var(--primary)) marker/tint."
   },
   {
     "name": "--sidebar-item-active-tint",
-    "value": "hsl(var(--primary))",
-    "description": "Sidebar active-item tint/marker — tokenised from the literal hsl(var(--primary)) * usages; defaults are byte-identical to the prior hard-coded values. A service * can re-tune the active sub-item accent without forking CSS."
+    "value": "initial",
+    "description": "Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override * never reaches it). A service re-tunes the active sub-item accent without forking CSS. * Defaults = hsl(var(--primary)) marker/tint."
   },
   {
     "name": "--sidebar-item-active-background",
-    "value": "hsl(var(--accent))",
-    "description": "Main nav-item active row — defaults are byte-identical to the hover state (accent bg, * foreground text). A service overrides these to brand the selected row (e.g. a gold tint + * gold text on a navy sidebar)."
+    "value": "initial",
+    "description": "Main nav-item active row — defaults mirror the hover state (accent bg, foreground text); a * service overrides these to brand the selected row (e.g. a gold tint + gold text on a navy * sidebar). `initial` so the defaults re-resolve under a scoped theme. * Defaults = hsl(var(--accent)) fill · hsl(var(--foreground)) text."
   },
   {
     "name": "--sidebar-item-active-foreground",
-    "value": "hsl(var(--foreground))",
-    "description": "Main nav-item active row — defaults are byte-identical to the hover state (accent bg, * foreground text). A service overrides these to brand the selected row (e.g. a gold tint + * gold text on a navy sidebar)."
+    "value": "initial",
+    "description": "Main nav-item active row — defaults mirror the hover state (accent bg, foreground text); a * service overrides these to brand the selected row (e.g. a gold tint + gold text on a navy * sidebar). `initial` so the defaults re-resolve under a scoped theme. * Defaults = hsl(var(--accent)) fill · hsl(var(--foreground)) text."
   },
   {
     "name": "--table-row-height-compact",
@@ -915,13 +915,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-header-background",
-    "value": "hsl(var(--muted))",
-    "description": "Header band — its OWN bg + fg tokens (decoupled from --secondary, which == --muted by default so * this is byte-identical). A brand whose --secondary is dark (navy buttons) no longer bleeds a * dark band under the dark header text; it sets both header tokens together to keep contrast."
+    "value": "initial",
+    "description": "Header band — its OWN bg + fg knobs (decoupled from --secondary). Declared `initial` so the * default re-resolves to the LIVE --muted / --muted-foreground roles at the call site: a :root * binding to a role var freezes at the :root value and a scoped [data-tenant] role override never * reaches it. A brand sets both header tokens together to keep band/text contrast. * Defaults = hsl(var(--muted)) band · hsl(var(--muted-foreground)) text."
   },
   {
     "name": "--table-header-foreground",
-    "value": "hsl(var(--muted-foreground))",
-    "description": "Header band — its OWN bg + fg tokens (decoupled from --secondary, which == --muted by default so * this is byte-identical). A brand whose --secondary is dark (navy buttons) no longer bleeds a * dark band under the dark header text; it sets both header tokens together to keep contrast."
+    "value": "initial",
+    "description": "Header band — its OWN bg + fg knobs (decoupled from --secondary). Declared `initial` so the * default re-resolves to the LIVE --muted / --muted-foreground roles at the call site: a :root * binding to a role var freezes at the :root value and a scoped [data-tenant] role override never * reaches it. A brand sets both header tokens together to keep band/text contrast. * Defaults = hsl(var(--muted)) band · hsl(var(--muted-foreground)) text."
   },
   {
     "name": "--table-pin-shadow",
@@ -930,17 +930,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-row-striped-background",
-    "value": "hsl(var(--muted) / 0.4)",
-    "description": "Row-state tint washes — translucent muted over the opaque base. Defaults equal * the prior literals; a service retints by reading another role (e.g. --primary)."
+    "value": "initial",
+    "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.4 striped · 0.5 hover · 0.3 selected)."
   },
   {
     "name": "--table-row-hover-background",
-    "value": "hsl(var(--muted) / 0.5)",
-    "description": "Row-state tint washes — translucent muted over the opaque base. Defaults equal * the prior literals; a service retints by reading another role (e.g. --primary)."
+    "value": "initial",
+    "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.4 striped · 0.5 hover · 0.3 selected)."
   },
   {
     "name": "--table-row-selected-background",
-    "value": "hsl(var(--muted) / 0.3)",
-    "description": "Row-state tint washes — translucent muted over the opaque base. Defaults equal * the prior literals; a service retints by reading another role (e.g. --primary)."
+    "value": "initial",
+    "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.4 striped · 0.5 hover · 0.3 selected)."
   }
 ];

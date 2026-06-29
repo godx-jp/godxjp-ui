@@ -67,7 +67,12 @@ Hard-won from real service consumption — check these BEFORE writing any value 
    (new `components/<name>.css` files need an `@import` in `src/tokens/base.css`; names must pass
    `check-token-tiers` — `--{component}-{part}-{property}`).
 2. Reference it from `src/styles/*.css` via `var(...)` — keep the old value as the default so the
-   change is opt-in unless the default itself is the fix.
+   change is opt-in unless the default itself is the fix. **Role-mirror knobs** (a colour/fill/
+   border/shadow token whose default is a role: `--card`, `--muted`, `--primary`, `--ring`…) MUST be
+   declared `initial` at `:root` with the role default at the CALL SITE — `var(--knob, var(--role))` —
+   never `--knob: var(--role)` at `:root` (that freezes at the `:root` role value and a scoped
+   `[data-tenant]`/`.dark` override of the role never reaches it). See `docs/TOKENS.md` ·
+   "Role-mirror knobs MUST be `initial`".
 3. Document it: `mcp/src/data/tokens.ts` entry (+ the component's `howToUse` in
    `mcp/src/data/components.ts` when behaviour changes) → rebuild `mcp/` (`cd mcp && pnpm build`).
 4. CHANGELOG entry under `[Unreleased]` (Added for new tokens, Changed for default changes).

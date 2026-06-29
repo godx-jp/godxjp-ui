@@ -110,12 +110,12 @@
   /* FOCUS RING — the two global knobs for the keyboard-focus affordance (WCAG 2.4.7 / 2.4.11).
    * `--focus-ring-color` is the themeable hue (HSL components, defaults to --ring) and
    * `--focus-ring-width` the standard thickness; override either ONCE — even scoped under a
-   * `[data-tenant]` — to retint or resize EVERY focus ring. Both are leaf tokens (a colour and a
-   * length, no nested var) so they re-resolve at the element that paints the ring; every
-   * :focus-visible rule reads them DIRECTLY as `0 0 0 var(--focus-ring-width)
-   * hsl(var(--focus-ring-color))`, never via an intermediate composite (a `:root`-declared
-   * composite that wraps these would freeze at :root and ignore a scoped override). */
-  --focus-ring-color: var(--ring);
+   * `[data-tenant]` — to retint or resize EVERY focus ring. `--focus-ring-color` is declared
+   * `initial` (NOT `var(--ring)`): a :root binding to a role var would freeze at the :root --ring
+   * and a scoped [data-tenant] override of --ring alone would never reach it. Every :focus-visible
+   * rule reads it with the live-role fallback `hsl(var(--focus-ring-color, var(--ring)))`, so the
+   * default re-resolves at the element that paints the ring while an explicit override still wins. */
+  --focus-ring-color: initial; /* default = the live --ring role */
   --focus-ring-width: 2px;
 
   /* GRADIENTS — opt-in decorative fills exposed at the token layer so a service can paint a hero

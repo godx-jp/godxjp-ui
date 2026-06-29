@@ -50,13 +50,13 @@
   }
 
   .ui-toggle[data-state="on"] {
-    background: var(--toggle-on-background);
+    background: var(--toggle-on-background, hsl(var(--primary)));
     color: hsl(var(--primary-foreground));
   }
 
   .ui-toggle:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px hsl(var(--focus-ring-color) / 0.35);
+    box-shadow: 0 0 0 3px hsl(var(--focus-ring-color, var(--ring)) / 0.35);
   }
 
   .ui-toggle:disabled,
@@ -85,7 +85,7 @@
 
   .ui-button:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
   }
 
   .ui-button:disabled {
@@ -287,7 +287,7 @@
   .ui-slider-thumb:focus-visible,
   .ui-switch:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
   }
 
   .ui-checkbox:disabled,
@@ -299,7 +299,7 @@
   }
 
   .ui-checkbox[data-state="checked"] {
-    background: var(--checkbox-checked-background);
+    background: var(--checkbox-checked-background, hsl(var(--primary)));
     color: hsl(var(--primary-foreground));
   }
 
@@ -336,7 +336,7 @@
   }
 
   .ui-switch[data-state="checked"] {
-    background: var(--switch-checked-background);
+    background: var(--switch-checked-background, hsl(var(--primary)));
   }
 
   .ui-switch[data-state="unchecked"] {
@@ -374,13 +374,13 @@
     flex-grow: 1;
     overflow: hidden;
     border-radius: var(--radius-pill);
-    background: var(--slider-track-background);
+    background: var(--slider-track-background, hsl(var(--primary) / 0.2));
   }
 
   .ui-slider-range {
     position: absolute;
     height: 100%;
-    background: var(--slider-range-background);
+    background: var(--slider-range-background, hsl(var(--primary)));
   }
 
   .ui-slider-thumb {
@@ -656,7 +656,7 @@
 }
 .ui-otp-slot[data-active="true"] {
   z-index: 1;
-  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
+  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
 }
 .ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-slot {
   border-color: hsl(var(--destructive));
@@ -727,7 +727,7 @@
   fill: currentColor;
 }
 .ui-rating-star:focus-visible {
-  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color));
+  outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color, var(--ring)));
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -745,8 +745,8 @@
   background: hsl(var(--background));
 }
 .ui-tag-input:focus-within {
-  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color));
-  border-color: hsl(var(--focus-ring-color));
+  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
+  border-color: hsl(var(--focus-ring-color, var(--ring)));
 }
 .ui-tag-input-disabled {
   opacity: 0.6;

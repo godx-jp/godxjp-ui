@@ -20,14 +20,16 @@
   --sidebar-gradient: none;
   --topbar-gradient: none;
 
-  /* Sidebar active-item tint/marker — tokenised from the literal hsl(var(--primary))
-   * usages; defaults are byte-identical to the prior hard-coded values. A service
-   * can re-tune the active sub-item accent without forking CSS. */
-  --sidebar-item-active-color: hsl(var(--primary));
-  --sidebar-item-active-tint: hsl(var(--primary));
-  /* Main nav-item active row — defaults are byte-identical to the hover state (accent bg,
-   * foreground text). A service overrides these to brand the selected row (e.g. a gold tint +
-   * gold text on a navy sidebar). */
-  --sidebar-item-active-background: hsl(var(--accent));
-  --sidebar-item-active-foreground: hsl(var(--foreground));
+  /* Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site
+   * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override
+   * never reaches it). A service re-tunes the active sub-item accent without forking CSS.
+   * Defaults = hsl(var(--primary)) marker/tint. */
+  --sidebar-item-active-color: initial;
+  --sidebar-item-active-tint: initial;
+  /* Main nav-item active row — defaults mirror the hover state (accent bg, foreground text); a
+   * service overrides these to brand the selected row (e.g. a gold tint + gold text on a navy
+   * sidebar). `initial` so the defaults re-resolve under a scoped theme.
+   * Defaults = hsl(var(--accent)) fill · hsl(var(--foreground)) text. */
+  --sidebar-item-active-background: initial;
+  --sidebar-item-active-foreground: initial;
 }

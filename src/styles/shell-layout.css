@@ -270,8 +270,8 @@
    * selected nav row a brand treatment — e.g. a gold tint + gold text on a navy sidebar — without
    * forking CSS. Defaults are byte-identical to the hover state. */
   .sb-nav-item[data-active="true"] {
-    background: var(--sidebar-item-active-background);
-    color: var(--sidebar-item-active-foreground);
+    background: var(--sidebar-item-active-background, hsl(var(--accent)));
+    color: var(--sidebar-item-active-foreground, hsl(var(--foreground)));
     font-weight: var(--font-weight-medium);
   }
 
@@ -362,12 +362,12 @@
 
   .sb-nav-item--sub[data-active="true"] {
     background: transparent;
-    color: var(--sidebar-item-active-color);
+    color: var(--sidebar-item-active-color, hsl(var(--primary)));
     font-weight: 500;
   }
 
   .sb-nav-item--sub[data-active="true"]::before {
-    background: var(--sidebar-item-active-tint);
+    background: var(--sidebar-item-active-tint, hsl(var(--primary)));
     opacity: 1;
   }
 
@@ -417,7 +417,7 @@
   }
 
   .sb-user:focus-visible {
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color) / 0.45);
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)) / 0.45);
   }
 
   .sb-user-avatar {
@@ -660,7 +660,7 @@
   }
 
   .tb-icon-btn:focus-visible {
-    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color) / 0.45);
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)) / 0.45);
   }
 
   .tb-bell {

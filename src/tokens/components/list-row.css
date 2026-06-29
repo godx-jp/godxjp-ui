@@ -5,5 +5,7 @@
   --list-row-padding-y: var(--space-3);
   --list-row-padding-x: var(--space-4);
   --list-row-gap: var(--space-3);
-  --list-row-border: 1px solid hsl(var(--border));
+  /* Row divider — `initial` so the --border default re-resolves at the call site under a scoped
+   * theme (a :root binding to a role var freezes at :root). Default = 1px solid hsl(var(--border)). */
+  --list-row-border: initial;
 }
