@@ -23,6 +23,16 @@
     overflow: hidden;
   }
 
+  /* Decorative brand SPOTLIGHT backdrop — the token-driven radial halo behind a hero / auth card,
+   * replacing a hand-authored `radial-gradient(... hsl(var(--primary)/.18) ...)`. Apply to an
+   * `aria-hidden` layer (e.g. an absolutely-positioned full-bleed div behind the card). All geometry
+   * and tint come from the `--brand-glow*` tokens, so a theme retints/repositions it with no markup
+   * change. `pointer-events:none` keeps the backdrop from stealing clicks from the card above it. */
+  .ui-brand-glow {
+    background-image: var(--brand-glow);
+    pointer-events: none;
+  }
+
   .ui-flex,
   .ui-stack-xs {
     display: flex;

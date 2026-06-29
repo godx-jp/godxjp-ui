@@ -33,4 +33,28 @@ describe("Badge", () => {
     expect(badge.querySelector('[data-slot="badge-icon"]')).toBeNull();
     expect(badge.className).toContain("text-info");
   });
+
+  it("renders the brand `primary` tone as a SOFT pill (tinted fill + brand text)", () => {
+    // The #120 case: a brand-coloured role pill with a soft/tinted background, not the
+    // heavy solid-primary fill. tone="primary" → bg-primary/10 + text-primary.
+    const { container } = renderWithUi(
+      <Badge tone="primary" icon={null}>
+        Admin
+      </Badge>,
+    );
+    const badge = badgeEl(container);
+    expect(badge).toHaveAttribute("data-tone", "primary");
+    expect(badge.className).toContain("text-primary");
+    expect(badge.className).toContain("bg-primary/10");
+    // It is NOT the solid-primary fill (that stays on the default variant).
+    expect(badge.className).not.toContain("text-primary-foreground");
+  });
+
+  it("keeps a SOLID brand fill on the default variant (no tone)", () => {
+    const { container } = renderWithUi(<Badge>Brand</Badge>);
+    const badge = badgeEl(container);
+    expect(badge).toHaveAttribute("data-tone", "default");
+    expect(badge.className).toContain("bg-primary");
+    expect(badge.className).toContain("text-primary-foreground");
+  });
 });

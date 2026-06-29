@@ -22,3 +22,21 @@ describe("Heading / Text — truncate", () => {
     expect(text).toHaveAttribute("data-truncate", "");
   });
 });
+
+describe("Heading — weight", () => {
+  it("defaults to medium (preserving the existing heading weight)", () => {
+    const { container } = render(<Heading level={1}>タイトル</Heading>);
+    expect(container.querySelector('[data-slot="heading"]')).toHaveAttribute("data-weight", "medium");
+  });
+
+  it("renders a bold heading while staying a semantic <h1> (issue #121)", () => {
+    const { container } = render(
+      <Heading level={1} weight="bold">
+        ブランド
+      </Heading>,
+    );
+    const heading = container.querySelector('[data-slot="heading"]')!;
+    expect(heading.tagName).toBe("H1");
+    expect(heading).toHaveAttribute("data-weight", "bold");
+  });
+});

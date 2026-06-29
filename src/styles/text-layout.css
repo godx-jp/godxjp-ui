@@ -33,14 +33,19 @@
     font-size: var(--font-size-2xl);
   }
 
-  /* Weight — the dxs-kintai canon (400 body · 500 heading/label · 700 emphasis). No 600. */
-  [data-slot="text"][data-weight="regular"] {
+  /* Weight — the dxs-kintai canon (400 body · 500 heading/label · 700 emphasis). No 600.
+   * Shared by text + heading; the two-attribute heading selectors outrank the base heading
+   * rule below, so `<Heading weight="bold">` renders a semantic, emphasised title. */
+  [data-slot="text"][data-weight="regular"],
+  [data-slot="heading"][data-weight="regular"] {
     font-weight: var(--font-weight-normal);
   }
-  [data-slot="text"][data-weight="medium"] {
+  [data-slot="text"][data-weight="medium"],
+  [data-slot="heading"][data-weight="medium"] {
     font-weight: var(--font-weight-medium);
   }
-  [data-slot="text"][data-weight="bold"] {
+  [data-slot="text"][data-weight="bold"],
+  [data-slot="heading"][data-weight="bold"] {
     font-weight: var(--font-weight-bold);
   }
 
