@@ -38,16 +38,20 @@ function StepIcon({
     return <span className={cn("flex items-center justify-center", controlIconClass)}>{icon}</span>;
 
   if (type === "dot") {
+    // The dot sits in the SAME control-height slot as the full icon (centered), so it lines up with
+    // the title exactly like the default marker — a bare dot would top-align and drift above the label.
     return (
-      <span
-        className={cn(
-          "block size-2.5 rounded-full",
-          status === "finish" && "bg-primary",
-          status === "process" && "bg-primary ring-primary/20 ring-4",
-          status === "error" && "bg-destructive",
-          status === "wait" && "bg-muted-foreground/30",
-        )}
-      />
+      <span className={cn("flex items-center justify-center", controlIconClass)}>
+        <span
+          className={cn(
+            "block size-2.5 rounded-full",
+            status === "finish" && "bg-primary",
+            status === "process" && "bg-primary ring-primary/20 ring-4",
+            status === "error" && "bg-destructive",
+            status === "wait" && "bg-muted-foreground/30",
+          )}
+        />
+      </span>
     );
   }
 
