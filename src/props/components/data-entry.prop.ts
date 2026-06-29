@@ -37,6 +37,10 @@ export type InputProp = React.InputHTMLAttributes<HTMLInputElement> & {
   allowClear?: boolean;
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
+  /** A leading affordance pinned inside the start of the field (e.g. a mail/lock icon). */
+  leadingIcon?: React.ReactNode;
+  /** A trailing affordance pinned inside the end of the field (replaced by the clear ✕ when `allowClear` + value). */
+  trailingIcon?: React.ReactNode;
 };
 
 /** @see Textarea */

@@ -40,6 +40,11 @@ export const toneWarningClass = "border-warning/30 bg-warning/10 text-warning-st
 
 export const toneInfoClass = "border-info/30 bg-info/10 text-info-strong";
 
+/** Soft BRAND pill — a tinted primary tone (border/fill keep the brand role, text is the brand
+ * colour). The brand hue is dark enough that `text-primary` on its own 10% tint clears WCAG AA.
+ * For a SOLID brand fill use the Badge `default` variant instead. */
+export const tonePrimaryClass = "border-primary/30 bg-primary/10 text-primary";
+
 export const toneDestructiveClass = "border-destructive/30 bg-destructive/10 text-error-strong";
 
 export const toneMutedClass = "border-border bg-muted text-muted-foreground";

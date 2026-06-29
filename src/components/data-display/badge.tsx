@@ -19,13 +19,19 @@ import {
   toneInfoClass,
   toneMutedClass,
   toneNeutralClass,
+  tonePrimaryClass,
   toneSuccessClass,
   toneWarningClass,
 } from "../../lib/control-styles";
 import type { ShapeProp, ToneProp } from "../../props/vocabulary";
 
 export type BadgeVariant = "default" | "secondary" | "outline" | "dashed";
-export type BadgeTone = ToneProp;
+/**
+ * Badge tones extend the shared status `ToneProp` with a brand `primary` tone — a SOFT brand pill
+ * (tinted fill + brand text), the dashboard "role pill" pattern. The status tones stay status-only;
+ * for a SOLID brand fill use `variant="default"`.
+ */
+export type BadgeTone = ToneProp | "primary";
 
 interface StatusDef {
   tone: Extract<BadgeTone, "success" | "warning" | "destructive" | "info" | "neutral">;
@@ -92,6 +98,7 @@ export interface BadgeProps
 
 const badgeToneClass: Record<BadgeTone, string | undefined> = {
   default: undefined,
+  primary: cn("border-transparent", tonePrimaryClass),
   success: cn("border-transparent", toneSuccessClass),
   warning: cn("border-transparent", toneWarningClass),
   destructive: cn("border-transparent", toneDestructiveClass),

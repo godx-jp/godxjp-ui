@@ -107,6 +107,21 @@
    * — the CTA then carries a brand glow with no component change. */
   --shadow-glow: 0 0 0 0 transparent;
 
+  /* Brand SPOTLIGHT — a decorative radial brand halo for hero / auth backdrops (the `.ui-brand-glow`
+   * utility paints this as a background-image on an aria-hidden layer). Every knob is a token, so a
+   * service retints (`--brand-glow-color`), softens (`--brand-glow-alpha`), resizes
+   * (`--brand-glow-size`) or repositions (`--brand-glow-position`) the halo with no markup change;
+   * override the whole `--brand-glow` for a bespoke gradient. Default: a soft primary glow up top. */
+  --brand-glow-color: var(--primary);
+  --brand-glow-alpha: 0.18;
+  --brand-glow-size: 60% 50%;
+  --brand-glow-position: 50% 0%;
+  --brand-glow: radial-gradient(
+    ellipse var(--brand-glow-size) at var(--brand-glow-position),
+    hsl(var(--brand-glow-color) / var(--brand-glow-alpha)),
+    transparent 70%
+  );
+
   /* FOCUS RING — the two global knobs for the keyboard-focus affordance (WCAG 2.4.7 / 2.4.11).
    * `--focus-ring-color` is the themeable hue (HSL components, defaults to --ring) and
    * `--focus-ring-width` the standard thickness; override either ONCE — even scoped under a

@@ -53,13 +53,14 @@ Text.displayName = "Text";
  * semantic element; override the rendered element with `as` (e.g. a visual h2 that is a real <h1>).
  */
 export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProp>(
-  ({ level = 2, as, tone = "default", align, truncate, className, ...props }, ref) =>
+  ({ level = 2, as, tone = "default", align, truncate, weight = "medium", className, ...props }, ref) =>
     React.createElement(as ?? `h${level}`, {
       ref,
       "data-slot": "heading",
       "data-level": level,
       "data-tone": tone,
       "data-align": align,
+      "data-weight": weight,
       "data-truncate": truncate ? "" : undefined,
       className: cn("ui-heading", className),
       ...props,

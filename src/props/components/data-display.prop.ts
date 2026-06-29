@@ -44,7 +44,8 @@ export type DescriptionsItemProp = {
 /** @see Badge */
 export type BadgeProp = {
   variant?: "default" | "secondary" | "outline";
-  tone?: ToneProp;
+  /** Status tones plus a brand `primary` tone (soft brand pill); solid brand = `variant="default"`. */
+  tone?: ToneProp | "primary";
   status?: string;
   icon?: React.ComponentType<{ className?: string }> | null;
   className?: ClassNameProp;

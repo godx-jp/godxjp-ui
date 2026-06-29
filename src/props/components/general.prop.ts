@@ -56,6 +56,8 @@ export type HeadingProp = Omit<React.HTMLAttributes<HTMLHeadingElement>, "color"
   tone?: TextToneProp;
   align?: TextAlignProp;
   truncate?: boolean;
+  /** Weight (system canon: 400 · 500 · 700). Default `medium` — set `bold` for an emphasised title. */
+  weight?: FontWeightProp;
 };
 
 /** @see Button */
