@@ -47,6 +47,16 @@ describe("PasswordInput", () => {
     expect(input).toBeDisabled();
   });
 
+  it("renders a leadingIcon (lock) alongside the built-in reveal toggle", () => {
+    // The issue case: the trailing slot is the eye toggle, so a lock icon must
+    // live in the leading slot. leadingIcon flows through to the inner Input.
+    const { getByTestId, getByRole } = render(
+      <PasswordInput aria-label="パスワード" leadingIcon={<span data-testid="lock">lock</span>} />,
+    );
+    expect(getByTestId("lock")).toBeInTheDocument();
+    expect(getByRole("button")).toBeInTheDocument(); // the reveal toggle still works
+  });
+
   it("has no axe violations", async () => {
     await expectNoA11yViolations(<PasswordInput aria-label="パスワード" />);
   });

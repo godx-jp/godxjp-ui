@@ -9,6 +9,12 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Called after the field is cleared via the inline ✕. */
   onClear?: () => void;
   /**
+   * A leading affordance pinned inside the start of the field — e.g. a mail or
+   * search icon (the common auth/search pattern). Decorative by default; the
+   * input keeps the keyboard focus. Pairs with `trailingIcon`/`allowClear`.
+   */
+  leadingIcon?: React.ReactNode;
+  /**
    * A trailing affordance pinned inside the field — e.g. a calendar / clock popover
    * trigger button. ONE trailing icon shows at a time: when `allowClear` and the field
    * holds a value the clear ✕ REPLACES this icon; otherwise this icon shows. Never both.
@@ -33,6 +39,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       type,
       allowClear = false,
       onClear,
+      leadingIcon,
       trailingIcon,
       value,
       defaultValue,
@@ -84,8 +91,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       onClear?.();
     };
 
-    // Fast path: no trailing affordance at all → a bare <input>, unchanged.
-    if (!allowClear && trailingIcon == null) {
+    // Fast path: no affix at all → a bare <input>, unchanged.
+    if (!allowClear && trailingIcon == null && leadingIcon == null) {
       return (
         <input
           type={type}
@@ -119,6 +126,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <span data-slot="input-affix-wrapper" className="relative inline-flex w-full items-center">
+        {leadingIcon != null ? (
+          <span
+            data-slot="input-leading"
+            aria-hidden="true"
+            className="text-muted-foreground pointer-events-none absolute inset-y-0 start-2 inline-flex items-center"
+          >
+            {leadingIcon}
+          </span>
+        ) : null}
         <input
           type={type}
           data-slot="input"
@@ -126,7 +142,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           value={value}
           defaultValue={defaultValue}
           onChange={handleChange}
-          className={cn(inputBaseClass, (showClear || trailingIcon != null) && "pe-9", className)}
+          className={cn(
+            inputBaseClass,
+            leadingIcon != null && "ps-9",
+            (showClear || trailingIcon != null) && "pe-9",
+            className,
+          )}
           {...props}
         />
         {trailing != null ? (

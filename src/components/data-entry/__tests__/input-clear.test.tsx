@@ -82,3 +82,47 @@ describe("Input — trailingIcon (one trailing icon at a time)", () => {
     expect(screen.queryByRole("button", { name: "Xóa" })).toBeNull();
   });
 });
+
+describe("Input — leadingIcon (start slot)", () => {
+  it("renders a leading icon at the start, decorative and not stealing focus", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <Input aria-label="email" leadingIcon={<span data-testid="mail">mail</span>} />,
+    );
+    const leading = screen.getByTestId("mail");
+    expect(leading).toBeInTheDocument();
+    // The leading slot is aria-hidden + pointer-events-none, so clicking the
+    // field area still focuses the input (the icon never steals focus).
+    expect(leading.closest('[data-slot="input-leading"]')).toHaveAttribute("aria-hidden", "true");
+    await user.click(screen.getByLabelText("email"));
+    expect(screen.getByLabelText("email")).toHaveFocus();
+  });
+
+  it("coexists with a trailingIcon AND with allowClear (leading is independent of the trailing slot)", () => {
+    const { rerender } = renderWithUi(
+      <Input
+        aria-label="search"
+        leadingIcon={<span data-testid="mail">mail</span>}
+        trailingIcon={
+          <button type="button" aria-label="open">
+            icon
+          </button>
+        }
+      />,
+    );
+    expect(screen.getByTestId("mail")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "open" })).toBeInTheDocument();
+
+    // leading icon survives even when the clear ✕ takes the trailing slot.
+    rerender(
+      <Input
+        aria-label="search"
+        leadingIcon={<span data-testid="mail">mail</span>}
+        allowClear
+        value="x"
+      />,
+    );
+    expect(screen.getByTestId("mail")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Xóa" })).toBeInTheDocument();
+  });
+});
