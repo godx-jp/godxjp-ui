@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.5.0] - 2026-06-29
+
 ### Fixed
 
 - **Coloured status TEXT now clears WCAG AA on white.** The light wa-iro semantics (若竹 success,
@@ -72,8 +74,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The token-tier guard now accepts `glow` / `tint` / `gradient` as component-token property
     suffixes. See `docs/roadmap/color-extensibility.md` for the full map (implemented slots +
     the prop-tier roadmap for states still set via a fixed `tone`/`variant` vocabulary).
-
-## [16.5.0] - 2026-06-28
 
 ### Changed
 
