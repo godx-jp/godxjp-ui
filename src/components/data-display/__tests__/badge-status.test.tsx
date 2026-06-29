@@ -44,7 +44,8 @@ describe("Badge", () => {
     );
     const badge = badgeEl(container);
     expect(badge).toHaveAttribute("data-tone", "primary");
-    expect(badge.className).toContain("text-primary");
+    // AA-strong brand text on the soft tint (text-primary alone is only 4.04:1 in light).
+    expect(badge.className).toContain("text-primary-strong");
     expect(badge.className).toContain("bg-primary/10");
     // It is NOT the solid-primary fill (that stays on the default variant).
     expect(badge.className).not.toContain("text-primary-foreground");

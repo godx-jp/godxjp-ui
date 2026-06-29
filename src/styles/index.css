@@ -42,7 +42,7 @@
 @source inline("rounded-{xs,xl,2xl}");
 @source inline("text-2xs");
 @source inline("text-{3xl,4xl,5xl}");
-@source inline("text-{success,warning,info,error}-strong");
+@source inline("text-{primary,success,warning,info,error}-strong");
 /* `.js` matters: the published package ships only compiled JS under dist (no
  * .tsx sources), and this file is copied verbatim into dist/styles — without
  * it Tailwind finds no component classes in consumers (unstyled popovers and
@@ -103,6 +103,7 @@
   --color-attention-foreground: hsl(var(--attention-foreground));
   /* AA-strong status TEXT colours (text-{success,warning,info,error}-strong) — darker than the
    * fills so small coloured labels clear WCAG AA on white; flip light on the dark theme. */
+  --color-primary-strong: hsl(var(--text-primary));
   --color-success-strong: hsl(var(--text-success));
   --color-warning-strong: hsl(var(--text-warning));
   --color-info-strong: hsl(var(--text-info));

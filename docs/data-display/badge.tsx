@@ -30,6 +30,7 @@ const shapes = [
 
 const tones = [
   { tone: "default" as const, label: "既定 Default" },
+  { tone: "primary" as const, label: "ブランド Brand" },
   { tone: "success" as const, label: "承認済 Approved" },
   { tone: "warning" as const, label: "保留 Pending" },
   { tone: "destructive" as const, label: "却下 Rejected" },

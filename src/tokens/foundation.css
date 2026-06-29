@@ -40,6 +40,7 @@
   /* Status TEXT colours — darker than the fill roles so small coloured text (a StatCard delta, an
    * outline status badge label) clears WCAG AA 4.5:1 on white. The fill roles (--success/--warning/
    * --info) stay the brighter wa-iro for badges/bars; only TEXT reads these via text-*-strong. */
+  --text-primary: 204 100% 30%; /* deep brand blue — AA brand text on the soft primary tint */
   --text-success: 152 84% 22%; /* deep 若竹 — AA green text on white */
   --text-warning: 36 100% 28%; /* dark 山吹 amber — yellow can never pass as text */
   --text-info: 221 70% 38%; /* deep 群青 — AA blue text on white */
@@ -360,6 +361,7 @@
   --text-link: 204 90% 66%;
   --text-brand: 204 90% 66%;
   /* Status text on the dark spine reads LIGHT (AA on dark surfaces). */
+  --text-primary: 204 90% 64%; /* lifted brand blue — AA on the dark primary tint */
   --text-success: 146 55% 64%;
   --text-warning: 44 95% 62%;
   --text-info: 221 70% 72%;

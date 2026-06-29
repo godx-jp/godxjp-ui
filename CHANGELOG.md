@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.7.0] - 2026-06-29
+
+### Added
+
+- **`Input` / `PasswordInput` `leadingIcon` (prefix slot)** (gh#119). Only a `trailingIcon` slot
+  existed, and `PasswordInput`'s trailing slot is the built-in reveal toggle — so a leading mail /
+  lock affordance (the common auth pattern) was impossible. `leadingIcon` adds a decorative
+  (`aria-hidden`, `pointer-events-none`) start slot with `ps-9` padding that coexists with
+  `trailingIcon` and `allowClear`; `PasswordInput` inherits it (lock leading + eye trailing).
+- **`Badge` brand `primary` tone** (gh#120). A SOFT brand pill (`border-primary/30 bg-primary/10`
+  with the new AA-strong `text-primary-strong`), the dashboard "role pill". Scoped to `BadgeTone`
+  so the shared status-only `ToneProp` (Alert/Dialog/Sheet) is unchanged; a SOLID brand fill stays
+  on `variant="default"`.
+- **`Heading` `weight` prop** (gh#121). Render a semantic, emphasised `<h1..h4>` at `bold` without
+  dropping to `Text weight="bold"`. Defaults to `medium` (no visual regression); the heading-scoped
+  weight selectors outrank the base heading rule.
+- **Brand spotlight — `.ui-brand-glow` utility + `--brand-glow*` tokens** (gh#122). A token-driven
+  radial brand halo for hero / auth backdrops, replacing a hand-authored `radial-gradient`. Apply to
+  an `aria-hidden` layer; decorative (`pointer-events:none`); retint (`--brand-glow-color`), soften
+  (`--brand-glow-alpha`), resize (`--brand-glow-size`) or reposition (`--brand-glow-position`) with
+  no markup change.
+- **AA-strong brand text token `--text-primary` → `text-primary-strong`** (`--color-primary-strong`),
+  completing the `text-*-strong` family. Plain `text-primary` on the soft primary tint is only
+  4.04:1 in light; the strong token clears WCAG AA (6.06:1 light · 6.08:1 dark).
+
 ## [16.6.0] - 2026-06-29
 
 ### Fixed
