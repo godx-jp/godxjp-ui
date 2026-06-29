@@ -7,7 +7,10 @@ import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 
 export default tseslint.config(
-  { ignores: ["dist/**", "examples/**", "preview/**", "node_modules/**", ".design/**", ".ux-audit/**", "debate/**"] },
+  // design-sync (claude.ai/design handoff) artifacts — generated bundles/cache (`ds-bundle`,
+  // `.ds-sync`, both gitignored) and committed render-snapshots (`.design-sync/previews`); tooling
+  // output, not shippable library source, so excluded from lint like `preview`/`.design`/`.ux-audit`.
+  { ignores: ["dist/**", "examples/**", "preview/**", "node_modules/**", ".design/**", ".ux-audit/**", "debate/**", "ds-bundle/**", ".ds-sync/**", ".design-sync/**"] },
   // Source carries `-- reason` disable directives for stricter rules (no-deprecated,
   // set-state-in-effect) that this lighter config doesn't enable; keep them as
   // documentation without flagging them unused.
