@@ -14,3 +14,11 @@ coverage/
 .ux-audit/
 .playwright-mcp/
 .claude/scheduled_tasks.lock
+
+# design-sync (claude.ai/design) — transient build/scratch; durable inputs (.design-sync/config.json,
+# NOTES.md, conventions.md, previews/, overrides/) ARE committed.
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules

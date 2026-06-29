@@ -1,0 +1,5 @@
+{
+  "pkg": "@godxjp/ui",
+  "shape": "package",
+  "buildCmd": "pnpm build"
+}
