@@ -121,9 +121,17 @@
     background: hsl(var(--destructive) / 0.9);
   }
 
+  /* Outline + ghost set their text colour EXPLICITLY (read --foreground) — never rely on inherited
+   * body colour. Inheriting breaks in a scoped dark region (e.g. an on-navy hero): the body's
+   * computed dark colour would carry in and the label goes near-invisible on the dark fill. */
   .ui-button--outline {
     border: 1px solid hsl(var(--input));
     background: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .ui-button--ghost {
+    color: hsl(var(--foreground));
   }
 
   .ui-button--outline:hover,

@@ -100,11 +100,11 @@ const THEME = `
   --secondary: 217 61% 12%;          /* navy button */
   --secondary-foreground: 0 0% 100%;
   --muted: 216 33% 97%;              /* neutral-50 */
-  --muted-foreground: 216 12% 50%;   /* neutral-500 */
+  --muted-foreground: 216 16% 40%;   /* neutral-600, darkened to clear WCAG AA 4.5:1 on cards */
   --border: 217 24% 89%;             /* neutral-200 */
   --input: 216 20% 80%;              /* neutral-300 */
   /* Fixed status signalling (TIXIMAX semantic palette) */
-  --success: 146 67% 37%; --success-foreground: 0 0% 100%;
+  --success: 152 78% 26%; --success-foreground: 0 0% 100%;  /* darker green: AA for delta text + white-on-fill */
   --warning: 41 73% 53%;  --warning-foreground: 217 61% 12%;  /* = brand gold */
   --destructive: 12 83% 44%; --destructive-foreground: 0 0% 100%;
   --info: 217 69% 47%; --info-foreground: 0 0% 100%;

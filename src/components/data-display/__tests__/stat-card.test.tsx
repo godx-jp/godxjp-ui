@@ -10,12 +10,12 @@ describe("StatCard — delta tone", () => {
     const { rerender } = render(<StatCard label="売上" value="¥1,000" delta="+12%" />);
     let delta = screen.getByText("+12%");
     expect(delta).toHaveAttribute("data-delta-tone", "positive");
-    expect(delta).toHaveClass("text-success");
+    expect(delta).toHaveClass("text-success-strong");
 
     rerender(<StatCard label="売上" value="¥900" delta="-5%" />);
     delta = screen.getByText("-5%");
     expect(delta).toHaveAttribute("data-delta-tone", "negative");
-    expect(delta).toHaveClass("text-destructive");
+    expect(delta).toHaveClass("text-error-strong");
   });
 
   it("inverse flips the semantics (lower is better)", () => {

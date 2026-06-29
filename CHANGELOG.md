@@ -6,7 +6,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Coloured status TEXT now clears WCAG AA on white.** The light wa-iro semantics (若竹 success,
+  山吹 warning, 群青 info) failed AA 4.5:1 as small coloured text (a `StatCard` delta, an outline
+  `Badge` label, an `Alert` title). New darker `--text-{success,warning,info,error}` tokens (light
+  on the dark theme) drive a `text-{success,warning,info,error}-strong` utility; the status TEXT now
+  reads those while the badge/bar/icon FILLS keep the brighter role colour. Gated by `check:contrast`
+  on the default-theme pages too.
+- **Outline/ghost `Button` text could vanish on a dark scoped region.** `.ui-button--outline` /
+  `--ghost` never set their own text colour, so they inherited `body`'s computed dark colour and went
+  near-invisible on an on-navy hero/region (contrast ~1.1:1). They now set
+  `color: hsl(var(--foreground))` explicitly, so the label always reads the scoped foreground.
+- **Table header text could go invisible when a brand set a dark `--secondary`.** The header band was
+  `background: --secondary` + `color: --muted-foreground` (independent), so a navy-secondary brand got
+  dark text on a dark band. The band is now decoupled into `--table-header-background` /
+  `--table-header-foreground` (defaults `--muted` / `--muted-foreground` — `--secondary` == `--muted`
+  in the default theme, so byte-identical), themed together to keep contrast.
+
 ### Added
+
+- **`check:contrast` — a browser-rendered WCAG 2.2 AA text-contrast gate** (`scripts/check-contrast.mjs`,
+  wired into `verify:release`). jsdom/axe-in-vitest can't see colour, so dark-on-dark scoped-region
+  bugs slipped every static check; this renders pages in Chromium, computes the effective background
+  behind every text node, and fails below 4.5:1 (3:1 for large text). Logotypes (`[data-logotype]`)
+  and disabled text are exempt (WCAG). Skips gracefully where no browser is available. (Surfaced — and
+  these now pass — the outline-button and table-header bugs above.)
+- **Composition pattern vs framework component — a hard decision gate.** New
+  `docs/COMPOSITION-VS-COMPONENT.md` defines the two concepts and the **Framework-Component Test**
+  (7 criteria, all must pass) that now gates every `src/components/` addition: it is **Gate 0** of the
+  `godxjp-ui-component` skill and **cardinal rule #46** in CLAUDE.md. Marketing Hero/Navbar/Footer,
+  page layouts and icon medallions FAIL the test → they are compositions built from existing
+  primitives + tokens, never framework components.
+- **Marketing display-type + dual-font tier (opt-in, enterprise defaults unchanged).** `--font-size-3xl/
+-4xl/-5xl` (wired to `text-3xl/-4xl/-5xl` utilities via `--font-size-display` + a bolder ramp),
+  `--font-weight-black` (800), and a dual-font split — `--font-family-display` (headings) +
+  `--font-family-body` (prose), both defaulting to `--font-family-sans`. Lets a marketing surface
+  reach a bold landing-page look from tokens; the dxs-kintai admin scale stays small by design.
+- **`Sidebar` main nav-item active is themeable** — `--sidebar-item-active-background` /
+  `--sidebar-item-active-foreground` (defaults = the hover look), so a service brands the selected
+  row (e.g. a gold tint + gold text on a navy sidebar) without forking CSS.
+- **`StatCard` gains an optional `icon` medallion** (see its own entry above).
+- **Two TIXIMAX showcases proving 100% token-fidelity from a Claude Design** — `tiximax-portal`
+  (admin portal: navy sidebar via role-scoping, gold CTA + glow, stat medallions) and
+  `tiximax-website` (marketing landing: navy hero + gold glow, services/steps/routes, CTA, footer) —
+  both rebuilt from token configuration + real primitives only, no new framework components.
 
 - **Component colour-extensibility slots — every component is now token-themeable, no new colour
   codes.** A repo-wide audit found surfaces whose colour was baked or only role-default; each now
@@ -188,7 +232,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (utilities layer) beat the `.ui-pagination-size-trigger` width (components layer); the trigger
   now also carries `w-[var(--pagination-size-width)]` so tailwind-merge drops `w-full`.
 - **Dead CSS removed:** the orphaned `.ui-filter-bar/.ui-filter-group/.ui-filter-label/
-  .ui-filter-clear` aliases left over from the FilterBar→Toolbar rename (no references remained).
+.ui-filter-clear` aliases left over from the FilterBar→Toolbar rename (no references remained).
 
 ## [15.0.0]
 

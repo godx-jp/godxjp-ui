@@ -914,6 +914,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Table component tokens: row height, cell padding."
   },
   {
+    "name": "--table-header-background",
+    "value": "hsl(var(--muted))",
+    "description": "Header band — its OWN bg + fg tokens (decoupled from --secondary, which == --muted by default so * this is byte-identical). A brand whose --secondary is dark (navy buttons) no longer bleeds a * dark band under the dark header text; it sets both header tokens together to keep contrast."
+  },
+  {
+    "name": "--table-header-foreground",
+    "value": "hsl(var(--muted-foreground))",
+    "description": "Header band — its OWN bg + fg tokens (decoupled from --secondary, which == --muted by default so * this is byte-identical). A brand whose --secondary is dark (navy buttons) no longer bleeds a * dark band under the dark header text; it sets both header tokens together to keep contrast."
+  },
+  {
     "name": "--table-pin-shadow",
     "value": "-6px 0 6px -5px hsl(var(--foreground) / 0.12)",
     "description": "Inline-end shadow that lifts a pinned (sticky) action column off the body it scrolls over."

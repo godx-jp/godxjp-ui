@@ -41,7 +41,26 @@ MUST pass every gate below. If you cannot satisfy a gate, STOP and fix the syste
 token/primitive/key) rather than working around it. Violations have been caught and rejected
 repeatedly — treat each rule as non-negotiable.
 
-## 0. Before you write a line — MCP-FIRST
+## 0. GATE 0 — Framework component or composition pattern? (decide FIRST, every time)
+
+**Before MCP-first, before a single line:** decide whether the thing you are about to build even
+belongs in `src/components/`. Run the **Framework-Component Test** in
+`docs/COMPOSITION-VS-COMPONENT.md` and record the verdict for **all 7 criteria** (C1 universal ·
+C2 owns reusable behavior · C3 not composable from existing primitives+tokens · C4 single
+responsibility + controlled-vocab API · C5 fully token-themeable, zero baked brand · C6 earns the
+i18n/a11y contract · C7 earns its bundle cost).
+
+- **ALL 7 pass** → it may be a framework component → continue with this contract.
+- **ANY fails** → it is a **composition pattern**. STOP. Do NOT add it to `src/components/`. Build it
+  from existing primitives + token overrides (global / scoped `[data-tenant]` / per-region role
+  scoping) in the app or a `docs/` showcase; if a token is missing, ADD THE TOKEN, not a component.
+
+A marketing **Hero / Navbar / Footer / Pricing**, a dashboard **page layout**, an **icon
+medallion** — all FAIL the test and are compositions (build from `Card`/`Button`/`Text`/`Avatar`/
+`ResponsiveGrid`/`Flex` + tokens). **When in doubt, compose.** You must publish the C1–C7 ledger in
+your reply for any new `src/components/**` addition; a reviewer rejects additions without it.
+
+## 0b. Before you write a line — MCP-FIRST
 
 - Consult the **`godxjp-ui` MCP** first, every time: `search_components` (right group, not just
   one), `get_component <Name>` for the exact prop API + example + cardinal rules,

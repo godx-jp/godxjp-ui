@@ -249,8 +249,8 @@ export function StatCard({
               data-slot="stat-card-delta"
               data-delta-tone={deltaTone}
               className={cn(
-                deltaTone === "positive" && "text-success",
-                deltaTone === "negative" && "text-destructive",
+                deltaTone === "positive" && "text-success-strong",
+                deltaTone === "negative" && "text-error-strong",
               )}
             >
               {delta}

@@ -120,20 +120,22 @@
     line-height: 1;
   }
 
+  /* Title text reads the AA-strong status colour (darker than the fill) so the coloured heading
+   * clears WCAG AA on the soft alert tint; the icon keeps the brighter role colour. */
   [data-slot="alert-title"][data-tone="destructive"] {
-    color: hsl(var(--destructive));
+    color: hsl(var(--text-error));
   }
 
   [data-slot="alert-title"][data-tone="warning"] {
-    color: hsl(var(--warning));
+    color: hsl(var(--text-warning));
   }
 
   [data-slot="alert-title"][data-tone="success"] {
-    color: hsl(var(--success));
+    color: hsl(var(--text-success));
   }
 
   [data-slot="alert-title"][data-tone="info"] {
-    color: hsl(var(--info));
+    color: hsl(var(--text-info));
   }
 
   [data-slot="alert-description"] {

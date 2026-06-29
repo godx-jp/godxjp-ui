@@ -8,6 +8,11 @@
   --table-cell-padding-y: var(--space-2);
   --table-cell-space-x: var(--control-padding-x);
   --table-head-font-size: var(--font-size-xs);
+  /* Header band — its OWN bg + fg tokens (decoupled from --secondary, which == --muted by default so
+   * this is byte-identical). A brand whose --secondary is dark (navy buttons) no longer bleeds a
+   * dark band under the dark header text; it sets both header tokens together to keep contrast. */
+  --table-header-background: hsl(var(--muted));
+  --table-header-foreground: hsl(var(--muted-foreground));
   /* Inline-end shadow that lifts a pinned (sticky) action column off the body it scrolls over. */
   --table-pin-shadow: -6px 0 6px -5px hsl(var(--foreground) / 0.12);
   /* Row-state tint washes — translucent muted over the opaque base. Defaults equal

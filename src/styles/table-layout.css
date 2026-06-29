@@ -8,10 +8,10 @@
     padding: var(--table-cell-padding-y) var(--table-cell-space-x);
     text-align: start;
     vertical-align: middle;
-    background: hsl(var(--secondary));
+    background: var(--table-header-background);
     font-size: var(--table-head-font-size);
     font-weight: var(--font-weight-medium);
-    color: hsl(var(--muted-foreground));
+    color: var(--table-header-foreground);
     white-space: nowrap;
   }
 

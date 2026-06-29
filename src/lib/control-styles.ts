@@ -31,14 +31,16 @@ export const tableHeadHeightClass = "h-[length:var(--table-row-height)]";
 
 export const tableCellPaddingClass = "py-[length:var(--table-cell-padding-y)]";
 
-/** Semantic status / badge tones — always use tokens, never raw Tailwind palette. */
-export const toneSuccessClass = "border-success/30 bg-success/10 text-success";
+/** Semantic status / badge tones — always use tokens, never raw Tailwind palette. The TEXT uses the
+ * AA-strong status colours (text-*-strong, darker than the fill) so a small status label clears
+ * WCAG AA on the soft tint; the border/fill keep the brighter wa-iro role. */
+export const toneSuccessClass = "border-success/30 bg-success/10 text-success-strong";
 
-export const toneWarningClass = "border-warning/30 bg-warning/10 text-warning-foreground";
+export const toneWarningClass = "border-warning/30 bg-warning/10 text-warning-strong";
 
-export const toneInfoClass = "border-info/30 bg-info/10 text-info";
+export const toneInfoClass = "border-info/30 bg-info/10 text-info-strong";
 
-export const toneDestructiveClass = "border-destructive/30 bg-destructive/10 text-destructive";
+export const toneDestructiveClass = "border-destructive/30 bg-destructive/10 text-error-strong";
 
 export const toneMutedClass = "border-border bg-muted text-muted-foreground";
 

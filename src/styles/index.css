@@ -41,6 +41,8 @@
  * `var(--radius-2xl)` directly; without a generated utility Tailwind drops the unused var). */
 @source inline("rounded-{xs,xl,2xl}");
 @source inline("text-2xs");
+@source inline("text-{3xl,4xl,5xl}");
+@source inline("text-{success,warning,info,error}-strong");
 /* `.js` matters: the published package ships only compiled JS under dist (no
  * .tsx sources), and this file is copied verbatim into dist/styles — without
  * it Tailwind finds no component classes in consumers (unstyled popovers and
@@ -99,6 +101,12 @@
   --color-info-foreground: hsl(var(--info-foreground));
   --color-attention: hsl(var(--attention));
   --color-attention-foreground: hsl(var(--attention-foreground));
+  /* AA-strong status TEXT colours (text-{success,warning,info,error}-strong) — darker than the
+   * fills so small coloured labels clear WCAG AA on white; flip light on the dark theme. */
+  --color-success-strong: hsl(var(--text-success));
+  --color-warning-strong: hsl(var(--text-warning));
+  --color-info-strong: hsl(var(--text-info));
+  --color-error-strong: hsl(var(--text-error));
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -152,6 +160,10 @@
   --text-lg: var(--font-size-lg);
   --text-xl: var(--font-size-xl);
   --text-2xl: var(--font-size-2xl);
+  /* Opt-in DISPLAY ramp (marketing/hero) — wired to the display tokens, unused by the admin scale. */
+  --text-3xl: var(--font-size-3xl);
+  --text-4xl: var(--font-size-4xl);
+  --text-5xl: var(--font-size-5xl);
 }
 
 @layer base {
@@ -179,7 +191,9 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: var(--font-family-sans);
+    /* Body reads --font-family-body (defaults to --font-family-sans → unchanged); a service that
+     * wants a dual-font brand (display + body face) overrides --font-family-body alone. */
+    font-family: var(--font-family-body);
     font-size: var(--font-size-base);
     line-height: var(--line-height-body);
     font-feature-settings:
@@ -193,7 +207,13 @@
 
   /* Semantic heading scale — SEO + accessibility: real <h1>–<h6> elements carry
    * the document outline (one <h1> per page, levels never skipped). Visual size
-   * follows the dxs-kintai scale; component titles override via their own class. */
+   * follows the dxs-kintai scale; component titles override via their own class.
+   * Headings read --font-family-display (defaults to --font-family-sans → unchanged) for dual-font
+   * brands (display face on headings, body face on prose). */
+  :where(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-family-display);
+  }
+
   h1 {
     font-size: var(--heading-h1);
     font-weight: var(--font-weight-medium);

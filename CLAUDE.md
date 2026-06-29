@@ -51,6 +51,15 @@ Hard-won from real service consumption — check these BEFORE writing any value 
   If yes, it MUST be a documented component token — theme sets it once globally, props override
   per instance. If the only route is forking CSS, that's a library gap: fix the library, never
   patch the consumer app.
+- **Composition pattern vs framework component — pass the test or compose (#46).** Before adding
+  ANYTHING to `src/components/`, run the **Framework-Component Test** (`docs/COMPOSITION-VS-COMPONENT.md`,
+  also Gate 0 of `godxjp-ui-component`): all 7 criteria (universal · owns reusable behavior · not
+  composable from existing primitives+tokens · single-responsibility controlled API · fully
+  token-themeable · earns the i18n/a11y contract · earns its bundle cost). ALL pass → it may be a
+  framework component. ANY fails → it is a **composition pattern**: build it from existing primitives
+  + token overrides (global / scoped `[data-tenant]` / per-region role scoping) in the app or a
+  `docs/` showcase — never in `src/components/`. Marketing Hero/Navbar/Footer/Pricing, page layouts,
+  icon medallions all FAIL → compose. When in doubt, compose; if a token is missing, add the token.
 
 ### Add-a-token checklist (ALL steps, in order)
 
