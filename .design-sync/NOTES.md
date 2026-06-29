@@ -2,19 +2,79 @@
 
 Repo-specific facts for syncing `@godxjp/ui` to claude.ai/design. Read this before every re-sync.
 
-## STATUS: not yet synced — blocked on design auth in the environment where it was started
+## STATUS: synced (first import 2026-06-29) — project `edbd03a8-e78b-40a1-a6f5-82f7452191b0`
 
-The first `/design-sync` was attempted from a headless claude.ai/code web session that has **no
-design-system authorization** and **no interactive terminal**, so `DesignSync` (and therefore
-`create_project` / `finalize_plan` / upload) could not run. The tool's own guidance:
+Target project **"@godxjp/ui Design System"** (https://claude.ai/design/p/edbd03a8-e78b-40a1-a6f5-82f7452191b0),
+freshly created for this import (NOT the user's hand-authored "dxs-kintai Design System" project — that
+one is left untouched). `projectId` is pinned in config.json. Incremental upload path (empty project).
 
-> DesignSync needs design-system authorization, but `/design-login` requires an interactive
-> terminal. If this is claude.ai/code, use Claude Design's "Send to Claude Code Web" (seeds the
-> project into the workspace) or provide the project files directly.
+The earlier headless attempt couldn't run `DesignSync`; this run completed from an interactive
+terminal after `/design-login` upgraded the claude.ai login with design-system scopes.
 
-**To complete the sync:** run `/design-sync` again from either (a) an interactive terminal where
-`/design-login` works, or (b) a session started via Claude Design's "Send to Claude Code Web". This
-config + these notes are committed so that run starts already scoped — see the verify-loop TODO below.
+### Architecture decision that drives this sync (IMPORTANT — read before re-sync)
+`@godxjp/ui` is a **design _framework_**, not a single locked brand: brand-neutral primitives + a
+semantic-token / knob system that consumers re-skin with their OWN design system (theme.css /
+`[data-tenant]` scoping). The sync reflects that: ship the neutral framework + default-quiet tokens,
+teach the design agent to re-skin via tokens (conventions header), demo previews in the default theme.
+
+### The entry problem (why cfg.entry + the 111-entry componentSrcMap exist)
+The package's published `.` entry (`dist/index.js`) is a THIN curated "admin" surface (~37 exports)
+and is **missing the core primitives** (Button, Card, Input, Select, Calendar, DataTable, …). The real
+public API is **subpath-based** (`@godxjp/ui/general`, `/data-display`, `/data-entry`, …). So:
+- **Bundle**: `cfg.entry = ./dist/_ds_all.js` — an aggregate (`.design-sync/gen-aggregate.mjs`,
+  regenerated post-`pnpm build` via `cfg.buildCmd`) that `export *`s all 8 category barrels + a few
+  extras. `window.GodxjpUi` ends up with 268 exports (92 catalogued + all compound sub-parts) so the
+  design agent can compose Card+CardContent, Dialog+DialogContent, etc.
+- **Cards**: `cfg.componentSrcMap` (111 entries) defines exactly the **92 catalogued** components
+  (matches `mcp/src/data/components.ts`) — 92 src-path ADDs + 19 nulls that exclude the sub-parts the
+  thin entry contributes (AlertTitle, DialogContent, TabsList, SkeletonStat, Toolbar…). Discovery's
+  types-root is hard-wired to `pkgJson.types` with NO config override, so componentSrcMap is the only
+  reproducible lever — do not "simplify" it away.
+
+### Font decision (resolves the would-be [FONT_DANGLING])
+Default face is **Noto Sans JP** (`:root`); **Montserrat** is the `vi`-locale face. The compiled
+preview CSS references both via absolute `/assets/*.woff2` urls (don't resolve outside Vite).
+`.design-sync/gen-css.mjs` (run in `cfg.buildCmd`) emits a STABLE cleaned cssEntry
+(`preview/dist/assets/_ds_cssentry.css`) that: (a) fixes the hash-rot risk by globbing the
+content-hashed `preview-runtime-*.css`; (b) **keeps Montserrat** (256 KB / 15 files, urls rewritten
+relative → shipped to fonts/); (c) **drops the 372 Noto Sans JP @font-face blocks** (8.8 MB of CJK
+subsets — disproportionate for a host-font-driven themeable framework). Noto Sans JP is runtime-marked
+(`cfg.runtimeFontPrefixes`) so it falls back to the system stack (-apple-system, Hiragino Sans). JP
+preview text renders in system JP fonts; consumers serve their own JP webfont in production.
+
+### Known render warns (validate these against on re-sync — NOT new if listed here)
+- **[TOKENS_MISSING] `--offset-*` / `--mobile-offset-*` (11 vars)** — set at runtime via inline
+  style / JS by positioned components (toasts/popovers/sheets). EXPECTED absent from static
+  stylesheets; non-blocking. Do not chase.
+- **[RENDER_BLANK]/[RENDER_THIN] on bare interactive primitives** — Button, Input, Checkbox,
+  Textarea, TagInput, Progress, AspectRatio (blank) and StatCard, Field, FormField, Rating,
+  PageContainer, SplitPane (thin) render small as empty floor cards. These are all in the AUTHORING
+  scope (`.design-sync/previews/<Name>.tsx`); the floor card is honest, authoring fixes them.
+  After authoring, only PageContainer / SplitPane (+1) remain legitimately `thin` — recorded, not new.
+
+### First-sync result (2026-06-29)
+- **92/92 render clean, bad=0**, variantsIdentical=0, thin=3 (layout primitives, recorded above).
+- **22 authored previews**, all graded `good` (carried forward at 0 cost on re-sync): Button, Card,
+  Input, Badge, Alert, Select, Switch, Checkbox, Textarea, TagInput, Progress, AspectRatio, StatCard,
+  Field, FormField, Rating, Tabs, Avatar, Steps, DataTable, Calendar, DatePicker.
+- **70 components on the honest floor card** — fully functional, authorable incrementally on any
+  re-sync (their `.design-sync/previews/<Name>.tsx` just doesn't exist yet).
+- `window.GodxjpUi` = 268 exports (92 catalogued + all compound sub-parts).
+- Conventions header authored at `.design-sync/conventions.md` (wired via `readmeHeader`) — every
+  token / prop / component it names was grep-verified against the built bundle.
+
+### Re-sync risks / watch-list
+- **cssEntry hash rot is SOLVED** by `gen-css.mjs` (globs `preview-runtime-*.css`, re-emits the stable
+  `_ds_cssentry.css`). But `cfg.buildCmd` MUST run `pnpm preview:build` before `gen-css.mjs`, else the
+  cleaned cssEntry is stale. Full chain: `pnpm build && pnpm preview:build && gen-aggregate && gen-css`.
+- **Authored-preview API guesses**: a few previews use props the `.d.ts` extractor flattened to
+  `VariantProps` (Select/Switch/Checkbox/Avatar compound APIs, Calendar `mode/selected`, DataTable
+  `{key,header,align,render}` columns, Steps `items`). They render correctly today; if upstream
+  changes those APIs, re-grade those cells.
+- **Noto Sans JP is runtime-marked, not shipped** (see Font decision). If a future brand needs JP
+  webfonts in previews, ship a Noto subset via `extraFonts` — don't unmark without a size budget.
+- The `:root` role-mirror freeze fix (v16.6.0) is why scoped/dark token overrides reach components;
+  purely CSS-internal, doesn't affect the bundle JS/.d.ts.
 
 ## Source shape: package (no Storybook)
 
