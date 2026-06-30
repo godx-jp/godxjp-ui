@@ -1407,9 +1407,9 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       },
       {
         name: "tone",
-        type: '"default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"',
+        type: '"default" | "primary" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"',
         description:
-          "SEMANTIC colour intent (ToneProp). This is the colour knob — success/warning/destructive/info/etc. Keep variant for structure, tone for meaning.",
+          "SEMANTIC colour intent (BadgeTone = ToneProp + `primary`). This is the colour knob — success/warning/destructive/info/etc. `primary` is a SOFT brand pill (tinted brand fill + brand text) for the dashboard role-pill pattern; for a SOLID brand fill use `variant=\"default\"`. Keep variant for structure, tone for meaning.",
       },
       {
         name: "shape",
@@ -2105,6 +2105,12 @@ import { Smartphone } from "lucide-react";
         name: "onClear",
         type: "() => void",
         description: "Called after the field is cleared via the inline ✕ (requires `allowClear`).",
+      },
+      {
+        name: "leadingIcon",
+        type: "React.ReactNode",
+        description:
+          "A leading affordance pinned inside the start of the field (e.g. a Mail / Lock / Search glyph) — purely decorative, rendered before the text. Sized to the control via tokens and offset with `ps-9` automatically; never hand-roll an absolutely-positioned icon over a plain Input.",
       },
       {
         name: "trailingIcon",
@@ -6893,6 +6899,12 @@ import { fetchInvoice } from "@/api/invoices";
       { name: "name", type: "string", description: "Form field name for native submission." },
       { name: "placeholder", type: "string", description: "Placeholder text." },
       { name: "disabled", type: "boolean", description: "Disables the field + toggle." },
+      {
+        name: "leadingIcon",
+        type: "React.ReactNode",
+        description:
+          "Inherited from Input — a leading glyph (e.g. a Lock icon) pinned inside the start of the field. The built-in show/hide eye stays on the trailing edge, so leading + trailing coexist here.",
+      },
     ],
     usage: [
       'DO use for any password / secret field instead of `<Input type="password">` so users get the show/hide affordance.',

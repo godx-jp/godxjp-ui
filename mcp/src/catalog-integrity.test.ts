@@ -234,4 +234,24 @@ describe("newly-added components are catalogued with the expected API", () => {
     expect(bar?.example).toMatch(/start=|center=|end=/);
     expect(bar?.example).not.toMatch(/\bproduct=|\bbell=|onSearchOpen=/);
   });
+
+  // #126 — the catalog lagged the lib: Input/PasswordInput gained `leadingIcon`
+  // and Badge `tone` gained `primary`. get_component must surface them.
+  it("Input and PasswordInput expose the leadingIcon prop", () => {
+    for (const name of ["Input", "PasswordInput"]) {
+      const c = findComponent(name);
+      expect(c, `${name} entry`).toBeDefined();
+      const lead = c?.props.find((p) => p.name === "leadingIcon");
+      expect(lead, `${name}.leadingIcon`).toBeDefined();
+      expect(lead?.type).toMatch(/ReactNode/);
+    }
+  });
+
+  it("Badge tone includes the brand 'primary' value", () => {
+    const badge = findComponent("Badge");
+    expect(badge, "Badge entry").toBeDefined();
+    const tone = badge?.props.find((p) => p.name === "tone");
+    expect(tone, "Badge.tone").toBeDefined();
+    expect(tone?.type).toMatch(/"primary"/);
+  });
 });

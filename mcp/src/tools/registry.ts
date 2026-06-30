@@ -975,7 +975,7 @@ function lintJsx(jsx: string): string {
     issues.push(
       "Tailwind heavy shadows are an AI tell — use ultra-diffuse low-opacity (< 0.05) or tinted shadows (soft.absolute-zero, minimalist).",
     );
-  if (/Inter|Roboto|Helvetica|Open\s*Sans/i.test(jsx))
+  if (/\b(?:Inter|Roboto|Helvetica|Open\s+Sans)\b/i.test(jsx))
     issues.push(
       "Banned default fonts (Inter/Roboto/Helvetica/Open Sans). Use Geist/Clash Display/PP Editorial New (soft.absolute-zero, minimalist.negative-constraints).",
     );
