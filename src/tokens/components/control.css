@@ -18,6 +18,17 @@
   --control-gap: var(--space-inline-sm);
   --control-gap-sm: var(--space-inline-xs);
   --control-radius: var(--radius);
+  /* Button corner radius — defaults to the button's historical `rounded-md` so nothing
+   * changes by default, but is its OWN knob so a service theme can retune the button
+   * radius INDEPENDENTLY of input/control radius (issue #124). */
+  --button-radius: var(--radius-md);
+  /* Control surface knobs — font-size, border width and resting shadow of every
+   * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them
+   * once instead of each component hard-coding Tailwind utilities. Defaults preserve
+   * the historical look (font-size-base, 1px border, shadow-xs). */
+  --control-font-size: var(--font-size-base);
+  --control-border-width: 1px;
+  --control-shadow: var(--shadow-xs);
   --control-icon-size: calc(1rem * var(--scaling));
   --control-icon-size-sm: calc(0.875rem * var(--scaling));
   --control-focus-ring-width: var(--focus-ring-width);

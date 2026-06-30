@@ -76,4 +76,11 @@ describe("lint_jsx — no false positives", () => {
   it("empty input is clean", async () => {
     expect(await lint("")).toMatch(/No issues/i);
   });
+
+  // #125 — the banned-font check matched "inter" as a substring of pointerEvents /
+  // pointer-events, flagging idiomatic JSX. It must be word-bounded to font names only.
+  it("pointerEvents / pointer-events is NOT mistaken for the banned font Inter", async () => {
+    expect(await lint('<div style={{ pointerEvents: "none" }} />')).not.toMatch(/Banned default fonts/);
+    expect(await lint('<div className="pointer-events-none" />')).not.toMatch(/Banned default fonts/);
+  });
 });

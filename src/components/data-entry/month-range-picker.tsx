@@ -147,7 +147,7 @@ export function MonthRangePicker({
       <PopoverAnchor asChild>
         <div
           className={cn(
-            "ui-control border-input bg-background flex w-full min-w-0 items-center gap-2 rounded-md border px-3 shadow-xs transition-[color,box-shadow] outline-none",
+            "ui-control border-input bg-background flex w-full min-w-0 items-center gap-2 rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
             "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
             open && "border-ring ring-ring/50 ring-[3px]",
             disabled && "pointer-events-none cursor-not-allowed opacity-50",

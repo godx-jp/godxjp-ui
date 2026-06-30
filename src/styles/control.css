@@ -202,13 +202,19 @@
     height: var(--control-height);
     padding-inline-start: var(--control-padding-x);
     padding-inline-end: var(--control-padding-x);
-    font-size: var(--font-size-base);
+    font-size: var(--control-font-size);
+    border-width: var(--control-border-width);
+    border-style: solid;
+    box-shadow: var(--control-shadow);
   }
 
   .ui-control-multiline {
     min-height: calc(var(--control-height) * 2.75);
     padding: var(--space-2) var(--control-padding-x);
-    font-size: var(--font-size-base);
+    font-size: var(--control-font-size);
+    border-width: var(--control-border-width);
+    border-style: solid;
+    box-shadow: var(--control-shadow);
   }
 
   .ui-table-row {

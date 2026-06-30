@@ -23,7 +23,7 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const inputBaseClass = [
-  "ui-control border-input bg-background w-full min-w-0 rounded-md border px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none",
+  "ui-control border-input bg-background w-full min-w-0 rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
   "selection:bg-primary selection:text-primary-foreground",
   "file:text-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",
   "placeholder:text-muted-foreground",
