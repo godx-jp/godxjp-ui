@@ -1,5 +1,5 @@
 {
-  "projectId": "edbd03a8-e78b-40a1-a6f5-82f7452191b0",
+  "projectId": "e7ef05a5-bc35-45dc-b096-e6cf09bda67c",
   "pkg": "@godxjp/ui",
   "shape": "package",
   "buildCmd": "pnpm build && pnpm preview:build && node .design-sync/gen-aggregate.mjs && node .design-sync/gen-css.mjs",

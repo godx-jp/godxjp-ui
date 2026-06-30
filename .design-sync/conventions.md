@@ -11,6 +11,8 @@ Most visual intent is expressed by **component props**, not classes:
 - `variant` — visual style (e.g. Button `default | secondary | outline | dashed | ghost | link | destructive`).
 - `tone` — semantic color role (`default | success | warning | destructive | info | muted | neutral`),
   on Badge / Alert / Progress / StatCard accents. Use tone for meaning; never a raw red/green.
+  Badge additionally accepts `tone="primary"` — a SOFT brand "role pill" (tinted brand fill +
+  AA-strong brand text); for a SOLID brand fill use Badge `variant="default"`.
 - `size` — size presets (e.g. Button `xs | sm | default | lg`); `density` (`tight | cozy`) for compactness.
 - Controlled inputs use `value` / `defaultValue` / `onValueChange` (a `value` with no `onValueChange`
   freezes the field). See `guidelines/docs/PROPS-VOCABULARY.md` for the exact per-component vocabulary

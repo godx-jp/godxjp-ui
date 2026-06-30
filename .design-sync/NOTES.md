@@ -2,11 +2,16 @@
 
 Repo-specific facts for syncing `@godxjp/ui` to claude.ai/design. Read this before every re-sync.
 
-## STATUS: synced (first import 2026-06-29) — project `edbd03a8-e78b-40a1-a6f5-82f7452191b0`
+## STATUS: re-import 2026-06-30 for @godxjp/ui@16.7.0 — project `e7ef05a5-bc35-45dc-b096-e6cf09bda67c`
 
-Target project **"@godxjp/ui Design System"** (https://claude.ai/design/p/edbd03a8-e78b-40a1-a6f5-82f7452191b0),
-freshly created for this import (NOT the user's hand-authored "dxs-kintai Design System" project — that
-one is left untouched). `projectId` is pinned in config.json. Incremental upload path (empty project).
+The original import's project (`edbd03a8-…`, 2026-06-29) was **deleted** sometime before this re-sync
+(`get_project` → 404), so there was no anchor to diff against. Re-created a fresh project of the SAME
+name **"@godxjp/ui Design System"** (https://claude.ai/design/p/e7ef05a5-bc35-45dc-b096-e6cf09bda67c)
+and re-imported at full scope (no `_ds_sync.json` → everything re-verifies). Carried forward all durable
+inputs: config.json, conventions.md, NOTES.md, and the 22 authored previews. 16.7.0 changed Badge (soft
+`primary` tone), Heading (`weight`), Input/PasswordInput (`leadingIcon`), + brand-glow/text-primary-strong
+tokens. NOT the user's hand-authored "dxs-kintai Design System" project — that one is left untouched.
+`projectId` re-pinned in config.json. Incremental upload path (fresh empty project).
 
 The earlier headless attempt couldn't run `DesignSync`; this run completed from an interactive
 terminal after `/design-login` upgraded the claude.ai login with design-system scopes.
@@ -62,6 +67,31 @@ preview text renders in system JP fonts; consumers serve their own JP webfont in
 - `window.GodxjpUi` = 268 exports (92 catalogued + all compound sub-parts).
 - Conventions header authored at `.design-sync/conventions.md` (wired via `readmeHeader`) — every
   token / prop / component it names was grep-verified against the built bundle.
+
+### Re-import result (2026-06-30, @godxjp/ui@16.7.0 → project e7ef05a5)
+- Old project (edbd03a8) was deleted → fresh project, full-scope re-import (no anchor).
+- **92/92 render clean, bad=0**; 4 warnings, all on the Known-render-warns list above
+  (`--offset-*` 11 vars; `[RENDER_THIN]` Rating/PageContainer/SplitPane).
+- **22 authored previews**: 20 carried forward at 0 cost; **Badge + Input re-authored + re-graded**
+  to showcase the 16.7.0 additions — `Badge.BrandTone` (soft `tone="primary"` pills) and
+  `Input.WithLeadingIcon` (mail/search `leadingIcon`, search one with `allowClear`). Both graded good.
+- `conventions.md`: added one line documenting Badge's brand `tone="primary"` (the only header drift
+  vs 16.7.0; every other named token/component still verifies).
+- `window.GodxjpUi` = **374 exports** (was 268 at the 16.6.0-era first sync — the 16.7.0 aggregate
+  surface grew; the **92 catalogued** component count is unchanged and is the real gate metric).
+- Uploaded 443 paths (441 content + sentinel + anchor); `list_files` confirms.
+
+### Re-sync result (2026-06-30, @godxjp/ui@16.7.1 — same project e7ef05a5)
+- 16.7.1 = token-driven control surface (#124): `--button-radius` + `--control-*` (font-size/border-width/
+  shadow); form controls now `rounded-[var(--control-radius)]`. Defaults unchanged.
+- Driver (`resync.mjs --remote`) verdict: **`pendingGrade: []`, `changed: []`, `canary: null`** — NO
+  rendered preview changed (control defaults preserved → identical renderHashes), so zero re-grading.
+  `upload.any: true` (bundle + styling + 9 components' source: Button/Checkbox/Form/Input/Radio/Select/
+  Slider/Table/Textarea), `deletePaths: []`. Uploaded full (atomic path) — 441 content + anchor.
+- conventions.md re-validated against the 16.7.1 build — all named tokens (`--control-radius`/`--control-height`/
+  `--space-*`/`--heading-h1`) still present; no drift, not rewritten.
+- **Key takeaway for future patch re-syncs**: a token-only change with unchanged defaults → driver
+  reports nothing to grade; just upload. Fast.
 
 ### Re-sync risks / watch-list
 - **cssEntry hash rot is SOLVED** by `gen-css.mjs` (globs `preview-runtime-*.css`, re-emits the stable
