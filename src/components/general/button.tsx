@@ -46,9 +46,10 @@ const buttonVariants = cva("ui-button", {
       "icon-lg": "size-[calc(var(--control-height)+0.25rem)]",
     },
     // Single source of corner radius (deterministic — no competing rounded-* utility): default uses
-    // the control radius token, pill is fully rounded, sharp is square.
+    // the dedicated --button-radius token (themeable independently of --control-radius, issue #124),
+    // pill is fully rounded, sharp is square.
     shape: {
-      default: "rounded-md",
+      default: "rounded-[var(--button-radius)]",
       pill: "rounded-[var(--radius-pill)]",
       sharp: "rounded-[var(--radius-sharp)]",
     },

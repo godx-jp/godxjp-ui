@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.7.1] - 2026-06-30
+
+### Added
+
+- **`--button-radius` control token** (gh#124). The button corner radius was locked to the shared
+  `--control-radius` (`shape="default"`), so a brand theme could not give inputs and buttons
+  different radii. `--button-radius` (default `var(--radius-md)`, preserving the historical look)
+  makes the button radius themeable INDEPENDENTLY of inputs/controls.
+- **`.ui-control` / `.ui-control-multiline` surface tokens** — `--control-font-size`
+  (default `var(--font-size-base)`), `--control-border-width` (default `1px`), `--control-shadow`
+  (default `var(--shadow-xs)`). Font size, border width and resting shadow of every control surface
+  are now themeable in one place instead of each component hard-coding Tailwind utilities.
+
+### Changed
+
+- **Form controls honor `--control-radius`.** `Input`/`PasswordInput`, the Select/Cascader/TreeSelect
+  trigger (`controlTriggerClass`), `Textarea` (`controlMultilineClass`), `controlFieldClass`, and the
+  Date/Month range pickers used hard-coded `rounded-md` / `rounded-lg` and so ignored the
+  `--control-radius` knob. They now use `rounded-[var(--control-radius)]`. Defaults are unchanged
+  (`--radius-lg === var(--radius) === --control-radius`); `Input` shifts from `--radius-md` to
+  `--control-radius` so all bordered controls share one themeable radius.
+- `.ui-control` now drives border width + resting shadow from the new tokens; the redundant inline
+  `border` / `shadow-xs` / `px-3` / `py-1` / `text-sm` utilities were dropped from `Input`.
+
 ## [16.7.0] - 2026-06-29
 
 ### Added
