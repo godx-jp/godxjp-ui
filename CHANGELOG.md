@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.7.2] - 2026-06-30
+
+### Fixed
+
+- **Components now work in Next.js App Router Server Components** (gh#128). The compiled `dist`
+  shipped no `"use client"` directive, so importing a client component into the RSC server graph
+  (e.g. an SSG page that also exports `generateMetadata` and therefore can't be `"use client"`
+  itself) failed `next build` with `TypeError: createContext is not a function` — `i18n/use-translation`
+  runs `createContext` at module top-level and `Button` calls the `useTranslation` hook. The build
+  now stamps `"use client"` onto every client module in `dist` (the `tsup` build is `bundle: false`,
+  so dist mirrors src 1:1; a new `scripts/add-use-client.mjs` post-build step detects client modules
+  from source — `createContext` / hook calls / client-only deps, plus `.tsx` wrappers that render a
+  client child — and prepends the directive). `import { Button } from "@godxjp/ui/..."` now works
+  directly inside a Server Component, like shadcn/MUI/Radix; no consumer `'use client'` boundary
+  shim needed. Pure modules (`lib/utils`'s `cn`, `lib/datetime`, `props/**`, tokens) and `.ts`
+  re-export barrels stay SERVER, so their non-component exports remain usable from an RSC. Guarded by
+  `check:use-client` in `verify:release`.
+
 ## [16.7.1] - 2026-06-30
 
 ### Added
