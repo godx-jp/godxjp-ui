@@ -1,0 +1,22 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * BUNDLED FONTS — opt-in.
+ *
+ * Self-contained so consumers need no font config. The browser only downloads
+ * the subset files matching the rendered text:
+ *   · Noto Sans JP — the DEFAULT face (Japanese + Latin), used for all locales
+ *                    except `vi`.
+ *   · Montserrat   — swapped in for the Vietnamese locale (`<html lang="vi">`),
+ *                    incl. its `vietnamese` subset for full diacritics.
+ *                    See --font-family-sans + :lang(vi) in base.css.
+ *
+ * The all-in-one `@godxjp/ui/styles` entry pulls this in automatically. If you
+ * manage fonts yourself (e.g. next/font), DON'T import this — import
+ * `@godxjp/ui/styles/base` + the layout layers you use and supply your own
+ * faces via the --font-family-* tokens.
+ * ───────────────────────────────────────────────────────────────────────── */
+@import "@fontsource/noto-sans-jp/400.css";
+@import "@fontsource/noto-sans-jp/500.css";
+@import "@fontsource/noto-sans-jp/700.css";
+@import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/500.css";
+@import "@fontsource/montserrat/700.css";
