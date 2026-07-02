@@ -25,6 +25,7 @@
       "import": "./dist/index.js"
     },
     "./styles": "./dist/styles/index.css",
+    "./styles/*": "./dist/styles/*.css",
     "./tokens": "./dist/tokens/base.css",
     "./admin": {
       "types": "./dist/components/admin/index.d.ts",
