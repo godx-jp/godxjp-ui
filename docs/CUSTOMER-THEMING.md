@@ -22,6 +22,69 @@ density per surface with
 
 ---
 
+## Slim CSS — ship only the layers you use
+
+`@godxjp/ui/styles` bundles every component's CSS plus the fonts. To ship only
+what you render, import the foundation plus the per-layer files you use (these
+mirror the JS subpaths, so the CSS tree-shakes the same way):
+
+```css
+@import "@godxjp/ui/styles/base";          /* REQUIRED: tailwind + tokens + @layer base */
+@import "@godxjp/ui/styles/control";       /* Button, Input, Select, Textarea, toggles */
+@import "@godxjp/ui/styles/form-layout";   /* FormField */
+@import "@godxjp/ui/styles/dialog-layout"; /* Dialog */
+@import "@godxjp/ui/styles/card-layout";   /* Card */
+@import "@godxjp/ui/styles/layout";        /* Flex/Grid spacing helpers */
+/* …only what you use. Available: shell-layout, layout, control, card-layout,
+   text-layout, table-layout, dialog-layout, alert-layout, badge-layout,
+   data-display-layout, data-entry-layout, form-layout, navigation-layout,
+   chart-layout, density. */
+```
+
+Rules: import `base` FIRST (the layer files declare `@layer components` and use
+`@apply`, which need Tailwind + tokens already loaded). Skip
+`@godxjp/ui/styles/fonts` when you manage fonts yourself and set the font tokens
+(next section). A ~10-component site typically drops component CSS ~142K → ~26K
+gzip.
+
+---
+
+## Fonts — token-driven, per-language
+
+The base ships **no hardcoded brand face** (`--font-sans-base` is a pure system
+stack). Supply your own faces (next/font, `@fontsource`, self-host) and set
+tokens — never edit the library. Two modes, both token-only:
+
+```css
+/* 1. One face everywhere */
+:root {
+  --font-sans-base: var(--my-face), system-ui, sans-serif;
+}
+
+/* 2. Per-language faces — no [lang] selectors to write. Each locale reads its
+      slot, falling back to --font-sans-base. */
+:root {
+  --font-sans-base: var(--brand-sans), system-ui, sans-serif;
+  --font-sans-ja: "Noto Sans JP", var(--font-sans-base); /* html lang="ja" */
+  --font-sans-vi: "Montserrat", var(--font-sans-base); /* html lang="vi" */
+  --font-sans-ko: var(--font-kr), var(--font-sans-base); /* html lang="ko" */
+  --font-sans-zh-hans: var(--font-sc), var(--font-sans-base); /* zh | zh-Hans | zh-CN */
+  --font-sans-zh-hant: var(--font-tc), var(--font-sans-base); /* zh-Hant | zh-TW */
+}
+```
+
+`styles/base.css` wires every `[lang]` to its slot; `styles/fonts` fills the
+slots for the bundled Noto Sans JP + Montserrat. Headings read
+`--font-family-display` and body reads `--font-family-body`, both defaulting to
+`--font-family-sans` — override them for a dual-font (display + body) brand.
+
+> **Per-locale @font-face loading is the consumer's job.** The library only
+> exposes the tokens; deciding *which* `@font-face` blocks ship on *which* pages
+> (e.g. loading the heavy CJK face only on `lang="ja"` routes) is done in your
+> app's font pipeline, not the library.
+
+---
+
 ## Customer apps — override anchor tokens
 
 Import the styles, then set anchor tokens in your app's `theme.css` (loaded after the import).

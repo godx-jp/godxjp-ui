@@ -145,15 +145,27 @@
   --gradient-hero: none;
   --gradient-glow: none;
 
-  /* Sans stack — script-aware per the international convention for mixed
-   * Latin/CJK UI: native Latin system fonts FIRST (clean, familiar English &
-   * DEFAULT face is the bundled "Noto Sans JP" (Japanese + clean Latin), with system sans as
-   * the network/loading fallback. The Vietnamese locale swaps this token to Montserrat via
-   * `:root:lang(vi)` in styles/index.css (set by AppProvider's <html lang>). Browsers resolve
-   * fonts per-glyph, so 日本語 and Latin both render in Noto Sans JP when it's loaded. */
-  --font-family-sans:
-    "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    system-ui, "Hiragino Sans", sans-serif;
+  /* Sans stack — FONT-AGNOSTIC by default. The library ships NO hardcoded brand
+   * face here: `--font-sans-base` is a pure system stack so godx renders cleanly
+   * with zero font setup. Consumers supply their own faces (next/font, @fontsource,
+   * self-host) and set the tokens — never edit the library.
+   *
+   * Two ways to theme fonts, both token-only (no [lang] selectors to write):
+   *   1. One face everywhere → override `--font-sans-base`.
+   *   2. Per-language faces → set the per-lang SLOT tokens; styles/base.css wires
+   *      each `[lang]` to read its slot with `--font-sans-base` as the fallback:
+   *        --font-sans-ja       (lang="ja")
+   *        --font-sans-ko       (lang="ko")
+   *        --font-sans-vi       (lang="vi")
+   *        --font-sans-zh-hans  (lang="zh" | "zh-Hans" | "zh-CN")
+   *        --font-sans-zh-hant  (lang="zh-Hant" | "zh-TW")
+   *      e.g. `--font-sans-ja: "Noto Sans JP", var(--font-sans-base);`
+   * The opt-in bundle `@godxjp/ui/styles/fonts` fills these slots for its bundled
+   * Noto Sans JP + Montserrat faces, so the all-in-one entry is zero-config. */
+  --font-sans-base:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, system-ui,
+    sans-serif;
+  --font-family-sans: var(--font-sans-base);
   --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* Dual-font split (opt-in) — many brand designs pair a DISPLAY face for headings with a separate
    * BODY face (e.g. Source Sans 3 display + Inter body). Both default to --font-family-sans, so a

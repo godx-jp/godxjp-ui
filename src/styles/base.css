@@ -22,17 +22,30 @@
  * ───────────────────────────────────────────────────────────────────────── */
 @import "tailwindcss";
 
-/* Vietnamese locale → Montserrat (set by AppProvider via <html lang="vi">). Overrides the
- * --font-family-sans token so every body/heading rule that reads it switches automatically.
- * Only takes visible effect when the Montserrat face is loaded (@godxjp/ui/styles/fonts, or
- * your own); consumers managing their own fonts override this token directly. */
-:root:lang(vi),
+/* Per-language font wiring — token-only, NO hardcoded faces. Each locale reads
+ * an OPTIONAL per-lang slot token (empty by default) and falls back to the
+ * base sans. Consumers switch a locale's face by setting its slot, e.g.
+ *   :root { --font-sans-ja: "Noto Sans JP", var(--font-sans-base); }
+ * without writing any [lang] selectors. The opt-in bundle styles/fonts fills
+ * these slots for its Noto Sans JP + Montserrat faces. `--font-sans-base` is a
+ * separate token (not --font-family-sans) so the fallback can't self-reference. */
+[lang="ja"] {
+  --font-family-sans: var(--font-sans-ja, var(--font-sans-base));
+}
+[lang="ko"] {
+  --font-family-sans: var(--font-sans-ko, var(--font-sans-base));
+}
 [lang="vi"] {
-  /* Montserrat for Latin/Vietnamese; Noto Sans JP kept as the tail so any 日本語 in a vi-locale
-   * screen still has the bundled JP face (Montserrat has no CJK glyphs). */
-  --font-family-sans:
-    "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    system-ui, "Noto Sans JP", sans-serif;
+  --font-family-sans: var(--font-sans-vi, var(--font-sans-base));
+}
+[lang="zh"],
+[lang="zh-Hans"],
+[lang="zh-CN"] {
+  --font-family-sans: var(--font-sans-zh-hans, var(--font-sans-base));
+}
+[lang="zh-Hant"],
+[lang="zh-TW"] {
+  --font-family-sans: var(--font-sans-zh-hant, var(--font-sans-base));
 }
 
 /* Guarantee the full set of semantic color utilities ships in the compiled CSS

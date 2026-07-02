@@ -30,6 +30,18 @@ export const TOKENS: TokenEntry[] = [
     role: "Raw typography scale.",
   },
   {
+    name: "--font-sans-base",
+    category: "semantic",
+    tier: "semantic",
+    role: "The default sans face. FONT-AGNOSTIC by default (pure system stack) — the library ships no hardcoded brand font. Override this for one face everywhere. --font-family-sans defaults to it; --font-family-display / --font-family-body default to --font-family-sans (override those for a dual display+body brand). Consumers supply the actual @font-face (next/font, @fontsource, self-host); the opt-in @godxjp/ui/styles/fonts fills this with the bundled Noto Sans JP.",
+  },
+  {
+    name: "--font-sans-{ja,ko,vi,zh-hans,zh-hant}",
+    category: "semantic",
+    tier: "semantic",
+    role: "Per-language font SLOT tokens. styles/base.css wires each [lang] to read its slot with --font-sans-base as fallback, so a consumer switches a locale's face by setting e.g. `--font-sans-ja: \"Noto Sans JP\", var(--font-sans-base)` — NO [lang] selectors to write. Empty by default. zh-hans matches lang zh|zh-Hans|zh-CN; zh-hant matches zh-Hant|zh-TW. Deciding which @font-face ships on which locale route is the consumer's font pipeline, not the library.",
+  },
+  {
     name: "--duration-{fast,base,slow}",
     category: "primitive",
     tier: "primitive",
