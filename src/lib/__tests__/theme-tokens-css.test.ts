@@ -26,6 +26,10 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
     readSrc("tokens/components/badge.css"),
   ].join("\n");
   const index = readSrc("styles/index.css");
+  // styles/base.css is the foundation: Tailwind entry, @theme inline color/type
+  // mapping, @layer base, and the density import. index.css composes it + the
+  // per-layer component owners.
+  const stylesBase = readSrc("styles/base.css");
   const density = readStyle("density.css");
   const control = readStyle("control.css");
 
@@ -84,7 +88,7 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
       "--color-chart-1:",
       "--color-chart-6:",
     ]) {
-      expect(index, `missing ${token} in index.css @theme`).toContain(token);
+      expect(stylesBase, `missing ${token} in base.css @theme`).toContain(token);
     }
   });
 
@@ -139,12 +143,16 @@ describe("theme CSS tokens (base.css + layout owners)", () => {
   });
 
   it("wires Tailwind text-* to typography tokens", () => {
-    expect(index).toContain("--text-sm: var(--font-size-sm)");
-    expect(index).toContain("--text-xs: var(--font-size-xs)");
+    expect(stylesBase).toContain("--text-sm: var(--font-size-sm)");
+    expect(stylesBase).toContain("--text-xs: var(--font-size-xs)");
   });
 
   it("imports split layout CSS owners", () => {
-    for (const file of ["density.css", "layout.css", "card-layout.css", "table-layout.css"]) {
+    // Foundation (base.css) owns the density import; index.css composes base +
+    // the per-layer component owners.
+    expect(stylesBase).toContain(`@import "./density.css"`);
+    expect(index).toContain(`@import "./base.css"`);
+    for (const file of ["layout.css", "card-layout.css", "table-layout.css"]) {
       expect(index).toContain(`@import "./${file}"`);
     }
   });

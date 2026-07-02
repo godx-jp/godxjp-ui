@@ -93,7 +93,12 @@ describe("token governance", () => {
 
   it("imports all layout CSS owners from index.css", () => {
     const index = readFileSync(join(root, "styles/index.css"), "utf8");
-    for (const file of LAYOUT_CSS_FILES) {
+    const stylesBase = readFileSync(join(root, "styles/base.css"), "utf8");
+    // Foundation (base.css) owns the density import + is composed by index.css;
+    // the component layer owners are imported directly by index.css.
+    expect(index).toContain(`@import "./base.css"`);
+    expect(stylesBase, `missing @import ./density.css`).toContain(`@import "./density.css"`);
+    for (const file of LAYOUT_CSS_FILES.filter((f) => f !== "density.css")) {
       expect(index, `missing @import ./${file}`).toContain(`@import "./${file}"`);
     }
     expect(index).not.toContain(".ui-stack-md {");

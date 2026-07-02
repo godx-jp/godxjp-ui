@@ -16,7 +16,8 @@ describe("scroll-containment CSS contract", () => {
   });
 
   it("hidden form-fallback + sr-only nodes are clamped to top-left (gh#105)", () => {
-    const css = read("../index.css");
+    // The @layer base clamp lives in the foundation (base.css), composed by index.css.
+    const css = read("../base.css");
     // the clamp targets Radix BubbleSelect/BubbleInput (aria-hidden + tabindex=-1) and .sr-only
     expect(css).toMatch(/\[aria-hidden="true"\]\[tabindex="-1"\]/);
     const clamp = css.slice(css.indexOf('[aria-hidden="true"][tabindex="-1"]'));
