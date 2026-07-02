@@ -145,7 +145,13 @@ async function main() {
       }
     }
   };
-  const browser = await chromium.launch({ executablePath: EXEC });
+  // Use the pinned executable only when it actually exists (dev machines /
+  // self-hosted runners with a fixed /opt browser). Otherwise fall back to
+  // Playwright's own resolution so `playwright install chromium` on a stock CI
+  // runner works too.
+  const { existsSync } = await import("node:fs");
+  const execPath = EXEC && existsSync(EXEC) ? EXEC : undefined;
+  const browser = await chromium.launch(execPath ? { executablePath: execPath } : {});
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
   let total = 0;
   for (const route of ROUTES) {
