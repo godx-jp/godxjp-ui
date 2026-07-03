@@ -139,7 +139,13 @@ export function Badge({
       {...props}
     >
       {ResolvedIcon ? <ResolvedIcon data-slot="badge-icon" aria-hidden="true" /> : null}
-      {resolvedChildren}
+      {/* Label span so badge-layout.css can text-box-trim the line box — JP faces (Noto Sans JP,
+          M PLUS 2) carry a bottom-heavy em box (ascent ≫ descent), so flex-centering the raw text
+          node rides the label visibly low inside the chip. Trim needs a real box: it does not
+          reach an anonymous flex item. */}
+      {resolvedChildren != null ? (
+        <span data-slot="badge-label">{resolvedChildren}</span>
+      ) : null}
     </div>
   );
 }

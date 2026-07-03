@@ -21,6 +21,19 @@
     white-space: nowrap;
   }
 
+  /* Optical vertical centering. JP faces (Noto Sans JP / M PLUS 2) declare ascent ≫ descent
+   * (~1.16em vs ~0.29em), so flex-centering the em box seats the label visibly LOW in the chip
+   * (worst with short lowercase labels: "owner", "active"). Trimming the line box to
+   * cap-height/alphabetic makes the INK the thing that gets centered, and drops the phantom
+   * leading so the chip height comes from --badge-space-y + the glyphs, not the font's em box.
+   * No-support browsers simply keep the legacy (slightly low) rendering. */
+  @supports (text-box-trim: trim-both) and (text-box-edge: cap alphabetic) {
+    [data-slot="badge-label"] {
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+    }
+  }
+
   [data-slot="badge-icon"] {
     width: 0.75rem;
     height: 0.75rem;

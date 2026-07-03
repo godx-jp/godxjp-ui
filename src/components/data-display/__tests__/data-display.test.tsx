@@ -27,7 +27,8 @@ describe("Badge", () => {
 
   it("success variant uses semantic success token (not green-*)", () => {
     renderWithUi(<Badge tone="success">OK</Badge>);
-    const el = screen.getByText("OK");
+    // Tone classes live on the badge root; getByText resolves the inner badge-label span.
+    const el = screen.getByText("OK").closest('[data-slot="badge"]') as HTMLElement;
     expect(el.className).toContain("success");
     expect(el.className).not.toMatch(/green-/);
   });
