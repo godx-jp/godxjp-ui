@@ -259,7 +259,12 @@ const RULES = [
   {
     id: "raw-intl-date",
     severity: "warn",
-    test: /\.toLocale(?:Date|Time)?String\(\s*\)|new Date\([^)]*\)\.(?:getMonth|getDate|getFullYear)\(\)\s*\+/,
+    // Only the unambiguously-Date methods: `.toLocaleDateString()` / `.toLocaleTimeString()`.
+    // Bare `.toLocaleString()` is excluded on purpose — it is overwhelmingly
+    // `Number.prototype.toLocaleString()` (legit locale number formatting), and matching it
+    // false-flagged every formatted count/amount. A date+time `Date.toLocaleString()` is rare and
+    // still partly covered by the hand-built `new Date(...).getMonth()+` alternative below.
+    test: /\.toLocale(?:Date|Time)String\(\s*\)|new Date\([^)]*\)\.(?:getMonth|getDate|getFullYear)\(\)\s*\+/,
     standard: "ISO 8601 · IANA tz database · ECMA-402 Intl.DateTimeFormat",
     message:
       "Don't hand-build or locale-default dates. Use formatDate from @godxjp/ui/datetime (Intl.DateTimeFormat + IANA timezone + ISO-8601), which respects the AppProvider locale/timezone.",
