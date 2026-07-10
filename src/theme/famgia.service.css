@@ -1,0 +1,43 @@
+/* ───────────────────────────────────────────────────────────────
+ * Famgia service theme — ファムジア株式会社
+ * Re-themes @godxjp/ui via SEMANTIC TOKENS only (no component CSS).
+ * Brand: electric blue #2563EB (primary) + violet #7C3AED (accent gradient).
+ * Import this instead of "@godxjp/ui/styles".
+ * ─────────────────────────────────────────────────────────────── */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap");
+@import "@godxjp/ui/styles";
+
+/* ── Light (default) ── */
+:root {
+  /* Brand primary ramp — electric blue */
+  --primary:          221 83% 53%;  /* #2563EB */
+  --primary-foreground: 0 0% 100%;
+  --primary-hover:    224 71% 48%;  /* #1D4ED8 */
+  --primary-active:   226 71% 40%;  /* #1E40AF */
+  --ring:             221 83% 53%;
+
+  /* Brand-colored text (AA on tint/white) */
+  --text-link:    224 76% 45%;
+  --text-brand:   221 83% 53%;
+  --text-primary: 224 76% 42%;
+
+  /* Signature brand gradient: blue → violet */
+  --gradient-brand: linear-gradient(135deg, hsl(221 83% 53%), hsl(262 83% 58%));
+
+  /* Typography — Inter (Latin/VI) + Noto Sans JP (kana/kanji) */
+  --font-family-sans: "Inter", "Noto Sans JP", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ── Dark ── lifted blue for contrast */
+.dark {
+  --primary:        221 90% 66%;
+  --primary-foreground: 222 47% 11%;
+  --primary-hover:  221 90% 72%;
+  --primary-active: 221 90% 60%;
+  --ring:           221 90% 66%;
+  --text-link:      221 90% 72%;
+  --text-brand:     221 90% 70%;
+  --text-primary:   221 90% 68%;
+}
