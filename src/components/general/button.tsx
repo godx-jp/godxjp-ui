@@ -42,8 +42,8 @@ const buttonVariants = cva("ui-button", {
       lg: "ui-button--lg has-[>svg]:px-4",
       icon: "ui-button--icon",
       "icon-xs": "size-[calc(var(--control-height)-0.75rem)] [&_svg:not([class*='size-'])]:size-3",
-      "icon-sm": "size-[calc(var(--control-height)-0.5rem)]",
-      "icon-lg": "size-[calc(var(--control-height)+0.25rem)]",
+      "icon-sm": "ui-button--icon-sm",
+      "icon-lg": "ui-button--icon-lg",
     },
     // Single source of corner radius (deterministic — no competing rounded-* utility): default uses
     // the dedicated --button-radius token (themeable independently of --control-radius, issue #124),

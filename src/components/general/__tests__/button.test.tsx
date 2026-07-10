@@ -81,6 +81,20 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Primary" })).toHaveClass("ui-button--default");
   });
 
+  // Regression, issue #133: icon-sm/icon-lg must bind the same density tokens as their labelled
+  // counterparts so a chevron trigger sits flush beside an sm action (split button). They used to
+  // hand-derive an offset off the BASE --control-height, which ignored the .ui-button--sm rebinding
+  // and rendered icon-sm 4px short — exactly the xs height.
+  it.each([
+    ["icon-sm", "ui-button--icon-sm"],
+    ["icon-lg", "ui-button--icon-lg"],
+  ] as const)("size=%s binds the density token class %s", (size, tokenClass) => {
+    renderWithUi(<Button size={size}>I</Button>);
+    const btn = screen.getByRole("button", { name: "I" });
+    expect(btn).toHaveClass(tokenClass);
+    expect(btn.className).not.toMatch(/size-\[calc\(var\(--control-height\)/);
+  });
+
   describe("loading", () => {
     it("sets aria-busy, data-loading, and disables the button while loading", () => {
       renderWithUi(<Button loading>Save</Button>);
