@@ -294,7 +294,7 @@
     "docs:sync-primitives": "node preview/scripts/sync-primitive-docs.mjs && prettier --write \"docs/primitives/**/*.tsx\"",
     "audit": "node scripts/ui-audit.mjs",
     "audit:examples": "node scripts/ui-audit.mjs docs",
-    "build": "tsup && tsc -p tsconfig.build.json && node scripts/copy-styles.mjs && node scripts/add-use-client.mjs",
+    "build": "tsup && tsc -p tsconfig.build.json && node scripts/copy-styles.mjs && node scripts/fix-esm-extensions.mjs && node scripts/add-use-client.mjs",
     "dev": "node scripts/dev.mjs",
     "prepublishOnly": "pnpm run build",
     "check:audit-sync": "node scripts/check-audit-sync.mjs",
