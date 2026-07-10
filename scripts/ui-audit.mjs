@@ -404,7 +404,7 @@ function walk(dir, acc = []) {
 // sub-component sits FLUSH (no padding). Per-line regexes can't see across lines, so this is a
 // whole-file pass. The body must be wrapped in <CardContent> (titles in <CardHeader>).
 const CARD_FLUSH =
-  /<Card(?![^>]*\bp-0\b)(?:\s[^>]*)?>\s*<(?!CardContent|CardHeader|CardCover|CardFooter|\/Card)/g;
+  /<Card(?![^>]*\bp-0\b)(?:\s[^>]*)?>\s*<(?!CardContent|CardHeader|CardCover|CardFooter|CardBar|\/Card)/g;
 
 // Structural: a bare <label>/<Label> paired with a TEXT control (its sibling) instead of a
 // <FormField>. FormField OWNS the label↔control association (htmlFor/id), aria-describedby/
