@@ -1,0 +1,41 @@
+/*
+ * LOGO — the product brand-mark box (a glyph on the primary fill). Replaces the hand-rolled
+ * `<span aria-hidden className="grid size-7 place-items-center rounded-md bg-primary …">g</span>`
+ * repeated across app shells and topbars (issue #116): size/radius/font-size are tokens (rule #45),
+ * colours read the primary role directly, and the type comes from a semantic class (not utilities
+ * on a bare span, rule #46).
+ */
+@layer components {
+  .ui-logo {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: var(--logo-size-md);
+    height: var(--logo-size-md);
+    border-radius: var(--logo-radius);
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    font-weight: 700;
+    font-size: var(--logo-font-size-md);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .ui-logo[data-size="xs"] {
+    width: var(--logo-size-xs);
+    height: var(--logo-size-xs);
+    font-size: var(--logo-font-size-xs);
+  }
+
+  .ui-logo[data-size="sm"] {
+    width: var(--logo-size-sm);
+    height: var(--logo-size-sm);
+    font-size: var(--logo-font-size-sm);
+  }
+
+  .ui-logo[data-size="lg"] {
+    width: var(--logo-size-lg);
+    height: var(--logo-size-lg);
+    font-size: var(--logo-font-size-lg);
+  }
+}

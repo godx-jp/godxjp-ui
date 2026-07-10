@@ -21,10 +21,36 @@ describe("Progress", () => {
     expect(bar()).toHaveAttribute("aria-valuenow", "0");
   });
 
-  it("defaults the tone to success and honours an explicit warning tone", () => {
+  it("defaults the tone to success and honours an explicit warning/destructive tone", () => {
     const { rerender } = render(<Progress value={50} />);
     expect(bar()).toHaveAttribute("data-tone", "success");
     rerender(<Progress value={50} tone="warning" />);
+    expect(bar()).toHaveAttribute("data-tone", "warning");
+    rerender(<Progress value={50} tone="destructive" />);
+    expect(bar()).toHaveAttribute("data-tone", "destructive");
+  });
+
+  // Over-capacity (issue #108): an over-limit meter (e.g. 252%) must read differently from a full
+  // one. `over` opts value out of the 100 clamp — the bar width still caps at 100% (aria-valuenow),
+  // but data-over marks the hatch, the tone auto-goes destructive, and aria-valuetext shows the
+  // real ratio so 252% ≠ 100%.
+  it("renders an over-capacity fill when over is set and value exceeds 100", () => {
+    const { container } = render(<Progress value={252} over />);
+    expect(bar()).toHaveAttribute("data-over", "");
+    expect(bar()).toHaveAttribute("data-tone", "destructive");
+    expect(bar()).toHaveAttribute("aria-valuenow", "100");
+    expect(bar()).toHaveAttribute("aria-valuetext", "252%");
+    expect(container.querySelector(".ui-progress-bar")).toHaveStyle({ width: "100%" });
+  });
+
+  it("still clamps and skips the over state without the over prop, and lets tone override in over mode", () => {
+    const { rerender } = render(<Progress value={252} />);
+    expect(bar()).not.toHaveAttribute("data-over");
+    expect(bar()).toHaveAttribute("aria-valuetext", "100%");
+    expect(bar()).toHaveAttribute("data-tone", "success");
+    // An explicit tone wins even when over.
+    rerender(<Progress value={110} over tone="warning" />);
+    expect(bar()).toHaveAttribute("data-over", "");
     expect(bar()).toHaveAttribute("data-tone", "warning");
   });
 

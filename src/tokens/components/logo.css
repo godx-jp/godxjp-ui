@@ -1,0 +1,15 @@
+/* Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the
+ * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a
+ * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary
+ * role tokens directly, so a re-themed --primary re-tints the mark automatically. */
+:root {
+  --logo-radius: var(--radius);
+  --logo-size-xs: 1.25rem;
+  --logo-size-sm: 1.5rem;
+  --logo-size-md: 1.75rem;
+  --logo-size-lg: 2.25rem;
+  --logo-font-size-xs: var(--font-size-2xs);
+  --logo-font-size-sm: var(--font-size-xs);
+  --logo-font-size-md: var(--font-size-sm);
+  --logo-font-size-lg: var(--font-size-base);
+}

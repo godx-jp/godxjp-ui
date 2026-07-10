@@ -56,6 +56,24 @@
     background: hsl(var(--warning));
   }
 
+  .ui-progress[data-tone="destructive"] .ui-progress-bar {
+    background: hsl(var(--destructive));
+  }
+
+  /* Over-capacity: keep the destructive fill but lay a diagonal hatch over it so an over-limit bar
+   * (value > 100, width still capped at 100%) is visually distinct from a full one. Placed after the
+   * tone rules so background-color wins; background-image carries the stripes. */
+  .ui-progress[data-over] .ui-progress-bar {
+    background-color: hsl(var(--destructive));
+    background-image: repeating-linear-gradient(
+      45deg,
+      hsl(var(--destructive-foreground) / 0.4) 0,
+      hsl(var(--destructive-foreground) / 0.4) 0.3rem,
+      transparent 0.3rem,
+      transparent 0.6rem
+    );
+  }
+
   .ui-progress-label {
     color: hsl(var(--muted-foreground));
     font-size: var(--progress-label-font-size);

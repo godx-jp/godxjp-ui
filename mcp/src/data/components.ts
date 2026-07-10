@@ -949,6 +949,60 @@ import { Trash2 } from "lucide-react";
 <Heading level={2}>請求書一覧</Heading>
 <Heading level={3} tone="muted">補足セクション</Heading>`,
   },
+  {
+    name: "Logo",
+    group: "general",
+    tagline:
+      "The product brand-mark box — a glyph on the primary fill. Tokenised size/radius/type; the fill reads --primary so a re-theme re-tints it. Decorative by default; pair with a wordmark.",
+    props: [
+      {
+        name: "glyph",
+        type: "React.ReactNode",
+        defaultValue: '"g"',
+        description: "The brand glyph — a short mark (letter/initials) or a custom inline <svg>.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Box size tier (tokenised).",
+      },
+      {
+        name: "label",
+        type: "string",
+        description:
+          "Accessible name. Set → exposed as a named image (role img); omitted → decorative (aria-hidden), the correct default when a readable wordmark sits beside it.",
+      },
+    ],
+    usage: [
+      'DO import from `@godxjp/ui/general`: `import { Logo } from "@godxjp/ui/general";`',
+      "DO use Logo INSTEAD of hand-rolling `<span aria-hidden className=\"grid size-7 place-items-center rounded-md bg-primary text-sm font-bold text-primary-foreground\">g</span>` — that repeats literal size/radius and puts type utilities on a bare span (rules #45/#46).",
+      "DO leave `label` unset when a readable wordmark sits beside the mark (shell header, topbar) — the mark stays decorative and the wordmark carries the accessible name. Set `label` only when the mark stands alone.",
+      "DON'T pass more than 1–2 glyphs — the box is square and centres its content; a long string overflows. For a full wordmark use `Text`/`Heading` beside the Logo, not inside it.",
+      "DON'T re-tint via `className=\"bg-*\"` — the fill reads the `--primary` role token; retune it through a service theme (`--primary`, `--logo-radius`, `--logo-size-*`), not utilities.",
+    ],
+    useCases: [
+      "App-shell header brand lockup — `<Logo glyph=\"c\" /> <Text weight=\"medium\">CoreBooks</Text>` in the sidebar/topbar, mark decorative, wordmark readable.",
+      "Auth screen — a standalone labelled mark above the sign-in form: `<Logo label=\"CoreBooks\" size=\"lg\" />`.",
+      "Tenant/workspace switcher row — a small `size=\"sm\"` mark as the leading slot of a ListRow or menu item.",
+      "Custom SVG brand — pass an inline `<svg>` as `glyph` to render a real logomark on the primary fill instead of a letter.",
+    ],
+    related: [
+      "Text / Heading — use for the readable wordmark BESIDE the Logo (the full lockup); the Logo is only the square mark, not the product name.",
+      "Avatar — use Avatar for a PERSON/entity image or initials; use Logo for the PRODUCT brand mark. They look similar (square/rounded glyph) but carry different meaning.",
+    ],
+    storyPath: "general/Logo.stories.tsx",
+    rules: [45, 46],
+    example: `import { Logo } from "@godxjp/ui/general";
+import { Text } from "@godxjp/ui/general";
+
+<span className="inline-flex items-center gap-2">
+  <Logo glyph="c" />
+  <Text weight="medium">CoreBooks</Text>
+</span>
+
+<Logo label="CoreBooks" size="lg" />`,
+  },
   // ─── data-display ───────────────────────────────────────────────────────
   {
     name: "DataTable",
@@ -1651,20 +1705,28 @@ import { Smartphone } from "lucide-react";
   {
     name: "Progress",
     group: "data-display",
-    tagline: "Horizontal progress bar 0–100 with optional label and semantic tone.",
+    tagline:
+      "Horizontal progress bar 0–100 with optional label, semantic tone, and an over-capacity (striped) state for over-limit meters.",
     props: [
       {
         name: "value",
         type: "number",
         required: true,
-        description: "Progress percentage 0–100 (clamped).",
+        description: "Progress percentage 0–100 (clamped unless `over`).",
       },
       { name: "label", type: "string", description: "Text label beside/below the bar." },
       {
         name: "tone",
-        type: '"success" | "warning"',
+        type: '"success" | "warning" | "destructive"',
         defaultValue: '"success"',
-        description: "Bar colour tone.",
+        description: "Bar colour tone. Over-capacity defaults to destructive.",
+      },
+      {
+        name: "over",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Allow value > 100 to render an over-capacity fill: bar caps at 100% width but gets a diagonal hatch + destructive tone (e.g. 252%). aria-valuetext reports the real ratio. Off by default (clamps to 100).",
       },
     ],
     usage: [
@@ -1682,6 +1744,7 @@ import { Smartphone } from "lucide-react";
       "Sync / import job completion feedback — surface the completion percentage of a long-running background job (polling the server) without giving the user an interactive control.",
       "StatCard companion — pair with a `StatCard` metric to add a visual fill below the KPI number, reinforcing how close a target is to being met.",
       "Multi-step onboarding or setup checklist — render one Progress per section (e.g. 3/5 steps complete = 60%) to give users a quick scan of overall progress across areas.",
+      'Over-capacity meter — an air-cargo weight/volume load or an over-booked resource pushed past its limit (e.g. 252%): pass `over` with the real ratio to get a red diagonal-hatched bar that reads unmistakably as over-limit, not merely full.',
     ],
     related: [
       "Slider — use Slider when the user must drag or set a bounded numeric value (volume, priority, price range); use Progress when the value is read-only and must not be interacted with.",
@@ -1692,7 +1755,8 @@ import { Smartphone } from "lucide-react";
     ],
     example: `import { Progress } from "@godxjp/ui/data-display";
 
-<Progress value={pct} label={pct + "% 使用中"} variant={pct >= 80 ? "warning" : "success"} />`,
+<Progress value={pct} label={pct + "% 使用中"} tone={pct >= 80 ? "warning" : "success"} />
+<Progress value={252} over label="252% 積載" />`,
     storyPath: "data-display/Progress.stories.tsx",
     rules: [],
   },
