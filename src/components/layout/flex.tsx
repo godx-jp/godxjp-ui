@@ -11,7 +11,7 @@ export type {
 } from "../../props/components/layout.prop";
 
 export function Flex({
-  direction = "col",
+  direction = "row",
   gap = "md",
   align,
   justify,

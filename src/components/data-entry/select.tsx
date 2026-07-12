@@ -220,6 +220,7 @@ function DataSelect({
     Object.entries(rest as Record<string, unknown>).filter(([key]) => key.startsWith("aria-")),
   );
   const searchable = showSearch ?? Boolean(loadOptions);
+  const hasOptions = options.length > 0;
 
   if (searchable) {
     return (
@@ -239,7 +240,7 @@ function DataSelect({
         loadingMessage={loadingMessage}
         clearLabel={clearLabel}
         clearable={clearable}
-        disabled={disabled}
+        disabled={disabled || (!loadOptions && !hasOptions)}
         name={name}
         id={id}
         className={className}
@@ -277,7 +278,7 @@ function DataSelect({
           options.find((option) => option.value === next),
         )
       }
-      disabled={disabled}
+      disabled={disabled || !hasOptions}
       name={name}
     >
       <SelectTrigger id={id} data-testid={dataTestId} className={className} {...ariaProps}>

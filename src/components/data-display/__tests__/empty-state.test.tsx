@@ -33,6 +33,16 @@ describe("EmptyState", () => {
     expect(getByRole("status")).toHaveClass("my-8");
   });
 
+  it("exposes restrained section and compact variants", () => {
+    const { getByRole, rerender, container } = render(
+      <EmptyState icon={Inbox} title="None" variant="section" />,
+    );
+    expect(getByRole("status")).toHaveAttribute("data-variant", "section");
+    rerender(<EmptyState icon={Inbox} title="None" variant="compact" />);
+    expect(getByRole("status")).toHaveAttribute("data-variant", "compact");
+    expect(container.querySelector(".ui-empty-state-icon")).toBeNull();
+  });
+
   it("has no axe violations", async () => {
     await expectNoA11yViolations(
       <EmptyState icon={Inbox} title="データなし" description="まだありません。" />,

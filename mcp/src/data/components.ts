@@ -178,8 +178,9 @@ export default function OrdersPage() {
       {
         name: "direction",
         type: '"row" | "col"',
-        defaultValue: '"col"',
-        description: "Main axis direction. Use row for horizontal runs, col for vertical stacks.",
+        defaultValue: '"row"',
+        description:
+          "Main axis direction. Defaults to the CSS platform initial value, row; use col explicitly for vertical stacks.",
       },
       {
         name: "gap",
@@ -976,15 +977,15 @@ import { Trash2 } from "lucide-react";
     ],
     usage: [
       'DO import from `@godxjp/ui/general`: `import { Logo } from "@godxjp/ui/general";`',
-      "DO use Logo INSTEAD of hand-rolling `<span aria-hidden className=\"grid size-7 place-items-center rounded-md bg-primary text-sm font-bold text-primary-foreground\">g</span>` — that repeats literal size/radius and puts type utilities on a bare span (rules #45/#46).",
+      'DO use Logo INSTEAD of hand-rolling `<span aria-hidden className="grid size-7 place-items-center rounded-md bg-primary text-sm font-bold text-primary-foreground">g</span>` — that repeats literal size/radius and puts type utilities on a bare span (rules #45/#46).',
       "DO leave `label` unset when a readable wordmark sits beside the mark (shell header, topbar) — the mark stays decorative and the wordmark carries the accessible name. Set `label` only when the mark stands alone.",
       "DON'T pass more than 1–2 glyphs — the box is square and centres its content; a long string overflows. For a full wordmark use `Text`/`Heading` beside the Logo, not inside it.",
-      "DON'T re-tint via `className=\"bg-*\"` — the fill reads the `--primary` role token; retune it through a service theme (`--primary`, `--logo-radius`, `--logo-size-*`), not utilities.",
+      'DON\'T re-tint via `className="bg-*"` — the fill reads the `--primary` role token; retune it through a service theme (`--primary`, `--logo-radius`, `--logo-size-*`), not utilities.',
     ],
     useCases: [
-      "App-shell header brand lockup — `<Logo glyph=\"c\" /> <Text weight=\"medium\">CoreBooks</Text>` in the sidebar/topbar, mark decorative, wordmark readable.",
-      "Auth screen — a standalone labelled mark above the sign-in form: `<Logo label=\"CoreBooks\" size=\"lg\" />`.",
-      "Tenant/workspace switcher row — a small `size=\"sm\"` mark as the leading slot of a ListRow or menu item.",
+      'App-shell header brand lockup — `<Logo glyph="c" /> <Text weight="medium">CoreBooks</Text>` in the sidebar/topbar, mark decorative, wordmark readable.',
+      'Auth screen — a standalone labelled mark above the sign-in form: `<Logo label="CoreBooks" size="lg" />`.',
+      'Tenant/workspace switcher row — a small `size="sm"` mark as the leading slot of a ListRow or menu item.',
       "Custom SVG brand — pass an inline `<svg>` as `glyph` to render a real logomark on the primary fill instead of a letter.",
     ],
     related: [
@@ -1463,7 +1464,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         name: "tone",
         type: '"default" | "primary" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral"',
         description:
-          "SEMANTIC colour intent (BadgeTone = ToneProp + `primary`). This is the colour knob — success/warning/destructive/info/etc. `primary` is a SOFT brand pill (tinted brand fill + brand text) for the dashboard role-pill pattern; for a SOLID brand fill use `variant=\"default\"`. Keep variant for structure, tone for meaning.",
+          'SEMANTIC colour intent (BadgeTone = ToneProp + `primary`). This is the colour knob — success/warning/destructive/info/etc. `primary` is a SOFT brand pill (tinted brand fill + brand text) for the dashboard role-pill pattern; for a SOLID brand fill use `variant="default"`. Keep variant for structure, tone for meaning.',
       },
       {
         name: "shape",
@@ -1673,6 +1674,12 @@ import { Smartphone } from "lucide-react";
       { name: "description", type: "string", description: "Secondary helper text." },
       { name: "icon", type: "LucideIcon", description: "Icon above the title." },
       { name: "action", type: "ReactNode", description: "CTA element (e.g. a Button)." },
+      {
+        name: "variant",
+        type: '"page" | "section" | "compact"',
+        defaultValue: '"page"',
+        description: "Contextual visual weight. Compact omits the icon medallion.",
+      },
     ],
     usage: [
       "DO always pass `title` — it is the only required prop and renders an `<h3>`; omitting it causes a blank silent render with no visible error.",
@@ -1681,6 +1688,7 @@ import { Smartphone } from "lucide-react";
       "DO NOT hand-roll a `data.length === 0 ? <EmptyState /> : <DataTable />` conditional — `DataTable` already embeds an `EmptyState` in its body when `data` is empty. Use the `empty=` prop on `DataTable` to customise it, not a wrapper conditional.",
       "DO NOT use EmptyState inside a `DataState` or `InfiniteQueryState` for the loading or error states — those widgets handle skeleton/error themselves; pass `EmptyState` only to their `empty=` prop for the zero-items case.",
       "DO NOT add padding directly on `EmptyState` via `className` when placing it inside a `Card` — wrap it in `<CardContent>` first; EmptyState is a self-contained block with its own internal spacing via `ui-empty-state` styles.",
+      "DO omit optional secondary sections when absence has no user value. Otherwise use variant='compact' or 'section'; reserve page for the primary page job.",
     ],
     useCases: [
       "Zero-row admin list pages (invoices, accounts, transactions) that are NOT backed by a `DataTable` — e.g. a card-grid or custom list layout where DataTable's built-in empty state doesn't apply.",
@@ -1744,7 +1752,7 @@ import { Smartphone } from "lucide-react";
       "Sync / import job completion feedback — surface the completion percentage of a long-running background job (polling the server) without giving the user an interactive control.",
       "StatCard companion — pair with a `StatCard` metric to add a visual fill below the KPI number, reinforcing how close a target is to being met.",
       "Multi-step onboarding or setup checklist — render one Progress per section (e.g. 3/5 steps complete = 60%) to give users a quick scan of overall progress across areas.",
-      'Over-capacity meter — an air-cargo weight/volume load or an over-booked resource pushed past its limit (e.g. 252%): pass `over` with the real ratio to get a red diagonal-hatched bar that reads unmistakably as over-limit, not merely full.',
+      "Over-capacity meter — an air-cargo weight/volume load or an over-booked resource pushed past its limit (e.g. 252%): pass `over` with the real ratio to get a red diagonal-hatched bar that reads unmistakably as over-limit, not merely full.",
     ],
     related: [
       "Slider — use Slider when the user must drag or set a bounded numeric value (volume, priority, price range); use Progress when the value is read-only and must not be interacted with.",
@@ -1884,6 +1892,17 @@ import { Smartphone } from "lucide-react";
       },
       { name: "skeleton", type: "ReactNode", required: true, description: "Shown while loading." },
       {
+        name: "prerequisite",
+        type: "ReactNode",
+        description: "Shown when the query is disabled/unstarted (pending + fetchStatus idle).",
+      },
+      {
+        name: "showRetry",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Opt in only for errors classified as transient/retryable.",
+      },
+      {
         name: "children",
         type: "(data) => ReactNode",
         required: true,
@@ -1898,7 +1917,8 @@ import { Smartphone } from "lucide-react";
       'DO: provide `empty` + `isEmpty` together when the data can legitimately return 0 items — e.g. `isEmpty={(d) => d.items.length === 0}` paired with `empty={<EmptyState title="…" />}`. Omitting `empty` means an empty array still falls through to `children`, silently rendering a blank table.',
       "DON'T: wrap DataState in your own conditional — e.g. `{query.isSuccess && <DataState …>}`. DataState IS the conditional; the outer guard is redundant and breaks the retry/refetch skeleton.",
       "DON'T: use DataState for `useInfiniteQuery` results. The `query` prop type is `UseQueryResult<T>`, not `UseInfiniteQueryResult`. Use `InfiniteQueryState` (from `@godxjp/ui/query`) instead, which accepts `flatten` and renders a load-more footer.",
-      "DO: supply `errorRenderer` only when the default `AlertQueryError` + retry button is not enough — e.g. a full-page error boundary with navigation. Otherwise rely on `showRetry` (default `true`) and the built-in `AlertQueryError`, and override `onRetry` only if `query.refetch()` is not the right action.",
+      "DO: classify errors by cause. Use session renewal/sign-in for 401, access guidance for 403, contextual correction for domain errors, and opt into showRetry only for transient network/5xx errors.",
+      "DO: pass prerequisite for enabled:false queries. Pending + fetchStatus idle is unstarted, not loading, and never renders a skeleton.",
     ],
     useCases: [
       "A detail page that loads a single invoice/journal entry via `useQuery` — DataState renders the skeleton row while fetching, an error alert with retry if the API fails, and the `<InvoiceCard>` only when data is confirmed non-null.",
@@ -7383,7 +7403,7 @@ export default function PasswordBlock() {
     ],
     usage: [
       'DO put the layout on `<ResizablePanelGroup orientation="horizontal|vertical">`, the resizable regions in `<ResizablePanel>`, and a `<ResizableHandle>` BETWEEN every adjacent pair — a group of N panels needs N-1 handles or there is nothing to drag.',
-      "DO express `defaultSize`/`minSize`/`maxSize` as PERCENTAGE STRINGS like `defaultSize=\"35%\"` (react-resizable-panels v4: a bare number is PIXELS, so `defaultSize={35}` renders a 35px sliver, NOT 35% — pass the string). Don't fight sizing with a fixed `w-[280px]` className on the panel.",
+      'DO express `defaultSize`/`minSize`/`maxSize` as PERCENTAGE STRINGS like `defaultSize="35%"` (react-resizable-panels v4: a bare number is PIXELS, so `defaultSize={35}` renders a 35px sliver, NOT 35% — pass the string). Don\'t fight sizing with a fixed `w-[280px]` className on the panel.',
       "DON'T reach for ResizablePanel when the split is fixed and never user-adjustable — use a plain `Flex`/`ResponsiveGrid`, or `SplitPane` for a simple two-pane layout. Resizable is for *user-draggable* boundaries only.",
       "DO give each panel a stable `id` and use `collapsible` + `collapsedSize` for a side panel the user can fully tuck away (e.g. a filters rail), reacting via `onResize`.",
       "DON'T hand-roll a draggable divider with mouse-move listeners — the primitive handles pointer + keyboard resizing, ARIA separator semantics, and min/max clamping. Always render `<ResizableHandle>`, never a bare styled `<div>`.",

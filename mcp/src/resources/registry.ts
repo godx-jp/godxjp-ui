@@ -18,10 +18,17 @@ import { PROP_VOCABULARY } from "../data/prop-vocabulary.js";
 import { TOKENS, tokensByCategory, type TokenCategory } from "../data/tokens.js";
 import { CARDINAL_RULES, findRule } from "../data/rules.js";
 import { PATTERNS, findPattern } from "../data/patterns.js";
+import pkg from "../../package.json";
 
 const RULE_COUNT = CARDINAL_RULES.length;
 
 export const RESOURCE_DEFINITIONS = [
+  {
+    uri: "godx-ui://compatibility",
+    name: "Package compatibility",
+    description: "MCP package/server version and the compatible @godxjp/ui release range.",
+    mimeType: "application/json",
+  },
   {
     uri: "godx-ui://components",
     name: "All components",
@@ -57,6 +64,18 @@ export const RESOURCE_DEFINITIONS = [
 ];
 
 export async function readResource(uri: string): Promise<string> {
+  if (uri === "godx-ui://compatibility") {
+    return JSON.stringify(
+      {
+        mcpVersion: pkg.version,
+        serverVersion: pkg.version,
+        compatibleUi: pkg.godxUiCompatibility,
+        policy: "UI and MCP are released from the same source commit and minor release train.",
+      },
+      null,
+      2,
+    );
+  }
   // godx-ui://components
   if (uri === "godx-ui://components") {
     return JSON.stringify(COMPONENTS, null, 2);

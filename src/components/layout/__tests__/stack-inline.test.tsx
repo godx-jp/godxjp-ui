@@ -21,6 +21,16 @@ describe("Stack", () => {
 });
 
 describe("Inline", () => {
+  it("defaults to the CSS-standard row direction", () => {
+    const { container } = renderWithUi(
+      <Flex>
+        <span>a</span>
+        <span>b</span>
+      </Flex>,
+    );
+    expect(container.firstChild).toHaveAttribute("data-direction", "row");
+  });
+
   it.each([
     ["xs", "ui-flex-gap-xs"],
     ["sm", "ui-flex-gap-sm"],

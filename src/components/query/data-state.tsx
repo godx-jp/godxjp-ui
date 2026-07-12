@@ -26,10 +26,11 @@ function defaultIsEmpty(data: unknown): boolean {
 export function DataState<T>({
   query,
   skeleton,
+  prerequisite = null,
   empty,
   isEmpty = defaultIsEmpty,
   errorRenderer,
-  showRetry = true,
+  showRetry = false,
   onRetry,
   children,
 }: DataStateProp<T>) {
@@ -41,12 +42,15 @@ export function DataState<T>({
     void query.refetch();
   }, [onRetry, query]);
 
+  if (query.isPending && query.fetchStatus === "idle") return <>{prerequisite}</>;
   if (query.isPending) return <>{skeleton}</>;
 
   if (query.isError) {
     if (query.isFetching) return <>{skeleton}</>;
     if (errorRenderer) return <>{errorRenderer(query.error, retry)}</>;
-    return <AlertQueryError error={query.error} onRetry={showRetry ? retry : undefined} />;
+    return (
+      <AlertQueryError error={query.error} onRetry={showRetry || onRetry ? retry : undefined} />
+    );
   }
 
   const data = query.data;

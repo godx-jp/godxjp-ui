@@ -62,6 +62,20 @@ describe("DataState", () => {
     expect(screen.getByTestId("skel")).toBeInTheDocument();
   });
 
+  it("shows prerequisite rather than false loading for a disabled query", () => {
+    renderWithUi(
+      <DataState
+        query={mockQuery({ isPending: true, isError: false, fetchStatus: "idle" })}
+        skeleton={<div>loading</div>}
+        prerequisite={<div>Select an organization</div>}
+      >
+        {() => <div>data</div>}
+      </DataState>,
+    );
+    expect(screen.getByText("Select an organization")).toBeInTheDocument();
+    expect(screen.queryByText("loading")).not.toBeInTheDocument();
+  });
+
   it("renders children when data loaded", () => {
     renderWithUi(
       <DataState
@@ -101,6 +115,7 @@ describe("DataState", () => {
           refetch,
         })}
         skeleton={<div data-testid="skel">loading</div>}
+        showRetry
       >
         {() => <div>data</div>}
       </DataState>,

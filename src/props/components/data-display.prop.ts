@@ -25,6 +25,8 @@ export type EmptyStateProp = {
   title: TitleProp;
   description?: DescriptionProp;
   action?: ActionProp;
+  /** Visual weight appropriate to the empty condition. Default `page`. */
+  variant?: "page" | "section" | "compact";
   className?: ClassNameProp;
 };
 

@@ -165,7 +165,8 @@ async function run() {
   const browser = await chromium.launch({
     executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined,
   });
-  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await context.newPage();
   const findings = [];
   const add = (ruleId, url, message) => {
     const rule = VISUAL_RULES.find((r) => r.id === ruleId);
@@ -224,6 +225,7 @@ async function run() {
     });
   }
 
+  await context.close();
   await browser.close();
   report(findings);
 }
@@ -256,6 +258,15 @@ function report(findings) {
 }
 
 run().catch((e) => {
-  console.error(`visual-audit failed: ${e.message}`);
+  if (asJson) {
+    process.stdout.write(
+      JSON.stringify({
+        status: "infrastructure-error",
+        summary: null,
+        findings: [],
+        error: e.message,
+      }) + "\n",
+    );
+  } else console.error(`visual-audit failed: ${e.message}`);
   process.exit(2);
 });

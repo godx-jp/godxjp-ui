@@ -46,6 +46,15 @@
     flex-direction: column;
   }
 
+  .ui-empty-state[data-variant="section"] {
+    padding: var(--empty-state-section-space-y) var(--empty-state-section-space-x);
+  }
+
+  .ui-empty-state[data-variant="compact"] {
+    padding: var(--empty-state-compact-space-y) var(--empty-state-compact-space-x);
+    gap: var(--space-stack-xs);
+  }
+
   .ui-flex[data-wrap="true"] {
     flex-wrap: wrap;
   }

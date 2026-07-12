@@ -1,6 +1,9 @@
 # @godxjp/ui-mcp
 
 Model Context Protocol server for [`@godxjp/ui`](https://github.com/godx-jp/godxjp-ui).
+The `godx-ui://compatibility` resource reports the MCP/server version and compatible UI release.
+UI and MCP ship from the same source commit and minor release train; consumers must surface a
+version mismatch instead of silently applying stale guidance.
 Gives **Claude Code**, **Codex CLI**, **Cursor**, **Cline**, **Continue**, or any
 MCP-aware agent live access to:
 

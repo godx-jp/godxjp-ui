@@ -149,49 +149,34 @@ export function SignUpCard() {
   },
 
   {
-    name: "settings-tabs",
+    name: "settings-page-responsive",
     tagline:
-      "Sectioned settings inside a Card with Tabs + FormField + Select + Switch (real @godxjp/ui API).",
+      "Route-backed settings: persistent desktop local navigation, compact mobile navigation, and bounded form content.",
     tags: ["settings", "form", "tabs", "admin"],
-    code: `import { Card, CardContent } from "@godxjp/ui/data-display";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@godxjp/ui/navigation";
-import { FormField, Input, Select, SelectTrigger, SelectValue, SelectContent, SelectItem, Switch, Label } from "@godxjp/ui/data-entry";
-import { Stack } from "@godxjp/ui/layout";
+    code: `// Research basis: GitHub/Google/Microsoft/Atlassian account settings + Carbon form grid.
+// Use URLs for every destination; do not keep broad settings IA in local tab state.
+import { NavLink, Outlet } from "react-router-dom";
+import { Flex, Stack } from "@godxjp/ui/layout";
+import { FormField, Input } from "@godxjp/ui/data-entry";
 
 export function WorkspaceSettings() {
   return (
-    <Card>
-      <CardContent>
-        <Tabs defaultValue="general">
-          <TabsList>
-            <TabsTrigger value="general">基本情報</TabsTrigger>
-            <TabsTrigger value="notify">通知</TabsTrigger>
-          </TabsList>
-          <TabsContent value="general">
-            <Stack gap="md">
-              <FormField id="ws-name" label="名前" required><Input id="ws-name" /></FormField>
-              <FormField id="visibility" label="公開範囲">
-                <Select defaultValue="internal">
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="private">プライベート</SelectItem>
-                    <SelectItem value="internal">社内公開</SelectItem>
-                    <SelectItem value="public">公開</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-            </Stack>
-          </TabsContent>
-          <TabsContent value="notify">
-            <div className="flex items-center gap-2">
-              <Switch id="notify-comment" defaultChecked />
-              <Label htmlFor="notify-comment">コメント通知を受け取る</Label>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+    <Flex gap="lg" className="settings-layout">
+      <nav aria-label="Settings" className="settings-local-nav">
+        <NavLink to="general">基本情報</NavLink>
+        <NavLink to="security">セキュリティ</NavLink>
+        <NavLink to="notifications">通知</NavLink>
+      </nav>
+      <main className="settings-content"><Outlet /></main>
+    </Flex>
   );
+}
+
+// Desktop: local nav + bounded content (roughly 40rem), horizontal form rows where useful.
+// Mobile (375/390px): same route links become a compact scrollable nav; labels stack above controls.
+// Do not add a Card around the whole page. Tabs are only for 2–4 peer views within one task.
+export function GeneralSettingsForm() {
+  return <Stack gap="md"><FormField id="ws-name" label="名前" layout="horizontal" controlWidth="md"><Input id="ws-name" /></FormField></Stack>;
 }`,
   },
 
@@ -469,6 +454,62 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
 // RULE: a chip never wraps — it is pinned white-space: nowrap, so it stays one line in
 // narrow table cells. Centralize the domain→tone map in ONE small consumer wrapper and
 // import that instead of the raw Badge across pages.`,
+  },
+  {
+    name: "async-data-state",
+    tagline: "Mutually exclusive prerequisite, loading, data, empty, and cause-aware error states.",
+    tags: ["async", "loading", "query", "error", "empty"],
+    code: `import { DataState } from "@godxjp/ui/query";
+import { EmptyState, SkeletonTable } from "@godxjp/ui/data-display";
+
+// enabled:false is prerequisite/idle, not loading. DataState checks fetchStatus.
+<DataState query={query} prerequisite={<EmptyState variant="section" title="組織を選択してください" />}
+  skeleton={<SkeletonTable />} empty={<EmptyState variant="section" title="結果がありません" />}
+  isEmpty={(data) => data.items.length === 0}
+  errorRenderer={(error, retry) => classify(error) === "transient" ? <TransientError onRetry={retry} /> : <CauseAwareError error={error} />}>
+  {(data) => <Results items={data.items} />}
+</DataState>
+
+// 401 → renew/sign in; 403 → permission path; domain → correction; transient network/5xx → Retry.
+// Never render pagination outside the successful populated-data branch.`,
+  },
+  {
+    name: "data-table-page",
+    tagline:
+      "Filter + table + single-row footer pagination, visible only for successful multi-page data.",
+    tags: ["table", "pagination", "filter", "async"],
+    code: `// FilterBar is standalone. Card owns one table surface; do not nest Card/Alert surfaces.
+// Inside DataState's success branch:
+<Card><CardContent flush><DataTable data={data.items} columns={columns} />
+  {data.totalPages > 1 && <Flex justify="between" align="center"><span>{range}</span><Pagination /></Flex>}
+</CardContent></Card>
+// Hide pagination for prerequisite/loading/error/empty and one-page results.
+// Preserve filters/page during a transient retry; stack only at narrow mobile widths.`,
+  },
+  {
+    name: "organization-memberships",
+    tagline:
+      "Workspace identity, current state, role and permission-aware actions; invitations are conditional.",
+    tags: ["organization", "workspace", "membership", "invitation", "account"],
+    code: `// Research basis: GitHub organizations and Slack workspace switching/invitations.
+// Each row: logo + recognizable name + Current badge + role + Open/Switch/Manage/Leave action.
+// Put Create organization at page level. Do not show raw membership timestamps without labels.
+// No pending invitations → omit the section entirely.
+// Few pending → compact actionable list; many/history → a focused route.
+<MembershipList memberships={memberships} currentId={currentId} />
+{pendingInvitations.length > 0 && <PendingInvitations variant="compact" items={pendingInvitations} />}`,
+  },
+  {
+    name: "account-recovery-settings",
+    tagline:
+      "Signed-in recovery method status rows, separate from password change and signed-out recovery.",
+    tags: ["account", "recovery", "security", "backup-codes", "password"],
+    code: `// Research basis: Google Account recovery, Microsoft Security info, GitHub recovery codes.
+// Use compact method rows: method + verified/available status + Add/Change/Regenerate action.
+// Do not stack generic Info Alerts for ordinary capability status.
+<RecoveryMethodRow method="email" value={maskedEmail} status="verified" action={<Button>変更</Button>} />
+{backupCodesSupported && <RecoveryMethodRow method="backup-codes" status={codeStatus} action={<Button>再生成</Button>} />}
+// Password change is a separate destination. Forgot-password is a signed-out journey.`,
   },
 ];
 

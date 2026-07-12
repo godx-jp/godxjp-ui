@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Flex` now defaults to the CSS-standard `row`. Existing implicit vertical uses must migrate to
+  `direction="col"`; omit `direction` only when a row is intended.
+- `DataState` distinguishes disabled/unstarted queries from active loading through `fetchStatus`,
+  adds a `prerequisite` slot, and no longer enables generic Retry by default.
+- Static data-driven `Select` disables itself when it has no options, preventing blank popovers.
+
+### Added
+
+- `EmptyState` `page`, `section`, and `compact` variants for context-appropriate visual weight.
+- MCP patterns for responsive settings, async/table state, organization membership/invitations,
+  and signed-in account recovery, plus lockstep UI compatibility metadata.
+
+### Fixed
+
+- Runtime visual audit creates an explicit Playwright browser context for Axe and returns structured
+  JSON for infrastructure failures.
+
 ## [16.7.2] - 2026-06-30
 
 ### Fixed
@@ -83,8 +102,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--avatar-background`, `--sidebar-item-active-*`, the timeline/tree/progress/slider/switch fills,
   the stat-card medallion, `--focus-ring-color: var(--ring)` … — **froze at the `:root` value**: CSS
   substitutes the `var()` at the declaring element, so a scoped `[data-tenant]`/`.dark` override of
-  the *role* (`--card`, `--muted`, `--primary`, `--ring`) never reached the component token. This
-  silently broke token-only re-theming for every component; it only became *visible* under a DARK
+  the _role_ (`--card`, `--muted`, `--primary`, `--ring`) never reached the component token. This
+  silently broke token-only re-theming for every component; it only became _visible_ under a DARK
   scoped theme (a frozen light card under white text → invisible), which is why earlier light
   re-themes never caught it. Each such token is now a **quiet opt-in knob** declared `initial`, with
   the role default moved to the call site as `var(--knob, <role>)` — so the default re-resolves live

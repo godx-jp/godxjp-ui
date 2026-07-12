@@ -21,6 +21,11 @@ const OPTIONS = [
 afterEach(() => vi.restoreAllMocks());
 
 describe("Select (data) controlled-ness with empty value", () => {
+  it("disables a static empty option list rather than opening a blank popover", () => {
+    const { getByRole } = renderWithUi(<Select options={[]} placeholder="選択" />);
+    expect(getByRole("combobox")).toBeDisabled();
+  });
+
   it("stays controlled across an empty → filled value change (no React warning)", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
 

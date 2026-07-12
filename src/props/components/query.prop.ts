@@ -15,10 +15,12 @@ import type { ClassNameProp, HandlerProp } from "../vocabulary";
 export type DataStateProp<T> = {
   query: UseQueryResult<T>;
   skeleton: React.ReactNode;
+  /** Rendered when a query is disabled/unstarted (`fetchStatus: "idle"` with no data). */
+  prerequisite?: React.ReactNode;
   empty?: React.ReactNode;
   isEmpty?: (data: NonNullable<T>) => boolean;
   errorRenderer?: (error: unknown, retry: () => void) => React.ReactNode;
-  /** Default error UI retry button. Default `true`. */
+  /** Opt in only for errors known to be transient/retryable. Default `false`. */
   showRetry?: boolean;
   /** Default `() => query.refetch()`. */
   onRetry?: HandlerProp;
