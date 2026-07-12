@@ -85,6 +85,11 @@ if (mcpBump === "sync") {
   setPkgField("mcp", "godxUiCompatibility", `${major}.${minor}.x`);
   // Pin the MCP to the lib's (possibly just-bumped) version — one shared line.
   run(`npm version ${uiVersion} --no-git-tag-version --allow-same-version`, "mcp");
+  // mcp/ is a STANDALONE package (not a pnpm-workspace member), so the root install does NOT
+  // provide its build deps (tsup et al). Install them here before building — otherwise a fresh
+  // CI checkout fails with "tsup: not found" AFTER the UI already published, splitting the
+  // lockstep train (postmortem: v17.0.0 — @godxjp/ui shipped but @godxjp/ui-mcp did not).
+  run("pnpm install", "mcp");
   run("pnpm build", "mcp");
   run("npm publish --access public", "mcp");
   console.log(`✓ published @godxjp/ui-mcp@${versionOf("mcp")}`);
