@@ -19,6 +19,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Pagination` gains `hideOnSinglePage` (default `true`): the bar is hidden for zero items and for a
   single page; set `false` to opt in on one page (e.g. to keep `showTotal` visible). `total === 0`
   is always hidden (#153).
+- **`CardTitle`** accepts a semantic heading `level` (`1`–`4`, default `3` — unchanged) and an
+  `as` override (`h1`–`h4`/`p`/`div`) so consumers keep a valid document outline
+  (`h1 → h2 → h3`, no skipped levels) without changing the title's token-driven size. Use `as="p"`
+  when the card title is a styled label rather than a section heading. (#154)
+- **`EmptyState`** accepts `titleLevel` (`1`–`4`, default `3` — unchanged) and `titleAs`
+  (`h1`–`h4`/`p`/`div`) for the same reason: pick the level for outline position, not size, and use
+  `titleAs="p"` for a compact/section empty state inside a section that already owns its heading.
+  Coordinated with the existing `variant` (`page`/`section`/`compact`) and `tone` API. (#154, #144)
+- **`DataTable` `ColumnDef.ariaLabel`** — a visually-empty action/selection column keeps a
+  screen-reader header (e.g. "Actions"/"Select") rendered as an `sr-only` label inside its `<th>`,
+  clearing the axe `empty-table-header` violation. DataTable now **dev-warns** when a rendered
+  `<th>` has neither visible nor accessible text. Official DataTable examples set `ariaLabel` on
+  their action columns. (#155)
 
 ### Changed
 

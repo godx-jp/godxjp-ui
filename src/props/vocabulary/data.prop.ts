@@ -16,6 +16,15 @@ export type OnRowClickProp<T> = (row: T) => void;
 export type ColumnDefProp<T> = {
   key: string;
   header: React.ReactNode;
+  /**
+   * Accessible header text for a column whose `header` is visually empty — the
+   * standard case for a row-actions or selection column. Rendered as an
+   * `sr-only` label inside the `<th>` so the column keeps a screen-reader name
+   * (e.g. "Actions" / "Select") while showing nothing on screen. Required
+   * (dev-warned) when `header` is empty; ignored when `header` has visible text.
+   * Route the string through `t()` for i18n.
+   */
+  ariaLabel?: string;
   render?: (row: T) => React.ReactNode;
   sortable?: boolean;
   width?: string;

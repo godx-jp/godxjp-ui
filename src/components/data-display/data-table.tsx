@@ -461,6 +461,11 @@ DataTable.ViewOptions = function DataTableViewOptions({ className }: { className
 };
 (DataTable.ViewOptions as React.FC).displayName = "DataTable.ViewOptions";
 
+/** A header slot with no visible text — an action / selection column. */
+function isEmptyHeader(header: React.ReactNode): boolean {
+  return header == null || header === "" || header === false;
+}
+
 function columnLabel(column: {
   id: string;
   columnDef: { meta?: { lean?: { header?: React.ReactNode } } };
@@ -599,6 +604,26 @@ DataTable.Content = function DataTableContent() {
   // fade (which would otherwise dim the pinned column) is suppressed.
   const hasPinEnd = visibleColumns.some((col) => col.pin === "end");
 
+  // Accessible-header contract: a column whose `header` renders no visible text
+  // (an action / selection column) MUST carry an `ariaLabel` so its <th> keeps a
+  // screen-reader name (axe: empty-table-header). Dev-warn the offenders once per
+  // change instead of failing silently.
+  const missingHeaderNames = visibleColumns
+    .filter((col) => isEmptyHeader(col.header) && !col.ariaLabel)
+    .map((col) => col.key)
+    .join("|");
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === "production" || !missingHeaderNames) return;
+    for (const key of missingHeaderNames.split("|")) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[DataTable] Column "${key}" renders a <th> with no visible or accessible text. ` +
+          "Give it a visible `header`, or set `ariaLabel` (e.g. \"Actions\"/\"Select\") so " +
+          "screen readers can announce the column and axe reports no empty-table-header violation.",
+      );
+    }
+  }, [missingHeaderNames]);
+
   // Active sort for header indicators — prefer the lean `sort` prop, else read
   // it back from the internal TanStack sorting state.
   const activeSort = sort ?? sortingStateToSort(table.getState().sorting);
@@ -657,16 +682,26 @@ DataTable.Content = function DataTableContent() {
                     <ChevronsUpDown className="text-muted-foreground size-3" aria-hidden="true" />
                   )
                 ) : null;
+                const headerEmpty = isEmptyHeader(col.header);
+                // Visually-empty header (action / selection column) keeps a
+                // screen-reader name via an sr-only span so the <th> is never
+                // nameless (axe: empty-table-header).
+                const headerContent =
+                  headerEmpty && col.ariaLabel ? (
+                    <span className="sr-only">{col.ariaLabel}</span>
+                  ) : (
+                    col.header
+                  );
                 const label = (
                   <span className="ui-data-table-sort-label">
-                    {col.header}
+                    {headerContent}
                     {sortIndicator}
                   </span>
                 );
                 return (
                   <TableHead
                     key={col.key}
-                    data-empty={!col.header || undefined}
+                    data-empty={headerEmpty || undefined}
                     aria-sort={
                       isSortable
                         ? isActiveSort

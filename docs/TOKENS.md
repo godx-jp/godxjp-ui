@@ -18,7 +18,7 @@ src/tokens/components/       ← component token files
 src/styles/
   index.css                  ← @theme bridge (Tailwind ↔ tokens) + body defaults
   density.css                ← .ui-density-* (PageContainer density prop)
-  layout.css                 ← Stack / Inline / Page / EmptyState
+  layout.css                 ← Flex / Page / EmptyState
   control.css                ← inputs, buttons height (--control-height)
   card-layout.css            ← Card* slots
   table-layout.css           ← Table + DataTable chrome
@@ -58,13 +58,13 @@ Runtime scale: app `theme.css` overrides → `--font-size-sm` on root.
 
 ### Spacing / margin / gap
 
-| App API             | Internal owner                             |
-| ------------------- | ------------------------------------------ |
-| `<Stack gap="md">`  | `layout.css` `.ui-stack-md`                |
-| `<Inline gap="sm">` | `layout.css` `.ui-inline-sm`               |
-| `<PageContainer>`   | `layout.css` `.ui-page-*`                  |
-| `<Card>` slots      | `card-layout.css`                          |
-| `<Table>` cells     | `table-layout.css` `[data-slot="table-*"]` |
+| App API                           | Internal owner                             |
+| --------------------------------- | ------------------------------------------ |
+| `<Flex direction="col" gap="md">` | `layout.css` `.ui-flex-gap-md`             |
+| `<Flex gap="sm">`                 | `layout.css` `.ui-flex-gap-sm`             |
+| `<PageContainer>`                 | `layout.css` `.ui-page-*`                  |
+| `<Card>` slots                    | `card-layout.css`                          |
+| `<Table>` cells                   | `table-layout.css` `[data-slot="table-*"]` |
 
 **Apps:** no Tailwind `p-*`, `m-*`, `gap-*`, `space-*`.
 
@@ -177,13 +177,13 @@ See `docs/SPACING.md` for Card slot matrix. Same pattern everywhere:
 
 ## Preset components (avoid reinventing layout)
 
-| Need            | Use                              |
-| --------------- | -------------------------------- |
-| KPI stat tile   | `<StatCard label value delta />` |
-| Page sections   | `<Stack gap="md">`               |
-| Row of controls | `<Inline gap="sm">`              |
-| Status enum     | `<Badge status="…" />`           |
-| Empty list      | `<EmptyState … />`               |
+| Need            | Use                               |
+| --------------- | --------------------------------- |
+| KPI stat tile   | `<StatCard label value delta />`  |
+| Page sections   | `<Flex direction="col" gap="md">` |
+| Row of controls | `<Flex gap="sm">`                 |
+| Status enum     | `<Badge status="…" />`            |
+| Empty list      | `<EmptyState … />`                |
 
 ## Adding a new component
 
