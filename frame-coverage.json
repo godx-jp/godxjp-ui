@@ -1327,12 +1327,20 @@
     "data-display/accordion": {
       "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
       "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
-      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." },
+      "touch": {
+        "status": "pass",
+        "reason": "Emulated coarse-pointer tap toggled expanded state at 320px and 390px."
+      }
     },
     "data-display/collapsible": {
       "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
       "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
-      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." },
+      "touch": {
+        "status": "pass",
+        "reason": "Emulated coarse-pointer tap toggled expanded state at 320px and 390px."
+      }
     },
     "data-display/carousel": {
       "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
@@ -1471,6 +1479,10 @@
       "async": {
         "status": "not-applicable",
         "reason": "Sheet primitives do not own mutation pending or recovery state."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Emulated coarse-pointer tap opened the Sheet dialog at 320px and 390px."
       }
     },
     "feedback/skeleton": {

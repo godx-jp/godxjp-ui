@@ -14,6 +14,27 @@
       "journey": ["tap trigger", "dialog visible", "tap action", "dialog closed"],
       "verdict": "pass",
       "physicalDevice": "untested"
+    },
+    {
+      "owner": "data-display/accordion",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "expanded state toggled"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "data-display/collapsible",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "expanded state toggled"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "feedback/sheet",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "dialog visible"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
     }
   ],
   "frames": [
