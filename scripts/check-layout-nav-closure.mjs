@@ -14,6 +14,7 @@ const allFrames = [
   "layout-split-pane",
   "layout-topbar",
   "navigation-breadcrumb",
+  "navigation-app-setting-picker",
   "navigation-context-menu",
   "navigation-dropdown-menu",
   "navigation-menubar",
@@ -41,7 +42,10 @@ try {
   for (const frame of frames) {
     for (const width of widths) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(`http://localhost:6008/frame/${frame}`, { waitUntil: "networkidle" });
+      await page.goto(
+        `http://localhost:6008/frame/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`,
+        { waitUntil: "networkidle" },
+      );
       const result = await page.evaluate(() => ({
         viewport: innerWidth,
         scrollWidth: document.documentElement.scrollWidth,
@@ -56,7 +60,10 @@ try {
   await page.setViewportSize({ width: 1024, height: 900 });
   const axe = {};
   for (const frame of frames) {
-    await page.goto(`http://localhost:6008/isolate/${frame}`, { waitUntil: "networkidle" });
+    await page.goto(
+      `http://localhost:6008/isolate/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`,
+      { waitUntil: "networkidle" },
+    );
     if (frame === "layout-resizable-panel") {
       await page.getByRole("button", { name: "サイドバーを開く" }).click();
       const handle = page.getByRole("separator").first();
@@ -70,6 +77,18 @@ try {
       await page.getByRole("button", { name: "レガシースロットを表示" }).click();
       if (!(await page.getByText("Legacy slots active").isVisible())) {
         throw new Error("AppShell legacy topbar slots did not render");
+      }
+    }
+    if (process.env.RTL === "1") {
+      if ((await page.locator("[data-rtl-root]").getAttribute("dir")) !== "rtl") {
+        throw new Error(`${frame}: RTL was not initialized before mount`);
+      }
+      if (frame === "navigation-menubar") {
+        const menus = page.getByRole("menuitem");
+        await menus.first().focus();
+        await page.keyboard.press("ArrowLeft");
+        const focused = await menus.evaluateAll((nodes) => nodes.indexOf(document.activeElement));
+        if (focused <= 0) throw new Error("RTL Menubar ArrowLeft did not move focus");
       }
     }
     axe[frame] = (await new AxeBuilder({ page }).analyze()).violations.map((violation) => ({
@@ -96,6 +115,7 @@ try {
       widths,
       reflow: "pass",
       coarsePointer: process.env.TOUCH === "1" ? "pass" : "not-run",
+      rtl: process.env.RTL === "1" ? "pass" : "not-run",
       axe,
     }),
   );

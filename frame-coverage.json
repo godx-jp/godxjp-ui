@@ -1094,6 +1094,10 @@
         "status": "pass",
         "reason": "Rendered control switches from composed topbar to legacy slots and asserts the resulting content."
       },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context, including the legacy-slot switch."
+      },
       "async": {
         "status": "not-applicable",
         "reason": "AppShell owns synchronous slot layout; application requests belong to consumers."
@@ -1143,6 +1147,10 @@
       "a11y": {
         "status": "pass",
         "reason": "Expanded owner frame passed Axe and the first separator changed aria-valuenow after ArrowRight."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Expanded owner passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
       },
       "async": {
         "status": "not-applicable",
@@ -1211,6 +1219,10 @@
         "status": "pass",
         "reason": "Owner source assertions map kind, appearance, disabled, controlled value and change behavior; id/name/className are forwarded form attributes."
       },
+      "touch": {
+        "status": "pass",
+        "reason": "Provider-bound picker passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
       "async": {
         "status": "not-applicable",
         "reason": "Picker changes provider settings synchronously; persistence callbacks are consumer-owned."
@@ -1220,6 +1232,10 @@
       "props": {
         "status": "pass",
         "reason": "Owner frame maps items, controlled/uncontrolled values, status, orientation, type, size, title placement and change behavior."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Interactive Steps passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
       },
       "async": {
         "status": "not-applicable",
@@ -1366,6 +1382,10 @@
         "reason": "Owner frame passed the executed eight-width Chromium matrix."
       },
       "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
       "async": {
         "status": "not-applicable",
         "reason": "NavigationMenu is synchronous navigation composition; route/data loading belongs to consumers."
@@ -1891,6 +1911,10 @@
         "composition": {
           "status": "pass",
           "reason": "Owner source cases render compound parts together and the owner frame passed runtime geometry and Axe."
+        },
+        "rtl": {
+          "status": "pass",
+          "reason": "Every grouped owner passed pre-render RTL subtree direction, eight-width geometry and isolated Axe; Menubar directional focus and the dedicated Tabs RTL frame passed arrow-key assertions."
         },
         "screenReader": {
           "status": "untested",

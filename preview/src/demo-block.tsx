@@ -168,6 +168,7 @@ export function StoryDemoBlock({
   error: string | null;
   children: React.ReactNode;
 }) {
+  const rtl = new URLSearchParams(window.location.search).get("rtl") === "1";
   const storyViewport = React.useMemo(
     () => ({ width: viewportWidth, height: viewportHeight }),
     [viewportHeight, viewportWidth],
@@ -490,6 +491,8 @@ export function StoryDemoBlock({
               <div
                 ref={frameRef}
                 className="demo-block-frame"
+                dir={rtl ? "rtl" : undefined}
+                lang={rtl ? "ar" : undefined}
                 tabIndex={0}
                 aria-label={`${storyId} preview canvas`}
                 data-layout={layout}
