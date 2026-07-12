@@ -37,6 +37,26 @@ const REGIONS: TreeOption[] = [
 ];
 
 describe("Cascader a11y", () => {
+  it("forwards the field ARIA contract to the semantic trigger", () => {
+    const { getByRole } = renderWithUi(
+      <Cascader
+        options={REGIONS}
+        aria-label="Region"
+        aria-labelledby="region-label"
+        aria-describedby="region-help"
+        aria-errormessage="region-error"
+        aria-invalid
+        aria-required
+      />,
+    );
+    expect(getByRole("combobox")).toHaveAttribute("aria-label", "Region");
+    expect(getByRole("combobox")).toHaveAttribute("aria-labelledby", "region-label");
+    expect(getByRole("combobox")).toHaveAttribute("aria-describedby", "region-help");
+    expect(getByRole("combobox")).toHaveAttribute("aria-errormessage", "region-error");
+    expect(getByRole("combobox")).toHaveAttribute("aria-invalid", "true");
+    expect(getByRole("combobox")).toHaveAttribute("aria-required", "true");
+  });
+
   it("exposes the combobox role with the accessible name from its bound label", () => {
     const { getByRole } = renderWithUi(
       <>

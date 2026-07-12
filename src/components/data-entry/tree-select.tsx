@@ -74,6 +74,12 @@ function TreeSelectRoot({
   className,
   id,
   fieldNames,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+  "aria-describedby": ariaDescribedby,
+  "aria-errormessage": ariaErrormessage,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
 }: TreeSelectProp) {
   const { t } = useTranslation();
   const options = React.useMemo(
@@ -227,6 +233,12 @@ function TreeSelectRoot({
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledby}
+          aria-describedby={ariaDescribedby}
+          aria-errormessage={ariaErrormessage}
+          aria-invalid={ariaInvalid}
+          aria-required={ariaRequired}
           disabled={disabled}
           className={cn(
             "w-full justify-between font-normal",

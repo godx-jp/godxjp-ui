@@ -317,16 +317,18 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Select value={priority} onValueChange={setPriority}>
-              <SelectTrigger size="sm" id="priority">
-                <SelectValue placeholder="優先度" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="high">高</SelectItem>
-                <SelectItem value="medium">中</SelectItem>
-                <SelectItem value="low">低</SelectItem>
-              </SelectContent>
-            </Select>
+            <FormField id="priority" label="優先度">
+              <Select value={priority} onValueChange={setPriority}>
+                <SelectTrigger size="sm" id="priority" aria-labelledby="priority-label">
+                  <SelectValue placeholder="優先度" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="high">高</SelectItem>
+                  <SelectItem value="medium">中</SelectItem>
+                  <SelectItem value="low">低</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormField>
           </CardContent>
         </Card>
       </Flex>

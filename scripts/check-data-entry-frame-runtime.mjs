@@ -6,7 +6,12 @@ import AxeBuilder from "@axe-core/playwright";
 const port = 6011;
 const base = `http://localhost:${port}`;
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
-const stories = ["data-entry-input", "data-entry-form-field"];
+const stories = [
+  "data-entry-input",
+  "data-entry-form-field",
+  "data-entry-form",
+  "data-entry-select",
+];
 const ignoredPageShellRules = new Set([
   "heading-order",
   "landmark-one-main",

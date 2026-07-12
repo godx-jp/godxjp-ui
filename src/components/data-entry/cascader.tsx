@@ -118,6 +118,12 @@ export function Cascader({
   expandTrigger = "click",
   fieldNames,
   allowClear = true,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+  "aria-describedby": ariaDescribedby,
+  "aria-errormessage": ariaErrormessage,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
 }: CascaderProp) {
   const { t } = useTranslation();
   const options = React.useMemo(
@@ -320,6 +326,12 @@ export function Cascader({
             variant="outline"
             role="combobox"
             aria-expanded={open}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
+            aria-describedby={ariaDescribedby}
+            aria-errormessage={ariaErrormessage}
+            aria-invalid={ariaInvalid}
+            aria-required={ariaRequired}
             disabled={disabled}
             className={cn(
               "w-full justify-start font-normal",

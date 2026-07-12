@@ -89,6 +89,69 @@
         "reason": "Axe executed on the rendered FormField frame at all eight viewport widths."
       }
     },
+    "Form": {
+      "isolated": { "status": "pass", "reason": "Rendered directly in docs/data-entry/form.tsx." },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered with its data-entry controls and executed by check:data-entry-frame-runtime."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Chromium geometry executed at 320,375,390,768,1024,1280,1440,1920 without horizontal overflow."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Axe executed on the rendered Form frame at all eight viewport widths."
+      }
+    },
+    "Select": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-entry/select.tsx."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Both data-driven and compound Select APIs are rendered in the owner frame."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Chromium geometry executed at 320,375,390,768,1024,1280,1440,1920 without horizontal overflow."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Axe executed on the rendered Select frame at all eight viewport widths after the compound trigger was labelled."
+      }
+    },
+    "Cascader": {
+      "isolated": { "status": "pass", "reason": "Rendered directly in docs/data-entry/form.tsx." },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered inside FormField with its complete ARIA field contract forwarded to the combobox trigger."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "The owning Form frame passed Chromium geometry at all eight viewport widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Trigger ARIA forwarding is unit-tested and the rendered owner frame passed Axe at all eight widths."
+      }
+    },
+    "TreeSelect": {
+      "isolated": { "status": "pass", "reason": "Rendered directly in docs/data-entry/form.tsx." },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered inside FormField with its complete ARIA field contract forwarded to the combobox trigger."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "The owning Form frame passed Chromium geometry at all eight viewport widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Trigger ARIA forwarding is unit-tested and the rendered owner frame passed Axe at all eight widths."
+      }
+    },
     "Flex": {
       "isolated": { "status": "pass", "reason": "Rendered directly in docs/layout/flex.tsx." }
     },

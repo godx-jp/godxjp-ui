@@ -475,6 +475,12 @@ export type CascaderProp = {
   expandTrigger?: "click" | "hover";
   fieldNames?: TreeFieldNamesProp;
   allowClear?: boolean;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
+  "aria-errormessage"?: string;
+  "aria-invalid"?: boolean | "true" | "false";
+  "aria-required"?: boolean | "true" | "false";
 };
 
 export type ShowCheckedStrategyProp = "SHOW_CHILD" | "SHOW_PARENT" | "SHOW_ALL";
@@ -497,6 +503,12 @@ export type TreeSelectProp = {
   className?: ClassNameProp;
   id?: IdProp;
   fieldNames?: TreeFieldNamesProp;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
+  "aria-errormessage"?: string;
+  "aria-invalid"?: boolean | "true" | "false";
+  "aria-required"?: boolean | "true" | "false";
 };
 
 /** @see TransferItem */

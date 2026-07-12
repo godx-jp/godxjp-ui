@@ -22,6 +22,27 @@ const TREE = [
 ];
 
 describe("TreeSelect", () => {
+  it("forwards the field ARIA contract to the semantic trigger", () => {
+    render(
+      <TreeSelect
+        treeData={TREE}
+        aria-label="Region"
+        aria-labelledby="region-label"
+        aria-describedby="region-help"
+        aria-errormessage="region-error"
+        aria-invalid
+        aria-required
+      />,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toHaveAttribute("aria-label", "Region");
+    expect(trigger).toHaveAttribute("aria-labelledby", "region-label");
+    expect(trigger).toHaveAttribute("aria-describedby", "region-help");
+    expect(trigger).toHaveAttribute("aria-errormessage", "region-error");
+    expect(trigger).toHaveAttribute("aria-invalid", "true");
+    expect(trigger).toHaveAttribute("aria-required", "true");
+  });
+
   it("shows the placeholder until a value is chosen", () => {
     render(<TreeSelect treeData={TREE} placeholder="地域を選択" />);
     expect(screen.getByRole("combobox")).toHaveTextContent("地域を選択");
