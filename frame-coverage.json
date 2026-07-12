@@ -616,5 +616,75 @@
         "reason": "DataTable frame passed Chromium RTL geometry and keyboard smoke at 1024px."
       }
     }
+  },
+  "ownerOverrides": {
+    "data-display/badge": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static badges."
+      }
+    },
+    "data-display/list-row": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "data-display/avatar": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static avatars."
+      }
+    },
+    "data-display/card": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Eight-width Chromium geometry including owned CardBar scrolling passed."
+      },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "data-display/accordion": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "data-display/collapsible": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "data-display/carousel": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered uniquely labelled landmarks passed axe and keyboard smoke."
+      }
+    },
+    "data-display/descriptions": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static descriptions."
+      }
+    },
+    "data-display/empty-state": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "data-display/progress": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static progress indicators."
+      }
+    }
   }
 }

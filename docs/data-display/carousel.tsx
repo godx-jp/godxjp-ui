@@ -38,7 +38,7 @@ const slides = [
 /** Dot navigation — `CarouselDots` reads the Embla api from context; no manual `setApi` wiring. */
 function DotNavExample() {
   return (
-    <Carousel className="px-10" opts={{ loop: true }}>
+    <Carousel className="px-10" opts={{ loop: true }} aria-label="ステータスの例">
       <CarouselContent>
         {slides.map((s) => (
           <CarouselItem key={s.label}>
@@ -67,7 +67,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Carousel className="px-10">
+            <Carousel className="px-10" aria-label="指標カード">
               <CarouselContent>
                 {months.map((m) => (
                   <CarouselItem key={m.label} className="basis-full sm:basis-1/2 lg:basis-1/3">
@@ -91,7 +91,11 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Carousel className="px-10" opts={{ loop: true, align: "start" }}>
+            <Carousel
+              className="px-10"
+              opts={{ loop: true, align: "start" }}
+              aria-label="ループする指標カード"
+            >
               <CarouselContent>
                 {months.map((m) => (
                   <CarouselItem key={m.label}>
@@ -129,7 +133,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Carousel className="py-10" opts={{ axis: "y" }}>
+            <Carousel className="py-10" opts={{ axis: "y" }} aria-label="縦方向の状態">
               <CarouselContent className="h-48">
                 {slides.map((s) => (
                   <CarouselItem key={s.label}>

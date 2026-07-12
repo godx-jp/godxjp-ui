@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-07-12T14:18:30.604Z",
+  "auditedAt": "2026-07-12T14:29:52.727Z",
   "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
   "limitations": [
     "Automated Chromium DOM/geometry/axe/keyboard evidence only.",
@@ -45,6 +45,136 @@
         "artifacts/display-runtime/general-button-320.png",
         "artifacts/display-runtime/general-button-1920.png"
       ]
+    },
+    {
+      "id": "data-display-badge",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-badge-320.png",
+        "artifacts/display-runtime/data-display-badge-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-list-row",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-list-row-320.png",
+        "artifacts/display-runtime/data-display-list-row-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-avatar",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-avatar-320.png",
+        "artifacts/display-runtime/data-display-avatar-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-accordion",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-accordion-320.png",
+        "artifacts/display-runtime/data-display-accordion-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-collapsible",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-collapsible-320.png",
+        "artifacts/display-runtime/data-display-collapsible-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-carousel",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-carousel-320.png",
+        "artifacts/display-runtime/data-display-carousel-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-descriptions",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-descriptions-320.png",
+        "artifacts/display-runtime/data-display-descriptions-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-empty-state",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-empty-state-320.png",
+        "artifacts/display-runtime/data-display-empty-state-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-progress",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-progress-320.png",
+        "artifacts/display-runtime/data-display-progress-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-card",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-card-320.png",
+        "artifacts/display-runtime/data-display-card-1920.png"
+      ],
+      "verdict": "pass"
     }
   ]
 }

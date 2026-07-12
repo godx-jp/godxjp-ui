@@ -5,11 +5,34 @@ import axe from "axe-core";
 
 const base = process.env.PREVIEW_URL ?? "http://localhost:6008";
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
-const frames = [
+const allFrames = [
   { id: "data-display-charts", route: "data-display-charts" },
   { id: "data-display-data-table", route: "data-display-data-table-index" },
   { id: "general-button", route: "general-button-index" },
+  ...[
+    "badge",
+    "list-row",
+    "avatar",
+    "accordion",
+    "collapsible",
+    "carousel",
+    "descriptions",
+    "empty-state",
+    "progress",
+    "timeline",
+    "tree-list",
+    "scroll-area",
+    "popover",
+    "hover-card",
+    "table",
+    "stat-card",
+  ].map((name) => ({ id: `data-display-${name}`, route: `data-display-${name}` })),
+  { id: "data-display-card", route: "data-display-card-index" },
+  { id: "general-typography", route: "general-typography" },
+  { id: "general-logo", route: "general-logo" },
 ];
+const requested = new Set((process.env.FRAMES ?? "").split(",").filter(Boolean));
+const frames = requested.size ? allFrames.filter(({ id }) => requested.has(id)) : allFrames;
 const evidenceDir = path.resolve("artifacts/display-runtime");
 fs.mkdirSync(evidenceDir, { recursive: true });
 
@@ -28,7 +51,14 @@ for (const { id, route } of frames) {
   for (const width of widths) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     const errors = [];
-    page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
+    page.on("console", (message) => {
+      const text = message.text();
+      if (
+        message.type() === "error" &&
+        !text.includes("WebSocket connection to 'ws://localhost:6008")
+      )
+        errors.push(text);
+    });
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(`${base}/isolate/${route}`, { waitUntil: "domcontentloaded" });
     await page.locator("#root").waitFor();
@@ -45,8 +75,13 @@ for (const { id, route } of frames) {
         const rect = node.getBoundingClientRect();
         const clipped = rect.right > document.documentElement.clientWidth + 1 || rect.left < -1;
         if (!clipped) return false;
-        const scroller = node.parentElement?.closest(".ui-data-table-scroll");
-        return !(scroller && scroller.scrollWidth > scroller.clientWidth);
+        const scroller = [...document.querySelectorAll("*")].find(
+          (candidate) =>
+            candidate.contains(node) &&
+            ["auto", "scroll"].includes(getComputedStyle(candidate).overflowX) &&
+            candidate.scrollWidth > candidate.clientWidth,
+        );
+        return !scroller;
       }).length,
     }));
     if (geometry.documentWidth > geometry.viewportWidth + 1 || geometry.clippedControls)
@@ -78,6 +113,14 @@ for (const { id, route } of frames) {
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
       );
       if (rtlOverflow) result.rtl = "fail";
+      const focusableCount = await page
+        .locator('button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')
+        .count();
+      if (focusableCount === 0) {
+        result.keyboard = "not-applicable";
+        await page.close();
+        continue;
+      }
       await page.keyboard.press("Tab");
       const focus = await page.evaluate(() => {
         const node = document.activeElement;
@@ -95,4 +138,20 @@ for (const { id, route } of frames) {
   results.push(result);
 }
 await browser.close();
-console.log(JSON.stringify({ auditedAt: new Date().toISOString(), frames: results }, null, 2));
+const auditedAt = new Date().toISOString();
+if (process.env.WRITE_EVIDENCE === "1") {
+  const ledgerPath = path.resolve("display-runtime-evidence.json");
+  const ledger = JSON.parse(fs.readFileSync(ledgerPath, "utf8"));
+  const merged = new Map((ledger.frames ?? []).map((frame) => [frame.id, frame]));
+  for (const result of results) {
+    merged.set(result.id, {
+      ...result,
+      evidence: result.evidence.map((file) => path.relative(process.cwd(), file)),
+    });
+  }
+  fs.writeFileSync(
+    ledgerPath,
+    `${JSON.stringify({ ...ledger, auditedAt, frames: [...merged.values()] }, null, 2)}\n`,
+  );
+}
+console.log(JSON.stringify({ auditedAt, frames: results }, null, 2));
