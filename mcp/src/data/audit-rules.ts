@@ -262,12 +262,12 @@ export const AUDIT_RULES: AuditRule[] = [
     fix: "Use logical utilities (ms-/me-/ps-/pe-, start-/end-, text-start/end, border-s/e, rounded-s/e).",
   },
 
-  // ── copy (dxs-kintai DNA) ────────────────────────────────────────────────
+  // ── copy (reference-design DNA) ──────────────────────────────────────────
   {
     id: "no-em-dash-in-copy",
     severity: "warn",
     category: "copy",
-    standard: "@godxjp/ui dxs-kintai typography",
+    standard: "@godxjp/ui reference-design typography",
     fix: "No em-dash (—) in copy; use a middot · or two calm sentences.",
   },
 ];

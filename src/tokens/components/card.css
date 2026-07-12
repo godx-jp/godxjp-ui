@@ -43,7 +43,7 @@
   --card-header-border-bottom: initial;
   --card-radius: var(--radius);
   /* Resting elevation — quiet by default (rule #44): cards are flat (1px border, no shadow) in the
-   * dxs-kintai baseline. A service that wants lifted cards sets this to an elevation token once,
+   * reference-design baseline. A service that wants lifted cards sets this to an elevation token once,
    * e.g. --card-shadow: var(--shadow-sm), and every Card picks up the shadow with no markup change. */
   --card-shadow: 0 0 0 0 transparent;
   /* Brand glow layer — invisible no-op at rest (rule #44). Paired AFTER --card-shadow in the

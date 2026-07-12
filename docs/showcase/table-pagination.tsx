@@ -1,7 +1,7 @@
 /**
  * Showcase · table-pagination — ページネーション (V14)
  *
- * Three pagination modes for a 勤怠 (kintai) DataTable, shown side by side so a
+ * Three pagination modes for a 勤怠 (attendance) DataTable, shown side by side so a
  * consumer can pick the right one for their dataset shape:
  *
  *   1. 番号付き + 件数選択 … numbered pages + page-size Select
@@ -17,7 +17,7 @@
  * Each card is an INDEPENDENT pattern: its own state setters, its own data.
  *
  * Built ENTIRELY from real @godxjp/ui primitives. NO hand-rolled <table>, NO
- * raw HTML controls. dxs-kintai DNA: compact density, tabular-nums on numeric
+ * raw HTML controls. reference-design DNA: compact density, tabular-nums on numeric
  * columns, fixed color signaling via Badge status/tone, small headings, quiet
  * JP copy, no emoji.
  */

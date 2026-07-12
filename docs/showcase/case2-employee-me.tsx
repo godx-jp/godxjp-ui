@@ -2,7 +2,7 @@
  * Showcase · case2 — 従業員ダッシュボード (/me)
  *
  * The employee self-service home (`/me/dashboard`), built ENTIRELY from real
- * @godxjp/ui primitives. dxs-kintai design handoff recreated as a "skeleton"
+ * @godxjp/ui primitives. reference-design handoff recreated as a "skeleton"
  * (intent + look), not a transcription of its prototype DOM.
  *
  * Composition map (prototype block → @godxjp/ui primitive):
@@ -80,7 +80,7 @@ const NAV_SECTIONS: SidebarSectionProp[] = [
 
 // ── Punch FSM ─────────────────────────────────────────────────────────────────
 //
-// The cardinal kintai UX rule: render ONLY the actions valid for the current
+// The cardinal attendance UX rule: render ONLY the actions valid for the current
 // session state — never four disabled buttons. State derives from the last punch
 // log (CheckIn / BreakStart / BreakEnd / CheckOut).
 
@@ -306,7 +306,7 @@ export default function EmployeeMeShowcase() {
       activeId={activeNav}
       onSelect={setActiveNav}
       sections={NAV_SECTIONS}
-      product={{ name: "dxs-kintai", role: "田中 美咲 · 渋谷店" }}
+      product={{ name: "Acme", role: "田中 美咲 · 渋谷店" }}
     />
   );
 

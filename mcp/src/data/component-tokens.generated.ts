@@ -116,7 +116,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-shadow",
     "value": "0 0 0 0 transparent",
-    "description": "Resting elevation — quiet by default (rule #44): cards are flat (1px border, no shadow) in the * dxs-kintai baseline. A service that wants lifted cards sets this to an elevation token once, * e.g. --card-shadow: var(--shadow-sm), and every Card picks up the shadow with no markup change."
+    "description": "Resting elevation — quiet by default (rule #44): cards are flat (1px border, no shadow) in the * reference-design baseline. A service that wants lifted cards sets this to an elevation token once, * e.g. --card-shadow: var(--shadow-sm), and every Card picks up the shadow with no markup change."
   },
   {
     "name": "--card-glow",

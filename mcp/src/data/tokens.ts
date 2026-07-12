@@ -45,7 +45,7 @@ export const TOKENS: TokenEntry[] = [
     name: "--duration-{fast,base,slow}",
     category: "primitive",
     tier: "primitive",
-    role: "Motion durations (150 / 250 / 500ms). Read these instead of a literal `0.5s` for enter/transition timing (rule #2). dxs-kintai keeps motion short; honour `prefers-reduced-motion` at the call site.",
+    role: "Motion durations (150 / 250 / 500ms). Read these instead of a literal `0.5s` for enter/transition timing (rule #2). the reference design keeps motion short; honour `prefers-reduced-motion` at the call site.",
   },
   {
     name: "--ease-{standard,emphasized,decelerate,accelerate}",

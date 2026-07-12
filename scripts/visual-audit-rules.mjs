@@ -29,7 +29,7 @@ export const VISUAL_RULES = [
     id: "oversaturated-accent",
     severity: "warn",
     category: "color",
-    standard: "@godxjp/ui dxs-kintai 渋み (OKLCH chroma ≤ 0.18)",
+    standard: "@godxjp/ui reference-design 渋み (OKLCH chroma ≤ 0.18)",
     fix: "Desaturate brand/primary surfaces — keep OKLCH chroma ≤ 0.18. Read --primary tokens; never paint a full-width bar in raw vivid blue.",
   },
   {
@@ -75,7 +75,7 @@ export function oklchChroma({ r, g, b }) {
   return Math.hypot(oa, ob);
 }
 
-/** dxs-kintai restraint bound. A signal/brand surface above this chroma "screams". */
+/** reference-design restraint bound. A signal/brand surface above this chroma "screams". */
 export const CHROMA_LIMIT = 0.18;
 
 /** @returns {boolean} true when an accent surface exceeds the 渋み chroma limit. */

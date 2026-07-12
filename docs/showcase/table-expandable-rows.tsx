@@ -1,7 +1,7 @@
 /**
  * Showcase · table-expandable-rows — 展開行 (V9)
  *
- * Expandable detail row pattern for a 勤怠 (kintai) admin list. Clicking a row
+ * Expandable detail row pattern for a 勤怠 (attendance) admin list. Clicking a row
  * reveals an inline detail panel (border-left 3px primary) directly beneath it;
  * the toggle is EXCLUSIVE — opening one row collapses any other.
  *
@@ -41,7 +41,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 type BadgeTone = NonNullable<BadgeProps["tone"]>;
 
-// ── Mock kintai data ──────────────────────────────────────────────────────────
+// ── Mock attendance data ──────────────────────────────────────────────────────────
 
 type ShiftStatus = "出勤" | "遅刻" | "早退" | "欠勤";
 
@@ -383,7 +383,7 @@ function ExpandableList() {
       <TableBody>
         {EMPLOYEES.map((emp) => {
           const isOpen = openId === emp.id;
-          const panelId = `kintai-detail-${emp.id}`;
+          const panelId = `row-detail-${emp.id}`;
           return (
             <React.Fragment key={emp.id}>
               <TableRow

@@ -1,6 +1,6 @@
 # DataTable & Component Gaps — ADR Set
 
-Decision records synthesizing the `@godxjp/ui` component gaps surfaced while researching the **dxs-kintai** design bundle (`.design/research/tables.md` §7) and building the 15 table showcases under `docs/showcase/table-*.tsx`. Each showcase carries an embedded gap note describing where the real `DataTable` API (`src/components/data-display/data-table.tsx`, vocab `src/props/vocabulary/data.prop.ts` + `interaction.prop.ts` + `layout.prop.ts`) was insufficient and the capability had to be hand-composed from lower-level `Table*` primitives.
+Decision records synthesizing the `@godxjp/ui` component gaps surfaced while researching the **reference** design bundle (`.design/research/tables.md` §7) and building the 15 table showcases under `docs/showcase/table-*.tsx`. Each showcase carries an embedded gap note describing where the real `DataTable` API (`src/components/data-display/data-table.tsx`, vocab `src/props/vocabulary/data.prop.ts` + `interaction.prop.ts` + `layout.prop.ts`) was insufficient and the capability had to be hand-composed from lower-level `Table*` primitives.
 
 **This is decision documentation only — no component is changed by this file.**
 

@@ -4,7 +4,7 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
 /**
  * Colors · design-token foundation. Every swatch is a real semantic Tailwind
- * utility wired to the dxs-kintai token (@theme in src/styles/index.css); no raw
+ * utility wired to the reference-design token (@theme in src/styles/index.css); no raw
  * hex, no raw palette. Composed only from real @godxjp/ui components.
  */
 const surfaces = [

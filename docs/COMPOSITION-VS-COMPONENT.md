@@ -35,7 +35,7 @@ would bloat every consumer's bundle with one design's one-off block.
 
 > A Claude Design's marketing landing page (Hero / Services / CTA / Footer) is the canonical
 > composition case: it is reproduced 100% from **token configuration + real primitives**, with zero
-> new framework components. See `docs/showcase/tiximax-website.tsx`.
+> new framework components. See `docs/showcase/acme-website.tsx`.
 
 ---
 
@@ -47,7 +47,7 @@ components instead.
 
 | #                                                                 | Criterion                                                                                                                      | PASS means                                                            | FAIL means (→ compose)                                                   |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **C1. Universal, not design-specific**                            | Needed by many apps across domains; not a recreation of one design's block.                                                    | A generic capability (a select, a table, a date picker).              | "TIXIMAX Hero", "AcmePricingTable", "this dashboard's header".           |
+| **C1. Universal, not design-specific**                            | Needed by many apps across domains; not a recreation of one design's block.                                                    | A generic capability (a select, a table, a date picker).              | "ACME Hero", "AcmePricingTable", "this dashboard's header".              |
 | **C2. Encapsulates reusable BEHAVIOR**                            | Owns non-trivial state / keyboard / focus / ARIA that must not be re-implemented per app.                                      | Listbox navigation, dialog focus-trap, table sort/select, async load. | Pure static layout/visual arrangement (a hero, a footer, a banner).      |
 | **C3. Not expressible by composing existing primitives + tokens** | You genuinely cannot build it from `Card`/`Button`/`Text`/`Grid`/`Flex`/… + token overrides.                                   | A new interaction primitive with no existing equivalent.              | You _can_ build it today from primitives + tokens (then you must).       |
 | **C4. Single responsibility + controlled-vocabulary API**         | One job; maps to `value`/`defaultValue`/`onValueChange`, `size ∈ xs\|sm\|md\|lg`, `tone`, etc.; generalizes beyond one screen. | `Select`, `Switch`, `Pagination`.                                     | A grab-bag "Section"/"Block"/"Layout" with a bespoke, screen-shaped API. |

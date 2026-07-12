@@ -16,7 +16,7 @@
  *   brand glyph = a styled <span> (size/radius    Avatar primitive — real brand mark      (#116)
  *     baked as literals)
  *
- * Built ENTIRELY from real @godxjp/ui primitives. dxs-kintai DNA: small headings, 14/1.7 body,
+ * Built ENTIRELY from real @godxjp/ui primitives. reference-design DNA: small headings, 14/1.7 body,
  * one --primary action, 1px-border surfaces, no resting shadow, quiet factual copy, no emoji.
  */
 import { KeyRound, Mail, ShieldCheck, Smartphone } from "lucide-react";

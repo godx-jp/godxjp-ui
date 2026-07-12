@@ -166,7 +166,7 @@ function Hero() {
 
 function LogoCloud() {
   const items: Array<[string, string]> = [
-    ["Tiximax", "Logistics"],
+    ["Acme", "Logistics"],
     ["ベト屋フーズ", "F&B"],
     ["Hub Support", "B2B"],
     ["Big Asia", "Trading"],
@@ -206,7 +206,7 @@ function Bento() {
       icon: Boxes,
       span: "wide",
       title: "Cross-border logistics & remittance",
-      text: "Tiximax vận hành hành lang Nhật → Việt: xử lý đơn hàng, kho vận và kiều hối với hạ tầng tuân thủ AML/KYC.",
+      text: "Acme vận hành hành lang Nhật → Việt: xử lý đơn hàng, kho vận và kiều hối với hạ tầng tuân thủ AML/KYC.",
     },
     {
       icon: Clock,
@@ -314,7 +314,7 @@ function Cta() {
 
 function Footer() {
   const cols: Array<[string, string[]]> = [
-    ["Ventures", ["Tiximax", "ベト屋フーズ", "Hub Support", "Big Asia"]],
+    ["Ventures", ["Acme", "ベト屋フーズ", "Hub Support", "Big Asia"]],
     ["Company", ["About", "Careers", "Press", "Contact"]],
     ["Offices", ["東京", "大阪", "Hồ Chí Minh", "Cần Thơ"]],
   ];

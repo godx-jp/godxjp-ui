@@ -3,7 +3,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
  * Typography · design-token foundation. Real semantic <h1>-<h6> elements (no
- * faked sizes): the base heading layer renders the dxs-kintai scale and keeps
+ * faked sizes): the base heading layer renders the reference-design scale and keeps
  * the document outline SEO/accessibility correct. Composed only from real
  * @godxjp/ui components.
  */

@@ -2,7 +2,7 @@
  * Showcase · table-density — 密度切替 (V4)
  *
  * One and the SAME DataTable, retuned across the three row densities of the
- * dxs-kintai token scale:
+ * reference-design token scale:
  *
  *   compact     行高 28px (1.75rem)  — 監視・大量行向け
  *   default     行高 32px (2rem)     — 標準
@@ -40,7 +40,7 @@ import type { TableDensityProp } from "@godxjp/ui/props";
 
 type BadgeTone = NonNullable<BadgeProps["tone"]>;
 
-// ── The three densities of the dxs-kintai token scale ─────────────────────────
+// ── The three densities of the reference-design token scale ─────────────────────────
 // DataTable's own `density` prop is TableDensityProp = "compact" | "comfortable"
 // (it excludes "default"). To showcase all THREE token steps over the same table
 // we drive the row retune through the public `ui-density-*` class — the same knob
@@ -61,7 +61,7 @@ const DENSITY_ORDER: DensityKey[] = ["compact", "default", "comfortable"];
 const toTableDensityProp = (d: DensityKey): TableDensityProp =>
   d === "comfortable" ? "comfortable" : "compact";
 
-// ── Realistic kintai data — 本日の打刻 ────────────────────────────────────────
+// ── Realistic attendance data — 本日の打刻 ────────────────────────────────────────
 
 type AttendanceStatus = "present" | "late" | "leftEarly" | "pending" | "absent";
 

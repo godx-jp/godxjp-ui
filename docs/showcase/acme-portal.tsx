@@ -1,11 +1,11 @@
 /**
- * Showcase · TIXIMAX customer portal — a TOKEN-ONLY re-theme of @godxjp/ui.
+ * Showcase · ACME customer portal — a TOKEN-ONLY re-theme of @godxjp/ui.
  *
- * Proves the brief: can the TIXIMAX design system (gold #DFA930 · navy #0C1A31 ·
+ * Proves the brief: can the ACME design system (gold #DFA930 · navy #0C1A31 ·
  * red #CD3913 · Source Sans 3 · 14px radius · navy-tinted shadows) be produced by
  * CONFIGURING TOKENS ALONE — no component edits, no new components? Every block below
- * is a real @godxjp/ui primitive; the ONLY TIXIMAX-specific code is the scoped token
- * block in `THEME` (anchor + semantic tokens under `[data-tenant="tiximax"]`).
+ * is a real @godxjp/ui primitive; the ONLY ACME-specific code is the scoped token
+ * block in `THEME` (anchor + semantic tokens under `[data-tenant="acme"]`).
  *
  *   page chrome ........ AppShell + Sidebar + Topbar
  *   header + CTA ....... PageContainer (extra) + Button (default = gold primary)
@@ -14,7 +14,7 @@
  *   journey ............ Card + Progress / Steps
  *   orders ............. Card + Table + Badge(tone)  (the centerpiece)
  *
- * Token map (TIXIMAX → godxjp anchor/semantic, HSL components):
+ * Token map (ACME → godxjp anchor/semantic, HSL components):
  *   gold → --primary/--ring/--warning · navy → --foreground/--secondary · red → --destructive
  *   #1F9D55 → --success · #2563C9 → --info · Source Sans 3 → --font-family-sans
  *   14px → --radius (+ exact 4/6/10/14/20/28 steps) · navy → --shadow-color · 16px → --font-size-base
@@ -71,8 +71,8 @@ import {
 
 type BadgeTone = NonNullable<BadgeProps["tone"]>;
 
-// ── The ENTIRE TIXIMAX customisation: a SCOPED token block. No component touched. ───────────
-// The whole brand lives under `[data-tenant="tiximax"]` — true multi-tenant theming. This works
+// ── The ENTIRE ACME customisation: a SCOPED token block. No component touched. ───────────
+// The whole brand lives under `[data-tenant="acme"]` — true multi-tenant theming. This works
 // because the library declares its colour/radius utilities with `@theme inline`, so `bg-primary`
 // etc. inline `hsl(var(--primary))` and re-resolve a scoped --primary at the element (a plain
 // @theme froze them at :root). Colours, the focus ring (--focus-ring-color/-width), the brand glow
@@ -83,7 +83,7 @@ type BadgeTone = NonNullable<BadgeProps["tone"]>;
 // (a :root single-brand theme needs only --radius). See docs/CUSTOMER-THEMING.md.
 const THEME = `
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;0,900&display=swap');
-[data-tenant="tiximax"] {
+[data-tenant="acme"] {
   /* Brand / action */
   --primary: 41 73% 53%;             /* gold #DFA930 */
   --primary-foreground: 217 61% 12%; /* navy text on gold */
@@ -103,12 +103,12 @@ const THEME = `
   --muted-foreground: 216 16% 40%;   /* neutral-600, darkened to clear WCAG AA 4.5:1 on cards */
   --border: 217 24% 89%;             /* neutral-200 */
   --input: 216 20% 80%;              /* neutral-300 */
-  /* Fixed status signalling (TIXIMAX semantic palette) */
+  /* Fixed status signalling (ACME semantic palette) */
   --success: 152 78% 26%; --success-foreground: 0 0% 100%;  /* darker green: AA for delta text + white-on-fill */
   --warning: 41 73% 53%;  --warning-foreground: 217 61% 12%;  /* = brand gold */
   --destructive: 12 83% 44%; --destructive-foreground: 0 0% 100%;
   --info: 217 69% 47%; --info-foreground: 0 0% 100%;
-  /* Shape - base radius + exact TIXIMAX steps; re-declare the intermediates so the scope re-resolves */
+  /* Shape - base radius + exact ACME steps; re-declare the intermediates so the scope re-resolves */
   --radius: 0.875rem;                /* 14px card */
   --radius-xs: 4px; --radius-sm: 6px; --radius-md: 10px;
   --radius-lg: 14px; --radius-xl: 20px; --radius-2xl: 28px;
@@ -125,16 +125,16 @@ const THEME = `
   /* Modal scrim → navy */
   --overlay-background: rgb(12 26 49 / 0.55);
   /* Type */
-  --font-size-base: 1rem;            /* 16px TIXIMAX body */
+  --font-size-base: 1rem;            /* 16px ACME body */
   --font-family-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, system-ui, sans-serif;
 }
 
-/* Dark NAVY sidebar chrome - the TIXIMAX signature (gold-on-navy). Done by SCOPING the colour
+/* Dark NAVY sidebar chrome - the ACME signature (gold-on-navy). Done by SCOPING the colour
  * ROLES to the .app-sidebar region: the Sidebar's own CSS reads --card / --foreground /
  * --muted-foreground / --accent / --border, so re-pointing them here turns the whole nav dark with
  * NO component change. The active row uses the new --sidebar-item-active-* knobs for a gold tint. */
-[data-tenant="tiximax"] .app-sidebar {
+[data-tenant="acme"] .app-sidebar {
   --card: 217 61% 12%;              /* navy #0C1A31 surface */
   --foreground: 0 0% 100%;          /* white logo + active text base */
   --muted-foreground: 217 40% 74%;  /* navy-200 inactive nav text */
@@ -266,7 +266,7 @@ const NAV_SECTIONS: SidebarSectionProp[] = [
   },
 ];
 
-export default function TiximaxPortalShowcase() {
+export default function AcmePortalShowcase() {
   const [activeNav, setActiveNav] = React.useState("dashboard");
 
   const sidebar = (
@@ -274,13 +274,13 @@ export default function TiximaxPortalShowcase() {
       activeId={activeNav}
       onSelect={setActiveNav}
       sections={NAV_SECTIONS}
-      product={{ name: "TIXIMAX", role: "Cổng khách hàng" }}
+      product={{ name: "ACME", role: "Cổng khách hàng" }}
     />
   );
 
   return (
-    <div data-tenant="tiximax">
-      {/* The one and only TIXIMAX-specific code: a scoped token block. */}
+    <div data-tenant="acme">
+      {/* The one and only ACME-specific code: a scoped token block. */}
       <style>{THEME}</style>
       <AppShell
         sidebar={sidebar}

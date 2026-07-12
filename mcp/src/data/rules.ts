@@ -64,7 +64,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 11,
     title: "Submodule discipline",
-    body: "Two-PR workflow: (1) submodule PR → `main`, (2) umbrella PR → bump pin. Never push a pin to a SHA not on the submodule remote.",
+    body: "Two-PR workflow: (1) submodule PR → `main`, (2) downstream PR → bump pin. Never push a pin to a SHA not on the submodule remote.",
   },
   {
     number: 12,

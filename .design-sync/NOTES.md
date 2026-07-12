@@ -10,7 +10,7 @@ name **"@godxjp/ui Design System"** (https://claude.ai/design/p/e7ef05a5-bc35-45
 and re-imported at full scope (no `_ds_sync.json` → everything re-verifies). Carried forward all durable
 inputs: config.json, conventions.md, NOTES.md, and the 22 authored previews. 16.7.0 changed Badge (soft
 `primary` tone), Heading (`weight`), Input/PasswordInput (`leadingIcon`), + brand-glow/text-primary-strong
-tokens. NOT the user's hand-authored "dxs-kintai Design System" project — that one is left untouched.
+tokens. NOT the user's hand-authored "reference" Design System project — that one is left untouched.
 `projectId` re-pinned in config.json. Incremental upload path (fresh empty project).
 
 The earlier headless attempt couldn't run `DesignSync`; this run completed from an interactive

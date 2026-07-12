@@ -30,7 +30,7 @@ export type TextToneProp =
   | "destructive"
   | "info";
 
-/** Font weight — the dxs-kintai canon is THREE weights only: `regular` (400 body), `medium` (500
+/** Font weight — the reference-design canon is THREE weights only: `regular` (400 body), `medium` (500
  *  heading/label), `bold` (700 emphasis). 600/`semibold` is forbidden. */
 export type FontWeightProp = "regular" | "medium" | "bold";
 

@@ -185,7 +185,7 @@ Set `data-tenant` on the app root. Two CSS-inheritance caveats for the **scoped*
   `--control-radius` and the `--shadow-{xs…2xl}` ramp are computed at their declaring element, so a
   scoped `--radius` / `--shadow-color` override won't reach them. For a scoped re-theme, re-declare
   the derived tokens you need (e.g. `--card-radius: var(--radius)`, or set `--card-shadow` to a
-  literal value). See `docs/showcase/tiximax-portal.tsx` for a full scoped example.
+  literal value). See `docs/showcase/acme-portal.tsx` for a full scoped example.
 - **Portaled overlays escape the subtree.** Dropdowns, Selects, Dialogs and Tooltips render in a
   portal at `<body>`, outside the `[data-tenant]` element — put the same `data-tenant` attribute on
   your portal container so they inherit the tenant's tokens (including `--overlay-background`).

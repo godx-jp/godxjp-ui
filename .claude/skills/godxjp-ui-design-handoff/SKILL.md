@@ -78,9 +78,9 @@ status-cell (`Badge tone`) · sortable/paginated · expandable / tree rows · em
 (`Skeleton`) + error states · numeric columns with `tabular-nums`. If `DataTable` can't express one,
 that's a `/debate` candidate (Rule #4).
 
-## Design DNA to apply as the skeleton (dxs-kintai)
+## Design DNA to apply as the skeleton (reference design)
 
-→ **Owned by [[godxjp-ui-best-ux]] — apply its dxs-kintai DNA, don't re-read it here.** In one line:
+→ **Owned by [[godxjp-ui-best-ux]] — apply its reference-design DNA, don't re-read it here.** In one line:
 渋み (chroma ≤ 0.18, `--primary` for the one key action + brand only, never status) · 間 (body 14/1.7,
 `tabular-nums`) · 簡素 (3 weights 400/500/700, h1 = 20px) · **fixed** color-signaling (success 若竹 ·
 warning 山吹 · info 群青 · attention 朱 over red for non-destructive · danger 茜 destructive-only; wa-iro
