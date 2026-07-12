@@ -1061,6 +1061,21 @@
     }
   },
   "ownerOverrides": {
+    "data-entry/checkbox-group": {
+      "responsive": { "status": "pass", "reason": "Aliased checkbox owner passed geometry at eight widths and source assertion proves CheckboxGroup renders." },
+      "rtl": { "status": "pass", "reason": "Aliased owner frame passed RTL at eight widths." },
+      "a11y": { "status": "pass", "reason": "Rendered CheckboxGroup passed Axe and keyboard smoke." }
+    },
+    "data-entry/radio": {
+      "responsive": { "status": "pass", "reason": "Aliased radio owner passed geometry at eight widths and source assertion proves the group renders." },
+      "rtl": { "status": "pass", "reason": "Aliased owner frame passed RTL at eight widths." },
+      "a11y": { "status": "pass", "reason": "Rendered radio aliases passed Axe and keyboard smoke." }
+    },
+    "data-entry/field": {
+      "responsive": { "status": "pass", "reason": "Checkbox and Switch owner frames render Field and passed geometry at eight widths." },
+      "rtl": { "status": "pass", "reason": "Rendered Field compositions passed RTL at eight widths." },
+      "a11y": { "status": "pass", "reason": "Labelled Field compositions passed Axe and keyboard smoke." }
+    },
     "layout/responsive-grid": {
       "props": {
         "status": "pass",
