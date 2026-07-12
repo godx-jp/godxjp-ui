@@ -79,7 +79,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_patterns",
     description:
-      "List every canonical code pattern (registration-form / settings-page / data-table / confirm-destructive / app-shell / filter-bar / loading-states). ~500 bytes. Use before `get_pattern`.",
+      "List every canonical code pattern (signup-form / settings-page-responsive / data-table-page / async-data-state / organization-memberships / account-recovery-settings / confirm-destructive …). Common aliases resolve too (loading-states→async-data-state, filter-bar→data-table-page, settings-tabs→settings-page-responsive). ~500 bytes. Use before `get_pattern`.",
     inputSchema: { type: "object", properties: {} },
   },
   {
@@ -943,7 +943,12 @@ function suggestPrimitive(useCase: string): string {
     "Select=discrete options, AutoComplete=free-text+suggestions.",
     3,
   );
-  check(["filter"], "Form layout='inline' + pattern 'filter-bar'", "Inline form above table.", 4);
+  check(
+    ["filter"],
+    "Toolbar/ToolbarGroup + pattern 'filter-bar' (→ data-table-page)",
+    "Standalone Toolbar filter bar above a table; see the data-table-page pattern.",
+    4,
+  );
   check(
     ["delete", "destructive"],
     "Pattern 'confirm-destructive'",

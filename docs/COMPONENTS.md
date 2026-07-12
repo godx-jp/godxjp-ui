@@ -45,12 +45,13 @@ Every admin page **must** use PageContainer.
 
 All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640px+) adds horizontal layouts. See `packages/ui/src/tokens/base.css` and `.ui-page-*` in `src/styles/index.css`. Preview defaults to mobile viewport.
 
-### Stack / Inline
+### Flex
 
-| Component | Prop         | Key props             |
-| --------- | ------------ | --------------------- |
-| `Stack`   | `StackProp`  | `gap: GapProp`        |
-| `Inline`  | `InlineProp` | `gap: GapProp` subset |
+`Flex` is the one layout primitive (the former `Stack`/`Inline` are removed). Default `direction="row"`; use `direction="col"` for vertical rhythm.
+
+| Component | Prop       | Key props                                                               |
+| --------- | ---------- | ----------------------------------------------------------------------- |
+| `Flex`    | `FlexProp` | `direction: "row" \| "col"`, `gap: GapProp`, `align`, `justify`, `wrap` |
 
 ---
 
