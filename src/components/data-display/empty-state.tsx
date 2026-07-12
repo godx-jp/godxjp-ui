@@ -9,12 +9,14 @@ export type {
 export function EmptyState({
   icon: Icon,
   title,
+  titleAs,
   description,
   action,
   variant = "page",
   tone = "muted",
   className,
 }: EmptyStateProp) {
+  const Title = titleAs ?? (variant === "page" ? "h2" : variant === "section" ? "h3" : "p");
   return (
     <div
       data-slot="empty-state"
@@ -28,7 +30,7 @@ export function EmptyState({
           <Icon className="text-muted-foreground size-6" aria-hidden="true" />
         </div>
       )}
-      <h3 className="ui-empty-state-title">{title}</h3>
+      <Title className="ui-empty-state-title">{title}</Title>
       {description && <p className="ui-empty-state-description">{description}</p>}
       {action && <div>{action}</div>}
     </div>

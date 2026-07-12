@@ -38,9 +38,18 @@ describe("EmptyState", () => {
       <EmptyState icon={Inbox} title="None" variant="section" />,
     );
     expect(getByRole("status")).toHaveAttribute("data-variant", "section");
+    expect(getByRole("heading", { level: 3, name: "None" })).toBeInTheDocument();
     rerender(<EmptyState icon={Inbox} title="None" variant="compact" />);
     expect(getByRole("status")).toHaveAttribute("data-variant", "compact");
     expect(container.querySelector(".ui-empty-state-icon")).toBeNull();
+    expect(container.querySelector(".ui-empty-state-title")?.tagName).toBe("P");
+  });
+
+  it("uses h2 for a page empty state and permits a contextual override", () => {
+    const { getByRole, rerender } = render(<EmptyState title="No invoices" />);
+    expect(getByRole("heading", { level: 2, name: "No invoices" })).toBeInTheDocument();
+    rerender(<EmptyState title="No invoices" titleAs="h4" />);
+    expect(getByRole("heading", { level: 4, name: "No invoices" })).toBeInTheDocument();
   });
 
   it("defaults to the muted tone and reflects a semantic tone via data-tone", () => {

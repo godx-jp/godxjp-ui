@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-07-12T14:10:25.816Z",
+  "auditedAt": "2026-07-12T14:18:30.604Z",
   "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
   "limitations": [
     "Automated Chromium DOM/geometry/axe/keyboard evidence only.",
@@ -9,11 +9,10 @@
   "frames": [
     {
       "id": "data-display-charts",
-      "verdict": "fail",
+      "verdict": "pass",
       "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
-      "overflow": "fail",
-      "a11y": "fail",
-      "a11yViolations": ["heading-order"],
+      "overflow": "pass",
+      "a11y": "pass",
       "rtl": "pass",
       "keyboard": "pass",
       "evidence": [
@@ -23,11 +22,10 @@
     },
     {
       "id": "data-display-data-table",
-      "verdict": "fail",
+      "verdict": "pass",
       "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
-      "overflow": "fail",
-      "a11y": "fail",
-      "a11yViolations": ["heading-order"],
+      "overflow": "pass",
+      "a11y": "pass",
       "rtl": "pass",
       "keyboard": "pass",
       "evidence": [
@@ -37,11 +35,10 @@
     },
     {
       "id": "general-button",
-      "verdict": "fail",
+      "verdict": "pass",
       "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
       "overflow": "pass",
-      "a11y": "fail",
-      "a11yViolations": ["heading-order"],
+      "a11y": "pass",
       "rtl": "pass",
       "keyboard": "pass",
       "evidence": [

@@ -1801,6 +1801,12 @@ import { Smartphone } from "lucide-react";
     tagline: "Centred empty placeholder with icon, title, description, and optional CTA.",
     props: [
       { name: "title", type: "string", required: true, description: "Primary empty message." },
+      {
+        name: "titleAs",
+        type: '"h2" | "h3" | "h4" | "p"',
+        description:
+          "Contextual title element. Defaults by variant: page=h2, section=h3, compact=p.",
+      },
       { name: "description", type: "string", description: "Secondary helper text." },
       { name: "icon", type: "LucideIcon", description: "Icon above the title." },
       { name: "action", type: "ReactNode", description: "CTA element (e.g. a Button)." },
@@ -1819,7 +1825,7 @@ import { Smartphone } from "lucide-react";
       },
     ],
     usage: [
-      "DO always pass `title` — it is the only required prop and renders an `<h3>`; omitting it causes a blank silent render with no visible error.",
+      "DO always pass `title`. Its semantic element follows context automatically (page=h2, section=h3, compact=p); use `titleAs` only when the surrounding heading outline requires an explicit level.",
       'DO use `tone="success"` (or warning/destructive/info) for a semantic confirmation/alert zero-state — it recolours the icon medallion from the role token; do NOT hand-roll a `.ui-success-state` class that scopes `--empty-state-icon-*`.',
       "DO use the `icon` prop (a Lucide icon component, not a JSX element) to give visual context — e.g. `icon={InboxIcon}` for empty inboxes, `icon={SearchIcon}` after a failed search. Pass the component reference, not `<InboxIcon />`.",
       "DO use `action` (a `ReactNode`, typically a `<Button>`) for actionable zero-states — e.g. 'Create first invoice' — so users have a clear next step instead of a dead end.",

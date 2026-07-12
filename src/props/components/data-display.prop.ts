@@ -33,6 +33,8 @@ export type EmptyStateToneProp = Extract<
 export type EmptyStateProp = {
   icon?: IconProp;
   title: TitleProp;
+  /** Semantic title element. Defaults by variant: page=h2, section=h3, compact=p. */
+  titleAs?: "h2" | "h3" | "h4" | "p";
   description?: DescriptionProp;
   action?: ActionProp;
   /** Visual weight appropriate to the empty condition. Default `page`. */

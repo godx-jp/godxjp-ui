@@ -79,15 +79,15 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
 CardHeader.displayName = "CardHeader";
 
 export type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
-  /** Semantic heading level. Cards directly below a page heading should use `h2`. */
+  /** Semantic heading level. Cards are page sections by default; nested cards opt into h3/h4. */
   as?: "h2" | "h3" | "h4";
 };
 
 export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ as: Heading = "h3", className, children, ...props }, ref) => (
-    <Heading ref={ref} data-slot="card-title" className={className} {...props}>
+  ({ as: Component = "h2", className, children, ...props }, ref) => (
+    <Component ref={ref} data-slot="card-title" className={className} {...props}>
       {children}
-    </Heading>
+    </Component>
   ),
 );
 CardTitle.displayName = "CardTitle";

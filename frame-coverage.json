@@ -62,6 +62,10 @@
       "rtl": {
         "status": "pass",
         "reason": "Chromium RTL geometry and keyboard smoke passed at 1024px."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Chromium axe and keyboard focus smoke passed in the rendered Button frame."
       }
     },
     "Input": {
@@ -202,30 +206,70 @@
       }
     },
     "LineChart": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Charts frame passed geometry checks at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered charts frame passed Chromium axe and keyboard focus smoke."
+      },
       "rtl": {
         "status": "pass",
         "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
       }
     },
     "BarChart": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Charts frame passed geometry checks at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered charts frame passed Chromium axe and keyboard focus smoke."
+      },
       "rtl": {
         "status": "pass",
         "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
       }
     },
     "AreaChart": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Charts frame passed geometry checks at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered charts frame passed Chromium axe and keyboard focus smoke."
+      },
       "rtl": {
         "status": "pass",
         "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
       }
     },
     "PieChart": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Charts frame passed geometry checks at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered charts frame passed Chromium axe and keyboard focus smoke."
+      },
       "rtl": {
         "status": "pass",
         "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
       }
     },
     "DataTable": {
+      "responsive": {
+        "status": "pass",
+        "reason": "DataTable frame passed document and owned-scroll geometry at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered DataTable frame passed Chromium axe and keyboard focus smoke."
+      },
       "rtl": {
         "status": "pass",
         "reason": "DataTable frame passed Chromium RTL geometry and keyboard smoke at 1024px."

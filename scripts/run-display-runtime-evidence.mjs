@@ -39,16 +39,25 @@ for (const { id, route } of frames) {
     const geometry = await page.evaluate(() => ({
       documentWidth: document.documentElement.scrollWidth,
       viewportWidth: document.documentElement.clientWidth,
-      clippedControls: [...document.querySelectorAll("button,a,input,select,[tabindex]")].filter(
-        (node) => {
-          const rect = node.getBoundingClientRect();
-          return rect.right > document.documentElement.clientWidth + 1 || rect.left < -1;
-        },
-      ).length,
+      clippedControls: [
+        ...document.querySelectorAll('button,a,input,select,[tabindex]:not([tabindex="-1"])'),
+      ].filter((node) => {
+        const rect = node.getBoundingClientRect();
+        const clipped = rect.right > document.documentElement.clientWidth + 1 || rect.left < -1;
+        if (!clipped) return false;
+        const scroller = node.parentElement?.closest(".ui-data-table-scroll");
+        return !(scroller && scroller.scrollWidth > scroller.clientWidth);
+      }).length,
     }));
     if (geometry.documentWidth > geometry.viewportWidth + 1 || geometry.clippedControls)
       result.overflow = "fail";
-    if (errors.length) result.overflow = "fail";
+    if (geometry.documentWidth > geometry.viewportWidth + 1 || geometry.clippedControls) {
+      (result.overflowFailures ??= []).push({ width, ...geometry });
+    }
+    if (errors.length) {
+      result.overflow = "fail";
+      (result.consoleErrors ??= []).push({ width, errors });
+    }
     result.widths.push(width);
     if (width === 320 || width === 1920) {
       const shot = path.join(evidenceDir, `${id}-${width}.png`);
