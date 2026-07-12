@@ -1094,13 +1094,22 @@
   },
   "ownerOverrides": {
     "data-entry/input": {
-      "rtl": { "status": "pass", "reason": "Input owner frame passed rendered RTL Axe and geometry at all eight widths." }
+      "rtl": {
+        "status": "pass",
+        "reason": "Input owner frame passed rendered RTL Axe and geometry at all eight widths."
+      }
     },
     "data-entry/form": {
-      "rtl": { "status": "pass", "reason": "Form owner frame passed rendered RTL Axe and geometry at all eight widths." }
+      "rtl": {
+        "status": "pass",
+        "reason": "Form owner frame passed rendered RTL Axe and geometry at all eight widths."
+      }
     },
     "data-entry/form-field": {
-      "rtl": { "status": "pass", "reason": "FormField owner frame passed rendered RTL Axe and geometry at all eight widths." }
+      "rtl": {
+        "status": "pass",
+        "reason": "FormField owner frame passed rendered RTL Axe and geometry at all eight widths."
+      }
     },
     "layout/app-shell": {
       "props": {
@@ -1920,6 +1929,51 @@
   },
   "ownerGroups": [
     {
+      "name": "layout-static-journey-touch-classification",
+      "owners": [
+        "layout/aspect-ratio",
+        "layout/auth-shell",
+        "layout/flex",
+        "layout/page-container",
+        "layout/responsive-grid",
+        "layout/separator",
+        "layout/split-pane",
+        "layout/topbar"
+      ],
+      "dimensions": {
+        "journey": {
+          "status": "not-applicable",
+          "reason": "This layout owner arranges consumer content but owns no entry/action/completion/recovery task journey."
+        },
+        "touch": {
+          "status": "not-applicable",
+          "reason": "This static layout owner exposes no custom pointer or touch gesture; interactive descendants are consumer-owned."
+        }
+      }
+    },
+    {
+      "name": "layout-navigation-interaction-journeys",
+      "owners": [
+        "layout/resizable",
+        "layout/sidebar",
+        "navigation/app-setting-picker",
+        "navigation/context-menu",
+        "navigation/dropdown-menu",
+        "navigation/filter-bar",
+        "navigation/menubar",
+        "navigation/navigation-menu",
+        "navigation/pagination",
+        "navigation/steps",
+        "navigation/tabs"
+      ],
+      "dimensions": {
+        "journey": {
+          "status": "pass",
+          "reason": "Executed interaction suite passed selection/open-close/change/keyboard behavior for this owner; rendered frame evidence covers its composed surface."
+        }
+      }
+    },
+    {
       "name": "layout-navigation-source-closure",
       "owners": [
         "layout/app-shell",
@@ -2096,53 +2150,297 @@
       }
     },
     {
-      "exports": ["Label", "CheckboxGroup", "Radio", "RadioItem", "RadioGroupRoot", "Textarea", "Field", "ToggleGroup", "ToggleGroupItem", "CommandEmpty", "CommandGroup", "CommandInput", "CommandItem", "CommandList", "PasswordStrength", "InputOTPGroup", "InputOTPSlot", "InputOTPSeparator"],
+      "exports": [
+        "Label",
+        "CheckboxGroup",
+        "Radio",
+        "RadioItem",
+        "RadioGroupRoot",
+        "Textarea",
+        "Field",
+        "ToggleGroup",
+        "ToggleGroupItem",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "PasswordStrength",
+        "InputOTPGroup",
+        "InputOTPSlot",
+        "InputOTPSeparator"
+      ],
       "dimensions": {
-        "isolated": { "status": "pass", "reason": "Owner source assertion proves the export renders and the owner frame passed the executed Chromium matrix." }
+        "isolated": {
+          "status": "pass",
+          "reason": "Owner source assertion proves the export renders and the owner frame passed the executed Chromium matrix."
+        }
       }
     },
     {
-      "exports": ["NumberInput", "Label", "Checkbox", "CheckboxGroup", "Radio", "RadioGroup", "RadioItem", "RadioGroupRoot", "Textarea", "Field", "SearchInput", "Switch", "Toggle", "ToggleGroup", "ToggleGroupItem", "Slider", "Calendar", "MonthPicker", "MonthRangePicker", "DatePicker", "DateRangePicker", "TimePicker", "ColorPicker", "Upload", "Transfer", "Command", "CommandEmpty", "CommandGroup", "CommandInput", "CommandItem", "CommandList", "PasswordInput", "PasswordStrength", "InputOTP", "InputOTPGroup", "InputOTPSlot", "InputOTPSeparator", "Rating", "TagInput"],
+      "exports": [
+        "NumberInput",
+        "Label",
+        "Checkbox",
+        "CheckboxGroup",
+        "Radio",
+        "RadioGroup",
+        "RadioItem",
+        "RadioGroupRoot",
+        "Textarea",
+        "Field",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "ToggleGroup",
+        "ToggleGroupItem",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Upload",
+        "Transfer",
+        "Command",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "PasswordInput",
+        "PasswordStrength",
+        "InputOTP",
+        "InputOTPGroup",
+        "InputOTPSlot",
+        "InputOTPSeparator",
+        "Rating",
+        "TagInput"
+      ],
       "dimensions": {
-        "composition": { "status": "pass", "reason": "Source contract maps the export to its owner composition and the rendered owner passed runtime checks." }
+        "composition": {
+          "status": "pass",
+          "reason": "Source contract maps the export to its owner composition and the rendered owner passed runtime checks."
+        }
       }
     },
     {
-      "exports": ["Input", "NumberInput", "Label", "Checkbox", "CheckboxGroup", "Radio", "RadioGroup", "RadioItem", "RadioGroupRoot", "Textarea", "Form", "FormField", "Field", "SearchInput", "Switch", "Toggle", "ToggleGroup", "ToggleGroupItem", "Slider", "Calendar", "MonthPicker", "MonthRangePicker", "DatePicker", "DateRangePicker", "TimePicker", "ColorPicker", "Cascader", "TreeSelect", "Transfer", "CommandEmpty", "CommandGroup", "CommandInput", "CommandItem", "CommandList", "PasswordInput", "PasswordStrength", "InputOTP", "InputOTPGroup", "InputOTPSlot", "InputOTPSeparator", "Rating", "TagInput"],
+      "exports": [
+        "Input",
+        "NumberInput",
+        "Label",
+        "Checkbox",
+        "CheckboxGroup",
+        "Radio",
+        "RadioGroup",
+        "RadioItem",
+        "RadioGroupRoot",
+        "Textarea",
+        "Form",
+        "FormField",
+        "Field",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "ToggleGroup",
+        "ToggleGroupItem",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Cascader",
+        "TreeSelect",
+        "Transfer",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "PasswordInput",
+        "PasswordStrength",
+        "InputOTP",
+        "InputOTPGroup",
+        "InputOTPSlot",
+        "InputOTPSeparator",
+        "Rating",
+        "TagInput"
+      ],
       "dimensions": {
-        "journey": { "status": "not-applicable", "reason": "This primitive/subpart owns no multi-step entry-completion-recovery journey; consumer workflow owns it. Local interaction is covered by keyboard and coarse-pointer evidence." }
+        "journey": {
+          "status": "not-applicable",
+          "reason": "This primitive/subpart owns no multi-step entry-completion-recovery journey; consumer workflow owns it. Local interaction is covered by keyboard and coarse-pointer evidence."
+        }
       }
     },
     {
       "exports": ["Upload", "Command"],
       "dimensions": {
-        "journey": { "status": "pass", "reason": "Owner frames execute Upload and Command owned lifecycle surfaces with keyboard and coarse-pointer entry paths." }
+        "journey": {
+          "status": "pass",
+          "reason": "Owner frames execute Upload and Command owned lifecycle surfaces with keyboard and coarse-pointer entry paths."
+        }
       }
     }
   ],
   "exportGroups": [
     {
-      "exports": ["Input", "NumberInput", "Select", "Checkbox", "RadioGroup", "Form", "FormField", "SearchInput", "Switch", "Toggle", "Slider", "Calendar", "MonthPicker", "MonthRangePicker", "DatePicker", "DateRangePicker", "TimePicker", "ColorPicker", "Upload", "Cascader", "TreeSelect", "Transfer", "Command", "PasswordInput", "InputOTP", "Rating", "TagInput"],
+      "exports": [
+        "Input",
+        "NumberInput",
+        "Select",
+        "Checkbox",
+        "RadioGroup",
+        "Form",
+        "FormField",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Upload",
+        "Cascader",
+        "TreeSelect",
+        "Transfer",
+        "Command",
+        "PasswordInput",
+        "InputOTP",
+        "Rating",
+        "TagInput"
+      ],
       "dimensions": {
-        "props": { "status": "pass", "reason": "Complete behavioral prop families are mapped to explicit owner-frame cases in data-entry-prop-cases.json; forwarded platform props are documented as pass-through N/A." }
+        "props": {
+          "status": "pass",
+          "reason": "Complete behavioral prop families are mapped to explicit owner-frame cases in data-entry-prop-cases.json; forwarded platform props are documented as pass-through N/A."
+        }
       }
     },
     {
-      "exports": ["SelectContent", "SelectGroup", "SelectItem", "SelectLabel", "SelectScrollDownButton", "SelectScrollUpButton", "SelectSeparator", "SelectTrigger", "SelectValue"],
+      "exports": [
+        "SelectContent",
+        "SelectGroup",
+        "SelectItem",
+        "SelectLabel",
+        "SelectScrollDownButton",
+        "SelectScrollUpButton",
+        "SelectSeparator",
+        "SelectTrigger",
+        "SelectValue"
+      ],
       "dimensions": {
-        "props": { "status": "not-applicable", "reason": "Compound subpart props forward unchanged to Radix; behavioral composition is asserted by the long Select owner case." }
+        "props": {
+          "status": "not-applicable",
+          "reason": "Compound subpart props forward unchanged to Radix; behavioral composition is asserted by the long Select owner case."
+        }
       }
     },
     {
-      "exports": ["Input", "NumberInput", "Label", "Checkbox", "CheckboxGroup", "Radio", "RadioGroup", "RadioItem", "RadioGroupRoot", "Textarea", "Form", "FormField", "Field", "SearchInput", "Switch", "Toggle", "ToggleGroup", "ToggleGroupItem", "Slider", "Calendar", "MonthPicker", "MonthRangePicker", "DatePicker", "DateRangePicker", "TimePicker", "ColorPicker", "Cascader", "TreeSelect", "Transfer", "CommandEmpty", "CommandGroup", "CommandInput", "CommandItem", "CommandList", "PasswordInput", "PasswordStrength", "InputOTP", "InputOTPGroup", "InputOTPSlot", "InputOTPSeparator", "Rating", "TagInput"],
+      "exports": [
+        "Input",
+        "NumberInput",
+        "Label",
+        "Checkbox",
+        "CheckboxGroup",
+        "Radio",
+        "RadioGroup",
+        "RadioItem",
+        "RadioGroupRoot",
+        "Textarea",
+        "Form",
+        "FormField",
+        "Field",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "ToggleGroup",
+        "ToggleGroupItem",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Cascader",
+        "TreeSelect",
+        "Transfer",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "PasswordInput",
+        "PasswordStrength",
+        "InputOTP",
+        "InputOTPGroup",
+        "InputOTPSlot",
+        "InputOTPSeparator",
+        "Rating",
+        "TagInput"
+      ],
       "dimensions": {
-        "async": { "status": "not-applicable", "reason": "This export has no owned asynchronous lifecycle; async data or callbacks are consumer-owned and forwarded synchronously." }
+        "async": {
+          "status": "not-applicable",
+          "reason": "This export has no owned asynchronous lifecycle; async data or callbacks are consumer-owned and forwarded synchronously."
+        }
       }
     },
     {
-      "exports": ["Input", "NumberInput", "Select", "SelectContent", "SelectGroup", "SelectItem", "SelectLabel", "SelectScrollDownButton", "SelectScrollUpButton", "SelectSeparator", "SelectTrigger", "SelectValue", "Checkbox", "RadioGroup", "Form", "FormField", "SearchInput", "Switch", "Toggle", "Slider", "Calendar", "MonthPicker", "MonthRangePicker", "DatePicker", "DateRangePicker", "TimePicker", "ColorPicker", "Upload", "Cascader", "TreeSelect", "Transfer", "Command", "PasswordInput", "InputOTP", "Rating", "TagInput"],
+      "exports": [
+        "Input",
+        "NumberInput",
+        "Select",
+        "SelectContent",
+        "SelectGroup",
+        "SelectItem",
+        "SelectLabel",
+        "SelectScrollDownButton",
+        "SelectScrollUpButton",
+        "SelectSeparator",
+        "SelectTrigger",
+        "SelectValue",
+        "Checkbox",
+        "RadioGroup",
+        "Form",
+        "FormField",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Upload",
+        "Cascader",
+        "TreeSelect",
+        "Transfer",
+        "Command",
+        "PasswordInput",
+        "InputOTP",
+        "Rating",
+        "TagInput"
+      ],
       "dimensions": {
-        "touch": { "status": "pass", "reason": "Chromium hasTouch/coarse-pointer owner journey tapped the control and retained a nonempty accessibility-tree target; compound Select parts were asserted after touch-open and scrolling." }
+        "touch": {
+          "status": "pass",
+          "reason": "Chromium hasTouch/coarse-pointer owner journey tapped the control and retained a nonempty accessibility-tree target; compound Select parts were asserted after touch-open and scrolling."
+        }
       }
     }
   ]
