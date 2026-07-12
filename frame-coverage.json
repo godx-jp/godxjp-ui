@@ -961,6 +961,10 @@
       "a11y": {
         "status": "pass",
         "reason": "Named popover dialogs passed rendered axe and keyboard smoke."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated closed-state Popover frame passed emulated coarse-pointer tap open, action and close at 320px and 390px. Physical-device touch remains separately untested."
       }
     },
     "data-display/hover-card": {

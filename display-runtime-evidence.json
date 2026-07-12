@@ -6,6 +6,16 @@
     "Automated Chromium DOM/geometry/axe/keyboard evidence only.",
     "Real screen-reader output and physical coarse-touch interaction remain untested."
   ],
+  "coarsePointerEvidence": [
+    {
+      "owner": "data-display/popover",
+      "frame": "data-display-popover-touch",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "dialog visible", "tap action", "dialog closed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    }
+  ],
   "frames": [
     {
       "id": "data-display-charts",
