@@ -116,6 +116,27 @@ try {
           () => document.activeElement !== document.body && document.activeElement !== null,
         );
         if (!hasKeyboardTarget) throw new Error(`${story}: no keyboard-entry target`);
+        if (story === "data-entry-select") {
+          await page.locator("#priority").click();
+          for (const slot of [
+            "select-content",
+            "select-label",
+            "select-separator",
+            "select-scroll-down-button",
+          ]) {
+            if ((await page.locator(`[data-slot="${slot}"]`).count()) === 0)
+              throw new Error(`${story}: missing rendered ${slot}`);
+          }
+          await page.locator('[data-slot="select-viewport"]').evaluate((element) => {
+            element.scrollTop = element.scrollHeight;
+            element.dispatchEvent(new Event("scroll", { bubbles: true }));
+          });
+          await page.waitForTimeout(50);
+          if ((await page.locator('[data-slot="select-scroll-up-button"]').count()) === 0)
+            throw new Error(`${story}: missing rendered select-scroll-up-button after scrolling`);
+          await page.keyboard.press("ArrowDown");
+          await page.keyboard.press("Escape");
+        }
       }
     }
     await context.close();

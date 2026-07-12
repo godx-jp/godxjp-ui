@@ -14,7 +14,10 @@ import {
   FormField,
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@godxjp/ui/data-entry";
@@ -323,9 +326,21 @@ export default function Demo() {
                   <SelectValue placeholder="優先度" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="high">高</SelectItem>
-                  <SelectItem value="medium">中</SelectItem>
-                  <SelectItem value="low">低</SelectItem>
+                  <SelectGroup>
+                    <SelectLabel>標準</SelectLabel>
+                    <SelectItem value="high">高</SelectItem>
+                    <SelectItem value="medium">中</SelectItem>
+                    <SelectItem value="low">低</SelectItem>
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel>追加レベル</SelectLabel>
+                    {Array.from({ length: 24 }, (_, index) => (
+                      <SelectItem key={index} value={`level-${index + 1}`}>
+                        レベル {index + 1}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 </SelectContent>
               </Select>
             </FormField>

@@ -13,7 +13,16 @@ const contracts = {
   ],
   "input-otp.tsx": ["InputOTP", "InputOTPGroup", "InputOTPSlot", "InputOTPSeparator"],
   "radio-group.tsx": ["RadioGroup"],
-  "select.tsx": ["Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem"],
+  "select.tsx": [
+    "Select",
+    "SelectTrigger",
+    "SelectValue",
+    "SelectContent",
+    "SelectGroup",
+    "SelectLabel",
+    "SelectItem",
+    "SelectSeparator",
+  ],
   "toggle-group.tsx": ["ToggleGroup", "ToggleGroupItem"],
 };
 

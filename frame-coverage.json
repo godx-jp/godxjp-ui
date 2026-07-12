@@ -395,6 +395,49 @@
       "a11y": { "status": "pass", "reason": "Axe passed after loading-option semantics fix." },
       "async": { "status": "pass", "reason": "Loading, results and empty async states render." }
     },
+    "SelectGroup": {
+      "isolated": { "status": "pass", "reason": "Rendered in the Select compound owner case." },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered inside SelectContent with labels and items."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Opened compound list passed Axe and keyboard navigation."
+      }
+    },
+    "SelectLabel": {
+      "isolated": { "status": "pass", "reason": "Rendered in the Select compound owner case." },
+      "composition": { "status": "pass", "reason": "Rendered inside SelectGroup." },
+      "a11y": { "status": "pass", "reason": "Opened compound list passed Axe." }
+    },
+    "SelectSeparator": {
+      "isolated": { "status": "pass", "reason": "Rendered in the Select compound owner case." },
+      "composition": { "status": "pass", "reason": "Rendered between SelectGroup sections." },
+      "a11y": { "status": "pass", "reason": "Opened compound list passed Axe." }
+    },
+    "SelectScrollUpButton": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Runtime scrolled the long Select list and asserted the up control."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered by SelectContent after viewport scrolling."
+      },
+      "a11y": { "status": "pass", "reason": "Long list passed Axe and keyboard navigation." }
+    },
+    "SelectScrollDownButton": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Runtime asserted the down control in the opened long Select list."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered by SelectContent for overflowing options."
+      },
+      "a11y": { "status": "pass", "reason": "Long list passed Axe and keyboard navigation." }
+    },
     "Flex": {
       "isolated": { "status": "pass", "reason": "Rendered directly in docs/layout/flex.tsx." },
       "responsive": {
