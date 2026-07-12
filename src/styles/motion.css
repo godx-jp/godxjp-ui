@@ -1,0 +1,52 @@
+/*
+ * MOTION — entrance/reveal animation for the `Reveal` primitive.
+ * Reads the DS motion tokens (--duration-slow / --ease-emphasized / --reveal-distance) instead of
+ * a hand-rolled @keyframes, and staggers via the --reveal-stagger-step ladder. Under
+ * prefers-reduced-motion the animation is dropped: content renders in its final, fully-visible
+ * position with no transform and no layout shift.
+ */
+
+@layer components {
+  .ui-reveal {
+    animation: ui-reveal-in var(--duration-slow) var(--ease-emphasized) both;
+    will-change: transform, opacity;
+  }
+
+  .ui-reveal[data-reveal-delay="1"] {
+    animation-delay: calc(var(--reveal-stagger-step) * 1);
+  }
+  .ui-reveal[data-reveal-delay="2"] {
+    animation-delay: calc(var(--reveal-stagger-step) * 2);
+  }
+  .ui-reveal[data-reveal-delay="3"] {
+    animation-delay: calc(var(--reveal-stagger-step) * 3);
+  }
+  .ui-reveal[data-reveal-delay="4"] {
+    animation-delay: calc(var(--reveal-stagger-step) * 4);
+  }
+  .ui-reveal[data-reveal-delay="5"] {
+    animation-delay: calc(var(--reveal-stagger-step) * 5);
+  }
+  .ui-reveal[data-reveal-delay="6"] {
+    animation-delay: calc(var(--reveal-stagger-step) * 6);
+  }
+
+  @keyframes ui-reveal-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--reveal-distance));
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Accessibility: no motion → no animation, content stays visible (WCAG 2.3.3 / 2.2.2). */
+  @media (prefers-reduced-motion: reduce) {
+    .ui-reveal,
+    .ui-reveal[data-reveal-delay] {
+      animation: none;
+    }
+  }
+}

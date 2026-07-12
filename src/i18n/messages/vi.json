@@ -130,6 +130,11 @@
       "mainLabel": "Nội dung chính",
       "footerLabel": "Chân trang"
     },
+    "authShell": {
+      "brandLabel": "Thương hiệu",
+      "mainLabel": "Nội dung chính",
+      "footerLabel": "Chân trang"
+    },
     "topbar": {
       "toggleSidebar": "Bật/tắt thanh bên",
       "search": "Tìm kiếm",

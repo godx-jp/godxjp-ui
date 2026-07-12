@@ -4,11 +4,14 @@ import type {
   AsChildProp,
   ButtonSizeProp,
   ButtonVariantProp,
+  ChildrenProp,
+  ClassNameProp,
   DisabledProp,
   FontWeightProp,
   HeadingLevelProp,
   OnClickProp,
   PendingProp,
+  RevealDelayProp,
   ShapeProp,
   TextAlignProp,
   TextSizeProp,
@@ -99,4 +102,27 @@ export type ButtonProp = React.ButtonHTMLAttributes<HTMLButtonElement> & {
    * `true` (a `0` pill shows); pass `false` to hide the pill at zero.
    */
   showZero?: boolean;
+};
+
+/**
+ * @see Reveal — entrance-motion primitive (staggered fade-up). Wraps content in a real element
+ * that animates in on mount reading the DS motion tokens (`--duration-slow`, `--ease-emphasized`,
+ * `--reveal-distance`), replacing hand-rolled `@keyframes` + `.app-reveal`/`.d1..d6` classes.
+ * Honours `prefers-reduced-motion` — the animation is dropped and content stays fully visible with
+ * no layout shift.
+ */
+export type RevealProp = React.HTMLAttributes<HTMLDivElement> & {
+  /** Child content to reveal on enter. */
+  children?: ChildrenProp;
+  /**
+   * Stagger ordinal — an INDEX into the motion ladder (`0..6`), never a raw ms. Each step adds one
+   * `--reveal-stagger-step` of delay so sibling reveals cascade. Default `0` (enter immediately).
+   */
+  delay?: RevealDelayProp;
+  /**
+   * Merge the reveal behaviour onto the single child element (Radix `Slot`) instead of rendering a
+   * wrapper `<div>` — use when an extra box would break a grid/flex layout. Default `false`.
+   */
+  asChild?: AsChildProp;
+  className?: ClassNameProp;
 };

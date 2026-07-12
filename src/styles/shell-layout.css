@@ -81,6 +81,48 @@
     max-width: none;
   }
 
+  /*
+   * AUTH SHELL — centred auth/login page shell (brand bar + centred card + footer).
+   * Comfortable control density + a larger auth heading are scoped to the shell so login/mfa/reset
+   * forms read at the right size without a consumer scope class. Everything reads a token knob.
+   */
+  .ui-auth-shell {
+    --control-height: var(--auth-shell-control-height);
+    --heading-h1: var(--auth-shell-heading-size);
+    display: flex;
+    min-height: 100dvh;
+    flex-direction: column;
+    background:
+      linear-gradient(180deg, hsl(var(--primary) / 0.035), transparent 14rem),
+      hsl(var(--background));
+  }
+
+  .ui-auth-shell-bar {
+    display: flex;
+    align-items: center;
+    padding: var(--auth-shell-bar-padding);
+  }
+
+  .ui-auth-shell-main {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--auth-shell-main-padding);
+  }
+
+  .ui-auth-shell-card {
+    width: 100%;
+    max-width: var(--auth-shell-card-max-width);
+  }
+
+  .ui-auth-shell-footer {
+    padding: var(--auth-shell-footer-padding);
+    text-align: center;
+    color: hsl(var(--muted-foreground));
+  }
+
   .app-topbar-rail {
     display: flex;
     min-width: 0;

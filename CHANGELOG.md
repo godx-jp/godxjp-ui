@@ -16,6 +16,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Reveal`** (general) — the official entrance-motion primitive (staggered fade-up). Reads the DS
+  motion tokens (`--duration-slow`, `--ease-emphasized`, `--reveal-distance`, the new
+  `--reveal-stagger-step`), staggers via a controlled ordinal `delay` (`0..6`, an index into the
+  motion ladder — never a raw ms), supports `asChild`, and honours `prefers-reduced-motion` (no
+  animation, content stays visible, no layout shift). Replaces consumers' hand-rolled
+  `@keyframes` + `.app-reveal`/`.d1..d6`.
+- **`AuthShell`** (layout) — centred auth/login page shell: `brand` bar (top) + centred `main`
+  (card) + `footer`, over `min-h-dvh`, scoping the comfortable control tier (44px, WCAG touch floor)
+  and a larger auth heading via `--auth-shell-*` tokens. Replaces consumers' `.auth-shell-*` /
+  `.ui-auth-scope` classes.
+- `--reveal-stagger-step` (60ms) primitive motion token — one step of the `Reveal` stagger ladder.
+- `EmptyState` `tone` prop (`muted` | `success` | `warning` | `destructive` | `info`, default
+  `muted`) — tints the icon medallion from the matching role token, so a consumer never hand-rolls a
+  `.ui-success-state` class to scope `--empty-state-icon-*`.
 - `EmptyState` `page`, `section`, and `compact` variants for context-appropriate visual weight.
 - MCP patterns for responsive settings, async/table state, organization membership/invitations,
   and signed-in account recovery, plus lockstep UI compatibility metadata.

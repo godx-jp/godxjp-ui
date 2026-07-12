@@ -20,6 +20,16 @@ import type {
 } from "../vocabulary";
 
 /** @see EmptyState */
+/**
+ * Semantic intent of the EmptyState icon medallion — a subset of the shared `ToneProp` vocabulary
+ * (no `default`/`neutral`; `destructive` is the DS name for a "danger" state). Drives the
+ * `--empty-state-icon-foreground` / `--empty-state-icon-tint` role tokens.
+ */
+export type EmptyStateToneProp = Extract<
+  ToneProp,
+  "muted" | "success" | "warning" | "destructive" | "info"
+>;
+
 export type EmptyStateProp = {
   icon?: IconProp;
   title: TitleProp;
@@ -27,6 +37,13 @@ export type EmptyStateProp = {
   action?: ActionProp;
   /** Visual weight appropriate to the empty condition. Default `page`. */
   variant?: "page" | "section" | "compact";
+  /**
+   * Medallion colour intent. Default `muted` (the neutral placeholder look). Set `success` for a
+   * confirmation zero-state (e.g. device approved), or `warning`/`destructive`/`info` to match the
+   * condition — tints the icon foreground + medallion fill from the matching role token, so a
+   * consumer never hand-rolls a `.ui-success-state` class to recolour it.
+   */
+  tone?: EmptyStateToneProp;
   className?: ClassNameProp;
 };
 

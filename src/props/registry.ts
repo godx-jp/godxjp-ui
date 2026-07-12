@@ -297,6 +297,12 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description: "Active table sort",
   },
+  RevealDelayProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Reveal entrance-stagger ordinal (0..6) — an index into the motion ladder, never a raw ms",
+  },
 
   // navigation.prop.ts
   BreadcrumbItemProp: {
@@ -430,6 +436,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["ChildrenProp"],
   },
+  AuthShellProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["ChildrenProp", "ClassNameProp"],
+  },
   SidebarProductProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -466,6 +477,21 @@ export const COMPONENT_PROP_REGISTRY = {
       "DisabledProp",
       "OnClickProp",
       "PendingProp",
+    ],
+  },
+  RevealProp: {
+    group: "general",
+    file: "components/general.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      "RevealDelayProp",
+      "AsChildProp",
+      "ClassNameProp",
+      {
+        field: "delay",
+        local: true,
+        reason: "Reveal stagger ordinal — RevealDelayProp vocabulary.",
+      },
     ],
   },
   TextProp: {
@@ -719,7 +745,12 @@ export const COMPONENT_PROP_REGISTRY = {
   EmptyStateProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["IconProp", "TitleProp", "DescriptionProp", "ActionProp"],
+    vocabulary: ["IconProp", "TitleProp", "DescriptionProp", "ActionProp", "ToneProp"],
+  },
+  EmptyStateToneProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
   },
   DescriptionsProp: {
     group: "data-display",

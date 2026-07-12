@@ -67,7 +67,7 @@ const componentPrefixes = {
   table: ["table"],
   "data-display": ["progress", "tree", "timeline", "avatar", "accordion", "carousel", "list-row", "descriptions"],
   "data-entry": ["password-strength"],
-  shell: ["sidebar", "topbar", "kbd", "app-shell", "page", "page-header"],
+  shell: ["sidebar", "topbar", "kbd", "app-shell", "auth-shell", "page", "page-header"],
 };
 
 for (const file of cssFiles) {

@@ -12,12 +12,14 @@ export function EmptyState({
   description,
   action,
   variant = "page",
+  tone = "muted",
   className,
 }: EmptyStateProp) {
   return (
     <div
       data-slot="empty-state"
       data-variant={variant}
+      data-tone={tone}
       role="status"
       className={cn("ui-empty-state", className)}
     >

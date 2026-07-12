@@ -60,6 +60,12 @@ export const TOKENS: TokenEntry[] = [
     role: "Distance (10px) a revealed element travels on enter (translateY/-X). Read instead of a literal `translateY(10px)` for staggered reveals.",
   },
   {
+    name: "--reveal-stagger-step",
+    category: "primitive",
+    tier: "primitive",
+    role: "One step (60ms) of the Reveal stagger ladder — `<Reveal delay={n}>` waits n × this before entering, so a column of reveals cascades. Read instead of a literal `.04s`/`.09s` per-item delay.",
+  },
+  {
     name: "--shadow-color",
     category: "primitive",
     tier: "primitive",

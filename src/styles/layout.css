@@ -521,6 +521,25 @@
     background-color: var(--empty-state-icon-tint, hsl(var(--muted)));
     color: var(--empty-state-icon-foreground, hsl(var(--muted-foreground)));
   }
+
+  /* tone — set the medallion foreground + tint from the matching role token, so a consumer never
+   * hand-rolls a `.ui-success-state` class. `muted` (default) keeps the neutral role fallback. */
+  .ui-empty-state[data-tone="success"] {
+    --empty-state-icon-foreground: hsl(var(--success));
+    --empty-state-icon-tint: hsl(var(--success) / 0.12);
+  }
+  .ui-empty-state[data-tone="warning"] {
+    --empty-state-icon-foreground: hsl(var(--warning));
+    --empty-state-icon-tint: hsl(var(--warning) / 0.12);
+  }
+  .ui-empty-state[data-tone="destructive"] {
+    --empty-state-icon-foreground: hsl(var(--destructive));
+    --empty-state-icon-tint: hsl(var(--destructive) / 0.12);
+  }
+  .ui-empty-state[data-tone="info"] {
+    --empty-state-icon-foreground: hsl(var(--info));
+    --empty-state-icon-tint: hsl(var(--info) / 0.12);
+  }
 }
 
 @layer components {

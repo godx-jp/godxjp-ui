@@ -32,4 +32,14 @@
    * Defaults = hsl(var(--accent)) fill · hsl(var(--foreground)) text. */
   --sidebar-item-active-background: initial;
   --sidebar-item-active-foreground: initial;
+
+  /* AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor)
+   * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets
+   * and heading size without forking. */
+  --auth-shell-control-height: var(--control-height-comfortable);
+  --auth-shell-heading-size: var(--font-size-2xl);
+  --auth-shell-card-max-width: 24rem;
+  --auth-shell-bar-padding: var(--space-5) var(--space-6);
+  --auth-shell-main-padding: var(--space-6);
+  --auth-shell-footer-padding: var(--space-3) var(--space-6) var(--space-4);
 }

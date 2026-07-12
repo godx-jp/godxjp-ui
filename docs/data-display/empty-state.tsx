@@ -1,7 +1,7 @@
 import { Card, CardContent, EmptyState } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { Inbox, Plus, SearchX } from "lucide-react";
+import { CheckCircle2, Inbox, Plus, SearchX } from "lucide-react";
 
 /**
  * EmptyState — centred zero-state with icon, title, description, and an optional
@@ -37,6 +37,17 @@ export default function Demo() {
               icon={SearchX}
               title="該当する結果がありません"
               description="フィルター条件を変更して、もう一度お試しください。"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <EmptyState
+              tone="success"
+              icon={CheckCircle2}
+              title="端末を承認しました"
+              description="この端末からサインインできるようになりました。"
             />
           </CardContent>
         </Card>
