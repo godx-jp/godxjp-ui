@@ -26,8 +26,8 @@
       "reason": "Frame presence alone does not prove semantics, keyboard, focus, or announcements."
     },
     "async": {
-      "status": "not-applicable",
-      "reason": "Default for primitives without async state; override when applicable."
+      "status": "untested",
+      "reason": "Async applicability and lifecycle coverage have not yet been classified for this export; classify explicitly as pass or reasoned not-applicable."
     }
   },
   "sourceAliases": {

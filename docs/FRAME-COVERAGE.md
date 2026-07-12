@@ -10,3 +10,7 @@ responsive, RTL, accessibility, async, composition, or journey coverage.
 
 Add narrow per-export overrides only after evidence exists. Never convert a dimension to `pass`
 merely because a unit test or static demo exists.
+
+Async is intentionally `untested` by default. Every export must eventually be classified: execute
+its loading/error/retry/cancel/offline lifecycle, or mark it `not-applicable` with a component-specific
+reason. A blanket primitive-default `not-applicable` hides async-capable controls and is forbidden.
