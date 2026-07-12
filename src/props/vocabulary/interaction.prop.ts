@@ -43,6 +43,17 @@ export type TextAlignProp = "start" | "center" | "end";
 /** Badge visual style. */
 export type BadgeVariantProp = "default" | "secondary" | "outline" | "dashed";
 
+/**
+ * AppSettingPicker trigger presentation.
+ * - `labeled` (default) — the leading icon + the selected value inside a full-width control
+ *   (settings forms, preference panels).
+ * - `icon` — a square, icon-only utility trigger (e.g. a topbar globe locale switcher). It
+ *   STRUCTURALLY drops the value text and the picker's owned trigger width, keeping the localized
+ *   `aria-label`, focus ring, keyboard behaviour and a `--control-height` tap target (which is
+ *   ≥44px on coarse/touch pointers per Rule #24) — so consumers never hide internal nodes via CSS.
+ */
+export type AppSettingPickerAppearanceProp = "labeled" | "icon";
+
 /** Button size preset. */
 export type SizeProp = "xs" | "sm" | "md" | "lg";
 

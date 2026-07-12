@@ -9,13 +9,9 @@ import type {
   AppTimezoneDefault,
   AppDateFormat,
 } from "../../app/types";
+import type { AppBrand, AppDensity, AppFontSize, AppTheme } from "../../app/theme-axes";
 import type {
-  AppBrand,
-  AppDensity,
-  AppFontSize,
-  AppTheme,
-} from "../../app/theme-axes";
-import type {
+  AppSettingPickerAppearanceProp,
   ChildrenProp,
   ClassNameProp,
   DisabledProp,
@@ -99,6 +95,14 @@ export type AppSettingKind =
  */
 export type AppSettingPickerProp = {
   kind: AppSettingKind;
+  /**
+   * Trigger presentation. `"labeled"` (default) shows the leading icon + the selected value in a
+   * full-width control. `"icon"` renders a supported square, icon-only topbar trigger (e.g. a globe
+   * language switcher): it structurally drops the value text and the picker's owned width — no
+   * descendant-selector CSS overrides needed — while always keeping the localized `aria-label`, so
+   * an icon-only trigger can never ship without an accessible name.
+   */
+  appearance?: AppSettingPickerAppearanceProp;
   className?: ClassNameProp;
   disabled?: DisabledProp;
   id?: IdProp;

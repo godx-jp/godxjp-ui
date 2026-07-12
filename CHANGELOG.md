@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `AppSettingPicker` `appearance` prop (`"labeled" | "icon"`, default `"labeled"`). `appearance="icon"`
+  is a supported, first-class icon-only topbar trigger (e.g. a globe locale switcher): it structurally
+  drops the value text and the picker's owned trigger width, hides the chevron, and squares the box to
+  the density-aware `--control-height` tap target — no descendant-selector CSS overrides. The localized
+  `aria-label` is always applied, so an icon-only trigger can never ship without an accessible name;
+  menu options keep their localized names (gh#148).
 - `EmptyState` `page`, `section`, and `compact` variants for context-appropriate visual weight.
 - MCP patterns for responsive settings, async/table state, organization membership/invitations,
   and signed-in account recovery, plus lockstep UI compatibility metadata.

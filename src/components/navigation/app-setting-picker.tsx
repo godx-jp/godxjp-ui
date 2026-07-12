@@ -83,7 +83,10 @@ const BRAND_NONE = "__app__";
  * value + onValueChange to control it.
  */
 export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPickerProp>(
-  function AppSettingPicker({ kind, className, disabled, id, name, value, onValueChange }, ref) {
+  function AppSettingPicker(
+    { kind, appearance = "labeled", className, disabled, id, name, value, onValueChange },
+    ref,
+  ) {
     const ctx = useOptionalAppContext();
     const { t, locale, fallbackLocale } = useTranslation();
 
@@ -99,8 +102,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
           theme: ctx.setTheme,
           density: ctx.setDensity,
           fontSize: ctx.setFontSize,
-          brand: (next: string) =>
-            ctx.setBrand(next === BRAND_NONE ? null : (next as AppBrand)),
+          brand: (next: string) => ctx.setBrand(next === BRAND_NONE ? null : (next as AppBrand)),
         }[kind]
       : undefined;
     const handleChange = onValueChange ?? (setter as ((value: string) => void) | undefined);
@@ -148,6 +150,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
     // parity with the other data-entry controls.
     const unbound = current === undefined || !handleChange;
     const Icon = ICON[kind];
+    const iconOnly = appearance === "icon";
 
     return (
       <Select
@@ -159,11 +162,24 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
         <SelectTrigger
           ref={ref}
           id={id}
-          className={cn("w-full", TRIGGER_WIDTH[kind], className)}
+          className={cn(
+            iconOnly
+              ? // Structurally icon-only: drop the owned width + value spacing, square the box to
+                // the density-aware --control-height tap target, centre the icon and hide the
+                // trailing chevron — no consumer descendant-selector overrides required.
+                "w-[length:var(--control-height)] justify-center ps-0 pe-0 [&_[data-slot=select-chevron]]:hidden"
+              : cn("w-full", TRIGGER_WIDTH[kind]),
+            className,
+          )}
+          // The localized aria-label is ALWAYS applied — an icon-only trigger drops the visible
+          // value text, so this is its only accessible name; it can never ship nameless.
           aria-label={t(ARIA_KEY[kind])}
         >
-          <Icon className="me-2 size-4 shrink-0 opacity-70" aria-hidden="true" />
-          <SelectValue />
+          <Icon
+            className={cn("size-4 shrink-0 opacity-70", !iconOnly && "me-2")}
+            aria-hidden="true"
+          />
+          {iconOnly ? null : <SelectValue />}
         </SelectTrigger>
         <SelectContent>
           {items.map((item) => (

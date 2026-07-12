@@ -93,6 +93,36 @@ describe("AppSettingPicker", () => {
     expect(trigger).toBeInTheDocument();
   });
 
+  it('appearance="icon": keeps its localized accessible name but drops the visible value text', () => {
+    renderWithUi(
+      <AppSettingPicker kind="locale" appearance="icon" value="ja" onValueChange={vi.fn()} />,
+    );
+    const trigger = screen.getByRole("combobox");
+    // The icon-only trigger MUST still expose an accessible name (its aria-label is the only one).
+    expect(trigger).toHaveAccessibleName();
+    // No SelectValue is rendered, so the closed trigger carries no textual value (icon only).
+    expect(trigger).toHaveTextContent("");
+  });
+
+  it('appearance="icon": still opens and fires onValueChange with localized options', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    renderWithUi(
+      <AppSettingPicker kind="locale" appearance="icon" value="ja" onValueChange={onValueChange} />,
+    );
+    await user.click(screen.getByRole("combobox"));
+    // Menu options retain their localized language names even though the trigger is icon-only.
+    await user.click(await screen.findByRole("option", { name: /English|英語|Tiếng Anh/ }));
+    expect(onValueChange).toHaveBeenCalledWith("en");
+  });
+
+  it('appearance="labeled" (default) renders the value text', () => {
+    renderWithUi(<AppSettingPicker kind="timeFormat" value="24h" onValueChange={vi.fn()} />);
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toHaveAccessibleName();
+    expect(trigger.textContent ?? "").not.toBe("");
+  });
+
   it("renders an id and name through to the Select", () => {
     renderWithUi(
       <AppSettingPicker
