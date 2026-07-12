@@ -27,6 +27,28 @@ function parseStoryId(): string {
   }
 }
 
+type FrameChrome = {
+  dir: "ltr" | "rtl";
+  density: "compact" | "default" | "comfortable";
+  theme: "light" | "dark";
+  locale: string;
+};
+
+/**
+ * Infra-level frame modes (issue #163) driven purely by query params so any /frame/**
+ * route can be exercised RTL / at a density / dark without editing per-component
+ * example content:  /frame/<id>?dir=rtl&density=compact&theme=dark&locale=ja
+ */
+function parseFrameChrome(): FrameChrome {
+  const sp = new URLSearchParams(window.location.search);
+  const dir = sp.get("dir") === "rtl" ? "rtl" : "ltr";
+  const densityRaw = sp.get("density");
+  const density = densityRaw === "compact" || densityRaw === "comfortable" ? densityRaw : "default";
+  const theme = sp.get("theme") === "dark" ? "dark" : "light";
+  const locale = sp.get("locale") || "ja";
+  return { dir, density, theme, locale };
+}
+
 function parseInitialView(): DemoBlockInitialView | undefined {
   const sp = new URLSearchParams(window.location.search);
   const preset = sp.get("preset");
@@ -57,6 +79,7 @@ function FrameApp() {
   const storyId = parseStoryId();
   const story = STORY_MAP.get(storyId);
   const initialView = React.useMemo(() => parseInitialView(), []);
+  const chrome = React.useMemo(() => parseFrameChrome(), []);
   const { Render, loading, error, sourceVersion } = useLazyStory(story);
   const source = React.useMemo(() => (story ? getStorySource(story) : ""), [story, sourceVersion]);
 
@@ -74,8 +97,15 @@ function FrameApp() {
       <MemoryRouter>
         {/* Demos are authored in Japanese; force ja so component chrome (search/clear/empty
             placeholders via t()) matches the demo copy instead of the AppProvider vi default. */}
-        <AppProvider defaultLocale="ja" persist={false}>
-          <main className="preview-frame">
+        <AppProvider
+          defaultLocale={chrome.locale}
+          theme={chrome.theme}
+          density={chrome.density}
+          persist={false}
+        >
+          {/* `dir` on the frame root flips logical CSS (ms/me/ps/pe, start/end) for the
+              whole subtree — a global RTL frame mode (#163) independent of demo locale. */}
+          <main className="preview-frame" dir={chrome.dir}>
             <StoryDemoBlock
               storyId={story.id}
               source={source}

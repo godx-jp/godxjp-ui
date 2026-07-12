@@ -1,0 +1,386 @@
+{
+  "generatedAt": "2026-07-12",
+  "note": "Per-frame COMPONENT/demo axe allowlist (violations INSIDE the rendered frame + its portals). Each value is the set of axe rule ids still firing on that frame. It may only SHRINK — a new rule on a frame fails CI. Chrome (the preview toolbar) is NOT allowlisted: it must be 0. Regenerate after a component-fix PR merges: `node scripts/check-frame-axe.mjs --update-baseline`.",
+  "component": {
+    "data-display-accordion": [
+      "heading-order"
+    ],
+    "data-display-avatar": [
+      "heading-order"
+    ],
+    "data-display-badge": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "data-display-card-examples-detail-panel": [
+      "heading-order",
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main"
+    ],
+    "data-display-card-index": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "data-display-carousel": [
+      "heading-order",
+      "landmark-unique"
+    ],
+    "data-display-charts": [
+      "heading-order"
+    ],
+    "data-display-collapsible": [
+      "heading-order"
+    ],
+    "data-display-data-table-examples-list-page": [
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main"
+    ],
+    "data-display-data-table-index": [
+      "empty-table-header",
+      "heading-order"
+    ],
+    "data-display-descriptions": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "data-display-empty-state": [
+      "heading-order"
+    ],
+    "data-display-hover-card": [
+      "heading-order"
+    ],
+    "data-display-list-row": [
+      "heading-order",
+      "listitem"
+    ],
+    "data-display-popover": [
+      "aria-dialog-name",
+      "aria-hidden-focus",
+      "landmark-one-main",
+      "page-has-heading-one"
+    ],
+    "data-display-progress": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "data-display-scroll-area": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "data-display-stat-card": [
+      "scrollable-region-focusable"
+    ],
+    "data-display-table": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "data-display-timeline": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "data-display-tree-list": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "data-entry-calendar": [
+      "color-contrast",
+      "heading-order",
+      "landmark-unique"
+    ],
+    "data-entry-cascader": [
+      "button-name",
+      "heading-order"
+    ],
+    "data-entry-checkbox": [
+      "heading-order"
+    ],
+    "data-entry-color-picker": [
+      "heading-order"
+    ],
+    "data-entry-command": [
+      "aria-required-children",
+      "heading-order"
+    ],
+    "data-entry-country-picker-recipe": [
+      "heading-order"
+    ],
+    "data-entry-date-picker": [
+      "heading-order"
+    ],
+    "data-entry-date-range-picker": [
+      "heading-order"
+    ],
+    "data-entry-form": [
+      "button-name",
+      "heading-order",
+      "label-title-only"
+    ],
+    "data-entry-form-examples-employee-settings": [
+      "heading-order",
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main"
+    ],
+    "data-entry-form-examples-invoice-form": [
+      "button-name",
+      "heading-order",
+      "label-title-only",
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main"
+    ],
+    "data-entry-form-field-examples-create-form": [
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main"
+    ],
+    "data-entry-form-field-index": [
+      "heading-order",
+      "label-title-only"
+    ],
+    "data-entry-form-root": [
+      "heading-order"
+    ],
+    "data-entry-input": [
+      "heading-order",
+      "label",
+      "label-title-only"
+    ],
+    "data-entry-input-otp": [
+      "heading-order",
+      "label-title-only"
+    ],
+    "data-entry-label": [
+      "heading-order",
+      "label-title-only"
+    ],
+    "data-entry-month-picker": [
+      "heading-order"
+    ],
+    "data-entry-month-range-picker": [
+      "heading-order"
+    ],
+    "data-entry-number-input": [
+      "heading-order"
+    ],
+    "data-entry-password-input": [
+      "heading-order",
+      "label"
+    ],
+    "data-entry-password-strength": [
+      "heading-order",
+      "label"
+    ],
+    "data-entry-radio-group": [
+      "heading-order"
+    ],
+    "data-entry-rating": [
+      "heading-order"
+    ],
+    "data-entry-search-input": [
+      "heading-order"
+    ],
+    "data-entry-select": [
+      "button-name",
+      "heading-order"
+    ],
+    "data-entry-select-matrix": [
+      "button-name",
+      "heading-order"
+    ],
+    "data-entry-slider": [
+      "heading-order"
+    ],
+    "data-entry-switch": [
+      "heading-order"
+    ],
+    "data-entry-tag-input": [
+      "heading-order"
+    ],
+    "data-entry-textarea": [
+      "heading-order",
+      "label",
+      "label-title-only"
+    ],
+    "data-entry-time-picker": [
+      "heading-order"
+    ],
+    "data-entry-toggle": [
+      "heading-order"
+    ],
+    "data-entry-toggle-group": [
+      "heading-order"
+    ],
+    "data-entry-transfer": [
+      "color-contrast",
+      "heading-order"
+    ],
+    "data-entry-tree-select": [
+      "button-name",
+      "heading-order"
+    ],
+    "data-entry-upload": [
+      "heading-order"
+    ],
+    "feedback-alert": [
+      "heading-order"
+    ],
+    "feedback-sheet": [
+      "button-name",
+      "color-contrast"
+    ],
+    "feedback-skeleton": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "feedback-toast": [
+      "heading-order"
+    ],
+    "feedback-tooltip": [
+      "heading-order"
+    ],
+    "foundation-colors": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "foundation-density": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "foundation-radius-shadow": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "foundation-spacing": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "foundation-typography": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "general-button-examples-form-actions": [
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main"
+    ],
+    "general-button-examples-toolbar": [
+      "empty-table-header",
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main"
+    ],
+    "general-button-index": [
+      "heading-order"
+    ],
+    "general-logo": [
+      "heading-order"
+    ],
+    "general-typography": [
+      "heading-order"
+    ],
+    "layout-app-shell": [
+      "heading-order",
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main"
+    ],
+    "layout-aspect-ratio": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "layout-auth-shell": [
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main",
+      "page-has-heading-one"
+    ],
+    "layout-flex": [
+      "heading-order"
+    ],
+    "layout-page-container": [
+      "heading-order",
+      "landmark-unique",
+      "scrollable-region-focusable"
+    ],
+    "layout-resizable-panel": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "layout-responsive-grid": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "layout-separator": [
+      "heading-order"
+    ],
+    "layout-sidebar": [
+      "heading-order",
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main",
+      "landmark-unique"
+    ],
+    "layout-split-pane": [
+      "heading-order",
+      "landmark-unique"
+    ],
+    "layout-topbar": [
+      "heading-order",
+      "landmark-main-is-top-level",
+      "landmark-no-duplicate-main"
+    ],
+    "navigation-app-setting-picker": [
+      "heading-order"
+    ],
+    "navigation-breadcrumb": [
+      "heading-order",
+      "landmark-unique",
+      "scrollable-region-focusable"
+    ],
+    "navigation-context-menu": [
+      "heading-order"
+    ],
+    "navigation-dropdown-menu": [
+      "heading-order"
+    ],
+    "navigation-menubar": [
+      "heading-order"
+    ],
+    "navigation-navigation-menu": [
+      "heading-order"
+    ],
+    "navigation-pagination": [
+      "heading-order",
+      "landmark-unique",
+      "scrollable-region-focusable"
+    ],
+    "navigation-steps": [
+      "heading-order"
+    ],
+    "navigation-tabs": [
+      "color-contrast",
+      "heading-order"
+    ],
+    "navigation-toolbar": [
+      "button-name",
+      "heading-order"
+    ],
+    "providers-app-provider": [
+      "heading-order"
+    ],
+    "providers-format-date": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "query-button-refetch": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "query-data-state": [
+      "heading-order",
+      "scrollable-region-focusable"
+    ],
+    "query-infinite-query-state": [
+      "heading-order"
+    ],
+    "query-mutation-feedback": [
+      "heading-order"
+    ],
+    "query-prefetch-link": [
+      "heading-order"
+    ]
+  }
+}
