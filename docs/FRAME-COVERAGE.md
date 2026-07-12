@@ -8,6 +8,10 @@ The checker fails for missing frames, duplicate exports, malformed statuses, or 
 `untested`/`not-applicable` states. A compiled frame earns only `isolated: pass`; it does not prove
 responsive, RTL, accessibility, async, composition, or journey coverage.
 
+The ledger also tracks `props`, `touch`, and `screenReader` independently. Axe/DOM checks may earn
+`a11y: pass`, but they never imply that every prop is demonstrated, a coarse pointer works, or a
+real screen reader announces the intended name/state/change.
+
 Add narrow per-export overrides only after evidence exists. Never convert a dimension to `pass`
 merely because a unit test or static demo exists.
 

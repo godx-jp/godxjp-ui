@@ -8,7 +8,18 @@ const config = JSON.parse(
   ),
 );
 const allowed = new Set(["pass", "untested", "not-applicable"]);
-const dimensions = ["isolated", "composition", "journey", "responsive", "rtl", "a11y", "async"];
+const dimensions = [
+  "isolated",
+  "props",
+  "composition",
+  "journey",
+  "responsive",
+  "rtl",
+  "a11y",
+  "touch",
+  "screenReader",
+  "async",
+];
 const errors = [];
 if (config.schemaVersion !== 1) errors.push("schemaVersion must be 1");
 for (const d of dimensions) {

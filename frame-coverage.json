@@ -5,6 +5,10 @@
       "status": "untested",
       "reason": "An owner frame exists, but compound exports are not assumed rendered without explicit evidence."
     },
+    "props": {
+      "status": "untested",
+      "reason": "Public prop and state combinations have not yet been mapped to executed frame cases for this export."
+    },
     "composition": {
       "status": "untested",
       "reason": "A component frame does not prove composition in every supported surface."
@@ -24,6 +28,14 @@
     "a11y": {
       "status": "untested",
       "reason": "Frame presence alone does not prove semantics, keyboard, focus, or announcements."
+    },
+    "touch": {
+      "status": "untested",
+      "reason": "No executed coarse-pointer or physical touch evidence is recorded for this export."
+    },
+    "screenReader": {
+      "status": "untested",
+      "reason": "Axe and DOM semantics do not prove announcements in a real screen reader; no manual AT evidence is recorded."
     },
     "async": {
       "status": "untested",

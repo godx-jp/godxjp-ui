@@ -11,7 +11,14 @@ describe("frame coverage checker", () => {
     );
     expect(report.exports).toBeGreaterThan(200);
     expect(report.frames).toBeGreaterThan(50);
-    expect(report.totals.responsive.untested).toBe(report.exports);
+    for (const dimension of Object.values(report.totals) as Array<Record<string, number>>) {
+      expect(Object.values(dimension).reduce((total, count) => total + count, 0)).toBe(
+        report.exports,
+      );
+    }
+    expect(report.totals.props.untested).toBe(report.exports);
+    expect(report.totals.touch.untested).toBe(report.exports);
+    expect(report.totals.screenReader.untested).toBe(report.exports);
     expect(report.totals.isolated.pass).toBeGreaterThan(0);
   });
 
