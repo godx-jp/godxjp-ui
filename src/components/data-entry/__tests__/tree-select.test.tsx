@@ -128,6 +128,7 @@ describe("TreeSelect", () => {
     const clearBtn = screen
       .getAllByRole("button")
       .find((b) => b.getAttribute("role") !== "combobox");
+    expect(screen.getByRole("combobox").querySelector("button")).toBeNull();
     await user.click(clearBtn!);
     expect(onValueChange).toHaveBeenCalled();
   });
