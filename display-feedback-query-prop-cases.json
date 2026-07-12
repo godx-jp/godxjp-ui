@@ -77,6 +77,11 @@
   "Reveal": {
     "delay/className/children/reduced motion": "docs/general/reveal.tsx plus reduced-motion tests"
   },
+  "Toaster/toast": {
+    "theme/richColors/position/duration/closeButton": "docs/feedback/toast.tsx configured Toaster owner case",
+    "success/error/warning/info/loading/action/promise/dismiss": "docs/feedback/toast.tsx lifecycle and recovery action cases plus toast tests",
+    "remaining Sonner props": "N/A: forwarded unchanged to Sonner"
+  },
   "ButtonRefetch": {
     "query/label/variant/size/fetching/click": "docs/query/button-refetch.tsx plus idle/fetching/refetch tests"
   },

@@ -35,6 +35,19 @@
       "journey": ["tap trigger", "dialog visible"],
       "verdict": "pass",
       "physicalDevice": "untested"
+    },
+    {
+      "owner": "feedback/sonner",
+      "frame": "feedback-toast",
+      "widths": [320, 390],
+      "journey": [
+        "tap delete",
+        "toast action visible",
+        "tap recovery action",
+        "original toast dismissed"
+      ],
+      "verdict": "pass",
+      "physicalDevice": "untested"
     }
   ],
   "frames": [

@@ -928,13 +928,37 @@
       "a11y": { "status": "pass", "reason": "Tooltip owner frame passed Axe analysis." }
     },
     "Toaster": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Toast owner frame directly renders configured Toaster and every public toast lifecycle."
+      },
+      "props": {
+        "status": "pass",
+        "reason": "Validated prop-case map covers Toaster position/duration/theme/closeButton and toast variants/action/promise/dismiss."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Owner frame composes one Toaster with action controls and public toast API."
+      },
       "responsive": {
         "status": "pass",
         "reason": "Toast frame passed Chromium reflow at all eight standard widths."
       },
       "journey": {
         "status": "pass",
-        "reason": "Success action emitted the expected live toast message."
+        "reason": "Variant, action recovery, promise lifecycle and dismiss cases are rendered and tested."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Emulated coarse-pointer action/recovery toast journey passed at 320px and 390px."
+      },
+      "screenReader": {
+        "status": "untested",
+        "reason": "Live-region semantics and Axe pass, but no real screen-reader announcement session was executed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Promise loading/success/error and programmatic dismiss lifecycle cases are covered."
       },
       "a11y": { "status": "pass", "reason": "Toast owner frame passed Axe analysis." }
     },

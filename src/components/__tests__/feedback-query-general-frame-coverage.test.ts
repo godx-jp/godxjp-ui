@@ -27,9 +27,21 @@ describe("feedback, query and reveal frame contracts", () => {
     ],
     ["docs/query/button-refetch.tsx", ["ButtonRefetch"]],
     ["docs/general/reveal.tsx", ["Reveal"]],
+    ["docs/feedback/toast.tsx", ["Toaster"]],
   ])("renders every standalone export in %s", (file, exports) => {
     const source = read(file as string);
     for (const name of exports as string[]) expect(source).toMatch(new RegExp(`<${name}(?:\\s|>)`));
+  });
+
+  it("uses every public toast lifecycle in the owner frame", () => {
+    const source = read("docs/feedback/toast.tsx");
+    expect(source).toContain("Toaster, toast");
+    for (const api of ["success", "error", "warning", "info", "loading", "promise", "dismiss"]) {
+      expect(source).toContain(`toast.${api}`);
+    }
+    expect(source).toContain("action:");
+    expect(source).toContain('position="top-right"');
+    expect(source).toContain("duration={4000}");
   });
 
   it("renders the consumer-facing Dialog and AlertDialog composition slots", () => {
