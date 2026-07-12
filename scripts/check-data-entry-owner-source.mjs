@@ -35,3 +35,15 @@ for (const [file, exports] of Object.entries(contracts)) {
   }
 }
 console.log("✓ data-entry owner source contracts");
+
+const propCases = JSON.parse(
+  await readFile(new URL("../data-entry-prop-cases.json", import.meta.url), "utf8"),
+);
+for (const [name, mapping] of Object.entries(propCases)) {
+  if (Object.keys(mapping).length === 0) throw new Error(`${name}: empty prop-case mapping`);
+  for (const [props, evidence] of Object.entries(mapping)) {
+    if (!props.trim() || !String(evidence).trim())
+      throw new Error(`${name}: incomplete prop mapping`);
+  }
+}
+console.log(`✓ data-entry prop-case mappings: ${Object.keys(propCases).length} exports`);

@@ -525,6 +525,174 @@
       "rtl": { "status": "pass", "reason": "Asserted in RTL at eight widths." },
       "async": { "status": "not-applicable", "reason": "Scroll affordance has no async lifecycle." }
     },
+    "CheckboxGroup": {
+      "props": { "status": "pass", "reason": "Explicit prop-case map covers group contract." },
+      "touch": {
+        "status": "pass",
+        "reason": "Chromium hasTouch tap preserved checkbox semantics."
+      },
+      "screenReader": {
+        "status": "pass",
+        "reason": "Chromium accessibility-tree ariaSnapshot captured named checkbox state before and after tap."
+      }
+    },
+    "Radio": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Namespace alias of the mapped RadioGroup contract."
+      },
+      "touch": { "status": "pass", "reason": "Coarse-pointer radio tap executed." },
+      "screenReader": { "status": "pass", "reason": "ARIA tree exposed named radio state." }
+    },
+    "RadioItem": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Item props forward to the mapped Radix primitive."
+      },
+      "touch": { "status": "pass", "reason": "Coarse-pointer radio item tap executed." },
+      "screenReader": { "status": "pass", "reason": "ARIA tree exposed named radio item state." }
+    },
+    "RadioGroupRoot": {
+      "props": { "status": "pass", "reason": "Explicit RadioGroup prop-case map." },
+      "touch": { "status": "pass", "reason": "Coarse-pointer group interaction executed." },
+      "screenReader": { "status": "pass", "reason": "ARIA tree exposed the radio group and items." }
+    },
+    "ToggleGroup": {
+      "props": { "status": "pass", "reason": "Explicit single/multiple group prop-case map." },
+      "touch": { "status": "pass", "reason": "Chromium hasTouch group tap executed." },
+      "screenReader": { "status": "pass", "reason": "ARIA tree snapshot captured the named group." }
+    },
+    "ToggleGroupItem": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Item primitive props forward unchanged; group states are mapped."
+      },
+      "touch": { "status": "pass", "reason": "Coarse-pointer item interaction executed." },
+      "screenReader": { "status": "pass", "reason": "ARIA tree exposed pressed item semantics." }
+    },
+    "Textarea": {
+      "props": { "status": "pass", "reason": "Explicit native/state prop-case map." },
+      "touch": { "status": "pass", "reason": "Chromium hasTouch focused the textarea." },
+      "screenReader": {
+        "status": "pass",
+        "reason": "ARIA tree snapshot exposed the labelled textbox."
+      }
+    },
+    "PasswordStrength": {
+      "props": { "status": "pass", "reason": "Explicit rules/labels/showRules prop-case map." },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Read-only password feedback has no pointer action."
+      },
+      "screenReader": {
+        "status": "pass",
+        "reason": "Owner accessibility tree snapshot remained populated during password entry."
+      }
+    },
+    "InputOTPGroup": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Layout primitive has no independent product props."
+      },
+      "touch": { "status": "pass", "reason": "Coarse-pointer OTP input focus executed." },
+      "screenReader": { "status": "pass", "reason": "ARIA tree snapshot exposed the OTP input." }
+    },
+    "InputOTPSlot": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Slot index is exercised by all owner-frame positions."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "OTP touch focus exercised slots through the shared input."
+      },
+      "screenReader": {
+        "status": "pass",
+        "reason": "ARIA tree exposes the shared OTP input rather than decorative slots."
+      }
+    },
+    "InputOTPSeparator": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Decorative separator has no public behavior props."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Decorative separator has no touch action."
+      },
+      "screenReader": {
+        "status": "not-applicable",
+        "reason": "Decorative separator is intentionally absent from the accessibility tree."
+      }
+    },
+    "CommandInput": {
+      "props": { "status": "pass", "reason": "Command prop map covers controlled async input." },
+      "touch": { "status": "pass", "reason": "Coarse-pointer input focus executed." },
+      "screenReader": { "status": "pass", "reason": "ARIA snapshot exposed named combobox input." }
+    },
+    "CommandList": {
+      "props": { "status": "not-applicable", "reason": "Container props forward to cmdk." },
+      "touch": { "status": "pass", "reason": "Owner touch journey exercised the command surface." },
+      "screenReader": { "status": "pass", "reason": "ARIA tree exposed listbox semantics." }
+    },
+    "CommandGroup": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Heading/content composition is rendered in owner cases."
+      },
+      "touch": { "status": "pass", "reason": "Owner touch journey exercised grouped commands." },
+      "screenReader": { "status": "pass", "reason": "ARIA tree exposed grouped options." }
+    },
+    "CommandItem": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Item props forward to cmdk and owner cases cover disabled/keywords/value."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Command surface accepts coarse-pointer interaction."
+      },
+      "screenReader": { "status": "pass", "reason": "ARIA tree exposed option semantics." }
+    },
+    "CommandEmpty": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Empty content has no independent behavior contract."
+      },
+      "touch": { "status": "not-applicable", "reason": "Empty feedback has no touch action." },
+      "screenReader": {
+        "status": "pass",
+        "reason": "Async owner case retains accessible empty feedback."
+      }
+    },
+    "Label": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "htmlFor/asChild/native label props forward unchanged."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Label owner frame touch-focused its associated control."
+      },
+      "screenReader": {
+        "status": "pass",
+        "reason": "ARIA snapshot exposed the labelled control name."
+      }
+    },
+    "Field": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Composition wrapper props are demonstrated by checkbox/switch owner cases."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Coarse-pointer labelled-control interaction executed."
+      },
+      "screenReader": {
+        "status": "pass",
+        "reason": "ARIA tree exposed the associated control and name."
+      }
+    },
     "Flex": {
       "isolated": { "status": "pass", "reason": "Rendered directly in docs/layout/flex.tsx." },
       "responsive": {

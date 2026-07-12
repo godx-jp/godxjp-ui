@@ -1,0 +1,29 @@
+{
+  "CheckboxGroup": {
+    "options/value/defaultValue/onValueChange/orientation/disabled/name/required": "docs/data-entry/checkbox.tsx state and orientation cases",
+    "inherited DOM and data attributes": "N/A: forwarded platform props are covered by the primitive contract"
+  },
+  "RadioGroup": {
+    "options/value/defaultValue/onValueChange/orientation/disabled/name/required": "docs/data-entry/radio-group.tsx vertical, horizontal and disabled cases",
+    "inherited Radix props": "N/A: forwarded unchanged to Radix RadioGroup"
+  },
+  "ToggleGroup": {
+    "type/value/defaultValue/onValueChange/orientation/disabled/size/variant": "docs/data-entry/toggle-group.tsx single, multiple, controlled and disabled cases",
+    "inherited Radix props": "N/A: forwarded unchanged to Radix ToggleGroup"
+  },
+  "Command": {
+    "value/onValueChange/shouldFilter/loop/vimBindings/label": "docs/data-entry/command.tsx controlled, action and async-search cases",
+    "filter/inherited cmdk props": "N/A: custom filter algorithm is consumer-owned; remaining props forward to cmdk"
+  },
+  "InputOTP": {
+    "maxLength/value/onChange/disabled/autoFocus/pattern/inputMode": "docs/data-entry/input-otp.tsx email, SMS, invalid and disabled cases",
+    "render/inherited input props": "N/A: slots own rendering; native props forward to input-otp"
+  },
+  "Textarea": {
+    "value/defaultValue/onChange/disabled/readOnly/invalid/rows/placeholder": "docs/data-entry/textarea.tsx state and form cases",
+    "native textarea attributes": "N/A: forwarded unchanged to the native textarea"
+  },
+  "PasswordStrength": {
+    "password/rules/labels/showRules/className": "docs/data-entry/password-strength.tsx empty, weak, partial and strong cases"
+  }
+}
