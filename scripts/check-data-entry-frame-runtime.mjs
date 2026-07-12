@@ -16,6 +16,11 @@ const stories = [
   "data-entry-switch",
   "data-entry-slider",
   "data-entry-toggle",
+  "data-entry-date-picker",
+  "data-entry-month-picker",
+  "data-entry-time-picker",
+  "data-entry-color-picker",
+  "data-entry-upload",
 ];
 const ignoredPageShellRules = new Set([
   "heading-order",
