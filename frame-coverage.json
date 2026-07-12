@@ -532,8 +532,8 @@
         "reason": "Chromium hasTouch tap preserved checkbox semantics."
       },
       "screenReader": {
-        "status": "pass",
-        "reason": "Chromium accessibility-tree ariaSnapshot captured named checkbox state before and after tap."
+        "status": "untested",
+        "reason": "Chromium accessibility-tree snapshot passed, but no manual VoiceOver/NVDA announcement session was executed."
       }
     },
     "Radio": {
@@ -542,7 +542,7 @@
         "reason": "Namespace alias of the mapped RadioGroup contract."
       },
       "touch": { "status": "pass", "reason": "Coarse-pointer radio tap executed." },
-      "screenReader": { "status": "pass", "reason": "ARIA tree exposed named radio state." }
+      "screenReader": { "status": "untested", "reason": "ARIA tree exposed named radio state; real screen-reader announcements remain untested." }
     },
     "RadioItem": {
       "props": {
@@ -550,17 +550,17 @@
         "reason": "Item props forward to the mapped Radix primitive."
       },
       "touch": { "status": "pass", "reason": "Coarse-pointer radio item tap executed." },
-      "screenReader": { "status": "pass", "reason": "ARIA tree exposed named radio item state." }
+      "screenReader": { "status": "untested", "reason": "ARIA tree exposed named radio item state; real screen-reader announcements remain untested." }
     },
     "RadioGroupRoot": {
       "props": { "status": "pass", "reason": "Explicit RadioGroup prop-case map." },
       "touch": { "status": "pass", "reason": "Coarse-pointer group interaction executed." },
-      "screenReader": { "status": "pass", "reason": "ARIA tree exposed the radio group and items." }
+      "screenReader": { "status": "untested", "reason": "ARIA tree exposed the radio group and items; real screen-reader announcements remain untested." }
     },
     "ToggleGroup": {
       "props": { "status": "pass", "reason": "Explicit single/multiple group prop-case map." },
       "touch": { "status": "pass", "reason": "Chromium hasTouch group tap executed." },
-      "screenReader": { "status": "pass", "reason": "ARIA tree snapshot captured the named group." }
+      "screenReader": { "status": "untested", "reason": "ARIA tree snapshot captured the named group; real screen-reader announcements remain untested." }
     },
     "ToggleGroupItem": {
       "props": {
@@ -568,14 +568,14 @@
         "reason": "Item primitive props forward unchanged; group states are mapped."
       },
       "touch": { "status": "pass", "reason": "Coarse-pointer item interaction executed." },
-      "screenReader": { "status": "pass", "reason": "ARIA tree exposed pressed item semantics." }
+      "screenReader": { "status": "untested", "reason": "ARIA tree exposed pressed item semantics; real screen-reader announcements remain untested." }
     },
     "Textarea": {
       "props": { "status": "pass", "reason": "Explicit native/state prop-case map." },
       "touch": { "status": "pass", "reason": "Chromium hasTouch focused the textarea." },
       "screenReader": {
-        "status": "pass",
-        "reason": "ARIA tree snapshot exposed the labelled textbox."
+        "status": "untested",
+        "reason": "ARIA tree snapshot exposed the labelled textbox; real screen-reader announcements remain untested."
       }
     },
     "PasswordStrength": {
@@ -585,8 +585,8 @@
         "reason": "Read-only password feedback has no pointer action."
       },
       "screenReader": {
-        "status": "pass",
-        "reason": "Owner accessibility tree snapshot remained populated during password entry."
+        "status": "untested",
+        "reason": "Accessibility tree snapshot remained populated; live announcement behavior in a real screen reader remains untested."
       }
     },
     "InputOTPGroup": {
@@ -595,7 +595,7 @@
         "reason": "Layout primitive has no independent product props."
       },
       "touch": { "status": "pass", "reason": "Coarse-pointer OTP input focus executed." },
-      "screenReader": { "status": "pass", "reason": "ARIA tree snapshot exposed the OTP input." }
+      "screenReader": { "status": "untested", "reason": "ARIA tree snapshot exposed the OTP input; real screen-reader announcements remain untested." }
     },
     "InputOTPSlot": {
       "props": {
@@ -607,8 +607,8 @@
         "reason": "OTP touch focus exercised slots through the shared input."
       },
       "screenReader": {
-        "status": "pass",
-        "reason": "ARIA tree exposes the shared OTP input rather than decorative slots."
+        "status": "untested",
+        "reason": "ARIA tree exposes the shared OTP input; real screen-reader digit-entry announcements remain untested."
       }
     },
     "InputOTPSeparator": {
@@ -628,12 +628,12 @@
     "CommandInput": {
       "props": { "status": "pass", "reason": "Command prop map covers controlled async input." },
       "touch": { "status": "pass", "reason": "Coarse-pointer input focus executed." },
-      "screenReader": { "status": "pass", "reason": "ARIA snapshot exposed named combobox input." }
+      "screenReader": { "status": "untested", "reason": "ARIA snapshot exposed named combobox input; real screen-reader announcements remain untested." }
     },
     "CommandList": {
       "props": { "status": "not-applicable", "reason": "Container props forward to cmdk." },
       "touch": { "status": "pass", "reason": "Owner touch journey exercised the command surface." },
-      "screenReader": { "status": "pass", "reason": "ARIA tree exposed listbox semantics." }
+      "screenReader": { "status": "untested", "reason": "ARIA tree exposed listbox semantics; real screen-reader announcements remain untested." }
     },
     "CommandGroup": {
       "props": {
@@ -641,7 +641,7 @@
         "reason": "Heading/content composition is rendered in owner cases."
       },
       "touch": { "status": "pass", "reason": "Owner touch journey exercised grouped commands." },
-      "screenReader": { "status": "pass", "reason": "ARIA tree exposed grouped options." }
+      "screenReader": { "status": "untested", "reason": "ARIA tree exposed grouped options; real screen-reader announcements remain untested." }
     },
     "CommandItem": {
       "props": {
@@ -652,7 +652,7 @@
         "status": "pass",
         "reason": "Command surface accepts coarse-pointer interaction."
       },
-      "screenReader": { "status": "pass", "reason": "ARIA tree exposed option semantics." }
+      "screenReader": { "status": "untested", "reason": "ARIA tree exposed option semantics; real screen-reader announcements remain untested." }
     },
     "CommandEmpty": {
       "props": {
@@ -661,8 +661,8 @@
       },
       "touch": { "status": "not-applicable", "reason": "Empty feedback has no touch action." },
       "screenReader": {
-        "status": "pass",
-        "reason": "Async owner case retains accessible empty feedback."
+        "status": "untested",
+        "reason": "Async owner retains accessible empty feedback in the ARIA tree; live announcements remain untested."
       }
     },
     "Label": {
@@ -675,8 +675,8 @@
         "reason": "Label owner frame touch-focused its associated control."
       },
       "screenReader": {
-        "status": "pass",
-        "reason": "ARIA snapshot exposed the labelled control name."
+        "status": "untested",
+        "reason": "ARIA snapshot exposed the labelled control name; real screen-reader announcements remain untested."
       }
     },
     "Field": {
@@ -689,8 +689,8 @@
         "reason": "Coarse-pointer labelled-control interaction executed."
       },
       "screenReader": {
-        "status": "pass",
-        "reason": "ARIA tree exposed the associated control and name."
+        "status": "untested",
+        "reason": "ARIA tree exposed the associated control and name; real screen-reader announcements remain untested."
       }
     },
     "Flex": {
