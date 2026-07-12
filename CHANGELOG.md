@@ -4,12 +4,16 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [17.0.0] - 2026-07-12
+
+> **BREAKING (major):** `Flex` now defaults to `direction="row"` (was `col`). Any `<Flex>` that
+> relied on the implicit vertical stack must add `direction="col"`. See the migration note below.
+> This release also ships as one train with `@godxjp/ui-mcp@17.0.0` (release-lockstep, #140).
 
 ### Changed
 
-- `Flex` now defaults to the CSS-standard `row`. Existing implicit vertical uses must migrate to
-  `direction="col"`; omit `direction` only when a row is intended.
+- **BREAKING:** `Flex` now defaults to the CSS-standard `row`. Existing implicit vertical uses must
+  migrate to `direction="col"`; omit `direction` only when a row is intended.
 - `DataState` distinguishes disabled/unstarted queries from active loading through `fetchStatus`,
   adds a `prerequisite` slot, and no longer enables generic Retry by default.
 - `DataState` / `Alert.QueryError` now classify errors by cause (`classifyQueryError`): Retry is
