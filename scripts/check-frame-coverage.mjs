@@ -64,9 +64,14 @@ for (const dir of fs.readdirSync(base, { withFileTypes: true }).filter((e) => e.
     for (const name of names) {
       const states = {};
       for (const d of dimensions) {
-        const groupOverride = config.ownerGroups?.find((group) => group.owners.includes(key))
-          ?.dimensions?.[d];
+        const groupOverride = config.ownerGroups?.find(
+          (group) => group.owners?.includes(key) && group.dimensions?.[d],
+        )?.dimensions?.[d];
+        const exportOverride = [...(config.exportGroups ?? []), ...(config.ownerGroups ?? [])].find(
+          (group) => group.exports?.includes(name) && group.dimensions?.[d],
+        )?.dimensions?.[d];
         const v =
+          exportOverride ??
           config.overrides?.[name]?.[d] ??
           config.ownerOverrides?.[key]?.[d] ??
           groupOverride ??

@@ -1085,6 +1085,15 @@
     }
   },
   "ownerOverrides": {
+    "data-entry/input": {
+      "rtl": { "status": "pass", "reason": "Input owner frame passed rendered RTL Axe and geometry at all eight widths." }
+    },
+    "data-entry/form": {
+      "rtl": { "status": "pass", "reason": "Form owner frame passed rendered RTL Axe and geometry at all eight widths." }
+    },
+    "data-entry/form-field": {
+      "rtl": { "status": "pass", "reason": "FormField owner frame passed rendered RTL Axe and geometry at all eight widths." }
+    },
     "layout/app-shell": {
       "props": {
         "status": "pass",

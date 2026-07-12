@@ -13,6 +13,29 @@ const cases = [
   ["data-entry-label", "textarea"],
   ["data-entry-textarea", "textarea"],
   ["data-entry-password-strength", 'input[type="password"]'],
+  ["data-entry-input", "input"],
+  ["data-entry-number-input", "input"],
+  ["data-entry-select", "#priority"],
+  ["data-entry-form", "input"],
+  ["data-entry-form-field-index", "input"],
+  ["data-entry-search-input", "input"],
+  ["data-entry-switch", '[role="switch"]'],
+  ["data-entry-toggle", "button[aria-pressed]"],
+  ["data-entry-slider", '[role="slider"]'],
+  ["data-entry-calendar", "button"],
+  ["data-entry-month-picker", "button"],
+  ["data-entry-month-range-picker", "button"],
+  ["data-entry-date-picker", "button"],
+  ["data-entry-date-range-picker", "button"],
+  ["data-entry-time-picker", "button"],
+  ["data-entry-color-picker", 'input[type="color"]'],
+  ["data-entry-upload", "button"],
+  ["data-entry-cascader", '[role="combobox"]'],
+  ["data-entry-tree-select", '[role="combobox"]'],
+  ["data-entry-transfer", '[role="checkbox"]'],
+  ["data-entry-password-input", 'input[type="password"]'],
+  ["data-entry-rating", "button"],
+  ["data-entry-tag-input", "input"],
 ];
 const server = spawn(
   "pnpm",
@@ -40,7 +63,9 @@ try {
     const before = await target.ariaSnapshot();
     if (!before.trim()) throw new Error(`${story}: empty accessibility-tree snapshot`);
     await target.tap();
-    const after = await target.ariaSnapshot();
+    const after = await (
+      story === "data-entry-select" ? page.locator('[data-slot="select-content"]') : target
+    ).ariaSnapshot();
     if (!after.trim()) throw new Error(`${story}: target left accessibility tree after tap`);
   }
   await context.close();
