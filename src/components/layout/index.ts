@@ -16,6 +16,8 @@ export type {
 export { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "./resizable";
 export { AppShell } from "./app-shell";
 export type { AppShellProps } from "./app-shell";
+export { AuthShell } from "./auth-shell";
+export type { AuthShellProp, AuthShellProps } from "./auth-shell";
 export { Breadcrumb } from "./breadcrumb";
 export type { BreadcrumbProps } from "./breadcrumb";
 export { Sidebar, SidebarHeader, SidebarItem, SidebarSection } from "./sidebar";

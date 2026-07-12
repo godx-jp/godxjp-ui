@@ -83,3 +83,10 @@ export type ColumnAlignProp = "left" | "center" | "right";
 
 /** Active sort state on DataTable. */
 export type SortStateProp = { key: string; direction: SortDirectionProp };
+
+/**
+ * Entrance-stagger ordinal for `Reveal` — an INDEX into the motion ladder, never a raw ms.
+ * `0` = enter immediately; `1..6` each add one `--reveal-stagger-step` of delay so a column of
+ * revealed rows cascades in. Reduced-motion collapses every step to 0 (content stays visible).
+ */
+export type RevealDelayProp = 0 | 1 | 2 | 3 | 4 | 5 | 6;

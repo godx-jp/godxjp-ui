@@ -684,6 +684,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
   },
   {
+    "name": "--empty-state-section-space-y",
+    "value": "var(--space-6)",
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
+    "name": "--empty-state-section-space-x",
+    "value": "var(--space-4)",
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
+    "name": "--empty-state-compact-space-y",
+    "value": "var(--space-3)",
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
+    "name": "--empty-state-compact-space-x",
+    "value": "var(--space-2)",
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
     "name": "--empty-state-icon-foreground",
     "value": "initial",
     "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
@@ -942,6 +962,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--sidebar-item-active-foreground",
     "value": "initial",
     "description": "Main nav-item active row — defaults mirror the hover state (accent bg, foreground text); a * service overrides these to brand the selected row (e.g. a gold tint + gold text on a navy * sidebar). `initial` so the defaults re-resolve under a scoped theme. * Defaults = hsl(var(--accent)) fill · hsl(var(--foreground)) text."
+  },
+  {
+    "name": "--auth-shell-control-height",
+    "value": "var(--control-height-comfortable)",
+    "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
+  },
+  {
+    "name": "--auth-shell-heading-size",
+    "value": "var(--font-size-2xl)",
+    "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
+  },
+  {
+    "name": "--auth-shell-card-max-width",
+    "value": "24rem",
+    "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
+  },
+  {
+    "name": "--auth-shell-bar-padding",
+    "value": "var(--space-5) var(--space-6)",
+    "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
+  },
+  {
+    "name": "--auth-shell-main-padding",
+    "value": "var(--space-6)",
+    "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
+  },
+  {
+    "name": "--auth-shell-footer-padding",
+    "value": "var(--space-3) var(--space-6) var(--space-4)",
+    "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
   },
   {
     "name": "--table-row-height-compact",

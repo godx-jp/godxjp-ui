@@ -81,6 +81,24 @@ export type AppShellProp = {
   sidebarCollapsed?: boolean;
 };
 
+/**
+ * @see AuthShell — centred auth/login page shell (login · mfa · passkey · device · reset). A
+ * top brand bar, a centred `main` that holds the auth `Card`, and an optional footer, over a
+ * `min-h-dvh` surface. The shell scopes `--control-height` to the comfortable tier (44px, the WCAG
+ * touch floor) and bumps the auth heading size so forms read at the right density — replacing
+ * consumers' hand-rolled `.auth-shell-*` / `.ui-auth-scope` classes. Motion is delegated to
+ * `Reveal` (wrap the card) so `prefers-reduced-motion` is honoured at one place.
+ */
+export type AuthShellProp = {
+  /** Centred content — typically a single auth `<Card>` with the form. */
+  children: ReactNode;
+  /** Brand bar slot pinned to the top (e.g. a `<Logo>` / product mark). */
+  brand?: ReactNode;
+  /** Footer slot pinned to the bottom (legal links, locale switch, support). */
+  footer?: ReactNode;
+  className?: ClassNameProp;
+};
+
 /** @see Sidebar */
 export type SidebarProductProp = {
   name: string;

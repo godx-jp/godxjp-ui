@@ -130,6 +130,11 @@
       "mainLabel": "メインコンテンツ",
       "footerLabel": "フッター"
     },
+    "authShell": {
+      "brandLabel": "ブランド",
+      "mainLabel": "メインコンテンツ",
+      "footerLabel": "フッター"
+    },
     "topbar": {
       "toggleSidebar": "サイドバーの切り替え",
       "search": "検索",

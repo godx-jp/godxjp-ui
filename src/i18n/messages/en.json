@@ -130,6 +130,11 @@
       "mainLabel": "Main content",
       "footerLabel": "Footer"
     },
+    "authShell": {
+      "brandLabel": "Brand",
+      "mainLabel": "Main content",
+      "footerLabel": "Footer"
+    },
     "topbar": {
       "toggleSidebar": "Toggle sidebar",
       "search": "Search",

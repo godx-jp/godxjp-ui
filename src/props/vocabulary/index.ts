@@ -66,6 +66,7 @@ export type {
   SortDirectionProp,
   ColumnAlignProp,
   SortStateProp,
+  RevealDelayProp,
 } from "./interaction.prop";
 
 export type { BreadcrumbItemProp, BreadcrumbProp } from "./navigation.prop";

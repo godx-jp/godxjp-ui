@@ -43,9 +43,27 @@ describe("EmptyState", () => {
     expect(container.querySelector(".ui-empty-state-icon")).toBeNull();
   });
 
+  it("defaults to the muted tone and reflects a semantic tone via data-tone", () => {
+    const { getByRole, rerender } = render(<EmptyState icon={Inbox} title="なし" />);
+    expect(getByRole("status")).toHaveAttribute("data-tone", "muted");
+    rerender(<EmptyState icon={Inbox} title="承認済み" tone="success" />);
+    expect(getByRole("status")).toHaveAttribute("data-tone", "success");
+  });
+
   it("has no axe violations", async () => {
     await expectNoA11yViolations(
       <EmptyState icon={Inbox} title="データなし" description="まだありません。" />,
+    );
+  });
+
+  it("has no axe violations for a success tone", async () => {
+    await expectNoA11yViolations(
+      <EmptyState
+        icon={Inbox}
+        title="承認しました"
+        tone="success"
+        description="端末が承認されました。"
+      />,
     );
   });
 });

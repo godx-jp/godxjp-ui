@@ -393,6 +393,74 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
     rules: [23],
   },
   {
+    name: "AuthShell",
+    group: "layout",
+    tagline:
+      "Centred auth/login page shell — brand bar (top) + centred card (main) + footer, over min-h-dvh, at comfortable control density.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description: "Centred content — typically a single auth <Card> holding the form.",
+      },
+      {
+        name: "brand",
+        type: "ReactNode",
+        description: "Brand bar slot pinned to the top (e.g. a <Logo> / product mark).",
+      },
+      {
+        name: "footer",
+        type: "ReactNode",
+        description: "Footer slot pinned to the bottom (legal links, locale switch, support).",
+      },
+    ],
+    usage: [
+      "DO pass a single <Card> (with the form inside <CardContent>) as `children` — AuthShell centres it and constrains its width via `--auth-shell-card-max-width`; do NOT hand-roll a `.auth-shell-main` / `.ui-auth-scope` wrapper.",
+      "DO put the product/brand mark in `brand` (a <Logo> or an <Avatar>) — it renders as the top banner landmark; omit it and the banner is not rendered.",
+      "DO use `footer` for compliance/legal/support links or a locale switch — it renders as the contentinfo landmark below the card.",
+      "DO wrap the card in <Reveal> for the entrance animation (`<AuthShell><Reveal><Card/></Reveal></AuthShell>`) — Reveal honours prefers-reduced-motion; AuthShell itself stays layout-only.",
+      "DO NOT re-scope control height or heading size in the app — AuthShell already sets the comfortable control tier (44px, WCAG touch floor) and the larger auth heading via `--auth-shell-control-height` / `--auth-shell-heading-size`; a service retunes those tokens, not a bespoke class.",
+      "DO NOT nest AuthShell inside AppShell (or vice-versa) — AuthShell is the ROOT shell for unauthenticated pages (login/mfa/passkey/device/reset); AppShell is for the authenticated app.",
+    ],
+    useCases: [
+      "Login page: <AuthShell brand={<Logo/>} footer={<AuthFooter/>}> wrapping a <Card> with the email/password form and a primary <Button fullWidth>.",
+      "MFA / passkey / device-authorisation step: same shell, a <Card> with the one-time-code <InputOTP> or a passkey prompt.",
+      "Password reset / forgot-password / accept-invite: the centred single-card flow with a brand bar and a legal footer.",
+      'SSO landing / success confirmation: pair with an <EmptyState tone="success"> inside the card for an approved-device confirmation.',
+    ],
+    related: [
+      "AppShell — the shell for AUTHENTICATED app pages (sidebar + topbar + main). AuthShell is its unauthenticated counterpart (brand bar + centred card + footer). Never nest the two.",
+      "Reveal — wrap the auth <Card> in <Reveal> for the entrance animation; AuthShell delegates motion (and prefers-reduced-motion handling) to it rather than baking an animation in.",
+      "Card — the canonical container for the auth form; place the form inside <CardContent>. AuthShell centres and width-constrains it.",
+      'EmptyState — with `tone="success"` for a confirmation card inside the shell (e.g. device approved).',
+    ],
+    example: `import { AuthShell } from "@godxjp/ui/layout";
+import { Reveal, Logo, Button } from "@godxjp/ui/general";
+import { Card, CardContent, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { Field } from "@godxjp/ui/data-entry";
+
+export function LoginPage() {
+  return (
+    <AuthShell brand={<Logo />} footer={<span>© 2026 GodX</span>}>
+      <Reveal>
+        <Card>
+          <CardHeader>
+            <CardTitle>ログイン</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* form fields */}
+            <Button fullWidth>続ける</Button>
+          </CardContent>
+        </Card>
+      </Reveal>
+    </AuthShell>
+  );
+}`,
+    storyPath: "layout/AuthShell.stories.tsx",
+    rules: [23],
+  },
+  {
     name: "Sidebar",
     group: "layout",
     tagline:
@@ -1003,6 +1071,68 @@ import { Text } from "@godxjp/ui/general";
 </span>
 
 <Logo label="CoreBooks" size="lg" />`,
+  },
+  {
+    name: "Reveal",
+    group: "general",
+    tagline:
+      "The official entrance-motion primitive (staggered fade-up) — reads DS motion tokens and honours prefers-reduced-motion, replacing hand-rolled @keyframes + .app-reveal/.d1..d6 classes.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description: "Content to reveal on enter.",
+      },
+      {
+        name: "delay",
+        type: "0 | 1 | 2 | 3 | 4 | 5 | 6",
+        defaultValue: "0",
+        description:
+          "Stagger ordinal — an INDEX into the motion ladder, never a raw ms. Each step adds one `--reveal-stagger-step` of delay so a column of reveals cascades. 0 = enter immediately.",
+      },
+      {
+        name: "asChild",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Merge the reveal onto the single child element (no wrapper <div>) — use when an extra box would break a grid/flex layout.",
+      },
+    ],
+    usage: [
+      "DO use <Reveal> INSTEAD of hand-rolling `@keyframes auth-fade-up` + `.app-reveal` + `.d1..d6` in a consumer global.css — that repeats literal durations/delays and violates the tokens-only rule. Reveal reads `--duration-slow` / `--ease-emphasized` / `--reveal-distance` / `--reveal-stagger-step`.",
+      "DO stagger a list/column by passing an increasing `delay` (1, 2, 3…) to successive siblings — the ordinal maps to `--reveal-stagger-step`, so a service retunes the cascade rhythm from one token.",
+      "DO pass `asChild` when wrapping an element that must keep its own box in a grid/flex row (the reveal merges onto that element instead of adding a <div>).",
+      "DO rely on the built-in reduced-motion behaviour — under `prefers-reduced-motion: reduce` the animation is dropped and content renders in its final, fully-visible position with no layout shift. Never gate visibility on the animation.",
+      "DO NOT set a raw ms delay or a literal translate distance — the whole point is that `delay` is a controlled ordinal and the distance/duration come from tokens.",
+    ],
+    useCases: [
+      "Auth card entrance: `<AuthShell><Reveal><Card/></Reveal></AuthShell>` — the sign-in card fades up on load, respecting reduced-motion.",
+      "Staggered dashboard: map stat cards with `<Reveal delay={i + 1}>` so the row cascades in.",
+      "Section reveal on a settings/detail page — wrap each Card in <Reveal> for a calm entrance without hand-written CSS.",
+      "asChild on a grid item: `<Reveal asChild delay={2}><ResponsiveGrid.Item/></Reveal>` keeps the grid cell intact while animating it in.",
+    ],
+    related: [
+      "AuthShell — pairs with Reveal for the auth card entrance; AuthShell delegates all motion to Reveal.",
+      "Card — the most common thing to wrap in <Reveal> (dashboard cards, auth card, settings sections).",
+      "ResponsiveGrid — combine with `<Reveal delay={n}>` (or `asChild`) per grid item for a staggered grid reveal.",
+    ],
+    example: `import { Reveal } from "@godxjp/ui/general";
+import { Card, CardContent } from "@godxjp/ui/data-display";
+
+// single entrance
+<Reveal>
+  <Card><CardContent>…</CardContent></Card>
+</Reveal>
+
+// staggered column
+{items.map((item, i) => (
+  <Reveal key={item.id} delay={Math.min(i + 1, 6) as 1 | 2 | 3 | 4 | 5 | 6}>
+    <Card><CardContent>{item.label}</CardContent></Card>
+  </Reveal>
+))}`,
+    storyPath: "general/Reveal.stories.tsx",
+    rules: [],
   },
   // ─── data-display ───────────────────────────────────────────────────────
   {
@@ -1680,9 +1810,17 @@ import { Smartphone } from "lucide-react";
         defaultValue: '"page"',
         description: "Contextual visual weight. Compact omits the icon medallion.",
       },
+      {
+        name: "tone",
+        type: '"muted" | "success" | "warning" | "destructive" | "info"',
+        defaultValue: '"muted"',
+        description:
+          "Medallion colour intent (a subset of the shared tone vocabulary; `destructive` is the DS name for a danger state). Tints the icon foreground + fill from the matching role token — set `success` for a confirmation zero-state (e.g. device approved) instead of hand-rolling a `.ui-success-state` class.",
+      },
     ],
     usage: [
       "DO always pass `title` — it is the only required prop and renders an `<h3>`; omitting it causes a blank silent render with no visible error.",
+      'DO use `tone="success"` (or warning/destructive/info) for a semantic confirmation/alert zero-state — it recolours the icon medallion from the role token; do NOT hand-roll a `.ui-success-state` class that scopes `--empty-state-icon-*`.',
       "DO use the `icon` prop (a Lucide icon component, not a JSX element) to give visual context — e.g. `icon={InboxIcon}` for empty inboxes, `icon={SearchIcon}` after a failed search. Pass the component reference, not `<InboxIcon />`.",
       "DO use `action` (a `ReactNode`, typically a `<Button>`) for actionable zero-states — e.g. 'Create first invoice' — so users have a clear next step instead of a dead end.",
       "DO NOT hand-roll a `data.length === 0 ? <EmptyState /> : <DataTable />` conditional — `DataTable` already embeds an `EmptyState` in its body when `data` is empty. Use the `empty=` prop on `DataTable` to customise it, not a wrapper conditional.",

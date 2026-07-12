@@ -83,7 +83,9 @@
   --disabled-opacity: 0.5;
 
   /* Shape and elevation */
-  --radius: calc(0.375rem * var(--scaling)); /* 6px base × scaling; override to retheme every step */
+  --radius: calc(
+    0.375rem * var(--scaling)
+  ); /* 6px base × scaling; override to retheme every step */
   --radius-ratio: 1.618; /* φ — radii scale by the golden ratio (steps derive in @theme) */
   --radius-pill: 9999px; /* fully-round: switch / radio / slider / pill badges (NOT --radius-derived) */
   --radius-sharp: 0; /* squared corners: table cells, flush inputs */
@@ -202,7 +204,9 @@
   --font-size-3xl: calc(
     var(--font-size-display) / var(--font-size-display-ratio) / var(--font-size-display-ratio)
   ); /* ≈ 33 → 28px feature heading */
-  --font-size-4xl: calc(var(--font-size-display) / var(--font-size-display-ratio)); /* ≈ 36px section */
+  --font-size-4xl: calc(
+    var(--font-size-display) / var(--font-size-display-ratio)
+  ); /* ≈ 36px section */
   --font-size-5xl: var(--font-size-display); /* 54px hero */
 
   /* Headings — also golden-derived. h1=ratio³, h2=ratio²; h3/h4 reuse body sizes (single source). */
@@ -332,6 +336,9 @@
   --ease-decelerate: cubic-bezier(0, 0, 0, 1);
   --ease-accelerate: cubic-bezier(0.3, 0, 1, 1);
   --reveal-distance: 10px;
+  /* One step of the Reveal stagger ladder — `<Reveal delay={n}>` waits n × this before entering,
+   * so a column of reveals cascades. Read instead of a literal `.04s`/`.09s` per-item delay. */
+  --reveal-stagger-step: 60ms;
 }
 
 .dark,
