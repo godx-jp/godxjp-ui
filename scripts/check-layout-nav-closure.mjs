@@ -54,6 +54,9 @@ try {
   const axe = {};
   for (const frame of frames) {
     await page.goto(`http://localhost:6008/isolate/${frame}`, { waitUntil: "networkidle" });
+    if (frame === "layout-resizable-panel") {
+      await page.getByRole("button", { name: "サイドバーを開く" }).click();
+    }
     axe[frame] = (await new AxeBuilder({ page }).analyze()).violations.map((violation) => ({
       id: violation.id,
       targets: violation.nodes.map((node) => node.target),
