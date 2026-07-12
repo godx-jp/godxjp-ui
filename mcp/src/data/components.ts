@@ -4780,6 +4780,26 @@ function MultiRegionPicker() {
           "HTML `id` placed on the trigger Button — use this to associate a `<label htmlFor>` for accessibility.",
       },
       {
+        name: "aria-label",
+        type: "string",
+        description: "Accessible name for the combobox trigger when no visible label is available.",
+      },
+      {
+        name: "aria-errormessage",
+        type: "string",
+        description: "ID of the element containing the current validation error message.",
+      },
+      {
+        name: "aria-invalid",
+        type: "boolean | 'true' | 'false'",
+        description: "Marks the semantic combobox trigger invalid for assistive technology.",
+      },
+      {
+        name: "aria-required",
+        type: "boolean | 'true' | 'false'",
+        description: "Marks the semantic combobox trigger required for assistive technology.",
+      },
+      {
         name: "fieldNames",
         type: "{ label?: string; value?: string; children?: string }",
         description:
