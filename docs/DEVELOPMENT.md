@@ -185,24 +185,59 @@ must report 0 errors for touched files.
 ## 6. Releasing — the lib and its MCP, in lockstep
 
 This repo publishes **two packages** that must agree: `@godxjp/ui` (the browser component
-library, root `package.json`, 6.x) and `@godxjp/ui-mcp` (the Node MCP server that tells agents
-how to use it, `mcp/`, 0.x). They stay **separate** on purpose — the MCP pulls the MCP SDK,
-which has no business in a consumer's browser bundle. Two guards keep them honest:
+library, root `package.json`) and `@godxjp/ui-mcp` (the Node MCP server that tells agents how to
+use it, `mcp/`). They stay **separate** on purpose — the MCP pulls the MCP SDK, which has no
+business in a consumer's browser bundle — but they ship on **one shared version line** so a
+catalog version always tells you exactly which library build it describes.
 
-- **Drift guard** (`pnpm check:mcp-sync`) — every component the MCP catalogs must still be a real
-  library export. Runs inside `verify` / `verify:release`, so a rename that forgets the MCP fails
-  before publish, not after agents start citing a component that no longer exists.
-- **Coordinated release** (`pnpm release`):
+### The lockstep contract (issue #140)
 
-  ```bash
-  pnpm release --ui minor --mcp patch   # bump + verify:release + build + publish + commit, both
-  pnpm release --ui patch               # ui only (mcp skipped)
-  pnpm release --mcp minor              # mcp only
-  ```
+A consumer that installs `@godxjp/ui@16.10.x` but points its agent at `@godxjp/ui-mcp@16.7.x`
+gets prop/token/pattern guidance for a build it never installed. To make that impossible, the two
+packages carry **mutual, machine-readable compatibility metadata**:
 
-  It refuses a dirty tree, runs the full `verify:release` gate (incl. the drift guard) before
-  publishing the lib, bumps each package's own version line, `npm publish`es each, and commits the
-  version bumps. Push the commit when ready. Never hand-publish one package and forget the other.
+- root `package.json` → `"godxUiMcp": "<mcp version>"` — the catalog version this library ships with.
+- `mcp/package.json` → `"version"` (identical to the library) **and** `"godxUiCompatibility": "<maj>.<min>.x"` — the UI minor this catalog describes.
+- the MCP exposes it at runtime: `serverInfo.version` == package version, the `godx-ui://compatibility` resource, and the `check_compatibility` tool (an agent calls it with the app's installed `@godxjp/ui` version to get a match/mismatch verdict).
+
+Three guards keep them honest, all wired into `verify` / `verify:release` **and** the
+`release-integrity` CI workflow (runs on every PR, so drift fails long before publish):
+
+- **Lockstep guard** (`pnpm check:mcp-lockstep` → `scripts/check-release-lockstep.mjs`) — asserts
+  ui.version == mcp.version, ui.godxUiMcp == mcp.version, and mcp.godxUiCompatibility covers the UI
+  version. Any split fails CI.
+- **Catalog drift guard** (`pnpm check:mcp-sync` / `check:mcp-orphans`) — every component the MCP
+  catalogs must still be a real library export, and vice-versa.
+- **Packed-artifact guard** (`release-integrity` CI, step 4) — packs both tarballs and re-asserts
+  lockstep on the **packed** manifests, i.e. the bytes that would actually ship.
+
+### Coordinated release (`pnpm release`)
+
+```bash
+pnpm release --ui minor --mcp sync   # bump ui, republish mcp at the SAME new version — the norm
+pnpm release --mcp sync              # mcp-only fix at the current ui version
+```
+
+`--ui <bump>` **requires** `--mcp sync` (the tool refuses a ui-only release) so the two packages
+can never split. On a bump the tool refreshes both compatibility fields, runs `verify:release`
+(incl. all three guards) before publishing the lib, `npm publish`es each package, re-runs the
+lockstep check as a final fail-closed gate, then commits the version bumps. Push the commit when
+ready.
+
+### Recovery from a partial publish
+
+If a run publishes `@godxjp/ui` but the `@godxjp/ui-mcp` publish fails (npm hiccup, expired token),
+the two are momentarily split on npm. Recover:
+
+1. Fix the cause (e.g. re-auth `npm whoami`), keep the working tree at the just-published version.
+2. Re-run **only** the MCP half at that same version:
+   `pnpm --dir mcp build && npm --prefix mcp version <ui-version> --allow-same-version && npm --prefix mcp publish --access public`.
+3. Verify parity: `pnpm check:mcp-lockstep` locally, then decode a real MCP `initialize` — its
+   `serverInfo.version` must equal the published `@godxjp/ui` version.
+
+npm versions are immutable, so you can never "fix" a bad published version in place — you can only
+publish the matching partner at the same number, or move both forward with a fresh
+`pnpm release --ui patch --mcp sync`. Never hand-publish one package and forget the other.
 
 ---
 

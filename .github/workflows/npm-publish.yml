@@ -1,10 +1,14 @@
 name: Publish to npm
 
 # Manual, credential-safe release. Reuses scripts/release.mjs (the single source of
-# truth) so @godxjp/ui and its pinned @godxjp/ui-mcp publish in lockstep.
+# truth) so @godxjp/ui and its pinned @godxjp/ui-mcp publish in lockstep — the script
+# refuses a ui-only bump and fail-closes on scripts/check-release-lockstep.mjs, so the two
+# packages can never ship at drifting versions (issue #140). Drift is also caught earlier,
+# on every PR, by the separate release-integrity.yml workflow.
 #
 # One-time setup: add a repo secret NPM_TOKEN (an npm "Automation" access token with
 # publish rights to the @godxjp scope). Then run this workflow from the Actions tab.
+# Keep the "mcp" input on `sync` for any release that bumps the UI.
 on:
   workflow_dispatch:
     inputs:
