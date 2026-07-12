@@ -113,7 +113,7 @@ describe("Alert", () => {
   });
 });
 
-describe("Alert.QueryError", () => {
+describe("Alert.QueryError — legacy (no category) mode", () => {
   it("shows message and retry", async () => {
     const user = userEvent.setup();
     const onRetry = vi.fn();
@@ -133,5 +133,47 @@ describe("Alert.QueryError", () => {
   it("uses destructive Alert styling", () => {
     renderWithUi(<Alert.QueryError error={new Error("503")} onRetry={() => undefined} />);
     expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "destructive");
+  });
+});
+
+describe("Alert.QueryError — cause-aware (category) mode", () => {
+  it("offers session renewal — not retry — for an auth error, hiding raw token text", async () => {
+    const user = userEvent.setup();
+    const onAuthAction = vi.fn();
+    const onRetry = vi.fn();
+    renderWithUi(
+      <Alert.QueryError
+        error={new Error("Access token invalid")}
+        category="auth"
+        onAuthAction={onAuthAction}
+        onRetry={onRetry}
+      />,
+    );
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.queryByText(/access token/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /thử lại/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /đăng nhập lại/i }));
+    expect(onAuthAction).toHaveBeenCalledOnce();
+    expect(onRetry).not.toHaveBeenCalled();
+  });
+
+  it("renders a permission-aware (warning) state without retry for forbidden", () => {
+    renderWithUi(
+      <Alert.QueryError error={new Error("403")} category="forbidden" onRetry={() => undefined} />,
+    );
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveAttribute("data-tone", "warning");
+    expect(screen.queryByRole("button", { name: /thử lại/i })).not.toBeInTheDocument();
+  });
+
+  it("offers Retry with destructive styling for a transient error", async () => {
+    const user = userEvent.setup();
+    const onRetry = vi.fn();
+    renderWithUi(
+      <Alert.QueryError error={new Error("503")} category="transient" onRetry={onRetry} />,
+    );
+    expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "destructive");
+    await user.click(screen.getByRole("button", { name: /thử lại/i }));
+    expect(onRetry).toHaveBeenCalledOnce();
   });
 });

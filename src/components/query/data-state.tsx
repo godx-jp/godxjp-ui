@@ -1,6 +1,8 @@
 import * as React from "react";
 
 import { AlertQueryError } from "../feedback/alert";
+import { useTranslation } from "../../i18n/use-translation";
+import { classifyQueryError } from "../../lib/query-error";
 import type { DataStateProp } from "../../props/components/query.prop";
 
 export type {
@@ -32,8 +34,10 @@ export function DataState<T>({
   errorRenderer,
   showRetry = false,
   onRetry,
+  onAuthError,
   children,
 }: DataStateProp<T>) {
+  const { t } = useTranslation();
   const retry = React.useCallback(() => {
     if (onRetry) {
       void onRetry();
@@ -42,14 +46,28 @@ export function DataState<T>({
     void query.refetch();
   }, [onRetry, query]);
 
+  // Disabled/unstarted (`enabled:false`) reads as pending in TanStack Query but `fetchStatus` is
+  // "idle" — no request is in flight. Render the prerequisite/idle slot, NOT an endless skeleton.
   if (query.isPending && query.fetchStatus === "idle") return <>{prerequisite}</>;
   if (query.isPending) return <>{skeleton}</>;
 
   if (query.isError) {
     if (query.isFetching) return <>{skeleton}</>;
     if (errorRenderer) return <>{errorRenderer(query.error, retry)}</>;
+    // Cause-aware recovery: Retry is offered ONLY for causes where retrying could help — transient
+    // failures (auto), or an `unknown` cause the consumer explicitly opts into (showRetry/onRetry).
+    // auth/forbidden/notFound/validation never get a blind retry (401 routes to session renewal).
+    const info = classifyQueryError(query.error);
+    const canRetry =
+      (info.category === "transient" || info.category === "unknown") &&
+      (info.retryable || showRetry || Boolean(onRetry));
     return (
-      <AlertQueryError error={query.error} onRetry={showRetry || onRetry ? retry : undefined} />
+      <AlertQueryError
+        error={query.error}
+        category={info.category}
+        onRetry={canRetry ? retry : undefined}
+        onAuthAction={info.category === "auth" ? onAuthError : undefined}
+      />
     );
   }
 
@@ -58,5 +76,18 @@ export function DataState<T>({
 
   if (empty && (data === null || isEmpty(data))) return <>{empty}</>;
 
-  return <>{children(data as NonNullable<T>)}</>;
+  const content = children(data as NonNullable<T>);
+  // Background refetch (existing data present, `isFetching` true) keeps content on screen and
+  // announces the busy state politely instead of flashing the skeleton over resolved data.
+  if (query.isFetching) {
+    return (
+      <>
+        {content}
+        <span role="status" aria-live="polite" className="sr-only">
+          {t("query.refreshing")}
+        </span>
+      </>
+    );
+  }
+  return <>{content}</>;
 }

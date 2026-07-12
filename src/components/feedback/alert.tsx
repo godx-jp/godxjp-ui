@@ -3,6 +3,7 @@ import {
   AlertCircle,
   CheckCircle2,
   Info,
+  LogIn,
   RefreshCw,
   TriangleAlert,
   X,
@@ -11,6 +12,7 @@ import {
 
 import { useTranslation } from "../../i18n/use-translation";
 import { humanError } from "../../lib/format";
+import { type QueryErrorCategory } from "../../lib/query-error";
 import { cn } from "../../lib/utils";
 import { Flex } from "../layout/flex";
 import { Button } from "../general/button";
@@ -134,29 +136,90 @@ export const AlertActions = React.forwardRef<HTMLDivElement, AlertActionsProp>(
 );
 AlertActions.displayName = "AlertActions";
 
-/** TanStack Query / API failure preset — same visual as `Alert tone="destructive"`. Used by `DataState` (@godxjp/ui/query). */
-export function AlertQueryError({ error, onRetry, className }: AlertQueryErrorProp) {
+/** Causes that read as a soft warning (the request reached a valid, non-broken state). */
+const WARNING_CATEGORIES: ReadonlySet<QueryErrorCategory> = new Set<QueryErrorCategory>([
+  "forbidden",
+  "notFound",
+  "validation",
+]);
+
+/** Causes where repeating the same request could plausibly help — the only ones that show Retry. */
+const RETRYABLE_CATEGORIES: ReadonlySet<QueryErrorCategory> = new Set<QueryErrorCategory>([
+  "transient",
+  "unknown",
+]);
+
+function RetryButton({ onRetry }: { onRetry: NonNullable<AlertQueryErrorProp["onRetry"]> }) {
   const { t } = useTranslation();
   return (
-    <Alert tone="destructive" className={className}>
-      <AlertTitle>{t("common.error")}</AlertTitle>
-      <AlertDescription>{humanError(error)}</AlertDescription>
-      {onRetry && (
+    <AlertActions>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => {
+          void onRetry();
+        }}
+      >
+        <Flex direction="row" wrap align="center" gap="xs">
+          <RefreshCw className="size-4" aria-hidden="true" />
+          {t("common.retry")}
+        </Flex>
+      </Button>
+    </AlertActions>
+  );
+}
+
+/**
+ * TanStack Query / API failure preset used by `DataState` (@godxjp/ui/query).
+ *
+ * - **Cause-aware mode** (pass `category`, as `DataState` does): presents a safe, localized message
+ *   — never the raw backend/token/stack text — with a cause-appropriate action. `auth`
+ *   (401/expired) offers session renewal (`onAuthAction`) instead of Retry; transient/network/5xx
+ *   offer Retry (`onRetry`); permission/not-found/validation offer neither by default.
+ * - **Legacy mode** (no `category`, e.g. mutation/infinite feedback): shows the cleaned domain
+ *   message (`humanError`) + optional Retry — form-submit corrective guidance stays visible.
+ */
+export function AlertQueryError({
+  error,
+  category,
+  onRetry,
+  onAuthAction,
+  className,
+}: AlertQueryErrorProp) {
+  const { t } = useTranslation();
+
+  if (!category) {
+    return (
+      <Alert tone="destructive" className={className}>
+        <AlertTitle>{t("common.error")}</AlertTitle>
+        <AlertDescription>{humanError(error)}</AlertDescription>
+        {onRetry && <RetryButton onRetry={onRetry} />}
+      </Alert>
+    );
+  }
+
+  const tone: ToneProp = WARNING_CATEGORIES.has(category) ? "warning" : "destructive";
+  return (
+    <Alert tone={tone} className={className}>
+      <AlertTitle>{t(`query.error.title.${category}`)}</AlertTitle>
+      <AlertDescription>{t(`query.error.description.${category}`)}</AlertDescription>
+      {category === "auth" && onAuthAction && (
         <AlertActions>
           <Button
             variant="outline"
             size="sm"
             onClick={() => {
-              void onRetry();
+              void onAuthAction();
             }}
           >
             <Flex direction="row" wrap align="center" gap="xs">
-              <RefreshCw className="size-4" aria-hidden="true" />
-              {t("common.retry")}
+              <LogIn className="size-4" aria-hidden="true" />
+              {t("query.error.action.signIn")}
             </Flex>
           </Button>
         </AlertActions>
       )}
+      {RETRYABLE_CATEGORIES.has(category) && onRetry && <RetryButton onRetry={onRetry} />}
     </Alert>
   );
 }

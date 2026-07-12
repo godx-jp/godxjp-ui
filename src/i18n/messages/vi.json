@@ -302,7 +302,29 @@
     "ASSIGNMENT_STATUS_TERMINATED": "Chấm dứt"
   },
   "query": {
-    "loadMore": "Tải thêm"
+    "loadMore": "Tải thêm",
+    "refreshing": "Đang cập nhật…",
+    "error": {
+      "title": {
+        "auth": "Phiên đăng nhập đã hết hạn",
+        "forbidden": "Không có quyền truy cập",
+        "notFound": "Không tìm thấy",
+        "validation": "Kiểm tra lại dữ liệu",
+        "transient": "Đã xảy ra lỗi",
+        "unknown": "Đã xảy ra lỗi"
+      },
+      "description": {
+        "auth": "Phiên của bạn đã kết thúc. Vui lòng đăng nhập lại để tiếp tục.",
+        "forbidden": "Bạn không có quyền xem nội dung này. Liên hệ quản trị viên nếu cần quyền truy cập.",
+        "notFound": "Không tìm thấy nội dung bạn cần. Có thể nội dung đã được di chuyển hoặc xóa.",
+        "validation": "Không thể hoàn tất yêu cầu. Vui lòng kiểm tra lại dữ liệu và thử lại.",
+        "transient": "Đã xảy ra sự cố tạm thời. Vui lòng thử lại sau giây lát.",
+        "unknown": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau."
+      },
+      "action": {
+        "signIn": "Đăng nhập lại"
+      }
+    }
   },
   "chart": {
     "empty": "Không có dữ liệu",

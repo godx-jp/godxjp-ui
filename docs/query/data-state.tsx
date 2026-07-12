@@ -75,6 +75,49 @@ function ErrorBlock() {
   );
 }
 
+function PrerequisiteBlock() {
+  // A tenant-scoped query stays disabled until an organization is selected (`enabled:false`).
+  // It reads as pending with fetchStatus "idle" — DataState shows the prerequisite, not a skeleton.
+  const query = useQuery<Invoice[]>({
+    queryKey: ["ds-prerequisite"],
+    queryFn: async () => invoices,
+    enabled: false,
+  });
+  return (
+    <DataState
+      query={query}
+      skeleton={<SkeletonTable />}
+      prerequisite={
+        <EmptyState
+          title="組織を選択してください"
+          description="表示するデータを絞り込むために組織を選択してください。"
+        />
+      }
+    >
+      {(d) => <DataTable data={d} columns={columns} getRowId={(r) => r.id} />}
+    </DataState>
+  );
+}
+
+function AuthErrorBlock() {
+  // A 401 / expired token never resolves by retrying — DataState offers session renewal instead.
+  const query = useQuery<Invoice[]>({
+    queryKey: ["ds-auth-error"],
+    queryFn: async () => {
+      throw new Error("Access token invalid");
+    },
+  });
+  return (
+    <DataState
+      query={query}
+      skeleton={<SkeletonTable />}
+      onAuthError={() => window.location.assign("/login")}
+    >
+      {(d) => <DataTable data={d} columns={columns} getRowId={(r) => r.id} />}
+    </DataState>
+  );
+}
+
 export default function Demo() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -107,11 +150,39 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Error (retry)</CardTitle>
-              <CardDescription>Built-in AlertQueryError + retry on failure.</CardDescription>
+              <CardTitle>Prerequisite (disabled query)</CardTitle>
+              <CardDescription>
+                An `enabled:false` query is unstarted, not loading. The prerequisite slot renders
+                instead of an endless skeleton.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PrerequisiteBlock />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Error · transient (retry)</CardTitle>
+              <CardDescription>
+                A 5xx/network failure is retryable, so AlertQueryError offers Retry automatically.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ErrorBlock />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Error · auth (session renewal)</CardTitle>
+              <CardDescription>
+                A 401 / expired token routes to session renewal via `onAuthError`, never a blind
+                retry, and never surfaces the raw token message.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AuthErrorBlock />
             </CardContent>
           </Card>
         </Flex>
