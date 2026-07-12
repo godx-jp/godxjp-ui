@@ -117,6 +117,14 @@ describe("Card", () => {
     expect(screen.getByTestId("content")).not.toHaveAttribute("data-tight");
   });
 
+  it("allows the consumer to preserve the page heading hierarchy", () => {
+    renderWithUi(<CardTitle as="h2">Account settings</CardTitle>);
+    expect(screen.getByRole("heading", { level: 2, name: "Account settings" })).toHaveAttribute(
+      "data-slot",
+      "card-title",
+    );
+  });
+
   it("renders banded header with title and description slots", () => {
     renderWithUi(
       <Card>

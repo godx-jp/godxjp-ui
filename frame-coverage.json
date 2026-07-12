@@ -161,7 +161,39 @@
       }
     },
     "Flex": {
-      "isolated": { "status": "pass", "reason": "Rendered directly in docs/layout/flex.tsx." }
+      "isolated": { "status": "pass", "reason": "Rendered directly in docs/layout/flex.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "check:layout-nav-frames passed Chromium reflow at 320,375,390,768,1024,1280,1440,1920 without document overflow."
+      }
+    },
+    "Tabs": {
+      "responsive": {
+        "status": "pass",
+        "reason": "check:layout-nav-frames passed Chromium reflow at all eight standard widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "RTL direction was initialized before mount; ArrowLeft moved focus from the first to the second tab in the rendered Arabic frame."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered frame passed Axe and LTR/RTL arrow-key assertions after inactive-trigger contrast was corrected."
+      }
+    },
+    "Pagination": {
+      "responsive": {
+        "status": "pass",
+        "reason": "check:layout-nav-frames passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered Next action advanced the controlled current-page marker from page 1 to page 2."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered frame passed Axe with unique consumer-supplied pagination landmark names."
+      }
     },
     "Card": {
       "isolated": {

@@ -55,7 +55,7 @@ export default function Demo() {
         {/* Full pagination below a Table */}
         <Card>
           <CardHeader>
-            <CardTitle>請求書一覧 (47 件)</CardTitle>
+            <CardTitle as="h2">請求書一覧 (47 件)</CardTitle>
             <CardDescription>
               Pagination sits BELOW the card. value + pageSize are controlled state. showTotal shows
               the built-in i18n count label. showSizeChanger lets users pick rows per page.
@@ -87,6 +87,7 @@ export default function Demo() {
 
         {/* Pagination component itself — outside the card, below it */}
         <Pagination
+          ariaLabel="請求書一覧のページネーション"
           value={page}
           total={invoices.length}
           pageSize={pageSize}
@@ -98,7 +99,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>境界状態 · 0 件 / 1 件</CardTitle>
+            <CardTitle as="h2">境界状態 · 0 件 / 1 件</CardTitle>
             <CardDescription>
               空データの範囲は 0〜0。1 件では 1〜1 を返し、前後ボタンは無効になる。
               実アプリでは空状態に Pagination を併置せず、この例は API 境界確認に使う。
@@ -123,7 +124,7 @@ export default function Demo() {
         {/* showTotal custom label */}
         <Card>
           <CardHeader>
-            <CardTitle>showTotal · カスタムラベル関数</CardTitle>
+            <CardTitle as="h2">showTotal · カスタムラベル関数</CardTitle>
             <CardDescription>
               showTotal に関数を渡すと範囲ラベルをカスタマイズできる。 例: &quot;1〜10 / 47
               件の請求書&quot;
@@ -131,6 +132,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Pagination
+              ariaLabel="カスタムラベル例のページネーション"
               value={page}
               total={invoices.length}
               pageSize={pageSize}
@@ -143,7 +145,7 @@ export default function Demo() {
         {/* Simple mode for compact contexts */}
         <Card>
           <CardHeader>
-            <CardTitle>Simple モード · コンパクト表示</CardTitle>
+            <CardTitle as="h2">Simple モード · コンパクト表示</CardTitle>
             <CardDescription>
               simple=true でモーダルフッターやサイドバーに収まるコンパクトな Prev / n/total / Next
               を表示する。
@@ -151,6 +153,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Pagination
+              ariaLabel="コンパクト例のページネーション"
               simple
               value={simplePage}
               total={200}
@@ -163,13 +166,14 @@ export default function Demo() {
         {/* Disabled state */}
         <Card>
           <CardHeader>
-            <CardTitle>Disabled 状態</CardTitle>
+            <CardTitle as="h2">Disabled 状態</CardTitle>
             <CardDescription>
               disabled=true でデータ読み込み中などページ送りを一時的に無効にする。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Pagination
+              ariaLabel="無効状態例のページネーション"
               value={1}
               total={100}
               pageSize={10}

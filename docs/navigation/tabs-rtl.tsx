@@ -8,7 +8,7 @@ export default function Demo() {
       <PageContainer title="علامات التبويب" subtitle="RTL keyboard and layout evidence">
         <Card>
           <CardHeader>
-            <CardTitle>إعدادات الحساب</CardTitle>
+            <CardTitle as="h2">إعدادات الحساب</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs

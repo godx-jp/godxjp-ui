@@ -26,6 +26,8 @@ export type ToolbarGroupProp = {
 
 /** @see Pagination — offset/page-based (distinct from DataTable cursor pagination). */
 export type PaginationProp = {
+  /** Accessible landmark name. Required when multiple paginations share a page. */
+  ariaLabel?: string;
   value?: number;
   total?: number;
   pageSize?: number;

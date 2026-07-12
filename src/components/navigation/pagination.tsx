@@ -107,6 +107,7 @@ const PaginationNext = React.forwardRef<HTMLButtonElement, PaginationLinkProps>(
 PaginationNext.displayName = "PaginationNext";
 
 export function Pagination({
+  ariaLabel,
   value = 1,
   total = 0,
   pageSize = 10,
@@ -147,7 +148,7 @@ export function Pagination({
   if (simple) {
     return (
       <nav
-        aria-label={t("navigation.pagination.ariaLabel")}
+        aria-label={ariaLabel ?? t("navigation.pagination.ariaLabel")}
         data-simple="true"
         className={cn("ui-pagination", className)}
       >
@@ -181,7 +182,7 @@ export function Pagination({
 
   return (
     <nav
-      aria-label={t("navigation.pagination.ariaLabel")}
+      aria-label={ariaLabel ?? t("navigation.pagination.ariaLabel")}
       className={cn("ui-pagination", className)}
     >
       {totalLabel && <span className="ui-pagination-total">{totalLabel}</span>}

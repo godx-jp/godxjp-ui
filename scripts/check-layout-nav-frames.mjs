@@ -18,7 +18,16 @@ const frames = [
 try {
   await server.listen();
   const page = await context.newPage();
+  const rechartsWarnings = [];
+  let activeFrame = "";
+  page.on("console", (message) => {
+    const value = message.text();
+    if (/width\(-1\)|height\(-1\)|recharts/i.test(value)) {
+      rechartsWarnings.push({ frame: activeFrame, message: value });
+    }
+  });
   for (const frame of frames) {
+    activeFrame = frame;
     for (const width of widths) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`http://localhost:6008/frame/${frame}`, { waitUntil: "networkidle" });
@@ -45,6 +54,12 @@ try {
   let axe = await new AxeBuilder({ page }).analyze();
   const tabsViolations = axe.violations.map((v) => v.id);
 
+  await page.addInitScript(() => {
+    if (location.pathname.includes("navigation-tabs-rtl")) {
+      document.documentElement.dir = "rtl";
+      document.documentElement.lang = "ar";
+    }
+  });
   await page.goto("http://localhost:6008/frame/navigation-tabs-rtl", { waitUntil: "networkidle" });
   tabs = page.getByRole("tab");
   if ((await page.locator('[dir="rtl"]').count()) === 0) throw new Error("RTL was not initialized");
@@ -53,6 +68,7 @@ try {
   const rtlFocusedIndex = await tabs.evaluateAll((elements) =>
     elements.indexOf(document.activeElement),
   );
+  if (rtlFocusedIndex !== 1) throw new Error("RTL Tabs ArrowLeft focus failed");
 
   await page.goto("http://localhost:6008/frame/navigation-pagination", {
     waitUntil: "networkidle",
@@ -69,14 +85,24 @@ try {
     throw new Error("Pagination next-page journey failed");
   axe = await new AxeBuilder({ page }).analyze();
   const paginationViolations = axe.violations.map((v) => v.id);
+  if (tabsViolations.length || paginationViolations.length) {
+    throw new Error(
+      `Axe violations: tabs=${tabsViolations.join(",") || "none"}; pagination=${paginationViolations.join(",") || "none"}`,
+    );
+  }
   console.log(
     JSON.stringify({
       frames,
       widths,
       reflow: "pass",
       keyboard: "pass",
-      rtl: { initialized: true, focusedIndexAfterArrowLeft: rtlFocusedIndex, verdict: "untested" },
+      rtl: {
+        initializedBeforeMount: true,
+        focusedIndexAfterArrowLeft: rtlFocusedIndex,
+        verdict: "pass",
+      },
       axe: { tabsViolations, paginationViolations },
+      rechartsWarnings,
     }),
   );
 } finally {
