@@ -139,9 +139,9 @@ bundled fonts). To ship only what you render, import the foundation plus the
 per-layer files you need (mirrors the JS subpaths — the CSS tree-shakes too):
 
 ```css
-@import "@godxjp/ui/styles/base";          /* required: tokens + tailwind + base layer */
-@import "@godxjp/ui/styles/control";       /* Button, Input, Select, Textarea, toggles */
-@import "@godxjp/ui/styles/form-layout";   /* FormField */
+@import "@godxjp/ui/styles/base"; /* required: tokens + tailwind + base layer */
+@import "@godxjp/ui/styles/control"; /* Button, Input, Select, Textarea, toggles */
+@import "@godxjp/ui/styles/form-layout"; /* FormField */
 @import "@godxjp/ui/styles/dialog-layout"; /* Dialog */
 /* …only the layers you use. Layer files need `base` first (they use @layer/@apply). */
 ```
@@ -158,8 +158,8 @@ one face everywhere, or per-language (no `[lang]` selectors to write):
 ```css
 :root {
   --font-sans-base: var(--my-latin), system-ui, sans-serif; /* default face */
-  --font-sans-ja: "Noto Sans JP", var(--font-sans-base);    /* lang="ja" */
-  --font-sans-vi: "Montserrat", var(--font-sans-base);      /* lang="vi" */
+  --font-sans-ja: "Noto Sans JP", var(--font-sans-base); /* lang="ja" */
+  --font-sans-vi: "Montserrat", var(--font-sans-base); /* lang="vi" */
   /* also: --font-sans-ko, --font-sans-zh-hans, --font-sans-zh-hant */
 }
 ```
@@ -220,6 +220,31 @@ pnpm release --ui <patch|minor|major> --mcp <…|skip>   # publish lib + MCP in 
 | `check:mcp-sync`        | every MCP catalog entry is a real export (no stale agent guidance)   |
 | `check:mcp-orphans`     | every public component HAS a catalog entry (catalog can't rot)       |
 | `check:core-isolation`  | the root export pulls no foreign runtime (adapters stay on subpaths) |
+
+### Runtime visual audit (Playwright + axe-core)
+
+`scripts/visual-audit.mjs` drives a **real browser** over a running app and runs axe-core plus
+computed-style heuristics (target size, OKLCH accent chroma, rendered emoji, mis-laid-out alerts) —
+catching what the static `pnpm audit` (source regexes) can't see. Playwright + `@axe-core/playwright`
+are **optional peers**, installed only by apps that run the audit.
+
+```bash
+# from a consumer, against its running dev/preview server:
+node node_modules/@godxjp/ui/scripts/visual-audit.mjs http://localhost:5173 /invoices /settings
+node node_modules/@godxjp/ui/scripts/visual-audit.mjs http://localhost:5173 --format json  # machine-readable
+node node_modules/@godxjp/ui/scripts/visual-audit.mjs --strict http://localhost:5173       # CI gate
+```
+
+**Tested peer range** (pin one of these): `playwright >=1.55 <2` (tested 1.61.1) ·
+`@axe-core/playwright >=4.10 <5` (tested 4.12.1) · `axe-core >=4.10 <5` (tested 4.12.1). Playwright
+1.55+ is required for the `browser.newContext()` → `context.newPage()` flow axe expects; older
+`browser.newPage()` throws _"Please use browser.newContext()"_.
+
+`--format json` **always** emits valid JSON — even on bootstrap failure — with a `status`
+(`ok` · `partial` · `error`) that separates **infrastructure errors** (missing peers, page won't
+load, axe won't inject → `errors[]`, `summary: null`/flagged) from **product findings** (`findings[]`).
+A tool failure can therefore never be misread as "zero violations". `pnpm check:visual-audit` is the
+CI smoke test: it serves a fixture page tripping all five rule families and asserts each one fires.
 
 This repo ships two packages — `@godxjp/ui` (this dir) and `@godxjp/ui-mcp` (`mcp/`). They keep
 separate version lines but release together via `pnpm release`; see DEVELOPMENT.md §6.

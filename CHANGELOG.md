@@ -32,8 +32,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Runtime visual audit creates an explicit Playwright browser context for Axe and returns structured
-  JSON for infrastructure failures.
+- Runtime visual audit (`scripts/visual-audit.mjs`) is now compatible with the current Playwright +
+  `@axe-core/playwright` (gh#139). It creates an explicit `browser.newContext()` → `context.newPage()`
+  (older `browser.newPage()` threw _"Please use browser.newContext()"_), guarantees page/context/browser
+  cleanup on both success and failure, and `--format json` **always** emits valid JSON — even on
+  bootstrap failure (missing peers, no URL, browser won't launch) — with a `status` (`ok`·`partial`·
+  `error`) that separates infrastructure `errors[]` from product `findings[]`, so a tool failure can
+  never be misread as "zero violations". The tested peer range is documented in the README and the MCP
+  `list_visual_checks` command (`playwright >=1.55 <2`, `@axe-core/playwright >=4.10 <5`,
+  `axe-core >=4.10 <5`). Adds `pnpm check:visual-audit` — a CI smoke test that serves a fixture page
+  tripping all five runtime rule families and asserts each executes (Chromium launch, context, Axe
+  injection) — wired into `verify:release`.
 
 ## [16.7.2] - 2026-06-30
 

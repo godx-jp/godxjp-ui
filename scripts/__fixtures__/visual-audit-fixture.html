@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>visual-audit smoke fixture</title>
+  </head>
+  <body>
+    <!--
+      This fixture deliberately trips ALL FIVE runtime rule families so the CI smoke
+      test (scripts/visual-audit-smoke.mjs) can assert every rule executed against a
+      real Chromium + axe injection. Do NOT "fix" the intentional violations below.
+    -->
+    <main>
+      <h1>Runtime audit fixture</h1>
+
+      <!-- (1) axe-violations: an <img> with no alt text (WCAG 1.1.1 / axe image-alt). -->
+      <img
+        src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+        width="120"
+        height="60"
+      />
+
+      <!-- (3) oversaturated-accent: a full vivid blue (OKLCH chroma > 0.18). -->
+      <button style="background: rgb(29, 78, 216); color: #fff; border: 0; padding: 8px 16px">
+        Deploy
+      </button>
+
+      <!-- (2) target-size-min: a visible interactive target smaller than 24×24. -->
+      <button
+        aria-label="tiny"
+        style="width: 16px; height: 16px; padding: 0; border: 0; background: #ddd"
+      >
+        x
+      </button>
+
+      <!-- (4) emoji-rendered: an emoji that survived into product text (UTS #51). -->
+      <p>Deploy complete 🎉 all systems nominal.</p>
+
+      <!-- (5) alert-controls-misplaced: 2 icons, full-width action, vertical stack. -->
+      <div
+        data-slot="alert"
+        role="alert"
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          width: 480px;
+          padding: 12px;
+          background: #f5f5f5;
+        "
+      >
+        <span>
+          <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" /></svg>
+          <svg width="16" height="16" viewBox="0 0 16 16"><rect width="16" height="16" /></svg>
+        </span>
+        <span>Something needs your attention.</span>
+        <button style="width: 100%; padding: 8px; border: 0; background: #ccc">Acknowledge</button>
+      </div>
+    </main>
+  </body>
+</html>

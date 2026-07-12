@@ -276,7 +276,7 @@
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",
     "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm test",
-    "verify:release": "pnpm build && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm check:mcp-prop-sync && pnpm check:contrast && pnpm test",
+    "verify:release": "pnpm build && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm check:mcp-prop-sync && pnpm check:contrast && pnpm check:visual-audit && pnpm test",
     "check:mcp-sync": "node scripts/check-mcp-sync.mjs",
     "check:mcp-orphans": "node scripts/check-mcp-orphans.mjs",
     "check:mcp-prop-sync": "node scripts/check-mcp-prop-sync.mjs",
@@ -301,6 +301,7 @@
     "check:audit-sync": "node scripts/check-audit-sync.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "visual-audit": "node scripts/visual-audit.mjs",
+    "check:visual-audit": "node scripts/visual-audit-smoke.mjs",
     "postinstall": "node scripts/postinstall.mjs",
     "init-agent": "node scripts/init-agent-kit.mjs",
     "check:use-client": "node scripts/check-use-client.mjs"

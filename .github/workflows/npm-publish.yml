@@ -37,9 +37,9 @@ jobs:
           registry-url: https://registry.npmjs.org # writes ~/.npmrc using NODE_AUTH_TOKEN
       - run: pnpm install --frozen-lockfile
 
-      # verify:release runs check:contrast, which launches headless Chromium via
-      # Playwright — the browser binary isn't in the runner image, so install it.
-      - name: Install Playwright Chromium (for check:contrast)
+      # verify:release runs check:contrast + check:visual-audit, which launch headless
+      # Chromium via Playwright — the browser binary isn't in the runner image, so install it.
+      - name: Install Playwright Chromium (for check:contrast + check:visual-audit)
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Configure git author
