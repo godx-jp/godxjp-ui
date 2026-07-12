@@ -1,4 +1,11 @@
-import { Alert, AlertActions, AlertDescription, AlertTitle } from "@godxjp/ui/feedback";
+import {
+  Alert,
+  AlertActions,
+  AlertContent,
+  AlertDescription,
+  AlertQueryError,
+  AlertTitle,
+} from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -43,6 +50,26 @@ export default function Demo() {
                 <AlertTitle>インポートが完了しました</AlertTitle>
                 <AlertDescription>1,240 件の仕訳を取り込みました。</AlertDescription>
               </Alert>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>AlertContent + cause-aware query recovery</CardTitle>
+            <CardDescription>
+              Content groups copy; transient errors expose an explicit retry.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Alert tone="default">
+                <AlertContent>
+                  <AlertTitle>同期状態</AlertTitle>
+                  <AlertDescription>最終同期は 2 分前です。</AlertDescription>
+                </AlertContent>
+              </Alert>
+              <AlertQueryError error={new Error("Service unavailable: 503")} onRetry={() => {}} />
             </Flex>
           </CardContent>
         </Card>

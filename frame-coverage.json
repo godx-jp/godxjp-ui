@@ -746,6 +746,112 @@
         "status": "pass",
         "reason": "Rendered axe passed for decorative and labelled logos; keyboard is not applicable."
       }
+    },
+    "feedback/alert": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe plus dismiss/retry interaction tests passed."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed dismiss and cause-aware retry recovery tests passed."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Alert presents feedback and invokes callbacks but does not own pending async state."
+      }
+    },
+    "feedback/dialog": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe and dialog keyboard/focus tests passed."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed open, close, cancel, action and focus-dismiss journeys passed."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Dialog primitives do not own mutation pending or recovery state."
+      }
+    },
+    "feedback/sheet": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and Sheet keyboard/focus tests passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed trigger, Escape and close-control journeys passed."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Sheet primitives do not own mutation pending or recovery state."
+      }
+    },
+    "feedback/skeleton": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to inert placeholders."
+      },
+      "journey": {
+        "status": "not-applicable",
+        "reason": "Skeletons are inert loading representations with no entry/action/completion transition."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Skeletons display a caller-owned pending state and execute no async work."
+      }
+    },
+    "feedback/tooltip": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe plus focus/keyboard tooltip tests passed."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed focus/open/content and dismissal interaction coverage passed."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Tooltip delay is interaction timing, not asynchronous data or mutation state."
+      }
+    },
+    "query/query-refetch-button": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard activation passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed click-to-refetch and fetching-state journeys passed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed idle/fetching state and refetch invocation tests passed."
+      }
+    },
+    "general/reveal": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to a visual wrapper."
+      },
+      "journey": {
+        "status": "not-applicable",
+        "reason": "Reveal is a visual entrance wrapper and owns no user task transition."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "CSS entrance timing is not asynchronous data or mutation state."
+      }
     }
   }
 }

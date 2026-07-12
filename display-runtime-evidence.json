@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-07-12T14:32:57.887Z",
+  "auditedAt": "2026-07-12T14:38:48.108Z",
   "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
   "limitations": [
     "Automated Chromium DOM/geometry/axe/keyboard evidence only.",
@@ -290,6 +290,97 @@
       "evidence": [
         "artifacts/display-runtime/general-logo-320.png",
         "artifacts/display-runtime/general-logo-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-alert",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/feedback-alert-320.png",
+        "artifacts/display-runtime/feedback-alert-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-dialog",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/feedback-dialog-320.png",
+        "artifacts/display-runtime/feedback-dialog-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-sheet",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/feedback-sheet-320.png",
+        "artifacts/display-runtime/feedback-sheet-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-skeleton",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/feedback-skeleton-320.png",
+        "artifacts/display-runtime/feedback-skeleton-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-tooltip",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/feedback-tooltip-320.png",
+        "artifacts/display-runtime/feedback-tooltip-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-button-refetch",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-button-refetch-320.png",
+        "artifacts/display-runtime/query-button-refetch-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "general-reveal",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/general-reveal-320.png",
+        "artifacts/display-runtime/general-reveal-1920.png"
       ],
       "verdict": "pass"
     }

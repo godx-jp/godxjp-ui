@@ -30,6 +30,12 @@ const allFrames = [
   { id: "data-display-card", route: "data-display-card-index" },
   { id: "general-typography", route: "general-typography" },
   { id: "general-logo", route: "general-logo" },
+  ...["alert", "dialog", "sheet", "skeleton", "tooltip"].map((name) => ({
+    id: `feedback-${name}`,
+    route: `feedback-${name}`,
+  })),
+  { id: "query-button-refetch", route: "query-button-refetch" },
+  { id: "general-reveal", route: "general-reveal" },
 ];
 const requested = new Set((process.env.FRAMES ?? "").split(",").filter(Boolean));
 const frames = requested.size ? allFrames.filter(({ id }) => requested.has(id)) : allFrames;

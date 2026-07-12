@@ -1,4 +1,10 @@
-import { Skeleton, SkeletonDetail, SkeletonStat, SkeletonTable } from "@godxjp/ui/feedback";
+import {
+  Skeleton,
+  SkeletonDetail,
+  SkeletonRows,
+  SkeletonStat,
+  SkeletonTable,
+} from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 
@@ -39,6 +45,18 @@ export default function Demo() {
                 </Flex>
               </Flex>
             </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>SkeletonRows · generic repeated rows</CardTitle>
+            <CardDescription>
+              Use for non-table list layouts with deterministic row count.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SkeletonRows rows={3} columns={2} />
           </CardContent>
         </Card>
 
