@@ -21,6 +21,13 @@ export type PageContainerProp = {
   extra?: ExtraProp;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;
+  /**
+   * Override the breadcrumb `<nav>` landmark's accessible name. Defaults to a localized
+   * "Breadcrumb". Needed when more than one `PageContainer` (each with its own `breadcrumb`)
+   * renders on the same page/view — two `<nav>` landmarks sharing one name/role fail axe's
+   * `landmark-unique` (WCAG 2.4.1 / 1.3.1).
+   */
+  breadcrumbAriaLabel?: string;
   linkComponent?: React.ElementType;
   density?: PageDensityProp;
   variant?: PageContainerVariantProp;

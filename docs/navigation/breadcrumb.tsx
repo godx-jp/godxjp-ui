@@ -32,6 +32,7 @@ export default function Demo() {
                 { label: "会計", to: "/accounting" },
                 { label: "請求書 INV-0042" },
               ]}
+              aria-label="基本例のパンくずリスト"
             />
           </CardContent>
         </Card>
@@ -46,13 +47,17 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]} />
+              <Breadcrumb
+                items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]}
+                aria-label="2階層のパンくずリスト"
+              />
               <Breadcrumb
                 items={[
                   { label: "ホーム", to: "/" },
                   { label: "給与管理", to: "/payroll" },
                   { label: "2024年5月分給与明細" },
                 ]}
+                aria-label="3階層のパンくずリスト"
               />
               <Breadcrumb
                 items={[
@@ -61,6 +66,7 @@ export default function Demo() {
                   { label: "経理部", to: "/payroll/departments/accounting" },
                   { label: "田中 太郎" },
                 ]}
+                aria-label="4階層のパンくずリスト"
               />
             </Flex>
           </CardContent>
