@@ -328,6 +328,73 @@
         "reason": "Owner frame passed Axe after disabled-row contrast was fixed."
       }
     },
+    "NumberInput": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/number-input.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "SearchInput": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/search-input.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "PasswordInput": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/password-input.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe passed after accessible-name fixes." }
+    },
+    "InputOTP": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/input-otp.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "Rating": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/rating.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "TagInput": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/tag-input.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "Calendar": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/calendar.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe passed after contrast and nav-label fixes." }
+    },
+    "DateRangePicker": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered in docs/data-entry/date-range-picker.tsx."
+      },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "MonthRangePicker": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered in docs/data-entry/month-range-picker.tsx."
+      },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "Command": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/command.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe passed after loading-option semantics fix." },
+      "async": { "status": "pass", "reason": "Loading, results and empty async states render." }
+    },
     "Flex": {
       "isolated": { "status": "pass", "reason": "Rendered directly in docs/layout/flex.tsx." },
       "responsive": {
