@@ -33,6 +33,19 @@ describe("Sidebar submenu", () => {
     expect(child).toHaveAttribute("aria-current", "page");
   });
 
+  it("reveals a newly-active child after navigation (route-synchronized expansion)", () => {
+    // A route that is NOT inside the group → the group is collapsed, child hidden.
+    const { rerender } = renderWithUi(
+      <Sidebar activeId="settings" sections={sections} onSelect={() => undefined} />,
+    );
+    expect(screen.queryByRole("button", { name: "Journals" })).toBeNull();
+    // Navigating into a child route must OPEN the group and reveal the now-active child (gh#165 —
+    // the old `defaultOpen` only set mount-time state and left the child hidden).
+    rerender(<Sidebar activeId="journals" sections={sections} onSelect={() => undefined} />);
+    const child = screen.getByRole("button", { name: "Journals" });
+    expect(child).toHaveAttribute("aria-current", "page");
+  });
+
   it("navigates when a submenu child is clicked", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
@@ -54,17 +67,45 @@ describe("Sidebar submenu", () => {
     expect(onSelect).toHaveBeenCalledWith("journals");
   });
 
-  it("renders custom rows with renderItem when sections are used", () => {
+  it("merges renderItem's element as the row WITHOUT a nested interactive element", () => {
     renderWithUi(
       <Sidebar
         activeId="settings"
         sections={sections}
         onSelect={() => undefined}
-        renderItem={(item) => <span>Custom {item.label}</span>}
+        renderItem={(item) => <a href={`/${item.id}`}>Custom {item.label}</a>}
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Custom Settings" })).toBeInTheDocument();
+    // The consumer's <a> IS the row (Slot merges the row class + active state onto it) — it is a
+    // link, not wrapped in a <button>, so there is no nested interactive element (gh#165).
+    const link = screen.getByRole("link", { name: "Custom Settings" });
+    expect(link).toHaveClass("sb-nav-item");
+    expect(link).toHaveAttribute("aria-current", "page");
+    expect(link).toHaveAttribute("href", "/settings");
+    expect(link.querySelector("button")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Custom Settings" })).toBeNull();
+  });
+
+  it("renders an item.href row as a real anchor (no nested button)", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    renderWithUi(
+      <Sidebar activeId="reports" onSelect={onSelect}>
+        <SidebarSection label="Links">
+          <SidebarItem
+            item={{ id: "reports", label: "Reports", icon: FileText, href: "/reports" }}
+            active
+            onActivate={onSelect}
+          />
+        </SidebarSection>
+      </Sidebar>,
+    );
+    const link = screen.getByRole("link", { name: "Reports" });
+    expect(link).toHaveAttribute("href", "/reports");
+    expect(link).toHaveAttribute("aria-current", "page");
+    await user.click(link);
+    expect(onSelect).toHaveBeenCalledWith("reports");
   });
 
   it("renders custom children instead of sections", async () => {

@@ -168,7 +168,12 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                 // the density-aware --control-height tap target, centre the icon and hide the
                 // trailing chevron — no consumer descendant-selector overrides required.
                 "w-[length:var(--control-height)] justify-center ps-0 pe-0 [&_[data-slot=select-chevron]]:hidden"
-              : cn("w-full", TRIGGER_WIDTH[kind]),
+              : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
+                // caps at the container (`w-auto max-w-full`) instead of the old UNCONDITIONAL
+                // `w-full` — so a labeled picker dropped into a narrow topbar no longer stretches to
+                // fill the bar (gh#165). A form field that wants a full-width control passes
+                // `className="w-full"`, which wins over `w-auto`.
+                cn("w-auto max-w-full", TRIGGER_WIDTH[kind]),
             className,
           )}
           // The localized aria-label is ALWAYS applied — an icon-only trigger drops the visible

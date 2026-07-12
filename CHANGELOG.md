@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `AppShell` now OWNS an accessible mobile navigation drawer below `lg`: a hamburger trigger in the
+  topbar opens a focus-trapped `Sheet` (Esc + overlay close, focus returns to the trigger). New
+  props `mobileNav` (defaults to the `sidebar` node — pass a tailored menu, or `null` to opt out),
+  `mobileNavLabel`, `mobileNavOpen` and `onMobileNavOpenChange`. Hiding the sidebar without a
+  reachable alternative is no longer the shell's behavior (#165).
+- `Sidebar` items support real links without a nested interactive element: `SidebarItemProp.href`
+  renders the row as an `<a>`, and `renderItem` now merges its returned element as the row via Slot
+  (return a router `<Link>`) — no more `<button>`-wrapped custom content (#165).
+- `Pagination` gains `hideOnSinglePage` (default `true`): the bar is hidden for zero items and for a
+  single page; set `false` to opt in on one page (e.g. to keep `showTotal` visible). `total === 0`
+  is always hidden (#153).
 - **`CardTitle`** accepts a semantic heading `level` (`1`–`4`, default `3` — unchanged) and an
   `as` override (`h1`–`h4`/`p`/`div`) so consumers keep a valid document outline
   (`h1 → h2 → h3`, no skipped levels) without changing the title's token-driven size. Use `as="p"`
@@ -21,6 +32,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clearing the axe `empty-table-header` violation. DataTable now **dev-warns** when a rendered
   `<th>` has neither visible nor accessible text. Official DataTable examples set `ariaLabel` on
   their action columns. (#155)
+
+### Changed
+
+- `Pagination` is now ONE horizontal row on desktop and never wraps — `.ui-pagination` drops
+  `flex-wrap: wrap`; the page-number strip scrolls horizontally on overflow and the total label
+  truncates. Use `simple` for the intentional compact mobile form (#153).
+- `ResponsiveGrid` and `SplitPane` now OWN their query container (`container-type: inline-size`) and
+  use container queries, so they respond to the width available to the component instead of the
+  viewport or an undeclared ancestor `container-type`. `SplitPane`'s split threshold moved from a
+  `1080px` viewport media query to a `48rem` container query; `ResponsiveGrid` thresholds are
+  `40rem / 48rem / 64rem` container widths (#165).
+- `Sidebar` group expansion is route-synchronized: a group opens whenever `activeId` moves to one of
+  its children, revealing the newly-active child after navigation (was a mount-only `defaultOpen`)
+  (#165).
+- `AppSettingPicker` `appearance="labeled"` no longer forces `w-full` below `640px` — it hugs its
+  content (`w-auto max-w-full`) on narrow screens and takes its per-kind fixed width from `sm` up, so
+  it fits a topbar. Pass `className="w-full"` for a full-width form field (#165).
+
+## [17.0.0] - 2026-07-12
 
 > **BREAKING (major):** `Flex` now defaults to `direction="row"` (was `col`). Any `<Flex>` that
 > relied on the implicit vertical stack must add `direction="col"`. See the migration note below.

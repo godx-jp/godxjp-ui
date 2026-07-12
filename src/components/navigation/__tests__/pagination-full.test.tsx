@@ -12,6 +12,28 @@ describe("Pagination — total + size changer", () => {
     expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
     rerender(<Pagination value={1} total={10} pageSize={10} />);
     expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+    // Exactly on the page-size boundary is one page → still hidden.
+    rerender(<Pagination value={1} total={7} pageSize={10} />);
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+  });
+
+  it("hideOnSinglePage={false} opts in to the bar on a single page (still hidden at total=0)", () => {
+    const { rerender } = renderWithUi(
+      <Pagination value={1} total={8} pageSize={10} showTotal hideOnSinglePage={false} />,
+    );
+    // One page but opted in → the bar renders, so the total stays visible.
+    expect(screen.getByRole("navigation")).toBeInTheDocument();
+    expect(screen.getByText(/8/)).toBeInTheDocument();
+    // total=0 is ALWAYS hidden — there is nothing to navigate, even opted in.
+    rerender(<Pagination value={1} total={0} pageSize={10} showTotal hideOnSinglePage={false} />);
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+  });
+
+  it("renders the full pager for multiple pages", () => {
+    renderWithUi(<Pagination value={1} total={30} pageSize={10} />);
+    expect(screen.getByRole("navigation")).toBeInTheDocument();
+    // 3 page buttons + prev + next.
+    expect(screen.getByRole("button", { name: /trang 3/i })).toBeInTheDocument();
   });
 
   it("renders a string total summary when showTotal is set", () => {

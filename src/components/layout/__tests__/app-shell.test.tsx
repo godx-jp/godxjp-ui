@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { AppShell } from "../app-shell";
-import { renderWithUi } from "@/test/render";
+import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { expectNoA11yViolations } from "@/test/a11y";
 
 describe("AppShell", () => {
@@ -62,6 +62,47 @@ describe("AppShell", () => {
       </AppShell>,
     );
     expect(container.querySelector(".app-root")).toHaveAttribute("data-collapsed", "true");
+  });
+
+  it("owns a mobile nav drawer trigger with an accessible name (defaults to the sidebar node)", () => {
+    renderWithUi(
+      <AppShell sidebar={<nav aria-label="主">サイドナビ</nav>}>
+        <p>本文</p>
+      </AppShell>,
+    );
+    // AppShell renders its own hamburger — the mobile nav is never merely hidden (gh#165).
+    expect(screen.getByRole("button", { name: "Mở menu điều hướng" })).toBeInTheDocument();
+  });
+
+  it("opens a focus-trapped drawer and returns focus to the trigger on close", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <AppShell
+        sidebar={<nav aria-label="主">サイドナビ</nav>}
+        mobileNav={<nav aria-label="モバイル">ドロワーナビ</nav>}
+      >
+        <p>本文</p>
+      </AppShell>,
+    );
+    const trigger = screen.getByRole("button", { name: "Mở menu điều hướng" });
+    await user.click(trigger);
+    // Drawer is a dialog (Sheet) with the localized title, containing the mobile nav.
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog).toBeInTheDocument();
+    expect(screen.getByText("ドロワーナビ")).toBeInTheDocument();
+    // Esc closes and focus returns to the trigger (Radix Dialog focus management).
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
+  it("mobileNav={null} opts out — no drawer trigger is rendered", () => {
+    renderWithUi(
+      <AppShell sidebar={<nav aria-label="主">n</nav>} mobileNav={null}>
+        x
+      </AppShell>,
+    );
+    expect(screen.queryByRole("button", { name: "Mở menu điều hướng" })).toBeNull();
   });
 
   it("has no axe violations", async () => {

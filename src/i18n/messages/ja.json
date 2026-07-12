@@ -129,7 +129,9 @@
       "sidebarLabel": "サイドバー",
       "headerLabel": "ヘッダー",
       "mainLabel": "メインコンテンツ",
-      "footerLabel": "フッター"
+      "footerLabel": "フッター",
+      "openNav": "ナビゲーションメニューを開く",
+      "navLabel": "メニュー"
     },
     "authShell": {
       "brandLabel": "ブランド",

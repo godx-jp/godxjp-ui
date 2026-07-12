@@ -129,7 +129,9 @@
       "sidebarLabel": "Thanh bên",
       "headerLabel": "Đầu trang",
       "mainLabel": "Nội dung chính",
-      "footerLabel": "Chân trang"
+      "footerLabel": "Chân trang",
+      "openNav": "Mở menu điều hướng",
+      "navLabel": "Menu"
     },
     "authShell": {
       "brandLabel": "Thương hiệu",
