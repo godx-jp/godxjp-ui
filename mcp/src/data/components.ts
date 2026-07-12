@@ -1153,7 +1153,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         type: "ColumnDef<T>[]",
         required: true,
         description:
-          "Lean column definitions (adapted to TanStack internally). Each column: { key: string; header: ReactNode; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end' }. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column.",
+          "Lean column definitions (adapted to TanStack internally). Each column: { key: string; header: ReactNode; ariaLabel?: string; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end' }. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column. ariaLabel gives a VISUALLY-EMPTY header (header='' — an action or selection column) a screen-reader name (e.g. 'Actions'/'Select'): it renders as an sr-only label inside the <th> so the column is never nameless (axe: empty-table-header). DataTable dev-warns when a column has an empty header and no ariaLabel.",
       },
       {
         name: "getRowId",
@@ -1288,6 +1288,8 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       "DO use DataTable.Toolbar as the immediate child that wraps search/filter controls on the left and DataTable.DensityToggle/action buttons on the right. DataTable.BulkActions inside the toolbar auto-hides when selection count is 0; it accepts either plain ReactNode children (built-in 'N selected' status bar) or a (count)=>node render-prop (you own the whole bar).",
       "DO reach for the grid chrome (DataTable.Search, DataTable.ViewOptions, DataTable.Pagination pageSizeOptions) when you need global search, a column 'set view' picker, or numbered pagination — these are the merged former-DataGrid features, now on the one DataTable. Drive them client-side by default; pass the matching state + manual* flag for a server query.",
       "DO use ColumnDef.render for custom cell content (Badge, Link, RowActions). For plain string/number fields render can be omitted — DataTable falls back to String(row[key]).",
+      "DO give every visually-empty column an accessible header via `ariaLabel` — a row-actions column (`header: ''`, `pin: 'end'`) sets `ariaLabel: t('actions')`, so screen readers announce the column and axe reports no `empty-table-header`. DataTable dev-warns any column that renders a `<th>` with neither visible text nor an `ariaLabel`. The selection column added by `selectable` is already named by its SelectAll checkbox — no `ariaLabel` needed there.",
+      "COLUMN SEMANTICS + KEYBOARD: a `sortable` header renders as a real <button> inside the <th> with `aria-sort` (ascending/descending/none) on the <th>; it is Tab-reachable and toggles asc → desc → cleared on Enter/Space/click. A selection column exposes a header 'select all' Checkbox (indeterminate when a subset is selected) and a per-row Checkbox, each keyboard-operable with Space. An action column is visually empty but carries an `ariaLabel`; its per-row controls (kebab menu / buttons) own their own accessible names and keyboard behavior. Row click (`onRowClick`) is suppressed when the user activates an interactive descendant.",
       "DO NOT nest DataTable.Content in a conditional — it is already guarded internally. If you need to override the table body slot, drop exactly one <DataTable.Content /> in children; DataTable auto-detects it by displayName and skips the default.",
     ],
     useCases: [
@@ -1410,6 +1412,7 @@ export default function InvoiceList({
     usage: [
       'DO always wrap body content in <CardContent> — the bare <Card> div has zero inner padding; content renders flush against card edges without it. Never add className="p-4" directly on <Card> as a substitute.',
       "DO put titles/descriptions in <CardHeader>/<CardTitle>/<CardDescription>. Use <CardHeader banded> for a visually separated muted-background header band (mirrors <CardFooter separated>). Pair with <CardAction> inside a flex-row CardHeader for header-level action buttons.",
+      "DO set <CardTitle level={n}> to keep a valid document outline (h1 → h2 → h3, no skipped levels): CardTitle renders <h3> by default, so a section card directly under a page <h1> needs level={2}. Pick the level by OUTLINE position, NEVER for visual size — the title size is fixed by tokens and does not change with level. When the card title is a styled label rather than a section heading, use <CardTitle as=\"p\"> so it is not announced as a heading.",
       "DO use <CardContent flush> for edge-to-edge children such as DataTable, Table, or a Tabs list — this removes horizontal padding. Combine with <CardContent tight> when there is no visual gap needed after the header, and <CardContent solo> when there is no CardHeader above (top padding matches the card shell).",
       "DO use <CardFooter separated> to render a top-bordered action band (Save/Cancel buttons, table summary row). Use <CardFooter flush> for a full-bleed footer bar.",
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
@@ -1817,9 +1820,23 @@ import { Smartphone } from "lucide-react";
         description:
           "Medallion colour intent (a subset of the shared tone vocabulary; `destructive` is the DS name for a danger state). Tints the icon foreground + fill from the matching role token — set `success` for a confirmation zero-state (e.g. device approved) instead of hand-rolling a `.ui-success-state` class.",
       },
+      {
+        name: "titleLevel",
+        type: "1 | 2 | 3 | 4",
+        defaultValue: "3",
+        description:
+          "Semantic heading level of the title. Pick it to keep the page outline valid (h1 → h2 → h3, no skipped levels), NEVER for visual size — the title size is fixed regardless of level. A page/onboarding empty state directly under the page h1 uses titleLevel={2}; one nested in an already-h2 section keeps the default 3.",
+      },
+      {
+        name: "titleAs",
+        type: '"h1" | "h2" | "h3" | "h4" | "p" | "div"',
+        description:
+          "Render the title as a non-heading element (p/div) instead of a heading — for a compact/section empty state inside a section that already owns its heading, so the message is not announced as a heading and cannot skip an outline level. Overrides titleLevel.",
+      },
     ],
     usage: [
-      "DO always pass `title` — it is the only required prop and renders an `<h3>`; omitting it causes a blank silent render with no visible error.",
+      "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
+      "DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs=\"p\"` so the message is not a heading at all.",
       'DO use `tone="success"` (or warning/destructive/info) for a semantic confirmation/alert zero-state — it recolours the icon medallion from the role token; do NOT hand-roll a `.ui-success-state` class that scopes `--empty-state-icon-*`.',
       "DO use the `icon` prop (a Lucide icon component, not a JSX element) to give visual context — e.g. `icon={InboxIcon}` for empty inboxes, `icon={SearchIcon}` after a failed search. Pass the component reference, not `<InboxIcon />`.",
       "DO use `action` (a `ReactNode`, typically a `<Button>`) for actionable zero-states — e.g. 'Create first invoice' — so users have a clear next step instead of a dead end.",
@@ -1827,6 +1844,8 @@ import { Smartphone } from "lucide-react";
       "DO NOT use EmptyState inside a `DataState` or `InfiniteQueryState` for the loading or error states — those widgets handle skeleton/error themselves; pass `EmptyState` only to their `empty=` prop for the zero-items case.",
       "DO NOT add padding directly on `EmptyState` via `className` when placing it inside a `Card` — wrap it in `<CardContent>` first; EmptyState is a self-contained block with its own internal spacing via `ui-empty-state` styles.",
       "DO omit optional secondary sections when absence has no user value. Otherwise use variant='compact' or 'section'; reserve page for the primary page job.",
+      "DO match empty-state visual weight to the section's importance and expected content density — a low-priority 'no received invitations' block uses variant='compact' (no medallion, minimal padding), not the full page treatment that would outweigh real content.",
+      "DO NOT wrap every empty condition in its own bordered Card. A compact/section empty state sits directly in the existing CardContent / section it belongs to; a dedicated bordered Card is only for a page-level or standalone zero-state.",
     ],
     useCases: [
       "Zero-row admin list pages (invoices, accounts, transactions) that are NOT backed by a `DataTable` — e.g. a card-grid or custom list layout where DataTable's built-in empty state doesn't apply.",

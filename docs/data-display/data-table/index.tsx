@@ -66,7 +66,9 @@ const columns: ColumnDef<Invoice>[] = [
   {
     key: "_actions",
     header: "",
+    ariaLabel: "操作",
     align: "right",
+    enableHiding: false,
     render: (row) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
