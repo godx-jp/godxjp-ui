@@ -7,13 +7,18 @@ import type { BreadcrumbProp } from "../../props/vocabulary/navigation.prop";
 export type BreadcrumbProps = {
   items: BreadcrumbProp;
   linkComponent?: ElementType;
+  ariaLabel?: string;
 };
 
-export function Breadcrumb({ items, linkComponent: LinkComponent = "a" }: BreadcrumbProps) {
+export function Breadcrumb({
+  items,
+  linkComponent: LinkComponent = "a",
+  ariaLabel,
+}: BreadcrumbProps) {
   const { t } = useTranslation();
 
   return (
-    <nav aria-label={t("navigation.breadcrumb.ariaLabel")} className="ui-breadcrumb">
+    <nav aria-label={ariaLabel ?? t("navigation.breadcrumb.ariaLabel")} className="ui-breadcrumb">
       <ol className="ui-breadcrumb-list">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;

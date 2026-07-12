@@ -27,6 +27,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Breadcrumb
+              ariaLabel="基本例のパンくず"
               items={[
                 { label: "ホーム", to: "/" },
                 { label: "会計", to: "/accounting" },
@@ -46,8 +47,12 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]} />
               <Breadcrumb
+                ariaLabel="短い例のパンくず"
+                items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]}
+              />
+              <Breadcrumb
+                ariaLabel="深い階層例のパンくず"
                 items={[
                   { label: "ホーム", to: "/" },
                   { label: "給与管理", to: "/payroll" },
@@ -55,6 +60,7 @@ export default function Demo() {
                 ]}
               />
               <Breadcrumb
+                ariaLabel="長いラベル例のパンくず"
                 items={[
                   { label: "ホーム", to: "/" },
                   { label: "給与管理", to: "/payroll" },

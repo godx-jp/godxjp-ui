@@ -648,6 +648,43 @@
       },
       "a11y": { "status": "pass", "reason": "Isolated Topbar frame passed Axe analysis." }
     },
+    "Breadcrumb": {
+      "responsive": { "status": "pass", "reason": "Breadcrumb frame passed all eight widths." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Multi-breadcrumb frame passed Axe with unique landmark names."
+      }
+    },
+    "ContextMenu": {
+      "responsive": { "status": "pass", "reason": "ContextMenu frame passed all eight widths." },
+      "a11y": { "status": "pass", "reason": "ContextMenu owner frame passed Axe." }
+    },
+    "DropdownMenu": {
+      "responsive": { "status": "pass", "reason": "DropdownMenu frame passed all eight widths." },
+      "a11y": { "status": "pass", "reason": "DropdownMenu owner frame passed Axe." }
+    },
+    "Menubar": {
+      "responsive": { "status": "pass", "reason": "Menubar frame passed all eight widths." },
+      "a11y": { "status": "pass", "reason": "Menubar owner frame passed Axe." }
+    },
+    "NavigationMenu": {
+      "responsive": {
+        "status": "pass",
+        "reason": "NavigationMenu frame passed all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "NavigationMenu owner frame passed Axe." }
+    },
+    "Steps": {
+      "responsive": { "status": "pass", "reason": "Steps frame passed all eight widths." },
+      "a11y": { "status": "pass", "reason": "Steps owner frame passed Axe." }
+    },
+    "Toolbar": {
+      "responsive": { "status": "pass", "reason": "Toolbar frame passed all eight widths." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Toolbar frame passed Axe after all Select triggers received accessible names."
+      }
+    },
     "Dialog": {
       "responsive": {
         "status": "pass",
