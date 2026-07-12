@@ -2064,6 +2064,8 @@ import { Smartphone } from "lucide-react";
       "DON'T: use DataState for `useInfiniteQuery` results. The `query` prop type is `UseQueryResult<T>`, not `UseInfiniteQueryResult`. Use `InfiniteQueryState` (from `@godxjp/ui/query`) instead, which accepts `flatten` and renders a load-more footer.",
       "DO: classify errors by cause. Use session renewal/sign-in for 401, access guidance for 403, contextual correction for domain errors, and opt into showRetry only for transient network/5xx errors.",
       "DO: pass prerequisite for enabled:false queries. Pending + fetchStatus idle is unstarted, not loading, and never renders a skeleton.",
+      "DO: rely on the localized, cause-specific error message — the raw backend/token/stack text is never shown. For a domain-specific message (e.g. a 422 field error) pass a custom errorRenderer.",
+      "DO: expect a background refetch over existing data to keep the content on screen with a polite sr-only busy status — it does not flash the skeleton. Only the initial fetch (isPending) shows the skeleton.",
     ],
     useCases: [
       "A detail page that loads a single invoice/journal entry via `useQuery` — DataState renders the skeleton row while fetching, an error alert with retry if the API fails, and the `<InvoiceCard>` only when data is confirmed non-null.",
@@ -2084,12 +2086,7 @@ import { Smartphone } from "lucide-react";
   {(d) => <MemberTable items={d.items} />}
 </DataState>`,
     storyPath: "query/DataState.stories.tsx",
-    rules: [
-      "Errors are classified by cause (via classifyQueryError). Retry is offered ONLY for transient/network/5xx; a 401/expired-token routes to session renewal through onAuthError; 403/404/422 present a cause-aware message with no blind retry.",
-      "The user-facing detail is a localized, cause-specific message — the raw backend/token/stack text is never shown. For a domain-specific message (e.g. a 422 field error) pass a custom errorRenderer.",
-      "A disabled/unstarted query (enabled:false → isPending with fetchStatus 'idle') renders the prerequisite slot, never the skeleton. Always pass prerequisite for tenant/org-gated queries.",
-      "A background refetch over existing data keeps the content on screen with a polite sr-only busy status — it does not flash the skeleton. Only the initial fetch (isPending) shows the skeleton.",
-    ],
+    rules: [],
   },
   {
     name: "InfiniteQueryState",
