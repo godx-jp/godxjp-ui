@@ -59,13 +59,13 @@ describe("pickers — value arriving after an undefined mount is honored", () =>
     const { rerender } = renderWithUi(
       <MonthPicker value={undefined} onValueChange={onValueChange} />,
     );
-    expect(screen.getByRole("textbox")).toHaveValue("");
+    expect(screen.getByRole("combobox")).toHaveValue("");
 
     rerender(<MonthPicker value={new Date(2026, 4, 1)} onValueChange={onValueChange} />);
-    expect(screen.getByRole("textbox")).toHaveValue("2026/05");
+    expect(screen.getByRole("combobox")).toHaveValue("2026/05");
 
     rerender(<MonthPicker value={undefined} onValueChange={onValueChange} />);
-    expect(screen.getByRole("textbox")).toHaveValue("");
+    expect(screen.getByRole("combobox")).toHaveValue("");
   });
 
   it("MonthRangePicker", () => {

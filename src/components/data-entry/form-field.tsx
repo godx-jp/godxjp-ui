@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
+import { mergeAriaIds } from "../../lib/field-a11y";
 import { useFormLayout } from "./form";
 import type { FormFieldProp } from "../../props/components/data-entry.prop";
 import type { WidthProp } from "../../props/vocabulary";
@@ -63,10 +64,7 @@ export function FormField({
   const childProps = React.isValidElement(children)
     ? (children.props as Record<string, unknown>)
     : undefined;
-  const mergeIds = (...values: Array<string | undefined>) =>
-    Array.from(new Set(values.flatMap((value) => value?.split(/\s+/).filter(Boolean) ?? []))).join(
-      " ",
-    ) || undefined;
+  const mergeIds = mergeAriaIds;
   const childWithA11y = React.isValidElement(children)
     ? React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
         // The label is associated via aria-labelledby (not <label for>): composite

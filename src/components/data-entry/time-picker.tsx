@@ -3,6 +3,7 @@ import { Clock } from "lucide-react";
 
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { isValidHhmm, normalizeHhmm } from "../../lib/datetime";
+import { pickFieldA11y } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Input } from "./input";
@@ -257,11 +258,16 @@ export function TimePicker({
   name,
   minuteStep = 5,
   allowClear = true,
+  ...ariaProps
 }: TimePickerProp) {
   const { t } = useTranslation();
   const { timeFormat } = usePickerLocales();
   const use12h = timeFormat === "12h";
   const [open, setOpen] = React.useState(false);
+  // Forward the FormField label/helper/error contract onto the typeable input (focus target).
+  const fieldA11y = pickFieldA11y(ariaProps);
+  const reactId = React.useId();
+  const dialogId = `${id ?? reactId}-dialog`;
   const [internal, setInternal] = React.useState(defaultValue ?? "");
   const isControlled = controlledValue !== undefined;
   const value = isControlled ? controlledValue : internal;
@@ -300,6 +306,8 @@ export function TimePicker({
             role="combobox"
             aria-expanded={open}
             aria-haspopup="dialog"
+            aria-controls={open ? dialogId : undefined}
+            {...fieldA11y}
             className="tabular-nums"
             allowClear={allowClear}
             onClear={clear}
@@ -340,6 +348,9 @@ export function TimePicker({
         </div>
       </PopoverAnchor>
       <PopoverContent
+        id={dialogId}
+        role="dialog"
+        aria-label={t("dataEntry.timePicker.openPicker") ?? "Time picker"}
         className="w-auto p-0"
         align="end"
         onOpenAutoFocus={(event) => event.preventDefault()}

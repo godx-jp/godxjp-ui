@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { resolveFieldA11y } from "../../lib/field-a11y";
 import { controlIconClass } from "../../lib/control-styles";
 import type { ColorPickerProp } from "../../props/components/data-entry.prop";
 import { Input } from "./input";
@@ -24,10 +25,15 @@ export function ColorPicker({
   className,
   id,
   showHexInput = true,
+  ...ariaProps
 }: ColorPickerProp) {
   const { t } = useTranslation();
   const [draft, setDraft] = React.useState<string | null>(null);
   const display = draft ?? value;
+  // The native <input type="color"> is the primary focus target — forward the FormField
+  // label/helper/error contract onto it (a FormField label via aria-labelledby wins over the
+  // intrinsic "Color" aria-label). The hex mirror keeps its own descriptive label.
+  const swatchA11y = resolveFieldA11y(ariaProps, t("dataEntry.colorPicker.ariaLabel"));
 
   const commit = (next: string) => {
     const normalized = normalizeHex(next);
@@ -54,7 +60,7 @@ export function ColorPicker({
           disabled={disabled}
           onChange={(event) => commit(event.target.value)}
           className="ui-color-picker-input"
-          aria-label={t("dataEntry.colorPicker.ariaLabel")}
+          {...swatchA11y}
         />
       </div>
       {showHexInput && (

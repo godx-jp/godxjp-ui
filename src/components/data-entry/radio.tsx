@@ -3,6 +3,7 @@ import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { Circle } from "lucide-react";
 
 import { cn } from "../../lib/utils";
+import { pickFieldA11y } from "../../lib/field-a11y";
 import { Field } from "./field";
 import { choiceGroupClassName, type ChoiceOption } from "./choice-option";
 import type { RadioGroupProp } from "../../props/components/data-entry.prop";
@@ -56,10 +57,15 @@ function RadioGroupOptions({
   orientation = "vertical",
   disabled,
   name,
+  id,
   className,
   children,
+  ...ariaProps
 }: RadioGroupProp) {
   const reactId = React.useId();
+  // role="radiogroup" IS a widget → it supports the full validation contract (aria-invalid /
+  // -errormessage / -required), so forward every field-a11y relationship FormField injects.
+  const groupA11y = pickFieldA11y(ariaProps);
 
   if (options && options.length > 0) {
     return (
@@ -69,6 +75,8 @@ function RadioGroupOptions({
         onValueChange={onValueChange}
         disabled={disabled}
         name={name}
+        id={id}
+        {...groupA11y}
         data-orientation={orientation}
         className={choiceGroupClassName(orientation, className)}
       >
@@ -91,6 +99,8 @@ function RadioGroupOptions({
       onValueChange={onValueChange}
       disabled={disabled}
       name={name}
+      id={id}
+      {...groupA11y}
       data-orientation={orientation}
       className={choiceGroupClassName(orientation, className)}
     >

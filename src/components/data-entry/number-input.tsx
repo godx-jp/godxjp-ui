@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { pickFieldA11y } from "../../lib/field-a11y";
 import { Button } from "../general/button";
 import { Input } from "./input";
 import type { NumberInputProp } from "../../props/components/data-entry.prop";
@@ -62,14 +63,15 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
       name,
       id,
       className,
-      "aria-label": ariaLabel,
-      "aria-labelledby": ariaLabelledby,
-      "aria-describedby": ariaDescribedby,
       "data-testid": dataTestId,
+      ...ariaProps
     },
     ref,
   ) => {
     const { t, locale } = useTranslation();
+    // Forward the full FormField label/helper/error/required/invalid contract onto the
+    // role="spinbutton" input (the focus target) — not just name/description (#164).
+    const fieldA11y = pickFieldA11y(ariaProps);
 
     const isControlled = controlledValue !== undefined;
     const [internal, setInternal] = React.useState<number | null>(defaultValue);
@@ -206,9 +208,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProp>(
           placeholder={placeholder}
           disabled={disabled}
           readOnly={readOnly}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledby}
-          aria-describedby={ariaDescribedby}
+          {...fieldA11y}
           aria-valuenow={numericValue ?? undefined}
           aria-valuemin={min}
           aria-valuemax={max}
