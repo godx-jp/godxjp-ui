@@ -56,11 +56,11 @@ function IsolateApp() {
         {/* Demos are authored in Japanese; force ja so component chrome (search/clear/empty
             placeholders via t()) matches the demo copy instead of the AppProvider vi default. */}
         <AppProvider defaultLocale="ja" persist={false}>
-          <main>
+          <div>
             <StoryErrorBoundary storyId={story.id}>
               <Render />
             </StoryErrorBoundary>
-          </main>
+          </div>
         </AppProvider>
       </MemoryRouter>
     </QueryClientProvider>
