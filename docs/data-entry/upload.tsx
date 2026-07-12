@@ -23,6 +23,16 @@ export default function Demo() {
   const [pictureItem, setPictureItem] = useState<UploadFileItem[]>([]);
   const [avatarItem, setAvatarItem] = useState<UploadFileItem[]>([]);
   const [avatarCropItem, setAvatarCropItem] = useState<UploadFileItem[]>([]);
+  const failedItems: UploadFileItem[] = [
+    {
+      uid: "failed-invoice",
+      name: "invoice-too-large.pdf",
+      size: 25 * 1024 * 1024,
+      mimeType: "application/pdf",
+      status: "error",
+      error: "20 MB 以下のファイルを選択してください",
+    },
+  ];
 
   return (
     <PageContainer
@@ -47,6 +57,31 @@ export default function Demo() {
               maxSizeBytes={20 * 1024 * 1024}
               onUpload={noopUpload}
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Error and recovery</CardTitle>
+            <CardDescription>
+              失敗理由は対象ファイルの行に表示する。Upload は自動 retry prop を持たないため、
+              不正なファイルを削除して修正済みファイルを再選択する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Upload variant="button" value={failedItems} onValueChange={() => {}} removable />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Disabled · populated</CardTitle>
+            <CardDescription>
+              権限不足時も既存ファイル名を保ったまま操作を無効化する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Upload variant="button" value={failedItems} onValueChange={() => {}} disabled />
           </CardContent>
         </Card>
 

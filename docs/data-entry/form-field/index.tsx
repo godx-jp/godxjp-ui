@@ -46,6 +46,25 @@ export default function Demo() {
                   ]}
                 />
               </FormField>
+              <FormField
+                id="ff-required-status"
+                label="承認状態"
+                required
+                helper="承認ワークフローで使用します"
+                error="承認状態を選択してください"
+              >
+                <Select
+                  id="ff-required-status"
+                  name="approval_status"
+                  value=""
+                  onValueChange={() => {}}
+                  placeholder="状態を選択"
+                  options={[
+                    { value: "pending", label: "承認待ち" },
+                    { value: "approved", label: "承認済み" },
+                  ]}
+                />
+              </FormField>
             </Flex>
           </CardContent>
         </Card>

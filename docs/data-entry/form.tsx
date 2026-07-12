@@ -170,6 +170,29 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Density · compact / default / comfortable</CardTitle>
+            <CardDescription>
+              density はフォーム全体の縦方向リズムを変更する。入力サイズやラベル関係は変えない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              {(["compact", "default", "comfortable"] as const).map((density) => (
+                <Form key={density} density={density} columns={2}>
+                  <FormField id={`density-${density}-name`} label={`${density} · 氏名`}>
+                    <Input id={`density-${density}-name`} defaultValue="山田 太郎" />
+                  </FormField>
+                  <FormField id={`density-${density}-email`} label="メール" helper="連絡先">
+                    <Input id={`density-${density}-email`} defaultValue="taro@example.jp" />
+                  </FormField>
+                </Form>
+              ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>選択系 · Select / TreeSelect / Cascader</CardTitle>
             <CardDescription>
               単一選択・階層ツリー選択・カスケード選択。いずれも options/treeData
