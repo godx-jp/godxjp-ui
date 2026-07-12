@@ -47,4 +47,28 @@ describe("frame coverage checker", () => {
       }),
     ).toThrow();
   });
+
+  it("rejects a screen-reader PASS without real AT evidence metadata", () => {
+    const directory = mkdtempSync(join(tmpdir(), "screen-reader-evidence-"));
+    const config = JSON.parse(readFileSync("frame-coverage.json", "utf8"));
+    config.dimensions.screenReader = {
+      status: "pass",
+      reason: "This deliberately invalid fixture has no linked real-AT evidence.",
+    };
+    const configPath = join(directory, "coverage.json");
+    const evidencePath = join(directory, "evidence.json");
+    writeFileSync(configPath, JSON.stringify(config));
+    writeFileSync(evidencePath, JSON.stringify({ schemaVersion: 1, records: [] }));
+
+    expect(() =>
+      execFileSync(process.execPath, ["scripts/check-screen-reader-evidence.mjs"], {
+        env: {
+          ...process.env,
+          FRAME_COVERAGE_CONFIG: configPath,
+          SCREEN_READER_EVIDENCE_CONFIG: evidencePath,
+        },
+        stdio: "pipe",
+      }),
+    ).toThrow();
+  });
 });
