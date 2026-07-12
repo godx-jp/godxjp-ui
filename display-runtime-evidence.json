@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-07-12T14:38:48.108Z",
+  "auditedAt": "2026-07-12T14:45:14.746Z",
   "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
   "limitations": [
     "Automated Chromium DOM/geometry/axe/keyboard evidence only.",
@@ -381,6 +381,84 @@
       "evidence": [
         "artifacts/display-runtime/general-reveal-320.png",
         "artifacts/display-runtime/general-reveal-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "providers-app-provider",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/providers-app-provider-320.png",
+        "artifacts/display-runtime/providers-app-provider-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "providers-format-date",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/providers-format-date-320.png",
+        "artifacts/display-runtime/providers-format-date-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-data-state",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-data-state-320.png",
+        "artifacts/display-runtime/query-data-state-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-infinite-query-state",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-infinite-query-state-320.png",
+        "artifacts/display-runtime/query-infinite-query-state-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-mutation-feedback",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-mutation-feedback-320.png",
+        "artifacts/display-runtime/query-mutation-feedback-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-prefetch-link",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-prefetch-link-320.png",
+        "artifacts/display-runtime/query-prefetch-link-1920.png"
       ],
       "verdict": "pass"
     }

@@ -1004,6 +1004,58 @@
         "status": "not-applicable",
         "reason": "CSS entrance timing is not asynchronous data or mutation state."
       }
+    },
+    "query/data-state": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard recovery smoke passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed loading, prerequisite, empty, success, transient retry and auth recovery tests passed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed initial loading, paused, background refresh, error and retry states passed."
+      }
+    },
+    "query/infinite-query-state": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard load-more smoke passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed loading, empty, error/recovery, data and load-more journeys passed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed fetch-next-page pending/completion, transient retry and auth routing tests passed."
+      }
+    },
+    "query/mutation-feedback": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard mutation smoke passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed idle, pending, error/retry and successful-clear states passed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed mutation pending, error and completion state tests passed."
+      }
+    },
+    "query/prefetch-link": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard link smoke passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed hover, focus, both and disabled-prefetch modes passed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed hover/focus query prefetch invocation and deduplication tests passed."
+      }
     }
   }
 }

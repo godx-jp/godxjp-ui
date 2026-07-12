@@ -36,6 +36,12 @@ const allFrames = [
   })),
   { id: "query-button-refetch", route: "query-button-refetch" },
   { id: "general-reveal", route: "general-reveal" },
+  { id: "providers-app-provider", route: "providers-app-provider" },
+  { id: "providers-format-date", route: "providers-format-date" },
+  ...["data-state", "infinite-query-state", "mutation-feedback", "prefetch-link"].map((name) => ({
+    id: `query-${name}`,
+    route: `query-${name}`,
+  })),
 ];
 const requested = new Set((process.env.FRAMES ?? "").split(",").filter(Boolean));
 const frames = requested.size ? allFrames.filter(({ id }) => requested.has(id)) : allFrames;
