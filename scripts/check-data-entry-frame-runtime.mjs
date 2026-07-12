@@ -24,6 +24,16 @@ const defaultStories = [
   "data-entry-cascader",
   "data-entry-tree-select",
   "data-entry-transfer",
+  "data-entry-number-input",
+  "data-entry-search-input",
+  "data-entry-password-input",
+  "data-entry-input-otp",
+  "data-entry-rating",
+  "data-entry-tag-input",
+  "data-entry-calendar",
+  "data-entry-date-range-picker",
+  "data-entry-month-range-picker",
+  "data-entry-command",
 ];
 const stories = process.env.DATA_ENTRY_STORIES?.split(",").filter(Boolean) ?? defaultStories;
 const ignoredPageShellRules = new Set([

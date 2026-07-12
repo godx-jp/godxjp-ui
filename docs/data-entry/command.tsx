@@ -225,7 +225,15 @@ export default function Demo() {
               />
               <CommandList aria-busy={loading}>
                 {loading ? (
-                  <Flex direction="col" gap="sm" className="ui-command-group" aria-live="polite">
+                  <Flex
+                    direction="col"
+                    gap="sm"
+                    className="ui-command-group"
+                    role="option"
+                    aria-disabled="true"
+                    aria-label="読み込み中"
+                    aria-live="polite"
+                  >
                     <Skeleton className="h-8 w-full" />
                     <Skeleton className="h-8 w-full" />
                     <Skeleton className="h-8 w-full" />
