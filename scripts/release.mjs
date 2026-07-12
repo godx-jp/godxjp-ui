@@ -91,6 +91,11 @@ if (mcpBump === "sync") {
   // lockstep train (postmortem: v17.0.0 — @godxjp/ui shipped but @godxjp/ui-mcp did not).
   run("pnpm install", "mcp");
   run("pnpm build", "mcp");
+  // The catalog has its OWN test suite (structural integrity, rule cross-refs) that the root
+  // `verify:release` does NOT run — a malformed catalog entry would otherwise publish silently
+  // (postmortem: DataState.rules held prose instead of rule-IDs and shipped in 17.0.0). Gate it
+  // here, fail-closed, before the catalog reaches npm.
+  run("pnpm test", "mcp");
   run("npm publish --access public", "mcp");
   console.log(`✓ published @godxjp/ui-mcp@${versionOf("mcp")}`);
 }
