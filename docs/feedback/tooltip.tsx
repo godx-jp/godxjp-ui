@@ -8,6 +8,8 @@ import { Copy, Info, Trash2 } from "lucide-react";
  * Tooltip · self-providing (no app-level TooltipProvider needed). Compose
  * Tooltip > TooltipTrigger (asChild on interactive elements) > TooltipContent.
  * Read-only hints only · use Popover for interactive floating content.
+ * On touch layouts essential help remains visible or moves to a tap-capable Popover; Tooltip is
+ * never the sole source of task-critical information.
  */
 export default function Demo() {
   return (

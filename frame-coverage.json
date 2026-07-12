@@ -78,6 +78,10 @@
       "a11y": {
         "status": "pass",
         "reason": "Chromium axe and keyboard focus smoke passed in the rendered Button frame."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated stateful touch frame executed Button activation at 320px and 390px."
       }
     },
     "Input": {
@@ -1081,6 +1085,10 @@
       "rtl": {
         "status": "pass",
         "reason": "DataTable frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated stateful touch frame executed row selection at 320px and 390px."
       }
     }
   },
@@ -1593,7 +1601,11 @@
     "data-display/list-row": {
       "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
       "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
-      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated stateful touch frame executed the trailing ListRow action at 320px and 390px."
+      }
     },
     "data-display/avatar": {
       "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
@@ -1700,7 +1712,11 @@
         "reason": "Eight-width Chromium geometry passed after narrow-label correction."
       },
       "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
-      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "HoverCard is an optional hover/focus preview; essential content and navigation must remain in the visible trigger/destination on touch devices."
+      }
     },
     "data-display/table": {
       "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
@@ -1737,6 +1753,10 @@
       "async": {
         "status": "not-applicable",
         "reason": "Alert presents feedback and invokes callbacks but does not own pending async state."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Alert is static feedback; its optional actions are ordinary Button contracts tested separately."
       }
     },
     "feedback/dialog": {
@@ -1786,6 +1806,10 @@
       "async": {
         "status": "not-applicable",
         "reason": "Skeletons display a caller-owned pending state and execute no async work."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Skeleton placeholders are inert and expose no pointer interaction."
       }
     },
     "feedback/tooltip": {
@@ -1802,6 +1826,10 @@
       "async": {
         "status": "not-applicable",
         "reason": "Tooltip delay is interaction timing, not asynchronous data or mutation state."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Tooltip is a hover/focus enhancement; essential help must remain visible or use a tap-capable Popover on touch layouts."
       }
     },
     "query/query-refetch-button": {
@@ -1883,6 +1911,10 @@
       "async": {
         "status": "pass",
         "reason": "Executed hover/focus query prefetch invocation and deduplication tests passed."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Hover/focus prefetch is an enhancement unavailable to coarse pointers; tap navigation remains the underlying Link contract."
       }
     }
   },
@@ -1952,6 +1984,14 @@
         "general/logo"
       ],
       "dimensions": {
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source-contract assertions prove every mapped public export/subpart renders in its owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner runtime frames and focused suites execute canonical compound composition."
+        },
         "props": {
           "status": "pass",
           "reason": "Validated prop-case map covers each public prop group or records forwarded-platform N/A."

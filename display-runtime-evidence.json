@@ -48,6 +48,30 @@
       ],
       "verdict": "pass",
       "physicalDevice": "untested"
+    },
+    {
+      "owner": "general/button",
+      "frame": "data-display-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap action", "state incremented"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "data-display/list-row",
+      "frame": "data-display-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap trailing action", "state incremented"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "data-display/data-table",
+      "frame": "data-display-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap selection checkbox", "selected count updated"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
     }
   ],
   "frames": [

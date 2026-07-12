@@ -17,7 +17,8 @@ import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
 /**
  * HoverCard — a rich popover shown on hover/focus of a trigger (sighted-pointer
  * affordance; not a replacement for Tooltip). Composed only from real
- * @godxjp/ui components.
+ * @godxjp/ui components. Touch layouts must keep essential identity/actions visible in the
+ * trigger or destination; never make HoverCard the only route to required information.
  */
 export default function Demo() {
   return (
