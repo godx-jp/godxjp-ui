@@ -199,6 +199,14 @@ function DataSelect({
   value,
   defaultValue,
   onValueChange,
+  open,
+  defaultOpen,
+  onOpenChange,
+  searchValue,
+  defaultSearchValue,
+  onSearchValueChange,
+  filterOption,
+  optionTextValue,
   renderOption,
   labelRender,
   selectedLabel,
@@ -208,9 +216,13 @@ function DataSelect({
   emptyMessage,
   loadingMessage,
   errorMessage,
+  retryLabel,
+  loadMoreLabel,
   clearLabel,
   clearable,
   disabled,
+  readOnly,
+  size = "md",
   name,
   id,
   className,
@@ -233,8 +245,16 @@ function DataSelect({
         value={value}
         defaultValue={defaultValue}
         onValueChange={onValueChange}
+        open={open}
+        defaultOpen={defaultOpen}
+        onOpenChange={onOpenChange}
+        searchValue={searchValue}
+        defaultSearchValue={defaultSearchValue}
+        onSearchValueChange={onSearchValueChange}
         options={options}
         loadOptions={loadOptions}
+        filterOption={filterOption}
+        optionTextValue={optionTextValue}
         renderOption={renderOption}
         labelRender={labelRender}
         selectedLabel={selectedLabel}
@@ -244,9 +264,13 @@ function DataSelect({
         emptyMessage={emptyMessage}
         loadingMessage={loadingMessage}
         errorMessage={errorMessage}
+        retryLabel={retryLabel}
+        loadMoreLabel={loadMoreLabel}
         clearLabel={clearLabel}
         clearable={clearable}
         disabled={disabled || (!loadOptions && !hasOptions)}
+        readOnly={readOnly}
+        size={size}
         name={name}
         id={id}
         className={className}
@@ -277,9 +301,10 @@ function DataSelect({
   return (
     <SelectPrimitive.Root
       data-slot="select"
-      value={isControlled ? value : undefined}
+      value={readOnly ? (value ?? defaultValue) : isControlled ? value : undefined}
       defaultValue={isControlled ? undefined : defaultValue || undefined}
       onValueChange={(next) =>
+        !readOnly &&
         onValueChange?.(
           next,
           options.find((option) => option.value === next),
@@ -288,7 +313,14 @@ function DataSelect({
       disabled={disabled || !hasOptions}
       name={name}
     >
-      <SelectTrigger id={id} data-testid={dataTestId} className={className} {...ariaProps}>
+      <SelectTrigger
+        id={id}
+        size={size}
+        aria-readonly={readOnly || undefined}
+        data-testid={dataTestId}
+        className={className}
+        {...ariaProps}
+      >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

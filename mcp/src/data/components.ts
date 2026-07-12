@@ -2322,7 +2322,7 @@ import { Smartphone } from "lucide-react";
       { name: "placeholder", type: "string", description: "Placeholder." },
       { name: "value", type: "string | number", description: "Controlled value." },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "React.ChangeEventHandler<HTMLInputElement>",
         description: "Native change handler.",
       },
@@ -2674,6 +2674,50 @@ import { Smartphone } from "lucide-react";
         type: "string",
         description:
           "Message rendered when an async loadOptions REJECTS — a distinct state from empty/loading. Defaults to a localized 'Couldn’t load options'. The panel shows this instead of a blank surface or a misleading 'no results'.",
+      },
+      {
+        name: "retryLabel",
+        type: "string",
+        description:
+          "Label for the keyboard-accessible retry action shown after loadOptions rejects.",
+      },
+      {
+        name: "loadMoreLabel",
+        type: "string",
+        description:
+          "Label for the explicit load-more button rendered when hasMore is true; infinite scroll is not the only access path.",
+      },
+      {
+        name: "open",
+        type: "boolean",
+        description: "Controlled searchable popup state; pair with onOpenChange.",
+      },
+      {
+        name: "searchValue",
+        type: "string",
+        description: "Controlled searchable input; pair with onSearchValueChange.",
+      },
+      {
+        name: "filterOption",
+        type: "boolean | ((query, option) => boolean)",
+        description:
+          "Static searchable filtering policy. false leaves filtering to the consumer; a function supports domain matching.",
+      },
+      {
+        name: "optionTextValue",
+        type: "(option) => string",
+        description: "Text used by default static filtering when labels alone are insufficient.",
+      },
+      {
+        name: "readOnly",
+        type: "boolean",
+        description: "Allows inspection while preventing selection and clear.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md"',
+        defaultValue: '"md"',
+        description: "Trigger size in both plain and searchable data APIs.",
       },
       {
         name: "clearable",

@@ -337,11 +337,19 @@ export type SearchSelectProp = {
   /** Uncontrolled initial value — the trigger shows its option's label at rest (controlled-triad). */
   defaultValue?: DefaultValueProp;
   onValueChange?: (value: string, option?: SearchSelectOptionProp) => void;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  searchValue?: string;
+  defaultSearchValue?: string;
+  onSearchValueChange?: (value: string) => void;
   /** Static option list (client-side filtered). Provide this OR `loadOptions`, not both. */
   options?: SearchSelectOptionProp[];
   /** Remote fetcher — debounced search + infinite-scroll pagination call into this. Provide this
    *  OR `options`. */
   loadOptions?: (params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>;
+  filterOption?: boolean | ((query: string, option: SearchSelectOptionProp) => boolean);
+  optionTextValue?: (option: SearchSelectOptionProp) => string;
   /** Custom per-option renderer (Ant-Design style). Defaults to label + optional sublabel. */
   renderOption?: (option: SearchSelectOptionProp) => React.ReactNode;
   /**
@@ -368,10 +376,14 @@ export type SearchSelectProp = {
   loadingMessage?: string;
   /** Message shown when an async `loadOptions` rejects — a distinct state from empty/loading. */
   errorMessage?: string;
+  retryLabel?: string;
+  loadMoreLabel?: string;
   clearLabel?: string;
   /** Show a "clear" row when a value is selected (default true). */
   clearable?: boolean;
   disabled?: DisabledProp;
+  readOnly?: boolean;
+  size?: "sm" | "md";
   /** Form field name — submits the selected value via a hidden input. */
   name?: NameProp;
   id?: IdProp;

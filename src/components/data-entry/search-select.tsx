@@ -36,8 +36,16 @@ export function SearchSelect({
   value: valueProp,
   defaultValue,
   onValueChange,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  searchValue: searchValueProp,
+  defaultSearchValue = "",
+  onSearchValueChange,
   options: staticOptions,
   loadOptions,
+  filterOption = true,
+  optionTextValue,
   renderOption,
   labelRender,
   selectedLabel,
@@ -47,9 +55,13 @@ export function SearchSelect({
   emptyMessage,
   loadingMessage,
   errorMessage,
+  retryLabel,
+  loadMoreLabel,
   clearLabel,
   clearable = true,
   disabled = false,
+  readOnly = false,
+  size = "md",
   name,
   id,
   className,
@@ -65,8 +77,18 @@ export function SearchSelect({
   const reactId = React.useId();
   const listId = `${reactId}-listbox`;
   const optionDomId = (optionValue: string) => `${reactId}-opt-${optionValue}`;
-  const [open, setOpen] = React.useState(false);
-  const [query, setQuery] = React.useState("");
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
+  const open = openProp ?? internalOpen;
+  const setOpen = (next: boolean) => {
+    if (openProp === undefined) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
+  const [internalQuery, setInternalQuery] = React.useState(defaultSearchValue);
+  const query = searchValueProp ?? internalQuery;
+  const setQuery = (next: string) => {
+    if (searchValueProp === undefined) setInternalQuery(next);
+    onSearchValueChange?.(next);
+  };
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
   const [loaded, setLoaded] = React.useState<SearchSelectOptionProp[]>([]);
   const [page, setPage] = React.useState(1);
@@ -95,17 +117,20 @@ export function SearchSelect({
         const needle = search.trim().toLowerCase();
         const list = staticOptions ?? [];
         return {
-          options: needle
-            ? list.filter(
-                (option) =>
-                  option.label.toLowerCase().includes(needle) ||
-                  option.value.toLowerCase().includes(needle),
-              )
-            : list,
+          options:
+            !needle || filterOption === false
+              ? list
+              : list.filter((option) =>
+                  typeof filterOption === "function"
+                    ? filterOption(search, option)
+                    : (optionTextValue?.(option) ?? `${option.label} ${option.value}`)
+                        .toLowerCase()
+                        .includes(needle),
+                ),
           hasMore: false,
         };
       }),
-    [loadOptions, staticOptions],
+    [filterOption, loadOptions, optionTextValue, staticOptions],
   );
 
   // Debounce the search term — one fetch per pause, not per keystroke.
@@ -189,7 +214,7 @@ export function SearchSelect({
   const currentIcon = value ? (selectedOption?.icon ?? selectedIcon) : null;
 
   const select = (option: SearchSelectOptionProp) => {
-    if (option.disabled) return;
+    if (option.disabled || readOnly) return;
     setPicked(option);
     if (!isControlled) setInternalValue(option.value);
     onValueChange?.(option.value, option);
@@ -256,7 +281,7 @@ export function SearchSelect({
 
   const activeOption = flatOrdered[activeIndex];
   const activeOptionId = activeOption ? optionDomId(activeOption.value) : undefined;
-  const showClear = clearable && Boolean(value) && !disabled;
+  const showClear = clearable && Boolean(value) && !disabled && !readOnly;
 
   return (
     <div className={cn("relative", className)}>
@@ -272,6 +297,7 @@ export function SearchSelect({
             id={id}
             type="button"
             variant="outline"
+            size={size === "sm" ? "sm" : "default"}
             role="combobox"
             aria-expanded={open}
             aria-controls={open ? listId : undefined}
@@ -281,6 +307,7 @@ export function SearchSelect({
             aria-errormessage={ariaErrorMessage}
             aria-invalid={ariaInvalid}
             aria-required={ariaRequired}
+            aria-readonly={readOnly || undefined}
             disabled={disabled}
             data-testid={dataTestId}
             className={cn(
@@ -439,6 +466,33 @@ export function SearchSelect({
                 </div>
               ) : null}
             </div>
+            {error ? (
+              <div className="border-border shrink-0 border-t p-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="w-full"
+                  onKeyDown={(event) => event.stopPropagation()}
+                  onClick={() => void fetchPage(1, debouncedQuery, false)}
+                >
+                  {retryLabel ?? t("common.retry")}
+                </Button>
+              </div>
+            ) : !loading && hasMore ? (
+              <div className="border-border shrink-0 border-t p-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  className="w-full"
+                  onKeyDown={(event) => event.stopPropagation()}
+                  onClick={() => void fetchPage(page + 1, debouncedQuery, true)}
+                >
+                  {loadMoreLabel ?? t("query.loadMore")}
+                </Button>
+              </div>
+            ) : null}
           </Command>
         </PopoverContent>
       </Popover>
