@@ -3,6 +3,7 @@ import { ChevronDown, ChevronRight, ChevronsUpDown, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { pickFieldA11y } from "../../lib/field-a11y";
 import { controlOpenRingClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -74,8 +75,13 @@ function TreeSelectRoot({
   className,
   id,
   fieldNames,
+  ...ariaProps
 }: TreeSelectProp) {
   const { t } = useTranslation();
+  // Forward the FormField label/helper/error contract onto the combobox trigger (focus target).
+  const fieldA11y = pickFieldA11y(ariaProps);
+  const reactId = React.useId();
+  const treeId = `${id ?? reactId}-tree`;
   const options = React.useMemo(
     () => normalizeTreeOptions(treeDataProp as Record<string, unknown>[], fieldNames),
     [treeDataProp, fieldNames],
@@ -227,6 +233,9 @@ function TreeSelectRoot({
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          aria-haspopup="tree"
+          aria-controls={open ? treeId : undefined}
+          {...fieldA11y}
           disabled={disabled}
           className={cn(
             "w-full justify-between font-normal",
@@ -270,6 +279,7 @@ function TreeSelectRoot({
         )}
         <ScrollArea className="max-h-[min(300px,50vh)]">
           <div
+            id={treeId}
             role="tree"
             aria-multiselectable={Boolean(checkable) || Boolean(multiple)}
             className="p-1"

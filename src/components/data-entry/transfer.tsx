@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { pickGroupFieldA11y } from "../../lib/field-a11y";
 import { Button } from "../general/button";
 import { ScrollArea } from "../data-display/scroll-area";
 import { Checkbox } from "./checkbox";
@@ -140,11 +141,17 @@ export function Transfer({
   showSearch,
   oneWay,
   disabled,
+  id,
   className,
   selectedKeys: selectedKeysProp,
   onSelectChange,
+  ...ariaProps
 }: TransferProp) {
   const { t } = useTranslation();
+  // Transfer is a dual-list shuttle with no single focus target — the root is a role="group"
+  // named by the FormField label; pickGroupFieldA11y forwards aria-labelledby/-describedby (error
+  // folded in). Each panel/list keeps its own title-derived label.
+  const groupA11y = pickGroupFieldA11y(ariaProps);
   const [internalSelected, setInternalSelected] = React.useState<[string[], string[]]>([[], []]);
   const selected: [string[], string[]] = selectedKeysProp ?? internalSelected;
 
@@ -177,7 +184,13 @@ export function Transfer({
   const rightTitle = titles?.[1] ?? t("dataEntry.transfer.target");
 
   return (
-    <div className={cn("flex flex-wrap items-stretch gap-3", className)}>
+    <div
+      role="group"
+      id={id}
+      {...groupA11y}
+      aria-disabled={disabled ? true : undefined}
+      className={cn("flex flex-wrap items-stretch gap-3", className)}
+    >
       <TransferPanel
         direction="left"
         title={leftTitle}

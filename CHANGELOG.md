@@ -32,6 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clearing the axe `empty-table-header` violation. DataTable now **dev-warns** when a rendered
   `<th>` has neither visible nor accessible text. Official DataTable examples set `ariaLabel` on
   their action columns. (#155)
+- Shared forwarding contract `src/lib/field-a11y.ts` (`FieldA11yProps`, `pickFieldA11y`,
+  `pickGroupFieldA11y`, `resolveFieldA11y`, `mergeAriaIds`) so the FormField relationship is wired
+  consistently, not reinvented per control.
+- FormField integration test asserting the **computed** accessible name / description / error for
+  every custom control (`form-field-contract.a11y.test.tsx`), plus a `docs/data-entry/form-field`
+  example demonstrating the contract, error timing and async server-validation + recovery.
 
 ### Changed
 
@@ -49,6 +55,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `AppSettingPicker` `appearance="labeled"` no longer forces `w-full` below `640px` — it hugs its
   content (`w-auto max-w-full`) on narrow screens and takes its per-kind fixed width from `sm` up, so
   it fits a topbar. Pass `className="w-full"` for a full-width form field (#165).
+
+### Fixed
+
+- **FormField a11y contract no longer silently dropped by custom controls (#164).** Every
+  data-entry control now accepts and FORWARDS the injected accessible name (`aria-labelledby`),
+  description (`aria-describedby`) and validation (`aria-errormessage` / `aria-invalid` /
+  `aria-required`) onto its real semantic focus target instead of ignoring them:
+  - Focus-target controls forward the full contract onto the input/combobox trigger — `NumberInput`,
+    `SearchInput`, `ColorPicker`, `DatePicker`, `MonthPicker`, `TimePicker`, `Cascader`,
+    `TreeSelect` (Select/SearchSelect already did).
+  - Popup controls expose the complete APG combobox relationship: `MonthPicker` is now a
+    `role="combobox"` (matching Date/TimePicker); `Cascader` / `TreeSelect` / the pickers add
+    `aria-haspopup` + `aria-controls` pointing at their popup.
+  - Group controls expose group-level semantics: `RadioGroup` (`role="radiogroup"`) forwards the
+    full validation set; `CheckboxGroup`, `DateRangePicker` / `MonthRangePicker` (two inputs) and
+    `Transfer` are `role="group"` named by the FormField label, with the error folded into
+    `aria-describedby` (widget-only `aria-invalid`/`aria-errormessage` are invalid on a group per
+    ARIA 1.2). `Upload` forwards the label/description onto its native `<input type="file">`.
 
 ## [17.0.0] - 2026-07-12
 
