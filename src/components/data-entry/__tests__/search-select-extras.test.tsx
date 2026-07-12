@@ -40,7 +40,9 @@ describe("SearchSelect — static options / uncontrolled / clear / empty", () =>
       />,
     );
     // when a value is set + clearable, an inline ✕ clear control sits on the trigger (no need to open)
-    await user.click(screen.getByRole("button", { name: "クリア" }));
+    const clear = screen.getByRole("button", { name: "クリア" });
+    expect(clear).toHaveClass("size-6");
+    await user.click(clear);
     expect(onValueChange).toHaveBeenCalledWith("", undefined);
   });
 

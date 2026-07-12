@@ -376,6 +376,12 @@ export type SearchSelectProp = {
   name?: NameProp;
   id?: IdProp;
   className?: ClassNameProp;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
+  "aria-errormessage"?: string;
+  "aria-invalid"?: boolean | "true" | "false";
+  "aria-required"?: boolean | "true" | "false";
   "data-testid"?: string;
 };
 

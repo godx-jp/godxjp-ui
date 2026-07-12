@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils";
 import { controlOpenRingClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
-import { Command, CommandGroup, CommandItem, CommandList } from "./command";
+import { Command, CommandGroup } from "./command";
 import { Input } from "./input";
 import type {
   SearchSelectProp,
@@ -54,6 +54,12 @@ export function SearchSelect({
   id,
   className,
   "data-testid": dataTestId,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
+  "aria-describedby": ariaDescribedby,
+  "aria-errormessage": ariaErrorMessage,
+  "aria-invalid": ariaInvalid,
+  "aria-required": ariaRequired,
 }: SearchSelectProp) {
   const { t } = useTranslation();
   const reactId = React.useId();
@@ -117,6 +123,10 @@ export function SearchSelect({
         const result = await resolvedLoad({ query: search, page: nextPage });
         if (ticket !== reqId.current) return; // a newer request superseded this one
         setLoaded((prev) => (append ? [...prev, ...result.options] : result.options));
+        if (!append) {
+          const firstEnabled = result.options.findIndex((option) => !option.disabled);
+          setActiveIndex(firstEnabled >= 0 ? firstEnabled : 0);
+        }
         setHasMore(Boolean(result.hasMore));
         setPage(nextPage);
       } catch {
@@ -200,13 +210,38 @@ export function SearchSelect({
     }
   };
 
+  const moveActive = (direction: 1 | -1) => {
+    if (flatOrdered.length === 0) return;
+    let next = activeIndex;
+    for (let checked = 0; checked < flatOrdered.length; checked += 1) {
+      next = (next + direction + flatOrdered.length) % flatOrdered.length;
+      if (!flatOrdered[next]?.disabled) {
+        setActiveIndex(next);
+        return;
+      }
+    }
+  };
+
+  const moveToEdge = (edge: "start" | "end") => {
+    const indices = flatOrdered.map((_, index) => index);
+    if (edge === "end") indices.reverse();
+    const next = indices.find((index) => !flatOrdered[index]?.disabled);
+    if (next !== undefined) setActiveIndex(next);
+  };
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setActiveIndex((i) => Math.min(i + 1, Math.max(flatOrdered.length - 1, 0)));
+      moveActive(1);
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      setActiveIndex((i) => Math.max(i - 1, 0));
+      moveActive(-1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      moveToEdge("start");
+    } else if (event.key === "End") {
+      event.preventDefault();
+      moveToEdge("end");
     } else if (event.key === "Enter" && flatOrdered[activeIndex]) {
       event.preventDefault();
       select(flatOrdered[activeIndex]);
@@ -239,6 +274,13 @@ export function SearchSelect({
             variant="outline"
             role="combobox"
             aria-expanded={open}
+            aria-controls={open ? listId : undefined}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
+            aria-describedby={ariaDescribedby}
+            aria-errormessage={ariaErrorMessage}
+            aria-invalid={ariaInvalid}
+            aria-required={ariaRequired}
             disabled={disabled}
             data-testid={dataTestId}
             className={cn(
@@ -272,6 +314,8 @@ export function SearchSelect({
         {/* Hidden field so the selection submits with a native form. */}
         {name ? <input type="hidden" name={name} value={value} readOnly /> : null}
         <PopoverContent
+          aria-label={ariaLabelledby ? undefined : (ariaLabel ?? resolvedPlaceholder)}
+          aria-labelledby={ariaLabelledby}
           align="start"
           sideOffset={4}
           collisionPadding={12}
@@ -280,7 +324,7 @@ export function SearchSelect({
           // cut the list mid-row.
           className="flex max-h-[var(--radix-popover-content-available-height)] w-max max-w-[min(32rem,calc(100vw-1.5rem))] min-w-[var(--radix-popover-trigger-width)] flex-col p-0"
         >
-          <Command shouldFilter={false} className="flex min-h-0 flex-col">
+          <Command value={value} shouldFilter={false} className="flex min-h-0 flex-col">
             {/* The search field is FLUSH inside the panel — borderless with a single bottom
                 separator (the panel frames it). A boxed/padded input here double-borders. */}
             <div className="border-border shrink-0 border-b">
@@ -292,6 +336,7 @@ export function SearchSelect({
                 aria-controls={listId}
                 aria-autocomplete="list"
                 aria-activedescendant={activeOptionId}
+                aria-label={searchPlaceholder ?? t("dataEntry.searchSelect.search")}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 onKeyDown={onKeyDown}
@@ -299,7 +344,7 @@ export function SearchSelect({
                 className="rounded-none border-0 shadow-none focus-visible:ring-0"
               />
             </div>
-            <CommandList
+            <div
               id={listId}
               role="listbox"
               // Announce the in-flight fetch (APG combobox) so the empty/error message that follows
@@ -313,23 +358,25 @@ export function SearchSelect({
             >
               {grouped.map((group) => {
                 const rows = group.items.map(({ option, index }) => (
-                  <CommandItem
+                  <div
                     key={option.value}
                     id={optionDomId(option.value)}
                     role="option"
-                    value={option.value}
                     data-testid={optionTestId(option.value)}
-                    aria-selected={activeIndex === index}
-                    disabled={option.disabled}
+                    aria-selected={value === option.value}
+                    aria-disabled={option.disabled || undefined}
+                    data-disabled={option.disabled || undefined}
                     className={cn(
+                      "ui-command-item",
                       // Selected = persistent bg-accent + medium weight (NO check icon — saves width),
                       // matching the plain SelectItem's `data-[state=checked]` convention; active =
                       // hover/keyboard accent. Same bg so selection stays coherent across both Selects.
                       value === option.value && "bg-accent text-foreground font-medium",
                       activeIndex === index && "bg-accent text-accent-foreground",
                     )}
-                    onMouseEnter={() => setActiveIndex(index)}
-                    onSelect={() => select(option)}
+                    onMouseEnter={() => !option.disabled && setActiveIndex(index)}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => select(option)}
                   >
                     {renderOption ? (
                       <div className="min-w-0 flex-1">{renderOption(option)}</div>
@@ -350,7 +397,7 @@ export function SearchSelect({
                         </div>
                       </div>
                     )}
-                  </CommandItem>
+                  </div>
                 ));
 
                 return group.heading ? (
@@ -391,7 +438,7 @@ export function SearchSelect({
                   {emptyMessage ?? t("dataEntry.searchSelect.empty")}
                 </div>
               ) : null}
-            </CommandList>
+            </div>
           </Command>
         </PopoverContent>
       </Popover>
@@ -399,13 +446,13 @@ export function SearchSelect({
           <button> (invalid HTML → hydration error). The overlay ignores pointer events so a click
           falls through to the trigger to open it; only the clear control re-enables them.
           ONE trailing icon: the clear (×) replaces the chevron while a value is selected. */}
-      <div className="pointer-events-none absolute inset-y-0 end-3 flex items-center">
+      <div className="pointer-events-none absolute inset-y-0 end-2 flex items-center">
         {showClear ? (
           <button
             type="button"
             aria-label={clearLabel ?? t("dataEntry.searchSelect.clear")}
             data-testid={optionTestId("clear")}
-            className="pointer-events-auto flex size-4 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
+            className="pointer-events-auto flex size-6 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
             onClick={clear}
           >
             <X className="size-4" aria-hidden="true" />

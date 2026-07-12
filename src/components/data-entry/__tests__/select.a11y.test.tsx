@@ -3,6 +3,7 @@ import { axe } from "vitest-axe";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
+import { FormField } from "../form-field";
 import { Label } from "../label";
 import { expectNoA11yViolations } from "@/test/a11y";
 
@@ -85,5 +86,38 @@ describe("Select a11y", () => {
     await user.click(screen.getByRole("combobox"));
     await screen.findByText("読み込めませんでした");
     expect(await axe(screen.getByRole("listbox"))).toHaveNoViolations();
+  });
+
+  it("forwards FormField accessible name, help, required and error to searchable trigger", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <FormField
+        id="searchable-office"
+        label="担当拠点"
+        required
+        helper="名称で検索できます"
+        error="担当拠点を確認してください"
+      >
+        <Select
+          showSearch
+          options={OPTIONS}
+          value="tokyo"
+          onValueChange={() => {}}
+          searchPlaceholder="拠点を検索"
+        />
+      </FormField>,
+    );
+
+    const trigger = screen.getByRole("combobox", { name: "担当拠点" });
+    expect(trigger).toHaveAttribute("aria-required", "true");
+    expect(trigger).toHaveAttribute("aria-invalid", "true");
+    expect(trigger).toHaveAttribute("aria-describedby", "searchable-office-helper");
+    expect(trigger).toHaveAttribute("aria-errormessage", "searchable-office-error");
+
+    await user.click(trigger);
+    expect(screen.getByRole("textbox", { name: "拠点を検索" })).toBeInTheDocument();
+    expect(trigger).toHaveAttribute("aria-controls");
+    await screen.findByRole("option", { name: "大阪" });
+    expect(await axe(screen.getByRole("dialog"))).toHaveNoViolations();
   });
 });

@@ -251,6 +251,7 @@ function DataSelect({
         id={id}
         className={className}
         data-testid={dataTestId}
+        {...ariaProps}
       />
     );
   }

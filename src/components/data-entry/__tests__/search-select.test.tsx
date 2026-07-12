@@ -98,4 +98,33 @@ describe("SearchSelect", () => {
     await user.click(screen.getByRole("combobox"));
     expect(await screen.findByText("custom:Cash")).toBeInTheDocument();
   });
+
+  it("keeps aria-selected on the value while keyboard focus skips disabled options", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <SearchSelect
+        value="2"
+        options={[
+          { value: "1", label: "First" },
+          { value: "disabled", label: "Disabled", disabled: true },
+          { value: "2", label: "Last" },
+        ]}
+      />,
+    );
+    await user.click(screen.getByRole("combobox"));
+    const search = screen.getByRole("textbox");
+    const first = await screen.findByRole("option", { name: "First" });
+    const disabled = screen.getByRole("option", { name: "Disabled" });
+    const selected = screen.getByRole("option", { name: "Last" });
+    expect(selected).toHaveAttribute("aria-selected", "true");
+    expect(first).toHaveAttribute("aria-selected", "false");
+
+    await user.type(search, "{ArrowDown}");
+    expect(search).toHaveAttribute("aria-activedescendant", selected.id);
+    expect(search).not.toHaveAttribute("aria-activedescendant", disabled.id);
+    await user.type(search, "{Home}");
+    expect(search).toHaveAttribute("aria-activedescendant", first.id);
+    await user.type(search, "{End}");
+    expect(search).toHaveAttribute("aria-activedescendant", selected.id);
+  });
 });
