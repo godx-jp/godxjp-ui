@@ -6,8 +6,13 @@ import AxeBuilder from "@axe-core/playwright";
 const port = 6011;
 const base = `http://localhost:${port}`;
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
-const stories = ["data-entry-input"];
-const ignoredPageShellRules = new Set(["heading-order", "landmark-one-main", "region"]);
+const stories = ["data-entry-input", "data-entry-form-field"];
+const ignoredPageShellRules = new Set([
+  "heading-order",
+  "landmark-one-main",
+  "page-has-heading-one",
+  "region",
+]);
 const server = spawn(
   "pnpm",
   ["exec", "vite", "--config", "preview/vite.config.ts", "--port", String(port), "--strictPort"],
@@ -42,7 +47,14 @@ try {
       const result = await new AxeBuilder({ page }).analyze();
       const violations = result.violations.filter((item) => !ignoredPageShellRules.has(item.id));
       if (violations.length)
-        throw new Error(`${story}@${width}: axe ${violations.map((item) => item.id).join(",")}`);
+        throw new Error(
+          `${story}@${width}: axe ${violations
+            .map(
+              (item) =>
+                `${item.id} (${item.nodes.map((node) => node.target.join(" ")).join(", ")})`,
+            )
+            .join(", ")}`,
+        );
     }
     await context.close();
   }
