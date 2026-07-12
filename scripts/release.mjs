@@ -101,5 +101,13 @@ run("node scripts/check-release-lockstep.mjs");
 run("git add package.json mcp/package.json");
 const uiPart = uiBump !== "skip" ? `@godxjp/ui@${versionOf()}` : null;
 const mcpPart = mcpBump !== "skip" ? `@godxjp/ui-mcp@${versionOf("mcp")}` : null;
-run(`git commit -m "chore(release): ${[uiPart, mcpPart].filter(Boolean).join(" · ")}"`);
-console.log("\n✓ Released. Push the commit when ready.");
+// The publish already happened above; the commit only records the version bump. When there is
+// nothing staged (e.g. a `mcp-only` re-publish at the CURRENT version, or the versions were
+// pre-committed during a recovery), `git commit` would exit non-zero and fail the whole run
+// AFTER a successful publish — a misleading red. Skip the commit when the tree is clean.
+if (execSync("git status --porcelain", { encoding: "utf8" }).trim()) {
+  run(`git commit -m "chore(release): ${[uiPart, mcpPart].filter(Boolean).join(" · ")}"`);
+  console.log("\n✓ Released. Push the commit when ready.");
+} else {
+  console.log("\n✓ Published. Working tree already clean — no release commit needed.");
+}
