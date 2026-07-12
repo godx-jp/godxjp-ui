@@ -71,24 +71,28 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent flush>
-            <ListRow
-              as="li"
-              leading={<Link2 aria-hidden="true" className="size-4" />}
-              title="GitHub"
-              description="taro@example.com として接続済み"
-              trailing={
-                <Button size="xs" variant="ghost">
-                  解除 Disconnect
-                </Button>
-              }
-            />
-            <ListRow
-              as="li"
-              leading={<KeyRound aria-hidden="true" className="size-4" />}
-              title="Passkey · iCloud Keychain"
-              description="2026年3月12日に追加"
-              trailing={<Badge tone="neutral">未使用</Badge>}
-            />
+            {/* `as="li"` rows are a SEMANTIC list — axe's `listitem` rule requires the parent to
+                actually be a list container (ul/ol/role=list), not just visually stacked divs. */}
+            <ul>
+              <ListRow
+                as="li"
+                leading={<Link2 aria-hidden="true" className="size-4" />}
+                title="GitHub"
+                description="taro@example.com として接続済み"
+                trailing={
+                  <Button size="xs" variant="ghost">
+                    解除 Disconnect
+                  </Button>
+                }
+              />
+              <ListRow
+                as="li"
+                leading={<KeyRound aria-hidden="true" className="size-4" />}
+                title="Passkey · iCloud Keychain"
+                description="2026年3月12日に追加"
+                trailing={<Badge tone="neutral">未使用</Badge>}
+              />
+            </ul>
           </CardContent>
         </Card>
       </Flex>
