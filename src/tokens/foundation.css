@@ -83,9 +83,8 @@
   --disabled-opacity: 0.5;
 
   /* Shape and elevation */
-  --radius: calc(
-    0.375rem * var(--scaling)
-  ); /* 6px base × scaling; override to retheme every step */
+  /* 6px base × scaling; override to retheme every radius step */
+  --radius: calc(0.375rem * var(--scaling));
   --radius-ratio: 1.618; /* φ — radii scale by the golden ratio (steps derive in @theme) */
   --radius-pill: 9999px; /* fully-round: switch / radio / slider / pill badges (NOT --radius-derived) */
   --radius-sharp: 0; /* squared corners: table cells, flush inputs */
