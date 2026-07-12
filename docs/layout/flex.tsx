@@ -11,9 +11,10 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
  * Flex · canonical flex primitive (replaced Stack/Inline as named shortcuts).
- * Use direction="col" for vertical stacks (formerly Stack), direction="row" for
- * horizontal groups (formerly Inline). Keep spacing in gap prop · same token
- * scale as Stack/Inline. align + justify expose cross-axis and main-axis control.
+ * The default direction is "row" — matching the CSS `display:flex` initial value.
+ * Use direction="col" for vertical stacks (formerly Stack); direction="row" is the
+ * default for horizontal groups (formerly Inline). Keep spacing in gap prop · same
+ * token scale as Stack/Inline. align + justify expose cross-axis and main-axis control.
  * wrap allows chip clusters and action rows to reflow. Composed only from real
  * @godxjp/ui components.
  */
@@ -26,9 +27,27 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
+            <CardTitle>既定 direction=&quot;row&quot; · CSS 標準</CardTitle>
+            <CardDescription>
+              direction を省略すると row（CSS の display:flex の初期値）。横並びが既定で、
+              縦積みには direction=&quot;col&quot; を明示する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex gap="sm" align="center">
+              <Badge variant="outline">借方</Badge>
+              <Badge variant="outline">貸方</Badge>
+              <Badge variant="outline">残高</Badge>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>direction=&quot;col&quot; · 縦スタック</CardTitle>
             <CardDescription>
-              既定値は col。gap トークンで間隔を均一に制御。className で raw gap-* を使わない。
+              縦積みは direction=&quot;col&quot; を明示する。gap
+              トークンで間隔を均一に制御。className で raw gap-* を使わない。
             </CardDescription>
           </CardHeader>
           <CardContent>
