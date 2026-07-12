@@ -7,6 +7,12 @@ const config = JSON.parse(
     "utf8",
   ),
 );
+const apiManifest = JSON.parse(
+  fs.readFileSync(path.join(root, "component-api-manifest.json"), "utf8"),
+);
+const componentEvidence = JSON.parse(
+  fs.readFileSync(path.join(root, "component-case-evidence.json"), "utf8"),
+);
 const allowed = new Set(["pass", "untested", "not-applicable"]);
 const dimensions = [
   "isolated",
@@ -29,6 +35,55 @@ for (const d of dimensions) {
 }
 const excluded = new Set(config.excludeExports ?? []);
 const rows = [];
+
+function exactPropCoverage(name) {
+  const contract = apiManifest.components?.[name];
+  if (!contract) {
+    return {
+      status: "untested",
+      reason: "No callable public API manifest entry exists for this export.",
+    };
+  }
+  if (!contract.props.length) {
+    return {
+      status: "not-applicable",
+      reason: "No owned or inherited behavioral props were discovered for this callable export.",
+    };
+  }
+  const evidence = componentEvidence.components?.[name];
+  const missing = [];
+  for (const prop of contract.props) {
+    if (
+      prop.origin === "inherited-behavioral" &&
+      evidence?.inheritedProps?.status === "pass-through" &&
+      evidence.inheritedProps.evidence?.length
+    ) {
+      continue;
+    }
+    const propEvidence = evidence?.props?.[prop.name];
+    if (!propEvidence?.evidence?.length || !propEvidence?.cases?.length) {
+      missing.push(prop.name);
+      continue;
+    }
+    if (
+      prop.values.some(
+        (value) => !propEvidence.cases.some((candidate) => Object.is(candidate, value)),
+      )
+    ) {
+      missing.push(`${prop.name}(literal branches)`);
+    }
+  }
+  return missing.length
+    ? {
+        status: "untested",
+        reason: `Exact component cases missing: ${missing.join(", ")}`,
+      }
+    : {
+        status: "pass",
+        reason:
+          "Every discovered public behavioral prop and literal branch has explicit rendered/test evidence.",
+      };
+}
 const builtinAliases = {
   "charts/line-chart": "data-display/charts",
   "charts/bar-chart": "data-display/charts",
@@ -70,12 +125,13 @@ for (const dir of fs.readdirSync(base, { withFileTypes: true }).filter((e) => e.
         const exportOverride = [...(config.exportGroups ?? []), ...(config.ownerGroups ?? [])].find(
           (group) => group.exports?.includes(name) && group.dimensions?.[d],
         )?.dimensions?.[d];
-        const v =
+        let v =
           exportOverride ??
           config.overrides?.[name]?.[d] ??
           config.ownerOverrides?.[key]?.[d] ??
           groupOverride ??
           config.dimensions[d];
+        if (d === "props") v = exactPropCoverage(name);
         if (!allowed.has(v.status)) errors.push(`${name}.${d}: invalid status`);
         if (v.status !== "pass" && !v.reason?.trim()) errors.push(`${name}.${d}: reason required`);
         states[d] = v;

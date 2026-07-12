@@ -18,7 +18,6 @@ describe("frame coverage checker", () => {
     }
     for (const dimension of [
       "isolated",
-      "props",
       "composition",
       "journey",
       "responsive",
@@ -29,6 +28,10 @@ describe("frame coverage checker", () => {
     ]) {
       expect(report.totals[dimension].untested).toBe(0);
     }
+    // Prop completeness is derived from exact TypeScript API + case evidence. Until every
+    // component case is authored, gaps must remain visible instead of inheriting a global PASS.
+    expect(report.totals.props.untested).toBeGreaterThan(0);
+    expect(report.totals.props.pass).toBeLessThan(report.exports);
     expect(report.totals.screenReader.untested).toBe(
       report.exports - report.totals.screenReader["not-applicable"],
     );
