@@ -58,6 +58,13 @@ async function waitForServer() {
   throw new Error("preview server did not start");
 }
 
+async function waitForFrame(page, story) {
+  await page.locator(".preview-runtime-loading").waitFor({ state: "hidden" });
+  const runtimeError = page.locator(".preview-runtime-error");
+  if (await runtimeError.count()) throw new Error(`${story}: ${await runtimeError.innerText()}`);
+  await page.locator("#root > *").first().waitFor();
+}
+
 let browser;
 try {
   await waitForServer();
@@ -66,7 +73,8 @@ try {
     const context = await browser.newContext({ viewport: { width, height: 900 } });
     const page = await context.newPage();
     for (const story of stories) {
-      await page.goto(`${base}/isolate/${story}`, { waitUntil: "networkidle" });
+      await page.goto(`${base}/isolate/${story}`, { waitUntil: "domcontentloaded" });
+      await waitForFrame(page, story);
       const storyRoot = page.locator("#root");
       if ((await storyRoot.innerText()).trim().length === 0)
         throw new Error(`${story}@${width}: story did not render`);

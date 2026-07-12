@@ -24,12 +24,29 @@ const allFrames = [
   "navigation-tabs",
   "navigation-pagination",
 ];
-const frames = process.env.FRAME_ID
-  ? allFrames.filter((frame) => frame === process.env.FRAME_ID)
+const requestedFrames = (process.env.FRAMES ?? process.env.FRAME_ID ?? "")
+  .split(",")
+  .filter(Boolean);
+const frames = requestedFrames.length
+  ? allFrames.filter((frame) => requestedFrames.includes(frame))
   : allFrames;
-if (!frames.length) throw new Error(`Unknown FRAME_ID: ${process.env.FRAME_ID}`);
+if (!frames.length || frames.length !== (requestedFrames.length || allFrames.length)) {
+  throw new Error(`Unknown frame selection: ${requestedFrames.join(",")}`);
+}
 
-const server = await createServer({ configFile: "preview/vite.config.ts" });
+async function waitForFrame(page, frame) {
+  await page.locator(".preview-runtime-loading").waitFor({ state: "hidden" });
+  const runtimeError = page.locator(".preview-runtime-error");
+  if (await runtimeError.count()) throw new Error(`${frame}: ${await runtimeError.innerText()}`);
+  await page.locator("#root > *").first().waitFor();
+}
+
+const port = Number(process.env.PREVIEW_PORT ?? 6113);
+const base = `http://localhost:${port}`;
+const server = await createServer({
+  configFile: "preview/vite.config.ts",
+  server: { port, strictPort: true },
+});
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ hasTouch: process.env.TOUCH === "1" });
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
@@ -43,9 +60,10 @@ try {
     for (const width of widths) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(
-        `http://localhost:6008/frame/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`,
-        { waitUntil: "networkidle" },
+        `${base}/frame/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`,
+        { waitUntil: "domcontentloaded" },
       );
+      await waitForFrame(page, frame);
       const result = await page.evaluate(() => ({
         viewport: innerWidth,
         scrollWidth: document.documentElement.scrollWidth,
@@ -61,9 +79,10 @@ try {
   const axe = {};
   for (const frame of frames) {
     await page.goto(
-      `http://localhost:6008/isolate/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`,
-      { waitUntil: "networkidle" },
+      `${base}/isolate/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`,
+      { waitUntil: "domcontentloaded" },
     );
+    await waitForFrame(page, frame);
     if (frame === "layout-resizable-panel") {
       await page.getByRole("button", { name: "サイドバーを開く" }).click();
       const handle = page.getByRole("separator").first();
