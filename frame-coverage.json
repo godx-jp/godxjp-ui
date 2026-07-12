@@ -2081,6 +2081,14 @@
           "status": "pass",
           "reason": "Validated prop-case map links every public prop group to a frame/test case or explicit forwarded-platform N/A."
         },
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source-contract assertions prove every mapped public export renders in its owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner frames and focused suites execute the public trigger/content/action and lifecycle compositions."
+        },
         "screenReader": {
           "status": "untested",
           "reason": "Automated ARIA/axe evidence does not prove announcements in a real screen reader."
