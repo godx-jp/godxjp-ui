@@ -1775,6 +1775,10 @@
         "status": "pass",
         "reason": "Rendered axe and dialog keyboard/focus tests passed."
       },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame opened and closed Dialog at 320px and 390px."
+      },
       "journey": {
         "status": "pass",
         "reason": "Executed open, close, cancel, action and focus-dismiss journeys passed."
@@ -1849,6 +1853,10 @@
         "status": "pass",
         "reason": "Executed click-to-refetch and fetching-state journeys passed."
       },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame invoked refetch and observed state increment at 320px and 390px."
+      },
       "async": {
         "status": "pass",
         "reason": "Executed idle/fetching state and refetch invocation tests passed."
@@ -1868,6 +1876,10 @@
       "async": {
         "status": "not-applicable",
         "reason": "CSS entrance timing is not asynchronous data or mutation state."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Reveal is an inert visual-motion wrapper and exposes no pointer contract."
       }
     },
     "query/data-state": {
@@ -1877,6 +1889,10 @@
       "journey": {
         "status": "pass",
         "reason": "Executed loading, prerequisite, empty, success, transient retry and auth recovery tests passed."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame tapped transient retry and observed recovery callback at 320px and 390px."
       },
       "async": {
         "status": "pass",
@@ -1891,6 +1907,10 @@
         "status": "pass",
         "reason": "Executed loading, empty, error/recovery, data and load-more journeys passed."
       },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame tapped load-more and observed fetchNextPage at 320px and 390px."
+      },
       "async": {
         "status": "pass",
         "reason": "Executed fetch-next-page pending/completion, transient retry and auth routing tests passed."
@@ -1903,6 +1923,10 @@
       "journey": {
         "status": "pass",
         "reason": "Executed idle, pending, error/retry and successful-clear states passed."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame tapped mutation retry and observed callback at 320px and 390px."
       },
       "async": {
         "status": "pass",

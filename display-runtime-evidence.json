@@ -8,6 +8,46 @@
   ],
   "coarsePointerEvidence": [
     {
+      "owner": "feedback/dialog",
+      "frame": "feedback-dialog-touch",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "dialog visible", "tap close", "dialog removed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "query/data-state",
+      "frame": "query-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap retry", "callback observed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "query/infinite-query-state",
+      "frame": "query-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap load more", "fetchNextPage observed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "query/mutation-feedback",
+      "frame": "query-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap retry", "callback observed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "query/query-refetch-button",
+      "frame": "query-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap refresh", "refetch observed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
       "owner": "data-display/popover",
       "frame": "data-display-popover-touch",
       "widths": [320, 390],
