@@ -8,9 +8,14 @@ const base = `http://localhost:${port}`;
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
 const stories = [
   "data-entry-input",
-  "data-entry-form-field",
+  "data-entry-form-field-index",
   "data-entry-form",
   "data-entry-select",
+  "data-entry-checkbox",
+  "data-entry-radio-group",
+  "data-entry-switch",
+  "data-entry-slider",
+  "data-entry-toggle",
 ];
 const ignoredPageShellRules = new Set([
   "heading-order",
@@ -43,6 +48,9 @@ try {
     const page = await context.newPage();
     for (const story of stories) {
       await page.goto(`${base}/isolate/${story}`, { waitUntil: "networkidle" });
+      const storyRoot = page.locator("#root");
+      if ((await storyRoot.innerText()).trim().length === 0)
+        throw new Error(`${story}@${width}: story did not render`);
       const geometry = await page.evaluate(() => ({
         scrollWidth: document.documentElement.scrollWidth,
         clientWidth: document.documentElement.clientWidth,
@@ -60,6 +68,36 @@ try {
             )
             .join(", ")}`,
         );
+      await page.evaluate(() => document.documentElement.setAttribute("dir", "rtl"));
+      const rtlGeometry = await page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      }));
+      if (rtlGeometry.scrollWidth > rtlGeometry.clientWidth + 1)
+        throw new Error(`${story}@${width}: RTL horizontal overflow`);
+      const rtlResult = await new AxeBuilder({ page }).analyze();
+      const rtlViolations = rtlResult.violations.filter(
+        (item) => !ignoredPageShellRules.has(item.id),
+      );
+      if (rtlViolations.length)
+        throw new Error(
+          `${story}@${width}: RTL axe ${rtlViolations.map((item) => item.id).join(",")}`,
+        );
+      if (width === widths[0]) {
+        const firstKeyboardTarget = page
+          .locator(
+            'input:not([type="hidden"]):not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          )
+          .first();
+        if ((await firstKeyboardTarget.count()) === 0)
+          throw new Error(`${story}: no keyboard target`);
+        await firstKeyboardTarget.focus();
+        await page.keyboard.press("Tab");
+        const hasKeyboardTarget = await page.evaluate(
+          () => document.activeElement !== document.body && document.activeElement !== null,
+        );
+        if (!hasKeyboardTarget) throw new Error(`${story}: no keyboard-entry target`);
+      }
     }
     await context.close();
   }
