@@ -278,6 +278,7 @@
     "check:example-imports": "node scripts/check-example-imports.mjs",
     "check:frame-coverage": "node scripts/check-frame-coverage.mjs",
     "check:data-entry-frame-runtime": "node scripts/check-data-entry-frame-runtime.mjs",
+    "check:data-entry-owner-source": "node scripts/check-data-entry-owner-source.mjs",
     "check:layout-nav-frames": "node scripts/check-layout-nav-frames.mjs",
     "check:provider-feedback-query-runtime": "for frame in navigation-app-setting-picker feedback-dialog feedback-sheet feedback-alert-dialog feedback-tooltip feedback-toast feedback-skeleton query-data-state query-infinite-query-state query-mutation-feedback query-prefetch-link; do node preview/scripts/kill-port.mjs >/dev/null 2>&1 || true; FRAME_ID=$frame node scripts/check-provider-feedback-query-runtime.mjs || exit 1; done",
     "check:layout-nav-closure": "for frame in layout-app-shell layout-aspect-ratio layout-auth-shell layout-page-container layout-resizable-panel layout-separator layout-sidebar layout-split-pane layout-topbar navigation-breadcrumb navigation-context-menu navigation-dropdown-menu navigation-menubar navigation-navigation-menu navigation-steps navigation-toolbar; do node preview/scripts/kill-port.mjs >/dev/null 2>&1 || true; FRAME_ID=$frame node scripts/check-layout-nav-closure.mjs || exit 1; done",
