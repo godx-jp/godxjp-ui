@@ -66,6 +66,12 @@ try {
       const after = await handle.getAttribute("aria-valuenow");
       if (before === after) throw new Error("ResizableHandle ArrowRight did not resize the panels");
     }
+    if (frame === "layout-app-shell") {
+      await page.getByRole("button", { name: "レガシースロットを表示" }).click();
+      if (!(await page.getByText("Legacy slots active").isVisible())) {
+        throw new Error("AppShell legacy topbar slots did not render");
+      }
+    }
     axe[frame] = (await new AxeBuilder({ page }).analyze()).violations.map((violation) => ({
       id: violation.id,
       targets: violation.nodes.map((node) => node.target),

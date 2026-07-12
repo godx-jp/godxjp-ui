@@ -52,8 +52,7 @@ import {
  * Japanese accounting shell (CoreBooks) with entity switcher, collapse toggle,
  * notifications badge, and a dashboard page body.
  * Composed only from real @godxjp/ui components.
- * PROP_COVERAGE_MISSING: legacy topbarLeft, topbarRight, and logo slots are not rendered here;
- * consumers should use the composed topbar slot shown below.
+ * Includes an executable switch between the composed topbar and legacy topbarLeft/topbarRight/logo.
  */
 
 const SECTIONS: SidebarSectionProp[] = [
@@ -98,6 +97,7 @@ export default function Demo() {
     ENTITIES[0].name,
   );
   const [unread, setUnread] = useState(true);
+  const [legacyTopbar, setLegacyTopbar] = useState(false);
 
   const sidebar = (
     <Sidebar
@@ -187,7 +187,22 @@ export default function Demo() {
   return (
     <AppShell
       sidebar={sidebar}
-      topbar={topbar}
+      topbar={legacyTopbar ? undefined : topbar}
+      logo={
+        legacyTopbar ? (
+          <Avatar>
+            <AvatarFallback>L</AvatarFallback>
+          </Avatar>
+        ) : undefined
+      }
+      topbarLeft={
+        legacyTopbar ? (
+          <Button size="sm" variant="ghost" onClick={() => setLegacyTopbar(false)}>
+            Composed topbar を表示
+          </Button>
+        ) : undefined
+      }
+      topbarRight={legacyTopbar ? <Text>Legacy slots active</Text> : undefined}
       sidebarCollapsed={collapsed}
       // Shell-level breadcrumb slot (app-breadcrumb landmark) · distinct from
       // PageContainer's own breadcrumb; here the shell owns the trail.
@@ -215,6 +230,9 @@ export default function Demo() {
             <Button size="sm" variant="outline" onClick={() => setUnread(true)}>
               <Bell />
               通知をリセット
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setLegacyTopbar(true)}>
+              レガシースロットを表示
             </Button>
             <Button size="sm">
               <Plus />

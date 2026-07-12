@@ -1,3 +1,5 @@
+import { forwardRef } from "react";
+import type { AnchorHTMLAttributes } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Breadcrumb } from "@godxjp/ui/layout";
@@ -7,9 +9,14 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * Breadcrumb — a STANDALONE "where am I" trail. Place `<Breadcrumb items={[…]} />` anywhere
  * (no shell required); it is NOT tied to AppShell or PageContainer. Pass one `items` array of
  * `{ label, to? }`; the segment with no `to` is the current page. Import from @godxjp/ui/layout.
- * PROP_COVERAGE_MISSING: linkComponent custom-router rendering is covered by PageContainer's owner
- * frame, not duplicated in this standalone Breadcrumb frame.
  */
+const RouterLink = forwardRef<
+  HTMLAnchorElement,
+  AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }
+>(function RouterLink({ to, href, ...props }, ref) {
+  return <a ref={ref} href={to ?? href} data-router-link="" {...props} />;
+});
+
 export default function Demo() {
   return (
     <PageContainer
@@ -69,6 +76,11 @@ export default function Demo() {
                   { label: "経理部", to: "/payroll/departments/accounting" },
                   { label: "田中 太郎" },
                 ]}
+              />
+              <Breadcrumb
+                ariaLabel="ルーターアダプター例のパンくず"
+                linkComponent={RouterLink}
+                items={[{ label: "ホーム", to: "/" }, { label: "アダプター例" }]}
               />
             </Flex>
           </CardContent>

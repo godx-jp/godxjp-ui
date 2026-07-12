@@ -1061,6 +1061,38 @@
     }
   },
   "ownerOverrides": {
+    "layout/app-shell": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner runtime executes composed topbar and legacy topbarLeft/topbarRight/logo modes plus all shell slots."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered control switches from composed topbar to legacy slots and asserts the resulting content."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "AppShell owns synchronous slot layout; application requests belong to consumers."
+      }
+    },
+    "layout/breadcrumb": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame covers items, unique ariaLabel and a rendered custom router linkComponent adapter."
+      },
+      "journey": {
+        "status": "not-applicable",
+        "reason": "Breadcrumb owns location links but not route completion or recovery behavior."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Breadcrumb uses native links with no custom pointer gesture contract."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Breadcrumb is synchronous navigation markup; route loading belongs to the router."
+      }
+    },
     "layout/flex": {
       "props": {
         "status": "pass",
@@ -1802,6 +1834,46 @@
     }
   },
   "ownerGroups": [
+    {
+      "name": "layout-navigation-source-closure",
+      "owners": [
+        "layout/app-shell",
+        "layout/aspect-ratio",
+        "layout/auth-shell",
+        "layout/breadcrumb",
+        "layout/flex",
+        "layout/page-container",
+        "layout/resizable",
+        "layout/sidebar",
+        "layout/split-pane",
+        "layout/topbar",
+        "layout/responsive-grid",
+        "layout/separator",
+        "navigation/app-setting-picker",
+        "navigation/context-menu",
+        "navigation/dropdown-menu",
+        "navigation/filter-bar",
+        "navigation/menubar",
+        "navigation/navigation-menu",
+        "navigation/pagination",
+        "navigation/steps",
+        "navigation/tabs"
+      ],
+      "dimensions": {
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source assertions prove mapped public exports render in the owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner source cases render compound parts together and the owner frame passed runtime geometry and Axe."
+        },
+        "screenReader": {
+          "status": "untested",
+          "reason": "ARIA and Axe evidence exists, but no real screen-reader announcement session was executed."
+        }
+      }
+    },
     {
       "name": "display-static-closure",
       "owners": [
