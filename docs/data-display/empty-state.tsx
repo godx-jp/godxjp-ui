@@ -44,6 +44,27 @@ export default function Demo() {
         <Card>
           <CardContent>
             <EmptyState
+              variant="section"
+              icon={SearchX}
+              title="このセクションに結果はありません"
+              description="ページ全体ではない、主要セクション内の空状態です。"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <EmptyState
+              variant="compact"
+              title="保留中の招待はありません"
+              description="補助的な空状態はアイコンを省き、最小限の余白で表示します。"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <EmptyState
               tone="success"
               icon={CheckCircle2}
               title="端末を承認しました"

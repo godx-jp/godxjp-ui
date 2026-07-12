@@ -34,6 +34,12 @@ const expenses = [
   { category: "その他", amount: 430000 },
 ];
 
+const sparseRevenue = [
+  { month: "1月", actual: 980000 },
+  { month: "2月", actual: null },
+  { month: "非常に長いカテゴリ名", actual: -120000 },
+];
+
 const jpy = { style: "currency", currency: "JPY" } as const;
 
 export default function Demo() {
@@ -138,6 +144,50 @@ export default function Demo() {
                 categoryKey="month"
                 series={[{ dataKey: "actual", label: "実績" }]}
                 size="sm"
+              />
+            </CardContent>
+          </Card>
+        </ResponsiveGrid>
+
+        <ResponsiveGrid columns={2}>
+          <Card>
+            <CardHeader>
+              <CardTitle>BarChart · 横方向・非積み上げ</CardTitle>
+              <CardDescription>長いカテゴリと負数を含む edge-data frame。</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <BarChart
+                label="例外値を含む売上"
+                description="null、負数、長いカテゴリ名の描画と代替テキストを確認します。"
+                data={sparseRevenue}
+                categoryKey="month"
+                series={[{ dataKey: "actual", label: "実績", color: "var(--chart-3)" }]}
+                numberFormat={jpy}
+                horizontal
+                showGrid={false}
+                showLegend={false}
+                size="xs"
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>PieChart · full pie・custom colours</CardTitle>
+              <CardDescription>donut=false と colors の明示指定。</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PieChart
+                id="expenses-full-pie"
+                label="経費内訳（円グラフ）"
+                description="カスタム配色を使用した full pie。"
+                data={expenses.slice(0, 3)}
+                dataKey="amount"
+                nameKey="category"
+                colors={["var(--chart-2)", "var(--chart-4)", "var(--chart-6)"]}
+                numberFormat={jpy}
+                height={240}
+                showLegend={false}
               />
             </CardContent>
           </Card>

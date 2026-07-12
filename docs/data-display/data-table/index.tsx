@@ -155,6 +155,26 @@ export default function Demo() {
           </Text>
           <DataTable data={[]} columns={columns} getRowId={(row) => row.id} />
         </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            0 件 + numbered pagination（境界状態）
+          </Text>
+          <DataTable data={[]} columns={columns} getRowId={(row) => row.id}>
+            <DataTable.Content />
+            <DataTable.Pagination pageSizeOptions={[10, 20]} />
+          </DataTable>
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            1 件 / 1 ページ + numbered pagination（境界状態）
+          </Text>
+          <DataTable data={invoices.slice(0, 1)} columns={columns} getRowId={(row) => row.id}>
+            <DataTable.Content />
+            <DataTable.Pagination pageSizeOptions={[10, 20]} />
+          </DataTable>
+        </Flex>
       </Flex>
     </PageContainer>
   );

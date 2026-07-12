@@ -20,13 +20,14 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Tones</CardTitle>
             <CardDescription>
-              Tone carries meaning。success（既定）と warning の 2 値のみ。
+              Tone carries meaning。success（既定）/ warning / destructive。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <Progress value={72} tone="success" label="処理スループット" />
               <Progress value={28} tone="warning" label="SLA 超過リスク" />
+              <Progress value={84} tone="destructive" label="エラー率の上限接近" />
               <Progress value={60} label="（tone 指定なし → success）" />
             </Flex>
           </CardContent>
@@ -34,9 +35,23 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Over capacity</CardTitle>
+            <CardDescription>
+              over=true で 100% を超えた実値を aria-valuetext
+              に残し、破壊的なストライプで区別します。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Progress value={132} over label="予約容量 132%" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Labelled / unlabelled</CardTitle>
             <CardDescription>
-              label を渡すと bar 下にテキストを表示し aria-labelledby で関連付け。省略時は aria-label=&quot;Progress&quot;。
+              label を渡すと bar 下にテキストを表示し aria-labelledby で関連付け。省略時は
+              aria-label=&quot;Progress&quot;。
             </CardDescription>
           </CardHeader>
           <CardContent>
