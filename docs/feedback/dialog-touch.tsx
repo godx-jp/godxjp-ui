@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@godxjp/ui/feedback";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@godxjp/ui/feedback";
 import { Button } from "@godxjp/ui/general";
 export default function Demo() {
   return (
@@ -8,6 +14,7 @@ export default function Demo() {
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>Touch dialog</DialogTitle>
+        <DialogDescription>Touch target and close behavior verification.</DialogDescription>
       </DialogContent>
     </Dialog>
   );

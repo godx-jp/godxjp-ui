@@ -948,6 +948,10 @@
         "status": "pass",
         "reason": "Toast frame passed Chromium reflow at all eight standard widths."
       },
+      "rtl": {
+        "status": "pass",
+        "reason": "Dedicated Toaster frame passed RTL direction, overflow and Axe checks at all eight required widths."
+      },
       "journey": {
         "status": "pass",
         "reason": "Variant, action recovery, promise lifecycle and dismiss cases are rendered and tested."
@@ -1656,6 +1660,10 @@
       "a11y": {
         "status": "pass",
         "reason": "Rendered uniquely labelled landmarks passed axe and keyboard smoke."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Coarse-pointer tap advanced the first carousel and changed previous-button state at 320px and 390px."
       }
     },
     "data-display/descriptions": {
