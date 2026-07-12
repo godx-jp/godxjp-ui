@@ -67,6 +67,37 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        <Card>
+          <CardHeader>
+            <CardTitle>320px stress · 長いローカライズラベル</CardTitle>
+            <CardDescription>
+              狭いコンテナで現行 Tabs の折返し・オーバーフローを可視化する。compact navigation
+              への変換は Tabs API に存在しないため擬似実装しない。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="max-w-80 border p-2">
+              <Tabs
+                defaultValue="methods"
+                variant="line"
+                items={[
+                  {
+                    value: "methods",
+                    label: "サインイン方法とパスワード",
+                    content: <Text>方法</Text>,
+                  },
+                  {
+                    value: "two-factor",
+                    label: "二要素認証の設定",
+                    content: <Text>二要素認証</Text>,
+                  },
+                  { value: "recovery", label: "アカウントの復旧方法", content: <Text>復旧</Text> },
+                ]}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
         {/* items API — line variant */}
         <Card>
           <CardHeader>

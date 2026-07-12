@@ -1,20 +1,12 @@
 import { AppProvider } from "@godxjp/ui/app";
-import {
-  Avatar,
-  AvatarFallback,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@godxjp/ui/data-display";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
-import { Flex, PageContainer, Topbar } from "@godxjp/ui/layout";
+import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
  * AppSettingPicker — ONE provider-bound Select for any single AppProvider setting,
- * chosen via `kind` ("locale" | "timezone" | "dateFormat" | "timeFormat"). It replaces the
+ * chosen via `kind` (locale/timezone/date/time plus theme/brand/density/fontSize). It replaces the
  * former Locale/Timezone/Date-format/Time-format pickers (4 components → 1). Mount under
  * <AppProvider> and it reads/writes the matching context with NO value/onValueChange; pass
  * those to control it instead. Composed only from real @godxjp/ui components.
@@ -60,30 +52,38 @@ export default function Demo() {
                   <Text weight="medium">時刻フォーマット</Text>
                   <AppSettingPicker kind="timeFormat" id="setting-time-format" />
                 </Flex>
+                <Flex direction="col" gap="sm" className="min-w-36 flex-1">
+                  <Text weight="medium">テーマ</Text>
+                  <AppSettingPicker kind="theme" id="setting-theme" />
+                </Flex>
+                <Flex direction="col" gap="sm" className="min-w-44 flex-1">
+                  <Text weight="medium">ブランド</Text>
+                  <AppSettingPicker kind="brand" id="setting-brand" />
+                </Flex>
+                <Flex direction="col" gap="sm" className="min-w-40 flex-1">
+                  <Text weight="medium">密度</Text>
+                  <AppSettingPicker kind="density" id="setting-density" />
+                </Flex>
+                <Flex direction="col" gap="sm" className="min-w-36 flex-1">
+                  <Text weight="medium">文字サイズ</Text>
+                  <AppSettingPicker kind="fontSize" id="setting-font-size" />
+                </Flex>
               </Flex>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>アイコンのみ（トップバー）</CardTitle>
+              <CardTitle>狭いコンテナと長いラベル</CardTitle>
               <CardDescription>
-                appearance=&quot;icon&quot;
-                で言語アイコンだけの正方形トリガーを描画。値テキストと固有幅を
-                構造的に外し、ローカライズ済み aria-label・フォーカス・キーボード操作・タップ領域
-                （--control-height）は保持する。開いたメニューには各言語名が表示される。
+                現行 API のモバイル挙動を 320px 相当で確認する。compact / icon-only API
+                は未提供のため、この例では CSS で擬似実装しない。
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Topbar
-                className="rounded-md border"
-                start={
-                  <Avatar className="rounded-md">
-                    <AvatarFallback>G</AvatarFallback>
-                  </Avatar>
-                }
-                end={<AppSettingPicker kind="locale" appearance="icon" id="topbar-locale-icon" />}
-              />
+              <div className="max-w-80 border p-3" lang="ja">
+                <AppSettingPicker kind="timezone" id="setting-timezone-narrow" />
+              </div>
             </CardContent>
           </Card>
 

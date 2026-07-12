@@ -153,6 +153,28 @@ export default function Demo() {
         {/* Dot style — compact */}
         <Card>
           <CardHeader>
+            <CardTitle>320px stress · 長いタイトル</CardTitle>
+            <CardDescription>
+              狭いコンテナで水平 Steps の長い日本語タイトルと説明を確認する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="max-w-80 border p-2">
+              <Steps
+                value={1}
+                items={[
+                  { title: "会社情報の入力", description: "法人番号と所在地" },
+                  { title: "本人確認書類のアップロード", description: "代表者の確認" },
+                  { title: "申請内容の最終確認", description: "送信前の確認" },
+                ]}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Dot style — compact */}
+        <Card>
+          <CardHeader>
             <CardTitle>Dot スタイル · コンパクト (type=&quot;dot&quot;)</CardTitle>
             <CardDescription>
               type=&quot;dot&quot; + size=&quot;sm&quot; で最小フットプリントのプログレスガイド。

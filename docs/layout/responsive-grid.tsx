@@ -65,6 +65,30 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Container stress · 320 / 768px 相当</CardTitle>
+            <CardDescription>
+              viewport ではなく親コンテナ幅で列数が変わることを、同じ 4 列指定で比較する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {["max-w-80", "max-w-3xl"].map((width) => (
+                <div key={width} className={`${width} [container-type:inline-size] border p-2`}>
+                  <ResponsiveGrid columns={4}>
+                    {Array.from({ length: 4 }, (_, index) => (
+                      <div key={index} className="bg-muted rounded p-3 text-center">
+                        {index + 1}
+                      </div>
+                    ))}
+                  </ResponsiveGrid>
+                </div>
+              ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>columns=&#123;4&#125; · KPI 行（StatCard 直置き）</CardTitle>
             <CardDescription>
               StatCard は自身がボーダー付き Card なので Card/CardContent でラップしない。 columns

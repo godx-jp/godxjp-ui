@@ -96,6 +96,30 @@ export default function Demo() {
           onValueChange={handleChange}
         />
 
+        <Card>
+          <CardHeader>
+            <CardTitle>境界状態 · 0 件 / 1 件</CardTitle>
+            <CardDescription>
+              空データの範囲は 0〜0。1 件では 1〜1 を返し、前後ボタンは無効になる。
+              実アプリでは空状態に Pagination を併置せず、この例は API 境界確認に使う。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Pagination
+                total={0}
+                pageSize={10}
+                showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件`}
+              />
+              <Pagination
+                total={1}
+                pageSize={10}
+                showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件`}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
         {/* showTotal custom label */}
         <Card>
           <CardHeader>

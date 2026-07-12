@@ -132,7 +132,7 @@ export function Pagination({
   const totalLabel =
     typeof showTotal === "function"
       ? showTotal(total, [
-          (safeCurrent - 1) * pageSize + 1,
+          total === 0 ? 0 : (safeCurrent - 1) * pageSize + 1,
           Math.min(safeCurrent * pageSize, total),
         ])
       : showTotal

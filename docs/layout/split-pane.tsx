@@ -17,10 +17,9 @@ import { FileText, Building2, Calendar, CreditCard, ArrowRight } from "lucide-re
  * Shows: main list + detail panel, asideWidth sm/md, nested inside PageContainer.
  * Composed only from real @godxjp/ui components.
  *
- * NOTE: <Flex> defaults to the CSS-standard direction="row"; every vertical stack sets
- * direction="col" explicitly (and rows may keep direction="row" for intent). Spacing comes
- * from the Flex `gap` prop or valid 4-point utilities (gap-3, pt-2, ml-3) · never named
- * classes like `gap-md` (no such utility exists).
+ * NOTE: <Flex> defaults to direction="row"; vertical stacks set direction="col"
+ * explicitly. Spacing comes from the Flex `gap` prop or valid 4-point utilities
+ * (gap-3, pt-2, ml-3) · never named classes like `gap-md` (no such utility exists).
  */
 
 type Invoice = {
@@ -295,6 +294,23 @@ export default function Demo() {
             </div>
           </Flex>
         </SplitPane>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Container stress · narrow embed</CardTitle>
+            <CardDescription>
+              大きな viewport 内の 768px 以下相当コンテナに埋め込み、現行の viewport-based
+              breakpoint を確認する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="max-w-3xl border p-2">
+              <SplitPane asideWidth="sm" aside={<div className="bg-muted p-4">補助パネル</div>}>
+                <div className="bg-muted p-4">メインコンテンツ</div>
+              </SplitPane>
+            </div>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

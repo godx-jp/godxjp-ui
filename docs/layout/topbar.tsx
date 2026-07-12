@@ -274,6 +274,24 @@ export default function Demo() {
               </Flex>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>320px stress · 長いローカライズ内容</CardTitle>
+              <CardDescription>
+                slot の優先度や overflow は consumer の責務。狭い幅で現行挙動を可視化する。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="max-w-80 overflow-hidden border p-2">
+                <Topbar
+                  start={<Text weight="medium">株式会社とても長い組織名称</Text>}
+                  center={<Button variant="outline">すべての取引を検索</Button>}
+                  end={<Button variant="ghost">山田 太郎 システム管理者</Button>}
+                />
+              </div>
+            </CardContent>
+          </Card>
         </Flex>
       </PageContainer>
     </AppShell>

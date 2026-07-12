@@ -222,6 +222,16 @@ export default function Demo() {
         }
       >
         <Flex direction="col" gap="lg">
+          <Card>
+            <CardHeader>
+              <CardTitle>Responsive frame coverage</CardTitle>
+              <CardDescription>
+                Frame の Dimensions で 320 / 375 / 390 / 768 / 1024 / 1280 / 1440 /
+                1920px を切り替え、sidebar・topbar・page actions・grid・split pane
+                の変換を同じ実用構成で確認する。
+              </CardDescription>
+            </CardHeader>
+          </Card>
           <ResponsiveGrid columns={{ sm: 2, md: 4 }}>
             <StatCard label="月次売上" value="¥8,200,000" delta="+12%" hint="先月比" />
             <StatCard label="請求件数" value="312" delta="+4%" />

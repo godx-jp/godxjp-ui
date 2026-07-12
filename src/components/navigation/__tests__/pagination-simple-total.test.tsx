@@ -12,4 +12,19 @@ describe("Pagination — simple mode total", () => {
     // the total label branch inside the simple-mode nav
     expect(container.querySelector(".ui-pagination-total")?.textContent).toMatch(/50/);
   });
+
+  it("reports a 0–0 range to custom totals when the collection is empty", () => {
+    let range: [number, number] | undefined;
+    renderWithUi(
+      <Pagination
+        total={0}
+        pageSize={10}
+        showTotal={(_total, nextRange) => {
+          range = nextRange;
+          return `${nextRange[0]}–${nextRange[1]}`;
+        }}
+      />,
+    );
+    expect(range).toEqual([0, 0]);
+  });
 });
