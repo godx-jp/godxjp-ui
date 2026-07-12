@@ -1,16 +1,17 @@
 # @godxjp/ui Documentation
 
-| Doc                                          | Purpose                                                                            |
-| -------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [DEVELOPMENT.md](./DEVELOPMENT.md)           | **Contributor guideline** — role/boundary, architecture, how to add/extend, verify |
-| [COMPONENTS.md](./COMPONENTS.md)             | Component catalog by Ant Design group                                              |
-| [PROPS-VOCABULARY.md](./PROPS-VOCABULARY.md) | Atomic prop types (`*Prop` suffix)                                                 |
-| [PROPS-REGISTRY.md](./PROPS-REGISTRY.md)     | Machine-readable registry + forbidden aliases                                      |
-| [DATETIME.md](./DATETIME.md)                 | **Mandatory** `formatDate` — all date/time display                                 |
-| [SPACING.md](./SPACING.md)                   | Golden ratio (φ) macro spacing — Stack, Card, PageContainer                        |
-| [FORMS.md](./FORMS.md)                       | **Mandatory** react-hook-form + Zod 4                                              |
-| [TESTING.md](./TESTING.md)                   | **Mandatory** Vitest per component                                                 |
-| [../README.md](../README.md)                 | Setup, workspace wiring, theme                                                     |
+| Doc                                          | Purpose                                                                              |
+| -------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [MIGRATION-v17.md](./MIGRATION-v17.md)       | **Upgrade guide** — v17 breaking `Flex` default + new primitives + safe query errors |
+| [DEVELOPMENT.md](./DEVELOPMENT.md)           | **Contributor guideline** — role/boundary, architecture, how to add/extend, verify   |
+| [COMPONENTS.md](./COMPONENTS.md)             | Component catalog by Ant Design group                                                |
+| [PROPS-VOCABULARY.md](./PROPS-VOCABULARY.md) | Atomic prop types (`*Prop` suffix)                                                   |
+| [PROPS-REGISTRY.md](./PROPS-REGISTRY.md)     | Machine-readable registry + forbidden aliases                                        |
+| [DATETIME.md](./DATETIME.md)                 | **Mandatory** `formatDate` — all date/time display                                   |
+| [SPACING.md](./SPACING.md)                   | Golden ratio (φ) macro spacing — Stack, Card, PageContainer                          |
+| [FORMS.md](./FORMS.md)                       | **Mandatory** react-hook-form + Zod 4                                                |
+| [TESTING.md](./TESTING.md)                   | **Mandatory** Vitest per component                                                   |
+| [../README.md](../README.md)                 | Setup, workspace wiring, theme                                                       |
 
 ## Preview
 
