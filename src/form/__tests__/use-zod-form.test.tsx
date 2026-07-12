@@ -64,6 +64,34 @@ describe("useZodForm + FormRoot + FormFieldControl", () => {
       expect(screen.getAllByRole("alert").length).toBeGreaterThan(0);
     });
     expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveFocus();
+  });
+
+  it("reset restores declared default values", async () => {
+    const user = userEvent.setup();
+    function ResettableForm() {
+      const form = useZodForm(schema, {
+        defaultValues: { name: "Default name", email: "default@example.com" },
+      });
+      return (
+        <FormRoot form={form} onSubmit={() => {}}>
+          <FormFieldControl name="name" label="Name">
+            {(field) => (
+              <Input {...field} value={typeof field.value === "string" ? field.value : ""} />
+            )}
+          </FormFieldControl>
+          <Button type="button" onClick={() => form.reset()}>
+            Reset
+          </Button>
+        </FormRoot>
+      );
+    }
+    renderWithUi(<ResettableForm />);
+    const input = screen.getByRole("textbox", { name: "Name" });
+    await user.clear(input);
+    await user.type(input, "Changed");
+    await user.click(screen.getByRole("button", { name: "Reset" }));
+    expect(input).toHaveValue("Default name");
   });
 
   it("FormRoot submits with registered inputs after user typing", async () => {

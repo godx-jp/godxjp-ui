@@ -63,6 +63,10 @@ export function FormField({
   const childProps = React.isValidElement(children)
     ? (children.props as Record<string, unknown>)
     : undefined;
+  const mergeIds = (...values: Array<string | undefined>) =>
+    Array.from(new Set(values.flatMap((value) => value?.split(/\s+/).filter(Boolean) ?? []))).join(
+      " ",
+    ) || undefined;
   const childWithA11y = React.isValidElement(children)
     ? React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
         // The label is associated via aria-labelledby (not <label for>): composite
@@ -72,10 +76,20 @@ export function FormField({
         "aria-labelledby": (childProps?.["aria-labelledby"] as string | undefined) ?? labelId,
         // Helper and error can coexist: helper stays on aria-describedby, the error on
         // aria-errormessage (surfaced when aria-invalid is true).
-        "aria-describedby": helperId,
-        "aria-errormessage": errorId,
-        "aria-required": required ? true : undefined,
-        "aria-invalid": !!error || undefined,
+        "aria-describedby": mergeIds(
+          childProps?.["aria-describedby"] as string | undefined,
+          helperId,
+        ),
+        "aria-errormessage": mergeIds(
+          childProps?.["aria-errormessage"] as string | undefined,
+          errorId,
+        ),
+        "aria-required": required
+          ? true
+          : (childProps?.["aria-required"] as React.AriaAttributes["aria-required"]),
+        "aria-invalid": error
+          ? true
+          : (childProps?.["aria-invalid"] as React.AriaAttributes["aria-invalid"]),
       })
     : children;
 
