@@ -1131,7 +1131,7 @@ dual-React artifact under vitest).`,
     whenToUse:
       "You are building or redesigning a COMPLEX multi-layer admin/console/back-office UI (platform admin, workspace admin, multi-tenant management, control panel) — the kind that spans several administrative tiers (Platform → Org/Tenant → Brand → Org-unit → Shop → Staff), not one flat resource list. Read this BEFORE writing JSX: it forces the right order — lock the entity model → study exemplars → design a LAYERED information architecture → wireframe (as an Artifact) → validate → only THEN code. Stops the flat-console anti-pattern (every resource in one list, create-form + list + detail crammed on one screen, no dashboards). For a single ordinary screen use compose-a-screen; for a design handoff bundle use design-to-page.",
     source:
-      "@godxjp/ui .claude/skills/design-complex-admin/SKILL.md — the admin.godx.jp redesign process (entity-tree concept → layered wireframe → code)",
+      "@godxjp/ui .claude/skills/design-complex-admin/SKILL.md — the multi-tenant admin-console redesign process (entity-tree concept → layered wireframe → code)",
     sections: [
       {
         id: "entity-model-first",
@@ -1144,7 +1144,7 @@ CONCEPT artifact (a tree of entities + a glossary + the rules) and get it confir
 - the identity split matters — Principal/User (can log in, carries authz) ≠ Employee/Staff
   (a domain record that may never log in); never fuse them in the IA;
 - explicitly list what is OUT OF SCOPE / does NOT exist, so the console doesn't invent tiers.
-Worked example (admin.godx.jp): Org = Tenant = 法人 · Brand · Org-unit (branch) · Shop = Branch ·
+Worked example (a multi-tenant admin console): Org = Tenant = 法人 · Brand · Org-unit (branch) · Shop = Branch ·
 Staff · Principal = User. No code until this tree is agreed — a wrong entity model is a wrong
 console, and it is far cheaper to fix here than in built screens.
 🔴 Entity-category colour is NON-SEMANTIC: never use red/amber/orange to distinguish a category
