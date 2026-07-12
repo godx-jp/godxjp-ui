@@ -26,7 +26,28 @@ jobs:
       - run: pnpm check:frame-contracts
 
   rendered-runtime:
+    name: rendered-runtime (${{ matrix.name }})
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: data-entry-core
+            stories: data-entry-input,data-entry-form-field-index,data-entry-form,data-entry-select,data-entry-checkbox,data-entry-radio-group,data-entry-switch,data-entry-slider,data-entry-toggle
+            command: pnpm check:data-entry-frame-runtime
+          - name: data-entry-pickers
+            stories: data-entry-date-picker,data-entry-month-picker,data-entry-time-picker,data-entry-color-picker,data-entry-upload,data-entry-cascader,data-entry-tree-select,data-entry-transfer,data-entry-number-input
+            command: pnpm check:data-entry-frame-runtime
+          - name: data-entry-specialized
+            stories: data-entry-search-input,data-entry-password-input,data-entry-input-otp,data-entry-rating,data-entry-tag-input,data-entry-calendar,data-entry-date-range-picker,data-entry-month-range-picker,data-entry-command
+            command: pnpm check:data-entry-frame-runtime
+          - name: interaction-semantics
+            stories: ""
+            command: pnpm check:data-entry-touch-aria && pnpm check:layout-nav-frames && pnpm check:provider-feedback-query-runtime
+          - name: layout-touch-rtl
+            stories: ""
+            command: pnpm check:layout-nav-closure && pnpm check:final-touch-rtl
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4.4.0
@@ -36,4 +57,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm check:frame-runtime
+      - run: ${{ matrix.command }}
+        env:
+          DATA_ENTRY_STORIES: ${{ matrix.stories }}
