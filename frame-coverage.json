@@ -125,6 +125,10 @@
         "status": "pass",
         "reason": "Both data-driven and compound Select APIs are rendered in the owner frame."
       },
+      "journey": {
+        "status": "pass",
+        "reason": "Runtime opened, navigated, scrolled and closed the compound popup at all eight widths."
+      },
       "responsive": {
         "status": "pass",
         "reason": "Chromium geometry executed at 320,375,390,768,1024,1280,1440,1920 without horizontal overflow."
@@ -395,6 +399,45 @@
       "a11y": { "status": "pass", "reason": "Axe passed after loading-option semantics fix." },
       "async": { "status": "pass", "reason": "Loading, results and empty async states render." }
     },
+    "SelectContent": {
+      "isolated": { "status": "pass", "reason": "Opened in owner frame." },
+      "composition": { "status": "pass", "reason": "Composes groups, items and scroll controls." },
+      "journey": {
+        "status": "pass",
+        "reason": "Open/navigate/scroll/close passed at eight widths."
+      },
+      "responsive": { "status": "pass", "reason": "Opened popup passed eight widths." },
+      "rtl": { "status": "pass", "reason": "RTL popup passed eight widths." },
+      "a11y": { "status": "pass", "reason": "Opened popup passed Axe and keyboard checks." },
+      "async": { "status": "not-applicable", "reason": "Compound content has no async lifecycle." }
+    },
+    "SelectTrigger": {
+      "isolated": { "status": "pass", "reason": "Rendered in owner frame." },
+      "composition": { "status": "pass", "reason": "Controls SelectContent." },
+      "journey": { "status": "pass", "reason": "Open/close passed at eight widths." },
+      "responsive": { "status": "pass", "reason": "Passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Passed RTL at eight widths." },
+      "a11y": { "status": "pass", "reason": "Named trigger passed Axe and keyboard checks." },
+      "async": { "status": "not-applicable", "reason": "Trigger has no async lifecycle." }
+    },
+    "SelectValue": {
+      "isolated": { "status": "pass", "reason": "Rendered in owner trigger." },
+      "composition": { "status": "pass", "reason": "Composed inside SelectTrigger." },
+      "journey": { "status": "pass", "reason": "Rendered through popup journey." },
+      "responsive": { "status": "pass", "reason": "Passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Passed RTL at eight widths." },
+      "a11y": { "status": "pass", "reason": "Trigger value passed Axe." },
+      "async": { "status": "not-applicable", "reason": "Value projection has no async lifecycle." }
+    },
+    "SelectItem": {
+      "isolated": { "status": "pass", "reason": "Rendered in opened owner popup." },
+      "composition": { "status": "pass", "reason": "Composed in labelled groups." },
+      "journey": { "status": "pass", "reason": "Keyboard navigation passed at eight widths." },
+      "responsive": { "status": "pass", "reason": "Opened items passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Opened RTL items passed eight widths." },
+      "a11y": { "status": "pass", "reason": "Items passed Axe and keyboard checks." },
+      "async": { "status": "not-applicable", "reason": "Compound item has no async lifecycle." }
+    },
     "SelectGroup": {
       "isolated": { "status": "pass", "reason": "Rendered in the Select compound owner case." },
       "composition": {
@@ -404,17 +447,38 @@
       "a11y": {
         "status": "pass",
         "reason": "Opened compound list passed Axe and keyboard navigation."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Open, navigate and close journey passed at eight widths."
+      },
+      "responsive": { "status": "pass", "reason": "Opened popup passed geometry at eight widths." },
+      "rtl": {
+        "status": "pass",
+        "reason": "Opened RTL popup passed Axe and geometry at eight widths."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Presentational grouping has no async lifecycle."
       }
     },
     "SelectLabel": {
       "isolated": { "status": "pass", "reason": "Rendered in the Select compound owner case." },
       "composition": { "status": "pass", "reason": "Rendered inside SelectGroup." },
-      "a11y": { "status": "pass", "reason": "Opened compound list passed Axe." }
+      "a11y": { "status": "pass", "reason": "Opened compound list passed Axe." },
+      "journey": { "status": "pass", "reason": "Rendered during the eight-width popup journey." },
+      "responsive": { "status": "pass", "reason": "Opened popup passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Opened RTL popup passed eight widths." },
+      "async": { "status": "not-applicable", "reason": "Static label has no async lifecycle." }
     },
     "SelectSeparator": {
       "isolated": { "status": "pass", "reason": "Rendered in the Select compound owner case." },
       "composition": { "status": "pass", "reason": "Rendered between SelectGroup sections." },
-      "a11y": { "status": "pass", "reason": "Opened compound list passed Axe." }
+      "a11y": { "status": "pass", "reason": "Opened compound list passed Axe." },
+      "journey": { "status": "pass", "reason": "Rendered during the eight-width popup journey." },
+      "responsive": { "status": "pass", "reason": "Opened popup passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Opened RTL popup passed eight widths." },
+      "async": { "status": "not-applicable", "reason": "Static separator has no async lifecycle." }
     },
     "SelectScrollUpButton": {
       "isolated": {
@@ -425,7 +489,14 @@
         "status": "pass",
         "reason": "Rendered by SelectContent after viewport scrolling."
       },
-      "a11y": { "status": "pass", "reason": "Long list passed Axe and keyboard navigation." }
+      "a11y": { "status": "pass", "reason": "Long list passed Axe and keyboard navigation." },
+      "journey": {
+        "status": "pass",
+        "reason": "Appeared after scrolling in every viewport journey."
+      },
+      "responsive": { "status": "pass", "reason": "Asserted after scrolling at eight widths." },
+      "rtl": { "status": "pass", "reason": "Asserted in RTL at eight widths." },
+      "async": { "status": "not-applicable", "reason": "Scroll affordance has no async lifecycle." }
     },
     "SelectScrollDownButton": {
       "isolated": {
@@ -436,7 +507,11 @@
         "status": "pass",
         "reason": "Rendered by SelectContent for overflowing options."
       },
-      "a11y": { "status": "pass", "reason": "Long list passed Axe and keyboard navigation." }
+      "a11y": { "status": "pass", "reason": "Long list passed Axe and keyboard navigation." },
+      "journey": { "status": "pass", "reason": "Appeared on open in every viewport journey." },
+      "responsive": { "status": "pass", "reason": "Asserted at eight widths." },
+      "rtl": { "status": "pass", "reason": "Asserted in RTL at eight widths." },
+      "async": { "status": "not-applicable", "reason": "Scroll affordance has no async lifecycle." }
     },
     "Flex": {
       "isolated": { "status": "pass", "reason": "Rendered directly in docs/layout/flex.tsx." },
