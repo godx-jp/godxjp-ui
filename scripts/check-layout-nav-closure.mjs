@@ -68,10 +68,46 @@ try {
         viewport: innerWidth,
         scrollWidth: document.documentElement.scrollWidth,
         error: document.querySelector(".preview-runtime-error")?.textContent,
+        clippedControls: [
+          ...document.querySelectorAll(
+            'button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
+          ),
+        ]
+          .filter((node) => {
+            const rect = node.getBoundingClientRect();
+            const style = getComputedStyle(node);
+            return rect.width > 0 && style.visibility !== "hidden" && style.display !== "none";
+          })
+          .filter((node) => {
+            for (let ancestor = node.parentElement; ancestor; ancestor = ancestor.parentElement) {
+              const style = getComputedStyle(ancestor);
+              if (
+                ["auto", "scroll"].includes(style.overflowX) &&
+                ancestor.scrollWidth > ancestor.clientWidth
+              ) {
+                return false;
+              }
+            }
+            return true;
+          })
+          .map((node) => {
+            const rect = node.getBoundingClientRect();
+            return {
+              name: node.getAttribute("aria-label") ?? node.textContent?.trim().slice(0, 60),
+              left: rect.left,
+              right: rect.right,
+            };
+          })
+          .filter(({ left, right }) => left < -1 || right > innerWidth + 1),
       }));
       if (result.error) throw new Error(`${frame}@${width}: ${result.error}`);
       if (result.scrollWidth > result.viewport + 1) {
         throw new Error(`${frame}@${width}: overflow ${result.scrollWidth}>${result.viewport}`);
+      }
+      if (result.clippedControls.length) {
+        throw new Error(
+          `${frame}@${width}: clipped controls ${JSON.stringify(result.clippedControls)}`,
+        );
       }
     }
   }

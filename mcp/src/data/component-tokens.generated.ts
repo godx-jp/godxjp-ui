@@ -869,6 +869,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--tabs-list-max-inline-size",
+    "value": "100%",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--tabs-list-overflow",
+    "value": "auto",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
     "name": "--menubar-item-hover-background",
     "value": "initial",
     "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."

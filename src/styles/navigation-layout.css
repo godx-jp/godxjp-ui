@@ -1,4 +1,11 @@
 @layer components {
+  [data-slot="tabs-list"] {
+    max-inline-size: var(--tabs-list-max-inline-size);
+    overflow-x: var(--tabs-list-overflow);
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+
   .ui-context-menu-content {
     z-index: 50;
     min-width: 10rem;

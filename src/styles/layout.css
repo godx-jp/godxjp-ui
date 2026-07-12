@@ -384,11 +384,36 @@
   }
 
   .ui-page-title {
-    font-size: var(--heading-h1);
+    font-size: var(--page-title-font-size);
     font-weight: var(--font-weight-medium);
     letter-spacing: var(--letter-spacing-tight);
     line-height: var(--line-height-tight);
     overflow-wrap: anywhere;
+  }
+
+  /* Compact viewports use a responsive type step, not compact density: body/control text and
+   * touch targets remain readable while page chrome stops competing with primary actions. A
+   * single Flex action group must wrap even when the consumer omitted `wrap`, because clipping
+   * header actions makes functionality unreachable. */
+  @media (max-width: 639px) {
+    .ui-page-container {
+      --space-page-active-x: var(--space-page-compact-x);
+      --space-page-active-y: var(--space-page-compact-y);
+      --space-section-active: var(--space-section-compact);
+    }
+
+    .ui-page-title {
+      font-size: var(--page-title-font-size-compact);
+    }
+
+    .ui-page-header .ui-page-subtitle {
+      font-size: var(--page-subtitle-font-size-compact);
+    }
+
+    .ui-page-header-extra > .ui-flex[data-direction="row"] {
+      flex-wrap: wrap;
+      max-width: 100%;
+    }
   }
 
   @media (min-width: 640px) {
@@ -407,7 +432,7 @@
   }
 
   .ui-page-subtitle {
-    font-size: var(--font-size-base);
+    font-size: var(--page-subtitle-font-size);
     color: hsl(var(--muted-foreground));
     margin-top: var(--space-1);
   }
