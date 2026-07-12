@@ -300,7 +300,29 @@
     "ASSIGNMENT_STATUS_TERMINATED": "Terminated"
   },
   "query": {
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "refreshing": "Updating…",
+    "error": {
+      "title": {
+        "auth": "Session expired",
+        "forbidden": "Access denied",
+        "notFound": "Not found",
+        "validation": "Check your input",
+        "transient": "Something went wrong",
+        "unknown": "Something went wrong"
+      },
+      "description": {
+        "auth": "Your session has ended. Sign in again to continue.",
+        "forbidden": "You don't have permission to view this. Contact an administrator if you need access.",
+        "notFound": "We couldn't find what you were looking for. It may have been moved or removed.",
+        "validation": "The request couldn't be completed. Review your input and try again.",
+        "transient": "A temporary problem occurred. Please try again in a moment.",
+        "unknown": "An unexpected error occurred. Please try again later."
+      },
+      "action": {
+        "signIn": "Sign in again"
+      }
+    }
   },
   "chart": {
     "empty": "No data to display",

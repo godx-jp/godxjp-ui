@@ -11,6 +11,11 @@ function mockQuery<T>(partial: Partial<UseQueryResult<T>>): UseQueryResult<T> {
   return partial as UseQueryResult<T>;
 }
 
+/** An Error carrying an HTTP `status` (fetch/axios-style), typed as Error for the query mock. */
+function httpError(status: number, message = ""): Error {
+  return Object.assign(new Error(message || String(status)), { status });
+}
+
 function withQueryClient(ui: React.ReactElement, client: QueryClient) {
   return <QueryClientProvider client={client}>{ui}</QueryClientProvider>;
 }
@@ -121,7 +126,9 @@ describe("DataState", () => {
       </DataState>,
     );
     expect(screen.getByRole("alert")).toBeInTheDocument();
-    expect(screen.getByText(/503/)).toBeInTheDocument();
+    // The endpoint/status is never dumped as the user-facing detail.
+    expect(screen.queryByText(/503/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/customers/)).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /thử lại/i }));
     expect(refetch).toHaveBeenCalledOnce();
   });
@@ -203,6 +210,176 @@ describe("DataState", () => {
       </DataState>,
     );
     expect(screen.getByTestId("custom-err")).toHaveTextContent("fail");
+  });
+});
+
+describe("DataState state matrix", () => {
+  it("active initial fetch (pending + fetchStatus fetching) renders the skeleton", () => {
+    renderWithUi(
+      <DataState
+        query={mockQuery({ isPending: true, isError: false, fetchStatus: "fetching" })}
+        skeleton={<div data-testid="skel">loading</div>}
+        prerequisite={<div>prereq</div>}
+      >
+        {() => <div>data</div>}
+      </DataState>,
+    );
+    expect(screen.getByTestId("skel")).toBeInTheDocument();
+    expect(screen.queryByText("prereq")).not.toBeInTheDocument();
+  });
+
+  it("paused (offline, pending + fetchStatus paused) renders the skeleton, not the prerequisite", () => {
+    renderWithUi(
+      <DataState
+        query={mockQuery({ isPending: true, isError: false, fetchStatus: "paused" })}
+        skeleton={<div data-testid="skel">loading</div>}
+        prerequisite={<div>prereq</div>}
+      >
+        {() => <div>data</div>}
+      </DataState>,
+    );
+    expect(screen.getByTestId("skel")).toBeInTheDocument();
+    expect(screen.queryByText("prereq")).not.toBeInTheDocument();
+  });
+
+  it("offers retry for a transient (5xx) error even without showRetry", async () => {
+    const user = userEvent.setup();
+    const refetch = vi.fn();
+    renderWithUi(
+      <DataState
+        query={mockQuery({
+          isPending: false,
+          isError: true,
+          isFetching: false,
+          error: new Error("Service Unavailable: 503"),
+          refetch,
+        })}
+        skeleton={<div>loading</div>}
+      >
+        {() => <div>data</div>}
+      </DataState>,
+    );
+    await user.click(screen.getByRole("button", { name: /thử lại/i }));
+    expect(refetch).toHaveBeenCalledOnce();
+  });
+
+  it("routes a 401 to session renewal (onAuthError), never a blind retry", async () => {
+    const user = userEvent.setup();
+    const onAuthError = vi.fn();
+    const refetch = vi.fn();
+    renderWithUi(
+      <DataState
+        query={mockQuery({
+          isPending: false,
+          isError: true,
+          isFetching: false,
+          error: new Error("Access token invalid"),
+          refetch,
+        })}
+        skeleton={<div>loading</div>}
+        showRetry
+        onAuthError={onAuthError}
+      >
+        {() => <div>data</div>}
+      </DataState>,
+    );
+    expect(screen.queryByRole("button", { name: /thử lại/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /đăng nhập lại/i }));
+    expect(onAuthError).toHaveBeenCalledOnce();
+    expect(refetch).not.toHaveBeenCalled();
+  });
+
+  it("does not offer retry for a 403 even when showRetry is set", () => {
+    renderWithUi(
+      <DataState
+        query={mockQuery({
+          isPending: false,
+          isError: true,
+          isFetching: false,
+          error: httpError(403, "Forbidden"),
+        })}
+        skeleton={<div>loading</div>}
+        showRetry
+      >
+        {() => <div>data</div>}
+      </DataState>,
+    );
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /thử lại/i })).not.toBeInTheDocument();
+  });
+
+  it("does not offer retry for a 404 not-found error", () => {
+    renderWithUi(
+      <DataState
+        query={mockQuery({
+          isPending: false,
+          isError: true,
+          isFetching: false,
+          error: httpError(404),
+        })}
+        skeleton={<div>loading</div>}
+      >
+        {() => <div>data</div>}
+      </DataState>,
+    );
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /thử lại/i })).not.toBeInTheDocument();
+  });
+
+  it("does not offer retry for a 422 validation error", () => {
+    renderWithUi(
+      <DataState
+        query={mockQuery({
+          isPending: false,
+          isError: true,
+          isFetching: false,
+          error: httpError(422, "declared_value must be > 0"),
+        })}
+        skeleton={<div>loading</div>}
+      >
+        {() => <div>data</div>}
+      </DataState>,
+    );
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /thử lại/i })).not.toBeInTheDocument();
+  });
+
+  it("preserves existing content with a polite busy status during a background refetch", () => {
+    renderWithUi(
+      <DataState
+        query={mockQuery({
+          isPending: false,
+          isError: false,
+          isFetching: true,
+          data: { items: [1, 2] },
+        })}
+        skeleton={<div data-testid="skel">loading</div>}
+      >
+        {(d) => <div data-testid="content">count:{d.items.length}</div>}
+      </DataState>,
+    );
+    // Content stays visible (no skeleton flash) and the refetch is announced politely.
+    expect(screen.getByTestId("content")).toHaveTextContent("count:2");
+    expect(screen.queryByTestId("skel")).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(/đang cập nhật/i);
+  });
+
+  it("shows placeholder/stale data (not skeleton) while the real fetch is in flight", () => {
+    renderWithUi(
+      <DataState
+        query={mockQuery({
+          isPending: false,
+          isError: false,
+          isFetching: true,
+          data: { items: [7] },
+        })}
+        skeleton={<div data-testid="skel">loading</div>}
+      >
+        {(d) => <div data-testid="content">count:{d.items.length}</div>}
+      </DataState>,
+    );
+    expect(screen.getByTestId("content")).toHaveTextContent("count:1");
+    expect(screen.queryByTestId("skel")).not.toBeInTheDocument();
   });
 });
 

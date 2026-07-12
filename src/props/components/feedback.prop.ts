@@ -1,5 +1,6 @@
 /** Feedback component prop types — @see docs/COMPONENTS.md#feedback */
 import type * as React from "react";
+import type { QueryErrorCategory } from "../../lib/query-error";
 import type {
   AlertVariantProp,
   CancelLabelProp,
@@ -36,7 +37,12 @@ export type AlertDialogProp = {
 /** @see Alert */
 export type AlertQueryErrorProp = {
   error: unknown;
+  /** Override the auto-classified cause. When omitted, the error is classified via `classifyQueryError`. */
+  category?: QueryErrorCategory;
+  /** Retry affordance — only shown for causes where retrying is meaningful (transient/network/5xx). */
   onRetry?: HandlerProp;
+  /** Recovery for `auth` (401/expired token): renew the session or sign in again. Replaces Retry. */
+  onAuthAction?: HandlerProp;
   className?: ClassNameProp;
 };
 

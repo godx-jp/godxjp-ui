@@ -20,10 +20,14 @@ export type DataStateProp<T> = {
   empty?: React.ReactNode;
   isEmpty?: (data: NonNullable<T>) => boolean;
   errorRenderer?: (error: unknown, retry: () => void) => React.ReactNode;
-  /** Opt in only for errors known to be transient/retryable. Default `false`. */
+  /** Force the Retry affordance even for non-transient causes. Retry is offered automatically for
+   * transient/network/5xx errors regardless of this flag; default `false` for all other causes. */
   showRetry?: boolean;
   /** Default `() => query.refetch()`. */
   onRetry?: HandlerProp;
+  /** Recovery for authentication errors (401 / expired token): renew the session or sign in again.
+   * When provided, a 401 renders this action instead of Retry. */
+  onAuthError?: HandlerProp;
   children: (data: NonNullable<T>) => React.ReactNode;
 };
 

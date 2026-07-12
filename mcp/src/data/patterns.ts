@@ -462,15 +462,19 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
     code: `import { DataState } from "@godxjp/ui/query";
 import { EmptyState, SkeletonTable } from "@godxjp/ui/data-display";
 
-// enabled:false is prerequisite/idle, not loading. DataState checks fetchStatus.
+// enabled:false is prerequisite/idle, not loading — DataState checks fetchStatus, not just isPending.
+// Errors are classified by cause: onAuthError handles 401/expired token (session renewal, NOT retry);
+// Retry appears automatically only for transient/network/5xx; 403/404/422 show a cause-aware message.
 <DataState query={query} prerequisite={<EmptyState variant="section" title="組織を選択してください" />}
   skeleton={<SkeletonTable />} empty={<EmptyState variant="section" title="結果がありません" />}
   isEmpty={(data) => data.items.length === 0}
-  errorRenderer={(error, retry) => classify(error) === "transient" ? <TransientError onRetry={retry} /> : <CauseAwareError error={error} />}>
+  onAuthError={() => auth.signInAgain()}>
   {(data) => <Results items={data.items} />}
 </DataState>
 
-// 401 → renew/sign in; 403 → permission path; domain → correction; transient network/5xx → Retry.
+// Need a bespoke error UI? Pass errorRenderer and branch on classifyQueryError(error).category
+// ("auth" | "forbidden" | "notFound" | "validation" | "transient" | "unknown").
+// The default detail is a localized message — never raw token/endpoint/stack text.
 // Never render pagination outside the successful populated-data branch.`,
   },
   {

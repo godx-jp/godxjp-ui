@@ -12,10 +12,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `direction="col"`; omit `direction` only when a row is intended.
 - `DataState` distinguishes disabled/unstarted queries from active loading through `fetchStatus`,
   adds a `prerequisite` slot, and no longer enables generic Retry by default.
+- `DataState` / `Alert.QueryError` now classify errors by cause (`classifyQueryError`): Retry is
+  offered only for transient/network/5xx failures; a 401/expired token routes to session renewal
+  via the new `DataState` `onAuthError` prop (and `Alert.QueryError` `onAuthAction`); 403/404/422
+  present a cause-aware message with no blind retry. The user-facing detail is now a localized,
+  cause-specific message — the raw backend/token/stack text is no longer shown by default (pass a
+  custom `errorRenderer` for a domain-specific message).
+- `DataState` preserves existing content during a background refetch (with a polite `sr-only` busy
+  status) instead of flashing the skeleton over resolved data.
 - Static data-driven `Select` disables itself when it has no options, preventing blank popovers.
+
+  **Migration:** consumers that relied on `DataState`/`Alert.QueryError` always showing a Retry
+  button or the raw error message must opt in per cause — set `showRetry` (transient still retries
+  automatically), pass `onAuthError` for 401 recovery, or supply `errorRenderer` to render a
+  bespoke message. Disabled queries (`enabled:false`) should be given a `prerequisite` slot.
 
 ### Added
 
+- `classifyQueryError` / `isRetryableQueryError` (exported from `@godxjp/ui/query`) — cause
+  classification (`auth` | `forbidden` | `notFound` | `validation` | `transient` | `unknown`) for
+  branching custom error UIs and structured logging.
 - `EmptyState` `page`, `section`, and `compact` variants for context-appropriate visual weight.
 - MCP patterns for responsive settings, async/table state, organization membership/invitations,
   and signed-in account recovery, plus lockstep UI compatibility metadata.

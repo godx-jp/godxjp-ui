@@ -8,3 +8,5 @@ export { InfiniteQueryState, flattenItemPages } from "./infinite-query-state";
 export type { InfiniteQueryStateProp, InfiniteQueryStateProps } from "./infinite-query-state";
 export { PrefetchLink } from "./prefetch-link";
 export type { PrefetchLinkProp, PrefetchLinkProps } from "./prefetch-link";
+export { classifyQueryError, isRetryableQueryError } from "../../lib/query-error";
+export type { QueryErrorCategory, QueryErrorInfo } from "../../lib/query-error";

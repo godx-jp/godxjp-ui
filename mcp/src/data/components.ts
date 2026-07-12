@@ -1900,7 +1900,14 @@ import { Smartphone } from "lucide-react";
         name: "showRetry",
         type: "boolean",
         defaultValue: "false",
-        description: "Opt in only for errors classified as transient/retryable.",
+        description:
+          "Force Retry even for non-transient causes. Retry is offered automatically for transient/network/5xx errors regardless of this flag.",
+      },
+      {
+        name: "onAuthError",
+        type: "() => void",
+        description:
+          "Recovery for 401 / expired-token errors: renew the session or sign in again. A 401 renders this action instead of Retry.",
       },
       {
         name: "children",
@@ -1939,7 +1946,12 @@ import { Smartphone } from "lucide-react";
   {(d) => <MemberTable items={d.items} />}
 </DataState>`,
     storyPath: "query/DataState.stories.tsx",
-    rules: [],
+    rules: [
+      "Errors are classified by cause (via classifyQueryError). Retry is offered ONLY for transient/network/5xx; a 401/expired-token routes to session renewal through onAuthError; 403/404/422 present a cause-aware message with no blind retry.",
+      "The user-facing detail is a localized, cause-specific message — the raw backend/token/stack text is never shown. For a domain-specific message (e.g. a 422 field error) pass a custom errorRenderer.",
+      "A disabled/unstarted query (enabled:false → isPending with fetchStatus 'idle') renders the prerequisite slot, never the skeleton. Always pass prerequisite for tenant/org-gated queries.",
+      "A background refetch over existing data keeps the content on screen with a polite sr-only busy status — it does not flash the skeleton. Only the initial fetch (isPending) shows the skeleton.",
+    ],
   },
   {
     name: "InfiniteQueryState",

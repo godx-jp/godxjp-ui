@@ -8,6 +8,10 @@ function mockQuery<T>(partial: Partial<UseQueryResult<T>>): UseQueryResult<T> {
   return partial as UseQueryResult<T>;
 }
 
+function httpError(status: number): Error {
+  return Object.assign(new Error(String(status)), { status });
+}
+
 type List = { items: number[] };
 
 // DataState orchestrates loading / error / empty / success — each branch must be
@@ -35,6 +39,51 @@ describe("DataState a11y", () => {
           refetch: () => Promise.resolve({} as never),
         })}
         skeleton={<p>Đang tải…</p>}
+      >
+        {(d) => <div>{d.items.length}</div>}
+      </DataState>,
+    );
+  });
+
+  it("auth error (session renewal) has no axe violations", async () => {
+    await expectNoA11yViolations(
+      <DataState<List>
+        query={mockQuery({
+          isPending: false,
+          isError: true,
+          isFetching: false,
+          error: new Error("Access token invalid"),
+        })}
+        skeleton={<p>Đang tải…</p>}
+        onAuthError={() => undefined}
+      >
+        {(d) => <div>{d.items.length}</div>}
+      </DataState>,
+    );
+  });
+
+  it("forbidden error (permission-aware, no retry) has no axe violations", async () => {
+    await expectNoA11yViolations(
+      <DataState<List>
+        query={mockQuery({
+          isPending: false,
+          isError: true,
+          isFetching: false,
+          error: httpError(403),
+        })}
+        skeleton={<p>Đang tải…</p>}
+      >
+        {(d) => <div>{d.items.length}</div>}
+      </DataState>,
+    );
+  });
+
+  it("prerequisite (disabled query) state has no axe violations", async () => {
+    await expectNoA11yViolations(
+      <DataState<List>
+        query={mockQuery({ isPending: true, isError: false, fetchStatus: "idle" })}
+        skeleton={<p>Đang tải…</p>}
+        prerequisite={<EmptyState title="組織を選択してください" />}
       >
         {(d) => <div>{d.items.length}</div>}
       </DataState>,
