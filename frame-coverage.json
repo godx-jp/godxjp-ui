@@ -1061,20 +1061,150 @@
     }
   },
   "ownerOverrides": {
+    "layout/flex": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame directly executes direction, alignment, justification, wrapping and gap cases."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated Flex owner frame passed Axe; Flex itself is a non-interactive layout primitive."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Flex is a synchronous CSS layout primitive with no async lifecycle."
+      }
+    },
+    "layout/resizable": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions directly map ResizablePanelGroup, ResizablePanel and ResizableHandle cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Complete compound owner frame passed Chromium geometry at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Expanded owner frame passed Axe and the first separator changed aria-valuenow after ArrowRight."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Panel sizing and separator input are synchronous; persistence is consumer-owned."
+      }
+    },
+    "layout/aspect-ratio": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame executes the behavioral ratio cases; remaining DOM props are forwarded primitive attributes."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "AspectRatio is a synchronous sizing primitive."
+      }
+    },
+    "layout/auth-shell": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame renders required children plus optional brand and footer slots; className is a forwarded DOM attribute."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "AuthShell only composes synchronous layout slots; authentication requests belong to consumers."
+      }
+    },
+    "layout/page-container": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame source assertions map every declared behavioral prop including footerReveal onScroll and fill."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "PageContainer owns synchronous page layout; page data fetching belongs to consumers."
+      }
+    },
+    "layout/separator": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame covers orientation and decorative behavior; remaining attributes are forwarded primitive props."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Separator is a synchronous static primitive."
+      }
+    },
+    "layout/split-pane": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame covers required content/aside, both aside widths and unique aside labels."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "SplitPane is synchronous CSS layout composition."
+      }
+    },
+    "layout/topbar": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame covers start, center, end and custom children composition; DOM attributes are forwarded."
+      },
+      "async": { "status": "not-applicable", "reason": "Topbar is synchronous slot composition." }
+    },
+    "navigation/app-setting-picker": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map kind, appearance, disabled, controlled value and change behavior; id/name/className are forwarded form attributes."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Picker changes provider settings synchronously; persistence callbacks are consumer-owned."
+      }
+    },
+    "navigation/steps": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame maps items, controlled/uncontrolled values, status, orientation, type, size, title placement and change behavior."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Steps progression is synchronous consumer-controlled state."
+      }
+    },
     "data-entry/checkbox-group": {
-      "responsive": { "status": "pass", "reason": "Aliased checkbox owner passed geometry at eight widths and source assertion proves CheckboxGroup renders." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Aliased checkbox owner passed geometry at eight widths and source assertion proves CheckboxGroup renders."
+      },
       "rtl": { "status": "pass", "reason": "Aliased owner frame passed RTL at eight widths." },
-      "a11y": { "status": "pass", "reason": "Rendered CheckboxGroup passed Axe and keyboard smoke." }
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered CheckboxGroup passed Axe and keyboard smoke."
+      }
     },
     "data-entry/radio": {
-      "responsive": { "status": "pass", "reason": "Aliased radio owner passed geometry at eight widths and source assertion proves the group renders." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Aliased radio owner passed geometry at eight widths and source assertion proves the group renders."
+      },
       "rtl": { "status": "pass", "reason": "Aliased owner frame passed RTL at eight widths." },
-      "a11y": { "status": "pass", "reason": "Rendered radio aliases passed Axe and keyboard smoke." }
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered radio aliases passed Axe and keyboard smoke."
+      }
     },
     "data-entry/field": {
-      "responsive": { "status": "pass", "reason": "Checkbox and Switch owner frames render Field and passed geometry at eight widths." },
-      "rtl": { "status": "pass", "reason": "Rendered Field compositions passed RTL at eight widths." },
-      "a11y": { "status": "pass", "reason": "Labelled Field compositions passed Axe and keyboard smoke." }
+      "responsive": {
+        "status": "pass",
+        "reason": "Checkbox and Switch owner frames render Field and passed geometry at eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Rendered Field compositions passed RTL at eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Labelled Field compositions passed Axe and keyboard smoke."
+      }
     },
     "layout/responsive-grid": {
       "props": {
@@ -1256,44 +1386,116 @@
       }
     },
     "data-entry/checkbox": {
-      "responsive": { "status": "pass", "reason": "Owner frame passed Chromium geometry at 320–1920." },
-      "rtl": { "status": "pass", "reason": "Owner frame passed RTL geometry and Axe at all eight widths." },
-      "a11y": { "status": "pass", "reason": "Source-mapped compounds passed rendered Axe and keyboard smoke." }
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Source-mapped compounds passed rendered Axe and keyboard smoke."
+      }
     },
     "data-entry/command": {
-      "responsive": { "status": "pass", "reason": "Owner frame passed Chromium geometry at 320–1920." },
-      "rtl": { "status": "pass", "reason": "Owner frame passed RTL geometry and Axe at all eight widths." },
-      "a11y": { "status": "pass", "reason": "Mapped Command parts passed rendered Axe and keyboard smoke." }
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Mapped Command parts passed rendered Axe and keyboard smoke."
+      }
     },
     "data-entry/input-otp": {
-      "responsive": { "status": "pass", "reason": "Owner frame passed Chromium geometry at 320–1920." },
-      "rtl": { "status": "pass", "reason": "Owner frame passed RTL geometry and Axe at all eight widths." },
-      "a11y": { "status": "pass", "reason": "Mapped OTP parts passed rendered Axe and keyboard smoke." }
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Mapped OTP parts passed rendered Axe and keyboard smoke."
+      }
     },
     "data-entry/label": {
-      "responsive": { "status": "pass", "reason": "Owner frame passed Chromium geometry at 320–1920." },
-      "rtl": { "status": "pass", "reason": "Owner frame passed RTL geometry and Axe at all eight widths." },
-      "a11y": { "status": "pass", "reason": "Label associations passed rendered Axe and keyboard smoke." }
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Label associations passed rendered Axe and keyboard smoke."
+      }
     },
     "data-entry/password-strength": {
-      "responsive": { "status": "pass", "reason": "Owner frame passed Chromium geometry at 320–1920." },
-      "rtl": { "status": "pass", "reason": "Owner frame passed RTL geometry and Axe at all eight widths." },
-      "a11y": { "status": "pass", "reason": "Rendered feedback passed Axe; keyboard targets are owned by the password input." }
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered feedback passed Axe; keyboard targets are owned by the password input."
+      }
     },
     "data-entry/radio-group": {
-      "responsive": { "status": "pass", "reason": "Owner frame passed Chromium geometry at 320–1920." },
-      "rtl": { "status": "pass", "reason": "Owner frame passed RTL geometry and Axe at all eight widths." },
-      "a11y": { "status": "pass", "reason": "Mapped radio aliases passed rendered Axe and keyboard smoke." }
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Mapped radio aliases passed rendered Axe and keyboard smoke."
+      }
     },
     "data-entry/textarea": {
-      "responsive": { "status": "pass", "reason": "Owner frame passed Chromium geometry at 320–1920." },
-      "rtl": { "status": "pass", "reason": "Owner frame passed RTL geometry and Axe at all eight widths." },
-      "a11y": { "status": "pass", "reason": "Labelled textarea states passed rendered Axe and keyboard smoke." }
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Labelled textarea states passed rendered Axe and keyboard smoke."
+      }
     },
     "data-entry/toggle-group": {
-      "responsive": { "status": "pass", "reason": "Owner frame passed Chromium geometry at 320–1920." },
-      "rtl": { "status": "pass", "reason": "Owner frame passed RTL geometry and Axe at all eight widths." },
-      "a11y": { "status": "pass", "reason": "Mapped group/item parts passed rendered Axe and keyboard smoke." }
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Mapped group/item parts passed rendered Axe and keyboard smoke."
+      }
     },
     "data-display/badge": {
       "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },

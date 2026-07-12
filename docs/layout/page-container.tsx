@@ -141,6 +141,7 @@ export default function Demo() {
           </Flex>
         }
         stickyFooter
+        footerReveal="onScroll"
       >
         <Card>
           <CardHeader>

@@ -3,6 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { createServer } from "vite";
 
 const allFrames = [
+  "layout-flex",
   "layout-app-shell",
   "layout-aspect-ratio",
   "layout-auth-shell",
@@ -58,6 +59,12 @@ try {
     await page.goto(`http://localhost:6008/isolate/${frame}`, { waitUntil: "networkidle" });
     if (frame === "layout-resizable-panel") {
       await page.getByRole("button", { name: "サイドバーを開く" }).click();
+      const handle = page.getByRole("separator").first();
+      const before = await handle.getAttribute("aria-valuenow");
+      await handle.focus();
+      await page.keyboard.press("ArrowRight");
+      const after = await handle.getAttribute("aria-valuenow");
+      if (before === after) throw new Error("ResizableHandle ArrowRight did not resize the panels");
     }
     axe[frame] = (await new AxeBuilder({ page }).analyze()).violations.map((violation) => ({
       id: violation.id,

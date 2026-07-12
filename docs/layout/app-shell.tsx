@@ -52,6 +52,8 @@ import {
  * Japanese accounting shell (CoreBooks) with entity switcher, collapse toggle,
  * notifications badge, and a dashboard page body.
  * Composed only from real @godxjp/ui components.
+ * PROP_COVERAGE_MISSING: legacy topbarLeft, topbarRight, and logo slots are not rendered here;
+ * consumers should use the composed topbar slot shown below.
  */
 
 const SECTIONS: SidebarSectionProp[] = [

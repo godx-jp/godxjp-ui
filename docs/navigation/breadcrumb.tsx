@@ -7,6 +7,8 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * Breadcrumb — a STANDALONE "where am I" trail. Place `<Breadcrumb items={[…]} />` anywhere
  * (no shell required); it is NOT tied to AppShell or PageContainer. Pass one `items` array of
  * `{ label, to? }`; the segment with no `to` is the current page. Import from @godxjp/ui/layout.
+ * PROP_COVERAGE_MISSING: linkComponent custom-router rendering is covered by PageContainer's owner
+ * frame, not duplicated in this standalone Breadcrumb frame.
  */
 export default function Demo() {
   return (
