@@ -74,6 +74,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
       overflowCount = 99,
       showZero = true,
       disabled,
+      type,
       children,
       ...props
     },
@@ -124,6 +125,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
         data-loading={isLoading ? "" : undefined}
         aria-busy={isLoading || undefined}
         disabled={isLoading || disabled}
+        type={asChild ? undefined : (type ?? "button")}
         className={cn(
           "inline-flex shrink-0 items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none",
           fullWidth && "w-full",

@@ -139,6 +139,11 @@ export function Pagination({
         ? t("navigation.pagination.total", { total })
         : null;
 
+  // Pagination is navigation between multiple result pages. Rendering a disabled
+  // `1 / 1` control for empty or single-page data adds noise and previously produced
+  // the invalid range `[1, 0]` for custom total labels.
+  if (total <= pageSize) return null;
+
   if (simple) {
     return (
       <nav

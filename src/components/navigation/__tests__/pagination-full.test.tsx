@@ -7,6 +7,13 @@ import { Pagination } from "../pagination";
 const nav = () => screen.getByRole("navigation");
 
 describe("Pagination — total + size changer", () => {
+  it("does not render for empty or single-page results", () => {
+    const { rerender } = renderWithUi(<Pagination value={1} total={0} pageSize={10} />);
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+    rerender(<Pagination value={1} total={10} pageSize={10} />);
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+  });
+
   it("renders a string total summary when showTotal is set", () => {
     const { container } = renderWithUi(<Pagination value={1} total={95} pageSize={10} showTotal />);
     expect(container.querySelector(".ui-pagination-total")?.textContent).toMatch(/95/);

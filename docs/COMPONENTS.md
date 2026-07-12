@@ -114,12 +114,12 @@ All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640
 
 Async data lifecycle helpers (TanStack Query). **Not visual components.**
 
-| Component            | Prop type                | Key props                                                                               |
-| -------------------- | ------------------------ | --------------------------------------------------------------------------------------- |
-| `DataState`          | `DataStateProp<T>`       | `query`, `skeleton`, `empty`, `isEmpty`, `showRetry`, `onRetry`, render-prop `children` |
-| `AlertMutationFeedback` | `AlertMutationFeedbackProp` | `mutation`, `onRetry`, `pending` — inline `useMutation` error                      |
-| `InfiniteQueryState` | `InfiniteQueryStateProp` | `flatten`, `loadMore`, `showLoadMore` — infinite scroll / timeline                      |
-| `PrefetchLink`       | `PrefetchLinkProp`       | `queryKey`, `queryFn`, `prefetchOn`, `staleTime`                                        |
+| Component               | Prop type                   | Key props                                                                               |
+| ----------------------- | --------------------------- | --------------------------------------------------------------------------------------- |
+| `DataState`             | `DataStateProp<T>`          | `query`, `skeleton`, `empty`, `isEmpty`, `showRetry`, `onRetry`, render-prop `children` |
+| `AlertMutationFeedback` | `AlertMutationFeedbackProp` | `mutation`, `onRetry`, `pending` — inline `useMutation` error                           |
+| `InfiniteQueryState`    | `InfiniteQueryStateProp`    | `flatten`, `loadMore`, `showLoadMore` — infinite scroll / timeline                      |
+| `PrefetchLink`          | `PrefetchLinkProp`          | `queryKey`, `queryFn`, `prefetchOn`, `staleTime`                                        |
 
 Import: `@godxjp/ui/query` (re-exported from `@godxjp/ui/admin`).
 
@@ -141,12 +141,12 @@ Auto retry: `useQuery({ retry, retryDelay })`. Manual retry: default `refetch()`
 
 ## Navigation
 
-| Component      | Prop type         | Key props                          |
-| -------------- | ----------------- | ---------------------------------- |
-| `Toolbar`      | `ToolbarProp`     | `onClear: OnClearFiltersProp`      |
-| `ToolbarGroup` | `ToolbarGroupProp`| `label: LabelProp`                 |
-| `Tabs`         | Radix primitives  | —                                  |
-| `DropdownMenu` | Radix primitives  | —                                  |
+| Component      | Prop type          | Key props                     |
+| -------------- | ------------------ | ----------------------------- |
+| `Toolbar`      | `ToolbarProp`      | `onClear: OnClearFiltersProp` |
+| `ToolbarGroup` | `ToolbarGroupProp` | `label: LabelProp`            |
+| `Tabs`         | Radix primitives   | —                             |
+| `DropdownMenu` | Radix primitives   | —                             |
 
 ---
 
@@ -157,5 +157,8 @@ Auto retry: `useQuery({ retry, retryDelay })`. Manual retry: default `refetch()`
 3. Add `{Name}Prop` → `src/props/components/{group}.prop.ts`
 4. Register in `src/props/registry.ts`
 5. Implement component importing prop type (no inline interfaces)
-6. Add preview example -> `examples/{group}/{Name}.preview.tsx`
-7. Update this doc
+6. Add isolated, composition and journey frames following
+   [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md)
+7. Register every applicable prop/state/responsive/a11y dimension in the frame coverage ledger;
+   missing coverage is `UNTESTED`, never pass
+8. Update this doc

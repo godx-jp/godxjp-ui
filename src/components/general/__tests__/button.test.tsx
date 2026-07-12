@@ -4,6 +4,16 @@ import { expectNoA11yViolations } from "@/test/a11y";
 import { Button } from "../button";
 
 describe("Button", () => {
+  it("defaults to type=button so it does not submit an ancestor form", () => {
+    renderWithUi(<Button>Safe action</Button>);
+    expect(screen.getByRole("button", { name: "Safe action" })).toHaveAttribute("type", "button");
+  });
+
+  it("preserves an explicit submit type", () => {
+    renderWithUi(<Button type="submit">Submit</Button>);
+    expect(screen.getByRole("button", { name: "Submit" })).toHaveAttribute("type", "submit");
+  });
+
   it("renders children and default type=submit implicit button", () => {
     renderWithUi(<Button>Click me</Button>);
     const btn = screen.getByRole("button", { name: "Click me" });
