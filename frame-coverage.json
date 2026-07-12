@@ -1609,6 +1609,10 @@
         "general/logo"
       ],
       "dimensions": {
+        "props": {
+          "status": "pass",
+          "reason": "Validated prop-case map covers each public prop group or records forwarded-platform N/A."
+        },
         "isolated": {
           "status": "pass",
           "reason": "Executable source-contract assertion proves every mapped public export renders in its owner frame."
@@ -1624,6 +1628,14 @@
         "async": {
           "status": "not-applicable",
           "reason": "Static presentation primitive executes no asynchronous data or mutation work."
+        },
+        "touch": {
+          "status": "not-applicable",
+          "reason": "Static presentation owner exposes no pointer-operated interaction."
+        },
+        "screenReader": {
+          "status": "untested",
+          "reason": "ARIA/axe evidence exists, but no real screen-reader announcement session was executed."
         }
       }
     },
@@ -1640,6 +1652,10 @@
         "general/button"
       ],
       "dimensions": {
+        "props": {
+          "status": "pass",
+          "reason": "Validated prop-case map links public prop groups to frame and interaction cases."
+        },
         "isolated": {
           "status": "pass",
           "reason": "Executable source-contract assertion proves every mapped public export renders in its owner frame."
@@ -1655,6 +1671,36 @@
         "async": {
           "status": "not-applicable",
           "reason": "Interaction is synchronous; caller-owned loading props and animation timing are not async data work."
+        },
+        "screenReader": {
+          "status": "untested",
+          "reason": "ARIA/axe evidence exists, but no real screen-reader announcement session was executed."
+        }
+      }
+    },
+    {
+      "name": "feedback-query-prop-closure",
+      "owners": [
+        "feedback/alert",
+        "feedback/dialog",
+        "feedback/sheet",
+        "feedback/skeleton",
+        "feedback/tooltip",
+        "general/reveal",
+        "query/query-refetch-button",
+        "query/data-state",
+        "query/infinite-query-state",
+        "query/mutation-feedback",
+        "query/prefetch-link"
+      ],
+      "dimensions": {
+        "props": {
+          "status": "pass",
+          "reason": "Validated prop-case map links every public prop group to a frame/test case or explicit forwarded-platform N/A."
+        },
+        "screenReader": {
+          "status": "untested",
+          "reason": "Automated ARIA/axe evidence does not prove announcements in a real screen reader."
         }
       }
     }

@@ -1,0 +1,95 @@
+{
+  "LineChart/BarChart/AreaChart/PieChart": {
+    "data/keys/series/label/description/size/height/format/legend/grid/orientation/stack/donut/colors/empty": "docs/data-display/charts.tsx populated, empty, sparse, negative, horizontal, stacked, donut and custom-colour cases"
+  },
+  "Badge": {
+    "variant/tone/status/icon/content": "docs/data-display/badge.tsx semantic, custom, icon and overflow content cases",
+    "native span props": "N/A: forwarded unchanged"
+  },
+  "ListRow": {
+    "as/leading/title/description/trailing": "docs/data-display/list-row.tsx div/li, icon, metadata, badge and action cases"
+  },
+  "Avatar/AvatarImage/AvatarFallback": {
+    "src/alt/fallback/size": "docs/data-display/avatar.tsx image, missing image, fallback and size cases",
+    "Radix image props": "N/A: forwarded unchanged"
+  },
+  "Card and parts/StatCard": {
+    "variant/accent/size/density/flush/tight/solo/banded/separated/cover/bar/extra/stat layout/delta": "docs/data-display/card/index.tsx and stat-card.tsx contract cases"
+  },
+  "Table and parts": {
+    "header/body/row/head/cell/alignment/content stress": "docs/data-display/table.tsx semantic table cases",
+    "native table props": "N/A: forwarded unchanged"
+  },
+  "Descriptions": {
+    "items/columns/mono/compound items": "docs/data-display/descriptions.tsx one/two/three-column and compound cases"
+  },
+  "DataTable": {
+    "columns/data/loading/empty/sort/select/density/row action/pagination/slots": "docs/data-display/data-table/index.tsx plus executed DataTable test suite"
+  },
+  "EmptyState": {
+    "icon/title/titleAs/description/action/variant/tone": "docs/data-display/empty-state.tsx and semantic heading tests"
+  },
+  "Progress": {
+    "value/max/label/tone/size": "docs/data-display/progress.tsx default, destructive, labelled and over-capacity cases"
+  },
+  "TreeList/Timeline": {
+    "items/nesting/current/status/time/content stress": "docs/data-display/tree-list.tsx and timeline.tsx cases"
+  },
+  "Popover and parts": {
+    "open/defaultOpen/onOpenChange/modal/trigger/anchor/content/side/align/header/title/description": "docs/data-display/popover.tsx and popover-touch.tsx controlled, placement, named dialog and touch cases"
+  },
+  "ScrollArea/ScrollBar": {
+    "orientation/className/content/keyboard viewport": "docs/data-display/scroll-area.tsx plus focusable-scroll regression evidence"
+  },
+  "Collapsible/Accordion and parts": {
+    "controlled/default/type/value/disabled/trigger/content": "docs/data-display/collapsible.tsx and accordion.tsx plus interaction tests"
+  },
+  "HoverCard and parts": {
+    "openDelay/closeDelay/side/align/trigger/content": "docs/data-display/hover-card.tsx placement, delay and content cases"
+  },
+  "Carousel and parts": {
+    "orientation/options/items/previous/next/dots/labels": "docs/data-display/carousel.tsx horizontal, vertical, loop, labelled and dot cases"
+  },
+  "Button": {
+    "variant/size/shape/fullWidth/loading/loadingText/count/overflowCount/showZero/asChild/disabled": "docs/general/button/index.tsx and executed Button tests"
+  },
+  "Text/Heading": {
+    "as/level/size/weight/tone/align/truncate/tabular/content stress": "docs/general/typography.tsx and typography tests"
+  },
+  "Logo": {
+    "size/label/decorative": "docs/general/logo.tsx every size and both accessibility modes"
+  },
+  "Alert and parts/AlertQueryError": {
+    "tone/title/content/description/actions/dismiss/category/retry/auth": "docs/feedback/alert.tsx plus alert recovery tests"
+  },
+  "Dialog/AlertDialog and parts": {
+    "open/defaultOpen/trigger/content/header/body/footer/title/description/action/cancel/close/tone/width": "docs/feedback/dialog.tsx plus dialog journey tests"
+  },
+  "Sheet and parts": {
+    "open/trigger/content/side/width/header/body/footer/title/description/close": "docs/feedback/sheet.tsx plus Sheet interaction tests"
+  },
+  "Skeleton family": {
+    "className/rows/columns/detail/stat/table": "docs/feedback/skeleton.tsx every exported skeleton case"
+  },
+  "Tooltip and parts": {
+    "provider/delay/open/trigger/content/side/disabled reason": "docs/feedback/tooltip.tsx plus focus/keyboard tests"
+  },
+  "Reveal": {
+    "delay/className/children/reduced motion": "docs/general/reveal.tsx plus reduced-motion tests"
+  },
+  "ButtonRefetch": {
+    "query/label/variant/size/fetching/click": "docs/query/button-refetch.tsx plus idle/fetching/refetch tests"
+  },
+  "DataState": {
+    "query/skeleton/prerequisite/empty/isEmpty/errorRenderer/showRetry/onRetry/onAuthError/children": "docs/query/data-state.tsx plus complete lifecycle tests"
+  },
+  "InfiniteQueryState": {
+    "query/skeleton/empty/flatten/isEmpty/error/retry/auth/loadingMore/loadMore/showLoadMore/children": "docs/query/infinite-query-state.tsx plus load-more lifecycle tests"
+  },
+  "AlertMutationFeedback": {
+    "mutation/pending/errorRenderer/retry": "docs/query/mutation-feedback.tsx plus idle/pending/error/success tests"
+  },
+  "PrefetchLink": {
+    "to/queryKey/queryFn/prefetchOn/staleTime/link props": "docs/query/prefetch-link.tsx plus hover/focus/both/none tests"
+  }
+}
