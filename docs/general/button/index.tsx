@@ -17,6 +17,31 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
+            <CardTitle>Count</CardTitle>
+            <CardDescription>
+              Trailing totals, overflow cap, and explicit zero visibility.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="md">
+              <Button variant="outline" count={18}>
+                保留中
+              </Button>
+              <Button variant="outline" count={128} overflowCount={99}>
+                受信トレイ
+              </Button>
+              <Button variant="ghost" count={0} showZero>
+                完了
+              </Button>
+              <Button variant="ghost" count={0} showZero={false}>
+                非表示のゼロ
+              </Button>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Variants</CardTitle>
             <CardDescription>
               One default (primary) per view. outline / secondary / ghost for supporting actions;

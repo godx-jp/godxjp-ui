@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
   Popover,
+  PopoverAnchor,
   PopoverContent,
   PopoverDescription,
   PopoverHeader,
@@ -31,6 +32,23 @@ export default function Demo() {
   return (
     <PageContainer title="Popover" subtitle="Floating panel anchored to a trigger · click to open">
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle>PopoverAnchor · non-trigger positioning reference</CardTitle>
+            <CardDescription>Anchor positions content without becoming its toggle.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Popover defaultOpen>
+              <PopoverAnchor asChild>
+                <span className="inline-flex rounded border px-3 py-2">請求額 ¥482,000</span>
+              </PopoverAnchor>
+              <PopoverContent side="right">
+                <PopoverDescription>税額と支払条件の補足情報です。</PopoverDescription>
+              </PopoverContent>
+            </Popover>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Controlled trigger + content</CardTitle>
