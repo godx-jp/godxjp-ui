@@ -19,6 +19,8 @@ const allFrames = [
   "navigation-navigation-menu",
   "navigation-steps",
   "navigation-toolbar",
+  "navigation-tabs",
+  "navigation-pagination",
 ];
 const frames = process.env.FRAME_ID
   ? allFrames.filter((frame) => frame === process.env.FRAME_ID)
@@ -27,7 +29,7 @@ if (!frames.length) throw new Error(`Unknown FRAME_ID: ${process.env.FRAME_ID}`)
 
 const server = await createServer({ configFile: "preview/vite.config.ts" });
 const browser = await chromium.launch({ headless: true });
-const context = await browser.newContext();
+const context = await browser.newContext({ hasTouch: process.env.TOUCH === "1" });
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
 
 try {
@@ -75,7 +77,15 @@ try {
     );
     throw new Error(`Axe violations: ${JSON.stringify(violations)} ${JSON.stringify(diagnostics)}`);
   }
-  console.log(JSON.stringify({ frames, widths, reflow: "pass", axe }));
+  console.log(
+    JSON.stringify({
+      frames,
+      widths,
+      reflow: "pass",
+      coarsePointer: process.env.TOUCH === "1" ? "pass" : "not-run",
+      axe,
+    }),
+  );
 } finally {
   await browser.close();
   await server.close();

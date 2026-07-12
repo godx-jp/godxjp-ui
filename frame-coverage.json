@@ -542,7 +542,10 @@
         "reason": "Namespace alias of the mapped RadioGroup contract."
       },
       "touch": { "status": "pass", "reason": "Coarse-pointer radio tap executed." },
-      "screenReader": { "status": "untested", "reason": "ARIA tree exposed named radio state; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed named radio state; real screen-reader announcements remain untested."
+      }
     },
     "RadioItem": {
       "props": {
@@ -550,17 +553,26 @@
         "reason": "Item props forward to the mapped Radix primitive."
       },
       "touch": { "status": "pass", "reason": "Coarse-pointer radio item tap executed." },
-      "screenReader": { "status": "untested", "reason": "ARIA tree exposed named radio item state; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed named radio item state; real screen-reader announcements remain untested."
+      }
     },
     "RadioGroupRoot": {
       "props": { "status": "pass", "reason": "Explicit RadioGroup prop-case map." },
       "touch": { "status": "pass", "reason": "Coarse-pointer group interaction executed." },
-      "screenReader": { "status": "untested", "reason": "ARIA tree exposed the radio group and items; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed the radio group and items; real screen-reader announcements remain untested."
+      }
     },
     "ToggleGroup": {
       "props": { "status": "pass", "reason": "Explicit single/multiple group prop-case map." },
       "touch": { "status": "pass", "reason": "Chromium hasTouch group tap executed." },
-      "screenReader": { "status": "untested", "reason": "ARIA tree snapshot captured the named group; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree snapshot captured the named group; real screen-reader announcements remain untested."
+      }
     },
     "ToggleGroupItem": {
       "props": {
@@ -568,7 +580,10 @@
         "reason": "Item primitive props forward unchanged; group states are mapped."
       },
       "touch": { "status": "pass", "reason": "Coarse-pointer item interaction executed." },
-      "screenReader": { "status": "untested", "reason": "ARIA tree exposed pressed item semantics; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed pressed item semantics; real screen-reader announcements remain untested."
+      }
     },
     "Textarea": {
       "props": { "status": "pass", "reason": "Explicit native/state prop-case map." },
@@ -595,7 +610,10 @@
         "reason": "Layout primitive has no independent product props."
       },
       "touch": { "status": "pass", "reason": "Coarse-pointer OTP input focus executed." },
-      "screenReader": { "status": "untested", "reason": "ARIA tree snapshot exposed the OTP input; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree snapshot exposed the OTP input; real screen-reader announcements remain untested."
+      }
     },
     "InputOTPSlot": {
       "props": {
@@ -628,12 +646,18 @@
     "CommandInput": {
       "props": { "status": "pass", "reason": "Command prop map covers controlled async input." },
       "touch": { "status": "pass", "reason": "Coarse-pointer input focus executed." },
-      "screenReader": { "status": "untested", "reason": "ARIA snapshot exposed named combobox input; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA snapshot exposed named combobox input; real screen-reader announcements remain untested."
+      }
     },
     "CommandList": {
       "props": { "status": "not-applicable", "reason": "Container props forward to cmdk." },
       "touch": { "status": "pass", "reason": "Owner touch journey exercised the command surface." },
-      "screenReader": { "status": "untested", "reason": "ARIA tree exposed listbox semantics; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed listbox semantics; real screen-reader announcements remain untested."
+      }
     },
     "CommandGroup": {
       "props": {
@@ -641,7 +665,10 @@
         "reason": "Heading/content composition is rendered in owner cases."
       },
       "touch": { "status": "pass", "reason": "Owner touch journey exercised grouped commands." },
-      "screenReader": { "status": "untested", "reason": "ARIA tree exposed grouped options; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed grouped options; real screen-reader announcements remain untested."
+      }
     },
     "CommandItem": {
       "props": {
@@ -652,7 +679,10 @@
         "status": "pass",
         "reason": "Command surface accepts coarse-pointer interaction."
       },
-      "screenReader": { "status": "untested", "reason": "ARIA tree exposed option semantics; real screen-reader announcements remain untested." }
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed option semantics; real screen-reader announcements remain untested."
+      }
     },
     "CommandEmpty": {
       "props": {
@@ -1031,6 +1061,185 @@
     }
   },
   "ownerOverrides": {
+    "layout/responsive-grid": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame executes the documented responsive column prop cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "async": {
+        "status": "not-applicable",
+        "reason": "ResponsiveGrid is a synchronous CSS layout primitive with no async lifecycle."
+      }
+    },
+    "layout/sidebar": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions cover sections, brand, renderItem, children, collapsed and selection cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated owner frame passed Axe with unique navigation landmarks."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Sidebar state and selection are synchronous consumer-controlled interactions."
+      }
+    },
+    "navigation/context-menu": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map the compound trigger, content and item contract."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "ContextMenu primitives forward synchronous Radix interaction state; data loading belongs to consumers."
+      }
+    },
+    "navigation/dropdown-menu": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map the compound trigger, content and item contract."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "DropdownMenu primitives forward synchronous Radix interaction state; data loading belongs to consumers."
+      }
+    },
+    "navigation/menubar": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map menu, trigger, content and item cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Menubar primitives expose synchronous menu interaction; data loading belongs to consumers."
+      }
+    },
+    "navigation/navigation-menu": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map list, item, trigger, content and link cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "async": {
+        "status": "not-applicable",
+        "reason": "NavigationMenu is synchronous navigation composition; route/data loading belongs to consumers."
+      }
+    },
+    "navigation/pagination": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame executes full, simple, disabled, total, size and boundary prop cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated owner frame passed Axe and the page-change keyboard journey."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Pagination is controlled synchronously; result fetching is explicitly owned by the consumer."
+      }
+    },
+    "navigation/tabs": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions and frames execute items, compound, controlled, orientation and variant cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Dedicated pre-mount RTL frame passed ArrowLeft focus semantics."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated owner frame passed Axe and LTR/RTL arrow-key assertions."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Tabs selection is synchronous; panel data loading belongs to consumers."
+      }
+    },
+    "navigation/filter-bar": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions execute Toolbar and labelled ToolbarGroup filter cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated owner frame passed Axe with labelled composite controls."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Toolbar composition and clear behavior are synchronous; filtering requests belong to consumers."
+      }
+    },
     "data-display/badge": {
       "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
       "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
