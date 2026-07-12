@@ -3,6 +3,7 @@ import { CalendarIcon } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime/parse";
 import { useControlledLatch } from "../../lib/hooks";
+import { pickFieldA11y } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Input } from "./input";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -35,10 +36,16 @@ export function DatePicker({
   fromDate,
   toDate,
   allowClear = true,
+  ...ariaProps
 }: DatePickerProp) {
   const { t } = useTranslation();
   const { dayPickerLocale } = usePickerLocales(localeProp);
   const [open, setOpen] = React.useState(false);
+  // The typeable <input> is the semantic focus target: forward the FormField label/helper/error
+  // contract onto it (never the wrapper div) so the visible label names the control for AT.
+  const fieldA11y = pickFieldA11y(ariaProps);
+  const reactId = React.useId();
+  const dialogId = `${id ?? reactId}-dialog`;
   // Controlled once a defined `value` has EVER been passed — a controlled
   // `value={undefined}` (no selection) isn't mistaken for uncontrolled, and an
   // empty-mounted form can still restore a saved value later. Uncontrolled
@@ -101,6 +108,8 @@ export function DatePicker({
             role="combobox"
             aria-expanded={open}
             aria-haspopup="dialog"
+            aria-controls={open ? dialogId : undefined}
+            {...fieldA11y}
             allowClear={allowClear}
             onClear={clear}
             trailingIcon={
@@ -141,6 +150,9 @@ export function DatePicker({
             }}
           />
           <PopoverContent
+            id={dialogId}
+            role="dialog"
+            aria-label={t("dataEntry.datePicker.openCalendar") ?? "Calendar"}
             className="w-auto p-0"
             align="start"
             onOpenAutoFocus={(event) => event.preventDefault()}

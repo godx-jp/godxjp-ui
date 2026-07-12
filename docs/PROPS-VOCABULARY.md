@@ -42,11 +42,11 @@ Import: `import type { TitleProp, GapProp } from "@godxjp/ui/props/vocabulary"`
 
 ## Layout & density
 
-| Type               | Values                              | Scope                                                |
-| ------------------ | ----------------------------------- | ---------------------------------------------------- |
-| `PageDensityProp`  | `compact \| default \| comfortable` | **PageContainer** subtree                            |
-| `GapProp`          | `xs \| sm \| md \| lg \| xl`        | `<Stack gap>`, `<Inline gap>` (Inline excludes `xl`) |
-| `TableDensityProp` | `compact \| comfortable`            | **DataTable** rows only                              |
+| Type               | Values                              | Scope                                                          |
+| ------------------ | ----------------------------------- | -------------------------------------------------------------- |
+| `PageDensityProp`  | `compact \| default \| comfortable` | **PageContainer** subtree                                      |
+| `GapProp`          | `xs \| sm \| md \| lg \| xl`        | `<Flex gap>` (row) and `<Flex direction="col" gap>` (vertical) |
+| `TableDensityProp` | `compact \| comfortable`            | **DataTable** rows only                                        |
 
 > **Critical:** `PageDensityProp` ≠ `TableDensityProp`. Never use bare `density` in new APIs.
 

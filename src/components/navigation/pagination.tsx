@@ -113,6 +113,7 @@ export function Pagination({
   pageSizeOptions = [10, 20, 50, 100],
   showSizeChanger,
   showTotal,
+  hideOnSinglePage = true,
   simple,
   disabled,
   className,
@@ -139,10 +140,12 @@ export function Pagination({
         ? t("navigation.pagination.total", { total })
         : null;
 
-  // Pagination is navigation between multiple result pages. Rendering a disabled
-  // `1 / 1` control for empty or single-page data adds noise and previously produced
-  // the invalid range `[1, 0]` for custom total labels.
-  if (total <= pageSize) return null;
+  // Pagination is navigation between multiple result pages. `total === 0` is ALWAYS hidden — there
+  // is no data to navigate (and a custom total label would produce the invalid range `[1, 0]`).
+  // A single page is hidden by default (`hideOnSinglePage`); a consumer opts in with
+  // `hideOnSinglePage={false}` when it still wants the bar (e.g. to keep `showTotal` visible).
+  if (total <= 0) return null;
+  if (hideOnSinglePage && totalPages <= 1) return null;
 
   if (simple) {
     return (

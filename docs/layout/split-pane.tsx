@@ -15,6 +15,9 @@ import { FileText, Building2, Calendar, CreditCard, ArrowRight } from "lucide-re
 /**
  * SplitPane · main + fixed aside panel.
  * Shows: main list + detail panel, asideWidth sm/md, nested inside PageContainer.
+ * It OWNS its query container (container-type: inline-size), so the two-column split
+ * is chosen from the PANE's own width (≥48rem), not the viewport — a narrow embedded
+ * pane on a large screen correctly stays single-column (gh#165).
  * Composed only from real @godxjp/ui components.
  *
  * NOTE: <Flex> defaults to direction="row"; vertical stacks set direction="col"
@@ -276,7 +279,8 @@ export default function Demo() {
                     (22rem) · 詳細フォーム、タイムライン、長いメタデータリスト向け。
                   </Text>
                   <Text as="p" tone="muted">
-                    1080px 未満のビューポートでは縦積みにフォールバックします。
+                    パネル自身の幅が 48rem 未満になると縦積みにフォールバックします
+                    （ビューポートではなくコンテナ基準 · gh#165）。
                     常にサイドバイサイドが必要な場合は CSS Grid を使用してください。
                   </Text>
                 </Flex>
@@ -297,18 +301,34 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Container stress · narrow embed</CardTitle>
+            <CardTitle>Container stress · narrow vs wide embed</CardTitle>
             <CardDescription>
-              大きな viewport 内の 768px 以下相当コンテナに埋め込み、現行の viewport-based
-              breakpoint を確認する。
+              大きな viewport 内でも、パネル自身の幅で分割が決まる（gh#165）。狭い埋め込み（約
+              28rem）は 1 カラムに潰れ、広い埋め込み（約 56rem）は 2 カラムに分割する。ビューポート
+              幅は同一。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="max-w-3xl border p-2">
-              <SplitPane asideWidth="sm" aside={<div className="bg-muted p-4">補助パネル</div>}>
-                <div className="bg-muted p-4">メインコンテンツ</div>
-              </SplitPane>
-            </div>
+            <Flex direction="col" gap="md">
+              {/* Narrow embed → stays single column (the container is < 48rem). */}
+              <div className="max-w-md border p-2">
+                <Text size="xs" tone="muted">
+                  約 28rem のコンテナ → 縦積み
+                </Text>
+                <SplitPane asideWidth="sm" aside={<div className="bg-muted p-4">補助パネル</div>}>
+                  <div className="bg-muted p-4">メインコンテンツ</div>
+                </SplitPane>
+              </div>
+              {/* Wide embed → splits into two columns (the container is ≥ 48rem). */}
+              <div className="max-w-4xl border p-2">
+                <Text size="xs" tone="muted">
+                  約 56rem のコンテナ → 2 カラム
+                </Text>
+                <SplitPane asideWidth="sm" aside={<div className="bg-muted p-4">補助パネル</div>}>
+                  <div className="bg-muted p-4">メインコンテンツ</div>
+                </SplitPane>
+              </div>
+            </Flex>
           </CardContent>
         </Card>
       </Flex>

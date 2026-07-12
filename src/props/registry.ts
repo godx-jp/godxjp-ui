@@ -758,7 +758,14 @@ export const COMPONENT_PROP_REGISTRY = {
   EmptyStateProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["IconProp", "TitleProp", "DescriptionProp", "ActionProp", "ToneProp"],
+    vocabulary: [
+      "IconProp",
+      "TitleProp",
+      "DescriptionProp",
+      "ActionProp",
+      "ToneProp",
+      "HeadingLevelProp",
+    ],
   },
   EmptyStateToneProp: {
     group: "data-display",
@@ -1120,6 +1127,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/data-display/card.tsx",
     vocabulary: ["TitleProp", "DescriptionProp", "ClassNameProp", "ChildrenProp"],
+  },
+  CardTitleProp: {
+    group: "data-display",
+    file: "components/data-display/card.tsx",
+    vocabulary: ["HeadingLevelProp", "ClassNameProp", "ChildrenProp"],
   },
   CardContentProp: {
     group: "data-display",

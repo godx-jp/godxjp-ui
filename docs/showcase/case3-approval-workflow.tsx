@@ -274,6 +274,7 @@ export default function Demo() {
     {
       key: "actions",
       header: "",
+      ariaLabel: "操作",
       align: "right",
       width: "w-32",
       render: (r) =>

@@ -106,11 +106,22 @@ const FAVOURITE_SECTIONS: SidebarSectionProp[] = [
 
 const FAVOURITE_IDS = new Set(["overview", "members"]);
 
-/** renderItem · replaces a row's content with a custom layout (icon + label + star affix). */
-function renderFavouriteRow(item: SidebarItemData) {
+/**
+ * renderItem · returns a SINGLE interactive element (here an `<a>` standing in for a router
+ * `<Link>`). The Sidebar merges the row styling + active state onto it via Slot, so the anchor IS
+ * the row and the ONLY interactive element — no nested `<button>` (gh#165). The star affix is a
+ * decorative, non-interactive descendant.
+ */
+function renderFavouriteRow(item: SidebarItemData, onSelect: (id: string) => void) {
   const Icon = item.icon;
   return (
-    <>
+    <a
+      href={`#${item.id}`}
+      onClick={(event) => {
+        event.preventDefault();
+        onSelect(item.id);
+      }}
+    >
       <span className="sb-icon">
         <Icon aria-hidden="true" />
       </span>
@@ -118,7 +129,7 @@ function renderFavouriteRow(item: SidebarItemData) {
       {FAVOURITE_IDS.has(item.id) ? (
         <Star className="text-attention size-4 shrink-0 fill-current" aria-label="お気に入り" />
       ) : null}
-    </>
+    </a>
   );
 }
 
@@ -271,7 +282,7 @@ export default function Demo() {
                   activeId={renderActiveId}
                   onSelect={setRenderActiveId}
                   sections={FAVOURITE_SECTIONS}
-                  renderItem={renderFavouriteRow}
+                  renderItem={(item) => renderFavouriteRow(item, setRenderActiveId)}
                 />
               </div>
             </CardContent>

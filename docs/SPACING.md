@@ -6,8 +6,8 @@ Implementation: `src/tokens/base.css` (values) · layout owners: `src/styles/*-l
 
 ## Rules for apps
 
-1. **Never** Tailwind `gap-*`, `space-*`, `p-*` for layout — use `<Stack gap>` / `<Inline gap>` / `<PageContainer>`.
-2. Default section gap: `<Stack gap="md">` (= φ⁰).
+1. **Never** Tailwind `gap-*`, `space-*`, `p-*` for layout — use `<Flex gap>` (row) / `<Flex direction="col" gap>` (vertical) / `<PageContainer>`.
+2. Default section gap: `<Flex direction="col" gap="md">` (= φ⁰).
 3. Major blocks: `gap="lg"` (φ¹) or `gap="xl"` (φ²).
 4. Card rhythm is token-driven — do not override card padding in app CSS.
 
@@ -22,7 +22,7 @@ Implementation: `src/tokens/base.css` (values) · layout owners: `src/styles/*-l
 
 `--phi-unit` steps up at `sm` breakpoint; density (`compact` / `comfortable`) retunes it on `PageContainer`.
 
-## Stack gap map
+## Flex gap map
 
 | Prop       | Token    | Typical use           |
 | ---------- | -------- | --------------------- |

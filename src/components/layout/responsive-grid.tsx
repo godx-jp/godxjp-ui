@@ -29,9 +29,15 @@ function resolveColumns(columns: ResponsiveGridColumnsProp): ResponsiveGridStyle
 }
 
 export function ResponsiveGrid({ columns = 4, children }: ResponsiveGridProps) {
+  // The scope wrapper establishes the grid's OWN query container (container-type: inline-size) so
+  // the column count responds to the width AVAILABLE TO THE GRID, never the viewport and never an
+  // undeclared ancestor `container-type`. It therefore stays correct inside a narrow card or a
+  // SplitPane aside instead of silently collapsing to one column (gh#165).
   return (
-    <div className="ui-responsive-grid" style={resolveColumns(columns)}>
-      {children}
+    <div className="ui-responsive-grid-scope">
+      <div className="ui-responsive-grid" style={resolveColumns(columns)}>
+        {children}
+      </div>
     </div>
   );
 }

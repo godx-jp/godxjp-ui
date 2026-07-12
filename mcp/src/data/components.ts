@@ -347,9 +347,32 @@ import { StatCard } from "@godxjp/ui/data-display";
         type: "BreadcrumbProp",
         description: "Breadcrumb trail rendered in the topbar header for back-navigation.",
       },
+      {
+        name: "mobileNav",
+        type: "ReactNode",
+        description:
+          "Navigation shown in the AppShell-owned mobile drawer below `lg` (where the docked sidebar is hidden). Defaults to the `sidebar` node; pass a tailored menu, or null to opt out.",
+      },
+      {
+        name: "mobileNavLabel",
+        type: "string",
+        description:
+          "Accessible title for the mobile navigation drawer. Defaults to localized 'Menu'.",
+      },
+      {
+        name: "mobileNavOpen",
+        type: "boolean",
+        description: "Controlled open state of the mobile drawer. Omit for AppShell-owned state.",
+      },
+      {
+        name: "onMobileNavOpenChange",
+        type: "(open: boolean) => void",
+        description: "Change handler for the mobile drawer open state.",
+      },
     ],
     usage: [
       "DO pass a <Sidebar> node to `sidebar` (required) and page content to `children` (required) — these are the only two required props. Everything else is optional and omitting optional slots simply removes that zone from the rendered DOM.",
+      "DO rely on AppShell's OWNED mobile drawer below `lg`: it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
       "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop only when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — when `topbar` is provided, logo/topbarLeft/topbarRight are ignored entirely.",
       "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",
       "DO place breadcrumb content in AppShell's `breadcrumb` prop (renders in the `app-breadcrumb` div inside `<main>` ABOVE children) — do NOT hand-roll a breadcrumb bar as the first child of children, and do NOT put breadcrumbs inside <Sidebar>.",
@@ -523,6 +546,8 @@ export function LoginPage() {
       "DO: Add content: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The parent item's icon is required even for groups. The group auto-opens and highlights when activeId matches any descendant.",
       "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",
       "DO: Use the footer prop for user info or status — it is pinned below the scroll area and does not scroll away.",
+      "DO: Render a leaf as a real link with `item.href` (a real <a>, so right-click / open-in-new-tab work) or, for a framework router <Link>, return that single element from `renderItem` — the Sidebar merges the row onto it via Slot so the link IS the row and the ONLY interactive element (no nested <button>). Never put a <button>/<a> inside a default row.",
+      "DO: Rely on route-synchronized group expansion — a group OPENS automatically whenever `activeId` moves to one of its children (e.g. after a deep-link navigation), revealing the newly-active child; users can still collapse/expand manually.",
       "DON'T: Manage collapse state inside the Sidebar — it is stateless. Hoist the boolean to your shell/page state and pass it down via both AppShell.sidebarCollapsed and Sidebar.collapsed.",
       "DON'T: Nest children more than one level deep — only top-level items can have children; grandchild items are not rendered.",
     ],
@@ -1153,7 +1178,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         type: "ColumnDef<T>[]",
         required: true,
         description:
-          "Lean column definitions (adapted to TanStack internally). Each column: { key: string; header: ReactNode; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end' }. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column.",
+          "Lean column definitions (adapted to TanStack internally). Each column: { key: string; header: ReactNode; ariaLabel?: string; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end' }. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column. ariaLabel gives a VISUALLY-EMPTY header (header='' — an action or selection column) a screen-reader name (e.g. 'Actions'/'Select'): it renders as an sr-only label inside the <th> so the column is never nameless (axe: empty-table-header). DataTable dev-warns when a column has an empty header and no ariaLabel.",
       },
       {
         name: "getRowId",
@@ -1288,6 +1313,8 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       "DO use DataTable.Toolbar as the immediate child that wraps search/filter controls on the left and DataTable.DensityToggle/action buttons on the right. DataTable.BulkActions inside the toolbar auto-hides when selection count is 0; it accepts either plain ReactNode children (built-in 'N selected' status bar) or a (count)=>node render-prop (you own the whole bar).",
       "DO reach for the grid chrome (DataTable.Search, DataTable.ViewOptions, DataTable.Pagination pageSizeOptions) when you need global search, a column 'set view' picker, or numbered pagination — these are the merged former-DataGrid features, now on the one DataTable. Drive them client-side by default; pass the matching state + manual* flag for a server query.",
       "DO use ColumnDef.render for custom cell content (Badge, Link, RowActions). For plain string/number fields render can be omitted — DataTable falls back to String(row[key]).",
+      "DO give every visually-empty column an accessible header via `ariaLabel` — a row-actions column (`header: ''`, `pin: 'end'`) sets `ariaLabel: t('actions')`, so screen readers announce the column and axe reports no `empty-table-header`. DataTable dev-warns any column that renders a `<th>` with neither visible text nor an `ariaLabel`. The selection column added by `selectable` is already named by its SelectAll checkbox — no `ariaLabel` needed there.",
+      "COLUMN SEMANTICS + KEYBOARD: a `sortable` header renders as a real <button> inside the <th> with `aria-sort` (ascending/descending/none) on the <th>; it is Tab-reachable and toggles asc → desc → cleared on Enter/Space/click. A selection column exposes a header 'select all' Checkbox (indeterminate when a subset is selected) and a per-row Checkbox, each keyboard-operable with Space. An action column is visually empty but carries an `ariaLabel`; its per-row controls (kebab menu / buttons) own their own accessible names and keyboard behavior. Row click (`onRowClick`) is suppressed when the user activates an interactive descendant.",
       "DO NOT nest DataTable.Content in a conditional — it is already guarded internally. If you need to override the table body slot, drop exactly one <DataTable.Content /> in children; DataTable auto-detects it by displayName and skips the default.",
     ],
     useCases: [
@@ -1410,6 +1437,7 @@ export default function InvoiceList({
     usage: [
       'DO always wrap body content in <CardContent> — the bare <Card> div has zero inner padding; content renders flush against card edges without it. Never add className="p-4" directly on <Card> as a substitute.',
       "DO put titles/descriptions in <CardHeader>/<CardTitle>/<CardDescription>. Use <CardHeader banded> for a visually separated muted-background header band (mirrors <CardFooter separated>). Pair with <CardAction> inside a flex-row CardHeader for header-level action buttons.",
+      "DO set <CardTitle level={n}> to keep a valid document outline (h1 → h2 → h3, no skipped levels): CardTitle renders <h3> by default, so a section card directly under a page <h1> needs level={2}. Pick the level by OUTLINE position, NEVER for visual size — the title size is fixed by tokens and does not change with level. When the card title is a styled label rather than a section heading, use <CardTitle as=\"p\"> so it is not announced as a heading.",
       "DO use <CardContent flush> for edge-to-edge children such as DataTable, Table, or a Tabs list — this removes horizontal padding. Combine with <CardContent tight> when there is no visual gap needed after the header, and <CardContent solo> when there is no CardHeader above (top padding matches the card shell).",
       "DO use <CardFooter separated> to render a top-bordered action band (Save/Cancel buttons, table summary row). Use <CardFooter flush> for a full-bleed footer bar.",
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
@@ -1817,9 +1845,23 @@ import { Smartphone } from "lucide-react";
         description:
           "Medallion colour intent (a subset of the shared tone vocabulary; `destructive` is the DS name for a danger state). Tints the icon foreground + fill from the matching role token — set `success` for a confirmation zero-state (e.g. device approved) instead of hand-rolling a `.ui-success-state` class.",
       },
+      {
+        name: "titleLevel",
+        type: "1 | 2 | 3 | 4",
+        defaultValue: "3",
+        description:
+          "Semantic heading level of the title. Pick it to keep the page outline valid (h1 → h2 → h3, no skipped levels), NEVER for visual size — the title size is fixed regardless of level. A page/onboarding empty state directly under the page h1 uses titleLevel={2}; one nested in an already-h2 section keeps the default 3.",
+      },
+      {
+        name: "titleAs",
+        type: '"h1" | "h2" | "h3" | "h4" | "p" | "div"',
+        description:
+          "Render the title as a non-heading element (p/div) instead of a heading — for a compact/section empty state inside a section that already owns its heading, so the message is not announced as a heading and cannot skip an outline level. Overrides titleLevel.",
+      },
     ],
     usage: [
-      "DO always pass `title` — it is the only required prop and renders an `<h3>`; omitting it causes a blank silent render with no visible error.",
+      "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
+      "DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs=\"p\"` so the message is not a heading at all.",
       'DO use `tone="success"` (or warning/destructive/info) for a semantic confirmation/alert zero-state — it recolours the icon medallion from the role token; do NOT hand-roll a `.ui-success-state` class that scopes `--empty-state-icon-*`.',
       "DO use the `icon` prop (a Lucide icon component, not a JSX element) to give visual context — e.g. `icon={InboxIcon}` for empty inboxes, `icon={SearchIcon}` after a failed search. Pass the component reference, not `<InboxIcon />`.",
       "DO use `action` (a `ReactNode`, typically a `<Button>`) for actionable zero-states — e.g. 'Create first invoice' — so users have a clear next step instead of a dead end.",
@@ -1827,6 +1869,8 @@ import { Smartphone } from "lucide-react";
       "DO NOT use EmptyState inside a `DataState` or `InfiniteQueryState` for the loading or error states — those widgets handle skeleton/error themselves; pass `EmptyState` only to their `empty=` prop for the zero-items case.",
       "DO NOT add padding directly on `EmptyState` via `className` when placing it inside a `Card` — wrap it in `<CardContent>` first; EmptyState is a self-contained block with its own internal spacing via `ui-empty-state` styles.",
       "DO omit optional secondary sections when absence has no user value. Otherwise use variant='compact' or 'section'; reserve page for the primary page job.",
+      "DO match empty-state visual weight to the section's importance and expected content density — a low-priority 'no received invitations' block uses variant='compact' (no medallion, minimal padding), not the full page treatment that would outweigh real content.",
+      "DO NOT wrap every empty condition in its own bordered Card. A compact/section empty state sits directly in the existing CardContent / section it belongs to; a dedicated bordered Card is only for a page-level or standalone zero-state.",
     ],
     useCases: [
       "Zero-row admin list pages (invoices, accounts, transactions) that are NOT backed by a `DataTable` — e.g. a card-grid or custom list layout where DataTable's built-in empty state doesn't apply.",
@@ -2226,7 +2270,7 @@ import { Smartphone } from "lucide-react";
     name: "FormField",
     group: "data-entry",
     tagline:
-      "Wraps a control with label, helper, and error; injects aria-describedby/aria-invalid onto the child. Reads the parent Form's layout (vertical/horizontal) — overridable per field.",
+      "Wraps a control with label, helper, and error; injects the accessible name (aria-labelledby), description (aria-describedby) and validation (aria-errormessage/aria-invalid/aria-required) contract onto the child, which forwards it to its real semantic focus target. Reads the parent Form's layout (vertical/horizontal) — overridable per field.",
     props: [
       {
         name: "id",
@@ -2287,6 +2331,9 @@ import { Smartphone } from "lucide-react";
       "DO use `labelAddon` (a ReactNode rendered inline after the label text) for supplementary controls such as a tooltip trigger or a 'copy' icon button — never insert such controls as siblings outside FormField, which breaks layout.",
       "DON'T wrap `Switch` in FormField — use `Field` instead, which already handles the label, hidden `<input name>` for HTML form submission, error, and helper internally.",
       "DON'T use FormField for checkbox-beside-label or radio-beside-label patterns — use `Field` (single checkbox/radio with description) or `CheckboxGroup` / `RadioGroup` (multiple options), which have their own integrated labelling.",
+      "CONTRACT (which element owns each ARIA relationship): every data-entry control accepts and FORWARDS the injected props to its real semantic focus target, not a wrapper div — Input/Textarea/NumberInput → the `<input>/<textarea>`; Select/SearchSelect/Cascader/TreeSelect → the `role=combobox` trigger (with aria-expanded + aria-haspopup + aria-controls per the WAI-ARIA APG combobox pattern); DatePicker/MonthPicker/TimePicker → the typeable `role=combobox` input (aria-haspopup=dialog); ColorPicker → the `<input type=color>` swatch; SearchInput → the `role=searchbox` input. GROUP controls own the relationship on their container: RadioGroup → `role=radiogroup` (full validation incl. aria-invalid/-errormessage/-required); CheckboxGroup, DateRangePicker/MonthRangePicker (two inputs), and Transfer → `role=group` — per ARIA 1.2 a group is not a widget, so the error id is folded into aria-describedby instead of aria-invalid/-errormessage. Upload forwards the label/description onto its native `<input type=file>`; its visible dropzone/button keeps its own action label. This forwarding is implemented once in `src/lib/field-a11y.ts` (`pickFieldA11y` / `pickGroupFieldA11y` / `resolveFieldA11y`) — do not reinvent it per control.",
+      "NATIVE FORM PARTICIPATION: pass `name` to a control for HTML form submission — Input/Textarea/NumberInput/Select submit natively; SearchSelect submits via a hidden input; DatePicker/TimePicker emit ISO strings (`yyyy-MM-dd` / 24h `HH:mm`); the range pickers emit `${name}_from` / `${name}_to`. `required`/`readOnly`/`disabled` map to the underlying control. Cascader/TreeSelect/Transfer/Upload are NOT native-form-submittable — read their value via `onValueChange` and submit programmatically.",
+      "ERROR TIMING & RECOVERY: pass `error` only after a field is dirty or the form is submitted (don't show errors on pristine mount). The error node renders with `role='alert'` so it is announced live the moment it appears; clearing `error` (e.g. after the user corrects the value or a server round-trip succeeds) removes aria-invalid and restores the helper. On submit, focus the first invalid control and/or render an error summary that links to each field by `id`.",
     ],
     useCases: [
       "Labelling a text `Input` or `Textarea` in an invoice-entry form, showing a red asterisk for required fields and surfacing server validation errors returned from a Laravel FormRequest.",
@@ -3856,9 +3903,29 @@ toast.error("保存に失敗しました");`,
         type: "boolean",
         description: "Show the page-size selector beside the pager.",
       },
+      {
+        name: "hideOnSinglePage",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Hide the control when there is nothing to page through — zero items OR exactly one page. Set false to opt in to the bar on a single page (e.g. to keep showTotal visible); total=0 is always hidden.",
+      },
+      {
+        name: "simple",
+        type: "boolean",
+        description:
+          "Compact form for narrow contexts — Prev / n·N / Next, no page-number buttons. The intentional mobile transformation (desktop never wraps).",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Disable all navigation controls.",
+      },
     ],
     usage: [
       "DO always control Pagination externally: store `value` (page) and `pageSize` in React state (or URL params), and update both in the `onValueChange(page, pageSize)` callback. Pagination is fully controlled — it has no internal state and will not move unless `value` changes.",
+      "DO let Pagination hide itself for zero items and single pages (`hideOnSinglePage`, default true) — it is navigation between multiple result pages. Render it inside a table footer only in the DATA state: never during loading, empty, error, or an unmet prerequisite. Pass `hideOnSinglePage={false}` only when you still want the bar on one page to keep `showTotal` visible.",
+      "DO trust Pagination to stay ONE horizontal row on desktop (it never wraps). For genuinely narrow viewports use `simple` for the intentional compact transformation rather than letting controls wrap.",
       "DO pass `total` as the raw item count (not page count). The component computes `Math.ceil(total / pageSize)` internally; passing a pre-computed page count as `total` will over-paginate.",
       "DO use `showSizeChanger` together with `pageSizeOptions` when the user needs density control (default options are [10, 20, 50, 100]). When `showSizeChanger` is omitted the page-size Select is not rendered at all — do NOT hand-roll your own Select beside Pagination.",
       "DO use `simple` mode for compact contexts (mobile, sidebars, sheet footers) — it renders Prev / `n / total` / Next with no page-number buttons. Use the full form for primary admin list pages.",
@@ -7659,7 +7726,7 @@ export default function PasswordBlock() {
         name: "appearance",
         type: '"labeled" | "icon"',
         description:
-          'Trigger presentation. "labeled" (default) shows the leading icon + selected value in a full-width control. "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. Menu options still show localized names. Use it instead of overriding internal descendants / width classes with CSS.',
+          'Trigger presentation. "labeled" (default) shows the leading icon + selected value: it hugs its content below `sm` (`w-auto max-w-full`) and takes a per-kind fixed width from `sm` up — it no longer stretches to `w-full` on narrow screens, so it fits a topbar (pass className="w-full" for a full-width form field). "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. Menu options still show localized names (the selected value is checked in the popup). Use these instead of overriding internal descendants / width classes with CSS.',
       },
       {
         name: "className",

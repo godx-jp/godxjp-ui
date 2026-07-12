@@ -5,9 +5,10 @@ import { useTranslation } from "../../i18n/use-translation";
 import { Input } from "../data-entry/input";
 import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
+import { resolveFieldA11y, type FieldA11yProps } from "../../lib/field-a11y";
 import { useDebouncedValue } from "../../lib/hooks";
 
-interface SearchInputProps {
+interface SearchInputProps extends FieldA11yProps {
   value?: string;
   defaultValue?: string;
   placeholder?: string;
@@ -37,6 +38,7 @@ export function SearchInput({
   inputClassName,
   id,
   disabled = false,
+  ...ariaProps
 }: SearchInputProps) {
   const { t } = useTranslation();
   const isControlled = controlledValue !== undefined;
@@ -47,6 +49,9 @@ export function SearchInput({
   const inputId = id ?? `search-${reactId}`;
   const resolvedPlaceholder = placeholder ?? t("dataEntry.searchInput.placeholder");
   const resolvedAriaLabel = ariaLabel ?? t("common.search");
+  // When FormField (or a consumer) supplies the label/helper/error contract, forward it onto the
+  // real <input> focus target — its aria-labelledby then wins over the intrinsic "Search" name.
+  const fieldA11y = resolveFieldA11y(ariaProps, resolvedAriaLabel);
 
   const onSearchRef = React.useRef(onSearch);
   React.useEffect(() => {
@@ -83,7 +88,7 @@ export function SearchInput({
             setValue(e.target.value);
           }}
           placeholder={resolvedPlaceholder}
-          aria-label={resolvedAriaLabel}
+          {...fieldA11y}
           className={cn(
             "ui-search-input-control !pr-[var(--search-input-end-padding)] !pl-[var(--search-input-start-padding)]",
             inputClassName,

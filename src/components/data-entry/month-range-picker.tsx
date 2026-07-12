@@ -3,6 +3,7 @@ import { ArrowRight, CalendarIcon, ChevronLeft, ChevronRight, X } from "lucide-r
 import type { DateRange } from "react-day-picker";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { useControlledLatch } from "../../lib/hooks";
+import { pickGroupFieldA11y } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -48,14 +49,20 @@ export function MonthRangePicker({
   fromYear,
   toYear,
   allowClear = true,
+  ...ariaProps
 }: MonthRangePickerProp) {
   const { t } = useTranslation();
   const { locale } = usePickerLocales();
   const [open, setOpen] = React.useState(false);
-  // Both inner inputs always carry ids (Chrome flags form fields without id/name).
+  // No single labelable focus target (two inputs) — the shell is a role="group" named by the
+  // FormField label; pickGroupFieldA11y forwards aria-labelledby/-describedby (error folded in).
+  const groupA11y = pickGroupFieldA11y(ariaProps);
+  // Both inner inputs always carry ids (Chrome flags form fields without id/name); the group owns
+  // the injected `id` so it isn't duplicated across the two inputs.
   const autoId = React.useId();
-  const fromId = id ?? autoId;
-  const toId = `${fromId}-to`;
+  const groupId = id ?? autoId;
+  const fromId = `${groupId}-from`;
+  const toId = `${groupId}-to`;
   // Controlled once a defined `value` has EVER been passed (an empty form may
   // restore a saved value later); uncontrolled state seeds from `defaultValue`.
   const isControlled = useControlledLatch(valueProp !== undefined);
@@ -146,6 +153,10 @@ export function MonthRangePicker({
        * leading (from) edge — the international range-picker convention. */}
       <PopoverAnchor asChild>
         <div
+          role="group"
+          id={groupId}
+          {...groupA11y}
+          aria-disabled={disabled ? true : undefined}
           className={cn(
             "ui-control border-input bg-background flex w-full min-w-0 items-center gap-2 rounded-[var(--control-radius)] transition-[color,box-shadow] outline-none",
             "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",

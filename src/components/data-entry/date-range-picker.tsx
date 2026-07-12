@@ -4,6 +4,7 @@ import type { DateRange } from "react-day-picker";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { parseDateInput, toIsoDate } from "../../lib/datetime";
 import { useControlledLatch } from "../../lib/hooks";
+import { pickGroupFieldA11y } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
 import { Calendar } from "./calendar";
@@ -36,14 +37,21 @@ export function DateRangePicker({
   fromDate,
   toDate,
   allowClear = true,
+  ...ariaProps
 }: DateRangePickerProp) {
   const { t } = useTranslation();
   const { dayPickerLocale } = usePickerLocales(localeProp);
   const [open, setOpen] = React.useState(false);
-  // Both inner inputs always carry ids (Chrome flags form fields without id/name).
+  // The range has no single labelable focus target (two inputs) — the shell is a role="group"
+  // named by the FormField label. pickGroupFieldA11y forwards aria-labelledby/-describedby (error
+  // folded in) — the widget-only aria-invalid/-required are invalid on role="group".
+  const groupA11y = pickGroupFieldA11y(ariaProps);
+  // Both inner inputs always carry ids (Chrome flags form fields without id/name); the group owns
+  // the injected `id` so it isn't duplicated across the two inputs.
   const autoId = React.useId();
-  const fromId = id ?? autoId;
-  const toId = `${fromId}-to`;
+  const groupId = id ?? autoId;
+  const fromId = `${groupId}-from`;
+  const toId = `${groupId}-to`;
   // Controlled once a defined `value` has EVER been passed (an empty form may
   // restore a saved value later); uncontrolled state seeds from `defaultValue`.
   const isControlled = useControlledLatch(valueProp !== undefined);
@@ -106,6 +114,10 @@ export function DateRangePicker({
        * leading (from) edge — the international date-picker convention. */}
       <PopoverAnchor asChild>
         <div
+          role="group"
+          id={groupId}
+          {...groupA11y}
+          aria-disabled={disabled ? true : undefined}
           className={cn(
             // One input-styled shell for the whole range — mirrors Input's control
             // tokens (border/radius/ring) so it reads as a single form field.
