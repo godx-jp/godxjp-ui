@@ -13,10 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `DataState` distinguishes disabled/unstarted queries from active loading through `fetchStatus`,
   adds a `prerequisite` slot, and no longer enables generic Retry by default.
 - Static data-driven `Select` disables itself when it has no options, preventing blank popovers.
+- Async data-driven `Select` (`loadOptions`) now treats loading / no-options / error as distinct
+  states: a rejected loader no longer leaks an unhandled promise rejection nor masquerades as
+  "no results" — it shows its own error affordance, and the empty/error rows render as a disabled
+  option row (never a blank surface). The open panel carries `aria-busy` while fetching (gh#138).
 
 ### Added
 
 - `EmptyState` `page`, `section`, and `compact` variants for context-appropriate visual weight.
+- `Select` / `SearchSelect` `errorMessage` prop — overrides the localized default shown when an
+  async `loadOptions` rejects. Paired with a new `dataEntry.searchSelect.error` i18n key (en/vi/ja).
 - MCP patterns for responsive settings, async/table state, organization membership/invitations,
   and signed-in account recovery, plus lockstep UI compatibility metadata.
 

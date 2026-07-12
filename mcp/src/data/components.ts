@@ -2522,6 +2522,12 @@ import { Smartphone } from "lucide-react";
         description: "Message rendered while loadOptions is resolving.",
       },
       {
+        name: "errorMessage",
+        type: "string",
+        description:
+          "Message rendered when an async loadOptions REJECTS — a distinct state from empty/loading. Defaults to a localized 'Couldn’t load options'. The panel shows this instead of a blank surface or a misleading 'no results'.",
+      },
+      {
         name: "clearable",
         type: "boolean",
         defaultValue: "true",
@@ -2568,6 +2574,7 @@ import { Smartphone } from "lucide-react";
       "DO pass name= on the data-driven Select so the value is submitted with a native form or Inertia useForm. Without name= the value is React-only and will not appear in form data.",
       "DO use loadOptions + selectedLabel together for async selects: selectedLabel prevents a flash of the raw id string while the first page loads.",
       "DO pair id= with a <label htmlFor={id}> for a11y. The trigger renders as a button; screen readers announce the label.",
+      "DO treat loading / no-options / error / disabled as DISTINCT states. A data-driven Select never opens a blank popover: a static options=[] list auto-disables the trigger (opening it would show nothing), while an async loadOptions shows a loading row, then either the options, a localized empty affordance (override with emptyMessage), or an error affordance if the fetch rejects (override with errorMessage). Disable the Select when there is nothing to pick AND no async loader; keep it enabled (it opens to load/search) whenever loadOptions is set.",
       "DON'T mix the two APIs: once you pass options or loadOptions, Select is data-driven — all compound sub-parts (SelectTrigger, SelectContent, SelectItem) are rendered internally. Do not wrap them manually.",
       "DON'T use a raw <select> element. Select is the one control for all single-select use cases. The only allowed raw <select> is a hidden aria-hidden sr-only element kept as an e2e hook paired with a visible Select.",
       "COMPOUND API sub-parts (when NOT using options/loadOptions): Select → SelectTrigger (contains SelectValue) → SelectContent → SelectItem. Optionally wrap items in SelectGroup + SelectLabel for headings, or add SelectSeparator between sections.",
@@ -2579,6 +2586,7 @@ import { Smartphone } from "lucide-react";
       "Grouped currency picker — set option.group='Asia' / 'Europe' on each option; the plain (non-search) data-driven mode renders SelectGroup headings automatically.",
       "Form field in an accounting entry — use the compound API when the trigger must show a currency flag icon alongside the SelectValue; wire SelectTrigger size='sm' for dense table rows.",
       "Required department select in a HR form — pass clearable=false so the user cannot clear the field once set; pair with name='department_id' for Inertia useForm submission.",
+      "Async account picker whose API can fail — pass loadOptions plus errorMessage so a rejected fetch shows a clear error affordance in the panel (not a blank surface or a false 'no results'); the loading and empty states are handled automatically.",
     ],
     related: [
       "SearchSelect — the combobox engine Select delegates to when showSearch=true or loadOptions is set. Prefer Select with showSearch instead of reaching for SearchSelect directly (SearchSelect is now deprecated as a public API).",

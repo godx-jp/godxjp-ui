@@ -684,6 +684,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
   },
   {
+    "name": "--empty-state-section-space-y",
+    "value": "var(--space-6)",
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
+    "name": "--empty-state-section-space-x",
+    "value": "var(--space-4)",
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
+    "name": "--empty-state-compact-space-y",
+    "value": "var(--space-3)",
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
+    "name": "--empty-state-compact-space-x",
+    "value": "var(--space-2)",
+    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+  },
+  {
     "name": "--empty-state-icon-foreground",
     "value": "initial",
     "description": "EmptyState icon medallion colour — `initial` so the role defaults re-resolve at the call site * under a scoped theme (rule #44). A service recolours the glyph (--empty-state-icon-foreground) * or washes the medallion fill (--empty-state-icon-tint) without forking. * Defaults = hsl(var(--muted-foreground)) glyph · hsl(var(--muted)) fill."
