@@ -228,7 +228,10 @@ export default function Demo() {
               <CardDescription>
                 Frame の Dimensions で 320 / 375 / 390 / 768 / 1024 / 1280 / 1440 / 1920px
                 を切り替え、sidebar・topbar・page actions・grid・split pane
-                の変換を同じ実用構成で確認する。
+                の変換を同じ実用構成で確認する。1024px 未満ではドックされたサイドバーが隠れ、
+                AppShell 所有のモバイルドロワー（トップバー左のハンバーガー → フォーカストラップ付き
+                Sheet · Esc で閉じてトリガーへフォーカス復帰）が navigation を提供する（gh#165）。
+                このデモは mobileNav を渡していないため、同じ Sidebar がドロワーに再利用される。
               </CardDescription>
             </CardHeader>
           </Card>

@@ -14,29 +14,49 @@ function vars(el: HTMLElement) {
 describe("ResponsiveGrid — column resolution", () => {
   it("a numeric columns clamps sm≤2 / md≤3 and keeps lg", () => {
     const { container } = render(<ResponsiveGrid columns={5}>x</ResponsiveGrid>);
-    expect(vars(container.firstChild as HTMLElement)).toEqual({ sm: "2", md: "3", lg: "5" });
+    expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      sm: "2",
+      md: "3",
+      lg: "5",
+    });
   });
 
   it("the default (4) resolves to 2 / 3 / 4", () => {
     const { container } = render(<ResponsiveGrid>x</ResponsiveGrid>);
-    expect(vars(container.firstChild as HTMLElement)).toEqual({ sm: "2", md: "3", lg: "4" });
+    expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      sm: "2",
+      md: "3",
+      lg: "4",
+    });
   });
 
   it("an explicit {sm,md,lg} object passes through", () => {
     const { container } = render(
       <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>x</ResponsiveGrid>,
     );
-    expect(vars(container.firstChild as HTMLElement)).toEqual({ sm: "1", md: "2", lg: "4" });
+    expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      sm: "1",
+      md: "2",
+      lg: "4",
+    });
   });
 
   it("object breakpoints fall back upward (sm→md→lg)", () => {
     const { container } = render(<ResponsiveGrid columns={{ sm: 2 }}>x</ResponsiveGrid>);
-    expect(vars(container.firstChild as HTMLElement)).toEqual({ sm: "2", md: "2", lg: "2" });
+    expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      sm: "2",
+      md: "2",
+      lg: "2",
+    });
   });
 
   it("a md-only object defaults sm to 1 and lg to md", () => {
     const { container } = render(<ResponsiveGrid columns={{ md: 3 }}>x</ResponsiveGrid>);
-    expect(vars(container.firstChild as HTMLElement)).toEqual({ sm: "1", md: "3", lg: "3" });
+    expect(vars(container.querySelector(".ui-responsive-grid") as HTMLElement)).toEqual({
+      sm: "1",
+      md: "3",
+      lg: "3",
+    });
   });
 
   it("renders its children", () => {

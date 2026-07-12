@@ -347,9 +347,32 @@ import { StatCard } from "@godxjp/ui/data-display";
         type: "BreadcrumbProp",
         description: "Breadcrumb trail rendered in the topbar header for back-navigation.",
       },
+      {
+        name: "mobileNav",
+        type: "ReactNode",
+        description:
+          "Navigation shown in the AppShell-owned mobile drawer below `lg` (where the docked sidebar is hidden). Defaults to the `sidebar` node; pass a tailored menu, or null to opt out.",
+      },
+      {
+        name: "mobileNavLabel",
+        type: "string",
+        description:
+          "Accessible title for the mobile navigation drawer. Defaults to localized 'Menu'.",
+      },
+      {
+        name: "mobileNavOpen",
+        type: "boolean",
+        description: "Controlled open state of the mobile drawer. Omit for AppShell-owned state.",
+      },
+      {
+        name: "onMobileNavOpenChange",
+        type: "(open: boolean) => void",
+        description: "Change handler for the mobile drawer open state.",
+      },
     ],
     usage: [
       "DO pass a <Sidebar> node to `sidebar` (required) and page content to `children` (required) — these are the only two required props. Everything else is optional and omitting optional slots simply removes that zone from the rendered DOM.",
+      "DO rely on AppShell's OWNED mobile drawer below `lg`: it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
       "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop only when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — when `topbar` is provided, logo/topbarLeft/topbarRight are ignored entirely.",
       "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",
       "DO place breadcrumb content in AppShell's `breadcrumb` prop (renders in the `app-breadcrumb` div inside `<main>` ABOVE children) — do NOT hand-roll a breadcrumb bar as the first child of children, and do NOT put breadcrumbs inside <Sidebar>.",
@@ -523,6 +546,8 @@ export function LoginPage() {
       "DO: Add content: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The parent item's icon is required even for groups. The group auto-opens and highlights when activeId matches any descendant.",
       "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",
       "DO: Use the footer prop for user info or status — it is pinned below the scroll area and does not scroll away.",
+      "DO: Render a leaf as a real link with `item.href` (a real <a>, so right-click / open-in-new-tab work) or, for a framework router <Link>, return that single element from `renderItem` — the Sidebar merges the row onto it via Slot so the link IS the row and the ONLY interactive element (no nested <button>). Never put a <button>/<a> inside a default row.",
+      "DO: Rely on route-synchronized group expansion — a group OPENS automatically whenever `activeId` moves to one of its children (e.g. after a deep-link navigation), revealing the newly-active child; users can still collapse/expand manually.",
       "DON'T: Manage collapse state inside the Sidebar — it is stateless. Hoist the boolean to your shell/page state and pass it down via both AppShell.sidebarCollapsed and Sidebar.collapsed.",
       "DON'T: Nest children more than one level deep — only top-level items can have children; grandchild items are not rendered.",
     ],
@@ -3856,9 +3881,29 @@ toast.error("保存に失敗しました");`,
         type: "boolean",
         description: "Show the page-size selector beside the pager.",
       },
+      {
+        name: "hideOnSinglePage",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Hide the control when there is nothing to page through — zero items OR exactly one page. Set false to opt in to the bar on a single page (e.g. to keep showTotal visible); total=0 is always hidden.",
+      },
+      {
+        name: "simple",
+        type: "boolean",
+        description:
+          "Compact form for narrow contexts — Prev / n·N / Next, no page-number buttons. The intentional mobile transformation (desktop never wraps).",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Disable all navigation controls.",
+      },
     ],
     usage: [
       "DO always control Pagination externally: store `value` (page) and `pageSize` in React state (or URL params), and update both in the `onValueChange(page, pageSize)` callback. Pagination is fully controlled — it has no internal state and will not move unless `value` changes.",
+      "DO let Pagination hide itself for zero items and single pages (`hideOnSinglePage`, default true) — it is navigation between multiple result pages. Render it inside a table footer only in the DATA state: never during loading, empty, error, or an unmet prerequisite. Pass `hideOnSinglePage={false}` only when you still want the bar on one page to keep `showTotal` visible.",
+      "DO trust Pagination to stay ONE horizontal row on desktop (it never wraps). For genuinely narrow viewports use `simple` for the intentional compact transformation rather than letting controls wrap.",
       "DO pass `total` as the raw item count (not page count). The component computes `Math.ceil(total / pageSize)` internally; passing a pre-computed page count as `total` will over-paginate.",
       "DO use `showSizeChanger` together with `pageSizeOptions` when the user needs density control (default options are [10, 20, 50, 100]). When `showSizeChanger` is omitted the page-size Select is not rendered at all — do NOT hand-roll your own Select beside Pagination.",
       "DO use `simple` mode for compact contexts (mobile, sidebars, sheet footers) — it renders Prev / `n / total` / Next with no page-number buttons. Use the full form for primary admin list pages.",
@@ -7659,7 +7704,7 @@ export default function PasswordBlock() {
         name: "appearance",
         type: '"labeled" | "icon"',
         description:
-          'Trigger presentation. "labeled" (default) shows the leading icon + selected value in a full-width control. "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. Menu options still show localized names. Use it instead of overriding internal descendants / width classes with CSS.',
+          'Trigger presentation. "labeled" (default) shows the leading icon + selected value: it hugs its content below `sm` (`w-auto max-w-full`) and takes a per-kind fixed width from `sm` up — it no longer stretches to `w-full` on narrow screens, so it fits a topbar (pass className="w-full" for a full-width form field). "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. Menu options still show localized names (the selected value is checked in the popup). Use these instead of overriding internal descendants / width classes with CSS.',
       },
       {
         name: "className",

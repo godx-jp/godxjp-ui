@@ -32,6 +32,14 @@ export type PaginationProp = {
   pageSizeOptions?: number[];
   showSizeChanger?: boolean;
   showTotal?: boolean | ((total: number, range: [number, number]) => React.ReactNode);
+  /**
+   * Hide the whole control when there is nothing to page through — zero items OR exactly one page.
+   * `true` (default) keeps table footers clean: pagination is navigation between multiple result
+   * pages, so a lone disabled `1 / 1` bar is noise. Set `false` for the explicit opt-in when a
+   * consumer still wants the bar on a single page (e.g. to keep `showTotal` visible). A control
+   * with `total === 0` is ALWAYS hidden — there is no data to navigate. (gh#153)
+   */
+  hideOnSinglePage?: boolean;
   simple?: boolean;
   disabled?: DisabledProp;
   className?: ClassNameProp;

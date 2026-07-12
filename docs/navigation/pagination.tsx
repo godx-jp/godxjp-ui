@@ -96,25 +96,73 @@ export default function Demo() {
           onValueChange={handleChange}
         />
 
+        {/* Regression: total=0, exactly one page, multiple pages, + the single-page opt-in (gh#153). */}
         <Card>
           <CardHeader>
-            <CardTitle>境界状態 · 0 件 / 1 件</CardTitle>
+            <CardTitle>境界状態 · 0 件 / 1 ページ / 複数ページ</CardTitle>
             <CardDescription>
-              空データの範囲は 0〜0。1 件では 1〜1 を返し、前後ボタンは無効になる。
-              実アプリでは空状態に Pagination を併置せず、この例は API 境界確認に使う。
+              Pagination は複数ページ間のナビゲーション。0 件と 1 ページ（total ≤ pageSize）は
+              既定で「非表示」になる（下の 2 例は何もレンダリングしない）。合計だけ見せたい 1
+              ページでは hideOnSinglePage={"{false}"} で明示的にオプトインする。複数ページでは 1
+              行のまま折り返さずに全ページャを表示する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {/* total=0 → hidden (nothing renders). */}
+              <Pagination total={0} pageSize={10} showTotal />
+              {/* exactly one page → hidden by default (nothing renders). */}
+              <Pagination total={8} pageSize={10} showTotal />
+              {/* single-page opt-in → the bar renders so the total stays visible. */}
+              <Pagination
+                total={8}
+                pageSize={10}
+                hideOnSinglePage={false}
+                showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件`}
+              />
+              {/* multiple pages → full pager, one horizontal row, no wrap. */}
+              <Pagination
+                value={2}
+                total={137}
+                pageSize={10}
+                showTotal
+                showSizeChanger
+                onValueChange={() => {}}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* Long localized total label — the row stays ONE line and never wraps on desktop (gh#153). */}
+        <Card>
+          <CardHeader>
+            <CardTitle>長いローカライズ済みラベル · 折り返さない</CardTitle>
+            <CardDescription>
+              長い合計ラベル（JA/VI）でも Pagination は 1 行を維持する。ラベルは省略記号で切り詰め、
+              ページ送りを 2 行目に押し出さない。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <Pagination
-                total={0}
-                pageSize={10}
-                showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件`}
+                value={3}
+                total={1284}
+                pageSize={20}
+                showSizeChanger
+                showTotal={(total, [from, to]) =>
+                  `${from.toLocaleString("ja-JP")}〜${to.toLocaleString("ja-JP")} 件目 / 全 ${total.toLocaleString("ja-JP")} 件の請求書を表示中`
+                }
+                onValueChange={() => {}}
               />
               <Pagination
-                total={1}
-                pageSize={10}
-                showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件`}
+                value={3}
+                total={1284}
+                pageSize={20}
+                showSizeChanger
+                showTotal={(total, [from, to]) =>
+                  `Đang hiển thị ${from}–${to} trong tổng số ${total.toLocaleString("vi-VN")} hoá đơn`
+                }
+                onValueChange={() => {}}
               />
             </Flex>
           </CardContent>
