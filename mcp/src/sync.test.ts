@@ -2,10 +2,11 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { TOOL_DEFINITIONS } from "./tools/registry.js";
+import { TOOL_DEFINITIONS, dispatchTool } from "./tools/registry.js";
 import { CARDINAL_RULES } from "./data/rules.js";
 import { TOKENS } from "./data/tokens.js";
 import { SKILLS } from "./data/skills-index.js";
+import { readResource } from "./resources/registry.js";
 import pkg from "../package.json";
 
 /**
@@ -61,5 +62,43 @@ describe("server version", () => {
     expect(src).toMatch(/version:\s*pkg\.version/);
     expect(src).not.toMatch(/version:\s*["']\d+\.\d+\.\d+["']/);
     expect(pkg.version).toMatch(/^\d+\.\d+\.\d+$/);
+  });
+});
+
+describe("release-lockstep compatibility metadata (#140)", () => {
+  it("declares a minor-pinned godxUiCompatibility range that covers its own version", () => {
+    const compat = (pkg as { godxUiCompatibility?: string }).godxUiCompatibility;
+    expect(compat).toMatch(/^\d+\.\d+\.x$/);
+    const [maj, min] = pkg.version.split(".");
+    expect(compat).toBe(`${maj}.${min}.x`);
+  });
+
+  it("the compatibility resource reports the package/server version + compatible range", async () => {
+    const data = JSON.parse(await readResource("godx-ui://compatibility"));
+    expect(data.mcpVersion).toBe(pkg.version);
+    expect(data.serverVersion).toBe(pkg.version);
+    expect(data.compatibleUi).toBe((pkg as { godxUiCompatibility?: string }).godxUiCompatibility);
+  });
+
+  it("check_compatibility: matching minor → in-lockstep verdict", async () => {
+    const [maj, min] = pkg.version.split(".");
+    const out = await dispatchTool("check_compatibility", { version: `${maj}.${min}.0` });
+    expect(out).toContain("In lockstep");
+    expect(out).not.toMatch(/MISMATCH/);
+  });
+
+  it("check_compatibility: different minor → actionable mismatch warning", async () => {
+    const [maj, min] = pkg.version.split(".");
+    const other = `${maj}.${Number(min) + 1}.0`;
+    const out = await dispatchTool("check_compatibility", { version: other });
+    expect(out).toMatch(/MISMATCH/);
+    expect(out).toContain(other);
+    expect(out).toContain(`npm i @godxjp/ui@${pkg.version}`);
+  });
+
+  it("check_compatibility: no version → reads catalog version + range, never throws", async () => {
+    const out = await dispatchTool("check_compatibility", {});
+    expect(out).toContain(pkg.version);
+    expect(out.length).toBeGreaterThan(0);
   });
 });

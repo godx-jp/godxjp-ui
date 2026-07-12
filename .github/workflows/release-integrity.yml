@@ -1,0 +1,64 @@
+name: Release integrity
+
+# Guards the @godxjp/ui ↔ @godxjp/ui-mcp release contract on EVERY change (issue #140), so a
+# version / compatibility drift or a stale catalog fails a PR — long before the manual publish.
+# Deterministic + fast: no Chromium, no publish, no secrets.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  lockstep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install UI deps
+        run: pnpm install --frozen-lockfile
+      - name: Install MCP deps
+        run: pnpm install --dir mcp
+
+      # 1) Versions + compatibility metadata are mutually consistent (the core lockstep invariant).
+      - name: Version/compatibility lockstep
+        run: pnpm check:mcp-lockstep
+
+      # 2) The catalog only names real library exports, and every export is catalogued.
+      - name: Catalog ↔ library sync
+        run: |
+          pnpm check:mcp-sync
+          pnpm check:mcp-orphans
+
+      # 3) The MCP builds and its own contract/resource/compatibility suite is green — this is what
+      #    proves serverInfo.version == package version and the compatibility tool/resource behave.
+      - name: Build + test MCP
+        run: pnpm --dir mcp build && pnpm --dir mcp test
+
+      # 4) Pack both tarballs together and re-assert lockstep on the PACKED manifests — the artifacts
+      #    that would actually ship must carry matching versions + compatibility pointers.
+      - name: Pack artifacts and verify lockstep on the packed manifests
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pack && rm -f /tmp/pack/*.tgz
+          npm pack --pack-destination /tmp/pack --ignore-scripts >/dev/null
+          npm pack ./mcp --pack-destination /tmp/pack --ignore-scripts >/dev/null
+          ls -1 /tmp/pack/*.tgz
+          node -e '
+            const {execSync}=require("node:child_process");
+            const fs=require("node:fs");
+            const read=(t,f)=>JSON.parse(execSync(`tar -xzO -f ${t} package/${f}`,{encoding:"utf8"}));
+            const [ui]=fs.readdirSync("/tmp/pack").filter(f=>f.includes("godxjp-ui-")&&!f.includes("ui-mcp"));
+            const [mcp]=fs.readdirSync("/tmp/pack").filter(f=>f.includes("ui-mcp"));
+            const u=read(`/tmp/pack/${ui}`,"package.json");
+            const m=read(`/tmp/pack/${mcp}`,"package.json");
+            const errs=[];
+            if(u.version!==m.version) errs.push(`packed version split: ui ${u.version} vs mcp ${m.version}`);
+            if(u.godxUiMcp!==m.version) errs.push(`packed godxUiMcp ${u.godxUiMcp} != mcp ${m.version}`);
+            if(errs.length){console.error("✗ packed artifacts drift:\n  "+errs.join("\n  "));process.exit(1);}
+            console.log(`✓ packed artifacts in lockstep — @godxjp/ui@${u.version} ↔ @godxjp/ui-mcp@${m.version}`);
+          '

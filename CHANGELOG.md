@@ -29,6 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `EmptyState` `page`, `section`, and `compact` variants for context-appropriate visual weight.
 - MCP patterns for responsive settings, async/table state, organization membership/invitations,
   and signed-in account recovery, plus lockstep UI compatibility metadata.
+- **Release lockstep (#140):** `@godxjp/ui` and `@godxjp/ui-mcp` now carry mutual compatibility
+  metadata (`godxUiMcp` ↔ `godxUiCompatibility`) enforced by `check:mcp-lockstep` (wired into
+  `verify` / `verify:release` and a new `release-integrity` CI workflow that also re-checks the
+  packed tarball manifests). `scripts/release.mjs` refuses a ui-only bump, refreshes the compat
+  fields, and fail-closes on the lockstep check before committing. New `check_compatibility` MCP
+  tool returns an actionable match/mismatch verdict for a consumer's installed `@godxjp/ui` version.
 
 ### Fixed
 

@@ -145,7 +145,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ---
 
-## Tools (23)
+## Tools (24)
 
 > **Building an app with @godxjp/ui?** Start with `list_consumer_skills` / `route_consumer_task`
 > (the Consumer namespace below) — they hide library-maintenance material. The data tools
@@ -191,6 +191,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 | `route_consumer_task`  | Natural-language task → consumer skill+section (never core)            | ~300 B |
 | `get_consumer_skill`   | One section of one consumer skill; refuses core-only skills            | ~2 KB  |
 | `draft_bug_report`     | Drafts a GitHub issue body + a `gh issue create` command for a lib bug | ~1 KB  |
+| `check_compatibility`  | Match/mismatch verdict: installed @godxjp/ui version vs this catalog   | ~500 B |
 
 ### Lint (one-shot critique)
 

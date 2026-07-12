@@ -42,6 +42,7 @@ import {
   visualRulesByCategory,
   type VisualRule,
 } from "../data/visual-rules.js";
+import pkg from "../../package.json";
 
 export const TOOL_DEFINITIONS = [
   // ── DISCOVERY (small responses) ────────────────────────────────
@@ -302,6 +303,28 @@ export const TOOL_DEFINITIONS = [
     },
   },
 
+  {
+    name: "check_compatibility",
+    description:
+      "Report whether the @godxjp/ui version installed in the target project matches THIS catalog. " +
+      "This MCP describes exactly one release train (see the `godx-ui://compatibility` resource); if " +
+      "the consumer runs a different @godxjp/ui minor, the props / tokens / patterns it returns may " +
+      "describe a build they never installed (issue #140). Pass the installed version (from the app's " +
+      "`node_modules/@godxjp/ui/package.json` or `npm ls @godxjp/ui`) to get an actionable match / " +
+      "mismatch verdict. Call it at the START of a consumer session before trusting catalog output.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        version: {
+          type: "string",
+          description:
+            "Installed @godxjp/ui version in the target project, e.g. '16.10.0'. Omit to just read " +
+            "the catalog's own version + compatible range.",
+        },
+      },
+    },
+  },
+
   // ── TASK ROUTING (smallest response — pointer) ─────────────────
   {
     name: "route_task",
@@ -389,6 +412,8 @@ export async function dispatchTool(name: string, args: Record<string, unknown>):
       return routeTaskTool(String(args.task ?? ""), { consumerOnly: true });
     case "draft_bug_report":
       return draftBugReport(args);
+    case "check_compatibility":
+      return checkCompatibility(args.version == null ? undefined : String(args.version));
     // Task routing
     case "route_task":
       return routeTaskTool(String(args.task ?? ""));
@@ -504,6 +529,65 @@ function draftBugReport(args: Record<string, unknown>): string {
   out += `## File it (copy-paste — this tool does NOT run gh)\n\n\`\`\`sh\n${cmd}\n\`\`\`\n\n`;
   out += `_Reminder: don't hand-roll a fake workaround to hide the bug — file this, then mark any minimal local workaround with \`// TODO(godxui#<n>)\`._\n`;
   return out;
+}
+
+/**
+ * Compatibility verdict between the consumer's installed @godxjp/ui and THIS catalog.
+ * The catalog is version-pinned to the library (issue #140): `pkg.version` is the release train and
+ * `pkg.godxUiCompatibility` the minor-pinned range (e.g. "16.10.x") it faithfully describes.
+ */
+function checkCompatibility(installed?: string): string {
+  const catalog = pkg.version;
+  const range = pkg.godxUiCompatibility as string | undefined;
+  const header =
+    `# @godxjp/ui compatibility\n\n` +
+    `- MCP / catalog version (serverInfo.version): **${catalog}**\n` +
+    `- Compatible @godxjp/ui range: **${range ?? "(unset)"}**\n`;
+
+  const v = installed?.trim();
+  if (!v) {
+    return (
+      header +
+      `\nProvide the installed version — \`check_compatibility version="16.10.0"\` — to get a ` +
+      `match/mismatch verdict. Read it from the target project's ` +
+      `\`node_modules/@godxjp/ui/package.json\` or \`npm ls @godxjp/ui\`.\n`
+    );
+  }
+
+  const parse = (s: string) => {
+    const m = /^(\d+)\.(\d+)\.(\d+)/.exec(s);
+    return m ? { major: m[1], minor: m[2] } : null;
+  };
+  const rangeMinor = range ? /^(\d+)\.(\d+)\.x$/.exec(range) : null;
+  const iv = parse(v);
+
+  if (!iv || (range && !rangeMinor)) {
+    return (
+      header +
+      `\n⚠️ Could not compare — installed="${v}" is not a plain x.y.z version, or the catalog range ` +
+      `is malformed. Verify with \`npm ls @godxjp/ui\`.\n`
+    );
+  }
+
+  const matches = rangeMinor
+    ? iv.major === rangeMinor[1] && iv.minor === rangeMinor[2]
+    : v === catalog;
+
+  if (matches) {
+    return (
+      header +
+      `\n✅ In lockstep — installed @godxjp/ui@${v} is described by this catalog. Prop / token / ` +
+      `pattern guidance is safe to trust.\n`
+    );
+  }
+  return (
+    header +
+    `\n🔴 MISMATCH — the target project runs @godxjp/ui@${v}, but this catalog describes ${range ?? catalog}. ` +
+    `Props, defaults, tokens, and patterns it returns may not match the installed build. ` +
+    `Align them before trusting output:\n` +
+    `- upgrade the app: \`npm i @godxjp/ui@${catalog}\`, or\n` +
+    `- point your agent at the matching MCP release: \`@godxjp/ui-mcp@${iv.major}.${iv.minor}\` (same minor as the app).\n`
+  );
 }
 
 function listPrimitives(group?: ComponentGroup): string {
