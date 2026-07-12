@@ -31,7 +31,7 @@ behaviours are owned by [[godxjp-ui-interaction-feel]].
 
 There are two voices in this skill, and they only contradict on the surface.
 
-- **taste-skill** (the anti-slop frontend framework) exists because AI-generated UIs default to _generic and boring_: centered cards, Inter/Acme, purple gradients, confetti on success, no hierarchy, no rhythm. Its remedy is three dials — DESIGN_VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY — plus a craft discipline (typographic hierarchy, spatial composition, canonical GSAP motion, em-dash ban, design-system mapping, redesign-audit, pre-flight checks). Its variant pack (soft / minimalist / brutalist) lets a project pick a personality and _commit_ to it.
+- **taste-skill** (the anti-slop frontend framework) exists because AI-generated UIs default to _generic and boring_: centered cards, Inter/Acme, purple gradients, confetti on success, no hierarchy, no rhythm. Its remedy is three dials — DESIGN*VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY — plus a craft discipline (typographic hierarchy, spatial composition, canonical GSAP motion, em-dash ban, design-system mapping, redesign-audit, pre-flight checks). Its variant pack (soft / minimalist / brutalist) lets a project pick a personality and \_commit* to it.
 
 - **dxs-kintai** is a multi-tenant JP-enterprise 勤怠 system. It already made the personality choice — _once, at the system level_ — and it chose restraint: 渋み (restrained chroma), 間 (breathing), 簡素 (simplicity). It is, in taste-skill's own terms, a system deliberately tuned to **LOW variance, LOW/reserved motion, controlled density**.
 

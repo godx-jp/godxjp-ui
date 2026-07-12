@@ -3,3 +3,8 @@ node_modules
 preview/dist
 coverage
 .turbo
+
+# Generated artifacts are owned by their generator (single source of truth);
+# their format is enforced by the generator's own --check, not prettier.
+# e.g. mcp/src/data/component-tokens.generated.ts (scripts/gen-component-tokens.mjs)
+*.generated.ts
