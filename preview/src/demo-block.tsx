@@ -490,6 +490,8 @@ export function StoryDemoBlock({
               <div
                 ref={frameRef}
                 className="demo-block-frame"
+                tabIndex={0}
+                aria-label={`${storyId} preview canvas`}
                 data-layout={layout}
                 data-fill={layout === "fullscreen" ? "true" : undefined}
                 data-height-mode={frameHeightAuto ? "auto" : undefined}

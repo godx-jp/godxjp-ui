@@ -225,7 +225,7 @@ export const SheetDescription = React.forwardRef<
   <DialogPrimitive.Description
     ref={ref}
     data-slot="sheet-description"
-    className={cn("text-muted-foreground text-sm", className)}
+    className={cn("text-foreground/80 text-sm", className)}
     {...props}
   />
 ));

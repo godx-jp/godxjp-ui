@@ -363,6 +363,116 @@
         "reason": "Rendered frame passed Axe with unique consumer-supplied pagination landmark names."
       }
     },
+    "AppSettingPicker": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Provider-bound settings frame passed Chromium reflow at 320,375,390,768,1024,1280,1440,1920."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Provider-bound settings frame passed rendered Axe analysis."
+      }
+    },
+    "Dialog": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Dialog frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered pre-open dialog accepted Escape, closed, and restored the underlying state."
+      },
+      "a11y": { "status": "pass", "reason": "Open Dialog frame passed Axe analysis." }
+    },
+    "Sheet": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Sheet frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered pre-open sheet accepted Escape and closed."
+      },
+      "a11y": { "status": "pass", "reason": "Open Sheet frame passed Axe analysis." }
+    },
+    "AlertDialog": {
+      "responsive": {
+        "status": "pass",
+        "reason": "AlertDialog frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered alert dialog cancel action closed the destructive confirmation."
+      },
+      "a11y": { "status": "pass", "reason": "Open AlertDialog frame passed Axe analysis." }
+    },
+    "Tooltip": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Tooltip frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Keyboard focus on the icon-only trigger displayed the rendered tooltip."
+      },
+      "a11y": { "status": "pass", "reason": "Tooltip owner frame passed Axe analysis." }
+    },
+    "Toaster": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Toast frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Success action emitted the expected live toast message."
+      },
+      "a11y": { "status": "pass", "reason": "Toast owner frame passed Axe analysis." }
+    },
+    "Skeleton": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Skeleton frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Skeleton owner frame passed Axe analysis." }
+    },
+    "DataState": {
+      "responsive": {
+        "status": "pass",
+        "reason": "DataState frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Rendered DataState frame passed Axe analysis." }
+    },
+    "InfiniteQueryState": {
+      "responsive": {
+        "status": "pass",
+        "reason": "InfiniteQueryState frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered InfiniteQueryState frame passed Axe analysis."
+      }
+    },
+    "AlertMutationFeedback": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Mutation feedback frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered mutation failure appeared and its retry action was executed."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered mutation feedback frame passed Axe analysis."
+      }
+    },
+    "PrefetchLink": {
+      "responsive": {
+        "status": "pass",
+        "reason": "PrefetchLink frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Rendered PrefetchLink frame passed Axe analysis." }
+    },
     "Card": {
       "isolated": {
         "status": "pass",
