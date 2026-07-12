@@ -16,10 +16,22 @@ describe("frame coverage checker", () => {
         report.exports,
       );
     }
-    expect(report.totals.props.untested).toBe(report.exports);
-    expect(report.totals.touch.untested).toBe(report.exports);
-    expect(report.totals.screenReader.untested).toBe(report.exports);
-    expect(report.totals.isolated.pass).toBeGreaterThan(0);
+    for (const dimension of [
+      "isolated",
+      "props",
+      "composition",
+      "journey",
+      "responsive",
+      "rtl",
+      "a11y",
+      "touch",
+      "async",
+    ]) {
+      expect(report.totals[dimension].untested).toBe(0);
+    }
+    expect(report.totals.screenReader.untested).toBe(
+      report.exports - report.totals.screenReader["not-applicable"],
+    );
   });
 
   it("fails closed for an unreasoned malformed status", () => {
