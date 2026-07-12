@@ -44,7 +44,7 @@ export const VISUAL_RULES: VisualRule[] = [
     id: "oversaturated-accent",
     severity: "warn",
     category: "color",
-    standard: "@godxjp/ui dxs-kintai 渋み (OKLCH chroma ≤ 0.18)",
+    standard: "@godxjp/ui reference-design 渋み (OKLCH chroma ≤ 0.18)",
     fix: "Desaturate brand/primary surfaces (OKLCH chroma ≤ 0.18); read --primary tokens, no raw vivid bars.",
   },
   {

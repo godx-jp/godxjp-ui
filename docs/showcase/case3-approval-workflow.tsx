@@ -1,7 +1,7 @@
 /**
  * Showcase · case3 — 欠勤承認ワークフロー (Absence approval workflow)
  *
- * The richest admin screen in dxs-kintai (screens.md §2.4 / ui-kit-surfaces.md §4):
+ * The richest admin screen in the reference design (screens.md §2.4 / ui-kit-surfaces.md §4):
  * a 4-column filter bar, a row-selectable DataTable with a bulk approve/reject +
  * reclassify toolbar, status/type Badge cells, an inline reject prompt that demands
  * a reason, an EmptyState (filtered-to-nothing), and a Skeleton loading variant.

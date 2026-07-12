@@ -40,7 +40,7 @@ type BadgeTone = NonNullable<BadgeProps["tone"]>;
 
 // ── Domain: a one-week 勤怠 matrix per 従業員 ───────────────────────────────
 
-/** Per-day attendance mark. Tone follows the fixed kintai signaling map. */
+/** Per-day attendance mark. Tone follows the fixed attendance signaling map. */
 type Mark = "present" | "late" | "absent" | "paid" | "off";
 
 const MARK: Record<Mark, { label: string; tone: BadgeTone | "muted" }> = {

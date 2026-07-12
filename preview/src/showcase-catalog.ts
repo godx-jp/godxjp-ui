@@ -32,20 +32,20 @@ export type ShowcaseEntry = {
 
 export const SHOWCASES: ShowcaseEntry[] = [
   {
-    id: "tiximax-portal",
-    title: "TIXIMAX — Cổng khách hàng (token re-theme)",
+    id: "acme-portal",
+    title: "ACME — Cổng khách hàng (token re-theme)",
     description:
-      "Chứng minh re-theme CHỈ bằng token: cùng bộ component @godxjp/ui nhưng khoác bộ token TIXIMAX (gold/navy/đỏ · Source Sans 3 · bo 14px · shadow ám navy). Không sửa/thêm component.",
+      "Chứng minh re-theme CHỈ bằng token: cùng bộ component @godxjp/ui nhưng khoác bộ token ACME (gold/navy/đỏ · Source Sans 3 · bo 14px · shadow ám navy). Không sửa/thêm component.",
     tag: "Theme",
-    load: () => import("../../docs/showcase/tiximax-portal"),
+    load: () => import("../../docs/showcase/acme-portal"),
   },
   {
-    id: "tiximax-website",
-    title: "TIXIMAX — Landing page (token rebuild)",
+    id: "acme-website",
+    title: "ACME — Landing page (token rebuild)",
     description:
-      "Dựng lại trang marketing TIXIMAX (Navbar · Hero navy + glow vàng · Dịch vụ · Quy trình · Tuyến · CTA · Footer) CHỈ bằng token + real primitives. Section marketing là composition (không thêm component framework); vùng navy dùng role-scoping; display type + dual font + glow đều là token.",
+      "Dựng lại trang marketing ACME (Navbar · Hero navy + glow vàng · Dịch vụ · Quy trình · Tuyến · CTA · Footer) CHỈ bằng token + real primitives. Section marketing là composition (không thêm component framework); vùng navy dùng role-scoping; display type + dual font + glow đều là token.",
     tag: "Theme",
-    load: () => import("../../docs/showcase/tiximax-website"),
+    load: () => import("../../docs/showcase/acme-website"),
   },
   {
     id: "futurelastic-web",

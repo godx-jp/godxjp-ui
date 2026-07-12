@@ -1,7 +1,7 @@
 /**
  * Showcase · table-crud-list — CRUD一覧 (V1)
  *
- * The canonical kintai 勤怠 admin 一覧 (list page), assembled entirely from real
+ * The canonical 勤怠 (attendance) admin 一覧 (list page), assembled entirely from real
  * @godxjp/ui primitives. This is the pattern a consumer should copy when building
  * an admin list screen:
  *

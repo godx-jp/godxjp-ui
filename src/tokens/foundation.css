@@ -1,7 +1,7 @@
 /* Foundation tokens: color, typography, raw spacing, ratio, radius, shadow. */
 
 :root {
-  /* Color system (HSL components) — dxs-kintai: warm hue-60 neutral spine,
+  /* Color system (HSL components) — the reference design: warm hue-60 neutral spine,
    * SmartHR blue primary, 和色/wa-iro semantics. */
   --background: 60 33% 99%; /* #fdfdfb warm off-white */
   --foreground: 48 8% 13%; /* #23221e SmartHR TEXT_BLACK */
@@ -220,7 +220,7 @@
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;
-  /* dxs-kintai uses three weights only: 400 body · 500 heading/label · 700 emphasis. 600 is
+  /* the reference design uses three weights only: 400 body · 500 heading/label · 700 emphasis. 600 is
    * forbidden (ambiguous between 500 and 700) — the legacy "semibold" token collapses to medium
    * so any remaining reference renders at 500. `bold` is the 700 emphasis weight. */
   --font-weight-semibold: 500;
@@ -325,7 +325,7 @@
 
   /* Motion — the primitive tier for animation, so enter/transition timing reads a token
    * instead of a literal 0.5s / cubic-bezier(...) / translateY(10px) (cardinal rule #2).
-   * dxs-kintai keeps motion LOW: short durations, a calm decelerate curve, a small reveal shift.
+   * the reference design keeps motion LOW: short durations, a calm decelerate curve, a small reveal shift.
    * Consumers honour prefers-reduced-motion at the call site. */
   --duration-fast: 150ms;
   --duration-base: 250ms;

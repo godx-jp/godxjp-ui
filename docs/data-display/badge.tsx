@@ -12,7 +12,7 @@ import { Star } from "lucide-react";
 /**
  * Badge — status / category chip. Composed only from real @godxjp/ui components.
  * variant is STRUCTURAL (default / secondary / outline); tone is SEMANTIC (ToneProp).
- * dxs-kintai: semantic mapping is FIXED (success 若竹 / warning 山吹 / info 群青 /
+ * the reference design: semantic mapping is FIXED (success 若竹 / warning 山吹 / info 群青 /
  * destructive 茜). Labels never wrap (rule #35).
  */
 const variants = [

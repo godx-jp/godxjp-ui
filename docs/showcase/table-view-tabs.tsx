@@ -1,7 +1,7 @@
 /**
  * Showcase · table-view-tabs — 保存ビュー (V7)
  *
- * Saved-view ribbon over a 勤怠 (kintai) DataTable. Each saved view is a tab
+ * Saved-view ribbon over a 勤怠 (attendance) DataTable. Each saved view is a tab
  * with a colored signal dot + a count pill. Switching the active view swaps
  * the DataTable PRESET: it re-filters the rows AND changes which columns are
  * shown (e.g. the 「要承認」 view surfaces an 申請者/申請時刻 column the default

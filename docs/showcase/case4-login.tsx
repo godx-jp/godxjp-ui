@@ -1,7 +1,7 @@
 /**
  * Showcase · case4 — Login (ログイン)
  *
- * The dxs-kintai auth surface, served at `/showcase/case4-login`.
+ * The reference-design auth surface, served at `/showcase/case4-login`.
  * Built ENTIRELY from real @godxjp/ui primitives — the design handoff
  * (UI Kit.html §04 + Handy login) recreated as a "skeleton" (intent + look),
  * not a transcription of the prototype DOM.
@@ -77,7 +77,7 @@ function GoogleMark() {
   );
 }
 
-// ── Brand lockup ("勤" mark + dxs · kintai wordmark) ───────────────────────────
+// ── Brand lockup ("勤" mark + Acme · 勤怠 wordmark) ───────────────────────────
 function BrandLockup({ size = "md" }: { size?: "md" | "lg" }) {
   return (
     <div className="flex items-center gap-2.5">
@@ -86,11 +86,11 @@ function BrandLockup({ size = "md" }: { size?: "md" | "lg" }) {
       </Avatar>
       <div className="leading-tight">
         <Text as="div" size="lg" weight="bold" className="tracking-tight">
-          dxs{" "}
+          Acme{" "}
           <Text as="span" tone="primary">
             ·
           </Text>{" "}
-          kintai
+          勤怠
         </Text>
         <Text as="div" size="2xs" tone="muted">
           勤怠管理プラットフォーム

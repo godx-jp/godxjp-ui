@@ -2,7 +2,7 @@
  * Showcase · case1 — Warehouse Dashboard (Tổng quan kho)
  *
  * A full standalone admin/勤怠 dashboard page, served at `/showcase/case1-warehouse-dashboard`.
- * Built ENTIRELY from real @godxjp/ui primitives — the dxs-kintai design handoff
+ * Built ENTIRELY from real @godxjp/ui primitives — the reference-design handoff
  * recreated as a "skeleton" (intent + look), not a transcription of its prototype DOM.
  *
  * Composition map (prototype block → @godxjp/ui primitive):
@@ -180,7 +180,7 @@ export default function WarehouseDashboardShowcase() {
       activeId={activeNav}
       onSelect={setActiveNav}
       sections={NAV_SECTIONS}
-      product={{ name: "Tiximax", role: "Kho B · Saitama" }}
+      product={{ name: "Acme", role: "Kho B · Saitama" }}
     />
   );
 
@@ -196,7 +196,7 @@ export default function WarehouseDashboardShowcase() {
     >
       <PageContainer
         title="Tổng quan"
-        subtitle="Kho B · Tiximax Saitama"
+        subtitle="Kho B · Acme Saitama"
         density="compact"
         extra={
           <Flex direction="row" gap="sm">

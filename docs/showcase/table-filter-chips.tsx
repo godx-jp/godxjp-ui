@@ -1,7 +1,7 @@
 /**
  * Showcase · table-filter-chips — フィルターチップ (V6)
  *
- * An active-filter chip bar above a kintai DataTable. Each applied filter
+ * An active-filter chip bar above an attendance DataTable. Each applied filter
  * renders as a removable Badge chip (× clears that one); a "すべて解除" button
  * clears them all. The chip set drives the DataTable's filtered rows live —
  * the table count, empty state, and pagination all react to the active chips.

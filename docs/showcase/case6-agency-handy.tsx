@@ -1,8 +1,8 @@
 /**
  * Showcase · case6 — 代理店ハンディ (Agency Handy, mobile)
  *
- * The Tiximax consolidation-warehouse handheld app (390×844, gloves-on, scan-heavy),
- * rebuilt ENTIRELY from real @godxjp/ui primitives — the dxs-kintai "Handy Agency"
+ * The Acme consolidation-warehouse handheld app (390×844, gloves-on, scan-heavy),
+ * rebuilt ENTIRELY from real @godxjp/ui primitives — the reference-design "Handy Agency"
  * design recreated as a skeleton (intent + look), not a transcription of its prototype DOM.
  *
  * Composition map (Handy prototype block → @godxjp/ui primitive):
@@ -350,7 +350,7 @@ function StatusBar() {
         9:41
       </Text>
       <Text size="sm" weight="medium" tabular tone="muted">
-        Tiximax Handy
+        Acme Handy
       </Text>
     </div>
   );

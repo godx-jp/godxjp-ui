@@ -281,9 +281,9 @@ const RULES = [
   {
     id: "no-em-dash-in-copy",
     severity: "warn",
-    // Em-dash (U+2014) in JSX text — dxs-kintai uses the middot `·` for JP/EN pairs and calm copy.
+    // Em-dash (U+2014) in JSX text — the reference design uses the middot `·` for JP/EN pairs and calm copy.
     test: /[A-Za-z0-9぀-ヿ一-鿿]\s*—\s*[A-Za-z0-9぀-ヿ一-鿿]/,
-    standard: "@godxjp/ui dxs-kintai typography (best-ux) · Unicode punctuation",
+    standard: "@godxjp/ui reference-design typography (best-ux) · Unicode punctuation",
     message:
       "No em-dash (—) in product copy. Use a middot `·` for JP/EN label pairs, or restructure into two calm sentences. Keep copy factual and quiet.",
   },

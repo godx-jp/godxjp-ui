@@ -218,7 +218,7 @@
 
   /* Semantic heading scale — SEO + accessibility: real <h1>–<h6> elements carry
    * the document outline (one <h1> per page, levels never skipped). Visual size
-   * follows the dxs-kintai scale; component titles override via their own class.
+   * follows the reference-design scale; component titles override via their own class.
    * Headings read --font-family-display (defaults to --font-family-sans → unchanged) for dual-font
    * brands (display face on headings, body face on prose). */
   :where(h1, h2, h3, h4, h5, h6) {

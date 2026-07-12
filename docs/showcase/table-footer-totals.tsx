@@ -1,7 +1,7 @@
 /**
  * Showcase · table-footer-totals — 合計行 (V17)
  *
- * A 勤怠 (kintai) summary table whose numeric columns roll up into a sticky
+ * A 勤怠 (attendance) summary table whose numeric columns roll up into a sticky
  * FOOTER totals row. The footer survives vertical scroll: the header stays
  * pinned to the top, the totals stay pinned to the bottom, and the body of
  * 部署 × 従業員 rows scrolls between them.

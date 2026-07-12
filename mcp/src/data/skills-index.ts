@@ -785,9 +785,9 @@ rule (get_rule) involved, with a minimal repro, expected vs actual, version, and
     audience: "consumer",
     name: "Design handoff → real page (consumer build guide)",
     whenToUse:
-      "You (a consumer agent) received a Claude Design handoff — a bundle/mock/screenshot/HTML prototype or a written brief — and must build it as a REAL page with @godxjp/ui. Read this BEFORE writing any JSX. It teaches: read intent, map every block to a real primitive via this MCP, consume existing tokens, apply the dxs-kintai DNA, treat tables as the centerpiece, resolve gaps by extend-or-ask, and verify.",
+      "You (a consumer agent) received a Claude Design handoff — a bundle/mock/screenshot/HTML prototype or a written brief — and must build it as a REAL page with @godxjp/ui. Read this BEFORE writing any JSX. It teaches: read intent, map every block to a real primitive via this MCP, consume existing tokens, apply the reference-design DNA, treat tables as the centerpiece, resolve gaps by extend-or-ask, and verify.",
     source:
-      "@godxjp/ui .design/research (chats-intent, tables, atomic-components) + dxs-kintai SKILL/colors_and_type.css",
+      "@godxjp/ui .design/research (chats-intent, tables, atomic-components) + reference-design SKILL/colors_and_type.css",
     sections: [
       {
         id: "read-intent",
@@ -837,7 +837,7 @@ never a literal px. Radii: card 6px, control 4px, inner pill 2px.`,
       },
       {
         id: "dna",
-        title: "Apply the dxs-kintai DNA",
+        title: "Apply the reference-design DNA",
         tagline:
           "渋み / 間 / 簡素 — fixed color signaling, dense, small headings, 14/1.7, no emoji.",
         body: `These rules survive when you drop the prototype's divs:
@@ -949,7 +949,7 @@ just buries a library bug inside every app). Instead:
     whenToUse:
       "You (a consumer agent) are building a NEW screen/page in an app that imports @godxjp/ui — from a written brief or product requirement, not a design handoff. Read this to assemble it from real primitives via this MCP: pick the right components, lay out one-intent-per-screen, wire every state + a11y + i18n, and verify. For a Claude Design handoff bundle/mock specifically, use design-to-page instead.",
     source:
-      "@godxjp/ui MCP (consumer surface) — taste/one-intent + component-discipline + dxs-kintai DNA",
+      "@godxjp/ui MCP (consumer surface) — taste/one-intent + component-discipline + reference-design DNA",
     sections: [
       {
         id: "pick-primitives",
@@ -1413,7 +1413,7 @@ export function routeTask(task: string, opts?: { consumerOnly?: boolean }): Rout
     ],
     "design-to-page",
     "map-to-primitives",
-    "Map every block to a real @godxjp/ui primitive (MCP-first), consume existing tokens, apply the dxs-kintai DNA, tables central, gaps → extend-or-ask, verify.",
+    "Map every block to a real @godxjp/ui primitive (MCP-first), consume existing tokens, apply the reference-design DNA, tables central, gaps → extend-or-ask, verify.",
     ["design-to-page/read-intent", "design-to-page/dna", "design-to-page/tables-central"],
   );
 

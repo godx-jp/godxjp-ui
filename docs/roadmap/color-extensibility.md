@@ -5,7 +5,7 @@
 > (gradient) and emphasis (accent) from the token layer alone; components stay role-bound so meaning
 > never drifts and you never "manage many colour codes". Audited 2026-06 (1 mapper + 8 parallel
 > implement→review agents). All implemented slots are **opt-in and quiet by default** — the
-> dxs-kintai baseline is byte-identical (verified in a browser).
+> reference-design baseline is byte-identical (verified in a browser).
 
 ## The mental model — three layers
 
@@ -140,11 +140,11 @@ reviewable library change when a real need appears:
 
 ## Known finding — default semantic colours vs AA text contrast
 
-`check:contrast` (the WCAG-AA text gate) surfaces a design-level tradeoff in the **default dxs-kintai
+`check:contrast` (the WCAG-AA text gate) surfaces a design-level tradeoff in the **default reference-design
 theme**: the light wa-iro semantics — 若竹 `--success` (#68be8d) and 山吹 `--warning` (#f8b500) — do
 NOT meet AA 4.5:1 for **small text on white** (a green/yellow `StatCard` delta, a `Badge tone="success"
 variant="outline"` label). They are fine as fills (status band + dark/white text) but fail as small
-coloured text. Brand re-themes (e.g. TIXIMAX) pass because they pick darker semantics. Resolving the
+coloured text. Brand re-themes (e.g. ACME) pass because they pick darker semantics. Resolving the
 default theme is a brand-colour decision — either darken `--success`/`--warning`, or add darker
 `--text-success` / `--text-warning` tokens (as the source Claude Design does: `--text-success`
 #197A43 ≠ `--success` #008148) and route success/warning _text_ through them. Tracked here; not yet

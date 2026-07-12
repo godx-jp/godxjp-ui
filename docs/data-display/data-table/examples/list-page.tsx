@@ -33,7 +33,7 @@ import {
  * a default, padded PageContainer, so the table aligns with the page header on the
  * same gutters instead of tearing to the viewport edges. The page title + "新規"
  * action are the header; bulk actions appear only when rows are selected. A
- * complete, real admin list mirroring the dxs-kintai PageContent → Card → Table shape.
+ * complete, real admin list mirroring the reference-design PageContent → Card → Table shape.
  */
 const sections: SidebarSectionProp[] = [
   {

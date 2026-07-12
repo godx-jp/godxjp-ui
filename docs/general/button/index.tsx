@@ -5,7 +5,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 
 /**
  * Button — the core action primitive. Composed only from real @godxjp/ui
- * components. dxs-kintai: exactly one primary (default) action per view; height
+ * components. The reference design: exactly one primary (default) action per view; height
  * comes from the size preset (--control-height); never raw <button>.
  */
 export default function Demo() {

@@ -19,7 +19,7 @@ description: >-
 `godxjp-ui-component` (this — correctness contract) → **godxjp-ui-interaction-feel** (state-truthful
 behaviours for any stateful control) → **godxjp-ui-behavioral-test** (drive in a real browser, then
 codify as user-event tests) → **godxjp-ui-example-page** (a complete docs page + the Audit Evidence
-Ledger) → **godxjp-ui-best-ux** (taste / dxs-kintai) → **godxjp-ui-mcp-catalog-sync** (keep the MCP
+Ledger) → **godxjp-ui-best-ux** (taste / reference design) → **godxjp-ui-mcp-catalog-sync** (keep the MCP
 catalog + tests in sync). Single source of truth: this skill owns _real-primitives / no-raw-HTML /
 MCP-first / no-duplication_; the others point here for that.
 

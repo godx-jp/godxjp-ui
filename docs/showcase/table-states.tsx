@@ -1,7 +1,7 @@
 /**
  * Showcase · table-states — 状態 (V16)
  *
- * The five states a 勤怠 (kintai) DataTable must render — each shown statically,
+ * The five states a 勤怠 (attendance) DataTable must render — each shown statically,
  * side by side, so a reader learns every state at rest without clicking:
  *
  *   1. loading … SkeletonTable inside the real Card+toolbar chrome, preserving
@@ -293,7 +293,7 @@ export default function Demo() {
                   サーバーが応答しませんでした。時間をおいて再試行してください。
                   <br />
                   <Text tone="muted">
-                    コード <code className="tabular-nums">KINTAI_FETCH_504</code> ・ リクエストID{" "}
+                    コード <code className="tabular-nums">ATTEND_FETCH_504</code> ・ リクエストID{" "}
                     <code className="tabular-nums">req_7f3a91c0d2</code>
                   </Text>
                 </AlertDescription>
@@ -323,7 +323,7 @@ export default function Demo() {
                     「倉庫」部署の打刻が取得できなかったため、最新ではない可能性があります。
                     <br />
                     <Text tone="muted">
-                      コード <code className="tabular-nums">KINTAI_PARTIAL_倉庫</code> ・
+                      コード <code className="tabular-nums">ATTEND_PARTIAL_倉庫</code> ・
                       リクエストID <code className="tabular-nums">req_7f3a91c0e8</code>
                     </Text>
                   </AlertDescription>

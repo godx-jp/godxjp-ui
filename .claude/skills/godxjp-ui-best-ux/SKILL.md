@@ -1,16 +1,16 @@
 ---
 name: godxjp-ui-best-ux
-description: BẮT BUỘC đọc trước khi thiết kế/đánh giá trải nghiệm người dùng cho bất kỳ surface @godxjp/ui hay dxs-kintai nào. Skill này hợp nhất craft chống-slop của taste-skill (phân cấp typographic, bố cục không gian, motion có chủ đích, kỷ luật em-dash, mapping design-system) VỚI sự tiết chế của dxs-kintai (渋み chroma ≤0.18, 間 14px/1.7, 簡素 3 weights, màu signaling cố định, card 1px viền không đổ bóng, không emoji, copy điềm tĩnh). Lấy KỸ THUẬT của taste-skill nhưng GẠT BỎ lời khuyên "hãy táo bạo" của nó — vì dxs-kintai là một hệ JP-enterprise đã chốt variance THẤP / motion THẤP một lần ở cấp hệ thống. Khác biệt ở đây = thực thi nhất quán hoàn hảo, KHÔNG phải re-theme. Tham chiếu (không lặp lại) các skill taste/soft/minimalist/brutalist + list_anti_ai_tells trong @godxjp/ui MCP.
+description: BẮT BUỘC đọc trước khi thiết kế/đánh giá trải nghiệm người dùng cho bất kỳ surface @godxjp/ui nào. Skill này hợp nhất craft chống-slop của taste-skill (phân cấp typographic, bố cục không gian, motion có chủ đích, kỷ luật em-dash, mapping design-system) VỚI sự tiết chế của reference design (渋み chroma ≤0.18, 間 14px/1.7, 簡素 3 weights, màu signaling cố định, card 1px viền không đổ bóng, không emoji, copy điềm tĩnh). Lấy KỸ THUẬT của taste-skill nhưng GẠT BỎ lời khuyên "hãy táo bạo" của nó — vì reference design là một hệ JP-enterprise đã chốt variance THẤP / motion THẤP một lần ở cấp hệ thống. Khác biệt ở đây = thực thi nhất quán hoàn hảo, KHÔNG phải re-theme. Tham chiếu (không lặp lại) các skill taste/soft/minimalist/brutalist + list_anti_ai_tells trong @godxjp/ui MCP.
 ---
 
 # godxjp-ui-best-ux — Best UX, reconciled
 
-> 🛠️ **AUDIENCE: CORE** — the taste/UX coordinate for **@godxjp/ui + dxs-kintai surfaces** built in
+> 🛠️ **AUDIENCE: CORE** — the taste/UX coordinate for **@godxjp/ui reference-design surfaces** built in
 > this repo. The consumer mirror of this DNA lives in the MCP (`design-to-page/dna` + the taste
 > family); app-devs use that. CORE↔CONSUMER map: `.claude/skills/README.md`.
 
 **This skill is the canonical OWNER of:** the **Layout hygiene** + **Interaction hygiene** blocks
-(below) and the **dxs-kintai DNA** (渋み/間/簡素, fixed color-signaling, density, 14/1.7).
+(below) and the **reference-design DNA** (渋み/間/簡素, fixed color-signaling, density, 14/1.7).
 [[godxjp-ui-design-handoff]] points here for all three instead of repeating them. Correctness is NOT
 this skill's job — run [[godxjp-ui-component]] first; this governs _taste_ on top. Refined interaction
 behaviours are owned by [[godxjp-ui-interaction-feel]].
@@ -33,17 +33,17 @@ There are two voices in this skill, and they only contradict on the surface.
 
 - **taste-skill** (the anti-slop frontend framework) exists because AI-generated UIs default to _generic and boring_: centered cards, Inter/Acme, purple gradients, confetti on success, no hierarchy, no rhythm. Its remedy is three dials — DESIGN*VARIANCE, MOTION_INTENSITY, VISUAL_DENSITY — plus a craft discipline (typographic hierarchy, spatial composition, canonical GSAP motion, em-dash ban, design-system mapping, redesign-audit, pre-flight checks). Its variant pack (soft / minimalist / brutalist) lets a project pick a personality and \_commit* to it.
 
-- **dxs-kintai** is a multi-tenant JP-enterprise 勤怠 system. It already made the personality choice — _once, at the system level_ — and it chose restraint: 渋み (restrained chroma), 間 (breathing), 簡素 (simplicity). It is, in taste-skill's own terms, a system deliberately tuned to **LOW variance, LOW/reserved motion, controlled density**.
+- The **reference design** is a multi-tenant JP-enterprise 勤怠 system. It already made the personality choice — _once, at the system level_ — and it chose restraint: 渋み (restrained chroma), 間 (breathing), 簡素 (simplicity). It is, in taste-skill's own terms, a system deliberately tuned to **LOW variance, LOW/reserved motion, controlled density**.
 
-**So the two do not fight. dxs-kintai is one fixed coordinate inside taste-skill's space.** Our job is to run taste-skill's _craft_ at that coordinate — and to refuse taste-skill's _be-bold_ impulses, because boldness re-themes, and re-theming breaks 渋み.
+**So the two do not fight. The reference design is one fixed coordinate inside taste-skill's space.** Our job is to run taste-skill's _craft_ at that coordinate — and to refuse taste-skill's _be-bold_ impulses, because boldness re-themes, and re-theming breaks 渋み.
 
-> The cardinal rule: **Distinctiveness here is flawless, consistent execution — not novelty.** A dxs-kintai screen stands out by being the most precisely typeset, best-spaced, most quietly confident enterprise screen in the room. Never by being the loudest.
+> The cardinal rule: **Distinctiveness here is flawless, consistent execution — not novelty.** A reference-design screen stands out by being the most precisely typeset, best-spaced, most quietly confident enterprise screen in the room. Never by being the loudest.
 
 If you ever feel the urge to "make this pop" with a new font, a gradient, a colored hero, or a celebratory animation — that is taste-skill's _anti-slop reflex misfiring_. The anti-slop move in THIS system is the opposite: remove the decoration, tighten the grid, fix the leading.
 
 ---
 
-## 1. The three dials, set to dxs-kintai defaults
+## 1. The three dials, set to reference-design defaults
 
 taste-skill asks you to choose dial positions per project. They are already chosen. Treat these as locked unless the user explicitly overrides for a one-off marketing/public surface.
 
@@ -75,7 +75,7 @@ This is the one dial that legitimately moves — but along a fixed, pre-defined 
 
 ## 2. The craft moves that ARE allowed (taste-skill, kept)
 
-These are the parts of taste-skill that _amplify_ dxs-kintai. Apply them aggressively — this is where "best UX" is won.
+These are the parts of taste-skill that _amplify_ the reference design. Apply them aggressively — this is where "best UX" is won.
 
 1. **Typographic hierarchy via the EXISTING scale.** Build clear rank with 20 / 18 / 14 / 13 at weights 400 / 500 / 700 and color (`--foreground` vs `--muted-foreground`) — not by inventing sizes. h1 = 20px and that is _correct_; oversized headings steal 間 from the data. `tabular-nums` on every numeric column and stat.
 2. **Spatial composition & rhythm.** 4px grid, consistent gaps, intentional grouping (filter cluster, action cluster, content). Whitespace is a feature, not an absence. Align everything to a column; never let controls drift.
@@ -90,9 +90,9 @@ These are the parts of taste-skill that _amplify_ dxs-kintai. Apply them aggress
 
 ## 3. The taste-skill advice that is OVERRIDDEN here
 
-These are real taste-skill defaults that DO NOT apply to dxs-kintai. If a generic "make it beautiful" instinct produces any of these, stop.
+These are real taste-skill defaults that DO NOT apply to the reference design. If a generic "make it beautiful" instinct produces any of these, stop.
 
-| taste-skill default                                  | OVERRIDDEN by dxs-kintai                                                                                                       |
+| taste-skill default                                  | OVERRIDDEN by the reference design                                                                                             |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | Push DESIGN_VARIANCE up for distinctiveness          | LOW, locked. Distinctiveness = consistent execution.                                                                           |
 | Per-screen font/personality, expressive display type | **One font: M PLUS 2.** Three weights. h1 = 20px. No display type on app surfaces.                                             |
@@ -161,14 +161,14 @@ taste-skill's anti-slop list targets consumer/marketing tells. Here is the JP-en
 The `@godxjp/ui` MCP already bundles the **taste / soft / minimalist / brutalist** skills and a **`list_anti_ai_tells`** tool. Do not re-implement them here.
 
 - Call **`list_anti_ai_tells`** as an external lint pass on a finished surface — it catches generic tells this skill's §4 may not enumerate. Treat its output as input to the §5 anti-slop scan.
-- The bundled **taste** skill is the upstream craft source; **soft / minimalist / brutalist** are _alternative_ personalities. For dxs-kintai surfaces, **do not adopt soft/minimalist/brutalist wholesale** — dxs-kintai is its own committed coordinate (LOW variance, restrained). Borrow only a specific craft technique (e.g. minimalist's editorial whitespace discipline, soft's calm restraint) when it _reinforces_ 渋み/間/簡素; reject anything that re-themes (brutalist Swiss type, soft pastel gradients, etc.).
+- The bundled **taste** skill is the upstream craft source; **soft / minimalist / brutalist** are _alternative_ personalities. For reference-design surfaces, **do not adopt soft/minimalist/brutalist wholesale** — the reference design is its own committed coordinate (LOW variance, restrained). Borrow only a specific craft technique (e.g. minimalist's editorial whitespace discipline, soft's calm restraint) when it _reinforces_ 渋み/間/簡素; reject anything that re-themes (brutalist Swiss type, soft pastel gradients, etc.).
 - When the MCP and this skill disagree on boldness, **this skill wins** — it is the system-level coordinate. When they disagree on a generic tell, **the MCP wins** — it's the broader lint.
 
 ---
 
 ## Source of truth
 
-- Design system: `/Users/satoshi01/sites/godxjp-ui/.design/bundle/dxs-kintai-design-system/README.md` and `project/README.md` / `project/SKILL.md`.
+- Design system: `/Users/satoshi01/sites/godxjp-ui/.design/bundle/reference-design-system/README.md` and `project/README.md` / `project/SKILL.md`.
 - Tokens: `colors_and_type.css` (mirrors `admin-web/src/app/globals.css`).
 - Correctness gate (run first for component work): **godxjp-ui-component** skill.
 - This skill governs _taste and UX judgement_ on top of those. If a rule here and the design-system docs disagree, the docs win and this skill is updated.

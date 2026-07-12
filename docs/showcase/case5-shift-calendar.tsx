@@ -2,7 +2,7 @@
  * Showcase · case5 — Shift Calendar (シフトカレンダー)
  *
  * A standalone shift-scheduling screen, served at `/showcase/case5-shift-calendar`.
- * Built ENTIRELY from real @godxjp/ui primitives — the dxs-kintai
+ * Built ENTIRELY from real @godxjp/ui primitives — the reference-design
  * `admin/[brandSlug]/employee-shifts/calendar` surface recreated as a "skeleton"
  * (intent + look), not a transcription of `comp-calendar.html`.
  *
