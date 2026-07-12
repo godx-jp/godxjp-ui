@@ -16,6 +16,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`check:no-consumer-coupling` CI gate** — enforces that `@godxjp/ui` stays an international,
+  consumer-agnostic library: it fails when library source (`src/`, `mcp/`, `docs/`, stories,
+  examples) names a specific downstream consumer/product (`kintai`, `tempo`, `tiximax`,
+  `umbrella`, `chat-prod`, …) or consumer infra domain (`id.godx.jp`, `apigw.godx.jp`,
+  `<slug>-prod.godx.jp`, …), and when component source bakes in a locale/currency/timezone
+  literal (`'¥'`, `'JPY'`, `'ja-JP'`, `'Asia/Tokyo'`) that should go through Intl/CLDR. The
+  library's OWN identity (`@godxjp/ui`, `godxjp-ui`) is never flagged. Pre-existing references
+  (origin-design lineage comments + customer-theming showcases) are recorded in a per-file
+  baseline (`scripts/no-consumer-coupling.baseline.json`) so the gate only fails on NEW coupling;
+  the baseline may only shrink. Wired into `verify` / `verify:release`.
 - `EmptyState` `page`, `section`, and `compact` variants for context-appropriate visual weight.
 - MCP patterns for responsive settings, async/table state, organization membership/invitations,
   and signed-in account recovery, plus lockstep UI compatibility metadata.
