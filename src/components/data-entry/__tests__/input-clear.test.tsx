@@ -86,9 +86,7 @@ describe("Input — trailingIcon (one trailing icon at a time)", () => {
 describe("Input — leadingIcon (start slot)", () => {
   it("renders a leading icon at the start, decorative and not stealing focus", async () => {
     const user = userEvent.setup();
-    renderWithUi(
-      <Input aria-label="email" leadingIcon={<span data-testid="mail">mail</span>} />,
-    );
+    renderWithUi(<Input aria-label="email" leadingIcon={<span data-testid="mail">mail</span>} />);
     const leading = screen.getByTestId("mail");
     expect(leading).toBeInTheDocument();
     // The leading slot is aria-hidden + pointer-events-none, so clicking the

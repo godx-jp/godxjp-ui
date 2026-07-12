@@ -27,7 +27,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>単一開閉 (type=&quot;single&quot;)</CardTitle>
             <CardDescription>
-              常に1セクションのみ開きます。collapsible により開いている項目を再度閉じられます。defaultValue で税の項目を初期表示。
+              常に1セクションのみ開きます。collapsible
+              により開いている項目を再度閉じられます。defaultValue で税の項目を初期表示。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -58,7 +59,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>複数開閉 (type=&quot;multiple&quot;)</CardTitle>
             <CardDescription>
-              複数セクションを同時に開けます。設定をグループ分けして一覧したい場面に最適。defaultValue で「通知」と「権限」を初期表示。
+              複数セクションを同時に開けます。設定をグループ分けして一覧したい場面に最適。defaultValue
+              で「通知」と「権限」を初期表示。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -78,7 +80,8 @@ export default function Demo() {
               <AccordionItem value="export">
                 <AccordionTrigger>データ書き出し</AccordionTrigger>
                 <AccordionContent>
-                  仕訳帳・総勘定元帳を CSV / PDF で出力します。会計期間を指定して一括ダウンロード可能。
+                  仕訳帳・総勘定元帳を CSV / PDF
+                  で出力します。会計期間を指定して一括ダウンロード可能。
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="api" disabled>

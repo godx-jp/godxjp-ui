@@ -4,7 +4,11 @@ export function Basic() {
   return (
     <div style={{ display: "grid", gap: 6, maxWidth: 380 }}>
       <Label htmlFor="skills">Skills</Label>
-      <TagInput id="skills" defaultValue={["React", "TypeScript", "勤怠管理"]} placeholder="Add a skill…" />
+      <TagInput
+        id="skills"
+        defaultValue={["React", "TypeScript", "勤怠管理"]}
+        placeholder="Add a skill…"
+      />
     </div>
   );
 }

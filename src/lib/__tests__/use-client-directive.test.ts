@@ -18,7 +18,9 @@ describe("use client detection (gh#128 — Next.js App Router RSC)", () => {
 
   it("does NOT flag pure server-safe code", () => {
     expect(isClientSource(`export const cn = (...a) => twMerge(clsx(a));`)).toBe(false);
-    expect(isClientSource(`import { format } from "date-fns"; export const fmt = format;`)).toBe(false);
+    expect(isClientSource(`import { format } from "date-fns"; export const fmt = format;`)).toBe(
+      false,
+    );
     expect(isClientSource(`export type Foo = { a: string };`)).toBe(false);
     // a hook NAME in an import (no call) or a member like `schema.useField` type — not a bare call
     expect(isClientSource(`import { useTranslation } from "../i18n";`)).toBe(false);

@@ -65,7 +65,16 @@ const componentPrefixes = {
     "hover-card",
   ],
   table: ["table"],
-  "data-display": ["progress", "tree", "timeline", "avatar", "accordion", "carousel", "list-row", "descriptions"],
+  "data-display": [
+    "progress",
+    "tree",
+    "timeline",
+    "avatar",
+    "accordion",
+    "carousel",
+    "list-row",
+    "descriptions",
+  ],
   "data-entry": ["password-strength"],
   shell: ["sidebar", "topbar", "kbd", "app-shell", "auth-shell", "page", "page-header"],
 };

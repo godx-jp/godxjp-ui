@@ -10,27 +10,27 @@ description: BẮT BUỘC khi tạo/sửa trang ví dụ catalogue trong docs/**
 > this. CORE↔CONSUMER map: `.claude/skills/README.md`.
 
 **Follow-map:** reached from [[godxjp-ui-component]] (the correctness contract — it owns
-*real-primitives / no-raw-HTML*). This skill **owns the Audit Evidence Ledger** (the forcing gate
+_real-primitives / no-raw-HTML_). This skill **owns the Audit Evidence Ledger** (the forcing gate
 others reference). Pair it with [[godxjp-ui-interaction-feel]] (the refined behaviours each card must
 prove) and [[godxjp-ui-behavioral-test]] (codify what you drove). Taste of the page: [[godxjp-ui-best-ux]].
 
 **DO / DON'T:**
 
-| ✅ DO | ⛔ DON'T |
-|---|---|
-| Fill the **Audit Evidence Ledger** with real evidence — drive EVERY card, open the console | Self-certify a partial pass; "looks fine"; a blank/skipped row |
-| Type-check against the REAL API — `tone` for colour, declared union values, installed prop names | `variant="success"`, invented union values, removed props, missing Provider/Router |
-| Render every non-default **state** + every **union value**; stage interaction **visible at rest** | One happy-path instance; behaviour only provable by clicking |
-| Compose real primitives + semantic tokens; ASCII quotes; readouts show human **labels** | Hand-rolled/faked controls; raw `hsl()`/inline px; smart quotes; raw value codes |
-| Pin the demo locale so `t()`-driven chrome matches the demo language | An "all-JP" demo whose search box renders "Tìm kiếm…" |
+| ✅ DO                                                                                             | ⛔ DON'T                                                                           |
+| ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Fill the **Audit Evidence Ledger** with real evidence — drive EVERY card, open the console        | Self-certify a partial pass; "looks fine"; a blank/skipped row                     |
+| Type-check against the REAL API — `tone` for colour, declared union values, installed prop names  | `variant="success"`, invented union values, removed props, missing Provider/Router |
+| Render every non-default **state** + every **union value**; stage interaction **visible at rest** | One happy-path instance; behaviour only provable by clicking                       |
+| Compose real primitives + semantic tokens; ASCII quotes; readouts show human **labels**           | Hand-rolled/faked controls; raw `hsl()`/inline px; smart quotes; raw value codes   |
+| Pin the demo locale so `t()`-driven chrome matches the demo language                              | An "all-JP" demo whose search box renders "Tìm kiếm…"                              |
 
 An example page in `docs/<group>/<name>.tsx` is the component's **proof of behaviour**. Its job is
 to demonstrate the component **completely** and **correctly** — not to look nice with one happy-path
 instance. A strict audit of all 87 pages (mean **5.93/10**) found the same failures over and over;
 these rules close them. Treat the page as **incomplete until every gate below passes**.
 
-> **Cardinal test:** could a reader who has never seen this component learn *every* prop, *every*
-> state, and *every* variant value **from this page alone, at rest, without clicking**? If not, it's
+> **Cardinal test:** could a reader who has never seen this component learn _every_ prop, _every_
+> state, and _every_ variant value **from this page alone, at rest, without clicking**? If not, it's
 > not done.
 
 ---
@@ -46,7 +46,7 @@ so a **partial pass self-certified as complete**. This ledger removes that escap
 **The rule is absolute:** when you audit or build an example page you MUST reproduce this ledger in
 your reply **with concrete evidence filled into every row** before you say "done", before you
 commit, and before you report results. **An empty cell, a "looks fine", or a skipped row = the
-audit FAILED — not a draft, a FAIL.** Evidence means *what you actually did and saw* (the click
+audit FAILED — not a draft, a FAIL.** Evidence means _what you actually did and saw_ (the click
 path, the rendered text, the console output), never a promise.
 
 ```
@@ -74,12 +74,12 @@ this gate forbids.
 
 ## Rule #0 — Type-check against the REAL API (a render-breaking bug is not an example)
 
-The 9 worst pages didn't *render* what their copy promised. Non-negotiable:
+The 9 worst pages didn't _render_ what their copy promised. Non-negotiable:
 
 - **Semantic colour goes through `tone`, never `variant`.** `variant` is STRUCTURAL
   (`default | secondary | outline`). Passing `variant="success"` to Badge/Tag/StatCard/Alert/Progress
   is a TS error that silently collapses to grey.
-  - 🛑 *Proof:* `feedback-alert` → 4 identical grey banners · `data-display-badge` → 5/8 colourless
+  - 🛑 _Proof:_ `feedback-alert` → 4 identical grey banners · `data-display-badge` → 5/8 colourless
     chips · `data-display-progress` → 5 identical green bars. All claimed colours; none rendered.
 - **No invented union values.** Use only the values the component's type actually declares
   (Progress tone is `success | warning` only — `info`/`destructive` don't exist).
@@ -110,7 +110,7 @@ A static screenshot must prove the behaviour:
 
 - **Every value of each structural union** — `variant`, `size`, `side`/`align`, `orientation`,
   `mode`, `type`, `titlePlacement` — not just the default.
-- **Controlled AND uncontrolled** (`value` + `onValueChange` *and* `defaultValue`) when the
+- **Controlled AND uncontrolled** (`value` + `onValueChange` _and_ `defaultValue`) when the
   component branches on them.
 - **The headline / defining prop, explicitly** — `loadOptions`, `locale`, `name`, `prefetchOn`,
   `density`, `side`/`align`. The reason the component exists must be on screen.
@@ -120,15 +120,15 @@ A static screenshot must prove the behaviour:
 
 ## Rule #4 — Show, don't tell (WHY claimed but not shown — 15 pages)
 
-Every WHY in the copy — *elevation, anti-reflow, container-query, responsive stacking, persistence,
-draft-undo, provider-driven output* — must have a **corresponding live rendered demo**. If you can't
+Every WHY in the copy — _elevation, anti-reflow, container-query, responsive stacking, persistence,
+draft-undo, provider-driven output_ — must have a **corresponding live rendered demo**. If you can't
 show it, delete the claim. (e.g. a container-query grid must be shown collapsing **in a narrow
 container at a wide viewport**, not only by shrinking the window.)
 
 ## Rule #5 — Real primitives + tokens only (rule 29 · tokens — 13 pages)
 
 - **No hand-rolled / faked controls** — import the real `Input`/`Select`/`Label`/`DataTable`/heading
-  primitive. (This is the *real-primitives* contract — owned by [[godxjp-ui-component]] §1; it applies
+  primitive. (This is the _real-primitives_ contract — owned by [[godxjp-ui-component]] §1; it applies
   verbatim to example pages.)
 - **Tokens only (example-page specifics)** — no raw `hsl()`/hex, no inline `style`
   width/height/maxWidth, no hardcoded px label strings, no arbitrary `[1.7]` values with
@@ -216,7 +216,7 @@ time. (Standing user instruction: log the whole process into the skill on every 
 2. **Root-cause in the code — name the file:line and WHY.** Don't guess-patch. Trace to the actual
    rule/selector/prop. (e.g. "right-aligned vertical labels ← `form-layout.css` `[data-label-align=end]`
    selector missing the `[data-layout=horizontal]` qualifier → leaked to vertical at ≥768px".)
-3. **Answer the meta-question honestly:** *why did I miss it?* Skill not read? skill missing a rule?
+3. **Answer the meta-question honestly:** _why did I miss it?_ Skill not read? skill missing a rule?
    measured-but-didn't-look? verified the atom but not the composed surface? Skipped a width? Write it
    down — that answer becomes the next rule.
 4. **Fix**, then **re-screenshot and LOOK** to confirm the defect is gone AND nothing else broke.

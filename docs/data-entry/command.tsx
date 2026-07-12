@@ -212,8 +212,8 @@ export default function Demo() {
             <CardTitle>取引先サーバー検索（非同期）</CardTitle>
             <CardDescription>
               shouldFilter={"{false}"} で内蔵フィルタを無効化し、入力値（value /
-              onValueChange）でサーバー検索した結果だけを表示。 取得中はローディング行、0
-              件は CommandEmpty を表示。
+              onValueChange）でサーバー検索した結果だけを表示。 取得中はローディング行、0 件は
+              CommandEmpty を表示。
             </CardDescription>
           </CardHeader>
           <CardContent>

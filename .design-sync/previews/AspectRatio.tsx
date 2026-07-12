@@ -4,9 +4,16 @@ export function Ratios() {
   const box = (label: string) => (
     <div
       style={{
-        width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center",
-        background: "hsl(var(--muted))", color: "hsl(var(--muted-foreground))",
-        borderRadius: "var(--radius)", fontSize: 13, fontWeight: 500,
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "hsl(var(--muted))",
+        color: "hsl(var(--muted-foreground))",
+        borderRadius: "var(--radius)",
+        fontSize: 13,
+        fontWeight: 500,
       }}
     >
       {label}

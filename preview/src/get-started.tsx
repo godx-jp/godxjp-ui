@@ -15,20 +15,17 @@ import { SHOWCASES } from "./showcase-catalog";
 export function GetStartedPage() {
   return (
     <div className="preview-stage">
-      <PageContainer
-        title="Bắt đầu"
-        subtitle="godxjp-ui · showcase & component preview"
-      >
+      <PageContainer title="Bắt đầu" subtitle="godxjp-ui · showcase & component preview">
         <Flex direction="col" gap="xl">
           <Card>
             <CardContent>
               <Flex direction="col" gap="md">
                 <p className="doc-page-intro">
-                  Preview này gồm hai phần. <strong>Component catalog</strong> (thanh bên trái) trình
-                  bày từng primitive với mọi prop, state và tone. <strong>Showcase</strong> bên dưới
-                  là các trang ứng dụng hoàn chỉnh dựng <em>chỉ bằng</em> real @godxjp/ui primitives —
-                  mở ở URL riêng <code>/showcase/&lt;id&gt;</code> để tham khảo cách ghép một màn hình
-                  thật.
+                  Preview này gồm hai phần. <strong>Component catalog</strong> (thanh bên trái)
+                  trình bày từng primitive với mọi prop, state và tone. <strong>Showcase</strong>{" "}
+                  bên dưới là các trang ứng dụng hoàn chỉnh dựng <em>chỉ bằng</em> real @godxjp/ui
+                  primitives — mở ở URL riêng <code>/showcase/&lt;id&gt;</code> để tham khảo cách
+                  ghép một màn hình thật.
                 </p>
               </Flex>
             </CardContent>
@@ -36,10 +33,10 @@ export function GetStartedPage() {
 
           <section>
             <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="whitespace-nowrap text-base font-bold">
+              <h2 className="text-base font-bold whitespace-nowrap">
                 Showcase ({SHOWCASES.length})
               </h2>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-muted-foreground text-xs">
                 Trang độc lập · mở tab mới · không nằm trong catalog
               </span>
             </div>
@@ -54,7 +51,7 @@ export function GetStartedPage() {
                   rel="noreferrer"
                   className="block no-underline"
                 >
-                  <Card className="h-full transition-colors hover:border-primary">
+                  <Card className="hover:border-primary h-full transition-colors">
                     <CardHeader className="flex flex-row items-start justify-between gap-2">
                       <div className="min-w-0">
                         <CardTitle className="flex items-center gap-1.5">
@@ -68,7 +65,7 @@ export function GetStartedPage() {
                       </Badge>
                     </CardHeader>
                     <CardContent>
-                      <code className="text-xs text-muted-foreground">/showcase/{s.id}</code>
+                      <code className="text-muted-foreground text-xs">/showcase/{s.id}</code>
                     </CardContent>
                   </Card>
                 </a>

@@ -8,6 +8,7 @@
 ## Phase 1 — i18n / international formatting (non-breaking)
 
 ### #66 Number / currency / bytes → `Intl` with the active locale
+
 - `src/lib/format.ts:71` `formatCurrency` hardcodes `Intl.NumberFormat("en-US")` → money renders
   in US conventions for every locale (ja sees `¥1,234` US-style, vi never gets `1.234.567 ₫`).
   Identifier is correct ISO 4217; formatting is not locale-delegated. **Fix:** thread the active
@@ -17,6 +18,7 @@
   English units). **Fix:** `Intl.NumberFormat(locale,{style:"unit",unit:"kilobyte|megabyte|gigabyte",unitDisplay:"short"})`.
 
 ### #67 Pluralization + numeric interpolation (`Intl.PluralRules`)
+
 - `src/i18n/translate.ts:28-34` only `replaceAll` → `{count}/{total}/{page}` via `String()` lose
   grouping; **no plural selection** → en `"selectedCount":"{count} selected"` yields "1 items".
   **Fix:** message values become category maps `{one,other}`, selected via
@@ -24,12 +26,14 @@
   Update `selectedCount` / `pagination.total` / `pageSizeOption` in en/vi/ja.json.
 
 ### #68 Country recipe → `Intl.DisplayNames`, drop emoji flags
+
 - `docs/data-entry/country-picker-recipe.tsx:14-25` uses emoji flags (`🇯🇵` — break on
   Windows/Linux) + hardcoded Japanese labels. Value is correct ISO 3166-1 alpha-2 but the name is
   neither standard-derived nor localized. **Fix:** keep the alpha-2 array; derive the label with
   `new Intl.DisplayNames([locale],{type:"region"}).of(code)`; drop emoji or use an SVG flag set.
 
 ### #69 RTL/bidi + hour-cycle
+
 - No `dir`-awareness anywhere; 14 physical Tailwind utilities (`ml/mr/pr`, `right-0`, `rounded-l/r`)
   in date-picker, time-picker, cascader, tree-select, calendar, app-setting-picker break under RTL.
   **Fix:** swap to logical (`ms/me/pe`, `end-0`, `rounded-s/e`, `border-e`, `text-start`); have
@@ -75,6 +79,7 @@
   throwing; DatePicker/DateRangePicker add `defaultValue` + `ValueProp<Date>`.
 
 ## Consumer ripple
+
 Phase 3 breaking renames + the earlier SearchSelect→internal change require the MF app
 (`resources/js`) to migrate on its next `@godxjp/ui` bump (Steps/Pagination props, size values,
 SearchSelect→`Select loadOptions`).

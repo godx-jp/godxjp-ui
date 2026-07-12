@@ -252,8 +252,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>地域選択（expandTrigger=&quot;hover&quot;）</CardTitle>
             <CardDescription>
-              expandTrigger=&quot;hover&quot; で列のホバーだけで次の階層が展開（既定は &quot;click&quot;）。
-              リーフはクリックで確定。 選択パス:{" "}
+              expandTrigger=&quot;hover&quot; で列のホバーだけで次の階層が展開（既定は
+              &quot;click&quot;）。 リーフはクリックで確定。 選択パス:{" "}
               {hoverPath.length > 0 ? pathToLabels(REGIONS, hoverPath).join(" / ") : "未選択"}
             </CardDescription>
           </CardHeader>
@@ -275,8 +275,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>配送区分（ノード単位フラグ・複数）</CardTitle>
             <CardDescription>
-              ノードの disabled で「クール便」「国際配送」を選択不可（薄表示）に、isLeaf で「店頭受取」を
-              子なし確定ノードに。 選択数: {shippingPaths.length} パス
+              ノードの disabled で「クール便」「国際配送」を選択不可（薄表示）に、isLeaf
+              で「店頭受取」を 子なし確定ノードに。 選択数: {shippingPaths.length} パス
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -297,9 +297,11 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>組織選択（fieldNames でキー写像）</CardTitle>
             <CardDescription>
-              実 API 形状（id / name / items）を fieldNames=&#123;&#123; value: &quot;id&quot;, label:
-              &quot;name&quot;, children: &quot;items&quot; &#125;&#125; で写像。 選択パス:{" "}
-              {orgPath.length > 0 ? pathToLabels(ORG_UNITS, orgPath, ORG_KEYS).join(" / ") : "未選択"}
+              実 API 形状（id / name / items）を fieldNames=&#123;&#123; value: &quot;id&quot;,
+              label: &quot;name&quot;, children: &quot;items&quot; &#125;&#125; で写像。 選択パス:{" "}
+              {orgPath.length > 0
+                ? pathToLabels(ORG_UNITS, orgPath, ORG_KEYS).join(" / ")
+                : "未選択"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -320,8 +322,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>非制御モード（defaultValue・allowClear=&#123;false&#125;）</CardTitle>
             <CardDescription>
-              defaultValue で初期パスを与え、状態を内部管理（非制御）。allowClear=&#123;false&#125; で
-              クリア（×）ボタンを無効化し、必須項目として常に値を保持。
+              defaultValue で初期パスを与え、状態を内部管理（非制御）。allowClear=&#123;false&#125;
+              で クリア（×）ボタンを無効化し、必須項目として常に値を保持。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -341,7 +343,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>無効状態（disabled・選択済み）</CardTitle>
             <CardDescription>
-              disabled で操作不可。value を与えて「選択済みのまま無効化」も表現（編集権限なしの読み取り表示）。
+              disabled で操作不可。value
+              を与えて「選択済みのまま無効化」も表現（編集権限なしの読み取り表示）。
               無効時はクリア（×）も非表示。
             </CardDescription>
           </CardHeader>

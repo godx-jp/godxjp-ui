@@ -19,7 +19,8 @@ export default function Demo() {
             <CardTitle>Heading scale</CardTitle>
             <CardDescription>
               h1 20 / h2 18 / h3 14 / h4-h6 13px, weight 500 (h5/h6 collapse to 13px). SEO/a11y:
-              exactly one &lt;h1&gt; per page (the page title above); h2-h6 below never skip a level.
+              exactly one &lt;h1&gt; per page (the page title above); h2-h6 below never skip a
+              level.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -77,8 +78,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Size scale</CardTitle>
             <CardDescription>
-              Six steps on the JP-dense base. text-sm (14px) is body;
-              text-base+ are for stats / large numerals, not running copy.
+              Six steps on the JP-dense base. text-sm (14px) is body; text-base+ are for stats /
+              large numerals, not running copy.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -119,8 +120,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Line height</CardTitle>
             <CardDescription>
-              tight 1.25 · headings · normal 1.5 · dense tables · body 1.7 · running 日本語/Latin copy
-              (the default applied to &lt;body&gt;).
+              tight 1.25 · headings · normal 1.5 · dense tables · body 1.7 · running 日本語/Latin
+              copy (the default applied to &lt;body&gt;).
             </CardDescription>
           </CardHeader>
           <CardContent>

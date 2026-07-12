@@ -336,7 +336,7 @@ function SectionHeader({ children, count }: { children: React.ReactNode; count?:
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
     <div className="mx-auto w-96 max-w-full shrink-0">
-      <div className="bg-background flex min-h-[844px] max-h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-2xl border">
+      <div className="bg-background flex max-h-[calc(100vh-2rem)] min-h-[844px] flex-col overflow-hidden rounded-2xl border">
         {children}
       </div>
     </div>
@@ -369,7 +369,7 @@ function TabBar({ active, onChange }: { active: string; onChange: (id: string) =
             onClick={() => onChange(t.id)}
             aria-current={isActive ? "page" : undefined}
             className={
-              "h-16 flex-col gap-1 rounded-none text-[var(--font-size-2xs)] font-medium " +
+              "h-16 flex-col gap-1 rounded-none font-medium text-[var(--font-size-2xs)] " +
               (isActive ? "text-primary" : "text-muted-foreground")
             }
           >
@@ -649,7 +649,7 @@ function InboundTab({
             <ToggleGroupItem
               key={f.id}
               value={f.id}
-              className="h-9 shrink-0 gap-1.5 rounded-full px-3 text-[var(--font-size-xs)] whitespace-nowrap"
+              className="h-9 shrink-0 gap-1.5 rounded-full px-3 whitespace-nowrap text-[var(--font-size-xs)]"
             >
               {f.label}
               <Text size="xs" mono tabular className="opacity-70">
@@ -777,12 +777,7 @@ function PackingTab({ onScan }: { onScan: () => void }) {
           >
             <CardContent solo>
               <div className="flex items-center justify-between">
-                <Text
-                  size="2xs"
-                  weight="medium"
-                  tone="muted"
-                  className="tracking-wider uppercase"
-                >
+                <Text size="2xs" weight="medium" tone="muted" className="tracking-wider uppercase">
                   Kiện đang làm
                 </Text>
                 <Badge tone="info" variant="outline" className="rounded-full">
@@ -834,16 +829,22 @@ function OutboundTab({ onSeal, onHandoff }: { onSeal: () => void; onHandoff: () 
           }}
           className="bg-secondary/60 grid w-full grid-cols-3 gap-1 rounded-xl p-1"
         >
-          <ToggleGroupItem value="seal" className="h-9 rounded-xl text-[var(--font-size-xs)] whitespace-nowrap">
+          <ToggleGroupItem
+            value="seal"
+            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+          >
             Chờ niêm phong
           </ToggleGroupItem>
           <ToggleGroupItem
             value="handoff"
-            className="h-9 rounded-xl text-[var(--font-size-xs)] whitespace-nowrap"
+            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
           >
             Chờ bàn giao
           </ToggleGroupItem>
-          <ToggleGroupItem value="done" className="h-9 rounded-xl text-[var(--font-size-xs)] whitespace-nowrap">
+          <ToggleGroupItem
+            value="done"
+            className="h-9 rounded-xl whitespace-nowrap text-[var(--font-size-xs)]"
+          >
             Đã bàn giao
           </ToggleGroupItem>
         </ToggleGroup>

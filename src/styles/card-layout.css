@@ -34,8 +34,7 @@
      * --card-background defaults to the LIVE --card role at the call site (re-resolves under a
      * scoped theme); a service overrides --card-background to win. */
     background:
-      linear-gradient(var(--card-tint), var(--card-tint)),
-      hsl(var(--card-background, var(--card)));
+      linear-gradient(var(--card-tint), var(--card-tint)), hsl(var(--card-background, var(--card)));
     color: hsl(var(--card-foreground));
     /* Resting elevation + opt-in brand glow — both quiet no-ops by default so a service theme can
      * lift (--card-shadow) and/or glow (--card-glow) every card with no markup change. */
@@ -100,9 +99,7 @@
   [data-slot="card"][data-accent] > [data-slot="card-header"],
   [data-slot="card"][data-accent] > [data-slot="card-content"]:not([data-flush]),
   [data-slot="card"][data-accent] > [data-slot="card-footer"]:not([data-flush]) {
-    padding-inline-start: calc(
-      var(--card-space-inset) - var(--card-accent-rail-width)
-    );
+    padding-inline-start: calc(var(--card-space-inset) - var(--card-accent-rail-width));
   }
 
   /* ── Header ──────────────────────────────────────────────────────────── */
@@ -156,7 +153,10 @@
   }
 
   .ui-card-header--banded {
-    border-bottom: var(--card-header-border-bottom, 1px solid hsl(var(--card-border, var(--border))));
+    border-bottom: var(
+      --card-header-border-bottom,
+      1px solid hsl(var(--card-border, var(--border)))
+    );
     background-color: hsl(
       var(--card-header-background, var(--muted)) / var(--card-header-background-alpha)
     );

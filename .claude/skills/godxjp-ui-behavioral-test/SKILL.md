@@ -10,31 +10,31 @@ description: BẮT BUỘC khi kiểm chứng BẤT KỲ component UI tương tá
 > CORE↔CONSUMER map: `.claude/skills/README.md`.
 
 **Follow-map:** this is the **codify** stage of the core chain. Reach it after [[godxjp-ui-component]]
-(contract) flags a stateful control and [[godxjp-ui-interaction-feel]] (which owns the *expected
-behaviours*) tells you what to drive. This skill turns each browser-confirmed behaviour into a
+(contract) flags a stateful control and [[godxjp-ui-interaction-feel]] (which owns the _expected
+behaviours_) tells you what to drive. This skill turns each browser-confirmed behaviour into a
 permanent `@testing-library/user-event` test so `pnpm test` is the regression guard with **no MCP**.
 
 **DO / DON'T:**
 
-| ✅ DO | ⛔ DON'T |
-|---|---|
-| SIMULATE in a real browser MCP, observe what actually happens, THEN codify | Conclude "typing works / Enter submits" by reading the JSX |
-| Run the freeze probe / multi-char type on every controlled input | Trust a single keystroke; assume value sticks |
-| Reproduce a controlled-input `value`/`aria-*` bug in jsdom before reporting it | Report a browser-MCP-only reading as a bug (harness false-positive) |
-| Wire an immediate `onValueChange` on any controlled `value` + debounced wrapper | Source a controlled `value` only from a debounced result → frozen input |
+| ✅ DO                                                                                | ⛔ DON'T                                                                    |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| SIMULATE in a real browser MCP, observe what actually happens, THEN codify           | Conclude "typing works / Enter submits" by reading the JSX                  |
+| Run the freeze probe / multi-char type on every controlled input                     | Trust a single keystroke; assume value sticks                               |
+| Reproduce a controlled-input `value`/`aria-*` bug in jsdom before reporting it       | Report a browser-MCP-only reading as a bug (harness false-positive)         |
+| Wire an immediate `onValueChange` on any controlled `value` + debounced wrapper      | Source a controlled `value` only from a debounced result → frozen input     |
 | End every confirmed behaviour as an assertion in `src/components/<group>/__tests__/` | Say "verified" with no codified test (a finding not codified didn't happen) |
 
 ## Principle — test real, never assume
 
 A control "looks correct" in source and is still **broken at runtime**. The
-only acceptable proof that an interaction works is having *driven it in a real
-browser* and *captured the result in a test that re-runs without a browser*.
+only acceptable proof that an interaction works is having _driven it in a real
+browser_ and _captured the result in a test that re-runs without a browser_.
 
 Two mandatory phases, in order:
 
 1. **SIMULATE (browser MCP).** Open the component in a real browser via a browser
    MCP (`chrome-devtools__*`, `playwright__*`, or browsermcp). Click it, focus it,
-   type into it, press keys, read the DOM back. Observe what *actually* happens.
+   type into it, press keys, read the DOM back. Observe what _actually_ happens.
    **Never** conclude "typing works / Enter submits / arrows navigate" by reading
    the JSX. The bug you are hunting (below) is invisible in source.
 2. **CODIFY (user-event test).** Convert every behavior you confirmed in the
@@ -108,7 +108,7 @@ Run this inside the browser MCP's script-evaluation tool
 ```
 
 For keys, prefer the MCP's high-level helpers (`type_text`, `press_key`,
-`fill`) which dispatch real key events — they exercise the *whole* path
+`fill`) which dispatch real key events — they exercise the _whole_ path
 (keydown → input → keyup) the way a user does, and surface the freeze bug
 naturally because a frozen input ends up empty after a multi-char type.
 
@@ -141,14 +141,14 @@ catches real ones.)
 
 **Cause**: the input is **controlled** (`value={value}`) but the only change
 handler is a **debounced** `onSearch` / `onChange`. Because `value` is sourced
-from the *debounced* result (or from a parent that only updates after the
+from the _debounced_ result (or from a parent that only updates after the
 debounce), the `value` prop never updates **synchronously** on the keystroke.
 React re-renders with the old `value`, overwriting what you typed → the input is
 swallowed every keystroke → frozen.
 
 **Fix — the controlled-vocabulary `onValueChange`**: a controlled input MUST
 expose an immediate, per-keystroke `onValueChange` that updates the controlled
-`value` *synchronously*, separately from any debounced side-effect.
+`value` _synchronously_, separately from any debounced side-effect.
 
 Real example, fixed today — `src/components/data-entry/search-input.tsx`:
 
@@ -157,7 +157,7 @@ Real example, fixed today — `src/components/data-entry/search-input.tsx`:
 // onSearch stays debounced for the expensive side-effect.
 const setValue = (v: string) => {
   if (!isControlled) setInternal(v);
-  onValueChange?.(v);          // <-- synchronous, every keystroke
+  onValueChange?.(v); // <-- synchronous, every keystroke
 };
 // <Input value={value} onChange={(e) => setValue(e.target.value)} ... />
 // useEffect(() => onSearchRef.current(debounced), [debounced]);  // debounced only
@@ -229,7 +229,7 @@ it("Enter submits, Escape clears", async () => {
   renderWithUi(<MyField onSubmit={onSubmit} />);
   const box = screen.getByRole("textbox");
 
-  await user.type(box, "query{Enter}");      // keyboard syntax inside type
+  await user.type(box, "query{Enter}"); // keyboard syntax inside type
   expect(onSubmit).toHaveBeenCalledWith("query");
 
   await user.keyboard("{Escape}");
@@ -254,8 +254,8 @@ it("opens, arrows to an option, Enter selects it", async () => {
   const onValueChange = vi.fn();
   renderWithUi(<MySelect options={OPTS} onValueChange={onValueChange} />);
 
-  await user.click(screen.getByRole("combobox"));        // or {ArrowDown} to open
-  await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");  // highlight + select
+  await user.click(screen.getByRole("combobox")); // or {ArrowDown} to open
+  await user.keyboard("{ArrowDown}{ArrowDown}{Enter}"); // highlight + select
   expect(onValueChange).toHaveBeenCalledWith(OPTS[1].value);
   // popover closed:
   expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
@@ -299,7 +299,7 @@ it("arrow keys move the focused day and Enter selects", async () => {
 > Notes for jsdom: layout/visual focus-ring CSS can't be asserted — assert
 > `toHaveFocus()` + `data-state`/`aria-*` instead. For debounced callbacks use
 > `vi.useFakeTimers({ shouldAdvanceTime: true })` + `userEvent.setup({
-> advanceTimers: vi.advanceTimersByTime })` (see existing `search-input.test.tsx`).
+advanceTimers: vi.advanceTimersByTime })` (see existing `search-input.test.tsx`).
 
 ## Pre-done checklist (do not claim "verified" until all true)
 

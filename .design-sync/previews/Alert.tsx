@@ -9,7 +9,9 @@ export function Tones() {
       </Alert>
       <Alert tone="success">
         <AlertTitle>Timesheet submitted</AlertTitle>
-        <AlertDescription>Your June timesheet was sent to your manager for approval.</AlertDescription>
+        <AlertDescription>
+          Your June timesheet was sent to your manager for approval.
+        </AlertDescription>
       </Alert>
       <Alert tone="warning">
         <AlertTitle>Approval pending</AlertTitle>
@@ -17,7 +19,9 @@ export function Tones() {
       </Alert>
       <Alert tone="destructive">
         <AlertTitle>Submission failed</AlertTitle>
-        <AlertDescription>Could not reach the server. Check your connection and retry.</AlertDescription>
+        <AlertDescription>
+          Could not reach the server. Check your connection and retry.
+        </AlertDescription>
       </Alert>
     </div>
   );
@@ -27,7 +31,9 @@ export function Dismissable() {
   return (
     <Alert tone="info" onDismiss={() => {}} style={{ maxWidth: 460 }}>
       <AlertTitle>Tip</AlertTitle>
-      <AlertDescription>You can export any table to CSV from the view options menu.</AlertDescription>
+      <AlertDescription>
+        You can export any table to CSV from the view options menu.
+      </AlertDescription>
     </Alert>
   );
 }

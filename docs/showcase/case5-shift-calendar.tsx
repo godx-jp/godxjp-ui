@@ -710,7 +710,7 @@ function WeekTimeline() {
                     >
                       <div className="h-px" style={{ background: "var(--destructive)" }} />
                       <div
-                        className="absolute -top-1 -start-1 size-2 rounded-full"
+                        className="absolute -start-1 -top-1 size-2 rounded-full"
                         style={{ background: "var(--destructive)" }}
                       />
                     </div>

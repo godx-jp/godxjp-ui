@@ -23,8 +23,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Image + fallback</CardTitle>
             <CardDescription>
-              Compose AvatarImage with AvatarFallback: a loaded photo shows the
-              image, an avatar with no image shows initials.
+              Compose AvatarImage with AvatarFallback: a loaded photo shows the image, an avatar
+              with no image shows initials.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -51,9 +51,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Fallback on a broken image</CardTitle>
             <CardDescription>
-              When the src fails to load, AvatarImage swaps in the AvatarFallback
-              automatically, never a blank circle. delayMs holds the fallback
-              back briefly so it does not flash before a slow image arrives.
+              When the src fails to load, AvatarImage swaps in the AvatarFallback automatically,
+              never a blank circle. delayMs holds the fallback back briefly so it does not flash
+              before a slow image arrives.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -74,8 +74,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Sizes</CardTitle>
             <CardDescription>
-              Default is var(--control-height); override with a size-* utility
-              (size-8 / size-10 / size-12).
+              Default is var(--control-height); override with a size-* utility (size-8 / size-10 /
+              size-12).
             </CardDescription>
           </CardHeader>
           <CardContent>

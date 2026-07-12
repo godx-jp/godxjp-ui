@@ -52,7 +52,9 @@ if (process.argv.includes("--check")) {
     );
     process.exit(1);
   }
-  console.log(`✓ check:mcp-token-sync — ${tokens.length} component tokens documented in the MCP catalog.`);
+  console.log(
+    `✓ check:mcp-token-sync — ${tokens.length} component tokens documented in the MCP catalog.`,
+  );
 } else {
   writeFileSync(OUT, body);
   console.log(`wrote ${OUT} (${tokens.length} tokens)`);

@@ -29,12 +29,12 @@ what you render, import the foundation plus the per-layer files you use (these
 mirror the JS subpaths, so the CSS tree-shakes the same way):
 
 ```css
-@import "@godxjp/ui/styles/base";          /* REQUIRED: tailwind + tokens + @layer base */
-@import "@godxjp/ui/styles/control";       /* Button, Input, Select, Textarea, toggles */
-@import "@godxjp/ui/styles/form-layout";   /* FormField */
+@import "@godxjp/ui/styles/base"; /* REQUIRED: tailwind + tokens + @layer base */
+@import "@godxjp/ui/styles/control"; /* Button, Input, Select, Textarea, toggles */
+@import "@godxjp/ui/styles/form-layout"; /* FormField */
 @import "@godxjp/ui/styles/dialog-layout"; /* Dialog */
-@import "@godxjp/ui/styles/card-layout";   /* Card */
-@import "@godxjp/ui/styles/layout";        /* Flex/Grid spacing helpers */
+@import "@godxjp/ui/styles/card-layout"; /* Card */
+@import "@godxjp/ui/styles/layout"; /* Flex/Grid spacing helpers */
 /* …only what you use. Available: shell-layout, layout, control, card-layout,
    text-layout, table-layout, dialog-layout, alert-layout, badge-layout,
    data-display-layout, data-entry-layout, form-layout, navigation-layout,
@@ -79,7 +79,7 @@ slots for the bundled Noto Sans JP + Montserrat. Headings read
 `--font-family-sans` — override them for a dual-font (display + body) brand.
 
 > **Per-locale @font-face loading is the consumer's job.** The library only
-> exposes the tokens; deciding *which* `@font-face` blocks ship on *which* pages
+> exposes the tokens; deciding _which_ `@font-face` blocks ship on _which_ pages
 > (e.g. loading the heavy CJK face only on `lang="ja"` routes) is done in your
 > app's font pipeline, not the library.
 
@@ -113,11 +113,20 @@ Import the styles, then set anchor tokens in your app's `theme.css` (loaded afte
 
   /* ── Brand depth — all opt-in, all quiet by default ─────────────── */
   --shadow-glow: 0 8px 20px hsl(var(--primary) / 0.32); /* glow halo on the primary CTA */
-  --card-shadow: 0 1px 2px rgb(12 26 49 / 0.06), 0 10px 28px -14px rgb(12 26 49 / 0.2); /* lift every Card */
+  --card-shadow:
+    0 1px 2px rgb(12 26 49 / 0.06), 0 10px 28px -14px rgb(12 26 49 / 0.2); /* lift every Card */
   --focus-ring-color: var(--ring); /* hue of every focus ring */
   --focus-ring-width: 2px; /* thickness of every focus ring */
-  --gradient-hero: linear-gradient(180deg, hsl(var(--accent)), transparent); /* PageContainer header banner */
-  --gradient-glow: radial-gradient(60% 70% at 90% -8%, hsl(var(--primary) / 0.1), transparent 70%); /* AppShell ambient wash */
+  --gradient-hero: linear-gradient(
+    180deg,
+    hsl(var(--accent)),
+    transparent
+  ); /* PageContainer header banner */
+  --gradient-glow: radial-gradient(
+    60% 70% at 90% -8%,
+    hsl(var(--primary) / 0.1),
+    transparent 70%
+  ); /* AppShell ambient wash */
   --overlay-background: rgb(12 26 49 / 0.55); /* modal scrim (Dialog / Sheet / Drawer) */
 }
 ```
@@ -131,10 +140,10 @@ Import the styles, then set anchor tokens in your app's `theme.css` (loaded afte
 | `--radius` (+ `--radius-ratio`)                                            | `0.375rem` (6px) / φ    | `--radius-{xs…2xl}` (all `radius × φⁿ`)                                                 |
 | `--shadow-color`                                                           | `0 0 0`                 | every shadow step `--shadow-{xs…2xl}` (`rgb(color / α)`)                                |
 | `--shadow-glow`                                                            | invisible               | brand glow halo on the primary CTA (set the full shadow value)                          |
-| `--card-shadow`                                                           | `none`                  | resting elevation of every Card                                                         |
-| `--focus-ring-color` / `--focus-ring-width`                               | `var(--ring)` / `2px`   | hue & thickness of every keyboard-focus ring                                            |
-| `--gradient-{hero,glow,brand}`                                            | `none`                  | hero header banner / AppShell ambient wash / spare (set the full gradient)              |
-| `--overlay-background`                                                    | `rgb(0 0 0 / .5)`       | the scrim of every overlay (Dialog / AlertDialog / Sheet / Drawer)                      |
+| `--card-shadow`                                                            | `none`                  | resting elevation of every Card                                                         |
+| `--focus-ring-color` / `--focus-ring-width`                                | `var(--ring)` / `2px`   | hue & thickness of every keyboard-focus ring                                            |
+| `--gradient-{hero,glow,brand}`                                             | `none`                  | hero header banner / AppShell ambient wash / spare (set the full gradient)              |
+| `--overlay-background`                                                     | `rgb(0 0 0 / .5)`       | the scrim of every overlay (Dialog / AlertDialog / Sheet / Drawer)                      |
 
 Semantic status colors (`--success/-warning/-info/-attention/-destructive`) are **fixed** so a
 "rejected" badge means the same in every brand — override them only if your brand genuinely

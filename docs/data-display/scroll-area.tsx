@@ -65,14 +65,12 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>type=&quot;always&quot;（バーを常時表示）</CardTitle>
             <CardDescription>
-              既定の hover はホバー時のみバーを表示します。always は内容が溢れる限りバーを常に表示します。
+              既定の hover はホバー時のみバーを表示します。always
+              は内容が溢れる限りバーを常に表示します。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea
-              type="always"
-              className="border-border h-56 w-full rounded-md border"
-            >
+            <ScrollArea type="always" className="border-border h-56 w-full rounded-md border">
               <Flex direction="col" gap="xs" className="p-3">
                 {entries.map((e) => (
                   <div key={e} className="text-sm tabular-nums">
@@ -88,17 +86,15 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>横スクロール（ScrollBar orientation=&quot;horizontal&quot;）</CardTitle>
             <CardDescription>
-              横方向のバーは明示的に ScrollBar を子要素として配置します。中身は幅を指定して溢れさせます。
+              横方向のバーは明示的に ScrollBar
+              を子要素として配置します。中身は幅を指定して溢れさせます。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ScrollArea className="border-border w-full rounded-md border">
               <Flex gap="lg" className="w-max p-3">
                 {columns.map((c) => (
-                  <div
-                    key={c}
-                    className="text-sm whitespace-nowrap tabular-nums"
-                  >
+                  <div key={c} className="text-sm whitespace-nowrap tabular-nums">
                     {c}
                   </div>
                 ))}
@@ -116,10 +112,7 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea
-              type="always"
-              className="border-border h-56 w-full rounded-md border"
-            >
+            <ScrollArea type="always" className="border-border h-56 w-full rounded-md border">
               <Flex direction="col" gap="xs" className="p-3">
                 {shortEntries.map((e) => (
                   <div key={e} className="text-sm tabular-nums">

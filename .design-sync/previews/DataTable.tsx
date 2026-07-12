@@ -9,7 +9,11 @@ const columns = [
     header: "Status",
     align: "center" as const,
     render: (row: any) => (
-      <Badge tone={row.status === "Approved" ? "success" : row.status === "Pending" ? "warning" : "neutral"}>
+      <Badge
+        tone={
+          row.status === "Approved" ? "success" : row.status === "Pending" ? "warning" : "neutral"
+        }
+      >
         {row.status}
       </Badge>
     ),
@@ -18,7 +22,11 @@ const columns = [
     key: "act",
     header: "",
     align: "right" as const,
-    render: () => <Button size="xs" variant="ghost">Edit</Button>,
+    render: () => (
+      <Button size="xs" variant="ghost">
+        Edit
+      </Button>
+    ),
   },
 ];
 

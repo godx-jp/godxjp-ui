@@ -20,8 +20,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Label + Checkbox (inline)</CardTitle>
             <CardDescription>
-              A compact pair where Field’s two-line layout is unnecessary, e.g. a “remember me”
-              row. When the peer control is disabled, the Label dims (peer-disabled:opacity-70 +
+              A compact pair where Field’s two-line layout is unnecessary, e.g. a “remember me” row.
+              When the peer control is disabled, the Label dims (peer-disabled:opacity-70 +
               cursor-not-allowed).
             </CardDescription>
           </CardHeader>

@@ -226,8 +226,8 @@ export default function Demo() {
             <CardHeader>
               <CardTitle>Responsive frame coverage</CardTitle>
               <CardDescription>
-                Frame の Dimensions で 320 / 375 / 390 / 768 / 1024 / 1280 / 1440 /
-                1920px を切り替え、sidebar・topbar・page actions・grid・split pane
+                Frame の Dimensions で 320 / 375 / 390 / 768 / 1024 / 1280 / 1440 / 1920px
+                を切り替え、sidebar・topbar・page actions・grid・split pane
                 の変換を同じ実用構成で確認する。
               </CardDescription>
             </CardHeader>

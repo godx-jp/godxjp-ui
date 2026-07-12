@@ -17,15 +17,18 @@ The earlier headless attempt couldn't run `DesignSync`; this run completed from 
 terminal after `/design-login` upgraded the claude.ai login with design-system scopes.
 
 ### Architecture decision that drives this sync (IMPORTANT — read before re-sync)
+
 `@godxjp/ui` is a **design _framework_**, not a single locked brand: brand-neutral primitives + a
 semantic-token / knob system that consumers re-skin with their OWN design system (theme.css /
 `[data-tenant]` scoping). The sync reflects that: ship the neutral framework + default-quiet tokens,
 teach the design agent to re-skin via tokens (conventions header), demo previews in the default theme.
 
 ### The entry problem (why cfg.entry + the 111-entry componentSrcMap exist)
+
 The package's published `.` entry (`dist/index.js`) is a THIN curated "admin" surface (~37 exports)
 and is **missing the core primitives** (Button, Card, Input, Select, Calendar, DataTable, …). The real
 public API is **subpath-based** (`@godxjp/ui/general`, `/data-display`, `/data-entry`, …). So:
+
 - **Bundle**: `cfg.entry = ./dist/_ds_all.js` — an aggregate (`.design-sync/gen-aggregate.mjs`,
   regenerated post-`pnpm build` via `cfg.buildCmd`) that `export *`s all 8 category barrels + a few
   extras. `window.GodxjpUi` ends up with 268 exports (92 catalogued + all compound sub-parts) so the
@@ -37,6 +40,7 @@ public API is **subpath-based** (`@godxjp/ui/general`, `/data-display`, `/data-e
   reproducible lever — do not "simplify" it away.
 
 ### Font decision (resolves the would-be [FONT_DANGLING])
+
 Default face is **Noto Sans JP** (`:root`); **Montserrat** is the `vi`-locale face. The compiled
 preview CSS references both via absolute `/assets/*.woff2` urls (don't resolve outside Vite).
 `.design-sync/gen-css.mjs` (run in `cfg.buildCmd`) emits a STABLE cleaned cssEntry
@@ -48,6 +52,7 @@ subsets — disproportionate for a host-font-driven themeable framework). Noto S
 preview text renders in system JP fonts; consumers serve their own JP webfont in production.
 
 ### Known render warns (validate these against on re-sync — NOT new if listed here)
+
 - **[TOKENS_MISSING] `--offset-*` / `--mobile-offset-*` (11 vars)** — set at runtime via inline
   style / JS by positioned components (toasts/popovers/sheets). EXPECTED absent from static
   stylesheets; non-blocking. Do not chase.
@@ -58,6 +63,7 @@ preview text renders in system JP fonts; consumers serve their own JP webfont in
   After authoring, only PageContainer / SplitPane (+1) remain legitimately `thin` — recorded, not new.
 
 ### First-sync result (2026-06-29)
+
 - **92/92 render clean, bad=0**, variantsIdentical=0, thin=3 (layout primitives, recorded above).
 - **22 authored previews**, all graded `good` (carried forward at 0 cost on re-sync): Button, Card,
   Input, Badge, Alert, Select, Switch, Checkbox, Textarea, TagInput, Progress, AspectRatio, StatCard,
@@ -69,6 +75,7 @@ preview text renders in system JP fonts; consumers serve their own JP webfont in
   token / prop / component it names was grep-verified against the built bundle.
 
 ### Re-import result (2026-06-30, @godxjp/ui@16.7.0 → project e7ef05a5)
+
 - Old project (edbd03a8) was deleted → fresh project, full-scope re-import (no anchor).
 - **92/92 render clean, bad=0**; 4 warnings, all on the Known-render-warns list above
   (`--offset-*` 11 vars; `[RENDER_THIN]` Rating/PageContainer/SplitPane).
@@ -82,6 +89,7 @@ preview text renders in system JP fonts; consumers serve their own JP webfont in
 - Uploaded 443 paths (441 content + sentinel + anchor); `list_files` confirms.
 
 ### Re-sync result (2026-06-30, @godxjp/ui@16.7.1 — same project e7ef05a5)
+
 - 16.7.1 = token-driven control surface (#124): `--button-radius` + `--control-*` (font-size/border-width/
   shadow); form controls now `rounded-[var(--control-radius)]`. Defaults unchanged.
 - Driver (`resync.mjs --remote`) verdict: **`pendingGrade: []`, `changed: []`, `canary: null`** — NO
@@ -94,6 +102,7 @@ preview text renders in system JP fonts; consumers serve their own JP webfont in
   reports nothing to grade; just upload. Fast.
 
 ### Re-sync risks / watch-list
+
 - **cssEntry hash rot is SOLVED** by `gen-css.mjs` (globs `preview-runtime-*.css`, re-emits the stable
   `_ds_cssentry.css`). But `cfg.buildCmd` MUST run `pnpm preview:build` before `gen-css.mjs`, else the
   cleaned cssEntry is stale. Full chain: `pnpm build && pnpm preview:build && gen-aggregate && gen-css`.

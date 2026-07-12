@@ -69,7 +69,12 @@ function walk(dir) {
 /** Resolve a relative `import ... from "./x"` specifier to an absolute src file we track. */
 function resolveSpecifier(fromFile, spec, known) {
   const base = resolve(dirname(fromFile), spec);
-  for (const cand of [`${base}.tsx`, `${base}.ts`, join(base, "index.tsx"), join(base, "index.ts")]) {
+  for (const cand of [
+    `${base}.tsx`,
+    `${base}.ts`,
+    join(base, "index.tsx"),
+    join(base, "index.ts"),
+  ]) {
     if (known.has(cand)) return cand;
   }
   return null;

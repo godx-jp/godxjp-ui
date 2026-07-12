@@ -13,7 +13,8 @@ export function States() {
         <Checkbox disabled /> <span style={{ fontSize: 14 }}>Locked option</span>
       </label>
       <label style={{ display: "flex", gap: 10, alignItems: "center", opacity: 0.6 }}>
-        <Checkbox defaultChecked disabled /> <span style={{ fontSize: 14 }}>Locked &amp; checked</span>
+        <Checkbox defaultChecked disabled />{" "}
+        <span style={{ fontSize: 14 }}>Locked &amp; checked</span>
       </label>
     </div>
   );

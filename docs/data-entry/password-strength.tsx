@@ -1,11 +1,7 @@
 import { useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import {
-  FormField,
-  PasswordInput,
-  PasswordStrength,
-} from "@godxjp/ui/data-entry";
+import { FormField, PasswordInput, PasswordStrength } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**

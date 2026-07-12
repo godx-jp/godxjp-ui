@@ -225,7 +225,7 @@ function GroupHeaderRow({
   const Chevron = open ? ChevronDown : ChevronRight;
   return (
     <TableRow className="bg-secondary hover:bg-secondary border-b">
-      <TableCell className="py-2 pe-0 ps-2" colSpan={2}>
+      <TableCell className="py-2 ps-2 pe-0" colSpan={2}>
         <Button
           variant="ghost"
           size="sm"

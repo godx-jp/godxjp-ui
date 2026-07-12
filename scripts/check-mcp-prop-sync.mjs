@@ -17,14 +17,9 @@ import { join } from "node:path";
 const root = process.cwd();
 const componentsSrc = readFileSync(join(root, "mcp/src/data/components.ts"), "utf8");
 
-const propFiles = [
-  "general",
-  "layout",
-  "data-display",
-  "data-entry",
-  "feedback",
-  "navigation",
-].map((g) => readFileSync(join(root, `src/props/components/${g}.prop.ts`), "utf8"));
+const propFiles = ["general", "layout", "data-display", "data-entry", "feedback", "navigation"].map(
+  (g) => readFileSync(join(root, `src/props/components/${g}.prop.ts`), "utf8"),
+);
 const allPropsSrc = propFiles.join("\n");
 
 /** MCP component name → the `*Prop` type(s) whose literal fields it must document. */
@@ -114,7 +109,9 @@ function catalogProps(name) {
 
 const failures = [];
 // Every catalog component whose `<Name>Prop` (or an override) resolves to an object literal.
-const names = [...componentsSrc.matchAll(/^\s{4}name:\s*"([A-Z][A-Za-z0-9]*)",/gm)].map((m) => m[1]);
+const names = [...componentsSrc.matchAll(/^\s{4}name:\s*"([A-Z][A-Za-z0-9]*)",/gm)].map(
+  (m) => m[1],
+);
 
 for (const name of names) {
   const typeNames = TYPE_OVERRIDES[name] ?? [`${name}Prop`];
@@ -132,7 +129,9 @@ for (const name of names) {
   if (documented === null) continue;
   const missing = [...declared].filter((f) => !IGNORED_FIELDS.has(f) && !documented.has(f));
   if (missing.length > 0) {
-    failures.push(`  ${name}: catalog is missing prop(s) ${missing.map((m) => `\`${m}\``).join(", ")}`);
+    failures.push(
+      `  ${name}: catalog is missing prop(s) ${missing.map((m) => `\`${m}\``).join(", ")}`,
+    );
   }
 }
 

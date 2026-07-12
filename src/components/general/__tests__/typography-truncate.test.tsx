@@ -26,7 +26,10 @@ describe("Heading / Text — truncate", () => {
 describe("Heading — weight", () => {
   it("defaults to medium (preserving the existing heading weight)", () => {
     const { container } = render(<Heading level={1}>タイトル</Heading>);
-    expect(container.querySelector('[data-slot="heading"]')).toHaveAttribute("data-weight", "medium");
+    expect(container.querySelector('[data-slot="heading"]')).toHaveAttribute(
+      "data-weight",
+      "medium",
+    );
   });
 
   it("renders a bold heading while staying a semantic <h1> (issue #121)", () => {

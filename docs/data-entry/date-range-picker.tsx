@@ -33,9 +33,10 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>基本 (controlled)</CardTitle>
             <CardDescription>
-              value + onValueChange で制御。開始/終了を直接タイプ入力するか、カレンダーアイコンを開いて
-              範囲を選択できる。name=&#34;period&#34; を指定すると period_from / period_to として ISO
-              yyyy-MM-dd でフォーム送信される。
+              value + onValueChange
+              で制御。開始/終了を直接タイプ入力するか、カレンダーアイコンを開いて
+              範囲を選択できる。name=&#34;period&#34; を指定すると period_from / period_to として
+              ISO yyyy-MM-dd でフォーム送信される。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -79,8 +80,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>非制御 (defaultValue)</CardTitle>
             <CardDescription>
-              value / onValueChange を渡さず defaultValue で初期範囲だけ与える。状態はコンポーネント内部で
-              保持され、name=&#34;fiscal_year&#34; のまま fiscal_year_from / fiscal_year_to として送信される。
+              value / onValueChange を渡さず defaultValue
+              で初期範囲だけ与える。状態はコンポーネント内部で 保持され、name=&#34;fiscal_year&#34;
+              のまま fiscal_year_from / fiscal_year_to として送信される。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -103,8 +105,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>locale で日本語カレンダー</CardTitle>
             <CardDescription>
-              locale=&#123;ja&#125; を渡すとポップオーバーのカレンダーが日本語表記 (曜日・月名) になる。
-              入力欄は常に ISO yyyy-MM-dd を保持する。
+              locale=&#123;ja&#125; を渡すとポップオーバーのカレンダーが日本語表記 (曜日・月名)
+              になる。 入力欄は常に ISO yyyy-MM-dd を保持する。
             </CardDescription>
           </CardHeader>
           <CardContent>

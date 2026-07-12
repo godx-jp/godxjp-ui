@@ -20,9 +20,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>基本 · これがコンポーネントそのもの</CardTitle>
             <CardDescription>
-              `&lt;Breadcrumb items={"{[…]}"} /&gt;` を置くだけ。シェル不要。リンクのセグメント
-              (to あり) はクリックで戻れ、末尾 (to なし) は現在地として aria-current=&quot;page&quot;
-              の span に、区切り記号と nav/aria は自動付与。
+              `&lt;Breadcrumb items={"{[…]}"} /&gt;` を置くだけ。シェル不要。リンクのセグメント (to
+              あり) はクリックで戻れ、末尾 (to なし) は現在地として aria-current=&quot;page&quot; の
+              span に、区切り記号と nav/aria は自動付与。
             </CardDescription>
           </CardHeader>
           <CardContent>

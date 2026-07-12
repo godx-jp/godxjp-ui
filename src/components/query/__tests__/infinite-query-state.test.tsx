@@ -30,9 +30,7 @@ describe("flattenItemPages", () => {
   });
 
   it("flattens items across pages", () => {
-    expect(
-      flattenItemPages({ pages: [{ items: [1, 2] }, { items: [3] }] }),
-    ).toEqual([1, 2, 3]);
+    expect(flattenItemPages({ pages: [{ items: [1, 2] }, { items: [3] }] })).toEqual([1, 2, 3]);
   });
 });
 

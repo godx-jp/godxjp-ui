@@ -31,7 +31,13 @@ describe("charts a11y", () => {
     // role=img carries the localized one-line summary as its accessible name.
     expect(getByRole("img", { name: /chuỗi|điểm/ })).toBeInTheDocument();
     await expectNoA11yViolations(
-      <LineChart label="月次売上" data={cartesianData} categoryKey="month" series={series} curved />,
+      <LineChart
+        label="月次売上"
+        data={cartesianData}
+        categoryKey="month"
+        series={series}
+        curved
+      />,
     );
   });
 
@@ -40,7 +46,14 @@ describe("charts a11y", () => {
       <BarChart label="地域別売上" data={cartesianData} categoryKey="month" series={series} />,
     );
     await expectNoA11yViolations(
-      <BarChart label="構成" data={cartesianData} categoryKey="month" series={series} stacked horizontal />,
+      <BarChart
+        label="構成"
+        data={cartesianData}
+        categoryKey="month"
+        series={series}
+        stacked
+        horizontal
+      />,
     );
   });
 

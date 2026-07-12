@@ -1,6 +1,13 @@
 import { useState } from "react";
 
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import { Checkbox, CheckboxGroup, Field, FormField } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
@@ -117,7 +124,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>CheckboxGroup (options)</CardTitle>
             <CardDescription>
-              Multi-select from a data-driven options array, with per-option description and disabled.
+              Multi-select from a data-driven options array, with per-option description and
+              disabled.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -127,7 +135,12 @@ export default function Demo() {
               options={[
                 { value: "pdf", label: "PDF 出力", description: "印刷向けのレイアウト" },
                 { value: "csv", label: "CSV 出力", description: "表計算ソフトで開けます" },
-                { value: "mail", label: "メール送信", disabled: true, description: "送信先が未設定です" },
+                {
+                  value: "mail",
+                  label: "メール送信",
+                  disabled: true,
+                  description: "送信先が未設定です",
+                },
               ]}
             />
           </CardContent>

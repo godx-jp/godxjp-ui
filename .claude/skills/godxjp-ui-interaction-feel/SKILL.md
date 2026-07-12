@@ -18,15 +18,15 @@ description: >-
 
 **DO / DON'T:**
 
-| ✅ DO | ⛔ DON'T |
-|---|---|
-| Cha tổng hợp trạng thái con (checked / indeterminate / trống); lá disabled không vào mẫu số | Checkbox cha "chết" luôn trống dù con đã chọn |
-| Selection nhiều bước HOÀN TẤT → cho bắt đầu lại (`resetOnSelect:true`) | Mutate lén một đầu mút → kẹt ngày bắt đầu |
-| Mở control là nhảy tới value đang giữ (`defaultMonth`/`scrollTo`/`defaultValue`) | Hiện tháng/đầu list che mất lựa chọn cũ |
-| Hover-intent giữ cấp đã mở, lái bằng per-node `onMouseEnter` | `onMouseLeave` cột collapse cột sâu → lá depth-3 không click được |
-| Readout hiện **nhãn người** (`営業費用 / 販売費`); đếm đúng; số nhiều đúng | In mã máy (`value.join()`); đếm sai; "1 items" |
-| Control con tách khỏi control bao (overlay sibling) — mở console kiểm | Lồng `<button>`/checkbox trong `<button role=option>` |
-| Input `role=combobox` mở popup khi click/ArrowDown vào CHÍNH field, không cướp focus | Chỉ nút icon phụ mở được → "focus mà không thấy lịch" |
+| ✅ DO                                                                                       | ⛔ DON'T                                                          |
+| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Cha tổng hợp trạng thái con (checked / indeterminate / trống); lá disabled không vào mẫu số | Checkbox cha "chết" luôn trống dù con đã chọn                     |
+| Selection nhiều bước HOÀN TẤT → cho bắt đầu lại (`resetOnSelect:true`)                      | Mutate lén một đầu mút → kẹt ngày bắt đầu                         |
+| Mở control là nhảy tới value đang giữ (`defaultMonth`/`scrollTo`/`defaultValue`)            | Hiện tháng/đầu list che mất lựa chọn cũ                           |
+| Hover-intent giữ cấp đã mở, lái bằng per-node `onMouseEnter`                                | `onMouseLeave` cột collapse cột sâu → lá depth-3 không click được |
+| Readout hiện **nhãn người** (`営業費用 / 販売費`); đếm đúng; số nhiều đúng                  | In mã máy (`value.join()`); đếm sai; "1 items"                    |
+| Control con tách khỏi control bao (overlay sibling) — mở console kiểm                       | Lồng `<button>`/checkbox trong `<button role=option>`             |
+| Input `role=combobox` mở popup khi click/ArrowDown vào CHÍNH field, không cướp focus        | Chỉ nút icon phụ mở được → "focus mà không thấy lịch"             |
 
 Một control **render đúng** chưa đủ. Nó phải **phản hồi trạng thái một cách trung thực** dưới
 click/gõ/hover/tab thật. Hầu hết lỗi UX ở đây **không lộ trên screenshot tĩnh** — phải tự tay drive

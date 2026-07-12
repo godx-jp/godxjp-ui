@@ -93,7 +93,12 @@ describe("MonthPicker", () => {
 
   it("respects fromYear/toYear by disabling the year chevrons at the bounds", () => {
     render(
-      <MonthPicker value={new Date(2026, 0, 1)} onValueChange={() => {}} fromYear={2026} toYear={2026} />,
+      <MonthPicker
+        value={new Date(2026, 0, 1)}
+        onValueChange={() => {}}
+        fromYear={2026}
+        toYear={2026}
+      />,
     );
     fireEvent.click(screen.getAllByRole("textbox")[0]);
     expect(screen.getByLabelText("Năm trước")).toBeDisabled();
@@ -101,7 +106,9 @@ describe("MonthPicker", () => {
   });
 
   it("hides the clear affordance when allowClear is false", () => {
-    render(<MonthPicker value={new Date(2026, 5, 1)} onValueChange={() => {}} allowClear={false} />);
+    render(
+      <MonthPicker value={new Date(2026, 5, 1)} onValueChange={() => {}} allowClear={false} />,
+    );
     expect(screen.queryByLabelText("Xóa")).toBeNull();
   });
 

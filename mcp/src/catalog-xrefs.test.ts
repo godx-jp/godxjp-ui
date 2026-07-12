@@ -2,13 +2,7 @@ import { describe, it, expect } from "vitest";
 
 import { AUDIT_RULES, type AuditRuleCategory } from "./data/audit-rules.js";
 import { VISUAL_RULES, type VisualRuleCategory } from "./data/visual-rules.js";
-import {
-  SKILLS,
-  findSkill,
-  findSection,
-  routeTask,
-  isConsumerSkill,
-} from "./data/skills-index.js";
+import { SKILLS, findSkill, findSection, routeTask, isConsumerSkill } from "./data/skills-index.js";
 
 /**
  * Cross-reference resolution for the guidance catalogs that point AT other

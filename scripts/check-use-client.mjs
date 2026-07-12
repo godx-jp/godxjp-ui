@@ -28,7 +28,9 @@ for (const abs of clientDistModules()) {
   }
   checked++;
   if (!/^\s*["']use client["'];/.test(code)) {
-    errors.push(`[MISSING] ${rel} is a client module but has no leading "use client" directive — run \`node scripts/add-use-client.mjs\` (it runs in \`build\`).`);
+    errors.push(
+      `[MISSING] ${rel} is a client module but has no leading "use client" directive — run \`node scripts/add-use-client.mjs\` (it runs in \`build\`).`,
+    );
   }
 }
 
@@ -43,7 +45,9 @@ const MUST_BE_SERVER = [
 for (const rel of MUST_BE_SERVER) {
   try {
     if (hasDirective(rel)) {
-      errors.push(`[OVER-MARKED] ${rel} must stay a SERVER module (pure exports usable from an RSC) but carries "use client".`);
+      errors.push(
+        `[OVER-MARKED] ${rel} must stay a SERVER module (pure exports usable from an RSC) but carries "use client".`,
+      );
     }
   } catch {
     errors.push(`[ABSENT] ${rel} not found — run \`pnpm build\` first.`);
@@ -54,4 +58,6 @@ if (errors.length) {
   console.error("✗ check:use-client failed:\n" + errors.map((e) => "  " + e).join("\n"));
   process.exit(1);
 }
-console.log(`✓ check:use-client — ${checked} client module(s) carry "use client"; pure server modules are clean.`);
+console.log(
+  `✓ check:use-client — ${checked} client module(s) carry "use client"; pure server modules are clean.`,
+);

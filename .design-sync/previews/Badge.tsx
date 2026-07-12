@@ -17,11 +17,15 @@ export function Tones() {
 export function Variants() {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-      <Badge variant="default" tone="info">Solid</Badge>
+      <Badge variant="default" tone="info">
+        Solid
+      </Badge>
       <Badge variant="secondary">Secondary</Badge>
       <Badge variant="outline">Outline</Badge>
       <Badge variant="dashed">Dashed</Badge>
-      <Badge shape="pill" tone="success">Pill</Badge>
+      <Badge shape="pill" tone="success">
+        Pill
+      </Badge>
       <Badge shape="sharp">Sharp</Badge>
     </div>
   );
@@ -33,7 +37,9 @@ export function BrandTone() {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
       <Badge tone="primary">Admin</Badge>
-      <Badge tone="primary" shape="pill">Agency</Badge>
+      <Badge tone="primary" shape="pill">
+        Agency
+      </Badge>
       <Badge variant="default">Solid brand</Badge>
     </div>
   );
@@ -42,9 +48,15 @@ export function BrandTone() {
 export function WithStatusDot() {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-      <Badge status="success" tone="success">Online</Badge>
-      <Badge status="warning" tone="warning">Away</Badge>
-      <Badge status="destructive" tone="destructive">Offline</Badge>
+      <Badge status="success" tone="success">
+        Online
+      </Badge>
+      <Badge status="warning" tone="warning">
+        Away
+      </Badge>
+      <Badge status="destructive" tone="destructive">
+        Offline
+      </Badge>
     </div>
   );
 }

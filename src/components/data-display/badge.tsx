@@ -143,9 +143,7 @@ export function Badge({
           M PLUS 2) carry a bottom-heavy em box (ascent ≫ descent), so flex-centering the raw text
           node rides the label visibly low inside the chip. Trim needs a real box: it does not
           reach an anonymous flex item. */}
-      {resolvedChildren != null ? (
-        <span data-slot="badge-label">{resolvedChildren}</span>
-      ) : null}
+      {resolvedChildren != null ? <span data-slot="badge-label">{resolvedChildren}</span> : null}
     </div>
   );
 }

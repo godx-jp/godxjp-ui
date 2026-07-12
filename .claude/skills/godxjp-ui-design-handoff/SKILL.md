@@ -18,20 +18,20 @@ result in the MCP catalog per [[godxjp-ui-mcp-catalog-sync]].
 
 **DO / DON'T:**
 
-| ✅ DO | ⛔ DON'T |
-|---|---|
-| Read the chats first (intent), then rebuild the *skeleton* with real primitives | Transcribe the prototype's DOM; hand-roll `<div class="card">` |
-| Put showcases in `docs/` (preview :6008) | Add anything to `src/components/` (bloats every consumer bundle) |
-| Consume existing `var(--…)` tokens (already shipped as `foundation.css`) | Redeclare a token or paste a hex |
-| Make `DataTable` the centerpiece; showcase the table family broadly | Ship one happy-path table |
-| Resolve a gap by **extend** or `/debate`+ADR | Silently invent a bespoke one-off |
+| ✅ DO                                                                           | ⛔ DON'T                                                         |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Read the chats first (intent), then rebuild the _skeleton_ with real primitives | Transcribe the prototype's DOM; hand-roll `<div class="card">`   |
+| Put showcases in `docs/` (preview :6008)                                        | Add anything to `src/components/` (bloats every consumer bundle) |
+| Consume existing `var(--…)` tokens (already shipped as `foundation.css`)        | Redeclare a token or paste a hex                                 |
+| Make `DataTable` the centerpiece; showcase the table family broadly             | Ship one happy-path table                                        |
+| Resolve a gap by **extend** or `/debate`+ADR                                    | Silently invent a bespoke one-off                                |
 
 A Claude Design bundle (`claude.ai/design` export) is an **HTML/CSS/JS prototype**, not production
-code. Your job is **not** to translate its markup line-by-line. It is to read the *intent*, lift the
-*visual + interaction skeleton*, and **rebuild it with REAL `@godxjp/ui` components** as a **showcase**.
+code. Your job is **not** to translate its markup line-by-line. It is to read the _intent_, lift the
+_visual + interaction skeleton_, and **rebuild it with REAL `@godxjp/ui` components** as a **showcase**.
 
 > **Mechanical = wrong.** A pixel-copy that hand-rolls `<div class="card">` to match the mock is a
-> failure. The right output composes `Card`/`DataTable`/`PageShell`/`Badge`… so the showcase *is*
+> failure. The right output composes `Card`/`DataTable`/`PageShell`/`Badge`… so the showcase _is_
 > how a consumer should actually build it. The prototype is the **target look**, godx-ui is the **means**.
 
 ## The hard boundary (read this twice)
@@ -41,19 +41,19 @@ code. Your job is **not** to translate its markup line-by-line. It is to read th
   consumer's bundle. The framework stays lean; the showcase layer is where app patterns live.
 - **Only real `@godxjp/ui` primitives.** No hand-rolled controls, no raw HTML re-creating a primitive
   (rule 29). If you're writing a styled `<div>` that looks like a Card, stop — use `Card`.
-- **Tokens already exist.** The design's `colors_and_type.css` is *already* implemented as godx-ui's
+- **Tokens already exist.** The design's `colors_and_type.css` is _already_ implemented as godx-ui's
   `src/tokens/foundation.css` (same SmartHR blue, wa-iro, M PLUS 2, densities). Never redeclare a
   token — consume `var(--…)` / the semantic utilities. If a token seems missing, it almost certainly
   exists under a different name; grep before inventing.
 
 ## Process
 
-1. **Read the chats first** (`<bundle>/chats/*.md`) — they hold *what the user actually wants* and
+1. **Read the chats first** (`<bundle>/chats/*.md`) — they hold _what the user actually wants_ and
    where they landed after iterating. The final HTML is the output; the chat is the intent.
 2. **Read the bundle README + SKILL.md + `colors_and_type.css`** for the design DNA (below). Then the
    primary surface (`ui_kits/.../UI Kit.html`, the `project/*.html`) and follow its imports.
-3. **Decompose each screen into a component shopping list.** For every visual block ask: *which
-   godx-ui component is this?* (page chrome → `PageContainer`/`AppShell`/`Sidebar`/`Topbar`; a stat
+3. **Decompose each screen into a component shopping list.** For every visual block ask: _which
+   godx-ui component is this?_ (page chrome → `PageContainer`/`AppShell`/`Sidebar`/`Topbar`; a stat
    row → `ResponsiveGrid` + `StatCard`; a data grid → `DataTable`; a status pill → `Badge tone=…`;
    a filter row → `Form` inline + `Select`/`Input`; an empty state → `EmptyState`; a confirm →
    `AlertDialog`). Use the **`godxjp_ui_guide` MCP** / `list_primitives` to map, don't guess.
@@ -61,10 +61,10 @@ code. Your job is **not** to translate its markup line-by-line. It is to read th
    - First try: **extend** — can an existing component take one more `variant`/`size`/`tone`/slot?
    - Genuine gap or unclear: run **`/debate`** ("new component vs. new variant on `<X>` vs.
      app-level composition") and converge on an ADR before building. **Never silently invent.**
-   - The fix for a gap is *still a showcase composition or an upstream component change* — never a
+   - The fix for a gap is _still a showcase composition or an upstream component change_ — never a
      bespoke one-off baked into the showcase page.
 5. **Build the showcase** in `docs/<group-or-recipes>/<screen>.tsx` per the **`godxjp-ui-example-page`**
-   skill (completeness, real states, tokens, a11y). Recreate the *look*, not the prototype's DOM.
+   skill (completeness, real states, tokens, a11y). Recreate the _look_, not the prototype's DOM.
 6. **Verify** at `:6008/isolate/<id>` (390/768/1280), console clean, `pnpm typecheck` + `pnpm audit`.
 7. **Make it MCP-discoverable** — register the showcase so `godxjp_ui_guide` can serve it as a
    pattern (so future consumers get "here's how a real kintai dashboard is built", not just atoms).

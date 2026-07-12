@@ -1,4 +1,4 @@
-## Conventions — @godxjp/ui is a re-skinnable design *framework*
+## Conventions — @godxjp/ui is a re-skinnable design _framework_
 
 @godxjp/ui is **brand-neutral by design**: a set of real primitives driven by **semantic CSS
 custom-property tokens**. A consumer drops in their OWN design system by overriding tokens once —
@@ -7,7 +7,9 @@ components' own props, and NEVER hard-code colors, radii, or chrome.** A hex val
 border is a bug — there is a token for it.
 
 ### Style through props first, tokens second — no utility soup for look-and-feel
+
 Most visual intent is expressed by **component props**, not classes:
+
 - `variant` — visual style (e.g. Button `default | secondary | outline | dashed | ghost | link | destructive`).
 - `tone` — semantic color role (`default | success | warning | destructive | info | muted | neutral`),
   on Badge / Alert / Progress / StatCard accents. Use tone for meaning; never a raw red/green.
@@ -19,11 +21,13 @@ Most visual intent is expressed by **component props**, not classes:
   before guessing a prop.
 
 ### When you DO write CSS, reference tokens (hsl-wrapped roles + raw structural)
+
 This is a Tailwind v4 system; for your own layout glue use utilities, but every value resolves to a token:
+
 - **Color roles** are HSL channel triplets — wrap them: `background: hsl(var(--primary))`,
   `color: hsl(var(--foreground))`. Roles: `--background --foreground --primary --primary-foreground
-  --secondary --muted --muted-foreground --accent --card --card-foreground --popover --border --input
-  --ring --destructive --success --warning --info --attention`.
+--secondary --muted --muted-foreground --accent --card --card-foreground --popover --border --input
+--ring --destructive --success --warning --info --attention`.
 - **Structural tokens** are used directly: `var(--radius)`, `var(--control-height)`,
   `var(--control-radius)`, the spacing scale `var(--space-page|--space-section|--space-stack|--space-inline|--space-chrome)`,
   type `var(--font-family-sans|--font-family-display)` and `var(--heading-h1..--heading-h4)`.
@@ -31,12 +35,14 @@ This is a Tailwind v4 system; for your own layout glue use utilities, but every 
   `--page-header-divider`. Don't add borders; opt in via the token.
 
 ### Re-skinning (this is the whole point)
+
 A consumer sets the role tokens once — globally at `:root`, or scoped per tenant via
 `[data-tenant="acme"] { --primary: …; --radius: … }` — and the entire UI follows. Build designs that
 hold up under re-theming: lean on the roles above so a brand swap just works. Full rules:
 `guidelines/docs/CUSTOMER-THEMING.md` and `guidelines/docs/TOKENS.md`.
 
 ### Where the truth lives (read before composing)
+
 - `guidelines/docs/TOKENS.md` · `CUSTOMER-THEMING.md` — the token system + theming.
 - `guidelines/docs/PROPS-VOCABULARY.md` · `SPACING.md` · `FORMS.md` — controlled prop vocab, spacing, forms.
 - `components/<group>/<Name>/<Name>.prompt.md` — per-component usage + variants. Read it before using a component.
@@ -44,17 +50,22 @@ hold up under re-theming: lean on the roles above so a brand swap just works. Fu
   `Select` + `SelectTrigger/SelectContent/SelectItem`, `Tabs` + `TabsList/TabsTrigger/TabsContent`) — never hand-roll them.
 
 ### Idiomatic snippet
+
 ```jsx
 const { Card, CardHeader, CardTitle, CardContent, Button, Badge } = window.GodxjpUi;
-<Card>                                            {/* tokens carry the look */}
+<Card>
+  {" "}
+  {/* tokens carry the look */}
   <CardHeader>
     <CardTitle>Monthly attendance</CardTitle>
   </CardHeader>
   <CardContent>
     <div style={{ display: "flex", gap: "var(--space-inline)", alignItems: "center" }}>
-      <Badge tone="success">Approved</Badge>     {/* tone = meaning, not a raw color */}
-      <Button size="sm" variant="outline">View timesheet</Button>
+      <Badge tone="success">Approved</Badge> {/* tone = meaning, not a raw color */}
+      <Button size="sm" variant="outline">
+        View timesheet
+      </Button>
     </div>
   </CardContent>
-</Card>
+</Card>;
 ```

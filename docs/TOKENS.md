@@ -80,12 +80,16 @@ When a component-token default is just a **role token** (`--card-background` def
 
 ```css
 /* ✗ WRONG — freezes at the :root role value */
-:root { --card-background: var(--card); }
-.ui-card { background: hsl(var(--card-background)); }
+:root {
+  --card-background: var(--card);
+}
+.ui-card {
+  background: hsl(var(--card-background));
+}
 ```
 
 CSS substitutes a `var()` at the element that **declares** it, so `--card-background` computes to
-`:root`'s `--card` and inherits that frozen value down. A consumer who scopes the *role*
+`:root`'s `--card` and inherits that frozen value down. A consumer who scopes the _role_
 (`[data-tenant] { --card: <dark> }` or `.dark`) overrides `--card` but **never reaches**
 `--card-background` — the component keeps the light `:root` value. Under a dark theme this is glaring
 (a frozen light card under white text → invisible text); under a light theme it hides silently.
@@ -96,8 +100,12 @@ painting element under any scope, while an explicit theme override of the knob s
 
 ```css
 /* ✓ RIGHT — default re-resolves under scope; knob still overridable */
-:root { --card-background: initial; } /* documented default = hsl(var(--card)) */
-.ui-card { background: hsl(var(--card-background, var(--card))); }
+:root {
+  --card-background: initial;
+} /* documented default = hsl(var(--card)) */
+.ui-card {
+  background: hsl(var(--card-background, var(--card)));
+}
 ```
 
 The same rule applies to `@theme inline` (utilities re-resolve scoped roles) and to any
@@ -108,18 +116,18 @@ border/shadow knob whose default is a role token does.
 
 Card primitive tokens:
 
-| Token                      | Purpose                                                            |
-| -------------------------- | ----------------------------------------------------------------- |
-| `--card-space-inset`       | Shared header/body/footer **x** inset — the column all slots align to |
-| `--card-space-header-y`    | Banded header band vertical density (feeds `--card-space-divided-y`) |
-| `--card-space-body-y`      | Gap under the header + the body's own top padding                 |
+| Token                      | Purpose                                                                 |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `--card-space-inset`       | Shared header/body/footer **x** inset — the column all slots align to   |
+| `--card-space-header-y`    | Banded header band vertical density (feeds `--card-space-divided-y`)    |
+| `--card-space-body-y`      | Gap under the header + the body's own top padding                       |
 | `--card-space-footer-y`    | Separated footer band vertical density (feeds `--card-space-divided-y`) |
-| `--card-space-divided-y`   | **Border-aware** symmetric top+bottom padding of a DIVIDED band    |
-| `--card-space-gap`         | In-slot stack gap (header title ↕ description)                     |
-| `--card-accent-rail-width` | Width of the `accent` leading-edge stripe (default `6px`)         |
-| `--card-title-font-size`   | Card title scale                                                  |
-| `--card-header-background` | Banded header background color token                              |
-| `--card-shadow`            | Card elevation                                                   |
+| `--card-space-divided-y`   | **Border-aware** symmetric top+bottom padding of a DIVIDED band         |
+| `--card-space-gap`         | In-slot stack gap (header title ↕ description)                          |
+| `--card-accent-rail-width` | Width of the `accent` leading-edge stripe (default `6px`)               |
+| `--card-title-font-size`   | Card title scale                                                        |
+| `--card-header-background` | Banded header background color token                                    |
+| `--card-shadow`            | Card elevation                                                          |
 
 #### Border-aware vertical padding (dividers)
 

@@ -17,12 +17,7 @@ import {
 import type { ChartDatum, ChartSeriesProp } from "../../props/components/charts.prop";
 import { EmptyState } from "../data-display/empty-state";
 import { useTranslation } from "../../i18n/use-translation";
-import {
-  ChartFrame,
-  chartColor,
-  chartHeight,
-  useChartNumberFormat,
-} from "./chart-frame";
+import { ChartFrame, chartColor, chartHeight, useChartNumberFormat } from "./chart-frame";
 import { buildCartesianSummary } from "./chart-summary";
 
 /**

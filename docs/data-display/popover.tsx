@@ -35,8 +35,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Controlled trigger + content</CardTitle>
             <CardDescription>
-              Common for compact filter / settings panels off a button. Controlled via
-              open / onOpenChange so 適用 closes the panel. Shown open at rest.
+              Common for compact filter / settings panels off a button. Controlled via open /
+              onOpenChange so 適用 closes the panel. Shown open at rest.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -69,8 +69,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Header / title / description slots</CardTitle>
             <CardDescription>
-              The titled info-panel pattern: PopoverHeader › PopoverTitle + PopoverDescription,
-              then body. Shown open at rest via defaultOpen.
+              The titled info-panel pattern: PopoverHeader › PopoverTitle + PopoverDescription, then
+              body. Shown open at rest via defaultOpen.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -203,9 +203,7 @@ export default function Demo() {
                 <Flex direction="col" gap="md">
                   <PopoverHeader>
                     <PopoverTitle>下書きを削除しますか？</PopoverTitle>
-                    <PopoverDescription>
-                      この操作は取り消せません。
-                    </PopoverDescription>
+                    <PopoverDescription>この操作は取り消せません。</PopoverDescription>
                   </PopoverHeader>
                   <Flex direction="row" justify="end" gap="xs">
                     <Button variant="outline" size="sm">

@@ -70,14 +70,16 @@ describe("route_consumer_task — never points at core", () => {
 });
 
 describe("route_consumer_task — performance tasks reach app-performance", () => {
-  it.each(["the screen is slow", "[Violation] 'click' handler took 240ms", "typing lags, too many re-renders", "bundle size is huge"])(
-    "routes %s to app-performance/measure-first",
-    async (task) => {
-      const out = await dispatchTool("route_consumer_task", { task });
-      expect(out).toContain("`app-performance`");
-      expect(out).toContain("measure-first");
-    },
-  );
+  it.each([
+    "the screen is slow",
+    "[Violation] 'click' handler took 240ms",
+    "typing lags, too many re-renders",
+    "bundle size is huge",
+  ])("routes %s to app-performance/measure-first", async (task) => {
+    const out = await dispatchTool("route_consumer_task", { task });
+    expect(out).toContain("`app-performance`");
+    expect(out).toContain("measure-first");
+  });
 
   it("app-performance sections all resolve through get_consumer_skill", async () => {
     const overview = await dispatchTool("get_consumer_skill", { skill: "app-performance" });

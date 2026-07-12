@@ -35,7 +35,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>メール認証コード（6桁）</CardTitle>
             <CardDescription>
-              6スロット 1グループ · ペースト・矢印キー操作に対応。autoFocus でコード入力画面の初期フォーカスを設定。
+              6スロット 1グループ · ペースト・矢印キー操作に対応。autoFocus
+              でコード入力画面の初期フォーカスを設定。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -115,7 +116,11 @@ export default function Demo() {
             <FormField
               id="autosubmit-otp"
               label="認証コード"
-              helper={verified ? `${verified} を検証済み · 自動送信されました。` : "6桁を入力すると自動で送信されます。"}
+              helper={
+                verified
+                  ? `${verified} を検証済み · 自動送信されました。`
+                  : "6桁を入力すると自動で送信されます。"
+              }
               required
             >
               <InputOTP

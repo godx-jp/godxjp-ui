@@ -7,7 +7,9 @@ export function Basic() {
       <Textarea
         id="note"
         rows={4}
-        defaultValue={"Approved. Please confirm the overtime hours match the shift log before final sign-off."}
+        defaultValue={
+          "Approved. Please confirm the overtime hours match the shift log before final sign-off."
+        }
       />
     </div>
   );

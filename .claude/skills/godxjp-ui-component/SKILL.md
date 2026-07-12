@@ -11,7 +11,7 @@ description: >-
 # Building a @godxjp/ui component — the discipline
 
 > 🛠️ **AUDIENCE: CORE** — governs building/changing **@godxjp/ui itself** (the library `src/`,
-> its docs, its MCP catalog). An app-dev building *with* the library does NOT use this skill —
+> its docs, its MCP catalog). An app-dev building _with_ the library does NOT use this skill —
 > they use the MCP (`list_consumer_skills` / `route_consumer_task`). Full CORE↔CONSUMER map:
 > `.claude/skills/README.md`.
 
@@ -20,21 +20,21 @@ description: >-
 behaviours for any stateful control) → **godxjp-ui-behavioral-test** (drive in a real browser, then
 codify as user-event tests) → **godxjp-ui-example-page** (a complete docs page + the Audit Evidence
 Ledger) → **godxjp-ui-best-ux** (taste / dxs-kintai) → **godxjp-ui-mcp-catalog-sync** (keep the MCP
-catalog + tests in sync). Single source of truth: this skill owns *real-primitives / no-raw-HTML /
-MCP-first / no-duplication*; the others point here for that.
+catalog + tests in sync). Single source of truth: this skill owns _real-primitives / no-raw-HTML /
+MCP-first / no-duplication_; the others point here for that.
 
 **DO / DON'T (quick gate — full rules below):**
 
-| ✅ DO | ⛔ DON'T |
-|---|---|
+| ✅ DO                                                                                                           | ⛔ DON'T                                                                                          |
+| --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | Consult the `godxjp-ui` MCP first (`get_component`, `search_components`, `get_rule`, `get_vocab`, `get_tokens`) | Guess a prop name/shape, or re-create what a primitive already does (`Select` = searchable/async) |
-| Compose real installable primitives fully (`CardContent` for padding) | Invent/hand-roll/fake a component, or use raw `<input>/<select>/<button>/<textarea>/<table>` |
-| Route every string + `aria-label` through `t()`; format via `Intl`/CLDR | Hardcode EN/JA, hand-build number/currency/date, ship emoji flags |
-| Implement the WAI-ARIA APG pattern + add a `*.a11y.test.tsx` (0 axe) | Colour-only state, missing accessible name, positive tabindex, keyboard traps |
-| Logical CSS only (`ms-/me-/ps-/pe-`, `start-/end-`) | Physical `ml-/mr-/pl-/pr-/left-/right-` |
-| Controlled triad `value`/`defaultValue`/`onValueChange`; `size ∈ xs\|sm\|md\|lg`; `tone` for status | `size="default"`, bespoke `current`/`onChange`, missing `defaultValue` |
-| Size from the `--control-height` tier | Literal `height`/`width` or `calc(var(--control-height) ± …)` |
-| Verify stateful controls by hand in a real browser, console clean | Self-certify a half-driven happy path; ship with a console warning |
+| Compose real installable primitives fully (`CardContent` for padding)                                           | Invent/hand-roll/fake a component, or use raw `<input>/<select>/<button>/<textarea>/<table>`      |
+| Route every string + `aria-label` through `t()`; format via `Intl`/CLDR                                         | Hardcode EN/JA, hand-build number/currency/date, ship emoji flags                                 |
+| Implement the WAI-ARIA APG pattern + add a `*.a11y.test.tsx` (0 axe)                                            | Colour-only state, missing accessible name, positive tabindex, keyboard traps                     |
+| Logical CSS only (`ms-/me-/ps-/pe-`, `start-/end-`)                                                             | Physical `ml-/mr-/pl-/pr-/left-/right-`                                                           |
+| Controlled triad `value`/`defaultValue`/`onValueChange`; `size ∈ xs\|sm\|md\|lg`; `tone` for status             | `size="default"`, bespoke `current`/`onChange`, missing `defaultValue`                            |
+| Size from the `--control-height` tier                                                                           | Literal `height`/`width` or `calc(var(--control-height) ± …)`                                     |
+| Verify stateful controls by hand in a real browser, console clean                                               | Self-certify a half-driven happy path; ship with a console warning                                |
 
 This is a **hard contract**, not advice. Every new/changed component, recipe, doc, or example
 MUST pass every gate below. If you cannot satisfy a gate, STOP and fix the system (add the real
@@ -146,7 +146,7 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
 > and declaring victory is the documented failure mode (a Cascader shipped with a parent that
 > couldn't drill, a hover that died at depth 3, and a `<button>`-in-`<button>` console error — all
 > because only the search card was tested). A blank or "looks fine" = not done. The example-page
-> skill's **Audit Evidence Ledger** is the template; reproduce it. For the *refined* expected
+> skill's **Audit Evidence Ledger** is the template; reproduce it. For the _refined_ expected
 > behaviours (parent checkbox aggregation/indeterminate, reset-on-complete, value-at-rest,
 > hover-intent, no nested interactive controls), consult **godxjp-ui-interaction-feel**.
 
@@ -157,7 +157,7 @@ in a real browser (Chrome DevTools MCP) before declaring it correct.
   picking one leaf in the search card. Half the real bugs live in the modes you skipped
   (parent-click closing the panel, hover collapsing at depth 3, a node-level `disabled`/`isLeaf`).
 - **Read the DevTools console — a warning is a failure.** A `<button> cannot be a descendant of
-  <button>` / hydration / `act()` warning is a real defect. Never nest interactive elements; render
+<button>` / hydration / `act()` warning is a real defect. Never nest interactive elements; render
   the clear/affordance as a sibling overlay (`pointer-events-none` wrapper, `pointer-events-auto`
   control). The audit isn't done until the console is clean. (No-nested-interactive fix detail:
   [[godxjp-ui-interaction-feel]] §8.)

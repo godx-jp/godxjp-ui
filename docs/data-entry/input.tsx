@@ -18,9 +18,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>States</CardTitle>
             <CardDescription>
-              Placeholder, filled, disabled, readOnly, and invalid
-              (aria-invalid). Focus an empty field to see the focus-visible
-              ring.
+              Placeholder, filled, disabled, readOnly, and invalid (aria-invalid). Focus an empty
+              field to see the focus-visible ring.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -38,8 +37,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Types</CardTitle>
             <CardDescription>
-              The native type attribute drives the input mode and built-in UI;
-              type="file" uses the file: styling baked into the component.
+              The native type attribute drives the input mode and built-in UI; type="file" uses the
+              file: styling baked into the component.
             </CardDescription>
           </CardHeader>
           <CardContent>

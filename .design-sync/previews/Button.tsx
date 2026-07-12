@@ -21,7 +21,9 @@ export function Sizes() {
       <Button size="sm">Small</Button>
       <Button size="default">Default</Button>
       <Button size="lg">Large</Button>
-      <Button shape="pill" variant="secondary">Pill</Button>
+      <Button shape="pill" variant="secondary">
+        Pill
+      </Button>
     </div>
   );
 }
@@ -31,7 +33,9 @@ export function States() {
     <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
       <Button>Enabled</Button>
       <Button disabled>Disabled</Button>
-      <Button variant="outline" disabled>Disabled outline</Button>
+      <Button variant="outline" disabled>
+        Disabled outline
+      </Button>
     </div>
   );
 }

@@ -72,11 +72,11 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Advanced filter (pre-opened, side=right)</CardTitle>
             <CardDescription>
-              The defining footer pattern: actions are end-aligned, the primary 適用 is last,
-              and the clear/reset action クリア moves to the leading edge via className=&quot;me-auto&quot;.
-              The footer is pinned to the bottom with a full-bleed top border; the body scrolls
-              between a fixed header and footer (header inset == footer inset). Fields are real
-              FormField + Select + Input.
+              The defining footer pattern: actions are end-aligned, the primary 適用 is last, and
+              the clear/reset action クリア moves to the leading edge via
+              className=&quot;me-auto&quot;. The footer is pinned to the bottom with a full-bleed
+              top border; the body scrolls between a fixed header and footer (header inset == footer
+              inset). Fields are real FormField + Select + Input.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -229,9 +229,10 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Edit with destructive action (削除 far-left)</CardTitle>
             <CardDescription>
-              A destructive / clear / reset action goes to the leading edge via className=&quot;me-auto&quot;
-              with variant=&quot;destructive&quot;, while キャンセル + 保存 stay grouped at the
-              end. This is the same me-auto slot the filter&apos;s クリア uses.
+              A destructive / clear / reset action goes to the leading edge via
+              className=&quot;me-auto&quot; with variant=&quot;destructive&quot;, while キャンセル +
+              保存 stay grouped at the end. This is the same me-auto slot the filter&apos;s クリア
+              uses.
             </CardDescription>
           </CardHeader>
           <CardContent>

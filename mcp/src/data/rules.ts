@@ -234,7 +234,7 @@ export const CARDINAL_RULES: CardinalRule[] = [
   {
     number: 45,
     title: "Every service-tunable constant gets a knob",
-    body: "When component CSS encodes a geometry choice that a service plausibly re-tunes to match its design handoff — form label column width, label↔control gap, header insets — it MUST be a documented component token (current value as the default). The theme sets it ONCE globally; props (`labelWidth`) override per instance; Form→FormField priority stays intact. The test: \"would a service theme.css want to change this to match its design grid?\" If yes and the only route is forking CSS, that is a library gap — fix the library, don't patch the app. Born from real consumption: `--form-label-width` / `--form-label-gap` (design spec said 110px/8px; the values were prop-only and hard-coded `--space-4`).",
+    body: 'When component CSS encodes a geometry choice that a service plausibly re-tunes to match its design handoff — form label column width, label↔control gap, header insets — it MUST be a documented component token (current value as the default). The theme sets it ONCE globally; props (`labelWidth`) override per instance; Form→FormField priority stays intact. The test: "would a service theme.css want to change this to match its design grid?" If yes and the only route is forking CSS, that is a library gap — fix the library, don\'t patch the app. Born from real consumption: `--form-label-width` / `--form-label-gap` (design spec said 110px/8px; the values were prop-only and hard-coded `--space-4`).',
   },
   {
     number: 46,

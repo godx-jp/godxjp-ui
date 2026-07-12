@@ -29,8 +29,8 @@ export default function Demo() {
             <CardTitle>基本 (controlled)</CardTitle>
             <CardDescription>
               value + onValueChange で制御。name= を指定すると ISO yyyy-MM-dd でフォーム送信される。
-              入力欄に直接タイプでき、カレンダーと同期。フォーカスを外すと正規の ISO 形式に整形され、
-              解釈できない入力は元の値へ復帰する。
+              入力欄に直接タイプでき、カレンダーと同期。フォーカスを外すと正規の ISO
+              形式に整形され、 解釈できない入力は元の値へ復帰する。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -112,11 +112,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <FormField id="entry-date" label="起票日">
-              <DatePicker
-                id="entry-date"
-                name="entry_date"
-                defaultValue={new Date(2026, 0, 31)}
-              />
+              <DatePicker id="entry-date" name="entry_date" defaultValue={new Date(2026, 0, 31)} />
             </FormField>
           </CardContent>
         </Card>

@@ -52,9 +52,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Structural variants</CardTitle>
             <CardDescription>
-              variant is structural emphasis only: default (filled), secondary (muted fill),
-              outline (bordered), dashed (dashed border). It carries no semantic meaning; use tone
-              for that.
+              variant is structural emphasis only: default (filled), secondary (muted fill), outline
+              (bordered), dashed (dashed border). It carries no semantic meaning; use tone for that.
             </CardDescription>
           </CardHeader>
           <CardContent>

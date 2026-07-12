@@ -30,25 +30,25 @@ If you touched none of these (an internal refactor with no API change), you can 
 
 ## The catalog files (one source of truth each)
 
-| Public thing | Catalog file | Helper |
-|---|---|---|
-| Components | `mcp/src/data/components.ts` (`COMPONENTS`) | `findComponent`, `componentsByGroup` |
-| Prop vocabulary | `mcp/src/data/prop-vocabulary.ts` (`PROP_VOCABULARY`) | `findVocab` |
-| Tokens | `mcp/src/data/tokens.ts` (`TOKENS`, `TokenCategory`) | `tokensByCategory` |
-| Cardinal rules | `mcp/src/data/rules.ts` (`CARDINAL_RULES`) | `findRule` |
-| Patterns | `mcp/src/data/patterns.ts` (`PATTERNS`) | `findPattern` |
+| Public thing    | Catalog file                                          | Helper                               |
+| --------------- | ----------------------------------------------------- | ------------------------------------ |
+| Components      | `mcp/src/data/components.ts` (`COMPONENTS`)           | `findComponent`, `componentsByGroup` |
+| Prop vocabulary | `mcp/src/data/prop-vocabulary.ts` (`PROP_VOCABULARY`) | `findVocab`                          |
+| Tokens          | `mcp/src/data/tokens.ts` (`TOKENS`, `TokenCategory`)  | `tokensByCategory`                   |
+| Cardinal rules  | `mcp/src/data/rules.ts` (`CARDINAL_RULES`)            | `findRule`                           |
+| Patterns        | `mcp/src/data/patterns.ts` (`PATTERNS`)               | `findPattern`                        |
 
 ## DO / DON'T
 
-| ✅ DO | ⛔ DON'T |
-|---|---|
-| Add/update the `components.ts` entry in the SAME change as the `src/` component | Ship a component with no MCP entry (consumers can't discover it) |
+| ✅ DO                                                                                              | ⛔ DON'T                                                                 |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Add/update the `components.ts` entry in the SAME change as the `src/` component                    | Ship a component with no MCP entry (consumers can't discover it)         |
 | Fill ALL fields: `props` (real types/defaults), `usage`, `useCases`, `related`, `example`, `rules` | Leave `rules: []` or cite a rule number that doesn't exist in `rules.ts` |
-| Keep a removed/renamed component **catalogued as `deprecated: true`** pointing to the replacement | Silently delete an entry — consumers mid-migration lose the steer |
-| Use a real import subpath + a copy-paste-able `example` | Invent an import path or a prop that isn't in `src/` |
-| Update the **schema enum** when the data's category union changes (e.g. `get_tokens`) | Let a tool's `enum` drift from the data (the `get_tokens` 9-vs-3 bug) |
-| Add/extend a test in `mcp/src/*.test.ts` so the new entry is covered | Add catalog data with zero test asserting it round-trips |
-| Update counts in `mcp/README.md` (tools / rules) when they change | Leave `README` saying "14 tools" / "34 rules" while code says otherwise |
+| Keep a removed/renamed component **catalogued as `deprecated: true`** pointing to the replacement  | Silently delete an entry — consumers mid-migration lose the steer        |
+| Use a real import subpath + a copy-paste-able `example`                                            | Invent an import path or a prop that isn't in `src/`                     |
+| Update the **schema enum** when the data's category union changes (e.g. `get_tokens`)              | Let a tool's `enum` drift from the data (the `get_tokens` 9-vs-3 bug)    |
+| Add/extend a test in `mcp/src/*.test.ts` so the new entry is covered                               | Add catalog data with zero test asserting it round-trips                 |
+| Update counts in `mcp/README.md` (tools / rules) when they change                                  | Leave `README` saying "14 tools" / "34 rules" while code says otherwise  |
 
 ## Tests are part of the contract
 

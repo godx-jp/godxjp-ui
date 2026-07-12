@@ -7,36 +7,41 @@
 
 **DO / DON'T:**
 
-| ✅ DO | ⛔ DON'T |
-|---|---|
-| Profile FIRST (longtask + React Profiler + esbuild metafile), fix what the numbers indict | Guess, blanket-memo, or optimize components measured fast |
-| Per-field `memo` units + STABLE setters for big filter panes | Page-root state with zero memo boundaries (165ms/keystroke) |
-| Defer heavy panel mounts; keep mounted after; pre-mount at idle | Mount/unmount a 25-field subtree inside a click handler |
-| Route-level `lazy()` per page in consumer apps | One 929KB chunk for an app that will grow dozens of screens |
-| Verify dev-mode numbers, then remember prod is 3–5× faster | Treat a one-off 65ms dev long task as an emergency |
+| ✅ DO                                                                                     | ⛔ DON'T                                                    |
+| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Profile FIRST (longtask + React Profiler + esbuild metafile), fix what the numbers indict | Guess, blanket-memo, or optimize components measured fast   |
+| Per-field `memo` units + STABLE setters for big filter panes                              | Page-root state with zero memo boundaries (165ms/keystroke) |
+| Defer heavy panel mounts; keep mounted after; pre-mount at idle                           | Mount/unmount a 25-field subtree inside a click handler     |
+| Route-level `lazy()` per page in consumer apps                                            | One 929KB chunk for an app that will grow dozens of screens |
+| Verify dev-mode numbers, then remember prod is 3–5× faster                                | Treat a one-off 65ms dev long task as an emergency          |
 
 ---
 
 ## 1. Measurement protocol (run these, paste the numbers)
 
 **Interaction cost — long tasks (anything >50ms triggers Chrome `[Violation]`):**
+
 ```js
 // in the page (playwright evaluate works)
 const tasks = [];
-new PerformanceObserver(l => l.getEntries().forEach(e => tasks.push(Math.round(e.duration))))
-  .observe({ type: "longtask", buffered: true });
+new PerformanceObserver((l) =>
+  l.getEntries().forEach((e) => tasks.push(Math.round(e.duration))),
+).observe({ type: "longtask", buffered: true });
 // ...drive the interaction, then read `tasks`
 ```
 
 **Attribution — which subtree is slow (dev only, temporary):**
+
 ```tsx
 <Profiler id="section" onRender={(id, phase, d) => (window.__perf ??= []).push([id, phase, Math.round(d)])}>
 ```
+
 Wrap candidate sections; compare `actualDuration` of the mount/update entries against the total
 long task. In the exseli audit this is what acquitted the lib (25 composite fields = 79ms mount)
 and indicted the page architecture (the other ~150ms was re-rendering everything else).
 
 **Bundle — per-import cost of THIS library (run against `dist/`):**
+
 ```bash
 echo 'import { Button } from "<repo>/dist/components/general/index.js"; console.log(Button);' > /tmp/probe.mjs
 npx esbuild /tmp/probe.mjs --bundle --minify --format=esm \
@@ -73,12 +78,12 @@ landed even in `Button`); **13.10.0 moved to preserved module structure** (dist 
 file per module — `tsup bundle:false` + `tsc -p tsconfig.build.json` for d.ts + copy-styles also
 ships the i18n JSONs) so consumers' bundlers see the real graph:
 
-| Import | 13.9.x | 13.10.0 | | Import | 13.9.x | 13.10.0 |
-|---|---|---|---|---|---|---|
-| StatCard | 81 | **30** | | DataTable | 172 | **79** |
-| Input | 102 | **52** | | DateRangePicker | 209 | 207¹ |
-| Button | 107 | **56** | | Select | 215 | **165** |
-| full index | 366 | 362 | | | | |
+| Import     | 13.9.x | 13.10.0 |     | Import          | 13.9.x | 13.10.0 |
+| ---------- | ------ | ------- | --- | --------------- | ------ | ------- |
+| StatCard   | 81     | **30**  |     | DataTable       | 172    | **79**  |
+| Input      | 102    | **52**  |     | DateRangePicker | 209    | 207¹    |
+| Button     | 107    | **56**  |     | Select          | 215    | **165** |
+| full index | 366    | 362     |     |                 |        |         |
 
 ¹ legitimately needs react-day-picker + date-fns. The remaining ~50KB floor is intrinsic:
 tailwind-merge ≈26KB (`cn`) + bundled 3-locale i18n ≈21KB; going lower means lazy locale

@@ -107,8 +107,7 @@
       grid-column: 1;
     }
 
-    [data-slot="alert-body"]:has(> [data-slot="alert-actions"])
-      > [data-slot="alert-actions"] {
+    [data-slot="alert-body"]:has(> [data-slot="alert-actions"]) > [data-slot="alert-actions"] {
       grid-column: 2;
       grid-row: 1;
     }

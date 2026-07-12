@@ -90,7 +90,12 @@ describe("PageContainer", () => {
 
   it("applies reveal-footer modifier only for footerReveal=onScroll with a sticky footer", () => {
     const { container } = renderWithUi(
-      <PageContainer title="Form" stickyFooter footerReveal="onScroll" footer={<Button>Save</Button>}>
+      <PageContainer
+        title="Form"
+        stickyFooter
+        footerReveal="onScroll"
+        footer={<Button>Save</Button>}
+      >
         <p>Body</p>
       </PageContainer>,
     );
@@ -143,7 +148,12 @@ describe("PageContainer", () => {
     vi.stubGlobal("IntersectionObserver", MockIO as unknown as typeof IntersectionObserver);
 
     const { container, unmount } = renderWithUi(
-      <PageContainer title="Form" stickyFooter footerReveal="onScroll" footer={<Button>Save</Button>}>
+      <PageContainer
+        title="Form"
+        stickyFooter
+        footerReveal="onScroll"
+        footer={<Button>Save</Button>}
+      >
         <p>Body</p>
       </PageContainer>,
     );
@@ -196,7 +206,12 @@ describe("PageContainer", () => {
     scroller.style.overflowY = "auto";
     document.body.appendChild(scroller);
     renderWithUi(
-      <PageContainer title="Form" stickyFooter footerReveal="onScroll" footer={<Button>Save</Button>}>
+      <PageContainer
+        title="Form"
+        stickyFooter
+        footerReveal="onScroll"
+        footer={<Button>Save</Button>}
+      >
         <p>Body</p>
       </PageContainer>,
       { container: scroller },
@@ -241,10 +256,7 @@ describe("PageContainer", () => {
 
   it("renders a breadcrumb item without a link as plain text", () => {
     renderWithUi(
-      <PageContainer
-        title="Detail"
-        breadcrumb={[{ label: "Root" }, { label: "Leaf" }]}
-      />,
+      <PageContainer title="Detail" breadcrumb={[{ label: "Root" }, { label: "Leaf" }]} />,
     );
     // first item has no `to` → rendered as span, not a link
     expect(screen.queryByRole("link", { name: "Root" })).toBeNull();

@@ -26,7 +26,9 @@ for (const file of files) {
     for (const m of line.matchAll(DECL)) {
       const value = m[1].trim();
       if (!ALLOWED.test(value)) {
-        failures.push(`${file}:${i + 1}  font-size: ${value}  — use a --font-size-* scale or a component --…-font-size token`);
+        failures.push(
+          `${file}:${i + 1}  font-size: ${value}  — use a --font-size-* scale or a component --…-font-size token`,
+        );
       }
     }
   });
@@ -38,4 +40,6 @@ if (failures.length) {
   console.error("\nEvery font-size must reference a token so a service theme can re-tune it.");
   process.exit(1);
 }
-console.log(`✓ check:typography — ${files.length} CSS files express font-size only through tokens.`);
+console.log(
+  `✓ check:typography — ${files.length} CSS files express font-size only through tokens.`,
+);

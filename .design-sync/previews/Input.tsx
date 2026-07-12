@@ -4,7 +4,12 @@ export function Basic() {
   return (
     <div style={{ display: "grid", gap: 6, maxWidth: 320 }}>
       <Label htmlFor="email">Work email</Label>
-      <Input id="email" type="email" placeholder="name@company.co.jp" defaultValue="tanaka@famgia.com" />
+      <Input
+        id="email"
+        type="email"
+        placeholder="name@company.co.jp"
+        defaultValue="tanaka@famgia.com"
+      />
     </div>
   );
 }
@@ -21,14 +26,30 @@ export function States() {
 }
 
 const MailIcon = (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    aria-hidden="true"
+  >
     <rect x="2" y="4" width="20" height="16" rx="2" />
     <path d="m22 7-10 6L2 7" />
   </svg>
 );
 
 const SearchIcon = (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    aria-hidden="true"
+  >
     <circle cx="11" cy="11" r="8" />
     <path d="m21 21-4.3-4.3" />
   </svg>
@@ -40,14 +61,23 @@ export function WithLeadingIcon() {
   return (
     <div style={{ display: "grid", gap: 12, maxWidth: 320 }}>
       <Input type="email" leadingIcon={MailIcon} placeholder="name@company.co.jp" />
-      <Input leadingIcon={SearchIcon} placeholder="Search members" defaultValue="tanaka" allowClear />
+      <Input
+        leadingIcon={SearchIcon}
+        placeholder="Search members"
+        defaultValue="tanaka"
+        allowClear
+      />
     </div>
   );
 }
 
 export function InField() {
   return (
-    <Field label="Employee ID" hint="6-digit number printed on the badge." style={{ maxWidth: 320 }}>
+    <Field
+      label="Employee ID"
+      hint="6-digit number printed on the badge."
+      style={{ maxWidth: 320 }}
+    >
       <Input placeholder="000000" inputMode="numeric" />
     </Field>
   );

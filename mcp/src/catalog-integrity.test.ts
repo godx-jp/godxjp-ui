@@ -227,7 +227,14 @@ describe("newly-added components are catalogued with the expected API", () => {
       expect(props.has(p), `Topbar.${p}`).toBe(true);
     }
     // The removed chrome props must be gone from the prop list.
-    for (const removed of ["product", "search", "bell", "onSearchOpen", "onNotificationsOpen", "collapsed"]) {
+    for (const removed of [
+      "product",
+      "search",
+      "bell",
+      "onSearchOpen",
+      "onNotificationsOpen",
+      "collapsed",
+    ]) {
       expect(props.has(removed), `Topbar must not list removed prop '${removed}'`).toBe(false);
     }
     // The example demonstrates the slot API, not the old props.

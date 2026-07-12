@@ -5,11 +5,7 @@
   "buildCmd": "pnpm build && pnpm preview:build && node .design-sync/gen-aggregate.mjs && node .design-sync/gen-css.mjs",
   "entry": "./dist/_ds_all.js",
   "cssEntry": "./preview/dist/assets/_ds_cssentry.css",
-  "runtimeFontPrefixes": [
-    "Noto Sans JP",
-    "Sora",
-    "Be Vietnam Pro"
-  ],
+  "runtimeFontPrefixes": ["Noto Sans JP", "Sora", "Be Vietnam Pro"],
   "componentSrcMap": {
     "Accordion": "src/components/data-display/accordion.tsx",
     "Alert": "src/components/feedback/alert.tsx",

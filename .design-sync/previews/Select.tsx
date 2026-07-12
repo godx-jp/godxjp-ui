@@ -1,5 +1,11 @@
 import {
-  Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
 } from "@godxjp/ui";
 
 export function Basic() {
@@ -30,12 +36,20 @@ export function States() {
   return (
     <div style={{ display: "grid", gap: 12, maxWidth: 280 }}>
       <Select>
-        <SelectTrigger><SelectValue placeholder="Placeholder" /></SelectTrigger>
-        <SelectContent><SelectItem value="a">Option A</SelectItem></SelectContent>
+        <SelectTrigger>
+          <SelectValue placeholder="Placeholder" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="a">Option A</SelectItem>
+        </SelectContent>
       </Select>
       <Select disabled defaultValue="x">
-        <SelectTrigger><SelectValue /></SelectTrigger>
-        <SelectContent><SelectItem value="x">Disabled</SelectItem></SelectContent>
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="x">Disabled</SelectItem>
+        </SelectContent>
       </Select>
     </div>
   );

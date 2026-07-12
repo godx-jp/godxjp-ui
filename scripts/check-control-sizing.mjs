@@ -98,6 +98,4 @@ if (errors.length) {
   for (const e of errors) console.error(`  ${e}`);
   process.exit(1);
 }
-console.log(
-  `✓ control-sizing guard passed${warns.length ? ` (${warns.length} warning(s))` : ""}`,
-);
+console.log(`✓ control-sizing guard passed${warns.length ? ` (${warns.length} warning(s))` : ""}`);

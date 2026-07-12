@@ -60,7 +60,11 @@ describe("useUploadDraft", () => {
     const { result } = renderHook(() => useUploadDraft({ value: committed(), onChange }));
     act(() => result.current.stageReplace(file("new.png")));
     expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({ pendingReplace: true, replacesMediaId: "m1", pendingDelete: false }),
+      expect.objectContaining({
+        pendingReplace: true,
+        replacesMediaId: "m1",
+        pendingDelete: false,
+      }),
     );
   });
 
@@ -130,9 +134,7 @@ describe("useUploadDraft", () => {
   });
 
   it("getCommitActions does not promote an errored item", () => {
-    const { result } = renderHook(() =>
-      useUploadDraft({ value: committed({ status: "error" }) }),
-    );
+    const { result } = renderHook(() => useUploadDraft({ value: committed({ status: "error" }) }));
     expect(result.current.getCommitActions().promoteMediaIds).toEqual([]);
   });
 

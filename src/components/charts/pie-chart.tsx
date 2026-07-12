@@ -1,11 +1,4 @@
-import {
-  Cell,
-  Legend,
-  Pie,
-  PieChart as RPieChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { Cell, Legend, Pie, PieChart as RPieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 import type { PieChartProp } from "../../props/components/charts.prop";
 import { EmptyState } from "../data-display/empty-state";

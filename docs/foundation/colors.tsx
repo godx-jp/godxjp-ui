@@ -133,8 +133,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Semantic surfaces</CardTitle>
             <CardDescription>
-              Page / raised / overlay / muted neutrals. Use these; never invent a new grey. Each
-              box shows its own foreground text token. Every role is redefined under .dark.
+              Page / raised / overlay / muted neutrals. Use these; never invent a new grey. Each box
+              shows its own foreground text token. Every role is redefined under .dark.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -147,8 +147,8 @@ export default function Demo() {
             <CardTitle>Structural neutrals</CardTitle>
             <CardDescription>
               Hairlines, field borders, focus ring. In practice these paint borders and outlines,
-              not areas. They are shown as fills here so the named token is visible. Also themed under
-              .dark.
+              not areas. They are shown as fills here so the named token is visible. Also themed
+              under .dark.
             </CardDescription>
           </CardHeader>
           <CardContent>

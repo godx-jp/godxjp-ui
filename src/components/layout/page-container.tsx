@@ -31,10 +31,10 @@ function useFooterReveal(enabled: boolean) {
     const el = headerRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return; // jsdom/SSR-safe
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setRevealed(!entry.isIntersecting),
-      { root: scrollParent(el), threshold: 0 },
-    );
+    const observer = new IntersectionObserver(([entry]) => setRevealed(!entry.isIntersecting), {
+      root: scrollParent(el),
+      threshold: 0,
+    });
     observer.observe(el);
     return () => observer.disconnect();
   }, [enabled]);

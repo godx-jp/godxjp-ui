@@ -1,4 +1,12 @@
-import { FormField, Input, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@godxjp/ui";
+import {
+  FormField,
+  Input,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@godxjp/ui";
 
 export function Vertical() {
   return (
@@ -18,7 +26,9 @@ export function Horizontal() {
     <div style={{ display: "grid", gap: 14, maxWidth: 420 }}>
       <FormField label="Department" layout="horizontal" labelWidth={120}>
         <Select defaultValue="ops">
-          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="ops">Operations</SelectItem>
             <SelectItem value="hr">Human Resources</SelectItem>

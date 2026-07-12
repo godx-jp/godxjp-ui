@@ -93,7 +93,9 @@ describe("FormField", () => {
   it("warns in development when given a non-element child", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     renderWithUi(<FormField label="Plain">just text</FormField>);
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining("FormField expects a single React element"));
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining("FormField expects a single React element"),
+    );
     warn.mockRestore();
   });
 
