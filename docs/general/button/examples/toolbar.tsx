@@ -94,6 +94,7 @@ const columns: ColumnDef<Invoice>[] = [
   {
     key: "_actions",
     header: "",
+    ariaLabel: "操作",
     align: "right",
     render: () => (
       <Flex direction="row" wrap align="center" gap="xs" justify="end">

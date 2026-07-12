@@ -143,6 +143,21 @@
     display: none;
   }
 
+  /* AppShell-owned mobile drawer trigger — hidden on desktop, shown once the docked sidebar
+   * collapses out below `lg` (gh#165). The drawer nav itself is a focus-trapped Sheet. */
+  .app-mobile-nav-trigger {
+    display: none;
+    flex: 0 0 auto;
+    margin-inline-end: var(--space-1);
+  }
+
+  /* The drawer nav reuses the docked Sidebar node; its `.sb-root { display: contents }` flattens
+   * into the scrollable SheetBody so sections/footer flow naturally in the panel. */
+  .app-mobile-nav-body {
+    display: flex;
+    flex-direction: column;
+  }
+
   .app-topbar-spacer {
     flex: 1;
   }
@@ -170,6 +185,10 @@
 
     .app-topbar-left:has(.app-mobile-sidebar-trigger) {
       display: flex;
+    }
+
+    .app-mobile-nav-trigger {
+      display: inline-flex;
     }
   }
 

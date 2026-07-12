@@ -6,6 +6,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `AppShell` now OWNS an accessible mobile navigation drawer below `lg`: a hamburger trigger in the
+  topbar opens a focus-trapped `Sheet` (Esc + overlay close, focus returns to the trigger). New
+  props `mobileNav` (defaults to the `sidebar` node — pass a tailored menu, or `null` to opt out),
+  `mobileNavLabel`, `mobileNavOpen` and `onMobileNavOpenChange`. Hiding the sidebar without a
+  reachable alternative is no longer the shell's behavior (#165).
+- `Sidebar` items support real links without a nested interactive element: `SidebarItemProp.href`
+  renders the row as an `<a>`, and `renderItem` now merges its returned element as the row via Slot
+  (return a router `<Link>`) — no more `<button>`-wrapped custom content (#165).
+- `Pagination` gains `hideOnSinglePage` (default `true`): the bar is hidden for zero items and for a
+  single page; set `false` to opt in on one page (e.g. to keep `showTotal` visible). `total === 0`
+  is always hidden (#153).
+- **`CardTitle`** accepts a semantic heading `level` (`1`–`4`, default `3` — unchanged) and an
+  `as` override (`h1`–`h4`/`p`/`div`) so consumers keep a valid document outline
+  (`h1 → h2 → h3`, no skipped levels) without changing the title's token-driven size. Use `as="p"`
+  when the card title is a styled label rather than a section heading. (#154)
+- **`EmptyState`** accepts `titleLevel` (`1`–`4`, default `3` — unchanged) and `titleAs`
+  (`h1`–`h4`/`p`/`div`) for the same reason: pick the level for outline position, not size, and use
+  `titleAs="p"` for a compact/section empty state inside a section that already owns its heading.
+  Coordinated with the existing `variant` (`page`/`section`/`compact`) and `tone` API. (#154, #144)
+- **`DataTable` `ColumnDef.ariaLabel`** — a visually-empty action/selection column keeps a
+  screen-reader header (e.g. "Actions"/"Select") rendered as an `sr-only` label inside its `<th>`,
+  clearing the axe `empty-table-header` violation. DataTable now **dev-warns** when a rendered
+  `<th>` has neither visible nor accessible text. Official DataTable examples set `ariaLabel` on
+  their action columns. (#155)
+- Shared forwarding contract `src/lib/field-a11y.ts` (`FieldA11yProps`, `pickFieldA11y`,
+  `pickGroupFieldA11y`, `resolveFieldA11y`, `mergeAriaIds`) so the FormField relationship is wired
+  consistently, not reinvented per control.
+- FormField integration test asserting the **computed** accessible name / description / error for
+  every custom control (`form-field-contract.a11y.test.tsx`), plus a `docs/data-entry/form-field`
+  example demonstrating the contract, error timing and async server-validation + recovery.
+
+### Changed
+
+- `Pagination` is now ONE horizontal row on desktop and never wraps — `.ui-pagination` drops
+  `flex-wrap: wrap`; the page-number strip scrolls horizontally on overflow and the total label
+  truncates. Use `simple` for the intentional compact mobile form (#153).
+- `ResponsiveGrid` and `SplitPane` now OWN their query container (`container-type: inline-size`) and
+  use container queries, so they respond to the width available to the component instead of the
+  viewport or an undeclared ancestor `container-type`. `SplitPane`'s split threshold moved from a
+  `1080px` viewport media query to a `48rem` container query; `ResponsiveGrid` thresholds are
+  `40rem / 48rem / 64rem` container widths (#165).
+- `Sidebar` group expansion is route-synchronized: a group opens whenever `activeId` moves to one of
+  its children, revealing the newly-active child after navigation (was a mount-only `defaultOpen`)
+  (#165).
+- `AppSettingPicker` `appearance="labeled"` no longer forces `w-full` below `640px` — it hugs its
+  content (`w-auto max-w-full`) on narrow screens and takes its per-kind fixed width from `sm` up, so
+  it fits a topbar. Pass `className="w-full"` for a full-width form field (#165).
+
 ### Fixed
 
 - **FormField a11y contract no longer silently dropped by custom controls (#164).** Every
@@ -23,15 +73,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `Transfer` are `role="group"` named by the FormField label, with the error folded into
     `aria-describedby` (widget-only `aria-invalid`/`aria-errormessage` are invalid on a group per
     ARIA 1.2). `Upload` forwards the label/description onto its native `<input type="file">`.
-
-### Added
-
-- Shared forwarding contract `src/lib/field-a11y.ts` (`FieldA11yProps`, `pickFieldA11y`,
-  `pickGroupFieldA11y`, `resolveFieldA11y`, `mergeAriaIds`) so the FormField relationship is wired
-  consistently, not reinvented per control.
-- FormField integration test asserting the **computed** accessible name / description / error for
-  every custom control (`form-field-contract.a11y.test.tsx`), plus a `docs/data-entry/form-field`
-  example demonstrating the contract, error timing and async server-validation + recovery.
 
 ## [17.0.0] - 2026-07-12
 

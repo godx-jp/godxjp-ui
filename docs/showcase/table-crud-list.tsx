@@ -298,6 +298,7 @@ const columns: ColumnDef<Attendance>[] = [
   {
     key: "_actions",
     header: "",
+    ariaLabel: "操作",
     align: "right",
     width: "w-12",
     render: (r) => (

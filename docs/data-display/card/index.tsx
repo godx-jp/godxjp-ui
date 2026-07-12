@@ -38,25 +38,25 @@ export default function Demo() {
           <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
             <Card variant="default">
               <CardHeader>
-                <CardTitle>default</CardTitle>
+                <CardTitle level={2}>default</CardTitle>
               </CardHeader>
               <CardContent>標準のサーフェス</CardContent>
             </Card>
             <Card variant="muted">
               <CardHeader>
-                <CardTitle>muted</CardTitle>
+                <CardTitle level={2}>muted</CardTitle>
               </CardHeader>
               <CardContent>控えめな塗り</CardContent>
             </Card>
             <Card variant="outline">
               <CardHeader>
-                <CardTitle>outline</CardTitle>
+                <CardTitle level={2}>outline</CardTitle>
               </CardHeader>
               <CardContent>枠線のみ</CardContent>
             </Card>
             <Card variant="featured">
               <CardHeader>
-                <CardTitle>featured</CardTitle>
+                <CardTitle level={2}>featured</CardTitle>
               </CardHeader>
               <CardContent>強調サーフェス</CardContent>
             </Card>
@@ -82,7 +82,7 @@ export default function Demo() {
           </Text>
           <Card accent="primary">
             <CardHeader banded>
-              <CardTitle>請求書 INV-2024-0312</CardTitle>
+              <CardTitle level={2}>請求書 INV-2024-0312</CardTitle>
               <CardDescription>株式会社ベトヤ · 2024-04-12</CardDescription>
               <CardAction>
                 <Button variant="ghost" size="icon-sm" aria-label="メニュー">
@@ -113,13 +113,13 @@ export default function Demo() {
           <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
             <Card size="md">
               <CardHeader>
-                <CardTitle>size=md</CardTitle>
+                <CardTitle level={2}>size=md</CardTitle>
               </CardHeader>
               <CardContent>標準のインセット（16px）</CardContent>
             </Card>
             <Card size="compact">
               <CardHeader>
-                <CardTitle>size=compact</CardTitle>
+                <CardTitle level={2}>size=compact</CardTitle>
               </CardHeader>
               <CardContent>密なインセット（KPI タイルの既定）</CardContent>
             </Card>
@@ -133,19 +133,19 @@ export default function Demo() {
           <ResponsiveGrid columns={{ sm: 1, md: 3 }}>
             <Card density="tight">
               <CardHeader>
-                <CardTitle>tight</CardTitle>
+                <CardTitle level={2}>tight</CardTitle>
               </CardHeader>
               <CardContent>余白を詰めた密度</CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>base</CardTitle>
+                <CardTitle level={2}>base</CardTitle>
               </CardHeader>
               <CardContent>既定の密度</CardContent>
             </Card>
             <Card density="cozy">
               <CardHeader>
-                <CardTitle>cozy</CardTitle>
+                <CardTitle level={2}>cozy</CardTitle>
               </CardHeader>
               <CardContent>ゆったりした密度</CardContent>
             </Card>
@@ -159,7 +159,7 @@ export default function Demo() {
           <ResponsiveGrid columns={{ sm: 1, lg: 2 }}>
             <Card>
               <CardHeader banded>
-                <CardTitle>仕訳明細</CardTitle>
+                <CardTitle level={2}>仕訳明細</CardTitle>
               </CardHeader>
               <CardContent flush>
                 <Table>
@@ -214,7 +214,7 @@ export default function Demo() {
                 </AspectRatio>
               </CardCover>
               <CardHeader>
-                <CardTitle>渋谷オフィス</CardTitle>
+                <CardTitle level={2}>渋谷オフィス</CardTitle>
                 <CardDescription>東京都渋谷区 · 内見受付中</CardDescription>
               </CardHeader>
               <CardFooter separated>

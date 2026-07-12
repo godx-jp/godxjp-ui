@@ -11,7 +11,9 @@ import { Flex, PageContainer, ResponsiveGrid, SplitPane } from "@godxjp/ui/layou
 
 /**
  * ResponsiveGrid · equal-width multi-column tile grid with automatic responsive
- * collapse (CSS container queries, not viewport). Direct children are typically
+ * collapse (CSS container queries, not viewport). It OWNS its query container
+ * (container-type: inline-size), so it responds to the width available to the grid
+ * with no external container-type declaration (gh#165). Direct children are typically
  * StatCard (self-contained bordered card · never wrap in Card/CardContent) or
  * Card+CardContent for richer tile bodies. columns accepts a number OR breakpoint
  * object { sm?, md?, lg? }. Composed only from real @godxjp/ui components.
@@ -25,12 +27,14 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>コンテナクエリで折り返し（ビューポートではなくコンテナ幅）</CardTitle>
+            <CardTitle>コンテナクエリで折り返し（自己所有のクエリコンテナ）</CardTitle>
             <CardDescription>
               同じ columns=&#123;4&#125; でも、コンテナ幅で列数が変わる。左の広い領域は 4
               列、右の狭いサイドバー（約 20rem）は 1 列に折り返す。ビューポート幅は同一なので、
-              折り返しの基準がコンテナ幅であることが分かる。 折り返しの閾値はコンテナ幅 640 / 768 /
-              1024px。 列間の gap は var(--space-stack-md) に固定で、prop では変更できない。
+              折り返しの基準がコンテナ幅であることが分かる。ResponsiveGrid は自身のクエリコンテナ
+              （container-type: inline-size）を持つため、外側に @container を用意しなくても正しく
+              折り返す（gh#165）。閾値はコンテナ幅 40 / 48 / 64rem。 列間の gap は
+              var(--space-stack-md) に固定で、prop では変更できない。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -39,25 +43,22 @@ export default function Demo() {
               aside={
                 <Flex direction="col" gap="sm">
                   <Text tone="muted">狭いコンテナ（約 20rem）→ sm=1 列</Text>
-                  <div className="@container">
-                    <ResponsiveGrid columns={4}>
-                      <StatCard label="今日の入金" value="¥420,000" />
-                      <StatCard label="未処理" value="6 件" />
-                    </ResponsiveGrid>
-                  </div>
+                  {/* No wrapping `@container` needed — ResponsiveGrid OWNS its query container (gh#165). */}
+                  <ResponsiveGrid columns={4}>
+                    <StatCard label="今日の入金" value="¥420,000" />
+                    <StatCard label="未処理" value="6 件" />
+                  </ResponsiveGrid>
                 </Flex>
               }
             >
               <Flex direction="col" gap="sm">
                 <Text tone="muted">広いコンテナ → lg=4 列</Text>
-                <div className="@container">
-                  <ResponsiveGrid columns={4}>
-                    <StatCard label="月次売上" value="¥12,400,000" delta="+8%" hint="先月比" />
-                    <StatCard label="請求件数" value="486" delta="+12%" />
-                    <StatCard label="売掛金残高" value="¥3,180,000" hint="未回収 23件" />
-                    <StatCard label="回収率" value="97.2%" delta="+0.4%" />
-                  </ResponsiveGrid>
-                </div>
+                <ResponsiveGrid columns={4}>
+                  <StatCard label="月次売上" value="¥12,400,000" delta="+8%" hint="先月比" />
+                  <StatCard label="請求件数" value="486" delta="+12%" />
+                  <StatCard label="売掛金残高" value="¥3,180,000" hint="未回収 23件" />
+                  <StatCard label="回収率" value="97.2%" delta="+0.4%" />
+                </ResponsiveGrid>
               </Flex>
             </SplitPane>
           </CardContent>
@@ -65,15 +66,17 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Container stress · 320 / 768px 相当</CardTitle>
+            <CardTitle>Container stress · 320 / 768px 相当（外側コンテナ不要）</CardTitle>
             <CardDescription>
-              viewport ではなく親コンテナ幅で列数が変わることを、同じ 4 列指定で比較する。
+              固定幅の親の中でも、同じ columns=&#123;4&#125; が親幅で列数を変える。親には
+              container-type を付けていない。ResponsiveGrid が自身のスコープでクエリするため、
+              外側にコンテナ宣言がなくても 1 列に潰れない（gh#165）。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               {["max-w-80", "max-w-3xl"].map((width) => (
-                <div key={width} className={`${width} [container-type:inline-size] border p-2`}>
+                <div key={width} className={`${width} border p-2`}>
                   <ResponsiveGrid columns={4}>
                     {Array.from({ length: 4 }, (_, index) => (
                       <div key={index} className="bg-muted rounded p-3 text-center">

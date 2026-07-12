@@ -175,6 +175,16 @@
     gap: var(--space-inline-lg);
   }
 
+  /* ResponsiveGrid OWNS its query container. The component wraps the grid in
+   * `.ui-responsive-grid-scope` (container-type: inline-size, named `responsive-grid`) so the
+   * column breakpoints resolve against the WIDTH AVAILABLE TO THE GRID — not the viewport and not
+   * an undeclared ancestor `container-type`. This makes it correct inside a narrow card, a
+   * SplitPane aside, or a bare `<div>`; it can never silently stay one column for want of an
+   * external container context (gh#165). Named so it queries its own scope, never a closer one. */
+  .ui-responsive-grid-scope {
+    container: responsive-grid / inline-size;
+  }
+
   .ui-responsive-grid {
     display: grid;
     gap: var(--space-stack-md);
@@ -185,22 +195,31 @@
     min-width: 0;
   }
 
-  @container (min-width: 640px) {
+  @container responsive-grid (min-width: 40rem) {
     .ui-responsive-grid {
       grid-template-columns: repeat(var(--responsive-grid-sm, 2), minmax(0, 1fr));
     }
   }
 
-  @container (min-width: 768px) {
+  @container responsive-grid (min-width: 48rem) {
     .ui-responsive-grid {
       grid-template-columns: repeat(var(--responsive-grid-md, 3), minmax(0, 1fr));
     }
   }
 
-  @container (min-width: 1024px) {
+  @container responsive-grid (min-width: 64rem) {
     .ui-responsive-grid {
       grid-template-columns: repeat(var(--responsive-grid-lg, 4), minmax(0, 1fr));
     }
+  }
+
+  /* SplitPane OWNS its query container too — `.ui-split-pane-scope`
+   * (container-type: inline-size, named `split-pane`). The two-column layout is chosen from the
+   * pane's OWN available width, so a narrow embedded pane on a large viewport correctly stays a
+   * single column, and a wide pane on a small viewport can split (gh#165 — replaces the old
+   * `@media (min-width: 1080px)` viewport query that ignored the container). */
+  .ui-split-pane-scope {
+    container: split-pane / inline-size;
   }
 
   .ui-split-pane {
@@ -259,7 +278,7 @@
     opacity: 0.5;
   }
 
-  @media (min-width: 1080px) {
+  @container split-pane (min-width: 48rem) {
     .ui-split-pane[data-aside-width="sm"] {
       grid-template-columns: minmax(0, 1fr) 20rem;
     }
@@ -543,22 +562,30 @@
 }
 
 @layer components {
+  /* Pagination is ONE horizontal row and never wraps to a second desktop line (gh#153 — the old
+   * `flex-wrap: wrap` split the range / size-changer / page strip across rows). The number strip
+   * (`.ui-pagination-list`) absorbs any overflow by scrolling horizontally rather than wrapping; a
+   * genuinely narrow viewport uses the INTENTIONAL compact form via the `simple` prop (Prev · n/N ·
+   * Next, no page buttons) — not browser-driven wrapping. */
   .ui-pagination {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    min-width: 0;
     align-items: center;
     justify-content: flex-end;
     gap: var(--pagination-gap);
   }
 
-  .ui-pagination[data-simple="true"] {
-    flex-wrap: nowrap;
-  }
-
+  /* Total / range label sits at the start and truncates rather than pushing the controls onto a
+   * second line — the nav row stays one line at every width (gh#153). */
   .ui-pagination-total {
+    min-width: 0;
     margin-inline-end: auto;
+    overflow: hidden;
     color: hsl(var(--muted-foreground));
     font-size: var(--pagination-total-font-size);
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .ui-pagination-count {
@@ -576,12 +603,22 @@
 
   .ui-pagination-list {
     display: flex;
+    min-width: 0;
     align-items: center;
     gap: var(--pagination-item-gap);
+    /* Overflow scrolls horizontally instead of wrapping onto a second row. Hidden scrollbar keeps
+     * the desktop bar clean; the strip stays swipeable on touch. */
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .ui-pagination-list::-webkit-scrollbar {
+    display: none;
   }
 
   .ui-pagination-item {
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
   }
