@@ -211,7 +211,7 @@ export default function Demo() {
             {/* ── Section: 取引先 ── */}
             <Card>
               <CardHeader>
-                <CardTitle>取引先</CardTitle>
+                <CardTitle level={2}>取引先</CardTitle>
                 <CardDescription>請求先の取引先名とコードを入力します。</CardDescription>
               </CardHeader>
               <CardContent>
@@ -253,7 +253,7 @@ export default function Demo() {
             {/* ── Section: 仕訳 ── */}
             <Card>
               <CardHeader>
-                <CardTitle>仕訳</CardTitle>
+                <CardTitle level={2}>仕訳</CardTitle>
                 <CardDescription>
                   勘定科目・経費カテゴリ・金額・税率・日付を入力します。
                 </CardDescription>
@@ -340,7 +340,7 @@ export default function Demo() {
             {/* ── Section: 補足 ── */}
             <Card>
               <CardHeader>
-                <CardTitle>補足</CardTitle>
+                <CardTitle level={2}>補足</CardTitle>
                 <CardDescription>ラベル・摘要と下書き保存の設定。</CardDescription>
               </CardHeader>
               <CardContent>

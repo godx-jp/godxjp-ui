@@ -43,7 +43,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>単一日付選択 (インライン常時表示)</CardTitle>
+            <CardTitle level={2}>単一日付選択 (インライン常時表示)</CardTitle>
             <CardDescription>
               mode="single" で日付を選択。フォームに送信が必要な場合は DatePicker を使用する。ja
               ロケールで曜日・月名を日本語表示。
@@ -69,7 +69,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>範囲選択 · Popover 内</CardTitle>
+            <CardTitle level={2}>範囲選択 · Popover 内</CardTitle>
             <CardDescription>
               mode="range" でポップオーバー内に配置。DateRangePicker
               はこのパターンにフォーム送信を加えた上位コンポーネント。
@@ -102,7 +102,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>年月ドロップダウン (captionLayout="dropdown")</CardTitle>
+            <CardTitle level={2}>年月ドロップダウン (captionLayout="dropdown")</CardTitle>
             <CardDescription>
               過去の会計期間に素早くジャンプする場合に便利。startMonth / endMonth
               でナビゲーション範囲を絞る。captionLayout は dropdown-months / dropdown-years
@@ -126,7 +126,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>複数日選択 (mode="multiple")</CardTitle>
+            <CardTitle level={2}>複数日選択 (mode="multiple")</CardTitle>
             <CardDescription>
               mode="multiple" で個別の複数日を選択 (Date[])。max
               で選択上限を制限できる。ここでは出勤シフト日を最大 5 日まで選択。showOutsideDays=

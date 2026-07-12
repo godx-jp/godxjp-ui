@@ -54,7 +54,7 @@ export function GetStartedPage() {
                   <Card className="hover:border-primary h-full transition-colors">
                     <CardHeader className="flex flex-row items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <CardTitle className="flex items-center gap-1.5">
+                        <CardTitle level={2} className="flex items-center gap-1.5">
                           {s.title}
                           <ArrowUpRight aria-hidden="true" className="size-4 shrink-0" />
                         </CardTitle>

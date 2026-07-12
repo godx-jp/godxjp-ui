@@ -29,7 +29,7 @@ export default function Demo() {
         {/* Entity peek — hover (or focus) the link to reveal the card */}
         <Card>
           <CardHeader>
-            <CardTitle>取引先プレビュー</CardTitle>
+            <CardTitle level={2}>取引先プレビュー</CardTitle>
             <CardDescription>
               リンクをホバーまたはフォーカスすると、ページを離れずに取引先を確認できます。トリガーは
               フォーカス可能なリンクなので、キーボード操作でも開きます。
@@ -60,7 +60,7 @@ export default function Demo() {
         {/* User card — the second pattern promised by the subtitle */}
         <Card>
           <CardHeader>
-            <CardTitle>ユーザーカード</CardTitle>
+            <CardTitle level={2}>ユーザーカード</CardTitle>
             <CardDescription>
               担当者名にホバーすると、連絡先と所属を含むユーザーカードを表示します。
             </CardDescription>
@@ -94,7 +94,7 @@ export default function Demo() {
         {/* Positioning — every `side` value, plus `align` and `sideOffset` */}
         <Card>
           <CardHeader>
-            <CardTitle>配置（side · align · sideOffset）</CardTitle>
+            <CardTitle level={2}>配置（side · align · sideOffset）</CardTitle>
             <CardDescription>
               ポップオーバーを開く向きは side（top / right / bottom / left）、トリガーに沿った
               位置は align、トリガーとの距離は sideOffset で制御します。各リンクをホバーすると
@@ -145,7 +145,7 @@ export default function Demo() {
         {/* Delay — openDelay / closeDelay tune the hover affordance */}
         <Card>
           <CardHeader>
-            <CardTitle>開閉ディレイ（openDelay · closeDelay）</CardTitle>
+            <CardTitle level={2}>開閉ディレイ（openDelay · closeDelay）</CardTitle>
             <CardDescription>
               openDelay はホバーから表示までの待ち時間、closeDelay は離れてから閉じるまでの
               猶予です。長い openDelay で誤爆を防ぎ、長い closeDelay でポップオーバー内へ

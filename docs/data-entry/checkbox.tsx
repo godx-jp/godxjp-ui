@@ -39,7 +39,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Single · labelled with Field</CardTitle>
+            <CardTitle level={2}>Single · labelled with Field</CardTitle>
             <CardDescription>
               Field pairs the control with a label + optional description. The last row is disabled.
             </CardDescription>
@@ -61,7 +61,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Indeterminate · select all</CardTitle>
+            <CardTitle level={2}>Indeterminate · select all</CardTitle>
             <CardDescription>
               The parent uses checked=&quot;indeterminate&quot; when only some children are selected
               (children composed from explicit Field + Checkbox).
@@ -108,7 +108,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Error · invalid in a FormField</CardTitle>
+            <CardTitle level={2}>Error · invalid in a FormField</CardTitle>
             <CardDescription>
               FormField wires aria-invalid + the error message onto the control (role=alert).
             </CardDescription>
@@ -122,7 +122,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>CheckboxGroup (options)</CardTitle>
+            <CardTitle level={2}>CheckboxGroup (options)</CardTitle>
             <CardDescription>
               Multi-select from a data-driven options array, with per-option description and
               disabled.
@@ -148,7 +148,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Horizontal orientation</CardTitle>
+            <CardTitle level={2}>Horizontal orientation</CardTitle>
             <CardDescription>
               orientation=&quot;horizontal&quot; lays the options out in a wrapping row.
             </CardDescription>
@@ -172,7 +172,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Controlled value</CardTitle>
+            <CardTitle level={2}>Controlled value</CardTitle>
             <CardDescription>
               value + onValueChange own the selection; it is surfaced below the group.
             </CardDescription>
@@ -201,7 +201,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Disabled group</CardTitle>
+            <CardTitle level={2}>Disabled group</CardTitle>
             <CardDescription>disabled on the group disables every option at once.</CardDescription>
           </CardHeader>
           <CardContent>

@@ -20,7 +20,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Heading levels</CardTitle>
+            <CardTitle level={2}>Heading levels</CardTitle>
             <CardDescription>
               level sets BOTH the --heading-h* size token and the semantic &lt;h1..h4&gt; element.
             </CardDescription>
@@ -38,7 +38,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Text sizes</CardTitle>
+            <CardTitle level={2}>Text sizes</CardTitle>
             <CardDescription>
               size is a type-scale step (2xs / xs / sm / md / lg / xl) — sm is the base. No px.
             </CardDescription>
@@ -56,7 +56,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Tone + weight</CardTitle>
+            <CardTitle level={2}>Tone + weight</CardTitle>
             <CardDescription>
               tone maps to semantic foreground tokens; weight is the 3-weight canon (400/500/700).
             </CardDescription>
@@ -81,7 +81,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Numbers, codes, truncation</CardTitle>
+            <CardTitle level={2}>Numbers, codes, truncation</CardTitle>
             <CardDescription>
               tabular for figures, mono for ids, truncate for one line.
             </CardDescription>

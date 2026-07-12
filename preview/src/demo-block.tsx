@@ -479,6 +479,9 @@ export function StoryDemoBlock({
             ref={canvasRef}
             data-mode={layout === "fullscreen" ? "page" : "component"}
             data-responsive={isResponsive ? "true" : undefined}
+            role="region"
+            aria-label="Component preview"
+            tabIndex={0}
           >
             <div
               className="demo-block-viewport"

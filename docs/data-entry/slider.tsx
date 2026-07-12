@@ -26,7 +26,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>単一スライダー · 税率設定</CardTitle>
+            <CardTitle level={2}>単一スライダー · 税率設定</CardTitle>
             <CardDescription>
               Single-thumb controlled slider. value={`[n]`} — plain number breaks rendering.
               onValueChange fires on every drag; onValueCommit fires on release.
@@ -55,7 +55,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>レンジスライダー · 請求金額フィルタ</CardTitle>
+            <CardTitle level={2}>レンジスライダー · 請求金額フィルタ</CardTitle>
             <CardDescription>
               Dual-thumb range slider: value={`[min, max]`}. Use minStepsBetweenThumbs to prevent
               thumbs overlapping.
@@ -85,7 +85,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>予算配分スライダー</CardTitle>
+            <CardTitle level={2}>予算配分スライダー</CardTitle>
             <CardDescription>
               step=5 for coarse granularity. Use name= to submit with a native form without JS
               wiring.
@@ -112,7 +112,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Disabled (read-only indicator)</CardTitle>
+            <CardTitle level={2}>Disabled (read-only indicator)</CardTitle>
             <CardDescription>
               Pass disabled with a controlled value to show a non-interactive bar. Use Progress for
               pure status display.

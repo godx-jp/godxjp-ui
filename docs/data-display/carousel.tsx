@@ -60,7 +60,7 @@ export default function Demo() {
         {/* Default horizontal, multi-up responsive track. px-10 clears the absolute arrow buttons. */}
         <Card>
           <CardHeader>
-            <CardTitle>月次 KPI</CardTitle>
+            <CardTitle level={2}>月次 KPI</CardTitle>
             <CardDescription>
               Default horizontal track. Step with prev/next; arrows auto-disable at the first and
               last slide.
@@ -84,7 +84,7 @@ export default function Demo() {
         {/* opts: looping single-up gallery — wraps past the ends, so both arrows stay enabled. */}
         <Card>
           <CardHeader>
-            <CardTitle>ループ ギャラリー</CardTitle>
+            <CardTitle level={2}>ループ ギャラリー</CardTitle>
             <CardDescription>
               opts=&#123;&#123; loop: true, align: &quot;start&quot; &#125;&#125; — wraps past the
               ends, so prev/next never disable.
@@ -108,7 +108,7 @@ export default function Demo() {
         {/* setApi + scrollTo: external dot navigation, active dot seeded visible at rest. */}
         <Card>
           <CardHeader>
-            <CardTitle>ドット ナビゲーション</CardTitle>
+            <CardTitle level={2}>ドット ナビゲーション</CardTitle>
             <CardDescription>
               Drop in CarouselDots and it reads the Embla api from context, rendering one dot per
               slide. The active dot widens and carries aria-current.
@@ -122,7 +122,7 @@ export default function Demo() {
         {/* opts.axis: vertical orientation — emits data-orientation="vertical". */}
         <Card>
           <CardHeader>
-            <CardTitle>縦方向 (vertical)</CardTitle>
+            <CardTitle level={2}>縦方向 (vertical)</CardTitle>
             <CardDescription>
               opts=&#123;&#123; axis: &quot;y&quot; &#125;&#125; — stacks slides and moves the
               prev/next controls to top and bottom.

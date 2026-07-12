@@ -296,7 +296,9 @@ function DetailPanel({ employee }: { employee: Employee }) {
         {/* Per-day breakdown — quiet nested list, real Card chrome */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-[var(--font-size-xs)]">今週の打刻</CardTitle>
+            <CardTitle level={2} className="text-[var(--font-size-xs)]">
+              今週の打刻
+            </CardTitle>
             <Text size="xs" tone="muted" className="inline-flex items-center gap-1">
               <Clock className="size-3.5" aria-hidden="true" />
               直近 3 日
@@ -448,7 +450,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>従業員の勤怠（今週）</CardTitle>
+            <CardTitle level={2}>従業員の勤怠（今週）</CardTitle>
             <Text size="xs" tone="muted" tabular>
               4 名 · 06/04 時点
             </Text>

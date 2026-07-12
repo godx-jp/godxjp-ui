@@ -17,7 +17,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Variants</CardTitle>
+            <CardTitle level={2}>Variants</CardTitle>
             <CardDescription>
               One default (primary) per view. outline / secondary / ghost for supporting actions;
               link for inline navigation; destructive for irreversible actions.
@@ -38,7 +38,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Shape</CardTitle>
+            <CardTitle level={2}>Shape</CardTitle>
             <CardDescription>
               `shape` sets corner radius from the tokens: default (control radius) / pill (fully
               rounded) / sharp (square). Works with any variant or size.
@@ -61,7 +61,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Sizes</CardTitle>
+            <CardTitle level={2}>Sizes</CardTitle>
             <CardDescription>
               Height comes from the preset: xs 24 / sm 28 / default 32 / lg 36. Icon-only buttons
               use the square icon-* sizes.
@@ -95,7 +95,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Icon + label, states, and links</CardTitle>
+            <CardTitle level={2}>Icon + label, states, and links</CardTitle>
             <CardDescription>
               Leading icons auto-size to 1rem. disabled blocks pointer events (prevents
               double-submit). Use asChild to render a real link with button styling.
@@ -124,7 +124,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Full width</CardTitle>
+            <CardTitle level={2}>Full width</CardTitle>
             <CardDescription>
               `fullWidth` spans the container (`width:100%`) — the prop form of `className="w-full"`
               for stacked auth / dialog-footer actions. Use the prop, not a raw utility (rule #42).
@@ -142,7 +142,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Loading</CardTitle>
+            <CardTitle level={2}>Loading</CardTitle>
             <CardDescription>
               `loading` shows a leading spinner, sets `aria-busy`, and blocks activation while
               keeping the label in place (no width jump). `loadingText` swaps the label for an

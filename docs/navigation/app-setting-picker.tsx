@@ -35,7 +35,7 @@ export default function Demo() {
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
-              <CardTitle>kind で対象設定を選ぶ</CardTitle>
+              <CardTitle level={2}>kind で対象設定を選ぶ</CardTitle>
               <CardDescription>
                 旧 Locale / Timezone / DateFormat / TimeFormat ピッカーを 1 コンポーネントに統合。
                 &lt;AppProvider&gt; 配下に置くと value / onValueChange
@@ -82,7 +82,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>狭いコンテナと長いラベル</CardTitle>
+              <CardTitle level={2}>狭いコンテナと長いラベル</CardTitle>
               <CardDescription>
                 320px 相当で長いタイムゾーン名の折返し・クリッピングを確認する。
               </CardDescription>
@@ -96,7 +96,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>アイコンのみ（トップバー）</CardTitle>
+              <CardTitle level={2}>アイコンのみ（トップバー）</CardTitle>
               <CardDescription>
                 appearance=&quot;icon&quot; は正方形トリガーとローカライズ済み accessible name
                 を保持し、選択肢はメニュー内で完全表示する。
@@ -117,7 +117,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>無効化</CardTitle>
+              <CardTitle level={2}>無効化</CardTitle>
               <CardDescription>disabled で操作を止める。</CardDescription>
             </CardHeader>
             <CardContent>

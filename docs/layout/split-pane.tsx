@@ -125,7 +125,9 @@ export default function Demo() {
               <Card>
                 <CardHeader>
                   <Flex direction="row" justify="between" align="center" gap="sm">
-                    <CardTitle className="text-base">{selected.id}</CardTitle>
+                    <CardTitle level={2} className="text-base">
+                      {selected.id}
+                    </CardTitle>
                     <Badge tone={STATUS_TONE[selected.status]}>{selected.status}</Badge>
                   </Flex>
                   <CardDescription>請求書詳細</CardDescription>
@@ -167,7 +169,9 @@ export default function Demo() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">明細概要</CardTitle>
+                  <CardTitle level={2} className="text-sm">
+                    明細概要
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Flex direction="col" gap="sm">
@@ -262,7 +266,9 @@ export default function Demo() {
           aside={
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">利用ガイド</CardTitle>
+                <CardTitle level={2} className="text-sm">
+                  利用ガイド
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <Flex direction="col" gap="sm">
@@ -301,7 +307,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Container stress · narrow vs wide embed</CardTitle>
+            <CardTitle level={2}>Container stress · narrow vs wide embed</CardTitle>
             <CardDescription>
               大きな viewport 内でも、パネル自身の幅で分割が決まる（gh#165）。狭い埋め込み（約
               28rem）は 1 カラムに潰れ、広い埋め込み（約 56rem）は 2 カラムに分割する。ビューポート

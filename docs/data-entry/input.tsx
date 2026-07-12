@@ -16,7 +16,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>States</CardTitle>
+            <CardTitle level={2}>States</CardTitle>
             <CardDescription>
               Placeholder, filled, disabled, readOnly, and invalid (aria-invalid). Focus an empty
               field to see the focus-visible ring.
@@ -35,7 +35,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Types</CardTitle>
+            <CardTitle level={2}>Types</CardTitle>
             <CardDescription>
               The native type attribute drives the input mode and built-in UI; type="file" uses the
               file: styling baked into the component.
@@ -53,7 +53,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>In FormField · label / helper / required / error</CardTitle>
+            <CardTitle level={2}>In FormField · label / helper / required / error</CardTitle>
             <CardDescription>
               FormField wires the label and aria-describedby for you.
             </CardDescription>

@@ -91,7 +91,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg" className="max-w-2xl">
         <Card>
           <CardHeader>
-            <CardTitle>ポップアップ系コントロール（combobox 契約）</CardTitle>
+            <CardTitle level={2}>ポップアップ系コントロール（combobox 契約）</CardTitle>
             <CardDescription>
               Select（showSearch 含む）/ Cascader / TreeSelect / 各ピッカーはトリガー（combobox）に
               aria-labelledby・aria-describedby・aria-expanded・aria-controls を転送します。
@@ -150,7 +150,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>グループ系コントロール（group / radiogroup 契約）</CardTitle>
+            <CardTitle level={2}>グループ系コントロール（group / radiogroup 契約）</CardTitle>
             <CardDescription>
               RadioGroup は role=radiogroup で完全な検証 ARIA を、CheckboxGroup は role=group で
               ラベルと説明（エラーは説明に統合）を公開します。
@@ -192,7 +192,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>エラーのタイミング・非同期検証・回復</CardTitle>
+            <CardTitle level={2}>エラーのタイミング・非同期検証・回復</CardTitle>
             <CardDescription>
               エラーは送信後にのみ表示（role=alert
               で即時アナウンス）。修正して再送信するとエラーが解除され、 helper

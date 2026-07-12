@@ -23,7 +23,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Destructive delete (pre-opened)</CardTitle>
+            <CardTitle level={2}>Destructive delete (pre-opened)</CardTitle>
             <CardDescription>
               Flat prop API: title (required) + description + confirmLabel + variant. onConfirm may
               be async; the dialog stays open until it resolves. Never use Dialog for destructive
@@ -54,7 +54,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Void / cancel action</CardTitle>
+            <CardTitle level={2}>Void / cancel action</CardTitle>
             <CardDescription>
               Same pattern for voiding an invoice or cancelling a batch job: destructive variant
               with a clear confirmLabel.
@@ -79,7 +79,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>High-friction: confirmPhrase</CardTitle>
+            <CardTitle level={2}>High-friction: confirmPhrase</CardTitle>
             <CardDescription>
               Pass confirmPhrase to require the user to type a specific string before the confirm
               button activates. Use for truly irreversible bulk operations.

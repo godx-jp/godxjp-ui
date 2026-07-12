@@ -49,6 +49,34 @@ function parseFrameChrome(): FrameChrome {
   return { dir, density, theme, locale };
 }
 
+/**
+ * The frame root needs exactly ONE top-level `<main>` landmark — but whether that main
+ * belongs to US (a bare component/fragment demo, e.g. a Card showcase with no page shell)
+ * or to the STORY ITSELF (a full-screen recipe that renders `AppShell`/`AuthShell`, which
+ * already emit their own `<main>`) is a runtime fact, not something knowable from story
+ * metadata (every catalog entry defaults to `layout: "fullscreen"` regardless of content).
+ * Detect it after mount: if the rendered subtree already contains a `<main>`/`role="main"`,
+ * stay a plain `<div>` (avoids `landmark-no-duplicate-main` / `landmark-main-is-top-level`);
+ * otherwise become the page's main landmark ourselves (avoids `landmark-one-main`).
+ */
+function FrameLandmark({ dir, children }: { dir: "ltr" | "rtl"; children: React.ReactNode }) {
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useLayoutEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const hasOwnMain = node.querySelector('main, [role="main"]') != null;
+    if (hasOwnMain) node.removeAttribute("role");
+    else node.setAttribute("role", "main");
+  });
+
+  return (
+    <div ref={ref} className="preview-frame" dir={dir}>
+      {children}
+    </div>
+  );
+}
+
 function parseInitialView(): DemoBlockInitialView | undefined {
   const sp = new URLSearchParams(window.location.search);
   const preset = sp.get("preset");
@@ -105,7 +133,7 @@ function FrameApp() {
         >
           {/* `dir` on the frame root flips logical CSS (ms/me/ps/pe, start/end) for the
               whole subtree — a global RTL frame mode (#163) independent of demo locale. */}
-          <main className="preview-frame" dir={chrome.dir}>
+          <FrameLandmark dir={chrome.dir}>
             <StoryDemoBlock
               storyId={story.id}
               source={source}
@@ -123,7 +151,7 @@ function FrameApp() {
                 </StoryErrorBoundary>
               ) : null}
             </StoryDemoBlock>
-          </main>
+          </FrameLandmark>
         </AppProvider>
       </MemoryRouter>
     </QueryClientProvider>

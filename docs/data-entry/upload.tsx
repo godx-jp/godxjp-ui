@@ -42,7 +42,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Dropzone</CardTitle>
+            <CardTitle level={2}>Dropzone</CardTitle>
             <CardDescription>
               ドラッグ＆ドロップエリア · PDF・Excel などの書類添付に使用。
             </CardDescription>
@@ -62,7 +62,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Error and recovery</CardTitle>
+            <CardTitle level={2}>Error and recovery</CardTitle>
             <CardDescription>
               失敗理由は対象ファイルの行に表示する。Upload は自動 retry prop を持たないため、
               不正なファイルを削除して修正済みファイルを再選択する。
@@ -75,7 +75,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Disabled · populated</CardTitle>
+            <CardTitle level={2}>Disabled · populated</CardTitle>
             <CardDescription>
               権限不足時も既存ファイル名を保ったまま操作を無効化する。
             </CardDescription>
@@ -87,7 +87,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Button</CardTitle>
+            <CardTitle level={2}>Button</CardTitle>
             <CardDescription>
               コンパクトなボタン形式 · CSVインポートなどの管理画面向け。
             </CardDescription>
@@ -107,7 +107,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Picture Card</CardTitle>
+            <CardTitle level={2}>Picture Card</CardTitle>
             <CardDescription>
               96×96 サムネイルグリッド · 商品ギャラリーや画像一覧に使用。
             </CardDescription>
@@ -126,7 +126,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Picture</CardTitle>
+            <CardTitle level={2}>Picture</CardTitle>
             <CardDescription>
               単一画像プレビュー · コンテンツのカバー画像選択に使用。
             </CardDescription>
@@ -145,7 +145,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Avatar</CardTitle>
+            <CardTitle level={2}>Avatar</CardTitle>
             <CardDescription>円形の単一画像ピッカー · ユーザーアイコン変更に使用。</CardDescription>
           </CardHeader>
           <CardContent>
@@ -161,7 +161,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Avatar Crop</CardTitle>
+            <CardTitle level={2}>Avatar Crop</CardTitle>
             <CardDescription>
               アバター選択後にトリミングダイアログを開く。UploadCropDialog は
               内部モーダルとして自動で埋め込まれるため、個別インポート不要。

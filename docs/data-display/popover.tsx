@@ -33,7 +33,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Controlled trigger + content</CardTitle>
+            <CardTitle level={2}>Controlled trigger + content</CardTitle>
             <CardDescription>
               Common for compact filter / settings panels off a button. Controlled via open /
               onOpenChange so 適用 closes the panel. Shown open at rest.
@@ -67,7 +67,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Header / title / description slots</CardTitle>
+            <CardTitle level={2}>Header / title / description slots</CardTitle>
             <CardDescription>
               The titled info-panel pattern: PopoverHeader › PopoverTitle + PopoverDescription, then
               body. Shown open at rest via defaultOpen.
@@ -107,7 +107,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Placement · side</CardTitle>
+            <CardTitle level={2}>Placement · side</CardTitle>
             <CardDescription>
               PopoverContent accepts side: top / right / bottom (default) / left, with sideOffset.
             </CardDescription>
@@ -152,7 +152,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Alignment · align</CardTitle>
+            <CardTitle level={2}>Alignment · align</CardTitle>
             <CardDescription>
               align: start / center (default) / end positions the panel along the trigger edge.
             </CardDescription>
@@ -189,7 +189,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Modal</CardTitle>
+            <CardTitle level={2}>Modal</CardTitle>
             <CardDescription>
               modal traps focus and blocks outside interaction while open. Shown open at rest.
             </CardDescription>

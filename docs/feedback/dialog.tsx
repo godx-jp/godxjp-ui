@@ -29,7 +29,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Form-style modal (pre-opened)</CardTitle>
+            <CardTitle level={2}>Form-style modal (pre-opened)</CardTitle>
             <CardDescription>
               Controlled via open + onOpenChange. DialogTitle is required for screen-reader
               accessibility. Hold open while pending to prevent double-submit.
@@ -80,7 +80,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Read-only detail pop-up</CardTitle>
+            <CardTitle level={2}>Read-only detail pop-up</CardTitle>
             <CardDescription>
               No footer action buttons needed, just a close trigger. Suitable for audit trail,
               attachment preview, or approval history.

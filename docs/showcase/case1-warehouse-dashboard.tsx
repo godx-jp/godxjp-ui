@@ -229,7 +229,7 @@ export default function WarehouseDashboardShowcase() {
           <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 2 }}>
             <Card className="self-start">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Cần xử lý</CardTitle>
+                <CardTitle level={2}>Cần xử lý</CardTitle>
                 <Text size="xs" tone="muted">
                   {QUEUE.length} hàng đợi
                 </Text>
@@ -260,7 +260,7 @@ export default function WarehouseDashboardShowcase() {
 
             <Card className="self-start">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Hoạt động gần đây</CardTitle>
+                <CardTitle level={2}>Hoạt động gần đây</CardTitle>
                 <Text size="xs" tone="muted">
                   24h qua
                 </Text>
@@ -275,7 +275,7 @@ export default function WarehouseDashboardShowcase() {
           <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 2 }}>
             <Card className="self-start">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Dung lượng giá hàng</CardTitle>
+                <CardTitle level={2}>Dung lượng giá hàng</CardTitle>
                 <Button variant="ghost" size="sm">
                   Xem tất cả
                 </Button>
@@ -299,7 +299,7 @@ export default function WarehouseDashboardShowcase() {
 
             <Card className="self-start">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Chuyến gần nhất</CardTitle>
+                <CardTitle level={2}>Chuyến gần nhất</CardTitle>
                 <Button variant="ghost" size="sm">
                   Tất cả
                 </Button>

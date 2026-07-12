@@ -209,7 +209,7 @@ export default function Demo() {
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
-              <CardTitle>請求書 一覧</CardTitle>
+              <CardTitle level={2}>請求書 一覧</CardTitle>
               <CardDescription>
                 請求書番号にホバーまたはフォーカスすると、その明細クエリが先読みされ次の画面が即時表示されます。
               </CardDescription>
@@ -221,7 +221,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>prefetchOn · トリガーの種類</CardTitle>
+              <CardTitle level={2}>prefetchOn · トリガーの種類</CardTitle>
               <CardDescription>
                 既定は both。hover / focus / none で先読みのきっかけを切り替えます。
               </CardDescription>
@@ -233,7 +233,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>先読みキャッシュ（観測）</CardTitle>
+              <CardTitle level={2}>先読みキャッシュ（観測）</CardTitle>
               <CardDescription>
                 QueryClient のキャッシュから ["invoice", id] を直接読み出して表示します。
               </CardDescription>
@@ -245,7 +245,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>遷移先の明細（契約）</CardTitle>
+              <CardTitle level={2}>遷移先の明細（契約）</CardTitle>
               <CardDescription>
                 リンクと同じ queryKey/queryFn を使う
                 useQuery。先読み済みならキャッシュから即時解決します。

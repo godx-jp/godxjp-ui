@@ -26,7 +26,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>会計モジュールナビゲーション</CardTitle>
+            <CardTitle level={2}>会計モジュールナビゲーション</CardTitle>
             <CardDescription>
               各メニュートリガーをホバーするとコンテンツパネルが展開します。
             </CardDescription>

@@ -27,7 +27,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>既定 direction=&quot;row&quot; · CSS 標準</CardTitle>
+            <CardTitle level={2}>既定 direction=&quot;row&quot; · CSS 標準</CardTitle>
             <CardDescription>
               direction を省略すると row（CSS の display:flex の初期値）。横並びが既定で、
               縦積みには direction=&quot;col&quot; を明示する。
@@ -44,7 +44,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>direction=&quot;col&quot; · 縦スタック</CardTitle>
+            <CardTitle level={2}>direction=&quot;col&quot; · 縦スタック</CardTitle>
             <CardDescription>
               縦積みは direction=&quot;col&quot; を明示する。gap
               トークンで間隔を均一に制御。className で raw gap-* を使わない。
@@ -73,7 +73,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>
+            <CardTitle level={2}>
               direction=&quot;row&quot; + justify=&quot;between&quot; · ツールバー
             </CardTitle>
             <CardDescription>
@@ -95,7 +95,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>
+            <CardTitle level={2}>
               align=&quot;center&quot; + justify=&quot;center&quot; · センタリング
             </CardTitle>
             <CardDescription>
@@ -114,7 +114,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>align · 交差軸の整列（全 5 値）</CardTitle>
+            <CardTitle level={2}>align · 交差軸の整列（全 5 値）</CardTitle>
             <CardDescription>
               direction=&quot;row&quot; の交差軸（縦方向）の揃え方。高さの異なる子要素で
               start・center・end・baseline・stretch の違いを比較。baseline はテキストの
@@ -147,7 +147,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>justify · 主軸の配置（全 6 値）</CardTitle>
+            <CardTitle level={2}>justify · 主軸の配置（全 6 値）</CardTitle>
             <CardDescription>
               direction=&quot;row&quot; の主軸（横方向）の配置。固定幅トラックで余白の
               分配を比較。between は端寄せ、around は各要素の周囲、evenly は要素間と端を
@@ -180,7 +180,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>wrap · 折り返しの有無を比較</CardTitle>
+            <CardTitle level={2}>wrap · 折り返しの有無を比較</CardTitle>
             <CardDescription>
               wrap=&#123;true&#125;（既定の false に対して）。狭いトラックで折り返しの有無を
               並べて比較。false では子要素が一行に圧縮され、true では次行へ流れる。
@@ -214,7 +214,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>wrap · バッジ・チップクラスター</CardTitle>
+            <CardTitle level={2}>wrap · バッジ・チップクラスター</CardTitle>
             <CardDescription>
               direction=&quot;row&quot; + wrap=&#123;true&#125; でタグ・ステータスバッジが折り返す。
               gap トークンで均一スペーシング。
@@ -236,7 +236,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>gap トークンスケール</CardTitle>
+            <CardTitle level={2}>gap トークンスケール</CardTitle>
             <CardDescription>
               xs · sm · md（既定）· lg · xl。raw gap-* / space-* ユーティリティは使わない。
             </CardDescription>

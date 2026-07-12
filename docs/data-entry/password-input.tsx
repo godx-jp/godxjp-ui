@@ -18,7 +18,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>States</CardTitle>
+            <CardTitle level={2}>States</CardTitle>
             <CardDescription>Placeholder, filled, and disabled.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -32,7 +32,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>ログインフォーム</CardTitle>
+            <CardTitle level={2}>ログインフォーム</CardTitle>
             <CardDescription>
               current-password autoComplete でパスワードマネージャーと連携。
             </CardDescription>
@@ -53,7 +53,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>パスワード変更フォーム</CardTitle>
+            <CardTitle level={2}>パスワード変更フォーム</CardTitle>
             <CardDescription>new-password autoComplete で新しいパスワードを設定。</CardDescription>
           </CardHeader>
           <CardContent>

@@ -38,7 +38,7 @@ export default function Demo() {
         {/* Horizontal — default style with descriptions */}
         <Card>
           <CardHeader>
-            <CardTitle>水平 · default スタイル (経費承認フロー)</CardTitle>
+            <CardTitle level={2}>水平 · default スタイル (経費承認フロー)</CardTitle>
             <CardDescription>
               items に title + description を渡す。current は 0-based index。 前のステップは
               finish、現在は process、後のステップは wait。
@@ -52,7 +52,7 @@ export default function Demo() {
         {/* Interactive — advance/retreat */}
         <Card>
           <CardHeader>
-            <CardTitle>インタラクティブ · ステップを進む / 戻る</CardTitle>
+            <CardTitle level={2}>インタラクティブ · ステップを進む / 戻る</CardTitle>
             <CardDescription>
               onValueChange を渡すと各ステップがクリッカブルになる。ボタンで value
               を制御することもできる。
@@ -89,7 +89,7 @@ export default function Demo() {
         {/* Error status on current step */}
         <Card>
           <CardHeader>
-            <CardTitle>status=&quot;error&quot; — 現在ステップをエラー表示</CardTitle>
+            <CardTitle level={2}>status=&quot;error&quot; — 現在ステップをエラー表示</CardTitle>
             <CardDescription>
               status prop を error にするとアクティブステップが赤くなる。
               バリデーション失敗時にフォームと組み合わせて使う。
@@ -108,7 +108,7 @@ export default function Demo() {
         {/* Vertical — default style */}
         <Card>
           <CardHeader>
-            <CardTitle>垂直 · default スタイル (法人オンボーディング)</CardTitle>
+            <CardTitle level={2}>垂直 · default スタイル (法人オンボーディング)</CardTitle>
             <CardDescription>
               orientation=&quot;vertical&quot; でサイドバーやサイドパネルに収まる縦型レイアウト。
             </CardDescription>
@@ -153,7 +153,7 @@ export default function Demo() {
         {/* Dot style — compact */}
         <Card>
           <CardHeader>
-            <CardTitle>320px stress · 長いタイトル</CardTitle>
+            <CardTitle level={2}>320px stress · 長いタイトル</CardTitle>
             <CardDescription>
               狭いコンテナで水平 Steps の長い日本語タイトルと説明を確認する。
             </CardDescription>
@@ -175,7 +175,7 @@ export default function Demo() {
         {/* Dot style — compact */}
         <Card>
           <CardHeader>
-            <CardTitle>Dot スタイル · コンパクト (type=&quot;dot&quot;)</CardTitle>
+            <CardTitle level={2}>Dot スタイル · コンパクト (type=&quot;dot&quot;)</CardTitle>
             <CardDescription>
               type=&quot;dot&quot; + size=&quot;sm&quot; で最小フットプリントのプログレスガイド。
               サイドバーのオンボーディングチェックリストに最適。

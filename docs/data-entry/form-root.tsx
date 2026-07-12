@@ -31,7 +31,7 @@ export default function Demo() {
     >
       <Card className="max-w-2xl">
         <CardHeader>
-          <CardTitle>送付先設定</CardTitle>
+          <CardTitle level={2}>送付先設定</CardTitle>
           <CardDescription>
             Submit 後に field error を表示し、最初の invalid field へ focus。reset は defaultValues
             を復元する。server error summary は application が管理する。

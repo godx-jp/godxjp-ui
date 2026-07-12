@@ -22,7 +22,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>基本 (controlled)</CardTitle>
+            <CardTitle level={2}>基本 (controlled)</CardTitle>
             <CardDescription>
               value + onValueChange で number | null を制御。空欄は null。ArrowUp/Down
               またはステッパーで step ずつ増減。
@@ -46,7 +46,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>min / max · 範囲クランプ</CardTitle>
+            <CardTitle level={2}>min / max · 範囲クランプ</CardTitle>
             <CardDescription>
               min=1, max=5。境界でステッパーが無効化され、コミット時に範囲内へクランプされる。
             </CardDescription>
@@ -68,7 +68,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>step · 刻み幅</CardTitle>
+            <CardTitle level={2}>step · 刻み幅</CardTitle>
             <CardDescription>
               step=100 で 100 単位の増減。Shift + Arrow で ×10 (1000 刻み)。
             </CardDescription>
@@ -89,7 +89,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>precision · 小数桁</CardTitle>
+            <CardTitle level={2}>precision · 小数桁</CardTitle>
             <CardDescription>
               precision=2, step=0.25。コミット時に小数 2 桁へ丸め、Intl.NumberFormat で整形。
             </CardDescription>
@@ -111,7 +111,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>prefix / suffix — ¥ と %</CardTitle>
+            <CardTitle level={2}>prefix / suffix — ¥ と %</CardTitle>
             <CardDescription>
               通貨記号や単位を装飾的な affix として表示 (aria-hidden)。値は生の数値のまま。
             </CardDescription>
@@ -148,7 +148,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>uncontrolled (defaultValue)</CardTitle>
+            <CardTitle level={2}>uncontrolled (defaultValue)</CardTitle>
             <CardDescription>
               React 管理不要なネイティブフォーム。送信時に name 経由で値が渡される。
             </CardDescription>
@@ -169,7 +169,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>disabled / readOnly</CardTitle>
+            <CardTitle level={2}>disabled / readOnly</CardTitle>
             <CardDescription>
               disabled は操作不可、readOnly は値を表示・選択できるが編集・ステップ不可。
             </CardDescription>
@@ -200,7 +200,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>size · xs / sm / md / lg</CardTitle>
+            <CardTitle level={2}>size · xs / sm / md / lg</CardTitle>
             <CardDescription>
               制御高さティア (--control-height) に連動。行内の他コントロールと整列。
             </CardDescription>

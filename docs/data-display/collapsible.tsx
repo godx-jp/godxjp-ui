@@ -29,7 +29,7 @@ export default function Demo() {
         <Flex direction="col" gap="md" className="md:flex-row">
           <Card className="flex-1">
             <CardHeader>
-              <CardTitle>補助科目（既定で開く）</CardTitle>
+              <CardTitle level={2}>補助科目（既定で開く）</CardTitle>
               <CardDescription>defaultOpen: 初期表示で展開された状態。</CardDescription>
             </CardHeader>
             <CardContent>
@@ -60,7 +60,7 @@ export default function Demo() {
 
           <Card className="flex-1">
             <CardHeader>
-              <CardTitle>補助科目（既定で閉じる）</CardTitle>
+              <CardTitle level={2}>補助科目（既定で閉じる）</CardTitle>
               <CardDescription>初期表示は折りたたみ。トリガーで展開します。</CardDescription>
             </CardHeader>
             <CardContent>
@@ -92,7 +92,7 @@ export default function Demo() {
         {/* Controlled — open state owned by the page (open + onOpenChange) */}
         <Card>
           <CardHeader>
-            <CardTitle>制御コンポーネント</CardTitle>
+            <CardTitle level={2}>制御コンポーネント</CardTitle>
             <CardDescription>open と onOpenChange でページ側が開閉を管理します。</CardDescription>
           </CardHeader>
           <CardContent>
@@ -130,7 +130,7 @@ export default function Demo() {
         {/* Disabled — locked, non-interactive */}
         <Card>
           <CardHeader>
-            <CardTitle>無効状態</CardTitle>
+            <CardTitle level={2}>無効状態</CardTitle>
             <CardDescription>disabled: トリガーが操作不可（ロック）になります。</CardDescription>
           </CardHeader>
           <CardContent>

@@ -224,7 +224,7 @@ export default function Demo() {
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
-              <CardTitle>Responsive frame coverage</CardTitle>
+              <CardTitle level={2}>Responsive frame coverage</CardTitle>
               <CardDescription>
                 Frame の Dimensions で 320 / 375 / 390 / 768 / 1024 / 1280 / 1440 / 1920px
                 を切り替え、sidebar・topbar・page actions・grid・split pane
@@ -248,7 +248,7 @@ export default function Demo() {
               <Flex direction="col" gap="md">
                 <Card>
                   <CardHeader>
-                    <CardTitle>最近の仕訳</CardTitle>
+                    <CardTitle level={2}>最近の仕訳</CardTitle>
                     <CardDescription>承認待ちの仕訳</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -269,7 +269,7 @@ export default function Demo() {
           >
             <Card>
               <CardHeader>
-                <CardTitle>売上推移</CardTitle>
+                <CardTitle level={2}>売上推移</CardTitle>
                 <CardDescription>過去6ヶ月の月次売上</CardDescription>
               </CardHeader>
               <CardContent>

@@ -423,7 +423,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>開閉可能なツリー</CardTitle>
+            <CardTitle level={2}>開閉可能なツリー</CardTitle>
           </CardHeader>
           <CardContent flush>
             <InteractiveTree />
@@ -432,7 +432,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>全展開（3階層・インデントの確認）</CardTitle>
+            <CardTitle level={2}>全展開（3階層・インデントの確認）</CardTitle>
           </CardHeader>
           <CardContent flush>
             <ExpandedTree />

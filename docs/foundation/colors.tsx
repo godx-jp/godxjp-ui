@@ -131,7 +131,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Semantic surfaces</CardTitle>
+            <CardTitle level={2}>Semantic surfaces</CardTitle>
             <CardDescription>
               Page / raised / overlay / muted neutrals. Use these; never invent a new grey. Each box
               shows its own foreground text token. Every role is redefined under .dark.
@@ -144,7 +144,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Structural neutrals</CardTitle>
+            <CardTitle level={2}>Structural neutrals</CardTitle>
             <CardDescription>
               Hairlines, field borders, focus ring. In practice these paint borders and outlines,
               not areas. They are shown as fills here so the named token is visible. Also themed
@@ -158,7 +158,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Brand & status</CardTitle>
+            <CardTitle level={2}>Brand & status</CardTitle>
             <CardDescription>
               Fixed semantic mapping: never substitute. primary = the single most important action;
               status is success / warning / info / attention / danger. Lifted for contrast under
@@ -172,7 +172,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>和色 wa-iro · decorative only</CardTitle>
+            <CardTitle level={2}>和色 wa-iro · decorative only</CardTitle>
             <CardDescription>
               Traditional Japanese accents for charts / tags / tenant theming. NEVER map a wa-iro
               hue to a semantic role beyond the five canonical ones above. Fixed hex ·
@@ -186,7 +186,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Chart accents</CardTitle>
+            <CardTitle level={2}>Chart accents</CardTitle>
             <CardDescription>
               Series colours for data visualisation: neutral decorative primitives, NOT business
               semantics. Use bg-chart-1…6 in order; theme-invariant like wa-iro.

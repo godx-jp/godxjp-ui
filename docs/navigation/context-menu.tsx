@@ -38,7 +38,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>基本アクション</CardTitle>
+            <CardTitle level={2}>基本アクション</CardTitle>
             <CardDescription>
               領域を右クリックするとメニューが開きます。サブメニュー・区切り・ショートカットを含む。
             </CardDescription>
@@ -79,7 +79,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>チェックボックス・ラジオアイテム</CardTitle>
+            <CardTitle level={2}>チェックボックス・ラジオアイテム</CardTitle>
             <CardDescription>
               表示設定の切り替えに使用。CheckboxItem は個別トグル、RadioGroup は排他選択。
             </CardDescription>

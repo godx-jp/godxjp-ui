@@ -32,7 +32,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>States</CardTitle>
+            <CardTitle level={2}>States</CardTitle>
             <CardDescription>
               required adds a red asterisk; helper is a muted hint; error (role=alert) overrides it.
             </CardDescription>
@@ -86,7 +86,9 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Layout matrix · widths / breakpoints / long locale / RTL</CardTitle>
+            <CardTitle level={2}>
+              Layout matrix · widths / breakpoints / long locale / RTL
+            </CardTitle>
             <CardDescription>
               horizontal は md 未満で vertical に collapse。field 単位の width override と 320px
               相当の長文を同時確認する。
@@ -126,7 +128,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>State contract · supported and untested gaps</CardTitle>
+            <CardTitle level={2}>State contract · supported and untested gaps</CardTitle>
             <CardDescription>
               FormField supports helper, required and error. warning, pending, touched/submitted
               timing, server-error mapping and form-summary focus are not FormField props; those
@@ -154,7 +156,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Composition · Dialog / Sheet</CardTitle>
+            <CardTitle level={2}>Composition · Dialog / Sheet</CardTitle>
             <CardDescription>同じ bounded form を overlay 内で確認する。</CardDescription>
           </CardHeader>
           <CardContent>

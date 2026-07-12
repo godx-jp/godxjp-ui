@@ -70,7 +70,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Advanced filter (pre-opened, side=right)</CardTitle>
+            <CardTitle level={2}>Advanced filter (pre-opened, side=right)</CardTitle>
             <CardDescription>
               The defining footer pattern: actions are end-aligned, the primary 適用 is last, and
               the clear/reset action クリア moves to the leading edge via
@@ -180,7 +180,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Quick-edit form (Cancel + Save, right-aligned)</CardTitle>
+            <CardTitle level={2}>Quick-edit form (Cancel + Save, right-aligned)</CardTitle>
             <CardDescription>
               No destructive action, so both buttons sit on the right: キャンセル (secondary) to the
               left of 保存 (primary). Close programmatically on submit success.
@@ -227,7 +227,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Edit with destructive action (削除 far-left)</CardTitle>
+            <CardTitle level={2}>Edit with destructive action (削除 far-left)</CardTitle>
             <CardDescription>
               A destructive / clear / reset action goes to the leading edge via
               className=&quot;me-auto&quot; with variant=&quot;destructive&quot;, while キャンセル +

@@ -26,7 +26,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>アクティブなセッション Active sessions</CardTitle>
+            <CardTitle level={2}>アクティブなセッション Active sessions</CardTitle>
             <CardDescription>
               Rows live in a flush CardContent and draw their own dividers. Trailing holds the row
               action: a status Badge or a destructive Button.
@@ -64,7 +64,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>連携アカウント Linked accounts</CardTitle>
+            <CardTitle level={2}>連携アカウント Linked accounts</CardTitle>
             <CardDescription>
               Leading takes an icon or Avatar; trailing takes any action control. `as="li"` when the
               rows are a semantic list.

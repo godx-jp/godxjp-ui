@@ -16,7 +16,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Heading scale</CardTitle>
+            <CardTitle level={2}>Heading scale</CardTitle>
             <CardDescription>
               h1 20 / h2 18 / h3 14 / h4-h6 13px, weight 500 (h5/h6 collapse to 13px). SEO/a11y:
               exactly one &lt;h1&gt; per page (the page title above); h2-h6 below never skip a
@@ -36,7 +36,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Body & weights</CardTitle>
+            <CardTitle level={2}>Body & weights</CardTitle>
             <CardDescription>
               Default body 14px / 1.7 (間 ma); dense tables 13px / 1.5. Three weights only · 400
               body, 500 heading/label, 700 emphasis. NO 300, NO 600.
@@ -61,7 +61,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Tabular figures</CardTitle>
+            <CardTitle level={2}>Tabular figures</CardTitle>
             <CardDescription>
               tabular-nums on every numeric column / large stat so digits align under 1.7 leading.
             </CardDescription>
@@ -76,7 +76,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Size scale</CardTitle>
+            <CardTitle level={2}>Size scale</CardTitle>
             <CardDescription>
               Six steps on the JP-dense base. text-sm (14px) is body; text-base+ are for stats /
               large numerals, not running copy.
@@ -96,7 +96,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Font family</CardTitle>
+            <CardTitle level={2}>Font family</CardTitle>
             <CardDescription>
               font-sans · Noto Sans JP by default (Japanese + Latin); the Vietnamese locale
               (&lt;html lang=&quot;vi&quot;&gt;) swaps to Montserrat (incl. its Vietnamese subset).
@@ -118,7 +118,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Line height</CardTitle>
+            <CardTitle level={2}>Line height</CardTitle>
             <CardDescription>
               tight 1.25 · headings · normal 1.5 · dense tables · body 1.7 · running 日本語/Latin
               copy (the default applied to &lt;body&gt;).

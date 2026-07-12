@@ -38,7 +38,7 @@ function Block() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>請求書 一覧</CardTitle>
+        <CardTitle level={2}>請求書 一覧</CardTitle>
         <CardDescription>The header Refresh button is bound to the query.</CardDescription>
         <CardAction>
           <ButtonRefetch query={query} label="更新" />

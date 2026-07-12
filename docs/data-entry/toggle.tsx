@@ -22,7 +22,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Controlled state</CardTitle>
+            <CardTitle level={2}>Controlled state</CardTitle>
             <CardDescription>
               Controlled via pressed/onPressedChange. Suitable for toolbar formatting or filter
               pins.
@@ -42,7 +42,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Variants</CardTitle>
+            <CardTitle level={2}>Variants</CardTitle>
             <CardDescription>
               default (filled background when pressed) vs outline (border style).
             </CardDescription>
@@ -71,7 +71,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Sizes</CardTitle>
+            <CardTitle level={2}>Sizes</CardTitle>
             <CardDescription>sm / md / lg · match surrounding density.</CardDescription>
           </CardHeader>
           <CardContent>

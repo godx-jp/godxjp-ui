@@ -15,7 +15,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>States</CardTitle>
+            <CardTitle level={2}>States</CardTitle>
             <CardDescription>Placeholder, filled, and disabled.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -29,7 +29,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>In FormField</CardTitle>
+            <CardTitle level={2}>In FormField</CardTitle>
             <CardDescription>Labelled with a helper hint.</CardDescription>
           </CardHeader>
           <CardContent>

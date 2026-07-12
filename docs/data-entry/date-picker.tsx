@@ -26,7 +26,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>基本 (controlled)</CardTitle>
+            <CardTitle level={2}>基本 (controlled)</CardTitle>
             <CardDescription>
               value + onValueChange で制御。name= を指定すると ISO yyyy-MM-dd でフォーム送信される。
               入力欄に直接タイプでき、カレンダーと同期。フォーカスを外すと正規の ISO
@@ -47,7 +47,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>fromDate で過去日を無効化</CardTitle>
+            <CardTitle level={2}>fromDate で過去日を無効化</CardTitle>
             <CardDescription>
               支払期限など、今日以降しか選べない場合に fromDate=&#123;new Date(2026, 0, 1)&#125;
               で制限。
@@ -68,7 +68,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>fromDate + toDate で範囲を制限</CardTitle>
+            <CardTitle level={2}>fromDate + toDate で範囲を制限</CardTitle>
             <CardDescription>決算締め日など、選択可能期間を会計年度内に絞る場合。</CardDescription>
           </CardHeader>
           <CardContent>
@@ -87,7 +87,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>disabled 状態</CardTitle>
+            <CardTitle level={2}>disabled 状態</CardTitle>
             <CardDescription>確定済み伝票など編集不可フィールドに使用。</CardDescription>
           </CardHeader>
           <CardContent>
@@ -104,7 +104,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>defaultValue (uncontrolled)</CardTitle>
+            <CardTitle level={2}>defaultValue (uncontrolled)</CardTitle>
             <CardDescription>
               value/onValueChange を渡さず defaultValue で初期値だけ与える非制御モード。状態は
               コンポーネント内部で保持され、name= でそのままフォーム送信できる。
@@ -119,7 +119,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>locale で暦の言語を切替</CardTitle>
+            <CardTitle level={2}>locale で暦の言語を切替</CardTitle>
             <CardDescription>
               locale={"{ja}"} を渡すとカレンダーの曜日・月名が日本語表示になる。値は ISO-8601
               のまま不変で、表示のみ各 locale に追従する。
@@ -140,7 +140,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>error 状態 (aria-invalid)</CardTitle>
+            <CardTitle level={2}>error 状態 (aria-invalid)</CardTitle>
             <CardDescription>
               FormField の error= を指定すると aria-invalid と role=&quot;alert&quot;
               のエラーメッセージが付与される。必須日付の未入力や範囲外選択の検証結果を提示する。
