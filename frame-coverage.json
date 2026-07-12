@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "dimensions": {
+    "isolated": {
+      "status": "untested",
+      "reason": "An owner frame exists, but compound exports are not assumed rendered without explicit evidence."
+    },
+    "composition": {
+      "status": "untested",
+      "reason": "A component frame does not prove composition in every supported surface."
+    },
+    "journey": {
+      "status": "untested",
+      "reason": "Static frames do not prove entry, action, completion, and recovery journeys."
+    },
+    "responsive": {
+      "status": "untested",
+      "reason": "No complete 320–1920 rendered evidence matrix is recorded for every export."
+    },
+    "rtl": {
+      "status": "untested",
+      "reason": "No complete rendered RTL matrix is recorded for every export."
+    },
+    "a11y": {
+      "status": "untested",
+      "reason": "Frame presence alone does not prove semantics, keyboard, focus, or announcements."
+    },
+    "async": {
+      "status": "not-applicable",
+      "reason": "Default for primitives without async state; override when applicable."
+    }
+  },
+  "sourceAliases": {
+    "layout/resizable": "layout/resizable-panel",
+    "data-entry/radio": "data-entry/radio-group",
+    "data-entry/form-field": "data-entry/form-field/index",
+    "data-display/card": "data-display/card/index",
+    "data-display/data-table": "data-display/data-table/index",
+    "general/button": "general/button/index"
+  },
+  "excludeExports": [
+    "useFormLayout",
+    "collectUploadCommitActions",
+    "createUploadItem",
+    "useUploadDraft",
+    "SHOW_CHILD",
+    "SHOW_PARENT",
+    "SHOW_ALL",
+    "usePasswordStrength",
+    "toast"
+  ],
+  "overrides": {
+    "Button": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/general/button/index.tsx."
+      }
+    },
+    "Input": {
+      "isolated": { "status": "pass", "reason": "Rendered directly in docs/data-entry/input.tsx." }
+    },
+    "Flex": {
+      "isolated": { "status": "pass", "reason": "Rendered directly in docs/layout/flex.tsx." }
+    },
+    "Card": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-display/card/index.tsx."
+      }
+    }
+  }
+}
