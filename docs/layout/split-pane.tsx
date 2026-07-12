@@ -17,9 +17,10 @@ import { FileText, Building2, Calendar, CreditCard, ArrowRight } from "lucide-re
  * Shows: main list + detail panel, asideWidth sm/md, nested inside PageContainer.
  * Composed only from real @godxjp/ui components.
  *
- * NOTE: <Flex> defaults to direction="col"; every horizontal row sets direction="row"
- * explicitly. Spacing comes from the Flex `gap` prop or valid 4-point utilities
- * (gap-3, pt-2, ml-3) · never named classes like `gap-md` (no such utility exists).
+ * NOTE: <Flex> defaults to the CSS-standard direction="row"; every vertical stack sets
+ * direction="col" explicitly (and rows may keep direction="row" for intent). Spacing comes
+ * from the Flex `gap` prop or valid 4-point utilities (gap-3, pt-2, ml-3) · never named
+ * classes like `gap-md` (no such utility exists).
  */
 
 type Invoice = {
