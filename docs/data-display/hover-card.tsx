@@ -156,7 +156,7 @@ export default function Demo() {
             <Flex direction="row" gap="lg" wrap>
               <HoverCard openDelay={700} closeDelay={150}>
                 <HoverCardTrigger asChild>
-                  <Button variant="link">ゆっくり開く（openDelay=700）</Button>
+                  <Button variant="link">openDelay=700ms</Button>
                 </HoverCardTrigger>
                 <HoverCardContent>
                   <Text>待ってから表示。意図しないホバーで開きません。</Text>
@@ -165,7 +165,7 @@ export default function Demo() {
 
               <HoverCard openDelay={0} closeDelay={600}>
                 <HoverCardTrigger asChild>
-                  <Button variant="link">すぐ開き、遅く閉じる（closeDelay=600）</Button>
+                  <Button variant="link">closeDelay=600ms</Button>
                 </HoverCardTrigger>
                 <HoverCardContent>
                   <Text>即座に表示し、離れても少し残るのでカード内に移動できます。</Text>

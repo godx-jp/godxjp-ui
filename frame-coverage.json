@@ -685,6 +685,67 @@
         "status": "pass",
         "reason": "Rendered axe passed; keyboard is not applicable to static progress indicators."
       }
+    },
+    "data-display/timeline": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static timelines."
+      }
+    },
+    "data-display/tree-list": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to the static frame."
+      }
+    },
+    "data-display/scroll-area": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Focusable scroll viewport passed rendered axe and keyboard smoke."
+      }
+    },
+    "data-display/popover": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Named popover dialogs passed rendered axe and keyboard smoke."
+      }
+    },
+    "data-display/hover-card": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Eight-width Chromium geometry passed after narrow-label correction."
+      },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "data-display/table": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static tables."
+      }
+    },
+    "general/typography": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "general/logo": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed for decorative and labelled logos; keyboard is not applicable."
+      }
     }
   }
 }

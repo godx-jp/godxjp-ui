@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-07-12T14:29:52.727Z",
+  "auditedAt": "2026-07-12T14:32:57.887Z",
   "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
   "limitations": [
     "Automated Chromium DOM/geometry/axe/keyboard evidence only.",
@@ -173,6 +173,123 @@
       "evidence": [
         "artifacts/display-runtime/data-display-card-320.png",
         "artifacts/display-runtime/data-display-card-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-timeline",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-timeline-320.png",
+        "artifacts/display-runtime/data-display-timeline-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-tree-list",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-tree-list-320.png",
+        "artifacts/display-runtime/data-display-tree-list-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-scroll-area",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-scroll-area-320.png",
+        "artifacts/display-runtime/data-display-scroll-area-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-popover",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-popover-320.png",
+        "artifacts/display-runtime/data-display-popover-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-hover-card",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-hover-card-320.png",
+        "artifacts/display-runtime/data-display-hover-card-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-table",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-table-320.png",
+        "artifacts/display-runtime/data-display-table-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-stat-card",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-stat-card-320.png",
+        "artifacts/display-runtime/data-display-stat-card-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "general-typography",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/general-typography-320.png",
+        "artifacts/display-runtime/general-typography-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "general-logo",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/general-logo-320.png",
+        "artifacts/display-runtime/general-logo-1920.png"
       ],
       "verdict": "pass"
     }
