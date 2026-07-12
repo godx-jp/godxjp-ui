@@ -1,7 +1,15 @@
 import { AppProvider } from "@godxjp/ui/app";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Avatar,
+  AvatarFallback,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
-import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { Flex, PageContainer, Topbar } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
@@ -76,14 +84,34 @@ export default function Demo() {
             <CardHeader>
               <CardTitle>狭いコンテナと長いラベル</CardTitle>
               <CardDescription>
-                現行 API のモバイル挙動を 320px 相当で確認する。compact / icon-only API
-                は未提供のため、この例では CSS で擬似実装しない。
+                320px 相当で長いタイムゾーン名の折返し・クリッピングを確認する。
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="max-w-80 border p-3" lang="ja">
                 <AppSettingPicker kind="timezone" id="setting-timezone-narrow" />
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>アイコンのみ（トップバー）</CardTitle>
+              <CardDescription>
+                appearance=&quot;icon&quot; は正方形トリガーとローカライズ済み accessible name
+                を保持し、選択肢はメニュー内で完全表示する。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Topbar
+                className="rounded-md border"
+                start={
+                  <Avatar className="rounded-md">
+                    <AvatarFallback>G</AvatarFallback>
+                  </Avatar>
+                }
+                end={<AppSettingPicker kind="locale" appearance="icon" id="topbar-locale-icon" />}
+              />
             </CardContent>
           </Card>
 
