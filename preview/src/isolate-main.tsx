@@ -49,7 +49,11 @@ function IsolateApp() {
   }
 
   if (!Render) return null;
-  const ownsDocumentLandmarks = storyId === "layout-app-shell" || storyId === "layout-auth-shell";
+  const ownsDocumentLandmarks =
+    storyId === "layout-app-shell" ||
+    storyId === "layout-auth-shell" ||
+    storyId === "layout-sidebar" ||
+    storyId === "layout-topbar";
   const Wrapper = ownsDocumentLandmarks ? "div" : "main";
 
   return (

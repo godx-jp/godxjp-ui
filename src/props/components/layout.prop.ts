@@ -130,6 +130,8 @@ export type SidebarSectionProp = {
 
 /** @see Sidebar */
 export type SidebarProp = {
+  /** Accessible navigation landmark name; make it unique when multiple sidebars share a document. */
+  ariaLabel?: string;
   activeId: string;
   onSelect?: (id: string) => void;
   sections?: SidebarSectionProp[];

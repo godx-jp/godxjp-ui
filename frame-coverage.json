@@ -604,6 +604,50 @@
         "reason": "Isolated multi-shell frame passed Axe with unique breadcrumb landmark labels."
       }
     },
+    "ResizablePanel": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Resizable owner frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Expanded panel state passed isolated Axe after the real open control was activated."
+      }
+    },
+    "Separator": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Separator frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated Separator frame passed Axe analysis." }
+    },
+    "Sidebar": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Sidebar frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated multi-sidebar frame passed Axe with unique navigation landmark names."
+      }
+    },
+    "SplitPane": {
+      "responsive": {
+        "status": "pass",
+        "reason": "SplitPane frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated multi-pane frame passed Axe with unique complementary landmark names."
+      }
+    },
+    "Topbar": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Topbar frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated Topbar frame passed Axe analysis." }
+    },
     "Dialog": {
       "responsive": {
         "status": "pass",

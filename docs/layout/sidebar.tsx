@@ -137,6 +137,7 @@ export default function Demo() {
 
   const sidebar = (
     <Sidebar
+      ariaLabel="会計アプリのメインナビゲーション"
       activeId={activeId}
       collapsed={collapsed}
       onSelect={setActiveId}
@@ -233,6 +234,7 @@ export default function Demo() {
             <CardContent>
               <div className="bg-card flex h-80 w-64 flex-col overflow-hidden rounded-lg border">
                 <Sidebar
+                  ariaLabel="ブランド例のナビゲーション"
                   activeId={brandActiveId}
                   onSelect={setBrandActiveId}
                   sections={BRAND_SECTIONS}
@@ -268,6 +270,7 @@ export default function Demo() {
             <CardContent>
               <div className="bg-card flex h-72 w-64 flex-col overflow-hidden rounded-lg border">
                 <Sidebar
+                  ariaLabel="カスタム行例のナビゲーション"
                   activeId={renderActiveId}
                   onSelect={setRenderActiveId}
                   sections={FAVOURITE_SECTIONS}
@@ -288,7 +291,11 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
-                <Sidebar activeId={composedActiveId} onSelect={setComposedActiveId}>
+                <Sidebar
+                  ariaLabel="構成可能な例のナビゲーション"
+                  activeId={composedActiveId}
+                  onSelect={setComposedActiveId}
+                >
                   <SidebarSection label="お気に入り">
                     {COMPOSED_ITEMS.map((item) => (
                       <SidebarItem
