@@ -23,7 +23,7 @@ export interface VisualRule {
 
 /** Command an agent runs against the running app before a visual pass (warnings, non-blocking). */
 export const VISUAL_AUDIT_COMMAND =
-  "node node_modules/@godxjp/ui/scripts/visual-audit.mjs <baseUrl> [route …]  (needs optional peers: playwright + @axe-core/playwright + a chromium; --strict for a CI gate, --format json, --rules to print this catalog)";
+  "node node_modules/@godxjp/ui/scripts/visual-audit.mjs <baseUrl> [route …]  (optional peers, TESTED range: playwright >=1.55 <2 [1.61.1] + @axe-core/playwright >=4.10 <5 [4.12.1] + axe-core >=4.10 <5 [4.12.1] + a chromium via `playwright install chromium`; --strict for a CI gate, --format json ALWAYS emits valid JSON with a status of ok|partial|error separating infra errors[] from product findings[], --rules to print this catalog)";
 
 export const VISUAL_RULES: VisualRule[] = [
   {
