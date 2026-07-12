@@ -64,9 +64,12 @@ for (const dir of fs.readdirSync(base, { withFileTypes: true }).filter((e) => e.
     for (const name of names) {
       const states = {};
       for (const d of dimensions) {
+        const groupOverride = config.ownerGroups?.find((group) => group.owners.includes(key))
+          ?.dimensions?.[d];
         const v =
           config.overrides?.[name]?.[d] ??
           config.ownerOverrides?.[key]?.[d] ??
+          groupOverride ??
           config.dimensions[d];
         if (!allowed.has(v.status)) errors.push(`${name}.${d}: invalid status`);
         if (v.status !== "pass" && !v.reason?.trim()) errors.push(`${name}.${d}: reason required`);

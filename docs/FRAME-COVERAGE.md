@@ -18,3 +18,12 @@ merely because a unit test or static demo exists.
 Async is intentionally `untested` by default. Every export must eventually be classified: execute
 its loading/error/retry/cancel/offline lifecycle, or mark it `not-applicable` with a component-specific
 reason. A blanket primitive-default `not-applicable` hides async-capable controls and is forbidden.
+
+## Accessibility evidence boundaries
+
+An `a11y: pass` in this ledger means the rendered frame passed automated axe checks plus the
+documented DOM/keyboard assertions. It does not claim testing with a real screen reader, braille
+display, voice control, switch control, or physical coarse-touch device. Those assistive-technology
+and hardware checks remain a separate manual evidence track and are currently `UNTESTED`, as also
+recorded in `display-runtime-evidence.json`. Never infer real AT or touch coverage from Chromium
+automation alone.

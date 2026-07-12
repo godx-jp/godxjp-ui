@@ -1113,5 +1113,77 @@
         "reason": "Executed hover/focus query prefetch invocation and deduplication tests passed."
       }
     }
-  }
+  },
+  "ownerGroups": [
+    {
+      "name": "display-static-closure",
+      "owners": [
+        "charts/line-chart",
+        "charts/bar-chart",
+        "charts/area-chart",
+        "charts/pie-chart",
+        "data-display/badge",
+        "data-display/avatar",
+        "data-display/card",
+        "data-display/table",
+        "data-display/descriptions",
+        "data-display/empty-state",
+        "data-display/progress",
+        "data-display/tree-list",
+        "data-display/timeline",
+        "data-display/scroll-area",
+        "general/typography",
+        "general/logo"
+      ],
+      "dimensions": {
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source-contract assertion proves every mapped public export renders in its owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner frame renders public parts in canonical composed surfaces and passed runtime geometry/axe."
+        },
+        "journey": {
+          "status": "not-applicable",
+          "reason": "Static presentation primitive owns no entry/action/completion/recovery journey."
+        },
+        "async": {
+          "status": "not-applicable",
+          "reason": "Static presentation primitive executes no asynchronous data or mutation work."
+        }
+      }
+    },
+    {
+      "name": "display-interactive-closure",
+      "owners": [
+        "data-display/list-row",
+        "data-display/data-table",
+        "data-display/popover",
+        "data-display/collapsible",
+        "data-display/accordion",
+        "data-display/hover-card",
+        "data-display/carousel",
+        "general/button"
+      ],
+      "dimensions": {
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source-contract assertion proves every mapped public export renders in its owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner frame plus tests execute canonical trigger/content/action composition."
+        },
+        "journey": {
+          "status": "pass",
+          "reason": "Executed keyboard/click/open/close/select or activation journeys pass."
+        },
+        "async": {
+          "status": "not-applicable",
+          "reason": "Interaction is synchronous; caller-owned loading props and animation timing are not async data work."
+        }
+      }
+    }
+  ]
 }
