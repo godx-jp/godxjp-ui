@@ -24,11 +24,11 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Input placeholder="プレースホルダー" />
-              <Input defaultValue="入力済みの値" />
-              <Input disabled defaultValue="無効 (disabled)" />
-              <Input readOnly defaultValue="読み取り専用 (readOnly)" />
-              <Input aria-invalid defaultValue="不正な値 (aria-invalid)" />
+              <Input aria-label="空のテキスト入力" placeholder="プレースホルダー" />
+              <Input aria-label="入力済み" defaultValue="入力済みの値" />
+              <Input aria-label="無効な入力" disabled defaultValue="無効 (disabled)" />
+              <Input aria-label="読み取り専用" readOnly defaultValue="読み取り専用 (readOnly)" />
+              <Input aria-label="不正な入力" aria-invalid defaultValue="不正な値 (aria-invalid)" />
             </Flex>
           </CardContent>
         </Card>
@@ -43,9 +43,9 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Input type="password" defaultValue="secret-value" />
-              <Input type="number" defaultValue={42} />
-              <Input type="date" defaultValue="2026-06-04" />
+              <Input aria-label="パスワード" type="password" defaultValue="secret-value" />
+              <Input aria-label="数量" type="number" defaultValue={42} />
+              <Input aria-label="日付" type="date" defaultValue="2026-06-04" />
               <Input type="file" aria-label="ファイルを選択" />
             </Flex>
           </CardContent>

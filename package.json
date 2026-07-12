@@ -277,6 +277,7 @@
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",
     "check:frame-coverage": "node scripts/check-frame-coverage.mjs",
+    "check:data-entry-frame-runtime": "node scripts/check-data-entry-frame-runtime.mjs",
     "pretest": "pnpm check:frame-coverage",
     "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm test",
     "verify:release": "pnpm build && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:audit-sync && pnpm check:mcp-prop-sync && pnpm check:contrast && pnpm check:visual-audit && pnpm test",
