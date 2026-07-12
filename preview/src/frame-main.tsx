@@ -56,24 +56,34 @@ function parseFrameChrome(): FrameChrome {
  * already emit their own `<main>`) is a runtime fact, not something knowable from story
  * metadata (every catalog entry defaults to `layout: "fullscreen"` regardless of content).
  * Detect it after mount: if the rendered subtree already contains a `<main>`/`role="main"`,
- * stay a plain `<div>` (avoids `landmark-no-duplicate-main` / `landmark-main-is-top-level`);
- * otherwise become the page's main landmark ourselves (avoids `landmark-one-main`).
+ * render a plain `<div>` (avoids `landmark-no-duplicate-main` / `landmark-main-is-top-level`);
+ * otherwise render the REAL `<main>` element ourselves (avoids `landmark-one-main`).
+ *
+ * This renders the actual `<main>` TAG, not a `role="main"` div: several axe landmark
+ * checks (e.g. `landmark-banner-is-top-level`'s body-context match for the toolbar
+ * `<header>`) walk ancestors by native tag name (`article, aside, main, nav, section`),
+ * not computed role — a `<div role="main">` would NOT be recognized as sectioning
+ * content by that walk, so the `<header>` inside it would wrongly start resolving to a
+ * top-level `banner` landmark.
  */
 function FrameLandmark({ dir, children }: { dir: "ltr" | "rtl"; children: React.ReactNode }) {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = React.useRef<HTMLElement>(null);
+  // Optimistic default: an own `<main>` (the common case — most demos are bare
+  // component/fragment showcases with no page shell of their own).
+  const [asMain, setAsMain] = React.useState(true);
 
   React.useLayoutEffect(() => {
     const node = ref.current;
     if (!node) return;
     const hasOwnMain = node.querySelector('main, [role="main"]') != null;
-    if (hasOwnMain) node.removeAttribute("role");
-    else node.setAttribute("role", "main");
+    setAsMain(!hasOwnMain);
   });
 
+  const Tag = asMain ? "main" : "div";
   return (
-    <div ref={ref} className="preview-frame" dir={dir}>
+    <Tag ref={ref} className="preview-frame" dir={dir}>
       {children}
-    </div>
+    </Tag>
   );
 }
 
