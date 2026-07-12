@@ -59,6 +59,7 @@ const DialogContent = React.forwardRef<
     showCloseButton?: boolean;
   }
 >(({ className, children, showClose, showCloseButton: showCloseButtonProp, ...props }, ref) => {
+  const { t } = useTranslation();
   const showCloseButton = showCloseButtonProp ?? showClose ?? true;
   return (
     <DialogPortal>
@@ -79,7 +80,7 @@ const DialogContent = React.forwardRef<
             className="ring-offset-background focus:ring-ring transition-opacity focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
           >
             <X className="size-4" aria-hidden="true" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{t("feedback.alert.dismiss")}</span>
           </DialogPrimitive.Close>
         ) : null}
       </DialogPrimitive.Content>
@@ -196,6 +197,7 @@ const AlertDialogContent = React.forwardRef<
     showCloseButton?: boolean;
   }
 >(({ className, children, showClose, showCloseButton: showCloseButtonProp, ...props }, ref) => {
+  const { t } = useTranslation();
   const showCloseButton = showCloseButtonProp ?? showClose ?? false;
   return (
     <AlertDialogPrimitive.Content
@@ -213,7 +215,7 @@ const AlertDialogContent = React.forwardRef<
           <button
             type="button"
             className="ring-offset-background focus:ring-ring transition-opacity focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
-            aria-label="Close"
+            aria-label={t("feedback.alert.dismiss")}
           >
             <X className="size-4" aria-hidden="true" />
           </button>
