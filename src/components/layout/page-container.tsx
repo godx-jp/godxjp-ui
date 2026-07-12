@@ -65,6 +65,7 @@ function PageContainerRoot({
   extra,
   footer,
   breadcrumb,
+  breadcrumbLabel = "Breadcrumb",
   linkComponent: LinkComponent = "a",
   density,
   variant = "default",
@@ -94,7 +95,7 @@ function PageContainerRoot({
     >
       <header ref={headerRef} className="ui-page-header">
         {breadcrumb && breadcrumb.length > 0 && (
-          <nav aria-label="Breadcrumb" className="ui-breadcrumb">
+          <nav aria-label={breadcrumbLabel} className="ui-breadcrumb">
             <ol className="ui-breadcrumb-list">
               {breadcrumb.map((item, i) => {
                 const isLast = i === breadcrumb.length - 1;

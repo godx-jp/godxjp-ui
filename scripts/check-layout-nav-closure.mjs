@@ -61,7 +61,17 @@ try {
   }
   if (runtimeErrors.length) throw new Error(`Runtime errors: ${runtimeErrors.join(" | ")}`);
   const violations = Object.entries(axe).filter(([, entries]) => entries.length);
-  if (violations.length) throw new Error(`Axe violations: ${JSON.stringify(violations)}`);
+  if (violations.length) {
+    const diagnostics = await page.locator(".ui-resizable-panel").evaluateAll((nodes) =>
+      nodes.map((node) => ({
+        html: node.outerHTML.slice(0, 500),
+        overflow: getComputedStyle(node).overflow,
+        scrollHeight: node.scrollHeight,
+        clientHeight: node.clientHeight,
+      })),
+    );
+    throw new Error(`Axe violations: ${JSON.stringify(violations)} ${JSON.stringify(diagnostics)}`);
+  }
   console.log(JSON.stringify({ frames, widths, reflow: "pass", axe }));
 } finally {
   await browser.close();

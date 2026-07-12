@@ -49,6 +49,8 @@ function IsolateApp() {
   }
 
   if (!Render) return null;
+  const ownsDocumentLandmarks = storyId === "layout-app-shell" || storyId === "layout-auth-shell";
+  const Wrapper = ownsDocumentLandmarks ? "div" : "main";
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -56,11 +58,11 @@ function IsolateApp() {
         {/* Demos are authored in Japanese; force ja so component chrome (search/clear/empty
             placeholders via t()) matches the demo copy instead of the AppProvider vi default. */}
         <AppProvider defaultLocale="ja" persist={false}>
-          <div>
+          <Wrapper>
             <StoryErrorBoundary storyId={story.id}>
               <Render />
             </StoryErrorBoundary>
-          </div>
+          </Wrapper>
         </AppProvider>
       </MemoryRouter>
     </QueryClientProvider>

@@ -26,7 +26,7 @@ export default function Demo() {
       <Reveal>
         <Card>
           <CardHeader>
-            <CardTitle>ログイン</CardTitle>
+            <CardTitle as="h1">ログイン</CardTitle>
             <CardDescription>アカウントにサインインしてください。</CardDescription>
           </CardHeader>
           <CardContent>

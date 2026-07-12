@@ -21,6 +21,8 @@ export type PageContainerProp = {
   extra?: ExtraProp;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;
+  /** Accessible breadcrumb landmark name; set a unique value when multiple shells share a document. */
+  breadcrumbLabel?: string;
   linkComponent?: React.ElementType;
   density?: PageDensityProp;
   variant?: PageContainerVariantProp;

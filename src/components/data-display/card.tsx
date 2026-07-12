@@ -80,7 +80,7 @@ CardHeader.displayName = "CardHeader";
 
 export type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
   /** Semantic heading level. Cards are page sections by default; nested cards opt into h3/h4. */
-  as?: "h2" | "h3" | "h4";
+  as?: "h1" | "h2" | "h3" | "h4";
 };
 
 export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
