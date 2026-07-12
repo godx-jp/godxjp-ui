@@ -132,10 +132,21 @@
       "a11y": {
         "status": "pass",
         "reason": "Axe executed on the rendered Select frame at all eight viewport widths after the compound trigger was labelled."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Select owner frame passed RTL geometry and Axe at all eight viewport widths."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Owner frame renders loading, rejected-loader recovery, empty and selected-value async states."
       }
     },
     "Cascader": {
-      "isolated": { "status": "pass", "reason": "Rendered directly in docs/data-entry/form.tsx." },
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-entry/cascader.tsx."
+      },
       "composition": {
         "status": "pass",
         "reason": "Rendered inside FormField with its complete ARIA field contract forwarded to the combobox trigger."
@@ -147,10 +158,17 @@
       "a11y": {
         "status": "pass",
         "reason": "Trigger ARIA forwarding is unit-tested and the rendered owner frame passed Axe at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Direct owner frame passed RTL geometry and Axe at all eight widths."
       }
     },
     "TreeSelect": {
-      "isolated": { "status": "pass", "reason": "Rendered directly in docs/data-entry/form.tsx." },
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-entry/tree-select.tsx."
+      },
       "composition": {
         "status": "pass",
         "reason": "Rendered inside FormField with its complete ARIA field contract forwarded to the combobox trigger."
@@ -162,6 +180,152 @@
       "a11y": {
         "status": "pass",
         "reason": "Trigger ARIA forwarding is unit-tested and the rendered owner frame passed Axe at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Direct owner frame passed RTL geometry and Axe at all eight widths."
+      }
+    },
+    "Checkbox": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/checkbox.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "RadioGroup": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/radio-group.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "Switch": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/switch.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "Slider": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/slider.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "Toggle": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/toggle.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "DatePicker": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/date-picker.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "MonthPicker": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/month-picker.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "TimePicker": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/time-picker.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "ColorPicker": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/color-picker.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "Upload": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/upload.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Owner frame passed Axe after its avatar overlay contrast defect was fixed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Owner frame explicitly renders upload progress, success, error, retry and pending-delete states."
+      }
+    },
+    "Transfer": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/transfer.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Owner frame passed Axe after disabled-row contrast was fixed."
       }
     },
     "Flex": {

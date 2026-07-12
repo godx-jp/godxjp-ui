@@ -105,7 +105,7 @@ function TransferPanel({
                   className={cn(
                     "flex cursor-pointer items-start gap-2 rounded-sm px-2 py-2 text-sm",
                     "hover:bg-accent hover:text-accent-foreground",
-                    item.disabled && "pointer-events-none opacity-50",
+                    item.disabled && "bg-muted/40 text-muted-foreground pointer-events-none",
                   )}
                 >
                   <Checkbox
