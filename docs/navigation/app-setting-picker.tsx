@@ -1,7 +1,15 @@
 import { AppProvider } from "@godxjp/ui/app";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Avatar,
+  AvatarFallback,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
-import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { Flex, PageContainer, Topbar } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
 
 /**
@@ -53,6 +61,29 @@ export default function Demo() {
                   <AppSettingPicker kind="timeFormat" id="setting-time-format" />
                 </Flex>
               </Flex>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>アイコンのみ（トップバー）</CardTitle>
+              <CardDescription>
+                appearance=&quot;icon&quot;
+                で言語アイコンだけの正方形トリガーを描画。値テキストと固有幅を
+                構造的に外し、ローカライズ済み aria-label・フォーカス・キーボード操作・タップ領域
+                （--control-height）は保持する。開いたメニューには各言語名が表示される。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Topbar
+                className="rounded-md border"
+                start={
+                  <Avatar className="rounded-md">
+                    <AvatarFallback>G</AvatarFallback>
+                  </Avatar>
+                }
+                end={<AppSettingPicker kind="locale" appearance="icon" id="topbar-locale-icon" />}
+              />
             </CardContent>
           </Card>
 

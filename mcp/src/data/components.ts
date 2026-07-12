@@ -7659,6 +7659,12 @@ export default function PasswordBlock() {
           "Controlled change handler. When omitted, calls the matching AppProvider setter (setLocale/setTimezone/setDateFormat/setTimeFormat). Required together with value when no AppProvider is present.",
       },
       {
+        name: "appearance",
+        type: '"labeled" | "icon"',
+        description:
+          'Trigger presentation. "labeled" (default) shows the leading icon + selected value in a full-width control. "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. Menu options still show localized names. Use it instead of overriding internal descendants / width classes with CSS.',
+      },
+      {
         name: "className",
         type: "string",
         description: "Extra CSS classes merged onto the SelectTrigger.",
@@ -7675,10 +7681,12 @@ export default function PasswordBlock() {
       "DO: Use controlled mode (value + onValueChange) when managing state outside AppProvider, e.g. a standalone settings form or a Storybook story. Both are required together in this mode.",
       "DO NOT: Render without AppProvider and without both controlled props — it throws 'AppSettingPicker requires <AppProvider> or controlled value + onValueChange'.",
       "DO: Render four instances with different kind values to build a full preferences panel; they all share the same AppProvider context and stay in sync.",
+      'DO: For an icon-only topbar utility (a globe language switcher), pass appearance="icon" — the supported compact trigger. NEVER hand-roll it by hiding the value/width with descendant-selector CSS.',
       "DON'T hand-roll a locale/timezone/format Select — AppSettingPicker already composes Select + the right icon + translated, context-wired options. There is no separate LocalePicker/TimezonePicker/DateFormatPicker/TimeFormatPicker anymore; use kind.",
     ],
     useCases: [
       'App-shell top-nav language switcher: <AppSettingPicker kind="locale" /> under AppProvider, persisting to localStorage with no extra state.',
+      'Icon-only topbar locale switcher (globe): <AppSettingPicker kind="locale" appearance="icon" /> in a Topbar `end` slot — square, value-less, keyboard + aria-label preserved.',
       "User settings page with all four preferences — render kind=locale, kind=timezone, kind=dateFormat, kind=timeFormat together under one AppProvider.",
       "Onboarding step that picks language/timezone before the rest of the app is configured — AppProvider persist={false} + controlled values to keep state local.",
       'Storybook/test harness without AppProvider — fully controlled: <AppSettingPicker kind="timeFormat" value="24h" onValueChange={fn} />.',
@@ -7710,6 +7718,14 @@ import { AppSettingPicker } from "@godxjp/ui/navigation";
 export function LocaleField() {
   const [locale, setLocale] = useState("en");
   return <AppSettingPicker kind="locale" value={locale} onValueChange={setLocale} />;
+}
+
+// Icon-only topbar locale switcher (globe) — supported compact trigger, no CSS overrides
+import { Topbar } from "@godxjp/ui/layout";
+import { AppSettingPicker } from "@godxjp/ui/navigation";
+
+export function TopbarLocale() {
+  return <Topbar end={<AppSettingPicker kind="locale" appearance="icon" />} />;
 }\`}`,
     storyPath: "navigation/AppSettingPicker.stories.tsx",
     rules: [3, 5, 6, 23],

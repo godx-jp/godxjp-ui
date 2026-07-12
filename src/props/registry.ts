@@ -217,6 +217,12 @@ export const VOCABULARY_REGISTRY = {
     category: "interaction",
     description: "Badge visual variant (default | secondary | outline | dashed)",
   },
+  AppSettingPickerAppearanceProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "AppSettingPicker trigger presentation: labeled (icon + value) | icon (square icon-only topbar trigger)",
+  },
   ShapeProp: {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
@@ -396,7 +402,14 @@ export const COMPONENT_PROP_REGISTRY = {
   AppSettingPickerProp: {
     group: "app",
     file: "components/app.prop.ts",
-    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "IdProp", "ClassNameProp"],
+    vocabulary: [
+      "ValueProp",
+      "OnValueChangeProp",
+      "DisabledProp",
+      "IdProp",
+      "ClassNameProp",
+      "AppSettingPickerAppearanceProp",
+    ],
   },
   PageContainerProp: {
     group: "layout",
