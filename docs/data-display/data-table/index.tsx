@@ -65,7 +65,7 @@ const columns: ColumnDef<Invoice>[] = [
   { key: "date", header: "発行日", align: "right", hiddenOnMobile: true },
   {
     key: "_actions",
-    header: "",
+    header: <span className="sr-only">操作</span>,
     align: "right",
     render: (row) => (
       <DropdownMenu>

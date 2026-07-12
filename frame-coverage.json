@@ -54,6 +54,14 @@
       "isolated": {
         "status": "pass",
         "reason": "Rendered directly in docs/general/button/index.tsx."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Chromium geometry run passed without document overflow or clipped controls at 320, 375, 390, 768, 1024, 1280, 1440 and 1920px."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Chromium RTL geometry and keyboard smoke passed at 1024px."
       }
     },
     "Input": {
@@ -159,6 +167,36 @@
       "isolated": {
         "status": "pass",
         "reason": "Rendered directly in docs/data-display/card/index.tsx."
+      }
+    },
+    "LineChart": {
+      "rtl": {
+        "status": "pass",
+        "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      }
+    },
+    "BarChart": {
+      "rtl": {
+        "status": "pass",
+        "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      }
+    },
+    "AreaChart": {
+      "rtl": {
+        "status": "pass",
+        "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      }
+    },
+    "PieChart": {
+      "rtl": {
+        "status": "pass",
+        "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      }
+    },
+    "DataTable": {
+      "rtl": {
+        "status": "pass",
+        "reason": "DataTable frame passed Chromium RTL geometry and keyboard smoke at 1024px."
       }
     }
   }

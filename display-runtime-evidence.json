@@ -1,21 +1,53 @@
 {
   "schemaVersion": 1,
+  "auditedAt": "2026-07-12T14:10:25.816Z",
   "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+  "limitations": [
+    "Automated Chromium DOM/geometry/axe/keyboard evidence only.",
+    "Real screen-reader output and physical coarse-touch interaction remain untested."
+  ],
   "frames": [
     {
       "id": "data-display-charts",
-      "verdict": "untested",
-      "reason": "Runtime matrix has not run yet."
+      "verdict": "fail",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "fail",
+      "a11y": "fail",
+      "a11yViolations": ["heading-order"],
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-charts-320.png",
+        "artifacts/display-runtime/data-display-charts-1920.png"
+      ]
     },
     {
       "id": "data-display-data-table",
-      "verdict": "untested",
-      "reason": "Runtime matrix has not run yet."
+      "verdict": "fail",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "fail",
+      "a11y": "fail",
+      "a11yViolations": ["heading-order"],
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-data-table-320.png",
+        "artifacts/display-runtime/data-display-data-table-1920.png"
+      ]
     },
     {
       "id": "general-button",
-      "verdict": "untested",
-      "reason": "Runtime matrix has not run yet."
+      "verdict": "fail",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "fail",
+      "a11yViolations": ["heading-order"],
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/general-button-320.png",
+        "artifacts/display-runtime/general-button-1920.png"
+      ]
     }
   ]
 }
