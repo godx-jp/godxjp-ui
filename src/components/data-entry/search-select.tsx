@@ -46,6 +46,7 @@ export function SearchSelect({
   searchPlaceholder,
   emptyMessage,
   loadingMessage,
+  errorMessage,
   clearLabel,
   clearable = true,
   disabled = false,
@@ -65,6 +66,9 @@ export function SearchSelect({
   const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  // A rejected `loadOptions` is a DISTINCT state from "no results" — track it so the panel can
+  // show an error affordance instead of masquerading as empty (or leaking an unhandled rejection).
+  const [error, setError] = React.useState(false);
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [picked, setPicked] = React.useState<SearchSelectOptionProp | null>(null);
 
@@ -108,12 +112,19 @@ export function SearchSelect({
     async (nextPage: number, search: string, append: boolean) => {
       const ticket = ++reqId.current;
       setLoading(true);
+      if (!append) setError(false);
       try {
         const result = await resolvedLoad({ query: search, page: nextPage });
         if (ticket !== reqId.current) return; // a newer request superseded this one
         setLoaded((prev) => (append ? [...prev, ...result.options] : result.options));
         setHasMore(Boolean(result.hasMore));
         setPage(nextPage);
+      } catch {
+        if (ticket !== reqId.current) return; // a newer request superseded this one
+        // Surface the failure as its own state; never leave the popover blank or looking "empty".
+        if (!append) setLoaded([]);
+        setHasMore(false);
+        setError(true);
       } finally {
         if (ticket === reqId.current) setLoading(false);
       }
@@ -291,6 +302,9 @@ export function SearchSelect({
             <CommandList
               id={listId}
               role="listbox"
+              // Announce the in-flight fetch (APG combobox) so the empty/error message that follows
+              // isn't read as a settled result while a request is still resolving.
+              aria-busy={loading}
               // The global --command-list-max-height cap (300px) is for bare Command
               // palettes; HERE the popover itself bounds the height (available-height
               // flex column), so the list stretches to fill it instead of stopping short.
@@ -347,14 +361,33 @@ export function SearchSelect({
                   <React.Fragment key="__ungrouped">{rows}</React.Fragment>
                 );
               })}
+              {/* Loading / error / empty are DISTINCT states, never a blank panel. Error and empty
+                  render as a disabled, non-focusable option row (the DS empty affordance) so the
+                  listbox always owns a child and keyboard nav has nothing to trap on. */}
               {loading ? (
-                <div className="text-muted-foreground flex items-center gap-2 px-2 py-3 text-sm">
+                <div
+                  role="status"
+                  className="text-muted-foreground flex items-center gap-2 px-2 py-3 text-sm"
+                >
                   <Loader2 className="size-4 animate-spin" aria-hidden="true" />
                   {loadingMessage ?? t("dataEntry.searchSelect.loading")}
                 </div>
-              ) : null}
-              {!loading && loaded.length === 0 ? (
-                <div className="text-muted-foreground px-2 py-6 text-center text-sm">
+              ) : error ? (
+                <div
+                  role="option"
+                  aria-disabled="true"
+                  aria-selected={false}
+                  className="text-destructive px-2 py-6 text-center text-sm"
+                >
+                  {errorMessage ?? t("dataEntry.searchSelect.error")}
+                </div>
+              ) : loaded.length === 0 ? (
+                <div
+                  role="option"
+                  aria-disabled="true"
+                  aria-selected={false}
+                  className="text-muted-foreground px-2 py-6 text-center text-sm"
+                >
                   {emptyMessage ?? t("dataEntry.searchSelect.empty")}
                 </div>
               ) : null}

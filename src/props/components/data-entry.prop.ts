@@ -366,6 +366,8 @@ export type SearchSelectProp = {
   searchPlaceholder?: PlaceholderProp;
   emptyMessage?: EmptyMessageProp;
   loadingMessage?: string;
+  /** Message shown when an async `loadOptions` rejects — a distinct state from empty/loading. */
+  errorMessage?: string;
   clearLabel?: string;
   /** Show a "clear" row when a value is selected (default true). */
   clearable?: boolean;

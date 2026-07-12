@@ -102,7 +102,8 @@
       "search": "検索",
       "clear": "選択をクリア",
       "loading": "読み込み中…",
-      "empty": "該当なし"
+      "empty": "該当なし",
+      "error": "選択肢を読み込めませんでした"
     },
     "monthPicker": {
       "openGrid": "月選択を開く",

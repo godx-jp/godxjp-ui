@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `DataState` preserves existing content during a background refetch (with a polite `sr-only` busy
   status) instead of flashing the skeleton over resolved data.
 - Static data-driven `Select` disables itself when it has no options, preventing blank popovers.
+- Async data-driven `Select` (`loadOptions`) now treats loading / no-options / error as distinct
+  states: a rejected loader no longer leaks an unhandled promise rejection nor masquerades as
+  "no results" — it shows its own error affordance, and the empty/error rows render as a disabled
+  option row (never a blank surface). The open panel carries `aria-busy` while fetching (gh#138).
 
   **Migration:** consumers that relied on `DataState`/`Alert.QueryError` always showing a Retry
   button or the raw error message must opt in per cause — set `showRetry` (transient still retries
@@ -57,6 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   classification (`auth` | `forbidden` | `notFound` | `validation` | `transient` | `unknown`) for
   branching custom error UIs and structured logging.
 - `EmptyState` `page`, `section`, and `compact` variants for context-appropriate visual weight.
+- `Select` / `SearchSelect` `errorMessage` prop — overrides the localized default shown when an
+  async `loadOptions` rejects. Paired with a new `dataEntry.searchSelect.error` i18n key (en/vi/ja).
 - MCP patterns for responsive settings, async/table state, organization membership/invitations,
   and signed-in account recovery, plus lockstep UI compatibility metadata.
 - **Release lockstep (#140):** `@godxjp/ui` and `@godxjp/ui-mcp` now carry mutual compatibility

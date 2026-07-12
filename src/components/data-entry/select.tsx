@@ -203,6 +203,7 @@ function DataSelect({
   searchPlaceholder,
   emptyMessage,
   loadingMessage,
+  errorMessage,
   clearLabel,
   clearable,
   disabled,
@@ -238,6 +239,7 @@ function DataSelect({
         searchPlaceholder={searchPlaceholder}
         emptyMessage={emptyMessage}
         loadingMessage={loadingMessage}
+        errorMessage={errorMessage}
         clearLabel={clearLabel}
         clearable={clearable}
         disabled={disabled || (!loadOptions && !hasOptions)}

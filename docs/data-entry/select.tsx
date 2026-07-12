@@ -58,6 +58,13 @@ export default function Demo() {
     return { options: list, hasMore: false };
   };
 
+  // Async loaders can reject (network / 500). A rejected loader is a DISTINCT state from
+  // "no results": the panel shows an error affordance, never a blank surface.
+  const loadFailing = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    throw new Error("network error");
+  };
+
   return (
     <PageContainer
       title="Select"
@@ -170,8 +177,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle>Async (loadOptions) + selectedIcon</CardTitle>
             <CardDescription>
-              With `loadOptions` and a preset value, `selectedLabel` + `selectedIcon` show the picked
-              person's name AND avatar on the trigger at rest, before the async list has loaded.
+              With `loadOptions` and a preset value, `selectedLabel` + `selectedIcon` show the
+              picked person's name AND avatar on the trigger at rest, before the async list has
+              loaded.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -193,11 +201,49 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Empty options · trigger disabled</CardTitle>
+            <CardDescription>
+              A static `options={[]}` list has nothing to pick, so the trigger disables itself and
+              never opens a blank popover. Provide options (or an async loadOptions) to enable it.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="empty-static" label="部門">
+              <Select id="empty-static" name="empty_static" options={[]} placeholder="部門を選択" />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Async error state (errorMessage)</CardTitle>
+            <CardDescription>
+              When `loadOptions` rejects, the panel shows a distinct error affordance instead of a
+              blank surface or a misleading “no results”. Override the localized default with
+              `errorMessage`. Open it to see the loading row resolve into the error row.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="reviewer-error" label="レビュー担当 (error)">
+              <Select
+                id="reviewer-error"
+                name="reviewer_error"
+                loadOptions={loadFailing}
+                errorMessage="担当者を読み込めませんでした"
+                searchPlaceholder="担当者を検索..."
+                placeholder="担当者を選択"
+              />
+            </FormField>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Custom rows (renderOption)</CardTitle>
             <CardDescription>
-              `renderOption` (like Ant&apos;s optionRender) draws a fully custom row: avatar + name +
-              email + a status badge. Use a flex ROW (`div className=&quot;flex items-center&quot;`),
-              not a bare `Flex` which defaults to a column.
+              `renderOption` (like Ant&apos;s optionRender) draws a fully custom row: avatar + name
+              + email + a status badge. Use a flex ROW (`div className=&quot;flex
+              items-center&quot;`), not a bare `Flex` which defaults to a column.
             </CardDescription>
           </CardHeader>
           <CardContent>
