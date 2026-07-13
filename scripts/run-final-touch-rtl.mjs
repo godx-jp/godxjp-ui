@@ -3,6 +3,13 @@ import AxeBuilder from "@axe-core/playwright";
 const base = process.env.PREVIEW_URL ?? "http://localhost:6010";
 const browser = await chromium.launch({ headless: true });
 const isolatedShellRules = new Set(["landmark-one-main", "page-has-heading-one", "region"]);
+
+// Chờ preview runtime mount xong TRƯỚC khi tương tác — nếu không, locator auto-wait chạm
+// frame chưa render (React đang mount) → 30s timeout flaky trên runner cloud chậm (ubuntu-latest).
+async function waitFrame(page) {
+  await page.locator(".preview-runtime-loading").waitFor({ state: "hidden" });
+  await page.locator("#root > *").first().waitFor();
+}
 const touch = [];
 for (const width of [320, 390]) {
   const context = await browser.newContext({
@@ -12,6 +19,7 @@ for (const width of [320, 390]) {
   });
   const query = await context.newPage();
   await query.goto(`${base}/isolate/query-touch-actions`);
+  await waitFrame(query);
   for (const [index, output] of [
     [0, "Retry result"],
     [1, "Load more result"],
@@ -28,6 +36,7 @@ for (const width of [320, 390]) {
   }
   const dialog = await context.newPage();
   await dialog.goto(`${base}/isolate/feedback-dialog-touch`);
+  await waitFrame(dialog);
   await dialog.getByRole("button", { name: "Open touch dialog" }).tap();
   const opened = await dialog.getByRole("dialog", { name: "Touch dialog" }).isVisible();
   await dialog.getByRole("dialog", { name: "Touch dialog" }).getByRole("button").first().tap();
@@ -39,9 +48,13 @@ for (const width of [320, 390]) {
 
   const carousel = await context.newPage();
   await carousel.goto(`${base}/isolate/data-display-carousel`);
-  const firstCarousel = carousel.getByRole("region", { name: "指標カード", exact: true });
+  await waitFrame(carousel);
+  const firstCarousel = carousel.getByRole("region", { name: "月次 KPI カルーセル", exact: true });
   const previous = firstCarousel.getByRole("button", { name: "前へ" });
   const next = firstCarousel.getByRole("button", { name: "次へ" });
+  // Chờ nút ATTACHED (không phải visible — carousel ở đầu ẩn/disable nút prev) rồi mới đọc
+  // trạng thái → tránh isDisabled auto-wait 30s khi carousel chưa mount trên runner chậm.
+  await previous.waitFor({ state: "attached" });
   const startedAtBeginning = await previous.isDisabled();
   await next.tap();
   touch.push({
@@ -56,6 +69,7 @@ for (const width of [320, 375, 390, 768, 1024, 1280, 1440, 1920]) {
   const context = await browser.newContext({ viewport: { width, height: 900 } });
   const page = await context.newPage();
   await page.goto(`${base}/isolate/feedback-toast`);
+  await waitFrame(page);
   await page.evaluate(() => {
     document.documentElement.dir = "rtl";
   });
