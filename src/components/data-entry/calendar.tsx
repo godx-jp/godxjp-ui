@@ -14,6 +14,8 @@ export function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  "aria-label": ariaLabel,
+  labels,
   ...props
 }: CalendarProp) {
   // Range mode defaults to resetOnSelect: once a range is complete, the next click
@@ -25,6 +27,11 @@ export function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      aria-label={ariaLabel}
+      labels={{
+        ...labels,
+        labelNav: labels?.labelNav ?? (() => `${ariaLabel ?? "Calendar"} navigation`),
+      }}
       // The calendar has an intrinsic width (7 fixed-size day columns); never stretch it to
       // fill a wide container — w-fit shrink-wraps the grid so the nav sits beside it, not at
       // the container edges. Consumers can still widen via `className` if they truly need to.

@@ -186,7 +186,8 @@ export default function Demo() {
               type="dot"
               size="sm"
               orientation="vertical"
-              value={2}
+              defaultValue={2}
+              titlePlacement="horizontal"
               items={[
                 { title: "会社情報", status: "finish" },
                 { title: "代表者情報", status: "finish" },

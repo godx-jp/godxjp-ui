@@ -1,4 +1,4 @@
-import { AppProvider } from "@godxjp/ui/app";
+import { AppProvider, useAppContext } from "@godxjp/ui/app";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Label } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
@@ -18,6 +18,11 @@ export default function Demo() {
       defaultTimezone="Asia/Tokyo"
       defaultDateFormat="iso"
       defaultTimeFormat="24h"
+      theme="light"
+      brand="brand"
+      density="comfortable"
+      fontSize="lg"
+      scaling={1}
       persist={false}
     >
       <PageContainer
@@ -136,8 +141,51 @@ export default function Demo() {
               </Flex>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>テーマ軸 · theme / brand / density / fontSize</CardTitle>
+              <CardDescription>
+                見た目の状態も AppProvider が一元管理する。各 picker は HTML の data 属性と
+                コンテキストを同時に更新し、個別コンポーネントへの CSS 上書きを不要にする。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Flex direction="row" gap="md" wrap>
+                {(["theme", "brand", "density", "fontSize"] as const).map((kind) => (
+                  <Flex key={kind} direction="col" gap="sm" className="min-w-40 flex-1">
+                    <Label htmlFor={`settings-${kind}`}>{kind}</Label>
+                    <AppSettingPicker kind={kind} id={`settings-${kind}`} />
+                  </Flex>
+                ))}
+              </Flex>
+            </CardContent>
+          </Card>
+
+          <ProviderState />
         </Flex>
       </PageContainer>
     </AppProvider>
+  );
+}
+
+function ProviderState() {
+  const state = useAppContext();
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>現在の provider state</CardTitle>
+        <CardDescription>
+          picker の変更が全 consumer に共有されることを目視確認するための状態表示。
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Text as="p">
+          locale={state.locale} · timezone={state.timezone} · date={state.dateFormat} · time=
+          {state.timeFormat} · theme={state.theme} · brand={state.brand ?? "custom"} · density=
+          {state.density} · fontSize={state.fontSize} · scaling={state.scaling ?? "density default"}
+        </Text>
+      </CardContent>
+    </Card>
   );
 }

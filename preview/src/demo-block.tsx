@@ -168,6 +168,7 @@ export function StoryDemoBlock({
   error: string | null;
   children: React.ReactNode;
 }) {
+  const rtl = new URLSearchParams(window.location.search).get("rtl") === "1";
   const storyViewport = React.useMemo(
     () => ({ width: viewportWidth, height: viewportHeight }),
     [viewportHeight, viewportWidth],
@@ -500,6 +501,8 @@ export function StoryDemoBlock({
               <div
                 ref={frameRef}
                 className="demo-block-frame"
+                dir={rtl ? "rtl" : undefined}
+                lang={rtl ? "ar" : undefined}
                 // A static story (no focusable content) taller than the scaled frame makes THIS
                 // element the scroll container; keep it keyboard-reachable so it can be scrolled
                 // without a mouse (axe scrollable-region-focusable). No role — a landmark here

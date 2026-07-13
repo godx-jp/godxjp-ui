@@ -26,6 +26,14 @@ export type ToolbarGroupProp = {
 
 /** @see Pagination — offset/page-based (distinct from DataTable cursor pagination). */
 export type PaginationProp = {
+  /**
+   * Override the `<nav>` landmark's accessible name. Defaults to a localized "Pagination".
+   * Multiple Pagination instances on one page/view (e.g. two independent result lists) need a
+   * DISTINCT name each — two `<nav>` landmarks sharing one name/role fail axe's `landmark-unique`
+   * (WCAG 2.4.1 / 1.3.1). Pass something that names what is being paged, e.g. `"注文一覧の
+   * ページネーション"` vs `"請求書一覧のページネーション"`.
+   */
+  ariaLabel?: string;
   value?: number;
   total?: number;
   pageSize?: number;
@@ -44,14 +52,6 @@ export type PaginationProp = {
   disabled?: DisabledProp;
   className?: ClassNameProp;
   onValueChange?: (page: number, pageSize: number) => void;
-  /**
-   * Override the `<nav>` landmark's accessible name. Defaults to a localized "Pagination".
-   * Multiple Pagination instances on one page/view (e.g. two independent result lists) need a
-   * DISTINCT name each — two `<nav>` landmarks sharing one name/role fail axe's `landmark-unique`
-   * (WCAG 2.4.1 / 1.3.1). Pass something that names what is being paged, e.g. `"注文一覧の
-   * ページネーション"` vs `"請求書一覧のページネーション"`.
-   */
-  "aria-label"?: string;
 };
 
 export type StepStatusProp = "wait" | "process" | "finish" | "error";

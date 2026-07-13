@@ -1,3 +1,5 @@
+import { forwardRef } from "react";
+import type { AnchorHTMLAttributes } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Breadcrumb } from "@godxjp/ui/layout";
@@ -8,6 +10,13 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * (no shell required); it is NOT tied to AppShell or PageContainer. Pass one `items` array of
  * `{ label, to? }`; the segment with no `to` is the current page. Import from @godxjp/ui/layout.
  */
+const RouterLink = forwardRef<
+  HTMLAnchorElement,
+  AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }
+>(function RouterLink({ to, href, ...props }, ref) {
+  return <a ref={ref} href={to ?? href} data-router-link="" {...props} />;
+});
+
 export default function Demo() {
   return (
     <PageContainer
@@ -27,6 +36,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Breadcrumb
+              ariaLabel="基本例のパンくず"
               items={[
                 { label: "ホーム", to: "/" },
                 { label: "会計", to: "/accounting" },
@@ -49,9 +59,14 @@ export default function Demo() {
             <Flex direction="col" gap="md">
               <Breadcrumb
                 items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]}
-                aria-label="2階層のパンくずリスト"
+                ariaLabel="2階層のパンくずリスト"
               />
               <Breadcrumb
+                ariaLabel="短い例のパンくず"
+                items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]}
+              />
+              <Breadcrumb
+                ariaLabel="深い階層例のパンくず"
                 items={[
                   { label: "ホーム", to: "/" },
                   { label: "給与管理", to: "/payroll" },
@@ -60,6 +75,7 @@ export default function Demo() {
                 aria-label="3階層のパンくずリスト"
               />
               <Breadcrumb
+                ariaLabel="長いラベル例のパンくず"
                 items={[
                   { label: "ホーム", to: "/" },
                   { label: "給与管理", to: "/payroll" },
@@ -67,6 +83,11 @@ export default function Demo() {
                   { label: "田中 太郎" },
                 ]}
                 aria-label="4階層のパンくずリスト"
+              />
+              <Breadcrumb
+                ariaLabel="ルーターアダプター例のパンくず"
+                linkComponent={RouterLink}
+                items={[{ label: "ホーム", to: "/" }, { label: "アダプター例" }]}
               />
             </Flex>
           </CardContent>

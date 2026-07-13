@@ -83,6 +83,8 @@ export type InfiniteQueryStateProp<TPage, TFlat> = {
   errorRenderer?: (error: unknown, retry: () => void) => React.ReactNode;
   showRetry?: boolean;
   onRetry?: HandlerProp;
+  /** Recovery for authentication errors (401 / expired token), shown instead of Retry. */
+  onAuthError?: HandlerProp;
   loadingMore?: React.ReactNode;
   /** Custom load-more footer; `false` hides footer entirely. */
   loadMore?: React.ReactNode | false;

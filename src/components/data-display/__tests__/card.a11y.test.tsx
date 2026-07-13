@@ -1,4 +1,5 @@
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../card";
 import { Button } from "../../general/button";
@@ -7,6 +8,12 @@ import { expectNoA11yViolations } from "@/test/a11y";
 // Cards are composition shells; the title must be a real heading and any
 // actions must carry accessible names.
 describe("Card a11y", () => {
+  it("defaults to a page-section h2 and supports nested heading levels", () => {
+    const { rerender } = render(<CardTitle>Primary section</CardTitle>);
+    expect(screen.getByRole("heading", { level: 2, name: "Primary section" })).toBeInTheDocument();
+    rerender(<CardTitle as="h3">Nested section</CardTitle>);
+    expect(screen.getByRole("heading", { level: 3, name: "Nested section" })).toBeInTheDocument();
+  });
   it("has no axe violations for a fully composed card", async () => {
     await expectNoA11yViolations(
       <Card>

@@ -1,6 +1,7 @@
 import {
   Card,
   CardAction,
+  CardBar,
   CardContent,
   CardCover,
   CardDescription,
@@ -14,6 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  StatCard,
 } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { AspectRatio, Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
@@ -31,6 +33,52 @@ export default function Demo() {
   return (
     <PageContainer title="Card" subtitle="variant · accent · header / content / footer composition">
       <Flex direction="col" gap="lg">
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            CardBar · scrollable controls + pinned action
+          </Text>
+          <Card>
+            <CardBar
+              extra={
+                <Button size="sm" variant="outline">
+                  ビューを保存
+                </Button>
+              }
+            >
+              <Button size="sm" variant="ghost">
+                すべて
+              </Button>
+              <Button size="sm" variant="ghost">
+                未払いの請求書
+              </Button>
+              <Button size="sm" variant="ghost">
+                支払期限を超過した請求書
+              </Button>
+            </CardBar>
+            <CardContent>
+              狭い幅では main のみ横スクロールし、extra は末尾に固定されます。
+            </CardContent>
+          </Card>
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            StatCard · stacked / inline / inverse
+          </Text>
+          <ResponsiveGrid columns={{ sm: 1, md: 3 }}>
+            <StatCard label="月間売上" value="¥12,840,000" delta="+12.4%" hint="前月比" />
+            <StatCard label="未払い" value="28" delta="-3" accent="warning" />
+            <StatCard
+              label="平均処理時間"
+              value="2.8日"
+              delta="-0.4日"
+              inverse
+              layout="inline"
+              align="end"
+            />
+          </ResponsiveGrid>
+        </Flex>
+
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
             Variants

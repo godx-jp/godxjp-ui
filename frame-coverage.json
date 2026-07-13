@@ -1,0 +1,2479 @@
+{
+  "schemaVersion": 1,
+  "dimensions": {
+    "isolated": {
+      "status": "untested",
+      "reason": "An owner frame exists, but compound exports are not assumed rendered without explicit evidence."
+    },
+    "props": {
+      "status": "untested",
+      "reason": "Public prop and state combinations have not yet been mapped to executed frame cases for this export."
+    },
+    "composition": {
+      "status": "untested",
+      "reason": "A component frame does not prove composition in every supported surface."
+    },
+    "journey": {
+      "status": "untested",
+      "reason": "Static frames do not prove entry, action, completion, and recovery journeys."
+    },
+    "responsive": {
+      "status": "untested",
+      "reason": "No complete 320–1920 rendered evidence matrix is recorded for every export."
+    },
+    "rtl": {
+      "status": "untested",
+      "reason": "No complete rendered RTL matrix is recorded for every export."
+    },
+    "a11y": {
+      "status": "untested",
+      "reason": "Frame presence alone does not prove semantics, keyboard, focus, or announcements."
+    },
+    "touch": {
+      "status": "untested",
+      "reason": "No executed coarse-pointer or physical touch evidence is recorded for this export."
+    },
+    "screenReader": {
+      "status": "untested",
+      "reason": "Axe and DOM semantics do not prove announcements in a real screen reader; no manual AT evidence is recorded."
+    },
+    "async": {
+      "status": "untested",
+      "reason": "Async applicability and lifecycle coverage have not yet been classified for this export; classify explicitly as pass or reasoned not-applicable."
+    }
+  },
+  "sourceAliases": {
+    "layout/resizable": "layout/resizable-panel",
+    "data-entry/radio": "data-entry/radio-group",
+    "data-entry/form-field": "data-entry/form-field/index",
+    "data-display/card": "data-display/card/index",
+    "data-display/data-table": "data-display/data-table/index",
+    "general/button": "general/button/index"
+  },
+  "excludeExports": [
+    "useFormLayout",
+    "collectUploadCommitActions",
+    "createUploadItem",
+    "useUploadDraft",
+    "SHOW_CHILD",
+    "SHOW_PARENT",
+    "SHOW_ALL",
+    "usePasswordStrength",
+    "toast"
+  ],
+  "overrides": {
+    "Button": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/general/button/index.tsx."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Chromium geometry run passed without document overflow or clipped controls at 320, 375, 390, 768, 1024, 1280, 1440 and 1920px."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Chromium RTL geometry and keyboard smoke passed at 1024px."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Chromium axe and keyboard focus smoke passed in the rendered Button frame."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated stateful touch frame executed Button activation at 320px and 390px."
+      }
+    },
+    "Input": {
+      "isolated": { "status": "pass", "reason": "Rendered directly in docs/data-entry/input.tsx." },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered inside FormField in the owner frame and executed by check:data-entry-frame-runtime."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Chromium geometry executed at 320,375,390,768,1024,1280,1440,1920 without horizontal overflow."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Axe executed on the rendered Input frame at all eight viewport widths after accessible-name defects were fixed."
+      }
+    },
+    "FormField": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-entry/form-field/index.tsx."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered with Input controls and executed by check:data-entry-frame-runtime."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Chromium geometry executed at 320,375,390,768,1024,1280,1440,1920 without horizontal overflow."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Axe executed on the rendered FormField frame at all eight viewport widths."
+      }
+    },
+    "Form": {
+      "isolated": { "status": "pass", "reason": "Rendered directly in docs/data-entry/form.tsx." },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered with its data-entry controls and executed by check:data-entry-frame-runtime."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Chromium geometry executed at 320,375,390,768,1024,1280,1440,1920 without horizontal overflow."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Axe executed on the rendered Form frame at all eight viewport widths."
+      }
+    },
+    "Select": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-entry/select.tsx."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Both data-driven and compound Select APIs are rendered in the owner frame."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Runtime opened, navigated, scrolled and closed the compound popup at all eight widths."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Chromium geometry executed at 320,375,390,768,1024,1280,1440,1920 without horizontal overflow."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Axe executed on the rendered Select frame at all eight viewport widths after the compound trigger was labelled."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Select owner frame passed RTL geometry and Axe at all eight viewport widths."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Owner frame renders loading, rejected-loader recovery, empty and selected-value async states."
+      }
+    },
+    "Cascader": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-entry/cascader.tsx."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered inside FormField with its complete ARIA field contract forwarded to the combobox trigger."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "The owning Form frame passed Chromium geometry at all eight viewport widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Trigger ARIA forwarding is unit-tested and the rendered owner frame passed Axe at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Direct owner frame passed RTL geometry and Axe at all eight widths."
+      }
+    },
+    "TreeSelect": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-entry/tree-select.tsx."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered inside FormField with its complete ARIA field contract forwarded to the combobox trigger."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "The owning Form frame passed Chromium geometry at all eight viewport widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Trigger ARIA forwarding is unit-tested and the rendered owner frame passed Axe at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Direct owner frame passed RTL geometry and Axe at all eight widths."
+      }
+    },
+    "Checkbox": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/checkbox.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "RadioGroup": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/radio-group.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "Switch": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/switch.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "Slider": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/slider.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "Toggle": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/toggle.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "DatePicker": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/date-picker.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "MonthPicker": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/month-picker.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "TimePicker": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/time-picker.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "ColorPicker": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/color-picker.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "Owner frame passed Axe and keyboard-entry checks." }
+    },
+    "Upload": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/upload.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Owner frame passed Axe after its avatar overlay contrast defect was fixed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Owner frame explicitly renders upload progress, success, error, retry and pending-delete states."
+      }
+    },
+    "Transfer": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/transfer.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed geometry at all eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Owner frame passed Axe after disabled-row contrast was fixed."
+      }
+    },
+    "NumberInput": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/number-input.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "SearchInput": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/search-input.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "PasswordInput": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/password-input.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe passed after accessible-name fixes." }
+    },
+    "InputOTP": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/input-otp.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "Rating": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/rating.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "TagInput": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/tag-input.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "Calendar": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/calendar.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe passed after contrast and nav-label fixes." }
+    },
+    "DateRangePicker": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered in docs/data-entry/date-range-picker.tsx."
+      },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "MonthRangePicker": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered in docs/data-entry/month-range-picker.tsx."
+      },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe and keyboard smoke passed." }
+    },
+    "Command": {
+      "isolated": { "status": "pass", "reason": "Rendered in docs/data-entry/command.tsx." },
+      "responsive": { "status": "pass", "reason": "Eight-width geometry passed." },
+      "rtl": { "status": "pass", "reason": "Eight-width RTL geometry and Axe passed." },
+      "a11y": { "status": "pass", "reason": "Axe passed after loading-option semantics fix." },
+      "async": { "status": "pass", "reason": "Loading, results and empty async states render." }
+    },
+    "SelectContent": {
+      "isolated": { "status": "pass", "reason": "Opened in owner frame." },
+      "composition": { "status": "pass", "reason": "Composes groups, items and scroll controls." },
+      "journey": {
+        "status": "pass",
+        "reason": "Open/navigate/scroll/close passed at eight widths."
+      },
+      "responsive": { "status": "pass", "reason": "Opened popup passed eight widths." },
+      "rtl": { "status": "pass", "reason": "RTL popup passed eight widths." },
+      "a11y": { "status": "pass", "reason": "Opened popup passed Axe and keyboard checks." },
+      "async": { "status": "not-applicable", "reason": "Compound content has no async lifecycle." }
+    },
+    "SelectTrigger": {
+      "isolated": { "status": "pass", "reason": "Rendered in owner frame." },
+      "composition": { "status": "pass", "reason": "Controls SelectContent." },
+      "journey": { "status": "pass", "reason": "Open/close passed at eight widths." },
+      "responsive": { "status": "pass", "reason": "Passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Passed RTL at eight widths." },
+      "a11y": { "status": "pass", "reason": "Named trigger passed Axe and keyboard checks." },
+      "async": { "status": "not-applicable", "reason": "Trigger has no async lifecycle." }
+    },
+    "SelectValue": {
+      "isolated": { "status": "pass", "reason": "Rendered in owner trigger." },
+      "composition": { "status": "pass", "reason": "Composed inside SelectTrigger." },
+      "journey": { "status": "pass", "reason": "Rendered through popup journey." },
+      "responsive": { "status": "pass", "reason": "Passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Passed RTL at eight widths." },
+      "a11y": { "status": "pass", "reason": "Trigger value passed Axe." },
+      "async": { "status": "not-applicable", "reason": "Value projection has no async lifecycle." }
+    },
+    "SelectItem": {
+      "isolated": { "status": "pass", "reason": "Rendered in opened owner popup." },
+      "composition": { "status": "pass", "reason": "Composed in labelled groups." },
+      "journey": { "status": "pass", "reason": "Keyboard navigation passed at eight widths." },
+      "responsive": { "status": "pass", "reason": "Opened items passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Opened RTL items passed eight widths." },
+      "a11y": { "status": "pass", "reason": "Items passed Axe and keyboard checks." },
+      "async": { "status": "not-applicable", "reason": "Compound item has no async lifecycle." }
+    },
+    "SelectGroup": {
+      "isolated": { "status": "pass", "reason": "Rendered in the Select compound owner case." },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered inside SelectContent with labels and items."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Opened compound list passed Axe and keyboard navigation."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Open, navigate and close journey passed at eight widths."
+      },
+      "responsive": { "status": "pass", "reason": "Opened popup passed geometry at eight widths." },
+      "rtl": {
+        "status": "pass",
+        "reason": "Opened RTL popup passed Axe and geometry at eight widths."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Presentational grouping has no async lifecycle."
+      }
+    },
+    "SelectLabel": {
+      "isolated": { "status": "pass", "reason": "Rendered in the Select compound owner case." },
+      "composition": { "status": "pass", "reason": "Rendered inside SelectGroup." },
+      "a11y": { "status": "pass", "reason": "Opened compound list passed Axe." },
+      "journey": { "status": "pass", "reason": "Rendered during the eight-width popup journey." },
+      "responsive": { "status": "pass", "reason": "Opened popup passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Opened RTL popup passed eight widths." },
+      "async": { "status": "not-applicable", "reason": "Static label has no async lifecycle." }
+    },
+    "SelectSeparator": {
+      "isolated": { "status": "pass", "reason": "Rendered in the Select compound owner case." },
+      "composition": { "status": "pass", "reason": "Rendered between SelectGroup sections." },
+      "a11y": { "status": "pass", "reason": "Opened compound list passed Axe." },
+      "journey": { "status": "pass", "reason": "Rendered during the eight-width popup journey." },
+      "responsive": { "status": "pass", "reason": "Opened popup passed eight widths." },
+      "rtl": { "status": "pass", "reason": "Opened RTL popup passed eight widths." },
+      "async": { "status": "not-applicable", "reason": "Static separator has no async lifecycle." }
+    },
+    "SelectScrollUpButton": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Runtime scrolled the long Select list and asserted the up control."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered by SelectContent after viewport scrolling."
+      },
+      "a11y": { "status": "pass", "reason": "Long list passed Axe and keyboard navigation." },
+      "journey": {
+        "status": "pass",
+        "reason": "Appeared after scrolling in every viewport journey."
+      },
+      "responsive": { "status": "pass", "reason": "Asserted after scrolling at eight widths." },
+      "rtl": { "status": "pass", "reason": "Asserted in RTL at eight widths." },
+      "async": { "status": "not-applicable", "reason": "Scroll affordance has no async lifecycle." }
+    },
+    "SelectScrollDownButton": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Runtime asserted the down control in the opened long Select list."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered by SelectContent for overflowing options."
+      },
+      "a11y": { "status": "pass", "reason": "Long list passed Axe and keyboard navigation." },
+      "journey": { "status": "pass", "reason": "Appeared on open in every viewport journey." },
+      "responsive": { "status": "pass", "reason": "Asserted at eight widths." },
+      "rtl": { "status": "pass", "reason": "Asserted in RTL at eight widths." },
+      "async": { "status": "not-applicable", "reason": "Scroll affordance has no async lifecycle." }
+    },
+    "CheckboxGroup": {
+      "props": { "status": "pass", "reason": "Explicit prop-case map covers group contract." },
+      "touch": {
+        "status": "pass",
+        "reason": "Chromium hasTouch tap preserved checkbox semantics."
+      },
+      "screenReader": {
+        "status": "untested",
+        "reason": "Chromium accessibility-tree snapshot passed, but no manual VoiceOver/NVDA announcement session was executed."
+      }
+    },
+    "Radio": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Namespace alias of the mapped RadioGroup contract."
+      },
+      "touch": { "status": "pass", "reason": "Coarse-pointer radio tap executed." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed named radio state; real screen-reader announcements remain untested."
+      }
+    },
+    "RadioItem": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Item props forward to the mapped Radix primitive."
+      },
+      "touch": { "status": "pass", "reason": "Coarse-pointer radio item tap executed." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed named radio item state; real screen-reader announcements remain untested."
+      }
+    },
+    "RadioGroupRoot": {
+      "props": { "status": "pass", "reason": "Explicit RadioGroup prop-case map." },
+      "touch": { "status": "pass", "reason": "Coarse-pointer group interaction executed." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed the radio group and items; real screen-reader announcements remain untested."
+      }
+    },
+    "ToggleGroup": {
+      "props": { "status": "pass", "reason": "Explicit single/multiple group prop-case map." },
+      "touch": { "status": "pass", "reason": "Chromium hasTouch group tap executed." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree snapshot captured the named group; real screen-reader announcements remain untested."
+      }
+    },
+    "ToggleGroupItem": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Item primitive props forward unchanged; group states are mapped."
+      },
+      "touch": { "status": "pass", "reason": "Coarse-pointer item interaction executed." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed pressed item semantics; real screen-reader announcements remain untested."
+      }
+    },
+    "Textarea": {
+      "props": { "status": "pass", "reason": "Explicit native/state prop-case map." },
+      "touch": { "status": "pass", "reason": "Chromium hasTouch focused the textarea." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree snapshot exposed the labelled textbox; real screen-reader announcements remain untested."
+      }
+    },
+    "PasswordStrength": {
+      "props": { "status": "pass", "reason": "Explicit rules/labels/showRules prop-case map." },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Read-only password feedback has no pointer action."
+      },
+      "screenReader": {
+        "status": "untested",
+        "reason": "Accessibility tree snapshot remained populated; live announcement behavior in a real screen reader remains untested."
+      }
+    },
+    "InputOTPGroup": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Layout primitive has no independent product props."
+      },
+      "touch": { "status": "pass", "reason": "Coarse-pointer OTP input focus executed." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree snapshot exposed the OTP input; real screen-reader announcements remain untested."
+      }
+    },
+    "InputOTPSlot": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Slot index is exercised by all owner-frame positions."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "OTP touch focus exercised slots through the shared input."
+      },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposes the shared OTP input; real screen-reader digit-entry announcements remain untested."
+      }
+    },
+    "InputOTPSeparator": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Decorative separator has no public behavior props."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Decorative separator has no touch action."
+      },
+      "screenReader": {
+        "status": "not-applicable",
+        "reason": "Decorative separator is intentionally absent from the accessibility tree."
+      }
+    },
+    "CommandInput": {
+      "props": { "status": "pass", "reason": "Command prop map covers controlled async input." },
+      "touch": { "status": "pass", "reason": "Coarse-pointer input focus executed." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA snapshot exposed named combobox input; real screen-reader announcements remain untested."
+      }
+    },
+    "CommandList": {
+      "props": { "status": "not-applicable", "reason": "Container props forward to cmdk." },
+      "touch": { "status": "pass", "reason": "Owner touch journey exercised the command surface." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed listbox semantics; real screen-reader announcements remain untested."
+      }
+    },
+    "CommandGroup": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Heading/content composition is rendered in owner cases."
+      },
+      "touch": { "status": "pass", "reason": "Owner touch journey exercised grouped commands." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed grouped options; real screen-reader announcements remain untested."
+      }
+    },
+    "CommandItem": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Item props forward to cmdk and owner cases cover disabled/keywords/value."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Command surface accepts coarse-pointer interaction."
+      },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed option semantics; real screen-reader announcements remain untested."
+      }
+    },
+    "CommandEmpty": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Empty content has no independent behavior contract."
+      },
+      "touch": { "status": "not-applicable", "reason": "Empty feedback has no touch action." },
+      "screenReader": {
+        "status": "untested",
+        "reason": "Async owner retains accessible empty feedback in the ARIA tree; live announcements remain untested."
+      }
+    },
+    "Label": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "htmlFor/asChild/native label props forward unchanged."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Label owner frame touch-focused its associated control."
+      },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA snapshot exposed the labelled control name; real screen-reader announcements remain untested."
+      }
+    },
+    "Field": {
+      "props": {
+        "status": "not-applicable",
+        "reason": "Composition wrapper props are demonstrated by checkbox/switch owner cases."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Coarse-pointer labelled-control interaction executed."
+      },
+      "screenReader": {
+        "status": "untested",
+        "reason": "ARIA tree exposed the associated control and name; real screen-reader announcements remain untested."
+      }
+    },
+    "Flex": {
+      "isolated": { "status": "pass", "reason": "Rendered directly in docs/layout/flex.tsx." },
+      "responsive": {
+        "status": "pass",
+        "reason": "check:layout-nav-frames passed Chromium reflow at 320,375,390,768,1024,1280,1440,1920 without document overflow."
+      }
+    },
+    "Tabs": {
+      "responsive": {
+        "status": "pass",
+        "reason": "check:layout-nav-frames passed Chromium reflow at all eight standard widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "RTL direction was initialized before mount; ArrowLeft moved focus from the first to the second tab in the rendered Arabic frame."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered frame passed Axe and LTR/RTL arrow-key assertions after inactive-trigger contrast was corrected."
+      }
+    },
+    "Pagination": {
+      "responsive": {
+        "status": "pass",
+        "reason": "check:layout-nav-frames passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered Next action advanced the controlled current-page marker from page 1 to page 2."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered frame passed Axe with unique consumer-supplied pagination landmark names."
+      }
+    },
+    "AppSettingPicker": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Provider-bound settings frame passed Chromium reflow at 320,375,390,768,1024,1280,1440,1920."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Provider-bound settings frame passed rendered Axe analysis."
+      }
+    },
+    "AppShell": {
+      "responsive": {
+        "status": "pass",
+        "reason": "AppShell frame passed Chromium reflow at 320,375,390,768,1024,1280,1440,1920."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated AppShell frame passed Axe analysis." }
+    },
+    "AspectRatio": {
+      "responsive": {
+        "status": "pass",
+        "reason": "AspectRatio frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated AspectRatio frame passed Axe analysis." }
+    },
+    "AuthShell": {
+      "responsive": {
+        "status": "pass",
+        "reason": "AuthShell frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated AuthShell frame passed Axe with a semantic h1 login title."
+      }
+    },
+    "PageContainer": {
+      "responsive": {
+        "status": "pass",
+        "reason": "PageContainer frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated multi-shell frame passed Axe with unique breadcrumb landmark labels."
+      }
+    },
+    "ResizablePanel": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Resizable owner frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Expanded panel state passed isolated Axe after the real open control was activated."
+      }
+    },
+    "Separator": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Separator frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated Separator frame passed Axe analysis." }
+    },
+    "Sidebar": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Sidebar frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated multi-sidebar frame passed Axe with unique navigation landmark names."
+      }
+    },
+    "SplitPane": {
+      "responsive": {
+        "status": "pass",
+        "reason": "SplitPane frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated multi-pane frame passed Axe with unique complementary landmark names."
+      }
+    },
+    "Topbar": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Topbar frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated Topbar frame passed Axe analysis." }
+    },
+    "Breadcrumb": {
+      "responsive": { "status": "pass", "reason": "Breadcrumb frame passed all eight widths." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Multi-breadcrumb frame passed Axe with unique landmark names."
+      }
+    },
+    "ContextMenu": {
+      "responsive": { "status": "pass", "reason": "ContextMenu frame passed all eight widths." },
+      "a11y": { "status": "pass", "reason": "ContextMenu owner frame passed Axe." }
+    },
+    "DropdownMenu": {
+      "responsive": { "status": "pass", "reason": "DropdownMenu frame passed all eight widths." },
+      "a11y": { "status": "pass", "reason": "DropdownMenu owner frame passed Axe." }
+    },
+    "Menubar": {
+      "responsive": { "status": "pass", "reason": "Menubar frame passed all eight widths." },
+      "a11y": { "status": "pass", "reason": "Menubar owner frame passed Axe." }
+    },
+    "NavigationMenu": {
+      "responsive": {
+        "status": "pass",
+        "reason": "NavigationMenu frame passed all eight widths."
+      },
+      "a11y": { "status": "pass", "reason": "NavigationMenu owner frame passed Axe." }
+    },
+    "Steps": {
+      "responsive": { "status": "pass", "reason": "Steps frame passed all eight widths." },
+      "a11y": { "status": "pass", "reason": "Steps owner frame passed Axe." }
+    },
+    "Toolbar": {
+      "responsive": { "status": "pass", "reason": "Toolbar frame passed all eight widths." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Toolbar frame passed Axe after all Select triggers received accessible names."
+      }
+    },
+    "Dialog": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Dialog frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered pre-open dialog accepted Escape, closed, and restored the underlying state."
+      },
+      "a11y": { "status": "pass", "reason": "Open Dialog frame passed Axe analysis." }
+    },
+    "Sheet": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Sheet frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered pre-open sheet accepted Escape and closed."
+      },
+      "a11y": { "status": "pass", "reason": "Open Sheet frame passed Axe analysis." }
+    },
+    "AlertDialog": {
+      "responsive": {
+        "status": "pass",
+        "reason": "AlertDialog frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered alert dialog cancel action closed the destructive confirmation."
+      },
+      "a11y": { "status": "pass", "reason": "Open AlertDialog frame passed Axe analysis." }
+    },
+    "Tooltip": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Tooltip frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Keyboard focus on the icon-only trigger displayed the rendered tooltip."
+      },
+      "a11y": { "status": "pass", "reason": "Tooltip owner frame passed Axe analysis." }
+    },
+    "Toaster": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Toast owner frame directly renders configured Toaster and every public toast lifecycle."
+      },
+      "props": {
+        "status": "pass",
+        "reason": "Validated prop-case map covers Toaster position/duration/theme/closeButton and toast variants/action/promise/dismiss."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Owner frame composes one Toaster with action controls and public toast API."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Toast frame passed Chromium reflow at all eight standard widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Dedicated Toaster frame passed RTL direction, overflow and Axe checks at all eight required widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Variant, action recovery, promise lifecycle and dismiss cases are rendered and tested."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Emulated coarse-pointer action/recovery toast journey passed at 320px and 390px."
+      },
+      "screenReader": {
+        "status": "untested",
+        "reason": "Live-region semantics and Axe pass, but no real screen-reader announcement session was executed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Promise loading/success/error and programmatic dismiss lifecycle cases are covered."
+      },
+      "a11y": { "status": "pass", "reason": "Toast owner frame passed Axe analysis." }
+    },
+    "Skeleton": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Skeleton frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Skeleton owner frame passed Axe analysis." }
+    },
+    "DataState": {
+      "responsive": {
+        "status": "pass",
+        "reason": "DataState frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Rendered DataState frame passed Axe analysis." }
+    },
+    "InfiniteQueryState": {
+      "responsive": {
+        "status": "pass",
+        "reason": "InfiniteQueryState frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered InfiniteQueryState frame passed Axe analysis."
+      }
+    },
+    "AlertMutationFeedback": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Mutation feedback frame passed Chromium reflow at all eight standard widths."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered mutation failure appeared and its retry action was executed."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered mutation feedback frame passed Axe analysis."
+      }
+    },
+    "PrefetchLink": {
+      "responsive": {
+        "status": "pass",
+        "reason": "PrefetchLink frame passed Chromium reflow at all eight standard widths."
+      },
+      "a11y": { "status": "pass", "reason": "Rendered PrefetchLink frame passed Axe analysis." }
+    },
+    "Card": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-display/card/index.tsx."
+      }
+    },
+    "LineChart": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Charts frame passed geometry checks at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered charts frame passed Chromium axe and keyboard focus smoke."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      }
+    },
+    "BarChart": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Charts frame passed geometry checks at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered charts frame passed Chromium axe and keyboard focus smoke."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      }
+    },
+    "AreaChart": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Charts frame passed geometry checks at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered charts frame passed Chromium axe and keyboard focus smoke."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      }
+    },
+    "PieChart": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Charts frame passed geometry checks at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered charts frame passed Chromium axe and keyboard focus smoke."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Charts frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      }
+    },
+    "DataTable": {
+      "responsive": {
+        "status": "pass",
+        "reason": "DataTable frame passed document and owned-scroll geometry at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered DataTable frame passed Chromium axe and keyboard focus smoke."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "DataTable frame passed Chromium RTL geometry and keyboard smoke at 1024px."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated stateful touch frame executed row selection at 320px and 390px."
+      }
+    }
+  },
+  "ownerOverrides": {
+    "data-entry/input": {
+      "rtl": {
+        "status": "pass",
+        "reason": "Input owner frame passed rendered RTL Axe and geometry at all eight widths."
+      }
+    },
+    "data-entry/form": {
+      "rtl": {
+        "status": "pass",
+        "reason": "Form owner frame passed rendered RTL Axe and geometry at all eight widths."
+      }
+    },
+    "data-entry/form-field": {
+      "rtl": {
+        "status": "pass",
+        "reason": "FormField owner frame passed rendered RTL Axe and geometry at all eight widths."
+      }
+    },
+    "layout/app-shell": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner runtime executes composed topbar and legacy topbarLeft/topbarRight/logo modes plus all shell slots."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered control switches from composed topbar to legacy slots and asserts the resulting content."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context, including the legacy-slot switch."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "AppShell owns synchronous slot layout; application requests belong to consumers."
+      }
+    },
+    "layout/breadcrumb": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame covers items, unique ariaLabel and a rendered custom router linkComponent adapter."
+      },
+      "journey": {
+        "status": "not-applicable",
+        "reason": "Breadcrumb owns location links but not route completion or recovery behavior."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Breadcrumb uses native links with no custom pointer gesture contract."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Breadcrumb is synchronous navigation markup; route loading belongs to the router."
+      }
+    },
+    "layout/flex": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame directly executes direction, alignment, justification, wrapping and gap cases."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated Flex owner frame passed Axe; Flex itself is a non-interactive layout primitive."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Flex is a synchronous CSS layout primitive with no async lifecycle."
+      }
+    },
+    "layout/resizable": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions directly map ResizablePanelGroup, ResizablePanel and ResizableHandle cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Complete compound owner frame passed Chromium geometry at all eight required widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Expanded owner frame passed Axe and the first separator changed aria-valuenow after ArrowRight."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Expanded owner passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Panel sizing and separator input are synchronous; persistence is consumer-owned."
+      }
+    },
+    "layout/aspect-ratio": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame executes the behavioral ratio cases; remaining DOM props are forwarded primitive attributes."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "AspectRatio is a synchronous sizing primitive."
+      }
+    },
+    "layout/auth-shell": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame renders required children plus optional brand and footer slots; className is a forwarded DOM attribute."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "AuthShell only composes synchronous layout slots; authentication requests belong to consumers."
+      }
+    },
+    "layout/page-container": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame source assertions map every declared behavioral prop including footerReveal onScroll and fill."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "PageContainer owns synchronous page layout; page data fetching belongs to consumers."
+      }
+    },
+    "layout/separator": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame covers orientation and decorative behavior; remaining attributes are forwarded primitive props."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Separator is a synchronous static primitive."
+      }
+    },
+    "layout/split-pane": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame covers required content/aside, both aside widths and unique aside labels."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "SplitPane is synchronous CSS layout composition."
+      }
+    },
+    "layout/topbar": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame covers start, center, end and custom children composition; DOM attributes are forwarded."
+      },
+      "async": { "status": "not-applicable", "reason": "Topbar is synchronous slot composition." }
+    },
+    "navigation/app-setting-picker": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map kind, appearance, disabled, controlled value and change behavior; id/name/className are forwarded form attributes."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Provider-bound picker passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Picker changes provider settings synchronously; persistence callbacks are consumer-owned."
+      }
+    },
+    "navigation/steps": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame maps items, controlled/uncontrolled values, status, orientation, type, size, title placement and change behavior."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Interactive Steps passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Steps progression is synchronous consumer-controlled state."
+      }
+    },
+    "data-entry/checkbox-group": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Aliased checkbox owner passed geometry at eight widths and source assertion proves CheckboxGroup renders."
+      },
+      "rtl": { "status": "pass", "reason": "Aliased owner frame passed RTL at eight widths." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered CheckboxGroup passed Axe and keyboard smoke."
+      }
+    },
+    "data-entry/radio": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Aliased radio owner passed geometry at eight widths and source assertion proves the group renders."
+      },
+      "rtl": { "status": "pass", "reason": "Aliased owner frame passed RTL at eight widths." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered radio aliases passed Axe and keyboard smoke."
+      }
+    },
+    "data-entry/field": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Checkbox and Switch owner frames render Field and passed geometry at eight widths."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Rendered Field compositions passed RTL at eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Labelled Field compositions passed Axe and keyboard smoke."
+      }
+    },
+    "layout/responsive-grid": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame executes the documented responsive column prop cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "async": {
+        "status": "not-applicable",
+        "reason": "ResponsiveGrid is a synchronous CSS layout primitive with no async lifecycle."
+      }
+    },
+    "layout/sidebar": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions cover sections, brand, renderItem, children, collapsed and selection cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated owner frame passed Axe with unique navigation landmarks."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Sidebar state and selection are synchronous consumer-controlled interactions."
+      }
+    },
+    "navigation/context-menu": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map the compound trigger, content and item contract."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "ContextMenu primitives forward synchronous Radix interaction state; data loading belongs to consumers."
+      }
+    },
+    "navigation/dropdown-menu": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map the compound trigger, content and item contract."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "DropdownMenu primitives forward synchronous Radix interaction state; data loading belongs to consumers."
+      }
+    },
+    "navigation/menubar": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map menu, trigger, content and item cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Menubar primitives expose synchronous menu interaction; data loading belongs to consumers."
+      }
+    },
+    "navigation/navigation-menu": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions map list, item, trigger, content and link cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": { "status": "pass", "reason": "Isolated owner frame passed Axe." },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "NavigationMenu is synchronous navigation composition; route/data loading belongs to consumers."
+      }
+    },
+    "navigation/pagination": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame executes full, simple, disabled, total, size and boundary prop cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated owner frame passed Axe and the page-change keyboard journey."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Pagination is controlled synchronously; result fetching is explicitly owned by the consumer."
+      }
+    },
+    "navigation/tabs": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions and frames execute items, compound, controlled, orientation and variant cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Dedicated pre-mount RTL frame passed ArrowLeft focus semantics."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated owner frame passed Axe and LTR/RTL arrow-key assertions."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Tabs selection is synchronous; panel data loading belongs to consumers."
+      }
+    },
+    "navigation/filter-bar": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner source assertions execute Toolbar and labelled ToolbarGroup filter cases."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed the executed eight-width Chromium matrix."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated owner frame passed Axe with labelled composite controls."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Owner frame passed all eight widths and Axe in a Chromium hasTouch/coarse-pointer context."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Toolbar composition and clear behavior are synchronous; filtering requests belong to consumers."
+      }
+    },
+    "data-entry/checkbox": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Source-mapped compounds passed rendered Axe and keyboard smoke."
+      }
+    },
+    "data-entry/command": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Mapped Command parts passed rendered Axe and keyboard smoke."
+      }
+    },
+    "data-entry/input-otp": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Mapped OTP parts passed rendered Axe and keyboard smoke."
+      }
+    },
+    "data-entry/label": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Label associations passed rendered Axe and keyboard smoke."
+      }
+    },
+    "data-entry/password-strength": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered feedback passed Axe; keyboard targets are owned by the password input."
+      }
+    },
+    "data-entry/radio-group": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Mapped radio aliases passed rendered Axe and keyboard smoke."
+      }
+    },
+    "data-entry/textarea": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Labelled textarea states passed rendered Axe and keyboard smoke."
+      }
+    },
+    "data-entry/toggle-group": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame passed Chromium geometry at 320–1920."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Owner frame passed RTL geometry and Axe at all eight widths."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Mapped group/item parts passed rendered Axe and keyboard smoke."
+      }
+    },
+    "data-display/badge": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static badges."
+      }
+    },
+    "data-display/list-row": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated stateful touch frame executed the trailing ListRow action at 320px and 390px."
+      }
+    },
+    "data-display/avatar": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static avatars."
+      }
+    },
+    "data-display/card": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Eight-width Chromium geometry including owned CardBar scrolling passed."
+      },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "data-display/accordion": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." },
+      "touch": {
+        "status": "pass",
+        "reason": "Emulated coarse-pointer tap toggled expanded state at 320px and 390px."
+      }
+    },
+    "data-display/collapsible": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." },
+      "touch": {
+        "status": "pass",
+        "reason": "Emulated coarse-pointer tap toggled expanded state at 320px and 390px."
+      }
+    },
+    "data-display/carousel": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered uniquely labelled landmarks passed axe and keyboard smoke."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Coarse-pointer tap advanced the first carousel and changed previous-button state at 320px and 390px."
+      }
+    },
+    "data-display/descriptions": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static descriptions."
+      }
+    },
+    "data-display/empty-state": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "data-display/progress": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static progress indicators."
+      }
+    },
+    "data-display/timeline": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static timelines."
+      }
+    },
+    "data-display/tree-list": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to the static frame."
+      }
+    },
+    "data-display/scroll-area": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Focusable scroll viewport passed rendered axe and keyboard smoke."
+      }
+    },
+    "data-display/popover": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Named popover dialogs passed rendered axe and keyboard smoke."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated closed-state Popover frame passed emulated coarse-pointer tap open, action and close at 320px and 390px. Physical-device touch remains separately untested."
+      }
+    },
+    "data-display/hover-card": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Eight-width Chromium geometry passed after narrow-label correction."
+      },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "HoverCard is an optional hover/focus preview; essential content and navigation must remain in the visible trigger/destination on touch devices."
+      }
+    },
+    "data-display/table": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to static tables."
+      }
+    },
+    "general/typography": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard smoke passed." }
+    },
+    "general/logo": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed for decorative and labelled logos; keyboard is not applicable."
+      }
+    },
+    "feedback/alert": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe plus dismiss/retry interaction tests passed."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed dismiss and cause-aware retry recovery tests passed."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Alert presents feedback and invokes callbacks but does not own pending async state."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Alert is static feedback; its optional actions are ordinary Button contracts tested separately."
+      }
+    },
+    "feedback/dialog": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe and dialog keyboard/focus tests passed."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame opened and closed Dialog at 320px and 390px."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed open, close, cancel, action and focus-dismiss journeys passed."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Dialog primitives do not own mutation pending or recovery state."
+      }
+    },
+    "feedback/sheet": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and Sheet keyboard/focus tests passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed trigger, Escape and close-control journeys passed."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Sheet primitives do not own mutation pending or recovery state."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Emulated coarse-pointer tap opened the Sheet dialog at 320px and 390px."
+      }
+    },
+    "feedback/skeleton": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to inert placeholders."
+      },
+      "journey": {
+        "status": "not-applicable",
+        "reason": "Skeletons are inert loading representations with no entry/action/completion transition."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Skeletons display a caller-owned pending state and execute no async work."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Skeleton placeholders are inert and expose no pointer interaction."
+      }
+    },
+    "feedback/tooltip": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe plus focus/keyboard tooltip tests passed."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed focus/open/content and dismissal interaction coverage passed."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "Tooltip delay is interaction timing, not asynchronous data or mutation state."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Tooltip is a hover/focus enhancement; essential help must remain visible or use a tap-capable Popover on touch layouts."
+      }
+    },
+    "query/query-refetch-button": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard activation passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed click-to-refetch and fetching-state journeys passed."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame invoked refetch and observed state increment at 320px and 390px."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed idle/fetching state and refetch invocation tests passed."
+      }
+    },
+    "general/reveal": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": {
+        "status": "pass",
+        "reason": "Rendered axe passed; keyboard is not applicable to a visual wrapper."
+      },
+      "journey": {
+        "status": "not-applicable",
+        "reason": "Reveal is a visual entrance wrapper and owns no user task transition."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "CSS entrance timing is not asynchronous data or mutation state."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Reveal is an inert visual-motion wrapper and exposes no pointer contract."
+      }
+    },
+    "query/data-state": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard recovery smoke passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed loading, prerequisite, empty, success, transient retry and auth recovery tests passed."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame tapped transient retry and observed recovery callback at 320px and 390px."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed initial loading, paused, background refresh, error and retry states passed."
+      }
+    },
+    "query/infinite-query-state": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard load-more smoke passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed loading, empty, error/recovery, data and load-more journeys passed."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame tapped load-more and observed fetchNextPage at 320px and 390px."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed fetch-next-page pending/completion, transient retry and auth routing tests passed."
+      }
+    },
+    "query/mutation-feedback": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard mutation smoke passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed idle, pending, error/retry and successful-clear states passed."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Dedicated hasTouch frame tapped mutation retry and observed callback at 320px and 390px."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed mutation pending, error and completion state tests passed."
+      }
+    },
+    "query/prefetch-link": {
+      "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
+      "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
+      "a11y": { "status": "pass", "reason": "Rendered axe and keyboard link smoke passed." },
+      "journey": {
+        "status": "pass",
+        "reason": "Executed hover, focus, both and disabled-prefetch modes passed."
+      },
+      "async": {
+        "status": "pass",
+        "reason": "Executed hover/focus query prefetch invocation and deduplication tests passed."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "Hover/focus prefetch is an enhancement unavailable to coarse pointers; tap navigation remains the underlying Link contract."
+      }
+    }
+  },
+  "ownerGroups": [
+    {
+      "name": "layout-static-journey-touch-classification",
+      "owners": [
+        "layout/aspect-ratio",
+        "layout/auth-shell",
+        "layout/flex",
+        "layout/page-container",
+        "layout/responsive-grid",
+        "layout/separator",
+        "layout/split-pane",
+        "layout/topbar"
+      ],
+      "dimensions": {
+        "journey": {
+          "status": "not-applicable",
+          "reason": "This layout owner arranges consumer content but owns no entry/action/completion/recovery task journey."
+        },
+        "touch": {
+          "status": "not-applicable",
+          "reason": "This static layout owner exposes no custom pointer or touch gesture; interactive descendants are consumer-owned."
+        }
+      }
+    },
+    {
+      "name": "layout-navigation-interaction-journeys",
+      "owners": [
+        "layout/resizable",
+        "layout/sidebar",
+        "navigation/app-setting-picker",
+        "navigation/context-menu",
+        "navigation/dropdown-menu",
+        "navigation/filter-bar",
+        "navigation/menubar",
+        "navigation/navigation-menu",
+        "navigation/pagination",
+        "navigation/steps",
+        "navigation/tabs"
+      ],
+      "dimensions": {
+        "journey": {
+          "status": "pass",
+          "reason": "Executed interaction suite passed selection/open-close/change/keyboard behavior for this owner; rendered frame evidence covers its composed surface."
+        }
+      }
+    },
+    {
+      "name": "layout-navigation-source-closure",
+      "owners": [
+        "layout/app-shell",
+        "layout/aspect-ratio",
+        "layout/auth-shell",
+        "layout/breadcrumb",
+        "layout/flex",
+        "layout/page-container",
+        "layout/resizable",
+        "layout/sidebar",
+        "layout/split-pane",
+        "layout/topbar",
+        "layout/responsive-grid",
+        "layout/separator",
+        "navigation/app-setting-picker",
+        "navigation/context-menu",
+        "navigation/dropdown-menu",
+        "navigation/filter-bar",
+        "navigation/menubar",
+        "navigation/navigation-menu",
+        "navigation/pagination",
+        "navigation/steps",
+        "navigation/tabs"
+      ],
+      "dimensions": {
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source assertions prove mapped public exports render in the owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner source cases render compound parts together and the owner frame passed runtime geometry and Axe."
+        },
+        "rtl": {
+          "status": "pass",
+          "reason": "Every grouped owner passed pre-render RTL subtree direction, eight-width geometry and isolated Axe; Menubar directional focus and the dedicated Tabs RTL frame passed arrow-key assertions."
+        },
+        "screenReader": {
+          "status": "untested",
+          "reason": "ARIA and Axe evidence exists, but no real screen-reader announcement session was executed."
+        }
+      }
+    },
+    {
+      "name": "display-static-closure",
+      "owners": [
+        "charts/line-chart",
+        "charts/bar-chart",
+        "charts/area-chart",
+        "charts/pie-chart",
+        "data-display/badge",
+        "data-display/avatar",
+        "data-display/card",
+        "data-display/table",
+        "data-display/descriptions",
+        "data-display/empty-state",
+        "data-display/progress",
+        "data-display/tree-list",
+        "data-display/timeline",
+        "data-display/scroll-area",
+        "general/typography",
+        "general/logo"
+      ],
+      "dimensions": {
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source-contract assertions prove every mapped public export/subpart renders in its owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner runtime frames and focused suites execute canonical compound composition."
+        },
+        "props": {
+          "status": "pass",
+          "reason": "Validated prop-case map covers each public prop group or records forwarded-platform N/A."
+        },
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source-contract assertion proves every mapped public export renders in its owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner frame renders public parts in canonical composed surfaces and passed runtime geometry/axe."
+        },
+        "journey": {
+          "status": "not-applicable",
+          "reason": "Static presentation primitive owns no entry/action/completion/recovery journey."
+        },
+        "async": {
+          "status": "not-applicable",
+          "reason": "Static presentation primitive executes no asynchronous data or mutation work."
+        },
+        "touch": {
+          "status": "not-applicable",
+          "reason": "Static presentation owner exposes no pointer-operated interaction."
+        },
+        "screenReader": {
+          "status": "untested",
+          "reason": "ARIA/axe evidence exists, but no real screen-reader announcement session was executed."
+        }
+      }
+    },
+    {
+      "name": "display-interactive-closure",
+      "owners": [
+        "data-display/list-row",
+        "data-display/data-table",
+        "data-display/popover",
+        "data-display/collapsible",
+        "data-display/accordion",
+        "data-display/hover-card",
+        "data-display/carousel",
+        "general/button"
+      ],
+      "dimensions": {
+        "props": {
+          "status": "pass",
+          "reason": "Validated prop-case map links public prop groups to frame and interaction cases."
+        },
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source-contract assertion proves every mapped public export renders in its owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner frame plus tests execute canonical trigger/content/action composition."
+        },
+        "journey": {
+          "status": "pass",
+          "reason": "Executed keyboard/click/open/close/select or activation journeys pass."
+        },
+        "async": {
+          "status": "not-applicable",
+          "reason": "Interaction is synchronous; caller-owned loading props and animation timing are not async data work."
+        },
+        "screenReader": {
+          "status": "untested",
+          "reason": "ARIA/axe evidence exists, but no real screen-reader announcement session was executed."
+        }
+      }
+    },
+    {
+      "name": "feedback-query-prop-closure",
+      "owners": [
+        "feedback/alert",
+        "feedback/dialog",
+        "feedback/sheet",
+        "feedback/skeleton",
+        "feedback/tooltip",
+        "general/reveal",
+        "query/query-refetch-button",
+        "query/data-state",
+        "query/infinite-query-state",
+        "query/mutation-feedback",
+        "query/prefetch-link"
+      ],
+      "dimensions": {
+        "props": {
+          "status": "pass",
+          "reason": "Validated prop-case map links every public prop group to a frame/test case or explicit forwarded-platform N/A."
+        },
+        "isolated": {
+          "status": "pass",
+          "reason": "Executable source-contract assertions prove every mapped public export renders in its owner frame."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner frames and focused suites execute the public trigger/content/action and lifecycle compositions."
+        },
+        "screenReader": {
+          "status": "untested",
+          "reason": "Automated ARIA/axe evidence does not prove announcements in a real screen reader."
+        }
+      }
+    },
+    {
+      "exports": [
+        "Label",
+        "CheckboxGroup",
+        "Radio",
+        "RadioItem",
+        "RadioGroupRoot",
+        "Textarea",
+        "Field",
+        "ToggleGroup",
+        "ToggleGroupItem",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "PasswordStrength",
+        "InputOTPGroup",
+        "InputOTPSlot",
+        "InputOTPSeparator"
+      ],
+      "dimensions": {
+        "isolated": {
+          "status": "pass",
+          "reason": "Owner source assertion proves the export renders and the owner frame passed the executed Chromium matrix."
+        }
+      }
+    },
+    {
+      "exports": [
+        "NumberInput",
+        "Label",
+        "Checkbox",
+        "CheckboxGroup",
+        "Radio",
+        "RadioGroup",
+        "RadioItem",
+        "RadioGroupRoot",
+        "Textarea",
+        "Field",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "ToggleGroup",
+        "ToggleGroupItem",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Upload",
+        "Transfer",
+        "Command",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "PasswordInput",
+        "PasswordStrength",
+        "InputOTP",
+        "InputOTPGroup",
+        "InputOTPSlot",
+        "InputOTPSeparator",
+        "Rating",
+        "TagInput"
+      ],
+      "dimensions": {
+        "composition": {
+          "status": "pass",
+          "reason": "Source contract maps the export to its owner composition and the rendered owner passed runtime checks."
+        }
+      }
+    },
+    {
+      "exports": [
+        "Input",
+        "NumberInput",
+        "Label",
+        "Checkbox",
+        "CheckboxGroup",
+        "Radio",
+        "RadioGroup",
+        "RadioItem",
+        "RadioGroupRoot",
+        "Textarea",
+        "Form",
+        "FormField",
+        "Field",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "ToggleGroup",
+        "ToggleGroupItem",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Cascader",
+        "TreeSelect",
+        "Transfer",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "PasswordInput",
+        "PasswordStrength",
+        "InputOTP",
+        "InputOTPGroup",
+        "InputOTPSlot",
+        "InputOTPSeparator",
+        "Rating",
+        "TagInput"
+      ],
+      "dimensions": {
+        "journey": {
+          "status": "not-applicable",
+          "reason": "This primitive/subpart owns no multi-step entry-completion-recovery journey; consumer workflow owns it. Local interaction is covered by keyboard and coarse-pointer evidence."
+        }
+      }
+    },
+    {
+      "exports": ["Upload", "Command"],
+      "dimensions": {
+        "journey": {
+          "status": "pass",
+          "reason": "Owner frames execute Upload and Command owned lifecycle surfaces with keyboard and coarse-pointer entry paths."
+        }
+      }
+    }
+  ],
+  "exportGroups": [
+    {
+      "exports": [
+        "Input",
+        "NumberInput",
+        "Select",
+        "Checkbox",
+        "RadioGroup",
+        "Form",
+        "FormField",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Upload",
+        "Cascader",
+        "TreeSelect",
+        "Transfer",
+        "Command",
+        "PasswordInput",
+        "InputOTP",
+        "Rating",
+        "TagInput"
+      ],
+      "dimensions": {
+        "props": {
+          "status": "pass",
+          "reason": "Complete behavioral prop families are mapped to explicit owner-frame cases in data-entry-prop-cases.json; forwarded platform props are documented as pass-through N/A."
+        }
+      }
+    },
+    {
+      "exports": [
+        "SelectContent",
+        "SelectGroup",
+        "SelectItem",
+        "SelectLabel",
+        "SelectScrollDownButton",
+        "SelectScrollUpButton",
+        "SelectSeparator",
+        "SelectTrigger",
+        "SelectValue"
+      ],
+      "dimensions": {
+        "props": {
+          "status": "not-applicable",
+          "reason": "Compound subpart props forward unchanged to Radix; behavioral composition is asserted by the long Select owner case."
+        }
+      }
+    },
+    {
+      "exports": [
+        "Input",
+        "NumberInput",
+        "Label",
+        "Checkbox",
+        "CheckboxGroup",
+        "Radio",
+        "RadioGroup",
+        "RadioItem",
+        "RadioGroupRoot",
+        "Textarea",
+        "Form",
+        "FormField",
+        "Field",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "ToggleGroup",
+        "ToggleGroupItem",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Cascader",
+        "TreeSelect",
+        "Transfer",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "PasswordInput",
+        "PasswordStrength",
+        "InputOTP",
+        "InputOTPGroup",
+        "InputOTPSlot",
+        "InputOTPSeparator",
+        "Rating",
+        "TagInput"
+      ],
+      "dimensions": {
+        "async": {
+          "status": "not-applicable",
+          "reason": "This export has no owned asynchronous lifecycle; async data or callbacks are consumer-owned and forwarded synchronously."
+        }
+      }
+    },
+    {
+      "exports": [
+        "Input",
+        "NumberInput",
+        "Select",
+        "SelectContent",
+        "SelectGroup",
+        "SelectItem",
+        "SelectLabel",
+        "SelectScrollDownButton",
+        "SelectScrollUpButton",
+        "SelectSeparator",
+        "SelectTrigger",
+        "SelectValue",
+        "Checkbox",
+        "RadioGroup",
+        "Form",
+        "FormField",
+        "SearchInput",
+        "Switch",
+        "Toggle",
+        "Slider",
+        "Calendar",
+        "MonthPicker",
+        "MonthRangePicker",
+        "DatePicker",
+        "DateRangePicker",
+        "TimePicker",
+        "ColorPicker",
+        "Upload",
+        "Cascader",
+        "TreeSelect",
+        "Transfer",
+        "Command",
+        "PasswordInput",
+        "InputOTP",
+        "Rating",
+        "TagInput"
+      ],
+      "dimensions": {
+        "touch": {
+          "status": "pass",
+          "reason": "Chromium hasTouch/coarse-pointer owner journey tapped the control and retained a nonempty accessibility-tree target; compound Select parts were asserted after touch-open and scrolling."
+        }
+      }
+    }
+  ]
+}

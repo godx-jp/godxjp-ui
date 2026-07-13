@@ -38,6 +38,7 @@ describe("EmptyState", () => {
       <EmptyState icon={Inbox} title="None" variant="section" />,
     );
     expect(getByRole("status")).toHaveAttribute("data-variant", "section");
+    expect(getByRole("heading", { level: 3, name: "None" })).toBeInTheDocument();
     rerender(<EmptyState icon={Inbox} title="None" variant="compact" />);
     expect(getByRole("status")).toHaveAttribute("data-variant", "compact");
     expect(container.querySelector(".ui-empty-state-icon")).toBeNull();

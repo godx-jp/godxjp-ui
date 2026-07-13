@@ -45,7 +45,7 @@ describe("primitive accessibility", () => {
       </Dialog>,
     );
 
-    expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Đóng" })).toBeInTheDocument();
     expectDecorativeIconsHidden(baseElement);
   });
 
@@ -59,7 +59,7 @@ describe("primitive accessibility", () => {
       </Sheet>,
     );
 
-    expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Đóng" })).toBeInTheDocument();
     expectDecorativeIconsHidden(baseElement);
   });
 });

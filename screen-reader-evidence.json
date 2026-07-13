@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "issue": "https://github.com/godx-jp/godxjp-ui/issues/171",
+    "requiredCombinations": [
+      "VoiceOver + Safari on current macOS",
+      "NVDA + Firefox on current Windows",
+      "NVDA + Chrome on current Windows for complex composites and live regions"
+    ],
+    "note": "Axe, DOM assertions and accessibility-tree snapshots are not real screen-reader evidence."
+  },
+  "records": []
+}

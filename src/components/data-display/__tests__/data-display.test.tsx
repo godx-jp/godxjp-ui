@@ -9,7 +9,7 @@ import { Descriptions } from "../descriptions";
 describe("EmptyState", () => {
   it("renders title and description", () => {
     renderWithUi(<EmptyState title="No data" description="Try changing filters" />);
-    expect(screen.getByRole("heading", { level: 3, name: "No data" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "No data" })).toBeInTheDocument();
     expect(screen.getByText("Try changing filters")).toBeInTheDocument();
   });
 

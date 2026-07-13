@@ -70,7 +70,7 @@ export default function Demo() {
         {/* Disabled first item — fallback selection must skip it (gh#175) */}
         <Card>
           <CardHeader>
-            <CardTitle>先頭タブが disabled · フォールバック選択</CardTitle>
+            <CardTitle level={2}>先頭タブが disabled · フォールバック選択</CardTitle>
             <CardDescription>
               defaultValue/value を渡さない場合、Tabs は先頭の ENABLED タブを自動選択する(disabled
               の先頭タブは選ばない)。全タブが disabled の場合は何も選択しない (gh#175)。

@@ -107,6 +107,7 @@ const PaginationNext = React.forwardRef<HTMLButtonElement, PaginationLinkProps>(
 PaginationNext.displayName = "PaginationNext";
 
 export function Pagination({
+  ariaLabel,
   value = 1,
   total = 0,
   pageSize = 10,
@@ -118,7 +119,6 @@ export function Pagination({
   disabled,
   className,
   onValueChange,
-  "aria-label": ariaLabel,
 }: PaginationProp) {
   const { t } = useTranslation();
   const navLabel = ariaLabel ?? t("navigation.pagination.ariaLabel");

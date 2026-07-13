@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
   Popover,
+  PopoverAnchor,
   PopoverContent,
   PopoverDescription,
   PopoverHeader,
@@ -31,6 +32,23 @@ export default function Demo() {
   return (
     <PageContainer title="Popover" subtitle="Floating panel anchored to a trigger · click to open">
       <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader>
+            <CardTitle>PopoverAnchor · non-trigger positioning reference</CardTitle>
+            <CardDescription>Anchor positions content without becoming its toggle.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Popover defaultOpen>
+              <PopoverAnchor asChild>
+                <span className="inline-flex rounded border px-3 py-2">請求額 ¥482,000</span>
+              </PopoverAnchor>
+              <PopoverContent side="right" aria-label="請求額の補足">
+                <PopoverDescription>税額と支払条件の補足情報です。</PopoverDescription>
+              </PopoverContent>
+            </Popover>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>Controlled trigger + content</CardTitle>
@@ -118,7 +136,7 @@ export default function Demo() {
                 <PopoverTrigger asChild>
                   <Button variant="outline">side=top</Button>
                 </PopoverTrigger>
-                <PopoverContent side="top">
+                <PopoverContent side="top" aria-label="上側の配置例">
                   <PopoverDescription>上に開きます。</PopoverDescription>
                 </PopoverContent>
               </Popover>
@@ -126,7 +144,7 @@ export default function Demo() {
                 <PopoverTrigger asChild>
                   <Button variant="outline">side=right</Button>
                 </PopoverTrigger>
-                <PopoverContent side="right">
+                <PopoverContent side="right" aria-label="右側の配置例">
                   <PopoverDescription>右に開きます。</PopoverDescription>
                 </PopoverContent>
               </Popover>
@@ -134,7 +152,7 @@ export default function Demo() {
                 <PopoverTrigger asChild>
                   <Button variant="outline">side=bottom</Button>
                 </PopoverTrigger>
-                <PopoverContent side="bottom">
+                <PopoverContent side="bottom" aria-label="下側の配置例">
                   <PopoverDescription>下に開きます（既定）。</PopoverDescription>
                 </PopoverContent>
               </Popover>
@@ -142,7 +160,7 @@ export default function Demo() {
                 <PopoverTrigger asChild>
                   <Button variant="outline">side=left</Button>
                 </PopoverTrigger>
-                <PopoverContent side="left">
+                <PopoverContent side="left" aria-label="左側の配置例">
                   <PopoverDescription>左に開きます。</PopoverDescription>
                 </PopoverContent>
               </Popover>
@@ -163,7 +181,7 @@ export default function Demo() {
                 <PopoverTrigger asChild>
                   <Button variant="outline">align=start</Button>
                 </PopoverTrigger>
-                <PopoverContent align="start">
+                <PopoverContent align="start" aria-label="開始端の配置例">
                   <PopoverDescription>開始端に揃えます。</PopoverDescription>
                 </PopoverContent>
               </Popover>
@@ -171,7 +189,7 @@ export default function Demo() {
                 <PopoverTrigger asChild>
                   <Button variant="outline">align=center</Button>
                 </PopoverTrigger>
-                <PopoverContent align="center">
+                <PopoverContent align="center" aria-label="中央の配置例">
                   <PopoverDescription>中央に揃えます（既定）。</PopoverDescription>
                 </PopoverContent>
               </Popover>
@@ -179,7 +197,7 @@ export default function Demo() {
                 <PopoverTrigger asChild>
                   <Button variant="outline">align=end</Button>
                 </PopoverTrigger>
-                <PopoverContent align="end">
+                <PopoverContent align="end" aria-label="終了端の配置例">
                   <PopoverDescription>終了端に揃えます。</PopoverDescription>
                 </PopoverContent>
               </Popover>

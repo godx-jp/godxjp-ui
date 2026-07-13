@@ -87,6 +87,7 @@ export default function Demo() {
 
         {/* Pagination component itself — outside the card, below it */}
         <Pagination
+          ariaLabel="請求書一覧のページネーション"
           value={page}
           total={invoices.length}
           pageSize={pageSize}
@@ -184,6 +185,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Pagination
+              ariaLabel="カスタムラベル例のページネーション"
               value={page}
               total={invoices.length}
               pageSize={pageSize}
@@ -205,6 +207,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Pagination
+              ariaLabel="コンパクト例のページネーション"
               simple
               value={simplePage}
               total={200}
@@ -225,6 +228,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Pagination
+              ariaLabel="無効状態例のページネーション"
               value={1}
               total={100}
               pageSize={10}

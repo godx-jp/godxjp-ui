@@ -307,6 +307,7 @@ function CollapsedRow({ item, activeId, onSelect }: RowProps) {
 }
 
 export function Sidebar({
+  ariaLabel,
   activeId,
   onSelect,
   sections,

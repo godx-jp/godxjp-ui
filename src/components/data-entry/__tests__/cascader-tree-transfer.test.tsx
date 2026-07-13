@@ -421,9 +421,7 @@ describe("TreeSelect", () => {
     );
 
     const combobox = screen.getByRole("combobox");
-    const clearIcon = combobox.querySelector("svg.lucide-x");
-    expect(clearIcon).toBeTruthy();
-    await user.click(clearIcon!);
+    await user.click(screen.getByRole("button", { name: "Xóa lựa chọn" }));
 
     expect(onChange).toHaveBeenCalledWith(undefined);
     expect(combobox).toHaveTextContent("Chọn…");

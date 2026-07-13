@@ -27,6 +27,8 @@ export type PageContainerProp = {
    * renders on the same page/view — two `<nav>` landmarks sharing one name/role fail axe's
    * `landmark-unique` (WCAG 2.4.1 / 1.3.1).
    */
+  breadcrumbLabel?: string;
+  /** Kebab/DOM-style alias of `breadcrumbLabel` (same landmark-unique override). */
   breadcrumbAriaLabel?: string;
   linkComponent?: React.ElementType;
   density?: PageDensityProp;
@@ -157,6 +159,8 @@ export type SidebarSectionProp = {
 
 /** @see Sidebar */
 export type SidebarProp = {
+  /** Accessible navigation landmark name; make it unique when multiple sidebars share a document. */
+  ariaLabel?: string;
   activeId: string;
   onSelect?: (id: string) => void;
   sections?: SidebarSectionProp[];

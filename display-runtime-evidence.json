@@ -1,0 +1,574 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-07-12T14:45:14.746Z",
+  "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+  "limitations": [
+    "Automated Chromium DOM/geometry/axe/keyboard evidence only.",
+    "Real screen-reader output and physical coarse-touch interaction remain untested."
+  ],
+  "coarsePointerEvidence": [
+    {
+      "owner": "feedback/dialog",
+      "frame": "feedback-dialog-touch",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "dialog visible", "tap close", "dialog removed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "query/data-state",
+      "frame": "query-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap retry", "callback observed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "query/infinite-query-state",
+      "frame": "query-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap load more", "fetchNextPage observed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "query/mutation-feedback",
+      "frame": "query-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap retry", "callback observed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "query/query-refetch-button",
+      "frame": "query-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap refresh", "refetch observed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "data-display/popover",
+      "frame": "data-display-popover-touch",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "dialog visible", "tap action", "dialog closed"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "data-display/accordion",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "expanded state toggled"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "data-display/collapsible",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "expanded state toggled"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "feedback/sheet",
+      "widths": [320, 390],
+      "journey": ["tap trigger", "dialog visible"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "feedback/sonner",
+      "frame": "feedback-toast",
+      "widths": [320, 390],
+      "journey": [
+        "tap delete",
+        "toast action visible",
+        "tap recovery action",
+        "original toast dismissed"
+      ],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "general/button",
+      "frame": "data-display-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap action", "state incremented"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "data-display/list-row",
+      "frame": "data-display-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap trailing action", "state incremented"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    },
+    {
+      "owner": "data-display/data-table",
+      "frame": "data-display-touch-actions",
+      "widths": [320, 390],
+      "journey": ["tap selection checkbox", "selected count updated"],
+      "verdict": "pass",
+      "physicalDevice": "untested"
+    }
+  ],
+  "frames": [
+    {
+      "id": "data-display-charts",
+      "verdict": "pass",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-charts-320.png",
+        "artifacts/display-runtime/data-display-charts-1920.png"
+      ]
+    },
+    {
+      "id": "data-display-data-table",
+      "verdict": "pass",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-data-table-320.png",
+        "artifacts/display-runtime/data-display-data-table-1920.png"
+      ]
+    },
+    {
+      "id": "general-button",
+      "verdict": "pass",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/general-button-320.png",
+        "artifacts/display-runtime/general-button-1920.png"
+      ]
+    },
+    {
+      "id": "data-display-badge",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-badge-320.png",
+        "artifacts/display-runtime/data-display-badge-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-list-row",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-list-row-320.png",
+        "artifacts/display-runtime/data-display-list-row-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-avatar",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-avatar-320.png",
+        "artifacts/display-runtime/data-display-avatar-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-accordion",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-accordion-320.png",
+        "artifacts/display-runtime/data-display-accordion-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-collapsible",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-collapsible-320.png",
+        "artifacts/display-runtime/data-display-collapsible-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-carousel",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-carousel-320.png",
+        "artifacts/display-runtime/data-display-carousel-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-descriptions",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-descriptions-320.png",
+        "artifacts/display-runtime/data-display-descriptions-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-empty-state",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-empty-state-320.png",
+        "artifacts/display-runtime/data-display-empty-state-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-progress",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-progress-320.png",
+        "artifacts/display-runtime/data-display-progress-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-card",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-card-320.png",
+        "artifacts/display-runtime/data-display-card-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-timeline",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-timeline-320.png",
+        "artifacts/display-runtime/data-display-timeline-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-tree-list",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-tree-list-320.png",
+        "artifacts/display-runtime/data-display-tree-list-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-scroll-area",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-scroll-area-320.png",
+        "artifacts/display-runtime/data-display-scroll-area-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-popover",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-popover-320.png",
+        "artifacts/display-runtime/data-display-popover-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-hover-card",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-hover-card-320.png",
+        "artifacts/display-runtime/data-display-hover-card-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-table",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-table-320.png",
+        "artifacts/display-runtime/data-display-table-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-stat-card",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/data-display-stat-card-320.png",
+        "artifacts/display-runtime/data-display-stat-card-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "general-typography",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/general-typography-320.png",
+        "artifacts/display-runtime/general-typography-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "general-logo",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/general-logo-320.png",
+        "artifacts/display-runtime/general-logo-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-alert",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/feedback-alert-320.png",
+        "artifacts/display-runtime/feedback-alert-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-dialog",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/feedback-dialog-320.png",
+        "artifacts/display-runtime/feedback-dialog-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-sheet",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/feedback-sheet-320.png",
+        "artifacts/display-runtime/feedback-sheet-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-skeleton",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/feedback-skeleton-320.png",
+        "artifacts/display-runtime/feedback-skeleton-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "feedback-tooltip",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/feedback-tooltip-320.png",
+        "artifacts/display-runtime/feedback-tooltip-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-button-refetch",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-button-refetch-320.png",
+        "artifacts/display-runtime/query-button-refetch-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "general-reveal",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/general-reveal-320.png",
+        "artifacts/display-runtime/general-reveal-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "providers-app-provider",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/providers-app-provider-320.png",
+        "artifacts/display-runtime/providers-app-provider-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "providers-format-date",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "not-applicable",
+      "evidence": [
+        "artifacts/display-runtime/providers-format-date-320.png",
+        "artifacts/display-runtime/providers-format-date-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-data-state",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-data-state-320.png",
+        "artifacts/display-runtime/query-data-state-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-infinite-query-state",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-infinite-query-state-320.png",
+        "artifacts/display-runtime/query-infinite-query-state-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-mutation-feedback",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-mutation-feedback-320.png",
+        "artifacts/display-runtime/query-mutation-feedback-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "query-prefetch-link",
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/query-prefetch-link-320.png",
+        "artifacts/display-runtime/query-prefetch-link-1920.png"
+      ],
+      "verdict": "pass"
+    }
+  ]
+}

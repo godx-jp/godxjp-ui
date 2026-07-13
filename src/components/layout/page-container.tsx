@@ -66,6 +66,7 @@ function PageContainerRoot({
   extra,
   footer,
   breadcrumb,
+  breadcrumbLabel,
   breadcrumbAriaLabel,
   linkComponent: LinkComponent = "a",
   density,
@@ -98,7 +99,7 @@ function PageContainerRoot({
       <header ref={headerRef} className="ui-page-header">
         {breadcrumb && breadcrumb.length > 0 && (
           <nav
-            aria-label={breadcrumbAriaLabel ?? t("navigation.breadcrumb.ariaLabel")}
+            aria-label={breadcrumbLabel ?? breadcrumbAriaLabel ?? t("navigation.breadcrumb.ariaLabel")}
             className="ui-breadcrumb"
           >
             <ol className="ui-breadcrumb-list">

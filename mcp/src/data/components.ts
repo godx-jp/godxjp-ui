@@ -1847,6 +1847,12 @@ import { Smartphone } from "lucide-react";
     tagline: "Centred empty placeholder with icon, title, description, and optional CTA.",
     props: [
       { name: "title", type: "string", required: true, description: "Primary empty message." },
+      {
+        name: "titleAs",
+        type: '"h2" | "h3" | "h4" | "p"',
+        description:
+          "Contextual title element. Defaults by variant: page=h2, section=h3, compact=p.",
+      },
       { name: "description", type: "string", description: "Secondary helper text." },
       { name: "icon", type: "LucideIcon", description: "Icon above the title." },
       { name: "action", type: "ReactNode", description: "CTA element (e.g. a Button)." },
@@ -2191,6 +2197,7 @@ import { Smartphone } from "lucide-react";
       "DO: Import from `@godxjp/ui/query` (not `@godxjp/ui`). Use the bundled `flattenItemPages` helper for any API that returns `{ items: T[] }` pages — it handles `undefined` data safely. Custom page shapes require a custom `flatten` function.",
       "DO: Always pass `skeleton` (e.g. `<SkeletonTable />` or `<SkeletonStat />`). It shows on initial `isPending`, on refetch-after-error, and whenever `data` is absent. Never show a blank area while loading.",
       "DO: Pass `empty` (an `<EmptyState>` node) to handle the zero-results case — without it the children render-prop is called with an empty array and you get a silent blank screen. Provide a custom `isEmpty` only when `TFlat` is not an array.",
+      "DO: Let errors remain cause-aware. Retry is automatic only for classified transient/network/5xx failures. Unknown errors do not get a blind retry unless `showRetry` or `onRetry` is explicitly supplied; 401 routes to `onAuthError`, and raw backend/token text is never rendered.",
       "DON'T: Hand-roll a load-more button. The component renders a default centered outline Button when `hasNextPage` is true. Override only via `loadMore` (custom node) or `showLoadMore={false}` (hide entirely). Never call `query.fetchNextPage()` outside the component for pagination.",
       "DON'T: Use `InfiniteQueryState` for a `useQuery` result — it expects `UseInfiniteQueryResult` shape (`pages`, `hasNextPage`, `fetchNextPage`, `isFetchingNextPage`). For regular `useQuery` use `DataState` instead.",
       "DON'T: Confuse the two generics: `TPage` is the raw page shape from the API, `TFlat` is what `flatten` returns (usually `TItem[]`). The `children` render-prop receives `TFlat`, not `TPage`. Pass `isEmpty` if `TFlat` is not a plain array so empty detection works correctly.",
@@ -2392,7 +2399,7 @@ import { Smartphone } from "lucide-react";
       { name: "placeholder", type: "string", description: "Placeholder." },
       { name: "value", type: "string | number", description: "Controlled value." },
       {
-        name: "onChange",
+        name: "onValueChange",
         type: "React.ChangeEventHandler<HTMLInputElement>",
         description: "Native change handler.",
       },
@@ -4897,6 +4904,26 @@ function MultiRegionPicker() {
         type: "string",
         description:
           "HTML `id` placed on the trigger Button — use this to associate a `<label htmlFor>` for accessibility.",
+      },
+      {
+        name: "aria-label",
+        type: "string",
+        description: "Accessible name for the combobox trigger when no visible label is available.",
+      },
+      {
+        name: "aria-errormessage",
+        type: "string",
+        description: "ID of the element containing the current validation error message.",
+      },
+      {
+        name: "aria-invalid",
+        type: "boolean | 'true' | 'false'",
+        description: "Marks the semantic combobox trigger invalid for assistive technology.",
+      },
+      {
+        name: "aria-required",
+        type: "boolean | 'true' | 'false'",
+        description: "Marks the semantic combobox trigger required for assistive technology.",
       },
       {
         name: "fieldNames",

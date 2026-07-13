@@ -67,7 +67,7 @@ describe("InfiniteQueryState", () => {
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
-  it("retry calls query.refetch when no onRetry is supplied", async () => {
+  it("automatically offers retry for a transient 5xx error", async () => {
     const user = userEvent.setup();
     const refetch = vi.fn(() => Promise.resolve({}));
     renderWithUi(
@@ -76,7 +76,7 @@ describe("InfiniteQueryState", () => {
           isError: true,
           isFetching: false,
           isFetchingNextPage: false,
-          error: new Error("boom"),
+          error: new Error("Service unavailable: 503"),
           refetch,
         })}
         skeleton={<p>skeleton</p>}
@@ -87,6 +87,32 @@ describe("InfiniteQueryState", () => {
     );
     await user.click(screen.getByRole("button"));
     expect(refetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not leak auth errors and routes recovery to onAuthError", async () => {
+    const user = userEvent.setup();
+    const onAuthError = vi.fn();
+    const refetch = vi.fn(() => Promise.resolve({}));
+    renderWithUi(
+      <InfiniteQueryState<Page, string[]>
+        query={mockInfiniteQuery({
+          isError: true,
+          isFetching: false,
+          isFetchingNextPage: false,
+          error: new Error("401 invalid access_token secret-value"),
+          refetch,
+        })}
+        skeleton={<p>skeleton</p>}
+        onAuthError={onAuthError}
+        flatten={(d) => flattenItemPages(d)}
+      >
+        {() => null}
+      </InfiniteQueryState>,
+    );
+    expect(screen.queryByText(/secret-value/i)).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button"));
+    expect(onAuthError).toHaveBeenCalledTimes(1);
+    expect(refetch).not.toHaveBeenCalled();
   });
 
   it("retry prefers onRetry over refetch and supports a custom errorRenderer", async () => {
