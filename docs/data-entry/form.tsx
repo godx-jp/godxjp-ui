@@ -118,7 +118,7 @@ export default function Demo() {
     >
       <Flex direction="col" gap="lg">
         {/* ════════════════════ 1. EVERY FIELD TYPE ════════════════════ */}
-        <Heading level={3}>1. 全フィールド型 · すべての入力コントロール</Heading>
+        <Heading level={2}>1. 全フィールド型 · すべての入力コントロール</Heading>
         <Text tone="muted" size="sm">
           ライブラリが提供するデータ入力コンポーネントを 1 つずつ FormField
           でラップ。ラベル・ヘルパー・必須マークを付与し、aria-* は自動配線される。
@@ -423,7 +423,7 @@ export default function Demo() {
         </Card>
 
         {/* ════════════════════ 2. EVERY LAYOUT ════════════════════ */}
-        <Heading level={3}>2. レイアウト · vertical / horizontal / inline / columns</Heading>
+        <Heading level={2}>2. レイアウト · vertical / horizontal / inline / columns</Heading>
 
         <Card>
           <CardHeader>
@@ -547,7 +547,7 @@ export default function Demo() {
         </Card>
 
         {/* ════════════════════ 3. EVERY STATE ════════════════════ */}
-        <Heading level={3}>3. 状態 · pristine / filled / error / disabled / read-only</Heading>
+        <Heading level={2}>3. 状態 · pristine / filled / error / disabled / read-only</Heading>
 
         <Card>
           <CardHeader>

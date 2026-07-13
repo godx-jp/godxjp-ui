@@ -20,9 +20,9 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Textarea placeholder="摘要を入力..." />
-              <Textarea defaultValue={"4月分 受注\nINV-2024-0312"} />
-              <Textarea disabled defaultValue="無効 (disabled)" />
+              <Textarea aria-label="プレースホルダー状態" placeholder="摘要を入力..." />
+              <Textarea aria-label="入力済み状態" defaultValue={"4月分 受注\nINV-2024-0312"} />
+              <Textarea aria-label="無効状態" disabled defaultValue="無効 (disabled)" />
             </Flex>
           </CardContent>
         </Card>

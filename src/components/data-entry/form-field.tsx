@@ -72,6 +72,13 @@ export function FormField({
         // and a dangling `for` triggers Chrome's "Incorrect use of <label>" issue.
         id: (childProps?.id as string | undefined) ?? resolvedId,
         "aria-labelledby": (childProps?.["aria-labelledby"] as string | undefined) ?? labelId,
+        // Redundant `aria-label` fallback (belt-and-suspenders): the accessible name is the
+        // SAME string as the visible label, just reachable even if an aria-labelledby lookup
+        // ever comes back empty (id-ref timing, AT quirks). Only when `label` is plain text and
+        // the child hasn't already set its own aria-label.
+        "aria-label":
+          (childProps?.["aria-label"] as string | undefined) ??
+          (typeof label === "string" ? label : undefined),
         // Helper and error can coexist: helper stays on aria-describedby, the error on
         // aria-errormessage (surfaced when aria-invalid is true).
         "aria-describedby": mergeIds(

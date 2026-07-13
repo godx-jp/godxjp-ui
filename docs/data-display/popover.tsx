@@ -47,7 +47,7 @@ export default function Demo() {
                   絞り込み
                 </Button>
               </PopoverTrigger>
-              <PopoverContent>
+              <PopoverContent aria-label="絞り込みパネル">
                 <Flex direction="col" gap="md">
                   <FormField id="min" label="最小金額">
                     <Input id="min" type="number" placeholder="0" />
@@ -81,7 +81,7 @@ export default function Demo() {
                   保険料の内訳
                 </Button>
               </PopoverTrigger>
-              <PopoverContent>
+              <PopoverContent aria-label="保険料の内訳">
                 <Flex direction="col" gap="md">
                   <PopoverHeader>
                     <PopoverTitle>保険料の内訳</PopoverTitle>
@@ -199,7 +199,7 @@ export default function Demo() {
               <PopoverTrigger asChild>
                 <Button variant="outline">確認が必要</Button>
               </PopoverTrigger>
-              <PopoverContent>
+              <PopoverContent aria-label="下書きを削除しますか？">
                 <Flex direction="col" gap="md">
                   <PopoverHeader>
                     <PopoverTitle>下書きを削除しますか？</PopoverTitle>

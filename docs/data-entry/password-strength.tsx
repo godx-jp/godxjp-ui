@@ -81,7 +81,12 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <PasswordInput autoComplete="new-password" defaultValue="MyP@ss1" disabled />
+              <PasswordInput
+                aria-label="パスワード（無効状態）"
+                autoComplete="new-password"
+                defaultValue="MyP@ss1"
+                disabled
+              />
               <PasswordStrength value="MyP@ss1" showChecklist={false} />
             </Flex>
           </CardContent>

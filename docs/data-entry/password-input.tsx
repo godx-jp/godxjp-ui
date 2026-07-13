@@ -23,9 +23,9 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <PasswordInput placeholder="パスワードを入力" />
-              <PasswordInput defaultValue="S3cr3t!pass" />
-              <PasswordInput disabled defaultValue="無効 (disabled)" />
+              <PasswordInput aria-label="プレースホルダー状態" placeholder="パスワードを入力" />
+              <PasswordInput aria-label="入力済み状態" defaultValue="S3cr3t!pass" />
+              <PasswordInput aria-label="無効状態" disabled defaultValue="無効 (disabled)" />
             </Flex>
           </CardContent>
         </Card>

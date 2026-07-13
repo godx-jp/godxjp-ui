@@ -152,6 +152,7 @@ export default function Demo() {
       collapsed={collapsed}
       onSelect={setActiveId}
       sections={FULL_SECTIONS}
+      aria-label="ドッキングサイドバーのナビゲーション"
       product={{
         name: "CoreBooks",
         role: "株式会社アクメ",
@@ -247,6 +248,7 @@ export default function Demo() {
                   activeId={brandActiveId}
                   onSelect={setBrandActiveId}
                   sections={BRAND_SECTIONS}
+                  aria-label="brand プロップ例のナビゲーション"
                   brand={
                     <SidebarHeader>
                       <span className="bg-primary text-primary-foreground grid size-7 shrink-0 place-items-center rounded-md">
@@ -283,6 +285,7 @@ export default function Demo() {
                   onSelect={setRenderActiveId}
                   sections={FAVOURITE_SECTIONS}
                   renderItem={(item) => renderFavouriteRow(item, setRenderActiveId)}
+                  aria-label="renderItem プロップ例のナビゲーション"
                 />
               </div>
             </CardContent>
@@ -299,7 +302,11 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
-                <Sidebar activeId={composedActiveId} onSelect={setComposedActiveId}>
+                <Sidebar
+                  activeId={composedActiveId}
+                  onSelect={setComposedActiveId}
+                  aria-label="children プロップ例のナビゲーション"
+                >
                   <SidebarSection label="お気に入り">
                     {COMPOSED_ITEMS.map((item) => (
                       <SidebarItem

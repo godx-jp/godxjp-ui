@@ -12,7 +12,9 @@ export const ScrollArea = React.forwardRef<
     className={cn("relative overflow-hidden", className)}
     {...props}
   >
-    <ScrollAreaPrimitive.Viewport className="size-full rounded-[inherit]">
+    {/* Keep the scroll viewport keyboard-reachable so overflowing content can be scrolled
+        without a pointer (WCAG 2.1.1 / axe scrollable-region-focusable). */}
+    <ScrollAreaPrimitive.Viewport tabIndex={0} className="size-full rounded-[inherit]">
       {children}
     </ScrollAreaPrimitive.Viewport>
     <ScrollBar />

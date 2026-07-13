@@ -225,7 +225,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <Heading level={4}>キーボード操作</Heading>
+            <Heading level={2}>キーボード操作</Heading>
           </CardHeader>
           <CardContent>
             <Text size="sm" tone="muted">

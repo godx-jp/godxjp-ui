@@ -283,7 +283,7 @@ function EmployeeDetail({ employee }: { employee: Employee }) {
           </Avatar>
           <div className="min-w-0">
             <Flex direction="row" align="center" gap="sm" wrap>
-              <Heading level={3}>{employee.name}</Heading>
+              <Heading level={2}>{employee.name}</Heading>
               <Badge tone={STATUS_TONE[employee.status]} variant="outline">
                 {STATUS_LABEL[employee.status]}
               </Badge>

@@ -373,7 +373,12 @@ export function StoryDemoBlock({
     <Card className="demo-block" ref={blockRef}>
       <CardContent>
         <Flex direction="col" gap="lg">
-          <header className="demo-block-toolbar">
+          {/* A plain div, NOT <header> — this is preview CHROME (zoom/dimension controls), not
+              page banner content. A real <header> here would resolve to an implicit `banner`
+              landmark whenever the rendered story ALSO provides its own (e.g. AppShell demos),
+              producing a `landmark-no-duplicate-banner` violation neither landmark can fix from
+              its own side. */}
+          <div className="demo-block-toolbar">
             <label className="demo-block-field">
               <span className="demo-block-field-label">Dimensions</span>
               <select
@@ -472,15 +477,17 @@ export function StoryDemoBlock({
             <span className="demo-block-meta" title="Effective scale">
               {zoomPercentLabel}
             </span>
-          </header>
+          </div>
 
           <div
             className="demo-block-canvas"
             ref={canvasRef}
             data-mode={layout === "fullscreen" ? "page" : "component"}
             data-responsive={isResponsive ? "true" : undefined}
-            role="region"
-            aria-label="Component preview"
+            // Keyboard-reachable so a taller-than-viewport story can be scrolled without a mouse
+            // (axe scrollable-region-focusable only requires focusability — NOT a role="region";
+            // that would make this a landmark and break landmark-*-is-top-level for any story
+            // that renders its own banner/main/contentinfo, e.g. AppShell demos).
             tabIndex={0}
           >
             <div
@@ -493,6 +500,11 @@ export function StoryDemoBlock({
               <div
                 ref={frameRef}
                 className="demo-block-frame"
+                // A static story (no focusable content) taller than the scaled frame makes THIS
+                // element the scroll container; keep it keyboard-reachable so it can be scrolled
+                // without a mouse (axe scrollable-region-focusable). No role — a landmark here
+                // would break landmark-*-is-top-level for stories that render their own regions.
+                tabIndex={0}
                 data-layout={layout}
                 data-fill={layout === "fullscreen" ? "true" : undefined}
                 data-height-mode={frameHeightAuto ? "auto" : undefined}

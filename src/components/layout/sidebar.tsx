@@ -317,6 +317,7 @@ export function Sidebar({
   children,
   renderItem,
   footer,
+  "aria-label": ariaLabel,
 }: SidebarProp) {
   const { t } = useTranslation();
   const resolvedSections = sections ?? [];
@@ -369,7 +370,7 @@ export function Sidebar({
         })()
       ) : null}
 
-      <nav className="sb-nav-scroll" aria-label={t("layout.sidebar.ariaLabel")}>
+      <nav className="sb-nav-scroll" aria-label={ariaLabel ?? t("layout.sidebar.ariaLabel")}>
         {children ??
           resolvedSections.map((section, sectionIndex) => (
             <SidebarSection
