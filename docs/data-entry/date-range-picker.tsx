@@ -31,7 +31,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>基本 (controlled)</CardTitle>
+            <CardTitle level={2}>基本 (controlled)</CardTitle>
             <CardDescription>
               value + onValueChange
               で制御。開始/終了を直接タイプ入力するか、カレンダーアイコンを開いて
@@ -55,7 +55,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>レポート期間フィルター (未選択)</CardTitle>
+            <CardTitle level={2}>レポート期間フィルター (未選択)</CardTitle>
             <CardDescription>
               初期値なし。選択後は reportRange_from / reportRange_to
               がクエリパラメータとして使われる。
@@ -78,7 +78,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>非制御 (defaultValue)</CardTitle>
+            <CardTitle level={2}>非制御 (defaultValue)</CardTitle>
             <CardDescription>
               value / onValueChange を渡さず defaultValue
               で初期範囲だけ与える。状態はコンポーネント内部で 保持され、name=&#34;fiscal_year&#34;
@@ -103,7 +103,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>locale で日本語カレンダー</CardTitle>
+            <CardTitle level={2}>locale で日本語カレンダー</CardTitle>
             <CardDescription>
               locale=&#123;ja&#125; を渡すとポップオーバーのカレンダーが日本語表記 (曜日・月名)
               になる。 入力欄は常に ISO yyyy-MM-dd を保持する。
@@ -126,7 +126,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>disabled 状態</CardTitle>
+            <CardTitle level={2}>disabled 状態</CardTitle>
             <CardDescription>確定済み期間や読み取り専用フィールドに使用。</CardDescription>
           </CardHeader>
           <CardContent>

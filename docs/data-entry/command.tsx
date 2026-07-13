@@ -68,7 +68,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>勘定科目クイック選択</CardTitle>
+            <CardTitle level={2}>勘定科目クイック選択</CardTitle>
             <CardDescription>
               グループ化された科目リストをキーボードで素早く選択。 ハイライト中の科目を value
               で制御（現在: {account || "未選択"}）。
@@ -133,7 +133,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>勤怠アクションパレット（Cmd+K 想定）</CardTitle>
+            <CardTitle level={2}>勤怠アクションパレット（Cmd+K 想定）</CardTitle>
             <CardDescription>
               ページ横断のクイックアクション。キーワードで絞り込み、Enter で実行。 実行:{" "}
               {action || "なし"}
@@ -209,7 +209,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>取引先サーバー検索（非同期）</CardTitle>
+            <CardTitle level={2}>取引先サーバー検索（非同期）</CardTitle>
             <CardDescription>
               shouldFilter={"{false}"} で内蔵フィルタを無効化し、入力値（value /
               onValueChange）でサーバー検索した結果だけを表示。 取得中はローディング行、0 件は

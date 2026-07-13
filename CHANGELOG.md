@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Per-frame axe a11y gate real fixes (#157)** — the frame-axe baseline shrank from 101 allowlisted
+  frames toward near-zero by fixing ROOT CAUSES, not re-baselining:
+  - Every docs demo's top-level `CardTitle` now declares `level={2}` (was the library default
+    `h3`), fixing the pervasive `h1 → h3` heading-order skip under `PageContainer`'s `<h1>` (91
+    frames) — an AST codemod, nested Card-in-Card titles correctly kept the `h3` default.
+  - `Pagination`, `Breadcrumb` (standalone + `PageContainer`'s built-in breadcrumb slot via new
+    `breadcrumbAriaLabel`), and `Sidebar` gained an `aria-label` override prop so more than one
+    instance on a page/view gets a distinguishable landmark name (`landmark-unique`, WCAG 2.4.1);
+    `PageContainer`'s breadcrumb `aria-label` now routes through `t()` instead of a hardcoded
+    English literal.
+  - `FormField` now ALSO injects a redundant `aria-label` (mirroring the visible `label`, when it's
+    plain text) alongside its `aria-labelledby` wiring — a belt-and-suspenders accessible-name path
+    for every control it wraps.
+  - Scrollable regions are now keyboard-reachable (`tabIndex={0}`, WCAG 2.1.1 / axe
+    `scrollable-region-focusable`) without becoming landmarks: the `Table` primitive's overflow
+    wrapper, the `DataTable` horizontal scroll region, and the `ScrollArea` viewport.
+  - `Calendar` selected day now keeps `text-primary-foreground` on its ghost `<button>` through
+    hover/focus, fixing dark-label-on-blue insufficient contrast on the selected date
+    (`color-contrast`).
+  - `DataTable`'s built-in empty state renders its message as plain text (`titleAs="p"`) instead of
+    an `<h3>`, so a "no rows" status never injects a stray heading into the page outline
+    (`heading-order`).
 - **`Select`/`DataSelect`** (searchable mode — `showSearch`/`loadOptions`) now forwards controlled
   `open`/`onOpenChange`, controlled `search`/`onSearchChange`, `readOnly`, `size`, a `filterOption`
   override for the default client-side filter, and custom `renderError`/`renderLoadMore` slots to
@@ -18,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   chevron disclosure indicator from the DOM entirely (not a CSS hide), for specialized triggers
   (icon-only, etc.) that render their own affordance, without reaching for consumer descendant CSS.
   (#175)
-
 - `AppShell` now OWNS an accessible mobile navigation drawer below `lg`: a hamburger trigger in the
   topbar opens a focus-trapped `Sheet` (Esc + overlay close, focus returns to the trigger). New
   props `mobileNav` (defaults to the `sidebar` node — pass a tailored menu, or `null` to opt out),

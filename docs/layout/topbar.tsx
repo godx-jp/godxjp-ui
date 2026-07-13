@@ -192,7 +192,7 @@ export default function Demo() {
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
-              <CardTitle>現在の状態</CardTitle>
+              <CardTitle level={2}>現在の状態</CardTitle>
               <CardDescription>
                 各コントロールは props ではなく slot
                 に置いた実コンポーネント。操作すると更新されます。
@@ -225,7 +225,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Topbar は3つの slot だけ</CardTitle>
+              <CardTitle level={2}>Topbar は3つの slot だけ</CardTitle>
               <CardDescription>
                 start / center / end。中身（ブランド・ナビ・検索・言語切替・ユーザーメニュー）は
                 すべて consumer が決める。アイコンのみ／ラベル付き／枠線あり等は各コンポーネントの
@@ -256,7 +256,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>状態リセット</CardTitle>
+              <CardTitle level={2}>状態リセット</CardTitle>
             </CardHeader>
             <CardContent>
               <Flex gap="sm" wrap>
@@ -277,7 +277,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>320px stress · 長いローカライズ内容</CardTitle>
+              <CardTitle level={2}>320px stress · 長いローカライズ内容</CardTitle>
               <CardDescription>
                 slot の優先度や overflow は consumer の責務。狭い幅で現行挙動を可視化する。
               </CardDescription>

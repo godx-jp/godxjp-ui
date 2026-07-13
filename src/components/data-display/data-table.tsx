@@ -654,6 +654,11 @@ DataTable.Content = function DataTableContent() {
     <div
       className={cn("ui-data-table-scroll", hasPinEnd && "ui-data-table-has-pin-end")}
       aria-busy={loading}
+      // A table wider than its container scrolls horizontally here; keep the scroll region
+      // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
+      // scrollable-region-focusable). No landmark role — avoids landmark-unique collisions
+      // when a page renders several tables.
+      tabIndex={0}
     >
       <div
         className="ui-data-table-surface min-w-[640px] sm:min-w-0"
@@ -782,7 +787,10 @@ DataTable.Content = function DataTableContent() {
                   className="ui-data-table-empty"
                   aria-live="polite"
                 >
-                  {empty ?? <EmptyState title={t("dataTable.empty")} />}
+                  {/* A table's "no rows" message is a status, not a document section — render the
+                      title as plain text (titleAs) so it never injects a stray heading into the
+                      page outline (axe heading-order). */}
+                  {empty ?? <EmptyState title={t("dataTable.empty")} titleAs="p" />}
                 </TableCell>
               </TableRow>
             ) : (

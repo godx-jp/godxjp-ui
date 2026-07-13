@@ -146,7 +146,7 @@ function NumberedPaginationCard() {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>番号付き + 件数選択</CardTitle>
+        <CardTitle level={2}>番号付き + 件数選択</CardTitle>
         <Text size="xs" tone="muted" tabular>
           全 {NUMBERED_DATA.length} 件
         </Text>
@@ -199,7 +199,7 @@ function LoadMoreCard() {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>もっと読む</CardTitle>
+        <CardTitle level={2}>もっと読む</CardTitle>
         <Text size="xs" tone="muted" tabular>
           {rows.length} / {LOADMORE_DATA.length} 件表示
         </Text>
@@ -264,7 +264,7 @@ function CursorPeriodCard() {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between gap-3">
-        <CardTitle>カーソル / 期間ジャンプ</CardTitle>
+        <CardTitle level={2}>カーソル / 期間ジャンプ</CardTitle>
         <Select
           value={period}
           onValueChange={(v: string) => {

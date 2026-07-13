@@ -18,7 +18,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Icon-only button labels</CardTitle>
+            <CardTitle level={2}>Icon-only button labels</CardTitle>
             <CardDescription>
               Use TooltipTrigger asChild to avoid nesting a button inside a button. The tooltip
               provides the accessible label for icon-only actions in DataTable rows.
@@ -54,7 +54,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Contextual help on a form label</CardTitle>
+            <CardTitle level={2}>Contextual help on a form label</CardTitle>
             <CardDescription>
               Wrap a non-interactive icon in a span with tabIndex=0 so keyboard users can focus it.
               Explain accounting terms or beta features without cluttering the UI.
@@ -79,7 +79,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Disabled button reason</CardTitle>
+            <CardTitle level={2}>Disabled button reason</CardTitle>
             <CardDescription>
               Wrap a disabled Button in a Tooltip to explain why the action is unavailable.
               TooltipTrigger asChild merges onto the disabled element correctly.
@@ -99,7 +99,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Keyboard shortcut hint</CardTitle>
+            <CardTitle level={2}>Keyboard shortcut hint</CardTitle>
             <CardDescription>
               Surface keyboard shortcuts on toolbar buttons without adding visible text to the UI.
               delayDuration={0} for instant display on quick hover.

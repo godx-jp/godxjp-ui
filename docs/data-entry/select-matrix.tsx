@@ -31,7 +31,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Compound primitive · complete anatomy</CardTitle>
+            <CardTitle level={2}>Compound primitive · complete anatomy</CardTitle>
             <CardDescription>
               Group, label, separator, disabled item, controlled value, sm/md trigger and portalled
               content. Radix owns keyboard focus and collision handling.
@@ -92,7 +92,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Non-search / search API boundary</CardTitle>
+            <CardTitle level={2}>Non-search / search API boundary</CardTitle>
             <CardDescription>
               Without showSearch/loadOptions the data API delegates to Radix Select: grouping,
               disabled options, renderOption, name and controlled/uncontrolled values are supported.
@@ -105,7 +105,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Data-driven · long JA/VI and disabled option</CardTitle>
+            <CardTitle level={2}>Data-driven · long JA/VI and disabled option</CardTitle>
             <CardDescription>
               Long labels truncate without widening the page. The disabled option remains visible
               but cannot be selected; name creates a native hidden form value.
@@ -136,7 +136,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Searchable · FormField validation contract</CardTitle>
+            <CardTitle level={2}>Searchable · FormField validation contract</CardTitle>
             <CardDescription>
               The searchable trigger receives FormField label, helper, required, invalid and error
               references. The internal search textbox has its own visible-purpose accessible name.
@@ -166,7 +166,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>RTL and collision boundary</CardTitle>
+            <CardTitle level={2}>RTL and collision boundary</CardTitle>
             <CardDescription>
               Logical spacing mirrors under dir=rtl. The portalled panel uses Radix collision
               padding near the inline edge instead of overflowing the viewport.
@@ -190,7 +190,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Supported async boundary</CardTitle>
+            <CardTitle level={2}>Supported async boundary</CardTitle>
             <CardDescription>
               The main Select frame demonstrates loading, resolved-empty and rejected loaders.
               Re-querying or reopening retries the loader; there is currently no explicit

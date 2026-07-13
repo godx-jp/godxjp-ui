@@ -43,7 +43,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Corner radius</CardTitle>
+            <CardTitle level={2}>Corner radius</CardTitle>
             <CardDescription>
               The system authors the base 6px radius and derives sm/md/lg from it. xl and full are
               not overridden; they fall through to Tailwind defaults.
@@ -80,7 +80,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Elevation</CardTitle>
+            <CardTitle level={2}>Elevation</CardTitle>
             <CardDescription>
               Cards carry a 1px border and NO shadow at rest. Shadow appears only on floating
               surfaces: popover and dialog.

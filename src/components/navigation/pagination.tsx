@@ -118,8 +118,10 @@ export function Pagination({
   disabled,
   className,
   onValueChange,
+  "aria-label": ariaLabel,
 }: PaginationProp) {
   const { t } = useTranslation();
+  const navLabel = ariaLabel ?? t("navigation.pagination.ariaLabel");
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const safeCurrent = Math.min(Math.max(1, value), totalPages);
   const pages = buildPageRange(safeCurrent, totalPages);
@@ -149,11 +151,7 @@ export function Pagination({
 
   if (simple) {
     return (
-      <nav
-        aria-label={t("navigation.pagination.ariaLabel")}
-        data-simple="true"
-        className={cn("ui-pagination", className)}
-      >
+      <nav aria-label={navLabel} data-simple="true" className={cn("ui-pagination", className)}>
         {totalLabel && <span className="ui-pagination-total">{totalLabel}</span>}
         <Button
           type="button"
@@ -183,10 +181,7 @@ export function Pagination({
   }
 
   return (
-    <nav
-      aria-label={t("navigation.pagination.ariaLabel")}
-      className={cn("ui-pagination", className)}
-    >
+    <nav aria-label={navLabel} className={cn("ui-pagination", className)}>
       {totalLabel && <span className="ui-pagination-total">{totalLabel}</span>}
 
       {showSizeChanger && (

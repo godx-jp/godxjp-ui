@@ -73,7 +73,7 @@ export default function SecurityMfaShowcase() {
          *  trailing slot per row — NOT a stack of full-width bars. */}
         <Card>
           <CardHeader>
-            <CardTitle>Xác thực hai lớp</CardTitle>
+            <CardTitle level={2}>Xác thực hai lớp</CardTitle>
             <CardDescription>Yêu cầu xác minh thêm khi đăng nhập.</CardDescription>
           </CardHeader>
           <CardContent flush>
@@ -117,7 +117,7 @@ export default function SecurityMfaShowcase() {
          *  primary rightmost, never a centered/full-width bar). */}
         <Card>
           <CardHeader>
-            <CardTitle>Mã khôi phục</CardTitle>
+            <CardTitle level={2}>Mã khôi phục</CardTitle>
             <CardDescription>
               Dùng khi bạn không truy cập được thiết bị xác thực. Còn lại 8 mã chưa dùng.
             </CardDescription>

@@ -37,7 +37,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>仕訳一覧フィルター（制御モード）</CardTitle>
+            <CardTitle level={2}>仕訳一覧フィルター（制御モード）</CardTitle>
             <CardDescription>
               value + onValueChange で即時制御（入力に追従）。onSearch は 250 ms
               デバウンス後に発火。
@@ -73,7 +73,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>取引先検索（非制御モード）</CardTitle>
+            <CardTitle level={2}>取引先検索（非制御モード）</CardTitle>
             <CardDescription>
               defaultValue のみ渡して非制御。ローカルフィルターに適す。
             </CardDescription>
@@ -100,7 +100,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>カスタム ariaLabel</CardTitle>
+            <CardTitle level={2}>カスタム ariaLabel</CardTitle>
             <CardDescription>隣接するラベルがない場合は ariaLabel で補完する。</CardDescription>
           </CardHeader>
           <CardContent>

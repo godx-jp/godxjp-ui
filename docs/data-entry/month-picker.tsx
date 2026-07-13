@@ -13,7 +13,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Controlled · form submission</CardTitle>
+            <CardTitle level={2}>Controlled · form submission</CardTitle>
             <CardDescription>
               value + onValueChange で制御し、name は yyyy/MM の表示値を送信する。直接入力と
               月グリッド選択のどちらも利用できる。
@@ -33,7 +33,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Uncontrolled · bounded years</CardTitle>
+            <CardTitle level={2}>Uncontrolled · bounded years</CardTitle>
             <CardDescription>
               defaultValue で内部状態を初期化し、fromYear / toYear で年移動を制限する。
             </CardDescription>
@@ -53,7 +53,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Clear affordance variants</CardTitle>
+            <CardTitle level={2}>Clear affordance variants</CardTitle>
             <CardDescription>
               値がある既定状態ではクリア操作を表示する。必須フィールドでは allowClear=false
               にして不用意な空値を防ぐ。
@@ -77,7 +77,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Disabled · empty and populated</CardTitle>
+            <CardTitle level={2}>Disabled · empty and populated</CardTitle>
             <CardDescription>権限不足または確定済みデータの操作不可状態。</CardDescription>
           </CardHeader>
           <CardContent>

@@ -249,7 +249,7 @@ export default function Demo() {
         <Card>
           <CardHeader className="gap-2">
             <Flex direction="row" wrap align="center" justify="between" gap="sm">
-              <CardTitle>勤怠サマリ · 製造部（当月締め）</CardTitle>
+              <CardTitle level={2}>勤怠サマリ · 製造部（当月締め）</CardTitle>
               <Text size="xs" tone="muted" tabular>
                 対象 {ROWS.length}名 · 2026-05
               </Text>
@@ -349,7 +349,7 @@ export default function Demo() {
         {/* ── DataTable 版（セル単位の条件付き書式は ColumnDef.render で表現） ── */}
         <Card>
           <CardHeader>
-            <CardTitle>DataTable 版 · セル単位の条件付き書式</CardTitle>
+            <CardTitle level={2}>DataTable 版 · セル単位の条件付き書式</CardTitle>
             <Text size="xs" tone="muted">
               ColumnDef.render 内でしきい値判定 → token クラスを付与。行全体のティントは ColumnDef
               では表現できないため上段の実 Table 合成を参照（gapNotes 参照）。

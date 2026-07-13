@@ -39,10 +39,24 @@ describe("PageContainer", () => {
         ]}
       />,
     );
-    const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
+    // Accessible name is now localized via t() (test harness defaultLocale="vi") — not asserted
+    // here (see the breadcrumbAriaLabel override test below for that contract); a single nav
+    // landmark is unambiguous without a name filter.
+    const nav = screen.getByRole("navigation");
     expect(nav).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "CRM" })).toHaveAttribute("href", "/crm");
     expect(nav).toHaveTextContent("Detail");
+  });
+
+  it("breadcrumbAriaLabel overrides the default localized nav name (landmark-unique, gh#157)", () => {
+    renderWithUi(
+      <PageContainer
+        title="Detail"
+        breadcrumb={[{ label: "CRM", to: "/crm" }, { label: "Detail" }]}
+        breadcrumbAriaLabel="Custom breadcrumb name"
+      />,
+    );
+    expect(screen.getByRole("navigation", { name: "Custom breadcrumb name" })).toBeInTheDocument();
   });
 
   it("applies density class on root", () => {

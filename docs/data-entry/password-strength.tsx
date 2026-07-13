@@ -21,7 +21,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>新規登録フォーム</CardTitle>
+            <CardTitle level={2}>新規登録フォーム</CardTitle>
             <CardDescription>
               PasswordInput の直下に配置し、入力と同時にスコアを表示する。
             </CardDescription>
@@ -45,7 +45,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>カスタムルール + ラベル</CardTitle>
+            <CardTitle level={2}>カスタムルール + ラベル</CardTitle>
             <CardDescription>
               rules で評価項目を絞り込み、labels でスコア表示を日本語化。
             </CardDescription>
@@ -74,14 +74,19 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>チェックリスト非表示</CardTitle>
+            <CardTitle level={2}>チェックリスト非表示</CardTitle>
             <CardDescription>
               showChecklist={"{false}"} でスコアバーのみ表示するコンパクト版。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <PasswordInput autoComplete="new-password" defaultValue="MyP@ss1" disabled />
+              <PasswordInput
+                aria-label="パスワード（無効状態）"
+                autoComplete="new-password"
+                defaultValue="MyP@ss1"
+                disabled
+              />
               <PasswordStrength value="MyP@ss1" showChecklist={false} />
             </Flex>
           </CardContent>

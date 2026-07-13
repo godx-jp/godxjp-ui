@@ -9,7 +9,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Size tiers</CardTitle>
+            <CardTitle level={2}>Size tiers</CardTitle>
             <CardDescription>xs / sm / md（既定）/ lg のトークンサイズ。</CardDescription>
           </CardHeader>
           <CardContent>
@@ -24,7 +24,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Glyph and accessible name</CardTitle>
+            <CardTitle level={2}>Glyph and accessible name</CardTitle>
             <CardDescription>
               Wordmark と組み合わせる mark は decorative。単独 mark は label で名前を付けます。
             </CardDescription>

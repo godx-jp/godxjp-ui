@@ -22,7 +22,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Controlled input</CardTitle>
+            <CardTitle level={2}>Controlled input</CardTitle>
             <CardDescription>
               Controlled via value/onValueChange. Keyboard accessible (radiogroup). Pass name= for
               native form submission.
@@ -47,7 +47,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Read-only display</CardTitle>
+            <CardTitle level={2}>Read-only display</CardTitle>
             <CardDescription>
               readOnly=true turns it into a display widget with no interaction. Use for showing
               average scores.
@@ -70,7 +70,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Custom max stars</CardTitle>
+            <CardTitle level={2}>Custom max stars</CardTitle>
             <CardDescription>
               max= controls the number of stars rendered. Default is 5.
             </CardDescription>

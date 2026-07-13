@@ -131,7 +131,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>勘定科目選択（単一・検索付き）</CardTitle>
+            <CardTitle level={2}>勘定科目選択（単一・検索付き）</CardTitle>
             <CardDescription>
               科目ツリーから1科目を選択。showSearch + treeDefaultExpandAll で素早くアクセス。
               選択値: {glAccount ?? "未選択"}
@@ -155,7 +155,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>部門フィルター（複数選択 + チェックボックス）</CardTitle>
+            <CardTitle level={2}>部門フィルター（複数選択 + チェックボックス）</CardTitle>
             <CardDescription>
               treeCheckable で親選択が子に連鎖。SHOW_PARENT で表示を集約。 選択数:{" "}
               {deptFilter.length} 件
@@ -179,7 +179,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>費用科目（チェック非連鎖・SHOW_ALL）</CardTitle>
+            <CardTitle level={2}>費用科目（チェック非連鎖・SHOW_ALL）</CardTitle>
             <CardDescription>
               treeCheckStrictly=true で親子独立選択。SHOW_ALL で全チェックノードを表示。
             </CardDescription>

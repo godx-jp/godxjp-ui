@@ -21,7 +21,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Toast variants</CardTitle>
+            <CardTitle level={2}>Toast variants</CardTitle>
             <CardDescription>
               Import toast from sonner (not @godxjp/ui). success / error / warning / info for the
               four semantic variants. Toasts auto-dismiss · use Alert for persistent messages.
@@ -63,7 +63,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Soft destructive with undo action</CardTitle>
+            <CardTitle level={2}>Soft destructive with undo action</CardTitle>
             <CardDescription>
               After a delete, surface an undo action via the toast action option. The user can
               recover without a confirmation modal.
@@ -89,7 +89,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Promise toast (loading → success/error)</CardTitle>
+            <CardTitle level={2}>Promise toast (loading → success/error)</CardTitle>
             <CardDescription>
               toast.promise() tracks an async operation automatically · shows a loading state then
               resolves to success or error. Ideal for background exports or bulk imports.

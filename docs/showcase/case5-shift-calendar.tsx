@@ -389,7 +389,7 @@ export default function ShiftCalendarShowcase() {
           {/* ── Shift-type legend (the 7-color wa-iro palette) ── */}
           <Card>
             <CardHeader>
-              <CardTitle>シフト区分</CardTitle>
+              <CardTitle level={2}>シフト区分</CardTitle>
               <CardAction>
                 <Text size="xs" tone="muted" className="whitespace-nowrap">
                   和色（装飾用）
@@ -477,7 +477,7 @@ function MonthGrid({ onPick }: { onPick: (d: DayCell) => void }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>月</CardTitle>
+        <CardTitle level={2}>月</CardTitle>
         <CardAction>
           <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
             6週間 · 31日
@@ -589,7 +589,7 @@ function WeekTimeline() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>週</CardTitle>
+        <CardTitle level={2}>週</CardTitle>
         <CardAction>
           <Text size="xs" tone="muted" tabular className="whitespace-nowrap">
             5月11日〜17日 · 06:00–22:00
@@ -733,7 +733,9 @@ function DayLanes() {
         {DAY_LANES.map((lane) => (
           <Card key={lane.staff} className="self-start">
             <CardHeader>
-              <CardTitle className="truncate">{lane.staff}</CardTitle>
+              <CardTitle level={2} className="truncate">
+                {lane.staff}
+              </CardTitle>
               <CardAction>
                 <Badge tone="neutral" variant="outline" className="whitespace-nowrap">
                   {lane.role}
@@ -748,7 +750,9 @@ function DayLanes() {
         {/* Understaffed gap — a calm attention EmptyState, not a dead grey box */}
         <Card className="self-start border-dashed" style={{ borderColor: "var(--attention)" }}>
           <CardHeader>
-            <CardTitle className="truncate whitespace-nowrap">夜帯 22:00–06:00</CardTitle>
+            <CardTitle level={2} className="truncate whitespace-nowrap">
+              夜帯 22:00–06:00
+            </CardTitle>
             <CardAction>
               <Badge tone="warning" variant="outline" className="whitespace-nowrap">
                 人員不足

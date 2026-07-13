@@ -152,6 +152,7 @@ export default function Demo() {
       collapsed={collapsed}
       onSelect={setActiveId}
       sections={FULL_SECTIONS}
+      aria-label="ドッキングサイドバーのナビゲーション"
       product={{
         name: "CoreBooks",
         role: "株式会社アクメ",
@@ -222,7 +223,7 @@ export default function Demo() {
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
-              <CardTitle>現在の状態</CardTitle>
+              <CardTitle level={2}>現在の状態</CardTitle>
               <CardDescription>
                 左のレールに渡している sections prop の現在のアクティブ項目
               </CardDescription>
@@ -235,7 +236,7 @@ export default function Demo() {
           {/* brand prop · replaces the product chip with a fully custom header (SidebarHeader). */}
           <Card>
             <CardHeader>
-              <CardTitle>brand プロップ</CardTitle>
+              <CardTitle level={2}>brand プロップ</CardTitle>
               <CardDescription>
                 product チップの代わりに SidebarHeader で完全に自作したヘッダーを差し込みます。
                 brand と product は排他です。
@@ -247,6 +248,7 @@ export default function Demo() {
                   activeId={brandActiveId}
                   onSelect={setBrandActiveId}
                   sections={BRAND_SECTIONS}
+                  aria-label="brand プロップ例のナビゲーション"
                   brand={
                     <SidebarHeader>
                       <span className="bg-primary text-primary-foreground grid size-7 shrink-0 place-items-center rounded-md">
@@ -270,7 +272,7 @@ export default function Demo() {
           {/* renderItem prop · per-item custom render escape hatch (here: a favourite-star affix). */}
           <Card>
             <CardHeader>
-              <CardTitle>renderItem プロップ</CardTitle>
+              <CardTitle level={2}>renderItem プロップ</CardTitle>
               <CardDescription>
                 各行のレンダリングを差し替えるエスケープハッチ。 ここではラベルの右に
                 お気に入りスターのアフィックスを描画しています。
@@ -283,6 +285,7 @@ export default function Demo() {
                   onSelect={setRenderActiveId}
                   sections={FAVOURITE_SECTIONS}
                   renderItem={(item) => renderFavouriteRow(item, setRenderActiveId)}
+                  aria-label="renderItem プロップ例のナビゲーション"
                 />
               </div>
             </CardContent>
@@ -291,7 +294,7 @@ export default function Demo() {
           {/* children prop · full nav override: compose SidebarSection / SidebarItem directly. */}
           <Card>
             <CardHeader>
-              <CardTitle>children プロップ（ナビ全体の差し替え）</CardTitle>
+              <CardTitle level={2}>children プロップ（ナビ全体の差し替え）</CardTitle>
               <CardDescription>
                 sections を使わず SidebarSection / SidebarItem を直接組み立てて、
                 ナビゲーション全体を 自前で構成します。
@@ -299,7 +302,11 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
-                <Sidebar activeId={composedActiveId} onSelect={setComposedActiveId}>
+                <Sidebar
+                  activeId={composedActiveId}
+                  onSelect={setComposedActiveId}
+                  aria-label="children プロップ例のナビゲーション"
+                >
                   <SidebarSection label="お気に入り">
                     {COMPOSED_ITEMS.map((item) => (
                       <SidebarItem
@@ -318,7 +325,7 @@ export default function Demo() {
           {/* Feature notes */}
           <Card>
             <CardHeader>
-              <CardTitle>主な機能</CardTitle>
+              <CardTitle level={2}>主な機能</CardTitle>
             </CardHeader>
             <CardContent>
               <Flex direction="col" gap="sm" className="text-sm">

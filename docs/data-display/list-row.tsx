@@ -26,7 +26,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>アクティブなセッション Active sessions</CardTitle>
+            <CardTitle level={2}>アクティブなセッション Active sessions</CardTitle>
             <CardDescription>
               Rows live in a flush CardContent and draw their own dividers. Trailing holds the row
               action: a status Badge or a destructive Button.
@@ -64,31 +64,35 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>連携アカウント Linked accounts</CardTitle>
+            <CardTitle level={2}>連携アカウント Linked accounts</CardTitle>
             <CardDescription>
               Leading takes an icon or Avatar; trailing takes any action control. `as="li"` when the
               rows are a semantic list.
             </CardDescription>
           </CardHeader>
           <CardContent flush>
-            <ListRow
-              as="li"
-              leading={<Link2 aria-hidden="true" className="size-4" />}
-              title="GitHub"
-              description="taro@example.com として接続済み"
-              trailing={
-                <Button size="xs" variant="ghost">
-                  解除 Disconnect
-                </Button>
-              }
-            />
-            <ListRow
-              as="li"
-              leading={<KeyRound aria-hidden="true" className="size-4" />}
-              title="Passkey · iCloud Keychain"
-              description="2026年3月12日に追加"
-              trailing={<Badge tone="neutral">未使用</Badge>}
-            />
+            {/* `as="li"` rows are a SEMANTIC list — axe's `listitem` rule requires the parent to
+                actually be a list container (ul/ol/role=list), not just visually stacked divs. */}
+            <ul>
+              <ListRow
+                as="li"
+                leading={<Link2 aria-hidden="true" className="size-4" />}
+                title="GitHub"
+                description="taro@example.com として接続済み"
+                trailing={
+                  <Button size="xs" variant="ghost">
+                    解除 Disconnect
+                  </Button>
+                }
+              />
+              <ListRow
+                as="li"
+                leading={<KeyRound aria-hidden="true" className="size-4" />}
+                title="Passkey · iCloud Keychain"
+                description="2026年3月12日に追加"
+                trailing={<Badge tone="neutral">未使用</Badge>}
+              />
+            </ul>
           </CardContent>
         </Card>
       </Flex>

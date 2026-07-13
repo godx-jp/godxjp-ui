@@ -21,7 +21,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Image + fallback</CardTitle>
+            <CardTitle level={2}>Image + fallback</CardTitle>
             <CardDescription>
               Compose AvatarImage with AvatarFallback: a loaded photo shows the image, an avatar
               with no image shows initials.
@@ -49,7 +49,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Fallback on a broken image</CardTitle>
+            <CardTitle level={2}>Fallback on a broken image</CardTitle>
             <CardDescription>
               When the src fails to load, AvatarImage swaps in the AvatarFallback automatically,
               never a blank circle. delayMs holds the fallback back briefly so it does not flash
@@ -72,7 +72,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Sizes</CardTitle>
+            <CardTitle level={2}>Sizes</CardTitle>
             <CardDescription>
               Default is var(--control-height); override with a size-* utility (size-8 / size-10 /
               size-12).

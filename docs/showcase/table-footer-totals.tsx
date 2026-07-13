@@ -200,7 +200,7 @@ export default function Demo() {
     >
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>従業員別 月次集計</CardTitle>
+          <CardTitle level={2}>従業員別 月次集計</CardTitle>
           <Text size="xs" tone="muted" tabular>
             対象 {ROWS.length} 名
           </Text>

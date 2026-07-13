@@ -222,7 +222,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>2026年6月 第1週</CardTitle>
+            <CardTitle level={2}>2026年6月 第1週</CardTitle>
             <Text size="xs" tone="muted" tabular>
               従業員 {EMPLOYEES.length} 名 · 横スクロールで全日表示
             </Text>
@@ -320,7 +320,7 @@ export default function Demo() {
         {/* Legend — the fixed color-signaling map, shown at rest. */}
         <Card>
           <CardHeader>
-            <CardTitle>凡例</CardTitle>
+            <CardTitle level={2}>凡例</CardTitle>
           </CardHeader>
           <CardContent>
             <Flex direction="row" wrap gap="md">

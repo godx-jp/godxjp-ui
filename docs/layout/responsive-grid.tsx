@@ -27,7 +27,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>コンテナクエリで折り返し（自己所有のクエリコンテナ）</CardTitle>
+            <CardTitle level={2}>コンテナクエリで折り返し（自己所有のクエリコンテナ）</CardTitle>
             <CardDescription>
               同じ columns=&#123;4&#125; でも、コンテナ幅で列数が変わる。左の広い領域は 4
               列、右の狭いサイドバー（約 20rem）は 1 列に折り返す。ビューポート幅は同一なので、
@@ -66,7 +66,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Container stress · 320 / 768px 相当（外側コンテナ不要）</CardTitle>
+            <CardTitle level={2}>Container stress · 320 / 768px 相当（外側コンテナ不要）</CardTitle>
             <CardDescription>
               固定幅の親の中でも、同じ columns=&#123;4&#125; が親幅で列数を変える。親には
               container-type を付けていない。ResponsiveGrid が自身のスコープでクエリするため、
@@ -92,7 +92,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>columns=&#123;4&#125; · KPI 行（StatCard 直置き）</CardTitle>
+            <CardTitle level={2}>columns=&#123;4&#125; · KPI 行（StatCard 直置き）</CardTitle>
             <CardDescription>
               StatCard は自身がボーダー付き Card なので Card/CardContent でラップしない。 columns
               数値指定時は sm=min(n,2) / md=min(n,3) / lg=n に自動変換。
@@ -110,7 +110,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>columns=&#123;3&#125; · 法人比較（Card+CardContent）</CardTitle>
+            <CardTitle level={2}>columns=&#123;3&#125; · 法人比較（Card+CardContent）</CardTitle>
             <CardDescription>
               StatCard 以外のリッチなタイルは Card+CardContent で構成。 columns=&#123;3&#125; → sm=2
               / md=3 / lg=3 に自動変換。
@@ -160,7 +160,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>
+            <CardTitle level={2}>
               columns=&#123;&#123; sm: 1, md: 2, lg: 4 &#125;&#125; ·
               ブレークポイントオブジェクト（3 段制御）
             </CardTitle>

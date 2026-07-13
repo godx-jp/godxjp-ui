@@ -4,7 +4,10 @@ import { cn } from "../../lib/utils";
 
 export const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="relative w-full overflow-auto">
+    // A table wider than its container scrolls horizontally in this wrapper; keep it
+    // keyboard-reachable so it can be scrolled without a pointer (WCAG 2.1.1 / axe
+    // scrollable-region-focusable). No landmark role — avoids landmark-unique collisions.
+    <div className="relative w-full overflow-auto" tabIndex={0}>
       <table
         ref={ref}
         data-slot="table"

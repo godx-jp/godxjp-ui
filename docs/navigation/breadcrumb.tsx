@@ -18,7 +18,7 @@ export default function Demo() {
         {/* 1 · IN FOCUS — the bare component + what every part does. */}
         <Card>
           <CardHeader>
-            <CardTitle>基本 · これがコンポーネントそのもの</CardTitle>
+            <CardTitle level={2}>基本 · これがコンポーネントそのもの</CardTitle>
             <CardDescription>
               `&lt;Breadcrumb items={"{[…]}"} /&gt;` を置くだけ。シェル不要。リンクのセグメント (to
               あり) はクリックで戻れ、末尾 (to なし) は現在地として aria-current=&quot;page&quot; の
@@ -32,6 +32,7 @@ export default function Demo() {
                 { label: "会計", to: "/accounting" },
                 { label: "請求書 INV-0042" },
               ]}
+              aria-label="基本例のパンくずリスト"
             />
           </CardContent>
         </Card>
@@ -39,20 +40,24 @@ export default function Demo() {
         {/* 2 · ONE KNOB — depth is just the array length. Stacked so the scaling is obvious. */}
         <Card>
           <CardHeader>
-            <CardTitle>深さ · items を増やすだけ</CardTitle>
+            <CardTitle level={2}>深さ · items を増やすだけ</CardTitle>
             <CardDescription>
               2 から 4 階層まで、変えるのは配列の長さだけ。区切りと折り返しは自動。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Breadcrumb items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]} />
+              <Breadcrumb
+                items={[{ label: "ホーム", to: "/" }, { label: "仕訳一覧" }]}
+                aria-label="2階層のパンくずリスト"
+              />
               <Breadcrumb
                 items={[
                   { label: "ホーム", to: "/" },
                   { label: "給与管理", to: "/payroll" },
                   { label: "2024年5月分給与明細" },
                 ]}
+                aria-label="3階層のパンくずリスト"
               />
               <Breadcrumb
                 items={[
@@ -61,6 +66,7 @@ export default function Demo() {
                   { label: "経理部", to: "/payroll/departments/accounting" },
                   { label: "田中 太郎" },
                 ]}
+                aria-label="4階層のパンくずリスト"
               />
             </Flex>
           </CardContent>
@@ -69,7 +75,7 @@ export default function Demo() {
         {/* 3 · PLACEMENT — standalone, or the optional shell convenience. Reference, last. */}
         <Card>
           <CardHeader>
-            <CardTitle>配置 · 単体 または シェルの任意プロップ</CardTitle>
+            <CardTitle level={2}>配置 · 単体 または シェルの任意プロップ</CardTitle>
             <CardDescription>
               単体でどこにでも置ける。任意で `PageContainer`/`AppShell` の `breadcrumb`
               プロップに渡すと、ヘッダーの定位置に出る (シェルが強制するものではない)。

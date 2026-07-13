@@ -181,7 +181,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>経費カテゴリ選択（単一・検索付き）</CardTitle>
+            <CardTitle level={2}>経費カテゴリ選択（単一・検索付き）</CardTitle>
             <CardDescription>
               費用科目の階層パスを選択。showSearch でリーフまで全文検索できる。 選択パス:{" "}
               {categoryPath.length > 0
@@ -205,7 +205,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>地域選択（単一・changeOnSelect）</CardTitle>
+            <CardTitle level={2}>地域選択（単一・changeOnSelect）</CardTitle>
             <CardDescription>
               changeOnSelect=true で中間ノードも確定値として選択可能。 選択パス:{" "}
               {regionPath.length > 0 ? pathToLabels(REGIONS, regionPath).join(" / ") : "未選択"}
@@ -227,7 +227,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>複数経費カテゴリ（multiple）</CardTitle>
+            <CardTitle level={2}>複数経費カテゴリ（multiple）</CardTitle>
             <CardDescription>
               multiple=true で string[][] を管理。チェックボックスで複数パスを選択。 選択数:{" "}
               {multiPaths.length} パス
@@ -250,7 +250,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>地域選択（expandTrigger=&quot;hover&quot;）</CardTitle>
+            <CardTitle level={2}>地域選択（expandTrigger=&quot;hover&quot;）</CardTitle>
             <CardDescription>
               expandTrigger=&quot;hover&quot; で列のホバーだけで次の階層が展開（既定は
               &quot;click&quot;）。 リーフはクリックで確定。 選択パス:{" "}
@@ -273,7 +273,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>配送区分（ノード単位フラグ・複数）</CardTitle>
+            <CardTitle level={2}>配送区分（ノード単位フラグ・複数）</CardTitle>
             <CardDescription>
               ノードの disabled で「クール便」「国際配送」を選択不可（薄表示）に、isLeaf
               で「店頭受取」を 子なし確定ノードに。 選択数: {shippingPaths.length} パス
@@ -295,7 +295,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>組織選択（fieldNames でキー写像）</CardTitle>
+            <CardTitle level={2}>組織選択（fieldNames でキー写像）</CardTitle>
             <CardDescription>
               実 API 形状（id / name / items）を fieldNames=&#123;&#123; value: &quot;id&quot;,
               label: &quot;name&quot;, children: &quot;items&quot; &#125;&#125; で写像。 選択パス:{" "}
@@ -320,7 +320,9 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>非制御モード（defaultValue・allowClear=&#123;false&#125;）</CardTitle>
+            <CardTitle level={2}>
+              非制御モード（defaultValue・allowClear=&#123;false&#125;）
+            </CardTitle>
             <CardDescription>
               defaultValue で初期パスを与え、状態を内部管理（非制御）。allowClear=&#123;false&#125;
               で クリア（×）ボタンを無効化し、必須項目として常に値を保持。
@@ -341,7 +343,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>無効状態（disabled・選択済み）</CardTitle>
+            <CardTitle level={2}>無効状態（disabled・選択済み）</CardTitle>
             <CardDescription>
               disabled で操作不可。value
               を与えて「選択済みのまま無効化」も表現（編集権限なしの読み取り表示）。

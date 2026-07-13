@@ -340,7 +340,7 @@ export default function AcmePortalShowcase() {
             <ResponsiveGrid columns={{ sm: 1, md: 1, lg: 2 }}>
               <Card className="self-start">
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Cần bạn xử lý</CardTitle>
+                  <CardTitle level={2}>Cần bạn xử lý</CardTitle>
                   <Text size="xs" tone="muted">
                     {QUEUE.length} việc
                   </Text>
@@ -369,7 +369,7 @@ export default function AcmePortalShowcase() {
 
               <Card className="self-start">
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Hành trình đơn TXM-100241</CardTitle>
+                  <CardTitle level={2}>Hành trình đơn TXM-100241</CardTitle>
                   <Badge tone="info" variant="outline">
                     <Plane aria-hidden="true" /> Đang vận chuyển
                   </Badge>
@@ -392,7 +392,7 @@ export default function AcmePortalShowcase() {
             {/* Orders table — the centerpiece */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Đơn mua hộ gần đây</CardTitle>
+                <CardTitle level={2}>Đơn mua hộ gần đây</CardTitle>
                 <Button variant="ghost" size="sm">
                   <Wallet aria-hidden="true" />
                   Xem tất cả

@@ -18,7 +18,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Tones</CardTitle>
+            <CardTitle level={2}>Tones</CardTitle>
             <CardDescription>
               Tone carries meaning。success（既定）/ warning / destructive。
             </CardDescription>
@@ -35,7 +35,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Over capacity</CardTitle>
+            <CardTitle level={2}>Over capacity</CardTitle>
             <CardDescription>
               over=true で 100% を超えた実値を aria-valuetext
               に残し、破壊的なストライプで区別します。
@@ -48,7 +48,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Labelled / unlabelled</CardTitle>
+            <CardTitle level={2}>Labelled / unlabelled</CardTitle>
             <CardDescription>
               label を渡すと bar 下にテキストを表示し aria-labelledby で関連付け。省略時は
               aria-label=&quot;Progress&quot;。
@@ -64,7 +64,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Edge values &amp; clamping</CardTitle>
+            <CardTitle level={2}>Edge values &amp; clamping</CardTitle>
             <CardDescription>
               value は 0–100 にクランプ（Math.max(0, Math.min(100, value))）。範囲外でも安全に描画。
             </CardDescription>

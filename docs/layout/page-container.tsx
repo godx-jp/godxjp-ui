@@ -101,6 +101,7 @@ export default function Demo() {
         subtitle="直近30日間の集計データ"
         linkComponent={RouterLink}
         breadcrumb={[{ label: "ホーム", to: "/" }, { label: "ダッシュボード" }]}
+        breadcrumbAriaLabel="売上ダッシュボードのパンくずリスト"
         extra={
           <Flex gap="sm">
             <Button variant="outline" size="sm">
@@ -132,6 +133,7 @@ export default function Demo() {
           { label: "管理", to: "/admin" },
           { label: "エンティティ設定" },
         ]}
+        breadcrumbAriaLabel="エンティティ設定のパンくずリスト"
         footer={
           <Flex gap="sm">
             <Button>保存</Button>
@@ -142,7 +144,7 @@ export default function Demo() {
       >
         <Card>
           <CardHeader>
-            <CardTitle>法人情報</CardTitle>
+            <CardTitle level={2}>法人情報</CardTitle>
             <CardDescription>登録されている法人の基本情報です。</CardDescription>
           </CardHeader>
           <CardContent>
@@ -163,6 +165,7 @@ export default function Demo() {
         title="仕訳一覧"
         subtitle="承認済み仕訳エントリ"
         breadcrumb={[{ label: "会計", to: "/" }, { label: "仕訳一覧" }]}
+        breadcrumbAriaLabel="仕訳一覧のパンくずリスト"
         extra={
           <Flex gap="sm">
             <Button variant="outline" size="sm">
@@ -197,12 +200,13 @@ export default function Demo() {
           { label: "取引先", to: "/partners" },
           { label: "株式会社グローバル商事" },
         ]}
+        breadcrumbAriaLabel="取引先詳細のパンくずリスト"
         extra={<Badge tone="success">取引中</Badge>}
       >
         <Flex direction="col" gap="md">
           <Card>
             <CardHeader>
-              <CardTitle>基本情報</CardTitle>
+              <CardTitle level={2}>基本情報</CardTitle>
             </CardHeader>
             <CardContent>
               <Descriptions columns={3}>

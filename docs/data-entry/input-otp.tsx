@@ -33,7 +33,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>メール認証コード（6桁）</CardTitle>
+            <CardTitle level={2}>メール認証コード（6桁）</CardTitle>
             <CardDescription>
               6スロット 1グループ · ペースト・矢印キー操作に対応。autoFocus
               でコード入力画面の初期フォーカスを設定。
@@ -57,7 +57,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>SMS認証コード（3+3）</CardTitle>
+            <CardTitle level={2}>SMS認証コード（3+3）</CardTitle>
             <CardDescription>
               InputOTPSeparator で 2 グループに分割して視認性を高める。
             </CardDescription>
@@ -83,7 +83,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>招待コード（4桁PIN）</CardTitle>
+            <CardTitle level={2}>招待コード（4桁PIN）</CardTitle>
             <CardDescription>4スロット · 数字のみ許可する pattern を指定。</CardDescription>
           </CardHeader>
           <CardContent>
@@ -107,7 +107,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>自動送信（onComplete）</CardTitle>
+            <CardTitle level={2}>自動送信（onComplete）</CardTitle>
             <CardDescription>
               全スロットが埋まると onComplete が発火し、ボタンを押さずに検証を実行する。
             </CardDescription>
@@ -144,7 +144,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>エラー（コードが一致しない）</CardTitle>
+            <CardTitle level={2}>エラー（コードが一致しない）</CardTitle>
             <CardDescription>
               FormField の error で aria-invalid を付与 · スロットの枠が destructive 色に変わる。
             </CardDescription>
@@ -172,7 +172,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>無効（再送クールダウン中）</CardTitle>
+            <CardTitle level={2}>無効（再送クールダウン中）</CardTitle>
             <CardDescription>
               disabled · コード再送のクールダウンや検証中は入力をロックする。
             </CardDescription>

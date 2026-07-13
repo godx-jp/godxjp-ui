@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-07-13",
+  "note": "Per-frame COMPONENT/demo axe allowlist (violations INSIDE the rendered frame + its portals). Each value is the set of axe rule ids still firing on that frame. It may only SHRINK — a new rule on a frame fails CI. Chrome (the preview toolbar) is NOT allowlisted: it must be 0. Regenerate after a component-fix PR merges: `node scripts/check-frame-axe.mjs --update-baseline`.",
+  "component": {
+    "data-display-popover": [
+      "aria-hidden-focus",
+      "landmark-one-main",
+      "page-has-heading-one"
+    ],
+    "data-entry-calendar": [
+      "landmark-unique"
+    ],
+    "data-entry-select": [
+      "button-name"
+    ],
+    "data-entry-select-matrix": [
+      "button-name"
+    ],
+    "data-entry-transfer": [
+      "color-contrast"
+    ],
+    "feedback-sheet": [
+      "button-name",
+      "color-contrast"
+    ],
+    "layout-resizable-panel": [
+      "scrollable-region-focusable"
+    ],
+    "layout-split-pane": [
+      "landmark-unique"
+    ],
+    "navigation-breadcrumb": [
+      "scrollable-region-focusable"
+    ],
+    "navigation-pagination": [
+      "scrollable-region-focusable"
+    ],
+    "navigation-tabs": [
+      "color-contrast"
+    ],
+    "navigation-toolbar": [
+      "button-name"
+    ]
+  }
+}

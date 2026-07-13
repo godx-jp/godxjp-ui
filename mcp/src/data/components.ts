@@ -88,6 +88,12 @@ export const COMPONENTS: ComponentEntry[] = [
         description: "Ordered trail of { label, to? } segments above the title.",
       },
       {
+        name: "breadcrumbAriaLabel",
+        type: "string",
+        description:
+          'Override the breadcrumb nav landmark\'s accessible name (defaults to a localized "Breadcrumb"). Required when more than one PageContainer (each with its own breadcrumb) renders on the same page/view — two nav landmarks sharing one name/role fail landmark-unique.',
+      },
+      {
         name: "variant",
         type: '"default" | "narrow" | "flush" | "ghost"',
         defaultValue: '"default"',
@@ -540,6 +546,12 @@ export function LoginPage() {
         description:
           "Slot pinned to the bottom of the sidebar below the scrollable nav area. Commonly used for user identity, online status, or version info.",
       },
+      {
+        name: "aria-label",
+        type: "string",
+        description:
+          'Override the nav landmark\'s accessible name (defaults to a localized "Main navigation"). Required when more than one Sidebar renders at once (e.g. a docked sidebar + its mobile-drawer twin) — two nav landmarks sharing one name/role fail landmark-unique.',
+      },
     ],
     usage: [
       "DO: Define all nav items as a SidebarSectionProp[] data structure and pass it to sections — never hand-roll nav buttons alongside or instead of the Sidebar.",
@@ -792,6 +804,12 @@ import { PanelLeftClose, Search } from "lucide-react";
         type: "BreadcrumbItemProp[]",
         required: true,
         description: "Array of { label, to? } — omit `to` on the last (current) segment.",
+      },
+      {
+        name: "aria-label",
+        type: "string",
+        description:
+          'Override the nav landmark\'s accessible name (defaults to a localized "Breadcrumb"). Required when more than one Breadcrumb renders on the same page/view — two nav landmarks sharing one name/role fail landmark-unique.',
       },
     ],
     usage: [
@@ -3993,6 +4011,12 @@ toast.error("保存に失敗しました");`,
         name: "disabled",
         type: "boolean",
         description: "Disable all navigation controls.",
+      },
+      {
+        name: "aria-label",
+        type: "string",
+        description:
+          'Override the nav landmark\'s accessible name (defaults to a localized "Pagination"). Required when more than one Pagination renders on the same page/view — two nav landmarks sharing one name/role fail landmark-unique.',
       },
     ],
     usage: [

@@ -56,7 +56,7 @@ export default function Demo() {
         {/* items API — default variant (pill) */}
         <Card>
           <CardHeader>
-            <CardTitle>Default variant · items API</CardTitle>
+            <CardTitle level={2}>Default variant · items API</CardTitle>
             <CardDescription>
               Pass an items array; Tabs renders all triggers and content panels automatically.
               variant=&quot;default&quot; is the pill style.
@@ -103,7 +103,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>320px stress · 長いローカライズラベル</CardTitle>
+            <CardTitle level={2}>320px stress · 長いローカライズラベル</CardTitle>
             <CardDescription>
               狭いコンテナでも長いラベルはクリップされず、水平タブリストが自身でスクロールする
               (gh#175)。compact navigation への変換は Tabs API に存在しないため擬似実装しない —
@@ -136,7 +136,7 @@ export default function Demo() {
         {/* items API — line variant */}
         <Card>
           <CardHeader>
-            <CardTitle>Line variant · controlled</CardTitle>
+            <CardTitle level={2}>Line variant · controlled</CardTitle>
             <CardDescription>
               variant=&quot;line&quot; renders an underline indicator. Pair value + onValueChange
               when the active tab is driven by parent state (e.g. URL param).
@@ -155,7 +155,7 @@ export default function Demo() {
         {/* items API — card variant */}
         <Card>
           <CardHeader>
-            <CardTitle>Card variant</CardTitle>
+            <CardTitle level={2}>Card variant</CardTitle>
             <CardDescription>
               variant=&quot;card&quot; gives each trigger a card-like surface. Good for settings or
               admin profile pages.
@@ -189,7 +189,7 @@ export default function Demo() {
         {/* Manual compound — orientation vertical */}
         <Card>
           <CardHeader>
-            <CardTitle>Manual compound · vertical orientation</CardTitle>
+            <CardTitle level={2}>Manual compound · vertical orientation</CardTitle>
             <CardDescription>
               Compose TabsList / TabsTrigger / TabsContent when per-panel control is needed.
               orientation=&quot;vertical&quot; goes on the root Tabs element.
@@ -220,7 +220,7 @@ export default function Demo() {
         {/* Controlled with external Button */}
         <Card>
           <CardHeader>
-            <CardTitle>外部制御 · ボタンでタブを切り替え</CardTitle>
+            <CardTitle level={2}>外部制御 · ボタンでタブを切り替え</CardTitle>
             <CardDescription>
               value + onValueChange で親から active tab を制御できる。
             </CardDescription>

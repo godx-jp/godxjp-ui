@@ -21,6 +21,13 @@ export type PageContainerProp = {
   extra?: ExtraProp;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;
+  /**
+   * Override the breadcrumb `<nav>` landmark's accessible name. Defaults to a localized
+   * "Breadcrumb". Needed when more than one `PageContainer` (each with its own `breadcrumb`)
+   * renders on the same page/view — two `<nav>` landmarks sharing one name/role fail axe's
+   * `landmark-unique` (WCAG 2.4.1 / 1.3.1).
+   */
+  breadcrumbAriaLabel?: string;
   linkComponent?: React.ElementType;
   density?: PageDensityProp;
   variant?: PageContainerVariantProp;
@@ -166,6 +173,13 @@ export type SidebarProp = {
    */
   renderItem?: (item: SidebarItemData) => ReactNode;
   footer?: ReactNode;
+  /**
+   * Override the nav landmark's accessible name. Defaults to a localized "Main navigation".
+   * Needed when more than one Sidebar renders on the same page/view (e.g. a docked sidebar +
+   * its mobile-drawer twin, both mounted at once) — two `<nav>` landmarks sharing one name/role
+   * fail axe's `landmark-unique` (WCAG 2.4.1 / 1.3.1).
+   */
+  "aria-label"?: string;
 };
 
 /**

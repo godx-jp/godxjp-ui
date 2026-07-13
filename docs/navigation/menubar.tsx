@@ -38,7 +38,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>会計アプリメニュー</CardTitle>
+            <CardTitle level={2}>会計アプリメニュー</CardTitle>
             <CardDescription>
               ファイル・編集・表示・ヘルプメニューを含む標準的なアプリメニューバー。
             </CardDescription>

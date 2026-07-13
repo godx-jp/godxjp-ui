@@ -60,7 +60,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>勘定科目ツリー</CardTitle>
+            <CardTitle level={2}>勘定科目ツリー</CardTitle>
             <CardDescription>
               Pre-filter server-side; each item still carries its depth (0-2). An active leaf
               carries aria-current; badges accept a string or a nested Badge node.
@@ -73,7 +73,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>組織ツリー（親を選択中）</CardTitle>
+            <CardTitle level={2}>組織ツリー（親を選択中）</CardTitle>
             <CardDescription>
               active is data-driven and works at any depth. Here the depth-0 parent is the current
               row.
@@ -86,7 +86,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>空の状態</CardTitle>
+            <CardTitle level={2}>空の状態</CardTitle>
             <CardDescription>
               An empty items={"{[]}"} array renders an empty list. Pair it with an EmptyState
               placeholder.

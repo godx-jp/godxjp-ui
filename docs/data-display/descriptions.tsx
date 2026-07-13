@@ -23,7 +23,7 @@ export default function Demo() {
             mono for the ID; span=2 + a long URL value shows full-row + break-all overflow. */}
         <Card>
           <CardHeader>
-            <CardTitle>請求書の詳細</CardTitle>
+            <CardTitle level={2}>請求書の詳細</CardTitle>
             <CardDescription>
               既定は
               columns=2。値は任意のノード（テキスト・Badge・金額）。狭い画面では1列に折り返します。
@@ -61,7 +61,7 @@ export default function Demo() {
             Default layout is "vertical" (label over value, the cards above). */}
         <Card>
           <CardHeader>
-            <CardTitle>横並び (layout=&quot;horizontal&quot;)</CardTitle>
+            <CardTitle level={2}>横並び (layout=&quot;horizontal&quot;)</CardTitle>
             <CardDescription>
               ラベルを値の左に揃える。`--descriptions-label-width` でラベル列幅を調整。既定は
               layout=&quot;vertical&quot;（ラベルを上に積む、上のカード）。
@@ -88,7 +88,7 @@ export default function Demo() {
         {/* columns=1 — stacked detail panel: every item on its own row. */}
         <Card>
           <CardHeader>
-            <CardTitle>取引先の詳細</CardTitle>
+            <CardTitle level={2}>取引先の詳細</CardTitle>
             <CardDescription>columns=1。各項目を縦積みにする詳細パネル向けの構成。</CardDescription>
           </CardHeader>
           <CardContent>
@@ -108,7 +108,7 @@ export default function Demo() {
         {/* columns=3 — dense metadata grid; span=3 makes the JSON value occupy the full width. */}
         <Card>
           <CardHeader>
-            <CardTitle>システムメタデータ</CardTitle>
+            <CardTitle level={2}>システムメタデータ</CardTitle>
             <CardDescription>
               columns=3。識別子の多い密なメタデータ向け。mono と span でIDやJSONを整列。
             </CardDescription>

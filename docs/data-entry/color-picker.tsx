@@ -22,7 +22,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>ブランドカラー設定</CardTitle>
+            <CardTitle level={2}>ブランドカラー設定</CardTitle>
             <CardDescription>
               FormField と組み合わせてラベル・バリデーションを付与。
             </CardDescription>
@@ -36,7 +36,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>アクセントカラー（Hex入力付き）</CardTitle>
+            <CardTitle level={2}>アクセントカラー（Hex入力付き）</CardTitle>
             <CardDescription>
               showHexInput={"{true}"} — デフォルト。Hex 文字列を直接編集可能。
             </CardDescription>
@@ -55,7 +55,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>勘定科目カテゴリカラー（スウォッチのみ）</CardTitle>
+            <CardTitle level={2}>勘定科目カテゴリカラー（スウォッチのみ）</CardTitle>
             <CardDescription>
               showHexInput={"{false}"} — テーブルセルやサイドバーのコンパクト表示向け。
             </CardDescription>
@@ -77,7 +77,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Hex バリデーションと確定動作</CardTitle>
+            <CardTitle level={2}>Hex バリデーションと確定動作</CardTitle>
             <CardDescription>
               Hex 入力は blur または Enter で確定。確定時に #RGB / #RRGGBB
               形式でなければ、直前の有効な値へ自動的に巻き戻る。
@@ -100,7 +100,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>無効状態</CardTitle>
+            <CardTitle level={2}>無効状態</CardTitle>
             <CardDescription>
               disabled · スウォッチと Hex 入力の両方が無効化される。
             </CardDescription>

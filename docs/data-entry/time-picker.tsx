@@ -24,7 +24,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>基本 (controlled)</CardTitle>
+            <CardTitle level={2}>基本 (controlled)</CardTitle>
             <CardDescription>
               value + onValueChange で制御。name= を指定すると HH:mm でフォーム送信される。
             </CardDescription>
@@ -45,7 +45,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>minuteStep={15} — シフト入力</CardTitle>
+            <CardTitle level={2}>minuteStep={15} — シフト入力</CardTitle>
             <CardDescription>
               勤怠管理など 15 分刻みの列を表示。typed 入力は任意の HH:mm を受け付ける。
             </CardDescription>
@@ -78,7 +78,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>disabled 状態</CardTitle>
+            <CardTitle level={2}>disabled 状態</CardTitle>
             <CardDescription>確定済みシフトや読み取り専用フィールドに使用。</CardDescription>
           </CardHeader>
           <CardContent>

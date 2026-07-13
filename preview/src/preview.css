@@ -609,8 +609,10 @@ button {
 }
 
 .demo-block-zoom-preset[data-active="true"] {
-  border-color: #1a73e8;
-  color: #1a73e8;
+  /* WCAG 2.2 AA (SC 1.4.3): #0b57d0 on #e8f0fe ≈ 5.5:1. The former #1a73e8 was only
+     3.93:1 — the single serious axe violation repeated across every /frame/** page. */
+  border-color: #0b57d0;
+  color: #0b57d0;
   background: #e8f0fe;
 }
 
