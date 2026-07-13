@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12",
+  "generatedAt": "2026-07-13",
   "note": "Per-frame widths with horizontal overflow / clipped controls. Allowlist — may only SHRINK. Regenerate after a responsive-fix PR: `node scripts/frame-geometry.mjs --update-baseline`.",
   "widths": [
     320,
@@ -12,11 +12,6 @@
     1920
   ],
   "frames": {
-    "data-display-hover-card": [
-      320,
-      375,
-      390
-    ],
     "data-display-data-table-index": [
       320,
       375,
@@ -32,12 +27,8 @@
       375,
       390
     ],
-    "data-entry-calendar": [
-      320
-    ],
     "data-entry-rating": [
-      320,
-      375
+      320
     ],
     "data-entry-form-examples-employee-settings": [
       320,
@@ -53,8 +44,7 @@
     ],
     "foundation-density": [
       320,
-      375,
-      390
+      375
     ],
     "general-button-examples-toolbar": [
       320,
@@ -65,18 +55,6 @@
       320,
       375,
       390
-    ],
-    "layout-separator": [
-      320,
-      375,
-      390
-    ],
-    "layout-sidebar": [
-      320
-    ],
-    "layout-split-pane": [
-      320,
-      375
     ],
     "layout-topbar": [
       320,

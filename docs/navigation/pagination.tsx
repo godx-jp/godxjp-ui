@@ -95,7 +95,6 @@ export default function Demo() {
           showSizeChanger
           pageSizeOptions={[5, 10, 20, 50]}
           onValueChange={handleChange}
-          aria-label="請求書一覧のページネーション"
         />
 
         {/* Regression: total=0, exactly one page, multiple pages, + the single-page opt-in (gh#153). */}
@@ -121,7 +120,7 @@ export default function Demo() {
                 pageSize={10}
                 hideOnSinglePage={false}
                 showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件`}
-                aria-label="1 ページのみ・opt-in 表示のページネーション"
+                ariaLabel="1 ページのみ・opt-in 表示のページネーション"
               />
               {/* multiple pages → full pager, one horizontal row, no wrap. */}
               <Pagination
@@ -131,7 +130,7 @@ export default function Demo() {
                 showTotal
                 showSizeChanger
                 onValueChange={() => {}}
-                aria-label="複数ページの境界状態のページネーション"
+                ariaLabel="複数ページの境界状態のページネーション"
               />
             </Flex>
           </CardContent>
@@ -157,7 +156,7 @@ export default function Demo() {
                   `${from.toLocaleString("ja-JP")}〜${to.toLocaleString("ja-JP")} 件目 / 全 ${total.toLocaleString("ja-JP")} 件の請求書を表示中`
                 }
                 onValueChange={() => {}}
-                aria-label="日本語ラベルのページネーション"
+                ariaLabel="日本語ラベルのページネーション"
               />
               <Pagination
                 value={3}
@@ -168,7 +167,7 @@ export default function Demo() {
                   `Đang hiển thị ${from}–${to} trong tổng số ${total.toLocaleString("vi-VN")} hoá đơn`
                 }
                 onValueChange={() => {}}
-                aria-label="Phân trang nhãn tiếng Việt"
+                ariaLabel="Phân trang nhãn tiếng Việt"
               />
             </Flex>
           </CardContent>
@@ -191,7 +190,6 @@ export default function Demo() {
               pageSize={pageSize}
               showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件の請求書`}
               onValueChange={handleChange}
-              aria-label="カスタムラベルのページネーション"
             />
           </CardContent>
         </Card>
@@ -213,7 +211,6 @@ export default function Demo() {
               total={200}
               pageSize={20}
               onValueChange={(p) => setSimplePage(p)}
-              aria-label="コンパクト表示のページネーション"
             />
           </CardContent>
         </Card>
@@ -235,7 +232,6 @@ export default function Demo() {
               showTotal
               disabled
               onValueChange={() => {}}
-              aria-label="無効状態のページネーション"
             />
           </CardContent>
         </Card>

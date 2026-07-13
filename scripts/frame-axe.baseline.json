@@ -7,21 +7,8 @@
       "landmark-one-main",
       "page-has-heading-one"
     ],
-    "data-entry-calendar": [
-      "landmark-unique"
-    ],
-    "data-entry-select": [
-      "button-name"
-    ],
     "data-entry-select-matrix": [
       "button-name"
-    ],
-    "data-entry-transfer": [
-      "color-contrast"
-    ],
-    "feedback-sheet": [
-      "button-name",
-      "color-contrast"
     ],
     "layout-resizable-panel": [
       "scrollable-region-focusable"
@@ -34,12 +21,6 @@
     ],
     "navigation-pagination": [
       "scrollable-region-focusable"
-    ],
-    "navigation-tabs": [
-      "color-contrast"
-    ],
-    "navigation-toolbar": [
-      "button-name"
     ]
   }
 }

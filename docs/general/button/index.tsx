@@ -17,7 +17,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Count</CardTitle>
+            <CardTitle level={2}>Count</CardTitle>
             <CardDescription>
               Trailing totals, overflow cap, and explicit zero visibility.
             </CardDescription>

@@ -41,7 +41,7 @@ export default function Demo() {
             <CardBar
               extra={
                 <Button size="sm" variant="outline">
-                  ビューを保存
+                  保存
                 </Button>
               }
             >
@@ -49,14 +49,14 @@ export default function Demo() {
                 すべて
               </Button>
               <Button size="sm" variant="ghost">
-                未払いの請求書
+                未払い
               </Button>
               <Button size="sm" variant="ghost">
-                支払期限を超過した請求書
+                超過
               </Button>
             </CardBar>
             <CardContent>
-              狭い幅では main のみ横スクロールし、extra は末尾に固定されます。
+              main が混み合うと main のみ横スクロールし、extra は末尾に固定されます。
             </CardContent>
           </Card>
         </Flex>

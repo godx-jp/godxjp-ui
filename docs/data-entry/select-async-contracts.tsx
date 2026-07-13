@@ -21,7 +21,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Explicit retry action</CardTitle>
+            <CardTitle level={2}>Explicit retry action</CardTitle>
             <CardDescription>
               A rejected loader exposes a keyboard-focusable retry action.
             </CardDescription>
@@ -45,7 +45,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Keyboard load more</CardTitle>
+            <CardTitle level={2}>Keyboard load more</CardTitle>
             <CardDescription>
               Infinite scroll also exposes a normal button for keyboard and switch users.
             </CardDescription>
@@ -63,7 +63,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Controlled popup + search</CardTitle>
+            <CardTitle level={2}>Controlled popup + search</CardTitle>
             <CardDescription>
               Parent state can synchronize deep links, dialogs, and external filter controls.
             </CardDescription>
@@ -87,7 +87,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Read-only value</CardTitle>
+            <CardTitle level={2}>Read-only value</CardTitle>
             <CardDescription>
               Users may inspect options but cannot change or clear the committed value.
             </CardDescription>

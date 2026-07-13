@@ -35,13 +35,12 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>メール認証コード（6桁）</CardTitle>
             <CardDescription>
-              6スロット 1グループ · ペースト・矢印キー操作に対応。autoFocus
-              でコード入力画面の初期フォーカスを設定。
+              6スロット 1グループ · ペースト・矢印キー操作に対応。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <FormField id="email-otp" label="認証コード" required>
-              <InputOTP autoFocus maxLength={6} value={emailCode} onChange={setEmailCode}>
+              <InputOTP maxLength={6} value={emailCode} onChange={setEmailCode}>
                 <InputOTPGroup>
                   <InputOTPSlot index={0} />
                   <InputOTPSlot index={1} />
