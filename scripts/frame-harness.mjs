@@ -9,7 +9,12 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-export const DEFAULT_BASE = "http://localhost:6008";
+// Port có thể override qua env PREVIEW_BASE — BẮT BUỘC trên runner self-hosted chung host:
+// nhiều job (axe/coverage/geometry) dùng chung harness; nếu cùng port 6008 thì
+// ensurePreviewServer thấy "reachable" sẽ TÁI DÙNG server của job khác, job đó xong gọi
+// cleanup() giết server → job đang chạy mất server giữa chừng (CONNECTION_REFUSED). Mỗi job
+// 1 port riêng → mỗi job tự sở hữu server của mình.
+export const DEFAULT_BASE = process.env.PREVIEW_BASE || "http://localhost:6008";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(HERE, "..");

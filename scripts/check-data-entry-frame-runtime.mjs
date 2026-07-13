@@ -3,7 +3,9 @@ import { spawn } from "node:child_process";
 import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";
 
-const port = 6011;
+// Port override qua env (PREVIEW_PORT) — 3 shard data-entry cùng chạy script này trên runner
+// self-hosted CHUNG host; cùng port 6011 → collision. Matrix cấp port riêng mỗi shard.
+const port = Number(process.env.PREVIEW_PORT) || 6011;
 const base = `http://localhost:${port}`;
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
 const defaultStories = [

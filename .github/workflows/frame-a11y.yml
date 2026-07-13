@@ -30,6 +30,9 @@ jobs:
   verify:
     name: Verify (build · typecheck · lint · guards · test)
     runs-on: [self-hosted, Linux, X64]
+    # Port preview riêng mỗi job (self-hosted chung host) — xem frame-harness.mjs DEFAULT_BASE.
+    env:
+      PREVIEW_BASE: http://localhost:6008
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -49,6 +52,8 @@ jobs:
   coverage:
     name: Frame coverage (contract inventory)
     runs-on: [self-hosted, Linux, X64]
+    env:
+      PREVIEW_BASE: http://localhost:6018
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -73,6 +78,8 @@ jobs:
   axe:
     name: Per-frame axe (chrome blocking, component allowlisted)
     runs-on: [self-hosted, Linux, X64]
+    env:
+      PREVIEW_BASE: http://localhost:6028
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -99,6 +106,8 @@ jobs:
     # Heavier (8 widths × every frame) but now gates PRs too — geometry regressions were
     # merging unseen because this only ran on main/nightly (#179 fixed 11 that had accumulated).
     runs-on: [self-hosted, Linux, X64]
+    env:
+      PREVIEW_BASE: http://localhost:6038
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
