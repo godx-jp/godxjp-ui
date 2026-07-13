@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Select`/`DataSelect`** (searchable mode — `showSearch`/`loadOptions`) now forwards controlled
+  `open`/`onOpenChange`, controlled `search`/`onSearchChange`, `readOnly`, `size`, a `filterOption`
+  override for the default client-side filter, and custom `renderError`/`renderLoadMore` slots to
+  the underlying `SearchSelect` engine — previously silently dropped. `readOnly` mirrors the
+  Input/NumberInput contract (value shown + submittable, no new pick, clear affordance hidden).
+  (#175)
+- **`SelectTrigger`** accepts `showIndicator` (default `true`) — set `false` to omit the built-in
+  chevron disclosure indicator from the DOM entirely (not a CSS hide), for specialized triggers
+  (icon-only, etc.) that render their own affordance, without reaching for consumer descendant CSS.
+  (#175)
+
 - `AppShell` now OWNS an accessible mobile navigation drawer below `lg`: a hamburger trigger in the
   topbar opens a focus-trapped `Sheet` (Esc + overlay close, focus returns to the trigger). New
   props `mobileNav` (defaults to the `sidebar` node — pass a tailored menu, or `null` to opt out),

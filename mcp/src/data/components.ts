@@ -2735,6 +2735,60 @@ import { Smartphone } from "lucide-react";
       },
       { name: "disabled", type: "boolean", description: "Disables the entire select." },
       {
+        name: "readOnly",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Searchable mode only (showSearch/loadOptions). Value is shown (and the clear affordance hidden) but the popover cannot be opened — no new pick, no search. Mirrors the Input/NumberInput readOnly contract: stays focusable and still submits its value, unlike disabled.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        description:
+          "Searchable mode only. Height tier forwarded to the SearchSelect trigger Button. For the compound API use SelectTrigger's own size prop instead (below).",
+      },
+      {
+        name: "open",
+        type: "boolean",
+        description:
+          "Searchable mode only. Controlled popover open state (uncontrolled by default). Pair with onOpenChange.",
+      },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description:
+          "Searchable mode only. Fires on every open/close attempt — including ones ignored because open is externally pinned — so a controlled consumer stays in sync.",
+      },
+      {
+        name: "search",
+        type: "string",
+        description:
+          "Searchable mode only. Controlled search-box query (uncontrolled by default). Pair with onSearchChange.",
+      },
+      {
+        name: "onSearchChange",
+        type: "(query: string) => void",
+        description: "Searchable mode only. Fires on every keystroke in the search box.",
+      },
+      {
+        name: "filterOption",
+        type: "(option: SearchSelectOptionProp, query: string) => boolean",
+        description:
+          "Searchable mode only, static options (ignored with loadOptions, which owns its own server-side filtering). Overrides the default label/value substring filter. Only consulted while the query is non-empty.",
+      },
+      {
+        name: "renderError",
+        type: "(params: { message: string; retry: () => void }) => React.ReactNode",
+        description:
+          "Searchable mode only. Custom error slot, overriding the default errorMessage row. retry() reloads from the first page.",
+      },
+      {
+        name: "renderLoadMore",
+        type: "(params: { hasMore: boolean; loading: boolean; loadMore: () => void }) => React.ReactNode",
+        description:
+          "Searchable mode only. Custom 'load more' affordance appended below the list while another page is available — pairs with (does not replace) the built-in scroll-triggered pagination.",
+      },
+      {
         name: "name",
         type: "string",
         description:
@@ -2762,6 +2816,13 @@ import { Smartphone } from "lucide-react";
         defaultValue: '"md"',
         description: "Compound API only. Size variant on the SelectTrigger sub-component.",
       },
+      {
+        name: "SelectTrigger showIndicator",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Compound API only. Set false to omit the built-in chevron disclosure indicator from the DOM entirely (not a CSS hide) — for specialized triggers (icon-only, etc.) that render their own affordance, so no consumer descendant CSS is needed.",
+      },
     ],
     usage: [
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
@@ -2772,6 +2833,11 @@ import { Smartphone } from "lucide-react";
       "DON'T mix the two APIs: once you pass options or loadOptions, Select is data-driven — all compound sub-parts (SelectTrigger, SelectContent, SelectItem) are rendered internally. Do not wrap them manually.",
       "DON'T use a raw <select> element. Select is the one control for all single-select use cases. The only allowed raw <select> is a hidden aria-hidden sr-only element kept as an e2e hook paired with a visible Select.",
       "COMPOUND API sub-parts (when NOT using options/loadOptions): Select → SelectTrigger (contains SelectValue) → SelectContent → SelectItem. Optionally wrap items in SelectGroup + SelectLabel for headings, or add SelectSeparator between sections.",
+      "DO reach for open/onOpenChange (searchable mode) to drive the popover from outside — e.g. opening it programmatically after a validation error — and search/onSearchChange to seed or read the query text. Both fall back to internal state when omitted; onOpenChange/onSearchChange still fire either way so a controlled consumer stays in sync.",
+      "DO use readOnly (searchable mode) for a value that must stay visible and submittable but not editable in this view — it differs from disabled: the control stays focusable and its value still submits. clearable is ignored while readOnly.",
+      "DO use filterOption (searchable mode, static options) when the default label/value substring match isn't right — e.g. filtering by a hidden code field. It is NOT consulted when loadOptions is set (that fetcher owns its own filtering).",
+      "DO use renderError + renderLoadMore (searchable mode) to replace the default error row with a branded retry affordance, or to pair a manual 'load more' button with (not instead of) the built-in scroll-triggered pagination.",
+      "DO set SelectTrigger showIndicator={false} (compound API) on a specialized trigger — icon-only, or one with its own affordance — instead of hiding [data-slot=select-chevron] with consumer CSS.",
     ],
     useCases: [
       "Status filter on an invoice list — pass options=[{value:'draft',label:'Draft'},{value:'paid',label:'Paid'}] with onChange to drive a query param; no search needed so omit showSearch.",
