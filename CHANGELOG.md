@@ -30,6 +30,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DataTable`'s built-in empty state renders its message as plain text (`titleAs="p"`) instead of
     an `<h3>`, so a "no rows" status never injects a stray heading into the page outline
     (`heading-order`).
+- **`Select`/`DataSelect`** (searchable mode — `showSearch`/`loadOptions`) now forwards controlled
+  `open`/`onOpenChange`, controlled `search`/`onSearchChange`, `readOnly`, `size`, a `filterOption`
+  override for the default client-side filter, and custom `renderError`/`renderLoadMore` slots to
+  the underlying `SearchSelect` engine — previously silently dropped. `readOnly` mirrors the
+  Input/NumberInput contract (value shown + submittable, no new pick, clear affordance hidden).
+  (#175)
+- **`SelectTrigger`** accepts `showIndicator` (default `true`) — set `false` to omit the built-in
+  chevron disclosure indicator from the DOM entirely (not a CSS hide), for specialized triggers
+  (icon-only, etc.) that render their own affordance, without reaching for consumer descendant CSS.
+  (#175)
 - `AppShell` now OWNS an accessible mobile navigation drawer below `lg`: a hamburger trigger in the
   topbar opens a focus-trapped `Sheet` (Esc + overlay close, focus returns to the trigger). New
   props `mobileNav` (defaults to the `sidebar` node — pass a tailored menu, or `null` to opt out),
@@ -80,6 +90,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Tabs` fallback selection no longer targets a disabled first item (#175).** When Tabs owns the
+  initial selection — no `value`, and no `defaultValue` naming an existing ENABLED item (missing,
+  unknown, or itself disabled) — it now resolves to the first item that is NOT `disabled`, instead
+  of blindly picking `items[0]`. Selects nothing when every item is disabled. Covered for both the
+  uncontrolled (`defaultValue`) and controlled (`value`/`onValueChange` starting unset) shapes.
+- **Horizontal `TabsList` no longer clips/overflows long localized labels in a narrow container
+  (#175).** The list is now width-bounded (`min-w-0 max-w-full`) and scrolls its own horizontal
+  overflow (hidden scrollbar, still swipeable/keyboard-reachable) instead of forcing its container
+  wider or hiding overflow content. Orientation-gated (`data-[orientation=horizontal]:…`) so the
+  vertical side-rail layout is unaffected.
 - **FormField a11y contract no longer silently dropped by custom controls (#164).** Every
   data-entry control now accepts and FORWARDS the injected accessible name (`aria-labelledby`),
   description (`aria-describedby`) and validation (`aria-errormessage` / `aria-invalid` /

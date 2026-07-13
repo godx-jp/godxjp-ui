@@ -20,6 +20,8 @@ import type {
   OnChangeProp,
   OnValueChangeProp,
   OnSearchChangeProp,
+  OpenProp,
+  OnOpenChangeProp,
   PlaceholderProp,
   RequiredProp,
   ValueProp,
@@ -368,12 +370,48 @@ export type SearchSelectProp = {
   searchPlaceholder?: PlaceholderProp;
   emptyMessage?: EmptyMessageProp;
   loadingMessage?: string;
-  /** Message shown when an async `loadOptions` rejects — a distinct state from empty/loading. */
+  /** Message shown when an async `loadOptions` rejects — a distinct state from empty/loading. Used
+   *  as-is unless `renderError` is provided. */
   errorMessage?: string;
   clearLabel?: string;
   /** Show a "clear" row when a value is selected (default true). */
   clearable?: boolean;
   disabled?: DisabledProp;
+  /**
+   * Read-only: the current value is shown (and the clear affordance hidden) but the popover cannot
+   * be opened — no new pick, no search. Mirrors the Input/NumberInput readOnly contract (stays
+   * focusable + submits its value, unlike `disabled`). Default false.
+   */
+  readOnly?: boolean;
+  /** Trigger height tier — forwarded to the underlying Button. Default matches Button's own default. */
+  size?: SizeProp;
+  /** Controlled open state for the popover (uncontrolled by default). */
+  open?: OpenProp;
+  onOpenChange?: OnOpenChangeProp;
+  /** Controlled search-box query (uncontrolled by default). Pairs with `onSearchChange`. */
+  search?: string;
+  onSearchChange?: OnSearchChangeProp;
+  /**
+   * Override the default client-side filter (`options` mode only — ignored with `loadOptions`,
+   * which is responsible for its own server-side filtering). Receives the option and the trimmed
+   * query; return true to keep the row. Only consulted while the query is non-empty.
+   */
+  filterOption?: (option: SearchSelectOptionProp, query: string) => boolean;
+  /**
+   * Custom error slot — receives the resolved message and a `retry` callback that reloads from the
+   * first page (a predictable recovery, not a resume of a failed page-N append). Overrides the
+   * default `errorMessage` row.
+   */
+  renderError?: (params: { message: string; retry: () => void }) => React.ReactNode;
+  /**
+   * Custom "load more" affordance appended below the list while another page is available — pairs
+   * with (does not replace) the built-in scroll-triggered pagination.
+   */
+  renderLoadMore?: (params: {
+    hasMore: boolean;
+    loading: boolean;
+    loadMore: () => void;
+  }) => React.ReactNode;
   /** Form field name — submits the selected value via a hidden input. */
   name?: NameProp;
   id?: IdProp;
@@ -391,6 +429,11 @@ export type SearchSelectProp = {
  * Data-driven (Ant-style) form of {@link Select} — one component covering static `options` or
  * async `loadOptions`, with `showSearch` toggling the searchable combobox vs a plain listbox.
  * Passing `options`/`loadOptions` to `<Select>` switches it from the compound API to this one.
+ *
+ * `readOnly`/`size`/`open`/`onOpenChange`/`search`/`onSearchChange`/`filterOption`/`renderError`/
+ * `renderLoadMore` (inherited from {@link SearchSelectProp}) take effect ONLY in searchable mode
+ * (`showSearch` or `loadOptions`) — they configure the `SearchSelect` engine that mode delegates
+ * to. The plain listbox (no search) is a native Radix listbox and ignores them.
  */
 export type SelectDataProp = SearchSelectProp & {
   /** Show the search box (combobox). Defaults to true when `loadOptions` is set, otherwise false. */

@@ -67,12 +67,47 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/* Disabled first item — fallback selection must skip it (gh#175) */}
+        <Card>
+          <CardHeader>
+            <CardTitle>先頭タブが disabled · フォールバック選択</CardTitle>
+            <CardDescription>
+              defaultValue/value を渡さない場合、Tabs は先頭の ENABLED タブを自動選択する(disabled
+              の先頭タブは選ばない)。全タブが disabled の場合は何も選択しない (gh#175)。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs
+              variant="default"
+              items={[
+                {
+                  value: "archived",
+                  label: "アーカイブ済 (無効)",
+                  content: <Text as="p">アーカイブ済の仕訳は表示できません。</Text>,
+                  disabled: true,
+                },
+                {
+                  value: "pending",
+                  label: "未承認",
+                  content: <Text as="p">未承認の仕訳が 2 件あります。</Text>,
+                },
+                {
+                  value: "posted",
+                  label: "承認済",
+                  content: <Text as="p">当期承認済: 48 件</Text>,
+                },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle level={2}>320px stress · 長いローカライズラベル</CardTitle>
             <CardDescription>
-              狭いコンテナで現行 Tabs の折返し・オーバーフローを可視化する。compact navigation
-              への変換は Tabs API に存在しないため擬似実装しない。
+              狭いコンテナでも長いラベルはクリップされず、水平タブリストが自身でスクロールする
+              (gh#175)。compact navigation への変換は Tabs API に存在しないため擬似実装しない —
+              スクロールが意図した縮退動作。
             </CardDescription>
           </CardHeader>
           <CardContent>

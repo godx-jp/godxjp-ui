@@ -1455,7 +1455,7 @@ export default function InvoiceList({
     usage: [
       'DO always wrap body content in <CardContent> — the bare <Card> div has zero inner padding; content renders flush against card edges without it. Never add className="p-4" directly on <Card> as a substitute.',
       "DO put titles/descriptions in <CardHeader>/<CardTitle>/<CardDescription>. Use <CardHeader banded> for a visually separated muted-background header band (mirrors <CardFooter separated>). Pair with <CardAction> inside a flex-row CardHeader for header-level action buttons.",
-      "DO set <CardTitle level={n}> to keep a valid document outline (h1 → h2 → h3, no skipped levels): CardTitle renders <h3> by default, so a section card directly under a page <h1> needs level={2}. Pick the level by OUTLINE position, NEVER for visual size — the title size is fixed by tokens and does not change with level. When the card title is a styled label rather than a section heading, use <CardTitle as=\"p\"> so it is not announced as a heading.",
+      'DO set <CardTitle level={n}> to keep a valid document outline (h1 → h2 → h3, no skipped levels): CardTitle renders <h3> by default, so a section card directly under a page <h1> needs level={2}. Pick the level by OUTLINE position, NEVER for visual size — the title size is fixed by tokens and does not change with level. When the card title is a styled label rather than a section heading, use <CardTitle as="p"> so it is not announced as a heading.',
       "DO use <CardContent flush> for edge-to-edge children such as DataTable, Table, or a Tabs list — this removes horizontal padding. Combine with <CardContent tight> when there is no visual gap needed after the header, and <CardContent solo> when there is no CardHeader above (top padding matches the card shell).",
       "DO use <CardFooter separated> to render a top-bordered action band (Save/Cancel buttons, table summary row). Use <CardFooter flush> for a full-bleed footer bar.",
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
@@ -1879,7 +1879,7 @@ import { Smartphone } from "lucide-react";
     ],
     usage: [
       "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
-      "DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs=\"p\"` so the message is not a heading at all.",
+      'DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs="p"` so the message is not a heading at all.',
       'DO use `tone="success"` (or warning/destructive/info) for a semantic confirmation/alert zero-state — it recolours the icon medallion from the role token; do NOT hand-roll a `.ui-success-state` class that scopes `--empty-state-icon-*`.',
       "DO use the `icon` prop (a Lucide icon component, not a JSX element) to give visual context — e.g. `icon={InboxIcon}` for empty inboxes, `icon={SearchIcon}` after a failed search. Pass the component reference, not `<InboxIcon />`.",
       "DO use `action` (a `ReactNode`, typically a `<Button>`) for actionable zero-states — e.g. 'Create first invoice' — so users have a clear next step instead of a dead end.",
@@ -2753,6 +2753,60 @@ import { Smartphone } from "lucide-react";
       },
       { name: "disabled", type: "boolean", description: "Disables the entire select." },
       {
+        name: "readOnly",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Searchable mode only (showSearch/loadOptions). Value is shown (and the clear affordance hidden) but the popover cannot be opened — no new pick, no search. Mirrors the Input/NumberInput readOnly contract: stays focusable and still submits its value, unlike disabled.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        description:
+          "Searchable mode only. Height tier forwarded to the SearchSelect trigger Button. For the compound API use SelectTrigger's own size prop instead (below).",
+      },
+      {
+        name: "open",
+        type: "boolean",
+        description:
+          "Searchable mode only. Controlled popover open state (uncontrolled by default). Pair with onOpenChange.",
+      },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description:
+          "Searchable mode only. Fires on every open/close attempt — including ones ignored because open is externally pinned — so a controlled consumer stays in sync.",
+      },
+      {
+        name: "search",
+        type: "string",
+        description:
+          "Searchable mode only. Controlled search-box query (uncontrolled by default). Pair with onSearchChange.",
+      },
+      {
+        name: "onSearchChange",
+        type: "(query: string) => void",
+        description: "Searchable mode only. Fires on every keystroke in the search box.",
+      },
+      {
+        name: "filterOption",
+        type: "(option: SearchSelectOptionProp, query: string) => boolean",
+        description:
+          "Searchable mode only, static options (ignored with loadOptions, which owns its own server-side filtering). Overrides the default label/value substring filter. Only consulted while the query is non-empty.",
+      },
+      {
+        name: "renderError",
+        type: "(params: { message: string; retry: () => void }) => React.ReactNode",
+        description:
+          "Searchable mode only. Custom error slot, overriding the default errorMessage row. retry() reloads from the first page.",
+      },
+      {
+        name: "renderLoadMore",
+        type: "(params: { hasMore: boolean; loading: boolean; loadMore: () => void }) => React.ReactNode",
+        description:
+          "Searchable mode only. Custom 'load more' affordance appended below the list while another page is available — pairs with (does not replace) the built-in scroll-triggered pagination.",
+      },
+      {
         name: "name",
         type: "string",
         description:
@@ -2780,6 +2834,13 @@ import { Smartphone } from "lucide-react";
         defaultValue: '"md"',
         description: "Compound API only. Size variant on the SelectTrigger sub-component.",
       },
+      {
+        name: "SelectTrigger showIndicator",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Compound API only. Set false to omit the built-in chevron disclosure indicator from the DOM entirely (not a CSS hide) — for specialized triggers (icon-only, etc.) that render their own affordance, so no consumer descendant CSS is needed.",
+      },
     ],
     usage: [
       "DO use the data-driven API (options/loadOptions) for straightforward selects — it handles grouping, search, async, and custom rendering automatically. Only reach for the compound API when you need to inject arbitrary content into the trigger or listbox.",
@@ -2790,6 +2851,11 @@ import { Smartphone } from "lucide-react";
       "DON'T mix the two APIs: once you pass options or loadOptions, Select is data-driven — all compound sub-parts (SelectTrigger, SelectContent, SelectItem) are rendered internally. Do not wrap them manually.",
       "DON'T use a raw <select> element. Select is the one control for all single-select use cases. The only allowed raw <select> is a hidden aria-hidden sr-only element kept as an e2e hook paired with a visible Select.",
       "COMPOUND API sub-parts (when NOT using options/loadOptions): Select → SelectTrigger (contains SelectValue) → SelectContent → SelectItem. Optionally wrap items in SelectGroup + SelectLabel for headings, or add SelectSeparator between sections.",
+      "DO reach for open/onOpenChange (searchable mode) to drive the popover from outside — e.g. opening it programmatically after a validation error — and search/onSearchChange to seed or read the query text. Both fall back to internal state when omitted; onOpenChange/onSearchChange still fire either way so a controlled consumer stays in sync.",
+      "DO use readOnly (searchable mode) for a value that must stay visible and submittable but not editable in this view — it differs from disabled: the control stays focusable and its value still submits. clearable is ignored while readOnly.",
+      "DO use filterOption (searchable mode, static options) when the default label/value substring match isn't right — e.g. filtering by a hidden code field. It is NOT consulted when loadOptions is set (that fetcher owns its own filtering).",
+      "DO use renderError + renderLoadMore (searchable mode) to replace the default error row with a branded retry affordance, or to pair a manual 'load more' button with (not instead of) the built-in scroll-triggered pagination.",
+      "DO set SelectTrigger showIndicator={false} (compound API) on a specialized trigger — icon-only, or one with its own affordance — instead of hiding [data-slot=select-chevron] with consumer CSS.",
     ],
     useCases: [
       "Status filter on an invoice list — pass options=[{value:'draft',label:'Draft'},{value:'paid',label:'Paid'}] with onChange to drive a query param; no search needed so omit showSearch.",
@@ -3846,10 +3912,15 @@ toast.error("保存に失敗しました");`,
         name: "items",
         type: "{ value: string; label: React.ReactNode; content: React.ReactNode; disabled?: boolean }[]",
         description:
-          "Optional data-driven tab list. When provided, Tabs renders all triggers and content panels.",
+          "Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled (gh#175).",
       },
       { name: "value", type: "string", description: "Controlled active tab key." },
-      { name: "defaultValue", type: "string", description: "Uncontrolled initial tab key." },
+      {
+        name: "defaultValue",
+        type: "string",
+        description:
+          "Uncontrolled initial tab key. Ignored (falls back to the first enabled item) when it names a disabled item or an unknown key.",
+      },
       {
         name: "onValueChange",
         type: "(value: string) => void",
@@ -3863,6 +3934,8 @@ toast.error("保存に失敗しました");`,
       "DO use `variant` on Tabs when using `items`; when composing manually, set `variant` on `TabsList`.",
       'DO: pass `orientation="vertical"` to `<Tabs>` (not to `TabsList`) for a side-rail layout — the CSS group classes on root and triggers respond automatically, so no extra className gymnastics are needed.',
       "DON'T: hand-roll the active-indicator underline or selected-state ring — `TabsTrigger` already applies `data-[state=active]` styles including the `after:` line element for the `line` variant. Adding your own underline breaks the design.",
+      "DO trust the horizontal `TabsList` to scroll its own overflow (hidden scrollbar, swipeable) instead of clipping when tab labels — especially long localized ones (Japanese, German) — don't fit a narrow container. Don't wrap it in your own `overflow-x-auto` div or truncate labels to work around clipping; that was gh#175 and is now the framework's job (#175).",
+      "DON'T assume the first item is ever auto-selected when it is `disabled` — Tabs always resolves the fallback to the first ENABLED item (or none, if all are disabled). A `disabled: true` first item is safe to author without also setting `defaultValue`.",
     ],
     useCases: [
       "Detail drawers or pages that need full per-panel control — e.g. an accounting journal-entry sheet where one panel has `forceMount` to keep a live chart mounted, requiring custom `TabsContent` props that `Tabs` cannot pass.",
