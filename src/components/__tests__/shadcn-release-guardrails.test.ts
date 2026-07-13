@@ -50,8 +50,12 @@ describe("shadcn release guardrails", () => {
     ]) {
       expect(exports[`./ui/${key}`], `missing ./ui/${key}`).toBeDefined();
     }
-    expect(pkg.scripts?.["verify:release"]).toContain("build");
-    expect(pkg.scripts?.["verify:release"]).toContain("test");
+    // verify:release delegates the non-browser gates (build, typecheck, lint, guards, test) to
+    // verify:static and appends the two browser checks. Assert the EFFECTIVE release chain
+    // (release + the static gates it runs) still builds and tests.
+    const releaseChain = `${pkg.scripts?.["verify:release"] ?? ""} ${pkg.scripts?.["verify:static"] ?? ""}`;
+    expect(releaseChain).toContain("build");
+    expect(releaseChain).toContain("test");
   });
 
   it("keeps bridge files present for installed shadcn components", () => {
