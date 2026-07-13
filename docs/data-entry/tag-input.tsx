@@ -23,7 +23,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>請求書ラベル</CardTitle>
+            <CardTitle level={2}>請求書ラベル</CardTitle>
             <CardDescription>
               Controlled via value/onValueChange (string[]). Deduplicate is built in. Use for ad-hoc
               record labels.
@@ -43,7 +43,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>担当者スキルタグ</CardTitle>
+            <CardTitle level={2}>担当者スキルタグ</CardTitle>
             <CardDescription>
               name= emits a hidden comma-joined input for native form submission without JS wiring.
             </CardDescription>
@@ -62,7 +62,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>承認通知メール送信先</CardTitle>
+            <CardTitle level={2}>承認通知メール送信先</CardTitle>
             <CardDescription>
               Uncontrolled start (empty defaultValue); caller receives full updated array on each
               change.

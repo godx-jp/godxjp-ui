@@ -171,6 +171,10 @@ pnpm check:mcp-sync       # MCP registry ↔ library export drift guard
 ```
 
 `pnpm verify` and `pnpm verify:release` run these together (verify:release also builds).
+`verify:release` (and CI on every PR) additionally runs `pnpm check:frame-axe` — a real-Chromium
+axe sweep over every `/frame/**` contract example. It needs `pnpm exec playwright install
+chromium` once locally; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run/scope it, read
+the evidence, and regenerate its baseline after an accessibility fix.
 
 All gates are **self-contained** — no internal/external tooling package required.
 The eslint, prettier, and vitest setup live in the package (`eslint.config.js`,
@@ -247,4 +251,5 @@ publish the matching partner at the same number, or move both forward with a fre
 - [ui-standardization.md](../../../.claude/skills/frontend-design/rules/ui-standardization.md) — the app-developer rules (§0 gate, §2a placement, token rules).
 - [ui-code-review.md](../../../docs/contributing/ui-code-review.md) — the review checklist.
 - `docs/TOKENS.md`, `docs/SPACING.md`, `docs/PROPS-VOCABULARY.md`, `docs/PROPS-REGISTRY.md`.
+- [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) — per-frame axe a11y + geometry + coverage CI gates.
 - **`godx-ui-component-placement`** skill — decide whether a component belongs here.

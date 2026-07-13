@@ -34,6 +34,11 @@ jobs:
           pnpm check:mcp-sync
           pnpm check:mcp-orphans
 
+      # 2b) Every copy-paste MCP pattern imports only REAL package exports, and no catalog/doc
+      #     names a removed component (Stack/Inline) or an undefined library CSS class (issue #156).
+      - name: Pattern imports resolve + no removed API in catalog/docs
+        run: pnpm check:mcp-pattern-imports
+
       # 3) The MCP builds and its own contract/resource/compatibility suite is green — this is what
       #    proves serverInfo.version == package version and the compatibility tool/resource behave.
       - name: Build + test MCP

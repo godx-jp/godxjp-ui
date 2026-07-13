@@ -129,7 +129,9 @@
       "sidebarLabel": "Sidebar",
       "headerLabel": "Header",
       "mainLabel": "Main content",
-      "footerLabel": "Footer"
+      "footerLabel": "Footer",
+      "openNav": "Open navigation menu",
+      "navLabel": "Menu"
     },
     "authShell": {
       "brandLabel": "Brand",

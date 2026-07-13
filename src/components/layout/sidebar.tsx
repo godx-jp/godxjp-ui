@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { ChevronDown } from "lucide-react";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../data-display/collapsible";
@@ -70,13 +71,56 @@ export function SidebarItem({
   const Icon = item.icon;
   const showBadge = item.badge !== undefined && item.badge !== "";
   const disabled = item.disabled || props.disabled;
-  const content = children ?? (renderItem ? renderItem(item) : undefined);
+  const custom = children ?? (renderItem ? renderItem(item) : undefined);
+
+  const rowClass = cn("sb-nav-item", sub && "sb-nav-item--sub");
+  const stateProps = {
+    className: rowClass,
+    "data-active": active ? "true" : undefined,
+    "aria-current": active ? ("page" as const) : undefined,
+  };
+
+  // Custom row: the CONSUMER supplies the single interactive element (a router `<Link>`/`<a>`), so
+  // we merge the row styling + active state onto THAT element via Slot — never a `<button>` wrapper.
+  // This is what lets a Sidebar item be a real link WITHOUT a nested interactive element (a
+  // `<button>`-in-`<a>` was the gh#165 defect). The consumer's element owns navigation.
+  if (custom !== undefined) {
+    return (
+      <Slot {...stateProps} aria-disabled={disabled || undefined}>
+        {custom}
+      </Slot>
+    );
+  }
+
+  // A declarative `href` renders the row AS the link — the anchor is the sole interactive element.
+  if (item.href) {
+    return (
+      <a
+        {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        href={disabled ? undefined : item.href}
+        {...stateProps}
+        aria-disabled={disabled || undefined}
+        onClick={(event) => {
+          if (disabled) event.preventDefault();
+          else onActivate?.(item.id);
+        }}
+      >
+        {!sub ? (
+          <span className="sb-icon">
+            <Icon aria-hidden="true" />
+          </span>
+        ) : null}
+        <span className="sb-label">{item.label}</span>
+        {showBadge ? <span className="sb-badge">{item.badge}</span> : null}
+      </a>
+    );
+  }
+
+  // Default: a plain action row that reports its selection through `onActivate` (SPA router visit).
   return (
     <button
       type="button"
-      className={cn("sb-nav-item", sub && "sb-nav-item--sub")}
-      data-active={active ? "true" : undefined}
-      aria-current={active ? "page" : undefined}
+      {...stateProps}
       aria-disabled={disabled}
       {...props}
       onClick={() => {
@@ -84,19 +128,13 @@ export function SidebarItem({
         onActivate?.(item.id);
       }}
     >
-      {content ? (
-        content
-      ) : (
-        <>
-          {!sub ? (
-            <span className="sb-icon">
-              <Icon aria-hidden="true" />
-            </span>
-          ) : null}
-          <span className="sb-label">{item.label}</span>
-          {showBadge ? <span className="sb-badge">{item.badge}</span> : null}
-        </>
-      )}
+      {!sub ? (
+        <span className="sb-icon">
+          <Icon aria-hidden="true" />
+        </span>
+      ) : null}
+      <span className="sb-label">{item.label}</span>
+      {showBadge ? <span className="sb-badge">{item.badge}</span> : null}
     </button>
   );
 }
@@ -155,8 +193,18 @@ function NavGroup({ item, activeId, onSelect, renderItem }: RowProps) {
   const active = isItemActive(item, activeId);
   const children = item.children ?? [];
 
+  // Route-driven expansion is SYNCHRONIZED, not just an initial `defaultOpen`: the group opens
+  // whenever one of its children becomes active (e.g. after an SPA navigation deep-links to a child
+  // route), so the newly-active row is always revealed — the old `defaultOpen={active}` only set the
+  // mount-time state and left a later-activated child hidden (gh#165). The user can still collapse/
+  // expand manually; a subsequent navigation into the group re-opens it.
+  const [open, setOpen] = React.useState(active);
+  React.useEffect(() => {
+    if (active) setOpen(true);
+  }, [active]);
+
   return (
-    <Collapsible defaultOpen={active} className="sb-nav-group">
+    <Collapsible open={open} onOpenChange={setOpen} className="sb-nav-group">
       <CollapsibleTrigger
         className="sb-nav-item sb-nav-group-trigger"
         data-active={active ? "true" : undefined}
@@ -270,6 +318,7 @@ export function Sidebar({
   children,
   renderItem,
   footer,
+  "aria-label": ariaLabel,
 }: SidebarProp) {
   const { t } = useTranslation();
   const resolvedSections = sections ?? [];

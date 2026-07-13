@@ -2,6 +2,7 @@ import * as React from "react";
 import { CalendarIcon, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { usePickerLocales, useTranslation } from "../../i18n/use-translation";
 import { useControlledLatch } from "../../lib/hooks";
+import { pickFieldA11y } from "../../lib/field-a11y";
 import { cn } from "../../lib/utils";
 import { Button } from "../general/button";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -43,12 +44,16 @@ export function MonthPicker({
   fromYear,
   toYear,
   allowClear = true,
+  ...ariaProps
 }: MonthPickerProp) {
   const { t } = useTranslation();
   const { locale } = usePickerLocales();
   const [open, setOpen] = React.useState(false);
   const autoId = React.useId();
   const inputId = id ?? autoId;
+  const dialogId = `${inputId}-dialog`;
+  // Forward the FormField label/helper/error contract onto the typeable input (focus target).
+  const fieldA11y = pickFieldA11y(ariaProps);
 
   // Controlled once a defined `value` has EVER been passed (an empty form may
   // restore a saved value later); uncontrolled state seeds from `defaultValue`.
@@ -100,6 +105,11 @@ export function MonthPicker({
             placeholder={placeholder ?? t("dataEntry.monthPicker.placeholder") ?? YM_HINT}
             inputMode="numeric"
             autoComplete="off"
+            role="combobox"
+            aria-expanded={open}
+            aria-haspopup="dialog"
+            aria-controls={open ? dialogId : undefined}
+            {...fieldA11y}
             className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent tabular-nums outline-none disabled:cursor-not-allowed"
             onKeyDown={(event) => {
               if (event.key === "ArrowDown") {
@@ -147,6 +157,9 @@ export function MonthPicker({
             </PopoverTrigger>
           )}
           <PopoverContent
+            id={dialogId}
+            role="dialog"
+            aria-label={t("dataEntry.monthPicker.openGrid") ?? "Month grid"}
             className="w-auto p-3"
             align="start"
             onOpenAutoFocus={(event) => event.preventDefault()}

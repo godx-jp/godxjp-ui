@@ -45,12 +45,13 @@ Every admin page **must** use PageContainer.
 
 All UI is **mobile-first**: base layout targets ~320–428px viewport; `sm` (640px+) adds horizontal layouts. See `packages/ui/src/tokens/base.css` and `.ui-page-*` in `src/styles/index.css`. Preview defaults to mobile viewport.
 
-### Stack / Inline
+### Flex
 
-| Component | Prop         | Key props             |
-| --------- | ------------ | --------------------- |
-| `Stack`   | `StackProp`  | `gap: GapProp`        |
-| `Inline`  | `InlineProp` | `gap: GapProp` subset |
+`Flex` is the one layout primitive (the former `Stack`/`Inline` are removed). Default `direction="row"`; use `direction="col"` for vertical rhythm.
+
+| Component | Prop       | Key props                                                               |
+| --------- | ---------- | ----------------------------------------------------------------------- |
+| `Flex`    | `FlexProp` | `direction: "row" \| "col"`, `gap: GapProp`, `align`, `justify`, `wrap` |
 
 ---
 
@@ -161,4 +162,7 @@ Auto retry: `useQuery({ retry, retryDelay })`. Manual retry: default `refetch()`
    [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md)
 7. Register every applicable prop/state/responsive/a11y dimension in the frame coverage ledger;
    missing coverage is `UNTESTED`, never pass
-8. Update this doc
+8. Run `pnpm check:frame-axe` (real-Chromium axe over every `/frame/**`) — a new frame must ship
+   with **zero** violations; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run it and the
+   categories of violations already root-caused for other components
+9. Update this doc

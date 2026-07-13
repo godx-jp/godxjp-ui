@@ -11,3 +11,9 @@ coverage
 
 # Package-manager lockfiles are tool-owned (pnpm), not hand-formatted.
 pnpm-lock.yaml
+
+# Frame-gate artifacts, owned by scripts/check-frame-axe.mjs / frame-geometry.mjs /
+# frame-coverage.mjs — regenerated deterministically, so prettier must not fight the generator.
+scripts/frame-axe.baseline.json
+scripts/frame-geometry.baseline.json
+docs/FRAME-COVERAGE-REPORT.md

@@ -79,7 +79,7 @@ export default function Demo() {
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
-              <CardTitle>アクティビティ</CardTitle>
+              <CardTitle level={2}>アクティビティ</CardTitle>
               <CardDescription>Click 「もっと見る」 to append the next page.</CardDescription>
             </CardHeader>
             <CardContent>

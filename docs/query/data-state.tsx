@@ -128,7 +128,7 @@ export default function Demo() {
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
-              <CardTitle>Success</CardTitle>
+              <CardTitle level={2}>Success</CardTitle>
               <CardDescription>
                 Resolved data renders through the children function.
               </CardDescription>
@@ -140,7 +140,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Loading (skeleton)</CardTitle>
+              <CardTitle level={2}>Loading (skeleton)</CardTitle>
               <CardDescription>The skeleton prop renders during the pending phase.</CardDescription>
             </CardHeader>
             <CardContent flush>
@@ -150,7 +150,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Prerequisite (disabled query)</CardTitle>
+              <CardTitle level={2}>Prerequisite (disabled query)</CardTitle>
               <CardDescription>
                 An `enabled:false` query is unstarted, not loading. The prerequisite slot renders
                 instead of an endless skeleton.
@@ -163,7 +163,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Error · transient (retry)</CardTitle>
+              <CardTitle level={2}>Error · transient (retry)</CardTitle>
               <CardDescription>
                 A 5xx/network failure is retryable, so AlertQueryError offers Retry automatically.
               </CardDescription>
@@ -175,7 +175,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Error · auth (session renewal)</CardTitle>
+              <CardTitle level={2}>Error · auth (session renewal)</CardTitle>
               <CardDescription>
                 A 401 / expired token routes to session renewal via `onAuthError`, never a blind
                 retry, and never surfaces the raw token message.

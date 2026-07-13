@@ -56,7 +56,7 @@ export default function Demo() {
         {/* items API — default variant (pill) */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">Default variant · items API</CardTitle>
+            <CardTitle level={2}>Default variant · items API</CardTitle>
             <CardDescription>
               Pass an items array; Tabs renders all triggers and content panels automatically.
               variant=&quot;default&quot; is the pill style.
@@ -67,12 +67,47 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/* Disabled first item — fallback selection must skip it (gh#175) */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">320px stress · 長いローカライズラベル</CardTitle>
+            <CardTitle level={2}>先頭タブが disabled · フォールバック選択</CardTitle>
             <CardDescription>
-              狭いコンテナで現行 Tabs の折返し・オーバーフローを可視化する。compact navigation
-              への変換は Tabs API に存在しないため擬似実装しない。
+              defaultValue/value を渡さない場合、Tabs は先頭の ENABLED タブを自動選択する(disabled
+              の先頭タブは選ばない)。全タブが disabled の場合は何も選択しない (gh#175)。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs
+              variant="default"
+              items={[
+                {
+                  value: "archived",
+                  label: "アーカイブ済 (無効)",
+                  content: <Text as="p">アーカイブ済の仕訳は表示できません。</Text>,
+                  disabled: true,
+                },
+                {
+                  value: "pending",
+                  label: "未承認",
+                  content: <Text as="p">未承認の仕訳が 2 件あります。</Text>,
+                },
+                {
+                  value: "posted",
+                  label: "承認済",
+                  content: <Text as="p">当期承認済: 48 件</Text>,
+                },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>320px stress · 長いローカライズラベル</CardTitle>
+            <CardDescription>
+              狭いコンテナでも長いラベルはクリップされず、水平タブリストが自身でスクロールする
+              (gh#175)。compact navigation への変換は Tabs API に存在しないため擬似実装しない —
+              スクロールが意図した縮退動作。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -101,7 +136,7 @@ export default function Demo() {
         {/* items API — line variant */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">Line variant · controlled</CardTitle>
+            <CardTitle level={2}>Line variant · controlled</CardTitle>
             <CardDescription>
               variant=&quot;line&quot; renders an underline indicator. Pair value + onValueChange
               when the active tab is driven by parent state (e.g. URL param).
@@ -120,7 +155,7 @@ export default function Demo() {
         {/* items API — card variant */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">Card variant</CardTitle>
+            <CardTitle level={2}>Card variant</CardTitle>
             <CardDescription>
               variant=&quot;card&quot; gives each trigger a card-like surface. Good for settings or
               admin profile pages.
@@ -154,7 +189,7 @@ export default function Demo() {
         {/* Manual compound — orientation vertical */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">Manual compound · vertical orientation</CardTitle>
+            <CardTitle level={2}>Manual compound · vertical orientation</CardTitle>
             <CardDescription>
               Compose TabsList / TabsTrigger / TabsContent when per-panel control is needed.
               orientation=&quot;vertical&quot; goes on the root Tabs element.
@@ -185,7 +220,7 @@ export default function Demo() {
         {/* Controlled with external Button */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">外部制御 · ボタンでタブを切り替え</CardTitle>
+            <CardTitle level={2}>外部制御 · ボタンでタブを切り替え</CardTitle>
             <CardDescription>
               value + onValueChange で親から active tab を制御できる。
             </CardDescription>

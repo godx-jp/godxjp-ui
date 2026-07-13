@@ -76,7 +76,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Data-driven (options)</CardTitle>
+            <CardTitle level={2}>Data-driven (options)</CardTitle>
             <CardDescription>
               Pass an options array; name= submits the value with the form.
             </CardDescription>
@@ -102,7 +102,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Searchable + grouped</CardTitle>
+            <CardTitle level={2}>Searchable + grouped</CardTitle>
             <CardDescription>
               showSearch enables client-side filtering; group buckets options.
             </CardDescription>
@@ -130,7 +130,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Searchable + clearable</CardTitle>
+            <CardTitle level={2}>Searchable + clearable</CardTitle>
             <CardDescription>
               With a value set and clearable (default), an inline ✕ on the trigger resets the
               selection without opening the list.
@@ -154,7 +154,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Option icon · shown on the trigger too</CardTitle>
+            <CardTitle level={2}>Option icon · shown on the trigger too</CardTitle>
             <CardDescription>
               Give each option an `icon` (avatar / flag / lucide icon). It renders before the label
               in the list AND on the trigger once selected, with no `renderOption` needed.
@@ -178,7 +178,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Async (loadOptions) + selectedIcon</CardTitle>
+            <CardTitle level={2}>Async (loadOptions) + selectedIcon</CardTitle>
             <CardDescription>
               With `loadOptions` and a preset value, `selectedLabel` + `selectedIcon` show the
               picked person's name AND avatar on the trigger at rest, before the async list has
@@ -204,7 +204,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Empty options · trigger disabled</CardTitle>
+            <CardTitle level={2}>Empty options · trigger disabled</CardTitle>
             <CardDescription>
               A static `options={[]}` list has nothing to pick, so the trigger disables itself and
               never opens a blank popover. Provide options (or an async loadOptions) to enable it.
@@ -219,7 +219,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Async error state (errorMessage)</CardTitle>
+            <CardTitle level={2}>Async error state (errorMessage)</CardTitle>
             <CardDescription>
               When `loadOptions` rejects, the panel shows a distinct error affordance instead of a
               blank surface or a misleading “no results”. Override the localized default with
@@ -242,7 +242,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Custom rows (renderOption)</CardTitle>
+            <CardTitle level={2}>Custom rows (renderOption)</CardTitle>
             <CardDescription>
               `renderOption` (like Ant&apos;s optionRender) draws a fully custom row: avatar + name
               + email + a status badge. Use a flex ROW (`div className=&quot;flex
@@ -281,7 +281,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>labelRender · custom selected display</CardTitle>
+            <CardTitle level={2}>labelRender · custom selected display</CardTitle>
             <CardDescription>
               `labelRender` (Ant Design) customizes the SELECTED value shown on the trigger: here an
               avatar + name + a role badge. The placeholder still shows when nothing is selected.
@@ -314,7 +314,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Compound API (custom trigger)</CardTitle>
+            <CardTitle level={2}>Compound API (custom trigger)</CardTitle>
             <CardDescription>
               Compose sub-parts when the trigger needs custom content.
             </CardDescription>

@@ -18,7 +18,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Label + Checkbox (inline)</CardTitle>
+            <CardTitle level={2}>Label + Checkbox (inline)</CardTitle>
             <CardDescription>
               A compact pair where Field’s two-line layout is unnecessary, e.g. a “remember me” row.
               When the peer control is disabled, the Label dims (peer-disabled:opacity-70 +
@@ -41,7 +41,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Label + Switch (settings row)</CardTitle>
+            <CardTitle level={2}>Label + Switch (settings row)</CardTitle>
             <CardDescription>
               Labelling a standalone Switch in an inline row that FormField’s full-width block would
               break.
@@ -63,7 +63,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Label + Textarea (minimal)</CardTitle>
+            <CardTitle level={2}>Label + Textarea (minimal)</CardTitle>
             <CardDescription>
               A free-text field where helper / error slots are not needed.
             </CardDescription>
@@ -77,7 +77,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>FormField vs bare Label · prefer FormField</CardTitle>
+            <CardTitle level={2}>FormField vs bare Label · prefer FormField</CardTitle>
             <CardDescription>
               FormField renders Label internally, wires aria-describedby / aria-invalid, and adds
               the helper / error / required slots. Use it for real form fields.

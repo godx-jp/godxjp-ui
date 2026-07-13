@@ -1,0 +1,95 @@
+{
+  "generatedAt": "2026-07-12",
+  "note": "Per-frame widths with horizontal overflow / clipped controls. Allowlist — may only SHRINK. Regenerate after a responsive-fix PR: `node scripts/frame-geometry.mjs --update-baseline`.",
+  "widths": [
+    320,
+    375,
+    390,
+    768,
+    1024,
+    1280,
+    1440,
+    1920
+  ],
+  "frames": {
+    "data-display-hover-card": [
+      320,
+      375,
+      390
+    ],
+    "data-display-data-table-index": [
+      320,
+      375,
+      390
+    ],
+    "data-display-data-table-examples-grid-features": [
+      320,
+      375,
+      390
+    ],
+    "data-display-data-table-examples-list-page": [
+      320,
+      375,
+      390
+    ],
+    "data-entry-calendar": [
+      320
+    ],
+    "data-entry-rating": [
+      320,
+      375
+    ],
+    "data-entry-form-examples-employee-settings": [
+      320,
+      375,
+      390,
+      768
+    ],
+    "data-entry-form-examples-invoice-form": [
+      320,
+      375,
+      390,
+      768
+    ],
+    "foundation-density": [
+      320,
+      375,
+      390
+    ],
+    "general-button-examples-toolbar": [
+      320,
+      375,
+      390
+    ],
+    "layout-page-container": [
+      320,
+      375,
+      390
+    ],
+    "layout-separator": [
+      320,
+      375,
+      390
+    ],
+    "layout-sidebar": [
+      320
+    ],
+    "layout-split-pane": [
+      320,
+      375
+    ],
+    "layout-topbar": [
+      320,
+      375,
+      390
+    ],
+    "navigation-pagination": [
+      320
+    ],
+    "navigation-tabs": [
+      320,
+      375,
+      390
+    ]
+  }
+}

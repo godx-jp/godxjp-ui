@@ -42,14 +42,42 @@ describe("EmptyState", () => {
     rerender(<EmptyState icon={Inbox} title="None" variant="compact" />);
     expect(getByRole("status")).toHaveAttribute("data-variant", "compact");
     expect(container.querySelector(".ui-empty-state-icon")).toBeNull();
-    expect(container.querySelector(".ui-empty-state-title")?.tagName).toBe("P");
   });
 
-  it("uses h2 for a page empty state and permits a contextual override", () => {
-    const { getByRole, rerender } = render(<EmptyState title="No invoices" />);
-    expect(getByRole("heading", { level: 2, name: "No invoices" })).toBeInTheDocument();
-    rerender(<EmptyState title="No invoices" titleAs="h4" />);
-    expect(getByRole("heading", { level: 4, name: "No invoices" })).toBeInTheDocument();
+  it("renders the title as an <h3> by default (unchanged)", () => {
+    const { getByRole } = render(<EmptyState title="データなし" />);
+    const heading = getByRole("heading", { level: 3 });
+    expect(heading.tagName).toBe("H3");
+    expect(heading).toHaveClass("ui-empty-state-title");
+  });
+
+  it("renders the title at the requested `titleLevel` for a valid page outline", () => {
+    const { getByRole, rerender } = render(<EmptyState title="なし" titleLevel={2} />);
+    expect(getByRole("heading", { level: 2 }).tagName).toBe("H2");
+    rerender(<EmptyState title="なし" titleLevel={4} />);
+    expect(getByRole("heading", { level: 4 }).tagName).toBe("H4");
+  });
+
+  it("renders the title as a non-heading element via `titleAs` (section already has a heading)", () => {
+    const { queryByRole, getByText } = render(
+      <EmptyState variant="compact" title="保留中の招待はありません" titleAs="p" />,
+    );
+    expect(queryByRole("heading")).toBeNull();
+    const title = getByText("保留中の招待はありません");
+    expect(title.tagName).toBe("P");
+    expect(title).toHaveClass("ui-empty-state-title");
+  });
+
+  it("has no heading-order violation nested under a section heading", async () => {
+    await expectNoA11yViolations(
+      <main>
+        <h1>設定</h1>
+        <section aria-label="招待">
+          <h2>受け取った招待</h2>
+          <EmptyState variant="section" title="招待はありません" titleLevel={3} />
+        </section>
+      </main>,
+    );
   });
 
   it("defaults to the muted tone and reflects a semantic tone via data-tone", () => {

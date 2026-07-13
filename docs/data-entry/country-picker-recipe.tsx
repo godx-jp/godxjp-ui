@@ -85,7 +85,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>請求先の国（必須・日本デフォルト・クリア不可）</CardTitle>
+            <CardTitle level={2}>請求先の国（必須・日本デフォルト・クリア不可）</CardTitle>
             <CardDescription>
               value は ISO 3166-1 alpha-2 コード、ラベルは
               Intl.DisplayNames（CLDR）で生成する（国名を
@@ -112,7 +112,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>取引先の国（任意・クリア可）</CardTitle>
+            <CardTitle level={2}>取引先の国（任意・クリア可）</CardTitle>
             <CardDescription>
               clearable（デフォルト true）で「指定なし」に戻せる。placeholder で空状態を案内する。
               任意項目なので未選択（プレースホルダー表示）を初期値にしている。
@@ -137,7 +137,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>居住国（loadOptions・遠隔リスト・SVG フラグ枠）</CardTitle>
+            <CardTitle level={2}>居住国（loadOptions・遠隔リスト・SVG フラグ枠）</CardTitle>
             <CardDescription>
               全世界の長いリストは options を同梱せず loadOptions でサーバー検索＋ページングする。
               読み込み中は loadingMessage、0 件は emptyMessage を出す。selectedLabel は値の option

@@ -41,8 +41,15 @@ export const SelectTrigger = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
     size?: "sm" | "md";
+    /**
+     * Show the built-in chevron disclosure indicator (default true). Set `false` for specialized
+     * triggers — icon-only, or one that already renders its own affordance — so it isn't
+     * duplicated. Omits the icon from the DOM entirely (not a CSS hide), so no consumer
+     * descendant CSS is needed to remove it.
+     */
+    showIndicator?: boolean;
   }
->(({ className, children, size = "md", ...props }, ref) => (
+>(({ className, children, size = "md", showIndicator = true, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     data-slot="select-trigger"
@@ -55,13 +62,15 @@ export const SelectTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <SelectPrimitive.Icon asChild>
-      <ChevronDown
-        data-slot="select-chevron"
-        className="size-4 shrink-0 opacity-50"
-        aria-hidden="true"
-      />
-    </SelectPrimitive.Icon>
+    {showIndicator ? (
+      <SelectPrimitive.Icon asChild>
+        <ChevronDown
+          data-slot="select-chevron"
+          className="size-4 shrink-0 opacity-50"
+          aria-hidden="true"
+        />
+      </SelectPrimitive.Icon>
+    ) : null}
   </SelectPrimitive.Trigger>
 ));
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
@@ -199,14 +208,6 @@ function DataSelect({
   value,
   defaultValue,
   onValueChange,
-  open,
-  defaultOpen,
-  onOpenChange,
-  searchValue,
-  defaultSearchValue,
-  onSearchValueChange,
-  filterOption,
-  optionTextValue,
   renderOption,
   labelRender,
   selectedLabel,
@@ -216,13 +217,18 @@ function DataSelect({
   emptyMessage,
   loadingMessage,
   errorMessage,
-  retryLabel,
-  loadMoreLabel,
   clearLabel,
   clearable,
   disabled,
   readOnly,
-  size = "md",
+  size,
+  open,
+  onOpenChange,
+  search,
+  onSearchChange,
+  filterOption,
+  renderError,
+  renderLoadMore,
   name,
   id,
   className,
@@ -245,16 +251,8 @@ function DataSelect({
         value={value}
         defaultValue={defaultValue}
         onValueChange={onValueChange}
-        open={open}
-        defaultOpen={defaultOpen}
-        onOpenChange={onOpenChange}
-        searchValue={searchValue}
-        defaultSearchValue={defaultSearchValue}
-        onSearchValueChange={onSearchValueChange}
         options={options}
         loadOptions={loadOptions}
-        filterOption={filterOption}
-        optionTextValue={optionTextValue}
         renderOption={renderOption}
         labelRender={labelRender}
         selectedLabel={selectedLabel}
@@ -264,13 +262,18 @@ function DataSelect({
         emptyMessage={emptyMessage}
         loadingMessage={loadingMessage}
         errorMessage={errorMessage}
-        retryLabel={retryLabel}
-        loadMoreLabel={loadMoreLabel}
         clearLabel={clearLabel}
         clearable={clearable}
         disabled={disabled || (!loadOptions && !hasOptions)}
         readOnly={readOnly}
         size={size}
+        open={open}
+        onOpenChange={onOpenChange}
+        search={search}
+        onSearchChange={onSearchChange}
+        filterOption={filterOption}
+        renderError={renderError}
+        renderLoadMore={renderLoadMore}
         name={name}
         id={id}
         className={className}
@@ -301,10 +304,9 @@ function DataSelect({
   return (
     <SelectPrimitive.Root
       data-slot="select"
-      value={readOnly ? (value ?? defaultValue) : isControlled ? value : undefined}
+      value={isControlled ? value : undefined}
       defaultValue={isControlled ? undefined : defaultValue || undefined}
       onValueChange={(next) =>
-        !readOnly &&
         onValueChange?.(
           next,
           options.find((option) => option.value === next),
@@ -313,14 +315,7 @@ function DataSelect({
       disabled={disabled || !hasOptions}
       name={name}
     >
-      <SelectTrigger
-        id={id}
-        size={size}
-        aria-readonly={readOnly || undefined}
-        data-testid={dataTestId}
-        className={className}
-        {...ariaProps}
-      >
+      <SelectTrigger id={id} data-testid={dataTestId} className={className} {...ariaProps}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

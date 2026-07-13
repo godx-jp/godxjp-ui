@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronRight } from "lucide-react";
 
+import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { densityClass, pageContainerVariantClass } from "../../lib/variants";
 import type { PageContainerProp, PageInsetProp } from "../../props/components/layout.prop";
@@ -65,7 +66,8 @@ function PageContainerRoot({
   extra,
   footer,
   breadcrumb,
-  breadcrumbLabel = "Breadcrumb",
+  breadcrumbLabel,
+  breadcrumbAriaLabel,
   linkComponent: LinkComponent = "a",
   density,
   variant = "default",
@@ -77,6 +79,7 @@ function PageContainerRoot({
 }: PageContainerProp) {
   const reveal = stickyFooter && footer != null && footerReveal === "onScroll";
   const { headerRef, revealed } = useFooterReveal(reveal);
+  const { t } = useTranslation();
 
   return (
     <div
@@ -95,7 +98,10 @@ function PageContainerRoot({
     >
       <header ref={headerRef} className="ui-page-header">
         {breadcrumb && breadcrumb.length > 0 && (
-          <nav aria-label={breadcrumbLabel} className="ui-breadcrumb">
+          <nav
+            aria-label={breadcrumbLabel ?? breadcrumbAriaLabel ?? t("navigation.breadcrumb.ariaLabel")}
+            className="ui-breadcrumb"
+          >
             <ol className="ui-breadcrumb-list">
               {breadcrumb.map((item, i) => {
                 const isLast = i === breadcrumb.length - 1;

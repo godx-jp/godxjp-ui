@@ -106,11 +106,22 @@ const FAVOURITE_SECTIONS: SidebarSectionProp[] = [
 
 const FAVOURITE_IDS = new Set(["overview", "members"]);
 
-/** renderItem · replaces a row's content with a custom layout (icon + label + star affix). */
-function renderFavouriteRow(item: SidebarItemData) {
+/**
+ * renderItem · returns a SINGLE interactive element (here an `<a>` standing in for a router
+ * `<Link>`). The Sidebar merges the row styling + active state onto it via Slot, so the anchor IS
+ * the row and the ONLY interactive element — no nested `<button>` (gh#165). The star affix is a
+ * decorative, non-interactive descendant.
+ */
+function renderFavouriteRow(item: SidebarItemData, onSelect: (id: string) => void) {
   const Icon = item.icon;
   return (
-    <>
+    <a
+      href={`#${item.id}`}
+      onClick={(event) => {
+        event.preventDefault();
+        onSelect(item.id);
+      }}
+    >
       <span className="sb-icon">
         <Icon aria-hidden="true" />
       </span>
@@ -118,7 +129,7 @@ function renderFavouriteRow(item: SidebarItemData) {
       {FAVOURITE_IDS.has(item.id) ? (
         <Star className="text-attention size-4 shrink-0 fill-current" aria-label="お気に入り" />
       ) : null}
-    </>
+    </a>
   );
 }
 
@@ -142,6 +153,7 @@ export default function Demo() {
       collapsed={collapsed}
       onSelect={setActiveId}
       sections={FULL_SECTIONS}
+      aria-label="ドッキングサイドバーのナビゲーション"
       product={{
         name: "CoreBooks",
         role: "株式会社アクメ",
@@ -212,7 +224,7 @@ export default function Demo() {
         <Flex direction="col" gap="lg">
           <Card>
             <CardHeader>
-              <CardTitle>現在の状態</CardTitle>
+              <CardTitle level={2}>現在の状態</CardTitle>
               <CardDescription>
                 左のレールに渡している sections prop の現在のアクティブ項目
               </CardDescription>
@@ -225,7 +237,7 @@ export default function Demo() {
           {/* brand prop · replaces the product chip with a fully custom header (SidebarHeader). */}
           <Card>
             <CardHeader>
-              <CardTitle>brand プロップ</CardTitle>
+              <CardTitle level={2}>brand プロップ</CardTitle>
               <CardDescription>
                 product チップの代わりに SidebarHeader で完全に自作したヘッダーを差し込みます。
                 brand と product は排他です。
@@ -238,6 +250,7 @@ export default function Demo() {
                   activeId={brandActiveId}
                   onSelect={setBrandActiveId}
                   sections={BRAND_SECTIONS}
+                  aria-label="brand プロップ例のナビゲーション"
                   brand={
                     <SidebarHeader>
                       <span className="bg-primary text-primary-foreground grid size-7 shrink-0 place-items-center rounded-md">
@@ -261,7 +274,7 @@ export default function Demo() {
           {/* renderItem prop · per-item custom render escape hatch (here: a favourite-star affix). */}
           <Card>
             <CardHeader>
-              <CardTitle>renderItem プロップ</CardTitle>
+              <CardTitle level={2}>renderItem プロップ</CardTitle>
               <CardDescription>
                 各行のレンダリングを差し替えるエスケープハッチ。 ここではラベルの右に
                 お気に入りスターのアフィックスを描画しています。
@@ -274,7 +287,8 @@ export default function Demo() {
                   activeId={renderActiveId}
                   onSelect={setRenderActiveId}
                   sections={FAVOURITE_SECTIONS}
-                  renderItem={renderFavouriteRow}
+                  renderItem={(item) => renderFavouriteRow(item, setRenderActiveId)}
+                  aria-label="renderItem プロップ例のナビゲーション"
                 />
               </div>
             </CardContent>
@@ -283,7 +297,7 @@ export default function Demo() {
           {/* children prop · full nav override: compose SidebarSection / SidebarItem directly. */}
           <Card>
             <CardHeader>
-              <CardTitle>children プロップ（ナビ全体の差し替え）</CardTitle>
+              <CardTitle level={2}>children プロップ（ナビ全体の差し替え）</CardTitle>
               <CardDescription>
                 sections を使わず SidebarSection / SidebarItem を直接組み立てて、
                 ナビゲーション全体を 自前で構成します。
@@ -314,7 +328,7 @@ export default function Demo() {
           {/* Feature notes */}
           <Card>
             <CardHeader>
-              <CardTitle>主な機能</CardTitle>
+              <CardTitle level={2}>主な機能</CardTitle>
             </CardHeader>
             <CardContent>
               <Flex direction="col" gap="sm" className="text-sm">

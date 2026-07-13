@@ -122,7 +122,7 @@ export default function Demo() {
 
             <Card>
               <CardHeader>
-                <CardTitle>基本情報</CardTitle>
+                <CardTitle level={2}>基本情報</CardTitle>
                 <CardDescription>
                   ラベルは固定幅の列に横並び（horizontal）。システム発番の項目は read-only。
                 </CardDescription>
@@ -187,7 +187,7 @@ export default function Demo() {
 
             <Card>
               <CardHeader>
-                <CardTitle>勤務・通知</CardTitle>
+                <CardTitle level={2}>勤務・通知</CardTitle>
                 <CardDescription>コアタイムと通知チャネル、二要素認証の設定。</CardDescription>
               </CardHeader>
               <CardContent>

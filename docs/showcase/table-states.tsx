@@ -198,7 +198,7 @@ function TableShell({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>本日の打刻</CardTitle>
+        <CardTitle level={2}>本日の打刻</CardTitle>
         <Text size="xs" tone="muted">
           {caption}
         </Text>

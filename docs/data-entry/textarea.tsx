@@ -15,21 +15,21 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>States</CardTitle>
+            <CardTitle level={2}>States</CardTitle>
             <CardDescription>Placeholder, filled, and disabled.</CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Textarea placeholder="摘要を入力..." />
-              <Textarea defaultValue={"4月分 受注\nINV-2024-0312"} />
-              <Textarea disabled defaultValue="無効 (disabled)" />
+              <Textarea aria-label="プレースホルダー状態" placeholder="摘要を入力..." />
+              <Textarea aria-label="入力済み状態" defaultValue={"4月分 受注\nINV-2024-0312"} />
+              <Textarea aria-label="無効状態" disabled defaultValue="無効 (disabled)" />
             </Flex>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>In FormField</CardTitle>
+            <CardTitle level={2}>In FormField</CardTitle>
             <CardDescription>Labelled with a helper hint.</CardDescription>
           </CardHeader>
           <CardContent>

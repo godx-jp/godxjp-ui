@@ -79,7 +79,7 @@ export default function Demo() {
 
           <Card accent="primary">
             <CardHeader banded>
-              <CardTitle>明細</CardTitle>
+              <CardTitle level={2}>明細</CardTitle>
               <CardDescription>4月分 受注</CardDescription>
             </CardHeader>
             <CardContent>

@@ -51,8 +51,9 @@ export const PROP_VOCABULARY: PropVocabEntry[] = [
     name: "GapProp",
     concept: "Shared layout gap scale.",
     values: ["xs", "sm", "md", "lg", "xl"],
-    usedBy: ["Stack", "Inline"],
-    notes: "Inline uses an Exclude<GapProp, 'xl'> subset.",
+    usedBy: ["Flex"],
+    notes:
+      'The single shared gap scale on Flex — the one layout primitive (default direction="row"; use direction="col" for vertical rhythm; these replaced the removed Stack/Inline).',
   },
   {
     name: "TitleProp",

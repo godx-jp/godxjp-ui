@@ -17,6 +17,7 @@ import type {
   TableDensityProp,
   ChildrenProp,
   ToneProp,
+  HeadingLevelProp,
 } from "../vocabulary";
 
 /** @see EmptyState */
@@ -33,8 +34,6 @@ export type EmptyStateToneProp = Extract<
 export type EmptyStateProp = {
   icon?: IconProp;
   title: TitleProp;
-  /** Semantic title element. Defaults by variant: page=h2, section=h3, compact=p. */
-  titleAs?: "h2" | "h3" | "h4" | "p";
   description?: DescriptionProp;
   action?: ActionProp;
   /** Visual weight appropriate to the empty condition. Default `page`. */
@@ -46,6 +45,21 @@ export type EmptyStateProp = {
    * consumer never hand-rolls a `.ui-success-state` class to recolour it.
    */
   tone?: EmptyStateToneProp;
+  /**
+   * Semantic heading level (`h1`–`h4`) for the title. Default `3`. Choose it to
+   * keep the page outline valid (`h1 → h2 → h3`, no skipped levels), NOT for
+   * visual size — the title size is fixed by `--empty-state` styles regardless
+   * of level. A page/onboarding empty state directly under a page `h1` uses
+   * `titleLevel={2}`; an empty state nested in an already-`h2` section uses `3`.
+   */
+  titleLevel?: HeadingLevelProp;
+  /**
+   * Render the title as a non-heading element (`p` / `div`) instead of a
+   * heading. Use for a `compact`/`section` empty state placed inside a section
+   * that already owns its heading, so the zero-state message is not announced as
+   * a heading and cannot skip an outline level. Overrides `titleLevel`.
+   */
+  titleAs?: "h1" | "h2" | "h3" | "h4" | "p" | "div";
   className?: ClassNameProp;
 };
 

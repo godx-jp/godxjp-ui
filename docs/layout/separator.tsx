@@ -25,7 +25,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>水平区切り（既定）</CardTitle>
+            <CardTitle level={2}>水平区切り（既定）</CardTitle>
             <CardDescription>
               orientation を省略すると horizontal。セクション間やフォームグループの分割に使う。 raw
               border div は使わない。
@@ -53,7 +53,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>垂直区切り · ツールバーグループ</CardTitle>
+            <CardTitle level={2}>垂直区切り · ツールバーグループ</CardTitle>
             <CardDescription>
               orientation=&quot;vertical&quot; は親が安定した高さを与えているときのみ使用。
               align=&quot;stretch&quot; の Flex 行で自然な高さを継承する。
@@ -86,7 +86,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>decorative=&#123;false&#125; · セマンティック区切り</CardTitle>
+            <CardTitle level={2}>decorative=&#123;false&#125; · セマンティック区切り</CardTitle>
             <CardDescription>
               decorative=&#123;false&#125; にすると role=&quot;separator&quot; が付与され
               スクリーンリーダーが読み上げる。意味のある区切りにのみ使う。

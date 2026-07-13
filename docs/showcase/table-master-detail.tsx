@@ -283,7 +283,7 @@ function EmployeeDetail({ employee }: { employee: Employee }) {
           </Avatar>
           <div className="min-w-0">
             <Flex direction="row" align="center" gap="sm" wrap>
-              <Heading level={3}>{employee.name}</Heading>
+              <Heading level={2}>{employee.name}</Heading>
               <Badge tone={STATUS_TONE[employee.status]} variant="outline">
                 {STATUS_LABEL[employee.status]}
               </Badge>
@@ -368,7 +368,7 @@ export default function Demo() {
         {/* ── Resizable master/detail split (Gmail-style) ── */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>本日の出勤状況</CardTitle>
+            <CardTitle level={2}>本日の出勤状況</CardTitle>
             <Text size="xs" tone="muted" tabular>
               2026-06-04 · {EMPLOYEES.length}名
             </Text>
@@ -414,7 +414,7 @@ export default function Demo() {
         {/* ── Empty detail state (nothing selected) ── */}
         <Card>
           <CardHeader>
-            <CardTitle>未選択の状態</CardTitle>
+            <CardTitle level={2}>未選択の状態</CardTitle>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="lg" align="start" className="lg:flex-row lg:items-start">
@@ -443,7 +443,7 @@ export default function Demo() {
         {/* ── Narrow fallback: stacked list + detail (no side room) ── */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>狭幅レイアウト（縦積み）</CardTitle>
+            <CardTitle level={2}>狭幅レイアウト（縦積み）</CardTitle>
             <Text size="xs" tone="muted">
               サイドペインが取れない幅では一覧の下に詳細を重ねます
             </Text>

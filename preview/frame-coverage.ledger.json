@@ -1,0 +1,33 @@
+{
+  "$schema": "declared frame-coverage ledger — read by scripts/frame-coverage.mjs (issue #163)",
+  "readme": [
+    "Per-component declaration of which contract axes (FRAME-COVERAGE-STANDARD.md) a frame COVERS.",
+    "A dimension is UNTESTED unless declared here as \"covered\" or \"N/A:<reason>\".",
+    "Component agents authoring frame content add their component under `components` as cases land.",
+    "Only an executed/authored case may be marked \"covered\" — never infer from a happy-path render."
+  ],
+  "infra": {
+    "note": "Global harness capabilities this branch provides for EVERY /frame/** route — they make a dimension EXERCISABLE, but a per-component `covered` mark still requires an authored case that demonstrates it.",
+    "viewportMatrix": {
+      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "runner": "scripts/frame-geometry.mjs (check:frame-geometry) — overflow + clipped-control sweep"
+    },
+    "rtl": "?dir=rtl on any /frame/<id> flips logical CSS for the whole subtree",
+    "density": "?density=compact|default|comfortable on any /frame/<id>",
+    "theme": "?theme=light|dark on any /frame/<id>",
+    "locale": "?locale=ja|vi|en|ar on any /frame/<id>",
+    "accessibilityAxe": "scripts/check-frame-axe.mjs (check:frame-axe) — desktop + mobile-sm axe per frame"
+  },
+  "dimensions": [
+    "visual",
+    "state",
+    "ownership",
+    "contentStress",
+    "responsive",
+    "international",
+    "accessibility",
+    "preferences",
+    "async"
+  ],
+  "components": {}
+}

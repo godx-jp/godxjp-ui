@@ -4,6 +4,7 @@ import { Camera, ImagePlus, RotateCcw, Trash2, Upload as UploadIcon, X } from "l
 import { useTranslation } from "../../i18n/use-translation";
 import { formatBytes } from "../../lib/format";
 import { cn } from "../../lib/utils";
+import { resolveFieldA11y } from "../../lib/field-a11y";
 import { controlIconClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
 import type { UploadProp } from "../../props/components/data-entry.prop";
@@ -124,10 +125,17 @@ export function Upload({
   disabled,
   removable = true,
   onUpload,
+  id,
   className,
   children,
+  ...ariaProps
 }: UploadProp) {
   const { t } = useTranslation();
+  // Upload is a composite widget (visible trigger + hidden file input + file list). The native
+  // <input type="file"> is the true form control, so the FormField label/helper/error contract is
+  // forwarded onto it; the visible dropzone/button keeps its own action label. Per-variant visible
+  // triggers are named by their own action label — see the docs for the ownership map.
+  const inputA11y = resolveFieldA11y(ariaProps, t("dataEntry.upload.inputLabel"));
   const accept = acceptProp ?? defaultAcceptForVariant(variant);
   const maxCount = maxCountProp ?? defaultMaxCount(variant);
   const multiple = multipleProp ?? (maxCount === 1 ? false : true);
@@ -194,12 +202,13 @@ export function Upload({
   const hiddenInput = (
     <input
       ref={inputRef}
+      id={id}
       type="file"
       className="sr-only"
       accept={accept}
       multiple={multiple && !isSingleAvatar}
       disabled={disabled}
-      aria-label={t("dataEntry.upload.inputLabel")}
+      {...inputA11y}
       onChange={(e) => {
         pickFiles(e.target.files);
         e.target.value = "";

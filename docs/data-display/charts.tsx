@@ -51,7 +51,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>LineChart · 月次トレンド</CardTitle>
+            <CardTitle level={2}>LineChart · 月次トレンド</CardTitle>
             <CardDescription>
               複数系列の推移。numberFormat で通貨をロケールに合わせて表示します。
             </CardDescription>
@@ -74,7 +74,7 @@ export default function Demo() {
         <ResponsiveGrid columns={2}>
           <Card>
             <CardHeader>
-              <CardTitle>BarChart · 地域/期間比較</CardTitle>
+              <CardTitle level={2}>BarChart · 地域/期間比較</CardTitle>
               <CardDescription>compact 表記。stacked で構成比に切替可能。</CardDescription>
             </CardHeader>
             <CardContent>
@@ -95,7 +95,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>AreaChart · 累積構成</CardTitle>
+              <CardTitle level={2}>AreaChart · 累積構成</CardTitle>
               <CardDescription>stacked で合計の積み上がりを表現。</CardDescription>
             </CardHeader>
             <CardContent>
@@ -117,7 +117,7 @@ export default function Demo() {
         <ResponsiveGrid columns={2}>
           <Card>
             <CardHeader>
-              <CardTitle>PieChart · 構成比</CardTitle>
+              <CardTitle level={2}>PieChart · 構成比</CardTitle>
               <CardDescription>少数スライス向け。donut にも切替可能。</CardDescription>
             </CardHeader>
             <CardContent>
@@ -134,7 +134,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>空状態</CardTitle>
+              <CardTitle level={2}>空状態</CardTitle>
               <CardDescription>data が空のとき EmptyState を表示します。</CardDescription>
             </CardHeader>
             <CardContent>
@@ -152,7 +152,7 @@ export default function Demo() {
         <ResponsiveGrid columns={2}>
           <Card>
             <CardHeader>
-              <CardTitle>BarChart · 横方向・非積み上げ</CardTitle>
+              <CardTitle level={2}>BarChart · 横方向・非積み上げ</CardTitle>
               <CardDescription>長いカテゴリと負数を含む edge-data frame。</CardDescription>
             </CardHeader>
             <CardContent>
@@ -173,7 +173,7 @@ export default function Demo() {
 
           <Card>
             <CardHeader>
-              <CardTitle>PieChart · full pie・custom colours</CardTitle>
+              <CardTitle level={2}>PieChart · full pie・custom colours</CardTitle>
               <CardDescription>donut=false と colors の明示指定。</CardDescription>
             </CardHeader>
             <CardContent>

@@ -4,6 +4,118 @@ All notable changes to `@godxjp/ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Per-frame axe a11y gate real fixes (#157)** — the frame-axe baseline shrank from 101 allowlisted
+  frames toward near-zero by fixing ROOT CAUSES, not re-baselining:
+  - Every docs demo's top-level `CardTitle` now declares `level={2}` (was the library default
+    `h3`), fixing the pervasive `h1 → h3` heading-order skip under `PageContainer`'s `<h1>` (91
+    frames) — an AST codemod, nested Card-in-Card titles correctly kept the `h3` default.
+  - `Pagination`, `Breadcrumb` (standalone + `PageContainer`'s built-in breadcrumb slot via new
+    `breadcrumbAriaLabel`), and `Sidebar` gained an `aria-label` override prop so more than one
+    instance on a page/view gets a distinguishable landmark name (`landmark-unique`, WCAG 2.4.1);
+    `PageContainer`'s breadcrumb `aria-label` now routes through `t()` instead of a hardcoded
+    English literal.
+  - `FormField` now ALSO injects a redundant `aria-label` (mirroring the visible `label`, when it's
+    plain text) alongside its `aria-labelledby` wiring — a belt-and-suspenders accessible-name path
+    for every control it wraps.
+  - Scrollable regions are now keyboard-reachable (`tabIndex={0}`, WCAG 2.1.1 / axe
+    `scrollable-region-focusable`) without becoming landmarks: the `Table` primitive's overflow
+    wrapper, the `DataTable` horizontal scroll region, and the `ScrollArea` viewport.
+  - `Calendar` selected day now keeps `text-primary-foreground` on its ghost `<button>` through
+    hover/focus, fixing dark-label-on-blue insufficient contrast on the selected date
+    (`color-contrast`).
+  - `DataTable`'s built-in empty state renders its message as plain text (`titleAs="p"`) instead of
+    an `<h3>`, so a "no rows" status never injects a stray heading into the page outline
+    (`heading-order`).
+- **`Select`/`DataSelect`** (searchable mode — `showSearch`/`loadOptions`) now forwards controlled
+  `open`/`onOpenChange`, controlled `search`/`onSearchChange`, `readOnly`, `size`, a `filterOption`
+  override for the default client-side filter, and custom `renderError`/`renderLoadMore` slots to
+  the underlying `SearchSelect` engine — previously silently dropped. `readOnly` mirrors the
+  Input/NumberInput contract (value shown + submittable, no new pick, clear affordance hidden).
+  (#175)
+- **`SelectTrigger`** accepts `showIndicator` (default `true`) — set `false` to omit the built-in
+  chevron disclosure indicator from the DOM entirely (not a CSS hide), for specialized triggers
+  (icon-only, etc.) that render their own affordance, without reaching for consumer descendant CSS.
+  (#175)
+- `AppShell` now OWNS an accessible mobile navigation drawer below `lg`: a hamburger trigger in the
+  topbar opens a focus-trapped `Sheet` (Esc + overlay close, focus returns to the trigger). New
+  props `mobileNav` (defaults to the `sidebar` node — pass a tailored menu, or `null` to opt out),
+  `mobileNavLabel`, `mobileNavOpen` and `onMobileNavOpenChange`. Hiding the sidebar without a
+  reachable alternative is no longer the shell's behavior (#165).
+- `Sidebar` items support real links without a nested interactive element: `SidebarItemProp.href`
+  renders the row as an `<a>`, and `renderItem` now merges its returned element as the row via Slot
+  (return a router `<Link>`) — no more `<button>`-wrapped custom content (#165).
+- `Pagination` gains `hideOnSinglePage` (default `true`): the bar is hidden for zero items and for a
+  single page; set `false` to opt in on one page (e.g. to keep `showTotal` visible). `total === 0`
+  is always hidden (#153).
+- **`CardTitle`** accepts a semantic heading `level` (`1`–`4`, default `3` — unchanged) and an
+  `as` override (`h1`–`h4`/`p`/`div`) so consumers keep a valid document outline
+  (`h1 → h2 → h3`, no skipped levels) without changing the title's token-driven size. Use `as="p"`
+  when the card title is a styled label rather than a section heading. (#154)
+- **`EmptyState`** accepts `titleLevel` (`1`–`4`, default `3` — unchanged) and `titleAs`
+  (`h1`–`h4`/`p`/`div`) for the same reason: pick the level for outline position, not size, and use
+  `titleAs="p"` for a compact/section empty state inside a section that already owns its heading.
+  Coordinated with the existing `variant` (`page`/`section`/`compact`) and `tone` API. (#154, #144)
+- **`DataTable` `ColumnDef.ariaLabel`** — a visually-empty action/selection column keeps a
+  screen-reader header (e.g. "Actions"/"Select") rendered as an `sr-only` label inside its `<th>`,
+  clearing the axe `empty-table-header` violation. DataTable now **dev-warns** when a rendered
+  `<th>` has neither visible nor accessible text. Official DataTable examples set `ariaLabel` on
+  their action columns. (#155)
+- Shared forwarding contract `src/lib/field-a11y.ts` (`FieldA11yProps`, `pickFieldA11y`,
+  `pickGroupFieldA11y`, `resolveFieldA11y`, `mergeAriaIds`) so the FormField relationship is wired
+  consistently, not reinvented per control.
+- FormField integration test asserting the **computed** accessible name / description / error for
+  every custom control (`form-field-contract.a11y.test.tsx`), plus a `docs/data-entry/form-field`
+  example demonstrating the contract, error timing and async server-validation + recovery.
+
+### Changed
+
+- `Pagination` is now ONE horizontal row on desktop and never wraps — `.ui-pagination` drops
+  `flex-wrap: wrap`; the page-number strip scrolls horizontally on overflow and the total label
+  truncates. Use `simple` for the intentional compact mobile form (#153).
+- `ResponsiveGrid` and `SplitPane` now OWN their query container (`container-type: inline-size`) and
+  use container queries, so they respond to the width available to the component instead of the
+  viewport or an undeclared ancestor `container-type`. `SplitPane`'s split threshold moved from a
+  `1080px` viewport media query to a `48rem` container query; `ResponsiveGrid` thresholds are
+  `40rem / 48rem / 64rem` container widths (#165).
+- `Sidebar` group expansion is route-synchronized: a group opens whenever `activeId` moves to one of
+  its children, revealing the newly-active child after navigation (was a mount-only `defaultOpen`)
+  (#165).
+- `AppSettingPicker` `appearance="labeled"` no longer forces `w-full` below `640px` — it hugs its
+  content (`w-auto max-w-full`) on narrow screens and takes its per-kind fixed width from `sm` up, so
+  it fits a topbar. Pass `className="w-full"` for a full-width form field (#165).
+
+### Fixed
+
+- **`Tabs` fallback selection no longer targets a disabled first item (#175).** When Tabs owns the
+  initial selection — no `value`, and no `defaultValue` naming an existing ENABLED item (missing,
+  unknown, or itself disabled) — it now resolves to the first item that is NOT `disabled`, instead
+  of blindly picking `items[0]`. Selects nothing when every item is disabled. Covered for both the
+  uncontrolled (`defaultValue`) and controlled (`value`/`onValueChange` starting unset) shapes.
+- **Horizontal `TabsList` no longer clips/overflows long localized labels in a narrow container
+  (#175).** The list is now width-bounded (`min-w-0 max-w-full`) and scrolls its own horizontal
+  overflow (hidden scrollbar, still swipeable/keyboard-reachable) instead of forcing its container
+  wider or hiding overflow content. Orientation-gated (`data-[orientation=horizontal]:…`) so the
+  vertical side-rail layout is unaffected.
+- **FormField a11y contract no longer silently dropped by custom controls (#164).** Every
+  data-entry control now accepts and FORWARDS the injected accessible name (`aria-labelledby`),
+  description (`aria-describedby`) and validation (`aria-errormessage` / `aria-invalid` /
+  `aria-required`) onto its real semantic focus target instead of ignoring them:
+  - Focus-target controls forward the full contract onto the input/combobox trigger — `NumberInput`,
+    `SearchInput`, `ColorPicker`, `DatePicker`, `MonthPicker`, `TimePicker`, `Cascader`,
+    `TreeSelect` (Select/SearchSelect already did).
+  - Popup controls expose the complete APG combobox relationship: `MonthPicker` is now a
+    `role="combobox"` (matching Date/TimePicker); `Cascader` / `TreeSelect` / the pickers add
+    `aria-haspopup` + `aria-controls` pointing at their popup.
+  - Group controls expose group-level semantics: `RadioGroup` (`role="radiogroup"`) forwards the
+    full validation set; `CheckboxGroup`, `DateRangePicker` / `MonthRangePicker` (two inputs) and
+    `Transfer` are `role="group"` named by the FormField label, with the error folded into
+    `aria-describedby` (widget-only `aria-invalid`/`aria-errormessage` are invalid on a group per
+    ARIA 1.2). `Upload` forwards the label/description onto its native `<input type="file">`.
+
 ## [17.0.0] - 2026-07-12
 
 > **BREAKING (major):** `Flex` now defaults to `direction="row"` (was `col`). Any `<Flex>` that

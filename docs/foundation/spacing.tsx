@@ -126,7 +126,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Raw scale · 4px grid</CardTitle>
+            <CardTitle level={2}>Raw scale · 4px grid</CardTitle>
             <CardDescription>
               The base step is 4px; every value is a 4-multiple. Bar width is the live token var(),
               the px label is resolved from it at runtime.
@@ -148,7 +148,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Golden-ratio scale · φ ≈ 1.618</CardTitle>
+            <CardTitle level={2}>Golden-ratio scale · φ ≈ 1.618</CardTitle>
             <CardDescription>
               Off-grid by design: each step is the previous multiplied or divided by φ around{" "}
               <Text mono>--phi-unit</Text> (= --space-4). These back the larger stack / inline gaps,
@@ -172,7 +172,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Semantic layout tokens</CardTitle>
+            <CardTitle level={2}>Semantic layout tokens</CardTitle>
             <CardDescription>
               What Flex gap and PageContainer padding resolve to: set the rhythm once, never
               hand-tune margins per element. Tokens marked (= --phi-*) inherit the golden-ratio
@@ -196,7 +196,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Density retunes the φ scale</CardTitle>
+            <CardTitle level={2}>Density retunes the φ scale</CardTitle>
             <CardDescription>
               PageContainer density remaps <Text mono>--phi-unit</Text> (compact → --space-3,
               comfortable → --space-6). Because every φ-derived token (stack-md/lg/xl, inline-md/lg,

@@ -6,7 +6,7 @@ These rules are normative for @godxjp/ui 8.0.0. They mirror `debate/props-vocab-
 2. Prop vocabulary: every public property in an exported component prop type MUST map to one `VOCABULARY_REGISTRY` entry or to a `local: true` registry record with a non-empty `reason`.
 3. Prop vocabulary: every vocabulary name referenced by `COMPONENT_PROP_REGISTRY[*].vocabulary` MUST exist in `VOCABULARY_REGISTRY`.
 4. Prop vocabulary: the same prop spelling, value kind, and semantic role used by two or more components MUST use one shared vocabulary entry.
-5. Prop vocabulary: `gap` MUST use `GapProp`; `StackGapProp` and `InlineGapProp` MUST NOT be canonical registry entries.
+5. Prop vocabulary: `gap` MUST use the single shared `GapProp` on every layout primitive (`Flex`); there are NO per-component gap vocabularies, and none may be added to the registry.
 6. Prop vocabulary: primary heading text MUST use `TitleProp`; `PageTitleProp` MUST NOT be a canonical registry entry.
 7. Prop vocabulary: abstract controlled values MUST use `value?: ValueProp<T>`, `defaultValue?: DefaultValueProp<T>`, and `onValueChange?: OnValueChangeProp<T>`; `onChange` MAY be used only for DOM event handlers or explicitly local compatibility wrappers.
 8. Prop vocabulary: disclosure/open state MUST use `open?: OpenProp`, `defaultOpen?: DefaultOpenProp`, and `onOpenChange?: OnOpenChangeProp`.

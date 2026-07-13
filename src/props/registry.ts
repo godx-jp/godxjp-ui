@@ -654,6 +654,9 @@ export const COMPONENT_PROP_REGISTRY = {
       "NameProp",
       "IdProp",
       "ClassNameProp",
+      "OpenProp",
+      "OnOpenChangeProp",
+      "SizeProp",
     ],
     note: "Internal — the searchable engine behind `<Select options showSearch>` (not public API); use Select.",
   },
@@ -669,6 +672,9 @@ export const COMPONENT_PROP_REGISTRY = {
       "NameProp",
       "IdProp",
       "ClassNameProp",
+      "OpenProp",
+      "OnOpenChangeProp",
+      "SizeProp",
     ],
     note: "Ant-style data-driven form of Select (options|loadOptions + showSearch). One Select for all single-selects.",
   },
@@ -758,7 +764,14 @@ export const COMPONENT_PROP_REGISTRY = {
   EmptyStateProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["IconProp", "TitleProp", "DescriptionProp", "ActionProp", "ToneProp"],
+    vocabulary: [
+      "IconProp",
+      "TitleProp",
+      "DescriptionProp",
+      "ActionProp",
+      "ToneProp",
+      "HeadingLevelProp",
+    ],
   },
   EmptyStateToneProp: {
     group: "data-display",
@@ -1120,6 +1133,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-display",
     file: "components/data-display/card.tsx",
     vocabulary: ["TitleProp", "DescriptionProp", "ClassNameProp", "ChildrenProp"],
+  },
+  CardTitleProp: {
+    group: "data-display",
+    file: "components/data-display/card.tsx",
+    vocabulary: ["HeadingLevelProp", "ClassNameProp", "ChildrenProp"],
   },
   CardContentProp: {
     group: "data-display",

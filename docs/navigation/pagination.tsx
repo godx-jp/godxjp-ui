@@ -55,7 +55,7 @@ export default function Demo() {
         {/* Full pagination below a Table */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">請求書一覧 (47 件)</CardTitle>
+            <CardTitle level={2}>請求書一覧 (47 件)</CardTitle>
             <CardDescription>
               Pagination sits BELOW the card. value + pageSize are controlled state. showTotal shows
               the built-in i18n count label. showSizeChanger lets users pick rows per page.
@@ -95,27 +95,80 @@ export default function Demo() {
           showSizeChanger
           pageSizeOptions={[5, 10, 20, 50]}
           onValueChange={handleChange}
+          aria-label="請求書一覧のページネーション"
         />
 
+        {/* Regression: total=0, exactly one page, multiple pages, + the single-page opt-in (gh#153). */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">境界状態 · 0 件 / 1 件</CardTitle>
+            <CardTitle level={2}>境界状態 · 0 件 / 1 ページ / 複数ページ</CardTitle>
             <CardDescription>
-              空データの範囲は 0〜0。1 件では 1〜1 を返し、前後ボタンは無効になる。
-              実アプリでは空状態に Pagination を併置せず、この例は API 境界確認に使う。
+              Pagination は複数ページ間のナビゲーション。0 件と 1 ページ（total ≤ pageSize）は
+              既定で「非表示」になる（下の 2 例は何もレンダリングしない）。合計だけ見せたい 1
+              ページでは hideOnSinglePage={"{false}"} で明示的にオプトインする。複数ページでは 1
+              行のまま折り返さずに全ページャを表示する。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {/* total=0 → hidden (nothing renders). */}
+              <Pagination total={0} pageSize={10} showTotal />
+              {/* exactly one page → hidden by default (nothing renders). */}
+              <Pagination total={8} pageSize={10} showTotal />
+              {/* single-page opt-in → the bar renders so the total stays visible. */}
+              <Pagination
+                total={8}
+                pageSize={10}
+                hideOnSinglePage={false}
+                showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件`}
+                aria-label="1 ページのみ・opt-in 表示のページネーション"
+              />
+              {/* multiple pages → full pager, one horizontal row, no wrap. */}
+              <Pagination
+                value={2}
+                total={137}
+                pageSize={10}
+                showTotal
+                showSizeChanger
+                onValueChange={() => {}}
+                aria-label="複数ページの境界状態のページネーション"
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* Long localized total label — the row stays ONE line and never wraps on desktop (gh#153). */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>長いローカライズ済みラベル · 折り返さない</CardTitle>
+            <CardDescription>
+              長い合計ラベル（JA/VI）でも Pagination は 1 行を維持する。ラベルは省略記号で切り詰め、
+              ページ送りを 2 行目に押し出さない。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <Pagination
-                total={0}
-                pageSize={10}
-                showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件`}
+                value={3}
+                total={1284}
+                pageSize={20}
+                showSizeChanger
+                showTotal={(total, [from, to]) =>
+                  `${from.toLocaleString("ja-JP")}〜${to.toLocaleString("ja-JP")} 件目 / 全 ${total.toLocaleString("ja-JP")} 件の請求書を表示中`
+                }
+                onValueChange={() => {}}
+                aria-label="日本語ラベルのページネーション"
               />
               <Pagination
-                total={1}
-                pageSize={10}
-                showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件`}
+                value={3}
+                total={1284}
+                pageSize={20}
+                showSizeChanger
+                showTotal={(total, [from, to]) =>
+                  `Đang hiển thị ${from}–${to} trong tổng số ${total.toLocaleString("vi-VN")} hoá đơn`
+                }
+                onValueChange={() => {}}
+                aria-label="Phân trang nhãn tiếng Việt"
               />
             </Flex>
           </CardContent>
@@ -124,7 +177,7 @@ export default function Demo() {
         {/* showTotal custom label */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">showTotal · カスタムラベル関数</CardTitle>
+            <CardTitle level={2}>showTotal · カスタムラベル関数</CardTitle>
             <CardDescription>
               showTotal に関数を渡すと範囲ラベルをカスタマイズできる。 例: &quot;1〜10 / 47
               件の請求書&quot;
@@ -138,6 +191,7 @@ export default function Demo() {
               pageSize={pageSize}
               showTotal={(total, [from, to]) => `${from}〜${to} / ${total} 件の請求書`}
               onValueChange={handleChange}
+              aria-label="カスタムラベルのページネーション"
             />
           </CardContent>
         </Card>
@@ -145,7 +199,7 @@ export default function Demo() {
         {/* Simple mode for compact contexts */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">Simple モード · コンパクト表示</CardTitle>
+            <CardTitle level={2}>Simple モード · コンパクト表示</CardTitle>
             <CardDescription>
               simple=true でモーダルフッターやサイドバーに収まるコンパクトな Prev / n/total / Next
               を表示する。
@@ -159,6 +213,7 @@ export default function Demo() {
               total={200}
               pageSize={20}
               onValueChange={(p) => setSimplePage(p)}
+              aria-label="コンパクト表示のページネーション"
             />
           </CardContent>
         </Card>
@@ -166,7 +221,7 @@ export default function Demo() {
         {/* Disabled state */}
         <Card>
           <CardHeader>
-            <CardTitle as="h2">Disabled 状態</CardTitle>
+            <CardTitle level={2}>Disabled 状態</CardTitle>
             <CardDescription>
               disabled=true でデータ読み込み中などページ送りを一時的に無効にする。
             </CardDescription>
@@ -180,6 +235,7 @@ export default function Demo() {
               showTotal
               disabled
               onValueChange={() => {}}
+              aria-label="無効状態のページネーション"
             />
           </CardContent>
         </Card>

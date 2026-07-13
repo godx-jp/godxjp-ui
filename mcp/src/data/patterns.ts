@@ -5,12 +5,18 @@
  * docs over and over.
  *
  * Every pattern is copy-paste-ready: imports listed at top, types
- * spelled out, inline JSX with no opaque helpers.
+ * spelled out, inline JSX with no opaque helpers. Every `import { … }
+ * from "@godxjp/ui…"` is verified against the REAL package export set
+ * by scripts/check-mcp-pattern-imports.mjs (release-sync guard), so a
+ * pattern can never teach a removed API (e.g. the deleted Stack/Inline
+ * layout primitives — use `Flex direction="col"`).
  */
 
 export interface PatternEntry {
   /** URL-safe slug. */
   name: string;
+  /** Alternate slugs that resolve to this pattern (older/other names a consumer may ask for). */
+  aliases?: string[];
   /** One-line elevator pitch. */
   tagline: string;
   /** Categories — used for search. */
@@ -39,48 +45,46 @@ export const PATTERNS: PatternEntry[] = [
 // 0) ★ MOST COMMON: <Card> body has NO padding (content is flush against the edges)
 //    Cause: the bare <Card> has ZERO inner padding — it MUST contain <CardContent>.
 //    Don't hand-roll padding with className="p-4" on the Card either.
-// ❌  <Card><Stack gap="md">…fields…</Stack></Card>          // flush, no padding
-// ❌  <Card className="p-4">…fields…</Card>                   // hand-rolled padding
-// ✅  <Card><CardContent><Stack gap="md">…fields…</Stack></CardContent></Card>
+// ❌  <Card><Flex direction="col" gap="md">…fields…</Flex></Card>   // flush, no padding
+// ❌  <Card className="p-4">…fields…</Card>                          // hand-rolled padding
+// ✅  <Card><CardContent><Flex direction="col" gap="md">…fields…</Flex></CardContent></Card>
 //    Titles → <CardHeader><CardTitle>. Only go flush deliberately for a full-bleed table:
 // ✅  <Card><CardContent flush><DataTable/></CardContent></Card>
 //    GENERAL RULE — compose godx-ui primitives FULLY; never hand-roll what one ships:
 //      padding → CardContent (not p-4) · controls → Input/Select/Button (not raw <input>/<select>/<button>)
-//      empty rows → DataTable's built-in empty / <EmptyState> (not a custom data.length===0 guard).
-//    If a primitive exists, USE it — don't reinvent it.
+//      vertical spacing → Flex direction="col" gap (not space-y-*) · empty rows → DataTable's built-in
+//      empty / <EmptyState> (not a custom data.length===0 guard). If a primitive exists, USE it.
 
 // 1) StatCard shows a DOUBLE border (too thick)
 //    Cause: StatCard IS already a bordered Card. Don't wrap it.
 // ❌  <Card><CardContent><StatCard label="x" value="1" /></CardContent></Card>
 // ✅  <ResponsiveGrid columns={4}><StatCard label="x" value="1" /></ResponsiveGrid>
 //    Need a section title? Use a heading, NOT a Card:
-// ✅  <Stack gap="sm"><div className="text-sm font-medium">KPI</div>
-//        <ResponsiveGrid columns={4}><StatCard .../></ResponsiveGrid></Stack>
+// ✅  <Flex direction="col" gap="sm"><div className="text-sm font-medium">KPI</div>
+//        <ResponsiveGrid columns={4}><StatCard .../></ResponsiveGrid></Flex>
 
 // 2) Badge renders grey with a ○ (no colour) for localized/tier labels
-//    Cause: it auto-maps only English lifecycle keys. (@godxjp/ui >= 6.1)
+//    Cause: it auto-maps only English lifecycle keys.
 // ❌  <Badge status="プレミアム" />
 // ✅  <Badge status="プレミアム" tone="success" icon={null} />   // tier → pill, no icon
-// ✅  <Badge status="active">公開中</Badge>                   // lifecycle → keep icon
+// ✅  <Badge status="active">公開中</Badge>                       // lifecycle → keep icon
 
 // 3) Table text collapses to one char per line, or a chip wraps
-//    Cause: pre-6.1.2. (@godxjp/ui >= 6.1.2 → cells + chips are nowrap)
-// ✅  npm i @godxjp/ui@^6.2.0
 // ✅  give long columns a width:  { key: "name", header: "氏名", width: "w-64" }
+//    (cells + chips are pinned white-space: nowrap by the library.)
 
 // 4) Empty (icon/action) column header shows a blank grey block
-//    (@godxjp/ui >= 6.2.0 auto-hides it: [data-slot=table-head][data-empty] → transparent)
-// ✅  npm i @godxjp/ui@^6.2.0   // header: "" now renders a transparent cell
+// ✅  header: "" renders a transparent cell — leave it empty, don't inject a space.
 
 // 5) DataTable columns are crushed / squeezed
 //    Cause: the table is nested in a narrow grid column.
 // ❌  <ResponsiveGrid columns={3}><div className="lg:col-span-2"><Card><DataTable/></Card></div></ResponsiveGrid>
 // ✅  Table gets its OWN full-width row: <Card><CardContent flush><DataTable/></CardContent></Card>
 
-// 6) FilterBar has no padding (sticks to the edge)
+// 6) Toolbar (filter bar) has no padding (sticks to the edge)
 //    Cause: it's inside CardContent flush (flush strips padding — that's for tables).
-// ❌  <Card><CardContent flush><FilterBar/><DataTable/></CardContent></Card>
-// ✅  <FilterBar/>  then  <Card><CardContent flush><DataTable/></CardContent></Card>
+// ❌  <Card><CardContent flush><Toolbar/><DataTable/></CardContent></Card>
+// ✅  <Toolbar/>  then  <Card><CardContent flush><DataTable/></CardContent></Card>
 
 // 7) Sidebar footer looks washed-out / off-design
 //    Cause: raw opacity-*/text-[11px]. Use semantic tokens.
@@ -96,7 +100,7 @@ export const PATTERNS: PatternEntry[] = [
 //    Cause: Math.random()/argless new Date() during render (SSR ≠ client).
 // ✅  seed deterministically by index, or compute in an event handler.
 
-// 10) Hide a column on mobile / sign-aware KPI delta (@godxjp/ui >= 6.2.0)
+// 10) Hide a column on mobile / sign-aware KPI delta
 // ✅  columns: [{ key: "email", header: "メール", hiddenOnMobile: true }]
 // ✅  <StatCard label="売上" value="¥8.2M" delta="+12%" />   // + green / - red; inverse flips`,
   },
@@ -112,7 +116,7 @@ import { z } from "zod";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@godxjp/ui/data-display";
 import { FormField, Input } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
-import { Stack } from "@godxjp/ui/layout";
+import { Flex } from "@godxjp/ui/layout";
 
 const schema = z.object({
   name: z.string().min(1, "氏名は必須です"),
@@ -130,18 +134,19 @@ export function SignUpCard() {
       <CardHeader><CardTitle>アカウント作成</CardTitle></CardHeader>
       <CardContent>
         <form id="signup" onSubmit={onSubmit}>
-          <Stack gap="md">
+          {/* Vertical rhythm comes from Flex direction="col" gap — never space-y-*/gap-* utilities. */}
+          <Flex direction="col" gap="md">
             <FormField id="name" label="氏名" required error={errors.name?.message}>
               <Input id="name" {...register("name")} />
             </FormField>
             <FormField id="email" label="メールアドレス" required error={errors.email?.message}>
               <Input id="email" type="email" {...register("email")} />
             </FormField>
-          </Stack>
+          </Flex>
         </form>
       </CardContent>
       <CardFooter separated>
-        <Button type="submit" form="signup" disabled={isSubmitting}>アカウントを作成</Button>
+        <Button type="submit" form="signup" loading={isSubmitting}>アカウントを作成</Button>
       </CardFooter>
     </Card>
   );
@@ -150,34 +155,98 @@ export function SignUpCard() {
 
   {
     name: "settings-page-responsive",
+    aliases: ["settings-tabs", "settings-page", "settings-layout"],
     tagline:
-      "Route-backed settings: persistent desktop local navigation, compact mobile navigation, and bounded form content.",
-    tags: ["settings", "form", "tabs", "admin"],
-    code: `// Research basis: GitHub/Google/Microsoft/Atlassian account settings + Carbon form grid.
-// Use URLs for every destination; do not keep broad settings IA in local tab state.
-import { NavLink, Outlet } from "react-router-dom";
-import { Flex, Stack } from "@godxjp/ui/layout";
+      "Route-backed settings: persistent desktop local navigation, compact mobile tab strip, deep links + browser history, and bounded form content — NO Card wrapper, NO undefined CSS.",
+    tags: ["settings", "form", "tabs", "admin", "responsive", "navigation"],
+    code: `// Research basis: GitHub, Google Account, Microsoft Account, Atlassian Account settings +
+// the IBM Carbon form grid. Every destination is a URL, so deep links and browser back/forward
+// work for free and the active item is derived from the route — never from local tab state.
+//
+// Desktop (>= lg): persistent vertical local nav on the left + bounded content on the right.
+// Mobile (< lg):   the SAME routes become a horizontal, scrollable tab strip above the content.
+// Styling uses ONLY real semantic token classes (bg-muted / text-foreground / text-muted-foreground)
+// and responsive/visibility utilities — the library ships NO bespoke settings shell/nav CSS classes.
+import { NavLink, Outlet, Navigate } from "react-router-dom";
+import { Flex } from "@godxjp/ui/layout";
 import { FormField, Input } from "@godxjp/ui/data-entry";
+import { Button } from "@godxjp/ui/general";
 
-export function WorkspaceSettings() {
+const SECTIONS = [
+  { to: "general", label: "基本情報" },
+  { to: "security", label: "セキュリティ" },
+  { to: "notifications", label: "通知" },
+] as const;
+
+// One link renderer for BOTH breakpoints. NavLink gives us the active state (and sets
+// aria-current="page") straight from the URL; semantic tokens only, no invented classes.
+const link = ({ isActive }: { isActive: boolean }) =>
+  [
+    "rounded-md px-3 py-2 text-sm no-underline transition-colors whitespace-nowrap",
+    isActive
+      ? "bg-muted text-foreground font-medium"
+      : "text-muted-foreground hover:text-foreground",
+  ].join(" ");
+
+export function SettingsLayout() {
   return (
-    <Flex gap="lg" className="settings-layout">
-      <nav aria-label="Settings" className="settings-local-nav">
-        <NavLink to="general">基本情報</NavLink>
-        <NavLink to="security">セキュリティ</NavLink>
-        <NavLink to="notifications">通知</NavLink>
+    <Flex direction="col" gap="lg" className="lg:flex-row lg:items-start">
+      {/* < lg: horizontal, scrollable route tabs. */}
+      <nav aria-label="設定" className="flex gap-1 overflow-x-auto lg:hidden">
+        {SECTIONS.map((s) => (
+          <NavLink key={s.to} to={s.to} className={link} end>{s.label}</NavLink>
+        ))}
       </nav>
-      <main className="settings-content"><Outlet /></main>
+      {/* >= lg: persistent vertical local nav (bounded width, does not shrink). */}
+      <nav aria-label="設定" className="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:gap-1">
+        {SECTIONS.map((s) => (
+          <NavLink key={s.to} to={s.to} className={link} end>{s.label}</NavLink>
+        ))}
+      </nav>
+      {/* Bounded content region (~42rem) — the routed section renders here. min-w-0 lets it shrink. */}
+      <main className="min-w-0 max-w-2xl flex-1"><Outlet /></main>
     </Flex>
   );
 }
 
-// Desktop: local nav + bounded content (roughly 40rem), horizontal form rows where useful.
-// Mobile (375/390px): same route links become a compact scrollable nav; labels stack above controls.
-// Do not add a Card around the whole page. Tabs are only for 2–4 peer views within one task.
-export function GeneralSettingsForm() {
-  return <Stack gap="md"><FormField id="ws-name" label="名前" layout="horizontal" controlWidth="md"><Input id="ws-name" /></FormField></Stack>;
-}`,
+// A settings section. Horizontal label/control rows on desktop (collapse to stacked on mobile),
+// controls bounded to a semantic width. FormField OWNS the label↔control relationship — do NOT
+// hand-roll <Label> + <input>. Save feedback = Button loading prop + a toast in onSuccess.
+export function GeneralSettingsSection({
+  defaults, onSave, saving, error,
+}: { defaults: { name: string; email: string }; onSave: (v: FormData) => void; saving: boolean; error?: string }) {
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); onSave(new FormData(e.currentTarget)); }}>
+      <Flex direction="col" gap="md">
+        <FormField id="ws-name" label="ワークスペース名" layout="horizontal" controlWidth="24rem"
+          helper="請求書や共有リンクに表示されます。" error={error}>
+          <Input id="ws-name" name="name" defaultValue={defaults.name} />
+        </FormField>
+        <FormField id="ws-email" label="連絡先メール" layout="horizontal" controlWidth="24rem">
+          <Input id="ws-email" name="email" type="email" defaultValue={defaults.email} />
+        </FormField>
+        <Flex gap="sm"><Button type="submit" loading={saving}>変更を保存</Button></Flex>
+      </Flex>
+    </form>
+  );
+}
+
+// Router wiring — each destination is addressable, so deep links + back/forward just work:
+//   <Route path="settings" element={<SettingsLayout/>}>
+//     <Route index element={<Navigate to="general" replace/>} />
+//     <Route path="general" element={<GeneralSettingsSection .../>} />
+//     <Route path="security" element={<SecuritySection/>} />
+//     <Route path="notifications" element={<NotificationsSection/>} />
+//   </Route>
+
+// ── DO / DON'T ────────────────────────────────────────────────────────────────────────────
+// ✅ Tabs (navigation) are fine for a SMALL number (2–4) of PEER views inside ONE task/section
+//    — e.g. "プロフィール" ⇄ "環境設定" within a single account page — where losing the URL is OK.
+// ⛔ Tabs as the PRIMARY IA for broad settings (Account / Security / Billing / Members / …):
+//    use route-backed local navigation so every area is deep-linkable and back/forward works.
+// ⛔ Do NOT wrap the whole settings page in a Card, and do NOT make desktop a horizontal tab bar
+//    — persistent local nav scales to many sections; a tab strip does not.
+// ⛔ Do NOT invent CSS class names for the shell/nav/content — compose Flex + semantic tokens.`,
   },
 
   {
@@ -189,7 +258,7 @@ export function GeneralSettingsForm() {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@godxjp/ui/feedback";
 import { Input } from "@godxjp/ui/data-entry";
 import { Button } from "@godxjp/ui/general";
-import { Stack } from "@godxjp/ui/layout";
+import { Flex } from "@godxjp/ui/layout";
 import { toast } from "sonner";
 
 export function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolean; onOpenChange: (v: boolean) => void; slug: string }) {
@@ -201,9 +270,9 @@ export function DeleteProjectDialog({ open, onOpenChange, slug }: { open: boolea
           <DialogTitle>プロジェクトを削除</DialogTitle>
           <DialogDescription>この操作は取り消せません。確認のためプロジェクト名 "{slug}" と入力してください。</DialogDescription>
         </DialogHeader>
-        <Stack gap="md">
+        <Flex direction="col" gap="md">
           <Input value={confirm} onValueChange={(e) => setConfirm(e.target.value)} placeholder={slug} />
-        </Stack>
+        </Flex>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>キャンセル</Button>
           <Button tone="destructive" disabled={confirm !== slug} onClick={() => { toast.success("削除しました"); onOpenChange(false); }}>完全に削除</Button>
@@ -247,14 +316,14 @@ export default function Coupons({ coupons }: { coupons?: Coupon[] }) {
   {
     name: "inertia-list-page",
     tagline:
-      "Inertia + @godxjp/ui list page — PageContainer + FilterBar + DataTable + Badge + Pagination (current primitive API).",
+      "Inertia + @godxjp/ui list page — PageContainer + Toolbar + DataTable + Badge + Pagination (current primitive API).",
     tags: ["inertia", "list", "table", "page", "filter", "pagination", "datatable", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
 import { useMemo, useState } from "react"
-import { PageContainer, ResponsiveGrid, Stack } from "@godxjp/ui/layout"
+import { PageContainer, ResponsiveGrid, Flex } from "@godxjp/ui/layout"
 import { Card, CardContent, StatCard, DataTable, EmptyState, Badge, type ColumnDef } from "@godxjp/ui/data-display"
 import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry"
-import { FilterBar, FilterGroup, Pagination } from "@godxjp/ui/navigation"
+import { Toolbar, ToolbarGroup, Pagination } from "@godxjp/ui/navigation"
 import { formatDate } from "@godxjp/ui/datetime"
 import { withCrmLayout } from "@/layouts/crm-layout" // see "inertia-persistent-layout"
 
@@ -285,19 +354,20 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
   return (
     <>
       <Head title="クーポン管理" />
-      {/* RULE: every page wraps in PageContainer; spacing via Stack/ResponsiveGrid, never p-*/gap-* */}
+      {/* RULE: every page wraps in PageContainer; vertical rhythm via Flex direction="col"/ResponsiveGrid, never p-*/gap-* */}
       <PageContainer title="クーポン管理" subtitle="配信中のクーポン一覧">
-        <Stack gap="lg">
+        <Flex direction="col" gap="lg">
           <ResponsiveGrid columns={3}>
             <StatCard label="公開中" value={coupons.filter((c) => c.status === "公開中").length} />
             <StatCard label="総利用数" value={coupons.reduce((s, c) => s + c.usage, 0).toLocaleString()} />
             <StatCard label="件数" value={coupons.length} />
           </ResponsiveGrid>
 
-          <FilterBar hasActiveFilters={q !== "" || status !== "all"} onClear={() => { setQ(""); setStatus("all"); setPage(1) }}>
+          {/* Toolbar is the filter-bar primitive (standalone, above the table surface). */}
+          <Toolbar hasActiveFilters={q !== "" || status !== "all"} onClear={() => { setQ(""); setStatus("all"); setPage(1) }}>
             {/* SearchInput is value + onSearch(v) — NOT onChange */}
             <SearchInput placeholder="クーポン名で検索" value={q} onSearch={(v) => { setQ(v); setPage(1) }} />
-            <FilterGroup label="ステータス">
+            <ToolbarGroup label="ステータス">
               <Select value={status} onValueChange={(v) => { setStatus(v); setPage(1) }}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -306,8 +376,8 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
                   <SelectItem value="下書き">下書き</SelectItem>
                 </SelectContent>
               </Select>
-            </FilterGroup>
-          </FilterBar>
+            </ToolbarGroup>
+          </Toolbar>
 
           <Card>
             <CardContent flush>
@@ -317,10 +387,11 @@ function Coupons({ coupons }: { coupons: Coupon[] }) {
             </CardContent>
           </Card>
 
+          {/* Pagination ONLY for real multi-page data — hide it while empty or single-page. */}
           {filtered.length > PAGE_SIZE && (
             <Pagination value={page} total={filtered.length} pageSize={PAGE_SIZE} showTotal onValueChange={(p) => setPage(p)} />
           )}
-        </Stack>
+        </Flex>
       </PageContainer>
     </>
   )
@@ -336,7 +407,7 @@ export default Coupons`,
       "Inertia detail page — receives {id} prop, Descriptions (compound) + StatCard + EmptyState fallback.",
     tags: ["inertia", "detail", "show", "page", "keyvaluegrid", "crm"],
     code: `import { Head, router } from "@inertiajs/react"
-import { PageContainer, ResponsiveGrid, Stack } from "@godxjp/ui/layout"
+import { PageContainer, ResponsiveGrid, Flex } from "@godxjp/ui/layout"
 import { Card, CardContent, StatCard, EmptyState, Descriptions, Badge } from "@godxjp/ui/data-display"
 import { Button } from "@godxjp/ui/general"
 import { formatDate } from "@godxjp/ui/datetime"
@@ -364,7 +435,7 @@ function MemberShow({ id }: { id: string }) {
     <>
       <Head title={member.name} />
       <PageContainer title={member.name} subtitle={\`\${member.id} / \${member.rank}\`}>
-        <Stack gap="lg">
+        <Flex direction="col" gap="lg">
           <ResponsiveGrid columns={4}>
             <StatCard label="累計購入額" value={\`¥\${member.total.toLocaleString()}\`} />
             <StatCard label="来店回数" value={member.visits} />
@@ -382,7 +453,7 @@ function MemberShow({ id }: { id: string }) {
               </Descriptions>
             </CardContent>
           </Card>
-        </Stack>
+        </Flex>
       </PageContainer>
     </>
   )
@@ -429,8 +500,7 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
 
   {
     name: "badge-coloring",
-    tagline:
-      "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props, @godxjp/ui ≥ 6.1).",
+    tagline: "Colour a Badge for localized labels and tiers via tone + icon (escape-hatch props).",
     tags: ["statusbadge", "badge", "tone", "color", "status", "tier", "table"],
     code: `import { Badge } from "@godxjp/ui/data-display"
 
@@ -439,7 +509,7 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
 //   scheduled/sending (info) · cancelled (neutral) · failed/deleted/bounced (destructive ✕)
 // Anything else (localized labels, tiers) falls back to neutral grey ○ unless you override.
 
-// 1) Lifecycle with localized text — map to the key, keep JP via \`label\` (icon stays):
+// 1) Lifecycle with localized text — map to the key, keep JP via children (icon stays):
 <Badge status="active">公開中</Badge>        // green ✓ 公開中
 
 // 2) Unknown label — set tone explicitly (no icon, since the key is unknown):
@@ -450,76 +520,352 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
 <Badge status="ゴールド"   tone="warning" icon={null} />
 <Badge status="法人共通"   tone="info"    icon={null} />
 
-// tone: "success" | "warning" | "destructive" | "info" | "neutral"  (import type BadgeTone)
+// tone: "success" | "warning" | "destructive" | "info" | "neutral"  (import type ToneProp)
 // RULE: a chip never wraps — it is pinned white-space: nowrap, so it stays one line in
 // narrow table cells. Centralize the domain→tone map in ONE small consumer wrapper and
 // import that instead of the raw Badge across pages.`,
   },
+
   {
     name: "async-data-state",
-    tagline: "Mutually exclusive prerequisite, loading, data, empty, and cause-aware error states.",
-    tags: ["async", "loading", "query", "error", "empty"],
-    code: `import { DataState } from "@godxjp/ui/query";
-import { EmptyState, SkeletonTable } from "@godxjp/ui/data-display";
+    aliases: ["loading-states", "data-state", "query-states"],
+    tagline:
+      "The full async state machine — ONE primary state at a time: prerequisite, disabled-vs-loading, stale refresh, populated, real-empty, and cause-aware error (401/403/404/422/transient) with correct recovery.",
+    tags: ["async", "loading", "query", "error", "empty", "prerequisite", "retry", "react-query"],
+    code: `import { DataState, classifyQueryError } from "@godxjp/ui/query";
+import { EmptyState } from "@godxjp/ui/data-display";
+import { SkeletonTable } from "@godxjp/ui/feedback";
+import { Building2, Inbox } from "lucide-react";
 
-// enabled:false is prerequisite/idle, not loading — DataState checks fetchStatus, not just isPending.
-// Errors are classified by cause: onAuthError handles 401/expired token (session renewal, NOT retry);
-// Retry appears automatically only for transient/network/5xx; 403/404/422 show a cause-aware message.
-<DataState query={query} prerequisite={<EmptyState variant="section" title="組織を選択してください" />}
-  skeleton={<SkeletonTable />} empty={<EmptyState variant="section" title="結果がありません" />}
-  isEmpty={(data) => data.items.length === 0}
-  onAuthError={() => auth.signInAgain()}>
-  {(data) => <Results items={data.items} />}
-</DataState>
+// ONE primary state renders at a time; DataState makes them mutually exclusive:
+//   prerequisite → skeleton(loading) → data → empty → error   (never two at once).
+//
+// enabled:false is PREREQUISITE/idle, NOT loading. TanStack reports isPending while a query is
+// disabled, but fetchStatus stays "idle" (no request in flight) — DataState renders the prerequisite
+// slot, so a disabled query shows an instruction, NOT an endless skeleton.
+//   const query = useQuery({ queryKey: ["members", orgId], queryFn, enabled: Boolean(orgId) });
+//
+// A background refetch over EXISTING data keeps the content on screen (no skeleton flash) and
+// announces the busy state politely — stale/placeholder refresh is handled for you.
+//
+// Errors are classified by CAUSE, not blanket-retried:
+//   auth (401)         → onAuthError: renew session / sign in again  (NOT a retry)
+//   forbidden (403)    → permission message + access path            (no retry)
+//   notFound (404)     → contextual not-found                        (no retry)
+//   validation (400/422)→ corrective guidance                        (no retry)
+//   transient (408/429/5xx/network) → Retry offered automatically
+//   unknown            → neutral; opt into Retry via showRetry/onRetry only if it can help
+export function MembersPanel({ query, orgId, onSignIn }: {
+  query: any; orgId?: string; onSignIn: () => void;
+}) {
+  return (
+    <DataState
+      query={query}
+      prerequisite={<EmptyState icon={Building2} variant="section" title="組織を選択してください"
+        description="メンバーを表示するには、上のセレクタで組織を選びます。" />}
+      skeleton={<SkeletonTable rows={8} columns={4} />}
+      empty={<EmptyState icon={Inbox} variant="section" title="メンバーがいません"
+        description="この組織にはまだメンバーが登録されていません。" />}
+      isEmpty={(data) => data.items.length === 0}
+      onAuthError={onSignIn}
+    >
+      {(data) => <MemberTable items={data.items} />}
+    </DataState>
+  );
+}
 
-// Need a bespoke error UI? Pass errorRenderer and branch on classifyQueryError(error).category
-// ("auth" | "forbidden" | "notFound" | "validation" | "transient" | "unknown").
-// The default detail is a localized message — never raw token/endpoint/stack text.
-// Never render pagination outside the successful populated-data branch.`,
+// Need a bespoke error surface? Pass errorRenderer and branch on the classified category — the
+// default detail is always a localized message (never raw token / endpoint / stack text):
+//   errorRenderer={(error, retry) => {
+//     const { category } = classifyQueryError(error);
+//     if (category === "auth") return <SessionExpired onRenew={onSignIn} />;
+//     if (category === "forbidden") return <NoAccess />;
+//     if (category === "transient") return <Retryable onRetry={retry} />;
+//     return <GenericError />;
+//   }}
+// RULE: pagination/footer chrome NEVER renders outside the populated-data branch (see data-table-page).`,
   },
+
   {
     name: "data-table-page",
+    aliases: ["filter-bar", "table-state", "list-page"],
     tagline:
-      "Filter + table + single-row footer pagination, visible only for successful multi-page data.",
-    tags: ["table", "pagination", "filter", "async"],
-    code: `// FilterBar is standalone. Card owns one table surface; do not nest Card/Alert surfaces.
-// Inside DataState's success branch:
-<Card><CardContent flush><DataTable data={data.items} columns={columns} />
-  {data.totalPages > 1 && <Flex justify="between" align="center"><span>{range}</span><Pagination /></Flex>}
-</CardContent></Card>
-// Hide pagination for prerequisite/loading/error/empty and one-page results.
-// Preserve filters/page during a transient retry; stack only at narrow mobile widths.`,
+      "Filter (Toolbar) + table surface + bottom pagination driven by a query state machine — pagination shows ONLY for successful multi-page data; filters/page survive a transient retry.",
+    tags: ["table", "pagination", "filter", "async", "toolbar", "datatable"],
+    code: `import { useState } from "react";
+import { DataState } from "@godxjp/ui/query";
+import { Card, CardContent, DataTable, EmptyState, type ColumnDef } from "@godxjp/ui/data-display";
+import { SkeletonTable } from "@godxjp/ui/feedback";
+import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry";
+import { Toolbar, ToolbarGroup, Pagination } from "@godxjp/ui/navigation";
+import { Flex } from "@godxjp/ui/layout";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+
+type Row = { id: string; name: string; status: string };
+
+export function MembersTablePage({ orgId }: { orgId?: string }) {
+  const [q, setQ] = useState("");
+  const [status, setStatus] = useState("all");
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
+
+  // placeholderData: keepPreviousData → on page/filter change the PREVIOUS page stays visible
+  // (a stale refresh) instead of flashing a skeleton. enabled gates on the prerequisite (orgId).
+  const query = useQuery({
+    queryKey: ["members", orgId, q, status, page],
+    queryFn: () => fetchMembers({ orgId: orgId!, q, status, page, pageSize }),
+    enabled: Boolean(orgId),
+    placeholderData: keepPreviousData,
+  });
+
+  const columns: ColumnDef<Row>[] = [
+    { key: "name", header: "氏名", render: (r) => <span className="font-medium">{r.name}</span> },
+    { key: "status", header: "ステータス" },
+  ];
+
+  return (
+    <Flex direction="col" gap="lg">
+      {/* Toolbar (filter bar) is STANDALONE and always visible so the user can change filters even
+          while a query is idle/loading/empty. Changing a filter resets to page 1. */}
+      <Toolbar hasActiveFilters={q !== "" || status !== "all"}
+        onClear={() => { setQ(""); setStatus("all"); setPage(1); }}>
+        <SearchInput placeholder="氏名で検索" value={q} onSearch={(v) => { setQ(v); setPage(1); }} />
+        <ToolbarGroup label="ステータス">
+          <Select value={status} onValueChange={(v) => { setStatus(v); setPage(1); }}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">すべて</SelectItem>
+              <SelectItem value="active">有効</SelectItem>
+              <SelectItem value="invited">招待中</SelectItem>
+            </SelectContent>
+          </Select>
+        </ToolbarGroup>
+      </Toolbar>
+
+      {/* The table surface owns exactly ONE card. Pagination lives INSIDE the success branch, so it
+          is hidden during prerequisite / loading / empty / error and for single-page results. */}
+      <DataState
+        query={query}
+        prerequisite={<EmptyState variant="section" title="組織を選択してください" />}
+        skeleton={<Card><CardContent flush><SkeletonTable rows={8} columns={2} /></CardContent></Card>}
+        empty={<EmptyState variant="section" title="該当するメンバーがいません" description="検索条件を変更してください。" />}
+        isEmpty={(d) => d.items.length === 0}
+      >
+        {(d) => {
+          const totalPages = Math.ceil(d.total / pageSize);
+          return (
+            <>
+              <Card><CardContent flush><DataTable data={d.items} columns={columns} getRowId={(r) => r.id} /></CardContent></Card>
+              {totalPages > 1 && (
+                <Pagination value={page} total={d.total} pageSize={pageSize} showTotal onValueChange={setPage} />
+              )}
+            </>
+          );
+        }}
+      </DataState>
+    </Flex>
+  );
+}
+// Responsive: Pagination's showTotal range + controls stack at narrow widths automatically.
+// A transient retry keeps q/status/page (they live in component state, not the query) — the
+// same page reloads in place; the user never loses their filters.`,
   },
+
   {
     name: "organization-memberships",
+    aliases: ["organization-switcher", "workspace-switcher", "received-invitations", "memberships"],
     tagline:
-      "Workspace identity, current state, role and permission-aware actions; invitations are conditional.",
-    tags: ["organization", "workspace", "membership", "invitation", "account"],
-    code: `// Research basis: GitHub organizations and Slack workspace switching/invitations.
-// Each row: logo + recognizable name + Current badge + role + Open/Switch/Manage/Leave action.
-// Put Create organization at page level. Do not show raw membership timestamps without labels.
-// No pending invitations → omit the section entirely.
-// Few pending → compact actionable list; many/history → a focused route.
-<MembershipList memberships={memberships} currentId={currentId} />
-{pendingInvitations.length > 0 && <PendingInvitations variant="compact" items={pendingInvitations} />}`,
+      "Workspace membership list — recognizable identity, current/active state, role, permission-aware Open/Switch/Manage/Leave row actions, page-level Create, and CONDITIONAL invitations (omit when none).",
+    tags: ["organization", "workspace", "membership", "invitation", "account", "switcher"],
+    code: `// Research basis: GitHub organization membership + Slack workspace switching/invitations.
+// Each row = recognizable identity (Avatar/logo, NOT an identical decorative icon) + name +
+// a "現在" (Current) badge for the active org + role + a permission-aware action menu.
+import { Card, CardContent, CardHeader, CardTitle, ListRow, Badge, Avatar, AvatarImage, AvatarFallback, EmptyState } from "@godxjp/ui/data-display";
+import { Button } from "@godxjp/ui/general";
+import { Flex } from "@godxjp/ui/layout";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@godxjp/ui/navigation";
+import { MoreHorizontal, Plus } from "lucide-react";
+
+type Role = "owner" | "admin" | "member";
+type Membership = { id: string; name: string; logoUrl?: string; role: Role; joinedAt: string; isCurrent: boolean; canManage: boolean };
+type Invite = { id: string; orgName: string; invitedBy: string };
+
+const ROLE_LABEL: Record<Role, string> = { owner: "オーナー", admin: "管理者", member: "メンバー" };
+
+export function OrganizationMemberships({
+  memberships, invitations, onOpen, onSwitch, onManage, onLeave, onCreate, onAccept, onDecline,
+}: {
+  memberships: Membership[]; invitations: Invite[];
+  onOpen: (id: string) => void; onSwitch: (id: string) => void; onManage: (id: string) => void;
+  onLeave: (id: string) => void; onCreate: () => void; onAccept: (id: string) => void; onDecline: (id: string) => void;
+}) {
+  return (
+    <Flex direction="col" gap="lg">
+      <Card>
+        <CardHeader>
+          <Flex justify="between" align="center">
+            <CardTitle>組織</CardTitle>
+            {/* Create belongs at page/section level, not per row. */}
+            <Button variant="outline" size="sm" onClick={onCreate}><Plus className="size-4" />組織を作成</Button>
+          </Flex>
+        </CardHeader>
+        {/* flush → ListRows draw their own edge-to-edge dividers. */}
+        <CardContent flush>
+          {memberships.length === 0 ? (
+            <EmptyState variant="section" title="所属している組織がありません" description="新しい組織を作成するか、招待を受け取ってください。" />
+          ) : (
+            memberships.map((m) => (
+              <ListRow
+                key={m.id}
+                leading={
+                  <Avatar>
+                    {m.logoUrl ? <AvatarImage src={m.logoUrl} alt="" /> : null}
+                    <AvatarFallback>{m.name.slice(0, 1)}</AvatarFallback>
+                  </Avatar>
+                }
+                title={
+                  <Flex gap="sm" align="center">
+                    <span className="font-medium">{m.name}</span>
+                    {m.isCurrent && <Badge tone="success" icon={null}>現在</Badge>}
+                  </Flex>
+                }
+                description={ROLE_LABEL[m.role]}
+                trailing={
+                  <Flex gap="sm" align="center">
+                    {m.isCurrent
+                      ? <Button size="sm" onClick={() => onOpen(m.id)}>開く</Button>
+                      : <Button variant="outline" size="sm" onClick={() => onSwitch(m.id)}>切り替え</Button>}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" aria-label={\`\${m.name} の操作\`}><MoreHorizontal className="size-4" /></Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onSelect={() => onOpen(m.id)}>開く</DropdownMenuItem>
+                        {m.canManage && <DropdownMenuItem onSelect={() => onManage(m.id)}>管理</DropdownMenuItem>}
+                        {m.role !== "owner" && <DropdownMenuItem onSelect={() => onLeave(m.id)}>退出</DropdownMenuItem>}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </Flex>
+                }
+              />
+            ))
+          )}
+        </CardContent>
+      </Card>
+
+      {/* CONDITIONAL invitations — no pending invites ⇒ render NOTHING (no permanent empty Card).
+          Few pending ⇒ a compact actionable list. Many/history ⇒ link to a focused route instead. */}
+      {invitations.length > 0 && (
+        <Card>
+          <CardHeader><CardTitle>保留中の招待</CardTitle></CardHeader>
+          <CardContent flush>
+            {invitations.map((inv) => (
+              <ListRow
+                key={inv.id}
+                title={<span className="font-medium">{inv.orgName}</span>}
+                description={\`\${inv.invitedBy} からの招待\`}
+                trailing={
+                  <Flex gap="sm">
+                    <Button size="sm" onClick={() => onAccept(inv.id)}>参加</Button>
+                    <Button variant="ghost" size="sm" onClick={() => onDecline(inv.id)}>辞退</Button>
+                  </Flex>
+                }
+              />
+            ))}
+          </CardContent>
+        </Card>
+      )}
+    </Flex>
+  );
+}
+// DON'T: passive rows with no action · identical decorative icons · unlabeled timestamps
+// (label them: "2024年に参加") · a large empty invitation Card shown permanently.`,
   },
+
   {
     name: "account-recovery-settings",
+    aliases: ["recovery-email", "backup-codes", "security-settings", "recovery-settings"],
     tagline:
-      "Signed-in recovery method status rows, separate from password change and signed-out recovery.",
-    tags: ["account", "recovery", "security", "backup-codes", "password"],
-    code: `// Research basis: Google Account recovery, Microsoft Security info, GitHub recovery codes.
-// Use compact method rows: method + verified/available status + Add/Change/Regenerate action.
-// Do not stack generic Info Alerts for ordinary capability status.
-<RecoveryMethodRow method="email" value={maskedEmail} status="verified" action={<Button>変更</Button>} />
-{backupCodesSupported && <RecoveryMethodRow method="backup-codes" status={codeStatus} action={<Button>再生成</Button>} />}
-// Password change is a separate destination. Forgot-password is a signed-out journey.`,
+      "Signed-in recovery: compact method status/action rows (email · phone · backup codes) + a separate password-change destination — capability-aware, risk-appropriate, NO stacked Info Alerts.",
+    tags: ["account", "recovery", "security", "backup-codes", "password", "settings"],
+    code: `// Research basis: Google Account recovery (email/phone + backup codes), Microsoft Security info,
+// GitHub recovery codes. Signed-IN recovery SETTINGS (manage your methods) is a DIFFERENT surface
+// from the signed-OUT forgot-password JOURNEY — do not mix them on one page.
+import { Card, CardContent, CardHeader, CardTitle, ListRow, Badge } from "@godxjp/ui/data-display";
+import { Button } from "@godxjp/ui/general";
+import { Flex } from "@godxjp/ui/layout";
+import { Mail, Smartphone, KeyRound } from "lucide-react";
+
+type MethodStatus = "verified" | "unverified" | "unavailable";
+
+const STATUS: Record<MethodStatus, { tone: "success" | "warning" | "neutral"; label: string }> = {
+  verified: { tone: "success", label: "確認済み" },
+  unverified: { tone: "warning", label: "未確認" },
+  unavailable: { tone: "neutral", label: "未設定" },
+};
+
+function MethodRow({ icon: Icon, name, value, status, action }: {
+  icon: React.ComponentType<{ className?: string }>; name: string; value?: string;
+  status: MethodStatus; action: React.ReactNode;
+}) {
+  const s = STATUS[status];
+  return (
+    <ListRow
+      leading={<Icon className="text-muted-foreground size-5" />}
+      title={<span className="font-medium">{name}</span>}
+      description={value ?? "未設定"}
+      trailing={<Flex gap="sm" align="center"><Badge tone={s.tone} icon={null}>{s.label}</Badge>{action}</Flex>}
+    />
+  );
+}
+
+// Compact status/action rows — one row per method, capability-aware. Do NOT stack full-width
+// Info Alerts for ordinary status, and do NOT show unavailable features as permanent page content
+// beyond a single row that offers to set them up.
+export function AccountRecoverySettings({ email, phone, backupCodesSupported, backupCodesRemaining, onChangeEmail, onChangePhone, onRegenerateCodes, onChangePassword }: {
+  email?: string; phone?: string; backupCodesSupported: boolean; backupCodesRemaining: number;
+  onChangeEmail: () => void; onChangePhone: () => void; onRegenerateCodes: () => void; onChangePassword: () => void;
+}) {
+  return (
+    <Flex direction="col" gap="lg">
+      <Card>
+        <CardHeader><CardTitle>アカウント復旧</CardTitle></CardHeader>
+        <CardContent flush>
+          <MethodRow icon={Mail} name="復旧用メール" value={email} status={email ? "verified" : "unavailable"}
+            action={<Button variant="outline" size="sm" onClick={onChangeEmail}>{email ? "変更" : "追加"}</Button>} />
+          <MethodRow icon={Smartphone} name="復旧用電話番号" value={phone} status={phone ? "verified" : "unavailable"}
+            action={<Button variant="outline" size="sm" onClick={onChangePhone}>{phone ? "変更" : "追加"}</Button>} />
+          {/* Capability-aware: only render backup codes when the account type supports them. */}
+          {backupCodesSupported && (
+            <MethodRow icon={KeyRound} name="バックアップコード"
+              value={\`残り \${backupCodesRemaining} 個\`} status={backupCodesRemaining > 0 ? "verified" : "unverified"}
+              action={<Button variant="outline" size="sm" onClick={onRegenerateCodes}>再生成</Button>} />
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Password change is its OWN destination (risk-appropriate confirmation lives there). */}
+      <Card>
+        <CardHeader><CardTitle>パスワード</CardTitle></CardHeader>
+        <CardContent>
+          <Flex justify="between" align="center">
+            <span className="text-muted-foreground text-sm">最終更新: 90日前</span>
+            <Button variant="outline" onClick={onChangePassword}>パスワードを変更</Button>
+          </Flex>
+        </CardContent>
+      </Card>
+    </Flex>
+  );
+}
+// The signed-OUT recovery journey (forgot password → email link → reset) is a separate flow on the
+// auth screens (AuthShell), NOT part of these signed-in settings. Do not surface it here.`,
   },
 ];
 
+/** Resolve a pattern by its canonical name OR any alias (case-insensitive). */
 export function findPattern(name: string): PatternEntry | undefined {
   const slug = name.trim().toLowerCase();
-  return PATTERNS.find((p) => p.name === slug);
+  return PATTERNS.find((p) => p.name === slug || p.aliases?.includes(slug));
 }
 
 export function searchPatterns(query: string): PatternEntry[] {
@@ -528,6 +874,7 @@ export function searchPatterns(query: string): PatternEntry[] {
   return PATTERNS.filter(
     (p) =>
       p.name.includes(q) ||
+      p.aliases?.some((a) => a.includes(q)) ||
       p.tagline.toLowerCase().includes(q) ||
       p.tags.some((t) => t.includes(q)),
   );

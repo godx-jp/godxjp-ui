@@ -36,16 +36,8 @@ export function SearchSelect({
   value: valueProp,
   defaultValue,
   onValueChange,
-  open: openProp,
-  defaultOpen = false,
-  onOpenChange,
-  searchValue: searchValueProp,
-  defaultSearchValue = "",
-  onSearchValueChange,
   options: staticOptions,
   loadOptions,
-  filterOption = true,
-  optionTextValue,
   renderOption,
   labelRender,
   selectedLabel,
@@ -55,13 +47,18 @@ export function SearchSelect({
   emptyMessage,
   loadingMessage,
   errorMessage,
-  retryLabel,
-  loadMoreLabel,
   clearLabel,
   clearable = true,
   disabled = false,
   readOnly = false,
-  size = "md",
+  size,
+  open: openProp,
+  onOpenChange,
+  search: searchProp,
+  onSearchChange,
+  filterOption,
+  renderError,
+  renderLoadMore,
   name,
   id,
   className,
@@ -77,18 +74,32 @@ export function SearchSelect({
   const reactId = React.useId();
   const listId = `${reactId}-listbox`;
   const optionDomId = (optionValue: string) => `${reactId}-opt-${optionValue}`;
-  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
-  const open = openProp ?? internalOpen;
-  const setOpen = (next: boolean) => {
-    if (openProp === undefined) setInternalOpen(next);
-    onOpenChange?.(next);
-  };
-  const [internalQuery, setInternalQuery] = React.useState(defaultSearchValue);
-  const query = searchValueProp ?? internalQuery;
-  const setQuery = (next: string) => {
-    if (searchValueProp === undefined) setInternalQuery(next);
-    onSearchValueChange?.(next);
-  };
+
+  // Controlled/uncontrolled open (controlled-triad rule): `open` wins when provided, otherwise
+  // internal state — `onOpenChange` still fires either way so a controlled consumer stays in sync.
+  const [internalOpen, setInternalOpen] = React.useState(false);
+  const isOpenControlled = openProp !== undefined;
+  const open = isOpenControlled ? openProp : internalOpen;
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      if (!isOpenControlled) setInternalOpen(next);
+      onOpenChange?.(next);
+    },
+    [isOpenControlled, onOpenChange],
+  );
+
+  // Controlled/uncontrolled search query — same triad, driving the debounced fetch below either way.
+  const [internalQuery, setInternalQuery] = React.useState("");
+  const isSearchControlled = searchProp !== undefined;
+  const query = isSearchControlled ? searchProp : internalQuery;
+  const setQuery = React.useCallback(
+    (next: string) => {
+      if (!isSearchControlled) setInternalQuery(next);
+      onSearchChange?.(next);
+    },
+    [isSearchControlled, onSearchChange],
+  );
+
   const [debouncedQuery, setDebouncedQuery] = React.useState("");
   const [loaded, setLoaded] = React.useState<SearchSelectOptionProp[]>([]);
   const [page, setPage] = React.useState(1);
@@ -114,23 +125,19 @@ export function SearchSelect({
     () =>
       loadOptions ??
       (async ({ query: search }) => {
-        const needle = search.trim().toLowerCase();
+        const needle = search.trim();
         const list = staticOptions ?? [];
+        const matches = (option: SearchSelectOptionProp) =>
+          filterOption
+            ? filterOption(option, needle)
+            : option.label.toLowerCase().includes(needle.toLowerCase()) ||
+              option.value.toLowerCase().includes(needle.toLowerCase());
         return {
-          options:
-            !needle || filterOption === false
-              ? list
-              : list.filter((option) =>
-                  typeof filterOption === "function"
-                    ? filterOption(search, option)
-                    : (optionTextValue?.(option) ?? `${option.label} ${option.value}`)
-                        .toLowerCase()
-                        .includes(needle),
-                ),
+          options: needle ? list.filter(matches) : list,
           hasMore: false,
         };
       }),
-    [filterOption, loadOptions, optionTextValue, staticOptions],
+    [loadOptions, staticOptions, filterOption],
   );
 
   // Debounce the search term — one fetch per pause, not per keystroke.
@@ -214,7 +221,7 @@ export function SearchSelect({
   const currentIcon = value ? (selectedOption?.icon ?? selectedIcon) : null;
 
   const select = (option: SearchSelectOptionProp) => {
-    if (option.disabled || readOnly) return;
+    if (option.disabled) return;
     setPicked(option);
     if (!isControlled) setInternalValue(option.value);
     onValueChange?.(option.value, option);
@@ -281,6 +288,8 @@ export function SearchSelect({
 
   const activeOption = flatOrdered[activeIndex];
   const activeOptionId = activeOption ? optionDomId(activeOption.value) : undefined;
+  // Read-only mirrors Input/NumberInput: value visible + selectable, but no new pick — so the
+  // clear affordance (which would mutate the value) is suppressed too.
   const showClear = clearable && Boolean(value) && !disabled && !readOnly;
 
   return (
@@ -288,6 +297,9 @@ export function SearchSelect({
       <Popover
         open={open}
         onOpenChange={(next) => {
+          // Read-only never opens (no pick surface) — closing (next=false) still passes through so
+          // an externally-forced close (e.g. Escape) is honored.
+          if (readOnly && next) return;
           setOpen(next);
           if (!next) setQuery("");
         }}
@@ -297,8 +309,8 @@ export function SearchSelect({
             id={id}
             type="button"
             variant="outline"
-            size={size === "sm" ? "sm" : "default"}
             role="combobox"
+            size={size}
             aria-expanded={open}
             aria-controls={open ? listId : undefined}
             aria-label={ariaLabel}
@@ -447,14 +459,23 @@ export function SearchSelect({
                   {loadingMessage ?? t("dataEntry.searchSelect.loading")}
                 </div>
               ) : error ? (
-                <div
-                  role="option"
-                  aria-disabled="true"
-                  aria-selected={false}
-                  className="text-destructive px-2 py-6 text-center text-sm"
-                >
-                  {errorMessage ?? t("dataEntry.searchSelect.error")}
-                </div>
+                renderError ? (
+                  renderError({
+                    message: errorMessage ?? t("dataEntry.searchSelect.error"),
+                    // Retry always reloads from the first page (a defined, predictable recovery —
+                    // NOT a resume of a failed page-N append, which would need to re-derive state).
+                    retry: () => void fetchPage(1, debouncedQuery, false),
+                  })
+                ) : (
+                  <div
+                    role="option"
+                    aria-disabled="true"
+                    aria-selected={false}
+                    className="text-destructive px-2 py-6 text-center text-sm"
+                  >
+                    {errorMessage ?? t("dataEntry.searchSelect.error")}
+                  </div>
+                )
               ) : loaded.length === 0 ? (
                 <div
                   role="option"
@@ -466,31 +487,18 @@ export function SearchSelect({
                 </div>
               ) : null}
             </div>
-            {error ? (
-              <div className="border-border shrink-0 border-t p-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="w-full"
-                  onKeyDown={(event) => event.stopPropagation()}
-                  onClick={() => void fetchPage(1, debouncedQuery, false)}
-                >
-                  {retryLabel ?? t("common.retry")}
-                </Button>
-              </div>
-            ) : !loading && hasMore ? (
-              <div className="border-border shrink-0 border-t p-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="ghost"
-                  className="w-full"
-                  onKeyDown={(event) => event.stopPropagation()}
-                  onClick={() => void fetchPage(page + 1, debouncedQuery, true)}
-                >
-                  {loadMoreLabel ?? t("query.loadMore")}
-                </Button>
+            {/* Custom "load more" affordance — pairs with (does not replace) the built-in
+                scroll-triggered pagination above. Lives OUTSIDE role="listbox" (a listbox's
+                children must be options/groups per APG). */}
+            {renderLoadMore && hasMore ? (
+              <div className="border-border shrink-0 border-t p-1">
+                {renderLoadMore({
+                  hasMore,
+                  loading,
+                  loadMore: () => {
+                    if (!loading) void fetchPage(page + 1, debouncedQuery, true);
+                  },
+                })}
               </div>
             ) : null}
           </Command>

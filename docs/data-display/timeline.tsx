@@ -57,7 +57,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>承認フロー</CardTitle>
+            <CardTitle level={2}>承認フロー</CardTitle>
             <CardDescription>
               items 配列を渡し、進行中のステップに current: true を付与します。
             </CardDescription>
@@ -69,7 +69,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>出荷ステータス</CardTitle>
+            <CardTitle level={2}>出荷ステータス</CardTitle>
             <CardDescription>
               タイトルのみの最小項目と、最後尾の current（接続線が省略される）を示します。
             </CardDescription>
@@ -81,7 +81,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>配送ルート進捗</CardTitle>
+            <CardTitle level={2}>配送ルート進捗</CardTitle>
             <CardDescription>
               variant="ordinal" で各ステップを連番（1,2,3…）で表示し、status
               で色だけを切り替えます。
@@ -94,7 +94,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>承認・消費税トラッカー</CardTitle>
+            <CardTitle level={2}>承認・消費税トラッカー</CardTitle>
             <CardDescription>
               variant="status" は status ごとにグリフを切り替えます（done → チェック、current →
               塗りつぶしドット、pending → 連番）。

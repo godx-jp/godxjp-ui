@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { Label } from "../data-entry/label";
 import { cn } from "../../lib/utils";
+import { mergeAriaIds } from "../../lib/field-a11y";
 import { useFormLayout } from "./form";
 import type { FormFieldProp } from "../../props/components/data-entry.prop";
 import type { WidthProp } from "../../props/vocabulary";
@@ -63,10 +64,7 @@ export function FormField({
   const childProps = React.isValidElement(children)
     ? (children.props as Record<string, unknown>)
     : undefined;
-  const mergeIds = (...values: Array<string | undefined>) =>
-    Array.from(new Set(values.flatMap((value) => value?.split(/\s+/).filter(Boolean) ?? []))).join(
-      " ",
-    ) || undefined;
+  const mergeIds = mergeAriaIds;
   const childWithA11y = React.isValidElement(children)
     ? React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
         // The label is associated via aria-labelledby (not <label for>): composite
@@ -74,6 +72,13 @@ export function FormField({
         // and a dangling `for` triggers Chrome's "Incorrect use of <label>" issue.
         id: (childProps?.id as string | undefined) ?? resolvedId,
         "aria-labelledby": (childProps?.["aria-labelledby"] as string | undefined) ?? labelId,
+        // Redundant `aria-label` fallback (belt-and-suspenders): the accessible name is the
+        // SAME string as the visible label, just reachable even if an aria-labelledby lookup
+        // ever comes back empty (id-ref timing, AT quirks). Only when `label` is plain text and
+        // the child hasn't already set its own aria-label.
+        "aria-label":
+          (childProps?.["aria-label"] as string | undefined) ??
+          (typeof label === "string" ? label : undefined),
         // Helper and error can coexist: helper stays on aria-describedby, the error on
         // aria-errormessage (surfaced when aria-invalid is true).
         "aria-describedby": mergeIds(

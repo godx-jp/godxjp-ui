@@ -43,7 +43,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>固定高さのリスト（縦スクロール）</CardTitle>
+            <CardTitle level={2}>固定高さのリスト（縦スクロール）</CardTitle>
             <CardDescription>
               ラッパーに h-56 を指定すると、その高さがスクロール領域のビューポートになります。
             </CardDescription>
@@ -63,7 +63,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>type=&quot;always&quot;（バーを常時表示）</CardTitle>
+            <CardTitle level={2}>type=&quot;always&quot;（バーを常時表示）</CardTitle>
             <CardDescription>
               既定の hover はホバー時のみバーを表示します。always
               は内容が溢れる限りバーを常に表示します。
@@ -84,7 +84,9 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>横スクロール（ScrollBar orientation=&quot;horizontal&quot;）</CardTitle>
+            <CardTitle level={2}>
+              横スクロール（ScrollBar orientation=&quot;horizontal&quot;）
+            </CardTitle>
             <CardDescription>
               横方向のバーは明示的に ScrollBar
               を子要素として配置します。中身は幅を指定して溢れさせます。
@@ -106,7 +108,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>内容が収まる場合（バー非表示）</CardTitle>
+            <CardTitle level={2}>内容が収まる場合（バー非表示）</CardTitle>
             <CardDescription>
               中身が高さに収まるときはスクロールバーは表示されません。
             </CardDescription>

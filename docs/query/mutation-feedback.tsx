@@ -31,7 +31,7 @@ function Block() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>取引先の登録</CardTitle>
+        <CardTitle level={2}>取引先の登録</CardTitle>
         <CardDescription>The feedback sits between the form and the submit button.</CardDescription>
       </CardHeader>
       <CardContent>

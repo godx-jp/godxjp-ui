@@ -13,7 +13,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Labelled rows (Field)</CardTitle>
+            <CardTitle level={2}>Labelled rows (Field)</CardTitle>
             <CardDescription>Field owns the label, description, and form input.</CardDescription>
           </CardHeader>
           <CardContent>

@@ -44,7 +44,7 @@ export default function Demo() {
         {/* Full filter bar above a representative table placeholder */}
         <Card>
           <CardHeader>
-            <CardTitle>仕訳一覧フィルター</CardTitle>
+            <CardTitle level={2}>仕訳一覧フィルター</CardTitle>
             <CardDescription>
               Toolbar + ToolbarGroup · SearchInput is placed directly (no ToolbarGroup); every other
               control gets a ToolbarGroup with a label. hasActiveFilters drives the clear-all
@@ -100,7 +100,7 @@ export default function Demo() {
         {/* Minimal toolbar — search only */}
         <Card>
           <CardHeader>
-            <CardTitle>SearchInput のみ (ToolbarGroup なし)</CardTitle>
+            <CardTitle level={2}>SearchInput のみ (ToolbarGroup なし)</CardTitle>
             <CardDescription>
               SearchInput は自己ラベル付きのためToolbarGroup 不要。 単一フィルターの場合は Toolbar +
               SearchInput だけで完結する。
@@ -116,7 +116,7 @@ export default function Demo() {
         {/* Department filter example */}
         <Card>
           <CardHeader>
-            <CardTitle>複数 ToolbarGroup · 部門・科目フィルター</CardTitle>
+            <CardTitle level={2}>複数 ToolbarGroup · 部門・科目フィルター</CardTitle>
             <CardDescription>
               勤怠・経費レポート向け。各フィルターを ToolbarGroup でラベルを付けて並べる。
             </CardDescription>

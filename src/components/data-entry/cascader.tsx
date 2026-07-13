@@ -3,6 +3,7 @@ import { Check, ChevronRight, ChevronsUpDown, Minus, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
+import { pickFieldA11y } from "../../lib/field-a11y";
 import { controlOpenRingClass } from "../../lib/control-styles";
 import { Button } from "../general/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -118,14 +119,13 @@ export function Cascader({
   expandTrigger = "click",
   fieldNames,
   allowClear = true,
-  "aria-label": ariaLabel,
-  "aria-labelledby": ariaLabelledby,
-  "aria-describedby": ariaDescribedby,
-  "aria-errormessage": ariaErrormessage,
-  "aria-invalid": ariaInvalid,
-  "aria-required": ariaRequired,
+  ...ariaProps
 }: CascaderProp) {
   const { t } = useTranslation();
+  // Forward the FormField label/helper/error contract onto the combobox trigger (focus target).
+  const fieldA11y = pickFieldA11y(ariaProps);
+  const reactId = React.useId();
+  const panelId = `${id ?? reactId}-panel`;
   const options = React.useMemo(
     () => normalizeTreeOptions(optionsProp as Record<string, unknown>[], fieldNames),
     [optionsProp, fieldNames],
@@ -326,12 +326,9 @@ export function Cascader({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            aria-label={ariaLabel}
-            aria-labelledby={ariaLabelledby}
-            aria-describedby={ariaDescribedby}
-            aria-errormessage={ariaErrormessage}
-            aria-invalid={ariaInvalid}
-            aria-required={ariaRequired}
+            aria-haspopup="listbox"
+            aria-controls={open ? panelId : undefined}
+            {...fieldA11y}
             disabled={disabled}
             className={cn(
               "w-full justify-start font-normal",
@@ -345,6 +342,7 @@ export function Cascader({
           </Button>
         </PopoverTrigger>
         <PopoverContent
+          id={panelId}
           className="w-auto min-w-[var(--radix-popover-trigger-width)] p-0"
           align="start"
         >

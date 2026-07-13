@@ -26,7 +26,13 @@ export type ToolbarGroupProp = {
 
 /** @see Pagination — offset/page-based (distinct from DataTable cursor pagination). */
 export type PaginationProp = {
-  /** Accessible landmark name. Required when multiple paginations share a page. */
+  /**
+   * Override the `<nav>` landmark's accessible name. Defaults to a localized "Pagination".
+   * Multiple Pagination instances on one page/view (e.g. two independent result lists) need a
+   * DISTINCT name each — two `<nav>` landmarks sharing one name/role fail axe's `landmark-unique`
+   * (WCAG 2.4.1 / 1.3.1). Pass something that names what is being paged, e.g. `"注文一覧の
+   * ページネーション"` vs `"請求書一覧のページネーション"`.
+   */
   ariaLabel?: string;
   value?: number;
   total?: number;
@@ -34,6 +40,14 @@ export type PaginationProp = {
   pageSizeOptions?: number[];
   showSizeChanger?: boolean;
   showTotal?: boolean | ((total: number, range: [number, number]) => React.ReactNode);
+  /**
+   * Hide the whole control when there is nothing to page through — zero items OR exactly one page.
+   * `true` (default) keeps table footers clean: pagination is navigation between multiple result
+   * pages, so a lone disabled `1 / 1` bar is noise. Set `false` for the explicit opt-in when a
+   * consumer still wants the bar on a single page (e.g. to keep `showTotal` visible). A control
+   * with `total === 0` is ALWAYS hidden — there is no data to navigate. (gh#153)
+   */
+  hideOnSinglePage?: boolean;
   simple?: boolean;
   disabled?: DisabledProp;
   className?: ClassNameProp;

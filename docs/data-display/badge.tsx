@@ -50,7 +50,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Structural variants</CardTitle>
+            <CardTitle level={2}>Structural variants</CardTitle>
             <CardDescription>
               variant is structural emphasis only: default (filled), secondary (muted fill), outline
               (bordered), dashed (dashed border). It carries no semantic meaning; use tone for that.
@@ -69,7 +69,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Shape</CardTitle>
+            <CardTitle level={2}>Shape</CardTitle>
             <CardDescription>
               shape sets corner radius from the tokens: default (badge radius) / pill (fully
               rounded) / sharp (square). Independent of variant and tone.
@@ -88,7 +88,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Semantic tones</CardTitle>
+            <CardTitle level={2}>Semantic tones</CardTitle>
             <CardDescription>
               tone conveys intent, pick by meaning, never aesthetics. success = approved/paid ·
               warning = pending · destructive = rejected · info · muted · neutral = category.
@@ -107,7 +107,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Lifecycle status</CardTitle>
+            <CardTitle level={2}>Lifecycle status</CardTitle>
             <CardDescription>
               status=&quot;key&quot; auto-maps known lifecycle keys to tone + icon + i18n label.
               Unknown keys fall back to neutral + a generic icon + the raw key text.
@@ -125,7 +125,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Icon overrides</CardTitle>
+            <CardTitle level={2}>Icon overrides</CardTitle>
             <CardDescription>
               icon replaces the status-mapped icon; icon=&#123;null&#125; suppresses it entirely
               while keeping the resolved tone and label.

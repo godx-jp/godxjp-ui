@@ -16,7 +16,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>States</CardTitle>
+            <CardTitle level={2}>States</CardTitle>
             <CardDescription>
               Placeholder, filled, disabled, readOnly, and invalid (aria-invalid). Focus an empty
               field to see the focus-visible ring.
@@ -24,18 +24,18 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Input aria-label="空のテキスト入力" placeholder="プレースホルダー" />
-              <Input aria-label="入力済み" defaultValue="入力済みの値" />
-              <Input aria-label="無効な入力" disabled defaultValue="無効 (disabled)" />
-              <Input aria-label="読み取り専用" readOnly defaultValue="読み取り専用 (readOnly)" />
-              <Input aria-label="不正な入力" aria-invalid defaultValue="不正な値 (aria-invalid)" />
+              <Input aria-label="プレースホルダー状態" placeholder="プレースホルダー" />
+              <Input aria-label="入力済み状態" defaultValue="入力済みの値" />
+              <Input aria-label="無効状態" disabled defaultValue="無効 (disabled)" />
+              <Input aria-label="読み取り専用状態" readOnly defaultValue="読み取り専用 (readOnly)" />
+              <Input aria-label="不正な値の状態" aria-invalid defaultValue="不正な値 (aria-invalid)" />
             </Flex>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Types</CardTitle>
+            <CardTitle level={2}>Types</CardTitle>
             <CardDescription>
               The native type attribute drives the input mode and built-in UI; type="file" uses the
               file: styling baked into the component.
@@ -43,9 +43,9 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Input aria-label="パスワード" type="password" defaultValue="secret-value" />
-              <Input aria-label="数量" type="number" defaultValue={42} />
-              <Input aria-label="日付" type="date" defaultValue="2026-06-04" />
+              <Input aria-label="パスワード型" type="password" defaultValue="secret-value" />
+              <Input aria-label="数値型" type="number" defaultValue={42} />
+              <Input aria-label="日付型" type="date" defaultValue="2026-06-04" />
               <Input type="file" aria-label="ファイルを選択" />
             </Flex>
           </CardContent>
@@ -53,7 +53,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>In FormField · label / helper / required / error</CardTitle>
+            <CardTitle level={2}>In FormField · label / helper / required / error</CardTitle>
             <CardDescription>
               FormField wires the label and aria-describedby for you.
             </CardDescription>

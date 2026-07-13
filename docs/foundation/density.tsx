@@ -114,7 +114,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Same UI, three densities</CardTitle>
+            <CardTitle level={2}>Same UI, three densities</CardTitle>
             <CardDescription>
               Set density once per page via {"<PageContainer density>"} · never the .ui-density-*
               classes directly. Flip the one prop and Input, Select, Checkbox, Switch and Button all
@@ -146,7 +146,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Table row density (DataTable density)</CardTitle>
+            <CardTitle level={2}>Table row density (DataTable density)</CardTitle>
             <CardDescription>
               The DataTable owns its own density axis: density=&quot;compact&quot; vs
               density=&quot;comfortable&quot; swaps --table-row-height and --table-cell-padding-y.
@@ -191,7 +191,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Page-level knob (PageContainer density)</CardTitle>
+            <CardTitle level={2}>Page-level knob (PageContainer density)</CardTitle>
             <CardDescription>
               In a real screen you pass density to the page shell once; this nested PageContainer is
               the comfortable knob applied to a whole form. Note the taller controls and looser φ

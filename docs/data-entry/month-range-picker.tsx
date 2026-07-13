@@ -26,7 +26,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>基本 (controlled)</CardTitle>
+            <CardTitle level={2}>基本 (controlled)</CardTitle>
             <CardDescription>
               value + onValueChange で制御。開始/終了を直接タイプ入力するか、カレンダーアイコンから
               月グリッドで 2 ステップ選択 (開始 → 終了)。逆順に選んでも from ≤ to
@@ -48,7 +48,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>検索フィルター (未選択)</CardTitle>
+            <CardTitle level={2}>検索フィルター (未選択)</CardTitle>
             <CardDescription>
               初期値なし。確定済み範囲の上でもう一度選ぶと新しい範囲が開始される (reset-on-complete
               — 開始月が固まって選び直せない、が起きない)。
@@ -68,7 +68,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>非制御 (defaultValue) + 年クランプ</CardTitle>
+            <CardTitle level={2}>非制御 (defaultValue) + 年クランプ</CardTitle>
             <CardDescription>
               defaultValue で初期範囲だけ与え、fromYear / toYear
               でグリッドの年ナビゲーションを境界年で止める。
@@ -92,7 +92,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>disabled 状態</CardTitle>
+            <CardTitle level={2}>disabled 状態</CardTitle>
             <CardDescription>確定済み範囲や読み取り専用フィールドに使用。</CardDescription>
           </CardHeader>
           <CardContent>

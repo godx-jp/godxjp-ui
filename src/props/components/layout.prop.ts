@@ -21,8 +21,15 @@ export type PageContainerProp = {
   extra?: ExtraProp;
   footer?: FooterProp;
   breadcrumb?: BreadcrumbProp;
-  /** Accessible breadcrumb landmark name; set a unique value when multiple shells share a document. */
+  /**
+   * Override the breadcrumb `<nav>` landmark's accessible name. Defaults to a localized
+   * "Breadcrumb". Needed when more than one `PageContainer` (each with its own `breadcrumb`)
+   * renders on the same page/view — two `<nav>` landmarks sharing one name/role fail axe's
+   * `landmark-unique` (WCAG 2.4.1 / 1.3.1).
+   */
   breadcrumbLabel?: string;
+  /** Kebab/DOM-style alias of `breadcrumbLabel` (same landmark-unique override). */
+  breadcrumbAriaLabel?: string;
   linkComponent?: React.ElementType;
   density?: PageDensityProp;
   variant?: PageContainerVariantProp;
@@ -81,6 +88,21 @@ export type AppShellProp = {
   breadcrumb?: ReactNode;
   footer?: ReactNode;
   sidebarCollapsed?: boolean;
+  /**
+   * Navigation shown in the mobile drawer below the `lg` breakpoint, where the docked sidebar is
+   * hidden. AppShell OWNS the drawer: it renders a hamburger trigger in the topbar and a focus-
+   * trapped Sheet (Esc + overlay close, focus returns to the trigger) — hiding the sidebar without
+   * a reachable alternative is invalid (gh#165). Defaults to `sidebar`, so the same nav is
+   * available on mobile with no extra wiring; pass a distinct node for a mobile-tailored menu, or
+   * `null` to opt out (only when navigation lives elsewhere, e.g. a bottom bar).
+   */
+  mobileNav?: ReactNode;
+  /** Accessible title for the mobile navigation drawer. Defaults to the localized "Menu". */
+  mobileNavLabel?: string;
+  /** Controlled open state of the mobile drawer. Omit for AppShell-owned (uncontrolled) state. */
+  mobileNavOpen?: boolean;
+  /** Change handler for the mobile drawer open state (pairs with `mobileNavOpen`). */
+  onMobileNavOpenChange?: (open: boolean) => void;
 };
 
 /**
@@ -115,6 +137,13 @@ export type SidebarItemProp = {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   badge?: ReactNode;
   disabled?: boolean;
+  /**
+   * Render the row as a real anchor (`<a href>`) — the link is the SOLE interactive element (no
+   * nested `<button>`). Use for MPA links / right-click-open-in-new-tab. Omit for SPA rows that
+   * report selection via `onSelect(id)`. For a framework router `<Link>`, use `renderItem` instead
+   * (its returned element is merged as the row via Slot, so there is still no nested interactive).
+   */
+  href?: string;
   /** Nested rows — renders a collapsible submenu group (the parent reads active when any child is). */
   children?: SidebarItemProp[];
 };
@@ -140,8 +169,21 @@ export type SidebarProp = {
   brand?: ReactNode;
   collapsed?: boolean;
   children?: ChildrenProp;
+  /**
+   * Escape hatch to render a leaf row as a custom element — typically a framework router `<Link>`.
+   * Return a SINGLE interactive element; the Sidebar merges the row styling + active state onto it
+   * via Slot (so it is the row and the sole interactive element — no nested `<button>`). Any
+   * secondary affix (a star, a count) must be a non-interactive descendant of that element.
+   */
   renderItem?: (item: SidebarItemData) => ReactNode;
   footer?: ReactNode;
+  /**
+   * Override the nav landmark's accessible name. Defaults to a localized "Main navigation".
+   * Needed when more than one Sidebar renders on the same page/view (e.g. a docked sidebar +
+   * its mobile-drawer twin, both mounted at once) — two `<nav>` landmarks sharing one name/role
+   * fail axe's `landmark-unique` (WCAG 2.4.1 / 1.3.1).
+   */
+  "aria-label"?: string;
 };
 
 /**

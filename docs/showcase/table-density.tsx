@@ -234,7 +234,7 @@ export default function Demo() {
         {/* Control + live readout */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-4">
-            <CardTitle>行密度</CardTitle>
+            <CardTitle level={2}>行密度</CardTitle>
             <Flex direction="row" align="center" gap="md">
               <Text as="span" size="xs" tone="muted" className="inline-flex items-center gap-1.5">
                 <Clock className="size-3.5" aria-hidden="true" />
@@ -315,7 +315,7 @@ export default function Demo() {
               return (
                 <Card key={key}>
                   <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>{m.label}</CardTitle>
+                    <CardTitle level={2}>{m.label}</CardTitle>
                     <Text size="xs" tone="muted" tabular>
                       行高 {m.px}px · {m.note}
                     </Text>

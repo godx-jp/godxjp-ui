@@ -274,6 +274,7 @@ export default function Demo() {
     {
       key: "actions",
       header: "",
+      ariaLabel: "操作",
       align: "right",
       width: "w-32",
       render: (r) =>
@@ -390,7 +391,7 @@ export default function Demo() {
           {rejectTarget && (
             <Card className="border-destructive/40 self-start">
               <CardHeader>
-                <CardTitle>申請を却下 · {rejectTarget.id}</CardTitle>
+                <CardTitle level={2}>申請を却下 · {rejectTarget.id}</CardTitle>
               </CardHeader>
               <CardContent>
                 <Flex direction="col" gap="md">
@@ -492,7 +493,7 @@ export default function Demo() {
           {/* ── Loading variant (staged visible at rest) ──────────────────── */}
           <Card className="self-start">
             <CardHeader>
-              <CardTitle>読み込み中の表示</CardTitle>
+              <CardTitle level={2}>読み込み中の表示</CardTitle>
             </CardHeader>
             <CardContent flush>
               <SkeletonTable rows={4} columns={6} />
@@ -502,7 +503,7 @@ export default function Demo() {
           {/* ── Empty variant (staged visible at rest) ────────────────────── */}
           <Card className="self-start">
             <CardHeader>
-              <CardTitle>空の表示</CardTitle>
+              <CardTitle level={2}>空の表示</CardTitle>
             </CardHeader>
             <CardContent>
               <EmptyState

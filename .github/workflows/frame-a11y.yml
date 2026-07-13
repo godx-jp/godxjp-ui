@@ -1,0 +1,91 @@
+name: Frame a11y & coverage
+
+# Per-frame accessibility + preview-contract coverage gates (issues #157, #163).
+#
+#   • frame-coverage  — browser-free; every public component must have a frame, reports
+#                       UNTESTED contract axes. Fast, runs on every PR.
+#   • frame-axe       — real Chromium + axe over every /frame at desktop + mobile-sm.
+#                       Preview-chrome violations are BLOCKING (0 allowed); component/demo
+#                       violations are allowlisted against scripts/frame-axe.baseline.json,
+#                       which may only shrink. Runs on every PR.
+#   • frame-geometry  — heavier viewport-matrix sweep (8 widths). Runs on push to main and
+#                       nightly (baseline-guarded) to keep PRs fast.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * *"
+
+concurrency:
+  group: frame-a11y-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    name: Frame coverage (contract inventory)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Coverage report (report-only)
+        run: pnpm check:frame-coverage
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frame-coverage
+          path: |
+            audit-evidence/frame-coverage/coverage.json
+            docs/FRAME-COVERAGE-REPORT.md
+          if-no-files-found: ignore
+
+  axe:
+    name: Per-frame axe (chrome blocking, component allowlisted)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install Chromium for Playwright
+        run: pnpm exec playwright install --with-deps chromium
+      - name: axe every frame (desktop + mobile-sm)
+        run: pnpm check:frame-axe
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frame-axe-evidence
+          path: audit-evidence/frame-axe/
+          if-no-files-found: ignore
+
+  geometry:
+    name: Viewport-matrix geometry sweep
+    # Heavier (8 widths × every frame) — keep PRs fast; run on main + nightly.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install Chromium for Playwright
+        run: pnpm exec playwright install --with-deps chromium
+      - name: geometry sweep (320→1920)
+        run: pnpm check:frame-geometry
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frame-geometry-evidence
+          path: audit-evidence/frame-geometry/
+          if-no-files-found: ignore

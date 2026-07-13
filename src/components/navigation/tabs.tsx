@@ -16,6 +16,25 @@ export type TabsProps = React.ComponentProps<typeof TabsPrimitive.Root> & {
   contentClassName?: string;
 };
 
+/**
+ * Resolves the value Tabs should fall back to when it owns the initial selection
+ * (uncontrolled — `value` is undefined). `requested` (usually `defaultValue`) is honored
+ * only when it names an item that exists AND is not disabled; otherwise (nothing requested,
+ * a stale/unknown key, or a key that points at a disabled item) it falls back to the first
+ * ENABLED item. Returns undefined — selecting nothing — when every item is disabled (gh#175).
+ */
+function resolveFallbackTabValue(
+  items: TabsItem[] | undefined,
+  requested: string | undefined,
+): string | undefined {
+  if (!items || items.length === 0) return requested;
+  if (requested !== undefined) {
+    const requestedItem = items.find((item) => item.value === requested);
+    if (requestedItem && !requestedItem.disabled) return requested;
+  }
+  return items.find((item) => !item.disabled)?.value;
+}
+
 export function Tabs({
   className,
   orientation = "horizontal",
@@ -27,8 +46,7 @@ export function Tabs({
   contentClassName,
   ...props
 }: TabsProps) {
-  const firstValue = items?.[0]?.value;
-  const resolvedDefault = defaultValue ?? firstValue;
+  const resolvedDefault = resolveFallbackTabValue(items, defaultValue);
 
   return (
     <TabsPrimitive.Root
@@ -37,7 +55,10 @@ export function Tabs({
       orientation={orientation}
       value={value}
       defaultValue={value === undefined ? resolvedDefault : undefined}
-      className={cn("group/tabs flex gap-2 data-[orientation=horizontal]:flex-col", className)}
+      className={cn(
+        "group/tabs flex min-w-0 gap-2 data-[orientation=horizontal]:flex-col",
+        className,
+      )}
       {...props}
     >
       {items ? (
@@ -95,7 +116,14 @@ export const TabsList = React.forwardRef<
     data-slot="tabs-list"
     data-variant={variant}
     className={cn(
-      "group/tabs-list text-muted-foreground data-[variant=default]:bg-muted inline-flex w-fit items-center justify-center rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[variant=line]:gap-1 data-[variant=line]:rounded-none data-[variant=line]:bg-transparent",
+      // `min-w-0 max-w-full` let the list shrink to (and never exceed) whatever width its
+      // ancestors actually give it instead of forcing them wider; horizontal orientation then
+      // scrolls its own overflow rather than clipping/hiding long localized labels in a narrow
+      // container (gh#175). Hidden scrollbar keeps the strip visually clean while staying
+      // swipeable on touch and reachable via keyboard (arrow-key roving focus still scrolls the
+      // newly-focused trigger into view natively). Vertical orientation is untouched — it already
+      // stacks in a column and is sized by its own `h-*`/`w-*` overrides.
+      "group/tabs-list text-muted-foreground data-[variant=default]:bg-muted inline-flex w-fit max-w-full min-w-0 items-center justify-center rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[orientation=horizontal]:[scrollbar-width:none] data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden data-[variant=line]:gap-1 data-[variant=line]:rounded-none data-[variant=line]:bg-transparent [&[data-orientation=horizontal]::-webkit-scrollbar]:hidden",
       className,
     )}
     {...props}

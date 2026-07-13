@@ -3,6 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import type { LucideIcon } from "lucide-react";
 
 import { cn } from "../../lib/utils";
+import type { HeadingLevelProp } from "../../props/vocabulary";
 
 type CardSize = "md" | "compact";
 /** Semantic leading-edge accent stripe (border-inline-start; width via the
@@ -79,16 +80,31 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
 CardHeader.displayName = "CardHeader";
 
 export type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
-  /** Semantic heading level. Cards are page sections by default; nested cards opt into h3/h4. */
-  as?: "h1" | "h2" | "h3" | "h4";
+  /**
+   * Semantic heading level (`h1`–`h4`). Default `3`. Choose it to keep the
+   * document outline valid (`h1 → h2 → h3`, no skipped levels) for the page the
+   * card sits on — NOT for visual size: the title's size is fixed by the
+   * `--card-title-*` tokens and does not change with `level`. A section card
+   * directly under a page `h1` uses `level={2}`; a card nested inside an
+   * already-`h2` section uses `level={3}` (the default).
+   */
+  level?: HeadingLevelProp;
+  /**
+   * Render a different element than the `level` heading. Use `"p"` / `"div"`
+   * when the card title is a styled label rather than a section heading in the
+   * outline (so it is not announced as a heading and cannot skip a level).
+   * Overrides `level`.
+   */
+  as?: "h1" | "h2" | "h3" | "h4" | "p" | "div";
 };
 
 export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ as: Component = "h2", className, children, ...props }, ref) => (
-    <Component ref={ref} data-slot="card-title" className={className} {...props}>
-      {children}
-    </Component>
-  ),
+  ({ className, children, level = 3, as, ...props }, ref) =>
+    React.createElement(
+      as ?? `h${level}`,
+      { ref, "data-slot": "card-title", className, ...props },
+      children,
+    ),
 );
 CardTitle.displayName = "CardTitle";
 

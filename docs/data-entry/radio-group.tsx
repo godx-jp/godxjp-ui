@@ -16,7 +16,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Vertical</CardTitle>
+            <CardTitle level={2}>Vertical</CardTitle>
             <CardDescription>The default stacked layout.</CardDescription>
           </CardHeader>
           <CardContent>
@@ -33,7 +33,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Horizontal</CardTitle>
+            <CardTitle level={2}>Horizontal</CardTitle>
             <CardDescription>orientation=“horizontal” for compact rows.</CardDescription>
           </CardHeader>
           <CardContent>

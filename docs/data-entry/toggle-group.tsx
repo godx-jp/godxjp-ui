@@ -22,7 +22,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Single selection (type=“single”)</CardTitle>
+            <CardTitle level={2}>Single selection (type=“single”)</CardTitle>
             <CardDescription>
               Mutually exclusive · switching fiscal period. value is string, onValueChange receives
               string.
@@ -48,7 +48,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Multiple selection (type=“multiple”)</CardTitle>
+            <CardTitle level={2}>Multiple selection (type=“multiple”)</CardTitle>
             <CardDescription>
               Independent toggles · output format selection. value is string[], onValueChange
               receives string[].
@@ -72,7 +72,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>View density switcher</CardTitle>
+            <CardTitle level={2}>View density switcher</CardTitle>
             <CardDescription>
               Common use case: switching between display modes in a list or dashboard.
             </CardDescription>

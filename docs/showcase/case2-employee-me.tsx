@@ -150,7 +150,9 @@ function PunchCard() {
   return (
     <Card density="cozy" className="self-start" accent={state === "break" ? "warning" : undefined}>
       <CardHeader className="flex flex-row items-center justify-between gap-3">
-        <CardTitle className="whitespace-nowrap">打刻 · Chấm công</CardTitle>
+        <CardTitle level={2} className="whitespace-nowrap">
+          打刻 · Chấm công
+        </CardTitle>
         <Badge tone={status.tone} variant="outline" className="whitespace-nowrap">
           {status.label}
         </Badge>
@@ -353,7 +355,9 @@ export default function EmployeeMeShowcase() {
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
             <Card className="self-start lg:col-span-2">
               <CardHeader className="flex flex-row items-center justify-between gap-3">
-                <CardTitle className="whitespace-nowrap">最近7日 · 7 ngày gần nhất</CardTitle>
+                <CardTitle level={2} className="whitespace-nowrap">
+                  最近7日 · 7 ngày gần nhất
+                </CardTitle>
                 <Text size="xs" tone="muted" className="whitespace-nowrap">
                   勤務 47.4h · 残業 1.5h
                 </Text>
@@ -400,7 +404,9 @@ export default function EmployeeMeShowcase() {
 
             <Card className="self-start lg:col-span-1">
               <CardHeader>
-                <CardTitle className="whitespace-nowrap">本日のサマリー · Hôm nay</CardTitle>
+                <CardTitle level={2} className="whitespace-nowrap">
+                  本日のサマリー · Hôm nay
+                </CardTitle>
               </CardHeader>
               <CardContent flush>
                 <dl className="divide-border divide-y">

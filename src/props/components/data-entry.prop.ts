@@ -7,6 +7,7 @@ import type { DayPickerProps } from "react-day-picker";
 import type { DateRange } from "react-day-picker";
 import type * as React from "react";
 import type { UploadFileItem } from "../../components/data-entry/upload-types";
+import type { FieldA11yProps } from "../../lib/field-a11y";
 import type {
   ClassNameProp,
   DisabledProp,
@@ -19,6 +20,8 @@ import type {
   OnChangeProp,
   OnValueChangeProp,
   OnSearchChangeProp,
+  OpenProp,
+  OnOpenChangeProp,
   PlaceholderProp,
   RequiredProp,
   ValueProp,
@@ -57,7 +60,7 @@ export type TextareaProp = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
  * the stepper buttons and ArrowUp/ArrowDown (Shift = ×10); `precision` sets the committed decimal
  * places (inferred from `step` when omitted). Value commits clamped to `min`/`max` on blur/Enter.
  */
-export type NumberInputProp = {
+export type NumberInputProp = FieldA11yProps & {
   value?: ValueProp<number | null>;
   defaultValue?: DefaultValueProp<number | null>;
   onValueChange?: OnValueChangeProp<number | null>;
@@ -82,9 +85,6 @@ export type NumberInputProp = {
   name?: NameProp;
   id?: IdProp;
   className?: ClassNameProp;
-  "aria-label"?: string;
-  "aria-labelledby"?: string;
-  "aria-describedby"?: string;
   "data-testid"?: string;
 };
 
@@ -128,7 +128,7 @@ export type FormFieldProp = {
 };
 
 /** @see SearchInput */
-export type SearchInputProp = {
+export type SearchInputProp = FieldA11yProps & {
   id?: IdProp;
   label?: LabelProp;
   placeholder?: PlaceholderProp;
@@ -151,7 +151,7 @@ export type ChoiceOptionProp = {
 };
 
 /** @see Checkbox.Group */
-export type CheckboxGroupProp = {
+export type CheckboxGroupProp = FieldA11yProps & {
   value?: ValueProp<string[]>;
   defaultValue?: DefaultValueProp<string[]>;
   onValueChange?: OnValueChangeProp<string[]>;
@@ -159,12 +159,14 @@ export type CheckboxGroupProp = {
   orientation?: "horizontal" | "vertical";
   disabled?: DisabledProp;
   name?: NameProp;
+  /** Injected by FormField (or set directly) — applied to the `role="group"` container. */
+  id?: IdProp;
   className?: ClassNameProp;
   children?: React.ReactNode;
 };
 
 /** @see Radio.Group */
-export type RadioGroupProp = {
+export type RadioGroupProp = FieldA11yProps & {
   value?: ValueProp;
   defaultValue?: DefaultValueProp;
   onValueChange?: OnValueChangeProp;
@@ -172,6 +174,8 @@ export type RadioGroupProp = {
   orientation?: "horizontal" | "vertical";
   disabled?: DisabledProp;
   name?: NameProp;
+  /** Injected by FormField (or set directly) — applied to the `role="radiogroup"` container. */
+  id?: IdProp;
   className?: ClassNameProp;
   children?: React.ReactNode;
 };
@@ -200,7 +204,7 @@ export type SliderProp = React.ComponentPropsWithoutRef<typeof SliderPrimitive.R
 export type CalendarProp = DayPickerProps;
 
 /** @see DatePicker */
-export type DatePickerProp = {
+export type DatePickerProp = FieldA11yProps & {
   value?: ValueProp<Date>;
   defaultValue?: DefaultValueProp<Date | undefined>;
   onValueChange?: OnValueChangeProp<Date | undefined>;
@@ -218,7 +222,7 @@ export type DatePickerProp = {
 };
 
 /** @see MonthPicker */
-export type MonthPickerProp = {
+export type MonthPickerProp = FieldA11yProps & {
   value?: ValueProp<Date>;
   defaultValue?: DefaultValueProp<Date | undefined>;
   onValueChange?: OnValueChangeProp<Date | undefined>;
@@ -239,7 +243,7 @@ export type MonthPickerProp = {
  * @see MonthRangePicker — both edges are normalized to the FIRST day of their month
  * (the `DateRange` shape is shared with DateRangePicker so ranges interop).
  */
-export type MonthRangePickerProp = {
+export type MonthRangePickerProp = FieldA11yProps & {
   value?: ValueProp<DateRange>;
   defaultValue?: DefaultValueProp<DateRange | undefined>;
   onValueChange?: OnValueChangeProp<DateRange | undefined>;
@@ -257,7 +261,7 @@ export type MonthRangePickerProp = {
 };
 
 /** @see DateRangePicker */
-export type DateRangePickerProp = {
+export type DateRangePickerProp = FieldA11yProps & {
   value?: ValueProp<DateRange>;
   defaultValue?: DefaultValueProp<DateRange | undefined>;
   onValueChange?: OnValueChangeProp<DateRange | undefined>;
@@ -275,7 +279,7 @@ export type DateRangePickerProp = {
 };
 
 /** @see TimePicker — popover HH:mm picker (canonical 24h storage). */
-export type TimePickerProp = {
+export type TimePickerProp = FieldA11yProps & {
   value?: ValueProp;
   defaultValue?: DefaultValueProp;
   onValueChange?: OnValueChangeProp;
@@ -292,7 +296,7 @@ export type TimePickerProp = {
 };
 
 /** @see ColorPicker */
-export type ColorPickerProp = {
+export type ColorPickerProp = FieldA11yProps & {
   value?: ValueProp;
   onValueChange?: OnValueChangeProp;
   disabled?: DisabledProp;
@@ -337,19 +341,11 @@ export type SearchSelectProp = {
   /** Uncontrolled initial value — the trigger shows its option's label at rest (controlled-triad). */
   defaultValue?: DefaultValueProp;
   onValueChange?: (value: string, option?: SearchSelectOptionProp) => void;
-  open?: boolean;
-  defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  searchValue?: string;
-  defaultSearchValue?: string;
-  onSearchValueChange?: (value: string) => void;
   /** Static option list (client-side filtered). Provide this OR `loadOptions`, not both. */
   options?: SearchSelectOptionProp[];
   /** Remote fetcher — debounced search + infinite-scroll pagination call into this. Provide this
    *  OR `options`. */
   loadOptions?: (params: SearchSelectLoadParamsProp) => Promise<SearchSelectLoadResultProp>;
-  filterOption?: boolean | ((query: string, option: SearchSelectOptionProp) => boolean);
-  optionTextValue?: (option: SearchSelectOptionProp) => string;
   /** Custom per-option renderer (Ant-Design style). Defaults to label + optional sublabel. */
   renderOption?: (option: SearchSelectOptionProp) => React.ReactNode;
   /**
@@ -374,16 +370,48 @@ export type SearchSelectProp = {
   searchPlaceholder?: PlaceholderProp;
   emptyMessage?: EmptyMessageProp;
   loadingMessage?: string;
-  /** Message shown when an async `loadOptions` rejects — a distinct state from empty/loading. */
+  /** Message shown when an async `loadOptions` rejects — a distinct state from empty/loading. Used
+   *  as-is unless `renderError` is provided. */
   errorMessage?: string;
-  retryLabel?: string;
-  loadMoreLabel?: string;
   clearLabel?: string;
   /** Show a "clear" row when a value is selected (default true). */
   clearable?: boolean;
   disabled?: DisabledProp;
+  /**
+   * Read-only: the current value is shown (and the clear affordance hidden) but the popover cannot
+   * be opened — no new pick, no search. Mirrors the Input/NumberInput readOnly contract (stays
+   * focusable + submits its value, unlike `disabled`). Default false.
+   */
   readOnly?: boolean;
-  size?: "sm" | "md";
+  /** Trigger height tier — forwarded to the underlying Button. Default matches Button's own default. */
+  size?: SizeProp;
+  /** Controlled open state for the popover (uncontrolled by default). */
+  open?: OpenProp;
+  onOpenChange?: OnOpenChangeProp;
+  /** Controlled search-box query (uncontrolled by default). Pairs with `onSearchChange`. */
+  search?: string;
+  onSearchChange?: OnSearchChangeProp;
+  /**
+   * Override the default client-side filter (`options` mode only — ignored with `loadOptions`,
+   * which is responsible for its own server-side filtering). Receives the option and the trimmed
+   * query; return true to keep the row. Only consulted while the query is non-empty.
+   */
+  filterOption?: (option: SearchSelectOptionProp, query: string) => boolean;
+  /**
+   * Custom error slot — receives the resolved message and a `retry` callback that reloads from the
+   * first page (a predictable recovery, not a resume of a failed page-N append). Overrides the
+   * default `errorMessage` row.
+   */
+  renderError?: (params: { message: string; retry: () => void }) => React.ReactNode;
+  /**
+   * Custom "load more" affordance appended below the list while another page is available — pairs
+   * with (does not replace) the built-in scroll-triggered pagination.
+   */
+  renderLoadMore?: (params: {
+    hasMore: boolean;
+    loading: boolean;
+    loadMore: () => void;
+  }) => React.ReactNode;
   /** Form field name — submits the selected value via a hidden input. */
   name?: NameProp;
   id?: IdProp;
@@ -401,6 +429,11 @@ export type SearchSelectProp = {
  * Data-driven (Ant-style) form of {@link Select} — one component covering static `options` or
  * async `loadOptions`, with `showSearch` toggling the searchable combobox vs a plain listbox.
  * Passing `options`/`loadOptions` to `<Select>` switches it from the compound API to this one.
+ *
+ * `readOnly`/`size`/`open`/`onOpenChange`/`search`/`onSearchChange`/`filterOption`/`renderError`/
+ * `renderLoadMore` (inherited from {@link SearchSelectProp}) take effect ONLY in searchable mode
+ * (`showSearch` or `loadOptions`) — they configure the `SearchSelect` engine that mode delegates
+ * to. The plain listbox (no search) is a native Radix listbox and ignores them.
  */
 export type SelectDataProp = SearchSelectProp & {
   /** Show the search box (combobox). Defaults to true when `loadOptions` is set, otherwise false. */
@@ -420,7 +453,7 @@ export type UploadVariantProp =
   | "avatar-crop";
 
 /** @see Upload — presentational; wire `onUpload` to media-service in app api.ts */
-export type UploadProp = {
+export type UploadProp = FieldA11yProps & {
   variant?: UploadVariantProp;
   value?: ValueProp<UploadFileItemProp[]>;
   defaultValue?: DefaultValueProp<UploadFileItemProp[]>;
@@ -436,6 +469,8 @@ export type UploadProp = {
     file: File,
     item: UploadFileItemProp,
   ) => Promise<{ mediaId: string; previewUrl?: string }>;
+  /** Injected by FormField (or set directly) — applied to the native `<input type="file">`. */
+  id?: IdProp;
   className?: ClassNameProp;
   children?: React.ReactNode;
 };
@@ -457,7 +492,7 @@ export type TreeFieldNamesProp = {
 };
 
 /** @see Cascader — cascade picker (Popover + multi-column). */
-export type CascaderProp = {
+export type CascaderProp = FieldA11yProps & {
   options: TreeOptionProp[];
   value?: ValueProp<string[] | string[][]>;
   defaultValue?: DefaultValueProp<string[] | string[][]>;
@@ -486,7 +521,7 @@ export type CascaderProp = {
 export type ShowCheckedStrategyProp = "SHOW_CHILD" | "SHOW_PARENT" | "SHOW_ALL";
 
 /** @see TreeSelect — tree in Popover (cmdk search + expand/collapse). */
-export type TreeSelectProp = {
+export type TreeSelectProp = FieldA11yProps & {
   treeData: TreeOptionProp[];
   value?: ValueProp<string | string[]>;
   defaultValue?: DefaultValueProp<string | string[]>;
@@ -520,7 +555,7 @@ export type TransferItemProp = {
 };
 
 /** @see Transfer — dual-list shuttle (Checkbox + SearchInput). */
-export type TransferProp = {
+export type TransferProp = FieldA11yProps & {
   dataSource: TransferItemProp[];
   targetKeys: string[];
   onValueChange?: (targetKeys: string[], direction: "left" | "right", moveKeys: string[]) => void;
@@ -528,6 +563,8 @@ export type TransferProp = {
   showSearch?: boolean;
   oneWay?: boolean;
   disabled?: DisabledProp;
+  /** Injected by FormField (or set directly) — applied to the `role="group"` shuttle container. */
+  id?: IdProp;
   className?: ClassNameProp;
   selectedKeys?: [string[], string[]];
   onSelectChange?: (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => void;

@@ -25,7 +25,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>Variants / tones</CardTitle>
+            <CardTitle level={2}>Variants / tones</CardTitle>
             <CardDescription>
               default (info), warning, destructive, success · each sets icon and colour scheme.
             </CardDescription>
@@ -76,7 +76,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>AlertTitle + AlertDescription + AlertActions</CardTitle>
+            <CardTitle level={2}>AlertTitle + AlertDescription + AlertActions</CardTitle>
             <CardDescription>
               Wrap text in AlertTitle / AlertDescription; put CTA Buttons in AlertActions (renders
               in the action slot). Never place raw buttons as top-level Alert children.
@@ -97,7 +97,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Dismissible banner</CardTitle>
+            <CardTitle level={2}>Dismissible banner</CardTitle>
             <CardDescription>
               Pass onDismiss: the component renders an accessible × button automatically. Never
               hand-roll your own dismiss button.

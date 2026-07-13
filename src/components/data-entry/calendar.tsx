@@ -91,7 +91,11 @@ export function Calendar({
           classNames?.range_middle,
         ),
         selected: cn(
-          "bg-foreground text-background hover:bg-foreground hover:text-background focus:bg-foreground focus:text-background [&>button]:text-background",
+          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+          // The day is a ghost <button> that sets its OWN (dark --foreground) text colour, which
+          // overrides the cell's text-primary-foreground and fails contrast on the blue fill
+          // (axe color-contrast). Force the button label to primary-foreground through hover/focus.
+          "[&>button]:text-primary-foreground [&>button:hover]:bg-primary [&>button:hover]:text-primary-foreground [&>button:focus]:text-primary-foreground",
           classNames?.selected,
         ),
         today: cn("bg-accent text-accent-foreground", classNames?.today),

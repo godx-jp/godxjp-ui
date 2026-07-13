@@ -145,7 +145,7 @@ export default function Demo() {
       >
         <Card>
           <CardHeader>
-            <CardTitle>法人情報</CardTitle>
+            <CardTitle level={2}>法人情報</CardTitle>
             <CardDescription>登録されている法人の基本情報です。</CardDescription>
           </CardHeader>
           <CardContent>
@@ -207,7 +207,7 @@ export default function Demo() {
         <Flex direction="col" gap="md">
           <Card>
             <CardHeader>
-              <CardTitle>基本情報</CardTitle>
+              <CardTitle level={2}>基本情報</CardTitle>
             </CardHeader>
             <CardContent>
               <Descriptions columns={3}>

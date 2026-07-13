@@ -56,7 +56,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>外部勘定科目マッピング（検索付き）</CardTitle>
+            <CardTitle level={2}>外部勘定科目マッピング（検索付き）</CardTitle>
             <CardDescription>
               外部から取り込んだ科目（左）を社内正規科目（右）にマッピングする。 マッピング済み:{" "}
               {mappedKeys.length} 件
@@ -75,7 +75,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>レポート列選択（追加専用）</CardTitle>
+            <CardTitle level={2}>レポート列選択（追加専用）</CardTitle>
             <CardDescription>
               oneWay=true でレポートに列を追加のみ可能（削除不可）。 選択列: {reportKeys.length} 列
             </CardDescription>

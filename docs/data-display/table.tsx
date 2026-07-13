@@ -28,7 +28,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle>仕訳明細</CardTitle>
+            <CardTitle level={2}>仕訳明細</CardTitle>
             <CardDescription>
               A fixed double-entry breakdown. The second row is rendered with the built-in selected
               state (TableRow data-state=&quot;selected&quot;), and a caption + total footer row
@@ -78,7 +78,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle>月次推移</CardTitle>
+            <CardTitle level={2}>月次推移</CardTitle>
             <CardDescription>
               A wide table, more columns than the viewport can hold, so the built-in scroll wrapper
               (.relative w-full overflow-auto) scrolls horizontally.
