@@ -29,7 +29,7 @@ concurrency:
 jobs:
   verify:
     name: Verify (build · typecheck · lint · guards · test)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -40,13 +40,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # verify:static includes check:visual-audit which renders in Chromium.
       - name: Install Chromium for Playwright
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install chromium
       - name: verify:static (all non-browser publish gates + test)
         run: pnpm verify:static
 
   coverage:
     name: Frame coverage (contract inventory)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -68,7 +68,7 @@ jobs:
 
   axe:
     name: Per-frame axe (chrome blocking, component allowlisted)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -78,7 +78,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Install Chromium for Playwright
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install chromium
       - name: axe every frame (desktop + mobile-sm)
         run: pnpm check:frame-axe
       - uses: actions/upload-artifact@v4
@@ -92,7 +92,7 @@ jobs:
     name: Viewport-matrix geometry sweep
     # Heavier (8 widths × every frame) but now gates PRs too — geometry regressions were
     # merging unseen because this only ran on main/nightly (#179 fixed 11 that had accumulated).
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -102,7 +102,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Install Chromium for Playwright
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install chromium
       - name: geometry sweep (320→1920)
         run: pnpm check:frame-geometry
       - uses: actions/upload-artifact@v4

@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   static-contracts:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4.4.0
@@ -27,7 +27,7 @@ jobs:
 
   rendered-runtime:
     name: rendered-runtime (${{ matrix.name }})
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -56,7 +56,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright install chromium
       - run: ${{ matrix.command }}
         env:
           DATA_ENTRY_STORIES: ${{ matrix.stories }}
