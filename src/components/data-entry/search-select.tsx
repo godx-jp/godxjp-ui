@@ -491,7 +491,14 @@ export function SearchSelect({
                 scroll-triggered pagination above. Lives OUTSIDE role="listbox" (a listbox's
                 children must be options/groups per APG). */}
             {renderLoadMore && hasMore ? (
-              <div className="border-border shrink-0 border-t p-1">
+              <div
+                className="border-border shrink-0 border-t p-1"
+                // The footer lives inside the cmdk root for layout, but its controls are NOT
+                // cmdk items — stop keydown here so Enter/Space activate the load-more button
+                // natively instead of being hijacked by cmdk's list navigation (a11y: the slot
+                // must be keyboard-operable, not mouse-only).
+                onKeyDown={(event) => event.stopPropagation()}
+              >
                 {renderLoadMore({
                   hasMore,
                   loading,

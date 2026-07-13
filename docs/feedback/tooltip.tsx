@@ -1,13 +1,22 @@
-import { Tooltip, TooltipContent, TooltipTrigger } from "@godxjp/ui/feedback";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { Copy, Info, Trash2 } from "lucide-react";
+import { Copy, Info, Pencil, Trash2 } from "lucide-react";
 
 /**
  * Tooltip · self-providing (no app-level TooltipProvider needed). Compose
  * Tooltip > TooltipTrigger (asChild on interactive elements) > TooltipContent.
  * Read-only hints only · use Popover for interactive floating content.
+ *
+ * TooltipProvider stays OPTIONAL — reach for it only to tune the open/close
+ * delay across a whole cluster (e.g. a dense toolbar) in one place instead of
+ * repeating delayDuration on every Tooltip. See the last card.
  */
 export default function Demo() {
   return (
@@ -114,6 +123,51 @@ export default function Demo() {
               </TooltipTrigger>
               <TooltipContent side="bottom">⌘K でグローバル検索を開く</TooltipContent>
             </Tooltip>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Shared delay across a toolbar (TooltipProvider)</CardTitle>
+            <CardDescription>
+              Wrap a cluster in TooltipProvider to set one delayDuration for every tooltip inside —
+              a dense toolbar feels snappy without repeating the prop on each Tooltip.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <TooltipProvider delayDuration={0}>
+              <Flex direction="row" gap="sm" align="center">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" aria-label="編集">
+                      <Pencil className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">編集</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" aria-label="複製">
+                      <Copy className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">複製</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="削除"
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">削除 (元に戻せません)</TooltipContent>
+                </Tooltip>
+              </Flex>
+            </TooltipProvider>
           </CardContent>
         </Card>
       </Flex>

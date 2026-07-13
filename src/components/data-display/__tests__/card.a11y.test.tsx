@@ -8,11 +8,13 @@ import { expectNoA11yViolations } from "@/test/a11y";
 // Cards are composition shells; the title must be a real heading and any
 // actions must carry accessible names.
 describe("Card a11y", () => {
-  it("defaults to a page-section h2 and supports nested heading levels", () => {
+  it("defaults to an h3 section heading and supports explicit levels", () => {
+    // Default level is 3 (a card nested under an already-h2 section) per #169; a card sitting
+    // directly under the page h1 opts up to level={2} to keep the outline gap-free.
     const { rerender } = render(<CardTitle>Primary section</CardTitle>);
-    expect(screen.getByRole("heading", { level: 2, name: "Primary section" })).toBeInTheDocument();
-    rerender(<CardTitle as="h3">Nested section</CardTitle>);
-    expect(screen.getByRole("heading", { level: 3, name: "Nested section" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 3, name: "Primary section" })).toBeInTheDocument();
+    rerender(<CardTitle level={2}>Nested section</CardTitle>);
+    expect(screen.getByRole("heading", { level: 2, name: "Nested section" })).toBeInTheDocument();
   });
   it("has no axe violations for a fully composed card", async () => {
     await expectNoA11yViolations(
