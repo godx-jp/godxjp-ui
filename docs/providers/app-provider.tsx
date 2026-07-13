@@ -54,7 +54,7 @@ export default function Demo() {
             <CardContent>
               <Flex direction="col" gap="sm">
                 <Label htmlFor="demo-locale">表示言語</Label>
-                <AppSettingPicker kind="locale" id="demo-locale" />
+                <AppSettingPicker kind="locale" appearance="labeled" id="demo-locale" />
               </Flex>
             </CardContent>
           </Card>
@@ -119,7 +119,7 @@ export default function Demo() {
               <Flex direction="row" gap="md" wrap>
                 <Flex direction="col" gap="sm" className="min-w-40 flex-1">
                   <Label htmlFor="settings-locale">表示言語</Label>
-                  <AppSettingPicker kind="locale" id="settings-locale" />
+                  <AppSettingPicker kind="locale" appearance="labeled" id="settings-locale" />
                 </Flex>
                 <Flex direction="col" gap="sm" className="min-w-56 flex-1">
                   <Label htmlFor="settings-timezone">タイムゾーン</Label>

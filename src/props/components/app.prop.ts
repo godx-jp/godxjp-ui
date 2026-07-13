@@ -96,11 +96,15 @@ export type AppSettingKind =
 export type AppSettingPickerProp = {
   kind: AppSettingKind;
   /**
-   * Trigger presentation. `"labeled"` (default) shows the leading icon + the selected value in a
-   * full-width control. `"icon"` renders a supported square, icon-only topbar trigger (e.g. a globe
-   * language switcher): it structurally drops the value text and the picker's owned width — no
-   * descendant-selector CSS overrides needed — while always keeping the localized `aria-label`, so
-   * an icon-only trigger can never ship without an accessible name.
+   * Trigger presentation. `"labeled"` shows the leading icon + the selected value in a control
+   * sized to the setting. `"icon"` renders a supported square, icon-only topbar trigger (e.g. a
+   * globe language switcher): it structurally drops the value text and the picker's owned width —
+   * no descendant-selector CSS overrides needed — while always keeping the localized `aria-label`,
+   * so an icon-only trigger can never ship without an accessible name.
+   *
+   * Default is kind-dependent: `kind="locale"` defaults to `"icon"` (its product contract is the
+   * compact language switcher); every other kind defaults to `"labeled"`. Override explicitly for
+   * e.g. a labeled locale row inside a settings form (`appearance="labeled"`).
    */
   appearance?: AppSettingPickerAppearanceProp;
   className?: ClassNameProp;

@@ -6,7 +6,6 @@ import { renderWithUi, screen, userEvent } from "@/test/render";
 
 describe("AppSettingPicker", () => {
   it.each([
-    ["locale", "ja"],
     ["timezone", "Asia/Tokyo"],
     ["dateFormat", "iso"],
     ["timeFormat", "24h"],
@@ -15,6 +14,25 @@ describe("AppSettingPicker", () => {
     const trigger = screen.getByRole("combobox");
     expect(trigger).toBeInTheDocument();
     expect(trigger).toHaveAttribute("aria-label");
+  });
+
+  it('kind="locale" defaults to the compact icon-only trigger (product contract, gh#175)', () => {
+    // No `appearance` prop: locale's canonical form is the icon-only language switcher, so it
+    // must default to icon (no visible value text) while still exposing its localized aria-label —
+    // NOT the labeled full-width Select the other kinds default to.
+    renderWithUi(<AppSettingPicker kind="locale" value="ja" onValueChange={vi.fn()} />);
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toHaveAccessibleName();
+    expect(trigger).toHaveTextContent("");
+  });
+
+  it('kind="locale" honours an explicit appearance="labeled" override (settings-form row)', () => {
+    renderWithUi(
+      <AppSettingPicker kind="locale" appearance="labeled" value="ja" onValueChange={vi.fn()} />,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toHaveAccessibleName();
+    expect(trigger.textContent ?? "").not.toBe("");
   });
 
   it("controlled: picking an option fires onValueChange (locale)", async () => {

@@ -85,6 +85,28 @@ describe("TagInput", () => {
     expect(queryByRole("button")).toBeNull();
   });
 
+  it("disabled marks the container aria-disabled so its dimmed chips are exempt from the contrast check (gh#175)", () => {
+    // The disabled control is dimmed to --disabled-opacity; that composite drops the chip
+    // text/background contrast below AA. `aria-disabled` flags it as an inactive control so the
+    // rendered a11y check (axe color-contrast) skips it — parity with native disabled controls.
+    const { container } = render(<TagInput value={["a", "b"]} disabled aria-label="タグ" />);
+    expect(container.querySelector('[data-slot="tag-input"]')).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
+
+  it("enabled does not set aria-disabled (only the disabled state is inactive)", () => {
+    const { container } = render(<TagInput value={["a"]} aria-label="タグ" />);
+    expect(container.querySelector('[data-slot="tag-input"]')).not.toHaveAttribute("aria-disabled");
+  });
+
+  it("has no axe violations when disabled (dimmed chips are exempt as an inactive control)", async () => {
+    await expectNoA11yViolations(
+      <TagInput defaultValue={["経費", "交通費"]} disabled aria-label="タグ" />,
+    );
+  });
+
   it("has no axe violations", async () => {
     await expectNoA11yViolations(<TagInput defaultValue={["経費", "交通費"]} aria-label="タグ" />);
   });

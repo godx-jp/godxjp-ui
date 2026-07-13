@@ -83,6 +83,22 @@ export default function Demo() {
             </FormField>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>無効状態</CardTitle>
+            <CardDescription>
+              disabled dims the whole control and drops the remove buttons; the container is marked
+              aria-disabled so the dimmed chips are treated as an inactive control (no contrast
+              failure).
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormField id="disabled-tags" label="ラベル">
+              <TagInput value={["確定済み", "ロック"]} disabled />
+            </FormField>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );
