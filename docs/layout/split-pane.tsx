@@ -324,7 +324,7 @@ export default function Demo() {
                   約 28rem のコンテナ → 縦積み
                 </Text>
                 <SplitPane
-                  asideLabel="補助パネル"
+                  asideLabel="補助パネル（狭い埋め込み）"
                   asideWidth="sm"
                   aside={<div className="bg-muted p-4">補助パネル</div>}
                 >
@@ -337,7 +337,7 @@ export default function Demo() {
                   約 56rem のコンテナ → 2 カラム
                 </Text>
                 <SplitPane
-                  asideLabel="補助パネル"
+                  asideLabel="補助パネル（広い埋め込み）"
                   asideWidth="sm"
                   aside={<div className="bg-muted p-4">補助パネル</div>}
                 >
