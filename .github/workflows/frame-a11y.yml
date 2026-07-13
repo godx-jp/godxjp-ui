@@ -29,7 +29,7 @@ concurrency:
 jobs:
   verify:
     name: Verify (build · typecheck · lint · guards · test)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -46,7 +46,7 @@ jobs:
 
   coverage:
     name: Frame coverage (contract inventory)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -68,7 +68,7 @@ jobs:
 
   axe:
     name: Per-frame axe (chrome blocking, component allowlisted)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -92,7 +92,7 @@ jobs:
     name: Viewport-matrix geometry sweep
     # Heavier (8 widths × every frame) but now gates PRs too — geometry regressions were
     # merging unseen because this only ran on main/nightly (#179 fixed 11 that had accumulated).
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
