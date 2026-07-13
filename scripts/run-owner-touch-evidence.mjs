@@ -45,7 +45,9 @@ for (const width of [320, 390]) {
     let pass = false;
     try {
       pass = await action(page);
-    } catch {}
+    } catch {
+      /* action lỗi → giữ pass=false */
+    }
     results.push({ owner, width, verdict: pass ? "pass" : "fail" });
     await page.close();
   }

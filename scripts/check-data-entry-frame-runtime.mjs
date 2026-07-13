@@ -52,7 +52,9 @@ async function waitForServer() {
   for (let attempt = 0; attempt < 80; attempt += 1) {
     try {
       if ((await fetch(base)).ok) return;
-    } catch {}
+    } catch {
+      /* server chưa lên — thử lại */
+    }
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   throw new Error("preview server did not start");

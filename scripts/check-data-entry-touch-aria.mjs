@@ -45,7 +45,9 @@ const server = spawn(
 for (let attempt = 0; attempt < 80; attempt += 1) {
   try {
     if ((await fetch(base)).ok) break;
-  } catch {}
+  } catch {
+    /* server chưa lên — thử lại */
+  }
   await new Promise((resolve) => setTimeout(resolve, 100));
 }
 let browser;
