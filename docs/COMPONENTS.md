@@ -162,4 +162,7 @@ Auto retry: `useQuery({ retry, retryDelay })`. Manual retry: default `refetch()`
    [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md)
 7. Register every applicable prop/state/responsive/a11y dimension in the frame coverage ledger;
    missing coverage is `UNTESTED`, never pass
-8. Update this doc
+8. Run `pnpm check:frame-axe` (real-Chromium axe over every `/frame/**`) — a new frame must ship
+   with **zero** violations; see [FRAME-A11Y-CI.md](./FRAME-A11Y-CI.md) for how to run it and the
+   categories of violations already root-caused for other components
+9. Update this doc
