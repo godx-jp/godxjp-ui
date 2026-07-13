@@ -1437,7 +1437,7 @@ export default function InvoiceList({
     usage: [
       'DO always wrap body content in <CardContent> — the bare <Card> div has zero inner padding; content renders flush against card edges without it. Never add className="p-4" directly on <Card> as a substitute.',
       "DO put titles/descriptions in <CardHeader>/<CardTitle>/<CardDescription>. Use <CardHeader banded> for a visually separated muted-background header band (mirrors <CardFooter separated>). Pair with <CardAction> inside a flex-row CardHeader for header-level action buttons.",
-      "DO set <CardTitle level={n}> to keep a valid document outline (h1 → h2 → h3, no skipped levels): CardTitle renders <h3> by default, so a section card directly under a page <h1> needs level={2}. Pick the level by OUTLINE position, NEVER for visual size — the title size is fixed by tokens and does not change with level. When the card title is a styled label rather than a section heading, use <CardTitle as=\"p\"> so it is not announced as a heading.",
+      'DO set <CardTitle level={n}> to keep a valid document outline (h1 → h2 → h3, no skipped levels): CardTitle renders <h3> by default, so a section card directly under a page <h1> needs level={2}. Pick the level by OUTLINE position, NEVER for visual size — the title size is fixed by tokens and does not change with level. When the card title is a styled label rather than a section heading, use <CardTitle as="p"> so it is not announced as a heading.',
       "DO use <CardContent flush> for edge-to-edge children such as DataTable, Table, or a Tabs list — this removes horizontal padding. Combine with <CardContent tight> when there is no visual gap needed after the header, and <CardContent solo> when there is no CardHeader above (top padding matches the card shell).",
       "DO use <CardFooter separated> to render a top-bordered action band (Save/Cancel buttons, table summary row). Use <CardFooter flush> for a full-bleed footer bar.",
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
@@ -1861,7 +1861,7 @@ import { Smartphone } from "lucide-react";
     ],
     usage: [
       "DO always pass `title` — it is the only required prop and renders a heading (`<h3>` by default); omitting it causes a blank silent render with no visible error.",
-      "DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs=\"p\"` so the message is not a heading at all.",
+      'DO set `titleLevel` to match the page outline (page h1 → section h2 → nested h3) so the empty state does not trigger a heading-order violation. Choose the level for OUTLINE position, never for visual size — the size never changes with the level. When the empty state sits in a section that already has its own heading, use `titleAs="p"` so the message is not a heading at all.',
       'DO use `tone="success"` (or warning/destructive/info) for a semantic confirmation/alert zero-state — it recolours the icon medallion from the role token; do NOT hand-roll a `.ui-success-state` class that scopes `--empty-state-icon-*`.',
       "DO use the `icon` prop (a Lucide icon component, not a JSX element) to give visual context — e.g. `icon={InboxIcon}` for empty inboxes, `icon={SearchIcon}` after a failed search. Pass the component reference, not `<InboxIcon />`.",
       "DO use `action` (a `ReactNode`, typically a `<Button>`) for actionable zero-states — e.g. 'Create first invoice' — so users have a clear next step instead of a dead end.",
@@ -3828,10 +3828,15 @@ toast.error("保存に失敗しました");`,
         name: "items",
         type: "{ value: string; label: React.ReactNode; content: React.ReactNode; disabled?: boolean }[]",
         description:
-          "Optional data-driven tab list. When provided, Tabs renders all triggers and content panels.",
+          "Optional data-driven tab list. When provided, Tabs renders all triggers and content panels. When Tabs owns the initial selection (no `value`, and no `defaultValue` naming an existing ENABLED item), it falls back to the first item that is NOT `disabled` — never a disabled one — and selects nothing if every item is disabled (gh#175).",
       },
       { name: "value", type: "string", description: "Controlled active tab key." },
-      { name: "defaultValue", type: "string", description: "Uncontrolled initial tab key." },
+      {
+        name: "defaultValue",
+        type: "string",
+        description:
+          "Uncontrolled initial tab key. Ignored (falls back to the first enabled item) when it names a disabled item or an unknown key.",
+      },
       {
         name: "onValueChange",
         type: "(value: string) => void",
@@ -3845,6 +3850,8 @@ toast.error("保存に失敗しました");`,
       "DO use `variant` on Tabs when using `items`; when composing manually, set `variant` on `TabsList`.",
       'DO: pass `orientation="vertical"` to `<Tabs>` (not to `TabsList`) for a side-rail layout — the CSS group classes on root and triggers respond automatically, so no extra className gymnastics are needed.',
       "DON'T: hand-roll the active-indicator underline or selected-state ring — `TabsTrigger` already applies `data-[state=active]` styles including the `after:` line element for the `line` variant. Adding your own underline breaks the design.",
+      "DO trust the horizontal `TabsList` to scroll its own overflow (hidden scrollbar, swipeable) instead of clipping when tab labels — especially long localized ones (Japanese, German) — don't fit a narrow container. Don't wrap it in your own `overflow-x-auto` div or truncate labels to work around clipping; that was gh#175 and is now the framework's job (#175).",
+      "DON'T assume the first item is ever auto-selected when it is `disabled` — Tabs always resolves the fallback to the first ENABLED item (or none, if all are disabled). A `disabled: true` first item is safe to author without also setting `defaultValue`.",
     ],
     useCases: [
       "Detail drawers or pages that need full per-panel control — e.g. an accounting journal-entry sheet where one panel has `forceMount` to keep a live chart mounted, requiring custom `TabsContent` props that `Tabs` cannot pass.",
