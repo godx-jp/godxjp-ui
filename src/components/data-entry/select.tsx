@@ -41,8 +41,15 @@ export const SelectTrigger = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
     size?: "sm" | "md";
+    /**
+     * Show the built-in chevron disclosure indicator (default true). Set `false` for specialized
+     * triggers — icon-only, or one that already renders its own affordance — so it isn't
+     * duplicated. Omits the icon from the DOM entirely (not a CSS hide), so no consumer
+     * descendant CSS is needed to remove it.
+     */
+    showIndicator?: boolean;
   }
->(({ className, children, size = "md", ...props }, ref) => (
+>(({ className, children, size = "md", showIndicator = true, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     data-slot="select-trigger"
@@ -55,13 +62,15 @@ export const SelectTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <SelectPrimitive.Icon asChild>
-      <ChevronDown
-        data-slot="select-chevron"
-        className="size-4 shrink-0 opacity-50"
-        aria-hidden="true"
-      />
-    </SelectPrimitive.Icon>
+    {showIndicator ? (
+      <SelectPrimitive.Icon asChild>
+        <ChevronDown
+          data-slot="select-chevron"
+          className="size-4 shrink-0 opacity-50"
+          aria-hidden="true"
+        />
+      </SelectPrimitive.Icon>
+    ) : null}
   </SelectPrimitive.Trigger>
 ));
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
@@ -211,6 +220,15 @@ function DataSelect({
   clearLabel,
   clearable,
   disabled,
+  readOnly,
+  size,
+  open,
+  onOpenChange,
+  search,
+  onSearchChange,
+  filterOption,
+  renderError,
+  renderLoadMore,
   name,
   id,
   className,
@@ -247,6 +265,15 @@ function DataSelect({
         clearLabel={clearLabel}
         clearable={clearable}
         disabled={disabled || (!loadOptions && !hasOptions)}
+        readOnly={readOnly}
+        size={size}
+        open={open}
+        onOpenChange={onOpenChange}
+        search={search}
+        onSearchChange={onSearchChange}
+        filterOption={filterOption}
+        renderError={renderError}
+        renderLoadMore={renderLoadMore}
         name={name}
         id={id}
         className={className}
