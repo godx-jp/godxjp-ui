@@ -64,7 +64,8 @@
     "navigation-pagination": [
       320,
       375,
-      390
+      390,
+      768
     ],
     "navigation-tabs": [
       320,
