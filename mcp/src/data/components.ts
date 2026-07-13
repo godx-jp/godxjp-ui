@@ -1847,12 +1847,6 @@ import { Smartphone } from "lucide-react";
     tagline: "Centred empty placeholder with icon, title, description, and optional CTA.",
     props: [
       { name: "title", type: "string", required: true, description: "Primary empty message." },
-      {
-        name: "titleAs",
-        type: '"h2" | "h3" | "h4" | "p"',
-        description:
-          "Contextual title element. Defaults by variant: page=h2, section=h3, compact=p.",
-      },
       { name: "description", type: "string", description: "Secondary helper text." },
       { name: "icon", type: "LucideIcon", description: "Icon above the title." },
       { name: "action", type: "ReactNode", description: "CTA element (e.g. a Button)." },

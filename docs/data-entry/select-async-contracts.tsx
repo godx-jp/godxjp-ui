@@ -30,7 +30,6 @@ export default function Demo() {
             <FormField id="retry-country" label="Country">
               <Select
                 id="retry-country"
-                retryLabel="再試行"
                 errorMessage="国を読み込めませんでした"
                 loadOptions={async () => {
                   if (attempt === 0) {
@@ -54,7 +53,6 @@ export default function Demo() {
           <CardContent>
             <Select
               aria-label="Paged country"
-              loadMoreLabel="さらに読み込む"
               loadOptions={async ({ page }) => ({
                 options: [countries[(page - 1) % countries.length]],
                 hasMore: page === 1,
@@ -77,9 +75,9 @@ export default function Demo() {
               options={countries}
               open={open}
               onOpenChange={setOpen}
-              searchValue={search}
-              onSearchValueChange={setSearch}
-              filterOption={(query, option) =>
+              search={search}
+              onSearchChange={setSearch}
+              filterOption={(option, query) =>
                 option.sublabel?.toLowerCase().includes(query.toLowerCase()) ?? false
               }
               size="sm"
