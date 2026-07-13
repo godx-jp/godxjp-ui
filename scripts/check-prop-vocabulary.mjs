@@ -151,6 +151,7 @@ const COMPONENT_TYPE_ALLOWLIST = new Set([
   "InputProps", // React.InputHTMLAttributes passthrough
   "TextareaProps", // React.TextareaHTMLAttributes passthrough
   "SkeletonProps", // React.HTMLAttributes passthrough
+  "TableProps", // React.HTMLAttributes passthrough + `scrollable` (own-scroll opt-out)
   "TabsProps", // Radix Tabs.Root props passthrough
   "SelectProp", // data-driven union (SelectDataProp | Radix Select.Root props)
 ]);
