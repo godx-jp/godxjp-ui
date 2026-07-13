@@ -60,6 +60,13 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     return (
       <div
         data-slot="tag-input"
+        // The disabled state dims the whole control (chips + field) to `--disabled-opacity`;
+        // that composite lowers the chip text/background pair below the WCAG AA contrast
+        // threshold. Marking the container `aria-disabled` makes it an INACTIVE control, which
+        // WCAG 1.4.3 exempts from contrast and which axe honours (it skips color-contrast on any
+        // node under `aria-disabled="true"`) — the same exemption native disabled form controls
+        // get for free. Without it the dimmed chips are a rendered a11y contrast failure (gh#175).
+        aria-disabled={disabled || undefined}
         className={cn("ui-tag-input", disabled && "ui-tag-input-disabled", className)}
       >
         {tags.length > 0 ? (

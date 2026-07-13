@@ -46,7 +46,9 @@ export default function Demo() {
               <Flex direction="row" gap="md" wrap>
                 <Flex direction="col" gap="sm" className="min-w-40 flex-1">
                   <Text weight="medium">表示言語</Text>
-                  <AppSettingPicker kind="locale" id="setting-locale" />
+                  {/* locale defaults to the icon-only switcher; a labeled settings-form row opts
+                      into the full trigger with an explicit appearance="labeled". */}
+                  <AppSettingPicker kind="locale" appearance="labeled" id="setting-locale" />
                 </Flex>
                 <Flex direction="col" gap="sm" className="min-w-56 flex-1">
                   <Text weight="medium">タイムゾーン</Text>

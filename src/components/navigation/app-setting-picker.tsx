@@ -84,9 +84,14 @@ const BRAND_NONE = "__app__";
  */
 export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPickerProp>(
   function AppSettingPicker(
-    { kind, appearance = "labeled", className, disabled, id, name, value, onValueChange },
+    { kind, appearance, className, disabled, id, name, value, onValueChange },
     ref,
   ) {
+    // Product contract (gh#175): the locale picker's canonical form is the compact icon-only
+    // language switcher (a globe/languages glyph in the topbar), so `kind="locale"` DEFAULTS to
+    // `appearance="icon"`. Every other kind defaults to the labeled trigger. Either can be
+    // overridden explicitly (e.g. a locale row inside a settings form passes `appearance="labeled"`).
+    const resolvedAppearance = appearance ?? (kind === "locale" ? "icon" : "labeled");
     const ctx = useOptionalAppContext();
     const { t, locale, fallbackLocale } = useTranslation();
 
@@ -150,7 +155,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
     // parity with the other data-entry controls.
     const unbound = current === undefined || !handleChange;
     const Icon = ICON[kind];
-    const iconOnly = appearance === "icon";
+    const iconOnly = resolvedAppearance === "icon";
 
     return (
       <Select
@@ -162,12 +167,14 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
         <SelectTrigger
           ref={ref}
           id={id}
+          // Icon-only triggers drop the chevron via the supported `showIndicator={false}` API
+          // (SelectTrigger omits the indicator from the DOM) — no consumer descendant-selector CSS.
+          showIndicator={!iconOnly}
           className={cn(
             iconOnly
-              ? // Structurally icon-only: drop the owned width + value spacing, square the box to
-                // the density-aware --control-height tap target, centre the icon and hide the
-                // trailing chevron — no consumer descendant-selector overrides required.
-                "w-[length:var(--control-height)] justify-center ps-0 pe-0 [&_[data-slot=select-chevron]]:hidden"
+              ? // Structurally icon-only: drop the owned width + value spacing and square the box to
+                // the density-aware --control-height tap target, centring the icon.
+                "w-[length:var(--control-height)] justify-center ps-0 pe-0"
               : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
                 // caps at the container (`w-auto max-w-full`) instead of the old UNCONDITIONAL
                 // `w-full` — so a labeled picker dropped into a narrow topbar no longer stretches to
