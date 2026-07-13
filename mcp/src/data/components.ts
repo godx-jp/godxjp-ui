@@ -2047,6 +2047,12 @@ import { Smartphone } from "lucide-react";
         description: "TableHeader / TableBody composition.",
       },
       { name: "className", type: "string", description: "Extra classes on the table element." },
+      {
+        name: "scrollable",
+        type: "boolean",
+        description:
+          "Whether Table owns its own horizontal-scroll region (default true). Leave true for a standalone table so a table wider than its container scrolls in a keyboard-reachable wrapper. Set false only when an ancestor already provides the scroll region (DataTable does) to avoid a redundant nested scroller + duplicate keyboard tab stop.",
+      },
     ],
     usage: [
       "DO compose all six sub-parts in order: wrap with `<Table>`, then `<TableHeader>` containing `<TableRow><TableHead>…</TableRow>`, then `<TableBody>` containing one or more `<TableRow><TableCell>…` rows. Skipping any layer (e.g. bare `<th>` inside `<Table>`) bypasses the design tokens and hover/border styles.",

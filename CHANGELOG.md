@@ -70,6 +70,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - FormField integration test asserting the **computed** accessible name / description / error for
   every custom control (`form-field-contract.a11y.test.tsx`), plus a `docs/data-entry/form-field`
   example demonstrating the contract, error timing and async server-validation + recovery.
+- **`Table` `scrollable` prop (default `true`).** A standalone `Table` keeps owning its
+  keyboard-reachable horizontal-scroll wrapper; pass `scrollable={false}` when an ancestor already
+  provides the scroll region so the table does not add a redundant NESTED scroll container + a
+  duplicate keyboard tab stop. `DataTable` now sets this (its `.ui-data-table-scroll` owns the
+  overflow + tab stop).
 
 ### Changed
 
@@ -90,6 +95,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`DataTable` no longer nests a redundant horizontal-scroll region (narrow-width geometry).**
+  `DataTable` already owns a keyboard-reachable horizontal scroller (`.ui-data-table-scroll`), but
+  the inner `Table` primitive was wrapping the `<table>` in a SECOND `overflow-auto` +
+  `tabIndex={0}` box — a double scroll container and a duplicate keyboard tab stop for one table. At
+  narrow widths (< `sm`, where the surface keeps its `min-w-[640px]`) that inner focusable extended
+  past the viewport and was flagged as a clipped control by the frame-geometry sweep. `DataTable`
+  now renders `<Table scrollable={false}>`, so a single scroll region owns the overflow. Fixes the
+  `query-button-refetch` and `query-data-state` geometry regressions at 320/375/390.
+- **AppShell demo topbar no longer overflows a narrow (mobile) viewport.** The `docs/layout`
+  AppShell example composed a topbar whose entity switcher and search control could not shrink,
+  forcing horizontal page scroll at 320/375/390. The example now demonstrates the correct
+  responsive composition: the entity switcher collapses to an icon-only control (label truncates
+  from `sm` up), the search control collapses to an icon-only trigger below `sm`, and the
+  decorative brand mark is hidden on the narrowest widths — each keeping its accessible name via
+  `aria-label`. Fixes the `layout-app-shell` geometry regression at 320/375/390.
 - **`Tabs` fallback selection no longer targets a disabled first item (#175).** When Tabs owns the
   initial selection — no `value`, and no `defaultValue` naming an existing ENABLED item (missing,
   unknown, or itself disabled) — it now resolves to the first item that is NOT `disabled`, instead

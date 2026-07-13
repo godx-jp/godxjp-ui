@@ -130,16 +130,23 @@ export default function Demo() {
           >
             {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
           </Button>
-          <Avatar className="rounded-md">
+          {/* Decorative brand mark — hidden below `sm` where the hamburger already anchors the
+              start of a narrow mobile topbar, so functional controls (entity switcher, search)
+              keep priority and the bar never overflows. */}
+          <Avatar className="hidden rounded-md sm:inline-flex">
             <AvatarFallback className="bg-primary text-primary-foreground font-bold">
               C
             </AvatarFallback>
           </Avatar>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
-                {activeEntity}
-                <ChevronDown />
+              {/* Entity switcher collapses to an icon-only control below `sm` so the topbar never
+                  overflows a narrow (mobile) viewport; the long tenant name truncates from `sm` up.
+                  `aria-label` keeps the accessible name at every width even when the label is hidden. */}
+              <Button variant="ghost" size="sm" aria-label={activeEntity} className="min-w-0">
+                <Building2 className="size-4 shrink-0 sm:hidden" aria-hidden="true" />
+                <span className="hidden min-w-0 truncate sm:inline">{activeEntity}</span>
+                <ChevronDown className="shrink-0" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
@@ -156,13 +163,17 @@ export default function Demo() {
         </>
       }
       center={
+        // Search collapses to an icon-only trigger below `sm` (fits a narrow topbar) and expands to
+        // the full-width search affordance from `sm` up. `aria-label` preserves the accessible name
+        // when the visible label is hidden.
         <Button
           variant="outline"
           size="sm"
-          className="text-muted-foreground w-full max-w-sm justify-start"
+          aria-label="検索"
+          className="text-muted-foreground w-auto justify-start sm:w-full sm:max-w-sm"
         >
           <Search />
-          検索…
+          <span className="hidden sm:inline">検索…</span>
         </Button>
       }
       end={

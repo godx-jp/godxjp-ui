@@ -618,7 +618,7 @@ DataTable.Content = function DataTableContent() {
       // eslint-disable-next-line no-console
       console.warn(
         `[DataTable] Column "${key}" renders a <th> with no visible or accessible text. ` +
-          "Give it a visible `header`, or set `ariaLabel` (e.g. \"Actions\"/\"Select\") so " +
+          'Give it a visible `header`, or set `ariaLabel` (e.g. "Actions"/"Select") so ' +
           "screen readers can announce the column and axe reports no empty-table-header violation.",
       );
     }
@@ -665,7 +665,7 @@ DataTable.Content = function DataTableContent() {
         data-striped={striped ? "" : undefined}
         data-hoverable={hoverable ? "" : undefined}
       >
-        <Table>
+        <Table scrollable={false}>
           <TableHeader className={cn("bg-secondary", stickyHeader && "sticky top-0 z-10")}>
             <TableRow>
               {selectable && (
