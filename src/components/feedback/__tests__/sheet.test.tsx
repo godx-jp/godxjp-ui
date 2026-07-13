@@ -32,6 +32,7 @@ describe("Sheet", () => {
       "data-slot",
       "sheet-content",
     );
+    expect(screen.getByRole("button", { name: "Đóng" })).toBeInTheDocument();
   });
 
   it("renders description inside panel", async () => {

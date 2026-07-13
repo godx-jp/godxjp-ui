@@ -21,6 +21,9 @@
   --space-page-active-x: var(--space-page-x);
   --space-page-active-y: var(--space-page-y);
   --space-section-active: var(--space-section);
+  --space-page-compact-x: var(--space-4); /* 16px mobile page gutter */
+  --space-page-compact-y: var(--space-4);
+  --space-section-compact: var(--space-4);
 
   /* Modal scrim — the single backdrop colour shared by EVERY overlay (Dialog, AlertDialog, Sheet,
    * Drawer). Themeable (rule #44) so a service tints the wash to its brand once, e.g. a navy
@@ -37,6 +40,13 @@
    * band reads vertically balanced (24 above / 24 below by default), instead of the
    * old fixed 16px pad that left 24 above vs 32 below. */
   --page-header-pad-bottom: calc(var(--space-page-active-y) - var(--space-section-active));
+
+  /* Responsive page typography is independent from density. Density changes information spacing;
+   * these tokens change only page chrome so mobile keeps readable body text and touch targets. */
+  --page-title-font-size: var(--heading-h1);
+  --page-title-font-size-compact: var(--heading-h2);
+  --page-subtitle-font-size: var(--font-size-base);
+  --page-subtitle-font-size-compact: var(--font-size-sm);
 
   /* Section "chrome" padding — the SHARED inset for header / body / footer of every overlay-ish
    * surface (Dialog · Sheet · Drawer · Card). One global knob: a service sets these once instead of

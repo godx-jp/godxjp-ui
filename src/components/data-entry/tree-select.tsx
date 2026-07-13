@@ -226,45 +226,47 @@ function TreeSelectRoot({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          id={id}
-          type="button"
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          aria-haspopup="tree"
-          aria-controls={open ? treeId : undefined}
-          {...fieldA11y}
-          disabled={disabled}
-          className={cn(
-            "w-full justify-between font-normal",
-            controlOpenRingClass,
-            !displayKeys.length && "text-muted-foreground",
-            className,
-          )}
-        >
-          <span className="truncate">
-            {displayKeys.length ? displayLabel : resolvedPlaceholder}
-          </span>
-          {/* ONE trailing icon: the clear (×) replaces the chevron while a value is selected;
-              a click on the field still opens the tree panel. */}
-          <span className="ms-2 flex shrink-0 items-center">
-            {allowClear && displayKeys.length > 0 && !disabled ? (
-              <button
-                type="button"
-                aria-label={t("dataEntry.treeSelect.clear")}
-                className="flex size-4 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
-                onClick={clearValue}
-              >
-                <X className="size-4" aria-hidden="true" />
-              </button>
-            ) : (
-              <ChevronsUpDown className="size-4 opacity-50" aria-hidden="true" />
+      <div className="relative">
+        <PopoverTrigger asChild>
+          <Button
+            id={id}
+            type="button"
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            aria-haspopup="tree"
+            aria-controls={open ? treeId : undefined}
+            {...fieldA11y}
+            disabled={disabled}
+            className={cn(
+              "w-full justify-between font-normal",
+              allowClear && displayKeys.length > 0 && !disabled && "pe-10",
+              controlOpenRingClass,
+              !displayKeys.length && "text-muted-foreground",
+              className,
             )}
-          </span>
-        </Button>
-      </PopoverTrigger>
+          >
+            <span className="truncate">
+              {displayKeys.length ? displayLabel : resolvedPlaceholder}
+            </span>
+            <span className="ms-2 flex shrink-0 items-center">
+              {!(allowClear && displayKeys.length > 0 && !disabled) && (
+                <ChevronsUpDown className="size-4 opacity-50" aria-hidden="true" />
+              )}
+            </span>
+          </Button>
+        </PopoverTrigger>
+        {allowClear && displayKeys.length > 0 && !disabled && (
+          <button
+            type="button"
+            aria-label={t("dataEntry.treeSelect.clear")}
+            className="absolute end-3 top-1/2 z-10 flex size-6 -translate-y-1/2 items-center justify-center rounded-sm opacity-50 hover:opacity-100 focus-visible:opacity-100"
+            onClick={clearValue}
+          >
+            <X className="size-4" aria-hidden="true" />
+          </button>
+        )}
+      </div>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
         {/* CommandInput already draws ONE bottom separator + its own inline padding — don't
             wrap it in another bordered/padded box (that double-borders the search row). */}

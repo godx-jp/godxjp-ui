@@ -12,6 +12,8 @@
   --filter-picker-width-md: 14rem;
   --breadcrumb-font-size: var(--font-size-xs);
   --menubar-shortcut-font-size: var(--font-size-xs);
+  --tabs-list-max-inline-size: 100%;
+  --tabs-list-overflow: auto;
 
   /* Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root).

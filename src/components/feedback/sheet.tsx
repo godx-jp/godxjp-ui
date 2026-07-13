@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import type { ToneProp, WidthProp } from "../../props/vocabulary";
 import { overlayHeaderToneClass } from "./overlay-header-tone";
+import { useTranslation } from "../../i18n/use-translation";
 
 /** number → px; string → any CSS length. */
 const toCssLength = (v: WidthProp): string => (typeof v === "number" ? `${v}px` : v);
@@ -84,6 +85,7 @@ export const SheetContent = React.forwardRef<
     { side = "right", className, children, showCloseButton = true, width, style, ...props },
     ref,
   ) => {
+    const { t } = useTranslation();
     const horizontal = side === "left" || side === "right";
     const widthSet = width != null && horizontal;
     const mergedStyle = widthSet
@@ -111,7 +113,7 @@ export const SheetContent = React.forwardRef<
               className="ring-offset-background focus:ring-ring absolute end-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
             >
               <X className="size-4" aria-hidden="true" />
-              <span className="sr-only">Close</span>
+              <span className="sr-only">{t("feedback.alert.dismiss")}</span>
             </DialogPrimitive.Close>
           ) : null}
         </DialogPrimitive.Content>
@@ -223,7 +225,7 @@ export const SheetDescription = React.forwardRef<
   <DialogPrimitive.Description
     ref={ref}
     data-slot="sheet-description"
-    className={cn("text-muted-foreground text-sm", className)}
+    className={cn("text-foreground/80 text-sm", className)}
     {...props}
   />
 ));

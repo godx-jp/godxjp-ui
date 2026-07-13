@@ -1,0 +1,107 @@
+{
+  "Input": {
+    "native input props and validation states": "docs/data-entry/input.tsx; native attributes forward unchanged"
+  },
+  "NumberInput": {
+    "value/defaultValue/min/max/step/precision/disabled/readOnly": "docs/data-entry/number-input.tsx state cases"
+  },
+  "Label": {
+    "htmlFor/asChild/native label props": "docs/data-entry/label.tsx; forwarded primitive props are N/A beyond association cases"
+  },
+  "Select": {
+    "options/loadOptions/value/defaultValue/search/loading/error/empty/disabled/readOnly/size/name/ARIA": "docs/data-entry/select.tsx static, compound and async cases"
+  },
+  "Checkbox": {
+    "checked/defaultChecked/indeterminate/disabled/required/name/value": "docs/data-entry/checkbox.tsx state cases"
+  },
+  "CheckboxGroup": {
+    "options/value/defaultValue/onValueChange/orientation/disabled/name/required": "docs/data-entry/checkbox.tsx state and orientation cases",
+    "inherited DOM and data attributes": "N/A: forwarded platform props are covered by the primitive contract"
+  },
+  "RadioGroup": {
+    "options/value/defaultValue/onValueChange/orientation/disabled/name/required": "docs/data-entry/radio-group.tsx vertical, horizontal and disabled cases",
+    "inherited Radix props": "N/A: forwarded unchanged to Radix RadioGroup"
+  },
+  "Textarea": {
+    "value/defaultValue/onChange/disabled/readOnly/invalid/rows/placeholder": "docs/data-entry/textarea.tsx state and form cases",
+    "native textarea attributes": "N/A: forwarded unchanged to the native textarea"
+  },
+  "Form": {
+    "layout/columns/density/labelWidth/controlWidth/labelAlign/collapseBelow": "docs/data-entry/form.tsx layout matrix"
+  },
+  "FormField": {
+    "id/label/required/helper/error/layout/width/colSpan": "docs/data-entry/form-field/index.tsx state and layout matrix"
+  },
+  "Field": {
+    "label/description/error/disabled/required/children": "docs/data-entry/checkbox.tsx and switch.tsx labelled-row cases"
+  },
+  "SearchInput": {
+    "value/defaultValue/onValueChange/onSearch/debounce/loading/clear/disabled": "docs/data-entry/search-input.tsx state and interaction cases"
+  },
+  "Switch": {
+    "checked/defaultChecked/onCheckedChange/disabled/required/name": "docs/data-entry/switch.tsx state cases"
+  },
+  "Toggle": {
+    "pressed/defaultPressed/onPressedChange/variant/size/disabled": "docs/data-entry/toggle.tsx state cases"
+  },
+  "ToggleGroup": {
+    "type/value/defaultValue/onValueChange/orientation/disabled/size/variant": "docs/data-entry/toggle-group.tsx single, multiple, controlled and disabled cases",
+    "inherited Radix props": "N/A: forwarded unchanged to Radix ToggleGroup"
+  },
+  "Slider": {
+    "value/defaultValue/min/max/step/orientation/disabled/name/ARIA": "docs/data-entry/slider.tsx state cases"
+  },
+  "Calendar": {
+    "mode/selected/onSelect/month/bounds/disabled/locale/labels": "docs/data-entry/calendar.tsx single/range/multiple cases"
+  },
+  "MonthPicker": {
+    "value/defaultValue/onValueChange/min/max/disabled/locale": "docs/data-entry/month-picker.tsx cases"
+  },
+  "MonthRangePicker": {
+    "value/defaultValue/onValueChange/min/max/disabled/locale": "docs/data-entry/month-range-picker.tsx cases"
+  },
+  "DatePicker": {
+    "value/defaultValue/onValueChange/min/max/disabled/clearable/locale": "docs/data-entry/date-picker.tsx cases"
+  },
+  "DateRangePicker": {
+    "value/defaultValue/onValueChange/min/max/disabled/clearable/locale": "docs/data-entry/date-range-picker.tsx cases"
+  },
+  "TimePicker": {
+    "value/defaultValue/onValueChange/format/step/disabled/clearable": "docs/data-entry/time-picker.tsx cases"
+  },
+  "ColorPicker": {
+    "value/defaultValue/onValueChange/presets/disabled/format": "docs/data-entry/color-picker.tsx cases"
+  },
+  "Upload": {
+    "files/onFilesChange/upload/accept/max/count/size/variant/disabled/error/retry": "docs/data-entry/upload.tsx lifecycle and variant cases"
+  },
+  "Cascader": {
+    "options/value/defaultValue/multiple/search/changeOnSelect/expandTrigger/fieldNames/clear/ARIA": "docs/data-entry/cascader.tsx and form.tsx cases"
+  },
+  "TreeSelect": {
+    "treeData/value/defaultValue/multiple/checkable/strict/search/strategy/expanded/fieldNames/clear/ARIA": "docs/data-entry/tree-select.tsx and form.tsx cases"
+  },
+  "Transfer": {
+    "dataSource/targetKeys/onValueChange/titles/search/disabled/selectedKeys": "docs/data-entry/transfer.tsx cases"
+  },
+  "Command": {
+    "value/onValueChange/shouldFilter/loop/vimBindings/label": "docs/data-entry/command.tsx controlled, action and async-search cases",
+    "filter/inherited cmdk props": "N/A: custom filter algorithm is consumer-owned; remaining props forward to cmdk"
+  },
+  "InputOTP": {
+    "maxLength/value/onChange/disabled/autoFocus/pattern/inputMode": "docs/data-entry/input-otp.tsx email, SMS, invalid and disabled cases",
+    "render/inherited input props": "N/A: slots own rendering; native props forward to input-otp"
+  },
+  "PasswordStrength": {
+    "password/rules/labels/showRules/className": "docs/data-entry/password-strength.tsx empty, weak, partial and strong cases"
+  },
+  "PasswordInput": {
+    "value/defaultValue/onChange/disabled/readOnly/visibility/autoComplete/ARIA": "docs/data-entry/password-input.tsx states and forms"
+  },
+  "Rating": {
+    "value/defaultValue/onValueChange/count/allowHalf/clear/disabled/readOnly": "docs/data-entry/rating.tsx cases"
+  },
+  "TagInput": {
+    "value/defaultValue/onValueChange/add/remove/max/duplicates/disabled/readOnly": "docs/data-entry/tag-input.tsx cases"
+  }
+}

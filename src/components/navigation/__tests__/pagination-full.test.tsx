@@ -7,6 +7,11 @@ import { Pagination } from "../pagination";
 const nav = () => screen.getByRole("navigation");
 
 describe("Pagination — total + size changer", () => {
+  it("accepts a unique accessible landmark name", () => {
+    renderWithUi(<Pagination ariaLabel="Invoice pages" value={1} total={95} pageSize={10} />);
+    expect(screen.getByRole("navigation", { name: "Invoice pages" })).toBeInTheDocument();
+  });
+
   it("does not render for empty or single-page results", () => {
     const { rerender } = renderWithUi(<Pagination value={1} total={0} pageSize={10} />);
     expect(screen.queryByRole("navigation")).not.toBeInTheDocument();

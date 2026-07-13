@@ -119,6 +119,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         {/* ── Example 1: Invoice list + detail panel ── */}
         <SplitPane
+          asideLabel="請求書詳細"
           asideWidth={asideWidth}
           aside={
             <Flex direction="col" gap="md">
@@ -262,6 +263,7 @@ export default function Demo() {
 
         {/* ── Example 2: Summary stats + aside narration ── */}
         <SplitPane
+          asideLabel="監査ログ詳細"
           asideWidth="sm"
           aside={
             <Card>
@@ -321,7 +323,11 @@ export default function Demo() {
                 <Text size="xs" tone="muted">
                   約 28rem のコンテナ → 縦積み
                 </Text>
-                <SplitPane asideWidth="sm" aside={<div className="bg-muted p-4">補助パネル</div>}>
+                <SplitPane
+                  asideLabel="補助パネル"
+                  asideWidth="sm"
+                  aside={<div className="bg-muted p-4">補助パネル</div>}
+                >
                   <div className="bg-muted p-4">メインコンテンツ</div>
                 </SplitPane>
               </div>
@@ -330,7 +336,11 @@ export default function Demo() {
                 <Text size="xs" tone="muted">
                   約 56rem のコンテナ → 2 カラム
                 </Text>
-                <SplitPane asideWidth="sm" aside={<div className="bg-muted p-4">補助パネル</div>}>
+                <SplitPane
+                  asideLabel="補助パネル"
+                  asideWidth="sm"
+                  aside={<div className="bg-muted p-4">補助パネル</div>}
+                >
                   <div className="bg-muted p-4">メインコンテンツ</div>
                 </SplitPane>
               </div>

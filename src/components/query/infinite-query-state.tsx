@@ -4,6 +4,7 @@ import { AlertQueryError } from "../feedback/alert";
 import { Button } from "../general/button";
 import { useTranslation } from "../../i18n/use-translation";
 import type { InfiniteQueryStateProp } from "../../props/components/query.prop";
+import { classifyQueryError } from "../../lib/query-error";
 
 export type {
   InfiniteQueryStateProp,
@@ -34,8 +35,9 @@ export function InfiniteQueryState<TPage, TFlat>({
   flatten,
   isEmpty = defaultIsEmptyFlat,
   errorRenderer,
-  showRetry = true,
+  showRetry = false,
   onRetry,
+  onAuthError,
   loadingMore,
   loadMore,
   showLoadMore = true,
@@ -56,7 +58,18 @@ export function InfiniteQueryState<TPage, TFlat>({
   if (query.isError) {
     if (query.isFetching && !query.isFetchingNextPage) return <>{skeleton}</>;
     if (errorRenderer) return <>{errorRenderer(query.error, retry)}</>;
-    return <AlertQueryError error={query.error} onRetry={showRetry ? retry : undefined} />;
+    const info = classifyQueryError(query.error);
+    const canRetry =
+      (info.category === "transient" || info.category === "unknown") &&
+      (info.retryable || showRetry || Boolean(onRetry));
+    return (
+      <AlertQueryError
+        error={query.error}
+        category={info.category}
+        onRetry={canRetry ? retry : undefined}
+        onAuthAction={info.category === "auth" ? onAuthError : undefined}
+      />
+    );
   }
 
   const data = query.data;

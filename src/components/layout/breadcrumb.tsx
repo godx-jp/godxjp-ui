@@ -12,13 +12,13 @@ export type BreadcrumbProps = {
    * Multiple Breadcrumb instances on one page/view need a DISTINCT name each — two `<nav>`
    * landmarks sharing one name/role fail axe's `landmark-unique` (WCAG 2.4.1 / 1.3.1).
    */
-  "aria-label"?: string;
+  ariaLabel?: string;
 };
 
 export function Breadcrumb({
   items,
   linkComponent: LinkComponent = "a",
-  "aria-label": ariaLabel,
+  ariaLabel,
 }: BreadcrumbProps) {
   const { t } = useTranslation();
 

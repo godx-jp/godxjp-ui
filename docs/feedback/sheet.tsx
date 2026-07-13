@@ -97,7 +97,7 @@ export default function Demo() {
                 <SheetBody className="flex flex-col gap-4">
                   <FormField id="filter-account" label="勘定科目">
                     <Select value={account} onValueChange={setAccount}>
-                      <SelectTrigger id="filter-account">
+                      <SelectTrigger id="filter-account" aria-label="勘定科目">
                         <SelectValue placeholder="すべての勘定科目" />
                       </SelectTrigger>
                       <SelectContent>
@@ -110,7 +110,7 @@ export default function Demo() {
                   </FormField>
                   <FormField id="filter-status" label="ステータス">
                     <Select value={status} onValueChange={setStatus}>
-                      <SelectTrigger id="filter-status">
+                      <SelectTrigger id="filter-status" aria-label="ステータス">
                         <SelectValue placeholder="すべてのステータス" />
                       </SelectTrigger>
                       <SelectContent>
@@ -122,7 +122,7 @@ export default function Demo() {
                   </FormField>
                   <FormField id="filter-source" label="ソース">
                     <Select value={source} onValueChange={setSource}>
-                      <SelectTrigger id="filter-source">
+                      <SelectTrigger id="filter-source" aria-label="ソース">
                         <SelectValue placeholder="すべてのソース" />
                       </SelectTrigger>
                       <SelectContent>

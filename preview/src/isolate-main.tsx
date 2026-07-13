@@ -49,6 +49,13 @@ function IsolateApp() {
   }
 
   if (!Render) return null;
+  const ownsDocumentLandmarks =
+    storyId === "layout-app-shell" ||
+    storyId === "layout-auth-shell" ||
+    storyId === "layout-sidebar" ||
+    storyId === "layout-topbar";
+  const Wrapper = ownsDocumentLandmarks ? "div" : "main";
+  const rtl = new URLSearchParams(window.location.search).get("rtl") === "1";
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -56,9 +63,15 @@ function IsolateApp() {
         {/* Demos are authored in Japanese; force ja so component chrome (search/clear/empty
             placeholders via t()) matches the demo copy instead of the AppProvider vi default. */}
         <AppProvider defaultLocale="ja" persist={false}>
-          <StoryErrorBoundary storyId={story.id}>
-            <Render />
-          </StoryErrorBoundary>
+          <Wrapper
+            dir={rtl ? "rtl" : undefined}
+            lang={rtl ? "ar" : undefined}
+            data-rtl-root={rtl ? "" : undefined}
+          >
+            <StoryErrorBoundary storyId={story.id}>
+              <Render />
+            </StoryErrorBoundary>
+          </Wrapper>
         </AppProvider>
       </MemoryRouter>
     </QueryClientProvider>

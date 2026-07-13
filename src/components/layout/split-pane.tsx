@@ -4,9 +4,11 @@ export type SplitPaneProps = {
   children: ReactNode;
   aside: ReactNode;
   asideWidth?: "sm" | "md";
+  /** Accessible complementary landmark name; required when multiple panes share a document. */
+  asideLabel?: string;
 };
 
-export function SplitPane({ children, aside, asideWidth = "md" }: SplitPaneProps) {
+export function SplitPane({ children, aside, asideWidth = "md", asideLabel }: SplitPaneProps) {
   // The scope wrapper establishes the pane's OWN query container (container-type: inline-size) so
   // the split decision comes from the pane's available width, not the viewport: a narrow embedded
   // pane on a large screen correctly stays single-column, and a wide pane on a small screen can
@@ -15,7 +17,9 @@ export function SplitPane({ children, aside, asideWidth = "md" }: SplitPaneProps
     <div className="ui-split-pane-scope">
       <div className="ui-split-pane" data-aside-width={asideWidth}>
         <div className="ui-split-pane-main">{children}</div>
-        <aside className="ui-split-pane-aside">{aside}</aside>
+        <aside className="ui-split-pane-aside" aria-label={asideLabel}>
+          {aside}
+        </aside>
       </div>
     </div>
   );

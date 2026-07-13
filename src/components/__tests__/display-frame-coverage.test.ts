@@ -44,4 +44,24 @@ describe("data-display and general frame coverage", () => {
     expect(source).toContain("actual: null");
     expect(source).toContain("actual: -120000");
   });
+
+  it("directly renders CardBar and StatCard public exports", () => {
+    const source = read("docs/data-display/card/index.tsx");
+    expect(source).toMatch(/<CardBar(?:\s|>)/);
+    expect(source).toMatch(/<StatCard(?:\s|>)/);
+  });
+
+  it("covers PopoverAnchor as a non-trigger positioning reference", () => {
+    const source = read("docs/data-display/popover.tsx");
+    expect(source).toContain("<PopoverAnchor asChild>");
+    expect(source).toContain("non-trigger positioning reference");
+  });
+
+  it("covers every Button count boundary", () => {
+    const source = read("docs/general/button/index.tsx");
+    expect(source).toContain("count={18}");
+    expect(source).toContain("overflowCount={99}");
+    expect(source).toContain("showZero>");
+    expect(source).toContain("showZero={false}");
+  });
 });

@@ -307,6 +307,7 @@ function CollapsedRow({ item, activeId, onSelect }: RowProps) {
 }
 
 export function Sidebar({
+  ariaLabel: ariaLabelCamel,
   activeId,
   onSelect,
   sections,
@@ -370,7 +371,7 @@ export function Sidebar({
         })()
       ) : null}
 
-      <nav className="sb-nav-scroll" aria-label={ariaLabel ?? t("layout.sidebar.ariaLabel")}>
+      <nav className="sb-nav-scroll" aria-label={ariaLabel ?? ariaLabelCamel ?? t("layout.sidebar.ariaLabel")}>
         {children ??
           resolvedSections.map((section, sectionIndex) => (
             <SidebarSection

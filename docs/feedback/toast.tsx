@@ -1,13 +1,11 @@
-import { Toaster } from "@godxjp/ui/feedback";
+import { Toaster, toast } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { toast } from "sonner";
 
 /**
  * Toast (Toaster + sonner) · transient ephemeral feedback. Mount ONE <Toaster>
- * at app root. Fire via `import { toast } from "sonner"` · NOT from
- * @godxjp/ui. Never import a toast helper from @godxjp/ui/feedback.
+ * at app root. Fire through the public @godxjp/ui/feedback toast export.
  */
 export default function Demo() {
   return (
@@ -16,7 +14,7 @@ export default function Demo() {
       subtitle="Toaster (mount once at root) + toast() from sonner · fire-and-forget ephemeral feedback"
     >
       {/* Mount Toaster once · in a real app this lives in the root layout */}
-      <Toaster richColors />
+      <Toaster richColors position="top-right" duration={4000} closeButton />
 
       <Flex direction="col" gap="lg">
         <Card>
@@ -58,6 +56,26 @@ export default function Demo() {
                 info
               </Button>
             </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Programmatic dismiss</CardTitle>
+            <CardDescription>
+              Keep the returned id and dismiss a specific toast explicitly.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const id = toast.loading("同期しています…", { duration: Infinity });
+                window.setTimeout(() => toast.dismiss(id), 500);
+              }}
+            >
+              同期トーストを表示して閉じる
+            </Button>
           </CardContent>
         </Card>
 

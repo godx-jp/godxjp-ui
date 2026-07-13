@@ -52,6 +52,7 @@ describe("AlertDialog primitives (composed via Radix Root)", () => {
     expect(within(dialog).getByText("ヘルプ")).toBeInTheDocument();
     expect(within(dialog).getByRole("button", { name: "続行" })).toBeInTheDocument();
     expect(within(dialog).getByRole("button", { name: "キャンセル" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "Đóng" })).toBeInTheDocument();
   });
 
   it("applies the tone band on the header", () => {
