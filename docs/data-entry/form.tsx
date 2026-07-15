@@ -172,6 +172,35 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Responsive collapse contract · every breakpoint</CardTitle>
+            <CardDescription>
+              The horizontal form collapse union is rendered at false, sm, md, lg and xl; the
+              viewport matrix verifies each transition without consumer CSS.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {([false, "sm", "md", "lg", "xl"] as const).map((collapseBelow) => (
+                <Form
+                  key={String(collapseBelow)}
+                  layout="horizontal"
+                  collapseBelow={collapseBelow}
+                  labelWidth="8rem"
+                  controlWidth="18rem"
+                  labelAlign="end"
+                  className="contract-collapse-form"
+                >
+                  <FormField id={`collapse-${String(collapseBelow)}`} label={String(collapseBelow)}>
+                    <Input defaultValue="Responsive value" />
+                  </FormField>
+                </Form>
+              ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Density · compact / default / comfortable</CardTitle>
             <CardDescription>
               density はフォーム全体の縦方向リズムを変更する。入力サイズやラベル関係は変えない。

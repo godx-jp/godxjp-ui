@@ -104,7 +104,14 @@ export default function Demo() {
             <CardDescription>隣接するラベルがない場合は ariaLabel で補完する。</CardDescription>
           </CardHeader>
           <CardContent>
-            <SearchInput placeholder="勘定科目コードで検索" onSearch={() => {}} />
+            <SearchInput
+              id="account-code-search"
+              ariaLabel="勘定科目コード検索"
+              className="contract-search-wrapper"
+              inputClassName="contract-search-field"
+              placeholder="勘定科目コードで検索"
+              onSearch={() => {}}
+            />
           </CardContent>
         </Card>
       </Flex>

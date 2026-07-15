@@ -982,6 +982,49 @@
           ]
         },
         {
+          "name": "mobileNav",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "mobileNavLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "mobileNavOpen",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "onMobileNavOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((open: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "sidebar",
           "origin": "owned",
           "required": true,
@@ -2138,12 +2181,29 @@
           "name": "as",
           "origin": "owned",
           "required": false,
-          "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | undefined",
+          "type": "\"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | undefined",
           "values": [
+            "div",
             "h1",
             "h2",
             "h3",
-            "h4"
+            "h4",
+            "p"
+          ],
+          "declaredIn": [
+            "src/components/data-display/card.tsx"
+          ]
+        },
+        {
+          "name": "level",
+          "origin": "owned",
+          "required": false,
+          "type": "HeadingLevelProp | undefined",
+          "values": [
+            1,
+            2,
+            3,
+            4
           ],
           "declaredIn": [
             "src/components/data-display/card.tsx"
@@ -2325,6 +2385,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -2335,6 +2396,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -2350,6 +2412,7 @@
             "false"
           ],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -2360,6 +2423,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -2370,6 +2434,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -2385,6 +2450,7 @@
             "false"
           ],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -2646,6 +2712,16 @@
             false,
             true
           ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
             "src/props/components/data-entry.prop.ts"
           ]
@@ -5230,12 +5306,29 @@
           "name": "titleAs",
           "origin": "owned",
           "required": false,
-          "type": "\"h2\" | \"h3\" | \"h4\" | \"p\" | undefined",
+          "type": "\"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"p\" | undefined",
           "values": [
+            "div",
+            "h1",
             "h2",
             "h3",
             "h4",
             "p"
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "titleLevel",
+          "origin": "owned",
+          "required": false,
+          "type": "HeadingLevelProp | undefined",
+          "values": [
+            1,
+            2,
+            3,
+            4
           ],
           "declaredIn": [
             "src/props/components/data-display.prop.ts"
@@ -7353,36 +7446,6 @@
       "group": "data-entry",
       "props": [
         {
-          "name": "aria-describedby",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
-          ]
-        },
-        {
-          "name": "aria-label",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
-          ]
-        },
-        {
-          "name": "aria-labelledby",
-          "origin": "owned",
-          "required": false,
-          "type": "string | undefined",
-          "values": [],
-          "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
-          ]
-        },
-        {
           "name": "className",
           "origin": "owned",
           "required": false,
@@ -7579,6 +7642,16 @@
           ]
         },
         {
+          "name": "breadcrumbAriaLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "breadcrumbLabel",
           "origin": "owned",
           "required": false,
@@ -7753,6 +7826,19 @@
         },
         {
           "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "hideOnSinglePage",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",
@@ -8709,6 +8795,16 @@
           ]
         },
         {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
           "name": "name",
           "origin": "owned",
           "required": false,
@@ -9275,7 +9371,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
@@ -9285,7 +9381,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
@@ -9295,7 +9391,7 @@
           "type": "number | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
@@ -9305,7 +9401,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
@@ -9318,7 +9414,7 @@
             true
           ],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
@@ -9328,7 +9424,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
@@ -9338,7 +9434,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
@@ -9348,27 +9444,27 @@
           "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
           "name": "onSearch",
           "origin": "owned",
           "required": false,
-          "type": "((query: string) => void) | undefined",
+          "type": "((q: string) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
           "name": "onValueChange",
           "origin": "owned",
           "required": false,
-          "type": "OnValueChangeProp | undefined",
+          "type": "((q: string) => void) | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
@@ -9378,7 +9474,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         },
         {
@@ -9388,7 +9484,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
-            "src/props/components/data-entry.prop.ts"
+            "src/components/data-entry/search-input.tsx"
           ]
         }
       ]
@@ -9396,20 +9492,6 @@
     "Select": {
       "group": "data-entry",
       "props": [
-        {
-          "name": "defaultOpen",
-          "origin": "owned",
-          "required": false,
-          "type": "boolean | undefined",
-          "values": [
-            false,
-            true
-          ],
-          "declaredIn": [
-            "node_modules/.pnpm/@radix-ui+react-select@2.2.6_@types+react-dom@19.2.3_@types+react@19.2.14__@types+react_682a989a3617012ce093f43297729adf/node_modules/@radix-ui/react-select/dist/index.d.mts",
-            "src/props/components/data-entry.prop.ts"
-          ]
-        },
         {
           "name": "defaultValue",
           "origin": "owned",
@@ -9450,7 +9532,7 @@
           "name": "onOpenChange",
           "origin": "owned",
           "required": false,
-          "type": "((open: boolean) => void) | ((open: boolean) => void) | undefined",
+          "type": "OnOpenChangeProp | ((open: boolean) => void) | undefined",
           "values": [],
           "declaredIn": [
             "node_modules/.pnpm/@radix-ui+react-select@2.2.6_@types+react-dom@19.2.3_@types+react@19.2.14__@types+react_682a989a3617012ce093f43297729adf/node_modules/@radix-ui/react-select/dist/index.d.mts",
@@ -9755,6 +9837,19 @@
           "values": [],
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.14/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "showIndicator",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/data-entry/select.tsx"
           ]
         },
         {
@@ -10133,6 +10228,16 @@
           "origin": "owned",
           "required": true,
           "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": [
             "src/props/components/layout.prop.ts"
@@ -10952,7 +11057,21 @@
     },
     "Table": {
       "group": "data-display",
-      "props": []
+      "props": [
+        {
+          "name": "scrollable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/data-display/table.tsx"
+          ]
+        }
+      ]
     },
     "TableBody": {
       "group": "data-display",
@@ -12298,6 +12417,16 @@
           ]
         },
         {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
           "name": "oneWay",
           "origin": "owned",
           "required": false,
@@ -12413,6 +12542,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -12423,6 +12553,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -12438,6 +12569,7 @@
             "false"
           ],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -12448,6 +12580,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -12458,6 +12591,7 @@
           "type": "string | undefined",
           "values": [],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -12473,6 +12607,7 @@
             "false"
           ],
           "declaredIn": [
+            "src/lib/field-a11y.ts",
             "src/props/components/data-entry.prop.ts"
           ]
         },
@@ -12702,6 +12837,16 @@
             false,
             true
           ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
             "src/props/components/data-entry.prop.ts"
           ]

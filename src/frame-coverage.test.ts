@@ -51,6 +51,35 @@ describe("frame coverage checker", () => {
     ).toThrow();
   });
 
+  it("counts exact public prop evidence and preserves visible gaps", () => {
+    const report = JSON.parse(
+      execFileSync(process.execPath, ["scripts/check-component-case-evidence.mjs"], {
+        encoding: "utf8",
+      }),
+    );
+
+    expect(report.callableComponents).toBeGreaterThan(200);
+    expect(report.coveredProps + report.untestedProps).toBe(report.publicProps);
+    expect(report.coveredProps).toBeGreaterThan(0);
+    expect(report.untestedProps).toBeGreaterThan(0);
+    expect(report.fullyCoveredComponents).toBeGreaterThanOrEqual(8);
+  });
+
+  it("fails closed when a completed component loses prop evidence", () => {
+    const directory = mkdtempSync(join(tmpdir(), "component-case-evidence-"));
+    const evidence = JSON.parse(readFileSync("component-case-evidence.json", "utf8"));
+    delete evidence.components.Input.props.allowClear;
+    const evidencePath = join(directory, "evidence.json");
+    writeFileSync(evidencePath, JSON.stringify(evidence));
+
+    expect(() =>
+      execFileSync(process.execPath, ["scripts/check-component-case-evidence.mjs"], {
+        env: { ...process.env, COMPONENT_CASE_EVIDENCE: evidencePath },
+        stdio: "pipe",
+      }),
+    ).toThrow();
+  });
+
   it("rejects a screen-reader PASS without real AT evidence metadata", () => {
     const directory = mkdtempSync(join(tmpdir(), "screen-reader-evidence-"));
     const config = JSON.parse(readFileSync("frame-coverage.json", "utf8"));

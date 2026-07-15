@@ -1,5 +1,7 @@
+import { useState } from "react";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { RadioGroup } from "@godxjp/ui/data-entry";
+import { Field, RadioGroup, RadioItem } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -8,6 +10,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * Composed only from real @godxjp/ui components.
  */
 export default function Demo() {
+  const [controlled, setControlled] = useState("email");
   return (
     <PageContainer
       title="RadioGroup"
@@ -28,6 +31,44 @@ export default function Demo() {
                 { value: "exempt", label: "非課税" },
               ]}
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Controlled · named · disabled</CardTitle>
+            <CardDescription>
+              Controlled callback and native form name with disabled options.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup
+              className="contract-radio-group"
+              name="notification_channel"
+              value={controlled}
+              onValueChange={setControlled}
+              options={[
+                { value: "email", label: "メール" },
+                { value: "sms", label: "SMS" },
+                { value: "push", label: "プッシュ", disabled: true },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Disabled group · custom children</CardTitle>
+            <CardDescription>
+              The children composition remains labelled and non-interactive.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup disabled defaultValue="locked">
+              <Field id="radio-locked" label="確定済み">
+                <RadioItem id="radio-locked" value="locked" />
+              </Field>
+            </RadioGroup>
           </CardContent>
         </Card>
 

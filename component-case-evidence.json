@@ -1,4 +1,760 @@
 {
   "schemaVersion": 1,
-  "components": {}
+  "components": {
+    "Form": {
+      "complete": true,
+      "props": {
+        "className": {
+          "cases": ["contract-collapse-form"],
+          "evidence": ["docs/data-entry/form.tsx"]
+        },
+        "collapseBelow": {
+          "cases": [false, "sm", "md", "lg", "xl"],
+          "evidence": ["docs/data-entry/form.tsx", "scripts/check-data-entry-frame-runtime.mjs"]
+        },
+        "columns": {
+          "cases": [2],
+          "evidence": ["docs/data-entry/form.tsx"]
+        },
+        "controlWidth": {
+          "cases": ["18rem"],
+          "evidence": ["docs/data-entry/form.tsx"]
+        },
+        "density": {
+          "cases": ["compact", "default", "comfortable"],
+          "evidence": ["docs/data-entry/form.tsx"]
+        },
+        "labelAlign": {
+          "cases": ["start", "end"],
+          "evidence": ["docs/data-entry/form.tsx"]
+        },
+        "labelWidth": {
+          "cases": [120, "6rem", "8rem"],
+          "evidence": ["docs/data-entry/form.tsx"]
+        },
+        "layout": {
+          "cases": ["vertical", "horizontal", "inline"],
+          "evidence": ["docs/data-entry/form.tsx", "scripts/check-data-entry-frame-runtime.mjs"]
+        }
+      }
+    },
+    "FormField": {
+      "complete": true,
+      "props": {
+        "children": {
+          "cases": ["Input", "Select"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
+        },
+        "className": {
+          "cases": ["contract-auto-id"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
+        },
+        "colSpan": {
+          "cases": [2],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
+        },
+        "controlWidth": {
+          "cases": ["16rem", "20rem"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
+        },
+        "error": {
+          "cases": ["client", "server"],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "src/components/data-entry/__tests__/form-field.a11y.test.tsx"
+          ]
+        },
+        "helper": {
+          "cases": ["present", "absent"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
+        },
+        "id": {
+          "cases": ["explicit", "generated"],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "src/components/data-entry/__tests__/form-field.test.tsx"
+          ]
+        },
+        "label": {
+          "cases": ["text", "long-locale"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
+        },
+        "labelAddon": {
+          "cases": ["button"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
+        },
+        "labelWidth": {
+          "cases": ["8rem", "12rem"],
+          "evidence": ["docs/data-entry/form-field/index.tsx"]
+        },
+        "layout": {
+          "cases": ["vertical", "horizontal", "inline"],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        },
+        "required": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/data-entry/form-field/index.tsx",
+            "src/components/data-entry/__tests__/form-field.a11y.test.tsx"
+          ]
+        }
+      }
+    },
+    "Select": {
+      "props": {
+        "defaultValue": {
+          "cases": ["suzuki"],
+          "evidence": ["docs/data-entry/select.tsx"]
+        },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/select.tsx", "scripts/check-data-entry-frame-runtime.mjs"]
+        },
+        "name": {
+          "cases": ["select_default_open"],
+          "evidence": ["docs/data-entry/select.tsx"]
+        },
+        "onOpenChange": {
+          "cases": ["controlled callback"],
+          "evidence": ["docs/data-entry/select.tsx"]
+        },
+        "onValueChange": {
+          "cases": ["controlled callback"],
+          "evidence": [
+            "docs/data-entry/select.tsx",
+            "src/components/data-entry/__tests__/select-interaction.test.tsx"
+          ]
+        },
+        "open": {
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/select.tsx", "scripts/check-data-entry-frame-runtime.mjs"]
+        },
+        "value": {
+          "cases": ["tanaka"],
+          "evidence": [
+            "docs/data-entry/select.tsx",
+            "src/components/data-entry/__tests__/select-controlled-empty.test.tsx"
+          ]
+        }
+      }
+    },
+    "Tabs": {
+      "props": {
+        "activationMode": {
+          "cases": ["manual", "automatic"],
+          "evidence": [
+            "src/components/navigation/__tests__/tabs-variants.test.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        },
+        "contentClassName": {
+          "cases": ["custom class"],
+          "evidence": ["src/components/navigation/__tests__/tabs-variants.test.tsx"]
+        },
+        "defaultValue": {
+          "cases": ["explicit", "first enabled fallback"],
+          "evidence": ["src/components/navigation/__tests__/tabs-variants.test.tsx"]
+        },
+        "dir": {
+          "cases": ["ltr", "rtl"],
+          "evidence": [
+            "docs/navigation/tabs-rtl.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        },
+        "items": {
+          "cases": ["items API", "compound children"],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        },
+        "listClassName": {
+          "cases": ["custom class"],
+          "evidence": ["src/components/navigation/__tests__/tabs-variants.test.tsx"]
+        },
+        "onValueChange": {
+          "cases": ["controlled callback"],
+          "evidence": ["docs/navigation/tabs.tsx", "scripts/check-layout-nav-frames.mjs"]
+        },
+        "orientation": {
+          "cases": ["vertical", "horizontal"],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        },
+        "value": {
+          "cases": ["controlled"],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        },
+        "variant": {
+          "cases": ["line", "default", "card"],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-variants.test.tsx"
+          ]
+        }
+      }
+    },
+    "AppSettingPicker": {
+      "props": {
+        "appearance": {
+          "cases": ["icon", "labeled"],
+          "evidence": [
+            "docs/navigation/app-setting-picker.tsx",
+            "src/components/__tests__/app-setting-picker.a11y.test.tsx"
+          ]
+        },
+        "className": {
+          "cases": ["trigger class override"],
+          "evidence": ["src/components/__tests__/app-setting-picker.a11y.test.tsx"]
+        },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/navigation/app-setting-picker.tsx",
+            "src/components/__tests__/app-setting-picker.a11y.test.tsx"
+          ]
+        },
+        "id": {
+          "cases": ["form id"],
+          "evidence": ["docs/navigation/app-setting-picker.tsx"]
+        },
+        "kind": {
+          "cases": [
+            "density",
+            "locale",
+            "timezone",
+            "dateFormat",
+            "timeFormat",
+            "theme",
+            "brand",
+            "fontSize"
+          ],
+          "evidence": [
+            "docs/navigation/app-setting-picker.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        },
+        "name": {
+          "cases": ["locale form field"],
+          "evidence": [
+            "docs/navigation/app-setting-picker.tsx",
+            "src/components/__tests__/app-setting-picker.a11y.test.tsx"
+          ]
+        },
+        "onValueChange": {
+          "cases": ["controlled callback"],
+          "evidence": [
+            "docs/navigation/app-setting-picker.tsx",
+            "src/components/__tests__/app-setting-picker.a11y.test.tsx"
+          ]
+        },
+        "value": {
+          "cases": ["controlled", "provider-bound"],
+          "evidence": [
+            "docs/navigation/app-setting-picker.tsx",
+            "src/components/__tests__/app-setting-picker.a11y.test.tsx"
+          ]
+        }
+      }
+    },
+    "Pagination": {
+      "props": {
+        "ariaLabel": {
+          "cases": ["localized default", "custom"],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "className": {
+          "cases": ["custom class"],
+          "evidence": ["src/components/navigation/__tests__/pagination-full.test.tsx"]
+        },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "onValueChange": {
+          "cases": ["next", "previous", "page size"],
+          "evidence": [
+            "src/components/navigation/__tests__/pagination-full.test.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        },
+        "pageSize": {
+          "cases": [5, 10, 20],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "pageSizeOptions": {
+          "cases": ["5,10,20,50"],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "showSizeChanger": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "showTotal": {
+          "cases": [false, true, "render function"],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx",
+            "src/components/navigation/__tests__/pagination-simple-total.test.tsx"
+          ]
+        },
+        "simple": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "total": {
+          "cases": [0, 47, 50, 95],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx"
+          ]
+        },
+        "value": {
+          "cases": [1, 2, 3],
+          "evidence": [
+            "docs/navigation/pagination.tsx",
+            "src/components/navigation/__tests__/pagination-full.test.tsx",
+            "scripts/check-layout-nav-frames.mjs"
+          ]
+        }
+      }
+    },
+    "Input": {
+      "complete": true,
+      "props": {
+        "allowClear": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/input-clear.test.tsx"
+          ]
+        },
+        "defaultValue": { "cases": ["filled"], "evidence": ["docs/data-entry/input.tsx"] },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/input.a11y.test.tsx"
+          ]
+        },
+        "leadingIcon": { "cases": ["currency"], "evidence": ["docs/data-entry/input.tsx"] },
+        "onClear": {
+          "cases": ["callback"],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/input-clear.test.tsx"
+          ]
+        },
+        "trailingIcon": { "cases": ["reference"], "evidence": ["docs/data-entry/input.tsx"] },
+        "type": {
+          "cases": ["text", "password", "number", "date", "file", "email"],
+          "evidence": ["docs/data-entry/input.tsx"]
+        },
+        "value": {
+          "cases": ["controlled"],
+          "evidence": [
+            "docs/data-entry/input.tsx",
+            "src/components/data-entry/__tests__/input-interactions.test.tsx"
+          ]
+        }
+      }
+    },
+    "PasswordInput": {
+      "complete": true,
+      "props": {
+        "allowClear": {
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/password-input.tsx"]
+        },
+        "leadingIcon": {
+          "cases": ["present"],
+          "evidence": [
+            "docs/data-entry/password-input.tsx",
+            "src/components/data-entry/__tests__/password-input.test.tsx"
+          ]
+        },
+        "onClear": { "cases": ["callback"], "evidence": ["docs/data-entry/password-input.tsx"] },
+        "trailingIcon": { "cases": ["present"], "evidence": ["docs/data-entry/password-input.tsx"] }
+      }
+    },
+    "PasswordStrength": {
+      "complete": true,
+      "props": {
+        "labels": {
+          "cases": ["custom"],
+          "evidence": [
+            "docs/data-entry/password-strength.tsx",
+            "src/components/data-entry/__tests__/password-strength.test.tsx"
+          ]
+        },
+        "rules": {
+          "cases": ["default", "custom"],
+          "evidence": [
+            "docs/data-entry/password-strength.tsx",
+            "src/components/data-entry/__tests__/password-strength.test.tsx"
+          ]
+        },
+        "showChecklist": {
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/password-strength.tsx"]
+        },
+        "value": {
+          "cases": ["empty", "weak", "strong"],
+          "evidence": [
+            "docs/data-entry/password-strength.tsx",
+            "src/components/data-entry/__tests__/password-strength.test.tsx"
+          ]
+        }
+      }
+    },
+    "Checkbox": {
+      "complete": true,
+      "props": {
+        "checked": {
+          "cases": [false, true, "indeterminate"],
+          "evidence": [
+            "docs/data-entry/checkbox.tsx",
+            "src/components/data-entry/__tests__/checkbox-interaction.test.tsx"
+          ]
+        },
+        "defaultChecked": {
+          "cases": [false, true, "indeterminate"],
+          "evidence": [
+            "docs/data-entry/checkbox.tsx",
+            "src/components/data-entry/__tests__/checkbox-interaction.test.tsx"
+          ]
+        },
+        "disabled": { "cases": [false, true], "evidence": ["docs/data-entry/checkbox.tsx"] },
+        "onCheckedChange": {
+          "cases": ["pointer", "keyboard"],
+          "evidence": ["src/components/data-entry/__tests__/checkbox-interaction.test.tsx"]
+        },
+        "required": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/data-entry/checkbox.tsx",
+            "src/components/data-entry/__tests__/checkbox.a11y.test.tsx"
+          ]
+        }
+      }
+    },
+    "CheckboxGroup": {
+      "props": {
+        "children": {
+          "cases": ["custom Field child"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
+        },
+        "className": {
+          "cases": ["contract-checkbox-children"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
+        },
+        "defaultValue": { "cases": [["pdf"]], "evidence": ["docs/data-entry/checkbox.tsx"] },
+        "disabled": { "cases": [false, true], "evidence": ["docs/data-entry/checkbox.tsx"] },
+        "name": { "cases": ["export"], "evidence": ["docs/data-entry/checkbox.tsx"] },
+        "onValueChange": {
+          "cases": ["pointer", "keyboard"],
+          "evidence": [
+            "docs/data-entry/checkbox.tsx",
+            "src/components/data-entry/__tests__/checkbox-interaction.test.tsx"
+          ]
+        },
+        "options": {
+          "cases": ["enabled", "disabled", "described"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
+        },
+        "orientation": {
+          "cases": ["vertical", "horizontal"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
+        },
+        "value": {
+          "cases": [["email", "sms"]],
+          "evidence": [
+            "docs/data-entry/checkbox.tsx",
+            "src/components/data-entry/__tests__/checkbox-group.test.tsx"
+          ]
+        }
+      }
+    },
+    "RadioGroup": {
+      "props": {
+        "children": { "cases": ["RadioItem"], "evidence": ["docs/data-entry/radio-group.tsx"] },
+        "className": {
+          "cases": ["contract-radio-group"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
+        },
+        "defaultValue": {
+          "cases": ["taxed", "locked"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
+        },
+        "disabled": { "cases": [false, true], "evidence": ["docs/data-entry/radio-group.tsx"] },
+        "name": {
+          "cases": ["notification_channel"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
+        },
+        "onValueChange": {
+          "cases": ["pointer", "keyboard"],
+          "evidence": [
+            "docs/data-entry/radio-group.tsx",
+            "src/components/data-entry/__tests__/radio.test.tsx"
+          ]
+        },
+        "options": {
+          "cases": ["enabled", "disabled"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
+        },
+        "orientation": {
+          "cases": ["vertical", "horizontal"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
+        },
+        "value": {
+          "cases": ["email"],
+          "evidence": [
+            "docs/data-entry/radio-group.tsx",
+            "src/components/data-entry/__tests__/radio.test.tsx"
+          ]
+        }
+      }
+    },
+    "SearchInput": {
+      "complete": true,
+      "props": {
+        "ariaLabel": {
+          "cases": ["勘定科目コード検索"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
+        },
+        "className": {
+          "cases": ["contract-search-wrapper"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
+        },
+        "debounce": {
+          "cases": [250, 300],
+          "evidence": [
+            "docs/data-entry/search-input.tsx",
+            "src/components/data-entry/__tests__/search-input.test.tsx"
+          ]
+        },
+        "defaultValue": {
+          "cases": ["", "2026年5月"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
+        },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/data-entry/search-input.tsx",
+            "src/components/data-entry/__tests__/search-input.test.tsx"
+          ]
+        },
+        "id": {
+          "cases": ["account-code-search"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
+        },
+        "inputClassName": {
+          "cases": ["contract-search-field"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
+        },
+        "label": {
+          "cases": ["visible", "screen-reader fallback"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
+        },
+        "onSearch": {
+          "cases": ["debounced callback"],
+          "evidence": [
+            "docs/data-entry/search-input.tsx",
+            "src/components/data-entry/__tests__/search-input.test.tsx"
+          ]
+        },
+        "onValueChange": {
+          "cases": ["immediate callback"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
+        },
+        "placeholder": { "cases": ["custom"], "evidence": ["docs/data-entry/search-input.tsx"] },
+        "value": { "cases": ["controlled"], "evidence": ["docs/data-entry/search-input.tsx"] }
+      }
+    },
+    "TagInput": {
+      "complete": true,
+      "props": {
+        "aria-label": {
+          "cases": ["CC送信先メール"],
+          "evidence": ["docs/data-entry/tag-input.tsx"]
+        },
+        "className": {
+          "cases": ["contract-tag-input"],
+          "evidence": ["docs/data-entry/tag-input.tsx"]
+        },
+        "defaultValue": {
+          "cases": [["approver@example.jp"]],
+          "evidence": [
+            "docs/data-entry/tag-input.tsx",
+            "src/components/data-entry/__tests__/tag-input.test.tsx"
+          ]
+        },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/data-entry/tag-input.tsx",
+            "src/components/data-entry/__tests__/tag-input.test.tsx"
+          ]
+        },
+        "id": { "cases": ["recipient-emails"], "evidence": ["docs/data-entry/tag-input.tsx"] },
+        "name": {
+          "cases": ["cc_emails", "locked_tags"],
+          "evidence": [
+            "docs/data-entry/tag-input.tsx",
+            "src/components/data-entry/__tests__/tag-input.test.tsx"
+          ]
+        },
+        "onValueChange": {
+          "cases": ["add", "remove", "backspace", "blur"],
+          "evidence": ["src/components/data-entry/__tests__/tag-input.test.tsx"]
+        },
+        "placeholder": {
+          "cases": ["empty visible", "populated hidden"],
+          "evidence": [
+            "docs/data-entry/tag-input.tsx",
+            "src/components/data-entry/__tests__/tag-input-extra.test.tsx"
+          ]
+        },
+        "value": {
+          "cases": [["営業部", "Q1"]],
+          "evidence": [
+            "docs/data-entry/tag-input.tsx",
+            "src/components/data-entry/__tests__/tag-input-extra.test.tsx"
+          ]
+        }
+      }
+    },
+    "Button": {
+      "props": {
+        "variant": {
+          "cases": ["default", "destructive", "outline", "dashed", "secondary", "ghost", "link"],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "size": {
+          "cases": ["default", "md", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "shape": {
+          "cases": ["default", "pill", "sharp"],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "fullWidth": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "asChild": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "loading": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "loadingText": {
+          "cases": ["omitted", "provided"],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "count": {
+          "cases": ["omitted", 0, 18, 128],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "overflowCount": {
+          "cases": ["default-99", "custom-9"],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "showZero": {
+          "cases": [false, true],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "type": {
+          "cases": ["button", "reset", "submit"],
+          "evidence": [
+            "docs/general/button/index.tsx",
+            "src/components/general/__tests__/button.test.tsx",
+            "scripts/check-display-runtime-evidence.mjs"
+          ]
+        },
+        "onClick": {
+          "cases": ["fires when enabled", "blocked when disabled", "blocked while loading"],
+          "evidence": ["src/components/general/__tests__/button.test.tsx"]
+        }
+      }
+    }
+  }
 }

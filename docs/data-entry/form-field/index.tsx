@@ -86,6 +86,50 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Complete field contract</CardTitle>
+            <CardDescription>
+              Auto id, label addon, every layout, per-field widths, className and grid span are
+              rendered explicitly.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form columns={2}>
+              <FormField
+                label="自動ID"
+                helper="id を省略すると control に生成IDを注入"
+                labelAddon={<Button aria-label="自動IDの説明">?</Button>}
+                className="contract-auto-id"
+              >
+                <Input defaultValue="自動関連付け" />
+              </FormField>
+              <FormField
+                id="contract-horizontal"
+                label="Horizontal"
+                layout="horizontal"
+                labelWidth="8rem"
+                controlWidth="16rem"
+                required={false}
+              >
+                <Input defaultValue="有効" />
+              </FormField>
+              <FormField id="contract-vertical" label="Vertical" layout="vertical" required>
+                <Input aria-invalid defaultValue="不正な値" />
+              </FormField>
+              <FormField
+                id="contract-inline"
+                label="Inline"
+                layout="inline"
+                error="入力内容を確認してください"
+                colSpan={2}
+              >
+                <Input defaultValue="invalid@example" />
+              </FormField>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>
               Layout matrix · widths / breakpoints / long locale / RTL
             </CardTitle>

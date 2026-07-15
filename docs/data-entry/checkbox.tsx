@@ -61,6 +61,41 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Required and explicit indeterminate defaults</CardTitle>
+            <CardDescription>
+              Required form semantics and both controlled/default indeterminate values are visible.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Field id="required-checkbox" label="必須確認">
+                <Checkbox id="required-checkbox" required defaultChecked={false} />
+              </Field>
+              <Field id="default-indeterminate" label="初期混在">
+                <Checkbox id="default-indeterminate" defaultChecked="indeterminate" />
+              </Field>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>CheckboxGroup custom children</CardTitle>
+            <CardDescription>
+              Children composition and className are explicit public contracts.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CheckboxGroup className="contract-checkbox-children">
+              <Field id="custom-child-checkbox" label="カスタム子要素">
+                <Checkbox id="custom-child-checkbox" value="custom" />
+              </Field>
+            </CheckboxGroup>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>Indeterminate · select all</CardTitle>
             <CardDescription>
               The parent uses checked=&quot;indeterminate&quot; when only some children are selected
