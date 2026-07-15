@@ -18,7 +18,6 @@ describe("frame coverage checker", () => {
     }
     for (const dimension of [
       "isolated",
-      "props",
       "composition",
       "journey",
       "responsive",
@@ -29,6 +28,10 @@ describe("frame coverage checker", () => {
     ]) {
       expect(report.totals[dimension].untested).toBe(0);
     }
+    // Prop completeness is derived from exact TypeScript API + case evidence. Until every
+    // component case is authored, gaps must remain visible instead of inheriting a global PASS.
+    expect(report.totals.props.untested).toBeGreaterThan(0);
+    expect(report.totals.props.pass).toBeLessThan(report.exports);
     expect(report.totals.screenReader.untested).toBe(
       report.exports - report.totals.screenReader["not-applicable"],
     );
@@ -48,6 +51,35 @@ describe("frame coverage checker", () => {
     ).toThrow();
   });
 
+  it("counts exact public prop evidence and preserves visible gaps", () => {
+    const report = JSON.parse(
+      execFileSync(process.execPath, ["scripts/check-component-case-evidence.mjs"], {
+        encoding: "utf8",
+      }),
+    );
+
+    expect(report.callableComponents).toBeGreaterThan(200);
+    expect(report.coveredProps + report.untestedProps).toBe(report.publicProps);
+    expect(report.coveredProps).toBeGreaterThan(0);
+    expect(report.untestedProps).toBeGreaterThan(0);
+    expect(report.fullyCoveredComponents).toBeGreaterThanOrEqual(8);
+  });
+
+  it("fails closed when a completed component loses prop evidence", () => {
+    const directory = mkdtempSync(join(tmpdir(), "component-case-evidence-"));
+    const evidence = JSON.parse(readFileSync("component-case-evidence.json", "utf8"));
+    delete evidence.components.Input.props.allowClear;
+    const evidencePath = join(directory, "evidence.json");
+    writeFileSync(evidencePath, JSON.stringify(evidence));
+
+    expect(() =>
+      execFileSync(process.execPath, ["scripts/check-component-case-evidence.mjs"], {
+        env: { ...process.env, COMPONENT_CASE_EVIDENCE: evidencePath },
+        stdio: "pipe",
+      }),
+    ).toThrow();
+  });
+
   it("rejects a screen-reader PASS without real AT evidence metadata", () => {
     const directory = mkdtempSync(join(tmpdir(), "screen-reader-evidence-"));
     const config = JSON.parse(readFileSync("frame-coverage.json", "utf8"));
@@ -58,7 +90,87 @@ describe("frame coverage checker", () => {
     const configPath = join(directory, "coverage.json");
     const evidencePath = join(directory, "evidence.json");
     writeFileSync(configPath, JSON.stringify(config));
-    writeFileSync(evidencePath, JSON.stringify({ schemaVersion: 1, records: [] }));
+    const evidence = JSON.parse(readFileSync("screen-reader-evidence.json", "utf8"));
+    writeFileSync(evidencePath, JSON.stringify(evidence));
+
+    expect(() =>
+      execFileSync(process.execPath, ["scripts/check-screen-reader-evidence.mjs"], {
+        env: {
+          ...process.env,
+          FRAME_COVERAGE_CONFIG: configPath,
+          SCREEN_READER_EVIDENCE_CONFIG: evidencePath,
+        },
+        stdio: "pipe",
+      }),
+    ).toThrow();
+  });
+
+  it("rejects an Axe snapshot presented as screen-reader evidence", () => {
+    const directory = mkdtempSync(join(tmpdir(), "screen-reader-evidence-"));
+    const evidence = JSON.parse(readFileSync("screen-reader-evidence.json", "utf8"));
+    evidence.records.push({
+      id: "invalid-axe-record",
+      owner: "data-entry/select",
+      combinationId: "voiceover-safari-macos",
+      operatingSystem: "macOS",
+      operatingSystemVersion: "26.0.1 (25A362)",
+      assistiveTechnology: "VoiceOver",
+      assistiveTechnologyVersion: "10",
+      browser: "Safari",
+      browserVersion: "26",
+      locale: "ja-JP",
+      frameUrl: "https://example.test/select",
+      journey: "Open and select an option",
+      transcript: "Select, collapsed",
+      captureMethod: "axe-accessibility-tree",
+      evidenceUrl: "https://example.test/axe-snapshot.json",
+      testedAt: "2026-07-15T00:00:00Z",
+      tester: "fixture",
+      verdict: "pass",
+    });
+    const evidencePath = join(directory, "evidence.json");
+    writeFileSync(evidencePath, JSON.stringify(evidence));
+
+    expect(() =>
+      execFileSync(process.execPath, ["scripts/check-screen-reader-evidence.mjs"], {
+        env: { ...process.env, SCREEN_READER_EVIDENCE_CONFIG: evidencePath },
+        stdio: "pipe",
+      }),
+    ).toThrow();
+  });
+
+  it("requires every AT/browser and locale record before an owner can PASS", () => {
+    const directory = mkdtempSync(join(tmpdir(), "screen-reader-evidence-"));
+    const config = JSON.parse(readFileSync("frame-coverage.json", "utf8"));
+    config.ownerOverrides = {
+      ...config.ownerOverrides,
+      "data-entry/input": { screenReader: { status: "pass" } },
+    };
+    const evidence = JSON.parse(readFileSync("screen-reader-evidence.json", "utf8"));
+    evidence.records.push({
+      id: "input-vo-ja-only",
+      owner: "data-entry/input",
+      combinationId: "voiceover-safari-macos",
+      operatingSystem: "macOS",
+      operatingSystemVersion: "26.0.1 (25A362)",
+      assistiveTechnology: "VoiceOver",
+      assistiveTechnologyVersion: "10",
+      browser: "Safari",
+      browserVersion: "26",
+      locale: "ja-JP",
+      frameUrl: "https://example.test/input",
+      journey: "Focus, enter invalid text, correct it",
+      transcript: "Name, edit text, required",
+      captureMethod: "audio-recording",
+      evidenceUrl: "https://example.test/recording.mov",
+      testedAt: "2026-07-15T00:00:00Z",
+      tester: "fixture",
+      verdict: "pass",
+    });
+    const configPath = join(directory, "coverage.json");
+    const evidencePath = join(directory, "evidence.json");
+    writeFileSync(configPath, JSON.stringify(config));
+    writeFileSync(evidencePath, JSON.stringify(evidence));
 
     expect(() =>
       execFileSync(process.execPath, ["scripts/check-screen-reader-evidence.mjs"], {

@@ -75,6 +75,9 @@ export default function Demo() {
               helper="複数のメールアドレスをEnterで追加できます"
             >
               <TagInput
+                id="recipient-emails"
+                aria-label="CC送信先メール"
+                className="contract-tag-input"
                 value={recipientEmails}
                 onValueChange={setRecipientEmails}
                 placeholder="メールアドレスを追加..."

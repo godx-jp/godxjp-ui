@@ -32,6 +32,32 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
+            <CardTitle level={2}>Inherited Input affordances</CardTitle>
+            <CardDescription>
+              PasswordInput retains leading/trailing nodes and the explicit clear callback while
+              preserving its visibility control.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <PasswordInput
+                aria-label="クリア可能なパスワード"
+                defaultValue="secret"
+                allowClear
+                onClear={() => {}}
+                leadingIcon={<span aria-hidden="true">L</span>}
+              />
+              <PasswordInput
+                aria-label="末尾情報付きパスワード"
+                allowClear={false}
+                trailingIcon={<span aria-hidden="true">T</span>}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle level={2}>ログインフォーム</CardTitle>
             <CardDescription>
               current-password autoComplete でパスワードマネージャーと連携。

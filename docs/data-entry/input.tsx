@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { FormField, Input } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -8,6 +10,7 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
  * @godxjp/ui components.
  */
 export default function Demo() {
+  const [contractValue, setContractValue] = useState("制御値");
   return (
     <PageContainer
       title="Input"
@@ -27,8 +30,43 @@ export default function Demo() {
               <Input aria-label="プレースホルダー状態" placeholder="プレースホルダー" />
               <Input aria-label="入力済み状態" defaultValue="入力済みの値" />
               <Input aria-label="無効状態" disabled defaultValue="無効 (disabled)" />
-              <Input aria-label="読み取り専用状態" readOnly defaultValue="読み取り専用 (readOnly)" />
-              <Input aria-label="不正な値の状態" aria-invalid defaultValue="不正な値 (aria-invalid)" />
+              <Input
+                aria-label="読み取り専用状態"
+                readOnly
+                defaultValue="読み取り専用 (readOnly)"
+              />
+              <Input
+                aria-label="不正な値の状態"
+                aria-invalid
+                defaultValue="不正な値 (aria-invalid)"
+              />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Owned affordances · controlled and uncontrolled</CardTitle>
+            <CardDescription>
+              Leading/trailing content and allowClear/onClear are rendered with both value modes.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Input
+                aria-label="制御されたクリア可能入力"
+                value={contractValue}
+                onChange={(event) => setContractValue(event.target.value)}
+                allowClear
+                onClear={() => setContractValue("")}
+                leadingIcon={<span aria-hidden="true">¥</span>}
+              />
+              <Input
+                aria-label="非制御の装飾付き入力"
+                defaultValue="INV-2026-001"
+                allowClear={false}
+                trailingIcon={<span aria-hidden="true">#</span>}
+              />
             </Flex>
           </CardContent>
         </Card>

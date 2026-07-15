@@ -1,13 +1,67 @@
 {
-  "schemaVersion": 1,
+  "$schema": "./screen-reader-evidence.schema.json",
+  "schemaVersion": 2,
   "policy": {
     "issue": "https://github.com/godx-jp/godxjp-ui/issues/171",
-    "requiredCombinations": [
-      "VoiceOver + Safari on current macOS",
-      "NVDA + Firefox on current Windows",
-      "NVDA + Chrome on current Windows for complex composites and live regions"
+    "requiredLocales": ["ja-JP", "vi-VN"],
+    "combinations": [
+      {
+        "id": "voiceover-safari-macos",
+        "operatingSystem": "macOS",
+        "assistiveTechnology": "VoiceOver",
+        "browser": "Safari",
+        "appliesTo": "all-interactive"
+      },
+      {
+        "id": "nvda-firefox-windows",
+        "operatingSystem": "Windows",
+        "assistiveTechnology": "NVDA",
+        "browser": "Firefox",
+        "appliesTo": "all-interactive"
+      },
+      {
+        "id": "nvda-chrome-windows-complex",
+        "operatingSystem": "Windows",
+        "assistiveTechnology": "NVDA",
+        "browser": "Chrome",
+        "appliesTo": "complex-composites-and-live-regions"
+      }
     ],
-    "note": "Axe, DOM assertions and accessibility-tree snapshots are not real screen-reader evidence."
+    "complexOwners": [
+      "data-display/accordion",
+      "data-display/carousel",
+      "data-display/data-table",
+      "data-display/popover",
+      "data-display/table",
+      "data-display/tree-list",
+      "data-entry/calendar",
+      "data-entry/cascader",
+      "data-entry/command",
+      "data-entry/date-picker",
+      "data-entry/date-range-picker",
+      "data-entry/month-picker",
+      "data-entry/month-range-picker",
+      "data-entry/select",
+      "data-entry/tag-input",
+      "data-entry/time-picker",
+      "data-entry/toggle-group",
+      "data-entry/transfer",
+      "data-entry/tree-select",
+      "feedback/alert",
+      "feedback/dialog",
+      "feedback/sheet",
+      "feedback/sonner",
+      "navigation/context-menu",
+      "navigation/dropdown-menu",
+      "navigation/filter-bar",
+      "navigation/menubar",
+      "navigation/navigation-menu",
+      "navigation/tabs",
+      "query/data-state",
+      "query/infinite-query-state",
+      "query/mutation-feedback"
+    ],
+    "note": "Only actual AT speech capture counts. Axe, DOM assertions and accessibility-tree snapshots are not screen-reader evidence."
   },
   "records": []
 }
