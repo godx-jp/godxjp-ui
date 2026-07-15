@@ -82,6 +82,31 @@
     padding-top: var(--space-stack-sm);
   }
 
+  /* Numbered footer may wrap only between its two semantic groups. The supported JA/EN/VI locale
+   * label and select stay fully visible together (gh#184). */
+  .ui-data-table-pagination--numbered {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .ui-data-table-page-size {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .ui-data-table-page-size-label {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .ui-data-table-page-size-trigger,
+  .ui-data-table-page-nav {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
   .ui-data-table-root {
     display: flex;
     flex-direction: column;

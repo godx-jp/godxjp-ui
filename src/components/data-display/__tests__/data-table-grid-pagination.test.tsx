@@ -59,6 +59,18 @@ describe("DataTable.Pagination — numbered (client) mode", () => {
     expect(next).toBeDisabled();
   });
 
+  it("keeps the translated rows-per-page control as one shrink-safe footer group", () => {
+    const { container } = NumberedGrid(make(12));
+    const pager = container.querySelector(".ui-data-table-pagination") as HTMLElement;
+    const pageSize = pager.querySelector(".ui-data-table-page-size") as HTMLElement;
+    const label = pageSize.querySelector(".ui-data-table-page-size-label") as HTMLElement;
+    const trigger = pageSize.querySelector(".ui-data-table-page-size-trigger") as HTMLElement;
+    expect(pager).toHaveClass("ui-data-table-pagination--numbered");
+    expect(pageSize).toContainElement(label);
+    expect(pageSize).toContainElement(trigger);
+    expect(label).toHaveTextContent(/Số dòng\/trang|表示件数|Rows per page/);
+  });
+
   it("disables next once the last page is reached", async () => {
     const user = userEvent.setup();
     const { container } = NumberedGrid(make(12)); // 2 pages

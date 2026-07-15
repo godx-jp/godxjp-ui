@@ -959,15 +959,21 @@ function NumberedPagination({
       justify="between"
       gap="md"
       wrap
-      className={cn("ui-data-table-pagination", className)}
+      className={cn("ui-data-table-pagination ui-data-table-pagination--numbered", className)}
     >
-      <Flex direction="row" align="center" gap="sm">
-        <span className="text-muted-foreground text-sm">{t("dataGrid.rowsPerPage")}</span>
+      <Flex direction="row" align="center" gap="sm" className="ui-data-table-page-size">
+        <span className="ui-data-table-page-size-label text-muted-foreground text-sm">
+          {t("dataGrid.rowsPerPage")}
+        </span>
         <Select
           value={String(pageSize)}
           onValueChange={(v: string) => table.setPageSize(Number(v))}
         >
-          <SelectTrigger size="sm" aria-label={t("dataGrid.rowsPerPage")} className="tabular-nums">
+          <SelectTrigger
+            size="sm"
+            aria-label={t("dataGrid.rowsPerPage")}
+            className="ui-data-table-page-size-trigger w-auto shrink-0 tabular-nums"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -979,7 +985,7 @@ function NumberedPagination({
           </SelectContent>
         </Select>
       </Flex>
-      <Flex direction="row" align="center" gap="sm">
+      <Flex direction="row" align="center" gap="sm" className="ui-data-table-page-nav">
         <span className="text-muted-foreground text-sm tabular-nums">
           {t("dataGrid.pageOf", { page: pageIndex + 1, total: Math.max(1, pageCount) })}
         </span>

@@ -89,7 +89,10 @@ export default function Demo() {
             <CardTitle level={2}>Sizes</CardTitle>
             <CardDescription>
               Height comes from the preset: xs 24 / sm 28 / default 32 / lg 36. Icon-only buttons
-              use the square icon-* sizes.
+              use the square icon-* sizes. icon-xs owns a 12px glyph: an explicit size-4 class on
+              its SVG is normalized so compact-density padding cannot collapse. Fine pointers use
+              the active --control-height-xs visual square; coarse pointers expand the actual hit
+              target to the framework's 44px --control-height-default floor.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -104,6 +107,9 @@ export default function Demo() {
                 <Button size="icon-xs" variant="ghost" aria-label="Edit">
                   <Pencil />
                 </Button>
+                <Button size="icon-xs" variant="ghost" aria-label="Edit with 16px icon">
+                  <Pencil className="size-4" />
+                </Button>
                 <Button size="icon-sm" variant="ghost" aria-label="Edit">
                   <Pencil />
                 </Button>
@@ -114,6 +120,16 @@ export default function Demo() {
                   <Plus />
                 </Button>
               </Flex>
+              <div className="ui-density-compact">
+                <Flex direction="row" wrap align="center" gap="md">
+                  <Button size="icon-xs" variant="ghost" aria-label="Compact edit">
+                    <Pencil />
+                  </Button>
+                  <Button size="icon-xs" variant="ghost" aria-label="Compact edit with 16px icon">
+                    <Pencil className="size-4" />
+                  </Button>
+                </Flex>
+              </div>
             </Flex>
           </CardContent>
         </Card>

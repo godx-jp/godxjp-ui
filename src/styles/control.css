@@ -202,6 +202,21 @@
    * icon button can sit flush beside a labelled one (split buttons, toolbars). Derive them from
    * the density tokens — never from a hand-written offset off the base --control-height, which
    * is how icon-sm drifted a step down to the xs height (issue #133). */
+  .ui-button--icon-xs {
+    width: var(--control-height-xs);
+    height: var(--control-height-xs);
+    padding: 0;
+  }
+
+  /* Rule #24: compact visual tiers never shrink the actual coarse-pointer hit target below 44px.
+   * The glyph remains 12px; only the interactive square expands. */
+  @media (pointer: coarse) {
+    .ui-button--icon-xs {
+      width: var(--control-height-default);
+      height: var(--control-height-default);
+    }
+  }
+
   .ui-button--icon-sm {
     width: var(--control-height-sm);
     height: var(--control-height-sm);

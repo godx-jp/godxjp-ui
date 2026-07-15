@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 
+import { AppProvider } from "@godxjp/ui/app";
 import { Badge, DataTable, type ColumnDef } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
@@ -149,6 +150,39 @@ export default function Demo() {
             読み込み中（loading=true で行を置き換え）
           </Text>
           <DataTable data={invoices} columns={columns} getRowId={(row) => row.id} loading />
+        </Flex>
+
+        <Flex direction="col" gap="sm" className="max-w-sm">
+          <Text as="div" weight="medium">
+            Narrow footer · VI expanded rows-per-page label
+          </Text>
+          <AppProvider defaultLocale="vi" persist={false}>
+            <DataTable data={invoices} columns={columns} getRowId={(row) => row.id}>
+              <DataTable.Pagination pageSizeOptions={[10, 20]} />
+            </DataTable>
+          </AppProvider>
+        </Flex>
+
+        <Flex direction="col" gap="sm" className="max-w-sm">
+          <Text as="div" weight="medium">
+            Narrow footer · JA rows-per-page label
+          </Text>
+          <AppProvider defaultLocale="ja" persist={false}>
+            <DataTable data={invoices} columns={columns} getRowId={(row) => row.id}>
+              <DataTable.Pagination pageSizeOptions={[10, 20]} />
+            </DataTable>
+          </AppProvider>
+        </Flex>
+
+        <Flex direction="col" gap="sm" className="max-w-sm">
+          <Text as="div" weight="medium">
+            Narrow footer · EN longest supported rows-per-page label
+          </Text>
+          <AppProvider defaultLocale="en" persist={false}>
+            <DataTable data={invoices} columns={columns} getRowId={(row) => row.id}>
+              <DataTable.Pagination pageSizeOptions={[10, 20]} />
+            </DataTable>
+          </AppProvider>
         </Flex>
 
         <Flex direction="col" gap="sm">
