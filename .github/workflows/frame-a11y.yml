@@ -34,11 +34,11 @@ jobs:
     env:
       PREVIEW_BASE: http://localhost:6008
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with:
           dest: ${{ runner.temp }}/setup-pnpm
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
@@ -55,18 +55,18 @@ jobs:
     env:
       PREVIEW_BASE: http://localhost:6018
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with:
           dest: ${{ runner.temp }}/setup-pnpm
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Coverage report (report-only)
         run: pnpm check:frame-coverage
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: frame-coverage
@@ -81,11 +81,11 @@ jobs:
     env:
       PREVIEW_BASE: http://localhost:6028
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with:
           dest: ${{ runner.temp }}/setup-pnpm
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
@@ -94,7 +94,7 @@ jobs:
         run: pnpm exec playwright install chromium
       - name: axe every frame (desktop + mobile-sm)
         run: pnpm check:frame-axe
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: frame-axe-evidence
@@ -109,11 +109,11 @@ jobs:
     env:
       PREVIEW_BASE: http://localhost:6038
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with:
           dest: ${{ runner.temp }}/setup-pnpm
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
@@ -122,7 +122,7 @@ jobs:
         run: pnpm exec playwright install chromium
       - name: geometry sweep (320→1920)
         run: pnpm check:frame-geometry
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: frame-geometry-evidence
