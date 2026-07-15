@@ -89,7 +89,10 @@ export default function Demo() {
             <CardTitle level={2}>Sizes</CardTitle>
             <CardDescription>
               Height comes from the preset: xs 24 / sm 28 / default 32 / lg 36. Icon-only buttons
-              use the square icon-* sizes.
+              use the square icon-* sizes. icon-xs owns a 12px glyph: an explicit size-4 class on
+              its SVG is normalized so compact-density padding cannot collapse. Its hit target is
+              the active --control-height-xs token, not an implicit 44px target; prefer icon or a
+              larger size for primary touch actions.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -103,6 +106,9 @@ export default function Demo() {
               <Flex direction="row" wrap align="center" gap="md">
                 <Button size="icon-xs" variant="ghost" aria-label="Edit">
                   <Pencil />
+                </Button>
+                <Button size="icon-xs" variant="ghost" aria-label="Edit with 16px icon">
+                  <Pencil className="size-4" />
                 </Button>
                 <Button size="icon-sm" variant="ghost" aria-label="Edit">
                   <Pencil />

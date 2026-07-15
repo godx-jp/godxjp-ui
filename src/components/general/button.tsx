@@ -41,7 +41,7 @@ const buttonVariants = cva("ui-button", {
       sm: "ui-button--sm gap-1.5 has-[>svg]:px-2.5",
       lg: "ui-button--lg has-[>svg]:px-4",
       icon: "ui-button--icon",
-      "icon-xs": "size-[calc(var(--control-height)-0.75rem)] [&_svg:not([class*='size-'])]:size-3",
+      "icon-xs": "ui-button--icon-xs [&_svg]:size-3 [&_svg]:shrink-0",
       "icon-sm": "ui-button--icon-sm",
       "icon-lg": "ui-button--icon-lg",
     },
@@ -133,7 +133,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProp>(
           "disabled:pointer-events-none disabled:opacity-50",
           "data-[loading]:pointer-events-none",
           "aria-invalid:border-destructive aria-invalid:ring-destructive/20",
-          "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "[&_svg]:pointer-events-none [&_svg]:shrink-0",
           buttonVariants({ variant, size, shape, className }),
         )}
         ref={ref}

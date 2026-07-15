@@ -96,6 +96,7 @@ describe("Button", () => {
   // hand-derive an offset off the BASE --control-height, which ignored the .ui-button--sm rebinding
   // and rendered icon-sm 4px short — exactly the xs height.
   it.each([
+    ["icon-xs", "ui-button--icon-xs"],
     ["icon-sm", "ui-button--icon-sm"],
     ["icon-lg", "ui-button--icon-lg"],
   ] as const)("size=%s binds the density token class %s", (size, tokenClass) => {
@@ -103,6 +104,19 @@ describe("Button", () => {
     const btn = screen.getByRole("button", { name: "I" });
     expect(btn).toHaveClass(tokenClass);
     expect(btn.className).not.toMatch(/size-\[calc\(var\(--control-height\)/);
+  });
+
+  it("icon-xs owns a 12px glyph even when the child requests size-4", () => {
+    renderWithUi(
+      <Button size="icon-xs" aria-label="Edit explicit icon">
+        <svg data-testid="explicit-icon" className="size-4" />
+      </Button>,
+    );
+    const button = screen.getByRole("button", { name: "Edit explicit icon" });
+    expect(button).toHaveClass("ui-button--icon-xs");
+    expect(screen.getByTestId("explicit-icon")).toHaveClass("size-4");
+    expect(button.className).toContain("[&_svg]:size-3");
+    expect(button.className).toContain("[&_svg]:shrink-0");
   });
 
   describe("loading", () => {
