@@ -54,7 +54,7 @@ jobs:
           - name: interaction-semantics
             port: 6041
             stories: ""
-            command: pnpm check:data-entry-touch-aria && pnpm check:layout-nav-frames && pnpm check:provider-feedback-query-runtime
+            command: pnpm check:data-entry-touch-aria && pnpm check:layout-nav-frames && pnpm check:provider-feedback-query-runtime && pnpm check:data-table-pagination-wrap && pnpm check:button-icon-xs
           - name: layout-touch-rtl
             port: 6051
             stories: ""
