@@ -974,18 +974,38 @@ function suggestPrimitive(useCase: string): string {
 function searchComponents(query: string): string {
   const q = query.trim().toLowerCase();
   if (!q) return listPrimitives();
+  // Tokenize → khớp theo TỪNG từ (query nhiều từ như "async searchable select" trước đây
+  // khớp cả cụm liền nên hiếm trúng). Bỏ token quá ngắn (nhiễu). Ghi điểm qua nhiều
+  // trường — quan trọng nhất: name/tagline + useCases (người dùng search theo Ý ĐỊNH, vd
+  // "confirm delete" / "date range"), rồi usage/related/group/props.
+  const tokens = q.split(/\s+/).filter((t) => t.length >= 2);
+  const terms = tokens.length ? tokens : [q];
   const matches = COMPONENTS.map((c) => {
+    const name = c.name.toLowerCase();
+    const tagline = c.tagline.toLowerCase();
+    const useCases = (c.useCases ?? []).join(" ").toLowerCase();
+    const usage = (c.usage ?? []).join(" ").toLowerCase();
+    const related = (c.related ?? []).join(" ").toLowerCase();
+    const props = c.props.map((p) => p.name.toLowerCase());
     let score = 0;
-    if (c.name.toLowerCase().includes(q)) score += 5;
-    if (c.tagline.toLowerCase().includes(q)) score += 2;
-    if (c.props.some((p) => p.name.toLowerCase().includes(q))) score += 1;
+    if (name === q) score += 100; // exact-name → luôn lên đầu
+    for (const t of terms) {
+      if (name.includes(t)) score += 5;
+      if (tagline.includes(t)) score += 3;
+      if (useCases.includes(t)) score += 2;
+      if (usage.includes(t)) score += 1;
+      if (related.includes(t)) score += 1;
+      if (c.group.includes(t)) score += 1;
+      if (props.some((p) => p.includes(t))) score += 1;
+    }
     return { c, score };
   })
     .filter((m) => m.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 12);
-  if (!matches.length) return `No matches for "${query}".`;
-  let out = `# Search "${query}" — ${matches.length} matches\n\n`;
+  if (!matches.length)
+    return `No matches for "${query}". Try \`list_primitives\` or a broader term (e.g. a use-case word like "date", "select", "confirm").`;
+  let out = `# Search "${query}" — ${matches.length} match${matches.length > 1 ? "es" : ""}\n\n`;
   for (const { c, score } of matches)
     out += `- **${c.name}** (${c.group}, ${score}) — ${c.tagline}\n`;
   return out;
