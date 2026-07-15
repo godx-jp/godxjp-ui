@@ -192,11 +192,16 @@ export const TOOL_DEFINITIONS = [
   {
     name: "get_component",
     description:
-      "Full guide for one @godxjp/ui component — import path, props/types/defaults, HOW to use it (DO/DON'T), WHEN to reach for it (use cases), related components (don't reinvent/confuse), a copy-paste example, story path, and cardinal rules. Use this before hand-rolling anything.",
+      "Full guide for one @godxjp/ui component — import path, props/types/defaults, HOW to use it (DO/DON'T), WHEN to reach for it (use cases), related components (don't reinvent/confuse), a copy-paste example, story path, and cardinal rules. Use this before hand-rolling anything. Design-token knobs are listed compactly (name+default); pass `verbose:true` for what each token controls.",
     inputSchema: {
       type: "object",
       properties: {
         name: { type: "string", description: "Component name (e.g. 'Button', 'DataTable')." },
+        verbose: {
+          type: "boolean",
+          description:
+            "Include the full design-token table with a 'what it controls' description per token. Default false (compact token+default only) to save context.",
+        },
       },
       required: ["name"],
     },
@@ -394,7 +399,7 @@ export async function dispatchTool(name: string, args: Record<string, unknown>):
     case "get_skill_section":
       return getSkillSection(String(args.skill ?? ""), String(args.section ?? ""));
     case "get_component":
-      return getComponent(String(args.name ?? ""));
+      return getComponent(String(args.name ?? ""), args.verbose === true);
     case "get_pattern":
       return getPattern(String(args.name ?? ""));
     case "get_rule":
@@ -788,7 +793,7 @@ function componentTokensFor(name: string) {
   return COMPONENT_TOKENS.filter((t) => prefixes.some((p) => t.name.startsWith(`--${p}-`)));
 }
 
-function getComponent(name: string): string {
+function getComponent(name: string, verbose = false): string {
   const c = findComponent(name);
   if (!c) return `Component "${name}" not found. Use \`list_primitives\` to discover.`;
   let out = `# ${c.name}\n\n**Group:** ${c.group}`;
@@ -805,8 +810,16 @@ function getComponent(name: string): string {
   const tokens = componentTokensFor(c.name);
   if (tokens.length) {
     out += `\n## Design tokens (theme knobs)\n\nOverride these in a service \`theme.css\` to re-tune ONLY this component (never hard-code or fork CSS — rules #44/#45/#46):\n\n`;
-    out += `| Token | Default | What it controls |\n|---|---|---|\n`;
-    for (const t of tokens) out += `| \`${t.name}\` | \`${t.value}\` | ${t.description} |\n`;
+    if (verbose) {
+      // Full table với "what it controls" — chỉ khi verbose (cột mô tả lặp nhiều, tốn token).
+      out += `| Token | Default | What it controls |\n|---|---|---|\n`;
+      for (const t of tokens) out += `| \`${t.name}\` | \`${t.value}\` | ${t.description} |\n`;
+    } else {
+      // Compact mặc định: token + default (bỏ cột mô tả) → đủ để biết knob nào có + giá trị.
+      out += `| Token | Default |\n|---|---|\n`;
+      for (const t of tokens) out += `| \`${t.name}\` | \`${t.value}\` |\n`;
+      out += `\n_${tokens.length} knob${tokens.length > 1 ? "s" : ""}. Gọi \`get_component name="${c.name}" verbose=true\` để xem mỗi token điều khiển gì._\n`;
+    }
   }
   if (c.usage && c.usage.length) {
     out += `\n## How to use it\n\n`;
