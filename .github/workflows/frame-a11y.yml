@@ -35,7 +35,7 @@ jobs:
       PREVIEW_BASE: http://localhost:6008
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6
@@ -56,7 +56,7 @@ jobs:
       PREVIEW_BASE: http://localhost:6018
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6
@@ -82,7 +82,7 @@ jobs:
       PREVIEW_BASE: http://localhost:6028
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6
@@ -110,7 +110,7 @@ jobs:
       PREVIEW_BASE: http://localhost:6038
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6

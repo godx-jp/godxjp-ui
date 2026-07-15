@@ -17,7 +17,7 @@ jobs:
     runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4.4.0
+      - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6
@@ -61,7 +61,7 @@ jobs:
             command: pnpm check:layout-nav-closure && pnpm check:final-touch-rtl
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4.4.0
+      - uses: pnpm/action-setup@v6.0.9
         with:
           dest: ${{ runner.temp }}/setup-pnpm
       - uses: actions/setup-node@v6
