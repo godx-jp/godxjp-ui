@@ -49,13 +49,13 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_skills",
     description:
-      "List every design / taste skill bundled by this MCP (taste / soft / minimalist / brutalist / gpt-tasteskill / redesign / output / brandkit / stitch / imagegen-mobile / imagegen-web / image-to-code). Returns id + name + whenToUse + section ids. ~1KB. Use FIRST to discover what skills exist; then `get_skill_section` to drill in.",
+      "List every design/taste skill bundled by this MCP (id + name + whenToUse + section ids). Use FIRST to discover skills; then `get_skill_section` to drill in.",
     inputSchema: { type: "object", properties: {} },
   },
   {
     name: "list_primitives",
     description:
-      "List every @godxjp/ui primitive / composite / shell. Returns group + tagline per entry. ~3KB. Optionally filter by group.",
+      "List every @godxjp/ui primitive/composite/shell (group + tagline per entry). Optionally filter by group. Then `get_component` for one's full API.",
     inputSchema: {
       type: "object",
       properties: {
@@ -79,13 +79,13 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_patterns",
     description:
-      "List every canonical code pattern (signup-form / settings-page-responsive / data-table-page / async-data-state / organization-memberships / account-recovery-settings / confirm-destructive …). Common aliases resolve too (loading-states→async-data-state, filter-bar→data-table-page, settings-tabs→settings-page-responsive). ~500 bytes. Use before `get_pattern`.",
+      "List every canonical copy-paste code pattern (signup-form, settings-page, data-table-page, async-data-state, confirm-destructive, …); common aliases resolve too. Use before `get_pattern`.",
     inputSchema: { type: "object", properties: {} },
   },
   {
     name: "list_anti_ai_tells",
     description:
-      "List every AI-tell pattern to AVOID (organised by category: visual / layout / copy / interaction / imagery / structure). ~2KB. Use to self-audit a design before shipping.",
+      "List every AI-tell pattern to AVOID (optionally by category). Use to self-audit a design before shipping; then `get_anti_ai_tell` for the fix.",
     inputSchema: {
       type: "object",
       properties: {
@@ -99,7 +99,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_redesign_checks",
     description:
-      "List the redesign audit checklist (50+ checks across 9 categories: typography / color-surface / layout / interactivity / content / components / iconography / code-quality / omissions). ~5KB. Use when auditing an existing project.",
+      "List the redesign audit checklist (50+ checks; optionally by category). Use when auditing an existing project; then `get_redesign_check` for a symptom's fix.",
     inputSchema: {
       type: "object",
       properties: {
@@ -124,7 +124,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_audit_rules",
     description:
-      "List the LOCAL ui-audit rules (scripts/ui-audit.mjs) an agent should run BEFORE any visual review. Each rule cites the international standard it enforces (WCAG 2.2 / WAI-ARIA / ECMA-402 Intl / ISO 4217·3166·8601 / IANA / CSS Logical Properties / HTML LS) + a concrete fix. Optionally filter by category. Includes the run command. ~3KB.",
+      "List the LOCAL static ui-audit rules (scripts/ui-audit.mjs) to run BEFORE any visual review — each cites the standard it enforces (WCAG/WAI-ARIA/Intl/ISO/IANA/CSS-Logical) + a fix + the run command. Optionally by category.",
     inputSchema: {
       type: "object",
       properties: {
@@ -139,7 +139,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_visual_checks",
     description:
-      "List the RUNTIME visual-audit checks (scripts/visual-audit.mjs — Playwright + axe-core) to run against the RUNNING app BEFORE a visual review. Catches what source/static checks can't: colour contrast + ARIA (axe), target size (WCAG 2.5.8), OKLCH chroma of rendered accents (渋み), emoji that reached the DOM, and a mis-laid-out notification banner. Separate from list_audit_rules (static, zero-dep) because it needs a browser. ~2KB.",
+      "List the RUNTIME visual-audit checks (scripts/visual-audit.mjs — Playwright + axe-core) to run against the RUNNING app: contrast/ARIA (axe), target size, rendered-accent chroma, DOM emoji, banner layout. Needs a browser (vs list_audit_rules, static). Optionally by category.",
     inputSchema: {
       type: "object",
       properties: {
@@ -192,11 +192,16 @@ export const TOOL_DEFINITIONS = [
   {
     name: "get_component",
     description:
-      "Full guide for one @godxjp/ui component — import path, props/types/defaults, HOW to use it (DO/DON'T), WHEN to reach for it (use cases), related components (don't reinvent/confuse), a copy-paste example, story path, and cardinal rules. Use this before hand-rolling anything.",
+      "Full guide for one @godxjp/ui component — import path, props/types/defaults, HOW to use it (DO/DON'T), WHEN to reach for it (use cases), related components (don't reinvent/confuse), a copy-paste example, story path, and cardinal rules. Use this before hand-rolling anything. Design-token knobs are listed compactly (name+default); pass `verbose:true` for what each token controls.",
     inputSchema: {
       type: "object",
       properties: {
         name: { type: "string", description: "Component name (e.g. 'Button', 'DataTable')." },
+        verbose: {
+          type: "boolean",
+          description:
+            "Include the full design-token table with a 'what it controls' description per token. Default false (compact token+default only) to save context.",
+        },
       },
       required: ["name"],
     },
@@ -306,12 +311,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "check_compatibility",
     description:
-      "Report whether the @godxjp/ui version installed in the target project matches THIS catalog. " +
-      "This MCP describes exactly one release train (see the `godx-ui://compatibility` resource); if " +
-      "the consumer runs a different @godxjp/ui minor, the props / tokens / patterns it returns may " +
-      "describe a build they never installed (issue #140). Pass the installed version (from the app's " +
-      "`node_modules/@godxjp/ui/package.json` or `npm ls @godxjp/ui`) to get an actionable match / " +
-      "mismatch verdict. Call it at the START of a consumer session before trusting catalog output.",
+      "Report whether the @godxjp/ui version installed in the target project matches THIS catalog (which describes one release train). A mismatched minor means the props/tokens/patterns may describe a build they never installed (#140). Pass the installed version (`npm ls @godxjp/ui`); call it at the START of a consumer session.",
     inputSchema: {
       type: "object",
       properties: {
@@ -329,7 +329,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "route_task",
     description:
-      "Natural-language task → skill+section pointer. ~300 bytes. E.g. 'I want to design a premium agency hero' → `{skill:'soft', section:'vibe-archetypes', why:'...'}`. Use FIRST when you don't know which skill applies.",
+      "Natural-language task → skill+section pointer (e.g. 'design a premium agency hero' → soft/vibe-archetypes). Use FIRST when you don't know which skill applies.",
     inputSchema: {
       type: "object",
       properties: { task: { type: "string", description: "Describe what you want to build." } },
@@ -394,7 +394,7 @@ export async function dispatchTool(name: string, args: Record<string, unknown>):
     case "get_skill_section":
       return getSkillSection(String(args.skill ?? ""), String(args.section ?? ""));
     case "get_component":
-      return getComponent(String(args.name ?? ""));
+      return getComponent(String(args.name ?? ""), args.verbose === true);
     case "get_pattern":
       return getPattern(String(args.name ?? ""));
     case "get_rule":
@@ -788,7 +788,7 @@ function componentTokensFor(name: string) {
   return COMPONENT_TOKENS.filter((t) => prefixes.some((p) => t.name.startsWith(`--${p}-`)));
 }
 
-function getComponent(name: string): string {
+function getComponent(name: string, verbose = false): string {
   const c = findComponent(name);
   if (!c) return `Component "${name}" not found. Use \`list_primitives\` to discover.`;
   let out = `# ${c.name}\n\n**Group:** ${c.group}`;
@@ -805,8 +805,16 @@ function getComponent(name: string): string {
   const tokens = componentTokensFor(c.name);
   if (tokens.length) {
     out += `\n## Design tokens (theme knobs)\n\nOverride these in a service \`theme.css\` to re-tune ONLY this component (never hard-code or fork CSS — rules #44/#45/#46):\n\n`;
-    out += `| Token | Default | What it controls |\n|---|---|---|\n`;
-    for (const t of tokens) out += `| \`${t.name}\` | \`${t.value}\` | ${t.description} |\n`;
+    if (verbose) {
+      // Full table với "what it controls" — chỉ khi verbose (cột mô tả lặp nhiều, tốn token).
+      out += `| Token | Default | What it controls |\n|---|---|---|\n`;
+      for (const t of tokens) out += `| \`${t.name}\` | \`${t.value}\` | ${t.description} |\n`;
+    } else {
+      // Compact mặc định: token + default (bỏ cột mô tả) → đủ để biết knob nào có + giá trị.
+      out += `| Token | Default |\n|---|---|\n`;
+      for (const t of tokens) out += `| \`${t.name}\` | \`${t.value}\` |\n`;
+      out += `\n_${tokens.length} knob${tokens.length > 1 ? "s" : ""}. Gọi \`get_component name="${c.name}" verbose=true\` để xem mỗi token điều khiển gì._\n`;
+    }
   }
   if (c.usage && c.usage.length) {
     out += `\n## How to use it\n\n`;
@@ -966,18 +974,38 @@ function suggestPrimitive(useCase: string): string {
 function searchComponents(query: string): string {
   const q = query.trim().toLowerCase();
   if (!q) return listPrimitives();
+  // Tokenize → khớp theo TỪNG từ (query nhiều từ như "async searchable select" trước đây
+  // khớp cả cụm liền nên hiếm trúng). Bỏ token quá ngắn (nhiễu). Ghi điểm qua nhiều
+  // trường — quan trọng nhất: name/tagline + useCases (người dùng search theo Ý ĐỊNH, vd
+  // "confirm delete" / "date range"), rồi usage/related/group/props.
+  const tokens = q.split(/\s+/).filter((t) => t.length >= 2);
+  const terms = tokens.length ? tokens : [q];
   const matches = COMPONENTS.map((c) => {
+    const name = c.name.toLowerCase();
+    const tagline = c.tagline.toLowerCase();
+    const useCases = (c.useCases ?? []).join(" ").toLowerCase();
+    const usage = (c.usage ?? []).join(" ").toLowerCase();
+    const related = (c.related ?? []).join(" ").toLowerCase();
+    const props = c.props.map((p) => p.name.toLowerCase());
     let score = 0;
-    if (c.name.toLowerCase().includes(q)) score += 5;
-    if (c.tagline.toLowerCase().includes(q)) score += 2;
-    if (c.props.some((p) => p.name.toLowerCase().includes(q))) score += 1;
+    if (name === q) score += 100; // exact-name → luôn lên đầu
+    for (const t of terms) {
+      if (name.includes(t)) score += 5;
+      if (tagline.includes(t)) score += 3;
+      if (useCases.includes(t)) score += 2;
+      if (usage.includes(t)) score += 1;
+      if (related.includes(t)) score += 1;
+      if (c.group.includes(t)) score += 1;
+      if (props.some((p) => p.includes(t))) score += 1;
+    }
     return { c, score };
   })
     .filter((m) => m.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 12);
-  if (!matches.length) return `No matches for "${query}".`;
-  let out = `# Search "${query}" — ${matches.length} matches\n\n`;
+  if (!matches.length)
+    return `No matches for "${query}". Try \`list_primitives\` or a broader term (e.g. a use-case word like "date", "select", "confirm").`;
+  let out = `# Search "${query}" — ${matches.length} match${matches.length > 1 ? "es" : ""}\n\n`;
   for (const { c, score } of matches)
     out += `- **${c.name}** (${c.group}, ${score}) — ${c.tagline}\n`;
   return out;
