@@ -49,13 +49,13 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_skills",
     description:
-      "List every design / taste skill bundled by this MCP (taste / soft / minimalist / brutalist / gpt-tasteskill / redesign / output / brandkit / stitch / imagegen-mobile / imagegen-web / image-to-code). Returns id + name + whenToUse + section ids. ~1KB. Use FIRST to discover what skills exist; then `get_skill_section` to drill in.",
+      "List every design/taste skill bundled by this MCP (id + name + whenToUse + section ids). Use FIRST to discover skills; then `get_skill_section` to drill in.",
     inputSchema: { type: "object", properties: {} },
   },
   {
     name: "list_primitives",
     description:
-      "List every @godxjp/ui primitive / composite / shell. Returns group + tagline per entry. ~3KB. Optionally filter by group.",
+      "List every @godxjp/ui primitive/composite/shell (group + tagline per entry). Optionally filter by group. Then `get_component` for one's full API.",
     inputSchema: {
       type: "object",
       properties: {
@@ -79,13 +79,13 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_patterns",
     description:
-      "List every canonical code pattern (signup-form / settings-page-responsive / data-table-page / async-data-state / organization-memberships / account-recovery-settings / confirm-destructive …). Common aliases resolve too (loading-states→async-data-state, filter-bar→data-table-page, settings-tabs→settings-page-responsive). ~500 bytes. Use before `get_pattern`.",
+      "List every canonical copy-paste code pattern (signup-form, settings-page, data-table-page, async-data-state, confirm-destructive, …); common aliases resolve too. Use before `get_pattern`.",
     inputSchema: { type: "object", properties: {} },
   },
   {
     name: "list_anti_ai_tells",
     description:
-      "List every AI-tell pattern to AVOID (organised by category: visual / layout / copy / interaction / imagery / structure). ~2KB. Use to self-audit a design before shipping.",
+      "List every AI-tell pattern to AVOID (optionally by category). Use to self-audit a design before shipping; then `get_anti_ai_tell` for the fix.",
     inputSchema: {
       type: "object",
       properties: {
@@ -99,7 +99,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_redesign_checks",
     description:
-      "List the redesign audit checklist (50+ checks across 9 categories: typography / color-surface / layout / interactivity / content / components / iconography / code-quality / omissions). ~5KB. Use when auditing an existing project.",
+      "List the redesign audit checklist (50+ checks; optionally by category). Use when auditing an existing project; then `get_redesign_check` for a symptom's fix.",
     inputSchema: {
       type: "object",
       properties: {
@@ -124,7 +124,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_audit_rules",
     description:
-      "List the LOCAL ui-audit rules (scripts/ui-audit.mjs) an agent should run BEFORE any visual review. Each rule cites the international standard it enforces (WCAG 2.2 / WAI-ARIA / ECMA-402 Intl / ISO 4217·3166·8601 / IANA / CSS Logical Properties / HTML LS) + a concrete fix. Optionally filter by category. Includes the run command. ~3KB.",
+      "List the LOCAL static ui-audit rules (scripts/ui-audit.mjs) to run BEFORE any visual review — each cites the standard it enforces (WCAG/WAI-ARIA/Intl/ISO/IANA/CSS-Logical) + a fix + the run command. Optionally by category.",
     inputSchema: {
       type: "object",
       properties: {
@@ -139,7 +139,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "list_visual_checks",
     description:
-      "List the RUNTIME visual-audit checks (scripts/visual-audit.mjs — Playwright + axe-core) to run against the RUNNING app BEFORE a visual review. Catches what source/static checks can't: colour contrast + ARIA (axe), target size (WCAG 2.5.8), OKLCH chroma of rendered accents (渋み), emoji that reached the DOM, and a mis-laid-out notification banner. Separate from list_audit_rules (static, zero-dep) because it needs a browser. ~2KB.",
+      "List the RUNTIME visual-audit checks (scripts/visual-audit.mjs — Playwright + axe-core) to run against the RUNNING app: contrast/ARIA (axe), target size, rendered-accent chroma, DOM emoji, banner layout. Needs a browser (vs list_audit_rules, static). Optionally by category.",
     inputSchema: {
       type: "object",
       properties: {
@@ -311,12 +311,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "check_compatibility",
     description:
-      "Report whether the @godxjp/ui version installed in the target project matches THIS catalog. " +
-      "This MCP describes exactly one release train (see the `godx-ui://compatibility` resource); if " +
-      "the consumer runs a different @godxjp/ui minor, the props / tokens / patterns it returns may " +
-      "describe a build they never installed (issue #140). Pass the installed version (from the app's " +
-      "`node_modules/@godxjp/ui/package.json` or `npm ls @godxjp/ui`) to get an actionable match / " +
-      "mismatch verdict. Call it at the START of a consumer session before trusting catalog output.",
+      "Report whether the @godxjp/ui version installed in the target project matches THIS catalog (which describes one release train). A mismatched minor means the props/tokens/patterns may describe a build they never installed (#140). Pass the installed version (`npm ls @godxjp/ui`); call it at the START of a consumer session.",
     inputSchema: {
       type: "object",
       properties: {
@@ -334,7 +329,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: "route_task",
     description:
-      "Natural-language task → skill+section pointer. ~300 bytes. E.g. 'I want to design a premium agency hero' → `{skill:'soft', section:'vibe-archetypes', why:'...'}`. Use FIRST when you don't know which skill applies.",
+      "Natural-language task → skill+section pointer (e.g. 'design a premium agency hero' → soft/vibe-archetypes). Use FIRST when you don't know which skill applies.",
     inputSchema: {
       type: "object",
       properties: { task: { type: "string", description: "Describe what you want to build." } },
