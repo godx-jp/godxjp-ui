@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "18.0.1",
-  "godxUiMcp": "18.0.1",
+  "version": "18.0.2",
+  "godxUiMcp": "18.0.2",
   "type": "module",
   "packageManager": "pnpm@10.29.1",
   "sideEffects": false,
@@ -276,7 +276,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",
-    "check:frame-coverage": "node scripts/check-frame-coverage.mjs",
+    "check:frame-coverage": "node scripts/frame-coverage.mjs",
     "check:screen-reader-evidence": "node scripts/check-screen-reader-evidence.mjs",
     "check:data-entry-frame-runtime": "node scripts/check-data-entry-frame-runtime.mjs",
     "check:data-entry-owner-source": "node scripts/check-data-entry-owner-source.mjs",
@@ -323,7 +323,6 @@
     "check:visual-audit": "node scripts/visual-audit-smoke.mjs",
     "check:frame-axe": "node scripts/check-frame-axe.mjs",
     "check:frame-geometry": "node scripts/frame-geometry.mjs",
-    "check:frame-coverage": "node scripts/frame-coverage.mjs",
     "postinstall": "node scripts/postinstall.mjs",
     "init-agent": "node scripts/init-agent-kit.mjs",
     "check:use-client": "node scripts/check-use-client.mjs"
