@@ -278,6 +278,7 @@
     "check:example-imports": "node scripts/check-example-imports.mjs",
     "check:frame-coverage": "node scripts/frame-coverage.mjs",
     "check:screen-reader-evidence": "node scripts/check-screen-reader-evidence.mjs",
+    "check:voiceover-capture": "node scripts/check-voiceover-capture.mjs",
     "check:data-entry-frame-runtime": "node scripts/check-data-entry-frame-runtime.mjs",
     "check:data-entry-owner-source": "node scripts/check-data-entry-owner-source.mjs",
     "check:data-entry-touch-aria": "node scripts/check-data-entry-touch-aria.mjs",
