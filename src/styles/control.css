@@ -208,6 +208,15 @@
     padding: 0;
   }
 
+  /* Rule #24: compact visual tiers never shrink the actual coarse-pointer hit target below 44px.
+   * The glyph remains 12px; only the interactive square expands. */
+  @media (pointer: coarse) {
+    .ui-button--icon-xs {
+      width: var(--control-height-default);
+      height: var(--control-height-default);
+    }
+  }
+
   .ui-button--icon-sm {
     width: var(--control-height-sm);
     height: var(--control-height-sm);
