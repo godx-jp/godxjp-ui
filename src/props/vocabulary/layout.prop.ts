@@ -12,6 +12,9 @@ export type DensityProp = "compact" | "default" | "comfortable";
 /** Page shell layout — orthogonal to PageDensityProp. */
 export type PageContainerVariantProp = "default" | "narrow" | "flush" | "ghost";
 
+/** CenteredShell content-column max-width tier — sm ~32rem, md ~46rem, lg ~64rem. */
+export type CenteredShellWidthProp = "sm" | "md" | "lg";
+
 /** Shared gap between layout children; components may document subsets. */
 export type GapProp = "xs" | "sm" | "md" | "lg" | "xl";
 

@@ -42,4 +42,16 @@
   --auth-shell-bar-padding: var(--space-5) var(--space-6);
   --auth-shell-main-padding: var(--space-6);
   --auth-shell-footer-padding: var(--space-3) var(--space-6) var(--space-4);
+
+  /* CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
+   * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height +
+   * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A
+   * service retunes the bar inset, block padding and each width tier without forking CSS. */
+  --centered-shell-bar-height: 3.25rem;
+  --centered-shell-bar-padding-x: var(--space-4);
+  --centered-shell-main-padding: var(--space-6);
+  --centered-shell-footer-padding: var(--space-3) var(--space-6) var(--space-4);
+  --centered-shell-width-sm: 32rem;
+  --centered-shell-width-md: 46rem;
+  --centered-shell-width-lg: 64rem;
 }

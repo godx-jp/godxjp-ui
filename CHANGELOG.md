@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`CenteredShell` — authenticated, no-sidebar, centred-column page shell (#189)** — the third
+  layout shell, filling the gap between `AppShell` (which REQUIRES a sidebar — its padded topbar
+  chrome is a grid area beside the nav rail) and `AuthShell` (the UNAUTHENTICATED root, a narrow
+  ~24rem card centred vertically with no actions slot). CenteredShell gives a **padded top bar with
+  real actions** (banner) reusing the same `.app-topbar` chrome (inline padding · border · backdrop)
+  WITHOUT a sidebar, a scrollable `main` holding a **width-tiered centred column** (`width` =
+  sm ~32rem · md ~46rem default · lg ~64rem, all wider than the auth card) that is top-aligned so
+  sections flow + scroll, and an optional footer (contentinfo). A hosted "My Page" / account /
+  standalone-settings page now needs **zero custom CSS** and never hand-rolls a bar (the bare
+  `Topbar` ships no inset — the `.ui-topbar` zero-padding footgun). New tokens
+  `--centered-shell-bar-height`, `--centered-shell-bar-padding-x`, `--centered-shell-main-padding`,
+  `--centered-shell-footer-padding`, `--centered-shell-width-{sm,md,lg}` let a service retune the
+  bar inset, block padding and each width tier without forking CSS.
 - **Per-frame axe a11y gate real fixes (#157)** — the frame-axe baseline shrank from 101 allowlisted
   frames toward near-zero by fixing ROOT CAUSES, not re-baselining:
   - Every docs demo's top-level `CardTitle` now declares `level={2}` (was the library default

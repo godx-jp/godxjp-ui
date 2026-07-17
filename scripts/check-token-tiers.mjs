@@ -76,7 +76,16 @@ const componentPrefixes = {
     "descriptions",
   ],
   "data-entry": ["password-strength"],
-  shell: ["sidebar", "topbar", "kbd", "app-shell", "auth-shell", "page", "page-header"],
+  shell: [
+    "sidebar",
+    "topbar",
+    "kbd",
+    "app-shell",
+    "auth-shell",
+    "centered-shell",
+    "page",
+    "page-header",
+  ],
 };
 
 for (const file of cssFiles) {
