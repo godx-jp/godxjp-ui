@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Framework-agnostic form-state adapter + first-class Inertia binding (#190)** — `FormRoot` and
+  `FormFieldControl` are no longer hard-coupled to react-hook-form. `FormRoot` now accepts EITHER
+  `form` (the built-in RHF + Zod client path, unchanged) OR `adapter` — a small `FormStateAdapter`
+  (`getValue`/`setValue`/`getError`/`isSubmitting`/optional `onBlur`/`getValues`) — so a
+  server-driven form library plugs into the SAME auto-binding. `FormFieldControl` binds each field by
+  `name` (value/onChange/error, with `aria-invalid` wired from the error slot) on either path, and a
+  new `useFormSubmitting()` hook reads `isSubmitting` from whichever path is active (drives
+  submit-button `loading`). New optional subpath **`@godxjp/ui/inertia`** ships `inertiaAdapter(form)`
+  (wrap Inertia's `useForm`) and a lighter `useInertiaField(form, name)` helper. The core keeps
+  **zero** dependency on `@inertiajs` — the Inertia shape is duck-typed — so formik / TanStack Form
+  can implement the same contract. An Inertia page now binds a labelled, validated field with no
+  manual `value`/`onChange`/`error`/`aria-invalid` wiring; server (FormRequest) errors surface on the
+  right field and clear on edit.
 - **Per-frame axe a11y gate real fixes (#157)** — the frame-axe baseline shrank from 101 allowlisted
   frames toward near-zero by fixing ROOT CAUSES, not re-baselining:
   - Every docs demo's top-level `CardTitle` now declares `level={2}` (was the library default
