@@ -1004,6 +1004,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
   },
   {
+    "name": "--centered-shell-bar-height",
+    "value": "3.25rem",
+    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+  },
+  {
+    "name": "--centered-shell-bar-padding-x",
+    "value": "var(--space-4)",
+    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+  },
+  {
+    "name": "--centered-shell-main-padding",
+    "value": "var(--space-6)",
+    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+  },
+  {
+    "name": "--centered-shell-footer-padding",
+    "value": "var(--space-3) var(--space-6) var(--space-4)",
+    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+  },
+  {
+    "name": "--centered-shell-width-sm",
+    "value": "32rem",
+    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+  },
+  {
+    "name": "--centered-shell-width-md",
+    "value": "46rem",
+    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+  },
+  {
+    "name": "--centered-shell-width-lg",
+    "value": "64rem",
+    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+  },
+  {
     "name": "--table-row-height-compact",
     "value": "1.75rem",
     "description": "Table component tokens: row height, cell padding."

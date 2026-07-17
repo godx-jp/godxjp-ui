@@ -138,6 +138,11 @@
       "mainLabel": "Main content",
       "footerLabel": "Footer"
     },
+    "centeredShell": {
+      "headerLabel": "Header",
+      "mainLabel": "Main content",
+      "footerLabel": "Footer"
+    },
     "topbar": {
       "toggleSidebar": "Toggle sidebar",
       "search": "Search",

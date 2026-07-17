@@ -490,6 +490,95 @@ export function LoginPage() {
     rules: [23],
   },
   {
+    name: "CenteredShell",
+    group: "layout",
+    tagline:
+      "Authenticated, no-sidebar, centred-column page shell (hosted-ID My Page / account / standalone settings) — padded topbar with real actions + a width-tiered centred column, zero custom CSS.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description:
+          "Centred column content — page sections (identity hero, org picker, service grid, team list). Top-aligned and scrolls; NOT vertically centred like AuthShell's card.",
+      },
+      {
+        name: "topbar",
+        type: "ReactNode",
+        description:
+          "Top bar slot (banner) — a <Topbar> with brand + real actions (AppSettingPicker, user menu, sign-out). Wrapped in the SAME padded chrome as AppShell's topbar (inline padding, border, backdrop) WITHOUT a sidebar; omit → no banner. Never hand-roll a bar (the bare Topbar ships no padding — the .ui-topbar zero-inset footgun).",
+      },
+      {
+        name: "footer",
+        type: "ReactNode",
+        description:
+          "Footer slot (contentinfo) pinned to the bottom (legal links, locale switch, support). Omit → no footer.",
+      },
+      {
+        name: "width",
+        type: '"sm" | "md" | "lg"',
+        description:
+          "Max-width of the centred column: sm ~32rem, md (default) ~46rem, lg ~64rem — all wider than AuthShell's 24rem auth card. A service retunes each tier via --centered-shell-width-*.",
+      },
+    ],
+    usage: [
+      "DO use CenteredShell for an AUTHENTICATED page that has a topbar with actions but NO sidebar — the hosted-ID 'My Page', an account / self-service surface, a standalone settings page. It is the third shell: AppShell (needs a sidebar) · AuthShell (unauthenticated narrow card) · CenteredShell (authenticated centred column).",
+      "DO put a <Topbar start={<brand/>} end={<actions/>}/> in `topbar` — CenteredShell wraps it in the padded `.app-topbar` chrome, so you get inline padding + border + backdrop with zero custom CSS. Do NOT hand-roll a bar with raw `padding-inline` — the bare Topbar primitive ships no inset (the .ui-topbar zero-padding footgun) and content sits flush to the edge.",
+      "DO pick `width` by content: `sm` (~32rem) for a single settings form, `md` (default, ~46rem) for a My Page of stacked sections, `lg` (~64rem) for a service-launcher grid. All are wider than AuthShell's 24rem card.",
+      "DO wrap an individual section in <Reveal> for entrance motion — CenteredShell stays layout-only and delegates prefers-reduced-motion handling to Reveal (same as AuthShell).",
+      "DO NOT use AuthShell for an authenticated page (it centres a narrow card VERTICALLY and has no actions slot), and DO NOT force AppShell with an empty sidebar — use CenteredShell. Never nest it inside AppShell/AuthShell (or vice-versa); it is a ROOT shell.",
+    ],
+    useCases: [
+      'Hosted GoDX ID \'My Page\': <CenteredShell topbar={<Topbar start={<Brand/>} end={<><AppSettingPicker kind="locale"/><UserMenu/></>}/>} footer={<Footer/>} width="md"> with an identity hero, an org picker, a service-launcher grid and a team list.',
+      "Account / self-service settings surface (no admin sidebar): stacked <Card> sections (profile, security, sessions) in a centred `md` column under a topbar with a user menu.",
+      'Standalone single settings page: `width="sm"` with one <Card> of <Field>s and a save action.',
+      'Service launcher / app picker after sign-in: `width="lg"` with a <ResponsiveGrid> of app cards under the brand topbar.',
+    ],
+    related: [
+      "AppShell — the shell for authenticated app pages WITH a sidebar nav rail. CenteredShell is its no-sidebar sibling (same padded topbar chrome, a centred column instead of a full-bleed main).",
+      "AuthShell — the UNAUTHENTICATED root shell (login/mfa/reset): a narrow ~24rem card centred vertically, no actions slot. CenteredShell is the AUTHENTICATED centred-page counterpart. Never nest the two.",
+      "Topbar — compose it into `topbar`; CenteredShell supplies the padded chrome the bare Topbar lacks.",
+      "PageContainer — for a titled section INSIDE the column; or compose <Card>/<ResponsiveGrid> sections directly.",
+    ],
+    example: `import { CenteredShell, Topbar, Flex } from "@godxjp/ui/layout";
+import { AppSettingPicker } from "@godxjp/ui/navigation";
+import { Avatar, AvatarFallback, Card, CardContent, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { Button, Text } from "@godxjp/ui/general";
+
+export function MyPage() {
+  return (
+    <CenteredShell
+      width="md"
+      topbar={
+        <Topbar
+          start={
+            <Avatar className="rounded-md">
+              <AvatarFallback className="bg-primary text-primary-foreground font-bold">G</AvatarFallback>
+            </Avatar>
+          }
+          end={
+            <>
+              <AppSettingPicker kind="locale" />
+              <Button variant="ghost" size="sm">田中 太郎</Button>
+            </>
+          }
+        />
+      }
+      footer={<Text size="xs" tone="muted">© 2026 GodX</Text>}
+    >
+      <Flex direction="col" gap="lg">
+        <Card>
+          <CardHeader><CardTitle level={1}>マイページ</CardTitle></CardHeader>
+          <CardContent>アカウントの概要。</CardContent>
+        </Card>
+      </Flex>
+    </CenteredShell>
+  );
+}`,
+    storyPath: "layout/CenteredShell.stories.tsx",
+    rules: [23],
+  },
+  {
     name: "Sidebar",
     group: "layout",
     tagline:
