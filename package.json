@@ -88,6 +88,10 @@
       "types": "./dist/form/index.d.ts",
       "import": "./dist/form/index.js"
     },
+    "./inertia": {
+      "types": "./dist/inertia/index.d.ts",
+      "import": "./dist/inertia/index.js"
+    },
     "./app": {
       "types": "./dist/app/index.d.ts",
       "import": "./dist/app/index.js"

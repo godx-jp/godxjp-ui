@@ -4,4 +4,9 @@ export { FormRoot } from "./form-root";
 export type { FormRootProp } from "./form-root";
 export { FormFieldControl } from "./form-field-control";
 export type { FormFieldControlProp } from "./form-field-control";
-export type { ZodSchemaProp, FieldErrorMessageProp } from "../props/components/form.prop";
+export { useFormSubmitting, useFormAdapter } from "./form-context";
+export type {
+  ZodSchemaProp,
+  FieldErrorMessageProp,
+  FormStateAdapter,
+} from "../props/components/form.prop";
