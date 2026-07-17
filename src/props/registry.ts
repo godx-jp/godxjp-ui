@@ -190,6 +190,11 @@ export const VOCABULARY_REGISTRY = {
     category: "layout",
     description: "Page shell layout — default, narrow, flush, ghost",
   },
+  CenteredShellWidthProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description: "CenteredShell column max-width — sm, md, lg",
+  },
   GapProp: {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
@@ -453,6 +458,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: ["ChildrenProp", "ClassNameProp"],
+  },
+  CenteredShellProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["ChildrenProp", "ClassNameProp", "CenteredShellWidthProp"],
   },
   SidebarProductProp: {
     group: "layout",

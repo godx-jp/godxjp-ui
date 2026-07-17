@@ -138,6 +138,11 @@
       "mainLabel": "メインコンテンツ",
       "footerLabel": "フッター"
     },
+    "centeredShell": {
+      "headerLabel": "ヘッダー",
+      "mainLabel": "メインコンテンツ",
+      "footerLabel": "フッター"
+    },
     "topbar": {
       "toggleSidebar": "サイドバーの切り替え",
       "search": "検索",

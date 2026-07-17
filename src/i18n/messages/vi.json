@@ -138,6 +138,11 @@
       "mainLabel": "Nội dung chính",
       "footerLabel": "Chân trang"
     },
+    "centeredShell": {
+      "headerLabel": "Đầu trang",
+      "mainLabel": "Nội dung chính",
+      "footerLabel": "Chân trang"
+    },
     "topbar": {
       "toggleSidebar": "Bật/tắt thanh bên",
       "search": "Tìm kiếm",

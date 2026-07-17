@@ -42,6 +42,7 @@ export type {
 export type {
   PageDensityProp,
   PageContainerVariantProp,
+  CenteredShellWidthProp,
   TableDensityProp,
   DensityProp,
   GapProp,

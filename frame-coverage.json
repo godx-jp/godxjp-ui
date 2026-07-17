@@ -796,6 +796,16 @@
         "reason": "Isolated AuthShell frame passed Axe with a semantic h1 login title."
       }
     },
+    "CenteredShell": {
+      "responsive": {
+        "status": "pass",
+        "reason": "CenteredShell frame is a single flex column (padded bar + internally-scrolling main + footer) with a max-width centred track and overflow:auto; it reflows by construction at the eight standard widths, mirroring AuthShell's proven pattern."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated CenteredShell frame passed vitest-axe with 0 violations (banner topbar + main + contentinfo landmarks, semantic h1 page title)."
+      }
+    },
     "PageContainer": {
       "responsive": {
         "status": "pass",
@@ -1205,6 +1215,16 @@
       "async": {
         "status": "not-applicable",
         "reason": "AuthShell only composes synchronous layout slots; authentication requests belong to consumers."
+      }
+    },
+    "layout/centered-shell": {
+      "props": {
+        "status": "pass",
+        "reason": "Owner frame renders required children plus optional topbar and footer slots and the width tier (sm|md|lg to data-width); className is a forwarded DOM attribute."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "CenteredShell only composes synchronous layout slots; data loading belongs to consumer sections."
       }
     },
     "layout/page-container": {
@@ -1965,6 +1985,7 @@
       "owners": [
         "layout/aspect-ratio",
         "layout/auth-shell",
+        "layout/centered-shell",
         "layout/flex",
         "layout/page-container",
         "layout/responsive-grid",
@@ -2011,6 +2032,7 @@
         "layout/app-shell",
         "layout/aspect-ratio",
         "layout/auth-shell",
+        "layout/centered-shell",
         "layout/breadcrumb",
         "layout/flex",
         "layout/page-container",

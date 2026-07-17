@@ -123,6 +123,72 @@
     color: hsl(var(--muted-foreground));
   }
 
+  /*
+   * CENTERED SHELL — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
+   * account / self-service, standalone settings). A flex column over the same brand-wash surface as
+   * the app/auth shells: a padded top bar that MIRRORS `.app-topbar` chrome (fixed height + inline
+   * padding + border + backdrop) but WITHOUT a sidebar grid, a scrollable `main` whose content is a
+   * width-tiered centred column that is TOP-aligned (sections flow + scroll, never vertically
+   * centred like the auth card), and an optional footer. Every knob reads a token.
+   */
+  .ui-centered-shell {
+    display: flex;
+    min-height: 100dvh;
+    flex-direction: column;
+    background:
+      linear-gradient(180deg, hsl(var(--primary) / 0.035), transparent 14rem),
+      hsl(var(--background));
+  }
+
+  .ui-centered-shell-bar {
+    display: flex;
+    min-width: 0;
+    min-height: var(--centered-shell-bar-height);
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding-inline: var(--centered-shell-bar-padding-x);
+    border-bottom: 1px solid hsl(var(--border));
+    background: hsl(var(--background) / 0.92);
+    /* Opt-in brand-chrome wash — shares the topbar hook, invisible by default (none). */
+    background-image: var(--topbar-gradient);
+    backdrop-filter: blur(12px);
+  }
+
+  .ui-centered-shell-main {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    overflow: auto;
+    /* Ambient brand glow hook — shares the app-main hook, invisible by default (none). */
+    background-image: var(--gradient-glow);
+    /* Sole scroll/clip boundary for the page area (same containment rationale as `.app-main`). */
+    contain: paint;
+    padding: var(--centered-shell-main-padding);
+  }
+
+  .ui-centered-shell-column {
+    width: 100%;
+    margin-inline: auto;
+    max-width: var(--centered-shell-width-md);
+  }
+
+  .ui-centered-shell-column[data-width="sm"] {
+    max-width: var(--centered-shell-width-sm);
+  }
+
+  .ui-centered-shell-column[data-width="lg"] {
+    max-width: var(--centered-shell-width-lg);
+  }
+
+  .ui-centered-shell-footer {
+    padding: var(--centered-shell-footer-padding);
+    border-top: 1px solid hsl(var(--border));
+    text-align: center;
+    color: hsl(var(--muted-foreground));
+  }
+
   .app-topbar-rail {
     display: flex;
     min-width: 0;

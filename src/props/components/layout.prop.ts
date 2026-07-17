@@ -9,6 +9,7 @@ import type {
   FooterProp,
   PageDensityProp,
   PageContainerVariantProp,
+  CenteredShellWidthProp,
   GapProp,
   ClassNameProp,
   ChildrenProp,
@@ -120,6 +121,35 @@ export type AuthShellProp = {
   brand?: ReactNode;
   /** Footer slot pinned to the bottom (legal links, locale switch, support). */
   footer?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
+ * account / self-service, standalone settings). A padded top bar with real actions (banner) reusing
+ * AppShell's `.app-topbar` chrome WITHOUT a sidebar, a scrollable `main` holding a centred column of
+ * configurable medium width (`width` = sm|md|lg, all wider than AuthShell's 24rem card) top-aligned
+ * so sections flow + scroll, and an optional footer (contentinfo). Fills the gap between AppShell
+ * (needs a sidebar) and AuthShell (unauthenticated, narrow vertically-centred card) — so a hosted
+ * account page needs ZERO custom CSS and never hand-rolls a bar (the `.ui-topbar` zero-inset
+ * footgun). Layout-only; delegate motion to `Reveal`.
+ */
+export type CenteredShellProp = {
+  /** Centred column content — page sections (identity hero, org picker, service grid, team list). */
+  children: ReactNode;
+  /**
+   * Top bar slot (banner) — a `<Topbar>` with brand + real actions (an `AppSettingPicker`, a user
+   * menu, sign-out). CenteredShell wraps it in the SAME padded chrome as AppShell's topbar
+   * (padding-inline · border · backdrop), so you never hand-roll a bar. Omit → no banner.
+   */
+  topbar?: ReactNode;
+  /** Footer slot (contentinfo) pinned to the bottom (legal links, locale switch, support). Omit → none. */
+  footer?: ReactNode;
+  /**
+   * Max-width of the centred content column: `sm` ~32rem, `md` (default) ~46rem, `lg` ~64rem — all
+   * wider than AuthShell's 24rem auth card. A service retunes each tier via `--centered-shell-width-*`.
+   */
+  width?: CenteredShellWidthProp;
   className?: ClassNameProp;
 };
 
