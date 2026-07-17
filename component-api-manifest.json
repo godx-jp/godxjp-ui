@@ -2601,6 +2601,65 @@
         }
       ]
     },
+    "CenteredShell": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "footer",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "topbar",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "width",
+          "origin": "owned",
+          "required": false,
+          "type": "CenteredShellWidthProp | undefined",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        }
+      ]
+    },
     "Checkbox": {
       "group": "data-entry",
       "props": [

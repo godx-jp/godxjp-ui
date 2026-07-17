@@ -20,9 +20,9 @@ import { AppSettingPicker } from "@godxjp/ui/navigation";
  */
 export default function Demo() {
   const services = [
-    { id: "kintai", name: "勤怠", desc: "打刻・勤務表" },
-    { id: "chat", name: "チャット", desc: "社内メッセージ" },
-    { id: "books", name: "会計", desc: "請求・支払" },
+    { id: "attendance", name: "勤怠", desc: "打刻・勤務表" },
+    { id: "messaging", name: "チャット", desc: "社内メッセージ" },
+    { id: "ledger", name: "会計", desc: "請求・支払" },
   ];
 
   return (
