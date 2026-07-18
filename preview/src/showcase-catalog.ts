@@ -226,6 +226,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
     tag: "Mobile",
     load: () => import("../../docs/showcase/case6-agency-handy"),
   },
+  {
+    id: "org-switcher",
+    title: "OrgSwitcher (chuyển tổ chức)",
+    description:
+      "Thẻ tổ chức đầu Sidebar (avatar/tên/vai trò) mở Popover chứa danh sách Command tìm kiếm được, kèm hành động tạo tổ chức / nhập mã mời. Mẫu Slack/Linear dựng CHỈ từ primitive @godxjp/ui — composition, không thêm component framework (godxjp-ui#196).",
+    tag: "Shell",
+    load: () => import("../../docs/showcase/org-switcher"),
+  },
 ];
 
 export const SHOWCASE_MAP = new Map<string, ShowcaseEntry>(SHOWCASES.map((s) => [s.id, s]));
