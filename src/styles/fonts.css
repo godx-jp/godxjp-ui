@@ -3,35 +3,33 @@
  *
  * Self-contained so consumers need no font config. The browser only downloads
  * the subset files matching the rendered text:
- *   · Noto Sans JP — the DEFAULT face (Japanese + Latin), used for all locales
- *                    except `vi`.
- *   · Montserrat   — swapped in for the Vietnamese locale (`<html lang="vi">`),
- *                    incl. its `vietnamese` subset for full diacritics.
- *                    See --font-family-sans + :lang(vi) in base.css.
+ *   · M PLUS 2 — the DXS DEFAULT face for Japanese and Latin, including the
+ *                Vietnamese glyph coverage used by the product locales.
+ *   · Noto Sans JP — retained as the CJK fallback after M PLUS 2.
  *
  * The all-in-one `@godxjp/ui/styles` entry pulls this in automatically. If you
  * manage fonts yourself (e.g. next/font), DON'T import this — import
  * `@godxjp/ui/styles/base` + the layout layers you use and supply your own
  * faces via the --font-family-* tokens.
  * ───────────────────────────────────────────────────────────────────────── */
+@import "@fontsource/m-plus-2/400.css";
+@import "@fontsource/m-plus-2/500.css";
+@import "@fontsource/m-plus-2/700.css";
 @import "@fontsource/noto-sans-jp/400.css";
 @import "@fontsource/noto-sans-jp/500.css";
 @import "@fontsource/noto-sans-jp/700.css";
-@import "@fontsource/montserrat/400.css";
-@import "@fontsource/montserrat/500.css";
-@import "@fontsource/montserrat/700.css";
 
 /* Fill the font-token slots (see tokens/foundation.css + styles/base.css) with
  * the bundled faces, so the all-in-one `@godxjp/ui/styles` entry stays
- * zero-config: Noto Sans JP is the default face (Japanese + clean Latin), and
- * the Vietnamese locale leads with Montserrat (Noto Sans JP tail keeps CJK
- * glyphs, which Montserrat lacks). Consumers on the per-layer setup who supply
- * their own faces simply DON'T import this file and set the slots themselves. */
+ * zero-config: M PLUS 2 is the DXS default face for every supported locale and
+ * Noto Sans JP remains its CJK fallback. Consumers on the per-layer setup who
+ * supply their own faces simply DON'T import this file and set the slots. */
 :root {
   --font-sans-base:
-    "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    system-ui, "Hiragino Sans", sans-serif;
+    "M PLUS 2", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", YuGothic,
+    "Noto Sans JP", Meiryo, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui,
+    sans-serif;
   --font-sans-vi:
-    "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    system-ui, "Noto Sans JP", sans-serif;
+    "M PLUS 2", "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui,
+    sans-serif;
 }

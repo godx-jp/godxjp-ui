@@ -74,7 +74,7 @@ tokens — never edit the library. Two modes, both token-only:
 ```
 
 `styles/base.css` wires every `[lang]` to its slot; `styles/fonts` fills the
-slots for the bundled Noto Sans JP + Montserrat. Headings read
+slots for the bundled M PLUS 2 + Noto Sans JP fallback. Headings read
 `--font-family-display` and body reads `--font-family-body`, both defaulting to
 `--font-family-sans` — override them for a dual-font (display + body) brand.
 

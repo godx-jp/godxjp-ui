@@ -161,8 +161,8 @@
    *        --font-sans-zh-hans  (lang="zh" | "zh-Hans" | "zh-CN")
    *        --font-sans-zh-hant  (lang="zh-Hant" | "zh-TW")
    *      e.g. `--font-sans-ja: "Noto Sans JP", var(--font-sans-base);`
-   * The opt-in bundle `@godxjp/ui/styles/fonts` fills these slots for its bundled
-   * Noto Sans JP + Montserrat faces, so the all-in-one entry is zero-config. */
+   * The opt-in bundle `@godxjp/ui/styles/fonts` fills these slots with the DXS
+   * M PLUS 2 face and Noto Sans JP fallback, so the all-in-one entry is zero-config. */
   --font-sans-base:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, system-ui,
     sans-serif;

@@ -11,7 +11,7 @@ export default function Demo() {
   return (
     <PageContainer
       title="Typography"
-      subtitle="Noto Sans JP (vi → Montserrat) · 14 / 1.7 body · headings 20/18/14/13 @ 500 · three weights only"
+      subtitle="M PLUS 2 (Noto Sans JP fallback) · 14 / 1.7 body · headings 20/18/14/13 @ 500 · three weights only"
     >
       <Flex direction="col" gap="lg">
         <Card>

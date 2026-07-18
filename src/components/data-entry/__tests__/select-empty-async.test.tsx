@@ -12,7 +12,13 @@ import { Select } from "../select";
  *  - async, REJECTS           → a DISTINCT error affordance (not a false "no results", not a
  *                               leaked unhandled rejection).
  */
-afterEach(() => vi.restoreAllMocks());
+afterEach(async () => {
+  // Radix FocusScope schedules its unmount autofocus event. Let that task drain while jsdom's
+  // Event constructor is still alive; otherwise a large full-suite run can report a false
+  // unhandled dispatch after this worker environment has already been torn down.
+  await new Promise<void>((resolve) => setTimeout(resolve, 0));
+  vi.restoreAllMocks();
+});
 
 describe("Select empty / async states (#138)", () => {
   it("disables the trigger for a static empty options list (never opens a blank popover)", () => {

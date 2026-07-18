@@ -110,13 +110,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--card-radius",
-    "value": "var(--radius)",
+    "value": "var(--radius-xl)",
     "description": "Banded-header divider — tokenised (rule #44) so a service theme can make it * dashed / heavier / none without forking CSS. Pair with * --card-header-background-alpha: 0 for a quiet borderless-band header. * Default = 1px solid hsl(var(--card-border)) (resolved at the call site)."
   },
   {
     "name": "--card-shadow",
-    "value": "0 0 0 0 transparent",
-    "description": "Resting elevation — quiet by default (rule #44): cards are flat (1px border, no shadow) in the * reference-design baseline. A service that wants lifted cards sets this to an elevation token once, * e.g. --card-shadow: var(--shadow-sm), and every Card picks up the shadow with no markup change."
+    "value": "var(--shadow-sm)",
+    "description": "The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm * elevation layer. Consumers can still flatten or lift cards through this knob."
   },
   {
     "name": "--card-glow",
@@ -994,6 +994,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Brand-chrome gradient hooks — opt-in, invisible by default. A service paints * the sidebar/topbar surface by setting these to a gradient (no-op = none)."
   },
   {
+    "name": "--app-shell-bar-height",
+    "value": "3rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--app-shell-page-max-width",
+    "value": "80rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--app-shell-main-background",
+    "value": "hsl(var(--muted) / 0.4)",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-brand-mark-size",
+    "value": "1.375rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-nav-item-height",
+    "value": "2rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-nav-item-font-size",
+    "value": "0.8125rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--topbar-search-max-width",
+    "value": "26.25rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
     "name": "--sidebar-item-active-color",
     "value": "initial",
     "description": "Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override * never reaches it). A service re-tunes the active sub-item accent without forking CSS. * Defaults = hsl(var(--primary)) marker/tint."
@@ -1045,7 +1080,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--centered-shell-bar-height",
-    "value": "3.25rem",
+    "value": "var(--app-shell-bar-height)",
     "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
   },
   {

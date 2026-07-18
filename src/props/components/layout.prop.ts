@@ -90,7 +90,7 @@ export type AppShellProp = {
   footer?: ReactNode;
   sidebarCollapsed?: boolean;
   /**
-   * Navigation shown in the mobile drawer below the `lg` breakpoint, where the docked sidebar is
+   * Navigation shown in the mobile drawer at the DXS 900px breakpoint, where the docked sidebar is
    * hidden. AppShell OWNS the drawer: it renders a hamburger trigger in the topbar and a focus-
    * trapped Sheet (Esc + overlay close, focus returns to the trigger) — hiding the sidebar without
    * a reachable alternative is invalid (gh#165). Defaults to `sidebar`, so the same nav is

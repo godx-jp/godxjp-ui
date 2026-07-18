@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Restore the checked-in DXS hi-fi baseline across every shell and data surface** — AppShell and
+  CenteredShell chrome now use the 48px reference height, flat card topbars, a warm muted main
+  surface and the 1280px page boundary instead of the 52px translucent/blurred gradient treatment.
+  Sidebar brand/navigation geometry now follows the compact 22px/13px reference rhythm and switches
+  to its drawer at 900px. Cards return to the documented 10px radius with `shadow-sm`, compact page
+  insets begin at 720px, and AuthShell/CenteredShell use the flat muted canvas. The bundled product
+  face is now M PLUS 2 for ja/en/vi with Noto Sans JP as its CJK fallback. All new geometry remains
+  exposed through component tokens so service themes can retune it without consumer CSS forks.
+
 ### Added
 
 - **`QrCode` local-only SVG renderer (#205)** — adds a scanner-safe data-display primitive for

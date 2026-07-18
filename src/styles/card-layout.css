@@ -42,7 +42,7 @@
     overflow: hidden;
   }
 
-  /* ── Surface variants — fill only; flat at rest (border, no shadow) ──── */
+  /* ── Surface variants — fill only; retain the shared DXS surface elevation ──── */
   [data-slot="card"][data-variant="muted"] {
     background: hsl(var(--secondary));
   }

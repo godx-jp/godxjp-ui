@@ -28,7 +28,7 @@ export function AppShell({
 }: AppShellProp) {
   const { t } = useTranslation();
 
-  // The docked sidebar is hidden below `lg`, so AppShell OWNS an accessible mobile drawer: a
+  // The docked sidebar is hidden at the DXS 900px breakpoint, so AppShell OWNS an accessible mobile drawer: a
   // hamburger trigger in the topbar opens a focus-trapped Sheet (Radix Dialog → Esc + overlay
   // close, focus returns to the trigger). The drawer nav defaults to the SAME `sidebar` node, so
   // navigation is never merely hidden (gh#165); pass `mobileNav` for a tailored menu, or `null`
@@ -74,7 +74,7 @@ export function AppShell({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="app-mobile-nav-trigger hidden max-lg:inline-flex"
+                className="app-mobile-nav-trigger hidden max-[900px]:inline-flex"
                 aria-label={t("layout.appShell.openNav")}
                 aria-haspopup="dialog"
               >

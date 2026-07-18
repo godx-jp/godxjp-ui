@@ -70,7 +70,7 @@ Components emit `data-slot` / `data-*`; the look lives in `styles/*-layout.css`.
 | **Layout**         | `@godxjp/ui/layout`       | `Flex`, `PageContainer`, `ResponsiveGrid`, `AppShell`, `Sidebar`, `Separator`, `AspectRatio`, `Resizable`                                                                                                                               |
 | **General**        | `@godxjp/ui/general`      | `Button`                                                                                                                                                                                                                                |
 | **Data Entry**     | `@godxjp/ui/data-entry`   | `Input`, `Select`, `FormField`, `Field`, `DatePicker`, `TimePicker`, `Combobox`, `Switch`, `Toggle`, `Upload`, `Cascader`, `TreeSelect`, `ColorPicker`, `Slider`, `PasswordInput`, `PasswordStrength`, `InputOTP`, `Rating`, `TagInput` |
-| **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `QrCode`, `CredentialReveal`, `Accordion`, `HoverCard`, `Carousel`, `Popover`, `Collapsible`                                  |
+| **Data Display**   | `@godxjp/ui/data-display` | `Table`, `DataTable`, `Card`, `StatCard`, `Badge`, `Avatar`, `Descriptions`, `Timeline`, `EmptyState`, `Progress`, `QrCode`, `CredentialReveal`, `Accordion`, `HoverCard`, `Carousel`, `Popover`, `Collapsible`                         |
 | **Feedback**       | `@godxjp/ui/feedback`     | `Dialog`, `AlertDialog`, `Sheet` (side), `Drawer` (bottom-sheet), `Toast`, `Skeleton`, `Alert`, `Tooltip`                                                                                                                               |
 | **Query**          | `@godxjp/ui/query`        | `DataState`, `InfiniteQueryState`, `PrefetchLink` (adapter subpath — pulls TanStack Query)                                                                                                                                              |
 | **Navigation**     | `@godxjp/ui/navigation`   | `Tabs`, `Toolbar`, `DropdownMenu`, `ContextMenu`, `Menubar`, `NavigationMenu`, `Steps`, `Pagination`, `Breadcrumb`, `AppSettingPicker`                                                                                                  |
@@ -121,7 +121,7 @@ separate `@godxjp/ui/data-grid` (`DataGrid`) subpath has been merged in and remo
 ## Consumer setup — theme is self-contained
 
 The framework ships colors, the type scale, the wa-iro palette, and (opt-in)
-bundled fonts (Noto Sans JP + Montserrat via `@fontsource`). A consumer's entire
+bundled fonts (M PLUS 2 + Noto Sans JP fallback via `@fontsource`). A consumer's entire
 styling surface is **one import + content sources** — no `:root` overrides, no
 font `<link>`:
 
