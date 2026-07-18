@@ -117,8 +117,16 @@
     box-shadow: var(--shadow-sm);
   }
 
+  /* SOLID hover/active tokens, never `--destructive / 0.9`: an alpha fill composites with whatever
+   * surface sits behind the button (a lighter Card/AlertDialog vs the page), so the effective colour
+   * — and its contrast with the label — drifts per context and can dip below AA (gh#199). The solid
+   * --destructive-hover/active are tuned to clear 4.5:1 on every surface. */
   .ui-button--destructive:hover {
-    background: hsl(var(--destructive) / 0.9);
+    background: hsl(var(--destructive-hover));
+  }
+
+  .ui-button--destructive:active {
+    background: hsl(var(--destructive-active));
   }
 
   /* Outline + ghost set their text colour EXPLICITLY (read --foreground) — never rely on inherited

@@ -359,8 +359,12 @@
   --muted-foreground: 44 6% 64%;
   --accent: 45 7% 22%;
   --accent-foreground: 60 20% 96%;
-  --destructive: 357 55% 52%;
-  --destructive-foreground: 60 20% 96%;
+  /* Filled destructive surfaces (button/badge/step) must clear WCAG AA (4.5:1) with comfortable
+   * margin, not sit on the floor (gh#199 — dark default was 4.54:1). Base darkened 52%→48% and the
+   * on-fill text lifted to pure white → ~5.5:1; states go DARKER (never lighter, which cut contrast
+   * against the light label). Error TEXT on dark surfaces uses --text-error, not this fill token. */
+  --destructive: 357 55% 48%;
+  --destructive-foreground: 0 0% 100%;
   --border: 45 6% 22%;
   --input: 45 6% 22%;
   --ring: 204 90% 60%;
@@ -388,6 +392,6 @@
   --primary-active: 204 90% 72%;
   --secondary-hover: 45 6% 22%;
   --secondary-active: 45 6% 26%;
-  --destructive-hover: 357 55% 58%;
-  --destructive-active: 357 55% 64%;
+  --destructive-hover: 357 55% 43%;
+  --destructive-active: 357 55% 38%;
 }

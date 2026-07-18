@@ -29,6 +29,12 @@ const ROUTES = routeArgs.length
       "/isolate/feedback-alert",
       "/isolate/data-display-badge",
       "/isolate/data-display-stat-card",
+      // gh#199 — destructive Button labels (incl. AlertDialog actions) must stay AA on their fill,
+      // audited in BOTH themes (the dark default previously sat at 4.54:1 and slipped this guard,
+      // which only covered default-theme text). Deterministic token coverage: destructive-contrast.test.
+      "/isolate/feedback-alert-dialog",
+      "/isolate/feedback-alert-dialog?theme=dark",
+      "/isolate/general-button?theme=dark",
     ];
 
 const EXEC =
