@@ -599,6 +599,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Tree active item — border + soft bg tint over the --primary role. `initial` so the default re-resolves under a scoped theme. Defaults = hsl(var(--primary) / 0.3) border · 0.05 fill."
   },
   {
+    "name": "--qr-code-foreground",
+    "value": "0 0% 0%",
+    "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
+  },
+  {
+    "name": "--qr-code-background",
+    "value": "0 0% 100%",
+    "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
+  },
+  {
+    "name": "--qr-code-size-xs",
+    "value": "6rem",
+    "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
+  },
+  {
+    "name": "--qr-code-size-sm",
+    "value": "8rem",
+    "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
+  },
+  {
+    "name": "--qr-code-size-md",
+    "value": "10rem",
+    "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
+  },
+  {
+    "name": "--qr-code-size-lg",
+    "value": "12.5rem",
+    "description": "QR codes stay scanner-safe in light and dark application themes. Consumers may override these component tokens only when the resulting pair retains strong contrast."
+  },
+  {
     "name": "--password-strength-score-font-size",
     "value": "var(--font-size-xs)",
     "description": "Data-entry component tokens — small-by-design text knobs (rule #45/#46)."

@@ -826,6 +826,11 @@ export const COMPONENT_PROP_REGISTRY = {
       "IdProp",
     ],
   },
+  QrCodeProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["ValueProp", "LabelProp", "SizeProp", "ClassNameProp", "IdProp"],
+  },
   ChartSeriesProp: {
     group: "data-display",
     file: "components/charts.prop.ts",

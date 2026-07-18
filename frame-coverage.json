@@ -62,6 +62,40 @@
     "toast"
   ],
   "overrides": {
+    "QrCode": {
+      "isolated": {
+        "status": "pass",
+        "reason": "Rendered directly in docs/data-display/qr-code.tsx."
+      },
+      "composition": {
+        "status": "pass",
+        "reason": "Rendered with CredentialReveal in the TOTP enrollment composition."
+      },
+      "journey": {
+        "status": "pass",
+        "reason": "Rendered PNG output is decoded back to the expected otpauth URI by jsQR at every viewport."
+      },
+      "responsive": {
+        "status": "pass",
+        "reason": "Chromium geometry and QR decoding passed at 320, 375, 390, 768, 1024, 1280, 1440 and 1920px."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Chromium RTL geometry passed at 1024px."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "The localized image name is unit-tested and the rendered frame passed Axe."
+      },
+      "touch": {
+        "status": "not-applicable",
+        "reason": "QrCode is non-interactive and has no touch target."
+      },
+      "async": {
+        "status": "not-applicable",
+        "reason": "QrCode renders synchronously and owns no async lifecycle."
+      }
+    },
     "Button": {
       "isolated": {
         "status": "pass",

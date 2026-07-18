@@ -31,4 +31,13 @@
      re-resolves under a scoped theme. Defaults = hsl(var(--primary) / 0.3) border · 0.05 fill. */
   --tree-item-active-border: initial;
   --tree-item-active-background: initial;
+
+  /* QR codes stay scanner-safe in light and dark application themes. Consumers may override these
+     component tokens only when the resulting pair retains strong contrast. */
+  --qr-code-foreground: 0 0% 0%;
+  --qr-code-background: 0 0% 100%;
+  --qr-code-size-xs: 6rem;
+  --qr-code-size-sm: 8rem;
+  --qr-code-size-md: 10rem;
+  --qr-code-size-lg: 12.5rem;
 }

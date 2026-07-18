@@ -4,7 +4,7 @@
  * `@import "./..."` chains inside base.css / index.css keep resolving.
  * Mirrors src/<dir> -> dist/<dir>.
  */
-import { cpSync, existsSync, mkdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -20,7 +20,7 @@ for (const dir of CSS_DIRS) {
   mkdirSync(dirname(to), { recursive: true });
   cpSync(from, to, {
     recursive: true,
-    filter: (src) => src === from || src.endsWith(".css") || !src.includes("."),
+    filter: (src) => src === from || statSync(src).isDirectory() || src.endsWith(".css"),
   });
 }
 

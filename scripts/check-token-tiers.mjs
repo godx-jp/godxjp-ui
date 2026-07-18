@@ -74,6 +74,7 @@ const componentPrefixes = {
     "carousel",
     "list-row",
     "descriptions",
+    "qr-code",
   ],
   "data-entry": ["password-strength"],
   shell: [

@@ -156,6 +156,12 @@ export const TOKENS: TokenEntry[] = [
     tier: "component",
     role: "Feedback component sizing and spacing.",
   },
+  {
+    name: "--qr-code-*",
+    category: "component",
+    tier: "component",
+    role: "QrCode scanner-safe foreground/background and xs/sm/md/lg natural-size tiers. Keep foreground/background at strong contrast; the defaults remain dark-on-light in dark application themes.",
+  },
 ];
 
 export function tokensByCategory(category: TokenCategory): TokenEntry[] {

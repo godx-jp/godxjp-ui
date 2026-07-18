@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-07-12T14:45:14.746Z",
-  "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+  "auditedAt": "2026-07-18T08:44:42.400Z",
+  "widths": [
+    320,
+    375,
+    390,
+    768,
+    1024,
+    1280,
+    1440,
+    1920
+  ],
   "limitations": [
     "Automated Chromium DOM/geometry/axe/keyboard evidence only.",
     "Real screen-reader output and physical coarse-touch interaction remain untested."
@@ -10,76 +19,137 @@
     {
       "owner": "feedback/dialog",
       "frame": "feedback-dialog-touch",
-      "widths": [320, 390],
-      "journey": ["tap trigger", "dialog visible", "tap close", "dialog removed"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap trigger",
+        "dialog visible",
+        "tap close",
+        "dialog removed"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "query/data-state",
       "frame": "query-touch-actions",
-      "widths": [320, 390],
-      "journey": ["tap retry", "callback observed"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap retry",
+        "callback observed"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "query/infinite-query-state",
       "frame": "query-touch-actions",
-      "widths": [320, 390],
-      "journey": ["tap load more", "fetchNextPage observed"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap load more",
+        "fetchNextPage observed"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "query/mutation-feedback",
       "frame": "query-touch-actions",
-      "widths": [320, 390],
-      "journey": ["tap retry", "callback observed"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap retry",
+        "callback observed"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "query/query-refetch-button",
       "frame": "query-touch-actions",
-      "widths": [320, 390],
-      "journey": ["tap refresh", "refetch observed"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap refresh",
+        "refetch observed"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "data-display/popover",
       "frame": "data-display-popover-touch",
-      "widths": [320, 390],
-      "journey": ["tap trigger", "dialog visible", "tap action", "dialog closed"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap trigger",
+        "dialog visible",
+        "tap action",
+        "dialog closed"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "data-display/accordion",
-      "widths": [320, 390],
-      "journey": ["tap trigger", "expanded state toggled"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap trigger",
+        "expanded state toggled"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "data-display/collapsible",
-      "widths": [320, 390],
-      "journey": ["tap trigger", "expanded state toggled"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap trigger",
+        "expanded state toggled"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "feedback/sheet",
-      "widths": [320, 390],
-      "journey": ["tap trigger", "dialog visible"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap trigger",
+        "dialog visible"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "feedback/sonner",
       "frame": "feedback-toast",
-      "widths": [320, 390],
+      "widths": [
+        320,
+        390
+      ],
       "journey": [
         "tap delete",
         "toast action visible",
@@ -92,24 +162,42 @@
     {
       "owner": "general/button",
       "frame": "data-display-touch-actions",
-      "widths": [320, 390],
-      "journey": ["tap action", "state incremented"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap action",
+        "state incremented"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "data-display/list-row",
       "frame": "data-display-touch-actions",
-      "widths": [320, 390],
-      "journey": ["tap trailing action", "state incremented"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap trailing action",
+        "state incremented"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     },
     {
       "owner": "data-display/data-table",
       "frame": "data-display-touch-actions",
-      "widths": [320, 390],
-      "journey": ["tap selection checkbox", "selected count updated"],
+      "widths": [
+        320,
+        390
+      ],
+      "journey": [
+        "tap selection checkbox",
+        "selected count updated"
+      ],
       "verdict": "pass",
       "physicalDevice": "untested"
     }
@@ -118,7 +206,16 @@
     {
       "id": "data-display-charts",
       "verdict": "pass",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -131,7 +228,16 @@
     {
       "id": "data-display-data-table",
       "verdict": "pass",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -144,7 +250,16 @@
     {
       "id": "general-button",
       "verdict": "pass",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -156,7 +271,16 @@
     },
     {
       "id": "data-display-badge",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -169,7 +293,16 @@
     },
     {
       "id": "data-display-list-row",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -182,7 +315,16 @@
     },
     {
       "id": "data-display-avatar",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -195,7 +337,16 @@
     },
     {
       "id": "data-display-accordion",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -208,7 +359,16 @@
     },
     {
       "id": "data-display-collapsible",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -221,7 +381,16 @@
     },
     {
       "id": "data-display-carousel",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -234,7 +403,16 @@
     },
     {
       "id": "data-display-descriptions",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -247,7 +425,16 @@
     },
     {
       "id": "data-display-empty-state",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -260,7 +447,16 @@
     },
     {
       "id": "data-display-progress",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -273,7 +469,16 @@
     },
     {
       "id": "data-display-card",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -286,7 +491,16 @@
     },
     {
       "id": "data-display-timeline",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -299,7 +513,16 @@
     },
     {
       "id": "data-display-tree-list",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -312,7 +535,16 @@
     },
     {
       "id": "data-display-scroll-area",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -325,7 +557,16 @@
     },
     {
       "id": "data-display-popover",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -338,7 +579,16 @@
     },
     {
       "id": "data-display-hover-card",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -351,7 +601,16 @@
     },
     {
       "id": "data-display-table",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -364,7 +623,16 @@
     },
     {
       "id": "data-display-stat-card",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -377,7 +645,16 @@
     },
     {
       "id": "general-typography",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -390,7 +667,16 @@
     },
     {
       "id": "general-logo",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -403,7 +689,16 @@
     },
     {
       "id": "feedback-alert",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -416,7 +711,16 @@
     },
     {
       "id": "feedback-dialog",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -429,7 +733,16 @@
     },
     {
       "id": "feedback-sheet",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -442,7 +755,16 @@
     },
     {
       "id": "feedback-skeleton",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -455,7 +777,16 @@
     },
     {
       "id": "feedback-tooltip",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -468,7 +799,16 @@
     },
     {
       "id": "query-button-refetch",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -481,7 +821,16 @@
     },
     {
       "id": "general-reveal",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -494,7 +843,16 @@
     },
     {
       "id": "providers-app-provider",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -507,7 +865,16 @@
     },
     {
       "id": "providers-format-date",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -520,7 +887,16 @@
     },
     {
       "id": "query-data-state",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -533,7 +909,16 @@
     },
     {
       "id": "query-infinite-query-state",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -546,7 +931,16 @@
     },
     {
       "id": "query-mutation-feedback",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -559,7 +953,16 @@
     },
     {
       "id": "query-prefetch-link",
-      "widths": [320, 375, 390, 768, 1024, 1280, 1440, 1920],
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "overflow": "pass",
       "a11y": "pass",
       "rtl": "pass",
@@ -567,6 +970,31 @@
       "evidence": [
         "artifacts/display-runtime/query-prefetch-link-320.png",
         "artifacts/display-runtime/query-prefetch-link-1920.png"
+      ],
+      "verdict": "pass"
+    },
+    {
+      "id": "data-display-qr-code",
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
+      "overflow": "pass",
+      "a11y": "pass",
+      "rtl": "pass",
+      "keyboard": "pass",
+      "evidence": [
+        "artifacts/display-runtime/data-display-qr-code-320.png",
+        "artifacts/display-runtime/data-display-qr-code-390.png",
+        "artifacts/display-runtime/data-display-qr-code-768.png",
+        "artifacts/display-runtime/data-display-qr-code-1280.png",
+        "artifacts/display-runtime/data-display-qr-code-1920.png"
       ],
       "verdict": "pass"
     }
