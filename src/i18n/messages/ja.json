@@ -178,6 +178,17 @@
       "show": "パスワードを表示",
       "hide": "パスワードを隠す"
     },
+    "credentialReveal": {
+      "secretLabel": "シークレット",
+      "warning": "このシークレットは一度だけ表示されます。今すぐコピーしてください。再表示はできません。",
+      "show": "シークレットを表示",
+      "hide": "シークレットを隠す",
+      "copy": "シークレットをコピー",
+      "copied": "コピーしました",
+      "copiedAnnounce": "シークレットをクリップボードにコピーしました",
+      "download": "シークレットをダウンロード",
+      "acknowledge": "保存しました"
+    },
     "numberInput": {
       "increment": "増やす",
       "decrement": "減らす"

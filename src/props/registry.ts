@@ -808,6 +808,19 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: ["ColumnDefProp", "DensityProp", "SortStateProp", "SelectedIdsProp"],
   },
+  CredentialRevealProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "SizeProp",
+      "ToneProp",
+      "OnValueChangeProp",
+      "HandlerProp",
+      "ClassNameProp",
+      "IdProp",
+    ],
+  },
   ChartSeriesProp: {
     group: "data-display",
     file: "components/charts.prop.ts",

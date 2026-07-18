@@ -31,6 +31,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to the library as the pure, render-neutral, tested util **`@godxjp/ui/lib/permission-grid`**
   (`grantKey` / `hasGrant` / `rolesDifferOnPermission` / `visibleRows` / `countDifferences` /
   `countGrants`) so every consumer shares one source of truth. No new `src/components/` entry.
+- **`CredentialReveal` — one-time secret display (#195)** — the GitHub/Stripe token-reveal pattern
+  as a real `@godxjp/ui/data-display` primitive so consumers stop hand-rolling it. Shows an issued
+  secret masked by default with a show/hide toggle (controlled boolean triad
+  `revealed`/`defaultRevealed`/`onRevealedChange`), a copy button that writes to the clipboard and
+  confirms via a `Check` swap + an `aria-live` announcement, an optional download-as-file button
+  (`downloadable`/`downloadFileName`), a localized caution banner (`tone` warning/destructive/info,
+  suppressible with `warning={null}`), and an optional `onAcknowledge` action to gate a paired
+  Dialog's close. Re-blurs automatically when the `secret` prop changes; masks with a fixed-length
+  dot string so the secret's real length never leaks. Composed only from real primitives
+  (`Alert` · `Button` · `Text`); every string + `aria-label` is routed through `t()`
+  (en/vi/ja). `size ∈ xs|sm|md|lg`. Ships a unit test and a `*.a11y.test.tsx` (0 axe violations).
 - **Framework-agnostic form-state adapter + first-class Inertia binding (#190)** — `FormRoot` and
   `FormFieldControl` are no longer hard-coupled to react-hook-form. `FormRoot` now accepts EITHER
   `form` (the built-in RHF + Zod client path, unchanged) OR `adapter` — a small `FormStateAdapter`
