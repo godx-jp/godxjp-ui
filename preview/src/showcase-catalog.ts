@@ -171,6 +171,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
     load: () => import("../../docs/showcase/table-master-detail"),
   },
   {
+    id: "permission-matrix",
+    title: "権限マトリクス (RBAC)",
+    description:
+      "Ma trận role × permission: cột đầu cố định, ô ✓/—, chế độ so sánh 2 role + lọc 差分のみ. Composition từ Table + Badge; logic diff dùng util @godxjp/ui/lib/permission-grid.",
+    tag: "Admin",
+    load: () => import("../../docs/showcase/permission-matrix"),
+  },
+  {
     id: "case4-login",
     title: "ログイン (Login)",
     description:
