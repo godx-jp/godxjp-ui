@@ -19,6 +19,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and `onConfirm` only runs after step-up resolves truthy. Mirrors DXS SCR-203 (org delete by slug)
   and SCR-209 (refund with step-up); showcased in `docs/feedback/danger-confirm.tsx`. i18n keys
   `feedback.alert.verifying` / `feedback.alert.stepUpFailed` added for en/vi/ja.
+- **Permission-matrix composition + `@godxjp/ui/lib/permission-grid` util (#194)** — a role ×
+  permission RBAC grid (sticky first column, ✓/— cells, two-role COMPARE mode, 差分のみ / diff-only
+  filter) requested by the DXS Platform Redesign. Per Gate 0 (`docs/COMPOSITION-VS-COMPONENT.md`) a
+  permission matrix is a **composition pattern**, not a framework component (it fails C2/C3/C7 — the
+  `Table` family + `Badge` + tokens already express it, and no consumer beyond RBAC admins pays its
+  bundle cost), so it ships as the real-screen showcase `docs/showcase/permission-matrix.tsx` built
+  from real primitives (sticky-column via the `Table` family exactly like `table-sticky-columns`;
+  role pickers = `Select`; diff toggle = `Switch`; cells = `Badge` with shape-encoded ✓/— + sr-only
+  state, never colour-only). The only genuinely reusable part — the grant/diff DATA logic — is added
+  to the library as the pure, render-neutral, tested util **`@godxjp/ui/lib/permission-grid`**
+  (`grantKey` / `hasGrant` / `rolesDifferOnPermission` / `visibleRows` / `countDifferences` /
+  `countGrants`) so every consumer shares one source of truth. No new `src/components/` entry.
 - **Framework-agnostic form-state adapter + first-class Inertia binding (#190)** — `FormRoot` and
   `FormFieldControl` are no longer hard-coupled to react-hook-form. `FormRoot` now accepts EITHER
   `form` (the built-in RHF + Zod client path, unchanged) OR `adapter` — a small `FormStateAdapter`

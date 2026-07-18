@@ -113,6 +113,10 @@
       "types": "./dist/lib/utils.d.ts",
       "import": "./dist/lib/utils.js"
     },
+    "./lib/permission-grid": {
+      "types": "./dist/lib/permission-grid.d.ts",
+      "import": "./dist/lib/permission-grid.js"
+    },
     "./hooks": {
       "types": "./dist/lib/hooks.d.ts",
       "import": "./dist/lib/hooks.js"
