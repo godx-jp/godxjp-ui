@@ -42,7 +42,7 @@ import {
   TableHeader,
   TableRow,
 } from "@godxjp/ui/data-display";
-import { Label, Select, Switch } from "@godxjp/ui/data-entry";
+import { FormField, Label, Select, Switch } from "@godxjp/ui/data-entry";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { cn } from "@godxjp/ui/lib/utils";
@@ -165,28 +165,24 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <Flex direction="row" wrap align="end" gap="md">
-              <Flex direction="col" gap="xs">
-                <Label htmlFor="pm-compare-a">比較 A</Label>
+              <FormField label="比較 A">
                 <Select
-                  id="pm-compare-a"
                   value={compareA}
                   onValueChange={setCompareA}
                   options={roleOptions}
                   clearable={false}
                   className="w-40"
                 />
-              </Flex>
-              <Flex direction="col" gap="xs">
-                <Label htmlFor="pm-compare-b">比較 B</Label>
+              </FormField>
+              <FormField label="比較 B">
                 <Select
-                  id="pm-compare-b"
                   value={compareB}
                   onValueChange={setCompareB}
                   options={roleOptions}
                   clearable={false}
                   className="w-40"
                 />
-              </Flex>
+              </FormField>
               <Flex direction="row" align="center" gap="sm">
                 <Switch
                   id="pm-diff-only"
@@ -208,7 +204,7 @@ export default function Demo() {
                       差分 {diffN} 件
                     </Badge>
                     <Text size="xs" tone="muted">
-                      {roleName(compareA)} ↔ {roleName(compareB)}
+                      {roleName(compareA)} vs {roleName(compareB)}
                     </Text>
                   </>
                 )}

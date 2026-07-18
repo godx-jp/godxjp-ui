@@ -290,7 +290,7 @@ export default function OrgSwitcherShowcase() {
             <CardTitle>OrgSwitcher (mẫu tổ hợp)</CardTitle>
             <CardDescription>
               Thẻ tổ chức ở đầu Sidebar mở một danh sách tìm kiếm bằng Command, kèm hành động tạo tổ
-              chức và tham gia bằng mã mời. Toàn bộ dựng từ primitive @godxjp/ui — không thêm
+              chức và tham gia bằng mã mời. Toàn bộ dựng từ primitive @godxjp/ui · không thêm
               component framework.
             </CardDescription>
           </CardHeader>

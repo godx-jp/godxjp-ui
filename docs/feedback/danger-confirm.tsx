@@ -22,7 +22,7 @@ export default function Demo() {
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Organization delete — typed slug challenge</CardTitle>
+            <CardTitle level={2}>Organization delete · typed slug challenge</CardTitle>
             <CardDescription>
               The confirm button stays disabled until the operator types the exact organization slug
               (<code>acme-inc</code>). A typed challenge always forces the destructive tone and a
@@ -51,7 +51,7 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Refund — step-up re-authentication</CardTitle>
+            <CardTitle level={2}>Refund · step-up re-authentication</CardTitle>
             <CardDescription>
               A privileged action guarded by <code>stepUp</code>: the async passkey / 2FA check runs
               first, the button shows a verifying state, and a failed check keeps the dialog open
