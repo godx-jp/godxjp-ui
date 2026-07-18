@@ -43,6 +43,7 @@ export type {
   DescriptionsItemProp,
   BadgeProp,
   DataTableProp,
+  QrCodeProp,
 } from "./data-display.prop";
 export type {
   ChartDatum,

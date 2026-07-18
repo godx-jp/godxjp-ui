@@ -26,6 +26,7 @@ const coveredOwners = new Set([
   "data-display/accordion",
   "data-display/hover-card",
   "data-display/carousel",
+  "data-display/qr-code",
   "general/button",
   "general/typography",
   "general/logo",

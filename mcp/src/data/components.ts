@@ -1967,6 +1967,70 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@godxjp/ui/fee
     rules: [3, 6, 23],
   },
   {
+    name: "QrCode",
+    group: "data-display",
+    tagline:
+      "Local-only SVG QR renderer for enrollment links, device pairing and other values that must never be sent to a third-party image service.",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        required: true,
+        description: "Value encoded in-process. It is never used as accessible text or a URL.",
+      },
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Localized, purpose-specific accessible name for the QR image.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Natural display-size tier; remains bounded by the available inline space.",
+      },
+      { name: "className", type: "string", description: "Root SVG class override." },
+      { name: "id", type: "string", description: "Root SVG element id." },
+    ],
+    usage: [
+      "DO use QrCode when the encoded payload must remain inside the browser, especially an otpauth enrollment URI containing a TOTP secret.",
+      "DO provide a localized label that describes the job, such as 'Two-factor authentication setup code'; the encoded value is intentionally excluded from the accessibility tree.",
+      "DO compose an adjacent CredentialReveal with the manual key when users need a non-camera fallback. Keep both inside one parent Card rather than adding a bordered QR card.",
+      "DON'T create an image URL with the payload, call a remote QR service, add a logo/image overlay, or expose raw colour/size props. The local encoder, four-module quiet zone and scanner-safe colours are security and reliability invariants.",
+      "DON'T encode the manual secret alone for TOTP. Encode the canonical otpauth URI returned by the backend so issuer, account, algorithm, digits and period stay intact.",
+    ],
+    useCases: [
+      "TOTP authenticator enrollment",
+      "Device pairing or application handoff",
+      "Locally rendered invitation or deep link",
+      "Payment or ticket payload that must not reach a third-party renderer",
+    ],
+    related: [
+      "CredentialReveal — pair it with QrCode for the manual setup-key fallback without exposing the full encoded URI.",
+      "Card — supplies the one outer enrollment surface; QrCode intentionally adds no nested border or card chrome.",
+      "Text — provides concise localized scan/manual guidance around the non-text QR image.",
+    ],
+    example: `import { CredentialReveal, QrCode } from "@godxjp/ui/data-display";
+import { Flex } from "@godxjp/ui/layout";
+
+<Flex direction="col" gap="md">
+  <QrCode
+    value={security.qr_code_url}
+    label="二要素認証の登録用QRコード"
+    size="lg"
+  />
+  <CredentialReveal
+    secret={security.secret}
+    label="手動設定キー"
+    warning={null}
+    defaultRevealed
+  />
+</Flex>`,
+    storyPath: "data-display/QrCode.stories.tsx",
+    rules: [6, 7, 23, 24],
+  },
+  {
     name: "Descriptions",
     group: "data-display",
     tagline:

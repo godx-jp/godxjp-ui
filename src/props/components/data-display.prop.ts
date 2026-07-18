@@ -140,6 +140,18 @@ export type CredentialRevealProp = {
   "aria-label"?: string;
 };
 
+/** @see QrCode */
+export type QrCodeProp = {
+  /** Sensitive or public value encoded locally into the QR modules. */
+  value: string;
+  /** Purpose-specific accessible name. The encoded value is never used as accessible text. */
+  label: string;
+  /** Natural display size. Default `md`. */
+  size?: SizeProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+};
+
 /** @see DataTable */
 export type DataTableProp<T> = {
   data: T[];

@@ -534,4 +534,23 @@
     display: flex;
     justify-content: flex-end;
   }
+
+  /* QrCode — a quiet, scanner-safe SVG surface with an ISO/IEC-style four-module quiet zone
+   * supplied by the encoder. Sizing is natural rather than stretched across its container. */
+  .ui-qr-code {
+    display: block;
+    inline-size: var(--qr-code-size-md);
+    block-size: auto;
+    max-inline-size: 100%;
+    aspect-ratio: 1;
+  }
+  .ui-qr-code[data-size="xs"] {
+    inline-size: var(--qr-code-size-xs);
+  }
+  .ui-qr-code[data-size="sm"] {
+    inline-size: var(--qr-code-size-sm);
+  }
+  .ui-qr-code[data-size="lg"] {
+    inline-size: var(--qr-code-size-lg);
+  }
 }

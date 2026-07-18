@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`QrCode` local-only SVG renderer (#205)** — adds a scanner-safe data-display primitive for
+  TOTP enrollment, device pairing and other QR payloads that must never be sent to a third-party
+  image service. The required localized `label` names the image without exposing its encoded value;
+  `size` uses the shared `xs | sm | md | lg` vocabulary; a fixed four-module quiet zone, local SVG
+  encoding, medium-or-better error correction and dark-on-light component tokens remain private
+  reliability invariants. The API deliberately omits remote image/logo settings, raw colours,
+  numeric sizing and inline style. Consumers compose it with `CredentialReveal` for a manual-key
+  fallback inside one outer Card. Includes unit, SSR, secrecy and axe coverage plus a complete docs
+  frame and MCP catalog entry.
+
 - **`AlertDialog` gains typed-`challenge` + `stepUp` re-auth for the DangerConfirm recipe (#193)** —
   the destructive-confirm preset now covers high-stakes deletion end-to-end WITHOUT a new component
   (it already owned type-to-confirm + destructive tone + `pending`). New `challenge` prop is the

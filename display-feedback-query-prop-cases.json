@@ -32,6 +32,9 @@
   "Progress": {
     "value/max/label/tone/size": "docs/data-display/progress.tsx default, destructive, labelled and over-capacity cases"
   },
+  "QrCode": {
+    "value/label/size/className/id/local encoding/quiet zone": "docs/data-display/qr-code.tsx plus QrCode secrecy, SSR, sizing, ref and axe tests"
+  },
   "TreeList/Timeline": {
     "items/nesting/current/status/time/content stress": "docs/data-display/tree-list.tsx and timeline.tsx cases"
   },

@@ -943,14 +943,14 @@
           "required": true,
           "type": "AppSettingKind",
           "values": [
+            "fontSize",
             "density",
             "locale",
             "timezone",
             "dateFormat",
             "timeFormat",
             "theme",
-            "brand",
-            "fontSize"
+            "brand"
           ],
           "declaredIn": [
             "src/props/components/app.prop.ts"
@@ -9050,6 +9050,66 @@
           "values": [],
           "declaredIn": [
             "src/components/data-display/progress.tsx"
+          ]
+        }
+      ]
+    },
+    "QrCode": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
           ]
         }
       ]

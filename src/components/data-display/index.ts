@@ -8,6 +8,9 @@ export type {
   CredentialRevealProps,
   CredentialRevealTone,
 } from "./credential-reveal";
+export { QrCode } from "./qr-code";
+export type { QrCodeProps } from "./qr-code";
+export type { QrCodeProp } from "../../props/components/data-display.prop";
 export { Avatar, AvatarImage, AvatarFallback } from "./avatar";
 export {
   Card,

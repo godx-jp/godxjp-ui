@@ -2,8 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
 import axe from "axe-core";
+import jsQR from "jsqr";
+import { PNG } from "pngjs";
+import { DEFAULT_BASE, ensurePreviewServer, resolveChromiumExecutable } from "./frame-harness.mjs";
 
-const base = process.env.PREVIEW_URL ?? "http://localhost:6008";
+const base = process.env.PREVIEW_URL ?? DEFAULT_BASE;
 const widths = [320, 375, 390, 768, 1024, 1280, 1440, 1920];
 const allFrames = [
   { id: "data-display-charts", route: "data-display-charts" },
@@ -24,6 +27,7 @@ const allFrames = [
     "scroll-area",
     "popover",
     "hover-card",
+    "qr-code",
     "table",
     "stat-card",
   ].map((name) => ({ id: `data-display-${name}`, route: `data-display-${name}` })),
@@ -48,7 +52,11 @@ const frames = requested.size ? allFrames.filter(({ id }) => requested.has(id)) 
 const evidenceDir = path.resolve("artifacts/display-runtime");
 fs.mkdirSync(evidenceDir, { recursive: true });
 
-const browser = await chromium.launch({ headless: true });
+const cleanup = await ensurePreviewServer(base);
+const browser = await chromium.launch({
+  headless: true,
+  executablePath: resolveChromiumExecutable(),
+});
 const results = [];
 for (const { id, route } of frames) {
   const result = {
@@ -105,8 +113,21 @@ for (const { id, route } of frames) {
       result.overflow = "fail";
       (result.consoleErrors ??= []).push({ width, errors });
     }
+    if (id === "data-display-qr-code") {
+      const qr = page.locator('[data-slot="qr-code"]').first();
+      const png = PNG.sync.read(await qr.screenshot());
+      const decoded = jsQR(new Uint8ClampedArray(png.data), png.width, png.height);
+      if (!decoded?.data.startsWith("otpauth://totp/")) {
+        result.a11y = "fail";
+        (result.scanFailures ??= []).push({ width });
+      }
+    }
     result.widths.push(width);
-    if (width === 320 || width === 1920) {
+    if (
+      width === 320 ||
+      width === 1920 ||
+      (id === "data-display-qr-code" && [390, 768, 1280].includes(width))
+    ) {
       const shot = path.join(evidenceDir, `${id}-${width}.png`);
       await page.screenshot({ path: shot, fullPage: true });
       result.evidence.push(shot);
@@ -150,6 +171,7 @@ for (const { id, route } of frames) {
   results.push(result);
 }
 await browser.close();
+await cleanup();
 const auditedAt = new Date().toISOString();
 if (process.env.WRITE_EVIDENCE === "1") {
   const ledgerPath = path.resolve("display-runtime-evidence.json");

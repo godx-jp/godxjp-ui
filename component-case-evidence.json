@@ -652,6 +652,40 @@
         }
       }
     },
+    "QrCode": {
+      "complete": true,
+      "props": {
+        "value": {
+          "cases": ["otpauth URI", "HTTPS URL"],
+          "evidence": [
+            "docs/data-display/qr-code.tsx",
+            "src/components/data-display/__tests__/qr-code.test.tsx"
+          ]
+        },
+        "label": {
+          "cases": ["localized purpose-specific label"],
+          "evidence": [
+            "docs/data-display/qr-code.tsx",
+            "src/components/data-display/__tests__/qr-code.a11y.test.tsx"
+          ]
+        },
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": [
+            "docs/data-display/qr-code.tsx",
+            "src/components/data-display/__tests__/qr-code.test.tsx"
+          ]
+        },
+        "className": {
+          "cases": ["consumer-class"],
+          "evidence": ["src/components/data-display/__tests__/qr-code.test.tsx"]
+        },
+        "id": {
+          "cases": ["enrollment-code"],
+          "evidence": ["src/components/data-display/__tests__/qr-code.test.tsx"]
+        }
+      }
+    },
     "Button": {
       "props": {
         "variant": {

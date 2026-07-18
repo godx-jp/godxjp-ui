@@ -57,6 +57,15 @@ describe("data-display and general frame coverage", () => {
     expect(source).toContain("non-trigger positioning reference");
   });
 
+  it("covers a TOTP composition and every QR code size", () => {
+    const source = read("docs/data-display/qr-code.tsx");
+    expect(source).toContain("otpauth://totp/");
+    expect(source).toContain("<CredentialReveal");
+    for (const size of ["xs", "sm", "md", "lg"]) {
+      expect(source).toContain(`"${size}"`);
+    }
+  });
+
   it("covers every Button count boundary", () => {
     const source = read("docs/general/button/index.tsx");
     expect(source).toContain("count={18}");
