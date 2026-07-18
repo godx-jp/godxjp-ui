@@ -303,7 +303,7 @@ export default function OrgSwitcherShowcase() {
               <Text size="sm" tone="muted">
                 Đổi tổ chức từ thẻ ở góc trên Sidebar để cập nhật giá trị này.
               </Text>
-              {lastAction ? <Badge tone="attention">{lastAction}</Badge> : null}
+              {lastAction ? <Badge tone="warning">{lastAction}</Badge> : null}
             </Flex>
           </CardContent>
         </Card>
