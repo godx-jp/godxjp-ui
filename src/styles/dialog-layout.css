@@ -132,4 +132,8 @@
     font-size: var(--font-size-base);
     color: hsl(var(--muted-foreground));
   }
+
+  [data-slot="dialog-header"]:not([data-tone="default"]) [data-slot="dialog-description"] {
+    color: hsl(var(--foreground));
+  }
 }
