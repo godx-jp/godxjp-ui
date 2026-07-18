@@ -1867,6 +1867,106 @@ import { Smartphone } from "lucide-react";
     rules: [42, 44],
   },
   {
+    name: "CredentialReveal",
+    group: "data-display",
+    tagline:
+      "One-time secret surface — masked-by-default value with a show/hide toggle, a copy button that confirms the copy, optional download, and an optional acknowledge action to pair with Dialog. The GitHub/Stripe token-reveal pattern as a real primitive so consumers stop hand-rolling it.",
+    props: [
+      { name: "secret", type: "string", required: true, description: "The one-time secret value." },
+      {
+        name: "label",
+        type: "string",
+        description: "Accessible name / caption for the secret (e.g. 'API key').",
+      },
+      {
+        name: "warning",
+        type: "React.ReactNode | null",
+        description:
+          "Caution banner copy; defaults to a localized 'shown only once' warning. Pass null to suppress the banner.",
+      },
+      {
+        name: "revealed",
+        type: "boolean",
+        description: "Controlled reveal state (with defaultRevealed / onRevealedChange).",
+      },
+      {
+        name: "defaultRevealed",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Uncontrolled initial reveal state.",
+      },
+      {
+        name: "onRevealedChange",
+        type: "(revealed: boolean) => void",
+        description: "Reveal toggle handler.",
+      },
+      {
+        name: "onCopy",
+        type: "(secret: string) => void",
+        description: "Called after the secret is written to the clipboard.",
+      },
+      {
+        name: "onAcknowledge",
+        type: "() => void",
+        description: "Renders a confirm button; wire it to the Dialog's onOpenChange(false).",
+      },
+      {
+        name: "downloadable",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Offer a download-as-file button.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Action button size tier.",
+      },
+      {
+        name: "tone",
+        type: '"warning" | "destructive" | "info"',
+        defaultValue: '"warning"',
+        description: "Caution banner severity.",
+      },
+    ],
+    usage: [
+      "DO use for a secret shown exactly once after creation (device credential, API key, service-account secret) — it masks by default and confirms the copy.",
+      "DO pair it inside a Dialog and reset via controlled `revealed`/`onRevealedChange` (or let it re-blur automatically when the `secret` prop changes) so a reopened dialog starts masked.",
+      "DO pass `onAcknowledge` to gate the dialog close behind an explicit 'I've saved it' confirmation.",
+      "DON'T use it for an editable password field — that's PasswordInput. CredentialReveal is read-only display of an issued secret.",
+      "DON'T hand-roll the copy button + copied-state + aria-live announcement; it's built in.",
+    ],
+    useCases: [
+      "Device credential issued after enrollment",
+      "API key / personal access token shown once on creation",
+      "Service-account secret / client secret reveal",
+      "Recovery code or one-time bootstrap password",
+    ],
+    related: [
+      "PasswordInput — editable password/secret ENTRY with a show/hide toggle (data-entry); CredentialReveal is read-only DISPLAY of an issued secret.",
+      "Dialog — the modal CredentialReveal is designed to live inside.",
+      "Alert — the caution banner CredentialReveal composes internally.",
+    ],
+    example: `import { CredentialReveal } from "@godxjp/ui/data-display";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@godxjp/ui/feedback";
+
+<Dialog open={open} onOpenChange={setOpen}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>APIキーを発行しました</DialogTitle>
+    </DialogHeader>
+    <CredentialReveal
+      label="APIキー"
+      secret="gxp_live_8Fh2kQ9wR7nZ1xV4bT6mL0cD"
+      downloadable
+      onAcknowledge={() => setOpen(false)}
+    />
+  </DialogContent>
+</Dialog>`,
+    storyPath: "data-display/CredentialReveal.stories.tsx",
+    rules: [3, 6, 23],
+  },
+  {
     name: "Descriptions",
     group: "data-display",
     tagline:

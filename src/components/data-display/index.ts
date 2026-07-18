@@ -2,6 +2,12 @@ export { Badge } from "./badge";
 export type { BadgeProps } from "./badge";
 export { ListRow } from "./list-row";
 export type { ListRowProps } from "./list-row";
+export { CredentialReveal } from "./credential-reveal";
+export type {
+  CredentialRevealProp,
+  CredentialRevealProps,
+  CredentialRevealTone,
+} from "./credential-reveal";
 export { Avatar, AvatarImage, AvatarFallback } from "./avatar";
 export {
   Card,
