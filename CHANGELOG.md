@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **OrgSwitcher recipe — sidebar organization/tenant switcher (#196)** — the Slack/Linear
+  workspace-switcher requested by dxs-platform ships as a **composition pattern**, not a new
+  framework component (GATE 0 Framework-Component Test: FAILs C2/C3/C4/C6/C7 — it owns no new
+  behaviour, is fully expressible from existing primitives, and `Sidebar` already exposes the
+  `brand`/`product` + `onProductClick` slot to host it). The current-org card at the top of the
+  `Sidebar` opens a `Popover` containing a searchable `Command` list of organizations plus
+  "create organization" / "join by invite code" footer actions — built entirely from real
+  `@godxjp/ui` primitives (`Popover` · `Command` · `Button` · `Avatar` · `Text`). Added as a
+  copy-pasteable showcase page (`docs/showcase/org-switcher.tsx`, registered in the showcase
+  catalog) with behavioural (`org-switcher.test.tsx`) and axe (`org-switcher.a11y.test.tsx`)
+  tests. The active org carries a visible Check **and** an sr-only status word (never
+  colour-only); the trigger announces the current org; spacing is logical (RTL-safe).
+
 - **Framework-agnostic form-state adapter + first-class Inertia binding (#190)** — `FormRoot` and
   `FormFieldControl` are no longer hard-coupled to react-hook-form. `FormRoot` now accepts EITHER
   `form` (the built-in RHF + Zod client path, unchanged) OR `adapter` — a small `FormStateAdapter`
