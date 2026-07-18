@@ -71,7 +71,10 @@ describe("AppShell", () => {
       </AppShell>,
     );
     // AppShell renders its own hamburger — the mobile nav is never merely hidden (gh#165).
-    expect(screen.getByRole("button", { name: "Mở menu điều hướng" })).toBeInTheDocument();
+    const trigger = screen.getByRole("button", { name: "Mở menu điều hướng" });
+
+    expect(trigger).toBeInTheDocument();
+    expect(trigger).toHaveClass("hidden", "max-lg:inline-flex");
   });
 
   it("opens a focus-trapped drawer and returns focus to the trigger on close", async () => {
@@ -94,6 +97,19 @@ describe("AppShell", () => {
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
+  it("keeps the mobile drawer navigation expanded when the docked sidebar is collapsed", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <AppShell sidebar={<nav aria-label="Main">Dashboard settings</nav>} sidebarCollapsed>
+        <p>Content</p>
+      </AppShell>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Mở menu điều hướng" }));
+
+    expect(await screen.findByRole("dialog")).toHaveTextContent("Dashboard settings");
   });
 
   it("mobileNav={null} opts out — no drawer trigger is rendered", () => {

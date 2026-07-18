@@ -235,7 +235,7 @@
     font-size: var(--font-size-base);
   }
 
-  @media (max-width: 1023px) {
+  @media (width < 64rem) {
     .app-root,
     .app-root[data-collapsed="true"] {
       grid-template-areas:
@@ -602,26 +602,34 @@
     color: hsl(var(--muted-foreground));
   }
 
-  [data-collapsed="true"] .sb-user-meta,
-  [data-collapsed="true"] .sb-user-menu {
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
+    .sb-user-meta,
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
+    .sb-user-menu {
     display: none;
   }
 
-  [data-collapsed="true"] .sb-product-name,
-  [data-collapsed="true"] .sb-product-tenant,
-  [data-collapsed="true"] .sb-product-caret,
-  [data-collapsed="true"] .sb-section-label,
-  [data-collapsed="true"] .sb-label,
-  [data-collapsed="true"] .sb-badge {
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
+    .sb-product-name,
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
+    .sb-product-tenant,
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
+    .sb-product-caret,
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
+    .sb-section-label,
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"]) .sb-label,
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"]) .sb-badge {
     display: none;
   }
 
-  [data-collapsed="true"] .sb-product {
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
+    .sb-product {
     justify-content: center;
     padding: 0;
   }
 
-  [data-collapsed="true"] .sb-nav-item {
+  :is(.app-root[data-collapsed="true"] > .app-sidebar, .sb-root[data-collapsed="true"])
+    .sb-nav-item {
     width: var(--control-height);
     justify-content: center;
     margin-inline: auto;
