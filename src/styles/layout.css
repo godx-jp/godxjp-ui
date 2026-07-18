@@ -717,6 +717,16 @@
     }
   }
 
+  /* Toolbar `sticky` (#197): pin the filter strip while the list scrolls beneath it.
+   * `inset-block-start` (not `top`) keeps it RTL/vertical-writing-mode safe; the fill only
+   * paints in this pinned variant so a non-sticky toolbar stays transparent chrome. */
+  .ui-toolbar-sticky {
+    position: sticky;
+    inset-block-start: var(--filter-bar-sticky-offset);
+    z-index: 20;
+    background: hsl(var(--filter-bar-sticky-background, var(--background)));
+  }
+
   .ui-toolbar-clear {
     width: 100%;
   }

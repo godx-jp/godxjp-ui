@@ -398,6 +398,11 @@ export const VOCABULARY_REGISTRY = {
     category: "data",
     description: "Any filter active flag",
   },
+  StickyProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description: "Pin the filter strip while the list scrolls",
+  },
 } as const;
 
 export type VocabularyPropName = keyof typeof VOCABULARY_REGISTRY;
@@ -1046,7 +1051,13 @@ export const COMPONENT_PROP_REGISTRY = {
   ToolbarProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["OnClearFiltersProp", "HasActiveFiltersProp", "ClassNameProp", "ChildrenProp"],
+    vocabulary: [
+      "OnClearFiltersProp",
+      "HasActiveFiltersProp",
+      "StickyProp",
+      "ClassNameProp",
+      "ChildrenProp",
+    ],
   },
   ToolbarGroupProp: {
     group: "navigation",

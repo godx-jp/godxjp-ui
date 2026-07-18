@@ -20,4 +20,11 @@
    * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text. */
   --menubar-item-hover-background: initial;
   --menubar-item-hover-foreground: initial;
+
+  /* Sticky offset for the pinned filter strip (Toolbar `sticky`, #197). Default 0 (chrome,
+   * rule #44); raise it so the strip parks below a fixed topbar. */
+  --filter-bar-sticky-offset: 0px;
+  /* Fill painted only when the filter strip is pinned. Role-mirror knob (rule #45): `initial`
+   * so --background re-resolves at the call site under a scoped [data-tenant]/.dark theme. */
+  --filter-bar-sticky-background: initial;
 }

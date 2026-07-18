@@ -889,6 +889,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site * under a scoped theme (a :root binding to a role var freezes at :root). * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text."
   },
   {
+    "name": "--filter-bar-sticky-offset",
+    "value": "0px",
+    "description": "Sticky offset for the pinned filter strip (Toolbar `sticky`, #197). Default 0 (chrome, * rule #44); raise it so the strip parks below a fixed topbar."
+  },
+  {
+    "name": "--filter-bar-sticky-background",
+    "value": "initial",
+    "description": "Fill painted only when the filter strip is pinned. Role-mirror knob (rule #45): `initial` * so --background re-resolves at the call site under a scoped [data-tenant]/.dark theme."
+  },
+  {
     "name": "--sidebar-section-label-font-size",
     "value": "var(--font-size-2xs)",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."

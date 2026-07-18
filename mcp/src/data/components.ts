@@ -4389,6 +4389,81 @@ import { Button } from "@godxjp/ui/general";
     storyPath: "navigation/Steps.stories.tsx",
     rules: [],
   },
+  {
+    name: "Toolbar",
+    group: "navigation",
+    tagline:
+      "List-page filter strip (the framework FilterBar) — SearchInput + labelled ToolbarGroup filter slots + a clear-all affordance, optionally sticky.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description:
+          "Filter controls. Place SearchInput directly; wrap each labelled Select/DatePicker in a ToolbarGroup.",
+      },
+      {
+        name: "onClear",
+        type: "() => void",
+        description:
+          "Clear-all handler. When provided AND hasActiveFilters is true, Toolbar renders the trailing 'Clear filters' button.",
+      },
+      {
+        name: "hasActiveFilters",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Whether any filter is applied — gates the clear-all button visibility.",
+      },
+      {
+        name: "sticky",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Pin the strip to the top of its scroll container while the list scrolls beneath it (#197). Opt-in; tune offset/fill via the --filter-bar-sticky-offset / --filter-bar-sticky-background theme knobs.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Extra classes on the role='toolbar' element.",
+      },
+    ],
+    usage: [
+      "DO place Toolbar ABOVE the table Card, never inside a `CardContent flush`. Put SearchInput as a direct child (it self-labels) and wrap every other control in a ToolbarGroup with a `label`.",
+      "DO drive the clear-all button with `hasActiveFilters` + `onClear` — it only renders when both are truthy. The strip collapses to a single stacked column below 640px automatically.",
+      "DO set `sticky` for long list pages so the filters stay reachable while scrolling; if a topbar sits above the list, raise `--filter-bar-sticky-offset` so the strip parks below it.",
+      "DON'T build active-filter chips by nesting a Button inside a Badge (invalid markup + broken focus). Render each chip as a Badge label with a SIBLING icon Button (`aria-label` = 'clear <filter>'); a ghost `size='sm'` Button clears all.",
+      "DON'T hand-roll a debounced search box or a raw `<select>` — compose SearchInput and Select. Toolbar is layout + clear-all only; the controls own their own state and a11y.",
+    ],
+    useCases: [
+      "Master list screens (members, organizations, subscriptions, invoices) that need free-text search plus a few dropdown filters above a DataTable.",
+      "Sticky filter strip over a tall list where the filters must remain visible as the user scrolls the results.",
+      "Filtered views that surface applied conditions as removable chips (clear-one via each chip's × Button, clear-all via `onClear`).",
+    ],
+    related: [
+      "ToolbarGroup — the labelled wrapper for each individual filter control inside a Toolbar (SearchInput is placed directly, without a group).",
+      "DataTable.Toolbar — the in-table strip for column/density/bulk-action controls; Toolbar (this) is the page-level filter strip that sits ABOVE the table.",
+      "SearchInput — the debounced free-text control placed as the first child of Toolbar.",
+      "Badge — compose Badge + a sibling icon Button to render each active-filter chip; Badge itself is a non-interactive leaf.",
+    ],
+    example: `import { Toolbar, ToolbarGroup } from "@godxjp/ui/navigation";
+import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry";
+
+<Toolbar sticky hasActiveFilters={hasFilters} onClear={clearAll}>
+  <SearchInput placeholder="氏名・メールで検索" value={q} onSearch={setQ} />
+  <ToolbarGroup label="ステータス">
+    <Select value={status} onValueChange={setStatus}>
+      <SelectTrigger aria-label="ステータス"><SelectValue /></SelectTrigger>
+      <SelectContent>
+        <SelectItem value="all">すべて</SelectItem>
+        <SelectItem value="active">有効</SelectItem>
+      </SelectContent>
+    </Select>
+  </ToolbarGroup>
+</Toolbar>`,
+    docPath: "navigation/toolbar",
+    storyPath: "navigation/toolbar.tsx",
+    rules: [23, 44, 45, 46],
+  },
 
   // ─── providers / datetime ───────────────────────────────────────────────
   {

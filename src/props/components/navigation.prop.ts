@@ -7,12 +7,20 @@ import type {
   HasActiveFiltersProp,
   LabelProp,
   OnClearFiltersProp,
+  StickyProp,
 } from "../vocabulary";
 
 /** @see Toolbar */
 export type ToolbarProp = {
   onClear?: OnClearFiltersProp;
   hasActiveFilters?: HasActiveFiltersProp;
+  /**
+   * Pin the strip to the top of its scroll container while the list scrolls beneath it
+   * (list-page filter bars, #197). Opt-in — default `false` keeps the toolbar quiet. Tune
+   * the pinned offset/background with the `--filter-bar-sticky-offset` /
+   * `--filter-bar-sticky-background` theme knobs.
+   */
+  sticky?: StickyProp;
   className?: ClassNameProp;
   children: ChildrenProp;
 };

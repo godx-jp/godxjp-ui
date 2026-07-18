@@ -84,4 +84,5 @@ export type {
   OnSearchChangeProp,
   OnClearFiltersProp,
   HasActiveFiltersProp,
+  StickyProp,
 } from "./data.prop";

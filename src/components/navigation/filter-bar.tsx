@@ -13,14 +13,20 @@ export type {
   ToolbarProp as ToolbarProps,
 } from "../../props/components/navigation.prop";
 
-export function Toolbar({ onClear, hasActiveFilters = true, className, children }: ToolbarProp) {
+export function Toolbar({
+  onClear,
+  hasActiveFilters = true,
+  sticky = false,
+  className,
+  children,
+}: ToolbarProp) {
   const { t } = useTranslation();
 
   return (
     <div
       role="toolbar"
       aria-label={t("navigation.toolbar.ariaLabel")}
-      className={cn("ui-toolbar", className)}
+      className={cn("ui-toolbar", sticky && "ui-toolbar-sticky", className)}
     >
       {children}
       {onClear && hasActiveFilters && (
