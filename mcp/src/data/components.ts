@@ -1867,6 +1867,106 @@ import { Smartphone } from "lucide-react";
     rules: [42, 44],
   },
   {
+    name: "CredentialReveal",
+    group: "data-display",
+    tagline:
+      "One-time secret surface — masked-by-default value with a show/hide toggle, a copy button that confirms the copy, optional download, and an optional acknowledge action to pair with Dialog. The GitHub/Stripe token-reveal pattern as a real primitive so consumers stop hand-rolling it.",
+    props: [
+      { name: "secret", type: "string", required: true, description: "The one-time secret value." },
+      {
+        name: "label",
+        type: "string",
+        description: "Accessible name / caption for the secret (e.g. 'API key').",
+      },
+      {
+        name: "warning",
+        type: "React.ReactNode | null",
+        description:
+          "Caution banner copy; defaults to a localized 'shown only once' warning. Pass null to suppress the banner.",
+      },
+      {
+        name: "revealed",
+        type: "boolean",
+        description: "Controlled reveal state (with defaultRevealed / onRevealedChange).",
+      },
+      {
+        name: "defaultRevealed",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Uncontrolled initial reveal state.",
+      },
+      {
+        name: "onRevealedChange",
+        type: "(revealed: boolean) => void",
+        description: "Reveal toggle handler.",
+      },
+      {
+        name: "onCopy",
+        type: "(secret: string) => void",
+        description: "Called after the secret is written to the clipboard.",
+      },
+      {
+        name: "onAcknowledge",
+        type: "() => void",
+        description: "Renders a confirm button; wire it to the Dialog's onOpenChange(false).",
+      },
+      {
+        name: "downloadable",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Offer a download-as-file button.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description: "Action button size tier.",
+      },
+      {
+        name: "tone",
+        type: '"warning" | "destructive" | "info"',
+        defaultValue: '"warning"',
+        description: "Caution banner severity.",
+      },
+    ],
+    usage: [
+      "DO use for a secret shown exactly once after creation (device credential, API key, service-account secret) — it masks by default and confirms the copy.",
+      "DO pair it inside a Dialog and reset via controlled `revealed`/`onRevealedChange` (or let it re-blur automatically when the `secret` prop changes) so a reopened dialog starts masked.",
+      "DO pass `onAcknowledge` to gate the dialog close behind an explicit 'I've saved it' confirmation.",
+      "DON'T use it for an editable password field — that's PasswordInput. CredentialReveal is read-only display of an issued secret.",
+      "DON'T hand-roll the copy button + copied-state + aria-live announcement; it's built in.",
+    ],
+    useCases: [
+      "Device credential issued after enrollment",
+      "API key / personal access token shown once on creation",
+      "Service-account secret / client secret reveal",
+      "Recovery code or one-time bootstrap password",
+    ],
+    related: [
+      "PasswordInput — editable password/secret ENTRY with a show/hide toggle (data-entry); CredentialReveal is read-only DISPLAY of an issued secret.",
+      "Dialog — the modal CredentialReveal is designed to live inside.",
+      "Alert — the caution banner CredentialReveal composes internally.",
+    ],
+    example: `import { CredentialReveal } from "@godxjp/ui/data-display";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@godxjp/ui/feedback";
+
+<Dialog open={open} onOpenChange={setOpen}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>APIキーを発行しました</DialogTitle>
+    </DialogHeader>
+    <CredentialReveal
+      label="APIキー"
+      secret="gxp_live_8Fh2kQ9wR7nZ1xV4bT6mL0cD"
+      downloadable
+      onAcknowledge={() => setOpen(false)}
+    />
+  </DialogContent>
+</Dialog>`,
+    storyPath: "data-display/CredentialReveal.stories.tsx",
+    rules: [3, 6, 23],
+  },
+  {
     name: "Descriptions",
     group: "data-display",
     tagline:
@@ -3742,9 +3842,21 @@ function CreateDialog() {
         description: "Optional type-to-confirm phrase to prevent accidental confirm.",
       },
       {
+        name: "challenge",
+        type: "string",
+        description:
+          "Semantic alias of `confirmPhrase` — the exact token to type (e.g. an org slug) before confirm arms.",
+      },
+      {
         name: "onConfirm",
         type: "() => Promise<void> | void",
         description: "Primary action handler.",
+      },
+      {
+        name: "stepUp",
+        type: "() => Promise<boolean> | boolean",
+        description:
+          "Optional step-up re-auth (passkey/2FA) gate; must resolve truthy before `onConfirm` fires. Returning false keeps the dialog open and announces failure.",
       },
       {
         name: "keepOpenOnConfirm",
@@ -3759,11 +3871,14 @@ function CreateDialog() {
     ],
     usage: [
       "Use `AlertDialog` for destructive/irreversible actions (delete, void, unpublish, archive, etc.).",
-      "Use `confirmPhrase` for high-friction operations (e.g. requiring `DELETE`) to reduce accidental confirmation.",
+      "Use `confirmPhrase`/`challenge` for high-friction operations (e.g. typing an org slug) to reduce accidental confirmation — both force the destructive tone.",
+      "Pass `stepUp` for a passkey/2FA re-auth gate that must resolve truthy before `onConfirm` runs (refunds, org deletion).",
       "Pass `keepOpenOnConfirm` when the confirm handler advances a multi-step flow and should not close immediately.",
     ],
     useCases: [
       "Dangerous delete or irreversible workflow confirmation that should block the background UI.",
+      "Organization/resource deletion gated behind typing the exact slug (`challenge`).",
+      "Refunds or privileged actions requiring step-up re-authentication before they run.",
       "Destructive batch operations that should remain modal and explicit until action is intentionally confirmed.",
     ],
     related: [
@@ -4273,6 +4388,81 @@ import { Button } from "@godxjp/ui/general";
 <Steps value={1} items={[{ title: "申請" }, { title: "審査中" }, { title: "完了" }]} />`,
     storyPath: "navigation/Steps.stories.tsx",
     rules: [],
+  },
+  {
+    name: "Toolbar",
+    group: "navigation",
+    tagline:
+      "List-page filter strip (the framework FilterBar) — SearchInput + labelled ToolbarGroup filter slots + a clear-all affordance, optionally sticky.",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description:
+          "Filter controls. Place SearchInput directly; wrap each labelled Select/DatePicker in a ToolbarGroup.",
+      },
+      {
+        name: "onClear",
+        type: "() => void",
+        description:
+          "Clear-all handler. When provided AND hasActiveFilters is true, Toolbar renders the trailing 'Clear filters' button.",
+      },
+      {
+        name: "hasActiveFilters",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Whether any filter is applied — gates the clear-all button visibility.",
+      },
+      {
+        name: "sticky",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Pin the strip to the top of its scroll container while the list scrolls beneath it (#197). Opt-in; tune offset/fill via the --filter-bar-sticky-offset / --filter-bar-sticky-background theme knobs.",
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Extra classes on the role='toolbar' element.",
+      },
+    ],
+    usage: [
+      "DO place Toolbar ABOVE the table Card, never inside a `CardContent flush`. Put SearchInput as a direct child (it self-labels) and wrap every other control in a ToolbarGroup with a `label`.",
+      "DO drive the clear-all button with `hasActiveFilters` + `onClear` — it only renders when both are truthy. The strip collapses to a single stacked column below 640px automatically.",
+      "DO set `sticky` for long list pages so the filters stay reachable while scrolling; if a topbar sits above the list, raise `--filter-bar-sticky-offset` so the strip parks below it.",
+      "DON'T build active-filter chips by nesting a Button inside a Badge (invalid markup + broken focus). Render each chip as a Badge label with a SIBLING icon Button (`aria-label` = 'clear <filter>'); a ghost `size='sm'` Button clears all.",
+      "DON'T hand-roll a debounced search box or a raw `<select>` — compose SearchInput and Select. Toolbar is layout + clear-all only; the controls own their own state and a11y.",
+    ],
+    useCases: [
+      "Master list screens (members, organizations, subscriptions, invoices) that need free-text search plus a few dropdown filters above a DataTable.",
+      "Sticky filter strip over a tall list where the filters must remain visible as the user scrolls the results.",
+      "Filtered views that surface applied conditions as removable chips (clear-one via each chip's × Button, clear-all via `onClear`).",
+    ],
+    related: [
+      "ToolbarGroup — the labelled wrapper for each individual filter control inside a Toolbar (SearchInput is placed directly, without a group).",
+      "DataTable.Toolbar — the in-table strip for column/density/bulk-action controls; Toolbar (this) is the page-level filter strip that sits ABOVE the table.",
+      "SearchInput — the debounced free-text control placed as the first child of Toolbar.",
+      "Badge — compose Badge + a sibling icon Button to render each active-filter chip; Badge itself is a non-interactive leaf.",
+    ],
+    example: `import { Toolbar, ToolbarGroup } from "@godxjp/ui/navigation";
+import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@godxjp/ui/data-entry";
+
+<Toolbar sticky hasActiveFilters={hasFilters} onClear={clearAll}>
+  <SearchInput placeholder="氏名・メールで検索" value={q} onSearch={setQ} />
+  <ToolbarGroup label="ステータス">
+    <Select value={status} onValueChange={setStatus}>
+      <SelectTrigger aria-label="ステータス"><SelectValue /></SelectTrigger>
+      <SelectContent>
+        <SelectItem value="all">すべて</SelectItem>
+        <SelectItem value="active">有効</SelectItem>
+      </SelectContent>
+    </Select>
+  </ToolbarGroup>
+</Toolbar>`,
+    docPath: "navigation/toolbar",
+    storyPath: "navigation/toolbar.tsx",
+    rules: [23, 44, 45, 46],
   },
 
   // ─── providers / datetime ───────────────────────────────────────────────

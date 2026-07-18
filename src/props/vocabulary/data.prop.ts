@@ -67,3 +67,10 @@ export type OnClearFiltersProp = () => void;
 
 /** Whether any filter is active — shows "Clear all". */
 export type HasActiveFiltersProp = boolean;
+
+/**
+ * Whether the filter strip pins to the top of its scroll container while the list
+ * scrolls beneath it. Opt-in (default `false`) so the toolbar stays quiet chrome;
+ * offset/background are tuned via the `--filter-bar-sticky-*` theme knobs.
+ */
+export type StickyProp = boolean;

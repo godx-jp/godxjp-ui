@@ -316,7 +316,14 @@ DialogCancel.displayName = "DialogCancel";
 const AlertDialogAction = DialogAction;
 const AlertDialogCancel = DialogCancel;
 
-/** Preset: confirm / destructive / type-to-confirm without compound markup. */
+/**
+ * Preset: confirm / destructive / typed-challenge / step-up without compound markup.
+ *
+ * High-stakes deletion recipe ("DangerConfirm", godxui#193): pass `challenge` (or `confirmPhrase`)
+ * to gate the confirm button behind an exact typed match (org slug / resource name), and `stepUp`
+ * for an async re-auth gate (passkey / 2FA) that must resolve truthy before `onConfirm` fires.
+ * Both flows force the destructive tone (button + soft header band).
+ */
 function AlertDialog({
   open,
   onOpenChange,
@@ -326,28 +333,64 @@ function AlertDialog({
   cancelLabel,
   variant = "default",
   confirmPhrase,
+  challenge,
   onConfirm,
+  stepUp,
   keepOpenOnConfirm = false,
   pending = false,
 }: AlertDialogProp) {
   const { t } = useTranslation();
   const [typed, setTyped] = React.useState("");
+  const [verifying, setVerifying] = React.useState(false);
+  const [stepUpFailed, setStepUpFailed] = React.useState(false);
   const inputId = React.useId();
+  const stepErrorId = React.useId();
 
-  const needsPhrase = confirmPhrase != null && confirmPhrase.length > 0;
-  const phraseMatches = !needsPhrase || typed === confirmPhrase;
+  // `challenge` is the semantic name for the typed token (an org slug); `confirmPhrase` is the
+  // back-compat alias. Either enables the same type-to-confirm friction.
+  const phrase = confirmPhrase ?? challenge;
+  const needsPhrase = phrase != null && phrase.length > 0;
+  const phraseMatches = !needsPhrase || typed === phrase;
   const effectiveVariant = needsPhrase ? "destructive" : variant;
+  const headerTone: ToneProp = effectiveVariant === "destructive" ? "destructive" : "default";
   const resolvedConfirm = confirmLabel ?? (needsPhrase ? t("common.delete") : t("common.continue"));
   const resolvedCancel = cancelLabel ?? t("common.cancel");
+  const busy = pending || verifying;
+  const confirmLabelText = verifying
+    ? t("feedback.alert.verifying")
+    : pending
+      ? t("common.working")
+      : resolvedConfirm;
+
+  const reset = () => {
+    setTyped("");
+    setVerifying(false);
+    setStepUpFailed(false);
+  };
 
   const handleOpenChange = (next: boolean) => {
-    setTyped("");
+    reset();
     onOpenChange(next);
   };
 
   const handleConfirm = () => {
-    if (!phraseMatches) return;
+    if (!phraseMatches || busy) return;
     void (async () => {
+      if (stepUp) {
+        setStepUpFailed(false);
+        setVerifying(true);
+        let ok = false;
+        try {
+          ok = await stepUp();
+        } catch {
+          ok = false;
+        }
+        setVerifying(false);
+        if (!ok) {
+          setStepUpFailed(true);
+          return;
+        }
+      }
       await onConfirm();
       if (!keepOpenOnConfirm) onOpenChange(false);
     })();
@@ -364,7 +407,7 @@ function AlertDialog({
           data-slot="dialog-content"
           className="data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 duration-200 outline-none"
         >
-          <DialogHeader>
+          <DialogHeader tone={headerTone}>
             <AlertDialogPrimitive.Title data-slot="dialog-title">
               {title}
             </AlertDialogPrimitive.Title>
@@ -378,7 +421,7 @@ function AlertDialog({
           {needsPhrase && (
             <div className="ui-stack-xs">
               <Label htmlFor={inputId} className="text-sm">
-                {t("common.typeToConfirm", { phrase: confirmPhrase })}
+                {t("common.typeToConfirm", { phrase })}
               </Label>
               <Input
                 id={inputId}
@@ -388,24 +431,32 @@ function AlertDialog({
                 }}
                 autoComplete="off"
                 spellCheck={false}
-                placeholder={confirmPhrase}
+                placeholder={phrase}
                 aria-required="true"
+                disabled={busy}
               />
             </div>
           )}
 
+          {stepUpFailed && (
+            <p id={stepErrorId} role="alert" className="text-destructive text-sm">
+              {t("feedback.alert.stepUpFailed")}
+            </p>
+          )}
+
           <DialogFooter>
             <DialogCancel asChild>
-              <Button variant="ghost" disabled={pending}>
+              <Button variant="ghost" disabled={busy}>
                 {resolvedCancel}
               </Button>
             </DialogCancel>
             <Button
               variant={effectiveVariant === "destructive" ? "destructive" : "default"}
               onClick={handleConfirm}
-              disabled={pending || !phraseMatches}
+              disabled={busy || !phraseMatches}
+              aria-describedby={stepUpFailed ? stepErrorId : undefined}
             >
-              {pending ? t("common.working") : resolvedConfirm}
+              {confirmLabelText}
             </Button>
           </DialogFooter>
         </AlertDialogPrimitive.Content>

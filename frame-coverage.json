@@ -1731,6 +1731,24 @@
         "reason": "Focusable scroll viewport passed rendered axe and keyboard smoke."
       }
     },
+    "data-display/credential-reveal": {
+      "responsive": {
+        "status": "pass",
+        "reason": "Owner frame is a single stacked field (masked/revealed secret + reveal/copy/download controls) that reflows across widths; no fixed-width overflow."
+      },
+      "rtl": {
+        "status": "pass",
+        "reason": "Logical inline CSS only; the field and its trailing controls mirror correctly under dir=rtl."
+      },
+      "a11y": {
+        "status": "pass",
+        "reason": "Isolated CredentialReveal frame passed vitest-axe (0 violations); reveal/copy/download controls carry accessible names and the copied/expiry state is announced, never colour-only."
+      },
+      "touch": {
+        "status": "pass",
+        "reason": "Reveal, copy and download controls are >=24px pointer targets. Physical-device touch remains separately untested."
+      }
+    },
     "data-display/popover": {
       "responsive": { "status": "pass", "reason": "Eight-width Chromium geometry passed." },
       "rtl": { "status": "pass", "reason": "Rendered RTL geometry passed." },
@@ -2140,6 +2158,7 @@
         "data-display/accordion",
         "data-display/hover-card",
         "data-display/carousel",
+        "data-display/credential-reveal",
         "general/button"
       ],
       "dimensions": {

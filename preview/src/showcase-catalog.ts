@@ -171,6 +171,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
     load: () => import("../../docs/showcase/table-master-detail"),
   },
   {
+    id: "permission-matrix",
+    title: "権限マトリクス (RBAC)",
+    description:
+      "Ma trận role × permission: cột đầu cố định, ô ✓/—, chế độ so sánh 2 role + lọc 差分のみ. Composition từ Table + Badge; logic diff dùng util @godxjp/ui/lib/permission-grid.",
+    tag: "Admin",
+    load: () => import("../../docs/showcase/permission-matrix"),
+  },
+  {
     id: "case4-login",
     title: "ログイン (Login)",
     description:
@@ -217,6 +225,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
       "UI cầm tay đại lý (390×844): Sheet, nút scan, list-card, badge 1:1, segmented, Dialog, toast, select-mode bar — density comfortable.",
     tag: "Mobile",
     load: () => import("../../docs/showcase/case6-agency-handy"),
+  },
+  {
+    id: "org-switcher",
+    title: "OrgSwitcher (chuyển tổ chức)",
+    description:
+      "Thẻ tổ chức đầu Sidebar (avatar/tên/vai trò) mở Popover chứa danh sách Command tìm kiếm được, kèm hành động tạo tổ chức / nhập mã mời. Mẫu Slack/Linear dựng CHỈ từ primitive @godxjp/ui — composition, không thêm component framework (godxjp-ui#196).",
+    tag: "Shell",
+    load: () => import("../../docs/showcase/org-switcher"),
   },
 ];
 

@@ -118,7 +118,9 @@
     },
     "genericError": "Something went wrong. Please retry.",
     "alert": {
-      "dismiss": "Dismiss"
+      "dismiss": "Dismiss",
+      "verifying": "Verifying…",
+      "stepUpFailed": "Re-authentication failed. Please try again."
     }
   },
   "layout": {
@@ -175,6 +177,17 @@
     "passwordInput": {
       "show": "Show password",
       "hide": "Hide password"
+    },
+    "credentialReveal": {
+      "secretLabel": "Secret",
+      "warning": "This secret is shown only once. Copy it now — you won't be able to see it again.",
+      "show": "Reveal secret",
+      "hide": "Hide secret",
+      "copy": "Copy secret",
+      "copied": "Copied",
+      "copiedAnnounce": "Secret copied to clipboard",
+      "download": "Download secret",
+      "acknowledge": "I've saved it"
     },
     "numberInput": {
       "increment": "Increase",

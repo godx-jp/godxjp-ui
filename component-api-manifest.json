@@ -310,6 +310,16 @@
           ]
         },
         {
+          "name": "challenge",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
           "name": "confirmLabel",
           "origin": "owned",
           "required": false,
@@ -399,6 +409,16 @@
           ]
         },
         {
+          "name": "stepUp",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => Promise<boolean> | boolean) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
           "name": "title",
           "origin": "owned",
           "required": true,
@@ -435,6 +455,16 @@
             false,
             true
           ],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
           ]
@@ -477,6 +507,16 @@
             false,
             true
           ],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
           ]
@@ -661,6 +701,16 @@
             false,
             true
           ],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
           ]
@@ -3651,6 +3701,189 @@
         }
       ]
     },
+    "CredentialReveal": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "acknowledgeLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "defaultRevealed",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "downloadable",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "downloadFileName",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "onAcknowledge",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "onCopy",
+          "origin": "owned",
+          "required": false,
+          "type": "((secret: string) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "onRevealedChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((revealed: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "revealed",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "secret",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "CredentialRevealTone | undefined",
+          "values": [
+            "warning",
+            "destructive",
+            "info"
+          ],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        },
+        {
+          "name": "warning",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/data-display.prop.ts"
+          ]
+        }
+      ]
+    },
     "DataState": {
       "group": "query",
       "props": [
@@ -4467,6 +4700,16 @@
           ]
         },
         {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
           "name": "type",
           "origin": "inherited-behavioral",
           "required": false,
@@ -4513,6 +4756,16 @@
           ]
         },
         {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
           "name": "type",
           "origin": "inherited-behavioral",
           "required": false,
@@ -4550,6 +4803,16 @@
             false,
             true
           ],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
           ]
@@ -4734,6 +4997,16 @@
             false,
             true
           ],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
+        },
+        {
+          "name": "name",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
           ]
@@ -12195,6 +12468,19 @@
           "required": false,
           "type": "OnClearFiltersProp | undefined",
           "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "sticky",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
           ]

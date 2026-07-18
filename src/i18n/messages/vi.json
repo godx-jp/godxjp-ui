@@ -118,7 +118,9 @@
     },
     "genericError": "Đã xảy ra lỗi. Vui lòng thử lại.",
     "alert": {
-      "dismiss": "Đóng"
+      "dismiss": "Đóng",
+      "verifying": "Đang xác minh…",
+      "stepUpFailed": "Xác thực lại thất bại. Vui lòng thử lại."
     }
   },
   "layout": {
@@ -175,6 +177,17 @@
     "passwordInput": {
       "show": "Hiện mật khẩu",
       "hide": "Ẩn mật khẩu"
+    },
+    "credentialReveal": {
+      "secretLabel": "Khóa bí mật",
+      "warning": "Khóa bí mật này chỉ hiển thị một lần. Hãy sao chép ngay — bạn sẽ không thể xem lại.",
+      "show": "Hiện khóa bí mật",
+      "hide": "Ẩn khóa bí mật",
+      "copy": "Sao chép khóa",
+      "copied": "Đã sao chép",
+      "copiedAnnounce": "Đã sao chép khóa bí mật vào bộ nhớ tạm",
+      "download": "Tải khóa bí mật",
+      "acknowledge": "Tôi đã lưu"
     },
     "numberInput": {
       "increment": "Tăng",

@@ -8,6 +8,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`AlertDialog` gains typed-`challenge` + `stepUp` re-auth for the DangerConfirm recipe (#193)** —
+  the destructive-confirm preset now covers high-stakes deletion end-to-end WITHOUT a new component
+  (it already owned type-to-confirm + destructive tone + `pending`). New `challenge` prop is the
+  semantic alias of `confirmPhrase` — the exact token to type (e.g. an org slug `acme-inc`) before
+  the confirm button arms; a typed challenge forces the destructive tone and a soft danger header
+  band. New `stepUp?: () => Promise<boolean> | boolean` runs an async passkey / 2FA re-auth gate
+  BEFORE `onConfirm` fires: the confirm button shows a "Verifying…" state while it runs, a resolved
+  `false` (or a throw) keeps the dialog open and announces the failure via a `role="alert"` region,
+  and `onConfirm` only runs after step-up resolves truthy. Mirrors DXS SCR-203 (org delete by slug)
+  and SCR-209 (refund with step-up); showcased in `docs/feedback/danger-confirm.tsx`. i18n keys
+  `feedback.alert.verifying` / `feedback.alert.stepUpFailed` added for en/vi/ja.
+- **Permission-matrix composition + `@godxjp/ui/lib/permission-grid` util (#194)** — a role ×
+  permission RBAC grid (sticky first column, ✓/— cells, two-role COMPARE mode, 差分のみ / diff-only
+  filter) requested by the DXS Platform Redesign. Per Gate 0 (`docs/COMPOSITION-VS-COMPONENT.md`) a
+  permission matrix is a **composition pattern**, not a framework component (it fails C2/C3/C7 — the
+  `Table` family + `Badge` + tokens already express it, and no consumer beyond RBAC admins pays its
+  bundle cost), so it ships as the real-screen showcase `docs/showcase/permission-matrix.tsx` built
+  from real primitives (sticky-column via the `Table` family exactly like `table-sticky-columns`;
+  role pickers = `Select`; diff toggle = `Switch`; cells = `Badge` with shape-encoded ✓/— + sr-only
+  state, never colour-only). The only genuinely reusable part — the grant/diff DATA logic — is added
+  to the library as the pure, render-neutral, tested util **`@godxjp/ui/lib/permission-grid`**
+  (`grantKey` / `hasGrant` / `rolesDifferOnPermission` / `visibleRows` / `countDifferences` /
+  `countGrants`) so every consumer shares one source of truth. No new `src/components/` entry.
+- **`CredentialReveal` — one-time secret display (#195)** — the GitHub/Stripe token-reveal pattern
+  as a real `@godxjp/ui/data-display` primitive so consumers stop hand-rolling it. Shows an issued
+  secret masked by default with a show/hide toggle (controlled boolean triad
+  `revealed`/`defaultRevealed`/`onRevealedChange`), a copy button that writes to the clipboard and
+  confirms via a `Check` swap + an `aria-live` announcement, an optional download-as-file button
+  (`downloadable`/`downloadFileName`), a localized caution banner (`tone` warning/destructive/info,
+  suppressible with `warning={null}`), and an optional `onAcknowledge` action to gate a paired
+  Dialog's close. Re-blurs automatically when the `secret` prop changes; masks with a fixed-length
+  dot string so the secret's real length never leaks. Composed only from real primitives
+  (`Alert` · `Button` · `Text`); every string + `aria-label` is routed through `t()`
+  (en/vi/ja). `size ∈ xs|sm|md|lg`. Ships a unit test and a `*.a11y.test.tsx` (0 axe violations).
+- **OrgSwitcher recipe — sidebar organization/tenant switcher (#196)** — the Slack/Linear
+  workspace-switcher requested by dxs-platform ships as a **composition pattern**, not a new
+  framework component (GATE 0 Framework-Component Test: FAILs C2/C3/C4/C6/C7 — it owns no new
+  behaviour, is fully expressible from existing primitives, and `Sidebar` already exposes the
+  `brand`/`product` + `onProductClick` slot to host it). The current-org card at the top of the
+  `Sidebar` opens a `Popover` containing a searchable `Command` list of organizations plus
+  "create organization" / "join by invite code" footer actions — built entirely from real
+  `@godxjp/ui` primitives (`Popover` · `Command` · `Button` · `Avatar` · `Text`). Added as a
+  copy-pasteable showcase page (`docs/showcase/org-switcher.tsx`, registered in the showcase
+  catalog) with behavioural (`org-switcher.test.tsx`) and axe (`org-switcher.a11y.test.tsx`)
+  tests. The active org carries a visible Check **and** an sr-only status word (never
+  colour-only); the trigger announces the current org; spacing is logical (RTL-safe).
+
+- **`Toolbar` (the FilterBar) gains an opt-in `sticky` list-filter strip + is now catalogued
+  (#197)** — the framework filter strip (`Toolbar` / `ToolbarGroup`, in
+  `src/components/navigation/filter-bar.tsx`) takes a new positive-boolean `sticky` prop that pins
+  the strip to the top of its scroll container while the list scrolls beneath it, closing the last
+  gap that pushed consumers to hand-roll their own bar (DXS list screens SCR-107/202/208). Following
+  Gate 0 (`docs/COMPOSITION-VS-COMPONENT.md`), a bespoke `<FilterBar filters=[…] chips …>` grab-bag
+  component was rejected — it is composable today (C3 fail) from `Toolbar` + `SearchInput` + `Select`
+  - `Badge` chips, so the pattern is documented as a real-screen recipe rather than a new component.
+    New quiet-by-default theme knobs `--filter-bar-sticky-offset` (park below a topbar) and the
+    role-mirror `--filter-bar-sticky-background` (`initial`, resolves to `--background`) let a service
+    retune the pinned strip without forking CSS. The previously-uncatalogued `Toolbar` now has a
+    `@godxjp/ui-mcp` entry (with the active-filter-chip recipe: a `Badge` label + a **sibling** icon
+    `Button`, never nested) so agents stop re-implementing it. New `StickyProp` vocabulary type,
+    registered.
 - **Framework-agnostic form-state adapter + first-class Inertia binding (#190)** — `FormRoot` and
   `FormFieldControl` are no longer hard-coupled to react-hook-form. `FormRoot` now accepts EITHER
   `form` (the built-in RHF + Zod client path, unchanged) OR `adapter` — a small `FormStateAdapter`

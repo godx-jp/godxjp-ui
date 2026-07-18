@@ -398,6 +398,11 @@ export const VOCABULARY_REGISTRY = {
     category: "data",
     description: "Any filter active flag",
   },
+  StickyProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description: "Pin the filter strip while the list scrolls",
+  },
 } as const;
 
 export type VocabularyPropName = keyof typeof VOCABULARY_REGISTRY;
@@ -808,6 +813,19 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: ["ColumnDefProp", "DensityProp", "SortStateProp", "SelectedIdsProp"],
   },
+  CredentialRevealProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "SizeProp",
+      "ToneProp",
+      "OnValueChangeProp",
+      "HandlerProp",
+      "ClassNameProp",
+      "IdProp",
+    ],
+  },
   ChartSeriesProp: {
     group: "data-display",
     file: "components/charts.prop.ts",
@@ -935,7 +953,17 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Destructive-dialog type-to-confirm friction phrase.",
       },
+      {
+        field: "challenge",
+        local: true,
+        reason: "Semantic alias of confirmPhrase — the typed challenge token (e.g. an org slug).",
+      },
       "HandlerProp",
+      {
+        field: "stepUp",
+        local: true,
+        reason: "Step-up re-auth (passkey/2FA) gate resolved before confirm fires.",
+      },
       {
         field: "keepOpenOnConfirm",
         local: true,
@@ -1023,7 +1051,13 @@ export const COMPONENT_PROP_REGISTRY = {
   ToolbarProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["OnClearFiltersProp", "HasActiveFiltersProp", "ClassNameProp", "ChildrenProp"],
+    vocabulary: [
+      "OnClearFiltersProp",
+      "HasActiveFiltersProp",
+      "StickyProp",
+      "ClassNameProp",
+      "ChildrenProp",
+    ],
   },
   ToolbarGroupProp: {
     group: "navigation",

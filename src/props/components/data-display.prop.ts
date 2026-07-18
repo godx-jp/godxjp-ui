@@ -18,6 +18,9 @@ import type {
   ChildrenProp,
   ToneProp,
   HeadingLevelProp,
+  SizeProp,
+  LabelProp,
+  IdProp,
 } from "../vocabulary";
 
 /** @see EmptyState */
@@ -85,6 +88,56 @@ export type BadgeProp = {
   icon?: React.ComponentType<{ className?: string }> | null;
   className?: ClassNameProp;
   children?: ChildrenProp;
+};
+
+/** @see CredentialReveal */
+/**
+ * Severity of the one-time-secret caution banner — a subset of the shared `ToneProp`
+ * vocabulary that carries a caution/danger/informational meaning (no `default`/`success`/
+ * `muted`/`neutral`, which would read as "safe"). Drives the composed `Alert` tone.
+ */
+export type CredentialRevealTone = Extract<ToneProp, "warning" | "destructive" | "info">;
+
+/** @see CredentialReveal */
+export type CredentialRevealProp = {
+  /** The one-time secret value shown masked by default and copied verbatim. */
+  secret: string;
+  /**
+   * Accessible name / caption for the secret (e.g. "API key", "デバイス資格情報"). When set it labels
+   * the secret region; when omitted a generic localized label is used.
+   */
+  label?: LabelProp;
+  /**
+   * Caution banner copy. Defaults to the localized "shown only once" warning. Pass `null` to
+   * suppress the banner entirely (e.g. when the surrounding Dialog already carries the caution).
+   */
+  warning?: React.ReactNode | null;
+  /** Controlled reveal state (masked ↔ shown). */
+  revealed?: boolean;
+  /** Uncontrolled initial reveal state. Default `false` (masked). */
+  defaultRevealed?: boolean;
+  /** Reveal-state change handler (fires on the show/hide toggle). */
+  onRevealedChange?: (revealed: boolean) => void;
+  /** Called after the secret is written to the clipboard. */
+  onCopy?: (secret: string) => void;
+  /**
+   * When provided, renders a confirm/acknowledge button that calls this — pair it with the
+   * surrounding Dialog's `onOpenChange(false)` so the secret re-blurs once dismissed.
+   */
+  onAcknowledge?: () => void;
+  /** Label for the acknowledge button. Defaults to a localized "I've saved it". */
+  acknowledgeLabel?: React.ReactNode;
+  /** Offer a download-as-file button next to copy. Default `false`. */
+  downloadable?: boolean;
+  /** Filename for the downloaded secret. Default `"credential.txt"`. */
+  downloadFileName?: string;
+  /** Control size tier for the action buttons. Default `md`. */
+  size?: SizeProp;
+  /** Caution banner severity. Default `warning`. */
+  tone?: CredentialRevealTone;
+  className?: ClassNameProp;
+  id?: IdProp;
+  "aria-label"?: string;
 };
 
 /** @see DataTable */
