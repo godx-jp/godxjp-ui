@@ -935,7 +935,17 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Destructive-dialog type-to-confirm friction phrase.",
       },
+      {
+        field: "challenge",
+        local: true,
+        reason: "Semantic alias of confirmPhrase — the typed challenge token (e.g. an org slug).",
+      },
       "HandlerProp",
+      {
+        field: "stepUp",
+        local: true,
+        reason: "Step-up re-auth (passkey/2FA) gate resolved before confirm fires.",
+      },
       {
         field: "keepOpenOnConfirm",
         local: true,

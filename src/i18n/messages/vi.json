@@ -118,7 +118,9 @@
     },
     "genericError": "Đã xảy ra lỗi. Vui lòng thử lại.",
     "alert": {
-      "dismiss": "Đóng"
+      "dismiss": "Đóng",
+      "verifying": "Đang xác minh…",
+      "stepUpFailed": "Xác thực lại thất bại. Vui lòng thử lại."
     }
   },
   "layout": {

@@ -118,7 +118,9 @@
     },
     "genericError": "Something went wrong. Please retry.",
     "alert": {
-      "dismiss": "Dismiss"
+      "dismiss": "Dismiss",
+      "verifying": "Verifying…",
+      "stepUpFailed": "Re-authentication failed. Please try again."
     }
   },
   "layout": {

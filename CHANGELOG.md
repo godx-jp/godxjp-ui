@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`AlertDialog` gains typed-`challenge` + `stepUp` re-auth for the DangerConfirm recipe (#193)** —
+  the destructive-confirm preset now covers high-stakes deletion end-to-end WITHOUT a new component
+  (it already owned type-to-confirm + destructive tone + `pending`). New `challenge` prop is the
+  semantic alias of `confirmPhrase` — the exact token to type (e.g. an org slug `acme-inc`) before
+  the confirm button arms; a typed challenge forces the destructive tone and a soft danger header
+  band. New `stepUp?: () => Promise<boolean> | boolean` runs an async passkey / 2FA re-auth gate
+  BEFORE `onConfirm` fires: the confirm button shows a "Verifying…" state while it runs, a resolved
+  `false` (or a throw) keeps the dialog open and announces the failure via a `role="alert"` region,
+  and `onConfirm` only runs after step-up resolves truthy. Mirrors DXS SCR-203 (org delete by slug)
+  and SCR-209 (refund with step-up); showcased in `docs/feedback/danger-confirm.tsx`. i18n keys
+  `feedback.alert.verifying` / `feedback.alert.stepUpFailed` added for en/vi/ja.
 - **Framework-agnostic form-state adapter + first-class Inertia binding (#190)** — `FormRoot` and
   `FormFieldControl` are no longer hard-coupled to react-hook-form. `FormRoot` now accepts EITHER
   `form` (the built-in RHF + Zod client path, unchanged) OR `adapter` — a small `FormStateAdapter`

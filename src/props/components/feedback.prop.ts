@@ -29,7 +29,11 @@ export type AlertDialogProp = {
   variant?: ConfirmVariantProp;
   /** Type-to-confirm friction — enables destructive flow (GitHub/Stripe style). */
   confirmPhrase?: string;
+  /** Semantic alias of `confirmPhrase` — the exact token to type (e.g. an org slug) to arm confirm. */
+  challenge?: string;
   onConfirm: HandlerProp;
+  /** Optional step-up re-auth gate (passkey/2FA); must resolve truthy before `onConfirm` fires. */
+  stepUp?: () => Promise<boolean> | boolean;
   keepOpenOnConfirm?: boolean;
   pending?: PendingProp;
 };

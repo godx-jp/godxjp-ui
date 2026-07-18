@@ -3742,9 +3742,21 @@ function CreateDialog() {
         description: "Optional type-to-confirm phrase to prevent accidental confirm.",
       },
       {
+        name: "challenge",
+        type: "string",
+        description:
+          "Semantic alias of `confirmPhrase` — the exact token to type (e.g. an org slug) before confirm arms.",
+      },
+      {
         name: "onConfirm",
         type: "() => Promise<void> | void",
         description: "Primary action handler.",
+      },
+      {
+        name: "stepUp",
+        type: "() => Promise<boolean> | boolean",
+        description:
+          "Optional step-up re-auth (passkey/2FA) gate; must resolve truthy before `onConfirm` fires. Returning false keeps the dialog open and announces failure.",
       },
       {
         name: "keepOpenOnConfirm",
@@ -3759,11 +3771,14 @@ function CreateDialog() {
     ],
     usage: [
       "Use `AlertDialog` for destructive/irreversible actions (delete, void, unpublish, archive, etc.).",
-      "Use `confirmPhrase` for high-friction operations (e.g. requiring `DELETE`) to reduce accidental confirmation.",
+      "Use `confirmPhrase`/`challenge` for high-friction operations (e.g. typing an org slug) to reduce accidental confirmation — both force the destructive tone.",
+      "Pass `stepUp` for a passkey/2FA re-auth gate that must resolve truthy before `onConfirm` runs (refunds, org deletion).",
       "Pass `keepOpenOnConfirm` when the confirm handler advances a multi-step flow and should not close immediately.",
     ],
     useCases: [
       "Dangerous delete or irreversible workflow confirmation that should block the background UI.",
+      "Organization/resource deletion gated behind typing the exact slug (`challenge`).",
+      "Refunds or privileged actions requiring step-up re-authentication before they run.",
       "Destructive batch operations that should remain modal and explicit until action is intentionally confirmed.",
     ],
     related: [
