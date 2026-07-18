@@ -24,7 +24,7 @@ const buttonVariants = cva("ui-button", {
     variant: {
       default: "ui-button--default bg-primary text-primary-foreground hover:bg-primary/90",
       destructive:
-        "ui-button--destructive bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive/20",
+        "ui-button--destructive bg-destructive text-destructive-foreground focus-visible:ring-destructive/20",
       outline:
         "ui-button--outline border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
       dashed:

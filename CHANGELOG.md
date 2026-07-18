@@ -121,6 +121,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Destructive `Button` now clears WCAG AA contrast with margin, on every surface (#199).** The dark
+  default sat at **4.54:1** — right on the AA floor — and its hover/active states drifted _lighter_
+  (52%→58%→64% L), cutting contrast against the light label further; downstream (`gino-cloud`) axe
+  measured a destructive action at 4.12:1. Two root causes fixed:
+  - **Hover/active were an alpha fill** (`hsl(var(--destructive) / 0.9)`), which composites with
+    whatever surface sits behind the button — a lighter `Card`/`AlertDialog` vs the page — so the
+    effective colour and its contrast drifted per context. They now read the **solid**
+    `--destructive-hover` / `--destructive-active` tokens (backdrop-independent), wired once in
+    `control.css` (the duplicate Tailwind `hover:bg-destructive/90` was removed from `Button`).
+  - **Dark fill palette retuned**: base 52%→48% L, on-fill text lifted to pure white, states now go
+    _darker_ (48%→43%→38%) — default is now **5.52:1**, hover/active higher, both themes ≥5.5:1.
+    Error TEXT on dark surfaces already uses `--text-error`, so this fill change does not touch it.
+  - Guarded by a deterministic token test (`destructive-contrast.test.ts`, both themes ×
+    default/hover/active) and `check:contrast` now audits the destructive Button + AlertDialog
+    actions in **dark** theme too (it previously only covered default-theme text — the gap that let
+    this slip).
 - **`DataTable` no longer nests a redundant horizontal-scroll region (narrow-width geometry).**
   `DataTable` already owns a keyboard-reachable horizontal scroller (`.ui-data-table-scroll`), but
   the inner `Table` primitive was wrapping the `<table>` in a SECOND `overflow-auto` +
