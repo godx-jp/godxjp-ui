@@ -41,11 +41,10 @@
    * --card-header-background-alpha: 0 for a quiet borderless-band header.
    * Default = 1px solid hsl(var(--card-border)) (resolved at the call site). */
   --card-header-border-bottom: initial;
-  --card-radius: var(--radius);
-  /* Resting elevation — quiet by default (rule #44): cards are flat (1px border, no shadow) in the
-   * reference-design baseline. A service that wants lifted cards sets this to an elevation token once,
-   * e.g. --card-shadow: var(--shadow-sm), and every Card picks up the shadow with no markup change. */
-  --card-shadow: 0 0 0 0 transparent;
+  --card-radius: var(--radius-xl);
+  /* The DXS hi-fi baseline uses a quiet 10px data surface with one shadow-sm
+   * elevation layer. Consumers can still flatten or lift cards through this knob. */
+  --card-shadow: var(--shadow-sm);
   /* Brand glow layer — invisible no-op at rest (rule #44). Paired AFTER --card-shadow in the
    * surface box-shadow so a service can wash every card with the global glow, e.g.
    * --card-glow: var(--shadow-glow), with no markup change. */

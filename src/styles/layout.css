@@ -414,7 +414,7 @@
    * touch targets remain readable while page chrome stops competing with primary actions. A
    * single Flex action group must wrap even when the consumer omitted `wrap`, because clipping
    * header actions makes functionality unreachable. */
-  @media (max-width: 639px) {
+  @media (max-width: 720px) {
     .ui-page-container {
       --space-page-active-x: var(--space-page-compact-x);
       --space-page-active-y: var(--space-page-compact-y);

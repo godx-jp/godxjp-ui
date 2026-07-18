@@ -74,7 +74,7 @@ describe("AppShell", () => {
     const trigger = screen.getByRole("button", { name: "Mở menu điều hướng" });
 
     expect(trigger).toBeInTheDocument();
-    expect(trigger).toHaveClass("hidden", "max-lg:inline-flex");
+    expect(trigger).toHaveClass("hidden", "max-[900px]:inline-flex");
   });
 
   it("opens a focus-trapped drawer and returns focus to the trigger on close", async () => {

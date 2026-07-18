@@ -11,11 +11,9 @@
       "sidebar main"
       "sidebar footer";
     grid-template-columns: 16rem minmax(0, 1fr);
-    grid-template-rows: 3.25rem minmax(0, 1fr) auto;
+    grid-template-rows: var(--app-shell-bar-height) minmax(0, 1fr) auto;
     height: 100vh;
-    background:
-      linear-gradient(180deg, hsl(var(--primary) / 0.035), transparent 14rem),
-      hsl(var(--background));
+    background: hsl(var(--background));
   }
 
   .app-root[data-collapsed="true"] {
@@ -46,10 +44,9 @@
     gap: var(--space-3);
     padding-inline: var(--space-4);
     border-bottom: 1px solid hsl(var(--border));
-    background: hsl(var(--background) / 0.92);
+    background: hsl(var(--card));
     /* Opt-in brand-chrome wash — invisible by default (--topbar-gradient: none). */
     background-image: var(--topbar-gradient);
-    backdrop-filter: blur(12px);
   }
 
   .app-main {
@@ -69,6 +66,7 @@
      * content can never extend the document scroll height (gh#104 — same shell-containment
      * family as the gh#103 body-stretch void). */
     contain: paint;
+    background-color: var(--app-shell-main-background);
   }
 
   .app-footer {
@@ -78,7 +76,8 @@
   }
 
   .app-main .ui-page-container {
-    max-width: none;
+    width: 100%;
+    max-width: var(--app-shell-page-max-width);
   }
 
   /*
@@ -92,9 +91,7 @@
     display: flex;
     min-height: 100dvh;
     flex-direction: column;
-    background:
-      linear-gradient(180deg, hsl(var(--primary) / 0.035), transparent 14rem),
-      hsl(var(--background));
+    background: hsl(var(--muted));
   }
 
   .ui-auth-shell-bar {
@@ -135,9 +132,7 @@
     display: flex;
     min-height: 100dvh;
     flex-direction: column;
-    background:
-      linear-gradient(180deg, hsl(var(--primary) / 0.035), transparent 14rem),
-      hsl(var(--background));
+    background: hsl(var(--muted));
   }
 
   .ui-centered-shell-bar {
@@ -149,10 +144,9 @@
     gap: var(--space-3);
     padding-inline: var(--centered-shell-bar-padding-x);
     border-bottom: 1px solid hsl(var(--border));
-    background: hsl(var(--background) / 0.92);
+    background: hsl(var(--card));
     /* Opt-in brand-chrome wash — shares the topbar hook, invisible by default (none). */
     background-image: var(--topbar-gradient);
-    backdrop-filter: blur(12px);
   }
 
   .ui-centered-shell-main {
@@ -235,7 +229,7 @@
     font-size: var(--font-size-base);
   }
 
-  @media (width < 64rem) {
+  @media (width <= 56.25rem) {
     .app-root,
     .app-root[data-collapsed="true"] {
       grid-template-areas:
@@ -265,7 +259,7 @@
   .sb-product,
   .sb-brand {
     display: flex;
-    min-height: 3.25rem;
+    min-height: var(--app-shell-bar-height);
     align-items: center;
     gap: var(--space-2);
     padding-inline: var(--space-4);
@@ -294,8 +288,8 @@
 
   .sb-logo-mark {
     display: grid;
-    width: 1.75rem;
-    height: 1.75rem;
+    width: var(--sidebar-brand-mark-size);
+    height: var(--sidebar-brand-mark-size);
     flex: 0 0 auto;
     place-items: center;
     border-radius: var(--radius);
@@ -344,14 +338,15 @@
   .sb-nav-scroll {
     flex: 1;
     overflow-y: auto;
-  }
-
-  .sb-section {
     padding: var(--space-3) var(--space-2);
   }
 
+  .sb-section {
+    padding: 0;
+  }
+
   .sb-section + .sb-section {
-    border-top: 1px solid hsl(var(--border));
+    margin-top: var(--space-4);
   }
 
   .sb-section-label {
@@ -373,18 +368,18 @@
   .sb-nav-item {
     display: flex;
     width: 100%;
-    height: var(--control-height);
+    height: var(--sidebar-nav-item-height);
     min-width: 0;
     align-items: center;
-    gap: var(--space-2);
-    padding-inline: var(--space-2);
+    gap: 0.625rem;
+    padding-inline: 0.625rem;
     border: 0;
     border-radius: calc(var(--radius) - 1px);
     background: transparent;
     color: hsl(var(--muted-foreground));
     cursor: pointer;
     font-family: inherit;
-    font-size: var(--font-size-base);
+    font-size: var(--sidebar-nav-item-font-size);
     text-align: start;
   }
 
@@ -737,7 +732,7 @@
 
   .tb-search {
     display: flex;
-    width: min(20rem, 30vw);
+    width: min(var(--topbar-search-max-width), 40vw);
     height: var(--control-height-sm);
     align-items: center;
     gap: var(--space-2);

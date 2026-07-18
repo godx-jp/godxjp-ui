@@ -11,7 +11,7 @@ import pkg from "../package.json";
 const require = createRequire(import.meta.url);
 const previewRoot = path.dirname(fileURLToPath(import.meta.url));
 const uiRoot = path.resolve(previewRoot, "..");
-const fontDirs = ["@fontsource/noto-sans-jp", "@fontsource/montserrat"].map((p) =>
+const fontDirs = ["@fontsource/m-plus-2", "@fontsource/noto-sans-jp"].map((p) =>
   path.dirname(require.resolve(`${p}/package.json`)),
 );
 

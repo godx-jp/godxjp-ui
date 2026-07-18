@@ -20,6 +20,16 @@
   --sidebar-gradient: none;
   --topbar-gradient: none;
 
+  /* DXS application-shell geometry. These defaults mirror the checked-in
+   * Admin/Console hi-fi source while remaining themeable by consumers. */
+  --app-shell-bar-height: 3rem;
+  --app-shell-page-max-width: 80rem;
+  --app-shell-main-background: hsl(var(--muted) / 0.4);
+  --sidebar-brand-mark-size: 1.375rem;
+  --sidebar-nav-item-height: 2rem;
+  --sidebar-nav-item-font-size: 0.8125rem;
+  --topbar-search-max-width: 26.25rem;
+
   /* Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override
    * never reaches it). A service re-tunes the active sub-item accent without forking CSS.
@@ -47,7 +57,7 @@
    * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height +
    * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A
    * service retunes the bar inset, block padding and each width tier without forking CSS. */
-  --centered-shell-bar-height: 3.25rem;
+  --centered-shell-bar-height: var(--app-shell-bar-height);
   --centered-shell-bar-padding-x: var(--space-4);
   --centered-shell-main-padding: var(--space-6);
   --centered-shell-footer-padding: var(--space-3) var(--space-6) var(--space-4);
