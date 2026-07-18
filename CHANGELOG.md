@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Toolbar` (the FilterBar) gains an opt-in `sticky` list-filter strip + is now catalogued
+  (#197)** — the framework filter strip (`Toolbar` / `ToolbarGroup`, in
+  `src/components/navigation/filter-bar.tsx`) takes a new positive-boolean `sticky` prop that pins
+  the strip to the top of its scroll container while the list scrolls beneath it, closing the last
+  gap that pushed consumers to hand-roll their own bar (DXS list screens SCR-107/202/208). Following
+  Gate 0 (`docs/COMPOSITION-VS-COMPONENT.md`), a bespoke `<FilterBar filters=[…] chips …>` grab-bag
+  component was rejected — it is composable today (C3 fail) from `Toolbar` + `SearchInput` + `Select`
+  - `Badge` chips, so the pattern is documented as a real-screen recipe rather than a new component.
+    New quiet-by-default theme knobs `--filter-bar-sticky-offset` (park below a topbar) and the
+    role-mirror `--filter-bar-sticky-background` (`initial`, resolves to `--background`) let a service
+    retune the pinned strip without forking CSS. The previously-uncatalogued `Toolbar` now has a
+    `@godxjp/ui-mcp` entry (with the active-filter-chip recipe: a `Badge` label + a **sibling** icon
+    `Button`, never nested) so agents stop re-implementing it. New `StickyProp` vocabulary type,
+    registered.
 - **Framework-agnostic form-state adapter + first-class Inertia binding (#190)** — `FormRoot` and
   `FormFieldControl` are no longer hard-coupled to react-hook-form. `FormRoot` now accepts EITHER
   `form` (the built-in RHF + Zod client path, unchanged) OR `adapter` — a small `FormStateAdapter`

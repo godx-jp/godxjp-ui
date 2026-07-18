@@ -44,6 +44,37 @@ describe("Toolbar", () => {
     );
     expect(screen.queryByRole("button")).toBeNull();
   });
+
+  it("is not pinned by default", () => {
+    renderWithUi(
+      <Toolbar>
+        <span />
+      </Toolbar>,
+    );
+    expect(screen.getByRole("toolbar")).not.toHaveClass("ui-toolbar-sticky");
+  });
+
+  it("adds the sticky class when sticky is set (#197)", () => {
+    renderWithUi(
+      <Toolbar sticky>
+        <span />
+      </Toolbar>,
+    );
+    const toolbar = screen.getByRole("toolbar");
+    expect(toolbar).toHaveClass("ui-toolbar");
+    expect(toolbar).toHaveClass("ui-toolbar-sticky");
+  });
+
+  it("keeps a caller className alongside the sticky class", () => {
+    renderWithUi(
+      <Toolbar sticky className="custom-strip">
+        <span />
+      </Toolbar>,
+    );
+    const toolbar = screen.getByRole("toolbar");
+    expect(toolbar).toHaveClass("ui-toolbar-sticky");
+    expect(toolbar).toHaveClass("custom-strip");
+  });
 });
 
 describe("ToolbarGroup", () => {
