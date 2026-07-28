@@ -31,6 +31,8 @@ export { AuthIdentity } from "./auth-identity";
 export type { AuthIdentityProps } from "./auth-identity";
 export { AuthFooter } from "./auth-footer";
 export type { AuthFooterProps } from "./auth-footer";
+export { AuthStack } from "./auth-stack";
+export type { AuthStackProps } from "./auth-stack";
 export { CenteredShell } from "./centered-shell";
 export type { CenteredShellProp, CenteredShellProps } from "./centered-shell";
 export type { CenteredShellWidthProp } from "../../props/vocabulary";

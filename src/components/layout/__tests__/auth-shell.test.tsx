@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { AuthShell } from "../auth-shell";
 import { AuthFooter } from "../auth-footer";
 import { AuthIdentity } from "../auth-identity";
+import { AuthStack } from "../auth-stack";
 import { renderWithUi } from "@/test/render";
 import { expectNoA11yViolations } from "@/test/a11y";
 
@@ -96,6 +97,10 @@ describe("AuthShell", () => {
     const { container, getByText } = renderWithUi(
       <AuthShell variant="canonical">
         <AuthIdentity title="GoDX ID" requester="Attendance is requesting sign in" />
+        <AuthStack>
+          <span>Passkey</span>
+          <span>Email</span>
+        </AuthStack>
         <AuthFooter product="console.godx.jp" terms="Terms" privacy="Privacy" locale="English" />
       </AuthShell>,
     );
@@ -103,5 +108,6 @@ describe("AuthShell", () => {
     expect(container.querySelector('[data-slot="auth-requester-icon"]')).toBeInTheDocument();
     expect(getByText("console.godx.jp")).toBeInTheDocument();
     expect(getByText("English")).toBeInTheDocument();
+    expect(container.querySelector('[data-slot="auth-stack"]')).toBeInTheDocument();
   });
 });

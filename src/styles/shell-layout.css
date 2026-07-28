@@ -174,6 +174,20 @@
     gap: var(--auth-legal-footer-gap);
   }
 
+  .ui-auth-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--auth-stack-gap);
+  }
+
+  .ui-auth-shell[data-variant="canonical"] .ui-form-field {
+    --field-label-gap: var(--auth-field-label-gap);
+  }
+
+  .ui-auth-shell[data-variant="canonical"] [data-slot="form-field-label"] [data-slot="label"] {
+    font-size: var(--auth-field-label-font-size);
+  }
+
   .ui-auth-shell[data-density="compact"] .ui-auth-shell-card {
     --card-space-inset: var(--auth-shell-compact-card-inset);
     --card-space-body-y: var(--auth-shell-card-padding-block-compact);
