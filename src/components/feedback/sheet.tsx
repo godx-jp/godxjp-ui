@@ -53,8 +53,8 @@ const sheetVariants = cva(
       // the Radix/shadcn Sheet convention. The physical classes below are intended.
       side: {
         /* rtl-ignore: named physical side */ right:
-          "inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-md",
-        /* rtl-ignore: named physical side */ left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-md",
+          "inset-y-0 right-0 h-full w-[min(var(--sheet-width-default),100%)] max-w-none border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
+        /* rtl-ignore: named physical side */ left: "inset-y-0 left-0 h-full w-[min(var(--sheet-width-default),100%)] max-w-none border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
         top: "inset-x-0 top-0 h-auto border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
         bottom:
           "inset-x-0 bottom-0 h-auto border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
@@ -74,7 +74,7 @@ export interface SheetContentProps
   /**
    * Desired panel size for side left/right (Ant Drawer `width`). Caps at the viewport — a small
    * screen still gets a full-width panel (`min(width, 100%)`), it is NOT a hard fixed width. Omit
-   * to keep the default `w-3/4 sm:max-w-md`.
+   * to keep the canonical drawer default from `--sheet-width-default`.
    */
   width?: WidthProp;
 }

@@ -21,9 +21,12 @@
     border-top: 1px solid hsl(var(--border));
   }
 
-  .ui-dialog-overlay,
-  [data-slot="sheet-overlay"] {
+  .ui-dialog-overlay {
     background-color: var(--overlay-background);
+  }
+
+  [data-slot="sheet-overlay"] {
+    background-color: var(--sheet-overlay-background);
   }
 
   .ui-dialog-overlay {

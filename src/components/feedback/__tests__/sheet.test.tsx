@@ -13,6 +13,21 @@ import {
 } from "../sheet";
 
 describe("Sheet", () => {
+  it("uses the canonical 360px drawer token and 20% sheet backdrop by default", () => {
+    renderWithUi(
+      <Sheet open>
+        <SheetContent>
+          <SheetHeader title="Canonical drawer" />
+        </SheetContent>
+      </Sheet>,
+    );
+
+    expect(screen.getByRole("dialog")).toHaveClass(
+      "w-[min(var(--sheet-width-default),100%)]",
+    );
+    expect(document.querySelector('[data-slot="sheet-overlay"]')).not.toBeNull();
+  });
+
   it("opens side panel from trigger", async () => {
     const user = userEvent.setup();
     renderWithUi(

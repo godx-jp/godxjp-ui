@@ -1,6 +1,8 @@
 /* Feedback primitive tokens: dialog, alert, empty state. */
 
 :root {
+  --sheet-width-default: 22.5rem;
+  --sheet-overlay-background: rgb(0 0 0 / 0.2);
   /* Dialog inset defaults to the shared global chrome tokens (override --space-chrome-* once for the
    * whole system, or --dialog-space-x/-y for dialogs only). */
   --dialog-space-x: var(--space-chrome-x);
