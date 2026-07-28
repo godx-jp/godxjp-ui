@@ -133,6 +133,63 @@
     color: hsl(var(--muted-foreground));
   }
 
+  .ui-two-factor-setup {
+    max-width: 27.5rem;
+  }
+
+  .ui-two-factor-setup-enrollment,
+  .ui-two-factor-setup-recovery {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-stack-md);
+  }
+
+  .ui-two-factor-setup-grid {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .ui-two-factor-setup-grid .ui-qr-code {
+    inline-size: 7.5rem;
+  }
+
+  .ui-two-factor-setup-fields,
+  .ui-two-factor-setup-code {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--space-stack-xs);
+  }
+
+  .ui-two-factor-setup-notice {
+    border: 1px dashed hsl(var(--border));
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .ui-two-factor-setup-recovery-codes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-md);
+    background: hsl(var(--muted) / 0.4);
+  }
+
+  @media (max-width: 479px) {
+    .ui-two-factor-setup-grid {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+
+    .ui-two-factor-setup-fields {
+      width: 100%;
+    }
+  }
+
   [data-slot="dialog-header"]:not([data-tone="default"]) [data-slot="dialog-description"] {
     color: hsl(var(--foreground));
   }

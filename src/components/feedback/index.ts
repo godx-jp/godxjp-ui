@@ -39,6 +39,8 @@ export {
   SheetTrigger,
 } from "./sheet";
 export type { SheetContentProps } from "./sheet";
+export { TwoFactorSetup } from "./two-factor-setup";
+export type { TwoFactorSetupLabels, TwoFactorSetupProps } from "./two-factor-setup";
 export { Toaster } from "./sonner";
 export { toast } from "./use-toast";
 export { Skeleton, SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonStat } from "./skeleton";
