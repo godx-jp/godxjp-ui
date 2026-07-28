@@ -121,6 +121,24 @@ export type AuthShellProp = {
   brand?: ReactNode;
   /** Footer slot pinned to the bottom (legal links, locale switch, support). */
   footer?: ReactNode;
+  /**
+   * Visual contract for the auth surface. `"canonical"` applies the shared DXS compact geometry
+   * (36px controls, 22.5rem card measure, and responsive page insets) through component tokens.
+   * Default `"default"` preserves the existing comfortable shell.
+   */
+  variant?: "default" | "canonical";
+  /**
+   * Vertical density scoped to auth-card descendants. The canonical variant defaults to
+   * `"compact"`; the default variant defaults to `"comfortable"`.
+   */
+  density?: "comfortable" | "compact";
+  className?: ClassNameProp;
+};
+
+/** @see AuthDivider */
+export type AuthDividerProp = {
+  /** Short localized conjunction rendered between the two separator rules (for example, "or"). */
+  label: string;
   className?: ClassNameProp;
 };
 

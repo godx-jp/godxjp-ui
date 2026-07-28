@@ -38,4 +38,9 @@
     height: var(--logo-size-lg);
     font-size: var(--logo-font-size-lg);
   }
+
+  .ui-logo[data-tone="success"] {
+    background: hsl(var(--logo-success-background));
+    color: hsl(var(--logo-success-foreground));
+  }
 }

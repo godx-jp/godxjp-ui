@@ -120,6 +120,40 @@
     color: hsl(var(--muted-foreground));
   }
 
+  .ui-auth-shell[data-variant="canonical"] {
+    --control-height: var(--auth-shell-canonical-control-height);
+    --auth-shell-card-max-width: var(--auth-shell-canonical-card-max-width);
+    --auth-shell-main-padding: var(--auth-shell-canonical-main-padding);
+  }
+
+  .ui-auth-shell[data-density="compact"] .ui-auth-shell-card {
+    --card-space-inset: var(--auth-shell-compact-card-inset);
+    --card-space-body-y: var(--auth-shell-compact-card-body-y);
+    --card-space-gap: var(--auth-shell-compact-card-gap);
+  }
+
+  .ui-auth-divider {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--auth-divider-gap);
+    color: hsl(var(--auth-divider-label-color));
+    font-size: var(--auth-divider-label-font-size);
+    line-height: 1;
+  }
+
+  .ui-auth-divider-rule {
+    height: 1px;
+    background: hsl(var(--auth-divider-color));
+  }
+
+  @media (max-width: 30rem) {
+    .ui-auth-shell[data-variant="canonical"] {
+      --auth-shell-main-padding: var(--auth-shell-canonical-main-padding-mobile);
+    }
+  }
+
   /*
    * CENTERED SHELL — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
    * account / self-service, standalone settings). A flex column over the same brand-wash surface as

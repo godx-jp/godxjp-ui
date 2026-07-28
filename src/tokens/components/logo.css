@@ -12,4 +12,8 @@
   --logo-font-size-sm: var(--font-size-xs);
   --logo-font-size-md: var(--font-size-sm);
   --logo-font-size-lg: var(--font-size-base);
+  /* Semantic identity fill is deliberately independent from --primary so a green brand mark never
+   * recolours primary buttons or links. Services can retune the role once for every Logo. */
+  --logo-success-background: var(--success);
+  --logo-success-foreground: var(--success-foreground);
 }

@@ -49,6 +49,39 @@ describe("AuthShell", () => {
     );
   });
 
+  it("exposes the canonical token preset and its compact default density", () => {
+    const { container } = renderWithUi(
+      <AuthShell variant="canonical">
+        <div>x</div>
+      </AuthShell>,
+    );
+    const shell = container.querySelector('[data-slot="auth-shell"]');
+    expect(shell).toHaveAttribute("data-variant", "canonical");
+    expect(shell).toHaveAttribute("data-density", "compact");
+  });
+
+  it("preserves comfortable defaults and accepts an explicit density override", () => {
+    const { container, rerender } = renderWithUi(
+      <AuthShell>
+        <div>x</div>
+      </AuthShell>,
+    );
+    expect(container.querySelector('[data-slot="auth-shell"]')).toHaveAttribute(
+      "data-density",
+      "comfortable",
+    );
+
+    rerender(
+      <AuthShell variant="canonical" density="comfortable">
+        <div>x</div>
+      </AuthShell>,
+    );
+    expect(container.querySelector('[data-slot="auth-shell"]')).toHaveAttribute(
+      "data-density",
+      "comfortable",
+    );
+  });
+
   it("has no axe violations", async () => {
     await expectNoA11yViolations(
       <AuthShell brand={<span>Brand</span>} footer={<span>© 2026</span>}>

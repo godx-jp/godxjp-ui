@@ -18,6 +18,8 @@ export { AppShell } from "./app-shell";
 export type { AppShellProps } from "./app-shell";
 export { AuthShell } from "./auth-shell";
 export type { AuthShellProp, AuthShellProps } from "./auth-shell";
+export { AuthDivider } from "./auth-divider";
+export type { AuthDividerProp, AuthDividerProps } from "./auth-divider";
 export { CenteredShell } from "./centered-shell";
 export type { CenteredShellProp, CenteredShellProps } from "./centered-shell";
 export type { CenteredShellWidthProp } from "../../props/vocabulary";

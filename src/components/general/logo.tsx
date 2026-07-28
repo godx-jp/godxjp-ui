@@ -3,6 +3,7 @@ import * as React from "react";
 import { cn } from "../../lib/utils";
 
 export type LogoSize = "xs" | "sm" | "md" | "lg";
+export type LogoTone = "primary" | "success";
 
 export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /**
@@ -12,6 +13,11 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
   glyph?: React.ReactNode;
   /** Box size tier (tokenised). Default `"md"` (1.75rem). */
   size?: LogoSize;
+  /**
+   * Semantic fill role. `"success"` provides the canonical green identity mark without changing
+   * the application's primary action colour. Default `"primary"` preserves existing behaviour.
+   */
+  tone?: LogoTone;
   /**
    * Accessible name for the mark. When set, the logo is exposed to assistive tech as an image with
    * this name; when omitted the mark is decorative (`aria-hidden`) — the correct default when a
@@ -30,11 +36,12 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
  * accessible name).
  */
 export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
-  ({ glyph = "g", size = "md", label, className, ...props }, ref) => (
+  ({ glyph = "g", size = "md", tone = "primary", label, className, ...props }, ref) => (
     <span
       ref={ref}
       data-slot="logo"
       data-size={size}
+      data-tone={tone}
       className={cn("ui-logo", className)}
       role={label ? "img" : undefined}
       aria-label={label}

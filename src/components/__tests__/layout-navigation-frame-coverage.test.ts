@@ -66,7 +66,7 @@ describe("layout and navigation owner frame contracts", () => {
       ],
     ],
     ["docs/layout/aspect-ratio.tsx", ["ratio"]],
-    ["docs/layout/auth-shell.tsx", ["brand", "footer"]],
+    ["docs/layout/auth-shell.tsx", ["brand", "footer", "variant"]],
     ["docs/layout/centered-shell.tsx", ["topbar", "footer", "width"]],
     [
       "docs/layout/page-container.tsx",

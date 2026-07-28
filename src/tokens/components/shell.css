@@ -53,6 +53,22 @@
   --auth-shell-main-padding: var(--space-6);
   --auth-shell-footer-padding: var(--space-3) var(--space-6) var(--space-4);
 
+  /* Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on
+   * AuthShell and may retune the product theme here rather than overriding individual fields. */
+  --auth-shell-canonical-control-height: 2.25rem;
+  --auth-shell-canonical-card-max-width: 22.5rem;
+  --auth-shell-canonical-main-padding: 1rem;
+  --auth-shell-canonical-main-padding-mobile: 0.9375rem;
+  --auth-shell-compact-card-inset: var(--space-4);
+  --auth-shell-compact-card-body-y: var(--space-3);
+  --auth-shell-compact-card-gap: var(--space-3);
+
+  /* Labelled auth divider geometry. */
+  --auth-divider-gap: var(--space-3);
+  --auth-divider-label-font-size: var(--font-size-sm);
+  --auth-divider-color: var(--border);
+  --auth-divider-label-color: var(--muted-foreground);
+
   /* CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
    * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height +
    * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A

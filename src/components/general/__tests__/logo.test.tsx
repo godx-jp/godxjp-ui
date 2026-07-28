@@ -23,6 +23,11 @@ describe("Logo", () => {
     expect(mark).toHaveAttribute("data-size", "lg");
   });
 
+  it("supports a semantic success mark without changing the primary role", () => {
+    const { container } = render(<Logo tone="success" />);
+    expect(container.querySelector('[data-slot="logo"]')).toHaveAttribute("data-tone", "success");
+  });
+
   // When the mark stands alone (no wordmark beside it) a label makes it a named image for AT.
   it("exposes an accessible image when label is provided", () => {
     render(<Logo label="CoreBooks" />);

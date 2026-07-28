@@ -36,6 +36,7 @@ export default function Demo() {
                 <Text weight="bold">godx Admin</Text>
               </Flex>
               <Logo glyph="神" label="Godx" size="lg" />
+              <Logo glyph="G" tone="success" label="Godx green identity mark" />
             </Flex>
           </CardContent>
         </Card>

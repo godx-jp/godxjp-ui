@@ -15,11 +15,24 @@ export type {
  * consumer's `.auth-shell-*` / `.ui-auth-scope` classes. Motion is delegated to `Reveal` (wrap the
  * card) so `prefers-reduced-motion` is honoured in one place.
  */
-export function AuthShell({ brand, footer, children, className }: AuthShellProp) {
+export function AuthShell({
+  brand,
+  footer,
+  children,
+  variant = "default",
+  density,
+  className,
+}: AuthShellProp) {
   const { t } = useTranslation();
+  const resolvedDensity = density ?? (variant === "canonical" ? "compact" : "comfortable");
 
   return (
-    <div data-slot="auth-shell" className={cn("ui-auth-shell", className)}>
+    <div
+      data-slot="auth-shell"
+      data-variant={variant}
+      data-density={resolvedDensity}
+      className={cn("ui-auth-shell", className)}
+    >
       {brand !== undefined && (
         <header className="ui-auth-shell-bar" aria-label={t("layout.authShell.brandLabel")}>
           {brand}

@@ -462,7 +462,25 @@ export const COMPONENT_PROP_REGISTRY = {
   AuthShellProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["ChildrenProp", "ClassNameProp"],
+    vocabulary: [
+      "ChildrenProp",
+      "ClassNameProp",
+      {
+        field: "variant",
+        local: true,
+        reason: "Auth-shell geometry preset; canonical selects the shared DXS token contract.",
+      },
+      {
+        field: "density",
+        local: true,
+        reason: "Auth-specific vertical-density scope for card descendants.",
+      },
+    ],
+  },
+  AuthDividerProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp", "ClassNameProp"],
   },
   CenteredShellProp: {
     group: "layout",

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Field, Input } from "@godxjp/ui/data-entry";
 import { Button, Logo, Reveal, Text } from "@godxjp/ui/general";
-import { AuthShell, Flex } from "@godxjp/ui/layout";
+import { AuthDivider, AuthShell, Flex } from "@godxjp/ui/layout";
 
 /**
  * AuthShell — centred auth/login page shell (brand bar + centred card + footer) over min-h-dvh at
@@ -11,6 +11,7 @@ import { AuthShell, Flex } from "@godxjp/ui/layout";
 export default function Demo() {
   return (
     <AuthShell
+      variant="canonical"
       brand={
         <Flex align="center" gap="sm">
           <Logo glyph="G" />
@@ -34,6 +35,7 @@ export default function Demo() {
               <Field id="auth-email" label="メールアドレス">
                 <Input id="auth-email" type="email" placeholder="you@example.com" />
               </Field>
+              <AuthDivider label="または" />
               <Field id="auth-password" label="パスワード">
                 <Input id="auth-password" type="password" placeholder="••••••••" />
               </Field>
