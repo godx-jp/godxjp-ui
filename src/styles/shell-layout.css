@@ -128,8 +128,8 @@
 
   .ui-auth-shell[data-density="compact"] .ui-auth-shell-card {
     --card-space-inset: var(--auth-shell-compact-card-inset);
-    --card-space-body-y: var(--auth-shell-compact-card-body-y);
-    --card-space-gap: var(--auth-shell-compact-card-gap);
+    --card-space-body-y: var(--auth-shell-card-padding-block-compact);
+    --card-space-gap: var(--auth-shell-card-gap-compact);
   }
 
   .ui-auth-divider {
@@ -137,15 +137,15 @@
     width: 100%;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    gap: var(--auth-divider-gap);
-    color: hsl(var(--auth-divider-label-color));
-    font-size: var(--auth-divider-label-font-size);
+    gap: var(--auth-shell-divider-gap);
+    color: hsl(var(--auth-shell-divider-label-color));
+    font-size: var(--auth-shell-divider-label-font-size);
     line-height: 1;
   }
 
   .ui-auth-divider-rule {
     height: 1px;
-    background: hsl(var(--auth-divider-color));
+    background: hsl(var(--auth-shell-divider-rule-color));
   }
 
   @media (max-width: 30rem) {

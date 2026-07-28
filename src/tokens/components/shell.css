@@ -60,14 +60,14 @@
   --auth-shell-canonical-main-padding: 1rem;
   --auth-shell-canonical-main-padding-mobile: 0.9375rem;
   --auth-shell-compact-card-inset: var(--space-4);
-  --auth-shell-compact-card-body-y: var(--space-3);
-  --auth-shell-compact-card-gap: var(--space-3);
+  --auth-shell-card-padding-block-compact: var(--space-3);
+  --auth-shell-card-gap-compact: var(--space-3);
 
   /* Labelled auth divider geometry. */
-  --auth-divider-gap: var(--space-3);
-  --auth-divider-label-font-size: var(--font-size-sm);
-  --auth-divider-color: var(--border);
-  --auth-divider-label-color: var(--muted-foreground);
+  --auth-shell-divider-gap: var(--space-3);
+  --auth-shell-divider-label-font-size: var(--font-size-sm);
+  --auth-shell-divider-rule-color: var(--border);
+  --auth-shell-divider-label-color: var(--muted-foreground);
 
   /* CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
    * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height +
