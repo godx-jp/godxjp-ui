@@ -79,14 +79,7 @@ export type AppProviderProp = {
 
 /** Which AppProvider setting the {@link AppSettingPicker} reads/writes. */
 export type AppSettingKind =
-  | "locale"
-  | "timezone"
-  | "dateFormat"
-  | "timeFormat"
-  | "theme"
-  | "brand"
-  | "density"
-  | "fontSize";
+  "locale" | "timezone" | "dateFormat" | "timeFormat" | "theme" | "brand" | "density" | "fontSize";
 
 /**
  * @see AppSettingPicker — one provider-bound Select for any single AppProvider setting.
@@ -100,7 +93,8 @@ export type AppSettingPickerProp = {
    * sized to the setting. `"icon"` renders a supported square, icon-only topbar trigger (e.g. a
    * globe language switcher): it structurally drops the value text and the picker's owned width —
    * no descendant-selector CSS overrides needed — while always keeping the localized `aria-label`,
-   * so an icon-only trigger can never ship without an accessible name.
+   * so an icon-only trigger can never ship without an accessible name. `"inline"` renders the
+   * selected value as a compact text trigger for legal/auth footers without a field-like box.
    *
    * Default is kind-dependent: `kind="locale"` defaults to `"icon"` (its product contract is the
    * compact language switcher); every other kind defaults to `"labeled"`. Override explicitly for

@@ -1,4 +1,23 @@
 @layer components {
+  .ui-app-setting-picker-inline {
+    width: auto;
+    min-height: 0;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    color: inherit;
+    font: inherit;
+  }
+
+  .ui-app-setting-picker-inline:hover,
+  .ui-app-setting-picker-inline[data-state="open"] {
+    background: transparent;
+    color: hsl(var(--foreground));
+    text-decoration: underline;
+  }
   [data-slot="tabs-list"] {
     max-inline-size: var(--tabs-list-max-inline-size);
     overflow-x: var(--tabs-list-overflow);

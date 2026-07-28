@@ -226,7 +226,7 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
     description:
-      "AppSettingPicker trigger presentation: labeled (icon + value) | icon (square icon-only topbar trigger)",
+      "AppSettingPicker trigger presentation: labeled (icon + value) | icon (square icon-only topbar trigger) | inline (compact text footer trigger)",
   },
   ShapeProp: {
     file: "vocabulary/interaction.prop.ts",
