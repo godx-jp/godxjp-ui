@@ -1,5 +1,8 @@
 export type {
   AppShellProp,
+  OrgSwitcherLabels,
+  OrgSwitcherOrganization,
+  OrgSwitcherProp,
   PageContainerProp,
   PageInsetProp,
   SidebarItemProp,

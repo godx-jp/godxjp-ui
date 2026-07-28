@@ -256,6 +256,126 @@
     display: contents;
   }
 
+  /*
+   * ORG SWITCHER — shared Console/Admin tenant control. Widths, insets and state geometry stay
+   * inside the library so a consumer never needs `w-64` or descendant-selector overrides.
+   */
+  .ui-org-switcher {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .ui-org-switcher[data-collapsed="true"] {
+    display: flex;
+    justify-content: center;
+  }
+
+  .ui-org-switcher-trigger {
+    width: 100%;
+    height: var(--org-switcher-trigger-height);
+    min-width: 0;
+    justify-content: flex-start;
+    padding-inline: var(--org-switcher-trigger-padding-x);
+  }
+
+  .ui-org-switcher-trigger[data-collapsed="true"] {
+    width: var(--org-switcher-trigger-height);
+    padding: 0;
+  }
+
+  .ui-org-switcher-avatar {
+    display: grid;
+    width: var(--org-switcher-avatar-size);
+    height: var(--org-switcher-avatar-size);
+    flex: 0 0 auto;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    font-size: var(--sidebar-avatar-font-size);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .ui-org-switcher-avatar > * {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ui-org-switcher-current,
+  .ui-org-switcher-option {
+    display: grid;
+    min-width: 0;
+    flex: 1;
+    text-align: start;
+  }
+
+  .ui-org-switcher-name,
+  .ui-org-switcher-meta {
+    overflow: hidden;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-org-switcher-name {
+    font-size: var(--sidebar-user-name-font-size);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-org-switcher-meta {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--sidebar-user-role-font-size);
+  }
+
+  .ui-org-switcher-chevron,
+  .ui-org-switcher-check,
+  .ui-org-switcher-spinner {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+  }
+
+  .ui-org-switcher-chevron {
+    margin-inline-start: auto;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-org-switcher-check {
+    margin-inline-start: auto;
+  }
+
+  .ui-org-switcher-popover {
+    width: min(var(--org-switcher-menu-width), calc(100vw - var(--space-4)));
+    padding: 0;
+  }
+
+  .ui-org-switcher-sheet {
+    max-height: var(--org-switcher-sheet-max-height);
+    border-start-start-radius: var(--radius-lg);
+    border-start-end-radius: var(--radius-lg);
+  }
+
+  .ui-org-switcher-command {
+    width: 100%;
+  }
+
+  .ui-org-switcher-state {
+    display: flex;
+    min-height: var(--org-switcher-state-min-height);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    color: hsl(var(--muted-foreground));
+    text-align: center;
+  }
+
+  .ui-org-switcher-spinner {
+    animation: spin 1s linear infinite;
+  }
+
   .sb-product,
   .sb-brand {
     display: flex;

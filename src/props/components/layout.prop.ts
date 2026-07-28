@@ -187,6 +187,49 @@ export type SidebarSectionProp = {
   items: SidebarItemProp[];
 };
 
+/** One selectable organization in the public {@link OrgSwitcher} contract. */
+export type OrgSwitcherOrganization = {
+  id: string;
+  name: string;
+  /** Secondary organization context, for example the member's role or tenant identifier. */
+  meta?: ReactNode;
+  /** Optional owned mark/avatar. When omitted, OrgSwitcher renders the first name character. */
+  avatar?: ReactNode;
+  disabled?: boolean;
+};
+
+/** Localized copy owned by the consuming product, never hard-coded by the component. */
+export type OrgSwitcherLabels = {
+  trigger: (organizationName: string) => string;
+  title: string;
+  search: string;
+  empty: string;
+  loading: string;
+  retry?: string;
+};
+
+/** @see OrgSwitcher */
+export type OrgSwitcherProp = {
+  organizations: readonly OrgSwitcherOrganization[];
+  value?: string;
+  onValueChange?: (value: string) => void;
+  collapsed?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
+  /** Error content replaces the list while preserving the trigger and retry affordance. */
+  error?: ReactNode;
+  onRetry?: () => void;
+  labels: OrgSwitcherLabels;
+  /**
+   * `"auto"` (default) uses a tokenized popover above 390px and a bottom Sheet at 390px and below.
+   * Explicit modes are useful for deterministic embedded surfaces and component tests.
+   */
+  responsive?: "auto" | "popover" | "sheet";
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  className?: ClassNameProp;
+};
+
 /** @see Sidebar */
 export type SidebarProp = {
   /** Accessible navigation landmark name; make it unique when multiple sidebars share a document. */
