@@ -25,6 +25,17 @@ export {
   StatCard,
 } from "./card";
 export type { StatCardProps, CardBarProps } from "./card";
+export {
+  ServiceCatalogCta,
+  ServiceLauncherCard,
+  ServiceLauncherCardSkeleton,
+} from "./service-launcher-card";
+export type {
+  ServiceCatalogCtaProps,
+  ServiceLauncherCardProps,
+  ServiceLauncherCardSkeletonProps,
+  ServiceLauncherStatusTone,
+} from "./service-launcher-card";
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 export { Descriptions } from "./descriptions";
 export { DataTable, flexRender } from "./data-table";

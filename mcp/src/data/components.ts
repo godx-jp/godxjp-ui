@@ -1713,6 +1713,104 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
     rules: [],
   },
   {
+    name: "ServiceLauncherCard",
+    group: "data-display",
+    tagline:
+      "Token-owned downstream-service launcher tile with semantic icon, status, metadata, action, disabled reason, matching skeleton, and companion catalog CTA.",
+    props: [
+      {
+        name: "icon",
+        type: "LucideIcon",
+        required: true,
+        description: "Decorative service glyph rendered in the canonical semantic icon surface.",
+      },
+      {
+        name: "title",
+        type: "ReactNode",
+        required: true,
+        description: "Real downstream service display name.",
+      },
+      {
+        name: "titleLevel",
+        type: "1 | 2 | 3 | 4",
+        defaultValue: "2",
+        description: "Semantic heading level; visual styling remains token-owned.",
+      },
+      {
+        name: "statusLabel",
+        type: "ReactNode",
+        description: "Consumer-provided access/readiness label. The component never infers status.",
+      },
+      {
+        name: "statusTone",
+        type: '"success" | "warning" | "destructive" | "info" | "neutral" | "muted"',
+        defaultValue: '"neutral"',
+        description: "Semantic tone corresponding to the real statusLabel.",
+      },
+      {
+        name: "description",
+        type: "ReactNode",
+        description: "Localized service summary.",
+      },
+      {
+        name: "metadata",
+        type: "ReactNode",
+        description: "Compact mono metadata such as real hostname and subscribed plan.",
+      },
+      {
+        name: "action",
+        type: "ReactNode",
+        required: true,
+        description: "Real launch/detail action, normally a Button or Button asChild link.",
+      },
+      {
+        name: "disabledReason",
+        type: "ReactNode",
+        description: "Explicit reason accompanying a disabled/unavailable action.",
+      },
+    ],
+    usage: [
+      "DO provide status, hostname, plan, access state and action from the product's real API contract. ServiceLauncherCard deliberately performs no entitlement or URL inference.",
+      "DO render ServiceLauncherCard directly inside ResponsiveGrid columns={3}; it already owns its Card shell and canonical internal rhythm.",
+      "DO replace it with ServiceLauncherCardSkeleton while loading. Use ServiceCatalogCta as the peer tile only when a real catalog/add route exists.",
+      "DON'T recreate launcher geometry with page-local CSS, utility padding, or a hand-built Card hierarchy.",
+      "DON'T show LIVE, a hostname, subscribed plan, or launch action merely because a service is active in the global catalog.",
+    ],
+    useCases: [
+      "Organization console launcher showing subscribed downstream applications with a real SSO launch action.",
+      "Service picker where unavailable apps remain visible with a disabled action and permission/subscription reason.",
+      "Responsive 3→2→1 launcher grid with a final ServiceCatalogCta tile linked to an existing catalog route.",
+    ],
+    related: [
+      "ServiceLauncherCardSkeleton — shape-matched initial loading placeholder.",
+      "ServiceCatalogCta — dashed companion tile for an existing catalog/add route.",
+      "ResponsiveGrid — owns the 3→2→1 layout around launcher tiles.",
+      "Card — general-purpose surface; use ServiceLauncherCard instead for this established composite.",
+    ],
+    example: `import { Clock } from "lucide-react";
+import { ServiceCatalogCta, ServiceLauncherCard } from "@godxjp/ui/data-display";
+import { Button } from "@godxjp/ui/general";
+import { ResponsiveGrid } from "@godxjp/ui/layout";
+
+<ResponsiveGrid columns={3}>
+  <ServiceLauncherCard
+    icon={Clock}
+    title={service.name}
+    statusLabel={service.accessLabel}
+    statusTone={service.accessTone}
+    description={service.description}
+    metadata={service.hostnameAndPlan}
+    action={<Button fullWidth>{t("launch")}</Button>}
+  />
+  <ServiceCatalogCta
+    title={t("addFromCatalog")}
+    action={<Button variant="outline">{t("viewCatalog")}</Button>}
+  />
+</ResponsiveGrid>`,
+    storyPath: "data-display/ServiceLauncherCard.stories.tsx",
+    rules: [40],
+  },
+  {
     name: "Badge",
     group: "data-display",
     tagline:
