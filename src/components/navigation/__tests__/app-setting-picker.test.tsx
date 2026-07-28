@@ -5,6 +5,18 @@ import { AppSettingPicker } from "../app-setting-picker";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 
 describe("AppSettingPicker", () => {
+  it("renders the inline appearance without field-like trigger chrome", () => {
+    renderWithUi(
+      <AppSettingPicker kind="locale" appearance="inline" value="en" onValueChange={() => {}} />,
+    );
+    expect(screen.getByRole("combobox")).toHaveClass(
+      "ui-app-setting-picker-inline",
+      "border-0",
+      "bg-transparent",
+      "shadow-none",
+    );
+  });
+
   it.each([
     ["timezone", "Asia/Tokyo"],
     ["dateFormat", "iso"],

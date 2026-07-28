@@ -173,7 +173,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
           showIndicator={!iconOnly && !inline}
           className={cn(
             inline
-              ? "ui-app-setting-picker-inline"
+              ? "ui-app-setting-picker-inline h-auto min-h-0 w-auto rounded-none border-0 bg-transparent p-0 shadow-none"
               : iconOnly
                 ? // Structurally icon-only: drop the owned width + value spacing and square the box to
                   // the density-aware --control-height tap target, centring the icon.
