@@ -13,6 +13,22 @@ import {
 } from "../dialog";
 
 describe("Dialog wrappers", () => {
+  it("uses the shared dialog surface and overlay slots for token-owned responsive geometry", () => {
+    renderWithUi(
+      <Dialog open>
+        <DialogContent>
+          <DialogTitle>Canonical form</DialogTitle>
+        </DialogContent>
+      </Dialog>,
+    );
+
+    expect(screen.getByRole("dialog")).toHaveAttribute("data-slot", "dialog-content");
+    expect(document.querySelector(".ui-dialog-overlay")).toHaveAttribute(
+      "data-slot",
+      "dialog-overlay",
+    );
+  });
+
   it("DialogClose dismisses the dialog", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
