@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { AuthShell } from "../auth-shell";
+import { AuthFooter } from "../auth-footer";
+import { AuthIdentity } from "../auth-identity";
 import { renderWithUi } from "@/test/render";
 import { expectNoA11yViolations } from "@/test/a11y";
 
@@ -88,5 +90,18 @@ describe("AuthShell", () => {
         <div>Form</div>
       </AuthShell>,
     );
+  });
+
+  it("renders canonical identity requester and legal footer composites", () => {
+    const { container, getByText } = renderWithUi(
+      <AuthShell variant="canonical">
+        <AuthIdentity title="GoDX ID" requester="Attendance is requesting sign in" />
+        <AuthFooter product="console.godx.jp" terms="Terms" privacy="Privacy" locale="English" />
+      </AuthShell>,
+    );
+    expect(container.querySelector('[data-slot="logo"][data-mark="godx"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-slot="auth-requester-icon"]')).toBeInTheDocument();
+    expect(getByText("console.godx.jp")).toBeInTheDocument();
+    expect(getByText("English")).toBeInTheDocument();
   });
 });
