@@ -196,7 +196,8 @@
   }
 
   /* MasterDetail owns both its container breakpoint and its tracks. The selectable master region
-   * leads at every width; below 48rem the detail stacks immediately after it. */
+   * leads at every width; below 40rem the detail stacks immediately after it. This preserves the
+   * canonical split in a 1024px app shell while still stacking in the 390px mobile shell. */
   .ui-master-detail-scope {
     container: master-detail / inline-size;
   }
@@ -212,7 +213,7 @@
     min-width: 0;
   }
 
-  @container master-detail (min-width: 48rem) {
+  @container master-detail (min-width: 40rem) {
     .ui-master-detail[data-rail-width="compact"] {
       grid-template-columns: var(--master-detail-rail-compact) minmax(0, 1fr);
     }

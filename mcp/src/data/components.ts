@@ -876,7 +876,7 @@ import { PanelLeftClose, Search } from "lucide-react";
       "DO choose `compact` for the canonical 300px rail and `standard` for 320px. Never reproduce these tracks with consumer CSS.",
       "DO provide `masterLabel` and `detailLabel` when the surrounding headings do not already identify both regions.",
       "DON'T use ResponsiveGrid for master-detail hierarchy; its equal tracks cannot represent this composition.",
-      "The component stacks master then detail below its own 48rem container breakpoint, so it works consistently at 1440, 1024, and 390 without viewport-specific consumer code.",
+      "The component stacks master then detail below its own 40rem container breakpoint, preserving the split in a 1024px app shell while stacking at 390px without viewport-specific consumer code.",
     ],
     useCases: [
       "Organization service access: services in the compact leading rail and selected service roles in the detail surface.",
