@@ -156,7 +156,7 @@
     gap: var(--space-4);
   }
 
-  .ui-two-factor-setup-grid .ui-qr-code {
+  .ui-two-factor-setup-grid .ui-qr-code[data-size] {
     inline-size: 7.5rem;
   }
 
