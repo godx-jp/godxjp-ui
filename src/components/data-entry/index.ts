@@ -72,6 +72,13 @@ export {
   CommandItem,
   CommandList,
 } from "./command";
+export { CommandPalette } from "./command-palette";
+export type {
+  CommandPaletteGroup,
+  CommandPaletteItem,
+  CommandPaletteLabels,
+  CommandPaletteProps,
+} from "./command-palette";
 export { PasswordInput } from "./password-input";
 export type { PasswordInputProps } from "./password-input";
 export { PasswordStrength, usePasswordStrength } from "./password-strength";

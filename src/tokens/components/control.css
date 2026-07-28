@@ -75,6 +75,12 @@
   --command-group-padding: var(--space-1);
   --command-item-padding-y: var(--space-2);
   --command-item-padding-x: var(--space-2);
+  --command-palette-width: 35rem;
+  --command-palette-top: var(--space-24);
+  --command-palette-viewport-gutter: var(--space-3);
+  --command-palette-hint-padding-y: var(--space-2);
+  --command-palette-hint-padding-x: var(--space-4);
+  --command-palette-hint-gap: var(--space-4);
   --search-input-edge-inset: var(--space-3);
   --search-input-start-padding: calc(
     var(--search-input-edge-inset) + var(--control-icon-size) + var(--control-gap)

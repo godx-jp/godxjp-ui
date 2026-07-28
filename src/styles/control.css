@@ -585,6 +585,52 @@
     opacity: 0.5;
   }
 
+  .ui-command-palette[data-slot="dialog-content"] {
+    top: var(--command-palette-top);
+    width: min(
+      var(--command-palette-width),
+      calc(100vw - (2 * var(--command-palette-viewport-gutter)))
+    );
+    max-width: none;
+    transform: translateX(-50%);
+    gap: 0;
+    padding: 0;
+    background: hsl(var(--popover));
+  }
+
+  .ui-command-palette-trigger {
+    min-width: 0;
+  }
+
+  .ui-command-palette-label {
+    min-width: 0;
+  }
+
+  .ui-command-palette-meta {
+    margin-inline-start: auto;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-xs);
+  }
+
+  .ui-command-palette-state {
+    padding-block: var(--space-6);
+    padding-inline: var(--space-4);
+    text-align: center;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--font-size-base);
+  }
+
+  .ui-command-palette-hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--command-palette-hint-gap);
+    border-top: 1px solid hsl(var(--border));
+    padding: var(--command-palette-hint-padding-y) var(--command-palette-hint-padding-x);
+    color: hsl(var(--muted-foreground));
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+  }
+
   .ui-search-input {
     position: relative;
   }
