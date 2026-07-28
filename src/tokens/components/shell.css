@@ -84,6 +84,7 @@
   --auth-stack-gap: var(--space-3);
   --auth-field-label-gap: var(--space-1);
   --auth-field-label-font-size: var(--font-size-xs);
+  --auth-field-label-line-height: 1.25;
 
   /* CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
    * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height +

@@ -186,6 +186,7 @@
 
   .ui-auth-shell[data-variant="canonical"] [data-slot="form-field-label"] [data-slot="label"] {
     font-size: var(--auth-field-label-font-size);
+    line-height: var(--auth-field-label-line-height);
   }
 
   .ui-auth-shell[data-density="compact"] .ui-auth-shell-card {
