@@ -636,6 +636,12 @@ export function MyPage() {
           "Slot pinned to the bottom of the sidebar below the scrollable nav area. Commonly used for user identity, online status, or version info.",
       },
       {
+        name: "renderItem",
+        type: "(item: SidebarItemData, rowProps: SidebarRenderItemProp) => ReactNode",
+        description:
+          "Framework-router escape hatch. Return one interactive element and spread rowProps onto it so canonical row geometry, active state, current-page semantics, and disabled state reach the rendered DOM node.",
+      },
+      {
         name: "aria-label",
         type: "string",
         description:
@@ -647,7 +653,7 @@ export function MyPage() {
       "DO: Add content: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The parent item's icon is required even for groups. The group auto-opens and highlights when activeId matches any descendant.",
       "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",
       "DO: Use the footer prop for user info or status — it is pinned below the scroll area and does not scroll away.",
-      "DO: Render a leaf as a real link with `item.href` (a real <a>, so right-click / open-in-new-tab work) or, for a framework router <Link>, return that single element from `renderItem` — the Sidebar merges the row onto it via Slot so the link IS the row and the ONLY interactive element (no nested <button>). Never put a <button>/<a> inside a default row.",
+      "DO: Render a leaf as a real link with `item.href` (a real <a>, so right-click / open-in-new-tab work) or, for a framework router <Link>, return that single element from `renderItem` and spread its second `rowProps` argument onto the Link. The link IS the row and the ONLY interactive element (no nested <button>). Never put a <button>/<a> inside a default row.",
       "DO: Rely on route-synchronized group expansion — a group OPENS automatically whenever `activeId` moves to one of its children (e.g. after a deep-link navigation), revealing the newly-active child; users can still collapse/expand manually.",
       "DON'T: Manage collapse state inside the Sidebar — it is stateless. Hoist the boolean to your shell/page state and pass it down via both AppShell.sidebarCollapsed and Sidebar.collapsed.",
       "DON'T: Nest children more than one level deep — only top-level items can have children; grandchild items are not rendered.",

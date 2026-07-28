@@ -28,6 +28,14 @@
   --sidebar-brand-mark-size: 1.375rem;
   --sidebar-nav-item-height: 2rem;
   --sidebar-nav-item-font-size: 0.8125rem;
+  --sidebar-nav-icon-size: 1rem;
+  --sidebar-nav-item-gap: 0.625rem;
+  --sidebar-nav-item-padding-x: 0.625rem;
+  --sidebar-nav-gap: 2px;
+  --sidebar-nav-scroll-padding: var(--space-3) var(--space-2);
+  --sidebar-section-gap: var(--space-4);
+  --sidebar-section-label-padding-x: var(--space-2);
+  --sidebar-section-label-padding-bottom: var(--space-1);
   --topbar-search-max-width: 26.25rem;
   --org-switcher-trigger-height: 2.75rem;
   --org-switcher-trigger-padding-x: var(--space-2);

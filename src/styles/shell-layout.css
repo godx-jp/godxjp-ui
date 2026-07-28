@@ -6,6 +6,9 @@
 @layer components {
   .app-root {
     display: grid;
+    width: 100%;
+    max-width: 100vw;
+    min-width: 0;
     grid-template-areas:
       "sidebar topbar"
       "sidebar main"
@@ -23,7 +26,9 @@
   .app-sidebar {
     grid-area: sidebar;
     display: flex;
+    height: 100%;
     min-width: 0;
+    min-height: 0;
     flex-direction: column;
     overflow: hidden;
     border-inline-end: 1px solid hsl(var(--border));
@@ -40,6 +45,7 @@
      * set to baseline; --scaling:1 alone is not enough — see foundation.css). */
     display: flex;
     min-width: 0;
+    overflow: hidden;
     align-items: center;
     gap: var(--space-3);
     padding-inline: var(--space-4);
@@ -476,7 +482,9 @@
   .sb-product,
   .sb-brand {
     display: flex;
+    min-width: 0;
     min-height: var(--app-shell-bar-height);
+    flex: 0 0 auto;
     align-items: center;
     gap: var(--space-2);
     padding-inline: var(--space-4);
@@ -554,8 +562,10 @@
 
   .sb-nav-scroll {
     flex: 1;
+    min-height: 0;
+    overscroll-behavior: contain;
     overflow-y: auto;
-    padding: var(--space-3) var(--space-2);
+    padding: var(--sidebar-nav-scroll-padding);
   }
 
   .sb-section {
@@ -563,11 +573,12 @@
   }
 
   .sb-section + .sb-section {
-    margin-top: var(--space-4);
+    margin-top: var(--sidebar-section-gap);
   }
 
   .sb-section-label {
-    padding: 0 var(--space-2) var(--space-1);
+    padding: 0 var(--sidebar-section-label-padding-x)
+      var(--sidebar-section-label-padding-bottom);
     color: hsl(var(--muted-foreground));
     font-size: var(--sidebar-section-label-font-size);
     font-weight: 700;
@@ -579,7 +590,7 @@
   .sb-nav {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--sidebar-nav-gap);
   }
 
   .sb-nav-item {
@@ -587,9 +598,10 @@
     width: 100%;
     height: var(--sidebar-nav-item-height);
     min-width: 0;
+    flex: 0 0 auto;
     align-items: center;
-    gap: 0.625rem;
-    padding-inline: 0.625rem;
+    gap: var(--sidebar-nav-item-gap);
+    padding-inline: var(--sidebar-nav-item-padding-x);
     border: 0;
     border-radius: calc(var(--radius) - 1px);
     background: transparent;
@@ -597,6 +609,7 @@
     cursor: pointer;
     font-family: inherit;
     font-size: var(--sidebar-nav-item-font-size);
+    line-height: 1;
     text-align: start;
   }
 
@@ -616,15 +629,18 @@
 
   .sb-icon {
     display: grid;
-    width: 1rem;
-    height: 1rem;
+    width: var(--sidebar-nav-icon-size);
+    height: var(--sidebar-nav-icon-size);
     flex: 0 0 auto;
+    line-height: 0;
     place-items: center;
   }
 
   .sb-icon svg {
-    width: 1rem;
-    height: 1rem;
+    display: block;
+    width: var(--sidebar-nav-icon-size);
+    height: var(--sidebar-nav-icon-size);
+    flex: 0 0 auto;
   }
 
   .sb-label {
@@ -860,9 +876,12 @@
    * The library owns ONLY this positioning; every control inside is the consumer's to compose. */
   .ui-topbar {
     display: flex;
-    width: 100%;
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0%;
     align-items: center;
     gap: var(--space-2);
+    overflow: hidden;
   }
   .ui-topbar-start,
   .ui-topbar-center,
@@ -873,10 +892,13 @@
     gap: var(--space-2);
   }
   .ui-topbar-center {
-    flex: 1 1 auto;
+    flex: 1 1 0%;
     justify-content: center;
+    overflow: hidden;
   }
   .ui-topbar-end {
+    max-width: 100%;
+    flex: 0 1 auto;
     margin-inline-start: auto;
   }
 

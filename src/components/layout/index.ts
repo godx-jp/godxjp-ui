@@ -44,6 +44,7 @@ export type {
   SidebarProductProp as SidebarProduct,
   SidebarProp,
   SidebarProp as SidebarProps,
+  SidebarRenderItemProp,
   SidebarSectionProp,
 } from "../../props/components/layout.prop";
 export { Topbar } from "./topbar";
