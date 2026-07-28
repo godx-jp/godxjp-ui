@@ -36,6 +36,7 @@ describe("TwoFactorSetup", () => {
     );
 
     expect(screen.getByRole("dialog")).toHaveClass("ui-two-factor-setup");
+    expect(document.querySelector(".ui-two-factor-setup-overlay")).not.toBeNull();
     expect(screen.getByLabelText(labels.qrLabel)).toBeInTheDocument();
     await user.type(screen.getByLabelText(labels.codeLabel), "12a34567");
     expect(onCodeChange).toHaveBeenLastCalledWith("7");

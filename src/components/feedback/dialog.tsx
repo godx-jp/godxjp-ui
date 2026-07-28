@@ -57,13 +57,25 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     showClose?: boolean;
     showCloseButton?: boolean;
+    overlayClassName?: string;
   }
->(({ className, children, showClose, showCloseButton: showCloseButtonProp, ...props }, ref) => {
+>(
+  (
+    {
+      className,
+      children,
+      showClose,
+      showCloseButton: showCloseButtonProp,
+      overlayClassName,
+      ...props
+    },
+    ref,
+  ) => {
   const { t } = useTranslation();
   const showCloseButton = showCloseButtonProp ?? showClose ?? true;
   return (
     <DialogPortal>
-      <DialogOverlay />
+      <DialogOverlay className={overlayClassName} />
       <DialogPrimitive.Content
         ref={ref}
         data-slot="dialog-content"
@@ -86,7 +98,8 @@ const DialogContent = React.forwardRef<
       </DialogPrimitive.Content>
     </DialogPortal>
   );
-});
+  },
+);
 DialogContent.displayName = "DialogContent";
 
 interface DialogHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {

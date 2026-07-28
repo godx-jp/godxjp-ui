@@ -63,7 +63,11 @@ export function TwoFactorSetup({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="ui-two-factor-setup" showCloseButton={!pending}>
+      <DialogContent
+        className="ui-two-factor-setup"
+        overlayClassName="ui-two-factor-setup-overlay"
+        showCloseButton={!pending}
+      >
         <DialogHeader>
           <DialogTitle>{labels.title}</DialogTitle>
           <DialogDescription>{labels.description}</DialogDescription>
