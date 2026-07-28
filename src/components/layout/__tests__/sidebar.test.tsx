@@ -73,7 +73,11 @@ describe("Sidebar submenu", () => {
         activeId="settings"
         sections={sections}
         onSelect={() => undefined}
-        renderItem={(item) => <a href={`/${item.id}`}>Custom {item.label}</a>}
+        renderItem={(item, rowProps) => (
+          <a href={`/${item.id}`} {...rowProps}>
+            Custom {item.label}
+          </a>
+        )}
       />,
     );
 

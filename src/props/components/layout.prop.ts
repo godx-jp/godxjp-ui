@@ -215,6 +215,14 @@ export type SidebarItemProp = {
 /** @see Sidebar */
 export type SidebarItemData = SidebarItemProp;
 
+/** Row state supplied to Sidebar.renderItem so framework router links receive canonical geometry. */
+export type SidebarRenderItemProp = {
+  className: string;
+  "data-active"?: "true";
+  "aria-current"?: "page";
+  "aria-disabled"?: true;
+};
+
 /** @see Sidebar */
 export type SidebarSectionProp = {
   label?: string;
@@ -282,7 +290,7 @@ export type SidebarProp = {
    * via Slot (so it is the row and the sole interactive element — no nested `<button>`). Any
    * secondary affix (a star, a count) must be a non-interactive descendant of that element.
    */
-  renderItem?: (item: SidebarItemData) => ReactNode;
+  renderItem?: (item: SidebarItemData, rowProps: SidebarRenderItemProp) => ReactNode;
   footer?: ReactNode;
   /**
    * Override the nav landmark's accessible name. Defaults to a localized "Main navigation".

@@ -11,6 +11,7 @@ import type {
   SidebarItemData,
   SidebarItemProp,
   SidebarProp,
+  SidebarRenderItemProp,
 } from "../../props/components/layout.prop";
 
 export type {
@@ -18,9 +19,10 @@ export type {
   SidebarProductProp as SidebarProduct,
   SidebarProp,
   SidebarProp as SidebarProps,
+  SidebarRenderItemProp,
 } from "../../props/components/layout.prop";
 
-type RenderItem = (item: SidebarItemData) => React.ReactNode;
+type RenderItem = (item: SidebarItemData, rowProps: SidebarRenderItemProp) => React.ReactNode;
 
 type SidebarHeaderProps = React.HTMLAttributes<HTMLDivElement>;
 type SidebarSectionProps = {
@@ -71,14 +73,14 @@ export function SidebarItem({
   const Icon = item.icon;
   const showBadge = item.badge !== undefined && item.badge !== "";
   const disabled = item.disabled || props.disabled;
-  const custom = children ?? (renderItem ? renderItem(item) : undefined);
-
   const rowClass = cn("sb-nav-item", sub && "sb-nav-item--sub");
-  const stateProps = {
+  const stateProps: SidebarRenderItemProp = {
     className: rowClass,
     "data-active": active ? "true" : undefined,
     "aria-current": active ? ("page" as const) : undefined,
+    "aria-disabled": disabled ? true : undefined,
   };
+  const custom = children ?? (renderItem ? renderItem(item, stateProps) : undefined);
 
   // Custom row: the CONSUMER supplies the single interactive element (a router `<Link>`/`<a>`), so
   // we merge the row styling + active state onto THAT element via Slot — never a `<button>` wrapper.
@@ -86,7 +88,7 @@ export function SidebarItem({
   // `<button>`-in-`<a>` was the gh#165 defect). The consumer's element owns navigation.
   if (custom !== undefined) {
     return (
-      <Slot {...stateProps} aria-disabled={disabled || undefined}>
+      <Slot {...stateProps}>
         {custom}
       </Slot>
     );
