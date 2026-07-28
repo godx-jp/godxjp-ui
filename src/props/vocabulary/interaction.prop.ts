@@ -5,13 +5,7 @@
 
 /** Button visual style. */
 export type ButtonVariantProp =
-  | "default"
-  | "destructive"
-  | "outline"
-  | "dashed"
-  | "secondary"
-  | "ghost"
-  | "link";
+  "default" | "destructive" | "outline" | "dashed" | "secondary" | "ghost" | "link";
 
 /** Corner shape — maps to the radius tokens (default = control/component radius). Shared by
  *  Button + Badge. `pill` = fully rounded (`--radius-pill`), `sharp` = square (`--radius-sharp`). */
@@ -22,13 +16,7 @@ export type TextSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 
 /** Text colour intent — maps to semantic foreground tokens (no raw palette). */
 export type TextToneProp =
-  | "default"
-  | "muted"
-  | "primary"
-  | "success"
-  | "warning"
-  | "destructive"
-  | "info";
+  "default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info";
 
 /** Font weight — the reference-design canon is THREE weights only: `regular` (400 body), `medium` (500
  *  heading/label), `bold` (700 emphasis). 600/`semibold` is forbidden. */
@@ -52,7 +40,7 @@ export type BadgeVariantProp = "default" | "secondary" | "outline" | "dashed";
  *   `aria-label`, focus ring, keyboard behaviour and a `--control-height` tap target (which is
  *   ≥44px on coarse/touch pointers per Rule #24) — so consumers never hide internal nodes via CSS.
  */
-export type AppSettingPickerAppearanceProp = "labeled" | "icon";
+export type AppSettingPickerAppearanceProp = "labeled" | "icon" | "inline";
 
 /** Button size preset. */
 export type SizeProp = "xs" | "sm" | "md" | "lg";
@@ -75,13 +63,7 @@ export type ConfirmVariantProp = "default" | "destructive";
 
 /** Semantic color/status intent. */
 export type ToneProp =
-  | "default"
-  | "success"
-  | "warning"
-  | "destructive"
-  | "info"
-  | "muted"
-  | "neutral";
+  "default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral";
 
 /** Inline Alert visual treatment. */
 export type AlertVariantProp = "default";

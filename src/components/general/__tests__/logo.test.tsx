@@ -28,6 +28,14 @@ describe("Logo", () => {
     expect(container.querySelector('[data-slot="logo"]')).toHaveAttribute("data-tone", "success");
   });
 
+  it("renders the canonical GoDX vector mark without a boxed glyph", () => {
+    const { container } = render(<Logo mark="godx" tone="success" />);
+    const mark = container.querySelector('[data-slot="logo"]');
+    expect(mark).toHaveAttribute("data-mark", "godx");
+    expect(mark).not.toHaveTextContent("g");
+    expect(mark?.querySelector('[data-slot="logo-artwork"]')).toBeInTheDocument();
+  });
+
   // When the mark stands alone (no wordmark beside it) a label makes it a named image for AT.
   it("exposes an accessible image when label is provided", () => {
     render(<Logo label="CoreBooks" />);

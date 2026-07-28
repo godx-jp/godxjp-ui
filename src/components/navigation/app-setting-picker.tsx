@@ -156,6 +156,7 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
     const unbound = current === undefined || !handleChange;
     const Icon = ICON[kind];
     const iconOnly = resolvedAppearance === "icon";
+    const inline = resolvedAppearance === "inline";
 
     return (
       <Select
@@ -169,28 +170,32 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
           id={id}
           // Icon-only triggers drop the chevron via the supported `showIndicator={false}` API
           // (SelectTrigger omits the indicator from the DOM) — no consumer descendant-selector CSS.
-          showIndicator={!iconOnly}
+          showIndicator={!iconOnly && !inline}
           className={cn(
-            iconOnly
-              ? // Structurally icon-only: drop the owned width + value spacing and square the box to
-                // the density-aware --control-height tap target, centring the icon.
-                "w-[length:var(--control-height)] justify-center ps-0 pe-0"
-              : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
-                // caps at the container (`w-auto max-w-full`) instead of the old UNCONDITIONAL
-                // `w-full` — so a labeled picker dropped into a narrow topbar no longer stretches to
-                // fill the bar (gh#165). A form field that wants a full-width control passes
-                // `className="w-full"`, which wins over `w-auto`.
-                cn("w-auto max-w-full", TRIGGER_WIDTH[kind]),
+            inline
+              ? "ui-app-setting-picker-inline"
+              : iconOnly
+                ? // Structurally icon-only: drop the owned width + value spacing and square the box to
+                  // the density-aware --control-height tap target, centring the icon.
+                  "w-[length:var(--control-height)] justify-center ps-0 pe-0"
+                : // Labeled: sized to a per-kind width from `sm` up; below `sm` it hugs its content and
+                  // caps at the container (`w-auto max-w-full`) instead of the old UNCONDITIONAL
+                  // `w-full` — so a labeled picker dropped into a narrow topbar no longer stretches to
+                  // fill the bar (gh#165). A form field that wants a full-width control passes
+                  // `className="w-full"`, which wins over `w-auto`.
+                  cn("w-auto max-w-full", TRIGGER_WIDTH[kind]),
             className,
           )}
           // The localized aria-label is ALWAYS applied — an icon-only trigger drops the visible
           // value text, so this is its only accessible name; it can never ship nameless.
           aria-label={t(ARIA_KEY[kind])}
         >
-          <Icon
-            className={cn("size-4 shrink-0 opacity-70", !iconOnly && "me-2")}
-            aria-hidden="true"
-          />
+          {inline ? null : (
+            <Icon
+              className={cn("size-4 shrink-0 opacity-70", !iconOnly && "me-2")}
+              aria-hidden="true"
+            />
+          )}
           {iconOnly ? null : <SelectValue />}
         </SelectTrigger>
         <SelectContent>

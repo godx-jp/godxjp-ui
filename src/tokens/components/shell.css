@@ -65,13 +65,13 @@
   --auth-shell-canonical-card-max-width: 22.5rem;
   --auth-shell-canonical-main-padding: 1rem;
   --auth-shell-canonical-main-padding-mobile: 0.9375rem;
-  --auth-shell-compact-card-inset: var(--space-4);
+  --auth-shell-compact-card-inset: var(--space-6);
   --auth-shell-card-padding-block-compact: var(--space-3);
   --auth-shell-card-gap-compact: var(--space-3);
 
   /* Labelled auth divider geometry. */
-  --auth-shell-divider-gap: var(--space-3);
-  --auth-shell-divider-label-font-size: var(--font-size-sm);
+  --auth-shell-divider-gap: 0.625rem;
+  --auth-shell-divider-label-font-size: 0.6875rem;
   --auth-shell-divider-rule-color: var(--border);
   --auth-shell-divider-label-color: var(--muted-foreground);
 

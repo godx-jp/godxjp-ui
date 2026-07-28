@@ -16,4 +16,6 @@
    * recolours primary buttons or links. Services can retune the role once for every Logo. */
   --logo-success-background: var(--success);
   --logo-success-foreground: var(--success-foreground);
+  --logo-godx-size: 2rem;
+  --logo-godx-color: var(--success);
 }
