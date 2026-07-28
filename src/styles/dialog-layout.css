@@ -134,6 +134,7 @@
   }
 
   .ui-two-factor-setup {
+    width: calc(100% - 1.5rem);
     max-width: 27.5rem;
   }
 
