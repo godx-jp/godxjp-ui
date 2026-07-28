@@ -16,6 +16,13 @@ export type {
 export { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "./resizable";
 export { AppShell } from "./app-shell";
 export type { AppShellProps } from "./app-shell";
+export { OrgSwitcher } from "./org-switcher";
+export type {
+  OrgSwitcherLabels,
+  OrgSwitcherOrganization,
+  OrgSwitcherProp,
+  OrgSwitcherProps,
+} from "./org-switcher";
 export { AuthShell } from "./auth-shell";
 export type { AuthShellProp, AuthShellProps } from "./auth-shell";
 export { AuthDivider } from "./auth-divider";

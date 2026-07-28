@@ -502,6 +502,21 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["LabelProp"],
   },
+  OrgSwitcherOrganization: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["IdProp", "LabelProp", "DisabledProp"],
+  },
+  OrgSwitcherLabels: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["LabelProp"],
+  },
+  OrgSwitcherProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["ValueProp", "OnValueChangeProp", "DisabledProp", "ClassNameProp"],
+  },
   SidebarProp: {
     group: "layout",
     file: "components/layout.prop.ts",

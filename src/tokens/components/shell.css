@@ -29,6 +29,12 @@
   --sidebar-nav-item-height: 2rem;
   --sidebar-nav-item-font-size: 0.8125rem;
   --topbar-search-max-width: 26.25rem;
+  --org-switcher-trigger-height: 2.75rem;
+  --org-switcher-trigger-padding-x: var(--space-2);
+  --org-switcher-avatar-size: 1.75rem;
+  --org-switcher-menu-width: 16rem;
+  --org-switcher-sheet-max-height: 75dvh;
+  --org-switcher-state-min-height: 8rem;
 
   /* Sidebar active-item tint/marker — `initial` so the role defaults re-resolve at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root; a scoped role override
