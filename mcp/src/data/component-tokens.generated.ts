@@ -204,6 +204,71 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
   },
   {
+    "name": "--card-service-launcher-space-gap",
+    "value": "var(--space-stack-sm)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-icon-size",
+    "value": "var(--control-height-lg)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-icon-glyph-size",
+    "value": "var(--space-5)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-icon-radius",
+    "value": "var(--radius-md)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-icon-background",
+    "value": "initial",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-icon-foreground",
+    "value": "initial",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-description-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-description-line-height",
+    "value": "var(--line-height-body)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-metadata-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-metadata-line-height",
+    "value": "var(--line-height-normal)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-cta-min-height",
+    "value": "calc(var(--control-height-lg) * 4)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-skeleton-title-width",
+    "value": "var(--space-12)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-skeleton-status-width",
+    "value": "var(--space-10)",
+    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+  },
+  {
     "name": "--control-height-compact",
     "value": "1.75rem",
     "description": "Control primitive tokens: heights, horizontal padding, adjacent control sizes."
@@ -844,6 +909,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Logo component tokens — the product brand-mark box (a glyph on the primary fill), used in the * app shell header, auth screens, and topbars. Size + radius + per-tier font-size are knobs so a * service theme retunes the mark without forking CSS (rules #44/#45). Colours read the primary * role tokens directly, so a re-themed --primary re-tints the mark automatically."
   },
   {
+    "name": "--logo-success-background",
+    "value": "var(--success)",
+    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo."
+  },
+  {
+    "name": "--logo-success-foreground",
+    "value": "var(--success-foreground)",
+    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo."
+  },
+  {
     "name": "--pagination-gap",
     "value": "var(--space-inline-sm)",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
@@ -1077,6 +1152,61 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--auth-shell-footer-padding",
     "value": "var(--space-3) var(--space-6) var(--space-4)",
     "description": "AuthShell — centred auth/login page shell. Comfortable control density (44px, WCAG touch floor) * + a larger auth heading, scoped to the shell; a service re-tunes the auth card width, insets * and heading size without forking."
+  },
+  {
+    "name": "--auth-shell-canonical-control-height",
+    "value": "2.25rem",
+    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+  },
+  {
+    "name": "--auth-shell-canonical-card-max-width",
+    "value": "22.5rem",
+    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+  },
+  {
+    "name": "--auth-shell-canonical-main-padding",
+    "value": "1rem",
+    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+  },
+  {
+    "name": "--auth-shell-canonical-main-padding-mobile",
+    "value": "0.9375rem",
+    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+  },
+  {
+    "name": "--auth-shell-compact-card-inset",
+    "value": "var(--space-4)",
+    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+  },
+  {
+    "name": "--auth-shell-card-padding-block-compact",
+    "value": "var(--space-3)",
+    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+  },
+  {
+    "name": "--auth-shell-card-gap-compact",
+    "value": "var(--space-3)",
+    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+  },
+  {
+    "name": "--auth-shell-divider-gap",
+    "value": "var(--space-3)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-shell-divider-label-font-size",
+    "value": "var(--font-size-sm)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-shell-divider-rule-color",
+    "value": "var(--border)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-shell-divider-label-color",
+    "value": "var(--muted-foreground)",
+    "description": "Labelled auth divider geometry."
   },
   {
     "name": "--centered-shell-bar-height",

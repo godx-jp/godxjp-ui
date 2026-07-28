@@ -1226,6 +1226,21 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display/card.tsx",
     vocabulary: ["TitleProp", "ToneProp", "IconProp", "ClassNameProp"],
   },
+  ServiceLauncherCardProp: {
+    group: "data-display",
+    file: "components/data-display/service-launcher-card.tsx",
+    vocabulary: ["TitleProp", "ToneProp", "IconProp", "ClassNameProp", "DisabledProp"],
+  },
+  ServiceCatalogCtaProp: {
+    group: "data-display",
+    file: "components/data-display/service-launcher-card.tsx",
+    vocabulary: ["TitleProp", "IconProp", "ClassNameProp"],
+  },
+  ServiceLauncherCardSkeletonProp: {
+    group: "data-display",
+    file: "components/data-display/service-launcher-card.tsx",
+    vocabulary: ["LabelProp", "ClassNameProp"],
+  },
   ResponsiveGridProp: {
     group: "layout",
     file: "components/layout/responsive-grid.tsx",

@@ -474,4 +474,127 @@
     font-size: var(--stat-card-hint-font-size);
     line-height: var(--line-height-normal);
   }
+
+  /* ── Service launcher — organization-scoped downstream app tile ─────── */
+  [data-slot="card"][data-service-launcher] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-service-launcher-space-gap);
+    padding: var(--card-space-inset);
+  }
+
+  [data-slot="service-launcher-heading"],
+  [data-slot="service-launcher-skeleton-heading"] {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--card-service-launcher-space-gap);
+  }
+
+  [data-slot="service-launcher-icon"] {
+    display: inline-flex;
+    width: var(--card-service-launcher-icon-size);
+    height: var(--card-service-launcher-icon-size);
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--card-service-launcher-icon-radius);
+    background: hsl(var(--card-service-launcher-icon-background, var(--accent)));
+    color: hsl(var(--card-service-launcher-icon-foreground, var(--primary)));
+  }
+
+  [data-slot="service-launcher-icon"] > svg {
+    width: var(--card-service-launcher-icon-glyph-size);
+    height: var(--card-service-launcher-icon-glyph-size);
+  }
+
+  [data-slot="service-launcher-title"] {
+    min-width: 0;
+    flex: 1;
+    overflow-wrap: anywhere;
+    font-size: var(--card-title-font-size);
+    font-weight: var(--card-title-font-weight);
+    line-height: var(--card-title-line-height);
+  }
+
+  [data-slot="service-launcher-status"] {
+    flex: none;
+  }
+
+  [data-slot="service-launcher-description"] {
+    flex: 1;
+    overflow-wrap: anywhere;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--card-service-launcher-description-font-size);
+    line-height: var(--card-service-launcher-description-line-height);
+  }
+
+  [data-slot="service-launcher-metadata"],
+  [data-slot="service-launcher-disabled-reason"] {
+    overflow-wrap: anywhere;
+    color: hsl(var(--muted-foreground));
+    font-family: var(--font-mono);
+    font-size: var(--card-service-launcher-metadata-font-size);
+    line-height: var(--card-service-launcher-metadata-line-height);
+  }
+
+  [data-slot="service-launcher-action"] > [data-slot="button"] {
+    width: 100%;
+  }
+
+  [data-slot="card"][data-service-catalog-cta] {
+    min-height: var(--card-service-launcher-cta-min-height);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--card-service-launcher-space-gap);
+    border-style: dashed;
+    padding: var(--card-space-inset);
+    text-align: center;
+  }
+
+  [data-slot="service-catalog-icon"] {
+    width: var(--card-service-launcher-icon-glyph-size);
+    height: var(--card-service-launcher-icon-glyph-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  [data-slot="service-catalog-title"] {
+    color: hsl(var(--muted-foreground));
+    font-size: var(--card-service-launcher-description-font-size);
+    line-height: var(--card-service-launcher-description-line-height);
+  }
+
+  [data-slot^="service-launcher-skeleton-"] {
+    display: block;
+  }
+
+  [data-slot="service-launcher-skeleton-icon"] {
+    width: var(--card-service-launcher-icon-size);
+    height: var(--card-service-launcher-icon-size);
+    flex: none;
+  }
+
+  [data-slot="service-launcher-skeleton-title"] {
+    width: var(--card-service-launcher-skeleton-title-width);
+    height: var(--font-size-base);
+  }
+
+  [data-slot="service-launcher-skeleton-status"] {
+    width: var(--card-service-launcher-skeleton-status-width);
+    height: var(--font-size-xs);
+    margin-inline-start: auto;
+  }
+
+  [data-slot="service-launcher-skeleton-description"],
+  [data-slot="service-launcher-skeleton-metadata"],
+  [data-slot="service-launcher-skeleton-action"] {
+    width: 100%;
+    height: var(--font-size-xs);
+  }
+
+  [data-slot="service-launcher-skeleton-action"] {
+    height: var(--control-height);
+  }
 }
