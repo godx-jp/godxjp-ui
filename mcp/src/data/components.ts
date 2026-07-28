@@ -836,6 +836,72 @@ import { PanelLeftClose, Search } from "lucide-react";
     rules: [2, 3, 5, 6],
   },
   {
+    name: "MasterDetail",
+    group: "layout",
+    tagline:
+      "Responsive master-detail composition with a token-owned 300px/320px leading rail and fluid detail surface.",
+    props: [
+      {
+        name: "master",
+        type: "ReactNode",
+        required: true,
+        description: "Selectable collection rendered in the leading master rail.",
+      },
+      {
+        name: "children",
+        type: "ReactNode",
+        required: true,
+        description: "Detail surface for the current master selection.",
+      },
+      {
+        name: "railWidth",
+        type: '"compact" | "standard"',
+        defaultValue: '"standard"',
+        description: "Token-owned master rail preset: compact=300px, standard=320px.",
+      },
+      {
+        name: "masterLabel",
+        type: "string",
+        description: "Accessible name for the master region landmark.",
+      },
+      {
+        name: "detailLabel",
+        type: "string",
+        description: "Accessible name for the detail region landmark.",
+      },
+    ],
+    usage: [
+      "DO use MasterDetail for service, team, member, or settings screens where a selectable leading collection controls a fluid detail surface.",
+      "DO keep selection and keyboard semantics on the controls inside `master` (`aria-pressed`, roving focus, or listbox semantics as appropriate); MasterDetail preserves those semantics.",
+      "DO choose `compact` for the canonical 300px rail and `standard` for 320px. Never reproduce these tracks with consumer CSS.",
+      "DO provide `masterLabel` and `detailLabel` when the surrounding headings do not already identify both regions.",
+      "DON'T use ResponsiveGrid for master-detail hierarchy; its equal tracks cannot represent this composition.",
+      "The component stacks master then detail below its own 48rem container breakpoint, so it works consistently at 1440, 1024, and 390 without viewport-specific consumer code.",
+    ],
+    useCases: [
+      "Organization service access: services in the compact leading rail and selected service roles in the detail surface.",
+      "Team directory: teams in the standard rail and membership/scope details in the fluid surface.",
+      "Settings navigator: categories in the rail and the selected configuration form in the detail surface.",
+    ],
+    related: [
+      "SplitPane — use when the fixed-width supporting pane belongs on the trailing edge rather than as the leading master collection.",
+      "ResponsiveGrid — use for equal-width independent cards, never for a master-detail relationship.",
+      "PageContainer — outer page scaffold that supplies page insets and title hierarchy around MasterDetail.",
+    ],
+    example: `import { MasterDetail } from "@godxjp/ui/layout";
+
+<MasterDetail
+  master={<ServiceList />}
+  railWidth="compact"
+  masterLabel="Services"
+  detailLabel="Selected service roles"
+>
+  <ServiceRoleDetails />
+</MasterDetail>`,
+    storyPath: "layout/MasterDetail.stories.tsx",
+    rules: [24, 40],
+  },
+  {
     name: "SplitPane",
     group: "layout",
     tagline: "Two-column layout with a main content area and a fixed-width aside panel.",

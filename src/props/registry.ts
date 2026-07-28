@@ -449,6 +449,38 @@ export const COMPONENT_PROP_REGISTRY = {
     ],
   },
   ResponsiveGridColumnsProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
+  MasterDetailRailWidthProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
+  MasterDetailProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ChildrenProp",
+      {
+        field: "master",
+        local: true,
+        reason: "Semantic selectable-collection slot paired with the detail children slot.",
+      },
+      {
+        field: "railWidth",
+        local: true,
+        reason: "Token-owned 300px/320px master-rail geometry preset.",
+      },
+      {
+        field: "masterLabel",
+        local: true,
+        reason: "Accessible name for the master region landmark.",
+      },
+      {
+        field: "detailLabel",
+        local: true,
+        reason: "Accessible name for the detail region landmark.",
+      },
+    ],
+  },
   PageInsetProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -1260,6 +1292,11 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "layout",
     file: "components/layout/responsive-grid.tsx",
     vocabulary: ["GapProp", "ClassNameProp", "ChildrenProp"],
+  },
+  MasterDetailProps: {
+    group: "layout",
+    file: "components/layout/master-detail.tsx",
+    vocabulary: ["ChildrenProp"],
   },
   SplitPaneProp: {
     group: "layout",

@@ -72,6 +72,22 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
 
 export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
 
+export type MasterDetailRailWidthProp = "compact" | "standard";
+
+/** @see MasterDetail */
+export type MasterDetailProp = {
+  /** Selectable collection rendered in the fixed-width leading rail. */
+  master: ReactNode;
+  /** Detail surface for the current selection. */
+  children: ChildrenProp;
+  /** `compact` = 300px; `standard` = 320px. */
+  railWidth?: MasterDetailRailWidthProp;
+  /** Accessible name for the master region. */
+  masterLabel?: string;
+  /** Accessible name for the detail region. */
+  detailLabel?: string;
+};
+
 /** @see PageContainer.Inset — full-bleed inset region inside the page padding. */
 export type PageInsetProp = React.HTMLAttributes<HTMLDivElement> & {
   children?: ChildrenProp;

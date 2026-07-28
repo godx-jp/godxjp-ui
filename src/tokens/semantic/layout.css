@@ -18,6 +18,11 @@
   --space-inline-md: var(--space-3); /* 12px */
   --space-inline-lg: var(--space-4); /* 16px */
 
+  /* Master-detail geometry. Consumers choose a semantic rail preset; they never author grid tracks. */
+  --master-detail-rail-compact: 18.75rem; /* 300px */
+  --master-detail-rail-standard: 20rem; /* 320px */
+  --master-detail-gap: var(--space-stack-md);
+
   --space-page-active-x: var(--space-page-x);
   --space-page-active-y: var(--space-page-y);
   --space-section-active: var(--space-section);

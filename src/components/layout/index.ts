@@ -50,6 +50,8 @@ export { Topbar } from "./topbar";
 export type { TopbarProp, TopbarProps } from "./topbar";
 export { ResponsiveGrid } from "./responsive-grid";
 export type { ResponsiveGridProps } from "./responsive-grid";
+export { MasterDetail } from "./master-detail";
+export type { MasterDetailProps } from "./master-detail";
 export { SplitPane } from "./split-pane";
 export type { SplitPaneProps } from "./split-pane";
 export { Separator } from "./separator";

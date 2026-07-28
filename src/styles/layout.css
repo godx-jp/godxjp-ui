@@ -195,6 +195,33 @@
     min-width: 0;
   }
 
+  /* MasterDetail owns both its container breakpoint and its tracks. The selectable master region
+   * leads at every width; below 48rem the detail stacks immediately after it. */
+  .ui-master-detail-scope {
+    container: master-detail / inline-size;
+  }
+
+  .ui-master-detail {
+    display: grid;
+    gap: var(--master-detail-gap);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ui-master-detail-master,
+  .ui-master-detail-detail {
+    min-width: 0;
+  }
+
+  @container master-detail (min-width: 48rem) {
+    .ui-master-detail[data-rail-width="compact"] {
+      grid-template-columns: var(--master-detail-rail-compact) minmax(0, 1fr);
+    }
+
+    .ui-master-detail[data-rail-width="standard"] {
+      grid-template-columns: var(--master-detail-rail-standard) minmax(0, 1fr);
+    }
+  }
+
   @container responsive-grid (min-width: 40rem) {
     .ui-responsive-grid {
       grid-template-columns: repeat(var(--responsive-grid-sm, 2), minmax(0, 1fr));
