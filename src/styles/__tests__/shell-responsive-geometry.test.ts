@@ -55,4 +55,18 @@ describe("responsive shell geometry", () => {
       /\.ui-topbar-center\s*\{[^}]*flex:\s*1 1 0%;[^}]*overflow:\s*hidden;/s,
     );
   });
+
+  it("owns canonical mobile drawer width, backdrop, safe areas and reduced motion", () => {
+    expect(shellTokens).toContain("--app-shell-mobile-nav-width: 22.5rem;");
+    expect(shellTokens).toContain("--app-shell-mobile-nav-overlay: rgb(0 0 0 / 0.2);");
+    expect(shellStyles).toMatch(
+      /\.app-mobile-nav-overlay\s*\{[^}]*background-color:\s*var\(--app-shell-mobile-nav-overlay\);/s,
+    );
+    expect(shellStyles).toMatch(
+      /\.app-mobile-nav-drawer\s*\{[^}]*safe-area-inset-top[^}]*safe-area-inset-bottom[^}]*safe-area-inset-left[^}]*safe-area-inset-right[^}]*overscroll-behavior:\s*contain;/s,
+    );
+    expect(shellStyles).toMatch(
+      /@media \(prefers-reduced-motion:\s*reduce\)\s*\{[^}]*\.app-mobile-nav-overlay,[^}]*\.app-mobile-nav-drawer\s*\{[^}]*animation:\s*none;[^}]*transition:\s*none;/s,
+    );
+  });
 });

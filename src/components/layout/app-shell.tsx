@@ -81,7 +81,12 @@ export function AppShell({
                 <Menu className="size-5" aria-hidden="true" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="app-mobile-nav-drawer">
+            <SheetContent
+              side="left"
+              width="var(--app-shell-mobile-nav-width)"
+              className="app-mobile-nav-drawer"
+              overlayClassName="app-mobile-nav-overlay"
+            >
               <SheetHeader title={mobileNavLabel ?? t("layout.appShell.navLabel")} />
               <SheetBody className="app-mobile-nav-body" onClick={handleDrawerClick}>
                 {drawerNav}

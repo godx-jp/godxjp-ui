@@ -38,6 +38,7 @@ export {
   SheetTitle,
   SheetTrigger,
 } from "./sheet";
+export type { SheetContentProps } from "./sheet";
 export { Toaster } from "./sonner";
 export { toast } from "./use-toast";
 export { Skeleton, SkeletonRows, SkeletonTable, SkeletonDetail, SkeletonStat } from "./skeleton";

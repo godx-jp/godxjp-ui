@@ -183,6 +183,25 @@ describe("Sheet", () => {
     expect(screen.getByRole("dialog").style.getPropertyValue("--sheet-width")).toBe("32rem");
   });
 
+  it("forwards a semantic class to its owned backdrop", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button type="button">Open</Button>
+        </SheetTrigger>
+        <SheetContent overlayClassName="product-navigation-overlay">
+          <SheetHeader title="Navigation" />
+        </SheetContent>
+      </Sheet>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Open" }));
+    expect(document.querySelector('[data-slot="sheet-overlay"]')).toHaveClass(
+      "product-navigation-overlay",
+    );
+  });
+
   // Regression for gh#101 (#3): footer owns symmetric vertical padding (py-4) and cancels the
   // content's p-6 bottom (-mb-6) instead of inheriting an asymmetric 16-top / 24-bottom rhythm.
   it("SheetFooter owns symmetric tokenized vertical padding", async () => {

@@ -99,6 +99,34 @@ describe("AppShell", () => {
     await waitFor(() => expect(trigger).toHaveFocus());
   });
 
+  it("owns canonical drawer width, backdrop and click-out focus restoration", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <AppShell
+        sidebar={<nav aria-label="主">サイドナビ</nav>}
+        mobileNav={<nav aria-label="モバイル">ドロワーナビ</nav>}
+      >
+        <p>本文</p>
+      </AppShell>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Mở menu điều hướng" });
+    await user.click(trigger);
+
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.style.getPropertyValue("--sheet-width")).toBe(
+      "var(--app-shell-mobile-nav-width)",
+    );
+    expect(dialog).toHaveClass("app-mobile-nav-drawer");
+
+    const overlay = document.querySelector('[data-slot="sheet-overlay"]') as HTMLElement;
+    expect(overlay).toHaveClass("app-mobile-nav-overlay");
+    await user.click(overlay);
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
   it("keeps the mobile drawer navigation expanded when the docked sidebar is collapsed", async () => {
     const user = userEvent.setup();
     renderWithUi(

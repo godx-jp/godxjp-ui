@@ -64,11 +64,13 @@ const sheetVariants = cva(
   },
 );
 
-interface SheetContentProps
+export interface SheetContentProps
   extends
     React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
   showCloseButton?: boolean;
+  /** Optional semantic class for the owned backdrop (for a shell-specific overlay token). */
+  overlayClassName?: string;
   /**
    * Desired panel size for side left/right (Ant Drawer `width`). Caps at the viewport — a small
    * screen still gets a full-width panel (`min(width, 100%)`), it is NOT a hard fixed width. Omit
@@ -82,7 +84,16 @@ export const SheetContent = React.forwardRef<
   SheetContentProps
 >(
   (
-    { side = "right", className, children, showCloseButton = true, width, style, ...props },
+    {
+      side = "right",
+      className,
+      children,
+      showCloseButton = true,
+      overlayClassName,
+      width,
+      style,
+      ...props
+    },
     ref,
   ) => {
     const { t } = useTranslation();
@@ -93,7 +104,7 @@ export const SheetContent = React.forwardRef<
       : style;
     return (
       <SheetPortal>
-        <SheetOverlay />
+        <SheetOverlay className={overlayClassName} />
         <DialogPrimitive.Content
           ref={ref}
           data-slot="sheet-content"

@@ -314,11 +314,24 @@
     margin-inline-end: var(--space-1);
   }
 
+  .app-mobile-nav-overlay {
+    background-color: var(--app-shell-mobile-nav-overlay);
+  }
+
+  .app-mobile-nav-drawer {
+    padding-block-start: max(var(--sheet-pad-y), env(safe-area-inset-top));
+    padding-block-end: max(var(--sheet-pad-y), env(safe-area-inset-bottom));
+    padding-inline-start: max(var(--sheet-pad-x), env(safe-area-inset-left));
+    padding-inline-end: max(var(--sheet-pad-x), env(safe-area-inset-right));
+    overscroll-behavior: contain;
+  }
+
   /* The drawer nav reuses the docked Sidebar node; its `.sb-root { display: contents }` flattens
    * into the scrollable SheetBody so sections/footer flow naturally in the panel. */
   .app-mobile-nav-body {
     display: flex;
     flex-direction: column;
+    overscroll-behavior: contain;
   }
 
   .app-topbar-spacer {
@@ -352,6 +365,14 @@
 
     .app-mobile-nav-trigger {
       display: inline-flex;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app-mobile-nav-overlay,
+    .app-mobile-nav-drawer {
+      animation: none;
+      transition: none;
     }
   }
 
