@@ -314,7 +314,7 @@
     margin-inline-end: var(--space-1);
   }
 
-  .app-mobile-nav-overlay {
+  [data-slot="sheet-overlay"].app-mobile-nav-overlay {
     background-color: var(--app-shell-mobile-nav-overlay);
   }
 
