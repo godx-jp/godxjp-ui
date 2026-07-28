@@ -34,7 +34,10 @@ export type BadgeVariant = "default" | "secondary" | "outline" | "dashed";
 export type BadgeTone = ToneProp | "primary";
 
 interface StatusDef {
-  tone: Extract<BadgeTone, "success" | "warning" | "destructive" | "info" | "neutral">;
+  tone: Extract<
+    BadgeTone,
+    "default" | "success" | "warning" | "destructive" | "info" | "neutral"
+  >;
   icon: LucideIcon;
 }
 
@@ -45,6 +48,10 @@ const STATUS_MAP: Record<string, StatusDef> = {
   done: { tone: "success", icon: CheckCircle2 },
   permanent: { tone: "success", icon: CheckCircle2 },
   succeeded: { tone: "success", icon: CheckCircle2 },
+  trialing: { tone: "info", icon: Clock },
+  past_due: { tone: "warning", icon: AlertCircle },
+  incomplete: { tone: "default", icon: Circle },
+  canceled: { tone: "destructive", icon: XCircle },
   draft: { tone: "neutral", icon: Circle },
   pending: { tone: "warning", icon: Clock },
   scheduled: { tone: "info", icon: Clock },
@@ -147,3 +154,12 @@ export function Badge({
     </div>
   );
 }
+
+/**
+ * Status-aware badge with the shared domain-status-to-tone mapping.
+ *
+ * `Badge` remains the general-purpose primitive. Prefer `StatusBadge` when the
+ * `status` prop drives presentation so status colours remain consistent across
+ * products.
+ */
+export const StatusBadge = Badge;

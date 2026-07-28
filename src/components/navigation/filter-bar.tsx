@@ -9,8 +9,12 @@ import type { ToolbarGroupProp, ToolbarProp } from "../../props/components/navig
 export type {
   ToolbarGroupProp,
   ToolbarGroupProp as ToolbarGroupProps,
+  ToolbarGroupProp as FilterBarGroupProp,
+  ToolbarGroupProp as FilterBarGroupProps,
   ToolbarProp,
   ToolbarProp as ToolbarProps,
+  ToolbarProp as FilterBarProp,
+  ToolbarProp as FilterBarProps,
 } from "../../props/components/navigation.prop";
 
 export function Toolbar({
@@ -57,3 +61,14 @@ export function ToolbarGroup({ label, className, children }: ToolbarGroupProp) {
     </div>
   );
 }
+
+/**
+ * Canonical list-page filter strip.
+ *
+ * `Toolbar` remains available for backwards compatibility. `FilterBar` is the
+ * public domain-neutral name used by application design specifications.
+ */
+export const FilterBar = Toolbar;
+
+/** Labelled control group for {@link FilterBar}. */
+export const FilterBarGroup = ToolbarGroup;

@@ -51,8 +51,15 @@ export {
   NavigationMenuViewport,
 } from "./navigation-menu";
 export { Steps } from "./steps";
-export { Toolbar, ToolbarGroup } from "./filter-bar";
-export type { ToolbarGroupProps, ToolbarProps } from "./filter-bar";
+export { FilterBar, FilterBarGroup, Toolbar, ToolbarGroup } from "./filter-bar";
+export type {
+  FilterBarGroupProp,
+  FilterBarGroupProps,
+  FilterBarProp,
+  FilterBarProps,
+  ToolbarGroupProps,
+  ToolbarProps,
+} from "./filter-bar";
 export { AppSettingPicker } from "./app-setting-picker";
 export type {
   AppSettingPickerProp,

@@ -1,4 +1,4 @@
-export { Badge } from "./badge";
+export { Badge, StatusBadge } from "./badge";
 export type { BadgeProps } from "./badge";
 export { ListRow } from "./list-row";
 export type { ListRowProps } from "./list-row";
