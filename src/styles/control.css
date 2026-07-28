@@ -585,7 +585,7 @@
     opacity: 0.5;
   }
 
-  .ui-command-palette[data-slot="dialog-content"] {
+  [data-slot="dialog-content"].ui-command-palette {
     top: var(--command-palette-top);
     width: min(
       var(--command-palette-width),
