@@ -8901,6 +8901,339 @@ export function NotifyRow() {
     storyPath: "charts/PieChart.stories.tsx",
     rules: [],
   },
+  {
+    name: "CommandPalette",
+    group: "data-entry",
+    tagline:
+      "Searchable command dialog with controlled or uncontrolled open state and consumer-owned selection.",
+    props: [
+      {
+        name: "groups",
+        type: "CommandPaletteGroup[]",
+        required: true,
+        description: "Grouped command items.",
+      },
+      {
+        name: "labels",
+        type: "CommandPaletteLabels",
+        required: true,
+        description: "Localized dialog and search copy.",
+      },
+      {
+        name: "onSelect",
+        type: "(item: CommandPaletteItem) => void",
+        required: true,
+        description: "Consumer-owned selection handler.",
+      },
+      { name: "open", type: "boolean", description: "Controlled open state." },
+      {
+        name: "defaultOpen",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Initial uncontrolled open state.",
+      },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state callback.",
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Shows the supplied loading content.",
+      },
+      { name: "error", type: "ReactNode", description: "Consumer-supplied error content." },
+    ],
+    usage: [
+      "Provide localized labels and real command groups; the component does not fetch commands.",
+      "Use either `open` plus `onOpenChange` or `defaultOpen`; do not mirror both state models.",
+    ],
+    example: `import { CommandPalette } from "@godxjp/ui/data-entry";
+
+<CommandPalette
+  groups={[{ id: "pages", label: "Pages", items: [{ id: "home", label: "Home" }] }]}
+  labels={{ open: "Open commands", title: "Commands", description: "Choose a command", placeholder: "Search", empty: "No results" }}
+  onSelect={(item) => navigate(item.id)}
+/>`,
+    storyPath: "data-entry/CommandPalette.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "TwoFactorSetup",
+    group: "feedback",
+    tagline:
+      "Canonical two-factor enrollment dialog for QR/manual-key verification and recovery-code acknowledgement.",
+    props: [
+      { name: "open", type: "boolean", required: true, description: "Controlled dialog state." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        required: true,
+        description: "Dialog state callback.",
+      },
+      {
+        name: "manualKey",
+        type: "string",
+        required: true,
+        description: "Consumer-provided enrollment secret.",
+      },
+      {
+        name: "qrValue",
+        type: "string",
+        description: "Optional QR payload for the same enrollment secret.",
+      },
+      { name: "code", type: "string", required: true, description: "Current verification code." },
+      {
+        name: "onCodeChange",
+        type: "(code: string) => void",
+        required: true,
+        description: "Verification-code callback.",
+      },
+      {
+        name: "onConfirm",
+        type: "() => void",
+        required: true,
+        description: "Consumer-owned verification action.",
+      },
+      {
+        name: "recoveryCodes",
+        type: "string[]",
+        description: "Codes shown only after successful enrollment.",
+      },
+      {
+        name: "onAcknowledge",
+        type: "() => void",
+        required: true,
+        description: "Recovery-code acknowledgement action.",
+      },
+      {
+        name: "labels",
+        type: "TwoFactorSetupLabels",
+        required: true,
+        description: "All localized copy.",
+      },
+      {
+        name: "pending",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Disables actions while the consumer request runs.",
+      },
+    ],
+    usage: [
+      "Keep enrollment, verification, persistence, and secret lifecycle in the consumer; this component is presentational.",
+      "Only pass recovery codes after verification succeeds, and clear them when the dialog lifecycle ends.",
+    ],
+    example: `import { TwoFactorSetup } from "@godxjp/ui/feedback";
+
+<TwoFactorSetup
+  open={open}
+  onOpenChange={setOpen}
+  qrValue={enrollment.qr}
+  manualKey={enrollment.secret}
+  code={code}
+  onCodeChange={setCode}
+  onConfirm={verify}
+  recoveryCodes={recoveryCodes}
+  onAcknowledge={finish}
+  labels={labels}
+/>`,
+    storyPath: "feedback/TwoFactorSetup.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "AuthDivider",
+    group: "layout",
+    tagline: "Localized auth-form divider with equal rules and an accessible separator label.",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Localized conjunction such as “or”.",
+      },
+      { name: "className", type: "string", description: "Optional structural class override." },
+    ],
+    example: `import { AuthDivider } from "@godxjp/ui/layout";
+
+<AuthDivider label="or" />`,
+    storyPath: "layout/AuthDivider.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "AuthFooter",
+    group: "layout",
+    tagline:
+      "Compact hosted-auth footer for consumer-owned product, legal, privacy, and locale content.",
+    props: [
+      {
+        name: "product",
+        type: "ReactNode",
+        required: true,
+        description: "Product identity content.",
+      },
+      {
+        name: "terms",
+        type: "ReactNode",
+        required: true,
+        description: "Terms link or localized text.",
+      },
+      {
+        name: "privacy",
+        type: "ReactNode",
+        required: true,
+        description: "Privacy link or localized text.",
+      },
+      { name: "locale", type: "ReactNode", description: "Optional consumer-owned locale control." },
+    ],
+    usage: [
+      "Pass real links and locale controls from the consumer; AuthFooter never invents navigation.",
+    ],
+    example: `import { AuthFooter } from "@godxjp/ui/layout";
+
+<AuthFooter product="Acme ID" terms={<a href="/terms">Terms</a>} privacy={<a href="/privacy">Privacy</a>} locale="English" />`,
+    storyPath: "layout/AuthFooter.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "AuthIdentity",
+    group: "layout",
+    tagline:
+      "Hosted-auth identity heading with the shared mark and optional requesting-client context.",
+    props: [
+      { name: "title", type: "ReactNode", required: true, description: "Primary auth heading." },
+      {
+        name: "requester",
+        type: "ReactNode",
+        description: "Optional real requesting-client context.",
+      },
+    ],
+    usage: ["Only show `requester` when the consumer has authoritative client context."],
+    example: `import { AuthIdentity } from "@godxjp/ui/layout";
+
+<AuthIdentity title="Sign in" requester="Acme Portal is requesting access" />`,
+    storyPath: "layout/AuthIdentity.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "AuthStack",
+    group: "layout",
+    tagline: "Token-spaced vertical stack for direct sections inside a canonical auth card.",
+    props: [
+      { name: "children", type: "ReactNode", description: "Auth sections in visual order." },
+      { name: "className", type: "string", description: "Optional structural class override." },
+    ],
+    example: `import { AuthStack } from "@godxjp/ui/layout";
+
+<AuthStack><PasskeyAction /><CredentialsForm /></AuthStack>`,
+    storyPath: "layout/AuthStack.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "OrgSwitcher",
+    group: "layout",
+    tagline:
+      "Searchable organization switcher with canonical trigger geometry, desktop popover, and mobile sheet.",
+    props: [
+      {
+        name: "organizations",
+        type: "readonly OrgSwitcherOrganization[]",
+        required: true,
+        description: "Consumer-provided organization choices.",
+      },
+      { name: "value", type: "string", description: "Selected organization id." },
+      {
+        name: "onValueChange",
+        type: "(value: string) => void",
+        description: "Selection callback; persistence remains consumer-owned.",
+      },
+      {
+        name: "labels",
+        type: "OrgSwitcherLabels",
+        required: true,
+        description: "Localized trigger, search, state, and retry copy.",
+      },
+      {
+        name: "collapsed",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Compact trigger presentation.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Disables the trigger.",
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Shows the loading state.",
+      },
+      { name: "error", type: "ReactNode", description: "Consumer-supplied error state." },
+      { name: "onRetry", type: "() => void", description: "Consumer-owned retry callback." },
+      {
+        name: "responsive",
+        type: '"auto" | "popover" | "sheet"',
+        defaultValue: '"auto"',
+        description: "Responsive presentation contract.",
+      },
+      { name: "open", type: "boolean", description: "Controlled open state." },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state callback.",
+      },
+    ],
+    usage: [
+      "Provide only organizations the current user may select; the component does not authorize or fetch tenants.",
+      "Keep persistence and navigation in `onValueChange`; use loading/error props for the real query state.",
+    ],
+    example: `import { OrgSwitcher } from "@godxjp/ui/layout";
+
+<OrgSwitcher
+  organizations={organizations}
+  value={organizationId}
+  onValueChange={setOrganizationId}
+  labels={labels}
+/>`,
+    storyPath: "layout/OrgSwitcher.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "FilterBar",
+    group: "navigation",
+    tagline:
+      "Domain-neutral list-page filter toolbar with optional clear action and labelled groups.",
+    props: [
+      { name: "children", type: "ReactNode", description: "Filter controls and groups." },
+      { name: "onClear", type: "() => void", description: "Consumer-owned clear action." },
+      {
+        name: "hasActiveFilters",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Shows clear only when filters are active.",
+      },
+      {
+        name: "sticky",
+        type: "boolean",
+        defaultValue: "false",
+        description: "Uses the token-owned sticky presentation.",
+      },
+      { name: "className", type: "string", description: "Optional structural class override." },
+    ],
+    usage: [
+      "Compose real controls as children; filter state and URL synchronization remain consumer-owned.",
+    ],
+    example: `import { FilterBar, FilterBarGroup } from "@godxjp/ui/navigation";
+
+<FilterBar onClear={clearFilters} hasActiveFilters={hasFilters}>
+  <FilterBarGroup label="Status"><StatusSelect /></FilterBarGroup>
+</FilterBar>`,
+    storyPath: "navigation/FilterBar.stories.tsx",
+    rules: [],
+  },
 ];
 
 export function findComponent(name: string): ComponentEntry | undefined {
