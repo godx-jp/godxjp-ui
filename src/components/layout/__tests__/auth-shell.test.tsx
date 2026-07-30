@@ -101,12 +101,12 @@ describe("AuthShell", () => {
           <span>Passkey</span>
           <span>Email</span>
         </AuthStack>
-        <AuthFooter product="console.godx.jp" terms="Terms" privacy="Privacy" locale="English" />
+        <AuthFooter product="Acme ID" terms="Terms" privacy="Privacy" locale="English" />
       </AuthShell>,
     );
     expect(container.querySelector('[data-slot="logo"][data-mark="godx"]')).toBeInTheDocument();
     expect(container.querySelector('[data-slot="auth-requester-icon"]')).toBeInTheDocument();
-    expect(getByText("console.godx.jp")).toBeInTheDocument();
+    expect(getByText("Acme ID")).toBeInTheDocument();
     expect(getByText("English")).toBeInTheDocument();
     expect(container.querySelector('[data-slot="auth-stack"]')).toBeInTheDocument();
   });

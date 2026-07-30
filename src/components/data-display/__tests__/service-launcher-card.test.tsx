@@ -19,7 +19,7 @@ describe("ServiceLauncherCard", () => {
         statusLabel="LIVE"
         statusTone="success"
         description="打刻・シフト・休暇申請。"
-        metadata="kintai.godx.jp · スタンダード"
+        metadata="time.acme.test · スタンダード"
         action={<Button>起動</Button>}
       />,
     );
@@ -28,7 +28,7 @@ describe("ServiceLauncherCard", () => {
     expect(
       screen.getByText("LIVE").closest('[data-slot="service-launcher-status"]'),
     ).toHaveAttribute("data-tone", "success");
-    expect(screen.getByText("kintai.godx.jp · スタンダード")).toBeInTheDocument();
+    expect(screen.getByText("time.acme.test · スタンダード")).toBeInTheDocument();
     expect(container.querySelector('[data-slot="service-launcher-icon"] svg')).toBeTruthy();
   });
 
@@ -75,7 +75,7 @@ describe("ServiceLauncherCard", () => {
           statusLabel="LIVE"
           statusTone="success"
           description="打刻・シフト・休暇申請。"
-          metadata="kintai.godx.jp · スタンダード"
+          metadata="time.acme.test · スタンダード"
           action={<Button>起動</Button>}
         />
         <ServiceCatalogCta

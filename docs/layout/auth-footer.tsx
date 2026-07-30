@@ -18,7 +18,7 @@ export default function Demo() {
         <CardContent>
           <AuthStack>
             <AuthFooter
-              product="id.godx.jp"
+              product="Acme Identity"
               terms={<a href="#terms">利用規約</a>}
               privacy={<a href="#privacy">プライバシー</a>}
               locale={<button type="button">日本語</button>}
