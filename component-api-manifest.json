@@ -897,6 +897,7 @@
           "required": false,
           "type": "AppSettingPickerAppearanceProp | undefined",
           "values": [
+            "inline",
             "icon",
             "labeled"
           ],
@@ -1305,6 +1306,101 @@
       "group": "layout",
       "props": []
     },
+    "AuthDivider": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        }
+      ]
+    },
+    "AuthFooter": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "locale",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/layout/auth-footer.tsx"
+          ]
+        },
+        {
+          "name": "privacy",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/layout/auth-footer.tsx"
+          ]
+        },
+        {
+          "name": "product",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/layout/auth-footer.tsx"
+          ]
+        },
+        {
+          "name": "terms",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/layout/auth-footer.tsx"
+          ]
+        }
+      ]
+    },
+    "AuthIdentity": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "requester",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/layout/auth-identity.tsx"
+          ]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/layout/auth-identity.tsx"
+          ]
+        }
+      ]
+    },
     "AuthShell": {
       "group": "layout",
       "props": [
@@ -1339,6 +1435,19 @@
           ]
         },
         {
+          "name": "density",
+          "origin": "owned",
+          "required": false,
+          "type": "\"compact\" | \"comfortable\" | undefined",
+          "values": [
+            "compact",
+            "comfortable"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "footer",
           "origin": "owned",
           "required": false,
@@ -1347,8 +1456,25 @@
           "declaredIn": [
             "src/props/components/layout.prop.ts"
           ]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "\"default\" | \"canonical\" | undefined",
+          "values": [
+            "default",
+            "canonical"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
         }
       ]
+    },
+    "AuthStack": {
+      "group": "layout",
+      "props": []
     },
     "Avatar": {
       "group": "data-display",
@@ -3187,6 +3313,123 @@
       "group": "data-entry",
       "props": []
     },
+    "CommandPalette": {
+      "group": "data-entry",
+      "props": [
+        {
+          "name": "defaultOpen",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "error",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "groups",
+          "origin": "owned",
+          "required": true,
+          "type": "CommandPaletteGroup[]",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "labels",
+          "origin": "owned",
+          "required": true,
+          "type": "CommandPaletteLabels",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((open: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "onSelect",
+          "origin": "owned",
+          "required": true,
+          "type": "(item: CommandPaletteItem) => void",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "open",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "shortcut",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "trigger",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        }
+      ]
+    },
     "ContextMenu": {
       "group": "navigation",
       "props": [
@@ -4859,6 +5102,16 @@
           ]
         },
         {
+          "name": "overlayClassName",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/dialog.tsx"
+          ]
+        },
+        {
           "name": "showClose",
           "origin": "owned",
           "required": false,
@@ -5788,6 +6041,102 @@
           "values": [],
           "declaredIn": [
             "src/props/components/data-entry.prop.ts"
+          ]
+        }
+      ]
+    },
+    "FilterBar": {
+      "group": "navigation",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "hasActiveFilters",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "onClear",
+          "origin": "owned",
+          "required": false,
+          "type": "OnClearFiltersProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "sticky",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        }
+      ]
+    },
+    "FilterBarGroup": {
+      "group": "navigation",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
           ]
         }
       ]
@@ -6879,6 +7228,19 @@
           ]
         },
         {
+          "name": "mark",
+          "origin": "owned",
+          "required": false,
+          "type": "LogoMark | undefined",
+          "values": [
+            "glyph",
+            "godx"
+          ],
+          "declaredIn": [
+            "src/components/general/logo.tsx"
+          ]
+        },
+        {
           "name": "size",
           "origin": "owned",
           "required": false,
@@ -6891,6 +7253,77 @@
           ],
           "declaredIn": [
             "src/components/general/logo.tsx"
+          ]
+        },
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "LogoTone | undefined",
+          "values": [
+            "success",
+            "primary"
+          ],
+          "declaredIn": [
+            "src/components/general/logo.tsx"
+          ]
+        }
+      ]
+    },
+    "MasterDetail": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "detailLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "master",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "masterLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "railWidth",
+          "origin": "owned",
+          "required": false,
+          "type": "MasterDetailRailWidthProp | undefined",
+          "values": [
+            "compact",
+            "standard"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
           ]
         }
       ]
@@ -8008,6 +8441,157 @@
           "values": [],
           "declaredIn": [
             "src/props/components/data-entry.prop.ts"
+          ]
+        }
+      ]
+    },
+    "OrgSwitcher": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "collapsed",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "error",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "labels",
+          "origin": "owned",
+          "required": true,
+          "type": "OrgSwitcherLabels",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((open: boolean) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "onRetry",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "onValueChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: string) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "open",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "organizations",
+          "origin": "owned",
+          "required": true,
+          "type": "readonly OrgSwitcherOrganization[]",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "responsive",
+          "origin": "owned",
+          "required": false,
+          "type": "\"popover\" | \"auto\" | \"sheet\" | undefined",
+          "values": [
+            "popover",
+            "auto",
+            "sheet"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "value",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
           ]
         }
       ]
@@ -10380,6 +10964,163 @@
         }
       ]
     },
+    "ServiceCatalogCta": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "action",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "LucideIcon | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        }
+      ]
+    },
+    "ServiceLauncherCard": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "action",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "disabledReason",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": true,
+          "type": "LucideIcon",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "metadata",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "statusLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "statusTone",
+          "origin": "owned",
+          "required": false,
+          "type": "ServiceLauncherStatusTone | undefined",
+          "values": [
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral"
+          ],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        },
+        {
+          "name": "titleLevel",
+          "origin": "owned",
+          "required": false,
+          "type": "HeadingLevelProp | undefined",
+          "values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        }
+      ]
+    },
+    "ServiceLauncherCardSkeleton": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/service-launcher-card.tsx"
+          ]
+        }
+      ]
+    },
     "Sheet": {
       "group": "feedback",
       "props": [
@@ -10493,6 +11234,16 @@
           ],
           "declaredIn": [
             "node_modules/.pnpm/@radix-ui+react-dialog@1.1.19_@types+react-dom@19.2.3_@types+react@19.2.17__@types+reac_8c2acd1036ebe22ffa260e976b7bebf3/node_modules/@radix-ui/react-dialog/dist/index.d.mts"
+          ]
+        },
+        {
+          "name": "overlayClassName",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/sheet.tsx"
           ]
         },
         {
@@ -10786,7 +11537,7 @@
           "name": "renderItem",
           "origin": "owned",
           "required": false,
-          "type": "((item: SidebarItemData) => ReactNode) | undefined",
+          "type": "((item: SidebarItemData, rowProps: SidebarRenderItemProp) => ReactNode) | undefined",
           "values": [],
           "declaredIn": [
             "src/props/components/layout.prop.ts"
@@ -11271,6 +12022,89 @@
           "values": [],
           "declaredIn": [
             "src/components/data-display/card.tsx"
+          ]
+        }
+      ]
+    },
+    "StatusBadge": {
+      "group": "data-display",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/badge.tsx"
+          ]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ComponentType<{ className?: string; }> | null | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/badge.tsx"
+          ]
+        },
+        {
+          "name": "shape",
+          "origin": "owned",
+          "required": false,
+          "type": "ShapeProp | null | undefined",
+          "values": [
+            "default",
+            "pill",
+            "sharp"
+          ],
+          "declaredIn": [
+            "src/components/data-display/badge.tsx"
+          ]
+        },
+        {
+          "name": "status",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/badge.tsx"
+          ]
+        },
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "BadgeTone | null | undefined",
+          "values": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral",
+            "primary"
+          ],
+          "declaredIn": [
+            "src/components/data-display/badge.tsx"
+          ]
+        },
+        {
+          "name": "variant",
+          "origin": "owned",
+          "required": false,
+          "type": "BadgeVariant | null | undefined",
+          "values": [
+            "default",
+            "secondary",
+            "outline",
+            "dashed"
+          ],
+          "declaredIn": [
+            "src/components/data-display/badge.tsx"
           ]
         }
       ]
@@ -13250,6 +14084,127 @@
           "values": [],
           "declaredIn": [
             "src/props/components/data-entry.prop.ts"
+          ]
+        }
+      ]
+    },
+    "TwoFactorSetup": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "code",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "labels",
+          "origin": "owned",
+          "required": true,
+          "type": "TwoFactorSetupLabels",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "manualKey",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "onAcknowledge",
+          "origin": "owned",
+          "required": true,
+          "type": "() => void",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "onCodeChange",
+          "origin": "owned",
+          "required": true,
+          "type": "(code: string) => void",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "onConfirm",
+          "origin": "owned",
+          "required": true,
+          "type": "() => void",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "onOpenChange",
+          "origin": "owned",
+          "required": true,
+          "type": "(open: boolean) => void",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "open",
+          "origin": "owned",
+          "required": true,
+          "type": "boolean",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "pending",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "qrValue",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
+          ]
+        },
+        {
+          "name": "recoveryCodes",
+          "origin": "owned",
+          "required": false,
+          "type": "string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/feedback/two-factor-setup.tsx"
           ]
         }
       ]
