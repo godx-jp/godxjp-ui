@@ -485,6 +485,18 @@
     margin-inline-start: auto;
   }
 
+  @media (max-width: 359px) {
+    [data-slot="list-row"] {
+      flex-wrap: wrap;
+    }
+
+    [data-slot="list-row-trailing"] {
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+  }
+
   /* CredentialReveal — one-time secret surface: caution banner, masked/revealed value row with
    * copy/reveal/download actions, and an optional acknowledge footer. Density-aware via the
    * --control-height tier; colours/spacing read semantic role tokens only. */

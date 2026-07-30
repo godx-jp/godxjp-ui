@@ -112,6 +112,7 @@ export function CommandPalette({
       <DialogContent
         className="ui-command-palette"
         showCloseButton={false}
+        aria-modal="true"
         aria-describedby="ui-command-palette-description"
       >
         <Dialog.Title className="sr-only">{labels.title}</Dialog.Title>

@@ -96,7 +96,7 @@ export function AppShell({
         )}
         {resolvedTopbar}
       </header>
-      <main className="app-main" aria-label={t("layout.appShell.mainLabel")}>
+      <main className="app-main" aria-label={t("layout.appShell.mainLabel")} tabIndex={0}>
         {breadcrumb !== undefined && <div className="app-breadcrumb">{breadcrumb}</div>}
         {children}
       </main>

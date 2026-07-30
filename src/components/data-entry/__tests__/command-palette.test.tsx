@@ -38,6 +38,7 @@ describe("CommandPalette", () => {
     await user.keyboard("{Control>}k{/Control}");
     const dialog = await screen.findByRole("dialog", { name: "Command palette" });
     expect(dialog).toBeInTheDocument();
+    expect(dialog).toHaveAttribute("aria-modal", "true");
     expect(screen.getByRole("combobox", { name: "Command palette" })).toHaveFocus();
 
     await user.keyboard("{ArrowDown}{Enter}");
