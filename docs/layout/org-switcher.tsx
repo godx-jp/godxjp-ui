@@ -35,7 +35,7 @@ const labels: OrgSwitcherLabels = {
  */
 export default function Demo() {
   const [value, setValue] = useState("godx");
-  const [error, setError] = useState("組織一覧を取得できませんでした。");
+  const [error, setError] = useState<string | undefined>("組織一覧を取得できませんでした。");
 
   return (
     <PageContainer title="OrgSwitcher" subtitle="選択 · 検索 · collapsed · loading/error">
@@ -89,7 +89,7 @@ export default function Demo() {
                 value={value}
                 labels={labels}
                 error={error}
-                onRetry={() => setError("")}
+                onRetry={() => setError(undefined)}
                 responsive="popover"
               />
               {!error ? (

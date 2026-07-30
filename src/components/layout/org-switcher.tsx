@@ -165,8 +165,18 @@ export function OrgSwitcher({
   className,
 }: OrgSwitcherProp) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
-  const resolvedOpen = open ?? uncontrolledOpen;
-  const setOpen = onOpenChange ?? setUncontrolledOpen;
+  const controlled = open !== undefined;
+  const resolvedOpen = controlled ? open : uncontrolledOpen;
+  const setOpen = React.useCallback(
+    (nextOpen: boolean) => {
+      if (!controlled) {
+        setUncontrolledOpen(nextOpen);
+      }
+
+      onOpenChange?.(nextOpen);
+    },
+    [controlled, onOpenChange],
+  );
   const mobile = useMediaQuery("(max-width: 390px)");
   const sheet = responsive === "sheet" || (responsive === "auto" && mobile);
   const current = organizations.find((organization) => organization.id === value);

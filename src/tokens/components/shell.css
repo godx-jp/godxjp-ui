@@ -7,6 +7,7 @@
   --sidebar-product-tenant-font-size: var(--font-size-2xs);
   --sidebar-badge-font-size: var(--font-size-2xs);
   --sidebar-user-role-font-size: var(--font-size-2xs);
+  --org-switcher-meta-foreground: var(--muted-foreground);
   --sidebar-nav-sub-font-size: var(--font-size-xs);
   --sidebar-flyout-title-font-size: var(--font-size-xs);
   --topbar-chip-icon-font-size: var(--font-size-2xs);

@@ -1,3 +1,4 @@
+import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import { expectNoA11yViolations } from "@/test/a11y";
@@ -18,6 +19,37 @@ const labels = {
   retry: "Retry",
 };
 
+function ControlledOrgSwitcher({
+  responsive,
+  onOpenChange,
+  onValueChange,
+}: {
+  responsive: "popover" | "sheet";
+  onOpenChange: (open: boolean) => void;
+  onValueChange: (value: string) => void;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("dxs");
+
+  return (
+    <OrgSwitcher
+      organizations={organizations}
+      value={value}
+      onValueChange={(nextValue) => {
+        setValue(nextValue);
+        onValueChange(nextValue);
+      }}
+      labels={labels}
+      responsive={responsive}
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        onOpenChange(nextOpen);
+      }}
+    />
+  );
+}
+
 describe("OrgSwitcher public contract", () => {
   it("renders the selected organization, metadata and canonical shell classes", () => {
     const { container } = renderWithUi(
@@ -31,57 +63,67 @@ describe("OrgSwitcher public contract", () => {
     expect(container.querySelector(".ui-org-switcher-trigger")).toBeInTheDocument();
   });
 
-  it("searches, selects and closes the desktop popover", async () => {
-    const onValueChange = vi.fn();
+  it("keeps callback-only popover state uncontrolled across touch, focus, tab and close", async () => {
     const onOpenChange = vi.fn();
     const user = userEvent.setup();
     renderWithUi(
       <OrgSwitcher
         organizations={organizations}
         value="dxs"
-        onValueChange={onValueChange}
         labels={labels}
         responsive="popover"
-        open
         onOpenChange={onOpenChange}
       />,
     );
 
-    await user.type(await screen.findByLabelText("Search organizations"), "非常");
-    expect(screen.queryByRole("option", { name: /DXS Holdings/ })).not.toBeInTheDocument();
-    await user.click(screen.getByRole("option", { name: /非常に長い組織名/ }));
-    expect(onValueChange).toHaveBeenCalledWith("long");
-    expect(onOpenChange).toHaveBeenCalledWith(false);
+    const trigger = screen.getByRole("button", {
+      name: "Current organization: DXS Holdings",
+    });
+    trigger.focus();
+    await user.pointer({ keys: "[TouchA]", target: trigger });
+    const dialog = await screen.findByRole("dialog", { name: "Choose organization" });
+    const search = await screen.findByLabelText("Search organizations");
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+    expect(search).toHaveFocus();
+    await user.tab();
+    expect(dialog).toBeInTheDocument();
+    expect(document.activeElement).not.toBe(document.body);
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog", { name: "Choose organization" })).not.toBeInTheDocument();
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    expect(trigger).toHaveFocus();
   });
 
-  it("opens and closes the uncontrolled desktop popover from its trigger", async () => {
+  it("keeps the controlled sheet stateful across touch, focus, tab, selection and close", async () => {
+    const onOpenChange = vi.fn();
+    const onValueChange = vi.fn();
     const user = userEvent.setup();
     renderWithUi(
-      <OrgSwitcher
-        organizations={organizations}
-        value="dxs"
-        labels={labels}
-        responsive="popover"
+      <ControlledOrgSwitcher
+        responsive="sheet"
+        onOpenChange={onOpenChange}
+        onValueChange={onValueChange}
       />,
     );
 
-    await user.click(screen.getByRole("button", { name: "Current organization: DXS Holdings" }));
-    expect(await screen.findByRole("dialog", { name: "Choose organization" })).toBeInTheDocument();
-    expect(await screen.findByLabelText("Search organizations")).toBeInTheDocument();
-    await user.keyboard("{Escape}");
-    expect(screen.queryByLabelText("Search organizations")).not.toBeInTheDocument();
-  });
-
-  it("renders a focus-trapped bottom Sheet in the explicit mobile mode", async () => {
-    const user = userEvent.setup();
-    renderWithUi(
-      <OrgSwitcher organizations={organizations} value="dxs" labels={labels} responsive="sheet" />,
-    );
-
-    await user.click(screen.getByRole("button", { name: "Current organization: DXS Holdings" }));
-    expect(await screen.findByRole("dialog", { name: "Choose organization" })).toBeInTheDocument();
-    await user.keyboard("{Escape}");
+    const trigger = screen.getByRole("button", {
+      name: "Current organization: DXS Holdings",
+    });
+    trigger.focus();
+    await user.pointer({ keys: "[TouchA]", target: trigger });
+    const dialog = await screen.findByRole("dialog", { name: "Choose organization" });
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+    expect(dialog).toContainElement(document.activeElement as HTMLElement);
+    await user.tab();
+    expect(dialog).toContainElement(document.activeElement as HTMLElement);
+    await user.pointer({
+      keys: "[TouchA]",
+      target: screen.getByRole("option", { name: /非常に長い組織名/ }),
+    });
     expect(screen.queryByRole("dialog", { name: "Choose organization" })).not.toBeInTheDocument();
+    expect(onValueChange).toHaveBeenCalledWith("long");
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    expect(trigger).toHaveFocus();
   });
 
   it("has no axe violations in the named open popover", async () => {

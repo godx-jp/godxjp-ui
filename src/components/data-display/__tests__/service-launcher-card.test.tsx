@@ -57,14 +57,15 @@ describe("ServiceLauncherCard", () => {
     expect(screen.getByRole("button", { name: "カタログを見る" })).toBeInTheDocument();
 
     rerender(<ServiceLauncherCardSkeleton label="サービスを読み込み中" />);
-    expect(screen.getByRole("status", { name: "サービスを読み込み中" })).toHaveAttribute(
+    expect(screen.getByText("サービスを読み込み中").closest("[aria-busy]")).toHaveAttribute(
       "aria-busy",
       "true",
     );
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
     expect(container.querySelectorAll(".ui-skeleton-block")).toHaveLength(6);
   });
 
-  it("has no axe violations for launcher and catalog tiles", async () => {
+  it("has no axe violations or repeated live regions for launcher and catalog tiles", async () => {
     await expectNoA11yViolations(
       <main>
         <h1>サービス</h1>
@@ -82,7 +83,11 @@ describe("ServiceLauncherCard", () => {
           action={<Button variant="outline">カタログを見る</Button>}
         />
         <ServiceLauncherCardSkeleton label="サービスを読み込み中" />
+        <ServiceLauncherCardSkeleton label="別のサービスを読み込み中" />
       </main>,
     );
+
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(screen.getAllByText(/サービスを読み込み中/)).toHaveLength(2);
   });
 });

@@ -125,11 +125,10 @@ export function ServiceLauncherCardSkeleton({
       density="tight"
       className={cn("ui-service-launcher-card", className)}
       data-service-launcher=""
-      role="status"
-      aria-label={label}
       aria-busy="true"
       {...props}
     >
+      <span className="sr-only">{label}</span>
       <div data-slot="service-launcher-skeleton-heading">
         <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-icon" />
         <span className="ui-skeleton-block" data-slot="service-launcher-skeleton-title" />

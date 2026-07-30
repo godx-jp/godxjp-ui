@@ -448,7 +448,7 @@
   }
 
   .ui-org-switcher-meta {
-    color: hsl(var(--foreground));
+    color: hsl(var(--org-switcher-meta-foreground));
     font-size: var(--sidebar-user-role-font-size);
   }
 
