@@ -112,7 +112,16 @@ export default function Demo() {
                     <AvatarFallback>G</AvatarFallback>
                   </Avatar>
                 }
-                end={<AppSettingPicker kind="locale" appearance="icon" id="topbar-locale-icon" />}
+                end={
+                  <Flex direction="row" gap="sm" align="center">
+                    <AppSettingPicker
+                      kind="locale"
+                      appearance="inline"
+                      id="topbar-locale-inline"
+                    />
+                    <AppSettingPicker kind="locale" appearance="icon" id="topbar-locale-icon" />
+                  </Flex>
+                }
               />
             </CardContent>
           </Card>

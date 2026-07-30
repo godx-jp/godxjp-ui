@@ -207,7 +207,7 @@
     "AppSettingPicker": {
       "props": {
         "appearance": {
-          "cases": ["icon", "labeled"],
+          "cases": ["icon", "inline", "labeled"],
           "evidence": [
             "docs/navigation/app-setting-picker.tsx",
             "src/components/__tests__/app-setting-picker.a11y.test.tsx"
