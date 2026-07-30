@@ -122,7 +122,11 @@ export function CommandPalette({
           const restoreTarget = shortcutRestoreFocusRef.current;
           if (restoreTarget?.isConnected) {
             event.preventDefault();
-            restoreTarget.focus();
+            requestAnimationFrame(() => {
+              if (restoreTarget.isConnected) {
+                restoreTarget.focus({ preventScroll: true });
+              }
+            });
           }
           shortcutRestoreFocusRef.current = null;
         }}

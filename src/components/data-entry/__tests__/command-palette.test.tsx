@@ -49,7 +49,7 @@ describe("CommandPalette", () => {
     await screen.findByRole("dialog", { name: "Command palette" });
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(trigger).toHaveFocus();
+    await waitFor(() => expect(trigger).toHaveFocus());
   });
 
   it("supports controlled state and click-out close without a consumer key handler", async () => {
