@@ -1,14 +1,15 @@
 import { useState } from "react";
 
-import { SearchInput, Select } from "@godxjp/ui/data-entry";
+import {
+  SearchInput,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@godxjp/ui/data-entry";
 import { PageContainer } from "@godxjp/ui/layout";
 import { FilterBar, FilterBarGroup } from "@godxjp/ui/navigation";
-
-const statusOptions = [
-  { label: "All statuses", value: "all" },
-  { label: "Active", value: "active" },
-  { label: "Paused", value: "paused" },
-];
 
 /** FilterBar — domain-neutral list filtering with consumer-owned state and clear behavior. */
 export default function Demo() {
@@ -32,15 +33,19 @@ export default function Demo() {
           aria-label="Search records"
           placeholder="Search records"
           value={query}
-          onSearchChange={setQuery}
+          onSearch={setQuery}
         />
         <FilterBarGroup label="Status">
-          <Select
-            aria-label="Status"
-            options={statusOptions}
-            value={status}
-            onValueChange={(value) => setStatus(value ?? "all")}
-          />
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger aria-label="Status">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="paused">Paused</SelectItem>
+            </SelectContent>
+          </Select>
         </FilterBarGroup>
       </FilterBar>
     </PageContainer>
