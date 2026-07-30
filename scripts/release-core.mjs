@@ -594,6 +594,17 @@ export function runRelease({
         persist();
         continue;
       }
+      if (
+        (step === RELEASE_STEPS.PromoteUiLatest || step === RELEASE_STEPS.PromoteMcpLatest) &&
+        (progress.ui.compensated ||
+          progress.mcp.compensated ||
+          progress.latestCompensation !== null)
+      ) {
+        progress.ui.compensated = false;
+        progress.mcp.compensated = false;
+        progress.latestCompensation = null;
+        persist(step);
+      }
       runStep(step, plan, artifacts, progress);
       if (step === RELEASE_STEPS.RecordPreviousLatestTags) progress.latestRecorded = true;
       if (step === RELEASE_STEPS.PromoteUiLatest) progress.ui.promoted = true;
@@ -608,9 +619,8 @@ export function runRelease({
   } catch (error) {
     let recoveryError = error;
     if (
-      activeStep === RELEASE_STEPS.PromoteMcpLatest &&
-      progress.ui.promoted &&
-      !progress.mcp.promoted
+      activeStep === RELEASE_STEPS.PromoteUiLatest ||
+      activeStep === RELEASE_STEPS.PromoteMcpLatest
     ) {
       try {
         progress.latestCompensation = compensateLatest(plan, progress);

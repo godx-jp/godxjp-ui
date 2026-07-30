@@ -547,6 +547,123 @@ describe("recoverable coordinated release", () => {
     expect(executed).toContain(RELEASE_STEPS.PromoteMcpLatest);
   });
 
+  it("compensates both latest tags on UI promotion ambiguity and clears history on recovery", () => {
+    const rootDir = fixture();
+    const recoveryDirectory = join(rootDir, ".recovery");
+    const artifactDirectory = join(recoveryDirectory, "artifacts");
+    mkdirSync(artifactDirectory, { recursive: true });
+    const uiTarball = join(artifactDirectory, "ui.tgz");
+    const mcpTarball = join(artifactDirectory, "mcp.tgz");
+    writeFileSync(uiTarball, "ui immutable bytes");
+    writeFileSync(mcpTarball, "mcp immutable bytes");
+    let state: RecoveryState | null = null;
+    let compensated = false;
+
+    expect(() =>
+      runRelease({
+        rootDir,
+        uiBump: "patch",
+        mcpBump: "sync",
+        sourceHead: SOURCE_HEAD,
+        recoveryDirectory,
+        runStep: (
+          step: string,
+          _plan: unknown,
+          _packed: unknown,
+          progress: Record<string, Record<string, unknown>>,
+        ) => {
+          recordLatest(step, progress);
+          if (step === RELEASE_STEPS.PromoteUiLatest) {
+            throw new Error("UI latest changed then timed out");
+          }
+        },
+        packTargetManifests: () => ({
+          ui: {},
+          mcp: {},
+          uiTarball,
+          mcpTarball,
+          uiIntegrity: integrityFor(uiTarball),
+          mcpIntegrity: integrityFor(mcpTarball),
+        }),
+        compensateLatest: (_plan: unknown, progress: Record<string, Record<string, unknown>>) => {
+          compensated = true;
+          expect(progress.ui.previousLatest).toBe("18.4.0");
+          expect(progress.mcp.previousLatest).toBe("18.4.0");
+          return {
+            observed: { ui: "18.4.1", mcp: "18.4.0" },
+            restored: { ui: "18.4.0", mcp: "18.4.0" },
+          };
+        },
+        writeRecoveryState: (value: RecoveryState) => {
+          state = structuredClone(value);
+        },
+      }),
+    ).toThrow("UI latest changed then timed out");
+    expect(compensated).toBe(true);
+    expect((state as RecoveryState | null)?.ui).toMatchObject({
+      promoted: false,
+      compensated: true,
+    });
+    expect((state as RecoveryState | null)?.mcp).toMatchObject({
+      promoted: false,
+      compensated: true,
+    });
+    expect(
+      validateRecoveryState(state, {
+        sourceHead: SOURCE_HEAD,
+        rootDir,
+        recoveryDirectory,
+      }),
+    ).toBeTruthy();
+
+    expect(() =>
+      runRelease({
+        rootDir,
+        uiBump: "skip",
+        mcpBump: "sync",
+        sourceHead: SOURCE_HEAD,
+        recoveryState: state,
+        runStep: (step: string) => {
+          if (step === RELEASE_STEPS.CommitTargetMetadata) throw new Error("commit retry failed");
+        },
+        writeRecoveryState: (value: RecoveryState) => {
+          state = structuredClone(value);
+        },
+      }),
+    ).toThrow("commit retry failed");
+    expect((state as RecoveryState | null)?.ui).toMatchObject({
+      promoted: true,
+      compensated: false,
+      stageTagRemoved: true,
+    });
+    expect((state as RecoveryState | null)?.mcp).toMatchObject({
+      promoted: true,
+      compensated: false,
+      stageTagRemoved: true,
+    });
+    expect((state as RecoveryState | null)?.latestCompensation).toBeNull();
+    expect(
+      validateRecoveryState(state, {
+        sourceHead: SOURCE_HEAD,
+        rootDir,
+        recoveryDirectory,
+      }),
+    ).toBeTruthy();
+
+    const executed: string[] = [];
+    runRelease({
+      rootDir,
+      uiBump: "skip",
+      mcpBump: "sync",
+      sourceHead: SOURCE_HEAD,
+      recoveryState: state,
+      runStep: (step: string) => executed.push(step),
+    });
+    expect(executed).not.toContain(RELEASE_STEPS.PromoteUiLatest);
+    expect(executed).not.toContain(RELEASE_STEPS.PromoteMcpLatest);
+    expect(executed).toContain(RELEASE_STEPS.CommitTargetMetadata);
+  });
+
   it("labels metadata-plan CLI output as explicitly non-validating", () => {
     const output = execFileSync(
       "node",
