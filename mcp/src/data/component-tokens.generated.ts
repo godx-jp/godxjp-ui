@@ -539,6 +539,36 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
+    "name": "--command-palette-width",
+    "value": "35rem",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+  },
+  {
+    "name": "--command-palette-top",
+    "value": "calc(var(--space-6) * 4)",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+  },
+  {
+    "name": "--command-palette-viewport-gutter",
+    "value": "var(--space-3)",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+  },
+  {
+    "name": "--command-palette-hint-padding-y",
+    "value": "var(--space-2)",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+  },
+  {
+    "name": "--command-palette-hint-padding-x",
+    "value": "var(--space-4)",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+  },
+  {
+    "name": "--command-palette-hint-gap",
+    "value": "var(--space-4)",
+    "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
+  },
+  {
     "name": "--search-input-edge-inset",
     "value": "var(--space-3)",
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
@@ -707,6 +737,31 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--descriptions-label-width",
     "value": "8rem",
     "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this * shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). * A rem value gives a fixed aligned column; set `max-content` to size each label to its text. * (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
+  },
+  {
+    "name": "--sheet-width-default",
+    "value": "22.5rem",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--sheet-overlay-background",
+    "value": "rgb(0 0 0 / 0.2)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--dialog-width-default",
+    "value": "32rem",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--dialog-viewport-gutter",
+    "value": "1.5rem",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
+  },
+  {
+    "name": "--dialog-overlay-background",
+    "value": "rgb(0 0 0 / 0.3)",
+    "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
     "name": "--dialog-space-x",
@@ -919,6 +974,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo."
   },
   {
+    "name": "--logo-godx-size",
+    "value": "2rem",
+    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo."
+  },
+  {
+    "name": "--logo-godx-color",
+    "value": "var(--success)",
+    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo."
+  },
+  {
     "name": "--pagination-gap",
     "value": "var(--space-inline-sm)",
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
@@ -1024,6 +1089,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
   },
   {
+    "name": "--org-switcher-meta-foreground",
+    "value": "var(--muted-foreground)",
+    "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
+  },
+  {
     "name": "--sidebar-nav-sub-font-size",
     "value": "var(--font-size-xs)",
     "description": "Shell (sidebar / topbar / kbd) component tokens — small-by-design text * knobs (rule #45/#46). A service re-tunes chrome text without moving the * global scale."
@@ -1084,6 +1154,16 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
   },
   {
+    "name": "--app-shell-mobile-nav-width",
+    "value": "22.5rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--app-shell-mobile-nav-overlay",
+    "value": "rgb(0 0 0 / 0.2)",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
     "name": "--sidebar-brand-mark-size",
     "value": "1.375rem",
     "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
@@ -1099,8 +1179,78 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
   },
   {
+    "name": "--sidebar-nav-icon-size",
+    "value": "1rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-nav-item-gap",
+    "value": "0.625rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-nav-item-padding-x",
+    "value": "0.625rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-nav-gap",
+    "value": "2px",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-nav-scroll-padding",
+    "value": "var(--space-3) var(--space-2)",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-section-gap",
+    "value": "var(--space-4)",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-section-label-padding-x",
+    "value": "var(--space-2)",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--sidebar-section-label-padding-bottom",
+    "value": "var(--space-1)",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
     "name": "--topbar-search-max-width",
     "value": "26.25rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--org-switcher-trigger-height",
+    "value": "2.75rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--org-switcher-trigger-padding-x",
+    "value": "var(--space-2)",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--org-switcher-avatar-size",
+    "value": "1.75rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--org-switcher-menu-width",
+    "value": "16rem",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--org-switcher-sheet-max-height",
+    "value": "75dvh",
+    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+  },
+  {
+    "name": "--org-switcher-state-min-height",
+    "value": "8rem",
     "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
   },
   {
@@ -1164,6 +1314,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
   },
   {
+    "name": "--auth-shell-canonical-heading-size",
+    "value": "var(--font-size-base)",
+    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+  },
+  {
     "name": "--auth-shell-canonical-main-padding",
     "value": "1rem",
     "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
@@ -1175,7 +1330,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-shell-compact-card-inset",
-    "value": "var(--space-4)",
+    "value": "var(--space-6)",
     "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
   },
   {
@@ -1190,12 +1345,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-shell-divider-gap",
-    "value": "var(--space-3)",
+    "value": "0.625rem",
     "description": "Labelled auth divider geometry."
   },
   {
     "name": "--auth-shell-divider-label-font-size",
-    "value": "var(--font-size-sm)",
+    "value": "0.6875rem",
     "description": "Labelled auth divider geometry."
   },
   {
@@ -1206,6 +1361,56 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--auth-shell-divider-label-color",
     "value": "var(--muted-foreground)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-identity-gap",
+    "value": "0.375rem",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-requester-gap",
+    "value": "0.375rem",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-requester-icon-size",
+    "value": "1rem",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-requester-glyph-size",
+    "value": "0.625rem",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-legal-footer-gap",
+    "value": "0.375rem",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-legal-footer-font-size",
+    "value": "0.6875rem",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-stack-gap",
+    "value": "var(--space-3)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-field-label-gap",
+    "value": "var(--space-1)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-field-label-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-field-label-line-height",
+    "value": "1.25",
     "description": "Labelled auth divider geometry."
   },
   {
