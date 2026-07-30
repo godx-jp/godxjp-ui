@@ -65,6 +65,7 @@ function packageProgress() {
     published: false,
     promoted: false,
     compensated: false,
+    stageTagRemovalAttempted: false,
     stageTagRemoved: false,
     previousLatest: null,
   };
@@ -79,6 +80,7 @@ function initialProgress(targetVersion, stageTag, sourceHead) {
     manifests: null,
     artifacts: null,
     latestRecorded: false,
+    latestCompensation: null,
     ui: packageProgress(),
     mcp: packageProgress(),
     committed: false,
@@ -205,18 +207,64 @@ export function assertTargetMetadata(ui, mcp, targetVersion, source = "package")
 }
 
 export function validateRecoveryState(state, { sourceHead, rootDir, recoveryDirectory }) {
-  if (!state || state.schemaVersion !== 2 || !SEMVER.test(state.targetVersion)) {
+  const exactKeys = (value, keys, label) => {
+    if (
+      !value ||
+      typeof value !== "object" ||
+      Object.keys(value).sort().join("\0") !== [...keys].sort().join("\0")
+    ) {
+      throw new Error(`Recovery ${label} shape is invalid.`);
+    }
+  };
+  const packageKeys = [
+    "publishAttempted",
+    "published",
+    "promoted",
+    "compensated",
+    "stageTagRemovalAttempted",
+    "stageTagRemoved",
+    "previousLatest",
+  ];
+  exactKeys(
+    state,
+    [
+      "schemaVersion",
+      "sourceHead",
+      "targetVersion",
+      "stageTag",
+      "manifests",
+      "artifacts",
+      "latestRecorded",
+      "latestCompensation",
+      "ui",
+      "mcp",
+      "committed",
+      "failedStep",
+      "error",
+      "updatedAt",
+    ],
+    "state",
+  );
+  if (
+    state.schemaVersion !== 2 ||
+    !SEMVER.test(state.targetVersion) ||
+    !/^[0-9a-f]{40,64}$/.test(state.sourceHead)
+  ) {
     throw new Error("Recovery state schema/version is invalid.");
   }
   if (state.sourceHead !== sourceHead)
     throw new Error("Recovery source HEAD differs from current HEAD.");
   if (state.stageTag !== `godx-staging-${state.targetVersion}`)
     throw new Error("Recovery staging tag is invalid.");
+  exactKeys(state.manifests, ["original", "target"], "manifests");
+  exactKeys(state.manifests.original, ["ui", "mcp"], "original manifests");
+  exactKeys(state.manifests.target, ["ui", "mcp"], "target manifests");
   if (
-    !state.manifests?.original?.ui ||
-    !state.manifests?.original?.mcp ||
-    !state.manifests?.target?.ui ||
-    !state.manifests?.target?.mcp
+    !["ui", "mcp"].every(
+      (name) =>
+        typeof state.manifests.original[name] === "string" &&
+        typeof state.manifests.target[name] === "string",
+    )
   ) {
     throw new Error("Recovery manifest snapshots are incomplete.");
   }
@@ -227,12 +275,17 @@ export function validateRecoveryState(state, { sourceHead, rootDir, recoveryDire
   const targetUi = JSON.parse(state.manifests.target.ui);
   const targetMcp = JSON.parse(state.manifests.target.mcp);
   assertTargetMetadata(targetUi, targetMcp, state.targetVersion, "recovery target");
+  JSON.parse(state.manifests.original.ui);
+  JSON.parse(state.manifests.original.mcp);
+  exactKeys(state.artifacts, ["ui", "mcp"], "artifacts");
   const recoveryRoot = `${resolve(recoveryDirectory)}${sep}`;
   for (const packageName of ["ui", "mcp"]) {
     const artifact = state.artifacts?.[packageName];
+    exactKeys(artifact, ["path", "integrity"], `${packageName} artifact`);
     if (
-      !artifact?.path ||
-      !artifact?.integrity ||
+      typeof artifact.path !== "string" ||
+      typeof artifact.integrity !== "string" ||
+      !/^sha512-[A-Za-z0-9+/]+={0,2}$/.test(artifact.integrity) ||
       !resolve(artifact.path).startsWith(recoveryRoot)
     ) {
       throw new Error(`Recovery ${packageName} artifact path/integrity is invalid.`);
@@ -241,16 +294,50 @@ export function validateRecoveryState(state, { sourceHead, rootDir, recoveryDire
       throw new Error(`Recovery ${packageName} artifact differs from recorded SHA512 integrity.`);
     }
     const progress = state[packageName];
+    exactKeys(progress, packageKeys, `${packageName} progress`);
+    const booleanFields = packageKeys.filter((key) => key !== "previousLatest");
     if (
-      !progress ||
+      !booleanFields.every((key) => typeof progress[key] === "boolean") ||
+      (progress.previousLatest !== null &&
+        (typeof progress.previousLatest !== "string" || !SEMVER.test(progress.previousLatest))) ||
       (progress.promoted && !progress.published) ||
-      (progress.stageTagRemoved && !progress.published)
+      (progress.stageTagRemovalAttempted && !progress.published) ||
+      (progress.stageTagRemoved && (!progress.published || !progress.stageTagRemovalAttempted)) ||
+      (progress.compensated && (!progress.published || progress.promoted))
     ) {
       throw new Error(`Recovery ${packageName} progress invariants are invalid.`);
     }
   }
-  if (!state.latestRecorded || state.committed)
+  if (state.latestCompensation !== null) {
+    exactKeys(state.latestCompensation, ["observed", "restored"], "latest compensation");
+    exactKeys(state.latestCompensation.observed, ["ui", "mcp"], "observed latest tags");
+    exactKeys(state.latestCompensation.restored, ["ui", "mcp"], "restored latest tags");
+    for (const snapshot of [state.latestCompensation.observed, state.latestCompensation.restored]) {
+      if (
+        !["ui", "mcp"].every(
+          (name) =>
+            snapshot[name] === null ||
+            (typeof snapshot[name] === "string" && SEMVER.test(snapshot[name])),
+        )
+      ) {
+        throw new Error("Recovery latest compensation versions are invalid.");
+      }
+    }
+  }
+  if (
+    state.latestRecorded !== true ||
+    state.committed !== false ||
+    (state.failedStep !== null && typeof state.failedStep !== "string") ||
+    (state.error !== null && typeof state.error !== "string") ||
+    typeof state.updatedAt !== "string" ||
+    (state.mcp.promoted && !state.ui.promoted && !state.ui.compensated) ||
+    (state.latestCompensation !== null &&
+      (typeof state.latestCompensation !== "object" ||
+        !state.ui.compensated ||
+        !state.mcp.compensated))
+  ) {
     throw new Error("Recovery transaction invariants are invalid.");
+  }
   return structuredClone(state);
 }
 
@@ -282,7 +369,26 @@ export function reconcilePackagePublication({
   const exactIntegrity = registry.integrity === artifact.integrity;
   const exactStageTag = registry.tags?.[stageTag] === targetVersion;
   if (progress.published) {
-    if (!exactIntegrity || (!progress.stageTagRemoved && !exactStageTag)) {
+    if (!exactIntegrity) {
+      throw new Error(`${packageName} registry integrity/staging tag differs from recovery state.`);
+    }
+    if (progress.stageTagRemoved) {
+      if (registry.tags?.[stageTag] !== undefined) {
+        throw new Error(`${packageName} staging tag reappeared after recorded removal.`);
+      }
+      return;
+    }
+    if (progress.stageTagRemovalAttempted) {
+      if (registry.tags?.[stageTag] === undefined) {
+        progress.stageTagRemoved = true;
+        return;
+      }
+      if (!exactStageTag) {
+        throw new Error(`${packageName} ambiguous staging-tag removal cannot be reconciled.`);
+      }
+      return;
+    }
+    if (!exactStageTag) {
       throw new Error(`${packageName} registry integrity/staging tag differs from recovery state.`);
     }
     return;
@@ -301,11 +407,19 @@ export function assertFreshTargets(uiRegistry, mcpRegistry) {
     throw new Error("Target version already exists; refusing partial/overwrite release.");
 }
 
-export function assertRegistryArtifact(registry, artifact, targetVersion, stageTag, packageName) {
+export function assertRegistryArtifact(
+  registry,
+  artifact,
+  targetVersion,
+  stageTag,
+  packageName,
+  requireStageTag = true,
+) {
   if (
     !registry.exists ||
     registry.integrity !== artifact.integrity ||
-    registry.tags?.[stageTag] !== targetVersion
+    (requireStageTag && registry.tags?.[stageTag] !== targetVersion) ||
+    (!requireStageTag && registry.tags?.[stageTag] !== undefined)
   ) {
     throw new Error(
       `${packageName} registry artifact integrity or staging tag does not match verified tarball.`,
@@ -402,7 +516,7 @@ export function runRelease({
   packTargetManifests = packAndVerifyTargetManifests,
   writeRecoveryState = () => {},
   clearRecoveryState = () => {},
-  compensateUiLatest = () => {},
+  compensateLatest = () => {},
   onStep = () => {},
 }) {
   const original = manifestBytes(rootDir);
@@ -470,12 +584,20 @@ export function runRelease({
         persist();
         continue;
       }
+      if (step === RELEASE_STEPS.RemoveUiStagingTag || step === RELEASE_STEPS.RemoveMcpStagingTag) {
+        const packageState = step === RELEASE_STEPS.RemoveUiStagingTag ? progress.ui : progress.mcp;
+        if (packageState.stageTagRemoved) continue;
+        packageState.stageTagRemovalAttempted = true;
+        persist(step);
+        runStep(step, plan, artifacts, progress);
+        packageState.stageTagRemoved = true;
+        persist();
+        continue;
+      }
       runStep(step, plan, artifacts, progress);
       if (step === RELEASE_STEPS.RecordPreviousLatestTags) progress.latestRecorded = true;
       if (step === RELEASE_STEPS.PromoteUiLatest) progress.ui.promoted = true;
       if (step === RELEASE_STEPS.PromoteMcpLatest) progress.mcp.promoted = true;
-      if (step === RELEASE_STEPS.RemoveUiStagingTag) progress.ui.stageTagRemoved = true;
-      if (step === RELEASE_STEPS.RemoveMcpStagingTag) progress.mcp.stageTagRemoved = true;
       if (step === RELEASE_STEPS.CommitTargetMetadata) {
         progress.committed = true;
         clearRecoveryState();
@@ -491,12 +613,14 @@ export function runRelease({
       !progress.mcp.promoted
     ) {
       try {
-        compensateUiLatest(plan, progress);
+        progress.latestCompensation = compensateLatest(plan, progress);
         progress.ui.promoted = false;
+        progress.mcp.promoted = false;
         progress.ui.compensated = true;
+        progress.mcp.compensated = true;
       } catch (compensationError) {
         recoveryError = new Error(
-          `${error.message}; UI latest compensation also failed: ${compensationError.message}`,
+          `${error.message}; latest compensation also failed: ${compensationError.message}`,
         );
       }
     }

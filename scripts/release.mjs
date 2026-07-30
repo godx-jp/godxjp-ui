@@ -144,6 +144,7 @@ function executeReleaseStep(step, plan, artifacts, progress) {
         plan.targetVersion,
         plan.stageTag,
         "@godxjp/ui",
+        !progress.ui.stageTagRemoved,
       );
       assertRegistryArtifact(
         mcpRegistry,
@@ -151,6 +152,7 @@ function executeReleaseStep(step, plan, artifacts, progress) {
         plan.targetVersion,
         plan.stageTag,
         "@godxjp/ui-mcp",
+        !progress.mcp.stageTagRemoved,
       );
       return;
     }
@@ -172,12 +174,31 @@ function executeReleaseStep(step, plan, artifacts, progress) {
   }
 }
 
-function compensateUiLatest(_plan, progress) {
-  if (progress.ui.previousLatest) {
-    command("npm", ["dist-tag", "add", `@godxjp/ui@${progress.ui.previousLatest}`, "latest"]);
-  } else {
-    command("npm", ["dist-tag", "rm", "@godxjp/ui", "latest"]);
+function compensateLatest(plan, progress) {
+  const observed = {
+    ui: registryState("@godxjp/ui", plan.targetVersion).tags.latest ?? null,
+    mcp: registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null,
+  };
+  const restore = (packageName, previousLatest, currentLatest) => {
+    if (currentLatest === previousLatest) return;
+    if (previousLatest) {
+      command("npm", ["dist-tag", "add", `${packageName}@${previousLatest}`, "latest"]);
+    } else {
+      command("npm", ["dist-tag", "rm", packageName, "latest"]);
+    }
+  };
+  restore("@godxjp/ui", progress.ui.previousLatest, observed.ui);
+  restore("@godxjp/ui-mcp", progress.mcp.previousLatest, observed.mcp);
+  const restored = {
+    ui: registryState("@godxjp/ui", plan.targetVersion).tags.latest ?? null,
+    mcp: registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null,
+  };
+  if (restored.ui !== progress.ui.previousLatest || restored.mcp !== progress.mcp.previousLatest) {
+    throw new Error(
+      `latest rollback verification failed: ${JSON.stringify({ observed, restored })}`,
+    );
   }
+  return { observed, restored };
 }
 
 function makePlanWorkspace() {
@@ -238,7 +259,7 @@ try {
     runStep: executeReleaseStep,
     writeRecoveryState: (state) => writeJsonAtomic(recoveryPath, state),
     clearRecoveryState: () => rmSync(recoveryDirectory, { force: true, recursive: true }),
-    compensateUiLatest,
+    compensateLatest,
     onStep: (step, mode) => console.log(`[${mode}] ${step}`),
   });
 

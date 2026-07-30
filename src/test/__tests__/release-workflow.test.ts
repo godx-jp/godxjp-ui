@@ -19,6 +19,8 @@ const {
   await import("../../../scripts/release-core.mjs");
 
 const workspaces: string[] = [];
+const SOURCE_HEAD = "a".repeat(40);
+const OTHER_HEAD = "b".repeat(40);
 type RecoveryState = Record<string, unknown> & {
   sourceHead: string;
   targetVersion: string;
@@ -90,7 +92,7 @@ describe("recoverable coordinated release", () => {
       currentVersion: "18.4.0",
       uiBump: "patch",
       mcpBump: "sync",
-      sourceHead: "head-a",
+      sourceHead: SOURCE_HEAD,
     });
     expect(plan.steps.slice(0, plan.steps.indexOf(RELEASE_STEPS.PublishUi))).toEqual([
       RELEASE_STEPS.ApplyTargetMetadata,
@@ -243,6 +245,16 @@ describe("recoverable coordinated release", () => {
         "@godxjp/ui",
       ),
     ).toThrow("integrity or staging tag");
+    expect(() =>
+      assertRegistryArtifact(
+        { exists: true, integrity: "sha512-exact", tags: {} },
+        { integrity: "sha512-exact" },
+        "18.4.1",
+        "godx-staging-18.4.1",
+        "@godxjp/ui",
+        false,
+      ),
+    ).not.toThrow();
   });
 
   it("binds recovery to source HEAD, exact manifests and retained SHA512 artifacts", () => {
@@ -260,7 +272,7 @@ describe("recoverable coordinated release", () => {
         rootDir,
         uiBump: "patch",
         mcpBump: "sync",
-        sourceHead: "head-a",
+        sourceHead: SOURCE_HEAD,
         recoveryDirectory,
         runStep: (
           step: string,
@@ -285,18 +297,176 @@ describe("recoverable coordinated release", () => {
       }),
     ).toThrow("MCP failed");
     expect(
-      validateRecoveryState(state, { sourceHead: "head-a", rootDir, recoveryDirectory }),
+      validateRecoveryState(state, { sourceHead: SOURCE_HEAD, rootDir, recoveryDirectory }),
     ).toMatchObject({
-      sourceHead: "head-a",
+      sourceHead: SOURCE_HEAD,
       targetVersion: "18.4.1",
     });
     expect(() =>
-      validateRecoveryState(state, { sourceHead: "head-b", rootDir, recoveryDirectory }),
+      validateRecoveryState(state, { sourceHead: OTHER_HEAD, rootDir, recoveryDirectory }),
     ).toThrow("source HEAD");
+    const wrongBoolean = structuredClone(state) as unknown as RecoveryState;
+    wrongBoolean.ui.published = "true";
+    expect(() =>
+      validateRecoveryState(wrongBoolean, {
+        sourceHead: SOURCE_HEAD,
+        rootDir,
+        recoveryDirectory,
+      }),
+    ).toThrow("progress invariants");
+    const invalidPreviousLatest = structuredClone(state) as unknown as RecoveryState;
+    invalidPreviousLatest.ui.previousLatest = "latest";
+    expect(() =>
+      validateRecoveryState(invalidPreviousLatest, {
+        sourceHead: SOURCE_HEAD,
+        rootDir,
+        recoveryDirectory,
+      }),
+    ).toThrow("progress invariants");
+    const extraKey = structuredClone(state) as unknown as RecoveryState & { unexpected?: boolean };
+    extraKey.unexpected = true;
+    expect(() =>
+      validateRecoveryState(extraKey, {
+        sourceHead: SOURCE_HEAD,
+        rootDir,
+        recoveryDirectory,
+      }),
+    ).toThrow("state shape");
+    const impossiblePromotion = structuredClone(state) as unknown as RecoveryState;
+    impossiblePromotion.mcp.published = true;
+    impossiblePromotion.mcp.promoted = true;
+    expect(() =>
+      validateRecoveryState(impossiblePromotion, {
+        sourceHead: SOURCE_HEAD,
+        rootDir,
+        recoveryDirectory,
+      }),
+    ).toThrow("transaction invariants");
     writeFileSync(uiTarball, "tampered");
     expect(() =>
-      validateRecoveryState(state, { sourceHead: "head-a", rootDir, recoveryDirectory }),
+      validateRecoveryState(state, { sourceHead: SOURCE_HEAD, rootDir, recoveryDirectory }),
     ).toThrow("SHA512");
+  });
+
+  it("reconciles ambiguous staging-tag removal and resumes after one tag removal", () => {
+    const removalProgress = {
+      publishAttempted: true,
+      published: true,
+      promoted: true,
+      compensated: false,
+      stageTagRemovalAttempted: true,
+      stageTagRemoved: false,
+      previousLatest: "18.4.0",
+    };
+    reconcilePackagePublication({
+      progress: removalProgress,
+      registry: { exists: true, integrity: "sha512-exact", tags: {} },
+      artifact: { integrity: "sha512-exact" },
+      targetVersion: "18.4.1",
+      stageTag: "godx-staging-18.4.1",
+      packageName: "@godxjp/ui",
+    });
+    expect(removalProgress.stageTagRemoved).toBe(true);
+
+    const rootDir = fixture();
+    let state: RecoveryState | null = null;
+    expect(() =>
+      runRelease({
+        rootDir,
+        uiBump: "patch",
+        mcpBump: "sync",
+        sourceHead: SOURCE_HEAD,
+        runStep: (
+          step: string,
+          _plan: unknown,
+          _packed: unknown,
+          progress: Record<string, Record<string, unknown>>,
+        ) => {
+          recordLatest(step, progress);
+          if (step === RELEASE_STEPS.RemoveMcpStagingTag) throw new Error("remove timed out");
+        },
+        packTargetManifests: () => artifacts(),
+        writeRecoveryState: (value: RecoveryState) => {
+          state = structuredClone(value);
+        },
+      }),
+    ).toThrow("remove timed out");
+    expect((state as RecoveryState | null)?.ui).toMatchObject({
+      stageTagRemovalAttempted: true,
+      stageTagRemoved: true,
+    });
+    expect((state as RecoveryState | null)?.mcp).toMatchObject({
+      stageTagRemovalAttempted: true,
+      stageTagRemoved: false,
+    });
+    reconcilePackagePublication({
+      progress: (state as unknown as RecoveryState).mcp,
+      registry: { exists: true, integrity: "sha512-mcp", tags: {} },
+      artifact: { integrity: "sha512-mcp" },
+      targetVersion: "18.4.1",
+      stageTag: "godx-staging-18.4.1",
+      packageName: "@godxjp/ui-mcp",
+    });
+    const executed: string[] = [];
+    runRelease({
+      rootDir,
+      uiBump: "skip",
+      mcpBump: "sync",
+      sourceHead: SOURCE_HEAD,
+      recoveryState: state,
+      runStep: (step: string) => executed.push(step),
+      writeRecoveryState: (value: RecoveryState) => {
+        state = structuredClone(value);
+      },
+    });
+    expect(executed).not.toContain(RELEASE_STEPS.RemoveUiStagingTag);
+    expect(executed).not.toContain(RELEASE_STEPS.RemoveMcpStagingTag);
+    expect(executed).toContain(RELEASE_STEPS.CommitTargetMetadata);
+  });
+
+  it("resumes commit failure after both staging tags were removed", () => {
+    const rootDir = fixture();
+    let state: RecoveryState | null = null;
+    expect(() =>
+      runRelease({
+        rootDir,
+        uiBump: "patch",
+        mcpBump: "sync",
+        sourceHead: SOURCE_HEAD,
+        runStep: (
+          step: string,
+          _plan: unknown,
+          _packed: unknown,
+          progress: Record<string, Record<string, unknown>>,
+        ) => {
+          recordLatest(step, progress);
+          if (step === RELEASE_STEPS.CommitTargetMetadata) throw new Error("commit failed");
+        },
+        packTargetManifests: () => artifacts(),
+        writeRecoveryState: (value: RecoveryState) => {
+          state = structuredClone(value);
+        },
+      }),
+    ).toThrow("commit failed");
+    expect((state as RecoveryState | null)?.ui).toMatchObject({ stageTagRemoved: true });
+    expect((state as RecoveryState | null)?.mcp).toMatchObject({ stageTagRemoved: true });
+    const executed: string[] = [];
+    runRelease({
+      rootDir,
+      uiBump: "skip",
+      mcpBump: "sync",
+      sourceHead: SOURCE_HEAD,
+      recoveryState: state,
+      runStep: (step: string) => executed.push(step),
+    });
+    expect(executed).not.toContain(RELEASE_STEPS.RemoveUiStagingTag);
+    expect(executed).not.toContain(RELEASE_STEPS.RemoveMcpStagingTag);
+    expect(executed).toEqual(
+      expect.arrayContaining([
+        RELEASE_STEPS.VerifyPublishedVersions,
+        RELEASE_STEPS.CommitTargetMetadata,
+      ]),
+    );
   });
 
   it("writes recovery state atomically", () => {
@@ -318,7 +488,7 @@ describe("recoverable coordinated release", () => {
         rootDir,
         uiBump: "patch",
         mcpBump: "sync",
-        sourceHead: "head-a",
+        sourceHead: SOURCE_HEAD,
         runStep: (
           step: string,
           _plan: unknown,
@@ -329,8 +499,12 @@ describe("recoverable coordinated release", () => {
           if (step === RELEASE_STEPS.PromoteMcpLatest) throw new Error("promotion failed");
         },
         packTargetManifests: () => artifacts(),
-        compensateUiLatest: () => {
+        compensateLatest: () => {
           compensated = true;
+          return {
+            observed: { ui: "18.4.1", mcp: "18.4.1" },
+            restored: { ui: "18.4.0", mcp: "18.4.0" },
+          };
         },
         writeRecoveryState: (value: RecoveryState) => {
           state = structuredClone(value);
@@ -344,13 +518,23 @@ describe("recoverable coordinated release", () => {
       compensated: true,
       previousLatest: "18.4.0",
     });
+    expect((state as RecoveryState | null)?.mcp).toMatchObject({
+      published: true,
+      promoted: false,
+      compensated: true,
+      previousLatest: "18.4.0",
+    });
+    expect((state as RecoveryState | null)?.latestCompensation).toEqual({
+      observed: { ui: "18.4.1", mcp: "18.4.1" },
+      restored: { ui: "18.4.0", mcp: "18.4.0" },
+    });
 
     const executed: string[] = [];
     runRelease({
       rootDir,
       uiBump: "skip",
       mcpBump: "sync",
-      sourceHead: "head-a",
+      sourceHead: SOURCE_HEAD,
       recoveryState: state,
       runStep: (step: string) => executed.push(step),
       writeRecoveryState: (value: RecoveryState) => {
