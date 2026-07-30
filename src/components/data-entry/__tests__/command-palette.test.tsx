@@ -76,6 +76,24 @@ describe("CommandPalette", () => {
     await waitFor(() => expect(screen.getByTestId("state")).toHaveTextContent("false"));
   });
 
+  it("restores focus to the active control when opened by the global shortcut", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <>
+        <button type="button">Account menu</button>
+        <CommandPalette groups={groups} labels={labels} onSelect={vi.fn()} />
+      </>,
+    );
+
+    const accountMenu = screen.getByRole("button", { name: "Account menu" });
+    accountMenu.focus();
+    await user.keyboard("{Control>}k{/Control}");
+    await screen.findByRole("dialog", { name: "Command palette" });
+    await user.keyboard("{Escape}");
+
+    await waitFor(() => expect(accountMenu).toHaveFocus());
+  });
+
   it("renders loading, error and empty states inside the same accessible dialog", () => {
     const { rerender } = renderWithUi(
       <CommandPalette defaultOpen loading groups={groups} labels={labels} onSelect={vi.fn()} />,

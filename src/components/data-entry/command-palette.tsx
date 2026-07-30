@@ -66,6 +66,7 @@ export function CommandPalette({
   shortcut = true,
 }: CommandPaletteProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
+  const shortcutRestoreFocusRef = React.useRef<HTMLElement | null>(null);
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = React.useCallback(
     (next: boolean) => {
@@ -87,6 +88,9 @@ export function CommandPalette({
         (event.metaKey || event.ctrlKey)
       ) {
         event.preventDefault();
+        if (!open && document.activeElement instanceof HTMLElement) {
+          shortcutRestoreFocusRef.current = document.activeElement;
+        }
         setOpen(!open);
       }
     };
@@ -114,6 +118,14 @@ export function CommandPalette({
         showCloseButton={false}
         aria-modal="true"
         aria-describedby="ui-command-palette-description"
+        onCloseAutoFocus={(event) => {
+          const restoreTarget = shortcutRestoreFocusRef.current;
+          if (restoreTarget?.isConnected) {
+            event.preventDefault();
+            restoreTarget.focus();
+          }
+          shortcutRestoreFocusRef.current = null;
+        }}
       >
         <Dialog.Title className="sr-only">{labels.title}</Dialog.Title>
         <Dialog.Description id="ui-command-palette-description" className="sr-only">
