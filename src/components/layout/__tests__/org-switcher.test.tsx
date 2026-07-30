@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { expectNoA11yViolations } from "@/test/a11y";
 import { renderWithUi, screen, userEvent } from "@/test/render";
 import { OrgSwitcher } from "../org-switcher";
 
@@ -53,19 +54,46 @@ describe("OrgSwitcher public contract", () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
-  it("renders a focus-trapped bottom Sheet in the explicit mobile mode", async () => {
+  it("opens and closes the uncontrolled desktop popover from its trigger", async () => {
     const user = userEvent.setup();
     renderWithUi(
       <OrgSwitcher
         organizations={organizations}
         value="dxs"
         labels={labels}
-        responsive="sheet"
-        open
+        responsive="popover"
       />,
     );
 
+    await user.click(screen.getByRole("button", { name: "Current organization: DXS Holdings" }));
     expect(await screen.findByRole("dialog", { name: "Choose organization" })).toBeInTheDocument();
+    expect(await screen.findByLabelText("Search organizations")).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByLabelText("Search organizations")).not.toBeInTheDocument();
+  });
+
+  it("renders a focus-trapped bottom Sheet in the explicit mobile mode", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <OrgSwitcher organizations={organizations} value="dxs" labels={labels} responsive="sheet" />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Current organization: DXS Holdings" }));
+    expect(await screen.findByRole("dialog", { name: "Choose organization" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog", { name: "Choose organization" })).not.toBeInTheDocument();
+  });
+
+  it("has no axe violations in the named open popover", async () => {
+    await expectNoA11yViolations(
+      <OrgSwitcher
+        organizations={organizations}
+        value="dxs"
+        labels={labels}
+        responsive="popover"
+        open
+      />,
+    );
   });
 
   it("supports collapsed, loading, empty, disabled and error states", async () => {

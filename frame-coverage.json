@@ -2033,6 +2033,89 @@
   },
   "ownerGroups": [
     {
+      "name": "platform-public-static-composite-closure",
+      "owners": [
+        "data-display/service-launcher-card",
+        "layout/auth-divider",
+        "layout/auth-identity",
+        "layout/auth-footer",
+        "layout/auth-stack",
+        "layout/master-detail"
+      ],
+      "dimensions": {
+        "isolated": {
+          "status": "pass",
+          "reason": "Each public export renders directly in its dedicated owner frame; focused component tests assert the exported structure and semantics."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner frames render the intended launcher/catalog/loading, hosted-auth, and named master/detail compositions using public APIs only."
+        },
+        "journey": {
+          "status": "not-applicable",
+          "reason": "These presentation/layout composites do not own application navigation or persistence; actions and selection are consumer-owned."
+        },
+        "responsive": {
+          "status": "pass",
+          "reason": "The nine new owner routes passed targeted Chromium geometry at 320, 375, 390, 768, 1024, 1280, 1440 and 1920px."
+        },
+        "rtl": {
+          "status": "pass",
+          "reason": "The nine new owner routes passed targeted RTL geometry at 1024px."
+        },
+        "a11y": {
+          "status": "pass",
+          "reason": "The new owner routes passed targeted Axe scans at 1440px and 375px; focused tests lock named regions, headings, busy status and canonical landmarks."
+        },
+        "touch": {
+          "status": "not-applicable",
+          "reason": "These composites own no custom pointer gesture; launcher actions, legal controls and master selection are consumer-supplied interactive descendants."
+        },
+        "async": {
+          "status": "not-applicable",
+          "reason": "These composites synchronously present consumer-provided content; loading placeholders do not execute or own asynchronous work."
+        }
+      }
+    },
+    {
+      "name": "platform-public-interactive-composite-closure",
+      "owners": ["data-entry/command-palette", "feedback/two-factor-setup", "layout/org-switcher"],
+      "dimensions": {
+        "isolated": {
+          "status": "pass",
+          "reason": "Each interactive composite is invoked in its dedicated owner frame and rendered by focused component tests."
+        },
+        "composition": {
+          "status": "pass",
+          "reason": "Owner frames and focused tests execute the canonical trigger/dialog, enrollment/recovery, and trigger/searchable-panel compositions."
+        },
+        "journey": {
+          "status": "pass",
+          "reason": "Focused tests execute open, keyboard or touch selection, close/focus return, enrollment/recovery and error/retry journeys."
+        },
+        "responsive": {
+          "status": "pass",
+          "reason": "The nine new owner routes passed targeted Chromium geometry at 320, 375, 390, 768, 1024, 1280, 1440 and 1920px."
+        },
+        "rtl": {
+          "status": "pass",
+          "reason": "The nine new owner routes passed targeted RTL geometry at 1024px."
+        },
+        "a11y": {
+          "status": "pass",
+          "reason": "The new owner routes passed targeted Axe scans at 1440px and 375px; focused tests assert dialog names, keyboard focus and announced states."
+        },
+        "touch": {
+          "status": "pass",
+          "reason": "A Chromium hasTouch/coarse-pointer gate opened CommandPalette, TwoFactorSetup and the responsive OrgSwitcher panel at 390px."
+        },
+        "async": {
+          "status": "pass",
+          "reason": "Owner frames and focused tests render loading, error/retry, pending or recovery states while leaving network execution consumer-owned."
+        }
+      }
+    },
+    {
       "name": "layout-static-journey-touch-classification",
       "owners": [
         "layout/aspect-ratio",

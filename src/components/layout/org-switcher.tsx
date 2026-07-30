@@ -31,25 +31,23 @@ function OrganizationMark({ organization }: { organization?: OrgSwitcherOrganiza
   );
 }
 
-function OrgSwitcherTrigger({
-  organization,
-  collapsed,
-  disabled,
-  label,
-}: {
+type OrgSwitcherTriggerProps = React.ComponentPropsWithoutRef<typeof Button> & {
   organization?: OrgSwitcherOrganization;
   collapsed: boolean;
-  disabled: boolean;
   label: string;
-}) {
-  return (
+};
+
+const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTriggerProps>(
+  ({ organization, collapsed, disabled, label, ...props }, ref) => (
     <Button
+      ref={ref}
       type="button"
       variant="ghost"
       className="ui-org-switcher-trigger"
       data-collapsed={collapsed ? "true" : undefined}
       disabled={disabled}
       aria-label={label}
+      {...props}
     >
       <OrganizationMark organization={organization} />
       {!collapsed ? (
@@ -64,8 +62,9 @@ function OrgSwitcherTrigger({
         </>
       ) : null}
     </Button>
-  );
-}
+  ),
+);
+OrgSwitcherTrigger.displayName = "OrgSwitcherTrigger";
 
 function OrgSwitcherPanel({
   organizations,
@@ -215,7 +214,7 @@ export function OrgSwitcher({
     <div className={cn("ui-org-switcher", className)} data-collapsed={collapsed || undefined}>
       <Popover open={resolvedOpen} onOpenChange={setOpen}>
         <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-        <PopoverContent align="start" className="ui-org-switcher-popover">
+        <PopoverContent align="start" className="ui-org-switcher-popover" aria-label={labels.title}>
           {panel}
         </PopoverContent>
       </Popover>

@@ -57,7 +57,10 @@ describe("ServiceLauncherCard", () => {
     expect(screen.getByRole("button", { name: "カタログを見る" })).toBeInTheDocument();
 
     rerender(<ServiceLauncherCardSkeleton label="サービスを読み込み中" />);
-    expect(screen.getByLabelText("サービスを読み込み中")).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByRole("status", { name: "サービスを読み込み中" })).toHaveAttribute(
+      "aria-busy",
+      "true",
+    );
     expect(container.querySelectorAll(".ui-skeleton-block")).toHaveLength(6);
   });
 
@@ -78,6 +81,7 @@ describe("ServiceLauncherCard", () => {
           title="サービスカタログから追加"
           action={<Button variant="outline">カタログを見る</Button>}
         />
+        <ServiceLauncherCardSkeleton label="サービスを読み込み中" />
       </main>,
     );
   });

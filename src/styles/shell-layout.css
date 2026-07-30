@@ -448,7 +448,7 @@
   }
 
   .ui-org-switcher-meta {
-    color: hsl(var(--muted-foreground));
+    color: hsl(var(--foreground));
     font-size: var(--sidebar-user-role-font-size);
   }
 
@@ -598,8 +598,7 @@
   }
 
   .sb-section-label {
-    padding: 0 var(--sidebar-section-label-padding-x)
-      var(--sidebar-section-label-padding-bottom);
+    padding: 0 var(--sidebar-section-label-padding-x) var(--sidebar-section-label-padding-bottom);
     color: hsl(var(--muted-foreground));
     font-size: var(--sidebar-section-label-font-size);
     font-weight: 700;

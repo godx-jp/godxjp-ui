@@ -125,6 +125,7 @@ export function ServiceLauncherCardSkeleton({
       density="tight"
       className={cn("ui-service-launcher-card", className)}
       data-service-launcher=""
+      role="status"
       aria-label={label}
       aria-busy="true"
       {...props}
