@@ -1,7 +1,19 @@
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import {
+  closeSync,
+  existsSync,
+  fsyncSync,
+  mkdtempSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 
 export const RELEASE_STEPS = Object.freeze({
   ApplyTargetMetadata: "apply-target-metadata",
@@ -13,6 +25,7 @@ export const RELEASE_STEPS = Object.freeze({
   PackTargetManifests: "pack-target-manifests",
   VerifyNpmAuth: "verify-npm-auth",
   VerifyTargetAvailability: "verify-target-availability",
+  RecordPreviousLatestTags: "record-previous-latest-tags",
   VerifyPublishTree: "verify-publish-tree",
   PublishUi: "publish-ui-staged",
   PublishMcp: "publish-mcp-staged",
@@ -32,10 +45,7 @@ const SEMVER = /^(\d+)\.(\d+)\.(\d+)$/;
 export function targetVersionFor(currentVersion, uiBump) {
   const match = SEMVER.exec(currentVersion);
   if (!match) throw new Error(`Current UI version "${currentVersion}" is not plain x.y.z semver.`);
-
-  const major = Number(match[1]);
-  const minor = Number(match[2]);
-  const patch = Number(match[3]);
+  const [major, minor, patch] = match.slice(1).map(Number);
   if (uiBump === "skip") return currentVersion;
   if (uiBump === "patch") return `${major}.${minor}.${patch + 1}`;
   if (uiBump === "minor") return `${major}.${minor + 1}.0`;
@@ -49,45 +59,62 @@ export function compatibilityFor(version) {
   return `${match[1]}.${match[2]}.x`;
 }
 
-function initialProgress(targetVersion, stageTag) {
+function packageProgress() {
   return {
-    schemaVersion: 1,
+    publishAttempted: false,
+    published: false,
+    promoted: false,
+    compensated: false,
+    stageTagRemoved: false,
+    previousLatest: null,
+  };
+}
+
+function initialProgress(targetVersion, stageTag, sourceHead) {
+  return {
+    schemaVersion: 2,
+    sourceHead,
     targetVersion,
     stageTag,
-    ui: { publishAttempted: false, published: false, promoted: false, stageTagRemoved: false },
-    mcp: { publishAttempted: false, published: false, promoted: false, stageTagRemoved: false },
+    manifests: null,
+    artifacts: null,
+    latestRecorded: false,
+    ui: packageProgress(),
+    mcp: packageProgress(),
     committed: false,
     failedStep: null,
     error: null,
   };
 }
 
-export function buildReleasePlan({ currentVersion, uiBump, mcpBump, recoveryState = null }) {
+export function buildReleasePlan({
+  currentVersion,
+  uiBump,
+  mcpBump,
+  sourceHead = "dry-run",
+  recoveryState = null,
+}) {
   if (!VALID_UI_BUMPS.has(uiBump) || !VALID_MCP_BUMPS.has(mcpBump)) {
     throw new Error(
-      "Usage: node scripts/release.mjs --ui <patch|minor|major> --mcp sync [--dry-run]",
+      "Usage: node scripts/release.mjs --ui <patch|minor|major> --mcp sync [--metadata-plan]",
     );
   }
-
   if (recoveryState) {
-    if (uiBump !== "skip" || mcpBump !== "sync") {
-      throw new Error("Recovery must run with --recovery (equivalent to --ui skip --mcp sync). ");
-    }
-    if (
-      !SEMVER.test(recoveryState.targetVersion) ||
-      currentVersion !== recoveryState.targetVersion
-    ) {
-      throw new Error("Recovery state target must match the preserved coordinated manifests.");
+    if (uiBump !== "skip" || mcpBump !== "sync") throw new Error("Recovery must use --recovery.");
+    if (currentVersion !== recoveryState.targetVersion) {
+      throw new Error("Recovery target does not match preserved manifests.");
     }
   } else if (uiBump === "skip" && mcpBump === "sync") {
-    throw new Error("MCP-only sync is recovery-only; re-run with --recovery and recorded state.");
+    throw new Error("MCP-only sync is recovery-only; use recorded --recovery state.");
   } else if (uiBump === "skip" || mcpBump !== "sync") {
-    throw new Error("A UI release requires --mcp sync so both packages ship in lockstep.");
+    throw new Error("A UI release requires --mcp sync.");
   }
 
   const targetVersion = recoveryState?.targetVersion ?? targetVersionFor(currentVersion, uiBump);
   const stageTag = recoveryState?.stageTag ?? `godx-staging-${targetVersion}`;
-  const progress = structuredClone(recoveryState ?? initialProgress(targetVersion, stageTag));
+  const progress = structuredClone(
+    recoveryState ?? initialProgress(targetVersion, stageTag, sourceHead),
+  );
   const steps = [
     RELEASE_STEPS.ApplyTargetMetadata,
     RELEASE_STEPS.VerifyRoot,
@@ -98,9 +125,9 @@ export function buildReleasePlan({ currentVersion, uiBump, mcpBump, recoveryStat
     RELEASE_STEPS.PackTargetManifests,
     RELEASE_STEPS.VerifyNpmAuth,
     RELEASE_STEPS.VerifyTargetAvailability,
-    RELEASE_STEPS.VerifyPublishTree,
   ];
-
+  if (!progress.latestRecorded) steps.push(RELEASE_STEPS.RecordPreviousLatestTags);
+  steps.push(RELEASE_STEPS.VerifyPublishTree);
   if (!progress.ui.published) steps.push(RELEASE_STEPS.PublishUi);
   if (!progress.mcp.published) steps.push(RELEASE_STEPS.PublishMcp);
   steps.push(RELEASE_STEPS.VerifyPublishedVersions);
@@ -109,17 +136,7 @@ export function buildReleasePlan({ currentVersion, uiBump, mcpBump, recoveryStat
   if (!progress.ui.stageTagRemoved) steps.push(RELEASE_STEPS.RemoveUiStagingTag);
   if (!progress.mcp.stageTagRemoved) steps.push(RELEASE_STEPS.RemoveMcpStagingTag);
   if (!progress.committed) steps.push(RELEASE_STEPS.CommitTargetMetadata);
-
-  return {
-    targetVersion,
-    compatibility: compatibilityFor(targetVersion),
-    stageTag,
-    recovery: Boolean(recoveryState),
-    publishesUi: !progress.ui.published,
-    publishesMcp: !progress.mcp.published,
-    progress,
-    steps,
-  };
+  return { targetVersion, stageTag, recovery: Boolean(recoveryState), progress, steps };
 }
 
 function packagePath(rootDir, packageDirectory) {
@@ -130,14 +147,7 @@ export function readPackage(rootDir, packageDirectory = ".") {
   return JSON.parse(readFileSync(packagePath(rootDir, packageDirectory), "utf8"));
 }
 
-function writePackage(rootDir, packageDirectory, packageJson) {
-  writeFileSync(
-    packagePath(rootDir, packageDirectory),
-    `${JSON.stringify(packageJson, null, 2)}\n`,
-  );
-}
-
-function snapshotManifests(rootDir) {
+function manifestBytes(rootDir) {
   return {
     ui: readFileSync(packagePath(rootDir, "."), "utf8"),
     mcp: readFileSync(packagePath(rootDir, "mcp"), "utf8"),
@@ -156,9 +166,92 @@ export function applyTargetMetadata(rootDir, targetVersion) {
   ui.godxUiMcp = targetVersion;
   mcp.version = targetVersion;
   mcp.godxUiCompatibility = compatibilityFor(targetVersion);
-  writePackage(rootDir, ".", ui);
-  writePackage(rootDir, "mcp", mcp);
+  writeFileSync(packagePath(rootDir, "."), `${JSON.stringify(ui, null, 2)}\n`);
+  writeFileSync(packagePath(rootDir, "mcp"), `${JSON.stringify(mcp, null, 2)}\n`);
   return { ui, mcp };
+}
+
+export function integrityFor(path) {
+  return `sha512-${createHash("sha512").update(readFileSync(path)).digest("base64")}`;
+}
+
+export function writeJsonAtomic(path, value) {
+  mkdirSync(dirname(path), { recursive: true });
+  const temporary = `${path}.${process.pid}.${Date.now()}.tmp`;
+  const descriptor = openSync(temporary, "wx", 0o600);
+  try {
+    writeFileSync(descriptor, `${JSON.stringify(value, null, 2)}\n`);
+    fsyncSync(descriptor);
+  } finally {
+    closeSync(descriptor);
+  }
+  renameSync(temporary, path);
+  const directoryDescriptor = openSync(dirname(path), "r");
+  try {
+    fsyncSync(directoryDescriptor);
+  } finally {
+    closeSync(directoryDescriptor);
+  }
+}
+
+export function assertTargetMetadata(ui, mcp, targetVersion, source = "package") {
+  const errors = [];
+  if (ui.version !== targetVersion) errors.push(`${source} UI version mismatch`);
+  if (mcp.version !== targetVersion) errors.push(`${source} MCP version mismatch`);
+  if (ui.godxUiMcp !== targetVersion) errors.push(`${source} godxUiMcp mismatch`);
+  if (mcp.godxUiCompatibility !== compatibilityFor(targetVersion))
+    errors.push(`${source} compatibility mismatch`);
+  if (errors.length) throw new Error(`Release metadata is not coordinated: ${errors.join(", ")}`);
+}
+
+export function validateRecoveryState(state, { sourceHead, rootDir, recoveryDirectory }) {
+  if (!state || state.schemaVersion !== 2 || !SEMVER.test(state.targetVersion)) {
+    throw new Error("Recovery state schema/version is invalid.");
+  }
+  if (state.sourceHead !== sourceHead)
+    throw new Error("Recovery source HEAD differs from current HEAD.");
+  if (state.stageTag !== `godx-staging-${state.targetVersion}`)
+    throw new Error("Recovery staging tag is invalid.");
+  if (
+    !state.manifests?.original?.ui ||
+    !state.manifests?.original?.mcp ||
+    !state.manifests?.target?.ui ||
+    !state.manifests?.target?.mcp
+  ) {
+    throw new Error("Recovery manifest snapshots are incomplete.");
+  }
+  const current = manifestBytes(rootDir);
+  if (current.ui !== state.manifests.target.ui || current.mcp !== state.manifests.target.mcp) {
+    throw new Error("Current manifests differ from exact recovery target bytes.");
+  }
+  const targetUi = JSON.parse(state.manifests.target.ui);
+  const targetMcp = JSON.parse(state.manifests.target.mcp);
+  assertTargetMetadata(targetUi, targetMcp, state.targetVersion, "recovery target");
+  const recoveryRoot = `${resolve(recoveryDirectory)}${sep}`;
+  for (const packageName of ["ui", "mcp"]) {
+    const artifact = state.artifacts?.[packageName];
+    if (
+      !artifact?.path ||
+      !artifact?.integrity ||
+      !resolve(artifact.path).startsWith(recoveryRoot)
+    ) {
+      throw new Error(`Recovery ${packageName} artifact path/integrity is invalid.`);
+    }
+    if (!existsSync(artifact.path) || integrityFor(artifact.path) !== artifact.integrity) {
+      throw new Error(`Recovery ${packageName} artifact differs from recorded SHA512 integrity.`);
+    }
+    const progress = state[packageName];
+    if (
+      !progress ||
+      (progress.promoted && !progress.published) ||
+      (progress.stageTagRemoved && !progress.published)
+    ) {
+      throw new Error(`Recovery ${packageName} progress invariants are invalid.`);
+    }
+  }
+  if (!state.latestRecorded || state.committed)
+    throw new Error("Recovery transaction invariants are invalid.");
+  return structuredClone(state);
 }
 
 export function assertOnlyCoordinatedManifestChanges(statusOutput) {
@@ -169,63 +262,63 @@ export function assertOnlyCoordinatedManifestChanges(statusOutput) {
       const path = entry.length >= 4 && entry[2] === " " ? entry.slice(3) : entry;
       return !COORDINATED_MANIFESTS.has(path);
     });
-  if (unexpected.length) {
-    throw new Error(
-      `Release preflight changed files outside package manifests:\n- ${unexpected.join("\n- ")}`,
-    );
-  }
+  if (unexpected.length)
+    throw new Error(`Preflight drift outside manifests:\n- ${unexpected.join("\n- ")}`);
 }
 
-export function assertTargetAvailability({ recovery, progress, uiExists, mcpExists }) {
-  if (!recovery && (uiExists || mcpExists)) {
-    throw new Error("Target UI/MCP version already exists; refusing an overwrite/partial release.");
+export function reconcilePackagePublication({
+  progress,
+  registry,
+  artifact,
+  targetVersion,
+  stageTag,
+  packageName,
+}) {
+  if (!registry.exists) {
+    if (progress.published)
+      throw new Error(`${packageName}@${targetVersion} disappeared from registry.`);
+    return;
   }
-  if (recovery) {
-    if (progress.ui.published !== uiExists) {
-      throw new Error(
-        `Recovery UI registry state mismatch (recorded=${progress.ui.published}, exists=${uiExists}).`,
-      );
+  const exactIntegrity = registry.integrity === artifact.integrity;
+  const exactStageTag = registry.tags?.[stageTag] === targetVersion;
+  if (progress.published) {
+    if (!exactIntegrity || (!progress.stageTagRemoved && !exactStageTag)) {
+      throw new Error(`${packageName} registry integrity/staging tag differs from recovery state.`);
     }
-    if (progress.mcp.published !== mcpExists) {
-      throw new Error(
-        `Recovery MCP registry state mismatch (recorded=${progress.mcp.published}, exists=${mcpExists}).`,
-      );
-    }
+    return;
   }
+  if (progress.publishAttempted && exactIntegrity && exactStageTag) {
+    progress.published = true;
+    return;
+  }
+  throw new Error(
+    `${packageName}@${targetVersion} exists but cannot be reconciled to the verified artifact; inspect recovery state.`,
+  );
 }
 
-export function assertPublishedVersions(uiExists, mcpExists) {
-  if (!uiExists || !mcpExists) {
+export function assertFreshTargets(uiRegistry, mcpRegistry) {
+  if (uiRegistry.exists || mcpRegistry.exists)
+    throw new Error("Target version already exists; refusing partial/overwrite release.");
+}
+
+export function assertRegistryArtifact(registry, artifact, targetVersion, stageTag, packageName) {
+  if (
+    !registry.exists ||
+    registry.integrity !== artifact.integrity ||
+    registry.tags?.[stageTag] !== targetVersion
+  ) {
     throw new Error(
-      "Both staged package versions must exist before either latest tag is promoted.",
+      `${packageName} registry artifact integrity or staging tag does not match verified tarball.`,
     );
   }
 }
 
-export function assertTargetMetadata(ui, mcp, targetVersion, source = "package") {
-  const expectedCompatibility = compatibilityFor(targetVersion);
-  const errors = [];
-  if (ui.version !== targetVersion)
-    errors.push(`${source} UI version ${ui.version} != ${targetVersion}`);
-  if (mcp.version !== targetVersion)
-    errors.push(`${source} MCP version ${mcp.version} != ${targetVersion}`);
-  if (ui.godxUiMcp !== targetVersion)
-    errors.push(`${source} godxUiMcp ${ui.godxUiMcp} != ${targetVersion}`);
-  if (mcp.godxUiCompatibility !== expectedCompatibility) {
-    errors.push(
-      `${source} godxUiCompatibility ${mcp.godxUiCompatibility} != ${expectedCompatibility}`,
-    );
-  }
-  if (errors.length)
-    throw new Error(`Release metadata is not coordinated:\n- ${errors.join("\n- ")}`);
-}
-
-function packManifest(rootDir, packageDirectory, packDirectory, execFile) {
-  const packageArgument = packageDirectory === "." ? "." : `./${packageDirectory}`;
+function packManifest(rootDir, packageDirectory, artifactDirectory, execFile) {
+  const argument = packageDirectory === "." ? "." : `./${packageDirectory}`;
   const result = JSON.parse(
     execFile(
       "npm",
-      ["pack", packageArgument, "--pack-destination", packDirectory, "--ignore-scripts", "--json"],
+      ["pack", argument, "--pack-destination", artifactDirectory, "--ignore-scripts", "--json"],
       {
         cwd: rootDir,
         encoding: "utf8",
@@ -234,41 +327,48 @@ function packManifest(rootDir, packageDirectory, packDirectory, execFile) {
     ),
   );
   const filename = result.at(0)?.filename;
-  if (!filename) throw new Error(`npm pack did not report an artifact for ${packageArgument}.`);
-  const tarballPath = join(packDirectory, filename);
+  if (!filename) throw new Error(`npm pack did not report ${argument}.`);
+  const path = join(artifactDirectory, filename);
   const manifest = JSON.parse(
-    execFile("tar", ["-xzO", "-f", tarballPath, "package/package.json"], {
+    execFile("tar", ["-xzO", "-f", path, "package/package.json"], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
     }),
   );
-  return { manifest, tarballPath };
+  return { manifest, path, integrity: integrityFor(path) };
 }
 
-export function packAndVerifyTargetManifests({ rootDir, targetVersion, execFile = execFileSync }) {
-  const packDirectory = mkdtempSync(join(tmpdir(), "godxjp-release-pack-"));
+export function packAndVerifyTargetManifests({
+  rootDir,
+  targetVersion,
+  artifactDirectory,
+  execFile = execFileSync,
+}) {
+  const directory = artifactDirectory ?? mkdtempSync(join(tmpdir(), "godxjp-release-pack-"));
+  rmSync(directory, { force: true, recursive: true });
+  mkdirSync(directory, { recursive: true });
   try {
-    const uiArtifact = packManifest(rootDir, ".", packDirectory, execFile);
-    const mcpArtifact = packManifest(rootDir, "mcp", packDirectory, execFile);
-    assertTargetMetadata(uiArtifact.manifest, mcpArtifact.manifest, targetVersion, "packed");
+    const ui = packManifest(rootDir, ".", directory, execFile);
+    const mcp = packManifest(rootDir, "mcp", directory, execFile);
+    assertTargetMetadata(ui.manifest, mcp.manifest, targetVersion, "packed");
     return {
-      ui: uiArtifact.manifest,
-      mcp: mcpArtifact.manifest,
-      uiTarball: uiArtifact.tarballPath,
-      mcpTarball: mcpArtifact.tarballPath,
-      cleanup: () => rmSync(packDirectory, { force: true, recursive: true }),
+      ui: ui.manifest,
+      mcp: mcp.manifest,
+      uiTarball: ui.path,
+      mcpTarball: mcp.path,
+      uiIntegrity: ui.integrity,
+      mcpIntegrity: mcp.integrity,
+      cleanup: () => rmSync(directory, { force: true, recursive: true }),
     };
   } catch (error) {
-    rmSync(packDirectory, { force: true, recursive: true });
+    rmSync(directory, { force: true, recursive: true });
     throw error;
   }
 }
 
-export function releaseCommandForStep(step, plan, packedArtifacts) {
+export function releaseCommandForStep(step, plan, artifacts) {
   if (step === RELEASE_STEPS.PublishUi || step === RELEASE_STEPS.PublishMcp) {
-    if (!packedArtifacts) throw new Error("Verified release tarballs are unavailable.");
-    const tarball =
-      step === RELEASE_STEPS.PublishUi ? packedArtifacts.uiTarball : packedArtifacts.mcpTarball;
+    const tarball = step === RELEASE_STEPS.PublishUi ? artifacts.uiTarball : artifacts.mcpTarball;
     return ["npm", ["publish", tarball, "--access", "public", "--tag", plan.stageTag]];
   }
   const packageName = step.includes("-ui-") ? "@godxjp/ui" : "@godxjp/ui-mcp";
@@ -278,7 +378,7 @@ export function releaseCommandForStep(step, plan, packedArtifacts) {
   if (step === RELEASE_STEPS.RemoveUiStagingTag || step === RELEASE_STEPS.RemoveMcpStagingTag) {
     return ["npm", ["dist-tag", "rm", packageName, plan.stageTag]];
   }
-  throw new Error(`No npm release command for step "${step}".`);
+  throw new Error(`No release command for ${step}.`);
 }
 
 function recoverySnapshot(progress, failedStep = null, error = null) {
@@ -294,57 +394,84 @@ export function runRelease({
   rootDir,
   uiBump,
   mcpBump,
+  sourceHead = "dry-run",
   recoveryState = null,
+  recoveryDirectory = null,
   dryRun = false,
   runStep,
   packTargetManifests = packAndVerifyTargetManifests,
   writeRecoveryState = () => {},
   clearRecoveryState = () => {},
+  compensateUiLatest = () => {},
   onStep = () => {},
 }) {
-  const originalManifests = snapshotManifests(rootDir);
-  const currentVersion = readPackage(rootDir).version;
-  const plan = buildReleasePlan({ currentVersion, uiBump, mcpBump, recoveryState });
+  const original = manifestBytes(rootDir);
+  const plan = buildReleasePlan({
+    currentVersion: readPackage(rootDir).version,
+    uiBump,
+    mcpBump,
+    sourceHead,
+    recoveryState,
+  });
   const progress = plan.progress;
   progress.failedStep = null;
   progress.error = null;
-  let packedArtifacts = null;
+  let artifacts = recoveryState
+    ? {
+        ui: JSON.parse(progress.manifests.target.ui),
+        mcp: JSON.parse(progress.manifests.target.mcp),
+        uiTarball: progress.artifacts.ui.path,
+        mcpTarball: progress.artifacts.mcp.path,
+        uiIntegrity: progress.artifacts.ui.integrity,
+        mcpIntegrity: progress.artifacts.mcp.integrity,
+      }
+    : null;
   let publishStarted = Boolean(recoveryState);
   let activeStep = null;
-
-  const persist = (failedStep = null, error = null) => {
+  let succeeded = false;
+  const persist = (failedStep = null, error = null) =>
     writeRecoveryState(recoverySnapshot(progress, failedStep, error));
-  };
 
   try {
     for (const step of plan.steps) {
       activeStep = step;
-      const executesDuringDryRun =
+      const localPlanStep =
         step === RELEASE_STEPS.ApplyTargetMetadata || step === RELEASE_STEPS.PackTargetManifests;
-      onStep(step, dryRun && !executesDuringDryRun ? "planned" : "executed");
-      if (dryRun && !executesDuringDryRun) continue;
-
+      onStep(step, dryRun && !localPlanStep ? "planned" : "executed");
+      if (dryRun && !localPlanStep) continue;
       if (step === RELEASE_STEPS.ApplyTargetMetadata) {
-        const { ui, mcp } = applyTargetMetadata(rootDir, plan.targetVersion);
-        assertTargetMetadata(ui, mcp, plan.targetVersion);
+        applyTargetMetadata(rootDir, plan.targetVersion);
+        const target = manifestBytes(rootDir);
+        if (!recoveryState) progress.manifests = { original, target };
         continue;
       }
       if (step === RELEASE_STEPS.PackTargetManifests) {
-        packedArtifacts = packTargetManifests({ rootDir, targetVersion: plan.targetVersion });
+        if (!recoveryState) {
+          artifacts = packTargetManifests({
+            rootDir,
+            targetVersion: plan.targetVersion,
+            artifactDirectory: recoveryDirectory ? join(recoveryDirectory, "artifacts") : undefined,
+          });
+          progress.artifacts = {
+            ui: { path: artifacts.uiTarball, integrity: artifacts.uiIntegrity },
+            mcp: { path: artifacts.mcpTarball, integrity: artifacts.mcpIntegrity },
+          };
+        }
         continue;
       }
       if (step === RELEASE_STEPS.PublishUi || step === RELEASE_STEPS.PublishMcp) {
-        const packageProgress = step === RELEASE_STEPS.PublishUi ? progress.ui : progress.mcp;
-        packageProgress.publishAttempted = true;
+        const packageState = step === RELEASE_STEPS.PublishUi ? progress.ui : progress.mcp;
+        if (packageState.published) continue;
+        packageState.publishAttempted = true;
         publishStarted = true;
         persist(step);
-        runStep(step, plan, packedArtifacts, progress);
-        packageProgress.published = true;
+        runStep(step, plan, artifacts, progress);
+        packageState.published = true;
         persist();
         continue;
       }
-
-      runStep(step, plan, packedArtifacts, progress);
+      runStep(step, plan, artifacts, progress);
+      if (step === RELEASE_STEPS.RecordPreviousLatestTags) progress.latestRecorded = true;
       if (step === RELEASE_STEPS.PromoteUiLatest) progress.ui.promoted = true;
       if (step === RELEASE_STEPS.PromoteMcpLatest) progress.mcp.promoted = true;
       if (step === RELEASE_STEPS.RemoveUiStagingTag) progress.ui.stageTagRemoved = true;
@@ -352,16 +479,31 @@ export function runRelease({
       if (step === RELEASE_STEPS.CommitTargetMetadata) {
         progress.committed = true;
         clearRecoveryState();
-      } else if (publishStarted) {
-        persist();
+      } else if (publishStarted) persist();
+    }
+    succeeded = true;
+    return { plan, packedManifests: artifacts, progress };
+  } catch (error) {
+    let recoveryError = error;
+    if (
+      activeStep === RELEASE_STEPS.PromoteMcpLatest &&
+      progress.ui.promoted &&
+      !progress.mcp.promoted
+    ) {
+      try {
+        compensateUiLatest(plan, progress);
+        progress.ui.promoted = false;
+        progress.ui.compensated = true;
+      } catch (compensationError) {
+        recoveryError = new Error(
+          `${error.message}; UI latest compensation also failed: ${compensationError.message}`,
+        );
       }
     }
-    return { plan, packedManifests: packedArtifacts, progress };
-  } catch (error) {
-    if (!publishStarted) restoreManifests(rootDir, originalManifests);
-    else persist(activeStep, error);
-    throw error;
+    if (!publishStarted) restoreManifests(rootDir, original);
+    else persist(activeStep, recoveryError);
+    throw recoveryError;
   } finally {
-    packedArtifacts?.cleanup?.();
+    if (dryRun || !publishStarted || succeeded) artifacts?.cleanup?.();
   }
 }

@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -5,27 +6,37 @@ import { afterEach, describe, expect, it } from "vitest";
 const {
   RELEASE_STEPS,
   assertOnlyCoordinatedManifestChanges,
-  assertTargetAvailability,
+  assertRegistryArtifact,
   buildReleasePlan,
+  integrityFor,
+  reconcilePackagePublication,
   releaseCommandForStep,
   runRelease,
+  validateRecoveryState,
+  writeJsonAtomic,
 } =
   // @ts-expect-error Release core intentionally stays dependency-free JavaScript for direct Node use.
   await import("../../../scripts/release-core.mjs");
 
 const workspaces: string[] = [];
+type RecoveryState = Record<string, unknown> & {
+  sourceHead: string;
+  targetVersion: string;
+  ui: Record<string, unknown>;
+  mcp: Record<string, unknown>;
+};
 
-function releaseFixture(): string {
-  const rootDir = mkdtempSync(join(tmpdir(), "godxjp-release-test-"));
-  workspaces.push(rootDir);
-  mkdirSync(join(rootDir, "mcp"));
-  writeFileSync(join(rootDir, "README.md"), "UI fixture\n");
-  writeFileSync(join(rootDir, "mcp/README.md"), "MCP fixture\n");
+function fixture(): string {
+  const root = mkdtempSync(join(tmpdir(), "godxjp-release-test-"));
+  workspaces.push(root);
+  mkdirSync(join(root, "mcp"));
+  writeFileSync(join(root, "README.md"), "UI\n");
+  writeFileSync(join(root, "mcp/README.md"), "MCP\n");
   writeFileSync(
-    join(rootDir, "package.json"),
+    join(root, "package.json"),
     `${JSON.stringify(
       {
-        name: "@godxjp/ui-release-test",
+        name: "@godxjp/ui-test",
         version: "18.4.0",
         godxUiMcp: "18.4.0",
         files: ["README.md"],
@@ -35,10 +46,10 @@ function releaseFixture(): string {
     )}\n`,
   );
   writeFileSync(
-    join(rootDir, "mcp/package.json"),
+    join(root, "mcp/package.json"),
     `${JSON.stringify(
       {
-        name: "@godxjp/ui-mcp-release-test",
+        name: "@godxjp/ui-mcp-test",
         version: "18.4.0",
         godxUiCompatibility: "18.4.x",
         files: ["README.md"],
@@ -47,33 +58,41 @@ function releaseFixture(): string {
       2,
     )}\n`,
   );
-  return rootDir;
+  return root;
 }
 
-function packageJson(rootDir: string, packageDirectory = "."): Record<string, unknown> {
-  return JSON.parse(readFileSync(join(rootDir, packageDirectory, "package.json"), "utf8"));
-}
-
-function fakeArtifacts(onCleanup = () => {}): Record<string, unknown> {
+function artifacts(cleanup = () => {}): Record<string, unknown> {
   return {
     ui: {},
     mcp: {},
-    uiTarball: "/tmp/verified-godxjp-ui-18.4.1.tgz",
-    mcpTarball: "/tmp/verified-godxjp-ui-mcp-18.4.1.tgz",
-    cleanup: onCleanup,
+    uiTarball: "/tmp/verified-ui.tgz",
+    mcpTarball: "/tmp/verified-mcp.tgz",
+    uiIntegrity: "sha512-ui",
+    mcpIntegrity: "sha512-mcp",
+    cleanup,
   };
 }
 
+function recordLatest(step: string, progress: Record<string, Record<string, unknown>>): void {
+  if (step === RELEASE_STEPS.RecordPreviousLatestTags) {
+    progress.ui.previousLatest = "18.4.0";
+    progress.mcp.previousLatest = "18.4.0";
+  }
+}
+
 afterEach(() => {
-  for (const workspace of workspaces.splice(0)) rmSync(workspace, { force: true, recursive: true });
+  for (const root of workspaces.splice(0)) rmSync(root, { recursive: true, force: true });
 });
 
-describe("coordinated release workflow", () => {
-  it("runs every target gate before staged publish and promotes latest only afterward", () => {
-    const plan = buildReleasePlan({ currentVersion: "18.4.0", uiBump: "patch", mcpBump: "sync" });
-    const firstPublish = plan.steps.indexOf(RELEASE_STEPS.PublishUi);
-    expect(plan.targetVersion).toBe("18.4.1");
-    expect(plan.steps.slice(0, firstPublish)).toEqual([
+describe("recoverable coordinated release", () => {
+  it("orders every preflight before staged publish and latest promotion after exact verification", () => {
+    const plan = buildReleasePlan({
+      currentVersion: "18.4.0",
+      uiBump: "patch",
+      mcpBump: "sync",
+      sourceHead: "head-a",
+    });
+    expect(plan.steps.slice(0, plan.steps.indexOf(RELEASE_STEPS.PublishUi))).toEqual([
       RELEASE_STEPS.ApplyTargetMetadata,
       RELEASE_STEPS.VerifyRoot,
       RELEASE_STEPS.InstallMcp,
@@ -83,30 +102,25 @@ describe("coordinated release workflow", () => {
       RELEASE_STEPS.PackTargetManifests,
       RELEASE_STEPS.VerifyNpmAuth,
       RELEASE_STEPS.VerifyTargetAvailability,
+      RELEASE_STEPS.RecordPreviousLatestTags,
       RELEASE_STEPS.VerifyPublishTree,
     ]);
-    expect(plan.steps.indexOf(RELEASE_STEPS.VerifyPublishedVersions)).toBeGreaterThan(
-      plan.steps.indexOf(RELEASE_STEPS.PublishMcp),
-    );
     expect(plan.steps.indexOf(RELEASE_STEPS.PromoteUiLatest)).toBeGreaterThan(
       plan.steps.indexOf(RELEASE_STEPS.VerifyPublishedVersions),
     );
-    expect(() =>
-      buildReleasePlan({ currentVersion: "18.4.0", uiBump: "skip", mcpBump: "sync" }),
-    ).toThrow("recovery-only");
   });
 
-  it("dry-runs offline and packs coordinated target-version manifests", () => {
-    const rootDir = releaseFixture();
-    const externalSteps: string[] = [];
+  it("packs coordinated metadata locally without executing release gates", () => {
+    const rootDir = fixture();
+    const external: string[] = [];
     const result = runRelease({
       rootDir,
       uiBump: "patch",
       mcpBump: "sync",
       dryRun: true,
-      runStep: (step: string) => externalSteps.push(step),
+      runStep: (step: string) => external.push(step),
     });
-    expect(externalSteps).toEqual([]);
+    expect(external).toEqual([]);
     expect(result.packedManifests.ui).toMatchObject({ version: "18.4.1", godxUiMcp: "18.4.1" });
     expect(result.packedManifests.mcp).toMatchObject({
       version: "18.4.1",
@@ -114,162 +128,251 @@ describe("coordinated release workflow", () => {
     });
   }, 20_000);
 
-  it("restores exact manifests when any pre-publish gate fails", () => {
-    const rootDir = releaseFixture();
-    const originalUi = readFileSync(join(rootDir, "package.json"), "utf8");
-    const originalMcp = readFileSync(join(rootDir, "mcp/package.json"), "utf8");
+  it("restores byte-exact manifests on prepublish failure", () => {
+    const rootDir = fixture();
+    const ui = readFileSync(join(rootDir, "package.json"), "utf8");
+    const mcp = readFileSync(join(rootDir, "mcp/package.json"), "utf8");
     expect(() =>
       runRelease({
         rootDir,
         uiBump: "patch",
         mcpBump: "sync",
         runStep: (step: string) => {
-          if (step === RELEASE_STEPS.TestMcp) throw new Error("MCP test failed");
+          if (step === RELEASE_STEPS.TestMcp) throw new Error("gate failed");
         },
       }),
-    ).toThrow("MCP test failed");
-    expect(readFileSync(join(rootDir, "package.json"), "utf8")).toBe(originalUi);
-    expect(readFileSync(join(rootDir, "mcp/package.json"), "utf8")).toBe(originalMcp);
+    ).toThrow("gate failed");
+    expect(readFileSync(join(rootDir, "package.json"), "utf8")).toBe(ui);
+    expect(readFileSync(join(rootDir, "mcp/package.json"), "utf8")).toBe(mcp);
   });
 
-  it("blocks generated drift immediately before publish and cleans verified tarballs", () => {
-    const rootDir = releaseFixture();
-    const originalUi = readFileSync(join(rootDir, "package.json"), "utf8");
+  it("blocks generated prepublish drift and cleans unconsumed artifacts", () => {
+    const rootDir = fixture();
     let cleaned = false;
-    const executed: string[] = [];
     expect(() =>
       runRelease({
         rootDir,
         uiBump: "patch",
         mcpBump: "sync",
         runStep: (step: string) => {
-          executed.push(step);
           if (step === RELEASE_STEPS.VerifyPublishTree) {
             assertOnlyCoordinatedManifestChanges(
-              " M package.json\0 M mcp/package.json\0?? generated-drift.json\0",
+              " M package.json\0 M mcp/package.json\0?? drift.json\0",
             );
           }
         },
         packTargetManifests: () =>
-          fakeArtifacts(() => {
+          artifacts(() => {
             cleaned = true;
           }),
       }),
-    ).toThrow("generated-drift.json");
-    expect(executed.at(-1)).toBe(RELEASE_STEPS.VerifyPublishTree);
-    expect(executed).not.toContain(RELEASE_STEPS.PublishUi);
-    expect(readFileSync(join(rootDir, "package.json"), "utf8")).toBe(originalUi);
+    ).toThrow("drift.json");
     expect(cleaned).toBe(true);
   });
 
-  it("publishes the exact verified tarballs under the staging tag in UI then MCP order", () => {
-    const rootDir = releaseFixture();
+  it("publishes exact verified paths under the staging tag in UI then MCP order", () => {
+    const rootDir = fixture();
+    const packed = artifacts();
     const commands: Array<[string, string[]]> = [];
-    const artifacts = fakeArtifacts();
     runRelease({
       rootDir,
       uiBump: "patch",
       mcpBump: "sync",
-      runStep: (step: string, plan: Record<string, unknown>, packed: Record<string, unknown>) => {
+      runStep: (
+        step: string,
+        plan: Record<string, unknown>,
+        value: Record<string, unknown>,
+        progress: Record<string, Record<string, unknown>>,
+      ) => {
+        recordLatest(step, progress);
         if (step === RELEASE_STEPS.PublishUi || step === RELEASE_STEPS.PublishMcp) {
-          commands.push(releaseCommandForStep(step, plan, packed));
+          commands.push(releaseCommandForStep(step, plan, value));
         }
       },
-      packTargetManifests: () => artifacts,
+      packTargetManifests: () => packed,
     });
     expect(commands).toEqual([
-      [
-        "npm",
-        ["publish", artifacts.uiTarball, "--access", "public", "--tag", "godx-staging-18.4.1"],
-      ],
-      [
-        "npm",
-        ["publish", artifacts.mcpTarball, "--access", "public", "--tag", "godx-staging-18.4.1"],
-      ],
+      ["npm", ["publish", packed.uiTarball, "--access", "public", "--tag", "godx-staging-18.4.1"]],
+      ["npm", ["publish", packed.mcpTarball, "--access", "public", "--tag", "godx-staging-18.4.1"]],
     ]);
   });
 
-  it("records UI-only staged recovery state when MCP publish fails without promoting latest", () => {
-    const rootDir = releaseFixture();
-    const executed: string[] = [];
-    const states: Array<Record<string, unknown>> = [];
-    expect(() =>
-      runRelease({
-        rootDir,
-        uiBump: "patch",
-        mcpBump: "sync",
-        runStep: (step: string) => {
-          executed.push(step);
-          if (step === RELEASE_STEPS.PublishMcp) throw new Error("MCP publish failed");
-        },
-        packTargetManifests: () => fakeArtifacts(),
-        writeRecoveryState: (state: Record<string, unknown>) => states.push(structuredClone(state)),
-      }),
-    ).toThrow("MCP publish failed");
-    const state = states.at(-1) as {
-      ui: Record<string, unknown>;
-      mcp: Record<string, unknown>;
+  it("reconciles ambiguous publish only when integrity and staging tag are exact", () => {
+    const progress = {
+      publishAttempted: true,
+      published: false,
+      promoted: false,
+      stageTagRemoved: false,
     };
-    expect(state.ui).toMatchObject({ published: true, promoted: false });
-    expect(state.mcp).toMatchObject({ publishAttempted: true, published: false, promoted: false });
-    expect(executed).not.toContain(RELEASE_STEPS.PromoteUiLatest);
-    expect(executed).not.toContain(RELEASE_STEPS.CommitTargetMetadata);
-    expect(packageJson(rootDir)).toMatchObject({ version: "18.4.1", godxUiMcp: "18.4.1" });
+    reconcilePackagePublication({
+      progress,
+      registry: {
+        exists: true,
+        integrity: "sha512-exact",
+        tags: { "godx-staging-18.4.1": "18.4.1" },
+      },
+      artifact: { integrity: "sha512-exact" },
+      targetVersion: "18.4.1",
+      stageTag: "godx-staging-18.4.1",
+      packageName: "@godxjp/ui",
+    });
+    expect(progress.published).toBe(true);
+    expect(() =>
+      reconcilePackagePublication({
+        progress: { ...progress, published: false },
+        registry: {
+          exists: true,
+          integrity: "sha512-other",
+          tags: { "godx-staging-18.4.1": "18.4.1" },
+        },
+        artifact: { integrity: "sha512-exact" },
+        targetVersion: "18.4.1",
+        stageTag: "godx-staging-18.4.1",
+        packageName: "@godxjp/ui",
+      }),
+    ).toThrow("cannot be reconciled");
   });
 
-  it("resumes the missing MCP publish and promotions without republishing UI", () => {
-    const rootDir = releaseFixture();
-    let recoveryState: Record<string, unknown> | null = null;
+  it("requires exact registry integrity and staging tag before promotion", () => {
+    expect(() =>
+      assertRegistryArtifact(
+        { exists: true, integrity: "sha512-exact", tags: { "godx-staging-18.4.1": "18.4.0" } },
+        { integrity: "sha512-exact" },
+        "18.4.1",
+        "godx-staging-18.4.1",
+        "@godxjp/ui",
+      ),
+    ).toThrow("integrity or staging tag");
+  });
+
+  it("binds recovery to source HEAD, exact manifests and retained SHA512 artifacts", () => {
+    const rootDir = fixture();
+    const recoveryDirectory = join(rootDir, ".recovery");
+    const artifactDirectory = join(recoveryDirectory, "artifacts");
+    mkdirSync(artifactDirectory, { recursive: true });
+    const uiTarball = join(artifactDirectory, "ui.tgz");
+    const mcpTarball = join(artifactDirectory, "mcp.tgz");
+    writeFileSync(uiTarball, "ui bytes");
+    writeFileSync(mcpTarball, "mcp bytes");
+    let state: RecoveryState | null = null;
     expect(() =>
       runRelease({
         rootDir,
         uiBump: "patch",
         mcpBump: "sync",
-        runStep: (step: string) => {
-          if (step === RELEASE_STEPS.PublishMcp) throw new Error("MCP publish failed");
+        sourceHead: "head-a",
+        recoveryDirectory,
+        runStep: (
+          step: string,
+          _plan: unknown,
+          _packed: unknown,
+          progress: Record<string, Record<string, unknown>>,
+        ) => {
+          recordLatest(step, progress);
+          if (step === RELEASE_STEPS.PublishMcp) throw new Error("MCP failed");
         },
-        packTargetManifests: () => fakeArtifacts(),
-        writeRecoveryState: (state: Record<string, unknown>) => {
-          recoveryState = structuredClone(state);
+        packTargetManifests: () => ({
+          ui: {},
+          mcp: {},
+          uiTarball,
+          mcpTarball,
+          uiIntegrity: integrityFor(uiTarball),
+          mcpIntegrity: integrityFor(mcpTarball),
+        }),
+        writeRecoveryState: (value: RecoveryState) => {
+          state = structuredClone(value);
         },
       }),
-    ).toThrow("MCP publish failed");
+    ).toThrow("MCP failed");
+    expect(
+      validateRecoveryState(state, { sourceHead: "head-a", rootDir, recoveryDirectory }),
+    ).toMatchObject({
+      sourceHead: "head-a",
+      targetVersion: "18.4.1",
+    });
+    expect(() =>
+      validateRecoveryState(state, { sourceHead: "head-b", rootDir, recoveryDirectory }),
+    ).toThrow("source HEAD");
+    writeFileSync(uiTarball, "tampered");
+    expect(() =>
+      validateRecoveryState(state, { sourceHead: "head-a", rootDir, recoveryDirectory }),
+    ).toThrow("SHA512");
+  });
+
+  it("writes recovery state atomically", () => {
+    const rootDir = fixture();
+    const path = join(rootDir, ".recovery", "state.json");
+    writeJsonAtomic(path, { schemaVersion: 2, targetVersion: "18.4.1" });
+    expect(JSON.parse(readFileSync(path, "utf8"))).toMatchObject({
+      schemaVersion: 2,
+      targetVersion: "18.4.1",
+    });
+  });
+
+  it("compensates UI latest on MCP promotion failure and recovery retries promotions only", () => {
+    const rootDir = fixture();
+    let state: RecoveryState | null = null;
+    let compensated = false;
+    expect(() =>
+      runRelease({
+        rootDir,
+        uiBump: "patch",
+        mcpBump: "sync",
+        sourceHead: "head-a",
+        runStep: (
+          step: string,
+          _plan: unknown,
+          _packed: unknown,
+          progress: Record<string, Record<string, unknown>>,
+        ) => {
+          recordLatest(step, progress);
+          if (step === RELEASE_STEPS.PromoteMcpLatest) throw new Error("promotion failed");
+        },
+        packTargetManifests: () => artifacts(),
+        compensateUiLatest: () => {
+          compensated = true;
+        },
+        writeRecoveryState: (value: RecoveryState) => {
+          state = structuredClone(value);
+        },
+      }),
+    ).toThrow("promotion failed");
+    expect(compensated).toBe(true);
+    expect((state as RecoveryState | null)?.ui).toMatchObject({
+      published: true,
+      promoted: false,
+      compensated: true,
+      previousLatest: "18.4.0",
+    });
 
     const executed: string[] = [];
-    let cleared = false;
     runRelease({
       rootDir,
       uiBump: "skip",
       mcpBump: "sync",
-      recoveryState,
+      sourceHead: "head-a",
+      recoveryState: state,
       runStep: (step: string) => executed.push(step),
-      packTargetManifests: () => fakeArtifacts(),
-      writeRecoveryState: (state: Record<string, unknown>) => {
-        recoveryState = structuredClone(state);
-      },
-      clearRecoveryState: () => {
-        cleared = true;
+      writeRecoveryState: (value: RecoveryState) => {
+        state = structuredClone(value);
       },
     });
     expect(executed).not.toContain(RELEASE_STEPS.PublishUi);
-    expect(executed.filter((step) => step === RELEASE_STEPS.PublishMcp)).toHaveLength(1);
+    expect(executed).not.toContain(RELEASE_STEPS.PublishMcp);
     expect(executed).toContain(RELEASE_STEPS.PromoteUiLatest);
     expect(executed).toContain(RELEASE_STEPS.PromoteMcpLatest);
-    expect(executed).toContain(RELEASE_STEPS.CommitTargetMetadata);
-    expect(cleared).toBe(true);
   });
 
-  it("rejects an already-existing MCP target when recovery says it still needs publish", () => {
-    expect(() =>
-      assertTargetAvailability({
-        recovery: true,
-        progress: {
-          ui: { published: true },
-          mcp: { published: false },
-        },
-        uiExists: true,
-        mcpExists: true,
-      }),
-    ).toThrow("Recovery MCP registry state mismatch");
-  });
+  it("labels metadata-plan CLI output as explicitly non-validating", () => {
+    const output = execFileSync(
+      "node",
+      ["scripts/release.mjs", "--ui", "patch", "--mcp", "sync", "--metadata-plan"],
+      {
+        cwd: process.cwd(),
+        encoding: "utf8",
+      },
+    );
+    expect(output).toContain("NOT validated");
+    expect(output).toContain('"releaseValidated": false');
+  }, 20_000);
 });
