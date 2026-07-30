@@ -5,6 +5,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  StatusBadge,
 } from "@godxjp/ui/data-display";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Star } from "lucide-react";
@@ -118,6 +119,7 @@ export default function Demo() {
               {statuses.map((s) => (
                 <Badge key={s} status={s} />
               ))}
+              <StatusBadge status="active" />
               <Badge status="unknown-key" />
             </Flex>
           </CardContent>
