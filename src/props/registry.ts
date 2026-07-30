@@ -529,6 +529,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["IdProp", "LabelProp", "DisabledProp", "ChildrenProp"],
   },
+  SidebarRenderItemProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
   SidebarSectionProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -1197,6 +1202,21 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "data-entry",
     file: "components/ui/toggle.tsx",
     vocabulary: ["SizeProp", "ClassNameProp"],
+  },
+  CommandPaletteProp: {
+    group: "data-entry",
+    file: "components/data-entry/command-palette.tsx",
+    vocabulary: ["OpenProp", "DefaultOpenProp", "OnOpenChangeProp"],
+  },
+  TwoFactorSetupProp: {
+    group: "feedback",
+    file: "components/feedback/two-factor-setup.tsx",
+    vocabulary: ["OpenProp", "OnOpenChangeProp", "PendingProp"],
+  },
+  AuthStackProp: {
+    group: "layout",
+    file: "components/layout/auth-stack.tsx",
+    vocabulary: ["ChildrenProp", "ClassNameProp"],
   },
   RatingProp: {
     group: "data-entry",
