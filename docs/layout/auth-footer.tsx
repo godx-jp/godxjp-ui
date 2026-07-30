@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { Button } from "@godxjp/ui/general";
 import { AuthFooter, AuthStack, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -21,7 +22,11 @@ export default function Demo() {
               product="Acme Identity"
               terms={<a href="#terms">利用規約</a>}
               privacy={<a href="#privacy">プライバシー</a>}
-              locale={<button type="button">日本語</button>}
+              locale={
+                <Button type="button" variant="ghost" size="sm">
+                  日本語
+                </Button>
+              }
             />
             <AuthFooter product="Godx ID" terms="Terms" privacy="Privacy" />
           </AuthStack>
