@@ -1,118 +1,155 @@
 #!/usr/bin/env node
 /**
- * Coordinated release for the monorepo — publish @godxjp/ui and/or @godxjp/ui-mcp with one
- * command so the library and its MCP tooling stay in lockstep (no more "publish twice by hand").
- * The MCP is PINNED to the lib's version (one shared line) so a catalog version always tells you
- * exactly which library build it describes. Enforced by scripts/check-release-lockstep.mjs.
+ * Coordinated fail-closed release for @godxjp/ui and @godxjp/ui-mcp.
  *
  * Usage:
- *   node scripts/release.mjs --ui patch --mcp sync   # both — mcp adopts the new ui version (NORM)
- *   node scripts/release.mjs --mcp sync              # mcp-only fix at the CURRENT ui version
- *                                                    # (fails on npm if that version exists)
- *   --ui: patch | minor | major | skip      --mcp: sync | skip
- *
- * A UI bump REQUIRES --mcp sync (a ui-only release is refused) so the two never split — the exact
- * drift issue #140 fixes (ui 16.9.2 / mcp 16.7.2 / server 16.7.0 all disagreeing).
+ *   node scripts/release.mjs --ui patch --mcp sync
+ *   node scripts/release.mjs --mcp sync
+ *   node scripts/release.mjs --ui patch --mcp sync --dry-run
  */
-import { execSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { cpSync, mkdtempSync, mkdirSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { RELEASE_STEPS, buildReleasePlan, readPackage, runRelease } from "./release-core.mjs";
 
 const args = process.argv.slice(2);
-const flag = (name, def) => {
-  const i = args.indexOf(name);
-  return i >= 0 ? args[i + 1] : def;
+const flag = (name, defaultValue) => {
+  const index = args.indexOf(name);
+  return index >= 0 ? args[index + 1] : defaultValue;
 };
 const uiBump = flag("--ui", "skip");
 const mcpBump = flag("--mcp", "skip");
-const VALID_UI = new Set(["patch", "minor", "major", "skip"]);
-const VALID_MCP = new Set(["sync", "skip"]);
+const dryRun = args.includes("--dry-run");
+const repositoryRoot = process.cwd();
 
-if (!VALID_UI.has(uiBump) || !VALID_MCP.has(mcpBump) || (uiBump === "skip" && mcpBump === "skip")) {
-  console.error("Usage: node scripts/release.mjs --ui <patch|minor|major|skip> --mcp <sync|skip>");
-  process.exit(1);
-}
-
-// LOCKSTEP GUARD (issue #140): @godxjp/ui-mcp is version-pinned to @godxjp/ui — one shared line.
-// So a UI bump MUST re-publish the MCP at the same new version (even a no-catalog-change release
-// only touches the MCP's version field). Refusing the ui-alone combo here is the enforcement that
-// stops the runtime package and its catalog from drifting apart.
-if (uiBump !== "skip" && mcpBump !== "sync") {
-  console.error(
-    "✗ Lockstep: bumping @godxjp/ui requires --mcp sync so the catalog republishes at the same\n" +
-      "  version. Releasing the library without its MCP is what let ui/mcp versions drift (#140).\n" +
-      "  Re-run with: node scripts/release.mjs --ui " +
-      uiBump +
-      " --mcp sync",
+function command(binary, commandArgs, cwd = repositoryRoot) {
+  console.log(
+    `\n$ ${[binary, ...commandArgs].join(" ")}${cwd !== repositoryRoot ? `  (in ${cwd})` : ""}`,
   );
-  process.exit(1);
+  execFileSync(binary, commandArgs, { cwd, stdio: "inherit" });
 }
 
-const run = (cmd, cwd) => {
-  console.log(`\n$ ${cmd}${cwd ? `  (in ${cwd})` : ""}`);
-  execSync(cmd, { stdio: "inherit", cwd });
-};
-const versionOf = (dir = ".") => JSON.parse(readFileSync(`${dir}/package.json`, "utf8")).version;
+function commitTargetMetadata(plan) {
+  command("git", ["add", "package.json", "mcp/package.json"]);
+  const hasStagedChanges =
+    spawnSync("git", ["diff", "--cached", "--quiet"], {
+      cwd: repositoryRoot,
+      stdio: "inherit",
+    }).status !== 0;
 
-// Rewrite a single top-level string field in a package.json, preserving formatting well enough for
-// a clean diff (the file stays 2-space-indented JSON with a trailing newline).
-const setPkgField = (dir, field, value) => {
-  const path = `${dir}/package.json`;
-  const pkg = JSON.parse(readFileSync(path, "utf8"));
-  pkg[field] = value;
-  writeFileSync(path, JSON.stringify(pkg, null, 2) + "\n");
-};
+  if (!hasStagedChanges) {
+    console.log("\n✓ Published. Coordinated target metadata was already committed.");
+    return;
+  }
 
-// Refuse to release from a dirty tree — release commits must be clean + reviewable.
-if (execSync("git status --porcelain", { encoding: "utf8" }).trim()) {
-  console.error("✗ Working tree is not clean — commit or stash first.");
-  process.exit(1);
+  const packages = [
+    plan.publishesUi ? `@godxjp/ui@${plan.targetVersion}` : null,
+    plan.publishesMcp ? `@godxjp/ui-mcp@${plan.targetVersion}` : null,
+  ].filter(Boolean);
+  command("git", ["commit", "-m", `chore(release): ${packages.join(" · ")}`]);
+  console.log("\n✓ Released. Push the coordinated version commit when ready.");
 }
 
-if (uiBump !== "skip") {
-  run("pnpm run verify:release"); // typecheck + lint + check:mcp-sync + build + test
-  run(`npm version ${uiBump} --no-git-tag-version`);
-  run("npm publish --access public");
-  console.log(`✓ published @godxjp/ui@${versionOf()}`);
+function executeReleaseStep(step, plan) {
+  switch (step) {
+    case RELEASE_STEPS.VerifyRoot:
+      command("pnpm", ["run", "verify:release"]);
+      return;
+    case RELEASE_STEPS.InstallMcp:
+      command("pnpm", ["install", "--frozen-lockfile"], join(repositoryRoot, "mcp"));
+      return;
+    case RELEASE_STEPS.BuildMcp:
+      command("pnpm", ["build"], join(repositoryRoot, "mcp"));
+      return;
+    case RELEASE_STEPS.TestMcp:
+      command("pnpm", ["test"], join(repositoryRoot, "mcp"));
+      return;
+    case RELEASE_STEPS.VerifyLockstep:
+      command("node", ["scripts/check-release-lockstep.mjs"]);
+      return;
+    case RELEASE_STEPS.PublishUi:
+      command("npm", ["publish", "--access", "public"]);
+      console.log(`✓ published @godxjp/ui@${plan.targetVersion}`);
+      return;
+    case RELEASE_STEPS.PublishMcp:
+      command("npm", ["publish", "--access", "public"], join(repositoryRoot, "mcp"));
+      console.log(`✓ published @godxjp/ui-mcp@${plan.targetVersion}`);
+      return;
+    case RELEASE_STEPS.CommitTargetMetadata:
+      commitTargetMetadata(plan);
+      return;
+    default:
+      throw new Error(`Unknown release step "${step}".`);
+  }
 }
 
-if (mcpBump === "sync") {
-  const uiVersion = versionOf();
-  // Refresh the mutual compatibility metadata BEFORE building/publishing so the packed artifacts
-  // carry the correct pointers: the UI declares the catalog version it ships with, and the catalog
-  // declares the minor-pinned UI range it describes. check:mcp-lockstep enforces both.
-  const [major, minor] = uiVersion.split(".");
-  setPkgField(".", "godxUiMcp", uiVersion);
-  setPkgField("mcp", "godxUiCompatibility", `${major}.${minor}.x`);
-  // Pin the MCP to the lib's (possibly just-bumped) version — one shared line.
-  run(`npm version ${uiVersion} --no-git-tag-version --allow-same-version`, "mcp");
-  // mcp/ is a STANDALONE package (not a pnpm-workspace member), so the root install does NOT
-  // provide its build deps (tsup et al). Install them here before building — otherwise a fresh
-  // CI checkout fails with "tsup: not found" AFTER the UI already published, splitting the
-  // lockstep train (postmortem: v17.0.0 — @godxjp/ui shipped but @godxjp/ui-mcp did not).
-  run("pnpm install", "mcp");
-  run("pnpm build", "mcp");
-  // The catalog has its OWN test suite (structural integrity, rule cross-refs) that the root
-  // `verify:release` does NOT run — a malformed catalog entry would otherwise publish silently
-  // (postmortem: DataState.rules held prose instead of rule-IDs and shipped in 17.0.0). Gate it
-  // here, fail-closed, before the catalog reaches npm.
-  run("pnpm test", "mcp");
-  run("npm publish --access public", "mcp");
-  console.log(`✓ published @godxjp/ui-mcp@${versionOf("mcp")}`);
+function makeDryRunWorkspace() {
+  const workspace = mkdtempSync(join(tmpdir(), "godxjp-release-dry-run-"));
+  mkdirSync(join(workspace, "mcp"));
+  cpSync(join(repositoryRoot, "package.json"), join(workspace, "package.json"));
+  cpSync(join(repositoryRoot, "mcp/package.json"), join(workspace, "mcp/package.json"));
+  return workspace;
 }
 
-// Fail-closed: refuse to commit a release whose two packages are not in lockstep.
-run("node scripts/check-release-lockstep.mjs");
+let workspace = repositoryRoot;
 
-run("git add package.json mcp/package.json");
-const uiPart = uiBump !== "skip" ? `@godxjp/ui@${versionOf()}` : null;
-const mcpPart = mcpBump !== "skip" ? `@godxjp/ui-mcp@${versionOf("mcp")}` : null;
-// The publish already happened above; the commit only records the version bump. When there is
-// nothing staged (e.g. a `mcp-only` re-publish at the CURRENT version, or the versions were
-// pre-committed during a recovery), `git commit` would exit non-zero and fail the whole run
-// AFTER a successful publish — a misleading red. Skip the commit when the tree is clean.
-if (execSync("git status --porcelain", { encoding: "utf8" }).trim()) {
-  run(`git commit -m "chore(release): ${[uiPart, mcpPart].filter(Boolean).join(" · ")}"`);
-  console.log("\n✓ Released. Push the commit when ready.");
-} else {
-  console.log("\n✓ Published. Working tree already clean — no release commit needed.");
+try {
+  const currentVersion = readPackage(repositoryRoot).version;
+  buildReleasePlan({ currentVersion, uiBump, mcpBump });
+
+  if (!dryRun) {
+    const status = execFileSync("git", ["status", "--porcelain"], {
+      cwd: repositoryRoot,
+      encoding: "utf8",
+    }).trim();
+
+    if (status) {
+      throw new Error("Working tree is not clean. Commit or stash changes before releasing.");
+    }
+  } else {
+    workspace = makeDryRunWorkspace();
+    console.log(
+      "Dry-run: using an isolated manifest workspace; no install, build, publish, or commit runs.",
+    );
+  }
+
+  const result = runRelease({
+    rootDir: workspace,
+    uiBump,
+    mcpBump,
+    dryRun,
+    runStep: executeReleaseStep,
+    onStep: (step, mode) => console.log(`[${mode}] ${step}`),
+  });
+
+  if (dryRun) {
+    const ui = result.packedManifests.ui;
+    const mcp = result.packedManifests.mcp;
+    console.log(
+      JSON.stringify(
+        {
+          targetVersion: result.plan.targetVersion,
+          steps: result.plan.steps,
+          packed: {
+            ui: { version: ui.version, godxUiMcp: ui.godxUiMcp },
+            mcp: {
+              version: mcp.version,
+              godxUiCompatibility: mcp.godxUiCompatibility,
+            },
+          },
+        },
+        null,
+        2,
+      ),
+    );
+    console.log("✓ Dry-run passed with coordinated packed target manifests and no publish.");
+  }
+} catch (error) {
+  console.error(`✗ Release aborted before completion: ${error.message}`);
+  process.exitCode = 1;
+} finally {
+  if (dryRun && workspace !== repositoryRoot) {
+    rmSync(workspace, { force: true, recursive: true });
+  }
 }
