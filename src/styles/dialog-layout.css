@@ -41,7 +41,7 @@
     top: 50%;
     z-index: 50;
     display: grid;
-    width: min(var(--dialog-width-default), calc(100% - var(--dialog-viewport-gutter)));
+    width: min(var(--dialog-width-default), calc(100% - var(--dialog-viewport-inset)));
     max-width: none;
     transform: translate(-50%, -50%);
     gap: var(--dialog-space-gap);

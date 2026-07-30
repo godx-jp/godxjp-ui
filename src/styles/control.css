@@ -586,10 +586,10 @@
   }
 
   [data-slot="dialog-content"].ui-command-palette {
-    top: var(--command-palette-top);
+    top: var(--command-palette-inset-top);
     width: min(
       var(--command-palette-width),
-      calc(100vw - (2 * var(--command-palette-viewport-gutter)))
+      calc(100vw - (2 * var(--command-palette-viewport-inset)))
     );
     max-width: none;
     transform: translateX(-50%);

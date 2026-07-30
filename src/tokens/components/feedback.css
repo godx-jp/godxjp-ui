@@ -4,7 +4,7 @@
   --sheet-width-default: 22.5rem;
   --sheet-overlay-background: rgb(0 0 0 / 0.2);
   --dialog-width-default: 32rem;
-  --dialog-viewport-gutter: 1.5rem;
+  --dialog-viewport-inset: 1.5rem;
   --dialog-overlay-background: rgb(0 0 0 / 0.3);
   /* Dialog inset defaults to the shared global chrome tokens (override --space-chrome-* once for the
    * whole system, or --dialog-space-x/-y for dialogs only). */

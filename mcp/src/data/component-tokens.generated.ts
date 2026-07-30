@@ -544,12 +544,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
-    "name": "--command-palette-top",
+    "name": "--command-palette-inset-top",
     "value": "calc(var(--space-6) * 4)",
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
   {
-    "name": "--command-palette-viewport-gutter",
+    "name": "--command-palette-viewport-inset",
     "value": "var(--space-3)",
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
   },
@@ -754,7 +754,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
-    "name": "--dialog-viewport-gutter",
+    "name": "--dialog-viewport-inset",
     "value": "1.5rem",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
@@ -1159,7 +1159,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
   },
   {
-    "name": "--app-shell-mobile-nav-overlay",
+    "name": "--app-shell-mobile-nav-background",
     "value": "rgb(0 0 0 / 0.2)",
     "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
   },
@@ -1384,12 +1384,12 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Labelled auth divider geometry."
   },
   {
-    "name": "--auth-legal-footer-gap",
+    "name": "--auth-footer-content-gap",
     "value": "0.375rem",
     "description": "Labelled auth divider geometry."
   },
   {
-    "name": "--auth-legal-footer-font-size",
+    "name": "--auth-footer-text-font-size",
     "value": "0.6875rem",
     "description": "Labelled auth divider geometry."
   },
@@ -1399,17 +1399,17 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Labelled auth divider geometry."
   },
   {
-    "name": "--auth-field-label-gap",
+    "name": "--auth-shell-field-label-gap",
     "value": "var(--space-1)",
     "description": "Labelled auth divider geometry."
   },
   {
-    "name": "--auth-field-label-font-size",
+    "name": "--auth-shell-field-label-font-size",
     "value": "var(--font-size-xs)",
     "description": "Labelled auth divider geometry."
   },
   {
-    "name": "--auth-field-label-line-height",
+    "name": "--auth-shell-field-label-line-height",
     "value": "1.25",
     "description": "Labelled auth divider geometry."
   },

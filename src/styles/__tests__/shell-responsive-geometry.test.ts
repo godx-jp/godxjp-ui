@@ -58,9 +58,9 @@ describe("responsive shell geometry", () => {
 
   it("owns canonical mobile drawer width, backdrop, safe areas and reduced motion", () => {
     expect(shellTokens).toContain("--app-shell-mobile-nav-width: 22.5rem;");
-    expect(shellTokens).toContain("--app-shell-mobile-nav-overlay: rgb(0 0 0 / 0.2);");
+    expect(shellTokens).toContain("--app-shell-mobile-nav-background: rgb(0 0 0 / 0.2);");
     expect(shellStyles).toMatch(
-      /\.app-mobile-nav-overlay\s*\{[^}]*background-color:\s*var\(--app-shell-mobile-nav-overlay\);/s,
+      /\.app-mobile-nav-overlay\s*\{[^}]*background-color:\s*var\(--app-shell-mobile-nav-background\);/s,
     );
     expect(shellStyles).toMatch(
       /\.app-mobile-nav-drawer\s*\{[^}]*safe-area-inset-top[^}]*safe-area-inset-bottom[^}]*safe-area-inset-left[^}]*safe-area-inset-right[^}]*overscroll-behavior:\s*contain;/s,

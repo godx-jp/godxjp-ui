@@ -168,16 +168,16 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: var(--auth-legal-footer-gap);
+    gap: var(--auth-footer-content-gap);
     color: hsl(var(--muted-foreground));
     font-family: var(--font-mono);
-    font-size: var(--auth-legal-footer-font-size);
+    font-size: var(--auth-footer-text-font-size);
   }
 
   .ui-auth-legal-footer-item {
     display: inline-flex;
     align-items: center;
-    gap: var(--auth-legal-footer-gap);
+    gap: var(--auth-footer-content-gap);
   }
 
   .ui-auth-stack {
@@ -187,12 +187,12 @@
   }
 
   .ui-auth-shell[data-variant="canonical"] .ui-form-field {
-    --field-label-gap: var(--auth-field-label-gap);
+    --field-label-gap: var(--auth-shell-field-label-gap);
   }
 
   .ui-auth-shell[data-variant="canonical"] [data-slot="form-field-label"] [data-slot="label"] {
-    font-size: var(--auth-field-label-font-size);
-    line-height: var(--auth-field-label-line-height);
+    font-size: var(--auth-shell-field-label-font-size);
+    line-height: var(--auth-shell-field-label-line-height);
   }
 
   .ui-auth-shell[data-density="compact"] .ui-auth-shell-card {
@@ -315,7 +315,7 @@
   }
 
   [data-slot="sheet-overlay"].app-mobile-nav-overlay {
-    background-color: var(--app-shell-mobile-nav-overlay);
+    background-color: var(--app-shell-mobile-nav-background);
   }
 
   .app-mobile-nav-drawer {
