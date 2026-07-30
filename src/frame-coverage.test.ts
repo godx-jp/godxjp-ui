@@ -26,7 +26,8 @@ describe("frame coverage checker", () => {
       "touch",
       "async",
     ]) {
-      expect(report.totals[dimension].untested).toBe(0);
+      expect(report.totals[dimension].untested).toBeGreaterThan(0);
+      expect(report.totals[dimension].untested).toBeLessThanOrEqual(report.exports);
     }
     // Prop completeness is derived from exact TypeScript API + case evidence. Until every
     // component case is authored, gaps must remain visible instead of inheriting a global PASS.
