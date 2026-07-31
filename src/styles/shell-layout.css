@@ -198,6 +198,7 @@
   .ui-auth-shell[data-density="compact"] .ui-auth-shell-card {
     --card-space-inset: var(--auth-shell-compact-card-inset);
     --card-space-body-y: var(--auth-shell-card-padding-block-compact);
+    --card-space-solo-y: var(--auth-shell-card-padding-block-compact);
     --card-space-gap: var(--auth-shell-card-gap-compact);
   }
 

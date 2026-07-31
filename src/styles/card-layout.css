@@ -282,7 +282,7 @@
   }
 
   [data-slot="card-content"][data-solo] {
-    padding-top: var(--card-space-inset);
+    padding-block: var(--card-space-solo-y);
   }
 
   [data-slot="card-content"][data-flush] {

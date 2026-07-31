@@ -9,6 +9,10 @@
   /* Gap between the header and the body, and the body's own top padding — the breathing
    * room under a title before content begins. */
   --card-space-body-y: var(--space-section-active);
+  /* Symmetric block padding for a SOLO content slot. Defaults to the shell inset so standalone
+   * cards preserve their existing geometry, while composed shells can tune block and inline
+   * spacing independently without targeting CardContent. */
+  --card-space-solo-y: var(--card-space-inset);
   /* Vertical padding of a SEPARATED footer band (top = bottom). Drives --card-space-divided-y. */
   --card-space-footer-y: var(--space-stack-sm);
   /* DIVIDED-section vertical padding (rule #44/#45). A header/footer that carries a divider
