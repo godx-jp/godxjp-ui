@@ -8,6 +8,9 @@ export { LineChart } from "./line-chart";
 export type { LineChartProp, LineChartProps } from "./line-chart";
 export { BarChart } from "./bar-chart";
 export type { BarChartProp, BarChartProps } from "./bar-chart";
+/** Dependency-free (no recharts) compact bar trend for dashboard summary cards. */
+export { CompactBarTrend } from "./compact-bar-trend";
+export type { CompactBarTrendProp, CompactBarTrendProps } from "./compact-bar-trend";
 export { AreaChart } from "./area-chart";
 export type { AreaChartProp, AreaChartProps } from "./area-chart";
 export { PieChart } from "./pie-chart";

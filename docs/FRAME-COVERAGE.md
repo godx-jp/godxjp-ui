@@ -1,5 +1,14 @@
 # Frame coverage ledger
 
+> **Two ledgers, one surface.** This page documents the _verdict_ ledger (`frame-coverage.json` →
+> `scripts/check-frame-coverage.mjs`), which classifies each export across ten evidence tracks
+> (`isolated`, `props`, `composition`, `journey`, `responsive`, `rtl`, `a11y`, `touch`,
+> `screenReader`, `async`). The _contract_ ledger for issue #163 —
+> `preview/frame-coverage.ledger.json`, which maps every public export and compound subcomponent to
+> a frame and declares the 14 contract dimensions as covered / UNTESTED / reasoned N-A — is
+> documented in [FRAME-COVERAGE-LEDGER.md](./FRAME-COVERAGE-LEDGER.md). Both share the same export
+> discovery (`scripts/check-frame-coverage.mjs`) so they can never disagree about what is public.
+
 `frame-coverage.json` is the policy input. `pnpm check:frame-coverage` discovers public visual
 exports from component barrels, resolves each owning `/frame/<id>` source, and emits the expanded
 export-by-dimension ledger as JSON.

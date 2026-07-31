@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "../../lib/utils";
+import { useKeepActiveTabVisible } from "./tabs-scroll";
 
 export type TabsItem = {
   value: string;
@@ -110,25 +111,45 @@ export const TabsList = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
     variant?: "default" | "line";
   }
->(({ className, variant = "default", ...props }, ref) => (
-  <TabsPrimitive.List
-    ref={ref}
-    data-slot="tabs-list"
-    data-variant={variant}
-    className={cn(
-      // `min-w-0 max-w-full` let the list shrink to (and never exceed) whatever width its
-      // ancestors actually give it instead of forcing them wider; horizontal orientation then
-      // scrolls its own overflow rather than clipping/hiding long localized labels in a narrow
-      // container (gh#175). Hidden scrollbar keeps the strip visually clean while staying
-      // swipeable on touch and reachable via keyboard (arrow-key roving focus still scrolls the
-      // newly-focused trigger into view natively). Vertical orientation is untouched — it already
-      // stacks in a column and is sized by its own `h-*`/`w-*` overrides.
-      "group/tabs-list text-muted-foreground data-[variant=default]:bg-muted inline-flex w-fit max-w-full min-w-0 items-center justify-center rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[orientation=horizontal]:[scrollbar-width:none] data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden data-[variant=line]:gap-1 data-[variant=line]:rounded-none data-[variant=line]:bg-transparent [&[data-orientation=horizontal]::-webkit-scrollbar]:hidden",
-      className,
-    )}
-    {...props}
-  />
-));
+>(({ className, variant = "default", ...props }, ref) => {
+  // Own a node ref regardless of what the caller passes, so the keep-visible observers always have
+  // the strip to measure; the caller's ref is still populated (object or callback form).
+  const listRef = React.useRef<React.ComponentRef<typeof TabsPrimitive.List> | null>(null);
+  const setListRef = React.useCallback(
+    (node: React.ComponentRef<typeof TabsPrimitive.List> | null) => {
+      listRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref],
+  );
+
+  // gh#204 — a responsive resize / route re-render must never leave the active trigger scrolled
+  // out of the strip (see ./tabs-scroll for the constraints this obeys).
+  useKeepActiveTabVisible(listRef);
+
+  return (
+    <TabsPrimitive.List
+      ref={setListRef}
+      data-slot="tabs-list"
+      data-variant={variant}
+      className={cn(
+        // `min-w-0 max-w-full` let the list shrink to (and never exceed) whatever width its
+        // ancestors actually give it instead of forcing them wider; horizontal orientation then
+        // scrolls its own overflow rather than clipping/hiding long localized labels in a narrow
+        // container (gh#175). Hidden scrollbar keeps the strip visually clean while staying
+        // swipeable on touch and reachable via keyboard (arrow-key roving focus still scrolls the
+        // newly-focused trigger into view natively); `useKeepActiveTabVisible` above re-pins the
+        // active trigger when a resize would otherwise strand it off-strip (gh#204). Vertical
+        // orientation is untouched — it already stacks in a column and is sized by its own
+        // `h-*`/`w-*` overrides.
+        "group/tabs-list text-muted-foreground data-[variant=default]:bg-muted inline-flex w-fit max-w-full min-w-0 items-center justify-center rounded-lg p-1 group-data-[orientation=vertical]/tabs:flex-col data-[orientation=horizontal]:[scrollbar-width:none] data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden data-[variant=line]:gap-1 data-[variant=line]:rounded-none data-[variant=line]:bg-transparent [&[data-orientation=horizontal]::-webkit-scrollbar]:hidden",
+        className,
+      )}
+      {...props}
+    />
+  );
+});
 TabsList.displayName = TabsPrimitive.List.displayName;
 
 export const TabsTrigger = React.forwardRef<

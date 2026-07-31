@@ -23,7 +23,7 @@ const publicRawRamp = /--(?:color-)?(?:gray|blue)-\d+\b/;
 const hexThemeColor = /^\s*--color-[\w-]+:\s*#/m;
 const componentToken = /^src\/tokens\/components\/([a-z0-9-]+)\.css$/;
 const componentNameShape =
-  /^--[a-z0-9]+(?:-[a-z0-9]+)*-(?:space|color|background|foreground|border|radius|height|width|padding|gap|size|font|line|letter|shadow|glow|tint|gradient|alpha|inset|offset|translate|max|overflow)(?:-[a-z0-9]+)*:/;
+  /^--[a-z0-9]+(?:-[a-z0-9]+)*-(?:space|color|background|foreground|border|radius|height|width|padding|gap|size|font|line|letter|shadow|glow|tint|gradient|alpha|align|inset|offset|translate|max|overflow)(?:-[a-z0-9]+)*:/;
 const componentPrefixes = {
   badge: ["badge"],
   card: ["card", "stat-card"],
@@ -63,6 +63,7 @@ const componentPrefixes = {
     "navigation-menu",
     "popover",
     "hover-card",
+    "app-setting-picker",
   ],
   table: ["table"],
   "data-display": [

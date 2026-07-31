@@ -1,4 +1,8 @@
+import type { ComponentType, ReactNode } from "react";
+
+import { createSidebarLink } from "../components/layout/sidebar-link";
 import type { FormStateAdapter } from "../props/components/form.prop";
+import type { SidebarLinkComponentProp } from "../props/components/layout.prop";
 
 /**
  * Structural shape of Inertia's `useForm` return that the adapter needs. Duck-typed on purpose —
@@ -81,4 +85,58 @@ export function useInertiaField<TData extends Record<string, unknown>>(
     error: form.errors[name],
     onChange: (event) => form.setData(name, event?.target?.value),
   };
+}
+
+/**
+ * Structural shape of Inertia's `<Link>` that the Sidebar adapter needs. Duck-typed on purpose —
+ * `@godxjp/ui` keeps ZERO dependency on `@inertiajs/react`; the real `Link` satisfies this shape,
+ * so a consumer passes it directly with no import from this package.
+ */
+export interface InertiaLinkLike {
+  href: string;
+  className?: string;
+  children?: ReactNode;
+}
+
+/**
+ * Bind Inertia's `<Link>` as the Sidebar's row element (gh#213).
+ *
+ * The LIBRARY still composes every row — the 16px icon slot, the label, the badge, `data-active` /
+ * `aria-current`, the icon-only collapsed rail and its tooltip name — and hands it to the link as
+ * `children`. The consumer supplies ONLY the element, so the class of production regression where a
+ * consumer `renderItem` returned `<Link>{item.label}</Link>` and silently dropped every sidebar icon
+ * is no longer expressible.
+ *
+ * A disabled row has no destination; Inertia's `Link` requires a string `href` and would visit `""`,
+ * so the adapter renders an inert `<a>` for that case while keeping the canonical row class and
+ * `aria-disabled`.
+ *
+ * React Router / TanStack Router use `to` instead of `href` — use
+ * `createSidebarLink(Link, "to")` from `@godxjp/ui/layout` for those.
+ *
+ * @example
+ * ```tsx
+ * import { Link } from "@inertiajs/react";
+ * import { Sidebar } from "@godxjp/ui/layout";
+ * import { inertiaSidebarLink } from "@godxjp/ui/inertia";
+ *
+ * const NavLink = inertiaSidebarLink(Link);
+ *
+ * <Sidebar
+ *   activeId={page.component}
+ *   linkComponent={NavLink}
+ *   sections={[
+ *     { label: "Operations", items: [
+ *       { id: "dashboard", label: t("nav.dashboard"), icon: LayoutDashboard, href: "/dashboard" },
+ *       { id: "invoices", label: t("nav.invoices"), icon: Receipt, href: "/invoices",
+ *         badge: <Badge tone="info">{unread}</Badge> },
+ *     ] },
+ *   ]}
+ * />;
+ * ```
+ */
+export function inertiaSidebarLink<P extends InertiaLinkLike>(
+  Link: ComponentType<P>,
+): SidebarLinkComponentProp {
+  return createSidebarLink(Link, "href");
 }

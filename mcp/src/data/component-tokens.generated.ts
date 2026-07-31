@@ -206,67 +206,157 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--card-service-launcher-space-gap",
     "value": "var(--space-stack-sm)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "── ServiceLauncherCard (gh#219) ─────────────────────────────────────────────────── * Internal rhythm of a launcher tile: one gap knob drives the vertical stack AND the * icon↔title↔status row, so a service theme retunes the whole tile density once."
   },
   {
     "name": "--card-service-launcher-icon-size",
     "value": "var(--control-height-lg)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for — * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls."
   },
   {
     "name": "--card-service-launcher-icon-glyph-size",
     "value": "var(--space-5)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for — * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls."
   },
   {
     "name": "--card-service-launcher-icon-radius",
     "value": "var(--radius-md)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for — * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls."
   },
   {
     "name": "--card-service-launcher-icon-background",
     "value": "initial",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Available-service medallion tint. `initial` (role-mirror rule, docs/TOKENS.md) so the role * defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override reaches them. * Defaults = hsl(var(--accent)) fill · hsl(var(--primary)) glyph."
   },
   {
     "name": "--card-service-launcher-icon-foreground",
     "value": "initial",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Available-service medallion tint. `initial` (role-mirror rule, docs/TOKENS.md) so the role * defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override reaches them. * Defaults = hsl(var(--accent)) fill · hsl(var(--primary)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-unavailable-icon-background",
+    "value": "initial",
+    "description": "Unavailable medallion tint — applied when the consumer supplies `disabledReason`, so an * un-launchable service never reads as brand-live. `initial` for the same role-mirror reason. * Defaults = hsl(var(--muted)) fill · hsl(var(--muted-foreground)) glyph."
+  },
+  {
+    "name": "--card-service-launcher-unavailable-icon-foreground",
+    "value": "initial",
+    "description": "Unavailable medallion tint — applied when the consumer supplies `disabledReason`, so an * un-launchable service never reads as brand-live. `initial` for the same role-mirror reason. * Defaults = hsl(var(--muted)) fill · hsl(var(--muted-foreground)) glyph."
   },
   {
     "name": "--card-service-launcher-description-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Description prose — also drives the disabled-reason line and the catalog-CTA caption."
   },
   {
     "name": "--card-service-launcher-description-line-height",
     "value": "var(--line-height-body)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Description prose — also drives the disabled-reason line and the catalog-CTA caption."
   },
   {
     "name": "--card-service-launcher-metadata-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Mono metadata line (hostname · plan) — tighter leading than prose by design."
   },
   {
     "name": "--card-service-launcher-metadata-line-height",
     "value": "var(--line-height-normal)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Mono metadata line (hostname · plan) — tighter leading than prose by design."
   },
   {
     "name": "--card-service-launcher-cta-min-height",
     "value": "calc(var(--control-height-lg) * 4)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Dashed catalog/add companion tile: kept tall enough to sit level with a populated launcher * tile in the same grid row. Four control tiers ≈ medallion + title + description + action."
   },
   {
     "name": "--card-service-launcher-skeleton-title-width",
     "value": "var(--space-12)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Skeleton bar widths — shape-matched placeholders for the title and status badge."
   },
   {
     "name": "--card-service-launcher-skeleton-status-width",
     "value": "var(--space-10)",
-    "description": "Medallion tint — soft brand wash + brand glyph by default; a service retints by overriding * --primary or these tokens directly (rule #44/#45). `initial` so the --primary default * re-resolves at the call site under a scoped theme (no :root freeze). * Defaults = hsl(var(--primary) / 0.1) fill · hsl(var(--primary)) glyph."
+    "description": "Skeleton bar widths — shape-matched placeholders for the title and status badge."
+  },
+  {
+    "name": "--chart-trend-plot-height-xs",
+    "value": "3.5rem",
+    "description": "── Plot height tiers (size = xs|sm|md|lg) ─────────────────────────────────────────── * `xs` is the canonical dashboard-summary-card density: a seven-day trend that sits under * a KPI headline without stealing its vertical rhythm. A service retunes the whole scale * here; a screen picks a step with the `size` prop."
+  },
+  {
+    "name": "--chart-trend-plot-height-sm",
+    "value": "5rem",
+    "description": "── Plot height tiers (size = xs|sm|md|lg) ─────────────────────────────────────────── * `xs` is the canonical dashboard-summary-card density: a seven-day trend that sits under * a KPI headline without stealing its vertical rhythm. A service retunes the whole scale * here; a screen picks a step with the `size` prop."
+  },
+  {
+    "name": "--chart-trend-plot-height-md",
+    "value": "7.5rem",
+    "description": "── Plot height tiers (size = xs|sm|md|lg) ─────────────────────────────────────────── * `xs` is the canonical dashboard-summary-card density: a seven-day trend that sits under * a KPI headline without stealing its vertical rhythm. A service retunes the whole scale * here; a screen picks a step with the `size` prop."
+  },
+  {
+    "name": "--chart-trend-plot-height-lg",
+    "value": "10rem",
+    "description": "── Plot height tiers (size = xs|sm|md|lg) ─────────────────────────────────────────── * `xs` is the canonical dashboard-summary-card density: a seven-day trend that sits under * a KPI headline without stealing its vertical rhythm. A service retunes the whole scale * here; a screen picks a step with the `size` prop."
+  },
+  {
+    "name": "--chart-trend-plot-height",
+    "value": "var(--chart-trend-plot-height-xs)",
+    "description": "Active tier — chart-layout.css re-points this per `data-size`; overriding it directly * pins one height for every trend regardless of `size`."
+  },
+  {
+    "name": "--chart-trend-bar-gap",
+    "value": "var(--space-2)",
+    "description": "── Bar marks ──────────────────────────────────────────────────────────────────────── * Thin marks, a surface gap between neighbours and a rounded data-end anchored to the * baseline (the data-visualization mark spec)."
+  },
+  {
+    "name": "--chart-trend-bar-radius",
+    "value": "var(--radius-sm)",
+    "description": "── Bar marks ──────────────────────────────────────────────────────────────────────── * Thin marks, a surface gap between neighbours and a rounded data-end anchored to the * baseline (the data-visualization mark spec)."
+  },
+  {
+    "name": "--chart-trend-bar-max-width",
+    "value": "1.5rem",
+    "description": "Ceiling on a single mark so a 3-point trend does not render slabs."
+  },
+  {
+    "name": "--chart-trend-bar-min-height",
+    "value": "2px",
+    "description": "Floor so a zero/absent value still reads as a plotted category rather than a hole."
+  },
+  {
+    "name": "--chart-trend-bar-background",
+    "value": "initial",
+    "description": "Muted mark fill — role-mirror knob, declared `initial` so the role default re-resolves * at the CALL SITE under `.dark` / `[data-tenant]` (docs/TOKENS.md · \"Role-mirror knobs * MUST be `initial`\"). Default = hsl(var(--muted-foreground) / 0.75), which clears the * 3:1 non-text contrast floor (WCAG 1.4.11) against the card surface."
+  },
+  {
+    "name": "--chart-trend-bar-background-alpha",
+    "value": "0.75",
+    "description": "Opacity applied to the muted-fill role default."
+  },
+  {
+    "name": "--chart-trend-bar-emphasis-background",
+    "value": "initial",
+    "description": "Emphasized (\"current\") mark fill — role-mirror knob. Default = hsl(var(--primary))."
+  },
+  {
+    "name": "--chart-trend-baseline-border",
+    "value": "initial",
+    "description": "── Baseline + category ticks ──────────────────────────────────────────────────────── * Chrome defaults QUIET (rule #44): no baseline rule at rest. A service opts in with * `--chart-trend-baseline-border: 1px solid hsl(var(--border));`."
+  },
+  {
+    "name": "--chart-trend-tick-gap",
+    "value": "var(--space-1)",
+    "description": "── Baseline + category ticks ──────────────────────────────────────────────────────── * Chrome defaults QUIET (rule #44): no baseline rule at rest. A service opts in with * `--chart-trend-baseline-border: 1px solid hsl(var(--border));`."
+  },
+  {
+    "name": "--chart-trend-tick-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "── Baseline + category ticks ──────────────────────────────────────────────────────── * Chrome defaults QUIET (rule #44): no baseline rule at rest. A service opts in with * `--chart-trend-baseline-border: 1px solid hsl(var(--border));`."
+  },
+  {
+    "name": "--chart-trend-footer-gap",
+    "value": "var(--space-2)",
+    "description": "Gap between the plot block and the optional activity footer slot."
   },
   {
     "name": "--control-height-compact",
@@ -739,29 +829,214 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Width of the label column when <Descriptions layout=\"horizontal\">. Labels align to this * shared column so the values line up (the horizontal-detail look, mirroring <Form layout>). * A rem value gives a fixed aligned column; set `max-content` to size each label to its text. * (rule #44/#45 — a service theme tunes it here instead of forking CSS.)"
   },
   {
+    "name": "--email-shell-width",
+    "value": "480px",
+    "description": "── Shell — the 480px transactional-email geometry ───────────────────────────────────────"
+  },
+  {
+    "name": "--email-shell-padding",
+    "value": "32px",
+    "description": "canonical transactional card width"
+  },
+  {
+    "name": "--email-shell-page-padding",
+    "value": "24px",
+    "description": "card inset — mirrors --space-8 (2rem)"
+  },
+  {
+    "name": "--email-shell-border-width",
+    "value": "1px",
+    "description": "gutter between the client viewport and the card (--space-6)"
+  },
+  {
+    "name": "--email-card-radius",
+    "value": "10px",
+    "description": "card edge — mirrors the 1px --border hairline"
+  },
+  {
+    "name": "--email-card-reference-height",
+    "value": "407px",
+    "description": "mirrors --card-radius (--radius-xl = 6px × φ ≈ 10px)"
+  },
+  {
+    "name": "--email-stack-gap",
+    "value": "24px",
+    "description": "canonical invitation reference measures 480×407"
+  },
+  {
+    "name": "--email-stack-gap-sm",
+    "value": "12px",
+    "description": "block rhythm — mirrors --space-stack-lg (1.5rem)"
+  },
+  {
+    "name": "--email-mark-width",
+    "value": "32px",
+    "description": "── Brand mark — the canonical GoDX capsule (see EMAIL_BRAND_MARK) ───────────────────────"
+  },
+  {
+    "name": "--email-mark-height",
+    "value": "32px",
+    "description": "mirrors --logo-godx-size (2rem)"
+  },
+  {
+    "name": "--email-font-family-sans",
+    "value": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+    "description": "── Typography — literal px so no client has to resolve the rem scale ────────────────────"
+  },
+  {
+    "name": "--email-body-font-size",
+    "value": "14px",
+    "description": "── Typography — literal px so no client has to resolve the rem scale ────────────────────"
+  },
+  {
+    "name": "--email-body-line-height",
+    "value": "1.7",
+    "description": "mirrors --font-size-base (0.875rem)"
+  },
+  {
+    "name": "--email-body-font-weight",
+    "value": "400",
+    "description": "mirrors --line-height-body"
+  },
+  {
+    "name": "--email-heading-font-size",
+    "value": "20px",
+    "description": "mirrors --font-weight-normal"
+  },
+  {
+    "name": "--email-heading-line-height",
+    "value": "1.25",
+    "description": "mirrors --heading-h1 (base × φ^¼³ ≈ 19.8px)"
+  },
+  {
+    "name": "--email-heading-font-weight",
+    "value": "700",
+    "description": "mirrors --line-height-tight"
+  },
+  {
+    "name": "--email-cta-height",
+    "value": "44px",
+    "description": "── Primary CTA — the one action button ──────────────────────────────────────────────────"
+  },
+  {
+    "name": "--email-cta-line-height",
+    "value": "44px",
+    "description": "mirrors --control-height-comfortable (2.75rem coarse-pointer target)"
+  },
+  {
+    "name": "--email-cta-padding-x",
+    "value": "24px",
+    "description": "equal to the height: bulletproof vertical centring in Outlook"
+  },
+  {
+    "name": "--email-cta-radius",
+    "value": "6px",
+    "description": "mirrors --space-6"
+  },
+  {
+    "name": "--email-cta-font-size",
+    "value": "14px",
+    "description": "mirrors the --radius base (0.375rem)"
+  },
+  {
+    "name": "--email-cta-font-weight",
+    "value": "700",
+    "description": "mirrors --font-size-base"
+  },
+  {
+    "name": "--email-footer-font-size",
+    "value": "12px",
+    "description": "── Legal footer ─────────────────────────────────────────────────────────────────────────"
+  },
+  {
+    "name": "--email-footer-line-height",
+    "value": "1.5",
+    "description": "mirrors --font-size-xs (base ÷ φ^¼ ≈ 12.5px)"
+  },
+  {
+    "name": "--email-footer-link-gap",
+    "value": "12px",
+    "description": "mirrors --line-height-normal"
+  },
+  {
+    "name": "--email-footer-padding-top",
+    "value": "20px",
+    "description": "horizontal separation between footer links (--space-3)"
+  },
+  {
+    "name": "--email-footer-border-width",
+    "value": "1px",
+    "description": "space above the legal band"
+  },
+  {
+    "name": "--email-focus-border-width",
+    "value": "2px",
+    "description": "── Focus affordance (webmail preview panes that DO honour :focus) ───────────────────────"
+  },
+  {
+    "name": "--email-mobile-max-width",
+    "value": "520px",
+    "description": "── Mobile reflow — applied under the narrow media query and by inline fallbacks ─────────"
+  },
+  {
+    "name": "--email-mobile-width",
+    "value": "100%",
+    "description": "the reflow breakpoint (card width + both gutters)"
+  },
+  {
+    "name": "--email-mobile-padding",
+    "value": "20px",
+    "description": "the card goes fluid below the breakpoint"
+  },
+  {
+    "name": "--email-mobile-page-padding",
+    "value": "12px",
+    "description": "reduced card inset — mirrors --space-5"
+  },
+  {
+    "name": "--email-mobile-heading-font-size",
+    "value": "18px",
+    "description": "reduced viewport gutter — mirrors --space-3"
+  },
+  {
+    "name": "--email-mobile-cta-width",
+    "value": "100%",
+    "description": "mirrors --heading-h2 (base × φ^¼² ≈ 17.6px)"
+  },
+  {
     "name": "--sheet-width-default",
     "value": "22.5rem",
     "description": "Feedback primitive tokens: dialog, alert, empty state."
   },
   {
     "name": "--sheet-overlay-background",
-    "value": "rgb(0 0 0 / 0.2)",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "value": "initial",
+    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+  },
+  {
+    "name": "--sheet-overlay-alpha",
+    "value": "40%",
+    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
   },
   {
     "name": "--dialog-width-default",
     "value": "32rem",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
   },
   {
     "name": "--dialog-viewport-inset",
     "value": "1.5rem",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
   },
   {
     "name": "--dialog-overlay-background",
-    "value": "rgb(0 0 0 / 0.3)",
-    "description": "Feedback primitive tokens: dialog, alert, empty state."
+    "value": "initial",
+    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
+  },
+  {
+    "name": "--dialog-overlay-alpha",
+    "value": "60%",
+    "description": "Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather * than a private literal, so a service retints every backdrop with one --overlay-background while * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog)."
   },
   {
     "name": "--dialog-space-x",
@@ -834,24 +1109,29 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
   },
   {
+    "name": "--empty-state-description-max-width",
+    "value": "28rem",
+    "description": "Measure of the description paragraph (rule #45 — a service-tunable constant gets a knob). * 28rem reads ~65 Latin characters per line; a JA/VI service that needs a shorter or longer * measure for its own copy retunes this once instead of forking `.ui-empty-state-description`."
+  },
+  {
     "name": "--empty-state-section-space-y",
     "value": "var(--space-6)",
-    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+    "description": "Measure of the description paragraph (rule #45 — a service-tunable constant gets a knob). * 28rem reads ~65 Latin characters per line; a JA/VI service that needs a shorter or longer * measure for its own copy retunes this once instead of forking `.ui-empty-state-description`."
   },
   {
     "name": "--empty-state-section-space-x",
     "value": "var(--space-4)",
-    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+    "description": "Measure of the description paragraph (rule #45 — a service-tunable constant gets a knob). * 28rem reads ~65 Latin characters per line; a JA/VI service that needs a shorter or longer * measure for its own copy retunes this once instead of forking `.ui-empty-state-description`."
   },
   {
     "name": "--empty-state-compact-space-y",
     "value": "var(--space-3)",
-    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+    "description": "Measure of the description paragraph (rule #45 — a service-tunable constant gets a knob). * 28rem reads ~65 Latin characters per line; a JA/VI service that needs a shorter or longer * measure for its own copy retunes this once instead of forking `.ui-empty-state-description`."
   },
   {
     "name": "--empty-state-compact-space-x",
     "value": "var(--space-2)",
-    "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
+    "description": "Measure of the description paragraph (rule #45 — a service-tunable constant gets a knob). * 28rem reads ~65 Latin characters per line; a JA/VI service that needs a shorter or longer * measure for its own copy retunes this once instead of forking `.ui-empty-state-description`."
   },
   {
     "name": "--empty-state-icon-foreground",
@@ -899,24 +1179,199 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Column gap between the label and its control in horizontal/inline layout."
   },
   {
+    "name": "--legal-document-measure-max-width",
+    "value": "46rem",
+    "description": "Readable document measure. Caps the header, the section column and the footer so * a 1440px viewport still reads at ~75-90 characters per line."
+  },
+  {
+    "name": "--legal-document-column-gap",
+    "value": "var(--space-10)",
+    "description": "Rail ↔ document column gutter (two-column mode only)."
+  },
+  {
+    "name": "--legal-document-toc-width",
+    "value": "15rem",
+    "description": "Sticky table-of-contents rail width (two-column mode only)."
+  },
+  {
+    "name": "--legal-document-toc-inset-block-start",
+    "value": "var(--space-6)",
+    "description": "Distance the pinned rail keeps from the top of the scrollport."
+  },
+  {
+    "name": "--legal-document-toc-max-height",
+    "value": "calc(100dvh - var(--space-12))",
+    "description": "Cap for a long contents list so the rail never outgrows the viewport."
+  },
+  {
+    "name": "--legal-document-toc-gap",
+    "value": "var(--space-1)",
+    "description": "Cap for a long contents list so the rail never outgrows the viewport."
+  },
+  {
+    "name": "--legal-document-toc-item-padding",
+    "value": "var(--space-1) var(--space-2)",
+    "description": "Cap for a long contents list so the rail never outgrows the viewport."
+  },
+  {
+    "name": "--legal-document-toc-item-radius",
+    "value": "var(--radius)",
+    "description": "Cap for a long contents list so the rail never outgrows the viewport."
+  },
+  {
+    "name": "--legal-document-toc-title-font-size",
+    "value": "var(--font-size-2xs)",
+    "description": "Cap for a long contents list so the rail never outgrows the viewport."
+  },
+  {
+    "name": "--legal-document-toc-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Cap for a long contents list so the rail never outgrows the viewport."
+  },
+  {
+    "name": "--legal-document-toc-marker-width",
+    "value": "2px",
+    "description": "Leading marker on the active contents entry — a non-colour affordance so the * active state is never colour-only (WCAG 1.4.1)."
+  },
+  {
+    "name": "--legal-document-nav-gap",
+    "value": "var(--space-4)",
+    "description": "Gap between the `documentNavigation` slot and the contents list inside the rail."
+  },
+  {
+    "name": "--legal-document-header-gap",
+    "value": "var(--space-2)",
+    "description": "Gap between the `documentNavigation` slot and the contents list inside the rail."
+  },
+  {
+    "name": "--legal-document-meta-gap",
+    "value": "var(--space-2)",
+    "description": "Gap between the `documentNavigation` slot and the contents list inside the rail."
+  },
+  {
+    "name": "--legal-document-meta-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Gap between the `documentNavigation` slot and the contents list inside the rail."
+  },
+  {
+    "name": "--legal-document-section-gap",
+    "value": "var(--space-10)",
+    "description": "Gap between the `documentNavigation` slot and the contents list inside the rail."
+  },
+  {
+    "name": "--legal-document-section-title-gap",
+    "value": "var(--space-3)",
+    "description": "Gap between the `documentNavigation` slot and the contents list inside the rail."
+  },
+  {
+    "name": "--legal-document-body-line-height",
+    "value": "1.8",
+    "description": "Long-form leading — legal prose reads looser than UI text."
+  },
+  {
+    "name": "--legal-document-scroll-offset",
+    "value": "var(--space-6)",
+    "description": "`scroll-margin-block-start` on every section: the offset a hash jump / anchor * activation leaves above the heading so it is not hidden under sticky chrome."
+  },
+  {
+    "name": "--legal-document-footer-gap",
+    "value": "var(--space-4)",
+    "description": "`scroll-margin-block-start` on every section: the offset a hash jump / anchor * activation leaves above the heading so it is not hidden under sticky chrome."
+  },
+  {
+    "name": "--legal-document-toc-border",
+    "value": "none",
+    "description": "── Chrome — quiet by default (rule #44) ───────────────────────────────────"
+  },
+  {
+    "name": "--legal-document-header-border",
+    "value": "none",
+    "description": "── Chrome — quiet by default (rule #44) ───────────────────────────────────"
+  },
+  {
+    "name": "--legal-document-footer-border",
+    "value": "none",
+    "description": "── Chrome — quiet by default (rule #44) ───────────────────────────────────"
+  },
+  {
+    "name": "--legal-document-meta-foreground",
+    "value": "initial",
+    "description": "── Role-mirror knobs — `initial` here, role default at the call site ───────"
+  },
+  {
+    "name": "--legal-document-summary-foreground",
+    "value": "initial",
+    "description": "default = hsl(var(--muted-foreground))"
+  },
+  {
+    "name": "--legal-document-toc-foreground",
+    "value": "initial",
+    "description": "default = hsl(var(--muted-foreground))"
+  },
+  {
+    "name": "--legal-document-toc-active-foreground",
+    "value": "initial",
+    "description": "default = hsl(var(--muted-foreground))"
+  },
+  {
+    "name": "--legal-document-toc-active-background",
+    "value": "initial",
+    "description": "default = hsl(var(--foreground))"
+  },
+  {
+    "name": "--legal-document-toc-marker-color",
+    "value": "initial",
+    "description": "default = hsl(var(--accent))"
+  },
+  {
     "name": "--list-row-padding-y",
     "value": "var(--space-3)",
-    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent; * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush * CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm * semantic border)."
   },
   {
     "name": "--list-row-padding-x",
     "value": "var(--space-4)",
-    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent; * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush * CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm * semantic border)."
   },
   {
     "name": "--list-row-gap",
     "value": "var(--space-3)",
-    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent; * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border)."
+    "description": "ListRow component tokens — a single-line entity row for short lists inside a Card * (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush * CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm * semantic border)."
   },
   {
     "name": "--list-row-border",
     "value": "initial",
     "description": "Row divider — `initial` so the --border default re-resolves at the call site under a scoped * theme (a :root binding to a role var freezes at :root). Default = 1px solid hsl(var(--border))."
+  },
+  {
+    "name": "--list-row-body-min-width",
+    "value": "12rem",
+    "description": "Inline size the content column keeps before the trailing actions wrap onto their own line * (#45 — a service retunes the stack threshold to its grid). Clamped with min(…, 100%) at the * call site, so a container narrower than the knob can never force page-root overflow (#224)."
+  },
+  {
+    "name": "--list-row-trailing-gap",
+    "value": "var(--space-2)",
+    "description": "Gap BETWEEN trailing actions — they also wrap among themselves at narrow widths (#224)."
+  },
+  {
+    "name": "--list-row-read-background",
+    "value": "initial",
+    "description": "Read (default) row surface — `initial`, documented default = transparent, i.e. the Card * surface shows through untouched (#44 — chrome defaults to the quietest state)."
+  },
+  {
+    "name": "--list-row-unread-background",
+    "value": "initial",
+    "description": "Unread emphasis surface (`unread` rows) — `initial` so the --muted default re-resolves at the * call site under a scoped theme. Documented default = hsl(var(--muted)), the same quiet * emphasis role the table header uses; it keeps the xs muted description line at WCAG AA * (4.63:1 light / 5.47:1 dark), which hsl(var(--accent)) would not (4.23:1 light)."
+  },
+  {
+    "name": "--list-row-indicator-color",
+    "value": "initial",
+    "description": "Unread indicator dot fill — `initial` so the --primary default re-resolves at the call site * under a scoped theme. Documented default = hsl(var(--primary))."
+  },
+  {
+    "name": "--list-row-indicator-size",
+    "value": "var(--space-2)",
+    "description": "Diameter of the read/unread indicator dot; the gutter is reserved on read rows too so the * titles of a mixed list stay on one optical axis."
   },
   {
     "name": "--logo-radius",
@@ -965,23 +1420,68 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--logo-success-background",
-    "value": "var(--success)",
-    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo."
+    "value": "initial",
+    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--success)) * --logo-success-foreground = hsl(var(--success-foreground)) * --logo-godx-color = hsl(var(--success))"
   },
   {
     "name": "--logo-success-foreground",
-    "value": "var(--success-foreground)",
-    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo."
+    "value": "initial",
+    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--success)) * --logo-success-foreground = hsl(var(--success-foreground)) * --logo-godx-color = hsl(var(--success))"
   },
   {
     "name": "--logo-godx-size",
     "value": "2rem",
-    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo."
+    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--success)) * --logo-success-foreground = hsl(var(--success-foreground)) * --logo-godx-color = hsl(var(--success))"
   },
   {
     "name": "--logo-godx-color",
-    "value": "var(--success)",
-    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo."
+    "value": "initial",
+    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--success)) * --logo-success-foreground = hsl(var(--success-foreground)) * --logo-godx-color = hsl(var(--success))"
+  },
+  {
+    "name": "--logo-wordmark-gap",
+    "value": "var(--space-2)",
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+  },
+  {
+    "name": "--logo-wordmark-font-size-xs",
+    "value": "var(--font-size-xs)",
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+  },
+  {
+    "name": "--logo-wordmark-font-size-sm",
+    "value": "var(--font-size-sm)",
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+  },
+  {
+    "name": "--logo-wordmark-font-size-md",
+    "value": "var(--font-size-base)",
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+  },
+  {
+    "name": "--logo-wordmark-font-size-lg",
+    "value": "var(--font-size-lg)",
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+  },
+  {
+    "name": "--logo-wordmark-font-weight",
+    "value": "700",
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+  },
+  {
+    "name": "--logo-wordmark-letter-spacing",
+    "value": "-0.01em",
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+  },
+  {
+    "name": "--logo-wordmark-font-family",
+    "value": "initial",
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+  },
+  {
+    "name": "--logo-wordmark-color",
+    "value": "initial",
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--pagination-gap",
@@ -1029,24 +1529,44 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--app-setting-picker-compact-control-height",
+    "value": "var(--control-height-sm)",
+    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
+  },
+  {
+    "name": "--app-setting-picker-compact-padding-x",
+    "value": "var(--space-2)",
+    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
+  },
+  {
+    "name": "--app-setting-picker-compact-gap",
+    "value": "var(--space-1)",
+    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
+  },
+  {
+    "name": "--app-setting-picker-compact-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
+  },
+  {
     "name": "--breadcrumb-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
   },
   {
     "name": "--menubar-shortcut-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
   },
   {
     "name": "--tabs-list-max-inline-size",
     "value": "100%",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
   },
   {
     "name": "--tabs-list-overflow",
     "value": "auto",
-    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+    "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
   },
   {
     "name": "--menubar-item-hover-background",
@@ -1067,6 +1587,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--filter-bar-sticky-background",
     "value": "initial",
     "description": "Fill painted only when the filter strip is pinned. Role-mirror knob (rule #45): `initial` * so --background re-resolves at the call site under a scoped [data-tenant]/.dark theme."
+  },
+  {
+    "name": "--filter-bar-scroll-padding-y",
+    "value": "var(--space-1)",
+    "description": "Scrollbar gutter reserved under a `overflow=\"scroll\"` filter strip (#216) so the inline * scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid * (0 on an overlay-scrollbar platform)."
+  },
+  {
+    "name": "--sheet-responsive-breakpoint-width",
+    "value": "48rem",
+    "description": "Viewport width at and below which `SheetContent responsive=\"auto\"` renders the mobile bottom * sheet instead of the desktop side panel. Read at runtime by useSheetResponsiveMode() (a CSS * @media cannot resolve a custom property), so a service moves the drawer breakpoint from ONE * knob for every overlay that opts into the responsive contract — Sheet and OrgSwitcher alike. * 48rem = 768px mirrors the library's canonical mobile line (useIsMobile). Accepts px/rem/em."
+  },
+  {
+    "name": "--sheet-bottom-max-height",
+    "value": "85dvh",
+    "description": "Block size cap for the responsive BOTTOM presentation only (never for a plain * `side=\"bottom\"` sheet, which stays content-sized). Keeps the sheet below the viewport so the * SheetBody scrolls and the page behind it stays visible/dismissable."
   },
   {
     "name": "--sidebar-section-label-font-size",
@@ -1144,114 +1679,164 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
   },
   {
+    "name": "--app-shell-bar-inset",
+    "value": "var(--space-4)",
+    "description": "Inline inset and slot gap of the AppShell top bar. `-compact` applies below the shell * breakpoint (the docked sidebar is gone, so the bar tightens against the viewport edge)."
+  },
+  {
+    "name": "--app-shell-bar-inset-compact",
+    "value": "var(--space-3)",
+    "description": "Inline inset and slot gap of the AppShell top bar. `-compact` applies below the shell * breakpoint (the docked sidebar is gone, so the bar tightens against the viewport edge)."
+  },
+  {
+    "name": "--app-shell-bar-gap",
+    "value": "var(--space-3)",
+    "description": "Inline inset and slot gap of the AppShell top bar. `-compact` applies below the shell * breakpoint (the docked sidebar is gone, so the bar tightens against the viewport edge)."
+  },
+  {
+    "name": "--app-shell-sidebar-width",
+    "value": "16rem",
+    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
+  },
+  {
+    "name": "--app-shell-rail-width",
+    "value": "4rem",
+    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
+  },
+  {
     "name": "--app-shell-page-max-width",
     "value": "80rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
   },
   {
     "name": "--app-shell-main-background",
     "value": "hsl(var(--muted) / 0.4)",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
   },
   {
     "name": "--app-shell-mobile-nav-width",
     "value": "22.5rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once * instead of forking `.app-root`. `-rail-` is the icon-only width used at * `<AppShell sidebarCollapsed>`."
   },
   {
     "name": "--app-shell-mobile-nav-background",
-    "value": "rgb(0 0 0 / 0.2)",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "value": "initial",
+    "description": "Mobile-drawer scrim — `initial` so the shared --overlay-background default re-resolves at the * CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding freezes at :root). Default = * var(--app-shell-mobile-nav-alpha) of the global scrim, i.e. rgb(0 0 0 / 0.2) out of the box."
+  },
+  {
+    "name": "--app-shell-mobile-nav-alpha",
+    "value": "40%",
+    "description": "Share of the global --overlay-background this drawer's scrim uses. A slide-in drawer washes the * page more lightly than a modal dialog; keeping it a RATIO means a service retints the whole * system with one --overlay-background and every overlay keeps its calibrated depth."
+  },
+  {
+    "name": "--app-shell-mobile-nav-inset",
+    "value": "var(--space-1)",
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-brand-mark-size",
     "value": "1.375rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-nav-item-height",
     "value": "2rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-nav-item-font-size",
     "value": "0.8125rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-nav-icon-size",
     "value": "1rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-nav-item-gap",
     "value": "0.625rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-nav-item-padding-x",
     "value": "0.625rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-nav-gap",
     "value": "2px",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-nav-scroll-padding",
     "value": "var(--space-3) var(--space-2)",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-section-gap",
     "value": "var(--space-4)",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-section-label-padding-x",
     "value": "var(--space-2)",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--sidebar-section-label-padding-bottom",
     "value": "var(--space-1)",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
     "name": "--topbar-search-max-width",
     "value": "26.25rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+  },
+  {
+    "name": "--topbar-height",
+    "value": "auto",
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
+  },
+  {
+    "name": "--topbar-inset",
+    "value": "0px",
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
+  },
+  {
+    "name": "--topbar-gap",
+    "value": "var(--space-2)",
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
   },
   {
     "name": "--org-switcher-trigger-height",
     "value": "2.75rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
   },
   {
     "name": "--org-switcher-trigger-padding-x",
     "value": "var(--space-2)",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
   },
   {
     "name": "--org-switcher-avatar-size",
     "value": "1.75rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
   },
   {
     "name": "--org-switcher-menu-width",
     "value": "16rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
   },
   {
     "name": "--org-switcher-sheet-max-height",
     "value": "75dvh",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
   },
   {
     "name": "--org-switcher-state-min-height",
     "value": "8rem",
-    "description": "DXS application-shell geometry. These defaults mirror the checked-in * Admin/Console hi-fi source while remaining themeable by consumers."
+    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
   },
   {
     "name": "--sidebar-item-active-color",
@@ -1344,6 +1929,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
   },
   {
+    "name": "--auth-shell-main-align",
+    "value": "center",
+    "description": "Main-axis alignment of the auth column. Default `center` = today's vertically-centred card; * a flow whose intro + card + footnote stack is tall opts into `start` via this knob."
+  },
+  {
+    "name": "--auth-shell-card-stack-gap",
+    "value": "0px",
+    "description": "Gap between the direct sections of the auth column (intro · card · remember row). Default 0 * (quiet, rule #44) so an existing single-card consumer is untouched; presets opt in."
+  },
+  {
+    "name": "--auth-shell-device-card-max-width",
+    "value": "23.75rem",
+    "description": "Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter * (at a 390px viewport the card is x=5px, width=380px)."
+  },
+  {
+    "name": "--auth-shell-device-main-padding",
+    "value": "1rem",
+    "description": "Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter * (at a 390px viewport the card is x=5px, width=380px)."
+  },
+  {
+    "name": "--auth-shell-device-main-padding-mobile",
+    "value": "0.9375rem 0.3125rem",
+    "description": "Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter * (at a 390px viewport the card is x=5px, width=380px)."
+  },
+  {
+    "name": "--auth-shell-context-card-max-width",
+    "value": "25rem",
+    "description": "Context-selection preset — 25rem card measure on desktop/tablet, edge-to-edge on mobile * (0 inline gutter) with a 16px rhythm between the intro, the card and the remember row."
+  },
+  {
+    "name": "--auth-shell-context-main-padding",
+    "value": "var(--space-6)",
+    "description": "Context-selection preset — 25rem card measure on desktop/tablet, edge-to-edge on mobile * (0 inline gutter) with a 16px rhythm between the intro, the card and the remember row."
+  },
+  {
+    "name": "--auth-shell-context-main-padding-mobile",
+    "value": "var(--space-6) 0",
+    "description": "Context-selection preset — 25rem card measure on desktop/tablet, edge-to-edge on mobile * (0 inline gutter) with a 16px rhythm between the intro, the card and the remember row."
+  },
+  {
+    "name": "--auth-shell-context-card-stack-gap",
+    "value": "1rem",
+    "description": "Context-selection preset — 25rem card measure on desktop/tablet, edge-to-edge on mobile * (0 inline gutter) with a 16px rhythm between the intro, the card and the remember row."
+  },
+  {
     "name": "--auth-shell-divider-gap",
     "value": "0.625rem",
     "description": "Labelled auth divider geometry."
@@ -1434,19 +2064,59 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
   },
   {
+    "name": "--centered-shell-column-offset-block",
+    "value": "0",
+    "description": "Block offset of the centred column inside the 100dvh shell. `0` (default, the quietest state — * rule #44) keeps the top-aligned flowing page; `auto` centres the column in the viewport, which * is what CenteredShell `align=\"center\"` sets for a SYSTEM-level standalone surface (500/503 * error page, maintenance notice). Auto block offsets collapse to 0 when the content is taller * than the viewport, so a long localized message scrolls from the top instead of clipping."
+  },
+  {
     "name": "--centered-shell-width-sm",
     "value": "32rem",
-    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+    "description": "Block offset of the centred column inside the 100dvh shell. `0` (default, the quietest state — * rule #44) keeps the top-aligned flowing page; `auto` centres the column in the viewport, which * is what CenteredShell `align=\"center\"` sets for a SYSTEM-level standalone surface (500/503 * error page, maintenance notice). Auto block offsets collapse to 0 when the content is taller * than the viewport, so a long localized message scrolls from the top instead of clipping."
   },
   {
     "name": "--centered-shell-width-md",
     "value": "46rem",
-    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+    "description": "Block offset of the centred column inside the 100dvh shell. `0` (default, the quietest state — * rule #44) keeps the top-aligned flowing page; `auto` centres the column in the viewport, which * is what CenteredShell `align=\"center\"` sets for a SYSTEM-level standalone surface (500/503 * error page, maintenance notice). Auto block offsets collapse to 0 when the content is taller * than the viewport, so a long localized message scrolls from the top instead of clipping."
   },
   {
     "name": "--centered-shell-width-lg",
     "value": "64rem",
-    "description": "CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID \"My Page\", * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height + * inline padding); the column max-width has three tiers, all wider than the 24rem auth card. A * service retunes the bar inset, block padding and each width tier without forking CSS."
+    "description": "Block offset of the centred column inside the 100dvh shell. `0` (default, the quietest state — * rule #44) keeps the top-aligned flowing page; `auto` centres the column in the viewport, which * is what CenteredShell `align=\"center\"` sets for a SYSTEM-level standalone surface (500/503 * error page, maintenance notice). Auto block offsets collapse to 0 when the content is taller * than the viewport, so a long localized message scrolls from the top instead of clipping."
+  },
+  {
+    "name": "--sidebar-nav-item-foreground",
+    "value": "initial",
+    "description": "Resting nav row + label (also the resting sub-row). Default = hsl(var(--muted-foreground))."
+  },
+  {
+    "name": "--sidebar-nav-item-hover-foreground",
+    "value": "initial",
+    "description": "Hovered nav row + label. Default = hsl(var(--foreground))."
+  },
+  {
+    "name": "--sidebar-nav-item-disabled-foreground",
+    "value": "initial",
+    "description": "`aria-disabled` nav row + label. Default = the resting row colour."
+  },
+  {
+    "name": "--sidebar-nav-icon-foreground",
+    "value": "initial",
+    "description": "Nav ICON (`.sb-icon`, incl. the collapsed rail and group triggers). Default = currentColor, * i.e. the row colour — the pre-gh#228 look. Set this alone to get canonical dark icons next to * muted labels."
+  },
+  {
+    "name": "--sidebar-nav-icon-hover-foreground",
+    "value": "initial",
+    "description": "Icon on a hovered / active / disabled row. Each falls back to --sidebar-nav-icon-foreground, * then to currentColor, so setting the base icon knob alone themes every state."
+  },
+  {
+    "name": "--sidebar-nav-icon-active-foreground",
+    "value": "initial",
+    "description": "Icon on a hovered / active / disabled row. Each falls back to --sidebar-nav-icon-foreground, * then to currentColor, so setting the base icon knob alone themes every state."
+  },
+  {
+    "name": "--sidebar-nav-icon-disabled-foreground",
+    "value": "initial",
+    "description": "Icon on a hovered / active / disabled row. Each falls back to --sidebar-nav-icon-foreground, * then to currentColor, so setting the base icon knob alone themes every state."
   },
   {
     "name": "--table-row-height-compact",

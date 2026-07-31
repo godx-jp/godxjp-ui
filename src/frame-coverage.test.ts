@@ -140,6 +140,153 @@ describe("frame coverage checker", () => {
     ).toThrow();
   });
 
+  it("registers every public export in the #163 ledger and never reports a gap as a pass", () => {
+    const report = JSON.parse(
+      execFileSync(
+        process.execPath,
+        ["scripts/check-frame-coverage-ledger.mjs", "--format", "json"],
+        { encoding: "utf8" },
+      ),
+    );
+
+    expect(report.errors).toEqual([]);
+    expect(report.schemaVersion).toBe(2);
+    // Every public export and compound subcomponent is linked to the ledger (issue #163 item 1).
+    expect(report.totals.exports).toBeGreaterThan(200);
+    // Every dimension of every export is in exactly one of the three states (item 3).
+    expect(report.totals.covered + report.totals.untested + report.totals.notApplicable).toBe(
+      report.totals.dimensionCells,
+    );
+    // The honest state of #163: an enormous UNTESTED backlog. It must stay visible, never be
+    // rounded up to a pass, and never be silently converted into coverage.
+    expect(report.totals.untested).toBeGreaterThan(0);
+    expect(report.totals.covered).toBeLessThan(report.totals.dimensionCells / 2);
+    expect(report.verdictLegend.untested).toMatch(/NOT a pass/i);
+    // The issue's "Initial known gaps" stay tracked.
+    expect(report.knownGaps).toBeGreaterThanOrEqual(9);
+    expect(report.openKnownGaps.length).toBeGreaterThan(0);
+    // Executed sweeps are recorded, never inferred.
+    expect(report.sweeps.geometry.failingCells).toBeLessThanOrEqual(
+      report.baseline.geometryFailingCells,
+    );
+    expect(report.sweeps.axe.failingFrames).toBeLessThanOrEqual(report.baseline.axeFailingFrames);
+  });
+
+  const withLedger = (mutate: (ledger: Record<string, never>) => void) => {
+    const directory = mkdtempSync(join(tmpdir(), "frame-coverage-ledger-"));
+    const ledger = JSON.parse(readFileSync("preview/frame-coverage.ledger.json", "utf8"));
+    mutate(ledger);
+    const ledgerPath = join(directory, "ledger.json");
+    writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2));
+    return () =>
+      execFileSync(process.execPath, ["scripts/check-frame-coverage-ledger.mjs"], {
+        env: { ...process.env, FRAME_COVERAGE_LEDGER: ledgerPath },
+        stdio: "pipe",
+      });
+  };
+
+  it("rejects a hand-written covered verdict with no evidence chain", () => {
+    expect(
+      withLedger((ledger) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (ledger as any).components.Button.dimensions.responsive = "covered:declared-case:invented";
+      }),
+    ).toThrow();
+  });
+
+  it("rejects a declared responsive case that omits the required viewport matrix", () => {
+    expect(
+      withLedger((ledger) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (ledger as any).cases = [
+          {
+            id: "partial-viewports",
+            export: "Button",
+            dimensions: ["responsive"],
+            frame: "docs/general/button/index.tsx",
+            case: "Responsive",
+            evidence: ["docs/general/button/index.tsx"],
+            viewports: [1440],
+            verifiedBy: "fixture",
+            verifiedIn: "https://example.test/pr",
+            verifiedAt: "2026-07-30T00:00:00Z",
+          },
+        ];
+      }),
+    ).toThrow();
+  });
+
+  it("ratchets: a coverage regression against the recorded baseline fails closed", () => {
+    expect(
+      withLedger((ledger) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (ledger as any).components.Button.baseline.covered += 2;
+      }),
+    ).toThrow();
+  });
+
+  it("ratchets: the required viewport baseline cannot be weakened", () => {
+    expect(
+      withLedger((ledger) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (ledger as any).policy.viewports.required = [1024, 1440];
+      }),
+    ).toThrow();
+  });
+
+  it("ratchets: an issue #163 known gap cannot be deleted or waived", () => {
+    expect(
+      withLedger((ledger) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const l = ledger as any;
+        l.policy.knownGaps = l.policy.knownGaps.filter(
+          (gap: { id: string }) => gap.id !== "data-table-contract-gaps",
+        );
+      }),
+    ).toThrow();
+    expect(
+      withLedger((ledger) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (ledger as any).policy.notApplicable = [
+          {
+            target: "DataTable",
+            dimension: "async",
+            reason:
+              "We would prefer not to test the asynchronous lifecycle of this table right now.",
+            reviewedBy: "fixture",
+            reviewedIn: "https://example.test/pr",
+            reviewedAt: "2026-07-30T00:00:00Z",
+          },
+        ];
+      }),
+    ).toThrow();
+  });
+
+  // The frames ratchet has two directions. This used to assert the first one by CLEARING
+  // `knownMissingFrames` — which only failed while some export genuinely lacked a frame.
+  // `layout/legal-document-shell` was that export; it now has one (its `sourceAliases` entry
+  // for the directory docs form landed), so the repo is at ZERO missing frames and clearing an
+  // already-empty list is a no-op that asserts nothing. Direction 1 (an unbaselined frameless
+  // export is a hard failure) cannot be synthesised from the ledger, because the checker derives
+  // the frame rows from the real repo and only `FRAME_COVERAGE_LEDGER` is overridable — it is
+  // enforced by `scripts/check-frame-coverage.mjs` instead, which is exactly the gate that caught
+  // legal-document-shell. Direction 2 is reachable and is what we pin here: the baseline may only
+  // ever SHRINK, so a stale entry naming an export that now HAS a frame must fail rather than
+  // silently keep reserving debt that was already paid off.
+  it("ratchets: a baseline entry for an export that now HAS a frame fails, so the floor only tightens", () => {
+    expect(
+      withLedger((ledger) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (ledger as any).baseline.knownMissingFrames = ["layout/legal-document-shell"];
+      }),
+    ).toThrow();
+  });
+
+  it("records zero missing frames today, so every public export reaches a /frame route", () => {
+    const ledger = JSON.parse(readFileSync("preview/frame-coverage.ledger.json", "utf8"));
+    expect(ledger.baseline.knownMissingFrames).toEqual([]);
+  });
+
   it("requires every AT/browser and locale record before an owner can PASS", () => {
     const directory = mkdtempSync(join(tmpdir(), "screen-reader-evidence-"));
     const config = JSON.parse(readFileSync("frame-coverage.json", "utf8"));

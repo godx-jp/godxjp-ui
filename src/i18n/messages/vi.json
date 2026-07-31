@@ -145,6 +145,11 @@
       "mainLabel": "Nội dung chính",
       "footerLabel": "Chân trang"
     },
+    "legalDocumentShell": {
+      "contents": "Mục lục",
+      "version": "Phiên bản {version}",
+      "effectiveDate": "Hiệu lực từ {date}"
+    },
     "topbar": {
       "toggleSidebar": "Bật/tắt thanh bên",
       "search": "Tìm kiếm",
@@ -162,6 +167,10 @@
       "next": "Sau",
       "dotsLabel": "Chọn slide",
       "goToSlide": "Đến slide {index}"
+    },
+    "listRow": {
+      "unread": "Chưa đọc",
+      "read": "Đã đọc"
     }
   },
   "ui": {
@@ -289,7 +298,11 @@
     "densitySwitch": "Chuyển sang mật độ {density}",
     "rowActions": "Thao tác dòng",
     "empty": "Chưa có dữ liệu",
-    "loading": "Đang tải…"
+    "loading": "Đang tải…",
+    "error": "Không tải được danh sách này",
+    "errorDescription": "Không lấy được dữ liệu. Vui lòng thử lại sau giây lát.",
+    "denied": "Bạn không có quyền xem danh sách này",
+    "deniedDescription": "Hãy đề nghị quản trị viên cấp quyền xem các bản ghi này."
   },
   "dataGrid": {
     "search": "Tìm kiếm",
@@ -301,6 +314,10 @@
   },
   "status": {
     "active": "Đang hoạt động",
+    "trialing": "Đang dùng thử",
+    "past_due": "Quá hạn thanh toán",
+    "incomplete": "Chưa hoàn tất",
+    "canceled": "Đã huỷ",
     "completed": "Hoàn thành",
     "delivered": "Đã giao",
     "done": "Xong",
@@ -350,6 +367,8 @@
   "chart": {
     "empty": "Không có dữ liệu",
     "summaryCartesian": "Biểu đồ gồm {series} chuỗi trên {points} điểm dữ liệu",
-    "summaryPie": "Biểu đồ tròn gồm {slices} phần"
+    "summaryPie": "Biểu đồ tròn gồm {slices} phần",
+    "summaryTrend": "Biểu đồ cột xu hướng gồm {points} điểm dữ liệu",
+    "trendCurrent": "hiện tại"
   }
 }

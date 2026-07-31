@@ -24,10 +24,33 @@
   /* DXS application-shell geometry. These defaults mirror the checked-in
    * Admin/Console hi-fi source while remaining themeable by consumers. */
   --app-shell-bar-height: 3rem;
+  /* Inline inset and slot gap of the AppShell top bar. `-compact` applies below the shell
+   * breakpoint (the docked sidebar is gone, so the bar tightens against the viewport edge). */
+  --app-shell-bar-inset: var(--space-4);
+  --app-shell-bar-inset-compact: var(--space-3);
+  --app-shell-bar-gap: var(--space-3);
+  /* Docked navigation rail widths — the SINGLE most-retuned shell constant (rule #45). A service
+   * that designs on a different grid sets `--app-shell-sidebar-width: 15.9375rem` (255px) once
+   * instead of forking `.app-root`. `-rail-` is the icon-only width used at
+   * `<AppShell sidebarCollapsed>`. */
+  --app-shell-sidebar-width: 16rem;
+  --app-shell-rail-width: 4rem;
   --app-shell-page-max-width: 80rem;
   --app-shell-main-background: hsl(var(--muted) / 0.4);
   --app-shell-mobile-nav-width: 22.5rem;
-  --app-shell-mobile-nav-background: rgb(0 0 0 / 0.2);
+  /* Mobile-drawer scrim — `initial` so the shared --overlay-background default re-resolves at the
+   * CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding freezes at :root). Default =
+   * var(--app-shell-mobile-nav-alpha) of the global scrim, i.e. rgb(0 0 0 / 0.2) out of the box. */
+  --app-shell-mobile-nav-background: initial;
+  /* Share of the global --overlay-background this drawer's scrim uses. A slide-in drawer washes the
+   * page more lightly than a modal dialog; keeping it a RATIO means a service retints the whole
+   * system with one --overlay-background and every overlay keeps its calibrated depth. */
+  --app-shell-mobile-nav-alpha: 40%;
+  /* Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav
+   * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the
+   * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for
+   * a custom mobileNav node that wants the full sheet chrome inset. */
+  --app-shell-mobile-nav-inset: var(--space-1);
   --sidebar-brand-mark-size: 1.375rem;
   --sidebar-nav-item-height: 2rem;
   --sidebar-nav-item-font-size: 0.8125rem;
@@ -40,6 +63,15 @@
   --sidebar-section-label-padding-x: var(--space-2);
   --sidebar-section-label-padding-bottom: var(--space-1);
   --topbar-search-max-width: 26.25rem;
+  /* Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally
+   * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs
+   * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that
+   * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)`
+   * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end
+   * clusters and INSIDE each of them, so one knob re-rhythms the whole bar. */
+  --topbar-height: auto;
+  --topbar-inset: 0px;
+  --topbar-gap: var(--space-2);
   --org-switcher-trigger-height: 2.75rem;
   --org-switcher-trigger-padding-x: var(--space-2);
   --org-switcher-avatar-size: 1.75rem;
@@ -81,6 +113,34 @@
   --auth-shell-card-padding-block-compact: var(--space-3);
   --auth-shell-card-gap-compact: var(--space-3);
 
+  /* Named AUTH FLOW PRESETS (gh#217 / gh#220). A preset owns the whole page measure for one
+   * canonical hosted-identity flow — card max-width plus the desktop and mobile page gutters — so a
+   * consumer selects `preset` once instead of hand-overriding --auth-shell-card-max-width. Presets
+   * are orthogonal to `variant` (which owns control density / heading size) and are applied AFTER
+   * it, so `variant="canonical" preset="device-authorization"` keeps the canonical chrome and only
+   * re-measures the page. Literal lengths (not --space-*) because the canonical artboards specify
+   * exact device pixels that must not drift with --scaling. */
+
+  /* Main-axis alignment of the auth column. Default `center` = today's vertically-centred card;
+   * a flow whose intro + card + footnote stack is tall opts into `start` via this knob. */
+  --auth-shell-main-align: center;
+  /* Gap between the direct sections of the auth column (intro · card · remember row). Default 0
+   * (quiet, rule #44) so an existing single-card consumer is untouched; presets opt in. */
+  --auth-shell-card-stack-gap: 0px;
+
+  /* Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter
+   * (at a 390px viewport the card is x=5px, width=380px). */
+  --auth-shell-device-card-max-width: 23.75rem;
+  --auth-shell-device-main-padding: 1rem;
+  --auth-shell-device-main-padding-mobile: 0.9375rem 0.3125rem;
+
+  /* Context-selection preset — 25rem card measure on desktop/tablet, edge-to-edge on mobile
+   * (0 inline gutter) with a 16px rhythm between the intro, the card and the remember row. */
+  --auth-shell-context-card-max-width: 25rem;
+  --auth-shell-context-main-padding: var(--space-6);
+  --auth-shell-context-main-padding-mobile: var(--space-6) 0;
+  --auth-shell-context-card-stack-gap: 1rem;
+
   /* Labelled auth divider geometry. */
   --auth-shell-divider-gap: 0.625rem;
   --auth-shell-divider-label-font-size: 0.6875rem;
@@ -105,6 +165,12 @@
   --centered-shell-bar-padding-x: var(--space-4);
   --centered-shell-main-padding: var(--space-6);
   --centered-shell-footer-padding: var(--space-3) var(--space-6) var(--space-4);
+  /* Block offset of the centred column inside the 100dvh shell. `0` (default, the quietest state —
+   * rule #44) keeps the top-aligned flowing page; `auto` centres the column in the viewport, which
+   * is what CenteredShell `align="center"` sets for a SYSTEM-level standalone surface (500/503
+   * error page, maintenance notice). Auto block offsets collapse to 0 when the content is taller
+   * than the viewport, so a long localized message scrolls from the top instead of clipping. */
+  --centered-shell-column-offset-block: 0;
   --centered-shell-width-sm: 32rem;
   --centered-shell-width-md: 46rem;
   --centered-shell-width-lg: 64rem;

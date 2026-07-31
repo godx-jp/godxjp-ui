@@ -160,24 +160,12 @@ Shape:
     "componentRegressions": 0, // rules present now but not in the baseline
     "infrastructureErrors": 0, // frames that failed to load / axe crashed
   },
-  "chrome": {
-    /* rule → { impact, nodes, frames: ["<frameId>@<viewport>", …] } */
-  },
-  "componentCurrent": {
-    /* frameId → viewport → ruleId → node count, this run */
-  },
-  "regressions": [
-    /* { frame, rule } — new rules, the actual gate failure */
-  ],
-  "shrinkHints": [
-    /* { frame, rule } — baseline rules that no longer fire */
-  ],
-  "infraErrors": [
-    /* { frame, viewport, message } */
-  ],
-  "results": [
-    /* per-frame { id, viewports: { desktop: { chrome, component }, mobile: {…} } } */
-  ],
+  "chrome": {/* rule → { impact, nodes, frames: ["<frameId>@<viewport>", …] } */},
+  "componentCurrent": {/* frameId → viewport → ruleId → node count, this run */},
+  "regressions": [/* { frame, rule } — new rules, the actual gate failure */],
+  "shrinkHints": [/* { frame, rule } — baseline rules that no longer fire */],
+  "infraErrors": [/* { frame, viewport, message } */],
+  "results": [/* per-frame { id, viewports: { desktop: { chrome, component }, mobile: {…} } } */],
 }
 ```
 
@@ -278,9 +266,15 @@ browser), not currently swept by the automated gate.
 `check:frame-coverage` reads the public inventory (`mcp/src/data/components.ts`), the frames that
 exist (`docs/` tsx), and the declared ledger (`preview/frame-coverage.ledger.json`), then emits
 `docs/FRAME-COVERAGE-REPORT.md` + `audit-evidence/frame-coverage/coverage.json`. Every contract axis
-is `covered` / `N/A:<reason>` / **`UNTESTED`** — a missing axis is never a silent pass. Component
-agents declare covered axes in the ledger as they author cases; dimension totals climb toward full
-coverage (the #163 exit criterion). See [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md).
+is `covered` / `N/A:<reason>` / **`UNTESTED`** — a missing axis is never a silent pass. Those axes
+are rolled up from the 14 contract dimensions the ledger tracks per export.
+
+`check:frame-coverage-ledger` is the enforcing gate: it regenerates the ledger from the real public
+surface, recomputes every dimension from the evidence, and fails on regression (coverage falling, a
+new export with no frame, a weakened viewport matrix, a growing geometry/axe baseline). Dimension
+totals climb toward full coverage (the #163 exit criterion). See
+[FRAME-COVERAGE-LEDGER.md](./FRAME-COVERAGE-LEDGER.md) and
+[FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md).
 
 ## Adding a new component/frame without regressing the gate
 
@@ -314,6 +308,10 @@ Before opening a PR that adds or meaningfully changes a `/frame/**` example:
 8. If you do land a frame with a tracked violation, add it to `scripts/frame-axe.baseline.json` via
    `--update-baseline` (never hand-edit the JSON) and note _why_ + the follow-up issue in the PR
    description — the baseline file's own `note` field explains it may only shrink from here.
-9. Register the frame's contract-axis coverage in `preview/frame-coverage.ledger.json` per
-   [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md) so `check:frame-coverage` doesn't
-   report it `UNTESTED`.
+9. Register the case you authored in `preview/frame-coverage.ledger.json` so
+   `check:frame-coverage-ledger` stops reporting that dimension `UNTESTED`. You **cannot** hand-write
+   a verdict — add an entry to the ledger's `cases` array (frame path + case heading + resolvable
+   evidence paths + reviewer + HTTPS review link + ISO timestamp) and run
+   `pnpm gen:frame-coverage-ledger`; the gate recomputes every cell from that evidence and rejects
+   any verdict it cannot reproduce. See [FRAME-COVERAGE-LEDGER.md](./FRAME-COVERAGE-LEDGER.md) and
+   [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md).

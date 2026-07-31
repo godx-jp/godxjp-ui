@@ -10,9 +10,13 @@ import type {
   PageDensityProp,
   PageContainerVariantProp,
   CenteredShellWidthProp,
+  CenteredShellAlignProp,
+  AuthShellPresetProp,
+  BreakpointProp,
   GapProp,
   ClassNameProp,
   ChildrenProp,
+  IdProp,
 } from "../vocabulary";
 
 /** @see PageContainer */
@@ -73,19 +77,36 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
 export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
 
 export type MasterDetailRailWidthProp = "compact" | "standard";
+export type MasterDetailRailProp = "master" | "detail";
 
 /** @see MasterDetail */
 export type MasterDetailProp = {
-  /** Selectable collection rendered in the fixed-width leading rail. */
+  /** Selectable collection; always first in DOM order, so the stacked order stays list-then-detail. */
   master: ReactNode;
   /** Detail surface for the current selection. */
   children: ChildrenProp;
-  /** `compact` = 300px; `standard` = 320px. */
+  /**
+   * Which region is the fixed-width rail; the other one is fluid. Defaults to `detail` — the
+   * canonical fluid-list + fixed-detail-rail composition. Use `master` for a leading
+   * category/navigator rail beside a fluid detail surface.
+   */
+  rail?: MasterDetailRailProp;
+  /** Rail track width: `compact` = 300px; `standard` = 320px. */
   railWidth?: MasterDetailRailWidthProp;
+  /**
+   * Stack the two regions below this breakpoint (`false` never stacks). Omit to inherit the
+   * themeable `--master-detail-collapse-below` token (default 40rem / the `sm` step).
+   */
+  collapseBelow?: BreakpointProp | false;
   /** Accessible name for the master region. */
   masterLabel?: string;
   /** Accessible name for the detail region. */
   detailLabel?: string;
+  /**
+   * Id of the detail region, so the selection controls inside `master` can point at it with
+   * `aria-controls` and the app can move focus to it after a selection.
+   */
+  detailId?: IdProp;
 };
 
 /** @see PageContainer.Inset — full-bleed inset region inside the page padding. */
@@ -144,6 +165,22 @@ export type AuthShellProp = {
    */
   variant?: "default" | "canonical";
   /**
+   * Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the
+   * auth card's max-width plus the desktop and mobile page gutters, all owned by component tokens
+   * (`--auth-shell-{device,context}-*`). Selecting a preset replaces every consumer-side
+   * `--auth-shell-card-max-width` override.
+   *
+   * - `"default"` (default) — the shell's own measure; nothing changes.
+   * - `"device-authorization"` — 380px card measure with a 5px inline page gutter at a 390px
+   *   viewport (canonical device-grant artboard).
+   * - `"context-selection"` — 25rem card measure on desktop/tablet, edge-to-edge on mobile, and a
+   *   tokenized rhythm between the intro, the card and the trailing "remember" row.
+   *
+   * Orthogonal to `variant`: presets are applied AFTER it, so `variant="canonical"` keeps owning
+   * control density and heading size while the preset re-measures the page.
+   */
+  preset?: AuthShellPresetProp;
+  /**
    * Vertical density scoped to auth-card descendants. The canonical variant defaults to
    * `"compact"`; the default variant defaults to `"comfortable"`.
    */
@@ -155,6 +192,43 @@ export type AuthShellProp = {
 export type AuthDividerProp = {
   /** Short localized conjunction rendered between the two separator rules (for example, "or"). */
   label: string;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see AuthFooter — the canonical hosted-identity legal line (host · Terms · Privacy · locale).
+ * AuthFooter owns ONLY the geometry: the mono type ramp, the wrap behaviour and the `·`
+ * separators between the slots that are actually present (tokens `--auth-footer-*`). Every slot
+ * is consumer-owned content — real localized links and a real locale control — so the library
+ * never invents navigation. Drop it into `AuthShell`'s `footer` slot (which supplies the
+ * `contentinfo` landmark); it renders a plain `div`, so it can also sit inside an existing footer.
+ */
+export type AuthFooterProp = {
+  /** Product / host identity — the operator of the auth surface (e.g. "GoDX ID"). */
+  product: ReactNode;
+  /** Terms-of-service link or localized text. */
+  terms: ReactNode;
+  /** Privacy-policy link or localized text. */
+  privacy: ReactNode;
+  /** Optional consumer-owned locale control (e.g. `<AppSettingPicker kind="locale" compact />`). */
+  locale?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see AuthIdentity — the canonical hosted-identity heading block: the brand-green GoDX mark
+ * (`Logo mark="godx"`, independent of `--primary`), the `h1` auth heading, and an optional
+ * requesting-client line for delegated flows (device grant, OAuth consent). Centred, token-spaced
+ * (`--auth-identity-gap` / `--auth-requester-*`) — a consumer never re-centres or re-spaces it.
+ */
+export type AuthIdentityProp = {
+  /** Primary auth heading, rendered as the page `h1`. */
+  title: ReactNode;
+  /**
+   * Optional real requesting-client context ("Attendance is requesting sign in"). Pass it ONLY
+   * when the client identity is authoritative — never a placeholder.
+   */
+  requester?: ReactNode;
   className?: ClassNameProp;
 };
 
@@ -184,6 +258,15 @@ export type CenteredShellProp = {
    * wider than AuthShell's 24rem auth card. A service retunes each tier via `--centered-shell-width-*`.
    */
   width?: CenteredShellWidthProp;
+  /**
+   * Block alignment of the centred column inside the `100dvh` shell. `"start"` (default) keeps the
+   * top-aligned flowing/scrolling page shape. `"center"` centres the column in the viewport — the
+   * SYSTEM-level standalone surface (a 500/503 error page, a maintenance notice) whose full-page
+   * geometry must stay package-owned instead of a consumer re-implementing `min-h-dvh` + flex
+   * centring. Overflowing content still scrolls from the top (auto block offsets collapse to 0), so
+   * a long localized message is never clipped.
+   */
+  align?: CenteredShellAlignProp;
   className?: ClassNameProp;
 };
 
@@ -198,14 +281,24 @@ export type SidebarProductProp = {
 export type SidebarItemProp = {
   id: string;
   label: string;
+  /**
+   * Leading 16px glyph — REQUIRED: the collapsed rail is icon-only and the expanded rail aligns
+   * every label to the icon column. Untyped/API-driven data that omits it no longer crashes the
+   * shell (the row renders an empty `.sb-icon` slot, keeping the 32px row / 10px gap), but the rail
+   * reads as a hole. Its colour is themeable separately from the label via
+   * `--sidebar-nav-icon-foreground` (see {@link SidebarProp}).
+   */
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   badge?: ReactNode;
   disabled?: boolean;
   /**
-   * Render the row as a real anchor (`<a href>`) — the link is the SOLE interactive element (no
-   * nested `<button>`). Use for MPA links / right-click-open-in-new-tab. Omit for SPA rows that
-   * report selection via `onSelect(id)`. For a framework router `<Link>`, use `renderItem` instead
-   * (its returned element is merged as the row via Slot, so there is still no nested interactive).
+   * Destination of the row. It is the SOLE interactive element (no nested `<button>`), so
+   * right-click / open-in-new-tab / middle-click all work. Omit for SPA rows that only report
+   * selection via `onSelect(id)`.
+   *
+   * With `Sidebar.linkComponent` this same `href` is what the framework router `<Link>` receives —
+   * the LIBRARY still composes the row (icon · label · badge · active · collapsed), so a router
+   * link never has to reconstruct row markup (gh#213).
    */
   href?: string;
   /** Nested rows — renders a collapsible submenu group (the parent reads active when any child is). */
@@ -215,12 +308,61 @@ export type SidebarItemProp = {
 /** @see Sidebar */
 export type SidebarItemData = SidebarItemProp;
 
-/** Row state supplied to Sidebar.renderItem so framework router links receive canonical geometry. */
+/**
+ * Props the Sidebar hands to `Sidebar.linkComponent` for one nav row (gh#213).
+ *
+ * Every field is ANCHOR-SAFE — a router `<Link>` may spread the whole object onto its `<a>` without
+ * emitting an unknown-DOM-attribute warning. `children` is the LIBRARY-COMPOSED row content (the
+ * `.sb-icon` slot, the `.sb-label`, the `.sb-badge`); render it as-is and never rebuild it, which is
+ * what makes icons/badges survive a consumer link (the reported production regression).
+ */
+export type SidebarLinkProp = {
+  /** `SidebarItemProp.href`. Absent for a disabled row — render an inert `<a>` with no navigation. */
+  href?: string;
+  /** Library-composed row content: icon slot + label + badge (icon only on the collapsed rail). */
+  children: ReactNode;
+  /** Canonical row class (`sb-nav-item`, plus `sb-nav-item--sub` for a submenu child). */
+  className: string;
+  /** Present only on the active row — drives `--sidebar-item-active-*`. */
+  "data-active"?: "true";
+  /** WAI-ARIA current-page semantics for the active row. */
+  "aria-current"?: "page";
+  /** Set when the item (or its row) is disabled; the row must not navigate. */
+  "aria-disabled"?: true;
+  /** Accessible name for the icon-only collapsed rail, where the visible label is hidden. */
+  "aria-label"?: string;
+  /** `"menuitem"` inside the collapsed rail's portaled flyout menu; absent for ordinary rows. */
+  role?: "menuitem";
+  /** Reports selection to `Sidebar.onSelect` after the router link runs its own handler. */
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+};
+
+/**
+ * A framework router link component driven by {@link SidebarLinkProp} — Inertia's `<Link href>`,
+ * a React Router / TanStack link wrapped by `createSidebarLink(Link, "to")`, or any component that
+ * renders a single `<a>`. It must forward its `ref` to that anchor so the collapsed rail's Tooltip
+ * can anchor to it.
+ */
+export type SidebarLinkComponentProp = ComponentType<SidebarLinkProp>;
+
+/**
+ * Row state supplied to the DEPRECATED `Sidebar.renderItem`.
+ *
+ * @deprecated Prefer `Sidebar.linkComponent` (or `SidebarItem asChild`), where the library composes
+ * the row and the consumer supplies only the element. `renderItem` leaves row CONTENT to the
+ * consumer, which is how a `<Link>{item.label}</Link>` silently dropped every icon and badge
+ * (gh#213). Spreading `rowProps` — including its `children` — now yields the canonical row.
+ */
 export type SidebarRenderItemProp = {
   className: string;
   "data-active"?: "true";
   "aria-current"?: "page";
   "aria-disabled"?: true;
+  /**
+   * Library-composed row content (icon slot · label · badge). Spread `rowProps` onto your element,
+   * or render `rowProps.children` explicitly, to keep the canonical row while adding an affix.
+   */
+  children?: ReactNode;
 };
 
 /** @see Sidebar */
@@ -237,6 +379,19 @@ export type OrgSwitcherOrganization = {
   meta?: ReactNode;
   /** Optional owned mark/avatar. When omitted, OrgSwitcher renders the first name character. */
   avatar?: ReactNode;
+  /**
+   * Status/plan affordance rendered end-aligned in the expanded trigger and in the menu row
+   * (e.g. `<Badge tone="warning">Trial</Badge>`). Hidden in the collapsed rail, which only has room
+   * for the mark. Pair a non-textual badge with {@link OrgSwitcherOrganization.badgeLabel}.
+   */
+  badge?: ReactNode;
+  /**
+   * Localized screen-reader text for `badge`. Required whenever the badge carries meaning the
+   * accessible name would otherwise lose (WCAG 1.1.1 / 1.4.1): the trigger's `aria-label` owns its
+   * accessible name, so the badge is announced through `aria-describedby` instead. When omitted, a
+   * textual badge is still announced inside the menu row but NOT on the trigger.
+   */
+  badgeLabel?: string;
   disabled?: boolean;
 };
 
@@ -263,7 +418,10 @@ export type OrgSwitcherProp = {
   onRetry?: () => void;
   labels: OrgSwitcherLabels;
   /**
-   * `"auto"` (default) uses a tokenized popover above 390px and a bottom Sheet at 390px and below.
+   * `"auto"` (default) uses the desktop popover above `--sheet-responsive-breakpoint-width` and a
+   * focus-trapped bottom Sheet at/below it — the SAME token that drives `SheetContent
+   * responsive="auto"`, resolved through the shared `useSheetResponsiveMode()` hook, so a service
+   * moves the drawer line once for every overlay instead of per component.
    * Explicit modes are useful for deterministic embedded surfaces and component tests.
    */
   responsive?: "auto" | "popover" | "sheet";
@@ -285,10 +443,37 @@ export type SidebarProp = {
   collapsed?: boolean;
   children?: ChildrenProp;
   /**
-   * Escape hatch to render a leaf row as a custom element — typically a framework router `<Link>`.
-   * Return a SINGLE interactive element; the Sidebar merges the row styling + active state onto it
-   * via Slot (so it is the row and the sole interactive element — no nested `<button>`). Any
-   * secondary affix (a star, a count) must be a non-interactive descendant of that element.
+   * THE framework-router contract (gh#213). Supply only the LINK ELEMENT TYPE; the Sidebar still
+   * composes the row — icon slot, label, badge, `data-active`/`aria-current`, the icon-only
+   * collapsed rail and its tooltip name — and passes it as {@link SidebarLinkProp} `children`.
+   * Used for every row that carries an `href`: top-level leaves, submenu children, collapsed-rail
+   * leaves and collapsed flyout entries. A group TRIGGER stays a `<button>` (it owns
+   * `aria-expanded` disclosure semantics per WAI-ARIA APG); its children take the link.
+   *
+   * Rows without an `href` keep the `<button>` + `onSelect(id)` shape — a router link with no
+   * destination is not a link.
+   *
+   * @example
+   * ```tsx
+   * // Inertia — its <Link href> already matches SidebarLinkProp.
+   * import { Link } from "@inertiajs/react";
+   * <Sidebar linkComponent={inertiaSidebarLink(Link)} sections={sections} activeId={activeId} />
+   *
+   * // React Router / TanStack — remap `href` to `to`.
+   * import { Link } from "react-router-dom";
+   * <Sidebar linkComponent={createSidebarLink(Link, "to")} sections={sections} activeId={activeId} />
+   * ```
+   */
+  linkComponent?: SidebarLinkComponentProp;
+  /**
+   * @deprecated Use {@link SidebarProp.linkComponent} (or `SidebarItem asChild`) instead — there the
+   * LIBRARY composes the row and you supply only the element, so icons/labels/badges cannot be lost.
+   *
+   * Legacy escape hatch: return a SINGLE interactive element and the Sidebar merges the row styling
+   * + active state onto it via Slot. Because row CONTENT stayed consumer-authored, a
+   * `<Link>{item.label}</Link>` silently dropped every icon and badge (the gh#213 production
+   * regression). `rowProps` now also carries the composed `children`, so spreading it restores the
+   * canonical row.
    */
   renderItem?: (item: SidebarItemData, rowProps: SidebarRenderItemProp) => ReactNode;
   footer?: ReactNode;
@@ -317,4 +502,80 @@ export type TopbarProp = Omit<React.HTMLAttributes<HTMLDivElement>, "children"> 
   end?: ReactNode;
   /** Escape hatch — render fully custom bar content instead of the three slots. */
   children?: ReactNode;
+};
+
+/**
+ * @see LegalDocumentShell — one entry of the table of contents + the matching document section.
+ * `id` is the REAL anchor target (`href="#{id}"`, `<section id>`), so it must be unique on the page
+ * and URL-safe: it is what a deep link, a hash jump and `aria-current` all key off.
+ */
+export type LegalDocumentSectionProp = {
+  /** URL-safe anchor id — the `<section id>` AND the contents `href="#…"` target. */
+  id: string;
+  /** Section heading text — rendered as an `<h2>` AND reused as the contents-list label. */
+  title: string;
+  /** Section body. Consumer-owned legal copy: paragraphs, lists, tables, nested `<h3>`s. */
+  content: ReactNode;
+};
+
+/**
+ * @see LegalDocumentShell — the long-form legal/policy document surface (terms of service, privacy
+ * policy, DPA, cookie policy, SLA, EULA) with a table of contents.
+ *
+ * It owns the parts an app must NOT re-implement: the readable measure + top-aligned document
+ * geometry, the sticky contents rail (single-column compact block below 56rem), scroll-spy
+ * active-section tracking, hash deep-linking with a token-driven scroll offset, focus handoff to
+ * the target `<section>`, and `prefers-reduced-motion`-aware smooth scrolling. All legal TEXT stays
+ * owned by the consumer — the shell only receives it through `sections` and the slots.
+ *
+ * Semantics: `<article>` labelled by the document title · a NAMED `<nav>` for the contents · REAL
+ * `<a href="#…">` anchors carrying `aria-current="location"` · one `<section>` per entry, labelled
+ * by its `<h2>`.
+ */
+export type LegalDocumentShellProp = {
+  /** Document title — the `<h1>` that names the `<article>` (e.g. "Terms of Service"). */
+  title: TitleProp;
+  /**
+   * Document version identifier (e.g. `"2.4"`). Rendered as a localized "Version {version}" line —
+   * pass the bare identifier, never a pre-localized sentence.
+   */
+  version?: string;
+  /**
+   * Effective date as an **ISO 8601** calendar date (`yyyy-MM-dd`) or a full ISO instant. Formatted
+   * for display with `Intl.DateTimeFormat` in the active locale and emitted inside a
+   * `<time dateTime={effectiveDate}>`, so the machine-readable value is always the ISO input.
+   * NEVER pass a pre-formatted string.
+   */
+  effectiveDate?: string;
+  /** Short plain-language summary rendered under the metadata, above the contents. */
+  summary?: ReactNode;
+  /**
+   * Accessible name + visible caption of the contents `<nav>` (e.g. "Contents"). Defaults to a
+   * localized "Contents"; override it when two documents render in the same view, so the two `nav`
+   * landmarks stay distinguishable (axe `landmark-unique`, WCAG 2.4.1).
+   */
+  contentsLabel?: string;
+  /** The document's sections, in reading order. Drives BOTH the contents list and the body. */
+  sections: LegalDocumentSectionProp[];
+  /**
+   * Controlled active section id (the entry marked `aria-current="location"`). Pair it with
+   * `onActiveSectionChange`; omit both for the uncontrolled form.
+   */
+  activeSection?: string;
+  /** Uncontrolled initial active section id. Defaults to the first section. */
+  defaultActiveSection?: string;
+  /**
+   * Fires whenever the active section changes — on a contents-anchor activation, on an initial
+   * hash deep link, and continuously from the scroll spy as the reader moves through the document.
+   */
+  onActiveSectionChange?: (sectionId: string) => void;
+  /**
+   * Slot above the contents list in the rail — a document switcher across the legal set
+   * (Terms · Privacy · Cookies). Rendered as a plain wrapper, so the consumer owns its semantics.
+   */
+  documentNavigation?: ReactNode;
+  /** Slot below the last section — the accept/download/print/contact actions. */
+  footerAction?: ReactNode;
+  id?: IdProp;
+  className?: ClassNameProp;
 };

@@ -13,9 +13,35 @@
   --logo-font-size-md: var(--font-size-sm);
   --logo-font-size-lg: var(--font-size-base);
   /* Semantic identity fill is deliberately independent from --primary so a green brand mark never
-   * recolours primary buttons or links. Services can retune the role once for every Logo. */
-  --logo-success-background: var(--success);
-  --logo-success-foreground: var(--success-foreground);
+   * recolours primary buttons or links. Services can retune the role once for every Logo.
+   * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE
+   * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually
+   * reaches the mark instead of freezing at the :root value (docs/TOKENS.md ·
+   * "Role-mirror knobs MUST be `initial`"). Documented defaults:
+   *   --logo-success-background = hsl(var(--success))
+   *   --logo-success-foreground = hsl(var(--success-foreground))
+   *   --logo-godx-color         = hsl(var(--success)) */
+  --logo-success-background: initial;
+  --logo-success-foreground: initial;
   --logo-godx-size: 2rem;
-  --logo-godx-color: var(--success);
+  --logo-godx-color: initial;
+
+  /* ── Wordmark / lockup (`<Logo wordmark="GoDX" />`) ─────────────────────────────────────────
+   * The readable product name set beside the mark. The package ships NO wordmark artwork: the
+   * wordmark is typeset in the design-system display face, so a service retunes face, weight,
+   * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a
+   * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success`
+   * lockup is brand-green out of the box, and every other lockup reads --foreground.
+   * Documented defaults: --logo-wordmark-font-family = var(--font-family-display);
+   * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the
+   * godx / tone="success" lockup. */
+  --logo-wordmark-gap: var(--space-2);
+  --logo-wordmark-font-size-xs: var(--font-size-xs);
+  --logo-wordmark-font-size-sm: var(--font-size-sm);
+  --logo-wordmark-font-size-md: var(--font-size-base);
+  --logo-wordmark-font-size-lg: var(--font-size-lg);
+  --logo-wordmark-font-weight: 700;
+  --logo-wordmark-letter-spacing: -0.01em;
+  --logo-wordmark-font-family: initial;
+  --logo-wordmark-color: initial;
 }

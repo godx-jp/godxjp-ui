@@ -85,6 +85,17 @@ export type AlertActionsProp = React.HTMLAttributes<HTMLDivElement> & {
   children?: ChildrenProp;
 };
 
+/**
+ * @see SheetContent — responsive drawer / detail-panel presentation contract.
+ *
+ * - `"side"` (default) — always the physical `side` panel the consumer named. Today's behaviour.
+ * - `"auto"` — desktop side panel above `--sheet-responsive-breakpoint-width`, mobile bottom sheet
+ *   at and below it. The breakpoint is a token, so a service moves the line once for every overlay.
+ * - `"bottom"` — always the mobile bottom-sheet presentation (deterministic embedded surfaces,
+ *   component tests, and composites that already decided they are on a compact viewport).
+ */
+export type SheetResponsiveProp = "auto" | "side" | "bottom";
+
 /** @see SkeletonRows */
 export type SkeletonRowsProp = {
   rows?: number;

@@ -10,12 +10,15 @@ import { cn } from "../../lib/utils";
 import type {
   SidebarItemData,
   SidebarItemProp,
+  SidebarLinkComponentProp,
   SidebarProp,
   SidebarRenderItemProp,
 } from "../../props/components/layout.prop";
 
 export type {
   SidebarItemData,
+  SidebarLinkComponentProp,
+  SidebarLinkProp,
   SidebarProductProp as SidebarProduct,
   SidebarProp,
   SidebarProp as SidebarProps,
@@ -35,6 +38,18 @@ type SidebarItemProps = {
   active?: boolean;
   sub?: boolean;
   onActivate?: (id: string) => void;
+  /**
+   * Framework-router link element TYPE (gh#213). The row content stays library-composed — see
+   * {@link SidebarLinkProp}. Applied only when `item.href` is set.
+   */
+  linkComponent?: SidebarLinkComponentProp;
+  /**
+   * Radix-style element swap: the single child element (a router `<Link>`) BECOMES the row and the
+   * library injects its composed icon + label + badge as that element's children (gh#213). Use it
+   * when you compose `SidebarItem` by hand instead of passing `sections` + `linkComponent`.
+   */
+  asChild?: boolean;
+  /** @deprecated Use `linkComponent` / `asChild` — see {@link SidebarProp.renderItem}. */
   renderItem?: RenderItem;
 };
 
@@ -61,17 +76,60 @@ export function SidebarSection({
   );
 }
 
+/**
+ * The 16px leading icon slot. The `.sb-icon` box is ALWAYS rendered (never conditionally dropped)
+ * so a row whose data carries no `icon` keeps canonical geometry — same 32px row height, same 10px
+ * icon↔label gap, labels still aligned in one column with their icon-bearing siblings. Rendering
+ * `item.icon` unguarded crashed the whole shell ("Element type is invalid… got: undefined") for
+ * API-driven / untyped nav data; `icon` stays REQUIRED in `SidebarItemProp`, this is the runtime
+ * safety net. Colour comes from `--sidebar-nav-icon-foreground` (see `Sidebar`).
+ */
+function SidebarIcon({ icon: Icon }: { icon?: SidebarItemData["icon"] }) {
+  return <span className="sb-icon">{Icon ? <Icon aria-hidden="true" /> : null}</span>;
+}
+
+/**
+ * THE canonical row composition — the single place that decides what a Sidebar row contains
+ * (gh#213). Every row shape renders this: the leaf button, the `href` anchor, the `linkComponent`
+ * router link, the `asChild` element and the group trigger. Because the LIBRARY owns it, a consumer
+ * that supplies only a `<Link>` element can no longer drop the icon or the badge — the production
+ * regression that motivated the issue.
+ *
+ * - `sub` rows are label-only (the submenu indents under the parent's icon column).
+ * - `iconOnly` is the collapsed rail: the label moves to `aria-label` + a portaled tooltip, and the
+ *   badge is dropped (the rail hides `.sb-label`/`.sb-badge` in CSS anyway).
+ */
+function SidebarRowContent({
+  item,
+  sub = false,
+  iconOnly = false,
+}: {
+  item: SidebarItemData;
+  sub?: boolean;
+  iconOnly?: boolean;
+}) {
+  if (iconOnly) return <SidebarIcon icon={item.icon} />;
+  const showBadge = item.badge !== undefined && item.badge !== "";
+  return (
+    <>
+      {!sub ? <SidebarIcon icon={item.icon} /> : null}
+      <span className="sb-label">{item.label}</span>
+      {showBadge ? <span className="sb-badge">{item.badge}</span> : null}
+    </>
+  );
+}
+
 export function SidebarItem({
   item,
   active = false,
   sub = false,
   onActivate,
+  linkComponent: LinkComponent,
+  asChild = false,
   renderItem,
   children,
   ...props
 }: SidebarItemProps & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onClick">) {
-  const Icon = item.icon;
-  const showBadge = item.badge !== undefined && item.badge !== "";
   const disabled = item.disabled || props.disabled;
   const rowClass = cn("sb-nav-item", sub && "sb-nav-item--sub");
   const stateProps: SidebarRenderItemProp = {
@@ -80,21 +138,51 @@ export function SidebarItem({
     "aria-current": active ? ("page" as const) : undefined,
     "aria-disabled": disabled ? true : undefined,
   };
-  const custom = children ?? (renderItem ? renderItem(item, stateProps) : undefined);
+  const content = <SidebarRowContent item={item} sub={sub} />;
+  const activate = (event: React.MouseEvent<HTMLElement>) => {
+    if (disabled) {
+      event.preventDefault();
+      return;
+    }
+    onActivate?.(item.id);
+  };
 
-  // Custom row: the CONSUMER supplies the single interactive element (a router `<Link>`/`<a>`), so
-  // we merge the row styling + active state onto THAT element via Slot — never a `<button>` wrapper.
-  // This is what lets a Sidebar item be a real link WITHOUT a nested interactive element (a
-  // `<button>`-in-`<a>` was the gh#165 defect). The consumer's element owns navigation.
-  if (custom !== undefined) {
+  // 1. `asChild` — the consumer supplies the ELEMENT ONLY. We clone it with the library-composed
+  // children (so icon/label/badge always survive) and Slot merges the row class + active state onto
+  // it. The consumer's element is the row AND the sole interactive node (no nested `<button>`).
+  if (asChild && React.isValidElement(children)) {
     return (
-      <Slot {...stateProps}>
-        {custom}
+      <Slot {...stateProps} onClick={activate}>
+        {React.cloneElement(children as React.ReactElement, undefined, content)}
       </Slot>
     );
   }
 
-  // A declarative `href` renders the row AS the link — the anchor is the sole interactive element.
+  // 2. DEPRECATED `renderItem` / raw `children`: row CONTENT stays consumer-authored. `rowProps` now
+  // carries the composed `children`, so spreading it restores the canonical row (gh#213).
+  const custom =
+    children ?? (renderItem ? renderItem(item, { ...stateProps, children: content }) : undefined);
+  if (custom !== undefined) {
+    return <Slot {...stateProps}>{custom}</Slot>;
+  }
+
+  // 3. Framework router link — the LIBRARY composes the row and passes it as `children`; the
+  // consumer's component only renders the `<a>`. Requires a destination: a router link without an
+  // href is not a link, so an href-less row keeps the button shape below.
+  if (LinkComponent && item.href) {
+    return (
+      <LinkComponent
+        {...stateProps}
+        href={disabled ? undefined : item.href}
+        aria-disabled={disabled || undefined}
+        onClick={activate}
+      >
+        {content}
+      </LinkComponent>
+    );
+  }
+
+  // 4. A declarative `href` renders the row AS the link — the anchor is the sole interactive element.
   if (item.href) {
     return (
       <a
@@ -102,41 +190,22 @@ export function SidebarItem({
         href={disabled ? undefined : item.href}
         {...stateProps}
         aria-disabled={disabled || undefined}
-        onClick={(event) => {
-          if (disabled) event.preventDefault();
-          else onActivate?.(item.id);
-        }}
+        onClick={activate}
       >
-        {!sub ? (
-          <span className="sb-icon">
-            <Icon aria-hidden="true" />
-          </span>
-        ) : null}
-        <span className="sb-label">{item.label}</span>
-        {showBadge ? <span className="sb-badge">{item.badge}</span> : null}
+        {content}
       </a>
     );
   }
 
-  // Default: a plain action row that reports its selection through `onActivate` (SPA router visit).
+  // 5. Default: a plain action row that reports its selection through `onActivate` (SPA router visit).
+  // A nav row is NOT a <Button>: it owns the `.sb-nav-item` row composition (icon + label + badge,
+  // active/collapsed state, 32px height) driven by the --sidebar-nav-* tokens. Wrapping it in
+  // <Button> would layer Button's own variant padding and focus treatment on top of that, and a
+  // <Button> inside the link/anchor branches is the gh#165 nested-interactive defect.
   return (
-    <button
-      type="button"
-      {...stateProps}
-      aria-disabled={disabled}
-      {...props}
-      onClick={() => {
-        if (disabled) return;
-        onActivate?.(item.id);
-      }}
-    >
-      {!sub ? (
-        <span className="sb-icon">
-          <Icon aria-hidden="true" />
-        </span>
-      ) : null}
-      <span className="sb-label">{item.label}</span>
-      {showBadge ? <span className="sb-badge">{item.badge}</span> : null}
+    // ui-audit-disable-next-line no-raw-button — raw <button> is the correct element here.
+    <button type="button" {...stateProps} aria-disabled={disabled} {...props} onClick={activate}>
+      {content}
     </button>
   );
 }
@@ -151,10 +220,11 @@ type RowProps = {
   activeId: string;
   onSelect?: (id: string) => void;
   sub?: boolean;
+  linkComponent?: SidebarLinkComponentProp;
   renderItem?: RenderItem;
 };
 
-function NavLeaf({ item, activeId, onSelect, sub = false, renderItem }: RowProps) {
+function NavLeaf({ item, activeId, onSelect, sub = false, linkComponent, renderItem }: RowProps) {
   const active = item.id === activeId;
   return (
     <SidebarItem
@@ -162,6 +232,7 @@ function NavLeaf({ item, activeId, onSelect, sub = false, renderItem }: RowProps
       active={active}
       onActivate={onSelect}
       sub={sub}
+      linkComponent={linkComponent}
       renderItem={renderItem}
     />
   );
@@ -171,11 +242,13 @@ function NavLeafsInGroup({
   children,
   activeId,
   onSelect,
+  linkComponent,
   renderItem,
 }: {
   children: SidebarItemProp[];
   activeId: string;
   onSelect?: (id: string) => void;
+  linkComponent?: SidebarLinkComponentProp;
   renderItem?: RenderItem;
 }) {
   return children.map((child) => (
@@ -185,13 +258,13 @@ function NavLeafsInGroup({
       activeId={activeId}
       onSelect={onSelect}
       sub
+      linkComponent={linkComponent}
       renderItem={renderItem}
     />
   ));
 }
 
-function NavGroup({ item, activeId, onSelect, renderItem }: RowProps) {
-  const Icon = item.icon;
+function NavGroup({ item, activeId, onSelect, linkComponent, renderItem }: RowProps) {
   const active = isItemActive(item, activeId);
   const children = item.children ?? [];
 
@@ -207,20 +280,30 @@ function NavGroup({ item, activeId, onSelect, renderItem }: RowProps) {
 
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="sb-nav-group">
+      {/*
+        The group trigger is a DISCLOSURE, not a link: WAI-ARIA APG requires the element that owns
+        `aria-expanded` and controls the submenu to be a `<button>`, so `linkComponent` is deliberately
+        NOT applied here (a link wrapping a chevron button would re-introduce the nested-interactive
+        defect of gh#165). Its ROW COMPOSITION is library-owned like every other shape — icon slot,
+        label and badge come from `SidebarRowContent`, the chevron stays outside `.sb-icon` so it reads
+        the row colour (gh#228). The group's CHILDREN take the router link.
+      */}
       <CollapsibleTrigger
         className="sb-nav-item sb-nav-group-trigger"
         data-active={active ? "true" : undefined}
       >
-        <span className="sb-icon">
-          <Icon aria-hidden="true" />
-        </span>
-        <span className="sb-label">{item.label}</span>
+        <SidebarRowContent item={item} />
         <ChevronDown className="sb-chevron" aria-hidden="true" />
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="sb-nav-sub">
           {children.length > 0 ? (
-            <NavLeafsInGroup activeId={activeId} onSelect={onSelect} renderItem={renderItem}>
+            <NavLeafsInGroup
+              activeId={activeId}
+              onSelect={onSelect}
+              linkComponent={linkComponent}
+              renderItem={renderItem}
+            >
               {children}
             </NavLeafsInGroup>
           ) : null}
@@ -235,9 +318,8 @@ function NavGroup({ item, activeId, onSelect, renderItem }: RowProps) {
  * tooltip; CLICK navigates a leaf, or opens the group's submenu as a portaled menu. Both overlays
  * ported to the page root so they are never clipped by the sidebar's overflow.
  */
-function CollapsedRow({ item, activeId, onSelect }: RowProps) {
+function CollapsedRow({ item, activeId, onSelect, linkComponent: LinkComponent }: RowProps) {
   const [menuOpen, setMenuOpen] = React.useState(false);
-  const Icon = item.icon;
   const active = isItemActive(item, activeId);
   const children = item.children ?? [];
   const hasChildren = children.length > 0;
@@ -256,16 +338,39 @@ function CollapsedRow({ item, activeId, onSelect }: RowProps) {
         if (!hasChildren && !item.disabled) onSelect?.(item.id);
       }}
     >
-      <span className="sb-icon">
-        <Icon aria-hidden="true" />
-      </span>
+      <SidebarIcon icon={item.icon} />
     </button>
   );
+
+  // A collapsed LEAF with an `href` takes the consumer's router link too (gh#213) — the library
+  // still composes the icon-only content and keeps the accessible name on `aria-label`, so the rail
+  // never degrades to an unnamed icon or loses the browser's own link affordances
+  // (context-menu → open-in-new-tab, middle-click).
+  const iconLink =
+    LinkComponent && !hasChildren && item.href ? (
+      <LinkComponent
+        className="sb-nav-item"
+        data-active={active ? "true" : undefined}
+        aria-current={active ? "page" : undefined}
+        aria-disabled={item.disabled || undefined}
+        aria-label={item.label}
+        href={item.disabled ? undefined : item.href}
+        onClick={(event) => {
+          if (item.disabled) {
+            event.preventDefault();
+            return;
+          }
+          onSelect?.(item.id);
+        }}
+      >
+        <SidebarRowContent item={item} iconOnly />
+      </LinkComponent>
+    ) : null;
 
   if (!hasChildren) {
     return (
       <Tooltip>
-        <TooltipTrigger asChild>{iconButton}</TooltipTrigger>
+        <TooltipTrigger asChild>{iconLink ?? iconButton}</TooltipTrigger>
         <TooltipContent side="right">{item.label}</TooltipContent>
       </Tooltip>
     );
@@ -287,27 +392,74 @@ function CollapsedRow({ item, activeId, onSelect }: RowProps) {
         className="sb-flyout-pop"
       >
         <div className="sb-flyout-title">{item.label}</div>
-        {children.map((child) => (
-          <button
-            key={child.id}
-            type="button"
-            role="menuitem"
-            className="sb-nav-item"
-            data-active={child.id === activeId ? "true" : undefined}
-            aria-current={child.id === activeId ? "page" : undefined}
-            onClick={() => {
-              setMenuOpen(false);
-              if (!child.disabled) onSelect?.(child.id);
-            }}
-          >
-            <span className="sb-label">{child.label}</span>
-          </button>
-        ))}
+        {children.map((child) => {
+          const childActive = child.id === activeId;
+          const select = (event: React.MouseEvent<HTMLElement>) => {
+            setMenuOpen(false);
+            if (child.disabled) {
+              event.preventDefault();
+              return;
+            }
+            onSelect?.(child.id);
+          };
+          const flyoutState = {
+            role: "menuitem" as const,
+            className: "sb-nav-item",
+            "data-active": childActive ? ("true" as const) : undefined,
+            "aria-current": childActive ? ("page" as const) : undefined,
+            "aria-disabled": child.disabled || undefined,
+          };
+          // Flyout entries are LEAVES, so the router link applies here as well — the collapsed rail
+          // is no longer a place where a consumer's `<Link>` silently reverts to a `<button>`.
+          return LinkComponent && child.href ? (
+            <LinkComponent
+              key={child.id}
+              {...flyoutState}
+              href={child.disabled ? undefined : child.href}
+              onClick={select}
+            >
+              <SidebarRowContent item={child} sub />
+            </LinkComponent>
+          ) : (
+            // A collapsed-rail flyout entry is a `menuitem`-styled nav row owning `.sb-nav-item`
+            // composition, not a <Button> — same contract as the leaf row above.
+            // ui-audit-disable-next-line no-raw-button
+            <button key={child.id} type="button" {...flyoutState} onClick={select}>
+              <SidebarRowContent item={child} sub />
+            </button>
+          );
+        })}
       </PopoverContent>
     </Popover>
   );
 }
 
+export { createSidebarLink } from "./sidebar-link";
+
+/**
+ * Sidebar — data-driven vertical nav rail.
+ *
+ * ROUTER LINKS (gh#213): pass `linkComponent` and the LIBRARY keeps composing every row (icon slot,
+ * label, badge, active state, the icon-only collapsed rail and its tooltip name) — the consumer
+ * supplies only the link ELEMENT. Use {@link createSidebarLink} to adapt a router `Link`, or
+ * `SidebarItem asChild` when composing rows by hand. `renderItem` is DEPRECATED: it left row content
+ * to the consumer, so a `<Link>{item.label}</Link>` dropped every icon and badge.
+ *
+ * THEMING (gh#228): the row/label and the nav ICON read SEPARATE component tokens, so a service can
+ * match a canonical shell's darker 16px icons without page-local CSS and without re-tinting every
+ * muted text globally:
+ *
+ * - `--sidebar-nav-item-foreground` (row + label, incl. sub rows) · default `hsl(var(--muted-foreground))`
+ * - `--sidebar-nav-item-hover-foreground` · default `hsl(var(--foreground))`
+ * - `--sidebar-nav-item-disabled-foreground` · default = the resting row colour
+ * - `--sidebar-nav-icon-foreground` (`.sb-icon`, incl. the collapsed rail + group triggers) ·
+ *   default `currentColor` = the row colour
+ * - `--sidebar-nav-icon-{hover,active,disabled}-foreground` · each defaults to the base icon knob
+ *
+ * The active row keeps `--sidebar-item-active-background` / `--sidebar-item-active-foreground`.
+ * These are COLOUR knobs only — icon size stays `--sidebar-nav-icon-size` (16px) and row geometry
+ * stays `--sidebar-nav-item-height` / `-gap` / `-padding-x`.
+ */
 export function Sidebar({
   ariaLabel: ariaLabelCamel,
   activeId,
@@ -318,6 +470,7 @@ export function Sidebar({
   brand,
   collapsed = false,
   children,
+  linkComponent,
   renderItem,
   footer,
   "aria-label": ariaLabel,
@@ -373,7 +526,10 @@ export function Sidebar({
         })()
       ) : null}
 
-      <nav className="sb-nav-scroll" aria-label={ariaLabel ?? ariaLabelCamel ?? t("layout.sidebar.ariaLabel")}>
+      <nav
+        className="sb-nav-scroll"
+        aria-label={ariaLabel ?? ariaLabelCamel ?? t("layout.sidebar.ariaLabel")}
+      >
         {children ??
           resolvedSections.map((section, sectionIndex) => (
             <SidebarSection
@@ -383,13 +539,20 @@ export function Sidebar({
             >
               {section.items.map((item) =>
                 collapsed ? (
-                  <CollapsedRow key={item.id} item={item} activeId={activeId} onSelect={onSelect} />
+                  <CollapsedRow
+                    key={item.id}
+                    item={item}
+                    activeId={activeId}
+                    onSelect={onSelect}
+                    linkComponent={linkComponent}
+                  />
                 ) : item.children && item.children.length > 0 ? (
                   <NavGroup
                     key={item.id}
                     item={item}
                     activeId={activeId}
                     onSelect={onSelect}
+                    linkComponent={linkComponent}
                     renderItem={renderItem}
                   />
                 ) : (
@@ -398,6 +561,7 @@ export function Sidebar({
                     item={item}
                     activeId={activeId}
                     onSelect={onSelect}
+                    linkComponent={linkComponent}
                     renderItem={renderItem}
                   />
                 ),

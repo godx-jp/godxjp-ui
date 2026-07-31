@@ -195,6 +195,18 @@ export const VOCABULARY_REGISTRY = {
     category: "layout",
     description: "CenteredShell column max-width — sm, md, lg",
   },
+  CenteredShellAlignProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description:
+      "CenteredShell column block alignment — start (flowing page), center (system surface)",
+  },
+  AuthShellPresetProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description:
+      "AuthShell named flow measure — default | device-authorization (380px card, 5px mobile gutter) | context-selection (25rem card, edge-to-edge mobile)",
+  },
   GapProp: {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
@@ -419,6 +431,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "IdProp",
       "ClassNameProp",
       "AppSettingPickerAppearanceProp",
+      {
+        field: "compact",
+        local: true,
+        reason:
+          "Trigger DENSITY for the picker only (sm control tier + content-hugging width) — orthogonal to `appearance`, and not the page-level DensityProp scope.",
+      },
     ],
   },
   PageContainerProp: {
@@ -454,20 +472,37 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [],
   },
+  MasterDetailRailProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
   MasterDetailProp: {
     group: "layout",
     file: "components/layout.prop.ts",
     vocabulary: [
       "ChildrenProp",
+      "BreakpointProp",
+      "IdProp",
       {
         field: "master",
         local: true,
         reason: "Semantic selectable-collection slot paired with the detail children slot.",
       },
       {
+        field: "rail",
+        local: true,
+        reason: "Semantic selector for which region owns the fixed track (master | detail).",
+      },
+      {
         field: "railWidth",
         local: true,
-        reason: "Token-owned 300px/320px master-rail geometry preset.",
+        reason: "Token-owned 300px/320px rail geometry preset.",
+      },
+      {
+        field: "collapseBelow",
+        local: true,
+        reason: "Per-instance override of the --master-detail-collapse-below stacking threshold.",
       },
       {
         field: "masterLabel",
@@ -478,6 +513,11 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "detailLabel",
         local: true,
         reason: "Accessible name for the detail region landmark.",
+      },
+      {
+        field: "detailId",
+        local: true,
+        reason: "Id of the detail region so master controls can wire aria-controls and focus.",
       },
     ],
   },
@@ -507,6 +547,7 @@ export const COMPONENT_PROP_REGISTRY = {
         local: true,
         reason: "Auth-specific vertical-density scope for card descendants.",
       },
+      "AuthShellPresetProp",
     ],
   },
   AuthDividerProp: {
@@ -514,10 +555,134 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: ["LabelProp", "ClassNameProp"],
   },
+  AuthFooterProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ClassNameProp",
+      {
+        field: "product",
+        local: true,
+        reason:
+          "Consumer-owned host/product identity slot of the legal line, not a page TitleProp.",
+      },
+      {
+        field: "terms",
+        local: true,
+        reason: "Consumer-owned Terms link/text slot — the library never invents legal navigation.",
+      },
+      {
+        field: "privacy",
+        local: true,
+        reason:
+          "Consumer-owned Privacy link/text slot — the library never invents legal navigation.",
+      },
+      {
+        field: "locale",
+        local: true,
+        reason:
+          "Optional consumer-owned locale control slot (an AppSettingPicker), not a locale value.",
+      },
+    ],
+  },
+  AuthIdentityProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "TitleProp",
+      "ClassNameProp",
+      {
+        field: "requester",
+        local: true,
+        reason:
+          "Authoritative requesting-client context for a delegated auth flow (device grant / consent).",
+      },
+    ],
+  },
   CenteredShellProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["ChildrenProp", "ClassNameProp", "CenteredShellWidthProp"],
+    vocabulary: [
+      "ChildrenProp",
+      "ClassNameProp",
+      "CenteredShellWidthProp",
+      "CenteredShellAlignProp",
+    ],
+  },
+  LegalDocumentSectionProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "IdProp",
+      "TitleProp",
+      {
+        field: "content",
+        local: true,
+        reason:
+          "Consumer-owned legal body for one section — a content slot, not the ChildrenProp of the shell itself.",
+      },
+    ],
+  },
+  LegalDocumentShellProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "TitleProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "version",
+        local: true,
+        reason: "Document version identifier interpolated into a localized 'Version {version}'.",
+      },
+      {
+        field: "effectiveDate",
+        local: true,
+        reason: "ISO 8601 date input formatted via Intl.DateTimeFormat in the active locale.",
+      },
+      {
+        field: "summary",
+        local: true,
+        reason: "Plain-language document summary slot, distinct from a page SubtitleProp.",
+      },
+      {
+        field: "contentsLabel",
+        local: true,
+        reason:
+          "Accessible name + visible caption of the contents nav landmark (landmark-unique override).",
+      },
+      {
+        field: "sections",
+        local: true,
+        reason: "Ordered LegalDocumentSectionProp[] driving both the contents list and the body.",
+      },
+      {
+        field: "activeSection",
+        local: true,
+        reason:
+          "Controlled active-section id — the X / defaultX / onXChange family (like open/onOpenChange); 'value' would be meaningless on a document shell.",
+      },
+      {
+        field: "defaultActiveSection",
+        local: true,
+        reason: "Uncontrolled initial active-section id.",
+      },
+      {
+        field: "onActiveSectionChange",
+        local: true,
+        reason: "Active-section change handler (anchor activation · hash deep link · scroll spy).",
+      },
+      {
+        field: "documentNavigation",
+        local: true,
+        reason: "Rail slot for a switcher across the legal document set.",
+      },
+      {
+        field: "footerAction",
+        local: true,
+        reason: "Document-footer slot for accept / download / print actions.",
+      },
+    ],
   },
   SidebarProductProp: {
     group: "layout",
@@ -532,7 +697,24 @@ export const COMPONENT_PROP_REGISTRY = {
   SidebarRenderItemProp: {
     group: "layout",
     file: "components/layout.prop.ts",
-    vocabulary: ["ClassNameProp"],
+    vocabulary: ["ClassNameProp", "ChildrenProp"],
+  },
+  SidebarLinkProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["ClassNameProp", "ChildrenProp", "OnClickProp"],
+  },
+  SidebarLinkComponentProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      {
+        field: "linkComponent",
+        local: true,
+        reason:
+          "Component type alias for a framework router Link driven by SidebarLinkProp (gh#213).",
+      },
+    ],
   },
   SidebarSectionProp: {
     group: "layout",
@@ -881,7 +1063,7 @@ export const COMPONENT_PROP_REGISTRY = {
   DataTableProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["ColumnDefProp", "DensityProp", "SortStateProp", "SelectedIdsProp"],
+    vocabulary: ["ColumnDefProp", "DensityProp", "SortStateProp", "SelectedIdsProp", "HandlerProp"],
   },
   CredentialRevealProp: {
     group: "data-display",
@@ -961,6 +1143,38 @@ export const COMPONENT_PROP_REGISTRY = {
       },
       { field: "stacked", local: true, reason: "Stack series into one bar." },
       { field: "horizontal", local: true, reason: "Category axis on the left." },
+    ],
+  },
+  CompactBarTrendProp: {
+    group: "data-display",
+    file: "components/charts.prop.ts",
+    vocabulary: [
+      "LabelProp",
+      "DescriptionProp",
+      "SizeProp",
+      "FooterProp",
+      "EmptyMessageProp",
+      "ClassNameProp",
+      "IdProp",
+      { field: "data", local: true, reason: "Chart row data (one bar per row)." },
+      { field: "categoryKey", local: true, reason: "Accessor key for the bar's tick label." },
+      { field: "valueKey", local: true, reason: "Accessor key for the plotted numeric value." },
+      {
+        field: "emphasizedIndex",
+        local: true,
+        reason: "Index of the highlighted 'current' bar (negative counts from the end).",
+      },
+      {
+        field: "showCategoryLabels",
+        local: true,
+        reason: "Chart-specific tick-label toggle.",
+      },
+      {
+        field: "numberFormat",
+        local: true,
+        reason: "Intl.NumberFormat options for the text alternative.",
+      },
+      { field: "ref", local: true, reason: "Forwarded ref to the <figure> element." },
     ],
   },
   AreaChartProp: {
@@ -1122,6 +1336,7 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/feedback.prop.ts",
     vocabulary: ["ClassNameProp", "ChildrenProp"],
   },
+  SheetResponsiveProp: { group: "feedback", file: "components/feedback.prop.ts", vocabulary: [] },
   SkeletonRowsProp: { group: "feedback", file: "components/feedback.prop.ts", vocabulary: [] },
   ToolbarProp: {
     group: "navigation",
@@ -1134,10 +1349,15 @@ export const COMPONENT_PROP_REGISTRY = {
       "ChildrenProp",
     ],
   },
+  FilterBarOverflowProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
   ToolbarGroupProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
-    vocabulary: ["LabelProp", "ClassNameProp", "ChildrenProp"],
+    vocabulary: ["LabelProp", "IdProp", "ClassNameProp", "ChildrenProp"],
   },
   PaginationProp: {
     group: "navigation",

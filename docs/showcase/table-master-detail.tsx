@@ -8,6 +8,7 @@
  *
  * Composition map (intent → real @godxjp/ui primitive):
  *   resizable split ........ ResizablePanelGroup + ResizablePanel + ResizableHandle
+ *   fixed-track split ...... MasterDetail (tokenized rail + stacking threshold, gh#223)
  *   master list ............ DataTable (compact, clickable rows, selected row)
  *   status cell ............ Badge tone (出勤/遅刻/早退/休暇 — fixed signaling)
  *   detail header .......... Avatar + heading + Badge + action Buttons
@@ -44,6 +45,7 @@ import {
 } from "@godxjp/ui/data-display";
 import {
   Flex,
+  MasterDetail,
   PageContainer,
   ResizableHandle,
   ResizablePanel,
@@ -411,14 +413,23 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* ── Empty detail state (nothing selected) ── */}
+        {/* ── Empty detail state (nothing selected) ──
+            Fixed-track split, so the geometry belongs to MasterDetail, not this page (gh#223):
+            rail="master" keeps the leading 一覧 on the fixed track while the detail surface stays
+            fluid, and collapseBelow="md" stacks 一覧→詳細 once the card body itself is too narrow
+            for two tracks. No grid tracks, no per-breakpoint widths, no page-local spacing. */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>未選択の状態</CardTitle>
           </CardHeader>
           <CardContent>
-            <Flex direction="col" gap="lg" align="start" className="lg:flex-row lg:items-start">
-              <div className="w-full lg:w-56 lg:shrink-0">
+            <MasterDetail
+              rail="master"
+              railWidth="compact"
+              collapseBelow="md"
+              masterLabel="従業員一覧"
+              detailLabel="従業員の詳細"
+              master={
                 <DataTable
                   data={EMPLOYEES.slice(0, 3)}
                   columns={columns}
@@ -426,17 +437,16 @@ export default function Demo() {
                   density="compact"
                   onRowClick={() => {}}
                 />
-              </div>
-              <Separator className="lg:hidden" />
-              <Separator orientation="vertical" className="hidden self-stretch lg:block" />
-              <div className="w-full flex-1 rounded-md border border-dashed p-8">
+              }
+            >
+              <div className="rounded-md border border-dashed p-8">
                 <EmptyState
                   icon={UserRound}
                   title="従業員を選択してください"
                   description="一覧から行を選ぶと詳細が表示されます。"
                 />
               </div>
-            </Flex>
+            </MasterDetail>
           </CardContent>
         </Card>
 

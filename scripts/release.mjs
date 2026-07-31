@@ -1,18 +1,24 @@
 #!/usr/bin/env node
-/** Coordinated, staged and recoverable release for @godxjp/ui + @godxjp/ui-mcp. */
+/**
+ * Coordinated, staged and recoverable release for @godxjp/ui + @godxjp/ui-mcp.
+ *
+ * This file is deliberately THIN: it parses flags, resolves paths, and wires two effect primitives
+ * (`run` / `capture`) into the pure planner + executor in scripts/release-core.mjs. Every command
+ * that actually runs — and the order it runs in — is decided by `buildReleasePlan` /
+ * `planReleaseCommands`, so `src/test/__tests__/release-workflow.test.ts` can prove offline that
+ * the coordinated target metadata and every preflight gate precede the first `npm publish`
+ * (issue #230).
+ */
 import { execFileSync, spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { existsSync, readFileSync, rmSync } from "node:fs";
 import { isAbsolute, join, resolve } from "node:path";
 import {
-  RELEASE_STEPS,
-  assertFreshTargets,
   assertOnlyCoordinatedManifestChanges,
-  assertRegistryArtifact,
   buildReleasePlan,
+  createManifestPlanWorkspace,
+  createReleaseRuntime,
+  planReleaseCommands,
   readPackage,
-  reconcilePackagePublication,
-  releaseCommandForStep,
   runRelease,
   validateRecoveryState,
   writeJsonAtomic,
@@ -41,173 +47,16 @@ const recoveryDirectory = isAbsolute(recoveryGitPath)
   : resolve(repositoryRoot, recoveryGitPath);
 const recoveryPath = join(recoveryDirectory, "state.json");
 
-function command(binary, commandArgs, cwd = repositoryRoot) {
-  console.log(
-    `\n$ ${[binary, ...commandArgs].join(" ")}${cwd !== repositoryRoot ? `  (in ${cwd})` : ""}`,
-  );
-  execFileSync(binary, commandArgs, { cwd, stdio: "inherit" });
-}
-
-function npmJson(commandArgs, missingIsNull = false) {
-  const result = spawnSync("npm", commandArgs, { cwd: repositoryRoot, encoding: "utf8" });
-  if (result.status === 0) return JSON.parse(result.stdout || "null");
-  const output = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
-  if (missingIsNull && /E404|404 Not Found|is not in this registry/i.test(output)) return null;
-  throw new Error(`npm ${commandArgs.join(" ")} failed: ${output.trim()}`);
-}
-
-function registryState(packageName, version) {
-  const integrity = npmJson(
-    ["view", `${packageName}@${version}`, "dist.integrity", "--json"],
-    true,
-  );
-  const tags = npmJson(["view", packageName, "dist-tags", "--json"], true) ?? {};
-  return { exists: typeof integrity === "string", integrity, tags };
-}
-
-function commitTargetMetadata(plan) {
-  command("git", ["add", "package.json", "mcp/package.json"]);
-  const dirty =
-    spawnSync("git", ["diff", "--cached", "--quiet"], { cwd: repositoryRoot }).status !== 0;
-  if (dirty) command("git", ["commit", "-m", `chore(release): UI + MCP @${plan.targetVersion}`]);
-}
-
-function executeReleaseStep(step, plan, artifacts, progress) {
-  switch (step) {
-    case RELEASE_STEPS.VerifyRoot:
-      command("pnpm", ["run", "verify:release"]);
-      return;
-    case RELEASE_STEPS.InstallMcp:
-      command("pnpm", ["install", "--frozen-lockfile"], join(repositoryRoot, "mcp"));
-      return;
-    case RELEASE_STEPS.BuildMcp:
-      command("pnpm", ["build"], join(repositoryRoot, "mcp"));
-      return;
-    case RELEASE_STEPS.TestMcp:
-      command("pnpm", ["test"], join(repositoryRoot, "mcp"));
-      return;
-    case RELEASE_STEPS.VerifyLockstep:
-      command("node", ["scripts/check-release-lockstep.mjs"]);
-      return;
-    case RELEASE_STEPS.VerifyNpmAuth:
-      command("npm", ["whoami"]);
-      return;
-    case RELEASE_STEPS.VerifyTargetAvailability: {
-      const uiRegistry = registryState("@godxjp/ui", plan.targetVersion);
-      const mcpRegistry = registryState("@godxjp/ui-mcp", plan.targetVersion);
-      if (!plan.recovery) {
-        assertFreshTargets(uiRegistry, mcpRegistry);
-      } else {
-        reconcilePackagePublication({
-          progress: progress.ui,
-          registry: uiRegistry,
-          artifact: progress.artifacts.ui,
-          targetVersion: plan.targetVersion,
-          stageTag: plan.stageTag,
-          packageName: "@godxjp/ui",
-        });
-        reconcilePackagePublication({
-          progress: progress.mcp,
-          registry: mcpRegistry,
-          artifact: progress.artifacts.mcp,
-          targetVersion: plan.targetVersion,
-          stageTag: plan.stageTag,
-          packageName: "@godxjp/ui-mcp",
-        });
-      }
-      return;
-    }
-    case RELEASE_STEPS.RecordPreviousLatestTags:
-      progress.ui.previousLatest =
-        registryState("@godxjp/ui", plan.targetVersion).tags.latest ?? null;
-      progress.mcp.previousLatest =
-        registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null;
-      return;
-    case RELEASE_STEPS.VerifyPublishTree: {
-      const status = execFileSync(
-        "git",
-        ["status", "--porcelain=v1", "-z", "--untracked-files=all"],
-        {
-          cwd: repositoryRoot,
-          encoding: "utf8",
-        },
-      );
-      assertOnlyCoordinatedManifestChanges(status);
-      return;
-    }
-    case RELEASE_STEPS.VerifyPublishedVersions: {
-      const uiRegistry = registryState("@godxjp/ui", plan.targetVersion);
-      const mcpRegistry = registryState("@godxjp/ui-mcp", plan.targetVersion);
-      assertRegistryArtifact(
-        uiRegistry,
-        progress.artifacts.ui,
-        plan.targetVersion,
-        plan.stageTag,
-        "@godxjp/ui",
-        !progress.ui.stageTagRemoved,
-      );
-      assertRegistryArtifact(
-        mcpRegistry,
-        progress.artifacts.mcp,
-        plan.targetVersion,
-        plan.stageTag,
-        "@godxjp/ui-mcp",
-        !progress.mcp.stageTagRemoved,
-      );
-      return;
-    }
-    case RELEASE_STEPS.PublishUi:
-    case RELEASE_STEPS.PublishMcp:
-    case RELEASE_STEPS.PromoteUiLatest:
-    case RELEASE_STEPS.PromoteMcpLatest:
-    case RELEASE_STEPS.RemoveUiStagingTag:
-    case RELEASE_STEPS.RemoveMcpStagingTag: {
-      const [binary, commandArgs] = releaseCommandForStep(step, plan, artifacts);
-      command(binary, commandArgs);
-      return;
-    }
-    case RELEASE_STEPS.CommitTargetMetadata:
-      commitTargetMetadata(plan);
-      return;
-    default:
-      throw new Error(`Unknown release step "${step}".`);
-  }
-}
-
-function compensateLatest(plan, progress) {
-  const observed = {
-    ui: registryState("@godxjp/ui", plan.targetVersion).tags.latest ?? null,
-    mcp: registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null,
-  };
-  const restore = (packageName, previousLatest, currentLatest) => {
-    if (currentLatest === previousLatest) return;
-    if (previousLatest) {
-      command("npm", ["dist-tag", "add", `${packageName}@${previousLatest}`, "latest"]);
-    } else {
-      command("npm", ["dist-tag", "rm", packageName, "latest"]);
-    }
-  };
-  restore("@godxjp/ui", progress.ui.previousLatest, observed.ui);
-  restore("@godxjp/ui-mcp", progress.mcp.previousLatest, observed.mcp);
-  const restored = {
-    ui: registryState("@godxjp/ui", plan.targetVersion).tags.latest ?? null,
-    mcp: registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null,
-  };
-  if (restored.ui !== progress.ui.previousLatest || restored.mcp !== progress.mcp.previousLatest) {
-    throw new Error(
-      `latest rollback verification failed: ${JSON.stringify({ observed, restored })}`,
+const runtime = createReleaseRuntime({
+  repositoryRoot,
+  run: (binary, commandArgs, cwd) => {
+    console.log(
+      `\n$ ${[binary, ...commandArgs].join(" ")}${cwd !== repositoryRoot ? `  (in ${cwd})` : ""}`,
     );
-  }
-  return { observed, restored };
-}
-
-function makePlanWorkspace() {
-  const workspace = mkdtempSync(join(tmpdir(), "godxjp-release-metadata-plan-"));
-  mkdirSync(join(workspace, "mcp"));
-  cpSync(join(repositoryRoot, "package.json"), join(workspace, "package.json"));
-  cpSync(join(repositoryRoot, "mcp/package.json"), join(workspace, "mcp/package.json"));
-  return workspace;
-}
+    execFileSync(binary, commandArgs, { cwd, stdio: "inherit" });
+  },
+  capture: (binary, commandArgs, cwd) => spawnSync(binary, commandArgs, { cwd, encoding: "utf8" }),
+});
 
 let workspace = repositoryRoot;
 try {
@@ -230,19 +79,12 @@ try {
   });
 
   if (!metadataPlan) {
-    const status = execFileSync(
-      "git",
-      ["status", "--porcelain=v1", "-z", "--untracked-files=all"],
-      {
-        cwd: repositoryRoot,
-        encoding: "utf8",
-      },
-    );
+    const status = runtime.gitStatus();
     if (recovery) assertOnlyCoordinatedManifestChanges(status);
     else if (status) throw new Error("Working tree is not clean.");
   } else {
     if (recovery) throw new Error("Recovery cannot be combined with metadata-plan mode.");
-    workspace = makePlanWorkspace();
+    workspace = createManifestPlanWorkspace(repositoryRoot);
     console.log(
       "Metadata/pack plan only: auth, registry, build, test, publish, tags and commit are NOT validated.",
     );
@@ -256,10 +98,10 @@ try {
     recoveryState,
     recoveryDirectory: metadataPlan ? null : recoveryDirectory,
     dryRun: metadataPlan,
-    runStep: executeReleaseStep,
+    runStep: runtime.runStep,
     writeRecoveryState: (state) => writeJsonAtomic(recoveryPath, state),
     clearRecoveryState: () => rmSync(recoveryDirectory, { force: true, recursive: true }),
-    compensateLatest,
+    compensateLatest: runtime.compensateLatest,
     onStep: (step, mode) => console.log(`[${mode}] ${step}`),
   });
 
@@ -273,6 +115,11 @@ try {
           targetVersion: result.plan.targetVersion,
           stageTag: result.plan.stageTag,
           steps: result.plan.steps,
+          commands: planReleaseCommands(result.plan, result.packedManifests).map((entry) => ({
+            step: entry.step,
+            command: [entry.binary, ...entry.args].join(" "),
+            cwd: entry.cwd,
+          })),
           packed: {
             ui: { version: ui.version, godxUiMcp: ui.godxUiMcp },
             mcp: { version: mcp.version, godxUiCompatibility: mcp.godxUiCompatibility },

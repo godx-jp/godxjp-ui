@@ -19,6 +19,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from "node:fs";
 import path from "node:path";
 import { REPO_ROOT, loadComponentInventory, kebab } from "./frame-harness.mjs";
+import { axesFromCells } from "./frame-coverage-contract.mjs";
 
 const LEDGER_PATH = path.join(REPO_ROOT, "preview/frame-coverage.ledger.json");
 const OUT_DIR = path.join(REPO_ROOT, "audit-evidence/frame-coverage");
@@ -111,11 +112,15 @@ function main() {
     const slug = FRAME_ALIAS[c.name] ?? kebab(c.name);
     const hasFrame = frameSlugs.has(slug);
     if (hasFrame) usedSlugs.add(slug);
-    const decl = ledger.components?.[c.name]?.dimensions ?? {};
+    // Ledger v2 (issue #163) stores the 14 CONTRACT DIMENSIONS per export; this report speaks
+    // the nine FRAME-COVERAGE-STANDARD axes, so roll them up through the shared contract module
+    // rather than re-deriving (and drifting) here.
+    const entry = ledger.components?.[c.name];
+    const decl = entry ? axesFromCells(entry.dimensions) : {};
     const dims = {};
     for (const d of DIMENSIONS) {
       const v = decl[d];
-      // "covered" | "N/A:<reason>" declared in ledger, else UNTESTED
+      // "covered" | "N/A:<reason>" rolled up from the ledger, else UNTESTED
       dims[d] = typeof v === "string" && v.length ? v : "UNTESTED";
     }
     rows.push({

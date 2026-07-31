@@ -84,7 +84,7 @@ const BRAND_NONE = "__app__";
  */
 export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPickerProp>(
   function AppSettingPicker(
-    { kind, appearance, className, disabled, id, name, value, onValueChange },
+    { kind, appearance, compact = false, className, disabled, id, name, value, onValueChange },
     ref,
   ) {
     // Product contract (gh#175): the locale picker's canonical form is the compact icon-only
@@ -157,6 +157,10 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
     const Icon = ICON[kind];
     const iconOnly = resolvedAppearance === "icon";
     const inline = resolvedAppearance === "inline";
+    // `compact` (gh#217) re-tiers the trigger box to --control-height-sm and drops the picker's
+    // owned per-kind width, so a LABELLED footer locale switch hugs its value instead of stretching
+    // to `sm:w-40`. `inline` is already chrome-less, so compact is a no-op there.
+    const isCompact = compact && !inline;
 
     return (
       <Select
@@ -183,7 +187,13 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
                   // `w-full` — so a labeled picker dropped into a narrow topbar no longer stretches to
                   // fill the bar (gh#165). A form field that wants a full-width control passes
                   // `className="w-full"`, which wins over `w-auto`.
-                  cn("w-auto max-w-full", TRIGGER_WIDTH[kind]),
+                  // `compact` drops the per-kind width entirely so the trigger hugs its value.
+                  cn("w-auto max-w-full", !isCompact && TRIGGER_WIDTH[kind]),
+            // Compact re-tiers the box through tokens (--app-setting-picker-compact-*); the height
+            // still comes from the official --control-height-sm tier, never a literal. The gap is a
+            // utility (not the class rule) so it beats SelectTrigger's own `gap-2`.
+            isCompact &&
+              "ui-app-setting-picker-compact gap-[length:var(--app-setting-picker-compact-gap)]",
             className,
           )}
           // The localized aria-label is ALWAYS applied — an icon-only trigger drops the visible
@@ -192,7 +202,11 @@ export const AppSettingPicker = React.forwardRef<HTMLButtonElement, AppSettingPi
         >
           {inline ? null : (
             <Icon
-              className={cn("size-4 shrink-0 opacity-70", !iconOnly && "me-2")}
+              className={cn(
+                "size-4 shrink-0 opacity-70",
+                // Compact relies on the trigger's tokenized flex gap instead of an icon margin.
+                !iconOnly && !isCompact && "me-2",
+              )}
               aria-hidden="true"
             />
           )}

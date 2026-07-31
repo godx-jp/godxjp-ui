@@ -1,0 +1,67 @@
+/* LegalDocumentShell component tokens — the long-form legal/policy document surface
+ * (terms of service, privacy policy, DPA, cookie policy, SLA, EULA) with a sticky
+ * table-of-contents rail.
+ *
+ * Rule #45 — every service-tunable constant is a knob: the readable measure, the rail
+ * width/offset, the section rhythm and the body leading are exactly the values a service
+ * theme wants to re-tune to match its design grid, so NONE of them are hard-coded in
+ * `src/styles/layout.css`.
+ *
+ * Rule #44 — chrome is a token, default QUIET: every divider (`*-border`) defaults to
+ * `none`. A service opts IN via theme, e.g.
+ *   --legal-document-toc-border: 1px solid hsl(var(--border));
+ *
+ * Colour knobs whose default is a ROLE token are declared `initial` here with the role
+ * default at the CALL SITE (`var(--knob, var(--role))`) — see docs/TOKENS.md ·
+ * "Role-mirror knobs MUST be `initial`" — so a scoped `[data-tenant]` / `.dark`
+ * override of the role still reaches them.
+ */
+
+:root {
+  /* ── Geometry ─────────────────────────────────────────────────────────────── */
+  /* Readable document measure. Caps the header, the section column and the footer so
+   * a 1440px viewport still reads at ~75-90 characters per line. */
+  --legal-document-measure-max-width: 46rem;
+  /* Rail ↔ document column gutter (two-column mode only). */
+  --legal-document-column-gap: var(--space-10);
+  /* Sticky table-of-contents rail width (two-column mode only). */
+  --legal-document-toc-width: 15rem;
+  /* Distance the pinned rail keeps from the top of the scrollport. */
+  --legal-document-toc-inset-block-start: var(--space-6);
+  /* Cap for a long contents list so the rail never outgrows the viewport. */
+  --legal-document-toc-max-height: calc(100dvh - var(--space-12));
+  --legal-document-toc-gap: var(--space-1);
+  --legal-document-toc-item-padding: var(--space-1) var(--space-2);
+  --legal-document-toc-item-radius: var(--radius);
+  --legal-document-toc-title-font-size: var(--font-size-2xs);
+  --legal-document-toc-font-size: var(--font-size-xs);
+  /* Leading marker on the active contents entry — a non-colour affordance so the
+   * active state is never colour-only (WCAG 1.4.1). */
+  --legal-document-toc-marker-width: 2px;
+  /* Gap between the `documentNavigation` slot and the contents list inside the rail. */
+  --legal-document-nav-gap: var(--space-4);
+  --legal-document-header-gap: var(--space-2);
+  --legal-document-meta-gap: var(--space-2);
+  --legal-document-meta-font-size: var(--font-size-xs);
+  --legal-document-section-gap: var(--space-10);
+  --legal-document-section-title-gap: var(--space-3);
+  /* Long-form leading — legal prose reads looser than UI text. */
+  --legal-document-body-line-height: 1.8;
+  /* `scroll-margin-block-start` on every section: the offset a hash jump / anchor
+   * activation leaves above the heading so it is not hidden under sticky chrome. */
+  --legal-document-scroll-offset: var(--space-6);
+  --legal-document-footer-gap: var(--space-4);
+
+  /* ── Chrome — quiet by default (rule #44) ─────────────────────────────────── */
+  --legal-document-toc-border: none;
+  --legal-document-header-border: none;
+  --legal-document-footer-border: none;
+
+  /* ── Role-mirror knobs — `initial` here, role default at the call site ─────── */
+  --legal-document-meta-foreground: initial; /* default = hsl(var(--muted-foreground)) */
+  --legal-document-summary-foreground: initial; /* default = hsl(var(--muted-foreground)) */
+  --legal-document-toc-foreground: initial; /* default = hsl(var(--muted-foreground)) */
+  --legal-document-toc-active-foreground: initial; /* default = hsl(var(--foreground)) */
+  --legal-document-toc-active-background: initial; /* default = hsl(var(--accent)) */
+  --legal-document-toc-marker-color: initial; /* default = hsl(var(--primary)) */
+}

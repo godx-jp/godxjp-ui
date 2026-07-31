@@ -21,7 +21,10 @@ export type {
  * `.app-topbar` (padding-inline · border · backdrop) WITHOUT a sidebar, a scrollable `main` whose
  * content is a **centred column** of a configurable medium width (`width` = sm|md|lg, all wider than
  * the 24rem auth card) **top-aligned** so sections flow and scroll (not vertically centred), and an
- * optional footer (contentinfo). A hosted account page thus needs ZERO custom CSS and never
+ * optional footer (contentinfo) — or, with `align="center"`, the column centred in the viewport for
+ * a SYSTEM-level standalone surface (a 500/503 error page, a maintenance notice), so that full-page
+ * geometry stays package-owned instead of a consumer re-implementing `min-h-dvh` + flex centring.
+ * A hosted account page thus needs ZERO custom CSS and never
  * hand-rolls a bar (the bare `Topbar` primitive ships no padding — the `.ui-topbar` zero-inset
  * footgun). Layout-only: delegate motion to `Reveal` (wrap a section) so `prefers-reduced-motion`
  * is honoured in one place.
@@ -31,6 +34,7 @@ export function CenteredShell({
   footer,
   children,
   width = "md",
+  align = "start",
   className,
 }: CenteredShellProp) {
   const { t } = useTranslation();
@@ -46,7 +50,7 @@ export function CenteredShell({
         </header>
       )}
       <main className="ui-centered-shell-main" aria-label={t("layout.centeredShell.mainLabel")}>
-        <div className="ui-centered-shell-column" data-width={width}>
+        <div className="ui-centered-shell-column" data-width={width} data-align={align}>
           {children}
         </div>
       </main>

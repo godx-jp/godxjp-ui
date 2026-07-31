@@ -17,6 +17,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   face is now M PLUS 2 for ja/en/vi with Noto Sans JP as its CJK fallback. All new geometry remains
   exposed through component tokens so service themes can retune it without consumer CSS forks.
 
+- **The `table-master-detail` showcase now composes `MasterDetail` instead of hand-rolled tracks
+  (#223).** The "未選択の状態" card built its split from page-local geometry —
+  `lg:flex-row lg:items-start` on a `Flex`, a `lg:w-56 lg:shrink-0` master column, `flex-1` on the
+  detail panel and a pair of orientation-swapped `Separator`s — which is exactly the consumer-local
+  track authoring #223 exists to delete, in the library's own copy-pasteable showcase. It is now a
+  single `<MasterDetail rail="master" railWidth="compact" collapseBelow="md">`: `rail="master"`
+  because the 一覧 is the LEADING fixed track and the detail surface is the fluid one (the inverse
+  of the default `rail="detail"`), and `collapseBelow="md"` because the threshold is measured
+  against the composition's own inline size rather than the viewport — inside a `Card` body at the
+  1280px page boundary the old viewport-based `lg:` corresponds to a ~940px container, and `md`
+  (48rem) is the tokenized step that keeps 1440 and 1024 side-by-side while 390 stacks. Measured in
+  Chromium: the rail holds 300px at both 1440 (detail 1042px) and 1024 (detail 626px), the regions
+  stack between 860 and 840 viewport px (container 778 → 758, i.e. the 768px token), and RTL mirrors
+  the rail to the inline-end edge. The 224px rail also silently clipped the master table's 275px
+  intrinsic width; the tokenized 300px `compact` track is the first one it fits in. The remaining
+  two regions are deliberately NOT migrated: the Gmail-style split is user-draggable and belongs to
+  `ResizablePanelGroup`, and the 狭幅レイアウト card is an always-stacked single-surface demo (flush
+  table, hairline, padded detail) that `MasterDetail`, whose stacking is width-driven, should not
+  impersonate.
+
 ### Added
 
 - **`QrCode` local-only SVG renderer (#205)** — adds a scanner-safe data-display primitive for
@@ -183,6 +203,385 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   provides the scroll region so the table does not add a redundant NESTED scroll container + a
   duplicate keyboard tab stop. `DataTable` now sets this (its `.ui-data-table-scroll` owns the
   overflow + tab stop).
+- **`LegalDocumentShell` — the long-form legal/policy document surface (#222).** Terms of service,
+  privacy policy, DPA, cookie policy, SLA and EULA screens were hand-rolled per app on consumer-only
+  `.legal-*` CSS; the shell now owns that behaviour and renders semantic `article` / `nav` /
+  `section` landmarks with REAL `<a href="#…">` anchors. It ships a readable measure and
+  top-aligned document geometry; a **sticky contents rail** at ≥`56rem` of the shell's OWN width
+  (a container query, not a viewport media query — the `SplitPane` precedent, #165), degrading below
+  that to a static compact block between the header and the first section; an `IntersectionObserver`
+  **scroll spy** marking the section at the reading line with `aria-current="location"` plus a
+  leading marker and a heavier weight (never colour-only, WCAG 1.4.1); **hash deep links**
+  (`#section-id` on arrival selects that section, and activating an entry rewrites the hash with
+  `history.replaceState`, so the Back button is never hijacked); a scroll offset via
+  `scroll-margin-block-start: var(--legal-document-scroll-offset)` instead of JS arithmetic; focus
+  handoff to the target `<section tabIndex={-1}>` (`preventScroll`) with a visible ring; and an
+  instant jump under `prefers-reduced-motion: reduce`. API: `title` · `sections: { id, title,
+content }[]` · `version` · `effectiveDate` (**ISO 8601** in, `Intl.DateTimeFormat` out, inside
+  `<time dateTime>`) · `summary` · `contentsLabel` · `activeSection` / `defaultActiveSection` /
+  `onActiveSectionChange` · `documentNavigation` · `footerAction` · `id` · `className`, with `ref`
+  forwarded to the container-query scope root. ALL legal text stays consumer-owned. Exported from
+  `@godxjp/ui/layout`, with a complete `--legal-document-*` tier
+  (`src/tokens/components/legal-document.css`) for measure, column gap, contents-rail
+  geometry/typography, header/meta/section rhythm, body line height, scroll offset and footer gap —
+  chrome quiet by default per rule #44 (`--legal-document-toc-border` /
+  `--legal-document-header-border` / `--legal-document-footer-border` default to `none`) and every
+  colour knob a role mirror declared `initial` with its role default at the call site (contents →
+  `--muted-foreground`, active → `--foreground` on `--accent`, marker → `--primary`, meta/summary →
+  `--muted-foreground`). i18n `layout.legalDocumentShell.{contents,version,effectiveDate}` in
+  en/vi/ja, docs fixtures at true 1440×900 / 1024×900 / 390×844 plus a long JA/EN/VI wrapping
+  fixture, and MCP catalog + token entries.
+- **`CompactBarTrend` — a DEPENDENCY-FREE compact bar trend for dashboard summary cards (#218).**
+  `@godxjp/ui/charts` previously offered only the recharts-backed `BarChart`, so a consumer whose
+  policy forbids screen implementers from adding dependencies (the DXS Platform SCR-201 admin
+  dashboard) had no framework option and fell back to a page-local grid with inline height
+  calculations. `CompactBarTrend` closes that gap: N category/value pairs rendered as token-sized
+  CSS marks with **no `recharts` peer at all**, muted bars plus ONE emphasized "current" bar
+  (`emphasizedIndex`, negative counts from the end), an `xs|sm|md|lg` plot-height tier (`xs` =
+  dashboard summary-card density), an optional `footer` activity slot rendered outside the
+  `role="img"` graphic, a built-in empty state and locale-aware `Intl.NumberFormat` values.
+  Accessibility reuses the shared chart frame — a `<figure>` + visible `<figcaption>`, a
+  `role="img"` plot named by a localized one-line summary, and a visually-hidden per-category value
+  list wired through `aria-describedby` (WCAG 1.1.1) in which the emphasized bar is annotated, so
+  the highlight is never colour-only (WCAG 1.4.1). The graphic holds no focusable element, so there
+  is no dead tab stop and no keyboard trap. Exported from `@godxjp/ui/charts`;
+  `CompactBarTrendProp`/`CompactBarTrendProps` registered in the prop registry; i18n keys
+  `chart.summaryTrend` and `chart.trendCurrent` (en/vi/ja).
+- **`--chart-trend-*` component tokens (#218)** — new tier file `src/tokens/components/chart.css`.
+  Every dimension and every fill of `CompactBarTrend` is a public knob so a service theme matches
+  its own design grid without page-local CSS (rule #45):
+  `--chart-trend-plot-height{,-xs,-sm,-md,-lg}` (3.5 / 5 / 7.5 / 10rem),
+  `--chart-trend-bar-{gap,radius,max-width,min-height}`, `--chart-trend-bar-background` +
+  `--chart-trend-bar-background-alpha` (role mirror, default `hsl(var(--muted-foreground) / .75)` —
+  clears the 3:1 non-text contrast floor), `--chart-trend-bar-emphasis-background` (default
+  `hsl(var(--primary))`), `--chart-trend-baseline-border` (QUIET by default per rule #44 — a service
+  opts INTO a baseline rule) and `--chart-trend-{tick-gap,tick-font-size,footer-gap}`. The
+  colour/border knobs are declared `initial` with the role default at the call site, so a scoped
+  `[data-tenant]` / `.dark` override of the role reaches them.
+- **`@godxjp/ui/email` — email-safe design-token contract for transactional templates (#227).** A
+  new framework-neutral, React-free, dependency-free subpath export that gives Blade/Twig/MJML
+  templates the values HTML email actually needs: literal `#rrggbb` and `px`. Exports
+  `EMAIL_COLORS` / `EMAIL_COLORS_DARK` (surface · background · foreground · muted · mutedForeground
+  · border · primary · primaryForeground · focus · brand · brandForeground), `EMAIL_SHELL` (the
+  480px card geometry, its content column, insets, radius and the 480×407 canonical-invitation
+  reference height), `EMAIL_TYPOGRAPHY`, `EMAIL_CTA`, `EMAIL_FOOTER`, `EMAIL_FOCUS`,
+  `EMAIL_MOBILE`, the aggregate `EMAIL_TOKENS` / `EMAIL_TOKENS_JSON`, plus the helpers `hslToHex()`
+  and `emailInlineStyle()` (which refuses `var()`/`calc()` — neither survives an email client).
+- **Canonical GoDX brand mark as email-safe markup (#227).** `EMAIL_BRAND_MARK` and
+  `emailBrandMarkSvg()` / `emailBrandMarkDataUri()` / `emailBrandMarkTableHtml()` render the emerald
+  capsule PLUS its internal glyph — the same artwork `<Logo mark="godx" />` paints, at the same
+  32×32 viewBox and with byte-identical path data (locked by a test). Three deliveries, none with an
+  external or relative asset dependency: inline `<svg>`, a `data:` URL for `<img src>`, and a
+  bulletproof `<table>` fallback. The pill-only mark is now a test failure. Ships with `--email-*`
+  component tokens (`src/tokens/components/email.css`) for the 480px shell geometry, the email type
+  ramp, the primary-CTA dimensions/radius/typography, the legal-footer typography and link spacing,
+  the focus width and the mobile padding/reflow values — all literal px (email clients resolve
+  neither `var()` nor `rem`), each naming the web token it mirrors — plus `pnpm gen:email-tokens` /
+  `pnpm check:email-token-sync` (`scripts/gen-email-tokens.mjs`), which generate
+  `src/email/tokens.generated.ts` from `src/tokens/foundation.css` and
+  `src/tokens/components/email.css` and fail if it goes stale. The HSL→hex conversion runs at module
+  load, so there is no hex literal anywhere in `src/email/` and the email palette cannot drift from
+  the web palette. Docs page `docs/foundation/email-tokens.tsx`
+  (`/isolate/foundation-email-tokens`) renders the real specimen document in an iframe at 480px and
+  at a narrow mobile width; MCP gains four `--email-*` token entries and a `transactional-email`
+  pattern (aliases `email-template`, `email-tokens`, `blade-email`, `html-email`).
+- **`Sidebar linkComponent` — the framework-router row contract (#213).** Pass only the link ELEMENT
+  TYPE; the library keeps composing every row (16px icon slot · label · badge ·
+  `data-active`/`aria-current` · the icon-only collapsed rail and its tooltip name) and hands it to
+  the link as `SidebarLinkProp.children`. It threads through all four row shapes — top-level leaves,
+  submenu children, collapsed-rail leaves and the collapsed flyout's `menuitem` entries. A group
+  TRIGGER stays a `<button>` (WAI-ARIA APG disclosure: it owns `aria-expanded`), but its row
+  composition is now library-owned too, so a group with a `badge` finally renders one. Rows without
+  an `href` keep the `<button>` + `onSelect(id)` shape. Companions:
+  **`createSidebarLink(Link, hrefProp?)`** (`@godxjp/ui/layout`), a dependency-free adapter for any
+  router link (`createSidebarLink(Link, "to")` for React Router / TanStack Router,
+  `createSidebarLink(Link)` for Next.js) that falls back to an inert
+  `<a role="link" aria-disabled="true">` for a row with no destination — the explicit `role` is
+  required because an `<a>` without `href` has no implicit role, which would make the collapsed
+  rail's `aria-label` a prohibited attribute and leave the row unnamed; **`inertiaSidebarLink(Link)`**
+  (`@godxjp/ui/inertia`), the same adapter pre-bound to Inertia's `<Link href>` with still zero
+  dependency on `@inertiajs/react` (duck-typed `InertiaLinkLike`); and **`SidebarItem asChild`**, a
+  Radix-style element swap for hand-composed rows
+  (`<SidebarItem item={item} asChild><Link to="/x" /></SidebarItem>` — write NO children, the
+  library injects the composed icon, label and badge). New public types `SidebarLinkProp` /
+  `SidebarLinkComponentProp`, registered in `src/props/registry.ts`.
+- **`Sidebar` nav icon and label foregrounds are separately themeable (#228)** — the rail used to
+  paint one `hsl(var(--muted-foreground))` on `.sb-nav-item`, so the Lucide SVG and the label shared
+  the same low-contrast colour and a service could only match the canonical shell's darker 16px nav
+  icons with page-local CSS or by re-tinting every muted text globally. New component tokens in
+  `src/tokens/components/sidebar.css`, all declared `initial` with the role default at the call
+  site: `--sidebar-nav-item-foreground`, `--sidebar-nav-item-hover-foreground` and
+  `--sidebar-nav-item-disabled-foreground` for the row/label (top-level **and** sub rows), and
+  `--sidebar-nav-icon-foreground` plus `--sidebar-nav-icon-hover-foreground` /
+  `--sidebar-nav-icon-active-foreground` / `--sidebar-nav-icon-disabled-foreground` for `.sb-icon`
+  (expanded rows, group triggers and the collapsed rail). Every default is byte-identical to the
+  previous rendering (icons fall back to `currentColor` = the row colour; each state falls back to
+  the base icon knob), so setting `--sidebar-nav-icon-foreground: hsl(var(--foreground))` alone is
+  enough to get canonical icons beside muted labels. Colour only — icon size stays
+  `--sidebar-nav-icon-size` (16px) and row geometry stays `--sidebar-nav-item-height` (32px) /
+  `--sidebar-nav-item-gap` (10px) / `--sidebar-nav-item-padding-x`; the active row keeps
+  `--sidebar-item-active-background` / `--sidebar-item-active-foreground`.
+- **`Sheet` — responsive drawer / detail-panel contract (#215).** `SheetContent` gains
+  `responsive?: "auto" | "side" | "bottom"`. `"auto"` renders the desktop side panel above
+  `--sheet-responsive-breakpoint-width` and the mobile bottom sheet at/below it, so ONE `<Sheet>`
+  serves both viewports with no page-local `useMediaQuery`; the resolved presentation is published
+  as `data-side` (and the requested mode as `data-responsive`) on the panel. Focus trap, Escape and
+  focus restoration are unchanged — it is the same Radix Dialog in both presentations. New
+  **`useSheetResponsiveMode(responsive?)`** (`@godxjp/ui/feedback`) exposes the same decision to a
+  composite that must swap a desktop surface for a mobile sheet, returning `"side" | "bottom"` off
+  the one themeable breakpoint. New tokens **`--sheet-responsive-breakpoint-width`** (default
+  `48rem` / 768px — the library's canonical mobile line, matching `useIsMobile`; read off `:root` at
+  runtime because a CSS `@media` cannot resolve a custom property, accepting `px`/`rem`/`em`) and
+  **`--sheet-bottom-max-height`** (default `85dvh`, capping the responsive BOTTOM presentation only
+  — a plain `side="bottom"` sheet keeps its content-sized height), in the new tier file
+  `src/tokens/components/sheet.css`. New public types `SheetResponsiveProp` and `SheetPresentation`.
+- **`OrgSwitcherOrganization.badge` + `.badgeLabel` (#213)** — a status/plan slot rendered
+  end-aligned in the expanded trigger and in each menu row, hidden in the collapsed rail. Because
+  the trigger's accessible name comes from `labels.trigger`, a supplied `badgeLabel` is announced as
+  an `aria-describedby` description and the badge node itself is marked presentational (WCAG 1.1.1 /
+  1.4.1); `badgeLabel` is also a search keyword in the menu. Exposed as
+  `[data-slot="org-switcher-badge"]` for theming.
+- **AppShell rail-width, top-bar and mobile-nav knobs (#213, #211).** The docked rail and the
+  icon-only collapsed rail were hard-coded `grid-template-columns` literals, so a service designing
+  on a different grid (the recurring 255px request) had to fork `.app-root`; they are now
+  `--app-shell-sidebar-width` (default `16rem`) and `--app-shell-rail-width` (default `4rem`). The
+  bar's inline padding and slot gap were raw `--space-*` values and are now `--app-shell-bar-inset`
+  (`var(--space-4)`), `--app-shell-bar-inset-compact` (`var(--space-3)`, applied below the 900px
+  breakpoint) and `--app-shell-bar-gap` (`var(--space-3)`). `--app-shell-mobile-nav-inset` (default
+  `var(--space-1)`) owns the inline inset of the mobile drawer's scrollable nav body — a service
+  rendering a custom `mobileNav` node that wants the full sheet chrome inset sets
+  `--app-shell-mobile-nav-inset: var(--space-6)` once in its theme instead of patching
+  `[data-slot="sheet-body"]:has(.sb-root)` in app CSS. Rendering is unchanged.
+- **Standalone `<Topbar>` box knobs (#213)** — `--topbar-height` (`auto`), `--topbar-inset` (`0px`)
+  and `--topbar-gap` (`var(--space-2)`). The defaults are the quiet ones, so rendering is
+  byte-identical to before they existed (inside AppShell the `.app-topbar` grid row still owns the
+  height and inset). A service that mounts `Topbar` directly on a page now sizes it from the theme
+  instead of an app-local class. `--topbar-gap` is both the gap BETWEEN the start/center/end
+  clusters and the gap INSIDE each, so one knob re-rhythms the whole bar; the #226 shrink contract
+  (`start` clips, `center` yields first, `end` stays anchored inline-end) is untouched.
+- **Per-overlay scrim share knobs (#215)** — `--dialog-overlay-alpha` (60%),
+  `--sheet-overlay-alpha` (40%) and `--app-shell-mobile-nav-alpha` (40%): the share of the shared
+  `--overlay-background` each surface's backdrop uses, so a slide-in drawer keeps washing the page
+  more lightly than a modal dialog while a single token retints them all.
+- **AuthShell `preset` — a named flow MEASURE (#217, #220).** `"default" | "device-authorization" |
+"context-selection"` (default `"default"`) owns the auth card's max-width plus the desktop and
+  mobile page gutters through component tokens, so a consumer never overrides
+  `--auth-shell-card-max-width` (or forks an `.auth-shell--wide` class) to hit a canonical artboard.
+  `"device-authorization"` is a 380px card at 1440/1024 with a 5px inline page gutter at 390 (card
+  x=5px, width=380px) (#220); `"context-selection"` is a 25rem card on desktop/tablet, edge-to-edge
+  on mobile, plus a tokenized rhythm between the intro, the choice card and the trailing "remember"
+  row (#217). It is orthogonal to `variant` — presets are applied AFTER it, so
+  `variant="canonical" preset="device-authorization"` keeps the canonical control density and
+  heading size and only re-measures the page. Adds the public vocabulary type
+  **`AuthShellPresetProp`** (exported from `@godxjp/ui/layout`, registered in
+  `src/props/registry.ts` and the MCP prop-vocabulary catalog), the preset tokens
+  `--auth-shell-device-{card-max-width,main-padding,main-padding-mobile}` and
+  `--auth-shell-context-{card-max-width,main-padding,main-padding-mobile,card-stack-gap}`, and two
+  column knobs per rule #45: `--auth-shell-main-align` (block alignment of the auth column, default
+  `center`) and `--auth-shell-card-stack-gap` (gap between the card slot's direct sections, default
+  `0px` — quiet by default per rule #44; presets opt in). Evidence frames
+  `docs/layout/auth-shell-device.tsx` and `docs/layout/auth-shell-context.tsx` (the latter including
+  the `Card` + `CardContent flush` + `ListRow as="li"` organisation-choice composition) cover
+  1440×900 · 1024×900 · 390×844.
+- **`AppSettingPicker compact` (#217)** — boolean, default `false`. Re-tiers the trigger box to the
+  official `--control-height-sm` tier and drops the picker's owned per-kind width, so a LABELLED
+  trigger hugs its value. This is the supported auth/legal-footer locale switch
+  (`<AppSettingPicker kind="locale" appearance="labeled" compact />`) for when the square icon-only
+  default reads as a stray button and the full labelled trigger is too tall; no effect on
+  `appearance="inline"` (already chrome-less). Adds
+  `--app-setting-picker-compact-{control-height,padding-x,gap,font-size}`.
+- **`Logo wordmark` — the mark + wordmark LOCKUP in one element (#214).** Replaces the hand-rolled
+  `<span className="inline-flex items-center gap-2"><Logo/><Text/></span>` that every shell header
+  and auth brand bar was repeating (rules #45/#46). The lockup root takes `ref` / `className` /
+  `...props`; the mark becomes decorative and the wordmark text carries the accessible name, so the
+  pair is announced once (`label` overrides the lockup name when needed). Omitting `wordmark`
+  renders exactly the previous bare-mark markup — byte-identical, fully backward compatible. The
+  package still ships **no wordmark ARTWORK**: the wordmark is typeset in the design-system display
+  face, and a real logotype drops in later as an inline `<svg>` passed to `wordmark` with no API
+  change. New tokens
+  `--logo-wordmark-{gap,font-size-xs,font-size-sm,font-size-md,font-size-lg,font-weight,letter-spacing,font-family,color}`;
+  `--logo-wordmark-font-family` defaults at the call site to `--font-family-display` and
+  `--logo-wordmark-color` to `hsl(var(--foreground))`, or to the `--success` identity role on the
+  `mark="godx"` / `tone="success"` lockup — **never `--primary`**, so an action-colour re-theme can
+  never recolour the brand and a consumer needs zero page CSS for logo colour.
+- **`brand="dxs"` — THE canonical DXS preset (#214).** A new `AppBrand` / `APP_BRANDS` value
+  (`<AppProvider brand="dxs">` → `<html data-brand="dxs">`) that, unlike the per-vertical brand
+  tints, binds both the palette AND the canonical hosted-identity SURFACE contract, so every surface
+  matches the canonical artboards with no page CSS:
+  `--auth-shell-{control-height,heading-size,card-max-width,main-padding}` are re-pointed at the
+  `--auth-shell-canonical-*` measures (36px controls, 22.5rem card, 16px page inset, 15px below
+  30rem). It invents no colour and no geometry — the palette is the shipped GodX Navy ramp
+  (identical to `data-brand="brand"`) and every auth value is a `var()` reference to tokens already
+  declared in `tokens/components/shell.css`. Ships alongside **`src/theme/dxs.canonical.css`** for
+  stylesheet-only apps with no provider (`@import "@godxjp/ui/theme/dxs.canonical.css";` instead of
+  `@godxjp/ui/styles`), which mirrors the `data-brand="dxs"` block at `:root` and is pinned against
+  drift by `src/tokens/__tests__/dxs-canonical-theme.test.ts`. The `src/theme/` CSS tree was already
+  copied into `dist/` by `copy-styles.mjs` but had no entry in the export map, so no consumer could
+  import it — a **`"./theme/*": "./dist/theme/*"`** package export is now declared.
+- **`AuthFooterProp` / `AuthIdentityProp` are registered public types (#214)** — both moved out of
+  local `interface`s in the component files into the prop registry
+  (`src/props/components/layout.prop.ts` + `src/props/registry.ts`) and are exported from
+  `@godxjp/ui/layout` and `@godxjp/ui/props/components` (the `*Props` aliases are kept for
+  back-compat). Both now accept **`className`**.
+- **`DataTable` `error` / `denied` / `onRetry` (#216)** — the two lifecycle states the list-page
+  contract was missing. `error={isError}` renders a built-in localized destructive `EmptyState`
+  inside the table grid announced with `role="alert"` (plus a Retry button when `onRetry` is given);
+  `denied={status === 403}` renders a localized warning state announced politely with **no** retry,
+  because repeating a 403 cannot succeed. Either prop also accepts a node that replaces the built-in
+  copy. Precedence is `loading` > `denied` > `error` > `empty` > rows, so exactly one state shows
+  and a page never needs its own alert/forbidden block around the table.
+- **FilterBar / Toolbar `overflow="wrap" | "scroll"` (#216)** — the responsive overflow strategy.
+  `wrap` (default, unchanged) stacks below 640px then wraps onto extra rows; `scroll` keeps one
+  bounded row at ≥640px that scrolls inline with the clear-all action sticky at the inline end, so a
+  filter-heavy list page with long JA/EN/VI labels never grows a three-row strip that pushes the
+  table below the fold. Below 640px `scroll` still stacks — a 390px viewport never hides a filter
+  behind an invisible horizontal scroll. New token `--filter-bar-scroll-padding-y`
+  (`src/tokens/components/navigation.css`, default `var(--space-1)`) reserves the scrollbar gutter
+  so the inline scrollbar never overlaps the controls (rule #45; set `0` on overlay-scrollbar
+  platforms), and the new `FilterBarOverflowProp` vocabulary type is registered.
+- **FilterBarGroup / ToolbarGroup `controlId` (#216)** — when the group wraps a single control, its
+  visible caption is rendered as that control's real `<label htmlFor>`, so the filter is named by
+  the text the user can see (WCAG 2.5.3 label-in-name / 1.3.1). Without it the caption named only
+  the group wrapper and a bare `Select` under it was nameless to a screen reader (axe
+  `select-name`).
+- **Canonical settings-section composition (#216)** — `docs/showcase/settings-account-sections.tsx`
+  (identity · preference rows · billing handoff · danger zone), registered in the preview showcase
+  gallery and built entirely from existing primitives with **zero new components**, plus the MCP
+  pattern `settings-section-rows` (aliases `settings-section`, `settings-row`, `danger-zone`,
+  `billing-handoff`, `preferences-rows`, `account-identity`). Gate 0 verdict: COMPOSITION PATTERN
+  (fails C2/C3/C4/C7) — a danger zone is `Card accent="destructive"` + `ListRow` +
+  `AlertDialog challenge`, needing no new component and no new token.
+- **#216 browser verification at 1440 / 1024 / 390, and the demos it was missing.** The acceptance
+  matrix was driven in headless Chromium against the built preview, and three gaps it exposed are
+  now closed. `docs/data-display/badge.tsx` gains a **Billing lifecycle** card rendering
+  `trialing` / `past_due` / `incomplete` / `canceled` (filled + outline) — the keys whose missing
+  translations shipped as raw `status.*` text were previously demoed by nothing, so the regression
+  was invisible in the preview. `docs/data-display/data-table/index.tsx` gains the
+  `error` **without** `onRetry` case, so "Retry appears only when the consumer supplies it" is a
+  visible state and not just a prop note. `docs/showcase/settings-account-sections.tsx` label-language
+  Select now also drives the app locale (`useAppLocale().setLocale`), so the library's own `t()`
+  chrome — the canonical `StatusBadge` above all — follows the page instead of leaving an English
+  page wearing a Vietnamese status pill. New tests codify the measured behaviour so the next run
+  needs no browser: `badge-status-billing.test.tsx` (localized label + canonical tone for all four
+  billing keys in en/ja/vi, and a raw-`status.`-prefix guard), a `role="alert"`-is-an-inner-wrapper
+  assertion in `data-table-states.test.tsx`, and `filter-bar-overflow-geometry.test.ts` pinning the
+  CSS rules behind the scroll strip (nowrap + `overflow-x: auto` + non-shrinking groups + the
+  sticky inline-end clear-all, all gated at `min-width: 640px`).
+- **`ServiceLauncherCard` unavailable-state token hooks (#219)** — supplying `disabledReason` now
+  marks the tile `data-unavailable`, and the medallion reads two new role-mirror knobs,
+  `--card-service-launcher-unavailable-icon-background` and
+  `--card-service-launcher-unavailable-icon-foreground` (both declared `initial`, defaulting at the
+  call site to `--muted` / `--muted-foreground`). A service that must not launch no longer renders a
+  brand-live medallion, and a consumer never needs page-local CSS to dim one. `disabledReason`
+  remains purely descriptive — it never disables the action, which stays the consumer's `Button`
+  prop, so the component still infers no access state. Backed by
+  `service-launcher-card-responsive.test.tsx`, which pins the canonical 3 → 2 → 1 ladder to
+  `ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}` and its 40/48/64rem container breakpoints (so
+  the package, not the page, owns the grid tracks), the overflow contract for long JA/EN/VI titles
+  and unbreakable hostname runs, the dashed catalog-CTA surface, the 36px medallion's
+  `--control-height-lg` derivation, the role-mirror `initial` rule and tab order across a disabled
+  tile — plus `service-launcher-card.types.test.ts`, which pins the public export surface and
+  asserts the props carry no `href`/`entitlement`/`available`-style access field.
+- **Error surface (403 / 404 / 500 / 503) as a composition pattern (#221)** — the requested
+  `ErrorSurface` component FAILS the Framework-Component Test (C2/C3/C4), so `@godxjp/ui` ships the
+  missing geometry plus the canonical recipe instead of a page-shaped component: see
+  `docs/layout/error-surface/` (overview + `index.md` contract + four real screens —
+  `examples/application-403`, `application-404`, `system-500`, `system-503`) and the MCP
+  `error-pages` pattern (aliases `error-surface`, `403`, `404`, `500`, `503`, `exception-page`,
+  incl. the Inertia/SSR exception pages), which the `CenteredShell` and `EmptyState` catalog entries
+  now point at. The missing geometry is **`CenteredShell` `align`** (`"start" | "center"`, default
+  `"start"`): `align="center"` centres the content column in the `100dvh` shell, giving a
+  SYSTEM-level standalone surface (500 / 503 error page, maintenance notice) package-owned
+  viewport-centred geometry at 1440 / 1024 / 390 with no consumer `min-h-dvh`, flex CSS, media query
+  or `className`, while overflowing content still scrolls from the top so a long localized message
+  is never clipped. New tokens `--centered-shell-column-offset-block` (default `0`; `align="center"`
+  flips it to `auto` — quiet default per rule #44, so the top-aligned flowing page shape is
+  unchanged for every existing consumer) and `--empty-state-description-max-width` (default `28rem`,
+  previously hard-coded, so a service or locale retunes the JA/EN/VI copy measure without forking
+  `.ui-empty-state-description`), plus the `CenteredShellAlignProp` vocabulary type exported from
+  `@godxjp/ui/layout` and `@godxjp/ui/props`. Tests:
+  `src/components/layout/__tests__/error-surface-pattern.test.tsx` (shell preservation,
+  exactly-one-action, request-ID + `Intl` maintenance window in en/ja/vi, heading order, focus) and
+  `error-surface-pattern.a11y.test.tsx` (0 axe violations for all four statuses in both shells).
+- **`MasterDetail` `collapseBelow` / `detailId` and a tokenized stacking threshold (#223)** —
+  `collapseBelow` (`"sm" | "md" | "lg" | "xl" | false`) is the per-instance stacking threshold,
+  reusing the shared `BreakpointProp` vocabulary (`sm` 40rem · `md` 48rem · `lg` 64rem · `xl` 80rem;
+  `false` never stacks); omit it to inherit the theme token
+  **`--master-detail-collapse-below`** (default `40rem`), measured against the composition's own
+  inline size, so a service theme retunes the breakpoint once globally instead of forking the layout
+  CSS (rule #45). `detailId` names the detail region so master controls can point at it with
+  `aria-controls` and the app can move focus to the new detail after a selection. The MCP catalog
+  now documents `--master-detail-rail-{compact,standard}`, `--master-detail-gap` and
+  `--master-detail-collapse-below` (all previously missing) plus `rail` / `collapseBelow` /
+  `detailId` and the measured 1440 / 1024 / 390 geometry.
+- **`ListRow` `overflow` and `unread` (#224, #225).** `overflow` (`"truncate" | "wrap"`, default
+  `"truncate"`) is semantic control over how a title/description longer than the row resolves;
+  `wrap` renders multi-line text and applies `overflow-wrap: anywhere`, so an unbroken JA/EN/VI
+  token can no longer widen the row (#224). `unread` (boolean, optional) is semantic read/unread
+  state for notification rows, rendering a compact indicator dot in its own gutter with localized
+  `sr-only` text ("Unread"/"Read", never colour alone — WCAG 1.4.1) plus the tokenized unread
+  surface; omit the prop entirely for rows with no read state, and pass `false` for a read row so
+  its title keeps the same optical axis (#225). New i18n keys `dataDisplay.listRow.unread` /
+  `dataDisplay.listRow.read` in en/ja/vi, and new component tokens in
+  `src/tokens/components/list-row.css`:
+  `--list-row-body-min-width` (default `12rem` — the inline size the content column keeps before the
+  trailing actions wrap to their own line, clamped `min(…, 100%)` at the call site so a narrow
+  container is never widened by the knob), `--list-row-trailing-gap` (default `var(--space-2)`),
+  `--list-row-read-background` (`initial`; documented default `transparent`),
+  `--list-row-unread-background` (`initial`; documented default `hsl(var(--muted))` — `--muted`
+  rather than `--accent` keeps the xs muted description line at WCAG AA on the emphasized surface,
+  4.63:1 light / 5.47:1 dark vs 4.23:1 for `--accent`), `--list-row-indicator-color` (`initial`;
+  documented default `hsl(var(--primary))`) and `--list-row-indicator-size` (default
+  `var(--space-2)`). The three colour knobs are role mirrors: `initial` at `:root`, role default at
+  the call site.
+- **Preview contract ledger + CI gate (#163).** `preview/frame-coverage.ledger.json` now links every
+  public export and compound subcomponent (273) to its `/frame` route and declares 14 contract
+  dimensions per export — variants · tones · sizes · shapes · density · controlled/uncontrolled
+  ownership · disabled/read-only/loading/empty/error/success · async retry/cancel/offline ·
+  responsive · RTL · long/localized content · keyboard/focus · accessible name/description/error ·
+  reduced motion/forced colors/200% zoom/coarse touch. Every cell is exactly one of `covered` (an
+  executed case proves it), `untested` (**not a pass**) or `not-applicable` with a written reason;
+  the schema is `frame-coverage.ledger.schema.json`. `pnpm gen:frame-coverage-ledger`
+  (`scripts/gen-frame-coverage-ledger.mjs`) generates the ledger from the real public surface —
+  component barrels, `component-api-manifest.json` and `component-case-evidence.json` — never a
+  hand-list, with `--reset-baseline` re-minting the ratchet floor.
+  `pnpm check:frame-coverage-ledger` (`scripts/check-frame-coverage-ledger.mjs`, wired into
+  `check:frame-contracts`) fails for a public export with no frame, an unclassified dimension, a
+  hand-written verdict no evidence supports, a deleted or unwired frame-runtime gate, and a growing
+  geometry-overflow or axe baseline; strictness is **ratchet-based**, so the pre-existing UNTESTED
+  backlog is recorded as a baseline and only regression fails the build.
+  `mcp/src/data/frame-coverage.generated.ts` and the `get_frame_coverage` MCP tool expose it, and
+  every `get_component` response now ends with a coverage block naming the UNTESTED dimensions, so a
+  consuming agent can never mistake a happy-path example for a support claim.
+  `docs/FRAME-COVERAGE-LEDGER.md` documents the ledger, the two promotion routes and the ratchet.
+  The honest state at authoring time is 273 exports × 14 dimensions = 3822 cells: 6 covered · 2141
+  UNTESTED · 1675 reasoned N/A (0.2%) — authoring the frame cases remains an epic; this change only
+  makes the true state visible and non-regressible.
+- **Screen-reader evidence infrastructure (#171)** — evidence record schema v3 for real
+  VoiceOver/NVDA runs. `screen-reader-evidence.json` now encodes the seven owner cohorts named in
+  #171 (`landmarks-page-structure`, `native-form-controls`, `selection-composites`, `overlays`,
+  `navigation-composites`, `data-structures`, `live-async-feedback`), mapping 87 owners to exactly
+  one cohort each, plus the per-cohort `requiredPhases` an announcement transcript must cover. A
+  **reviewed not-applicable registry** (`policy.notApplicable`) records the attributed, reasoned
+  waiver (`reason` ≥ 40 chars, `reviewedBy`, `reviewedIn`, `reviewedAt`) required before a
+  static/decorative export may leave `screenReader: untested` as `not-applicable`.
+  `audit-evidence/screen-reader/` is the drop directory for human-recorded AT speech artifacts, and
+  `src/screen-reader-evidence.test.ts` pins the gate with 16 tests — including that the committed
+  ledger still reports `screenReader.pass === 0`. No export was promoted: producing the transcripts
+  requires a person driving VoiceOver on macOS and NVDA on Windows in `ja-JP` and `vi-VN`, and
+  nothing here fabricates or infers one.
+- **Font-bundle cascade regression test (#210)** — `src/styles/__tests__/font-bundle-cascade.test.ts`
+  flattens the real `@import` graph in source order and asserts the **winning** `:root`
+  `--font-sans-base` / `--font-sans-vi` declaration is the bundled M PLUS 2 stack (plus: `fonts.css`
+  is imported after `base.css`, both declarations stay unlayered, the `@fontsource` imports match
+  the documented faces, and `dist/styles/index.css` keeps the same order when a build is present).
+- **`pnpm check:release-plan` — no-network release-transition guard (#230).**
+  `scripts/check-release-command-plan.mjs` plans the next patch/minor/major release, asserts no
+  publish precedes any gate, and packs the **post-bump** manifests to prove both artifacts carry the
+  target version and compatibility fields. Wired into `.github/workflows/release-integrity.yml`,
+  whose existing packed-artifact check only ever saw the pre-bump manifests. `node
+scripts/release.mjs --metadata-plan` now also prints the ordered `commands` array alongside the
+  packed metadata.
 
 ### Changed
 
@@ -200,6 +599,125 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `AppSettingPicker` `appearance="labeled"` no longer forces `w-full` below `640px` — it hugs its
   content (`w-auto max-w-full`) on narrow screens and takes its per-kind fixed width from `sm` up, so
   it fits a topbar. Pass `className="w-full"` for a full-width form field (#165).
+- **BEHAVIOUR CHANGE — `MasterDetail` now ships the canonical fluid-list + fixed-detail-rail
+  composition (#223).** The first cut inverted the tracks: it pinned the MASTER to 300/320px and let
+  the detail run fluid, which cannot express the 1fr/320px composition the Teams screen (SCR-110)
+  asks for. A new controlled-vocabulary prop **`rail` (`"master" | "detail"`, default `"detail"`)**
+  picks which region keeps the fixed track, so the DEFAULT track order is inverted relative to the
+  previous behaviour; `rail="master"` restores the leading navigator rail. `master` stays first in
+  DOM order either way, so the stacked (mobile) order is always list-then-detail. Changing the
+  default is safe: `MasterDetail` has never been published (the `18.4.0` tarball predates it, see
+  #229).
+- **`MasterDetail`'s collapse breakpoint is a real token instead of a hard-coded `40rem` (#223).** A
+  media/container query CONDITION cannot read a `var()`, so the responsive decision moved off
+  `@container master-detail (min-width: 40rem)` and onto a flex-basis threshold
+  (`calc((var(--master-detail-collapse-below) - 100%) * 999)`), where a `var()` DOES resolve. The
+  semantics are unchanged — the threshold is measured against the composition's OWN inline size,
+  never the viewport — but rule #45 now holds: a theme retunes it once globally and `collapseBelow`
+  overrides it per instance. The component no longer wraps itself in a `container-type: inline-size`
+  scope element, and the block is physical-property free (RTL flips with the writing direction).
+  `MasterDetail` also wires the selection semantics it can honestly own: selection and keyboard
+  behaviour stay with the caller's controls (only the caller knows whether the master is a listbox,
+  a tablist or toggle buttons), but the detail region now takes `detailId` and carries
+  `tabIndex={-1}`.
+- **BEHAVIOUR CHANGE — `OrgSwitcher responsive="auto"` now flips popover → bottom Sheet at
+  `--sheet-responsive-breakpoint-width` (768px default) instead of a hard-coded
+  `(max-width: 390px)` (#215, #213).** Behaviour is unchanged at the acceptance viewports (1440/1024
+  = popover, 390 = sheet), but between 391px and 768px the switcher now prefers the focus-trapped
+  bottom sheet over a 16rem popover. The threshold is themeable for the first time;
+  `--org-switcher-sheet-max-height` remains authoritative for that surface. `SheetContent` itself
+  defaults to `responsive="side"`, so existing usage — including the AppShell mobile nav drawer,
+  which must stay a leading-edge drawer at 390px — is byte-for-byte unaffected.
+- **`Sidebar.renderItem` is deprecated in favour of `linkComponent` / `asChild` (#213).**
+  `renderItem` handed the consumer a className plus active state and left the row CONTENT to them,
+  so a `<Link>{item.label}</Link>` legitimately dropped every icon and badge — the reported
+  production regression. It is still fully supported and still takes precedence over
+  `linkComponent`, so upgrading is never a surprise. `SidebarRenderItemProp` now carries
+  **`children`** (the library-composed row content), so an existing consumer that spreads `rowProps`
+  onto its element gets the canonical row (icon + label + badge) back with no code change. The
+  internal class names `sb-icon` / `sb-label` / `sb-badge` are NOT a public contract and no longer
+  appear in any library doc or test as consumer-authored markup. Collapsed-flyout entries now render
+  through the shared row composition too, so a submenu child's `badge` appears in the flyout and
+  disabled children expose `aria-disabled`.
+- **`ServiceLauncherCard` renders `disabledReason` above the action, as prose (#219).** The reason
+  previously sat AFTER the launch button and inherited the mono metadata treatment. A disabled
+  control announces nothing about _why_, so the explanation must precede it in DOM order (WCAG 2.2 ·
+  1.3.2), and a localized JA/VI sentence must not be set in monospace. `metadata` (hostname · plan)
+  remains the only mono line, driven by `--card-service-launcher-metadata-*`; the reason now uses
+  the description prose knobs. The MCP catalog is corrected alongside it: every
+  `--card-service-launcher-*` token was being documented with StatCard's medallion comment (the
+  generator attributes the nearest preceding CSS comment), so the block is now commented per knob,
+  and the entry documents that `ResponsiveGrid` owns the 3 → 2 → 1 layout, that `metadata` is
+  machine identifiers only, and that the component exposes no entitlement/URL prop.
+- **`Topbar` slots clip with `overflow: clip`, not `hidden` (#226).** `.ui-topbar-start` /
+  `.ui-topbar-center` / `.ui-topbar-end` each clip their own overflow, so an over-long label is cut
+  inside its cluster instead of spilling over a sibling. `clip` is deliberate: an `overflow: hidden`
+  box is still a scroll container, so focusing a clipped control would scroll the slot and shove its
+  leading content out of view. `overflow-clip-margin: var(--focus-ring-width)` keeps the focus ring
+  of an edge control paintable (WCAG 2.4.11 / 2.4.13) — no new token, it reads the existing knob.
+- **`ChartFrame` (the internal chart chrome) gained `size`, `footer` and an optional `height`
+  (#218).** `height` is now optional so a CSS-drawn chart can size its plot from a token tier
+  (`size` → `data-size` → `--*-plot-height`) instead of an inline pixel box, and `footer` renders
+  below the plot but OUTSIDE the `role="img"` canvas so interactive footer content stays reachable.
+  A `ref` is forwarded to the `<figure>`. The recharts-backed `LineChart` / `BarChart` / `AreaChart`
+  / `PieChart` still pass a measured `height` and are unchanged.
+- **`AuthFooter` keys its items by slot name instead of the array index (#214)** — toggling the
+  optional `locale` slot no longer re-keys the following items and remounts the consumer's real link
+  or locale control. Each item also carries
+  `data-slot="auth-legal-footer-{product|terms|privacy|locale}"`.
+- **Role-mirror fix for the identity mark (#214)** — `--logo-success-background`,
+  `--logo-success-foreground` and `--logo-godx-color` are now declared `initial` at `:root` with the
+  role default at the CALL SITE (`hsl(var(--logo-godx-color, var(--success)))`), per docs/TOKENS.md
+  · "Role-mirror knobs MUST be `initial`". Same rendered default; a scoped `.dark` / `[data-tenant]`
+  override of `--success` now actually reaches the identity mark instead of freezing at the `:root`
+  value.
+- `AuthShell`'s `main` now reads `justify-content: var(--auth-shell-main-align)` instead of a
+  literal `center` (same rendered default), and `scripts/check-token-tiers.mjs` accepts `align` as a
+  component-token property suffix and registers the `app-setting-picker` prefix under the
+  `navigation` token file (#217, #220).
+- **MCP catalog accuracy across the shell surfaces (#214, #217, #220).** `AuthShell` now documents
+  `variant`, `preset`, `density` and `className` (previously only its three slots); `Logo` documents
+  `wordmark` plus the already-shipping `mark` (`"glyph" | "godx"`, the canonical GoDX identity mark)
+  and `tone` — their absence from the catalog is why consumers believed the identity mark was not
+  exposed; `AppSettingPicker`'s `appearance` union is corrected to include `"inline"` and its
+  kind-dependent default is spelled out; `AuthFooter` and `AuthIdentity` document `className`, their
+  registered public types and their token knobs; `AppProvider.brand` documents the `"dxs"` value and
+  the theme-file entry point. `mcp/src/data/tokens.ts` gains the `--logo-godx-*` /
+  `--logo-wordmark-*` entries and a `data-brand="dxs"` preset entry; `src/test/theme-globals.ts`
+  mirrors the new `dxs` palette for the story/preview toolbar; `docs/general/logo.tsx` gains a
+  "Wordmark lockup" card (GoDX lockup, sized lockup, boxed-glyph lockup, `label` override).
+- `.ui-centered-shell-column` reads `--centered-shell-column-offset-block` and
+  `.ui-empty-state-description` reads `--empty-state-description-max-width`; both defaults preserve
+  the previous rendering byte-for-byte (#221).
+- **Documented the load-bearing CSS import order (#210).** `styles/fonts` MUST come **after**
+  `styles/base` on the per-layer setup (same specificity → later import wins). Stated in
+  `src/styles/index.css`, `src/styles/fonts.css`, `src/styles/base.css`, `src/tokens/foundation.css`,
+  `README.md` and `docs/CUSTOMER-THEMING.md`, and shown in the per-layer import examples.
+- **Corrected the bundled-face docs to match the code (#210).** The token docs claimed the opt-in
+  `@godxjp/ui/styles/fonts` fills `--font-sans-base` with bundled **Noto Sans JP**; it actually sets
+  **M PLUS 2** as the primary face (including the Vietnamese coverage) with **Noto Sans JP** as the
+  CJK fallback. Fixed in `mcp/src/data/tokens.ts` (`--font-sans-base` and
+  `--font-sans-{ja,ko,vi,zh-hans,zh-hant}`), `README.md` and `docs/CUSTOMER-THEMING.md`, which also
+  now note the **v16 → v18 bundle change** (v16: Noto Sans JP + Montserrat; v18: M PLUS 2 + Noto
+  Sans JP) so a consumer whose spec named the v16 faces can notice.
+- `scripts/check-frame-coverage.mjs` accepts `--allow-missing-frames` (the default behaviour and its
+  stdout contract are unchanged, so the #171 screen-reader gate is unaffected) and now reports
+  `hasFrame` / `missingFrames`; `scripts/frame-coverage.mjs` reads the v2 ledger, rolling the 14
+  dimensions up to the nine FRAME-COVERAGE-STANDARD axes, so `docs/FRAME-COVERAGE-REPORT.md` shows
+  reasoned N/A instead of a uniform blank (#163).
+- **The screen-reader evidence gate got materially stricter (#171).**
+  `scripts/check-screen-reader-evidence.mjs` now additionally rejects: a `screenReader: pass` whose
+  owner is not cohort-mapped; a record without `entryCommand` or a structured `steps[]` transcript
+  (`phase` + `command` + `announced`); a passing record whose phases do not cover its cohort's
+  `requiredPhases` (this is what makes error/help/required/invalid mandatory for form owners and
+  loading/success/error/recovery mandatory for live/async owners); an unknown journey phase; a
+  ledger `not-applicable` without a reviewed waiver; an orphan or pre-approved waiver; and any
+  attempt to waive an interactive cohort owner. Baseline cohorts and their phases are hard-coded so
+  policy can be extended but never weakened. `screen-reader-evidence.schema.json` is bumped to
+  `schemaVersion: 3` with `policy.cohorts`, `policy.notApplicable`, `records[].entryCommand`,
+  `records[].steps[]` and a shared `$defs.journeyPhase` enum, and
+  `docs/SCREEN-READER-EVIDENCE.md` adds the cohort registry table, the reviewed-N/A rules, the v3
+  record example and a "where the human contributor puts the run" checklist.
 
 ### Fixed
 
@@ -244,6 +762,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   overflow (hidden scrollbar, still swipeable/keyboard-reachable) instead of forcing its container
   wider or hiding overflow content. Orientation-gated (`data-[orientation=horizontal]:…`) so the
   vertical side-rail layout is unaffected.
+- **`Tabs` / `TabsList` — the active tab can no longer be scrolled out of view by a responsive
+  resize (#204).** The horizontal tab strip owns its overflow scroll (#175) but used to keep (or
+  shift) its internal scroll offset across a 1440 → 1024 → 390 resize or route re-render, stranding
+  the ACTIVE — typically FIRST — trigger completely outside the visible strip while it still
+  reported `data-state="active"` / `aria-selected="true"`. `TabsList` now observes its own size
+  (`ResizeObserver`) and its triggers' `data-state` (`MutationObserver`) and re-pins the trigger
+  that must stay reachable with `scrollIntoView({ block: "nearest", inline: "nearest" })`. The
+  correction only runs when the target is not already fully inside the scrollport, so it never
+  fights a deliberate manual/touch scroll, a click, or arrow-key roving focus; under
+  `activationMode="manual"` the FOCUSED trigger wins over the selected one so keyboard users are
+  never stranded. Resize corrections are instant and `prefers-reduced-motion: reduce` downgrades
+  selection-change corrections to an instant jump. Works for the first and last trigger, in RTL, and
+  on the vertical rail — `inline: "nearest"` plus physical-rect geometry means there is no direction
+  branch. A forwarded `ref` on `TabsList` is composed (not replaced), so object and callback refs
+  keep receiving the tablist node.
 - **FormField a11y contract no longer silently dropped by custom controls (#164).** Every
   data-entry control now accepts and FORWARDS the injected accessible name (`aria-labelledby`),
   description (`aria-describedby`) and validation (`aria-errormessage` / `aria-invalid` /
@@ -259,6 +792,95 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `Transfer` are `role="group"` named by the FormField label, with the error folded into
     `aria-describedby` (widget-only `aria-invalid`/`aria-errormessage` are invalid on a group per
     ARIA 1.2). `Upload` forwards the label/description onto its native `<input type="file">`.
+- **BEHAVIOUR CHANGE — the all-in-one `@godxjp/ui/styles` entry now actually applies the bundled
+  fonts (#210).** The entry imported `styles/fonts.css` **before** `styles/base.css` →
+  `tokens/base.css` → `tokens/foundation.css`. Both declare `--font-sans-base` on `:root` unlayered
+  at identical specificity (0,1,0), so foundation's font-agnostic system stack always won and the
+  bundled-font opt-in was permanently dead — every all-in-one consumer downloaded ~800 KB of
+  `@font-face` (74% of the dev stylesheet, 85% of the production gzip) that could never render.
+  `fonts.css` is now imported **after** the token layers, so an all-in-one consumer's type will
+  visibly change to the bundled M PLUS 2 face. This is the unfinished half of #130.
+- **AppShell's mobile drawer no longer double-pads the Sidebar (#211).** Below `lg` the drawer's
+  `SheetBody` applied the generic 24px sheet chrome inset (`--sheet-pad-x`) on top of the `Sidebar`'s
+  own 8px `--sidebar-nav-scroll-padding`, so every nav row sat ~32px from the drawer edge — on a
+  ~293px drawer that crams the nav into a ~228px column. AppShell now renders `mobileNav` in a Sheet
+  body whose inline inset is the new `--app-shell-mobile-nav-inset` token (default `var(--space-1)`
+  = 4px), so the nav owns its own inset and stays edge-to-edge. The body's full-bleed
+  `-mx-[var(--sheet-pad-x)]` pull-out and its vertical scroll padding are unchanged.
+- **BEHAVIOUR CHANGE — one AppShell breakpoint, and the footer survives on mobile (#213).** A
+  duplicate `@media (max-width: 768px)` block restructured `.app-root` a second time, disagreeing
+  with the canonical 900px rule: between 768 and 900 the sidebar was hidden while the grid still
+  reserved a sidebar track. It also dropped the `"footer"` grid area and set
+  `.app-footer { display: none }` — silently deleting whatever a consumer passed to `AppShell`'s
+  `footer` slot on a phone — and re-declared the grid rows with a `3rem` literal that overrode
+  `--app-shell-bar-height` below 768px only. The shell now restructures at exactly one breakpoint
+  (900px / 56.25rem, matching `max-[900px]:inline-flex` on the drawer trigger in `app-shell.tsx`),
+  and the footer row and the bar-height token hold at every width — so a consumer-supplied footer is
+  now VISIBLE on mobile where it previously vanished. The remaining 768px rule is topbar chip/search
+  density only and no longer touches `.app-root`.
+- **`--overlay-background` actually works now (#215).** It was documented (and released in v17) as
+  "the single backdrop colour shared by EVERY overlay", but nothing consumed it — Dialog, Sheet and
+  the AppShell mobile drawer each carried a private literal, and `TwoFactorSetup` re-stated
+  `rgb(0 0 0 / .3)` at a higher specificity, so setting the token had **zero effect anywhere**. The
+  three per-overlay knobs (`--dialog-overlay-background`, `--sheet-overlay-background`,
+  `--app-shell-mobile-nav-background`) are now declared `initial` at `:root` with the default
+  resolved at the CALL SITE as a share of `--overlay-background`, per the role-mirror rule in
+  `docs/TOKENS.md` — so a scoped `[data-tenant]` / `.dark` override reaches the portaled overlay
+  instead of freezing at `:root`. Every default is byte-identical (dialog `0.3`, sheet + drawer
+  `0.2` black), and setting a `*-overlay-background` knob directly still wins outright. (Reaching a
+  _portaled_ overlay under a `[data-tenant]` scope still requires the tenant attribute on the portal
+  container, as documented in `docs/CUSTOMER-THEMING.md`.)
+- **Overlay animations honour `prefers-reduced-motion` (#215, WCAG 2.3.3 / 2.2.2).** Dialog,
+  AlertDialog, CommandPalette, Sheet and Popover enter/exit animations (fade + zoom + slide) were
+  ungated. They are now killed under `prefers-reduced-motion: reduce` — the overlay still appears
+  and disappears instantly, so the open/closed state stays unambiguous; only the motion is removed.
+  The gate is deliberately **unlayered**: Tailwind v4 emits `animate-in` / `slide-in-from-*` into
+  `@layer utilities`, which beats any rule inside `@layer components` regardless of specificity, so
+  a gate written in the components layer is dead code. The pre-existing AppShell mobile-drawer gate
+  had exactly that bug and is fixed the same way.
+- **`Sidebar`'s collapsed rail and submenu group children never received `renderItem` at all
+  (#213)** — a consumer's router `<Link>` silently reverted to a `<button>` + `onSelect` there. Both
+  now take the router link via `linkComponent`.
+- **`Sidebar` no longer crashes on an icon-less nav item (#228).** `SidebarItem` rendered `item.icon`
+  unguarded, so untyped/API-driven data without an `icon` threw
+  `Element type is invalid… got: undefined` and took down the whole shell (all four row shapes: leaf
+  button, `href` anchor, group trigger, collapsed rail). The icon slot is now always rendered and
+  only fills in when an icon is supplied, so the row keeps its 32px height, 10px icon↔label gap and
+  label column. `icon` remains **required** in `SidebarItemProp` — this is a runtime safety net, not
+  an API loosening.
+- **`Topbar` — explicit shrink contract, no horizontal document overflow (#226).** Intrinsic-width
+  slot content (a long tenant/brand string in `start`, a fixed-width search trigger in `center`) no
+  longer pushes the `end` cluster past the bar and out of the viewport, and no longer leaks a
+  horizontal document scroll. `.ui-topbar` gains `max-width: 100%` so the bar never exceeds its
+  `AppShell` grid/flex allocation; `.ui-topbar-start` is pinned to `flex: 0 1 auto` and absorbs the
+  overflow while `.ui-topbar-center` (`flex-basis: 0`) yields its whole box first; `.ui-topbar-end`
+  is now `flex: 0 0 auto` so the locale picker / user menu keep their natural width anchored
+  inline-end. Verified in a headless browser at 390 / 1024 / 1440 px (LTR + RTL):
+  `document.documentElement.scrollWidth === clientWidth` and the last `end` control stays fully
+  inside the bar at every width; the 1440 px desktop composition and the 390 px drawer composition
+  are unchanged.
+- **`ListRow` no longer forces page-root overflow (#224)** with a long title plus two trailing
+  Buttons at responsive viewports. The row is now `min-inline-size: 0` + `flex-wrap: wrap`, the
+  content column shrinks to `min(var(--list-row-body-min-width), 100%)` (logical `min-inline-size`,
+  replacing the physical `min-width: 0`), and the trailing slot wraps (`flex-wrap: wrap`,
+  `max-inline-size: 100%`, `gap: var(--list-row-trailing-gap)`) instead of pushing the row wider
+  than its container. Keyboard order and visible focus are unchanged (DOM order, no tabindex).
+  Consumers must no longer add one-off `min-width`/wrapping CSS.
+- **`StatusBadge` billing statuses had no localized label (#216).** `trialing`, `past_due`,
+  `incomplete` and `canceled` are in the shared `STATUS_MAP` but were missing from `en`/`ja`/`vi`,
+  so `<StatusBadge status="trialing" />` rendered the raw i18n key. Labels added in all three
+  locales.
+- **Release: no publish can outrun the coordinated bump or an MCP gate (#230).**
+  `scripts/release.mjs` is now a thin executor — the entire side-effecting command sequence is
+  produced by pure, exportable planners in `scripts/release-core.mjs` (`planReleaseCommands` /
+  `releaseCommandForStep` / `assertReleaseCommandPlan` / `assertPreflightOrder`), and the step
+  machine itself runs through `createReleaseRuntime`, whose only effects are two injected primitives
+  (`run` / `capture`). The coordinated target version plus **both** compatibility fields
+  (`godxUiMcp`, `godxUiCompatibility`) are written first, then `verify:release`, MCP
+  install/build/test, lockstep and the packed manifests of **both** tarballs are verified at that
+  target version — every one of them before the first `npm publish`. A publish descriptor is refused
+  outright unless it names a tarball produced by the preflight pack, and `npm version` can no longer
+  appear in a plan at all.
 
 ## [17.0.0] - 2026-07-12
 

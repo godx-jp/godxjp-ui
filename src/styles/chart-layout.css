@@ -37,3 +37,100 @@
   color: hsl(var(--popover-foreground));
   font-size: var(--font-size-xs);
 }
+
+/* Content that sits BELOW the plot (the activity footer slot) — outside the
+ * `role="img"` canvas so links/buttons in it stay reachable and announced. */
+.ui-chart-footer {
+  margin-block-start: var(--chart-trend-footer-gap);
+  font-size: var(--font-size-xs);
+  color: hsl(var(--muted-foreground));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * CompactBarTrend — a dependency-free (no recharts) vertical bar trend.
+ * ALL geometry resolves from `--chart-trend-*` tokens; the only inline value is
+ * the DATUM itself (`--chart-trend-bar-value`, a 0..1 ratio), so a consumer never
+ * writes a height calculation or a colour of its own.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+/* `size` → the active plot-height tier. Set on the <figure> as `data-size`. */
+.ui-chart-trend[data-size="xs"] {
+  --chart-trend-plot-height: var(--chart-trend-plot-height-xs);
+}
+
+.ui-chart-trend[data-size="sm"] {
+  --chart-trend-plot-height: var(--chart-trend-plot-height-sm);
+}
+
+.ui-chart-trend[data-size="md"] {
+  --chart-trend-plot-height: var(--chart-trend-plot-height-md);
+}
+
+.ui-chart-trend[data-size="lg"] {
+  --chart-trend-plot-height: var(--chart-trend-plot-height-lg);
+}
+
+.ui-chart-trend-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--chart-trend-tick-gap);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.ui-chart-trend-plot {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--chart-trend-bar-gap);
+  block-size: var(--chart-trend-plot-height);
+  inline-size: 100%;
+  min-inline-size: 0;
+  /* Quiet by default (rule #44) — a service opts into a baseline rule with
+   * `--chart-trend-baseline-border: 1px solid hsl(var(--border));`. */
+  border-block-end: var(--chart-trend-baseline-border, none);
+}
+
+.ui-chart-trend-column {
+  display: flex;
+  flex: 1 1 0;
+  align-items: flex-end;
+  justify-content: center;
+  min-inline-size: 0;
+  block-size: 100%;
+}
+
+.ui-chart-trend-bar {
+  inline-size: 100%;
+  max-inline-size: var(--chart-trend-bar-max-width);
+  /* Data-driven: the 0..1 ratio arrives as an inline custom property. */
+  block-size: max(var(--chart-trend-bar-min-height), calc(var(--chart-trend-bar-value, 0) * 100%));
+  border-start-start-radius: var(--chart-trend-bar-radius);
+  border-start-end-radius: var(--chart-trend-bar-radius);
+  background: var(
+    --chart-trend-bar-background,
+    hsl(var(--muted-foreground) / var(--chart-trend-bar-background-alpha))
+  );
+}
+
+.ui-chart-trend-bar[data-emphasized="true"] {
+  background: var(--chart-trend-bar-emphasis-background, hsl(var(--primary)));
+}
+
+.ui-chart-trend-ticks {
+  display: flex;
+  gap: var(--chart-trend-bar-gap);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.ui-chart-trend-tick {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  overflow: hidden;
+  font-size: var(--chart-trend-tick-font-size);
+  line-height: var(--line-height-tight);
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

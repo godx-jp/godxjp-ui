@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Check, ChevronsUpDown, Loader2, RotateCcw } from "lucide-react";
 
-import { useMediaQuery } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
 import type { OrgSwitcherOrganization, OrgSwitcherProp } from "../../props/components/layout.prop";
 import { Popover, PopoverContent, PopoverTrigger } from "../data-display/popover";
@@ -13,7 +12,14 @@ import {
   CommandItem,
   CommandList,
 } from "../data-entry/command";
-import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from "../feedback/sheet";
+import {
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetHeader,
+  SheetTrigger,
+  useSheetResponsiveMode,
+} from "../feedback/sheet";
 import { Button } from "../general/button";
 
 export type {
@@ -37,32 +43,68 @@ type OrgSwitcherTriggerProps = React.ComponentPropsWithoutRef<typeof Button> & {
   label: string;
 };
 
-const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTriggerProps>(
-  ({ organization, collapsed, disabled, label, ...props }, ref) => (
-    <Button
-      ref={ref}
-      type="button"
-      variant="ghost"
-      className="ui-org-switcher-trigger"
-      data-collapsed={collapsed ? "true" : undefined}
-      disabled={disabled}
-      aria-label={label}
-      {...props}
+/**
+ * End-aligned status/plan slot. The node itself is treated as PRESENTATIONAL whenever the consumer
+ * supplied `badgeLabel`, so the localized text is announced exactly once (WCAG 1.1.1) instead of
+ * being duplicated by the badge's own glyph/text.
+ */
+function OrganizationBadge({ organization }: { organization: OrgSwitcherOrganization }) {
+  if (organization.badge == null) return null;
+
+  return (
+    <span
+      data-slot="org-switcher-badge"
+      className="shrink-0"
+      aria-hidden={organization.badgeLabel != null ? "true" : undefined}
     >
-      <OrganizationMark organization={organization} />
-      {!collapsed ? (
-        <>
-          <span className="ui-org-switcher-current">
-            <span className="ui-org-switcher-name">{organization?.name ?? label}</span>
-            {organization?.meta != null ? (
-              <span className="ui-org-switcher-meta">{organization.meta}</span>
+      {organization.badge}
+    </span>
+  );
+}
+
+const OrgSwitcherTrigger = React.forwardRef<HTMLButtonElement, OrgSwitcherTriggerProps>(
+  ({ organization, collapsed, disabled, label, ...props }, ref) => {
+    const reactId = React.useId();
+    // The trigger's accessible name comes from `aria-label`, which SUPPRESSES descendant text — so a
+    // meaningful badge is announced as a DESCRIPTION (APG: name then description) rather than lost.
+    const badgeDescriptionId =
+      !collapsed && organization?.badge != null && organization.badgeLabel != null
+        ? `${reactId}-badge`
+        : undefined;
+
+    return (
+      <Button
+        ref={ref}
+        type="button"
+        variant="ghost"
+        className="ui-org-switcher-trigger"
+        data-collapsed={collapsed ? "true" : undefined}
+        disabled={disabled}
+        aria-label={label}
+        aria-describedby={badgeDescriptionId}
+        {...props}
+      >
+        <OrganizationMark organization={organization} />
+        {!collapsed ? (
+          <>
+            <span className="ui-org-switcher-current">
+              <span className="ui-org-switcher-name">{organization?.name ?? label}</span>
+              {organization?.meta != null ? (
+                <span className="ui-org-switcher-meta">{organization.meta}</span>
+              ) : null}
+            </span>
+            {organization != null ? <OrganizationBadge organization={organization} /> : null}
+            {badgeDescriptionId != null ? (
+              <span id={badgeDescriptionId} className="sr-only">
+                {organization?.badgeLabel}
+              </span>
             ) : null}
-          </span>
-          <ChevronsUpDown className="ui-org-switcher-chevron" aria-hidden="true" />
-        </>
-      ) : null}
-    </Button>
-  ),
+            <ChevronsUpDown className="ui-org-switcher-chevron" aria-hidden="true" />
+          </>
+        ) : null}
+      </Button>
+    );
+  },
 );
 OrgSwitcherTrigger.displayName = "OrgSwitcherTrigger";
 
@@ -116,7 +158,11 @@ function OrgSwitcherPanel({
               <CommandItem
                 key={organization.id}
                 value={`${organization.name} ${String(organization.meta ?? "")}`}
-                keywords={[organization.id]}
+                keywords={
+                  organization.badgeLabel != null
+                    ? [organization.id, organization.badgeLabel]
+                    : [organization.id]
+                }
                 disabled={organization.disabled}
                 onSelect={() => {
                   onValueChange?.(organization.id);
@@ -130,6 +176,10 @@ function OrgSwitcherPanel({
                     <span className="ui-org-switcher-meta">{organization.meta}</span>
                   ) : null}
                 </span>
+                <OrganizationBadge organization={organization} />
+                {organization.badge != null && organization.badgeLabel != null ? (
+                  <span className="sr-only">{organization.badgeLabel}</span>
+                ) : null}
                 {selected ? (
                   <>
                     <Check className="ui-org-switcher-check" aria-hidden="true" />
@@ -146,8 +196,9 @@ function OrgSwitcherPanel({
 }
 
 /**
- * Organization switcher with one stable shell contract: canonical trigger geometry, searchable
- * desktop popover, a focus-trapped bottom Sheet at 390px, and explicit loading/empty/error states.
+ * Organization switcher with one stable shell contract: canonical trigger geometry, an optional
+ * status badge, a searchable desktop popover, a focus-trapped bottom Sheet at/below the shared
+ * `--sheet-responsive-breakpoint-width`, and explicit loading/empty/error states.
  */
 export function OrgSwitcher({
   organizations,
@@ -177,8 +228,11 @@ export function OrgSwitcher({
     },
     [controlled, onOpenChange],
   );
-  const mobile = useMediaQuery("(max-width: 390px)");
-  const sheet = responsive === "sheet" || (responsive === "auto" && mobile);
+  // The popover→bottom-sheet switch is the SHARED Sheet contract, not a page-local media query:
+  // one themeable knob (--sheet-responsive-breakpoint-width) moves the drawer line for every
+  // overlay in the system at once (rule #45).
+  const compactViewport = useSheetResponsiveMode("auto") === "bottom";
+  const sheet = responsive === "sheet" || (responsive === "auto" && compactViewport);
   const current = organizations.find((organization) => organization.id === value);
   const fallbackName = current?.name ?? labels.title;
   const triggerLabel = labels.trigger(fallbackName);
@@ -211,7 +265,18 @@ export function OrgSwitcher({
       <div className={cn("ui-org-switcher", className)} data-collapsed={collapsed || undefined}>
         <Sheet open={resolvedOpen} onOpenChange={setOpen}>
           <SheetTrigger asChild>{trigger}</SheetTrigger>
-          <SheetContent side="bottom" className="ui-org-switcher-sheet">
+          <SheetContent
+            responsive="bottom"
+            className="ui-org-switcher-sheet"
+            // Keep the published --org-switcher-sheet-max-height knob authoritative for THIS
+            // surface: the responsive bottom sheet is capped by --sheet-bottom-max-height, so alias
+            // it here rather than letting the generic cap silently shadow the component token.
+            style={
+              {
+                "--sheet-bottom-max-height": "var(--org-switcher-sheet-max-height)",
+              } as React.CSSProperties
+            }
+          >
             <SheetHeader title={labels.title} />
             <SheetBody>{panel}</SheetBody>
           </SheetContent>

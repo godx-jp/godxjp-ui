@@ -22,6 +22,12 @@
   --master-detail-rail-compact: 18.75rem; /* 300px */
   --master-detail-rail-standard: 20rem; /* 320px */
   --master-detail-gap: var(--space-stack-md);
+  /* The collapse threshold: MasterDetail keeps its two-track split while the composition's OWN
+   * inline size is at least this wide, and stacks (master then detail) below it. A service theme
+   * retunes it once globally; the `collapseBelow` prop overrides it per instance (rule #45).
+   * This is a real knob — the layout reads it through the flex-basis threshold, NOT a media
+   * query, precisely so a `var()` can drive it (see src/styles/layout.css · .ui-master-detail). */
+  --master-detail-collapse-below: 40rem; /* 640px — the `sm` step */
 
   --space-page-active-x: var(--space-page-x);
   --space-page-active-y: var(--space-page-y);
@@ -31,8 +37,18 @@
   --space-section-compact: var(--space-4);
 
   /* Modal scrim — the single backdrop colour shared by EVERY overlay (Dialog, AlertDialog, Sheet,
-   * Drawer). Themeable (rule #44) so a service tints the wash to its brand once, e.g. a navy
-   * `--overlay-background: rgb(12 26 49 / .55)`, instead of forking each overlay. */
+   * Drawer, AppShell mobile nav). Themeable (rule #44) so a service tints the wash to its brand
+   * once, e.g. a navy `--overlay-background: rgb(12 26 49 / .55)`, instead of forking each overlay.
+   *
+   * HOW IT REACHES AN OVERLAY (gh#215 — it previously reached NOTHING): each surface declares its
+   * own knob `initial` and resolves a SHARE of this colour at the call site,
+   * `var(--dialog-overlay-background, color-mix(in srgb, var(--overlay-background)
+   * var(--dialog-overlay-alpha), transparent))`. That keeps the calibrated per-surface depth — a
+   * slide-in Sheet washes the page more lightly (40%) than a modal Dialog (60%) — while ONE
+   * override here retints every backdrop. Per docs/TOKENS.md the knobs must stay `initial`: a
+   * `:root` binding would freeze and a scoped `[data-tenant]`/`.dark` override of this token would
+   * never reach the overlay. Overlays are portaled, so a tenant scope must also sit on the portal
+   * container (see docs/CUSTOMER-THEMING.md). */
   --overlay-background: rgb(0 0 0 / 0.5);
 
   /* Full-bleed rule under the PageContainer header. OFF by default — the title/body

@@ -101,6 +101,15 @@ export type AppSettingPickerProp = {
    * e.g. a labeled locale row inside a settings form (`appearance="labeled"`).
    */
   appearance?: AppSettingPickerAppearanceProp;
+  /**
+   * Compact presentation (gh#217) — re-tiers the trigger box to `--control-height-sm` and drops the
+   * picker's owned per-kind width so a LABELLED trigger hugs its value. Use it for an auth/legal
+   * footer locale switch (`kind="locale" appearance="labeled" compact`), where the square icon-only
+   * default reads as a stray button and the full labelled trigger is too tall. All geometry is
+   * tokenized (`--app-setting-picker-compact-*`). No effect on `appearance="inline"`, which is
+   * already chrome-less. Default `false`.
+   */
+  compact?: boolean;
   className?: ClassNameProp;
   disabled?: DisabledProp;
   id?: IdProp;

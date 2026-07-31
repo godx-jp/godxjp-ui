@@ -13,6 +13,12 @@ const apiManifest = JSON.parse(
 const componentEvidence = JSON.parse(
   fs.readFileSync(path.join(root, "component-case-evidence.json"), "utf8"),
 );
+// `--allow-missing-frames` keeps discovery running when an owner has no docs frame yet (an
+// export landing mid-flight). Rows are still emitted, with `frameFile: null` + `hasFrame:false`,
+// and the owner is listed under `missingFrames`. The DEFAULT behaviour is unchanged — a missing
+// frame is a hard error — because scripts/check-screen-reader-evidence.mjs (issue #171) and
+// scripts/check-frame-coverage-ledger.mjs (issue #163) both consume this stdout contract.
+const allowMissingFrames = process.argv.includes("--allow-missing-frames");
 const allowed = new Set(["pass", "untested", "not-applicable"]);
 const dimensions = [
   "isolated",
@@ -35,6 +41,7 @@ for (const d of dimensions) {
 }
 const excluded = new Set(config.excludeExports ?? []);
 const rows = [];
+const missingFrames = [];
 
 function exactPropCoverage(name) {
   const contract = apiManifest.components?.[name];
@@ -112,9 +119,13 @@ for (const dir of fs.readdirSync(base, { withFileTypes: true }).filter((e) => e.
     const key = `${dir.name}/${owner}`;
     const stem = config.sourceAliases?.[key] ?? builtinAliases[key] ?? key;
     const file = path.join(root, "docs", `${stem}.tsx`);
-    if (!fs.existsSync(file)) {
-      errors.push(`${key}: missing docs frame ${path.relative(root, file)}`);
-      continue;
+    const hasFrame = fs.existsSync(file);
+    if (!hasFrame) {
+      if (!allowMissingFrames) {
+        errors.push(`${key}: missing docs frame ${path.relative(root, file)}`);
+        continue;
+      }
+      missingFrames.push({ owner: key, expected: path.relative(root, file), exports: names });
     }
     for (const name of names) {
       const states = {};
@@ -140,7 +151,8 @@ for (const dir of fs.readdirSync(base, { withFileTypes: true }).filter((e) => e.
         export: name,
         owner: key,
         frameId: stem.replaceAll("/", "-"),
-        frameFile: path.relative(root, file),
+        frameFile: hasFrame ? path.relative(root, file) : null,
+        hasFrame,
         dimensions: states,
       });
     }
@@ -167,7 +179,8 @@ console.log(
     {
       schemaVersion: 1,
       exports: rows.length,
-      frames: new Set(rows.map((r) => r.frameId)).size,
+      frames: new Set(rows.filter((r) => r.hasFrame).map((r) => r.frameId)).size,
+      missingFrames,
       totals,
       entries: rows,
     },

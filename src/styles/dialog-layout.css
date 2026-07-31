@@ -21,12 +21,22 @@
     border-top: 1px solid hsl(var(--border));
   }
 
+  /* Scrim = a SHARE of the ONE shared semantic scrim (--overlay-background), resolved here at the
+   * call site so a scoped [data-tenant]/.dark override of --overlay-background actually reaches the
+   * portaled overlay (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). Setting
+   * --dialog-overlay-background / --sheet-overlay-background still wins outright. */
   .ui-dialog-overlay {
-    background-color: var(--dialog-overlay-background);
+    background-color: var(
+      --dialog-overlay-background,
+      color-mix(in srgb, var(--overlay-background) var(--dialog-overlay-alpha), transparent)
+    );
   }
 
   [data-slot="sheet-overlay"] {
-    background-color: var(--sheet-overlay-background);
+    background-color: var(
+      --sheet-overlay-background,
+      color-mix(in srgb, var(--overlay-background) var(--sheet-overlay-alpha), transparent)
+    );
   }
 
   .ui-dialog-overlay {
@@ -141,9 +151,9 @@
     max-width: 27.5rem;
   }
 
-  [data-slot="dialog-overlay"].ui-two-factor-setup-overlay {
-    background-color: rgb(0 0 0 / 0.3);
-  }
+  /* No scrim override here: the two-factor dialog's backdrop is the SHARED overlay scrim
+   * (.ui-dialog-overlay above). The old literal `rgb(0 0 0 / 0.3)` re-stated the dialog default at a
+   * higher specificity and silently opted this one dialog out of --overlay-background theming. */
 
   .ui-two-factor-setup-enrollment,
   .ui-two-factor-setup-recovery {
@@ -200,5 +210,31 @@
 
   [data-slot="dialog-header"]:not([data-tone="default"]) [data-slot="dialog-description"] {
     color: hsl(var(--foreground));
+  }
+}
+
+/*
+ * REDUCED MOTION — every overlay enter/exit animation is gated (WCAG 2.3.3 Animation from
+ * Interactions / 2.2.2 Pause-Stop-Hide). Dialog, AlertDialog, CommandPalette (a Dialog), Sheet /
+ * mobile drawer and Popover all animate via Tailwind `data-[state]:animate-in|animate-out`
+ * utilities plus a `transition`; the content additionally zooms/slides, which is exactly the
+ * vestibular trigger the media query exists for. The overlay still fades in/out INSTANTLY, so the
+ * open/closed state is never ambiguous — only the motion is removed, never the affordance.
+ *
+ * DELIBERATELY UNLAYERED. Tailwind v4 emits `animate-in` / `slide-in-from-*` into `@layer
+ * utilities`, which beats ANY rule inside `@layer components` regardless of specificity — a gate
+ * written inside the components layer above would be dead code. Unlayered author declarations win
+ * over every layered one, so this block (and only this block) actually stops the animation.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-content"],
+  [data-slot="sheet-overlay"],
+  [data-slot="sheet-content"],
+  [data-slot="popover-content"],
+  .ui-dialog-overlay,
+  .ui-command-palette {
+    animation: none;
+    transition: none;
   }
 }

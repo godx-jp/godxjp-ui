@@ -62,7 +62,7 @@ npx @godxjp/ui-mcp
 }
 ```
 
-Restart Claude Code. The 21 tools appear under `mcp__godx_ui__*`.
+Restart Claude Code. The 25 tools appear under `mcp__godx_ui__*`.
 
 ### Codex CLI
 
@@ -145,7 +145,7 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ---
 
-## Tools (24)
+## Tools (25)
 
 > **Building an app with @godxjp/ui?** Start with `list_consumer_skills` / `route_consumer_task`
 > (the Consumer namespace below) — they hide library-maintenance material. The data tools
@@ -166,14 +166,15 @@ Total: ~3 KB. Versus naive "give me everything about @godxjp/ui" = 50+ KB.
 
 ### Drill-down (medium responses — after discovery)
 
-| Tool                | Returns                           | Size            |
-| ------------------- | --------------------------------- | --------------- |
-| `get_skill_section` | ONE section of ONE skill          | ~2 KB           |
-| `get_component`     | Full API for one component        | ~2 KB           |
-| `get_pattern`       | Full code snippet for one pattern | ~3 KB           |
-| `get_rule`          | One cardinal rule (or all 43)     | ~500 B / ~10 KB |
-| `get_vocab`         | One vocab type (or all 14)        | ~500 B / ~3 KB  |
-| `get_tokens`        | Tokens (optionally by category)   | ~5 KB           |
+| Tool                 | Returns                                                                                                                                       | Size            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `get_skill_section`  | ONE section of ONE skill                                                                                                                      | ~2 KB           |
+| `get_component`      | Full API for one component                                                                                                                    | ~2 KB           |
+| `get_pattern`        | Full code snippet for one pattern                                                                                                             | ~3 KB           |
+| `get_rule`           | One cardinal rule (or all 43)                                                                                                                 | ~500 B / ~10 KB |
+| `get_vocab`          | One vocab type (or all 14)                                                                                                                    | ~500 B / ~3 KB  |
+| `get_tokens`         | Tokens (optionally by category)                                                                                                               | ~5 KB           |
+| `get_frame_coverage` | Frame-contract coverage for one export (or the totals). Reports `UNTESTED` explicitly — never infers support from a happy-path example (#163) | ~1 KB           |
 
 ### Task routing (smallest — pointer only)
 

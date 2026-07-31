@@ -67,3 +67,12 @@ jobs:
             if(errs.length){console.error("✗ packed artifacts drift:\n  "+errs.join("\n  "));process.exit(1);}
             console.log(`✓ packed artifacts in lockstep — @godxjp/ui@${u.version} ↔ @godxjp/ui-mcp@${m.version}`);
           '
+
+      # 5) Step 4 only ever packs the PRE-bump manifests, so it cannot see the transition where the
+      #    bug lived (issue #230): `npm version` + immediate `npm publish` shipping a UI tarball that
+      #    still declared the previous godxUiMcp, with MCP failures found after the bytes were
+      #    immutable. This plans the NEXT release for every bump kind and asserts, offline, that no
+      #    publish precedes verify:release / MCP install+build+test / lockstep / npm auth, and that
+      #    both POST-bump packed manifests already carry the coordinated target metadata.
+      - name: Release command plan + post-bump packed manifests
+        run: node scripts/check-release-command-plan.mjs

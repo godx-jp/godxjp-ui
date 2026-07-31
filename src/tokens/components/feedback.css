@@ -2,10 +2,18 @@
 
 :root {
   --sheet-width-default: 22.5rem;
-  --sheet-overlay-background: rgb(0 0 0 / 0.2);
+  /* Overlay scrims — `initial` so the shared semantic --overlay-background re-resolves at the CALL
+   * SITE under a scoped [data-tenant]/.dark theme (a :root binding to it freezes at :root and a
+   * scoped override never reaches the overlay). Each surface takes a SHARE of that one scrim rather
+   * than a private literal, so a service retints every backdrop with one --overlay-background while
+   * the calibrated per-surface depth survives: a slide-in Sheet washes the page more lightly than a
+   * modal Dialog. Defaults resolve to rgb(0 0 0 / 0.2) (sheet) and rgb(0 0 0 / 0.3) (dialog). */
+  --sheet-overlay-background: initial;
+  --sheet-overlay-alpha: 40%;
   --dialog-width-default: 32rem;
   --dialog-viewport-inset: 1.5rem;
-  --dialog-overlay-background: rgb(0 0 0 / 0.3);
+  --dialog-overlay-background: initial;
+  --dialog-overlay-alpha: 60%;
   /* Dialog inset defaults to the shared global chrome tokens (override --space-chrome-* once for the
    * whole system, or --dialog-space-x/-y for dialogs only). */
   --dialog-space-x: var(--space-chrome-x);
@@ -27,6 +35,10 @@
   --dialog-content-glow: 0 0 0 0 transparent;
   --empty-state-space-y: var(--space-10);
   --empty-state-space-x: var(--space-6);
+  /* Measure of the description paragraph (rule #45 — a service-tunable constant gets a knob).
+   * 28rem reads ~65 Latin characters per line; a JA/VI service that needs a shorter or longer
+   * measure for its own copy retunes this once instead of forking `.ui-empty-state-description`. */
+  --empty-state-description-max-width: 28rem;
   --empty-state-section-space-y: var(--space-6);
   --empty-state-section-space-x: var(--space-4);
   --empty-state-compact-space-y: var(--space-3);

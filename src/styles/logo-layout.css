@@ -39,9 +39,11 @@
     font-size: var(--logo-font-size-lg);
   }
 
+  /* Identity fills — role defaults live HERE (call site), not on :root, so a scoped `.dark` /
+   * `[data-tenant]` override of --success re-resolves (docs/TOKENS.md · role-mirror knobs). */
   .ui-logo[data-tone="success"] {
-    background: hsl(var(--logo-success-background));
-    color: hsl(var(--logo-success-foreground));
+    background: hsl(var(--logo-success-background, var(--success)));
+    color: hsl(var(--logo-success-foreground, var(--success-foreground)));
   }
 
   .ui-logo[data-mark="godx"] {
@@ -49,12 +51,53 @@
     height: var(--logo-godx-size);
     border-radius: 0;
     background: transparent;
-    color: hsl(var(--logo-godx-color));
+    color: hsl(var(--logo-godx-color, var(--success)));
   }
 
   .ui-logo[data-mark="godx"] [data-slot="logo-artwork"] {
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  /*
+   * LOCKUP — `<Logo wordmark="…" />`: the mark plus the readable product name as ONE element, so a
+   * shell header / auth brand bar never hand-rolls `inline-flex items-center gap-2` around a Logo
+   * and a `<Text>` (rule #46). Every knob is a token (rule #45); the wordmark colour defaults to
+   * the IDENTITY role and never reads --primary, so re-theming the action colour cannot recolour
+   * the brand — no consumer page CSS is required for the logo colour (gh#214).
+   */
+  .ui-logo-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--logo-wordmark-gap);
+  }
+
+  .ui-logo-lockup .ui-logo-wordmark {
+    font-family: var(--logo-wordmark-font-family, var(--font-family-display));
+    font-size: var(--logo-wordmark-font-size-md);
+    font-weight: var(--logo-wordmark-font-weight);
+    letter-spacing: var(--logo-wordmark-letter-spacing);
+    line-height: 1;
+    color: hsl(var(--logo-wordmark-color, var(--foreground)));
+    white-space: nowrap;
+  }
+
+  .ui-logo-lockup[data-size="xs"] .ui-logo-wordmark {
+    font-size: var(--logo-wordmark-font-size-xs);
+  }
+
+  .ui-logo-lockup[data-size="sm"] .ui-logo-wordmark {
+    font-size: var(--logo-wordmark-font-size-sm);
+  }
+
+  .ui-logo-lockup[data-size="lg"] .ui-logo-wordmark {
+    font-size: var(--logo-wordmark-font-size-lg);
+  }
+
+  /* Canonical brand-green GoDX wordmark — the identity role, independent of --primary. */
+  .ui-logo-lockup[data-mark="godx"] .ui-logo-wordmark,
+  .ui-logo-lockup[data-tone="success"] .ui-logo-wordmark {
+    color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--success))));
   }
 }

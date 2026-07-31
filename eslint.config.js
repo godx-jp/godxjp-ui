@@ -12,7 +12,11 @@ export default tseslint.config(
   // output, not shippable library source, so excluded from lint like `preview`/`.design`/`.ux-audit`.
   {
     ignores: [
-      "dist/**",
+      // `**/dist/**`, not just `dist/**`: the mcp/ workspace builds to `mcp/dist`, and a bundled
+      // artifact is not source we hold to the lint rules. Linting it added 20 phantom errors the
+      // moment anyone ran `cd mcp && pnpm build`, which made `pnpm lint` depend on whether a
+      // gitignored build happened to be present.
+      "**/dist/**",
       "examples/**",
       "preview/**",
       "node_modules/**",

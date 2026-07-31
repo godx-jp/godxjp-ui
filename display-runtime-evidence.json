@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-07-18T08:44:42.400Z",
+  "auditedAt": "2026-07-30T12:36:11.303Z",
   "widths": [
     320,
     375,
@@ -227,7 +227,6 @@
     },
     {
       "id": "data-display-data-table",
-      "verdict": "pass",
       "widths": [
         320,
         375,
@@ -245,7 +244,8 @@
       "evidence": [
         "artifacts/display-runtime/data-display-data-table-320.png",
         "artifacts/display-runtime/data-display-data-table-1920.png"
-      ]
+      ],
+      "verdict": "pass"
     },
     {
       "id": "general-button",

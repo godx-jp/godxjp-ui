@@ -449,20 +449,46 @@
 }
 
 @layer components {
-  /* ListRow — single-line entity row (leading · title/description · trailing) for short lists
-   * inside a flush CardContent. Rows separate with a quiet divider; the last row leaves the
-   * Card border to close the list. Logical properties throughout (RTL-safe). */
+  /* ListRow — single-line entity row (indicator · leading · title/description · trailing) for
+   * short lists inside a flush CardContent. Rows separate with a quiet divider; the last row
+   * leaves the Card border to close the list. Logical properties throughout (RTL-safe).
+   *
+   * Overflow contract (#224): the row itself may shrink (min-inline-size: 0) and WRAPS, the
+   * content column keeps only `min(--list-row-body-min-width, 100%)` — so it can always shrink
+   * below its intrinsic width and truncate/wrap — and the trailing actions wrap onto their own
+   * line instead of pushing the row (and the page root) wider than the viewport. */
   [data-slot="list-row"] {
     display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--list-row-gap);
     padding: var(--list-row-padding-y) var(--list-row-padding-x);
+    background: var(--list-row-read-background, transparent);
+  }
+  /* Unread emphasis surface — paired with the indicator dot + its sr-only text, never colour
+   * alone (WCAG 1.4.1). */
+  [data-slot="list-row"][data-unread] {
+    background: var(--list-row-unread-background, hsl(var(--muted)));
   }
   [data-slot="list-row"][data-align="start"] {
     align-items: flex-start;
   }
   [data-slot="list-row"]:not(:last-child) {
     border-block-end: var(--list-row-border, 1px solid hsl(var(--border)));
+  }
+  [data-slot="list-row-indicator"] {
+    position: relative;
+    display: block;
+    flex-shrink: 0;
+    inline-size: var(--list-row-indicator-size);
+    block-size: var(--list-row-indicator-size);
+    border-radius: var(--radius-pill);
+    /* Read rows keep the gutter (titles stay on one optical axis) but paint nothing. */
+    background: transparent;
+  }
+  [data-slot="list-row"][data-unread] [data-slot="list-row-indicator"] {
+    background: hsl(var(--list-row-indicator-color, var(--primary)));
   }
   [data-slot="list-row-leading"] {
     display: inline-flex;
@@ -473,15 +499,23 @@
   }
   [data-slot="list-row-body"] {
     display: flex;
-    min-width: 0;
-    flex: 1 1 auto;
+    min-inline-size: min(var(--list-row-body-min-width, 12rem), 100%);
+    flex: 1 1 var(--list-row-body-min-width, 12rem);
     flex-direction: column;
+  }
+  /* `overflow="wrap"` — the title/description wrap instead of truncating; `anywhere` also lowers
+   * the min-content width so an unbroken token (URL, long JA/VI compound) can't widen the row. */
+  [data-slot="list-row"][data-overflow="wrap"] [data-slot="list-row-body"] {
+    overflow-wrap: anywhere;
   }
   [data-slot="list-row-trailing"] {
     display: inline-flex;
+    max-inline-size: 100%;
     flex-shrink: 0;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2);
+    justify-content: flex-end;
+    gap: var(--list-row-trailing-gap, var(--space-2));
     margin-inline-start: auto;
   }
 

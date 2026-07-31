@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
+import { Link } from "react-router-dom";
 import {
   AppShell,
+  createSidebarLink,
   Flex,
   PageContainer,
   Sidebar,
@@ -9,7 +11,7 @@ import {
   SidebarSection,
   Topbar,
 } from "@godxjp/ui/layout";
-import type { SidebarItemData, SidebarSectionProp } from "@godxjp/ui/layout";
+import type { SidebarItemData, SidebarRenderItemProp, SidebarSectionProp } from "@godxjp/ui/layout";
 import {
   Card,
   CardContent,
@@ -42,7 +44,8 @@ import {
 /**
  * Sidebar · data-driven vertical nav rail.
  * Focus: every public prop · sections, groups with children[], product chip,
- * brand header, renderItem escape hatch, children composition, footer, active
+ * brand header, linkComponent (router links) + SidebarItem asChild, the
+ * deprecated renderItem escape hatch, children composition, footer, active
  * item, collapsed icon-only mode.
  * Composed only from real @godxjp/ui components inside an AppShell frame.
  */
@@ -107,13 +110,61 @@ const FAVOURITE_SECTIONS: SidebarSectionProp[] = [
 const FAVOURITE_IDS = new Set(["overview", "members"]);
 
 /**
- * renderItem · returns a SINGLE interactive element (here an `<a>` standing in for a router
- * `<Link>`). The Sidebar merges the row styling + active state onto it via Slot, so the anchor IS
- * the row and the ONLY interactive element — no nested `<button>` (gh#165). The star affix is a
- * decorative, non-interactive descendant.
+ * gh#228 · nav row and nav icon read SEPARATE colour tokens. A service normally sets these once in
+ * its theme.css (`:root` or a scoped `[data-tenant] .app-sidebar`); here they are scoped to one
+ * demo frame so the default rail can sit next to the themed one. Icons only — geometry (16px icon,
+ * 32px row, 10px gap) is untouched.
  */
-function renderFavouriteRow(item: SidebarItemData, onSelect: (id: string) => void) {
-  const Icon = item.icon;
+const CANONICAL_NAV_TOKENS = {
+  "--sidebar-nav-icon-foreground": "hsl(var(--foreground))",
+  "--sidebar-nav-icon-active-foreground": "hsl(var(--primary))",
+} as CSSProperties;
+
+/**
+ * gh#213 · THE router-link contract. `createSidebarLink` adapts any router `Link` — React Router /
+ * TanStack use `to`, Inertia and Next.js use `href` (the default, and
+ * `inertiaSidebarLink(Link)` from `@godxjp/ui/inertia` is the same thing pre-bound). The consumer
+ * writes NO row markup: the Sidebar composes the icon slot, the label, the badge, the active state
+ * and the collapsed rail, and hands them to the link as `children`.
+ */
+const RouterLink = createSidebarLink(Link, "to");
+
+/** Router-driven rows — each carries an `href`, which is what the link adapter navigates to. */
+const ROUTED_SECTIONS: SidebarSectionProp[] = [
+  {
+    label: "ナビゲーション",
+    items: [
+      { id: "overview", label: "概要", icon: LayoutDashboard, href: "/overview" },
+      {
+        id: "reports",
+        label: "レポート",
+        icon: FileText,
+        href: "/reports",
+        badge: <Badge tone="info">5</Badge>,
+      },
+      {
+        id: "ledger",
+        label: "元帳",
+        icon: BookOpen,
+        children: [{ id: "journal-2", label: "仕訳入力", icon: Receipt, href: "/journal" }],
+      },
+      { id: "members", label: "メンバー", icon: Users, href: "/members", disabled: true },
+    ],
+  },
+];
+
+/**
+ * renderItem · DEPRECATED (gh#213) — kept working for existing consumers. It leaves the row CONTENT
+ * to the caller, which is how a `<Link>{item.label}</Link>` silently dropped every icon in
+ * production. `rowProps` now carries the library-composed `children`, so spreading it (or rendering
+ * `rowProps.children`) restores the canonical row; the star is a decorative, non-interactive affix.
+ * Prefer `linkComponent` (above) or `SidebarItem asChild` for new code.
+ */
+function renderFavouriteRow(
+  item: SidebarItemData,
+  rowProps: SidebarRenderItemProp,
+  onSelect: (id: string) => void,
+) {
   return (
     <a
       href={`#${item.id}`}
@@ -122,10 +173,8 @@ function renderFavouriteRow(item: SidebarItemData, onSelect: (id: string) => voi
         onSelect(item.id);
       }}
     >
-      <span className="sb-icon">
-        <Icon aria-hidden="true" />
-      </span>
-      <span className="sb-label">{item.label}</span>
+      {/* The icon + label come from the LIBRARY, not from hand-written .sb-icon / .sb-label spans. */}
+      {rowProps.children}
       {FAVOURITE_IDS.has(item.id) ? (
         <Star className="text-attention size-4 shrink-0 fill-current" aria-label="お気に入り" />
       ) : null}
@@ -134,9 +183,9 @@ function renderFavouriteRow(item: SidebarItemData, onSelect: (id: string) => voi
 }
 
 const COMPOSED_ITEMS: SidebarItemData[] = [
-  { id: "starred-1", label: "月次決算", icon: Star },
-  { id: "starred-2", label: "売掛金一覧", icon: Receipt },
-  { id: "starred-3", label: "取引先マスタ", icon: Building2 },
+  { id: "starred-1", label: "月次決算", icon: Star, href: "/close" },
+  { id: "starred-2", label: "売掛金一覧", icon: Receipt, href: "/receivables" },
+  { id: "starred-3", label: "取引先マスタ", icon: Building2, href: "/partners" },
 ];
 
 export default function Demo() {
@@ -144,7 +193,9 @@ export default function Demo() {
   const [collapsed, setCollapsed] = useState(false);
   const [brandActiveId, setBrandActiveId] = useState("projects");
   const [renderActiveId, setRenderActiveId] = useState("overview");
+  const [routedActiveId, setRoutedActiveId] = useState("reports");
   const [composedActiveId, setComposedActiveId] = useState("starred-1");
+  const [tokenActiveId, setTokenActiveId] = useState("overview");
 
   const sidebar = (
     <Sidebar
@@ -271,13 +322,58 @@ export default function Demo() {
             </CardContent>
           </Card>
 
-          {/* renderItem prop · per-item custom render escape hatch (here: a favourite-star affix). */}
+          {/* linkComponent prop · THE router-link contract (gh#213) — library composes the row. */}
           <Card>
             <CardHeader>
-              <CardTitle level={2}>renderItem プロップ</CardTitle>
+              <CardTitle level={2}>linkComponent プロップ（ルーターリンク）</CardTitle>
               <CardDescription>
-                各行のレンダリングを差し替えるエスケープハッチ。 ここではラベルの右に
-                お気に入りスターのアフィックスを描画しています。
+                フレームワークのルーター Link を渡すだけ。行の中身（アイコン・ラベル・バッジ・
+                アクティブ状態・折りたたみレール）は ライブラリ側が組み立てて children
+                として渡すので、 利用側が行マークアップを再実装することはありません。React Router /
+                TanStack は createSidebarLink(Link, &quot;to&quot;)、Inertia / Next.js は
+                createSidebarLink(Link)（または @godxjp/ui/inertia の
+                inertiaSidebarLink(Link)）を使います。 左は展開、右は折りたたみレールです。
+                どちらも同じ Link のままアイコンが残ります。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Flex gap="md" wrap>
+                <div className="bg-card flex h-72 w-64 flex-col overflow-hidden rounded-lg border">
+                  <Sidebar
+                    ariaLabel="ルーターリンク行のナビゲーション"
+                    activeId={routedActiveId}
+                    onSelect={setRoutedActiveId}
+                    sections={ROUTED_SECTIONS}
+                    linkComponent={RouterLink}
+                    aria-label="linkComponent プロップ例のナビゲーション（展開）"
+                  />
+                </div>
+                <div className="bg-card flex h-72 w-16 flex-col overflow-hidden rounded-lg border">
+                  <Sidebar
+                    ariaLabel="折りたたみレールのルーターリンク"
+                    activeId={routedActiveId}
+                    onSelect={setRoutedActiveId}
+                    sections={ROUTED_SECTIONS}
+                    linkComponent={RouterLink}
+                    collapsed
+                    aria-label="linkComponent プロップ例のナビゲーション（折りたたみ）"
+                  />
+                </div>
+              </Flex>
+            </CardContent>
+          </Card>
+
+          {/* renderItem prop · DEPRECATED escape hatch (gh#213) — kept for back-compat. */}
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>renderItem プロップ（非推奨）</CardTitle>
+              <CardDescription>
+                行の中身まで利用側が書く旧エスケープハッチ。これが原因で
+                <code>&lt;Link&gt;{"{item.label}"}&lt;/Link&gt;</code>
+                がアイコンを全て落とす回帰が発生しました（gh#213）。 現在は rowProps.children
+                にライブラリ製の行内容が入るので、それを描画すれば 正規の行が復元されます（ここでは
+                その右にお気に入りスターを添えています）。 新規コードでは linkComponent か
+                SidebarItem asChild を使ってください。
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -287,7 +383,9 @@ export default function Demo() {
                   activeId={renderActiveId}
                   onSelect={setRenderActiveId}
                   sections={FAVOURITE_SECTIONS}
-                  renderItem={(item) => renderFavouriteRow(item, setRenderActiveId)}
+                  renderItem={(item, rowProps) =>
+                    renderFavouriteRow(item, rowProps, setRenderActiveId)
+                  }
                   aria-label="renderItem プロップ例のナビゲーション"
                 />
               </div>
@@ -300,28 +398,94 @@ export default function Demo() {
               <CardTitle level={2}>children プロップ（ナビ全体の差し替え）</CardTitle>
               <CardDescription>
                 sections を使わず SidebarSection / SidebarItem を直接組み立てて、
-                ナビゲーション全体を 自前で構成します。
+                ナビゲーション全体を 自前で構成します。右は同じ構成に SidebarItem の asChild
+                を足したものです。子として ルーターの Link
+                を「要素だけ」渡すと、アイコン・ラベル・バッジは ライブラリが差し込みます（gh#213。
+                children は書きません）。
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
-                <Sidebar
-                  ariaLabel="構成可能な例のナビゲーション"
-                  activeId={composedActiveId}
-                  onSelect={setComposedActiveId}
+              <Flex gap="md" wrap>
+                <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
+                  <Sidebar
+                    ariaLabel="構成可能な例のナビゲーション"
+                    activeId={composedActiveId}
+                    onSelect={setComposedActiveId}
+                  >
+                    <SidebarSection label="お気に入り">
+                      {COMPOSED_ITEMS.map((item) => (
+                        <SidebarItem
+                          key={item.id}
+                          item={item}
+                          active={composedActiveId === item.id}
+                          onActivate={setComposedActiveId}
+                        />
+                      ))}
+                    </SidebarSection>
+                  </Sidebar>
+                </div>
+                <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
+                  <Sidebar
+                    ariaLabel="asChild 例のナビゲーション"
+                    activeId={composedActiveId}
+                    onSelect={setComposedActiveId}
+                    aria-label="SidebarItem asChild 例のナビゲーション"
+                  >
+                    <SidebarSection label="お気に入り（asChild）">
+                      {COMPOSED_ITEMS.map((item) => (
+                        <SidebarItem
+                          key={item.id}
+                          item={item}
+                          active={composedActiveId === item.id}
+                          onActivate={setComposedActiveId}
+                          asChild
+                        >
+                          <Link to={item.href ?? "/"} />
+                        </SidebarItem>
+                      ))}
+                    </SidebarSection>
+                  </Sidebar>
+                </div>
+              </Flex>
+            </CardContent>
+          </Card>
+
+          {/* Nav colour tokens · icon and label are themed SEPARATELY (gh#228). */}
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>ナビの配色トークン（アイコンとラベルを別々に）</CardTitle>
+              <CardDescription>
+                行（ラベル）は --sidebar-nav-item-foreground、アイコンは
+                --sidebar-nav-icon-foreground を読みます。 既定値は従来どおり（どちらも
+                --muted-foreground）。 テーマ側でアイコンだけ濃くすれば、muted
+                テキスト全体の色を変えずに キャンバス基準の 16px
+                アイコンに揃えられます（ホバー/アクティブ/無効の各状態にも 対応トークンあり）。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Flex gap="md" wrap>
+                <div className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border">
+                  <Sidebar
+                    ariaLabel="既定の配色のナビゲーション"
+                    activeId={tokenActiveId}
+                    onSelect={setTokenActiveId}
+                    sections={FAVOURITE_SECTIONS}
+                    aria-label="既定の配色（アイコンは行の色を継承）"
+                  />
+                </div>
+                <div
+                  className="bg-card flex h-64 w-64 flex-col overflow-hidden rounded-lg border"
+                  style={CANONICAL_NAV_TOKENS}
                 >
-                  <SidebarSection label="お気に入り">
-                    {COMPOSED_ITEMS.map((item) => (
-                      <SidebarItem
-                        key={item.id}
-                        item={item}
-                        active={composedActiveId === item.id}
-                        onActivate={setComposedActiveId}
-                      />
-                    ))}
-                  </SidebarSection>
-                </Sidebar>
-              </div>
+                  <Sidebar
+                    ariaLabel="アイコンを濃くしたナビゲーション"
+                    activeId={tokenActiveId}
+                    onSelect={setTokenActiveId}
+                    sections={FAVOURITE_SECTIONS}
+                    aria-label="トークン上書き（アイコンのみ --foreground）"
+                  />
+                </div>
+              </Flex>
             </CardContent>
           </Card>
 
@@ -340,6 +504,9 @@ export default function Demo() {
                   "badge prop で件数バッジをアイテムに付与可能",
                   "disabled=true で項目を非活性化（クリック不可）",
                   "footer prop でスクロール外にユーザー情報を固定",
+                  "linkComponent · ルーター Link は「要素だけ」渡す。行の中身はライブラリが組み立てる（gh#213）",
+                  "linkComponent は葉・サブメニュー・折りたたみレール・フライアウトの全てに適用される",
+                  "グループのトリガーは aria-expanded を持つ開閉ボタンのままなので linkComponent は適用されない",
                 ].map((note) => (
                   <Flex key={note} align="center" gap="sm">
                     <Plus className="text-primary size-3 shrink-0" />

@@ -195,32 +195,72 @@
     min-width: 0;
   }
 
-  /* MasterDetail owns both its container breakpoint and its tracks. The selectable master region
-   * leads at every width; below 40rem the detail stacks immediately after it. This preserves the
-   * canonical split in a 1024px app shell while still stacking in the 390px mobile shell. */
-  .ui-master-detail-scope {
-    container: master-detail / inline-size;
+  /* MasterDetail owns its tracks AND its collapse threshold — both token-driven (gh#223).
+   *
+   * WHY FLEX AND NOT `@container (min-width: …)`: a media/container-query CONDITION cannot read a
+   * `var()` — it is resolved before custom properties, so a tokenised breakpoint is impossible
+   * there (the reason the first cut hard-coded `40rem`, violating rule #45). The flex threshold
+   * below ("Holy Albatross") puts the breakpoint in a `calc()`, where a `var()` DOES resolve, so
+   * `--master-detail-collapse-below` is a genuine knob a service theme can retune once globally.
+   *
+   * How it reads: the fluid region's flex-basis is `(threshold - 100%) * 999`, where 100% is the
+   * composition's own inline size (so, like the old container query, the decision comes from the
+   * space available to the layout — never the viewport).
+   *   · width < threshold → a huge positive basis → each region takes a whole flex line and
+   *     shrinks to it: master stacked above detail, both full width.
+   *   · width ≥ threshold → the calc goes negative and is clamped to 0 → one line: the fluid
+   *     region absorbs the free space while the rail keeps its token width (`max()` keeps the
+   *     rail's basis at the preset because a negative operand can never win a max).
+   *
+   * `data-rail` picks WHICH region is the fixed rail. Default `detail` = the canonical
+   * "fluid list + fixed detail rail" (1fr / 320px) composition; `master` puts the fixed rail on
+   * the leading edge for a category/navigator list. DOM order is always master → detail, so the
+   * stacked order is list-then-detail either way, and the flex row follows the writing direction
+   * (RTL-safe without a single physical property). */
+  .ui-master-detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--master-detail-gap);
+    --master-detail-rail-size: var(--master-detail-rail-standard);
   }
 
-  .ui-master-detail {
-    display: grid;
-    gap: var(--master-detail-gap);
-    grid-template-columns: minmax(0, 1fr);
+  .ui-master-detail[data-rail-width="compact"] {
+    --master-detail-rail-size: var(--master-detail-rail-compact);
+  }
+
+  /* Per-instance override of the token threshold (theme sets it globally, prop overrides here). */
+  .ui-master-detail[data-collapse-below="false"] {
+    --master-detail-collapse-below: 0px;
+  }
+  .ui-master-detail[data-collapse-below="sm"] {
+    --master-detail-collapse-below: 40rem;
+  }
+  .ui-master-detail[data-collapse-below="md"] {
+    --master-detail-collapse-below: 48rem;
+  }
+  .ui-master-detail[data-collapse-below="lg"] {
+    --master-detail-collapse-below: 64rem;
+  }
+  .ui-master-detail[data-collapse-below="xl"] {
+    --master-detail-collapse-below: 80rem;
   }
 
   .ui-master-detail-master,
   .ui-master-detail-detail {
-    min-width: 0;
+    min-inline-size: 0;
   }
 
-  @container master-detail (min-width: 40rem) {
-    .ui-master-detail[data-rail-width="compact"] {
-      grid-template-columns: var(--master-detail-rail-compact) minmax(0, 1fr);
-    }
+  /* The fluid region. */
+  .ui-master-detail[data-rail="detail"] > .ui-master-detail-master,
+  .ui-master-detail[data-rail="master"] > .ui-master-detail-detail {
+    flex: 1 1 calc((var(--master-detail-collapse-below) - 100%) * 999);
+  }
 
-    .ui-master-detail[data-rail-width="standard"] {
-      grid-template-columns: var(--master-detail-rail-standard) minmax(0, 1fr);
-    }
+  /* The fixed rail. */
+  .ui-master-detail[data-rail="detail"] > .ui-master-detail-detail,
+  .ui-master-detail[data-rail="master"] > .ui-master-detail-master {
+    flex: 0 1
+      max(var(--master-detail-rail-size), calc((var(--master-detail-collapse-below) - 100%) * 999));
   }
 
   @container responsive-grid (min-width: 40rem) {
@@ -578,7 +618,8 @@
   .ui-empty-state-description {
     font-size: var(--font-size-base);
     color: hsl(var(--muted-foreground));
-    max-width: 28rem;
+    /* Measure knob (rule #45) — default 28rem, retunable per service/locale. */
+    max-width: var(--empty-state-description-max-width);
   }
 
   .ui-empty-state-icon {
@@ -782,5 +823,246 @@
     align-items: center;
     color: hsl(var(--muted-foreground));
     font-size: var(--filter-label-font-size);
+  }
+
+  /* Toolbar/FilterBar `overflow="scroll"` (#216) — one bounded row that scrolls INLINE instead of
+   * wrapping onto extra rows. Below 640px the strip still stacks (the `wrap` base rules above own
+   * that): a 390px viewport must never hide a filter behind a horizontal scroll it cannot see.
+   * `overflow-x` matches the rest of the package's scroll regions (.ui-data-table-scroll, tabs
+   * list) and the browser already mirrors its scroll origin under `dir="rtl"`; the INSET/margin
+   * properties below stay logical. No `tabindex` is needed — every group holds a focusable
+   * control, so the region is keyboard-reachable (axe scrollable-region-focusable / WCAG 2.1.1). */
+  @media (min-width: 640px) {
+    .ui-toolbar[data-overflow="scroll"] {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-gutter: stable;
+      padding-block-end: var(--filter-bar-scroll-padding-y);
+    }
+
+    .ui-toolbar[data-overflow="scroll"] > .ui-toolbar-group {
+      flex: 0 0 auto;
+    }
+
+    /* The clear action stays parked at the inline end of the VIEWPORT of the scroll region, not at
+     * the end of its scroll width — `margin-inline-start: auto` would push it past the fold and
+     * make "clear all" unreachable without scrolling. */
+    .ui-toolbar[data-overflow="scroll"] > .ui-toolbar-clear {
+      position: sticky;
+      inset-inline-end: 0;
+      margin-inline-start: auto;
+      flex: 0 0 auto;
+      /* Above the scrolling groups, and opaque, so a filter never slides underneath it. */
+      z-index: 1;
+      background: hsl(var(--filter-bar-sticky-background, var(--background)));
+    }
+  }
+
+  /* ── LegalDocumentShell (#222) ─────────────────────────────────────────────────
+   * The long-form legal/policy document surface: a readable, measure-capped document
+   * column with a STICKY table-of-contents rail beside it. Every value reads a
+   * `--legal-document-*` component token, so a service re-tunes the measure, the rail
+   * and the section rhythm from theme.css with zero consumer `.legal-*` CSS.
+   *
+   * It OWNS its query container (`container: legal-document / inline-size`, the SplitPane
+   * precedent — gh#165), so the one-column ⇄ two-column decision comes from the SHELL's
+   * own available width, not the viewport: dropped into a narrow pane on a 1440px screen
+   * it correctly stays single-column.
+   *
+   * DOM order is header → rail (contents) → sections → footer, which is exactly the
+   * mobile reading order; the desktop branch only re-places those boxes into a grid.
+   */
+  .ui-legal-document-scope {
+    container: legal-document / inline-size;
+  }
+
+  .ui-legal-document {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--legal-document-section-gap);
+    align-items: start;
+    min-width: 0;
+  }
+
+  .ui-legal-document-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--legal-document-header-gap);
+    min-width: 0;
+    max-width: var(--legal-document-measure-max-width);
+    border-block-end: var(--legal-document-header-border);
+  }
+
+  .ui-legal-document-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--legal-document-meta-gap);
+    font-size: var(--legal-document-meta-font-size);
+    color: hsl(var(--legal-document-meta-foreground, var(--muted-foreground)));
+  }
+
+  /* Long-form prose wrapping that holds in JA (kinsoku via `line-break: strict`), in EN
+   * (long compounds / URLs via `overflow-wrap: break-word`) and in VI (diacritic-heavy
+   * words must NOT be broken mid-word — `word-break: normal` keeps that true). */
+  .ui-legal-document-summary,
+  .ui-legal-document-section-body {
+    min-width: 0;
+    line-height: var(--legal-document-body-line-height);
+    overflow-wrap: break-word;
+    word-break: normal;
+    line-break: strict;
+  }
+
+  .ui-legal-document-summary {
+    color: hsl(var(--legal-document-summary-foreground, var(--muted-foreground)));
+  }
+
+  .ui-legal-document-rail {
+    display: flex;
+    flex-direction: column;
+    gap: var(--legal-document-nav-gap);
+    min-width: 0;
+  }
+
+  .ui-legal-document-toc {
+    display: flex;
+    flex-direction: column;
+    gap: var(--legal-document-toc-gap);
+    min-width: 0;
+    min-height: 0;
+    border-inline-end: var(--legal-document-toc-border);
+  }
+
+  .ui-legal-document-toc-title {
+    font-size: var(--legal-document-toc-title-font-size);
+    color: hsl(var(--legal-document-toc-foreground, var(--muted-foreground)));
+  }
+
+  .ui-legal-document-toc-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--legal-document-toc-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  /* REAL anchors — `href="#<section id>"` — so the contents list is keyboard-reachable,
+   * middle-clickable and deep-linkable even before JS boots. */
+  .ui-legal-document-toc-link {
+    display: block;
+    padding: var(--legal-document-toc-item-padding);
+    border-radius: var(--legal-document-toc-item-radius);
+    border-inline-start: var(--legal-document-toc-marker-width) solid transparent;
+    font-size: var(--legal-document-toc-font-size);
+    line-height: 1.6;
+    color: hsl(var(--legal-document-toc-foreground, var(--muted-foreground)));
+    text-decoration: none;
+    overflow-wrap: break-word;
+    transition-property: color, background-color, border-color;
+    transition-duration: var(--duration-fast);
+  }
+
+  .ui-legal-document-toc-link:hover {
+    color: hsl(var(--legal-document-toc-active-foreground, var(--foreground)));
+    background: hsl(var(--legal-document-toc-active-background, var(--accent)) / 0.6);
+  }
+
+  .ui-legal-document-toc-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
+  }
+
+  /* Active entry: colour + a leading marker + a heavier weight, so the state survives a
+   * monochrome / high-contrast rendering (never colour-only, WCAG 1.4.1). The anchor also
+   * carries `aria-current="location"`. */
+  .ui-legal-document-toc-link[data-active] {
+    color: hsl(var(--legal-document-toc-active-foreground, var(--foreground)));
+    background: hsl(var(--legal-document-toc-active-background, var(--accent)));
+    border-inline-start-color: hsl(var(--legal-document-toc-marker-color, var(--primary)));
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ui-legal-document-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--legal-document-section-gap);
+    min-width: 0;
+    max-width: var(--legal-document-measure-max-width);
+  }
+
+  /* `scroll-margin-block-start` (logical, so it survives vertical writing modes) is what
+   * makes a hash jump AND a programmatic `scrollIntoView` land BELOW sticky chrome — no
+   * JS offset arithmetic, no consumer CSS. */
+  .ui-legal-document-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--legal-document-section-title-gap);
+    min-width: 0;
+    scroll-margin-block-start: var(--legal-document-scroll-offset);
+  }
+
+  /* The section is `tabIndex={-1}` and receives focus when its contents anchor is
+   * activated, so the focus ring must be VISIBLE (WCAG 2.4.7 / 2.4.11). */
+  .ui-legal-document-section:focus-visible {
+    outline: var(--focus-ring-width) solid hsl(var(--focus-ring-color, var(--ring)));
+    outline-offset: var(--space-1);
+  }
+
+  .ui-legal-document-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--legal-document-footer-gap);
+    min-width: 0;
+    max-width: var(--legal-document-measure-max-width);
+    border-block-start: var(--legal-document-footer-border);
+  }
+
+  /* Two-column mode (shell ≥56rem — a 1024px and a 1440px viewport both qualify): the
+   * rail is PINNED beside a measure-capped document column and spans the header/body/
+   * footer rows, so it stays in view for the whole scroll. Logical grid placement means
+   * column 1 is the START side, i.e. it mirrors correctly under `dir="rtl"`.
+   *
+   * Below 56rem (the 390×844 case) NOTHING here applies: the shell stays a single column
+   * and the rail is a STATIC compact contents block between the document header and the
+   * first section — deliberately not sticky and not height-capped, so a phone never loses
+   * vertical space to pinned chrome. */
+  @container legal-document (min-width: 56rem) {
+    .ui-legal-document {
+      grid-template-columns:
+        var(--legal-document-toc-width)
+        minmax(0, var(--legal-document-measure-max-width));
+      column-gap: var(--legal-document-column-gap);
+    }
+
+    .ui-legal-document-header {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .ui-legal-document-rail {
+      grid-column: 1;
+      grid-row: 1 / span 3;
+      position: sticky;
+      inset-block-start: var(--legal-document-toc-inset-block-start);
+      align-self: start;
+      max-height: var(--legal-document-toc-max-height);
+      overflow-y: auto;
+    }
+
+    .ui-legal-document-content {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .ui-legal-document-footer {
+      grid-column: 2;
+      grid-row: 3;
+    }
   }
 }

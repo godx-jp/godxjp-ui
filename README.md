@@ -144,11 +144,19 @@ per-layer files you need (mirrors the JS subpaths — the CSS tree-shakes too):
 @import "@godxjp/ui/styles/form-layout"; /* FormField */
 @import "@godxjp/ui/styles/dialog-layout"; /* Dialog */
 /* …only the layers you use. Layer files need `base` first (they use @layer/@apply). */
+@import "@godxjp/ui/styles/fonts"; /* optional bundled faces — MUST come after `base` */
 ```
 
 Skip `@godxjp/ui/styles/fonts` when you manage fonts yourself (next/font, etc.)
 and set the font tokens instead (see below). A marketing site using ~10
 components typically drops component CSS from ~142K → ~26K gzip.
+
+> **Import order rule — `fonts` after `base`.** `styles/base` pulls in the token
+> layers, whose font-agnostic `:root { --font-sans-base: <system stack> }` sits at
+> the same specificity (0,1,0) as the bundle's fill, so the later import wins.
+> Import `styles/fonts` first and the bundled faces silently never apply while the
+> ~800 KB of `@font-face` still ships. The all-in-one `@godxjp/ui/styles` entry
+> already orders this correctly.
 
 ### Fonts — token-driven, per-language, no library hardcoding
 
@@ -165,7 +173,14 @@ one face everywhere, or per-language (no `[lang]` selectors to write):
 ```
 
 `styles/base.css` wires each `[lang]` to its slot (falling back to
-`--font-sans-base`); `styles/fonts` fills these slots for the bundled faces.
+`--font-sans-base`); the opt-in `styles/fonts` overwrites `--font-sans-base` (and
+`--font-sans-vi`) with the bundled DXS stack — **M PLUS 2** primary with **Noto
+Sans JP** as the CJK fallback.
+
+> **The bundled faces changed in v18.** v16 bundled Noto Sans JP + Montserrat;
+> v18 bundles M PLUS 2 (primary, incl. Vietnamese coverage) + Noto Sans JP (CJK
+> fallback). If your design spec named the v16 faces, set the tokens yourself
+> instead of relying on the bundle.
 
 ```tsx
 import { AppProvider } from "@godxjp/ui/app"; // locale, tz, date/time format

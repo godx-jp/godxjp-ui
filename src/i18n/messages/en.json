@@ -145,6 +145,11 @@
       "mainLabel": "Main content",
       "footerLabel": "Footer"
     },
+    "legalDocumentShell": {
+      "contents": "Contents",
+      "version": "Version {version}",
+      "effectiveDate": "Effective {date}"
+    },
     "topbar": {
       "toggleSidebar": "Toggle sidebar",
       "search": "Search",
@@ -162,6 +167,10 @@
       "next": "Next",
       "dotsLabel": "Choose slide",
       "goToSlide": "Go to slide {index}"
+    },
+    "listRow": {
+      "unread": "Unread",
+      "read": "Read"
     }
   },
   "ui": {
@@ -292,7 +301,11 @@
     "densitySwitch": "Switch to {density} density",
     "rowActions": "Row actions",
     "empty": "No data",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "error": "Couldn't load this list",
+    "errorDescription": "The data could not be retrieved. Try again in a moment.",
+    "denied": "You don't have access to this list",
+    "deniedDescription": "Ask an administrator to grant you permission to view these records."
   },
   "dataGrid": {
     "search": "Search",
@@ -304,6 +317,10 @@
   },
   "status": {
     "active": "Active",
+    "trialing": "Trialing",
+    "past_due": "Past due",
+    "incomplete": "Incomplete",
+    "canceled": "Canceled",
     "completed": "Completed",
     "delivered": "Delivered",
     "done": "Done",
@@ -353,6 +370,8 @@
   "chart": {
     "empty": "No data to display",
     "summaryCartesian": "Chart with {series} series across {points} data points",
-    "summaryPie": "Pie chart with {slices} slices"
+    "summaryPie": "Pie chart with {slices} slices",
+    "summaryTrend": "Bar trend with {points} data points",
+    "trendCurrent": "current"
   }
 }

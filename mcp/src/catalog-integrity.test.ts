@@ -205,18 +205,34 @@ describe("component catalog — examples are plausible TSX", () => {
 });
 
 describe("newly-added components are catalogued with the expected API", () => {
-  it("ListRow exists with title/description/leading/trailing/align/as props", () => {
+  it("ListRow exists with title/description/leading/trailing/align/as/overflow/unread props", () => {
     const row = findComponent("ListRow");
     expect(row, "ListRow entry").toBeDefined();
     expect(row?.group).toBe("data-display");
     const props = new Set(row?.props.map((p) => p.name));
-    for (const p of ["title", "description", "leading", "trailing", "align", "as"]) {
+    for (const p of [
+      "title",
+      "description",
+      "leading",
+      "trailing",
+      "align",
+      "as",
+      "overflow",
+      "unread",
+    ]) {
       expect(props.has(p), `ListRow.${p}`).toBe(true);
     }
     // title is required.
     expect(row?.props.find((p) => p.name === "title")?.required).toBe(true);
     // `as` is the div|li render-element union.
     expect(row?.props.find((p) => p.name === "as")?.type).toMatch(/div.*li/);
+    // gh#224 — overflow is the documented truncate|wrap union, truncate by default.
+    expect(row?.props.find((p) => p.name === "overflow")?.type).toMatch(/truncate.*wrap/);
+    expect(row?.props.find((p) => p.name === "overflow")?.defaultValue).toMatch(/truncate/);
+    // gh#225 — unread is a semantic boolean state (dot + tokenized surface), not a Badge.
+    expect(row?.props.find((p) => p.name === "unread")?.type).toBe("boolean");
+    expect(row?.usage.join(" ")).toMatch(/--list-row-body-min-width/);
+    expect(row?.usage.join(" ")).toMatch(/--list-row-unread-background/);
   });
 
   it("Topbar reflects the new slot API (start/center/end) — NOT the removed chrome props", () => {
@@ -260,5 +276,42 @@ describe("newly-added components are catalogued with the expected API", () => {
     const tone = badge?.props.find((p) => p.name === "tone");
     expect(tone, "Badge.tone").toBeDefined();
     expect(tone?.type).toMatch(/"primary"/);
+  });
+
+  // gh#218 — the DEPENDENCY-FREE compact trend. Agents must be able to find it (and learn
+  // that it does NOT need the recharts peer) from the catalog alone, otherwise a
+  // dependency-constrained screen hand-rolls a page-local grid chart again.
+  it("CompactBarTrend is catalogued as the recharts-free compact trend primitive", () => {
+    const trend = findComponent("CompactBarTrend");
+    expect(trend, "CompactBarTrend entry").toBeDefined();
+    expect(trend?.group).toBe("data-display");
+    expect(trend?.importPath).toBe("@godxjp/ui/charts");
+    const props = new Map((trend?.props ?? []).map((p) => [p.name, p] as const));
+    for (const p of [
+      "data",
+      "categoryKey",
+      "valueKey",
+      "label",
+      "size",
+      "emphasizedIndex",
+      "showCategoryLabels",
+      "footer",
+      "emptyMessage",
+    ]) {
+      expect(props.has(p), `CompactBarTrend.${p}`).toBe(true);
+    }
+    // the data accessors + the accessible name are required
+    for (const p of ["data", "categoryKey", "valueKey", "label"]) {
+      expect(props.get(p)?.required, `CompactBarTrend.${p} required`).toBe(true);
+    }
+    // size is the controlled vocabulary tier, defaulting to the compact step
+    expect(props.get("size")?.type).toMatch(/"xs".*"sm".*"md".*"lg"/);
+    expect(props.get("size")?.defaultValue).toMatch(/xs/);
+    // the catalog must state the dependency contract and the token surface
+    const usage = (trend?.usage ?? []).join(" ");
+    expect(usage).toMatch(/NO `recharts` peer|no `recharts`/i);
+    expect(usage).toMatch(/--chart-trend-/);
+    // and point at BarChart for the full cartesian case
+    expect((trend?.related ?? []).join(" ")).toMatch(/BarChart/);
   });
 });

@@ -1,6 +1,6 @@
 {
   "$schema": "./screen-reader-evidence.schema.json",
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "policy": {
     "issue": "https://github.com/godx-jp/godxjp-ui/issues/171",
     "requiredLocales": ["ja-JP", "vi-VN"],
@@ -25,6 +25,163 @@
         "assistiveTechnology": "NVDA",
         "browser": "Chrome",
         "appliesTo": "complex-composites-and-live-regions"
+      }
+    ],
+    "cohorts": [
+      {
+        "id": "landmarks-page-structure",
+        "title": "Landmarks and page structure",
+        "requiredPhases": ["landmark-navigation", "focus-entry", "internal-navigation"],
+        "owners": [
+          "layout/app-shell",
+          "layout/auth-shell",
+          "layout/auth-stack",
+          "layout/centered-shell",
+          "layout/master-detail",
+          "layout/page-container",
+          "layout/resizable",
+          "layout/sidebar",
+          "layout/split-pane",
+          "layout/topbar"
+        ]
+      },
+      {
+        "id": "native-form-controls",
+        "title": "Native and form controls",
+        "requiredPhases": [
+          "focus-entry",
+          "value-change",
+          "required-announcement",
+          "help-announcement",
+          "invalid-announcement",
+          "error-announcement"
+        ],
+        "owners": [
+          "data-display/credential-reveal",
+          "data-entry/calendar",
+          "data-entry/checkbox",
+          "data-entry/checkbox-group",
+          "data-entry/color-picker",
+          "data-entry/date-picker",
+          "data-entry/date-range-picker",
+          "data-entry/field",
+          "data-entry/form",
+          "data-entry/form-field",
+          "data-entry/input",
+          "data-entry/input-otp",
+          "data-entry/label",
+          "data-entry/month-picker",
+          "data-entry/month-range-picker",
+          "data-entry/number-input",
+          "data-entry/password-input",
+          "data-entry/radio",
+          "data-entry/rating",
+          "data-entry/search-input",
+          "data-entry/slider",
+          "data-entry/switch",
+          "data-entry/textarea",
+          "data-entry/time-picker",
+          "data-entry/toggle",
+          "data-entry/upload",
+          "feedback/two-factor-setup",
+          "general/button",
+          "general/reveal"
+        ]
+      },
+      {
+        "id": "selection-composites",
+        "title": "Selection composites",
+        "requiredPhases": [
+          "focus-entry",
+          "internal-navigation",
+          "activation",
+          "value-change",
+          "escape-close",
+          "focus-return"
+        ],
+        "owners": [
+          "data-entry/cascader",
+          "data-entry/command",
+          "data-entry/command-palette",
+          "data-entry/select",
+          "data-entry/tag-input",
+          "data-entry/toggle-group",
+          "data-entry/transfer",
+          "data-entry/tree-select",
+          "layout/org-switcher",
+          "navigation/app-setting-picker"
+        ]
+      },
+      {
+        "id": "overlays",
+        "title": "Overlays",
+        "requiredPhases": ["focus-entry", "internal-navigation", "escape-close", "focus-return"],
+        "owners": [
+          "data-display/hover-card",
+          "data-display/popover",
+          "feedback/dialog",
+          "feedback/sheet",
+          "feedback/tooltip",
+          "navigation/context-menu",
+          "navigation/dropdown-menu"
+        ]
+      },
+      {
+        "id": "navigation-composites",
+        "title": "Navigation composites",
+        "requiredPhases": ["focus-entry", "internal-navigation", "activation"],
+        "owners": [
+          "layout/breadcrumb",
+          "navigation/filter-bar",
+          "navigation/menubar",
+          "navigation/navigation-menu",
+          "navigation/pagination",
+          "navigation/steps",
+          "navigation/tabs",
+          "query/prefetch-link"
+        ]
+      },
+      {
+        "id": "data-structures",
+        "title": "Data structures and alternative text",
+        "requiredPhases": ["focus-entry", "internal-navigation", "activation"],
+        "owners": [
+          "charts/area-chart",
+          "charts/bar-chart",
+          "charts/line-chart",
+          "charts/pie-chart",
+          "data-display/accordion",
+          "data-display/carousel",
+          "data-display/collapsible",
+          "data-display/data-table",
+          "data-display/descriptions",
+          "data-display/list-row",
+          "data-display/qr-code",
+          "data-display/scroll-area",
+          "data-display/table",
+          "data-display/timeline",
+          "data-display/tree-list"
+        ]
+      },
+      {
+        "id": "live-async-feedback",
+        "title": "Live and async feedback",
+        "requiredPhases": [
+          "loading-announcement",
+          "success-announcement",
+          "error-announcement",
+          "recovery-announcement"
+        ],
+        "owners": [
+          "data-display/progress",
+          "data-entry/password-strength",
+          "feedback/alert",
+          "feedback/sonner",
+          "query/data-state",
+          "query/infinite-query-state",
+          "query/mutation-feedback",
+          "query/query-refetch-button"
+        ]
       }
     ],
     "complexOwners": [
@@ -61,7 +218,17 @@
       "query/infinite-query-state",
       "query/mutation-feedback"
     ],
-    "note": "Only actual AT speech capture counts. Axe, DOM assertions and accessibility-tree snapshots are not screen-reader evidence."
+    "notApplicable": [
+      {
+        "target": "InputOTPSeparator",
+        "scope": "export",
+        "reason": "Decorative separator between OTP slots. It is intentionally absent from the accessibility tree, so no assistive technology can reach or announce it and there is no journey to record.",
+        "reviewedBy": "Pham Thai Duong",
+        "reviewedIn": "https://github.com/godx-jp/godxjp-ui/commit/1fae349",
+        "reviewedAt": "2026-07-12T00:00:00Z"
+      }
+    ],
+    "note": "Only actual AT speech capture counts. Axe, DOM assertions and accessibility-tree snapshots are not screen-reader evidence. An owner that is not mapped to a cohort cannot be promoted out of untested: map it in the PR that records its journey."
   },
   "records": []
 }

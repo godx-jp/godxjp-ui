@@ -1,0 +1,47 @@
+/* Chart component tokens — the dependency-free `CompactBarTrend` primitive
+ * (`@godxjp/ui/charts`). Every piece of its geometry and every fill is a public knob so a
+ * service theme can match its own design grid WITHOUT page-local CSS or inline heights
+ * (cardinal rules #44/#45). The recharts-backed charts draw their own SVG and only use the
+ * foundation `--chart-1..6` palette. */
+
+:root {
+  /* ── Plot height tiers (size = xs|sm|md|lg) ───────────────────────────────────────────
+   * `xs` is the canonical dashboard-summary-card density: a seven-day trend that sits under
+   * a KPI headline without stealing its vertical rhythm. A service retunes the whole scale
+   * here; a screen picks a step with the `size` prop. */
+  --chart-trend-plot-height-xs: 3.5rem;
+  --chart-trend-plot-height-sm: 5rem;
+  --chart-trend-plot-height-md: 7.5rem;
+  --chart-trend-plot-height-lg: 10rem;
+  /* Active tier — chart-layout.css re-points this per `data-size`; overriding it directly
+   * pins one height for every trend regardless of `size`. */
+  --chart-trend-plot-height: var(--chart-trend-plot-height-xs);
+
+  /* ── Bar marks ────────────────────────────────────────────────────────────────────────
+   * Thin marks, a surface gap between neighbours and a rounded data-end anchored to the
+   * baseline (the data-visualization mark spec). */
+  --chart-trend-bar-gap: var(--space-2);
+  --chart-trend-bar-radius: var(--radius-sm);
+  /* Ceiling on a single mark so a 3-point trend does not render slabs. */
+  --chart-trend-bar-max-width: 1.5rem;
+  /* Floor so a zero/absent value still reads as a plotted category rather than a hole. */
+  --chart-trend-bar-min-height: 2px;
+  /* Muted mark fill — role-mirror knob, declared `initial` so the role default re-resolves
+   * at the CALL SITE under `.dark` / `[data-tenant]` (docs/TOKENS.md · "Role-mirror knobs
+   * MUST be `initial`"). Default = hsl(var(--muted-foreground) / 0.75), which clears the
+   * 3:1 non-text contrast floor (WCAG 1.4.11) against the card surface. */
+  --chart-trend-bar-background: initial;
+  /* Opacity applied to the muted-fill role default. */
+  --chart-trend-bar-background-alpha: 0.75;
+  /* Emphasized ("current") mark fill — role-mirror knob. Default = hsl(var(--primary)). */
+  --chart-trend-bar-emphasis-background: initial;
+
+  /* ── Baseline + category ticks ────────────────────────────────────────────────────────
+   * Chrome defaults QUIET (rule #44): no baseline rule at rest. A service opts in with
+   * `--chart-trend-baseline-border: 1px solid hsl(var(--border));`. */
+  --chart-trend-baseline-border: initial;
+  --chart-trend-tick-gap: var(--space-1);
+  --chart-trend-tick-font-size: var(--font-size-xs);
+  /* Gap between the plot block and the optional activity footer slot. */
+  --chart-trend-footer-gap: var(--space-2);
+}

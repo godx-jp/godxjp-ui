@@ -46,6 +46,42 @@ describe("ServiceLauncherCard", () => {
     expect(screen.getByRole("button", { name: "起動" })).toBeDisabled();
   });
 
+  it("never infers access state — a reason alone does not disable the consumer's action", () => {
+    const { container } = render(
+      <ServiceLauncherCard
+        icon={Clock}
+        title="会計"
+        statusLabel="要対応"
+        statusTone="warning"
+        // A reason WITHOUT a disabled Button: the component must not take over the decision.
+        disabledReason="請求先情報の確認が必要です。"
+        action={<Button>起動</Button>}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "起動" })).toBeEnabled();
+    // The only thing derived is presentational: a token hook for the muted medallion.
+    expect(container.querySelector("[data-service-launcher]")).toHaveAttribute("data-unavailable");
+  });
+
+  it("renders the status verbatim and adds no live/attention markup of its own", () => {
+    const { container } = render(
+      <ServiceLauncherCard
+        icon={Clock}
+        title="監査ログ"
+        statusLabel="LIVE"
+        statusTone="success"
+        action={<Button>起動</Button>}
+      />,
+    );
+
+    const tile = container.querySelector("[data-service-launcher]") as HTMLElement;
+    expect(tile).not.toHaveAttribute("data-unavailable");
+    expect(tile.querySelector("a")).toBeNull(); // no inferred launch URL
+    expect(screen.getByText("LIVE")).toBeInTheDocument();
+    expect(screen.queryByText(/available|unavailable|利用可能/i)).not.toBeInTheDocument();
+  });
+
   it("renders a token-owned catalog CTA and shape-matched loading state", () => {
     const { rerender, container } = render(
       <ServiceCatalogCta

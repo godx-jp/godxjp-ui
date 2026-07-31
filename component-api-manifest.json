@@ -916,6 +916,19 @@
           ]
         },
         {
+          "name": "compact",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/app.prop.ts"
+          ]
+        },
+        {
           "name": "disabled",
           "origin": "owned",
           "required": false,
@@ -1180,7 +1193,7 @@
           "name": "description",
           "origin": "owned",
           "required": false,
-          "type": "import(\"react\").ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
             "src/props/components/charts.prop.ts"
@@ -1220,7 +1233,7 @@
           "name": "label",
           "origin": "owned",
           "required": true,
-          "type": "import(\"react\").ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
             "src/props/components/charts.prop.ts"
@@ -1335,43 +1348,53 @@
       "group": "layout",
       "props": [
         {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "locale",
           "origin": "owned",
           "required": false,
-          "type": "ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
-            "src/components/layout/auth-footer.tsx"
+            "src/props/components/layout.prop.ts"
           ]
         },
         {
           "name": "privacy",
           "origin": "owned",
           "required": true,
-          "type": "ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
-            "src/components/layout/auth-footer.tsx"
+            "src/props/components/layout.prop.ts"
           ]
         },
         {
           "name": "product",
           "origin": "owned",
           "required": true,
-          "type": "ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
-            "src/components/layout/auth-footer.tsx"
+            "src/props/components/layout.prop.ts"
           ]
         },
         {
           "name": "terms",
           "origin": "owned",
           "required": true,
-          "type": "ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
-            "src/components/layout/auth-footer.tsx"
+            "src/props/components/layout.prop.ts"
           ]
         }
       ]
@@ -1380,23 +1403,33 @@
       "group": "layout",
       "props": [
         {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "requester",
           "origin": "owned",
           "required": false,
-          "type": "ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
-            "src/components/layout/auth-identity.tsx"
+            "src/props/components/layout.prop.ts"
           ]
         },
         {
           "name": "title",
           "origin": "owned",
           "required": true,
-          "type": "ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
-            "src/components/layout/auth-identity.tsx"
+            "src/props/components/layout.prop.ts"
           ]
         }
       ]
@@ -1453,6 +1486,20 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "preset",
+          "origin": "owned",
+          "required": false,
+          "type": "AuthShellPresetProp | undefined",
+          "values": [
+            "default",
+            "device-authorization",
+            "context-selection"
+          ],
           "declaredIn": [
             "src/props/components/layout.prop.ts"
           ]
@@ -1608,7 +1655,7 @@
           "name": "description",
           "origin": "owned",
           "required": false,
-          "type": "import(\"react\").ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
             "src/props/components/charts.prop.ts"
@@ -1661,7 +1708,7 @@
           "name": "label",
           "origin": "owned",
           "required": true,
-          "type": "import(\"react\").ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
             "src/props/components/charts.prop.ts"
@@ -2781,6 +2828,19 @@
       "group": "layout",
       "props": [
         {
+          "name": "align",
+          "origin": "owned",
+          "required": false,
+          "type": "CenteredShellAlignProp | undefined",
+          "values": [
+            "center",
+            "start"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": true,
@@ -3426,6 +3486,159 @@
           "values": [],
           "declaredIn": [
             "src/components/data-entry/command-palette.tsx"
+          ]
+        }
+      ]
+    },
+    "CompactBarTrend": {
+      "group": "charts",
+      "props": [
+        {
+          "name": "categoryKey",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "data",
+          "origin": "owned",
+          "required": true,
+          "type": "ChartDatum[]",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "description",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "emphasizedIndex",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "emptyMessage",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "footer",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "label",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "numberFormat",
+          "origin": "owned",
+          "required": false,
+          "type": "Intl.NumberFormatOptions | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "ref",
+          "origin": "owned",
+          "required": false,
+          "type": "React.Ref<HTMLElement> | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "showCategoryLabels",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "size",
+          "origin": "owned",
+          "required": false,
+          "type": "SizeProp | undefined",
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
+          ]
+        },
+        {
+          "name": "valueKey",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/charts.prop.ts"
           ]
         }
       ]
@@ -4289,6 +4502,16 @@
           ]
         },
         {
+          "name": "denied",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/data-table.tsx"
+          ]
+        },
+        {
           "name": "density",
           "origin": "owned",
           "required": false,
@@ -4304,6 +4527,16 @@
         },
         {
           "name": "empty",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/data-table.tsx"
+          ]
+        },
+        {
+          "name": "error",
           "origin": "owned",
           "required": false,
           "type": "React.ReactNode",
@@ -4432,6 +4665,16 @@
           "origin": "owned",
           "required": false,
           "type": "OnChangeFn<PaginationState> | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-display/data-table.tsx"
+          ]
+        },
+        {
+          "name": "onRetry",
+          "origin": "owned",
+          "required": false,
+          "type": "(() => void) | undefined",
           "values": [],
           "declaredIn": [
             "src/components/data-display/data-table.tsx"
@@ -6092,6 +6335,19 @@
           ]
         },
         {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarOverflowProp | undefined",
+          "values": [
+            "wrap",
+            "scroll"
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "sticky",
           "origin": "owned",
           "required": false,
@@ -6121,6 +6377,16 @@
         },
         {
           "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "controlId",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",
@@ -6974,6 +7240,141 @@
       "group": "data-entry",
       "props": []
     },
+    "LegalDocumentShell": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "activeSection",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "contentsLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "defaultActiveSection",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "documentNavigation",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "effectiveDate",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "footerAction",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "onActiveSectionChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((sectionId: string) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "sections",
+          "origin": "owned",
+          "required": true,
+          "type": "LegalDocumentSectionProp[]",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "summary",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "version",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        }
+      ]
+    },
     "LineChart": {
       "group": "charts",
       "props": [
@@ -7024,7 +7425,7 @@
           "name": "description",
           "origin": "owned",
           "required": false,
-          "type": "import(\"react\").ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
             "src/props/components/charts.prop.ts"
@@ -7064,7 +7465,7 @@
           "name": "label",
           "origin": "owned",
           "required": true,
-          "type": "import(\"react\").ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
             "src/props/components/charts.prop.ts"
@@ -7183,6 +7584,19 @@
           ]
         },
         {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "\"wrap\" | \"truncate\" | undefined",
+          "values": [
+            "wrap",
+            "truncate"
+          ],
+          "declaredIn": [
+            "src/components/data-display/list-row.tsx"
+          ]
+        },
+        {
           "name": "title",
           "origin": "owned",
           "required": true,
@@ -7198,6 +7612,19 @@
           "required": false,
           "type": "React.ReactNode",
           "values": [],
+          "declaredIn": [
+            "src/components/data-display/list-row.tsx"
+          ]
+        },
+        {
+          "name": "unread",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
           "declaredIn": [
             "src/components/data-display/list-row.tsx"
           ]
@@ -7267,6 +7694,16 @@
           "declaredIn": [
             "src/components/general/logo.tsx"
           ]
+        },
+        {
+          "name": "wordmark",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/components/general/logo.tsx"
+          ]
         }
       ]
     },
@@ -7278,6 +7715,32 @@
           "origin": "owned",
           "required": true,
           "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "collapseBelow",
+          "origin": "owned",
+          "required": false,
+          "type": "false | BreakpointProp | undefined",
+          "values": [
+            false,
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "detailId",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
           "values": [],
           "declaredIn": [
             "src/props/components/layout.prop.ts"
@@ -7309,6 +7772,19 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "rail",
+          "origin": "owned",
+          "required": false,
+          "type": "MasterDetailRailProp | undefined",
+          "values": [
+            "master",
+            "detail"
+          ],
           "declaredIn": [
             "src/props/components/layout.prop.ts"
           ]
@@ -9228,7 +9704,7 @@
           "name": "description",
           "origin": "owned",
           "required": false,
-          "type": "import(\"react\").ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
             "src/props/components/charts.prop.ts"
@@ -9281,7 +9757,7 @@
           "name": "label",
           "origin": "owned",
           "required": true,
-          "type": "import(\"react\").ReactNode",
+          "type": "React.ReactNode",
           "values": [],
           "declaredIn": [
             "src/props/components/charts.prop.ts"
@@ -11218,6 +11694,16 @@
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
           ]
+        },
+        {
+          "name": "value",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
         }
       ]
     },
@@ -11242,6 +11728,20 @@
           "required": false,
           "type": "string | undefined",
           "values": [],
+          "declaredIn": [
+            "src/components/feedback/sheet.tsx"
+          ]
+        },
+        {
+          "name": "responsive",
+          "origin": "owned",
+          "required": false,
+          "type": "SheetResponsiveProp | undefined",
+          "values": [
+            "auto",
+            "side",
+            "bottom"
+          ],
           "declaredIn": [
             "src/components/feedback/sheet.tsx"
           ]
@@ -11424,6 +11924,16 @@
           "declaredIn": [
             "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
           ]
+        },
+        {
+          "name": "value",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "string | number | readonly string[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
         }
       ]
     },
@@ -11504,6 +12014,16 @@
           ]
         },
         {
+          "name": "linkComponent",
+          "origin": "owned",
+          "required": false,
+          "type": "SidebarLinkComponentProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "onProductClick",
           "origin": "owned",
           "required": false,
@@ -11576,6 +12096,19 @@
           ]
         },
         {
+          "name": "asChild",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/layout/sidebar.tsx"
+          ]
+        },
+        {
           "name": "disabled",
           "origin": "inherited-behavioral",
           "required": false,
@@ -11593,6 +12126,16 @@
           "origin": "owned",
           "required": true,
           "type": "SidebarItemProp",
+          "values": [],
+          "declaredIn": [
+            "src/components/layout/sidebar.tsx"
+          ]
+        },
+        {
+          "name": "linkComponent",
+          "origin": "owned",
+          "required": false,
+          "type": "SidebarLinkComponentProp | undefined",
           "values": [],
           "declaredIn": [
             "src/components/layout/sidebar.tsx"
@@ -13367,6 +13910,19 @@
           ]
         },
         {
+          "name": "overflow",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarOverflowProp | undefined",
+          "values": [
+            "wrap",
+            "scroll"
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "sticky",
           "origin": "owned",
           "required": false,
@@ -13396,6 +13952,16 @@
         },
         {
           "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "controlId",
           "origin": "owned",
           "required": false,
           "type": "string | undefined",

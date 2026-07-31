@@ -145,6 +145,11 @@
       "mainLabel": "メインコンテンツ",
       "footerLabel": "フッター"
     },
+    "legalDocumentShell": {
+      "contents": "目次",
+      "version": "バージョン {version}",
+      "effectiveDate": "施行日 {date}"
+    },
     "topbar": {
       "toggleSidebar": "サイドバーの切り替え",
       "search": "検索",
@@ -162,6 +167,10 @@
       "next": "次へ",
       "dotsLabel": "スライドを選択",
       "goToSlide": "{index} 番目のスライドへ"
+    },
+    "listRow": {
+      "unread": "未読",
+      "read": "既読"
     }
   },
   "ui": {
@@ -289,7 +298,11 @@
     "densitySwitch": "{density} 表示に切り替え",
     "rowActions": "行の操作",
     "empty": "データがありません",
-    "loading": "読み込み中…"
+    "loading": "読み込み中…",
+    "error": "一覧を取得できませんでした",
+    "errorDescription": "データを取得できませんでした。時間をおいて再試行してください。",
+    "denied": "この一覧を表示する権限がありません",
+    "deniedDescription": "閲覧するには管理者に権限の付与を依頼してください。"
   },
   "dataGrid": {
     "search": "検索",
@@ -301,6 +314,10 @@
   },
   "status": {
     "active": "有効",
+    "trialing": "試用中",
+    "past_due": "支払期限超過",
+    "incomplete": "未完了",
+    "canceled": "解約済み",
     "completed": "完了",
     "delivered": "配達済み",
     "done": "完了",
@@ -350,6 +367,8 @@
   "chart": {
     "empty": "データがありません",
     "summaryCartesian": "{series}系列・{points}データ点のグラフ",
-    "summaryPie": "{slices}区分の円グラフ"
+    "summaryPie": "{slices}区分の円グラフ",
+    "summaryTrend": "{points}データ点の推移棒グラフ",
+    "trendCurrent": "現在"
   }
 }

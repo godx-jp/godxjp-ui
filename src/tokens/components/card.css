@@ -75,17 +75,35 @@
   --stat-card-icon-background: initial;
   --stat-card-icon-foreground: initial;
   --stat-card-delta-font-size: var(--font-size-xs);
+  /* ── ServiceLauncherCard (gh#219) ───────────────────────────────────────────────────
+   * Internal rhythm of a launcher tile: one gap knob drives the vertical stack AND the
+   * icon↔title↔status row, so a service theme retunes the whole tile density once. */
   --card-service-launcher-space-gap: var(--space-stack-sm);
+  /* Semantic icon surface. `--control-height-lg` is the 36px control tier the hi-fi calls for —
+   * a tier token, never a literal, so the medallion tracks --scaling with its sibling controls. */
   --card-service-launcher-icon-size: var(--control-height-lg);
   --card-service-launcher-icon-glyph-size: var(--space-5);
   --card-service-launcher-icon-radius: var(--radius-md);
+  /* Available-service medallion tint. `initial` (role-mirror rule, docs/TOKENS.md) so the role
+   * defaults resolve at the CALL SITE and a scoped [data-tenant]/.dark override reaches them.
+   * Defaults = hsl(var(--accent)) fill · hsl(var(--primary)) glyph. */
   --card-service-launcher-icon-background: initial;
   --card-service-launcher-icon-foreground: initial;
+  /* Unavailable medallion tint — applied when the consumer supplies `disabledReason`, so an
+   * un-launchable service never reads as brand-live. `initial` for the same role-mirror reason.
+   * Defaults = hsl(var(--muted)) fill · hsl(var(--muted-foreground)) glyph. */
+  --card-service-launcher-unavailable-icon-background: initial;
+  --card-service-launcher-unavailable-icon-foreground: initial;
+  /* Description prose — also drives the disabled-reason line and the catalog-CTA caption. */
   --card-service-launcher-description-font-size: var(--font-size-xs);
   --card-service-launcher-description-line-height: var(--line-height-body);
+  /* Mono metadata line (hostname · plan) — tighter leading than prose by design. */
   --card-service-launcher-metadata-font-size: var(--font-size-xs);
   --card-service-launcher-metadata-line-height: var(--line-height-normal);
+  /* Dashed catalog/add companion tile: kept tall enough to sit level with a populated launcher
+   * tile in the same grid row. Four control tiers ≈ medallion + title + description + action. */
   --card-service-launcher-cta-min-height: calc(var(--control-height-lg) * 4);
+  /* Skeleton bar widths — shape-matched placeholders for the title and status badge. */
   --card-service-launcher-skeleton-title-width: var(--space-12);
   --card-service-launcher-skeleton-status-width: var(--space-10);
 }

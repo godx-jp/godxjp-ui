@@ -1,8 +1,11 @@
 /** Charts component prop types — @see docs/COMPONENTS.md#charts (tree-shaken `@godxjp/ui/charts`). */
+import type * as React from "react";
+
 import type {
   ClassNameProp,
   DescriptionProp,
   EmptyMessageProp,
+  FooterProp,
   IdProp,
   LabelProp,
   SizeProp,
@@ -61,6 +64,45 @@ export type BarChartProp = ChartCartesianBase & {
   stacked?: boolean;
   /** Lay bars out horizontally (category on the y-axis). */
   horizontal?: boolean;
+};
+
+/**
+ * @see CompactBarTrend
+ *
+ * Dependency-free (no `recharts`) compact vertical bar trend: N category/value
+ * pairs, muted marks plus ONE emphasized "current" mark. Every dimension resolves
+ * from `--chart-trend-*` tokens, so a screen never writes CSS or an inline height.
+ */
+export type CompactBarTrendProp = {
+  /** Row data — one bar per row. Not limited to seven points. */
+  data: ChartDatum[];
+  /** Key into each datum holding the category (tick) label. */
+  categoryKey: string;
+  /** Key into each datum holding the plotted numeric value. */
+  valueKey: string;
+  /** Accessible name + visible caption for the chart. REQUIRED (role="img" needs a name). */
+  label: LabelProp;
+  /** Extra context appended to the screen-reader description. */
+  description?: DescriptionProp;
+  /** Plot-height tier — `xs|sm|md|lg`. Defaults to `xs` (dashboard summary-card density). */
+  size?: SizeProp;
+  /**
+   * Index of the emphasized ("current") bar. Negative counts from the end
+   * (`-1` = the latest datum); out of range = no emphasis. Never colour-only —
+   * the emphasized row is annotated in the screen-reader text alternative.
+   */
+  emphasizedIndex?: number;
+  /** Render the category tick labels under the plot. */
+  showCategoryLabels?: boolean;
+  /** `Intl.NumberFormat` options for the values in the text alternative (locale is automatic). */
+  numberFormat?: Intl.NumberFormatOptions;
+  /** Activity footer slot rendered below the plot, outside the `role="img"` graphic. */
+  footer?: FooterProp;
+  /** Message shown when `data` is empty. Defaults to a localized "no data". */
+  emptyMessage?: EmptyMessageProp;
+  className?: ClassNameProp;
+  id?: IdProp;
+  ref?: React.Ref<HTMLElement>;
 };
 
 /** @see AreaChart */

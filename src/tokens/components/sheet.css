@@ -1,0 +1,19 @@
+/* Sheet RESPONSIVE (drawer / detail-panel) geometry.
+ *
+ * Lives in its own tier file rather than in feedback.css because these two knobs are the
+ * *responsive* contract (`SheetContent responsive="auto"`), not the static panel chrome —
+ * see feedback.css for --sheet-width-default / --sheet-pad-* / --sheet-overlay-background.
+ */
+
+:root {
+  /* Viewport width at and below which `SheetContent responsive="auto"` renders the mobile bottom
+   * sheet instead of the desktop side panel. Read at runtime by useSheetResponsiveMode() (a CSS
+   * @media cannot resolve a custom property), so a service moves the drawer breakpoint from ONE
+   * knob for every overlay that opts into the responsive contract — Sheet and OrgSwitcher alike.
+   * 48rem = 768px mirrors the library's canonical mobile line (useIsMobile). Accepts px/rem/em. */
+  --sheet-responsive-breakpoint-width: 48rem;
+  /* Block size cap for the responsive BOTTOM presentation only (never for a plain
+   * `side="bottom"` sheet, which stays content-sized). Keeps the sheet below the viewport so the
+   * SheetBody scrolls and the page behind it stays visible/dismissable. */
+  --sheet-bottom-max-height: 85dvh;
+}

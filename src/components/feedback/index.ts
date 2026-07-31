@@ -37,8 +37,9 @@ export {
   SheetPortal,
   SheetTitle,
   SheetTrigger,
+  useSheetResponsiveMode,
 } from "./sheet";
-export type { SheetContentProps } from "./sheet";
+export type { SheetContentProps, SheetPresentation, SheetResponsiveProp } from "./sheet";
 export { TwoFactorSetup } from "./two-factor-setup";
 export type { TwoFactorSetupLabels, TwoFactorSetupProps } from "./two-factor-setup";
 export { Toaster } from "./sonner";

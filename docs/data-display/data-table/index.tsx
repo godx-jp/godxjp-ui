@@ -192,6 +192,46 @@ export default function Demo() {
           <DataTable data={[]} columns={columns} getRowId={(row) => row.id} />
         </Flex>
 
+        {/* gh#216 — the two failure states, in the same table grid as empty/loading. */}
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            エラー（error · role=&quot;alert&quot; · onRetry で再試行を表示）
+          </Text>
+          <DataTable
+            data={[]}
+            columns={columns}
+            getRowId={(row) => row.id}
+            error
+            onRetry={() => {}}
+          />
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            エラー（onRetry なし · 再試行ボタンは出さない）
+          </Text>
+          <DataTable data={[]} columns={columns} getRowId={(row) => row.id} error />
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            エラー（error にノードを渡して文言を差し替え）
+          </Text>
+          <DataTable
+            data={[]}
+            columns={columns}
+            getRowId={(row) => row.id}
+            error={<Text tone="muted">コード INV_FETCH_504 · リクエストID req_7f3a91c0d2</Text>}
+          />
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            権限なし（denied · 403 は再試行を出さない）
+          </Text>
+          <DataTable data={[]} columns={columns} getRowId={(row) => row.id} denied />
+        </Flex>
+
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
             0 件 + numbered pagination（境界状態）

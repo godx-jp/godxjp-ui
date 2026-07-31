@@ -1,6 +1,8 @@
+import { LayoutDashboard } from "lucide-react";
 import { describe, expect, it } from "vitest";
 
 import { AppShell } from "../app-shell";
+import { Sidebar } from "../sidebar";
 import { renderWithUi, screen, userEvent, waitFor } from "@/test/render";
 import { expectNoA11yViolations } from "@/test/a11y";
 
@@ -138,6 +140,49 @@ describe("AppShell", () => {
     await user.click(screen.getByRole("button", { name: "Mở menu điều hướng" }));
 
     expect(await screen.findByRole("dialog")).toHaveTextContent("Dashboard settings");
+  });
+
+  it("does not double-pad a Sidebar in the drawer at a 390px mobile viewport (gh#211)", async () => {
+    const originalWidth = window.innerWidth;
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 390 });
+    window.dispatchEvent(new Event("resize"));
+    try {
+      const user = userEvent.setup();
+      renderWithUi(
+        <AppShell
+          sidebar={
+            <Sidebar
+              ariaLabel="主"
+              activeId="dashboard"
+              sections={[
+                { items: [{ id: "dashboard", label: "ダッシュボード", icon: LayoutDashboard }] },
+              ]}
+              onSelect={() => undefined}
+            />
+          }
+        >
+          <p>本文</p>
+        </AppShell>,
+      );
+
+      await user.click(screen.getByRole("button", { name: "Mở menu điều hướng" }));
+      await screen.findByRole("dialog");
+
+      const body = document.querySelector('[data-slot="sheet-body"]') as HTMLElement;
+      // The drawer body's inline inset is the AppShell knob, NOT the generic 24px sheet chrome
+      // inset — otherwise it stacks on the Sidebar's own --sidebar-nav-scroll-padding and every
+      // nav row sits ~32px from the drawer edge on a 390px screen.
+      expect(body).toHaveClass("app-mobile-nav-body", "px-[var(--app-shell-mobile-nav-inset)]");
+      expect(body.className).not.toContain("px-[var(--sheet-pad-x)]");
+      // Full-bleed pull-out is preserved, so the collapsed inset is measured from the drawer edge.
+      expect(body.className).toContain("-mx-[var(--sheet-pad-x)]");
+      // The Sidebar is the node inside that body — it owns the remaining inset.
+      expect(body.querySelector(".sb-root")).not.toBeNull();
+      expect(body.querySelector(".sb-nav-scroll")).not.toBeNull();
+    } finally {
+      Object.defineProperty(window, "innerWidth", { configurable: true, value: originalWidth });
+      window.dispatchEvent(new Event("resize"));
+    }
   });
 
   it("mobileNav={null} opts out — no drawer trigger is rendered", () => {

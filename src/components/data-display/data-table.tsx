@@ -1,7 +1,9 @@
 // DataTable — the one compound, TanStack-powered admin list component.
 //
 // Encapsulates: sticky header, density toggle, per-row click navigation, bulk
-// selection, empty/loading states, sorting, global search, column visibility,
+// selection, the full lifecycle state set (loading · empty · error · denied —
+// gh#216, precedence loading > denied > error > empty > rows), sorting, global
+// search, column visibility,
 // and BOTH cursor and numbered pagination. Internally driven by
 // `@tanstack/react-table` (useReactTable) so sorting / filtering / column
 // visibility / pagination / selection are all real table state — but the SIMPLE
@@ -42,6 +44,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import {
+  AlertCircle,
   ArrowDown,
   ArrowUp,
   ChevronLeft,
@@ -50,6 +53,8 @@ import {
   Layers,
   Layers2,
   MoreHorizontal,
+  RefreshCw,
+  ShieldAlert,
   SlidersHorizontal,
 } from "lucide-react";
 
@@ -138,6 +143,9 @@ interface DataTableContextValue<T = unknown> {
   onRowClick?: (row: T) => void;
   loading: boolean;
   empty?: React.ReactNode;
+  error?: React.ReactNode;
+  denied?: React.ReactNode;
+  onRetry?: () => void;
   striped: boolean;
   hoverable: boolean;
   stickyHeader: boolean;
@@ -194,6 +202,21 @@ interface DataTableProps<T> {
   loading?: boolean;
   /** Custom empty content when `data` is empty; defaults to a built-in EmptyState. */
   empty?: React.ReactNode;
+  /**
+   * Failure state (#216). `true` renders the built-in localized error message; any other node
+   * REPLACES it (e.g. an `Alert` carrying an error code + request id). Pass `undefined`/`false`
+   * when the read succeeded. Never pass a raw `Error` object — it is not renderable.
+   * Announced via `role="alert"`; precedence is loading → denied → error → empty → rows.
+   */
+  error?: React.ReactNode;
+  /**
+   * Permission-denied state (#216) — the read was refused, not failed. `true` renders the
+   * built-in localized "no access" message; any other node replaces it. Distinct from `error`
+   * so a 403 never offers a pointless retry.
+   */
+  denied?: React.ReactNode;
+  /** Retry handler for the built-in `error` state; omit to hide the retry action. */
+  onRetry?: () => void;
   /** Zebra-stripe the body rows (even rows get a subtle fill). */
   striped?: boolean;
   /** Highlight a row on hover even when it is not clickable (no `onRowClick`). */
@@ -250,6 +273,9 @@ export function DataTable<T>({
   manualPagination = false,
   loading = false,
   empty,
+  error,
+  denied,
+  onRetry,
   striped = false,
   hoverable = false,
   stickyHeader = true,
@@ -356,6 +382,9 @@ export function DataTable<T>({
     onRowClick,
     loading,
     empty,
+    error,
+    denied,
+    onRetry,
     striped,
     hoverable,
     stickyHeader,
@@ -586,12 +615,21 @@ DataTable.Content = function DataTableContent() {
     onRowClick,
     loading,
     empty,
+    error,
+    denied,
+    onRetry,
     striped,
     hoverable,
     stickyHeader,
     rowClassName,
   } = useDataTableContext();
   const { t } = useTranslation();
+
+  // A slot is "raised" when it carries content OR the sentinel `true` (built-in copy). `false` /
+  // `undefined` / `null` mean the state is not active — mirroring how a consumer writes
+  // `error={isError}` / `denied={status === 403}` straight from a query result.
+  const isDenied = denied != null && denied !== false;
+  const isError = !isDenied && error != null && error !== false;
 
   const rowPadding = tableRowHeightClass;
   const cellPadding = tableCellPaddingClass;
@@ -780,6 +818,60 @@ DataTable.Content = function DataTableContent() {
                   ))}
                 </TableRow>
               ))
+            ) : isDenied ? (
+              // DENIED (#216): the read was REFUSED, not failed — no retry is offered, because
+              // repeating a 403 cannot succeed. `warning` (not destructive) keeps it a policy
+              // statement rather than a system fault. Announced politely: a permission boundary
+              // is expected information, not an interruption.
+              <TableRow className="hover:bg-transparent">
+                <TableCell
+                  colSpan={emptyColSpan}
+                  className="ui-data-table-empty"
+                  aria-live="polite"
+                >
+                  {denied === true ? (
+                    <EmptyState
+                      icon={ShieldAlert}
+                      tone="warning"
+                      title={t("dataTable.denied")}
+                      description={t("dataTable.deniedDescription")}
+                      titleAs="p"
+                    />
+                  ) : (
+                    denied
+                  )}
+                </TableCell>
+              </TableRow>
+            ) : isError ? (
+              // ERROR (#216): a failed read. Announced assertively (`role="alert"`) because the
+              // user's request did not complete — unlike empty/denied, which are states of the data
+              // itself. The role sits on an inner wrapper, never on the <td>: overriding a cell's
+              // role would strip it out of the table's grid semantics for AT.
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={emptyColSpan} className="ui-data-table-empty">
+                  <div role="alert">
+                    {error === true ? (
+                      <EmptyState
+                        icon={AlertCircle}
+                        tone="destructive"
+                        title={t("dataTable.error")}
+                        description={t("dataTable.errorDescription")}
+                        titleAs="p"
+                        action={
+                          onRetry ? (
+                            <Button variant="outline" size="sm" onClick={onRetry}>
+                              <RefreshCw aria-hidden="true" />
+                              {t("common.retry")}
+                            </Button>
+                          ) : undefined
+                        }
+                      />
+                    ) : (
+                      error
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
             ) : rowCount === 0 ? (
               <TableRow className="hover:bg-transparent">
                 <TableCell

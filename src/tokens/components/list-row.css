@@ -1,6 +1,7 @@
 /* ListRow component tokens — a single-line entity row for short lists inside a Card
- * (sessions / API tokens / linked accounts / passkeys …). Sits in a flush CardContent;
- * rows separate with a quiet divider (#44 — chrome defaults to the calm semantic border). */
+ * (sessions / API tokens / linked accounts / passkeys / notifications …). Sits in a flush
+ * CardContent; rows separate with a quiet divider (#44 — chrome defaults to the calm
+ * semantic border). */
 :root {
   --list-row-padding-y: var(--space-3);
   --list-row-padding-x: var(--space-4);
@@ -8,4 +9,24 @@
   /* Row divider — `initial` so the --border default re-resolves at the call site under a scoped
    * theme (a :root binding to a role var freezes at :root). Default = 1px solid hsl(var(--border)). */
   --list-row-border: initial;
+  /* Inline size the content column keeps before the trailing actions wrap onto their own line
+   * (#45 — a service retunes the stack threshold to its grid). Clamped with min(…, 100%) at the
+   * call site, so a container narrower than the knob can never force page-root overflow (#224). */
+  --list-row-body-min-width: 12rem;
+  /* Gap BETWEEN trailing actions — they also wrap among themselves at narrow widths (#224). */
+  --list-row-trailing-gap: var(--space-2);
+  /* Read (default) row surface — `initial`, documented default = transparent, i.e. the Card
+   * surface shows through untouched (#44 — chrome defaults to the quietest state). */
+  --list-row-read-background: initial;
+  /* Unread emphasis surface (`unread` rows) — `initial` so the --muted default re-resolves at the
+   * call site under a scoped theme. Documented default = hsl(var(--muted)), the same quiet
+   * emphasis role the table header uses; it keeps the xs muted description line at WCAG AA
+   * (4.63:1 light / 5.47:1 dark), which hsl(var(--accent)) would not (4.23:1 light). */
+  --list-row-unread-background: initial;
+  /* Unread indicator dot fill — `initial` so the --primary default re-resolves at the call site
+   * under a scoped theme. Documented default = hsl(var(--primary)). */
+  --list-row-indicator-color: initial;
+  /* Diameter of the read/unread indicator dot; the gutter is reserved on read rows too so the
+   * titles of a mixed list stay on one optical axis. */
+  --list-row-indicator-size: var(--space-2);
 }

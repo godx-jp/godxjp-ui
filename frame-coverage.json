@@ -48,7 +48,8 @@
     "data-entry/form-field": "data-entry/form-field/index",
     "data-display/card": "data-display/card/index",
     "data-display/data-table": "data-display/data-table/index",
-    "general/button": "general/button/index"
+    "general/button": "general/button/index",
+    "layout/legal-document-shell": "layout/legal-document-shell/index"
   },
   "excludeExports": [
     "useFormLayout",

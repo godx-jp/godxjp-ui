@@ -32,6 +32,7 @@
     },
     "./styles": "./dist/styles/index.css",
     "./styles/*": "./dist/styles/*.css",
+    "./theme/*": "./dist/theme/*",
     "./tokens": "./dist/tokens/base.css",
     "./admin": {
       "types": "./dist/components/admin/index.d.ts",
@@ -108,6 +109,10 @@
     "./i18n": {
       "types": "./dist/i18n/index.d.ts",
       "import": "./dist/i18n/index.js"
+    },
+    "./email": {
+      "types": "./dist/email/index.d.ts",
+      "import": "./dist/email/index.js"
     },
     "./lib/utils": {
       "types": "./dist/lib/utils.d.ts",
@@ -290,6 +295,8 @@
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",
     "check:frame-coverage": "node scripts/frame-coverage.mjs",
+    "gen:frame-coverage-ledger": "node scripts/gen-frame-coverage-ledger.mjs",
+    "check:frame-coverage-ledger": "node scripts/gen-frame-coverage-ledger.mjs --check && node scripts/check-frame-coverage-ledger.mjs",
     "check:screen-reader-evidence": "node scripts/check-screen-reader-evidence.mjs",
     "check:voiceover-capture": "node scripts/check-voiceover-capture.mjs",
     "check:data-entry-frame-runtime": "node scripts/check-data-entry-frame-runtime.mjs",
@@ -301,14 +308,15 @@
     "check:display-runtime-evidence": "node scripts/check-display-runtime-evidence.mjs",
     "check:data-table-pagination-wrap": "node scripts/check-data-table-pagination-wrap.mjs",
     "check:button-icon-xs": "node scripts/check-button-icon-xs.mjs",
-    "check:frame-contracts": "pnpm check:component-api-manifest && pnpm audit:component-cases && pnpm check:frame-coverage && pnpm check:screen-reader-evidence && pnpm check:data-entry-owner-source && pnpm check:display-runtime-evidence",
+    "check:frame-contracts": "pnpm check:component-api-manifest && pnpm audit:component-cases && pnpm check:frame-coverage && pnpm check:frame-coverage-ledger && pnpm check:screen-reader-evidence && pnpm check:data-entry-owner-source && pnpm check:display-runtime-evidence",
     "check:final-touch-rtl": "node scripts/check-final-touch-rtl.mjs",
     "check:frame-runtime": "pnpm check:data-entry-frame-runtime && pnpm check:data-entry-touch-aria && pnpm check:layout-nav-frames && pnpm check:provider-feedback-query-runtime && pnpm check:layout-nav-closure && pnpm check:final-touch-rtl && pnpm check:data-table-pagination-wrap && pnpm check:button-icon-xs",
     "pretest": "pnpm check:frame-coverage",
-    "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm check:frame-coverage && pnpm test",
-    "verify:static": "pnpm build && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm check:mcp-prop-sync && pnpm check:contrast && pnpm check:visual-audit && pnpm test",
+    "verify": "pnpm typecheck && pnpm lint && pnpm format && pnpm build && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:email-token-sync && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm check:frame-coverage && pnpm test",
+    "verify:static": "pnpm build && pnpm typecheck && pnpm typecheck:docs && pnpm lint && pnpm preview:build && pnpm check:example-imports && pnpm check:core-isolation && pnpm check:no-consumer-coupling && pnpm check:use-client && pnpm check:prop-vocabulary && pnpm check:token-tiers && pnpm check:control-sizing && pnpm check:rtl && pnpm check:typography && pnpm check:mcp-token-sync && pnpm check:email-token-sync && pnpm check:mcp-lockstep && pnpm check:mcp-sync && pnpm check:mcp-orphans && pnpm check:mcp-pattern-imports && pnpm check:audit-sync && pnpm check:mcp-prop-sync && pnpm check:contrast && pnpm check:visual-audit && pnpm test",
     "verify:release": "pnpm verify:static && pnpm check:frame-contracts && pnpm check:frame-coverage && pnpm check:frame-axe",
     "check:mcp-lockstep": "node scripts/check-release-lockstep.mjs",
+    "check:release-plan": "node scripts/check-release-command-plan.mjs",
     "check:mcp-pattern-imports": "node scripts/check-mcp-pattern-imports.mjs",
     "check:mcp-sync": "node scripts/check-mcp-sync.mjs",
     "check:mcp-orphans": "node scripts/check-mcp-orphans.mjs",
@@ -323,6 +331,8 @@
     "check:typography": "node scripts/check-typography.mjs",
     "gen:component-tokens": "node scripts/gen-component-tokens.mjs",
     "check:mcp-token-sync": "node scripts/gen-component-tokens.mjs --check",
+    "gen:email-tokens": "node scripts/gen-email-tokens.mjs",
+    "check:email-token-sync": "node scripts/gen-email-tokens.mjs --check",
     "check:core-isolation": "node scripts/check-core-isolation.mjs",
     "check:no-consumer-coupling": "node scripts/check-no-consumer-coupling.mjs",
     "release": "node scripts/release.mjs",

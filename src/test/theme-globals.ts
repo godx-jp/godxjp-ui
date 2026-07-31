@@ -31,7 +31,14 @@ const FONT_SIZE_VARS: Record<FontSizeGlobal, Record<string, string>> = {
 };
 
 /** Brand primary presets — HSL components (no `hsl()` wrapper), like `theme.css`. */
-export const PRIMARY_COLOR_GLOBALS = ["brand", "crm", "logistics", "partner", "slate"] as const;
+export const PRIMARY_COLOR_GLOBALS = [
+  "brand",
+  "crm",
+  "logistics",
+  "partner",
+  "slate",
+  "dxs",
+] as const;
 export type PrimaryColorGlobal = (typeof PRIMARY_COLOR_GLOBALS)[number];
 
 export const PRIMARY_COLOR_LABELS: Record<PrimaryColorGlobal, string> = {
@@ -40,6 +47,7 @@ export const PRIMARY_COLOR_LABELS: Record<PrimaryColorGlobal, string> = {
   logistics: "Logistics Teal",
   partner: "Partner Orange",
   slate: "HQ Slate",
+  dxs: "DXS Canonical",
 };
 
 /** Primary, focus ring, and tinted accent mirror service theme.css overrides. */
@@ -78,6 +86,16 @@ export const PRIMARY_COLOR_VARS: Record<PrimaryColorGlobal, Record<string, strin
     "--ring": "215 25% 27%",
     "--accent": "215 25% 94%",
     "--accent-foreground": "215 25% 20%",
+  },
+  // Canonical DXS preset (gh#214) — the shipped GodX Navy ramp. The surface half of the
+  // contract (auth measure/density/insets) lives in tokens/axes.css + theme/dxs.canonical.css;
+  // only the palette is mirrored here, which is all this toolbar helper binds.
+  dxs: {
+    "--primary": "211 73% 15%",
+    "--primary-foreground": "0 0% 100%",
+    "--ring": "24 99% 46%",
+    "--accent": "24 99% 95%",
+    "--accent-foreground": "24 99% 28%",
   },
 };
 

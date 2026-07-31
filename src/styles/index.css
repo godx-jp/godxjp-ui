@@ -7,13 +7,21 @@
  *   @import "@godxjp/ui/styles/control";     // + only the layout layers you use
  *   @import "@godxjp/ui/styles/dialog-layout";
  *   ...
- * and add `@godxjp/ui/styles/fonts` only if you want the bundled faces.
- * See src/styles/base.css for the full list and rules.
+ * and add `@godxjp/ui/styles/fonts` AFTER `styles/base` if you want the bundled
+ * faces. See src/styles/base.css for the full list and rules.
+ *
+ * ORDER IS LOAD-BEARING — `fonts.css` MUST come AFTER `base.css`.
+ * `base.css` pulls in `tokens/base.css` → `tokens/foundation.css`, which declares
+ * the font-agnostic `:root { --font-sans-base: <system stack> }` default. Both
+ * declarations sit on `:root` at identical specificity (0,1,0), so the LATER one
+ * wins. With `fonts.css` first the bundled faces could never apply and every
+ * consumer downloaded ~800 KB of dead @font-face (issue #210).
  * ───────────────────────────────────────────────────────────────────────── */
 @import "sonner/dist/styles.css";
 @import "react-day-picker/style.css";
-@import "./fonts.css";
 @import "./base.css";
+/* AFTER the token layers — see the ORDER IS LOAD-BEARING note above. */
+@import "./fonts.css";
 @import "./shell-layout.css";
 @import "./motion.css";
 @import "./layout.css";

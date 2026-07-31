@@ -1,0 +1,4 @@
+Human-recorded VoiceOver/NVDA artifacts for issue #171 land here as
+<record-id>.<m4a|mov|txt>, referenced by evidenceUrl in screen-reader-evidence.json.
+No file in this directory may be generated from Axe, DOM assertions or an
+accessibility-tree snapshot: only real assistive-technology speech capture counts.

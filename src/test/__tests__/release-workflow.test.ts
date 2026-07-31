@@ -7,8 +7,11 @@ const {
   RELEASE_STEPS,
   assertOnlyCoordinatedManifestChanges,
   assertRegistryArtifact,
+  assertReleaseCommandPlan,
   buildReleasePlan,
+  createReleaseRuntime,
   integrityFor,
+  planReleaseCommands,
   reconcilePackagePublication,
   releaseCommandForStep,
   runRelease,
@@ -27,6 +30,8 @@ type RecoveryState = Record<string, unknown> & {
   ui: Record<string, unknown>;
   mcp: Record<string, unknown>;
 };
+type ReleaseCommand = { step: string; binary: string; args: string[]; cwd: string };
+type Capture = { status: number; stdout: string; stderr: string };
 
 function fixture(): string {
   const root = mkdtempSync(join(tmpdir(), "godxjp-release-test-"));
@@ -112,6 +117,176 @@ describe("recoverable coordinated release", () => {
     );
   });
 
+  it("plans the whole side-effecting command sequence with every gate before the first publish", () => {
+    const plan = buildReleasePlan({
+      currentVersion: "18.4.0",
+      uiBump: "patch",
+      mcpBump: "sync",
+      sourceHead: SOURCE_HEAD,
+    });
+    const commands: ReleaseCommand[] = planReleaseCommands(plan, artifacts());
+    expect(
+      commands.map((entry) => `${[entry.binary, ...entry.args].join(" ")} @${entry.cwd}`),
+    ).toEqual([
+      "pnpm run verify:release @root",
+      "pnpm install --frozen-lockfile @mcp",
+      "pnpm build @mcp",
+      "pnpm test @mcp",
+      "node scripts/check-release-lockstep.mjs @root",
+      "npm whoami @root",
+      "npm publish /tmp/verified-ui.tgz --access public --tag godx-staging-18.4.1 @root",
+      "npm publish /tmp/verified-mcp.tgz --access public --tag godx-staging-18.4.1 @root",
+      "npm dist-tag add @godxjp/ui@18.4.1 latest @root",
+      "npm dist-tag add @godxjp/ui-mcp@18.4.1 latest @root",
+      "npm dist-tag rm @godxjp/ui godx-staging-18.4.1 @root",
+      "npm dist-tag rm @godxjp/ui-mcp godx-staging-18.4.1 @root",
+    ]);
+    expect(assertReleaseCommandPlan(commands)).toBe(commands);
+  });
+
+  it("rejects a package-manager version bump and any publish that outruns a gate", () => {
+    const plan = buildReleasePlan({
+      currentVersion: "18.4.0",
+      uiBump: "patch",
+      mcpBump: "sync",
+      sourceHead: SOURCE_HEAD,
+    });
+    const planned: ReleaseCommand[] = planReleaseCommands(plan, artifacts());
+    expect(() =>
+      assertReleaseCommandPlan([
+        { step: "legacy-bump", binary: "npm", args: ["version", "patch"], cwd: "root" },
+        ...planned,
+      ]),
+    ).toThrow('must not bump with "npm version"');
+    const publishFirst = [
+      ...planned.filter((entry) => entry.step === RELEASE_STEPS.PublishUi),
+      ...planned.filter((entry) => entry.step !== RELEASE_STEPS.PublishUi),
+    ];
+    expect(() => assertReleaseCommandPlan(publishFirst)).toThrow(
+      `Release plan runs preflight gate "${RELEASE_STEPS.VerifyRoot}" after publish.`,
+    );
+  });
+
+  it("refuses to plan a publish without a tarball verified by the preflight pack", () => {
+    const plan = buildReleasePlan({
+      currentVersion: "18.4.0",
+      uiBump: "patch",
+      mcpBump: "sync",
+      sourceHead: SOURCE_HEAD,
+    });
+    expect(() => releaseCommandForStep(RELEASE_STEPS.PublishUi, plan, {})).toThrow(
+      "no verified tarball",
+    );
+  });
+
+  it("runs the real executor offline in gate → publish → promote → commit order at the target version", () => {
+    const rootDir = fixture();
+    const packed = artifacts();
+    const registry: Record<string, { integrity: string | null; tags: Record<string, string> }> = {
+      "@godxjp/ui": { integrity: null, tags: { latest: "18.4.0" } },
+      "@godxjp/ui-mcp": { integrity: null, tags: { latest: "18.4.0" } },
+    };
+    const log: string[] = [];
+    const manifestsAtPublish: Array<{ ui: unknown; mcp: unknown }> = [];
+
+    const run = (binary: string, args: string[], cwd: string): void => {
+      log.push(`${[binary, ...args].join(" ")} @${cwd === join(rootDir, "mcp") ? "mcp" : "root"}`);
+      if (binary !== "npm") return;
+      if (args[0] === "publish") {
+        manifestsAtPublish.push({
+          ui: JSON.parse(readFileSync(join(rootDir, "package.json"), "utf8")),
+          mcp: JSON.parse(readFileSync(join(rootDir, "mcp/package.json"), "utf8")),
+        });
+        const name = args[1] === packed.uiTarball ? "@godxjp/ui" : "@godxjp/ui-mcp";
+        registry[name].integrity = name === "@godxjp/ui" ? "sha512-ui" : "sha512-mcp";
+        registry[name].tags[args[args.length - 1]] = "18.4.1";
+      }
+      if (args[0] === "dist-tag" && args[1] === "add") {
+        const [name, version] = args[2].split(/@(?=\d)/);
+        registry[name].tags.latest = version;
+      }
+      if (args[0] === "dist-tag" && args[1] === "rm") delete registry[args[2]].tags[args[3]];
+    };
+
+    const capture = (binary: string, args: string[]): Capture => {
+      if (binary === "git" && args[0] === "status") return { status: 0, stdout: "", stderr: "" };
+      if (binary === "git" && args[0] === "diff") return { status: 1, stdout: "", stderr: "" };
+      if (binary === "npm" && args[0] === "view" && args[2] === "dist.integrity") {
+        const spec = args[1];
+        const integrity = registry[spec.slice(0, spec.lastIndexOf("@"))].integrity;
+        return integrity
+          ? { status: 0, stdout: JSON.stringify(integrity), stderr: "" }
+          : { status: 1, stdout: "", stderr: "npm ERR! code E404" };
+      }
+      if (binary === "npm" && args[0] === "view" && args[2] === "dist-tags") {
+        return { status: 0, stdout: JSON.stringify(registry[args[1]].tags), stderr: "" };
+      }
+      throw new Error(`unexpected capture: ${binary} ${args.join(" ")}`);
+    };
+
+    const runtime = createReleaseRuntime({ repositoryRoot: rootDir, run, capture });
+    runRelease({
+      rootDir,
+      uiBump: "patch",
+      mcpBump: "sync",
+      sourceHead: SOURCE_HEAD,
+      runStep: runtime.runStep,
+      compensateLatest: runtime.compensateLatest,
+      packTargetManifests: () => {
+        log.push("pack target manifests @root");
+        return packed;
+      },
+    });
+
+    expect(log).toEqual([
+      "pnpm run verify:release @root",
+      "pnpm install --frozen-lockfile @mcp",
+      "pnpm build @mcp",
+      "pnpm test @mcp",
+      "node scripts/check-release-lockstep.mjs @root",
+      "pack target manifests @root",
+      "npm whoami @root",
+      "npm publish /tmp/verified-ui.tgz --access public --tag godx-staging-18.4.1 @root",
+      "npm publish /tmp/verified-mcp.tgz --access public --tag godx-staging-18.4.1 @root",
+      "npm dist-tag add @godxjp/ui@18.4.1 latest @root",
+      "npm dist-tag add @godxjp/ui-mcp@18.4.1 latest @root",
+      "npm dist-tag rm @godxjp/ui godx-staging-18.4.1 @root",
+      "npm dist-tag rm @godxjp/ui-mcp godx-staging-18.4.1 @root",
+      "git add package.json mcp/package.json @root",
+      "git commit -m chore(release): UI + MCP @18.4.1 @root",
+    ]);
+    expect(manifestsAtPublish).toHaveLength(2);
+    for (const snapshot of manifestsAtPublish) {
+      expect(snapshot.ui).toMatchObject({ version: "18.4.1", godxUiMcp: "18.4.1" });
+      expect(snapshot.mcp).toMatchObject({ version: "18.4.1", godxUiCompatibility: "18.4.x" });
+    }
+  });
+
+  it("aborts the whole release when an MCP gate fails, before any publish command runs", () => {
+    const rootDir = fixture();
+    const log: string[] = [];
+    const runtime = createReleaseRuntime({
+      repositoryRoot: rootDir,
+      run: (binary: string, args: string[]) => {
+        log.push([binary, ...args].join(" "));
+        if (binary === "pnpm" && args[0] === "build") throw new Error("mcp build failed");
+      },
+      capture: () => ({ status: 0, stdout: "{}", stderr: "" }),
+    });
+    expect(() =>
+      runRelease({
+        rootDir,
+        uiBump: "patch",
+        mcpBump: "sync",
+        sourceHead: SOURCE_HEAD,
+        runStep: runtime.runStep,
+        packTargetManifests: () => artifacts(),
+      }),
+    ).toThrow("mcp build failed");
+    expect(log.some((entry) => entry.startsWith("npm publish"))).toBe(false);
+    expect(readFileSync(join(rootDir, "package.json"), "utf8")).toContain('"version": "18.4.0"');
+  });
+
   it("packs coordinated metadata locally without executing release gates", () => {
     const rootDir = fixture();
     const external: string[] = [];
@@ -175,7 +350,7 @@ describe("recoverable coordinated release", () => {
   it("publishes exact verified paths under the staging tag in UI then MCP order", () => {
     const rootDir = fixture();
     const packed = artifacts();
-    const commands: Array<[string, string[]]> = [];
+    const commands: ReleaseCommand[] = [];
     runRelease({
       rootDir,
       uiBump: "patch",
@@ -194,8 +369,18 @@ describe("recoverable coordinated release", () => {
       packTargetManifests: () => packed,
     });
     expect(commands).toEqual([
-      ["npm", ["publish", packed.uiTarball, "--access", "public", "--tag", "godx-staging-18.4.1"]],
-      ["npm", ["publish", packed.mcpTarball, "--access", "public", "--tag", "godx-staging-18.4.1"]],
+      {
+        step: RELEASE_STEPS.PublishUi,
+        binary: "npm",
+        args: ["publish", packed.uiTarball, "--access", "public", "--tag", "godx-staging-18.4.1"],
+        cwd: "root",
+      },
+      {
+        step: RELEASE_STEPS.PublishMcp,
+        binary: "npm",
+        args: ["publish", packed.mcpTarball, "--access", "public", "--tag", "godx-staging-18.4.1"],
+        cwd: "root",
+      },
     ]);
   });
 
@@ -675,5 +860,36 @@ describe("recoverable coordinated release", () => {
     );
     expect(output).toContain("NOT validated");
     expect(output).toContain('"releaseValidated": false');
+    const plan = JSON.parse(output.slice(output.indexOf("{"))) as {
+      targetVersion: string;
+      commands: Array<{ step: string; command: string }>;
+      packed: {
+        ui: { version: string; godxUiMcp: string };
+        mcp: { version: string; godxUiCompatibility: string };
+      };
+    };
+    // The dry run packs the POST-bump manifests: both tarballs already carry the coordinated
+    // target version and both compatibility fields, with no publish before the gates (issue #230).
+    expect(plan.packed.ui).toEqual({
+      version: plan.targetVersion,
+      godxUiMcp: plan.targetVersion,
+    });
+    expect(plan.packed.mcp.version).toBe(plan.targetVersion);
+    expect(plan.packed.mcp.godxUiCompatibility).toBe(
+      `${plan.targetVersion.split(".").slice(0, 2).join(".")}.x`,
+    );
+    const firstPublish = plan.commands.findIndex((entry) =>
+      entry.command.startsWith("npm publish"),
+    );
+    expect(firstPublish).toBeGreaterThan(0);
+    expect(plan.commands.map((entry) => entry.command).slice(0, firstPublish)).toEqual([
+      "pnpm run verify:release",
+      "pnpm install --frozen-lockfile",
+      "pnpm build",
+      "pnpm test",
+      "node scripts/check-release-lockstep.mjs",
+      "npm whoami",
+    ]);
+    expect(plan.commands.some((entry) => entry.command.includes("npm version"))).toBe(false);
   }, 20_000);
 });

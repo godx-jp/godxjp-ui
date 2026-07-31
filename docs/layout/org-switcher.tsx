@@ -1,6 +1,13 @@
 import { useState } from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import {
   Flex,
@@ -11,11 +18,21 @@ import {
 } from "@godxjp/ui/layout";
 
 const organizations = [
-  { id: "godx", name: "Godx株式会社", meta: "Owner" },
+  {
+    id: "godx",
+    name: "Godx株式会社",
+    meta: "Owner",
+    // `badgeLabel` is what a screen reader announces — the trigger's accessible name comes from
+    // `labels.trigger`, so the visual Badge alone would never reach assistive technology.
+    badge: <Badge variant="secondary">Trial</Badge>,
+    badgeLabel: "トライアルプラン",
+  },
   {
     id: "platform",
     name: "非常に長い組織名株式会社プラットフォーム開発本部",
     meta: "Member",
+    badge: <Badge variant="outline">Enterprise</Badge>,
+    badgeLabel: "エンタープライズプラン",
   },
   { id: "suspended", name: "Archived Workspace", meta: "利用停止", disabled: true },
 ];
@@ -43,7 +60,11 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle level={2}>デスクトップの組織選択</CardTitle>
-            <CardDescription>検索可能なpopover。選択状態はconsumerが保持します。</CardDescription>
+            <CardDescription>
+              検索可能なpopover。選択状態はconsumerが保持します。`responsive=&quot;auto&quot;`は共有
+              トークン `--sheet-responsive-breakpoint-width`（48rem）で popover と bottom sheet
+              を切り替えます。badgeはtriggerとmenu行の末尾に並びます（collapsed時は非表示）。
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">

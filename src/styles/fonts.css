@@ -7,10 +7,21 @@
  *                Vietnamese glyph coverage used by the product locales.
  *   · Noto Sans JP — retained as the CJK fallback after M PLUS 2.
  *
- * The all-in-one `@godxjp/ui/styles` entry pulls this in automatically. If you
- * manage fonts yourself (e.g. next/font), DON'T import this — import
- * `@godxjp/ui/styles/base` + the layout layers you use and supply your own
- * faces via the --font-family-* tokens.
+ * IMPORT ORDER IS LOAD-BEARING — this file MUST be imported AFTER
+ * `@godxjp/ui/styles/base`:
+ *
+ *     @import "@godxjp/ui/styles/base";   /· tokens: --font-sans-base = system stack ·/
+ *     @import "@godxjp/ui/styles/fonts";  /· THEN the bundled faces overwrite it ·/
+ *
+ * The token fills below and foundation.css's font-agnostic default both target
+ * `:root` at identical specificity (0,1,0), so whichever is parsed LAST wins.
+ * Imported first, this file is silently dead — the system stack renders and the
+ * ~800 KB of @font-face is downloaded for nothing (issue #210).
+ *
+ * The all-in-one `@godxjp/ui/styles` entry pulls this in automatically, in the
+ * correct position. If you manage fonts yourself (e.g. next/font), DON'T import
+ * this — import `@godxjp/ui/styles/base` + the layout layers you use and supply
+ * your own faces via the --font-family-* tokens.
  * ───────────────────────────────────────────────────────────────────────── */
 @import "@fontsource/m-plus-2/400.css";
 @import "@fontsource/m-plus-2/500.css";

@@ -7,8 +7,16 @@ import type { PageDensityProp } from "../props/vocabulary/layout.prop";
 
 /** Light / dark spine — `data-theme` (alias of the legacy `.dark` class). */
 export type AppTheme = "light" | "dark";
-/** Primary-palette preset — `data-brand`. `null` = keep the app's own `--primary`. */
-export type AppBrand = "brand" | "crm" | "logistics" | "partner" | "slate";
+/**
+ * Primary-palette preset — `data-brand`. `null` = keep the app's own `--primary`.
+ *
+ * `"dxs"` is the CANONICAL DXS preset: unlike the per-vertical tints it also binds the canonical
+ * hosted-identity surface contract (auth measure/density/insets + the brand-green identity mark),
+ * so every surface matches the canonical artboards with no consumer page CSS (gh#214). See
+ * `src/tokens/axes.css` for the bindings and `@godxjp/ui/theme/dxs.canonical.css` for the
+ * copy-free stylesheet entry point.
+ */
+export type AppBrand = "brand" | "crm" | "logistics" | "partner" | "slate" | "dxs";
 /** Control / table / spacing density — `data-density` (same vocab as PageContainer). */
 export type AppDensity = PageDensityProp;
 /** Base type size — `data-font-size`; a preset rescales the whole golden scale. */
@@ -21,6 +29,7 @@ export const APP_BRANDS = [
   "logistics",
   "partner",
   "slate",
+  "dxs",
 ] as const satisfies readonly AppBrand[];
 export const APP_DENSITIES = [
   "compact",

@@ -195,6 +195,14 @@ export const SHOWCASES: ShowcaseEntry[] = [
     load: () => import("../../docs/showcase/settings-security-mfa"),
   },
   {
+    id: "settings-account-sections",
+    title: "設定セクション / 行 (gh#216)",
+    description:
+      "Composition chuẩn cho trang cài đặt: Identity (Descriptions) · Preferences (CardContent flush + ListRow, control nằm ở trailing) · Billing handoff (StatusBadge canonical + Intl tiền/ngày/vùng) · Danger zone (Card accent=destructive + AlertDialog challenge). Đổi nhãn JA/EN/VI để kiểm tra nhãn dài ở 1440/1024/390. KHÔNG thêm component framework nào.",
+    tag: "Settings",
+    load: () => import("../../docs/showcase/settings-account-sections"),
+  },
+  {
     id: "case2-employee-me",
     title: "従業員 /me",
     description:

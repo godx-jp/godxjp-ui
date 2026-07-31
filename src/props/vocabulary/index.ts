@@ -43,6 +43,8 @@ export type {
   PageDensityProp,
   PageContainerVariantProp,
   CenteredShellWidthProp,
+  CenteredShellAlignProp,
+  AuthShellPresetProp,
   TableDensityProp,
   DensityProp,
   GapProp,

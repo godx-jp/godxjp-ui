@@ -29,6 +29,19 @@
     color: hsl(var(--foreground));
     text-decoration: underline;
   }
+
+  /*
+   * AppSettingPicker `compact` (gh#217) — a small, content-hugging LABELLED trigger for auth /
+   * legal footers: it keeps the icon, the readable value and the real control chrome (so it is
+   * obviously a switcher), but re-tiers the box to --control-height-sm and drops the picker's owned
+   * per-kind width. Every value is a token; the height comes from the official control tier, never
+   * a literal or an ad-hoc calc.
+   */
+  .ui-app-setting-picker-compact {
+    --control-height: var(--app-setting-picker-compact-control-height);
+    --control-padding-x: var(--app-setting-picker-compact-padding-x);
+    --control-font-size: var(--app-setting-picker-compact-font-size);
+  }
   [data-slot="tabs-list"] {
     max-inline-size: var(--tabs-list-max-inline-size);
     overflow-x: var(--tabs-list-overflow);

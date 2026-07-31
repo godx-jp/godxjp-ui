@@ -8,6 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  useSheetResponsiveMode,
 } from "@godxjp/ui/feedback";
 import {
   Badge,
@@ -61,6 +62,11 @@ export default function Demo() {
   // Card 3 · edit with a destructive action: 削除 far-left (mr-auto), Cancel + Save right.
   const [recordOpen, setRecordOpen] = useState(false);
   const [memo, setMemo] = useState("4月度 経費精算");
+
+  // Card 4 · responsive detail panel. The SAME hook SheetContent uses, so the label below always
+  // reports the presentation the panel will actually render — resize the frame to 390 to see it flip.
+  const [detailOpen, setDetailOpen] = useState(false);
+  const presentation = useSheetResponsiveMode("auto");
 
   return (
     <PageContainer
@@ -271,6 +277,59 @@ export default function Demo() {
                 </SheetFooter>
               </SheetContent>
             </Sheet>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              Responsive detail panel (responsive=&quot;auto&quot; · desktop side / mobile bottom)
+            </CardTitle>
+            <CardDescription>
+              ONE Sheet covers both viewports: above{" "}
+              <code>--sheet-responsive-breakpoint-width</code> (48rem / 768px) it is the desktop
+              side panel, at or below it the mobile bottom sheet capped by{" "}
+              <code>--sheet-bottom-max-height</code>. The breakpoint comes from a theme token. Never
+              re-derive it with a page-local <code>useMediaQuery</code>. Focus trap, Escape and
+              focus restoration are identical in both presentations because it is the same Radix
+              Dialog.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Text size="sm" tone="muted" aria-live="polite">
+                現在の表示: {presentation === "bottom" ? "bottom sheet (mobile)" : "side panel"}
+              </Text>
+              <Sheet open={detailOpen} onOpenChange={setDetailOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    請求書の詳細
+                  </Button>
+                </SheetTrigger>
+                <SheetContent responsive="auto" width={420}>
+                  <SheetHeader
+                    title="請求書 INV-1024"
+                    subtitle="2026-07-30 発行 · 株式会社サンプル"
+                    extra={<Badge tone="success">支払済み</Badge>}
+                  />
+                  <SheetBody className="flex flex-col gap-4">
+                    <Text size="sm">
+                      レコードのdetail surfaceはdesktopでは右side panel、mobileではbottom
+                      sheetとして表示されます。
+                    </Text>
+                    <Text size="sm" tone="muted">
+                      幅は side panel のときだけ適用され、bottom sheet
+                      では全幅になります（widthはbottomでは無視されます）。
+                    </Text>
+                  </SheetBody>
+                  <SheetFooter>
+                    <Button variant="outline" onClick={() => setDetailOpen(false)}>
+                      閉じる
+                    </Button>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            </Flex>
           </CardContent>
         </Card>
       </Flex>

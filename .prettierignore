@@ -17,3 +17,8 @@ pnpm-lock.yaml
 scripts/frame-axe.baseline.json
 scripts/frame-geometry.baseline.json
 docs/FRAME-COVERAGE-REPORT.md
+
+# Issue #163 contract ledger, owned by scripts/gen-frame-coverage-ledger.mjs (its --check is the
+# formatter of record). Prettier must not reflow it, or `check:frame-coverage-ledger` and
+# `pnpm format` would each demand the other's output.
+preview/frame-coverage.ledger.json

@@ -67,6 +67,15 @@ export const PROP_VOCABULARY: PropVocabEntry[] = [
     values: ["compact", "default", "comfortable"],
     usedBy: ["PageContainer"],
   },
+  {
+    name: "AuthShellPresetProp",
+    concept:
+      "Named hosted-identity FLOW MEASURE for AuthShell — the card max-width plus the desktop and mobile page gutters, all owned by component tokens.",
+    values: ["default", "device-authorization", "context-selection"],
+    usedBy: ["AuthShell"],
+    notes:
+      'Orthogonal to AuthShell\'s `variant` (which owns control density + heading size) and applied after it, so `variant="canonical" preset="device-authorization"` composes. device-authorization = 380px card / 5px inline gutter at 390 (gh#220); context-selection = 25rem card, edge-to-edge on mobile (gh#217). Selecting a preset REPLACES any consumer-side --auth-shell-card-max-width override — a page-local width is the anti-pattern these presets exist to remove.',
+  },
 ];
 
 export function findVocab(name: string): PropVocabEntry | undefined {

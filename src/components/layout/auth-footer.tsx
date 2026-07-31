@@ -1,29 +1,35 @@
 import type { ReactNode } from "react";
 
-export interface AuthFooterProps {
-  product: ReactNode;
-  terms: ReactNode;
-  privacy: ReactNode;
-  locale?: ReactNode;
-}
+import { cn } from "../../lib/utils";
+import type { AuthFooterProp } from "../../props/components/layout.prop";
+
+export type { AuthFooterProp } from "../../props/components/layout.prop";
+export type { AuthFooterProp as AuthFooterProps } from "../../props/components/layout.prop";
+
+/** Slot order is the canonical reading order of the legal line; the key is the SLOT, never the index. */
+const SLOTS = ["product", "terms", "privacy", "locale"] as const;
 
 /** Canonical mono legal line shared by hosted identity screens. */
-export function AuthFooter({ product, terms, privacy, locale }: AuthFooterProps) {
-  const items = [product, terms, privacy, locale].filter(
-    (item): item is Exclude<ReactNode, null | undefined | false> =>
-      item !== null && item !== undefined && item !== false,
+export function AuthFooter({ product, terms, privacy, locale, className }: AuthFooterProp) {
+  const bySlot: Record<(typeof SLOTS)[number], ReactNode> = { product, terms, privacy, locale };
+  const items = SLOTS.filter(
+    (slot) => bySlot[slot] !== null && bySlot[slot] !== undefined && bySlot[slot] !== false,
   );
 
   return (
-    <div data-slot="auth-legal-footer" className="ui-auth-legal-footer">
-      {items.map((item, index) => (
-        <span key={index} className="ui-auth-legal-footer-item">
+    <div data-slot="auth-legal-footer" className={cn("ui-auth-legal-footer", className)}>
+      {items.map((slot, index) => (
+        <span
+          key={slot}
+          data-slot={`auth-legal-footer-${slot}`}
+          className="ui-auth-legal-footer-item"
+        >
           {index > 0 ? (
             <span aria-hidden="true" className="ui-auth-legal-footer-separator">
               ·
             </span>
           ) : null}
-          {item}
+          {bySlot[slot]}
         </span>
       ))}
     </div>

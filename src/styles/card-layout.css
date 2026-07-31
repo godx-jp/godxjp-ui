@@ -503,6 +503,14 @@
     color: hsl(var(--card-service-launcher-icon-foreground, var(--primary)));
   }
 
+  /* Unavailable tile (the consumer supplied a `disabledReason`): the medallion drops its brand
+   * wash so an un-launchable service never reads as live. Role-mirror knobs default at the CALL
+   * SITE, so a scoped [data-tenant]/.dark override of --muted still reaches it (docs/TOKENS.md). */
+  [data-slot="card"][data-service-launcher][data-unavailable] [data-slot="service-launcher-icon"] {
+    background: hsl(var(--card-service-launcher-unavailable-icon-background, var(--muted)));
+    color: hsl(var(--card-service-launcher-unavailable-icon-foreground, var(--muted-foreground)));
+  }
+
   [data-slot="service-launcher-icon"] > svg {
     width: var(--card-service-launcher-icon-glyph-size);
     height: var(--card-service-launcher-icon-glyph-size);
@@ -529,13 +537,22 @@
     line-height: var(--card-service-launcher-description-line-height);
   }
 
-  [data-slot="service-launcher-metadata"],
-  [data-slot="service-launcher-disabled-reason"] {
+  /* Mono metadata ONLY (hostname · plan) — machine identifiers, never prose. */
+  [data-slot="service-launcher-metadata"] {
     overflow-wrap: anywhere;
     color: hsl(var(--muted-foreground));
     font-family: var(--font-mono);
     font-size: var(--card-service-launcher-metadata-font-size);
     line-height: var(--card-service-launcher-metadata-line-height);
+  }
+
+  /* The disabled/unavailable reason is a localized SENTENCE — it takes the description's prose
+   * rhythm, not the mono metadata treatment (a JA/VI sentence in monospace is unreadable). */
+  [data-slot="service-launcher-disabled-reason"] {
+    overflow-wrap: anywhere;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--card-service-launcher-description-font-size);
+    line-height: var(--card-service-launcher-description-line-height);
   }
 
   [data-slot="service-launcher-action"] > [data-slot="button"] {

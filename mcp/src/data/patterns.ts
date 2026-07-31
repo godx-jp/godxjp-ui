@@ -250,6 +250,147 @@ export function GeneralSettingsSection({
   },
 
   {
+    name: "settings-section-rows",
+    aliases: [
+      "settings-section",
+      "settings-row",
+      "danger-zone",
+      "billing-handoff",
+      "preferences-rows",
+      "account-identity",
+    ],
+    tagline:
+      "The four canonical settings BLOCKS — identity · preference rows · billing handoff · danger zone — composed from Card + ListRow + Descriptions + StatusBadge + AlertDialog. A COMPOSITION pattern: godx-ui ships no SettingsSection/SettingsRow/DangerZone component and never will.",
+    tags: ["settings", "account", "billing", "danger", "preferences", "listrow", "card", "admin"],
+    code: `// gh#216. Gate 0 (docs/COMPOSITION-VS-COMPONENT.md): a "SettingsSection"/"SettingsRow"/
+// "DangerZone" FAILS the Framework-Component Test — it owns no behavior (C2), is fully
+// expressible from existing primitives + tokens (C3), and its API would be screen-shaped (C4).
+// So compose it. Live reference screen: the "settings account sections" page in the preview
+// showcase gallery (docs/showcase/, served at /showcase/<id>).
+import { ExternalLink, ShieldAlert } from "lucide-react";
+import { Button, Text } from "@godxjp/ui/general";
+import {
+  Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
+  Descriptions, ListRow, StatusBadge,
+} from "@godxjp/ui/data-display";
+import { Switch } from "@godxjp/ui/data-entry";
+import { AlertDialog } from "@godxjp/ui/feedback";
+import { Flex } from "@godxjp/ui/layout";
+
+// 1) IDENTITY — metadata is a description list, so it is Descriptions (a real <dl>), never a
+//    two-column flex of styled divs. One header action goes in CardAction.
+<Card>
+  <CardHeader>
+    <CardTitle level={2}>アカウント情報</CardTitle>
+    <CardDescription>請求書・監査ログに表示される氏名とメールアドレスです。</CardDescription>
+    <CardAction><Button variant="outline" size="sm">編集</Button></CardAction>
+  </CardHeader>
+  <CardContent>
+    <Descriptions columns={2}>
+      <Descriptions.Item label="表示名">藤原 慧</Descriptions.Item>
+      <Descriptions.Item label="メールアドレス">satoshi@example.co.jp</Descriptions.Item>
+      <Descriptions.Item label="従業員番号" mono>EMP-1042-JP</Descriptions.Item>
+      <Descriptions.Item label="利用開始日">
+        {/* ISO-8601 in the machine attribute, Intl for the human text. */}
+        <time dateTime="2023-04-01">
+          {new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "UTC" }).format(since)}
+        </time>
+      </Descriptions.Item>
+    </Descriptions>
+  </CardContent>
+</Card>
+
+// 2) PREFERENCE ROWS — THE setting row pattern: CardContent flush + ListRow, whose \`trailing\`
+//    slot IS the control. align="start" + overflow="wrap" keep long JA/VI titles readable and let
+//    the control drop to its own line at 390px (--list-row-body-min-width).
+// ⛔ NEVER: <div className="flex items-center justify-between border-b py-3">…</div>
+<Card>
+  <CardHeader><CardTitle level={2}>通知の環境設定</CardTitle></CardHeader>
+  <CardContent flush>
+    <ListRow
+      align="start"
+      overflow="wrap"
+      title={<label htmlFor="pref-digest">週次サマリーをメールで受け取る</label>}
+      description="毎週月曜日の朝に未処理の承認をまとめて送信します。"
+      trailing={<Switch id="pref-digest" checked={digest} onCheckedChange={setDigest} />}
+    />
+  </CardContent>
+</Card>
+
+// 3) BILLING HANDOFF — the subscription state is a CANONICAL StatusBadge; the tone + icon come
+//    from the library's shared domain-status map, so a page NEVER keeps its own status→colour
+//    table. Money/seats/dates go through Intl (ISO 4217 minor units come from the formatter).
+// ⛔ NEVER: const STATUS_COLORS = { past_due: "red", trialing: "blue" }
+<Card>
+  <CardHeader>
+    <CardTitle level={2}>請求とサブスクリプション</CardTitle>
+    <CardDescription>支払い方法と請求書は外部の請求ポータルで管理します。</CardDescription>
+    <CardAction><StatusBadge status="past_due" variant="outline" /></CardAction>
+  </CardHeader>
+  <CardContent>
+    <Descriptions columns={2}>
+      <Descriptions.Item label="契約プラン">ビジネス（年額）</Descriptions.Item>
+      <Descriptions.Item label="次回請求予定額">
+        {new Intl.NumberFormat(locale, { style: "currency", currency: "JPY" }).format(1536000)}
+      </Descriptions.Item>
+    </Descriptions>
+  </CardContent>
+  <CardFooter separated>
+    <Button variant="outline" asChild>
+      <a href={portalUrl} target="_blank" rel="noreferrer">
+        <ExternalLink aria-hidden="true" />
+        請求ポータルを開く
+        {/* Never signal "leaves the app" with the icon alone (WCAG 1.4.1 / 2.4.4). */}
+        <span className="sr-only">（新しいタブで開きます）</span>
+      </a>
+    </Button>
+  </CardFooter>
+</Card>
+
+// 4) DANGER ZONE — Card accent="destructive" paints the semantic leading rail from --destructive
+//    through the existing --card-accent-rail-width token. NO new component, NO new token, and no
+//    baked red. Colour never carries the meaning alone: the heading says "irreversible", each row
+//    says what is lost, and delete is gated behind type-to-confirm friction.
+<Card accent="destructive">
+  <CardHeader>
+    <CardTitle level={2} className="text-destructive">取り消せない操作</CardTitle>
+    <CardDescription>以下の操作は元に戻せません。</CardDescription>
+  </CardHeader>
+  <CardContent flush>
+    <ListRow
+      align="start"
+      overflow="wrap"
+      leading={<ShieldAlert className="text-destructive size-4" aria-hidden="true" />}
+      title="ワークスペースと全データを完全に削除する"
+      description="勤怠記録・申請履歴・監査ログがすべて削除されます。"
+      trailing={
+        <Button variant="destructive" size="sm" onClick={() => setConfirmOpen(true)}>削除</Button>
+      }
+    />
+  </CardContent>
+</Card>
+
+<AlertDialog
+  open={confirmOpen}
+  onOpenChange={setConfirmOpen}
+  title="ワークスペースを完全に削除しますか？"
+  description="この操作は取り消せません。確認のため識別子を入力してください。"
+  challenge={workspaceSlug}
+  variant="destructive"
+  onConfirm={destroy}
+/>
+
+// ── DO / DON'T ────────────────────────────────────────────────────────────────────────────
+// ✅ Sections stack in a bounded column: <Flex direction="col" gap="lg" className="max-w-3xl">.
+// ✅ Every setting row is a ListRow; its control lives in \`trailing\`, and the visible row title is
+//    a <label htmlFor> pointing at that control so the switch/select is named by what you can read.
+// ⛔ Do NOT add SettingsSection / SettingsRow / DangerZone to src/components — they fail Gate 0.
+// ⛔ Do NOT wrap the WHOLE settings page in one Card (route-backed local nav owns the IA — see the
+//    responsive settings page pattern); each block is its own Card.
+// ⛔ Do NOT hand-roll padding (p-4) on a Card, a status colour map, or a <dl> replacement.`,
+  },
+
+  {
     name: "confirm-destructive",
     tagline:
       'Type-to-confirm destructive dialog — Dialog mode="confirm" + Input gate + toast (real @godxjp/ui API).',
@@ -496,6 +637,132 @@ export const withCrmLayout = [CrmLayout]   // ✅ array → Inertia passes the p
 // hydration mismatch ("server rendered text didn't match the client"). Seed
 // deterministically by index, or compute inside an event handler:
 const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; return x - Math.floor(x) }`,
+  },
+
+  {
+    name: "error-pages",
+    aliases: ["error-surface", "errorsurface", "403", "404", "500", "503", "exception-page"],
+    tagline:
+      '403 / 404 / 500 / 503 exception pages. There is NO ErrorSurface component — compose EmptyState + Text + Button inside the shell the page already renders (403/404 keep AppShell; 500/503 use CenteredShell align="center").',
+    tags: [
+      "error",
+      "errorsurface",
+      "403",
+      "404",
+      "500",
+      "503",
+      "maintenance",
+      "inertia",
+      "ssr",
+      "layout",
+      "emptystate",
+      "centeredshell",
+    ],
+    code: `// ⚠️ There is NO <ErrorSurface mode=… status=…/> in @godxjp/ui, and no \`mode\` prop to set.
+// The mode IS THE SHELL you render (gh#221 — the surface fails the Framework-Component Test:
+// it owns no behaviour and is expressible from existing primitives + tokens):
+//    403 / 404  → the page's EXISTING <AppShell> is PRESERVED (nav + topbar survive)
+//    500 / 503  → <CenteredShell align="center" width="sm">  (viewport-centred system surface)
+// Docs page: docs/layout/error-surface/
+
+import { EmptyState } from "@godxjp/ui/data-display";
+import { Button, Text } from "@godxjp/ui/general";
+import { CenteredShell, Flex, PageContainer } from "@godxjp/ui/layout";
+import { SearchX, ServerCrash, ShieldAlert, Wrench } from "lucide-react";
+
+// ── THE CANONICAL BODY — identical for all four statuses ───────────────────────────────
+// status code (compact, mono/tabular) → EmptyState(icon · tone · title · description · ONE action)
+// → optional metadata (request ID · maintenance window).
+// EXACTLY ONE recovery action is STRUCTURAL: EmptyState.action is a single slot, so a second
+// CTA has nowhere to go. Every string comes from the APP's t() — the library owns no product copy.
+const META = {
+  403: { icon: ShieldAlert, tone: "warning" },
+  404: { icon: SearchX, tone: "muted" },
+  500: { icon: ServerCrash, tone: "destructive" },
+  503: { icon: Wrench, tone: "warning" },
+} as const;
+
+function ErrorBody({ status, requestId, maintenance, inShell }: {
+  status: 403 | 404 | 500 | 503;
+  requestId?: string;
+  maintenance?: { start: string; end: string; timeZone: string };  // ISO-8601 + IANA
+  inShell: boolean;                                                // true ⇒ a page <h1> exists above
+}) {
+  const meta = META[status];
+  return (
+    <Flex direction="col" align="center" gap="sm">
+      <Text as="p" size="sm" tone="muted" weight="medium" mono tabular>{status}</Text>
+      <EmptyState
+        icon={meta.icon}
+        tone={meta.tone}
+        titleLevel={inShell ? 2 : 1}          {/* keep the outline valid, never for size */}
+        title={t(\`errors.\${status}.title\`)}
+        description={t(\`errors.\${status}.description\`)}
+        action={<Button onClick={recover}>{t(\`errors.\${status}.action\`)}</Button>}
+      />
+      {requestId && (
+        <Text as="p" size="xs" tone="muted" mono>{t("errors.requestId")}: {requestId}</Text>
+      )}
+      {maintenance && (
+        <Text as="p" size="sm" tone="muted">
+          {t("errors.maintenance")}:{" "}
+          {new Intl.DateTimeFormat(locale, {
+            dateStyle: "medium", timeStyle: "short", timeZone: maintenance.timeZone,
+          }).formatRange(new Date(maintenance.start), new Date(maintenance.end))}
+        </Text>
+      )}
+    </Flex>
+  );
+}
+
+// ── 403 / 404 — APPLICATION mode: PRESERVE the authenticated shell ─────────────────────
+// Render the body as the page BODY. The route's own <AppShell> (persistent layout) stays
+// mounted, so the sidebar, topbar and breadcrumb are never reconstructed by the error page.
+export function ForbiddenPage() {
+  return (
+    <PageContainer title={t("reports.title")} breadcrumb={[{ label: t("nav.home"), to: "/" }, { label: t("reports.title") }]}>
+      <ErrorBody status={403} inShell />
+    </PageContainer>
+  );
+}
+
+// ── 500 / 503 — SYSTEM mode: package-owned viewport-centred geometry ───────────────────
+// align="center" sets --centered-shell-column-offset-block: auto → the column centres in the
+// 100dvh shell at 1440 / 1024 / 390. NO className, NO min-h-dvh, NO media query. Tall copy
+// still scrolls from the top (auto offsets collapse), so a long JA/VI message is never clipped.
+export function MaintenancePage() {
+  return (
+    <CenteredShell align="center" width="sm" footer={<Text size="xs" tone="muted">2026 GodX</Text>}>
+      <ErrorBody
+        status={503}
+        inShell={false}
+        maintenance={{ start: "2026-08-02T18:00:00Z", end: "2026-08-02T20:00:00Z", timeZone: "Asia/Tokyo" }}
+      />
+    </CenteredShell>
+  );
+}
+
+// ── INERTIA / SSR — one Error page component, status switch, zero client state ─────────
+// Laravel: Handler::render() → Inertia::render('Error', ['status' => $response->getStatusCode()])
+//
+//   export default function Error({ status, requestId }) {
+//     const body = <ErrorBody status={status} requestId={requestId} inShell={status < 500} />
+//     return status < 500 ? body : <CenteredShell align="center" width="sm">{body}</CenteredShell>
+//   }
+//   // persistent layout ⇒ 403/404 keep the authenticated shell; 500/503 own the page
+//   Error.layout = (page) => (page.props.status < 500 ? <CrmLayout>{page}</CrmLayout> : page)
+//
+// SSR rules:
+//  • The pattern has NO client state / effects / portals → it renders fully server-side. An
+//    exception page must be readable without hydration.
+//  • Format the maintenance window from a SERVER-SENT ISO-8601 string + an explicit IANA
+//    timeZone. An argless new Date() or the server's local zone ⇒ hydration mismatch.
+//  • A 500 page must NOT import the app's query client / data providers — the failure may be
+//    inside them. EmptyState + CenteredShell need no provider.
+//
+// ANTI-PATTERNS: rebuilding nav on the 403 page · AuthShell for a system error (it is the
+// UNAUTHENTICATED root with auth-card geometry) · two CTAs · className="min-h-dvh flex …" ·
+// a hand-built "18:00 - 20:00 JST" string.`,
   },
 
   {
@@ -859,6 +1126,128 @@ export function AccountRecoverySettings({ email, phone, backupCodesSupported, ba
 }
 // The signed-OUT recovery journey (forgot password → email link → reset) is a separate flow on the
 // auth screens (AuthShell), NOT part of these signed-in settings. Do not surface it here.`,
+  },
+  {
+    name: "transactional-email",
+    aliases: ["email-template", "email-tokens", "blade-email", "html-email"],
+    tagline:
+      "Build a transactional HTML email (Blade/Twig/MJML/React) from @godxjp/ui/email — literal hex + px derived from the web tokens, the canonical GoDX brand mark, a bulletproof CTA, legal footer and mobile reflow. NEVER hand-copy hex or hand-draw the logo in a mail template.",
+    tags: ["email", "transactional", "blade", "laravel", "tokens", "brand", "mark", "mjml", "cta"],
+    code: `// ───────────────────────────────────────────────────────────────────────
+// WHY a separate export: an email is rendered by Blade/Twig/MJML and by clients that strip
+// <style>, ignore CSS custom properties and block remote images. So NEITHER the React components
+// NOR @godxjp/ui/tokens are reachable — every value must be a LITERAL inline style.
+// @godxjp/ui/email is that bridge. It is React-free and dependency-free, and every value is
+// DERIVED from src/tokens/ (HSL→hex at module load), so it can never drift from the web palette.
+//
+// ❌ style="background:#0077c7"                 // hand-copied hex → drifts the first re-theme
+// ❌ style="padding: var(--space-8)"            // no email client resolves var()
+// ❌ style="width: 30rem"                       // rem is unreliable; use literal px
+// ❌ <img src="https://cdn…/logo.png">          // blocked by default in most clients
+// ❌ an emerald pill with no internal glyph     // that is the INCOMPLETE mark
+// ✅ every value from the token export + the embedded brand mark below
+
+import {
+  EMAIL_BRAND_MARK,
+  EMAIL_COLORS,
+  EMAIL_CTA,
+  EMAIL_FOOTER,
+  EMAIL_MOBILE,
+  EMAIL_SHELL,
+  EMAIL_TYPOGRAPHY,
+  emailInlineStyle,
+} from "@godxjp/ui/email";
+
+const c = EMAIL_COLORS;
+
+// 1) THE 480px SHELL — a table, not a div: Outlook's Word renderer has no flex/grid.
+const page = emailInlineStyle({ padding: EMAIL_SHELL.pagePadding, backgroundColor: c.background });
+const card = emailInlineStyle({
+  width: EMAIL_SHELL.width,               // "480px" — EMAIL_SHELL.widthPx (480) for width="480"
+  maxWidth: "100%",
+  backgroundColor: c.surface,             // ← --card
+  border: \`\${EMAIL_SHELL.borderWidth} solid \${c.border}\`,
+  borderRadius: EMAIL_SHELL.radius,
+});
+const body = emailInlineStyle({
+  padding: EMAIL_SHELL.padding,           // content column = EMAIL_SHELL.contentWidth (416px)
+  fontFamily: EMAIL_TYPOGRAPHY.fontFamily,
+  fontSize: EMAIL_TYPOGRAPHY.bodyFontSize,
+  lineHeight: EMAIL_TYPOGRAPHY.bodyLineHeight,
+  color: c.foreground,
+});
+
+// 2) THE BRAND MARK — emerald capsule + internal glyph, embedded, zero network fetch.
+//    EMAIL_BRAND_MARK.svg        inline <svg>            (Apple Mail, iOS, Thunderbird)
+//    EMAIL_BRAND_MARK.dataUri    data: URL for <img src> (no request)
+//    EMAIL_BRAND_MARK.tableHtml  <table> fallback        (renders everywhere)
+const mark = EMAIL_BRAND_MARK.svg;
+
+// 3) THE CTA — line-height EQUALS height, so the label centres with no flexbox.
+const ctaCell = emailInlineStyle({
+  height: EMAIL_CTA.height,               // 44px = the coarse-pointer target
+  borderRadius: EMAIL_CTA.radius,
+  backgroundColor: c.primary,
+});
+const ctaLink = emailInlineStyle({
+  display: "inline-block",
+  padding: \`0 \${EMAIL_CTA.paddingX}\`,
+  lineHeight: EMAIL_CTA.lineHeight,
+  fontSize: EMAIL_CTA.fontSize,
+  fontWeight: EMAIL_CTA.fontWeight,
+  color: c.primaryForeground,
+  textDecoration: "none",
+});
+
+// 4) LEGAL FOOTER — quiet type over a hairline; links separated by a fixed-width spacer span
+//    (margins between inline links are dropped by several clients).
+const footer = emailInlineStyle({
+  borderTop: \`\${EMAIL_FOOTER.borderWidth} solid \${c.border}\`,
+  paddingTop: EMAIL_FOOTER.paddingTop,
+  fontSize: EMAIL_FOOTER.fontSize,
+  lineHeight: EMAIL_FOOTER.lineHeight,
+  color: c.mutedForeground,
+});
+const linkSpacer = emailInlineStyle({ display: "inline-block", width: EMAIL_FOOTER.linkGap });
+
+export const html = \`
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr><td align="center" style="\${page}">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0"
+           width="\${EMAIL_SHELL.widthPx}" class="email-card" style="\${card}">
+      <tr><td class="email-body" style="\${body}">
+        \${mark}
+        <h1 class="email-heading">Your subject line</h1>
+        <p>Your body copy.</p>
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+          <tr><td class="email-cta" align="center" style="\${ctaCell}">
+            <a class="email-cta-link" href="https://your.app/action" style="\${ctaLink}">Continue</a>
+          </td></tr>
+        </table>
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+          <tr><td style="\${footer}">
+            <p>This mailbox is not monitored.</p>
+            <p><a href="#">Help</a><span style="\${linkSpacer}">&#8203;</span><a href="#">Privacy</a></p>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>\`;
+
+// 5) MOBILE REFLOW — progressive enhancement ONLY. Every rule below has an inline equivalent
+//    above, so a client that strips <style> still renders the desktop layout, never a broken one.
+export const mediaQuery = \`
+@media (max-width: \${EMAIL_MOBILE.maxWidth}) {
+  .email-card { width: \${EMAIL_MOBILE.width} !important; }
+  .email-body { padding: \${EMAIL_MOBILE.padding} !important; }
+  .email-heading { font-size: \${EMAIL_MOBILE.headingFontSize} !important; }
+  .email-cta, .email-cta-link { width: \${EMAIL_MOBILE.ctaWidth} !important; }
+}\`;
+
+// 6) BLADE / TWIG / any non-JS engine — dump the same values once in the build step:
+//    node --input-type=module -e 'import("@godxjp/ui/email").then(m => process.stdout.write(m.EMAIL_TOKENS_JSON))' > resources/design/email-tokens.json
+//    then read the JSON from PHP. Same numbers, same source, no copy-paste.`,
   },
 ];
 

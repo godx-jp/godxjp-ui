@@ -63,3 +63,9 @@ Add a composition whenever components share state, accessible relationships, lay
 CI fails when a public visual export has no frame, a declared frame does not resolve, a required dimension has neither a case nor a reasoned `N/A`, or a frame has runtime errors, horizontal overflow, clipped interactive controls, accessibility violations or an unapproved visual regression.
 
 Coverage reports distinguish `PASS`, `FAIL`, `UNTESTED` and `N/A`. Only an executed assertion can produce `PASS`.
+
+These rules are enforced by `pnpm check:frame-coverage-ledger` against
+[`preview/frame-coverage.ledger.json`](../preview/frame-coverage.ledger.json). See
+[FRAME-COVERAGE-LEDGER.md](./FRAME-COVERAGE-LEDGER.md) for the ledger shape, the two promotion
+routes, and the ratchet that lets the gate fail on regression while the pre-existing `UNTESTED`
+backlog stays recorded rather than silently passing.

@@ -61,6 +61,34 @@ describe("CenteredShell", () => {
     );
   });
 
+  it("defaults the column to top-aligned (data-align=start)", () => {
+    const { container } = renderWithUi(
+      <CenteredShell>
+        <div>x</div>
+      </CenteredShell>,
+    );
+    // Quiet default (rule #44): the flowing/scrolling page shape stays unchanged.
+    expect(container.querySelector(".ui-centered-shell-column")).toHaveAttribute(
+      "data-align",
+      "start",
+    );
+  });
+
+  it("reflects align='center' onto the column so the system surface centres in the viewport", () => {
+    // The 500/503 system error surface: package-owned viewport-centred geometry, no consumer
+    // `min-h-dvh` + flex CSS and no className. `[data-align="center"]` flips
+    // --centered-shell-column-offset-block to `auto`.
+    const { container } = renderWithUi(
+      <CenteredShell align="center" width="sm">
+        <div>500</div>
+      </CenteredShell>,
+    );
+    expect(container.querySelector(".ui-centered-shell-column")).toHaveAttribute(
+      "data-align",
+      "center",
+    );
+  });
+
   it("forwards className to the shell root", () => {
     const { container } = renderWithUi(
       <CenteredShell className="tenant-scope">

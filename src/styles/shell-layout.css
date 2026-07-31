@@ -13,14 +13,16 @@
       "sidebar topbar"
       "sidebar main"
       "sidebar footer";
-    grid-template-columns: 16rem minmax(0, 1fr);
+    /* Rail width is a knob, never a literal (rule #45) — a service on a different design grid sets
+     * --app-shell-sidebar-width once (e.g. 255px) instead of forking this rule. */
+    grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
     grid-template-rows: var(--app-shell-bar-height) minmax(0, 1fr) auto;
     height: 100vh;
     background: hsl(var(--background));
   }
 
   .app-root[data-collapsed="true"] {
-    grid-template-columns: 4rem minmax(0, 1fr);
+    grid-template-columns: var(--app-shell-rail-width) minmax(0, 1fr);
   }
 
   .app-sidebar {
@@ -47,8 +49,8 @@
     min-width: 0;
     overflow: hidden;
     align-items: center;
-    gap: var(--space-3);
-    padding-inline: var(--space-4);
+    gap: var(--app-shell-bar-gap);
+    padding-inline: var(--app-shell-bar-inset);
     border-bottom: 1px solid hsl(var(--border));
     background: hsl(var(--card));
     /* Opt-in brand-chrome wash — invisible by default (--topbar-gradient: none). */
@@ -111,7 +113,7 @@
     flex: 1 1 auto;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: var(--auth-shell-main-align);
     padding: var(--auth-shell-main-padding);
   }
 
@@ -131,6 +133,29 @@
     --heading-h1: var(--auth-shell-canonical-heading-size);
     --auth-shell-card-max-width: var(--auth-shell-canonical-card-max-width);
     --auth-shell-main-padding: var(--auth-shell-canonical-main-padding);
+  }
+
+  /*
+   * NAMED FLOW PRESETS (gh#217 / gh#220) — orthogonal to `variant` and declared AFTER it (equal
+   * specificity, so source order wins) so a preset re-measures the page while `variant="canonical"`
+   * keeps owning control density and heading size. A preset owns the card measure + page gutters,
+   * so the consumer never overrides `--auth-shell-card-max-width` by hand.
+   */
+  .ui-auth-shell[data-preset] .ui-auth-shell-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--auth-shell-card-stack-gap);
+  }
+
+  .ui-auth-shell[data-preset="device-authorization"] {
+    --auth-shell-card-max-width: var(--auth-shell-device-card-max-width);
+    --auth-shell-main-padding: var(--auth-shell-device-main-padding);
+  }
+
+  .ui-auth-shell[data-preset="context-selection"] {
+    --auth-shell-card-max-width: var(--auth-shell-context-card-max-width);
+    --auth-shell-main-padding: var(--auth-shell-context-main-padding);
+    --auth-shell-card-stack-gap: var(--auth-shell-context-card-stack-gap);
   }
 
   .ui-auth-identity {
@@ -221,6 +246,17 @@
     .ui-auth-shell[data-variant="canonical"] {
       --auth-shell-main-padding: var(--auth-shell-canonical-main-padding-mobile);
     }
+
+    /* Declared after the canonical mobile inset so a preset's mobile gutter wins at equal
+     * specificity: device-authorization = 5px inline (card x=5, width=380 at 390px);
+     * context-selection = edge-to-edge (0 inline). */
+    .ui-auth-shell[data-preset="device-authorization"] {
+      --auth-shell-main-padding: var(--auth-shell-device-main-padding-mobile);
+    }
+
+    .ui-auth-shell[data-preset="context-selection"] {
+      --auth-shell-main-padding: var(--auth-shell-context-main-padding-mobile);
+    }
   }
 
   /*
@@ -268,7 +304,15 @@
   .ui-centered-shell-column {
     width: 100%;
     margin-inline: auto;
+    /* Block offset knob — `0` (top-aligned page, the default) or `auto` (viewport-centred system
+     * surface via `align="center"`). Auto margins absorb the free space of the flex `main`, and
+     * collapse to 0 when the content overflows, so tall content still scrolls from the top. */
+    margin-block: var(--centered-shell-column-offset-block);
     max-width: var(--centered-shell-width-md);
+  }
+
+  .ui-centered-shell-column[data-align="center"] {
+    --centered-shell-column-offset-block: auto;
   }
 
   .ui-centered-shell-column[data-width="sm"] {
@@ -314,8 +358,15 @@
     margin-inline-end: var(--space-1);
   }
 
+  /* Drawer scrim = a SHARE of the ONE shared semantic scrim (--overlay-background), resolved at the
+   * call site so a scoped [data-tenant]/.dark override of --overlay-background reaches the portaled
+   * drawer (docs/TOKENS.md · "Role-mirror knobs MUST be `initial`"). Default resolves to the same
+   * rgb(0 0 0 / 0.2) it has always been; setting --app-shell-mobile-nav-background still wins. */
   [data-slot="sheet-overlay"].app-mobile-nav-overlay {
-    background-color: var(--app-shell-mobile-nav-background);
+    background-color: var(
+      --app-shell-mobile-nav-background,
+      color-mix(in srgb, var(--overlay-background) var(--app-shell-mobile-nav-alpha), transparent)
+    );
   }
 
   .app-mobile-nav-drawer {
@@ -327,7 +378,12 @@
   }
 
   /* The drawer nav reuses the docked Sidebar node; its `.sb-root { display: contents }` flattens
-   * into the scrollable SheetBody so sections/footer flow naturally in the panel. */
+   * into the scrollable SheetBody so sections/footer flow naturally in the panel.
+   * The body's INLINE inset is tokenized on the component itself
+   * (`px-[var(--app-shell-mobile-nav-inset)]` in AppShell, which wins over SheetBody's generic
+   * `px-[var(--sheet-pad-x)]` because both are utilities) — the nav owns its edge instead of being
+   * double-padded (gh#211). Do NOT set `padding-inline` here: this file is `@layer components`, so
+   * a Tailwind utility on the element always wins. */
   .app-mobile-nav-body {
     display: flex;
     flex-direction: column;
@@ -345,6 +401,21 @@
     font-size: var(--font-size-base);
   }
 
+  /*
+   * THE ONE AppShell breakpoint — 900px (56.25rem), the DXS canonical value. It is stated in exactly
+   * two places and they must agree: this rule and `max-[900px]:inline-flex` on the hamburger in
+   * `app-shell.tsx` (a CSS @media cannot read a custom property, so the trigger's visibility has to
+   * repeat the number; making it a public knob needs a `data-shell-mode` attribute — tracked in the
+   * #213 audit, out of scope here).
+   *
+   * There used to be a SECOND, conflicting `@media (max-width: 768px)` block further down that also
+   * restructured `.app-root`. It (a) dropped the `"footer"` grid area and set `.app-footer{display:
+   * none}`, silently deleting whatever a consumer passed to AppShell's `footer` slot on a phone, and
+   * (b) re-declared the grid ROW template with a 3rem literal, overriding --app-shell-bar-height so
+   * a themed bar height was ignored below 768px only. Between 768 and 900 the sidebar was hidden by
+   * THIS rule while the grid still reserved a sidebar track — incoherent. Both are gone; the
+   * footer row and the bar-height token now hold at every width.
+   */
   @media (width <= 56.25rem) {
     .app-root,
     .app-root[data-collapsed="true"] {
@@ -359,20 +430,17 @@
       display: none;
     }
 
+    /* The docked rail is gone, so the bar tightens against the viewport edge (knob, not a literal). */
+    .app-topbar {
+      padding-inline: var(--app-shell-bar-inset-compact);
+    }
+
     .app-topbar-left:has(.app-mobile-sidebar-trigger) {
       display: flex;
     }
 
     .app-mobile-nav-trigger {
       display: inline-flex;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .app-mobile-nav-overlay,
-    .app-mobile-nav-drawer {
-      animation: none;
-      transition: none;
     }
   }
 
@@ -625,7 +693,10 @@
     border: 0;
     border-radius: calc(var(--radius) - 1px);
     background: transparent;
-    color: hsl(var(--muted-foreground));
+    /* gh#228 — the row/label foreground is its own knob (default = the muted role, unchanged). The
+     * icon reads a SEPARATE knob on `.sb-icon` below, so a service can darken 16px nav icons
+     * without re-tinting every muted text. */
+    color: var(--sidebar-nav-item-foreground, hsl(var(--muted-foreground)));
     cursor: pointer;
     font-family: inherit;
     font-size: var(--sidebar-nav-item-font-size);
@@ -635,7 +706,7 @@
 
   .sb-nav-item:hover {
     background: hsl(var(--accent));
-    color: hsl(var(--foreground));
+    color: var(--sidebar-nav-item-hover-foreground, hsl(var(--foreground)));
   }
 
   /* Active item reads its own bg/fg tokens (defaults = the hover look) so a service can give the
@@ -654,6 +725,12 @@
     flex: 0 0 auto;
     line-height: 0;
     place-items: center;
+    /* gh#228 — the nav ICON owns its own foreground knob; the default `currentColor` resolves to the
+     * row colour, so the resting look is byte-identical to before. A service sets
+     * `--sidebar-nav-icon-foreground` alone to get canonical darker icons beside muted labels — no
+     * page-local selector, no global `--muted-foreground` re-tint. Colour only: size/geometry stay
+     * on --sidebar-nav-icon-size. */
+    color: var(--sidebar-nav-icon-foreground, currentColor);
   }
 
   .sb-icon svg {
@@ -717,7 +794,9 @@
   .sb-nav-item--sub {
     height: 1.75rem;
     font-size: var(--sidebar-nav-sub-font-size);
-    color: hsl(var(--muted-foreground));
+    /* Same row knob as a top-level row (gh#228) — one override themes the whole nav, sub rows
+     * included. Default unchanged. */
+    color: var(--sidebar-nav-item-foreground, hsl(var(--muted-foreground)));
   }
 
   .sb-nav-item--sub::before {
@@ -732,7 +811,7 @@
 
   .sb-nav-item--sub:hover {
     background: transparent;
-    color: hsl(var(--foreground));
+    color: var(--sidebar-nav-item-hover-foreground, hsl(var(--foreground)));
   }
 
   .sb-nav-item--sub[data-active="true"] {
@@ -744,6 +823,42 @@
   .sb-nav-item--sub[data-active="true"]::before {
     background: var(--sidebar-item-active-tint, hsl(var(--primary)));
     opacity: 1;
+  }
+
+  /* gh#228 — nav ICON state knobs. Declared AFTER the row-state rules so they win at equal
+   * specificity, in the same order the row states resolve (hover → active → disabled). Each falls
+   * back to the base icon knob and finally to `currentColor` (= the row colour for that state), so
+   * the defaults are byte-identical to the pre-gh#228 rendering and setting only
+   * `--sidebar-nav-icon-foreground` themes every state at once. Colour only — no geometry. */
+  .sb-nav-item:hover .sb-icon {
+    color: var(
+      --sidebar-nav-icon-hover-foreground,
+      var(--sidebar-nav-icon-foreground, currentColor)
+    );
+  }
+
+  .sb-nav-item[data-active="true"] .sb-icon {
+    color: var(
+      --sidebar-nav-icon-active-foreground,
+      var(--sidebar-nav-icon-foreground, currentColor)
+    );
+  }
+
+  /* Disabled rows (`aria-disabled="true"`, set by SidebarItem for item.disabled). Defaults resolve
+   * to the RESTING row/icon colour, so a disabled row reads as inert in every state; a service dims
+   * it further with the two disabled knobs. */
+  .sb-nav-item[aria-disabled="true"] {
+    color: var(
+      --sidebar-nav-item-disabled-foreground,
+      var(--sidebar-nav-item-foreground, hsl(var(--muted-foreground)))
+    );
+  }
+
+  .sb-nav-item[aria-disabled="true"] .sb-icon {
+    color: var(
+      --sidebar-nav-icon-disabled-foreground,
+      var(--sidebar-nav-icon-foreground, currentColor)
+    );
   }
 
   /* Collapsed-rail flyout — PORTALED (Radix Popover) so it escapes the sidebar's overflow and is
@@ -893,14 +1008,39 @@
   }
 
   /* Topbar — a pure slot bar. start (inline-start) · center (grows, centered) · end (inline-end).
-   * The library owns ONLY this positioning; every control inside is the consumer's to compose. */
+   * The library owns ONLY this positioning; every control inside is the consumer's to compose.
+   *
+   * SHRINK CONTRACT (gh#226) — a hosted console packs an intrinsically wide brand/tenant string
+   * into `start` and a fixed-width search trigger into `center`; at a compact desktop width
+   * (1024px minus a 16rem sidebar) that content used to push `end` (locale picker, user menu) past
+   * the bar and out of the viewport, and leak a horizontal document scroll. The contract is:
+   *   root      — never wider than its AppShell grid/flex allocation (`max-width:100%` +
+   *               `min-width:0`, so it shrinks whether the parent is a grid track or a flex line);
+   *   start     — shrinks first, its content clipped INSIDE the slot (never spills over center/end);
+   *   center    — `flex-basis:0`, so it yields all of its box before `start` gives up a pixel;
+   *   end       — `flex:0 0 auto`, so it keeps its natural width and stays anchored inline-end.
+   * Slots clip with `clip`, NOT `hidden`: a `hidden` box is still a scroll container, so focusing a
+   * clipped control would scroll the slot and shove its leading content out of view. The clip
+   * margin keeps the focus ring of an edge control paintable (WCAG 2.4.11 / 2.4.13).
+   *
+   * BOX KNOBS (rule #45) — --topbar-height / --topbar-inset / --topbar-gap. Their defaults are the
+   * QUIET ones (`auto` / `0` / the previous 8px), i.e. byte-identical rendering to before they
+   * existed: inside AppShell the `.app-topbar` grid row still owns the height and inset. A service
+   * that mounts <Topbar> DIRECTLY on a page (no AppShell) now sizes it from the theme —
+   * `--topbar-height: 3.5rem; --topbar-inset: var(--space-4)` — instead of an app-local class.
+   * `--topbar-gap` re-rhythms the whole bar at once: it is both the gap BETWEEN the three clusters
+   * and the gap INSIDE each of them, so a denser bar stays internally consistent.
+   * The shrink contract above is unaffected — none of these touch flex/overflow. */
   .ui-topbar {
     display: flex;
+    height: var(--topbar-height);
     width: auto;
+    max-width: 100%;
     min-width: 0;
     flex: 1 1 0%;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--topbar-gap);
+    padding-inline: var(--topbar-inset);
     overflow: hidden;
   }
   .ui-topbar-start,
@@ -909,16 +1049,20 @@
     display: flex;
     min-width: 0;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--topbar-gap);
+    overflow: clip;
+    overflow-clip-margin: var(--focus-ring-width);
+  }
+  .ui-topbar-start {
+    flex: 0 1 auto;
   }
   .ui-topbar-center {
     flex: 1 1 0%;
     justify-content: center;
-    overflow: hidden;
   }
   .ui-topbar-end {
     max-width: 100%;
-    flex: 0 1 auto;
+    flex: 0 0 auto;
     margin-inline-start: auto;
   }
 
@@ -1066,25 +1210,16 @@
     background: hsl(var(--attention));
   }
 
+  /* TOPBAR CHIP/SEARCH DENSITY ONLY — this is NOT a second shell breakpoint. The `.app-root`
+   * restructure that used to live here (a 768px duplicate of the 900px rule that also deleted the
+   * footer row and re-declared the grid rows with a 3rem literal) is gone; see the note on the one
+   * `@media (width <= 56.25rem)` block above. What remains is purely the optional `.tb-*` console
+   * chrome collapsing to icon-only on a phone, which is independent of where the shell switches to
+   * its drawer. */
   @media (max-width: 768px) {
-    .app-root,
-    .app-root[data-collapsed="true"] {
-      grid-template-areas:
-        "topbar"
-        "main";
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: 3rem minmax(0, 1fr);
-    }
-
-    .app-sidebar,
-    .app-footer,
     .tb-chip-sep,
     .tb-search .kbd {
       display: none;
-    }
-
-    .app-topbar {
-      padding-inline: var(--space-3);
     }
 
     .tb-search {
@@ -1095,5 +1230,22 @@
     .tb-search span {
       display: none;
     }
+  }
+}
+
+/*
+ * REDUCED MOTION for the AppShell mobile drawer (WCAG 2.3.3 / 2.2.2). The drawer is a Sheet, so it
+ * animates via Tailwind `data-[state]:animate-in|animate-out` + `slide-in-from-*` utilities.
+ * DELIBERATELY UNLAYERED: Tailwind v4 emits those into `@layer utilities`, which beats any rule in
+ * `@layer components` regardless of specificity — this gate was previously written inside the
+ * components layer above and could never win. Same reasoning as the overlay gate in
+ * dialog-layout.css (which also covers this drawer via [data-slot="sheet-*"]); kept here as well so
+ * a consumer importing only `styles/shell-layout` still gets it.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .app-mobile-nav-overlay,
+  .app-mobile-nav-drawer {
+    animation: none;
+    transition: none;
   }
 }

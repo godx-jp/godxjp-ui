@@ -2,13 +2,73 @@ import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
+import { useMediaQuery } from "../../lib/hooks";
 import { cn } from "../../lib/utils";
+import type { SheetResponsiveProp } from "../../props/components/feedback.prop";
 import type { ToneProp, WidthProp } from "../../props/vocabulary";
 import { overlayHeaderToneClass } from "./overlay-header-tone";
 import { useTranslation } from "../../i18n/use-translation";
 
+export type { SheetResponsiveProp } from "../../props/components/feedback.prop";
+
 /** number → px; string → any CSS length. */
 const toCssLength = (v: WidthProp): string => (typeof v === "number" ? `${v}px` : v);
+
+/** Resolved presentation of a responsive sheet: the named side panel, or the mobile bottom sheet. */
+export type SheetPresentation = "side" | "bottom";
+
+/** Theme knob holding the drawer breakpoint (src/tokens/components/sheet.css). */
+const SHEET_BREAKPOINT_TOKEN = "--sheet-responsive-breakpoint-width";
+/** Mirrors the token default (48rem @ a 16px root) so SSR and a token-less test env agree. */
+const SHEET_BREAKPOINT_FALLBACK_QUERY = "(max-width: 768px)";
+
+/** CSS length → px. Supports the units a breakpoint knob is realistically written in. */
+function cssLengthToPx(value: string, rootFontSize: number): number | undefined {
+  const match = /^(-?\d*\.?\d+)(px|rem|em)?$/.exec(value.trim());
+  if (match == null) return undefined;
+  const amount = Number(match[1]);
+  if (!Number.isFinite(amount)) return undefined;
+  return match[2] === "rem" || match[2] === "em" ? amount * rootFontSize : amount;
+}
+
+/**
+ * Build the media query from the token. A CSS `@media` cannot resolve a custom property, so the
+ * breakpoint is read off the document root once per mount — that is what makes the drawer
+ * breakpoint themeable instead of a literal baked into every composite.
+ */
+function readSheetBreakpointQuery(): string {
+  if (typeof document === "undefined" || typeof window.getComputedStyle !== "function") {
+    return SHEET_BREAKPOINT_FALLBACK_QUERY;
+  }
+  const rootStyle = window.getComputedStyle(document.documentElement);
+  const rootFontSize = cssLengthToPx(rootStyle.fontSize || "16px", 16) ?? 16;
+  const px = cssLengthToPx(rootStyle.getPropertyValue(SHEET_BREAKPOINT_TOKEN), rootFontSize);
+  return px == null ? SHEET_BREAKPOINT_FALLBACK_QUERY : `(max-width: ${String(px)}px)`;
+}
+
+/**
+ * The canonical responsive-overlay decision, shared by `SheetContent` and by any composite that
+ * swaps a desktop surface for a mobile sheet (see `OrgSwitcher`). Returns `"bottom"` when the
+ * viewport is at or below `--sheet-responsive-breakpoint-width`.
+ *
+ * Public so a consumer NEVER hand-rolls `useMediaQuery("(max-width: 390px)")` in app code — the
+ * breakpoint stays one themeable knob for the whole system.
+ */
+export function useSheetResponsiveMode(
+  responsive: SheetResponsiveProp = "side",
+): SheetPresentation {
+  const [query, setQuery] = React.useState(SHEET_BREAKPOINT_FALLBACK_QUERY);
+
+  React.useEffect(() => {
+    // Same-value updates bail out inside React, so this is a no-op unless a theme moved the knob.
+    setQuery(readSheetBreakpointQuery());
+  }, []);
+
+  const compact = useMediaQuery(query);
+
+  if (responsive === "side" || responsive === "bottom") return responsive;
+  return compact ? "bottom" : "side";
+}
 
 export function Sheet(props: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="sheet" {...props} />;
@@ -77,6 +137,14 @@ export interface SheetContentProps
    * to keep the canonical drawer default from `--sheet-width-default`.
    */
   width?: WidthProp;
+  /**
+   * Responsive drawer / detail-panel contract. `"side"` (default) keeps today's behaviour: the
+   * physical `side` the consumer named, at every viewport. `"auto"` renders the desktop side panel
+   * above `--sheet-responsive-breakpoint-width` and the mobile bottom sheet at/below it (capped by
+   * `--sheet-bottom-max-height`), so ONE `<Sheet>` covers both without a page-local media query.
+   * `"bottom"` pins the bottom-sheet presentation.
+   */
+  responsive?: SheetResponsiveProp;
 }
 
 export const SheetContent = React.forwardRef<
@@ -91,13 +159,20 @@ export const SheetContent = React.forwardRef<
       showCloseButton = true,
       overlayClassName,
       width,
+      responsive = "side",
       style,
       ...props
     },
     ref,
   ) => {
     const { t } = useTranslation();
-    const horizontal = side === "left" || side === "right";
+    const presentation = useSheetResponsiveMode(responsive);
+    // The bottom sheet REPLACES the named side (never merges with it) so the geometry classes stay
+    // a single coherent set — a side variant's inset classes UNIONED with the bottom variant's would
+    // pin all four edges and produce a full-screen overlay instead of a drawer.
+    const resolvedSide = presentation === "bottom" ? "bottom" : side;
+    const bottomSheet = responsive !== "side" && presentation === "bottom";
+    const horizontal = resolvedSide === "left" || resolvedSide === "right";
     const widthSet = width != null && horizontal;
     const mergedStyle = widthSet
       ? ({ ...style, ["--sheet-width" as string]: toCssLength(width) } as React.CSSProperties)
@@ -108,11 +183,16 @@ export const SheetContent = React.forwardRef<
         <DialogPrimitive.Content
           ref={ref}
           data-slot="sheet-content"
+          data-responsive={responsive}
+          data-side={resolvedSide}
           style={mergedStyle}
           className={cn(
-            sheetVariants({ side }),
+            sheetVariants({ side: resolvedSide }),
             // `width` caps at the viewport: full-width panel on a small screen, capped on a large one.
             widthSet && "w-[min(var(--sheet-width),100%)] max-w-none sm:max-w-none",
+            // Only the RESPONSIVE bottom presentation is capped — a plain `side="bottom"` sheet keeps
+            // its content-sized height so existing usage is untouched.
+            bottomSheet && "max-h-[var(--sheet-bottom-max-height)]",
             className,
           )}
           {...props}

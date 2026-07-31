@@ -60,14 +60,28 @@ type ChartFrameProps = {
   imgSummary: string;
   /** True when there is data to plot (otherwise children render an empty state). */
   hasData: boolean;
-  height: number;
+  /**
+   * Canvas height in px. OPTIONAL: recharts needs a measured pixel box, but a
+   * CSS-drawn chart leaves it undefined and sizes its plot from a token tier
+   * instead (`size` → `data-size` → `--*-plot-height`), so no geometry is baked
+   * into an inline style.
+   */
+  height?: number;
+  /** Mirrored onto the figure as `data-size` so CSS can pick a token height tier. */
+  size?: "xs" | "sm" | "md" | "lg";
+  /**
+   * Content rendered BELOW the plot, outside the `role="img"` canvas — an activity
+   * footer, a delta, a link. Kept outside so interactive children stay reachable.
+   */
+  footer?: React.ReactNode;
   className?: string;
   id?: string;
   children: React.ReactNode;
+  ref?: React.Ref<HTMLElement>;
 };
 
 /**
- * The accessible figure wrapper. The recharts SVG passed as `children` is wrapped
+ * The accessible figure wrapper. The chart body passed as `children` is wrapped
  * in a `role="img"` element with a short `aria-label`; the full data is exposed as
  * a sibling visually-hidden list referenced by the figure's `aria-describedby`.
  */
@@ -78,9 +92,12 @@ export function ChartFrame({
   imgSummary,
   hasData,
   height,
+  size,
+  footer,
   className,
   id,
   children,
+  ref,
 }: ChartFrameProps) {
   const reactId = React.useId();
   const titleId = `${id ?? reactId}-title`;
@@ -88,8 +105,10 @@ export function ChartFrame({
 
   return (
     <figure
+      ref={ref}
       id={id}
       data-slot="chart"
+      data-size={size}
       className={cn("ui-chart", className)}
       aria-labelledby={titleId}
       aria-describedby={descId}
@@ -100,6 +119,7 @@ export function ChartFrame({
       <div className="ui-chart-canvas" style={{ height }} role="img" aria-label={imgSummary}>
         {children}
       </div>
+      {footer ? <div className="ui-chart-footer">{footer}</div> : null}
       {/* Screen-reader text alternative — the plotted data as a readable list. */}
       <p id={descId} className="sr-only">
         {description ? <>{description} </> : null}

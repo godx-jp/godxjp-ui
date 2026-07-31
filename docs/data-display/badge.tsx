@@ -42,6 +42,14 @@ const tones = [
 
 const statuses = ["active", "draft", "pending", "cancelled", "failed", "scheduled"];
 
+/**
+ * Subscription/billing lifecycle keys (gh#216). They ship the SAME canonical status→tone→icon
+ * map as every other key, so a billing screen never keeps a page-local colour table. They are
+ * demoed explicitly because their i18n labels were once missing. A missing key renders the raw
+ * `status.trialing` string, and only a rendered demo makes that regression visible.
+ */
+const billingStatuses = ["trialing", "past_due", "incomplete", "canceled"];
+
 export default function Demo() {
   return (
     <PageContainer
@@ -121,6 +129,27 @@ export default function Demo() {
               ))}
               <StatusBadge status="active" />
               <Badge status="unknown-key" />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Billing lifecycle</CardTitle>
+            <CardDescription>
+              Subscription keys map through the SAME canonical table · trialing = info · past_due =
+              warning · incomplete = default · canceled = destructive. Every label is translated, so
+              a billing screen never shows a raw status.* key and never keeps its own colour map.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="row" wrap align="center" gap="sm">
+              {billingStatuses.map((s) => (
+                <StatusBadge key={s} status={s} />
+              ))}
+              {billingStatuses.map((s) => (
+                <StatusBadge key={`${s}-outline`} status={s} variant="outline" />
+              ))}
             </Flex>
           </CardContent>
         </Card>

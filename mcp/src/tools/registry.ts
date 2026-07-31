@@ -19,6 +19,12 @@ import {
 import { PROP_VOCABULARY, findVocab } from "../data/prop-vocabulary.js";
 import { TOKENS, tokensByCategory, type TokenCategory } from "../data/tokens.js";
 import { COMPONENT_TOKENS } from "../data/component-tokens.generated.js";
+import {
+  FRAME_COVERAGE,
+  FRAME_COVERAGE_POLICY,
+  findFrameCoverage,
+  type FrameCoverageEntry,
+} from "../data/frame-coverage.generated.js";
 import { CARDINAL_RULES, findRule } from "../data/rules.js";
 import { PATTERNS, findPattern, searchPatterns } from "../data/patterns.js";
 import {
@@ -356,6 +362,22 @@ export const TOOL_DEFINITIONS = [
     },
   },
 
+  {
+    name: "get_frame_coverage",
+    description:
+      "Verified preview-contract coverage for a component (issue #163). Answers 'is this state actually PROVEN?' — returns, per contract dimension (variants, tones, sizes, shapes, density, controlled/uncontrolled ownership, disabled/read-only/loading/empty/error/success, async retry/cancel/offline, responsive viewport matrix, RTL, long/localized content, keyboard/focus, accessible name/description/error, reduced motion / coarse touch), whether an EXECUTED case proves it (covered), whether nothing proves it (UNTESTED), or whether it cannot exist (not-applicable, with a reason). UNTESTED IS NOT A PASS: never infer that a component supports a state because an example renders. Call this before telling a user a component 'supports' anything. Omit `name` for the repo-wide summary and the tracked known gaps.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+          description:
+            "Public export name (e.g. 'Button', 'DataTable', 'CardFooter'). Omit for the repo-wide coverage summary.",
+        },
+      },
+    },
+  },
+
   // ── LINT / AUDIT (one-shot critique) ───────────────────────────
   {
     name: "lint_jsx",
@@ -421,6 +443,8 @@ export async function dispatchTool(name: string, args: Record<string, unknown>):
       return suggestPrimitive(String(args.use_case ?? ""));
     case "search_components":
       return searchComponents(String(args.query ?? ""));
+    case "get_frame_coverage":
+      return getFrameCoverage(args.name === undefined ? undefined : String(args.name));
     // Lint
     case "lint_jsx":
       return lintJsx(String(args.jsx ?? ""));
@@ -765,7 +789,9 @@ const TOKEN_PREFIXES: Record<string, string[]> = {
   Radio: ["choice"],
   RadioGroup: ["choice"],
   Field: ["choice"],
-  AppShell: ["sidebar", "topbar"],
+  // `app-shell` was missing, so get_component AppShell never surfaced its OWN knobs —
+  // --app-shell-{sidebar,rail}-width, -bar-height/-inset/-gap, -mobile-nav-* (gh#213).
+  AppShell: ["app-shell", "sidebar", "topbar"],
   Sidebar: ["sidebar"],
   Topbar: ["topbar"],
   Form: ["form"],
@@ -825,6 +851,10 @@ function getComponent(name: string, verbose = false): string {
     for (const u of c.useCases) out += `- ${u}\n`;
   }
   out += `\n## Example\n\n\`\`\`tsx\n${c.example}\n\`\`\`\n\n`;
+  // The example above is ONE hand-picked happy path. Issue #163 item 7: the catalogue must
+  // state which contract dimensions are actually proven, so the example is never mistaken for
+  // a support claim.
+  out += coverageBlock(findFrameCoverage(c.name), c.name);
   if (c.related && c.related.length) {
     out += `## Related — don't confuse / don't reinvent\n\n`;
     for (const r of c.related) out += `- ${r}\n`;
@@ -840,6 +870,84 @@ function getComponent(name: string, verbose = false): string {
     }
   }
   return out;
+}
+
+const DIMENSION_TITLE = new Map(
+  FRAME_COVERAGE_POLICY.dimensions.map((d) => [d.id as string, d.title as string]),
+);
+
+/**
+ * Coverage block appended to `get_component` (issue #163 item 7). The whole point is that an
+ * agent reading a happy-path example must ALSO see which contract dimensions nothing proves —
+ * otherwise the example gets mistaken for a support claim.
+ */
+function coverageBlock(entry: FrameCoverageEntry | undefined, name: string): string {
+  if (!entry) {
+    return (
+      `\n## Verified contract coverage (issue #163)\n\n` +
+      `**UNTESTED.** \`${name}\` has no entry in the frame-coverage ledger, so NOTHING about its ` +
+      `props, states, responsive behaviour, RTL, keyboard or async lifecycle is proven by an ` +
+      `executed case. Treat the example above as an illustration, never as evidence of support.\n\n`
+    );
+  }
+  const label = (ids: readonly string[]) =>
+    ids.map((id) => DIMENSION_TITLE.get(id) ?? id).join(", ");
+  let out = `\n## Verified contract coverage (issue #163)\n\n`;
+  out += `> ${FRAME_COVERAGE_POLICY.warning}\n\n`;
+  out += entry.frame
+    ? `Frame: \`${entry.frame}\`\n\n`
+    : `**No \`/frame/**\` route exists for this export yet.**\n\n`;
+  out += entry.covered.length
+    ? `- ✅ **covered** (an executed case proves it): ${label(entry.covered)}\n`
+    : `- ✅ **covered:** none\n`;
+  out += entry.untested.length
+    ? `- ⚠️ **UNTESTED — not a pass, no executed case:** ${label(entry.untested)}\n`
+    : `- ⚠️ **UNTESTED:** none\n`;
+  if (entry.notApplicable.length) {
+    out += `- ➖ **not applicable** (no such axis in this export's public API): ${label(entry.notApplicable)}\n`;
+  }
+  const gaps = FRAME_COVERAGE_POLICY.knownGaps.filter((gap) =>
+    (gap.targets as readonly string[]).includes(entry.name),
+  );
+  for (const gap of gaps) {
+    out += `- 🔎 **tracked known gap** \`${gap.id}\`: ${(gap.cases as readonly string[]).join(" · ")}\n`;
+  }
+  out += `\nSee \`preview/frame-coverage.ledger.json\` and \`docs/FRAME-COVERAGE-LEDGER.md\` for the written reason behind every cell.\n\n`;
+  return out;
+}
+
+function getFrameCoverage(name?: string): string {
+  const t = FRAME_COVERAGE_POLICY.totals;
+  if (!name || !name.trim()) {
+    let out = `# Preview contract coverage (issue #163)\n\n`;
+    out += `> ${FRAME_COVERAGE_POLICY.warning}\n\n`;
+    out += `- Public exports tracked: **${t.exports}** (${t.exportsWithoutFrame} with no frame at all)\n`;
+    out += `- Dimension cells: **${t.dimensionCells}** — ✅ ${t.covered} covered · ⚠️ ${t.untested} UNTESTED · ➖ ${t.notApplicable} reasoned not-applicable\n`;
+    out += `- Required viewport matrix: ${FRAME_COVERAGE_POLICY.requiredViewports.join(", ")} (container widths ${FRAME_COVERAGE_POLICY.containerWidths.join(", ")})\n`;
+    out += `- Ledger recorded: ${FRAME_COVERAGE_POLICY.recordedAt} · \`${FRAME_COVERAGE_POLICY.ledger}\`\n\n`;
+    out += `## Contract dimensions\n\n`;
+    for (const d of FRAME_COVERAGE_POLICY.dimensions) out += `- \`${d.id}\` — ${d.title}\n`;
+    out += `\n## Tracked known gaps\n\n`;
+    for (const gap of FRAME_COVERAGE_POLICY.knownGaps) {
+      out += `- \`${gap.id}\` — ${(gap.targets as readonly string[]).join(", ")}: ${(gap.cases as readonly string[]).join(" · ")}\n`;
+    }
+    out += `\nCall \`get_frame_coverage name="Button"\` for one export. **Never** report a dimension as supported because an example renders it.\n`;
+    return out;
+  }
+  const entry = findFrameCoverage(name);
+  if (!entry) {
+    const near = FRAME_COVERAGE.filter((candidate) =>
+      candidate.name.toLowerCase().includes(name.trim().toLowerCase()),
+    )
+      .slice(0, 8)
+      .map((candidate) => candidate.name);
+    return (
+      `No frame-coverage entry for "${name}" — its contract is **UNTESTED** by definition.\n` +
+      (near.length ? `Did you mean: ${near.join(", ")}?\n` : "") +
+      `Call \`get_frame_coverage\` with no name for the repo-wide summary.\n`
+    );
+  }
+  return `# ${entry.name} — contract coverage\n\n**Group:** ${entry.group}\n${coverageBlock(entry, entry.name)}`;
 }
 
 function getPattern(name: string): string {

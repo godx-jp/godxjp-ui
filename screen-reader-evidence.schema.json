@@ -6,10 +6,18 @@
   "required": ["$schema", "schemaVersion", "policy", "records"],
   "properties": {
     "$schema": { "type": "string" },
-    "schemaVersion": { "const": 2 },
+    "schemaVersion": { "const": 3 },
     "policy": {
       "type": "object",
-      "required": ["issue", "requiredLocales", "combinations", "complexOwners", "note"],
+      "required": [
+        "issue",
+        "requiredLocales",
+        "combinations",
+        "cohorts",
+        "complexOwners",
+        "notApplicable",
+        "note"
+      ],
       "properties": {
         "issue": { "type": "string", "format": "uri" },
         "requiredLocales": {
@@ -34,7 +42,58 @@
             "additionalProperties": false
           }
         },
+        "cohorts": {
+          "type": "array",
+          "minItems": 7,
+          "items": {
+            "type": "object",
+            "required": ["id", "title", "requiredPhases", "owners"],
+            "properties": {
+              "id": {
+                "enum": [
+                  "landmarks-page-structure",
+                  "native-form-controls",
+                  "selection-composites",
+                  "overlays",
+                  "navigation-composites",
+                  "data-structures",
+                  "live-async-feedback"
+                ]
+              },
+              "title": { "type": "string", "minLength": 1 },
+              "requiredPhases": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "$ref": "#/$defs/journeyPhase" }
+              },
+              "owners": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "minLength": 1 }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
         "complexOwners": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+        "notApplicable": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["target", "scope", "reason", "reviewedBy", "reviewedIn", "reviewedAt"],
+            "properties": {
+              "target": { "type": "string", "minLength": 1 },
+              "scope": { "enum": ["owner", "export"] },
+              "reason": { "type": "string", "minLength": 40 },
+              "reviewedBy": { "type": "string", "minLength": 1 },
+              "reviewedIn": { "type": "string", "format": "uri" },
+              "reviewedAt": { "type": "string", "format": "date-time" }
+            },
+            "additionalProperties": false
+          }
+        },
         "note": { "type": "string" }
       },
       "additionalProperties": false
@@ -55,7 +114,9 @@
           "browserVersion",
           "locale",
           "frameUrl",
+          "entryCommand",
           "journey",
+          "steps",
           "transcript",
           "captureMethod",
           "evidenceUrl",
@@ -75,7 +136,22 @@
           "browserVersion": { "type": "string" },
           "locale": { "type": "string" },
           "frameUrl": { "type": "string" },
+          "entryCommand": { "type": "string", "minLength": 1 },
           "journey": { "type": "string" },
+          "steps": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["phase", "command", "announced"],
+              "properties": {
+                "phase": { "$ref": "#/$defs/journeyPhase" },
+                "command": { "type": "string", "minLength": 1 },
+                "announced": { "type": "string", "minLength": 1 }
+              },
+              "additionalProperties": false
+            }
+          },
           "transcript": { "type": "string" },
           "captureMethod": {
             "enum": [
@@ -93,6 +169,26 @@
         },
         "additionalProperties": false
       }
+    }
+  },
+  "$defs": {
+    "journeyPhase": {
+      "enum": [
+        "landmark-navigation",
+        "focus-entry",
+        "internal-navigation",
+        "activation",
+        "value-change",
+        "escape-close",
+        "focus-return",
+        "required-announcement",
+        "help-announcement",
+        "invalid-announcement",
+        "error-announcement",
+        "loading-announcement",
+        "success-announcement",
+        "recovery-announcement"
+      ]
     }
   },
   "additionalProperties": false

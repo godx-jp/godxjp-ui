@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   closeSync,
+  cpSync,
   existsSync,
   fsyncSync,
   mkdtempSync,
@@ -36,6 +37,40 @@ export const RELEASE_STEPS = Object.freeze({
   RemoveMcpStagingTag: "remove-mcp-staging-tag",
   CommitTargetMetadata: "commit-target-metadata",
 });
+
+/**
+ * Every gate that MUST have run — at the coordinated TARGET version — before the first byte is
+ * published. Issue #230: `npm version` + immediate `npm publish` made the UI tarball immutable on
+ * npm while it still declared the previous `godxUiMcp`, and any MCP failure was discovered too late
+ * to repair. The target metadata is therefore written FIRST and every gate observes it.
+ */
+export const PREFLIGHT_STEPS = Object.freeze([
+  RELEASE_STEPS.ApplyTargetMetadata,
+  RELEASE_STEPS.VerifyRoot,
+  RELEASE_STEPS.InstallMcp,
+  RELEASE_STEPS.BuildMcp,
+  RELEASE_STEPS.TestMcp,
+  RELEASE_STEPS.VerifyLockstep,
+  RELEASE_STEPS.PackTargetManifests,
+  RELEASE_STEPS.VerifyNpmAuth,
+  RELEASE_STEPS.VerifyTargetAvailability,
+  RELEASE_STEPS.VerifyPublishTree,
+]);
+
+const PUBLISH_STEPS = new Set([RELEASE_STEPS.PublishUi, RELEASE_STEPS.PublishMcp]);
+
+/** Pure ordering invariant: no publish step may precede any preflight gate. */
+export function assertPreflightOrder(steps) {
+  const firstPublish = steps.findIndex((step) => PUBLISH_STEPS.has(step));
+  if (firstPublish === -1) return steps;
+  for (const gate of PREFLIGHT_STEPS) {
+    const at = steps.indexOf(gate);
+    if (at === -1) throw new Error(`Release plan omits preflight gate "${gate}" before publish.`);
+    if (at > firstPublish)
+      throw new Error(`Release plan runs preflight gate "${gate}" after publish.`);
+  }
+  return steps;
+}
 
 const COORDINATED_MANIFESTS = new Set(["package.json", "mcp/package.json"]);
 const VALID_UI_BUMPS = new Set(["patch", "minor", "major", "skip"]);
@@ -138,6 +173,7 @@ export function buildReleasePlan({
   if (!progress.ui.stageTagRemoved) steps.push(RELEASE_STEPS.RemoveUiStagingTag);
   if (!progress.mcp.stageTagRemoved) steps.push(RELEASE_STEPS.RemoveMcpStagingTag);
   if (!progress.committed) steps.push(RELEASE_STEPS.CommitTargetMetadata);
+  assertPreflightOrder(steps);
   return { targetVersion, stageTag, recovery: Boolean(recoveryState), progress, steps };
 }
 
@@ -480,19 +516,287 @@ export function packAndVerifyTargetManifests({
   }
 }
 
+/**
+ * The single source of truth for every side-effecting *command* a release issues, as a pure
+ * function of (step, plan, artifacts). The executor in scripts/release.mjs only dispatches these —
+ * it never composes a publish or a gate itself, so the order below is exactly the order that runs
+ * and a no-network test can assert it (issue #230).
+ *
+ * `cwd` is a symbolic location ("root" | "mcp"), resolved by the executor against the repository.
+ */
+const publishCommand = (tarball, plan, packageName) => {
+  if (typeof tarball !== "string" || !tarball) {
+    throw new Error(
+      `Refusing to publish ${packageName}: no verified tarball from the preflight pack.`,
+    );
+  }
+  return {
+    binary: "npm",
+    args: ["publish", tarball, "--access", "public", "--tag", plan.stageTag],
+    cwd: "root",
+  };
+};
+
+const STEP_COMMANDS = Object.freeze({
+  [RELEASE_STEPS.VerifyRoot]: () => ({
+    binary: "pnpm",
+    args: ["run", "verify:release"],
+    cwd: "root",
+  }),
+  [RELEASE_STEPS.InstallMcp]: () => ({
+    binary: "pnpm",
+    args: ["install", "--frozen-lockfile"],
+    cwd: "mcp",
+  }),
+  [RELEASE_STEPS.BuildMcp]: () => ({ binary: "pnpm", args: ["build"], cwd: "mcp" }),
+  [RELEASE_STEPS.TestMcp]: () => ({ binary: "pnpm", args: ["test"], cwd: "mcp" }),
+  [RELEASE_STEPS.VerifyLockstep]: () => ({
+    binary: "node",
+    args: ["scripts/check-release-lockstep.mjs"],
+    cwd: "root",
+  }),
+  [RELEASE_STEPS.VerifyNpmAuth]: () => ({ binary: "npm", args: ["whoami"], cwd: "root" }),
+  [RELEASE_STEPS.PublishUi]: (plan, artifacts) =>
+    publishCommand(artifacts?.uiTarball, plan, "@godxjp/ui"),
+  [RELEASE_STEPS.PublishMcp]: (plan, artifacts) =>
+    publishCommand(artifacts?.mcpTarball, plan, "@godxjp/ui-mcp"),
+  [RELEASE_STEPS.PromoteUiLatest]: (plan) => ({
+    binary: "npm",
+    args: ["dist-tag", "add", `@godxjp/ui@${plan.targetVersion}`, "latest"],
+    cwd: "root",
+  }),
+  [RELEASE_STEPS.PromoteMcpLatest]: (plan) => ({
+    binary: "npm",
+    args: ["dist-tag", "add", `@godxjp/ui-mcp@${plan.targetVersion}`, "latest"],
+    cwd: "root",
+  }),
+  [RELEASE_STEPS.RemoveUiStagingTag]: (plan) => ({
+    binary: "npm",
+    args: ["dist-tag", "rm", "@godxjp/ui", plan.stageTag],
+    cwd: "root",
+  }),
+  [RELEASE_STEPS.RemoveMcpStagingTag]: (plan) => ({
+    binary: "npm",
+    args: ["dist-tag", "rm", "@godxjp/ui-mcp", plan.stageTag],
+    cwd: "root",
+  }),
+});
+
+export function stepHasCommand(step) {
+  return Object.hasOwn(STEP_COMMANDS, step);
+}
+
 export function releaseCommandForStep(step, plan, artifacts) {
-  if (step === RELEASE_STEPS.PublishUi || step === RELEASE_STEPS.PublishMcp) {
-    const tarball = step === RELEASE_STEPS.PublishUi ? artifacts.uiTarball : artifacts.mcpTarball;
-    return ["npm", ["publish", tarball, "--access", "public", "--tag", plan.stageTag]];
+  if (!stepHasCommand(step)) throw new Error(`No release command for ${step}.`);
+  return { step, ...STEP_COMMANDS[step](plan, artifacts) };
+}
+
+/** The full ordered command sequence a plan will issue — pure, offline, assertable. */
+export function planReleaseCommands(
+  plan,
+  artifacts = { uiTarball: "<ui.tgz>", mcpTarball: "<mcp.tgz>" },
+) {
+  return plan.steps
+    .filter((step) => stepHasCommand(step))
+    .map((step) => releaseCommandForStep(step, plan, artifacts));
+}
+
+const GATE_COMMAND_STEPS = Object.freeze([
+  RELEASE_STEPS.VerifyRoot,
+  RELEASE_STEPS.InstallMcp,
+  RELEASE_STEPS.BuildMcp,
+  RELEASE_STEPS.TestMcp,
+  RELEASE_STEPS.VerifyLockstep,
+  RELEASE_STEPS.VerifyNpmAuth,
+]);
+
+/**
+ * Pure guard over a planned command sequence: versions are never mutated by a package manager
+ * (the coordinated manifests are written first instead), and no publish runs before every gate.
+ */
+export function assertReleaseCommandPlan(commands) {
+  const mutation = commands.find(
+    (entry) => (entry.binary === "npm" || entry.binary === "pnpm") && entry.args[0] === "version",
+  );
+  if (mutation) {
+    throw new Error(
+      `Release plan must not bump with "${mutation.binary} version"; the coordinated target ` +
+        "version and both compatibility fields are written before any gate.",
+    );
   }
-  const packageName = step.includes("-ui-") ? "@godxjp/ui" : "@godxjp/ui-mcp";
-  if (step === RELEASE_STEPS.PromoteUiLatest || step === RELEASE_STEPS.PromoteMcpLatest) {
-    return ["npm", ["dist-tag", "add", `${packageName}@${plan.targetVersion}`, "latest"]];
+  const firstPublish = commands.findIndex(
+    (entry) => entry.binary === "npm" && entry.args[0] === "publish",
+  );
+  if (firstPublish === -1) return commands;
+  for (const step of GATE_COMMAND_STEPS) {
+    const at = commands.findIndex((entry) => entry.step === step);
+    if (at === -1) throw new Error(`Release plan omits preflight gate "${step}" before publish.`);
+    if (at > firstPublish)
+      throw new Error(`Release plan runs preflight gate "${step}" after publish.`);
   }
-  if (step === RELEASE_STEPS.RemoveUiStagingTag || step === RELEASE_STEPS.RemoveMcpStagingTag) {
-    return ["npm", ["dist-tag", "rm", packageName, plan.stageTag]];
-  }
-  throw new Error(`No release command for ${step}.`);
+  return commands;
+}
+
+/** Copy just the coordinated manifests into a throwaway tree so a plan can pack without touching the repo. */
+export function createManifestPlanWorkspace(rootDir) {
+  const workspace = mkdtempSync(join(tmpdir(), "godxjp-release-metadata-plan-"));
+  mkdirSync(join(workspace, "mcp"));
+  cpSync(join(rootDir, "package.json"), join(workspace, "package.json"));
+  cpSync(join(rootDir, "mcp/package.json"), join(workspace, "mcp/package.json"));
+  return workspace;
+}
+
+/**
+ * The release executor. Every effect goes through exactly two injected primitives, so the whole
+ * step machine can be driven offline by a test with a recording fake:
+ *   run(binary, args, cwd)      → streams, throws on non-zero
+ *   capture(binary, args, cwd)  → { status, stdout, stderr }, never throws
+ */
+export function createReleaseRuntime({ repositoryRoot, run, capture }) {
+  const cwdFor = (location) => (location === "mcp" ? join(repositoryRoot, "mcp") : repositoryRoot);
+  const execute = (descriptor) => run(descriptor.binary, descriptor.args, cwdFor(descriptor.cwd));
+
+  const npmJson = (args, missingIsNull = false) => {
+    const result = capture("npm", args, repositoryRoot);
+    if (result.status === 0) return JSON.parse(result.stdout || "null");
+    const output = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+    if (missingIsNull && /E404|404 Not Found|is not in this registry/i.test(output)) return null;
+    throw new Error(`npm ${args.join(" ")} failed: ${output.trim()}`);
+  };
+
+  const registryState = (packageName, version) => {
+    const integrity = npmJson(
+      ["view", `${packageName}@${version}`, "dist.integrity", "--json"],
+      true,
+    );
+    const tags = npmJson(["view", packageName, "dist-tags", "--json"], true) ?? {};
+    return { exists: typeof integrity === "string", integrity, tags };
+  };
+
+  const gitStatus = () => {
+    const result = capture(
+      "git",
+      ["status", "--porcelain=v1", "-z", "--untracked-files=all"],
+      repositoryRoot,
+    );
+    if (result.status !== 0) throw new Error(`git status failed: ${(result.stderr ?? "").trim()}`);
+    return result.stdout ?? "";
+  };
+
+  const commitTargetMetadata = (plan) => {
+    execute({ binary: "git", args: ["add", "package.json", "mcp/package.json"], cwd: "root" });
+    const dirty = capture("git", ["diff", "--cached", "--quiet"], repositoryRoot).status !== 0;
+    if (dirty) {
+      execute({
+        binary: "git",
+        args: ["commit", "-m", `chore(release): UI + MCP @${plan.targetVersion}`],
+        cwd: "root",
+      });
+    }
+  };
+
+  const compensateLatest = (plan, progress) => {
+    const observed = {
+      ui: registryState("@godxjp/ui", plan.targetVersion).tags.latest ?? null,
+      mcp: registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null,
+    };
+    const restore = (packageName, previousLatest, currentLatest) => {
+      if (currentLatest === previousLatest) return;
+      if (previousLatest) {
+        execute({
+          binary: "npm",
+          args: ["dist-tag", "add", `${packageName}@${previousLatest}`, "latest"],
+          cwd: "root",
+        });
+      } else {
+        execute({ binary: "npm", args: ["dist-tag", "rm", packageName, "latest"], cwd: "root" });
+      }
+    };
+    restore("@godxjp/ui", progress.ui.previousLatest, observed.ui);
+    restore("@godxjp/ui-mcp", progress.mcp.previousLatest, observed.mcp);
+    const restored = {
+      ui: registryState("@godxjp/ui", plan.targetVersion).tags.latest ?? null,
+      mcp: registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null,
+    };
+    if (
+      restored.ui !== progress.ui.previousLatest ||
+      restored.mcp !== progress.mcp.previousLatest
+    ) {
+      throw new Error(
+        `latest rollback verification failed: ${JSON.stringify({ observed, restored })}`,
+      );
+    }
+    return { observed, restored };
+  };
+
+  const runStep = (step, plan, artifacts, progress) => {
+    if (stepHasCommand(step)) {
+      execute(releaseCommandForStep(step, plan, artifacts));
+      return;
+    }
+    switch (step) {
+      case RELEASE_STEPS.VerifyTargetAvailability: {
+        const uiRegistry = registryState("@godxjp/ui", plan.targetVersion);
+        const mcpRegistry = registryState("@godxjp/ui-mcp", plan.targetVersion);
+        if (!plan.recovery) {
+          assertFreshTargets(uiRegistry, mcpRegistry);
+          return;
+        }
+        reconcilePackagePublication({
+          progress: progress.ui,
+          registry: uiRegistry,
+          artifact: progress.artifacts.ui,
+          targetVersion: plan.targetVersion,
+          stageTag: plan.stageTag,
+          packageName: "@godxjp/ui",
+        });
+        reconcilePackagePublication({
+          progress: progress.mcp,
+          registry: mcpRegistry,
+          artifact: progress.artifacts.mcp,
+          targetVersion: plan.targetVersion,
+          stageTag: plan.stageTag,
+          packageName: "@godxjp/ui-mcp",
+        });
+        return;
+      }
+      case RELEASE_STEPS.RecordPreviousLatestTags:
+        progress.ui.previousLatest =
+          registryState("@godxjp/ui", plan.targetVersion).tags.latest ?? null;
+        progress.mcp.previousLatest =
+          registryState("@godxjp/ui-mcp", plan.targetVersion).tags.latest ?? null;
+        return;
+      case RELEASE_STEPS.VerifyPublishTree:
+        assertOnlyCoordinatedManifestChanges(gitStatus());
+        return;
+      case RELEASE_STEPS.VerifyPublishedVersions: {
+        assertRegistryArtifact(
+          registryState("@godxjp/ui", plan.targetVersion),
+          progress.artifacts.ui,
+          plan.targetVersion,
+          plan.stageTag,
+          "@godxjp/ui",
+          !progress.ui.stageTagRemoved,
+        );
+        assertRegistryArtifact(
+          registryState("@godxjp/ui-mcp", plan.targetVersion),
+          progress.artifacts.mcp,
+          plan.targetVersion,
+          plan.stageTag,
+          "@godxjp/ui-mcp",
+          !progress.mcp.stageTagRemoved,
+        );
+        return;
+      }
+      case RELEASE_STEPS.CommitTargetMetadata:
+        commitTargetMetadata(plan);
+        return;
+      default:
+        throw new Error(`Unknown release step "${step}".`);
+    }
+  };
+
+  return { runStep, compensateLatest, registryState, gitStatus };
 }
 
 function recoverySnapshot(progress, failedStep = null, error = null) {

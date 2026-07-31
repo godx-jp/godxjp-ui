@@ -40,6 +40,28 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Wordmark lockup</CardTitle>
+            <CardDescription>
+              wordmark を渡すと mark + 製品名の lockup になります。GoDX の lockup は --primary
+              ではなく identity role（brand green）で着色されるため、
+              テーマ変更でブランド色が崩れません。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {/* Canonical GoDX lockup — brand-green mark + wordmark, one element. */}
+              <Logo mark="godx" tone="success" wordmark="GoDX" />
+              <Logo mark="godx" tone="success" wordmark="GoDX ID" size="lg" />
+              {/* Boxed-glyph lockup for a product brand that is not the GoDX identity. */}
+              <Logo glyph="GX" wordmark="godx Admin" size="sm" />
+              {/* label overrides the lockup name when the wordmark alone is ambiguous. */}
+              <Logo mark="godx" wordmark="GoDX" label="GoDX ID ホーム" />
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

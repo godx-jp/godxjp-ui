@@ -7,7 +7,9 @@
     "native span props": "N/A: forwarded unchanged"
   },
   "ListRow": {
-    "as/leading/title/description/trailing": "docs/data-display/list-row.tsx div/li, icon, metadata, badge and action cases"
+    "as/leading/title/description/trailing": "docs/data-display/list-row.tsx div/li, icon, metadata, badge and action cases",
+    "align/overflow": "docs/data-display/list-row.tsx center+truncate default rows, start+wrap invitation rows with long JA/EN/VI titles and two trailing Buttons (gh#224)",
+    "unread": "docs/data-display/list-row.tsx notifications card — unread / unread={false} / omitted, with zero, one and two trailing actions (gh#225)"
   },
   "Avatar/AvatarImage/AvatarFallback": {
     "src/alt/fallback/size": "docs/data-display/avatar.tsx image, missing image, fallback and size cases",

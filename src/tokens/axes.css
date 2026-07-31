@@ -57,3 +57,42 @@
   --accent: 215 25% 94%;
   --accent-foreground: 215 25% 20%;
 }
+
+/* ── THE CANONICAL DXS PRESET (gh#214) ──────────────────────────────────────
+ * `dxs` is the one brand value that is NOT just a primary tint: it binds the
+ * canonical DXS SURFACE CONTRACT that every hosted-identity screen shares, so a
+ * service selects it once (`<AppProvider brand="dxs">`, or import
+ * `@godxjp/ui/theme/dxs.canonical.css`) and needs ZERO page CSS for auth
+ * geometry, density, insets, logo colour, divider or footer.
+ *
+ * SINGLE SOURCE OF TRUTH — every value below is already canonical evidence in
+ * this package: the palette is the shipped GodX Navy ramp (identical to
+ * `data-brand="brand"`), and the auth knobs simply re-point the generic
+ * AuthShell tokens at the `--auth-shell-canonical-*` values declared in
+ * `tokens/components/shell.css`. Nothing here is a new brand colour.
+ * `src/theme/dxs.canonical.css` mirrors this block for stylesheet-only apps;
+ * `src/tokens/__tests__/dxs-canonical-theme.test.ts` fails if the two drift.
+ *
+ * The brand-green GoDX identity mark needs no binding: `--logo-godx-color` /
+ * `--logo-wordmark-color` already default to the `--success` identity role at
+ * their call sites and never reference `--primary`. */
+:root[data-brand="dxs"] {
+  --primary: 211 73% 15%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 24 99% 46%;
+  --accent: 24 99% 95%;
+  --accent-foreground: 24 99% 28%;
+
+  /* Canonical auth surface — 36px controls, 22.5rem card measure, 16px page
+   * inset (15px below 30rem, see the media query). Matches AuthShell
+   * `variant="canonical"`, which still owns the compact CARD density knob. */
+  --auth-shell-control-height: var(--auth-shell-canonical-control-height);
+  --auth-shell-heading-size: var(--auth-shell-canonical-heading-size);
+  --auth-shell-card-max-width: var(--auth-shell-canonical-card-max-width);
+  --auth-shell-main-padding: var(--auth-shell-canonical-main-padding);
+}
+@media (max-width: 30rem) {
+  :root[data-brand="dxs"] {
+    --auth-shell-main-padding: var(--auth-shell-canonical-main-padding-mobile);
+  }
+}

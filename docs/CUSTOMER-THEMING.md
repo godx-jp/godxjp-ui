@@ -14,10 +14,10 @@ The design system ships a complete, **zero-config default theme**. Two audiences
 import "@godxjp/ui/styles";
 ```
 
-That single import ships everything: colors, the bundled fonts (Noto Sans JP by default,
-Montserrat for the Vietnamese locale — self-bundled & subsetted), the golden-ratio type scale,
-spacing grid, radius scale, shadow ramp, and all component CSS. Nothing else to configure. Pick
-density per surface with
+That single import ships everything: colors, the bundled fonts (**M PLUS 2** as the default face —
+including the Vietnamese coverage — with **Noto Sans JP** as the CJK fallback, self-bundled &
+subsetted), the golden-ratio type scale, spacing grid, radius scale, shadow ramp, and all component
+CSS. Nothing else to configure. Pick density per surface with
 `<PageContainer density="compact | default | comfortable">`.
 
 ---
@@ -39,6 +39,7 @@ mirror the JS subpaths, so the CSS tree-shakes the same way):
    text-layout, table-layout, dialog-layout, alert-layout, badge-layout,
    data-display-layout, data-entry-layout, form-layout, navigation-layout,
    chart-layout, density. */
+@import "@godxjp/ui/styles/fonts"; /* OPTIONAL bundled faces — MUST come AFTER base */
 ```
 
 Rules: import `base` FIRST (the layer files declare `@layer components` and use
@@ -46,6 +47,14 @@ Rules: import `base` FIRST (the layer files declare `@layer components` and use
 `@godxjp/ui/styles/fonts` when you manage fonts yourself and set the font tokens
 (next section). A ~10-component site typically drops component CSS ~142K → ~26K
 gzip.
+
+> **Import order rule — `fonts` AFTER `base`.** `styles/base` pulls in the token
+> layers, whose font-agnostic `:root { --font-sans-base: <system stack> }` sits at
+> exactly the same specificity (0,1,0) as the bundle's fill in `styles/fonts`, so
+> the **later** import wins. Put `styles/fonts` first and the bundled faces
+> silently never apply — you still ship ~800 KB of `@font-face` that can never
+> render (issue #210). The all-in-one `@godxjp/ui/styles` entry already imports
+> `fonts.css` after the token layers, so it needs no thought.
 
 ---
 
@@ -73,8 +82,12 @@ tokens — never edit the library. Two modes, both token-only:
 }
 ```
 
-`styles/base.css` wires every `[lang]` to its slot; `styles/fonts` fills the
-slots for the bundled M PLUS 2 + Noto Sans JP fallback. Headings read
+`styles/base.css` wires every `[lang]` to its slot; the opt-in `styles/fonts`
+overwrites `--font-sans-base` (and `--font-sans-vi`) with the bundled stack —
+**M PLUS 2** primary, **Noto Sans JP** CJK fallback. (**Bundle change:** v16
+bundled Noto Sans JP + Montserrat; v18 bundles M PLUS 2 + Noto Sans JP. If your
+design spec named the v16 faces, set the tokens yourself rather than relying on
+the bundle.) Headings read
 `--font-family-display` and body reads `--font-family-body`, both defaulting to
 `--font-family-sans` — override them for a dual-font (display + body) brand.
 

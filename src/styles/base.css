@@ -14,8 +14,14 @@
  *
  * The layout files declare `@layer components` and use `@apply`, so base.css
  * (which pulls in Tailwind) MUST be imported before them, in the same
- * stylesheet. Bundled fonts are opt-in — add `@godxjp/ui/styles/fonts` if you
- * want them, or skip it and supply your own via the --font-family-* tokens.
+ * stylesheet.
+ *
+ * Bundled fonts are opt-in — add `@godxjp/ui/styles/fonts` if you want them, or
+ * skip it and supply your own via the --font-family-* tokens. When you DO import
+ * it, it MUST come AFTER this file: base.css pulls in tokens/foundation.css,
+ * whose font-agnostic `:root { --font-sans-base: <system stack> }` sits at the
+ * same specificity as the bundle's fill, so the later import wins. Imported
+ * first, the bundle is dead weight (issue #210).
  *
  * Prefer the all-in-one `@godxjp/ui/styles` entry if you'd rather ship every
  * component's CSS + the bundled fonts and not think about it.

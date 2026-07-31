@@ -1,5 +1,7 @@
 export type {
   AppShellProp,
+  AuthFooterProp,
+  AuthIdentityProp,
   OrgSwitcherLabels,
   OrgSwitcherOrganization,
   OrgSwitcherProp,
@@ -63,6 +65,7 @@ export type {
   AlertContentProp,
   AlertDescriptionProp,
   AlertActionsProp,
+  SheetResponsiveProp,
   SkeletonRowsProp,
 } from "./feedback.prop";
 export type {

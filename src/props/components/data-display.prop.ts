@@ -18,6 +18,7 @@ import type {
   ChildrenProp,
   ToneProp,
   HeadingLevelProp,
+  HandlerProp,
   SizeProp,
   LabelProp,
   IdProp,
@@ -167,6 +168,18 @@ export type DataTableProp<T> = {
   onSortChange?: OnSortChangeProp;
   loading?: boolean;
   empty?: React.ReactNode;
+  /**
+   * Failure state (#216). `true` = built-in localized message (with a retry when `onRetry` is
+   * given); any other node replaces it. `false`/`undefined` = the read succeeded.
+   */
+  error?: React.ReactNode;
+  /**
+   * Permission-denied state (#216) — refused, not failed. `true` = built-in localized message
+   * with NO retry. Takes precedence over `error`.
+   */
+  denied?: React.ReactNode;
+  /** Retry handler surfaced by the built-in `error` state. */
+  onRetry?: HandlerProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
 };

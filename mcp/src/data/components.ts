@@ -379,6 +379,7 @@ import { StatCard } from "@godxjp/ui/data-display";
     usage: [
       "DO pass a <Sidebar> node to `sidebar` (required) and page content to `children` (required) — these are the only two required props. Everything else is optional and omitting optional slots simply removes that zone from the rendered DOM.",
       "DO rely on AppShell's OWNED mobile drawer below `lg`: it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
+      "DO let the drawer nav own its own inset: AppShell renders `mobileNav` in a Sheet body whose inline padding is the `--app-shell-mobile-nav-inset` token (near-zero by default) instead of the generic 24px sheet chrome inset, so a <Sidebar> in the drawer is not double-padded (its own --sidebar-nav-scroll-padding already insets each row). If a custom `mobileNav` node needs the full chrome inset, set `--app-shell-mobile-nav-inset: var(--space-6)` in the service theme — never patch the drawer with a `[data-slot='sheet-body']` selector in app CSS.",
       "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop only when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — when `topbar` is provided, logo/topbarLeft/topbarRight are ignored entirely.",
       "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",
       "DO place breadcrumb content in AppShell's `breadcrumb` prop (renders in the `app-breadcrumb` div inside `<main>` ABOVE children) — do NOT hand-roll a breadcrumb bar as the first child of children, and do NOT put breadcrumbs inside <Sidebar>.",
@@ -443,9 +444,38 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
         type: "ReactNode",
         description: "Footer slot pinned to the bottom (legal links, locale switch, support).",
       },
+      {
+        name: "variant",
+        type: '"default" | "canonical"',
+        defaultValue: '"default"',
+        description:
+          'Visual contract for the auth surface. "canonical" applies the shared DXS compact geometry (36px controls, 22.5rem/360px card measure, responsive page insets, tighter field labels) through component tokens. "default" keeps the comfortable 44px shell with the 24rem card.',
+      },
+      {
+        name: "preset",
+        type: '"default" | "device-authorization" | "context-selection"',
+        defaultValue: '"default"',
+        description:
+          'Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the card max-width plus the desktop AND mobile page gutters, all owned by component tokens. "device-authorization" (gh#220) = a 380px card at 1440/1024 with a 5px inline page gutter at 390 (card x=5px, width=380px). "context-selection" (gh#217) = a 25rem card on desktop/tablet, edge-to-edge on mobile (0 inline gutter), plus a tokenized rhythm between the intro, the card and the trailing "remember" row. ORTHOGONAL to `variant` (presets are applied after it), so `variant="canonical" preset="device-authorization"` keeps the canonical chrome and only re-measures. Selecting a preset REPLACES every consumer-side `--auth-shell-card-max-width` override.',
+      },
+      {
+        name: "density",
+        type: '"comfortable" | "compact"',
+        description:
+          'Vertical density scoped to auth-card descendants. Defaults to "compact" under variant="canonical" and "comfortable" otherwise.',
+      },
+      {
+        name: "className",
+        type: "string",
+        description: "Extra CSS classes merged onto the shell root.",
+      },
     ],
     usage: [
       "DO pass a single <Card> (with the form inside <CardContent>) as `children` — AuthShell centres it and constrains its width via `--auth-shell-card-max-width`; do NOT hand-roll a `.auth-shell-main` / `.ui-auth-scope` wrapper.",
+      'DO select a `preset` instead of overriding the card width: `preset="device-authorization"` for the 380px OAuth device-grant measure, `preset="context-selection"` for the 25rem organisation/context picker that goes edge-to-edge on mobile. A page-local `--auth-shell-card-max-width` override (or a forked `.auth-shell--wide` class) is the exact anti-pattern these presets replace (gh#217/gh#220).',
+      'DO combine `variant` and `preset` — they are orthogonal: `variant` owns control density + heading size, `preset` owns the page measure. `variant="canonical" preset="device-authorization"` is the canonical device screen.',
+      'DO let `preset="context-selection"` space the auth column: it turns the card slot into a flex column with a tokenized `--auth-shell-card-stack-gap`, so an intro (<AuthIdentity>), the choice <Card> and a trailing "remember" row pass as three siblings with NO page-local spacing.',
+      "DO NOT add a page-local width, inset or colour to hit an artboard — if a measure is missing, it is a library gap: a new preset or token, never consumer CSS (rules #44/#45).",
       "DO put the product/brand mark in `brand` (a <Logo> or an <Avatar>) — it renders as the top banner landmark; omit it and the banner is not rendered.",
       "DO use `footer` for compliance/legal/support links or a locale switch — it renders as the contentinfo landmark below the card.",
       "DO wrap the card in <Reveal> for the entrance animation (`<AuthShell><Reveal><Card/></Reveal></AuthShell>`) — Reveal honours prefers-reduced-motion; AuthShell itself stays layout-only.",
@@ -455,6 +485,8 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
     useCases: [
       "Login page: <AuthShell brand={<Logo/>} footer={<AuthFooter/>}> wrapping a <Card> with the email/password form and a primary <Button fullWidth>.",
       "MFA / passkey / device-authorisation step: same shell, a <Card> with the one-time-code <InputOTP> or a passkey prompt.",
+      'OAuth device-grant screen (SCR-004): <AuthShell variant="canonical" preset="device-authorization"> — a 380px card at 1440/1024 and a 5px inline gutter at 390, with zero page-local CSS (gh#220).',
+      'Organisation / context selection (/select-context): <AuthShell variant="canonical" preset="context-selection" brand={<Logo mark="godx" />}> with an <AuthIdentity> intro, a <Card><CardContent flush> list of <ListRow as="li"> organisations, and a trailing "remember this choice" <Checkbox> — the preset spaces the three sections (gh#217).',
       "Password reset / forgot-password / accept-invite: the centred single-card flow with a brand bar and a legal footer.",
       'SSO landing / success confirmation: pair with an <EmptyState tone="success"> inside the card for an approved-device confirmation.',
     ],
@@ -463,23 +495,39 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
       "Reveal — wrap the auth <Card> in <Reveal> for the entrance animation; AuthShell delegates motion (and prefers-reduced-motion handling) to it rather than baking an animation in.",
       "Card — the canonical container for the auth form; place the form inside <CardContent>. AuthShell centres and width-constrains it.",
       'EmptyState — with `tone="success"` for a confirmation card inside the shell (e.g. device approved).',
+      'AuthIdentity / AuthFooter / AuthStack / AuthDivider — the auth composites that fill the shell: the GoDX identity mark + heading + requesting-client line, the mono legal footer (its `locale` slot takes an <AppSettingPicker kind="locale" appearance="labeled" compact />), the 12px section rhythm, and the labelled "or" rule.',
+      'ListRow — compose the organisation choice list for `preset="context-selection"` as <Card><CardContent flush><ul> of <ListRow as="li">: shared row dividers, no per-row card outline. There is no separate OrganizationChoiceList component — that is a composition pattern (rule #46), not a framework component.',
     ],
-    example: `import { AuthShell } from "@godxjp/ui/layout";
+    example: `import { AuthShell, AuthIdentity, AuthFooter } from "@godxjp/ui/layout";
 import { Reveal, Logo, Button } from "@godxjp/ui/general";
 import { Card, CardContent, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Field } from "@godxjp/ui/data-entry";
+import { AppSettingPicker } from "@godxjp/ui/navigation";
 
-export function LoginPage() {
+export function DeviceAuthorizationPage() {
   return (
-    <AuthShell brand={<Logo />} footer={<span>© 2026 GodX</span>}>
+    // 380px card at 1440/1024 · 5px inline gutter at 390 — all token-owned, no page CSS.
+    <AuthShell
+      variant="canonical"
+      preset="device-authorization"
+      brand={<Logo mark="godx" tone="success" />}
+      footer={
+        <AuthFooter
+          product="GoDX ID"
+          terms="Terms"
+          privacy="Privacy"
+          locale={<AppSettingPicker kind="locale" appearance="labeled" compact />}
+        />
+      }
+    >
       <Reveal>
         <Card>
           <CardHeader>
-            <CardTitle>ログイン</CardTitle>
+            <AuthIdentity title="デバイスを認証" requester="勤怠管理が認証を要求しています" />
+            <CardTitle level={2}>確認コードを入力</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* form fields */}
-            <Button fullWidth>続ける</Button>
+            {/* InputOTP + actions */}
+            <Button fullWidth>デバイスを承認</Button>
           </CardContent>
         </Card>
       </Reveal>
@@ -520,6 +568,12 @@ export function LoginPage() {
         description:
           "Max-width of the centred column: sm ~32rem, md (default) ~46rem, lg ~64rem — all wider than AuthShell's 24rem auth card. A service retunes each tier via --centered-shell-width-*.",
       },
+      {
+        name: "align",
+        type: '"start" | "center"',
+        description:
+          'Block alignment of the centred column inside the 100dvh shell. "start" (default) keeps the top-aligned flowing/scrolling page shape. "center" centres the column in the viewport — the SYSTEM-level standalone surface (a 500/503 error page, a maintenance notice); the full-page geometry stays package-owned (--centered-shell-column-offset-block: auto) instead of a consumer writing min-h-dvh + flex centring or a className. Overflowing content still scrolls from the top, so a long localized message is never clipped.',
+      },
     ],
     usage: [
       "DO use CenteredShell for an AUTHENTICATED page that has a topbar with actions but NO sidebar — the hosted-ID 'My Page', an account / self-service surface, a standalone settings page. It is the third shell: AppShell (needs a sidebar) · AuthShell (unauthenticated narrow card) · CenteredShell (authenticated centred column).",
@@ -527,11 +581,13 @@ export function LoginPage() {
       "DO pick `width` by content: `sm` (~32rem) for a single settings form, `md` (default, ~46rem) for a My Page of stacked sections, `lg` (~64rem) for a service-launcher grid. All are wider than AuthShell's 24rem card.",
       "DO wrap an individual section in <Reveal> for entrance motion — CenteredShell stays layout-only and delegates prefers-reduced-motion handling to Reveal (same as AuthShell).",
       "DO NOT use AuthShell for an authenticated page (it centres a narrow card VERTICALLY and has no actions slot), and DO NOT force AppShell with an empty sidebar — use CenteredShell. Never nest it inside AppShell/AuthShell (or vice-versa); it is a ROOT shell.",
+      'DO use `align="center"` (+ `width="sm"`) for a SYSTEM-level standalone page — a 500/503 error surface, a maintenance notice. It centres the column in the 100dvh shell at 1440/1024/390 with no consumer `min-h-dvh` / flex CSS and no className; the knob is --centered-shell-column-offset-block. There is NO ErrorSurface component: get the full 403/404/500/503 recipe from the `error-pages` pattern.',
     ],
     useCases: [
       'Hosted GoDX ID \'My Page\': <CenteredShell topbar={<Topbar start={<Brand/>} end={<><AppSettingPicker kind="locale"/><UserMenu/></>}/>} footer={<Footer/>} width="md"> with an identity hero, an org picker, a service-launcher grid and a team list.',
       "Account / self-service settings surface (no admin sidebar): stacked <Card> sections (profile, security, sessions) in a centred `md` column under a topbar with a user menu.",
       'Standalone single settings page: `width="sm"` with one <Card> of <Field>s and a save action.',
+      'System error / maintenance page (500 · 503): `<CenteredShell align="center" width="sm">` around the canonical error body (status code <Text mono tabular> + <EmptyState icon tone title description action> + optional request-ID / maintenance line). See the `error-pages` pattern.',
       'Service launcher / app picker after sign-in: `width="lg"` with a <ResponsiveGrid> of app cards under the brand topbar.',
     ],
     related: [
@@ -636,10 +692,16 @@ export function MyPage() {
           "Slot pinned to the bottom of the sidebar below the scrollable nav area. Commonly used for user identity, online status, or version info.",
       },
       {
+        name: "linkComponent",
+        type: "SidebarLinkComponentProp",
+        description:
+          "THE framework-router contract (gh#213). Supply only the link ELEMENT TYPE; the library keeps composing every row — icon slot, label, badge, data-active/aria-current, the icon-only collapsed rail and its tooltip name — and passes it to the link as SidebarLinkProp children. Applied to every row that carries an href: top-level leaves, submenu children, collapsed-rail leaves and collapsed flyout entries. Build it with createSidebarLink(Link, 'to') for React Router / TanStack, createSidebarLink(Link) or inertiaSidebarLink(Link) from @godxjp/ui/inertia for Inertia / Next.js. Rows without an href keep the button + onSelect shape; a group TRIGGER stays a button because it owns aria-expanded disclosure semantics.",
+      },
+      {
         name: "renderItem",
         type: "(item: SidebarItemData, rowProps: SidebarRenderItemProp) => ReactNode",
         description:
-          "Framework-router escape hatch. Return one interactive element and spread rowProps onto it so canonical row geometry, active state, current-page semantics, and disabled state reach the rendered DOM node.",
+          "DEPRECATED (gh#213) — use linkComponent, or asChild on SidebarItem. Legacy escape hatch that left row CONTENT to the caller, which is how a <Link>{item.label}</Link> silently dropped every icon and badge in production. Still supported and still wins over linkComponent; rowProps now also carries the library-composed children, so spreading rowProps (or rendering rowProps.children) restores the canonical row.",
       },
       {
         name: "aria-label",
@@ -650,11 +712,16 @@ export function MyPage() {
     ],
     usage: [
       "DO: Define all nav items as a SidebarSectionProp[] data structure and pass it to sections — never hand-roll nav buttons alongside or instead of the Sidebar.",
-      "DO: Add content: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The parent item's icon is required even for groups. The group auto-opens and highlights when activeId matches any descendant.",
+      "DO: Add children: SidebarItemProp[] to any SidebarItemProp to create a collapsible submenu group. The parent item's icon is required even for groups. The group auto-opens and highlights when activeId matches any descendant.",
       "DO: Mirror the collapsed boolean between AppShell's sidebarCollapsed prop and Sidebar's collapsed prop — they must stay in sync so the shell layout grid adjusts correctly.",
       "DO: Use the footer prop for user info or status — it is pinned below the scroll area and does not scroll away.",
-      "DO: Render a leaf as a real link with `item.href` (a real <a>, so right-click / open-in-new-tab work) or, for a framework router <Link>, return that single element from `renderItem` and spread its second `rowProps` argument onto the Link. The link IS the row and the ONLY interactive element (no nested <button>). Never put a <button>/<a> inside a default row.",
+      "DO: Give every navigable item an `item.href` and let the library render it. A plain `href` becomes a real <a> (context-menu open-in-new-tab, middle-click); with `linkComponent` that same href drives your framework router's <Link>. Either way the link IS the row and the ONLY interactive element (no nested <button>). Never put a <button>/<a> inside a default row.",
+      "DO: Wire a framework router with `linkComponent` — `createSidebarLink(Link, 'to')` (React Router / TanStack), `createSidebarLink(Link)` (Next.js), or `inertiaSidebarLink(Link)` from `@godxjp/ui/inertia`. That is the WHOLE integration: you pass the element type, the library composes the row. It threads through leaves, submenu children, the collapsed rail and the collapsed flyout. When you compose rows by hand, the same contract is `<SidebarItem item={item} asChild><Link to=… /></SidebarItem>` — write NO children; the library injects the icon, label and badge.",
+      "DON'T: Use `renderItem` in new code — it is DEPRECATED (gh#213). It hands you a className + active state and leaves the row CONTENT to you, so `renderItem={(item) => <Link href={…}>{item.label}</Link>}` renders a row with NO icon and NO badge. That is the exact production regression that motivated `linkComponent`. If you must keep it, render `rowProps.children` (the library-composed row) instead of hand-writing `.sb-icon` / `.sb-label` spans, which are internal class names and not a public contract.",
       "DO: Rely on route-synchronized group expansion — a group OPENS automatically whenever `activeId` moves to one of its children (e.g. after a deep-link navigation), revealing the newly-active child; users can still collapse/expand manually.",
+      "DO: Theme the nav ICON and the row/label SEPARATELY with tokens (gh#228) — the icon reads `--sidebar-nav-icon-foreground` (+ `-hover-`/`-active-`/`-disabled-` variants) and the row/label reads `--sidebar-nav-item-foreground` (+ `-hover-`/`-disabled-`). Defaults are unchanged (both = `hsl(var(--muted-foreground))`, hover/active = `hsl(var(--foreground))`), so setting `--sidebar-nav-icon-foreground: hsl(var(--foreground))` in your theme is all it takes to get canonical darker 16px icons beside muted labels. NEVER write a page-local `.sb-nav-item svg { color: … }` rule and never re-tint `--muted-foreground` globally to fix sidebar icons.",
+      "DO: Give every item an `icon` — it is required by SidebarItemProp and by the canonical rail (the collapsed mode is icon-only). An item whose data arrives without one no longer crashes the shell; it renders an EMPTY 16px icon slot so the row keeps its geometry and label column, but it reads as a hole in the rail.",
+      "DON'T: Change icon SIZE or row geometry through these colour knobs — icon size stays `--sidebar-nav-icon-size` (16px) and row geometry stays `--sidebar-nav-item-height` / `--sidebar-nav-item-gap` / `--sidebar-nav-item-padding-x`. The active row's fill/label keep `--sidebar-item-active-background` / `--sidebar-item-active-foreground`.",
       "DON'T: Manage collapse state inside the Sidebar — it is stateless. Hoist the boolean to your shell/page state and pass it down via both AppShell.sidebarCollapsed and Sidebar.collapsed.",
       "DON'T: Nest children more than one level deep — only top-level items can have children; grandchild items are not rendered.",
     ],
@@ -673,22 +740,28 @@ export function MyPage() {
     example: `
 {\`import { useState } from "react";
 import { LayoutDashboard, FileText, Users, Shield, CreditCard, BookOpen } from "lucide-react";
-import { AppShell } from "@godxjp/ui/layout";
+import { Link } from "react-router-dom";
+import { AppShell, createSidebarLink } from "@godxjp/ui/layout";
 import { Sidebar, type SidebarSection } from "@godxjp/ui/layout";
 import { Topbar } from "@godxjp/ui/layout";
+
+// The WHOLE router integration (gh#213): pass the element type, the library composes every row
+// (icon · label · badge · active · collapsed rail). Inertia: inertiaSidebarLink(Link) from
+// "@godxjp/ui/inertia". Next.js: createSidebarLink(Link).
+const NavLink = createSidebarLink(Link, "to");
 
 const sections: SidebarSection[] = [
   {
     label: "Accounting",
     items: [
-      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
       {
         id: "ledger",
         label: "Ledger",
         icon: BookOpen,
-        content: [
-          { id: "journal", label: "Journal", icon: FileText },
-          { id: "chart-of-accounts", label: "Chart of Accounts", icon: CreditCard },
+        children: [
+          { id: "journal", label: "Journal", icon: FileText, href: "/ledger/journal" },
+          { id: "chart-of-accounts", label: "Chart of Accounts", icon: CreditCard, href: "/ledger/coa" },
         ],
       },
     ],
@@ -696,8 +769,8 @@ const sections: SidebarSection[] = [
   {
     label: "Administration",
     items: [
-      { id: "users", label: "Users", icon: Users },
-      { id: "roles", label: "Roles", icon: Shield, disabled: true },
+      { id: "users", label: "Users", icon: Users, href: "/users" },
+      { id: "roles", label: "Roles", icon: Shield, href: "/roles", disabled: true },
     ],
   },
 ];
@@ -715,6 +788,7 @@ export default function Shell() {
           collapsed={collapsed}
           onSelect={setActiveId}
           sections={sections}
+          linkComponent={NavLink}
           product={{ name: "CoreBooks", role: "Admin Console", color: "hsl(var(--primary))" }}
           onProductClick={() => {/* open entity switcher */}}
           footer={
@@ -788,6 +862,7 @@ export default function Shell() {
       "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
       "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
       "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
+      "DO rely on the built-in shrink contract instead of hand-tuning widths: the bar never exceeds its shell allocation, `start` shrinks first and `center` yields its whole box, each cluster CLIPS its own overflow (so a long tenant/brand string can never spill over a sibling or leak a horizontal document scroll), and `end` keeps its natural width anchored inline-end — the locale picker and user menu stay visible at 1024px with a 16rem sidebar. If a label must degrade gracefully rather than be cut, give THAT element `truncate`/`text-overflow` yourself; don't add `overflow`/`flex` overrides to the slots.",
     ],
     useCases: [
       "Admin shell: `start` = sidebar toggle + brand mark (`Avatar`) + an entity switcher (`DropdownMenu` around a `Button`); `center` = a `Button` search trigger; `end` = `AppSettingPicker` (locale) + a notifications `Button` + a user `DropdownMenu`.",
@@ -845,13 +920,14 @@ import { PanelLeftClose, Search } from "lucide-react";
     name: "MasterDetail",
     group: "layout",
     tagline:
-      "Responsive master-detail composition with a token-owned 300px/320px leading rail and fluid detail surface.",
+      "Responsive master-detail composition: a fluid list beside a token-owned 300px/320px fixed rail, with a themeable collapse threshold. `rail` picks which region is fixed — default `detail` (the canonical 1fr/320px list + detail rail); `master` for a leading navigator rail.",
     props: [
       {
         name: "master",
         type: "ReactNode",
         required: true,
-        description: "Selectable collection rendered in the leading master rail.",
+        description:
+          "Selectable collection. Always FIRST in DOM order, so the stacked (mobile) order is list-then-detail whichever region owns the rail.",
       },
       {
         name: "children",
@@ -860,10 +936,24 @@ import { PanelLeftClose, Search } from "lucide-react";
         description: "Detail surface for the current master selection.",
       },
       {
+        name: "rail",
+        type: '"master" | "detail"',
+        defaultValue: '"detail"',
+        description:
+          "Which region keeps the fixed track; the other one is fluid. `detail` = the canonical fluid-list + fixed detail rail. `master` = leading category/navigator rail beside a fluid detail surface.",
+      },
+      {
         name: "railWidth",
         type: '"compact" | "standard"',
         defaultValue: '"standard"',
-        description: "Token-owned master rail preset: compact=300px, standard=320px.",
+        description:
+          "Token-owned rail preset: compact=300px (--master-detail-rail-compact), standard=320px (--master-detail-rail-standard).",
+      },
+      {
+        name: "collapseBelow",
+        type: '"sm" | "md" | "lg" | "xl" | false',
+        description:
+          "Per-instance stacking threshold (sm=40rem, md=48rem, lg=64rem, xl=80rem; false never stacks). OMIT it to inherit the themeable --master-detail-collapse-below token (default 40rem) — that is the global knob a service theme retunes once.",
       },
       {
         name: "masterLabel",
@@ -875,34 +965,48 @@ import { PanelLeftClose, Search } from "lucide-react";
         type: "string",
         description: "Accessible name for the detail region landmark.",
       },
+      {
+        name: "detailId",
+        type: "string",
+        description:
+          "Id of the detail region so the selection controls inside `master` can point at it with aria-controls, and the app can move focus to it after a selection (the region carries tabIndex={-1} for exactly this).",
+      },
     ],
     usage: [
-      "DO use MasterDetail for service, team, member, or settings screens where a selectable leading collection controls a fluid detail surface.",
-      "DO keep selection and keyboard semantics on the controls inside `master` (`aria-pressed`, roving focus, or listbox semantics as appropriate); MasterDetail preserves those semantics.",
-      "DO choose `compact` for the canonical 300px rail and `standard` for 320px. Never reproduce these tracks with consumer CSS.",
+      'DO use MasterDetail for team, member, service or settings screens where a selectable collection drives a detail surface. Default `rail="detail"` gives the canonical fluid list + 320px detail rail; pass `rail="master"` for a leading navigator rail.',
+      "DO keep selection and keyboard semantics on the controls inside `master` (`aria-pressed`, roving focus, or listbox semantics as appropriate) — only the caller knows which APG pattern applies; MasterDetail preserves whatever you render.",
+      "DO wire the two together: give the master controls `aria-controls={detailId}`, and move focus to `document.getElementById(detailId)` when a selection replaces the detail (the region is `tabIndex={-1}` so that focus call works).",
+      "DO choose `compact` for the 300px rail and `standard` for 320px. Never reproduce these tracks with consumer CSS.",
       "DO provide `masterLabel` and `detailLabel` when the surrounding headings do not already identify both regions.",
       "DON'T use ResponsiveGrid for master-detail hierarchy; its equal tracks cannot represent this composition.",
-      "The component stacks master then detail below its own 40rem container breakpoint, preserving the split in a 1024px app shell while stacking at 390px without viewport-specific consumer code.",
+      "The collapse threshold is a real token: below `--master-detail-collapse-below` (default 40rem, measured against the COMPOSITION's own inline size, never the viewport) master stacks above detail. A theme retunes it globally, `collapseBelow` overrides it per instance. It is implemented as a flex-basis threshold rather than a media query precisely because a query CONDITION cannot read a var().",
+      "Measured geometry with the defaults: 1440 → fluid master + 320px rail; 1024 → fluid master + 320px rail; 390 → stacked full-width master then detail. Same JSX at every width — no consumer-local CSS, grid tracks or per-screen spacing.",
     ],
     useCases: [
-      "Organization service access: services in the compact leading rail and selected service roles in the detail surface.",
-      "Team directory: teams in the standard rail and membership/scope details in the fluid surface.",
-      "Settings navigator: categories in the rail and the selected configuration form in the detail surface.",
+      "Teams screen: the team DataTable stays fluid while the selected team's detail keeps the 320px rail.",
+      'Organization service access: services in the compact leading rail (`rail="master"`) and selected service roles in the fluid detail surface.',
+      "Settings navigator: categories in the leading rail and the selected configuration form in the detail surface.",
     ],
     related: [
-      "SplitPane — use when the fixed-width supporting pane belongs on the trailing edge rather than as the leading master collection.",
+      "SplitPane — a main surface plus a COMPLEMENTARY aside (its own content), not a selection-driven detail; use MasterDetail when the trailing pane is the detail OF the selection.",
       "ResponsiveGrid — use for equal-width independent cards, never for a master-detail relationship.",
       "PageContainer — outer page scaffold that supplies page insets and title hierarchy around MasterDetail.",
     ],
     example: `import { MasterDetail } from "@godxjp/ui/layout";
 
+// Canonical: fluid list + fixed 320px detail rail (stacks below 40rem).
 <MasterDetail
-  master={<ServiceList />}
-  railWidth="compact"
-  masterLabel="Services"
-  detailLabel="Selected service roles"
+  masterLabel="Teams"
+  detailLabel="Selected team"
+  detailId="team-detail"
+  master={<TeamTable onRowClick={select} detailId="team-detail" />}
 >
-  <ServiceRoleDetails />
+  <TeamDetail team={selected} />
+</MasterDetail>
+
+// Leading navigator rail instead.
+<MasterDetail rail="master" railWidth="compact" masterLabel="Categories">
+  <SettingsForm />
 </MasterDetail>`,
     storyPath: "layout/MasterDetail.stories.tsx",
     rules: [24, 40],
@@ -954,6 +1058,137 @@ import { PanelLeftClose, Search } from "lucide-react";
 </SplitPane>`,
     storyPath: "layout/SplitPane.stories.tsx",
     rules: [24],
+  },
+  {
+    name: "LegalDocumentShell",
+    group: "layout",
+    tagline:
+      "Long-form legal/policy document surface (terms, privacy, DPA, cookie policy, SLA) — semantic article/nav/section landmarks, real anchors, a sticky table-of-contents rail, scroll-spy aria-current, hash deep links with a token-driven scroll offset and focus handoff. All legal text stays consumer-owned.",
+    props: [
+      {
+        name: "title",
+        type: "ReactNode",
+        required: true,
+        description:
+          "Document title — the <h1> that names the <article> (e.g. 'Terms of Service').",
+      },
+      {
+        name: "sections",
+        type: "{ id: string; title: string; content: ReactNode }[]",
+        required: true,
+        description:
+          "The document's sections in reading order. Drives BOTH the contents list and the body: `id` is the REAL anchor target (<section id> + href='#id'), `title` becomes the <h2> AND the contents label, `content` is the consumer-owned legal copy.",
+      },
+      {
+        name: "version",
+        type: "string",
+        description:
+          "Bare version identifier (e.g. '2.4'). Rendered as a localized 'Version {version}' — never pass a pre-localized sentence.",
+      },
+      {
+        name: "effectiveDate",
+        type: "string",
+        description:
+          "ISO 8601 calendar date (yyyy-MM-dd) or a full ISO instant. Formatted with Intl.DateTimeFormat in the active locale and emitted inside <time dateTime={effectiveDate}>, so the machine-readable value is always the ISO input. NEVER pass a pre-formatted date string.",
+      },
+      {
+        name: "summary",
+        type: "ReactNode",
+        description:
+          "Short plain-language summary rendered under the metadata, above the contents.",
+      },
+      {
+        name: "contentsLabel",
+        type: "string",
+        description:
+          "Accessible name + visible caption of the contents <nav>. Defaults to a localized 'Contents'. Override it when two documents share a view, so the two nav landmarks stay distinguishable (axe landmark-unique, WCAG 2.4.1).",
+      },
+      {
+        name: "activeSection",
+        type: "string",
+        description:
+          "Controlled active section id (the entry marked aria-current='location'). Pair with onActiveSectionChange; omit both for the uncontrolled form.",
+      },
+      {
+        name: "defaultActiveSection",
+        type: "string",
+        description: "Uncontrolled initial active section id. Defaults to the first section.",
+      },
+      {
+        name: "onActiveSectionChange",
+        type: "(sectionId: string) => void",
+        description:
+          "Fires on contents-anchor activation, on an initial hash deep link, and continuously from the scroll spy as the reader moves through the document.",
+      },
+      {
+        name: "documentNavigation",
+        type: "ReactNode",
+        description:
+          "Rail slot above the contents list — a switcher across the legal set (Terms · Privacy · Cookies). Rendered as a plain wrapper, so the consumer owns its semantics.",
+      },
+      {
+        name: "footerAction",
+        type: "ReactNode",
+        description: "Slot below the last section — accept / download / print / contact actions.",
+      },
+      { name: "id", type: "string", description: "Root element id; also seeds the internal ids." },
+      { name: "className", type: "string", description: "Root class override (rarely needed)." },
+    ],
+    usage: [
+      "DO use LegalDocumentShell for ANY long-form legal/policy document — terms of service, privacy policy, DPA, cookie policy, SLA, EULA, security policy. It is the only primitive that owns the document behaviour: scroll-spy active section, hash deep links, scroll offset, focus handoff and reduced-motion scrolling.",
+      "DO pass `effectiveDate` as an ISO 8601 string ('2026-04-01'). The shell formats it with Intl.DateTimeFormat in the active locale and keeps the ISO value in <time dateTime>. A pre-formatted string ('April 1, 2026') is a bug — it will not localize.",
+      "DO keep ALL legal text in the consumer: the shell only receives `sections` (+ the `summary` / `documentNavigation` / `footerAction` slots). It never ships legal copy.",
+      "DO give every section a URL-safe, page-unique `id` — it is simultaneously the <section id>, the contents href, the deep-link target and the aria-current key.",
+      "DO NOT hand-roll this from CenteredShell + SplitPane + `.legal-*` CSS. The geometry is the easy half; the scroll spy, hash offset, focus handoff and aria-current wiring are what the shell exists to own, and no token can express them.",
+      "DO NOT add a consumer `className` for the measure, the rail width, the section rhythm or the dividers — every one of those is a --legal-document-* token. Dividers default to `none` (rule #44): opt in with `--legal-document-toc-border: 1px solid hsl(var(--border))`.",
+      "DO NOT expect a viewport media query: the shell owns its query container, so the one-column ⇄ two-column split (56rem) is decided by the SHELL's own width. Below it the contents are a STATIC compact block (never pinned on a phone); above it they are a sticky rail.",
+    ],
+    useCases: [
+      'Hosted legal terms/privacy screen (SCR-005): <CenteredShell width="lg" topbar={<Topbar …/>}><LegalDocumentShell title="利用規約" version="2.4" effectiveDate="2026-04-01" contentsLabel="目次" sections={sections} activeSection={active} onActiveSectionChange={setActive} documentNavigation={<DocumentSwitcher/>} footerAction={<Button>同意する</Button>} /></CenteredShell>',
+      "In-app policy viewer inside a Dialog/Sheet during onboarding: the same `sections` with `footerAction` carrying the accept button; the shell stays single-column because its container is narrow.",
+      "Deep-linkable DPA / sub-processor document: link to /legal/dpa#data-retention — the shell selects, scrolls to (with the scroll offset) and focuses that section on arrival.",
+      "Multi-document legal set (Terms · Privacy · Cookies): render the switcher in `documentNavigation` so it sits above the contents in the sticky rail.",
+    ],
+    related: [
+      "CenteredShell — the page shell to put a LegalDocumentShell inside (brand bar + centred column + footer). LegalDocumentShell is the document, not the page chrome; never nest two shells of the same kind.",
+      "SplitPane — a generic main + fixed aside. It gives similar GEOMETRY but owns no scroll-spy / hash / focus behaviour, so it is the wrong pick for a document with a table of contents.",
+      "PageContainer — for a titled section inside an app page; LegalDocumentShell already renders its own document header (h1 + version + effective date + summary).",
+      "Text / Heading — compose the section `content` from these; the shell only supplies the section heading (h2) and the body wrapper.",
+    ],
+    example: `import { LegalDocumentShell, CenteredShell, Flex, Topbar } from "@godxjp/ui/layout";
+import { Button, Text } from "@godxjp/ui/general";
+import { useState } from "react";
+
+export function TermsPage() {
+  const [activeSection, setActiveSection] = useState("acceptance");
+
+  return (
+    <CenteredShell width="lg" topbar={<Topbar start={<Brand />} />}>
+      <LegalDocumentShell
+        title="利用規約"
+        version="2.4"
+        effectiveDate="2026-04-01"
+        summary="本規約は、当社が提供するサービスの利用条件を定めるものです。"
+        contentsLabel="目次"
+        activeSection={activeSection}
+        onActiveSectionChange={setActiveSection}
+        sections={[
+          { id: "acceptance", title: "第1条(本規約への同意)", content: <Text as="p">…</Text> },
+          { id: "accounts", title: "第2条(アカウントの管理)", content: <Text as="p">…</Text> },
+        ]}
+        documentNavigation={
+          <Flex direction="col" gap="xs" role="group" aria-label="法的文書">
+            <Button variant="secondary" size="sm" fullWidth aria-current="page">利用規約</Button>
+            <Button variant="ghost" size="sm" fullWidth>プライバシーポリシー</Button>
+          </Flex>
+        }
+        footerAction={<Button size="sm">同意する</Button>}
+      />
+    </CenteredShell>
+  );
+}`,
+    storyPath: "layout/LegalDocumentShell.stories.tsx",
+    rules: [23, 24],
   },
   {
     name: "Breadcrumb",
@@ -1226,54 +1461,83 @@ import { Trash2 } from "lucide-react";
     name: "Logo",
     group: "general",
     tagline:
-      "The product brand-mark box — a glyph on the primary fill. Tokenised size/radius/type; the fill reads --primary so a re-theme re-tints it. Decorative by default; pair with a wordmark.",
+      "The product brand mark — a glyph/identity box, or (with `wordmark`) the full mark + wordmark LOCKUP. Tokenised size/radius/type/gap; the boxed fill reads --primary, while the GoDX identity mark and wordmark read the --success identity role instead, so an action-colour re-theme never recolours the brand.",
     props: [
       {
         name: "glyph",
         type: "React.ReactNode",
         defaultValue: '"g"',
-        description: "The brand glyph — a short mark (letter/initials) or a custom inline <svg>.",
+        description:
+          'The brand glyph — a short mark (letter/initials) or a custom inline <svg>. Only read when mark="glyph".',
+      },
+      {
+        name: "mark",
+        type: '"glyph" | "godx"',
+        defaultValue: '"glyph"',
+        description:
+          'Semantic mark artwork. "godx" renders THE CANONICAL GoDX IDENTITY MARK as an inline vector owned by the package — use it for hosted-identity surfaces (AuthShell brand bar, AuthIdentity, CenteredShell topbar); do NOT re-draw or import a brand SVG in the app. Its box + colour are tokenized (--logo-godx-size, --logo-godx-color, default the --success role) and it drops the boxed fill/radius. "glyph" keeps the configurable boxed-glyph treatment.',
       },
       {
         name: "size",
         type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
-        description: "Box size tier (tokenised).",
+        description:
+          'Box size tier (tokenised). Applies to the boxed glyph; mark="godx" sizes from --logo-godx-size.',
+      },
+      {
+        name: "tone",
+        type: '"primary" | "success"',
+        defaultValue: '"primary"',
+        description:
+          'Semantic fill role. "success" gives the canonical green identity mark without re-tinting the application\'s primary action colour (it reads --logo-success-background / --logo-success-foreground, independent of --primary).',
+      },
+      {
+        name: "wordmark",
+        type: "React.ReactNode",
+        description:
+          'Readable product name rendered BESIDE the mark as ONE lockup — pass the localized product name (or an inline <svg> logotype when a real asset exists). Set it INSTEAD of hand-rolling `inline-flex items-center gap-2` around a Logo and a Text. The lockup root takes ref/className/…props; the mark becomes decorative and the wordmark text carries the accessible name, so the pair is announced once. Colour/face/weight/tracking/size and the mark↔wordmark gap are tokens (--logo-wordmark-*); on mark="godx" / tone="success" the wordmark is brand-green from the identity role and NEVER reads --primary. Omit for the bare mark (unchanged behaviour).',
       },
       {
         name: "label",
         type: "string",
         description:
-          "Accessible name. Set → exposed as a named image (role img); omitted → decorative (aria-hidden), the correct default when a readable wordmark sits beside it.",
+          "Accessible name. Set → exposed as a named image (role img); omitted → decorative (aria-hidden), the correct default when a readable wordmark sits beside it. With `wordmark` set, `label` overrides the lockup's name (the wordmark text is otherwise the name).",
       },
     ],
     usage: [
       'DO import from `@godxjp/ui/general`: `import { Logo } from "@godxjp/ui/general";`',
       'DO use Logo INSTEAD of hand-rolling `<span aria-hidden className="grid size-7 place-items-center rounded-md bg-primary text-sm font-bold text-primary-foreground">g</span>` — that repeats literal size/radius and puts type utilities on a bare span (rules #45/#46).',
       "DO leave `label` unset when a readable wordmark sits beside the mark (shell header, topbar) — the mark stays decorative and the wordmark carries the accessible name. Set `label` only when the mark stands alone.",
-      "DON'T pass more than 1–2 glyphs — the box is square and centres its content; a long string overflows. For a full wordmark use `Text`/`Heading` beside the Logo, not inside it.",
+      "DON'T pass more than 1–2 glyphs — the box is square and centres its content; a long string overflows. The product NAME goes in `wordmark`, never in `glyph`.",
+      'DO use `wordmark` for the full lockup: `<Logo mark="godx" tone="success" wordmark="GoDX" />`. It replaces the hand-rolled `<span className="inline-flex items-center gap-2"><Logo/><Text/></span>` — the gap, face, weight, tracking, per-tier size and the brand colour are all tokens, so a shell header / auth brand bar needs no page CSS (gh#214).',
+      "NOTE: the package ships NO wordmark ARTWORK — `wordmark` typesets the name in the design-system display face (`--logo-wordmark-font-family`). When design supplies a real logotype, pass it as an inline `<svg>` node to `wordmark`; do not approximate letterforms in CSS.",
       'DON\'T re-tint via `className="bg-*"` — the fill reads the `--primary` role token; retune it through a service theme (`--primary`, `--logo-radius`, `--logo-size-*`), not utilities.',
+      "DO use `mark=\"godx\"` for the canonical GoDX identity mark on hosted-identity screens — it is ALREADY in the package as real inline vector artwork. DON'T pass a hand-drawn brand SVG as `glyph`, and don't ship a brand asset in the app, to reproduce it.",
     ],
     useCases: [
-      'App-shell header brand lockup — `<Logo glyph="c" /> <Text weight="medium">CoreBooks</Text>` in the sidebar/topbar, mark decorative, wordmark readable.',
+      'App-shell header brand lockup — `<Logo glyph="c" wordmark="CoreBooks" />` in the sidebar/topbar: mark decorative, wordmark readable, spacing tokenized.',
       'Auth screen — a standalone labelled mark above the sign-in form: `<Logo label="CoreBooks" size="lg" />`.',
       'Tenant/workspace switcher row — a small `size="sm"` mark as the leading slot of a ListRow or menu item.',
       "Custom SVG brand — pass an inline `<svg>` as `glyph` to render a real logomark on the primary fill instead of a letter.",
+      'Hosted GoDX identity surface — `<Logo mark="godx" tone="success" />` in an AuthShell `brand` bar or inside <AuthIdentity>: the canonical GoDX mark the package already owns. There is no separate identity-mark component and no asset to import.',
+      'Brand lockup in a shell header / auth brand bar — `<Logo mark="godx" tone="success" wordmark="GoDX" />`: one element, brand-green, no wrapper div and no page CSS.',
     ],
     related: [
-      "Text / Heading — use for the readable wordmark BESIDE the Logo (the full lockup); the Logo is only the square mark, not the product name.",
+      "AuthIdentity (@godxjp/ui/layout) — the canonical auth heading block; it already renders the GoDX mark, so don't add a second Logo above it.",
+      "Text / Heading — only for a bespoke lockup the `wordmark` prop cannot express; for the ordinary mark + product name, use `wordmark` (it owns the gap, face and brand colour as tokens).",
       "Avatar — use Avatar for a PERSON/entity image or initials; use Logo for the PRODUCT brand mark. They look similar (square/rounded glyph) but carry different meaning.",
     ],
     storyPath: "general/Logo.stories.tsx",
     rules: [45, 46],
     example: `import { Logo } from "@godxjp/ui/general";
-import { Text } from "@godxjp/ui/general";
 
-<span className="inline-flex items-center gap-2">
-  <Logo glyph="c" />
-  <Text weight="medium">CoreBooks</Text>
-</span>
+// Full lockup — mark + wordmark as ONE element (no wrapper, no page CSS).
+<Logo glyph="c" wordmark="CoreBooks" />
 
+// Canonical brand-green GoDX lockup — identity role, independent of --primary.
+<Logo mark="godx" tone="success" wordmark="GoDX" />
+
+// Bare mark standing alone → give it an accessible name.
 <Logo label="CoreBooks" size="lg" />`,
   },
   {
@@ -1474,6 +1738,24 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
           "Custom content rendered inside the table body when data is empty and loading is false. Defaults to a built-in EmptyState with a localised 'No data' message. Pass a custom <EmptyState title='...' description='...' action={...}/> to tailor the message.",
       },
       {
+        name: "error",
+        type: "ReactNode",
+        description:
+          "FAILURE state (gh#216). Pass error={isError} — `true` renders the built-in localized destructive EmptyState ('Couldn't load this list') announced with role='alert'; any other node REPLACES that copy (e.g. an <Alert> carrying an error code + request id). `false`/`undefined` means the read succeeded. NEVER pass a raw Error object (it is not renderable). Suppresses the empty state.",
+      },
+      {
+        name: "denied",
+        type: "ReactNode",
+        description:
+          "PERMISSION-DENIED state (gh#216) — the read was REFUSED (403), not failed. `true` renders the built-in localized warning EmptyState ('You don't have access to this list') with NO retry, announced politely (aria-live) because a permission boundary is expected information, not a fault. Takes precedence over `error`. Any other node replaces the copy.",
+      },
+      {
+        name: "onRetry",
+        type: "() => void",
+        description:
+          "Retry handler surfaced as a Retry button inside the BUILT-IN error state only. Omit it to render the error without a retry affordance; it is intentionally never offered for `denied` (repeating a 403 cannot succeed).",
+      },
+      {
         name: "className",
         type: "string",
         description: "Extra classes applied to the root wrapper div (ui-data-table-root).",
@@ -1488,6 +1770,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
     usage: [
       "DO pass loading={isFetching} during data fetches — it renders a loading row in the table body and suppresses the empty state. Never show a spinner outside DataTable while the table is visible.",
       "DO NOT add a data.length===0 conditional around DataTable. When data is empty and loading is false, the built-in EmptyState renders automatically. Pass empty={<EmptyState title='...'/>} only when you need a custom message.",
+      "SIX STATES, ZERO HAND-ROLLING (gh#216): loading (`loading`), empty (automatic / `empty`), error (`error` + optional `onRetry`), denied (`denied`), pagination (`DataTable.Pagination`), row actions (`DataTable.RowActions`). Wire them straight off the query — `<DataTable loading={isPending} error={isError} denied={status === 403} onRetry={refetch} …/>` — and never branch the page around the table to render your own alert/empty/forbidden block. Precedence is loading > denied > error > empty > rows, so exactly one state ever shows.",
       "DO provide getRowId when selectable is true or when rows do not have a string/number 'id' field — the default falls back to row.id and silently returns '' for missing IDs, which breaks selection.",
       "DO use DataTable.Toolbar as the immediate child that wraps search/filter controls on the left and DataTable.DensityToggle/action buttons on the right. DataTable.BulkActions inside the toolbar auto-hides when selection count is 0; it accepts either plain ReactNode children (built-in 'N selected' status bar) or a (count)=>node render-prop (you own the whole bar).",
       "DO reach for the grid chrome (DataTable.Search, DataTable.ViewOptions, DataTable.Pagination pageSizeOptions) when you need global search, a column 'set view' picker, or numbered pagination — these are the merged former-DataGrid features, now on the one DataTable. Drive them client-side by default; pass the matching state + manual* flag for a server query.",
@@ -1838,14 +2121,17 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       {
         name: "disabledReason",
         type: "ReactNode",
-        description: "Explicit reason accompanying a disabled/unavailable action.",
+        description:
+          "Localized prose reason accompanying a disabled/unavailable action. Rendered ABOVE the action (so assistive tech meets the explanation before the disabled control) and marks the tile data-unavailable, which mutes the medallion via --card-service-launcher-unavailable-icon-*. It never disables the action itself — that stays the consumer's Button prop.",
       },
     ],
     usage: [
-      "DO provide status, hostname, plan, access state and action from the product's real API contract. ServiceLauncherCard deliberately performs no entitlement or URL inference.",
-      "DO render ServiceLauncherCard directly inside ResponsiveGrid columns={3}; it already owns its Card shell and canonical internal rhythm.",
-      "DO replace it with ServiceLauncherCardSkeleton while loading. Use ServiceCatalogCta as the peer tile only when a real catalog/add route exists.",
-      "DON'T recreate launcher geometry with page-local CSS, utility padding, or a hand-built Card hierarchy.",
+      "DO provide status, hostname, plan, access state and action from the product's real API contract. ServiceLauncherCard deliberately performs no entitlement or URL inference — it has no href/entitlement/available prop at all.",
+      "DO own the layout with ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }} — the canonical 3→2→1 launcher grid. ResponsiveGrid queries its OWN container (40/48/64rem), so never hand-write grid-template-columns or a media query in the page. The shorthand columns={3} also works but widens to 2 columns earlier (40rem).",
+      "DO render ServiceLauncherCard directly as a grid child; it already owns its Card shell, its 36px medallion (--control-height-lg tier) and the canonical internal rhythm.",
+      "DO replace it with ServiceLauncherCardSkeleton while loading (it carries a required `label` and aria-busy, and deliberately opens no live region). Use ServiceCatalogCta as the peer tile only when a real catalog/add route exists.",
+      "DO keep `metadata` to machine identifiers (hostname · plan) — it is the only mono line. Sentences belong in `description` / `disabledReason`.",
+      "DON'T recreate launcher geometry with page-local CSS, utility padding, grid tracks, or a hand-built Card hierarchy. Retune it with the --card-service-launcher-* tokens instead.",
       "DON'T show LIVE, a hostname, subscribed plan, or launch action merely because a service is active in the global catalog.",
     ],
     useCases: [
@@ -1854,26 +2140,41 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       "Responsive 3→2→1 launcher grid with a final ServiceCatalogCta tile linked to an existing catalog route.",
     ],
     related: [
-      "ServiceLauncherCardSkeleton — shape-matched initial loading placeholder.",
+      "ServiceLauncherCardSkeleton — shape-matched initial loading placeholder (required `label`, aria-busy, no live region).",
       "ServiceCatalogCta — dashed companion tile for an existing catalog/add route.",
-      "ResponsiveGrid — owns the 3→2→1 layout around launcher tiles.",
+      "ResponsiveGrid — OWNS the 3→2→1 layout around launcher tiles; the launcher never ships grid tracks of its own.",
       "Card — general-purpose surface; use ServiceLauncherCard instead for this established composite.",
     ],
     example: `import { Clock } from "lucide-react";
-import { ServiceCatalogCta, ServiceLauncherCard } from "@godxjp/ui/data-display";
+import {
+  ServiceCatalogCta,
+  ServiceLauncherCard,
+  ServiceLauncherCardSkeleton,
+} from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
 
-<ResponsiveGrid columns={3}>
-  <ServiceLauncherCard
-    icon={Clock}
-    title={service.name}
-    statusLabel={service.accessLabel}
-    statusTone={service.accessTone}
-    description={service.description}
-    metadata={service.hostnameAndPlan}
-    action={<Button fullWidth>{t("launch")}</Button>}
-  />
+// ResponsiveGrid owns the canonical 3 → 2 → 1 ladder; the page writes no tracks.
+<ResponsiveGrid columns={{ sm: 1, md: 2, lg: 3 }}>
+  {loading
+    ? services.map((s) => <ServiceLauncherCardSkeleton key={s.id} label={t("loadingService")} />)
+    : services.map((s) => (
+        <ServiceLauncherCard
+          key={s.id}
+          icon={Clock}
+          title={s.name}
+          statusLabel={s.accessLabel}
+          statusTone={s.accessTone}
+          description={s.description}
+          metadata={s.hostnameAndPlan}
+          disabledReason={s.blockedReason}
+          action={
+            <Button asChild={s.canLaunch} disabled={!s.canLaunch}>
+              {s.canLaunch ? <a href={s.launchUrl}>{t("launch")}</a> : t("launch")}
+            </Button>
+          }
+        />
+      ))}
   <ServiceCatalogCta
     title={t("addFromCatalog")}
     action={<Button variant="outline">{t("viewCatalog")}</Button>}
@@ -1993,17 +2294,34 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
         defaultValue: '"div"',
         description: "Render element — `li` when the parent is a semantic `<ul>`/`<ol>`.",
       },
+      {
+        name: "overflow",
+        type: '"truncate" | "wrap"',
+        defaultValue: '"truncate"',
+        description:
+          "How title/description resolve content longer than the row — `truncate` (one line + ellipsis) or `wrap` (multi-line; long unbroken tokens break via `overflow-wrap: anywhere`). Either way the content column may shrink below its intrinsic width, so the row never widens the page root.",
+      },
+      {
+        name: "unread",
+        type: "boolean",
+        description:
+          "Read/unread state for notification rows — renders the indicator dot (with localized `sr-only` text, never colour alone) plus the tokenized `--list-row-unread-background`. OMIT the prop for rows with no read state; pass `false` for a read row so its title keeps the same optical axis as the unread ones.",
+      },
     ],
     usage: [
       "DO use ListRow for a SHORT (≈2–8 item) list of entities inside a Card where each row is one line with an action — account sessions, API keys, linked identities, passkeys. Stack rows in a `<Card><CardContent flush>` so the rows draw their own quiet dividers edge-to-edge.",
       "DON'T reach for DataTable here — it carries sorting/selection/pagination chrome that a 3-item list doesn't need. DON'T nest a Card per row either (card-in-card). ListRow is the in-between surface.",
       'DON\'T hand-roll `<div className="flex items-center justify-between border-b py-3">` — that is exactly the repeated pattern ListRow replaces (border/radius/padding are tokenized via `--list-row-*`).',
       'DO put the row\'s action in `trailing` (a `ghost`/`outline` Button, a DropdownMenu trigger, a Switch, or a status Badge). DO pass `as="li"` when the rows live inside a semantic `<ul>`.',
+      'DO use `unread` for a notification list — the dot is a SHAPE with localized `sr-only` text ("Unread"/"Read"), so it never reads as colour alone, and the row surface reads `--list-row-unread-background` (default `hsl(var(--muted))` — chosen so the xs muted description line stays WCAG AA on the emphasized surface; `--accent` would drop it to 4.23:1). DON\'T substitute a `Badge` — that renders a labelled pill, not a compact status dot.',
+      'DON\'T add one-off `min-width`/wrapping CSS in the consumer app for a long title + two trailing Buttons. The row already shrinks and WRAPS: the content column keeps only `min(var(--list-row-body-min-width), 100%)` and the trailing actions drop onto their own line below the threshold. Retune the threshold with `--list-row-body-min-width` (default 12rem) and the action gap with `--list-row-trailing-gap`; pass `overflow="wrap"` (usually with `align="start"`) when the title must stay fully readable at 390px instead of truncating.',
     ],
     useCases: [
       "Account security page — a list of active sessions (device + last-seen as title/description, a destructive 'Revoke' Button in trailing).",
       "Developer settings — API tokens or passkeys, each row showing the name + created date and a DropdownMenu of actions.",
       "Linked accounts / SSO — an IdP icon in leading, the provider name + connected email, and a Switch or 'Disconnect' Button trailing.",
+      'Notifications inbox — `unread` rows carry the dot + emphasized surface, `overflow="wrap"` keeps a long JA/EN/VI title and its ISO-8601 timestamp readable, and two inline trailing Buttons (Mark as read / Open) wrap under the text at 390px.',
+      "Pending invitations — Avatar in leading, the organization/invitation name as title, and Accept + Decline Buttons in trailing that stack at narrow widths without a horizontal page scrollbar.",
     ],
     related: [
       "DataTable — use instead when the list is long or needs sorting/selection/pagination; ListRow is for short, chrome-light lists.",
@@ -2031,6 +2349,26 @@ import { Smartphone } from "lucide-react";
       description="最終アクセス 3日前"
       trailing={<Button size="xs" variant="outline">ログアウト</Button>}
     />
+  </CardContent>
+</Card>
+
+// Notifications — unread dot + emphasized surface, wrapping title, two inline actions
+<Card>
+  <CardContent flush>
+    <ListRow
+      unread
+      align="start"
+      overflow="wrap"
+      title="組織「グローバル・トランスフォーメーション推進本部」への招待が届いています"
+      description="2026-07-30 09:12 JST"
+      trailing={
+        <>
+          <Button size="xs" variant="ghost">既読にする</Button>
+          <Button size="xs" variant="outline">開く</Button>
+        </>
+      }
+    />
+    <ListRow unread={false} align="start" overflow="wrap" title="請求書が発行されました" description="2026-07-28 18:40 JST" />
   </CardContent>
 </Card>`,
     storyPath: "data-display/ListRow.stories.tsx",
@@ -4140,7 +4478,7 @@ function CreateDialog() {
     name: "Sheet",
     group: "feedback",
     tagline:
-      "Side-panel drawer (Radix Dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter.",
+      "Side-panel drawer / responsive detail panel (Radix Dialog). Parts: Sheet/SheetTrigger/SheetContent(side=right|left|top|bottom, responsive=auto|side|bottom)/SheetHeader/SheetBody/SheetTitle/SheetFooter.",
     props: [
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
@@ -4155,6 +4493,13 @@ function CreateDialog() {
           "On SheetContent (side left/right): desired panel width (number→px). Caps at the viewport — full-width on a small screen (min(width,100%)), NOT a hard fixed width. Default w-3/4 sm:max-w-md.",
       },
       {
+        name: "responsive",
+        type: '"auto" | "side" | "bottom"',
+        defaultValue: '"side"',
+        description:
+          'On SheetContent: the responsive drawer / detail-panel contract. "side" (default) always renders the physical `side` you named. "auto" renders the desktop side panel above --sheet-responsive-breakpoint-width (48rem/768px) and the mobile BOTTOM sheet at/below it, capped by --sheet-bottom-max-height (85dvh). "bottom" pins the bottom-sheet presentation. The resolved presentation is exposed as data-side on the panel. Never hand-roll useMediaQuery in app code — import useSheetResponsiveMode() if a composite must make the same decision.',
+      },
+      {
         name: "title / subtitle / extra / tone",
         type: "ReactNode / ReactNode / ReactNode / ToneProp",
         description:
@@ -4164,6 +4509,8 @@ function CreateDialog() {
     usage: [
       "DO build the panel with SheetHeader (pass `title`/`subtitle`/`extra`/`tone` OR children) > SheetBody (scrollable, ring-safe) > SheetFooter (pinned). SheetTitle is required for a11y — the `title` prop renders it for you. Never skip the title.",
       "DO set `width` on SheetContent for a wider/narrower panel (e.g. width={480}); it caps at the viewport so small screens still get a full-width panel.",
+      'DO use responsive="auto" for a record detail panel / drawer that must be a desktop side panel and a mobile bottom sheet — ONE <Sheet>, no page-local media query. The breakpoint is the --sheet-responsive-breakpoint-width token, so a service moves the line once for every overlay. `width` is ignored while the bottom presentation is active (a bottom sheet is full-bleed).',
+      'DON\'T hardcode an overlay breakpoint in app code (useMediaQuery("(max-width: 390px)")). If a composite must swap a desktop surface for a mobile sheet (a Popover→Sheet switcher, for example), call the exported useSheetResponsiveMode("auto") hook so it reads the same themeable token.',
       "DO use all named sub-parts in order: Sheet (root) > SheetTrigger (opener) > SheetContent (panel) > SheetHeader > SheetTitle (required for a11y — maps to Radix DialogPrimitive.Title, announced as the accessible name) > optional SheetDescription > body content > SheetFooter. Never skip SheetTitle inside an open SheetContent.",
       "DO control state explicitly with open + onOpenChange on Sheet root when you need to close programmatically (e.g. after form submit). Uncontrolled (no props) works for simple trigger-only cases but gives you no hook to reset form state on close.",
       "DO use SheetTrigger asChild to wrap a Button or other interactive element — this avoids a nested <button> in the DOM. Never render a raw <button> as a direct child of SheetTrigger.",
@@ -4175,7 +4522,7 @@ function CreateDialog() {
     useCases: [
       "Filter/search panel: slide in from the right with filter FormFields (Select, DateRangePicker, CheckboxGroup) that affect a DataTable — preferred over a Dialog because filters do not require confirmation and benefit from seeing the table behind the overlay.",
       "Quick-edit drawer: open an entity's editable fields (e.g. invoice line items, account settings) without navigating away, with Save/Cancel in SheetFooter — use side='right' and keep the main page visible as context.",
-      "Detail peek panel: show read-only Descriptions / Timeline of a selected record (e.g. a journal entry or invoice) from a DataTable row click, using side='right' with showCloseButton={true}.",
+      "Detail peek panel: show read-only Descriptions / Timeline of a selected record (e.g. a journal entry or invoice) from a DataTable row click, using side='right' with showCloseButton={true}. Add responsive='auto' so the same panel becomes a bottom sheet on a phone instead of a 100%-wide slab.",
       "Mobile-first navigation drawer: side='left' sheet acting as a slide-in nav menu on small viewports when the AppShell Sidebar is hidden — triggered by a hamburger Button.",
       "Step-by-step wizard side panel: multi-step form (Steps component inside SheetContent) for onboarding or import flows where full-page navigation would lose list context.",
     ],
@@ -4381,6 +4728,7 @@ toast.error("保存に失敗しました");`,
       "DON'T: hand-roll the active-indicator underline or selected-state ring — `TabsTrigger` already applies `data-[state=active]` styles including the `after:` line element for the `line` variant. Adding your own underline breaks the design.",
       "DO trust the horizontal `TabsList` to scroll its own overflow (hidden scrollbar, swipeable) instead of clipping when tab labels — especially long localized ones (Japanese, German) — don't fit a narrow container. Don't wrap it in your own `overflow-x-auto` div or truncate labels to work around clipping; that was gh#175 and is now the framework's job (#175).",
       "DON'T assume the first item is ever auto-selected when it is `disabled` — Tabs always resolves the fallback to the first ENABLED item (or none, if all are disabled). A `disabled: true` first item is safe to author without also setting `defaultValue`.",
+      'DON\'T write your own resize/scroll-into-view effect to keep the selected tab on screen — `TabsList` observes its own size and its triggers\' `data-state` and re-pins the active (or focused, under `activationMode="manual"`) trigger with `scrollIntoView({ block: "nearest", inline: "nearest" })`, honoring `prefers-reduced-motion` and leaving a deliberate manual scroll alone. Before gh#204 a 1440 → 1024 → 390 resize could strand the ACTIVE FIRST tab entirely outside the strip while it still reported `aria-selected="true"`.',
     ],
     useCases: [
       "Detail drawers or pages that need full per-panel control — e.g. an accounting journal-entry sheet where one panel has `forceMount` to keep a live chart mounted, requiring custom `TabsContent` props that `Tabs` cannot pass.",
@@ -4656,6 +5004,13 @@ import { Button } from "@godxjp/ui/general";
           "Pin the strip to the top of its scroll container while the list scrolls beneath it (#197). Opt-in; tune offset/fill via the --filter-bar-sticky-offset / --filter-bar-sticky-background theme knobs.",
       },
       {
+        name: "overflow",
+        type: "'wrap' | 'scroll'",
+        defaultValue: "'wrap'",
+        description:
+          "Responsive overflow strategy (gh#216). 'wrap' stacks the groups into one column below 640px, then wraps onto extra rows. 'scroll' keeps ONE bounded row at >=640px that scrolls inline (groups never shrink; the clear-all button stays sticky at the inline end) — use it when many filters with long JA/EN/VI labels would otherwise push the table below the fold. Below 640px 'scroll' still stacks, so a 390px viewport never hides a filter behind an invisible horizontal scroll. Gutter knob: --filter-bar-scroll-padding-y.",
+      },
+      {
         name: "className",
         type: "string",
         description: "Extra classes on the role='toolbar' element.",
@@ -4665,6 +5020,8 @@ import { Button } from "@godxjp/ui/general";
       "DO place Toolbar ABOVE the table Card, never inside a `CardContent flush`. Put SearchInput as a direct child (it self-labels) and wrap every other control in a ToolbarGroup with a `label`.",
       "DO drive the clear-all button with `hasActiveFilters` + `onClear` — it only renders when both are truthy. The strip collapses to a single stacked column below 640px automatically.",
       "DO set `sticky` for long list pages so the filters stay reachable while scrolling; if a topbar sits above the list, raise `--filter-bar-sticky-offset` so the strip parks below it.",
+      "DO pass `controlId` on a ToolbarGroup that wraps ONE control (gh#216) and give that control the same `id` — the visible caption then becomes the control's real `<label htmlFor>` (WCAG 2.5.3 label-in-name). Without it the caption only names the group wrapper and the control itself is NAMELESS (axe: select-name / button-name), so you must fall back to an `aria-label` that repeats the caption.",
+      "DO switch to `overflow='scroll'` when a list page carries more filters than fit one row (gh#216) — one bounded row that scrolls inline keeps the table above the fold, where the default `wrap` would grow a 3-row strip with long JA/EN/VI labels. Never re-implement the geometry in the page: no page-local flex/grid/width rules on a filter strip.",
       "DON'T build active-filter chips by nesting a Button inside a Badge (invalid markup + broken focus). Render each chip as a Badge label with a SIBLING icon Button (`aria-label` = 'clear <filter>'); a ghost `size='sm'` Button clears all.",
       "DON'T hand-roll a debounced search box or a raw `<select>` — compose SearchInput and Select. Toolbar is layout + clear-all only; the controls own their own state and a11y.",
     ],
@@ -4739,10 +5096,10 @@ import { SearchInput, Select, SelectContent, SelectItem, SelectTrigger, SelectVa
       },
       {
         name: "brand",
-        type: '"brand" | "crm" | "logistics" | "partner" | "slate" | null',
+        type: '"brand" | "crm" | "logistics" | "partner" | "slate" | "dxs" | null',
         defaultValue: "null",
         description:
-          "Brand-palette axis → <html data-brand> (sets --primary/--ring/--accent). OPT-IN: null keeps the --primary your own theme.css defines.",
+          'Brand-palette axis → <html data-brand> (sets --primary/--ring/--accent). OPT-IN: null keeps the --primary your own theme.css defines. "dxs" is THE CANONICAL DXS PRESET and is more than a tint: it also binds the canonical hosted-identity surface contract (36px auth controls, 22.5rem auth card measure, 16px page inset / 15px below 30rem), so a DXS surface needs ZERO page CSS for auth geometry, density, insets, logo colour, divider or footer. Stylesheet-only apps (no provider) import "@godxjp/ui/theme/dxs.canonical.css" instead — same contract, guarded against drift by a test.',
       },
       {
         name: "density",
@@ -8361,9 +8718,16 @@ export default function PasswordBlock() {
       },
       {
         name: "appearance",
-        type: '"labeled" | "icon"',
+        type: '"labeled" | "icon" | "inline"',
         description:
-          'Trigger presentation. "labeled" (default) shows the leading icon + selected value: it hugs its content below `sm` (`w-auto max-w-full`) and takes a per-kind fixed width from `sm` up — it no longer stretches to `w-full` on narrow screens, so it fits a topbar (pass className="w-full" for a full-width form field). "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. Menu options still show localized names (the selected value is checked in the popup). Use these instead of overriding internal descendants / width classes with CSS.',
+          'Trigger presentation. "labeled" shows the leading icon + selected value: it hugs its content below `sm` (`w-auto max-w-full`) and takes a per-kind fixed width from `sm` up — it no longer stretches to `w-full` on narrow screens, so it fits a topbar (pass className="w-full" for a full-width form field). "icon" is the supported icon-only topbar trigger (e.g. a globe locale switcher): it structurally drops the value text and the picker\'s owned width and hides the chevron, squares the box to the density-aware --control-height tap target (≥44px on touch), and always keeps the localized aria-label so it can never ship nameless. "inline" renders the selected value as a chrome-less text trigger for a legal/auth footer (no border, no box). DEFAULT IS KIND-DEPENDENT: kind="locale" defaults to "icon" (its product contract is the compact language switcher); every other kind defaults to "labeled". Use these instead of overriding internal descendants / width classes with CSS.',
+      },
+      {
+        name: "compact",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          'Compact trigger density (gh#217): re-tiers the box to the official --control-height-sm tier and DROPS the picker\'s owned per-kind width, so a labelled trigger hugs its value. This is the supported auth/legal-footer locale switch — `<AppSettingPicker kind="locale" appearance="labeled" compact />` — when the square icon-only default reads as a stray button but the full labelled trigger is too tall. All geometry is tokenized (--app-setting-picker-compact-{control-height,padding-x,gap,font-size}); the accessible name and the visible value are both preserved. No effect on appearance="inline", which is already chrome-less.',
       },
       {
         name: "className",
@@ -8383,11 +8747,13 @@ export default function PasswordBlock() {
       "DO NOT: Render without AppProvider and without both controlled props — it throws 'AppSettingPicker requires <AppProvider> or controlled value + onValueChange'.",
       "DO: Render four instances with different kind values to build a full preferences panel; they all share the same AppProvider context and stay in sync.",
       'DO: For an icon-only topbar utility (a globe language switcher), pass appearance="icon" — the supported compact trigger. NEVER hand-roll it by hiding the value/width with descendant-selector CSS.',
+      'DO: For an AUTH/LEGAL FOOTER locale switch, pass appearance="labeled" compact — a small, content-hugging labelled trigger (readable language name, --control-height-sm box). Use appearance="inline" instead when the footer wants no control chrome at all. NEVER re-size the trigger with a page-local height/width class.',
       "DON'T hand-roll a locale/timezone/format Select — AppSettingPicker already composes Select + the right icon + translated, context-wired options. There is no separate LocalePicker/TimezonePicker/DateFormatPicker/TimeFormatPicker anymore; use kind.",
     ],
     useCases: [
       'App-shell top-nav language switcher: <AppSettingPicker kind="locale" /> under AppProvider, persisting to localStorage with no extra state.',
       'Icon-only topbar locale switcher (globe): <AppSettingPicker kind="locale" appearance="icon" /> in a Topbar `end` slot — square, value-less, keyboard + aria-label preserved.',
+      'Auth-footer locale switch: <AppSettingPicker kind="locale" appearance="labeled" compact /> inside an <AuthFooter locale={…}> slot — the readable language name at the small control tier, hugging its value.',
       "User settings page with all four preferences — render kind=locale, kind=timezone, kind=dateFormat, kind=timeFormat together under one AppProvider.",
       "Onboarding step that picks language/timezone before the rest of the app is configured — AppProvider persist={false} + controlled values to keep state local.",
       'Storybook/test harness without AppProvider — fully controlled: <AppSettingPicker kind="timeFormat" value="24h" onValueChange={fn} />.',
@@ -8695,6 +9061,112 @@ export function NotifyRow() {
   numberFormat={{ notation: "compact" }}
 />`,
     storyPath: "charts/BarChart.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "CompactBarTrend",
+    group: "data-display",
+    importPath: "@godxjp/ui/charts",
+    tagline:
+      "DEPENDENCY-FREE compact vertical bar trend for dashboard summary cards — N category/value pairs, muted marks plus ONE emphasized 'current' bar, all geometry from --chart-trend-* tokens. Needs NO recharts. Sparkline / micro-chart / activity pulse / KPI trend strip.",
+    props: [
+      {
+        name: "data",
+        type: "ChartDatum[]",
+        required: true,
+        description: "Row data — one bar per row. Any point count (7 is not hard-coded).",
+      },
+      {
+        name: "categoryKey",
+        type: "string",
+        required: true,
+        description: "Key into each datum holding the category (tick) label.",
+      },
+      {
+        name: "valueKey",
+        type: "string",
+        required: true,
+        description: "Key into each datum holding the plotted numeric value.",
+      },
+      {
+        name: "label",
+        type: "string",
+        required: true,
+        description: "Accessible name + visible caption.",
+      },
+      {
+        name: "description",
+        type: "string",
+        description: "Extra context appended to the screen-reader description.",
+      },
+      {
+        name: "size",
+        type: '"xs" | "sm" | "md" | "lg"',
+        defaultValue: '"xs"',
+        description:
+          "Plot-height tier (--chart-trend-plot-height-*). xs is the dashboard summary-card density.",
+      },
+      {
+        name: "emphasizedIndex",
+        type: "number",
+        description:
+          "Index of the emphasized 'current' bar. Negative counts from the end (-1 = latest); out of range = no emphasis. Also annotated in the text alternative, so it is never colour-only.",
+      },
+      {
+        name: "showCategoryLabels",
+        type: "boolean",
+        defaultValue: "true",
+        description: "Render the category tick labels under the plot.",
+      },
+      {
+        name: "numberFormat",
+        type: "Intl.NumberFormatOptions",
+        description: "Locale-aware formatting for the values in the text alternative.",
+      },
+      {
+        name: "footer",
+        type: "ReactNode",
+        description:
+          "Activity footer slot below the plot, rendered OUTSIDE the role=img graphic so links/buttons in it stay reachable.",
+      },
+      { name: "emptyMessage", type: "string", description: "Message shown when `data` is empty." },
+      {
+        name: "ref",
+        type: "React.Ref<HTMLElement>",
+        description: "Forwarded to the <figure> element.",
+      },
+    ],
+    usage: [
+      'DO import from the charts entry: `import { CompactBarTrend } from "@godxjp/ui/charts";` — unlike BarChart it needs NO `recharts` peer, so an app that may not add dependencies can still use a real framework chart.',
+      'DO reach for it INSIDE a dashboard summary card (a 7-day signup/organization/activity strip under a StatCard headline) — that is the density `size="xs"` is tuned for.',
+      "DO mark the current period with `emphasizedIndex={-1}` (or an explicit index); the highlight is duplicated in the screen-reader text alternative, so it never depends on colour alone.",
+      "DO retheme through the `--chart-trend-*` tokens (bar gap/radius/width, plot heights, muted + emphasis fills, opt-in baseline). NEVER add page-local CSS, an inline height calculation, or a hardcoded colour.",
+      "DON'T use it when you need axes, a grid, tooltips, multiple series, or a continuous trend — that is BarChart / LineChart / AreaChart (recharts peer). DON'T fake bars with styled divs in the app.",
+      'DON\'T put interactive content in the plot: anything clickable goes in `footer`, which renders outside the `role="img"` graphic.',
+    ],
+    useCases: [
+      "Seven-day new-organizations / new-users trend inside an admin dashboard summary card (SCR-201).",
+      "Weekly activity pulse beside a KPI headline, where the SHAPE matters more than exact figures.",
+      "A dependency-constrained app (no recharts) that still needs a token-driven chart.",
+    ],
+    related: [
+      "BarChart — full cartesian bar chart with axes/grid/tooltip/legend (requires the recharts optional peer).",
+      "StatCard — the KPI headline this trend usually sits under.",
+      "Progress — one ratio against a target, not a series over time.",
+    ],
+    example: `import { CompactBarTrend } from "@godxjp/ui/charts";
+
+<CompactBarTrend
+  label={t("dashboard.newOrganizations7d")}
+  description={t("dashboard.newOrganizationsHint")}
+  data={trend}
+  categoryKey="date"
+  valueKey="count"
+  emphasizedIndex={-1}
+  size="xs"
+  footer={<Text size="xs" tone="muted">{t("dashboard.lastUpdated", { at })}</Text>}
+/>`,
+    storyPath: "charts/CompactBarTrend.stories.tsx",
     rules: [],
   },
   {
@@ -9085,15 +9557,24 @@ export function NotifyRow() {
         description: "Privacy link or localized text.",
       },
       { name: "locale", type: "ReactNode", description: "Optional consumer-owned locale control." },
+      {
+        name: "className",
+        type: "string",
+        description: "Optional structural class override merged onto the footer root.",
+      },
     ],
     usage: [
       "Pass real links and locale controls from the consumer; AuthFooter never invents navigation.",
+      "DO drop it into AuthShell's `footer` slot — that slot supplies the contentinfo landmark, so AuthFooter itself renders a plain div and can also sit inside an existing footer without nesting landmarks.",
+      "AuthFooter owns ONLY the geometry: mono ramp, wrap, and a `·` separator between the slots that are actually PRESENT (omit `locale` and its separator disappears). Don't hand-write separators into the slot content.",
+      "Public type: `AuthFooterProp` (alias `AuthFooterProps`) from `@godxjp/ui/layout` — registered in the prop registry, not a local interface.",
+      "Retune the line through `--auth-footer-content-gap` / `--auth-footer-text-font-size`, never page CSS (rule #45).",
     ],
     example: `import { AuthFooter } from "@godxjp/ui/layout";
 
 <AuthFooter product="Acme ID" terms={<a href="/terms">Terms</a>} privacy={<a href="/privacy">Privacy</a>} locale="English" />`,
     storyPath: "layout/AuthFooter.stories.tsx",
-    rules: [],
+    rules: [45],
   },
   {
     name: "AuthIdentity",
@@ -9107,13 +9588,23 @@ export function NotifyRow() {
         type: "ReactNode",
         description: "Optional real requesting-client context.",
       },
+      {
+        name: "className",
+        type: "string",
+        description: "Optional structural class override merged onto the identity root.",
+      },
     ],
-    usage: ["Only show `requester` when the consumer has authoritative client context."],
+    usage: [
+      "Only show `requester` when the consumer has authoritative client context.",
+      'It ALREADY renders the canonical brand-green GoDX mark (`Logo mark="godx" tone="success"`, independent of --primary) plus the page h1 — don\'t add a second Logo or heading above it.',
+      "Centring and rhythm are token-owned (`--auth-identity-gap` / `--auth-requester-*`); no page CSS (rule #45).",
+      "Public type: `AuthIdentityProp` (alias `AuthIdentityProps`) from `@godxjp/ui/layout` — registered in the prop registry, not a local interface.",
+    ],
     example: `import { AuthIdentity } from "@godxjp/ui/layout";
 
 <AuthIdentity title="Sign in" requester="Acme Portal is requesting access" />`,
     storyPath: "layout/AuthIdentity.stories.tsx",
-    rules: [],
+    rules: [45],
   },
   {
     name: "AuthStack",
@@ -9177,7 +9668,8 @@ export function NotifyRow() {
         name: "responsive",
         type: '"auto" | "popover" | "sheet"',
         defaultValue: '"auto"',
-        description: "Responsive presentation contract.",
+        description:
+          'Responsive presentation contract. "auto" resolves through the SHARED Sheet hook useSheetResponsiveMode(): desktop popover above --sheet-responsive-breakpoint-width (48rem/768px), focus-trapped bottom Sheet at/below it. Move that one token to move the line for every overlay.',
       },
       { name: "open", type: "boolean", description: "Controlled open state." },
       {
@@ -9189,11 +9681,22 @@ export function NotifyRow() {
     usage: [
       "Provide only organizations the current user may select; the component does not authorize or fetch tenants.",
       "Keep persistence and navigation in `onValueChange`; use loading/error props for the real query state.",
+      "DO put a plan/status affordance in `organization.badge` (a <Badge>) instead of stuffing it into `meta` — the badge is end-aligned in the expanded trigger and in the menu row, and hidden in the collapsed rail. ALWAYS pair it with a localized `organization.badgeLabel`: the trigger's accessible name comes from `labels.trigger`, so the badge is announced as an aria-describedby DESCRIPTION and the raw node is marked presentational (WCAG 1.1.1). `badgeLabel` also becomes a search keyword.",
+      'DON\'T wrap OrgSwitcher in your own media query to pick popover vs sheet — `responsive="auto"` already reads the shared --sheet-responsive-breakpoint-width token.',
     ],
     example: `import { OrgSwitcher } from "@godxjp/ui/layout";
+import { Badge } from "@godxjp/ui/data-display";
 
 <OrgSwitcher
-  organizations={organizations}
+  organizations={[
+    {
+      id: "dxs",
+      name: "DXS Holdings",
+      meta: t("org.role.owner"),
+      badge: <Badge variant="secondary">{t("org.plan.trial")}</Badge>,
+      badgeLabel: t("org.plan.trial.sr"),
+    },
+  ]}
   value={organizationId}
   onValueChange={setOrganizationId}
   labels={labels}
@@ -9221,15 +9724,26 @@ export function NotifyRow() {
         defaultValue: "false",
         description: "Uses the token-owned sticky presentation.",
       },
+      {
+        name: "overflow",
+        type: "'wrap' | 'scroll'",
+        defaultValue: "'wrap'",
+        description:
+          "Responsive overflow strategy (gh#216). 'wrap': stacked column below 640px, wrapping rows above. 'scroll': one bounded inline-scrolling row above 640px (still stacked below) with the clear-all action pinned at the inline end. The geometry is entirely token/CSS owned — never re-implement it in the page.",
+      },
       { name: "className", type: "string", description: "Optional structural class override." },
     ],
     usage: [
       "Compose real controls as children; filter state and URL synchronization remain consumer-owned.",
+      "Give each FilterBarGroup a `controlId` matching its single control's `id` (gh#216) so the visible caption is that control's real <label>; otherwise the control is nameless to a screen reader.",
+      "Reach for `overflow='scroll'` on filter-heavy list pages so a long JA/EN/VI label set never grows the strip into multiple rows and pushes the table below the fold.",
     ],
     example: `import { FilterBar, FilterBarGroup } from "@godxjp/ui/navigation";
 
-<FilterBar onClear={clearFilters} hasActiveFilters={hasFilters}>
-  <FilterBarGroup label="Status"><StatusSelect /></FilterBarGroup>
+<FilterBar overflow="scroll" onClear={clearFilters} hasActiveFilters={hasFilters}>
+  <FilterBarGroup label="Status" controlId="f-status">
+    <StatusSelect id="f-status" />
+  </FilterBarGroup>
 </FilterBar>`,
     storyPath: "navigation/FilterBar.stories.tsx",
     rules: [],

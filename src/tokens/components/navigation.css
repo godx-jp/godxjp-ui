@@ -10,6 +10,15 @@
   --filter-label-font-size: var(--font-size-xs);
   --filter-picker-width-sm: 11rem;
   --filter-picker-width-md: 14rem;
+
+  /* AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an
+   * auth/legal footer, where the square icon-only default reads as a stray button and the full
+   * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never
+   * a literal / ad-hoc calc), and every other knob is themeable (rule #45). */
+  --app-setting-picker-compact-control-height: var(--control-height-sm);
+  --app-setting-picker-compact-padding-x: var(--space-2);
+  --app-setting-picker-compact-gap: var(--space-1);
+  --app-setting-picker-compact-font-size: var(--font-size-xs);
   --breadcrumb-font-size: var(--font-size-xs);
   --menubar-shortcut-font-size: var(--font-size-xs);
   --tabs-list-max-inline-size: 100%;
@@ -27,4 +36,8 @@
   /* Fill painted only when the filter strip is pinned. Role-mirror knob (rule #45): `initial`
    * so --background re-resolves at the call site under a scoped [data-tenant]/.dark theme. */
   --filter-bar-sticky-background: initial;
+  /* Scrollbar gutter reserved under a `overflow="scroll"` filter strip (#216) so the inline
+   * scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid
+   * (0 on an overlay-scrollbar platform). */
+  --filter-bar-scroll-padding-y: var(--space-1);
 }

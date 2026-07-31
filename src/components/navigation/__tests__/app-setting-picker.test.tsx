@@ -153,6 +153,67 @@ describe("AppSettingPicker", () => {
     expect(trigger.textContent ?? "").not.toBe("");
   });
 
+  it('compact + appearance="labeled": keeps icon + value, drops the owned per-kind width (gh#217)', () => {
+    // The canonical auth-footer locale switch: readable value text (not the square icon-only
+    // default), a small tokenized box, and a trigger that HUGS its value instead of stretching to
+    // the picker's `sm:w-40`.
+    renderWithUi(
+      <AppSettingPicker
+        kind="locale"
+        appearance="labeled"
+        compact
+        value="ja"
+        onValueChange={vi.fn()}
+      />,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toHaveClass("ui-app-setting-picker-compact");
+    expect(trigger).not.toHaveClass("sm:w-40");
+    expect(trigger).toHaveClass("w-auto");
+    // Accessible name (localized aria-label) and the visible value are both preserved.
+    expect(trigger).toHaveAccessibleName();
+    expect(trigger.textContent ?? "").not.toBe("");
+  });
+
+  it("compact: still opens and fires onValueChange with localized options", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    renderWithUi(
+      <AppSettingPicker
+        kind="locale"
+        appearance="labeled"
+        compact
+        value="ja"
+        onValueChange={onValueChange}
+      />,
+    );
+    await user.click(screen.getByRole("combobox"));
+    await user.click(await screen.findByRole("option", { name: /English|英語|Tiếng Anh/ }));
+    expect(onValueChange).toHaveBeenCalledWith("en");
+  });
+
+  it("compact is a no-op on the already chrome-less inline appearance", () => {
+    renderWithUi(
+      <AppSettingPicker
+        kind="locale"
+        appearance="inline"
+        compact
+        value="en"
+        onValueChange={vi.fn()}
+      />,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).toHaveClass("ui-app-setting-picker-inline");
+    expect(trigger).not.toHaveClass("ui-app-setting-picker-compact");
+  });
+
+  it("compact defaults to off, so existing labelled pickers keep their per-kind width", () => {
+    renderWithUi(<AppSettingPicker kind="dateFormat" value="iso" onValueChange={vi.fn()} />);
+    const trigger = screen.getByRole("combobox");
+    expect(trigger).not.toHaveClass("ui-app-setting-picker-compact");
+    expect(trigger).toHaveClass("sm:w-44");
+  });
+
   it("renders an id and name through to the Select", () => {
     renderWithUi(
       <AppSettingPicker

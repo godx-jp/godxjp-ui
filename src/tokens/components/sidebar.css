@@ -1,0 +1,33 @@
+/* Sidebar nav-row COLOUR knobs (gh#228). The row/label and its icon are separately themeable:
+ * before this, `.sb-nav-item` painted one `--muted-foreground` that the Lucide SVG inherited, so a
+ * service could only darken its 16px nav icons by writing page-local CSS or by re-tinting every
+ * muted text globally. Geometry knobs (--sidebar-nav-icon-size, --sidebar-nav-item-height/-gap/
+ * -padding-x) live in components/shell.css and are untouched by these.
+ *
+ * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE
+ * (`var(--knob, hsl(var(--role)))`), so a scoped `[data-tenant]` / `.dark` role override
+ * re-resolves live instead of freezing at :root (docs/TOKENS.md · "Role-mirror knobs MUST be
+ * `initial`"). Every default is byte-identical to the pre-gh#228 rendering.
+ *
+ * The ACTIVE row's own background/foreground keep their existing knobs
+ * (--sidebar-item-active-background / --sidebar-item-active-foreground, components/shell.css);
+ * only the active ICON gets a new one. */
+
+:root {
+  /* Resting nav row + label (also the resting sub-row). Default = hsl(var(--muted-foreground)). */
+  --sidebar-nav-item-foreground: initial;
+  /* Hovered nav row + label. Default = hsl(var(--foreground)). */
+  --sidebar-nav-item-hover-foreground: initial;
+  /* `aria-disabled` nav row + label. Default = the resting row colour. */
+  --sidebar-nav-item-disabled-foreground: initial;
+
+  /* Nav ICON (`.sb-icon`, incl. the collapsed rail and group triggers). Default = currentColor,
+   * i.e. the row colour — the pre-gh#228 look. Set this alone to get canonical dark icons next to
+   * muted labels. */
+  --sidebar-nav-icon-foreground: initial;
+  /* Icon on a hovered / active / disabled row. Each falls back to --sidebar-nav-icon-foreground,
+   * then to currentColor, so setting the base icon knob alone themes every state. */
+  --sidebar-nav-icon-hover-foreground: initial;
+  --sidebar-nav-icon-active-foreground: initial;
+  --sidebar-nav-icon-disabled-foreground: initial;
+}

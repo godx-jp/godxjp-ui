@@ -5,10 +5,18 @@ import type {
   ClassNameProp,
   DisabledProp,
   HasActiveFiltersProp,
+  IdProp,
   LabelProp,
   OnClearFiltersProp,
   StickyProp,
 } from "../vocabulary";
+
+/**
+ * How a {@link ToolbarProp} strip resolves more filters than fit one row (#216).
+ * `wrap` (default) stacks on narrow viewports then wraps onto extra rows; `scroll` keeps ONE
+ * bounded row that scrolls inline, so a wide filter set never pushes the list below the fold.
+ */
+export type FilterBarOverflowProp = "wrap" | "scroll";
 
 /** @see Toolbar */
 export type ToolbarProp = {
@@ -21,6 +29,12 @@ export type ToolbarProp = {
    * `--filter-bar-sticky-background` theme knobs.
    */
   sticky?: StickyProp;
+  /**
+   * Responsive overflow strategy (#216). Default `wrap`. Use `scroll` for list pages with many
+   * filters (long JA/EN/VI labels) where a wrapped 3-row strip would push the table off screen.
+   * Tune the scrollbar gutter with the `--filter-bar-scroll-padding-y` theme knob.
+   */
+  overflow?: FilterBarOverflowProp;
   className?: ClassNameProp;
   children: ChildrenProp;
 };
@@ -28,6 +42,12 @@ export type ToolbarProp = {
 /** @see ToolbarGroup */
 export type ToolbarGroupProp = {
   label: LabelProp;
+  /**
+   * `id` of the single control this group labels (#216). When set, the visible group label is
+   * rendered as that control's real `<label htmlFor>`, so the filter is named by the text the
+   * user sees (WCAG 2.5.3 / 1.3.1) — otherwise the control needs its own `aria-label`.
+   */
+  controlId?: IdProp;
   className?: ClassNameProp;
   children: ChildrenProp;
 };
