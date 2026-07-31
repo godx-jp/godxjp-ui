@@ -158,6 +158,15 @@
     --auth-shell-card-stack-gap: var(--auth-shell-context-card-stack-gap);
   }
 
+  /* Account-recovery preset (gh#233) — one 432px measure for BOTH SCR-008 panels (password
+   * recovery and the sign-in MFA challenge). Title + description live INSIDE the bordered surface
+   * here, so the panel is `Card > CardHeader(CardTitle + CardDescription)` with no `AuthIdentity`
+   * mark above it — the preset only re-measures the page, it never dictates content. */
+  .ui-auth-shell[data-preset="account-recovery"] {
+    --auth-shell-card-max-width: var(--auth-shell-recovery-card-max-width);
+    --auth-shell-main-padding: var(--auth-shell-recovery-main-padding);
+  }
+
   .ui-auth-identity {
     display: flex;
     flex-direction: column;
@@ -269,6 +278,13 @@
 
     .ui-auth-shell[data-preset="context-selection"] {
       --auth-shell-main-padding: var(--auth-shell-context-main-padding-mobile);
+    }
+
+    /* account-recovery = 15px inline at 390 (panel x=15, width=360). This is a DECIDED mobile
+     * contract — the supplied 390 canonical reference is a desktop 2x2 composite that overflows
+     * horizontally and is not a valid source (gh#233). */
+    .ui-auth-shell[data-preset="account-recovery"] {
+      --auth-shell-main-padding: var(--auth-shell-recovery-main-padding-mobile);
     }
   }
 

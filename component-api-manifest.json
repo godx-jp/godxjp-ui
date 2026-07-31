@@ -1498,7 +1498,8 @@
           "values": [
             "default",
             "device-authorization",
-            "context-selection"
+            "context-selection",
+            "account-recovery"
           ],
           "declaredIn": [
             "src/props/components/layout.prop.ts"

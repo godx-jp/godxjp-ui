@@ -726,8 +726,8 @@
 .ui-otp-slot {
   position: relative;
   display: flex;
-  width: var(--control-height);
-  height: var(--control-height);
+  width: var(--otp-slot-size, var(--control-height));
+  height: var(--otp-slot-size, var(--control-height));
   align-items: center;
   justify-content: center;
   font-size: var(--font-size-base);

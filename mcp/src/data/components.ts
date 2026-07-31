@@ -461,10 +461,10 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
       },
       {
         name: "preset",
-        type: '"default" | "device-authorization" | "context-selection"',
+        type: '"default" | "device-authorization" | "context-selection" | "account-recovery"',
         defaultValue: '"default"',
         description:
-          'Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the card max-width plus the desktop AND mobile page gutters, all owned by component tokens. "device-authorization" (gh#220) = a 380px card at 1440/1024 with a 5px inline page gutter at 390 (card x=5px, width=380px). "context-selection" (gh#217) = a 25rem card on desktop/tablet, edge-to-edge on mobile (0 inline gutter), plus a tokenized rhythm between the intro, the card and the trailing "remember" row. ORTHOGONAL to `variant` (presets are applied after it), so `variant="canonical" preset="device-authorization"` keeps the canonical chrome and only re-measures. Selecting a preset REPLACES every consumer-side `--auth-shell-card-max-width` override.',
+          'Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the card max-width plus the desktop AND mobile page gutters, all owned by component tokens. "device-authorization" (gh#220) = a 380px card at 1440/1024 with a 5px inline page gutter at 390 (card x=5px, width=380px). "context-selection" (gh#217) = a 25rem card on desktop/tablet, edge-to-edge on mobile (0 inline gutter), plus a tokenized rhythm between the intro, the card and the trailing "remember" row. "account-recovery" (gh#233) = the 27rem/432px SCR-008 panel measure shared by the password-recovery panel (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP · recovery-code · passkey-failure), with a 15px inline page gutter at 390 (panel x=15, width=360). ORTHOGONAL to `variant` (presets are applied after it), so `variant="canonical" preset="device-authorization"` keeps the canonical chrome and only re-measures. Selecting a preset REPLACES every consumer-side `--auth-shell-card-max-width` override.',
       },
       {
         name: "density",
@@ -480,7 +480,8 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
     ],
     usage: [
       "DO pass a single <Card> (with the form inside <CardContent>) as `children` — AuthShell centres it and constrains its width via `--auth-shell-card-max-width`; do NOT hand-roll a `.auth-shell-main` / `.ui-auth-scope` wrapper.",
-      'DO select a `preset` instead of overriding the card width: `preset="device-authorization"` for the 380px OAuth device-grant measure, `preset="context-selection"` for the 25rem organisation/context picker that goes edge-to-edge on mobile. A page-local `--auth-shell-card-max-width` override (or a forked `.auth-shell--wide` class) is the exact anti-pattern these presets replace (gh#217/gh#220).',
+      'DO select a `preset` instead of overriding the card width: `preset="device-authorization"` for the 380px OAuth device-grant measure, `preset="context-selection"` for the 25rem organisation/context picker that goes edge-to-edge on mobile, `preset="account-recovery"` for the 432px SCR-008 password-recovery / sign-in-MFA panel. A page-local `--auth-shell-card-max-width` override (or a forked `.auth-shell--wide` class) is the exact anti-pattern these presets replace (gh#217/gh#220/gh#233).',
+      'DO build the password-recovery and sign-in MFA CHALLENGE panels as a COMPOSITION inside `preset="account-recovery"` — there is NO PasswordRecoveryPanel and NO MfaChallengePanel component (gh#233 Gate 0): Card > CardHeader(CardTitle + CardDescription, INSIDE the bordered surface) > CardContent > AuthStack[ Alert notice · FormField fields · Button fullWidth · Flex justify="between" wrap fallback row ]. Do NOT put AuthIdentity above the panel there (it always renders the hosted mark), and NEVER reuse TwoFactorSetup — that is the ENROLLMENT dialog, not a sign-in challenge. See the `auth-recovery-panels` pattern.',
       'DO combine `variant` and `preset` — they are orthogonal: `variant` owns control density + heading size, `preset` owns the page measure. `variant="canonical" preset="device-authorization"` is the canonical device screen.',
       'DO let `preset="context-selection"` space the auth column: it turns the card slot into a flex column with a tokenized `--auth-shell-card-stack-gap`, so an intro (<AuthIdentity>), the choice <Card> and a trailing "remember" row pass as three siblings with NO page-local spacing.',
       "DO NOT add a page-local width, inset or colour to hit an artboard — if a measure is missing, it is a library gap: a new preset or token, never consumer CSS (rules #44/#45).",
@@ -8331,6 +8332,8 @@ export default function PasswordBlock() {
       "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
       "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",
       "DON'T build N separate Inputs — this is ONE field with paste, arrow-key, and caret handling built in.",
+      "DO widen the slots with `--otp-slot-size` (gh#233) when a challenge row must fill a wide auth panel — it defaults to the live `--control-height` tier, so re-scoping `--control-height` on the card instead would also resize the submit button and every other input in it. Set a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
+      "DO drive the sign-in MFA challenge from FormField: `error` wires aria-invalid + aria-errormessage + a role=alert message onto the single field, and the slot borders turn destructive. State is never colour-only.",
     ],
     useCases: [
       "2FA / OTP verification code",

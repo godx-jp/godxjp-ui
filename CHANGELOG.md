@@ -39,6 +39,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`AuthShell preset="account-recovery"` — the token-owned SCR-008 password-recovery / sign-in-MFA
+  panel measure (#233).** DXS Platform could only reach the canonical 432px recovery and MFA
+  challenge panels through page-local geometry, because `variant="canonical"` owns a single 360px
+  measure. A third named flow preset now owns both — the two canonical desktop panels share one
+  width, so they share one preset: `--auth-shell-recovery-card-max-width` (27rem/432px),
+  `--auth-shell-recovery-main-padding` (16px) and `--auth-shell-recovery-main-padding-mobile` (15px
+  inline, so the panel renders `x=15, width=360` at 390). Measured in Chromium: panel `x=504, w=432`
+  at 1440 and `x=296, w=432` at 1024 with a 382px content column; `x=15, w=360` with a 310px column
+  at 390; no horizontal overflow at any of the three, and axe (wcag2a/2aa/21a/21aa/22aa) reports 0
+  violations on all five docs pages at both 1440 and 390. Everything that existed before is
+  untouched — the canonical 22.5rem Login measure, the 24rem un-preset shell, and the
+  `device-authorization` / `context-selection` presets — and `preset` remains optional.
+  **The panels themselves are deliberately NOT components.** Both failed Gate 0 of
+  `docs/COMPOSITION-VS-COMPONENT.md` on C2/C3/C4/C7: the only real behaviour in the surface (paste,
+  arrow keys, backspace, caret across six slots) already belongs to `InputOTP`, focus order is DOM
+  order, and a `state="request | sent | new-password | expired"` prop would be the same
+  screen-shaped grab-bag that `ErrorSurface`'s `mode` was rejected for — one prop swapping five
+  incompatible bodies. So the package ships the measure and the tokens, and
+  `docs/layout/auth-recovery/` pins the canonical body — a `Card` whose `CardHeader` holds the
+  `CardTitle` and `CardDescription` INSIDE the bordered surface, over a `CardContent` > `AuthStack`
+  carrying the notice (`Alert`), the fields, the `Button fullWidth` primary and a
+  `Flex justify="between" wrap` fallback row — across all seven states
+  (recovery request/sent/new-password/expired, MFA otp/recovery-code/passkey-failure) plus the
+  error, loading and disabled paths. The surface is presentation-only: no route, no reset semantics,
+  no OTP verification, no recovery-code consumption, no passkey authentication, no permissions.
+  `AuthIdentity` is explicitly not used there (it always renders the hosted mark above the card) and
+  `TwoFactorSetup` remains the enrollment dialog, never a sign-in challenge.
+  **The 390 responsive contract is decided here, not traced.** The canonical 390 reference supplied
+  with the issue is a desktop 2×2 composite that overflows and crops horizontally; it shows no
+  mobile route and was not used. The documented contract instead reuses the canonical Login mobile
+  gutter so Login → Recovery never makes the surface jump, keeps the OTP row at one 216px line
+  inside the 310px column, keeps the primary action full-width, and lets the fallback row reflow to
+  a stack purely on content — measured: the vi labels (222.4+206.4px) wrap at 432px while ja and en
+  do not, and all three wrap at 360px, with no media query and no locale branch.
+
+- **`--otp-slot-size` — the InputOTP slot box as its own knob (#233).** An auth panel can now widen
+  the 6-slot challenge row without re-scoping `--control-height` on the card, which would also
+  resize the submit button and every other input in it. It is declared `initial` with the tier as a
+  call-site fallback (`var(--otp-slot-size, var(--control-height))`) — the tier-mirror form of the
+  role-mirror rule in `docs/TOKENS.md`. That detail is not academic: the first implementation bound
+  the knob to the tier at `:root` and headless Chromium caught the canonical auth shell's 36px slots
+  silently collapsing to the frozen 32px `:root` tier. Default output is byte-identical and still
+  density-aware; a service opts in with a named tier, never an ad-hoc `calc()` offset.
+
 - **`QrCode` local-only SVG renderer (#205)** — adds a scanner-safe data-display primitive for
   TOTP enrollment, device pairing and other QR payloads that must never be sent to a third-party
   image service. The required localized `label` names the image without exposing its encoded value;

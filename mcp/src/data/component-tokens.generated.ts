@@ -579,6 +579,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Control surface knobs — font-size, border width and resting shadow of every * `.ui-control` (input / picker trigger). Tokenised so a service theme tunes them * once instead of each component hard-coding Tailwind utilities. Defaults preserve * the historical look (font-size-base, 1px border, shadow-xs)."
   },
   {
+    "name": "--otp-slot-size",
+    "value": "initial",
+    "description": "InputOTP slot box (gh#233). Its own knob so an auth surface can widen the 6-slot challenge row * to fill a wide panel WITHOUT re-scoping --control-height (which would resize every other * control in the same card). Declared `initial` — the tier-mirror form of the role-mirror rule in * docs/TOKENS.md: the default must resolve at the CALL SITE (`var(--otp-slot-size, * var(--control-height))`), because `--otp-slot-size: var(--control-height)` here would FREEZE at * the :root tier (32px) and an OTP row inside `.ui-auth-shell[data-variant=\"canonical\"]`, which * re-scopes --control-height to 36px, would silently shrink. Verified in Chromium: 36px before * and after. A service opts in with a NAMED tier (`var(--control-height-lg)`), never a calc."
+  },
+  {
     "name": "--checkbox-checked-background",
     "value": "initial",
     "description": "Checked/on/active fills — `initial` so the --primary default re-resolves at the call site * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped * [data-tenant] override of --primary never reaches it). A service retints the \"selected\" state * by overriding these directly. Defaults = hsl(var(--primary)) · slider track 0.2α."
@@ -1982,6 +1987,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--auth-shell-context-card-stack-gap",
     "value": "1rem",
     "description": "Context-selection preset — 25rem card measure on desktop/tablet, edge-to-edge on mobile * (0 inline gutter) with a 16px rhythm between the intro, the card and the remember row."
+  },
+  {
+    "name": "--auth-shell-recovery-card-max-width",
+    "value": "27rem",
+    "description": "Account-recovery preset (gh#233) — the SCR-008 measure shared by the password-recovery panel * (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP · * recovery-code · passkey-failure). Both canonical desktop panels measure w=432 at 1440, so ONE * preset owns them; the 360px canonical Login measure is untouched. * The mobile gutter is a DECIDED contract, not a traced artboard: the supplied 390 reference is a * desktop 2x2 composite that crops horizontally and cannot be measured. 15px inline at 390 ⇒ the * panel is x=15, width=360 — the same page rhythm as the canonical Login flow, so a user moving * from Login to Recovery on a phone never sees the surface jump."
+  },
+  {
+    "name": "--auth-shell-recovery-main-padding",
+    "value": "1rem",
+    "description": "Account-recovery preset (gh#233) — the SCR-008 measure shared by the password-recovery panel * (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP · * recovery-code · passkey-failure). Both canonical desktop panels measure w=432 at 1440, so ONE * preset owns them; the 360px canonical Login measure is untouched. * The mobile gutter is a DECIDED contract, not a traced artboard: the supplied 390 reference is a * desktop 2x2 composite that crops horizontally and cannot be measured. 15px inline at 390 ⇒ the * panel is x=15, width=360 — the same page rhythm as the canonical Login flow, so a user moving * from Login to Recovery on a phone never sees the surface jump."
+  },
+  {
+    "name": "--auth-shell-recovery-main-padding-mobile",
+    "value": "0.9375rem",
+    "description": "Account-recovery preset (gh#233) — the SCR-008 measure shared by the password-recovery panel * (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP · * recovery-code · passkey-failure). Both canonical desktop panels measure w=432 at 1440, so ONE * preset owns them; the 360px canonical Login measure is untouched. * The mobile gutter is a DECIDED contract, not a traced artboard: the supplied 390 reference is a * desktop 2x2 composite that crops horizontally and cannot be measured. 15px inline at 390 ⇒ the * panel is x=15, width=360 — the same page rhythm as the canonical Login flow, so a user moving * from Login to Recovery on a phone never sees the surface jump."
   },
   {
     "name": "--auth-shell-divider-gap",

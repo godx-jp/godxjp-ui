@@ -1050,6 +1050,138 @@ export function OrganizationMemberships({
   },
 
   {
+    name: "auth-recovery-panels",
+    aliases: [
+      "password-recovery",
+      "forgot-password",
+      "reset-password",
+      "mfa-challenge",
+      "two-factor-challenge",
+      "2fa-challenge",
+      "otp-challenge",
+      "passkey-failure",
+      "scr-008",
+    ],
+    tagline:
+      'Signed-OUT password recovery + sign-in MFA challenge panels (SCR-008). There is NO PasswordRecoveryPanel and NO MfaChallengePanel — compose Card + AuthStack + FormField/InputOTP + Button inside AuthShell preset="account-recovery" (the 432px token-owned measure).',
+    tags: [
+      "auth",
+      "authshell",
+      "recovery",
+      "password",
+      "mfa",
+      "2fa",
+      "otp",
+      "inputotp",
+      "passkey",
+      "layout",
+      "presentation",
+    ],
+    code: `// ⚠️ There is NO <PasswordRecoveryPanel state=…/> and NO <MfaChallengePanel state=…/> in
+// @godxjp/ui (gh#233 — both fail the Framework-Component Test: they own no behaviour, and a
+// \`state\` prop that swaps five incompatible bodies is the screen-shaped grab-bag anti-pattern,
+// the same call as ErrorSurface's \`mode\`). What the package owns is the MEASURE:
+//    <AuthShell variant="canonical" preset="account-recovery">   ← 432px panel, 15px gutter at 390
+// Docs page: docs/layout/auth-recovery/
+//
+// PRESENTATION ONLY. No route, no reset semantics, no OTP verification, no recovery-code
+// consumption, no passkey authentication, no permissions. The consumer owns all logic and copy.
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import { FormField, Input, InputOTP, InputOTPGroup, InputOTPSlot, PasswordInput, PasswordStrength } from "@godxjp/ui/data-entry";
+import { Alert, AlertDescription, AlertTitle } from "@godxjp/ui/feedback";
+import { Button, Reveal } from "@godxjp/ui/general";
+import { AuthFooter, AuthShell, AuthStack, Flex } from "@godxjp/ui/layout";
+
+// ── THE CANONICAL PANEL ANATOMY — identical for ALL SEVEN states ───────────────────────
+//   Card > CardHeader(CardTitle + CardDescription)   ← title/description INSIDE the surface
+//        > CardContent > AuthStack
+//            [notice]   Alert tone="success|destructive"   (only when the state has one)
+//            [fields]   FormField(s): email · password pair · ONE 6-slot InputOTP · one Input
+//            [primary]  Button fullWidth                    (spans the panel; exactly one)
+//            [fallback] Flex justify="between" gap="sm" wrap (two ghost actions share ONE row)
+//
+// DON'T put <AuthIdentity> above the panel here — it always renders the hosted mark, and the
+// SCR-008 hierarchy puts the heading INSIDE the bordered surface.
+// DON'T reuse <TwoFactorSetup> — that is the ENROLLMENT Dialog (QR / manual key / recovery
+// output). A sign-in challenge has no secret to reveal and no dialog to dismiss: it IS the page.
+
+// ── SIGN-IN MFA CHALLENGE (otp) ────────────────────────────────────────────────────────
+// Focus order IS DOM order: code field → verify → fallback A → fallback B. No tabindex.
+// The 6-slot row is ONE field: InputOTP owns paste/arrows/backspace/caret and is a single tab
+// stop. Six <Input>s would put six stops in the ring and break paste of a 6-digit code.
+export function MfaChallengePage({ code, onCodeChange, error, pending, onVerify }) {
+  return (
+    <AuthShell
+      variant="canonical"
+      preset="account-recovery"
+      brand={brand}
+      footer={<AuthFooter product="GoDX ID" terms={termsLink} privacy={privacyLink} locale={localePicker} />}
+    >
+      <Reveal>
+        <Card>
+          <CardHeader>
+            <CardTitle level={1}>{t("mfa.title")}</CardTitle>
+            <CardDescription>{t("mfa.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AuthStack>
+              <FormField id="mfa-code" label={t("mfa.codeLabel")} error={error} required>
+                <InputOTP maxLength={6} pattern="^[0-9]+$" value={code} onChange={onCodeChange}>
+                  <InputOTPGroup>
+                    {/* six <InputOTPSlot index={0..5} /> */}
+                  </InputOTPGroup>
+                </InputOTP>
+              </FormField>
+              <Button fullWidth loading={pending} loadingText={t("common.verifying")} onClick={onVerify}>
+                {t("mfa.verify")}
+              </Button>
+              <Flex justify="between" gap="sm" wrap>
+                <Button variant="ghost" size="sm">{t("mfa.useRecoveryCode")}</Button>
+                <Button variant="ghost" size="sm">{t("mfa.retryPasskey")}</Button>
+              </Flex>
+            </AuthStack>
+          </CardContent>
+        </Card>
+      </Reveal>
+    </AuthShell>
+  );
+}
+
+// ── THE OTHER SIX STATES — same anatomy, only the notice/fields/copy change ─────────────
+// The STATE IS NOT A PROP: the server answers, and the route renders the matching body in the
+// SAME 432px panel. Nothing is reconstructed, because nothing was torn down.
+//
+//   password recovery · request        —  fields: email (autoComplete="username")
+//   password recovery · sent           —  <Alert tone="success"> + <Button fullWidth disabled> (cooldown)
+//   password recovery · new-password   —  two <PasswordInput autoComplete="new-password"> + <PasswordStrength>
+//   password recovery · expired        —  <Alert tone="destructive">, primary = request a new link
+//   MFA · recovery-code                —  ONE <Input autoComplete="one-time-code">
+//   MFA · passkey-failure              —  <Alert tone="destructive">, primary = retry passkey
+//
+// The masked address in \`sent\` ("h*****@example.co.jp") is produced by the SERVER — the panel
+// never reconstructs an identifier, it renders the string it is given.
+
+// ── STATES ─────────────────────────────────────────────────────────────────────────────
+//  error    FormField error ⇒ aria-invalid + aria-errormessage + role="alert". Never colour-only.
+//  loading  Button loading + loadingText ⇒ aria-busy, the box does not resize, fallbacks disabled.
+//  disabled a resend cooldown is <Button disabled> — keep it VISIBLE so the affordance is known.
+
+// ── RESPONSIVE CONTRACT (1440 / 1024 / 390) ────────────────────────────────────────────
+//  1440 · 1024   panel 432px, centred, 16px page gutter; OTP one row (6 × 36px = 216px)
+//  390           panel 360px at x=15 (15px inline gutter, --auth-shell-recovery-main-padding-mobile),
+//                310px content column, OTP still ONE row, primary still full-width, the fallback
+//                row wraps to a stack only when the localized labels exceed the column.
+//  ⚠️ The 390 canonical reference supplied with gh#233 is a desktop 2×2 COMPOSITE that overflows
+//  and crops horizontally. It is NOT a valid mobile source and was not traced; the row above is a
+//  DECIDED contract, documented in docs/layout/auth-recovery/ and pinned by tests.
+
+// ANTI-PATTERNS: a page-local --auth-shell-card-max-width override or a .recovery-panel{width:432px}
+// class · AuthIdentity above the panel · TwoFactorSetup as a challenge · six Inputs for the OTP row ·
+// re-scoping --control-height to widen the slots (use --otp-slot-size) · two primary actions.`,
+  },
+
+  {
     name: "account-recovery-settings",
     aliases: ["recovery-email", "backup-codes", "security-settings", "recovery-settings"],
     tagline:

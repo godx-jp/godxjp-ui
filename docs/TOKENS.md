@@ -114,6 +114,25 @@ The same rule applies to `@theme inline` (utilities re-resolve scoped roles) and
 (spacing, radius, font-size) don't need this — they aren't scope-retinted — but any colour/fill/
 border/shadow knob whose default is a role token does.
 
+**The same freeze bites any knob whose default is a RE-SCOPED tier, colour or not.**
+`--control-height` is re-scoped by `.ui-auth-shell` (44px comfortable) and by
+`.ui-auth-shell[data-variant="canonical"]` (36px), so a knob that mirrors it must follow the same
+`initial` + call-site-fallback shape:
+
+```css
+:root {
+  --otp-slot-size: initial;
+} /* documented default = var(--control-height) */
+.ui-otp-slot {
+  width: var(--otp-slot-size, var(--control-height));
+}
+```
+
+Written as `--otp-slot-size: var(--control-height)` at `:root` it freezes at the `:root` tier —
+headless Chromium caught exactly this: the canonical auth shell's 36px OTP slots silently collapsed
+to 32px (gh#233). Ask "is the default a token that some scope re-declares?", not "is the default a
+colour?".
+
 Card primitive tokens:
 
 | Token                      | Purpose                                                                                        |

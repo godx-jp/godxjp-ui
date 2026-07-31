@@ -283,6 +283,18 @@ export const TOKENS: TokenEntry[] = [
     role: 'AuthShell `preset="context-selection"` measure (gh#217) — the organisation/context picker: a 25rem card on desktop/tablet, edge-to-edge on mobile (0 inline gutter), and a 1rem rhythm between the three direct sections of the auth column (intro · choice card · "remember" row).',
   },
   {
+    name: "--auth-shell-recovery-{card-max-width,main-padding,main-padding-mobile}",
+    category: "component",
+    tier: "component",
+    role: 'AuthShell `preset="account-recovery"` measure (gh#233) — the SCR-008 27rem/432px panel, shared by the password-recovery panel (request · sent · new-password · expired) AND the sign-in MFA challenge panel (OTP · recovery-code · passkey-failure), because both canonical desktop panels measure w=432 at 1440. Mobile gutter = 15px inline at <=30rem, so the panel is x=15, width=360 — the SAME rhythm as the canonical Login flow, chosen deliberately: the supplied 390 reference is a desktop 2x2 composite that crops horizontally and is NOT a valid source. The canonical 360px Login measure and the 24rem un-preset shell are untouched.',
+  },
+  {
+    name: "--otp-slot-size",
+    category: "component",
+    tier: "component",
+    role: "InputOTP slot box (gh#233). Default `var(--control-height)` — byte-identical to before and still density-aware — but its OWN knob, so an auth panel can widen the 6-slot challenge row to fill a wide surface WITHOUT re-scoping --control-height (which would resize the primary button and every other input in the same card). Set it to a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
+  },
+  {
     name: "--auth-shell-{main-align,card-stack-gap}",
     category: "component",
     tier: "component",

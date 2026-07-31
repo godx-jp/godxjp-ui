@@ -157,6 +157,18 @@
   --auth-shell-context-main-padding-mobile: var(--space-6) 0;
   --auth-shell-context-card-stack-gap: 1rem;
 
+  /* Account-recovery preset (gh#233) — the SCR-008 measure shared by the password-recovery panel
+   * (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP ·
+   * recovery-code · passkey-failure). Both canonical desktop panels measure w=432 at 1440, so ONE
+   * preset owns them; the 360px canonical Login measure is untouched.
+   * The mobile gutter is a DECIDED contract, not a traced artboard: the supplied 390 reference is a
+   * desktop 2x2 composite that crops horizontally and cannot be measured. 15px inline at 390 ⇒ the
+   * panel is x=15, width=360 — the same page rhythm as the canonical Login flow, so a user moving
+   * from Login to Recovery on a phone never sees the surface jump. */
+  --auth-shell-recovery-card-max-width: 27rem;
+  --auth-shell-recovery-main-padding: 1rem;
+  --auth-shell-recovery-main-padding-mobile: 0.9375rem;
+
   /* Labelled auth divider geometry. */
   --auth-shell-divider-gap: 0.625rem;
   --auth-shell-divider-label-font-size: 0.6875rem;

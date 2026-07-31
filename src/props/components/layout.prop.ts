@@ -198,7 +198,7 @@ export type AuthShellProp = {
   /**
    * Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the
    * auth card's max-width plus the desktop and mobile page gutters, all owned by component tokens
-   * (`--auth-shell-{device,context}-*`). Selecting a preset replaces every consumer-side
+   * (`--auth-shell-{device,context,recovery}-*`). Selecting a preset replaces every consumer-side
    * `--auth-shell-card-max-width` override.
    *
    * - `"default"` (default) — the shell's own measure; nothing changes.
@@ -206,6 +206,10 @@ export type AuthShellProp = {
    *   viewport (canonical device-grant artboard).
    * - `"context-selection"` — 25rem card measure on desktop/tablet, edge-to-edge on mobile, and a
    *   tokenized rhythm between the intro, the card and the trailing "remember" row.
+   * - `"account-recovery"` — 27rem/432px panel measure with a 15px inline page gutter at 390px
+   *   (panel x=15, width=360). One measure for BOTH canonical SCR-008 panels: password recovery
+   *   (request · sent · new-password · expired) and the sign-in MFA challenge (OTP · recovery-code
+   *   · passkey-failure), whose title and description sit INSIDE the bordered surface.
    *
    * Orthogonal to `variant`: presets are applied AFTER it, so `variant="canonical"` keeps owning
    * control density and heading size while the preset re-measures the page.

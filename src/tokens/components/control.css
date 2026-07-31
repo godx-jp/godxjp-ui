@@ -58,6 +58,16 @@
   --slider-track-height: 0.375rem;
   --slider-thumb-size: 1rem;
 
+  /* InputOTP slot box (gh#233). Its own knob so an auth surface can widen the 6-slot challenge row
+   * to fill a wide panel WITHOUT re-scoping --control-height (which would resize every other
+   * control in the same card). Declared `initial` — the tier-mirror form of the role-mirror rule in
+   * docs/TOKENS.md: the default must resolve at the CALL SITE (`var(--otp-slot-size,
+   * var(--control-height))`), because `--otp-slot-size: var(--control-height)` here would FREEZE at
+   * the :root tier (32px) and an OTP row inside `.ui-auth-shell[data-variant="canonical"]`, which
+   * re-scopes --control-height to 36px, would silently shrink. Verified in Chromium: 36px before
+   * and after. A service opts in with a NAMED tier (`var(--control-height-lg)`), never a calc. */
+  --otp-slot-size: initial; /* default = var(--control-height) at the call site */
+
   /* Checked/on/active fills — `initial` so the --primary default re-resolves at the call site
    * under a scoped theme (a :root binding to var(--primary) freezes at the :root value and a scoped
    * [data-tenant] override of --primary never reaches it). A service retints the "selected" state
