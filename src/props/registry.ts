@@ -439,6 +439,11 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  PageContainerHeaderLayoutProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
   PageContainerProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -450,6 +455,12 @@ export const COMPONENT_PROP_REGISTRY = {
       "BreadcrumbProp",
       "DensityProp",
       "PageContainerVariantProp",
+      {
+        field: "headerLayout",
+        local: true,
+        reason:
+          "Header ARRANGEMENT of the title band vs the extra slot below the 640px step (stack | responsive-inline) — orthogonal to PageContainerVariantProp, which selects the page shell layout.",
+      },
     ],
   },
   FlexDirectionProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
@@ -477,6 +488,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [],
   },
+  MasterDetailMasterViewportProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
   MasterDetailProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -498,6 +514,12 @@ export const COMPONENT_PROP_REGISTRY = {
         field: "railWidth",
         local: true,
         reason: "Token-owned 300px/320px rail geometry preset.",
+      },
+      {
+        field: "masterViewport",
+        local: true,
+        reason:
+          "Token-owned bounded-collection preset (auto | compact | standard) for the master region's scroll viewport — geometry, not a raw pixel measure.",
       },
       {
         field: "collapseBelow",

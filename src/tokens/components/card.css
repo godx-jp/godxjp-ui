@@ -4,6 +4,14 @@
   /* Horizontal inset of every slot (header / content / footer) + the resting top/bottom
    * shell padding. This is the column the title, body and footer all align to. */
   --card-space-inset: var(--space-section-active);
+  /* BLOCK-axis (top/bottom) shell padding of the slotted card rhythm — a plain header's top, a
+   * `solo` body's top, and the terminal slot's bottom (gh#232). Split off --card-space-inset so a
+   * shell (AuthShell compact) can retune the card's height WITHOUT moving the inline column.
+   * Declared `initial` — NOT `var(--card-space-inset)` — so the default resolves at the CALL SITE:
+   * a :root binding would freeze at the :root inset and `[data-density="tight"|"cozy"]` (which
+   * override --card-space-inset on the card element) would stop reaching it. See docs/TOKENS.md ·
+   * "Role-mirror knobs MUST be `initial`" — the same call-site rule applies to derived knobs. */
+  --card-space-shell-y: initial; /* default = var(--card-space-inset) */
   /* Vertical padding of a BANDED header band (top = bottom). Drives --card-space-divided-y. */
   --card-space-header-y: var(--space-stack-sm);
   /* Gap between the header and the body, and the body's own top padding — the breathing

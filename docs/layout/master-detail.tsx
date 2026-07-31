@@ -99,6 +99,17 @@ const SERVICES = [
 
 const RAIL_WIDTHS = ["compact", "standard"] as const;
 const COLLAPSE_STEPS = ["token", "sm", "md", "lg", "xl", "false"] as const;
+const MASTER_VIEWPORTS = ["auto", "compact", "standard"] as const;
+
+/**
+ * 実サービスの「長い」コレクション (gh#231)。auto のままだと一覧が数千 px に伸び、
+ * 積み重なった 390px 画面では詳細がフォールドの遥か下に押し出される。
+ */
+const MEMBERS = Array.from({ length: 60 }, (_, i) => ({
+  id: `member-${i + 1}`,
+  name: `メンバー ${i + 1}`,
+  role: i % 3 === 0 ? "管理者" : i % 3 === 1 ? "編集者" : "閲覧者",
+}));
 
 const numberFormat = new Intl.NumberFormat("ja-JP");
 const dateFormat = new Intl.DateTimeFormat("ja-JP", { dateStyle: "medium" });
@@ -106,16 +117,21 @@ const formatDate = (iso: string) => dateFormat.format(new Date(`${iso}T00:00:00Z
 
 const TEAM_DETAIL_ID = "master-detail-team-detail";
 const SERVICE_DETAIL_ID = "master-detail-service-detail";
+const MEMBER_DETAIL_ID = "master-detail-member-detail";
 
 export default function Demo() {
   const [teamId, setTeamId] = useState("core");
   const [railWidth, setRailWidth] = useState<(typeof RAIL_WIDTHS)[number]>("standard");
   const [collapseStep, setCollapseStep] = useState<(typeof COLLAPSE_STEPS)[number]>("token");
   const [serviceId, setServiceId] = useState("members");
+  const [masterViewport, setMasterViewport] =
+    useState<(typeof MASTER_VIEWPORTS)[number]>("compact");
+  const [memberId, setMemberId] = useState(MEMBERS[0].id);
 
   const team = TEAMS.find((item) => item.id === teamId) ?? TEAMS[0];
   const service = SERVICES.find((item) => item.id === serviceId) ?? SERVICES[0];
   const ServiceIcon = service.icon;
+  const member = MEMBERS.find((item) => item.id === memberId) ?? MEMBERS[0];
 
   // "token" は prop を渡さない = テーマの --master-detail-collapse-below に委ねる状態。
   const collapseBelow =
@@ -191,6 +207,22 @@ export default function Demo() {
                 variant={collapseStep === value ? "default" : "outline"}
                 aria-pressed={collapseStep === value}
                 onClick={() => setCollapseStep(value)}
+              >
+                {value}
+              </Button>
+            ))}
+          </Flex>
+          <Flex direction="row" wrap align="center" gap="sm">
+            <Text size="xs" tone="muted">
+              masterViewport
+            </Text>
+            {MASTER_VIEWPORTS.map((value) => (
+              <Button
+                key={value}
+                size="sm"
+                variant={masterViewport === value ? "default" : "outline"}
+                aria-pressed={masterViewport === value}
+                onClick={() => setMasterViewport(value)}
               >
                 {value}
               </Button>
@@ -303,6 +335,49 @@ export default function Demo() {
                 <Text>現在の設定件数: {numberFormat.format(service.count)}</Text>
                 <Button>設定を開く</Button>
               </Flex>
+            </CardContent>
+          </Card>
+        </MasterDetail>
+
+        {/* ── 3. masterViewport — 長い実コレクションを境界付きビューポートに収める (gh#231)。
+               auto: 一覧が 60 行ぶん伸び、390px では詳細がフォールドの遥か下に落ちる。
+               compact / standard: --master-detail-master-viewport-* が block サイズを
+               上限とし、コレクションは region の中でスクロールする。
+               region 自体が tabIndex={0} のスクロールコンテナなので、キーボードだけでも
+               スクロールできる (WCAG 2.1.1) — フォーカスは閉じ込められない。 ── */}
+        <MasterDetail
+          rail="detail"
+          masterViewport={masterViewport}
+          masterLabel="メンバー一覧（スクロール領域）"
+          detailLabel={`${member.name} の詳細`}
+          detailId={MEMBER_DETAIL_ID}
+          master={
+            <Flex direction="col" gap="xs">
+              {MEMBERS.map((item) => (
+                <Button
+                  key={item.id}
+                  variant={item.id === memberId ? "secondary" : "ghost"}
+                  aria-pressed={item.id === memberId}
+                  aria-controls={MEMBER_DETAIL_ID}
+                  onClick={() => setMemberId(item.id)}
+                >
+                  {item.name}
+                  <Badge tone="neutral">{item.role}</Badge>
+                </Button>
+              ))}
+            </Flex>
+          }
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle level={2}>{member.name}</CardTitle>
+              <CardDescription>権限: {member.role}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Text tone="muted">
+                masterViewport=&quot;{masterViewport}&quot; · 一覧は{" "}
+                {masterViewport === "auto" ? "コンテンツ全高" : "トークン上限つきスクロール"}
+              </Text>
             </CardContent>
           </Card>
         </MasterDetail>

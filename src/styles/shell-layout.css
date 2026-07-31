@@ -220,9 +220,22 @@
     line-height: var(--auth-shell-field-label-line-height);
   }
 
+  /*
+   * Compact auth card density — the two card axes are wired to SEPARATE knobs (gh#232), so a
+   * service can shorten the canonical Login card without narrowing its column (or vice versa):
+   *   inline column  ← --auth-shell-compact-card-inset      → --card-space-inset
+   *   block padding  ← --auth-shell-card-padding-block-compact → --card-space-shell-y
+   *   header↔body    ← --auth-shell-card-body-gap-compact    → --card-space-body-y
+   * The block knob is `initial` at :root, so its default resolves HERE against the live inset —
+   * canonical output is byte-identical to pre-gh#232 while the knob is now actually consumed.
+   */
   .ui-auth-shell[data-density="compact"] .ui-auth-shell-card {
     --card-space-inset: var(--auth-shell-compact-card-inset);
-    --card-space-body-y: var(--auth-shell-card-padding-block-compact);
+    --card-space-shell-y: var(
+      --auth-shell-card-padding-block-compact,
+      var(--auth-shell-compact-card-inset)
+    );
+    --card-space-body-y: var(--auth-shell-card-body-gap-compact);
     --card-space-gap: var(--auth-shell-card-gap-compact);
   }
 

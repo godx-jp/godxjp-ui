@@ -116,18 +116,19 @@ border/shadow knob whose default is a role token does.
 
 Card primitive tokens:
 
-| Token                      | Purpose                                                                 |
-| -------------------------- | ----------------------------------------------------------------------- |
-| `--card-space-inset`       | Shared header/body/footer **x** inset — the column all slots align to   |
-| `--card-space-header-y`    | Banded header band vertical density (feeds `--card-space-divided-y`)    |
-| `--card-space-body-y`      | Gap under the header + the body's own top padding                       |
-| `--card-space-footer-y`    | Separated footer band vertical density (feeds `--card-space-divided-y`) |
-| `--card-space-divided-y`   | **Border-aware** symmetric top+bottom padding of a DIVIDED band         |
-| `--card-space-gap`         | In-slot stack gap (header title ↕ description)                          |
-| `--card-accent-rail-width` | Width of the `accent` leading-edge stripe (default `6px`)               |
-| `--card-title-font-size`   | Card title scale                                                        |
-| `--card-header-background` | Banded header background color token                                    |
-| `--card-shadow`            | Card elevation                                                          |
+| Token                      | Purpose                                                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------------------- |
+| `--card-space-inset`       | Shared header/body/footer **inline** inset — the column all slots align to                     |
+| `--card-space-shell-y`     | **Block** shell padding (header top · `solo` body top · terminal bottom) — default = the inset |
+| `--card-space-header-y`    | Banded header band vertical density (feeds `--card-space-divided-y`)                           |
+| `--card-space-body-y`      | Gap under the header + the body's own top padding                                              |
+| `--card-space-footer-y`    | Separated footer band vertical density (feeds `--card-space-divided-y`)                        |
+| `--card-space-divided-y`   | **Border-aware** symmetric top+bottom padding of a DIVIDED band                                |
+| `--card-space-gap`         | In-slot stack gap (header title ↕ description)                                                 |
+| `--card-accent-rail-width` | Width of the `accent` leading-edge stripe (default `6px`)                                      |
+| `--card-title-font-size`   | Card title scale                                                                               |
+| `--card-header-background` | Banded header background color token                                                           |
+| `--card-shadow`            | Card elevation                                                                                 |
 
 #### Border-aware vertical padding (dividers)
 
@@ -138,14 +139,35 @@ a token, never hard-code padding on the slot:
   `<CardFooter separated>` (top border). It reads as its own region, so it pads **symmetrically**
   top+bottom from `--card-space-divided-y` (which defaults to `--card-space-header-y`). One knob
   keeps the header- and footer-band rhythm in sync.
-- **Plain header** — no border; it _flows_ into the body. Top padding is `--card-space-inset`,
-  bottom is `0`, and the body supplies the gap via `--card-space-body-y`.
+- **Plain header** — no border; it _flows_ into the body. Top padding is `--card-space-shell-y`
+  (which defaults to `--card-space-inset`), bottom is `0`, and the body supplies the gap via
+  `--card-space-body-y`.
 - **Header above a flush table** — `<CardContent flush>` with a `<Table>`/`<DataTable>` zeroes the
   body's top padding, so the plain header instead supplies its own `--card-space-body-y` bottom gap;
   the title never butts against the table header row.
 
 So: WITH a divider → symmetric band padding; WITHOUT → asymmetric flow padding. Tune the band
 density once at `--card-space-divided-y`; tune the accent stripe at `--card-accent-rail-width`.
+
+#### The two card axes are independent (gh#232)
+
+`--card-space-inset` owns the **inline** column; `--card-space-shell-y` owns the **block** shell
+edges (a plain header's top, a `solo` body's top, the terminal slot's bottom). `--card-space-shell-y`
+is declared `initial`, so its default resolves at the call site to `--card-space-inset` — a card that
+sets neither, or that only re-tunes the inset (including `density="tight|cozy"`), renders exactly as
+before. Override `--card-space-shell-y` alone to make a card **shorter without narrowing it**:
+
+```css
+/* a short login card that keeps its 24px column */
+.ui-auth-shell {
+  --auth-shell-card-padding-block-compact: 14px;
+}
+```
+
+That AuthShell knob is wired straight to `--card-space-shell-y` on the compact auth card; the inline
+column stays on `--auth-shell-compact-card-inset` and the header↔body gap on
+`--auth-shell-card-body-gap-compact`. Three knobs, three axes, no consumer bridge selector on
+`[data-slot="card-content"]`.
 
 Example app override:
 

@@ -29,6 +29,19 @@
    * query, precisely so a `var()` can drive it (see src/styles/layout.css · .ui-master-detail). */
   --master-detail-collapse-below: 40rem; /* 640px — the `sm` step */
 
+  /* Bounded master viewport (gh#231). OPT-IN, chosen by the semantic `masterViewport` prop —
+   * `auto` (the default) applies NO bound, so every existing composition is unchanged. A real
+   * collection can be thousands of pixels tall; when the layout stacks, that pushes the detail
+   * far below the fold. The presets cap the collection's BLOCK size and scroll it inside the
+   * region instead. Sized as a whole number of nominal collection rows (2.5rem ≈ a compact list
+   * row) so a service theme retunes them in the same semantic unit the design grid uses. */
+  --master-detail-master-viewport-compact: 20rem; /* 320px — about 8 nominal rows */
+  --master-detail-master-viewport-standard: 28rem; /* 448px — about 11 nominal rows */
+  /* Focus-ring room INSIDE the bounded region: an overflow container clips both axes, so without
+   * an inset the ring of a row at the edge would be cut off (WCAG 2.4.11/2.4.13). Doubles as the
+   * scroll-padding so a row scrolled into view never sits flush against the clip edge. */
+  --master-detail-master-viewport-inset: var(--space-1); /* 4px */
+
   --space-page-active-x: var(--space-page-x);
   --space-page-active-y: var(--space-page-y);
   --space-section-active: var(--space-section);
@@ -61,6 +74,14 @@
    * band reads vertically balanced (24 above / 24 below by default), instead of the
    * old fixed 16px pad that left 24 above vs 32 below. */
   --page-header-pad-bottom: calc(var(--space-page-active-y) - var(--space-section-active));
+
+  /* Inline measure of the header `extra` region while the page header is in `responsive-inline`
+   * arrangement (gh#231). Below the 640px step the default arrangement drops `extra` onto its own
+   * full-width line under the subtitle; `headerLayout="responsive-inline"` keeps it beside the
+   * title band at this measure instead, so a single compact control (a search field, one primary
+   * action) stays on the title row at 390px. Unused by the default arrangement, so no existing
+   * page moves. 11rem = 176px, i.e. the control ends flush with the compact page gutter. */
+  --page-header-extra-measure: 11rem; /* 176px */
 
   /* Responsive page typography is independent from density. Density changes information spacing;
    * these tokens change only page chrome so mobile keeps readable body text and touch targets. */

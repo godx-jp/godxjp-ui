@@ -56,14 +56,19 @@
     box-shadow: 0 0 0 1px hsl(var(--primary));
   }
 
-  /* ── Density — override the shell inset/body tokens ──────────────────── */
+  /* ── Density — override the shell inset/body tokens ──────────────────────
+   * `--card-space-shell-y: initial` re-arms the block axis to follow THIS card's inset again: the
+   * `density` prop is an explicit per-instance decision and must beat an ambient shell-level block
+   * override (e.g. AuthShell compact), exactly as it did when one inset owned both axes. */
   [data-slot="card"][data-density="tight"] {
     --card-space-inset: var(--space-3);
+    --card-space-shell-y: initial;
     --card-space-body-y: var(--space-3);
   }
 
   [data-slot="card"][data-density="cozy"] {
     --card-space-inset: var(--space-5);
+    --card-space-shell-y: initial;
     --card-space-body-y: var(--space-5);
   }
 
@@ -111,7 +116,7 @@
   }
 
   [data-slot="card-header"]:not([data-banded]) {
-    padding-top: var(--card-space-inset);
+    padding-top: var(--card-space-shell-y, var(--card-space-inset));
     padding-bottom: 0;
   }
 
@@ -254,7 +259,7 @@
   /* Header-only card — terminal slot owns bottom shell */
   [data-slot="card"]:not(:has([data-slot="card-content"], [data-slot="card-footer"]))
     [data-slot="card-header"] {
-    padding-bottom: var(--card-space-inset);
+    padding-bottom: var(--card-space-shell-y, var(--card-space-inset));
   }
 
   /* Cover — header below media uses section top, not shell */
@@ -271,10 +276,14 @@
     padding-top: var(--card-space-body-y);
   }
 
-  /* ── Content ─────────────────────────────────────────────────────────── */
+  /* ── Content ─────────────────────────────────────────────────────────────
+   * The two axes are INDEPENDENT (gh#232): the inline column reads --card-space-inset, the block
+   * shell edge reads --card-space-shell-y (default = the same inset, so the resting render is
+   * unchanged). A shell that needs a shorter card without a narrower column — AuthShell compact —
+   * now moves the block axis alone instead of hitting a wall at a uniform inset. */
   [data-slot="card-content"] {
     padding-inline: var(--card-space-inset);
-    padding-bottom: var(--card-space-inset);
+    padding-bottom: var(--card-space-shell-y, var(--card-space-inset));
   }
 
   [data-slot="card-content"]:not([data-tight]):not([data-solo]) {
@@ -282,7 +291,7 @@
   }
 
   [data-slot="card-content"][data-solo] {
-    padding-top: var(--card-space-inset);
+    padding-top: var(--card-space-shell-y, var(--card-space-inset));
   }
 
   [data-slot="card-content"][data-flush] {
@@ -343,7 +352,7 @@
 
   [data-slot="card-footer"]:not([data-separated]) {
     padding-top: 0;
-    padding-bottom: var(--card-space-inset);
+    padding-bottom: var(--card-space-shell-y, var(--card-space-inset));
   }
 
   [data-slot="card-footer"][data-separated] {

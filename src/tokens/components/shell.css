@@ -109,8 +109,24 @@
   --auth-shell-canonical-heading-size: var(--font-size-base);
   --auth-shell-canonical-main-padding: 1rem;
   --auth-shell-canonical-main-padding-mobile: 0.9375rem;
+  /* INLINE (start/end) inset of the compact auth card — the column the title, fields and actions
+   * align to. Independent of the block axis below (gh#232). */
   --auth-shell-compact-card-inset: var(--space-6);
-  --auth-shell-card-padding-block-compact: var(--space-3);
+  /* BLOCK (top/bottom) padding of the compact auth card — the knob that tunes canonical Login card
+   * HEIGHT without narrowing the column. Bound to the card's --card-space-shell-y, so it really
+   * reaches CardContent's block edges (before gh#232 it was wired only to --card-space-body-y and
+   * the rendered body kept the inset on both block edges — the documented token did nothing).
+   * Declared `initial` so the default mirrors the LIVE --auth-shell-compact-card-inset resolved at
+   * the CALL SITE: the canonical card renders exactly as before (24px block = 24px inline), and a
+   * service that re-tunes the inset inside a scoped `[data-tenant]` still drags the block default
+   * with it (a :root binding would freeze at the :root inset — docs/TOKENS.md). */
+  --auth-shell-card-padding-block-compact: initial; /* default = var(--auth-shell-compact-card-inset) */
+  /* Header↔body gap inside the compact auth card (the breathing room under the title before the
+   * first field). Its own knob since gh#232 — it used to ride on
+   * --auth-shell-card-padding-block-compact, which conflated the section gap with the card's block
+   * padding and made the block knob un-tunable. Default is the pre-gh#232 12px rhythm. */
+  --auth-shell-card-body-gap-compact: var(--space-3);
+  /* IN-SLOT stack gap of the compact auth card (title ↕ description inside the header). */
   --auth-shell-card-gap-compact: var(--space-3);
 
   /* Named AUTH FLOW PRESETS (gh#217 / gh#220). A preset owns the whole page measure for one

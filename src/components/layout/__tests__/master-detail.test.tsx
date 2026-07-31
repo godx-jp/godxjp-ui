@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { expectNoA11yViolations } from "@/test/a11y";
@@ -75,6 +76,103 @@ describe("MasterDetail", () => {
 
       expect(root(container)).toHaveAttribute("data-collapse-below", String(collapseBelow));
     }
+  });
+
+  describe("bounded master viewport (gh#231)", () => {
+    it("is unbounded by default — no scroll container, no extra tab stop", () => {
+      const { container } = render(<MasterDetail master={<div>Master</div>}>Detail</MasterDetail>);
+
+      expect(root(container)).toHaveAttribute("data-master-viewport", "auto");
+      // `auto` matches no CSS rule, so the region keeps growing with its content exactly as
+      // before, and it must NOT become focusable (an unbounded region never scrolls).
+      expect(container.querySelector(".ui-master-detail-master")).not.toHaveAttribute("tabindex");
+    });
+
+    it("selects a token-owned preset and makes the region keyboard-scrollable", () => {
+      for (const masterViewport of ["compact", "standard"] as const) {
+        const { container } = render(
+          <MasterDetail masterViewport={masterViewport} masterLabel="Members" master={<div>M</div>}>
+            Detail
+          </MasterDetail>,
+        );
+
+        expect(root(container)).toHaveAttribute("data-master-viewport", masterViewport);
+        // WCAG 2.1.1 / axe scrollable-region-focusable: a scroll container must be reachable
+        // and scrollable with the keyboard alone, even with nothing focusable inside it.
+        expect(container.querySelector(".ui-master-detail-master")).toHaveAttribute(
+          "tabindex",
+          "0",
+        );
+      }
+    });
+
+    it("does not trap focus inside the bounded region", async () => {
+      const user = userEvent.setup();
+      const { getByRole } = render(
+        <>
+          <button type="button">Before</button>
+          <MasterDetail
+            masterViewport="compact"
+            masterLabel="Members"
+            detailLabel="Selected member"
+            master={
+              <>
+                <button type="button">Row one</button>
+                <button type="button">Row two</button>
+              </>
+            }
+          >
+            <button type="button">Detail action</button>
+          </MasterDetail>
+        </>,
+      );
+
+      const region = getByRole("region", { name: "Members" });
+      getByRole("button", { name: "Before" }).focus();
+
+      // Tab reaches the scroll region itself (so it can be scrolled by keyboard)…
+      await user.tab();
+      expect(document.activeElement).toBe(region);
+      // …then walks THROUGH its rows and out the far side. Nothing is trapped.
+      await user.tab();
+      expect(document.activeElement).toBe(getByRole("button", { name: "Row one" }));
+      await user.tab();
+      expect(document.activeElement).toBe(getByRole("button", { name: "Row two" }));
+      await user.tab();
+      expect(document.activeElement).toBe(getByRole("button", { name: "Detail action" }));
+
+      // …and Shift+Tab walks back out the near side.
+      await user.tab({ shift: true });
+      await user.tab({ shift: true });
+      await user.tab({ shift: true });
+      expect(document.activeElement).toBe(region);
+      await user.tab({ shift: true });
+      expect(document.activeElement).toBe(getByRole("button", { name: "Before" }));
+    });
+
+    it("has no axe violations with a bounded, long collection", async () => {
+      await expectNoA11yViolations(
+        <MasterDetail
+          masterViewport="compact"
+          masterLabel="Members"
+          detailLabel="Selected member"
+          detailId="member-detail"
+          master={
+            <ul>
+              {Array.from({ length: 40 }, (_, i) => (
+                <li key={i}>
+                  <button type="button" aria-controls="member-detail" aria-pressed={i === 0}>
+                    {`Member ${i + 1}`}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          }
+        >
+          <h2>Member 1</h2>
+        </MasterDetail>,
+      );
+    });
   });
 
   it("exposes the detail region as an aria-controls target and a focus target", () => {
@@ -168,6 +266,39 @@ describe("MasterDetail", () => {
         /max\(\s*var\(--master-detail-rail-size\),\s*calc\(\(var\(--master-detail-collapse-below\) - 100%\) \* 999\)\s*\)/s,
       );
       expect(layoutCss).not.toMatch(/@container master-detail/);
+    });
+
+    /*
+     * Bounded master viewport (gh#231). Measured in Chromium against this stylesheet, in the
+     * docs frame, with a 200-row collection (see the numbers reported on the issue):
+     *
+     *   masterViewport="auto"     390px → master 3,749px tall, detail pushed to y≈3,935
+     *   masterViewport="compact"  390px → master  320px tall, detail at y≈4xx (scrolls in place)
+     */
+    it("bounds the master viewport from tokens only when a preset is selected", () => {
+      expect(layoutTokens).toMatch(/--master-detail-master-viewport-compact:\s*20rem/);
+      expect(layoutTokens).toMatch(/--master-detail-master-viewport-standard:\s*28rem/);
+      expect(layoutTokens).toMatch(/--master-detail-master-viewport-inset:\s*var\(--space-1\)/);
+      expect(layoutCss).toMatch(
+        /\[data-master-viewport="compact"\]\s*>\s*\.ui-master-detail-master\s*\{\s*max-block-size:\s*var\(--master-detail-master-viewport-compact\)/,
+      );
+      expect(layoutCss).toMatch(
+        /\[data-master-viewport="standard"\]\s*>\s*\.ui-master-detail-master\s*\{\s*max-block-size:\s*var\(--master-detail-master-viewport-standard\)/,
+      );
+      // `auto` must never be a selector — the default has to stay literally unstyled.
+      expect(layoutCss).not.toMatch(/\[data-master-viewport="auto"\]/);
+      // No raw pixel geometry anywhere in the bound.
+      expect(layoutCss).not.toMatch(/max-block-size:\s*\d/);
+    });
+
+    it("gives the bounded region scroll containment and focus-ring room", () => {
+      const start = layoutCss.indexOf('.ui-master-detail[data-master-viewport="compact"]');
+      const block = layoutCss.slice(start, layoutCss.indexOf("}", start));
+
+      expect(block).toMatch(/overflow-y:\s*auto/);
+      expect(block).toMatch(/overscroll-behavior:\s*contain/);
+      expect(block).toMatch(/padding:\s*var\(--master-detail-master-viewport-inset\)/);
+      expect(block).toMatch(/scroll-padding-block:\s*var\(--master-detail-master-viewport-inset\)/);
     });
 
     it("keeps the composition direction-agnostic (RTL-safe)", () => {

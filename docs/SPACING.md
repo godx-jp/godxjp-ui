@@ -35,11 +35,12 @@ Implementation: `src/tokens/base.css` (values) · layout owners: `src/styles/*-l
 
 **Single owner:** `src/styles/card-layout.css` - all `[data-slot="card-*"]` padding. Components emit `data-slot` + modifier flags only (`data-banded`, `data-flush`, `data-tight`, `data-solo`, `data-separated`). Never Tailwind `p-*` / `px-*` on `Card*` in apps or previews.
 
-| Part                                              | Ratio                    | Role                                         |
-| ------------------------------------------------- | ------------------------ | -------------------------------------------- |
-| `--card-space-inset`                              | `--space-section-active` | Horizontal inset · first/last vertical shell |
-| `--card-space-body-y`                             | `--space-section-active` | Header↔body gap                              |
-| `--card-space-header-y` / `--card-space-footer-y` | `--space-stack-sm`       | Banded header + separated footer band        |
+| Part                                              | Ratio                    | Role                                       |
+| ------------------------------------------------- | ------------------------ | ------------------------------------------ |
+| `--card-space-inset`                              | `--space-section-active` | Inline (start/end) inset                   |
+| `--card-space-shell-y`                            | `--card-space-inset`     | Block shell padding (first/last slot edge) |
+| `--card-space-body-y`                             | `--space-section-active` | Header↔body gap                            |
+| `--card-space-header-y` / `--card-space-footer-y` | `--space-stack-sm`       | Banded header + separated footer band      |
 
 | Component                 | Use                                                |
 | ------------------------- | -------------------------------------------------- |

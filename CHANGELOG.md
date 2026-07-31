@@ -881,6 +881,55 @@ scripts/release.mjs --metadata-plan` now also prints the ordered `commands` arra
   target version — every one of them before the first `npm publish`. A publish descriptor is refused
   outright unless it names a tarball produced by the preflight pack, and `npm version` can no longer
   appear in a plan at all.
+- **`AuthShell`'s compact block-padding knob now actually reaches `CardContent` (#232).**
+  `--auth-shell-card-padding-block-compact` was documented as the public knob for the canonical
+  Login card's height, but it was wired only to `--card-space-body-y` — the header↔body gap — while
+  the rendered body took BOTH of its block edges (and its inline column) from the single
+  `--card-space-inset`. Setting the knob therefore made the card marginally _taller_ instead of
+  shorter, and a headerless (`solo`) body ignored it entirely: measured on the official build,
+  `--auth-shell-card-padding-block-compact: 14px` left `[data-slot="card-content"]` computing
+  `padding: 24px`. Platform had to bridge it with a consumer selector on `[data-slot="card-content"]`
+  — precisely the fork rules #44/#45 exist to prevent. The two card axes are now separate knobs:
+  `--card-space-inset` is inline-only, and the new **`--card-space-shell-y`** owns every block shell
+  edge (a plain header's top, a `solo` body's top, the terminal slot's bottom). It is declared
+  `initial`, so its default re-resolves at the CALL SITE to `--card-space-inset` — every existing
+  card, including `density="tight|cozy"` (which re-declares it `initial` so an explicit per-instance
+  density still beats an ambient shell override), renders byte-identically. On the compact auth card
+  the three axes are now bound one-to-one: `--auth-shell-compact-card-inset` → inline column,
+  `--auth-shell-card-padding-block-compact` → `--card-space-shell-y`, and the new
+  `--auth-shell-card-body-gap-compact` → `--card-space-body-y` (the header↔body gap the block knob
+  used to be mis-wired to, kept at its 12px rhythm). Measured in headless Chromium at 1440×900 and
+  390×844, identical at both: default `12px 24px 24px` before and after (card 279.5px); with the
+  knob at 14px `12px 24px 24px` → `12px 24px 14px` (card 281.5px → 259.5px); with the knob at 14px
+  and the inset at 20px `14px 20px 20px` → `12px 20px 14px`; a `solo` body with the knob at 14px
+  `24px` → `14px 24px`. Consumers can drop the bridge selector.
+
+- **Token-owned bounded `MasterDetail` rail + a 390px inline `PageContainer` header (#231)** — two
+  responsive contracts a consumer could previously only reach with local CSS. `MasterDetail` gains
+  `masterViewport?: "auto" | "compact" | "standard"` (default `"auto"`, i.e. today's unbounded
+  behaviour, and `auto` deliberately matches NO selector in the stylesheet). The presets cap the
+  master region's block size from the new semantic tokens
+  `--master-detail-master-viewport-compact` (20rem/320px) and `-standard` (28rem/448px) and scroll
+  the collection INSIDE the region; `--master-detail-master-viewport-inset` (default `--space-1`)
+  reserves focus-ring room, because an overflow container clips both axes, and doubles as the
+  region's `scroll-padding-block`. The bounded region carries `tabIndex={0}` so it is reachable and
+  scrollable by keyboard alone (WCAG 2.1.1 / axe `scrollable-region-focusable`) while staying an
+  ordinary tab stop — Tab and Shift+Tab walk straight through it. `PageContainer` gains
+  `headerLayout?: "stack" | "responsive-inline"` (default `"stack"` — the historical arrangement,
+  which likewise matches no selector). Below the 640px step `responsive-inline` keeps `extra`
+  beside the title band at the new `--page-header-extra-measure` (11rem/176px) and lets the
+  title/subtitle wrap into what is left; at ≥640px both arrangements resolve to the identical row,
+  so nothing changes on desktop. No raw pixel props exist by design — a service theme retunes the
+  tokens. Measured in headless Chromium against the built preview: with a 60-row collection at
+  390px the master is 2,156px tall and the detail lands at y=3,244 on `auto`, versus a 320px master
+  (scrollHeight 2,164, `overflow-y: auto`) and the detail at y=1,408 on `compact` — 1,836px higher —
+  and 448px/y=1,536 on `standard`; at 1440 and 1024 the master is 2,156px on `auto` and 320/448px
+  bounded, with the 320px detail rail unmoved at x=1096/x=680. Focusing the bounded region and
+  pressing PageDown then ArrowDown scrolled it 0 → 273 → 313px, and Tab moved focus out to the
+  first row. For the header at 390px, `stack` puts the search at x=16/y=header+81 (a full-width
+  358px line under the subtitle) while `responsive-inline` puts it at x=198/y=header, 176px wide;
+  RTL mirrors it to x=16 with the title band at x=204, and both frames report 0 axe violations at
+  1440/1024/390.
 
 ## [17.0.0] - 2026-07-12
 

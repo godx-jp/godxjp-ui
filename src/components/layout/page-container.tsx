@@ -71,6 +71,7 @@ function PageContainerRoot({
   linkComponent: LinkComponent = "a",
   density,
   variant = "default",
+  headerLayout = "stack",
   stickyFooter = false,
   footerReveal = "always",
   fill = false,
@@ -96,10 +97,15 @@ function PageContainerRoot({
         className,
       )}
     >
-      <header ref={headerRef} className="ui-page-header">
+      {/* `data-layout` is the only hook the header arrangement needs: `stack` (the default)
+          matches no rule, so the historical geometry is untouched, while `responsive-inline`
+          selects the compact-range rules that keep `extra` beside the title band (gh#231). */}
+      <header ref={headerRef} className="ui-page-header" data-layout={headerLayout}>
         {breadcrumb && breadcrumb.length > 0 && (
           <nav
-            aria-label={breadcrumbLabel ?? breadcrumbAriaLabel ?? t("navigation.breadcrumb.ariaLabel")}
+            aria-label={
+              breadcrumbLabel ?? breadcrumbAriaLabel ?? t("navigation.breadcrumb.ariaLabel")
+            }
             className="ui-breadcrumb"
           >
             <ol className="ui-breadcrumb-list">
@@ -131,7 +137,7 @@ function PageContainerRoot({
           </nav>
         )}
         <div className="ui-page-header-row">
-          <div className="min-w-0">
+          <div className="ui-page-header-heading min-w-0">
             <h1 className="ui-page-title">{title}</h1>
             {subtitle && <p className="ui-page-subtitle">{subtitle}</p>}
           </div>

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { act } from "@testing-library/react";
 import { renderWithUi, screen } from "@/test/render";
@@ -275,6 +277,71 @@ describe("PageContainer", () => {
     // first item has no `to` → rendered as span, not a link
     expect(screen.queryByRole("link", { name: "Root" })).toBeNull();
     expect(screen.getByText("Root")).toBeInTheDocument();
+  });
+
+  /*
+   * Responsive inline header arrangement (gh#231). jsdom has no layout engine and evaluates no
+   * media query, so the geometry is asserted here as a DOM + CSS contract; the live numbers were
+   * measured in Chromium against this exact stylesheet at 390px (reported on the issue):
+   *
+   *   headerLayout="stack" (default) → extra wraps BELOW the subtitle, at x=16
+   *   headerLayout="responsive-inline" → extra stays on the title row, at x=198 / 176px wide
+   */
+  describe("headerLayout (gh#231)", () => {
+    const layoutCss = readFileSync(resolve(process.cwd(), "src/styles/layout.css"), "utf8");
+    const layoutTokens = readFileSync(
+      resolve(process.cwd(), "src/tokens/semantic/layout.css"),
+      "utf8",
+    );
+
+    it("keeps the historical stacked arrangement by default", () => {
+      const { container } = renderWithUi(
+        <PageContainer title="Members" subtitle="All members" extra={<Button>Search</Button>} />,
+      );
+
+      expect(container.querySelector("header")).toHaveAttribute("data-layout", "stack");
+      // `stack` matches no rule in the stylesheet — the default geometry is literally untouched.
+      expect(layoutCss).not.toMatch(/\[data-layout="stack"\]/);
+    });
+
+    it("opts into the inline arrangement", () => {
+      const { container } = renderWithUi(
+        <PageContainer
+          title="Members"
+          subtitle="All members"
+          headerLayout="responsive-inline"
+          extra={<Button>Search</Button>}
+        />,
+      );
+
+      expect(container.querySelector("header")).toHaveAttribute("data-layout", "responsive-inline");
+      // The title band is addressable, so it can absorb the space `extra` no longer takes.
+      expect(container.querySelector(".ui-page-header-heading")).toContainElement(
+        screen.getByRole("heading", { level: 1, name: "Members" }),
+      );
+    });
+
+    it("owns the inline extra measure as a token, scoped to the compact range", () => {
+      expect(layoutTokens).toMatch(/--page-header-extra-measure:\s*11rem/);
+      expect(layoutCss).toMatch(
+        /@media \(max-width: 639\.98px\) \{[\s\S]*?\[data-layout="responsive-inline"\] \.ui-page-header-extra \{[^}]*inline-size:\s*var\(--page-header-extra-measure\)/,
+      );
+      // No raw pixel measure — the knob is the only route.
+      expect(layoutCss).not.toMatch(/inline-size:\s*\d+px/);
+    });
+
+    it("has no a11y violations in the inline arrangement", async () => {
+      await expectNoA11yViolations(
+        <PageContainer
+          title="Members"
+          subtitle="All members"
+          headerLayout="responsive-inline"
+          extra={<Button>Search</Button>}
+        >
+          <p>Body content</p>
+        </PageContainer>,
+      );
+    });
   });
 
   it("has no a11y violations with header, body, and footer", async () => {

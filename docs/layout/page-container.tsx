@@ -14,6 +14,7 @@ import {
 } from "@godxjp/ui/data-display";
 import type { ColumnDef } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
+import { SearchInput } from "@godxjp/ui/data-entry";
 import { ResponsiveGrid } from "@godxjp/ui/layout";
 import { Plus, Download, Filter } from "lucide-react";
 
@@ -79,6 +80,7 @@ export default function Demo() {
   const [activeDensity, setActiveDensity] = useState<"compact" | "default" | "comfortable">(
     "default",
   );
+  const [memberQuery, setMemberQuery] = useState("");
 
   const variants = [
     { key: "default", label: "default" },
@@ -342,6 +344,59 @@ export default function Demo() {
             </Card>
           </PageContainer>
         </div>
+      </ResponsiveGrid>
+
+      {/* ── 7. headerLayout · 390px でヘッダー extra をタイトル行に残す (gh#231) ──
+          stack (既定) は 640px 未満で extra を subtitle の下の全幅行に落とす。
+          responsive-inline は --page-header-extra-measure (11rem) の測度で
+          title 帯の横に残す。640px 以上では両者は同一。
+          幅は完全にトークン所有 — このページに px 指定もメディアクエリもありません。 */}
+      <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+        <PageContainer
+          variant="ghost"
+          title="メンバー"
+          subtitle='headerLayout="stack"（既定）· 640px 未満では検索が subtitle の下に回り込む'
+          extra={
+            <SearchInput
+              id="page-header-layout-stack-search"
+              ariaLabel="メンバーを検索（stack）"
+              placeholder="メンバーを検索"
+              onValueChange={setMemberQuery}
+            />
+          }
+        >
+          <Card>
+            <CardContent>
+              <Text as="p" tone="muted">
+                入力中の絞り込み語: {memberQuery === "" ? "（なし）" : memberQuery}
+              </Text>
+            </CardContent>
+          </Card>
+        </PageContainer>
+
+        <PageContainer
+          variant="ghost"
+          headerLayout="responsive-inline"
+          title="メンバー"
+          subtitle='headerLayout="responsive-inline" · 390px でも検索がタイトル行に残る'
+          extra={
+            <SearchInput
+              id="page-header-layout-inline-search"
+              ariaLabel="メンバーを検索（responsive-inline）"
+              placeholder="メンバーを検索"
+              onValueChange={setMemberQuery}
+            />
+          }
+        >
+          <Card>
+            <CardContent>
+              <Text as="p" tone="muted">
+                extra の測度はトークン --page-header-extra-measure。タイトルと subtitle
+                は残りの幅で折り返します。
+              </Text>
+            </CardContent>
+          </Card>
+        </PageContainer>
       </ResponsiveGrid>
     </Flex>
   );

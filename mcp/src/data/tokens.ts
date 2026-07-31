@@ -142,6 +142,24 @@ export const TOKENS: TokenEntry[] = [
     tier: "semantic",
     role: "MasterDetail stacking threshold (default 40rem / the `sm` step), measured against the composition's OWN inline size, not the viewport: wider keeps the split, narrower stacks master above detail. A real knob — the layout resolves it inside a flex-basis calc(), because a media/container-query CONDITION cannot read a var(). The `collapseBelow` prop overrides it per instance (rule #45).",
   },
+  {
+    name: "--master-detail-master-viewport-{compact,standard}",
+    category: "semantic",
+    tier: "semantic",
+    role: 'Bounded MasterDetail master viewport — 20rem (320px) / 28rem (448px), selected by the semantic `masterViewport` prop. `masterViewport="auto"` (the default) applies NO bound, so existing compositions are unchanged; the presets cap the collection\'s block size and scroll it INSIDE the region, which is what stops a long real collection from pushing the detail below the fold once the layout stacks. Retune the presets in a service theme exactly like --master-detail-rail-*; never author a pixel max-height in consumer CSS.',
+  },
+  {
+    name: "--master-detail-master-viewport-inset",
+    category: "semantic",
+    tier: "semantic",
+    role: "Focus-ring room inside a bounded MasterDetail master region (default --space-1 / 4px), and its scroll-padding. An overflow container clips BOTH axes, so without this inset the focus ring of a row at the region's edge would be cut off; it also keeps a row scrolled into view off the clip edge. Only applies when `masterViewport` is compact/standard.",
+  },
+  {
+    name: "--page-header-extra-measure",
+    category: "semantic",
+    tier: "semantic",
+    role: 'Inline measure of the PageContainer header `extra` region while `headerLayout="responsive-inline"` and the page is below the 640px step (default 11rem / 176px). The default `headerLayout="stack"` never reads it — `extra` keeps wrapping onto its own full-width line under the subtitle. At >=640px both arrangements are identical, so this token only governs the compact range.',
+  },
   { name: "--badge-space-*", category: "component", tier: "component", role: "Badge spacing." },
   {
     name: "--logo-godx-{size,color} / --logo-success-{background,foreground}",
@@ -269,6 +287,18 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "AuthShell column knobs shared by every preset. --auth-shell-main-align is the block alignment of the auth column (default `center`, the vertically-centred card; set `start` for a tall intro+card+footnote stack). --auth-shell-card-stack-gap is the gap between the card slot's direct sections — default `0px` (quiet, rule #44) so an existing single-card consumer is byte-for-byte unchanged; a preset opts in.",
+  },
+  {
+    name: "--card-space-shell-y",
+    category: "component",
+    tier: "component",
+    role: "Card BLOCK-axis shell padding (gh#232) — a plain header's top, a `solo` body's top and the terminal slot's bottom. Split off --card-space-inset, which is now inline-only, so a theme can make a card SHORTER without narrowing its column. Declared `initial`: the default resolves at the CALL SITE to --card-space-inset, so a card that overrides neither (and `density=\"tight|cozy\"`, which re-declares it `initial` to re-arm the per-instance inset) renders exactly as before.",
+  },
+  {
+    name: "--auth-shell-{compact-card-inset,card-padding-block-compact,card-body-gap-compact,card-gap-compact}",
+    category: "component",
+    tier: "component",
+    role: "The compact AuthShell card's four independent knobs (gh#232) — one per axis, so the canonical Login card is tunable WITHOUT a consumer selector on the card-content slot: `compact-card-inset` = the inline column (→ --card-space-inset); `card-padding-block-compact` = the card's block/top-bottom padding (→ --card-space-shell-y, `initial` so its default mirrors the live inline inset and canonical output is unchanged); `card-body-gap-compact` = the header↔body gap (→ --card-space-body-y, 12px, the role the block knob used to be mis-wired to); `card-gap-compact` = the in-slot title↕description stack gap (→ --card-space-gap).",
   },
   {
     name: "--app-setting-picker-compact-{control-height,padding-x,gap,font-size}",

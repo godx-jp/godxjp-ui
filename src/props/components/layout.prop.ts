@@ -19,6 +19,14 @@ import type {
   IdProp,
 } from "../vocabulary";
 
+/**
+ * Arrangement of the page header's title band and its `extra` slot below the 640px step.
+ * `stack` (default) is the historical arrangement — `extra` drops onto its own full-width line
+ * under the subtitle. `responsive-inline` keeps `extra` beside the title band at the
+ * `--page-header-extra-measure` measure, letting the title/subtitle wrap into what is left.
+ */
+export type PageContainerHeaderLayoutProp = "stack" | "responsive-inline";
+
 /** @see PageContainer */
 export type PageContainerProp = {
   title: TitleProp;
@@ -38,6 +46,14 @@ export type PageContainerProp = {
   linkComponent?: React.ElementType;
   density?: PageDensityProp;
   variant?: PageContainerVariantProp;
+  /**
+   * How the title band and `extra` share the header row below the 640px step. Defaults to
+   * `stack` — the historical arrangement, where `extra` wraps onto its own full-width line under
+   * the subtitle. Use `responsive-inline` to keep ONE compact control (a search field, a single
+   * primary action) beside the title at 390px, at the token-owned
+   * `--page-header-extra-measure`. At >=640px both arrangements are identical.
+   */
+  headerLayout?: PageContainerHeaderLayoutProp;
   /** Pin footer to viewport bottom on scroll — pairs well with `variant="narrow"`. */
   stickyFooter?: boolean;
   /**
@@ -78,6 +94,13 @@ export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?
 
 export type MasterDetailRailWidthProp = "compact" | "standard";
 export type MasterDetailRailProp = "master" | "detail";
+/**
+ * Bounded viewport preset for the master collection. `auto` (default) never bounds it — the
+ * region grows with its content, exactly as before. `compact` / `standard` cap its block size
+ * with the `--master-detail-master-viewport-*` tokens and scroll the collection inside the
+ * region, so a long list cannot push the detail below the fold once the layout stacks.
+ */
+export type MasterDetailMasterViewportProp = "auto" | "compact" | "standard";
 
 /** @see MasterDetail */
 export type MasterDetailProp = {
@@ -93,6 +116,14 @@ export type MasterDetailProp = {
   rail?: MasterDetailRailProp;
   /** Rail track width: `compact` = 300px; `standard` = 320px. */
   railWidth?: MasterDetailRailWidthProp;
+  /**
+   * Bound the master collection to a scrollable viewport instead of letting it grow with its
+   * content. `auto` (default) keeps the unbounded behaviour. `compact` (20rem) / `standard`
+   * (28rem) read the `--master-detail-master-viewport-*` tokens, scroll the collection INSIDE the
+   * region, and make it a keyboard-reachable scroll container. Pair with `masterLabel` so the
+   * scroll region is announced.
+   */
+  masterViewport?: MasterDetailMasterViewportProp;
   /**
    * Stack the two regions below this breakpoint (`false` never stacks). Omit to inherit the
    * themeable `--master-detail-collapse-below` token (default 40rem / the `sm` step).

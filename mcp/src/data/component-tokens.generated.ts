@@ -34,6 +34,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Horizontal inset of every slot (header / content / footer) + the resting top/bottom * shell padding. This is the column the title, body and footer all align to."
   },
   {
+    "name": "--card-space-shell-y",
+    "value": "initial",
+    "description": "BLOCK-axis (top/bottom) shell padding of the slotted card rhythm — a plain header's top, a * `solo` body's top, and the terminal slot's bottom (gh#232). Split off --card-space-inset so a * shell (AuthShell compact) can retune the card's height WITHOUT moving the inline column. * Declared `initial` — NOT `var(--card-space-inset)` — so the default resolves at the CALL SITE: * a :root binding would freeze at the :root inset and `[data-density=\"tight\"|\"cozy\"]` (which * override --card-space-inset on the card element) would stop reaching it. See docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\" — the same call-site rule applies to derived knobs."
+  },
+  {
     "name": "--card-space-header-y",
     "value": "var(--space-stack-sm)",
     "description": "Vertical padding of a BANDED header band (top = bottom). Drives --card-space-divided-y."
@@ -1916,17 +1921,22 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--auth-shell-compact-card-inset",
     "value": "var(--space-6)",
-    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+    "description": "INLINE (start/end) inset of the compact auth card — the column the title, fields and actions * align to. Independent of the block axis below (gh#232)."
   },
   {
     "name": "--auth-shell-card-padding-block-compact",
+    "value": "initial",
+    "description": "BLOCK (top/bottom) padding of the compact auth card — the knob that tunes canonical Login card * HEIGHT without narrowing the column. Bound to the card's --card-space-shell-y, so it really * reaches CardContent's block edges (before gh#232 it was wired only to --card-space-body-y and * the rendered body kept the inset on both block edges — the documented token did nothing). * Declared `initial` so the default mirrors the LIVE --auth-shell-compact-card-inset resolved at * the CALL SITE: the canonical card renders exactly as before (24px block = 24px inline), and a * service that re-tunes the inset inside a scoped `[data-tenant]` still drags the block default * with it (a :root binding would freeze at the :root inset — docs/TOKENS.md)."
+  },
+  {
+    "name": "--auth-shell-card-body-gap-compact",
     "value": "var(--space-3)",
-    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+    "description": "Header↔body gap inside the compact auth card (the breathing room under the title before the * first field). Its own knob since gh#232 — it used to ride on * --auth-shell-card-padding-block-compact, which conflated the section gap with the card's block * padding and made the block knob un-tunable. Default is the pre-gh#232 12px rhythm."
   },
   {
     "name": "--auth-shell-card-gap-compact",
     "value": "var(--space-3)",
-    "description": "Canonical DXS auth preset. These are public theme knobs: consumers select the preset once on * AuthShell and may retune the product theme here rather than overriding individual fields."
+    "description": "IN-SLOT stack gap of the compact auth card (title ↕ description inside the header)."
   },
   {
     "name": "--auth-shell-main-align",

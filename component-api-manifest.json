@@ -7777,6 +7777,20 @@
           ]
         },
         {
+          "name": "masterViewport",
+          "origin": "owned",
+          "required": false,
+          "type": "MasterDetailMasterViewportProp | undefined",
+          "values": [
+            "compact",
+            "auto",
+            "standard"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "rail",
           "origin": "owned",
           "required": false,
@@ -9180,6 +9194,19 @@
           "values": [
             "always",
             "onScroll"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "headerLayout",
+          "origin": "owned",
+          "required": false,
+          "type": "PageContainerHeaderLayoutProp | undefined",
+          "values": [
+            "stack",
+            "responsive-inline"
           ],
           "declaredIn": [
             "src/props/components/layout.prop.ts"

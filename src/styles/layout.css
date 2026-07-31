@@ -263,6 +263,34 @@
       max(var(--master-detail-rail-size), calc((var(--master-detail-collapse-below) - 100%) * 999));
   }
 
+  /* Bounded master viewport (gh#231) — OPT-IN via `masterViewport`. `auto` (the default) emits no
+   * bound at all, so an existing composition renders byte-identically; the two presets cap the
+   * collection's BLOCK size with a token and scroll it INSIDE the region, which is what keeps a
+   * long real collection from pushing the detail thousands of pixels below the fold once the
+   * layout stacks. Block axis only — the inline axis stays owned by the flex threshold above, so
+   * the bound is writing-direction agnostic (RTL-safe).
+   *
+   * A11y: the region carries tabIndex={0} in this mode (see master-detail.tsx) so the scroll
+   * container is reachable and scrollable by keyboard alone, and the inset below reserves room
+   * for a focused row's focus ring — an overflow container clips BOTH axes, so a ring drawn at
+   * the region's edge would otherwise be cut. Focus is never trapped: the region is a plain tab
+   * stop that Tab/Shift+Tab leave normally. */
+  .ui-master-detail[data-master-viewport="compact"] > .ui-master-detail-master,
+  .ui-master-detail[data-master-viewport="standard"] > .ui-master-detail-master {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--master-detail-master-viewport-inset);
+    scroll-padding-block: var(--master-detail-master-viewport-inset);
+  }
+
+  .ui-master-detail[data-master-viewport="compact"] > .ui-master-detail-master {
+    max-block-size: var(--master-detail-master-viewport-compact);
+  }
+
+  .ui-master-detail[data-master-viewport="standard"] > .ui-master-detail-master {
+    max-block-size: var(--master-detail-master-viewport-standard);
+  }
+
   @container responsive-grid (min-width: 40rem) {
     .ui-responsive-grid {
       grid-template-columns: repeat(var(--responsive-grid-sm, 2), minmax(0, 1fr));
@@ -500,6 +528,34 @@
     .ui-page-header-extra > .ui-flex[data-direction="row"] {
       flex-wrap: wrap;
       max-width: 100%;
+    }
+  }
+
+  /* `headerLayout="responsive-inline"` (gh#231): below the 640px step the DEFAULT arrangement
+   * drops `extra` onto its own full-width line under the subtitle, which pushes a compact header
+   * control (a member search, one primary action) off the title row on a 390px screen. This
+   * arrangement keeps it beside the title band at a token-owned measure instead, and lets the
+   * title/subtitle wrap into the space that is left. Scoped to the compact range only, so at
+   * >=640px both arrangements resolve to the identical row below — and a page that never sets
+   * `headerLayout` never matches these rules at all. */
+  @media (max-width: 639.98px) {
+    .ui-page-header[data-layout="responsive-inline"] .ui-page-header-row {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-inline-md);
+    }
+
+    .ui-page-header[data-layout="responsive-inline"] .ui-page-header-heading {
+      flex: 1 1 auto;
+      min-inline-size: 0;
+    }
+
+    .ui-page-header[data-layout="responsive-inline"] .ui-page-header-extra {
+      flex: 0 0 var(--page-header-extra-measure);
+      inline-size: var(--page-header-extra-measure);
+      max-inline-size: 100%;
+      justify-content: flex-end;
     }
   }
 

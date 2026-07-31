@@ -106,6 +106,13 @@ export const COMPONENTS: ComponentEntry[] = [
         description: "Spacing density across the page subtree.",
       },
       {
+        name: "headerLayout",
+        type: '"stack" | "responsive-inline"',
+        defaultValue: '"stack"',
+        description:
+          'How the title band and `extra` share the header row BELOW the 640px step. "stack" (default) drops `extra` onto its own full-width line under the subtitle. "responsive-inline" keeps it beside the title at the token-owned --page-header-extra-measure (11rem) and lets the title/subtitle wrap — use it for ONE compact control (a search field, a single primary action) that must stay on the title row at 390px. At >=640px the two arrangements are identical.',
+      },
+      {
         name: "stickyFooter",
         type: "boolean",
         defaultValue: "false",
@@ -140,6 +147,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
       "DON'T: Confuse PageContainer's prop names with the old PageHeader's prop names — PageContainer uses `subtitle` (not `description`) and `extra` (not `actions`). If you see those legacy names in old code, migrate them to PageContainer.",
       "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`. DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
+      'DO: Reach for `headerLayout="responsive-inline"` when a SINGLE compact header control (a member search, one primary action) must stay beside the title at 390px instead of wrapping under the subtitle. Its measure is the token `--page-header-extra-measure` (11rem) — never a consumer `w-[176px]` or a media query in app CSS. Keep the default `stack` when `extra` holds a toolbar of several buttons; squeezing those into the compact measure only makes them wrap in a narrower box.',
       "DO: Know the header draws NO bottom divider by default — it is governed by the semantic token `--page-header-divider` (default `none`). A service theme opts in once, globally, with `--page-header-divider: 1px solid hsl(var(--border));` in its theme CSS. Never re-create the divider with a `border-b` utility on the header or a `<Separator>` under the title; `variant='ghost'` stays divider-less regardless of the token.",
     ],
     useCases: [
@@ -480,6 +488,7 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
       "DO use `footer` for compliance/legal/support links or a locale switch — it renders as the contentinfo landmark below the card.",
       "DO wrap the card in <Reveal> for the entrance animation (`<AuthShell><Reveal><Card/></Reveal></AuthShell>`) — Reveal honours prefers-reduced-motion; AuthShell itself stays layout-only.",
       "DO NOT re-scope control height or heading size in the app — AuthShell already sets the comfortable control tier (44px, WCAG touch floor) and the larger auth heading via `--auth-shell-control-height` / `--auth-shell-heading-size`; a service retunes those tokens, not a bespoke class.",
+      "DO tune the COMPACT auth card through its three independent knobs, never a consumer selector on `[data-slot=\"card-content\"]` (gh#232): `--auth-shell-compact-card-inset` = the inline column, `--auth-shell-card-padding-block-compact` = the card's block (top/bottom) padding — it is wired to the card's `--card-space-shell-y` and really moves CardContent's block edges — and `--auth-shell-card-body-gap-compact` = the header↔body gap. Each defaults to today's canonical rhythm, so overriding one moves ONLY that axis.",
       "DO NOT nest AuthShell inside AppShell (or vice-versa) — AuthShell is the ROOT shell for unauthenticated pages (login/mfa/passkey/device/reset); AppShell is for the authenticated app.",
     ],
     useCases: [
@@ -950,6 +959,13 @@ import { PanelLeftClose, Search } from "lucide-react";
           "Token-owned rail preset: compact=300px (--master-detail-rail-compact), standard=320px (--master-detail-rail-standard).",
       },
       {
+        name: "masterViewport",
+        type: '"auto" | "compact" | "standard"',
+        defaultValue: '"auto"',
+        description:
+          "Bound the master collection to a scrollable viewport. `auto` (default) never bounds it — the region grows with its content. `compact` (--master-detail-master-viewport-compact, 20rem) / `standard` (28rem) cap its block size and scroll the collection INSIDE the region, and make that region a keyboard-reachable scroll container (tabIndex 0, --master-detail-master-viewport-inset reserves focus-ring room). No raw pixel prop exists — retune the tokens in a service theme.",
+      },
+      {
         name: "collapseBelow",
         type: '"sm" | "md" | "lg" | "xl" | false',
         description:
@@ -979,6 +995,8 @@ import { PanelLeftClose, Search } from "lucide-react";
       "DO choose `compact` for the 300px rail and `standard` for 320px. Never reproduce these tracks with consumer CSS.",
       "DO provide `masterLabel` and `detailLabel` when the surrounding headings do not already identify both regions.",
       "DON'T use ResponsiveGrid for master-detail hierarchy; its equal tracks cannot represent this composition.",
+      'DO set `masterViewport="compact"` (or `"standard"`) whenever the collection is a REAL, unbounded list. Left at `auto` a 200-row list renders ~3,700px tall, and once the layout stacks the detail lands thousands of pixels below the fold; bounded, the collection scrolls inside the rail and the detail stays near the top of the screen. Pass `masterLabel` too, so the scroll region is announced.',
+      "DON'T reproduce that bound with a consumer `max-height`/`overflow` rule or a pixel prop — there is none by design. Retune `--master-detail-master-viewport-compact` / `-standard` in the service theme, and `--master-detail-master-viewport-inset` if the collection's focus ring needs more room.",
       "The collapse threshold is a real token: below `--master-detail-collapse-below` (default 40rem, measured against the COMPOSITION's own inline size, never the viewport) master stacks above detail. A theme retunes it globally, `collapseBelow` overrides it per instance. It is implemented as a flex-basis threshold rather than a media query precisely because a query CONDITION cannot read a var().",
       "Measured geometry with the defaults: 1440 → fluid master + 320px rail; 1024 → fluid master + 320px rail; 390 → stacked full-width master then detail. Same JSX at every width — no consumer-local CSS, grid tracks or per-screen spacing.",
     ],
@@ -1007,6 +1025,12 @@ import { PanelLeftClose, Search } from "lucide-react";
 // Leading navigator rail instead.
 <MasterDetail rail="master" railWidth="compact" masterLabel="Categories">
   <SettingsForm />
+</MasterDetail>
+
+// A long real collection: bound the master so it scrolls in place and the detail
+// stays near the top of a stacked mobile page.
+<MasterDetail masterViewport="compact" masterLabel="Members" detailLabel="Selected member">
+  <MemberDetail member={selected} />
 </MasterDetail>`,
     storyPath: "layout/MasterDetail.stories.tsx",
     rules: [24, 40],
@@ -1904,7 +1928,7 @@ export default function InvoiceList({
       "DO use <CardFooter separated> to render a top-bordered action band (Save/Cancel buttons, table summary row). Use <CardFooter flush> for a full-bleed footer bar.",
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
       "DON'T hand-roll a stat/KPI tile with <Card> + raw divs — use <StatCard> (label, value, hint, delta, layout, inverse props) which is already a Card internally with correct token-driven layout.",
-      "SPACING IS BORDER-AWARE & token-driven (theme via src/tokens/components/card.css, never hard-code padding on slots): `--card-space-inset` is the shared horizontal column every slot (header/content/footer) aligns to. A DIVIDED section — a `banded` header or a `separated` footer, i.e. one carrying a divider border — pads SYMMETRICALLY top+bottom from `--card-space-divided-y` (a band reads as its own region). A PLAIN header flows into the body instead: top `--card-space-inset`, no bottom, and the body supplies the gap via `--card-space-body-y`. Special case: a header above `<CardContent flush>` with a <Table> gets its own `--card-space-body-y` bottom gap (the flush table zeroes its top), so the title never butts the table. `--card-space-gap` is the in-slot stack gap (title↕description). Tune the band rhythm once at `--card-space-divided-y`; tune the accent stripe width at `--card-accent-rail-width` (default 6px).",
+      "SPACING IS BORDER-AWARE & token-driven (theme via src/tokens/components/card.css, never hard-code padding on slots): `--card-space-inset` is the shared horizontal column every slot (header/content/footer) aligns to. A DIVIDED section — a `banded` header or a `separated` footer, i.e. one carrying a divider border — pads SYMMETRICALLY top+bottom from `--card-space-divided-y` (a band reads as its own region). A PLAIN header flows into the body instead: top `--card-space-shell-y`, no bottom, and the body supplies the gap via `--card-space-body-y`. THE TWO AXES ARE INDEPENDENT (gh#232): `--card-space-inset` is inline-only, while `--card-space-shell-y` owns the BLOCK shell edges (plain-header top, `solo` body top, terminal slot bottom) and defaults to the inset — so a shell/theme can make a card SHORTER without narrowing its column by overriding `--card-space-shell-y` alone (this is how AuthShell's `--auth-shell-card-padding-block-compact` reaches CardContent). Never bridge it with a consumer selector on the card-content slot. Special case: a header above `<CardContent flush>` with a <Table> gets its own `--card-space-body-y` bottom gap (the flush table zeroes its top), so the title never butts the table. `--card-space-gap` is the in-slot stack gap (title↕description). Tune the band rhythm once at `--card-space-divided-y`; tune the accent stripe width at `--card-accent-rail-width` (default 6px).",
     ],
     useCases: [
       'Dashboard KPI summary row: wrap each metric in <StatCard> (or a plain <Card size="compact"> with <CardContent>) to render a uniform grid of labeled value tiles with optional trend deltas.',

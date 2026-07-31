@@ -81,4 +81,15 @@ describe("design tokens", () => {
     const out = await dispatchTool("get_tokens", { category: "color" });
     expect(out).toMatch(/No tokens/);
   });
+
+  it("teaches the Card block axis and the compact AuthShell knobs (gh#232)", async () => {
+    // The block axis is a PUBLIC knob a consumer must find from the MCP instead of bridging it with
+    // a selector on the card-content slot — if it drops out of the catalog the bug comes back.
+    const out = await dispatchTool("get_tokens", { category: "component" });
+    expect(out).toContain("--card-space-shell-y");
+    expect(out).toContain("--auth-shell-{compact-card-inset,card-padding-block-compact");
+    expect(TOKENS.find((t) => t.name === "--card-space-shell-y")?.role).toMatch(
+      /BLOCK-axis .*initial/s,
+    );
+  });
 });
