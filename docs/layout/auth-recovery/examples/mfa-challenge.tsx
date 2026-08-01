@@ -22,7 +22,8 @@ import { AppSettingPicker } from "@godxjp/ui/navigation";
  * `Input`s would put six stops in the tab ring and break paste.
  *
  * State coverage: otp (idle) · otp ERROR (wrong code) · otp LOADING (verifying) · recovery-code ·
- * passkey-failure. Stacked at `level={2}`; a real route renders ONE panel at `level={1}`.
+ * passkey-failure. The first panel owns the standalone frame's single `level={1}` heading; the
+ * remaining state sections use `level={2}`. A real route renders ONE panel at `level={1}`.
  */
 export default function Demo() {
   const [code, setCode] = useState("");
@@ -55,7 +56,7 @@ export default function Demo() {
         </Text>
         <Card>
           <CardHeader>
-            <CardTitle level={2}>二段階認証</CardTitle>
+            <CardTitle level={1}>二段階認証</CardTitle>
             <CardDescription>
               認証アプリに表示されている 6 桁のコードを入力してください。
             </CardDescription>

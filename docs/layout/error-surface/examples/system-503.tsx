@@ -15,8 +15,11 @@ import { RotateCcw, Wrench } from "lucide-react";
  */
 export default function Demo() {
   const maintenanceWindow = new Intl.DateTimeFormat("ja", {
-    dateStyle: "medium",
-    timeStyle: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
     timeZone: "Asia/Tokyo",
     timeZoneName: "short",
   }).formatRange(new Date("2026-08-02T18:00:00Z"), new Date("2026-08-02T20:00:00Z"));

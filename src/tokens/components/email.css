@@ -30,7 +30,7 @@
 
   /* ── Typography — literal px so no client has to resolve the rem scale ──────────────────── */
   --email-font-family-sans:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
   --email-body-font-size: 14px; /* mirrors --font-size-base (0.875rem) */
   --email-body-line-height: 1.7; /* mirrors --line-height-body */
   --email-body-font-weight: 400; /* mirrors --font-weight-normal */

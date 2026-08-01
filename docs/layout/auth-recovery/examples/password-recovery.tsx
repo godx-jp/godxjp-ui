@@ -14,9 +14,9 @@ import { AppSettingPicker } from "@godxjp/ui/navigation";
  *   Card > CardHeader(CardTitle + CardDescription) > CardContent > AuthStack
  *          [notice Alert] → [fields] → [Button fullWidth] → [fallback row]
  *
- * A real route renders ONE of these panels with `CardTitle level={1}`. They are stacked here (at
- * `level={2}`, under the page's own caption line) purely so the four states can be compared at the
- * identical measure — the shell's `preset="account-recovery"` column caps every one at 432px.
+ * A real route renders ONE of these panels with `CardTitle level={1}`. This standalone comparison
+ * keeps that contract on the first panel, then uses `level={2}` for the remaining state sections,
+ * so the frame has exactly one meaningful page heading and every state keeps a valid outline.
  *
  * State coverage: request (idle) · sent (success notice + DISABLED resend during cooldown) ·
  * new-password (field ERROR + strength meter) · expired (destructive notice). The LOADING state is
@@ -57,7 +57,7 @@ export default function Demo() {
         </Text>
         <Card>
           <CardHeader>
-            <CardTitle level={2}>パスワードをリセット</CardTitle>
+            <CardTitle level={1}>パスワードをリセット</CardTitle>
             <CardDescription>
               登録済みのメールアドレスにリセットリンクをお送りします。
             </CardDescription>

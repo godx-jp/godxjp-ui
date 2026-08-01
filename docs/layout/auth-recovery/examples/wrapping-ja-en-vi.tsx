@@ -42,7 +42,7 @@ export default function Demo() {
         </Text>
         <Card>
           <CardHeader>
-            <CardTitle level={2}>二段階認証コードを入力してください</CardTitle>
+            <CardTitle level={1}>二段階認証コードを入力してください</CardTitle>
             <CardDescription>
               お使いの認証アプリに表示されている 6
               桁の確認コードを入力すると、サインインが完了します。

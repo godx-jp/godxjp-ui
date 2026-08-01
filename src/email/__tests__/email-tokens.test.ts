@@ -195,6 +195,7 @@ describe("values are compatible with inline email styles", () => {
     expect(EMAIL_TYPOGRAPHY.fontFamily).toContain("Arial");
     expect(EMAIL_TYPOGRAPHY.fontFamily).toContain("sans-serif");
     expect(EMAIL_TYPOGRAPHY.fontFamily).not.toMatch(/url\(|@font-face/);
+    expect(EMAIL_TYPOGRAPHY.fontFamily).not.toMatch(/["']/);
   });
 
   it("emailInlineStyle serialises to a style attribute and refuses unresolvable values", () => {

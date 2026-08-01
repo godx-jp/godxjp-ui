@@ -126,7 +126,7 @@ export const EMAIL_GEOMETRY_SOURCE = {
   "--email-stack-gap-sm": "12px",
   "--email-mark-width": "32px",
   "--email-mark-height": "32px",
-  "--email-font-family-sans": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+  "--email-font-family-sans": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
   "--email-body-font-size": "14px",
   "--email-body-line-height": "1.7",
   "--email-body-font-weight": "400",
