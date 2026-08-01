@@ -895,7 +895,7 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--email-font-family-sans",
-    "value": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+    "value": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
     "description": "── Typography — literal px so no client has to resolve the rem scale ────────────────────"
   },
   {
