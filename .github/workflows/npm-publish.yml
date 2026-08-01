@@ -22,6 +22,10 @@ on:
         type: choice
         default: sync
         options: [sync, skip]
+      adopt_staged_version:
+        description: "Recover an exact already-published staging pair (x.y.z; blank for normal release)"
+        type: string
+        default: ""
 
 permissions:
   contents: write # push the chore(release) commit back to main
@@ -52,7 +56,12 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Release (verify → version → publish → commit)
-        run: node scripts/release.mjs --ui "${{ inputs.ui }}" --mcp "${{ inputs.mcp }}"
+        run: |
+          if [ -n "${{ inputs.adopt_staged_version }}" ]; then
+            node scripts/release.mjs --adopt-staged "${{ inputs.adopt_staged_version }}" --mcp sync
+          else
+            node scripts/release.mjs --ui "${{ inputs.ui }}" --mcp "${{ inputs.mcp }}"
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

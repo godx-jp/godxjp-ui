@@ -130,13 +130,24 @@ export function buildReleasePlan({
   mcpBump,
   sourceHead = "dry-run",
   recoveryState = null,
+  adoptStagedVersion = null,
 }) {
   if (!VALID_UI_BUMPS.has(uiBump) || !VALID_MCP_BUMPS.has(mcpBump)) {
     throw new Error(
       "Usage: node scripts/release.mjs --ui <patch|minor|major> --mcp sync [--metadata-plan]",
     );
   }
-  if (recoveryState) {
+  if (recoveryState && adoptStagedVersion) {
+    throw new Error("Recovery state and staged adoption are mutually exclusive.");
+  }
+  if (adoptStagedVersion) {
+    if (!SEMVER.test(adoptStagedVersion) || adoptStagedVersion === currentVersion) {
+      throw new Error("Staged adoption requires a different plain x.y.z target version.");
+    }
+    if (uiBump !== "skip" || mcpBump !== "sync") {
+      throw new Error("Staged adoption must use --ui skip --mcp sync.");
+    }
+  } else if (recoveryState) {
     if (uiBump !== "skip" || mcpBump !== "sync") throw new Error("Recovery must use --recovery.");
     if (currentVersion !== recoveryState.targetVersion) {
       throw new Error("Recovery target does not match preserved manifests.");
@@ -147,11 +158,18 @@ export function buildReleasePlan({
     throw new Error("A UI release requires --mcp sync.");
   }
 
-  const targetVersion = recoveryState?.targetVersion ?? targetVersionFor(currentVersion, uiBump);
+  const targetVersion =
+    recoveryState?.targetVersion ?? adoptStagedVersion ?? targetVersionFor(currentVersion, uiBump);
   const stageTag = recoveryState?.stageTag ?? `godx-staging-${targetVersion}`;
   const progress = structuredClone(
     recoveryState ?? initialProgress(targetVersion, stageTag, sourceHead),
   );
+  if (adoptStagedVersion) {
+    progress.ui.publishAttempted = true;
+    progress.ui.published = true;
+    progress.mcp.publishAttempted = true;
+    progress.mcp.published = true;
+  }
   const steps = [
     RELEASE_STEPS.ApplyTargetMetadata,
     RELEASE_STEPS.VerifyRoot,
@@ -174,7 +192,14 @@ export function buildReleasePlan({
   if (!progress.mcp.stageTagRemoved) steps.push(RELEASE_STEPS.RemoveMcpStagingTag);
   if (!progress.committed) steps.push(RELEASE_STEPS.CommitTargetMetadata);
   assertPreflightOrder(steps);
-  return { targetVersion, stageTag, recovery: Boolean(recoveryState), progress, steps };
+  return {
+    targetVersion,
+    stageTag,
+    recovery: Boolean(recoveryState),
+    adoptStaged: Boolean(adoptStagedVersion),
+    progress,
+    steps,
+  };
 }
 
 function packagePath(rootDir, packageDirectory) {
@@ -457,8 +482,11 @@ export function assertRegistryArtifact(
     (requireStageTag && registry.tags?.[stageTag] !== targetVersion) ||
     (!requireStageTag && registry.tags?.[stageTag] !== undefined)
   ) {
+    const observedStageTag = registry.tags?.[stageTag] ?? null;
     throw new Error(
-      `${packageName} registry artifact integrity or staging tag does not match verified tarball.`,
+      `${packageName} registry artifact integrity or staging tag does not match verified tarball: ` +
+        `expected integrity=${artifact.integrity}, ${stageTag}=${targetVersion}; ` +
+        `observed integrity=${registry.integrity ?? null}, ${stageTag}=${observedStageTag}.`,
     );
   }
 }
@@ -652,7 +680,15 @@ export function createManifestPlanWorkspace(rootDir) {
  *   run(binary, args, cwd)      → streams, throws on non-zero
  *   capture(binary, args, cwd)  → { status, stdout, stderr }, never throws
  */
-export function createReleaseRuntime({ repositoryRoot, run, capture }) {
+export function createReleaseRuntime({
+  repositoryRoot,
+  run,
+  capture,
+  wait = (milliseconds) =>
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds),
+  registryVerificationAttempts = 6,
+  registryVerificationDelayMs = 2_000,
+}) {
   const cwdFor = (location) => (location === "mcp" ? join(repositoryRoot, "mcp") : repositoryRoot);
   const execute = (descriptor) => run(descriptor.binary, descriptor.args, cwdFor(descriptor.cwd));
 
@@ -738,6 +774,23 @@ export function createReleaseRuntime({ repositoryRoot, run, capture }) {
       case RELEASE_STEPS.VerifyTargetAvailability: {
         const uiRegistry = registryState("@godxjp/ui", plan.targetVersion);
         const mcpRegistry = registryState("@godxjp/ui-mcp", plan.targetVersion);
+        if (plan.adoptStaged) {
+          assertRegistryArtifact(
+            uiRegistry,
+            progress.artifacts.ui,
+            plan.targetVersion,
+            plan.stageTag,
+            "@godxjp/ui",
+          );
+          assertRegistryArtifact(
+            mcpRegistry,
+            progress.artifacts.mcp,
+            plan.targetVersion,
+            plan.stageTag,
+            "@godxjp/ui-mcp",
+          );
+          return;
+        }
         if (!plan.recovery) {
           assertFreshTargets(uiRegistry, mcpRegistry);
           return;
@@ -770,23 +823,32 @@ export function createReleaseRuntime({ repositoryRoot, run, capture }) {
         assertOnlyCoordinatedManifestChanges(gitStatus());
         return;
       case RELEASE_STEPS.VerifyPublishedVersions: {
-        assertRegistryArtifact(
-          registryState("@godxjp/ui", plan.targetVersion),
-          progress.artifacts.ui,
-          plan.targetVersion,
-          plan.stageTag,
-          "@godxjp/ui",
-          !progress.ui.stageTagRemoved,
-        );
-        assertRegistryArtifact(
-          registryState("@godxjp/ui-mcp", plan.targetVersion),
-          progress.artifacts.mcp,
-          plan.targetVersion,
-          plan.stageTag,
-          "@godxjp/ui-mcp",
-          !progress.mcp.stageTagRemoved,
-        );
-        return;
+        let verificationError;
+        for (let attempt = 1; attempt <= registryVerificationAttempts; attempt += 1) {
+          try {
+            assertRegistryArtifact(
+              registryState("@godxjp/ui", plan.targetVersion),
+              progress.artifacts.ui,
+              plan.targetVersion,
+              plan.stageTag,
+              "@godxjp/ui",
+              !progress.ui.stageTagRemoved,
+            );
+            assertRegistryArtifact(
+              registryState("@godxjp/ui-mcp", plan.targetVersion),
+              progress.artifacts.mcp,
+              plan.targetVersion,
+              plan.stageTag,
+              "@godxjp/ui-mcp",
+              !progress.mcp.stageTagRemoved,
+            );
+            return;
+          } catch (error) {
+            verificationError = error;
+            if (attempt < registryVerificationAttempts) wait(registryVerificationDelayMs);
+          }
+        }
+        throw verificationError;
       }
       case RELEASE_STEPS.CommitTargetMetadata:
         commitTargetMetadata(plan);
@@ -814,6 +876,7 @@ export function runRelease({
   mcpBump,
   sourceHead = "dry-run",
   recoveryState = null,
+  adoptStagedVersion = null,
   recoveryDirectory = null,
   dryRun = false,
   runStep,
@@ -830,6 +893,7 @@ export function runRelease({
     mcpBump,
     sourceHead,
     recoveryState,
+    adoptStagedVersion,
   });
   const progress = plan.progress;
   progress.failedStep = null;
@@ -910,6 +974,9 @@ export function runRelease({
         persist(step);
       }
       runStep(step, plan, artifacts, progress);
+      if (step === RELEASE_STEPS.VerifyTargetAvailability && plan.adoptStaged) {
+        publishStarted = true;
+      }
       if (step === RELEASE_STEPS.RecordPreviousLatestTags) progress.latestRecorded = true;
       if (step === RELEASE_STEPS.PromoteUiLatest) progress.ui.promoted = true;
       if (step === RELEASE_STEPS.PromoteMcpLatest) progress.mcp.promoted = true;

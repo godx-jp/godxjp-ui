@@ -117,6 +117,70 @@ describe("recoverable coordinated release", () => {
     );
   });
 
+  it("adopts an exact staged pair without planning an immutable republish", () => {
+    const plan = buildReleasePlan({
+      currentVersion: "18.4.0",
+      uiBump: "skip",
+      mcpBump: "sync",
+      sourceHead: SOURCE_HEAD,
+      adoptStagedVersion: "18.5.0",
+    });
+    expect(plan.targetVersion).toBe("18.5.0");
+    expect(plan.adoptStaged).toBe(true);
+    expect(plan.steps).not.toContain(RELEASE_STEPS.PublishUi);
+    expect(plan.steps).not.toContain(RELEASE_STEPS.PublishMcp);
+    expect(plan.steps.indexOf(RELEASE_STEPS.VerifyPublishedVersions)).toBeLessThan(
+      plan.steps.indexOf(RELEASE_STEPS.PromoteUiLatest),
+    );
+  });
+
+  it("retries bounded post-publish verification while npm registry metadata propagates", () => {
+    let uiIntegrityReads = 0;
+    let waits = 0;
+    const capture = (_binary: string, args: string[]): Capture => {
+      if (args[0] === "view" && args[2] === "dist.integrity") {
+        const isUi = args[1].startsWith("@godxjp/ui@18.5.0");
+        if (isUi) uiIntegrityReads += 1;
+        const integrity =
+          isUi && uiIntegrityReads === 1 ? "sha512-stale" : isUi ? "sha512-ui" : "sha512-mcp";
+        return { status: 0, stdout: JSON.stringify(integrity), stderr: "" };
+      }
+      if (args[0] === "view" && args[2] === "dist-tags") {
+        return {
+          status: 0,
+          stdout: JSON.stringify({ "godx-staging-18.5.0": "18.5.0" }),
+          stderr: "",
+        };
+      }
+      throw new Error(`unexpected capture: ${args.join(" ")}`);
+    };
+    const runtime = createReleaseRuntime({
+      repositoryRoot: fixture(),
+      run: () => {},
+      capture,
+      wait: () => {
+        waits += 1;
+      },
+      registryVerificationAttempts: 3,
+      registryVerificationDelayMs: 0,
+    });
+    runtime.runStep(
+      RELEASE_STEPS.VerifyPublishedVersions,
+      { targetVersion: "18.5.0", stageTag: "godx-staging-18.5.0" },
+      artifacts(),
+      {
+        artifacts: {
+          ui: { integrity: "sha512-ui" },
+          mcp: { integrity: "sha512-mcp" },
+        },
+        ui: { stageTagRemoved: false },
+        mcp: { stageTagRemoved: false },
+      },
+    );
+    expect(uiIntegrityReads).toBe(2);
+    expect(waits).toBe(1);
+  });
+
   it("plans the whole side-effecting command sequence with every gate before the first publish", () => {
     const plan = buildReleasePlan({
       currentVersion: "18.4.0",

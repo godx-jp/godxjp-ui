@@ -31,7 +31,8 @@ const flag = (name, fallback) => {
 };
 const recovery = args.includes("--recovery");
 const metadataPlan = args.includes("--metadata-plan") || args.includes("--dry-run");
-const uiBump = recovery ? "skip" : flag("--ui", "skip");
+const adoptStagedVersion = flag("--adopt-staged", null);
+const uiBump = recovery || adoptStagedVersion ? "skip" : flag("--ui", "skip");
 const mcpBump = recovery ? "sync" : flag("--mcp", "skip");
 const repositoryRoot = process.cwd();
 const sourceHead = execFileSync("git", ["rev-parse", "HEAD"], {
@@ -76,6 +77,7 @@ try {
     mcpBump,
     sourceHead,
     recoveryState,
+    adoptStagedVersion,
   });
 
   if (!metadataPlan) {
@@ -96,6 +98,7 @@ try {
     mcpBump,
     sourceHead,
     recoveryState,
+    adoptStagedVersion,
     recoveryDirectory: metadataPlan ? null : recoveryDirectory,
     dryRun: metadataPlan,
     runStep: runtime.runStep,
