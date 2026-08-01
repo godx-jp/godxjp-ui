@@ -290,8 +290,13 @@
     padding-top: var(--card-space-body-y);
   }
 
+  /* A solo body owns BOTH block edges (there is no header/footer to carry them), so this is
+   * `padding-block`, not just `padding-top` — it overrides the generic bottom edge above.
+   * The fallback chain solo-y → shell-y → inset means: a shell that tunes only the general block
+   * knob still reaches a solo body, an explicit --card-space-solo-y wins over it, and with neither
+   * set the render is the historical inset. */
   [data-slot="card-content"][data-solo] {
-    padding-top: var(--card-space-shell-y, var(--card-space-inset));
+    padding-block: var(--card-space-solo-y, var(--card-space-shell-y, var(--card-space-inset)));
   }
 
   [data-slot="card-content"][data-flush] {

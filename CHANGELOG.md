@@ -37,6 +37,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   table, hairline, padded detail) that `MasterDetail`, whose stacking is width-driven, should not
   impersonate.
 
+### Fixed
+
+- **`check:layout-nav-frames` is deterministic again — the roving-focus assertions now await the
+  focus move instead of racing it.** The gate failed intermittently (and on `origin/main`
+  reproducibly) with `LTR Tabs ArrowRight focus failed`. The product was never wrong: Radix
+  `RovingFocusGroup` deliberately defers the arrow-key focus move out of the `keydown` handler
+  (`setTimeout(() => focusFirst(candidateNodes))`), so the next trigger becomes
+  `document.activeElement` ~10-25ms after `keyboard.press()` resolves — measured 8/8 in Chromium,
+  always landing on the correct trigger, just later than the very next CDP round-trip. The harness
+  read `document.activeElement` synchronously, so the gate passed or failed on scheduling luck. Both
+  the LTR ArrowRight and the RTL ArrowLeft checks now poll the same assertion with a bounded wait
+  and report the index that was actually focused on failure, and each tablist is first awaited until
+  Radix has registered its focusable items (`[role="tablist"][tabindex="0"]`) so the key never lands
+  on a not-yet-interactive strip. No assertion was weakened, retried away or removed.
+
 ### Added
 
 - **`AuthShell preset="account-recovery"` — the token-owned SCR-008 password-recovery / sign-in-MFA

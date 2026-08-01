@@ -15,7 +15,7 @@ describe("AppShell", () => {
     );
     // <aside> = complementary, <main> = main, <header> = banner
     expect(getByRole("complementary")).toBeInTheDocument();
-    expect(getByRole("main")).toBeInTheDocument();
+    expect(getByRole("main")).toHaveAttribute("tabindex", "0");
     expect(getByRole("banner")).toBeInTheDocument();
     expect(getByText("ナビ")).toBeInTheDocument();
     expect(getByText("本文")).toBeInTheDocument();

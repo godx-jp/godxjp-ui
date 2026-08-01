@@ -49,6 +49,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Gap between the header and the body, and the body's own top padding — the breathing * room under a title before content begins."
   },
   {
+    "name": "--card-space-solo-y",
+    "value": "initial",
+    "description": "Symmetric block padding for a SOLO content slot, so a composed shell can tune block and * inline spacing independently without targeting CardContent. * Declared `initial` for the SAME reason as --card-space-shell-y above: written as * `var(--card-space-inset)` here it would freeze at the :root inset, and a card carrying * [data-density=\"tight\"|\"cozy\"] (which override --card-space-inset ON THE CARD) would keep the * :root value. The default now resolves at the call site through the chain * solo-y → shell-y → inset, so a solo body follows the general block knob when only that is * set, and an explicit solo-y still wins."
+  },
+  {
     "name": "--card-space-footer-y",
     "value": "var(--space-stack-sm)",
     "description": "Vertical padding of a SEPARATED footer band (top = bottom). Drives --card-space-divided-y."

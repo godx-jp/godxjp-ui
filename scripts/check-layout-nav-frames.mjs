@@ -3,6 +3,60 @@ import AxeBuilder from "@axe-core/playwright";
 import { createServer } from "vite";
 import { execFileSync } from "node:child_process";
 
+/**
+ * Roving-focus assertions must be AWAITED, never read synchronously after the key press.
+ *
+ * Radix `RovingFocusGroup` defers the focus move out of the `keydown` handler
+ * (`setTimeout(() => focusFirst(candidateNodes))` — @radix-ui/react-roving-focus), so the next
+ * trigger becomes `document.activeElement` ~10-25ms AFTER `keyboard.press()` resolves. Reading
+ * `document.activeElement` in the very next CDP round-trip is therefore a race that passes or
+ * fails on scheduling luck alone. These helpers poll the real assertion instead — same condition,
+ * bounded wait, and a failure still fails (with the observed state attached).
+ */
+
+/**
+ * Waits until the tablist is genuinely interactive, not merely painted.
+ *
+ * Radix only makes the group container focusable (`tabindex="0"`) once its items have registered
+ * with the roving-focus collection (`focusableItemsCount > 0`), which happens in an effect after
+ * hydration. Until then an arrow key would land on a tablist whose key handler cannot resolve any
+ * candidate. Individual triggers stay at `tabindex="-1"` until something focuses them, so the
+ * container is the correct readiness signal.
+ */
+async function waitForRovingTablist(page) {
+  await page.waitForFunction(
+    () =>
+      document.querySelectorAll('[role="tab"]').length > 1 &&
+      document.querySelector('[role="tablist"][tabindex="0"]') !== null,
+    undefined,
+    { timeout: 5000 },
+  );
+}
+
+/**
+ * Waits for the roving focus to land on the tab at `index` (document order) and returns the index
+ * actually read back from the page. Throws `message` — with the index actually focused — when the
+ * focus never gets there.
+ */
+async function waitForFocusedTabIndex(page, index, message) {
+  try {
+    await page.waitForFunction(
+      (expected) =>
+        [...document.querySelectorAll('[role="tab"]')].indexOf(document.activeElement) === expected,
+      index,
+      { timeout: 5000, polling: 16 },
+    );
+  } catch {
+    const observed = await page.evaluate(() =>
+      [...document.querySelectorAll('[role="tab"]')].indexOf(document.activeElement),
+    );
+    throw new Error(`${message} (expected tab index ${index}, focus stayed on index ${observed})`);
+  }
+  return page.evaluate(() =>
+    [...document.querySelectorAll('[role="tab"]')].indexOf(document.activeElement),
+  );
+}
+
 execFileSync(process.execPath, ["preview/scripts/kill-port.mjs"], { stdio: "ignore" });
 const server = await createServer({ configFile: "preview/vite.config.ts" });
 const browser = await chromium.launch({ headless: true });
@@ -47,10 +101,10 @@ try {
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.goto("http://localhost:6008/frame/navigation-tabs", { waitUntil: "networkidle" });
   let tabs = page.getByRole("tab");
+  await waitForRovingTablist(page);
   await tabs.first().focus();
   await page.keyboard.press("ArrowRight");
-  if (!(await tabs.nth(1).evaluate((element) => element === document.activeElement)))
-    throw new Error("LTR Tabs ArrowRight focus failed");
+  await waitForFocusedTabIndex(page, 1, "LTR Tabs ArrowRight focus failed");
   let axe = await new AxeBuilder({ page }).analyze();
   const tabsViolations = axe.violations.map((v) => v.id);
 
@@ -63,12 +117,10 @@ try {
   await page.goto("http://localhost:6008/frame/navigation-tabs-rtl", { waitUntil: "networkidle" });
   tabs = page.getByRole("tab");
   if ((await page.locator('[dir="rtl"]').count()) === 0) throw new Error("RTL was not initialized");
+  await waitForRovingTablist(page);
   await tabs.first().focus();
   await page.keyboard.press("ArrowLeft");
-  const rtlFocusedIndex = await tabs.evaluateAll((elements) =>
-    elements.indexOf(document.activeElement),
-  );
-  if (rtlFocusedIndex !== 1) throw new Error("RTL Tabs ArrowLeft focus failed");
+  const rtlFocusedIndex = await waitForFocusedTabIndex(page, 1, "RTL Tabs ArrowLeft focus failed");
 
   await page.goto("http://localhost:6008/frame/navigation-pagination", {
     waitUntil: "networkidle",

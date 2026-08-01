@@ -130,7 +130,10 @@ const AUTH_CARD = blockDeclarations(shellStyles, AUTH_CARD_SCOPE);
 const DECLARED = {
   inline: property(cardStyles, CARD_CONTENT, "padding-inline"),
   blockEnd: property(cardStyles, CARD_CONTENT, "padding-bottom"),
-  blockStartSolo: property(cardStyles, CARD_CONTENT_SOLO, "padding-top"),
+  // A solo body owns BOTH block edges (no header/footer carries them), so the rule is
+  // `padding-block`, not `padding-top`. It reads its own knob first and falls back through the
+  // general block knob to the inset: solo-y → shell-y → inset.
+  blockStartSolo: property(cardStyles, CARD_CONTENT_SOLO, "padding-block"),
   headerTop: property(cardStyles, CARD_HEADER_PLAIN, "padding-top"),
 };
 
@@ -157,9 +160,15 @@ describe("Card content padding is wired on two independent axes (gh#232)", () =>
     // Inline stays on the shared column token; every BLOCK edge reads the new knob with the column
     // as its call-site default, so a card that overrides neither is byte-identical to before.
     expect(DECLARED.inline).toBe("var(--card-space-inset)");
-    for (const edge of [DECLARED.blockEnd, DECLARED.blockStartSolo, DECLARED.headerTop]) {
+    for (const edge of [DECLARED.blockEnd, DECLARED.headerTop]) {
       expect(edge).toBe("var(--card-space-shell-y, var(--card-space-inset))");
     }
+    // A solo body additionally gets its OWN knob ahead of the general one, so a shell can tune a
+    // header-less card independently of a composed one. The chain still ends at the inset, so an
+    // untouched card is byte-identical to before.
+    expect(DECLARED.blockStartSolo).toBe(
+      "var(--card-space-solo-y, var(--card-space-shell-y, var(--card-space-inset)))",
+    );
   });
 
   it("declares --card-space-shell-y `initial` so its default re-resolves at the call site", () => {

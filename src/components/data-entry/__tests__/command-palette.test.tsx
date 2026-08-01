@@ -38,6 +38,7 @@ describe("CommandPalette", () => {
     await user.keyboard("{Control>}k{/Control}");
     const dialog = await screen.findByRole("dialog", { name: "Command palette" });
     expect(dialog).toBeInTheDocument();
+    expect(dialog).toHaveAttribute("aria-modal", "true");
     expect(screen.getByRole("combobox", { name: "Command palette" })).toHaveFocus();
 
     await user.keyboard("{ArrowDown}{Enter}");
@@ -48,7 +49,7 @@ describe("CommandPalette", () => {
     await screen.findByRole("dialog", { name: "Command palette" });
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(trigger).toHaveFocus();
+    await waitFor(() => expect(trigger).toHaveFocus());
   });
 
   it("supports controlled state and click-out close without a consumer key handler", async () => {
@@ -73,6 +74,24 @@ describe("CommandPalette", () => {
     renderWithUi(<Controlled />);
     await user.click(document.querySelector(".ui-dialog-overlay") as HTMLElement);
     await waitFor(() => expect(screen.getByTestId("state")).toHaveTextContent("false"));
+  });
+
+  it("restores focus to the active control when opened by the global shortcut", async () => {
+    const user = userEvent.setup();
+    renderWithUi(
+      <>
+        <button type="button">Account menu</button>
+        <CommandPalette groups={groups} labels={labels} onSelect={vi.fn()} />
+      </>,
+    );
+
+    const accountMenu = screen.getByRole("button", { name: "Account menu" });
+    accountMenu.focus();
+    await user.keyboard("{Control>}k{/Control}");
+    await screen.findByRole("dialog", { name: "Command palette" });
+    await user.keyboard("{Escape}");
+
+    await waitFor(() => expect(accountMenu).toHaveFocus());
   });
 
   it("renders loading, error and empty states inside the same accessible dialog", () => {

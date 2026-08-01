@@ -24,6 +24,14 @@ jobs:
       - name: Install MCP deps
         run: pnpm install --dir mcp
 
+      # Build the exact public artifact first, then prove the packed subpath barrels contain the
+      # runtime and declaration exports consumed by downstream applications. Packing only manifests
+      # can pass while dist is absent or stale.
+      - name: Build UI and verify packed public contract
+        run: |
+          pnpm build
+          pnpm check:packed-public-contract
+
       # 1) Versions + compatibility metadata are mutually consistent (the core lockstep invariant).
       - name: Version/compatibility lockstep
         run: pnpm check:mcp-lockstep
