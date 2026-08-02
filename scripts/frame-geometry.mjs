@@ -7,6 +7,9 @@
  * clipped interactive controls inside the rendered example (`.demo-block-frame`). This is
  * the geometry counterpart to check:frame-axe (which owns a11y at 2 viewports).
  *
+ * "Clipped" means UNREACHABLE, not merely out of the frame box — see the semantics on `measure`
+ * in ./frame-geometry-measure.mjs before changing what this gate counts.
+ *
  * Like the axe gate, it compares to a machine-readable baseline that may only SHRINK:
  * a NEW overflow above baseline fails; pre-existing ones (component agents' territory)
  * are allowlisted and printed in full. Chromium-driven; runs in a dedicated CI lane.
@@ -29,6 +32,7 @@ import {
   loadManifest,
   componentFrames,
 } from "./frame-harness.mjs";
+import { measure } from "./frame-geometry-measure.mjs";
 
 const BASELINE_PATH = path.join(REPO_ROOT, "scripts/frame-geometry.baseline.json");
 const EVIDENCE_DIR = path.join(REPO_ROOT, "audit-evidence/frame-geometry");
@@ -54,23 +58,6 @@ function loadBaseline() {
   } catch {
     return { frames: {} };
   }
-}
-
-/** Measured inside the browser: overflow + clipped focusables within the rendered frame. */
-function measure() {
-  const frame = document.querySelector(".demo-block-frame");
-  if (!frame) return { overflowX: false, clipped: 0, scrollWidth: 0, clientWidth: 0 };
-  const fr = frame.getBoundingClientRect();
-  const overflowX = frame.scrollWidth > frame.clientWidth + 1;
-  let clipped = 0;
-  for (const el of frame.querySelectorAll(
-    "a[href], button, [role=button], input:not([type=hidden]), select, textarea, [tabindex]:not([tabindex='-1'])",
-  )) {
-    const r = el.getBoundingClientRect();
-    if (r.width === 0 && r.height === 0) continue;
-    if (r.right > fr.right + 1 || r.left < fr.left - 1) clipped++;
-  }
-  return { overflowX, clipped, scrollWidth: frame.scrollWidth, clientWidth: frame.clientWidth };
 }
 
 async function main() {

@@ -21,6 +21,23 @@ violation in the original #157 audit was root-caused and fixed). `check:frame-ge
 identically for responsive overflow (see its own header comment); `check:frame-coverage` is
 covered briefly at the end and fully in [FRAME-COVERAGE-STANDARD.md](./FRAME-COVERAGE-STANDARD.md).
 
+### What geometry counts as a "clipped control"
+
+A control the **user cannot bring into the frame** — not merely one whose box currently sticks
+out. Everything inside a deliberately scrollable surface sticks out by design (a `DataTable`'s
+`.ui-data-table-scroll` at 320px, a `FilterBar overflow="scroll"` strip, a tabs list), and those
+controls are reachable: a control entirely out of the scrollport is scrolled fully in the moment
+it takes keyboard focus, and a partially visible one keeps its focus ring on screen (Chromium's
+`CenterIfNeeded` focus alignment does not move a partially visible target — browser behaviour, and
+still inside 2.4.7 / 2.4.11 AA). So an out-of-frame focusable is
+re-probed: the sweep scrolls **only** its user-scrollable ancestors (computed
+`overflow: auto|scroll|overlay` that actually has scroll room — never `hidden`/`clip`, which no
+user can scroll) and re-measures. It is reachable when it then sits fully inside the frame, or
+when it is content wider than its own scroll viewport (a full table row) whose leading edge is
+inside; scroll offsets are restored afterwards. Anything else — no scroll container, a `hidden`
+clipper, or a control the scroll cannot reach — is a real WCAG 2.1.1 / 2.4.7 defect and still
+fails. Fix the frame or the component; do not widen this definition.
+
 ## Why a per-frame gate, not the old hand-picked checks
 
 Before #157, accessibility was checked two ways, both blind to most of the catalog:

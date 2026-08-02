@@ -39,6 +39,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`check:frame-geometry` no longer reports a deliberately scrollable surface as a clipped
+  control.** The sweep counted every focusable whose box sticks out of the frame, which is true of
+  ALL content inside a scroll region — so a `DataTable` at 320px (`.ui-data-table-scroll`,
+  scrollWidth 640 / clientWidth 244) and a `FilterBar overflow="scroll"` strip at 768px
+  (`.ui-toolbar`, scrollWidth 768 / clientWidth 652) were flagged even though `overflowX` was
+  false and every flagged control was focusable, scrollable into view and hit-tested clean —
+  focusing the DataTable's sort button scrolls its region from scrollLeft 0 to 344 and lands it
+  fully inside, and the one `FilterBar` trigger that stays put is 63% visible with its focus ring
+  on screen because Chromium's `CenterIfNeeded` focus alignment never moves a partially visible
+  target (reproduced on a synthetic scroller — browser behaviour, not a component defect; it
+  clears 2.4.7 and 2.4.11 AA, which only forbids a fully obscured focus). Four such false
+  positives (`layout-master-detail` @320/375/390, `navigation-filter-bar` @768) failed the
+  gate. `clipped` now means what it says — _a control the user cannot bring into the frame_: an
+  out-of-frame focusable is re-probed by scrolling ONLY its user-scrollable ancestors (computed
+  `overflow: auto|scroll|overlay` with real scroll room — never `hidden`/`clip`) and counts as
+  reachable when it lands fully inside, or when it is content wider than its own scroll viewport
+  (a full table row) whose leading edge is inside. Scroll offsets are restored after each probe.
+  Genuinely clipped controls still fail: verified that `data-entry-rating` @320,
+  `foundation-density` @320/375 and the form examples keep every one of their counts because those
+  controls have no scrollable ancestor at all, and `layout-page-container` keeps its real document
+  overflow. The baseline was NOT regenerated — it is recorded on the canonical CI runner and may
+  only shrink there.
+
 - **`check:layout-nav-frames` is deterministic again — the roving-focus assertions now await the
   focus move instead of racing it.** The gate failed intermittently (and on `origin/main`
   reproducibly) with `LTR Tabs ArrowRight focus failed`. The product was never wrong: Radix
