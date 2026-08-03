@@ -17,6 +17,7 @@ import type {
   ClassNameProp,
   ChildrenProp,
   IdProp,
+  DisabledProp,
 } from "../vocabulary";
 
 /**
@@ -264,6 +265,21 @@ export type AuthIdentityProp = {
    * when the client identity is authoritative — never a placeholder.
    */
   requester?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see AuthAccountSummary — compact signed-in identity row for hosted authentication surfaces.
+ * It owns avatar fallback, bidi-safe email truncation and the keyboard action geometry; the
+ * consumer owns the authoritative email, localized action label and navigation handler.
+ */
+export type AuthAccountSummaryProp = {
+  email: string;
+  avatarSrc?: string;
+  avatarFallback?: ReactNode;
+  actionLabel: ReactNode;
+  onAction: () => void;
+  disabled?: DisabledProp;
   className?: ClassNameProp;
 };
 

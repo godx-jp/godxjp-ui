@@ -197,6 +197,50 @@
     height: var(--auth-requester-glyph-size);
   }
 
+  .ui-auth-account-summary {
+    display: flex;
+    min-height: var(--auth-account-summary-min-height);
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--auth-account-summary-gap);
+    padding: var(--auth-account-summary-padding);
+    border-radius: var(--radius-md);
+    background: hsl(var(--muted));
+  }
+
+  .ui-auth-account-identity {
+    display: flex;
+    min-width: min(100%, var(--auth-account-summary-identity-min-width));
+    flex: 1 1 var(--auth-account-summary-identity-min-width);
+    align-items: center;
+    gap: var(--auth-account-summary-gap);
+  }
+
+  .ui-auth-account-avatar {
+    width: var(--auth-account-summary-avatar-size);
+    height: var(--auth-account-summary-avatar-size);
+    flex: none;
+  }
+
+  .ui-auth-account-fallback-icon {
+    width: var(--auth-account-summary-avatar-glyph-size);
+    height: var(--auth-account-summary-avatar-glyph-size);
+  }
+
+  .ui-auth-account-email {
+    min-width: 0;
+    overflow: hidden;
+    color: hsl(var(--foreground));
+    font-size: var(--auth-account-summary-email-font-size);
+    font-weight: var(--font-weight-medium);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-auth-account-summary > [data-slot="button"] {
+    margin-inline-start: auto;
+  }
+
   .ui-auth-legal-footer {
     display: flex;
     flex-wrap: wrap;

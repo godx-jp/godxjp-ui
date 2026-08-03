@@ -745,6 +745,34 @@
   border-start-end-radius: var(--radius-md);
   border-end-end-radius: var(--radius-md);
 }
+.ui-otp-group[data-appearance="grouped"] {
+  overflow: hidden;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  background: hsl(var(--background));
+}
+.ui-otp-group[data-appearance="grouped"] .ui-otp-slot {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.ui-otp-group[data-appearance="grouped"] .ui-otp-slot[data-active="true"] {
+  box-shadow: none;
+}
+.ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
+  border-color: hsl(var(--focus-ring-color, var(--ring)));
+  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));
+}
+.ui-otp-container:has(.ui-otp-input[aria-invalid="true"]) .ui-otp-group[data-appearance="grouped"] {
+  border-color: hsl(var(--destructive));
+}
+.ui-otp-container:has(.ui-otp-input[aria-invalid="true"])
+  .ui-otp-group[data-appearance="grouped"]:has(.ui-otp-slot[data-active="true"]) {
+  box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--destructive));
+}
+.ui-otp-container:has(.ui-otp-input:disabled) .ui-otp-group[data-appearance="grouped"] {
+  background: hsl(var(--muted));
+}
 .ui-otp-slot[data-active="true"] {
   z-index: 1;
   box-shadow: 0 0 0 var(--focus-ring-width) hsl(var(--focus-ring-color, var(--ring)));

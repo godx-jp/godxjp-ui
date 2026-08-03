@@ -205,7 +205,13 @@
   },
   "navigation": {
     "steps": {
-      "ariaLabel": "Progress"
+      "ariaLabel": "Progress",
+      "status": {
+        "wait": "Waiting",
+        "process": "Current step",
+        "finish": "Completed",
+        "error": "Error"
+      }
     },
     "breadcrumb": {
       "ariaLabel": "Breadcrumb"

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, Circle, Loader2, X } from "lucide-react";
+import { Check, ChevronRight, Circle, Loader2, X } from "lucide-react";
 
 import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
@@ -91,12 +91,13 @@ export function Steps({
   const base = defaultValue;
   const isVertical = orientation === "vertical";
   const compact = size === "sm";
+  const inline = type === "inline";
 
   return (
     <ol
       className={cn(
         "flex w-full",
-        isVertical ? "flex-col gap-0" : "flex-row items-start",
+        inline ? "ui-steps-inline" : isVertical ? "flex-col gap-0" : "flex-row items-start",
         className,
       )}
       aria-label={t("navigation.steps.ariaLabel")}
@@ -108,17 +109,38 @@ export function Steps({
         const clickable = interactive && !item.disabled;
         const description = item.description;
         const isCurrent = absoluteIndex === current;
+        const statusLabel = t(
+          stepStatus === "finish"
+            ? "navigation.steps.status.finish"
+            : stepStatus === "process"
+              ? "navigation.steps.status.process"
+              : stepStatus === "error"
+                ? "navigation.steps.status.error"
+                : "navigation.steps.status.wait",
+        );
 
         // When `onValueChange` is provided the step is an actionable control (a real <button> that
         // may be disabled). When it is not, the steps are purely informational, so render a non-button
         // wrapper to keep disabled steps out of the tab order (WAI-ARIA: don't emit dead buttons).
         const stepClassName = cn(
           "group flex min-w-0",
-          isVertical ? "flex-row items-start gap-3" : "flex-col items-center",
+          inline
+            ? "ui-steps-inline-control"
+            : isVertical
+              ? "flex-row items-start gap-3"
+              : "flex-col items-center",
           clickable ? "cursor-pointer" : "cursor-default",
         );
 
-        const stepInner = (
+        const stepInner = inline ? (
+          <>
+            <span className="ui-steps-inline-index" aria-hidden="true">
+              {absoluteIndex + 1}
+            </span>
+            <span className="ui-steps-inline-title">{item.title}</span>
+            <span className="sr-only">{statusLabel}</span>
+          </>
+        ) : (
           <>
             <StepIcon status={stepStatus} icon={item.icon} type={type} />
             <div
@@ -156,15 +178,23 @@ export function Steps({
             key={index}
             aria-current={isCurrent ? "step" : undefined}
             className={cn(
-              "relative flex min-w-0 flex-1",
-              isVertical ? "flex-row gap-3 pb-8 last:pb-0" : "flex-col items-center text-center",
+              "relative flex min-w-0",
+              !inline && "flex-1",
+              inline
+                ? "ui-steps-inline-item"
+                : isVertical
+                  ? "flex-row gap-3 pb-8 last:pb-0"
+                  : "flex-col items-center text-center",
               !isVertical &&
+                !inline &&
                 index < items.length - 1 &&
                 "after:bg-border after:absolute after:top-4 after:h-px",
               !isVertical &&
+                !inline &&
                 index < items.length - 1 &&
                 "after:left-[calc(50%+1.25rem)] after:w-[calc(100%-2.5rem)]",
             )}
+            data-status={stepStatus}
           >
             {interactive ? (
               <button
@@ -178,6 +208,12 @@ export function Steps({
             ) : (
               <span className={stepClassName}>{stepInner}</span>
             )}
+            {inline && index < items.length - 1 ? (
+              <ChevronRight
+                className="ui-steps-inline-separator rtl:rotate-180"
+                aria-hidden="true"
+              />
+            ) : null}
           </li>
         );
       })}

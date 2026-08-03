@@ -101,7 +101,11 @@ export type StepsProp = {
   defaultValue?: number;
   status?: StepStatusProp;
   orientation?: "horizontal" | "vertical";
-  type?: "default" | "dot";
+  /**
+   * Marker appearance. `inline` renders the compact numbered auth/device progress row without the
+   * icon rail while preserving the same status and current-step semantics.
+   */
+  type?: "default" | "dot" | "inline";
   size?: "md" | "sm";
   titlePlacement?: "horizontal" | "vertical";
   onValueChange?: (value: number) => void;

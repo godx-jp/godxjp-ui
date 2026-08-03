@@ -89,6 +89,11 @@ export type {
   PasswordStrengthReturn,
 } from "./password-strength";
 export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "./input-otp";
+export type {
+  InputOTPGroupAppearanceProp,
+  InputOTPGroupProp,
+  InputOTPGroupProps,
+} from "./input-otp";
 export { Rating } from "./rating";
 export type { RatingProps } from "./rating";
 export { TagInput } from "./tag-input";
