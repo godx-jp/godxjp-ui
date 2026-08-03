@@ -147,6 +147,51 @@
     gap: var(--auth-shell-card-stack-gap);
   }
 
+  /* Login is an anchored three-part composition: AuthIdentity · Card · AuthFooter. The fixed
+   * identity track absorbs absent, one-line and wrapped two-line requester states while its
+   * content remains visually adjacent to the Card. This keeps real requester data intact without
+   * allowing its line count to move the canonical SCR-001 card anchor (gh#237). */
+  .ui-auth-shell[data-preset="login"] {
+    --auth-shell-card-max-width: var(--auth-shell-login-card-max-width);
+    --auth-shell-main-align: flex-start;
+    --auth-shell-main-padding: var(--auth-shell-login-flow-offset-block)
+      var(--auth-shell-login-main-padding-inline) var(--auth-shell-login-main-padding-block-end);
+    --auth-shell-card-stack-gap: var(--auth-shell-login-card-stack-gap);
+    --auth-shell-card-padding-block-compact: var(--auth-shell-login-card-padding-block-compact);
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-shell-card {
+    display: grid;
+    grid-template-rows: var(--auth-shell-login-identity-slot-block-size) auto auto;
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-shell-card > .ui-auth-identity,
+  .ui-auth-shell[data-preset="login"] .ui-auth-shell-card > :has(> .ui-auth-identity) {
+    min-width: 0;
+    min-height: 0;
+    block-size: var(--auth-shell-login-identity-slot-block-size);
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-shell-card > .ui-auth-identity,
+  .ui-auth-shell[data-preset="login"]
+    .ui-auth-shell-card
+    > :has(> .ui-auth-identity)
+    > .ui-auth-identity {
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-requester {
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-requester > :last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
   .ui-auth-shell[data-preset="device-authorization"] {
     --auth-shell-card-max-width: var(--auth-shell-device-card-max-width);
     --auth-shell-main-padding: var(--auth-shell-device-main-padding);
@@ -275,6 +320,12 @@
   @media (max-width: 30rem) {
     .ui-auth-shell[data-variant="canonical"] {
       --auth-shell-main-padding: var(--auth-shell-canonical-main-padding-mobile);
+    }
+
+    .ui-auth-shell[data-preset="login"] {
+      --auth-shell-main-padding: var(--auth-shell-login-flow-offset-block-mobile)
+        var(--auth-shell-login-main-padding-inline-mobile)
+        var(--auth-shell-login-main-padding-block-end);
     }
 
     /* Declared after the canonical mobile inset so a preset's mobile gutter wins at equal

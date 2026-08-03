@@ -1,49 +1,54 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { Field, Input } from "@godxjp/ui/data-entry";
-import { Button, Logo, Reveal, Text } from "@godxjp/ui/general";
-import { AuthDivider, AuthShell, Flex } from "@godxjp/ui/layout";
+import { Card, CardContent } from "@godxjp/ui/data-display";
+import { FormField, Input } from "@godxjp/ui/data-entry";
+import { Button } from "@godxjp/ui/general";
+import {
+  AuthDivider,
+  AuthFooter,
+  AuthIdentity,
+  AuthShell,
+  AuthStack,
+  Flex,
+} from "@godxjp/ui/layout";
 
 /**
- * AuthShell — centred auth/login page shell (brand bar + centred card + footer) over min-h-dvh at
- * comfortable control density. Motion is delegated to <Reveal> (wrap the card) so
- * prefers-reduced-motion is honoured in one place. Composed only from real @godxjp/ui components.
+ * SCR-001 Login visual contract. `?state=standalone|one-line|wrapped` drives the package visual
+ * test; all three keep the same card anchor without consumer CSS or fake requester data.
  */
 export default function Demo() {
+  const state = new URLSearchParams(window.location.search).get("state") ?? "one-line";
+  const requester =
+    state === "standalone"
+      ? undefined
+      : state === "wrapped"
+        ? "Platform console browser BFF is requesting sign in to this organization"
+        : "Attendance is requesting sign in";
+
   return (
-    <AuthShell
-      variant="canonical"
-      brand={
-        <Flex align="center" gap="sm">
-          <Logo glyph="G" />
-          <Text weight="medium">GodX ID</Text>
-        </Flex>
-      }
-      footer={
-        <Text size="xs" tone="muted">
-          2026 GodX · プライバシー · 利用規約
-        </Text>
-      }
-    >
-      <Reveal>
-        <Card>
-          <CardHeader>
-            <CardTitle level={1}>ログイン</CardTitle>
-            <CardDescription>アカウントにサインインしてください。</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Flex direction="col" gap="md">
-              <Field id="auth-email" label="メールアドレス">
-                <Input id="auth-email" type="email" placeholder="you@example.com" />
-              </Field>
-              <AuthDivider label="または" />
-              <Field id="auth-password" label="パスワード">
-                <Input id="auth-password" type="password" placeholder="••••••••" />
-              </Field>
-              <Button fullWidth>続ける</Button>
+    <AuthShell variant="canonical" preset="login">
+      <AuthIdentity title="GoDX ID" requester={requester} />
+      <Card>
+        <CardContent>
+          <AuthStack>
+            <Button fullWidth>パスキーでサインイン</Button>
+            <AuthDivider label="または" />
+            <FormField id="auth-email" label="メールアドレス" layout="vertical">
+              <Input id="auth-email" type="email" placeholder="you@example.co.jp" />
+            </FormField>
+            <Button variant="outline" fullWidth>
+              次へ
+            </Button>
+            <Flex justify="between" wrap>
+              <Button variant="link" size="sm">
+                アカウント登録
+              </Button>
+              <Button variant="link" size="sm">
+                パスワードを忘れた
+              </Button>
             </Flex>
-          </CardContent>
-        </Card>
-      </Reveal>
+          </AuthStack>
+        </CardContent>
+      </Card>
+      <AuthFooter product="GoDX ID" terms="利用規約" privacy="プライバシー" />
     </AuthShell>
   );
 }

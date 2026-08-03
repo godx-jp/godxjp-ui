@@ -16,8 +16,9 @@ export type {
  * card) so `prefers-reduced-motion` is honoured in one place.
  *
  * `preset` names the flow MEASURE (card max-width + desktop/mobile page gutters) so a consumer
- * never overrides `--auth-shell-card-max-width` by hand: `"device-authorization"` = 380px card with
- * a 5px inline gutter at 390px; `"context-selection"` = 25rem card, edge-to-edge on mobile;
+ * never overrides page geometry by hand: `"login"` = SCR-001's stable identity/card/footer anchor
+ * for standalone and real requester states; `"device-authorization"` = 380px card with a 5px
+ * inline gutter at 390px; `"context-selection"` = 25rem card, edge-to-edge on mobile;
  * `"account-recovery"` = the 432px SCR-008 panel measure shared by password recovery and the
  * sign-in MFA challenge, with a 15px inline gutter at 390px. It is orthogonal to `variant` —
  * combine `variant="canonical"` with any preset.

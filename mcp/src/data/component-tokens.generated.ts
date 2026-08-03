@@ -1959,6 +1959,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Gap between the direct sections of the auth column (intro · card · remember row). Default 0 * (quiet, rule #44) so an existing single-card consumer is untouched; presets opt in."
   },
   {
+    "name": "--auth-shell-login-card-max-width",
+    "value": "22.5rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-flow-offset-block",
+    "value": "14.4375rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-flow-offset-block-mobile",
+    "value": "13.8125rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-main-padding-inline",
+    "value": "1rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-main-padding-inline-mobile",
+    "value": "0.9375rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-main-padding-block-end",
+    "value": "1rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-identity-slot-block-size",
+    "value": "7rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-card-stack-gap",
+    "value": "1.25rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-card-padding-block-compact",
+    "value": "calc( var(--auth-shell-compact-card-inset) + var(--control-border-width) + var(--control-border-width) )",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
     "name": "--auth-shell-device-card-max-width",
     "value": "23.75rem",
     "description": "Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter * (at a 390px viewport the card is x=5px, width=380px)."

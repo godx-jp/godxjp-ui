@@ -291,6 +291,7 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "test": "vitest run",
+    "test:visual:auth-login": "node scripts/auth-shell-login-visual.mjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",

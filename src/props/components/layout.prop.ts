@@ -198,10 +198,15 @@ export type AuthShellProp = {
   /**
    * Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the
    * auth card's max-width plus the desktop and mobile page gutters, all owned by component tokens
-   * (`--auth-shell-{device,context,recovery}-*`). Selecting a preset replaces every consumer-side
-   * `--auth-shell-card-max-width` override.
+   * (`--auth-shell-{login,device,context,recovery}-*`). Selecting a preset replaces every
+   * consumer-side geometry override.
    *
    * - `"default"` (default) — the shell's own measure; nothing changes.
+   * - `"login"` — SCR-001's 360px card at x=540/332/15 and y=363/363/353 for the canonical
+   *   1440x900, 1024x900 and 390x844 viewports. The identity occupies a package-owned anchor slot,
+   *   so standalone, one-line requester and wrapped two-line requester states keep the same card
+   *   position without truncating or inventing requester data. Pass AuthIdentity, Card and
+   *   AuthFooter as direct children (an anchor may wrap AuthIdentity).
    * - `"device-authorization"` — 380px card measure with a 5px inline page gutter at a 390px
    *   viewport (canonical device-grant artboard).
    * - `"context-selection"` — 25rem card measure on desktop/tablet, edge-to-edge on mobile, and a
@@ -212,7 +217,7 @@ export type AuthShellProp = {
    *   · passkey-failure), whose title and description sit INSIDE the bordered surface.
    *
    * Orthogonal to `variant`: presets are applied AFTER it, so `variant="canonical"` keeps owning
-   * control density and heading size while the preset re-measures the page.
+   * control density and heading size while the preset re-measures/anchors the page.
    */
   preset?: AuthShellPresetProp;
   /**
