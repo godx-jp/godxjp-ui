@@ -1,8 +1,21 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { FormField, InputOTP, InputOTPGroup, InputOTPSlot } from "@godxjp/ui/data-entry";
+import {
+  FormField,
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@godxjp/ui/data-entry";
 import { Button, Logo, Reveal, Text } from "@godxjp/ui/general";
-import { AuthFooter, AuthIdentity, AuthShell, AuthStack, Flex } from "@godxjp/ui/layout";
-import { AppSettingPicker } from "@godxjp/ui/navigation";
+import {
+  AuthAccountSummary,
+  AuthFooter,
+  AuthIdentity,
+  AuthShell,
+  AuthStack,
+  Flex,
+} from "@godxjp/ui/layout";
+import { AppSettingPicker, Steps } from "@godxjp/ui/navigation";
 
 /**
  * AuthShell preset="device-authorization" (gh#220) — the canonical OAuth device-grant screen.
@@ -38,26 +51,41 @@ export default function Demo() {
       <Reveal>
         <Card>
           <CardHeader>
+            <Steps
+              type="inline"
+              value={0}
+              items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
+            />
             <AuthIdentity
               title="デバイスを認証"
               requester="勤怠管理 (TV アプリ) が認証を要求しています"
             />
             <CardTitle level={2}>確認コードを入力</CardTitle>
             <CardDescription>
-              デバイスの画面に表示されている 6 桁のコードを入力してください。
+              デバイスの画面に表示されている 8 桁のコードを入力してください。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <AuthStack>
+              <AuthAccountSummary
+                email="signed-in.user@example.com"
+                actionLabel="切り替え"
+                onAction={() => {}}
+              />
               <FormField id="device-otp" label="デバイス確認コード" required>
-                <InputOTP maxLength={6}>
-                  <InputOTPGroup>
+                <InputOTP maxLength={8}>
+                  <InputOTPGroup appearance="grouped">
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />
                     <InputOTPSlot index={2} />
                     <InputOTPSlot index={3} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup appearance="grouped">
                     <InputOTPSlot index={4} />
                     <InputOTPSlot index={5} />
+                    <InputOTPSlot index={6} />
+                    <InputOTPSlot index={7} />
                   </InputOTPGroup>
                 </InputOTP>
               </FormField>

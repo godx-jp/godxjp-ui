@@ -4952,8 +4952,8 @@ import { Button } from "@godxjp/ui/general";
       },
       {
         name: "type",
-        type: '"default" | "dot"',
-        description: "Render full steps or compact dots.",
+        type: '"default" | "dot" | "inline"',
+        description: "Render full markers, compact dots, or a numbered inline auth progress row.",
       },
       {
         name: "size",
@@ -4975,6 +4975,7 @@ import { Button } from "@godxjp/ui/general";
       "DO: Pass all steps via the `items` array (each `{ title, subtitle?, description?, icon?, status?, disabled? }`) — Steps is a single-component API with no child sub-components to compose manually.",
       "DO: Control the active step with `value` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
       "DO: Use per-item `status` to pin individual steps independently of `value` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `value`.",
+      "DO: Use type='inline' for compact hosted-auth/device progress. It retains process/finish/error/wait and aria-current semantics without the tall icon rail; never rebuild the row from Text and arrows in a consumer.",
       "DON'T: Use Steps for navigation that needs URL routing or tab-switching — it has no built-in panel rendering. Pair it with your own conditional panel or a `Tabs`/`Tabs` body; Steps only renders the indicator bar.",
       "DON'T: Wire `onValueChange` unless you actually support non-linear navigation. `onValueChange` makes every non-disabled step clickable (rendered as `<button>`); omitting it makes all steps non-interactive (`cursor-default`). Never set `disabled` on an item without also providing `onValueChange`, or the prop is meaningless.",
       "A11y: The `<ol>` is given `aria-label='Progress'` automatically. Individual steps render as `<button type='button'>` when `onValueChange` is present — ensure each `item.title` is descriptive enough to serve as the button label; avoid icon-only steps without a visible title.",
@@ -8333,6 +8334,7 @@ export default function PasswordBlock() {
     usage: [
       "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
       "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",
+      "For device codes, set `appearance='grouped'` on each InputOTPGroup to render one outline per group while preserving the single hidden input, paste, caret, keyboard and screen-reader behavior.",
       "DON'T build N separate Inputs — this is ONE field with paste, arrow-key, and caret handling built in.",
       "DO widen the slots with `--otp-slot-size` (gh#233) when a challenge row must fill a wide auth panel — it defaults to the live `--control-height` tier, so re-scoping `--control-height` on the card instead would also resize the submit button and every other input in it. Set a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
       "DO drive the sign-in MFA challenge from FormField: `error` wires aria-invalid + aria-errormessage + a role=alert message onto the single field, and the slot borders turn destructive. State is never colour-only.",
@@ -9633,6 +9635,62 @@ export function NotifyRow() {
 
 <AuthIdentity title="Sign in" requester="Acme Portal is requesting access" />`,
     storyPath: "layout/AuthIdentity.stories.tsx",
+    rules: [45],
+  },
+  {
+    name: "AuthAccountSummary",
+    group: "layout",
+    tagline:
+      "Compact signed-in account row for hosted auth: avatar fallback, authoritative email and switch action.",
+    props: [
+      {
+        name: "email",
+        type: "string",
+        required: true,
+        description: "Authoritative signed-in email.",
+      },
+      { name: "avatarSrc", type: "string", description: "Optional real avatar URL." },
+      {
+        name: "avatarFallback",
+        type: "ReactNode",
+        description: "Optional localized/text fallback; defaults to a user glyph.",
+      },
+      {
+        name: "actionLabel",
+        type: "ReactNode",
+        required: true,
+        description: "Localized visible switch-account action label.",
+      },
+      {
+        name: "onAction",
+        type: "() => void",
+        required: true,
+        description: "Consumer-owned account-switch navigation/action.",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Disable the action while the consumer cannot switch.",
+      },
+      { name: "className", type: "string", description: "Optional structural class override." },
+    ],
+    usage: [
+      "Pass only the authoritative signed-in email; AuthAccountSummary never fetches or invents identity data.",
+      "Pass localized actionLabel and the existing account-switch handler. The component owns no route, mutation or permission behavior.",
+      "The package owns avatar fallback, long-email truncation, responsive action wrapping and keyboard focus. Retune only through --auth-account-summary-* tokens.",
+    ],
+    useCases: [
+      "OAuth device consent and authorization cards where the user must confirm or switch the signed-in account.",
+      "Hosted consent screens that need a compact identity confirmation row without a second profile card.",
+    ],
+    related: [
+      "AuthIdentity — page identity heading and requesting-client context; use AuthAccountSummary inside the card for the signed-in user.",
+      "Avatar — use Avatar directly for general profile surfaces; AuthAccountSummary owns only the compact hosted-auth row.",
+    ],
+    example: `import { AuthAccountSummary } from "@godxjp/ui/layout";
+
+<AuthAccountSummary email={user.email} actionLabel={t("auth.switchAccount")} onAction={switchAccount} />`,
+    storyPath: "layout/AuthAccountSummary.stories.tsx",
     rules: [45],
   },
   {

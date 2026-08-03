@@ -30,6 +30,8 @@ export { AuthDivider } from "./auth-divider";
 export type { AuthDividerProp, AuthDividerProps } from "./auth-divider";
 export { AuthIdentity } from "./auth-identity";
 export type { AuthIdentityProp, AuthIdentityProps } from "./auth-identity";
+export { AuthAccountSummary } from "./auth-account-summary";
+export type { AuthAccountSummaryProp, AuthAccountSummaryProps } from "./auth-account-summary";
 export { AuthFooter } from "./auth-footer";
 export type { AuthFooterProp, AuthFooterProps } from "./auth-footer";
 export { AuthStack } from "./auth-stack";

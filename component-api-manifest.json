@@ -1319,6 +1319,84 @@
       "group": "layout",
       "props": []
     },
+    "AuthAccountSummary": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "actionLabel",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "avatarFallback",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "avatarSrc",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "email",
+          "origin": "owned",
+          "required": true,
+          "type": "string",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "onAction",
+          "origin": "owned",
+          "required": true,
+          "type": "() => void",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        }
+      ]
+    },
     "AuthDivider": {
       "group": "layout",
       "props": [
@@ -7213,11 +7291,36 @@
     },
     "InputOTP": {
       "group": "data-entry",
-      "props": []
+      "props": [
+        {
+          "name": "type",
+          "origin": "inherited-behavioral",
+          "required": false,
+          "type": "HTMLInputTypeAttribute | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts"
+          ]
+        }
+      ]
     },
     "InputOTPGroup": {
       "group": "data-entry",
-      "props": []
+      "props": [
+        {
+          "name": "appearance",
+          "origin": "owned",
+          "required": false,
+          "type": "InputOTPGroupAppearanceProp | undefined",
+          "values": [
+            "slots",
+            "grouped"
+          ],
+          "declaredIn": [
+            "src/props/components/data-entry.prop.ts"
+          ]
+        }
+      ]
     },
     "InputOTPSeparator": {
       "group": "data-entry",
@@ -12782,9 +12885,10 @@
           "name": "type",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | \"dot\" | undefined",
+          "type": "\"default\" | \"inline\" | \"dot\" | undefined",
           "values": [
             "default",
+            "inline",
             "dot"
           ],
           "declaredIn": [

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
-import { AuthIdentity, AuthStack, PageContainer } from "@godxjp/ui/layout";
+import { AuthAccountSummary, AuthIdentity, AuthStack, PageContainer } from "@godxjp/ui/layout";
 
 /**
  * AuthIdentity — canonical identity title with optional relying-party request context. The
@@ -22,6 +22,11 @@ export default function Demo() {
             <AuthIdentity
               title="Continue to Godx ID"
               requester="Enterprise Security and Compliance Administration is requesting sign in"
+            />
+            <AuthAccountSummary
+              email="very.long.authoritative.account@example.enterprise.invalid"
+              actionLabel="アカウントを切り替える"
+              onAction={() => {}}
             />
           </AuthStack>
         </CardContent>

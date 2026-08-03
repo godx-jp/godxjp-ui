@@ -205,7 +205,13 @@
   },
   "navigation": {
     "steps": {
-      "ariaLabel": "進行状況"
+      "ariaLabel": "進行状況",
+      "status": {
+        "wait": "未完了",
+        "process": "現在のステップ",
+        "finish": "完了",
+        "error": "エラー"
+      }
     },
     "breadcrumb": {
       "ariaLabel": "パンくずリスト"

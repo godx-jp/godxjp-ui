@@ -85,6 +85,7 @@ const componentPrefixes = {
     "app-shell",
     "org-switcher",
     "auth-identity",
+    "auth-account-summary",
     "auth-requester",
     "auth-footer",
     "auth-stack",

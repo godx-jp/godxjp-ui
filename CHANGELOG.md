@@ -77,6 +77,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Device-authorization public primitives (#238).** `Steps type="inline"` renders the compact
+  numbered auth progress row with localized process/finish/error/wait semantics;
+  `InputOTPGroup appearance="grouped"` renders one outline per code group without replacing the
+  real `input-otp` hidden input, paste, caret or keyboard behavior; and `AuthAccountSummary` owns
+  the compact avatar/email/switch-action row with long-email truncation and responsive wrapping.
+  All geometry is token-backed and the package adds no route, permission or mutation behavior.
+
 - **`AuthShell preset="account-recovery"` — the token-owned SCR-008 password-recovery / sign-in-MFA
   panel measure (#233).** DXS Platform could only reach the canonical 432px recovery and MFA
   challenge panels through page-local geometry, because `variant="canonical"` owns a single 360px

@@ -34,6 +34,14 @@ import type {
 } from "../vocabulary";
 import type { ResponsiveGridColumnsProp } from "./layout.prop";
 
+/** One-outline-per-group appearance for the compound InputOTP control. */
+export type InputOTPGroupAppearanceProp = "slots" | "grouped";
+
+/** @see InputOTPGroup */
+export type InputOTPGroupProp = React.HTMLAttributes<HTMLDivElement> & {
+  appearance?: InputOTPGroupAppearanceProp;
+};
+
 /** @see Input */
 export type InputProp = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Show an inline ✕ that clears the field while it holds text (default false). */
@@ -445,12 +453,7 @@ export type UploadFileItemProp = UploadFileItem;
 
 /** @see Upload */
 export type UploadVariantProp =
-  | "dropzone"
-  | "button"
-  | "picture-card"
-  | "picture"
-  | "avatar"
-  | "avatar-crop";
+  "dropzone" | "button" | "picture-card" | "picture" | "avatar" | "avatar-crop";
 
 /** @see Upload — presentational; wire `onUpload` to media-service in app api.ts */
 export type UploadProp = FieldA11yProps & {

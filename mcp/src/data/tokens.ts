@@ -295,6 +295,18 @@ export const TOKENS: TokenEntry[] = [
     role: "InputOTP slot box (gh#233). Default `var(--control-height)` — byte-identical to before and still density-aware — but its OWN knob, so an auth panel can widen the 6-slot challenge row to fill a wide surface WITHOUT re-scoping --control-height (which would resize the primary button and every other input in the same card). Set it to a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
   },
   {
+    name: "--steps-inline-{gap,item-gap,font-size,separator-size}",
+    category: "component",
+    tier: "component",
+    role: "Steps type=inline compact auth/device progress rhythm and typography. Consumers select the semantic appearance; services retune the row once without page CSS.",
+  },
+  {
+    name: "--auth-account-summary-{min-height,gap,padding,identity-min-width,avatar-size,avatar-glyph-size,email-font-size}",
+    category: "component",
+    tier: "component",
+    role: "AuthAccountSummary compact signed-in identity row: wrapping threshold, avatar, email and action rhythm. The default touch-safe row is package-owned and remains themeable without consumer selectors.",
+  },
+  {
     name: "--auth-shell-{main-align,card-stack-gap}",
     category: "component",
     tier: "component",

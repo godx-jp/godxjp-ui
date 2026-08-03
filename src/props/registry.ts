@@ -621,6 +621,12 @@ export const COMPONENT_PROP_REGISTRY = {
       },
     ],
   },
+  AuthAccountSummaryProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["DisabledProp", "ClassNameProp"],
+    local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction"],
+  },
   CenteredShellProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -1390,6 +1396,16 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: ["ValueProp", "DefaultValueProp", "SizeProp", "OnValueChangeProp", "ClassNameProp"],
+  },
+  InputOTPGroupProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
+  InputOTPGroupAppearanceProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
   },
   StepItemProp: {
     group: "navigation",

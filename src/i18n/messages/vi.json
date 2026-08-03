@@ -205,7 +205,13 @@
   },
   "navigation": {
     "steps": {
-      "ariaLabel": "Tiến trình"
+      "ariaLabel": "Tiến trình",
+      "status": {
+        "wait": "Đang chờ",
+        "process": "Bước hiện tại",
+        "finish": "Đã hoàn tất",
+        "error": "Lỗi"
+      }
     },
     "breadcrumb": {
       "ariaLabel": "Đường dẫn"

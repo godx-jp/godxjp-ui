@@ -1,0 +1,59 @@
+[
+  {
+    "viewport": {
+      "name": "1440",
+      "width": 1440,
+      "height": 900
+    },
+    "status": 200,
+    "title": "godxjp-ui · Demo",
+    "consoleErrors": [],
+    "assertions": {
+      "japaneseCopy": true,
+      "eightDigitCopy": true,
+      "oneRealOtpInput": true,
+      "twoGroupedRows": true,
+      "eightSlots": true,
+      "accountEmailVisible": true,
+      "filledValue": true
+    }
+  },
+  {
+    "viewport": {
+      "name": "1024",
+      "width": 1024,
+      "height": 900
+    },
+    "status": 200,
+    "title": "godxjp-ui · Demo",
+    "consoleErrors": [],
+    "assertions": {
+      "japaneseCopy": true,
+      "eightDigitCopy": true,
+      "oneRealOtpInput": true,
+      "twoGroupedRows": true,
+      "eightSlots": true,
+      "accountEmailVisible": true,
+      "filledValue": true
+    }
+  },
+  {
+    "viewport": {
+      "name": "390",
+      "width": 390,
+      "height": 844
+    },
+    "status": 200,
+    "title": "godxjp-ui · Demo",
+    "consoleErrors": [],
+    "assertions": {
+      "japaneseCopy": true,
+      "eightDigitCopy": true,
+      "oneRealOtpInput": true,
+      "twoGroupedRows": true,
+      "eightSlots": true,
+      "accountEmailVisible": true,
+      "filledValue": true
+    }
+  }
+]
