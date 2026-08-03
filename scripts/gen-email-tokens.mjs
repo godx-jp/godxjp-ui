@@ -46,6 +46,8 @@ export const EMAIL_COLOR_ROLES = {
   focus: "--ring",
   brand: "--success",
   brandForeground: "--success-foreground",
+  urgency: "--attention",
+  urgencyForeground: "--attention-foreground",
 };
 
 /** Extract the declarations of a top-level CSS block, keyed by custom-property name. */

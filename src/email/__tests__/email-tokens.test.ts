@@ -27,6 +27,8 @@ import {
   EMAIL_TOKENS,
   EMAIL_TOKENS_JSON,
   EMAIL_TYPOGRAPHY,
+  EMAIL_URGENCY,
+  EMAIL_URGENCY_DARK,
   emailBrandMarkSvg,
   emailBrandMarkTableHtml,
   emailInlineStyle,
@@ -56,6 +58,25 @@ const FOUNDATION_DARK = readBlock(
   /^\.dark,\s*\n:root\[data-theme="dark"\]\s*\{/m,
 );
 const EMAIL_CSS = readBlock("src/tokens/components/email.css", /^:root\s*\{/m);
+
+function relativeLuminance(hex: string): number {
+  const channels = hex
+    .slice(1)
+    .match(/.{2}/g)!
+    .map((value) => Number.parseInt(value, 16) / 255)
+    .map((value) => (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4));
+
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+}
+
+function contrastRatio(first: string, second: string): number {
+  const firstLuminance = relativeLuminance(first);
+  const secondLuminance = relativeLuminance(second);
+  return (
+    (Math.max(firstLuminance, secondLuminance) + 0.05) /
+    (Math.min(firstLuminance, secondLuminance) + 0.05)
+  );
+}
 
 // ── 1. Colours derive from the web roles, never from a copied hex ───────────────────────────────
 describe("email colours derive from the web token roles", () => {
@@ -96,12 +117,43 @@ describe("email colours derive from the web token roles", () => {
         "primaryForeground",
         "surface",
         "surfaceForeground",
+        "urgency",
+        "urgencyForeground",
       ].sort(),
     );
     expect(EMAIL_COLOR_SOURCE.surface.cssVar).toBe("--card");
     expect(EMAIL_COLOR_SOURCE.focus.cssVar).toBe("--ring");
     // The GoDX identity mark is the --success role (what --logo-godx-color points at), NOT --primary.
     expect(EMAIL_COLOR_SOURCE.brand.cssVar).toBe("--success");
+    expect(EMAIL_COLOR_SOURCE.urgency.cssVar).toBe("--attention");
+    expect(EMAIL_COLOR_SOURCE.urgencyForeground.cssVar).toBe("--attention-foreground");
+  });
+
+  it("publishes an action-required accent with an explicit contrast and usage contract", () => {
+    expect(EMAIL_URGENCY).toEqual({
+      accent: EMAIL_COLORS.urgency,
+      solidBackground: EMAIL_COLORS.urgency,
+      solidForeground: EMAIL_COLORS.urgencyForeground,
+    });
+    expect(EMAIL_URGENCY_DARK).toEqual({
+      accent: EMAIL_COLORS_DARK.urgency,
+      solidBackground: EMAIL_COLORS_DARK.urgency,
+      solidForeground: EMAIL_COLORS_DARK.urgencyForeground,
+    });
+
+    expect(contrastRatio(EMAIL_URGENCY.accent, EMAIL_COLORS.surface)).toBeGreaterThanOrEqual(3);
+    expect(
+      contrastRatio(EMAIL_URGENCY.solidBackground, EMAIL_URGENCY.solidForeground),
+    ).toBeGreaterThanOrEqual(3);
+    expect(
+      contrastRatio(EMAIL_URGENCY_DARK.accent, EMAIL_COLORS_DARK.surface),
+    ).toBeGreaterThanOrEqual(3);
+    expect(
+      contrastRatio(EMAIL_URGENCY_DARK.solidBackground, EMAIL_URGENCY_DARK.solidForeground),
+    ).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(EMAIL_COLORS.foreground, EMAIL_COLORS.surface)).toBeGreaterThanOrEqual(
+      4.5,
+    );
   });
 
   it("hslToHex matches the reference conversions the design comments record", () => {
@@ -214,6 +266,19 @@ describe("values are compatible with inline email styles", () => {
   it("EMAIL_TOKENS_JSON round-trips for non-JS template engines", () => {
     expect(JSON.parse(EMAIL_TOKENS_JSON)).toEqual(JSON.parse(JSON.stringify(EMAIL_TOKENS)));
     expect(JSON.parse(EMAIL_TOKENS_JSON).colors.primary).toBe(EMAIL_COLORS.primary);
+    expect(JSON.parse(EMAIL_TOKENS_JSON).urgency.accent).toBe(EMAIL_URGENCY.accent);
+  });
+
+  it("serialises urgency as an inline-safe rail without changing surface body copy", () => {
+    expect(
+      emailInlineStyle({
+        backgroundColor: EMAIL_COLORS.surface,
+        borderTop: `${EMAIL_SHELL.borderWidth} solid ${EMAIL_URGENCY.accent}`,
+        color: EMAIL_COLORS.foreground,
+      }),
+    ).toBe(
+      `background-color:${EMAIL_COLORS.surface};border-top:${EMAIL_SHELL.borderWidth} solid ${EMAIL_URGENCY.accent};color:${EMAIL_COLORS.foreground}`,
+    );
   });
 });
 

@@ -59,6 +59,14 @@ export const EMAIL_COLOR_SOURCE = {
   "brandForeground": {
     "cssVar": "--success-foreground",
     "hsl": "60 33% 99%"
+  },
+  "urgency": {
+    "cssVar": "--attention",
+    "hsl": "25 99% 46%"
+  },
+  "urgencyForeground": {
+    "cssVar": "--attention-foreground",
+    "hsl": "60 33% 99%"
   }
 } as const;
 
@@ -110,6 +118,14 @@ export const EMAIL_COLOR_SOURCE_DARK = {
   },
   "brandForeground": {
     "cssVar": "--success-foreground",
+    "hsl": "48 9% 9%"
+  },
+  "urgency": {
+    "cssVar": "--attention",
+    "hsl": "25 95% 56%"
+  },
+  "urgencyForeground": {
+    "cssVar": "--attention-foreground",
     "hsl": "48 9% 9%"
   }
 } as const;
