@@ -96,7 +96,12 @@ describe("AuthShell", () => {
     expect(container.querySelector('[data-slot="auth-shell"]')).not.toHaveAttribute("data-preset");
   });
 
-  it.each([["device-authorization"], ["context-selection"]] as const)(
+  it.each([
+    ["login"],
+    ["device-authorization"],
+    ["context-selection"],
+    ["account-recovery"],
+  ] as const)(
     'preset="%s" is exposed on the shell root and composes with variant="canonical"',
     (preset) => {
       const { container } = renderWithUi(
@@ -136,6 +141,19 @@ describe("AuthShell", () => {
     await expectNoA11yViolations(
       <AuthShell variant="canonical" preset="device-authorization" brand={<span>Brand</span>}>
         <div>Device code</div>
+      </AuthShell>,
+    );
+  });
+
+  it("has no axe violations under the login preset with a wrapped real requester", async () => {
+    await expectNoA11yViolations(
+      <AuthShell variant="canonical" preset="login">
+        <AuthIdentity
+          title="GoDX ID"
+          requester="Platform console browser BFF is requesting sign in to this organization"
+        />
+        <div>Login form</div>
+        <AuthFooter product="GoDX ID" terms="Terms" privacy="Privacy" />
       </AuthShell>,
     );
   });

@@ -26,15 +26,15 @@ export type CenteredShellAlignProp = "start" | "center";
 /**
  * AuthShell named flow preset — the page MEASURE contract for a canonical hosted-identity flow
  * (card max-width plus the desktop and mobile page gutters), owned by component tokens.
- * `"default"` keeps the shell's own measure; `"device-authorization"` is the 380px device-grant
- * measure with a 5px mobile inline gutter; `"context-selection"` is the 25rem organisation/context
- * picker measure that goes edge-to-edge on mobile; `"account-recovery"` is the 432px SCR-008
- * measure shared by the password-recovery and sign-in MFA challenge panels (15px mobile inline
- * gutter). Orthogonal to AuthShell's `variant` (which owns control density and heading size) —
- * combine them.
+ * `"default"` keeps the shell's own measure; `"login"` owns SCR-001's stable card anchor for
+ * standalone and requester flows; `"device-authorization"` is the 380px device-grant measure with
+ * a 5px mobile inline gutter; `"context-selection"` is the 25rem organisation/context picker
+ * measure that goes edge-to-edge on mobile; `"account-recovery"` is the 432px SCR-008 measure
+ * shared by the password-recovery and sign-in MFA challenge panels (15px mobile inline gutter).
+ * Orthogonal to AuthShell's `variant` (which owns control density and heading size) — combine them.
  */
 export type AuthShellPresetProp =
-  "default" | "device-authorization" | "context-selection" | "account-recovery";
+  "default" | "login" | "device-authorization" | "context-selection" | "account-recovery";
 
 /** Shared gap between layout children; components may document subsets. */
 export type GapProp = "xs" | "sm" | "md" | "lg" | "xl";
