@@ -72,6 +72,11 @@
   --topbar-height: auto;
   --topbar-inset: 0px;
   --topbar-gap: var(--space-2);
+  /* At compact desktop/tablet widths the docked sidebar leaves too little inline room for three
+   * intrinsically-sized clusters. The package hides the optional center slot before it can cover
+   * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy
+   * (for example `flex`) once their center content has its own compact presentation. */
+  --topbar-center-compact-display: none;
   --org-switcher-trigger-height: 2.75rem;
   --org-switcher-trigger-padding-x: var(--space-2);
   --org-switcher-avatar-size: 1.75rem;

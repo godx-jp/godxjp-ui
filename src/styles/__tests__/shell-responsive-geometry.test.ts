@@ -122,6 +122,25 @@ describe("responsive shell geometry", () => {
     expect(end).toMatch(/margin-inline-start:\s*auto;/);
   });
 
+  it("removes the optional Topbar center before it collides with long start/end content (gh#244)", () => {
+    expect(shellTokens).toContain("--topbar-center-compact-display: none;");
+
+    const collisionBlocks = mediaBlocksMentioning(shellStyles, ".ui-topbar-center").filter(
+      ({ condition }) => condition.includes("width <= 68.75rem"),
+    );
+    expect(collisionBlocks).toHaveLength(1);
+    expect(collisionBlocks[0].body).toMatch(
+      /\.ui-topbar-center\s*\{[^}]*display:\s*var\(--topbar-center-compact-display\);/s,
+    );
+
+    const startTitle = declarationsFor(shellStyles, ".ui-topbar-start > :last-child");
+    expect(startTitle).toMatch(/min-width:\s*0;/);
+    expect(startTitle).toMatch(/flex:\s*0 1 auto;/);
+    expect(startTitle).toMatch(/overflow:\s*hidden;/);
+    expect(startTitle).toMatch(/text-overflow:\s*ellipsis;/);
+    expect(startTitle).toMatch(/white-space:\s*nowrap;/);
+  });
+
   it("owns canonical mobile drawer width, backdrop, safe areas and reduced motion", () => {
     expect(shellTokens).toContain("--app-shell-mobile-nav-width: 22.5rem;");
     // The scrim knob is `initial` at :root with the shared --overlay-background default resolved at

@@ -59,12 +59,31 @@ const ENTITIES = [
   { id: "initech", name: "イニテック有限会社" },
 ] as const;
 
+const TOPBAR_COPY = {
+  ja: {
+    screenTitle: "組織セキュリティと認証ポリシーの管理",
+    search: "ユーザー、組織、監査イベントを検索…",
+  },
+  en: {
+    screenTitle: "Organization security and authentication policy administration",
+    search: "Search users, organizations, and audit events…",
+  },
+  vi: {
+    screenTitle: "Quản trị chính sách bảo mật và xác thực của tổ chức",
+    search: "Tìm người dùng, tổ chức và sự kiện kiểm toán…",
+  },
+} as const;
+
+type DemoLocale = keyof typeof TOPBAR_COPY;
+
 export default function Demo() {
   const [activeId, setActiveId] = useState("dashboard");
   const [collapsed, setCollapsed] = useState(false);
   const [activeEntity, setActiveEntity] = useState<(typeof ENTITIES)[number]>(ENTITIES[0]);
   const [unread, setUnread] = useState(true);
   const [searchOpenCount, setSearchOpenCount] = useState(0);
+  const [locale, setLocale] = useState<DemoLocale>("ja");
+  const topbarCopy = TOPBAR_COPY[locale];
 
   // start cluster · sidebar toggle + brand mark (Avatar) + an entity switcher the consumer owns.
   const start = (
@@ -104,6 +123,9 @@ export default function Demo() {
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+      <Text data-demo-topbar-title="" title={topbarCopy.screenTitle} weight="medium">
+        {topbarCopy.screenTitle}
+      </Text>
     </>
   );
 
@@ -116,7 +138,7 @@ export default function Demo() {
       onClick={() => setSearchOpenCount((n) => n + 1)}
     >
       <Search />
-      検索…
+      {topbarCopy.search}
     </Button>
   );
 
@@ -200,6 +222,19 @@ export default function Demo() {
             </CardHeader>
             <CardContent>
               <Flex direction="col" gap="sm" className="text-sm">
+                <Flex aria-label="Preview locale" gap="sm" wrap>
+                  {(["ja", "en", "vi"] as const).map((language) => (
+                    <Button
+                      key={language}
+                      size="sm"
+                      variant="outline"
+                      aria-pressed={locale === language}
+                      onClick={() => setLocale(language)}
+                    >
+                      {language.toUpperCase()}
+                    </Button>
+                  ))}
+                </Flex>
                 <Flex align="center" gap="md">
                   <Building2 className="text-muted-foreground size-4" />
                   <Text tone="muted">アクティブエンティティ</Text>
@@ -279,7 +314,8 @@ export default function Demo() {
             <CardHeader>
               <CardTitle level={2}>320px stress · 長いローカライズ内容</CardTitle>
               <CardDescription>
-                slot の優先度や overflow は consumer の責務。狭い幅で現行挙動を可視化する。
+                1100px 以下では package-owned contract が center slot を隠し、start の最後の
+                ラベルを ellipsis で切り詰めて end utilities を保護する。
               </CardDescription>
             </CardHeader>
             <CardContent>

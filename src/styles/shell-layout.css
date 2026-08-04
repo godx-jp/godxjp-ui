@@ -1215,6 +1215,14 @@
   .ui-topbar-start {
     flex: 0 1 auto;
   }
+  .ui-topbar-start > :last-child {
+    max-width: 100%;
+    min-width: 0;
+    flex: 0 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .ui-topbar-center {
     flex: 1 1 0%;
     justify-content: center;
@@ -1223,6 +1231,17 @@
     max-width: 100%;
     flex: 0 0 auto;
     margin-inline-start: auto;
+  }
+
+  /* COLLISION CONTRACT (gh#244) — with a docked 16rem sidebar, 901–1100px viewports do not have
+   * enough room for a breadcrumb/title, full search trigger and end utilities. The center slot is
+   * optional by definition, so remove it before it can cover either owned edge. This also gives
+   * phones the same deterministic allocation. A consumer with a real compact center presentation
+   * can opt it back in through the public token instead of a page-local media query. */
+  @media (width <= 68.75rem) {
+    .ui-topbar-center {
+      display: var(--topbar-center-compact-display);
+    }
   }
 
   .tb-chip {

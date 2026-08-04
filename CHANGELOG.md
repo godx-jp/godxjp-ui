@@ -39,6 +39,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Topbar now prevents center-slot collisions at compact desktop and mobile widths (#244).** At
+  1100px and below, the optional center slot follows the public
+  `--topbar-center-compact-display` contract (default `none`) before a full search trigger can
+  cover the start breadcrumb/title or end utilities. The final start-slot item now owns a real
+  shrink + ellipsis boundary. The interactive Topbar preview exercises long JA/EN/VI labels, and a
+  Chromium gate records 1440/1024/390 geometry, focus, overflow and screenshots.
+
 - **`CompactBarTrend` now has a Recharts-free public entry (#243).** Consumers that do not install
   the optional `recharts` peer can import from `@godxjp/ui/charts/compact-bar-trend` without Vite
   eagerly linking the peer-backed exports in `@godxjp/ui/charts`. The packed-public-contract gate
