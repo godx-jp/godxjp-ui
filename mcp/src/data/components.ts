@@ -352,6 +352,13 @@ import { StatCard } from "@godxjp/ui/data-display";
         description: "Collapse the sidebar to icon-only mode.",
       },
       {
+        name: "responsiveNavigation",
+        type: '"drawer" | "docked"',
+        defaultValue: '"drawer"',
+        description:
+          "Navigation strategy below the canonical 900px breakpoint. drawer exposes the accessible mobile Sheet; docked retains the token-sized sidebar grid track and suppresses the redundant drawer trigger.",
+      },
+      {
         name: "footer",
         type: "ReactNode",
         description: "App-level footer outside the main content area.",
@@ -387,6 +394,7 @@ import { StatCard } from "@godxjp/ui/data-display";
     usage: [
       "DO pass a <Sidebar> node to `sidebar` (required) and page content to `children` (required) — these are the only two required props. Everything else is optional and omitting optional slots simply removes that zone from the rendered DOM.",
       "DO rely on AppShell's OWNED mobile drawer below `lg`: it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
+      'DO set `responsiveNavigation="docked"` only when the approved product contract retains its sidebar below 900px. AppShell keeps the same sidebar/footer/active navigation in a token-sized grid track and removes the redundant drawer trigger; never reproduce this with consumer media queries.',
       "DO let the drawer nav own its own inset: AppShell renders `mobileNav` in a Sheet body whose inline padding is the `--app-shell-mobile-nav-inset` token (near-zero by default) instead of the generic 24px sheet chrome inset, so a <Sidebar> in the drawer is not double-padded (its own --sidebar-nav-scroll-padding already insets each row). If a custom `mobileNav` node needs the full chrome inset, set `--app-shell-mobile-nav-inset: var(--space-6)` in the service theme — never patch the drawer with a `[data-slot='sheet-body']` selector in app CSS.",
       "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop only when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — when `topbar` is provided, logo/topbarLeft/topbarRight are ignored entirely.",
       "DO wire a single `sidebarCollapsed` boolean between AppShell's `sidebarCollapsed` prop and Sidebar's `collapsed` prop — AppShell sets `data-collapsed='true'` on the root div (which CSS reads for width transitions) but does NOT own the collapsed state itself; lift the state and pass it down to both.",

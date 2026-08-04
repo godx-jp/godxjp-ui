@@ -83,6 +83,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **AppShell opt-in docked navigation below 900px (#242).** The new
+  `responsiveNavigation="drawer" | "docked"` contract keeps the accessible drawer as the default,
+  while approved narrow layouts can retain the same sidebar, footer/account region and active
+  navigation in the token-sized shell grid. Docked mode suppresses the redundant drawer trigger;
+  consumers no longer need page-local media queries to keep a canonical rail visible.
+
 - **Device-authorization public primitives (#238).** `Steps type="inline"` renders the compact
   numbered auth progress row with localized process/finish/error/wait semantics;
   `InputOTPGroup appearance="grouped"` renders one outline per code group without replacing the

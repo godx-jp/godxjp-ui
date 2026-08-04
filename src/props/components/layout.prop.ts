@@ -159,6 +159,17 @@ export type AppShellProp = {
   footer?: ReactNode;
   sidebarCollapsed?: boolean;
   /**
+   * Responsive navigation strategy below the canonical 900px shell breakpoint.
+   *
+   * - `"drawer"` (default) hides the docked sidebar and exposes the accessible mobile Sheet.
+   * - `"docked"` keeps the sidebar grid track, footer/account region and active navigation in the
+   *   shell at narrow widths. The sidebar width remains owned by `--app-shell-sidebar-width`.
+   *
+   * Use `"docked"` only when the product's approved responsive contract explicitly retains the
+   * rail; it intentionally suppresses the redundant mobile drawer trigger.
+   */
+  responsiveNavigation?: "drawer" | "docked";
+  /**
    * Navigation shown in the mobile drawer at the DXS 900px breakpoint, where the docked sidebar is
    * hidden. AppShell OWNS the drawer: it renders a hamburger trigger in the topbar and a focus-
    * trapped Sheet (Esc + overlay close, focus returns to the trigger) — hiding the sidebar without

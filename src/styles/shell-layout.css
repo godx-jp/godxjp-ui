@@ -574,6 +574,33 @@
     .app-mobile-nav-trigger {
       display: inline-flex;
     }
+
+    /* Some approved application contracts retain their navigation rail at narrow widths. This is
+     * an explicit AppShell mode, never a consumer media-query fork: the same sidebar node, footer,
+     * active items and token-owned rail width remain in the canonical two-track grid. */
+    .app-root[data-responsive-navigation="docked"] {
+      grid-template-areas:
+        "sidebar topbar"
+        "sidebar main"
+        "sidebar footer";
+      grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-collapsed="true"] {
+      grid-template-columns: var(--app-shell-rail-width) minmax(0, 1fr);
+    }
+
+    .app-root[data-responsive-navigation="docked"] > .app-sidebar {
+      display: flex;
+    }
+
+    .app-root[data-responsive-navigation="docked"] > .app-topbar {
+      padding-inline: var(--app-shell-bar-inset);
+    }
+
+    .app-root[data-responsive-navigation="docked"] .app-mobile-nav-trigger {
+      display: none;
+    }
   }
 
   .sb-root {

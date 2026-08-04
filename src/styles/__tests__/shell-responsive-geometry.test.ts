@@ -192,6 +192,29 @@ describe("responsive shell geometry", () => {
     expect(appShell).toContain("max-[900px]:inline-flex");
   });
 
+  it("offers an opt-in docked narrow contract without consumer media queries (gh#242)", () => {
+    const restructuring = mediaBlocksMentioning(
+      shellStyles,
+      '.app-root[data-responsive-navigation="docked"]',
+    );
+    expect(restructuring).toHaveLength(1);
+    expect(restructuring[0].condition).toBe("(width <= 56.25rem)");
+    expect(restructuring[0].body).toContain('"sidebar topbar"');
+    expect(restructuring[0].body).toContain('"sidebar main"');
+    expect(restructuring[0].body).toContain('"sidebar footer"');
+    expect(restructuring[0].body).toMatch(
+      /grid-template-columns:\s*var\(--app-shell-sidebar-width\) minmax\(0, 1fr\);/,
+    );
+    expect(restructuring[0].body).toMatch(
+      /data-responsive-navigation="docked"[^}]*> \.app-sidebar\s*\{[^}]*display:\s*flex;/s,
+    );
+    expect(restructuring[0].body).toMatch(
+      /data-responsive-navigation="docked"[^}]*\.app-mobile-nav-trigger\s*\{[^}]*display:\s*none;/s,
+    );
+    expect(appShell).toContain('responsiveNavigation = "drawer"');
+    expect(appShell).toContain("data-responsive-navigation={responsiveNavigation}");
+  });
+
   it("exposes Topbar height / inset / gap as quiet-default knobs (gh#213)", () => {
     // Defaults are byte-identical to the pre-knob behaviour: `auto` height and no inline inset (the
     // AppShell `.app-topbar` grid row owns those), and the previous 8px cluster gap.
