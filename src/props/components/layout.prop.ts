@@ -28,6 +28,9 @@ import type {
  */
 export type PageContainerHeaderLayoutProp = "stack" | "responsive-inline";
 
+/** Whole-page semantic composition owned by PageContainer. */
+export type PageContainerPresetProp = "default" | "admin-collection";
+
 /** @see PageContainer */
 export type PageContainerProp = {
   title: TitleProp;
@@ -47,6 +50,12 @@ export type PageContainerProp = {
   linkComponent?: React.ElementType;
   density?: PageDensityProp;
   variant?: PageContainerVariantProp;
+  /**
+   * Whole-page composition contract. `admin-collection` sets the header-to-toolbar rhythm,
+   * collection search measure, control height and table density once for the entire subtree.
+   * Geometry remains token-owned and service-themeable; no child needs a sizing override.
+   */
+  preset?: PageContainerPresetProp;
   /**
    * How the title band and `extra` share the header row below the 640px step. Defaults to
    * `stack` — the historical arrangement, where `extra` wraps onto its own full-width line under

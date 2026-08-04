@@ -106,6 +106,13 @@ export const COMPONENTS: ComponentEntry[] = [
         description: "Spacing density across the page subtree.",
       },
       {
+        name: "preset",
+        type: '"default" | "admin-collection"',
+        defaultValue: '"default"',
+        description:
+          'Whole-page semantic composition. "admin-collection" owns header-to-toolbar rhythm, collection search measure, control height and table density for the subtree through themeable tokens.',
+      },
+      {
         name: "headerLayout",
         type: '"stack" | "responsive-inline"',
         defaultValue: '"stack"',
@@ -145,6 +152,7 @@ export const COMPONENTS: ComponentEntry[] = [
       "DO: Use `variant='flush'` when the page body contains a full-bleed component like DataTable. Inside a flush container, wrap any padded strips (Toolbar, intro text) in `<PageContainer.Inset>` to align them with the header. Never add manual `px-*` or `p-*` padding to compensate — use PageContainer.Inset.",
       "DO: Pass `breadcrumb` as an ordered array of `{ label, to? }` objects from root to current page. The last item is automatically rendered without a link and receives `aria-current='page'`; earlier items with `to` become router `<Link>` elements. Never hand-roll a breadcrumb nav inside a PageContainer.",
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
+      "DO: Use `preset='admin-collection'` for canonical Admin list pages. It owns the toolbar/search/control/table composition once at PageContainer level; do not repeat widths, heights, cell padding or media queries on child fields and rows.",
       "DON'T: Confuse PageContainer's prop names with the old PageHeader's prop names — PageContainer uses `subtitle` (not `description`) and `extra` (not `actions`). If you see those legacy names in old code, migrate them to PageContainer.",
       "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`. DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
       'DO: Reach for `headerLayout="responsive-inline"` when a SINGLE compact header control (a member search, one primary action) must stay beside the title at 390px instead of wrapping under the subtitle. Its measure is the token `--page-header-extra-measure` (11rem) — never a consumer `w-[176px]` or a media query in app CSS. Keep the default `stack` when `extra` holds a toolbar of several buttons; squeezing those into the compact measure only makes them wrap in a narrower box.',

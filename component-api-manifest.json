@@ -9341,6 +9341,19 @@
           ]
         },
         {
+          "name": "preset",
+          "origin": "owned",
+          "required": false,
+          "type": "PageContainerPresetProp | undefined",
+          "values": [
+            "default",
+            "admin-collection"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "stickyFooter",
           "origin": "owned",
           "required": false,

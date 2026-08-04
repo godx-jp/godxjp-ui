@@ -71,6 +71,7 @@ function PageContainerRoot({
   linkComponent: LinkComponent = "a",
   density,
   variant = "default",
+  preset = "default",
   headerLayout = "stack",
   stickyFooter = false,
   footerReveal = "always",
@@ -84,6 +85,7 @@ function PageContainerRoot({
 
   return (
     <div
+      data-preset={preset}
       data-revealed={revealed ? "true" : undefined}
       className={cn(
         "ui-page-container",

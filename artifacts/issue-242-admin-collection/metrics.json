@@ -1,0 +1,47 @@
+{
+  "url": "/isolate/layout-admin-collection",
+  "cases": [
+    {
+      "width": 1440,
+      "height": 900,
+      "locale": "JA",
+      "create": "組織を作成",
+      "errors": [],
+      "containment": {
+        "documentScrollWidth": 1440,
+        "viewportWidth": 1440,
+        "tableClientWidth": 1392,
+        "tableScrollWidth": 1392,
+        "activeTag": "INPUT"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 900,
+      "locale": "EN",
+      "create": "Create organization",
+      "errors": [],
+      "containment": {
+        "documentScrollWidth": 1024,
+        "viewportWidth": 1024,
+        "tableClientWidth": 976,
+        "tableScrollWidth": 976,
+        "activeTag": "INPUT"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "locale": "VI",
+      "create": "Tạo tổ chức",
+      "errors": [],
+      "containment": {
+        "documentScrollWidth": 390,
+        "viewportWidth": 390,
+        "tableClientWidth": 390,
+        "tableScrollWidth": 672,
+        "activeTag": "INPUT"
+      }
+    }
+  ]
+}

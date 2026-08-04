@@ -712,6 +712,20 @@
 }
 
 @layer components {
+  .ui-page-container[data-preset="admin-collection"] {
+    --control-height: var(--admin-collection-control-height);
+    --space-section-active: var(--admin-collection-section-gap);
+    --filter-bar-padding-y: var(--admin-collection-toolbar-padding-y);
+    --table-row-height: var(--admin-collection-table-row-height);
+    --table-cell-padding-y: var(--admin-collection-table-cell-padding-y);
+  }
+
+  .ui-page-container[data-preset="admin-collection"] .ui-toolbar .ui-search-input {
+    inline-size: min(100%, var(--admin-collection-search-measure));
+  }
+}
+
+@layer components {
   /* Pagination is ONE horizontal row and never wraps to a second desktop line (gh#153 — the old
    * `flex-wrap: wrap` split the range / size-changer / page strip across rows). The number strip
    * (`.ui-pagination-list`) absorbs any overflow by scrolling horizontally rather than wrapping; a

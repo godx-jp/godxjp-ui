@@ -83,6 +83,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **PageContainer canonical Admin collection preset (#242).**
+  `preset="admin-collection"` now owns the collection header-to-toolbar rhythm, 320px search
+  measure, 32px control tier, compact table row/cell density and horizontal containment through
+  service-themeable semantic tokens. Consumers set one page-level API instead of repeating field,
+  row or breakpoint overrides. The responsive preview covers JA/EN/VI labels, keyboard focus and
+  narrow horizontal table containment.
+
 - **AppShell opt-in docked navigation below 900px (#242).** The new
   `responsiveNavigation="drawer" | "docked"` contract keeps the accessible drawer as the default,
   while approved narrow layouts can retain the same sidebar, footer/account region and active

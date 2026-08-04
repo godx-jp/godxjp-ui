@@ -748,6 +748,7 @@ export const COMPONENT_VI = {
     useCases: [
       "List page: title + nút Create trong `extra`.",
       "Detail page: `footer` Save/Cancel sticky.",
+      '`preset="admin-collection"`: set một lần cho nhịp toolbar, search, control và table.',
     ],
   },
   DataTable: {
