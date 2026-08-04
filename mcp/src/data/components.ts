@@ -9097,7 +9097,7 @@ export function NotifyRow() {
   {
     name: "CompactBarTrend",
     group: "data-display",
-    importPath: "@godxjp/ui/charts",
+    importPath: "@godxjp/ui/charts/compact-bar-trend",
     tagline:
       "DEPENDENCY-FREE compact vertical bar trend for dashboard summary cards — N category/value pairs, muted marks plus ONE emphasized 'current' bar, all geometry from --chart-trend-* tokens. Needs NO recharts. Sparkline / micro-chart / activity pulse / KPI trend strip.",
     props: [
@@ -9168,7 +9168,7 @@ export function NotifyRow() {
       },
     ],
     usage: [
-      'DO import from the charts entry: `import { CompactBarTrend } from "@godxjp/ui/charts";` — unlike BarChart it needs NO `recharts` peer, so an app that may not add dependencies can still use a real framework chart.',
+      'DO import from the isolated entry: `import { CompactBarTrend } from "@godxjp/ui/charts/compact-bar-trend";` — unlike the charts barrel, this path never links modules that require the optional `recharts` peer.',
       'DO reach for it INSIDE a dashboard summary card (a 7-day signup/organization/activity strip under a StatCard headline) — that is the density `size="xs"` is tuned for.',
       "DO mark the current period with `emphasizedIndex={-1}` (or an explicit index); the highlight is duplicated in the screen-reader text alternative, so it never depends on colour alone.",
       "DO retheme through the `--chart-trend-*` tokens (bar gap/radius/width, plot heights, muted + emphasis fills, opt-in baseline). NEVER add page-local CSS, an inline height calculation, or a hardcoded colour.",
@@ -9185,7 +9185,7 @@ export function NotifyRow() {
       "StatCard — the KPI headline this trend usually sits under.",
       "Progress — one ratio against a target, not a series over time.",
     ],
-    example: `import { CompactBarTrend } from "@godxjp/ui/charts";
+    example: `import { CompactBarTrend } from "@godxjp/ui/charts/compact-bar-trend";
 
 <CompactBarTrend
   label={t("dashboard.newOrganizations7d")}

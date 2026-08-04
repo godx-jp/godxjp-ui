@@ -66,6 +66,10 @@
       "types": "./dist/components/charts/index.d.ts",
       "import": "./dist/components/charts/index.js"
     },
+    "./charts/compact-bar-trend": {
+      "types": "./dist/components/charts/compact-bar-trend.d.ts",
+      "import": "./dist/components/charts/compact-bar-trend.js"
+    },
     "./ui": {
       "types": "./dist/components/ui/index.d.ts",
       "import": "./dist/components/ui/index.js"

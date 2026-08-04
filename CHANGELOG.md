@@ -39,6 +39,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`CompactBarTrend` now has a Recharts-free public entry (#243).** Consumers that do not install
+  the optional `recharts` peer can import from `@godxjp/ui/charts/compact-bar-trend` without Vite
+  eagerly linking the peer-backed exports in `@godxjp/ui/charts`. The packed-public-contract gate
+  now extracts the real tarball into a fresh consumer and runs a production Vite build with no
+  `recharts` package present, so this regression cannot pass on source-only or text-only checks.
+
 - **`check:frame-geometry` no longer reports a deliberately scrollable surface as a clipped
   control.** The sweep counted every focusable whose box sticks out of the frame, which is true of
   ALL content inside a scroll region — so a `DataTable` at 320px (`.ui-data-table-scroll`,

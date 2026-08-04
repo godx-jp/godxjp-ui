@@ -8,7 +8,10 @@ export { LineChart } from "./line-chart";
 export type { LineChartProp, LineChartProps } from "./line-chart";
 export { BarChart } from "./bar-chart";
 export type { BarChartProp, BarChartProps } from "./bar-chart";
-/** Dependency-free (no recharts) compact bar trend for dashboard summary cards. */
+/**
+ * Dependency-free compact trend. Consumers without recharts should use the isolated
+ * `@godxjp/ui/charts/compact-bar-trend` entry so this barrel does not link peer-backed charts.
+ */
 export { CompactBarTrend } from "./compact-bar-trend";
 export type { CompactBarTrendProp, CompactBarTrendProps } from "./compact-bar-trend";
 export { AreaChart } from "./area-chart";
