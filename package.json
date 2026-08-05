@@ -1,7 +1,7 @@
 {
   "name": "@godxjp/ui",
-  "version": "18.5.0",
-  "godxUiMcp": "18.5.0",
+  "version": "18.6.0",
+  "godxUiMcp": "18.6.0",
   "type": "module",
   "packageManager": "pnpm@10.29.1",
   "pnpm": {
