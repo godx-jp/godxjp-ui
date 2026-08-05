@@ -6,7 +6,246 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`CenteredShell preset="public-landing"` + `Flex hideBelow` / `hideFrom` — the public landing
+  page is now buildable from public exports and public tokens alone (#252).** SCR-007 was applying
+  consumer CSS for shared shell decisions: a 67.5rem card measure, the shell main alignment, a
+  global card-shadow kill inside the landing surface, a chromeless centred hero, a separate
+  max-width header/footer wrapper, and media queries that hide public navigation below the tablet
+  step and the wordmark + secondary action at mobile. Per `docs/COMPOSITION-VS-COMPONENT.md` a
+  landing header / hero / section grid / legal footer FAILS the Framework-Component Test (it owns
+  no behaviour and composes from `Card`/`Button`/`Text`/`Heading`/`Flex`/`ResponsiveGrid`), so
+  there is deliberately **no `PublicLandingShell`** — instead the package now owns every piece of
+  geometry that forced the page-local CSS. `preset="public-landing"` shares ONE measure
+  (`--centered-shell-landing-max-width`, 67.5rem) between the header bar, the centred column and
+  the footer — the bar/footer inline padding is `max(gutter, (100% - measure) / 2)`, so header
+  content starts on exactly the column edge with no consumer wrapper — and owns the section rhythm
+  between plain `<section>` elements, the flat public-surface card chrome
+  (`--centered-shell-landing-card-shadow: none`, rule #44), the hero `h1` tier (it re-points
+  `--heading-h1`, so a hero title stays a real `Heading level={1}`) and the 40rem compact step.
+  `Flex hideBelow`/`hideFrom` replace the consumer's own media queries at the package's canonical
+  breakpoint scale (sm 40rem · md 48rem · lg 64rem · xl 80rem, the `--master-detail-collapse-below`
+  steps). Both defaults are provably inert: `preset="default"` and an unset `hideBelow` emit no
+  attribute at all, and the stylesheets contain no `[data-preset="default"]` / bare
+  `[data-hide-below]` selector (asserted in tests, the gh#231 contract). Measured in headless
+  Chromium on `/showcase/public-landing`, LTR and RTL: **1440×900** column x=180 w=1080, bar 1440×48,
+  h1 54px; **1024×900** column x=24 w=976; **390×844** column x=16 w=358, h1 33px, nav
+  `display:none`, wordmark `display:none`; `documentElement.scrollWidth === clientWidth` (overflow 0)
+  at all three widths in both directions, card `box-shadow: none`, zero console errors.
+
+- **`Table preset="action-collection"` + `TableHead`/`TableCell` `priority` — a canonical
+  responsive approval queue that fits 390px (#253).** The public Table kept its desktop intrinsic
+  column widths, so a five-column approval queue (申請者 · 対象 · 理由 · 申請日時 · 操作) rendered
+  1511px wide inside a 1182px card and scrolled horizontally — at 390 only the first two columns
+  were in the initial frame. The preset replaces the SIZING model, not the markup: `table-layout:
+fixed` plus token-owned column-PRIORITY measures (`--table-action-collection-*`, percentages so
+  the ratio holds at any card width, with an absolute measure reserved for the row-action
+  affordance so it can never be squeezed below its touch target), and cells wrap instead of forcing
+  a scroll. There is **no display change, no role rewriting and no card transformation**, so
+  `<table>/<thead>/<th scope>/<tr>/<td>` semantics, header association, `aria-sort` and
+  screen-reader table navigation are byte-identical at 390 and at 1440. `collapseBelow` is measured
+  against the table's OWN container (a container query), not the viewport, so a queue inside a
+  master rail collapses before the page does. Measured in headless Chromium on
+  `/showcase/table-approval-queue`, LTR and RTL: the table now fits its card exactly at every width
+  (`scrollWidth === clientWidth`) — **1440** 1182px wide, columns 213/260/511/142/56; **1024** 766px
+  wide, columns 138/169/312/92/56; **390** 388px wide, columns 93/85/88/78/44 with all five headers
+  inside 1…389 — page overflow 0 everywhere, RTL mirrored, zero console errors. Defaults stay
+  inert: `preset="default"` emits neither the attribute nor the container class, and the stylesheet
+  has no `[data-preset="default"]` selector.
+
+- **`DataTable preset="action-collection"` / `collapseBelow` + `ColumnDef.priority` — the same
+  responsive approval-queue contract on the TanStack-driven table, and `--table-surface-min-inline-size`
+  (#253, residual gap).** The `Table` half of #253 shipped without `DataTable`, so a queue driven
+  through TanStack still scrolled sideways at 390: `.ui-data-table-surface` carried a hard-coded
+  `min-w-[640px] sm:min-w-0` utility pair — the literal that forced the scroll, and exactly the kind
+  of service-tunable constant rule #45 says must be a knob — and `ColumnDef` had no way to express a
+  column priority. `DataTable` now forwards `preset`/`collapseBelow` to the table it renders and
+  stamps `ColumnDef.priority` onto the column's `<th>` **and** every `<td>` (`meta.lean` is already
+  this component's declared home for custom column options, so priority needed no second TanStack
+  channel). It **reuses** the `Table` contract end to end — the same `--table-action-collection-*`
+  tokens, the same `.ui-table-collection` container query, the same four priority steps; there is
+  deliberately no parallel `--data-table-action-collection-*` family. The width floor is now
+  `--table-surface-min-inline-size` (default `640px`, byte-identical to the old utility and
+  deliberately px so it releases at exactly the px-based `sm` media query that clears it); the
+  preset opts out of it entirely, because there the priority measures own the width. Measured in
+  headless Chromium against `pnpm preview:build` on
+  `/isolate/data-display-data-table-examples-approval-queue`, LTR and RTL: the table fits its card
+  exactly at every width — **1440** 1182px, columns 212.8/260/511.4/141.8/56; **1024** 766px,
+  columns 137.9/168.5/311.7/91.9/56; **390** 388px, columns 93.1/85.4/87.9/77.6/44 with all five
+  headers inside 1…389 — `documentElement.scrollWidth === clientWidth` and
+  `.ui-data-table-scroll` overflow 0 at all three widths in both directions, zero console errors.
+  The default is provably inert: `preset="default"` emits no `data-preset` on the surface or the
+  table, an unmarked column emits no `data-priority`, the surface's class list is exactly
+  `ui-data-table-surface`, and the stylesheet contains neither `[data-preset="default"]` nor a bare
+  `.ui-data-table-surface[data-preset]` selector (asserted in tests — the gh#231 contract). The same
+  page with `preset` omitted still measures `min-inline-size: 640px` at 390 and `0` at 1024/1440.
+
+- **`ErrorSurface` — the 403 / 404 / 500 / 503 exception surface is now a real, importable component
+  (gh#251, reversing the gh#221 outcome).** #221 shipped this surface as a documentation-only
+  composition pattern; #251 proved that wrong the only way that matters — a clean install of
+  18.5.0 exposed no `ErrorSurface`, so DXS Platform was still composing `AuthShell` + a generic
+  `Card` behind a consumer-local `.canonical-auth-card`. **A consumer cannot `import` a docs page.**
+  `import { ErrorSurface } from "@godxjp/ui/layout"` now ships the whole contract:
+  `mode` is the SHELL CONTRACT, not a skin — `"application"` (403/404) renders ONLY the surface
+  block, i.e. what you put in the children of the `AppShell` the route already provides, so the
+  sidebar/topbar/breadcrumb are PRESERVED and never reconstructed (a component cannot manufacture
+  chrome from consumer-owned nav data — the one conclusion #221 got right, kept verbatim); and
+  `"system"` (500/503) owns the whole page via `CenteredShell align="center"`, so package-owned
+  geometry at 1440 / 1024 / 390 replaces every consumer `min-h-dvh` / flex-centring class / media
+  query. `status` is the input that derives the icon (`ShieldAlert` · `SearchX` · `ServerCrash` ·
+  `Wrench`) and tone (`warning` · `muted` · `destructive` · `warning`), both overridable.
+  **Exactly one** recovery action stays structural: a single `action` slot, with extras dropped and
+  a development-time error (never a throw — an exception on the exception page is how a 500 becomes
+  a blank screen). `requestId`, `permission`, `organization` and
+  `maintenance{start,end,timeZone,progress}` are semantic `<dt>`/`<dd>` metadata slots rather than
+  prose, so the label↔value relation survives for a screen reader; the maintenance window is
+  formatted by `Intl.DateTimeFormat(locale).formatRange()` from ISO-8601 instants + an IANA zone
+  with the ISO value kept in `<time dateTime>`, and `progress` renders a labelled `Progress` meter
+  named through `Intl.NumberFormat` percent style. The status code is announced as a phrase
+  ("HTTP status 403"), never the cardinal number; `titleLevel` defaults per mode (`h2` under a
+  `PageContainer` `h1`, `h1` on a system page). No state, no effects, no portals and no provider
+  requirement, so it renders fully server-side (Inertia/SSR). Verified at **0 axe violations** for
+  all four statuses in both shells, with metadata, and under `dir="rtl"`.
+
+- **Packed-tarball consumer contract for `ErrorSurface` (gh#251).** Source-only checks are exactly
+  what let the regression through, so `scripts/check-packed-public-contract.mjs` now pins
+  `ErrorSurface` (+ `ErrorSurfaceProp`/`Props`/`MaintenanceProp`/`ModeProp`/`StatusProp` and
+  `dist/components/layout/error-surface.{js,d.ts}`) in the `./layout` packed contract, and adds a
+  fresh-consumer fixture that extracts the REAL tarball into an empty `node_modules`, runs a
+  production Vite build importing `ErrorSurface` from `@godxjp/ui/layout`, then server-renders it
+  with `react-dom/server` in BOTH modes and asserts the shipped contract from the packed runtime:
+  the status code and its accessible phrase, exactly one action, the semantic metadata rows, the
+  ISO-8601 `<time>`, the progress meter, and that `application` mode builds no page shell while
+  `system` mode emits the centred column. It renders with no provider on purpose — an exception
+  page must work when the app around it is already broken.
+
+- **`--error-surface-*` component tokens.** `--error-surface-max-width` (32rem surface measure, both
+  modes), `--error-surface-gap`, `--error-surface-padding-block` / `-padding-block-compact` (the
+  desktop steps vs the 390 step), `--error-surface-brand-gap`, `--error-surface-meta-gap` /
+  `-meta-row-gap` / `-meta-padding-block` and `--error-surface-progress-max-width`. Chrome is quiet
+  by default (rule #44): `--error-surface-meta-border` is `none`, and a service opts in with
+  `1px solid hsl(var(--border))`. The narrow step is a CONTAINER query at 30rem on the surface's own
+  width (the SplitPane precedent, gh#165), so it compacts identically whether the squeeze came from
+  a phone or from an expanded application sidebar. Catalogued in `mcp/src/data/tokens.ts`.
+
+- **`@godxjp/ui/email` publishes the canonical M PLUS 2 stack, a mono face and the header lockup
+  (gh#250).** `EMAIL_TYPOGRAPHY.fontFamily` now names the DXS canonical face first and documents its
+  whole degradation path (`M PLUS 2` → Hiragino → Yu Gothic → Noto Sans JP → Meiryo → system UI →
+  Arial → `sans-serif`); no email client honours `@font-face`, so the stack IS the fallback
+  contract. New `EMAIL_TYPOGRAPHY.monoFontFamily` (`--email-font-family-mono`, mirrors
+  `--font-family-mono`) sets invoice ids, masked card numbers, ISO-8601 dates and amounts, which the
+  canonical card sets in mono and a template previously had to hand-type. Family names export
+  SINGLE-quoted so the value drops into a double-quoted `style="…"` attribute unescaped, and
+  `emailInlineStyle` now throws on a value containing `"` (it would close the attribute mid-tag)
+  alongside the existing `var()`/`calc()` guards. New `--email-mark-gap` (8px) and
+  `--email-wordmark-{font-size,font-weight}` (13px/700) publish the canonical header LOCKUP through
+  `EMAIL_BRAND_MARK.gap` / `.wordmarkFontSize` / `.wordmarkFontWeight`, so a template stops guessing
+  the mark-to-wordmark rhythm; in that pairing the mark is decorative (`label: ""`) and the wordmark
+  carries the accessible name. Everything still derives from `src/tokens/`: no hex literal exists
+  anywhere in `src/email/`, and the mark artwork remains byte-identical to
+  `<Logo mark="godx" />`.
+
+- **`Avatar shape="circle" | "square"` — a token-owned entity-header brand mark (gh#249).** The
+  public API exposed only Avatar/AvatarImage/AvatarFallback, so an organization/service header could
+  only render the round muted person avatar and a consumer had to reach for a forbidden
+  `className="rounded-md bg-primary"` override. `shape="square"` is the semantic entity mark:
+  compact rounded square on the brand surface, driven entirely by four new knobs —
+  `--avatar-square-radius` (`--radius-lg`), `--avatar-square-size` (`--control-height`, so swapping
+  shape never reflows a header) and the role-mirror pair `--avatar-square-background` /
+  `--avatar-square-foreground`, declared `initial` with `hsl(var(--primary))` /
+  `hsl(var(--primary-foreground))` resolved at the call site so a scoped `[data-tenant]`/`.dark`
+  role override still reaches the mark. The brand fill is handed down through `--avatar-background`,
+  so `AvatarFallback` picks it up with no extra rule and a service that wants a neutral square sets
+  `--avatar-square-background` alone. Measured in Chromium at 1440 / 1024 / 390: square = 6px radius,
+  32×32 box, `rgb(0,119,199)` on `rgb(253,253,252)` (**4.65:1**, WCAG AA); every circle avatar on the
+  same page stayed 9999px / `rgb(244,243,240)` / `rgb(112,110,102)`. The default is inert — `circle`
+  emits no attribute at all, so existing avatars keep their exact DOM and geometry. `shape` is
+  registered as the `AvatarShapeProp` vocabulary (`AvatarProp` in `src/props`); the control
+  `ShapeProp` (`default|pill|sharp`) is deliberately NOT reused — its `sharp` is `--radius-sharp: 0`
+  and cannot express a rounded rect.
+
+- **`ListRow density="compact"` — a token-owned compact inline-actions geometry (gh#246).** After
+  the #224 overflow fix the row and its trailing cluster wrap, which removed the page-root overflow
+  but left the canonical compact invitation composition unrepresentable through the public API: the
+  12rem `--list-row-body-min-width` forced the trailing Buttons (and a history Badge + date) onto a
+  second line inside the canonical 358px card. `density="compact"` lowers the geometry through four
+  new knobs — `--list-row-compact-{padding-y,padding-x,gap,body-min-width}` (block `--space-2`,
+  inline `--list-row-padding-x`, gap `--space-2`, threshold `6rem`); the three spacing knobs are
+  `initial` with the density-scaled default at the call site, so a `.ui-density-*` subtree
+  re-resolves them. Measured in Chromium on the preview: at 390px an invitation row goes from 126px
+  tall with the actions wrapped to **62px with the Avatar, title and both Buttons inline**, and a
+  history row (status Badge + ISO-8601 date in `trailing`) from 114px to **41px**, against the
+  canonical 42px. At 1024 / 1440 the same rows are 62px / 40–41px. It only LOWERS thresholds: the
+  row and the trailing cluster still wrap and the body is still clamped with `min(…, 100%)`, so a
+  cluster that genuinely cannot fit (a 186px pair of bilingual labels in a 324px column) drops to
+  its own line and `documentElement.scrollWidth === clientWidth` holds at 390 / 1024 / 1440 with
+  long JA/EN/VI titles. Keyboard order and focus are unchanged.
+
 ### Changed
+
+- **⚠ DELIBERATE BRAND-COLOUR CORRECTION — the GoDX identity mark is now the canonical emerald,
+  not the wakatake status green. New `--brand` / `--brand-foreground` semantic role (gh#250,
+  finishing gh#214).** This IS a visible colour change on every surface that renders the identity
+  mark; it is a correction, not a regression, and it should not be reverted as one. #214 shipped a
+  brand mark "independent of `--primary`" — true, but it was bound to `--success`, the 若竹
+  wakatake STATUS green (`#68be8d`). The canonical design system defines TWO distinct greens: the
+  wakatake `--success` (which this package already matched almost exactly, and which is correct for
+  status) and a separate identity green documented as "kept distinct from SmartHR primary". The
+  package therefore rendered the mark at **`#69bf8e`** where canonical is **`#009766`** —
+  **ΔE76 ≈ 17.5**, an obviously wrong brand colour rather than a subtle drift.
+  `--brand` is now a first-class semantic role in `src/tokens/foundation.css`, declared in both
+  `:root` and `.dark` exactly like the other roles: light **`160.5 100% 29.6%` = `#009766`**
+  (`oklch(0.595 0.137 162.94)`; carried at one decimal because an integer `160 100% 30%` would drift
+  to `#009966`), dark **`160.5 100% 36%` = `#00b87c`** — the SAME hue and chroma, lifted only in
+  lightness so the mark reads off the warm near-black spine (6.9:1 on `--background`, 6.3:1 on
+  `--card`). `--brand-foreground` is the on-fill pair (off-white light, near-black dark, mirroring
+  `--success-foreground`). Verified in headless Chromium against a real preview build: the computed
+  fill of `<Logo mark="godx" />` is `#009766` in light and `#00b87c` in dark, for the vector mark,
+  the boxed `tone="success"` fill and the wordmark alike.
+  **What visibly changes:** `<Logo mark="godx" />`, `<Logo tone="success" />` and the GoDX wordmark
+  lockup (so `AuthIdentity`, the AuthShell brand bar and any `CenteredShell` topbar that renders
+  them), plus `EMAIL_COLORS.brand` / `.brandForeground` and therefore `EMAIL_BRAND_MARK` in
+  `@godxjp/ui/email`. **What does NOT change:** every status surface. `--success` is untouched in
+  both themes — badges, alerts, progress fills, timeline done dots, password-strength segments, the
+  sidebar presence dot and `tone="success"` text all keep the wakatake green. Nothing else in the
+  library was using `--success` for identity.
+  Mechanically, `--logo-godx-color`, `--logo-wordmark-color` and `--logo-success-{background,
+foreground}` stay **role-mirror knobs**: still `initial` at `:root`, with the role default moved at
+  the CALL SITE to `hsl(var(--logo-godx-color, var(--brand)))`, so a scoped `.dark` /
+  `[data-tenant]` override of `--brand` still reaches the mark instead of freezing at `:root`.
+  On the email side only the ROLE MAP moved (`EMAIL_COLOR_ROLES.brand → --brand`); the invariant
+  that **no hex literal exists anywhere in `src/email/`** holds — the palette is still generated
+  from `src/tokens/foundation.css` and converted HSL→hex at module load.
+  Note the three same-sounding tokens are now explicitly disambiguated in the catalog: `--brand`
+  (identity), `--brand-glow-*` (the decorative radial halo) and `--text-brand` / the Tailwind
+  `text-brand` utility (the BLUE brand-numeral text slot). There is intentionally no `bg-brand`
+  utility, because `--color-brand` is already taken by `--text-brand`; identity surfaces read
+  `hsl(var(--brand))` directly in component CSS. The `Logo` wordmark also now carries
+  `data-logotype`, the attribute `check:contrast` reads for the WCAG 2.2 SC 1.4.3 logotype
+  exemption — brand-name artwork has no contrast minimum, and the library must not darken a
+  brand's own colour to satisfy one. (Contrast improved regardless: the wordmark went from
+  ~2.2:1 to 3.67:1 on the light surface, and the dark mark sits at 6.3:1.)
+  Pinned by `src/tokens/__tests__/brand-identity-role.test.ts`, which asserts the identity reads
+  `--brand` and never `--success`/`--primary`, that the status owners still read `--success`, and
+  that the two greens stay visibly distinct.
+
+- **Email base tokens reconciled with the SCR-302 canonical reference (gh#250).** Measured from
+  `.design/DXS Email Templates.dc.html` and confirmed pixel-for-pixel against the 1440 reference
+  raster, the email ramp was carrying the WEB scale rather than the canonical email one. Typography:
+  title `20px/1.25` weight 700 → **`17px/1.7` weight 500** (a transactional title is calm, not
+  bold), body line-height `1.7` → **`1.9`**, legal band `12px/1.5` → **`11px/1.8`**, mobile title
+  `18px` → **`16px`** (it must never exceed the desktop title). Primary CTA: `44px` tall with `24px`
+  inline padding and a `700` label → **`36px` (mirrors `--control-height-lg`), `16px` padding
+  (`--space-4`), `500` label** — still clearing WCAG 2.2 SC 2.5.8 (24×24), and the mobile reflow
+  still takes it full-bleed. Brand mark: the ARTWORK was already correct — byte-identical to
+  `<Logo mark="godx" />` and to the canonical raster, contrary to the report of a differing glyph —
+  but the rendered box was the 32px web box; it is now the canonical **22px** header box. The CTA
+  colour pair is CONFIRMED, not changed: `EMAIL_COLORS.primary` / `primaryForeground` keep deriving
+  from `--primary` / `--primary-foreground`, because pasting the canonical console's hex would break
+  the no-drift guarantee that is the whole point of this export. The `--email-*` tokens, the
+  `@godxjp/ui/email` export, the MCP catalog and the `foundation/email-tokens` specimen all move
+  together; templates pinned to the old geometry should re-render against the specimen.
 
 - **Restore the checked-in DXS hi-fi baseline across every shell and data surface** — AppShell and
   CenteredShell chrome now use the 48px reference height, flat card topbars, a warm muted main
@@ -38,6 +277,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   impersonate.
 
 ### Fixed
+
+- **`Tabs variant="line"` no longer keeps a ring around the SELECTED trigger — and the keyboard
+  focus ring is finally its own state (gh#248).** `TabsTrigger` painted the selected state with
+  `data-[state=active]:ring-1 ring-primary/25` for every variant, so the underline-only line variant
+  still drew a card-like border no consumer could remove without a page-local override. Worse, both
+  states used the same Tailwind `ring-*` utilities at equal specificity, so the 1px selected ring
+  simply swallowed the 3px `focus-visible:ring-[3px]` keyboard ring. The selected ring is now scoped
+  to the default/card lists (`group-data-[variant=default]/tabs-list:`), and the line indicator moved
+  out of the `after:*` utilities into a token-owned rule reading
+  `--tabs-indicator-{background,size,offset}` (`initial` → `hsl(var(--primary))`, 2px, offset 0).
+  Measured in Chromium at 1440 / 1024 / 390 on `/frame/navigation-tabs`: a mouse-selected line tab
+  now computes a **fully transparent box-shadow** plus a 2px `rgb(0,119,199)` bar, while a genuinely
+  keyboard-focused one (Tab, then ArrowRight) computes `oklab(… / 0.5) 0 0 0 **3px**` plus
+  `outline: solid 1px` — before the fix BOTH states computed the same `oklab(… / 0.25) 0 0 0 1px`.
+  Default/card triggers are unchanged (1px ring + `shadow-sm`), the strips still scroll their own
+  overflow at 390, and the console stayed clean. Two side fixes fall out: the `items` API now
+  actually forwards `variant="line"` to its `TabsList` (previously it styled the list through
+  `className`, leaving `data-variant="default"` so no line rule ever matched, and the underline was a
+  duplicate hand-rolled `border-b-2 border-primary`), and the vertical rail uses logical
+  `inset-inline-end` instead of the physical `after:-right-1`, so it flips under `dir="rtl"`
+  (verified: `right:0` in LTR → `left:0` in RTL).
+
+- **`DataTable.Pagination` now owns its own inset instead of declaring `padding-top` only
+  (gh#236).** The footer ships as a self-contained slot and is usually dropped straight into the
+  documented flush container (`<Card><CardContent flush><DataTable/>`), where no ancestor supplies
+  padding — so the "rows per page" label and the page-size `Select` sat flush against the container
+  edge and its closing border. Measured in Chromium on the preview at 1440 / 1024 / 390: computed
+  padding was `7.36px 0 0 0` (numbered) / `8.64px 0 0 0` (cursor) and the label started at the
+  container's own inline edge, 13px inside of the first column's text axis. It now declares
+  `padding-block` + `padding-inline` from two new knobs, giving `7.36px 12px 7.36px 12px` /
+  `8.64px 12px 8.64px 12px`, with the label at 36px against the first column's text at 37px (the
+  1px table border) — on the same optical axis, with the block-end breathing room restored. The
+  block value still differs per density scope, which is the point: both knobs are declared
+  `initial` with their density-scaled defaults resolved at the call site, so a `.ui-density-*`
+  subtree re-resolves them instead of freezing at `:root`. Consumer apps can drop their local
+  `.ui-data-table-pagination` overrides.
 
 - **`Sidebar` no longer shears descenders and Vietnamese tone marks off every nav label (gh#254).**
   `.sb-label` clips with `overflow: hidden` but declared no line-height, so it inherited
@@ -105,6 +380,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   on a not-yet-interactive strip. No assertion was weakened, retried away or removed.
 
 ### Added
+
+- **`PageContainer` bounded page `measure` — one shared header+body measure, orthogonal to
+  `variant` (#245, #247).** The new `measure="default" | "narrow" | "medium"` prop caps the page
+  HEADER and the page BODY to a single token-owned measure, so a header `extra` action ends flush
+  with the body surface instead of stranded at the page edge. This is the gap both consumer issues
+  hit: `variant="narrow"` caps only `.ui-page-body` (header action left at x≈1416 at 1440), and
+  because chrome and measure were the SAME variant axis, the quiet `variant="ghost"` rhythm a
+  notification feed wants could not be combined with a bounded measure at all. `measure` is a third
+  independent axis, so `variant="ghost" measure="medium" headerLayout="responsive-inline"` composes
+  as the canonical quiet feed. New semantic tokens `--page-measure-narrow` (42rem) and
+  `--page-measure-medium` (48rem) are OUTER measures — the package-owned page gutters sit inside the
+  cap — so a service theme retunes both presets in one place and no consumer writes a page-local
+  `max-width`. Measured in headless Chromium against the built stylesheet, emulating the AppShell
+  main region (256px rail + the 80rem page boundary): `measure="medium"` renders a **720px** visible
+  surface at **x=280..1000 at both 1440 and 1024**, with the header action's end edge landing on
+  **x=1000**, exactly on the card edge; `measure="narrow"` renders 624px (x=280..904); at 390 nothing
+  binds and the surface stays fluid at **358px** with the 16px compact gutter, while
+  `headerLayout="responsive-inline"` still holds the action on the title row (x=198..374, 176px).
+  RTL mirrors the whole measure to the inline-end edge (1440: body x=672..1440, card 696..1416).
+  The cap is `max-inline-size`, never a width, and the footer is deliberately left uncapped because
+  its border/background is page chrome when `stickyFooter` pins it. No new "quiet header" token was
+  needed: `--page-header-divider` already defaults to `none` (cardinal rule #44) and `ghost` already
+  drops the header's bottom pad. `measure="default"` is inert by construction — it emits
+  `data-measure="default"`, which matches NO selector in the stylesheet (the gh#231
+  `data-layout="stack"` precedent, asserted by a test), and every existing page measured
+  `max-inline-size: none` on both bands in the browser.
 
 - **PageContainer canonical Admin collection preset (#242).**
   `preset="admin-collection"` now owns the collection header-to-toolbar rhythm, 320px search

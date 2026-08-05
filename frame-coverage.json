@@ -49,7 +49,8 @@
     "data-display/card": "data-display/card/index",
     "data-display/data-table": "data-display/data-table/index",
     "general/button": "general/button/index",
-    "layout/legal-document-shell": "layout/legal-document-shell/index"
+    "layout/legal-document-shell": "layout/legal-document-shell/index",
+    "layout/error-surface": "layout/error-surface/index"
   },
   "excludeExports": [
     "useFormLayout",

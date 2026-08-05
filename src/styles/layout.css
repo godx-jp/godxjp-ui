@@ -411,6 +411,29 @@
     max-width: 42rem;
   }
 
+  /* `measure` (gh#245 / gh#247) — a bounded page measure axis ORTHOGONAL to `variant`, so the
+   * quiet `ghost` chrome and a narrow/medium measure finally compose (they used to be the same
+   * variant axis, which is exactly why a notification feed could not have both). Unlike
+   * `variant="narrow"` — which caps only the body and leaves the header `extra` action stranded
+   * at the page edge — this caps the HEADER and the BODY to ONE shared measure, so the action
+   * ends on the same edge as the body surface. Both elements carry the identical page gutters,
+   * so their content edges line up exactly at both ends.
+   *
+   * `measure="default"` is the inert default: it emits `data-measure="default"`, which matches NO
+   * rule here, so every existing page renders byte-identically (the gh#231 `data-layout="stack"`
+   * precedent). The cap is a max, never a width — below it the page stays fluid, so 390px keeps
+   * the full compact-gutter surface. The footer is deliberately NOT capped: its border/background
+   * is page-level chrome that must span the page when `stickyFooter` pins it. */
+  .ui-page-container[data-measure="narrow"] .ui-page-header,
+  .ui-page-container[data-measure="narrow"] .ui-page-body {
+    max-inline-size: var(--page-measure-narrow);
+  }
+
+  .ui-page-container[data-measure="medium"] .ui-page-header,
+  .ui-page-container[data-measure="medium"] .ui-page-body {
+    max-inline-size: var(--page-measure-medium);
+  }
+
   /* flush = full-bleed body (DataTable); header/footer keep their inset. */
   .ui-page-container--flush .ui-page-body {
     padding-inline-start: 0;
@@ -1133,6 +1156,68 @@
     .ui-legal-document-footer {
       grid-column: 2;
       grid-row: 3;
+    }
+  }
+}
+
+@layer components {
+  /* ── Flex responsive region visibility (gh#252) ──────────────────────────────────────────────
+   * `hideBelow` / `hideFrom` are the ONE public way to drop a layout region at a breakpoint step.
+   * Without them a public header cannot hide its anchor navigation below the tablet step, or show
+   * a compact-only affordance, without a page-local media query — which is exactly the API-first
+   * violation gh#252 reports. The steps are the package's canonical breakpoint scale, the same
+   * values `--master-detail-collapse-below` uses (sm 40rem · md 48rem · lg 64rem · xl 80rem); a
+   * media query cannot read a `var()`, so the step values are the tokenized scale written out.
+   *
+   * Both props default to `undefined`, so NO `data-hide-*` attribute is emitted and none of these
+   * selectors can match — every existing Flex is untouched (the gh#231 inert-default contract).
+   * `display: none` removes the region from the a11y tree too, which is the point: the destination
+   * must stay reachable from another region (the footer nav) at that width. */
+  @media (width < 40rem) {
+    .ui-flex[data-hide-below="sm"] {
+      display: none;
+    }
+  }
+
+  @media (width < 48rem) {
+    .ui-flex[data-hide-below="md"] {
+      display: none;
+    }
+  }
+
+  @media (width < 64rem) {
+    .ui-flex[data-hide-below="lg"] {
+      display: none;
+    }
+  }
+
+  @media (width < 80rem) {
+    .ui-flex[data-hide-below="xl"] {
+      display: none;
+    }
+  }
+
+  @media (width >= 40rem) {
+    .ui-flex[data-hide-from="sm"] {
+      display: none;
+    }
+  }
+
+  @media (width >= 48rem) {
+    .ui-flex[data-hide-from="md"] {
+      display: none;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .ui-flex[data-hide-from="lg"] {
+      display: none;
+    }
+  }
+
+  @media (width >= 80rem) {
+    .ui-flex[data-hide-from="xl"] {
+      display: none;
     }
   }
 }

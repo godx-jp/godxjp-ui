@@ -120,6 +120,13 @@ export const COMPONENTS: ComponentEntry[] = [
           'How the title band and `extra` share the header row BELOW the 640px step. "stack" (default) drops `extra` onto its own full-width line under the subtitle. "responsive-inline" keeps it beside the title at the token-owned --page-header-extra-measure (11rem) and lets the title/subtitle wrap — use it for ONE compact control (a search field, a single primary action) that must stay on the title row at 390px. At >=640px the two arrangements are identical.',
       },
       {
+        name: "measure",
+        type: '"default" | "narrow" | "medium"',
+        defaultValue: '"default"',
+        description:
+          'Bounded page MEASURE shared by the header AND the body — a third axis, ORTHOGONAL to `variant` (chrome) and `headerLayout` (arrangement). "default" applies no cap (the historical fluid page). "narrow" (--page-measure-narrow, 42rem outer → 624px visible surface) and "medium" (--page-measure-medium, 48rem outer → 720px visible surface) cap BOTH bands, so a header `extra` action ends flush with the body surface instead of stranded at the page edge — unlike variant="narrow", which caps only the body. The package-owned page gutters sit INSIDE the cap, and it is a max, so a 390px viewport stays fluid (358px surface at the 16px compact gutter). The footer is intentionally not capped (its border/background is page chrome when `stickyFooter` pins it).',
+      },
+      {
         name: "stickyFooter",
         type: "boolean",
         defaultValue: "false",
@@ -157,6 +164,8 @@ export const COMPONENTS: ComponentEntry[] = [
       "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`. DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
       'DO: Reach for `headerLayout="responsive-inline"` when a SINGLE compact header control (a member search, one primary action) must stay beside the title at 390px instead of wrapping under the subtitle. Its measure is the token `--page-header-extra-measure` (11rem) — never a consumer `w-[176px]` or a media query in app CSS. Keep the default `stack` when `extra` holds a toolbar of several buttons; squeezing those into the compact measure only makes them wrap in a narrower box.',
       "DO: Know the header draws NO bottom divider by default — it is governed by the semantic token `--page-header-divider` (default `none`). A service theme opts in once, globally, with `--page-header-divider: 1px solid hsl(var(--border));` in its theme CSS. Never re-create the divider with a `border-b` utility on the header or a `<Separator>` under the title; `variant='ghost'` stays divider-less regardless of the token.",
+      'DO: Bound a readable/feed page with `measure="medium"` (720px visible surface) or `measure="narrow"` (624px) — NEVER a page-local `max-w-[720px]`, a wrapper div, or a consumer CSS variable override. `measure` caps the HEADER and the BODY together, which is the whole point: with `variant="narrow"` the header action stays out at the page edge while the body is 624px, so the action and the card do not share an end edge. Retune the presets once in a service theme via `--page-measure-narrow` / `--page-measure-medium`.',
+      'DO: Compose the axes — `variant="ghost" measure="medium" headerLayout="responsive-inline"` is the canonical quiet notification/inbox feed: ghost owns the quiet header rhythm (no divider, no header bottom pad, tighter title→body gap), `measure` owns the shared 720px measure, `headerLayout` keeps one compact control on the title row at 390px. They are independent props precisely so chrome and measure are no longer one variant axis. DON\'T stack `variant="narrow"` on top of `measure` — the measure rule simply wins on the body (verified in Chromium: variant="narrow" + measure="medium" resolves the body to 768px, not the intersection), so the `variant="narrow"` is dead weight that only misleads the next reader. `variant="narrow"` is the legacy body-only cap; `measure="narrow"` is the same 624px surface with the header included.',
     ],
     useCases: [
       "A master list page (e.g. invoices, journal entries, customers) where the header holds the page title, a 'New Invoice' button in `extra`, a breadcrumb trail, and a full-bleed DataTable as the body — use `variant='flush'` + `<PageContainer.Inset>` for the Toolbar above the table.",
@@ -225,6 +234,18 @@ export default function OrdersPage() {
         type: "boolean",
         defaultValue: "false",
         description: "Allows children to wrap onto additional flex lines.",
+      },
+      {
+        name: "hideBelow",
+        type: '"sm" | "md" | "lg" | "xl"',
+        description:
+          'Drop this region below a canonical breakpoint step (sm 40rem, md 48rem, lg 64rem, xl 80rem). THE public way to make a region responsive without a page-local media query — a public header hides its anchor navigation with hideBelow="md" (gh#252). Omitted by default, so no attribute is emitted and no rule matches. display:none also removes it from the a11y tree, so keep its destinations reachable elsewhere (a footer nav) at that width.',
+      },
+      {
+        name: "hideFrom",
+        type: '"sm" | "md" | "lg" | "xl"',
+        description:
+          "Inverse of hideBelow — drop the region FROM that step upwards, i.e. keep it only on the narrow side (a compact-only affordance).",
       },
     ],
     usage: [
@@ -602,6 +623,13 @@ export function DeviceAuthorizationPage() {
         description:
           'Block alignment of the centred column inside the 100dvh shell. "start" (default) keeps the top-aligned flowing/scrolling page shape. "center" centres the column in the viewport — the SYSTEM-level standalone surface (a 500/503 error page, a maintenance notice); the full-page geometry stays package-owned (--centered-shell-column-offset-block: auto) instead of a consumer writing min-h-dvh + flex centring or a className. Overflowing content still scrolls from the top, so a long localized message is never clipped.',
       },
+      {
+        name: "preset",
+        type: '"default" | "public-landing"',
+        defaultValue: '"default"',
+        description:
+          'Whole-page shell contract. "default" emits no attribute and keeps the exact box. "public-landing" owns the PUBLIC landing geometry (gh#252): ONE content measure shared by the header bar, the centred column and the footer (--centered-shell-landing-max-width, 67.5rem), the section rhythm between page sections, the flat elevation-free card chrome (--centered-shell-landing-card-shadow: none) and the hero h1 tier — plus the compact step at 40rem. A landing composition therefore needs no page-local CSS, no max-width wrapper and no descendant selector against shell internals.',
+      },
     ],
     usage: [
       "DO use CenteredShell for an AUTHENTICATED page that has a topbar with actions but NO sidebar — the hosted-ID 'My Page', an account / self-service surface, a standalone settings page. It is the third shell: AppShell (needs a sidebar) · AuthShell (unauthenticated narrow card) · CenteredShell (authenticated centred column).",
@@ -609,7 +637,7 @@ export function DeviceAuthorizationPage() {
       "DO pick `width` by content: `sm` (~32rem) for a single settings form, `md` (default, ~46rem) for a My Page of stacked sections, `lg` (~64rem) for a service-launcher grid. All are wider than AuthShell's 24rem card.",
       "DO wrap an individual section in <Reveal> for entrance motion — CenteredShell stays layout-only and delegates prefers-reduced-motion handling to Reveal (same as AuthShell).",
       "DO NOT use AuthShell for an authenticated page (it centres a narrow card VERTICALLY and has no actions slot), and DO NOT force AppShell with an empty sidebar — use CenteredShell. Never nest it inside AppShell/AuthShell (or vice-versa); it is a ROOT shell.",
-      'DO use `align="center"` (+ `width="sm"`) for a SYSTEM-level standalone page — a 500/503 error surface, a maintenance notice. It centres the column in the 100dvh shell at 1440/1024/390 with no consumer `min-h-dvh` / flex CSS and no className; the knob is --centered-shell-column-offset-block. There is NO ErrorSurface component: get the full 403/404/500/503 recipe from the `error-pages` pattern.',
+      'DO use `align="center"` (+ `width="sm"`) for a SYSTEM-level standalone page — a 500/503 error surface, a maintenance notice. It centres the column in the 100dvh shell at 1440/1024/390 with no consumer `min-h-dvh` / flex CSS and no className; the knob is --centered-shell-column-offset-block. For an actual 403/404/500/503 page do NOT wire this by hand — use `ErrorSurface`, which renders this shell itself in `mode="system"`.',
     ],
     useCases: [
       'Hosted GoDX ID \'My Page\': <CenteredShell topbar={<Topbar start={<Brand/>} end={<><AppSettingPicker kind="locale"/><UserMenu/></>}/>} footer={<Footer/>} width="md"> with an identity hero, an org picker, a service-launcher grid and a team list.',
@@ -1103,6 +1131,180 @@ import { PanelLeftClose, Search } from "lucide-react";
     rules: [24],
   },
   {
+    name: "ErrorSurface",
+    group: "layout",
+    tagline:
+      'Package-owned semantic exception surface for 403 / 404 / 500 / 503. `mode` is the SHELL CONTRACT: "application" renders the body you put inside the AppShell the route already provides (chrome PRESERVED, never reconstructed); "system" owns the whole page via CenteredShell align="center" (package-owned 1440/1024/390 geometry). Exactly one recovery action, plus semantic request-id / permission / organization / maintenance metadata slots.',
+    props: [
+      {
+        name: "mode",
+        type: '"application" | "system"',
+        required: true,
+        description:
+          'The shell contract, not a skin. "application" (403/404) renders ONLY the surface block — put it in AppShell\'s children (usually inside a PageContainer) so the sidebar/topbar/breadcrumb stay mounted; it cannot build chrome, because nav data and the user menu are consumer-owned. "system" (500/503) renders the whole page: CenteredShell align="center", so no consumer min-h-dvh / flex class / media query.',
+      },
+      {
+        name: "status",
+        type: "403 | 404 | 500 | 503",
+        required: true,
+        description:
+          "The HTTP status (a NUMBER, not a string). It is the input that drives the default icon (ShieldAlert 403 · SearchX 404 · ServerCrash 500 · Wrench 503) and tone (warning 403/503 · muted 404 · destructive 500). Also rendered as the compact tabular status code, announced as 'HTTP status 403' rather than the cardinal number.",
+      },
+      {
+        name: "title",
+        type: "ReactNode",
+        required: true,
+        description:
+          "Headline. Consumer-owned copy from the APP's own t() — @godxjp/ui ships no product text.",
+      },
+      {
+        name: "action",
+        type: "ReactNode",
+        required: true,
+        description:
+          "The ONE recovery action (a Button, or Button asChild wrapping a router Link). A single slot IS the enforcement: pass a fragment with two buttons and only the first renders, with a development-time console error. Support contact goes in `description`, never in a second CTA.",
+      },
+      {
+        name: "description",
+        type: "ReactNode",
+        description:
+          "Supporting sentence under the title. Put support-contact guidance here. Its measure is owned by --empty-state-description-max-width.",
+      },
+      {
+        name: "requestId",
+        type: "string",
+        description:
+          "Support correlation id, rendered as a <dt>/<dd> metadata row with a localized 'Request ID' label and a mono/tabular value so it can be read out or copied accurately. Pass the bare id — never write it into `description` as prose.",
+      },
+      {
+        name: "permission",
+        type: "ReactNode",
+        description:
+          "The permission/role the viewer is missing (403). Pass the bare permission name ('reports.view'); the localized 'Required permission' label is the surface's.",
+      },
+      {
+        name: "organization",
+        type: "ReactNode",
+        description:
+          "The organization/tenant the failed request was scoped to. Together with `permission` this is what distinguishes a wrong-workspace 403 from a missing-role 403.",
+      },
+      {
+        name: "maintenance",
+        type: "{ start: string; end?: string; timeZone?: string; progress?: number }",
+        description:
+          "Planned-outage timing (503). `start`/`end` are ISO-8601 INSTANTS and `timeZone` an IANA id: the surface formats them with Intl.DateTimeFormat(locale).formatRange() and keeps the ISO value in <time dateTime>. NEVER pass a pre-formatted '18:00 - 20:00 JST' string. `progress` (0-100) adds a labelled Progress meter named via Intl.NumberFormat percent style; it is SERVER-SENT on purpose — deriving it from the client clock breaks SSR hydration.",
+      },
+      {
+        name: "icon",
+        type: "ComponentType<{ className?: string }>",
+        description:
+          "Override the status-derived icon. Use only when the product has a truer glyph for the failure, never to change perceived severity.",
+      },
+      {
+        name: "tone",
+        type: '"muted" | "info" | "success" | "warning" | "destructive"',
+        description:
+          "Override the status-derived tone (same union as EmptyState.tone). Defaults: 403/503 warning · 404 muted · 500 destructive.",
+      },
+      {
+        name: "titleLevel",
+        type: "1 | 2 | 3 | 4",
+        description:
+          "Semantic heading level of `title`. Defaults to 2 in application mode (a PageContainer h1 sits above) and 1 in system mode (the surface IS the page). Choose it to keep the outline valid, never for size.",
+      },
+      {
+        name: "brand",
+        type: "ReactNode",
+        description:
+          "system mode ONLY — brand slot above the status code (a Logo). Ignored in application mode, where the shell already shows the brand.",
+      },
+      {
+        name: "footer",
+        type: "ReactNode",
+        description:
+          "system mode ONLY — the page footer (contentinfo): copyright, status page link, locale switch.",
+      },
+      {
+        name: "width",
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"sm"',
+        description:
+          "system mode ONLY — measure of the centred column (the CenteredShell width tier).",
+      },
+      { name: "id", type: "string", description: "Root element id." },
+      { name: "className", type: "string", description: "Root class override (rarely needed)." },
+    ],
+    usage: [
+      "DO use ErrorSurface for ANY 403 / 404 / 500 / 503 page. It is a real import from @godxjp/ui/layout — never hand-compose an error page from AuthShell + a generic Card, and never add a consumer-local `.canonical-auth-card`-style class (that workaround IS the gh#251 regression).",
+      'DO put mode="application" INSIDE the shell the route already renders: <AppShell …><PageContainer …><ErrorSurface mode="application" …/></PageContainer></AppShell>. The surface returns only its own block on purpose, so the sidebar/topbar/breadcrumb survive and the user can navigate away.',
+      'DO use mode="system" for 500/503 and pass NOTHING for geometry — the surface renders CenteredShell align="center" itself. A className="min-h-dvh flex items-center" is always wrong.',
+      "DO pass ONE action. A second CTA is dropped with a development error; put 'contact support' in `description`.",
+      "DO pass `maintenance` as ISO-8601 instants + an IANA timeZone and let Intl format it. A hand-built window string cannot localize, and a client-derived `progress` breaks SSR hydration.",
+      "DO let `status` pick the icon and tone. Override them only for a truer product glyph — never to recolour a status into a different severity.",
+      "DO NOT retune the geometry with a className: --error-surface-max-width, --error-surface-gap, --error-surface-padding-block(-compact), --error-surface-meta-* and --error-surface-progress-max-width are the knobs. The metadata divider defaults to `none` (rule #44); opt in with --error-surface-meta-border.",
+      "DO NOT write the request id, the missing permission or the maintenance window into `description` as prose — each is a semantic <dt>/<dd> slot, and prose loses the label↔value relationship for a screen reader.",
+      "DO NOT use AuthShell for an error page: it is the UNAUTHENTICATED root and imposes auth-card geometry.",
+    ],
+    useCases: [
+      'Inertia/Laravel exception page (SCR-006): one Error.tsx receives `status` from Handler::render() and renders <ErrorSurface mode={status >= 500 ? "system" : "application"} status={status} … />, with Error.layout keeping the authenticated shell for 403/404 only.',
+      'Forbidden report inside the console: <ErrorSurface mode="application" status={403} permission="reports.view" organization="Acme KK" action={<Button asChild><Link href="/">Back</Link></Button>} /> inside the existing AppShell + PageContainer.',
+      'Planned maintenance page: <ErrorSurface mode="system" status={503} maintenance={{ start, end, timeZone: "Asia/Tokyo", progress: 40 }} brand={<Logo glyph="G" />} footer={…} />.',
+      'Unexpected failure with a support correlation id: <ErrorSurface mode="system" status={500} requestId="01J9Z0…" action={<Button onClick={reload}>Reload</Button>} />.',
+    ],
+    related: [
+      'CenteredShell — the viewport-centred page shell that ErrorSurface renders internally for mode="system". Use it directly only for a standalone surface that is NOT one of the four HTTP statuses.',
+      'AppShell + PageContainer — what you wrap around a mode="application" surface. ErrorSurface never builds them: nav sections and the user menu are consumer-owned data.',
+      "EmptyState — the zero-state primitive ErrorSurface composes for its icon/title/description/action body. Use it directly for an empty LIST or an empty section, not for an HTTP exception page.",
+      "AlertQueryError / humanError — inline, in-page query failure feedback. ErrorSurface is the whole PAGE; an inline alert is the right pick when the surrounding page still works.",
+      "Progress — the meter ErrorSurface renders for maintenance.progress.",
+    ],
+    example: `import { Button, Logo, Text } from "@godxjp/ui/general";
+import { AppShell, ErrorSurface, PageContainer, Sidebar } from "@godxjp/ui/layout";
+
+// 403 — APPLICATION mode: the body inside the shell the route ALREADY renders.
+// The sidebar/topbar/breadcrumb are preserved; the surface builds no chrome.
+export function ForbiddenPage() {
+  return (
+    <AppShell sidebar={<Sidebar activeId="reports" sections={sections} />}>
+      <PageContainer title="レポート" breadcrumb={[{ label: "ホーム", to: "/" }, { label: "レポート" }]}>
+        <ErrorSurface
+          mode="application"
+          status={403}
+          title={t("errors.403.title")}
+          description={t("errors.403.description")}
+          permission="reports.view"
+          organization="株式会社ゴッドエックス"
+          action={<Button onClick={goHome}>{t("errors.backHome")}</Button>}
+        />
+      </PageContainer>
+    </AppShell>
+  );
+}
+
+// 503 — SYSTEM mode: the surface owns the page. No className, no min-h-dvh, no media query.
+export function MaintenancePage() {
+  return (
+    <ErrorSurface
+      mode="system"
+      status={503}
+      brand={<Logo glyph="G" />}
+      title={t("errors.503.title")}
+      description={t("errors.503.description")}
+      maintenance={{
+        start: "2026-08-02T18:00:00Z",   // ISO-8601 instant, server-sent
+        end: "2026-08-02T20:00:00Z",
+        timeZone: "Asia/Tokyo",           // IANA — explicit, so SSR and client agree
+        progress: 40,                     // 0-100, server-sent (never from the client clock)
+      }}
+      footer={<Text size="xs" tone="muted">2026 GodX</Text>}
+      action={<Button onClick={reload}>{t("errors.reload")}</Button>}
+    />
+  );
+}`,
+    storyPath: "layout/ErrorSurface.stories.tsx",
+    rules: [23, 24],
+  },
+  {
     name: "LegalDocumentShell",
     group: "layout",
     tagline:
@@ -1518,7 +1720,7 @@ import { Trash2 } from "lucide-react";
         type: '"glyph" | "godx"',
         defaultValue: '"glyph"',
         description:
-          'Semantic mark artwork. "godx" renders THE CANONICAL GoDX IDENTITY MARK as an inline vector owned by the package — use it for hosted-identity surfaces (AuthShell brand bar, AuthIdentity, CenteredShell topbar); do NOT re-draw or import a brand SVG in the app. Its box + colour are tokenized (--logo-godx-size, --logo-godx-color, default the --success role) and it drops the boxed fill/radius. "glyph" keeps the configurable boxed-glyph treatment.',
+          'Semantic mark artwork. "godx" renders THE CANONICAL GoDX IDENTITY MARK as an inline vector owned by the package — use it for hosted-identity surfaces (AuthShell brand bar, AuthIdentity, CenteredShell topbar); do NOT re-draw or import a brand SVG in the app. Its box + colour are tokenized (--logo-godx-size, --logo-godx-color, defaulting to the --brand IDENTITY role = canonical emerald #009766, never --primary and never the --success status green) and it drops the boxed fill/radius. "glyph" keeps the configurable boxed-glyph treatment.',
       },
       {
         name: "size",
@@ -1532,13 +1734,13 @@ import { Trash2 } from "lucide-react";
         type: '"primary" | "success"',
         defaultValue: '"primary"',
         description:
-          'Semantic fill role. "success" gives the canonical green identity mark without re-tinting the application\'s primary action colour (it reads --logo-success-background / --logo-success-foreground, independent of --primary).',
+          'Semantic fill role. "success" names the IDENTITY slot, not the status role: it gives the canonical GoDX emerald mark without re-tinting the application\'s primary action colour (it reads --logo-success-background / --logo-success-foreground, which default to the --brand role — independent of BOTH --primary and the --success status green, gh#250).',
       },
       {
         name: "wordmark",
         type: "React.ReactNode",
         description:
-          'Readable product name rendered BESIDE the mark as ONE lockup — pass the localized product name (or an inline <svg> logotype when a real asset exists). Set it INSTEAD of hand-rolling `inline-flex items-center gap-2` around a Logo and a Text. The lockup root takes ref/className/…props; the mark becomes decorative and the wordmark text carries the accessible name, so the pair is announced once. Colour/face/weight/tracking/size and the mark↔wordmark gap are tokens (--logo-wordmark-*); on mark="godx" / tone="success" the wordmark is brand-green from the identity role and NEVER reads --primary. Omit for the bare mark (unchanged behaviour).',
+          'Readable product name rendered BESIDE the mark as ONE lockup — pass the localized product name (or an inline <svg> logotype when a real asset exists). Set it INSTEAD of hand-rolling `inline-flex items-center gap-2` around a Logo and a Text. The lockup root takes ref/className/…props; the mark becomes decorative and the wordmark text carries the accessible name, so the pair is announced once. Colour/face/weight/tracking/size and the mark↔wordmark gap are tokens (--logo-wordmark-*); on mark="godx" / tone="success" the wordmark is canonical emerald from the --brand identity role and NEVER reads --primary or --success. The wordmark span carries `data-logotype`: WCAG 2.2 SC 1.4.3 exempts brand-name artwork from the text-contrast minimum, so a consumer contrast audit must skip it rather than darken the brand colour. Omit for the bare mark (unchanged behaviour).',
       },
       {
         name: "label",
@@ -1664,7 +1866,7 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         type: "ColumnDef<T>[]",
         required: true,
         description:
-          "Lean column definitions (adapted to TanStack internally). Each column: { key: string; header: ReactNode; ariaLabel?: string; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end' }. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column. ariaLabel gives a VISUALLY-EMPTY header (header='' — an action or selection column) a screen-reader name (e.g. 'Actions'/'Select'): it renders as an sr-only label inside the <th> so the column is never nameless (axe: empty-table-header). DataTable dev-warns when a column has an empty header and no ariaLabel.",
+          "Lean column definitions (adapted to TanStack internally — `meta.lean` is the declared home for every custom column option, so `priority` needs no second TanStack channel). Each column: { key: string; header: ReactNode; ariaLabel?: string; render?: (row: T) => ReactNode; sortable?: boolean; width?: string; align?: 'left'|'center'|'right'; hiddenOnMobile?: boolean; enableHiding?: boolean; pin?: 'end'; priority?: 'primary'|'secondary'|'meta'|'actions' }. priority is the column-priority contract read by preset=\"action-collection\" (gh#253) — DataTable stamps it as data-priority on the <th> AND every <td> of the column, so the preset can allocate the narrow-frame measure; leave the free-text column unmarked (it takes the remaining space), and prefer priority over width under the preset because an explicit width utility wins the cascade and defeats the measure. If render is omitted, the raw value at row[key] is rendered as a string. sortable opts the column into the sort cycle (client-side by default, or server-side via sort+onSortChange). enableHiding (default true) lists the column in DataTable.ViewOptions; set false to keep a key/actions column always visible. pin:'end' sticks the column (typically row actions) to the inline-end edge on horizontal scroll with a separating shadow — pin at most one column. ariaLabel gives a VISUALLY-EMPTY header (header='' — an action or selection column) a screen-reader name (e.g. 'Actions'/'Select'): it renders as an sr-only label inside the <th> so the column is never nameless (axe: empty-table-header). DataTable dev-warns when a column has an empty header and no ariaLabel.",
       },
       {
         name: "getRowId",
@@ -1729,6 +1931,20 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
         defaultValue: "true",
         description:
           "Pin the header to the top while the body scrolls (ヘッダ追従). Set false to let it scroll away with the rows.",
+      },
+      {
+        name: "preset",
+        type: "'default' | 'action-collection'",
+        defaultValue: "'default'",
+        description:
+          "Named collection contract (gh#253) — the SAME preset the Table primitive owns, forwarded to the table DataTable renders. 'default' emits NO attribute and matches no selector, so an existing DataTable is byte-identical. 'action-collection' is the canonical dense approval/action queue: below collapseBelow the desktop INTRINSIC column widths give way to the token-owned column-PRIORITY measures (--table-action-collection-*) under table-layout: fixed, cells wrap, and the bordered surface drops its --table-surface-min-inline-size floor — so requester · target · reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll. Mark each column with `priority` on its ColumnDef. Semantics are untouched (no display change, no role rewriting, no card swap), so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440. Measured: table 1182 / 766 / 388px at 1440 / 1024 / 390, document scrollWidth === clientWidth at every width, LTR and RTL.",
+      },
+      {
+        name: "collapseBelow",
+        type: "'sm' | 'md' | 'lg' | 'xl'",
+        defaultValue: "'sm'",
+        description:
+          "Step at which preset=\"action-collection\" switches to the compact priority measures, measured against the TABLE'S OWN container (a container query on sm 40rem · md 48rem · lg 64rem · xl 80rem), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is 'default'.",
       },
       {
         name: "sort",
@@ -1817,6 +2033,10 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       "DO provide getRowId when selectable is true or when rows do not have a string/number 'id' field — the default falls back to row.id and silently returns '' for missing IDs, which breaks selection.",
       "DO use DataTable.Toolbar as the immediate child that wraps search/filter controls on the left and DataTable.DensityToggle/action buttons on the right. DataTable.BulkActions inside the toolbar auto-hides when selection count is 0; it accepts either plain ReactNode children (built-in 'N selected' status bar) or a (count)=>node render-prop (you own the whole bar).",
       "DO reach for the grid chrome (DataTable.Search, DataTable.ViewOptions, DataTable.Pagination pageSizeOptions) when you need global search, a column 'set view' picker, or numbered pagination — these are the merged former-DataGrid features, now on the one DataTable. Drive them client-side by default; pass the matching state + manual* flag for a server query.",
+      "DataTable.Pagination OWNS ITS OWN INSET (gh#236, fixed in 18.6.0). The footer is a self-contained slot: it declares `padding-block` + `padding-inline` from `--table-pagination-padding-{y,x}` (block default = `--space-stack-sm`, inline default = `--table-cell-space-x`, so the 'rows per page' label lands on the same optical axis as the first column's text). Before the fix it declared `padding-top` only, so inside the documented flush container (`<Card><CardContent flush><DataTable/>`) the label and page-size Select sat flush against the container edge and border. DON'T ship a local `.ui-data-table-pagination { padding: … }` override in an app — retune the two tokens in your theme instead.",
+      'RESPONSIVE APPROVAL / ACTION QUEUE (gh#253): reach for `preset="action-collection"` when a dense five-column queue (requester · target · reason · requested date · row actions) must stay readable at 390px, and give every column a `priority` on its ColumnDef — `primary` (the row subject), `secondary` (its target), `meta` (a timestamp/id), `actions` (the row-action affordance, whose measure is reserved FIRST so it can never be pushed off-screen). Leave the free-text column unmarked; it takes the remaining space. This is the SAME contract, the SAME `--table-action-collection-*` tokens and the SAME container query as `Table preset="action-collection"` — there is no separate DataTable family. Never add a consumer width, a hidden column, `hiddenOnMobile` or a page-local breakpoint to make a table fit: retune the tokens instead.',
+      "DON'T set `width` on a column that also has a `priority` — an explicit width utility wins the cascade over the priority measure and re-opens the horizontal scroll. Under the preset, `pin: 'end'` is also redundant: nothing scrolls sideways, so the actions column is already in frame.",
+      'The DataTable surface\'s narrow-viewport width floor is `--table-surface-min-inline-size` (default 640px, released at the `sm` viewport step). It used to be a hard-coded `min-w-[640px] sm:min-w-0` utility pair on the surface — the literal that forced the horizontal scroll at 390. Retune (or zero) the token in your theme; `preset="action-collection"` already opts out of it.',
       "DO use ColumnDef.render for custom cell content (Badge, Link, RowActions). For plain string/number fields render can be omitted — DataTable falls back to String(row[key]).",
       "DO give every visually-empty column an accessible header via `ariaLabel` — a row-actions column (`header: ''`, `pin: 'end'`) sets `ariaLabel: t('actions')`, so screen readers announce the column and axe reports no `empty-table-header`. DataTable dev-warns any column that renders a `<th>` with neither visible text nor an `ariaLabel`. The selection column added by `selectable` is already named by its SelectAll checkbox — no `ariaLabel` needed there.",
       "COLUMN SEMANTICS + KEYBOARD: a `sortable` header renders as a real <button> inside the <th> with `aria-sort` (ascending/descending/none) on the <th>; it is Tab-reachable and toggles asc → desc → cleared on Enter/Space/click. A selection column exposes a header 'select all' Checkbox (indeterminate when a subset is selected) and a per-row Checkbox, each keyboard-operable with Space. An action column is visually empty but carries an `ariaLabel`; its per-row controls (kebab menu / buttons) own their own accessible names and keyboard behavior. Row click (`onRowClick`) is suppressed when the user activates an interactive descendant.",
@@ -1828,7 +2048,8 @@ import { Card, CardContent } from "@godxjp/ui/data-display";
       "Server-side sorted tables: pass sort + onSortChange and update the data prop after the API call; DataTable renders asc/desc/neutral icons on the header automatically.",
       "Cursor-paginated lists: add DataTable.Pagination with cursor + hasMore + onChange inside children to get First/Next navigation without offset arithmetic. For page-size + numbered prev/next instead, use DataTable.Pagination with pageSizeOptions (no cursor/onChange) driven by the internal TanStack pagination.",
       "Full grid screens (global search + column 'set view' + numbered pagination): compose DataTable.Search, DataTable.ViewOptions, DataTable.DensityToggle in the toolbar and DataTable.Pagination pageSizeOptions={[…]} — client-side by default, or server-side by passing globalFilter/pagination/sort state with the matching manual* flag.",
-      "Responsive admin tables where lower-priority columns (e.g. internal IDs, dates) should collapse below mobile breakpoints — set hiddenOnMobile: true on those ColumnDef entries.",
+      'Responsive admin tables where lower-priority columns (e.g. internal IDs, dates) should collapse below mobile breakpoints — set hiddenOnMobile: true on those ColumnDef entries. When the columns must all stay DISCOVERABLE at 390 instead (an approval/action queue), use preset="action-collection" + ColumnDef.priority rather than hiding anything.',
+      "Access-approval / action queues at 390px (SCR-105, gh#253): preset=\"action-collection\" + a priority on each ColumnDef keeps requester · target · reason · requested date · row actions inside the initial narrow frame with no page-local CSS, no consumer width, no hidden column and no horizontal scroll — see the DataTable 'Approval queue' example page.",
       "Loading skeletons during initial page load or filter change: set loading={true} alongside an empty data={[]} to show the loading row without flashing an empty state.",
     ],
     related: [
@@ -2345,6 +2566,13 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
           "How title/description resolve content longer than the row — `truncate` (one line + ellipsis) or `wrap` (multi-line; long unbroken tokens break via `overflow-wrap: anywhere`). Either way the content column may shrink below its intrinsic width, so the row never widens the page root.",
       },
       {
+        name: "density",
+        type: '"default" | "compact"',
+        defaultValue: '"default"',
+        description:
+          "Row geometry. `compact` is the inline-actions preset (gh#246): tighter block padding and column gap plus a LOWER body threshold (`--list-row-compact-*`), so a leading Avatar, the title/description and one or two small trailing Buttons stay INLINE inside a narrow card (≈326px content) at 390px, and a history Badge + ISO-8601 date stays on the title's line. It only lowers thresholds — the row and its trailing cluster still wrap, so a cluster that cannot fit drops to its own line rather than widening the page root.",
+      },
+      {
         name: "unread",
         type: "boolean",
         description:
@@ -2357,6 +2585,7 @@ import { ResponsiveGrid } from "@godxjp/ui/layout";
       'DON\'T hand-roll `<div className="flex items-center justify-between border-b py-3">` — that is exactly the repeated pattern ListRow replaces (border/radius/padding are tokenized via `--list-row-*`).',
       'DO put the row\'s action in `trailing` (a `ghost`/`outline` Button, a DropdownMenu trigger, a Switch, or a status Badge). DO pass `as="li"` when the rows live inside a semantic `<ul>`.',
       'DO use `unread` for a notification list — the dot is a SHAPE with localized `sr-only` text ("Unread"/"Read"), so it never reads as colour alone, and the row surface reads `--list-row-unread-background` (default `hsl(var(--muted))` — chosen so the xs muted description line stays WCAG AA on the emphasized surface; `--accent` would drop it to 4.23:1). DON\'T substitute a `Badge` — that renders a labelled pill, not a compact status dot.',
+      'DO pass `density="compact"` for the canonical invitation / history row — an Avatar, a title (+ description) and one or two small trailing Buttons that must read as ONE line inside a narrow card (≈326px content at 390px), or a history row whose status Badge + ISO-8601 date belongs beside the title. Measured at 390px: 62px tall vs 126px at the default density (where the actions wrapped), history row 41px vs 114px. DON\'T reach for it just to "make things tighter" on a roomy page — the default density is the entity-row measure.',
       'DON\'T add one-off `min-width`/wrapping CSS in the consumer app for a long title + two trailing Buttons. The row already shrinks and WRAPS: the content column keeps only `min(var(--list-row-body-min-width), 100%)` and the trailing actions drop onto their own line below the threshold. Retune the threshold with `--list-row-body-min-width` (default 12rem) and the action gap with `--list-row-trailing-gap`; pass `overflow="wrap"` (usually with `align="start"`) when the title must stay fully readable at 390px instead of truncating.',
     ],
     useCases: [
@@ -2857,6 +3086,20 @@ import { Flex } from "@godxjp/ui/layout";
         description:
           "Whether Table owns its own horizontal-scroll region (default true). Leave true for a standalone table so a table wider than its container scrolls in a keyboard-reachable wrapper. Set false only when an ancestor already provides the scroll region (DataTable does) to avoid a redundant nested scroller + duplicate keyboard tab stop.",
       },
+      {
+        name: "preset",
+        type: '"default" | "action-collection"',
+        defaultValue: '"default"',
+        description:
+          'Named collection contract. "default" emits no attribute and keeps the plain table. "action-collection" is the canonical dense approval/action queue (gh#253): the desktop INTRINSIC column widths (which make a five-column queue wider than its card and force a horizontal scroll at 390) are replaced by table-layout: fixed plus the token-owned column PRIORITY measures (--table-action-collection-*), and cells wrap. Mark each column with `priority` on its TableHead AND its TableCell. Semantics are untouched — no display change, no role rewriting, no card transformation — so header association, aria-sort and screen-reader table navigation are identical at 390 and 1440.',
+      },
+      {
+        name: "collapseBelow",
+        type: '"sm" | "md" | "lg" | "xl"',
+        defaultValue: '"sm"',
+        description:
+          'Step at which preset="action-collection" switches to the compact priority measures, measured against the TABLE\'S OWN container (a container query), not the viewport — a table inside a master rail collapses before the page does. Ignored while preset is "default".',
+      },
     ],
     usage: [
       "DO compose all six sub-parts in order: wrap with `<Table>`, then `<TableHeader>` containing `<TableRow><TableHead>…</TableRow>`, then `<TableBody>` containing one or more `<TableRow><TableCell>…` rows. Skipping any layer (e.g. bare `<th>` inside `<Table>`) bypasses the design tokens and hover/border styles.",
@@ -2864,6 +3107,7 @@ import { Flex } from "@godxjp/ui/layout";
       'DO apply numeric alignment via `className` on individual `TableHead`/`TableCell` elements (e.g. `className="text-right"`). There are no built-in alignment props — all styling goes through Tailwind class overrides.',
       "DO NOT hand-roll empty-state handling inside a Table composition. When data can be empty, switch to `DataTable` (which has a built-in empty state) or wrap the `<Table>` with a conditional that renders `<EmptyState>` — never leave a table with only a header and zero rows.",
       "DO NOT use Table for lists that need sorting, filtering, pagination, or row selection — those features are only in `DataTable`. Table is intentionally stateless: it owns no TanStack Table instance, no column definitions, and no toolbar.",
+      'DO reach for `preset="action-collection"` for a dense approval / action queue (requester · target · reason · requested date · row actions) that must stay readable at 390px, and mark every column with `priority` on BOTH its `TableHead` and its `TableCell`: `primary` (the row subject), `secondary` (its target), `meta` (a timestamp/id), `actions` (the row-action affordance, whose measure is reserved first so it can never be pushed off-screen). Leave the free-text column unmarked — it takes the remaining space. Never add a consumer width, a hidden column or a page-local breakpoint to make a table fit; retune `--table-action-collection-*` instead. The IDENTICAL preset exists on `DataTable` (`preset` + `collapseBelow` on the table, `priority` on the `ColumnDef`) sharing these same tokens — use DataTable when the queue is data-driven and needs sorting/selection/pagination, and reach for the raw `Table` only for a hand-authored queue.',
       "DO place `<Table>` inside a `<CardContent flush>` (or `p-0` card) when embedding in a Card, so the built-in `overflow-auto` wrapper sits flush to the card edges. Wrapping with plain `<CardContent>` adds padding that clips the horizontal scroll shadow.",
     ],
     useCases: [
@@ -4761,6 +5005,13 @@ toast.error("保存に失敗しました");`,
         type: "(value: string) => void",
         description: "Active-tab change handler.",
       },
+      {
+        name: "variant",
+        type: '"default" | "line" | "card"',
+        defaultValue: '"default"',
+        description:
+          'Trigger-strip appearance. `default`/`card` keep the pill/card chrome (a selected trigger gets a soft `ring-primary/25` ring). `line` is UNDERLINE-ONLY (gh#248): the selected trigger gets no ring or card border at all — only the token-owned 2px primary bar (--tabs-indicator-{background,size,offset}) — so the `:focus-visible` keyboard ring stays visible and clearly distinct from selection. With `items`, the variant is forwarded to the list; when composing manually, pass the same value to `<TabsList variant="line">`.',
+      },
     ],
     usage: [
       "DO pass `items` when all tab content is known up front — each item needs a unique `value`, trigger `label`, and panel `content`.",
@@ -4768,7 +5019,7 @@ toast.error("保存に失敗しました");`,
       "DO: use `defaultValue` (uncontrolled) for simple local state; use `value` + `onValueChange` together (controlled) when the active tab is driven by URL query params, router state, or parent state. NEVER set both simultaneously.",
       "DO use `variant` on Tabs when using `items`; when composing manually, set `variant` on `TabsList`.",
       'DO: pass `orientation="vertical"` to `<Tabs>` (not to `TabsList`) for a side-rail layout — the CSS group classes on root and triggers respond automatically, so no extra className gymnastics are needed.',
-      "DON'T: hand-roll the active-indicator underline or selected-state ring — `TabsTrigger` already applies `data-[state=active]` styles including the `after:` line element for the `line` variant. Adding your own underline breaks the design.",
+      "DON'T: hand-roll the active-indicator underline or selected-state ring — `TabsTrigger` already applies `data-[state=active]` styles, including the token-owned indicator bar for the `line` variant. Adding your own `border-b-2 border-primary` (or a page-local `ring-0` override to remove one) breaks the design; retune --tabs-indicator-{background,size,offset} in the service theme instead.",
       "DO trust the horizontal `TabsList` to scroll its own overflow (hidden scrollbar, swipeable) instead of clipping when tab labels — especially long localized ones (Japanese, German) — don't fit a narrow container. Don't wrap it in your own `overflow-x-auto` div or truncate labels to work around clipping; that was gh#175 and is now the framework's job (#175).",
       "DON'T assume the first item is ever auto-selected when it is `disabled` — Tabs always resolves the fallback to the first ENABLED item (or none, if all are disabled). A `disabled: true` first item is safe to author without also setting `defaultValue`.",
       'DON\'T write your own resize/scroll-into-view effect to keep the selected tab on screen — `TabsList` observes its own size and its triggers\' `data-state` and re-pins the active (or focused, under `activationMode="manual"`) trigger with `scrollIntoView({ block: "nearest", inline: "nearest" })`, honoring `prefers-reduced-motion` and leaving a deliberate manual scroll alone. Before gh#204 a 1440 → 1024 → 390 resize could strand the ACTIVE FIRST tab entirely outside the strip while it still reported `aria-selected="true"`.',
@@ -7954,6 +8205,13 @@ import { fetchInvoice } from "@/api/invoices";
     tagline: "Radix Avatar wrapper with image and fallback slots for users, teams, and entities.",
     props: [
       {
+        name: "shape",
+        type: '"circle" | "square"',
+        defaultValue: '"circle"',
+        description:
+          'Identity geometry. `circle` (default, inert) is the PERSON avatar — the round --radius-pill mark on the muted surface. `square` is the ENTITY-HEADER organization/service mark (gh#249): a compact rounded square on the brand surface, whose radius, box size, fill and glyph colour are all --avatar-square-{radius,size,background,foreground} tokens. Pick the shape by WHAT the mark represents; never hand-roll it with className="rounded-md bg-primary".',
+      },
+      {
         name: "children",
         type: "ReactNode",
         description: "Compose AvatarImage and AvatarFallback.",
@@ -7962,15 +8220,27 @@ import { fetchInvoice } from "@/api/invoices";
     ],
     usage: [
       "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+      'DO use `shape="square"` for an organization / service / tenant mark in an entity header, and keep the default `shape="circle"` for people. The square appearance already carries the brand surface and an AA-contrast glyph colour — a className/colour override on the call site is never needed (and is forbidden by the API-first redesign policy).',
+      "DON'T retune the entity mark per call site: set --avatar-square-{radius,size,background,foreground} ONCE in the service theme (e.g. --avatar-square-background: hsl(var(--muted)) for a neutral mark).",
       "DON'T use Avatar for decorative thumbnails; use CardCover or an img when the image is content rather than identity.",
     ],
-    useCases: ["User profile chips", "Team member lists", "Account owner cells in a DataTable"],
+    useCases: [
+      "User profile chips",
+      "Team member lists",
+      "Account owner cells in a DataTable",
+      'Organization / service entity headers (shape="square" beside the entity name and code)',
+    ],
     related: ["Badge — use beside Avatar for role/status metadata."],
     example: `import { Avatar, AvatarFallback, AvatarImage } from "@godxjp/ui/data-display";
 
 <Avatar>
   <AvatarImage src="/user.png" alt="User" />
   <AvatarFallback>UI</AvatarFallback>
+</Avatar>
+
+// Organization entity header mark
+<Avatar shape="square">
+  <AvatarFallback>山</AvatarFallback>
 </Avatar>`,
     storyPath: "data-display/Avatar.stories.tsx",
     rules: [3, 35],

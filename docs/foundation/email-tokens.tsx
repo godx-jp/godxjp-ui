@@ -57,6 +57,28 @@ const geometryGroups = [
     ],
   },
   {
+    title: "Typography",
+    rows: [
+      ["body", `${EMAIL_TYPOGRAPHY.bodyFontSize}/${EMAIL_TYPOGRAPHY.bodyLineHeight}`],
+      ["body weight", String(EMAIL_TYPOGRAPHY.bodyFontWeight)],
+      ["heading", `${EMAIL_TYPOGRAPHY.headingFontSize}/${EMAIL_TYPOGRAPHY.headingLineHeight}`],
+      ["heading weight", String(EMAIL_TYPOGRAPHY.headingFontWeight)],
+      ["footer", `${EMAIL_FOOTER.fontSize}/${EMAIL_FOOTER.lineHeight}`],
+      ["mobile heading", EMAIL_MOBILE.headingFontSize],
+    ],
+  },
+  {
+    title: "Brand lockup",
+    rows: [
+      ["mark box", `${EMAIL_BRAND_MARK.widthPx} × ${EMAIL_BRAND_MARK.heightPx}px`],
+      ["viewBox", EMAIL_BRAND_MARK.viewBox],
+      ["mark · wordmark gap", EMAIL_BRAND_MARK.gap],
+      ["wordmark", EMAIL_BRAND_MARK.wordmarkFontSize],
+      ["wordmark weight", String(EMAIL_BRAND_MARK.wordmarkFontWeight)],
+      ["capsule", EMAIL_COLORS.brand],
+    ],
+  },
+  {
     title: "Primary CTA",
     rows: [
       ["height", EMAIL_CTA.height],
@@ -90,6 +112,11 @@ const geometryGroups = [
     ],
   },
 ] as const;
+
+const fontStacks = [
+  { label: "--email-font-family-sans", value: EMAIL_TYPOGRAPHY.fontFamily },
+  { label: "--email-font-family-mono", value: EMAIL_TYPOGRAPHY.monoFontFamily },
+];
 
 export default function Demo() {
   return (
@@ -143,10 +170,15 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Brand mark</CardTitle>
             <CardDescription>
-              The canonical GoDX mark is the emerald capsule plus the internal glyph. A capsule
-              alone is the incomplete mark. Three deliveries, none of which fetches an asset: inline
-              SVG, the same SVG as a data: URL, and a table fallback for clients with no SVG
-              support.
+              The canonical GoDX mark is the emerald capsule plus the internal glyph. The artwork is
+              byte-identical to the <code>&lt;Logo mark=&quot;godx&quot; /&gt;</code> path and to
+              the SCR-302 reference raster; only the rendered box is email-specific (
+              {EMAIL_BRAND_MARK.width}, against the 32px web box). A capsule alone is the incomplete
+              mark. In a header the mark is DECORATIVE and pairs with the readable wordmark{" "}
+              {EMAIL_BRAND_MARK.gap} away at {EMAIL_BRAND_MARK.wordmarkFontSize}/
+              {EMAIL_BRAND_MARK.wordmarkFontWeight}, so the name is announced once. Three
+              deliveries, none of which fetches an asset: inline SVG, the same SVG as a data: URL,
+              and a table fallback for clients with no SVG support.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -225,12 +257,32 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Geometry &amp; typography</CardTitle>
             <CardDescription>
-              Literal px only. No rem, no calc(), no var(). Body copy is{" "}
-              {EMAIL_TYPOGRAPHY.bodyFontSize}/{EMAIL_TYPOGRAPHY.bodyLineHeight} in the email-safe
-              system stack; headings are {EMAIL_TYPOGRAPHY.headingFontSize}.
+              Literal px only. No rem, no calc(), no var(). The ramp is the canonical SCR-302 email
+              ramp, deliberately looser and quieter than the web one: body{" "}
+              {EMAIL_TYPOGRAPHY.bodyFontSize}/{EMAIL_TYPOGRAPHY.bodyLineHeight}, title{" "}
+              {EMAIL_TYPOGRAPHY.headingFontSize} at weight {EMAIL_TYPOGRAPHY.headingFontWeight} (a
+              transactional title is calm, not bold), legal band {EMAIL_FOOTER.fontSize}/
+              {EMAIL_FOOTER.lineHeight}. Font stacks name the canonical M PLUS 2 face FIRST and then
+              degrade. No email client honours <code>@font-face</code>, so a reader gets M PLUS 2
+              only where it is already available and otherwise lands on Hiragino (macOS/iOS), Yu
+              Gothic (Windows), Noto Sans JP, Meiryo, the system UI face, Arial, then{" "}
+              <code>sans-serif</code>. Families are single-quoted so the value drops into a
+              double-quoted <code>style</code> attribute unescaped.
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <Flex direction="col" gap="xs" className="mb-4">
+              {fontStacks.map((stack) => (
+                <Flex key={stack.label} direction="col" gap="xs">
+                  <Badge tone="neutral" variant="outline">
+                    {stack.label}
+                  </Badge>
+                  <Text size="sm" tone="muted">
+                    {stack.value}
+                  </Text>
+                </Flex>
+              ))}
+            </Flex>
             <ResponsiveGrid columns={{ sm: 1, md: 2, lg: 4 }}>
               {geometryGroups.map((group) => (
                 <Flex key={group.title} direction="col" gap="xs">

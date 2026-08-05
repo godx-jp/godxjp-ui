@@ -39,6 +39,13 @@ export type { AuthStackProps } from "./auth-stack";
 export { CenteredShell } from "./centered-shell";
 export type { CenteredShellProp, CenteredShellProps } from "./centered-shell";
 export type { CenteredShellWidthProp, CenteredShellAlignProp } from "../../props/vocabulary";
+export { ErrorSurface } from "./error-surface";
+export type {
+  ErrorSurfaceMaintenanceProp,
+  ErrorSurfaceProp,
+  ErrorSurfaceProps,
+} from "./error-surface";
+export type { ErrorSurfaceModeProp, ErrorSurfaceStatusProp } from "../../props/vocabulary";
 export { Breadcrumb } from "./breadcrumb";
 export type { BreadcrumbProps } from "./breadcrumb";
 export { createSidebarLink, Sidebar, SidebarHeader, SidebarItem, SidebarSection } from "./sidebar";

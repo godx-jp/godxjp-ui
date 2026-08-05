@@ -73,6 +73,7 @@ function PageContainerRoot({
   variant = "default",
   preset = "default",
   headerLayout = "stack",
+  measure = "default",
   stickyFooter = false,
   footerReveal = "always",
   fill = false,
@@ -83,9 +84,13 @@ function PageContainerRoot({
   const { headerRef, revealed } = useFooterReveal(reveal);
   const { t } = useTranslation();
 
+  // `data-measure` caps the HEADER and the BODY to one shared token-owned measure so a header
+  // action ends flush with the body surface (gh#245/gh#247). `default` matches no rule in the
+  // stylesheet, so a page that never sets `measure` is geometrically untouched.
   return (
     <div
       data-preset={preset}
+      data-measure={measure}
       data-revealed={revealed ? "true" : undefined}
       className={cn(
         "ui-page-container",

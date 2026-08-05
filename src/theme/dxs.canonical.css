@@ -33,10 +33,11 @@
 
 :root {
   /* ── Brand palette — the shipped GodX Navy ramp (identical to the `brand`
-   *    axis preset). The brand-green IDENTITY mark is deliberately NOT here:
-   *    `--logo-godx-color` / `--logo-wordmark-color` default to the `--success`
-   *    identity role at their call sites and never read `--primary`, so a
-   *    re-themed action colour can never recolour the GoDX mark or wordmark. */
+   *    axis preset). The emerald IDENTITY mark is deliberately NOT here:
+   *    `--logo-godx-color` / `--logo-wordmark-color` default to the `--brand`
+   *    IDENTITY role at their call sites and never read `--primary` (nor the
+   *    `--success` status green — gh#250), so a re-themed action colour can
+   *    never recolour the GoDX mark or wordmark. */
   --primary: 211 73% 15%;
   --primary-foreground: 0 0% 100%;
   --ring: 24 99% 46%;

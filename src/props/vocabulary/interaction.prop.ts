@@ -11,6 +11,16 @@ export type ButtonVariantProp =
  *  Button + Badge. `pill` = fully rounded (`--radius-pill`), `sharp` = square (`--radius-sharp`). */
 export type ShapeProp = "default" | "pill" | "sharp";
 
+/**
+ * Avatar geometry — WHAT the mark represents, not just its corner radius, which is why it is a
+ * separate vocabulary from the control `ShapeProp` (`default | pill | sharp`): an entity mark is a
+ * ROUNDED rect, a value `ShapeProp` cannot express (its `sharp` = `--radius-sharp` = 0).
+ * - `circle` (default) — a person: the fully-round `--radius-pill` identity avatar.
+ * - `square` — an organization / service entity mark for an entity header: the compact rounded
+ *   square on the brand surface (`--avatar-square-*` tokens).
+ */
+export type AvatarShapeProp = "circle" | "square";
+
 /** Text size — steps of the golden-ratio type scale (NEVER an arbitrary px). `sm` = base. */
 export type TextSizeProp = "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 

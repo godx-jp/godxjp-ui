@@ -643,7 +643,7 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
     name: "error-pages",
     aliases: ["error-surface", "errorsurface", "403", "404", "500", "503", "exception-page"],
     tagline:
-      '403 / 404 / 500 / 503 exception pages. There is NO ErrorSurface component — compose EmptyState + Text + Button inside the shell the page already renders (403/404 keep AppShell; 500/503 use CenteredShell align="center").',
+      '403 / 404 / 500 / 503 exception pages. USE THE COMPONENT: import { ErrorSurface } from "@godxjp/ui/layout". `mode="application"` (403/404) is the body you put inside the AppShell the route already renders; `mode="system"` (500/503) owns the page via CenteredShell align="center".',
     tags: [
       "error",
       "errorsurface",
@@ -658,111 +658,106 @@ const seeded = (n: number) => { const x = Math.sin((n + 1) * 99.71) * 1e4; retur
       "emptystate",
       "centeredshell",
     ],
-    code: `// ⚠️ There is NO <ErrorSurface mode=… status=…/> in @godxjp/ui, and no \`mode\` prop to set.
-// The mode IS THE SHELL you render (gh#221 — the surface fails the Framework-Component Test:
-// it owns no behaviour and is expressible from existing primitives + tokens):
-//    403 / 404  → the page's EXISTING <AppShell> is PRESERVED (nav + topbar survive)
-//    500 / 503  → <CenteredShell align="center" width="sm">  (viewport-centred system surface)
+    code: `// @godxjp/ui SHIPS <ErrorSurface> (gh#221 → gh#251). Do NOT hand-compose an error page from
+// AuthShell + a generic Card + a local ".canonical-auth-card" — that workaround IS the regression.
+//
+//    403 / 404  → mode="application": the surface is the BODY of the AppShell you ALREADY render
+//                 (sidebar + topbar + breadcrumb are PRESERVED, never reconstructed)
+//    500 / 503  → mode="system":      the surface OWNS the page (CenteredShell align="center",
+//                 package-owned geometry at 1440 / 1024 / 390 — no min-h-dvh, no media query)
 // Docs page: docs/layout/error-surface/
 
-import { EmptyState } from "@godxjp/ui/data-display";
-import { Button, Text } from "@godxjp/ui/general";
-import { CenteredShell, Flex, PageContainer } from "@godxjp/ui/layout";
-import { SearchX, ServerCrash, ShieldAlert, Wrench } from "lucide-react";
+import { Button, Logo, Text } from "@godxjp/ui/general";
+import { AppShell, ErrorSurface, PageContainer, Sidebar } from "@godxjp/ui/layout";
 
-// ── THE CANONICAL BODY — identical for all four statuses ───────────────────────────────
-// status code (compact, mono/tabular) → EmptyState(icon · tone · title · description · ONE action)
-// → optional metadata (request ID · maintenance window).
-// EXACTLY ONE recovery action is STRUCTURAL: EmptyState.action is a single slot, so a second
-// CTA has nowhere to go. Every string comes from the APP's t() — the library owns no product copy.
-const META = {
-  403: { icon: ShieldAlert, tone: "warning" },
-  404: { icon: SearchX, tone: "muted" },
-  500: { icon: ServerCrash, tone: "destructive" },
-  503: { icon: Wrench, tone: "warning" },
-} as const;
-
-function ErrorBody({ status, requestId, maintenance, inShell }: {
-  status: 403 | 404 | 500 | 503;
-  requestId?: string;
-  maintenance?: { start: string; end: string; timeZone: string };  // ISO-8601 + IANA
-  inShell: boolean;                                                // true ⇒ a page <h1> exists above
-}) {
-  const meta = META[status];
-  return (
-    <Flex direction="col" align="center" gap="sm">
-      <Text as="p" size="sm" tone="muted" weight="medium" mono tabular>{status}</Text>
-      <EmptyState
-        icon={meta.icon}
-        tone={meta.tone}
-        titleLevel={inShell ? 2 : 1}          {/* keep the outline valid, never for size */}
-        title={t(\`errors.\${status}.title\`)}
-        description={t(\`errors.\${status}.description\`)}
-        action={<Button onClick={recover}>{t(\`errors.\${status}.action\`)}</Button>}
-      />
-      {requestId && (
-        <Text as="p" size="xs" tone="muted" mono>{t("errors.requestId")}: {requestId}</Text>
-      )}
-      {maintenance && (
-        <Text as="p" size="sm" tone="muted">
-          {t("errors.maintenance")}:{" "}
-          {new Intl.DateTimeFormat(locale, {
-            dateStyle: "medium", timeStyle: "short", timeZone: maintenance.timeZone,
-          }).formatRange(new Date(maintenance.start), new Date(maintenance.end))}
-        </Text>
-      )}
-    </Flex>
-  );
-}
+// ── WHAT THE COMPONENT OWNS ───────────────────────────────────────────────────────────
+//  • status → icon + tone (ShieldAlert/warning · SearchX/muted · ServerCrash/destructive ·
+//    Wrench/warning). You pass the NUMBER; you never write the lookup.
+//  • EXACTLY ONE recovery action — a single slot; a 2nd element is dropped with a dev error.
+//  • semantic metadata slots as real <dt>/<dd> pairs, with LIBRARY-owned localized labels:
+//    requestId · permission · organization · maintenance{start,end,timeZone,progress}
+//  • heading order (h2 in application mode under the PageContainer h1, h1 in system mode)
+//  • the status code announced as "HTTP status 403", not the cardinal number "403"
+// PRODUCT COPY stays yours: title / description / action come from the APP's own t().
 
 // ── 403 / 404 — APPLICATION mode: PRESERVE the authenticated shell ─────────────────────
-// Render the body as the page BODY. The route's own <AppShell> (persistent layout) stays
-// mounted, so the sidebar, topbar and breadcrumb are never reconstructed by the error page.
 export function ForbiddenPage() {
   return (
-    <PageContainer title={t("reports.title")} breadcrumb={[{ label: t("nav.home"), to: "/" }, { label: t("reports.title") }]}>
-      <ErrorBody status={403} inShell />
-    </PageContainer>
+    <AppShell sidebar={<Sidebar activeId="reports" sections={sections} />}>
+      <PageContainer title={t("reports.title")} breadcrumb={[{ label: t("nav.home"), to: "/" }, { label: t("reports.title") }]}>
+        <ErrorSurface
+          mode="application"
+          status={403}
+          title={t("errors.403.title")}
+          description={t("errors.403.description")}
+          permission="reports.view"        {/* WHY: the missing role … */}
+          organization="Acme KK"           {/* … vs the wrong workspace */}
+          action={<Button onClick={goHome}>{t("errors.backHome")}</Button>}
+        />
+      </PageContainer>
+    </AppShell>
   );
 }
 
 // ── 500 / 503 — SYSTEM mode: package-owned viewport-centred geometry ───────────────────
-// align="center" sets --centered-shell-column-offset-block: auto → the column centres in the
-// 100dvh shell at 1440 / 1024 / 390. NO className, NO min-h-dvh, NO media query. Tall copy
-// still scrolls from the top (auto offsets collapse), so a long JA/VI message is never clipped.
+// The component renders CenteredShell align="center" itself → the column centres in the 100dvh
+// shell at 1440 / 1024 / 390. NO className, NO min-h-dvh, NO media query. Tall copy still scrolls
+// from the top (auto offsets collapse), so a long JA/VI message is never clipped.
 export function MaintenancePage() {
   return (
-    <CenteredShell align="center" width="sm" footer={<Text size="xs" tone="muted">2026 GodX</Text>}>
-      <ErrorBody
-        status={503}
-        inShell={false}
-        maintenance={{ start: "2026-08-02T18:00:00Z", end: "2026-08-02T20:00:00Z", timeZone: "Asia/Tokyo" }}
-      />
-    </CenteredShell>
+    <ErrorSurface
+      mode="system"
+      status={503}
+      brand={<Logo glyph="G" />}
+      title={t("errors.503.title")}
+      description={t("errors.503.description")}
+      maintenance={{
+        start: "2026-08-02T18:00:00Z",  // ISO-8601 instants + an IANA zone → Intl.formatRange
+        end: "2026-08-02T20:00:00Z",
+        timeZone: "Asia/Tokyo",
+        progress: 40,                   // 0-100, SERVER-SENT (a client clock breaks hydration)
+      }}
+      footer={<Text size="xs" tone="muted">2026 GodX</Text>}
+      action={<Button onClick={reload}>{t("errors.reload")}</Button>}
+    />
   );
 }
 
-// ── INERTIA / SSR — one Error page component, status switch, zero client state ─────────
+// ── INERTIA / SSR — one Error page component, one expression ───────────────────────────
 // Laravel: Handler::render() → Inertia::render('Error', ['status' => $response->getStatusCode()])
 //
 //   export default function Error({ status, requestId }) {
-//     const body = <ErrorBody status={status} requestId={requestId} inShell={status < 500} />
-//     return status < 500 ? body : <CenteredShell align="center" width="sm">{body}</CenteredShell>
+//     const isSystem = status >= 500
+//     return (
+//       <ErrorSurface
+//         mode={isSystem ? "system" : "application"}
+//         status={status}
+//         requestId={requestId}
+//         title={t(\`errors.\${status}.title\`)}
+//         description={t(\`errors.\${status}.description\`)}
+//         action={<Button asChild><Link href="/">{t("errors.backHome")}</Link></Button>}
+//       />
+//     )
 //   }
 //   // persistent layout ⇒ 403/404 keep the authenticated shell; 500/503 own the page
 //   Error.layout = (page) => (page.props.status < 500 ? <CrmLayout>{page}</CrmLayout> : page)
 //
 // SSR rules:
-//  • The pattern has NO client state / effects / portals → it renders fully server-side. An
+//  • ErrorSurface has NO client state / effects / portals → it renders fully server-side. An
 //    exception page must be readable without hydration.
-//  • Format the maintenance window from a SERVER-SENT ISO-8601 string + an explicit IANA
-//    timeZone. An argless new Date() or the server's local zone ⇒ hydration mismatch.
+//  • Pass the maintenance window as a SERVER-SENT ISO-8601 string + an explicit IANA timeZone.
+//    An argless new Date() or the server's local zone ⇒ hydration mismatch.
 //  • A 500 page must NOT import the app's query client / data providers — the failure may be
-//    inside them. EmptyState + CenteredShell need no provider.
+//    inside them. ErrorSurface needs only the AppProvider that supplies the locale.
 //
-// ANTI-PATTERNS: rebuilding nav on the 403 page · AuthShell for a system error (it is the
-// UNAUTHENTICATED root with auth-card geometry) · two CTAs · className="min-h-dvh flex …" ·
-// a hand-built "18:00 - 20:00 JST" string.`,
+// THEMING: retune with tokens, never a className —
+//   --error-surface-max-width | -gap | -padding-block(-compact) | -meta-gap | -meta-row-gap |
+//   --error-surface-meta-border (default 'none', rule #44) | --error-surface-progress-max-width
+//
+// ANTI-PATTERNS: AuthShell + a generic Card (the gh#251 workaround; AuthShell is the
+// UNAUTHENTICATED root with auth-card geometry) · rebuilding nav on the 403 page · two CTAs ·
+// className="min-h-dvh flex …" · a hand-built "18:00 - 20:00 JST" string · writing the request id
+// into 'description' as prose instead of using the semantic slot.`,
   },
 
   {
@@ -1287,6 +1282,7 @@ import {
   EMAIL_MOBILE,
   EMAIL_SHELL,
   EMAIL_TYPOGRAPHY,
+  emailBrandMarkSvg,
   emailInlineStyle,
 } from "@godxjp/ui/email";
 
@@ -1313,11 +1309,14 @@ const body = emailInlineStyle({
 //    EMAIL_BRAND_MARK.svg        inline <svg>            (Apple Mail, iOS, Thunderbird)
 //    EMAIL_BRAND_MARK.dataUri    data: URL for <img src> (no request)
 //    EMAIL_BRAND_MARK.tableHtml  <table> fallback        (renders everywhere)
-const mark = EMAIL_BRAND_MARK.svg;
+//    The header is a LOCKUP: mark (22px) + EMAIL_BRAND_MARK.gap + the wordmark at
+//    EMAIL_BRAND_MARK.wordmarkFontSize/wordmarkFontWeight. The mark is DECORATIVE there —
+//    emailBrandMarkSvg({ label: "" }) — so the wordmark carries the name and it is announced once.
+const mark = emailBrandMarkSvg({ label: "" });
 
 // 3) THE CTA — line-height EQUALS height, so the label centres with no flexbox.
 const ctaCell = emailInlineStyle({
-  height: EMAIL_CTA.height,               // 44px = the coarse-pointer target
+  height: EMAIL_CTA.height,               // 36px — the canonical box (mirrors --control-height-lg)
   borderRadius: EMAIL_CTA.radius,
   backgroundColor: c.primary,
 });

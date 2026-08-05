@@ -91,7 +91,7 @@ function resolve(
  * | `border`                      | `--border`                        | card edge, footer hairline        |
  * | `primary` / `primaryForeground`| `--primary` / `--primary-foreground` | the one CTA                  |
  * | `focus`                       | `--ring`                          | focus affordance in webmail panes |
- * | `brand` / `brandForeground`   | `--success` / `--success-foreground` | the GoDX capsule + its glyph   |
+ * | `brand` / `brandForeground`   | `--brand` / `--brand-foreground`  | the GoDX capsule + its glyph      |
  * | `urgency` / `urgencyForeground`| `--attention` / `--attention-foreground` | action-required accent / solid large label |
  */
 export const EMAIL_COLORS: Readonly<Record<EmailColorToken, EmailHex>> = resolve(

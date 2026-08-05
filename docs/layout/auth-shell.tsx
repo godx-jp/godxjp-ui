@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@godxjp/ui/data-display";
 import { FormField, Input } from "@godxjp/ui/data-entry";
-import { Button } from "@godxjp/ui/general";
+import { Button, Logo, Text } from "@godxjp/ui/general";
 import {
   AuthDivider,
   AuthFooter,
@@ -24,7 +24,17 @@ export default function Demo() {
         : "Attendance is requesting sign in";
 
   return (
-    <AuthShell variant="canonical" preset="login">
+    <AuthShell
+      variant="canonical"
+      preset="login"
+      brand={
+        <Flex align="center" gap="sm">
+          <Logo mark="godx" />
+          <Text weight="medium">GoDX ID</Text>
+        </Flex>
+      }
+      footer={<AuthFooter product="GoDX ID" terms="利用規約" privacy="プライバシー" />}
+    >
       <AuthIdentity title="GoDX ID" requester={requester} />
       <Card>
         <CardContent>
@@ -48,7 +58,6 @@ export default function Demo() {
           </AuthStack>
         </CardContent>
       </Card>
-      <AuthFooter product="GoDX ID" terms="利用規約" privacy="プライバシー" />
     </AuthShell>
   );
 }

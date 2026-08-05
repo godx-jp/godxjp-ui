@@ -15,8 +15,12 @@ import type {
   SelectedIdsProp,
   SortStateProp,
   TableDensityProp,
+  TablePresetProp,
+  BreakpointProp,
+  DensityProp,
   ChildrenProp,
   ToneProp,
+  AvatarShapeProp,
   HeadingLevelProp,
   HandlerProp,
   SizeProp,
@@ -78,6 +82,22 @@ export type DescriptionsItemProp = {
   label: React.ReactNode;
   value: React.ReactNode;
   mono?: boolean;
+};
+
+/**
+ * @see Avatar
+ *
+ * Identity mark. `shape` is the ONLY appearance knob: the default `circle` is the person avatar
+ * (unchanged — an existing `<Avatar>` renders identically), `square` is the entity-header
+ * organization / service mark (compact rounded square on the brand surface). Every value it
+ * paints — radius, box size, fill, glyph colour — comes from the `--avatar-square-*` component
+ * tokens (cardinal rule #45), so a service retunes the entity mark once in its theme instead of
+ * overriding `className` per call site.
+ */
+export type AvatarProp = React.ComponentPropsWithoutRef<"span"> & {
+  shape?: AvatarShapeProp;
+  className?: ClassNameProp;
+  children?: ChildrenProp;
 };
 
 /** @see Badge */
@@ -180,6 +200,55 @@ export type DataTableProp<T> = {
   denied?: React.ReactNode;
   /** Retry handler surfaced by the built-in `error` state. */
   onRetry?: HandlerProp;
+  /**
+   * Named collection contract (gh#253) — the SAME preset the `Table` primitive owns, forwarded to
+   * the table DataTable renders. `"default"` (the default) emits no attribute and matches no
+   * selector. `"action-collection"` is the canonical dense approval / action queue: below
+   * `collapseBelow` the desktop intrinsic column widths give way to the token-owned column-PRIORITY
+   * measures (`--table-action-collection-*`) under `table-layout: fixed`, cells wrap, and the
+   * surface drops its `--table-surface-min-inline-size` floor — so every column, row actions
+   * included, stays inside a 390px frame with no horizontal scroll. Mark each column with
+   * `priority` on its `ColumnDef`.
+   */
+  preset?: TablePresetProp;
+  /**
+   * Container step at which `preset="action-collection"` switches to the compact priority measures.
+   * Measured against the TABLE's own container (a container query), not the viewport, so a table in
+   * a master rail collapses before the page does. Default `"sm"`. Ignored while `preset` is
+   * `"default"`.
+   */
+  collapseBelow?: BreakpointProp;
   className?: ClassNameProp;
   children?: ChildrenProp;
+};
+
+/**
+ * ListRow geometry — `default` (the roomy entity row) or `compact` (#246: the inline-actions row —
+ * Avatar + title/description + one or two small trailing Buttons on ONE line inside a narrow card).
+ * A ListRow-LOCAL subset of the shared density vocabulary: the row has no `comfortable` step, so it
+ * is deliberately narrower than `DensityProp` (and unrelated to `PageDensityProp`/`TableDensityProp`).
+ */
+export type ListRowDensityProp = Exclude<DensityProp, "comfortable">;
+
+/** @see ListRow */
+export type ListRowProp = {
+  /** Render element — `div` (default) or `li` when the parent is a `<ul>`/`<ol>`. */
+  as?: "div" | "li";
+  /** Leading slot — a decorative icon or an Avatar. Mark a purely decorative icon `aria-hidden`. */
+  leading?: React.ReactNode;
+  /** Primary line — rendered in medium weight. */
+  title: TitleProp | React.ReactNode;
+  /** Secondary line under the title (muted, xs). */
+  description?: DescriptionProp | React.ReactNode;
+  /** Trailing slot — the row action(s): a Button / DropdownMenu trigger, a Badge, or a Switch. */
+  trailing?: React.ReactNode;
+  /** Cross-axis alignment of the columns — `center` (default) or `start` for multi-line content. */
+  align?: "center" | "start";
+  /** How over-long title/description resolve — `truncate` (default) or `wrap` (#224). */
+  overflow?: "truncate" | "wrap";
+  /** Row geometry — `default` or the compact inline-actions preset (#246). */
+  density?: ListRowDensityProp;
+  /** Read/unread state — indicator dot + localized `sr-only` text, never colour alone (#225). */
+  unread?: boolean;
+  className?: ClassNameProp;
 };

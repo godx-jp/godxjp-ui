@@ -29,6 +29,9 @@ const contracts = [
       "AuthFooter",
       "AuthStack",
       "CenteredShell",
+      // gh#251 — the semantic exception surface. It regressed once by existing only as a docs
+      // page, so it is pinned in the PACKED artifact, not just in the source barrel.
+      "ErrorSurface",
       "Breadcrumb",
       "Sidebar",
       "SidebarHeader",
@@ -38,8 +41,22 @@ const contracts = [
       "ResponsiveGrid",
       "MasterDetail",
     ],
-    types: ["PageContainerProp", "SidebarRenderItemProp", "MasterDetailProps"],
-    files: ["dist/components/layout/master-detail.js", "dist/components/layout/master-detail.d.ts"],
+    types: [
+      "PageContainerProp",
+      "SidebarRenderItemProp",
+      "MasterDetailProps",
+      "ErrorSurfaceProp",
+      "ErrorSurfaceProps",
+      "ErrorSurfaceMaintenanceProp",
+      "ErrorSurfaceModeProp",
+      "ErrorSurfaceStatusProp",
+    ],
+    files: [
+      "dist/components/layout/master-detail.js",
+      "dist/components/layout/master-detail.d.ts",
+      "dist/components/layout/error-surface.js",
+      "dist/components/layout/error-surface.d.ts",
+    ],
   },
   {
     subpath: "./data-entry",
@@ -148,6 +165,161 @@ createRoot(document.getElementById("root")).render(
   }
 }
 
+/** Extract the packed tarball into a fresh consumer's node_modules and link its runtime deps. */
+function installPackedUi(consumer, tarball, manifest) {
+  const consumerModules = join(consumer, "node_modules");
+  const installedUi = join(consumerModules, "@godxjp", "ui");
+  mkdirSync(installedUi, { recursive: true });
+  execFileSync("tar", ["-xzf", tarball, "-C", installedUi, "--strip-components=1"], {
+    cwd: root,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  for (const dependency of [...Object.keys(manifest.dependencies ?? {}), "react", "react-dom"]) {
+    linkInstalledPackage(consumerModules, dependency);
+  }
+  return consumer;
+}
+
+/**
+ * gh#251 — the ErrorSurface consumer contract.
+ *
+ * Source-only checks are what let the regression through: `src/` had the surface, the docs had the
+ * surface, and the PUBLISHED artifact had nothing importable. So this fixture is deliberately the
+ * consumer's point of view and nothing else — it extracts the real tarball into a fresh
+ * `node_modules`, then:
+ *
+ *  1. BUILDS a production Vite bundle that imports `ErrorSurface` from `@godxjp/ui/layout`,
+ *     proving the public subpath resolves and bundles from the packed files;
+ *  2. RENDERS it with `react-dom/server` in BOTH modes, proving the packed runtime actually
+ *     executes and emits the contract — the status code, the "HTTP status" accessible phrase,
+ *     exactly one action, the semantic metadata rows, and (in system mode) the package-owned
+ *     centred page geometry.
+ *
+ * It renders with NO provider on purpose: an exception page must work when the app around it is
+ * already broken.
+ */
+function buildErrorSurfaceConsumer(tarball, manifest) {
+  const consumer = installPackedUi(
+    join(packDirectory, "error-surface-consumer"),
+    tarball,
+    manifest,
+  );
+
+  mkdirSync(join(consumer, "src"), { recursive: true });
+  writeFileSync(
+    join(consumer, "package.json"),
+    JSON.stringify({ name: "error-surface-consumer", private: true, type: "module" }, null, 2),
+  );
+  writeFileSync(
+    join(consumer, "index.html"),
+    '<!doctype html><html><body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>',
+  );
+  writeFileSync(
+    join(consumer, "src/main.jsx"),
+    `import React from "react";
+import { createRoot } from "react-dom/client";
+import { ErrorSurface } from "@godxjp/ui/layout";
+
+createRoot(document.getElementById("root")).render(
+  <ErrorSurface
+    mode="system"
+    status={503}
+    title="Service temporarily unavailable"
+    description="We are performing scheduled maintenance."
+    maintenance={{ start: "2026-08-02T18:00:00Z", end: "2026-08-02T20:00:00Z", timeZone: "Asia/Tokyo", progress: 40 }}
+    action={<button type="button">Reload</button>}
+  />,
+);
+`,
+  );
+
+  execFileSync(process.execPath, [join(root, "node_modules/vite/bin/vite.js"), "build"], {
+    cwd: consumer,
+    env: { ...process.env, CI: "1" },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (!existsSync(join(consumer, "dist/index.html"))) {
+    throw new Error("error surface consumer Vite build did not emit dist/index.html");
+  }
+
+  // ── Render the PACKED runtime, no JSX and no provider — plain createElement, exactly what a
+  // server-rendered exception page does. ──────────────────────────────────────────────────────
+  writeFileSync(
+    join(consumer, "render.mjs"),
+    `import { createElement as h } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { ErrorSurface } from "@godxjp/ui/layout";
+
+const application = renderToStaticMarkup(
+  h(ErrorSurface, {
+    mode: "application",
+    status: 403,
+    title: "You do not have access to this page",
+    description: "Ask an administrator to grant you the Reports role.",
+    requestId: "01J9Z0M7Q2K5S7WQ3T5N8V2H4B",
+    permission: "reports.view",
+    organization: "Acme KK",
+    action: h("button", { type: "button" }, "Back to dashboard"),
+  }),
+);
+
+const system = renderToStaticMarkup(
+  h(ErrorSurface, {
+    mode: "system",
+    status: 503,
+    title: "Service temporarily unavailable",
+    maintenance: {
+      start: "2026-08-02T18:00:00Z",
+      end: "2026-08-02T20:00:00Z",
+      timeZone: "Asia/Tokyo",
+      progress: 40,
+    },
+    action: h("button", { type: "button" }, "Reload"),
+  }),
+);
+
+const failures = [];
+const expect = (label, ok) => { if (!ok) failures.push(label); };
+
+// application mode: the surface block ONLY — no shell, no page geometry manufactured.
+expect('application: data-mode', application.includes('data-mode="application"'));
+expect('application: status code', application.includes(">403<"));
+// The library's OWN metadata labels are localized (default locale, no provider), so assert the
+// SHAPE: an sr-only sibling whose text is a phrase around 403, not the bare digits.
+const srOnly = application.match(/class="sr-only">([^<]*)</);
+expect('application: HTTP status phrase', Boolean(srOnly) && srOnly[1].includes("403") && srOnly[1].trim().length > 3);
+expect('application: title', application.includes("You do not have access to this page"));
+expect('application: exactly one action', (application.match(/<button/g) ?? []).length === 1);
+expect('application: request id row', application.includes("01J9Z0M7Q2K5S7WQ3T5N8V2H4B"));
+expect('application: permission row', application.includes("reports.view"));
+expect('application: organization row', application.includes("Acme KK"));
+expect('application: semantic metadata dl', application.includes("<dt") && application.includes("<dd"));
+expect('application: builds NO page shell', !application.includes("ui-centered-shell"));
+
+// system mode: the surface OWNS the page — package-owned viewport-centred geometry.
+expect('system: centred shell', system.includes("ui-centered-shell"));
+expect('system: centred column', system.includes('data-align="center"'));
+expect('system: data-mode', system.includes('data-mode="system"'));
+expect('system: status code', system.includes(">503<"));
+expect('system: ISO-8601 time element', /<time [^>]*datetime="2026-08-02T18:00:00Z"/i.test(system));
+expect('system: maintenance progress meter', system.includes('role="progressbar"'));
+expect('system: exactly one action', (system.match(/<button/g) ?? []).length === 1);
+
+if (failures.length > 0) {
+  console.error("packed ErrorSurface render contract failed:\\n  " + failures.join("\\n  "));
+  process.exit(1);
+}
+console.log("packed ErrorSurface rendered in both modes");
+`,
+  );
+
+  execFileSync(process.execPath, ["render.mjs"], {
+    cwd: consumer,
+    env: { ...process.env, CI: "1" },
+    stdio: ["ignore", "pipe", "inherit"],
+  });
+}
+
 try {
   const result = JSON.parse(
     execFileSync(
@@ -205,9 +377,10 @@ try {
   }
 
   buildCompactTrendConsumer(tarball, manifest);
+  buildErrorSurfaceConsumer(tarball, manifest);
 
   console.log(
-    `packed public contract OK — @godxjp/ui@${manifest.version} (${artifact.filename}, ${packedFiles.size} files); compact trend Vite consumer built without recharts`,
+    `packed public contract OK — @godxjp/ui@${manifest.version} (${artifact.filename}, ${packedFiles.size} files); compact trend Vite consumer built without recharts; ErrorSurface imported, built and server-rendered from the tarball in both modes`,
   );
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));

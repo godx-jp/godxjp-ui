@@ -57,6 +57,12 @@
   /* Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip
    * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2. */
   --sidebar-nav-item-line-height: 1.5;
+  /* Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last
+   * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`),
+   * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese
+   * tone marks exactly as the sidebar label did. Keep >= 1.2. */
+  --auth-account-summary-email-line-height: 1.5;
+  --topbar-start-truncate-line-height: 1.5;
   --sidebar-nav-icon-size: 1rem;
   --sidebar-nav-item-gap: 0.625rem;
   --sidebar-nav-item-padding-x: 0.625rem;
@@ -235,4 +241,37 @@
   --centered-shell-width-sm: 32rem;
   --centered-shell-width-md: 46rem;
   --centered-shell-width-lg: 64rem;
+}
+
+/* CenteredShell · public-landing preset (gh#252) — the token-owned geometry of a PUBLIC marketing
+ * / product landing page: one content measure shared by header, main column and footer, the
+ * section rhythm between page sections, the flat (chrome-quiet) card presentation and the hero
+ * heading tier. Every value is a service-themeable knob (rule #45): a landing composition is a
+ * COMPOSITION of real primitives (docs/COMPOSITION-VS-COMPONENT.md — Hero/Navbar/Footer FAIL the
+ * Framework-Component Test), so the consumer must never own geometry or a media query. These
+ * knobs are read ONLY under `.ui-centered-shell[data-preset="public-landing"]`, so the default
+ * shell — which emits no `data-preset` at all — is byte-identical to before. */
+:root {
+  --centered-shell-landing-max-width: 67.5rem; /* 1080px — header/main/footer share ONE measure */
+  --centered-shell-landing-inset-inline: var(--space-6); /* 24px page gutter ≥ 40rem */
+  --centered-shell-landing-inset-inline-compact: var(--space-4); /* 16px page gutter < 40rem */
+  --centered-shell-landing-main-padding-block: var(--space-10); /* 40px */
+  --centered-shell-landing-main-padding-block-compact: var(--space-6); /* 24px */
+  --centered-shell-landing-section-gap: var(--space-10); /* rhythm BETWEEN page sections */
+  --centered-shell-landing-section-gap-compact: var(--space-6);
+  --centered-shell-landing-footer-padding-block: var(--space-8);
+  /* Chrome is a token, default quiet (rule #44): a landing surface is FLAT — no card elevation —
+   * so a service opts back IN with `--centered-shell-landing-card-shadow: var(--card-shadow)`. */
+  --centered-shell-landing-card-shadow: none;
+  /* Hero heading tier. The preset re-points `--heading-h1` (same mechanism as
+   * `.ui-auth-shell` → `--auth-shell-heading-size`), so a hero title is a real `Heading level={1}`
+   * and never a consumer font-size. */
+  --centered-shell-landing-heading-size: var(--font-size-display);
+  --centered-shell-landing-heading-size-compact: var(--font-size-3xl);
+  /* Role-mirror knob — MUST stay `initial`, with the role default at the CALL SITE
+   * (`var(--centered-shell-landing-background, var(--background))`), so a scoped
+   * `[data-tenant]` / `.dark` override of `--background` still reaches it (docs/TOKENS.md ·
+   * "Role-mirror knobs MUST be `initial`"). Documented default = hsl(var(--background)) — a public
+   * page is the plain page canvas, not the app's `--muted` chrome. */
+  --centered-shell-landing-background: initial;
 }

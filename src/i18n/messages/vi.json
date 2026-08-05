@@ -150,6 +150,14 @@
       "version": "Phiên bản {version}",
       "effectiveDate": "Hiệu lực từ {date}"
     },
+    "errorSurface": {
+      "statusLabel": "Trạng thái HTTP {status}",
+      "requestId": "Mã yêu cầu",
+      "permission": "Quyền yêu cầu",
+      "organization": "Tổ chức",
+      "maintenanceWindow": "Bảo trì theo lịch",
+      "maintenanceProgress": "Tiến độ bảo trì {percent}"
+    },
     "topbar": {
       "toggleSidebar": "Bật/tắt thanh bên",
       "search": "Tìm kiếm",

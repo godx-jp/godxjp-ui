@@ -66,9 +66,13 @@ export function Tabs({
         <>
           <TabsList
             data-slot="tabs-list"
+            // The list variant MUST be forwarded, not just styled through `className` — every
+            // line-variant rule on TabsTrigger keys off `group-data-[variant=line]/tabs-list`
+            // (that is how the active ring is kept off the line variant, gh#248). `card` keeps the
+            // default list chrome, exactly like a hand-composed <TabsList> with no variant.
+            variant={variant === "line" ? "line" : "default"}
             className={cn(
-              variant === "line" &&
-                "h-auto w-full justify-start rounded-none border-b bg-transparent p-0",
+              variant === "line" && "h-auto w-full justify-start border-b p-0",
               variant === "card" && "w-full justify-start",
               listClassName,
             )}
@@ -79,8 +83,9 @@ export function Tabs({
                 value={item.value}
                 disabled={item.disabled}
                 className={cn(
-                  variant === "line" &&
-                    "data-[state=active]:border-primary rounded-none border-b-2 border-transparent bg-transparent px-4 py-2 shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                  // Geometry only — the active underline is the token-owned `::after` bar the
+                  // line variant already owns (never a second, hand-rolled border-b indicator).
+                  variant === "line" && "rounded-none px-4 py-2",
                   variant === "card" && "data-[state=active]:shadow-sm",
                 )}
               >
@@ -160,7 +165,13 @@ export const TabsTrigger = React.forwardRef<
     ref={ref}
     data-slot="tabs-trigger"
     className={cn(
-      "text-muted-foreground ring-offset-background hover:text-foreground focus-visible:border-ring focus-visible:outline-ring focus-visible:ring-ring/50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:ring-primary/25 after:bg-foreground relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start after:absolute after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:ring-1 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100",
+      // The SELECTED-state ring (`ring-1 ring-primary/25`) is scoped to the default/card lists —
+      // the `line` variant is underline-only (gh#248) and must NEVER paint a surrounding ring, or
+      // it competes with (and at equal specificity overrides) the `:focus-visible` ring. The
+      // focus-visible ring/outline below is deliberately left unscoped: every variant keeps a
+      // visible keyboard focus indicator (WCAG 2.4.7). The line indicator itself lives in
+      // src/styles/navigation-layout.css so it reads the --tabs-indicator-* tokens.
+      "text-muted-foreground ring-offset-background hover:text-foreground focus-visible:border-ring focus-visible:outline-ring focus-visible:ring-ring/50 data-[state=active]:bg-background data-[state=active]:text-foreground group-data-[variant=default]/tabs-list:data-[state=active]:ring-primary/25 relative inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 py-1 text-sm font-medium whitespace-nowrap transition-all group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start group-data-[variant=line]/tabs-list:border-e-0 group-data-[variant=line]/tabs-list:border-b-0 focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=default]/tabs-list:data-[state=active]:ring-1 group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none",
       className,
     )}
     {...props}

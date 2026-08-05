@@ -17,6 +17,7 @@ import {
   EMAIL_MOBILE,
   EMAIL_SHELL,
   EMAIL_TYPOGRAPHY,
+  emailBrandMarkSvg,
   emailInlineStyle,
 } from "@godxjp/ui/email";
 
@@ -53,23 +54,60 @@ const progressiveStyles = `
 `;
 
 export interface EmailSpecimenCopy {
+  wordmark: string;
   heading: string;
   lede: string;
+  /** Reference strings — ids, masked numbers, ISO dates. Set in the mono face. */
+  reference: string[];
   cta: string;
   legal: string;
   links: string[];
 }
 
 export const EMAIL_SPECIMEN_COPY: EmailSpecimenCopy = {
+  wordmark: "GoDX",
   heading: "Heading placeholder",
-  lede: "One or two calm sentences of placeholder body copy, long enough to wrap and show the 1.7 line height inside the 416px content column.",
+  lede: `One or two calm sentences of placeholder body copy, long enough to wrap and show the ${EMAIL_TYPOGRAPHY.bodyLineHeight} line height inside the 416px content column.`,
   cta: "Primary action",
+  reference: ["Reference: ref_0000", "Date: 2026-01-01"],
   legal: "Placeholder legal line. This address is not monitored.",
   links: ["Help", "Privacy", "Unsubscribe"],
 };
 
 /** Build the full email document. */
 export function buildEmailSpecimenHtml(copy: EmailSpecimenCopy = EMAIL_SPECIMEN_COPY): string {
+  // In a header the mark is DECORATIVE: the wordmark beside it carries the accessible name, so the
+  // brand is announced once rather than twice.
+  const mark = emailBrandMarkSvg({ label: "" });
+
+  // The canonical header is a LOCKUP, not a bare mark. Email clients have no flexbox, so the row is
+  // a presentational table and the mark-to-wordmark gap is a spacer cell.
+  // ui-audit-disable-next-line no-raw-table
+  const lockup = `<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="${emailInlineStyle(
+    { borderCollapse: "collapse" },
+  )}"><tr>
+              <td valign="middle" style="${emailInlineStyle({
+                fontSize: 0,
+                lineHeight: 0,
+                // The next line closes a JS template-literal interpolation, not a hand-formatted
+                // price, so the currency rule is a false positive here.
+                // ui-audit-disable-next-line hardcoded-currency
+              })}">${mark}</td>
+              <td style="${emailInlineStyle({ width: EMAIL_BRAND_MARK.gap, fontSize: 0, lineHeight: 0 })}">&#8203;</td>
+              <td valign="middle" style="${emailInlineStyle({
+                fontFamily: EMAIL_TYPOGRAPHY.fontFamily,
+                fontSize: EMAIL_BRAND_MARK.wordmarkFontSize,
+                fontWeight: EMAIL_BRAND_MARK.wordmarkFontWeight,
+                lineHeight: 1,
+                color: c.foreground,
+                // The next line closes a JS template-literal interpolation, not a hand-formatted
+                // price, so the currency rule is a false positive here.
+                // ui-audit-disable-next-line hardcoded-currency
+              })}">${copy.wordmark}</td>
+            </tr></table>`;
+
+  const reference = copy.reference.join("<br>");
+
   const footerLinks = copy.links
     .map(
       (label, index) =>
@@ -129,7 +167,7 @@ ${progressiveStyles}
             fontWeight: EMAIL_TYPOGRAPHY.bodyFontWeight,
             color: c.foreground,
           })}">
-            ${EMAIL_BRAND_MARK.svg}
+            ${lockup}
             ${spacer(EMAIL_SHELL.gapPx)}
             <h1 class="email-heading" style="${emailInlineStyle({
               margin: 0,
@@ -152,6 +190,19 @@ ${progressiveStyles}
               // price, so the currency rule is a false positive here.
               // ui-audit-disable-next-line hardcoded-currency
             })}">${copy.lede}</p>
+            ${spacer(EMAIL_SHELL.gapSmPx)}
+            <!-- Reference block. Ids, masked numbers and ISO dates are set in the mono face so the
+                 figures align and cannot be misread. -->
+            <p style="${emailInlineStyle({
+              margin: 0,
+              fontFamily: EMAIL_TYPOGRAPHY.monoFontFamily,
+              fontSize: EMAIL_FOOTER.fontSize,
+              lineHeight: EMAIL_TYPOGRAPHY.bodyLineHeight,
+              color: c.mutedForeground,
+              // The next line closes a JS template-literal interpolation, not a hand-formatted
+              // price, so the currency rule is a false positive here.
+              // ui-audit-disable-next-line hardcoded-currency
+            })}">${reference}</p>
             ${spacer(EMAIL_SHELL.gapPx)}
             <!-- Bulletproof CTA. The button is a padded table cell so Outlook paints the fill and
                  the radius. ui-audit-disable-next-line no-raw-table -->

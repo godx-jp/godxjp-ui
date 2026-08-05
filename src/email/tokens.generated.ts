@@ -53,11 +53,11 @@ export const EMAIL_COLOR_SOURCE = {
     "hsl": "204 100% 39%"
   },
   "brand": {
-    "cssVar": "--success",
-    "hsl": "146 40% 58%"
+    "cssVar": "--brand",
+    "hsl": "160.5 100% 29.6%"
   },
   "brandForeground": {
-    "cssVar": "--success-foreground",
+    "cssVar": "--brand-foreground",
     "hsl": "60 33% 99%"
   },
   "urgency": {
@@ -113,11 +113,11 @@ export const EMAIL_COLOR_SOURCE_DARK = {
     "hsl": "204 90% 60%"
   },
   "brand": {
-    "cssVar": "--success",
-    "hsl": "146 45% 55%"
+    "cssVar": "--brand",
+    "hsl": "160.5 100% 36%"
   },
   "brandForeground": {
-    "cssVar": "--success-foreground",
+    "cssVar": "--brand-foreground",
     "hsl": "48 9% 9%"
   },
   "urgency": {
@@ -140,23 +140,27 @@ export const EMAIL_GEOMETRY_SOURCE = {
   "--email-card-reference-height": "407px",
   "--email-stack-gap": "24px",
   "--email-stack-gap-sm": "12px",
-  "--email-mark-width": "32px",
-  "--email-mark-height": "32px",
-  "--email-font-family-sans": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
+  "--email-mark-width": "22px",
+  "--email-mark-height": "22px",
+  "--email-mark-gap": "8px",
+  "--email-wordmark-font-size": "13px",
+  "--email-wordmark-font-weight": "700",
+  "--email-font-family-sans": "'M PLUS 2', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic Medium', YuGothic, 'Noto Sans JP', Meiryo, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, Arial, sans-serif",
+  "--email-font-family-mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
   "--email-body-font-size": "14px",
-  "--email-body-line-height": "1.7",
+  "--email-body-line-height": "1.9",
   "--email-body-font-weight": "400",
-  "--email-heading-font-size": "20px",
-  "--email-heading-line-height": "1.25",
-  "--email-heading-font-weight": "700",
-  "--email-cta-height": "44px",
-  "--email-cta-line-height": "44px",
-  "--email-cta-padding-x": "24px",
+  "--email-heading-font-size": "17px",
+  "--email-heading-line-height": "1.7",
+  "--email-heading-font-weight": "500",
+  "--email-cta-height": "36px",
+  "--email-cta-line-height": "36px",
+  "--email-cta-padding-x": "16px",
   "--email-cta-radius": "6px",
   "--email-cta-font-size": "14px",
-  "--email-cta-font-weight": "700",
-  "--email-footer-font-size": "12px",
-  "--email-footer-line-height": "1.5",
+  "--email-cta-font-weight": "500",
+  "--email-footer-font-size": "11px",
+  "--email-footer-line-height": "1.8",
   "--email-footer-link-gap": "12px",
   "--email-footer-padding-top": "20px",
   "--email-footer-border-width": "1px",
@@ -165,6 +169,6 @@ export const EMAIL_GEOMETRY_SOURCE = {
   "--email-mobile-width": "100%",
   "--email-mobile-padding": "20px",
   "--email-mobile-page-padding": "12px",
-  "--email-mobile-heading-font-size": "18px",
+  "--email-mobile-heading-font-size": "16px",
   "--email-mobile-cta-width": "100%"
 } as const;

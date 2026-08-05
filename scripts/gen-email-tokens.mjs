@@ -44,8 +44,11 @@ export const EMAIL_COLOR_ROLES = {
   primary: "--primary",
   primaryForeground: "--primary-foreground",
   focus: "--ring",
-  brand: "--success",
-  brandForeground: "--success-foreground",
+  // IDENTITY, not status: the GoDX capsule reads --brand (canonical emerald), the same role
+  // `--logo-godx-color` defaults to on the web. It used to read --success (若竹 status green),
+  // which shipped the mark ΔE76 ≈ 17.5 off canonical — gh#250.
+  brand: "--brand",
+  brandForeground: "--brand-foreground",
   urgency: "--attention",
   urgencyForeground: "--attention-foreground",
 };
@@ -99,6 +102,16 @@ for (const name of Object.keys(geometry)) {
       `${EMAIL_CSS}: ${name} is "${geometry[name]}" — email tokens must be LITERAL values ` +
         `(no var()/calc(); email clients resolve neither).`,
     );
+  }
+  // Quote normalisation. A multi-word font family MUST be quoted in CSS ("M PLUS 2" is not a valid
+  // unquoted identifier sequence), and the repo's prettier config writes CSS strings with DOUBLE
+  // quotes. But the only place an email consumes this value is an inline `style="…"` attribute,
+  // which a double quote terminates. CSS treats '…' and "…" identically, so the export swaps to
+  // single quotes here — one transform, in the one place that already owns CSS→export conversion,
+  // instead of a hand-maintained second copy of the stack.
+  geometry[name] = geometry[name].replace(/"/g, "'");
+  if (geometry[name].includes('"')) {
+    throw new Error(`${EMAIL_CSS}: ${name} still carries a double quote after normalisation`);
   }
 }
 

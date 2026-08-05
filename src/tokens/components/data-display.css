@@ -15,6 +15,19 @@
      Painted as an overlay so a service sets --avatar-tint: hsl(var(--primary) / 0.08). */
   --avatar-tint: transparent;
 
+  /* Entity-header mark — `<Avatar shape="square">` (gh#249): the compact rounded SQUARE an
+     organization/service header uses, as opposed to the round person avatar. Every value is a knob
+     (rule #45) so a service matches the mark to its own grid without a className override.
+     --avatar-square-background / --avatar-square-foreground are role-mirror knobs: `initial` so the
+     --primary / --primary-foreground defaults re-resolve at the CALL SITE under a scoped
+     [data-tenant]/.dark theme (a :root binding to a role var would freeze at the :root value).
+     Defaults = --radius-lg corners · --control-height box (same as the circle avatar, so swapping
+     shape never reflows a header) · hsl(var(--primary)) fill · hsl(var(--primary-foreground)) glyph. */
+  --avatar-square-radius: var(--radius-lg);
+  --avatar-square-size: var(--control-height);
+  --avatar-square-background: initial;
+  --avatar-square-foreground: initial;
+
   /* Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme.
      Track reads --secondary, fill reads --success; a service re-tones once.
      Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill. */

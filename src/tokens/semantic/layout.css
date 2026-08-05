@@ -83,6 +83,21 @@
    * page moves. 11rem = 176px, i.e. the control ends flush with the compact page gutter. */
   --page-header-extra-measure: 11rem; /* 176px */
 
+  /* Bounded page MEASURE (gh#245 / gh#247) — the shared inline cap applied to the page HEADER and
+   * BODY together, so the header `extra` action ends on the same edge as the body surface (the
+   * `variant="narrow"` complaint: it caps only `.ui-page-body`, leaving the header action out at
+   * the page edge). Selected by the semantic `measure` prop; `measure="default"` reads NEITHER
+   * token, so an existing page is untouched.
+   *
+   * These are OUTER measures: the page gutters (--space-page-active-x, 24px each side by default)
+   * live INSIDE the cap, so the VISIBLE surface is the measure minus both gutters:
+   *   narrow  42rem = 672px → 624px visible surface (the historical variant="narrow" body width)
+   *   medium  48rem = 768px → 720px visible surface (the canonical readable/feed measure)
+   * Below the cap nothing binds, so a 390px viewport stays fluid at the 16px compact gutter
+   * (358px surface). A service theme retunes both in ONE place; never a page-local max-width. */
+  --page-measure-narrow: 42rem; /* 672px outer → 624px surface */
+  --page-measure-medium: 48rem; /* 768px outer → 720px surface */
+
   /* Responsive page typography is independent from density. Density changes information spacing;
    * these tokens change only page chrome so mobile keeps readable body text and touch targets. */
   --page-title-font-size: var(--heading-h1);

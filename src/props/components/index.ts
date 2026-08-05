@@ -43,6 +43,7 @@ export type {
   TransferItemProp,
 } from "./data-entry.prop";
 export type {
+  AvatarProp,
   EmptyStateProp,
   DescriptionsProp,
   DescriptionsItemProp,

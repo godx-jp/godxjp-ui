@@ -352,6 +352,126 @@ describe("PageContainer", () => {
     });
   });
 
+  /*
+   * Bounded page measure (gh#245 notification feed / gh#247 invitations inbox). jsdom has no
+   * layout engine, so the geometry is asserted here as a DOM + stylesheet + token contract; the
+   * live numbers were measured in headless Chromium against this exact stylesheet (reported on
+   * both issues):
+   *
+   *   measure="default" 1440 → header 1440 / body content 1392 (unbounded, unchanged)
+   *   measure="medium"  1440 → header 768 / body 768 → 720px VISIBLE surface, header extra and
+   *                            the body card share the end edge (both at x=744 in the isolate)
+   *   measure="medium"  1024 → 720px surface (identical — the cap binds at both desktop steps)
+   *   measure="medium"   390 → 358px surface (nothing binds; the 16px compact gutter is intact)
+   *   measure="narrow"  1440 → 624px surface (the historical variant="narrow" body width)
+   */
+  describe("measure (gh#245, gh#247)", () => {
+    const layoutCss = readFileSync(resolve(process.cwd(), "src/styles/layout.css"), "utf8");
+    const layoutTokens = readFileSync(
+      resolve(process.cwd(), "src/tokens/semantic/layout.css"),
+      "utf8",
+    );
+
+    it("is unbounded by default, and the default matches NO rule in the stylesheet", () => {
+      const { container } = renderWithUi(
+        <PageContainer title="Notifications" extra={<Button>Mark all read</Button>}>
+          <p>Feed</p>
+        </PageContainer>,
+      );
+
+      expect(container.firstChild).toHaveAttribute("data-measure", "default");
+      // The inert-default contract: an existing page emits the attribute but matches no selector,
+      // so its geometry is literally untouched (same precedent as data-layout="stack", gh#231).
+      expect(layoutCss).not.toMatch(/\[data-measure="default"\]/);
+    });
+
+    it("opts into the medium measure", () => {
+      const { container } = renderWithUi(
+        <PageContainer
+          title="Notifications"
+          measure="medium"
+          extra={<Button>Mark all read</Button>}
+        >
+          <p>Feed</p>
+        </PageContainer>,
+      );
+      expect(container.firstChild).toHaveAttribute("data-measure", "medium");
+    });
+
+    it("caps the HEADER and the BODY together — not the body alone like variant='narrow'", () => {
+      // The whole point of the axis (gh#245): variant="narrow" leaves the header action at the
+      // page edge because only .ui-page-body is capped.
+      expect(layoutCss).toMatch(
+        /\.ui-page-container\[data-measure="medium"\] \.ui-page-header,\s*\.ui-page-container\[data-measure="medium"\] \.ui-page-body \{\s*max-inline-size: var\(--page-measure-medium\);/,
+      );
+      expect(layoutCss).toMatch(
+        /\.ui-page-container\[data-measure="narrow"\] \.ui-page-header,\s*\.ui-page-container\[data-measure="narrow"\] \.ui-page-body \{\s*max-inline-size: var\(--page-measure-narrow\);/,
+      );
+      // Legacy variant stays body-only — untouched, so existing pages do not move.
+      expect(layoutCss).toMatch(
+        /\.ui-page-container--narrow \.ui-page-body \{\s*max-width: 42rem;/,
+      );
+    });
+
+    it("owns both measures as tokens — no raw pixel measure in the stylesheet", () => {
+      expect(layoutTokens).toMatch(/--page-measure-narrow:\s*42rem/);
+      expect(layoutTokens).toMatch(/--page-measure-medium:\s*48rem/);
+      // The measure rules never hard-code a length; the token is the only route (rule #45).
+      expect(layoutCss).not.toMatch(/max-inline-size:\s*\d+(?:\.\d+)?(?:px|rem)/);
+    });
+
+    it("uses the logical inline axis so the measure flips under RTL", () => {
+      // max-inline-size (not max-width) keeps the cap on the inline axis, and the flex column's
+      // cross-axis start is the inline start — so the bounded page hugs the correct edge in `rtl`.
+      expect(layoutCss).not.toMatch(/\[data-measure="[a-z]+"\][^{]*\{[^}]*max-width:/);
+    });
+
+    it("is orthogonal to variant and headerLayout — the canonical quiet feed composes", () => {
+      // gh#245: ghost owned the quiet header rhythm but could not also be measure-bounded,
+      // because chrome and measure were ONE variant axis. Three independent props now.
+      const { container } = renderWithUi(
+        <PageContainer
+          title="Notifications"
+          variant="ghost"
+          measure="medium"
+          headerLayout="responsive-inline"
+          extra={<Button>Mark all read</Button>}
+        >
+          <p>Feed</p>
+        </PageContainer>,
+      );
+      const root = container.firstChild as HTMLElement;
+      expect(root).toHaveClass("ui-page-container--ghost");
+      expect(root).toHaveAttribute("data-measure", "medium");
+      expect(container.querySelector("header")).toHaveAttribute("data-layout", "responsive-inline");
+    });
+
+    it("keeps the header quiet by default — the divider stays a service opt-in (rule #44)", () => {
+      // No new chrome token was needed for gh#245's "quiet header": the divider already defaults
+      // to the quietest state and is read through a token, and ghost drops the header pad too.
+      expect(layoutTokens).toMatch(/--page-header-divider:\s*none;/);
+      expect(layoutCss).toMatch(/border-bottom: var\(--page-header-divider\);/);
+      expect(layoutCss).toMatch(
+        /\.ui-page-container--ghost \.ui-page-header \{\s*border-bottom: none;\s*padding-bottom: 0;/,
+      );
+    });
+
+    it("has no a11y violations in the bounded quiet feed composition", async () => {
+      await expectNoA11yViolations(
+        <PageContainer
+          title="Notifications"
+          subtitle="Unread first"
+          variant="ghost"
+          measure="medium"
+          headerLayout="responsive-inline"
+          extra={<Button>Mark all read</Button>}
+        >
+          <p>Feed content</p>
+        </PageContainer>,
+      );
+    });
+  });
+
   it("has no a11y violations with header, body, and footer", async () => {
     await expectNoA11yViolations(
       <PageContainer

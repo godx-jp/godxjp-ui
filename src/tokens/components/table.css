@@ -7,6 +7,29 @@
   --table-row-height: calc(var(--table-row-height-default) * var(--scaling));
   --table-cell-padding-y: var(--space-2);
   --table-cell-space-x: var(--control-padding-x);
+  /* Pagination footer inset (gh#236). The footer ships as a SELF-CONTAINED slot and is commonly
+   * placed in a flush container (`<Card><CardContent flush><DataTable/>`), where no ancestor
+   * supplies padding — so it owns its own on BOTH axes instead of declaring block-start only.
+   * Block default = the previous single `padding-top` value, now on both block edges (breathing
+   * room above the footer and before the container's closing border). Inline default = the cell
+   * inline padding, so the "rows per page" label sits on the same optical axis as the first
+   * column's text. A service retunes either axis to its own grid (#45).
+   * Both are declared `initial` so the defaults re-resolve at the CALL SITE: --space-stack-sm and
+   * --table-cell-space-x are density-scaled and re-declared inside a `.ui-density-*` subtree, and a
+   * :root binding would freeze the footer at the :root density (docs/TOKENS.md — the :root freeze
+   * rule). Defaults = var(--space-stack-sm) block · var(--table-cell-space-x) inline. */
+  --table-pagination-padding-y: initial;
+  --table-pagination-padding-x: initial;
+  /* DataTable surface — narrow-viewport legibility FLOOR (gh#253). Below the `sm` viewport step a
+   * multi-column admin grid whose columns are `white-space: nowrap` would otherwise be crushed, so
+   * the bordered surface keeps a minimum inline size and `.ui-data-table-scroll` scrolls instead.
+   * This shipped as a hard-coded `min-w-[640px]` utility on the surface element, which left a
+   * service that wants a narrower (or no) floor with no route but forking the component (#45).
+   * Default = the previous literal, in px so the floor releases at EXACTLY the same width as the
+   * px-based `sm` media query that clears it (a rem value would drift under a non-16px root and
+   * re-introduce the scroll between the two thresholds). Set `0` to opt out entirely — which is
+   * what `preset="action-collection"` does, because there the priority measures own the width. */
+  --table-surface-min-inline-size: 640px;
   --table-head-font-size: var(--font-size-xs);
   /* Header band — its OWN bg + fg knobs (decoupled from --secondary). Declared `initial` so the
    * default re-resolves to the LIVE --muted / --muted-foreground roles at the call site: a :root
@@ -23,4 +46,26 @@
   --table-row-striped-background: initial;
   --table-row-hover-background: initial;
   --table-row-selected-background: initial;
+}
+
+/* Table · action-collection preset (gh#253) — the canonical dense approval / action queue.
+ * Column PRIORITY measures replace the desktop intrinsic widths (a nowrap free-text column is
+ * what makes a five-column queue wider than its card and forces a horizontal scroll). Nothing
+ * here is read unless `preset="action-collection"` is set, so every existing table is untouched.
+ * Percentages so the ratio holds at any card width; the action affordance is an absolute measure
+ * because it must never be squeezed below its touch target. */
+:root {
+  --table-action-collection-primary-width: 18%; /* requester / subject */
+  --table-action-collection-secondary-width: 22%; /* target / resource */
+  --table-action-collection-meta-width: 12%; /* timestamps, ids — lowest priority */
+  --table-action-collection-actions-width: 3.5rem; /* row-action affordance, never clipped */
+  /* Compact tier, applied below the collapse step (the 390px acceptance frame). */
+  --table-action-collection-primary-width-compact: 24%;
+  --table-action-collection-secondary-width-compact: 22%;
+  --table-action-collection-meta-width-compact: 20%;
+  --table-action-collection-actions-width-compact: 2.75rem;
+  --table-action-collection-font-size-compact: var(--font-size-xs);
+  --table-action-collection-cell-space-x-compact: var(--space-2);
+  --table-action-collection-cell-padding-y-compact: var(--space-2);
+  --table-action-collection-row-height-compact: var(--table-row-height-compact);
 }

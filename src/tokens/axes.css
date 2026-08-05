@@ -73,9 +73,10 @@
  * `src/theme/dxs.canonical.css` mirrors this block for stylesheet-only apps;
  * `src/tokens/__tests__/dxs-canonical-theme.test.ts` fails if the two drift.
  *
- * The brand-green GoDX identity mark needs no binding: `--logo-godx-color` /
- * `--logo-wordmark-color` already default to the `--success` identity role at
- * their call sites and never reference `--primary`. */
+ * The GoDX identity mark needs no binding: `--logo-godx-color` /
+ * `--logo-wordmark-color` already default to the `--brand` IDENTITY role (the
+ * canonical emerald) at their call sites, and never reference `--primary` — nor
+ * the `--success` status green they wrongly borrowed before gh#250. */
 :root[data-brand="dxs"] {
   --primary: 211 73% 15%;
   --primary-foreground: 0 0% 100%;

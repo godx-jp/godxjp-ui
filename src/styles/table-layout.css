@@ -74,12 +74,17 @@
     gap: var(--space-inline-sm);
   }
 
+  /* The footer owns its own inset on BOTH axes (gh#236) — it is a self-contained slot that is
+   * usually dropped straight into a flush container, so relying on an ancestor for inline/block-end
+   * padding left the label and the page-size Select flush against the container edge and its
+   * closing border. Logical properties only (RTL-safe); both axes are tunable tokens (#45). */
   .ui-data-table-pagination {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: var(--space-inline-sm);
-    padding-top: var(--space-stack-sm);
+    padding-block: var(--table-pagination-padding-y, var(--space-stack-sm));
+    padding-inline: var(--table-pagination-padding-x, var(--table-cell-space-x));
   }
 
   /* Numbered footer may wrap only between its two semantic groups. The supported JA/EN/VI locale
@@ -115,8 +120,20 @@
 
   .ui-data-table-surface {
     overflow: hidden;
+    /* Narrow-viewport legibility floor — a TOKEN, not the old `min-w-[640px]` literal (gh#253,
+     * rule #45). Cleared at the `sm` step below, and opted out of entirely by the collection
+     * preset, which owns its width through the column-priority measures. */
+    min-inline-size: var(--table-surface-min-inline-size);
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius-md);
+  }
+
+  /* `preset="action-collection"` (gh#253) — the priority measures fit the table to its container at
+   * every width, so the desktop floor would re-introduce exactly the horizontal scroll the preset
+   * removes. Attribute-scoped: `preset="default"` emits NO attribute, so an untouched DataTable
+   * never matches this rule (the inert-default contract, gh#231). */
+  .ui-data-table-surface[data-preset="action-collection"] {
+    min-inline-size: 0;
   }
 
   /* Zebra striping (opt-in via the `striped` prop). Selected rows keep their
@@ -187,6 +204,12 @@
     .ui-data-table-scroll::after {
       inset-inline-end: 0;
     }
+
+    /* From `sm` up the viewport is already wider than the floor, so it is released and the surface
+     * simply fills its container (this is the `sm:min-w-0` half of the old utility pair). */
+    .ui-data-table-surface {
+      min-inline-size: 0;
+    }
   }
 
   /* ── Pinned (sticky) inline-end column ────────────────────────────────
@@ -231,5 +254,145 @@
       var(--table-row-selected-background, hsl(var(--muted) / 0.3)),
       var(--table-row-selected-background, hsl(var(--muted) / 0.3))
     );
+  }
+}
+
+@layer components {
+  /* ── Table · `preset="action-collection"` (gh#253) ───────────────────────────────────────────
+   * The canonical dense approval / action queue: requester · target · reason · requested date ·
+   * row actions, all five discoverable in the initial 390px frame, WITHOUT a consumer width, a
+   * hidden column or a page-local breakpoint.
+   *
+   * It keeps the REAL table: no `display` change, no role rewriting, no card transformation — so
+   * `<table>/<thead>/<tr>/<th>/<td>` semantics, header association, `aria-sort` and screen-reader
+   * table navigation survive exactly as they are at 1440. What the preset replaces is the SIZING
+   * model: the desktop INTRINSIC column widths (a `white-space: nowrap` reason column is what
+   * makes a five-column queue 1511px wide and forces the horizontal scroll gh#253 reports) give
+   * way to `table-layout: fixed` plus token-owned column-PRIORITY measures, and cells wrap.
+   *
+   * The collapse step is measured against the TABLE'S OWN container, not the viewport (a table in
+   * a master rail must collapse before the page does), so it is a container query. Below the step
+   * only the MEASURES and the type/padding tier change — the structure is identical. */
+  .ui-table-collection {
+    container: ui-table-collection / inline-size;
+  }
+
+  .ui-table-collection [data-slot="table"] {
+    table-layout: fixed;
+    inline-size: 100%;
+  }
+
+  .ui-table-collection :is([data-slot="table-head"], [data-slot="table-cell"]) {
+    /* The column measure comes from `priority`; an unmarked column takes what is left (`auto`),
+     * which is the free-text column. */
+    inline-size: var(--table-action-collection-column-width, auto);
+    overflow-wrap: anywhere;
+    white-space: normal;
+    vertical-align: top;
+  }
+
+  .ui-table-collection [data-priority="primary"] {
+    --table-action-collection-column-width: var(--table-action-collection-primary-width);
+  }
+
+  .ui-table-collection [data-priority="secondary"] {
+    --table-action-collection-column-width: var(--table-action-collection-secondary-width);
+  }
+
+  .ui-table-collection [data-priority="meta"] {
+    --table-action-collection-column-width: var(--table-action-collection-meta-width);
+  }
+
+  .ui-table-collection [data-priority="actions"] {
+    --table-action-collection-column-width: var(--table-action-collection-actions-width);
+    text-align: end;
+  }
+
+  /* Below the step the SOURCE measures are re-pointed to their compact tier (and the type / row
+   * density with them); nothing else moves. One block per canonical step — a media/container
+   * query cannot read a `var()`, so the tokenized scale is written out (sm 40rem · md 48rem ·
+   * lg 64rem · xl 80rem, the same steps as `--master-detail-collapse-below`). */
+  @container ui-table-collection (width < 40rem) {
+    [data-collapse-below="sm"] [data-slot="table"] {
+      --table-action-collection-primary-width: var(--table-action-collection-primary-width-compact);
+      --table-action-collection-secondary-width: var(
+        --table-action-collection-secondary-width-compact
+      );
+      --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
+      --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
+      --table-row-height: var(--table-action-collection-row-height-compact);
+      --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
+      --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
+      font-size: var(--table-action-collection-font-size-compact);
+    }
+
+    /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
+     * compact measure — inside a collapsed action cell everything wraps. */
+    [data-collapse-below="sm"] [data-slot="table-cell"] * {
+      white-space: normal;
+    }
+  }
+
+  @container ui-table-collection (width < 48rem) {
+    [data-collapse-below="md"] [data-slot="table"] {
+      --table-action-collection-primary-width: var(--table-action-collection-primary-width-compact);
+      --table-action-collection-secondary-width: var(
+        --table-action-collection-secondary-width-compact
+      );
+      --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
+      --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
+      --table-row-height: var(--table-action-collection-row-height-compact);
+      --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
+      --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
+      font-size: var(--table-action-collection-font-size-compact);
+    }
+
+    /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
+     * compact measure — inside a collapsed action cell everything wraps. */
+    [data-collapse-below="md"] [data-slot="table-cell"] * {
+      white-space: normal;
+    }
+  }
+
+  @container ui-table-collection (width < 64rem) {
+    [data-collapse-below="lg"] [data-slot="table"] {
+      --table-action-collection-primary-width: var(--table-action-collection-primary-width-compact);
+      --table-action-collection-secondary-width: var(
+        --table-action-collection-secondary-width-compact
+      );
+      --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
+      --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
+      --table-row-height: var(--table-action-collection-row-height-compact);
+      --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
+      --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
+      font-size: var(--table-action-collection-font-size-compact);
+    }
+
+    /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
+     * compact measure — inside a collapsed action cell everything wraps. */
+    [data-collapse-below="lg"] [data-slot="table-cell"] * {
+      white-space: normal;
+    }
+  }
+
+  @container ui-table-collection (width < 80rem) {
+    [data-collapse-below="xl"] [data-slot="table"] {
+      --table-action-collection-primary-width: var(--table-action-collection-primary-width-compact);
+      --table-action-collection-secondary-width: var(
+        --table-action-collection-secondary-width-compact
+      );
+      --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
+      --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
+      --table-row-height: var(--table-action-collection-row-height-compact);
+      --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
+      --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
+      font-size: var(--table-action-collection-font-size-compact);
+    }
+
+    /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
+     * compact measure — inside a collapsed action cell everything wraps. */
+    [data-collapse-below="xl"] [data-slot="table-cell"] * {
+      white-space: normal;
+    }
   }
 }

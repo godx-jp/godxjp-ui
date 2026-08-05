@@ -9,7 +9,7 @@ import {
   CardTitle,
   ListRow,
 } from "@godxjp/ui/data-display";
-import { Button } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { KeyRound, Laptop, Link2, Smartphone } from "lucide-react";
 
@@ -169,6 +169,158 @@ export default function Demo() {
                   <Button size="xs" variant="outline">
                     Accept
                   </Button>
+                </>
+              }
+            />
+          </CardContent>
+        </Card>
+
+        {/* #246 — `density="compact"` inline-actions geometry. Inside the canonical narrow card
+            (358px at a 390px viewport → 326px content column) the 36px Avatar, the shrinkable
+            title/description and the two small trailing Buttons stay on ONE line, and the history
+            rows keep their status Badge + ISO-8601 date inline with the title. The #224 wrap
+            contract is untouched: a cluster that cannot fit still wraps, never widening the page. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>招待 · コンパクト Compact invitations</CardTitle>
+            <CardDescription>
+              `density=&quot;compact&quot;` lowers the row inset, the column gap and the body
+              threshold (`--list-row-compact-*`) so avatar · title · actions read as one line in a
+              narrow card, instead of the actions dropping to a second row.
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <ListRow
+              density="compact"
+              leading={
+                <Avatar className="size-9">
+                  <AvatarFallback>グ</AvatarFallback>
+                </Avatar>
+              }
+              title="グローバル推進本部"
+              description="山田 太郎 · 2026-07-28"
+              trailing={
+                <>
+                  <Button size="xs" variant="ghost">
+                    辞退
+                  </Button>
+                  <Button size="xs" variant="outline">
+                    参加
+                  </Button>
+                </>
+              }
+            />
+            <ListRow
+              density="compact"
+              leading={
+                <Avatar className="size-9">
+                  <AvatarFallback>T</AvatarFallback>
+                </Avatar>
+              }
+              title="Trung tâm Dữ liệu"
+              description="nguyen.van.a@example.com · 2026-07-27"
+              trailing={
+                <>
+                  <Button size="xs" variant="ghost">
+                    Từ chối
+                  </Button>
+                  <Button size="xs" variant="outline">
+                    Đồng ý
+                  </Button>
+                </>
+              }
+            />
+            <ListRow
+              density="compact"
+              leading={
+                <Avatar className="size-9">
+                  <AvatarFallback>A</AvatarFallback>
+                </Avatar>
+              }
+              title="Acme Data Platform"
+              description="taro@example.com · 2026-07-26"
+              trailing={
+                <>
+                  <Button size="xs" variant="ghost">
+                    Decline
+                  </Button>
+                  <Button size="xs" variant="outline">
+                    Accept
+                  </Button>
+                </>
+              }
+            />
+            {/* Compact does NOT give up the #224 safety net: a title too long for the compact
+                threshold still wraps (and the actions drop to their own line if they cannot fit),
+                so the page root never scrolls horizontally. */}
+            <ListRow
+              density="compact"
+              align="start"
+              overflow="wrap"
+              leading={
+                <Avatar className="size-9">
+                  <AvatarFallback>グ</AvatarFallback>
+                </Avatar>
+              }
+              title="グローバル・トランスフォーメーション推進本部 デジタルプラットフォーム統括部"
+              description="Trung tâm Điều phối Chuyển đổi số · 2026-07-25"
+              trailing={
+                <>
+                  <Button size="xs" variant="ghost">
+                    辞退 Decline
+                  </Button>
+                  <Button size="xs" variant="outline">
+                    参加 Accept
+                  </Button>
+                </>
+              }
+            />
+          </CardContent>
+        </Card>
+
+        {/* #246 — the compact HISTORY row: no leading slot, status Badge + ISO-8601 date inline. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>履歴 Invitation history</CardTitle>
+            <CardDescription>
+              A compact row with a status Badge and an ISO-8601 date in `trailing` stays a single
+              line at 390px. The metadata never drops under the title.
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <ListRow
+              density="compact"
+              title="グローバル推進本部"
+              trailing={
+                <>
+                  <Badge tone="success">承認済み</Badge>
+                  <Text size="xs" tone="muted">
+                    2026-07-12
+                  </Text>
+                </>
+              }
+            />
+            <ListRow
+              density="compact"
+              title="Trung tâm Dữ liệu"
+              trailing={
+                <>
+                  <Badge tone="neutral">期限切れ</Badge>
+                  <Text size="xs" tone="muted">
+                    2026-06-30
+                  </Text>
+                </>
+              }
+            />
+            <ListRow
+              density="compact"
+              title="Acme Data Platform"
+              trailing={
+                <>
+                  <Badge tone="destructive">辞退</Badge>
+                  <Text size="xs" tone="muted">
+                    2026-06-18
+                  </Text>
                 </>
               }
             />

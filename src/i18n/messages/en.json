@@ -150,6 +150,14 @@
       "version": "Version {version}",
       "effectiveDate": "Effective {date}"
     },
+    "errorSurface": {
+      "statusLabel": "HTTP status {status}",
+      "requestId": "Request ID",
+      "permission": "Required permission",
+      "organization": "Organization",
+      "maintenanceWindow": "Scheduled maintenance",
+      "maintenanceProgress": "Maintenance progress {percent}"
+    },
     "topbar": {
       "toggleSidebar": "Toggle sidebar",
       "search": "Search",

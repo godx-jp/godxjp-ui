@@ -1,10 +1,11 @@
 /**
  * ERROR SURFACE — axe coverage for the 403/404/500/503 composition pattern (gh#221).
  *
- * The pattern is documented in docs/layout/error-surface/ and served by the MCP `error-pages`
- * pattern; it is NOT a component (Gate 0 → composition, see docs/COMPOSITION-VS-COMPONENT.md).
- * Every status is asserted at 0 axe violations in the shell it actually ships in, so the
- * recommended composition can never teach an inaccessible page.
+ * This covers the layer BELOW the shipped `ErrorSurface` component (whose own axe coverage lives in
+ * error-surface.a11y.test.tsx): the raw `EmptyState` + `Flex` + `Text` composition that the surface
+ * renders internally, and that an app still hand-composes for a status outside the supported four.
+ * Every status is asserted at 0 axe violations in the shell it actually ships in, so neither the
+ * component nor the hand-composed fallback can teach an inaccessible page.
  */
 import { describe, it } from "vitest";
 import { Home, ServerCrash, ShieldAlert, SearchX, Wrench } from "lucide-react";

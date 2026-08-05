@@ -39,11 +39,14 @@
     font-size: var(--logo-font-size-lg);
   }
 
-  /* Identity fills — role defaults live HERE (call site), not on :root, so a scoped `.dark` /
-   * `[data-tenant]` override of --success re-resolves (docs/TOKENS.md · role-mirror knobs). */
+  /* Identity fills — the IDENTITY role --brand (canonical GoDX emerald), NOT the --success STATUS
+   * green: `tone="success"` names the semantic slot, not the status role, and a badge/progress
+   * green must never drag the product mark with it (gh#250). Role defaults live HERE (call site),
+   * not on :root, so a scoped `.dark` / `[data-tenant]` override of --brand re-resolves
+   * (docs/TOKENS.md · role-mirror knobs). */
   .ui-logo[data-tone="success"] {
-    background: hsl(var(--logo-success-background, var(--success)));
-    color: hsl(var(--logo-success-foreground, var(--success-foreground)));
+    background: hsl(var(--logo-success-background, var(--brand)));
+    color: hsl(var(--logo-success-foreground, var(--brand-foreground)));
   }
 
   .ui-logo[data-mark="godx"] {
@@ -51,7 +54,7 @@
     height: var(--logo-godx-size);
     border-radius: 0;
     background: transparent;
-    color: hsl(var(--logo-godx-color, var(--success)));
+    color: hsl(var(--logo-godx-color, var(--brand)));
   }
 
   .ui-logo[data-mark="godx"] [data-slot="logo-artwork"] {
@@ -95,9 +98,9 @@
     font-size: var(--logo-wordmark-font-size-lg);
   }
 
-  /* Canonical brand-green GoDX wordmark — the identity role, independent of --primary. */
+  /* Canonical GoDX wordmark — the --brand IDENTITY role, independent of --primary AND of --success. */
   .ui-logo-lockup[data-mark="godx"] .ui-logo-wordmark,
   .ui-logo-lockup[data-tone="success"] .ui-logo-wordmark {
-    color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--success))));
+    color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))));
   }
 }

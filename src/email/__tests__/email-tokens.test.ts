@@ -123,8 +123,10 @@ describe("email colours derive from the web token roles", () => {
     );
     expect(EMAIL_COLOR_SOURCE.surface.cssVar).toBe("--card");
     expect(EMAIL_COLOR_SOURCE.focus.cssVar).toBe("--ring");
-    // The GoDX identity mark is the --success role (what --logo-godx-color points at), NOT --primary.
-    expect(EMAIL_COLOR_SOURCE.brand.cssVar).toBe("--success");
+    // The GoDX identity mark is the --brand IDENTITY role (what --logo-godx-color points at) —
+    // NOT --primary, and NOT the --success status green it wrongly borrowed before gh#250.
+    expect(EMAIL_COLOR_SOURCE.brand.cssVar).toBe("--brand");
+    expect(EMAIL_COLOR_SOURCE.brandForeground.cssVar).toBe("--brand-foreground");
     expect(EMAIL_COLOR_SOURCE.urgency.cssVar).toBe("--attention");
     expect(EMAIL_COLOR_SOURCE.urgencyForeground.cssVar).toBe("--attention-foreground");
   });
@@ -173,8 +175,13 @@ describe("email colours derive from the web token roles", () => {
 
 // ── 2. Geometry derives from the component token tier ───────────────────────────────────────────
 describe("email geometry derives from src/tokens/components/email.css", () => {
-  it("mirrors every --email-* declaration verbatim", () => {
-    expect(EMAIL_GEOMETRY_SOURCE).toEqual(EMAIL_CSS);
+  it("mirrors every --email-* declaration verbatim (bar the documented quote swap)", () => {
+    // The ONE transform the generator applies: CSS string literals are double-quoted (prettier's
+    // house style), but an inline style="…" attribute is too — so the export re-quotes with '.
+    const normalised = Object.fromEntries(
+      Object.entries(EMAIL_CSS).map(([name, value]) => [name, value.replace(/"/g, "'")]),
+    );
+    expect(EMAIL_GEOMETRY_SOURCE).toEqual(normalised);
     expect(Object.keys(EMAIL_CSS).length).toBeGreaterThan(20);
   });
 
@@ -212,6 +219,52 @@ describe("email geometry derives from src/tokens/components/email.css", () => {
   });
 });
 
+// ── 2b. The SCR-302 canonical reference (gh#250) ────────────────────────────────────────────────
+/**
+ * Values measured from the canonical design source `.design/DXS Email Templates.dc.html`
+ * (payment-failure card) and confirmed pixel-for-pixel against the 1440 reference raster
+ * `.design/evidence/reference/email-1440.png` in dxs-platform/platform. Locking them here is what
+ * stops a "tidy-up" from quietly walking the email ramp back onto the WEB scale — the two ramps are
+ * deliberately different (an email is read once, in a client the reader cannot re-densify).
+ */
+describe("matches the SCR-302 canonical reference", () => {
+  it("typography: 17px/500 title, 14px/1.9 body, 11px/1.8 legal band", () => {
+    expect(EMAIL_TYPOGRAPHY.headingFontSizePx).toBe(17);
+    expect(EMAIL_TYPOGRAPHY.headingFontWeight).toBe(500);
+    expect(EMAIL_TYPOGRAPHY.headingLineHeight).toBe(1.7);
+    expect(EMAIL_TYPOGRAPHY.bodyFontSizePx).toBe(14);
+    expect(EMAIL_TYPOGRAPHY.bodyLineHeight).toBe(1.9);
+    expect(EMAIL_TYPOGRAPHY.bodyFontWeight).toBe(400);
+    expect(EMAIL_FOOTER.fontSizePx).toBe(11);
+    expect(EMAIL_FOOTER.lineHeight).toBe(1.8);
+    // the mobile title must never be LARGER than the desktop one
+    expect(EMAIL_MOBILE.headingFontSizePx).toBeLessThan(EMAIL_TYPOGRAPHY.headingFontSizePx);
+  });
+
+  it("primary CTA: 36×auto, 16px inline padding, 6px radius, 14px/500 label", () => {
+    expect(EMAIL_CTA.heightPx).toBe(36);
+    expect(EMAIL_CTA.lineHeightPx).toBe(36);
+    expect(EMAIL_CTA.paddingXPx).toBe(16);
+    expect(EMAIL_CTA.radiusPx).toBe(6);
+    expect(EMAIL_CTA.fontSizePx).toBe(14);
+    expect(EMAIL_CTA.fontWeight).toBe(500);
+    // WCAG 2.2 SC 2.5.8 Target Size (Minimum) is 24×24 CSS px — the canonical box still clears it,
+    // and the mobile reflow takes the CTA full-bleed.
+    expect(EMAIL_CTA.heightPx).toBeGreaterThanOrEqual(24);
+    expect(EMAIL_MOBILE.ctaWidth).toBe("100%");
+  });
+
+  it("CTA colours come from the --primary role, never from a canonical hex paste", () => {
+    expect(EMAIL_COLOR_SOURCE.primary.cssVar).toBe("--primary");
+    expect(EMAIL_COLOR_SOURCE.primaryForeground.cssVar).toBe("--primary-foreground");
+    expect(EMAIL_COLORS.primary).toBe(hslToHex(FOUNDATION_LIGHT["--primary"]));
+    expect(EMAIL_COLORS.primaryForeground).toBe(hslToHex(FOUNDATION_LIGHT["--primary-foreground"]));
+    expect(
+      contrastRatio(EMAIL_COLORS.primary, EMAIL_COLORS.primaryForeground),
+    ).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
 // ── 3. Every exported value is inline-email-safe ────────────────────────────────────────────────
 describe("values are compatible with inline email styles", () => {
   const flat = (value: unknown, path: string, out: [string, string][] = []) => {
@@ -238,16 +291,29 @@ describe("values are compatible with inline email styles", () => {
 
   it("every geometry token is a literal px / % / unitless number", () => {
     for (const [name, value] of Object.entries(EMAIL_GEOMETRY_SOURCE)) {
-      if (name === "--email-font-family-sans") continue;
+      if (name.startsWith("--email-font-family-")) continue;
       expect(value, name).toMatch(/^\d+(?:\.\d+)?(?:px|%)?$/);
     }
   });
 
-  it("the font stack names only email-safe system faces (no @font-face dependency)", () => {
+  it("the font stacks carry the canonical face and degrade to a generic, with no @font-face", () => {
+    for (const stack of [EMAIL_TYPOGRAPHY.fontFamily, EMAIL_TYPOGRAPHY.monoFontFamily]) {
+      expect(stack).not.toMatch(/url\(|@font-face/);
+      // a double quote would close the style="…" attribute the value is written into
+      expect(stack).not.toContain('"');
+      // ASCII only: a non-ASCII family name does not survive every transfer encoding
+      // eslint-disable-next-line no-control-regex
+      expect(stack).toMatch(/^[\x20-\x7e]+$/);
+    }
+    expect(EMAIL_TYPOGRAPHY.fontFamily.startsWith("'M PLUS 2'")).toBe(true);
     expect(EMAIL_TYPOGRAPHY.fontFamily).toContain("Arial");
-    expect(EMAIL_TYPOGRAPHY.fontFamily).toContain("sans-serif");
-    expect(EMAIL_TYPOGRAPHY.fontFamily).not.toMatch(/url\(|@font-face/);
-    expect(EMAIL_TYPOGRAPHY.fontFamily).not.toMatch(/["']/);
+    expect(EMAIL_TYPOGRAPHY.fontFamily.endsWith("sans-serif")).toBe(true);
+    expect(EMAIL_TYPOGRAPHY.monoFontFamily.endsWith("monospace")).toBe(true);
+    // the CSS source is the only author; the export differs from it ONLY by quote style
+    expect(EMAIL_TYPOGRAPHY.fontFamily).toBe(
+      EMAIL_CSS["--email-font-family-sans"].replace(/"/g, "'"),
+    );
+    expect(EMAIL_TYPOGRAPHY.monoFontFamily).toBe(EMAIL_CSS["--email-font-family-mono"]);
   });
 
   it("emailInlineStyle serialises to a style attribute and refuses unresolvable values", () => {
@@ -261,6 +327,11 @@ describe("values are compatible with inline email styles", () => {
     ).toBe(`width:480px;background-color:${EMAIL_COLORS.surface};border-radius:10px`);
     expect(() => emailInlineStyle({ color: "var(--primary)" })).toThrow(TypeError);
     expect(() => emailInlineStyle({ width: "calc(100% - 8px)" })).toThrow(TypeError);
+    // a double-quoted family would close style="…" mid-tag; the shipped stack must pass
+    expect(() => emailInlineStyle({ fontFamily: '"M PLUS 2", sans-serif' })).toThrow(TypeError);
+    expect(emailInlineStyle({ fontFamily: EMAIL_TYPOGRAPHY.fontFamily })).toBe(
+      `font-family:${EMAIL_TYPOGRAPHY.fontFamily}`,
+    );
   });
 
   it("EMAIL_TOKENS_JSON round-trips for non-JS template engines", () => {
@@ -333,10 +404,27 @@ describe("canonical GoDX brand mark", () => {
     expect(logoPath.startsWith(EMAIL_BRAND_MARK.capsulePath)).toBe(true);
   });
 
-  it("uses the component's 32×32 viewBox and default box size", () => {
+  it("uses the component's 32×32 viewBox, rendered in the canonical 22px header box", () => {
     expect(logo).toContain(`viewBox="${EMAIL_BRAND_MARK.viewBox}"`);
-    expect(EMAIL_BRAND_MARK.widthPx).toBe(32);
-    expect(EMAIL_BRAND_MARK.heightPx).toBe(32);
+    // the ARTWORK space is the component's; only the RENDERED box is email-specific (gh#250)
+    expect(EMAIL_BRAND_MARK.viewBox).toBe("0 0 32 32");
+    expect(EMAIL_BRAND_MARK.widthPx).toBe(22);
+    expect(EMAIL_BRAND_MARK.heightPx).toBe(22);
+    expect(EMAIL_BRAND_MARK.widthPx).toBe(EMAIL_BRAND_MARK.heightPx);
+  });
+
+  it("publishes the header LOCKUP metrics, so a template never hand-types the wordmark", () => {
+    expect(EMAIL_BRAND_MARK.gapPx).toBe(Number.parseFloat(EMAIL_CSS["--email-mark-gap"]));
+    expect(EMAIL_BRAND_MARK.wordmarkFontSizePx).toBe(
+      Number.parseFloat(EMAIL_CSS["--email-wordmark-font-size"]),
+    );
+    expect(EMAIL_BRAND_MARK.wordmarkFontWeight).toBe(
+      Number.parseFloat(EMAIL_CSS["--email-wordmark-font-weight"]),
+    );
+    // the canonical SCR-302 header: 22px mark · 8px gap · 13px/700 wordmark
+    expect(EMAIL_BRAND_MARK.gapPx).toBe(8);
+    expect(EMAIL_BRAND_MARK.wordmarkFontSizePx).toBe(13);
+    expect(EMAIL_BRAND_MARK.wordmarkFontWeight).toBe(700);
   });
 
   it("draws BOTH the emerald capsule and the internal glyph (a pill-only mark is the bug)", () => {

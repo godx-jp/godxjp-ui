@@ -1,7 +1,7 @@
 export { Badge, StatusBadge } from "./badge";
 export type { BadgeProps } from "./badge";
 export { ListRow } from "./list-row";
-export type { ListRowProps } from "./list-row";
+export type { ListRowProps, ListRowDensity } from "./list-row";
 export { CredentialReveal } from "./credential-reveal";
 export type {
   CredentialRevealProp,

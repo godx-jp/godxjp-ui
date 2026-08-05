@@ -80,6 +80,41 @@ describe("ListRow a11y", () => {
     );
   });
 
+  // gh#246 — the compact inline-actions geometry: an invitation row with an Avatar-sized leading
+  // slot and two small Buttons, plus a history row whose Badge + ISO-8601 date stay inline.
+  it("has no axe violations for compact invitation + history rows", async () => {
+    await expectNoA11yViolations(
+      <Card>
+        <CardHeader>
+          <CardTitle>招待 Invitations</CardTitle>
+        </CardHeader>
+        <CardContent flush>
+          <ListRow
+            density="compact"
+            leading={<span aria-hidden="true">◐</span>}
+            title="グローバル推進本部"
+            description="山田 太郎 · 2026-07-28"
+            trailing={
+              <>
+                <Button size="xs" variant="ghost">
+                  辞退
+                </Button>
+                <Button size="xs" variant="outline">
+                  参加
+                </Button>
+              </>
+            }
+          />
+          <ListRow
+            density="compact"
+            title="Acme Data Platform"
+            trailing={<Badge tone="success">承認済み</Badge>}
+          />
+        </CardContent>
+      </Card>,
+    );
+  });
+
   // gh#224 — a long invitation title with TWO trailing Buttons (the SCR-115 overflow case).
   it("has no axe violations for a long invitation title with two trailing actions", async () => {
     await expectNoA11yViolations(

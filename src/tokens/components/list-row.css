@@ -15,6 +15,26 @@
   --list-row-body-min-width: 12rem;
   /* Gap BETWEEN trailing actions — they also wrap among themselves at narrow widths (#224). */
   --list-row-trailing-gap: var(--space-2);
+  /* ── Compact inline-actions geometry (`density="compact"`, #246) ──────────────────────────
+   * The canonical invitation / history row: a 36px leading avatar, a shrinkable title +
+   * description body and one or two small trailing Buttons, all on ONE line inside the canonical
+   * 358px card (326px content after the row's own inline inset) at a 390px viewport. These knobs
+   * only LOWER the geometry — the #224 wrap contract (row + trailing cluster wrap, body clamped
+   * with min(…, 100%)) is untouched, so a cluster that genuinely cannot fit still wraps instead of
+   * widening the page root.
+   * Declared `initial` so the spacing defaults re-resolve at the CALL SITE — --space-2 is
+   * density-scaled and re-declared inside a `.ui-density-*` subtree, so a :root binding would
+   * freeze compact rows at the :root density (docs/TOKENS.md — the :root freeze rule).
+   * Defaults = var(--space-2) block padding · var(--list-row-padding-x) inline padding ·
+   * var(--space-2) gap. */
+  --list-row-compact-padding-y: initial;
+  /* Inline inset defaults to the default row axis so compact and default rows in the same Card keep
+   * one optical axis; a service retunes it to its own grid (#45). */
+  --list-row-compact-padding-x: initial;
+  --list-row-compact-gap: initial;
+  /* Compact body threshold — small enough that avatar + body + two compact Buttons fit the
+   * canonical column (36 + 8 + 96 + 8 + 146 = 294 ≤ 326), and still a readable measure. */
+  --list-row-compact-body-min-width: 6rem;
   /* Read (default) row surface — `initial`, documented default = transparent, i.e. the Card
    * surface shows through untouched (#44 — chrome defaults to the quietest state). */
   --list-row-read-background: initial;

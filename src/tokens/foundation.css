@@ -31,6 +31,25 @@
   --attention: 25 99% 46%; /* 朱 #eb6101 */
   --attention-foreground: 60 33% 99%;
 
+  /* IDENTITY role — the canonical GoDX emerald. This is the PRODUCT MARK colour (Logo `mark="godx"`
+   * / `tone="success"`, its wordmark, the email brand capsule), and it is deliberately THREE-WAY
+   * distinct:
+   *   · from --primary   — a service re-theming its action colour must never recolour the mark;
+   *   · from --success   — 若竹 #68be8d is the STATUS green (badges, progress, "saved" text) and
+   *                        stays exactly as it is. The mark previously borrowed it, which rendered
+   *                        the identity at #69bf8e instead of the canonical emerald — ΔE76 ≈ 17.5,
+   *                        a plainly wrong brand colour (gh#250/#214);
+   *   · from --text-brand / --color-brand — those are the BLUE brand-numeral TEXT slot and the
+   *                        Tailwind `text-brand` utility it feeds; unrelated, and not renamed here.
+   * Canonical value: oklch(0.595 0.137 162.94) = #009766, "kept distinct from SmartHR primary".
+   * The triplet is carried at one decimal so hsl() lands on that exact hex (an integer 160 100% 30%
+   * would drift to #009966). Dark lifts lightness only — same hue, same full chroma — so the mark
+   * stays the same emerald while clearing AA against the dark spine.
+   * There is no Tailwind `bg-brand` utility on purpose: `--color-brand` is already taken by
+   * --text-brand, so identity surfaces read `hsl(var(--brand))` directly in component CSS. */
+  --brand: 160.5 100% 29.6%; /* 翠 GoDX emerald #009766 */
+  --brand-foreground: 60 33% 99%;
+
   /* Extended text hierarchy (beyond --foreground / --muted-foreground) — themeable per service.
    * Roles primitives bake in today: caption/meta, disabled, inline link, brand numerals. */
   --text-tertiary: 44 5% 55%; /* lighter than muted-foreground — captions / meta */
@@ -379,6 +398,13 @@
   --info-foreground: 48 9% 9%;
   --attention: 25 95% 56%;
   --attention-foreground: 48 9% 9%;
+
+  /* IDENTITY (dark) — the SAME canonical emerald hue/chroma, lifted 29.6% → 36% lightness so the
+   * mark reads off the warm near-black spine (#00b87c: 6.9:1 on --background, 6.3:1 on --card;
+   * the unlifted #009766 sat at 4.4:1 on the card). The on-fill glyph flips dark, exactly like
+   * --success-foreground does. */
+  --brand: 160.5 100% 36%; /* #00b87c */
+  --brand-foreground: 48 9% 9%;
 
   /* Extended text hierarchy + interaction ramp (dark) */
   --text-tertiary: 44 6% 56%;

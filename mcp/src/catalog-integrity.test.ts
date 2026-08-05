@@ -219,6 +219,7 @@ describe("newly-added components are catalogued with the expected API", () => {
       "as",
       "overflow",
       "unread",
+      "density",
     ]) {
       expect(props.has(p), `ListRow.${p}`).toBe(true);
     }
@@ -231,8 +232,12 @@ describe("newly-added components are catalogued with the expected API", () => {
     expect(row?.props.find((p) => p.name === "overflow")?.defaultValue).toMatch(/truncate/);
     // gh#225 — unread is a semantic boolean state (dot + tokenized surface), not a Badge.
     expect(row?.props.find((p) => p.name === "unread")?.type).toBe("boolean");
-    expect(row?.usage.join(" ")).toMatch(/--list-row-body-min-width/);
-    expect(row?.usage.join(" ")).toMatch(/--list-row-unread-background/);
+    // gh#246 — density is the default|compact inline-actions union, default by default.
+    expect(row?.props.find((p) => p.name === "density")?.type).toMatch(/default.*compact/);
+    expect(row?.props.find((p) => p.name === "density")?.defaultValue).toMatch(/default/);
+    expect(row?.usage?.join(" ")).toMatch(/--list-row-body-min-width/);
+    expect(row?.usage?.join(" ")).toMatch(/--list-row-unread-background/);
+    expect(row?.usage?.join(" ")).toMatch(/density="compact"/);
   });
 
   it("Topbar reflects the new slot API (start/center/end) — NOT the removed chrome props", () => {
@@ -285,7 +290,10 @@ describe("newly-added components are catalogued with the expected API", () => {
     const trend = findComponent("CompactBarTrend");
     expect(trend, "CompactBarTrend entry").toBeDefined();
     expect(trend?.group).toBe("data-display");
-    expect(trend?.importPath).toBe("@godxjp/ui/charts");
+    // The ISOLATED entry, not the `@godxjp/ui/charts` barrel (gh#243). Importing the barrel makes
+    // Vite eagerly link the peer-backed exports, so a consumer without the optional `recharts` peer
+    // fails its production build — which is the whole point of this dependency-free primitive.
+    expect(trend?.importPath).toBe("@godxjp/ui/charts/compact-bar-trend");
     const props = new Map((trend?.props ?? []).map((p) => [p.name, p] as const));
     for (const p of [
       "data",
@@ -309,9 +317,148 @@ describe("newly-added components are catalogued with the expected API", () => {
     expect(props.get("size")?.defaultValue).toMatch(/xs/);
     // the catalog must state the dependency contract and the token surface
     const usage = (trend?.usage ?? []).join(" ");
-    expect(usage).toMatch(/NO `recharts` peer|no `recharts`/i);
+    // Assert the CONTRACT, not one phrasing: the usage text must name `recharts` under a negation,
+    // so a consuming agent learns the peer is not required. Pinning an exact sentence made this
+    // fail when gh#243 reworded it to describe the isolated entry point.
+    expect(usage).toMatch(/(?:\bno\b|never|without|free of)[^.]*`?recharts`?/i);
     expect(usage).toMatch(/--chart-trend-/);
     // and point at BarChart for the full cartesian case
     expect((trend?.related ?? []).join(" ")).toMatch(/BarChart/);
+  });
+
+  // gh#221 → gh#251 — the exception surface REGRESSED once by being shipped as a docs-only
+  // composition pattern (a consumer cannot `import` a docs page), and the MCP catalog was the
+  // surface that taught "there is NO ErrorSurface". These assertions make that specific untruth
+  // impossible to reintroduce: the entry must exist, must be importable from @godxjp/ui/layout,
+  // and must carry the mode/status/one-action/metadata contract.
+  it("ErrorSurface is catalogued as an importable component with the mode contract", () => {
+    const surface = findComponent("ErrorSurface");
+    expect(surface, "ErrorSurface entry").toBeDefined();
+    expect(surface?.group).toBe("layout");
+    // No importPath override ⇒ the group-derived public subpath, which is the one a consumer
+    // actually installs. The example must show that exact import statement.
+    expect(surface?.importPath ?? `@godxjp/ui/${surface?.group}`).toBe("@godxjp/ui/layout");
+    expect(surface?.example).toMatch(/from "@godxjp\/ui\/layout"/);
+
+    const props = new Map((surface?.props ?? []).map((p) => [p.name, p] as const));
+    for (const p of [
+      "mode",
+      "status",
+      "title",
+      "description",
+      "action",
+      "requestId",
+      "permission",
+      "organization",
+      "maintenance",
+      "icon",
+      "tone",
+      "titleLevel",
+      "brand",
+      "footer",
+      "width",
+    ]) {
+      expect(props.has(p), `ErrorSurface.${p}`).toBe(true);
+    }
+
+    // mode / status / title / action are the required contract — an error page without a
+    // recovery action strands the user.
+    for (const p of ["mode", "status", "title", "action"]) {
+      expect(props.get(p)?.required, `ErrorSurface.${p} required`).toBe(true);
+    }
+    expect(props.get("mode")?.type).toMatch(/"application".*"system"/);
+    expect(props.get("status")?.type).toMatch(/403.*404.*500.*503/);
+    // maintenance is timing DATA (ISO-8601 + IANA), never a pre-formatted string
+    expect(props.get("maintenance")?.type).toMatch(/start.*timeZone.*progress/s);
+
+    const usage = (surface?.usage ?? []).join(" ");
+    // the catalog must actively steer away from the gh#251 workaround …
+    expect(usage).toMatch(/AuthShell/);
+    expect(usage).toMatch(/EXACTLY ONE|ONE action/i);
+    // … and teach that system geometry is package-owned
+    expect(usage).toMatch(/min-h-dvh/);
+    expect((surface?.related ?? []).join(" ")).toMatch(/CenteredShell/);
+
+    // The catalog must no longer claim the component does not exist (the gh#251 untruth).
+    const catalogText = COMPONENTS.map((c) =>
+      [c.tagline, (c.usage ?? []).join(" "), (c.related ?? []).join(" ")].join(" "),
+    ).join(" ");
+    expect(catalogText).not.toMatch(/(?:is\s+)?NO\s+ErrorSurface/i);
+  });
+});
+
+describe("catalog teaches the gh#248 / gh#249 appearance contracts", () => {
+  it("Tabs documents variant, with `line` as underline-only and ring-free", () => {
+    const tabs = COMPONENTS.find((c) => c.name === "Tabs");
+    const variant = (tabs?.props ?? []).find((p) => p.name === "variant");
+    expect(variant, "Tabs.variant").toBeDefined();
+    expect(variant?.type).toMatch(/"default".*"line".*"card"/);
+    expect(variant?.defaultValue).toBe('"default"');
+    // the selected state of `line` is a token-owned bar — never a surrounding ring …
+    expect(variant?.description).toMatch(/--tabs-indicator-/);
+    expect(variant?.description).toMatch(/no ring|never.*ring|UNDERLINE-ONLY/i);
+    // … and the keyboard focus ring must be taught as a SEPARATE, still-visible state.
+    expect(variant?.description).toMatch(/focus-visible/);
+
+    const usage = (tabs?.usage ?? []).join(" ");
+    expect(usage).toMatch(/--tabs-indicator-/);
+    // no consumer-side page-local workaround (`ring-0`) may be suggested as the fix
+    expect(usage).toMatch(/ring-0/);
+  });
+
+  it("Avatar documents shape, with square as the token-owned entity mark", () => {
+    const avatar = COMPONENTS.find((c) => c.name === "Avatar");
+    const shape = (avatar?.props ?? []).find((p) => p.name === "shape");
+    expect(shape, "Avatar.shape").toBeDefined();
+    expect(shape?.type).toBe('"circle" | "square"');
+    expect(shape?.defaultValue).toBe('"circle"');
+    expect(shape?.description).toMatch(/--avatar-square-/);
+    expect(shape?.description).toMatch(/entity/i);
+
+    const usage = (avatar?.usage ?? []).join(" ");
+    expect(usage).toMatch(/shape="square"/);
+    expect(usage).toMatch(/--avatar-square-/);
+    expect(avatar?.example).toMatch(/shape="square"/);
+  });
+});
+
+describe("catalog teaches the gh#253 responsive action-collection contract on BOTH tables", () => {
+  it("DataTable documents preset + collapseBelow with the same vocabulary as Table", () => {
+    const dataTable = findComponent("DataTable");
+    const table = findComponent("Table");
+    const props = new Map((dataTable?.props ?? []).map((p) => [p.name, p]));
+    const tableProps = new Map((table?.props ?? []).map((p) => [p.name, p]));
+
+    for (const name of ["preset", "collapseBelow"] as const) {
+      expect(props.get(name), `DataTable.${name}`).toBeDefined();
+      expect(tableProps.get(name), `Table.${name}`).toBeDefined();
+    }
+    // Identical value vocabulary and identical inert default on both entry points.
+    expect(props.get("preset")?.type).toMatch(/action-collection/);
+    expect(props.get("preset")?.defaultValue).toBe("'default'");
+    expect(props.get("collapseBelow")?.defaultValue).toBe("'sm'");
+    // The default must be taught as INERT (gh#231): no attribute, nothing to match.
+    expect(props.get("preset")?.description).toMatch(/no attribute|NO attribute/i);
+    // …and as a container query on the table's own width, not a viewport breakpoint.
+    expect(props.get("collapseBelow")?.description).toMatch(/container/i);
+    expect(props.get("collapseBelow")?.description).toMatch(/not the viewport/i);
+  });
+
+  it("DataTable teaches column priority on the ColumnDef, sharing the Table tokens", () => {
+    const dataTable = findComponent("DataTable");
+    const columns = (dataTable?.props ?? []).find((p) => p.name === "columns");
+
+    expect(columns?.type).toBe("ColumnDef<T>[]");
+    expect(columns?.description).toMatch(/priority\?: 'primary'\|'secondary'\|'meta'\|'actions'/);
+    expect(columns?.description).toMatch(/data-priority/);
+
+    const usage = (dataTable?.usage ?? []).join(" ");
+    // ONE token family for both entry points — never a parallel --data-table-* family.
+    expect(usage).toMatch(/--table-action-collection-\*/);
+    expect(usage).not.toMatch(/--data-table-action-collection-/);
+    // The width floor is a documented token, not the old hard-coded utility.
+    expect(usage).toMatch(/--table-surface-min-inline-size/);
+    // The library must never suggest a consumer-side workaround as the fix.
+    expect(usage).toMatch(/Never add a consumer width|never.*page-local breakpoint/i);
   });
 });

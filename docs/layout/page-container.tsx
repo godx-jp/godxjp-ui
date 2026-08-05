@@ -11,6 +11,7 @@ import {
   Badge,
   DataTable,
   Descriptions,
+  ListRow,
 } from "@godxjp/ui/data-display";
 import type { ColumnDef } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
@@ -398,6 +399,96 @@ export default function Demo() {
           </Card>
         </PageContainer>
       </ResponsiveGrid>
+
+      {/* ── 8. measure · ヘッダーとボディを 1 つの測度で束ねる (gh#245 / gh#247) ──
+          measure は variant（クローム）と直交する第 3 の軸。variant="narrow" は
+          .ui-page-body しか絞らないため、ヘッダーのアクションはページ端に取り残される。
+          measure はヘッダーとボディの両方を同じトークン測度で絞るので、extra の終端が
+          ボディ面の終端と一致する。既定 measure="default" は一切のルールに一致しない。
+          幅はすべて --page-measure-* が所有 — このページに px 指定はありません。 */}
+      <PageContainer
+        title="通知"
+        subtitle='measure="default"（既定）· 面はページ幅いっぱいに広がります'
+        extra={
+          <Button variant="outline" size="sm">
+            すべて既読にする
+          </Button>
+        }
+      >
+        <Card>
+          <CardContent flush>
+            <ListRow
+              unread
+              title="請求書 INV-2041 が承認されました"
+              description="2026-08-05 10:24 · 経理部"
+              trailing={<Badge tone="success">承認</Badge>}
+            />
+            <ListRow
+              title="月次締め処理のリマインド"
+              description="2026-08-04 18:00 · システム"
+              trailing={<Badge tone="warning">要対応</Badge>}
+            />
+          </CardContent>
+        </Card>
+      </PageContainer>
+
+      {/* 通知フィードの正準構成: ghost（静かなヘッダー律動）× medium（720px の共有測度）×
+          responsive-inline（390px でもアクションをタイトル行に残す）。3 つは独立した prop。 */}
+      <PageContainer
+        variant="ghost"
+        measure="medium"
+        headerLayout="responsive-inline"
+        title="通知"
+        subtitle='variant="ghost" × measure="medium" × headerLayout="responsive-inline" · ヘッダーのアクションが 720px のフィード面と同じ端で終わります'
+        extra={
+          <Button variant="outline" size="sm">
+            すべて既読にする
+          </Button>
+        }
+      >
+        <Card>
+          <CardContent flush>
+            <ListRow
+              unread
+              title="請求書 INV-2041 が承認されました"
+              description="2026-08-05 10:24 · 経理部"
+              trailing={<Badge tone="success">承認</Badge>}
+            />
+            <ListRow
+              unread
+              title="組織「株式会社ファムジア」への招待が届いています"
+              description="2026-08-05 09:12 · 管理者"
+              trailing={<Badge tone="info">招待</Badge>}
+            />
+            <ListRow
+              title="月次締め処理のリマインド"
+              description="2026-08-04 18:00 · システム"
+              trailing={<Badge tone="warning">要対応</Badge>}
+            />
+          </CardContent>
+        </Card>
+      </PageContainer>
+
+      {/* measure="narrow" — variant="narrow" と同じ 624px の面だが、ヘッダーも一緒に絞られる。 */}
+      <PageContainer
+        measure="narrow"
+        title="招待"
+        subtitle='measure="narrow" · 624px。variant="narrow" と違いヘッダーも同じ測度で絞られます'
+        extra={
+          <Button variant="outline" size="sm">
+            招待を送る
+          </Button>
+        }
+      >
+        <Card>
+          <CardContent>
+            <Text as="p" tone="muted">
+              測度はトークン --page-measure-narrow（42rem 外寸）。ページ余白は測度の内側にあるため、
+              可視面は 624px になります。390px ではどのトークンも効かず、面は流動的なままです。
+            </Text>
+          </CardContent>
+        </Card>
+      </PageContainer>
     </Flex>
   );
 }

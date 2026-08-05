@@ -117,7 +117,12 @@ export const Logo = React.forwardRef<HTMLSpanElement, LogoProps>(
           <span data-slot="logo" {...identity} className="ui-logo" aria-hidden="true">
             <MarkArtwork mark={mark} glyph={glyph} />
           </span>
-          <span data-slot="logo-wordmark" className="ui-logo-wordmark">
+          {/* `data-logotype` marks this as brand-name artwork: WCAG 2.2 SC 1.4.3 exempts "text
+           * that is part of a logo or brand name" from the contrast minimum, and check:contrast
+           * reads exactly this attribute. The wordmark is typeset identity, not readable UI copy —
+           * the canonical GoDX emerald (--brand, #009766) is the brand's colour, not a choice the
+           * library may darken. */}
+          <span data-slot="logo-wordmark" data-logotype className="ui-logo-wordmark">
             {wordmark}
           </span>
         </span>

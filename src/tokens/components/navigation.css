@@ -28,6 +28,17 @@
   --tabs-list-max-inline-size: 100%;
   --tabs-list-overflow: auto;
 
+  /* Tabs `line` active indicator (gh#248) — the ONLY selected-state decoration the line variant
+   * paints. The surrounding active ring belongs to the default/card lists, so `:focus-visible`
+   * keeps its own distinct keyboard ring here (WCAG 2.4.7). `--tabs-indicator-background` is a
+   * role-mirror knob: `initial` so hsl(var(--primary)) re-resolves at the CALL SITE under a scoped
+   * [data-tenant]/.dark theme (a :root binding to a role var would freeze at :root).
+   * Default = hsl(var(--primary)) · 2px thick · flush with the trigger edge (offset 0 = quietest,
+   * rule #44); a service raises the offset to park the bar on a thicker strip hairline. */
+  --tabs-indicator-background: initial;
+  --tabs-indicator-size: 2px;
+  --tabs-indicator-offset: 0px;
+
   /* Menu item hover/highlight tint — `initial` so the --accent default re-resolves at the call site
    * under a scoped theme (a :root binding to a role var freezes at :root).
    * Defaults = hsl(var(--accent)) fill · hsl(var(--accent-foreground)) text. */

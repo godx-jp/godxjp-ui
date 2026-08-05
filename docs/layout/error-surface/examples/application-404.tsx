@@ -1,7 +1,7 @@
-import { EmptyState } from "@godxjp/ui/data-display";
-import { Button, Logo, Text } from "@godxjp/ui/general";
+import { Button, Logo } from "@godxjp/ui/general";
 import {
   AppShell,
+  ErrorSurface,
   Flex,
   PageContainer,
   Sidebar,
@@ -9,16 +9,18 @@ import {
   Topbar,
 } from "@godxjp/ui/layout";
 import { AppSettingPicker } from "@godxjp/ui/navigation";
-import { BarChart3, FileText, LayoutDashboard, SearchX, Users } from "lucide-react";
+import { BarChart3, FileText, LayoutDashboard, Users } from "lucide-react";
 
 /**
- * 404 — APPLICATION mode with an optional request ID. Same preserved shell, same three-part body;
- * only the status, icon, tone and copy differ from 403.
+ * 404 — `mode="application"` with the optional request ID. Same preserved shell, same surface; only
+ * `status` changes, and with it the default icon (SearchX) and tone (muted — a miss is neutral, not
+ * a warning). You do not re-pick the icon or the colour per status: the status IS the input.
  *
- * The request ID is a plain metadata line under the action (`Text size="xs" mono`) — mono so the
- * correlation id can be read out or copied accurately for support, and muted so it never competes
- * with the single recovery action. Omit the line when the page has no correlation id: metadata is
- * an OPTIONAL slot, not a required row.
+ * `requestId` is a semantic metadata slot, not a paragraph you write. The surface renders it as a
+ * `<dt>/<dd>` pair with a localized "Request ID" label and a mono/tabular value, so the correlation
+ * id can be read out or copied accurately for support, and so a screen reader announces the
+ * label↔value relationship instead of a run-on sentence. Omit the prop when there is no id —
+ * metadata rows are optional and the list disappears entirely when every slot is empty.
  */
 const sections: SidebarSectionProp[] = [
   {
@@ -61,21 +63,14 @@ export default function Demo() {
         title="ドキュメント"
         breadcrumb={[{ label: "ホーム", to: "#" }, { label: "ドキュメント" }]}
       >
-        <Flex direction="col" align="center" gap="sm">
-          <Text as="p" size="sm" tone="muted" weight="medium" mono tabular>
-            404
-          </Text>
-          <EmptyState
-            icon={SearchX}
-            titleLevel={2}
-            title="ページが見つかりません"
-            description="お探しのドキュメントは移動または削除された可能性があります。一覧から選び直してください。"
-            action={<Button>ドキュメント一覧へ</Button>}
-          />
-          <Text as="p" size="xs" tone="muted" mono>
-            リクエスト ID: 01J9Z0M7Q2K5S7WQ3T5N8V2H4B
-          </Text>
-        </Flex>
+        <ErrorSurface
+          mode="application"
+          status={404}
+          title="ページが見つかりません"
+          description="お探しのドキュメントは移動または削除された可能性があります。一覧から選び直してください。"
+          requestId="01J9Z0M7Q2K5S7WQ3T5N8V2H4B"
+          action={<Button>ドキュメント一覧へ</Button>}
+        />
       </PageContainer>
     </AppShell>
   );

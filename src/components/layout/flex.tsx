@@ -16,6 +16,8 @@ export function Flex({
   align,
   justify,
   wrap = false,
+  hideBelow,
+  hideFrom,
   className,
   children,
   ...props
@@ -26,6 +28,10 @@ export function Flex({
       data-align={align}
       data-justify={justify}
       data-wrap={wrap ? "true" : undefined}
+      // Omitted when unset, so an unconfigured Flex matches no responsive rule at all (gh#231
+      // inert-default contract) — the stylesheet has no `[data-hide-below]`-less selector.
+      data-hide-below={hideBelow}
+      data-hide-from={hideFrom}
       className={cn("ui-flex", flexGapClass[gap], className)}
       {...props}
     >

@@ -11,6 +11,9 @@ import type {
   PageContainerVariantProp,
   CenteredShellWidthProp,
   CenteredShellAlignProp,
+  CenteredShellPresetProp,
+  ErrorSurfaceModeProp,
+  ErrorSurfaceStatusProp,
   AuthShellPresetProp,
   BreakpointProp,
   GapProp,
@@ -18,7 +21,12 @@ import type {
   ChildrenProp,
   IdProp,
   DisabledProp,
+  DescriptionProp,
+  ActionProp,
+  IconProp,
+  HeadingLevelProp,
 } from "../vocabulary";
+import type { EmptyStateToneProp } from "./data-display.prop";
 
 /**
  * Arrangement of the page header's title band and its `extra` slot below the 640px step.
@@ -30,6 +38,19 @@ export type PageContainerHeaderLayoutProp = "stack" | "responsive-inline";
 
 /** Whole-page semantic composition owned by PageContainer. */
 export type PageContainerPresetProp = "default" | "admin-collection";
+
+/**
+ * Bounded page MEASURE — the shared inline cap applied to the page header AND body together, so
+ * the header `extra` action ends on the same edge as the body surface. Orthogonal to
+ * `PageContainerVariantProp` (chrome) and to `PageContainerHeaderLayoutProp`, so a quiet
+ * `variant="ghost"` feed can finally have a bounded measure too (gh#245 / gh#247).
+ *
+ * `default` applies NO cap — the page is fluid exactly as before. `narrow` / `medium` read the
+ * `--page-measure-{narrow,medium}` tokens (42rem / 48rem OUTER, i.e. 624px / 720px VISIBLE surface
+ * once the package-owned page gutters are subtracted). Both are maxes, so a compact viewport stays
+ * fluid at the compact gutter.
+ */
+export type PageContainerMeasureProp = "default" | "narrow" | "medium";
 
 /** @see PageContainer */
 export type PageContainerProp = {
@@ -64,6 +85,15 @@ export type PageContainerProp = {
    * `--page-header-extra-measure`. At >=640px both arrangements are identical.
    */
   headerLayout?: PageContainerHeaderLayoutProp;
+  /**
+   * Bounded page measure shared by the header and the body. Defaults to `default` — no cap, the
+   * historical fluid page. `narrow` (624px surface) / `medium` (720px surface) cap BOTH bands to
+   * one token-owned measure (`--page-measure-{narrow,medium}`), so a header action ends flush with
+   * the body surface instead of at the page edge. Orthogonal to `variant`, so `variant="ghost"`
+   * quiet chrome composes with a bounded measure (gh#245 / gh#247). Unlike `variant="narrow"`,
+   * which caps only the body.
+   */
+  measure?: PageContainerMeasureProp;
   /** Pin footer to viewport bottom on scroll — pairs well with `variant="narrow"`. */
   stickyFooter?: boolean;
   /**
@@ -98,6 +128,20 @@ export type FlexProp = React.HTMLAttributes<HTMLDivElement> & {
   align?: FlexAlignProp;
   justify?: FlexJustifyProp;
   wrap?: boolean;
+  /**
+   * Drop this region below a breakpoint step (`sm` 40rem · `md` 48rem · `lg` 64rem · `xl` 80rem).
+   * The ONE public way to make a layout region responsive without a page-local media query — a
+   * public header hides its anchor navigation below the tablet step with `hideBelow="md"` instead
+   * of a consumer `@media` rule (gh#252). Omit (the default) and no attribute is emitted, so no
+   * rule can match and the Flex is unchanged. The region is removed from the accessibility tree
+   * too, so keep its destinations reachable elsewhere at that width (a footer nav).
+   */
+  hideBelow?: BreakpointProp;
+  /**
+   * The inverse of `hideBelow` — drop this region FROM a breakpoint step upwards, i.e. keep it
+   * only on the narrow side (a compact-only affordance). Omit for no attribute and no rule.
+   */
+  hideFrom?: BreakpointProp;
 };
 
 export type ResponsiveGridColumnsProp = number | { sm?: number; md?: number; lg?: number };
@@ -343,6 +387,121 @@ export type CenteredShellProp = {
    * a long localized message is never clipped.
    */
   align?: CenteredShellAlignProp;
+  /**
+   * Whole-page shell contract. `"default"` (the default) emits no attribute and keeps the shell's
+   * exact box. `"public-landing"` owns the PUBLIC landing geometry — one content measure shared by
+   * the header bar, the centred column and the footer, the section rhythm, the flat public-surface
+   * card chrome and the hero `h1` tier — from `--centered-shell-landing-*` tokens, so a landing
+   * composition (header · hero · sections · legal footer) needs no page-local CSS and no descendant
+   * selector against shell internals (gh#252).
+   */
+  preset?: CenteredShellPresetProp;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see ErrorSurface — the optional maintenance / planned-outage timing slot (503, occasionally a
+ * planned 500).
+ *
+ * `start` / `end` are **ISO-8601 instants** and `timeZone` an **IANA** zone id: the surface formats
+ * them with `Intl.DateTimeFormat(locale, …).formatRange()` (CLDR), so ja / en / vi each read
+ * natively. NEVER pass a pre-formatted string like `"18:00 - 20:00 JST"` — it cannot localize, and
+ * the machine-readable value is what lands in `<time dateTime>`.
+ *
+ * `progress` is server-sent on purpose: deriving "how far through the window are we" from the
+ * client clock makes SSR and hydration disagree, and an exception page must be readable before
+ * hydration.
+ */
+export type ErrorSurfaceMaintenanceProp = {
+  /** Window start as an ISO-8601 instant (`2026-08-02T18:00:00Z`). Also the `<time dateTime>` value. */
+  start: string;
+  /** Window end as an ISO-8601 instant. Omit for an open-ended outage — a single instant is shown. */
+  end?: string;
+  /**
+   * IANA time zone id (`Asia/Tokyo`) the window is presented in. Omit to use the runtime zone —
+   * pass it explicitly whenever the page is server-rendered, or SSR and client output diverge.
+   */
+  timeZone?: string;
+  /**
+   * Completion of the maintenance window as a **percentage 0–100**, rendered as a labelled
+   * `Progress` meter. Server-sent (see above); omit for an outage with no published progress.
+   */
+  progress?: number;
+};
+
+/**
+ * @see ErrorSurface — the package-owned semantic exception surface for 403 / 404 / 500 / 503.
+ *
+ * The `mode` is the SHELL CONTRACT, not a skin:
+ * - `mode="application"` (403/404) renders the surface as the **body** you put inside the
+ *   `AppShell` the route already provides (normally within a `PageContainer`). It deliberately does
+ *   NOT reconstruct navigation chrome: the sidebar, topbar and user menu are consumer-owned data,
+ *   so the surface preserves the shell it is placed in instead of manufacturing a fake one.
+ * - `mode="system"` (500/503) owns the whole page: it renders `CenteredShell align="center"`, so
+ *   the viewport-centred geometry at 1440 / 1024 / 390 stays package-owned and a consumer never
+ *   writes `min-h-dvh`, a flex-centring class or a media query.
+ *
+ * `action` is **exactly one** recovery action, enforced structurally by a single slot (a second
+ * element is dropped with a development error). Support contact belongs in `description`, not in a
+ * second CTA.
+ *
+ * All product COPY stays consumer-owned (`title` / `description` / `action` come from the app's own
+ * `t()`); the surface owns only its own metadata labels, which it localizes itself.
+ */
+export type ErrorSurfaceProp = {
+  /** Where the surface lives — `application` = AppShell body (403/404), `system` = own page (500/503). */
+  mode: ErrorSurfaceModeProp;
+  /** HTTP status presented. Drives the default `icon`, `tone` and the rendered status code. */
+  status: ErrorSurfaceStatusProp;
+  /** Headline. Consumer-owned copy from the app's `t()` — the library ships no product text. */
+  title: TitleProp;
+  /** Supporting sentence under the title. Put support-contact guidance here, never in a 2nd CTA. */
+  description?: DescriptionProp;
+  /**
+   * The ONE recovery action (a `Button`, or a `Button asChild` wrapping a router `Link`). A single
+   * slot IS the enforcement: pass more than one element and only the first renders, with a
+   * development-time error.
+   */
+  action: ActionProp;
+  /** Override the status-derived icon (403 ShieldAlert · 404 SearchX · 500 ServerCrash · 503 Wrench). */
+  icon?: IconProp;
+  /** Override the status-derived tone (403/503 `warning` · 404 `muted` · 500 `destructive`). */
+  tone?: EmptyStateToneProp;
+  /**
+   * Semantic heading level of `title`. Defaults to `2` in `application` mode (a `PageContainer`
+   * `h1` sits above it) and `1` in `system` mode (the surface IS the page). Choose it to keep the
+   * outline valid, never for size.
+   */
+  titleLevel?: HeadingLevelProp;
+  /**
+   * Support correlation id for the failure, rendered as a monospace/tabular metadata row so it can
+   * be read out or copied accurately. Pass the bare id — the localized label is the surface's.
+   */
+  requestId?: string;
+  /**
+   * The permission / role the viewer is missing (403). Pass the bare permission name
+   * (`reports.view`) — the surface renders the localized "Required permission" label around it.
+   */
+  permission?: ReactNode;
+  /**
+   * The organization / tenant the failed request was scoped to. Disambiguates a 403 caused by
+   * being in the wrong workspace from one caused by a missing role.
+   */
+  organization?: ReactNode;
+  /** Optional planned-outage timing + progress (503). ISO-8601 + IANA, formatted with `Intl`. */
+  maintenance?: ErrorSurfaceMaintenanceProp;
+  /**
+   * `system` mode only — brand slot above the status code (a `Logo`). Ignored in `application`
+   * mode, where the shell already shows the product brand.
+   */
+  brand?: ReactNode;
+  /** `system` mode only — the page footer (contentinfo): copyright, status page, locale switch. */
+  footer?: FooterProp;
+  /**
+   * `system` mode only — measure of the centred column (`CenteredShell` width tier). Default `sm`.
+   */
+  width?: CenteredShellWidthProp;
+  id?: IdProp;
   className?: ClassNameProp;
 };
 

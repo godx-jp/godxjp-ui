@@ -49,6 +49,45 @@
     scrollbar-width: thin;
   }
 
+  /* Tabs `line` — the ACTIVE decoration is a token-owned bar and nothing else (gh#248). It is
+   * deliberately painted here (not as an `after:*` utility) so it stays independent of the
+   * `:focus-visible` ring utilities: "selected" and "keyboard-focused" are two different states and
+   * must remain visually distinct (WCAG 2.4.7). Logical insets keep the vertical rail on the
+   * inline-END edge under dir="rtl" too. */
+  [data-slot="tabs-list"][data-variant="line"] [data-slot="tabs-trigger"]::after {
+    content: "";
+    position: absolute;
+    background: var(--tabs-indicator-background, hsl(var(--primary)));
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-standard);
+    pointer-events: none;
+  }
+
+  [data-slot="tabs-list"][data-variant="line"][data-orientation="horizontal"]
+    [data-slot="tabs-trigger"]::after {
+    inset-inline: 0;
+    inset-block-end: calc(-1 * var(--tabs-indicator-offset));
+    block-size: var(--tabs-indicator-size);
+  }
+
+  [data-slot="tabs-list"][data-variant="line"][data-orientation="vertical"]
+    [data-slot="tabs-trigger"]::after {
+    inset-block: 0;
+    inset-inline-end: calc(-1 * var(--tabs-indicator-offset));
+    inline-size: var(--tabs-indicator-size);
+  }
+
+  [data-slot="tabs-list"][data-variant="line"]
+    [data-slot="tabs-trigger"][data-state="active"]::after {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot="tabs-list"][data-variant="line"] [data-slot="tabs-trigger"]::after {
+      transition: none;
+    }
+  }
+
   .ui-context-menu-content {
     z-index: 50;
     min-width: 10rem;

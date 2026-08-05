@@ -764,6 +764,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Optional role wash over the avatar (default transparent = invisible, rule #44). Painted as an overlay so a service sets --avatar-tint: hsl(var(--primary) / 0.08)."
   },
   {
+    "name": "--avatar-square-radius",
+    "value": "var(--radius-lg)",
+    "description": "Entity-header mark — `<Avatar shape=\"square\">` (gh#249): the compact rounded SQUARE an organization/service header uses, as opposed to the round person avatar. Every value is a knob (rule #45) so a service matches the mark to its own grid without a className override. --avatar-square-background / --avatar-square-foreground are role-mirror knobs: `initial` so the --primary / --primary-foreground defaults re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to a role var would freeze at the :root value). Defaults = --radius-lg corners · --control-height box (same as the circle avatar, so swapping shape never reflows a header) · hsl(var(--primary)) fill · hsl(var(--primary-foreground)) glyph."
+  },
+  {
+    "name": "--avatar-square-size",
+    "value": "var(--control-height)",
+    "description": "Entity-header mark — `<Avatar shape=\"square\">` (gh#249): the compact rounded SQUARE an organization/service header uses, as opposed to the round person avatar. Every value is a knob (rule #45) so a service matches the mark to its own grid without a className override. --avatar-square-background / --avatar-square-foreground are role-mirror knobs: `initial` so the --primary / --primary-foreground defaults re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to a role var would freeze at the :root value). Defaults = --radius-lg corners · --control-height box (same as the circle avatar, so swapping shape never reflows a header) · hsl(var(--primary)) fill · hsl(var(--primary-foreground)) glyph."
+  },
+  {
+    "name": "--avatar-square-background",
+    "value": "initial",
+    "description": "Entity-header mark — `<Avatar shape=\"square\">` (gh#249): the compact rounded SQUARE an organization/service header uses, as opposed to the round person avatar. Every value is a knob (rule #45) so a service matches the mark to its own grid without a className override. --avatar-square-background / --avatar-square-foreground are role-mirror knobs: `initial` so the --primary / --primary-foreground defaults re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to a role var would freeze at the :root value). Defaults = --radius-lg corners · --control-height box (same as the circle avatar, so swapping shape never reflows a header) · hsl(var(--primary)) fill · hsl(var(--primary-foreground)) glyph."
+  },
+  {
+    "name": "--avatar-square-foreground",
+    "value": "initial",
+    "description": "Entity-header mark — `<Avatar shape=\"square\">` (gh#249): the compact rounded SQUARE an organization/service header uses, as opposed to the round person avatar. Every value is a knob (rule #45) so a service matches the mark to its own grid without a className override. --avatar-square-background / --avatar-square-foreground are role-mirror knobs: `initial` so the --primary / --primary-foreground defaults re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme (a :root binding to a role var would freeze at the :root value). Defaults = --radius-lg corners · --control-height box (same as the circle avatar, so swapping shape never reflows a header) · hsl(var(--primary)) fill · hsl(var(--primary-foreground)) glyph."
+  },
+  {
     "name": "--progress-track-background",
     "value": "initial",
     "description": "Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme. Track reads --secondary, fill reads --success; a service re-tones once. Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill."
@@ -885,68 +905,88 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--email-mark-width",
-    "value": "32px",
-    "description": "── Brand mark — the canonical GoDX capsule (see EMAIL_BRAND_MARK) ───────────────────────"
+    "value": "22px",
+    "description": "The mark ARTWORK is the same 32×32 capsule + glyph `<Logo mark=\"godx\" />` paints; only the * RENDERED BOX differs. The canonical SCR-302 header sets it at 22px next to a 13px/700 \"GoDX\" * wordmark, which is smaller than the web --logo-godx-size (2rem) — an email header carries the * identity, not the navigation, so the lockup sits quieter (gh#250)."
   },
   {
     "name": "--email-mark-height",
-    "value": "32px",
-    "description": "mirrors --logo-godx-size (2rem)"
+    "value": "22px",
+    "description": "canonical SCR-302 header lockup mark box"
+  },
+  {
+    "name": "--email-mark-gap",
+    "value": "8px",
+    "description": "canonical SCR-302 header lockup mark box"
+  },
+  {
+    "name": "--email-wordmark-font-size",
+    "value": "13px",
+    "description": "mark ↔ wordmark — mirrors --logo-wordmark-gap (--space-2)"
+  },
+  {
+    "name": "--email-wordmark-font-weight",
+    "value": "700",
+    "description": "canonical wordmark size (≈ --font-size-xs 12.5px)"
   },
   {
     "name": "--email-font-family-sans",
-    "value": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
-    "description": "── Typography — literal px so no client has to resolve the rem scale ────────────────────"
+    "value": "\"M PLUS 2\", \"Hiragino Sans\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic Medium\", YuGothic, \"Noto Sans JP\", Meiryo, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, system-ui, Arial, sans-serif",
+    "description": "The DXS canonical face is M PLUS 2 (see src/styles/fonts.css). Email clients honour NO * @font-face, so the stack ships the face NAME first and degrades through the platform JP faces * to a generic — a client with M PLUS 2 installed (or a webmail that already loaded it) renders * the canonical face, everything else lands on Hiragino (macOS/iOS) → Yu Gothic (Windows) → * Noto Sans JP → Meiryo → the system UI face → Arial → sans-serif. Family names are SINGLE-quoted * on export (the generator normalises) because an inline `style=\"…\"` attribute is double-quoted; * only ASCII aliases are listed, since a non-ASCII family name does not survive every transfer * encoding."
+  },
+  {
+    "name": "--email-font-family-mono",
+    "value": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+    "description": "Tabular/reference strings — invoice ids, masked card numbers, ISO dates, amounts — are set in * the mono face in the canonical card. Mirrors --font-family-mono."
   },
   {
     "name": "--email-body-font-size",
     "value": "14px",
-    "description": "── Typography — literal px so no client has to resolve the rem scale ────────────────────"
+    "description": "Tabular/reference strings — invoice ids, masked card numbers, ISO dates, amounts — are set in * the mono face in the canonical card. Mirrors --font-family-mono."
   },
   {
     "name": "--email-body-line-height",
-    "value": "1.7",
-    "description": "mirrors --font-size-base (0.875rem)"
+    "value": "1.9",
+    "description": "1.9, NOT the web --line-height-body (1.7) — the canonical email card runs its JP body copy * looser than a screen, because a mail client gives the reader no density control."
   },
   {
     "name": "--email-body-font-weight",
     "value": "400",
-    "description": "mirrors --line-height-body"
+    "description": "1.9, NOT the web --line-height-body (1.7) — the canonical email card runs its JP body copy * looser than a screen, because a mail client gives the reader no density control."
   },
   {
     "name": "--email-heading-font-size",
-    "value": "20px",
+    "value": "17px",
     "description": "mirrors --font-weight-normal"
   },
   {
     "name": "--email-heading-line-height",
-    "value": "1.25",
-    "description": "mirrors --heading-h1 (base × φ^¼³ ≈ 19.8px)"
+    "value": "1.7",
+    "description": "canonical card title (≈ --heading-h2, base × φ^¼² ≈ 17.6px)"
   },
   {
     "name": "--email-heading-font-weight",
-    "value": "700",
-    "description": "mirrors --line-height-tight"
+    "value": "500",
+    "description": "the title shares the card's body leading, not a tight ramp"
   },
   {
     "name": "--email-cta-height",
-    "value": "44px",
+    "value": "36px",
     "description": "── Primary CTA — the one action button ──────────────────────────────────────────────────"
   },
   {
     "name": "--email-cta-line-height",
-    "value": "44px",
-    "description": "mirrors --control-height-comfortable (2.75rem coarse-pointer target)"
+    "value": "36px",
+    "description": "mirrors --control-height-lg (2.25rem) — the canonical CTA box"
   },
   {
     "name": "--email-cta-padding-x",
-    "value": "24px",
+    "value": "16px",
     "description": "equal to the height: bulletproof vertical centring in Outlook"
   },
   {
     "name": "--email-cta-radius",
     "value": "6px",
-    "description": "mirrors --space-6"
+    "description": "mirrors --space-4"
   },
   {
     "name": "--email-cta-font-size",
@@ -955,23 +995,23 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--email-cta-font-weight",
-    "value": "700",
+    "value": "500",
     "description": "mirrors --font-size-base"
   },
   {
     "name": "--email-footer-font-size",
-    "value": "12px",
+    "value": "11px",
     "description": "── Legal footer ─────────────────────────────────────────────────────────────────────────"
   },
   {
     "name": "--email-footer-line-height",
-    "value": "1.5",
-    "description": "mirrors --font-size-xs (base ÷ φ^¼ ≈ 12.5px)"
+    "value": "1.8",
+    "description": "mirrors --font-size-2xs (base ÷ φ^¼² ≈ 11.1px)"
   },
   {
     "name": "--email-footer-link-gap",
     "value": "12px",
-    "description": "mirrors --line-height-normal"
+    "description": "the legal band runs looser than the web --line-height-normal"
   },
   {
     "name": "--email-footer-padding-top",
@@ -1010,13 +1050,63 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--email-mobile-heading-font-size",
-    "value": "18px",
-    "description": "reduced viewport gutter — mirrors --space-3"
+    "value": "16px",
+    "description": "One step below the 17px desktop title. The canonical 390px reference raster is unusable (it is * 435px wide and already clips the card — dxs-platform/platform#496), so this is the library's * documented contract rather than a measured canonical value."
   },
   {
     "name": "--email-mobile-cta-width",
     "value": "100%",
-    "description": "mirrors --heading-h2 (base × φ^¼² ≈ 17.6px)"
+    "description": "One step below the 17px desktop title. The canonical 390px reference raster is unusable (it is * 435px wide and already clips the card — dxs-platform/platform#496), so this is the library's * documented contract rather than a measured canonical value."
+  },
+  {
+    "name": "--error-surface-max-width",
+    "value": "32rem",
+    "description": "Measure of the surface block. Caps the status code + body + metadata column so a long ja/vi * headline wraps at a readable width in BOTH shells, including the application shell where * PageContainer is much wider than the copy wants to be."
+  },
+  {
+    "name": "--error-surface-gap",
+    "value": "var(--space-3)",
+    "description": "Rhythm between the status code, the EmptyState body, the metadata list and the progress meter."
+  },
+  {
+    "name": "--error-surface-padding-block",
+    "value": "var(--space-10)",
+    "description": "Block padding of the surface inside the shell it is placed in. Desktop (1440/1024) default; the * 390 step steps it down so a phone loses no vertical space (see styles/shell-layout.css)."
+  },
+  {
+    "name": "--error-surface-padding-block-compact",
+    "value": "var(--space-6)",
+    "description": "Block padding of the surface inside the shell it is placed in. Desktop (1440/1024) default; the * 390 step steps it down so a phone loses no vertical space (see styles/shell-layout.css)."
+  },
+  {
+    "name": "--error-surface-brand-gap",
+    "value": "var(--space-2)",
+    "description": "Brand slot (a Logo) above the status code, system mode only."
+  },
+  {
+    "name": "--error-surface-meta-gap",
+    "value": "var(--space-1)",
+    "description": "Metadata description list: row rhythm and the label↔value gap inside one row."
+  },
+  {
+    "name": "--error-surface-meta-row-gap",
+    "value": "var(--space-2)",
+    "description": "Metadata description list: row rhythm and the label↔value gap inside one row."
+  },
+  {
+    "name": "--error-surface-meta-border",
+    "value": "none",
+    "description": "Chrome, default quiet (#44). A service opts in with * `--error-surface-meta-border: 1px solid hsl(var(--border));`."
+  },
+  {
+    "name": "--error-surface-meta-padding-block",
+    "value": "0",
+    "description": "Chrome, default quiet (#44). A service opts in with * `--error-surface-meta-border: 1px solid hsl(var(--border));`."
+  },
+  {
+    "name": "--error-surface-progress-max-width",
+    "value": "18rem",
+    "description": "Width of the maintenance progress meter — narrower than the measure, so it reads as metadata * rather than as the primary content of the page."
   },
   {
     "name": "--sheet-width-default",
@@ -1369,6 +1459,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Gap BETWEEN trailing actions — they also wrap among themselves at narrow widths (#224)."
   },
   {
+    "name": "--list-row-compact-padding-y",
+    "value": "initial",
+    "description": "── Compact inline-actions geometry (`density=\"compact\"`, #246) ────────────────────────── * The canonical invitation / history row: a 36px leading avatar, a shrinkable title + * description body and one or two small trailing Buttons, all on ONE line inside the canonical * 358px card (326px content after the row's own inline inset) at a 390px viewport. These knobs * only LOWER the geometry — the #224 wrap contract (row + trailing cluster wrap, body clamped * with min(…, 100%)) is untouched, so a cluster that genuinely cannot fit still wraps instead of * widening the page root. * Declared `initial` so the spacing defaults re-resolve at the CALL SITE — --space-2 is * density-scaled and re-declared inside a `.ui-density-*` subtree, so a :root binding would * freeze compact rows at the :root density (docs/TOKENS.md — the :root freeze rule). * Defaults = var(--space-2) block padding · var(--list-row-padding-x) inline padding · * var(--space-2) gap."
+  },
+  {
+    "name": "--list-row-compact-padding-x",
+    "value": "initial",
+    "description": "Inline inset defaults to the default row axis so compact and default rows in the same Card keep * one optical axis; a service retunes it to its own grid (#45)."
+  },
+  {
+    "name": "--list-row-compact-gap",
+    "value": "initial",
+    "description": "Inline inset defaults to the default row axis so compact and default rows in the same Card keep * one optical axis; a service retunes it to its own grid (#45)."
+  },
+  {
+    "name": "--list-row-compact-body-min-width",
+    "value": "6rem",
+    "description": "Compact body threshold — small enough that avatar + body + two compact Buttons fit the * canonical column (36 + 8 + 96 + 8 + 146 = 294 ≤ 326), and still a readable measure."
+  },
+  {
     "name": "--list-row-read-background",
     "value": "initial",
     "description": "Read (default) row surface — `initial`, documented default = transparent, i.e. the Card * surface shows through untouched (#44 — chrome defaults to the quietest state)."
@@ -1436,67 +1546,67 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--logo-success-background",
     "value": "initial",
-    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--success)) * --logo-success-foreground = hsl(var(--success-foreground)) * --logo-godx-color = hsl(var(--success))"
+    "description": "Semantic identity fill reads the --brand IDENTITY role: independent of --primary (a re-themed * action colour never recolours the mark) AND of --success (the 若竹 STATUS green stays on * badges/progress/\"saved\" text — the mark used to borrow it and rendered ΔE76 ≈ 17.5 off the * canonical emerald, gh#250). Services retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --brand actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--brand)) * --logo-success-foreground = hsl(var(--brand-foreground)) * --logo-godx-color = hsl(var(--brand))"
   },
   {
     "name": "--logo-success-foreground",
     "value": "initial",
-    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--success)) * --logo-success-foreground = hsl(var(--success-foreground)) * --logo-godx-color = hsl(var(--success))"
+    "description": "Semantic identity fill reads the --brand IDENTITY role: independent of --primary (a re-themed * action colour never recolours the mark) AND of --success (the 若竹 STATUS green stays on * badges/progress/\"saved\" text — the mark used to borrow it and rendered ΔE76 ≈ 17.5 off the * canonical emerald, gh#250). Services retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --brand actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--brand)) * --logo-success-foreground = hsl(var(--brand-foreground)) * --logo-godx-color = hsl(var(--brand))"
   },
   {
     "name": "--logo-godx-size",
     "value": "2rem",
-    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--success)) * --logo-success-foreground = hsl(var(--success-foreground)) * --logo-godx-color = hsl(var(--success))"
+    "description": "Semantic identity fill reads the --brand IDENTITY role: independent of --primary (a re-themed * action colour never recolours the mark) AND of --success (the 若竹 STATUS green stays on * badges/progress/\"saved\" text — the mark used to borrow it and rendered ΔE76 ≈ 17.5 off the * canonical emerald, gh#250). Services retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --brand actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--brand)) * --logo-success-foreground = hsl(var(--brand-foreground)) * --logo-godx-color = hsl(var(--brand))"
   },
   {
     "name": "--logo-godx-color",
     "value": "initial",
-    "description": "Semantic identity fill is deliberately independent from --primary so a green brand mark never * recolours primary buttons or links. Services can retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--success)) * --logo-success-foreground = hsl(var(--success-foreground)) * --logo-godx-color = hsl(var(--success))"
+    "description": "Semantic identity fill reads the --brand IDENTITY role: independent of --primary (a re-themed * action colour never recolours the mark) AND of --success (the 若竹 STATUS green stays on * badges/progress/\"saved\" text — the mark used to borrow it and rendered ΔE76 ≈ 17.5 off the * canonical emerald, gh#250). Services retune the role once for every Logo. * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --brand actually * reaches the mark instead of freezing at the :root value (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented defaults: * --logo-success-background = hsl(var(--brand)) * --logo-success-foreground = hsl(var(--brand-foreground)) * --logo-godx-color = hsl(var(--brand))"
   },
   {
     "name": "--logo-wordmark-gap",
     "value": "var(--space-2)",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--logo-wordmark-font-size-xs",
     "value": "var(--font-size-xs)",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--logo-wordmark-font-size-sm",
     "value": "var(--font-size-sm)",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--logo-wordmark-font-size-md",
     "value": "var(--font-size-base)",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--logo-wordmark-font-size-lg",
     "value": "var(--font-size-lg)",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--logo-wordmark-font-weight",
     "value": "700",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--logo-wordmark-letter-spacing",
     "value": "-0.01em",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--logo-wordmark-font-family",
     "value": "initial",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--logo-wordmark-color",
     "value": "initial",
-    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success` * lockup is brand-green out of the box, and every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the * godx / tone=\"success\" lockup."
+    "description": "── Wordmark / lockup (`<Logo wordmark=\"GoDX\" />`) ───────────────────────────────────────── * The readable product name set beside the mark. The package ships NO wordmark artwork: the * wordmark is typeset in the design-system display face, so a service retunes face, weight, * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and * every other lockup reads --foreground. * Documented defaults: --logo-wordmark-font-family = var(--font-family-display); * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the * godx / tone=\"success\" lockup."
   },
   {
     "name": "--pagination-gap",
@@ -1602,6 +1712,21 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--tabs-list-overflow",
     "value": "auto",
     "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
+  },
+  {
+    "name": "--tabs-indicator-background",
+    "value": "initial",
+    "description": "Tabs `line` active indicator (gh#248) — the ONLY selected-state decoration the line variant * paints. The surrounding active ring belongs to the default/card lists, so `:focus-visible` * keeps its own distinct keyboard ring here (WCAG 2.4.7). `--tabs-indicator-background` is a * role-mirror knob: `initial` so hsl(var(--primary)) re-resolves at the CALL SITE under a scoped * [data-tenant]/.dark theme (a :root binding to a role var would freeze at :root). * Default = hsl(var(--primary)) · 2px thick · flush with the trigger edge (offset 0 = quietest, * rule #44); a service raises the offset to park the bar on a thicker strip hairline."
+  },
+  {
+    "name": "--tabs-indicator-size",
+    "value": "2px",
+    "description": "Tabs `line` active indicator (gh#248) — the ONLY selected-state decoration the line variant * paints. The surrounding active ring belongs to the default/card lists, so `:focus-visible` * keeps its own distinct keyboard ring here (WCAG 2.4.7). `--tabs-indicator-background` is a * role-mirror knob: `initial` so hsl(var(--primary)) re-resolves at the CALL SITE under a scoped * [data-tenant]/.dark theme (a :root binding to a role var would freeze at :root). * Default = hsl(var(--primary)) · 2px thick · flush with the trigger edge (offset 0 = quietest, * rule #44); a service raises the offset to park the bar on a thicker strip hairline."
+  },
+  {
+    "name": "--tabs-indicator-offset",
+    "value": "0px",
+    "description": "Tabs `line` active indicator (gh#248) — the ONLY selected-state decoration the line variant * paints. The surrounding active ring belongs to the default/card lists, so `:focus-visible` * keeps its own distinct keyboard ring here (WCAG 2.4.7). `--tabs-indicator-background` is a * role-mirror knob: `initial` so hsl(var(--primary)) re-resolves at the CALL SITE under a scoped * [data-tenant]/.dark theme (a :root binding to a role var would freeze at :root). * Default = hsl(var(--primary)) · 2px thick · flush with the trigger edge (offset 0 = quietest, * rule #44); a service raises the offset to park the bar on a thicker strip hairline."
   },
   {
     "name": "--menubar-item-hover-background",
@@ -1789,49 +1914,59 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
+    "name": "--auth-account-summary-email-line-height",
+    "value": "1.5",
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
+  },
+  {
+    "name": "--topbar-start-truncate-line-height",
+    "value": "1.5",
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
+  },
+  {
     "name": "--sidebar-nav-icon-size",
     "value": "1rem",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--sidebar-nav-item-gap",
     "value": "0.625rem",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--sidebar-nav-item-padding-x",
     "value": "0.625rem",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--sidebar-nav-gap",
     "value": "2px",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--sidebar-nav-scroll-padding",
     "value": "var(--space-3) var(--space-2)",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--sidebar-section-gap",
     "value": "var(--space-4)",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--sidebar-section-label-padding-x",
     "value": "var(--space-2)",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--sidebar-section-label-padding-bottom",
     "value": "var(--space-1)",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--topbar-search-max-width",
     "value": "26.25rem",
-    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+    "description": "Same gh#254 trap, two more clipping boxes. `.ui-auth-account-email` and the truncating last * child of `.ui-topbar-start` both clip (`overflow: hidden`/`clip` + `text-overflow: ellipsis`), * so their line box IS their clip box — inheriting a tight value shears descenders and Vietnamese * tone marks exactly as the sidebar label did. Keep >= 1.2."
   },
   {
     "name": "--topbar-height",
@@ -2229,6 +2364,66 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Block offset of the centred column inside the 100dvh shell. `0` (default, the quietest state — * rule #44) keeps the top-aligned flowing page; `auto` centres the column in the viewport, which * is what CenteredShell `align=\"center\"` sets for a SYSTEM-level standalone surface (500/503 * error page, maintenance notice). Auto block offsets collapse to 0 when the content is taller * than the viewport, so a long localized message scrolls from the top instead of clipping."
   },
   {
+    "name": "--centered-shell-landing-max-width",
+    "value": "67.5rem",
+    "description": "CenteredShell · public-landing preset (gh#252) — the token-owned geometry of a PUBLIC marketing * / product landing page: one content measure shared by header, main column and footer, the * section rhythm between page sections, the flat (chrome-quiet) card presentation and the hero * heading tier. Every value is a service-themeable knob (rule #45): a landing composition is a * COMPOSITION of real primitives (docs/COMPOSITION-VS-COMPONENT.md — Hero/Navbar/Footer FAIL the * Framework-Component Test), so the consumer must never own geometry or a media query. These * knobs are read ONLY under `.ui-centered-shell[data-preset=\"public-landing\"]`, so the default * shell — which emits no `data-preset` at all — is byte-identical to before."
+  },
+  {
+    "name": "--centered-shell-landing-inset-inline",
+    "value": "var(--space-6)",
+    "description": "1080px — header/main/footer share ONE measure"
+  },
+  {
+    "name": "--centered-shell-landing-inset-inline-compact",
+    "value": "var(--space-4)",
+    "description": "24px page gutter ≥ 40rem"
+  },
+  {
+    "name": "--centered-shell-landing-main-padding-block",
+    "value": "var(--space-10)",
+    "description": "16px page gutter < 40rem"
+  },
+  {
+    "name": "--centered-shell-landing-main-padding-block-compact",
+    "value": "var(--space-6)",
+    "description": "40px"
+  },
+  {
+    "name": "--centered-shell-landing-section-gap",
+    "value": "var(--space-10)",
+    "description": "24px"
+  },
+  {
+    "name": "--centered-shell-landing-section-gap-compact",
+    "value": "var(--space-6)",
+    "description": "rhythm BETWEEN page sections"
+  },
+  {
+    "name": "--centered-shell-landing-footer-padding-block",
+    "value": "var(--space-8)",
+    "description": "rhythm BETWEEN page sections"
+  },
+  {
+    "name": "--centered-shell-landing-card-shadow",
+    "value": "none",
+    "description": "Chrome is a token, default quiet (rule #44): a landing surface is FLAT — no card elevation — * so a service opts back IN with `--centered-shell-landing-card-shadow: var(--card-shadow)`."
+  },
+  {
+    "name": "--centered-shell-landing-heading-size",
+    "value": "var(--font-size-display)",
+    "description": "Hero heading tier. The preset re-points `--heading-h1` (same mechanism as * `.ui-auth-shell` → `--auth-shell-heading-size`), so a hero title is a real `Heading level={1}` * and never a consumer font-size."
+  },
+  {
+    "name": "--centered-shell-landing-heading-size-compact",
+    "value": "var(--font-size-3xl)",
+    "description": "Hero heading tier. The preset re-points `--heading-h1` (same mechanism as * `.ui-auth-shell` → `--auth-shell-heading-size`), so a hero title is a real `Heading level={1}` * and never a consumer font-size."
+  },
+  {
+    "name": "--centered-shell-landing-background",
+    "value": "initial",
+    "description": "Role-mirror knob — MUST stay `initial`, with the role default at the CALL SITE * (`var(--centered-shell-landing-background, var(--background))`), so a scoped * `[data-tenant]` / `.dark` override of `--background` still reaches it (docs/TOKENS.md · * \"Role-mirror knobs MUST be `initial`\"). Documented default = hsl(var(--background)) — a public * page is the plain page canvas, not the app's `--muted` chrome."
+  },
+  {
     "name": "--sidebar-nav-item-foreground",
     "value": "initial",
     "description": "Resting nav row + label (also the resting sub-row). Default = hsl(var(--muted-foreground))."
@@ -2294,9 +2489,24 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Table component tokens: row height, cell padding."
   },
   {
+    "name": "--table-pagination-padding-y",
+    "value": "initial",
+    "description": "Pagination footer inset (gh#236). The footer ships as a SELF-CONTAINED slot and is commonly * placed in a flush container (`<Card><CardContent flush><DataTable/>`), where no ancestor * supplies padding — so it owns its own on BOTH axes instead of declaring block-start only. * Block default = the previous single `padding-top` value, now on both block edges (breathing * room above the footer and before the container's closing border). Inline default = the cell * inline padding, so the \"rows per page\" label sits on the same optical axis as the first * column's text. A service retunes either axis to its own grid (#45). * Both are declared `initial` so the defaults re-resolve at the CALL SITE: --space-stack-sm and * --table-cell-space-x are density-scaled and re-declared inside a `.ui-density-*` subtree, and a * :root binding would freeze the footer at the :root density (docs/TOKENS.md — the :root freeze * rule). Defaults = var(--space-stack-sm) block · var(--table-cell-space-x) inline."
+  },
+  {
+    "name": "--table-pagination-padding-x",
+    "value": "initial",
+    "description": "Pagination footer inset (gh#236). The footer ships as a SELF-CONTAINED slot and is commonly * placed in a flush container (`<Card><CardContent flush><DataTable/>`), where no ancestor * supplies padding — so it owns its own on BOTH axes instead of declaring block-start only. * Block default = the previous single `padding-top` value, now on both block edges (breathing * room above the footer and before the container's closing border). Inline default = the cell * inline padding, so the \"rows per page\" label sits on the same optical axis as the first * column's text. A service retunes either axis to its own grid (#45). * Both are declared `initial` so the defaults re-resolve at the CALL SITE: --space-stack-sm and * --table-cell-space-x are density-scaled and re-declared inside a `.ui-density-*` subtree, and a * :root binding would freeze the footer at the :root density (docs/TOKENS.md — the :root freeze * rule). Defaults = var(--space-stack-sm) block · var(--table-cell-space-x) inline."
+  },
+  {
+    "name": "--table-surface-min-inline-size",
+    "value": "640px",
+    "description": "DataTable surface — narrow-viewport legibility FLOOR (gh#253). Below the `sm` viewport step a * multi-column admin grid whose columns are `white-space: nowrap` would otherwise be crushed, so * the bordered surface keeps a minimum inline size and `.ui-data-table-scroll` scrolls instead. * This shipped as a hard-coded `min-w-[640px]` utility on the surface element, which left a * service that wants a narrower (or no) floor with no route but forking the component (#45). * Default = the previous literal, in px so the floor releases at EXACTLY the same width as the * px-based `sm` media query that clears it (a rem value would drift under a non-16px root and * re-introduce the scroll between the two thresholds). Set `0` to opt out entirely — which is * what `preset=\"action-collection\"` does, because there the priority measures own the width."
+  },
+  {
     "name": "--table-head-font-size",
     "value": "var(--font-size-xs)",
-    "description": "Table component tokens: row height, cell padding."
+    "description": "DataTable surface — narrow-viewport legibility FLOOR (gh#253). Below the `sm` viewport step a * multi-column admin grid whose columns are `white-space: nowrap` would otherwise be crushed, so * the bordered surface keeps a minimum inline size and `.ui-data-table-scroll` scrolls instead. * This shipped as a hard-coded `min-w-[640px]` utility on the surface element, which left a * service that wants a narrower (or no) floor with no route but forking the component (#45). * Default = the previous literal, in px so the floor releases at EXACTLY the same width as the * px-based `sm` media query that clears it (a rem value would drift under a non-16px root and * re-introduce the scroll between the two thresholds). Set `0` to opt out entirely — which is * what `preset=\"action-collection\"` does, because there the priority measures own the width."
   },
   {
     "name": "--table-header-background",
@@ -2327,5 +2537,65 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-row-selected-background",
     "value": "initial",
     "description": "Row-state tint washes — translucent muted over the opaque base. `initial` so the --muted * default re-resolves under a scoped theme; a service retints by reading another role (e.g. * --primary). Defaults = hsl(var(--muted) / 0.4 striped · 0.5 hover · 0.3 selected)."
+  },
+  {
+    "name": "--table-action-collection-primary-width",
+    "value": "18%",
+    "description": "Table · action-collection preset (gh#253) — the canonical dense approval / action queue. * Column PRIORITY measures replace the desktop intrinsic widths (a nowrap free-text column is * what makes a five-column queue wider than its card and forces a horizontal scroll). Nothing * here is read unless `preset=\"action-collection\"` is set, so every existing table is untouched. * Percentages so the ratio holds at any card width; the action affordance is an absolute measure * because it must never be squeezed below its touch target."
+  },
+  {
+    "name": "--table-action-collection-secondary-width",
+    "value": "22%",
+    "description": "requester / subject"
+  },
+  {
+    "name": "--table-action-collection-meta-width",
+    "value": "12%",
+    "description": "target / resource"
+  },
+  {
+    "name": "--table-action-collection-actions-width",
+    "value": "3.5rem",
+    "description": "timestamps, ids — lowest priority"
+  },
+  {
+    "name": "--table-action-collection-primary-width-compact",
+    "value": "24%",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+  },
+  {
+    "name": "--table-action-collection-secondary-width-compact",
+    "value": "22%",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+  },
+  {
+    "name": "--table-action-collection-meta-width-compact",
+    "value": "20%",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+  },
+  {
+    "name": "--table-action-collection-actions-width-compact",
+    "value": "2.75rem",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+  },
+  {
+    "name": "--table-action-collection-font-size-compact",
+    "value": "var(--font-size-xs)",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+  },
+  {
+    "name": "--table-action-collection-cell-space-x-compact",
+    "value": "var(--space-2)",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+  },
+  {
+    "name": "--table-action-collection-cell-padding-y-compact",
+    "value": "var(--space-2)",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+  },
+  {
+    "name": "--table-action-collection-row-height-compact",
+    "value": "var(--table-row-height-compact)",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
   }
 ];

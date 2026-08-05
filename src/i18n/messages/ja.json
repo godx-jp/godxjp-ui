@@ -150,6 +150,14 @@
       "version": "バージョン {version}",
       "effectiveDate": "施行日 {date}"
     },
+    "errorSurface": {
+      "statusLabel": "HTTP ステータス {status}",
+      "requestId": "リクエスト ID",
+      "permission": "必要な権限",
+      "organization": "組織",
+      "maintenanceWindow": "計画メンテナンス",
+      "maintenanceProgress": "メンテナンス進捗 {percent}"
+    },
     "topbar": {
       "toggleSidebar": "サイドバーの切り替え",
       "search": "検索",

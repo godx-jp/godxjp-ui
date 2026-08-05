@@ -219,6 +219,22 @@ export const SHOWCASES: ShowcaseEntry[] = [
     load: () => import("../../docs/showcase/case3-approval-workflow"),
   },
   {
+    id: "table-approval-queue",
+    title: "アクセス承認キュー (390 canonical)",
+    description:
+      'Hàng đợi phê duyệt 5 cột (申請者 · 対象 · 理由 · 申請日時 · 操作) giữ nguyên trong khung 390px nhờ Table preset="action-collection" + priority — không CSS trang, không cột ẩn, không cuộn ngang (gh#253).',
+    tag: "Admin",
+    load: () => import("../../docs/showcase/table-approval-queue"),
+  },
+  {
+    id: "public-landing",
+    title: "パブリックランディング (SCR-007)",
+    description:
+      'Trang landing công khai dựng 100% từ primitive: CenteredShell preset="public-landing" sở hữu measure/nhịp section/chrome phẳng, Flex hideBelow/hideFrom lo hiển thị theo breakpoint — zero CSS trang (gh#252).',
+    tag: "Public",
+    load: () => import("../../docs/showcase/public-landing"),
+  },
+  {
     id: "case5-shift-calendar",
     title: "シフトカレンダー",
     description:

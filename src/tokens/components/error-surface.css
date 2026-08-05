@@ -1,0 +1,36 @@
+/* ErrorSurface — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251).
+ *
+ * Package-owned geometry: a service retunes the surface here (or in its own theme.css) instead of
+ * forking `.ui-error-surface` or adding a `className` to the component. Chrome defaults are QUIET
+ * (cardinal rule #44): the metadata block ships with no divider — a service opts IN.
+ */
+:root {
+  /* Measure of the surface block. Caps the status code + body + metadata column so a long ja/vi
+   * headline wraps at a readable width in BOTH shells, including the application shell where
+   * PageContainer is much wider than the copy wants to be. */
+  --error-surface-max-width: 32rem;
+
+  /* Rhythm between the status code, the EmptyState body, the metadata list and the progress meter. */
+  --error-surface-gap: var(--space-3);
+
+  /* Block padding of the surface inside the shell it is placed in. Desktop (1440/1024) default; the
+   * 390 step steps it down so a phone loses no vertical space (see styles/shell-layout.css). */
+  --error-surface-padding-block: var(--space-10);
+  --error-surface-padding-block-compact: var(--space-6);
+
+  /* Brand slot (a Logo) above the status code, system mode only. */
+  --error-surface-brand-gap: var(--space-2);
+
+  /* Metadata description list: row rhythm and the label↔value gap inside one row. */
+  --error-surface-meta-gap: var(--space-1);
+  --error-surface-meta-row-gap: var(--space-2);
+
+  /* Chrome, default quiet (#44). A service opts in with
+   * `--error-surface-meta-border: 1px solid hsl(var(--border));`. */
+  --error-surface-meta-border: none;
+  --error-surface-meta-padding-block: 0;
+
+  /* Width of the maintenance progress meter — narrower than the measure, so it reads as metadata
+   * rather than as the primary content of the page. */
+  --error-surface-progress-max-width: 18rem;
+}

@@ -1,12 +1,12 @@
 /**
- * ERROR SURFACE — composition-pattern contract test (gh#221).
+ * ERROR SURFACE — the UNDERLYING composition (gh#221 → gh#251).
  *
- * `@godxjp/ui` deliberately ships NO `ErrorSurface` component: the 403/404/500/503 surface failed
- * Gate 0 of docs/COMPOSITION-VS-COMPONENT.md (it owns no behaviour and is expressible today from
- * `EmptyState` + `Flex` + `Text` + `Button` inside the shell the page already renders). This test
- * pins the CANONICAL composition documented in docs/layout/error-surface/ and in the MCP
- * `error-pages` pattern, so a refactor of those primitives can never silently break the four
- * exception pages a consumer builds from them.
+ * `@godxjp/ui` now ships a real, importable `ErrorSurface` (see error-surface.test.tsx): shipping
+ * the 403/404/500/503 surface as a docs-only composition pattern was the gh#251 regression, because
+ * a consumer cannot `import` a docs page. What survives here is the layer BELOW it — the
+ * `EmptyState` + `Flex` + `Text` + `Button` composition that `ErrorSurface` renders internally, and
+ * that an app still hand-composes when it needs a status outside the supported four. Pinning it
+ * separately means a refactor of those primitives cannot silently break the surface from underneath.
  *
  * What is pinned here:
  *  - application mode (403/404) PRESERVES the authenticated AppShell chrome (nav + banner survive);
@@ -68,7 +68,7 @@ function formatWindow(locale: keyof typeof COPY): string {
   }).formatRange(new Date(WINDOW_START), new Date(WINDOW_END));
 }
 
-describe("error surface — composition pattern (gh#221)", () => {
+describe("error surface — the composition ErrorSurface is built from (gh#221)", () => {
   it("application mode (403) preserves the authenticated app shell around the error body", () => {
     const { getAllByRole, getByRole, getByText } = renderWithUi(
       <AppShell

@@ -4,7 +4,10 @@
  * The mark is an emerald CAPSULE with an internal light GLYPH bar — the same artwork the React
  * `<Logo mark="godx" />` paints, at the same 32×32 viewBox and the same coordinates (a test asserts
  * the capsule path is byte-identical to the component's, so the two can never diverge). A capsule
- * WITHOUT the internal glyph is the incomplete mark and must not ship.
+ * WITHOUT the internal glyph is the incomplete mark and must not ship. The ARTWORK matches the
+ * canonical SCR-302 raster exactly; only the rendered BOX is email-specific — the canonical email
+ * header sets it at 22px (`--email-mark-width`) beside the "GoDX" wordmark, where the web
+ * `<Logo mark="godx" />` box is 32px.
  *
  * Nothing here references an external or relative asset: an email template has no base URL it can
  * trust, remote images are blocked by default in most clients, and a `cid:` attachment needs
@@ -16,8 +19,10 @@
  *     Renders everywhere; degrades to a square emerald block with a light bar in Outlook's Word
  *     renderer (which drops `border-radius`) — still recognisably the mark, never a broken image.
  *
- * Colours come from `EMAIL_COLORS` (derived from `--success` / `--success-foreground`, the roles
- * `--logo-godx-color` already points at), so a re-themed identity role re-tints the mark.
+ * Colours come from `EMAIL_COLORS` (derived from `--brand` / `--brand-foreground`, the roles
+ * `--logo-godx-color` points at), so a re-themed identity role re-tints the mark. NOT `--success`:
+ * that is the wakatake STATUS green, and binding identity to it rendered the mark ~ΔE76 17 away
+ * from the canonical emerald until gh#250 introduced the dedicated `--brand` role.
  */
 import { EMAIL_COLORS, type EmailHex } from "./color";
 import { EMAIL_GEOMETRY_SOURCE } from "./tokens.generated";
@@ -73,9 +78,9 @@ export function roundedRectPath({ x, y, width, height, radius }: EmailBrandMarkR
 
 /** Options for rendering the mark. Every default comes from the token contract. */
 export interface EmailBrandMarkOptions {
-  /** Rendered width in px. Default `EMAIL_BRAND_MARK.widthPx` (32). */
+  /** Rendered width in px. Default `EMAIL_BRAND_MARK.widthPx` (the canonical 22px header box). */
   width?: number;
-  /** Rendered height in px. Default `EMAIL_BRAND_MARK.heightPx` (32). */
+  /** Rendered height in px. Default `EMAIL_BRAND_MARK.heightPx` (the canonical 22px header box). */
   height?: number;
   /** Capsule fill. Default `EMAIL_COLORS.brand`. */
   color?: EmailHex;
@@ -176,6 +181,17 @@ export interface EmailBrandMark {
   readonly glyph: EmailBrandMarkRect;
   readonly capsulePath: string;
   readonly glyphPath: string;
+  /**
+   * Mark ↔ wordmark separation in the canonical header LOCKUP. The mark alone is not the header:
+   * the canonical card sets the mark beside a readable "GoDX" wordmark, and the wordmark — not the
+   * mark — carries the accessible name (render the mark with `label: ""` in that pairing).
+   */
+  readonly gap: string;
+  readonly gapPx: number;
+  /** Wordmark type size in the lockup. */
+  readonly wordmarkFontSize: string;
+  readonly wordmarkFontSizePx: number;
+  readonly wordmarkFontWeight: number;
   /** Inline `<svg>` — highest fidelity. */
   readonly svg: string;
   /** `data:` URL of the same SVG, for `<img src>`. */
@@ -194,6 +210,11 @@ export const EMAIL_BRAND_MARK: EmailBrandMark = Object.freeze({
   glyph: EMAIL_BRAND_MARK_GLYPH,
   capsulePath: CAPSULE_PATH,
   glyphPath: GLYPH_PATH,
+  gap: EMAIL_GEOMETRY_SOURCE["--email-mark-gap"],
+  gapPx: Number.parseFloat(EMAIL_GEOMETRY_SOURCE["--email-mark-gap"]),
+  wordmarkFontSize: EMAIL_GEOMETRY_SOURCE["--email-wordmark-font-size"],
+  wordmarkFontSizePx: Number.parseFloat(EMAIL_GEOMETRY_SOURCE["--email-wordmark-font-size"]),
+  wordmarkFontWeight: Number.parseFloat(EMAIL_GEOMETRY_SOURCE["--email-wordmark-font-weight"]),
   svg: emailBrandMarkSvg(),
   dataUri: emailBrandMarkDataUri(),
   tableHtml: emailBrandMarkTableHtml(),

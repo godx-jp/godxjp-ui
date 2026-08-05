@@ -24,6 +24,29 @@ export type CenteredShellWidthProp = "sm" | "md" | "lg";
 export type CenteredShellAlignProp = "start" | "center";
 
 /**
+ * ErrorSurface shell contract — WHERE the exception surface lives, not how it looks.
+ *
+ * `"application"` (403 / 404): the failure happened INSIDE the authenticated app, so the surface is
+ * the page BODY of the `AppShell` the route already renders. It never reconstructs nav chrome — a
+ * component cannot manufacture the sidebar/topbar/user menu, which are consumer-owned; it renders
+ * as `AppShell`'s children (usually inside a `PageContainer`) so the shell is PRESERVED and the
+ * user is never stranded chrome-less.
+ *
+ * `"system"` (500 / 503): the app itself failed — session and nav data may be gone — so the surface
+ * owns the whole page and renders package-owned viewport-centred geometry
+ * (`CenteredShell align="center"`), with no consumer `min-h-dvh` / flex CSS at 1440 / 1024 / 390.
+ */
+export type ErrorSurfaceModeProp = "application" | "system";
+
+/**
+ * The HTTP status an ErrorSurface presents. Deliberately closed to the four exception pages every
+ * app ships (RFC 9110 §15.5.4 / §15.5.5 / §15.6.1 / §15.6.4); it drives the default icon, tone and
+ * the recommended `mode`. A number, never a string — it is the numeric status, and it is rendered
+ * with tabular figures.
+ */
+export type ErrorSurfaceStatusProp = 403 | 404 | 500 | 503;
+
+/**
  * AuthShell named flow preset — the page MEASURE contract for a canonical hosted-identity flow
  * (card max-width plus the desktop and mobile page gutters), owned by component tokens.
  * `"default"` keeps the shell's own measure; `"login"` owns SCR-001's stable card anchor for
@@ -41,3 +64,14 @@ export type GapProp = "xs" | "sm" | "md" | "lg" | "xl";
 
 /** DataTable row density subset. */
 export type TableDensityProp = Exclude<DensityProp, "default">;
+
+/**
+ * CenteredShell named page preset — the token-owned SHELL geometry of a whole page shape.
+ * `"default"` keeps the shell's own box (and emits no attribute at all, so it can match no rule).
+ * `"public-landing"` is the PUBLIC marketing / product landing contract: one content measure
+ * shared by the header bar, the centred column and the footer, the section rhythm between page
+ * sections, the flat (elevation-free) public-surface chrome and the hero heading tier — all owned
+ * by `--centered-shell-landing-*` knobs so the landing COMPOSITION (hero, nav, sections, footer —
+ * each of which fails the Framework-Component Test) needs no page-local CSS.
+ */
+export type CenteredShellPresetProp = "default" | "public-landing";

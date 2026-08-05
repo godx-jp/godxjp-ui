@@ -277,6 +277,8 @@
     overflow: hidden;
     color: hsl(var(--foreground));
     font-size: var(--auth-account-summary-email-font-size);
+    /* Declares its own line box because it CLIPS — see gh#254. */
+    line-height: var(--auth-account-summary-email-line-height);
     font-weight: var(--font-weight-medium);
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1224,6 +1226,8 @@
     min-width: 0;
     flex: 0 1 auto;
     overflow: hidden;
+    /* Declares its own line box because it CLIPS — see gh#254. */
+    line-height: var(--topbar-start-truncate-line-height);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1433,5 +1437,154 @@
   .app-mobile-nav-drawer {
     animation: none;
     transition: none;
+  }
+}
+
+/*
+ * ERROR SURFACE — the 403 / 404 / 500 / 503 exception surface (gh#221, gh#251).
+ *
+ * Geometry is PACKAGE-OWNED at 1440 / 1024 / 390: a consumer never writes `min-h-dvh`, a
+ * flex-centring class or a media query for an error page. In `system` mode the viewport centring
+ * comes from `CenteredShell align="center"` (which the component renders itself); this block owns
+ * the surface block that is identical in BOTH modes — measure, rhythm, metadata list.
+ *
+ * The narrow step is a CONTAINER query, not a viewport one (the SplitPane precedent, gh#165): the
+ * surface reads its OWN width, so it compacts correctly whether the shrinking came from a 390px
+ * phone or from an application shell whose sidebar is expanded on a laptop.
+ */
+@layer components {
+  .ui-error-surface {
+    container: error-surface / inline-size;
+    display: flex;
+    width: 100%;
+    max-width: var(--error-surface-max-width);
+    flex-direction: column;
+    align-items: center;
+    /* Logical, so the surface stays centred and its text start-aligns correctly under `dir="rtl"`. */
+    margin-inline: auto;
+    gap: var(--error-surface-gap);
+    padding-block: var(--error-surface-padding-block);
+    text-align: center;
+  }
+
+  .ui-error-surface-brand {
+    display: flex;
+    justify-content: center;
+    padding-block-end: var(--error-surface-brand-gap);
+  }
+
+  /* The EmptyState body already owns its own vertical rhythm and description measure
+   * (--empty-state-*); the surface only removes the duplicated block padding so the two spacing
+   * systems do not stack into a hole between the status code and the icon. */
+  .ui-error-surface .ui-error-surface-body {
+    width: 100%;
+    padding-block: 0;
+  }
+
+  .ui-error-surface-status {
+    margin: 0;
+  }
+
+  .ui-error-surface-meta {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: var(--error-surface-meta-gap);
+    /* Chrome is a token, default quiet (rule #44) — `none` unless a service opts in. */
+    border-block-start: var(--error-surface-meta-border);
+    padding-block-start: var(--error-surface-meta-padding-block);
+    margin: 0;
+  }
+
+  .ui-error-surface-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--error-surface-meta-row-gap);
+  }
+
+  .ui-error-surface-meta-row > dd {
+    margin-inline-start: 0;
+  }
+
+  .ui-error-surface-progress {
+    width: 100%;
+    max-width: var(--error-surface-progress-max-width);
+  }
+
+  /*
+   * NARROW STEP (the 390 case). Reclaim vertical space and stop a long ja / vi metadata row from
+   * wrapping into a ragged two-column shape: each label stacks over its value, centred.
+   */
+  @container error-surface (width < 30rem) {
+    .ui-error-surface {
+      padding-block: var(--error-surface-padding-block-compact);
+    }
+
+    .ui-error-surface-meta-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+}
+
+@layer components {
+  /* ── CenteredShell · `preset="public-landing"` (gh#252) ──────────────────────────────────────
+   * A PUBLIC landing page (marketing header · hero · sections · legal footer) is a COMPOSITION,
+   * not a framework component (docs/COMPOSITION-VS-COMPONENT.md: Hero / Navbar / Footer / Pricing
+   * all FAIL the Framework-Component Test). What the consumer must NOT own is the SHELL geometry —
+   * the content measure, the header/footer measure alignment, the section rhythm and the flat
+   * public-surface chrome. This preset owns all of it through `--centered-shell-landing-*` knobs,
+   * so a landing composes real primitives with ZERO page-local CSS and zero descendant selectors.
+   *
+   * `preset="default"` emits NO `data-preset` attribute at all, so none of this can match and every
+   * existing CenteredShell keeps its exact box (the gh#231 inert-default contract). */
+  .ui-centered-shell[data-preset="public-landing"] {
+    --centered-shell-main-padding: var(--centered-shell-landing-main-padding-block)
+      var(--centered-shell-landing-inset-inline);
+    /* The hero title is a real `Heading level={1}`; the preset re-points the h1 tier the same way
+     * `.ui-auth-shell` re-points it — never a consumer font-size. */
+    --heading-h1: var(--centered-shell-landing-heading-size);
+    /* Flat public surface: every Card in the subtree loses its elevation from ONE knob instead of
+     * a consumer `.landing .card { box-shadow: none }` descendant selector. */
+    --card-shadow: var(--centered-shell-landing-card-shadow);
+    background: hsl(var(--centered-shell-landing-background, var(--background)));
+  }
+
+  .ui-centered-shell[data-preset="public-landing"] .ui-centered-shell-column {
+    display: flex;
+    max-width: var(--centered-shell-landing-max-width);
+    flex-direction: column;
+    /* Section rhythm — the consumer stacks plain `<section>` layout elements and never sets a gap. */
+    gap: var(--centered-shell-landing-section-gap);
+  }
+
+  /* Header and footer share the column's measure WITHOUT a consumer max-width wrapper: the inline
+   * padding is the page gutter until the viewport is wider than the measure, then it grows so the
+   * bar content starts on exactly the same inline edge as the centred column. */
+  .ui-centered-shell[data-preset="public-landing"] .ui-centered-shell-bar,
+  .ui-centered-shell[data-preset="public-landing"] .ui-centered-shell-footer {
+    padding-inline: max(
+      var(--centered-shell-landing-inset-inline),
+      calc((100% - var(--centered-shell-landing-max-width)) / 2)
+    );
+  }
+
+  .ui-centered-shell[data-preset="public-landing"] .ui-centered-shell-footer {
+    padding-block: var(--centered-shell-landing-footer-padding-block);
+    text-align: start;
+  }
+
+  /* Compact step (the 390px acceptance width sits here): the gutter, the section rhythm and the
+   * hero tier switch to their compact knobs. One media query, owned by the package. */
+  @media (width < 40rem) {
+    .ui-centered-shell[data-preset="public-landing"] {
+      --centered-shell-landing-inset-inline: var(--centered-shell-landing-inset-inline-compact);
+      --centered-shell-landing-main-padding-block: var(
+        --centered-shell-landing-main-padding-block-compact
+      );
+      --centered-shell-landing-section-gap: var(--centered-shell-landing-section-gap-compact);
+      --centered-shell-landing-heading-size: var(--centered-shell-landing-heading-size-compact);
+    }
   }
 }

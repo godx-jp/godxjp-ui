@@ -43,6 +43,17 @@ export type ColumnDefProp<T> = {
    * separating shadow. Pin at most one column per table.
    */
   pin?: "end";
+  /**
+   * Relative importance of the column, read ONLY by `DataTable preset="action-collection"`
+   * (gh#253). It is the SAME contract the `Table` primitive exposes on `TableHead`/`TableCell`:
+   * DataTable stamps it onto both cells of the column for you, so the preset can swap the desktop
+   * intrinsic widths for the token-owned priority measures (`--table-action-collection-*`) instead
+   * of scrolling a five-column approval queue sideways at 390px. Leave the free-text column
+   * unmarked — it takes the remaining space. Emitted as `data-priority` only when set, so an
+   * ordinary column gains no attribute. Prefer this over `width` under the preset: an explicit
+   * `width` utility wins the cascade and defeats the priority measure.
+   */
+  priority?: TableColumnPriorityProp;
 };
 
 /** Set of selected row IDs. */
@@ -74,3 +85,21 @@ export type HasActiveFiltersProp = boolean;
  * offset/background are tuned via the `--filter-bar-sticky-*` theme knobs.
  */
 export type StickyProp = boolean;
+
+/**
+ * Table named collection preset. `"default"` keeps the plain table (and emits no attribute).
+ * `"action-collection"` is the canonical dense approval / action queue: below `collapseBelow`
+ * the desktop intrinsic column widths are replaced by token-owned column-PRIORITY measures under
+ * `table-layout: fixed` and cells wrap, so every column — including the row actions — stays inside
+ * the initial narrow frame. The real `<table>` semantics are never rewritten.
+ */
+export type TablePresetProp = "default" | "action-collection";
+
+/**
+ * Relative importance of a table column, used by `preset="action-collection"` to allocate the
+ * narrow-frame measure. `"primary"` is the row's subject, `"secondary"` its object/target,
+ * `"meta"` a low-priority stamp (dates, ids), `"actions"` the row-action affordance whose measure
+ * is reserved first so it can never be pushed outside the viewport. A column with no priority
+ * takes the remaining space (the free-text column).
+ */
+export type TableColumnPriorityProp = "primary" | "secondary" | "meta" | "actions";

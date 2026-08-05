@@ -10,8 +10,10 @@
  * string. Where a value mirrors a web token the comment names it, so a retune stays traceable.
  *
  * Colours are deliberately NOT redeclared here — they derive from the semantic roles
- * (--card/--background/--foreground/--muted/--border/--primary/--ring/--success) and are converted
+ * (--card/--background/--foreground/--muted/--border/--primary/--ring/--brand) and are converted
  * HSL→hex at module load, so a re-themed role re-tints the email with zero copy-paste.
+ * The identity mark reads --brand, NOT --success: --success is the wakatake status green, and the
+ * two are deliberately distinct roles (gh#250).
  */
 :root {
   /* ── Shell — the 480px transactional-email geometry ─────────────────────────────────────── */
@@ -24,31 +26,53 @@
   --email-stack-gap: 24px; /* block rhythm — mirrors --space-stack-lg (1.5rem) */
   --email-stack-gap-sm: 12px; /* tight rhythm — mirrors --space-3 (0.75rem) */
 
-  /* ── Brand mark — the canonical GoDX capsule (see EMAIL_BRAND_MARK) ─────────────────────── */
-  --email-mark-width: 32px; /* mirrors --logo-godx-size (2rem) */
-  --email-mark-height: 32px;
+  /* ── Brand-mark lockup — the canonical GoDX capsule + wordmark (see EMAIL_BRAND_MARK) ────── */
+  /* The mark ARTWORK is the same 32×32 capsule + glyph `<Logo mark="godx" />` paints; only the
+   * RENDERED BOX differs. The canonical SCR-302 header sets it at 22px next to a 13px/700 "GoDX"
+   * wordmark, which is smaller than the web --logo-godx-size (2rem) — an email header carries the
+   * identity, not the navigation, so the lockup sits quieter (gh#250). */
+  --email-mark-width: 22px; /* canonical SCR-302 header lockup mark box */
+  --email-mark-height: 22px;
+  --email-mark-gap: 8px; /* mark ↔ wordmark — mirrors --logo-wordmark-gap (--space-2) */
+  --email-wordmark-font-size: 13px; /* canonical wordmark size (≈ --font-size-xs 12.5px) */
+  --email-wordmark-font-weight: 700; /* mirrors --logo-wordmark-font-weight */
 
   /* ── Typography — literal px so no client has to resolve the rem scale ──────────────────── */
+  /* The DXS canonical face is M PLUS 2 (see src/styles/fonts.css). Email clients honour NO
+   * @font-face, so the stack ships the face NAME first and degrades through the platform JP faces
+   * to a generic — a client with M PLUS 2 installed (or a webmail that already loaded it) renders
+   * the canonical face, everything else lands on Hiragino (macOS/iOS) → Yu Gothic (Windows) →
+   * Noto Sans JP → Meiryo → the system UI face → Arial → sans-serif. Family names are SINGLE-quoted
+   * on export (the generator normalises) because an inline `style="…"` attribute is double-quoted;
+   * only ASCII aliases are listed, since a non-ASCII family name does not survive every transfer
+   * encoding. */
   --email-font-family-sans:
-    -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+    "M PLUS 2", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", YuGothic,
+    "Noto Sans JP", Meiryo, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, Arial,
+    sans-serif;
+  /* Tabular/reference strings — invoice ids, masked card numbers, ISO dates, amounts — are set in
+   * the mono face in the canonical card. Mirrors --font-family-mono. */
+  --email-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --email-body-font-size: 14px; /* mirrors --font-size-base (0.875rem) */
-  --email-body-line-height: 1.7; /* mirrors --line-height-body */
+  /* 1.9, NOT the web --line-height-body (1.7) — the canonical email card runs its JP body copy
+   * looser than a screen, because a mail client gives the reader no density control. */
+  --email-body-line-height: 1.9;
   --email-body-font-weight: 400; /* mirrors --font-weight-normal */
-  --email-heading-font-size: 20px; /* mirrors --heading-h1 (base × φ^¼³ ≈ 19.8px) */
-  --email-heading-line-height: 1.25; /* mirrors --line-height-tight */
-  --email-heading-font-weight: 700; /* mirrors --font-weight-bold */
+  --email-heading-font-size: 17px; /* canonical card title (≈ --heading-h2, base × φ^¼² ≈ 17.6px) */
+  --email-heading-line-height: 1.7; /* the title shares the card's body leading, not a tight ramp */
+  --email-heading-font-weight: 500; /* mirrors --font-weight-medium — an email title is calm, not bold */
 
   /* ── Primary CTA — the one action button ────────────────────────────────────────────────── */
-  --email-cta-height: 44px; /* mirrors --control-height-comfortable (2.75rem coarse-pointer target) */
-  --email-cta-line-height: 44px; /* equal to the height: bulletproof vertical centring in Outlook */
-  --email-cta-padding-x: 24px; /* mirrors --space-6 */
+  --email-cta-height: 36px; /* mirrors --control-height-lg (2.25rem) — the canonical CTA box */
+  --email-cta-line-height: 36px; /* equal to the height: bulletproof vertical centring in Outlook */
+  --email-cta-padding-x: 16px; /* mirrors --space-4 */
   --email-cta-radius: 6px; /* mirrors the --radius base (0.375rem) */
   --email-cta-font-size: 14px; /* mirrors --font-size-base */
-  --email-cta-font-weight: 700; /* mirrors --font-weight-bold */
+  --email-cta-font-weight: 500; /* mirrors --font-weight-medium */
 
   /* ── Legal footer ───────────────────────────────────────────────────────────────────────── */
-  --email-footer-font-size: 12px; /* mirrors --font-size-xs (base ÷ φ^¼ ≈ 12.5px) */
-  --email-footer-line-height: 1.5; /* mirrors --line-height-normal */
+  --email-footer-font-size: 11px; /* mirrors --font-size-2xs (base ÷ φ^¼² ≈ 11.1px) */
+  --email-footer-line-height: 1.8; /* the legal band runs looser than the web --line-height-normal */
   --email-footer-link-gap: 12px; /* horizontal separation between footer links (--space-3) */
   --email-footer-padding-top: 20px; /* space above the legal band */
   --email-footer-border-width: 1px; /* the hairline above the legal band */
@@ -61,6 +85,9 @@
   --email-mobile-width: 100%; /* the card goes fluid below the breakpoint */
   --email-mobile-padding: 20px; /* reduced card inset — mirrors --space-5 */
   --email-mobile-page-padding: 12px; /* reduced viewport gutter — mirrors --space-3 */
-  --email-mobile-heading-font-size: 18px; /* mirrors --heading-h2 (base × φ^¼² ≈ 17.6px) */
+  /* One step below the 17px desktop title. The canonical 390px reference raster is unusable (it is
+   * 435px wide and already clips the card — dxs-platform/platform#496), so this is the library's
+   * documented contract rather than a measured canonical value. */
+  --email-mobile-heading-font-size: 16px;
   --email-mobile-cta-width: 100%; /* the CTA goes full-bleed so the tap target spans the card */
 }

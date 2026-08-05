@@ -201,6 +201,36 @@ export const VOCABULARY_REGISTRY = {
     description:
       "CenteredShell column block alignment — start (flowing page), center (system surface)",
   },
+  CenteredShellPresetProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description:
+      "CenteredShell whole-page preset — default (untouched box) | public-landing (token-owned public landing measure, section rhythm, flat chrome and hero h1 tier)",
+  },
+  TablePresetProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Table collection preset — default | action-collection (dense approval/action queue: column-priority measures below the collapse step instead of desktop intrinsic widths)",
+  },
+  TableColumnPriorityProp: {
+    file: "vocabulary/data.prop.ts",
+    category: "data",
+    description:
+      "Table column priority for the action-collection preset — primary | secondary | meta | actions (unset = takes the remaining space)",
+  },
+  ErrorSurfaceModeProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description:
+      "ErrorSurface shell contract — application (403/404 body inside the route's existing AppShell) vs system (500/503 owns the page via CenteredShell align=center)",
+  },
+  ErrorSurfaceStatusProp: {
+    file: "vocabulary/layout.prop.ts",
+    category: "layout",
+    description:
+      "HTTP status an ErrorSurface presents — 403 | 404 | 500 | 503 (numeric); drives the default icon, tone and mode",
+  },
   AuthShellPresetProp: {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
@@ -244,6 +274,12 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/interaction.prop.ts",
     category: "interaction",
     description: "Corner shape default | pill | sharp — shared by Button + Badge (radius tokens)",
+  },
+  AvatarShapeProp: {
+    file: "vocabulary/interaction.prop.ts",
+    category: "interaction",
+    description:
+      "Avatar geometry circle (person, --radius-pill) | square (entity-header organization/service mark, --avatar-square-* tokens) — a rounded rect ShapeProp cannot express",
   },
   TextSizeProp: {
     file: "vocabulary/interaction.prop.ts",
@@ -373,7 +409,8 @@ export const VOCABULARY_REGISTRY = {
   ColumnDefProp: {
     file: "vocabulary/data.prop.ts",
     category: "data",
-    description: "DataTable column definition",
+    description:
+      'DataTable column definition — key/header/render/sortable/align/width/pin/hiddenOnMobile/enableHiding/ariaLabel plus `priority` (TableColumnPriorityProp), read by DataTable preset="action-collection"',
   },
   SelectedIdsProp: {
     file: "vocabulary/data.prop.ts",
@@ -444,6 +481,16 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [],
   },
+  PageContainerMeasureProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
+  PageContainerPresetProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [],
+  },
   PageContainerProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -461,6 +508,12 @@ export const COMPONENT_PROP_REGISTRY = {
         reason:
           "Header ARRANGEMENT of the title band vs the extra slot below the 640px step (stack | responsive-inline) — orthogonal to PageContainerVariantProp, which selects the page shell layout.",
       },
+      {
+        field: "measure",
+        local: true,
+        reason:
+          "Bounded page MEASURE shared by the header and body (default | narrow | medium), backed by --page-measure-*. A third orthogonal axis: PageContainerVariantProp owns page CHROME, this owns the inline cap, so a quiet ghost page can also be measure-bounded.",
+      },
     ],
   },
   FlexDirectionProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
@@ -475,6 +528,18 @@ export const COMPONENT_PROP_REGISTRY = {
       { field: "align", local: true, reason: "Flex-specific align-items keyword subset." },
       { field: "justify", local: true, reason: "Flex-specific justify-content keyword subset." },
       { field: "wrap", local: true, reason: "Flex-specific boolean shorthand for flex-wrap." },
+      "BreakpointProp",
+      {
+        field: "hideBelow",
+        local: true,
+        reason:
+          "Responsive region visibility at a canonical breakpoint step — the public alternative to a page-local media query (gh#252).",
+      },
+      {
+        field: "hideFrom",
+        local: true,
+        reason: "Inverse of hideBelow — keeps a compact-only region off the wide layout.",
+      },
     ],
   },
   ResponsiveGridColumnsProp: { group: "layout", file: "components/layout.prop.ts", vocabulary: [] },
@@ -635,6 +700,89 @@ export const COMPONENT_PROP_REGISTRY = {
       "ClassNameProp",
       "CenteredShellWidthProp",
       "CenteredShellAlignProp",
+      "CenteredShellPresetProp",
+    ],
+  },
+  ErrorSurfaceMaintenanceProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      {
+        field: "start",
+        local: true,
+        reason:
+          "ISO 8601 instant starting the maintenance window; formatted via Intl.DateTimeFormat and emitted as the <time dateTime> value.",
+      },
+      {
+        field: "end",
+        local: true,
+        reason: "ISO 8601 instant ending the window; omitted for an open-ended outage.",
+      },
+      {
+        field: "timeZone",
+        local: true,
+        reason:
+          "IANA time zone id the window is presented in — explicit so SSR and client output cannot diverge.",
+      },
+      {
+        field: "progress",
+        local: true,
+        reason:
+          "Server-sent 0–100 completion of the maintenance window; deriving it from the client clock would break hydration.",
+      },
+    ],
+  },
+  ErrorSurfaceProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "ErrorSurfaceModeProp",
+      "ErrorSurfaceStatusProp",
+      "TitleProp",
+      "DescriptionProp",
+      "ActionProp",
+      "IconProp",
+      "HeadingLevelProp",
+      "FooterProp",
+      "CenteredShellWidthProp",
+      "IdProp",
+      "ClassNameProp",
+      {
+        field: "tone",
+        local: true,
+        reason:
+          "Reuses the EmptyStateToneProp union verbatim (the surface renders an EmptyState) — a status-derived default the consumer may override, not a new tone vocabulary.",
+      },
+      {
+        field: "requestId",
+        local: true,
+        reason:
+          "Support correlation id for the failure, rendered as a mono/tabular metadata row — an identifier, not a LabelProp.",
+      },
+      {
+        field: "permission",
+        local: true,
+        reason:
+          "The permission/role the viewer is missing (403). The localized label is the surface's; the value is the bare permission name.",
+      },
+      {
+        field: "organization",
+        local: true,
+        reason:
+          "The organization/tenant the failed request was scoped to — disambiguates a wrong-workspace 403 from a missing-role 403.",
+      },
+      {
+        field: "maintenance",
+        local: true,
+        reason:
+          "ErrorSurfaceMaintenanceProp timing/progress slot (ISO 8601 + IANA), formatted with Intl.DateTimeFormat.",
+      },
+      {
+        field: "brand",
+        local: true,
+        reason:
+          "system-mode brand slot above the status code (a Logo); the application shell already shows the brand.",
+      },
     ],
   },
   LegalDocumentSectionProp: {
@@ -1083,6 +1231,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: ["LabelProp", "ValueProp"],
   },
+  AvatarProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: ["AvatarShapeProp", "ChildrenProp", "ClassNameProp"],
+  },
   BadgeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
@@ -1091,7 +1244,42 @@ export const COMPONENT_PROP_REGISTRY = {
   DataTableProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
-    vocabulary: ["ColumnDefProp", "DensityProp", "SortStateProp", "SelectedIdsProp", "HandlerProp"],
+    vocabulary: [
+      "ColumnDefProp",
+      "DensityProp",
+      "SortStateProp",
+      "SelectedIdsProp",
+      "HandlerProp",
+      "TablePresetProp",
+      "TableColumnPriorityProp",
+      "BreakpointProp",
+    ],
+  },
+  ListRowDensityProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
+  ListRowProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [
+      "TitleProp",
+      "DescriptionProp",
+      "ClassNameProp",
+      {
+        field: "density",
+        local: true,
+        reason:
+          "ListRow-local density subset (default | compact) — the compact inline-actions geometry (#246). No `comfortable` step, and unrelated to PageDensityProp/TableDensityProp.",
+      },
+      {
+        field: "overflow",
+        local: true,
+        reason:
+          "Row-local overflow resolution for the title/description column (truncate | wrap, #224).",
+      },
+    ],
   },
   CredentialRevealProp: {
     group: "data-display",

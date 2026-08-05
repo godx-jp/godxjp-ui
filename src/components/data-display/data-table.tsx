@@ -94,7 +94,13 @@ import {
   tableCellPaddingClass,
   tableRowHeightClass,
 } from "../../lib/control-styles";
-import type { ColumnDefProp, DensityProp, SortStateProp } from "../../props/vocabulary";
+import type {
+  BreakpointProp,
+  ColumnDefProp,
+  DensityProp,
+  SortStateProp,
+  TablePresetProp,
+} from "../../props/vocabulary";
 
 // DataTable supports all three density tiers (compact 28 / default 36 /
 // comfortable 48) so a 表示密度 control can drive the full set, not just a
@@ -104,15 +110,17 @@ export type Density = DensityProp;
 /**
  * Lean column definition — the simple, common-case column API. `render` shapes
  * a cell; `sortable` opts the column into the sort cycle; `align` / `width` /
- * `pin` / `hiddenOnMobile` tune layout; `enableHiding` (default true) lists the
- * column in DataTable.ViewOptions. Adapted to a TanStack column internally.
+ * `pin` / `hiddenOnMobile` / `priority` tune layout; `enableHiding` (default true)
+ * lists the column in DataTable.ViewOptions. Adapted to a TanStack column internally.
  */
 export type ColumnDef<T> = ColumnDefProp<T>;
 
 // ── lean ColumnDef → TanStack column adapter ───────────────────────────────
 // We keep the lean ColumnDef as the public column shape and translate it into a
 // TanStack column. The original lean column is stashed in `meta.lean` so the
-// (lean-rendered) Content can read render/align/width/pin/hiddenOnMobile back.
+// (lean-rendered) Content can read render/align/width/pin/hiddenOnMobile/priority
+// back — `meta.lean` is THE declared home for every custom column option here, so
+// `priority` needs no second TanStack channel (see the ColumnMeta augmentation).
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- generics required by the augmented interface signature
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -149,6 +157,8 @@ interface DataTableContextValue<T = unknown> {
   striped: boolean;
   hoverable: boolean;
   stickyHeader: boolean;
+  preset: TablePresetProp;
+  collapseBelow: BreakpointProp;
   rowClassName?: (row: T) => string | undefined;
 }
 
@@ -224,6 +234,27 @@ interface DataTableProps<T> {
   /** Pin the header to the top while the body scrolls. Default true. */
   stickyHeader?: boolean;
   /**
+   * Named collection contract (gh#253) — the SAME preset the `Table` primitive owns, forwarded to
+   * the table DataTable renders, so a TanStack-driven queue gets the identical responsive contract.
+   * `"default"` (the default) emits no attribute and matches no selector: an existing DataTable is
+   * byte-identical. `"action-collection"` is the canonical dense approval / action queue: below
+   * `collapseBelow` the desktop intrinsic column widths give way to the token-owned column-PRIORITY
+   * measures (`--table-action-collection-*`) under `table-layout: fixed`, cells wrap, and the
+   * bordered surface drops its `--table-surface-min-inline-size` floor — so requester · target ·
+   * reason · requested date · row actions all stay inside a 390px frame with no horizontal scroll.
+   * Mark each column with `priority` on its `ColumnDef`; DataTable stamps it on the `<th>` AND the
+   * `<td>` for you. The table stays a REAL table: no `display` change, no role rewriting, no card
+   * swap, so header association, `aria-sort` and screen-reader navigation are identical at 1440.
+   */
+  preset?: TablePresetProp;
+  /**
+   * Step at which `preset="action-collection"` switches to the compact priority measures, measured
+   * against the TABLE's own container (a container query), not the viewport — a table inside a
+   * master rail collapses before the page does. Default `"sm"`. Ignored while `preset` is
+   * `"default"`.
+   */
+  collapseBelow?: BreakpointProp;
+  /**
    * Per-row className for state-based row tinting (e.g. flag an invalid or
    * empty record). Returned classes are appended last, so they win over the
    * built-in hover/selected fills. Return `undefined` to leave a row unstyled.
@@ -279,6 +310,8 @@ export function DataTable<T>({
   striped = false,
   hoverable = false,
   stickyHeader = true,
+  preset = "default",
+  collapseBelow = "sm",
   rowClassName,
   className,
   children,
@@ -388,6 +421,8 @@ export function DataTable<T>({
     striped,
     hoverable,
     stickyHeader,
+    preset,
+    collapseBelow,
     rowClassName,
   };
 
@@ -621,9 +656,14 @@ DataTable.Content = function DataTableContent() {
     striped,
     hoverable,
     stickyHeader,
+    preset,
+    collapseBelow,
     rowClassName,
   } = useDataTableContext();
   const { t } = useTranslation();
+  // `"default"` must be provably inert: no attribute is emitted, so no preset selector can match
+  // and the rendered surface is identical to the pre-gh#253 markup (the gh#231 contract).
+  const presetAttr = preset === "default" ? undefined : preset;
 
   // A slot is "raised" when it carries content OR the sentinel `true` (built-in copy). `false` /
   // `undefined` / `null` mean the state is not active — mirroring how a consumer writes
@@ -699,11 +739,16 @@ DataTable.Content = function DataTableContent() {
       tabIndex={0}
     >
       <div
-        className="ui-data-table-surface min-w-[640px] sm:min-w-0"
+        // The narrow-viewport width floor is `--table-surface-min-inline-size` (gh#253) — it used
+        // to be a hard-coded 640px min-width utility pair, i.e. exactly the literal that forced
+        // the horizontal scroll at 390 and the kind of service-tunable constant rule #45 says
+        // must be a token. The collection preset opts out of the floor via `data-preset`.
+        className="ui-data-table-surface"
+        data-preset={presetAttr}
         data-striped={striped ? "" : undefined}
         data-hoverable={hoverable ? "" : undefined}
       >
-        <Table scrollable={false}>
+        <Table scrollable={false} preset={preset} collapseBelow={collapseBelow}>
           <TableHeader className={cn("bg-secondary", stickyHeader && "sticky top-0 z-10")}>
             <TableRow>
               {selectable && (
@@ -744,6 +789,10 @@ DataTable.Content = function DataTableContent() {
                 return (
                   <TableHead
                     key={col.key}
+                    // The column-priority contract is carried by BOTH cells of a column; the
+                    // primitive emits `data-priority` only when it is set, so an ordinary table
+                    // gains no attribute (see ColumnDefProp.priority).
+                    priority={col.priority}
                     data-empty={headerEmpty || undefined}
                     aria-sort={
                       isSortable
@@ -797,6 +846,7 @@ DataTable.Content = function DataTableContent() {
                   {visibleColumns.map((col, j) => (
                     <TableCell
                       key={col.key}
+                      priority={col.priority}
                       className={cn(
                         cellPadding,
                         col.width,
@@ -943,6 +993,7 @@ DataTable.Content = function DataTableContent() {
                     {visibleColumns.map((col) => (
                       <TableCell
                         key={col.key}
+                        priority={col.priority}
                         className={cn(
                           cellPadding,
                           col.width,

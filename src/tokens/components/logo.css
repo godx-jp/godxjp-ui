@@ -12,15 +12,17 @@
   --logo-font-size-sm: var(--font-size-xs);
   --logo-font-size-md: var(--font-size-sm);
   --logo-font-size-lg: var(--font-size-base);
-  /* Semantic identity fill is deliberately independent from --primary so a green brand mark never
-   * recolours primary buttons or links. Services can retune the role once for every Logo.
+  /* Semantic identity fill reads the --brand IDENTITY role: independent of --primary (a re-themed
+   * action colour never recolours the mark) AND of --success (the 若竹 STATUS green stays on
+   * badges/progress/"saved" text — the mark used to borrow it and rendered ΔE76 ≈ 17.5 off the
+   * canonical emerald, gh#250). Services retune the role once for every Logo.
    * ROLE-MIRROR KNOBS — declared `initial` here with the role default at the CALL SITE
-   * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --success actually
+   * (logo-layout.css), so a scoped `.dark` / `[data-tenant]` override of --brand actually
    * reaches the mark instead of freezing at the :root value (docs/TOKENS.md ·
    * "Role-mirror knobs MUST be `initial`"). Documented defaults:
-   *   --logo-success-background = hsl(var(--success))
-   *   --logo-success-foreground = hsl(var(--success-foreground))
-   *   --logo-godx-color         = hsl(var(--success)) */
+   *   --logo-success-background = hsl(var(--brand))
+   *   --logo-success-foreground = hsl(var(--brand-foreground))
+   *   --logo-godx-color         = hsl(var(--brand)) */
   --logo-success-background: initial;
   --logo-success-foreground: initial;
   --logo-godx-size: 2rem;
@@ -30,10 +32,11 @@
    * The readable product name set beside the mark. The package ships NO wordmark artwork: the
    * wordmark is typeset in the design-system display face, so a service retunes face, weight,
    * tracking, size and the mark↔wordmark gap here instead of writing page CSS. The colour is a
-   * role-mirror knob whose default is the IDENTITY role (never --primary): the GoDX/`success`
-   * lockup is brand-green out of the box, and every other lockup reads --foreground.
+   * role-mirror knob whose default is the IDENTITY role --brand (never --primary, never the
+   * --success status green): the GoDX/`success` lockup is canonical emerald out of the box, and
+   * every other lockup reads --foreground.
    * Documented defaults: --logo-wordmark-font-family = var(--font-family-display);
-   * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--success)) on the
+   * --logo-wordmark-color = hsl(var(--foreground)), or hsl(var(--brand)) on the
    * godx / tone="success" lockup. */
   --logo-wordmark-gap: var(--space-2);
   --logo-wordmark-font-size-xs: var(--font-size-xs);

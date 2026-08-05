@@ -35,12 +35,19 @@ export function CenteredShell({
   children,
   width = "md",
   align = "start",
+  preset = "default",
   className,
 }: CenteredShellProp) {
   const { t } = useTranslation();
 
   return (
-    <div data-slot="centered-shell" className={cn("ui-centered-shell", className)}>
+    <div
+      data-slot="centered-shell"
+      // `data-preset` is only emitted for a REAL preset, so the default shell keeps its exact
+      // pre-preset box — `default` is never a selector in the stylesheet (gh#231 / gh#220).
+      data-preset={preset === "default" ? undefined : preset}
+      className={cn("ui-centered-shell", className)}
+    >
       {topbar !== undefined && (
         <header
           className="ui-centered-shell-bar ui-scale-fixed"

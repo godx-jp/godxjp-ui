@@ -95,8 +95,19 @@ export const TOKENS: TokenEntry[] = [
     tier: "primitive",
     role: "Opt-in decorative gradient fills, default `none`. --gradient-hero paints the PageContainer header (hero banner); --gradient-glow paints the AppShell .app-main (ambient brand wash); --gradient-brand is a spare. A service sets the full gradient, e.g. `--gradient-glow: radial-gradient(60% 80% at 50% 0%, hsl(var(--primary) / .25), transparent)`.",
   },
-  { name: "--primary", category: "semantic", tier: "semantic", role: "Brand/action color role." },
-  { name: "--success", category: "semantic", tier: "semantic", role: "Success status role." },
+  { name: "--primary", category: "semantic", tier: "semantic", role: "Action color role." },
+  {
+    name: "--brand / --brand-foreground",
+    category: "semantic",
+    tier: "semantic",
+    role: 'The IDENTITY role — the canonical GoDX emerald (light #009766 = oklch(0.595 0.137 162.94); dark lifts lightness only, #00b87c). It is what `<Logo mark="godx">` / `tone="success">` / the godx wordmark / the `@godxjp/ui/email` brand capsule paint, and it is distinct from THREE lookalikes: --primary (the ACTION colour — re-theme it freely, the mark never moves), --success (若竹 #68be8d, the STATUS green for badges/progress/"saved" text — the mark borrowed this before gh#250 and shipped ΔE76 ≈ 17.5 off canonical), and --text-brand (the blue brand-NUMERAL text slot behind the Tailwind `text-brand` utility). There is no `bg-brand` utility: `--color-brand` is already taken by --text-brand, so identity surfaces read `hsl(var(--brand))` directly in component CSS. Re-brand a service by overriding --brand once (scoped `[data-tenant]` works — every logo knob resolves it at the call site).',
+  },
+  {
+    name: "--success",
+    category: "semantic",
+    tier: "semantic",
+    role: 'Success STATUS role (若竹 wakatake #68be8d) — badges, alerts, progress fills, timeline done dots, `tone="success"` text. NOT the product identity: the GoDX mark reads --brand (gh#250).',
+  },
   { name: "--warning", category: "semantic", tier: "semantic", role: "Warning status role." },
   {
     name: "--destructive",
@@ -160,18 +171,24 @@ export const TOKENS: TokenEntry[] = [
     tier: "semantic",
     role: 'Inline measure of the PageContainer header `extra` region while `headerLayout="responsive-inline"` and the page is below the 640px step (default 11rem / 176px). The default `headerLayout="stack"` never reads it — `extra` keeps wrapping onto its own full-width line under the subtitle. At >=640px both arrangements are identical, so this token only governs the compact range.',
   },
+  {
+    name: "--page-measure-{narrow,medium}",
+    category: "semantic",
+    tier: "semantic",
+    role: 'Bounded PageContainer MEASURE presets — 42rem (672px) / 48rem (768px), selected by the semantic `measure` prop. They are OUTER measures: the package-owned page gutters (--space-page-active-x, 24px each side) sit INSIDE the cap, so the VISIBLE surface is 624px / 720px, and at 390px nothing binds (358px surface at the 16px compact gutter). Unlike variant="narrow" — which caps only .ui-page-body — the measure caps the page HEADER and the BODY together, so a header `extra` action ends flush with the body surface (gh#245/gh#247). `measure="default"` (the default) reads NEITHER token and matches no rule, so existing pages are unchanged. Retune the presets in a service theme; never author a page-local max-width.',
+  },
   { name: "--badge-space-*", category: "component", tier: "component", role: "Badge spacing." },
   {
     name: "--logo-godx-{size,color} / --logo-success-{background,foreground}",
     category: "component",
     tier: "component",
-    role: 'The GoDX IDENTITY mark, deliberately independent of --primary so a re-themed action colour never recolours the brand. Role-mirror knobs: declared `initial` at :root with the role default at the CALL SITE (`hsl(var(--logo-godx-color, var(--success)))`), so a scoped `.dark`/`[data-tenant]` override of --success actually reaches the mark. Applies to `<Logo mark="godx">` / `tone="success"`.',
+    role: 'The GoDX IDENTITY mark. Its default is the --brand IDENTITY role (canonical emerald) — deliberately independent of --primary, so a re-themed action colour never recolours the brand, AND of --success, the 若竹 STATUS green it wrongly defaulted to before gh#250 (`tone="success"` names the semantic SLOT, not the status role). Role-mirror knobs: declared `initial` at :root with the role default at the CALL SITE (`hsl(var(--logo-godx-color, var(--brand)))`), so a scoped `.dark`/`[data-tenant]` override of --brand actually reaches the mark. Applies to `<Logo mark="godx">` / `tone="success"`.',
   },
   {
     name: "--logo-wordmark-{gap,font-size-xs|sm|md|lg,font-weight,letter-spacing,font-family,color}",
     category: "component",
     tier: "component",
-    role: 'Wordmark/lockup knobs for `<Logo wordmark="…" />` — the mark↔wordmark gap, the per-size-tier wordmark type ramp, and its face/weight/tracking/colour. The package ships NO wordmark artwork: `--logo-wordmark-font-family` defaults (at the call site) to --font-family-display, so the wordmark is typeset in the design-system face; pass an inline <svg> as `wordmark` when a real logotype exists. `--logo-wordmark-color` is a role-mirror knob (`initial`) whose call-site default is hsl(var(--foreground)), or the --success identity role on the godx / tone="success" lockup — never --primary. Setting it once in a service theme re-colours every lockup with no page CSS (gh#214).',
+    role: 'Wordmark/lockup knobs for `<Logo wordmark="…" />` — the mark↔wordmark gap, the per-size-tier wordmark type ramp, and its face/weight/tracking/colour. The package ships NO wordmark artwork: `--logo-wordmark-font-family` defaults (at the call site) to --font-family-display, so the wordmark is typeset in the design-system face; pass an inline <svg> as `wordmark` when a real logotype exists. `--logo-wordmark-color` is a role-mirror knob (`initial`) whose call-site default is hsl(var(--foreground)), or the --brand IDENTITY role on the godx / tone="success" lockup — never --primary and never the --success status green (gh#250). Setting it once in a service theme re-colours every lockup with no page CSS (gh#214).',
   },
   {
     name: "--card-*",
@@ -186,6 +203,18 @@ export const TOKENS: TokenEntry[] = [
     role: "Shared form control heights, padding, icons, and focus chrome.",
   },
   { name: "--table-*", category: "component", tier: "component", role: "Table row/cell sizing." },
+  {
+    name: "--table-pagination-padding-{y,x}",
+    category: "component",
+    tier: "component",
+    role: "DataTable.Pagination footer inset (gh#236). The footer used to declare `padding-top` ONLY, so in the documented flush container (`<Card><CardContent flush><DataTable/>`) the 'rows per page' label and the page-size Select sat flush against the container edge and its closing border. It now owns `padding-block` + `padding-inline`. Both knobs are declared `initial` with the default at the CALL SITE — block `var(--space-stack-sm)` (the old padding-top value, now on both block edges), inline `var(--table-cell-space-x)` so the label lands on the same optical axis as the first column's text. `initial` is load-bearing: both defaults are density-scaled and re-declared inside a `.ui-density-*` subtree, and a `:root` binding would freeze the footer at the `:root` density. Consumers no longer need a local `.ui-data-table-pagination` override; a service on another grid retunes either axis.",
+  },
+  {
+    name: "--table-surface-min-inline-size",
+    category: "component",
+    tier: "component",
+    role: 'DataTable surface narrow-viewport width FLOOR (gh#253). Below the `sm` viewport step a multi-column admin grid whose cells are `white-space: nowrap` would be crushed, so the bordered surface keeps a minimum inline size and `.ui-data-table-scroll` scrolls instead. This shipped as a hard-coded `min-w-[640px] sm:min-w-0` utility pair ON the surface element — the literal that forced the horizontal scroll at 390 — leaving a service that wants a narrower (or no) floor with no route but forking the component (rule #45). Default `640px`, byte-identical to the old utility, and deliberately px so the floor releases at exactly the same width as the px-based `sm` media query that clears it (a rem value drifts under a non-16px root and re-introduces the scroll between the two thresholds). Set `0` to opt out; `DataTable preset="action-collection"` already does, because there the column-priority measures own the width.',
+  },
   {
     name: "--form-label-width",
     category: "component",
@@ -253,22 +282,28 @@ export const TOKENS: TokenEntry[] = [
     role: "Transactional-email shell geometry: the 480px card width, its 32px inset, the 24px viewport gutter, the 1px edge, the 10px radius (mirrors --card-radius) and the block rhythm. The canonical invitation reference measures 480×407 (--email-card-reference-height is a visual-regression target, NEVER a fixed height on the card). Values are LITERAL px — email clients resolve neither var() nor rem — and are consumed through the `@godxjp/ui/email` export (EMAIL_SHELL), never by a stylesheet.",
   },
   {
-    name: "--email-{body,heading}-{font-size,line-height,font-weight} / --email-font-family-sans / --email-mark-{width,height}",
+    name: "--email-{body,heading}-{font-size,line-height,font-weight} / --email-font-family-{sans,mono}",
     category: "component",
     tier: "component",
-    role: "Email type ramp + brand-mark box. Body 14px/1.7 (mirrors --font-size-base / --line-height-body), heading 20px/1.25 (--heading-h1 / --line-height-tight), mark 32×32 (--logo-godx-size). The font stack is email-safe system faces only — no @font-face survives an email client. Exposed as EMAIL_TYPOGRAPHY / EMAIL_BRAND_MARK.",
+    role: "Email type ramp, reconciled with the SCR-302 canonical reference (gh#250). Body 14px/1.9, title 17px/1.7 at weight 500 (a transactional title is CALM, not bold) — deliberately looser and quieter than the web ramp, because a mail client gives the reader no density control, so do NOT 'fix' it back to --heading-h1/--line-height-body. --email-font-family-sans names the canonical M PLUS 2 face first and degrades Hiragino → Yu Gothic → Noto Sans JP → Meiryo → system UI → Arial → sans-serif; no email client honours @font-face, so the stack is the whole fallback contract. --email-font-family-mono (mirrors --font-family-mono) sets invoice ids, masked card numbers, ISO dates and amounts. Family names export SINGLE-quoted so the value drops into a double-quoted style=\"…\" attribute unescaped (emailInlineStyle throws on a double quote). Exposed as EMAIL_TYPOGRAPHY.",
+  },
+  {
+    name: "--email-mark-{width,height,gap} / --email-wordmark-{font-size,font-weight}",
+    category: "component",
+    tier: "component",
+    role: 'Email brand-mark LOCKUP (gh#250). The ARTWORK is byte-identical to <Logo mark="godx" /> (the 32×32 capsule + internal glyph, asserted by test); only the rendered box is email-specific — the canonical header sets a 22px mark, an 8px gap (mirrors --logo-wordmark-gap) and a 13px/700 wordmark (mirrors --logo-wordmark-font-weight). In that pairing the mark is DECORATIVE (render it with label: "") and the wordmark carries the accessible name, so the brand is announced once. Exposed as EMAIL_BRAND_MARK; the svg / dataUri / tableHtml deliveries all derive from this one geometry source.',
   },
   {
     name: "--email-cta-{height,line-height,padding-x,radius,font-size,font-weight} / --email-focus-border-width",
     category: "component",
     tier: "component",
-    role: "The single primary email CTA: 44px tall (mirrors --control-height-comfortable, the coarse-pointer target) with line-height EQUAL to the height so the label centres without flexbox in Outlook, 24px inline padding, the 6px --radius base, 14px/700 label. --email-focus-border-width mirrors --focus-ring-width for the webmail panes that honour :focus-visible. Exposed as EMAIL_CTA / EMAIL_FOCUS.",
+    role: "The single primary email CTA, reconciled with the SCR-302 canonical reference (gh#250): 36px tall (mirrors --control-height-lg) with line-height EQUAL to the height so the label centres without flexbox in Outlook, 16px inline padding (--space-4), the 6px --radius base, 14px/500 label. 36px still clears WCAG 2.2 SC 2.5.8 (24×24) and the mobile reflow takes the CTA full-bleed. Fill/label are EMAIL_COLORS.primary / primaryForeground, derived from the --primary role — never paste a canonical hex, or the email stops tracking a re-theme. --email-focus-border-width mirrors --focus-ring-width for the webmail panes that honour :focus-visible. Exposed as EMAIL_CTA / EMAIL_FOCUS.",
   },
   {
     name: "--email-footer-{font-size,line-height,link-gap,padding-top,border-width} / --email-mobile-*",
     category: "component",
     tier: "component",
-    role: "Legal-footer typography (12px/1.5 quiet type, 12px between adjacent links, 20px above the hairline) and the narrow-viewport reflow (520px breakpoint, fluid card, 20px inset, 12px gutter, 18px heading, full-bleed CTA). Exposed as EMAIL_FOOTER / EMAIL_MOBILE; every reflow rule needs an inline fallback because most clients strip <style>.",
+    role: "Legal-footer typography (11px/1.8 quiet type per the SCR-302 canonical, 12px between adjacent links, 20px above the hairline) and the narrow-viewport reflow (520px breakpoint, fluid card, 20px inset, 12px gutter, 16px heading — one step under the 17px desktop title, full-bleed CTA). The canonical 390px reference raster is unusable (435px wide and already clipping the card, dxs-platform/platform#496), so the mobile ramp is the library's documented contract rather than a measured value. Exposed as EMAIL_FOOTER / EMAIL_MOBILE; every reflow rule needs an inline fallback because most clients strip <style>.",
   },
   {
     name: "--auth-shell-device-{card-max-width,main-padding,main-padding-mobile}",
@@ -293,6 +328,18 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "InputOTP slot box (gh#233). Default `var(--control-height)` — byte-identical to before and still density-aware — but its OWN knob, so an auth panel can widen the 6-slot challenge row to fill a wide surface WITHOUT re-scoping --control-height (which would resize the primary button and every other input in the same card). Set it to a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
+  },
+  {
+    name: "--tabs-indicator-{background,size,offset}",
+    category: "component",
+    tier: "component",
+    role: "Tabs `line` ACTIVE indicator (gh#248) — the only selected-state decoration the line variant paints; it never gets a surrounding ring/card border, so the `:focus-visible` keyboard ring stays visible and distinct (WCAG 2.4.7). --tabs-indicator-background is declared `initial` so its hsl(var(--primary)) default re-resolves at the CALL SITE under a scoped [data-tenant]/.dark theme. Defaults = primary · 2px · offset 0 (flush with the trigger edge); raise the offset to park the bar on a thicker strip hairline. The selected ring on the default/card variants is unchanged.",
+  },
+  {
+    name: "--avatar-square-{radius,size,background,foreground}",
+    category: "component",
+    tier: "component",
+    role: 'Avatar `shape="square"` entity-header mark (gh#249) — the compact rounded square an organization/service header uses instead of the round person avatar. --avatar-square-background / --avatar-square-foreground are declared `initial` so the hsl(var(--primary)) / hsl(var(--primary-foreground)) defaults re-resolve at the CALL SITE under a scoped theme. Defaults = --radius-lg corners · --control-height box (swapping shape never reflows the header) · primary fill at 4.65:1 contrast. `shape="circle"` (the default) is inert and reads --avatar-background / --avatar-tint as before.',
   },
   {
     name: "--steps-inline-{gap,item-gap,font-size,separator-size}",
@@ -337,6 +384,24 @@ export const TOKENS: TokenEntry[] = [
     role: 'CenteredShell column block offset (gh#221) — default `0` (the quiet state, rule #44: the top-aligned flowing/scrolling page). `<CenteredShell align="center">` flips it to `auto`, which centres the column in the 100dvh shell: the package-owned geometry for a SYSTEM-level standalone surface (a 500/503 error page, a maintenance notice) at 1440/1024/390, so a consumer never writes `min-h-dvh` + flex-centring CSS or a className. Auto block offsets collapse to 0 when the content is taller than the viewport, so a long localized message scrolls from the top instead of clipping.',
   },
   {
+    name: "--error-surface-*",
+    category: "component",
+    tier: "component",
+    role: 'ErrorSurface knobs (gh#221 / gh#251) — the whole 403/404/500/503 exception surface is themeable without a single consumer class or media query, in BOTH `mode="application"` and `mode="system"`. Geometry: `--error-surface-max-width` (32rem measure of the surface block, so a long JA/VI headline wraps readably even inside a wide PageContainer), `--error-surface-gap` (rhythm between status code · body · metadata · progress), `--error-surface-padding-block` (--space-10, the 1440/1024 steps) and `--error-surface-padding-block-compact` (--space-6, below the narrow step, i.e. the 390 case), `--error-surface-brand-gap` (system-mode Logo slot) and `--error-surface-progress-max-width` (18rem, so the maintenance meter reads as metadata, not as the page\'s primary content). Metadata list: `--error-surface-meta-gap` (row rhythm) · `--error-surface-meta-row-gap` (label↔value gap inside one row) · `--error-surface-meta-padding-block`. Chrome is QUIET by default (rule #44): `--error-surface-meta-border` is `none`; a service opts in with `1px solid hsl(var(--border))`. The narrow step is a CONTAINER query at 30rem on the SURFACE\'s own width, not a viewport media query, so it compacts correctly whether the squeeze came from a 390px phone or from an application shell with an expanded sidebar; below it, metadata rows stack label-over-value. System-mode viewport centring is delegated to `--centered-shell-column-offset-block` (via CenteredShell align="center"), and the description measure to `--empty-state-description-max-width`.',
+  },
+  {
+    name: "--centered-shell-landing-*",
+    category: "component",
+    tier: "component",
+    role: 'CenteredShell public-landing knobs (gh#252) — the SHELL geometry of a public marketing/product landing, so the landing itself stays a COMPOSITION (Hero/Navbar/Footer fail the Framework-Component Test) with ZERO page-local CSS. Read only under `preset="public-landing"`; the default shell emits no `data-preset`, so none of them can match. Measure: `--centered-shell-landing-max-width` (67.5rem, shared by the header bar, the centred column AND the footer — the bar/footer inline padding is `max(gutter, (100% - measure) / 2)`, so header content starts on exactly the column edge and no consumer max-width wrapper exists), `--centered-shell-landing-inset-inline` (+ `-compact`, the 390 gutter), `--centered-shell-landing-main-padding-block` (+ `-compact`), `--centered-shell-landing-section-gap` (+ `-compact`, the rhythm BETWEEN plain `<section>` elements — the consumer never sets a gap) and `--centered-shell-landing-footer-padding-block`. Chrome is QUIET by default (rule #44): `--centered-shell-landing-card-shadow` is `none`, which flattens every Card in the subtree from ONE knob instead of a consumer `.landing .card { box-shadow: none }`. Type: `--centered-shell-landing-heading-size` (+ `-compact`) re-points `--heading-h1`, so a hero title is a real `Heading level={1}` and never a page font-size. `--centered-shell-landing-background` is a ROLE-MIRROR declared `initial` with the role default at the call site (`var(--centered-shell-landing-background, var(--background))`), so a scoped [data-tenant]/.dark override of `--background` still reaches the landing canvas. The compact step is a 40rem media query owned by the package; region visibility (anchor nav below the tablet step, wordmark and the secondary action at mobile) is `Flex hideBelow` / `hideFrom`, never a consumer @media.',
+  },
+  {
+    name: "--table-action-collection-*",
+    category: "component",
+    tier: "component",
+    role: 'Table action-collection knobs (gh#253) — the canonical dense approval/action queue at 1440 · 1024 · 390. Read only under `preset="action-collection"`. Column PRIORITY measures replace the desktop intrinsic widths (a `white-space: nowrap` free-text column is what makes a five-column queue wider than its card and forces the horizontal scroll): `--table-action-collection-primary-width` (18%), `-secondary-width` (22%), `-meta-width` (12%) and `-actions-width` (3.5rem — an absolute measure because the row-action affordance must never be squeezed below its touch target); an unmarked column takes the remaining space. Below the collapse step the same four re-point to their `-compact` tier (24% / 22% / 20% / 2.75rem) together with `--table-action-collection-font-size-compact`, `-row-height-compact`, `-cell-space-x-compact` and `-cell-padding-y-compact`. The step is a CONTAINER query on the table\'s own width (sm 40rem · md 48rem · lg 64rem · xl 80rem via `collapseBelow`), not a viewport media query, so a table inside a master rail collapses before the page does. Percentages so the ratio holds at any card width; a service retunes the ratio once instead of authoring column widths per screen (rule #45). ONE family serves BOTH entry points — the `Table` primitive (`priority` on `TableHead`/`TableCell`) and the TanStack `DataTable` (`priority` on the `ColumnDef`, stamped onto both cells for you). There is deliberately no parallel `--data-table-action-collection-*` family: retune these once and every queue follows.',
+  },
+  {
     name: "--legal-document-*",
     category: "component",
     tier: "component",
@@ -353,6 +418,12 @@ export const TOKENS: TokenEntry[] = [
     category: "component",
     tier: "component",
     role: "Sidebar navigation row + icon COLOUR, split so they can differ (gh#228). Previously `.sb-nav-item` set one `color` for the whole row, so the Lucide SVG inherited `--muted-foreground` along with the label and the icons read as 'missing' against a canonical shell that wants darker 16px icons. `--sidebar-nav-item-*` drives the row/label (incl. sub rows), `--sidebar-nav-icon-*` drives `.sb-icon`. All are role-mirror knobs declared `initial` at `:root` with the role default at the call site, so a scoped `[data-tenant]`/`.dark` override reaches them; icon defaults resolve to `currentColor`, i.e. rendering is unchanged until a service opts in (`--sidebar-nav-icon-foreground: hsl(var(--foreground))` is the canonical darker-icon setting). Colour ONLY — the 16px icon, 32px row height and 10px gap are untouched. The active row keeps `--sidebar-item-active-{background,foreground}`.",
+  },
+  {
+    name: "--list-row-compact-{padding-y,padding-x,gap,body-min-width}",
+    category: "component",
+    tier: "component",
+    role: 'ListRow `density="compact"` inline-actions geometry (gh#246) — the compact invitation/history row: a 36px leading Avatar, a shrinkable title+description and one or two small trailing Buttons on ONE line inside the canonical 358px card (326px content). `--list-row-compact-body-min-width` (6rem) is the compact body threshold — the default 12rem `--list-row-body-min-width` is what forced the actions (and a history Badge + date) onto a second line at 390px; it is consumed as `min(<token>, 100%)` exactly like the default knob, so the #224 wrap contract is intact and a cluster that genuinely cannot fit still wraps instead of widening the page root. `--list-row-compact-{padding-y,padding-x,gap}` are declared `initial` with the density-scaled default at the CALL SITE (`var(--space-2)` block, `var(--list-row-padding-x)` inline, `var(--space-2)` gap) — a `:root` binding would freeze compact rows at the `:root` density. Measured at 390px: invitation row 62px (was 126px, actions wrapped), history row 41px (was 114px), documentElement scrollWidth === clientWidth.',
   },
   {
     name: "--list-row-{body-min-width,trailing-gap,indicator-size,read-background,unread-background,indicator-color}",

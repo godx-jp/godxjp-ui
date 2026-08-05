@@ -90,6 +90,66 @@ describe("ListRow overflow CSS contract (gh#224)", () => {
   });
 });
 
+/**
+ * gh#246 — `density="compact"` is the compact inline-actions geometry: inside the canonical 358px
+ * card (326px content) a 36px Avatar, a shrinkable title/description and two small trailing Buttons
+ * must stay on ONE line, and a history Badge + date must stay inline with the title — WITHOUT
+ * giving up the #224 wrap that keeps the page root from scrolling.
+ *
+ * Browser evidence (Playwright/Chromium, preview `data-display-list-row`, `documentElement`
+ * scrollWidth === clientWidth at every width):
+ *   390 — default invitation rows 126 / 147 / 101px tall, trailing cluster WRAPPED to its own line;
+ *         compact invitation rows 62 / 62 / 62px, trailing cluster INLINE (body 141–180px);
+ *         compact history rows (Badge + ISO date) 40–41px, inline — canonical 42px.
+ *   1024 / 1440 — compact invitation 62px, history 40–41px, all clusters inline.
+ *   A compact row whose actions genuinely cannot fit (186px cluster in a 324px column) still wraps:
+ *   134px tall at 390 with scrollWidth 390 === clientWidth — the #224 safety net is intact.
+ */
+describe("ListRow compact inline-actions CSS contract (gh#246)", () => {
+  it("lowers the body threshold for compact rows, still clamped to the container", () => {
+    const body = rule('[data-slot="list-row"][data-density="compact"] [data-slot="list-row-body"]');
+    // min(…, 100%) is load-bearing here too — compact must never widen a narrower container (#224)
+    expect(body).toMatch(
+      /min-inline-size:\s*min\(var\(--list-row-compact-body-min-width[^)]*\),\s*100%\)/,
+    );
+    expect(body).toMatch(/flex-basis:\s*var\(--list-row-compact-body-min-width/);
+    expect(tokenCss).toMatch(/--list-row-compact-body-min-width:\s*\S+/);
+  });
+
+  it("tightens the compact row inset and gap through tokens only", () => {
+    const row = rule('[data-slot="list-row"][data-density="compact"]');
+    expect(row).toMatch(/gap:\s*var\(--list-row-compact-gap/);
+    expect(row).toMatch(/padding:\s*var\(--list-row-compact-padding-y/);
+    expect(row).toMatch(/var\(--list-row-compact-padding-x/);
+    // logical only — the compact inset must flip under dir="rtl"
+    expect(row).not.toMatch(/(?:^|[^-])(?:margin|padding)-(?:left|right)\s*:/);
+    // no literal geometry: every compact constant is a documented knob (#45)
+    expect(row).not.toMatch(/:\s*\d+(?:\.\d+)?(?:px|rem)/);
+  });
+
+  it("declares the compact spacing knobs `initial` so density scopes re-resolve them", () => {
+    // docs/TOKENS.md — a :root binding to a density-scaled token freezes compact rows at the :root
+    // density; `initial` + a call-site default lets a `.ui-density-*` subtree re-resolve it.
+    for (const token of [
+      "--list-row-compact-padding-y",
+      "--list-row-compact-padding-x",
+      "--list-row-compact-gap",
+    ]) {
+      expect(tokenCss).toMatch(new RegExp(`${token}:\\s*initial`));
+    }
+  });
+
+  it("leaves the #224 overflow contract (row + trailing wrap) untouched for compact rows", () => {
+    // compact must not re-declare flex-wrap / min-inline-size on the row or the trailing cluster
+    const row = rule('[data-slot="list-row"][data-density="compact"]');
+    expect(row).not.toMatch(/flex-wrap/);
+    expect(row).not.toMatch(/min-inline-size/);
+    expect(layoutCss).not.toMatch(
+      /\[data-density="compact"\][^{]*\[data-slot="list-row-trailing"\][^{]*\{[^}]*flex-wrap:\s*nowrap/,
+    );
+  });
+});
+
 describe.each([
   ["720px content column", 720],
   ["390px viewport", 390],
@@ -151,5 +211,78 @@ describe.each([
       await user.tab();
       expect(screen.getByRole("button", { name })).toHaveFocus();
     }
+  });
+});
+
+describe.each([
+  ["720px container", 720],
+  ["390px viewport", 390],
+])("ListRow density='compact' at %s (gh#246)", (_label, width) => {
+  const originalWidth = window.innerWidth;
+  beforeEach(() => setViewport(width));
+  afterEach(() => setViewport(originalWidth));
+
+  const compact = (
+    <Card>
+      <CardContent flush style={{ inlineSize: `${width}px` }}>
+        {(["ja", "en", "vi"] as const).map((locale) => (
+          <ListRow
+            key={locale}
+            density="compact"
+            leading={<span aria-hidden="true">◐</span>}
+            title={LONG_TITLE[locale]}
+            description="2026-07-30"
+            trailing={
+              <>
+                <Button size="xs" variant="ghost">
+                  {`Decline ${locale}`}
+                </Button>
+                <Button size="xs" variant="outline">
+                  {`Accept ${locale}`}
+                </Button>
+              </>
+            }
+          />
+        ))}
+      </CardContent>
+    </Card>
+  );
+
+  it("marks the row compact so it picks up the compact geometry", () => {
+    const { container } = renderWithUi(compact);
+    const listRows = container.querySelectorAll('[data-slot="list-row"]');
+    expect(listRows).toHaveLength(3);
+    for (const row of listRows) {
+      expect(row).toHaveAttribute("data-density", "compact");
+      expect(row.querySelectorAll('[data-slot="list-row-trailing"] button')).toHaveLength(2);
+    }
+  });
+
+  it("keeps the default density attribute-free (no compact geometry unless asked)", () => {
+    const { container } = renderWithUi(<ListRow title="既定" />);
+    expect(container.querySelector('[data-slot="list-row"]')).not.toHaveAttribute("data-density");
+  });
+
+  it("keeps keyboard order and focusability unchanged in compact rows", async () => {
+    const user = userEvent.setup();
+    renderWithUi(compact);
+    const expected = ["ja", "en", "vi"].flatMap((locale) => [
+      `Decline ${locale}`,
+      `Accept ${locale}`,
+    ]);
+    for (const name of expected) {
+      await user.tab();
+      expect(screen.getByRole("button", { name })).toHaveFocus();
+    }
+  });
+
+  it("still supports the #224 escape hatches (overflow='wrap' + align='start') when compact", () => {
+    const { container } = renderWithUi(
+      <ListRow density="compact" align="start" overflow="wrap" title={LONG_TITLE.ja} />,
+    );
+    const row = container.querySelector('[data-slot="list-row"]');
+    expect(row).toHaveAttribute("data-density", "compact");
+    expect(row).toHaveAttribute("data-overflow", "wrap");
+    expect(row).toHaveAttribute("data-align", "start");
   });
 });

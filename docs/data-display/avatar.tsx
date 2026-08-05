@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 
 /**
@@ -66,6 +67,49 @@ export default function Demo() {
                 <AvatarImage src="/__missing-avatar.png" alt="未設定の担当者" />
                 <AvatarFallback delayMs={600}>HS</AvatarFallback>
               </Avatar>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* shape="square" — the entity-header organization / service mark (gh#249) */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>エンティティヘッダー · shape=&quot;square&quot;</CardTitle>
+            <CardDescription>
+              組織・サービスのマークは shape=&quot;square&quot; (角丸スクエア +
+              ブランド面)、人物は既定の shape=&quot;circle&quot;。 半径・サイズ・配色はすべて
+              --avatar-square-* トークン所有なので、サービス側は className を上書きせずテーマ 1
+              か所で調整できる。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" align="center" gap="md">
+                <Avatar shape="square">
+                  <AvatarFallback>山</AvatarFallback>
+                </Avatar>
+                <Flex direction="col">
+                  <Text weight="medium">株式会社山田商事</Text>
+                  <Text size="xs" tone="muted">
+                    組織 · 取引先コード 100482
+                  </Text>
+                </Flex>
+              </Flex>
+              <Flex direction="row" wrap align="center" gap="md">
+                <Avatar shape="square">
+                  <AvatarImage src="https://picsum.photos/seed/godxjp-org/96/96" alt="組織ロゴ" />
+                  <AvatarFallback>山</AvatarFallback>
+                </Avatar>
+                <Avatar shape="square">
+                  <AvatarFallback>経理</AvatarFallback>
+                </Avatar>
+                <Avatar shape="square" className="size-12">
+                  <AvatarFallback>DX</AvatarFallback>
+                </Avatar>
+                <Avatar shape="circle">
+                  <AvatarFallback>田</AvatarFallback>
+                </Avatar>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>
