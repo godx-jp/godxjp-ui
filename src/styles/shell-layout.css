@@ -781,6 +781,10 @@
     min-width: 0;
     flex: 1;
     overflow: hidden;
+    /* gh#254 — MUST NOT inherit the row's `line-height: 1`. This element clips, so its line box is
+     * its clip box, and a 1em box is shorter than the font's ascent+descent: every descender and
+     * Vietnamese tone mark below the baseline gets sheared off. Knob, not constant (rule #45). */
+    line-height: var(--sidebar-nav-item-line-height);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -1156,6 +1160,10 @@
     min-width: 0;
     overflow: hidden;
     font-weight: 500;
+    /* gh#254 — same trap as `.sb-label`: this clips, so it must own a line box tall enough for the
+     * font's descenders. `.tb-chip` uses `font: inherit`, so without this the chip would shear its
+     * glyphs the moment a service set a tight line-height on the bar. */
+    line-height: 1.5;
     text-overflow: ellipsis;
     white-space: nowrap;
   }

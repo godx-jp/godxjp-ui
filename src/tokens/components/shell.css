@@ -54,6 +54,9 @@
   --sidebar-brand-mark-size: 1.375rem;
   --sidebar-nav-item-height: 2rem;
   --sidebar-nav-item-font-size: 0.8125rem;
+  /* Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip
+   * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2. */
+  --sidebar-nav-item-line-height: 1.5;
   --sidebar-nav-icon-size: 1rem;
   --sidebar-nav-item-gap: 0.625rem;
   --sidebar-nav-item-padding-x: 0.625rem;

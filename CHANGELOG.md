@@ -39,6 +39,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`Sidebar` no longer shears descenders and Vietnamese tone marks off every nav label (gh#254).**
+  `.sb-label` clips with `overflow: hidden` but declared no line-height, so it inherited
+  `line-height: 1` from `.sb-nav-item` — and on a clipping element the line box IS the clip box, so
+  a 1em box shorter than the font's ascent+descent destroyed everything below the baseline.
+  Measured in Chromium against the bundled M PLUS 2 at the row's 0.8125rem, comparing canvas ink
+  extents with the element's own clip box: **1.6–1.9px of glyph gone at `line-height: 1`**, fits
+  from 1.2, 1.4px of headroom at 1.5. Downstream (DXS console) this silently misspelled the
+  Japanese-first product's Vietnamese locale — "Dịch vụ" lost both tone marks and rendered as
+  "Dich vu", "Phê duyệt truy cập" lost three — while the DOM text stayed correct, so no a11y or
+  reflow gate could see it. The label now reads a new `--sidebar-nav-item-line-height` knob
+  (default `1.5`) instead of inheriting: the row is a fixed `--sidebar-nav-item-height` with
+  `align-items: center`, so 19.5px inside the 32px row grows only the centred text box — row
+  height, icon alignment and gap are byte-identical. `.tb-chip-label` carried the same latent trap
+  (clips, no own line-height, safe only because `.tb-chip` uses `font: inherit`) and is fixed in
+  the same pass, and a guard now fails the build if ANY single-line clipping box in the shell
+  inherits its line box.
+
 - **`check:frame-geometry` no longer reports a deliberately scrollable surface as a clipped
   control.** The sweep counted every focusable whose box sticks out of the frame, which is true of
   ALL content inside a scroll region — so a `DataTable` at 320px (`.ui-data-table-scroll`,

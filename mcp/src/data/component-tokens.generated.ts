@@ -1764,49 +1764,54 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
   },
   {
+    "name": "--sidebar-nav-item-line-height",
+    "value": "1.5",
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
+  },
+  {
     "name": "--sidebar-nav-icon-size",
     "value": "1rem",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--sidebar-nav-item-gap",
     "value": "0.625rem",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--sidebar-nav-item-padding-x",
     "value": "0.625rem",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--sidebar-nav-gap",
     "value": "2px",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--sidebar-nav-scroll-padding",
     "value": "var(--space-3) var(--space-2)",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--sidebar-section-gap",
     "value": "var(--space-4)",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--sidebar-section-label-padding-x",
     "value": "var(--space-2)",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--sidebar-section-label-padding-bottom",
     "value": "var(--space-1)",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--topbar-search-max-width",
     "value": "26.25rem",
-    "description": "Inline inset of the mobile drawer's scrollable nav body. Near-zero by design: the drawer nav * (the <Sidebar> node by default) owns its own inset via --sidebar-nav-scroll-padding, so the * generic sheet chrome inset must NOT stack on top of it (gh#211). Set it to var(--space-6) for * a custom mobileNav node that wants the full sheet chrome inset."
+    "description": "Line box of the nav LABEL, not the row (gh#254): `.sb-label` clips, so its line box is its clip * box, and the row's `line-height: 1` shears descenders and Vietnamese tone marks. Keep >= 1.2."
   },
   {
     "name": "--topbar-height",
