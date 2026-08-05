@@ -252,6 +252,56 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        {/* TabsList union — both list variants, hand-composed and named explicitly */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>TabsList variant · default / line</CardTitle>
+            <CardDescription>
+              手動合成では TabsList に variant を直接指定する。variant=&quot;default&quot;
+              はピル型のリスト、variant=&quot;line&quot; は下線インジケータのリスト。items API
+              を使う場合は Tabs の variant がそのまま TabsList に渡る。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  variant=&quot;default&quot;
+                </Text>
+                <Tabs defaultValue="summary">
+                  <TabsList variant="default">
+                    <TabsTrigger value="summary">サマリ</TabsTrigger>
+                    <TabsTrigger value="detail">明細</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="summary">
+                    <Text as="p">当月の売上合計 ¥4,820,000</Text>
+                  </TabsContent>
+                  <TabsContent value="detail">
+                    <Text as="p">明細 24 件 · 未承認 2 件</Text>
+                  </TabsContent>
+                </Tabs>
+              </Flex>
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  variant=&quot;line&quot;
+                </Text>
+                <Tabs defaultValue="summary">
+                  <TabsList variant="line">
+                    <TabsTrigger value="summary">サマリ</TabsTrigger>
+                    <TabsTrigger value="detail">明細</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="summary">
+                    <Text as="p">当月の売上合計 ¥4,820,000</Text>
+                  </TabsContent>
+                  <TabsContent value="detail">
+                    <Text as="p">明細 24 件 · 未承認 2 件</Text>
+                  </TabsContent>
+                </Tabs>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

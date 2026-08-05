@@ -34,6 +34,33 @@ export default function Demo() {
             </Flex>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>size · sm / md</CardTitle>
+            <CardDescription>
+              sm は一覧行やツールバーなど密度の高い場所、md (既定) は設定画面の行に使う。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Field
+                id="sw-size-sm"
+                label="自動保存 (sm)"
+                description="行の高さを抑えた一覧向けのサイズ"
+              >
+                <Switch id="sw-size-sm" size="sm" defaultChecked />
+              </Field>
+              <Field
+                id="sw-size-md"
+                label="自動保存 (md · 既定)"
+                description="設定画面の標準サイズ"
+              >
+                <Switch id="sw-size-md" size="md" defaultChecked />
+              </Field>
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );

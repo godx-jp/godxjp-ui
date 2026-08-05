@@ -12,6 +12,7 @@ export {
   DialogTrigger,
   DialogAction,
   DialogCancel,
+  AlertDialogRoot,
   AlertDialogTrigger,
   AlertDialogPortal,
   AlertDialogOverlay,

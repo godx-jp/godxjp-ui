@@ -7,6 +7,7 @@ import {
   CardTitle,
   StatusBadge,
 } from "@godxjp/ui/data-display";
+import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { Star } from "lucide-react";
 
@@ -49,6 +50,30 @@ const statuses = ["active", "draft", "pending", "cancelled", "failed", "schedule
  * `status.trialing` string, and only a rendered demo makes that regression visible.
  */
 const billingStatuses = ["trialing", "past_due", "incomplete", "canceled"];
+
+/**
+ * StatusBadge is the status-first name for the same chip, so it carries the SAME structural
+ * axes. `incomplete` is the one canonical key that resolves to the tone-neutral default, which
+ * is why the four variants stay legible next to each other: a tone would repaint the fill.
+ */
+const statusBadgeVariants = [
+  { variant: "default" as const, note: "既定 Default" },
+  { variant: "secondary" as const, note: "控えめ Secondary" },
+  { variant: "outline" as const, note: "枠線 Outline" },
+  { variant: "dashed" as const, note: "点線 Dashed" },
+];
+
+/** A project status outside the canonical map declares its own tone; the label stays authored. */
+const statusBadgeTones = [
+  { tone: "default" as const, label: "受付 Received" },
+  { tone: "primary" as const, label: "優先対応 Priority" },
+  { tone: "success" as const, label: "検収済 Accepted" },
+  { tone: "warning" as const, label: "修正待ち Awaiting fix" },
+  { tone: "destructive" as const, label: "検収差戻し Rejected" },
+  { tone: "info" as const, label: "監査中 Under audit" },
+  { tone: "muted" as const, label: "対象外 Out of scope" },
+  { tone: "neutral" as const, label: "下書き Draft" },
+];
 
 export default function Demo() {
   return (
@@ -150,6 +175,53 @@ export default function Demo() {
               {billingStatuses.map((s) => (
                 <StatusBadge key={`${s}-outline`} status={s} variant="outline" />
               ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>StatusBadge · 構造 / 形状 / トーン</CardTitle>
+            <CardDescription>
+              StatusBadge はステータス主導の別名で、Badge と同じ variant / shape / tone
+              を受け取ります。canonical マップに無い自社ステータスは tone
+              を明示し、色表をアプリ側に持たせません。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="col" gap="xs">
+                <Text size="xs" tone="muted">
+                  variant · status=&quot;incomplete&quot;（トーン中立のキー）
+                </Text>
+                <Flex direction="row" wrap align="center" gap="sm">
+                  {statusBadgeVariants.map((v) => (
+                    <StatusBadge key={v.variant} status="incomplete" variant={v.variant} />
+                  ))}
+                </Flex>
+              </Flex>
+              <Flex direction="col" gap="xs">
+                <Text size="xs" tone="muted">
+                  shape · 既定 / pill / sharp
+                </Text>
+                <Flex direction="row" wrap align="center" gap="sm">
+                  {shapes.map((s) => (
+                    <StatusBadge key={s.shape} status="scheduled" shape={s.shape} />
+                  ))}
+                </Flex>
+              </Flex>
+              <Flex direction="col" gap="xs">
+                <Text size="xs" tone="muted">
+                  tone · 自社ステータスに意味の色を与える
+                </Text>
+                <Flex direction="row" wrap align="center" gap="sm">
+                  {statusBadgeTones.map((t) => (
+                    <StatusBadge key={t.tone} tone={t.tone}>
+                      {t.label}
+                    </StatusBadge>
+                  ))}
+                </Flex>
+              </Flex>
             </Flex>
           </CardContent>
         </Card>

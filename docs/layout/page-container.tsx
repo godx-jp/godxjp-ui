@@ -223,8 +223,10 @@ export default function Demo() {
         </Flex>
       </PageContainer>
 
-      {/* ── 4b. density axis (compact vs comfortable) · static, side by side ── */}
-      <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+      {/* ── 4b. density axis · 3 段すべてを静止状態で並べる ──
+          density は variant と直交する間隔スケール（ui-density-*）で、既定値は "default"。
+          既定も明示値として扱えるため、3 つを同じ本文で並べると段差がそのまま読めます。 */}
+      <ResponsiveGrid columns={{ sm: 1, md: 3 }}>
         <PageContainer
           density="compact"
           variant="ghost"
@@ -236,6 +238,21 @@ export default function Demo() {
               <Descriptions columns={1}>
                 <Descriptions.Item label="表示密度">コンパクト</Descriptions.Item>
                 <Descriptions.Item label="用途">大量データの一覧</Descriptions.Item>
+              </Descriptions>
+            </CardContent>
+          </Card>
+        </PageContainer>
+        <PageContainer
+          density="default"
+          variant="ghost"
+          title="デフォルト密度"
+          subtitle='density="default"（既定）· 業務画面の標準リズム'
+        >
+          <Card>
+            <CardContent>
+              <Descriptions columns={1}>
+                <Descriptions.Item label="表示密度">デフォルト</Descriptions.Item>
+                <Descriptions.Item label="用途">一般的な業務画面</Descriptions.Item>
               </Descriptions>
             </CardContent>
           </Card>

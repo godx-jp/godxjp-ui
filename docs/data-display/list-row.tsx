@@ -327,6 +327,35 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        {/* Both density branches on the same content, so the inset difference is readable at rest
+            without toggling anything. `default` is what a row renders with density omitted. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>密度の対比 density=default vs compact</CardTitle>
+            <CardDescription>
+              同じ行を density=&quot;default&quot;（既定 · ゆとりのある行間）と
+              density=&quot;compact&quot;（明細向けの詰めた行間）で並べています。切り替えるのは
+              inset · 列間 · 本文の折り返し閾値だけで、内容と操作は変わりません。
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <ListRow
+              density="default"
+              leading={<Laptop aria-hidden="true" className="size-4" />}
+              title="MacBook Pro · Osaka"
+              description={'density="default" · 最終アクセス 3日前'}
+              trailing={<Badge status="active" />}
+            />
+            <ListRow
+              density="compact"
+              leading={<Laptop aria-hidden="true" className="size-4" />}
+              title="MacBook Pro · Osaka"
+              description={'density="compact" · 最終アクセス 3日前'}
+              trailing={<Badge status="active" />}
+            />
+          </CardContent>
+        </Card>
+
         {/* #225 — notification rows. `unread` renders the indicator dot (a SHAPE with localized
             sr-only text, never colour alone) plus the tokenized emphasis surface; read rows keep
             the gutter so every title stays on one optical axis. */}

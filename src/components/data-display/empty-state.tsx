@@ -33,7 +33,11 @@ export function EmptyState({
     >
       {Icon && variant !== "compact" && (
         <div className="ui-empty-state-icon">
-          <Icon className="text-muted-foreground size-6" aria-hidden="true" />
+          {/* The glyph inherits `currentColor` from `.ui-empty-state-icon`, which reads
+           * `--empty-state-icon-foreground` (default `hsl(var(--muted-foreground))` at the call
+           * site). A hard-coded `text-muted-foreground` here would out-specify the inherited
+           * colour and pin every tone to muted — only the medallion tint would vary. */}
+          <Icon className="size-6" aria-hidden="true" />
         </div>
       )}
       {createElement(TitleTag, { className: "ui-empty-state-title" }, title)}

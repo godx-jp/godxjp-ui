@@ -8,9 +8,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@godxjp/ui/feedback";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+
+/** Every branch of DialogHeader's `tone`, in the order the vocabulary declares them. */
+const headerTones = [
+  "default",
+  "success",
+  "warning",
+  "destructive",
+  "info",
+  "muted",
+  "neutral",
+] as const;
 
 /**
  * Dialog · compound controlled modal for form-style flows. Always control via
@@ -20,6 +38,8 @@ import { Flex, PageContainer } from "@godxjp/ui/layout";
 export default function Demo() {
   const [createOpen, setCreateOpen] = useState(true);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [toneOpen, setToneOpen] = useState(false);
+  const [headerTone, setHeaderTone] = useState<(typeof headerTones)[number]>("default");
 
   return (
     <PageContainer
@@ -114,6 +134,57 @@ export default function Demo() {
                 </Flex>
               </DialogContent>
             </Dialog>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>DialogHeader tone band (every branch)</CardTitle>
+            <CardDescription>
+              DialogHeader also takes a prop-driven form: title, subtitle and an extra slot, plus
+              tone. tone tints only the header band and leaves the text at the foreground colour, so
+              the dialog never turns into a loud solid fill. default paints no band at all; muted
+              and neutral deliberately share the same quiet band. Close the pre-opened dialog above
+              with Escape, then pick a branch: the same dialog re-opens with that header.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" gap="sm" wrap>
+                {headerTones.map((tone) => (
+                  <Button
+                    key={tone}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setHeaderTone(tone);
+                      setToneOpen(true);
+                    }}
+                  >
+                    {tone}
+                  </Button>
+                ))}
+              </Flex>
+              <Dialog open={toneOpen} onOpenChange={setToneOpen}>
+                <DialogContent className="max-w-md">
+                  <DialogHeader
+                    tone={headerTone}
+                    title="仕訳の取り込み結果"
+                    subtitle={`見出し帯は tone="${headerTone}" で描画しています。`}
+                    extra={<Badge tone={headerTone}>{headerTone}</Badge>}
+                  />
+                  <Text size="sm">
+                    帯の色だけが tone に追従し、見出しと本文の文字色は変わりません。extra
+                    スロットは帯の右端に固定され、閉じるボタンとは重なりません。
+                  </Text>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setToneOpen(false)}>
+                      閉じる
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </Flex>
           </CardContent>
         </Card>
       </Flex>

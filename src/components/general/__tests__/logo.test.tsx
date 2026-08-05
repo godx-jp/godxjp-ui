@@ -148,6 +148,20 @@ describe("Logo brand tokens", () => {
     }
   });
 
+  it("gives the identity mark its own size ramp, md pinned at the historical 2rem", () => {
+    for (const [knob, value] of [
+      ["--logo-godx-size-xs", "1.5rem"],
+      ["--logo-godx-size-sm", "1.75rem"],
+      ["--logo-godx-size-md", "2rem"],
+      ["--logo-godx-size-lg", "2.5rem"],
+    ] as const) {
+      expect(tokens).toContain(`${knob}: ${value};`);
+    }
+    // The PIN is inert by default — `initial` is the guaranteed-invalid value, so every call site
+    // falls through to its tier. A literal here would silently re-freeze the mark at one box.
+    expect(tokens).toContain("--logo-godx-size: initial;");
+  });
+
   it("tokenizes every wordmark knob a service would retune (rule #45)", () => {
     for (const knob of [
       "--logo-wordmark-gap",

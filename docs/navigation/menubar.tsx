@@ -40,7 +40,8 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>会計アプリメニュー</CardTitle>
             <CardDescription>
-              ファイル・編集・表示・ヘルプメニューを含む標準的なアプリメニューバー。
+              ファイル・編集・表示・ヘルプメニューを含む標準的なアプリメニューバー。MenubarItem の
+              variant は default と destructive の 2 つ。編集メニューの末尾で両方を並べている。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -92,6 +93,12 @@ export default function Demo() {
                   <MenubarItem>
                     貼り付け
                     <MenubarShortcut>⌘V</MenubarShortcut>
+                  </MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem variant="default">選択行をアーカイブ</MenubarItem>
+                  <MenubarItem variant="destructive">
+                    選択行を削除
+                    <MenubarShortcut>⌫</MenubarShortcut>
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>

@@ -31,6 +31,17 @@ import {
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { SlidersHorizontal } from "lucide-react";
 
+/** Every branch of SheetHeader's `tone`, in the order the vocabulary declares them. */
+const headerTones = [
+  "default",
+  "success",
+  "warning",
+  "destructive",
+  "info",
+  "muted",
+  "neutral",
+] as const;
+
 /**
  * Sheet · side-panel drawer (Radix Dialog). Slides in from an edge. Compose
  * Sheet > SheetTrigger (asChild) > SheetContent(side) > SheetHeader >
@@ -67,6 +78,11 @@ export default function Demo() {
   // reports the presentation the panel will actually render — resize the frame to 390 to see it flip.
   const [detailOpen, setDetailOpen] = useState(false);
   const presentation = useSheetResponsiveMode("auto");
+
+  // Card 5 · SheetHeader tone band. One panel, re-opened per branch, so only one overlay is ever
+  // mounted and the focus trap stays honest.
+  const [toneOpen, setToneOpen] = useState(false);
+  const [headerTone, setHeaderTone] = useState<(typeof headerTones)[number]>("default");
 
   return (
     <PageContainer
@@ -324,6 +340,62 @@ export default function Demo() {
                   </SheetBody>
                   <SheetFooter>
                     <Button variant="outline" onClick={() => setDetailOpen(false)}>
+                      閉じる
+                    </Button>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>SheetHeader tone band (every branch)</CardTitle>
+            <CardDescription>
+              SheetHeader carries the same header contract as DialogHeader: title, subtitle, an
+              extra slot and tone. tone tints only the band and leaves the text at the foreground
+              colour. default paints no band; muted and neutral share the same quiet band on
+              purpose, so a caller can name intent without adding colour. Close the pre-opened
+              filter panel above with Escape, then pick a branch.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Flex direction="row" gap="sm" wrap>
+                {headerTones.map((tone) => (
+                  <Button
+                    key={tone}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setHeaderTone(tone);
+                      setToneOpen(true);
+                    }}
+                  >
+                    {tone}
+                  </Button>
+                ))}
+              </Flex>
+              <Sheet open={toneOpen} onOpenChange={setToneOpen}>
+                <SheetContent side="right" width={420}>
+                  <SheetHeader
+                    tone={headerTone}
+                    title="承認ステータス"
+                    subtitle={`見出し帯は tone="${headerTone}" で描画しています。`}
+                    extra={<Badge tone={headerTone}>{headerTone}</Badge>}
+                  />
+                  <SheetBody className="flex flex-col gap-4">
+                    <Text size="sm">
+                      帯の色だけが tone
+                      に追従し、見出しと本文の文字色は変わりません。帯は本文と同じ左右インセットで全幅に広がります。
+                    </Text>
+                    <Text size="sm" tone="muted">
+                      extra スロットは帯の右端に固定され、閉じるボタンとは重なりません。
+                    </Text>
+                  </SheetBody>
+                  <SheetFooter>
+                    <Button variant="outline" onClick={() => setToneOpen(false)}>
                       閉じる
                     </Button>
                   </SheetFooter>

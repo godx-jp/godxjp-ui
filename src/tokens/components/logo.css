@@ -21,12 +21,51 @@
    * reaches the mark instead of freezing at the :root value (docs/TOKENS.md ·
    * "Role-mirror knobs MUST be `initial`"). Documented defaults:
    *   --logo-success-background = hsl(var(--brand))
-   *   --logo-success-foreground = hsl(var(--brand-foreground))
+   *   --logo-success-foreground = hsl(var(--logo-identity-foreground))
    *   --logo-godx-color         = hsl(var(--brand)) */
   --logo-success-background: initial;
   --logo-success-foreground: initial;
-  --logo-godx-size: 2rem;
   --logo-godx-color: initial;
+
+  /* Identity-fill INK — the ink `mark="glyph"` sets its (caller-supplied) TEXT in when it sits on
+   * the --brand identity fill. This is deliberately NOT --brand-foreground.
+   *
+   * --brand-foreground is the identity artwork's KNOCKOUT colour, not an ink: it tracks
+   * --background in both themes (light 60 33% 99% = --background; dark 48 9% 9% = --background)
+   * because `<Logo mark="godx">` punches its inner bar as an evenodd HOLE and the email mark has to
+   * paint that hole as a solid fill to match. Negative space only has to clear WCAG 2.2 SC 1.4.11
+   * (3:1, non-text) — and at 3.67:1 on the emerald it does.
+   *
+   * The boxed glyph is a different thing: it renders real TEXT, so SC 1.4.3 applies at 4.5:1 (14px
+   * bold is NOT "large text" — that needs 18.66px bold / 24px), and the knockout white measured
+   * 3.67:1 → a genuine AA failure. This ink is 48 9% 9% (#191815), the same near-black spine the
+   * DARK theme already inked the glyph with, so it is theme-INVARIANT: dark renders byte-identically
+   * (6.89:1, unchanged) and light rises 3.67 → 4.74:1. A service that re-themes --brand to a dark
+   * fill overrides --logo-success-foreground (the public knob) to re-invert the ink.
+   *
+   * NOT a role-mirror knob: its default is a real value, not a role token, so there is no role to
+   * freeze at :root and the `initial` + call-site rule (docs/TOKENS.md) does not apply to it. */
+  --logo-identity-foreground: 48 9% 9%;
+
+  /* ── Identity-mark box (`<Logo mark="godx" />`) ──────────────────────────────────────────────
+   * The `size` prop drives the identity mark exactly like it drives the boxed glyph — a public
+   * prop that renders identically at every tier is a silent no-op, and the godx LOCKUP already
+   * scaled its wordmark per tier, so a fixed mark broke the mark↔wordmark proportion at
+   * `size="lg"` (gh#163 follow-up). The godx artwork is a horizontal capsule inside a square
+   * viewBox, so it carries less optical weight than the fully-filled glyph box: each tier sits
+   * +0.25rem above its --logo-size-* sibling. `md` is 2rem — the historical fixed value — so
+   * every existing default-size identity surface renders byte-identically.
+   *
+   * --logo-godx-size is the PIN: declared `initial` (guaranteed-invalid) here with the per-tier
+   * default at the CALL SITE (logo-layout.css), so it is inert by default and a service that
+   * sets it once freezes the mark at that box on EVERY tier — the same call-site pattern the
+   * role-mirror colour knobs use (docs/TOKENS.md). Retune a single tier via --logo-godx-size-*.
+   * Documented default: --logo-godx-size = unset (tiers apply). */
+  --logo-godx-size-xs: 1.5rem;
+  --logo-godx-size-sm: 1.75rem;
+  --logo-godx-size-md: 2rem;
+  --logo-godx-size-lg: 2.5rem;
+  --logo-godx-size: initial;
 
   /* ── Wordmark / lockup (`<Logo wordmark="GoDX" />`) ─────────────────────────────────────────
    * The readable product name set beside the mark. The package ships NO wordmark artwork: the

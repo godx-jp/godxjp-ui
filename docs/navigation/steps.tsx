@@ -150,7 +150,35 @@ export default function Demo() {
           </CardContent>
         </Card>
 
-        {/* Dot style — compact */}
+        {/* size union — md (default) vs sm */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>size · md (既定) / sm</CardTitle>
+            <CardDescription>
+              size は各ステップのタイトルと説明の文字サイズを決める。size=&quot;md&quot;
+              が既定でページ見出し直下の主要フローに使う。size=&quot;sm&quot;
+              はカードヘッダやサイドパネルなど、周囲の密度に合わせて縮める場合に使う。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="lg">
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  size=&quot;md&quot;
+                </Text>
+                <Steps size="md" value={1} items={approvalSteps} />
+              </Flex>
+              <Flex direction="col" gap="sm">
+                <Text as="p" size="sm" tone="muted">
+                  size=&quot;sm&quot;
+                </Text>
+                <Steps size="sm" value={1} items={approvalSteps} />
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* 320px stress */}
         <Card>
           <CardHeader>
             <CardTitle level={2}>320px stress · 長いタイトル</CardTitle>

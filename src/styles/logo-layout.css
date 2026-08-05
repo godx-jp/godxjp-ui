@@ -43,18 +43,48 @@
    * green: `tone="success"` names the semantic slot, not the status role, and a badge/progress
    * green must never drag the product mark with it (gh#250). Role defaults live HERE (call site),
    * not on :root, so a scoped `.dark` / `[data-tenant]` override of --brand re-resolves
-   * (docs/TOKENS.md · role-mirror knobs). */
+   * (docs/TOKENS.md · role-mirror knobs).
+   *
+   * The INK is --logo-identity-foreground, NOT --brand-foreground: this branch sets caller-supplied
+   * TEXT on the fill, so WCAG 2.2 SC 1.4.3 applies at 4.5:1 (14px bold is not "large text"), while
+   * --brand-foreground is the artwork KNOCKOUT colour that tracks --background and only owes 3:1 as
+   * non-text (SC 1.4.11). Knockout white on the emerald measured 3.67:1 — an AA failure on every
+   * boxed `tone="success"` glyph. See src/tokens/components/logo.css. */
   .ui-logo[data-tone="success"] {
     background: hsl(var(--logo-success-background, var(--brand)));
-    color: hsl(var(--logo-success-foreground, var(--brand-foreground)));
+    color: hsl(var(--logo-success-foreground, var(--logo-identity-foreground)));
   }
 
+  /* The identity mark honours `size` like every other Logo branch. The godx box has its OWN tier
+   * scale (--logo-godx-size-*) because the artwork is a horizontal capsule in a square viewBox and
+   * needs ~+0.25rem over the filled glyph box to read at the same weight — but a public `size` prop
+   * that renders identically at xs and lg is a silent no-op, and the lockup already scaled its
+   * wordmark per tier, so a frozen mark broke the mark↔wordmark proportion at `size="lg"`.
+   * These are `[data-mark][data-size]` (0,3,0) so they beat BOTH `.ui-logo[data-size]` and the
+   * `[data-mark="godx"]` base regardless of source order — the ordering bug that hid `size` here.
+   * --logo-godx-size stays the documented PIN: unset by default, and set once by a service theme it
+   * wins at every tier (call-site default, docs/TOKENS.md). */
   .ui-logo[data-mark="godx"] {
-    width: var(--logo-godx-size);
-    height: var(--logo-godx-size);
+    width: var(--logo-godx-size, var(--logo-godx-size-md));
+    height: var(--logo-godx-size, var(--logo-godx-size-md));
     border-radius: 0;
     background: transparent;
     color: hsl(var(--logo-godx-color, var(--brand)));
+  }
+
+  .ui-logo[data-mark="godx"][data-size="xs"] {
+    width: var(--logo-godx-size, var(--logo-godx-size-xs));
+    height: var(--logo-godx-size, var(--logo-godx-size-xs));
+  }
+
+  .ui-logo[data-mark="godx"][data-size="sm"] {
+    width: var(--logo-godx-size, var(--logo-godx-size-sm));
+    height: var(--logo-godx-size, var(--logo-godx-size-sm));
+  }
+
+  .ui-logo[data-mark="godx"][data-size="lg"] {
+    width: var(--logo-godx-size, var(--logo-godx-size-lg));
+    height: var(--logo-godx-size, var(--logo-godx-size-lg));
   }
 
   .ui-logo[data-mark="godx"] [data-slot="logo-artwork"] {

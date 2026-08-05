@@ -42,8 +42,9 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>行アクションメニュー (DataTable 行の &quot;…&quot;)</CardTitle>
             <CardDescription>
-              DropdownMenuTrigger に asChild を付けて godx-ui Button をトリガーにする。 削除は
-              variant=&quot;destructive&quot; — className で色を上書きしない。
+              DropdownMenuTrigger に asChild を付けて godx-ui Button をトリガーにする。
+              DropdownMenuItem の variant は default と destructive の 2 つ。削除だけを
+              variant=&quot;destructive&quot; にし、className で色を上書きしない。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -59,6 +60,7 @@ export default function Demo() {
                   <DropdownMenuItem>編集</DropdownMenuItem>
                   <DropdownMenuItem>複製</DropdownMenuItem>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem variant="default">アーカイブに移動</DropdownMenuItem>
                   <DropdownMenuItem variant="destructive">削除</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

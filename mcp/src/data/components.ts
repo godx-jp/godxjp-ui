@@ -1706,7 +1706,7 @@ import { Trash2 } from "lucide-react";
     name: "Logo",
     group: "general",
     tagline:
-      "The product brand mark — a glyph/identity box, or (with `wordmark`) the full mark + wordmark LOCKUP. Tokenised size/radius/type/gap; the boxed fill reads --primary, while the GoDX identity mark and wordmark read the --success identity role instead, so an action-colour re-theme never recolours the brand.",
+      "The product brand mark — a glyph/identity box, or (with `wordmark`) the full mark + wordmark LOCKUP. Tokenised size/radius/type/gap, and `size` scales every branch (boxed glyph, identity mark, lockup); the boxed fill reads --primary, while the GoDX identity mark and wordmark read the --brand IDENTITY role instead, so an action-colour re-theme never recolours the brand.",
     props: [
       {
         name: "glyph",
@@ -1720,21 +1720,21 @@ import { Trash2 } from "lucide-react";
         type: '"glyph" | "godx"',
         defaultValue: '"glyph"',
         description:
-          'Semantic mark artwork. "godx" renders THE CANONICAL GoDX IDENTITY MARK as an inline vector owned by the package — use it for hosted-identity surfaces (AuthShell brand bar, AuthIdentity, CenteredShell topbar); do NOT re-draw or import a brand SVG in the app. Its box + colour are tokenized (--logo-godx-size, --logo-godx-color, defaulting to the --brand IDENTITY role = canonical emerald #009766, never --primary and never the --success status green) and it drops the boxed fill/radius. "glyph" keeps the configurable boxed-glyph treatment.',
+          'Semantic mark artwork. "godx" renders THE CANONICAL GoDX IDENTITY MARK as an inline vector owned by the package — use it for hosted-identity surfaces (AuthShell brand bar, AuthIdentity, CenteredShell topbar); do NOT re-draw or import a brand SVG in the app. Its box + colour are tokenized (--logo-godx-size-{xs,sm,md,lg} driven by the `size` prop, pinnable at every tier via --logo-godx-size; --logo-godx-color, defaulting to the --brand IDENTITY role = canonical emerald #009766, never --primary and never the --success status green) and it drops the boxed fill/radius. "glyph" keeps the configurable boxed-glyph treatment.',
       },
       {
         name: "size",
         type: '"xs" | "sm" | "md" | "lg"',
         defaultValue: '"md"',
         description:
-          'Box size tier (tokenised). Applies to the boxed glyph; mark="godx" sizes from --logo-godx-size.',
+          'Box size tier (tokenised) — it applies to EVERY mark, including mark="godx". The boxed glyph reads --logo-size-* (md = 1.75rem); the identity mark reads its own --logo-godx-size-* scale (xs 1.5 / sm 1.75 / md 2 / lg 2.5rem — the artwork is a capsule inside a square viewBox, so it needs slightly more box to read at the same optical weight). On a `wordmark` lockup the tier scales the mark and the wordmark together. To freeze the identity box at ONE size across every tier, a service theme sets --logo-godx-size (unset by default).',
       },
       {
         name: "tone",
         type: '"primary" | "success"',
         defaultValue: '"primary"',
         description:
-          'Semantic fill role. "success" names the IDENTITY slot, not the status role: it gives the canonical GoDX emerald mark without re-tinting the application\'s primary action colour (it reads --logo-success-background / --logo-success-foreground, which default to the --brand role — independent of BOTH --primary and the --success status green, gh#250).',
+          'Semantic fill role. "success" names the IDENTITY slot, not the status role: it gives the canonical GoDX emerald mark without re-tinting the application\'s primary action colour (it reads --logo-success-background / --logo-success-foreground; the FILL defaults to the --brand role — independent of BOTH --primary and the --success status green, gh#250). The boxed glyph\'s INK defaults to --logo-identity-foreground (near-black), NOT --brand-foreground: --brand-foreground is the artwork KNOCKOUT colour and clears only 3.67:1 on the emerald, while a boxed glyph renders real TEXT and owes WCAG 2.2 SC 1.4.3\'s 4.5:1 (14px bold is not "large text"). Re-theming --brand to a DARK fill? Override --logo-success-foreground to re-invert the ink.',
       },
       {
         name: "wordmark",
@@ -2894,7 +2894,7 @@ import { Flex } from "@godxjp/ui/layout";
         type: '"muted" | "success" | "warning" | "destructive" | "info"',
         defaultValue: '"muted"',
         description:
-          "Medallion colour intent (a subset of the shared tone vocabulary; `destructive` is the DS name for a danger state). Tints the icon foreground + fill from the matching role token — set `success` for a confirmation zero-state (e.g. device approved) instead of hand-rolling a `.ui-success-state` class.",
+          "Medallion colour intent (a subset of the shared tone vocabulary; `destructive` is the DS name for a danger state). Recolours BOTH the icon GLYPH and the medallion fill from the matching role token — set `success` for a confirmation zero-state (e.g. device approved) instead of hand-rolling a `.ui-success-state` class. The glyph inherits `--empty-state-icon-foreground`; never pass a `text-*` colour utility on your icon, it would out-specify the token and pin every tone to muted.",
       },
       {
         name: "titleLevel",
@@ -4742,6 +4742,7 @@ function CreateDialog() {
     ],
     related: [
       "Dialog — use for form-style and non-destructive modal flows, no confirm preset behavior.",
+      "AlertDialogRoot — the compound counterpart. Reach for it only when the confirmation body needs content this flat preset does not cover (a summary table, a diff, a nested list); the preset already covers title/description/challenge/step-up.",
     ],
     example: `import { AlertDialog } from "@godxjp/ui/feedback";
 
@@ -4758,6 +4759,78 @@ function CreateDialog() {
   }}
   variant="destructive"
 />`,
+    storyPath: "feedback/AlertDialog.stories.tsx",
+    rules: [23, 3],
+  },
+  {
+    name: "AlertDialogRoot",
+    group: "feedback",
+    tagline:
+      'Compound alertdialog Root — the role="alertdialog" mirror of Dialog\'s root. Wraps Radix AlertDialog.Root and supplies the context AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel read. Parts: AlertDialogTrigger/AlertDialogPortal/AlertDialogOverlay/AlertDialogContent/AlertDialogHeader/AlertDialogFooter/AlertDialogTitle/AlertDialogDescription/AlertDialogAction/AlertDialogCancel.',
+    props: [
+      { name: "open", type: "boolean", description: "Controlled open state." },
+      {
+        name: "defaultOpen",
+        type: "boolean",
+        description: "Uncontrolled initial open state (use with AlertDialogTrigger).",
+      },
+      {
+        name: "onOpenChange",
+        type: "(open: boolean) => void",
+        description: "Open-state change handler.",
+      },
+      {
+        name: "children",
+        type: "React.ReactNode",
+        description: "The trigger and the portalled alertdialog parts.",
+      },
+    ],
+    usage: [
+      "Reach for the flat `AlertDialog` preset FIRST — it already covers title/description/confirm/cancel, the typed `challenge`, `stepUp` re-auth and `pending`. Use `AlertDialogRoot` only when the confirm body needs content the preset does not model (an impact summary, a diff, a nested list).",
+      "DO name it `AlertDialogRoot`, not `AlertDialog` — the `AlertDialog` export is the flat preset and takes a completely different (non-compound) prop API.",
+      "DO include `AlertDialogHeader` with `AlertDialogTitle` inside every `AlertDialogContent` — Radix requires an accessible title for `role=alertdialog`; omitting it warns in the console and breaks screen-reader announcement. `AlertDialogHeader` also takes the prop-driven `title`/`subtitle`/`extra`/`tone` form, where `subtitle` renders the `AlertDialogDescription`.",
+      "DO portal explicitly: `AlertDialogContent` does NOT self-portal (unlike `DialogContent`). Wrap it in `AlertDialogPortal` with a sibling `AlertDialogOverlay`, or the scrim and stacking context are wrong.",
+      "DO use `AlertDialogAction` / `AlertDialogCancel` for the footer buttons — they carry the button styling AND the Radix close semantics. Do not wrap them in `asChild` `<Button variant=…>`: the Root's button classes and the child's would both land on the element and the variant would not win.",
+      "DO NOT import `@radix-ui/react-alert-dialog` directly in a consumer app. Everything the compound needs is exported from `@godxjp/ui/feedback`.",
+    ],
+    useCases: [
+      "Confirm-with-impact-summary — a destructive confirmation that must show what will be affected (a list of 3 downstream jobs, a table of invoices) before the user commits. The flat preset only takes a string `description`.",
+      "Batch-close confirmation whose body renders a rich breakdown (counts, totals, per-tenant rows) alongside the standard confirm/cancel pair.",
+      "Any confirmation that must keep `role=alertdialog` semantics (focus trap, no dismiss-on-outside-click) but needs freeform children — use Dialog only when the flow is non-destructive.",
+    ],
+    related: [
+      "AlertDialog — the flat preset. Prefer it; it is the canonical destructive-confirm recipe and needs no compound markup.",
+      "Dialog — compound modal for form-style, non-destructive flows. `role=dialog`, dismissible on outside click.",
+      "AlertDialogHeader — the header band; `tone` tints only the background (default | success | warning | destructive | info | muted | neutral).",
+    ],
+    example: `import {
+  AlertDialogRoot, AlertDialogTrigger, AlertDialogPortal, AlertDialogOverlay,
+  AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogAction, AlertDialogCancel,
+} from "@godxjp/ui/feedback";
+import { Button } from "@godxjp/ui/general";
+
+function ConfirmSettlement() {
+  return (
+    <AlertDialogRoot>
+      <AlertDialogTrigger asChild><Button variant="outline" size="sm">支払を確定</Button></AlertDialogTrigger>
+      <AlertDialogPortal>
+        <AlertDialogOverlay />
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle>2026年7月分の支払を確定しますか？</AlertDialogTitle>
+            <AlertDialogDescription>確定すると振込データが生成されます。</AlertDialogDescription>
+          </AlertDialogHeader>
+          {/* freeform impact summary goes here */}
+          <AlertDialogFooter>
+            <AlertDialogCancel>戻る</AlertDialogCancel>
+            <AlertDialogAction>確定する</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialogPortal>
+    </AlertDialogRoot>
+  );
+}`,
     storyPath: "feedback/AlertDialog.stories.tsx",
     rules: [23, 3],
   },
@@ -8351,21 +8424,51 @@ import { fetchInvoice } from "@/api/invoices";
       },
       { name: "value", type: "string | string[]", description: "Controlled selected value(s)." },
       {
+        name: "defaultValue",
+        type: "string | string[]",
+        description: "Uncontrolled initial value(s).",
+      },
+      {
         name: "onValueChange",
         type: "(value: string | string[]) => void",
         description: "Selection callback.",
+      },
+      {
+        name: "variant",
+        type: '"default" | "outline"',
+        defaultValue: '"default"',
+        description:
+          "Visual style, PROVIDED TO EVERY ITEM via context — set it once on the group, not on each ToggleGroupItem. An explicit `variant` on an item still wins. The default is applied per item by toggleVariants, so an unset group emits no `data-variant` at all.",
+      },
+      {
+        name: "size",
+        type: '"sm" | "md" | "lg"',
+        defaultValue: '"md"',
+        description:
+          "Control size, PROVIDED TO EVERY ITEM via context — set it once on the group. An explicit `size` on an item still wins. Heights come from the --control-height tier (sm 28px · md 32px · lg 36px).",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        description: "Disables the whole group; individual items also accept `disabled`.",
       },
     ],
     usage: [
       "DO choose type='single' for mutually exclusive toolbar modes.",
       "DO choose type='multiple' for independent formatting toggles.",
+      "DO set `variant`/`size` ONCE on the ToggleGroup — they propagate to every ToggleGroupItem through context. Repeating them on each item is redundant (it still works, and an explicit item prop overrides the group).",
+      "DO set `size`/`variant` on an individual ToggleGroupItem only when that ONE item must differ from the group.",
+      "DON'T pass size='default' — it is not a member of the `sm | md | lg` union. Omit `size` for the md default.",
+      "DO give the group an accessible name (`aria-label`) — it renders a radiogroup (single) or a group of toggle buttons (multiple).",
     ],
     useCases: ["Text alignment selector", "Formatting toolbar", "View density switcher"],
     related: ["Toggle", "RadioGroup"],
     example: `import { ToggleGroup, ToggleGroupItem } from "@godxjp/ui/data-entry";
 
-<ToggleGroup type="single">
+// size/variant are set ONCE on the group and reach every item.
+<ToggleGroup type="single" size="lg" variant="outline" defaultValue="left" aria-label="Alignment">
   <ToggleGroupItem value="left">Left</ToggleGroupItem>
+  <ToggleGroupItem value="center">Center</ToggleGroupItem>
 </ToggleGroup>`,
     storyPath: "data-entry/ToggleGroup.stories.tsx",
     rules: [3, 13],

@@ -93,26 +93,49 @@ export default function Demo() {
 
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Tone · Size</CardTitle>
+            <CardTitle level={2}>Tone</CardTitle>
             <CardDescription>
-              警告帯の severity は tone（warning / destructive / info）。操作ボタンは size で調整。
+              警告帯の severity は tone。warning（既定）は保管を促す通常の一度きり表示、destructive
+              は失効・再発行が必要な重大な扱い、info は運用上の補足に使います。
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
               <CredentialReveal
+                label="サービスアカウント鍵"
+                secret="svc_3pS5yJ8Fh2kQ9wR7nZ1xV4bT"
+                tone="warning"
+              />
+              <CredentialReveal
                 label="デバイス資格情報"
                 secret="dev_7h2K9wR7nZ1xV4bT6mL0cD"
                 tone="destructive"
-                size="sm"
               />
               <CredentialReveal
                 label="Webhook 署名シークレット"
                 secret="whsec_1xV4bT6mL0cD3pS5yJ8Fh2kQ"
                 tone="info"
-                size="lg"
                 warning="このシークレットは Webhook 署名の検証にのみ使用します。"
               />
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Size</CardTitle>
+            <CardDescription>
+              size は資格情報行の高さと操作ボタンの寸法を決めます。xs / sm
+              は明細行や設定表の中に、md （既定）は単独のカードに、lg
+              は発行直後のダイアログで使います。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <CredentialReveal label="xs" secret="key_xs_9wR7nZ1xV4bT6mL0cD" size="xs" />
+              <CredentialReveal label="sm" secret="key_sm_9wR7nZ1xV4bT6mL0cD" size="sm" />
+              <CredentialReveal label="md（既定）" secret="key_md_9wR7nZ1xV4bT6mL0cD" size="md" />
+              <CredentialReveal label="lg" secret="key_lg_9wR7nZ1xV4bT6mL0cD" size="lg" />
             </Flex>
           </CardContent>
         </Card>

@@ -32,6 +32,7 @@ export default function Demo() {
   const [status, setStatus] = useState("paid");
   const [currency, setCurrency] = useState("JPY");
   const [priority, setPriority] = useState("medium");
+  const [priorityMd, setPriorityMd] = useState("medium");
   const [assignee, setAssignee] = useState("tanaka");
   const [reviewer, setReviewer] = useState("tanaka");
   const [reviewerAsync, setReviewerAsync] = useState("tanaka");
@@ -316,34 +317,50 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Compound API (custom trigger)</CardTitle>
             <CardDescription>
-              Compose sub-parts when the trigger needs custom content.
+              Compose sub-parts when the trigger needs custom content. SelectTrigger accepts size
+              &quot;sm&quot; and &quot;md&quot;; &quot;md&quot; is the default and matches Input
+              height in a form, &quot;sm&quot; fits a dense toolbar or table header.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <FormField id="priority" label="優先度">
-              <Select value={priority} onValueChange={setPriority}>
-                <SelectTrigger size="sm" id="priority" aria-labelledby="priority-label">
-                  <SelectValue placeholder="優先度" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>標準</SelectLabel>
+            <Flex direction="col" gap="md">
+              <FormField id="priority-md" label="優先度 (size=md)">
+                <Select value={priorityMd} onValueChange={setPriorityMd}>
+                  <SelectTrigger size="md" id="priority-md" aria-labelledby="priority-md-label">
+                    <SelectValue placeholder="優先度" />
+                  </SelectTrigger>
+                  <SelectContent>
                     <SelectItem value="high">高</SelectItem>
                     <SelectItem value="medium">中</SelectItem>
                     <SelectItem value="low">低</SelectItem>
-                  </SelectGroup>
-                  <SelectSeparator />
-                  <SelectGroup>
-                    <SelectLabel>追加レベル</SelectLabel>
-                    {Array.from({ length: 24 }, (_, index) => (
-                      <SelectItem key={index} value={`level-${index + 1}`}>
-                        レベル {index + 1}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </FormField>
+                  </SelectContent>
+                </Select>
+              </FormField>
+              <FormField id="priority" label="優先度 (size=sm)">
+                <Select value={priority} onValueChange={setPriority}>
+                  <SelectTrigger size="sm" id="priority" aria-labelledby="priority-label">
+                    <SelectValue placeholder="優先度" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>標準</SelectLabel>
+                      <SelectItem value="high">高</SelectItem>
+                      <SelectItem value="medium">中</SelectItem>
+                      <SelectItem value="low">低</SelectItem>
+                    </SelectGroup>
+                    <SelectSeparator />
+                    <SelectGroup>
+                      <SelectLabel>追加レベル</SelectLabel>
+                      {Array.from({ length: 24 }, (_, index) => (
+                        <SelectItem key={index} value={`level-${index + 1}`}>
+                          レベル {index + 1}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormField>
+            </Flex>
           </CardContent>
         </Card>
       </Flex>

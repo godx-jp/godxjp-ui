@@ -304,7 +304,11 @@
           "nested heading levels",
           "RTL accent rail"
         ],
-        "source": "issue #163 — Initial known gaps to encode"
+        "source": "issue #163 — Initial known gaps to encode",
+        "resolvedBy": [
+          "Card.variants · prop-evidence variant=default|muted|outline|featured · docs/data-display/card/index.tsx",
+          "Card.density · prop-evidence density=tight|cozy · docs/data-display/card/index.tsx"
+        ]
       },
       {
         "id": "card-subcomponent-contract-gaps",
@@ -344,7 +348,10 @@
           "without icon / description / action",
           "heading level (`titleAs` / `titleLevel`) and live-region semantics"
         ],
-        "source": "issue #163 — Initial known gaps to encode"
+        "source": "issue #163 — Initial known gaps to encode",
+        "resolvedBy": [
+          "EmptyState.variants · prop-evidence variant=page|section|compact · docs/data-display/empty-state.tsx"
+        ]
       },
       {
         "id": "progress-contract-gaps",
@@ -359,7 +366,10 @@
           "destructive tone",
           "`over={true}` (value beyond 100%)"
         ],
-        "source": "issue #163 — Initial known gaps to encode"
+        "source": "issue #163 — Initial known gaps to encode",
+        "resolvedBy": [
+          "Progress.tones · prop-evidence tone=success|warning|destructive · docs/data-display/progress.tsx"
+        ]
       },
       {
         "id": "carousel-contract-gaps",
@@ -404,7 +414,10 @@
           "keyboard behaviour",
           "virtualization"
         ],
-        "source": "issue #163 — Initial known gaps to encode"
+        "source": "issue #163 — Initial known gaps to encode",
+        "resolvedBy": [
+          "DataTable.density · prop-evidence density=compact|default|comfortable · docs/data-display/data-table/index.tsx"
+        ]
       },
       {
         "id": "charts-contract-gaps",
@@ -522,11 +535,11 @@
   "baseline": {
     "recordedAt": "2026-07-30",
     "note": "Ratchet floor. `covered` may only rise, `knownMissingFrames` / sweep failures may only shrink. The large pre-existing `untested` backlog is RECORDED here, not passed off as coverage — it is the honest state of issue #163 and it is what the epic has to burn down.",
-    "exports": 275,
-    "dimensionCells": 3850,
-    "covered": 6,
-    "untested": 2162,
-    "notApplicable": 1682,
+    "exports": 276,
+    "dimensionCells": 3864,
+    "covered": 64,
+    "untested": 2112,
+    "notApplicable": 1688,
     "knownMissingFrames": [],
     "geometryFailingCells": 36,
     "axeFailingFrames": 6
@@ -653,13 +666,13 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 7
       },
       "dimensions": {
-        "variants": "untested",
-        "tones": "untested",
+        "variants": "covered:prop-evidence:variant",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
@@ -765,12 +778,12 @@
         "docs/feedback/dialog.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 9
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -933,13 +946,13 @@
         "docs/feedback/dialog.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
@@ -1000,6 +1013,34 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
+        "states": "not-applicable:api-manifest",
+        "async": "untested",
+        "responsive": "untested",
+        "rtl": "untested",
+        "contentStress": "untested",
+        "keyboard": "untested",
+        "accessibleName": "untested",
+        "reducedMotion": "untested"
+      }
+    },
+    "AlertDialogRoot": {
+      "group": "feedback",
+      "owner": "feedback/dialog",
+      "frames": [
+        "docs/feedback/dialog.tsx"
+      ],
+      "baseline": {
+        "covered": 0,
+        "notApplicable": 6,
+        "untested": 8
+      },
+      "dimensions": {
+        "variants": "not-applicable:api-manifest",
+        "tones": "not-applicable:api-manifest",
+        "sizes": "not-applicable:api-manifest",
+        "shapes": "not-applicable:api-manifest",
+        "density": "not-applicable:api-manifest",
+        "ownership": "untested",
         "states": "not-applicable:api-manifest",
         "async": "untested",
         "responsive": "untested",
@@ -1214,14 +1255,14 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -1382,16 +1423,16 @@
         "docs/layout/auth-shell.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 7
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
-        "density": "untested",
+        "density": "covered:prop-evidence:density",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
         "async": "untested",
@@ -1438,15 +1479,15 @@
         "docs/data-display/avatar.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
-        "shapes": "untested",
+        "shapes": "covered:prop-evidence:shape",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
@@ -1522,15 +1563,15 @@
         "docs/data-display/badge.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 3,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 7
       },
       "dimensions": {
-        "variants": "untested",
-        "tones": "untested",
+        "variants": "covered:prop-evidence:variant",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
-        "shapes": "untested",
+        "shapes": "covered:prop-evidence:shape",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
@@ -1551,14 +1592,14 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -1635,15 +1676,15 @@
         "docs/query/button-refetch.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 3,
         "notApplicable": 3,
-        "untested": 11
+        "untested": 8
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
-        "shapes": "untested",
+        "sizes": "covered:prop-evidence:size",
+        "shapes": "covered:prop-evidence:shape",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "untested",
@@ -1692,16 +1733,16 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 3,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 7
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
-        "density": "untested",
+        "density": "covered:prop-evidence:density",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
         "async": "untested",
@@ -2533,14 +2574,14 @@
         "docs/charts/compact-bar-trend.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -2645,12 +2686,12 @@
         "docs/navigation/context-menu.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 8
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -2953,14 +2994,14 @@
         "docs/data-display/credential-reveal.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
-        "sizes": "untested",
+        "tones": "covered:prop-evidence:tone",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -3010,16 +3051,16 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
-        "density": "untested",
+        "density": "covered:prop-evidence:density",
         "ownership": "untested",
         "states": "untested",
         "async": "untested",
@@ -3346,13 +3387,13 @@
         "docs/feedback/dialog.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
@@ -3598,12 +3639,12 @@
         "docs/navigation/dropdown-menu.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 8
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -3907,13 +3948,13 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 7
       },
       "dimensions": {
-        "variants": "untested",
-        "tones": "untested",
+        "variants": "covered:prop-evidence:variant",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
@@ -3935,13 +3976,13 @@
         "docs/layout/error-surface/index.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
@@ -4131,13 +4172,13 @@
         "docs/general/typography.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
@@ -4468,14 +4509,14 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -4496,16 +4537,16 @@
         "docs/data-display/list-row.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
-        "density": "untested",
+        "density": "covered:prop-evidence:density",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
         "async": "untested",
@@ -4524,14 +4565,14 @@
         "docs/general/logo.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
-        "sizes": "untested",
+        "tones": "covered:prop-evidence:tone",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -4664,12 +4705,12 @@
         "docs/navigation/menubar.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 8
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -5252,14 +5293,14 @@
         "docs/data-entry/number-input.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -5308,16 +5349,16 @@
         "docs/layout/page-container.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 7
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
-        "density": "untested",
+        "density": "covered:prop-evidence:density",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
         "async": "untested",
@@ -5590,14 +5631,14 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -5843,13 +5884,13 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
@@ -6487,14 +6528,14 @@
         "docs/data-entry/select.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -6823,13 +6864,13 @@
         "docs/feedback/sheet.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
@@ -7272,14 +7313,14 @@
         "docs/data-display/card/index.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -7300,15 +7341,15 @@
         "docs/data-display/badge.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 3,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 7
       },
       "dimensions": {
-        "variants": "untested",
-        "tones": "untested",
+        "variants": "covered:prop-evidence:variant",
+        "tones": "covered:prop-evidence:tone",
         "sizes": "not-applicable:api-manifest",
-        "shapes": "untested",
+        "shapes": "covered:prop-evidence:shape",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
         "states": "not-applicable:api-manifest",
@@ -7328,14 +7369,14 @@
         "docs/navigation/steps.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -7356,14 +7397,14 @@
         "docs/data-entry/switch.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 9
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -7609,12 +7650,12 @@
         "docs/navigation/tabs.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 8
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -7693,14 +7734,14 @@
         "docs/general/typography.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 7
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
-        "tones": "untested",
-        "sizes": "untested",
+        "tones": "covered:prop-evidence:tone",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -7750,12 +7791,12 @@
       ],
       "embeddable": true,
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 6,
-        "untested": 8
+        "untested": 7
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",
@@ -7834,14 +7875,14 @@
         "docs/data-entry/toggle.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 5,
-        "untested": 9
+        "untested": 7
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
@@ -7862,14 +7903,14 @@
         "docs/data-entry/toggle-group.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 3,
-        "untested": 11
+        "untested": 9
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -7890,14 +7931,14 @@
         "docs/data-entry/toggle-group.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 2,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 8
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
-        "sizes": "untested",
+        "sizes": "covered:prop-evidence:size",
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "untested",
@@ -8228,12 +8269,12 @@
         "docs/data-entry/upload.tsx"
       ],
       "baseline": {
-        "covered": 0,
+        "covered": 1,
         "notApplicable": 4,
-        "untested": 10
+        "untested": 9
       },
       "dimensions": {
-        "variants": "untested",
+        "variants": "covered:prop-evidence:variant",
         "tones": "not-applicable:api-manifest",
         "sizes": "not-applicable:api-manifest",
         "shapes": "not-applicable:api-manifest",

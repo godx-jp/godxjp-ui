@@ -6,7 +6,186 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **The boxed `<Logo tone="success">` glyph inked its TEXT with the identity KNOCKOUT colour, failing
+  WCAG 2.2 AA at 3.67:1.** `.ui-logo[data-tone="success"]` fell back to `--brand-foreground` for
+  `color`, but `--brand-foreground` is not an ink — it tracks `--background` in both themes
+  (light `60 33% 99%`, dark `48 9% 9%`) because `mark="godx"` punches its inner bar as an evenodd
+  **hole** and the email mark has to paint that hole solid to match. As negative space it only owes
+  SC 1.4.11's 3:1 (non-text) and clears it; as the ink under caller-supplied TEXT it owes SC 1.4.3's
+  **4.5:1** — 14px bold is not "large text" (that needs 18.66px bold / 24px). Measured in headless
+  Chromium across every branch of `docs/general/logo.tsx`: light `tone="success"` glyph
+  `#fdfdfc` on `#009766` = **3.67:1 FAIL** (both the `md` and `lg` nodes), while light
+  `tone="primary"` was 4.62:1, dark `tone="success"` 6.89:1 and dark `tone="primary"` 7.05:1 — all
+  passing. The `tone="success"` boxed glyph now inks from the new
+  **`--logo-identity-foreground`** (`48 9% 9%`, `#191815`), so light rises **3.67 → 4.74:1**. The ink
+  is theme-INVARIANT — it is the same near-black spine the dark theme already resolved to — so
+  **dark renders byte-identically at 6.89:1**, and the default untoned `tone="primary"` rendering is
+  untouched. `--brand` / `--brand-foreground` are unchanged, so the canonical emerald, the `godx`
+  vector mark and the email brand capsule (whose light inner bar must stay light to match the web
+  mark's knockout hole) all keep their exact colours. This was NOT treated as a logotype exemption:
+  `mark="glyph"` renders CALLER-supplied text in a tinted box — a generic boxed badge, not the GoDX
+  identity artwork — so the `data-logotype` route the wordmark uses does not apply. Guarded by
+  `src/tokens/__tests__/logo-identity-contrast.test.ts`, which resolves the real `var()` fallback
+  chains out of the shipped CSS and asserts the measured ratio per tone per theme.
+
 ### Added
+
+- **`--logo-identity-foreground`** (`48 9% 9%`) — the ink the boxed `mark="glyph"` sets its TEXT in
+  when it sits on the `--brand` identity fill. Deliberately NOT a role-mirror knob: its default is a
+  real value rather than a role token, so there is no role to freeze and it is declared at `:root`
+  instead of `initial` (the four existing role-mirror knobs — `--logo-success-background`,
+  `--logo-success-foreground`, `--logo-godx-color`, `--logo-wordmark-color` — stay `initial` with
+  their role defaults at the call site, unchanged). A service re-theming `--brand` to a DARK fill
+  re-inverts the ink through the existing public knob `--logo-success-foreground`.
+
+- **`EmptyState` `tone` never coloured the icon GLYPH — only the medallion tint varied.**
+  `.ui-empty-state-icon` correctly reads `color: var(--empty-state-icon-foreground, hsl(var(--muted-foreground)))`
+  and every `[data-tone]` rule re-points that token, but the component rendered the icon with a
+  hard-coded utility `className="text-muted-foreground size-6"`. The utility out-specified the
+  inherited colour, so the token was half-dead: measured in headless Chromium, the medallion tracked
+  the tone (`success` `rgb(105,191,142)` · `warning` `rgb(250,183,0)` · `destructive` `rgb(184,40,48)`
+  · `info` `rgb(77,109,179)`) while the svg stayed `rgb(112,110,102)` for **all five** tones. Dropping
+  the colour utility (keeping `size-6`) lets the glyph inherit `currentColor`; after the fix the glyph
+  equals the medallion token exactly for every tone, and the default `tone="muted"` still resolves to
+  `rgb(112,110,102)` — the untoned rendering is **byte-identical**. No token changed: the knobs were
+  already role-mirror `initial` at `:root` with the role default at the call site. The glyph stays
+  `aria-hidden` and matches the shipped `Alert` tone-icon convention (raw role for the decorative
+  glyph, contrast-tuned `--text-*` reserved for text), so SC 1.4.11 does not apply — measured
+  `EmptyState` success 2.00:1 / warning 1.62:1 vs the existing `Alert` icons' 2.11:1 / 1.69:1 on the
+  same ~12% tint. Guarded by `src/components/data-display/__tests__/empty-state-tone-glyph.test.tsx`.
+- **`<ToggleGroup variant size>` never reached its items, and the default was off-union.**
+  The group stamped `data-variant`/`data-size` on the ROOT only; `ToggleGroupItem` read just its own
+  props and `.ui-toggle-group` consumed neither attribute, so `<ToggleGroup size="lg">` alone painted
+  **nothing** — measured in headless Chromium, a group-only `data-size` of `sm`/`md`/`lg` all rendered
+  the same unstyled **25.8px** item against real tiers of **28/32/36px**, forcing consumers to repeat
+  the prop on every single item. Worse, the destructuring default was the literal `"default"`, which
+  is **not** a member of the declared `sm | md | lg` union, so an unset group emitted
+  `data-size="default"` — an invalid value for its own type. Fixed with the upstream shadcn React
+  **context** pattern: the group provides `variant`/`size`, each item falls back to the context only
+  where its own prop is unset, and the destructuring defaults were removed so an unset group emits no
+  `data-size`/`data-variant` at all (the real default still comes from `toggleVariants`, applied per
+  item). Measured after the fix, group-only sizing produces the correct real heights on **every**
+  item — `sm` 28px · `md` 32px · `lg` 36px — and an explicit item prop still wins (a `size="lg"` item
+  inside a `size="sm"` group measures 36px between two 28px siblings). Repeating the prop on every
+  item — the only thing that worked before, and what the docs frames did — renders **identically**:
+  group-only, item-only, and both-repeated all emit the same class string and the same 36px box.
+  Guarded by `src/components/data-entry/__tests__/toggle-group-propagation.test.tsx`.
+- **`size` was a silent no-op on `<Logo mark="godx" />` — the identity mark now honours every tier.**
+  `.ui-logo[data-mark="godx"]` pinned `width`/`height` to `--logo-godx-size` at the SAME specificity
+  as the `.ui-logo[data-size="…"]` rules (both 0,2,0) and sat later in `logo-layout.css`, so source
+  order won: measured in headless Chromium, `xs` · `sm` · `md` · `lg` all rendered **32×32px**. The
+  prop is public and did nothing — and the godx LOCKUP already scaled its wordmark per tier
+  (12.47px → 17.65px from `xs` to `lg`), so a frozen mark visibly broke the mark↔wordmark proportion
+  at `size="lg"`. A half-applied prop cannot honestly be documented as "inapplicable", so `size` was
+  made real rather than typed away. The identity mark gets its own ramp,
+  **`--logo-godx-size-{xs,sm,md,lg}` = 1.5 / 1.75 / 2 / 2.5rem** — one step above the `--logo-size-*`
+  glyph box, because the artwork is a horizontal capsule inside a square viewBox and needs the extra
+  box to read at the same optical weight. The per-tier rules are `[data-mark][data-size]` (0,3,0), so
+  they out-rank both neighbours regardless of source order and the ordering bug cannot recur.
+  Measured after the fix: **24 / 28 / 32 / 40px**, with `md` byte-identical to the old fixed 32px, so
+  every existing default-size identity surface (`AuthIdentity`, the AuthShell brand bars,
+  `CenteredShell` topbars) is unchanged. The **`--brand` colour contract is untouched**: the mark
+  still resolves `hsl(var(--logo-godx-color, var(--brand)))` at the call site — `rgb(0,151,102)`
+  `#009766` light, `rgb(0,184,124)` `#00b87c` dark, verified at every tier and in both themes.
+  `src/components/general/__tests__/logo-size-cascade.test.ts` resolves the real cascade
+  (specificity, then source order) over the shipped stylesheet and asserts a distinct winning box per
+  tier — it reproduces the old one-value-for-all-tiers result on the pre-fix CSS, so a `toContain`-style
+  guard could not have caught this.
+
+- **The `/isolate/**` preview harness stopped wrapping shell stories in a SECOND `<main>`.**
+  `preview/src/isolate-main.tsx` decided whether a story already owned the document landmarks from a
+  HARDCODED story-id list (`ownsDocumentLandmarks`), while `preview/src/frame-main.tsx` had long since
+  DETECTED an own `<main>` at runtime. The list drifted behind the catalog, so every shell story
+  authored after it was written (the `AuthShell` presets, `CenteredShell`, `LegalDocumentShell`,
+  `ErrorSurface` and the `AppShell` recipes under `docs/**/examples/`) rendered its own `<main>`
+  INSIDE the harness's `<main>`. Measured in headless Chromium across all **152** isolate routes:
+  **26 routes had two `<main>` landmarks and 25 of them carried real axe violations — 50
+  `landmark-main-is-top-level` / `landmark-no-duplicate-main` nodes**, including
+  `/isolate/layout-auth-shell-context`, `/isolate/layout-auth-shell-device`,
+  `/isolate/layout-auth-recovery-index`, all four `layout-error-surface` routes and all five
+  `layout-legal-document-shell` routes. A duplicated heuristic is how it drifted, so the duplicate is
+  gone: both entry points now import ONE detector, **`preview/src/landmark-root.tsx`
+  (`<LandmarkRoot>`)**, which probes its own subtree for a `main` / `role="main"` in a
+  `useLayoutEffect` — synchronous after commit and BEFORE the browser paints, so the landmark is
+  already correct on the first paint (no flash, no window for axe or a screenshot to observe the wrong
+  tree) — and renders the real `<main>` TAG, never a `role="main"` div, only when the story does not
+  own one. Re-measured after the fix: **152/152 isolate routes have exactly one `<main>`, 0 landmark
+  violation nodes, 0 regressions** — the bare component showcases that legitimately rely on the
+  harness supplying `<main>` are untouched. `/frame/**` is unaffected by construction and verified
+  identical (`check:frame-axe` before and after: 0 preview-chrome violations, the same 19 component
+  nodes across the same 6 frames), so `scripts/frame-axe.baseline.json` is deliberately left
+  unchanged — this clears `/isolate` debt, not `/frame` debt.
+
+### Changed
+
+- **`--logo-godx-size` is now the identity mark's PIN, not its base.** It is declared `initial`
+  (guaranteed-invalid) at `:root` with the per-tier default at the CALL SITE
+  (`var(--logo-godx-size, var(--logo-godx-size-md))`), so it is inert by default and the `size` tiers
+  apply. A service theme that sets it once still freezes the mark at that box on **every** tier —
+  verified in-browser (`--logo-godx-size: 3rem` → 48px at `xs`/`sm`/`md`/`lg`) — while a single step
+  is retuned through `--logo-godx-size-lg` and friends (`4rem` → 64px). Consumers that only _set_ the
+  token are unaffected; a theme that _read_ `var(--logo-godx-size)` expecting `2rem` must read
+  `--logo-godx-size-md` instead.
+
+### Added
+
+- **`AlertDialogRoot` — the compound alert-dialog was unassemblable from the public API; now it
+  isn't.** `@godxjp/ui/feedback` shipped every compound PART (`AlertDialogTrigger`, `Portal`,
+  `Overlay`, `Content`, `Header`, `Footer`, `Title`, `Description`, `Action`, `Cancel`) but no Root:
+  the name `AlertDialog` is taken by the flat destructive-confirm preset, which internally composes
+  `DialogHeader`, not `AlertDialogHeader`. Every one of those parts needs a Radix AlertDialog Root
+  ancestor for context, so `AlertDialogHeader` could not be rendered anywhere by a consumer — the
+  only working composition in the repo imported `@radix-ui/react-alert-dialog` directly, which a
+  consumer must not do and a docs frame cannot do (`check:example-imports` allows only react /
+  lucide-react / `@godxjp/ui`). `AlertDialogRoot` is the exact mirror of `DialogRoot`: a
+  pass-through over `AlertDialogPrimitive.Root` stamped `data-slot="dialog"`, so focus trap, focus
+  restoration and `role="alertdialog"` stay Radix-owned. Purely additive — the flat `AlertDialog`
+  preset is untouched. `AlertDialogRoot > AlertDialogTrigger + AlertDialogPortal > AlertDialogOverlay
+  - AlertDialogContent > AlertDialogHeader > AlertDialogTitle`now composes from the public API
+alone, which also makes`AlertDialogHeader`'s seven-branch `tone`band reachable for the first
+time; both are demonstrated in`docs/feedback/alert-dialog.tsx`and recorded in`component-case-evidence.json`. Catalogued in the MCP as its own entry (with the "prefer the flat
+    preset" steer), and covered by trigger-open / cancel-and-Escape focus-restoration tests plus a
+    vitest-axe sweep of both header forms.
+- **Frame coverage (#163) — the `tone` and `size` contracts of the general + charts exports are now
+  demonstrated, not assumed.** `docs/general/typography.tsx` gains a `Heading tone` card that
+  renders all seven semantic tones on a real section heading; `docs/general/logo.tsx` gains a
+  `tone` card that separates the two branches against the new `--brand` identity role
+  (`tone="primary"` fills the boxed glyph from the action colour `--primary`, `tone="success"` from
+  `--brand`) and records that `mark="godx"` is always drawn in `--brand` and always at
+  `--logo-godx-size`, regardless of `tone`/`size`; a new `docs/charts/size-tiers.tsx` frame renders
+  `LineChart` / `BarChart` / `AreaChart` / `PieChart` at every `size` tier (xs · sm · md · lg).
+  `component-case-evidence.json` records the branches, so `Heading.tone`, `Text.tone`, `Text.size`,
+  `Logo.tone`, `Logo.size`, `AreaChart.size`, `BarChart.size`, `LineChart.size`, `PieChart.size` and
+  `CompactBarTrend.size` promote to `covered:prop-evidence` in the frame-coverage ledger.
+
+- **Frame coverage (#163) — the data-display `variant` / `tone` / `size` / `density` / `shape`
+  contracts are demonstrated at rest, not behind a toggle.** `docs/data-display/badge.tsx` gains a
+  `StatusBadge` card that renders its four structural variants (on the tone-neutral `incomplete`
+  key, so the variant is what changes), its three shapes and all eight tones; `empty-state.tsx`
+  gains the remaining `tone` steps (warning · destructive · info · muted) and states `variant="page"`
+  explicitly; `credential-reveal.tsx` splits Tone and Size into two cards and now renders
+  `tone="warning"` plus every `size` tier (xs · sm · md · lg); `data-table/index.tsx` renders
+  `density` compact / default / comfortable as three STATIC tables (the DensityToggle only proved
+  them after a click); `list-row.tsx` gains a default-vs-compact contrast row; `stat-card.tsx`
+  states `size="compact"` explicitly next to `size="md"`; `timeline.tsx` states `variant="icon"`
+  explicitly. `component-case-evidence.json` records the branches, so `Badge`, `StatusBadge`,
+  `Card`, `EmptyState`, `Timeline`, `Upload`, `CredentialReveal`, `Progress`, `StatCard`,
+  `DataTable`, `ListRow` and `Avatar` promote 20 prop-shaped cells to `covered:prop-evidence`, and
+  the `card` / `empty-state` / `progress` / `data-table` known gaps record the resolving evidence.
+
+- **Frame coverage (#163) — the layout `variant` / `tone` / `density` contracts are demonstrated.**
+  New `docs/layout/auth-shell-variants.tsx` frame renders `AuthShell` on its two orthogonal axes:
+  `variant` (default · canonical) and `density` (comfortable · compact) are switched from one shell,
+  because two stacked `AuthShell`s would duplicate the `banner` / `main` / `contentinfo` landmarks
+  and fail axe by construction. `docs/layout/page-container.tsx` promotes its density comparison to
+  a three-up row so `density="default"` is stated explicitly next to compact and comfortable.
+  `docs/layout/error-surface/index.tsx` gains a `tone` card rendering all five semantic steps
+  (muted · info · warning · destructive · success) on the statuses each one truthfully belongs to.
+  `component-case-evidence.json` records the branches, so `AuthShell.variant`, `AuthShell.density`,
+  `PageContainer.variant`, `PageContainer.density` and `ErrorSurface.tone` promote to
+  `covered:prop-evidence` in the frame-coverage ledger.
 
 - **`CenteredShell preset="public-landing"` + `Flex hideBelow` / `hideFrom` — the public landing
   page is now buildable from public exports and public tokens alone (#252).** SCR-007 was applying
@@ -181,6 +360,58 @@ fixed` plus token-owned column-PRIORITY measures (`--table-action-collection-*`,
   cluster that genuinely cannot fit (a 186px pair of bilingual labels in a 324px column) drops to
   its own line and `documentElement.scrollWidth === clientWidth` holds at 390 / 1024 / 1440 with
   long JA/EN/VI titles. Keyboard order and focus are unchanged.
+
+- **Data-entry + query frames now demonstrate every `variant` / `size` / `shape` branch of
+  `Upload`, `NumberInput`, `Switch` and `ButtonRefetch` (#163).** `docs/data-entry/switch.tsx`
+  gained a `size · sm / md` card (the previous page only ever rendered the default row height), and
+  `docs/query/button-refetch.tsx` gained `variant` (7), `size` (5 text tiers + 4 square icon tiers,
+  each with its own `aria-label` since the icon-only form drops `label`) and `shape` (3) matrices,
+  each card owning its own `useQuery` so the matrices never refetch in lockstep. `Upload`'s six
+  variants and `NumberInput`'s four size tiers were already rendered and are now recorded.
+  `component-case-evidence.json` records the branches, which promotes six previously `untested`
+  cells of `preview/frame-coverage.ledger.json` to `covered:prop-evidence`. Verified headless at
+  390 / 768 / 1280: no horizontal overflow, zero console errors/warnings, and
+  `check:data-entry-frame-runtime` green across all eight widths.
+
+- **Navigation + toggle frames now demonstrate every `variant` / `size` branch of `TabsList`,
+  `ContextMenuItem`, `DropdownMenuItem`, `MenubarItem`, `Steps`, `Toggle`, `ToggleGroup`,
+  `ToggleGroupItem` and `SelectTrigger` (#163).** The menu frames only ever rendered
+  `variant="destructive"` implicitly against unnamed defaults (`docs/navigation/menubar.tsx` had no
+  destructive item at all), so the two-branch item union was never drawn side by side; each menu now
+  ends on an explicit `variant="default"` archive action next to the destructive delete.
+  `docs/navigation/tabs.tsx` gained a hand-composed `TabsList variant` card (the `default` pill list
+  and the `line` underline list) since the compound path previously only ever named `line`, and
+  `docs/navigation/steps.tsx` gained a `size · md / sm` card (`size` drives the step title and
+  description type scale; only `sm` had ever been rendered, inside the dot-style card).
+  `docs/data-entry/toggle-group.tsx` gained `variant` (2) and `size` (3) cards, set on the group and
+  its items together because `ToggleGroup` only stamps `data-variant` / `data-size` and each
+  `ToggleGroupItem` carries its own visual variant; `docs/data-entry/select.tsx` now renders the
+  default `SelectTrigger size="md"` next to the existing `sm` trigger. `Toggle` already rendered
+  both unions and is now recorded. `component-case-evidence.json` records the branches, promoting
+  twelve previously `untested` cells of `preview/frame-coverage.ledger.json` to
+  `covered:prop-evidence`. Driven headless in Chromium: each menu opened and its
+  `[role="menuitem"] data-variant` read back (`default` × 4-5, `destructive` × 1 per menu), no
+  horizontal overflow and zero axe violations on all six touched frames at 320-1920, zero console
+  errors, and `check:layout-nav-frames` still green (tabs keyboard, RTL ArrowLeft and axe).
+
+- **Feedback / overlay frames now demonstrate every `tone` / `variant` branch of `Alert`,
+  `AlertDialog`, `DialogHeader` and `SheetHeader` (#163).** `docs/feedback/alert.tsx` rendered only
+  four of the seven `tone` branches, so `info`, `muted` and `neutral` were claimed by the copy and
+  never drawn; the page now renders all seven in vocabulary order and spells out the single
+  `variant="default"` branch. `docs/feedback/alert-dialog.tsx` only ever opened
+  `variant="destructive"` dialogs and gained a neutral confirm card for the `default` branch (no
+  header band, primary confirm button). `docs/feedback/dialog.tsx` and `docs/feedback/sheet.tsx`
+  gained a header-tone card that re-opens ONE overlay per branch through the prop-driven
+  `title`/`subtitle`/`extra` form, so all seven bands of the shared `overlayHeaderToneClass`
+  contract are reachable without ever mounting two focus traps at once.
+  `component-case-evidence.json` records the branches, promoting five previously `untested` cells
+  of `preview/frame-coverage.ledger.json` to `covered:prop-evidence`. Driven headless in Chromium:
+  every branch verified by its rendered `data-tone` and computed band colour (title colour constant
+  at `rgb(36,35,30)` in all seven, confirming the band tints only the background), no horizontal
+  overflow at 320–1920, and `check:provider-feedback-query-runtime` green with zero axe violations
+  on `feedback-dialog`, `feedback-sheet` and `feedback-alert-dialog`. `AlertDialogHeader.tone`
+  stays **UNTESTED**: `@godxjp/ui` exports the alert-dialog header/content/footer parts but no
+  alert-dialog Root, so the compound form cannot be composed from the public API in a docs frame.
 
 ### Changed
 

@@ -1,7 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle, EmptyState } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
-import { Flex, PageContainer } from "@godxjp/ui/layout";
-import { CheckCircle2, Inbox, Plus, SearchX } from "lucide-react";
+import { Flex, PageContainer, ResponsiveGrid } from "@godxjp/ui/layout";
+import {
+  AlertTriangle,
+  Archive,
+  CheckCircle2,
+  Inbox,
+  Info,
+  Plus,
+  SearchX,
+  XCircle,
+} from "lucide-react";
 
 /**
  * EmptyState — centred zero-state with icon, title, description, and an optional
@@ -28,6 +37,7 @@ export default function Demo() {
           </CardHeader>
           <CardContent>
             <EmptyState
+              variant="page"
               icon={Inbox}
               title="請求書がありません"
               description="最初の請求書を作成して開始しましょう。"
@@ -102,6 +112,50 @@ export default function Demo() {
               description="この端末からサインインできるようになりました。"
               titleLevel={3}
             />
+          </CardContent>
+        </Card>
+
+        {/* tone — the remaining four steps. tone tints the icon medallion only; the copy still
+            carries the meaning, so a zero-state never relies on colour alone. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>tone：warning / destructive / info / muted（既定）</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveGrid columns={{ sm: 1, md: 2 }}>
+              <EmptyState
+                variant="section"
+                tone="warning"
+                icon={AlertTriangle}
+                title="未処理の取込エラーがあります"
+                description="取込ログを確認してから再実行してください。"
+                titleLevel={3}
+              />
+              <EmptyState
+                variant="section"
+                tone="destructive"
+                icon={XCircle}
+                title="同期が停止しています"
+                description="接続資格情報の期限が切れたため、データを取得できません。"
+                titleLevel={3}
+              />
+              <EmptyState
+                variant="section"
+                tone="info"
+                icon={Info}
+                title="集計はまだ準備中です"
+                description="当月分の集計は翌営業日の午前に反映されます。"
+                titleLevel={3}
+              />
+              <EmptyState
+                variant="section"
+                tone="muted"
+                icon={Archive}
+                title="アーカイブは空です"
+                description="tone を省略したときの既定です。中立な余白として振る舞います。"
+                titleLevel={3}
+              />
+            </ResponsiveGrid>
           </CardContent>
         </Card>
       </Flex>

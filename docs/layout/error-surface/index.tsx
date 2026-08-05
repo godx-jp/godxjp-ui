@@ -135,6 +135,66 @@ export default function Demo() {
           </CardContent>
         </Card>
 
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>tone · セマンティックな重大度の 5 段階</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* `tone` DEFAULTS from `status` (403/503 warning · 404 muted · 500 destructive). An
+                explicit tone is for the case where the product knows a TRUER severity than the
+                status code carries -- a planned window is informational, a resolved incident is a
+                success -- never to recolour one severity into another for decoration. All five
+                branches are rendered here so the whole axis is readable at rest. */}
+            <ResponsiveGrid columns={{ sm: 1, md: 3 }}>
+              <ErrorSurface
+                mode="application"
+                status={404}
+                tone="muted"
+                titleLevel={3}
+                title="ページが見つかりません"
+                description="リンクが古い可能性があります。中立な不在であり、障害ではありません。"
+                action={<Button variant="outline">ホームへ戻る</Button>}
+              />
+              <ErrorSurface
+                mode="application"
+                status={503}
+                tone="info"
+                titleLevel={3}
+                title="計画メンテナンスを実施しています"
+                description="事前告知済みの停止です。障害ではないため、警告ではなく情報として提示します。"
+                action={<Button variant="outline">ステータスページを見る</Button>}
+              />
+              <ErrorSurface
+                mode="application"
+                status={403}
+                tone="warning"
+                titleLevel={3}
+                title="この操作には承認が必要です"
+                description="権限を追加すれば同じ画面に戻れます。回復可能な状態です。"
+                action={<Button variant="outline">権限を申請する</Button>}
+              />
+              <ErrorSurface
+                mode="application"
+                status={500}
+                tone="destructive"
+                titleLevel={3}
+                title="問題が発生しました"
+                description="想定外の失敗です。利用者側の操作では回復できません。"
+                action={<Button variant="outline">再読み込み</Button>}
+              />
+              <ErrorSurface
+                mode="application"
+                status={503}
+                tone="success"
+                titleLevel={3}
+                title="復旧が完了しました"
+                description="最終確認を行っています。まもなく通常どおりご利用いただけます。"
+                action={<Button variant="outline">再読み込み</Button>}
+              />
+            </ResponsiveGrid>
+          </CardContent>
+        </Card>
+
         {/* The same surface in ja / en / vi. The library-owned metadata LABELS ("Request ID") follow
             the active app locale; the product copy is whatever the app's own t() returns. The
             description measure is owned by --empty-state-description-max-width (28rem), and the

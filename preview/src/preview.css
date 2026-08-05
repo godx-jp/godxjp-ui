@@ -282,9 +282,13 @@ button {
   color: hsl(var(--foreground));
 }
 
+/* Active label reads --text-primary, NOT --primary. `--primary` (#0077c7) on `--accent` (#ebe9e5)
+ * measures 3.88:1 at this 12.5px size — below AA. `--text-primary` is the contrast-tuned slot the
+ * token file describes as "deep brand blue — AA brand text on the soft primary tint", i.e. exactly
+ * this pairing. The 3px rail keeps --primary: it is a decorative bar, not text. */
 .preview-tree-leaf[data-active="true"] {
   background: hsl(var(--accent));
-  color: hsl(var(--primary));
+  color: hsl(var(--text-primary));
   font-weight: 600;
   box-shadow: inset 3px 0 0 hsl(var(--primary));
 }

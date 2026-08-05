@@ -41,6 +41,8 @@ export default function Demo() {
             <CardTitle level={2}>基本アクション</CardTitle>
             <CardDescription>
               領域を右クリックするとメニューが開きます。サブメニュー・区切り・ショートカットを含む。
+              ContextMenuItem の variant は default と destructive の 2 つ。破棄系のアクションだけを
+              destructive にする。
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -68,6 +70,7 @@ export default function Demo() {
                   </ContextMenuSubContent>
                 </ContextMenuSub>
                 <ContextMenuSeparator />
+                <ContextMenuItem variant="default">アーカイブに移動</ContextMenuItem>
                 <ContextMenuItem variant="destructive">
                   削除
                   <ContextMenuShortcut>⌫</ContextMenuShortcut>

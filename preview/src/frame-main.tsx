@@ -14,6 +14,7 @@ import {
   type DemoBlockInitialView,
   DEVICE_PRESETS,
 } from "./demo-block";
+import { LandmarkRoot } from "./landmark-root";
 import { getStorySource, STORY_MAP } from "./preview-catalog";
 import { queryClient, StoryErrorBoundary, useLazyStory } from "./preview-runtime";
 
@@ -47,44 +48,6 @@ function parseFrameChrome(): FrameChrome {
   const theme = sp.get("theme") === "dark" ? "dark" : "light";
   const locale = sp.get("locale") || "ja";
   return { dir, density, theme, locale };
-}
-
-/**
- * The frame root needs exactly ONE top-level `<main>` landmark — but whether that main
- * belongs to US (a bare component/fragment demo, e.g. a Card showcase with no page shell)
- * or to the STORY ITSELF (a full-screen recipe that renders `AppShell`/`AuthShell`, which
- * already emit their own `<main>`) is a runtime fact, not something knowable from story
- * metadata (every catalog entry defaults to `layout: "fullscreen"` regardless of content).
- * Detect it after mount: if the rendered subtree already contains a `<main>`/`role="main"`,
- * render a plain `<div>` (avoids `landmark-no-duplicate-main` / `landmark-main-is-top-level`);
- * otherwise render the REAL `<main>` element ourselves (avoids `landmark-one-main`).
- *
- * This renders the actual `<main>` TAG, not a `role="main"` div: several axe landmark
- * checks (e.g. `landmark-banner-is-top-level`'s body-context match for the toolbar
- * `<header>`) walk ancestors by native tag name (`article, aside, main, nav, section`),
- * not computed role — a `<div role="main">` would NOT be recognized as sectioning
- * content by that walk, so the `<header>` inside it would wrongly start resolving to a
- * top-level `banner` landmark.
- */
-function FrameLandmark({ dir, children }: { dir: "ltr" | "rtl"; children: React.ReactNode }) {
-  const ref = React.useRef<HTMLElement>(null);
-  // Optimistic default: an own `<main>` (the common case — most demos are bare
-  // component/fragment showcases with no page shell of their own).
-  const [asMain, setAsMain] = React.useState(true);
-
-  React.useLayoutEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const hasOwnMain = node.querySelector('main, [role="main"]') != null;
-    setAsMain(!hasOwnMain);
-  });
-
-  const Tag = asMain ? "main" : "div";
-  return (
-    <Tag ref={ref} className="preview-frame" dir={dir}>
-      {children}
-    </Tag>
-  );
 }
 
 function parseInitialView(): DemoBlockInitialView | undefined {
@@ -142,8 +105,9 @@ function FrameApp() {
           persist={false}
         >
           {/* `dir` on the frame root flips logical CSS (ms/me/ps/pe, start/end) for the
-              whole subtree — a global RTL frame mode (#163) independent of demo locale. */}
-          <FrameLandmark dir={chrome.dir}>
+              whole subtree — a global RTL frame mode (#163) independent of demo locale.
+              `LandmarkRoot` resolves `<main>` vs `<div>` at runtime — see landmark-root.tsx. */}
+          <LandmarkRoot className="preview-frame" dir={chrome.dir}>
             <StoryDemoBlock
               storyId={story.id}
               source={source}
@@ -161,7 +125,7 @@ function FrameApp() {
                 </StoryErrorBoundary>
               ) : null}
             </StoryDemoBlock>
-          </FrameLandmark>
+          </LandmarkRoot>
         </AppProvider>
       </MemoryRouter>
     </QueryClientProvider>

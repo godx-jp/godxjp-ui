@@ -71,33 +71,33 @@ const DialogContent = React.forwardRef<
     },
     ref,
   ) => {
-  const { t } = useTranslation();
-  const showCloseButton = showCloseButtonProp ?? showClose ?? true;
-  return (
-    <DialogPortal>
-      <DialogOverlay className={overlayClassName} />
-      <DialogPrimitive.Content
-        ref={ref}
-        data-slot="dialog-content"
-        className={cn(
-          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 duration-200 outline-none",
-          className,
-        )}
-        {...props}
-      >
-        {children}
-        {showCloseButton ? (
-          <DialogPrimitive.Close
-            data-slot="dialog-close"
-            className="ring-offset-background focus:ring-ring transition-opacity focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
-          >
-            <X className="size-4" aria-hidden="true" />
-            <span className="sr-only">{t("feedback.alert.dismiss")}</span>
-          </DialogPrimitive.Close>
-        ) : null}
-      </DialogPrimitive.Content>
-    </DialogPortal>
-  );
+    const { t } = useTranslation();
+    const showCloseButton = showCloseButtonProp ?? showClose ?? true;
+    return (
+      <DialogPortal>
+        <DialogOverlay className={overlayClassName} />
+        <DialogPrimitive.Content
+          ref={ref}
+          data-slot="dialog-content"
+          className={cn(
+            "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 duration-200 outline-none",
+            className,
+          )}
+          {...props}
+        >
+          {children}
+          {showCloseButton ? (
+            <DialogPrimitive.Close
+              data-slot="dialog-close"
+              className="ring-offset-background focus:ring-ring transition-opacity focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+            >
+              <X className="size-4" aria-hidden="true" />
+              <span className="sr-only">{t("feedback.alert.dismiss")}</span>
+            </DialogPrimitive.Close>
+          ) : null}
+        </DialogPrimitive.Content>
+      </DialogPortal>
+    );
   },
 );
 DialogContent.displayName = "DialogContent";
@@ -184,6 +184,23 @@ const DialogDescription = React.forwardRef<
   );
 });
 DialogDescription.displayName = "DialogDescription";
+
+type AlertDialogRootProps = React.ComponentProps<typeof AlertDialogPrimitive.Root> & {};
+
+/**
+ * Compound alert-dialog Root — the `role="alertdialog"` mirror of {@link DialogRoot}.
+ *
+ * The flat {@link AlertDialog} preset owns the confirm / challenge / step-up recipe and cannot be
+ * re-composed; this Root is what a consumer reaches for when the confirmation needs bespoke
+ * content. It supplies the Radix AlertDialog context that `AlertDialogTitle`,
+ * `AlertDialogDescription`, `AlertDialogAction` and `AlertDialogCancel` read, so the compound
+ * parts are assemblable from the public API alone (no direct `@radix-ui/react-alert-dialog`
+ * import). Focus trap, focus restoration and the modal `role="alertdialog"` semantics stay
+ * Radix-owned.
+ */
+function AlertDialogRoot(props: AlertDialogRootProps) {
+  return <AlertDialogPrimitive.Root data-slot="dialog" {...props} />;
+}
 
 const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 const AlertDialogPortal = AlertDialogPrimitive.Portal;
@@ -507,6 +524,7 @@ export {
   DialogClose,
   DialogAction,
   DialogCancel,
+  AlertDialogRoot,
   AlertDialogTrigger,
   AlertDialogPortal,
   AlertDialogOverlay,

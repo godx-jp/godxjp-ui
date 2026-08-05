@@ -20,21 +20,30 @@ export default function Demo() {
   return (
     <PageContainer
       title="Alert"
-      subtitle="variant × dismiss × actions · persistent inline banner (never use for transient feedback)"
+      subtitle="tone × variant × dismiss × actions · persistent inline banner (never use for transient feedback)"
     >
       <Flex direction="col" gap="lg">
         <Card>
           <CardHeader>
-            <CardTitle level={2}>Variants / tones</CardTitle>
+            <CardTitle level={2}>Every tone branch · variant</CardTitle>
             <CardDescription>
-              default (info), warning, destructive, success · each sets icon and colour scheme.
+              All seven tone branches, in order: default, success, warning, destructive, info,
+              muted, neutral. Tone sets the icon, the surface and the live-region politeness
+              (destructive and warning announce assertively; the rest are polite). default, muted
+              and neutral deliberately share the quiet neutral surface, so the caller names intent
+              without adding colour. variant is the structural axis and currently has a single
+              branch, default, spelled out on the first banner.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Flex direction="col" gap="md">
-              <Alert tone="default">
+              <Alert variant="default" tone="default">
                 <AlertTitle>勘定科目マスタを更新しました</AlertTitle>
                 <AlertDescription>変更内容は次回の仕訳入力から反映されます。</AlertDescription>
+              </Alert>
+              <Alert tone="success">
+                <AlertTitle>インポートが完了しました</AlertTitle>
+                <AlertDescription>1,240 件の仕訳を取り込みました。</AlertDescription>
               </Alert>
               <Alert tone="warning">
                 <AlertTitle>3 件の打刻漏れがあります</AlertTitle>
@@ -46,9 +55,19 @@ export default function Demo() {
                   サーバーエラーが発生しました。内容を確認のうえ再度お試しください。
                 </AlertDescription>
               </Alert>
-              <Alert tone="success">
-                <AlertTitle>インポートが完了しました</AlertTitle>
-                <AlertDescription>1,240 件の仕訳を取り込みました。</AlertDescription>
+              <Alert tone="info">
+                <AlertTitle>電子帳簿保存法の保存要件が変更されます</AlertTitle>
+                <AlertDescription>
+                  2026年1月以降に受領した証憑が対象です。保存設定をご確認ください。
+                </AlertDescription>
+              </Alert>
+              <Alert tone="muted">
+                <AlertTitle>この請求書は下書きです</AlertTitle>
+                <AlertDescription>送信するまで取引先には表示されません。</AlertDescription>
+              </Alert>
+              <Alert tone="neutral">
+                <AlertTitle>8月10日 02:00 から 04:00 まで定期メンテナンスを行います</AlertTitle>
+                <AlertDescription>作業中は仕訳の保存ができません。</AlertDescription>
               </Alert>
             </Flex>
           </CardContent>

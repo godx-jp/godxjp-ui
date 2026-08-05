@@ -140,7 +140,11 @@ describe("--brand: the GoDX identity role (gh#250)", () => {
 describe("Logo identity call sites read --brand, never --success", () => {
   const identityDefaults = [
     "background: hsl(var(--logo-success-background, var(--brand)))",
-    "color: hsl(var(--logo-success-foreground, var(--brand-foreground)))",
+    // The boxed glyph's INK is --logo-identity-foreground, not --brand-foreground: --brand-foreground
+    // is the artwork KNOCKOUT colour (it tracks --background so the godx evenodd hole and the email
+    // mark's solid bar match) and only owes 3:1 as non-text, while this branch paints real TEXT and
+    // owes 4.5:1. The AA floor itself is guarded in logo-identity-contrast.test.ts.
+    "color: hsl(var(--logo-success-foreground, var(--logo-identity-foreground)))",
     "color: hsl(var(--logo-godx-color, var(--brand)))",
     "color: hsl(var(--logo-wordmark-color, var(--logo-godx-color, var(--brand))))",
   ];

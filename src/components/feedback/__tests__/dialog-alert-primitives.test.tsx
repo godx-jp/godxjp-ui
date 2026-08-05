@@ -1,15 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
-import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { renderWithUi, screen, userEvent, within } from "@/test/render";
 
 import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogRoot,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "../dialog";
+import { Button } from "../../general/button";
 
 function Confirm(props: {
   onOpenChange?: (o: boolean) => void;
@@ -17,9 +22,9 @@ function Confirm(props: {
   useChildren?: boolean;
 }) {
   return (
-    <AlertDialogPrimitive.Root open onOpenChange={props.onOpenChange ?? (() => {})}>
-      <AlertDialogPrimitive.Portal>
-        <AlertDialogPrimitive.Overlay />
+    <AlertDialogRoot open onOpenChange={props.onOpenChange ?? (() => {})}>
+      <AlertDialogPortal>
+        <AlertDialogOverlay />
         <AlertDialogContent showCloseButton>
           {props.useChildren ? (
             <AlertDialogHeader>
@@ -38,12 +43,90 @@ function Confirm(props: {
             <AlertDialogCancel>キャンセル</AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialogPrimitive.Portal>
-    </AlertDialogPrimitive.Root>
+      </AlertDialogPortal>
+    </AlertDialogRoot>
   );
 }
 
-describe("AlertDialog primitives (composed via Radix Root)", () => {
+/** Trigger-driven, fully uncontrolled — the composition a consumer copies from the docs frame. */
+function TriggeredConfirm({ defaultOpen }: { defaultOpen?: boolean }) {
+  return (
+    <AlertDialogRoot defaultOpen={defaultOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline" size="sm">
+          支払を確定
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogPortal>
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>支払を確定しますか？</AlertDialogTitle>
+            <AlertDialogDescription>取消には管理者の承認が必要です。</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>戻る</AlertDialogCancel>
+            <AlertDialogAction>確定する</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialogPortal>
+    </AlertDialogRoot>
+  );
+}
+
+describe("AlertDialogRoot (compound composition from the public surface)", () => {
+  it("opens from AlertDialogTrigger with alertdialog semantics", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<TriggeredConfirm />);
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "支払を確定" }));
+    const dialog = await screen.findByRole("alertdialog");
+    expect(dialog).toHaveAttribute("aria-labelledby");
+    expect(dialog).toHaveAttribute("aria-describedby");
+    expect(within(dialog).getByText("支払を確定しますか？")).toBeInTheDocument();
+  });
+
+  it("restores focus to the trigger after cancel", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<TriggeredConfirm />);
+    const trigger = screen.getByRole("button", { name: "支払を確定" });
+
+    await user.click(trigger);
+    await screen.findByRole("alertdialog");
+    await user.click(screen.getByRole("button", { name: "戻る" }));
+
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+  });
+
+  it("honours both defaultOpen branches for an uncontrolled alertdialog", async () => {
+    const user = userEvent.setup();
+    const open = renderWithUi(<TriggeredConfirm defaultOpen />);
+    expect(await screen.findByRole("alertdialog")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "戻る" }));
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+    open.unmount();
+
+    renderWithUi(<TriggeredConfirm defaultOpen={false} />);
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+  });
+
+  it("closes on Escape and restores focus", async () => {
+    const user = userEvent.setup();
+    renderWithUi(<TriggeredConfirm />);
+    const trigger = screen.getByRole("button", { name: "支払を確定" });
+
+    await user.click(trigger);
+    await screen.findByRole("alertdialog");
+    await user.keyboard("{Escape}");
+
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+  });
+});
+
+describe("AlertDialog primitives (composed via AlertDialogRoot)", () => {
   it("renders the prop-driven header, action and cancel", () => {
     renderWithUi(<Confirm />);
     const dialog = screen.getByRole("alertdialog");

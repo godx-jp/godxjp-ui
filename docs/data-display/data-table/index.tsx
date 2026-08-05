@@ -145,6 +145,44 @@ export default function Demo() {
           <DataTable.Pagination cursor="INV-0309" hasMore onChange={() => {}} />
         </DataTable>
 
+        {/* The three density branches rendered statically. The DensityToggle above reaches the
+            same values, but a toggle only proves them after a click; these prove them at rest. */}
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            密度 compact（明細の一覧 · 行高さを最小に）
+          </Text>
+          <DataTable
+            data={invoices}
+            columns={columns}
+            getRowId={(row) => row.id}
+            density="compact"
+          />
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            密度 default（既定 · 管理画面の標準）
+          </Text>
+          <DataTable
+            data={invoices}
+            columns={columns}
+            getRowId={(row) => row.id}
+            density="default"
+          />
+        </Flex>
+
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            密度 comfortable（少数行 · 承認画面など読み取り重視）
+          </Text>
+          <DataTable
+            data={invoices}
+            columns={columns}
+            getRowId={(row) => row.id}
+            density="comfortable"
+          />
+        </Flex>
+
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
             読み込み中（loading=true で行を置き換え）

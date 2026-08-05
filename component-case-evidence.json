@@ -357,7 +357,10 @@
             "src/components/data-entry/__tests__/input-clear.test.tsx"
           ]
         },
-        "defaultValue": { "cases": ["filled"], "evidence": ["docs/data-entry/input.tsx"] },
+        "defaultValue": {
+          "cases": ["filled"],
+          "evidence": ["docs/data-entry/input.tsx"]
+        },
         "disabled": {
           "cases": [false, true],
           "evidence": [
@@ -365,7 +368,10 @@
             "src/components/data-entry/__tests__/input.a11y.test.tsx"
           ]
         },
-        "leadingIcon": { "cases": ["currency"], "evidence": ["docs/data-entry/input.tsx"] },
+        "leadingIcon": {
+          "cases": ["currency"],
+          "evidence": ["docs/data-entry/input.tsx"]
+        },
         "onClear": {
           "cases": ["callback"],
           "evidence": [
@@ -373,7 +379,10 @@
             "src/components/data-entry/__tests__/input-clear.test.tsx"
           ]
         },
-        "trailingIcon": { "cases": ["reference"], "evidence": ["docs/data-entry/input.tsx"] },
+        "trailingIcon": {
+          "cases": ["reference"],
+          "evidence": ["docs/data-entry/input.tsx"]
+        },
         "type": {
           "cases": ["text", "password", "number", "date", "file", "email"],
           "evidence": ["docs/data-entry/input.tsx"]
@@ -401,8 +410,14 @@
             "src/components/data-entry/__tests__/password-input.test.tsx"
           ]
         },
-        "onClear": { "cases": ["callback"], "evidence": ["docs/data-entry/password-input.tsx"] },
-        "trailingIcon": { "cases": ["present"], "evidence": ["docs/data-entry/password-input.tsx"] }
+        "onClear": {
+          "cases": ["callback"],
+          "evidence": ["docs/data-entry/password-input.tsx"]
+        },
+        "trailingIcon": {
+          "cases": ["present"],
+          "evidence": ["docs/data-entry/password-input.tsx"]
+        }
       }
     },
     "PasswordStrength": {
@@ -452,7 +467,10 @@
             "src/components/data-entry/__tests__/checkbox-interaction.test.tsx"
           ]
         },
-        "disabled": { "cases": [false, true], "evidence": ["docs/data-entry/checkbox.tsx"] },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
+        },
         "onCheckedChange": {
           "cases": ["pointer", "keyboard"],
           "evidence": ["src/components/data-entry/__tests__/checkbox-interaction.test.tsx"]
@@ -476,9 +494,18 @@
           "cases": ["contract-checkbox-children"],
           "evidence": ["docs/data-entry/checkbox.tsx"]
         },
-        "defaultValue": { "cases": [["pdf"]], "evidence": ["docs/data-entry/checkbox.tsx"] },
-        "disabled": { "cases": [false, true], "evidence": ["docs/data-entry/checkbox.tsx"] },
-        "name": { "cases": ["export"], "evidence": ["docs/data-entry/checkbox.tsx"] },
+        "defaultValue": {
+          "cases": [["pdf"]],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
+        },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
+        },
+        "name": {
+          "cases": ["export"],
+          "evidence": ["docs/data-entry/checkbox.tsx"]
+        },
         "onValueChange": {
           "cases": ["pointer", "keyboard"],
           "evidence": [
@@ -505,7 +532,10 @@
     },
     "RadioGroup": {
       "props": {
-        "children": { "cases": ["RadioItem"], "evidence": ["docs/data-entry/radio-group.tsx"] },
+        "children": {
+          "cases": ["RadioItem"],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
+        },
         "className": {
           "cases": ["contract-radio-group"],
           "evidence": ["docs/data-entry/radio-group.tsx"]
@@ -514,7 +544,10 @@
           "cases": ["taxed", "locked"],
           "evidence": ["docs/data-entry/radio-group.tsx"]
         },
-        "disabled": { "cases": [false, true], "evidence": ["docs/data-entry/radio-group.tsx"] },
+        "disabled": {
+          "cases": [false, true],
+          "evidence": ["docs/data-entry/radio-group.tsx"]
+        },
         "name": {
           "cases": ["notification_channel"],
           "evidence": ["docs/data-entry/radio-group.tsx"]
@@ -595,8 +628,14 @@
           "cases": ["immediate callback"],
           "evidence": ["docs/data-entry/search-input.tsx"]
         },
-        "placeholder": { "cases": ["custom"], "evidence": ["docs/data-entry/search-input.tsx"] },
-        "value": { "cases": ["controlled"], "evidence": ["docs/data-entry/search-input.tsx"] }
+        "placeholder": {
+          "cases": ["custom"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
+        },
+        "value": {
+          "cases": ["controlled"],
+          "evidence": ["docs/data-entry/search-input.tsx"]
+        }
       }
     },
     "TagInput": {
@@ -624,7 +663,10 @@
             "src/components/data-entry/__tests__/tag-input.test.tsx"
           ]
         },
-        "id": { "cases": ["recipient-emails"], "evidence": ["docs/data-entry/tag-input.tsx"] },
+        "id": {
+          "cases": ["recipient-emails"],
+          "evidence": ["docs/data-entry/tag-input.tsx"]
+        },
         "name": {
           "cases": ["cc_emails", "locked_tags"],
           "evidence": [
@@ -787,6 +829,478 @@
         "onClick": {
           "cases": ["fires when enabled", "blocked when disabled", "blocked while loading"],
           "evidence": ["src/components/general/__tests__/button.test.tsx"]
+        }
+      }
+    },
+    "Upload": {
+      "props": {
+        "variant": {
+          "cases": ["button", "picture", "dropzone", "picture-card", "avatar", "avatar-crop"],
+          "evidence": ["docs/data-entry/upload.tsx"]
+        }
+      }
+    },
+    "NumberInput": {
+      "props": {
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": [
+            "docs/data-entry/number-input.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        }
+      }
+    },
+    "Avatar": {
+      "props": {
+        "shape": {
+          "cases": ["circle", "square"],
+          "evidence": ["docs/data-display/avatar.tsx"]
+        }
+      }
+    },
+    "Badge": {
+      "props": {
+        "variant": {
+          "cases": ["default", "secondary", "outline", "dashed"],
+          "evidence": ["docs/data-display/badge.tsx"]
+        },
+        "tone": {
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral",
+            "primary"
+          ],
+          "evidence": ["docs/data-display/badge.tsx"]
+        },
+        "shape": {
+          "cases": ["default", "pill", "sharp"],
+          "evidence": ["docs/data-display/badge.tsx"]
+        }
+      }
+    },
+    "StatusBadge": {
+      "props": {
+        "variant": {
+          "cases": ["default", "secondary", "outline", "dashed"],
+          "evidence": ["docs/data-display/badge.tsx"]
+        },
+        "tone": {
+          "cases": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral",
+            "primary"
+          ],
+          "evidence": ["docs/data-display/badge.tsx"]
+        },
+        "shape": {
+          "cases": ["default", "pill", "sharp"],
+          "evidence": ["docs/data-display/badge.tsx"]
+        }
+      }
+    },
+    "Card": {
+      "props": {
+        "variant": {
+          "cases": ["default", "muted", "outline", "featured"],
+          "evidence": ["docs/data-display/card/index.tsx"]
+        },
+        "size": {
+          "cases": ["compact", "md"],
+          "evidence": ["docs/data-display/card/index.tsx"]
+        },
+        "density": {
+          "cases": ["tight", "cozy"],
+          "evidence": ["docs/data-display/card/index.tsx"]
+        }
+      }
+    },
+    "StatCard": {
+      "props": {
+        "size": {
+          "cases": ["compact", "md"],
+          "evidence": ["docs/data-display/stat-card.tsx"]
+        }
+      }
+    },
+    "EmptyState": {
+      "props": {
+        "variant": {
+          "cases": ["section", "compact", "page"],
+          "evidence": ["docs/data-display/empty-state.tsx"]
+        },
+        "tone": {
+          "cases": ["success", "warning", "destructive", "info", "muted"],
+          "evidence": ["docs/data-display/empty-state.tsx"]
+        }
+      }
+    },
+    "Timeline": {
+      "props": {
+        "variant": {
+          "cases": ["icon", "status", "ordinal"],
+          "evidence": ["docs/data-display/timeline.tsx"]
+        }
+      }
+    },
+    "Progress": {
+      "props": {
+        "tone": {
+          "cases": ["success", "warning", "destructive"],
+          "evidence": ["docs/data-display/progress.tsx"]
+        }
+      }
+    },
+    "CredentialReveal": {
+      "props": {
+        "tone": {
+          "cases": ["warning", "destructive", "info"],
+          "evidence": ["docs/data-display/credential-reveal.tsx"]
+        },
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/data-display/credential-reveal.tsx"]
+        }
+      }
+    },
+    "DataTable": {
+      "props": {
+        "density": {
+          "cases": ["compact", "default", "comfortable"],
+          "evidence": ["docs/data-display/data-table/index.tsx"]
+        }
+      }
+    },
+    "ListRow": {
+      "props": {
+        "density": {
+          "cases": ["compact", "default"],
+          "evidence": ["docs/data-display/list-row.tsx"]
+        }
+      }
+    },
+    "Switch": {
+      "props": {
+        "size": {
+          "cases": ["sm", "md"],
+          "evidence": [
+            "docs/data-entry/switch.tsx",
+            "src/components/data-entry/__tests__/switch-interaction.test.tsx",
+            "scripts/check-data-entry-frame-runtime.mjs"
+          ]
+        }
+      }
+    },
+    "ButtonRefetch": {
+      "props": {
+        "variant": {
+          "cases": ["link", "default", "ghost", "destructive", "secondary", "outline", "dashed"],
+          "evidence": ["docs/query/button-refetch.tsx"]
+        },
+        "size": {
+          "cases": ["default", "xs", "sm", "md", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+          "evidence": ["docs/query/button-refetch.tsx"]
+        },
+        "shape": {
+          "cases": ["default", "pill", "sharp"],
+          "evidence": ["docs/query/button-refetch.tsx"]
+        }
+      }
+    },
+    "AuthShell": {
+      "props": {
+        "variant": {
+          "cases": ["default", "canonical"],
+          "evidence": ["docs/layout/auth-shell-variants.tsx", "docs/layout/auth-shell.tsx"]
+        },
+        "density": {
+          "cases": ["compact", "comfortable"],
+          "evidence": ["docs/layout/auth-shell-variants.tsx"]
+        }
+      }
+    },
+    "PageContainer": {
+      "props": {
+        "variant": {
+          "cases": ["default", "narrow", "flush", "ghost"],
+          "evidence": ["docs/layout/page-container.tsx"]
+        },
+        "density": {
+          "cases": ["compact", "default", "comfortable"],
+          "evidence": ["docs/layout/page-container.tsx"]
+        }
+      }
+    },
+    "ErrorSurface": {
+      "props": {
+        "tone": {
+          "cases": ["success", "warning", "destructive", "info", "muted"],
+          "evidence": ["docs/layout/error-surface/index.tsx"]
+        }
+      }
+    },
+    "TabsList": {
+      "props": {
+        "variant": {
+          "cases": ["line", "default"],
+          "evidence": [
+            "docs/navigation/tabs.tsx",
+            "src/components/navigation/__tests__/tabs-line-active-ring-248.test.tsx"
+          ]
+        }
+      }
+    },
+    "ContextMenuItem": {
+      "props": {
+        "variant": {
+          "cases": ["default", "destructive"],
+          "evidence": [
+            "docs/navigation/context-menu.tsx",
+            "src/components/navigation/__tests__/context-menu.test.tsx"
+          ]
+        }
+      }
+    },
+    "DropdownMenuItem": {
+      "props": {
+        "variant": {
+          "cases": ["default", "destructive"],
+          "evidence": [
+            "docs/navigation/dropdown-menu.tsx",
+            "src/components/navigation/__tests__/dropdown-menu.a11y.test.tsx"
+          ]
+        }
+      }
+    },
+    "MenubarItem": {
+      "props": {
+        "variant": {
+          "cases": ["default", "destructive"],
+          "evidence": ["docs/navigation/menubar.tsx"]
+        }
+      }
+    },
+    "Steps": {
+      "props": {
+        "size": {
+          "cases": ["sm", "md"],
+          "evidence": [
+            "docs/navigation/steps.tsx",
+            "src/components/navigation/__tests__/steps-compact.test.tsx"
+          ]
+        }
+      }
+    },
+    "Toggle": {
+      "props": {
+        "variant": {
+          "cases": ["default", "outline"],
+          "evidence": ["docs/data-entry/toggle.tsx"]
+        },
+        "size": {
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["docs/data-entry/toggle.tsx"]
+        }
+      }
+    },
+    "ToggleGroup": {
+      "props": {
+        "variant": {
+          "cases": ["default", "outline"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
+        },
+        "size": {
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
+        }
+      }
+    },
+    "ToggleGroupItem": {
+      "props": {
+        "variant": {
+          "cases": ["default", "outline"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
+        },
+        "size": {
+          "cases": ["sm", "md", "lg"],
+          "evidence": ["docs/data-entry/toggle-group.tsx"]
+        }
+      }
+    },
+    "SelectTrigger": {
+      "props": {
+        "size": {
+          "cases": ["sm", "md"],
+          "evidence": ["docs/data-entry/select.tsx"]
+        }
+      }
+    },
+    "Alert": {
+      "props": {
+        "tone": {
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": ["docs/feedback/alert.tsx"]
+        },
+        "variant": {
+          "cases": ["default"],
+          "evidence": ["docs/feedback/alert.tsx"]
+        }
+      }
+    },
+    "AlertDialog": {
+      "props": {
+        "variant": {
+          "cases": ["default", "destructive"],
+          "evidence": ["docs/feedback/alert-dialog.tsx"]
+        }
+      }
+    },
+    "AlertDialogRoot": {
+      "props": {
+        "open": {
+          "cases": [true, false],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        },
+        "defaultOpen": {
+          "cases": [true, false],
+          "evidence": ["src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"]
+        },
+        "onOpenChange": {
+          "cases": ["controlled callback", "cancel", "escape"],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        }
+      }
+    },
+    "AlertDialogHeader": {
+      "props": {
+        "tone": {
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": ["docs/feedback/alert-dialog.tsx"]
+        },
+        "title": {
+          "cases": ["prop-driven title"],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        },
+        "subtitle": {
+          "cases": ["prop-driven subtitle"],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        },
+        "extra": {
+          "cases": ["trailing badge slot"],
+          "evidence": [
+            "docs/feedback/alert-dialog.tsx",
+            "src/components/feedback/__tests__/dialog-alert-primitives.test.tsx"
+          ]
+        }
+      }
+    },
+    "DialogHeader": {
+      "props": {
+        "tone": {
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": ["docs/feedback/dialog.tsx"]
+        }
+      }
+    },
+    "SheetHeader": {
+      "props": {
+        "tone": {
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": ["docs/feedback/sheet.tsx"]
+        }
+      }
+    },
+    "Heading": {
+      "props": {
+        "tone": {
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "evidence": ["docs/general/typography.tsx"]
+        }
+      }
+    },
+    "Text": {
+      "props": {
+        "tone": {
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "primary"],
+          "evidence": ["docs/general/typography.tsx"]
+        },
+        "size": {
+          "cases": ["xs", "sm", "md", "lg", "xl", "2xs", "2xl"],
+          "evidence": ["docs/general/typography.tsx"]
+        }
+      }
+    },
+    "Logo": {
+      "props": {
+        "tone": {
+          "cases": ["primary", "success"],
+          "evidence": ["docs/general/logo.tsx"]
+        },
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/general/logo.tsx"]
+        }
+      }
+    },
+    "AreaChart": {
+      "props": {
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/size-tiers.tsx"]
+        }
+      }
+    },
+    "BarChart": {
+      "props": {
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/size-tiers.tsx"]
+        }
+      }
+    },
+    "LineChart": {
+      "props": {
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/size-tiers.tsx"]
+        }
+      }
+    },
+    "PieChart": {
+      "props": {
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/size-tiers.tsx"]
+        }
+      }
+    },
+    "CompactBarTrend": {
+      "props": {
+        "size": {
+          "cases": ["xs", "sm", "md", "lg"],
+          "evidence": ["docs/charts/compact-bar-trend.tsx"]
         }
       }
     }

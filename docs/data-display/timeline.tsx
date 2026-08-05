@@ -59,11 +59,13 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>承認フロー</CardTitle>
             <CardDescription>
-              items 配列を渡し、進行中のステップに current: true を付与します。
+              items 配列を渡し、進行中のステップに current: true
+              を付与します。variant=&quot;icon&quot;
+              が既定で、全ステップ共通のドットグリフを描きます。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Timeline items={items} />
+            <Timeline variant="icon" items={items} />
           </CardContent>
         </Card>
 

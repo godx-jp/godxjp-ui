@@ -8,6 +8,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 
 import { AppProvider } from "../../src/app/app-provider";
+import { LandmarkRoot } from "./landmark-root";
 import { STORY_MAP } from "./preview-catalog";
 import { queryClient, StoryErrorBoundary, useLazyStory } from "./preview-runtime";
 
@@ -49,12 +50,6 @@ function IsolateApp() {
   }
 
   if (!Render) return null;
-  const ownsDocumentLandmarks =
-    storyId === "layout-app-shell" ||
-    storyId === "layout-auth-shell" ||
-    storyId === "layout-sidebar" ||
-    storyId === "layout-topbar";
-  const Wrapper = ownsDocumentLandmarks ? "div" : "main";
   const rtl = new URLSearchParams(window.location.search).get("rtl") === "1";
 
   return (
@@ -63,7 +58,11 @@ function IsolateApp() {
         {/* Demos are authored in Japanese; force ja so component chrome (search/clear/empty
             placeholders via t()) matches the demo copy instead of the AppProvider vi default. */}
         <AppProvider defaultLocale="ja" persist={false}>
-          <Wrapper
+          {/* `<main>` vs `<div>` is decided at runtime by probing the rendered story for an
+              own `<main>` — the SAME detector `/frame/**` uses. It replaced a hardcoded
+              story-id allowlist that had drifted behind the catalog and was double-wrapping
+              every shell story added after it was written. See landmark-root.tsx. */}
+          <LandmarkRoot
             dir={rtl ? "rtl" : undefined}
             lang={rtl ? "ar" : undefined}
             data-rtl-root={rtl ? "" : undefined}
@@ -71,7 +70,7 @@ function IsolateApp() {
             <StoryErrorBoundary storyId={story.id}>
               <Render />
             </StoryErrorBoundary>
-          </Wrapper>
+          </LandmarkRoot>
         </AppProvider>
       </MemoryRouter>
     </QueryClientProvider>

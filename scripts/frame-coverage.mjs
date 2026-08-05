@@ -50,6 +50,7 @@ const NON_COMPONENT_GROUPS = new Set(["showcase", "foundation"]);
  * (subcomponents, chart variants, aliases). Anything not here is matched by kebab(name).
  */
 const FRAME_ALIAS = {
+  AlertDialogRoot: "alert-dialog",
   CardContent: "card",
   Field: "form-field",
   Toaster: "toast",

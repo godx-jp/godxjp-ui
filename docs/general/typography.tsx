@@ -11,6 +11,17 @@ const sizes = ["2xs", "xs", "sm", "md", "lg", "xl", "2xl"] as const;
 const tones = ["default", "muted", "primary", "success", "warning", "destructive", "info"] as const;
 const levels = [1, 2, 3, 4] as const;
 
+/** Heading tone — every branch paired with the section it actually belongs on. */
+const headingTones = [
+  { tone: "default", title: "請求サマリー" },
+  { tone: "muted", title: "補足情報" },
+  { tone: "primary", title: "今月の重点項目" },
+  { tone: "success", title: "月次締め処理が完了しました" },
+  { tone: "warning", title: "承認待ちの申請があります" },
+  { tone: "destructive", title: "同期に失敗した明細" },
+  { tone: "info", title: "システムメンテナンスのお知らせ" },
+] as const;
+
 export default function Demo() {
   return (
     <PageContainer
@@ -31,6 +42,30 @@ export default function Demo() {
                 <Heading key={level} level={level}>
                   H{level} · 請求書一覧
                 </Heading>
+              ))}
+            </Flex>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Heading tone</CardTitle>
+            <CardDescription>
+              level は文書構造、tone は意味です。見出しの tone は Text
+              と同じ意味論トークンを読むため、 節の状態を色で示しても文書階層は変わりません。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {headingTones.map(({ tone, title }) => (
+                <Flex key={tone} direction="col" gap="xs">
+                  <Heading level={3} tone={tone}>
+                    {title}
+                  </Heading>
+                  <Text size="2xs" mono tone="muted">
+                    {`tone="${tone}"`}
+                  </Text>
+                </Flex>
               ))}
             </Flex>
           </CardContent>

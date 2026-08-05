@@ -17,7 +17,13 @@ export interface LogoProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "
    * `"glyph"` preserves the configurable boxed-glyph treatment.
    */
   mark?: LogoMark;
-  /** Box size tier (tokenised). Default `"md"` (1.75rem). */
+  /**
+   * Box size tier (tokenised), applied to EVERY mark. The boxed glyph reads `--logo-size-*`
+   * (default `md` = 1.75rem); `mark="godx"` reads its own `--logo-godx-size-*` scale (default `md`
+   * = 2rem — the identity artwork is a capsule in a square viewBox and needs slightly more box to
+   * read at the same optical weight). On a `wordmark` lockup the tier scales the mark and the
+   * wordmark together. A theme pins the identity box at every tier with `--logo-godx-size`.
+   */
   size?: LogoSize;
   /**
    * Semantic fill role. `"success"` provides the canonical green identity mark without changing
