@@ -147,6 +147,51 @@
     gap: var(--auth-shell-card-stack-gap);
   }
 
+  /* Login is an anchored three-part composition: AuthIdentity · Card · AuthFooter. The fixed
+   * identity track absorbs absent, one-line and wrapped two-line requester states while its
+   * content remains visually adjacent to the Card. This keeps real requester data intact without
+   * allowing its line count to move the canonical SCR-001 card anchor (gh#237). */
+  .ui-auth-shell[data-preset="login"] {
+    --auth-shell-card-max-width: var(--auth-shell-login-card-max-width);
+    --auth-shell-main-align: flex-start;
+    --auth-shell-main-padding: var(--auth-shell-login-flow-offset-block)
+      var(--auth-shell-login-main-padding-inline) var(--auth-shell-login-main-padding-block-end);
+    --auth-shell-card-stack-gap: var(--auth-shell-login-card-stack-gap);
+    --auth-shell-card-padding-block-compact: var(--auth-shell-login-card-padding-block-compact);
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-shell-card {
+    display: grid;
+    grid-template-rows: var(--auth-shell-login-identity-slot-block-size) auto auto;
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-shell-card > .ui-auth-identity,
+  .ui-auth-shell[data-preset="login"] .ui-auth-shell-card > :has(> .ui-auth-identity) {
+    min-width: 0;
+    min-height: 0;
+    block-size: var(--auth-shell-login-identity-slot-block-size);
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-shell-card > .ui-auth-identity,
+  .ui-auth-shell[data-preset="login"]
+    .ui-auth-shell-card
+    > :has(> .ui-auth-identity)
+    > .ui-auth-identity {
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-requester {
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .ui-auth-shell[data-preset="login"] .ui-auth-requester > :last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
   .ui-auth-shell[data-preset="device-authorization"] {
     --auth-shell-card-max-width: var(--auth-shell-device-card-max-width);
     --auth-shell-main-padding: var(--auth-shell-device-main-padding);
@@ -195,6 +240,50 @@
   .ui-auth-requester-icon > svg {
     width: var(--auth-requester-glyph-size);
     height: var(--auth-requester-glyph-size);
+  }
+
+  .ui-auth-account-summary {
+    display: flex;
+    min-height: var(--auth-account-summary-min-height);
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--auth-account-summary-gap);
+    padding: var(--auth-account-summary-padding);
+    border-radius: var(--radius-md);
+    background: hsl(var(--muted));
+  }
+
+  .ui-auth-account-identity {
+    display: flex;
+    min-width: min(100%, var(--auth-account-summary-identity-min-width));
+    flex: 1 1 var(--auth-account-summary-identity-min-width);
+    align-items: center;
+    gap: var(--auth-account-summary-gap);
+  }
+
+  .ui-auth-account-avatar {
+    width: var(--auth-account-summary-avatar-size);
+    height: var(--auth-account-summary-avatar-size);
+    flex: none;
+  }
+
+  .ui-auth-account-fallback-icon {
+    width: var(--auth-account-summary-avatar-glyph-size);
+    height: var(--auth-account-summary-avatar-glyph-size);
+  }
+
+  .ui-auth-account-email {
+    min-width: 0;
+    overflow: hidden;
+    color: hsl(var(--foreground));
+    font-size: var(--auth-account-summary-email-font-size);
+    font-weight: var(--font-weight-medium);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-auth-account-summary > [data-slot="button"] {
+    margin-inline-start: auto;
   }
 
   .ui-auth-legal-footer {
@@ -275,6 +364,12 @@
   @media (max-width: 30rem) {
     .ui-auth-shell[data-variant="canonical"] {
       --auth-shell-main-padding: var(--auth-shell-canonical-main-padding-mobile);
+    }
+
+    .ui-auth-shell[data-preset="login"] {
+      --auth-shell-main-padding: var(--auth-shell-login-flow-offset-block-mobile)
+        var(--auth-shell-login-main-padding-inline-mobile)
+        var(--auth-shell-login-main-padding-block-end);
     }
 
     /* Declared after the canonical mobile inset so a preset's mobile gutter wins at equal
@@ -478,6 +573,33 @@
 
     .app-mobile-nav-trigger {
       display: inline-flex;
+    }
+
+    /* Some approved application contracts retain their navigation rail at narrow widths. This is
+     * an explicit AppShell mode, never a consumer media-query fork: the same sidebar node, footer,
+     * active items and token-owned rail width remain in the canonical two-track grid. */
+    .app-root[data-responsive-navigation="docked"] {
+      grid-template-areas:
+        "sidebar topbar"
+        "sidebar main"
+        "sidebar footer";
+      grid-template-columns: var(--app-shell-sidebar-width) minmax(0, 1fr);
+    }
+
+    .app-root[data-responsive-navigation="docked"][data-collapsed="true"] {
+      grid-template-columns: var(--app-shell-rail-width) minmax(0, 1fr);
+    }
+
+    .app-root[data-responsive-navigation="docked"] > .app-sidebar {
+      display: flex;
+    }
+
+    .app-root[data-responsive-navigation="docked"] > .app-topbar {
+      padding-inline: var(--app-shell-bar-inset);
+    }
+
+    .app-root[data-responsive-navigation="docked"] .app-mobile-nav-trigger {
+      display: none;
     }
   }
 
@@ -1097,6 +1219,14 @@
   .ui-topbar-start {
     flex: 0 1 auto;
   }
+  .ui-topbar-start > :last-child {
+    max-width: 100%;
+    min-width: 0;
+    flex: 0 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .ui-topbar-center {
     flex: 1 1 0%;
     justify-content: center;
@@ -1105,6 +1235,17 @@
     max-width: 100%;
     flex: 0 0 auto;
     margin-inline-start: auto;
+  }
+
+  /* COLLISION CONTRACT (gh#244) — with a docked 16rem sidebar, 901–1100px viewports do not have
+   * enough room for a breadcrumb/title, full search trigger and end utilities. The center slot is
+   * optional by definition, so remove it before it can cover either owned edge. This also gives
+   * phones the same deterministic allocation. A consumer with a real compact center presentation
+   * can opt it back in through the public token instead of a page-local media query. */
+  @media (width <= 68.75rem) {
+    .ui-topbar-center {
+      display: var(--topbar-center-compact-display);
+    }
   }
 
   .tb-chip {

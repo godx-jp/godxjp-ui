@@ -32,6 +32,26 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     expect(shellTokens).toContain("--auth-shell-card-max-width: 24rem;");
   });
 
+  it("login owns one stable SCR-001 card anchor across all canonical viewports (gh#237)", () => {
+    expect(shellTokens).toContain("--auth-shell-login-card-max-width: 22.5rem;");
+    expect(shellTokens).toContain("--auth-shell-login-flow-offset-block: 14.4375rem;");
+    expect(shellTokens).toContain("--auth-shell-login-flow-offset-block-mobile: 13.8125rem;");
+    expect(shellTokens).toContain("--auth-shell-login-identity-slot-block-size: 7rem;");
+    expect(shellTokens).toContain("--auth-shell-login-card-stack-gap: 1.25rem;");
+
+    const [desktop] = authBlock("login");
+    expect(desktop).toMatch(
+      /--auth-shell-card-max-width:\s*var\(--auth-shell-login-card-max-width\)/,
+    );
+    expect(desktop).toMatch(/--auth-shell-main-align:\s*flex-start/);
+    expect(shellStyles).toMatch(
+      /data-preset="login"[^}]*\.ui-auth-shell-card\s*\{[^}]*grid-template-rows:\s*var\(--auth-shell-login-identity-slot-block-size\) auto auto;/s,
+    );
+    expect(shellStyles).toMatch(
+      /data-preset="login"[^}]*\.ui-auth-requester > :last-child\s*\{[^}]*overflow-wrap:\s*anywhere;/s,
+    );
+  });
+
   it("device-authorization owns a 380px card measure and a 5px mobile inline gutter (gh#220)", () => {
     // 23.75rem = 380px; 0.3125rem = 5px → at a 390px viewport the card is x=5px, width=380px.
     expect(shellTokens).toContain("--auth-shell-device-card-max-width: 23.75rem;");
@@ -59,13 +79,15 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     );
   });
 
-  it("puts both preset mobile gutters in the shared 30rem block, after the canonical one", () => {
+  it("puts every preset mobile gutter in the shared 30rem block, after the canonical one", () => {
     const mobile = shellStyles.match(/@media \(max-width: 30rem\)\s*\{[\s\S]*?\n {2}\}/)?.[0] ?? "";
     const canonical = mobile.indexOf('[data-variant="canonical"]');
+    const login = mobile.indexOf('[data-preset="login"]');
     const device = mobile.indexOf('[data-preset="device-authorization"]');
     const context = mobile.indexOf('[data-preset="context-selection"]');
 
     expect(canonical).toBeGreaterThan(-1);
+    expect(login).toBeGreaterThan(canonical);
     // Equal specificity (0,2,0) — the preset MUST come last or canonical's 15px inset would win.
     expect(device).toBeGreaterThan(canonical);
     expect(context).toBeGreaterThan(canonical);
@@ -75,13 +97,16 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     expect(mobile).toMatch(
       /--auth-shell-main-padding:\s*var\(--auth-shell-context-main-padding-mobile\)/,
     );
+    expect(mobile).toMatch(/var\(--auth-shell-login-flow-offset-block-mobile\)/);
   });
 
   it("declares the preset rules after the canonical variant so the two compose", () => {
     const canonical = shellStyles.indexOf('.ui-auth-shell[data-variant="canonical"] {');
+    const login = shellStyles.indexOf('.ui-auth-shell[data-preset="login"] {');
     const device = shellStyles.indexOf('.ui-auth-shell[data-preset="device-authorization"] {');
     const context = shellStyles.indexOf('.ui-auth-shell[data-preset="context-selection"] {');
     expect(canonical).toBeGreaterThan(-1);
+    expect(login).toBeGreaterThan(canonical);
     expect(device).toBeGreaterThan(canonical);
     expect(context).toBeGreaterThan(canonical);
   });
@@ -105,7 +130,12 @@ describe("AuthShell flow presets — token-owned geometry", () => {
   it("never hardcodes a preset measure in the stylesheet", () => {
     // Every preset length must live in the token tier — a literal here is the exact regression
     // (a forked `.canonical-auth-shell--wide`) that gh#220 was filed against.
-    const presetRules = [...authBlock("device-authorization"), ...authBlock("context-selection")];
+    const presetRules = [
+      ...authBlock("login"),
+      ...authBlock("device-authorization"),
+      ...authBlock("context-selection"),
+      ...authBlock("account-recovery"),
+    ];
     expect(presetRules.length).toBeGreaterThan(0);
     for (const rule of presetRules) {
       expect(rule).not.toMatch(/:\s*[\d.]+(rem|px|em)\b/);

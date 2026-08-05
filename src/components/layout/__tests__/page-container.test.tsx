@@ -66,6 +66,14 @@ describe("PageContainer", () => {
     expect(container.firstChild).toHaveClass("ui-density-compact");
   });
 
+  it("emits a stable whole-page collection preset contract", () => {
+    const { container, rerender } = renderWithUi(<PageContainer title="Default" />);
+    expect(container.firstChild).toHaveAttribute("data-preset", "default");
+
+    rerender(<PageContainer title="Organizations" preset="admin-collection" />);
+    expect(container.firstChild).toHaveAttribute("data-preset", "admin-collection");
+  });
+
   it("emits no density class by default — inherits the global density axis", () => {
     // Unset density must NOT pin ui-density-default; otherwise it would override a
     // :root[data-density] axis set app-wide via AppProvider.

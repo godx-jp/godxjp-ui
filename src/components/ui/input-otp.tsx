@@ -3,6 +3,7 @@ import { OTPInput, OTPInputContext } from "input-otp";
 import { Minus } from "lucide-react";
 
 import { cn } from "../../lib/utils";
+import type { InputOTPGroupProp } from "../../props/components/data-entry.prop";
 
 export const InputOTP = React.forwardRef<
   React.ComponentRef<typeof OTPInput>,
@@ -18,11 +19,18 @@ export const InputOTP = React.forwardRef<
 ));
 InputOTP.displayName = "InputOTP";
 
-export const InputOTPGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+export type {
+  InputOTPGroupAppearanceProp,
+  InputOTPGroupProp,
+  InputOTPGroupProp as InputOTPGroupProps,
+} from "../../props/components/data-entry.prop";
+
+export const InputOTPGroup = React.forwardRef<HTMLDivElement, InputOTPGroupProp>(
+  ({ appearance = "slots", className, ...props }, ref) => (
     <div
       ref={ref}
       data-slot="input-otp-group"
+      data-appearance={appearance}
       className={cn("ui-otp-group", className)}
       {...props}
     />

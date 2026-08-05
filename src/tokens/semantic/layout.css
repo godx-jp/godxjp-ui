@@ -104,3 +104,13 @@
    * whole system stays in sync (gh feedback: Descriptions was ~0px while FormField was 8px). */
   --field-label-gap: var(--space-2); /* 8px */
 }
+
+/* Canonical admin collection composition. Services may retune these semantic knobs once. */
+:root {
+  --admin-collection-control-height: var(--control-height-default);
+  --admin-collection-section-gap: var(--space-stack-md);
+  --admin-collection-toolbar-padding-y: 0px;
+  --admin-collection-search-measure: 20rem;
+  --admin-collection-table-row-height: var(--table-row-height-default);
+  --admin-collection-table-cell-padding-y: var(--space-1);
+}

@@ -1,0 +1,177 @@
+{
+  "generatedAt": "2026-08-03T15:03:10.074Z",
+  "base": "http://localhost:6017",
+  "results": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "card": {
+          "x": 540,
+          "y": 363,
+          "width": 360
+        }
+      },
+      "states": [
+        {
+          "state": "standalone",
+          "card": {
+            "x": 540,
+            "y": 363,
+            "width": 360,
+            "height": 253
+          },
+          "requester": null,
+          "screenshot": "standalone-1440x900.png"
+        },
+        {
+          "state": "one-line",
+          "card": {
+            "x": 540,
+            "y": 363,
+            "width": 360,
+            "height": 253
+          },
+          "requester": {
+            "x": 611.78125,
+            "y": 321.8125,
+            "width": 216.421875,
+            "height": 21.1875
+          },
+          "screenshot": "one-line-1440x900.png"
+        },
+        {
+          "state": "wrapped",
+          "card": {
+            "x": 540,
+            "y": 363,
+            "width": 360,
+            "height": 253
+          },
+          "requester": {
+            "x": 540,
+            "y": 300.625,
+            "width": 360,
+            "height": 42.375
+          },
+          "screenshot": "wrapped-1440x900.png"
+        }
+      ],
+      "consoleFailures": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 900,
+        "card": {
+          "x": 332,
+          "y": 363,
+          "width": 360
+        }
+      },
+      "states": [
+        {
+          "state": "standalone",
+          "card": {
+            "x": 332,
+            "y": 363,
+            "width": 360,
+            "height": 253
+          },
+          "requester": null,
+          "screenshot": "standalone-1024x900.png"
+        },
+        {
+          "state": "one-line",
+          "card": {
+            "x": 332,
+            "y": 363,
+            "width": 360,
+            "height": 253
+          },
+          "requester": {
+            "x": 403.78125,
+            "y": 321.8125,
+            "width": 216.421875,
+            "height": 21.1875
+          },
+          "screenshot": "one-line-1024x900.png"
+        },
+        {
+          "state": "wrapped",
+          "card": {
+            "x": 332,
+            "y": 363,
+            "width": 360,
+            "height": 253
+          },
+          "requester": {
+            "x": 332,
+            "y": 300.625,
+            "width": 360,
+            "height": 42.375
+          },
+          "screenshot": "wrapped-1024x900.png"
+        }
+      ],
+      "consoleFailures": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "card": {
+          "x": 15,
+          "y": 353,
+          "width": 360
+        }
+      },
+      "states": [
+        {
+          "state": "standalone",
+          "card": {
+            "x": 15,
+            "y": 353,
+            "width": 360,
+            "height": 253
+          },
+          "requester": null,
+          "screenshot": "standalone-390x844.png"
+        },
+        {
+          "state": "one-line",
+          "card": {
+            "x": 15,
+            "y": 353,
+            "width": 360,
+            "height": 253
+          },
+          "requester": {
+            "x": 86.78125,
+            "y": 311.8125,
+            "width": 216.421875,
+            "height": 21.1875
+          },
+          "screenshot": "one-line-390x844.png"
+        },
+        {
+          "state": "wrapped",
+          "card": {
+            "x": 15,
+            "y": 353,
+            "width": 360,
+            "height": 253
+          },
+          "requester": {
+            "x": 15,
+            "y": 290.625,
+            "width": 360,
+            "height": 42.375
+          },
+          "screenshot": "wrapped-390x844.png"
+        }
+      ],
+      "consoleFailures": []
+    }
+  ]
+}

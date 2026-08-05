@@ -17,6 +17,7 @@ import type {
   ClassNameProp,
   ChildrenProp,
   IdProp,
+  DisabledProp,
 } from "../vocabulary";
 
 /**
@@ -26,6 +27,9 @@ import type {
  * `--page-header-extra-measure` measure, letting the title/subtitle wrap into what is left.
  */
 export type PageContainerHeaderLayoutProp = "stack" | "responsive-inline";
+
+/** Whole-page semantic composition owned by PageContainer. */
+export type PageContainerPresetProp = "default" | "admin-collection";
 
 /** @see PageContainer */
 export type PageContainerProp = {
@@ -46,6 +50,12 @@ export type PageContainerProp = {
   linkComponent?: React.ElementType;
   density?: PageDensityProp;
   variant?: PageContainerVariantProp;
+  /**
+   * Whole-page composition contract. `admin-collection` sets the header-to-toolbar rhythm,
+   * collection search measure, control height and table density once for the entire subtree.
+   * Geometry remains token-owned and service-themeable; no child needs a sizing override.
+   */
+  preset?: PageContainerPresetProp;
   /**
    * How the title band and `extra` share the header row below the 640px step. Defaults to
    * `stack` — the historical arrangement, where `extra` wraps onto its own full-width line under
@@ -158,6 +168,17 @@ export type AppShellProp = {
   footer?: ReactNode;
   sidebarCollapsed?: boolean;
   /**
+   * Responsive navigation strategy below the canonical 900px shell breakpoint.
+   *
+   * - `"drawer"` (default) hides the docked sidebar and exposes the accessible mobile Sheet.
+   * - `"docked"` keeps the sidebar grid track, footer/account region and active navigation in the
+   *   shell at narrow widths. The sidebar width remains owned by `--app-shell-sidebar-width`.
+   *
+   * Use `"docked"` only when the product's approved responsive contract explicitly retains the
+   * rail; it intentionally suppresses the redundant mobile drawer trigger.
+   */
+  responsiveNavigation?: "drawer" | "docked";
+  /**
    * Navigation shown in the mobile drawer at the DXS 900px breakpoint, where the docked sidebar is
    * hidden. AppShell OWNS the drawer: it renders a hamburger trigger in the topbar and a focus-
    * trapped Sheet (Esc + overlay close, focus returns to the trigger) — hiding the sidebar without
@@ -198,10 +219,15 @@ export type AuthShellProp = {
   /**
    * Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the
    * auth card's max-width plus the desktop and mobile page gutters, all owned by component tokens
-   * (`--auth-shell-{device,context,recovery}-*`). Selecting a preset replaces every consumer-side
-   * `--auth-shell-card-max-width` override.
+   * (`--auth-shell-{login,device,context,recovery}-*`). Selecting a preset replaces every
+   * consumer-side geometry override.
    *
    * - `"default"` (default) — the shell's own measure; nothing changes.
+   * - `"login"` — SCR-001's 360px card at x=540/332/15 and y=363/363/353 for the canonical
+   *   1440x900, 1024x900 and 390x844 viewports. The identity occupies a package-owned anchor slot,
+   *   so standalone, one-line requester and wrapped two-line requester states keep the same card
+   *   position without truncating or inventing requester data. Pass AuthIdentity, Card and
+   *   AuthFooter as direct children (an anchor may wrap AuthIdentity).
    * - `"device-authorization"` — 380px card measure with a 5px inline page gutter at a 390px
    *   viewport (canonical device-grant artboard).
    * - `"context-selection"` — 25rem card measure on desktop/tablet, edge-to-edge on mobile, and a
@@ -212,7 +238,7 @@ export type AuthShellProp = {
    *   · passkey-failure), whose title and description sit INSIDE the bordered surface.
    *
    * Orthogonal to `variant`: presets are applied AFTER it, so `variant="canonical"` keeps owning
-   * control density and heading size while the preset re-measures the page.
+   * control density and heading size while the preset re-measures/anchors the page.
    */
   preset?: AuthShellPresetProp;
   /**
@@ -264,6 +290,21 @@ export type AuthIdentityProp = {
    * when the client identity is authoritative — never a placeholder.
    */
   requester?: ReactNode;
+  className?: ClassNameProp;
+};
+
+/**
+ * @see AuthAccountSummary — compact signed-in identity row for hosted authentication surfaces.
+ * It owns avatar fallback, bidi-safe email truncation and the keyboard action geometry; the
+ * consumer owns the authoritative email, localized action label and navigation handler.
+ */
+export type AuthAccountSummaryProp = {
+  email: string;
+  avatarSrc?: string;
+  avatarFallback?: ReactNode;
+  actionLabel: ReactNode;
+  onAction: () => void;
+  disabled?: DisabledProp;
   className?: ClassNameProp;
 };
 

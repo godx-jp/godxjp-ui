@@ -122,6 +122,25 @@ describe("responsive shell geometry", () => {
     expect(end).toMatch(/margin-inline-start:\s*auto;/);
   });
 
+  it("removes the optional Topbar center before it collides with long start/end content (gh#244)", () => {
+    expect(shellTokens).toContain("--topbar-center-compact-display: none;");
+
+    const collisionBlocks = mediaBlocksMentioning(shellStyles, ".ui-topbar-center").filter(
+      ({ condition }) => condition.includes("width <= 68.75rem"),
+    );
+    expect(collisionBlocks).toHaveLength(1);
+    expect(collisionBlocks[0].body).toMatch(
+      /\.ui-topbar-center\s*\{[^}]*display:\s*var\(--topbar-center-compact-display\);/s,
+    );
+
+    const startTitle = declarationsFor(shellStyles, ".ui-topbar-start > :last-child");
+    expect(startTitle).toMatch(/min-width:\s*0;/);
+    expect(startTitle).toMatch(/flex:\s*0 1 auto;/);
+    expect(startTitle).toMatch(/overflow:\s*hidden;/);
+    expect(startTitle).toMatch(/text-overflow:\s*ellipsis;/);
+    expect(startTitle).toMatch(/white-space:\s*nowrap;/);
+  });
+
   it("owns canonical mobile drawer width, backdrop, safe areas and reduced motion", () => {
     expect(shellTokens).toContain("--app-shell-mobile-nav-width: 22.5rem;");
     // The scrim knob is `initial` at :root with the shared --overlay-background default resolved at
@@ -190,6 +209,29 @@ describe("responsive shell geometry", () => {
     );
     // The TSX hamburger variant must state the SAME number as the CSS breakpoint.
     expect(appShell).toContain("max-[900px]:inline-flex");
+  });
+
+  it("offers an opt-in docked narrow contract without consumer media queries (gh#242)", () => {
+    const restructuring = mediaBlocksMentioning(
+      shellStyles,
+      '.app-root[data-responsive-navigation="docked"]',
+    );
+    expect(restructuring).toHaveLength(1);
+    expect(restructuring[0].condition).toBe("(width <= 56.25rem)");
+    expect(restructuring[0].body).toContain('"sidebar topbar"');
+    expect(restructuring[0].body).toContain('"sidebar main"');
+    expect(restructuring[0].body).toContain('"sidebar footer"');
+    expect(restructuring[0].body).toMatch(
+      /grid-template-columns:\s*var\(--app-shell-sidebar-width\) minmax\(0, 1fr\);/,
+    );
+    expect(restructuring[0].body).toMatch(
+      /data-responsive-navigation="docked"[^}]*> \.app-sidebar\s*\{[^}]*display:\s*flex;/s,
+    );
+    expect(restructuring[0].body).toMatch(
+      /data-responsive-navigation="docked"[^}]*\.app-mobile-nav-trigger\s*\{[^}]*display:\s*none;/s,
+    );
+    expect(appShell).toContain('responsiveNavigation = "drawer"');
+    expect(appShell).toContain("data-responsive-navigation={responsiveNavigation}");
   });
 
   it("exposes Topbar height / inset / gap as quiet-default knobs (gh#213)", () => {

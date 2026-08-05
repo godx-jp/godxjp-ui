@@ -66,6 +66,10 @@
       "types": "./dist/components/charts/index.d.ts",
       "import": "./dist/components/charts/index.js"
     },
+    "./charts/compact-bar-trend": {
+      "types": "./dist/components/charts/compact-bar-trend.d.ts",
+      "import": "./dist/components/charts/compact-bar-trend.js"
+    },
     "./ui": {
       "types": "./dist/components/ui/index.d.ts",
       "import": "./dist/components/ui/index.js"
@@ -291,6 +295,8 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "test": "vitest run",
+    "test:visual:auth-login": "node scripts/auth-shell-login-visual.mjs",
+    "test:visual:topbar-collision": "node scripts/topbar-collision-visual.mjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",

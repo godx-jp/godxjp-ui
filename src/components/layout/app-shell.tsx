@@ -21,6 +21,7 @@ export function AppShell({
   footer,
   children,
   sidebarCollapsed = false,
+  responsiveNavigation = "drawer",
   mobileNav,
   mobileNavLabel,
   mobileNavOpen,
@@ -34,7 +35,7 @@ export function AppShell({
   // navigation is never merely hidden (gh#165); pass `mobileNav` for a tailored menu, or `null`
   // to opt out.
   const drawerNav = mobileNav !== undefined ? mobileNav : sidebar;
-  const hasDrawer = drawerNav != null;
+  const hasDrawer = responsiveNavigation === "drawer" && drawerNav != null;
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
   const drawerOpen = mobileNavOpen ?? uncontrolledOpen;
   const setDrawerOpen = onMobileNavOpenChange ?? setUncontrolledOpen;
@@ -62,7 +63,11 @@ export function AppShell({
     );
 
   return (
-    <div className="app-root" data-collapsed={sidebarCollapsed ? "true" : undefined}>
+    <div
+      className="app-root"
+      data-collapsed={sidebarCollapsed ? "true" : undefined}
+      data-responsive-navigation={responsiveNavigation}
+    >
       <aside className="app-sidebar" aria-label={t("layout.appShell.sidebarLabel")}>
         {sidebar}
       </aside>
@@ -89,13 +94,13 @@ export function AppShell({
             >
               <SheetHeader title={mobileNavLabel ?? t("layout.appShell.navLabel")} />
               {/* The drawer body is edge-to-edge: the nav it hosts (the <Sidebar> node by default)
-                * owns its own inset via --sidebar-nav-scroll-padding, so stacking SheetBody's
-                * generic chrome inset (--sheet-pad-x = 24px) on top of it double-padded every row
-                * — 32px of dead space per side on a ~293px drawer (gh#211). The inset is a
-                * documented knob (--app-shell-mobile-nav-inset); a custom `mobileNav` that wants
-                * the full chrome inset sets it to var(--space-6) once in the service theme.
-                * Passed as a utility (not CSS) because *-layout.css is `@layer components`, where
-                * SheetBody's own px-* utility would win. */}
+               * owns its own inset via --sidebar-nav-scroll-padding, so stacking SheetBody's
+               * generic chrome inset (--sheet-pad-x = 24px) on top of it double-padded every row
+               * — 32px of dead space per side on a ~293px drawer (gh#211). The inset is a
+               * documented knob (--app-shell-mobile-nav-inset); a custom `mobileNav` that wants
+               * the full chrome inset sets it to var(--space-6) once in the service theme.
+               * Passed as a utility (not CSS) because *-layout.css is `@layer components`, where
+               * SheetBody's own px-* utility would win. */}
               <SheetBody
                 className="app-mobile-nav-body px-[var(--app-shell-mobile-nav-inset)]"
                 onClick={handleDrawerClick}

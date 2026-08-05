@@ -1,6 +1,6 @@
 import type * as React from "react";
 import { Building2, UserPlus } from "lucide-react";
-import { CompactBarTrend } from "@godxjp/ui/charts";
+import { CompactBarTrend } from "@godxjp/ui/charts/compact-bar-trend";
 import {
   Card,
   CardContent,

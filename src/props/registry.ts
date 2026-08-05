@@ -205,7 +205,7 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
     description:
-      "AuthShell named flow measure — default | device-authorization (380px card, 5px mobile gutter) | context-selection (25rem card, edge-to-edge mobile) | account-recovery (432px SCR-008 recovery/MFA panel, 15px mobile gutter)",
+      "AuthShell named flow geometry — default | login (stable SCR-001 identity/card/footer anchor) | device-authorization (380px card, 5px mobile gutter) | context-selection (25rem card, edge-to-edge mobile) | account-recovery (432px SCR-008 recovery/MFA panel, 15px mobile gutter)",
   },
   GapProp: {
     file: "vocabulary/layout.prop.ts",
@@ -620,6 +620,12 @@ export const COMPONENT_PROP_REGISTRY = {
           "Authoritative requesting-client context for a delegated auth flow (device grant / consent).",
       },
     ],
+  },
+  AuthAccountSummaryProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: ["DisabledProp", "ClassNameProp"],
+    local: ["email", "avatarSrc", "avatarFallback", "actionLabel", "onAction"],
   },
   CenteredShellProp: {
     group: "layout",
@@ -1390,6 +1396,16 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: ["ValueProp", "DefaultValueProp", "SizeProp", "OnValueChangeProp", "ClassNameProp"],
+  },
+  InputOTPGroupProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: ["ClassNameProp"],
+  },
+  InputOTPGroupAppearanceProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
   },
   StepItemProp: {
     group: "navigation",

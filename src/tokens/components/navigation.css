@@ -10,6 +10,10 @@
   --filter-label-font-size: var(--font-size-xs);
   --filter-picker-width-sm: 11rem;
   --filter-picker-width-md: 14rem;
+  --steps-inline-gap: var(--space-2);
+  --steps-inline-item-gap: var(--space-1);
+  --steps-inline-font-size: var(--font-size-xs);
+  --steps-inline-separator-size: var(--control-icon-size-sm);
 
   /* AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an
    * auth/legal footer, where the square icon-only default reads as a stray button and the full

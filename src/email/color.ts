@@ -92,6 +92,7 @@ function resolve(
  * | `primary` / `primaryForeground`| `--primary` / `--primary-foreground` | the one CTA                  |
  * | `focus`                       | `--ring`                          | focus affordance in webmail panes |
  * | `brand` / `brandForeground`   | `--success` / `--success-foreground` | the GoDX capsule + its glyph   |
+ * | `urgency` / `urgencyForeground`| `--attention` / `--attention-foreground` | action-required accent / solid large label |
  */
 export const EMAIL_COLORS: Readonly<Record<EmailColorToken, EmailHex>> = resolve(
   EMAIL_COLOR_SOURCE as unknown as Record<string, { cssVar: string; hsl: string }>,

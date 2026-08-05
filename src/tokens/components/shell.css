@@ -75,6 +75,11 @@
   --topbar-height: auto;
   --topbar-inset: 0px;
   --topbar-gap: var(--space-2);
+  /* At compact desktop/tablet widths the docked sidebar leaves too little inline room for three
+   * intrinsically-sized clusters. The package hides the optional center slot before it can cover
+   * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy
+   * (for example `flex`) once their center content has its own compact presentation. */
+  --topbar-center-compact-display: none;
   --org-switcher-trigger-height: 2.75rem;
   --org-switcher-trigger-padding-x: var(--space-2);
   --org-switcher-avatar-size: 1.75rem;
@@ -147,6 +152,24 @@
    * (quiet, rule #44) so an existing single-card consumer is untouched; presets opt in. */
   --auth-shell-card-stack-gap: 0px;
 
+  /* Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844.
+   * The 112px identity slot is deliberately taller than a two-line real requester. Identity
+   * content aligns to the slot end, so missing/one-line/two-line requester data changes only the
+   * empty space above it, never the card or footer position. The flow starts at y=231 desktop and
+   * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here,
+   * not in a consumer selector, and do not drift with --scaling. */
+  --auth-shell-login-card-max-width: 22.5rem;
+  --auth-shell-login-flow-offset-block: 14.4375rem;
+  --auth-shell-login-flow-offset-block-mobile: 13.8125rem;
+  --auth-shell-login-main-padding-inline: 1rem;
+  --auth-shell-login-main-padding-inline-mobile: 0.9375rem;
+  --auth-shell-login-main-padding-block-end: 1rem;
+  --auth-shell-login-identity-slot-block-size: 7rem;
+  --auth-shell-login-card-stack-gap: 1.25rem;
+  --auth-shell-login-card-padding-block-compact: calc(
+    var(--auth-shell-compact-card-inset) + var(--control-border-width) + var(--control-border-width)
+  );
+
   /* Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter
    * (at a 390px viewport the card is x=5px, width=380px). */
   --auth-shell-device-card-max-width: 23.75rem;
@@ -181,6 +204,13 @@
   --auth-requester-gap: 0.375rem;
   --auth-requester-icon-size: 1rem;
   --auth-requester-glyph-size: 0.625rem;
+  --auth-account-summary-min-height: var(--control-height-comfortable);
+  --auth-account-summary-gap: var(--space-2);
+  --auth-account-summary-padding: var(--space-1) var(--space-2);
+  --auth-account-summary-identity-min-width: 12rem;
+  --auth-account-summary-avatar-size: var(--control-height-sm);
+  --auth-account-summary-avatar-glyph-size: var(--control-icon-size-sm);
+  --auth-account-summary-email-font-size: var(--font-size-sm);
   --auth-footer-content-gap: 0.375rem;
   --auth-footer-text-font-size: 0.6875rem;
   --auth-stack-gap: var(--space-3);

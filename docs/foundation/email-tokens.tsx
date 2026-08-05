@@ -16,6 +16,7 @@ import {
   EMAIL_MOBILE,
   EMAIL_SHELL,
   EMAIL_TYPOGRAPHY,
+  EMAIL_URGENCY,
   type EmailColorToken,
 } from "@godxjp/ui/email";
 import { Text } from "@godxjp/ui/general";
@@ -191,7 +192,10 @@ export default function Demo() {
             <CardTitle level={2}>Palette</CardTitle>
             <CardDescription>
               Each slot is the semantic web role converted HSL→hex at module load. No literal is
-              ever copied by hand. Re-theme the role and the email follows.
+              ever copied by hand. Re-theme the role and the email follows. The action-required rail
+              uses {EMAIL_URGENCY.accent} from <code>--attention</code>; solid urgency labels use{" "}
+              {EMAIL_URGENCY.solidForeground} on {EMAIL_URGENCY.solidBackground} only for icons or
+              large/bold text. Body copy remains foreground on surface.
             </CardDescription>
           </CardHeader>
           <CardContent>

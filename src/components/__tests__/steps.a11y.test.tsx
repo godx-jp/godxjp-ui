@@ -15,4 +15,8 @@ describe("Steps a11y", () => {
   it("has no axe violations when steps are interactive controls", async () => {
     await expectNoA11yViolations(<Steps items={items} value={1} onValueChange={() => {}} />);
   });
+
+  it("has no axe violations in the compact inline authorization appearance", async () => {
+    await expectNoA11yViolations(<Steps items={items} value={1} type="inline" />);
+  });
 });

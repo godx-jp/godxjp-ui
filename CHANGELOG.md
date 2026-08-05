@@ -55,6 +55,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (clips, no own line-height, safe only because `.tb-chip` uses `font: inherit`) and is fixed in
   the same pass, and a guard now fails the build if ANY single-line clipping box in the shell
   inherits its line box.
+- **Topbar now prevents center-slot collisions at compact desktop and mobile widths (#244).** At
+  1100px and below, the optional center slot follows the public
+  `--topbar-center-compact-display` contract (default `none`) before a full search trigger can
+  cover the start breadcrumb/title or end utilities. The final start-slot item now owns a real
+  shrink + ellipsis boundary. The interactive Topbar preview exercises long JA/EN/VI labels, and a
+  Chromium gate records 1440/1024/390 geometry, focus, overflow and screenshots.
+
+- **`CompactBarTrend` now has a Recharts-free public entry (#243).** Consumers that do not install
+  the optional `recharts` peer can import from `@godxjp/ui/charts/compact-bar-trend` without Vite
+  eagerly linking the peer-backed exports in `@godxjp/ui/charts`. The packed-public-contract gate
+  now extracts the real tarball into a fresh consumer and runs a production Vite build with no
+  `recharts` package present, so this regression cannot pass on source-only or text-only checks.
 
 - **`check:frame-geometry` no longer reports a deliberately scrollable surface as a clipped
   control.** The sweep counted every focusable whose box sticks out of the frame, which is true of
@@ -93,6 +105,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   on a not-yet-interactive strip. No assertion was weakened, retried away or removed.
 
 ### Added
+
+- **PageContainer canonical Admin collection preset (#242).**
+  `preset="admin-collection"` now owns the collection header-to-toolbar rhythm, 320px search
+  measure, 32px control tier, compact table row/cell density and horizontal containment through
+  service-themeable semantic tokens. Consumers set one page-level API instead of repeating field,
+  row or breakpoint overrides. The responsive preview covers JA/EN/VI labels, keyboard focus and
+  narrow horizontal table containment.
+
+- **AppShell opt-in docked navigation below 900px (#242).** The new
+  `responsiveNavigation="drawer" | "docked"` contract keeps the accessible drawer as the default,
+  while approved narrow layouts can retain the same sidebar, footer/account region and active
+  navigation in the token-sized shell grid. Docked mode suppresses the redundant drawer trigger;
+  consumers no longer need page-local media queries to keep a canonical rail visible.
+
+- **Device-authorization public primitives (#238).** `Steps type="inline"` renders the compact
+  numbered auth progress row with localized process/finish/error/wait semantics;
+  `InputOTPGroup appearance="grouped"` renders one outline per code group without replacing the
+  real `input-otp` hidden input, paste, caret or keyboard behavior; and `AuthAccountSummary` owns
+  the compact avatar/email/switch-action row with long-email truncation and responsive wrapping.
+  All geometry is token-backed and the package adds no route, permission or mutation behavior.
 
 - **`AuthShell preset="account-recovery"` — the token-owned SCR-008 password-recovery / sign-in-MFA
   panel measure (#233).** DXS Platform could only reach the canonical 432px recovery and MFA

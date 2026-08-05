@@ -41,6 +41,24 @@ describe("InputOTP a11y", () => {
     );
   });
 
+  it("has no axe violations (outlined grouped 4+4 device code)", async () => {
+    await expectNoA11yViolations(
+      <InputOTP maxLength={8} aria-label="デバイスコード">
+        <InputOTPGroup appearance="grouped">
+          {[0, 1, 2, 3].map((index) => (
+            <InputOTPSlot key={index} index={index} />
+          ))}
+        </InputOTPGroup>
+        <InputOTPSeparator />
+        <InputOTPGroup appearance="grouped">
+          {[4, 5, 6, 7].map((index) => (
+            <InputOTPSlot key={index} index={index} />
+          ))}
+        </InputOTPGroup>
+      </InputOTP>,
+    );
+  });
+
   it("has no axe violations (disabled)", async () => {
     await expectNoA11yViolations(
       <InputOTP maxLength={4} aria-label="PIN" disabled>

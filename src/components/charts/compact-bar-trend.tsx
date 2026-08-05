@@ -35,7 +35,8 @@ export type {
  * - **i18n** — values are formatted with the active locale's `Intl.NumberFormat`;
  *   every generated string comes from `t()`.
  *
- * Import from the tree-shaken `@godxjp/ui/charts` entry.
+ * Import from `@godxjp/ui/charts/compact-bar-trend`. The isolated public entry keeps
+ * consumers without the optional `recharts` peer away from the peer-backed charts barrel.
  */
 export function CompactBarTrend({
   data,

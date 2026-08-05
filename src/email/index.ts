@@ -23,13 +23,14 @@
  * ## Usage
  *
  * ```ts
- * import { EMAIL_COLORS, EMAIL_SHELL, EMAIL_CTA, EMAIL_BRAND_MARK, emailInlineStyle } from "@godxjp/ui/email";
+ * import { EMAIL_COLORS, EMAIL_URGENCY, EMAIL_SHELL, EMAIL_CTA, EMAIL_BRAND_MARK, emailInlineStyle } from "@godxjp/ui/email";
  *
  * const card = emailInlineStyle({
  *   width: EMAIL_SHELL.width,
  *   padding: EMAIL_SHELL.padding,
  *   backgroundColor: EMAIL_COLORS.surface,
  *   border: `${EMAIL_SHELL.borderWidth} solid ${EMAIL_COLORS.border}`,
+ *   borderTopColor: EMAIL_URGENCY.accent,
  *   borderRadius: EMAIL_SHELL.radius,
  * });
  * ```
@@ -88,6 +89,8 @@ export {
 
 export { emailInlineStyle, type EmailStyleDeclarations } from "./inline-style";
 
+export { EMAIL_URGENCY, EMAIL_URGENCY_DARK, type EmailUrgencyTokens } from "./urgency";
+
 export {
   EMAIL_COLOR_SOURCE,
   EMAIL_COLOR_SOURCE_DARK,
@@ -105,11 +108,14 @@ import {
   EMAIL_MOBILE,
 } from "./geometry";
 import { EMAIL_BRAND_MARK } from "./brand-mark";
+import { EMAIL_URGENCY, EMAIL_URGENCY_DARK } from "./urgency";
 
 /** The whole contract in one object — the shape `EMAIL_TOKENS_JSON` serialises. */
 export interface EmailTokens {
   readonly colors: typeof EMAIL_COLORS;
   readonly colorsDark: typeof EMAIL_COLORS_DARK;
+  readonly urgency: typeof EMAIL_URGENCY;
+  readonly urgencyDark: typeof EMAIL_URGENCY_DARK;
   readonly shell: typeof EMAIL_SHELL;
   readonly typography: typeof EMAIL_TYPOGRAPHY;
   readonly cta: typeof EMAIL_CTA;
@@ -123,6 +129,8 @@ export interface EmailTokens {
 export const EMAIL_TOKENS: EmailTokens = Object.freeze({
   colors: EMAIL_COLORS,
   colorsDark: EMAIL_COLORS_DARK,
+  urgency: EMAIL_URGENCY,
+  urgencyDark: EMAIL_URGENCY_DARK,
   shell: EMAIL_SHELL,
   typography: EMAIL_TYPOGRAPHY,
   cta: EMAIL_CTA,

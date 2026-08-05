@@ -66,6 +66,25 @@ describe("AppShell", () => {
     expect(container.querySelector(".app-root")).toHaveAttribute("data-collapsed", "true");
   });
 
+  it("exposes the responsive navigation strategy and keeps drawer as the default", () => {
+    const { container, rerender } = renderWithUi(<AppShell sidebar={<nav>n</nav>}>x</AppShell>);
+    expect(container.querySelector(".app-root")).toHaveAttribute(
+      "data-responsive-navigation",
+      "drawer",
+    );
+
+    rerender(
+      <AppShell sidebar={<nav>n</nav>} responsiveNavigation="docked">
+        x
+      </AppShell>,
+    );
+    expect(container.querySelector(".app-root")).toHaveAttribute(
+      "data-responsive-navigation",
+      "docked",
+    );
+    expect(screen.queryByRole("button", { name: "Mở menu điều hướng" })).toBeNull();
+  });
+
   it("owns a mobile nav drawer trigger with an accessible name (defaults to the sidebar node)", () => {
     renderWithUi(
       <AppShell sidebar={<nav aria-label="主">サイドナビ</nav>}>

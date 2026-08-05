@@ -1544,6 +1544,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Navigation primitive tokens: pagination, filters, compact pickers."
   },
   {
+    "name": "--steps-inline-gap",
+    "value": "var(--space-2)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--steps-inline-item-gap",
+    "value": "var(--space-1)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--steps-inline-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
+    "name": "--steps-inline-separator-size",
+    "value": "var(--control-icon-size-sm)",
+    "description": "Navigation primitive tokens: pagination, filters, compact pickers."
+  },
+  {
     "name": "--app-setting-picker-compact-control-height",
     "value": "var(--control-height-sm)",
     "description": "AppSettingPicker `compact` (gh#217) — the small, content-hugging labelled trigger used in an * auth/legal footer, where the square icon-only default reads as a stray button and the full * labelled trigger is too tall. Box height comes from the official --control-height-sm tier (never * a literal / ad-hoc calc), and every other knob is themeable (rule #45)."
@@ -1829,34 +1849,39 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
   },
   {
+    "name": "--topbar-center-compact-display",
+    "value": "none",
+    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
+  },
+  {
     "name": "--org-switcher-trigger-height",
     "value": "2.75rem",
-    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
+    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
   },
   {
     "name": "--org-switcher-trigger-padding-x",
     "value": "var(--space-2)",
-    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
+    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
   },
   {
     "name": "--org-switcher-avatar-size",
     "value": "1.75rem",
-    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
+    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
   },
   {
     "name": "--org-switcher-menu-width",
     "value": "16rem",
-    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
+    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
   },
   {
     "name": "--org-switcher-sheet-max-height",
     "value": "75dvh",
-    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
+    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
   },
   {
     "name": "--org-switcher-state-min-height",
     "value": "8rem",
-    "description": "Standalone <Topbar> geometry (rule #45). Topbar is a pure slot bar, so its box is intentionally * QUIET by default: `auto` height and no inline inset, i.e. exactly what it did before these knobs * existed — inside AppShell the `.app-topbar` grid row still owns the height. A service that * places Topbar directly on a page sets `--topbar-height: 3.5rem` / `--topbar-inset: var(--space-4)` * once instead of writing an app-local class. `--topbar-gap` is the gap BETWEEN the start/center/end * clusters and INSIDE each of them, so one knob re-rhythms the whole bar."
+    "description": "At compact desktop/tablet widths the docked sidebar leaves too little inline room for three * intrinsically-sized clusters. The package hides the optional center slot before it can cover * the breadcrumb/title or end utilities. Consumers may opt back into another display strategy * (for example `flex`) once their center content has its own compact presentation."
   },
   {
     "name": "--sidebar-item-active-color",
@@ -1964,6 +1989,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Gap between the direct sections of the auth column (intro · card · remember row). Default 0 * (quiet, rule #44) so an existing single-card consumer is untouched; presets opt in."
   },
   {
+    "name": "--auth-shell-login-card-max-width",
+    "value": "22.5rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-flow-offset-block",
+    "value": "14.4375rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-flow-offset-block-mobile",
+    "value": "13.8125rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-main-padding-inline",
+    "value": "1rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-main-padding-inline-mobile",
+    "value": "0.9375rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-main-padding-block-end",
+    "value": "1rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-identity-slot-block-size",
+    "value": "7rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-card-stack-gap",
+    "value": "1.25rem",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
+    "name": "--auth-shell-login-card-padding-block-compact",
+    "value": "calc( var(--auth-shell-compact-card-inset) + var(--control-border-width) + var(--control-border-width) )",
+    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+  },
+  {
     "name": "--auth-shell-device-card-max-width",
     "value": "23.75rem",
     "description": "Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter * (at a 390px viewport the card is x=5px, width=380px)."
@@ -2051,6 +2121,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--auth-requester-glyph-size",
     "value": "0.625rem",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-account-summary-min-height",
+    "value": "var(--control-height-comfortable)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-account-summary-gap",
+    "value": "var(--space-2)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-account-summary-padding",
+    "value": "var(--space-1) var(--space-2)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-account-summary-identity-min-width",
+    "value": "12rem",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-account-summary-avatar-size",
+    "value": "var(--control-height-sm)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-account-summary-avatar-glyph-size",
+    "value": "var(--control-icon-size-sm)",
+    "description": "Labelled auth divider geometry."
+  },
+  {
+    "name": "--auth-account-summary-email-font-size",
+    "value": "var(--font-size-sm)",
     "description": "Labelled auth divider geometry."
   },
   {
