@@ -1160,6 +1160,17 @@
         }
       }
     },
+    "Banner": {
+      "props": {
+        "tone": {
+          "cases": ["default", "success", "warning", "destructive", "info", "muted", "neutral"],
+          "evidence": [
+            "docs/feedback/alert.tsx",
+            "src/components/feedback/__tests__/banner.test.tsx"
+          ]
+        }
+      }
+    },
     "AlertDialog": {
       "props": {
         "variant": {

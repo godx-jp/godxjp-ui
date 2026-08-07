@@ -222,6 +222,23 @@ export default function Demo() {
                   </Button>
                 </Banner.Actions>
               </Banner>
+              {/* The remaining three tones. default / muted / neutral deliberately share the quiet
+                  neutral surface — the caller names intent without adding colour — so all three
+                  belong here: a reader has to SEE that they resolve alike, not be told. */}
+              <Banner tone="default">
+                <Banner.Title>新しい利用規約が2026年9月1日に発効します</Banner.Title>
+                <Banner.Description>内容は設定画面からいつでも確認できます。</Banner.Description>
+              </Banner>
+              <Banner tone="success">
+                <Banner.Title>すべてのサービスが正常に稼働しています</Banner.Title>
+                <Banner.Description>直近のインシデントは解決済みです。</Banner.Description>
+              </Banner>
+              <Banner tone="muted">
+                <Banner.Title>この組織はアーカイブされています</Banner.Title>
+                <Banner.Description>
+                  閲覧のみ可能で、新しい操作は記録されません。
+                </Banner.Description>
+              </Banner>
             </Flex>
           </CardContent>
         </Card>
