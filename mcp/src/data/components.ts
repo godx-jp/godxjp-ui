@@ -10037,6 +10037,31 @@ export function NotifyRow() {
         description: "Open-state callback.",
       },
       {
+        name: "search",
+        type: "string",
+        description: "Controlled search-box query. Pairs with `onSearchChange`.",
+      },
+      {
+        name: "defaultSearch",
+        type: "string",
+        defaultValue: '""',
+        description:
+          "Initial uncontrolled query, and the value the palette resets to when it closes.",
+      },
+      {
+        name: "onSearchChange",
+        type: "(query: string) => void",
+        description:
+          "Fires on every keystroke with the current query — the seam for search-as-you-type. Also fires with `defaultSearch` when the palette closes.",
+      },
+      {
+        name: "shouldFilter",
+        type: "boolean",
+        defaultValue: "true",
+        description:
+          "Whether the palette filters `groups` itself. Set false for server-side search, which also hands the empty node to the palette (derived from `groups`).",
+      },
+      {
         name: "loading",
         type: "boolean",
         defaultValue: "false",
@@ -10047,6 +10072,8 @@ export function NotifyRow() {
     usage: [
       "Provide localized labels and real command groups; the component does not fetch commands.",
       "Use either `open` plus `onOpenChange` or `defaultOpen`; do not mirror both state models.",
+      "Search-as-you-type against an API: read the query from `onSearchChange`, pass the results back as `groups`, and set `shouldFilter={false}` so the rows are not scored a second time against the same string.",
+      "The empty-state contract: with `shouldFilter` (default) cmdk decides — items exist, the query matches none. With `shouldFilter={false}` the PALETTE decides from props — `labels.empty` renders when `groups` carries no items, and never while `loading` or `error` is set. Hold `loading` for the whole in-flight window: a request that has not answered yet is not an empty result, and asserting over cmdk's own empty node races an async group that populates a frame late.",
     ],
     example: `import { CommandPalette } from "@godxjp/ui/data-entry";
 

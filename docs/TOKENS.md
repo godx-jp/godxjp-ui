@@ -226,6 +226,53 @@ See `docs/SPACING.md` for Card slot matrix. Same pattern everywhere:
 | Status enum     | `<Badge status="…" />`            |
 | Empty list      | `<EmptyState … />`                |
 
+## The layer contract
+
+Every rule this package ships sits inside a cascade layer, and **layer order beats specificity
+outright**. Two halves, and both have already cost a release.
+
+### Inside the package
+
+`@import "tailwindcss"` establishes `theme, base, components, utilities`. Component CSS lives in
+`@layer components`, which is **earlier** than `utilities` — so a Tailwind utility a component emits
+on its own element outranks the layered rule that is supposed to own the same property, and no
+selector can win that fight.
+
+That is a real defect, not a hypothetical: `Table` renders `<table class="… text-sm">`, so the
+`action-collection` preset's `font-size: var(--table-action-collection-font-size-compact)` never
+applied at any width. The documented token was dead, the narrow frame stayed at 14px, and a 5–6
+character Japanese label could not fit its column measure — a WCAG 2.2 SC 1.4.10 failure that only
+manifests in Japanese. Two independent consumers reported it.
+
+A **responsive re-point** that must beat such a utility goes in **`@layer godxjp-ui-responsive`**,
+declared straight after Tailwind in `src/styles/base.css` and therefore the last layer:
+
+```css
+@layer godxjp-ui-responsive {
+  @container ui-table-collection (width < 40rem) {
+    [data-collapse-below="sm"] [data-slot="table"] {
+      font-size: var(--table-action-collection-font-size-compact);
+    }
+  }
+}
+```
+
+It is reserved for `@container` / `@media` re-points. A static rule has no business in it — that
+would silently outrank a consumer's deliberate utility override. Everything static stays in
+`@layer components`.
+
+### In a consumer app
+
+**Unlayered CSS outranks every layer, including `godxjp-ui-responsive`.** So:
+
+- Theme this package by setting **tokens** on a wrapper element (`.my-page { --table-…: 7rem; }`).
+- Do **not** write app selectors against package internals (`[data-slot]`, `[data-priority]`,
+  `.ui-*`). An unlayered rule that does wins at _every_ width and kills the package's responsive
+  re-points. What that looks like in production: a column measured to **0px**, wrapping one
+  character per line.
+- If an app genuinely must write such a rule, put it in a layer — `@layer components { … }` — so
+  the package's own re-points still resolve above it.
+
 ## Adding a new component
 
 1. Add/update the component token file in `src/tokens/components/`.

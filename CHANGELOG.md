@@ -8,6 +8,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`CommandPalette` — a real query accessor: `search` / `defaultSearch` / `onSearchChange`, plus
+  `shouldFilter` (gh#412).** A server-backed result group could not learn what the user had typed:
+  the palette exposed the open state and the groups, and nothing in between. The only route left was
+  reaching into the internal `cmdk-input` element, which a consumer built, proved, and then reverted
+  rather than ship — driving the palette through its own internals destabilised their empty-state
+  contract test, because cmdk decides that node from a SCHEDULED count of the items that have
+  registered in the DOM, so an async group populating a frame late flips it on and off. That was the
+  right call, and this is the seam that makes it unnecessary. The pair follows the `SearchSelect`
+  idiom (`search` + `onSearchChange`) and adds the uncontrolled half `SearchSelect` lacks: pass
+  `search` to control the query, `defaultSearch` to seed it, or neither. `onSearchChange` fires on
+  every keystroke either way, and once more with `defaultSearch` when the palette closes — the query
+  has never survived a close (it used to fall out of the dialog unmounting cmdk), and now that it is
+  a prop the palette says so out loud, so a controlled consumer can drop the result set it fetched
+  for the abandoned query. `shouldFilter={false}` hands filtering to the consumer, which is what
+  server-side search needs: without it every row the server already matched is scored a second time
+  against the same string.
+- **`CommandPalette` — a stated empty-state contract, and `shouldFilter={false}` changes who owns
+  it (gh#412).** With `shouldFilter` (the default) nothing moves: cmdk owns the empty node, and it
+  means "this palette holds items and the query matches none of them". With `shouldFilter={false}`
+  the PALETTE owns it, derived synchronously from props — `labels.empty` renders when `groups`
+  carries no items, and never while `loading` or `error` is set. cmdk's node cannot be trusted in
+  that mode, because it counts DOM registrations on a scheduler rather than reading what the
+  consumer knows; reading `groups` instead makes "did we render the empty state?" a pure function
+  of that render's props, which is the thing a contract test can assert without racing. The
+  practical rule, now documented on the component and in the MCP catalog: hold `loading` for the
+  whole in-flight window — a request that has not answered yet is not an empty result. No new prop
+  was needed to say it.
+
+### Fixed
+
+- **`--table-action-collection-font-size-compact` was dead at every width (gh#412).** Reported
+  independently by two consumers. `Table` emits its type as a Tailwind utility
+  (`<table class="… text-sm">`), and `utilities` outranks `@layer components` by LAYER ORDER — so
+  the compact tier's `font-size:` re-point could never apply, however specific it was written. The
+  documented token had no effect, and the measured consequence only ever showed up in Japanese: in
+  the 390px frame the `action-collection` table is 356px, `primary` takes 24% ≈ 69px of content,
+  and `タイムゾーン` at the effective 14px needs 84px — so the compact tier could not hold a 5–6
+  character Japanese label and broke it toward one character per line (WCAG 2.2 SC 1.4.10). The
+  whole compact tier — type AND the four column measures — now lives in `@layer
+godxjp-ui-responsive`, declared after Tailwind in `styles/base.css` and therefore the LAST layer,
+  so it outranks `utilities` and cannot be half-collapsed by a consumer utility on the table
+  either. At `--font-size-xs` the same label needs ~62px and fits. No markup changed and no default
+  moved; the token simply does what it always said it did.
+- **`DataTable`'s default cell renderer no longer emits a bare text node into the `<td>`
+  (gh#412).** Scalar values (and the `—` placeholder) render inside
+  `<span data-slot="table-cell-text">`. A bare text node leaves the padded cell BOX as the only
+  geometry anything can measure, and the cell's block padding inflates it — so a single unwrapped
+  line reads as wrapped, which is exactly how a CJK one-character-per-line reflow check
+  false-positives on a healthy cell (a consumer hit this and correctly fixed their side rather than
+  weaken their detector). A column with a custom `render` is untouched.
+
+### Changed
+
+- **New cascade layer `godxjp-ui-responsive`, and the layer contract is now written down
+  (cardinal rule #47, `docs/TOKENS.md`).** Declared immediately after `@import "tailwindcss"` in
+  `styles/base.css`, so it is the last layer and outranks `utilities`. It is reserved for
+  responsive re-points — `@container`/`@media` blocks that must beat a component's own static
+  utility — and holds nothing else. The consumer half of the contract matters just as much and had
+  never been stated: UNLAYERED app CSS outranks every layer, including this one, so an app must
+  theme this package through TOKENS on a wrapper and must not write its own selectors against
+  `[data-slot]` / `[data-priority]` internals. One that did killed the package's `@container`
+  re-point at every width and rendered a column at 0px, wrapping one character per line. If an app
+  genuinely must write such a rule, it belongs in `@layer components { … }`.
+
 - **`Card accentPlacement="perimeter"` — a full attention border in a SEMANTIC tone (gh#12).**
   `accent` was documented and implemented as a leading-edge stripe (`border-inline-start` only), and
   the system's one perimeter — `variant="featured"` — hard-coded `--primary`. So a card that had to

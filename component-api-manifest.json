@@ -3644,6 +3644,16 @@
           ]
         },
         {
+          "name": "defaultSearch",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
           "name": "error",
           "origin": "owned",
           "required": false,
@@ -3697,6 +3707,16 @@
           ]
         },
         {
+          "name": "onSearchChange",
+          "origin": "owned",
+          "required": false,
+          "type": "((query: string) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
           "name": "onSelect",
           "origin": "owned",
           "required": true,
@@ -3720,7 +3740,30 @@
           ]
         },
         {
+          "name": "search",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
           "name": "shortcut",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/components/data-entry/command-palette.tsx"
+          ]
+        },
+        {
+          "name": "shouldFilter",
           "origin": "owned",
           "required": false,
           "type": "boolean | undefined",

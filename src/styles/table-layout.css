@@ -307,7 +307,18 @@
     --table-action-collection-column-width: var(--table-action-collection-actions-width);
     text-align: end;
   }
+}
 
+/* The compact tier lives in `godxjp-ui-responsive` — the LAST layer, declared after Tailwind in
+ * styles/base.css — not in `@layer components`. `<table>` carries `text-sm`, a Tailwind utility,
+ * and `utilities` outranks `components` by LAYER ORDER, so a `font-size:` re-point written here as
+ * a component rule can never apply however specific it is: that is exactly why
+ * `--table-action-collection-font-size-compact` was dead at every width (gh#412), leaving the
+ * narrow frame at 14px where a 5–6 character Japanese label overflows its column measure. The
+ * column measures move with it so the whole compact tier is decided in ONE place, and so a
+ * consumer utility on the table can't half-collapse it either. See styles/base.css · THE LAYER
+ * CONTRACT. */
+@layer godxjp-ui-responsive {
   /* Below the step the SOURCE measures are re-pointed to their compact tier (and the type / row
    * density with them); nothing else moves. One block per canonical step — a media/container
    * query cannot read a `var()`, so the tokenized scale is written out (sm 40rem · md 48rem ·

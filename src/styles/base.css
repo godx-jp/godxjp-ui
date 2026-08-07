@@ -28,6 +28,34 @@
  * ───────────────────────────────────────────────────────────────────────── */
 @import "tailwindcss";
 
+/* ── THE LAYER CONTRACT (gh#412) ───────────────────────────────────────────
+ * `@import "tailwindcss"` establishes `theme, base, components, utilities`. Everything this
+ * package styles lives in `@layer components`, which is EARLIER than `utilities` — so a Tailwind
+ * utility a component itself emits silently outranks the package rule that is supposed to own the
+ * same property, no matter how specific that rule is. That is not a specificity bug you can fix
+ * with another selector; layer order beats specificity outright.
+ *
+ * It shipped as a real defect: `<table class="… text-sm">` (utilities) vs the collection preset's
+ * `font-size: var(--table-action-collection-font-size-compact)` (components) — the compact type
+ * tier never applied at ANY width, so the documented token was dead and a 5–6 character Japanese
+ * label could not fit the narrow-frame column measure (WCAG 2.2 SC 1.4.10, and only ever visible
+ * in Japanese). Two independent consumers reported it.
+ *
+ * `godxjp-ui-responsive` is declared HERE, after Tailwind, so it is the LAST layer and outranks
+ * `utilities`. It is reserved for one thing: RESPONSIVE RE-POINTS — the container/media blocks
+ * that must win over a component's own static utility for the layout contract to hold. Nothing
+ * static belongs in it; a rule that does not sit inside a `@container`/`@media` query goes in
+ * `@layer components` like everything else.
+ *
+ * What this layer canNOT do — and the rule consumers must follow: an UNLAYERED consumer rule
+ * outranks EVERY layer, including this one. So app CSS must theme this package through TOKENS on
+ * a wrapper, never by writing its own selectors against `[data-slot]` / `[data-priority]`
+ * elements. A consumer that does write such a rule must put it in a layer
+ * (`@layer components { … }`), or it will silently kill the responsive re-points the package
+ * makes — a column measured to 0px and wrapped one character per line is what that looks like.
+ * See docs/TOKENS.md · "The layer contract". */
+@layer godxjp-ui-responsive;
+
 /* Per-language font wiring — token-only, NO hardcoded faces. Each locale reads
  * an OPTIONAL per-lang slot token (empty by default) and falls back to the
  * base sans. Consumers switch a locale's face by setting its slot, e.g.

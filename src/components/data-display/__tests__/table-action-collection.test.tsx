@@ -150,3 +150,50 @@ describe("Table action-collection preset (gh#253)", () => {
     expect(presetCss).not.toMatch(/font-size:\s*[\d.]+(px|rem|em)\b/);
   });
 });
+
+describe("Table action-collection compact tier — the layer contract (gh#412)", () => {
+  const baseCss = read("../../../styles/base.css");
+
+  it("declares `godxjp-ui-responsive` AFTER Tailwind, so it is the last layer", () => {
+    const tailwindAt = baseCss.indexOf('@import "tailwindcss";');
+    const layerAt = baseCss.indexOf("@layer godxjp-ui-responsive;");
+
+    expect(tailwindAt).toBeGreaterThanOrEqual(0);
+    expect(layerAt).toBeGreaterThan(tailwindAt);
+    // Nothing may re-declare it earlier and steal the position.
+    expect(baseCss.slice(0, tailwindAt)).not.toContain("godxjp-ui-responsive");
+  });
+
+  it("puts the compact re-point in that layer — `@layer components` cannot beat `text-sm`", () => {
+    // The reason the token was dead: Table emits a Tailwind utility for its type, and `utilities`
+    // outranks `components` by LAYER ORDER — no selector written in `components` can win.
+    expect(read("../table.tsx")).toContain("caption-bottom text-sm");
+
+    const responsiveAt = tableCss.indexOf("@layer godxjp-ui-responsive {");
+    expect(responsiveAt).toBeGreaterThan(0);
+    const responsiveLayer = tableCss.slice(responsiveAt);
+    const beforeResponsive = tableCss.slice(0, responsiveAt);
+
+    // Every compact re-point — type AND measures — is inside the last layer…
+    expect(responsiveLayer.match(/@container ui-table-collection \(width </g)).toHaveLength(4);
+    expect(
+      responsiveLayer.match(/font-size: var\(--table-action-collection-font-size-compact\)/g),
+    ).toHaveLength(4);
+    // …and none of it is left behind in `@layer components` (prose comments aside).
+    const beforeRules = beforeResponsive.replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(beforeRules).not.toContain("@container ui-table-collection");
+    expect(beforeRules).not.toContain("-compact");
+  });
+
+  it("keeps the static preset rules in `@layer components` — the layer is for re-points only", () => {
+    const responsiveAt = tableCss.indexOf("@layer godxjp-ui-responsive {");
+    const responsiveLayer = tableCss.slice(responsiveAt);
+
+    expect(tableCss.slice(0, responsiveAt)).toMatch(/\.ui-table-collection\s*\{/);
+    // Nothing in the last layer sits outside a container query.
+    for (const line of responsiveLayer.split("\n")) {
+      if (/^\s{2}[.[]/.test(line))
+        throw new Error(`unqueried rule in the responsive layer: ${line}`);
+    }
+  });
+});

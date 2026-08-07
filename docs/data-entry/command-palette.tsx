@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import {
@@ -42,6 +42,70 @@ const groups = [
     items: [{ id: "invite", label: "メンバーを招待", meta: "⌘ I" }],
   },
 ];
+
+const directory = [
+  { id: "tanaka", label: "田中 太郎", meta: "経理部" },
+  { id: "suzuki", label: "鈴木 花子", meta: "情報システム部" },
+  { id: "sato", label: "佐藤 健", meta: "営業部" },
+  { id: "takahashi", label: "高橋 美咲", meta: "人事部" },
+];
+
+const serverLabels: CommandPaletteLabels = {
+  ...labels,
+  open: "メンバーを検索",
+  title: "メンバー検索",
+  description: "サーバー検索で該当するメンバーを表示します。",
+  placeholder: "氏名または部署で検索…",
+  empty: "該当するメンバーはいません。",
+  loading: "検索中…",
+};
+
+/**
+ * Server-backed search-as-you-type. The consumer owns the query (`onSearchChange`) and the result
+ * set, so `shouldFilter={false}` stops the palette from scoring the same rows a second time — and
+ * with it off the palette derives the empty node from `groups`, never from cmdk's scheduled count.
+ * `loading` is held for the whole in-flight window: a request that has not answered is not an
+ * empty result, so "該当なし" can only appear on a query the server actually answered.
+ */
+function ServerSearchDemo() {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState(directory);
+  const [loading, setLoading] = useState(false);
+  const requestRef = useRef(0);
+
+  useEffect(() => {
+    const request = (requestRef.current += 1);
+    setLoading(true);
+    const timer = setTimeout(() => {
+      if (request !== requestRef.current) return;
+      const trimmed = query.trim();
+      setResults(
+        trimmed === ""
+          ? directory
+          : directory.filter((entry) => `${entry.label}${entry.meta}`.includes(trimmed)),
+      );
+      setLoading(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  return (
+    <Flex direction="col" gap="md">
+      <CommandPalette
+        shouldFilter={false}
+        search={query}
+        onSearchChange={setQuery}
+        loading={loading}
+        groups={[{ id: "members", label: "メンバー", items: results }]}
+        labels={serverLabels}
+        onSelect={(item) => setQuery(String(item.label))}
+      />
+      <Text size="sm" tone="muted" aria-live="polite">
+        {`クエリ: ${query === "" ? "(未入力)" : query} · 結果 ${results.length} 件`}
+      </Text>
+    </Flex>
+  );
+}
 
 /**
  * CommandPalette — searchable keyboard navigation with controlled async/error states and a durable
@@ -96,6 +160,18 @@ export default function Demo() {
               </Button>
             </Flex>
           </Flex>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle level={2}>サーバー検索（search-as-you-type）</CardTitle>
+          <CardDescription>
+            `onSearchChange` でクエリを受け取り、結果を `groups` として返します。`shouldFilter=
+            false` でクライアント側の再フィルタを止め、空状態は `groups` から決まります。
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ServerSearchDemo />
         </CardContent>
       </Card>
     </PageContainer>

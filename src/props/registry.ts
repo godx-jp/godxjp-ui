@@ -1757,7 +1757,7 @@ export const COMPONENT_PROP_REGISTRY = {
   CommandPaletteProp: {
     group: "data-entry",
     file: "components/data-entry/command-palette.tsx",
-    vocabulary: ["OpenProp", "DefaultOpenProp", "OnOpenChangeProp"],
+    vocabulary: ["OpenProp", "DefaultOpenProp", "OnOpenChangeProp", "OnSearchChangeProp"],
   },
   TwoFactorSetupProp: {
     group: "feedback",
