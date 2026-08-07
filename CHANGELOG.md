@@ -127,6 +127,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **⚠ VISIBLE IN EVERY TRANSACTIONAL EMAIL: the primary CTA grows 36px → 44px
+  (`--email-cta-height`, dxs-platform/platform#559).** The email CTA mirrored `--control-height-lg`,
+  and 36px clears WCAG 2.2 **SC 2.5.8** Target Size (Minimum, AA, 24×24) — which is why nothing
+  downstream could see the problem. It does NOT clear **SC 2.5.5** Target Size (Enhanced, AAA,
+  44×44), Apple HIG 44pt or Material 48dp. Email is a mobile-first, **touch-only** medium: no hover
+  state, no precise pointer, and mail clients do not reliably offer zoom or a focus affordance, so
+  the web's AA floor is the wrong bar. `--email-cta-height` and `--email-cta-line-height` (which
+  must stay equal — an Outlook-safe button centres by line-height, not flexbox) are now **44px**,
+  and the mirror to `--control-height-lg` is **deliberately broken**; the token comment says so, so
+  the next reader does not "restore" it. The 44px floor is now asserted as a CONTRACT
+  (`expect(EMAIL_CTA.heightPx).toBeGreaterThanOrEqual(44)`), not as a restatement of the current
+  value — the previous test only checked `heightPx === EMAIL_CSS["--email-cta-height"]`, which is
+  green for any number and is exactly how a consumer spec asserting the 44px floor got pinned to
+  `EMAIL_CTA.heightPx` and silently lost it. The artboard test that pinned 36 was updated
+  deliberately. **Kept in a MINOR** on purpose: no public name, prop or export changes, nothing is
+  removed, the change only enlarges a touch target toward an accessibility floor, and the escape
+  hatch is one public line — a service that must keep the old box sets `--email-cta-height` and
+  `--email-cta-line-height` to `36px` in its own theme. Templates with a tightly measured CTA row
+  will reflow by 8px.
 - **⚠ 18.6.0 silently removed the Topbar CENTRE SLOT at 1100px and below — including on every phone.**
   The gh#244 collision fix introduced `@media (width <= 68.75rem) { .ui-topbar-center { display:
 var(--topbar-center-compact-display) } }` with a default of `none`. Consumers whose global search

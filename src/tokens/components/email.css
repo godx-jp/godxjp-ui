@@ -63,8 +63,14 @@
   --email-heading-font-weight: 500; /* mirrors --font-weight-medium — an email title is calm, not bold */
 
   /* ── Primary CTA — the one action button ────────────────────────────────────────────────── */
-  --email-cta-height: 36px; /* mirrors --control-height-lg (2.25rem) — the canonical CTA box */
-  --email-cta-line-height: 36px; /* equal to the height: bulletproof vertical centring in Outlook */
+  /* TOUCH TARGET, deliberately DECOUPLED from --control-height-lg (36px). Do not "restore" the
+   * mirror: email is a mobile-first, touch-only medium. There is no hover state, no precise
+   * pointer, and mail clients do not reliably offer zoom or a focus affordance — so the web's AA
+   * floor (SC 2.5.8, 24x24, which 36px clears) is the wrong bar here. 44px is the AAA target size
+   * (SC 2.5.5, 44x44) and the Apple HIG 44pt / Material 48dp convention. A service that must keep
+   * the old box sets --email-cta-height + --email-cta-line-height in its own theme. */
+  --email-cta-height: 44px;
+  --email-cta-line-height: 44px; /* equal to the height: bulletproof vertical centring in Outlook */
   --email-cta-padding-x: 16px; /* mirrors --space-4 */
   --email-cta-radius: 6px; /* mirrors the --radius base (0.375rem) */
   --email-cta-font-size: 14px; /* mirrors --font-size-base */

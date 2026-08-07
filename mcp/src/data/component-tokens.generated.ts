@@ -1020,13 +1020,13 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--email-cta-height",
-    "value": "36px",
-    "description": "── Primary CTA — the one action button ──────────────────────────────────────────────────"
+    "value": "44px",
+    "description": "TOUCH TARGET, deliberately DECOUPLED from --control-height-lg (36px). Do not \"restore\" the * mirror: email is a mobile-first, touch-only medium. There is no hover state, no precise * pointer, and mail clients do not reliably offer zoom or a focus affordance — so the web's AA * floor (SC 2.5.8, 24x24, which 36px clears) is the wrong bar here. 44px is the AAA target size * (SC 2.5.5, 44x44) and the Apple HIG 44pt / Material 48dp convention. A service that must keep * the old box sets --email-cta-height + --email-cta-line-height in its own theme."
   },
   {
     "name": "--email-cta-line-height",
-    "value": "36px",
-    "description": "mirrors --control-height-lg (2.25rem) — the canonical CTA box"
+    "value": "44px",
+    "description": "TOUCH TARGET, deliberately DECOUPLED from --control-height-lg (36px). Do not \"restore\" the * mirror: email is a mobile-first, touch-only medium. There is no hover state, no precise * pointer, and mail clients do not reliably offer zoom or a focus affordance — so the web's AA * floor (SC 2.5.8, 24x24, which 36px clears) is the wrong bar here. 44px is the AAA target size * (SC 2.5.5, 44x44) and the Apple HIG 44pt / Material 48dp convention. A service that must keep * the old box sets --email-cta-height + --email-cta-line-height in its own theme."
   },
   {
     "name": "--email-cta-padding-x",

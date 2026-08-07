@@ -1489,7 +1489,7 @@ const mark = emailBrandMarkSvg({ label: "" });
 
 // 3) THE CTA — line-height EQUALS height, so the label centres with no flexbox.
 const ctaCell = emailInlineStyle({
-  height: EMAIL_CTA.height,               // 36px — the canonical box (mirrors --control-height-lg)
+  height: EMAIL_CTA.height,               // 44px — the SC 2.5.5 / HIG 44pt touch target
   borderRadius: EMAIL_CTA.radius,
   backgroundColor: c.primary,
 });
