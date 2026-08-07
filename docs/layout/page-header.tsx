@@ -75,6 +75,10 @@ export default function PageHeaderPage() {
         { label: "Layout", to: "/layout" },
         { label: "PageHeader" },
       ]}
+      // Three breadcrumb trails render on this one page, so each nav landmark needs a DISTINCT
+      // accessible name — two <nav>s sharing one name/role fail axe's landmark-unique (WCAG
+      // 2.4.1 / 1.3.1). This page is the live proof of why `breadcrumbLabel` exists.
+      breadcrumbLabel="このページのパンくず"
       meta={<Badge tone="info">gh#255</Badge>}
       extra={
         <Flex direction="row" gap="sm" align="center" wrap>
@@ -125,6 +129,7 @@ export default function PageHeaderPage() {
                     { label: "会計", to: "/accounting" },
                     { label: "請求一覧" },
                   ]}
+                  breadcrumbLabel="請求一覧のパンくず"
                 />
               </section>
 
@@ -217,6 +222,7 @@ export default function PageHeaderPage() {
                 subtitle="株式会社ゴドー · 2026年7月分"
                 meta={<Badge tone="warning">期限超過</Badge>}
                 breadcrumb={[{ label: "ホーム", to: "/" }, { label: "請求書 #4021" }]}
+                breadcrumbLabel="請求書 #4021 のパンくず"
                 extra={<Button>再送信</Button>}
               />
             </section>
