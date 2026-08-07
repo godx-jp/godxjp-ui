@@ -18,10 +18,63 @@ import type {
  */
 export type FilterBarOverflowProp = "wrap" | "scroll";
 
+/**
+ * One APPLIED filter, rendered as a removable chip under the control row (#258).
+ *
+ * The chip is the visible record of a filter that is already in effect — it is NOT the control that
+ * sets it. `label` is caller-localized text (the bar never interprets or formats domain values);
+ * omit `onRemove` for a chip the user may not lift (a scope locked by the route or by permission),
+ * and the chip renders as a static token with no dead button.
+ */
+export type FilterBarChipProp = {
+  /** Stable identity — also the argument passed back to {@link ToolbarProp.onChipRemove}. */
+  id: string;
+  /** Already-localized chip text, e.g. "状態: 未払い". */
+  label: string;
+  /**
+   * Per-chip removal. Omit for a chip the user cannot lift; the bar then renders no remove control
+   * rather than a disabled one, so nothing focusable is dead.
+   */
+  onRemove?: () => void;
+};
+
 /** @see Toolbar */
 export type ToolbarProp = {
   onClear?: OnClearFiltersProp;
   hasActiveFilters?: HasActiveFiltersProp;
+  /**
+   * The search control (#258). A slot, not a rendered input: the bar owns its MEASURE
+   * (`--filter-bar-search-width`) and its position at the START of the row, while the caller
+   * still chooses the real primitive (`SearchInput`, or a `Select showSearch` for scoped search)
+   * and owns its debounce and value. Passing the control as a child instead is what produced the
+   * inconsistent search widths the issue was filed against.
+   */
+  search?: ChildrenProp;
+  /**
+   * Applied filters as removable chips (#258). The bar owns the CHIP LIFECYCLE — chips render
+   * below the control row, each with an accessible remove control, and the row disappears entirely
+   * when the array is empty (never an empty reserved strip). It owns no state: removing a chip
+   * calls back and the caller re-renders the array.
+   */
+  chips?: readonly FilterBarChipProp[];
+  /**
+   * Called with the chip's `id` when its remove control is activated. Fires in addition to that
+   * chip's own `onRemove`, so a caller may handle removal per chip, centrally, or both.
+   */
+  onChipRemove?: (id: string) => void;
+  /**
+   * Number of records the current filters resolve to (#258). Rendered in a POLITE LIVE REGION and
+   * formatted with `Intl.NumberFormat` + CLDR plurals for the active locale — which is the point:
+   * a sighted user sees the table change, and this is what tells everyone else that filtering
+   * happened. Omit when the count is unknown or still loading.
+   */
+  resultCount?: number;
+  /**
+   * Trailing action region (#258) — export, column settings, a saved-view menu. Rendered AFTER the
+   * reset control, so "clear filters" never sits at the end of the row beside an unrelated primary
+   * action. The bar owns the ordering; the caller owns the controls.
+   */
+  actions?: ChildrenProp;
   /**
    * Pin the strip to the top of its scroll container while the list scrolls beneath it
    * (list-page filter bars, #197). Opt-in — default `false` keeps the toolbar quiet. Tune

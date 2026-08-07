@@ -1199,6 +1199,41 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Soft (subtle) semantic tint ratios — themeable so a service can hit its exact spec * (a brand's success-bg/-border are often more present than the faint 5%/30% default)."
   },
   {
+    "name": "--banner-radius",
+    "value": "0",
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+  },
+  {
+    "name": "--banner-border-width",
+    "value": "0",
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+  },
+  {
+    "name": "--banner-border-block-end-width",
+    "value": "1px",
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+  },
+  {
+    "name": "--banner-space-block",
+    "value": "var(--space-3)",
+    "description": "BANNER — the page-level Alert treatment (gh#255). Every constant a service would want to * match to its page grid is a knob (rule #45): a banner that must keep the app's rounded card * language sets --banner-radius, one that rules its top edge too sets --banner-border-width. * The inline inset tracks the live page gutter, so a banner mounted above a PageContainer lines * its text up with the page title instead of sitting at a second, unrelated margin."
+  },
+  {
+    "name": "--banner-space-inline",
+    "value": "var(--space-page-active-x)",
+    "description": "Inline inset tracks the page gutter so a banner's text lines up with the page title. * `--space-page-active-x` steps down to the compact gutter on `.ui-page-container` only, and * custom properties inherit — so a banner rendered INSIDE the container picks the compact value * up for free, while the normal case (a banner mounted ABOVE the container, or in AppShell) would * keep the desktop gutter and sit 8px out at 390px. The compact step below is what actually keeps * the two aligned; retune it rather than hard-coding a mobile inset at the call site."
+  },
+  {
+    "name": "--banner-space-inline-compact",
+    "value": "var(--space-page-compact-x)",
+    "description": "Inline inset tracks the page gutter so a banner's text lines up with the page title. * `--space-page-active-x` steps down to the compact gutter on `.ui-page-container` only, and * custom properties inherit — so a banner rendered INSIDE the container picks the compact value * up for free, while the normal case (a banner mounted ABOVE the container, or in AppShell) would * keep the desktop gutter and sit 8px out at 390px. The compact step below is what actually keeps * the two aligned; retune it rather than hard-coding a mobile inset at the call site."
+  },
+  {
+    "name": "--banner-dismiss-space-offset",
+    "value": "var(--space-2)",
+    "description": "Dismiss offset is measured from the banner's own (shorter) block inset, so the ✕ stays * optically centred on a one-line strip instead of floating at the inline-alert offset."
+  },
+  {
     "name": "--dialog-content-glow",
     "value": "0 0 0 0 transparent",
     "description": "Brand glow layer for the raised dialog/sheet panel — invisible no-op at rest (rule #44). * Paired AFTER --shadow-lg in the surface box-shadow so a service can wash the overlay with the * global glow, e.g. --dialog-content-glow: var(--shadow-glow), with no markup change."
@@ -1779,6 +1814,61 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Scrollbar gutter reserved under a `overflow=\"scroll\"` filter strip (#216) so the inline * scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid * (0 on an overlay-scrollbar platform)."
   },
   {
+    "name": "--filter-bar-search-width",
+    "value": "18rem",
+    "description": "FilterBar typed model (#258) — the search / chip / result-count regions the bar now OWNS, so a * list page never re-decides them. Every constant is a knob (rule #45): a service matches its own * grid by retuning these once instead of per page. * * Search MEASURE — the whole point of the `search` slot. Below the 640px step the control is * full-width (a bounded search box on a 390px screen wastes the row), so this binds only at and * above it. 18rem = 288px: comfortable for a JA/VI query without crowding the filter groups."
+  },
+  {
+    "name": "--filter-bar-chip-gap",
+    "value": "var(--space-inline-xs)",
+    "description": "Applied-filter chips."
+  },
+  {
+    "name": "--filter-bar-chip-row-gap",
+    "value": "var(--space-inline-xs)",
+    "description": "Applied-filter chips."
+  },
+  {
+    "name": "--filter-bar-chip-padding-inline",
+    "value": "var(--space-2)",
+    "description": "Applied-filter chips."
+  },
+  {
+    "name": "--filter-bar-chip-padding-block",
+    "value": "var(--space-1)",
+    "description": "Applied-filter chips."
+  },
+  {
+    "name": "--filter-bar-chip-radius",
+    "value": "var(--radius-sm)",
+    "description": "Applied-filter chips."
+  },
+  {
+    "name": "--filter-bar-chip-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Applied-filter chips."
+  },
+  {
+    "name": "--filter-bar-chip-background",
+    "value": "initial",
+    "description": "Role-mirror knobs (docs/TOKENS.md) — `initial` at :root so --muted / --muted-foreground * re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme. Binding a role var here * would freeze the chip at the :root palette and a tenant override would never reach it."
+  },
+  {
+    "name": "--filter-bar-chip-foreground",
+    "value": "initial",
+    "description": "Role-mirror knobs (docs/TOKENS.md) — `initial` at :root so --muted / --muted-foreground * re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme. Binding a role var here * would freeze the chip at the :root palette and a tenant override would never reach it."
+  },
+  {
+    "name": "--filter-bar-count-font-size",
+    "value": "var(--font-size-xs)",
+    "description": "Result-count live region."
+  },
+  {
+    "name": "--filter-bar-count-foreground",
+    "value": "initial",
+    "description": "Result-count live region."
+  },
+  {
     "name": "--sheet-responsive-breakpoint-width",
     "value": "48rem",
     "description": "Viewport width at and below which `SheetContent responsive=\"auto\"` renders the mobile bottom * sheet instead of the desktop side panel. Read at runtime by useSheetResponsiveMode() (a CSS * @media cannot resolve a custom property), so a service moves the drawer breakpoint from ONE * knob for every overlay that opts into the responsive contract — Sheet and OrgSwitcher alike. * 48rem = 768px mirrors the library's canonical mobile line (useIsMobile). Accepts px/rem/em."
@@ -2242,6 +2332,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--auth-shell-recovery-main-padding-mobile",
     "value": "0.9375rem",
     "description": "Account-recovery preset (gh#233) — the SCR-008 measure shared by the password-recovery panel * (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP · * recovery-code · passkey-failure). Both canonical desktop panels measure w=432 at 1440, so ONE * preset owns them; the 360px canonical Login measure is untouched. * The mobile gutter is a DECIDED contract, not a traced artboard: the supplied 390 reference is a * desktop 2x2 composite that crops horizontally and cannot be measured. 15px inline at 390 ⇒ the * panel is x=15, width=360 — the same page rhythm as the canonical Login flow, so a user moving * from Login to Recovery on a phone never sees the surface jump."
+  },
+  {
+    "name": "--auth-shell-registration-card-max-width",
+    "value": "22.5rem",
+    "description": "Registration preset (gh#256) — the canonical sign-up measure. Two things make it structurally * different from every preset above, and both are the reason it could not be expressed by * re-using `login`: * * 1. LONG-FORM SCROLLING. A registration card is the tallest surface in the hosted-identity set * (name · email · password · confirm · strength meter · consent · submit · provider row), and * a vertically CENTRED tall card clips its own top on a short viewport — the top overflows * above the scroll origin and becomes unreachable. So the column is start-aligned and the * block-start inset becomes ordinary page padding the user can scroll past. * 2. FOOTER CLEARANCE. The legal/consent footer must never be flush against the submit button * at the end of a long scroll, so the block-end inset is a knob of its own rather than * mirroring the block-start one. * * The 360px form measure and the 15px mobile inline gutter match the canonical Login flow exactly * (22.5rem card, x=15 at 390 ⇒ width=360), so a user moving sign-in → sign-up on a phone never * sees the surface jump."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-block-start",
+    "value": "9.5rem",
+    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-block-start-mobile",
+    "value": "8.875rem",
+    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-inline",
+    "value": "1rem",
+    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-inline-mobile",
+    "value": "0.9375rem",
+    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-block-end",
+    "value": "3rem",
+    "description": "Footer clearance — the gap the legal footer keeps below the end of a long form."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-block-end-mobile",
+    "value": "2rem",
+    "description": "Footer clearance — the gap the legal footer keeps below the end of a long form."
+  },
+  {
+    "name": "--auth-shell-registration-card-stack-gap",
+    "value": "1.25rem",
+    "description": "Footer clearance — the gap the legal footer keeps below the end of a long form."
+  },
+  {
+    "name": "--auth-shell-registration-identity-slot-block-size",
+    "value": "7rem",
+    "description": "Fixed identity track, the same 112px `login` proved (gh#237). Without it the card anchor moves * with the title/requester line count — measured here at 82.69px for one wrapped requester — so * the canonical y above would hold for exactly one copy length and drift for every other. The * slot absorbs absent / one-line / two-line identity content instead."
   },
   {
     "name": "--auth-shell-divider-gap",

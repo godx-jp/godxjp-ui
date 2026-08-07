@@ -201,6 +201,43 @@
   --auth-shell-recovery-main-padding: 1rem;
   --auth-shell-recovery-main-padding-mobile: 0.9375rem;
 
+  /* Registration preset (gh#256) — the canonical sign-up measure. Two things make it structurally
+   * different from every preset above, and both are the reason it could not be expressed by
+   * re-using `login`:
+   *
+   *  1. LONG-FORM SCROLLING. A registration card is the tallest surface in the hosted-identity set
+   *     (name · email · password · confirm · strength meter · consent · submit · provider row), and
+   *     a vertically CENTRED tall card clips its own top on a short viewport — the top overflows
+   *     above the scroll origin and becomes unreachable. So the column is start-aligned and the
+   *     block-start inset becomes ordinary page padding the user can scroll past.
+   *  2. FOOTER CLEARANCE. The legal/consent footer must never be flush against the submit button
+   *     at the end of a long scroll, so the block-end inset is a knob of its own rather than
+   *     mirroring the block-start one.
+   *
+   * The 360px form measure and the 15px mobile inline gutter match the canonical Login flow exactly
+   * (22.5rem card, x=15 at 390 ⇒ width=360), so a user moving sign-in → sign-up on a phone never
+   * sees the surface jump. */
+  --auth-shell-registration-card-max-width: 22.5rem;
+  /* Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card
+   * anchors at y=284 (1440x900) and y=274 (390x844), and the column is
+   *   card y = padding-block-start + identity slot + stack gap
+   * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical
+   * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as
+   * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor. */
+  --auth-shell-registration-main-padding-block-start: 9.5rem;
+  --auth-shell-registration-main-padding-block-start-mobile: 8.875rem;
+  --auth-shell-registration-main-padding-inline: 1rem;
+  --auth-shell-registration-main-padding-inline-mobile: 0.9375rem;
+  /* Footer clearance — the gap the legal footer keeps below the end of a long form. */
+  --auth-shell-registration-main-padding-block-end: 3rem;
+  --auth-shell-registration-main-padding-block-end-mobile: 2rem;
+  --auth-shell-registration-card-stack-gap: 1.25rem;
+  /* Fixed identity track, the same 112px `login` proved (gh#237). Without it the card anchor moves
+   * with the title/requester line count — measured here at 82.69px for one wrapped requester — so
+   * the canonical y above would hold for exactly one copy length and drift for every other. The
+   * slot absorbs absent / one-line / two-line identity content instead. */
+  --auth-shell-registration-identity-slot-block-size: 7rem;
+
   /* Labelled auth divider geometry. */
   --auth-shell-divider-gap: 0.625rem;
   --auth-shell-divider-label-font-size: 0.6875rem;

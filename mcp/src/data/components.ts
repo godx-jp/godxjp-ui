@@ -147,6 +147,19 @@ export const COMPONENTS: ComponentEntry[] = [
           "Grow the body to fill the remaining shell height. Default false = top-packed, content-height (short pages leave no stretched void). Enable for a full-height DataTable, SplitPane, or a chat surface.",
       },
       {
+        name: "meta",
+        type: "ReactNode",
+        description:
+          "Status/meta band rendered INLINE with the <h1> (a Badge tone, a record id, a timestamp). Forwarded verbatim to PageHeader. Omit it and the title band emits its historical bare-<h1> DOM, so no existing page moves.",
+      },
+      {
+        name: "headerLoading",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Skeletonise the TITLE BAND only while the page's record resolves (title/subtitle placeholders + aria-busy; the <h1> stays in the outline with an sr-only accessible name). Breadcrumbs and `extra` stay live — they come from the route, not the record. This is not a page-wide loading flag; use DataState for the body.",
+      },
+      {
         name: "linkComponent",
         type: "React.ElementType",
         description:
@@ -160,7 +173,8 @@ export const COMPONENTS: ComponentEntry[] = [
       "DO: Pass `breadcrumb` as an ordered array of `{ label, to? }` objects from root to current page. The last item is automatically rendered without a link and receives `aria-current='page'`; earlier items with `to` become router `<Link>` elements. Never hand-roll a breadcrumb nav inside a PageContainer.",
       "DON'T: Use `density` to change individual control sizes — it cascades spacing across the entire page subtree. Set it once per page (e.g. `density='compact'` for data-dense list pages) and let all child components inherit it. Do not apply density classes manually.",
       "DO: Use `preset='admin-collection'` for canonical Admin list pages. It owns the toolbar/search/control/table composition once at PageContainer level; do not repeat widths, heights, cell padding or media queries on child fields and rows.",
-      "DON'T: Confuse PageContainer's prop names with the old PageHeader's prop names — PageContainer uses `subtitle` (not `description`) and `extra` (not `actions`). If you see those legacy names in old code, migrate them to PageContainer.",
+      "DO: Use `subtitle` (not `description`) and `extra` (not `actions`) — those are the names both PageContainer and the standalone PageHeader take. If you see `description` / `actions` in old code, migrate them.",
+      "DO: Reach for the standalone `PageHeader` export ONLY when a title band must render outside a page shell (a Sheet detail, a MasterDetail detail pane, a tab body). Inside a page, keep using PageContainer — it renders that very component internally, so the geometry is identical and a hand-mounted PageHeader inside a PageContainer would produce two `<h1>`s.",
       "DO: Leave `fill` off (the default) for ordinary pages — the body is content-height and top-packed, so a short page on a tall viewport leaves no stretched empty void below the content (the page background simply spans the shell). Only set `fill` when the body itself should occupy the full remaining height: a full-height DataTable, a SplitPane, or a chat surface whose message list scrolls and whose composer is pinned to the bottom via `footer` + `stickyFooter`. DON'T add a manual `min-h-screen` / `flex-1` wrapper or a spacer div to fight or fake this.",
       'DO: Reach for `headerLayout="responsive-inline"` when a SINGLE compact header control (a member search, one primary action) must stay beside the title at 390px instead of wrapping under the subtitle. Its measure is the token `--page-header-extra-measure` (11rem) — never a consumer `w-[176px]` or a media query in app CSS. Keep the default `stack` when `extra` holds a toolbar of several buttons; squeezing those into the compact measure only makes them wrap in a narrower box.',
       "DO: Know the header draws NO bottom divider by default — it is governed by the semantic token `--page-header-divider` (default `none`). A service theme opts in once, globally, with `--page-header-divider: 1px solid hsl(var(--border));` in its theme CSS. Never re-create the divider with a `border-b` utility on the header or a `<Separator>` under the title; `variant='ghost'` stays divider-less regardless of the token.",
@@ -198,6 +212,101 @@ export default function OrdersPage() {
   );
 }`,
     storyPath: "layout/PageContainer.stories.tsx",
+    rules: [23],
+  },
+  {
+    name: "PageHeader",
+    group: "layout",
+    tagline:
+      "The canonical page title band (breadcrumb · h1 · subtitle · meta · actions) — the SAME component PageContainer renders, exported for use outside a page shell.",
+    props: [
+      {
+        name: "title",
+        type: "ReactNode",
+        required: true,
+        description: "Heading rendered as the <h1> of the surface.",
+      },
+      { name: "subtitle", type: "ReactNode", description: "Secondary line beneath the title." },
+      {
+        name: "meta",
+        type: "ReactNode",
+        description:
+          "Status/meta band rendered INLINE with the <h1> — a Badge tone, a record id, a timestamp. Wraps below the title at 390px instead of squeezing the title column. Omitted → no band wrapper is emitted at all.",
+      },
+      {
+        name: "extra",
+        type: "ReactNode",
+        description: "Trailing action region — buttons, a search field, an overflow menu.",
+      },
+      {
+        name: "breadcrumb",
+        type: "BreadcrumbItemProp[]",
+        description:
+          "Ordered trail of { label, to? } segments above the title. The last item renders unlinked with aria-current='page'.",
+      },
+      {
+        name: "breadcrumbLabel",
+        type: "string",
+        description:
+          'Override the breadcrumb nav landmark\'s accessible name (defaults to a localized "Breadcrumb"). Required when two headers with breadcrumbs render on one view — two nav landmarks sharing a name/role fail landmark-unique. `breadcrumbAriaLabel` is the kebab/DOM-style alias.',
+      },
+      {
+        name: "layout",
+        type: '"stack" | "responsive-inline"',
+        defaultValue: '"stack"',
+        description:
+          'How the title band and `extra` share the row BELOW the 640px step. "stack" drops `extra` onto its own full-width line; "responsive-inline" keeps it beside the title at the token-owned --page-header-extra-measure. Identical at >=640px. (PageContainer spells this prop `headerLayout`.)',
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        defaultValue: "false",
+        description:
+          "Pending state for the TITLE BAND. Renders the title/subtitle as skeletons and marks the header aria-busy, keeping the <h1> in the heading outline with an sr-only accessible name (an empty heading is an axe violation). Breadcrumbs and `extra` are NOT skeletonised — they come from the route, not the record.",
+      },
+      {
+        name: "linkComponent",
+        type: "React.ElementType",
+        description:
+          "Link component used for breadcrumb links (an Inertia or React Router `Link`). Defaults to a native `<a>`.",
+      },
+    ],
+    usage: [
+      "DON'T: Put a PageHeader inside a PageContainer. PageContainer ALREADY renders this exact component from its own `title`/`subtitle`/`meta`/`extra`/`breadcrumb` props — nesting one would emit two `<h1>`s on one page. Inside a page, pass the props to PageContainer.",
+      "DO: Use the standalone export only where there is no page shell to carry the band: a Sheet/Drawer detail surface, a MasterDetail detail pane, a tab body with its own title, an embedded widget. That is the whole reason it exists — so those surfaces get the package's header geometry instead of a consumer-local `.page-header` stylesheet.",
+      "DO: Pass a status Badge through `meta`, not into `title`. `meta` is a separate inline band, so a long JA/VI title wraps without dragging the badge with it, and the `<h1>` accessible name stays the title alone rather than 'Invoice #4021 Overdue'.",
+      "DO: Drive the pending band with `loading` instead of conditionally rendering the header. Unmounting the header removes the page's only level-1 heading mid-load, which breaks the outline screen-reader users navigate by; `loading` keeps the `<h1>` with an sr-only name and marks the band aria-busy.",
+      "DON'T: Use `loading` as a page-wide flag. It skeletonises the title band ONLY. The body's loading/empty/error states belong to DataState (@godxjp/ui/query) or Skeleton; a page the user may NOT see belongs to ErrorSurface — never render a header whose title and breadcrumbs leak a forbidden resource's name.",
+      "DON'T: Add a bottom rule with a `border-b` utility. The divider is the semantic token `--page-header-divider` (default `none`); a service theme opts in once globally.",
+    ],
+    useCases: [
+      "A MasterDetail detail pane whose selected record needs its own title, status Badge and action row, while the page-level PageContainer title names the collection.",
+      "A Sheet or Drawer detail surface that must present the same title/subtitle/actions rhythm as a full page without being one.",
+      "A tab body inside a settings page where each tab carries its own heading and primary action.",
+      "A record page whose title arrives asynchronously — mount the header immediately with `loading` so the heading outline and breadcrumb trail are stable from first paint.",
+    ],
+    related: [
+      "PageContainer — renders this component internally and adds the page chrome (padding, measure, body rhythm, footer). Use PageContainer for anything that IS a page; use PageHeader only outside a page shell.",
+      "ErrorSurface — the canonical whole-surface contract for permission-denied / error / maintenance states. PageHeader has no `denied` or `error` state on purpose: a title band for a resource the user may not see leaks its name.",
+      "Banner — page-level status strip that sits ABOVE the header (a maintenance notice, a trial-expiry warning), not inside it.",
+      "Breadcrumb — the standalone trail primitive. PageHeader renders its own trail from the `breadcrumb` array; do not nest a Breadcrumb inside it.",
+    ],
+    example: `import { PageHeader, MasterDetail } from "@godxjp/ui/layout";
+import { Badge } from "@godxjp/ui/data-display";
+import { Button } from "@godxjp/ui/general";
+
+export function InvoiceDetail({ invoice, isLoading }) {
+  return (
+    <PageHeader
+      title={invoice?.number}
+      subtitle={invoice?.customer}
+      meta={<Badge tone="warning">{invoice?.status}</Badge>}
+      extra={<Button>再送信</Button>}
+      loading={isLoading}
+    />
+  );
+}`,
+    storyPath: "layout/page-header.tsx",
     rules: [23],
   },
   {
@@ -498,10 +607,10 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
       },
       {
         name: "preset",
-        type: '"default" | "login" | "device-authorization" | "context-selection" | "account-recovery"',
+        type: '"default" | "login" | "registration" | "device-authorization" | "context-selection" | "account-recovery"',
         defaultValue: '"default"',
         description:
-          'Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. "login" (gh#237) anchors the 360px SCR-001 card at x=540/332/15 and y=363/363/353 for 1440x900, 1024x900 and 390x844; its fixed identity slot absorbs standalone, one-line requester and wrapped two-line requester states without truncating data. "device-authorization" (gh#220) = a 380px card at 1440/1024 with a 5px inline page gutter at 390. "context-selection" (gh#217) = a 25rem card on desktop/tablet, edge-to-edge on mobile, plus tokenized section rhythm. "account-recovery" (gh#233) = the 27rem/432px SCR-008 recovery/MFA panel with a 15px mobile gutter. ORTHOGONAL to `variant`, so `variant="canonical" preset="login"` keeps canonical control chrome while the preset owns layout. Selecting a preset REPLACES consumer-side geometry overrides.',
+          'Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. "login" (gh#237) anchors the 360px SCR-001 card at x=540/332/15 and y=363/363/353 for 1440x900, 1024x900 and 390x844; its fixed identity slot absorbs standalone, one-line requester and wrapped two-line requester states without truncating data. "device-authorization" (gh#220) = a 380px card at 1440/1024 with a 5px inline page gutter at 390. "registration" (gh#256) = the 360px sign-up measure with a 15px inline gutter at 390 (the same page rhythm as "login", so sign-in to sign-up never jumps on a phone). It is the ONLY START-aligned preset: a sign-up card is the tallest surface in the set (name/email/password/confirm/strength/consent/submit/providers) and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach. It is also the only preset with its own footer-clearance knob, so the legal/consent footer never sits flush against the submit button; it carries the full password form AND the pending-email confirmation state with no consumer geometry CSS. "context-selection" (gh#217) = a 25rem card on desktop/tablet, edge-to-edge on mobile, plus tokenized section rhythm. "account-recovery" (gh#233) = the 27rem/432px SCR-008 recovery/MFA panel with a 15px mobile gutter. ORTHOGONAL to `variant`, so `variant="canonical" preset="login"` keeps canonical control chrome while the preset owns layout. Selecting a preset REPLACES consumer-side geometry overrides.',
       },
       {
         name: "density",
@@ -518,7 +627,9 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
     usage: [
       "DO pass a single <Card> (with the form inside <CardContent>) as `children` — AuthShell centres it and constrains its width via `--auth-shell-card-max-width`; do NOT hand-roll a `.auth-shell-main` / `.ui-auth-scope` wrapper.",
       'DO use `variant="canonical" preset="login"` for SCR-001 and pass <AuthIdentity>, <Card>, <AuthFooter> as direct children in that order (an anchor may wrap AuthIdentity). The preset owns the identity slot, card anchor, 20px section rhythm and compact card block inset for standalone and real requester states. Do not wrap the three sections in a consumer Flex/Stack or the semantic grid cannot anchor them.',
-      'DO select a `preset` instead of overriding geometry: `preset="login"` for the stable SCR-001 identity/card/footer anchor, `preset="device-authorization"` for the 380px OAuth device-grant measure, `preset="context-selection"` for the 25rem organisation/context picker, `preset="account-recovery"` for the 432px SCR-008 recovery/MFA panel. Page-local width/inset/vertical-offset variables are the exact anti-pattern these presets replace (gh#217/gh#220/gh#233/gh#237).',
+      'DO select a `preset` instead of overriding geometry: `preset="login"` for the stable SCR-001 identity/card/footer anchor, `preset="registration"` for the sign-up form and its pending-email state, `preset="device-authorization"` for the 380px OAuth device-grant measure, `preset="context-selection"` for the 25rem organisation/context picker, `preset="account-recovery"` for the 432px SCR-008 recovery/MFA panel. Page-local width/inset/vertical-offset variables are the exact anti-pattern these presets replace (gh#217/gh#220/gh#233/gh#237).',
+      'DO build the SOCIAL / PROVIDER ACTION row as a COMPOSITION — there is NO SocialLinks component (gh#256 Gate 0): `<AuthDivider label="or" />` followed by a `Flex direction="col" gap="sm"` of real `Button variant="outline"` with the provider glyph as an aria-hidden icon. The package deliberately does not own it: which providers a product offers, in what order, and what consent they imply are product decisions, and a component would have to invent them. `disabled` / `loading` are the Button\'s own props — do not add a provider-specific API.',
+      'DO build the ORGANIZATION CHOICE LIST as a COMPOSITION — there is NO OrganizationChoiceList component (gh#256 Gate 0): `Card` > `CardContent flush` > a `<ul>` of `ListRow as="li"` (leading Avatar, title, description, trailing Button). `CardContent flush` is what gives shared row dividers instead of a card outline per row. Its states are existing exports, never bespoke markup: Skeleton rows for loading, `EmptyState` for no invitations, `Alert tone="destructive"` for a failed fetch and `Alert tone="warning"` for permission-denied. See the auth-shell-context and auth-shell-registration frames.',
       'DO build the password-recovery and sign-in MFA CHALLENGE panels as a COMPOSITION inside `preset="account-recovery"` — there is NO PasswordRecoveryPanel and NO MfaChallengePanel component (gh#233 Gate 0): Card > CardHeader(CardTitle + CardDescription, INSIDE the bordered surface) > CardContent > AuthStack[ Alert notice · FormField fields · Button fullWidth · Flex justify="between" wrap fallback row ]. Do NOT put AuthIdentity above the panel there (it always renders the hosted mark), and NEVER reuse TwoFactorSetup — that is the ENROLLMENT dialog, not a sign-in challenge. See the `auth-recovery-panels` pattern.',
       'DO combine `variant` and `preset` — they are orthogonal: `variant` owns control density + heading size, `preset` owns the page measure. `variant="canonical" preset="device-authorization"` is the canonical device screen.',
       'DO let `preset="context-selection"` space the auth column: it turns the card slot into a flex column with a tokenized `--auth-shell-card-stack-gap`, so an intro (<AuthIdentity>), the choice <Card> and a trailing "remember" row pass as three siblings with NO page-local spacing.',
@@ -4913,9 +5024,10 @@ import { Button } from "@godxjp/ui/general";
     props: [
       {
         name: "variant",
-        type: '"default" | "destructive" | "warning" | "success"',
+        type: '"default" | "banner"',
         defaultValue: '"default"',
-        description: "Colour scheme + default icon.",
+        description:
+          'Box MEASURE, not colour — colour is always `tone`. "default" is the inset, rounded, fully-bordered INLINE alert that sits inside a page body. "banner" is the page-level strip: square, edge-to-edge, ruled on the block-end edge only, measured by the --banner-* tokens. Prefer the `Banner` export over writing variant="banner" by hand.',
       },
       {
         name: "onDismiss",
@@ -4944,10 +5056,10 @@ import { Button } from "@godxjp/ui/general";
     ],
     useCases: [
       'Page-level error banner after a form submission fails server-side validation — `tone="destructive"` with `Alert.Title` summarising the error and `Alert.Description` listing field issues, paired with `onDismiss` so the user can clear it.',
-      "Inline warning at the top of an accounting invoice list when the OAuth token for the MF sync is about to expire — `variant=\"warning\"` with an `Alert.Actions` containing a 'Reconnect' Button.",
+      "Inline warning at the top of an accounting invoice list when the OAuth token for the MF sync is about to expire — `tone=\"warning\"` with an `Alert.Actions` containing a 'Reconnect' Button.",
       'Success confirmation banner rendered after a bulk-import job completes and the user returns to the list page — `tone="success"` with `Alert.Description` showing the record count imported.',
       "TanStack Query data-fetch failure inside a Card body — use `<Alert.QueryError error={error} onRetry={refetch} />` instead of writing a custom error state.",
-      "Informational notice at the top of a settings page when a feature is in beta or requires a plan upgrade — `variant=\"default\"` (Info icon) with a short description and an `Alert.Actions` 'Learn more' link.",
+      "Informational notice at the top of a settings page when a feature is in beta or requires a plan upgrade — `tone=\"info\"` with a short description and an `Alert.Actions` 'Learn more' link.",
       'Dismissible billing-overdue notice at the top of the dashboard — `tone="destructive"` with `onDismiss` that sets a session flag so it does not reappear until the next login.',
     ],
     related: [
@@ -4963,6 +5075,65 @@ import { Button } from "@godxjp/ui/general";
   <AlertDescription>本日中に確認してください。</AlertDescription>
 </Alert>`,
     storyPath: "feedback/Alert.stories.tsx",
+    rules: [],
+  },
+  {
+    name: "Banner",
+    group: "feedback",
+    tagline:
+      'Page-level status strip — Alert locked to variant="banner" (square, edge-to-edge, block-end rule). Same tones, icons, actions and dismiss contract as Alert.',
+    props: [
+      {
+        name: "tone",
+        type: '"default" | "info" | "success" | "warning" | "destructive" | "muted" | "neutral"',
+        defaultValue: '"default"',
+        description:
+          'Semantic tone driving the fill, the leading icon and the live-region politeness (destructive/warning get an assertive role="alert"; everything else role="status").',
+      },
+      {
+        name: "onDismiss",
+        type: "() => void | Promise<void>",
+        description:
+          "Renders the accessible × dismiss button, pinned to the banner's own (shorter) inset so it stays optically centred on a one-line strip.",
+      },
+      {
+        name: "icon",
+        type: "LucideIcon | false",
+        description: "Override or hide (false) the tone's default leading icon.",
+      },
+    ],
+    usage: [
+      'Banner IS Alert — there is one implementation. It takes every Alert prop except `variant`, which it fixes to "banner". Use `Banner.Title` / `Banner.Description` / `Banner.Actions` (the very same elements as Alert\'s) — never mix `Alert.Title` inside a `Banner` and vice versa in one strip.',
+      "DO: Reach for Banner when the message is about the PAGE or the whole app — scheduled maintenance, a trial expiring, a read-only/impersonation mode, a degraded integration. Mount it ABOVE the PageHeader / PageContainer, or in the AppShell so it spans every route. Its inline inset tracks the live page gutter (--banner-space-inline), so its text lines up with the page title.",
+      "DON'T: Use Banner for a message about ONE section, card, form or field — that is an inline `Alert` inside the section it concerns, or `FormField` error text for a field. A page-wide strip for a local problem sends the user hunting.",
+      "DON'T: Use Banner for transient 'saved successfully' feedback — that is `toast()`. Banner is persistent until the user acts or dismisses.",
+      "DO: Retheme it with tokens, never a wrapper className. --banner-radius (0), --banner-border-width (0), --banner-border-block-end-width (1px), --banner-space-block / --banner-space-inline, --banner-dismiss-space-offset. An app that keeps rounded card language everywhere sets --banner-radius once in its theme.",
+      "DON'T: Stack more than one Banner. Two competing page-level strips halve each other's weight; pick the most severe tone and put the rest in the page body.",
+    ],
+    useCases: [
+      "A scheduled-maintenance notice pinned inside AppShell above every route — `tone=\"info\"` with a `Banner.Description` carrying the Intl-formatted window and a `Banner.Actions` 'Details' link.",
+      "A trial-expiry / billing-overdue strip at the top of an authenticated app — `tone=\"warning\"` (or `destructive` past due) with an 'Upgrade' action and `onDismiss` stored per session.",
+      'A read-only or impersonation mode indicator that must stay visible for the whole session — `tone="neutral"`, no `onDismiss`, so the operator cannot lose the context.',
+      "A degraded-integration notice on an accounting workspace (the sync token expired) — `tone=\"warning\"` with a 'Reconnect' action, spanning the page above the header.",
+    ],
+    related: [
+      "Alert — the SAME component at the inline measure. Use Alert inside a page body/section; use Banner for page or app chrome. Do not re-create either with a styled div.",
+      "PageHeader / PageContainer — the banner sits ABOVE the title band, never inside it. PageHeader has no banner slot on purpose: an app-wide notice outlives any single page's header.",
+      "ErrorSurface — when the user may not see the page AT ALL (denied / error / maintenance page), replace the whole surface rather than banner-ing a page they should not be reading.",
+      "Toaster — transient, auto-dismissing feedback. Banner is persistent page chrome.",
+    ],
+    example: `import { Banner } from "@godxjp/ui/feedback";
+
+<Banner tone="warning" onDismiss={dismiss}>
+  <Banner.Content>
+    <Banner.Title>お試し期間は残り3日です</Banner.Title>
+    <Banner.Description>期限までにプランを選択してください。</Banner.Description>
+  </Banner.Content>
+  <Banner.Actions>
+    <Button size="sm">プランを見る</Button>
+  </Banner.Actions>
+</Banner>`,
+    storyPath: "feedback/alert.tsx",
     rules: [],
   },
   {
@@ -10207,16 +10378,62 @@ import { Badge } from "@godxjp/ui/data-display";
         description:
           "Responsive overflow strategy (gh#216). 'wrap': stacked column below 640px, wrapping rows above. 'scroll': one bounded inline-scrolling row above 640px (still stacked below) with the clear-all action pinned at the inline end. The geometry is entirely token/CSS owned — never re-implement it in the page.",
       },
+      {
+        name: "search",
+        type: "ReactNode",
+        description:
+          "SLOT for the page's search control (gh#258). The bar owns its PLACE (start of the row) and its WIDTH (--filter-bar-search-width, 18rem from the 640px step up, full-width below it); the caller owns the primitive, its value and its debounce. Passing the search control as a plain child instead is what produced inconsistent search widths across list pages.",
+      },
+      {
+        name: "chips",
+        type: "readonly { id: string; label: string; onRemove?: () => void }[]",
+        description:
+          "APPLIED filters as removable chips (gh#258) — the visible record of filters already in effect, NOT the controls that set them. Rendered on their own full-width line inside a labelled group, each with a remove control named after its specific filter. The row disappears entirely when the array is empty (never a reserved empty strip). Omit a chip's `onRemove` for a filter the user may not lift and it renders with NO remove control, rather than a disabled one that is a dead tab stop. The bar holds no state: removal calls back and the caller re-renders the array.",
+      },
+      {
+        name: "onChipRemove",
+        type: "(id: string) => void",
+        description:
+          "Called with the chip's id when its remove control is activated. Fires IN ADDITION to that chip's own `onRemove`, so removal can be handled per chip, centrally, or both.",
+      },
+      {
+        name: "resultCount",
+        type: "number",
+        description:
+          "Number of records the current filters resolve to (gh#258). Rendered in a POLITE LIVE REGION and formatted with Intl.NumberFormat + CLDR plurals for the active locale. This is the accessibility point of the prop: a sighted user sees the table change, and this is what tells everyone else that filtering happened. Omit while the count is unknown or loading — do not pass 0 as a placeholder.",
+      },
+      {
+        name: "actions",
+        type: "ReactNode",
+        description:
+          "Trailing action region (gh#258) — export, column settings, a saved-view menu. Rendered AFTER the reset control so `clear filters` never lands at the end of the row next to an unrelated primary action. The bar owns the ordering; the caller owns the controls.",
+      },
       { name: "className", type: "string", description: "Optional structural class override." },
     ],
     usage: [
       "Compose real controls as children; filter state and URL synchronization remain consumer-owned.",
       "Give each FilterBarGroup a `controlId` matching its single control's `id` (gh#216) so the visible caption is that control's real <label>; otherwise the control is nameless to a screen reader.",
       "Reach for `overflow='scroll'` on filter-heavy list pages so a long JA/EN/VI label set never grows the strip into multiple rows and pushes the table below the fold.",
+      "ORDER IS THE CONTRACT (gh#258). DOM order is tab order, and the BAR decides it, not each page: search → filter groups (children) → applied chips → result count → reset → actions. Pass each region through its own prop and you get that order for free; hand-placing them as children is what made every list page keyboard-order differently.",
+      "DO pass the search control through `search`, NOT as a child. As a child it keeps whatever width the caller's control happened to have; through the prop it gets the one token-owned measure every list page shares.",
+      "DO drive applied filters through `chips` rather than rendering Badges yourself. The bar owns the chip lifecycle — the labelled group, the per-chip remove control named after that specific filter (a row of buttons all called 'Remove' is unusable from a screen-reader's control list), and hiding the row entirely when nothing is applied.",
+      "DO pass `resultCount` whenever the filters change a visible count. It is the only part of filtering a non-sighted user is told about; a count rendered as ordinary text beside the bar announces nothing.",
+      "DON'T hand-format the count ('12 results'). `resultCount` groups the number with Intl.NumberFormat and selects the noun with CLDR plural rules for the active locale — a hand-built string produces '1 results' and ignores JA/VI conventions.",
+      "DON'T reach for these props to make the bar own filter STATE. It never does: `search` is a slot, `chips` is a rendered array, `resultCount` is a number you computed. The bar owns placement, measure, ordering, keyboard order and announcement — nothing else.",
     ],
     example: `import { FilterBar, FilterBarGroup } from "@godxjp/ui/navigation";
+import { SearchInput } from "@godxjp/ui/data-entry";
+import { Button } from "@godxjp/ui/general";
 
-<FilterBar overflow="scroll" onClear={clearFilters} hasActiveFilters={hasFilters}>
+<FilterBar
+  overflow="scroll"
+  search={<SearchInput value={q} onSearchChange={setQ} />}
+  chips={applied.map((f) => ({ id: f.id, label: f.label, onRemove: () => lift(f.id) }))}
+  resultCount={rows.length}
+  onClear={clearFilters}
+  hasActiveFilters={applied.length > 0}
+  actions={<Button variant="outline" size="sm">エクスポート</Button>}
+>
   <FilterBarGroup label="Status" controlId="f-status">
     <StatusSelect id="f-status" />
   </FilterBarGroup>

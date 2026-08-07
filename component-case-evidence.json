@@ -1152,8 +1152,11 @@
           "evidence": ["docs/feedback/alert.tsx"]
         },
         "variant": {
-          "cases": ["default"],
-          "evidence": ["docs/feedback/alert.tsx"]
+          "cases": ["default", "banner"],
+          "evidence": [
+            "docs/feedback/alert.tsx",
+            "src/components/feedback/__tests__/banner.test.tsx"
+          ]
         }
       }
     },

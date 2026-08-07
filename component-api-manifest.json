@@ -205,9 +205,10 @@
           "name": "variant",
           "origin": "owned",
           "required": false,
-          "type": "\"default\" | undefined",
+          "type": "AlertVariantProp | undefined",
           "values": [
-            "default"
+            "default",
+            "banner"
           ],
           "declaredIn": [
             "src/props/components/feedback.prop.ts"
@@ -1630,6 +1631,7 @@
           "values": [
             "default",
             "login",
+            "registration",
             "device-authorization",
             "context-selection",
             "account-recovery"
@@ -1762,6 +1764,71 @@
           ],
           "declaredIn": [
             "src/components/data-display/badge.tsx"
+          ]
+        }
+      ]
+    },
+    "Banner": {
+      "group": "feedback",
+      "props": [
+        {
+          "name": "children",
+          "origin": "owned",
+          "required": false,
+          "type": "ReactNode",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts",
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "node_modules/.pnpm/@types+react@19.2.17/node_modules/@types/react/index.d.ts",
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "icon",
+          "origin": "owned",
+          "required": false,
+          "type": "false | IconProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "onDismiss",
+          "origin": "owned",
+          "required": false,
+          "type": "HandlerProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/feedback.prop.ts"
+          ]
+        },
+        {
+          "name": "tone",
+          "origin": "owned",
+          "required": false,
+          "type": "ToneProp | undefined",
+          "values": [
+            "default",
+            "success",
+            "warning",
+            "destructive",
+            "info",
+            "muted",
+            "neutral"
+          ],
+          "declaredIn": [
+            "src/props/components/feedback.prop.ts"
           ]
         }
       ]
@@ -6679,10 +6746,30 @@
       "group": "navigation",
       "props": [
         {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": true,
           "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "chips",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly FilterBarChipProp[] | undefined",
           "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
@@ -6712,6 +6799,16 @@
           ]
         },
         {
+          "name": "onChipRemove",
+          "origin": "owned",
+          "required": false,
+          "type": "((id: string) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "onClear",
           "origin": "owned",
           "required": false,
@@ -6730,6 +6827,26 @@
             "wrap",
             "scroll"
           ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "resultCount",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "search",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
           ]
@@ -9668,6 +9785,19 @@
           ]
         },
         {
+          "name": "headerLoading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
           "name": "linkComponent",
           "origin": "owned",
           "required": false,
@@ -9687,6 +9817,16 @@
             "narrow",
             "medium"
           ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "meta",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": [
             "src/props/components/layout.prop.ts"
           ]
@@ -9748,6 +9888,127 @@
             "flush",
             "ghost"
           ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        }
+      ]
+    },
+    "PageHeader": {
+      "group": "layout",
+      "props": [
+        {
+          "name": "breadcrumb",
+          "origin": "owned",
+          "required": false,
+          "type": "BreadcrumbProp | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "breadcrumbAriaLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "breadcrumbLabel",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "className",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "extra",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "layout",
+          "origin": "owned",
+          "required": false,
+          "type": "PageContainerHeaderLayoutProp | undefined",
+          "values": [
+            "stack",
+            "responsive-inline"
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "linkComponent",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ElementType<any, keyof React.JSX.IntrinsicElements> | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "meta",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "subtitle",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/layout.prop.ts"
+          ]
+        },
+        {
+          "name": "title",
+          "origin": "owned",
+          "required": true,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": [
             "src/props/components/layout.prop.ts"
           ]
@@ -14437,10 +14698,30 @@
       "group": "navigation",
       "props": [
         {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "children",
           "origin": "owned",
           "required": true,
           "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "chips",
+          "origin": "owned",
+          "required": false,
+          "type": "readonly FilterBarChipProp[] | undefined",
           "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
@@ -14470,6 +14751,16 @@
           ]
         },
         {
+          "name": "onChipRemove",
+          "origin": "owned",
+          "required": false,
+          "type": "((id: string) => void) | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "onClear",
           "origin": "owned",
           "required": false,
@@ -14488,6 +14779,26 @@
             "wrap",
             "scroll"
           ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "resultCount",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "search",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
           ]

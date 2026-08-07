@@ -529,6 +529,41 @@
     overflow-wrap: anywhere;
   }
 
+  /* Title + `meta` share one baseline-aligned band (gh#255). The band only exists when `meta` is
+   * passed, so a header without it keeps its historical bare-`<h1>` DOM. `wrap` is what keeps a
+   * long JA/VI title and a status Badge legible at 390px instead of squeezing the title column. */
+  .ui-page-title-band {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--page-header-meta-gap);
+    min-inline-size: 0;
+  }
+
+  .ui-page-header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--page-header-meta-gap);
+    min-inline-size: 0;
+  }
+
+  /* `loading` placeholders — the real `<h1>`/`<p>` wearing the shared `.ui-skeleton-block` skin, so
+   * the pending band occupies the same rhythm the settled band will. `max-inline-size: 100%` keeps
+   * them inside a 390px column; the block size replaces the line box the (sr-only) text no longer
+   * fills. */
+  .ui-page-title-placeholder {
+    inline-size: var(--page-title-placeholder-measure);
+    max-inline-size: 100%;
+    min-block-size: var(--page-title-placeholder-block-size);
+  }
+
+  .ui-page-subtitle-placeholder {
+    inline-size: var(--page-subtitle-placeholder-measure);
+    max-inline-size: 100%;
+    min-block-size: var(--page-subtitle-placeholder-block-size);
+  }
+
   /* Compact viewports use a responsive type step, not compact density: body/control text and
    * touch targets remain readable while page chrome stops competing with primary actions. A
    * single Flex action group must wrap even when the consumer omitted `wrap`, because clipping
@@ -916,6 +951,84 @@
     align-items: center;
     color: hsl(var(--muted-foreground));
     font-size: var(--filter-label-font-size);
+  }
+
+  /* ── FilterBar typed model (#258) ──────────────────────────────────────────────────────────
+   * Every rule below is scoped to a region the bar only emits when its prop is passed, so a bar
+   * built the old way (children + onClear) matches none of them and is geometrically untouched.
+   *
+   * SEARCH — full-width while the strip is stacked (a bounded search box on a 390px screen wastes
+   * the row), then one shared token-owned measure from the 640px step up. This single measure is
+   * what the issue was filed against: as a plain child, every page picked its own width. */
+  .ui-filter-bar-search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .ui-filter-bar-search {
+      width: var(--filter-bar-search-width);
+      max-width: 100%;
+      flex: 0 0 auto;
+    }
+  }
+
+  /* CHIPS — always their own full-width line. Applied filters are a record of state, not another
+   * control in the row; wrapping them in beside the pickers makes both harder to scan. */
+  .ui-filter-bar-chips {
+    display: flex;
+    width: 100%;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--filter-bar-chip-row-gap);
+    min-width: 0;
+  }
+
+  .ui-filter-bar-chip {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    gap: var(--filter-bar-chip-gap);
+    padding: var(--filter-bar-chip-padding-block) var(--filter-bar-chip-padding-inline);
+    border-radius: var(--filter-bar-chip-radius);
+    background: hsl(var(--filter-bar-chip-background, var(--muted)));
+    color: hsl(var(--filter-bar-chip-foreground, var(--muted-foreground)));
+    font-size: var(--filter-bar-chip-font-size);
+  }
+
+  /* A long JA/VI chip value wraps inside the chip rather than pushing the row into a horizontal
+   * scroll — the remove control must stay reachable at 390px. */
+  .ui-filter-bar-chip-label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ui-filter-bar-chip-remove {
+    flex: none;
+  }
+
+  .ui-filter-bar-count {
+    color: hsl(var(--filter-bar-count-foreground, var(--muted-foreground)));
+    font-size: var(--filter-bar-count-font-size);
+    /* The count is a number that changes in place — tabular figures stop the row from twitching
+     * as it goes 9 → 10 → 100. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ui-filter-bar-actions {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-inline-sm);
+  }
+
+  @media (min-width: 640px) {
+    .ui-filter-bar-actions {
+      width: auto;
+      flex: 0 0 auto;
+    }
   }
 
   /* Toolbar/FilterBar `overflow="scroll"` (#216) — one bounded row that scrolls INLINE instead of

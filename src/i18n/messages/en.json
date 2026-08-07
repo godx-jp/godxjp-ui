@@ -135,6 +135,9 @@
       "openNav": "Open navigation menu",
       "navLabel": "Menu"
     },
+    "pageHeader": {
+      "loading": "Loading page…"
+    },
     "authShell": {
       "brandLabel": "Brand",
       "mainLabel": "Main content",
@@ -226,6 +229,14 @@
     },
     "toolbar": {
       "ariaLabel": "Filters"
+    },
+    "filterBar": {
+      "appliedFilters": "Applied filters",
+      "removeFilter": "Remove filter {label}",
+      "resultCount": {
+        "one": "{count} result",
+        "other": "{count} results"
+      }
     },
     "localePicker": {
       "ariaLabel": "Language"

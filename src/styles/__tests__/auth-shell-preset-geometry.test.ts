@@ -120,6 +120,98 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     );
   });
 
+  it("registration owns the 360px sign-up measure and a 15px mobile inline gutter (gh#256)", () => {
+    // 22.5rem = 360px, matching preset="login" exactly; 0.9375rem = 15px ⇒ at 390 the card is
+    // x=15, width=360, so sign-in → sign-up never shifts the surface on a phone.
+    expect(shellTokens).toContain("--auth-shell-registration-card-max-width: 22.5rem;");
+    expect(shellTokens).toContain("--auth-shell-registration-main-padding-inline: 1rem;");
+    expect(shellTokens).toContain(
+      "--auth-shell-registration-main-padding-inline-mobile: 0.9375rem;",
+    );
+
+    const [desktop] = authBlock("registration");
+    expect(desktop).toMatch(
+      /--auth-shell-card-max-width:\s*var\(--auth-shell-registration-card-max-width\)/,
+    );
+    expect(desktop).toMatch(
+      /--auth-shell-card-stack-gap:\s*var\(--auth-shell-registration-card-stack-gap\)/,
+    );
+
+    // The mobile gutter must live in the ONE shared max-width:30rem block, after the canonical
+    // mobile inset, so it wins at equal specificity like every other preset.
+    const mobileBlock = shellStyles.match(/@media \(max-width: 30rem\)\s*\{[\s\S]*?\n {2}\}/)?.[0];
+    expect(mobileBlock).toMatch(
+      /data-preset="registration"[^}]*--auth-shell-registration-main-padding-inline-mobile/s,
+    );
+  });
+
+  it("registration anchors its card on the canonical SCR-002 y, derived not chosen (gh#256)", () => {
+    // These two offsets were INVENTED in the first pass (3rem / 1.5rem) and measured wrong by
+    // 133/147px. They are now derived from the canonical artboard quoted in the SCR-002 acceptance
+    // review — card y=284 at 1440x900, y=274 at 390x844 — through the column's own arithmetic:
+    //   card y = padding-block-start + identity slot + stack gap
+    //   284 - 112 - 20 = 152px = 9.5rem      274 - 112 - 20 = 142px = 8.875rem
+    // Verified in headless Chromium at both viewports: measured card y == canonical y, delta 0.00px.
+    expect(shellTokens).toContain("--auth-shell-registration-main-padding-block-start: 9.5rem;");
+    expect(shellTokens).toContain(
+      "--auth-shell-registration-main-padding-block-start-mobile: 8.875rem;",
+    );
+    expect(shellTokens).toContain("--auth-shell-registration-identity-slot-block-size: 7rem;");
+    expect(shellTokens).toContain("--auth-shell-registration-card-stack-gap: 1.25rem;");
+
+    // The arithmetic itself, so a future edit to any ONE of the three cannot silently move the
+    // anchor while every individual assertion above still passes.
+    const px = (token: string) => {
+      const rem = shellTokens.match(new RegExp(`${token}:\\s*([\\d.]+)rem;`))?.[1];
+      return rem ? parseFloat(rem) * 16 : NaN;
+    };
+    expect(
+      px("--auth-shell-registration-main-padding-block-start") +
+        px("--auth-shell-registration-identity-slot-block-size") +
+        px("--auth-shell-registration-card-stack-gap"),
+    ).toBe(284);
+    expect(
+      px("--auth-shell-registration-main-padding-block-start-mobile") +
+        px("--auth-shell-registration-identity-slot-block-size") +
+        px("--auth-shell-registration-card-stack-gap"),
+    ).toBe(274);
+  });
+
+  it("registration pins the identity track so copy length cannot move the anchor (gh#256)", () => {
+    // Without the fixed track the card rides on the identity block's own height (measured 82.69px
+    // for one wrapped requester), so the canonical y would hold for exactly one copy length. With
+    // it, headless Chromium measured card y=274 identically for absent, short and wrapped
+    // two-line requester copy. Content aligns to the slot END, as `login` does.
+    expect(shellStyles).toMatch(
+      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*block-size:\s*var\(--auth-shell-registration-identity-slot-block-size\)/s,
+    );
+    expect(shellStyles).toMatch(
+      /data-preset="registration"\][^{]*\.ui-auth-shell-card > \.ui-auth-identity\s*\{[^}]*justify-content:\s*flex-end/s,
+    );
+  });
+
+  it("registration is the ONLY start-aligned preset — a tall sign-up card must scroll (gh#256)", () => {
+    // A vertically CENTRED tall card overflows ABOVE the scroll origin on a short viewport, which
+    // makes its first field unreachable. This is the whole reason the preset exists separately
+    // from `login`, so it is pinned rather than left to a future "tidy-up" to undo.
+    const [desktop] = authBlock("registration");
+    expect(desktop).toMatch(/--auth-shell-main-align:\s*flex-start/);
+
+    for (const other of ["device-authorization", "context-selection", "account-recovery"]) {
+      const [rule] = authBlock(other);
+      expect(rule).not.toMatch(/--auth-shell-main-align/);
+    }
+  });
+
+  it("registration keeps footer clearance on its own knob, not mirrored from the top inset", () => {
+    // At the end of a long scroll the legal/consent footer must not sit flush against the submit
+    // button, so the block-end inset is a knob of its own. It is deliberately NOT derived from the
+    // block-start offset: that one is pinned to the canonical card anchor (see the anchor test),
+    // which says nothing about how much room the footer needs below a long form.
+    expect(shellTokens).toContain("--auth-shell-registration-main-padding-block-end: 3rem;");
+    expect(shellTokens).toContain("--auth-shell-registration-main-padding-block-end-mobile: 2rem;");
+  });
+
   it("routes the auth column's block alignment through a knob (rule #45)", () => {
     expect(shellTokens).toContain("--auth-shell-main-align: center;");
     expect(shellStyles).toMatch(
@@ -132,6 +224,7 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     // (a forked `.canonical-auth-shell--wide`) that gh#220 was filed against.
     const presetRules = [
       ...authBlock("login"),
+      ...authBlock("registration"),
       ...authBlock("device-authorization"),
       ...authBlock("context-selection"),
       ...authBlock("account-recovery"),

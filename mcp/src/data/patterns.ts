@@ -1045,6 +1045,179 @@ export function OrganizationMemberships({
   },
 
   {
+    name: "rbac-service-roles",
+    aliases: [
+      "service-role-panel",
+      "servicerolepanel",
+      "branch-scope-picker",
+      "branchscopepicker",
+      "permission-matrix",
+      "permissionmatrix",
+      "role-editor",
+      "rbac",
+      "scr-203",
+      "scr-111b",
+    ],
+    tagline:
+      "Service roles, branch scope and the permission matrix. There is NO ServiceRolePanel, NO BranchScopePicker and NO PermissionMatrix component — all three FAIL the Framework-Component Test and are canonical COMPOSITIONS of existing primitives, with the only genuinely reusable part (the grant/diff data logic) shipped as @godxjp/ui/lib/permission-grid.",
+    tags: [
+      "rbac",
+      "permissions",
+      "roles",
+      "admin",
+      "table",
+      "treeselect",
+      "listrow",
+      "masterdetail",
+      "presentation",
+    ],
+    code: `// ⚠️ There is NO <ServiceRolePanel/>, NO <BranchScopePicker/> and NO <PermissionMatrix/> in
+// @godxjp/ui, and none is planned (gh#257). Each fails the Framework-Component Test
+// (docs/COMPOSITION-VS-COMPONENT.md): they own no reusable BEHAVIOR beyond what Table / TreeSelect
+// / ListRow already give (C2), they are expressible today from primitives + tokens (C3), and they
+// are RBAC-admin-niche rather than universal (C7). What the package DOES own is the part every
+// consumer would otherwise re-derive: the grant/diff logic, as pure framework-neutral helpers.
+//
+// The three canonical compositions, and the ONE import you actually need:
+
+import {
+  countDifferences,
+  grantKey,
+  hasGrant,
+  rolesDifferOnPermission,
+  visibleRows,
+} from "@godxjp/ui/lib/permission-grid";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  EmptyState,
+  ListRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@godxjp/ui/data-display";
+import { FormField, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SHOW_PARENT, Switch, TreeSelect } from "@godxjp/ui/data-entry";
+import { Alert, AlertDescription, AlertDialog, AlertTitle, Skeleton } from "@godxjp/ui/feedback";
+import { Button } from "@godxjp/ui/general";
+import { Flex, MasterDetail, PageContainer } from "@godxjp/ui/layout";
+
+// ── 1. SERVICE ROLE PANEL ────────────────────────────────────────────────────────────────────
+// "which role does this member hold on each service" = a labelled list of rows, each with a role
+// Select. Card + CardContent flush + <ul> of ListRow as="li" gives shared row dividers instead of
+// a card outline per service. READ-ONLY / LOCKED is a Badge, NOT a disabled Select: a disabled
+// control is a dead tab stop that says "you may change this later", which is not what locked means.
+<Card>
+  <CardHeader>
+    <CardTitle level={2}>サービス権限</CardTitle>
+    <CardDescription>サービスごとに付与するロールを選択します。</CardDescription>
+  </CardHeader>
+  <CardContent flush>
+    <ul>
+      {services.map((service) => (
+        <ListRow
+          as="li"
+          key={service.id}
+          title={service.name}
+          description={service.description}
+          trailing={
+            service.locked ? (
+              <Badge tone="neutral">{service.roleLabel}（変更不可）</Badge>
+            ) : (
+              <Select value={service.roleId} onValueChange={(next) => assign(service.id, next)}>
+                <SelectTrigger aria-label={\`\${service.name} のロール\`}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {roles.map((role) => (
+                    <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )
+          }
+        />
+      ))}
+    </ul>
+  </CardContent>
+</Card>
+
+// ── 2. BRANCH SCOPE PICKER ───────────────────────────────────────────────────────────────────
+// A branch scope is a HIERARCHICAL multi-select with parent/child aggregation — which is exactly
+// TreeSelect. Do NOT hand-roll a checkbox tree, and do NOT add a BranchScopePicker: that would
+// duplicate a primitive (the cardinal no-duplication rule). SHOW_PARENT collapses a fully selected
+// subtree to its parent, which is what makes "全社" read as one chip instead of 42.
+<FormField
+  label="適用範囲（支店）"
+  required
+  helper="選択した支店とその配下にのみ権限が適用されます。"
+  error={scope.length === 0 ? "少なくとも1つの支店を選択してください。" : undefined}
+>
+  <TreeSelect
+    multiple
+    treeCheckable
+    showSearch
+    showCheckedStrategy={SHOW_PARENT}
+    treeData={branches}
+    value={scope}
+    onValueChange={setScope}
+    disabled={readOnly}
+  />
+</FormField>
+
+// ── 3. PERMISSION MATRIX ─────────────────────────────────────────────────────────────────────
+// role × permission grid with a sticky first column, a two-role COMPARE mode and a
+// differences-only filter. Built from the Table family + Badge; the DATA logic is the library
+// helper, so every consumer shares one source of truth for grant lookup and diffing.
+// State is shape-encoded (Check vs Minus icon) plus sr-only text — never colour alone (WCAG 1.4.1).
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="sticky start-0">権限</TableHead>
+      {roles.map((role) => <TableHead key={role.id}>{role.name}</TableHead>)}
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {visibleRows(permissions, grants, { compare, diffOnly }).map((permission) => (
+      <TableRow key={permission.id} data-diff={compare && rolesDifferOnPermission(grants, compare, permission.id)}>
+        <TableCell className="sticky start-0">{permission.name}</TableCell>
+        {roles.map((role) => (
+          <TableCell key={grantKey(role.id, permission.id)}>
+            {hasGrant(grants, role.id, permission.id)
+              ? <><Check aria-hidden="true" /><span className="sr-only">許可</span></>
+              : <><Minus aria-hidden="true" /><span className="sr-only">不許可</span></>}
+          </TableCell>
+        ))}
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
+
+// ── THE STATES, all from existing exports — never bespoke markup ─────────────────────────────
+//   loading            → <Skeleton/> rows (match the settled row height so nothing jumps)
+//   empty              → <EmptyState title=… description=…/>
+//   validation         → FormField \`error\` (announced via aria-errormessage, not colour)
+//   error              → <Alert tone="destructive"> with a retry action
+//   permission-denied  → <Alert tone="warning"> for a SECTION; <ErrorSurface mode="denied"> when
+//                        the whole page is forbidden (never render a page header that leaks the
+//                        resource's name)
+//   read-only / locked → a Badge stating the fact, NOT a disabled control
+//   destructive        → <AlertDialog variant="destructive" title=… onConfirm=…> (revoking a
+//                        role is not undoable from the UI; add \`challenge\` for type-to-confirm)
+//
+// LAYOUT: put the role list and the editor side by side with <MasterDetail> — it owns the tracks,
+// the gap and the stacking threshold as tokens, so there is no grid-template-columns and no media
+// query in your page at 1440 / 1024 / 390.
+//
+// Full worked screen: docs/showcase/permission-matrix.tsx and docs/showcase/service-role-scope.tsx`,
+  },
+  {
     name: "auth-recovery-panels",
     aliases: [
       "password-recovery",

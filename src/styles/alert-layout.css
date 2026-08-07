@@ -51,6 +51,42 @@
     padding-inline-end: calc(var(--alert-space-inset) + var(--space-8));
   }
 
+  /*
+   * BANNER variant (gh#255) — the same Alert, re-measured as page chrome: edge-to-edge, square,
+   * ruled only on the block-end edge so it separates itself from the content BELOW it. Declared
+   * after the base box (equal specificity → source order wins) and it touches geometry only, so
+   * every tone, the icon treatment, the actions grid and the dismiss control are inherited
+   * unchanged from the inline alert above.
+   */
+  [data-slot="alert"][data-variant="banner"] {
+    border-radius: var(--banner-radius);
+    border-width: var(--banner-border-width);
+    border-block-end-width: var(--banner-border-block-end-width);
+    padding: var(--banner-space-block) var(--banner-space-inline);
+  }
+
+  /* The dismissible reserve is re-derived from the BANNER inset — reusing the inline-alert
+   * calc would leave a ✕-sized hole on a strip whose own inset is half as deep. */
+  [data-slot="alert"][data-variant="banner"][data-dismissible] {
+    padding-inline-end: calc(var(--banner-space-inline) + var(--space-8));
+  }
+
+  [data-slot="alert"][data-variant="banner"] > [data-slot="alert-dismiss"] {
+    top: var(--banner-dismiss-space-offset);
+    inset-inline-end: var(--banner-dismiss-space-offset);
+  }
+
+  /* The compact page gutter. `.ui-page-container` steps `--space-page-active-x` down at this same
+   * breakpoint, and a banner mounted ABOVE the container (the normal case — page/app chrome) does
+   * not inherit that, so without this rule its text would sit 8px outside the page title at 390px.
+   * Bound to its own `--banner-space-inline-compact` knob rather than a literal, so a service
+   * retunes the mobile inset the same way it retunes the desktop one. */
+  @media (max-width: 720px) {
+    [data-slot="alert"][data-variant="banner"] {
+      --banner-space-inline: var(--banner-space-inline-compact);
+    }
+  }
+
   [data-slot="alert-icon"] {
     width: 1.25rem;
     height: 1.25rem;

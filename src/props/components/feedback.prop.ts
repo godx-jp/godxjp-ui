@@ -61,6 +61,13 @@ export type AlertProp = React.HTMLAttributes<HTMLDivElement> & {
   children?: ChildrenProp;
 };
 
+/**
+ * @see Banner — page-level Alert. `variant` is fixed to `"banner"` by the alias, so it is the one
+ * prop a Banner does not take; everything else (tone, icon, onDismiss, children) is Alert's
+ * contract verbatim. gh#255.
+ */
+export type BannerProp = Omit<AlertProp, "variant">;
+
 /** @see AlertTitle */
 export type AlertTitleProp = React.HTMLAttributes<HTMLParagraphElement> & {
   className?: ClassNameProp;

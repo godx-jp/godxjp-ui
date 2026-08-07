@@ -55,4 +55,30 @@
    * scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid
    * (0 on an overlay-scrollbar platform). */
   --filter-bar-scroll-padding-y: var(--space-1);
+
+  /* FilterBar typed model (#258) — the search / chip / result-count regions the bar now OWNS, so a
+   * list page never re-decides them. Every constant is a knob (rule #45): a service matches its own
+   * grid by retuning these once instead of per page.
+   *
+   * Search MEASURE — the whole point of the `search` slot. Below the 640px step the control is
+   * full-width (a bounded search box on a 390px screen wastes the row), so this binds only at and
+   * above it. 18rem = 288px: comfortable for a JA/VI query without crowding the filter groups. */
+  --filter-bar-search-width: 18rem;
+
+  /* Applied-filter chips. */
+  --filter-bar-chip-gap: var(--space-inline-xs);
+  --filter-bar-chip-row-gap: var(--space-inline-xs);
+  --filter-bar-chip-padding-inline: var(--space-2);
+  --filter-bar-chip-padding-block: var(--space-1);
+  --filter-bar-chip-radius: var(--radius-sm);
+  --filter-bar-chip-font-size: var(--font-size-xs);
+  /* Role-mirror knobs (docs/TOKENS.md) — `initial` at :root so --muted / --muted-foreground
+   * re-resolve at the CALL SITE under a scoped [data-tenant]/.dark theme. Binding a role var here
+   * would freeze the chip at the :root palette and a tenant override would never reach it. */
+  --filter-bar-chip-background: initial;
+  --filter-bar-chip-foreground: initial;
+
+  /* Result-count live region. */
+  --filter-bar-count-font-size: var(--font-size-xs);
+  --filter-bar-count-foreground: initial;
 }

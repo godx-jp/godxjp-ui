@@ -135,6 +135,9 @@
       "openNav": "ナビゲーションメニューを開く",
       "navLabel": "メニュー"
     },
+    "pageHeader": {
+      "loading": "ページを読み込んでいます…"
+    },
     "authShell": {
       "brandLabel": "ブランド",
       "mainLabel": "メインコンテンツ",
@@ -226,6 +229,11 @@
     },
     "toolbar": {
       "ariaLabel": "フィルター"
+    },
+    "filterBar": {
+      "appliedFilters": "適用中のフィルター",
+      "removeFilter": "フィルター「{label}」を解除",
+      "resultCount": "{count} 件"
     },
     "localePicker": {
       "ariaLabel": "言語"

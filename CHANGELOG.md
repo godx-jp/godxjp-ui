@@ -6,6 +6,137 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`PageHeader` is now a real export (gh#255).** The page title band — breadcrumbs, `<h1>`,
+  subtitle, a new `meta` status slot, `extra` actions, the `layout` arrangement and a `loading`
+  pending state — was only reachable through `PageContainer`, so a surface that is NOT a whole page
+  (a Sheet detail, a `MasterDetail` pane, a tab body) had to re-author `.ui-page-header` locally.
+  Following the gh#251 post-mortem, the deciding question was not the Gate 0 verdict alone but
+  whether the consumer can reach the geometry through PUBLIC routes: they could hand-build a header
+  from `Breadcrumb` + `Heading` + `Flex`, but they could NOT get the token-owned row gaps, `extra`
+  alignment, responsive arrangement or the `--page-header-divider` opt-in without copying package
+  CSS — so it is exported. There is exactly ONE implementation: `PageContainer` now renders this
+  component, and `page-header.test.tsx` pins the pre-gh#255 header DOM byte-for-byte so the
+  extraction cannot have moved an existing page. `denied`/`error` are deliberately NOT states of the
+  band — a title band for a resource the user may not see leaks its name, which is `ErrorSurface`'s
+  whole-surface contract. `loading` keeps the `<h1>` in the heading outline wearing the library's own
+  `ui-skeleton-block` skin (nesting Skeleton's `<div>` inside an `<h1>` is invalid HTML) with an
+  sr-only accessible name, because a heading rendered as a bare decorative box is an EMPTY heading
+  (axe `empty-heading`, WCAG 1.3.1); breadcrumbs and `extra` are not skeletonised, since they come
+  from the route rather than the record.
+- **`Banner` — the canonical page-level status strip (gh#255).** `Alert` locked to the new
+  `variant="banner"`: square, edge-to-edge, ruled on the block-end edge only, measured by the new
+  `--banner-*` tokens. Deliberately an ALIAS, not a second implementation — a banner and an inline
+  alert are one object at two measures, so re-deriving the tone→role mapping, icon defaults, actions
+  grid and dismiss control would be exactly the duplication this system forbids (the same reasoning
+  that makes `FilterBar` an alias of `Toolbar`). `Banner.Title` IS `AlertTitle`, asserted by
+  identity in `banner.test.tsx`, so a consumer can never mix two families in one strip.
+- **`AuthShell preset="registration"` (gh#256)** — the 360px sign-up measure with a 15px inline
+  gutter at 390px, matching `preset="login"` exactly so sign-in → sign-up never jumps on a phone.
+  Two things make it structurally distinct rather than a re-skin of `login`, and both are pinned by
+  tests: it is the ONLY start-aligned preset, because a sign-up card is the tallest surface in the
+  hosted-identity set and a vertically CENTRED tall card overflows ABOVE the scroll origin on a
+  short viewport, putting its first field permanently out of reach; and it is the only preset with
+  its own footer-clearance knob, so the legal/consent footer never sits flush against the submit
+  button at the end of a long scroll. Carries the full password form AND the pending-email state
+  with no consumer geometry CSS.
+- **A typed search/filter/chip/action/reset/result-count model on `FilterBar` (gh#258).** New
+  `search`, `chips`, `onChipRemove`, `resultCount` and `actions` props, plus the `FilterBarChipProp`
+  type. ORDER IS THE CONTRACT: DOM order is tab order, and the bar now decides it —
+  search → filter groups → applied chips → result count → reset → actions, with reset before
+  `actions` so "clear filters" never lands beside an unrelated primary action. `search` is a SLOT,
+  so the control finally gets one token-owned measure (`--filter-bar-search-width`) across every
+  list page instead of whatever width each page gave it. `chips` owns the chip lifecycle: a labelled
+  group, a remove control named after THAT specific filter (a row of buttons all called "Remove" is
+  unusable from a screen-reader's control list), no row at all when the array is empty, and NO
+  remove control — rather than a disabled one, which is a dead tab stop — for a chip the user may
+  not lift. `resultCount` renders in a polite live region formatted via `Intl.NumberFormat` + CLDR
+  plurals, which is the accessibility point of the whole prop: a sighted user SEES the table change,
+  and this is what tells everyone else. The bar still owns no filter state. Every region is opt-in
+  and emits nothing when its prop is absent, so a bar built the old way is geometrically unchanged
+  (pinned by a backwards-compatibility test).
+- **Packed-consumer coverage for the new surface.** `check:packed-public-contract` now extracts
+  `PageHeader`/`PageHeaderProp(s)` and `Banner`/`BannerProp(s)` from the real tarball, and gains a
+  `./navigation` contract (`FilterBar`, `FilterBarGroup`, `Toolbar`, `ToolbarGroup`,
+  `FilterBarChipProp`) that did not exist before — the navigation subpath had nothing pinning the
+  names a list page imports. This is the gh#251 lesson applied preventively: the guard immediately
+  caught that `FilterBarChipProp` was exported from `filter-bar.tsx` but never re-exported from the
+  navigation barrel, so it would have been invisible to a consumer despite passing every
+  source-level check.
+- **`docs/CANONICAL-CONTRACTS.md`** — the formal per-name record of what the package ships for
+  `PageHeader`, `Banner`, `SocialLinks`, `OrganizationChoiceList`, `ServiceRolePanel`,
+  `BranchScopePicker`, `PermissionMatrix` and `FilterBar`, with the Gate 0 verdict, the
+  "can the consumer reach it publicly?" follow-up that gh#251 taught us to ask, and — for a
+  composition — the exact primitives, token knobs and state table.
+- **New tokens.** `--page-header-meta-gap`, `--page-title-placeholder-{measure,block-size}`,
+  `--page-subtitle-placeholder-{measure,block-size}` (gh#255 header band);
+  `--banner-{radius,border-width,border-block-end-width,space-block,space-inline,space-inline-compact,dismiss-space-offset}`
+  (gh#255 banner); `--auth-shell-registration-*` (gh#256);
+  `--filter-bar-search-width`, `--filter-bar-chip-*`, `--filter-bar-count-*` (gh#258). The chip and
+  count colour knobs are role-mirror knobs, declared `initial` at `:root` with the role default at
+  the CALL SITE, so a scoped `[data-tenant]`/`.dark` override of `--muted`/`--muted-foreground`
+  actually reaches them.
+
+### Changed
+
+- **The `registration` preset's vertical geometry was invented, and is now derived and measured.**
+  The first pass shipped `3rem` / `1.5rem` block-start offsets that were chosen rather than taken
+  from the canonical artboard — the one thing every other preset in that file does carefully, citing
+  exact artboard pixels. Measured in headless Chromium, the card landed **133px / 147px above** the
+  canonical SCR-002 anchor. The offsets are now derived from the artboard quoted in the SCR-002
+  acceptance review (card `y=284` at 1440x900, `y=274` at 390x844) through the column's own
+  arithmetic — `card y = padding-block-start + identity slot + stack gap` — giving `9.5rem` /
+  `8.875rem`; re-measured delta is **0.00px at both viewports**. The horizontal measure chosen in
+  the first pass was already correct and is unchanged (360px card, 15px mobile gutter, centred at
+  1440 — measured delta 0.00px).
+- **`registration` gains the fixed identity track `login` already proved (`--auth-shell-registration-identity-slot-block-size`, 112px).**
+  Without it the card rides on the identity block's own height — measured at 82.69px for one wrapped
+  requester — so the canonical anchor above would have held for exactly one copy length and drifted
+  for every other. With it, headless Chromium measures card `y=274` identically for absent, short
+  and wrapped two-line requester copy. Applied to the identity element rather than through a grid
+  row, so the preset does not constrain how many sections a page stacks.
+- **The registration docs frame no longer passes a `brand` bar.** The canonical hosted-identity
+  screens put the mark INSIDE the column as `AuthIdentity` and pass no top bar — the real DXS
+  `Login.tsx` and `Register.tsx` both do exactly this. The frame passed one, which pushed the whole
+  column down by the bar's measured 72px and made every offset read off that page wrong. This was
+  what first looked like a 72px defect in the shipped `login` preset; `login` is correct, and the
+  frame was lying. NOTE: `docs/layout/auth-shell.tsx` still demonstrates `preset="login"` WITH a
+  brand bar and so mis-states that preset's anchor by the same 72px — left unchanged here because it
+  is pre-existing and touching it would move visual baselines outside this issue's scope.
+
+- **The banner's inline inset now steps down with the page gutter at 720px.** `--banner-space-inline`
+  reads `--space-page-active-x` so a strip's text lines up with the page title, but that token steps
+  down to the compact gutter on `.ui-page-container` ONLY. Custom properties inherit, so a banner
+  rendered inside the container picked the compact value up for free — while the normal case, a
+  banner mounted ABOVE the container or in `AppShell`, kept the 24px desktop gutter and sat 8px
+  outside the page title at 390px. The new `--banner-space-inline-compact` knob applies the same
+  step to the banner itself, so the alignment the token was introduced for actually holds on mobile.
+
+- **`ServiceRolePanel`, `BranchScopePicker` and `PermissionMatrix` are formally documented as
+  COMPOSITIONS, not components (gh#257).** All three fail the Framework-Component Test, and
+  `BranchScopePicker` fails it twice over: a hierarchical multi-select with parent/child aggregation
+  IS `TreeSelect`, so adding it would duplicate a primitive. The follow-up question is a clean
+  "yes" — each is reachable from public primitives + tokens with no package CSS — and the one
+  genuinely reusable part, the grant/diff data logic, already ships as the pure
+  `@godxjp/ui/lib/permission-grid` util. Documented with every state gh#257 listed
+  (read-only/locked, loading, empty, validation, error, permission-denied, destructive-confirmation)
+  in the new `docs/showcase/service-role-scope.tsx`, plus a new MCP `rbac-service-roles` pattern so
+  an agent asking for these names is taught the composition instead of inventing an API. Read-only
+  is a `Badge` STATING the fact, never a disabled `Select` — a disabled control is a dead tab stop
+  that implies "editable later".
+- **`SocialLinks` and `OrganizationChoiceList` formally documented as compositions (gh#256)**, with
+  their loading/empty/error/denied/disabled states, in `docs/layout/auth-shell-registration.tsx` and
+  two new `AuthShell` MCP usage rules. The package deliberately does not own the provider row:
+  which providers a product offers, in what order, and what consent they imply are product
+  decisions.
+- **MCP catalog corrections.** `Alert`'s `variant` was catalogued as
+  `"default" | "destructive" | "warning" | "success"` — it has never been the colour axis (that is
+  `tone`), and two `useCases` repeated the error. Both are fixed, and `variant` now documents the
+  MEASURE axis it really is. The `PageContainer` usage rule that told agents about "the old
+  PageHeader's prop names" was rewritten: there is now a real `PageHeader`, and leaving that string
+  in place would have taught agents the exact kind of wrong thing gh#251 was filed about.
+
 ### Fixed
 
 - **The boxed `<Logo tone="success">` glyph inked its TEXT with the identity KNOCKOUT colour, failing

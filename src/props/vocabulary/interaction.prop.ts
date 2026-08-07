@@ -75,8 +75,16 @@ export type ConfirmVariantProp = "default" | "destructive";
 export type ToneProp =
   "default" | "success" | "warning" | "destructive" | "info" | "muted" | "neutral";
 
-/** Inline Alert visual treatment. */
-export type AlertVariantProp = "default";
+/**
+ * Alert visual treatment.
+ *
+ * `"default"` is the inset, rounded, fully-bordered INLINE alert that sits inside a page body.
+ * `"banner"` is the page-level strip the `Banner` alias ships (gh#255): square, edge-to-edge, ruled
+ * on the block-end edge only, so it reads as page chrome above the content rather than as a card
+ * inside it. Both share one implementation, one tone scale and one dismiss/actions contract —
+ * `banner` re-measures the box through `--banner-*` tokens and changes nothing else.
+ */
+export type AlertVariantProp = "default" | "banner";
 
 /** Sort direction for table columns. */
 export type SortDirectionProp = "asc" | "desc";

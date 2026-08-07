@@ -53,6 +53,8 @@ export {
 export { Steps } from "./steps";
 export { FilterBar, FilterBarGroup, Toolbar, ToolbarGroup } from "./filter-bar";
 export type {
+  FilterBarChipProp,
+  FilterBarChipProps,
   FilterBarGroupProp,
   FilterBarGroupProps,
   FilterBarProp,

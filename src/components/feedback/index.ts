@@ -54,8 +54,11 @@ export {
   AlertDescription,
   AlertActions,
   AlertQueryError,
+  Banner,
 } from "./alert";
 export type {
+  BannerProp,
+  BannerProps,
   AlertProp,
   AlertProps,
   AlertTitleProp,

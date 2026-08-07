@@ -491,6 +491,34 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/layout.prop.ts",
     vocabulary: [],
   },
+  PageHeaderProp: {
+    group: "layout",
+    file: "components/layout.prop.ts",
+    vocabulary: [
+      "TitleProp",
+      "SubtitleProp",
+      "ExtraProp",
+      "BreadcrumbProp",
+      {
+        field: "meta",
+        local: true,
+        reason:
+          "Status/meta band rendered inline with the `<h1>` (a Badge tone, a record id, a timestamp). A free ReactNode slot, not a controlled value — the header never interprets what it holds.",
+      },
+      {
+        field: "layout",
+        local: true,
+        reason:
+          "Header ARRANGEMENT of the title band vs the extra slot below the 640px step (stack | responsive-inline) — the standalone spelling of PageContainer's `headerLayout`.",
+      },
+      {
+        field: "loading",
+        local: true,
+        reason:
+          "Pending state of the TITLE BAND only (skeleton title/subtitle + aria-busy), distinct from a page-wide DataState: breadcrumbs and actions come from the route and stay live while the record resolves.",
+      },
+    ],
+  },
   PageContainerProp: {
     group: "layout",
     file: "components/layout.prop.ts",
@@ -502,6 +530,17 @@ export const COMPONENT_PROP_REGISTRY = {
       "BreadcrumbProp",
       "DensityProp",
       "PageContainerVariantProp",
+      {
+        field: "meta",
+        local: true,
+        reason: "Forwarded verbatim to PageHeader's `meta` slot — see PageHeaderProp.",
+      },
+      {
+        field: "headerLoading",
+        local: true,
+        reason:
+          "Forwarded to PageHeader's `loading`. Named for the BAND it skeletonises, so it can never be read as a page-wide loading flag (that is DataState's job).",
+      },
       {
         field: "headerLayout",
         local: true,
@@ -1532,6 +1571,13 @@ export const COMPONENT_PROP_REGISTRY = {
       "ChildrenProp",
     ],
   },
+  BannerProp: {
+    group: "feedback",
+    file: "components/feedback.prop.ts",
+    // `Omit<AlertProp, "variant">` — the alias fixes the one prop it drops, so it inherits Alert's
+    // vocabulary exactly. Listing it again here is what keeps the guard honest if Alert's API moves.
+    vocabulary: ["ToneProp", "IconProp", "OnValueChangeProp", "ClassNameProp", "ChildrenProp"],
+  },
   AlertTitleProp: {
     group: "feedback",
     file: "components/feedback.prop.ts",
@@ -1563,6 +1609,50 @@ export const COMPONENT_PROP_REGISTRY = {
       "StickyProp",
       "ClassNameProp",
       "ChildrenProp",
+      {
+        field: "search",
+        local: true,
+        reason:
+          "SLOT for the caller's own search control, positioned at the start of the row and measured by --filter-bar-search-width. Not a value/onValueChange pair: the bar owns the search's PLACE and WIDTH, never its state (gh#258).",
+      },
+      {
+        field: "chips",
+        local: true,
+        reason:
+          "APPLIED filters as removable chips — the visible record of filters already in effect, distinct from the controls that set them. A bar-specific shape (id/label/onRemove), not a shared vocabulary type (gh#258).",
+      },
+      {
+        field: "onChipRemove",
+        local: true,
+        reason:
+          "Chip-removal callback keyed by chip id. Not `onValueChange`: it reports ONE lifted filter rather than the bar's whole value, which the bar deliberately does not hold (gh#258).",
+      },
+      {
+        field: "resultCount",
+        local: true,
+        reason:
+          "Number of records the current filters resolve to, announced in a polite live region and formatted via Intl.NumberFormat + CLDR plurals. Presentational output, not a controlled value (gh#258).",
+      },
+      {
+        field: "actions",
+        local: true,
+        reason:
+          "Trailing action SLOT (export, column settings, saved views), ordered AFTER the reset control by the bar so `clear filters` never sits beside an unrelated primary action (gh#258).",
+      },
+    ],
+  },
+  FilterBarChipProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [
+      "IdProp",
+      "LabelProp",
+      {
+        field: "onRemove",
+        local: true,
+        reason:
+          "Per-chip removal. Omitting it is meaningful — the chip renders with NO remove control (a filter the user may not lift), rather than a disabled button that is a dead tab stop (gh#258).",
+      },
     ],
   },
   FilterBarOverflowProp: {

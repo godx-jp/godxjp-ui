@@ -24,9 +24,12 @@ import type {
   AlertProp,
   AlertQueryErrorProp,
   AlertTitleProp,
+  BannerProp,
 } from "../../props/components/feedback.prop";
 
 export type {
+  BannerProp,
+  BannerProp as BannerProps,
   AlertProp,
   AlertProp as AlertProps,
   AlertTitleProp,
@@ -230,6 +233,28 @@ export const Alert = Object.assign(AlertBase, {
   Description: AlertDescription,
   Actions: AlertActions,
   QueryError: AlertQueryError,
+});
+
+/**
+ * Banner — the canonical PAGE-LEVEL status strip (gh#255).
+ *
+ * Deliberately NOT a second implementation: a banner and an inline alert are the same object at two
+ * measures, so re-deriving tone mapping, the assertive/polite role split, the icon defaults, the
+ * actions grid and the dismiss control here would be exactly the duplication this system forbids.
+ * `Banner` is `Alert` locked to `variant="banner"`, which swaps only the box geometry (square,
+ * edge-to-edge, block-end rule) through `--banner-*` tokens. It carries the same subcomponents, so
+ * `Banner.Title` / `Banner.Description` / `Banner.Actions` are the very elements `Alert` uses and a
+ * consumer never mixes two families in one strip.
+ */
+const BannerBase = React.forwardRef<HTMLDivElement, BannerProp>(function Banner(props, ref) {
+  return <AlertBase {...props} ref={ref} variant="banner" />;
+});
+
+export const Banner = Object.assign(BannerBase, {
+  Title: AlertTitle,
+  Content: AlertContent,
+  Description: AlertDescription,
+  Actions: AlertActions,
 });
 
 export { AlertBase };

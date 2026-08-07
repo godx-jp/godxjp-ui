@@ -5,6 +5,8 @@ export type {
   BreadcrumbItem,
   BreadcrumbItemProp,
 } from "./page-container";
+export { PageHeader } from "./page-header";
+export type { PageHeaderProp, PageHeaderProps } from "./page-header";
 export { Flex } from "./flex";
 export type {
   FlexAlignProp,

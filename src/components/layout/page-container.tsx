@@ -1,10 +1,9 @@
 /** PageContainer — mandatory shell for every admin page (Ant Design PageHeader equivalent). */
 import { useEffect, useRef, useState } from "react";
-import { ChevronRight } from "lucide-react";
 
-import { useTranslation } from "../../i18n/use-translation";
 import { cn } from "../../lib/utils";
 import { densityClass, pageContainerVariantClass } from "../../lib/variants";
+import { PageHeader } from "./page-header";
 import type { PageContainerProp, PageInsetProp } from "../../props/components/layout.prop";
 
 /** Nearest scrollable ancestor (the page's scroll viewport), else the window. */
@@ -63,6 +62,8 @@ export function PageContainerInset({ className, children, ...props }: PageInsetP
 function PageContainerRoot({
   title,
   subtitle,
+  meta,
+  headerLoading,
   extra,
   footer,
   breadcrumb,
@@ -82,7 +83,6 @@ function PageContainerRoot({
 }: PageContainerProp) {
   const reveal = stickyFooter && footer != null && footerReveal === "onScroll";
   const { headerRef, revealed } = useFooterReveal(reveal);
-  const { t } = useTranslation();
 
   // `data-measure` caps the HEADER and the BODY to one shared token-owned measure so a header
   // action ends flush with the body surface (gh#245/gh#247). `default` matches no rule in the
@@ -104,53 +104,21 @@ function PageContainerRoot({
         className,
       )}
     >
-      {/* `data-layout` is the only hook the header arrangement needs: `stack` (the default)
-          matches no rule, so the historical geometry is untouched, while `responsive-inline`
-          selects the compact-range rules that keep `extra` beside the title band (gh#231). */}
-      <header ref={headerRef} className="ui-page-header" data-layout={headerLayout}>
-        {breadcrumb && breadcrumb.length > 0 && (
-          <nav
-            aria-label={
-              breadcrumbLabel ?? breadcrumbAriaLabel ?? t("navigation.breadcrumb.ariaLabel")
-            }
-            className="ui-breadcrumb"
-          >
-            <ol className="ui-breadcrumb-list">
-              {breadcrumb.map((item, i) => {
-                const isLast = i === breadcrumb.length - 1;
-                return (
-                  <li key={i} className="ui-inline-xs">
-                    {item.to && !isLast ? (
-                      <LinkComponent
-                        href={item.to}
-                        to={item.to}
-                        className="hover:text-foreground hover:underline"
-                      >
-                        {item.label}
-                      </LinkComponent>
-                    ) : (
-                      <span
-                        className={isLast ? "text-foreground" : ""}
-                        aria-current={isLast ? "page" : undefined}
-                      >
-                        {item.label}
-                      </span>
-                    )}
-                    {!isLast && <ChevronRight className="size-3" aria-hidden="true" />}
-                  </li>
-                );
-              })}
-            </ol>
-          </nav>
-        )}
-        <div className="ui-page-header-row">
-          <div className="ui-page-header-heading min-w-0">
-            <h1 className="ui-page-title">{title}</h1>
-            {subtitle && <p className="ui-page-subtitle">{subtitle}</p>}
-          </div>
-          {extra && <div className="ui-page-header-extra">{extra}</div>}
-        </div>
-      </header>
+      {/* ONE implementation of the title band, shared with the standalone `PageHeader` export
+          (gh#255) — the two can never drift, because this IS that component. */}
+      <PageHeader
+        ref={headerRef}
+        title={title}
+        subtitle={subtitle}
+        meta={meta}
+        extra={extra}
+        breadcrumb={breadcrumb}
+        breadcrumbLabel={breadcrumbLabel}
+        breadcrumbAriaLabel={breadcrumbAriaLabel}
+        linkComponent={LinkComponent}
+        layout={headerLayout}
+        loading={headerLoading}
+      />
 
       {children != null && <div className="ui-page-body">{children}</div>}
 

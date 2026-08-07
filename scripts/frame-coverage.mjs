@@ -65,6 +65,9 @@ const FRAME_ALIAS = {
   AreaChart: "charts",
   PieChart: "charts",
   UploadCropDialog: "upload",
+  // Banner IS Alert at the page measure (gh#255) — one implementation, so it is demoed in the
+  // alert frame beside the inline variant it re-measures, not in a frame of its own.
+  Banner: "alert",
 };
 
 function walk(dir) {

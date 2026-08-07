@@ -49,7 +49,8 @@ const componentPrefixes = {
     "transfer",
     "cascader",
   ],
-  feedback: ["dialog", "alert", "empty-state", "skeleton", "sheet", "tooltip"],
+  // `banner` is the page-level Alert treatment (gh#255) — same component file, own measure knobs.
+  feedback: ["dialog", "alert", "banner", "empty-state", "skeleton", "sheet", "tooltip"],
   navigation: [
     "pagination",
     "filter",

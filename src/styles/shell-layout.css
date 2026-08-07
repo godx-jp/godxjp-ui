@@ -212,6 +212,30 @@
     --auth-shell-main-padding: var(--auth-shell-recovery-main-padding);
   }
 
+  /* Registration preset (gh#256) — the sign-up measure. `flex-start` is the load-bearing line: a
+   * registration card is the tallest surface in the hosted-identity set, and a vertically CENTRED
+   * tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of
+   * reach. Start-aligned, the block-start inset is ordinary page padding the user scrolls past, and
+   * the block-end inset is the footer clearance the form keeps at the end of a long scroll. */
+  .ui-auth-shell[data-preset="registration"] {
+    --auth-shell-card-max-width: var(--auth-shell-registration-card-max-width);
+    --auth-shell-main-align: flex-start;
+    --auth-shell-main-padding: var(--auth-shell-registration-main-padding-block-start)
+      var(--auth-shell-registration-main-padding-inline)
+      var(--auth-shell-registration-main-padding-block-end);
+    --auth-shell-card-stack-gap: var(--auth-shell-registration-card-stack-gap);
+  }
+
+  /* Fixed identity track — the mechanism `login` proved (gh#237), applied to the identity block
+   * wherever it sits in the column rather than through a grid row, so the preset does not constrain
+   * how many sections the page stacks. Content aligns to the slot END, so absent / one-line /
+   * wrapped two-line identity copy changes only the empty space ABOVE it and never moves the card
+   * off its canonical anchor. */
+  .ui-auth-shell[data-preset="registration"] .ui-auth-shell-card > .ui-auth-identity {
+    block-size: var(--auth-shell-registration-identity-slot-block-size);
+    justify-content: flex-end;
+  }
+
   .ui-auth-identity {
     display: flex;
     flex-direction: column;
@@ -390,6 +414,16 @@
      * horizontally and is not a valid source (gh#233). */
     .ui-auth-shell[data-preset="account-recovery"] {
       --auth-shell-main-padding: var(--auth-shell-recovery-main-padding-mobile);
+    }
+
+    /* registration = 15px inline at 390 (card x=15, width=360 — the same page rhythm as Login, so
+     * sign-in → sign-up never jumps on a phone). The block insets tighten but the footer clearance
+     * stays deliberately larger than the block-start inset: at 390 the form is at its tallest and
+     * the consent/legal footer must not sit flush against the submit button. */
+    .ui-auth-shell[data-preset="registration"] {
+      --auth-shell-main-padding: var(--auth-shell-registration-main-padding-block-start-mobile)
+        var(--auth-shell-registration-main-padding-inline-mobile)
+        var(--auth-shell-registration-main-padding-block-end-mobile);
     }
   }
 

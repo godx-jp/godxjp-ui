@@ -40,6 +40,9 @@ const contracts = [
       "Topbar",
       "ResponsiveGrid",
       "MasterDetail",
+      // gh#255 — the page title band. The consumer blocker was that it existed only INSIDE
+      // PageContainer, so it is pinned in the packed artifact for the same reason ErrorSurface is.
+      "PageHeader",
     ],
     types: [
       "PageContainerProp",
@@ -50,12 +53,16 @@ const contracts = [
       "ErrorSurfaceMaintenanceProp",
       "ErrorSurfaceModeProp",
       "ErrorSurfaceStatusProp",
+      "PageHeaderProp",
+      "PageHeaderProps",
     ],
     files: [
       "dist/components/layout/master-detail.js",
       "dist/components/layout/master-detail.d.ts",
       "dist/components/layout/error-surface.js",
       "dist/components/layout/error-surface.d.ts",
+      "dist/components/layout/page-header.js",
+      "dist/components/layout/page-header.d.ts",
     ],
   },
   {
@@ -78,11 +85,24 @@ const contracts = [
   },
   {
     subpath: "./feedback",
-    runtime: ["TwoFactorSetup"],
-    types: ["TwoFactorSetupProps"],
+    // gh#255 — Banner is the page-level Alert alias; pinned here so the alias can never be
+    // dropped from the published barrel while the source barrel still lists it.
+    runtime: ["TwoFactorSetup", "Banner"],
+    types: ["TwoFactorSetupProps", "BannerProp", "BannerProps"],
     files: [
       "dist/components/feedback/two-factor-setup.js",
       "dist/components/feedback/two-factor-setup.d.ts",
+    ],
+  },
+  {
+    // gh#258 — the typed FilterBar model. The navigation subpath had no packed contract at all,
+    // so nothing pinned the public names a list page imports.
+    subpath: "./navigation",
+    runtime: ["FilterBar", "FilterBarGroup", "Toolbar", "ToolbarGroup"],
+    types: ["FilterBarProp", "FilterBarProps", "FilterBarChipProp", "FilterBarGroupProps"],
+    files: [
+      "dist/components/navigation/filter-bar.js",
+      "dist/components/navigation/filter-bar.d.ts",
     ],
   },
   {

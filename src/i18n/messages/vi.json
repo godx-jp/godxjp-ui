@@ -135,6 +135,9 @@
       "openNav": "Mở menu điều hướng",
       "navLabel": "Menu"
     },
+    "pageHeader": {
+      "loading": "Đang tải trang…"
+    },
     "authShell": {
       "brandLabel": "Thương hiệu",
       "mainLabel": "Nội dung chính",
@@ -226,6 +229,11 @@
     },
     "toolbar": {
       "ariaLabel": "Bộ lọc"
+    },
+    "filterBar": {
+      "appliedFilters": "Bộ lọc đang áp dụng",
+      "removeFilter": "Bỏ bộ lọc {label}",
+      "resultCount": "{count} kết quả"
     },
     "localePicker": {
       "ariaLabel": "Ngôn ngữ"

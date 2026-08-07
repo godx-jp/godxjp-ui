@@ -5,6 +5,7 @@ import {
   AlertDescription,
   AlertQueryError,
   AlertTitle,
+  Banner,
 } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button } from "@godxjp/ui/general";
@@ -31,8 +32,9 @@ export default function Demo() {
               muted, neutral. Tone sets the icon, the surface and the live-region politeness
               (destructive and warning announce assertively; the rest are polite). default, muted
               and neutral deliberately share the quiet neutral surface, so the caller names intent
-              without adding colour. variant is the structural axis and currently has a single
-              branch, default, spelled out on the first banner.
+              without adding colour. variant is the structural axis: the MEASURE of the box, never
+              the colour: default (spelled out on the first banner) is this inset, rounded, inline
+              alert; banner is the page-level strip shown at the bottom of this page.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -134,6 +136,93 @@ export default function Demo() {
                 期日を過ぎた請求書が 2 件あります。早急にご確認ください。
               </AlertDescription>
             </Alert>
+          </CardContent>
+        </Card>
+
+        {/* Banner — the SAME component at the page measure (gh#255). variant="banner" swaps only
+            the box: square, edge-to-edge, ruled on the block-end edge, measured by the --banner-*
+            tokens. Every tone, the icon, the actions grid and the dismiss ✕ are inherited from the
+            inline alert above, so there is nothing new to learn and nothing duplicated.
+            `CardContent flush` removes the card inset so the strip really does reach both edges —
+            which is the whole point of the variant and cannot be shown inside a padded body. */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>Banner · page-level strip</CardTitle>
+            <CardDescription>
+              Mount it above PageHeader/PageContainer, or in AppShell to span every route. Use it
+              only for page- or app-scoped messages (maintenance, trial expiry, read-only mode); a
+              message about ONE section stays an inline Alert inside that section. Never stack two.
+            </CardDescription>
+          </CardHeader>
+          <CardContent flush>
+            <Flex direction="col">
+              <Banner tone="info">
+                <Banner.Title>8月10日 02:00〜04:00 に定期メンテナンスを実施します</Banner.Title>
+                <Banner.Description>作業中は仕訳の保存ができません。</Banner.Description>
+              </Banner>
+              <Banner
+                tone="warning"
+                onDismiss={() => {
+                  /* set session flag */
+                }}
+              >
+                <Banner.Content>
+                  <Banner.Title>お試し期間は残り 3 日です</Banner.Title>
+                  <Banner.Description>期限までにプランを選択してください。</Banner.Description>
+                </Banner.Content>
+                <Banner.Actions>
+                  <Button size="sm">プランを見る</Button>
+                </Banner.Actions>
+              </Banner>
+              <Banner tone="neutral">
+                <Banner.Title>閲覧専用モードで表示しています</Banner.Title>
+                <Banner.Description>
+                  サポート担当として代理ログイン中のため、編集操作は無効です。
+                </Banner.Description>
+              </Banner>
+              <Banner tone="destructive">
+                <Banner.Title>請求が未払いのため一部機能を停止しています</Banner.Title>
+                <Banner.Description>
+                  期日を過ぎた請求書が 2 件あります。お支払い後、数分で再開されます。
+                </Banner.Description>
+              </Banner>
+              {/* Long EN / VI copy at the same measure — the strip wraps rather than truncating,
+                  and the actions column keeps its minimum before dropping to its own row. This is
+                  the 390px stress case: nothing here sets a width. */}
+              <Banner tone="warning">
+                <Banner.Content>
+                  <Banner.Title>
+                    Scheduled maintenance will pause synchronisation for all connected accounting
+                    workspaces
+                  </Banner.Title>
+                  <Banner.Description>
+                    Journal entries created during the window are queued and submitted automatically
+                    once the service resumes. No action is required.
+                  </Banner.Description>
+                </Banner.Content>
+                <Banner.Actions>
+                  <Button size="sm" variant="outline">
+                    View status page
+                  </Button>
+                </Banner.Actions>
+              </Banner>
+              <Banner tone="info">
+                <Banner.Content>
+                  <Banner.Title>
+                    Việc đồng bộ dữ liệu hoá đơn sẽ tạm dừng trong thời gian bảo trì định kỳ
+                  </Banner.Title>
+                  <Banner.Description>
+                    Các bút toán được tạo trong khoảng thời gian này sẽ được xếp hàng và gửi lại tự
+                    động sau khi dịch vụ hoạt động trở lại.
+                  </Banner.Description>
+                </Banner.Content>
+                <Banner.Actions>
+                  <Button size="sm" variant="outline">
+                    Xem trạng thái
+                  </Button>
+                </Banner.Actions>
+              </Banner>
+            </Flex>
           </CardContent>
         </Card>
       </Flex>
