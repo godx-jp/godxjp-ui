@@ -67,7 +67,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | AlertDialogRoot | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | Sheet | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | Alert | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
-| Banner | ✓ | · | N/A | N/A | · | · | · | · | · | · |
+| Banner | ✓ | ✓ | N/A | N/A | · | · | · | · | · | · |
 | SkeletonTable | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Toaster | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | Tabs | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
@@ -106,7 +106,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | HoverCard | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | PasswordInput | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | PasswordStrength | ✓ | N/A | N/A | · | · | · | · | · | · | · |
-| InputOTP | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
+| InputOTP | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | Rating | ✓ | N/A | · | · | · | · | · | · | · | · |
 | TagInput | ✓ | N/A | · | · | · | · | · | · | · | · |
 | ContextMenu | ✓ | N/A | N/A | · | · | · | · | · | · | · |

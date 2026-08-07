@@ -510,7 +510,7 @@ import { StatCard } from "@godxjp/ui/data-display";
         name: "mobileNav",
         type: "ReactNode",
         description:
-          "Navigation shown in the AppShell-owned mobile drawer below `lg` (where the docked sidebar is hidden). Defaults to the `sidebar` node; pass a tailored menu, or null to opt out.",
+          "Navigation shown in the AppShell-owned mobile drawer at 900px and below — THE ONE AppShell breakpoint, where the docked sidebar is hidden. It is NOT Tailwind's `lg` (1024px): the shipped `@media (width <= 56.25rem)` rule and the hamburger's `max-[900px]:inline-flex` both fire at 900, and this catalog said `lg` for six minors (gh#259). Defaults to the `sidebar` node; pass a tailored menu, or null to opt out.",
       },
       {
         name: "mobileNavLabel",
@@ -531,7 +531,7 @@ import { StatCard } from "@godxjp/ui/data-display";
     ],
     usage: [
       "DO pass a <Sidebar> node to `sidebar` (required) and page content to `children` (required) — these are the only two required props. Everything else is optional and omitting optional slots simply removes that zone from the rendered DOM.",
-      "DO rely on AppShell's OWNED mobile drawer below `lg`: it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
+      "DO rely on AppShell's OWNED mobile drawer at 900px and below (56.25rem — the ONE AppShell breakpoint, not Tailwind's `lg`/1024px): it renders a hamburger trigger in the topbar and a focus-trapped Sheet (Esc + overlay close, focus returns to the trigger). `mobileNav` defaults to the `sidebar` node, so the same nav is reachable on mobile with no wiring — never hide the sidebar without providing this. Pass a tailored `mobileNav`, or `mobileNav={null}` only when navigation lives elsewhere (e.g. a bottom bar).",
       'DO set `responsiveNavigation="docked"` only when the approved product contract retains its sidebar below 900px. AppShell keeps the same sidebar/footer/active navigation in a token-sized grid track and removes the redundant drawer trigger; never reproduce this with consumer media queries.',
       "DO let the drawer nav own its own inset: AppShell renders `mobileNav` in a Sheet body whose inline padding is the `--app-shell-mobile-nav-inset` token (near-zero by default) instead of the generic 24px sheet chrome inset, so a <Sidebar> in the drawer is not double-padded (its own --sidebar-nav-scroll-padding already insets each row). If a custom `mobileNav` node needs the full chrome inset, set `--app-shell-mobile-nav-inset: var(--space-6)` in the service theme — never patch the drawer with a `[data-slot='sheet-body']` selector in app CSS.",
       "DO use the auto-built topbar rail (logo / topbarLeft / topbarRight) for simple shells. Pass a fully configured <Topbar> to the `topbar` prop only when you need live handlers (entity switcher via productMenu, search, notifications, user avatar) — when `topbar` is provided, logo/topbarLeft/topbarRight are ignored entirely.",
@@ -610,7 +610,7 @@ export function CrmLayout({ children }: { content: React.ReactNode }) {
         type: '"default" | "login" | "registration" | "device-authorization" | "context-selection" | "account-recovery"',
         defaultValue: '"default"',
         description:
-          'Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. "login" (gh#237) anchors the 360px SCR-001 card at x=540/332/15 and y=363/363/353 for 1440x900, 1024x900 and 390x844; its fixed identity slot absorbs standalone, one-line requester and wrapped two-line requester states without truncating data. "device-authorization" (gh#220) = a 380px card at 1440/1024 with a 5px inline page gutter at 390. "registration" (gh#256) = the 360px sign-up measure with a 15px inline gutter at 390 (the same page rhythm as "login", so sign-in to sign-up never jumps on a phone). It is the ONLY START-aligned preset: a sign-up card is the tallest surface in the set (name/email/password/confirm/strength/consent/submit/providers) and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach. It is also the only preset with its own footer-clearance knob, so the legal/consent footer never sits flush against the submit button; it carries the full password form AND the pending-email confirmation state with no consumer geometry CSS. "context-selection" (gh#217) = a 25rem card on desktop/tablet, edge-to-edge on mobile, plus tokenized section rhythm. "account-recovery" (gh#233) = the 27rem/432px SCR-008 recovery/MFA panel with a 15px mobile gutter. ORTHOGONAL to `variant`, so `variant="canonical" preset="login"` keeps canonical control chrome while the preset owns layout. Selecting a preset REPLACES consumer-side geometry overrides.',
+          'Named flow GEOMETRY — the package-owned layout contract for a canonical hosted-identity flow. "login" (gh#237) anchors the 360px SCR-001 card at x=540/332/15 and y=363/363/353 for 1440x900, 1024x900 and 390x844; its fixed identity slot absorbs standalone, one-line requester and wrapped two-line requester states without truncating data. "device-authorization" (gh#220, gh#12) = a 380px card at 1440/1024 with a 5px inline page gutter at 390, AND the code field itself: the preset hands --otp-slot-{inline,block}-size the canonical 27.5x52 device-grant slot, so two 4-slot grouped boxes measure 112x54 instead of the 146x38 the square --control-height tier produced. "registration" (gh#256) = the 360px sign-up measure with a 15px inline gutter at 390 (the same page rhythm as "login", so sign-in to sign-up never jumps on a phone). It is the ONLY START-aligned preset: a sign-up card is the tallest surface in the set (name/email/password/confirm/strength/consent/submit/providers) and a vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field out of reach. It is also the only preset with its own footer-clearance knob, so the legal/consent footer never sits flush against the submit button; it carries the full password form AND the pending-email confirmation state with no consumer geometry CSS. "context-selection" (gh#217) = a 25rem card on desktop/tablet, edge-to-edge on mobile, plus tokenized section rhythm. "account-recovery" (gh#233) = the 27rem/432px SCR-008 recovery/MFA panel with a 15px mobile gutter. ORTHOGONAL to `variant`, so `variant="canonical" preset="login"` keeps canonical control chrome while the preset owns layout. Selecting a preset REPLACES consumer-side geometry overrides.',
       },
       {
         name: "density",
@@ -1001,7 +1001,7 @@ export default function Shell() {
         type: "ReactNode",
         defaultValue: "undefined",
         description:
-          "Center cluster (grows + centers) — optional. e.g. a search trigger (`Button` + `Search` icon opening your command palette) or a page/entity switcher (`DropdownMenu`).",
+          "Center cluster (grows + centers) — optional. e.g. a search trigger (`Button` + `Search` icon opening your command palette) or a page/entity switcher (`DropdownMenu`). ⚠ HIDDEN AT 1100px AND BELOW by default: the slot follows `--topbar-center-compact-display` (default `none`) so it cannot cover the start breadcrumb/title or the end utilities when a 16rem sidebar is docked (gh#244). A global search placed here is therefore invisible on tablets and every phone until you set `--topbar-center-compact-display: flex`.",
       },
       {
         name: "end",
@@ -1029,6 +1029,7 @@ export default function Shell() {
       "DO put a locale/theme switcher in `end` using `AppSettingPicker` (or your own control) — icon-only vs labelled, bordered vs not, is THAT component's prop, not Topbar's. Topbar does not ship or force a language picker.",
       "DON'T look for `product`/`project`/`onSearchOpen`/`onNotificationsOpen`/`collapsed` props — they were removed. A chrome control only exists if YOU put it in a slot, so there is never a dead dropdown / empty search with nothing behind it.",
       "DO render Topbar inside `AppShell`'s `topbar` slot (or any `<header>`). For a non-three-cluster layout, pass `children` and lay it out yourself.",
+      "DO decide, explicitly, what happens to the `center` slot at 1100px and below. It is REMOVED there by default (`--topbar-center-compact-display: none`, gh#244) so it cannot cover the start or end clusters when a 16rem sidebar is docked — which also means a global search trigger in `center` is gone on tablets AND phones. This default arrived in 18.6.0 and changed behaviour for consumers who touched nothing but their lockfile. If your center content already has a compact presentation (an icon-only search trigger), opt back in globally with `:root { --topbar-center-compact-display: flex; }`; if it does not, move the trigger into `end` for compact widths. Never re-create either behaviour with a page-local media query.",
       "DO rely on the built-in shrink contract instead of hand-tuning widths: the bar never exceeds its shell allocation, `start` shrinks first and `center` yields its whole box, each cluster CLIPS its own overflow (so a long tenant/brand string can never spill over a sibling or leak a horizontal document scroll), and `end` keeps its natural width anchored inline-end — the locale picker and user menu stay visible at 1024px with a 16rem sidebar. If a label must degrade gracefully rather than be cut, give THAT element `truncate`/`text-overflow` yourself; don't add `overflow`/`flex` overrides to the slots.",
     ],
     useCases: [
@@ -2251,13 +2252,22 @@ export default function InvoiceList({
       {
         name: "accent",
         type: '"primary" | "success" | "warning" | "info" | "attention" | "destructive"',
-        description: "3px left-edge semantic accent stripe.",
+        description:
+          "Semantic accent TONE. Where it is drawn is `accentPlacement`'s job — by default a leading-edge stripe on `border-inline-start` at the `--card-accent-rail-width` measure (6px).",
+      },
+      {
+        name: "accentPlacement",
+        type: '"edge" | "perimeter"',
+        defaultValue: '"edge"',
+        description:
+          'Where `accent` is drawn. "edge" is the classic leading rail. "perimeter" is the FULL attention border — the whole edge in the accent tone, at the same optical weight as `variant="featured"` but tone-owned, so a card can read as "action required" (accent="attention") or "failed" (accent="destructive") without borrowing the brand colour. Inert without `accent`. Switching placement never shifts the body text: the rail\'s slot-padding compensation is undone with it.',
       },
       {
         name: "variant",
         type: '"default" | "muted" | "outline" | "featured"',
         defaultValue: '"default"',
-        description: "Surface fill style.",
+        description:
+          'Surface fill style. `featured` is the BRAND perimeter; its colour is now the `--card-featured-border-color` knob rather than a hard-coded `--primary`. For a perimeter in a semantic tone use `accent` + `accentPlacement="perimeter"` instead.',
       },
       {
         name: "size",
@@ -2278,6 +2288,7 @@ export default function InvoiceList({
       "DO use <CardContent flush> for edge-to-edge children such as DataTable, Table, or a Tabs list — this removes horizontal padding. Combine with <CardContent tight> when there is no visual gap needed after the header, and <CardContent solo> when there is no CardHeader above (top padding matches the card shell).",
       "DO use <CardFooter separated> to render a top-bordered action band (Save/Cancel buttons, table summary row). Use <CardFooter flush> for a full-bleed footer bar.",
       "DO use <CardCover> as the first child for full-bleed cover media — the header below it uses card-section top spacing, not the card shell.",
+      'DO reach for `accentPlacement="perimeter"` when the whole card needs attention, not one edge: `<Card accent="attention" accentPlacement="perimeter">` is the semantic-tone equivalent of `variant="featured"` (which is brand-toned by definition). Never hand-roll it with `className="border-2 border-[--attention]"` or a page-local `.card--attention` rule — the placement owns the border weight, the outer ring AND the slot-padding compensation, so text stays on the same column as an unaccented sibling.',
       "DON'T hand-roll a stat/KPI tile with <Card> + raw divs — use <StatCard> (label, value, hint, delta, layout, inverse props) which is already a Card internally with correct token-driven layout.",
       "SPACING IS BORDER-AWARE & token-driven (theme via src/tokens/components/card.css, never hard-code padding on slots): `--card-space-inset` is the shared horizontal column every slot (header/content/footer) aligns to. A DIVIDED section — a `banded` header or a `separated` footer, i.e. one carrying a divider border — pads SYMMETRICALLY top+bottom from `--card-space-divided-y` (a band reads as its own region). A PLAIN header flows into the body instead: top `--card-space-shell-y`, no bottom, and the body supplies the gap via `--card-space-body-y`. THE TWO AXES ARE INDEPENDENT (gh#232): `--card-space-inset` is inline-only, while `--card-space-shell-y` owns the BLOCK shell edges (plain-header top, `solo` body top, terminal slot bottom) and defaults to the inset — so a shell/theme can make a card SHORTER without narrowing its column by overriding `--card-space-shell-y` alone (this is how AuthShell's `--auth-shell-card-padding-block-compact` reaches CardContent). Never bridge it with a consumer selector on the card-content slot. Special case: a header above `<CardContent flush>` with a <Table> gets its own `--card-space-body-y` bottom gap (the flush table zeroes its top), so the title never butts the table. `--card-space-gap` is the in-slot stack gap (title↕description). Tune the band rhythm once at `--card-space-divided-y`; tune the accent stripe width at `--card-accent-rail-width` (default 6px).",
     ],
@@ -5477,6 +5488,13 @@ import { Button } from "@godxjp/ui/general";
         description: "Lay step titles beside or below the step icons.",
       },
       {
+        name: "separator",
+        type: '"chevron" | "arrow"',
+        defaultValue: '"chevron"',
+        description:
+          'The glyph between INLINE steps (`type="inline"` only; gh#12). `chevron` (›) is the breadcrumb-flavoured original; `arrow` (→) is the canonical hosted-identity progression marker — a chevron reads "drill into", an arrow reads "then", which is what a step row means. Both flip under dir="rtl". Ignored by every other `type`.',
+      },
+      {
         name: "onValueChange",
         type: "(value: number) => void",
         description: "Fires with the clicked step index (0-based).",
@@ -5487,6 +5505,7 @@ import { Button } from "@godxjp/ui/general";
       "DO: Control the active step with `value` (0-based index). For async operations, set the top-level `status` prop (`'process'|'error'|'finish'`) to override the current step's icon — e.g. `status='error'` turns the active step red without touching `items`.",
       "DO: Use per-item `status` to pin individual steps independently of `value` (e.g. a skipped or already-errored step). Per-item `status` takes precedence over the derived status from `value`.",
       "DO: Use type='inline' for compact hosted-auth/device progress. It retains process/finish/error/wait and aria-current semantics without the tall icon rail; never rebuild the row from Text and arrows in a consumer.",
+      'DO: Pick the inline progression marker with `separator` (`"arrow"` for the canonical hosted-identity row, `"chevron"` for the default), and express the step-number emphasis through `--steps-inline-index-{color,font-weight}` + `--steps-inline-separator-color` in the service theme. The canonical treatment is an accent TINT at normal weight; the library default is bold at the inherited colour. Both are one token away — never fork `.ui-steps-inline-index` in app CSS.',
       "DON'T: Use Steps for navigation that needs URL routing or tab-switching — it has no built-in panel rendering. Pair it with your own conditional panel or a `Tabs`/`Tabs` body; Steps only renders the indicator bar.",
       "DON'T: Wire `onValueChange` unless you actually support non-linear navigation. `onValueChange` makes every non-disabled step clickable (rendered as `<button>`); omitting it makes all steps non-interactive (`cursor-default`). Never set `disabled` on an item without also providing `onValueChange`, or the prop is meaningless.",
       "A11y: The `<ol>` is given `aria-label='Progress'` automatically. Individual steps render as `<button type='button'>` when `onValueChange` is present — ensure each `item.title` is descriptive enough to serve as the button label; avoid icon-only steps without a visible title.",
@@ -8456,6 +8475,13 @@ import { fetchInvoice } from "@/api/invoices";
           'Identity geometry. `circle` (default, inert) is the PERSON avatar — the round --radius-pill mark on the muted surface. `square` is the ENTITY-HEADER organization/service mark (gh#249): a compact rounded square on the brand surface, whose radius, box size, fill and glyph colour are all --avatar-square-{radius,size,background,foreground} tokens. Pick the shape by WHAT the mark represents; never hand-roll it with className="rounded-md bg-primary".',
       },
       {
+        name: "appearance",
+        type: '"default" | "tinted"',
+        defaultValue: '"default"',
+        description:
+          'Fill treatment, ORTHOGONAL to `shape`. `default` (inert) is the identity fill — --muted for a person, the solid brand mark for `shape="square"`. `tinted` is the CAPABILITY MEDALLION (gh#12): a soft role wash behind a role-coloured glyph, with the glyph sized by the component. `shape="square" appearance="tinted"` is the canonical rounded-square medallion a feature/capability icon sits on. Retune with --avatar-tinted-{background,foreground,glyph-size}.',
+      },
+      {
         name: "children",
         type: "ReactNode",
         description: "Compose AvatarImage and AvatarFallback.",
@@ -8464,6 +8490,7 @@ import { fetchInvoice } from "@/api/invoices";
     ],
     usage: [
       "DO compose Avatar > AvatarImage + AvatarFallback so broken or missing images still show a readable fallback.",
+      'DO render a capability / feature icon as `<Avatar shape="square" appearance="tinted"><AvatarFallback><Sparkles aria-hidden /></AvatarFallback></Avatar>` — the medallion is a COMPOSITION (Avatar + a Lucide glyph, per docs/COMPOSITION-VS-COMPONENT.md), and `appearance="tinted"` is the token-owned tint that composition needs. A BARE glyph beside a card title, or a hand-derived `hsl(var(--primary) / 0.1)` plate in page CSS, are both the anti-pattern this replaces. Left-aligned capability card: `<Card><CardHeader className="flex flex-row items-center gap-3"><Avatar shape="square" appearance="tinted">…</Avatar><CardTitle>…</CardTitle></CardHeader>…`.',
       'DO use `shape="square"` for an organization / service / tenant mark in an entity header, and keep the default `shape="circle"` for people. The square appearance already carries the brand surface and an AA-contrast glyph colour — a className/colour override on the call site is never needed (and is forbidden by the API-first redesign policy).',
       "DON'T retune the entity mark per call site: set --avatar-square-{radius,size,background,foreground} ONCE in the service theme (e.g. --avatar-square-background: hsl(var(--muted)) for a neutral mark).",
       "DON'T use Avatar for decorative thumbnails; use CardCover or an img when the image is content rather than identity.",
@@ -8890,13 +8917,22 @@ export default function PasswordBlock() {
           "Value callback (this is a true text input — onChange is the DOM-style value handler here).",
       },
       { name: "pattern", type: "string", description: "Allowed-char regex (e.g. digits only)." },
+      {
+        name: "align",
+        type: '"start" | "center" | "end"',
+        defaultValue: '"start"',
+        description:
+          "Main-axis alignment of the whole code row (groups + separators) inside the field (gh#12). `center` is the canonical auth challenge. Before this existed, every consumer wrapped the OTP in their own flex-centring div — do not. A service that wants all code fields centred sets `--otp-container-align` once instead.",
+      },
     ],
     usage: [
       "DO set `maxLength` to the code length and render that many InputOTPSlot with sequential `index`.",
+      'DO centre a challenge with `align="center"` on InputOTP — never with a wrapper `<div className="flex justify-center">`. The container is owned by input-otp, so a wrapper is the only thing a consumer CAN reach, which is exactly why the prop exists.',
       "DO wrap slots in InputOTPGroup; use InputOTPSeparator between groups (e.g. 3 + 3).",
       "For device codes, set `appearance='grouped'` on each InputOTPGroup to render one outline per group while preserving the single hidden input, paste, caret, keyboard and screen-reader behavior.",
       "DON'T build N separate Inputs — this is ONE field with paste, arrow-key, and caret handling built in.",
       "DO widen the slots with `--otp-slot-size` (gh#233) when a challenge row must fill a wide auth panel — it defaults to the live `--control-height` tier, so re-scoping `--control-height` on the card instead would also resize the submit button and every other input in it. Set a NAMED tier (`var(--control-height-lg)`), never an ad-hoc calc offset.",
+      'DO use `--otp-slot-inline-size` / `--otp-slot-block-size` (gh#12) when the code field is NOT square — a device-grant slot is taller than it is wide. They win over the `--otp-slot-size` shorthand and fall back to it, so setting neither keeps the square control tier. You rarely set them by hand inside `AuthShell preset="device-authorization"`: that preset already owns its code-field measure.',
       "DO drive the sign-in MFA challenge from FormField: `error` wires aria-invalid + aria-errormessage + a role=alert message onto the single field, and the slot borders turn destructive. State is never colour-only.",
     ],
     useCases: [

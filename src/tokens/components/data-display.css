@@ -28,6 +28,18 @@
   --avatar-square-background: initial;
   --avatar-square-foreground: initial;
 
+  /* Capability medallion — `<Avatar appearance="tinted">` (gh#12): the tinted plate a capability /
+     feature glyph sits on, as opposed to the SOLID entity mark above. Pair it with shape="square"
+     for the canonical rounded square. --avatar-tinted-background / --avatar-tinted-foreground are
+     role-mirror knobs (`initial`, docs/TOKENS.md) so the --primary defaults resolve at the CALL
+     SITE and a scoped [data-tenant]/.dark override of --primary reaches them — the exact reason
+     this is a token and not the `hsl(var(--primary) / 0.1)` literal consumers were writing in page
+     CSS. Defaults = hsl(var(--primary) / 0.1) wash · hsl(var(--primary)) glyph ·
+     --control-icon-size glyph box. */
+  --avatar-tinted-background: initial;
+  --avatar-tinted-foreground: initial;
+  --avatar-tinted-glyph-size: var(--control-icon-size);
+
   /* Progress track + fill — `initial` so the role defaults re-resolve under a scoped theme.
      Track reads --secondary, fill reads --success; a service re-tones once.
      Defaults = hsl(var(--secondary)) track · hsl(var(--success)) fill. */

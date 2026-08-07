@@ -8,6 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Card accentPlacement="perimeter"` — a full attention border in a SEMANTIC tone (gh#12).**
+  `accent` was documented and implemented as a leading-edge stripe (`border-inline-start` only), and
+  the system's one perimeter — `variant="featured"` — hard-coded `--primary`. So a card that had to
+  read as "action required" or "this failed" around its whole edge had exactly one route left: page
+  CSS. The tone and its PLACEMENT are now two orthogonal props, and `perimeter` carries the same
+  optical weight `featured` has (`--card-accent-perimeter-width` + `--card-accent-perimeter-ring-width`,
+  1px + 1px) in the card's own accent colour. It also undoes the rail's slot-padding compensation,
+  so switching placement never shifts the body text off the shell column — the failure mode of every
+  hand-rolled `border-2` workaround. `edge` is the default and emits no attribute, so every existing
+  accented Card keeps byte-identical DOM. `StatCard` forwards the prop for a KPI that needs the same
+  treatment.
+- **`Avatar appearance="tinted"` — the capability medallion (gh#12).** Canonical capability icons sit
+  in a tinted rounded-square medallion. `EmptyState`'s icon plate is centred, `StatCard`'s is
+  KPI-semantic, and `Avatar shape="square"` is a SOLID entity mark — so a left-aligned capability
+  card had no equivalent and consumers rendered bare glyphs. The medallion is a _composition_
+  (`Avatar` + a Lucide glyph, exactly as `docs/COMPOSITION-VS-COMPONENT.md` prescribes) and stays
+  one: what the library owed it was the TINT, which had no token, forcing `hsl(var(--primary) / 0.1)`
+  to be re-derived in page CSS. `appearance` is orthogonal to `shape`, so
+  `shape="square" appearance="tinted"` is the canonical rounded square and a tinted circle costs the
+  same one word. Retune with `--avatar-tinted-{background,foreground,glyph-size}`; the glyph rule is
+  scoped to this appearance on purpose, since a global `.ui-avatar svg` would outrank the per-call-site
+  icon classes existing avatars already carry.
+- **`InputOTP align` + `--otp-container-align` (gh#12).** `.ui-otp-container` had no alignment of its
+  own, and the container element belongs to `input-otp` — so the only thing a consumer could reach
+  was a wrapping flex div, and every one of them wrote it. `align="center"` (the canonical auth
+  challenge) is now a prop; the attribute lands on the hidden input and the container reads it back
+  through `:has()`, the same mechanism this stylesheet already uses for the invalid and disabled
+  states. `start` is the default and emits nothing.
+- **`--otp-slot-inline-size` / `--otp-slot-block-size` — a per-AXIS code-field measure (gh#12).**
+  `--otp-slot-size` stayed the square shorthand; the two new knobs win over it and fall back to it,
+  so the chain (axis → square → `--control-height`) still resolves at the call site. A code field
+  that is taller than it is wide was previously inexpressible from a token.
+- **`AuthShell preset="device-authorization"` now owns its CODE FIELD (gh#12).** The preset owned the
+  page measure but not its own subject: left on the generic square knob, two 4-slot
+  `appearance="grouped"` boxes rendered **146×38** against a **112×54** artboard (4 × the canonical
+  36px control tier + the 1px group border). The preset now hands the per-axis knobs
+  `--auth-shell-device-otp-slot-{inline,block}-size` (27.5×52 per slot ⇒ 112×54 per group), as literal
+  artboard lengths like every other measure in that file. Nothing else moves, and the generic
+  `--otp-slot-size` default is untouched everywhere else.
+- **`Steps separator="arrow"` + inline-emphasis tokens (gh#12).** The inline step row separated steps
+  with a chevron (`›`) and marked the number with bold, where the canonical hosted-identity row uses
+  an arrow (`→`) and an accent tint. A chevron reads "drill into"; an arrow reads "then", which is
+  what a step row means — so the glyph is a prop, and the emphasis is two knobs
+  (`--steps-inline-index-font-weight`, `--steps-inline-index-color`, plus
+  `--steps-inline-separator-color`). Both glyphs flip under `dir="rtl"`. Defaults reproduce the
+  existing row byte for byte.
+
 - **`PageHeader` is now a real export (gh#255).** The page title band — breadcrumbs, `<h1>`,
   subtitle, a new `meta` status slot, `extra` actions, the `layout` arrangement and a `loading`
   pending state — was only reachable through `PageContainer`, so a surface that is NOT a whole page
@@ -80,6 +127,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **⚠ 18.6.0 silently removed the Topbar CENTRE SLOT at 1100px and below — including on every phone.**
+  The gh#244 collision fix introduced `@media (width <= 68.75rem) { .ui-topbar-center { display:
+var(--topbar-center-compact-display) } }` with a default of `none`. Consumers whose global search
+  trigger lives in `Topbar center` lost it at 901–1100px and downward **without changing a line of
+  their own code** — a lockfile bump deleted a slot they depended on. **The default stays `none`**:
+  the overlap it prevents (a full search trigger covering the start breadcrumb/title or the end
+  utilities with a 16rem sidebar docked) is a real defect, and flipping a shipped default a second
+  time would be worse than documenting it once. It is now stated as a decision instead of a
+  side effect — the token comment, the MCP catalog's `center` prop description and a new Topbar usage
+  rule all carry the warning and the opt-in:
+
+  ```css
+  :root {
+    --topbar-center-compact-display: flex;
+  } /* restore the slot at every width */
+  ```
+
+  Opt back in only once the centre content has a compact presentation of its own (an icon-only search
+  trigger); otherwise move the trigger into `end` for compact widths. A page-local media query is the
+  anti-pattern the knob replaces.
+
+- **`variant="featured"` no longer hard-codes `--primary`.** Its edge and ring are now
+  `--card-featured-border-color` (role-mirror `initial`, so the `--primary` default resolves at the
+  call site and a scoped `[data-tenant]`/`.dark` override reaches it) and `--card-featured-ring-width`.
+  Rendered output is unchanged. `featured` is now simply the brand-toned member of the same family as
+  `accentPlacement="perimeter"`.
+- **The Card accent colour is resolved once per tone into `--card-accent-color`**, consumed by both
+  placements, so a rail and a perimeter can never drift apart. It is set on the element and is
+  therefore NOT a service knob — retint the role (`--attention`, `--success`, …).
 - **The `registration` preset's vertical geometry was invented, and is now derived and measured.**
   The first pass shipped `3rem` / `1.5rem` block-start offsets that were chosen rather than taken
   from the canonical artboard — the one thing every other preset in that file does carefully, citing
@@ -139,6 +215,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **The AppShell drawer breakpoint was documented as `lg` (1024px) but has always fired at 900px
+  (gh#259).** `shell-layout.css` said the docked sidebar "collapses out below `lg`", and the MCP
+  catalog's `mobileNav` description and its AppShell usage rule said the same — while the shipped
+  rule is `@media (width <= 56.25rem)` and the hamburger is `max-[900px]:inline-flex`. Between 900
+  and 1024 an agent reading the catalog therefore built against a breakpoint that does not exist.
+  `layout.prop.ts` was already correct. All three now name 900px / 56.25rem and point at the block
+  comment that explains why it is the one canonical value. No behaviour change — this was always a
+  documentation defect, but agents read the catalog, so it shipped wrong numbers into consumers.
 - **The boxed `<Logo tone="success">` glyph inked its TEXT with the identity KNOCKOUT colour, failing
   WCAG 2.2 AA at 3.67:1.** `.ui-logo[data-tone="success"]` fell back to `--brand-foreground` for
   `color`, but `--brand-foreground` is not an ink — it tracks `--background` in both themes

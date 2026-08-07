@@ -106,10 +106,26 @@ describe("InputOTP slot box — --otp-slot-size (gh#233)", () => {
 
   it("reads the knob with the tier as the call-site fallback, never an ad-hoc size", () => {
     const rule = controlStyles.match(/\.ui-otp-slot\s*\{[^}]*\}/)?.[0] ?? "";
-    expect(rule).toMatch(/width:\s*var\(--otp-slot-size,\s*var\(--control-height\)\)/);
-    expect(rule).toMatch(/height:\s*var\(--otp-slot-size,\s*var\(--control-height\)\)/);
+    // The per-axis knobs (gh#12) sit IN FRONT of the square shorthand, which keeps the tier as the
+    // final call-site fallback — so a field that sets no axis still resolves --control-height.
+    expect(rule).toMatch(
+      /width:\s*var\(--otp-slot-inline-size,\s*var\(--otp-slot-size,\s*var\(--control-height\)\)\)/,
+    );
+    expect(rule).toMatch(
+      /height:\s*var\(--otp-slot-block-size,\s*var\(--otp-slot-size,\s*var\(--control-height\)\)\)/,
+    );
     // No literal box and no calc offset — the box is always a named tier (rule #3 / check:control-sizing).
     expect(rule).not.toMatch(/(?:width|height):\s*[\d.]+(?:rem|px|em)/);
     expect(rule).not.toMatch(/calc\(var\(--control-height\)/);
+  });
+
+  it("declares both per-axis knobs `initial` too, so the whole chain resolves at the call site", () => {
+    // A :root binding on either axis (e.g. `--otp-slot-inline-size: var(--otp-slot-size)`) would
+    // freeze the chain at the :root tier and defeat the square shorthand it is supposed to defer to.
+    for (const axis of ["--otp-slot-inline-size", "--otp-slot-block-size"]) {
+      const declarations = controlTokens.match(new RegExp(`^\\s*${axis}:.*$`, "gm")) ?? [];
+      expect(declarations).toHaveLength(1);
+      expect(declarations[0]).toMatch(/:\s*initial;/);
+    }
   });
 });

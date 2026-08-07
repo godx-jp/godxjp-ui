@@ -6,9 +6,21 @@ import { cn } from "../../lib/utils";
 import type { HeadingLevelProp } from "../../props/vocabulary";
 
 type CardSize = "md" | "compact";
-/** Semantic leading-edge accent stripe (border-inline-start; width via the
- *  --card-accent-rail-width token, default 6px). */
+/** Semantic accent tone. `accentPlacement` decides WHERE it is drawn — a leading-edge
+ *  stripe (default) or the full perimeter. */
 type CardAccent = "primary" | "success" | "warning" | "info" | "attention" | "destructive";
+/**
+ * Where the semantic `accent` tone is drawn.
+ *
+ * - `"edge"` (default) — the leading-edge stripe on `border-inline-start` only, at the
+ *   `--card-accent-rail-width` measure (6px). The classic "this row needs a look" rail.
+ * - `"perimeter"` — a full attention border around the WHOLE card in the same semantic
+ *   tone, measured by `--card-accent-perimeter-width` + `--card-accent-perimeter-ring-width`.
+ *   This is what `variant="featured"` does, except the tone is yours instead of `--primary`,
+ *   so a card can shout "action required" (`accent="attention"`) or "this failed"
+ *   (`accent="destructive"`) without borrowing the brand colour.
+ */
+type CardAccentPlacement = "edge" | "perimeter";
 /** Surface fill — plain card, muted band, borderless outline, or emphasized featured ring. */
 type CardVariant = "default" | "muted" | "outline" | "featured";
 /** Padding density — base 16px · tight 12px · cozy 20px. */
@@ -31,18 +43,26 @@ export type CardProps = React.HTMLAttributes<HTMLDivElement> &
   VariantProps<typeof cardVariants> & {
     size?: CardSize;
     accent?: CardAccent;
+    /**
+     * Where `accent` is drawn — `"edge"` (default, the leading-edge stripe) or `"perimeter"`
+     * (a full attention border in the accent tone). Inert without `accent`.
+     */
+    accentPlacement?: CardAccentPlacement;
     variant?: CardVariant;
     density?: CardDensity;
   };
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, size = "md", accent, variant, density, ...props }, ref) => (
+  ({ className, size = "md", accent, accentPlacement, variant, density, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(cardVariants({ size }), className)}
       data-slot="card"
       data-size={size === "compact" ? "compact" : undefined}
       data-accent={accent}
+      // INERT DEFAULT: `edge` emits no attribute at all, so every existing accented Card keeps
+      // the exact DOM and the exact leading-rail geometry it had.
+      data-accent-placement={accentPlacement === "perimeter" ? "perimeter" : undefined}
       data-variant={variant && variant !== "default" ? variant : undefined}
       data-density={density}
       {...props}
@@ -208,6 +228,8 @@ export type StatCardProps = React.HTMLAttributes<HTMLDivElement> &
     inverse?: boolean;
     /** Semantic leading-edge rail (Card accent) — flags a KPI needing attention. */
     accent?: CardAccent;
+    /** Where `accent` is drawn — `"edge"` (default rail) or `"perimeter"` (full attention border). */
+    accentPlacement?: CardAccentPlacement;
   };
 
 function getDeltaTone(
@@ -236,6 +258,7 @@ export function StatCard({
   align = "start",
   inverse = false,
   accent,
+  accentPlacement,
   className,
   size = "compact",
   ...props
@@ -246,6 +269,7 @@ export function StatCard({
     <Card
       size={size ?? "compact"}
       accent={accent}
+      accentPlacement={accentPlacement}
       className={cn("ui-stat-card", className)}
       data-stat-card=""
       data-stat-layout={layout}

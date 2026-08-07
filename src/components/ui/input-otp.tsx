@@ -3,15 +3,26 @@ import { OTPInput, OTPInputContext } from "input-otp";
 import { Minus } from "lucide-react";
 
 import { cn } from "../../lib/utils";
-import type { InputOTPGroupProp } from "../../props/components/data-entry.prop";
+import type { InputOTPAlignProp, InputOTPGroupProp } from "../../props/components/data-entry.prop";
 
+/**
+ * InputOTP — the code-challenge field.
+ *
+ * `align` positions the whole row (groups + separators) on the main axis: `start` (default,
+ * unchanged), `center` — the canonical auth challenge — or `end`. The attribute lands on the
+ * hidden input because `input-otp` owns the container element; `.ui-otp-container` reads it back
+ * through `:has()`, exactly as it already does for the invalid and disabled states. A service that
+ * wants every code field centred sets `--otp-container-align` once instead.
+ */
 export const InputOTP = React.forwardRef<
   React.ComponentRef<typeof OTPInput>,
-  React.ComponentPropsWithoutRef<typeof OTPInput>
->(({ className, containerClassName, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof OTPInput> & { align?: InputOTPAlignProp }
+>(({ className, containerClassName, align, ...props }, ref) => (
   <OTPInput
     ref={ref}
     data-slot="input-otp"
+    // INERT DEFAULT: `start` emits no attribute, so an existing field keeps its exact DOM.
+    data-align={align && align !== "start" ? align : undefined}
     containerClassName={cn("ui-otp-container", containerClassName)}
     className={cn("ui-otp-input", className)}
     {...props}
@@ -20,6 +31,7 @@ export const InputOTP = React.forwardRef<
 InputOTP.displayName = "InputOTP";
 
 export type {
+  InputOTPAlignProp,
   InputOTPGroupAppearanceProp,
   InputOTPGroupProp,
   InputOTPGroupProp as InputOTPGroupProps,

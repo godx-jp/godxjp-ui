@@ -29,6 +29,23 @@ describe("Steps — compact size", () => {
     expect(container.querySelector(".animate-spin")).toBeNull();
   });
 
+  it("picks the inline progression glyph through `separator`, defaulting to the chevron (gh#12)", () => {
+    const items = [{ title: "コード入力" }, { title: "確認" }];
+
+    // Default — the breadcrumb-flavoured chevron the row has always used.
+    const { container: chevron } = render(<Steps type="inline" items={items} />);
+    expect(chevron.querySelector(".ui-steps-inline-separator")).toHaveClass("lucide-chevron-right");
+
+    // The canonical hosted-identity marker: an arrow reads "then", a chevron reads "drill into".
+    const { container: arrow } = render(<Steps type="inline" separator="arrow" items={items} />);
+    const glyph = arrow.querySelector(".ui-steps-inline-separator");
+    expect(glyph).toHaveClass("lucide-arrow-right");
+    // Both glyphs point along the reading direction, so both must flip under dir="rtl".
+    expect(glyph).toHaveClass("rtl:rotate-180");
+    // Decorative — the step's own status text carries the meaning.
+    expect(glyph).toHaveAttribute("aria-hidden", "true");
+  });
+
   it("preserves an explicit error state in the inline appearance", () => {
     const { container } = render(
       <Steps

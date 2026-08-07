@@ -113,11 +113,32 @@ export default function Demo() {
 
         <Flex direction="col" gap="sm">
           <Text as="div" weight="medium">
-            Accent stripe (3px left edge)
+            Accent · accentPlacement=&quot;edge&quot; (既定 · 先頭エッジのレール)
           </Text>
           <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 6 }}>
             {accents.map((a) => (
               <Card key={a} accent={a}>
+                <CardContent>{a}</CardContent>
+              </Card>
+            ))}
+          </ResponsiveGrid>
+        </Flex>
+
+        {/* accentPlacement="perimeter" — the semantic attention border (gh#12) */}
+        <Flex direction="col" gap="sm">
+          <Text as="div" weight="medium">
+            Accent · accentPlacement=&quot;perimeter&quot; (全周のアテンションボーダー)
+          </Text>
+          <Text size="xs" tone="muted">
+            variant=&quot;featured&quot;
+            は定義上ブランド色の全周ボーダー。トーンを自分で決めたいとき —
+            「対応が必要」「失敗した」— は accent と accentPlacement の 2
+            語で表す。本文の左インセットは レール版と同じ位置に戻るので、placement
+            を切り替えても文字は動かない。
+          </Text>
+          <ResponsiveGrid columns={{ sm: 2, md: 3, lg: 6 }}>
+            {accents.map((a) => (
+              <Card key={a} accent={a} accentPlacement="perimeter">
                 <CardContent>{a}</CardContent>
               </Card>
             ))}

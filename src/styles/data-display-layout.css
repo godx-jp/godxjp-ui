@@ -30,6 +30,22 @@
     color: var(--avatar-square-foreground, hsl(var(--primary-foreground)));
   }
 
+  /* CAPABILITY MEDALLION — `<Avatar appearance="tinted">` (gh#12). The tinted companion of the
+   * solid entity mark: same box, same radius, a soft role wash instead of a solid fill and the
+   * glyph in the role itself. Declared AFTER the square rule (equal specificity) so it retints
+   * either shape. The glyph rule is scoped to this appearance ON PURPOSE — a global
+   * `.ui-avatar svg` would outrank the per-call-site icon classes existing avatars already use. */
+  .ui-avatar[data-appearance="tinted"] {
+    --avatar-background: var(--avatar-tinted-background, hsl(var(--primary) / 0.1));
+    color: var(--avatar-tinted-foreground, hsl(var(--primary)));
+  }
+
+  .ui-avatar[data-appearance="tinted"] svg {
+    inline-size: var(--avatar-tinted-glyph-size);
+    block-size: var(--avatar-tinted-glyph-size);
+    flex: none;
+  }
+
   .ui-avatar-image {
     width: 100%;
     height: 100%;

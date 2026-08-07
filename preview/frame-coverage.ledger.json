@@ -473,7 +473,7 @@
       "geometry": {
         "runner": "scripts/frame-geometry.mjs (pnpm check:frame-geometry)",
         "baseline": "scripts/frame-geometry.baseline.json",
-        "recordedAt": "2026-07-13",
+        "recordedAt": "2026-08-07",
         "widths": [
           320,
           375,
@@ -484,26 +484,25 @@
           1440,
           1920
         ],
-        "failingFrames": 12,
-        "failingCells": 36,
+        "failingFrames": 7,
+        "failingCells": 16,
         "byWidth": {
-          "320": 12,
-          "375": 11,
-          "390": 10,
-          "768": 3
+          "320": 7,
+          "375": 4,
+          "390": 3,
+          "768": 2
         },
         "note": "Recorded frame×width overflow / clipped-control failures from the shrink-only geometry baseline. NOT re-executed by this generator — the sweep needs Chromium plus a built preview. It proves the absence of overflow on the frames it swept; it is not a responsive-layout case and never promotes `responsive`."
       },
       "axe": {
         "runner": "scripts/check-frame-axe.mjs (pnpm check:frame-axe)",
         "baseline": "scripts/frame-axe.baseline.json",
-        "recordedAt": "2026-07-13",
-        "failingFrames": 6,
+        "recordedAt": "2026-08-07",
+        "failingFrames": 5,
         "failingRules": [
           "aria-hidden-focus",
           "button-name",
           "landmark-one-main",
-          "landmark-unique",
           "page-has-heading-one",
           "scrollable-region-focusable"
         ],
@@ -538,11 +537,11 @@
     "exports": 278,
     "dimensionCells": 3892,
     "covered": 65,
-    "untested": 2127,
-    "notApplicable": 1700,
+    "untested": 2128,
+    "notApplicable": 1699,
     "knownMissingFrames": [],
-    "geometryFailingCells": 36,
-    "axeFailingFrames": 6
+    "geometryFailingCells": 16,
+    "axeFailingFrames": 5
   },
   "cases": [],
   "components": {
@@ -4369,8 +4368,8 @@
       ],
       "baseline": {
         "covered": 0,
-        "notApplicable": 7,
-        "untested": 7
+        "notApplicable": 6,
+        "untested": 8
       },
       "dimensions": {
         "variants": "not-applicable:api-manifest",
@@ -4379,7 +4378,7 @@
         "shapes": "not-applicable:api-manifest",
         "density": "not-applicable:api-manifest",
         "ownership": "not-applicable:api-manifest",
-        "states": "not-applicable:api-manifest",
+        "states": "untested",
         "async": "untested",
         "responsive": "untested",
         "rtl": "untested",

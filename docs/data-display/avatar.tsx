@@ -10,6 +10,7 @@ import {
 } from "@godxjp/ui/data-display";
 import { Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
+import { Building2, KeyRound, ShieldCheck, Sparkles } from "lucide-react";
 
 /**
  * Avatar — identity image with a readable fallback (users, teams, entities).
@@ -108,6 +109,62 @@ export default function Demo() {
                 </Avatar>
                 <Avatar shape="circle">
                   <AvatarFallback>田</AvatarFallback>
+                </Avatar>
+              </Flex>
+            </Flex>
+          </CardContent>
+        </Card>
+
+        {/* appearance="tinted" — the capability medallion (gh#12) */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              ケイパビリティ メダリオン · appearance=&quot;tinted&quot;
+            </CardTitle>
+            <CardDescription>
+              機能・ケイパビリティのアイコンは、淡いロール地の角丸スクエア（メダリオン）に載せる。
+              メダリオンは Avatar + Lucide グリフの合成パターン（docs/COMPOSITION-VS-COMPONENT.md）
+              なので、ライブラリが持つべきは「淡色」そのもの · appearance=&quot;tinted&quot;。
+              これが無いと消費側は hsl(var(--primary) / 0.1) をページ CSS
+              に書き写すか、素のグリフを置くしかなかった。 shape と直交するので、円形メダリオンも
+              同じ 1 語で得られる。配色は --avatar-tinted-* トークン所有。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              {/* The left-aligned capability card: medallion, title, one line of prose. */}
+              <Flex direction="row" align="center" gap="md">
+                <Avatar shape="square" appearance="tinted">
+                  <AvatarFallback>
+                    <ShieldCheck aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
+                <Flex direction="col">
+                  <Text weight="medium">シングルサインオン</Text>
+                  <Text size="xs" tone="muted">
+                    1 つの ID で全サービスへ
+                  </Text>
+                </Flex>
+              </Flex>
+              <Flex direction="row" wrap align="center" gap="md">
+                <Avatar shape="square" appearance="tinted">
+                  <AvatarFallback>
+                    <KeyRound aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
+                <Avatar shape="square" appearance="tinted">
+                  <AvatarFallback>
+                    <Building2 aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
+                <Avatar appearance="tinted">
+                  <AvatarFallback>
+                    <Sparkles aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
+                {/* Solid entity mark beside it — the two treatments are different jobs. */}
+                <Avatar shape="square">
+                  <AvatarFallback>山</AvatarFallback>
                 </Avatar>
               </Flex>
             </Flex>

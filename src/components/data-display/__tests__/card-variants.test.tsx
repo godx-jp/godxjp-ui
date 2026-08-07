@@ -19,6 +19,29 @@ describe("Card — surface data attributes", () => {
     expect(card).toHaveAttribute("data-density", "tight");
   });
 
+  it("draws the accent on the perimeter when asked, and on the edge by default (gh#12)", () => {
+    // SCR-117 needs a full attention border in a NON-primary tone. `variant="featured"` draws a
+    // perimeter but is brand-toned by definition, so the tone and its placement are two props.
+    const { container: perimeter } = render(
+      <Card accent="attention" accentPlacement="perimeter">
+        body
+      </Card>,
+    );
+    const card = q(perimeter, "card");
+    expect(card).toHaveAttribute("data-accent", "attention");
+    expect(card).toHaveAttribute("data-accent-placement", "perimeter");
+
+    // INERT DEFAULT: an existing accented card must keep byte-identical DOM.
+    const { container: edge } = render(<Card accent="attention">body</Card>);
+    expect(q(edge, "card")).not.toHaveAttribute("data-accent-placement");
+    const { container: explicit } = render(
+      <Card accent="attention" accentPlacement="edge">
+        body
+      </Card>,
+    );
+    expect(q(explicit, "card")).not.toHaveAttribute("data-accent-placement");
+  });
+
   it("omits data-variant/data-size for the defaults", () => {
     const { container } = render(
       <Card variant="default" size="md">

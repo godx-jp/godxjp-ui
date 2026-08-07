@@ -46,3 +46,39 @@ describe("InputOTP grouped appearance", () => {
     expect(field).toHaveValue("1234567");
   });
 });
+
+describe("InputOTP alignment (gh#12)", () => {
+  it("centres the row through `align` instead of a consumer wrapper div", () => {
+    // `input-otp` owns the container element, so the ONLY thing a consumer could reach was a
+    // wrapping flex div — which every one of them wrote. The attribute lands on the hidden input
+    // and `.ui-otp-container` reads it back with :has(), the same mechanism the invalid and
+    // disabled states already use.
+    const { container } = renderWithUi(
+      <InputOTP maxLength={2} align="center" aria-label="code">
+        <InputOTPGroup>
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+        </InputOTPGroup>
+      </InputOTP>,
+    );
+    const field = container.querySelector('[data-slot="input-otp"]');
+    expect(field).toHaveAttribute("data-align", "center");
+    // The :has() selector needs the flagged input to be a DESCENDANT of the container that
+    // input-otp renders — it is nested one level down inside the overlay wrapper, not a child.
+    const otpContainer = container.querySelector(".ui-otp-container");
+    expect(otpContainer).not.toBeNull();
+    expect(otpContainer?.contains(field!)).toBe(true);
+  });
+
+  it("emits no alignment attribute for the default — an existing field is byte-identical", () => {
+    const { container } = renderWithUi(
+      <InputOTP maxLength={2} aria-label="code">
+        <InputOTPGroup>
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+        </InputOTPGroup>
+      </InputOTP>,
+    );
+    expect(container.querySelector('[data-slot="input-otp"]')).not.toHaveAttribute("data-align");
+  });
+});

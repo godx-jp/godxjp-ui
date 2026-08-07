@@ -1275,6 +1275,11 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-display.prop.ts",
     vocabulary: ["AvatarShapeProp", "ChildrenProp", "ClassNameProp"],
   },
+  AvatarAppearanceProp: {
+    group: "data-display",
+    file: "components/data-display.prop.ts",
+    vocabulary: [],
+  },
   BadgeProp: {
     group: "data-display",
     file: "components/data-display.prop.ts",
@@ -1685,12 +1690,22 @@ export const COMPONENT_PROP_REGISTRY = {
     file: "components/data-entry.prop.ts",
     vocabulary: [],
   },
+  InputOTPAlignProp: {
+    group: "data-entry",
+    file: "components/data-entry.prop.ts",
+    vocabulary: [],
+  },
   StepItemProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: ["TitleProp", "SubtitleProp", "DescriptionProp", "IconProp", "DisabledProp"],
   },
   StepStatusProp: { group: "navigation", file: "components/navigation.prop.ts", vocabulary: [] },
+  StepsSeparatorProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: [],
+  },
   TabsProp: {
     group: "navigation",
     file: "components/navigation.prop.ts",

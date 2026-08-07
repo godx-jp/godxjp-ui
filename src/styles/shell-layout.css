@@ -192,9 +192,14 @@
     text-align: center;
   }
 
+  /* Device-authorization also owns its CODE FIELD (gh#12): the preset's subject is the code, so
+   * the slot box comes from the preset instead of the generic square control tier. Scoped on the
+   * shell so every OTP inside the device flow inherits it; a per-instance override still wins. */
   .ui-auth-shell[data-preset="device-authorization"] {
     --auth-shell-card-max-width: var(--auth-shell-device-card-max-width);
     --auth-shell-main-padding: var(--auth-shell-device-main-padding);
+    --otp-slot-inline-size: var(--auth-shell-device-otp-slot-inline-size);
+    --otp-slot-block-size: var(--auth-shell-device-otp-slot-block-size);
   }
 
   .ui-auth-shell[data-preset="context-selection"] {
@@ -519,7 +524,11 @@
   }
 
   /* AppShell-owned mobile drawer trigger — hidden on desktop, shown once the docked sidebar
-   * collapses out below `lg` (gh#165). The drawer nav itself is a focus-trapped Sheet. */
+   * collapses out at 900px, THE ONE AppShell breakpoint (gh#165, gh#259). NOT Tailwind's `lg`
+   * (1024px): this comment said "below lg" for six minors while the shipped rule below and the
+   * hamburger's own `max-[900px]:inline-flex` both fired at 900 — see the block comment on the
+   * `@media (width <= 56.25rem)` rule for why 900 is the canonical value. The drawer nav itself is
+   * a focus-trapped Sheet. */
   .app-mobile-nav-trigger {
     display: none;
     flex: 0 0 auto;

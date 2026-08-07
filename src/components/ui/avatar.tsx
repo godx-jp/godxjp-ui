@@ -6,8 +6,9 @@ import type { AvatarProp } from "../../props/components/data-display.prop";
 
 export const Avatar = React.forwardRef<
   React.ComponentRef<typeof AvatarPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> & Pick<AvatarProp, "shape">
->(({ className, shape = "circle", ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> &
+    Pick<AvatarProp, "shape" | "appearance">
+>(({ className, shape = "circle", appearance = "default", ...props }, ref) => (
   <AvatarPrimitive.Root
     ref={ref}
     data-slot="avatar"
@@ -17,6 +18,11 @@ export const Avatar = React.forwardRef<
     // colour are ALL `--avatar-square-*` component tokens (gh#249, cardinal rule #45) — a service
     // retunes the entity mark once in its theme instead of overriding className per call site.
     data-shape={shape === "square" ? "square" : undefined}
+    // Also inert by default. `tinted` is the CAPABILITY MEDALLION skin (gh#12): a soft role wash
+    // behind a role-coloured glyph, sized by --avatar-tinted-* — the plate a feature/capability
+    // icon sits on. Orthogonal to `shape`, so `shape="square" appearance="tinted"` is the
+    // canonical rounded-square medallion and a tinted circle is equally reachable.
+    data-appearance={appearance === "tinted" ? "tinted" : undefined}
     className={cn("ui-avatar", className)}
     {...props}
   />

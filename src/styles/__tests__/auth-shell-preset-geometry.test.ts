@@ -65,6 +65,26 @@ describe("AuthShell flow presets — token-owned geometry", () => {
     expect(desktop).toMatch(/--auth-shell-main-padding:\s*var\(--auth-shell-device-main-padding\)/);
   });
 
+  it("device-authorization also owns its CODE FIELD measure (gh#12)", () => {
+    // The preset's SUBJECT is the code. Left on the generic square --otp-slot-size it fell back to
+    // the canonical 36px control tier, so two 4-slot `appearance="grouped"` boxes rendered 146x38
+    // against a 112x54 artboard: 4 x 36 + 2 x 1px group border = 146 wide, 36 + 2 = 38 tall.
+    // 1.71875rem = 27.5px → 4 x 27.5 + 2 = 112. 3.25rem = 52px → 52 + 2 = 54.
+    expect(shellTokens).toContain("--auth-shell-device-otp-slot-inline-size: 1.71875rem;");
+    expect(shellTokens).toContain("--auth-shell-device-otp-slot-block-size: 3.25rem;");
+
+    const [desktop] = authBlock("device-authorization");
+    expect(desktop).toMatch(
+      /--otp-slot-inline-size:\s*var\(--auth-shell-device-otp-slot-inline-size\)/,
+    );
+    expect(desktop).toMatch(
+      /--otp-slot-block-size:\s*var\(--auth-shell-device-otp-slot-block-size\)/,
+    );
+    // Handed to the PUBLIC per-axis knobs, never to a `.ui-otp-*` selector inside the shell —
+    // a shell that reaches into another component's internals is the fork this preset replaces.
+    expect(shellStyles).not.toMatch(/data-preset="device-authorization"[^{]*\.ui-otp-/);
+  });
+
   it("context-selection owns a 25rem card measure and an edge-to-edge mobile gutter (gh#217)", () => {
     expect(shellTokens).toContain("--auth-shell-context-card-max-width: 25rem;");
     expect(shellTokens).toContain("--auth-shell-context-main-padding-mobile: var(--space-6) 0;");

@@ -226,6 +226,37 @@ export default function Demo() {
             />
           </CardContent>
         </Card>
+
+        {/* Inline row — the hosted-identity / device progression (gh#12) */}
+        <Card>
+          <CardHeader>
+            <CardTitle level={2}>
+              Inline 行 · 区切りグリフ (type=&quot;inline&quot; · separator)
+            </CardTitle>
+            <CardDescription>
+              認証・デバイス系の 1 行プログレス。区切りは既定が chevron (›)、 正典のホステッド ID
+              画面は arrow (→) — chevron は「掘り下げる」、arrow
+              は「次へ」を意味し、ステップ行の意味は後者。 番号の強調（既定は太字 /
+              正典はアクセント色）は --steps-inline-index-color / --steps-inline-index-font-weight
+              で、アプリ CSS を書かずに切り替える。
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Flex direction="col" gap="md">
+              <Steps
+                type="inline"
+                value={1}
+                items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
+              />
+              <Steps
+                type="inline"
+                separator="arrow"
+                value={1}
+                items={[{ title: "コード入力" }, { title: "確認" }, { title: "完了" }]}
+              />
+            </Flex>
+          </CardContent>
+        </Card>
       </Flex>
     </PageContainer>
   );
