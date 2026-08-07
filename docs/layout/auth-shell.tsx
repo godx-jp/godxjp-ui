@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@godxjp/ui/data-display";
 import { FormField, Input } from "@godxjp/ui/data-entry";
-import { Button, Logo, Text } from "@godxjp/ui/general";
+import { Button } from "@godxjp/ui/general";
 import {
   AuthDivider,
   AuthFooter,
@@ -24,15 +24,15 @@ export default function Demo() {
         : "Attendance is requesting sign in";
 
   return (
+    // NO `brand` bar — the canonical SCR-001 screen passes none (the mark lives INSIDE the column
+    // as `AuthIdentity` below), and the real hosted Login.tsx does the same. Passing one pushed the
+    // whole column down by the bar's 72px, which is exactly why this frame's own visual contract
+    // was failing: `expected 363 +/- 1px, received 435`. The preset's offset token is measured from
+    // the top of `main`, so a bar above it silently breaks the canonical anchor. The `brand` slot
+    // stays covered by auth-shell-variants / -context / -device.
     <AuthShell
       variant="canonical"
       preset="login"
-      brand={
-        <Flex align="center" gap="sm">
-          <Logo mark="godx" />
-          <Text weight="medium">GoDX ID</Text>
-        </Flex>
-      }
       footer={<AuthFooter product="GoDX ID" terms="利用規約" privacy="プライバシー" />}
     >
       <AuthIdentity title="GoDX ID" requester={requester} />
