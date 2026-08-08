@@ -335,6 +335,10 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
+      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
+       * before; a consumer whose column count exceeds the priority budget raises it and the
+       * surrounding scroll region takes the overflow instead of the cells. */
+      min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
@@ -356,6 +360,10 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
+      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
+       * before; a consumer whose column count exceeds the priority budget raises it and the
+       * surrounding scroll region takes the overflow instead of the cells. */
+      min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
@@ -377,6 +385,10 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
+      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
+       * before; a consumer whose column count exceeds the priority budget raises it and the
+       * surrounding scroll region takes the overflow instead of the cells. */
+      min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the
@@ -398,6 +410,10 @@
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
       font-size: var(--table-action-collection-font-size-compact);
+      /* The legibility floor. Default `0` keeps the table fitted to its container exactly as
+       * before; a consumer whose column count exceeds the priority budget raises it and the
+       * surrounding scroll region takes the overflow instead of the cells. */
+      min-inline-size: var(--table-action-collection-min-inline-size-compact);
     }
 
     /* A nowrap child (a Badge pill, a chip) would otherwise bleed into the next column at the

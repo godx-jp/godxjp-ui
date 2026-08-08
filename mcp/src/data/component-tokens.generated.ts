@@ -2832,5 +2832,10 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "name": "--table-action-collection-row-height-compact",
     "value": "var(--table-row-height-compact)",
     "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+  },
+  {
+    "name": "--table-action-collection-min-inline-size-compact",
+    "value": "0",
+    "description": "Compact-tier LEGIBILITY FLOOR — the measure below which the preset stops fitting the table * to its container and lets the scroll region it already owns take over. * * The percentage budget above is sized for ONE column per priority tier plus one free-text * column. A queue that repeats a tier — two `secondary` columns, three `meta` columns, or an * unmarked column beside them — asks for more than 100%, and under `table-layout: fixed` the * surplus is taken out of the columns rather than out of the table: measured on a seven-column * Japanese admin queue at 390, every column landed at 44–59px and CJK labels wrapped at ONE to * TWO characters per line (dxs-platform/platform#680). That is a WCAG 2.2 SC 1.4.10 Reflow (AA) * failure, and it is the failure mode this floor removes. * * Scrolling is the correct escape, not a concession: SC 1.4.10 exempts \"parts of the content * which require two-dimensional layout for usage or meaning\", and its own note names data * tables as the example. A table that scrolls horizontally inside its card conforms; a table * whose cells are one character wide does not. * * Default `0` so nothing changes for any existing consumer: a queue that fits its priority * budget keeps fitting. A consumer whose queue carries more columns than the budget sets this * to the measure at which its narrowest column is still readable (roughly 5rem per column for * Japanese at the compact type tier) and the table scrolls instead of crushing."
   }
 ];

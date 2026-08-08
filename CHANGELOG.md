@@ -8,6 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Table` / `DataTable` `preset="action-collection"` — a compact-tier legibility floor:
+  `--table-action-collection-min-inline-size-compact` (dxs-platform/platform#680).** The preset's
+  percentage budget is sized for ONE column per priority tier plus one free-text column: 24%
+  primary + 22% secondary + 20% meta + a 2.75rem action measure. A queue that REPEATS a tier — two
+  `secondary` columns, three `meta` columns, or a second unmarked column — asks for more than 100%,
+  and under `table-layout: fixed` the surplus comes out of the COLUMNS rather than out of the
+  table. Measured on a consumer's seven-column Japanese admin queue at 390: 名前 59 · 種別 54 ·
+  支店 54 · シリアル番号 49 · 最終接続 49 · 状態 49 · 操作 44 in a 356px table, with シリアル番号
+  and 最終接続 wrapping at TWO characters per line and a six-column sibling reaching ONE character
+  per line in a 14px box. That is a WCAG 2.2 SC 1.4.10 Reflow (AA) failure — the content is present
+  and unreadable — and the preset had no seam through which a consumer could say so.
+
+  The new token is the measure below which the preset stops fitting the table to its container.
+  Above the floor nothing changes. Below it the `overflow-x: auto` region the table already owns
+  takes the overflow instead of the cells, which is the conformant outcome rather than a
+  concession: SC 1.4.10 exempts "parts of the content which require two-dimensional layout for
+  usage or meaning", and its own note names data tables as the example. A queue that scrolls
+  horizontally inside its card conforms; a queue whose cells are one character wide does not.
+
+  **Default `0`, so this is inert for every existing consumer** — a queue that fits its priority
+  budget keeps fitting, at the same measures, with no scroll introduced. Nothing is hidden, no
+  breakpoint is invented, and the table is byte-identical at 1440. Applies at all four collapse
+  steps (`sm` / `md` / `lg` / `xl`).
 - **`CommandPalette` — a real query accessor: `search` / `defaultSearch` / `onSearchChange`, plus
   `shouldFilter` (gh#412).** A server-backed result group could not learn what the user had typed:
   the palette exposed the open state and the groups, and nothing in between. The only route left was
