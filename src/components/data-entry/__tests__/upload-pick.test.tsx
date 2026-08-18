@@ -59,6 +59,8 @@ describe("Upload — file picking rules", () => {
     );
     const input = fileInput(container);
     expect(input).toBeDisabled();
+    await user.upload(input, img("a.png"));
+    expect(input.files).toHaveLength(0);
     expect(onValueChange).not.toHaveBeenCalled();
   });
 });
