@@ -11863,6 +11863,84 @@
       "group": "data-entry",
       "props": [
         {
+          "name": "aria-describedby",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-errormessage",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-invalid",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | \"true\" | \"false\" | \"grammar\" | \"spelling\" | undefined",
+          "values": [
+            false,
+            true,
+            "true",
+            "false",
+            "grammar",
+            "spelling"
+          ],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-label",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-labelledby",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "aria-required",
+          "origin": "owned",
+          "required": false,
+          "type": "(boolean | \"true\" | \"false\") | undefined",
+          "values": [
+            false,
+            true,
+            "true",
+            "false"
+          ],
+          "declaredIn": [
+            "src/lib/field-a11y.ts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
           "name": "defaultValue",
           "origin": "owned",
           "required": false,
@@ -11884,6 +11962,17 @@
           ],
           "declaredIn": [
             "node_modules/.pnpm/@radix-ui+react-select@2.3.3_@types+react-dom@19.2.3_@types+react@19.2.17__@types+react_f9b02e7a1a0d2bed7b40ca8d3c3f2b18/node_modules/@radix-ui/react-select/dist/index.d.mts",
+            "src/props/components/data-entry.prop.ts"
+          ]
+        },
+        {
+          "name": "id",
+          "origin": "owned",
+          "required": false,
+          "type": "string | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/components/data-entry/select.tsx",
             "src/props/components/data-entry.prop.ts"
           ]
         },

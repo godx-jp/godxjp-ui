@@ -497,15 +497,9 @@
       "axe": {
         "runner": "scripts/check-frame-axe.mjs (pnpm check:frame-axe)",
         "baseline": "scripts/frame-axe.baseline.json",
-        "recordedAt": "2026-08-07",
-        "failingFrames": 5,
-        "failingRules": [
-          "aria-hidden-focus",
-          "button-name",
-          "landmark-one-main",
-          "page-has-heading-one",
-          "scrollable-region-focusable"
-        ],
+        "recordedAt": "2026-08-18",
+        "failingFrames": 0,
+        "failingRules": [],
         "note": "Recorded per-frame axe violations from the shrink-only axe baseline. NOT re-executed by this generator. An axe pass never promotes `accessibleName` or `keyboard`."
       }
     }
@@ -541,7 +535,7 @@
     "notApplicable": 1699,
     "knownMissingFrames": [],
     "geometryFailingCells": 16,
-    "axeFailingFrames": 5
+    "axeFailingFrames": 0
   },
   "cases": [],
   "components": {

@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   budget keeps fitting, at the same measures, with no scroll introduced. Nothing is hidden, no
   breakpoint is invented, and the table is byte-identical at 1440. Applies at all four collapse
   steps (`sm` / `md` / `lg` / `xl`).
+
 - **`CommandPalette` — a real query accessor: `search` / `defaultSearch` / `onSearchChange`, plus
   `shouldFilter` (gh#412).** A server-backed result group could not learn what the user had typed:
   the palette exposed the open state and the groups, and nothing in between. The only route left was
@@ -60,6 +61,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   was needed to say it.
 
 ### Fixed
+
+- **A compound `Select` under `FormField` had NO accessible name (WCAG 2.2 SC 4.1.2, critical).**
+  `FormField` hands its label/helper/error wiring to a single child with `cloneElement`. In the
+  compound API that child is `SelectPrimitive.Root` — a context-only component that renders no DOM
+  — so `id` and every `aria-*` were silently dropped and never reached the trigger button. The
+  visible value was not a fallback: the trigger is `role="combobox"`, which takes no accessible
+  name from its content, so `<FormField label="担当拠点"><Select><SelectTrigger>…` shipped an
+  anonymous combobox to assistive tech. axe reported `button-name` (critical) on every such
+  trigger; the data-driven `<Select options>` API was unaffected because it forwards `aria-*` to
+  the trigger explicitly. `Select` now routes the field-a11y contract — plus `id`, so
+  label-click-to-focus resolves — through context to `SelectTrigger`, which also fixes a bare
+  `<Select aria-label="…">` in compound form. Props set directly on `SelectTrigger` still win, and
+  a trigger that states its own name (`aria-label`/`aria-labelledby`) keeps it whole rather than
+  inheriting a competing `aria-labelledby`.
+
+- **A `ResizablePanel` or fully disabled `Pagination` could scroll but not be reached by keyboard
+  (WCAG 2.2 SC 2.1.1).** `react-resizable-panels` hardcodes `overflow: auto` on the nested div it
+  applies our class to, and the pagination strip scrolls horizontally instead of wrapping. Tabbing
+  to a focusable child normally scrolls such a region — but a panel holding only text, or a
+  pagination bar whose every button is disabled, offers no focusable child, so the clipped content
+  was unreachable without a pointer. Both now measure at runtime (size and content, kept in sync as
+  either changes) and take `tabindex="0"` only in that case, so no redundant tab stop appears where
+  the content is already reachable.
 
 - **`--table-action-collection-font-size-compact` was dead at every width (gh#412).** Reported
   independently by two consumers. `Table` emits its type as a Tailwind utility
