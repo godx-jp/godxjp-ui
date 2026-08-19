@@ -15,6 +15,11 @@
     border-radius: var(--radius-md);
     border-width: 1px;
     font-size: var(--badge-font-size);
+    /* The cva used to carry `text-xs`, which set BOTH font-size and the Tailwind companion
+     * line-height. It was dropped (gh#260) so this components-layer rule can own font-size —
+     * so line-height must be restored here too, or the badge would inherit the ambient body
+     * leading and grow taller. Default reproduces `text-xs` exactly. */
+    line-height: var(--badge-line-height);
     font-weight: var(--font-weight-medium);
     /* A status chip must read as one unit — never wrap its label across lines,
      * especially inside narrow table cells. */
