@@ -169,6 +169,11 @@
     padding-inline: var(--space-page-active-x);
   }
 
+  /* Scroll-hint fade — a SCROLL affordance, so it only shows while the region
+   * actually overflows and is not scrolled to the inline-end. The component
+   * measures the scroll box and stamps `.ui-data-table-has-overflow-end`
+   * (gh#267 — the fade used to render unconditionally, washing out the last
+   * column of tables that never scroll). */
   .ui-data-table-scroll::after {
     content: "";
     position: absolute;
@@ -178,7 +183,13 @@
     z-index: 20;
     width: 1.75rem;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms ease;
     background: linear-gradient(to left, hsl(var(--background) / 0.88), transparent);
+  }
+
+  .ui-data-table-has-overflow-end::after {
+    opacity: 1;
   }
 
   [data-slot="card-content"][data-flush] .ui-data-table-scroll {

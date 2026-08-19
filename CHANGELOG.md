@@ -6,7 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **DataTable scroll-hint fade rendered unconditionally (gh#267)** — `.ui-data-table-scroll::after`
+  was pure CSS with no overflow detection, so every table WITHOUT a `pin:'end'` column showed a
+  permanent inline-end fade washing out its last column even when nothing scrolls. The component
+  now measures the scroll box (scroll + ResizeObserver, RTL-safe) and stamps
+  `.ui-data-table-has-overflow-end`; the fade only shows while the region overflows and is not
+  scrolled to the inline-end.
+
 ### Added
+
+- **`--alert-radius` component token (gh#268 — rule #45)** — Alert's corner radius was a
+  hard-coded `--radius-md`; a full-width Alert sitting above a Card (`--card-radius`, 2 φ-steps
+  larger) read as unsynchronized corners with no knob to align them. Default unchanged.
+
 
 - **`AuthShell preset="registration"` (gh#256)** — the canonical SCR-002 sign-up measure: a
   22.5rem/360px form measure with a 15px inline gutter at 390 (card x=15, width=360, the same page
