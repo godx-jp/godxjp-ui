@@ -2585,42 +2585,47 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--table-action-collection-primary-width-compact",
-    "value": "24%",
-    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+    "value": "6rem",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame). * * These are rem FLOOR-MEASURES, deliberately NOT percentages (gh#262). Under * `table-layout: fixed` an engine NORMALIZES percentage columns whose sum exceeds 100% back * into the table's specified width — so at ~10 columns a \"24%\" column really renders at a tenth * of the frame, every column drops below one CJK glyph, and JA headers shred into a vertical * one-character-per-line column (the failure mode WCAG 2.2 SC 1.4.10 Reflow exists to prevent). * Cell `min-inline-size` and `max(%, length)` widths are equally inert in the fixed algorithm * (verified in Chromium), so a length IS the only floor an engine respects: length columns are * never squeezed — when their sum outgrows the container, the table's used width grows past its * specified 100% (CSS 2.1 §17.5.2.1) and the keyboard-reachable overflow-x region the Table * wrapper already provides scrolls. ONE-dimensional scrolling of a data table is explicitly * permitted by SC 1.4.10; one-character-per-line is not readable at all. While the measures DO * fit, the engine distributes the leftover width across the columns, so a narrow queue still * fills its container edge-to-edge exactly as the percentage tier did. * * Units are rem, not ch: `ch` tracks the \"0\" glyph (~half a CJK em), so a ch-denominated floor * would silently halve for the JA copy these floors exist to protect. At the compact type tier * (font-size-xs = 0.75rem, space-2 inline padding each side) the 5rem meta floor keeps a ~4rem * text measure ≈ 5 full-width glyphs per line — a JA header wraps to two readable lines, never * a character column. Regression guard for the gh#253 five-column acceptance frame at 390px: * 6rem + 5.5rem + 5rem (flex) + 5rem + 2.75rem = 24.25rem = 388px ≤ 390px, so the canonical * queue stays scroll-free."
   },
   {
     "name": "--table-action-collection-secondary-width-compact",
-    "value": "22%",
-    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+    "value": "5.5rem",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame). * * These are rem FLOOR-MEASURES, deliberately NOT percentages (gh#262). Under * `table-layout: fixed` an engine NORMALIZES percentage columns whose sum exceeds 100% back * into the table's specified width — so at ~10 columns a \"24%\" column really renders at a tenth * of the frame, every column drops below one CJK glyph, and JA headers shred into a vertical * one-character-per-line column (the failure mode WCAG 2.2 SC 1.4.10 Reflow exists to prevent). * Cell `min-inline-size` and `max(%, length)` widths are equally inert in the fixed algorithm * (verified in Chromium), so a length IS the only floor an engine respects: length columns are * never squeezed — when their sum outgrows the container, the table's used width grows past its * specified 100% (CSS 2.1 §17.5.2.1) and the keyboard-reachable overflow-x region the Table * wrapper already provides scrolls. ONE-dimensional scrolling of a data table is explicitly * permitted by SC 1.4.10; one-character-per-line is not readable at all. While the measures DO * fit, the engine distributes the leftover width across the columns, so a narrow queue still * fills its container edge-to-edge exactly as the percentage tier did. * * Units are rem, not ch: `ch` tracks the \"0\" glyph (~half a CJK em), so a ch-denominated floor * would silently halve for the JA copy these floors exist to protect. At the compact type tier * (font-size-xs = 0.75rem, space-2 inline padding each side) the 5rem meta floor keeps a ~4rem * text measure ≈ 5 full-width glyphs per line — a JA header wraps to two readable lines, never * a character column. Regression guard for the gh#253 five-column acceptance frame at 390px: * 6rem + 5.5rem + 5rem (flex) + 5rem + 2.75rem = 24.25rem = 388px ≤ 390px, so the canonical * queue stays scroll-free."
   },
   {
     "name": "--table-action-collection-meta-width-compact",
-    "value": "20%",
-    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+    "value": "5rem",
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame). * * These are rem FLOOR-MEASURES, deliberately NOT percentages (gh#262). Under * `table-layout: fixed` an engine NORMALIZES percentage columns whose sum exceeds 100% back * into the table's specified width — so at ~10 columns a \"24%\" column really renders at a tenth * of the frame, every column drops below one CJK glyph, and JA headers shred into a vertical * one-character-per-line column (the failure mode WCAG 2.2 SC 1.4.10 Reflow exists to prevent). * Cell `min-inline-size` and `max(%, length)` widths are equally inert in the fixed algorithm * (verified in Chromium), so a length IS the only floor an engine respects: length columns are * never squeezed — when their sum outgrows the container, the table's used width grows past its * specified 100% (CSS 2.1 §17.5.2.1) and the keyboard-reachable overflow-x region the Table * wrapper already provides scrolls. ONE-dimensional scrolling of a data table is explicitly * permitted by SC 1.4.10; one-character-per-line is not readable at all. While the measures DO * fit, the engine distributes the leftover width across the columns, so a narrow queue still * fills its container edge-to-edge exactly as the percentage tier did. * * Units are rem, not ch: `ch` tracks the \"0\" glyph (~half a CJK em), so a ch-denominated floor * would silently halve for the JA copy these floors exist to protect. At the compact type tier * (font-size-xs = 0.75rem, space-2 inline padding each side) the 5rem meta floor keeps a ~4rem * text measure ≈ 5 full-width glyphs per line — a JA header wraps to two readable lines, never * a character column. Regression guard for the gh#253 five-column acceptance frame at 390px: * 6rem + 5.5rem + 5rem (flex) + 5rem + 2.75rem = 24.25rem = 388px ≤ 390px, so the canonical * queue stays scroll-free."
   },
   {
     "name": "--table-action-collection-actions-width-compact",
     "value": "2.75rem",
-    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame). * * These are rem FLOOR-MEASURES, deliberately NOT percentages (gh#262). Under * `table-layout: fixed` an engine NORMALIZES percentage columns whose sum exceeds 100% back * into the table's specified width — so at ~10 columns a \"24%\" column really renders at a tenth * of the frame, every column drops below one CJK glyph, and JA headers shred into a vertical * one-character-per-line column (the failure mode WCAG 2.2 SC 1.4.10 Reflow exists to prevent). * Cell `min-inline-size` and `max(%, length)` widths are equally inert in the fixed algorithm * (verified in Chromium), so a length IS the only floor an engine respects: length columns are * never squeezed — when their sum outgrows the container, the table's used width grows past its * specified 100% (CSS 2.1 §17.5.2.1) and the keyboard-reachable overflow-x region the Table * wrapper already provides scrolls. ONE-dimensional scrolling of a data table is explicitly * permitted by SC 1.4.10; one-character-per-line is not readable at all. While the measures DO * fit, the engine distributes the leftover width across the columns, so a narrow queue still * fills its container edge-to-edge exactly as the percentage tier did. * * Units are rem, not ch: `ch` tracks the \"0\" glyph (~half a CJK em), so a ch-denominated floor * would silently halve for the JA copy these floors exist to protect. At the compact type tier * (font-size-xs = 0.75rem, space-2 inline padding each side) the 5rem meta floor keeps a ~4rem * text measure ≈ 5 full-width glyphs per line — a JA header wraps to two readable lines, never * a character column. Regression guard for the gh#253 five-column acceptance frame at 390px: * 6rem + 5.5rem + 5rem (flex) + 5rem + 2.75rem = 24.25rem = 388px ≤ 390px, so the canonical * queue stays scroll-free."
+  },
+  {
+    "name": "--table-action-collection-flex-width-compact",
+    "value": "5rem",
+    "description": "Compact measure for a column with NO `priority` (the free-text column, `auto` above the * step). It cannot stay `auto` below the step: once the marked columns over-constrain the * table, the fixed algorithm hands an auto column exactly 0px (verified in Chromium) — the * same shredding, moved to the free-text column."
   },
   {
     "name": "--table-action-collection-font-size-compact",
     "value": "var(--font-size-xs)",
-    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+    "description": "Compact measure for a column with NO `priority` (the free-text column, `auto` above the * step). It cannot stay `auto` below the step: once the marked columns over-constrain the * table, the fixed algorithm hands an auto column exactly 0px (verified in Chromium) — the * same shredding, moved to the free-text column."
   },
   {
     "name": "--table-action-collection-cell-space-x-compact",
     "value": "var(--space-2)",
-    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+    "description": "Compact measure for a column with NO `priority` (the free-text column, `auto` above the * step). It cannot stay `auto` below the step: once the marked columns over-constrain the * table, the fixed algorithm hands an auto column exactly 0px (verified in Chromium) — the * same shredding, moved to the free-text column."
   },
   {
     "name": "--table-action-collection-cell-padding-y-compact",
     "value": "var(--space-2)",
-    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+    "description": "Compact measure for a column with NO `priority` (the free-text column, `auto` above the * step). It cannot stay `auto` below the step: once the marked columns over-constrain the * table, the fixed algorithm hands an auto column exactly 0px (verified in Chromium) — the * same shredding, moved to the free-text column."
   },
   {
     "name": "--table-action-collection-row-height-compact",
     "value": "var(--table-row-height-compact)",
-    "description": "Compact tier, applied below the collapse step (the 390px acceptance frame)."
+    "description": "Compact measure for a column with NO `priority` (the free-text column, `auto` above the * step). It cannot stay `auto` below the step: once the marked columns over-constrain the * table, the fixed algorithm hands an auto column exactly 0px (verified in Chromium) — the * same shredding, moved to the free-text column."
   }
 ];

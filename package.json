@@ -308,6 +308,7 @@
     "test": "vitest run",
     "test:visual:auth-login": "node scripts/auth-shell-login-visual.mjs",
     "test:visual:topbar-collision": "node scripts/topbar-collision-visual.mjs",
+    "test:visual:table-collection-cjk": "node scripts/table-collection-cjk-visual.mjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check:example-imports": "node scripts/check-example-imports.mjs",

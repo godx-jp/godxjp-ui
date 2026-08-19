@@ -150,3 +150,66 @@ describe("Table action-collection preset (gh#253)", () => {
     expect(presetCss).not.toMatch(/font-size:\s*[\d.]+(px|rem|em)\b/);
   });
 });
+
+describe("Table action-collection priority floors (gh#262)", () => {
+  // jsdom performs no table layout, so the geometry itself is exercised by the Playwright script
+  // (scripts/table-collection-cjk-visual.mjs, 10 CJK columns at 390px). Here we pin the CONTRACT:
+  // every compact measure is a LENGTH floor (the only floor `table-layout: fixed` respects —
+  // over-constrained percentage columns are normalized back into the frame and shred CJK headers
+  // one character per line), the unmarked column is floored below the step, and the overflow
+  // fallback region the floors rely on actually exists on the rendered wrapper.
+
+  it("floors every compact measure as a rem length — never a normalizable percentage", () => {
+    for (const token of [
+      "--table-action-collection-primary-width-compact",
+      "--table-action-collection-secondary-width-compact",
+      "--table-action-collection-meta-width-compact",
+      "--table-action-collection-actions-width-compact",
+      "--table-action-collection-flex-width-compact",
+    ]) {
+      // rem, not %: fixed layout scales over-constrained percentages back down (sub-glyph
+      // columns), while length columns grow the table into the scroll region instead.
+      // rem, not ch: `ch` tracks the "0" glyph (~half a CJK em), which would silently halve the
+      // floor for the JA copy it protects.
+      expect(tableTokens).toMatch(new RegExp(`${token}:\\s*[\\d.]+rem;`));
+      expect(tableCssFlat).toContain(`var(${token})`);
+    }
+  });
+
+  it("floors the unmarked free-text column below the step — auto would collapse to 0px", () => {
+    // Base rule: the cell measure falls back through the flex slot before `auto`, so the
+    // container query can floor unmarked columns without touching marked ones.
+    expect(tableCssFlat).toContain(
+      "inline-size:var(--table-action-collection-column-width,var(--table-action-collection-flex-width,auto))",
+    );
+    // Every collapse step re-points the flex slot at the compact flex floor.
+    const occurrences = tableCssFlat.split(
+      "--table-action-collection-flex-width:var(--table-action-collection-flex-width-compact)",
+    ).length;
+    expect(occurrences - 1).toBe(4); // sm / md / lg / xl
+  });
+
+  it("keeps the keyboard-reachable horizontal overflow region the floors fall back to", () => {
+    // Bare Table: the preset wrapper itself is the scroll region (overflow-auto + tab stop), so
+    // when the floors outgrow the container the result is a scrollable table, never a clipped one.
+    const { container } = render(<Queue preset="action-collection" />);
+    const wrapper = container.querySelector("div")!;
+    expect(wrapper.className).toContain("ui-table-collection");
+    expect(wrapper.className).toContain("overflow-auto");
+    expect(wrapper).toHaveAttribute("tabindex", "0");
+    // DataTable: its `.ui-data-table-scroll` region owns overflow-x for the same fallback.
+    expect(tableCssFlat).toContain(".ui-data-table-scroll{position:relative;overflow-x:auto");
+  });
+
+  it("never breaks CJK headers with keep-all — wrapping stays lossless under fixed layout", () => {
+    // Under `table-layout: fixed` a column cannot grow to fit an unbreakable CJK run, so
+    // `word-break: keep-all` would clip long JA headers instead of wrapping them (see the
+    // stylesheet comment). Pin its absence from the collection DECLARATIONS (the stylesheet
+    // comment deliberately names it, so strip comments before asserting).
+    const presetCss = tableCss
+      .slice(tableCss.indexOf(".ui-table-collection {"))
+      .replace(/\/\*[\s\S]*?\*\//g, "");
+    expect(presetCss).not.toContain("keep-all");
+    expect(presetCss).toContain("overflow-wrap: anywhere");
+  });
+});

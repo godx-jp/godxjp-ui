@@ -284,8 +284,23 @@
 
   .ui-table-collection :is([data-slot="table-head"], [data-slot="table-cell"]) {
     /* The column measure comes from `priority`; an unmarked column takes what is left (`auto`),
-     * which is the free-text column. */
-    inline-size: var(--table-action-collection-column-width, auto);
+     * which is the free-text column — EXCEPT below the collapse step, where the container query
+     * re-points the middle fallback at the compact flex measure (gh#262): the fixed algorithm
+     * hands an auto column 0px once the marked columns over-constrain the table, which is the
+     * one-character-per-line shredding this preset must never produce. Below the step every
+     * column therefore carries a rem floor-measure; once the floors outgrow the container the
+     * table's used width grows past its specified 100% (CSS 2.1 §17.5.2.1) and the wrapper's
+     * existing keyboard-reachable overflow-x region scrolls — the SC 1.4.10-permitted
+     * one-dimensional scroll, instead of unreadable shredding (see tokens/components/table.css). */
+    inline-size: var(
+      --table-action-collection-column-width,
+      var(--table-action-collection-flex-width, auto)
+    );
+    /* Wrapping guard, considered for gh#262: this stays `overflow-wrap: anywhere`, NOT
+     * `word-break: keep-all`. Under `table-layout: fixed` a column cannot grow to fit an
+     * unbreakable CJK run, so keep-all would overflow/clip a long JA header instead of widening
+     * its column. With the floors guaranteeing a ~5-glyph measure, a wrapped JA header is two
+     * readable lines — never a vertical character column — and losing no text beats clipping. */
     overflow-wrap: anywhere;
     white-space: normal;
     vertical-align: top;
@@ -320,6 +335,7 @@
       );
       --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
       --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
+      --table-action-collection-flex-width: var(--table-action-collection-flex-width-compact);
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
@@ -341,6 +357,7 @@
       );
       --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
       --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
+      --table-action-collection-flex-width: var(--table-action-collection-flex-width-compact);
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
@@ -362,6 +379,7 @@
       );
       --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
       --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
+      --table-action-collection-flex-width: var(--table-action-collection-flex-width-compact);
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
@@ -383,6 +401,7 @@
       );
       --table-action-collection-meta-width: var(--table-action-collection-meta-width-compact);
       --table-action-collection-actions-width: var(--table-action-collection-actions-width-compact);
+      --table-action-collection-flex-width: var(--table-action-collection-flex-width-compact);
       --table-row-height: var(--table-action-collection-row-height-compact);
       --table-cell-space-x: var(--table-action-collection-cell-space-x-compact);
       --table-cell-padding-y: var(--table-action-collection-cell-padding-y-compact);
