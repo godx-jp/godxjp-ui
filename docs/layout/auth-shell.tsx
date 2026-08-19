@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@godxjp/ui/data-display";
 import { FormField, Input } from "@godxjp/ui/data-entry";
-import { Button, Logo, Text } from "@godxjp/ui/general";
+import { Button, Text } from "@godxjp/ui/general";
 import {
   AuthDivider,
   AuthFooter,
@@ -13,6 +13,11 @@ import {
 /**
  * SCR-001 Login visual contract. `?state=standalone|one-line|wrapped` drives the package visual
  * test; all three keep the same card anchor without consumer CSS or fake requester data.
+ *
+ * The composition mirrors the documented consumer page exactly (gh#263): NO top brand bar (the
+ * canonical SCR-001 artboard has none — the in-flow AuthIdentity mark IS the brand), a header-less
+ * `<CardContent solo>` body, `AuthFooter` as the third direct child (the login preset's third grid
+ * row), and a plain 12px text-link row like the artboard's.
  */
 export default function Demo() {
   const state = new URLSearchParams(window.location.search).get("state") ?? "one-line";
@@ -24,20 +29,10 @@ export default function Demo() {
         : "Attendance is requesting sign in";
 
   return (
-    <AuthShell
-      variant="canonical"
-      preset="login"
-      brand={
-        <Flex align="center" gap="sm">
-          <Logo mark="godx" />
-          <Text weight="medium">GoDX ID</Text>
-        </Flex>
-      }
-      footer={<AuthFooter product="GoDX ID" terms="利用規約" privacy="プライバシー" />}
-    >
+    <AuthShell variant="canonical" preset="login">
       <AuthIdentity title="GoDX ID" requester={requester} />
       <Card>
-        <CardContent>
+        <CardContent solo>
           <AuthStack>
             <Button fullWidth>パスキーでサインイン</Button>
             <AuthDivider label="または" />
@@ -48,16 +43,17 @@ export default function Demo() {
               次へ
             </Button>
             <Flex justify="between" wrap>
-              <Button variant="link" size="sm">
-                アカウント登録
-              </Button>
-              <Button variant="link" size="sm">
-                パスワードを忘れた
-              </Button>
+              <Text size="xs">
+                <a href="#register">アカウント登録</a>
+              </Text>
+              <Text size="xs">
+                <a href="#forgot">パスワードを忘れた</a>
+              </Text>
             </Flex>
           </AuthStack>
         </CardContent>
       </Card>
+      <AuthFooter product="GoDX ID" terms="利用規約" privacy="プライバシー" />
     </AuthShell>
   );
 }

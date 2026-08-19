@@ -2190,8 +2190,8 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   },
   {
     "name": "--auth-shell-login-card-padding-block-compact",
-    "value": "calc( var(--auth-shell-compact-card-inset) + var(--control-border-width) + var(--control-border-width) )",
-    "description": "Login preset (gh#237) — canonical SCR-001 anchors at 1440x900, 1024x900 and 390x844. * The 112px identity slot is deliberately taller than a two-line real requester. Identity * content aligns to the slot end, so missing/one-line/two-line requester data changes only the * empty space above it, never the card or footer position. The flow starts at y=231 desktop and * y=221 mobile: 231/221 + 112 + 20 gap = card y=363/353. Literal artboard lengths belong here, * not in a consumer selector, and do not drift with --scaling."
+    "value": "var(--auth-shell-compact-card-inset)",
+    "description": "Canonical SCR-001 block inset is a FLAT 24px — the same measure as the inline inset. The card * draws its own 1px border and a border-box rect already contains it, so the former * `+ 2 x --control-border-width` double-counted the border and pushed the passkey CTA to y=390 * instead of the canonical y=388 (gh#263)."
   },
   {
     "name": "--auth-shell-device-card-max-width",
@@ -2291,107 +2291,112 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
   {
     "name": "--auth-shell-divider-gap",
     "value": "0.625rem",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-shell-divider-label-font-size",
     "value": "0.6875rem",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
+  },
+  {
+    "name": "--auth-shell-divider-label-line-height",
+    "value": "calc(19 / 11)",
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-shell-divider-rule-color",
     "value": "var(--border)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-shell-divider-label-color",
     "value": "var(--muted-foreground)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-identity-gap",
     "value": "0.375rem",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-requester-gap",
     "value": "0.375rem",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-requester-icon-size",
     "value": "1rem",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-requester-glyph-size",
     "value": "0.625rem",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-account-summary-min-height",
     "value": "var(--control-height-comfortable)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-account-summary-gap",
     "value": "var(--space-2)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-account-summary-padding",
     "value": "var(--space-1) var(--space-2)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-account-summary-identity-min-width",
     "value": "12rem",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-account-summary-avatar-size",
     "value": "var(--control-height-sm)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-account-summary-avatar-glyph-size",
     "value": "var(--control-icon-size-sm)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-account-summary-email-font-size",
     "value": "var(--font-size-sm)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-footer-content-gap",
     "value": "0.375rem",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-footer-text-font-size",
     "value": "0.6875rem",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-stack-gap",
     "value": "var(--space-3)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-shell-field-label-gap",
     "value": "var(--space-1)",
-    "description": "Labelled auth divider geometry."
+    "description": "Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the * whole lower half of the Login card 8px high (gh#263)."
   },
   {
     "name": "--auth-shell-field-label-font-size",
-    "value": "var(--font-size-xs)",
-    "description": "Labelled auth divider geometry."
+    "value": "0.75rem",
+    "description": "Canonical SCR-001 field label: a LITERAL 12px (the golden-ratio --font-size-xs ≈ 12.47px would * drift the 18px line box to 18.7px and push the email input off its y=489 anchor) with a 1.5 * line box = 18px. The former var(--font-size-xs)/1.25 pair rendered a 14px box, sitting the * email input 4px high (gh#263)."
   },
   {
     "name": "--auth-shell-field-label-line-height",
-    "value": "1.25",
-    "description": "Labelled auth divider geometry."
+    "value": "1.5",
+    "description": "Canonical SCR-001 field label: a LITERAL 12px (the golden-ratio --font-size-xs ≈ 12.47px would * drift the 18px line box to 18.7px and push the email input off its y=489 anchor) with a 1.5 * line box = 18px. The former var(--font-size-xs)/1.25 pair rendered a 14px box, sitting the * email input 4px high (gh#263)."
   },
   {
     "name": "--centered-shell-bar-height",

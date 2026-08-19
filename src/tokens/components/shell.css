@@ -172,9 +172,11 @@
   --auth-shell-login-main-padding-block-end: 1rem;
   --auth-shell-login-identity-slot-block-size: 7rem;
   --auth-shell-login-card-stack-gap: 1.25rem;
-  --auth-shell-login-card-padding-block-compact: calc(
-    var(--auth-shell-compact-card-inset) + var(--control-border-width) + var(--control-border-width)
-  );
+  /* Canonical SCR-001 block inset is a FLAT 24px — the same measure as the inline inset. The card
+   * draws its own 1px border and a border-box rect already contains it, so the former
+   * `+ 2 x --control-border-width` double-counted the border and pushed the passkey CTA to y=390
+   * instead of the canonical y=388 (gh#263). */
+  --auth-shell-login-card-padding-block-compact: var(--auth-shell-compact-card-inset);
 
   /* Device-authorization preset — 380px card measure, 15px block · 5px inline mobile gutter
    * (at a 390px viewport the card is x=5px, width=380px). */
@@ -238,9 +240,14 @@
    * content instead. */
   --auth-shell-registration-identity-slot-block-size: 7rem;
 
-  /* Labelled auth divider geometry. */
+  /* Labelled auth divider geometry. The canonical SCR-001 divider row is 19px tall at the 11px
+   * label (the artboard label inherits the page's line-height instead of collapsing to a 1.0 line
+   * box). 19/11 pins the row at exactly 19px and keeps it proportional if a service retunes the
+   * label font-size. The previous hardcoded `line-height: 1` rendered an 11px row, sitting the
+   * whole lower half of the Login card 8px high (gh#263). */
   --auth-shell-divider-gap: 0.625rem;
   --auth-shell-divider-label-font-size: 0.6875rem;
+  --auth-shell-divider-label-line-height: calc(19 / 11);
   --auth-shell-divider-rule-color: var(--border);
   --auth-shell-divider-label-color: var(--muted-foreground);
   --auth-identity-gap: 0.375rem;
@@ -258,8 +265,12 @@
   --auth-footer-text-font-size: 0.6875rem;
   --auth-stack-gap: var(--space-3);
   --auth-shell-field-label-gap: var(--space-1);
-  --auth-shell-field-label-font-size: var(--font-size-xs);
-  --auth-shell-field-label-line-height: 1.25;
+  /* Canonical SCR-001 field label: a LITERAL 12px (the golden-ratio --font-size-xs ≈ 12.47px would
+   * drift the 18px line box to 18.7px and push the email input off its y=489 anchor) with a 1.5
+   * line box = 18px. The former var(--font-size-xs)/1.25 pair rendered a 14px box, sitting the
+   * email input 4px high (gh#263). */
+  --auth-shell-field-label-font-size: 0.75rem;
+  --auth-shell-field-label-line-height: 1.5;
 
   /* CenteredShell — authenticated, no-sidebar, centred-column page shell (hosted-ID "My Page",
    * account, standalone settings). The bar mirrors AppShell's `.app-topbar` chrome (fixed height +

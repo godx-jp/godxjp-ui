@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-03T15:03:10.074Z",
+  "generatedAt": "2026-08-19T12:40:32.408Z",
   "base": "http://localhost:6017",
   "results": [
     {
@@ -19,7 +19,7 @@
             "x": 540,
             "y": 363,
             "width": 360,
-            "height": 253
+            "height": 268.1875
           },
           "requester": null,
           "screenshot": "standalone-1440x900.png"
@@ -30,7 +30,7 @@
             "x": 540,
             "y": 363,
             "width": 360,
-            "height": 253
+            "height": 268.1875
           },
           "requester": {
             "x": 611.78125,
@@ -46,7 +46,7 @@
             "x": 540,
             "y": 363,
             "width": 360,
-            "height": 253
+            "height": 268.1875
           },
           "requester": {
             "x": 540,
@@ -76,7 +76,7 @@
             "x": 332,
             "y": 363,
             "width": 360,
-            "height": 253
+            "height": 268.1875
           },
           "requester": null,
           "screenshot": "standalone-1024x900.png"
@@ -87,7 +87,7 @@
             "x": 332,
             "y": 363,
             "width": 360,
-            "height": 253
+            "height": 268.1875
           },
           "requester": {
             "x": 403.78125,
@@ -103,7 +103,7 @@
             "x": 332,
             "y": 363,
             "width": 360,
-            "height": 253
+            "height": 268.1875
           },
           "requester": {
             "x": 332,
@@ -133,7 +133,7 @@
             "x": 15,
             "y": 353,
             "width": 360,
-            "height": 253
+            "height": 268.1875
           },
           "requester": null,
           "screenshot": "standalone-390x844.png"
@@ -144,7 +144,7 @@
             "x": 15,
             "y": 353,
             "width": 360,
-            "height": 253
+            "height": 268.1875
           },
           "requester": {
             "x": 86.78125,
@@ -160,7 +160,7 @@
             "x": 15,
             "y": 353,
             "width": 360,
-            "height": 253
+            "height": 268.1875
           },
           "requester": {
             "x": 15,

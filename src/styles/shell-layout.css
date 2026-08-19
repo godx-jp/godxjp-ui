@@ -339,10 +339,21 @@
     --field-label-gap: var(--auth-shell-field-label-gap);
   }
 
-  .ui-auth-shell[data-variant="canonical"] [data-slot="form-field-label"] [data-slot="label"] {
-    font-size: var(--auth-shell-field-label-font-size);
-    line-height: var(--auth-shell-field-label-line-height);
-  }
+}
+
+/* INTENTIONALLY UNLAYERED (like density.css) — the Label primitive carries `text-sm leading-none`
+ * Tailwind utility classes, and the utilities layer is declared after `components`, so a
+ * components-layer declaration of the same properties can NEVER win regardless of specificity.
+ * That left `--auth-shell-field-label-font-size` / `--auth-shell-field-label-line-height` dead and
+ * the canonical field label rendering as a 14px/1.0 line box instead of the canonical 12px/1.5 =
+ * 18px, sitting the email input 4px high (gh#263). Unlayered author CSS out-cascades every layer;
+ * the two tokens remain the public tuning knobs. */
+.ui-auth-shell[data-variant="canonical"] [data-slot="form-field-label"] [data-slot="label"] {
+  font-size: var(--auth-shell-field-label-font-size);
+  line-height: var(--auth-shell-field-label-line-height);
+}
+
+@layer components {
 
   /*
    * Compact auth card density — the two card axes are wired to SEPARATE knobs (gh#232), so a
@@ -379,7 +390,7 @@
     gap: var(--auth-shell-divider-gap);
     color: hsl(var(--auth-shell-divider-label-color));
     font-size: var(--auth-shell-divider-label-font-size);
-    line-height: 1;
+    line-height: var(--auth-shell-divider-label-line-height);
   }
 
   .ui-auth-divider-rule {
