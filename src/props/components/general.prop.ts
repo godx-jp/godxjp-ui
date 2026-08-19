@@ -42,8 +42,15 @@ export type TextProp = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
   /** Weight (system 2-weight: 400/500). Default `regular`. */
   weight?: FontWeightProp;
   align?: TextAlignProp;
-  /** Single-line ellipsis. */
+  /** Single-line ellipsis. Mutually exclusive with `clamp` — when both are set, `clamp` wins. */
   truncate?: boolean;
+  /**
+   * Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis.
+   * Token-owned line-clamp styling (never write the `line-clamp-N` utility page-side).
+   * Visual-only: the full text stays in the DOM / accessible name. Mutually exclusive with
+   * `truncate` — when both are set, `clamp` wins (dev builds warn).
+   */
+  clamp?: number;
   /** Tabular figures for aligned numbers. */
   tabular?: boolean;
   /** Monospace family (codes, ids). */

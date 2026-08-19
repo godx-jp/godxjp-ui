@@ -118,7 +118,7 @@ export default function Demo() {
           <CardHeader>
             <CardTitle level={2}>Numbers, codes, truncation</CardTitle>
             <CardDescription>
-              tabular for figures, mono for ids, truncate for one line.
+              tabular for figures, mono for ids, truncate for one line, clamp for N lines.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -131,6 +131,11 @@ export default function Demo() {
               </Text>
               <Text truncate className="max-w-64">
                 とても長い説明テキストが一行に収まらない場合は省略記号で切り詰められます。
+              </Text>
+              {/* clamp={2} — the card-description case (dxs-platform/platform#427): a long
+               * Japanese description limited to 2 lines, full text kept in the DOM. */}
+              <Text as="p" size="sm" tone="muted" clamp={2} className="max-w-64">
+                クラウド会計・請求書発行・経費精算・勤怠管理までを一つの契約で提供する統合バックオフィスサービスです。組織の規模や業種に合わせてプランを選択でき、導入後もデータ移行と運用支援を継続的に受けられます。
               </Text>
               <Flex direction="row" gap="sm" align="center">
                 <Text>明細を確認してください。</Text>

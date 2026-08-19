@@ -1627,7 +1627,17 @@ import { Trash2 } from "lucide-react";
           "Font weight — the 3-weight canon: regular 400 (body), medium 500 (label), bold 700 (emphasis). 600/semibold is forbidden.",
       },
       { name: "align", type: '"start" | "center" | "end"', description: "Logical text alignment." },
-      { name: "truncate", type: "boolean", description: "Single-line ellipsis." },
+      {
+        name: "truncate",
+        type: "boolean",
+        description: "Single-line ellipsis. Mutually exclusive with `clamp` (`clamp` wins).",
+      },
+      {
+        name: "clamp",
+        type: "number",
+        description:
+          "Multi-line clamp — max rendered lines (integer ≥ 1); overflow ends in an ellipsis. The token-owned line-clamp: NEVER write a page-local `line-clamp-N` utility (rule #2). Visual-only — the full text stays in the DOM / accessible name. Mutually exclusive with `truncate` (`clamp` wins; dev builds warn).",
+      },
       { name: "tabular", type: "boolean", description: "Tabular figures for aligned numbers." },
       { name: "mono", type: "boolean", description: "Monospace family for codes / ids." },
       {
@@ -1646,12 +1656,14 @@ import { Trash2 } from "lucide-react";
     usage: [
       "DO use `<Text>` for ALL body / inline / caption text instead of a styled `<span>`/`<p>`. Pick `size` from the scale; never write `text-[13px]`/`text-[11px]` or `font-semibold` by hand.",
       'DO use `tone` for colour (`muted`/`primary`/semantic), `tabular` for numbers, `mono` for codes — not `className="text-muted-foreground font-mono tabular-nums"`.',
+      'DO use `clamp={n}` for a description limited to n lines (card grids) and `truncate` for a one-line ellipsis — never `className="line-clamp-2"` (banned utility). They are mutually exclusive; `clamp` wins.',
       "For a heading, use `<Heading level>` instead of a large-size `<Text>`.",
     ],
     useCases: [
       'A muted caption under a value: `<Text size="xs" tone="muted">2026年5月度</Text>`.',
       'A monospace id in a list row: `<Text size="xs" mono tone="muted">RC-204881</Text>`.',
       'An emphasized inline figure: `<Text weight="medium" tabular>¥1,240,000</Text>`.',
+      'A service-card description clamped to 2 lines on a narrow (390px) index: `<Text as="p" size="sm" tone="muted" clamp={2}>{description}</Text>`.',
     ],
     storyPath: "general/typography.tsx",
     rules: [2, 23],

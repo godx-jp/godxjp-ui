@@ -32,6 +32,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Text` gains a public multi-line clamp: `clamp?: number`** (gh#261). `<Text as="p" size="sm"
+tone="muted" clamp={2}>` limits a description to N lines with a trailing ellipsis — the
+  token-owned form of the banned page-local `line-clamp-N` utility (rule #2), needed verbatim by
+  the DXS service-catalog card ruling (dxs-platform/platform#427: description "clamped to 2
+  lines" at 390px). The component emits `data-clamp` + an inline `--text-clamp` var; all styling
+  lives in `text-layout.css` (`display: -webkit-box` + `-webkit-line-clamp`/`line-clamp:
+var(--text-clamp)`), with the same `min-width: 0` flex-shrink contract as `truncate` (issue
+  #114). Clamping is visual-only — the full text stays in the DOM and the accessible name.
+  `clamp` and `truncate` are mutually exclusive: when both are set `clamp` wins and dev builds
+  warn; an invalid `clamp` (< 1 / non-finite) is ignored with a dev warning and a fractional
+  value is floored. Docs: `docs/general/typography.tsx` now renders a long Japanese description
+  at `clamp={2}`.
 - **`--logo-identity-foreground`** (`48 9% 9%`) — the ink the boxed `mark="glyph"` sets its TEXT in
   when it sits on the `--brand` identity fill. Deliberately NOT a role-mirror knob: its default is a
   real value rather than a role token, so there is no role to freeze and it is declared at `:root`

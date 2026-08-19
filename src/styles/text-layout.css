@@ -107,6 +107,19 @@
      * having to add `min-w-0` — the documented flex-truncate idiom (issue #114). */
     min-width: 0;
   }
+  /* Multi-line clamp (`clamp` prop, issue #261) — the token-owned line-clamp so consumers never
+   * write a page-local `line-clamp-N` utility. Visual-only: the full text stays in the DOM and
+   * the accessible name. `--text-clamp` is set inline by the component from the prop value. */
+  [data-slot="text"][data-clamp] {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--text-clamp, 2);
+    line-clamp: var(--text-clamp, 2);
+    overflow: hidden;
+    /* Same flex-shrink contract as truncate (issue #114): clamps inside a flex row without
+     * the consumer adding `min-w-0`. */
+    min-width: 0;
+  }
   [data-slot="text"][data-tabular] {
     font-variant-numeric: tabular-nums;
   }

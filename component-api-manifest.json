@@ -13884,6 +13884,16 @@
           ]
         },
         {
+          "name": "clamp",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/general.prop.ts"
+          ]
+        },
+        {
           "name": "htmlFor",
           "origin": "owned",
           "required": false,

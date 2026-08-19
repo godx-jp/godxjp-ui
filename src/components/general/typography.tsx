@@ -25,26 +25,52 @@ export const Text = React.forwardRef<HTMLElement, TextProp>(
       weight = "regular",
       align,
       truncate,
+      clamp,
       tabular,
       mono,
       className,
+      style,
       ...props
     },
     ref,
-  ) =>
-    React.createElement(as, {
+  ) => {
+    // `clamp` is a max line count: integer ≥ 1. Anything else is ignored (dev builds warn).
+    const clampLines =
+      typeof clamp === "number" && Number.isFinite(clamp) && clamp >= 1
+        ? Math.floor(clamp)
+        : undefined;
+    if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
+      if (clamp !== undefined && clampLines === undefined) {
+        console.warn(
+          `Text: \`clamp\` must be a finite number ≥ 1 (got ${String(clamp)}); ignored.`,
+        );
+      }
+      if (truncate && clampLines !== undefined) {
+        // Mutually exclusive by contract: clamp (multi-line) wins over truncate (single-line).
+        console.warn(
+          "Text: `truncate` and `clamp` are mutually exclusive — `clamp` takes precedence; drop `truncate`.",
+        );
+      }
+    }
+    return React.createElement(as, {
       ref,
       "data-slot": "text",
       "data-size": size,
       "data-tone": tone,
       "data-weight": weight,
       "data-align": align,
-      "data-truncate": truncate ? "" : undefined,
+      "data-truncate": truncate && clampLines === undefined ? "" : undefined,
+      "data-clamp": clampLines !== undefined ? "" : undefined,
+      style:
+        clampLines !== undefined
+          ? ({ ...style, "--text-clamp": clampLines } as React.CSSProperties)
+          : style,
       "data-tabular": tabular ? "" : undefined,
       "data-mono": mono ? "" : undefined,
       className: cn("ui-text", className),
       ...props,
-    }),
+    });
+  },
 );
 Text.displayName = "Text";
 
