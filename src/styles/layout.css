@@ -950,6 +950,90 @@
       z-index: 1;
       background: hsl(var(--filter-bar-sticky-background, var(--background)));
     }
+
+    /* Typed-model reset+actions cluster gets the same viewport-pinned treatment (gh#258). */
+    .ui-toolbar[data-overflow="scroll"] > .ui-filter-bar-end {
+      position: sticky;
+      inset-inline-end: 0;
+      margin-inline-start: auto;
+      flex: 0 0 auto;
+      z-index: 1;
+      background: hsl(var(--filter-bar-sticky-background, var(--background)));
+    }
+  }
+
+  /* ── FilterBar typed model (gh#258) ─────────────────────────────────────────────
+   * Canonical model layout: strip (search → filters → children → reset → actions) →
+   * applied-chips row → result-count/error line. Geometry is entirely token-owned
+   * (`--filter-bar-*`); stacking below 640px reuses the `.ui-toolbar` base rules, so
+   * 1440/1024/390 behave identically to the composition form. */
+  .ui-filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--filter-bar-section-gap);
+  }
+
+  .ui-filter-bar .ui-filter-bar-search {
+    inline-size: 100%;
+  }
+
+  .ui-filter-bar-end {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  /* Inside the end cluster the clear button gives up its own auto margin — the CLUSTER is what
+   * parks at the inline end, so reset and actions stay adjacent in the keyboard/DOM order. */
+  .ui-filter-bar-end .ui-toolbar-clear {
+    margin-inline-start: 0;
+  }
+
+  .ui-filter-bar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  @media (min-width: 640px) {
+    .ui-filter-bar .ui-filter-bar-search {
+      inline-size: min(100%, var(--filter-bar-search-width));
+    }
+
+    .ui-filter-bar .ui-filter-bar-filter {
+      min-inline-size: min(100%, var(--filter-bar-filter-width));
+    }
+
+    .ui-filter-bar-end {
+      width: auto;
+      margin-inline-start: auto;
+    }
+  }
+
+  .ui-filter-bar-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--filter-bar-chip-gap);
+  }
+
+  .ui-filter-bar-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .ui-filter-bar-meta {
+    font-size: var(--filter-label-font-size);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ui-filter-bar-error {
+    color: hsl(var(--destructive));
   }
 
   /* ── LegalDocumentShell (#222) ─────────────────────────────────────────────────

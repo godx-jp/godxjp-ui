@@ -1779,6 +1779,26 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Scrollbar gutter reserved under a `overflow=\"scroll\"` filter strip (#216) so the inline * scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid * (0 on an overlay-scrollbar platform)."
   },
   {
+    "name": "--filter-bar-search-width",
+    "value": "20rem",
+    "description": "FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME * search width, filter width, chip rhythm and section stacking without page-local CSS. * All are rule-#45 knobs: a service theme retunes them once, props/className override per * instance. Below 640px the strip stacks (search/filters full-width); the widths apply from * the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never * overflows at 390px with long JA/EN/VI labels."
+  },
+  {
+    "name": "--filter-bar-filter-width",
+    "value": "var(--filter-picker-width-md)",
+    "description": "FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME * search width, filter width, chip rhythm and section stacking without page-local CSS. * All are rule-#45 knobs: a service theme retunes them once, props/className override per * instance. Below 640px the strip stacks (search/filters full-width); the widths apply from * the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never * overflows at 390px with long JA/EN/VI labels."
+  },
+  {
+    "name": "--filter-bar-chip-gap",
+    "value": "var(--space-2)",
+    "description": "FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME * search width, filter width, chip rhythm and section stacking without page-local CSS. * All are rule-#45 knobs: a service theme retunes them once, props/className override per * instance. Below 640px the strip stacks (search/filters full-width); the widths apply from * the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never * overflows at 390px with long JA/EN/VI labels."
+  },
+  {
+    "name": "--filter-bar-section-gap",
+    "value": "var(--space-2)",
+    "description": "FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME * search width, filter width, chip rhythm and section stacking without page-local CSS. * All are rule-#45 knobs: a service theme retunes them once, props/className override per * instance. Below 640px the strip stacks (search/filters full-width); the widths apply from * the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never * overflows at 390px with long JA/EN/VI labels."
+  },
+  {
     "name": "--sheet-responsive-breakpoint-width",
     "value": "48rem",
     "description": "Viewport width at and below which `SheetContent responsive=\"auto\"` renders the mobile bottom * sheet instead of the desktop side panel. Read at runtime by useSheetResponsiveMode() (a CSS * @media cannot resolve a custom property), so a service moves the drawer breakpoint from ONE * knob for every overlay that opts into the responsive contract — Sheet and OrgSwitcher alike. * 48rem = 768px mirrors the library's canonical mobile line (useIsMobile). Accepts px/rem/em."

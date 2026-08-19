@@ -227,6 +227,11 @@
     "toolbar": {
       "ariaLabel": "フィルター"
     },
+    "filterBar": {
+      "appliedFilters": "適用中のフィルター",
+      "removeFilter": "フィルターを解除: {label}",
+      "resultCount": "{count} 件の結果"
+    },
     "localePicker": {
       "ariaLabel": "言語"
     },

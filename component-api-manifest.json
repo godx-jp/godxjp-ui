@@ -6680,10 +6680,30 @@
       "group": "navigation",
       "props": [
         {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "children",
           "origin": "owned",
-          "required": true,
+          "required": false,
           "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "chips",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarChipProp[] | undefined",
           "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
@@ -6700,6 +6720,39 @@
           ]
         },
         {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "error",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "filters",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarFilterProp[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "hasActiveFilters",
           "origin": "owned",
           "required": false,
@@ -6708,6 +6761,29 @@
             false,
             true
           ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "onChipRemove",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: string) => void) | undefined",
+          "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
           ]
@@ -6731,6 +6807,26 @@
             "wrap",
             "scroll"
           ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "resultCount",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "search",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarSearchProp | undefined",
+          "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
           ]
@@ -14448,10 +14544,30 @@
       "group": "navigation",
       "props": [
         {
+          "name": "actions",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "children",
           "origin": "owned",
-          "required": true,
+          "required": false,
           "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "chips",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarChipProp[] | undefined",
           "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
@@ -14468,6 +14584,39 @@
           ]
         },
         {
+          "name": "disabled",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "error",
+          "origin": "owned",
+          "required": false,
+          "type": "React.ReactNode",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "filters",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarFilterProp[] | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
           "name": "hasActiveFilters",
           "origin": "owned",
           "required": false,
@@ -14476,6 +14625,29 @@
             false,
             true
           ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "loading",
+          "origin": "owned",
+          "required": false,
+          "type": "boolean | undefined",
+          "values": [
+            false,
+            true
+          ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "onChipRemove",
+          "origin": "owned",
+          "required": false,
+          "type": "((value: string) => void) | undefined",
+          "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
           ]
@@ -14499,6 +14671,26 @@
             "wrap",
             "scroll"
           ],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "resultCount",
+          "origin": "owned",
+          "required": false,
+          "type": "number | undefined",
+          "values": [],
+          "declaredIn": [
+            "src/props/components/navigation.prop.ts"
+          ]
+        },
+        {
+          "name": "search",
+          "origin": "owned",
+          "required": false,
+          "type": "FilterBarSearchProp | undefined",
+          "values": [],
           "declaredIn": [
             "src/props/components/navigation.prop.ts"
           ]

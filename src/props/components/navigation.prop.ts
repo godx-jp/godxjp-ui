@@ -1,15 +1,20 @@
 /** Navigation component prop types — @see docs/COMPONENTS.md#navigation */
 import type * as React from "react";
 import type {
+  ActionsProp,
   ChildrenProp,
   ClassNameProp,
   DisabledProp,
+  ErrorProp,
   HasActiveFiltersProp,
   IdProp,
   LabelProp,
   OnClearFiltersProp,
+  PendingProp,
+  PlaceholderProp,
   StickyProp,
 } from "../vocabulary";
+import type { SearchSelectOptionProp } from "./data-entry.prop";
 
 /**
  * How a {@link ToolbarProp} strip resolves more filters than fit one row (#216).
@@ -17,6 +22,60 @@ import type {
  * bounded row that scrolls inline, so a wide filter set never pushes the list below the fold.
  */
 export type FilterBarOverflowProp = "wrap" | "scroll";
+
+/**
+ * Typed search slot of the FilterBar model (gh#258). Renders the canonical SearchInput as the
+ * FIRST control of the strip, with a token-owned consistent width (`--filter-bar-search-width`,
+ * full-width below 640px). Controlled by consumer data via the `value`/`defaultValue`/
+ * `onValueChange` triad; `onSearch` mirrors SearchInput's debounced-term callback.
+ */
+export type FilterBarSearchProp = {
+  value?: string;
+  defaultValue?: string;
+  /** Fires on EVERY keystroke — required to keep a controlled `value` responsive. */
+  onValueChange?: (query: string) => void;
+  /** Fires with the DEBOUNCED term. Omit it when filtering is driven off `onValueChange`. */
+  onSearch?: (query: string) => void;
+  placeholder?: string;
+  /** Visible label above the search field. Omit for the placeholder-only compact form. */
+  label?: React.ReactNode;
+  /** Accessible name when no visible `label` is given (defaults to the localized "Search"). */
+  ariaLabel?: string;
+  id?: IdProp;
+  disabled?: DisabledProp;
+};
+
+/**
+ * One typed filter of the FilterBar model (gh#258): a labelled, domain-neutral Select whose
+ * options and selection are consumer data. `value` is the filter's stable identity (never shown);
+ * the visible `label` is rendered as the control's real `<label htmlFor>` (WCAG 2.5.3 / 1.3.1).
+ * Selection is controlled via `selected`/`defaultSelected`/`onSelectedChange` — the standard
+ * triad, renamed so the filter's own identity `value` stays unambiguous.
+ */
+export type FilterBarFilterProp = {
+  /** Stable filter identity (drives the control id + React key). */
+  value: string;
+  label: LabelProp;
+  options: SearchSelectOptionProp[];
+  selected?: string;
+  defaultSelected?: string;
+  onSelectedChange?: (selected: string) => void;
+  placeholder?: PlaceholderProp;
+  disabled?: DisabledProp;
+};
+
+/**
+ * One applied-filter chip of the FilterBar model (gh#258). Chips are pure consumer data — the
+ * lifecycle is: ADD by including the chip in `chips`, REMOVE via `onChipRemove(value)` (the ×
+ * button), CLEAR-ALL via the bar's `onClear`. `label` should be a string when possible so the
+ * remove button's accessible name can quote it; otherwise `value` is quoted instead.
+ */
+export type FilterBarChipProp = {
+  /** Stable chip identity, passed to `onChipRemove`. */
+  value: string;
+  label: React.ReactNode;
+  disabled?: DisabledProp;
+};
 
 /** @see Toolbar */
 export type ToolbarProp = {
@@ -35,8 +94,35 @@ export type ToolbarProp = {
    * Tune the scrollbar gutter with the `--filter-bar-scroll-padding-y` theme knob.
    */
   overflow?: FilterBarOverflowProp;
+  /**
+   * Typed model (gh#258) — search slot. When ANY model prop (`search`/`filters`/`chips`/
+   * `onChipRemove`/`actions`/`resultCount`/`loading`/`disabled`/`error`) is present the bar renders
+   * the canonical model layout: strip (search → filters → children → reset → actions) → chips row →
+   * result-count/error line, with token-owned widths and stacking. Without any of them the bar
+   * stays the plain children-composition toolbar — existing markup is unchanged.
+   */
+  search?: FilterBarSearchProp;
+  /** Typed model — labelled Select filters rendered after the search slot, in array order. */
+  filters?: FilterBarFilterProp[];
+  /** Typed model — applied-filter chips (consumer data; add = include, remove = `onChipRemove`). */
+  chips?: FilterBarChipProp[];
+  /** Remove ONE chip by its `value`. Required for chips to render their × remove button. */
+  onChipRemove?: (value: string) => void;
+  /** Typed model — trailing action slot (e.g. a primary "Add" Button), parked at the inline end. */
+  actions?: ActionsProp;
+  /**
+   * Typed model — localized, pluralized result count ("{count} results") announced politely via a
+   * `role="status"` line under the strip. `0` is the rendered empty state, not "hidden".
+   */
+  resultCount?: number;
+  /** Typed model — marks the strip `aria-busy` while results are being (re)fetched. */
+  loading?: PendingProp;
+  /** Typed model — disables every model-rendered control (search, filters, reset, chip removes). */
+  disabled?: DisabledProp;
+  /** Typed model — consumer error content, announced via `role="alert"` in place of the count. */
+  error?: ErrorProp;
   className?: ClassNameProp;
-  children: ChildrenProp;
+  children?: ChildrenProp;
 };
 
 /** @see ToolbarGroup */

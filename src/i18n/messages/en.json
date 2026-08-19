@@ -227,6 +227,14 @@
     "toolbar": {
       "ariaLabel": "Filters"
     },
+    "filterBar": {
+      "appliedFilters": "Applied filters",
+      "removeFilter": "Remove filter: {label}",
+      "resultCount": {
+        "one": "{count} result",
+        "other": "{count} results"
+      }
+    },
     "localePicker": {
       "ariaLabel": "Language"
     },

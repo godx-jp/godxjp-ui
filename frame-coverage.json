@@ -1528,7 +1528,7 @@
     "navigation/filter-bar": {
       "props": {
         "status": "pass",
-        "reason": "Owner source assertions execute Toolbar and labelled ToolbarGroup filter cases."
+        "reason": "Owner source assertions execute Toolbar and labelled ToolbarGroup filter cases, plus the gh#258 typed model: search/filters/chips/onChipRemove/actions/resultCount/loading/disabled/error slots, chip add/remove/clear lifecycle, reset, canonical keyboard order and the unchanged legacy composition path."
       },
       "responsive": {
         "status": "pass",
@@ -1536,7 +1536,7 @@
       },
       "a11y": {
         "status": "pass",
-        "reason": "Isolated owner frame passed Axe with labelled composite controls."
+        "reason": "Isolated owner frame passed Axe with labelled composite controls; the gh#258 typed model additionally passes vitest-axe with search, labelled filter Selects, chips, reset, actions, result-count status and error alert rendered."
       },
       "touch": {
         "status": "pass",
@@ -1544,7 +1544,7 @@
       },
       "async": {
         "status": "not-applicable",
-        "reason": "Toolbar composition and clear behavior are synchronous; filtering requests belong to consumers."
+        "reason": "Toolbar composition and clear behavior are synchronous; filtering requests belong to consumers — the typed model renders consumer-provided loading/error state, it never fetches."
       }
     },
     "data-entry/checkbox": {

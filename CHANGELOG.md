@@ -89,6 +89,25 @@ var(--text-clamp)`), with the same `min-width: 0` flex-shrink contract as `trunc
   warn; an invalid `clamp` (< 1 / non-finite) is ignored with a dev warning and a fractional
   value is floored. Docs: `docs/general/typography.tsx` now renders a long Japanese description
   at `clamp={2}`.
+- **FilterBar typed model (gh#258)** — `FilterBarProps` gains an optional, domain-neutral,
+  consumer-controlled model: `search` (canonical SearchInput slot with the token-owned
+  `--filter-bar-search-width`), `filters` (labelled Select filters whose visible caption is the
+  control's REAL `<label htmlFor>` — `FilterBarFilterProp`), `chips` + `onChipRemove`
+  (applied-filter chips as pure data: add = include, remove = `onChipRemove(value)`, clear-all =
+  `onClear` — `FilterBarChipProp`), `actions` (trailing slot at the inline end), `resultCount`
+  (localized CLDR-pluralized `role="status"` line; `0` is the visible empty state), `loading`
+  (`aria-busy` strip), `disabled` (reaches every model-rendered control) and `error`
+  (`role="alert"` line replacing the count). Canonical DOM = keyboard order:
+  search → filters → children → reset → actions → chip removes. Presence of ANY model prop
+  activates the model layout; **without one the legacy children-composition markup renders
+  byte-identically** (children is now optional — a pure model usage needs none). New geometry
+  knobs (rule #45): `--filter-bar-{search-width,filter-width,chip-gap,section-gap}`; under
+  `overflow="scroll"` the reset+actions cluster stays pinned at the inline end exactly like the
+  legacy clear button. i18n: `navigation.filterBar.{appliedFilters,removeFilter,resultCount}`
+  in vi/en/ja. Guarded by
+  `src/components/navigation/__tests__/filter-bar-typed-model.test.tsx` (slots + order, chip
+  lifecycle, reset, localized plural count, keyboard order, loading/disabled/error, legacy
+  path unchanged, vitest-axe 0 violations, compile-time `@ts-expect-error` contract).
 - **`--logo-identity-foreground`** (`48 9% 9%`) — the ink the boxed `mark="glyph"` sets its TEXT in
   when it sits on the `--brand` identity fill. Deliberately NOT a role-mirror knob: its default is a
   real value rather than a role token, so there is no role to freeze and it is declared at `:root`

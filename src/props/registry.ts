@@ -1561,6 +1561,10 @@ export const COMPONENT_PROP_REGISTRY = {
       "OnClearFiltersProp",
       "HasActiveFiltersProp",
       "StickyProp",
+      "ActionsProp",
+      "PendingProp",
+      "DisabledProp",
+      "ErrorProp",
       "ClassNameProp",
       "ChildrenProp",
     ],
@@ -1569,6 +1573,21 @@ export const COMPONENT_PROP_REGISTRY = {
     group: "navigation",
     file: "components/navigation.prop.ts",
     vocabulary: [],
+  },
+  FilterBarSearchProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["PlaceholderProp", "IdProp", "DisabledProp"],
+  },
+  FilterBarFilterProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["LabelProp", "PlaceholderProp", "DisabledProp"],
+  },
+  FilterBarChipProp: {
+    group: "navigation",
+    file: "components/navigation.prop.ts",
+    vocabulary: ["DisabledProp"],
   },
   ToolbarGroupProp: {
     group: "navigation",

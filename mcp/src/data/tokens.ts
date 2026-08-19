@@ -444,6 +444,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'Scrollbar gutter for `<FilterBar overflow="scroll">` (gh#216), default `var(--space-1)`. Only applies at ≥640px, where a wide filter set becomes a single nowrap strip with a sticky inline-end clear-all; below that the bar still stacks, so the gutter would be dead space. Pair with the existing `--filter-bar-sticky-background` (already an `initial` role-mirror knob) when theming the strip.',
   },
   {
+    name: "--filter-bar-{search-width,filter-width,chip-gap,section-gap}",
+    category: "component",
+    tier: "component",
+    role: "FilterBar typed-model geometry (gh#258) — every list page gets the SAME search width, filter width, chip rhythm and section stacking without page-local CSS (rule #45: theme sets once, className overrides per instance). `--filter-bar-search-width` (20rem) sizes the model search slot; `--filter-bar-filter-width` (→ `--filter-picker-width-md`) is the min inline size of each typed filter group; both apply from 640px up, consumed as `min(100%, <token>)` so a 390px viewport never overflows with long JA/EN/VI labels (below 640px everything stacks full-width). `--filter-bar-chip-gap` (`--space-2`) spaces the applied-chips row; `--filter-bar-section-gap` (`--space-2`) stacks strip → chips → result-count/error line.",
+  },
+  {
     name: "--app-shell-{sidebar-width,rail-width}",
     category: "component",
     tier: "component",

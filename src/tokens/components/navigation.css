@@ -55,4 +55,15 @@
    * scrollbar never overlaps the controls. Rule #45 — a service theme retunes it to its grid
    * (0 on an overlay-scrollbar platform). */
   --filter-bar-scroll-padding-y: var(--space-1);
+
+  /* FilterBar typed model (gh#258) — token-owned geometry so every list page gets the SAME
+   * search width, filter width, chip rhythm and section stacking without page-local CSS.
+   * All are rule-#45 knobs: a service theme retunes them once, props/className override per
+   * instance. Below 640px the strip stacks (search/filters full-width); the widths apply from
+   * the 640px breakpoint up, always clamped by min(100%, …) so a narrow container never
+   * overflows at 390px with long JA/EN/VI labels. */
+  --filter-bar-search-width: 20rem;
+  --filter-bar-filter-width: var(--filter-picker-width-md);
+  --filter-bar-chip-gap: var(--space-2);
+  --filter-bar-section-gap: var(--space-2);
 }

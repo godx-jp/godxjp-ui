@@ -72,7 +72,7 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | Pagination | ✓ | N/A | · | · | · | · | · | · | · | · |
 | DropdownMenu | ✓ | N/A | N/A | · | · | · | · | · | · | · |
 | Steps | ✓ | ✓ | N/A | · | · | · | · | · | · | · |
-| Toolbar | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
+| Toolbar | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | AppProvider | ✓ | · | · | · | · | · | · | · | · | · |
 | formatDate | ✓ | · | · | · | · | · | · | · | · | · |
 | TimePicker | ✓ | N/A | · | · | · | · | · | · | · | · |
@@ -127,5 +127,5 @@ Legend: ✓ covered · N/A reasoned skip · · UNTESTED (blank cell = UNTESTED).
 | AuthAccountSummary | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 | AuthStack | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
 | OrgSwitcher | ✓ | N/A | · | · | · | · | · | · | · | · |
-| FilterBar | ✓ | N/A | N/A | N/A | · | · | · | · | · | · |
+| FilterBar | ✓ | N/A | · | N/A | · | · | · | · | · | · |
 

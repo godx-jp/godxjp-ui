@@ -227,6 +227,11 @@
     "toolbar": {
       "ariaLabel": "Bộ lọc"
     },
+    "filterBar": {
+      "appliedFilters": "Bộ lọc đang áp dụng",
+      "removeFilter": "Bỏ bộ lọc: {label}",
+      "resultCount": "{count} kết quả"
+    },
     "localePicker": {
       "ariaLabel": "Ngôn ngữ"
     },
