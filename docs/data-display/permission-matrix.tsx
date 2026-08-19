@@ -17,7 +17,7 @@ import {
   CardTitle,
   PermissionMatrix,
 } from "@godxjp/ui/data-display";
-import { Label, Select, Switch } from "@godxjp/ui/data-entry";
+import { FormField, Label, Select, Switch } from "@godxjp/ui/data-entry";
 import { Flex, PageContainer } from "@godxjp/ui/layout";
 import { grantKey } from "@godxjp/ui/lib/permission-grid";
 
@@ -115,20 +115,26 @@ export default function Demo() {
           <CardContent>
             <Flex direction="col" gap="md">
               <Flex direction="row" wrap align="end" gap="md">
-                <Select
-                  value={compareA}
-                  onValueChange={setCompareA}
-                  options={roleOptions}
-                  clearable={false}
-                  className="w-40"
-                />
-                <Select
-                  value={compareB}
-                  onValueChange={setCompareB}
-                  options={roleOptions}
-                  clearable={false}
-                  className="w-40"
-                />
+                {/* Bare Select has NO accessible name (axe button-name) — the compare
+                    pickers are labelled through FormField, exactly as the showcase does. */}
+                <FormField label="比較 A">
+                  <Select
+                    value={compareA}
+                    onValueChange={setCompareA}
+                    options={roleOptions}
+                    clearable={false}
+                    className="w-40"
+                  />
+                </FormField>
+                <FormField label="比較 B">
+                  <Select
+                    value={compareB}
+                    onValueChange={setCompareB}
+                    options={roleOptions}
+                    clearable={false}
+                    className="w-40"
+                  />
+                </FormField>
                 <Flex direction="row" align="center" gap="sm">
                   <Switch
                     id="pm-doc-diff-only"

@@ -65,12 +65,17 @@ export default function Demo() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* Two panels share this page, so each names its regions DISTINCTLY —
+                duplicate landmark names fail axe landmark-unique (same pattern as the
+                master-detail docs page). Single-instance apps keep the localized defaults. */}
             <ServiceRolePanel
               roles={ROLES}
               value={selected}
               onValueChange={setSelected}
               onDeleteRole={(roleId) => toast.success(`ロール ${roleId} を削除しました（デモ）`)}
               masterViewport="compact"
+              masterLabel="ロール一覧（編集可）"
+              detailLabel="選択中ロールの詳細"
             >
               {(role) =>
                 role && (
@@ -101,7 +106,13 @@ export default function Demo() {
             <CardDescription>readOnly では削除などの変更系アフォーダンスが消える。</CardDescription>
           </CardHeader>
           <CardContent>
-            <ServiceRolePanel roles={ROLES} onDeleteRole={() => {}} readOnly>
+            <ServiceRolePanel
+              roles={ROLES}
+              onDeleteRole={() => {}}
+              readOnly
+              masterLabel="ロール一覧（読み取り専用）"
+              detailLabel="ロールの詳細（読み取り専用）"
+            >
               {(role) =>
                 role && (
                   <Descriptions>

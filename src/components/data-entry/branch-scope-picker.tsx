@@ -236,7 +236,18 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
                 {t("dataEntry.branchScope.noMatches")}
               </Text>
             ) : (
-              <div className="max-h-64 overflow-y-auto">
+              // A bounded list is a scroll container, so it MUST be reachable and scrollable
+              // with the keyboard alone even when every row is unfocusable (all checkboxes
+              // `disabled`) — WCAG 2.1.1 / axe `scrollable-region-focusable`; same contract as
+              // MasterDetail's bounded master region. It is an ordinary tab stop (no trap), and
+              // it carries the group's accessible name so the stop is announced meaningfully —
+              // the inner CheckboxGroup deliberately no longer duplicates that label.
+              <div
+                role="group"
+                aria-label={t("dataEntry.branchScope.listLabel")}
+                tabIndex={0}
+                className="max-h-64 overflow-y-auto"
+              >
                 <CheckboxGroup
                   value={[...branchIds]}
                   onValueChange={(next) => commit({ mode: "selected", branchIds: next })}
@@ -247,7 +258,6 @@ export const BranchScopePicker = React.forwardRef<HTMLDivElement, BranchScopePic
                     disabled: branch.disabled,
                   }))}
                   disabled={disabled}
-                  aria-label={t("dataEntry.branchScope.listLabel")}
                 />
               </div>
             )}
