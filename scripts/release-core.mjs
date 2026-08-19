@@ -33,10 +33,25 @@ export const RELEASE_STEPS = Object.freeze({
   VerifyPublishedVersions: "verify-published-versions",
   PromoteUiLatest: "promote-ui-latest",
   PromoteMcpLatest: "promote-mcp-latest",
-  RemoveUiStagingTag: "remove-ui-staging-tag",
-  RemoveMcpStagingTag: "remove-mcp-staging-tag",
   CommitTargetMetadata: "commit-target-metadata",
 });
+
+/**
+ * The single, constant, OVERWRITABLE staging dist-tag (issue #266). Earlier releases staged under
+ * a per-version tag (`godx-staging-${targetVersion}`) and planned a final `npm dist-tag rm` pair —
+ * but deleting a dist-tag requires npm DELETE rights the CI automation token does not have (and a
+ * human login is still OTP-gated), so the rm steps aborted every release and the tags accumulated
+ * forever. Publishing every release under this one constant tag makes each release overwrite the
+ * previous staging pointer instead: nothing accumulates and no delete permission is ever needed.
+ * The trade-off is accepted and asserted: after a successful release `godx-staging` simply equals
+ * `latest` (both point at the released version) until the next release moves both.
+ *
+ * The six legacy tags already on the registry (`godx-staging-18.{7,8,9}.0` on @godxjp/ui and
+ * @godxjp/ui-mcp) need a ONE-TIME manual removal by a human with 2FA/OTP (command in issue #266);
+ * this script never creates versioned staging tags again.
+ */
+export const STAGE_TAG = "godx-staging";
+const LEGACY_STAGE_TAG_FOR = (targetVersion) => `godx-staging-${targetVersion}`;
 
 /**
  * Every gate that MUST have run — at the coordinated TARGET version — before the first byte is
@@ -100,15 +115,13 @@ function packageProgress() {
     published: false,
     promoted: false,
     compensated: false,
-    stageTagRemovalAttempted: false,
-    stageTagRemoved: false,
     previousLatest: null,
   };
 }
 
 function initialProgress(targetVersion, stageTag, sourceHead) {
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     sourceHead,
     targetVersion,
     stageTag,
@@ -160,7 +173,9 @@ export function buildReleasePlan({
 
   const targetVersion =
     recoveryState?.targetVersion ?? adoptStagedVersion ?? targetVersionFor(currentVersion, uiBump);
-  const stageTag = recoveryState?.stageTag ?? `godx-staging-${targetVersion}`;
+  // Recovery keeps whatever tag the interrupted release actually published under — including the
+  // legacy per-version `godx-staging-${targetVersion}` from pre-#266 recovery files.
+  const stageTag = recoveryState?.stageTag ?? STAGE_TAG;
   const progress = structuredClone(
     recoveryState ?? initialProgress(targetVersion, stageTag, sourceHead),
   );
@@ -188,8 +203,6 @@ export function buildReleasePlan({
   steps.push(RELEASE_STEPS.VerifyPublishedVersions);
   if (!progress.ui.promoted) steps.push(RELEASE_STEPS.PromoteUiLatest);
   if (!progress.mcp.promoted) steps.push(RELEASE_STEPS.PromoteMcpLatest);
-  if (!progress.ui.stageTagRemoved) steps.push(RELEASE_STEPS.RemoveUiStagingTag);
-  if (!progress.mcp.stageTagRemoved) steps.push(RELEASE_STEPS.RemoveMcpStagingTag);
   if (!progress.committed) steps.push(RELEASE_STEPS.CommitTargetMetadata);
   assertPreflightOrder(steps);
   return {
@@ -282,10 +295,13 @@ export function validateRecoveryState(state, { sourceHead, rootDir, recoveryDire
     "published",
     "promoted",
     "compensated",
-    "stageTagRemovalAttempted",
-    "stageTagRemoved",
     "previousLatest",
   ];
+  // Pre-#266 (schemaVersion 2) recovery files carry the per-version staging tag plus two
+  // removal-progress flags. They stay loadable: the flags are validated, then stripped from the
+  // normalised clone (the removal steps no longer exist), and the legacy stageTag is preserved so
+  // reconciliation checks the tag the interrupted release actually published under.
+  const legacyStageKeys = ["stageTagRemovalAttempted", "stageTagRemoved"];
   exactKeys(
     state,
     [
@@ -307,7 +323,7 @@ export function validateRecoveryState(state, { sourceHead, rootDir, recoveryDire
     "state",
   );
   if (
-    state.schemaVersion !== 2 ||
+    (state.schemaVersion !== 2 && state.schemaVersion !== 3) ||
     !SEMVER.test(state.targetVersion) ||
     !/^[0-9a-f]{40,64}$/.test(state.sourceHead)
   ) {
@@ -315,8 +331,12 @@ export function validateRecoveryState(state, { sourceHead, rootDir, recoveryDire
   }
   if (state.sourceHead !== sourceHead)
     throw new Error("Recovery source HEAD differs from current HEAD.");
-  if (state.stageTag !== `godx-staging-${state.targetVersion}`)
+  if (
+    state.stageTag !== STAGE_TAG &&
+    state.stageTag !== LEGACY_STAGE_TAG_FOR(state.targetVersion)
+  ) {
     throw new Error("Recovery staging tag is invalid.");
+  }
   exactKeys(state.manifests, ["original", "target"], "manifests");
   exactKeys(state.manifests.original, ["ui", "mcp"], "original manifests");
   exactKeys(state.manifests.target, ["ui", "mcp"], "target manifests");
@@ -355,15 +375,19 @@ export function validateRecoveryState(state, { sourceHead, rootDir, recoveryDire
       throw new Error(`Recovery ${packageName} artifact differs from recorded SHA512 integrity.`);
     }
     const progress = state[packageName];
-    exactKeys(progress, packageKeys, `${packageName} progress`);
-    const booleanFields = packageKeys.filter((key) => key !== "previousLatest");
+    const legacyShape = legacyStageKeys.every((key) => Object.hasOwn(progress ?? {}, key));
+    const shapeKeys = legacyShape ? [...packageKeys, ...legacyStageKeys] : packageKeys;
+    exactKeys(progress, shapeKeys, `${packageName} progress`);
+    const booleanFields = shapeKeys.filter((key) => key !== "previousLatest");
     if (
       !booleanFields.every((key) => typeof progress[key] === "boolean") ||
       (progress.previousLatest !== null &&
         (typeof progress.previousLatest !== "string" || !SEMVER.test(progress.previousLatest))) ||
       (progress.promoted && !progress.published) ||
-      (progress.stageTagRemovalAttempted && !progress.published) ||
-      (progress.stageTagRemoved && (!progress.published || !progress.stageTagRemovalAttempted)) ||
+      (legacyShape && progress.stageTagRemovalAttempted && !progress.published) ||
+      (legacyShape &&
+        progress.stageTagRemoved &&
+        (!progress.published || !progress.stageTagRemovalAttempted)) ||
       (progress.compensated && (!progress.published || progress.promoted))
     ) {
       throw new Error(`Recovery ${packageName} progress invariants are invalid.`);
@@ -399,7 +423,14 @@ export function validateRecoveryState(state, { sourceHead, rootDir, recoveryDire
   ) {
     throw new Error("Recovery transaction invariants are invalid.");
   }
-  return structuredClone(state);
+  // Normalise to the current shape: legacy removal flags disappear (their steps no longer exist)
+  // while the legacy stageTag is kept, so re-persisted snapshots validate as schemaVersion 3.
+  const normalized = structuredClone(state);
+  normalized.schemaVersion = 3;
+  for (const packageName of ["ui", "mcp"]) {
+    for (const key of legacyStageKeys) delete normalized[packageName][key];
+  }
+  return normalized;
 }
 
 export function assertOnlyCoordinatedManifestChanges(statusOutput) {
@@ -430,26 +461,7 @@ export function reconcilePackagePublication({
   const exactIntegrity = registry.integrity === artifact.integrity;
   const exactStageTag = registry.tags?.[stageTag] === targetVersion;
   if (progress.published) {
-    if (!exactIntegrity) {
-      throw new Error(`${packageName} registry integrity/staging tag differs from recovery state.`);
-    }
-    if (progress.stageTagRemoved) {
-      if (registry.tags?.[stageTag] !== undefined) {
-        throw new Error(`${packageName} staging tag reappeared after recorded removal.`);
-      }
-      return;
-    }
-    if (progress.stageTagRemovalAttempted) {
-      if (registry.tags?.[stageTag] === undefined) {
-        progress.stageTagRemoved = true;
-        return;
-      }
-      if (!exactStageTag) {
-        throw new Error(`${packageName} ambiguous staging-tag removal cannot be reconciled.`);
-      }
-      return;
-    }
-    if (!exactStageTag) {
+    if (!exactIntegrity || !exactStageTag) {
       throw new Error(`${packageName} registry integrity/staging tag differs from recovery state.`);
     }
     return;
@@ -468,19 +480,17 @@ export function assertFreshTargets(uiRegistry, mcpRegistry) {
     throw new Error("Target version already exists; refusing partial/overwrite release.");
 }
 
-export function assertRegistryArtifact(
-  registry,
-  artifact,
-  targetVersion,
-  stageTag,
-  packageName,
-  requireStageTag = true,
-) {
+/**
+ * The staging tag must always point at the released version — including AFTER latest promotion:
+ * with the single overwritable `godx-staging` there is no removal step, so after a successful
+ * release the staging tag simply equals `latest` (both = targetVersion) until the next release
+ * overwrites it. That equality is the accepted post-#266 steady state, not an anomaly.
+ */
+export function assertRegistryArtifact(registry, artifact, targetVersion, stageTag, packageName) {
   if (
     !registry.exists ||
     registry.integrity !== artifact.integrity ||
-    (requireStageTag && registry.tags?.[stageTag] !== targetVersion) ||
-    (!requireStageTag && registry.tags?.[stageTag] !== undefined)
+    registry.tags?.[stageTag] !== targetVersion
   ) {
     const observedStageTag = registry.tags?.[stageTag] ?? null;
     throw new Error(
@@ -596,16 +606,6 @@ const STEP_COMMANDS = Object.freeze({
   [RELEASE_STEPS.PromoteMcpLatest]: (plan) => ({
     binary: "npm",
     args: ["dist-tag", "add", `@godxjp/ui-mcp@${plan.targetVersion}`, "latest"],
-    cwd: "root",
-  }),
-  [RELEASE_STEPS.RemoveUiStagingTag]: (plan) => ({
-    binary: "npm",
-    args: ["dist-tag", "rm", "@godxjp/ui", plan.stageTag],
-    cwd: "root",
-  }),
-  [RELEASE_STEPS.RemoveMcpStagingTag]: (plan) => ({
-    binary: "npm",
-    args: ["dist-tag", "rm", "@godxjp/ui-mcp", plan.stageTag],
     cwd: "root",
   }),
 });
@@ -832,7 +832,6 @@ export function createReleaseRuntime({
               plan.targetVersion,
               plan.stageTag,
               "@godxjp/ui",
-              !progress.ui.stageTagRemoved,
             );
             assertRegistryArtifact(
               registryState("@godxjp/ui-mcp", plan.targetVersion),
@@ -840,7 +839,6 @@ export function createReleaseRuntime({
               plan.targetVersion,
               plan.stageTag,
               "@godxjp/ui-mcp",
-              !progress.mcp.stageTagRemoved,
             );
             return;
           } catch (error) {
@@ -949,16 +947,6 @@ export function runRelease({
         persist(step);
         runStep(step, plan, artifacts, progress);
         packageState.published = true;
-        persist();
-        continue;
-      }
-      if (step === RELEASE_STEPS.RemoveUiStagingTag || step === RELEASE_STEPS.RemoveMcpStagingTag) {
-        const packageState = step === RELEASE_STEPS.RemoveUiStagingTag ? progress.ui : progress.mcp;
-        if (packageState.stageTagRemoved) continue;
-        packageState.stageTagRemovalAttempted = true;
-        persist(step);
-        runStep(step, plan, artifacts, progress);
-        packageState.stageTagRemoved = true;
         persist();
         continue;
       }

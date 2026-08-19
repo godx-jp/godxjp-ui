@@ -148,7 +148,7 @@ describe("recoverable coordinated release", () => {
       if (args[0] === "view" && args[2] === "dist-tags") {
         return {
           status: 0,
-          stdout: JSON.stringify({ "godx-staging-18.5.0": "18.5.0" }),
+          stdout: JSON.stringify({ "godx-staging": "18.5.0" }),
           stderr: "",
         };
       }
@@ -166,15 +166,13 @@ describe("recoverable coordinated release", () => {
     });
     runtime.runStep(
       RELEASE_STEPS.VerifyPublishedVersions,
-      { targetVersion: "18.5.0", stageTag: "godx-staging-18.5.0" },
+      { targetVersion: "18.5.0", stageTag: "godx-staging" },
       artifacts(),
       {
         artifacts: {
           ui: { integrity: "sha512-ui" },
           mcp: { integrity: "sha512-mcp" },
         },
-        ui: { stageTagRemoved: false },
-        mcp: { stageTagRemoved: false },
       },
     );
     expect(uiIntegrityReads).toBe(2);
@@ -198,13 +196,16 @@ describe("recoverable coordinated release", () => {
       "pnpm test @mcp",
       "node scripts/check-release-lockstep.mjs @root",
       "npm whoami @root",
-      "npm publish /tmp/verified-ui.tgz --access public --tag godx-staging-18.4.1 @root",
-      "npm publish /tmp/verified-mcp.tgz --access public --tag godx-staging-18.4.1 @root",
+      "npm publish /tmp/verified-ui.tgz --access public --tag godx-staging @root",
+      "npm publish /tmp/verified-mcp.tgz --access public --tag godx-staging @root",
       "npm dist-tag add @godxjp/ui@18.4.1 latest @root",
       "npm dist-tag add @godxjp/ui-mcp@18.4.1 latest @root",
-      "npm dist-tag rm @godxjp/ui godx-staging-18.4.1 @root",
-      "npm dist-tag rm @godxjp/ui-mcp godx-staging-18.4.1 @root",
     ]);
+    // No `npm dist-tag rm` anywhere: the constant overwritable godx-staging tag needs no delete
+    // permission (issue #266) — the next release simply overwrites it.
+    expect(commands.some((entry) => entry.args[0] === "dist-tag" && entry.args[1] === "rm")).toBe(
+      false,
+    );
     expect(assertReleaseCommandPlan(commands)).toBe(commands);
   });
 
@@ -310,15 +311,17 @@ describe("recoverable coordinated release", () => {
       "node scripts/check-release-lockstep.mjs @root",
       "pack target manifests @root",
       "npm whoami @root",
-      "npm publish /tmp/verified-ui.tgz --access public --tag godx-staging-18.4.1 @root",
-      "npm publish /tmp/verified-mcp.tgz --access public --tag godx-staging-18.4.1 @root",
+      "npm publish /tmp/verified-ui.tgz --access public --tag godx-staging @root",
+      "npm publish /tmp/verified-mcp.tgz --access public --tag godx-staging @root",
       "npm dist-tag add @godxjp/ui@18.4.1 latest @root",
       "npm dist-tag add @godxjp/ui-mcp@18.4.1 latest @root",
-      "npm dist-tag rm @godxjp/ui godx-staging-18.4.1 @root",
-      "npm dist-tag rm @godxjp/ui-mcp godx-staging-18.4.1 @root",
       "git add package.json mcp/package.json @root",
       "git commit -m chore(release): UI + MCP @18.4.1 @root",
     ]);
+    // Post-release steady state (issue #266): godx-staging is NOT removed — it stays on the
+    // released version, equal to latest, until the next release overwrites it.
+    expect(registry["@godxjp/ui"].tags).toEqual({ latest: "18.4.1", "godx-staging": "18.4.1" });
+    expect(registry["@godxjp/ui-mcp"].tags).toEqual({ latest: "18.4.1", "godx-staging": "18.4.1" });
     expect(manifestsAtPublish).toHaveLength(2);
     for (const snapshot of manifestsAtPublish) {
       expect(snapshot.ui).toMatchObject({ version: "18.4.1", godxUiMcp: "18.4.1" });
@@ -436,13 +439,13 @@ describe("recoverable coordinated release", () => {
       {
         step: RELEASE_STEPS.PublishUi,
         binary: "npm",
-        args: ["publish", packed.uiTarball, "--access", "public", "--tag", "godx-staging-18.4.1"],
+        args: ["publish", packed.uiTarball, "--access", "public", "--tag", "godx-staging"],
         cwd: "root",
       },
       {
         step: RELEASE_STEPS.PublishMcp,
         binary: "npm",
-        args: ["publish", packed.mcpTarball, "--access", "public", "--tag", "godx-staging-18.4.1"],
+        args: ["publish", packed.mcpTarball, "--access", "public", "--tag", "godx-staging"],
         cwd: "root",
       },
     ]);
@@ -453,18 +456,17 @@ describe("recoverable coordinated release", () => {
       publishAttempted: true,
       published: false,
       promoted: false,
-      stageTagRemoved: false,
     };
     reconcilePackagePublication({
       progress,
       registry: {
         exists: true,
         integrity: "sha512-exact",
-        tags: { "godx-staging-18.4.1": "18.4.1" },
+        tags: { "godx-staging": "18.4.1" },
       },
       artifact: { integrity: "sha512-exact" },
       targetVersion: "18.4.1",
-      stageTag: "godx-staging-18.4.1",
+      stageTag: "godx-staging",
       packageName: "@godxjp/ui",
     });
     expect(progress.published).toBe(true);
@@ -474,34 +476,50 @@ describe("recoverable coordinated release", () => {
         registry: {
           exists: true,
           integrity: "sha512-other",
-          tags: { "godx-staging-18.4.1": "18.4.1" },
+          tags: { "godx-staging": "18.4.1" },
         },
         artifact: { integrity: "sha512-exact" },
         targetVersion: "18.4.1",
-        stageTag: "godx-staging-18.4.1",
+        stageTag: "godx-staging",
         packageName: "@godxjp/ui",
       }),
     ).toThrow("cannot be reconciled");
   });
 
-  it("requires exact registry integrity and staging tag before promotion", () => {
+  it("requires the constant staging tag to point at the target version, before and after promote", () => {
+    // Wrong version under the tag → refuse.
     expect(() =>
       assertRegistryArtifact(
-        { exists: true, integrity: "sha512-exact", tags: { "godx-staging-18.4.1": "18.4.0" } },
+        { exists: true, integrity: "sha512-exact", tags: { "godx-staging": "18.4.0" } },
         { integrity: "sha512-exact" },
         "18.4.1",
-        "godx-staging-18.4.1",
+        "godx-staging",
         "@godxjp/ui",
       ),
     ).toThrow("integrity or staging tag");
+    // Missing tag → refuse: there is no removal step any more, so an absent godx-staging can
+    // only mean the publish under the constant tag never happened (issue #266).
     expect(() =>
       assertRegistryArtifact(
         { exists: true, integrity: "sha512-exact", tags: {} },
         { integrity: "sha512-exact" },
         "18.4.1",
-        "godx-staging-18.4.1",
+        "godx-staging",
         "@godxjp/ui",
-        false,
+      ),
+    ).toThrow("integrity or staging tag");
+    // The accepted post-promote steady state: godx-staging === latest === targetVersion.
+    expect(() =>
+      assertRegistryArtifact(
+        {
+          exists: true,
+          integrity: "sha512-exact",
+          tags: { "godx-staging": "18.4.1", latest: "18.4.1" },
+        },
+        { integrity: "sha512-exact" },
+        "18.4.1",
+        "godx-staging",
+        "@godxjp/ui",
       ),
     ).not.toThrow();
   });
@@ -597,27 +615,15 @@ describe("recoverable coordinated release", () => {
     ).toThrow("SHA512");
   });
 
-  it("reconciles ambiguous staging-tag removal and resumes after one tag removal", () => {
-    const removalProgress = {
-      publishAttempted: true,
-      published: true,
-      promoted: true,
-      compensated: false,
-      stageTagRemovalAttempted: true,
-      stageTagRemoved: false,
-      previousLatest: "18.4.0",
-    };
-    reconcilePackagePublication({
-      progress: removalProgress,
-      registry: { exists: true, integrity: "sha512-exact", tags: {} },
-      artifact: { integrity: "sha512-exact" },
-      targetVersion: "18.4.1",
-      stageTag: "godx-staging-18.4.1",
-      packageName: "@godxjp/ui",
-    });
-    expect(removalProgress.stageTagRemoved).toBe(true);
-
+  it("accepts a pre-#266 legacy recovery state, keeps its versioned staging tag and strips the removal flags", () => {
     const rootDir = fixture();
+    const recoveryDirectory = join(rootDir, ".recovery");
+    const artifactDirectory = join(recoveryDirectory, "artifacts");
+    mkdirSync(artifactDirectory, { recursive: true });
+    const uiTarball = join(artifactDirectory, "ui.tgz");
+    const mcpTarball = join(artifactDirectory, "mcp.tgz");
+    writeFileSync(uiTarball, "ui bytes");
+    writeFileSync(mcpTarball, "mcp bytes");
     let state: RecoveryState | null = null;
     expect(() =>
       runRelease({
@@ -625,6 +631,7 @@ describe("recoverable coordinated release", () => {
         uiBump: "patch",
         mcpBump: "sync",
         sourceHead: SOURCE_HEAD,
+        recoveryDirectory,
         runStep: (
           step: string,
           _plan: unknown,
@@ -632,48 +639,73 @@ describe("recoverable coordinated release", () => {
           progress: Record<string, Record<string, unknown>>,
         ) => {
           recordLatest(step, progress);
-          if (step === RELEASE_STEPS.RemoveMcpStagingTag) throw new Error("remove timed out");
+          if (step === RELEASE_STEPS.PublishMcp) throw new Error("MCP failed");
         },
-        packTargetManifests: () => artifacts(),
+        packTargetManifests: () => ({
+          ui: {},
+          mcp: {},
+          uiTarball,
+          mcpTarball,
+          uiIntegrity: integrityFor(uiTarball),
+          mcpIntegrity: integrityFor(mcpTarball),
+        }),
         writeRecoveryState: (value: RecoveryState) => {
           state = structuredClone(value);
         },
       }),
-    ).toThrow("remove timed out");
-    expect((state as RecoveryState | null)?.ui).toMatchObject({
-      stageTagRemovalAttempted: true,
-      stageTagRemoved: true,
-    });
-    expect((state as RecoveryState | null)?.mcp).toMatchObject({
-      stageTagRemovalAttempted: true,
-      stageTagRemoved: false,
-    });
-    reconcilePackagePublication({
-      progress: (state as unknown as RecoveryState).mcp,
-      registry: { exists: true, integrity: "sha512-mcp", tags: {} },
-      artifact: { integrity: "sha512-mcp" },
-      targetVersion: "18.4.1",
-      stageTag: "godx-staging-18.4.1",
-      packageName: "@godxjp/ui-mcp",
-    });
-    const executed: string[] = [];
-    runRelease({
+    ).toThrow("MCP failed");
+
+    // Rewrite the captured state into the exact shape the pre-#266 script persisted:
+    // schemaVersion 2, per-version staging tag, and the two removal-progress flags.
+    const legacy = structuredClone(state) as unknown as RecoveryState & {
+      schemaVersion: number;
+      stageTag: string;
+    };
+    legacy.schemaVersion = 2;
+    legacy.stageTag = "godx-staging-18.4.1";
+    for (const name of ["ui", "mcp"] as const) {
+      legacy[name].stageTagRemovalAttempted = false;
+      legacy[name].stageTagRemoved = false;
+    }
+    const normalized = validateRecoveryState(legacy, {
+      sourceHead: SOURCE_HEAD,
       rootDir,
+      recoveryDirectory,
+    }) as RecoveryState & { schemaVersion: number; stageTag: string };
+    expect(normalized.schemaVersion).toBe(3);
+    expect(normalized.stageTag).toBe("godx-staging-18.4.1");
+    expect(normalized.ui).not.toHaveProperty("stageTagRemovalAttempted");
+    expect(normalized.ui).not.toHaveProperty("stageTagRemoved");
+    expect(normalized.mcp).not.toHaveProperty("stageTagRemovalAttempted");
+    expect(normalized.mcp).not.toHaveProperty("stageTagRemoved");
+
+    // The recovery plan republishes under the tag the interrupted release actually used…
+    const legacyPlan = buildReleasePlan({
+      currentVersion: "18.4.1",
       uiBump: "skip",
       mcpBump: "sync",
       sourceHead: SOURCE_HEAD,
-      recoveryState: state,
-      runStep: (step: string) => executed.push(step),
-      writeRecoveryState: (value: RecoveryState) => {
-        state = structuredClone(value);
-      },
+      recoveryState: normalized,
     });
-    expect(executed).not.toContain(RELEASE_STEPS.RemoveUiStagingTag);
-    expect(executed).not.toContain(RELEASE_STEPS.RemoveMcpStagingTag);
-    expect(executed).toContain(RELEASE_STEPS.CommitTargetMetadata);
+    expect(legacyPlan.stageTag).toBe("godx-staging-18.4.1");
+    // …while a fresh plan always stages under the single constant, overwritable tag.
+    expect(
+      buildReleasePlan({
+        currentVersion: "18.4.0",
+        uiBump: "patch",
+        mcpBump: "sync",
+        sourceHead: SOURCE_HEAD,
+      }).stageTag,
+    ).toBe("godx-staging");
+    // Any other tag shape stays rejected.
+    const wrongTag = structuredClone(legacy) as unknown as RecoveryState & { stageTag: string };
+    wrongTag.stageTag = "godx-staging-18.9.9";
+    expect(() =>
+      validateRecoveryState(wrongTag, { sourceHead: SOURCE_HEAD, rootDir, recoveryDirectory }),
+    ).toThrow("staging tag is invalid");
   });
 
-  it("resumes commit failure after both staging tags were removed", () => {
+  it("resumes commit failure after both promotions without ever planning a tag removal", () => {
     const rootDir = fixture();
     let state: RecoveryState | null = null;
     expect(() =>
@@ -697,8 +729,8 @@ describe("recoverable coordinated release", () => {
         },
       }),
     ).toThrow("commit failed");
-    expect((state as RecoveryState | null)?.ui).toMatchObject({ stageTagRemoved: true });
-    expect((state as RecoveryState | null)?.mcp).toMatchObject({ stageTagRemoved: true });
+    expect((state as RecoveryState | null)?.ui).toMatchObject({ published: true, promoted: true });
+    expect((state as RecoveryState | null)?.mcp).toMatchObject({ published: true, promoted: true });
     const executed: string[] = [];
     runRelease({
       rootDir,
@@ -708,8 +740,8 @@ describe("recoverable coordinated release", () => {
       recoveryState: state,
       runStep: (step: string) => executed.push(step),
     });
-    expect(executed).not.toContain(RELEASE_STEPS.RemoveUiStagingTag);
-    expect(executed).not.toContain(RELEASE_STEPS.RemoveMcpStagingTag);
+    expect(executed).not.toContain("remove-ui-staging-tag");
+    expect(executed).not.toContain("remove-mcp-staging-tag");
     expect(executed).toEqual(
       expect.arrayContaining([
         RELEASE_STEPS.VerifyPublishedVersions,
@@ -721,9 +753,9 @@ describe("recoverable coordinated release", () => {
   it("writes recovery state atomically", () => {
     const rootDir = fixture();
     const path = join(rootDir, ".recovery", "state.json");
-    writeJsonAtomic(path, { schemaVersion: 2, targetVersion: "18.4.1" });
+    writeJsonAtomic(path, { schemaVersion: 3, targetVersion: "18.4.1" });
     expect(JSON.parse(readFileSync(path, "utf8"))).toMatchObject({
-      schemaVersion: 2,
+      schemaVersion: 3,
       targetVersion: "18.4.1",
     });
   });
@@ -883,12 +915,10 @@ describe("recoverable coordinated release", () => {
     expect((state as RecoveryState | null)?.ui).toMatchObject({
       promoted: true,
       compensated: false,
-      stageTagRemoved: true,
     });
     expect((state as RecoveryState | null)?.mcp).toMatchObject({
       promoted: true,
       compensated: false,
-      stageTagRemoved: true,
     });
     expect((state as RecoveryState | null)?.latestCompensation).toBeNull();
     expect(

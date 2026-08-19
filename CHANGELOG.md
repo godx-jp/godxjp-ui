@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Release staging dist-tags no longer accumulate on the registry.** Every release staged both
+  packages under a per-version `godx-staging-${version}` dist-tag and planned a final
+  `npm dist-tag rm` pair — but deleting a dist-tag needs npm DELETE rights the CI automation token
+  does not have (and a human login is still OTP-gated), so the removal steps aborted every release
+  and the tags piled up forever (`godx-staging-18.{7,8,9}.0` on both `@godxjp/ui` and
+  `@godxjp/ui-mcp`). `scripts/release-core.mjs` now stages under the single constant, OVERWRITABLE
+  `godx-staging` tag: each release overwrites the previous pointer, nothing accumulates, and no
+  delete permission is ever needed. After a successful release `godx-staging` deliberately equals
+  `latest` until the next release moves both. Pre-#266 recovery-state files (schemaVersion 2, with
+  the versioned stageTag and the removal-progress flags) remain loadable and are normalised on
+  validation. **One-time manual cleanup**: the six legacy tags already on the registry must be
+  removed by a human with 2FA/OTP (command in godx-jp/godxjp-ui#266) — the script never creates
+  versioned staging tags again.
 - **The boxed `<Logo tone="success">` glyph inked its TEXT with the identity KNOCKOUT colour, failing
   WCAG 2.2 AA at 3.67:1.** `.ui-logo[data-tone="success"]` fell back to `--brand-foreground` for
   `color`, but `--brand-foreground` is not an ink — it tracks `--background` in both themes
