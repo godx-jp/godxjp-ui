@@ -53,11 +53,19 @@ export type ErrorSurfaceStatusProp = 403 | 404 | 500 | 503;
  * standalone and requester flows; `"device-authorization"` is the 380px device-grant measure with
  * a 5px mobile inline gutter; `"context-selection"` is the 25rem organisation/context picker
  * measure that goes edge-to-edge on mobile; `"account-recovery"` is the 432px SCR-008 measure
- * shared by the password-recovery and sign-in MFA challenge panels (15px mobile inline gutter).
+ * shared by the password-recovery and sign-in MFA challenge panels (15px mobile inline gutter);
+ * `"registration"` is the 360px sign-up measure — start-aligned like `"login"`, because a
+ * registration card is the tallest surface in the set and a centred tall card overflows above the
+ * scroll origin, and the only preset with a footer-clearance knob of its own.
  * Orthogonal to AuthShell's `variant` (which owns control density and heading size) — combine them.
  */
 export type AuthShellPresetProp =
-  "default" | "login" | "device-authorization" | "context-selection" | "account-recovery";
+  | "default"
+  | "login"
+  | "registration"
+  | "device-authorization"
+  | "context-selection"
+  | "account-recovery";
 
 /** Shared gap between layout children; components may document subsets. */
 export type GapProp = "xs" | "sm" | "md" | "lg" | "xl";

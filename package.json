@@ -307,6 +307,7 @@
     "format:fix": "prettier --write .",
     "test": "vitest run",
     "test:visual:auth-login": "node scripts/auth-shell-login-visual.mjs",
+    "test:visual:auth-registration": "node scripts/auth-shell-registration-visual.mjs",
     "test:visual:topbar-collision": "node scripts/topbar-collision-visual.mjs",
     "test:visual:table-collection-cjk": "node scripts/table-collection-cjk-visual.mjs",
     "test:watch": "vitest",

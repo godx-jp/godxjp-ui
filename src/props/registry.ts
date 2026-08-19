@@ -235,7 +235,7 @@ export const VOCABULARY_REGISTRY = {
     file: "vocabulary/layout.prop.ts",
     category: "layout",
     description:
-      "AuthShell named flow geometry — default | login (stable SCR-001 identity/card/footer anchor) | device-authorization (380px card, 5px mobile gutter) | context-selection (25rem card, edge-to-edge mobile) | account-recovery (432px SCR-008 recovery/MFA panel, 15px mobile gutter)",
+      "AuthShell named flow geometry — default | login (stable SCR-001 identity/card/footer anchor) | registration (360px SCR-002 sign-up measure, start-aligned long-form scroll, own footer clearance, 15px mobile gutter) | device-authorization (380px card, 5px mobile gutter) | context-selection (25rem card, edge-to-edge mobile) | account-recovery (432px SCR-008 recovery/MFA panel, 15px mobile gutter)",
   },
   GapProp: {
     file: "vocabulary/layout.prop.ts",

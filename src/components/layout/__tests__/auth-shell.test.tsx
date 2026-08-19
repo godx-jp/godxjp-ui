@@ -98,6 +98,7 @@ describe("AuthShell", () => {
 
   it.each([
     ["login"],
+    ["registration"],
     ["device-authorization"],
     ["context-selection"],
     ["account-recovery"],
@@ -154,6 +155,58 @@ describe("AuthShell", () => {
         />
         <div>Login form</div>
         <AuthFooter product="GoDX ID" terms="Terms" privacy="Privacy" />
+      </AuthShell>,
+    );
+  });
+
+  it.each([
+    // JA/EN/VI long-label coverage (gh#256): each locale's longest realistic sign-up heading and
+    // hint copy must render inside the registration identity slot without the shell truncating or
+    // rearranging the column — copy length is absorbed by the fixed identity track.
+    [
+      "ja",
+      "新しいアカウントを作成して組織に参加する",
+      "すでにアカウントをお持ちの場合はこちらからサインインしてください（組織の管理者から招待を受けている場合も同じです）",
+    ],
+    [
+      "en",
+      "Create a new account and join your organization",
+      "If you already have an account, sign in here instead — the same applies when you have received an invitation from your organization administrator",
+    ],
+    [
+      "vi",
+      "Tạo tài khoản mới và tham gia tổ chức của bạn",
+      "Nếu bạn đã có tài khoản, hãy đăng nhập tại đây — điều này cũng áp dụng khi bạn đã nhận được lời mời từ quản trị viên của tổ chức",
+    ],
+  ] as const)(
+    "registration preset carries long %s identity copy without truncation markup",
+    (_locale, title, requester) => {
+      const { container, getByText } = renderWithUi(
+        <AuthShell variant="canonical" preset="registration">
+          <AuthIdentity title={title} requester={requester} />
+          <div>Sign-up form</div>
+          <AuthFooter product="GoDX ID" terms="Terms" privacy="Privacy" />
+        </AuthShell>,
+      );
+      expect(getByText(title)).toBeInTheDocument();
+      expect(getByText(requester)).toBeInTheDocument();
+      // The identity block is a DIRECT child of the card slot, where the preset's fixed track
+      // rule can reach it — wrapping it would detach the anchor.
+      expect(
+        container.querySelector(".ui-auth-shell-card > .ui-auth-identity"),
+      ).toBeInTheDocument();
+    },
+  );
+
+  it("has no axe violations under the registration preset with a full sign-up column", async () => {
+    await expectNoA11yViolations(
+      <AuthShell variant="canonical" preset="registration">
+        <AuthIdentity
+          title="アカウントを作成"
+          requester="すでにアカウントをお持ちの場合はサインインしてください"
+        />
+        <div>Registration form</div>
+        <AuthFooter product="GoDX ID" terms="利用規約" privacy="プライバシー" />
       </AuthShell>,
     );
   });

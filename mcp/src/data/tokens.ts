@@ -324,6 +324,12 @@ export const TOKENS: TokenEntry[] = [
     role: 'AuthShell `preset="account-recovery"` measure (gh#233) — the SCR-008 27rem/432px panel, shared by the password-recovery panel (request · sent · new-password · expired) AND the sign-in MFA challenge panel (OTP · recovery-code · passkey-failure), because both canonical desktop panels measure w=432 at 1440. Mobile gutter = 15px inline at <=30rem, so the panel is x=15, width=360 — the SAME rhythm as the canonical Login flow, chosen deliberately: the supplied 390 reference is a desktop 2x2 composite that crops horizontally and is NOT a valid source. The canonical 360px Login measure and the 24rem un-preset shell are untouched.',
   },
   {
+    name: "--auth-shell-registration-{card-max-width,main-padding-block-start,main-padding-block-start-mobile,main-padding-inline,main-padding-inline-mobile,main-padding-block-end,main-padding-block-end-mobile,card-stack-gap,identity-slot-block-size}",
+    category: "component",
+    tier: "component",
+    role: 'AuthShell `preset="registration"` measure (gh#256) — the canonical SCR-002 sign-up flow: a 22.5rem/360px form measure with a 15px inline gutter at 390 (card x=15, width=360 — the same page rhythm as the Login flow, so sign-in → sign-up never jumps on a phone). START-aligned (a tall sign-up card must scroll, not clip its own top above the scroll origin), with the block-start offset DERIVED from the canonical artboard (card y=284 at 1440x900, y=274 at 390x844: padding-block-start + 112px identity slot + 20px stack gap), and a footer-clearance knob of its own (block-end 3rem / 2rem mobile) so the legal/consent footer never sits flush against the submit button after a long scroll. The fixed 112px identity track absorbs absent / one-line / wrapped two-line identity copy without moving the card anchor.',
+  },
+  {
     name: "--otp-slot-size",
     category: "component",
     tier: "component",

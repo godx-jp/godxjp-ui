@@ -2244,6 +2244,51 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Account-recovery preset (gh#233) — the SCR-008 measure shared by the password-recovery panel * (request · sent · new-password · expired) and the sign-in MFA challenge panel (OTP · * recovery-code · passkey-failure). Both canonical desktop panels measure w=432 at 1440, so ONE * preset owns them; the 360px canonical Login measure is untouched. * The mobile gutter is a DECIDED contract, not a traced artboard: the supplied 390 reference is a * desktop 2x2 composite that crops horizontally and cannot be measured. 15px inline at 390 ⇒ the * panel is x=15, width=360 — the same page rhythm as the canonical Login flow, so a user moving * from Login to Recovery on a phone never sees the surface jump."
   },
   {
+    "name": "--auth-shell-registration-card-max-width",
+    "value": "22.5rem",
+    "description": "Registration preset (gh#256) — the canonical sign-up measure. Two things make it structurally * different from every preset above, and both are the reason it could not be expressed by * re-using `login`: * * 1. LONG-FORM SCROLLING. A registration card is the tallest surface in the hosted-identity set * (name · email · password · confirm · strength meter · consent · submit · provider row), and * a vertically CENTRED tall card clips its own top on a short viewport — the top overflows * above the scroll origin and becomes unreachable. So the column is start-aligned and the * block-start inset becomes ordinary page padding the user can scroll past. * 2. FOOTER CLEARANCE. The legal/consent footer must never be flush against the submit button * at the end of a long scroll, so the block-end inset is a knob of its own rather than * mirroring the block-start one. * * The 360px form measure and the 15px mobile inline gutter match the canonical Login flow exactly * (22.5rem card, x=15 at 390 ⇒ width=360), so a user moving sign-in → sign-up on a phone never * sees the surface jump."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-block-start",
+    "value": "9.5rem",
+    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-block-start-mobile",
+    "value": "8.875rem",
+    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-inline",
+    "value": "1rem",
+    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-inline-mobile",
+    "value": "0.9375rem",
+    "description": "Block-start offsets are DERIVED from the canonical SCR-002 artboard, not chosen: the card * anchors at y=284 (1440x900) and y=274 (390x844), and the column is * card y = padding-block-start + identity slot + stack gap * so 284 - 112 - 20 = 152px (9.5rem) and 274 - 112 - 20 = 142px (8.875rem). Like every canonical * screen in this family the page passes NO brand bar (the mark lives INSIDE the column as * AuthIdentity), so `main` starts at the viewport top and the offset is the whole anchor."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-block-end",
+    "value": "3rem",
+    "description": "Footer clearance — the gap the legal footer keeps below the end of a long form."
+  },
+  {
+    "name": "--auth-shell-registration-main-padding-block-end-mobile",
+    "value": "2rem",
+    "description": "Footer clearance — the gap the legal footer keeps below the end of a long form."
+  },
+  {
+    "name": "--auth-shell-registration-card-stack-gap",
+    "value": "1.25rem",
+    "description": "Footer clearance — the gap the legal footer keeps below the end of a long form."
+  },
+  {
+    "name": "--auth-shell-registration-identity-slot-block-size",
+    "value": "7rem",
+    "description": "Fixed identity track, the same 112px `login` proved (gh#237). Without it the card anchor moves * with the title/requester line count, so the canonical y above would hold for exactly one copy * length and drift for every other. The slot absorbs absent / one-line / two-line identity * content instead."
+  },
+  {
     "name": "--auth-shell-divider-gap",
     "value": "0.625rem",
     "description": "Labelled auth divider geometry."

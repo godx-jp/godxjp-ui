@@ -6,6 +6,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`AuthShell preset="registration"` (gh#256)** — the canonical SCR-002 sign-up measure: a
+  22.5rem/360px form measure with a 15px inline gutter at 390 (card x=15, width=360, the same page
+  rhythm as `preset="login"` so sign-in → sign-up never jumps on a phone). START-aligned like
+  login — a registration card is the tallest surface in the hosted-identity set and a vertically
+  centred tall card overflows ABOVE the scroll origin on a short viewport, putting its first field
+  out of reach; start-aligned, a long form simply scrolls. The only preset with a
+  footer-clearance knob of its own (`--auth-shell-registration-main-padding-block-end{,-mobile}`,
+  3rem/2rem) so the legal/consent footer never sits flush against the submit button. The
+  block-start offset is DERIVED from the canonical artboard (card y=284 at 1440x900, y=274 at
+  390x844 = padding-block-start + 112px identity track + 20px stack gap), and the fixed identity
+  track absorbs absent / one-line / wrapped two-line identity copy without moving the card anchor.
+  Carries the full password registration form AND the pending-email confirmation state with no
+  consumer geometry CSS. New tokens: `--auth-shell-registration-{card-max-width,
+  main-padding-block-start, main-padding-block-start-mobile, main-padding-inline,
+  main-padding-inline-mobile, main-padding-block-end, main-padding-block-end-mobile,
+  card-stack-gap, identity-slot-block-size}`. Worked screen:
+  `docs/layout/auth-shell-registration.tsx`; visual contract:
+  `scripts/auth-shell-registration-visual.mjs` (`pnpm test:visual:auth-registration`).
+- **`SocialLinks` and `OrganizationChoiceList` are formally documented COMPOSITIONS (gh#256), not
+  components.** Both fail the Framework-Component Test: the social/provider action row is
+  `<AuthDivider label="…"/>` + a `Flex direction="col" gap="sm"` of real
+  `Button variant="outline"` (which providers a product offers, in what order, and what consent
+  they imply are product decisions the package must not invent; `disabled`/`loading` are the
+  Button's own props). The organization choice list is `Card` > `CardContent flush` > a `<ul>` of
+  `ListRow as="li"`, with its loading / empty / error / denied / disabled states drawn from
+  existing exports (Skeleton rows, `EmptyState`, `Alert tone="destructive"` /
+  `tone="warning"`, the Button's own `disabled`) — never bespoke markup. Both are catalogued in
+  the MCP AuthShell entry and demonstrated with every state in
+  `docs/layout/auth-shell-registration.tsx`.
+
 ### Fixed
 
 - **Release staging dist-tags no longer accumulate on the registry.** Every release staged both

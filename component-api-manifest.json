@@ -1630,6 +1630,7 @@
           "values": [
             "default",
             "login",
+            "registration",
             "device-authorization",
             "context-selection",
             "account-recovery"

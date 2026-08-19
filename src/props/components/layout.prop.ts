@@ -263,8 +263,8 @@ export type AuthShellProp = {
   /**
    * Named flow MEASURE — the page geometry contract for one canonical hosted-identity flow: the
    * auth card's max-width plus the desktop and mobile page gutters, all owned by component tokens
-   * (`--auth-shell-{login,device,context,recovery}-*`). Selecting a preset replaces every
-   * consumer-side geometry override.
+   * (`--auth-shell-{login,registration,device,context,recovery}-*`). Selecting a preset replaces
+   * every consumer-side geometry override.
    *
    * - `"default"` (default) — the shell's own measure; nothing changes.
    * - `"login"` — SCR-001's 360px card at x=540/332/15 and y=363/363/353 for the canonical
@@ -272,6 +272,15 @@ export type AuthShellProp = {
    *   so standalone, one-line requester and wrapped two-line requester states keep the same card
    *   position without truncating or inventing requester data. Pass AuthIdentity, Card and
    *   AuthFooter as direct children (an anchor may wrap AuthIdentity).
+   * - `"registration"` — the 360px sign-up measure with a 15px inline gutter at 390px (the same
+   *   page rhythm as `"login"`, so sign-in → sign-up never jumps on a phone). START-aligned like
+   *   login, because a registration card is the tallest surface in the hosted-identity set
+   *   (name · email · password · confirm · strength · consent · submit · providers) and a
+   *   vertically centred tall card overflows ABOVE the scroll origin on a short viewport, putting
+   *   its first field out of reach — start-aligned, a long form simply scrolls. It is also the
+   *   only preset with a footer-clearance knob of its own, so the legal/consent footer never sits
+   *   flush against the submit button. Carries the full password form and the pending-email
+   *   confirmation state with no consumer geometry CSS.
    * - `"device-authorization"` — 380px card measure with a 5px inline page gutter at a 390px
    *   viewport (canonical device-grant artboard).
    * - `"context-selection"` — 25rem card measure on desktop/tablet, edge-to-edge on mobile, and a

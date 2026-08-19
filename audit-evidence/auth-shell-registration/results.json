@@ -1,0 +1,237 @@
+{
+  "generatedAt": "2026-08-19T12:37:29.985Z",
+  "base": "http://localhost:6017",
+  "results": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "card": {
+          "x": 540,
+          "y": 284,
+          "width": 360
+        }
+      },
+      "states": [
+        {
+          "state": "standalone",
+          "card": {
+            "x": 540,
+            "y": 284,
+            "width": 360,
+            "height": 796.90625
+          },
+          "requester": null,
+          "scrollHeight": 1525,
+          "screenshot": "standalone-1440x900.png"
+        },
+        {
+          "state": "one-line",
+          "card": {
+            "x": 540,
+            "y": 284,
+            "width": 360,
+            "height": 796.90625
+          },
+          "requester": {
+            "x": 540.78125,
+            "y": 242.8125,
+            "width": 358.421875,
+            "height": 21.1875
+          },
+          "scrollHeight": 1525,
+          "screenshot": "one-line-1440x900.png"
+        },
+        {
+          "state": "wrapped",
+          "card": {
+            "x": 540,
+            "y": 284,
+            "width": 360,
+            "height": 796.90625
+          },
+          "requester": {
+            "x": 540,
+            "y": 200.4375,
+            "width": 360,
+            "height": 63.5625
+          },
+          "scrollHeight": 1525,
+          "screenshot": "wrapped-1440x900.png"
+        },
+        {
+          "state": "pending-email",
+          "card": {
+            "x": 540,
+            "y": 284,
+            "width": 360,
+            "height": 383.09375
+          },
+          "requester": {
+            "x": 554.75,
+            "y": 242.8125,
+            "width": 330.484375,
+            "height": 21.1875
+          },
+          "scrollHeight": 1112,
+          "screenshot": "pending-email-1440x900.png"
+        }
+      ],
+      "consoleFailures": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 900,
+        "card": {
+          "x": 332,
+          "y": 284,
+          "width": 360
+        }
+      },
+      "states": [
+        {
+          "state": "standalone",
+          "card": {
+            "x": 332,
+            "y": 284,
+            "width": 360,
+            "height": 796.90625
+          },
+          "requester": null,
+          "scrollHeight": 1525,
+          "screenshot": "standalone-1024x900.png"
+        },
+        {
+          "state": "one-line",
+          "card": {
+            "x": 332,
+            "y": 284,
+            "width": 360,
+            "height": 796.90625
+          },
+          "requester": {
+            "x": 332.78125,
+            "y": 242.8125,
+            "width": 358.421875,
+            "height": 21.1875
+          },
+          "scrollHeight": 1525,
+          "screenshot": "one-line-1024x900.png"
+        },
+        {
+          "state": "wrapped",
+          "card": {
+            "x": 332,
+            "y": 284,
+            "width": 360,
+            "height": 796.90625
+          },
+          "requester": {
+            "x": 332,
+            "y": 200.4375,
+            "width": 360,
+            "height": 63.5625
+          },
+          "scrollHeight": 1525,
+          "screenshot": "wrapped-1024x900.png"
+        },
+        {
+          "state": "pending-email",
+          "card": {
+            "x": 332,
+            "y": 284,
+            "width": 360,
+            "height": 383.09375
+          },
+          "requester": {
+            "x": 346.75,
+            "y": 242.8125,
+            "width": 330.484375,
+            "height": 21.1875
+          },
+          "scrollHeight": 1112,
+          "screenshot": "pending-email-1024x900.png"
+        }
+      ],
+      "consoleFailures": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "card": {
+          "x": 15,
+          "y": 274,
+          "width": 360
+        }
+      },
+      "states": [
+        {
+          "state": "standalone",
+          "card": {
+            "x": 15,
+            "y": 274,
+            "width": 360,
+            "height": 796.90625
+          },
+          "requester": null,
+          "scrollHeight": 1499,
+          "screenshot": "standalone-390x844.png"
+        },
+        {
+          "state": "one-line",
+          "card": {
+            "x": 15,
+            "y": 274,
+            "width": 360,
+            "height": 796.90625
+          },
+          "requester": {
+            "x": 15.78125,
+            "y": 232.8125,
+            "width": 358.421875,
+            "height": 21.1875
+          },
+          "scrollHeight": 1499,
+          "screenshot": "one-line-390x844.png"
+        },
+        {
+          "state": "wrapped",
+          "card": {
+            "x": 15,
+            "y": 274,
+            "width": 360,
+            "height": 796.90625
+          },
+          "requester": {
+            "x": 15,
+            "y": 190.4375,
+            "width": 360,
+            "height": 63.5625
+          },
+          "scrollHeight": 1499,
+          "screenshot": "wrapped-390x844.png"
+        },
+        {
+          "state": "pending-email",
+          "card": {
+            "x": 15,
+            "y": 274,
+            "width": 360,
+            "height": 383.09375
+          },
+          "requester": {
+            "x": 29.75,
+            "y": 232.8125,
+            "width": 330.484375,
+            "height": 21.1875
+          },
+          "scrollHeight": 1086,
+          "screenshot": "pending-email-390x844.png"
+        }
+      ],
+      "consoleFailures": []
+    }
+  ]
+}
