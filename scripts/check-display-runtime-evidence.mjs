@@ -10,7 +10,8 @@ for (const frame of data.frames ?? []) {
     errors.push(`${frame.id ?? "<missing>"}: invalid identity or verdict`);
     continue;
   }
-  if (frame.verdict === "untested" && !frame.reason) errors.push(`${frame.id}: untested needs reason`);
+  if (frame.verdict === "untested" && !frame.reason)
+    errors.push(`${frame.id}: untested needs reason`);
   if (frame.verdict !== "untested") {
     if (JSON.stringify(frame.widths) !== JSON.stringify(widths)) {
       errors.push(`${frame.id}: PASS/FAIL requires all eight widths`);

@@ -89,9 +89,15 @@ export const PermissionMatrix = React.forwardRef<HTMLDivElement, PermissionMatri
     const { t } = useTranslation();
     const grantSet = React.useMemo(() => toGrantSet(grants), [grants]);
 
-    const sameRole = compare !== null && compare !== undefined && compare[0] === compare[1];
-    const comparePair: ComparePair | null =
-      compare === null || compare === undefined || sameRole ? null : [compare[0], compare[1]];
+    const compareA = compare?.[0];
+    const compareB = compare?.[1];
+    const comparePair = React.useMemo<ComparePair | null>(
+      () =>
+        compareA === undefined || compareB === undefined || compareA === compareB
+          ? null
+          : [compareA, compareB],
+      [compareA, compareB],
+    );
     const compared = React.useMemo(() => new Set(comparePair ?? []), [comparePair]);
 
     const rows = React.useMemo(

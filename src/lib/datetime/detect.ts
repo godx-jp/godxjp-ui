@@ -1,13 +1,7 @@
 import { isValidHhmm } from "./parse";
 
 export type FormatDateKind =
-  | "auto"
-  | "date"
-  | "datetime"
-  | "time"
-  | "long"
-  | "relative"
-  | "calendar";
+  "auto" | "date" | "datetime" | "time" | "long" | "relative" | "calendar";
 
 const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
 

@@ -120,9 +120,7 @@ describe("Select (searchable) — readOnly/size forwarding to SearchSelect (#175
   });
 
   it("forwards `size` to the SearchSelect trigger", () => {
-    renderWithUi(
-      <Select options={OPTIONS} showSearch onValueChange={() => undefined} size="sm" />,
-    );
+    renderWithUi(<Select options={OPTIONS} showSearch onValueChange={() => undefined} size="sm" />);
     expect(trigger()).toHaveAttribute("data-size", "sm");
   });
 });

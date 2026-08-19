@@ -34,9 +34,7 @@ export default function Demo() {
         <Card>
           <CardHeader>
             <CardTitle level={2}>メール認証コード（6桁）</CardTitle>
-            <CardDescription>
-              6スロット 1グループ · ペースト・矢印キー操作に対応。
-            </CardDescription>
+            <CardDescription>6スロット 1グループ · ペースト・矢印キー操作に対応。</CardDescription>
           </CardHeader>
           <CardContent>
             <FormField id="email-otp" label="認証コード" required>

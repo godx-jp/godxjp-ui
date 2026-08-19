@@ -7,9 +7,11 @@ KHÔNG dùng `ubuntu-latest` (tốn phí + chậm). Tài liệu này ghi lại m
 GitHub-hosted đã phải xử lý, để lần đụng CI/onboard runner sau tra được ngay.
 
 ## Setup 1 lần mỗi runner host
+
 ```sh
 ssh satoshi@<runner-host> 'bash -s' < .github/setup-runner-deps.sh
 ```
+
 Cài font + verify Chromium. Idempotent — chạy lại sau khi rebuild host.
 
 ## 5 khác biệt so với ubuntu-latest (đều từng làm CI đỏ)
@@ -19,16 +21,18 @@ Cài font + verify Chromium. Idempotent — chạy lại sau khi rebuild host.
    mình). Triệu chứng: job **queued mãi**, 0 dispatch, dù runner online/idle/label khớp.
    → Bật `allows_public_repositories=true` trên runner group **VÀ** đặt fork-PR approval =
    `all_external_contributors` (mọi PR fork phải duyệt tay → chặn RCE):
+
    ```sh
    gh api --method PATCH orgs/godx-jp/actions/runner-groups/1 -F allows_public_repositories=true
    gh api --method PUT repos/godx-jp/godxjp-ui/actions/permissions/fork-pr-contributor-approval \
      -f approval_policy=all_external_contributors
    ```
+
    (Đổi setting mất ~1 phút để lan; job queued CŨ không được route lại — push commit mới.)
 
 2. **`playwright install --with-deps` FAIL trên AlmaLinux.** `--with-deps` = `apt-get`
    (chỉ Debian/Ubuntu). AlmaLinux = dnf → bước này lỗi. → workflow dùng `playwright install
-   chromium` (không `--with-deps`); system libs Chromium (libnss3/atk/gbm/asound) đã có sẵn
+chromium` (không `--with-deps`); system libs Chromium (libnss3/atk/gbm/asound) đã có sẵn
    trên AlmaLinux 10 (verify: `node -e "chromium.launch()"` OK).
 
 3. **pnpm/action-setup race (3 runner chung `$HOME`).** Mặc định `dest: ~/setup-pnpm` CỐ ĐỊNH
@@ -52,6 +56,7 @@ Cài font + verify Chromium. Idempotent — chạy lại sau khi rebuild host.
    env = runner** (regen `node scripts/frame-geometry.mjs --update-baseline` TRÊN runner).
 
 ## Quy tắc khi thêm script render mới
+
 - Đọc port từ env (`PREVIEW_BASE`/`PREVIEW_PORT`), KHÔNG hardcode — chung host là đụng.
 - Nếu tạo baseline geometry/visual mới: regen TRÊN runner (không phải máy local Mac/khác) để
   khớp môi trường CI thật.

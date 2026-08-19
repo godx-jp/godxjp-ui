@@ -11,10 +11,7 @@ import { describe, expect, it } from "vitest";
  * no destructive-button route). Error TEXT on dark surfaces uses `--text-error`, not this fill token.
  */
 
-const css = readFileSync(
-  join(process.cwd(), "src/tokens/foundation.css"),
-  "utf8",
-);
+const css = readFileSync(join(process.cwd(), "src/tokens/foundation.css"), "utf8");
 
 /** Extract a flat `selector { ... }` block body (token blocks have no nested braces). */
 function block(selector: string): string {

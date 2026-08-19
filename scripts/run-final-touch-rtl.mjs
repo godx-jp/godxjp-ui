@@ -80,7 +80,10 @@ for (const width of [320, 375, 390, 768, 1024, 1280, 1440, 1920]) {
   const violations = (await new AxeBuilder({ page }).analyze()).violations
     .map(({ id }) => id)
     .filter((id) => !isolatedShellRules.has(id));
-  rtl.push({ width, pass: geometry.direction === "rtl" && !geometry.overflow && !violations.length });
+  rtl.push({
+    width,
+    pass: geometry.direction === "rtl" && !geometry.overflow && !violations.length,
+  });
   await context.close();
 }
 await browser.close();

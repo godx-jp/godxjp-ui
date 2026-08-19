@@ -59,10 +59,9 @@ try {
   for (const frame of frames) {
     for (const width of widths) {
       await page.setViewportSize({ width, height: 900 });
-      await page.goto(
-        `${base}/frame/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`,
-        { waitUntil: "domcontentloaded" },
-      );
+      await page.goto(`${base}/frame/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`, {
+        waitUntil: "domcontentloaded",
+      });
       await waitForFrame(page, frame);
       const result = await page.evaluate(() => ({
         viewport: innerWidth,
@@ -114,10 +113,9 @@ try {
   await page.setViewportSize({ width: 1024, height: 900 });
   const axe = {};
   for (const frame of frames) {
-    await page.goto(
-      `${base}/isolate/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`,
-      { waitUntil: "domcontentloaded" },
-    );
+    await page.goto(`${base}/isolate/${frame}${process.env.RTL === "1" ? "?rtl=1" : ""}`, {
+      waitUntil: "domcontentloaded",
+    });
     await waitForFrame(page, frame);
     if (frame === "layout-resizable-panel") {
       await page.getByRole("button", { name: "サイドバーを開く" }).click();

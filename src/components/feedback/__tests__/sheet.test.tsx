@@ -22,9 +22,7 @@ describe("Sheet", () => {
       </Sheet>,
     );
 
-    expect(screen.getByRole("dialog")).toHaveClass(
-      "w-[min(var(--sheet-width-default),100%)]",
-    );
+    expect(screen.getByRole("dialog")).toHaveClass("w-[min(var(--sheet-width-default),100%)]");
     expect(document.querySelector('[data-slot="sheet-overlay"]')).not.toBeNull();
   });
 

@@ -29,6 +29,11 @@ export const COMPONENT_TOKENS: ComponentToken[] = [
     "description": "Small-by-design (badge/pill/counter). A knob (rule #45) so a service can * re-tune badge text without touching the global --font-size-xs step."
   },
   {
+    "name": "--badge-line-height",
+    "value": "calc(1 / 0.75)",
+    "description": "Companion to --badge-font-size (gh#260). The cva's old `text-xs` utility also set * line-height via Tailwind's default `--text-xs--line-height: calc(1 / 0.75)` (the theme * remaps --text-xs but never that companion). Same unitless ratio here keeps the default * badge pixel-identical now that badge-layout.css owns the type metrics."
+  },
+  {
     "name": "--banner-radius",
     "value": "0",
     "description": "Square corners — a strip spans its container edge-to-edge, so it carries no radius."

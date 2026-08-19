@@ -100,14 +100,20 @@ try {
         Math.abs(card.height - rhythm.cardHeight) <= 2,
         `${label} card height: expected ${rhythm.cardHeight} +/- 2px, received ${card.height}`,
       );
-      const passkey = await page.locator('[data-slot="card"] [data-slot="button"]').first().boundingBox();
+      const passkey = await page
+        .locator('[data-slot="card"] [data-slot="button"]')
+        .first()
+        .boundingBox();
       closeTo(passkey.y - card.y, rhythm.passkeyTop, `${label} passkey CTA top`);
       const divider = await page.locator('[data-slot="auth-divider"]').boundingBox();
       closeTo(divider.y - card.y, rhythm.dividerTop, `${label} divider top`);
       closeTo(divider.height, rhythm.dividerHeight, `${label} divider height`);
       const input = await page.locator('[data-slot="card"] input').boundingBox();
       closeTo(input.y - card.y, rhythm.inputTop, `${label} email input top`);
-      const secondary = await page.locator('[data-slot="card"] [data-slot="button"]').nth(1).boundingBox();
+      const secondary = await page
+        .locator('[data-slot="card"] [data-slot="button"]')
+        .nth(1)
+        .boundingBox();
       closeTo(secondary.y - card.y, rhythm.secondaryTop, `${label} secondary action top`);
       const links = await page.locator('[data-slot="card"] .ui-flex').last().boundingBox();
       closeTo(links.y - card.y, rhythm.linksTop, `${label} links row top`);

@@ -134,7 +134,7 @@ export default function Demo() {
           UNDER the long JA title at 390px — nothing clips, no consumer CSS. */}
       <PageContainer
         title="株式会社ファムジア（本社・東京オフィス）の組織プロファイル"
-        subtitle="Organization profile · Hồ sơ tổ chức — trạng thái hợp đồng và môi trường"
+        subtitle="Organization profile · Hồ sơ tổ chức · trạng thái hợp đồng và môi trường"
         status={
           <>
             <Badge tone="success">有効</Badge>
@@ -158,7 +158,7 @@ export default function Demo() {
             <CardTitle level={2}>ステータスバンドの契約</CardTitle>
             <CardDescription>
               status はタイトル行に載り、コンパクト幅ではタイトルの下に折り返します。バッジを h1
-              の隣に手置きしないでください — 余白は --page-header-status-gap が所有します。
+              の隣に手置きしないでください。余白は --page-header-status-gap が所有します。
             </CardDescription>
           </CardHeader>
           <CardContent>

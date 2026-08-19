@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-04T23:18:01.229Z",
+  "generatedAt": "2026-08-19T13:11:57.818Z",
   "base": "http://localhost:6018",
   "results": [
     {
@@ -34,9 +34,9 @@
       },
       "title": {
         "x": 494,
-        "y": 11.59375,
+        "y": 13,
         "width": 252,
-        "height": 23.796875
+        "height": 21
       },
       "titleStyle": {
         "overflow": "hidden",
@@ -81,9 +81,9 @@
       },
       "title": {
         "x": 494,
-        "y": 11.59375,
+        "y": 13,
         "width": 432.8125,
-        "height": 23.796875
+        "height": 21
       },
       "titleStyle": {
         "overflow": "hidden",
@@ -128,9 +128,9 @@
       },
       "title": {
         "x": 494,
-        "y": 11.59375,
+        "y": 13,
         "width": 358.234375,
-        "height": 23.796875
+        "height": 21
       },
       "titleStyle": {
         "overflow": "hidden",
@@ -170,9 +170,9 @@
       },
       "title": {
         "x": 494,
-        "y": 11.59375,
+        "y": 13,
         "width": 252,
-        "height": 23.796875
+        "height": 21
       },
       "titleStyle": {
         "overflow": "hidden",
@@ -212,9 +212,9 @@
       },
       "title": {
         "x": 494,
-        "y": 11.59375,
+        "y": 13,
         "width": 341.234375,
-        "height": 23.796875
+        "height": 21
       },
       "titleStyle": {
         "overflow": "hidden",
@@ -254,9 +254,9 @@
       },
       "title": {
         "x": 494,
-        "y": 11.59375,
+        "y": 13,
         "width": 341.234375,
-        "height": 23.796875
+        "height": 21
       },
       "titleStyle": {
         "overflow": "hidden",
@@ -296,9 +296,9 @@
       },
       "title": {
         "x": 290,
-        "y": 11.59375,
+        "y": 13,
         "width": 0,
-        "height": 23.796875
+        "height": 21
       },
       "titleStyle": {
         "overflow": "hidden",
@@ -338,9 +338,9 @@
       },
       "title": {
         "x": 290,
-        "y": 11.59375,
+        "y": 13,
         "width": 0,
-        "height": 23.796875
+        "height": 21
       },
       "titleStyle": {
         "overflow": "hidden",
@@ -380,9 +380,9 @@
       },
       "title": {
         "x": 290,
-        "y": 11.59375,
+        "y": 13,
         "width": 0,
-        "height": 23.796875
+        "height": 21
       },
       "titleStyle": {
         "overflow": "hidden",

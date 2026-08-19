@@ -9,17 +9,17 @@ while every word of legal text stays owned by the consumer (`sections`).
 
 ## What the shell owns (so no app re-implements it)
 
-| Capability             | Behaviour                                                                                                                      |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Readable measure       | `--legal-document-measure-max-width` (46rem) caps the header, the body and the footer at every viewport.                       |
-| Sticky contents rail   | At **≥56rem of shell width** the contents pin beside a measure-capped column and span the whole scroll.                        |
-| Compact/mobile rail    | Below 56rem the shell is one column: header → contents → sections → footer. The rail is **static** — never pinned, never capped. |
-| Scroll spy             | An `IntersectionObserver` marks the section at the reading line `aria-current="location"` (+ a marker + a weight — never colour alone). |
-| Hash navigation        | `#section-id` on arrival selects that section; activating an entry rewrites the hash with `history.replaceState` (Back is never hijacked). |
-| Scroll offset          | `scroll-margin-block-start: var(--legal-document-scroll-offset)` — a jump lands below sticky chrome with no offset arithmetic.  |
-| Focus handoff          | The target `<section tabIndex={-1}>` takes focus (`preventScroll`) with a **visible ring**, so keyboard users arrive inside it. |
-| Reduced motion         | The smooth scroll degrades to an instant jump under `prefers-reduced-motion: reduce`.                                           |
-| i18n                   | `effectiveDate` takes **ISO 8601** in and is rendered with `Intl.DateTimeFormat` in the active locale, inside `<time dateTime>`. |
+| Capability           | Behaviour                                                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Readable measure     | `--legal-document-measure-max-width` (46rem) caps the header, the body and the footer at every viewport.                                   |
+| Sticky contents rail | At **≥56rem of shell width** the contents pin beside a measure-capped column and span the whole scroll.                                    |
+| Compact/mobile rail  | Below 56rem the shell is one column: header → contents → sections → footer. The rail is **static** — never pinned, never capped.           |
+| Scroll spy           | An `IntersectionObserver` marks the section at the reading line `aria-current="location"` (+ a marker + a weight — never colour alone).    |
+| Hash navigation      | `#section-id` on arrival selects that section; activating an entry rewrites the hash with `history.replaceState` (Back is never hijacked). |
+| Scroll offset        | `scroll-margin-block-start: var(--legal-document-scroll-offset)` — a jump lands below sticky chrome with no offset arithmetic.             |
+| Focus handoff        | The target `<section tabIndex={-1}>` takes focus (`preventScroll`) with a **visible ring**, so keyboard users arrive inside it.            |
+| Reduced motion       | The smooth scroll degrades to an instant jump under `prefers-reduced-motion: reduce`.                                                      |
+| i18n                 | `effectiveDate` takes **ISO 8601** in and is rendered with `Intl.DateTimeFormat` in the active locale, inside `<time dateTime>`.           |
 
 ## Breakpoint is a CONTAINER query, not a viewport query
 

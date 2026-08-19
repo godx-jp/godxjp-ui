@@ -29,12 +29,7 @@ export type UploadFileItem = {
 };
 
 export type UploadVariant =
-  | "dropzone"
-  | "button"
-  | "picture-card"
-  | "picture"
-  | "avatar"
-  | "avatar-crop";
+  "dropzone" | "button" | "picture-card" | "picture" | "avatar" | "avatar-crop";
 
 /** Actions parent runs on form submit (media-service). */
 export type UploadCommitAction = {

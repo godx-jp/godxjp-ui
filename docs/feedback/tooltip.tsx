@@ -1,9 +1,4 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@godxjp/ui/feedback";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@godxjp/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@godxjp/ui/data-display";
 import { Button, Text } from "@godxjp/ui/general";
 import { Flex, PageContainer } from "@godxjp/ui/layout";

@@ -26,7 +26,7 @@ export default function Demo() {
             <CardTitle level={2}>Canonical shell notices · every tone</CardTitle>
             <CardDescription>
               The strip runs edge-to-edge with square corners and a single tone-coloured hairline on
-              the block-end edge — geometry owned by the --banner-* tokens, never consumer CSS.
+              the block-end edge. Geometry is owned by the --banner-* tokens, never consumer CSS.
               destructive and warning announce assertively (role=alert); the rest politely
               (role=status).
             </CardDescription>
@@ -86,7 +86,7 @@ export default function Demo() {
             <CardTitle level={2}>Dismissible · built-in control, focus order</CardTitle>
             <CardDescription>
               onDismiss renders the localized dismiss button pinned top/inline-end and LAST in DOM
-              order — keyboard focus reaches content, then actions, then dismiss. Never hand-roll an
+              order: keyboard focus reaches content, then actions, then dismiss. Never hand-roll an
               × inside Banner.Actions.
             </CardDescription>
           </CardHeader>
@@ -117,8 +117,8 @@ export default function Demo() {
             <CardTitle level={2}>Long JA / EN / VI copy · 390px wrapping</CardTitle>
             <CardDescription>
               The text column wraps inside min-width 0 and actions drop onto their own full-width
-              wrapping line below the 640px step — narrow this frame to 390px: nothing clips,
-              nothing overflows horizontally.
+              wrapping line below the 640px step. Narrow this frame to 390px: nothing clips, nothing
+              overflows horizontally.
             </CardDescription>
           </CardHeader>
           <CardContent flush>
@@ -160,7 +160,7 @@ export default function Demo() {
               <Banner tone="destructive">
                 <Banner.Content>
                   <Banner.Title>
-                    Phiên hỗ trợ từ xa đang hoạt động — nhân viên hỗ trợ hiện có thể xem toàn bộ dữ
+                    Phiên hỗ trợ từ xa đang hoạt động. Nhân viên hỗ trợ hiện có thể xem toàn bộ dữ
                     liệu tổ chức của bạn cho đến khi phiên kết thúc
                   </Banner.Title>
                   <Banner.Description>

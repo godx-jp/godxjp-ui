@@ -34,10 +34,7 @@ export type BadgeVariant = "default" | "secondary" | "outline" | "dashed";
 export type BadgeTone = ToneProp | "primary";
 
 interface StatusDef {
-  tone: Extract<
-    BadgeTone,
-    "default" | "success" | "warning" | "destructive" | "info" | "neutral"
-  >;
+  tone: Extract<BadgeTone, "default" | "success" | "warning" | "destructive" | "info" | "neutral">;
   icon: LucideIcon;
 }
 

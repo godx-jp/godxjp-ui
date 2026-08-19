@@ -68,8 +68,8 @@ function VariantBlock() {
       <CardHeader>
         <CardTitle level={2}>variant</CardTitle>
         <CardDescription>
-          Button の構造バリアントをそのまま受け取る。既定は outline · ページヘッダーでは
-          outline か ghost を使い、default は主要操作のために空けておく。
+          Button の構造バリアントをそのまま受け取る。既定は outline · ページヘッダーでは outline か
+          ghost を使い、default は主要操作のために空けておく。
         </CardDescription>
       </CardHeader>
       <CardContent>

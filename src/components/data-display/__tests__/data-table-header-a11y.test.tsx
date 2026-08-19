@@ -65,15 +65,11 @@ describe("DataTable accessible header contract (#155)", () => {
         { key: "_actions", header: "", align: "right", render: () => <button>…</button> },
       ];
       renderWithUi(<DataTable data={data} columns={bad} getRowId={(r) => r.id} />);
-      expect(warn).toHaveBeenCalledWith(
-        expect.stringContaining('Column "_actions"'),
-      );
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('Column "_actions"'));
     });
 
     it("does NOT warn when the empty header carries an ariaLabel", () => {
-      renderWithUi(
-        <DataTable data={data} columns={columnsWithActions} getRowId={(r) => r.id} />,
-      );
+      renderWithUi(<DataTable data={data} columns={columnsWithActions} getRowId={(r) => r.id} />);
       expect(warn).not.toHaveBeenCalled();
     });
   });

@@ -21,9 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   track absorbs absent / one-line / wrapped two-line identity copy without moving the card anchor.
   Carries the full password registration form AND the pending-email confirmation state with no
   consumer geometry CSS. New tokens: `--auth-shell-registration-{card-max-width,
-  main-padding-block-start, main-padding-block-start-mobile, main-padding-inline,
-  main-padding-inline-mobile, main-padding-block-end, main-padding-block-end-mobile,
-  card-stack-gap, identity-slot-block-size}`. Worked screen:
+main-padding-block-start, main-padding-block-start-mobile, main-padding-inline,
+main-padding-inline-mobile, main-padding-block-end, main-padding-block-end-mobile,
+card-stack-gap, identity-slot-block-size}`. Worked screen:
   `docs/layout/auth-shell-registration.tsx`; visual contract:
   `scripts/auth-shell-registration-visual.mjs` (`pnpm test:visual:auth-registration`).
 - **`SocialLinks` and `OrganizationChoiceList` are formally documented COMPOSITIONS (gh#256), not

@@ -101,13 +101,17 @@ describe("CommandPalette", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Loading");
 
     rerender(
-      <CommandPalette defaultOpen error="Request failed" groups={groups} labels={labels} onSelect={vi.fn()} />,
+      <CommandPalette
+        defaultOpen
+        error="Request failed"
+        groups={groups}
+        labels={labels}
+        onSelect={vi.fn()}
+      />,
     );
     expect(screen.getByRole("alert")).toHaveTextContent("Request failed");
 
-    rerender(
-      <CommandPalette defaultOpen groups={[]} labels={labels} onSelect={vi.fn()} />,
-    );
+    rerender(<CommandPalette defaultOpen groups={[]} labels={labels} onSelect={vi.fn()} />);
     expect(screen.getByText("No results")).toBeInTheDocument();
   });
 });

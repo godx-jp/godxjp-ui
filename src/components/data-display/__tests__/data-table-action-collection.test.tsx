@@ -236,14 +236,14 @@ describe("DataTable action-collection preset (gh#253)", () => {
       meta: round((tableWidth * percent("--table-action-collection-meta-width")) / 100),
       actions: rem("--table-action-collection-actions-width"),
     });
-    const compact = (tableWidth: number) => ({
-      primary: round(
-        (tableWidth * percent("--table-action-collection-primary-width-compact")) / 100,
-      ),
-      secondary: round(
-        (tableWidth * percent("--table-action-collection-secondary-width-compact")) / 100,
-      ),
-      meta: round((tableWidth * percent("--table-action-collection-meta-width-compact")) / 100),
+    // gh#262: the compact tier switched from percentages to rem FLOOR measures — fixed
+    // table layout normalizes over-100% percentage columns (the 10-column CJK shredding),
+    // while a length is the one floor it respects. The measures below are therefore
+    // absolute, not derived from the table width.
+    const compact = () => ({
+      primary: rem("--table-action-collection-primary-width-compact"),
+      secondary: rem("--table-action-collection-secondary-width-compact"),
+      meta: rem("--table-action-collection-meta-width-compact"),
       actions: rem("--table-action-collection-actions-width-compact"),
     });
     const free = (tableWidth: number, m: ReturnType<typeof desktop>) =>
@@ -255,9 +255,19 @@ describe("DataTable action-collection preset (gh#253)", () => {
     // 1024 → 766px table
     expect(desktop(766)).toEqual({ primary: 137.9, secondary: 168.5, meta: 91.9, actions: 56 });
     expect(free(766, desktop(766))).toBe(311.7);
-    // 390 → 388px table, compact tier below the `sm` container step
-    expect(compact(388)).toEqual({ primary: 93.1, secondary: 85.4, meta: 77.6, actions: 44 });
-    expect(free(388, compact(388))).toBe(87.9);
+    // 390 → 388px table, compact tier below the `sm` container step. The canonical 5-column
+    // frame (primary + secondary + meta + actions + one flex column) must stay scroll-free:
+    // floors sum to 388px ≤ 390px.
+    expect(compact()).toEqual({ primary: 96, secondary: 88, meta: 80, actions: 44 });
+    expect(
+      round(
+        compact().primary +
+          compact().secondary +
+          compact().meta +
+          compact().actions +
+          rem("--table-action-collection-flex-width-compact"),
+      ),
+    ).toBeLessThanOrEqual(390);
     // The reserved actions measure must clear the WCAG 2.5.8 24px target even at the compact tier.
     expect(rem("--table-action-collection-actions-width-compact")).toBeGreaterThanOrEqual(24);
   });

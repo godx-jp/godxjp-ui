@@ -66,7 +66,12 @@ describe("layout and navigation owner frame contracts", () => {
       ],
     ],
     ["docs/layout/aspect-ratio.tsx", ["ratio"]],
-    ["docs/layout/auth-shell.tsx", ["brand", "footer", "variant"]],
+    // gh#263: the login frame mirrors canonical SCR-001, which has NO footer slot usage
+    // (AuthFooter is the third direct grid child). The `footer` prop is demonstrated by the
+    // recovery and registration frames below instead.
+    ["docs/layout/auth-shell.tsx", ["brand", "variant"]],
+    ["docs/layout/auth-recovery/index.tsx", ["footer", "preset"]],
+    ["docs/layout/auth-shell-registration.tsx", ["footer", "preset"]],
     ["docs/layout/centered-shell.tsx", ["topbar", "footer", "width"]],
     [
       "docs/layout/page-container.tsx",

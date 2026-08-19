@@ -99,16 +99,15 @@ export function CommandPalette({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, setOpen, shortcut]);
 
-  const triggerNode =
-    trigger ?? (
-      <Button variant="outline" size="sm" className="ui-command-palette-trigger">
-        <Search aria-hidden="true" />
-        <span>{labels.open}</span>
-        <span className="kbd" aria-hidden="true">
-          ⌘K
-        </span>
-      </Button>
-    );
+  const triggerNode = trigger ?? (
+    <Button variant="outline" size="sm" className="ui-command-palette-trigger">
+      <Search aria-hidden="true" />
+      <span>{labels.open}</span>
+      <span className="kbd" aria-hidden="true">
+        ⌘K
+      </span>
+    </Button>
+  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -136,7 +135,11 @@ export function CommandPalette({
           {labels.description}
         </Dialog.Description>
         <Command label={labels.title}>
-          <CommandInput autoFocus placeholder={labels.placeholder} aria-label={labels.placeholder} />
+          <CommandInput
+            autoFocus
+            placeholder={labels.placeholder}
+            aria-label={labels.placeholder}
+          />
           <CommandList aria-busy={loading}>
             {loading ? (
               <div className="ui-command-palette-state" role="status">

@@ -338,7 +338,6 @@
   .ui-auth-shell[data-variant="canonical"] .ui-form-field {
     --field-label-gap: var(--auth-shell-field-label-gap);
   }
-
 }
 
 /* INTENTIONALLY UNLAYERED (like density.css) — the Label primitive carries `text-sm leading-none`
@@ -354,7 +353,6 @@
 }
 
 @layer components {
-
   /*
    * Compact auth card density — the two card axes are wired to SEPARATE knobs (gh#232), so a
    * service can shorten the canonical Login card without narrowing its column (or vice versa):
